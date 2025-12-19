@@ -52,6 +52,7 @@
     *   **Crucial**: Add a "Next Steps" section pointing to `docs/architecture_instructions.md` (or equivalent) to guide developers on architecture standards after setup.
 *   **Create `docs/android_setup.md`**: A detailed guide on how to configure Android flavors (modifying `build.gradle.kts` and `AndroidManifest.xml`).
 *   **Create `docs/ios_setup.md`**: A detailed guide on how to configure iOS flavors (Schemes and Build Configurations in Xcode).
+*   **Create `docs/github_push_instructions.md`**: Instructions for pushing the local repo to GitHub via GitHub Desktop.
 
 ## Response Constraints:
 *   Do NOT implement complex UI or business logic (e.g., do not write the actual authentication logic, just the folder for it).

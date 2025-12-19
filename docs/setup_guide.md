@@ -130,5 +130,7 @@ For platform-specific flavor configurations, please refer to:
 
 Now that the project structure and environment are set up, please refer to the following documentation for architecture guidelines and development standards:
 
+*   **[Pushing to GitHub](github_push_instructions.md)**: Easy steps to publish your local repository to GitHub using GitHub Desktop.
 *   **[Architecture Instructions](architecture_instructions.md)**: Detailed guide on the project's layered architecture, state management, and coding standards.
+
 
