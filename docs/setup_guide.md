@@ -36,6 +36,14 @@ flutter create --org io.getbizzie --project-name bizzie .
 # lib/env/env.g.dart 
 ```
 
+### Step 1.5: Git Initialization
+Initialized the git repository and committed the base project structure:
+```bash
+git init
+git add .
+git commit -m "Initial project setup"
+```
+
 ### Step 2: Directory Structure
 **Commands:**
 ```bash

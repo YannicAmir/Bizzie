@@ -43,10 +43,21 @@
 
 Execute the following terminal commands (and any other commands needed) to generate the assets:
 
-```bash
+```
 dart run flutter_launcher_icons
 dart run flutter_native_splash:create
 ```
+
+## Maintenance & Partial Updates
+
+If you only need to update specific assets (e.g. just the splash branding or background color) without running the full setup interview:
+
+1.  **Modify the Config:** Edit `flutter_launcher_icons.yaml` or `flutter_native_splash.yaml` directly to change colors or image paths.
+2.  **Replace Assets:** Overwrite the existing image files in `assets/images/branding/` with new versions (keep filenames the same to avoid config changes).
+3.  **Regenerate:** Run the specific command for the part you changed:
+    *   **App Icon:** `dart run flutter_launcher_icons`
+    *   **Splash Screen:** `dart run flutter_native_splash:create`
+
 
 ## Response Constraints
 
