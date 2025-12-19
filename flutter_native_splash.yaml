@@ -1,0 +1,26 @@
+flutter_native_splash:
+  color: "#ffffff"
+  image: assets/images/branding/splash_logo.png
+  branding: assets/images/branding/splash_branding.png
+  
+  color_dark: "#0e172c"
+  image_dark: assets/images/branding/splash_logo.png
+  branding_dark: assets/images/branding/splash_branding.png
+
+  android_12:
+    color: "#ffffff"
+    image: assets/images/branding/splash_logo.png
+    branding: assets/images/branding/splash_branding.png
+    
+    # Android 12 specific dark mode overrides
+    # Note: 'icon_background_color_dark' is the key for android_12 dark color usually?
+    # Actually the doc says for android_12, you can use `color_dark`, `image_dark` inside it? 
+    # Or does it inherit?
+    # Using specific documented keys for android 12 if needed, but standard practice 
+    # often allows just the top level ones to propagate if not specified, 
+    # or specific keys inside. 
+    # However, to be safe and adhering to common patterns:
+    color_dark: "#0e172c"
+    image_dark: assets/images/branding/splash_logo.png
+    branding_dark: assets/images/branding/splash_branding.png
+
