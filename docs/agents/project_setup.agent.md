@@ -24,13 +24,23 @@
     ```
     lib/
     ├── l10n/                  # Localization (app_en.arb)
-    ├── app/                   # App root (app.dart, themes)
+    ├── app/                   # App root
+    │   ├── themes/            # App-wide themes
+    │   ├── router.dart
+    │   └── app.dart
     ├── bootstrap/             # Bootstrap logic
-    ├── core/                  # Core logic (error, usecase, network, enums)
+    ├── core/                  # Core & Shared Logic
+    │   ├── error/             # Failures & Exceptions
+    │   ├── usecase/           # Abstract Base UseCase
+    │   ├── network/           # Interceptors & Network Info
+    │   └── enums/             # Global Enums
     ├── di/                    # Dependency Injection
     ├── services/              # Third-party wrappers (analytics, auth, etc)
     ├── features/              # Feature modules
     ├── shared/                # Shared widgets/utils
+    │   ├── widgets/
+    │   ├── utils/
+    │   └── constants/
     ├── main_dev.dart          # Dev entry point
     ├── main_qa.dart           # QA entry point
     └── main_prod.dart         # Prod entry point

@@ -29,11 +29,62 @@ lib/features/[feature_name]/
 │   ├── models/        # Pure Dart classes (Business Entities)
 │   ├── interfaces/    # Abstract Repository Interfaces
 │   └── usecases/      # Single-responsibility business logic classes
-└── presentation/
-    ├── bloc/          # State Management (Bloc/Cubit)
-    ├── views/         # Screens (Pages)
-    ├── widgets/       # Feature-specific widgets
-    └── [feature].dart # Barrel file / Export
+├── presentation/
+│   ├── bloc/          # State Management (Bloc/Cubit)
+│   ├── views/         # Screens (Pages)
+│   └── widgets/       # Feature-specific widgets
+└── [feature].dart     # Barrel file / Export
+```
+
+### Full Project Architecture Reference
+
+Use this full project tree as the context for where features fit in and strictly follow this structure:
+
+```plaintext
+lib/
+├── l10n/                  # Localization
+│   ├── app_en.arb         # English Strings
+│   └── l10n.dart          # Helper configuration
+├── app/
+│   ├── app.dart           # Root widget
+│   ├── router.dart        # App-level routing
+│   └── themes/            # App-wide themes
+├── bootstrap/             # Entry point setup
+│   └── bootstrap.dart
+├── core/                  # Shared business logic
+│   ├── error/             # Failures & Exceptions
+│   ├── usecase/           # Abstract Base UseCase
+│   ├── network/           # Interceptors & Network Info
+│   └── enums/             # Global Enums
+├── di/                    # Dependency Injection
+│   ├── injection.dart     # GetIt/Injectable setup
+│   └── injectable.config.dart
+├── services/              # Third-party wrapper services
+│   ├── notification_service.dart
+│   ├── analytics_service.dart
+│   ├── permission_service.dart
+│   └── auth_service.dart
+├── features/              # Modular Features
+│   └── [feature_name]/
+│       ├── data/
+│       │   ├── dtos/
+│       │   ├── datasources/
+│       │   └── repositories/
+│       ├── domain/
+│       │   ├── models/
+│       │   ├── interfaces/
+│       │   └── usecases/
+│       ├── presentation/
+│       │   ├── bloc/
+│       │   ├── views/
+│       │   ├── widgets/
+│       │   └── routes/
+│       └── [feature_name].dart
+├── shared/                # Global UI components & Utils
+│   ├── widgets/
+│   ├── utils/
+│   └── constants/
+└── main.dart              # App entry point
 ```
 
 ### Enforce Boundaries

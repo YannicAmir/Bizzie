@@ -52,3 +52,7 @@ app.*.map.json
 # Envied generated files
 # lib/env/env.g.dart # Uncomment if you don't want to commit generated secrets
 
+
+# Firebase Config
+ios/config/
+**/google-services.json

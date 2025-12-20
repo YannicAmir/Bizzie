@@ -48,7 +48,7 @@ git commit -m "Initial project setup"
 **Commands:**
 ```bash
 rm lib/main.dart test/widget_test.dart
-mkdir -p lib/l10n lib/app lib/bootstrap lib/core/enums lib/di lib/services lib/features lib/shared lib/env
+mkdir -p lib/l10n lib/app/themes lib/bootstrap lib/core/enums lib/core/error lib/core/usecase lib/core/network lib/di lib/services lib/features lib/shared/widgets lib/shared/utils lib/shared/constants lib/env
 ```
 
 ### Step 3: Core Files & Entry Points
