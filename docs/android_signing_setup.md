@@ -30,26 +30,38 @@ An Upload Keystore is a cryptographic key that proves you are the author of the 
 
 ### Option B: Using Command Line (Terminal)
 
-Run the following command in your terminal:
+You can run this command from **any** folder in your terminal. We will save the file specifically to your **Home Directory** so you can find it easily.
 
-```bash
-keytool -genkey -v -keystore ~/upload-keystore.jks \
-        -keyalg RSA -keysize 2048 -validity 10000 \
-        -alias upload
-```
+1.  **Open your Terminal app.**
+2.  **Paste and Run** the following command:
 
-*   It will prompt you for a password and some details (Name, Organization, etc.).
-*   The file `upload-keystore.jks` will be created in your home directory.
+    ```bash
+    keytool -genkey -v -keystore ~/upload-keystore.jks \
+            -keyalg RSA -keysize 2048 -validity 10000 \
+            -alias upload
+    ```
+
+    > **Note:** The `~` symbol stands for your user home folder (e.g., `/Users/yannicamir/`). So `~/upload-keystore.jks` means "save this file named `upload-keystore.jks` right inside my home folder."
+
+3.  **Answer the Prompts:**
+    *   **Enter keystore password:** Type a strong password (it won't show on screen as you type). Press Enter.
+    *   **Re-enter new password:** Type it again.
+    *   **What is your first and last name?:** Enter "Bizzie Team" (or your name).
+    *   **Organizational Unit / Organization / City / State / Country:** You can fill these or just leave them blank (press Enter).
+    *   **Is CN=..., C=... correct?:** Type `yes` and press Enter.
 
 ---
 
 ## Verifying the File
 
-Ensure the file was created:
-```bash
-ls -l ~/upload-keystore.jks 
-# Or wherever you saved it
-```
+Once the command finishes, check if the file exists:
+
+1.  Run this command to listed the file details:
+    ```bash
+    ls -l ~/upload-keystore.jks
+    ```
+2.  If it prints a line like `-rw-r--r--  1 yannicamir  staff  2345 ...`, the file is there!
+3.  You can now use this path (`~/upload-keystore.jks`) for the Base64 encoding step in the CI/CD guide.
 
 ## Next Steps
 

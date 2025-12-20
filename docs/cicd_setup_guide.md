@@ -227,7 +227,8 @@ To verify everything works, we will trigger a manual build for the **Dev** envir
 4.  **Trigger the Run:**
     *   On the right side of the blue banner, click the **Run workflow** dropdown button.
     *   **Use workflow from:** Ensure `main` is selected.
-    *   **Which environment to deploy?:** Select `dev`.
+    *   **Which environment to deploy?:** Select `dev` (for first test).
+    *   *Note: In the future, you can select `qa` or `prod` here to deploy to those environments.*
     *   Click the green **Run workflow** button.
 5.  **Monitor the Build:**
     *   After a few seconds, a new row will appear in the list with a yellow spinning circle.

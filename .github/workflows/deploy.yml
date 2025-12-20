@@ -183,13 +183,13 @@ jobs:
       # -----------------------------------------------------------------------
       # 2. Build Android
       # -----------------------------------------------------------------------
-      - name: Build APK (Release)
-        run: |
-          flutter build apk --release \
-            --flavor ${{ inputs.flavor }} \
-            -t lib/main_${{ inputs.flavor }}.dart
-            # Add keystore params if not in gradle properties?
-            # Usually strict: --build-name=... --build-number=...
+      # - name: Build APK (Release)
+      #   run: |
+      #     flutter build apk --release \
+      #       --flavor ${{ inputs.flavor }} \
+      #       -t lib/main_${{ inputs.flavor }}.dart
+      #       # Add keystore params if not in gradle properties?
+      #       # Usually strict: --build-name=... --build-number=...
             
       # -----------------------------------------------------------------------
       # 3. Build iOS
