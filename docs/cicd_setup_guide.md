@@ -95,19 +95,15 @@ Apple requires a helper certificate and provisioning profile to build the `.ipa`
 1.  Export your Apple Distribution Certificate from Keychain Access as a `.p12` file.
 2.  **Action:**
     ```bash
-    base64 -i ~/Desktop/Certificates.p12 | pbcopy
+    base64 -i ~/Desktop/distr_cert.p12 | pbcopy
     ```
     *   Encode the `.p12` file.
-    *   Create Secret: `DEV_IOS_CERTIFICATE_BASE64`
+    *   Create Secret: `IOS_DIST_CERTIFICATE_BASE64`
     *   Value: [Paste Base64 String]
-    *   Create Secret: `DEV_IOS_CERTIFICATE_PASSWORD` (The password string itself, NOT base64).
+    *   Create Secret: `IOS_DIST_CERTIFICATE_PASSWORD` (The password string itself, NOT base64).
     *   Value: [Paste Password String]
 
-    **QA & Prod Environments:**
-    *   Create Secret: `QA_IOS_CERTIFICATE_BASE64` -> **Use the SAME value as Dev.**
-    *   Create Secret: `QA_IOS_CERTIFICATE_PASSWORD` -> **Use the SAME password as Dev.**
-    *   Create Secret: `PROD_IOS_CERTIFICATE_BASE64` -> **Use the SAME value as Dev.**
-    *   Create Secret: `PROD_IOS_CERTIFICATE_PASSWORD` -> **Use the SAME password as Dev.**
+    > **Note:** This single certificate secret is used for **Dev**, **QA**, and **Prod** environments.
 
 #### B. Provisioning Profiles (.mobileprovision)
 1.  Download the **Ad Hoc** provisioning profile for each environment from Apple Developer Portal.
@@ -185,6 +181,19 @@ These files contain the implementation details for Firebase and ARE in your proj
     base64 -i ios/config/prod/GoogleService-Info.plist | pbcopy
     ```
     *   Secret: `PROD_GOOGLE_SERVICE_INFO_PLIST_BASE64`
+
+---
+
+### Step 5: Firebase App Distribution Setup
+Before running your first build, you must configure the "testers" group in Firebase.
+
+If you see an error like `Requested entity was not found`, it usually means this group is missing.
+
+**To fix/configure this:**
+1.  Go to **Firebase Console** > **App Distribution** > **Testers & Groups**.
+2.  Create a new group named `testers` (must be lowercase to match our workflow default).
+3.  **Add your email** to this group.
+4.  (Optional) Re-run the build manually in GitHub Actions, and you will receive the email invite!
 
 ---
 

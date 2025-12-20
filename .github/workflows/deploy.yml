@@ -62,13 +62,9 @@ jobs:
           # Let's decode the Keystore file itself.
           
           # IOS CERT + PROFILE
-          DEV_CERT: ${{ secrets.DEV_IOS_CERTIFICATE_BASE64 }}
-          QA_CERT: ${{ secrets.QA_IOS_CERTIFICATE_BASE64 }}
-          PROD_CERT: ${{ secrets.PROD_IOS_CERTIFICATE_BASE64 }}
-          
-          DEV_CERT_PASS: ${{ secrets.DEV_IOS_CERTIFICATE_PASSWORD }}
-          QA_CERT_PASS: ${{ secrets.QA_IOS_CERTIFICATE_PASSWORD }}
-          PROD_CERT_PASS: ${{ secrets.PROD_IOS_CERTIFICATE_PASSWORD }}
+          # Certificate is shared across all environments
+          IOS_DIST_CERT: ${{ secrets.IOS_DIST_CERTIFICATE_BASE64 }}
+          IOS_DIST_CERT_PASS: ${{ secrets.IOS_DIST_CERTIFICATE_PASSWORD }}
           
           DEV_PROF: ${{ secrets.DEV_IOS_PROVISION_PROFILE_BASE64 }}
           QA_PROF: ${{ secrets.QA_IOS_PROVISION_PROFILE_BASE64 }}
@@ -91,28 +87,26 @@ jobs:
           PREFIX=$(echo "${FLAVOR}" | tr '[:lower:]' '[:upper:]')
           echo "Processing flavor: $FLAVOR (Prefix: $PREFIX)"
 
+          # Common Certificate for ALL flavors
+          CERT="$IOS_DIST_CERT"
+          PASS="$IOS_DIST_CERT_PASS"
+
           # Set variables based on prefix
           if [ "$FLAVOR" == "dev" ]; then
              SA="$DEV_SA"
              KS="$DEV_KS"
-             CERT="$DEV_CERT"
-             PASS="$DEV_CERT_PASS"
              PROF="$DEV_PROF"
              GS="$DEV_GS"
              GSP="$DEV_GSP"
           elif [ "$FLAVOR" == "qa" ]; then
              SA="$QA_SA"
              KS="$QA_KS"
-             CERT="$QA_CERT"
-             PASS="$QA_CERT_PASS"
              PROF="$QA_PROF"
              GS="$QA_GS"
              GSP="$QA_GSP"
           elif [ "$FLAVOR" == "prod" ]; then
              SA="$PROD_SA"
              KS="$PROD_KS"
-             CERT="$PROD_CERT"
-             PASS="$PROD_CERT_PASS"
              PROF="$PROD_PROF"
              GS="$PROD_GS"
              GSP="$PROD_GSP"
@@ -168,7 +162,15 @@ jobs:
           # Import Certificate
           echo "$CERT" | base64 --decode > certificate.p12
           security import certificate.p12 -P "$PASS" -A -t cert -f pkcs12 -k "$KEYCHAIN_PATH"
-          security list-keychain -d user -s "$KEYCHAIN_PATH"
+          security set-key-partition-list -S apple-tool:,apple: -s -k "" "$KEYCHAIN_PATH"
+          
+          # Preserve existing keychains (likely login) and add ours. 
+          # GitHub Runners often have intermediates in login keychain.
+          security list-keychain -d user -s "$KEYCHAIN_PATH" $(security list-keychain -d user | sed 's/"//g')
+          
+          # Debug: List available identities to confirm import worked
+          echo "Debugging: Available Identities:"
+          security find-identity -v -p codesigning "$KEYCHAIN_PATH"
           
           # Import Profile
           mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
@@ -205,7 +207,12 @@ jobs:
           # 2. Inject Manual Settings into Runner Target
           # We search for DEVELOPMENT_TEAM and append the Manual Signing flags after it.
           # This ensures we hit the Build Settings block where checking usually happens.
+          # 2. Inject Manual Settings into Runner Target
+          # We search for DEVELOPMENT_TEAM and append the Manual Signing flags after it.
           sed -i '' "s/DEVELOPMENT_TEAM = [^;]*;/& CODE_SIGN_STYLE = Manual; PROVISIONING_PROFILE_SPECIFIER = \"$PROFILE_NAME\"; CODE_SIGN_IDENTITY = \"Apple Distribution\";/g" ios/Runner.xcodeproj/project.pbxproj
+          
+          # 3. Force "Apple Distribution" for iphoneos SDK (Overwrites "iPhone Developer")
+          sed -i '' "s/\"CODE_SIGN_IDENTITY\[sdk=iphoneos\*\]\" = \"iPhone Developer\";/\"CODE_SIGN_IDENTITY[sdk=iphoneos*]\" = \"Apple Distribution\";/g" ios/Runner.xcodeproj/project.pbxproj
           
           echo "Successfully updated project.pbxproj for Manual Signing."
           
@@ -233,28 +240,17 @@ jobs:
       # -----------------------------------------------------------------------
       # 4. Upload to Firebase
       # -----------------------------------------------------------------------
-      - name: Upload Artifacts to Firebase
-        uses: wzieba/Firebase-Distribution-Github-Action@v1
-        with:
-          serviceCredentialsFile: ${{ env.FIREBASE_SERVICE_ACCOUNT_PATH }}
-          appId: ${{ inputs.flavor == 'prod' && '1:937588855548:android:32ca030ac4beb523273d79' || inputs.flavor == 'qa' && '1:362847044804:android:ca25c4970f0ef40ca73591' || '1:5470748320:android:93705737fce5f4287493c5' }} 
-          # Note: User needs to provide App IDs. 
-          # However, the prompt didn't strictly say "Decode App ID", but Firebase Action needs it.
-          # We will try to rely on the file detection or usage of mapping. 
-          # Actually wzieba action takes 'appId'. 
-          # We'll use a placeholder or secret for this too if we want to be perfect.
-          # Let's add APP_ID logic to the mapping step above if possible, or just warn user in docs.
-          # Update: better to put it in the "Map Secrets" step and export to ENV.
-          file: build/app/outputs/flutter-apk/app-${{ inputs.flavor }}-release.apk
-          groups: testers
-          releaseNotes: "Automatic build from GitHub Actions for ${{ inputs.flavor }}"
-        continue-on-error: true # Don't fail if one fails? Or maybe distinct steps for iOS/Android
+      - name: Install Firebase CLI
+        run: npm install -g firebase-tools
 
       - name: Upload iOS to Firebase
-        uses: wzieba/Firebase-Distribution-Github-Action@v1
-        with:
-          serviceCredentialsFile: ${{ env.FIREBASE_SERVICE_ACCOUNT_PATH }}
-          appId: ${{ inputs.flavor == 'prod' && '1:937588855548:ios:df00961c39fa6d0b273d79' || inputs.flavor == 'qa' && '1:362847044804:ios:f1fb001df36c95bca73591' || '1:5470748320:ios:a230b0d1d71b90f27493c5' }}
-          file: build/ios/ipa/*.ipa
-          groups: testers
-          releaseNotes: "Automatic build from GitHub Actions for ${{ inputs.flavor }}"
+        env:
+          FIREBASE_APP_ID: ${{ inputs.flavor == 'prod' && '1:937588855548:ios:df00961c39fa6d0b273d79' || inputs.flavor == 'qa' && '1:362847044804:ios:f1fb001df36c95bca73591' || '1:5470748320:ios:a230b0d1d71b90f27493c5' }}
+          NOTE: "Automatic build from GitHub Actions for ${{ inputs.flavor }}"
+          GROUPS: "testers"
+          GOOGLE_APPLICATION_CREDENTIALS: ${{ env.FIREBASE_SERVICE_ACCOUNT_PATH }}
+        run: |
+          firebase appdistribution:distribute build/ios/ipa/*.ipa \
+            --app "$FIREBASE_APP_ID" \
+            --groups "$GROUPS" \
+            --release-notes "$NOTE"

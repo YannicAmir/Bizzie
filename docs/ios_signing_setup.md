@@ -40,7 +40,7 @@ This certificate certifies your organization's identity.
 3.  Find your **"Apple Distribution: [Team Name]"** certificate.
 4.  Right-click it and select **Export "Apple Distribution..."**.
 5.  Save it as `Certificates.p12` to your Desktop.
-6.  **Important:** You will be asked to create a password. **Remember this password!** You will need it for the `DEV_IOS_CERTIFICATE_PASSWORD` secret.
+6.  **Important:** You will be asked to create a password. **Remember this password!** You will need it for the `IOS_DIST_CERTIFICATE_PASSWORD` secret.
 
 ---
 
@@ -120,3 +120,5 @@ Now that you have:
 4.  `Dist_Prod.mobileprovision`
 
 Go back to the [CI/CD Setup Guide](cicd_setup_guide.md) to **Base64 encode** them and add them to GitHub Secrets.
+
+> **Note:** You will create ONE secret pair (`IOS_DIST_CERTIFICATE_BASE64` / `_PASSWORD`) and THREE profile secrets (`DEV_IOS...`, `QA_IOS...`, `PROD_IOS...`).
