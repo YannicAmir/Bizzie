@@ -166,6 +166,7 @@ jobs:
           security unlock-keychain -p "" "$KEYCHAIN_PATH"
 
           # Import Certificate
+          echo "$CERT" | base64 --decode > certificate.p12
           security import certificate.p12 -P "$PASS" -A -t cert -f pkcs12 -k "$KEYCHAIN_PATH"
           security set-key-partition-list -S apple-tool:,apple: -s -k "" "$KEYCHAIN_PATH"
           
