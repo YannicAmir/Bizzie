@@ -19,7 +19,8 @@
 *   **Git Initialization:** Initialize the git repository, add files, and perform the initial commit.
 
 ### 2. Directory Structure Enforcement
-*   Delete the default `lib/main.dart` and `test/widget_test.dart`.
+*   Delete the default `lib/main.dart`.
+*   **Crucial:** RETAIN `test/widget_test.dart` (or replace it with a basic "smoke test"). The CI pipeline requires at least one test to run.
 *   Create the following exact directory structure:
     ```
     lib/
