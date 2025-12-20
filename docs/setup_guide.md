@@ -47,7 +47,7 @@ git commit -m "Initial project setup"
 ### Step 2: Directory Structure
 **Commands:**
 ```bash
-rm lib/main.dart test/widget_test.dart
+rm lib/main.dart
 mkdir -p lib/l10n lib/app/themes lib/bootstrap lib/core/enums lib/core/error lib/core/usecase lib/core/network lib/di lib/services lib/features lib/shared/widgets lib/shared/utils lib/shared/constants lib/env
 ```
 
