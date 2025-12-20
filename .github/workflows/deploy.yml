@@ -181,6 +181,30 @@ jobs:
           # For this task, we will just place the profile.
           
       # -----------------------------------------------------------------------
+      # 2.5 Disable Automatic Signing (Critical for CI)
+      # -----------------------------------------------------------------------
+      - name: Disable Automatic Signing & Set Profile
+        if: ${{ inputs.flavor != 'none' }} # Always runs, just a valid expression
+        run: |
+          echo "Disabling Automatic Signing..."
+          # Determine Profile Name
+          if [ "${{ inputs.flavor }}" == "dev" ]; then
+             PROFILE_NAME="Dist_Dev"
+          elif [ "${{ inputs.flavor }}" == "qa" ]; then
+             PROFILE_NAME="Dist_QA"
+          else
+             PROFILE_NAME="Dist_Prod"
+          fi
+          
+          echo "Setting Provisioning Profile to: $PROFILE_NAME"
+          
+          # Use sed to switch to Manual and set Profile
+          # This replaces "CODE_SIGN_STYLE = Automatic;" with Manual + Specifier
+          sed -i '' "s/CODE_SIGN_STYLE = Automatic;/CODE_SIGN_STYLE = Manual; PROVISIONING_PROFILE_SPECIFIER = \"$PROFILE_NAME\"; CODE_SIGN_IDENTITY = \"Apple Distribution\";/g" ios/Runner.xcodeproj/project.pbxproj
+          
+          echo "Successfully updated project.pbxproj for Manual Signing."
+          
+      # -----------------------------------------------------------------------
       # 2. Build Android
       # -----------------------------------------------------------------------
       # - name: Build APK (Release)
