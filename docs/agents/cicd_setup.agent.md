@@ -42,7 +42,11 @@
     * Run build command targeting the specific entry point defined by **ProjectSetup**:
         * `flutter build apk --release --flavor ${{ inputs.flavor }} -t lib/main_${{ inputs.flavor }}.dart`
         * `flutter build ipa --release --flavor ${{ inputs.flavor }} -t lib/main_${{ inputs.flavor }}.dart --export-options-plist=ios/ExportOptions-${{ inputs.flavor }}.plist`
-    * Upload to Firebase App Distribution using `wzieba/Firebase-Distribution-Github-Action@v1`.
+    *   **Upload to Firebase:**
+        *   **Android:** Use `wzieba/Firebase-Distribution-Github-Action@v1`.
+        *   **iOS (Important):** Use the official Firebase CLI (`firebase-tools`).
+            *   Run `npm install -g firebase-tools`
+            *   Run `firebase appdistribution:distribute build/ios/ipa/*.ipa --app "$FIREBASE_APP_ID" --groups "testers" --release-notes "..."`
 
 ### 3. PR Quality Workflow (`.github/workflows/pr_checks.yml`)
 * Create a separate workflow file named `pr_checks.yml`.

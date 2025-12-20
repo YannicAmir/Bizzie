@@ -184,6 +184,19 @@ These files contain the implementation details for Firebase and ARE in your proj
 
 ---
 
+### Step 5: Firebase App Distribution Setup
+Before running your first build, you must configure the "testers" group in Firebase.
+
+If you see an error like `Requested entity was not found`, it usually means this group is missing.
+
+**To fix/configure this:**
+1.  Go to **Firebase Console** > **App Distribution** > **Testers & Groups**.
+2.  Create a new group named `testers` (must be lowercase to match our workflow default).
+3.  **Add your email** to this group.
+4.  (Optional) Re-run the build manually in GitHub Actions, and you will receive the email invite!
+
+---
+
 ## Part 2: App IDs (for Deploy Workflow)
 
 The deployment workflow needs to know specifically which App to upload to in Firebase.
