@@ -38,11 +38,11 @@ lib/features/[feature_name]/
 │   ├── models/        # Pure Dart classes (Business Entities)
 │   ├── interfaces/    # Abstract Repositories (Contracts)
 │   └── usecases/      # Single-responsibility business logic classes (Interactors)
-└── presentation/
-    ├── bloc/          # State Management (Blocs/Cubits)
-    ├── views/         # Screens (Pages)
-    ├── widgets/       # Feature-specific, reusable widgets
-    └── [feature].dart # Barrel file / Export
+├── presentation/
+│   ├── bloc/          # State Management (Blocs/Cubits)
+│   ├── views/         # Screens (Pages)
+│   └── widgets/       # Feature-specific, reusable widgets
+└── [feature].dart     # Barrel file / Export
 ```
 
 ### Core Structure (`lib/core/`)
