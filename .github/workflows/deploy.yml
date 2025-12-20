@@ -240,28 +240,17 @@ jobs:
       # -----------------------------------------------------------------------
       # 4. Upload to Firebase
       # -----------------------------------------------------------------------
-      - name: Upload Artifacts to Firebase
-        uses: wzieba/Firebase-Distribution-Github-Action@v1
-        with:
-          serviceCredentialsFile: ${{ env.FIREBASE_SERVICE_ACCOUNT_PATH }}
-          appId: ${{ inputs.flavor == 'prod' && '1:937588855548:android:32ca030ac4beb523273d79' || inputs.flavor == 'qa' && '1:362847044804:android:ca25c4970f0ef40ca73591' || '1:5470748320:android:93705737fce5f4287493c5' }} 
-          # Note: User needs to provide App IDs. 
-          # However, the prompt didn't strictly say "Decode App ID", but Firebase Action needs it.
-          # We will try to rely on the file detection or usage of mapping. 
-          # Actually wzieba action takes 'appId'. 
-          # We'll use a placeholder or secret for this too if we want to be perfect.
-          # Let's add APP_ID logic to the mapping step above if possible, or just warn user in docs.
-          # Update: better to put it in the "Map Secrets" step and export to ENV.
-          file: build/app/outputs/flutter-apk/app-${{ inputs.flavor }}-release.apk
-          groups: testers
-          releaseNotes: "Automatic build from GitHub Actions for ${{ inputs.flavor }}"
-        continue-on-error: true # Don't fail if one fails? Or maybe distinct steps for iOS/Android
+      - name: Install Firebase CLI
+        run: npm install -g firebase-tools
 
       - name: Upload iOS to Firebase
-        uses: wzieba/Firebase-Distribution-Github-Action@v1
-        with:
-          serviceCredentialsFile: ${{ env.FIREBASE_SERVICE_ACCOUNT_PATH }}
-          appId: ${{ inputs.flavor == 'prod' && '1:937588855548:ios:df00961c39fa6d0b273d79' || inputs.flavor == 'qa' && '1:362847044804:ios:f1fb001df36c95bca73591' || '1:5470748320:ios:a230b0d1d71b90f27493c5' }}
-          file: build/ios/ipa/*.ipa
-          groups: testers
-          releaseNotes: "Automatic build from GitHub Actions for ${{ inputs.flavor }}"
+        env:
+          FIREBASE_APP_ID: ${{ inputs.flavor == 'prod' && '1:937588855548:ios:df00961c39fa6d0b273d79' || inputs.flavor == 'qa' && '1:362847044804:ios:f1fb001df36c95bca73591' || '1:5470748320:ios:a230b0d1d71b90f27493c5' }}
+          NOTE: "Automatic build from GitHub Actions for ${{ inputs.flavor }}"
+          GROUPS: "testers"
+          GOOGLE_APPLICATION_CREDENTIALS: ${{ env.FIREBASE_SERVICE_ACCOUNT_PATH }}
+        run: |
+          firebase appdistribution:distribute build/ios/ipa/*.ipa \
+            --app "$FIREBASE_APP_ID" \
+            --groups "$GROUPS" \
+            --release-notes "$NOTE"
