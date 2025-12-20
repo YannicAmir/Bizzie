@@ -95,7 +95,7 @@ Apple requires a helper certificate and provisioning profile to build the `.ipa`
 1.  Export your Apple Distribution Certificate from Keychain Access as a `.p12` file.
 2.  **Action:**
     ```bash
-    base64 -i ~/Desktop/Certificates.p12 | pbcopy
+    base64 -i ~/Desktop/distr_cert.p12 | pbcopy
     ```
     *   Encode the `.p12` file.
     *   Create Secret: `IOS_DIST_CERTIFICATE_BASE64`
