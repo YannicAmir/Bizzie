@@ -8,8 +8,8 @@
     <string>manual</string>
     <key>provisioningProfiles</key>
     <dict>
-        <key>com.example.bizzie.dev</key>
-        <string>MATCH_ME_IN_CI</string>
+        <key>io.getbizzie.bizzieapp.dev</key>
+        <string>Dist_Dev</string>
     </dict>
 </dict>
 </plist>

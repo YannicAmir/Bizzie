@@ -19,7 +19,9 @@
     * `ExportOptions-dev.plist`
     * `ExportOptions-qa.plist`
     * `ExportOptions-prod.plist`
-* **Content:** Use `method: ad-hoc` (for Firebase) and `signingStyle: manual`. Use placeholder text for the Provisioning Profile name (e.g., "MATCH_ME_IN_CI").
+* **Content:** Use `method: ad-hoc` (for Firebase) and `signingStyle: manual`.
+* **CRITICAL:** Do NOT use placeholders. You MUST read the project's `.xcodeproj` to find the actual Bundle IDs for each flavor (e.g., `io.getbizzie.bizzieapp.dev`).
+* **Profile Mapping:** Map the Bundle ID to the specific Provisioning Profile Name defined in the documentation strategies (e.g., `Dist_Dev`, `Dist_QA`, `Dist_Prod`). The `provisioningProfiles` dictionary must key off the *real* Bundle ID.
 
 ### 2. Manual Deployment Workflow (`.github/workflows/deploy.yml`)
 * Create a workflow that **ONLY** runs on `workflow_dispatch`.

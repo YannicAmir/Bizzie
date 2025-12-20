@@ -107,6 +107,8 @@ These profiles link your App ID, Certificate, and Devices together.
 2.  Profile Name: `Dist_Prod`.
 3.  **Download** and save as `Dist_Prod.mobileprovision`.
 
+> **CRITICAL:** The Profile Names (`Dist_Dev`, `Dist_QA`, `Dist_Prod`) MUST match exactly what is configured in your `ios/ExportOptions-*.plist` files. If you name them differently here, the CI build will fail because it won't find the profile it expects.
+
 ---
 
 ## Next Steps
