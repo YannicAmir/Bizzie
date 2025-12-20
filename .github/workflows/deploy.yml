@@ -168,6 +168,7 @@ jobs:
           # Import Certificate
           echo "$CERT" | base64 --decode > certificate.p12
           security import certificate.p12 -P "$PASS" -A -t cert -f pkcs12 -k "$KEYCHAIN_PATH"
+          security set-key-partition-list -S apple-tool:,apple: -s -k "" "$KEYCHAIN_PATH"
           security list-keychain -d user -s "$KEYCHAIN_PATH"
           
           # Import Profile
@@ -205,7 +206,12 @@ jobs:
           # 2. Inject Manual Settings into Runner Target
           # We search for DEVELOPMENT_TEAM and append the Manual Signing flags after it.
           # This ensures we hit the Build Settings block where checking usually happens.
+          # 2. Inject Manual Settings into Runner Target
+          # We search for DEVELOPMENT_TEAM and append the Manual Signing flags after it.
           sed -i '' "s/DEVELOPMENT_TEAM = [^;]*;/& CODE_SIGN_STYLE = Manual; PROVISIONING_PROFILE_SPECIFIER = \"$PROFILE_NAME\"; CODE_SIGN_IDENTITY = \"Apple Distribution\";/g" ios/Runner.xcodeproj/project.pbxproj
+          
+          # 3. Force "Apple Distribution" for iphoneos SDK (Overwrites "iPhone Developer")
+          sed -i '' "s/\"CODE_SIGN_IDENTITY\[sdk=iphoneos\*\]\" = \"iPhone Developer\";/\"CODE_SIGN_IDENTITY[sdk=iphoneos*]\" = \"Apple Distribution\";/g" ios/Runner.xcodeproj/project.pbxproj
           
           echo "Successfully updated project.pbxproj for Manual Signing."
           
