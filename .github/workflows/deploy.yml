@@ -196,11 +196,16 @@ jobs:
              PROFILE_NAME="Dist_Prod"
           fi
           
+          
           echo "Setting Provisioning Profile to: $PROFILE_NAME"
           
-          # Use sed to switch to Manual and set Profile
-          # This replaces "CODE_SIGN_STYLE = Automatic;" with Manual + Specifier
-          sed -i '' "s/CODE_SIGN_STYLE = Automatic;/CODE_SIGN_STYLE = Manual; PROVISIONING_PROFILE_SPECIFIER = \"$PROFILE_NAME\"; CODE_SIGN_IDENTITY = \"Apple Distribution\";/g" ios/Runner.xcodeproj/project.pbxproj
+          # 1. Replace explicit "Automatic" (mostly affects Tests, but good cleanup)
+          sed -i '' "s/CODE_SIGN_STYLE = Automatic;/CODE_SIGN_STYLE = Manual;/g" ios/Runner.xcodeproj/project.pbxproj
+          
+          # 2. Inject Manual Settings into Runner Target
+          # We search for DEVELOPMENT_TEAM and append the Manual Signing flags after it.
+          # This ensures we hit the Build Settings block where checking usually happens.
+          sed -i '' "s/DEVELOPMENT_TEAM = [^;]*;/& CODE_SIGN_STYLE = Manual; PROVISIONING_PROFILE_SPECIFIER = \"$PROFILE_NAME\"; CODE_SIGN_IDENTITY = \"Apple Distribution\";/g" ios/Runner.xcodeproj/project.pbxproj
           
           echo "Successfully updated project.pbxproj for Manual Signing."
           
