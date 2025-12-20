@@ -98,16 +98,12 @@ Apple requires a helper certificate and provisioning profile to build the `.ipa`
     base64 -i ~/Desktop/Certificates.p12 | pbcopy
     ```
     *   Encode the `.p12` file.
-    *   Create Secret: `DEV_IOS_CERTIFICATE_BASE64`
+    *   Create Secret: `IOS_DIST_CERTIFICATE_BASE64`
     *   Value: [Paste Base64 String]
-    *   Create Secret: `DEV_IOS_CERTIFICATE_PASSWORD` (The password string itself, NOT base64).
+    *   Create Secret: `IOS_DIST_CERTIFICATE_PASSWORD` (The password string itself, NOT base64).
     *   Value: [Paste Password String]
 
-    **QA & Prod Environments:**
-    *   Create Secret: `QA_IOS_CERTIFICATE_BASE64` -> **Use the SAME value as Dev.**
-    *   Create Secret: `QA_IOS_CERTIFICATE_PASSWORD` -> **Use the SAME password as Dev.**
-    *   Create Secret: `PROD_IOS_CERTIFICATE_BASE64` -> **Use the SAME value as Dev.**
-    *   Create Secret: `PROD_IOS_CERTIFICATE_PASSWORD` -> **Use the SAME password as Dev.**
+    > **Note:** This single certificate secret is used for **Dev**, **QA**, and **Prod** environments.
 
 #### B. Provisioning Profiles (.mobileprovision)
 1.  Download the **Ad Hoc** provisioning profile for each environment from Apple Developer Portal.

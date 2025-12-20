@@ -62,13 +62,9 @@ jobs:
           # Let's decode the Keystore file itself.
           
           # IOS CERT + PROFILE
-          DEV_CERT: ${{ secrets.DEV_IOS_CERTIFICATE_BASE64 }}
-          QA_CERT: ${{ secrets.QA_IOS_CERTIFICATE_BASE64 }}
-          PROD_CERT: ${{ secrets.PROD_IOS_CERTIFICATE_BASE64 }}
-          
-          DEV_CERT_PASS: ${{ secrets.DEV_IOS_CERTIFICATE_PASSWORD }}
-          QA_CERT_PASS: ${{ secrets.QA_IOS_CERTIFICATE_PASSWORD }}
-          PROD_CERT_PASS: ${{ secrets.PROD_IOS_CERTIFICATE_PASSWORD }}
+          # Certificate is shared across all environments
+          IOS_DIST_CERT: ${{ secrets.IOS_DIST_CERTIFICATE_BASE64 }}
+          IOS_DIST_CERT_PASS: ${{ secrets.IOS_DIST_CERTIFICATE_PASSWORD }}
           
           DEV_PROF: ${{ secrets.DEV_IOS_PROVISION_PROFILE_BASE64 }}
           QA_PROF: ${{ secrets.QA_IOS_PROVISION_PROFILE_BASE64 }}
@@ -91,28 +87,26 @@ jobs:
           PREFIX=$(echo "${FLAVOR}" | tr '[:lower:]' '[:upper:]')
           echo "Processing flavor: $FLAVOR (Prefix: $PREFIX)"
 
+          # Common Certificate for ALL flavors
+          CERT="$IOS_DIST_CERT"
+          PASS="$IOS_DIST_CERT_PASS"
+
           # Set variables based on prefix
           if [ "$FLAVOR" == "dev" ]; then
              SA="$DEV_SA"
              KS="$DEV_KS"
-             CERT="$DEV_CERT"
-             PASS="$DEV_CERT_PASS"
              PROF="$DEV_PROF"
              GS="$DEV_GS"
              GSP="$DEV_GSP"
           elif [ "$FLAVOR" == "qa" ]; then
              SA="$QA_SA"
              KS="$QA_KS"
-             CERT="$QA_CERT"
-             PASS="$QA_CERT_PASS"
              PROF="$QA_PROF"
              GS="$QA_GS"
              GSP="$QA_GSP"
           elif [ "$FLAVOR" == "prod" ]; then
              SA="$PROD_SA"
              KS="$PROD_KS"
-             CERT="$PROD_CERT"
-             PASS="$PROD_CERT_PASS"
              PROF="$PROD_PROF"
              GS="$PROD_GS"
              GSP="$PROD_GSP"
