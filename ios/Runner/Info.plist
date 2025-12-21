@@ -47,5 +47,35 @@
 		<true/>
 		<key>UIStatusBarHidden</key>
 		<false/>
+		<key>CFBundleURLTypes</key>
+		<array>
+			<!-- DEV Environment -->
+			<dict>
+				<key>CFBundleTypeRole</key>
+				<string>Editor</string>
+				<key>CFBundleURLSchemes</key>
+				<array>
+					<string>com.googleusercontent.apps.5470748320-9b522enqc8fhos940ffg9o8otcfiprk7</string>
+				</array>
+			</dict>
+			<!-- QA Environment -->
+			<dict>
+				<key>CFBundleTypeRole</key>
+				<string>Editor</string>
+				<key>CFBundleURLSchemes</key>
+				<array>
+					<string>com.googleusercontent.apps.362847044804-jpfi3jle43vcv310rvvpihil4dq006e0</string>
+				</array>
+			</dict>
+			<!-- PROD Environment -->
+			<dict>
+				<key>CFBundleTypeRole</key>
+				<string>Editor</string>
+				<key>CFBundleURLSchemes</key>
+				<array>
+					<string>com.googleusercontent.apps.937588855548-k7toonok6maubjd035gdgoil8f162ep8</string>
+				</array>
+			</dict>
+		</array>
 	</dict>
 </plist>

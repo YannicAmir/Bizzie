@@ -22,7 +22,7 @@
 * *Constraint:* Ensure `ios/config` is added to `.gitignore` initially (secrets will be injected by CI later).
 
 ### 2. Dependency Management
-* Add `firebase_core` to `pubspec.yaml`.
+* **Delegation:** Instruct the **DevOps Agent** (`docs/agents/dev_ops.agent.md`) to add `firebase_core` to `pubspec.yaml`.
 * Provide the specific Gradle modifications:
     * `android/build.gradle`: Add `com.google.gms:google-services` classpath.
     * `android/app/build.gradle`: Apply the `com.google.gms.google-services` plugin.
