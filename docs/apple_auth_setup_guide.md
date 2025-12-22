@@ -56,3 +56,24 @@ Since you modified the App ID capabilities on the portal, your local "Provisioni
 1.  Go to the **Profiles** section in Apple Developer Portal.
 2.  Find your profiles (Dev/Distribution). They will likely be marked "Invalid".
 3.  Edit each one, re-save/download, and install them by double-clicking.
+
+
+## 4. Troubleshooting
+
+### "Sign Up Not Completed" Error (Physical Device)
+
+If you see a generic "Sign Up Not Completed" error on a physical device (especially after a Release/Distribution build via GitHub Actions) but it works on Simulator:
+
+**Cause:** The Provisioning Profile being used by GitHub Actions is outdated or "stale," even if the portal says "Enabled".
+
+**Fix (The "Uncheck/Recheck" Method):**
+1.  Go to the **Apple Developer Portal** > **Identifiers**.
+2.  Select your App ID (e.g., `com.example.bizzie.dev`).
+3.  **Uncheck** "Sign in with Apple".
+4.  Click **Save** (Confirm warnings).
+5.  Wait 5 seconds.
+6.  **Check** "Sign in with Apple" again.
+7.  Click **Save**.
+8.  **CRITICAL:** Go to **Profiles**, find your Distribution profile (e.g., `Dist_Dev`). It will likely be "Invalid".
+9.  Edit -> Save -> Download the new profile.
+10. Update your **GitHub Secret** (`DEV_IOS_PROVISION_PROFILE_BASE64`) with the new file base64.
