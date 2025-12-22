@@ -1,3 +1,5 @@
+import 'dart:developer';
+import 'package:flutter/services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
@@ -77,22 +79,32 @@ class RemoteAuthDataSourceImpl implements RemoteAuthDataSource {
 
   @override
   Future<User> signInWithApple() async {
-    final appleCredential = await SignInWithApple.getAppleIDCredential(
-      scopes: [
-        AppleIDAuthorizationScopes.email,
-        AppleIDAuthorizationScopes.fullName,
-      ],
-    );
+    try {
+      final appleCredential = await SignInWithApple.getAppleIDCredential(
+        scopes: [
+          AppleIDAuthorizationScopes.email,
+          AppleIDAuthorizationScopes.fullName,
+        ],
+      );
 
-    final OAuthProvider provider = OAuthProvider('apple.com');
-    final AuthCredential credential = provider.credential(
-      idToken: appleCredential.identityToken,
-      accessToken: appleCredential.authorizationCode,
-    );
+      final OAuthProvider provider = OAuthProvider('apple.com');
+      final AuthCredential credential = provider.credential(
+        idToken: appleCredential.identityToken,
+        accessToken: appleCredential.authorizationCode,
+      );
 
-    final UserCredential userCredential = await _firebaseAuth
-        .signInWithCredential(credential);
-    return userCredential.user!;
+      final UserCredential userCredential = await _firebaseAuth
+          .signInWithCredential(credential);
+      return userCredential.user!;
+    } on PlatformException catch (e) {
+      log(
+        'Apple Sign-In Error: Code=${e.code}, Message=${e.message}, Details=${e.details}',
+      );
+      rethrow;
+    } catch (e) {
+      log('Apple Sign-In Generic Error: $e');
+      rethrow;
+    }
   }
 
   @override
