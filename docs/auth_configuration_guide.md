@@ -73,7 +73,27 @@ For **each** file:
         </array>
     </dict>
 </array>
+</array>
+    </dict>
+</array>
 ```
+
+### Step 1.3: Configure `GIDClientID` (Automated)
+
+> [!NOTE]
+> **No Manual Action Required**
+> `google_sign_in` version 7+ requires a `GIDClientID` key in `Info.plist` that matches the `CLIENT_ID` from `GoogleService-Info.plist`.
+
+We have implemented an **automated build script** to handle this for you.
+- **Script Location**: `ios/scripts/setup_firebase_config.sh`
+- **Behavior**:
+  1. During the Apple build process, the script identifies the current environment (Dev, QA, or Prod).
+  2. It copies the correct `GoogleService-Info.plist` to the app bundle.
+  3. It extracts the `CLIENT_ID` from that file.
+  4. It **automatically injects** this ID into the app's `Info.plist` as the `GIDClientID` key.
+
+**Verification**:
+You do not need to manually add `GIDClientID` to `ios/Runner/Info.plist`. If you inspect the `Info.plist` inside the *built* app (via Xcode or filesystem), you will see the key present.
 
 ## 2. Sign in with Apple Configuration
 
