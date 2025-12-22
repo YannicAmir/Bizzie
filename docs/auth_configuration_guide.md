@@ -108,7 +108,14 @@ else
 
     echo "✅ Successfully updated GIDClientID in Info.plist"
 fi
+fi
 ```
+
+**Critical: Build Phase Ordering**
+The `Info.plist` is created during the "Copy Bundle Resources" phase. If this script runs before that, the `Info.plist` will not exist (or be overwritten), and the injection will fail.
+
+**Agent Instruction:**
+Verify `ios/Runner.xcodeproj/project.pbxproj`. Ensure the "Setup Firebase Configuration" build phase is the **LAST** item in the `buildPhases` list for the Runner target. If it is not last, move it to the end.
 
 ## 2. Sign in with Apple Configuration
 
