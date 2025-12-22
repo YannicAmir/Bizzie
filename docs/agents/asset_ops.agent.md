@@ -33,14 +33,18 @@ When the user uploads an image/icon with context (e.g., "Here is the background 
     * Check if the **directory path** (e.g., `assets/images/auth/`) is listed under `flutter: assets:`.
     * *Rule:* We register directories, not individual files, to keep pubspec clean.
     * If missing, add it and instruct the **DevOps Agent** (`docs/agents/dev_ops.agent.md`) to run `flutter pub get`.
+* **Update `AppAssets`:**
+    * Open `lib/app/themes/app_assets.dart`.
+    * Add a `static const String` for the new asset.
+    * Use camelCase for the variable name (e.g., `authEmailIcon = 'assets/images/auth/email_icon.png'`).
 
 **Response Constraints:**
 * **Naming Strictness:** Always enforce `snake_case`. No spaces, no capital letters in filenames.
-* **Verification:** After adding an asset, explicitly state: "Saved to `[path]`. Registered in `pubspec.yaml`. Ready for MockBuilder."
+* **Verification:** After adding an asset, explicitly state: "Saved to `[path]`. Registered in `pubspec.yaml`. Added to `AppAssets`. Ready for MockBuilder."
 * **No UI Coding:** Do not write Flutter Widgets. Your job is the file system.
 * **No Dependency Management:** Do not add Dart packages or run build_runner. That is handled by a separate agent.
 
 **Immediate Task:**
 Wait for the user to upload a file or provide a command.
 * *Input Example:* [Uploads `logo.png`] "This is the logo for the Home screen header."
-* *Action:* Identify `home` feature -> Rename to `header_logo.png` -> Save to `assets/images/home/` -> Check `pubspec.yaml`.
+* *Action:* Identify `home` feature -> Rename to `header_logo.png` -> Save to `assets/images/home/` -> Check `pubspec.yaml` -> Add to `AppAssets`.
