@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../bloc/auth_bloc.dart';
 import '../bloc/auth_event.dart';
+import 'package:bizzie/shared/utils/validators.dart';
 
 class CreateAccountForm extends StatefulWidget {
   const CreateAccountForm({super.key});
@@ -50,17 +51,7 @@ class _CreateAccountFormState extends State<CreateAccountForm> {
             iconPath: AppAssets.authEmailIcon,
             keyboardType: TextInputType.emailAddress,
             textInputAction: TextInputAction.next,
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Please enter your email';
-              }
-              if (!RegExp(
-                r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
-              ).hasMatch(value)) {
-                return 'Please enter a valid email';
-              }
-              return null;
-            },
+            validator: Validators.validateEmail,
           ),
           const SizedBox(height: 16),
           // Password Field
@@ -77,15 +68,8 @@ class _CreateAccountFormState extends State<CreateAccountForm> {
             },
             onSubmitted: _onCreateAccountPressed,
             textInputAction: TextInputAction.done,
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Please enter a password';
-              }
-              if (value.length < 6) {
-                return 'Password must be at least 6 characters';
-              }
-              return null;
-            },
+            validator:
+                (value) => Validators.validatePassword(value, minLength: 8),
           ),
           const SizedBox(height: 24),
           // Create Account Button

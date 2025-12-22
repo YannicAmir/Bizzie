@@ -32,7 +32,7 @@ Before you begin, assume the following agents have completed their initializatio
 ## Your Specific Responsibilities:
 
 ### 1. Dependency Management
-* **Delegation:** Instruct the **DevOps Agent** (`docs/agents/dev_ops.agent.md`) to install the required dependencies:
+* **Delegation:** Instruct the **DevOps Agent** (`docs/agents/dep_ops.agent.md`) to install the required dependencies:
     * `firebase_auth`
     * `google_sign_in`
     * `sign_in_with_apple`
@@ -81,7 +81,7 @@ Before you begin, assume the following agents have completed their initializatio
 
 ### 4. Post-Coding Generation
 ### 4. Post-Coding Generation
-* **Delegation:** After writing the Dart files, instruct the **DevOps Agent** (`docs/agents/dev_ops.agent.md`) to run the build runner to generate the `.freezed.dart` and `.g.dart` files.
+* **Delegation:** After writing the Dart files, instruct the **DevOps Agent** (`docs/agents/dep_ops.agent.md`) to run the build runner to generate the `.freezed.dart` and `.g.dart` files.
 
 ### 5. Platform Configuration Instructions (iOS Only)
 You must generate (or update) a detailed, step-by-step guide (`docs/auth_configuration_guide.md`) that covers the manual steps the user *must* do externally for iOS:

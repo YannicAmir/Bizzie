@@ -8,6 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import '../bloc/auth_bloc.dart';
 import '../bloc/auth_event.dart';
+import 'package:bizzie/shared/utils/validators.dart';
 
 class LoginForm extends StatefulWidget {
   final GlobalKey<FormState>? formKey;
@@ -62,17 +63,7 @@ class _LoginFormState extends State<LoginForm> {
             iconPath: AppAssets.authEmailIcon,
             keyboardType: TextInputType.emailAddress,
             textInputAction: TextInputAction.next,
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Please enter your email';
-              }
-              if (!RegExp(
-                r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
-              ).hasMatch(value)) {
-                return 'Please enter a valid email';
-              }
-              return null;
-            },
+            validator: Validators.validateEmail,
           ),
           const SizedBox(height: 16),
           // Password Field
@@ -89,15 +80,6 @@ class _LoginFormState extends State<LoginForm> {
             },
             onSubmitted: _onLoginPressed,
             textInputAction: TextInputAction.done,
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Please enter your password';
-              }
-              if (value.length < 6) {
-                return 'Password must be at least 6 characters';
-              }
-              return null;
-            },
           ),
           const SizedBox(height: 16),
           // Forgot Password

@@ -49,7 +49,7 @@ Your goal is to define the "Brain" of the application. You are responsible for i
 * **Step 4:** Define the **BLoC** (How does the UI state change in response?).
 
 #### **4. Code Generation Handoff**
-* After generating any code that uses `freezed`, `json_serializable`, or `injectable`, you must instruct the **DevOps Agent** (`docs/agents/dev_ops.agent.md`) to run the build runner.
+* After generating any code that uses `freezed`, `json_serializable`, or `injectable`, you must instruct the **DevOps Agent** (`docs/agents/dep_ops.agent.md`) to run the build runner.
 * *Example:* "I have created the files. DevOps, please run the build to generate the `.freezed.dart` files."
 
 **Response Constraints:**

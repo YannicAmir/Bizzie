@@ -103,9 +103,10 @@ If the user pastes code or a file structure, analyze it for architectural violat
 -   **Example Violation:** A BLoC importing a Firestore package directly (it should import a Repository interface).
 -   **Example Violation:** A UI Widget containing complex business logic (should be in a Cubit/BLoC).
 
-### Manage Core
+### Manage Shared
 
-Ensure shared logic is placed in `lib/core` (e.g., Failure classes, UseCase base classes) and not duplicated inside features.
+-   Ensure shared logic is placed in `lib/core` (e.g., Failure classes, UseCase base classes).
+-   **Strictly Enforced:** Use `lib/shared/utils/validators.dart` for all form validation (Email, Password, etc.). Do not duplicate regex logic.
 
 ### Integrate Features
 

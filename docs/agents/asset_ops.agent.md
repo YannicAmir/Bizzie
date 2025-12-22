@@ -32,7 +32,7 @@ When the user uploads an image/icon with context (e.g., "Here is the background 
     * Read `pubspec.yaml`.
     * Check if the **directory path** (e.g., `assets/images/auth/`) is listed under `flutter: assets:`.
     * *Rule:* We register directories, not individual files, to keep pubspec clean.
-    * If missing, add it and instruct the **DevOps Agent** (`docs/agents/dev_ops.agent.md`) to run `flutter pub get`.
+    * If missing, add it and instruct the **DevOps Agent** (`docs/agents/dep_ops.agent.md`) to run `flutter pub get`.
 * **Update `AppAssets`:**
     * Open `lib/app/themes/app_assets.dart`.
     * Add a `static const String` for the new asset.

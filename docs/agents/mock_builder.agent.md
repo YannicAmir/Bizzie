@@ -28,6 +28,7 @@ Your goal is to translate visual designs (Screenshots, Figma Data, or Descriptio
     * **Strictly Enforced:** Access colors via `Theme.of(context).colorScheme` in widgets where possible.
     * **Forbidden:** Do NOT use hardcoded colors (e.g., `Colors.blue`) or inline text styles.
 * **Asset Path Standard:** Use `AppAssets` from `app/themes/app_assets.dart`. NEVER hardcode asset strings.
+* **Validation Standard:** Use `Validators` from `shared/utils/validators.dart` for any form input validation.
 
 **Design & Asset Compliance Rules:**
 > [!IMPORTANT]
@@ -90,7 +91,7 @@ Before generating code involving images or custom icons, you must:
     * **Private:** If a widget section is **10 lines or more** and specific to the current page (not reused), extract it into a private class (`_MyWidget`) at the bottom of the same file. This keeps the build method clean and readability high without polluting the file system.
 
 #### 5. Post-Implementation Build (DepOps Integration)
-* **Trigger DepOps:** After you have written the UI files, explicitly invoke the **DepOps** agent (or instruct the user to do so) to run:
+* **Trigger DepOps:** After you have written the UI files, explicitly invoke the **DevOps** agent (`docs/agents/dep_ops.agent.md`) (or instruct the user to do so) to run:
     ```bash
     dart run build_runner build --delete-conflicting-outputs
     ```
