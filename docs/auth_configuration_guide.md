@@ -78,22 +78,37 @@ For **each** file:
 </array>
 ```
 
-### Step 1.3: Configure `GIDClientID` (Automated)
+### Step 1.3: Configure `GIDClientID` (Agent Task)
 
-> [!NOTE]
-> **No Manual Action Required**
-> `google_sign_in` version 7+ requires a `GIDClientID` key in `Info.plist` that matches the `CLIENT_ID` from `GoogleService-Info.plist`.
+`google_sign_in` version 7+ requires a `GIDClientID` key in `Info.plist`.
 
-We have implemented an **automated build script** to handle this for you.
-- **Script Location**: `ios/scripts/setup_firebase_config.sh`
-- **Behavior**:
-  1. During the Apple build process, the script identifies the current environment (Dev, QA, or Prod).
-  2. It copies the correct `GoogleService-Info.plist` to the app bundle.
-  3. It extracts the `CLIENT_ID` from that file.
-  4. It **automatically injects** this ID into the app's `Info.plist` as the `GIDClientID` key.
+**AI Agent Instruction:**
+Check `ios/scripts/setup_firebase_config.sh`. Ensure it includes the following logic to automatically inject the `GIDClientID` from the environment's `GoogleService-Info.plist` into the built `Info.plist`. If missing, apply this code block after the plist copy step:
 
-**Verification**:
-You do not need to manually add `GIDClientID` to `ios/Runner/Info.plist`. If you inspect the `Info.plist` inside the *built* app (via Xcode or filesystem), you will see the key present.
+```bash
+# --------------------------------------------------------------------------
+# UPDATE GIDClientID IN Info.plist
+# --------------------------------------------------------------------------
+INFO_PLIST_PATH="${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}/Info.plist"
+
+echo "🔧 Updating GIDClientID in Info.plist..."
+
+# 1. Extract CLIENT_ID from GoogleService-Info.plist
+CLIENT_ID=$(/usr/libexec/PlistBuddy -c "Print :CLIENT_ID" "${SOURCE_PATH}")
+
+if [ -z "$CLIENT_ID" ]; then
+    echo "⚠️ WARNING: CLIENT_ID not found in ${SOURCE_PATH}. Google Sign-In may fail."
+else
+    echo "Found CLIENT_ID: $CLIENT_ID"
+
+    # 2. Add/Update GIDClientID in the App's Info.plist
+    # Try to delete if exists to ensure we don't error on 'Add'
+    /usr/libexec/PlistBuddy -c "Delete :GIDClientID" "${INFO_PLIST_PATH}" 2>/dev/null || true
+    /usr/libexec/PlistBuddy -c "Add :GIDClientID string ${CLIENT_ID}" "${INFO_PLIST_PATH}"
+
+    echo "✅ Successfully updated GIDClientID in Info.plist"
+fi
+```
 
 ## 2. Sign in with Apple Configuration
 
