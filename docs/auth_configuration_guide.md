@@ -117,6 +117,23 @@ The `Info.plist` is created during the "Copy Bundle Resources" phase. If this sc
 **Agent Instruction:**
 Verify `ios/Runner.xcodeproj/project.pbxproj`. Ensure the "Setup Firebase Configuration" build phase is the **LAST** item in the `buildPhases` list for the Runner target. If it is not last, move it to the end.
 
+
+### Step 1.4: Customize Consent Screen Branding (App Name & Logo)
+The user will see a screen saying "Continue to [Project Name]". To change this name or add your logo:
+
+1.  Go to the **[Google Cloud Console](https://console.cloud.google.com/)**.
+2.  Select your project (e.g., `Bizzie Dev`, `QA`, or `Prod`) from the top dropdown.
+3.  Navigate to **APIs & Services** > **OAuth consent screen**.
+4.  Click **Edit App**.
+5.  In the **App information** section:
+    *   **App name:** Enter "Bizzie" (or "Bizzie Dev").
+    *   **User support email:** Select your email.
+    *   **App logo:** Upload your app icon (optional but recommended).
+6.  Click **Save and Continue**.
+
+> [!TIP]
+> **No App Update Required:** These changes are server-side. You do NOT need to rebuild or redeploy your app. They will appear automatically after a few minutes (authentication pages may cache, so give it 5 minutes).
+
 ## 2. Sign in with Apple Configuration
 
 ### Step 2.1: Add Capability in Xcode
