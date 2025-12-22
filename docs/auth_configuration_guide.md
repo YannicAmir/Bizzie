@@ -73,7 +73,66 @@ For **each** file:
         </array>
     </dict>
 </array>
+</array>
+    </dict>
+</array>
 ```
+
+### Step 1.3: Configure `GIDClientID` (Agent Task)
+
+`google_sign_in` version 7+ requires a `GIDClientID` key in `Info.plist`.
+
+**AI Agent Instruction:**
+Check `ios/scripts/setup_firebase_config.sh`. Ensure it includes the following logic to automatically inject the `GIDClientID` from the environment's `GoogleService-Info.plist` into the built `Info.plist`. If missing, apply this code block after the plist copy step:
+
+```bash
+# --------------------------------------------------------------------------
+# UPDATE GIDClientID IN Info.plist
+# --------------------------------------------------------------------------
+INFO_PLIST_PATH="${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}/Info.plist"
+
+echo "🔧 Updating GIDClientID in Info.plist..."
+
+# 1. Extract CLIENT_ID from GoogleService-Info.plist
+CLIENT_ID=$(/usr/libexec/PlistBuddy -c "Print :CLIENT_ID" "${SOURCE_PATH}")
+
+if [ -z "$CLIENT_ID" ]; then
+    echo "⚠️ WARNING: CLIENT_ID not found in ${SOURCE_PATH}. Google Sign-In may fail."
+else
+    echo "Found CLIENT_ID: $CLIENT_ID"
+
+    # 2. Add/Update GIDClientID in the App's Info.plist
+    # Try to delete if exists to ensure we don't error on 'Add'
+    /usr/libexec/PlistBuddy -c "Delete :GIDClientID" "${INFO_PLIST_PATH}" 2>/dev/null || true
+    /usr/libexec/PlistBuddy -c "Add :GIDClientID string ${CLIENT_ID}" "${INFO_PLIST_PATH}"
+
+    echo "✅ Successfully updated GIDClientID in Info.plist"
+fi
+fi
+```
+
+**Critical: Build Phase Ordering**
+The `Info.plist` is created during the "Copy Bundle Resources" phase. If this script runs before that, the `Info.plist` will not exist (or be overwritten), and the injection will fail.
+
+**Agent Instruction:**
+Verify `ios/Runner.xcodeproj/project.pbxproj`. Ensure the "Setup Firebase Configuration" build phase is the **LAST** item in the `buildPhases` list for the Runner target. If it is not last, move it to the end.
+
+
+### Step 1.4: Customize Consent Screen Branding (App Name & Logo)
+The user will see a screen saying "Continue to [Project Name]". To change this name or add your logo:
+
+1.  Go to the **[Google Cloud Console](https://console.cloud.google.com/)**.
+2.  Select your project (e.g., `Bizzie Dev`, `QA`, or `Prod`) from the top dropdown.
+3.  Navigate to **APIs & Services** > **OAuth consent screen**.
+4.  Click **Edit App**.
+5.  In the **App information** section:
+    *   **App name:** Enter "Bizzie" (or "Bizzie Dev").
+    *   **User support email:** Select your email.
+    *   **App logo:** Upload your app icon (optional but recommended).
+6.  Click **Save and Continue**.
+
+> [!TIP]
+> **No App Update Required:** These changes are server-side. You do NOT need to rebuild or redeploy your app. They will appear automatically after a few minutes (authentication pages may cache, so give it 5 minutes).
 
 ## 2. Sign in with Apple Configuration
 
