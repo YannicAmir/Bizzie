@@ -11,6 +11,12 @@ class AppAssets {
   static const String authShowPasswordIcon =
       'assets/images/auth/show_password_icon.png';
 
+  static const String authForgotPasswordMascot =
+      'assets/images/auth/forgot_password_mascot.png';
+
+  static const String authEmailSentMascot =
+      'assets/images/auth/email_sent_mascot.png';
+
   // Shared
   static const String defaultMascot = 'assets/images/shared/default_mascot.png';
 }

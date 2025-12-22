@@ -23,4 +23,17 @@ class AppColors {
   static const Color appleBlack = Colors.black;
   static const Color googleBackground = Color(0xFFF1F5F9);
   static const Color googleText = Color(0xFF0F172B);
+
+  // General
+  static const Color black = Colors.black;
+  static const Color white = Colors.white;
+
+  // Feature Specific
+  static const Color mascotBackground = Color(0xFFEFF6FF); // Light Blue-50
+  static const Color mascotSubtitle = Color(0xFF1447E6); // Deep Blue
+
+  static const Color mascotCardGradientStart = Color(0xFFEFF6FF);
+  static const Color mascotCardGradientEnd = Color(0xFFEEF2FF);
+  // rgba(219,234,254,0.5) -> 0x  80  DB EAF E
+  static const Color mascotCardBorder = Color(0x80DBEAFE);
 }

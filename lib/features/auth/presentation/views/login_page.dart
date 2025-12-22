@@ -1,3 +1,4 @@
+import 'package:bizzie/app/routes/app_routes.dart';
 import 'package:bizzie/app/themes/app_assets.dart';
 import 'package:bizzie/app/themes/app_colors.dart';
 import 'package:bizzie/app/themes/app_text_styles.dart';
@@ -122,7 +123,7 @@ class LoginPage extends StatelessWidget {
                               TapGestureRecognizer()
                                 ..onTap = () {
                                   // Navigate to Terms
-                                  context.push('/terms');
+                                  context.push(AppRoutes.terms);
                                 },
                         ),
                         const TextSpan(text: ' and\n'),
@@ -133,7 +134,7 @@ class LoginPage extends StatelessWidget {
                               TapGestureRecognizer()
                                 ..onTap = () {
                                   // Navigate to Privacy
-                                  context.push('/privacy');
+                                  context.push(AppRoutes.privacy);
                                 },
                         ),
                       ],

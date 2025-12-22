@@ -50,7 +50,7 @@ lib/
 ├── app/
 │   ├── app.dart           # Root widget
 │   ├── router.dart        # App-level routing
-│   └── themes/            # AppTheme, AppColors, AppTextStyles
+│   └── themes/            # AppTheme, AppColors, AppTextStyles, AppAssets
 ├── bootstrap/             # Entry point setup
 │   └── bootstrap.dart
 ├── core/                  # Shared business logic
@@ -94,6 +94,7 @@ lib/
 1.  **Rule 1:** `domain` must **NOT** depend on `data` or `presentation`. It should be pure Dart.
 2.  **Rule 2:** `presentation` must **NOT** talk to `data` directly. It must go through `domain` (UseCases).
 3.  **Rule 3:** `data` must implement interfaces defined in `domain`.
+4.  **Rule 4:** **Routes MUST be defined in `lib/app/routes/app_routes.dart` and referenced via static constants.** Hardcoded route strings (e.g., `'/login'`) are forbidden in `GoRoute` definitions or navigation calls (`context.push()`).
 
 ### Review Code (Mock Mode)
 

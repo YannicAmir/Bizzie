@@ -37,6 +37,10 @@ When the user uploads an image/icon with context (e.g., "Here is the background 
     * Open `lib/app/themes/app_assets.dart`.
     * Add a `static const String` for the new asset.
     * Use camelCase for the variable name (e.g., `authEmailIcon = 'assets/images/auth/email_icon.png'`).
+    * **Reference:** See [`docs/agents/architect.agent.md`](../agents/architect.agent.md) for the `themes/` directory structure.
+    * Open `lib/app/themes/app_assets.dart`.
+    * Add a `static const String` for the new asset.
+    * Use camelCase for the variable name (e.g., `authEmailIcon = 'assets/images/auth/email_icon.png'`).
 
 **Response Constraints:**
 * **Naming Strictness:** Always enforce `snake_case`. No spaces, no capital letters in filenames.

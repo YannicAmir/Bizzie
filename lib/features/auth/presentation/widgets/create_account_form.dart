@@ -1,21 +1,19 @@
-import 'package:bizzie/app/routes/app_routes.dart';
 import 'package:bizzie/app/themes/app_assets.dart';
 import 'package:bizzie/app/themes/app_colors.dart';
 import 'package:bizzie/app/themes/app_text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 import '../bloc/auth_bloc.dart';
 import '../bloc/auth_event.dart';
 
-class LoginForm extends StatefulWidget {
-  const LoginForm({super.key});
+class CreateAccountForm extends StatefulWidget {
+  const CreateAccountForm({super.key});
 
   @override
-  State<LoginForm> createState() => _LoginFormState();
+  State<CreateAccountForm> createState() => _CreateAccountFormState();
 }
 
-class _LoginFormState extends State<LoginForm> {
+class _CreateAccountFormState extends State<CreateAccountForm> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
@@ -28,10 +26,14 @@ class _LoginFormState extends State<LoginForm> {
     super.dispose();
   }
 
-  void _onLoginPressed() {
+  void _onCreateAccountPressed() {
     if (_formKey.currentState!.validate()) {
+      // Note: AuthEmailSignUpRequested only takes email/password in the current event definition.
+      // If name is required by backend, the event/usecase needs update.
+      // For now, we will capture it but the BLoC might not use it yet unless updated.
+      // Provided Event: AuthEmailSignUpRequested(String email, String password)
       context.read<AuthBloc>().add(
-        AuthEvent.emailSignInRequested(
+        AuthEvent.emailSignUpRequested(
           _emailController.text,
           _passwordController.text,
         ),
@@ -41,24 +43,14 @@ class _LoginFormState extends State<LoginForm> {
 
   @override
   Widget build(BuildContext context) {
-    // Styles from Figma
     final inputBorder = OutlineInputBorder(
-      borderRadius: BorderRadius.circular(16), // Figma: 16px
+      borderRadius: BorderRadius.circular(16),
       borderSide: const BorderSide(color: AppColors.inputBorder),
     );
-
-    // Exact Hint Style (Matching 'Password' text node 35:16984: 17px, #44556C)
-    // Exact Hint Style (Matching 'Password' text node 35:16984: 17px, #44556C)
-
-    // Figma code snippet had "border-[#e2e8f0]" for the "or continue with" line, likely generic border color.
-    // Screenshot shows inputs have a light background (maybe just white on white? No, they stand out).
-    // Let's assume white field with a border, or light gray field. Common mobile pattern: Grey[100] filled.
-    // "Email address" placeholder color: #94a3b8? (Slate-400).
 
     return Form(
       key: _formKey,
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           // Email Field
           TextFormField(
@@ -104,7 +96,7 @@ class _LoginFormState extends State<LoginForm> {
             controller: _passwordController,
             obscureText: !_isPasswordVisible,
             textInputAction: TextInputAction.done,
-            onFieldSubmitted: (_) => _onLoginPressed(),
+            onFieldSubmitted: (_) => _onCreateAccountPressed(),
             style: AppTextStyles.bodyLarge,
             decoration: InputDecoration(
               prefixIcon: Padding(
@@ -131,6 +123,7 @@ class _LoginFormState extends State<LoginForm> {
                 },
               ),
               hintText: 'Password',
+              // Note: Figma might show "Enter Password" or similar, adhering to standard consistency
               hintStyle: AppTextStyles.inputHint,
               filled: true,
               fillColor: AppColors.inputBackground,
@@ -140,50 +133,34 @@ class _LoginFormState extends State<LoginForm> {
               focusedBorder: inputBorder.copyWith(
                 borderSide: const BorderSide(color: AppColors.primary),
               ),
-              errorMaxLines: 2,
             ),
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return 'Please enter your password';
+                return 'Please enter a password';
               }
               if (value.length < 6) {
-                // Return null to avoid blocking login if logic permits, but standard is min length
                 return 'Password must be at least 6 characters';
               }
               return null;
             },
           ),
-          const SizedBox(height: 16), // Gap: 16px (Was 12)
-          // Forgot Password
-          GestureDetector(
-            onTap: () {
-              context.push(AppRoutes.forgotPassword);
-            },
-            child: Text(
-              'Forgot Password?',
-              style: AppTextStyles.forgotPassword,
-            ),
-          ),
-          const SizedBox(height: 24), // Gap: 24px (Calculated 20->24)
-          // Login Button
+          const SizedBox(height: 24),
+          // Create Account Button
           SizedBox(
             width: double.infinity,
-            height:
-                58, // Match Figma height guideline for touch targets (usually 48-56, Figma 57.5)
+            height: 58,
             child: ElevatedButton(
-              onPressed: _onLoginPressed,
+              onPressed: _onCreateAccountPressed,
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.primary,
                 foregroundColor: Colors.white,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(
-                    16,
-                  ), // Match input radius 16px
+                  borderRadius: BorderRadius.circular(16),
                 ),
                 elevation: 0,
               ),
               child: Text(
-                'Log In',
+                'Create Account',
                 style: AppTextStyles.button.copyWith(color: Colors.white),
               ),
             ),
