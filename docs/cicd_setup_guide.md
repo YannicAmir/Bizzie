@@ -10,6 +10,20 @@ This guide walks you through setting up the GitHub Actions pipeline for Bizzie. 
 *   Access to the Apple Developer Portal (Certificates & Profiles).
 *   A terminal on macOS or Linux (for encoding files).
 
+*   A terminal on macOS or Linux (for encoding files).
+
+---
+
+## Part 0: Versioning Strategy
+
+To avoid "duplicate build" errors in Firebase App Distribution, we use a hybrid versioning approach:
+
+1.  **Marketing Version (Name):** Controlled by `pubspec.yaml` (e.g., `1.0.0`). This is what users see.
+2.  **Build Number (Internal):** Controlled by **GitHub Actions Run ID**.
+    *   Every time the pipeline runs, GitHub assigns a unique, incrementing integer (e.g., Run #45).
+    *   We inject this as the build number: `1.0.0+45`.
+    *   **Result:** You can deploy the *same* code commit multiple times, and each one will be treated as a unique build by Firebase/AppStore.
+
 ---
 
 ## Part 1: Secrets Management (The "Hard" Part)

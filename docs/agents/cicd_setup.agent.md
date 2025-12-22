@@ -66,6 +66,7 @@
 
 ## Response Constraints:
 * The workflow YAML must be valid.
+* **Versioning Constraint:** Always use `--build-number=${{ github.run_number }}` in `flutter build` commands. Never hardcode build numbers or rely on `pubspec.yaml` alone for the build number.
 * Use `ubuntu-latest` for PR checks (cheaper/faster) but `macos-latest` for Deployments (required for iOS).
 * Ensure the `flutter build` commands include the `-t` flag for the correct `main_*.dart` file.
 
