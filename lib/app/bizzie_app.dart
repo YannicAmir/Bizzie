@@ -11,6 +11,7 @@ import 'package:bizzie/features/auth/domain/usecases/sign_in_with_google.dart';
 import 'package:bizzie/features/auth/domain/usecases/sign_out.dart';
 import 'package:bizzie/features/auth/domain/usecases/sign_up_with_email.dart';
 import 'package:bizzie/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:bizzie/features/auth/presentation/bloc/auth_event.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -42,6 +43,8 @@ class _BizzieAppState extends State<BizzieApp> {
       resetPassword: ResetPassword(_authRepository),
       deleteAccount: DeleteAccount(_authRepository),
     );
+
+    _authBloc.add(const AuthStatusRequested());
   }
 
   @override

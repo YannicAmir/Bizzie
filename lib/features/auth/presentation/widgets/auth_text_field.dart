@@ -16,6 +16,9 @@ class AuthTextField extends StatelessWidget {
     this.keyboardType,
     this.textInputAction,
     this.validator,
+    this.borderRadius = 16,
+    this.fillColor = AppColors.inputBackground,
+    this.borderColor = AppColors.inputBorder,
   });
 
   final TextEditingController controller;
@@ -28,12 +31,15 @@ class AuthTextField extends StatelessWidget {
   final TextInputType? keyboardType;
   final TextInputAction? textInputAction;
   final String? Function(String?)? validator;
+  final double borderRadius;
+  final Color fillColor;
+  final Color borderColor;
 
   @override
   Widget build(BuildContext context) {
     final inputBorder = OutlineInputBorder(
-      borderRadius: BorderRadius.circular(16),
-      borderSide: const BorderSide(color: AppColors.inputBorder),
+      borderRadius: BorderRadius.circular(borderRadius),
+      borderSide: BorderSide(color: borderColor),
     );
 
     return TextFormField(
@@ -65,7 +71,7 @@ class AuthTextField extends StatelessWidget {
         hintText: hintText,
         hintStyle: AppTextStyles.inputHint,
         filled: true,
-        fillColor: AppColors.inputBackground,
+        fillColor: fillColor,
         contentPadding: const EdgeInsets.symmetric(vertical: 16),
         border: inputBorder,
         enabledBorder: inputBorder,

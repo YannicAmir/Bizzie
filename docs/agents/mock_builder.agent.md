@@ -26,6 +26,7 @@ Your goal is to translate visual designs (Screenshots, Figma Data, or Descriptio
     * **Strictly Enforced:** Use `AppColors` from `app/themes/app_colors.dart`.
     * **Strictly Enforced:** Use `AppTextStyles` from `app/themes/app_text_styles.dart` for all typography. Do NOT use `GoogleFonts` or `TextStyle` directly in widgets.
     * **Strictly Enforced:** Access colors via `Theme.of(context).colorScheme` in widgets where possible.
+    * **Strictly Enforced:** For any widget supported by `ThemeData` (e.g., `AppBar`, `ElevatedButton`, `InputDecoration`), you MUST rely on the global theme defined in `AppTheme`. Do NOT explicitly set properties (like `backgroundColor`, `elevation`) locally unless they DEVIATE from the global theme for a specific design reason.
     * **Forbidden:** Do NOT use hardcoded colors (e.g., `Colors.blue`) or inline text styles.
 * **Asset Path Standard:** Use `AppAssets` from `app/themes/app_assets.dart`. NEVER hardcode asset strings.
 * **Validation Standard:** Use `Validators` from `shared/utils/validators.dart` for any form input validation.

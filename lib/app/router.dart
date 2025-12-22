@@ -3,6 +3,7 @@ import 'package:bizzie/features/auth/presentation/views/create_account_page.dart
 import 'package:bizzie/features/auth/presentation/views/email_sent_page.dart';
 import 'package:bizzie/features/auth/presentation/views/forgot_password_page.dart';
 import 'package:bizzie/features/auth/presentation/views/login_page.dart';
+import 'package:bizzie/features/home/presentation/views/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -11,27 +12,7 @@ final router = GoRouter(
   routes: [
     GoRoute(
       path: AppRoutes.home,
-      builder:
-          (context, state) => Scaffold(
-            body: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text('Hello Bizzie!'),
-                  const SizedBox(height: 20),
-                  ElevatedButton(
-                    onPressed: () => context.push(AppRoutes.login),
-                    child: const Text('Go to Login'),
-                  ),
-                  const SizedBox(height: 10),
-                  ElevatedButton(
-                    onPressed: () => context.push(AppRoutes.createAccount),
-                    child: const Text('Go to Create Account'),
-                  ),
-                ],
-              ),
-            ),
-          ),
+      builder: (context, state) => const HomePage(),
     ),
     GoRoute(
       path: AppRoutes.login,

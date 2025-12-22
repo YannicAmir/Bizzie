@@ -41,11 +41,8 @@ class SocialLoginButtons extends StatelessWidget {
           ),
         ),
         const SizedBox(
-          height: 16,
-        ), // Gap between social buttons (11.998px ~ 12px?)
-        // Figma said gap-[11.998px]. Code has 16. strict adherence means 12.
-        // Wait, metadata said "gap-[11.998px]".
-        // I will change this to 12.
+          height: 12,
+        ), // Gap between social buttons (Figma: ~11.998px)
         SizedBox(
           width: double.infinity,
           height: 58,

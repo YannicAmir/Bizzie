@@ -1,4 +1,6 @@
+import 'package:bizzie/app/routes/app_routes.dart';
 import 'package:bizzie/app/themes/app_assets.dart';
+import 'package:bizzie/app/themes/app_colors.dart';
 import 'package:bizzie/app/themes/app_text_styles.dart';
 import 'package:bizzie/features/auth/presentation/widgets/auth_divider.dart';
 import 'package:flutter/material.dart';
@@ -20,9 +22,7 @@ class LoginPage extends StatelessWidget {
       listener: (context, state) {
         state.maybeWhen(
           authenticated: (user) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Welcome back, ${user.id}!')),
-            );
+            context.go(AppRoutes.home);
           },
           failure: (message) {
             ScaffoldMessenger.of(
@@ -35,18 +35,9 @@ class LoginPage extends StatelessWidget {
       child: Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          leading: Padding(
-            padding: const EdgeInsets.only(left: 8.0, top: 8.0),
-            child: IconButton(
-              icon: Icon(
-                Icons.arrow_back_ios_new,
-                color: Theme.of(context).colorScheme.onSurface,
-                size: 20,
-              ),
-              onPressed: () => context.pop(),
-            ),
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back_ios_new),
+            onPressed: () => context.pop(),
           ),
         ),
         body: SafeArea(
@@ -60,7 +51,8 @@ class LoginPage extends StatelessWidget {
                 Center(
                   child: Image.asset(
                     AppAssets.defaultMascot,
-                    height: 120,
+                    height:
+                        120, // Verify height from Figma if possible, keeping 120 for now
                     fit: BoxFit.contain,
                   ),
                 ),
@@ -97,9 +89,23 @@ class _LoginHeader extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Welcome Back!', style: AppTextStyles.h1),
+        Text(
+          'Welcome Back!',
+          style: AppTextStyles.h1.copyWith(
+            fontSize: 32, // Figma says 32/33, keeping 32 standard
+            // letterSpacing: 0.406, // from AppTextStyles.h1
+            color: AppColors.textPrimary,
+          ),
+        ),
         const SizedBox(height: 8),
-        Text('Log in to continue', style: AppTextStyles.subtitle),
+        Text(
+          'Log in to continue',
+          style: AppTextStyles.subtitle.copyWith(
+            fontSize:
+                16, // Figma says 16px typical for subtitle here? Previous was 17
+            color: AppColors.textSecondary,
+          ),
+        ),
       ],
     );
   }

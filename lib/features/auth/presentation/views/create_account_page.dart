@@ -1,3 +1,4 @@
+import 'package:bizzie/app/routes/app_routes.dart';
 import 'package:bizzie/app/themes/app_colors.dart';
 import 'package:bizzie/app/themes/app_text_styles.dart';
 import 'package:bizzie/features/auth/presentation/widgets/auth_divider.dart';
@@ -21,9 +22,7 @@ class CreateAccountPage extends StatelessWidget {
       listener: (context, state) {
         state.maybeWhen(
           authenticated: (user) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Account Created! Welcome ${user.id}')),
-            );
+            context.go(AppRoutes.home);
           },
           failure: (message) {
             ScaffoldMessenger.of(

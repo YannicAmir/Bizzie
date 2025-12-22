@@ -21,6 +21,14 @@ class AppTheme {
         bodyLarge: AppTextStyles.bodyLarge,
         bodyMedium: AppTextStyles.subtitle,
       ),
+      appBarTheme: AppBarTheme(
+        backgroundColor: AppColors.surface,
+        surfaceTintColor:
+            Colors.transparent, // Prevents primary color tint on scroll
+        scrolledUnderElevation: 0, // Removes shadow on scroll
+        elevation: 0,
+        iconTheme: const IconThemeData(color: AppColors.textPrimary, size: 20),
+      ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.primary,

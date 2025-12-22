@@ -3,29 +3,43 @@ import 'package:bizzie/app/themes/app_text_styles.dart';
 import 'package:flutter/material.dart';
 
 class AuthButton extends StatelessWidget {
-  const AuthButton({super.key, required this.text, required this.onPressed});
+  const AuthButton({
+    super.key,
+    required this.text,
+    required this.onPressed,
+    this.height = 58,
+    this.borderRadius = 16,
+    this.backgroundColor = AppColors.primary,
+    this.textStyle,
+  });
 
   final String text;
   final VoidCallback onPressed;
+  final double height;
+  final double borderRadius;
+  final Color backgroundColor;
+  final TextStyle? textStyle;
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       width: double.infinity,
-      height: 58,
+      height: height,
       child: ElevatedButton(
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.primary,
+          backgroundColor: backgroundColor,
           foregroundColor: Colors.white,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(borderRadius),
           ),
           elevation: 0,
         ),
         child: Text(
           text,
-          style: AppTextStyles.button.copyWith(color: Colors.white),
+          style: (textStyle ?? AppTextStyles.button).copyWith(
+            color: Colors.white,
+          ),
         ),
       ),
     );

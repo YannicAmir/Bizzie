@@ -1,5 +1,6 @@
 import 'package:bizzie/app/routes/app_routes.dart';
 import 'package:bizzie/app/themes/app_assets.dart';
+import 'package:bizzie/app/themes/app_colors.dart';
 import 'package:bizzie/app/themes/app_text_styles.dart';
 import 'package:bizzie/features/auth/presentation/widgets/auth_button.dart';
 import 'package:bizzie/features/auth/presentation/widgets/auth_text_field.dart';
@@ -59,9 +60,9 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
           leading: Padding(
             padding: const EdgeInsets.only(left: 8.0, top: 8.0),
             child: IconButton(
-              icon: Icon(
+              icon: const Icon(
                 Icons.arrow_back_ios_new,
-                color: Theme.of(context).colorScheme.onSurface,
+                color: AppColors.textPrimary,
                 size: 20,
               ),
               onPressed: () => context.pop(),
@@ -78,13 +79,19 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                 children: [
                   const SizedBox(height: 24),
                   // Title
-                  Text('Reset Password', style: AppTextStyles.h1),
+                  Text(
+                    'Reset Password',
+                    style: AppTextStyles.h1.copyWith(
+                      color: const Color(0xFF0F172B),
+                    ),
+                  ),
                   const SizedBox(height: 12),
                   // Subtitle
                   Text(
                     'We\'ll email you a link to reset your password',
                     style: AppTextStyles.subtitle.copyWith(
                       fontSize: 16,
+                      color: const Color(0xFF45556C),
                       height: 1.5,
                     ),
                   ),
@@ -99,6 +106,9 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                     textInputAction: TextInputAction.done,
                     onSubmitted: _onSendResetLinkPressed,
                     validator: Validators.validateEmail,
+                    borderRadius: 8,
+                    fillColor: const Color(0xFFF8F9FA),
+                    borderColor: const Color(0xFFDEE2E6),
                   ),
                   const SizedBox(height: 24),
 
@@ -106,6 +116,12 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                   AuthButton(
                     text: 'Send Reset Link',
                     onPressed: _onSendResetLinkPressed,
+                    height: 56,
+                    borderRadius: 12,
+                    backgroundColor: const Color(0xFF1A5CE5),
+                    textStyle: AppTextStyles.button.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
 
                   const SizedBox(height: 78),
