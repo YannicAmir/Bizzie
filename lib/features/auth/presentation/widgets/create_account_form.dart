@@ -1,6 +1,6 @@
 import 'package:bizzie/app/themes/app_assets.dart';
-import 'package:bizzie/app/themes/app_colors.dart';
-import 'package:bizzie/app/themes/app_text_styles.dart';
+import 'package:bizzie/features/auth/presentation/widgets/auth_button.dart';
+import 'package:bizzie/features/auth/presentation/widgets/auth_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../bloc/auth_bloc.dart';
@@ -28,10 +28,6 @@ class _CreateAccountFormState extends State<CreateAccountForm> {
 
   void _onCreateAccountPressed() {
     if (_formKey.currentState!.validate()) {
-      // Note: AuthEmailSignUpRequested only takes email/password in the current event definition.
-      // If name is required by backend, the event/usecase needs update.
-      // For now, we will capture it but the BLoC might not use it yet unless updated.
-      // Provided Event: AuthEmailSignUpRequested(String email, String password)
       context.read<AuthBloc>().add(
         AuthEvent.emailSignUpRequested(
           _emailController.text,
@@ -43,41 +39,17 @@ class _CreateAccountFormState extends State<CreateAccountForm> {
 
   @override
   Widget build(BuildContext context) {
-    final inputBorder = OutlineInputBorder(
-      borderRadius: BorderRadius.circular(16),
-      borderSide: const BorderSide(color: AppColors.inputBorder),
-    );
-
     return Form(
       key: _formKey,
       child: Column(
         children: [
           // Email Field
-          TextFormField(
+          AuthTextField(
             controller: _emailController,
+            hintText: 'Email address',
+            iconPath: AppAssets.authEmailIcon,
             keyboardType: TextInputType.emailAddress,
             textInputAction: TextInputAction.next,
-            style: AppTextStyles.bodyLarge,
-            decoration: InputDecoration(
-              prefixIcon: Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: Image.asset(
-                  AppAssets.authEmailIcon,
-                  width: 24,
-                  height: 24,
-                ),
-              ),
-              hintText: 'Email address',
-              hintStyle: AppTextStyles.inputHint,
-              filled: true,
-              fillColor: AppColors.inputBackground,
-              contentPadding: const EdgeInsets.symmetric(vertical: 16),
-              border: inputBorder,
-              enabledBorder: inputBorder,
-              focusedBorder: inputBorder.copyWith(
-                borderSide: const BorderSide(color: AppColors.primary),
-              ),
-            ),
             validator: (value) {
               if (value == null || value.isEmpty) {
                 return 'Please enter your email';
@@ -92,48 +64,19 @@ class _CreateAccountFormState extends State<CreateAccountForm> {
           ),
           const SizedBox(height: 16),
           // Password Field
-          TextFormField(
+          AuthTextField(
             controller: _passwordController,
-            obscureText: !_isPasswordVisible,
+            hintText: 'Password',
+            iconPath: AppAssets.authLockIcon,
+            isPassword: true,
+            isPasswordVisible: _isPasswordVisible,
+            onVisibilityChanged: () {
+              setState(() {
+                _isPasswordVisible = !_isPasswordVisible;
+              });
+            },
+            onSubmitted: _onCreateAccountPressed,
             textInputAction: TextInputAction.done,
-            onFieldSubmitted: (_) => _onCreateAccountPressed(),
-            style: AppTextStyles.bodyLarge,
-            decoration: InputDecoration(
-              prefixIcon: Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: Image.asset(
-                  AppAssets.authLockIcon,
-                  width: 24,
-                  height: 24,
-                ),
-              ),
-              suffixIcon: IconButton(
-                icon: Image.asset(
-                  !_isPasswordVisible
-                      ? AppAssets.authHidePasswordIcon
-                      : AppAssets.authShowPasswordIcon,
-                  width: 24,
-                  height: 24,
-                  color: AppColors.textSecondary,
-                ),
-                onPressed: () {
-                  setState(() {
-                    _isPasswordVisible = !_isPasswordVisible;
-                  });
-                },
-              ),
-              hintText: 'Password',
-              // Note: Figma might show "Enter Password" or similar, adhering to standard consistency
-              hintStyle: AppTextStyles.inputHint,
-              filled: true,
-              fillColor: AppColors.inputBackground,
-              contentPadding: const EdgeInsets.symmetric(vertical: 16),
-              border: inputBorder,
-              enabledBorder: inputBorder,
-              focusedBorder: inputBorder.copyWith(
-                borderSide: const BorderSide(color: AppColors.primary),
-              ),
-            ),
             validator: (value) {
               if (value == null || value.isEmpty) {
                 return 'Please enter a password';
@@ -146,24 +89,9 @@ class _CreateAccountFormState extends State<CreateAccountForm> {
           ),
           const SizedBox(height: 24),
           // Create Account Button
-          SizedBox(
-            width: double.infinity,
-            height: 58,
-            child: ElevatedButton(
-              onPressed: _onCreateAccountPressed,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primary,
-                foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                elevation: 0,
-              ),
-              child: Text(
-                'Create Account',
-                style: AppTextStyles.button.copyWith(color: Colors.white),
-              ),
-            ),
+          AuthButton(
+            text: 'Create Account',
+            onPressed: _onCreateAccountPressed,
           ),
         ],
       ),

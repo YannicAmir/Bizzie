@@ -1,7 +1,8 @@
 import 'package:bizzie/app/routes/app_routes.dart';
 import 'package:bizzie/app/themes/app_assets.dart';
-import 'package:bizzie/app/themes/app_colors.dart';
 import 'package:bizzie/app/themes/app_text_styles.dart';
+import 'package:bizzie/features/auth/presentation/widgets/auth_button.dart';
+import 'package:bizzie/features/auth/presentation/widgets/auth_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -38,11 +39,6 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
 
   @override
   Widget build(BuildContext context) {
-    final inputBorder = OutlineInputBorder(
-      borderRadius: BorderRadius.circular(16),
-      borderSide: const BorderSide(color: AppColors.inputBorder),
-    );
-
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
         state.maybeWhen(
@@ -51,15 +47,6 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
               context,
             ).showSnackBar(SnackBar(content: Text(message)));
           },
-          // Note: AuthBloc implementation for reset might not explicitly emit 'success',
-          // or we check if it goes back to unauthenticated/initial without error.
-          // For now, assuming the BLoC handles the call.
-          // Ideally, we'd have a specific success state or display a message.
-          // Given the current AuthBloc, we might just show a success message if no error occurs quickly?
-          // Actually, looking at AuthBloc, it just calls the repo. If successful, nothing emits.
-          // So we might want to manually show a SnackBar if we don't get a failure?
-          // But BlocListener only reacts to state changes.
-          // Let's rely on failure handling primarily, and perhaps clear the field.
           orElse: () {},
         );
       },
@@ -103,32 +90,13 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                   const SizedBox(height: 32),
 
                   // Email Field
-                  TextFormField(
+                  AuthTextField(
                     controller: _emailController,
+                    hintText: 'Email address',
+                    iconPath: AppAssets.authEmailIcon,
                     keyboardType: TextInputType.emailAddress,
                     textInputAction: TextInputAction.done,
-                    onFieldSubmitted: (_) => _onSendResetLinkPressed(),
-                    style: AppTextStyles.bodyLarge,
-                    decoration: InputDecoration(
-                      hintText: 'Email address',
-                      hintStyle: AppTextStyles.inputHint,
-                      prefixIcon: Padding(
-                        padding: const EdgeInsets.all(12.0),
-                        child: Image.asset(
-                          AppAssets.authEmailIcon,
-                          width: 20,
-                          height: 20,
-                        ),
-                      ),
-                      filled: true,
-                      fillColor: AppColors.inputBackground,
-                      contentPadding: const EdgeInsets.all(16),
-                      border: inputBorder,
-                      enabledBorder: inputBorder,
-                      focusedBorder: inputBorder.copyWith(
-                        borderSide: const BorderSide(color: AppColors.primary),
-                      ),
-                    ),
+                    onSubmitted: _onSendResetLinkPressed,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return 'Please enter your email';
@@ -144,7 +112,10 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                   const SizedBox(height: 24),
 
                   // Button
-                  _SendResetLinkButton(onPressed: _onSendResetLinkPressed),
+                  AuthButton(
+                    text: 'Send Reset Link',
+                    onPressed: _onSendResetLinkPressed,
+                  ),
 
                   const SizedBox(height: 78),
 
@@ -152,7 +123,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                   Center(
                     child: Image.asset(
                       AppAssets.authForgotPasswordMascot,
-                      height: 150, // Estimated from screenshot
+                      height: 150,
                       fit: BoxFit.contain,
                     ),
                   ),
@@ -160,38 +131,6 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                 ],
               ),
             ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _SendResetLinkButton extends StatelessWidget {
-  const _SendResetLinkButton({required this.onPressed});
-
-  final VoidCallback onPressed;
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: double.infinity,
-      height: 58,
-      child: ElevatedButton(
-        onPressed: onPressed,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.primary,
-          foregroundColor: Colors.white,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-          ),
-          elevation: 0,
-        ),
-        child: Text(
-          'Send Reset Link',
-          style: AppTextStyles.button.copyWith(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
           ),
         ),
       ),

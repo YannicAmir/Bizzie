@@ -1,14 +1,13 @@
-import 'package:bizzie/app/routes/app_routes.dart';
 import 'package:bizzie/app/themes/app_assets.dart';
-import 'package:bizzie/app/themes/app_colors.dart';
 import 'package:bizzie/app/themes/app_text_styles.dart';
-import 'package:flutter/gestures.dart';
+import 'package:bizzie/features/auth/presentation/widgets/auth_divider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../bloc/auth_bloc.dart';
 import '../bloc/auth_state.dart';
+import '../widgets/auth_footer.dart';
 import '../widgets/login_form.dart';
 import '../widgets/social_login_buttons.dart';
 
@@ -21,8 +20,6 @@ class LoginPage extends StatelessWidget {
       listener: (context, state) {
         state.maybeWhen(
           authenticated: (user) {
-            // Navigate to Home or Post-Login Screen
-            // User didn't specify exact destination yet, but usually it's Home
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text('Welcome back, ${user.id}!')),
             );
@@ -67,86 +64,43 @@ class LoginPage extends StatelessWidget {
                     fit: BoxFit.contain,
                   ),
                 ),
-                const SizedBox(height: 32), // Increased gap
+                const SizedBox(height: 32),
                 // Titles
-                Text('Welcome Back!', style: AppTextStyles.h1),
-                const SizedBox(height: 8),
-                Text('Log in to continue', style: AppTextStyles.subtitle),
-                const SizedBox(height: 24), // Gap: 24px (Calculated from Figma)
+                const _LoginHeader(),
+                const SizedBox(height: 24),
                 // Form
                 const LoginForm(),
-                const SizedBox(height: 24), // Gap: 24px
+                const SizedBox(height: 24),
                 // OR Divider
-                Row(
-                  children: [
-                    const Expanded(
-                      child: Divider(
-                        color: AppColors.inputBorder,
-                        thickness: 1,
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: Text(
-                        'or continue with',
-                        style: AppTextStyles.caption,
-                      ),
-                    ),
-                    const Expanded(
-                      child: Divider(
-                        color: AppColors.inputBorder,
-                        thickness: 1,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(
-                  height: 24,
-                ), // Gap: 24px (Calculated: 26.4 -> 24)
+                const AuthDivider(),
+                const SizedBox(height: 24),
                 // Social Buttons
                 const SocialLoginButtons(),
-                const SizedBox(height: 48), // Footer Gap (Estimated/Kept)
+                const SizedBox(height: 48),
                 // Footer
-                Center(
-                  child: RichText(
-                    textAlign: TextAlign.center,
-                    text: TextSpan(
-                      style: AppTextStyles.smallLink,
-                      children: [
-                        const TextSpan(
-                          text: 'By continuing, you agree to Bizzie\'s ',
-                        ),
-                        TextSpan(
-                          text: 'Terms of Service',
-                          style: AppTextStyles.smallLinkBold,
-                          recognizer:
-                              TapGestureRecognizer()
-                                ..onTap = () {
-                                  // Navigate to Terms
-                                  context.push(AppRoutes.terms);
-                                },
-                        ),
-                        const TextSpan(text: ' and\n'),
-                        TextSpan(
-                          text: 'Privacy Policy',
-                          style: AppTextStyles.smallLinkBold,
-                          recognizer:
-                              TapGestureRecognizer()
-                                ..onTap = () {
-                                  // Navigate to Privacy
-                                  context.push(AppRoutes.privacy);
-                                },
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
+                const AuthFooter(),
                 const SizedBox(height: 20),
               ],
             ),
           ),
         ),
       ),
+    );
+  }
+}
+
+class _LoginHeader extends StatelessWidget {
+  const _LoginHeader();
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('Welcome Back!', style: AppTextStyles.h1),
+        const SizedBox(height: 8),
+        Text('Log in to continue', style: AppTextStyles.subtitle),
+      ],
     );
   }
 }
