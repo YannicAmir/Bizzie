@@ -26,7 +26,7 @@
     lib/
     ├── l10n/                  # Localization (app_en.arb)
     ├── app/                   # App root
-    │   ├── themes/            # App-wide themes
+    │   ├── themes/            # App-wide themes (AppTheme, AppColors)
     │   ├── router.dart
     │   └── app.dart
     ├── bootstrap/             # Bootstrap logic
