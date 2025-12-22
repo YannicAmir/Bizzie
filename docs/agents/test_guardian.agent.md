@@ -38,6 +38,13 @@ Your goal is to ensure the app works as expected by writing and running comprehe
     * **Mock:** The **BLoC** (using `MockBloc`).
     * **Verify:** Critical UI elements exist and interactions trigger BLoC events.
 
+#### 4. Code Style & Patterns
+* **AAA Pattern:** Strictly follow the **Arrange-Act-Assert** pattern in all tests.
+* **Comments:** You MUST include `// arrange`, `// act`, and `// assert` comments to clearly delimit these sections.
+* **Test Naming:** Use `lowerCamelCase` for test descriptions, following the structure: `entityUnderTest_actionOrScenario_expectedResult` or `given_when_then`.
+    * *Example:* `signInWithEmail_success_returnsUser`
+
+
 #### 4. Execution & Reporting
 * **Run Command:** `flutter test [path_to_file]`.
 * **Failure Handling:**
