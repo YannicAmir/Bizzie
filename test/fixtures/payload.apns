@@ -1,5 +1,4 @@
 {
-  "Simulator Target Bundle": "io.getbizzie.bizzieapp.dev",
   "aps": {
     "alert": {
       "title": "NVDA Earnings Update",

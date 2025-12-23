@@ -88,9 +88,16 @@ This matches the channel ID used in `LocalNotificationDataSource.dart`.
 ## 5. Simulator Testing
 Since real Push Notifications often fail on the iOS Simulator, use the generated fixture to test logic.
 
-**Command (Run in Terminal):**
+**Commands (Run in Terminal):**
 ```bash
+# Dev
 xcrun simctl push booted io.getbizzie.bizzieapp.dev test/fixtures/payload.apns
+
+# QA
+xcrun simctl push booted io.getbizzie.bizzieapp.qa test/fixtures/payload.apns
+
+# Prod
+xcrun simctl push booted io.getbizzie.bizzieapp test/fixtures/payload.apns
 ```
 
 *   **Background:** Minimize app -> Run command -> See Banner.
