@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'dart:developer';
+import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
@@ -43,13 +43,13 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
   ) async {
     emit(const NotificationState.loading());
     try {
-      log(
+      BizzieLogger.info(
         'NotificationBloc: SetupRequested event received. calling requestPermission...',
       );
       await _requestPermission();
-      log('NotificationBloc: Permission request completed.');
+      BizzieLogger.info('NotificationBloc: Permission request completed.');
       final token = await _getFcmToken();
-      log('FCM Token: $token'); // For debugging as requested
+      BizzieLogger.info('FCM Token: $token'); // For debugging as requested
 
       _messageSubscription = _listenToMessages().listen((message) {
         add(NotificationEvent.messageReceived(message));

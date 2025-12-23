@@ -1,3 +1,4 @@
+import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:injectable/injectable.dart';
 
@@ -8,13 +9,13 @@ class FcmRemoteDataSource {
   FcmRemoteDataSource() : _firebaseMessaging = FirebaseMessaging.instance;
 
   Future<NotificationSettings> requestPermission() async {
-    print('FcmRemoteDataSource: Requesting permission...');
+    BizzieLogger.info('FcmRemoteDataSource: Requesting permission...');
     final settings = await _firebaseMessaging.requestPermission(
       alert: true,
       badge: true,
       sound: true,
     );
-    print(
+    BizzieLogger.info(
       'FcmRemoteDataSource: Permission status: ${settings.authorizationStatus}',
     );
     return settings;
