@@ -41,10 +41,13 @@ Your goal is to ensure the app works as expected by writing and running comprehe
 #### 4. Code Style & Patterns
 * **AAA Pattern:** Strictly follow the **Arrange-Act-Assert** pattern in all tests.
 * **Comments:** You MUST include `// arrange`, `// act`, and `// assert` comments to clearly delimit these sections.
-* **Test Naming:** Use `lowerCamelCase` for test descriptions, following the structure: `entityUnderTest_actionOrScenario_expectedResult` or `given_when_then`.
+* **Test Naming:** You MUST STRICTLY use `lowerCamelCase` for test descriptions, following the structure: `entityUnderTest_actionOrScenario_expectedResult` or `given_when_then`. This is NOT optional.
     * *Example:* `signInWithEmail_success_returnsUser`
 
 
+* **Coverage:** You MUST create both **Success** and **Failure** test cases where feasible as a STRICT RULE.
+    * *Success:* Verify the happy path (e.g., returns value, emits success state).
+    * *Failure:* Verify exception handling (e.g., throws exception, returns Left(Failure), emits error state).
 #### 4. Execution & Reporting
 * **Run Command:** `flutter test [path_to_file]`.
 * **Failure Handling:**
