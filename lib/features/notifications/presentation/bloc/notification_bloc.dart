@@ -1,0 +1,105 @@
+import 'dart:async';
+import 'dart:developer';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:injectable/injectable.dart';
+import 'package:bizzie/features/notifications/domain/models/notification_message.dart';
+import 'package:bizzie/features/notifications/domain/usecases/get_fcm_token.dart';
+import 'package:bizzie/features/notifications/domain/usecases/listen_to_messages.dart';
+import 'package:bizzie/features/notifications/domain/usecases/request_notification_permission.dart';
+import 'package:bizzie/features/notifications/domain/usecases/subscribe_to_topic.dart';
+import 'package:bizzie/features/notifications/domain/usecases/unsubscribe_from_topic.dart';
+
+part 'notification_event.dart';
+part 'notification_state.dart';
+part 'notification_bloc.freezed.dart';
+
+@injectable
+class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
+  final RequestNotificationPermission _requestPermission;
+  final GetFcmToken _getFcmToken;
+  final ListenToMessages _listenToMessages;
+  final SubscribeToTopic _subscribeToTopic;
+  final UnsubscribeFromTopic _unsubscribeFromTopic;
+
+  StreamSubscription<NotificationMessage>? _messageSubscription;
+
+  NotificationBloc(
+    this._requestPermission,
+    this._getFcmToken,
+    this._listenToMessages,
+    this._subscribeToTopic,
+    this._unsubscribeFromTopic,
+  ) : super(const NotificationState.initial()) {
+    on<_SetupRequested>(_onSetupRequested);
+    on<_SubscribeToTopicRequested>(_onSubscribeToTopicRequested);
+    on<_UnsubscribeFromTopicRequested>(_onUnsubscribeFromTopicRequested);
+    on<_MessageReceived>(_onMessageReceived);
+  }
+
+  Future<void> _onSetupRequested(
+    _SetupRequested event,
+    Emitter<NotificationState> emit,
+  ) async {
+    emit(const NotificationState.loading());
+    try {
+      log(
+        'NotificationBloc: SetupRequested event received. calling requestPermission...',
+      );
+      await _requestPermission();
+      log('NotificationBloc: Permission request completed.');
+      final token = await _getFcmToken();
+      log('FCM Token: $token'); // For debugging as requested
+
+      _messageSubscription = _listenToMessages().listen((message) {
+        add(NotificationEvent.messageReceived(message));
+      });
+
+      emit(NotificationState.success(token));
+    } catch (e) {
+      emit(NotificationState.failure(e.toString()));
+    }
+  }
+
+  Future<void> _onSubscribeToTopicRequested(
+    _SubscribeToTopicRequested event,
+    Emitter<NotificationState> emit,
+  ) async {
+    try {
+      await _subscribeToTopic(event.topic);
+    } catch (e) {
+      // For now, we might want to emit a failure or just log it.
+      // Keeping state as is or emitting failure.
+      // Since this is often a fire-and-forget or part of a larger flow,
+      // I'll emit failure if it fails, but ideally we'd have a specific state for this.
+      emit(NotificationState.failure("Failed to subscribe: ${e.toString()}"));
+    }
+  }
+
+  Future<void> _onUnsubscribeFromTopicRequested(
+    _UnsubscribeFromTopicRequested event,
+    Emitter<NotificationState> emit,
+  ) async {
+    try {
+      await _unsubscribeFromTopic(event.topic);
+    } catch (e) {
+      emit(NotificationState.failure("Failed to unsubscribe: ${e.toString()}"));
+    }
+  }
+
+  void _onMessageReceived(
+    _MessageReceived event,
+    Emitter<NotificationState> emit,
+  ) {
+    emit(NotificationState.messageReceivedState(event.message));
+    // Immediately revert to success or keep it?
+    // Usually we might use a Listener in UI to react to this state,
+    // so strictly speaking it's a transient state.
+  }
+
+  @override
+  Future<void> close() {
+    _messageSubscription?.cancel();
+    return super.close();
+  }
+}

@@ -113,6 +113,7 @@ If the user pastes code or a file structure, analyze it for architectural violat
 When a new feature requires global access (e.g., Authentication, Settings, Navigation), you must instruct the user (or the relevant agent) to:
 1.  **Register dependencies:** Ensure Repositories and UseCases are initialized in the `main.dart` or `bootstrap.dart` logic (or via DI).
 2.  **Provide BLoCs:** Wrap the root `MaterialApp` in `lib/app/bizzie_app.dart` with a `MultiBlocProvider` to make the global BLoC available to the entire widget tree.
+    *   *Strict Requirement:* Use proper Dependency Injection to retrieve the BLoC (e.g., `create: (_) => getIt<MyBloc>()`).
     *   *Constraint:* Never let a feature be "orphan" code. If it's built, it must be wired up.
 
 ## Response Constraints

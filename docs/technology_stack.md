@@ -13,6 +13,7 @@ This document serves as the **Single Source of Truth** for the tools, libraries,
 * **Data Models:** `freezed` + `json_annotation` + `json_serializable`
 * **Navigation/Routing:** `go_router`
 * **Dependency Injection:** `get_it` + `injectable`
+* **Charts & Graphs:** `syncfusion_flutter_charts` (Standard for all data visualization)
 
 ## 3. Backend & Infrastructure (Firebase)
 * **Authentication:** `firebase_auth` (Email, Google, Apple)
@@ -37,9 +38,7 @@ This document serves as the **Single Source of Truth** for the tools, libraries,
 
 ## 7. CI/CD Pipeline
 * **Continuous Integration (CI):** GitHub Actions
-    * *Responsibility:* Build, Test, Lint, Security Checks.
 * **Continuous Delivery (CD):** Firebase App Distribution
-    * *Responsibility:* Distribute builds to Dev/QA testers.
 
 ## 8. Styling & Design System
 * **Theme Source:** `lib/app/themes/app_theme.dart`
@@ -49,6 +48,8 @@ This document serves as the **Single Source of Truth** for the tools, libraries,
 
 ## Agent Guidelines
 * **StateArchitect:** Use `flutter_bloc` with `freezed` unions for all logic. Do not use Equatable.
-* **MockBuilder:** Use `go_router` for all navigation.
+* **MockBuilder:**
+    * Use `go_router` for all navigation.
+    * Use `syncfusion_flutter_charts` for any chart/graph requirements. Do not use `fl_chart` or `charts_flutter`.
 * **BackendConnector:** All data persists to Firestore unless it is financial data (fetch from API).
 * **SecOps:** Ensure all keys are stored in `Envied` configs, never hardcoded.

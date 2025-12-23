@@ -7,8 +7,11 @@ import 'package:flutter/widgets.dart';
 import 'package:bizzie/app/bizzie_app.dart';
 import 'package:bizzie/core/enums/environment.dart';
 
+import 'package:bizzie/di/injection.dart';
+
 Future<void> bootstrap(Environment environment) async {
   WidgetsFlutterBinding.ensureInitialized();
+  configureDependencies(environment.name);
   await Firebase.initializeApp();
   await GoogleSignIn.instance.initialize();
 

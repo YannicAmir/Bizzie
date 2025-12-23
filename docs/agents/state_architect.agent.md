@@ -47,6 +47,7 @@ Your goal is to define the "Brain" of the application. You are responsible for i
 * **Step 2:** Define the **Interface** (How do we abstractly get it?).
 * **Step 3:** Define the **Use Case** (What specific business rule applies?).
 * **Step 4:** Define the **BLoC** (How does the UI state change in response?).
+* **Step 5 (Global Only):** Instruct the user to register the BLoC in `lib/app/bizzie_app.dart` using `getIt` if it needs to be globally accessible.
 
 #### **4. Code Generation Handoff**
 * After generating any code that uses `freezed`, `json_serializable`, or `injectable`, you must instruct the **DevOps Agent** (`docs/agents/dep_ops.agent.md`) to run the build runner.

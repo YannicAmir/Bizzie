@@ -8,4 +8,5 @@ class AppRoutes {
   static const String emailSent = '/email-sent';
   static const String terms = '/terms';
   static const String privacy = '/privacy';
+  static const String notificationRequest = '/notifications-request';
 }

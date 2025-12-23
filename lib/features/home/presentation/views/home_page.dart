@@ -17,52 +17,60 @@ class HomePage extends StatelessWidget {
         child: BlocBuilder<AuthBloc, AuthState>(
           builder: (context, state) {
             return state.maybeWhen(
-              authenticated:
-                  (user) => Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text('Welcome, ${user.id}!'),
-                      const SizedBox(height: 20),
-                      ElevatedButton(
-                        onPressed: () {
-                          context.read<AuthBloc>().add(
-                            const AuthLogoutRequested(),
-                          );
-                        },
-                        child: const Text('Logout'),
-                      ),
-                      const SizedBox(height: 10),
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.red,
-                          foregroundColor: Colors.white,
-                        ),
-                        onPressed: () {
-                          context.read<AuthBloc>().add(
-                            const AuthDeleteAccountRequested(),
-                          );
-                        },
-                        child: const Text('Delete Account'),
-                      ),
-                    ],
+              authenticated: (user) => Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text('Welcome, ${user.id}!'),
+                  const SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: () {
+                      context.read<AuthBloc>().add(const AuthLogoutRequested());
+                    },
+                    child: const Text('Logout'),
                   ),
-              orElse:
-                  () => Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Text('Hello Bizzie!'),
-                      const SizedBox(height: 20),
-                      ElevatedButton(
-                        onPressed: () => context.push(AppRoutes.login),
-                        child: const Text('Go to Login'),
-                      ),
-                      const SizedBox(height: 10),
-                      ElevatedButton(
-                        onPressed: () => context.push(AppRoutes.createAccount),
-                        child: const Text('Go to Create Account'),
-                      ),
-                    ],
+                  const SizedBox(height: 10),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.red,
+                      foregroundColor: Colors.white,
+                    ),
+                    onPressed: () {
+                      context.read<AuthBloc>().add(
+                        const AuthDeleteAccountRequested(),
+                      );
+                    },
+                    child: const Text('Delete Account'),
                   ),
+                  const SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: () =>
+                        context.push(AppRoutes.notificationRequest),
+                    child: const Text('Notification Shortcut'),
+                  ),
+                ],
+              ),
+              orElse: () => Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text('Hello Bizzie!'),
+                  const SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: () => context.push(AppRoutes.login),
+                    child: const Text('Go to Login'),
+                  ),
+                  const SizedBox(height: 10),
+                  ElevatedButton(
+                    onPressed: () => context.push(AppRoutes.createAccount),
+                    child: const Text('Go to Create Account'),
+                  ),
+                  const SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: () =>
+                        context.push(AppRoutes.notificationRequest),
+                    child: const Text('Notification Shortcut'),
+                  ),
+                ],
+              ),
             );
           },
         ),

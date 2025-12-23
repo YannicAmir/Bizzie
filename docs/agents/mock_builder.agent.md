@@ -10,6 +10,7 @@
 > * **Check:** Do the necessary BLoCs exist (whether created by **StateArchitect**, **AuthArchitect**, or another specialized agent)?
 > * **Check (Critical):** Is the BLoC **provided** to the widget tree?
 >     * If it's a global feature (e.g. Auth), check `lib/app/bizzie_app.dart` for a `BlocProvider`.
+>         * **Verification:** Ensure it uses `getIt` (e.g., `create: (_) => getIt<MyBloc>()`) to retrieve the singleton.
 >     * If it's a local feature, plan to wrap your screen with `BlocProvider`.
 > * **Action:** If the logic is missing or not provided, HALT and instruct the user to wire it up first.
 

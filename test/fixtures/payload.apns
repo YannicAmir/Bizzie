@@ -1,0 +1,15 @@
+{
+  "Simulator Target Bundle": "io.getbizzie.bizzieapp.dev",
+  "aps": {
+    "alert": {
+      "title": "NVDA Earnings Update",
+      "body": "Nvidia is reporting earnings in 3 days."
+    },
+    "sound": "default",
+    "badge": 1
+  },
+  "custom_data": {
+    "screen": "earnings_report",
+    "id": "123"
+  }
+}
