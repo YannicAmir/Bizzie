@@ -105,21 +105,18 @@ jobs:
              PROF="$DEV_PROF"
              GS="$DEV_GS"
              GSP="$DEV_GSP"
-             OPT="$DEV_OPT"
           elif [ "$FLAVOR" == "qa" ]; then
              SA="$QA_SA"
              KS="$QA_KS"
              PROF="$QA_PROF"
              GS="$QA_GS"
              GSP="$QA_GSP"
-             OPT="$QA_OPT"
           elif [ "$FLAVOR" == "prod" ]; then
              SA="$PROD_SA"
              KS="$PROD_KS"
              PROF="$PROD_PROF"
              GS="$PROD_GS"
              GSP="$PROD_GSP"
-             OPT="$PROD_OPT"
           fi
 
           # ----------------------------------------------------
@@ -129,12 +126,20 @@ jobs:
           echo "FIREBASE_SERVICE_ACCOUNT_PATH=$(pwd)/firebase_service_account.json" >> $GITHUB_ENV
 
           # ----------------------------------------------------
-          # DECODE FIREBASE OPTIONS (DART)
+          # DECODE FIREBASE OPTIONS (DART) - ALL REQUIRED
           # ----------------------------------------------------
-          # Write to: lib/config/firebase/firebase_options_${flavor}.dart
           mkdir -p lib/config/firebase
-          echo "$OPT" | base64 --decode > lib/config/firebase/firebase_options_${FLAVOR}.dart
-          echo "Decoded firebase_options_${FLAVOR}.dart to lib/config/firebase/"
+          
+          # Dev
+          echo "$DEV_OPT" | base64 --decode > lib/config/firebase/firebase_options_dev.dart
+          
+          # QA
+          echo "$QA_OPT" | base64 --decode > lib/config/firebase/firebase_options_qa.dart
+          
+          # Prod
+          echo "$PROD_OPT" | base64 --decode > lib/config/firebase/firebase_options_prod.dart
+          
+          echo "Decoded all firebase_options_*.dart files to lib/config/firebase/"
 
 
           # ----------------------------------------------------
