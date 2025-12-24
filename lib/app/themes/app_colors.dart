@@ -27,6 +27,7 @@ class AppColors {
   // General
   static const Color black = Colors.black;
   static const Color white = Colors.white;
+  static const Color transparent = Colors.transparent;
 
   // Feature Specific
   static const Color mascotBackground = Color(0xFFEFF6FF); // Light Blue-50
@@ -36,4 +37,14 @@ class AppColors {
   static const Color mascotCardGradientEnd = Color(0xFFEEF2FF);
   // rgba(219,234,254,0.5) -> 0x  80  DB EAF E
   static const Color mascotCardBorder = Color(0x80DBEAFE);
+
+  // Slate Palette (for mapped usage)
+  static const Color slate100 = Color(0xFFF1F5F9);
+  static const Color slate200 = Color(0xFFE2E8F0);
+  static const Color slate700 = Color(0xFF334155);
+  static const Color slate900 = Color(0xFF0F172A);
+
+  // Shadows
+  static const Color shadowLight = Color(0x14000000); // 0.08 opacity approx
+  static const Color shadowDark = Color(0x40000000); // 0.25 opacity
 }
