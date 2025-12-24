@@ -117,7 +117,8 @@ If your `deploy.yml` has not been updated yet, ask the Agent to do it for you.
 **Prompt to copy-paste to Agent:**
 > "Update the `.github/workflows/deploy.yml` pipeline to handle the new Firebase Options secrets.
 > 1. Map `DEV_FIREBASE_OPTIONS_DART_BASE64` (and QA/PROD) to env vars.
-> 2. Add a build step to decode them into `lib/config/firebase/firebase_options_{env}.dart` before the build starts."
+> 2. Add a build step to decode **ALL THREE** (Dev, QA, Prod) into `lib/config/firebase/firebase_options_{env}.dart` before the build starts.
+> **IMPORTANT:** You must decode ALL env files regardless of the current build flavor, because `bootstrap.dart` imports all of them statically."
 
 ---
 
