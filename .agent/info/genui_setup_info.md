@@ -76,5 +76,5 @@ Before you start, understand the two options Firebase will present to you.
     *   **Wait! Do I need to update Provisioning Profiles?**
         *   **Just for the Key?** No.
         *   **To USE the feature (App Attest Capability)?** YES.
-        *   **Guide:** If you are ready to enable the capability in Xcode, strictly follow: [App Attest Setup Guide](app_attest_setup_info.md).
+        *   **Guide:** If you are ready to enable the capability in Xcode, strictly follow: [App Attest Setup Guide](apple_app_attest_setup_info.md).
 *   **Verification**: The table row should now show a green checkmark or "Registered" status.
