@@ -13,9 +13,10 @@ description: Create GenUI widgets from design and loose inputs
 
 ## Prerequisites
 * [Project Setup](general-project-setup.md) (Implicit, assumed project exists)
+* [GenUI Feature Setup](genui-setup.md) (Should be run to establish lib/features/genui structure)
 
 ## Workflow Steps
-1.  **Validation:** Verify that `genui` is added to `pubspec.yaml`.
+1.  **Validation:** Verify that `genui` is added to `pubspec.yaml` and `lib/features/genui` exists.
 2.  **Analysis:**
     *   Read the user's input (Text Description, Image Screenshot, or Figma Link).
     *   **Analyze the design:** Identify UI elements, layout, and likely data requirements.
@@ -27,6 +28,7 @@ description: Create GenUI widgets from design and loose inputs
     *   *Confirm:* If highly ambiguous, ask user to confirm the schema.
 4.  **Code Generation:**
     *   **Step A: Widget Code:** Generate the Flutter Widget.
+        *   Place in `lib/features/genui/presentation/widgets/`.
         *   Use `genui` patterns if binding to `DataModel` is required.
         *   Follow `Bizzie` styling (AppTheme, AppTextStyles).
     *   **Step B: Data Integration:**

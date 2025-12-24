@@ -25,7 +25,12 @@ description: Sets up GenUI and GenUI Firebase AI in the project
 2.  **Execution:**
     *   Run `flutter pub add genui genui_firebase_ai`.
     *   Ensure `firebase_core` is also added if not present.
-    *   (Optional) If requested, create a basic service wrapper or example usage in `lib/core/services/genui_service.dart` following architecture guidelines.
+    *   **Feature Structure Setup:**
+        *   Create the following directory structure:
+            *   `lib/features/genui/data/`
+            *   `lib/features/genui/domain/`
+            *   `lib/features/genui/presentation/widgets/`
+        *   (Optional) Create a basic service wrapper or example usage in `lib/features/genui/domain/genui_service.dart` following architecture guidelines.
 
 3.  **Manual Handoff:**
     *   Refer the user to `../info/genui_setup_info.md` to ensure the Gemini API is enabled in the Firebase Console and App Check is configured.

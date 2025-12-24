@@ -12,8 +12,9 @@ trigger: manual
     *   Catalog Item names should be human-readable strings (e.g., 'My Custom Widget').
 
 *   **Path Convention:**
-    *   Place feature-specific widgets in: `lib/features/[feature_name]/presentation/widgets/`.
-    *   Place shared widgets in: `lib/shared/widgets/genui/`.
+    *   **GenUI is a Feature:** All GenUI components reside in the `genui` feature.
+    *   Place all widgets in: `lib/features/genui/presentation/widgets/`.
+    *   If a widget is absolutely generic and reused outside of GenUI contexts without GenUI logic, only then consider `lib/shared/widgets/`.
 
 *   **Data Handling:**
     *   Every widget MUST have a clearly defined data schema.
@@ -21,7 +22,7 @@ trigger: manual
     *   For **Custom Widgets**: This schema must be provided as a JSON Schema structure referencing the required properties.
 
 *   **GenUI Integration:**
-    *   **Standard Catalog Items**: The output must include *both* the `Widget` class and the `CatalogItem` definition (or clear instructions on where/how to add the `CatalogItem` to the global catalog).
+    *   **Standard Catalog Items**: The output must include *both* the `Widget` class and the `CatalogItem` definition (or clear instructions on where/how to add the `CatalogItem` to the global catalog in `lib/features/genui/domain/catalog/`).
     *   **Custom Widgets**: The output must include the `Widget` class and a standalone JSON Schema definition for the data it expects. The widget should be written to accept this data (e.g., via a model class generated from the schema).
 
 *   **Flexibility & Inference:**
