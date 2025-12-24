@@ -2,6 +2,8 @@ import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:injectable/injectable.dart';
 
+final _logger = BizzieLogger('LocalNotificationDataSource');
+
 @singleton
 class LocalNotificationDataSource {
   final FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin;
@@ -55,13 +57,9 @@ class LocalNotificationDataSource {
       badge: true,
       sound: true,
     );
-    BizzieLogger.info(
-      'LocalNotificationDataSource: Permission sync result: $result',
-    );
+    _logger.info('Permission sync result: $result');
 
-    BizzieLogger.info(
-      'LocalNotificationDataSource: Showing notification id=$id title=$title',
-    );
+    _logger.info('Showing notification id=$id title=$title');
     const NotificationDetails notificationDetails = NotificationDetails(
       android: androidNotificationDetails,
       iOS: DarwinNotificationDetails(

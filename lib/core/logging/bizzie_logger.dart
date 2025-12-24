@@ -1,45 +1,54 @@
-import 'package:flutter/foundation.dart';
+import 'dart:developer' as developer;
 import 'package:logging/logging.dart';
 
 /// Centralized logger for Bizzie application.
-/// strictly controls output based on the environment.
 class BizzieLogger {
-  static final Logger _logger = Logger('Bizzie');
+  factory BizzieLogger(String name) {
+    if (_instances.containsKey(name)) return _instances[name]!;
 
-  /// Initializes the logger.
-  /// Should be called in bootstrap.dart.
-  static void init() {
-    Logger.root.level = Level.ALL;
-    Logger.root.onRecord.listen((record) {
-      if (kDebugMode) {
-        print(
-          '[Bizzie] [${record.level.name}] ${record.time}: ${record.message}',
-        );
-        if (record.error != null) {
-          print('Error: ${record.error}');
-        }
-        if (record.stackTrace != null) {
-          print('Stack: ${record.stackTrace}');
-        }
-      }
-    });
+    return BizzieLogger._(Logger(name));
   }
 
+  BizzieLogger._(this._logger);
+
+  static final BizzieLogger shared = BizzieLogger('BizzieLogger');
+  static final Map<String, BizzieLogger> _instances = {};
+  final Logger _logger;
+
+  /// Initializes the logger.
+  /// [dev] - strict boolean to determine if we are in a development environment.
+  static void init({required bool dev}) {
+    if (dev) {
+      Logger.root.level = Level.ALL;
+      Logger.root.onRecord.listen((record) {
+        developer.log(
+          '${record.level.name}: ${record.message}',
+          name: record.loggerName,
+          error: record.error,
+        );
+      });
+    } else {
+      // In non-dev environments (QA, Prod), restrict logging to WARNING and above.
+      // We might want to hook this up to a remote logging service later.
+      Logger.root.level = Level.WARNING;
+    }
+  }
+
+  /// Exposes the LogRecord stream for telemetry tools.
+  static Stream<LogRecord> get logRecord => Logger.root.onRecord;
+
   /// Log an info message.
-  static void info(String message, [Object? error]) {
-    if (!kDebugMode) return;
+  void info(String message, [Object? error]) {
     _logger.info(message, error);
   }
 
   /// Log a warning message.
-  static void warning(String message, [Object? error]) {
-    if (!kDebugMode) return;
+  void warning(String message, [Object? error]) {
     _logger.warning(message, error);
   }
 
   /// Log a severe message (error).
-  static void severe(String message, [Object? error, StackTrace? stack]) {
-    if (!kDebugMode) return;
+  void severe(String message, [Object? error, StackTrace? stack]) {
     _logger.severe(message, error, stack);
   }
 }

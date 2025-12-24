@@ -14,6 +14,8 @@ part 'notification_event.dart';
 part 'notification_state.dart';
 part 'notification_bloc.freezed.dart';
 
+final _logger = BizzieLogger('NotificationBloc');
+
 @injectable
 class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
   final RequestNotificationPermission _requestPermission;
@@ -43,13 +45,13 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
   ) async {
     emit(const NotificationState.loading());
     try {
-      BizzieLogger.info(
-        'NotificationBloc: SetupRequested event received. calling requestPermission...',
+      _logger.info(
+        'SetupRequested event received. calling requestPermission...',
       );
       await _requestPermission();
-      BizzieLogger.info('NotificationBloc: Permission request completed.');
+      _logger.info('Permission request completed.');
       final token = await _getFcmToken();
-      BizzieLogger.info('FCM Token: $token'); // For debugging as requested
+      _logger.info('FCM Token: $token'); // For debugging as requested
 
       _messageSubscription = _listenToMessages().listen((message) {
         add(NotificationEvent.messageReceived(message));
