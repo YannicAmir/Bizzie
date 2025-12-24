@@ -56,3 +56,5 @@ app.*.map.json
 # Firebase Config
 ios/config/
 **/google-services.json
+lib/config/firebase/
+

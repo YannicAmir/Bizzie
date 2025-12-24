@@ -75,9 +75,15 @@ jobs:
           QA_GS: ${{ secrets.QA_GOOGLE_SERVICES_JSON_BASE64 }}
           PROD_GS: ${{ secrets.PROD_GOOGLE_SERVICES_JSON_BASE64 }}
           
+          
           DEV_GSP: ${{ secrets.DEV_GOOGLE_SERVICE_INFO_PLIST_BASE64 }}
           QA_GSP: ${{ secrets.QA_GOOGLE_SERVICE_INFO_PLIST_BASE64 }}
           PROD_GSP: ${{ secrets.PROD_GOOGLE_SERVICE_INFO_PLIST_BASE64 }}
+
+          # FIREBASE OPTIONS (DART)
+          DEV_OPT: ${{ secrets.DEV_FIREBASE_OPTIONS_DART_BASE64 }}
+          QA_OPT: ${{ secrets.QA_FIREBASE_OPTIONS_DART_BASE64 }}
+          PROD_OPT: ${{ secrets.PROD_FIREBASE_OPTIONS_DART_BASE64 }}
 
         run: |
           # Function to define output for next steps
@@ -91,6 +97,7 @@ jobs:
           CERT="$IOS_DIST_CERT"
           PASS="$IOS_DIST_CERT_PASS"
 
+          
           # Set variables based on prefix
           if [ "$FLAVOR" == "dev" ]; then
              SA="$DEV_SA"
@@ -98,18 +105,21 @@ jobs:
              PROF="$DEV_PROF"
              GS="$DEV_GS"
              GSP="$DEV_GSP"
+             OPT="$DEV_OPT"
           elif [ "$FLAVOR" == "qa" ]; then
              SA="$QA_SA"
              KS="$QA_KS"
              PROF="$QA_PROF"
              GS="$QA_GS"
              GSP="$QA_GSP"
+             OPT="$QA_OPT"
           elif [ "$FLAVOR" == "prod" ]; then
              SA="$PROD_SA"
              KS="$PROD_KS"
              PROF="$PROD_PROF"
              GS="$PROD_GS"
              GSP="$PROD_GSP"
+             OPT="$PROD_OPT"
           fi
 
           # ----------------------------------------------------
@@ -117,6 +127,15 @@ jobs:
           # ----------------------------------------------------
           echo "$SA" | base64 --decode > firebase_service_account.json
           echo "FIREBASE_SERVICE_ACCOUNT_PATH=$(pwd)/firebase_service_account.json" >> $GITHUB_ENV
+
+          # ----------------------------------------------------
+          # DECODE FIREBASE OPTIONS (DART)
+          # ----------------------------------------------------
+          # Write to: lib/config/firebase/firebase_options_${flavor}.dart
+          mkdir -p lib/config/firebase
+          echo "$OPT" | base64 --decode > lib/config/firebase/firebase_options_${FLAVOR}.dart
+          echo "Decoded firebase_options_${FLAVOR}.dart to lib/config/firebase/"
+
 
           # ----------------------------------------------------
           # DECODE ANDROID CONFIGS (Google Services)
