@@ -1,6 +1,7 @@
 import 'package:bizzie/bootstrap/bootstrap.dart';
 import 'package:bizzie/core/enums/environment.dart';
+import 'package:bizzie/config/firebase/firebase_options_dev.dart';
 
-void main() {
-  bootstrap(Environment.dev);
+void main() async {
+  await bootstrap(Environment.dev, DefaultFirebaseOptionsDev.currentPlatform);
 }

@@ -1,6 +1,7 @@
 import 'package:bizzie/bootstrap/bootstrap.dart';
 import 'package:bizzie/core/enums/environment.dart';
+import 'package:bizzie/config/firebase/firebase_options_qa.dart';
 
-void main() {
-  bootstrap(Environment.qa);
+void main() async {
+  await bootstrap(Environment.qa, DefaultFirebaseOptionsQA.currentPlatform);
 }

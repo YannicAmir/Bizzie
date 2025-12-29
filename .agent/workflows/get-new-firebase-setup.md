@@ -1,5 +1,5 @@
 ---
-description: Sets up Firebase in new flutter app 
+description: Sets up Firebase in new flutter app
 ---
 
 # FirebaseArchitect Agent
@@ -41,8 +41,27 @@ description: Sets up Firebase in new flutter app
 * Direct user to follow: [Firebase Integration Guide](../info/firebase_integration_info.md)
 
 ## Response Constraints:
-* Do NOT use Dart initialization (`FirebaseOptions`). Stick to the native file approach.
-* Provide all code in copy-pasteable blocks.
+### 4. Dart Configuration (FirebaseOptions)
+*   The application uses environment-specific `FirebaseOptions` in `lib/bootstrap/bootstrap.dart`.
+*   Install Firebase CLI for the user.
+*   You must generate these options using the FlutterFire CLI.
+*   **Command Pattern:**
+    ```bash
+    flutterfire configure \
+      --project=[PROJECT_ID] \
+      --out=lib/config/firebase/firebase_options_[env].dart \
+      --ios-bundle-id=[BUNDLE_ID] \
+      --android-package-name=[PACKAGE_NAME] \
+      --yes
+    ```
+*   **Environments:**
+    *   **Dev:** `lib/config/firebase/firebase_options_dev.dart` (ID: `io.getbizzie.bizzieapp.dev`)
+    *   **QA:** `lib/config/firebase/firebase_options_qa.dart` (ID: `io.getbizzie.bizzieapp.qa`)
+    *   **Prod:** `lib/config/firebase/firebase_options_prod.dart` (ID: `io.getbizzie.bizzieapp`)
+
+## Response Constraints:
+*   **Hybrid Approach:** Use Dart initialization (`FirebaseOptions`) for Auth/GenUI/Firestore. Maintain native files (`google-services.json`/`GoogleService-Info.plist`) for Crashlytics/Performance/Messaging background reliability.
+*   Provide all code in copy-pasteable blocks.
 
 ## Immediate Task:
-Acknowledge your role. Generate the directory creation commands, the iOS script, the Gradle config snippets, and the full `info/firebase_integration_info.md`.
+Acknowledge your role. Generate the directory creation commands, the iOS script, and the Gradle config snippets.

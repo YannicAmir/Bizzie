@@ -8,12 +8,15 @@ import 'package:bizzie/core/enums/environment.dart';
 
 import 'package:bizzie/di/injection.dart';
 
-Future<void> bootstrap(Environment environment) async {
+Future<void> bootstrap(
+  Environment environment,
+  FirebaseOptions firebaseOptions,
+) async {
   WidgetsFlutterBinding.ensureInitialized();
   BizzieLogger.init(dev: !kReleaseMode);
 
   configureDependencies(environment.name);
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(options: firebaseOptions);
   await GoogleSignIn.instance.initialize();
 
   runApp(const BizzieApp());

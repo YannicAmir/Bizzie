@@ -75,9 +75,15 @@ jobs:
           QA_GS: ${{ secrets.QA_GOOGLE_SERVICES_JSON_BASE64 }}
           PROD_GS: ${{ secrets.PROD_GOOGLE_SERVICES_JSON_BASE64 }}
           
+          
           DEV_GSP: ${{ secrets.DEV_GOOGLE_SERVICE_INFO_PLIST_BASE64 }}
           QA_GSP: ${{ secrets.QA_GOOGLE_SERVICE_INFO_PLIST_BASE64 }}
           PROD_GSP: ${{ secrets.PROD_GOOGLE_SERVICE_INFO_PLIST_BASE64 }}
+
+          # FIREBASE OPTIONS (DART)
+          DEV_OPT: ${{ secrets.DEV_FIREBASE_OPTIONS_DART_BASE64 }}
+          QA_OPT: ${{ secrets.QA_FIREBASE_OPTIONS_DART_BASE64 }}
+          PROD_OPT: ${{ secrets.PROD_FIREBASE_OPTIONS_DART_BASE64 }}
 
         run: |
           # Function to define output for next steps
@@ -91,6 +97,7 @@ jobs:
           CERT="$IOS_DIST_CERT"
           PASS="$IOS_DIST_CERT_PASS"
 
+          
           # Set variables based on prefix
           if [ "$FLAVOR" == "dev" ]; then
              SA="$DEV_SA"
@@ -117,6 +124,23 @@ jobs:
           # ----------------------------------------------------
           echo "$SA" | base64 --decode > firebase_service_account.json
           echo "FIREBASE_SERVICE_ACCOUNT_PATH=$(pwd)/firebase_service_account.json" >> $GITHUB_ENV
+
+          # ----------------------------------------------------
+          # DECODE FIREBASE OPTIONS (DART) - ALL REQUIRED
+          # ----------------------------------------------------
+          mkdir -p lib/config/firebase
+          
+          # Dev
+          echo "$DEV_OPT" | base64 --decode > lib/config/firebase/firebase_options_dev.dart
+          
+          # QA
+          echo "$QA_OPT" | base64 --decode > lib/config/firebase/firebase_options_qa.dart
+          
+          # Prod
+          echo "$PROD_OPT" | base64 --decode > lib/config/firebase/firebase_options_prod.dart
+          
+          echo "Decoded all firebase_options_*.dart files to lib/config/firebase/"
+
 
           # ----------------------------------------------------
           # DECODE ANDROID CONFIGS (Google Services)
