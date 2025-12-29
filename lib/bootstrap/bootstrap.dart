@@ -8,28 +8,12 @@ import 'package:bizzie/core/enums/environment.dart';
 
 import 'package:bizzie/di/injection.dart';
 
-import 'package:bizzie/config/firebase/firebase_options_dev.dart'
-    as dev_options;
-import 'package:bizzie/config/firebase/firebase_options_qa.dart' as qa_options;
-import 'package:bizzie/config/firebase/firebase_options_prod.dart'
-    as prod_options;
-
-Future<void> bootstrap(Environment environment) async {
+Future<void> bootstrap(
+  Environment environment,
+  FirebaseOptions firebaseOptions,
+) async {
   WidgetsFlutterBinding.ensureInitialized();
   BizzieLogger.init(dev: !kReleaseMode);
-
-  FirebaseOptions firebaseOptions;
-  switch (environment) {
-    case Environment.dev:
-      firebaseOptions = dev_options.DefaultFirebaseOptions.currentPlatform;
-      break;
-    case Environment.qa:
-      firebaseOptions = qa_options.DefaultFirebaseOptions.currentPlatform;
-      break;
-    case Environment.prod:
-      firebaseOptions = prod_options.DefaultFirebaseOptions.currentPlatform;
-      break;
-  }
 
   configureDependencies(environment.name);
   await Firebase.initializeApp(options: firebaseOptions);
