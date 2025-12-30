@@ -8,6 +8,8 @@ import 'package:bizzie/core/enums/environment.dart';
 
 import 'package:bizzie/di/injection.dart';
 
+import 'package:firebase_remote_config/firebase_remote_config.dart';
+
 Future<void> bootstrap(
   Environment environment,
   FirebaseOptions firebaseOptions,
@@ -18,6 +20,14 @@ Future<void> bootstrap(
   configureDependencies(environment.name);
   await Firebase.initializeApp(options: firebaseOptions);
   await GoogleSignIn.instance.initialize();
+
+  // Fetch remote config at startup
+  try {
+    await FirebaseRemoteConfig.instance.fetchAndActivate();
+  } catch (e) {
+    // Log error but allow app to continue with defaults
+    debugPrint('Failed to fetch remote config: $e');
+  }
 
   runApp(const BizzieApp());
 }

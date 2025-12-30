@@ -9,6 +9,9 @@
 // coverage:ignore-file
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
+import 'package:cloud_firestore/cloud_firestore.dart' as _i974;
+import 'package:firebase_messaging/firebase_messaging.dart' as _i892;
+import 'package:firebase_remote_config/firebase_remote_config.dart' as _i627;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 
@@ -31,6 +34,12 @@ import '../features/notifications/domain/usecases/unsubscribe_from_topic.dart'
     as _i999;
 import '../features/notifications/presentation/bloc/notification_bloc.dart'
     as _i687;
+import '../features/onboarding/data/repositories/onboarding_repository_impl.dart'
+    as _i379;
+import '../features/onboarding/domain/interfaces/i_onboarding_repository.dart'
+    as _i329;
+import '../features/onboarding/presentation/bloc/onboarding_bloc.dart' as _i593;
+import 'register_module.dart' as _i291;
 
 extension GetItInjectableX on _i174.GetIt {
   // initializes the registration of main-scope dependencies inside of GetIt
@@ -39,11 +48,19 @@ extension GetItInjectableX on _i174.GetIt {
     _i526.EnvironmentFilter? environmentFilter,
   }) async {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
+    final registerModule = _$RegisterModule();
     gh.factory<_i640.FcmRemoteDataSource>(() => _i640.FcmRemoteDataSource());
     await gh.singletonAsync<_i982.LocalNotificationDataSource>(() {
       final i = _i982.LocalNotificationDataSource();
       return i.init().then((_) => i);
     }, preResolve: true);
+    gh.lazySingleton<_i974.FirebaseFirestore>(() => registerModule.firestore);
+    gh.lazySingleton<_i892.FirebaseMessaging>(
+      () => registerModule.firebaseMessaging,
+    );
+    gh.lazySingleton<_i627.FirebaseRemoteConfig>(
+      () => registerModule.remoteConfig,
+    );
     gh.lazySingleton<_i622.INotificationRepository>(
       () => _i648.NotificationRepositoryImpl(
         gh<_i640.FcmRemoteDataSource>(),
@@ -67,6 +84,15 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i999.UnsubscribeFromTopic>(
       () => _i999.UnsubscribeFromTopic(gh<_i622.INotificationRepository>()),
     );
+    gh.lazySingleton<_i329.IOnboardingRepository>(
+      () => _i379.OnboardingRepositoryImpl(
+        gh<_i974.FirebaseFirestore>(),
+        gh<_i892.FirebaseMessaging>(),
+      ),
+    );
+    gh.factory<_i593.OnboardingBloc>(
+      () => _i593.OnboardingBloc(gh<_i329.IOnboardingRepository>()),
+    );
     gh.factory<_i687.NotificationBloc>(
       () => _i687.NotificationBloc(
         gh<_i332.RequestNotificationPermission>(),
@@ -79,3 +105,5 @@ extension GetItInjectableX on _i174.GetIt {
     return this;
   }
 }
+
+class _$RegisterModule extends _i291.RegisterModule {}
