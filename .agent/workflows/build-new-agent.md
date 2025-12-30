@@ -41,7 +41,7 @@ Determine a `kebab-case` name for the agent (e.g., `genui-setup`, `stripe-paymen
     * [Constraint 2]
     ```
 
-#### B. Generate Info (`.agent/info/[name]_info.md`)
+#### B. Generate Info (`.agent/info/[name]-info.md`)
 *   **Condition:** ONLY create this if there are strictly manual steps (portals, keys, billing) that the AI cannot do.
 *   **Content Config:**
     *   **Detail Level:** EXTREME. Assume the user is a complete beginner.

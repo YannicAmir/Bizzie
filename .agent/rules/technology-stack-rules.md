@@ -41,6 +41,7 @@ This document serves as the **Single Source of Truth** for the tools, libraries,
 * **Financial Data:** Financial Modeling Prep API
 * **Deep Linking:** Branch.io
 * **AI/LLM:** Google Gemini API
+* **In-App Purchases / Subscriptions:** RevenueCat
 
 ## 7. CI/CD Pipeline
 * **Continuous Integration (CI):** GitHub Actions
