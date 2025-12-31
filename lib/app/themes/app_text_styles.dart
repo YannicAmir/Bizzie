@@ -20,6 +20,14 @@ class AppTextStyles {
     color: AppColors.textPrimary,
   );
 
+  static final TextStyle h3 = GoogleFonts.inter(
+    fontSize: 20,
+    fontWeight: FontWeight.w700, // Bold
+    height: 1.5,
+    letterSpacing: 0.3,
+    color: AppColors.textPrimary,
+  );
+
   // Body Texts
   static final TextStyle subtitle = GoogleFonts.inter(
     fontSize: 17,
@@ -41,6 +49,13 @@ class AppTextStyles {
     fontWeight: FontWeight.normal,
     color: AppColors.textPrimary,
     letterSpacing: -0.2, // Small negative spacing often good for small text
+  );
+
+  static final TextStyle bodyMedium = GoogleFonts.inter(
+    fontSize: 15,
+    fontWeight: FontWeight.normal,
+    color: AppColors.textPrimary,
+    letterSpacing: -0.2344,
   );
 
   static final TextStyle caption = GoogleFonts.inter(

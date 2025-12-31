@@ -55,7 +55,7 @@ extension OnboardingEventPatterns on OnboardingEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Started value)?  started,TResult Function( _NameSubmitted value)?  nameSubmitted,TResult Function( _SectorSelected value)?  sectorSelected,TResult Function( _UploadBrands value)?  uploadBrands,TResult Function( _LoadSp500History value)?  loadSp500History,TResult Function( _ConfirmWatchlist value)?  confirmWatchlist,TResult Function( _ExperienceSelected value)?  experienceSelected,TResult Function( _CompleteOnboarding value)?  completeOnboarding,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Started value)?  started,TResult Function( _NameSubmitted value)?  nameSubmitted,TResult Function( _SectorSelected value)?  sectorSelected,TResult Function( _UploadBrands value)?  uploadBrands,TResult Function( _LoadSp500History value)?  loadSp500History,TResult Function( _ConfirmWatchlist value)?  confirmWatchlist,TResult Function( _LoadBrands value)?  loadBrands,TResult Function( _ToggleBrand value)?  toggleBrand,TResult Function( _UpdateCustomBrandInput value)?  updateCustomBrandInput,TResult Function( _ExperienceSelected value)?  experienceSelected,TResult Function( _CompleteOnboarding value)?  completeOnboarding,TResult Function( _StartAnalysis value)?  startAnalysis,TResult Function( _UpdateAnalysisStep value)?  updateAnalysisStep,TResult Function( _StartWatchlistAddition value)?  startWatchlistAddition,TResult Function( _UpdateWatchlistStep value)?  updateWatchlistStep,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _Started() when started != null:
@@ -64,9 +64,16 @@ return nameSubmitted(_that);case _SectorSelected() when sectorSelected != null:
 return sectorSelected(_that);case _UploadBrands() when uploadBrands != null:
 return uploadBrands(_that);case _LoadSp500History() when loadSp500History != null:
 return loadSp500History(_that);case _ConfirmWatchlist() when confirmWatchlist != null:
-return confirmWatchlist(_that);case _ExperienceSelected() when experienceSelected != null:
+return confirmWatchlist(_that);case _LoadBrands() when loadBrands != null:
+return loadBrands(_that);case _ToggleBrand() when toggleBrand != null:
+return toggleBrand(_that);case _UpdateCustomBrandInput() when updateCustomBrandInput != null:
+return updateCustomBrandInput(_that);case _ExperienceSelected() when experienceSelected != null:
 return experienceSelected(_that);case _CompleteOnboarding() when completeOnboarding != null:
-return completeOnboarding(_that);case _:
+return completeOnboarding(_that);case _StartAnalysis() when startAnalysis != null:
+return startAnalysis(_that);case _UpdateAnalysisStep() when updateAnalysisStep != null:
+return updateAnalysisStep(_that);case _StartWatchlistAddition() when startWatchlistAddition != null:
+return startWatchlistAddition(_that);case _UpdateWatchlistStep() when updateWatchlistStep != null:
+return updateWatchlistStep(_that);case _:
   return orElse();
 
 }
@@ -84,7 +91,7 @@ return completeOnboarding(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Started value)  started,required TResult Function( _NameSubmitted value)  nameSubmitted,required TResult Function( _SectorSelected value)  sectorSelected,required TResult Function( _UploadBrands value)  uploadBrands,required TResult Function( _LoadSp500History value)  loadSp500History,required TResult Function( _ConfirmWatchlist value)  confirmWatchlist,required TResult Function( _ExperienceSelected value)  experienceSelected,required TResult Function( _CompleteOnboarding value)  completeOnboarding,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Started value)  started,required TResult Function( _NameSubmitted value)  nameSubmitted,required TResult Function( _SectorSelected value)  sectorSelected,required TResult Function( _UploadBrands value)  uploadBrands,required TResult Function( _LoadSp500History value)  loadSp500History,required TResult Function( _ConfirmWatchlist value)  confirmWatchlist,required TResult Function( _LoadBrands value)  loadBrands,required TResult Function( _ToggleBrand value)  toggleBrand,required TResult Function( _UpdateCustomBrandInput value)  updateCustomBrandInput,required TResult Function( _ExperienceSelected value)  experienceSelected,required TResult Function( _CompleteOnboarding value)  completeOnboarding,required TResult Function( _StartAnalysis value)  startAnalysis,required TResult Function( _UpdateAnalysisStep value)  updateAnalysisStep,required TResult Function( _StartWatchlistAddition value)  startWatchlistAddition,required TResult Function( _UpdateWatchlistStep value)  updateWatchlistStep,}){
 final _that = this;
 switch (_that) {
 case _Started():
@@ -93,9 +100,16 @@ return nameSubmitted(_that);case _SectorSelected():
 return sectorSelected(_that);case _UploadBrands():
 return uploadBrands(_that);case _LoadSp500History():
 return loadSp500History(_that);case _ConfirmWatchlist():
-return confirmWatchlist(_that);case _ExperienceSelected():
+return confirmWatchlist(_that);case _LoadBrands():
+return loadBrands(_that);case _ToggleBrand():
+return toggleBrand(_that);case _UpdateCustomBrandInput():
+return updateCustomBrandInput(_that);case _ExperienceSelected():
 return experienceSelected(_that);case _CompleteOnboarding():
-return completeOnboarding(_that);case _:
+return completeOnboarding(_that);case _StartAnalysis():
+return startAnalysis(_that);case _UpdateAnalysisStep():
+return updateAnalysisStep(_that);case _StartWatchlistAddition():
+return startWatchlistAddition(_that);case _UpdateWatchlistStep():
+return updateWatchlistStep(_that);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -112,7 +126,7 @@ return completeOnboarding(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Started value)?  started,TResult? Function( _NameSubmitted value)?  nameSubmitted,TResult? Function( _SectorSelected value)?  sectorSelected,TResult? Function( _UploadBrands value)?  uploadBrands,TResult? Function( _LoadSp500History value)?  loadSp500History,TResult? Function( _ConfirmWatchlist value)?  confirmWatchlist,TResult? Function( _ExperienceSelected value)?  experienceSelected,TResult? Function( _CompleteOnboarding value)?  completeOnboarding,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Started value)?  started,TResult? Function( _NameSubmitted value)?  nameSubmitted,TResult? Function( _SectorSelected value)?  sectorSelected,TResult? Function( _UploadBrands value)?  uploadBrands,TResult? Function( _LoadSp500History value)?  loadSp500History,TResult? Function( _ConfirmWatchlist value)?  confirmWatchlist,TResult? Function( _LoadBrands value)?  loadBrands,TResult? Function( _ToggleBrand value)?  toggleBrand,TResult? Function( _UpdateCustomBrandInput value)?  updateCustomBrandInput,TResult? Function( _ExperienceSelected value)?  experienceSelected,TResult? Function( _CompleteOnboarding value)?  completeOnboarding,TResult? Function( _StartAnalysis value)?  startAnalysis,TResult? Function( _UpdateAnalysisStep value)?  updateAnalysisStep,TResult? Function( _StartWatchlistAddition value)?  startWatchlistAddition,TResult? Function( _UpdateWatchlistStep value)?  updateWatchlistStep,}){
 final _that = this;
 switch (_that) {
 case _Started() when started != null:
@@ -121,9 +135,16 @@ return nameSubmitted(_that);case _SectorSelected() when sectorSelected != null:
 return sectorSelected(_that);case _UploadBrands() when uploadBrands != null:
 return uploadBrands(_that);case _LoadSp500History() when loadSp500History != null:
 return loadSp500History(_that);case _ConfirmWatchlist() when confirmWatchlist != null:
-return confirmWatchlist(_that);case _ExperienceSelected() when experienceSelected != null:
+return confirmWatchlist(_that);case _LoadBrands() when loadBrands != null:
+return loadBrands(_that);case _ToggleBrand() when toggleBrand != null:
+return toggleBrand(_that);case _UpdateCustomBrandInput() when updateCustomBrandInput != null:
+return updateCustomBrandInput(_that);case _ExperienceSelected() when experienceSelected != null:
 return experienceSelected(_that);case _CompleteOnboarding() when completeOnboarding != null:
-return completeOnboarding(_that);case _:
+return completeOnboarding(_that);case _StartAnalysis() when startAnalysis != null:
+return startAnalysis(_that);case _UpdateAnalysisStep() when updateAnalysisStep != null:
+return updateAnalysisStep(_that);case _StartWatchlistAddition() when startWatchlistAddition != null:
+return startWatchlistAddition(_that);case _UpdateWatchlistStep() when updateWatchlistStep != null:
+return updateWatchlistStep(_that);case _:
   return null;
 
 }
@@ -140,7 +161,7 @@ return completeOnboarding(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  started,TResult Function( String name)?  nameSubmitted,TResult Function( String sector)?  sectorSelected,TResult Function( String brandsText)?  uploadBrands,TResult Function()?  loadSp500History,TResult Function( List<Company> confirmedCompanies)?  confirmWatchlist,TResult Function( InvestingExperience experience)?  experienceSelected,TResult Function( String uid,  String fcmToken)?  completeOnboarding,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  started,TResult Function( String name)?  nameSubmitted,TResult Function( Sector sector)?  sectorSelected,TResult Function( String brandsText)?  uploadBrands,TResult Function()?  loadSp500History,TResult Function( List<Company> confirmedCompanies)?  confirmWatchlist,TResult Function()?  loadBrands,TResult Function( Brand brand)?  toggleBrand,TResult Function( String input)?  updateCustomBrandInput,TResult Function( InvestingExperience experience)?  experienceSelected,TResult Function( String uid,  String fcmToken)?  completeOnboarding,TResult Function()?  startAnalysis,TResult Function( int step)?  updateAnalysisStep,TResult Function()?  startWatchlistAddition,TResult Function( int step)?  updateWatchlistStep,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Started() when started != null:
 return started();case _NameSubmitted() when nameSubmitted != null:
@@ -148,9 +169,16 @@ return nameSubmitted(_that.name);case _SectorSelected() when sectorSelected != n
 return sectorSelected(_that.sector);case _UploadBrands() when uploadBrands != null:
 return uploadBrands(_that.brandsText);case _LoadSp500History() when loadSp500History != null:
 return loadSp500History();case _ConfirmWatchlist() when confirmWatchlist != null:
-return confirmWatchlist(_that.confirmedCompanies);case _ExperienceSelected() when experienceSelected != null:
+return confirmWatchlist(_that.confirmedCompanies);case _LoadBrands() when loadBrands != null:
+return loadBrands();case _ToggleBrand() when toggleBrand != null:
+return toggleBrand(_that.brand);case _UpdateCustomBrandInput() when updateCustomBrandInput != null:
+return updateCustomBrandInput(_that.input);case _ExperienceSelected() when experienceSelected != null:
 return experienceSelected(_that.experience);case _CompleteOnboarding() when completeOnboarding != null:
-return completeOnboarding(_that.uid,_that.fcmToken);case _:
+return completeOnboarding(_that.uid,_that.fcmToken);case _StartAnalysis() when startAnalysis != null:
+return startAnalysis();case _UpdateAnalysisStep() when updateAnalysisStep != null:
+return updateAnalysisStep(_that.step);case _StartWatchlistAddition() when startWatchlistAddition != null:
+return startWatchlistAddition();case _UpdateWatchlistStep() when updateWatchlistStep != null:
+return updateWatchlistStep(_that.step);case _:
   return orElse();
 
 }
@@ -168,7 +196,7 @@ return completeOnboarding(_that.uid,_that.fcmToken);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  started,required TResult Function( String name)  nameSubmitted,required TResult Function( String sector)  sectorSelected,required TResult Function( String brandsText)  uploadBrands,required TResult Function()  loadSp500History,required TResult Function( List<Company> confirmedCompanies)  confirmWatchlist,required TResult Function( InvestingExperience experience)  experienceSelected,required TResult Function( String uid,  String fcmToken)  completeOnboarding,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  started,required TResult Function( String name)  nameSubmitted,required TResult Function( Sector sector)  sectorSelected,required TResult Function( String brandsText)  uploadBrands,required TResult Function()  loadSp500History,required TResult Function( List<Company> confirmedCompanies)  confirmWatchlist,required TResult Function()  loadBrands,required TResult Function( Brand brand)  toggleBrand,required TResult Function( String input)  updateCustomBrandInput,required TResult Function( InvestingExperience experience)  experienceSelected,required TResult Function( String uid,  String fcmToken)  completeOnboarding,required TResult Function()  startAnalysis,required TResult Function( int step)  updateAnalysisStep,required TResult Function()  startWatchlistAddition,required TResult Function( int step)  updateWatchlistStep,}) {final _that = this;
 switch (_that) {
 case _Started():
 return started();case _NameSubmitted():
@@ -176,9 +204,16 @@ return nameSubmitted(_that.name);case _SectorSelected():
 return sectorSelected(_that.sector);case _UploadBrands():
 return uploadBrands(_that.brandsText);case _LoadSp500History():
 return loadSp500History();case _ConfirmWatchlist():
-return confirmWatchlist(_that.confirmedCompanies);case _ExperienceSelected():
+return confirmWatchlist(_that.confirmedCompanies);case _LoadBrands():
+return loadBrands();case _ToggleBrand():
+return toggleBrand(_that.brand);case _UpdateCustomBrandInput():
+return updateCustomBrandInput(_that.input);case _ExperienceSelected():
 return experienceSelected(_that.experience);case _CompleteOnboarding():
-return completeOnboarding(_that.uid,_that.fcmToken);case _:
+return completeOnboarding(_that.uid,_that.fcmToken);case _StartAnalysis():
+return startAnalysis();case _UpdateAnalysisStep():
+return updateAnalysisStep(_that.step);case _StartWatchlistAddition():
+return startWatchlistAddition();case _UpdateWatchlistStep():
+return updateWatchlistStep(_that.step);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -195,7 +230,7 @@ return completeOnboarding(_that.uid,_that.fcmToken);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  started,TResult? Function( String name)?  nameSubmitted,TResult? Function( String sector)?  sectorSelected,TResult? Function( String brandsText)?  uploadBrands,TResult? Function()?  loadSp500History,TResult? Function( List<Company> confirmedCompanies)?  confirmWatchlist,TResult? Function( InvestingExperience experience)?  experienceSelected,TResult? Function( String uid,  String fcmToken)?  completeOnboarding,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  started,TResult? Function( String name)?  nameSubmitted,TResult? Function( Sector sector)?  sectorSelected,TResult? Function( String brandsText)?  uploadBrands,TResult? Function()?  loadSp500History,TResult? Function( List<Company> confirmedCompanies)?  confirmWatchlist,TResult? Function()?  loadBrands,TResult? Function( Brand brand)?  toggleBrand,TResult? Function( String input)?  updateCustomBrandInput,TResult? Function( InvestingExperience experience)?  experienceSelected,TResult? Function( String uid,  String fcmToken)?  completeOnboarding,TResult? Function()?  startAnalysis,TResult? Function( int step)?  updateAnalysisStep,TResult? Function()?  startWatchlistAddition,TResult? Function( int step)?  updateWatchlistStep,}) {final _that = this;
 switch (_that) {
 case _Started() when started != null:
 return started();case _NameSubmitted() when nameSubmitted != null:
@@ -203,9 +238,16 @@ return nameSubmitted(_that.name);case _SectorSelected() when sectorSelected != n
 return sectorSelected(_that.sector);case _UploadBrands() when uploadBrands != null:
 return uploadBrands(_that.brandsText);case _LoadSp500History() when loadSp500History != null:
 return loadSp500History();case _ConfirmWatchlist() when confirmWatchlist != null:
-return confirmWatchlist(_that.confirmedCompanies);case _ExperienceSelected() when experienceSelected != null:
+return confirmWatchlist(_that.confirmedCompanies);case _LoadBrands() when loadBrands != null:
+return loadBrands();case _ToggleBrand() when toggleBrand != null:
+return toggleBrand(_that.brand);case _UpdateCustomBrandInput() when updateCustomBrandInput != null:
+return updateCustomBrandInput(_that.input);case _ExperienceSelected() when experienceSelected != null:
 return experienceSelected(_that.experience);case _CompleteOnboarding() when completeOnboarding != null:
-return completeOnboarding(_that.uid,_that.fcmToken);case _:
+return completeOnboarding(_that.uid,_that.fcmToken);case _StartAnalysis() when startAnalysis != null:
+return startAnalysis();case _UpdateAnalysisStep() when updateAnalysisStep != null:
+return updateAnalysisStep(_that.step);case _StartWatchlistAddition() when startWatchlistAddition != null:
+return startWatchlistAddition();case _UpdateWatchlistStep() when updateWatchlistStep != null:
+return updateWatchlistStep(_that.step);case _:
   return null;
 
 }
@@ -318,7 +360,7 @@ class _SectorSelected implements OnboardingEvent {
   const _SectorSelected(this.sector);
   
 
- final  String sector;
+ final  Sector sector;
 
 /// Create a copy of OnboardingEvent
 /// with the given fields replaced by the non-null parameter values.
@@ -350,7 +392,7 @@ abstract mixin class _$SectorSelectedCopyWith<$Res> implements $OnboardingEventC
   factory _$SectorSelectedCopyWith(_SectorSelected value, $Res Function(_SectorSelected) _then) = __$SectorSelectedCopyWithImpl;
 @useResult
 $Res call({
- String sector
+ Sector sector
 });
 
 
@@ -370,7 +412,7 @@ class __$SectorSelectedCopyWithImpl<$Res>
 @pragma('vm:prefer-inline') $Res call({Object? sector = null,}) {
   return _then(_SectorSelected(
 null == sector ? _self.sector : sector // ignore: cast_nullable_to_non_nullable
-as String,
+as Sector,
   ));
 }
 
@@ -550,6 +592,179 @@ as List<Company>,
 /// @nodoc
 
 
+class _LoadBrands implements OnboardingEvent {
+  const _LoadBrands();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _LoadBrands);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'OnboardingEvent.loadBrands()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class _ToggleBrand implements OnboardingEvent {
+  const _ToggleBrand(this.brand);
+  
+
+ final  Brand brand;
+
+/// Create a copy of OnboardingEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$ToggleBrandCopyWith<_ToggleBrand> get copyWith => __$ToggleBrandCopyWithImpl<_ToggleBrand>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ToggleBrand&&(identical(other.brand, brand) || other.brand == brand));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,brand);
+
+@override
+String toString() {
+  return 'OnboardingEvent.toggleBrand(brand: $brand)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$ToggleBrandCopyWith<$Res> implements $OnboardingEventCopyWith<$Res> {
+  factory _$ToggleBrandCopyWith(_ToggleBrand value, $Res Function(_ToggleBrand) _then) = __$ToggleBrandCopyWithImpl;
+@useResult
+$Res call({
+ Brand brand
+});
+
+
+$BrandCopyWith<$Res> get brand;
+
+}
+/// @nodoc
+class __$ToggleBrandCopyWithImpl<$Res>
+    implements _$ToggleBrandCopyWith<$Res> {
+  __$ToggleBrandCopyWithImpl(this._self, this._then);
+
+  final _ToggleBrand _self;
+  final $Res Function(_ToggleBrand) _then;
+
+/// Create a copy of OnboardingEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? brand = null,}) {
+  return _then(_ToggleBrand(
+null == brand ? _self.brand : brand // ignore: cast_nullable_to_non_nullable
+as Brand,
+  ));
+}
+
+/// Create a copy of OnboardingEvent
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$BrandCopyWith<$Res> get brand {
+  
+  return $BrandCopyWith<$Res>(_self.brand, (value) {
+    return _then(_self.copyWith(brand: value));
+  });
+}
+}
+
+/// @nodoc
+
+
+class _UpdateCustomBrandInput implements OnboardingEvent {
+  const _UpdateCustomBrandInput(this.input);
+  
+
+ final  String input;
+
+/// Create a copy of OnboardingEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$UpdateCustomBrandInputCopyWith<_UpdateCustomBrandInput> get copyWith => __$UpdateCustomBrandInputCopyWithImpl<_UpdateCustomBrandInput>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _UpdateCustomBrandInput&&(identical(other.input, input) || other.input == input));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,input);
+
+@override
+String toString() {
+  return 'OnboardingEvent.updateCustomBrandInput(input: $input)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$UpdateCustomBrandInputCopyWith<$Res> implements $OnboardingEventCopyWith<$Res> {
+  factory _$UpdateCustomBrandInputCopyWith(_UpdateCustomBrandInput value, $Res Function(_UpdateCustomBrandInput) _then) = __$UpdateCustomBrandInputCopyWithImpl;
+@useResult
+$Res call({
+ String input
+});
+
+
+
+
+}
+/// @nodoc
+class __$UpdateCustomBrandInputCopyWithImpl<$Res>
+    implements _$UpdateCustomBrandInputCopyWith<$Res> {
+  __$UpdateCustomBrandInputCopyWithImpl(this._self, this._then);
+
+  final _UpdateCustomBrandInput _self;
+  final $Res Function(_UpdateCustomBrandInput) _then;
+
+/// Create a copy of OnboardingEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? input = null,}) {
+  return _then(_UpdateCustomBrandInput(
+null == input ? _self.input : input // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
 class _ExperienceSelected implements OnboardingEvent {
   const _ExperienceSelected(this.experience);
   
@@ -682,326 +897,199 @@ as String,
 }
 
 /// @nodoc
-mixin _$OnboardingState {
 
- List<Company> get detectedCompanies; List<HistoricalPrice> get sp500History; OnboardingStatus get status; OnboardingData get onboardingData; List<String> get availableSectors; bool get isLoadingSectors; bool get isLoadingHistory; bool get isAnalyzingBrands; bool get isSubmitting; String? get failureMessage; int get currentStep;
-/// Create a copy of OnboardingState
+
+class _StartAnalysis implements OnboardingEvent {
+  const _StartAnalysis();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _StartAnalysis);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'OnboardingEvent.startAnalysis()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class _UpdateAnalysisStep implements OnboardingEvent {
+  const _UpdateAnalysisStep(this.step);
+  
+
+ final  int step;
+
+/// Create a copy of OnboardingEvent
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-$OnboardingStateCopyWith<OnboardingState> get copyWith => _$OnboardingStateCopyWithImpl<OnboardingState>(this as OnboardingState, _$identity);
+_$UpdateAnalysisStepCopyWith<_UpdateAnalysisStep> get copyWith => __$UpdateAnalysisStepCopyWithImpl<_UpdateAnalysisStep>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is OnboardingState&&const DeepCollectionEquality().equals(other.detectedCompanies, detectedCompanies)&&const DeepCollectionEquality().equals(other.sp500History, sp500History)&&(identical(other.status, status) || other.status == status)&&(identical(other.onboardingData, onboardingData) || other.onboardingData == onboardingData)&&const DeepCollectionEquality().equals(other.availableSectors, availableSectors)&&(identical(other.isLoadingSectors, isLoadingSectors) || other.isLoadingSectors == isLoadingSectors)&&(identical(other.isLoadingHistory, isLoadingHistory) || other.isLoadingHistory == isLoadingHistory)&&(identical(other.isAnalyzingBrands, isAnalyzingBrands) || other.isAnalyzingBrands == isAnalyzingBrands)&&(identical(other.isSubmitting, isSubmitting) || other.isSubmitting == isSubmitting)&&(identical(other.failureMessage, failureMessage) || other.failureMessage == failureMessage)&&(identical(other.currentStep, currentStep) || other.currentStep == currentStep));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _UpdateAnalysisStep&&(identical(other.step, step) || other.step == step));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(detectedCompanies),const DeepCollectionEquality().hash(sp500History),status,onboardingData,const DeepCollectionEquality().hash(availableSectors),isLoadingSectors,isLoadingHistory,isAnalyzingBrands,isSubmitting,failureMessage,currentStep);
+int get hashCode => Object.hash(runtimeType,step);
 
 @override
 String toString() {
-  return 'OnboardingState(detectedCompanies: $detectedCompanies, sp500History: $sp500History, status: $status, onboardingData: $onboardingData, availableSectors: $availableSectors, isLoadingSectors: $isLoadingSectors, isLoadingHistory: $isLoadingHistory, isAnalyzingBrands: $isAnalyzingBrands, isSubmitting: $isSubmitting, failureMessage: $failureMessage, currentStep: $currentStep)';
+  return 'OnboardingEvent.updateAnalysisStep(step: $step)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class $OnboardingStateCopyWith<$Res>  {
-  factory $OnboardingStateCopyWith(OnboardingState value, $Res Function(OnboardingState) _then) = _$OnboardingStateCopyWithImpl;
+abstract mixin class _$UpdateAnalysisStepCopyWith<$Res> implements $OnboardingEventCopyWith<$Res> {
+  factory _$UpdateAnalysisStepCopyWith(_UpdateAnalysisStep value, $Res Function(_UpdateAnalysisStep) _then) = __$UpdateAnalysisStepCopyWithImpl;
 @useResult
 $Res call({
- List<Company> detectedCompanies, List<HistoricalPrice> sp500History, OnboardingStatus status, OnboardingData onboardingData, List<String> availableSectors, bool isLoadingSectors, bool isLoadingHistory, bool isAnalyzingBrands, bool isSubmitting, String? failureMessage, int currentStep
+ int step
 });
 
 
-$OnboardingDataCopyWith<$Res> get onboardingData;
+
 
 }
 /// @nodoc
-class _$OnboardingStateCopyWithImpl<$Res>
-    implements $OnboardingStateCopyWith<$Res> {
-  _$OnboardingStateCopyWithImpl(this._self, this._then);
+class __$UpdateAnalysisStepCopyWithImpl<$Res>
+    implements _$UpdateAnalysisStepCopyWith<$Res> {
+  __$UpdateAnalysisStepCopyWithImpl(this._self, this._then);
 
-  final OnboardingState _self;
-  final $Res Function(OnboardingState) _then;
+  final _UpdateAnalysisStep _self;
+  final $Res Function(_UpdateAnalysisStep) _then;
 
-/// Create a copy of OnboardingState
+/// Create a copy of OnboardingEvent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? detectedCompanies = null,Object? sp500History = null,Object? status = null,Object? onboardingData = null,Object? availableSectors = null,Object? isLoadingSectors = null,Object? isLoadingHistory = null,Object? isAnalyzingBrands = null,Object? isSubmitting = null,Object? failureMessage = freezed,Object? currentStep = null,}) {
-  return _then(_self.copyWith(
-detectedCompanies: null == detectedCompanies ? _self.detectedCompanies : detectedCompanies // ignore: cast_nullable_to_non_nullable
-as List<Company>,sp500History: null == sp500History ? _self.sp500History : sp500History // ignore: cast_nullable_to_non_nullable
-as List<HistoricalPrice>,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
-as OnboardingStatus,onboardingData: null == onboardingData ? _self.onboardingData : onboardingData // ignore: cast_nullable_to_non_nullable
-as OnboardingData,availableSectors: null == availableSectors ? _self.availableSectors : availableSectors // ignore: cast_nullable_to_non_nullable
-as List<String>,isLoadingSectors: null == isLoadingSectors ? _self.isLoadingSectors : isLoadingSectors // ignore: cast_nullable_to_non_nullable
-as bool,isLoadingHistory: null == isLoadingHistory ? _self.isLoadingHistory : isLoadingHistory // ignore: cast_nullable_to_non_nullable
-as bool,isAnalyzingBrands: null == isAnalyzingBrands ? _self.isAnalyzingBrands : isAnalyzingBrands // ignore: cast_nullable_to_non_nullable
-as bool,isSubmitting: null == isSubmitting ? _self.isSubmitting : isSubmitting // ignore: cast_nullable_to_non_nullable
-as bool,failureMessage: freezed == failureMessage ? _self.failureMessage : failureMessage // ignore: cast_nullable_to_non_nullable
-as String?,currentStep: null == currentStep ? _self.currentStep : currentStep // ignore: cast_nullable_to_non_nullable
+@pragma('vm:prefer-inline') $Res call({Object? step = null,}) {
+  return _then(_UpdateAnalysisStep(
+null == step ? _self.step : step // ignore: cast_nullable_to_non_nullable
 as int,
   ));
 }
-/// Create a copy of OnboardingState
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$OnboardingDataCopyWith<$Res> get onboardingData {
-  
-  return $OnboardingDataCopyWith<$Res>(_self.onboardingData, (value) {
-    return _then(_self.copyWith(onboardingData: value));
-  });
-}
-}
 
-
-/// Adds pattern-matching-related methods to [OnboardingState].
-extension OnboardingStatePatterns on OnboardingState {
-/// A variant of `map` that fallback to returning `orElse`.
-///
-/// It is equivalent to doing:
-/// ```dart
-/// switch (sealedClass) {
-///   case final Subclass value:
-///     return ...;
-///   case _:
-///     return orElse();
-/// }
-/// ```
-
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _OnboardingState value)?  $default,{required TResult orElse(),}){
-final _that = this;
-switch (_that) {
-case _OnboardingState() when $default != null:
-return $default(_that);case _:
-  return orElse();
-
-}
-}
-/// A `switch`-like method, using callbacks.
-///
-/// Callbacks receives the raw object, upcasted.
-/// It is equivalent to doing:
-/// ```dart
-/// switch (sealedClass) {
-///   case final Subclass value:
-///     return ...;
-///   case final Subclass2 value:
-///     return ...;
-/// }
-/// ```
-
-@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _OnboardingState value)  $default,){
-final _that = this;
-switch (_that) {
-case _OnboardingState():
-return $default(_that);case _:
-  throw StateError('Unexpected subclass');
-
-}
-}
-/// A variant of `map` that fallback to returning `null`.
-///
-/// It is equivalent to doing:
-/// ```dart
-/// switch (sealedClass) {
-///   case final Subclass value:
-///     return ...;
-///   case _:
-///     return null;
-/// }
-/// ```
-
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _OnboardingState value)?  $default,){
-final _that = this;
-switch (_that) {
-case _OnboardingState() when $default != null:
-return $default(_that);case _:
-  return null;
-
-}
-}
-/// A variant of `when` that fallback to an `orElse` callback.
-///
-/// It is equivalent to doing:
-/// ```dart
-/// switch (sealedClass) {
-///   case Subclass(:final field):
-///     return ...;
-///   case _:
-///     return orElse();
-/// }
-/// ```
-
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<Company> detectedCompanies,  List<HistoricalPrice> sp500History,  OnboardingStatus status,  OnboardingData onboardingData,  List<String> availableSectors,  bool isLoadingSectors,  bool isLoadingHistory,  bool isAnalyzingBrands,  bool isSubmitting,  String? failureMessage,  int currentStep)?  $default,{required TResult orElse(),}) {final _that = this;
-switch (_that) {
-case _OnboardingState() when $default != null:
-return $default(_that.detectedCompanies,_that.sp500History,_that.status,_that.onboardingData,_that.availableSectors,_that.isLoadingSectors,_that.isLoadingHistory,_that.isAnalyzingBrands,_that.isSubmitting,_that.failureMessage,_that.currentStep);case _:
-  return orElse();
-
-}
-}
-/// A `switch`-like method, using callbacks.
-///
-/// As opposed to `map`, this offers destructuring.
-/// It is equivalent to doing:
-/// ```dart
-/// switch (sealedClass) {
-///   case Subclass(:final field):
-///     return ...;
-///   case Subclass2(:final field2):
-///     return ...;
-/// }
-/// ```
-
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<Company> detectedCompanies,  List<HistoricalPrice> sp500History,  OnboardingStatus status,  OnboardingData onboardingData,  List<String> availableSectors,  bool isLoadingSectors,  bool isLoadingHistory,  bool isAnalyzingBrands,  bool isSubmitting,  String? failureMessage,  int currentStep)  $default,) {final _that = this;
-switch (_that) {
-case _OnboardingState():
-return $default(_that.detectedCompanies,_that.sp500History,_that.status,_that.onboardingData,_that.availableSectors,_that.isLoadingSectors,_that.isLoadingHistory,_that.isAnalyzingBrands,_that.isSubmitting,_that.failureMessage,_that.currentStep);case _:
-  throw StateError('Unexpected subclass');
-
-}
-}
-/// A variant of `when` that fallback to returning `null`
-///
-/// It is equivalent to doing:
-/// ```dart
-/// switch (sealedClass) {
-///   case Subclass(:final field):
-///     return ...;
-///   case _:
-///     return null;
-/// }
-/// ```
-
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<Company> detectedCompanies,  List<HistoricalPrice> sp500History,  OnboardingStatus status,  OnboardingData onboardingData,  List<String> availableSectors,  bool isLoadingSectors,  bool isLoadingHistory,  bool isAnalyzingBrands,  bool isSubmitting,  String? failureMessage,  int currentStep)?  $default,) {final _that = this;
-switch (_that) {
-case _OnboardingState() when $default != null:
-return $default(_that.detectedCompanies,_that.sp500History,_that.status,_that.onboardingData,_that.availableSectors,_that.isLoadingSectors,_that.isLoadingHistory,_that.isAnalyzingBrands,_that.isSubmitting,_that.failureMessage,_that.currentStep);case _:
-  return null;
-
-}
-}
 
 }
 
 /// @nodoc
 
 
-class _OnboardingState implements OnboardingState {
-  const _OnboardingState({final  List<Company> detectedCompanies = const [], final  List<HistoricalPrice> sp500History = const [], this.status = OnboardingStatus.initial, this.onboardingData = const OnboardingData(), final  List<String> availableSectors = const [], this.isLoadingSectors = false, this.isLoadingHistory = false, this.isAnalyzingBrands = false, this.isSubmitting = false, this.failureMessage, this.currentStep = 1}): _detectedCompanies = detectedCompanies,_sp500History = sp500History,_availableSectors = availableSectors;
+class _StartWatchlistAddition implements OnboardingEvent {
+  const _StartWatchlistAddition();
   
 
- final  List<Company> _detectedCompanies;
-@override@JsonKey() List<Company> get detectedCompanies {
-  if (_detectedCompanies is EqualUnmodifiableListView) return _detectedCompanies;
-  // ignore: implicit_dynamic_type
-  return EqualUnmodifiableListView(_detectedCompanies);
-}
 
- final  List<HistoricalPrice> _sp500History;
-@override@JsonKey() List<HistoricalPrice> get sp500History {
-  if (_sp500History is EqualUnmodifiableListView) return _sp500History;
-  // ignore: implicit_dynamic_type
-  return EqualUnmodifiableListView(_sp500History);
-}
 
-@override@JsonKey() final  OnboardingStatus status;
-@override@JsonKey() final  OnboardingData onboardingData;
- final  List<String> _availableSectors;
-@override@JsonKey() List<String> get availableSectors {
-  if (_availableSectors is EqualUnmodifiableListView) return _availableSectors;
-  // ignore: implicit_dynamic_type
-  return EqualUnmodifiableListView(_availableSectors);
-}
-
-@override@JsonKey() final  bool isLoadingSectors;
-@override@JsonKey() final  bool isLoadingHistory;
-@override@JsonKey() final  bool isAnalyzingBrands;
-@override@JsonKey() final  bool isSubmitting;
-@override final  String? failureMessage;
-@override@JsonKey() final  int currentStep;
-
-/// Create a copy of OnboardingState
-/// with the given fields replaced by the non-null parameter values.
-@override @JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-_$OnboardingStateCopyWith<_OnboardingState> get copyWith => __$OnboardingStateCopyWithImpl<_OnboardingState>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _OnboardingState&&const DeepCollectionEquality().equals(other._detectedCompanies, _detectedCompanies)&&const DeepCollectionEquality().equals(other._sp500History, _sp500History)&&(identical(other.status, status) || other.status == status)&&(identical(other.onboardingData, onboardingData) || other.onboardingData == onboardingData)&&const DeepCollectionEquality().equals(other._availableSectors, _availableSectors)&&(identical(other.isLoadingSectors, isLoadingSectors) || other.isLoadingSectors == isLoadingSectors)&&(identical(other.isLoadingHistory, isLoadingHistory) || other.isLoadingHistory == isLoadingHistory)&&(identical(other.isAnalyzingBrands, isAnalyzingBrands) || other.isAnalyzingBrands == isAnalyzingBrands)&&(identical(other.isSubmitting, isSubmitting) || other.isSubmitting == isSubmitting)&&(identical(other.failureMessage, failureMessage) || other.failureMessage == failureMessage)&&(identical(other.currentStep, currentStep) || other.currentStep == currentStep));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _StartWatchlistAddition);
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_detectedCompanies),const DeepCollectionEquality().hash(_sp500History),status,onboardingData,const DeepCollectionEquality().hash(_availableSectors),isLoadingSectors,isLoadingHistory,isAnalyzingBrands,isSubmitting,failureMessage,currentStep);
+int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'OnboardingState(detectedCompanies: $detectedCompanies, sp500History: $sp500History, status: $status, onboardingData: $onboardingData, availableSectors: $availableSectors, isLoadingSectors: $isLoadingSectors, isLoadingHistory: $isLoadingHistory, isAnalyzingBrands: $isAnalyzingBrands, isSubmitting: $isSubmitting, failureMessage: $failureMessage, currentStep: $currentStep)';
+  return 'OnboardingEvent.startWatchlistAddition()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class _UpdateWatchlistStep implements OnboardingEvent {
+  const _UpdateWatchlistStep(this.step);
+  
+
+ final  int step;
+
+/// Create a copy of OnboardingEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$UpdateWatchlistStepCopyWith<_UpdateWatchlistStep> get copyWith => __$UpdateWatchlistStepCopyWithImpl<_UpdateWatchlistStep>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _UpdateWatchlistStep&&(identical(other.step, step) || other.step == step));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,step);
+
+@override
+String toString() {
+  return 'OnboardingEvent.updateWatchlistStep(step: $step)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class _$OnboardingStateCopyWith<$Res> implements $OnboardingStateCopyWith<$Res> {
-  factory _$OnboardingStateCopyWith(_OnboardingState value, $Res Function(_OnboardingState) _then) = __$OnboardingStateCopyWithImpl;
-@override @useResult
+abstract mixin class _$UpdateWatchlistStepCopyWith<$Res> implements $OnboardingEventCopyWith<$Res> {
+  factory _$UpdateWatchlistStepCopyWith(_UpdateWatchlistStep value, $Res Function(_UpdateWatchlistStep) _then) = __$UpdateWatchlistStepCopyWithImpl;
+@useResult
 $Res call({
- List<Company> detectedCompanies, List<HistoricalPrice> sp500History, OnboardingStatus status, OnboardingData onboardingData, List<String> availableSectors, bool isLoadingSectors, bool isLoadingHistory, bool isAnalyzingBrands, bool isSubmitting, String? failureMessage, int currentStep
+ int step
 });
 
 
-@override $OnboardingDataCopyWith<$Res> get onboardingData;
+
 
 }
 /// @nodoc
-class __$OnboardingStateCopyWithImpl<$Res>
-    implements _$OnboardingStateCopyWith<$Res> {
-  __$OnboardingStateCopyWithImpl(this._self, this._then);
+class __$UpdateWatchlistStepCopyWithImpl<$Res>
+    implements _$UpdateWatchlistStepCopyWith<$Res> {
+  __$UpdateWatchlistStepCopyWithImpl(this._self, this._then);
 
-  final _OnboardingState _self;
-  final $Res Function(_OnboardingState) _then;
+  final _UpdateWatchlistStep _self;
+  final $Res Function(_UpdateWatchlistStep) _then;
 
-/// Create a copy of OnboardingState
+/// Create a copy of OnboardingEvent
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? detectedCompanies = null,Object? sp500History = null,Object? status = null,Object? onboardingData = null,Object? availableSectors = null,Object? isLoadingSectors = null,Object? isLoadingHistory = null,Object? isAnalyzingBrands = null,Object? isSubmitting = null,Object? failureMessage = freezed,Object? currentStep = null,}) {
-  return _then(_OnboardingState(
-detectedCompanies: null == detectedCompanies ? _self._detectedCompanies : detectedCompanies // ignore: cast_nullable_to_non_nullable
-as List<Company>,sp500History: null == sp500History ? _self._sp500History : sp500History // ignore: cast_nullable_to_non_nullable
-as List<HistoricalPrice>,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
-as OnboardingStatus,onboardingData: null == onboardingData ? _self.onboardingData : onboardingData // ignore: cast_nullable_to_non_nullable
-as OnboardingData,availableSectors: null == availableSectors ? _self._availableSectors : availableSectors // ignore: cast_nullable_to_non_nullable
-as List<String>,isLoadingSectors: null == isLoadingSectors ? _self.isLoadingSectors : isLoadingSectors // ignore: cast_nullable_to_non_nullable
-as bool,isLoadingHistory: null == isLoadingHistory ? _self.isLoadingHistory : isLoadingHistory // ignore: cast_nullable_to_non_nullable
-as bool,isAnalyzingBrands: null == isAnalyzingBrands ? _self.isAnalyzingBrands : isAnalyzingBrands // ignore: cast_nullable_to_non_nullable
-as bool,isSubmitting: null == isSubmitting ? _self.isSubmitting : isSubmitting // ignore: cast_nullable_to_non_nullable
-as bool,failureMessage: freezed == failureMessage ? _self.failureMessage : failureMessage // ignore: cast_nullable_to_non_nullable
-as String?,currentStep: null == currentStep ? _self.currentStep : currentStep // ignore: cast_nullable_to_non_nullable
+@pragma('vm:prefer-inline') $Res call({Object? step = null,}) {
+  return _then(_UpdateWatchlistStep(
+null == step ? _self.step : step // ignore: cast_nullable_to_non_nullable
 as int,
   ));
 }
 
-/// Create a copy of OnboardingState
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$OnboardingDataCopyWith<$Res> get onboardingData {
-  
-  return $OnboardingDataCopyWith<$Res>(_self.onboardingData, (value) {
-    return _then(_self.copyWith(onboardingData: value));
-  });
-}
+
 }
 
 // dart format on

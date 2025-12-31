@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$OnboardingData {
 
- String get firstName; String get selectedSector; String get rawBrandsText; List<Company> get detectedCompanies; InvestingExperience get investingExperience;
+ String get firstName; Sector? get selectedSector; String get rawBrandsText; List<Company> get detectedCompanies; InvestingExperience? get investingExperience;
 /// Create a copy of OnboardingData
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -45,7 +45,7 @@ abstract mixin class $OnboardingDataCopyWith<$Res>  {
   factory $OnboardingDataCopyWith(OnboardingData value, $Res Function(OnboardingData) _then) = _$OnboardingDataCopyWithImpl;
 @useResult
 $Res call({
- String firstName, String selectedSector, String rawBrandsText, List<Company> detectedCompanies, InvestingExperience investingExperience
+ String firstName, Sector? selectedSector, String rawBrandsText, List<Company> detectedCompanies, InvestingExperience? investingExperience
 });
 
 
@@ -62,14 +62,14 @@ class _$OnboardingDataCopyWithImpl<$Res>
 
 /// Create a copy of OnboardingData
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? firstName = null,Object? selectedSector = null,Object? rawBrandsText = null,Object? detectedCompanies = null,Object? investingExperience = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? firstName = null,Object? selectedSector = freezed,Object? rawBrandsText = null,Object? detectedCompanies = null,Object? investingExperience = freezed,}) {
   return _then(_self.copyWith(
 firstName: null == firstName ? _self.firstName : firstName // ignore: cast_nullable_to_non_nullable
-as String,selectedSector: null == selectedSector ? _self.selectedSector : selectedSector // ignore: cast_nullable_to_non_nullable
-as String,rawBrandsText: null == rawBrandsText ? _self.rawBrandsText : rawBrandsText // ignore: cast_nullable_to_non_nullable
+as String,selectedSector: freezed == selectedSector ? _self.selectedSector : selectedSector // ignore: cast_nullable_to_non_nullable
+as Sector?,rawBrandsText: null == rawBrandsText ? _self.rawBrandsText : rawBrandsText // ignore: cast_nullable_to_non_nullable
 as String,detectedCompanies: null == detectedCompanies ? _self.detectedCompanies : detectedCompanies // ignore: cast_nullable_to_non_nullable
-as List<Company>,investingExperience: null == investingExperience ? _self.investingExperience : investingExperience // ignore: cast_nullable_to_non_nullable
-as InvestingExperience,
+as List<Company>,investingExperience: freezed == investingExperience ? _self.investingExperience : investingExperience // ignore: cast_nullable_to_non_nullable
+as InvestingExperience?,
   ));
 }
 
@@ -154,7 +154,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String firstName,  String selectedSector,  String rawBrandsText,  List<Company> detectedCompanies,  InvestingExperience investingExperience)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String firstName,  Sector? selectedSector,  String rawBrandsText,  List<Company> detectedCompanies,  InvestingExperience? investingExperience)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _OnboardingData() when $default != null:
 return $default(_that.firstName,_that.selectedSector,_that.rawBrandsText,_that.detectedCompanies,_that.investingExperience);case _:
@@ -175,7 +175,7 @@ return $default(_that.firstName,_that.selectedSector,_that.rawBrandsText,_that.d
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String firstName,  String selectedSector,  String rawBrandsText,  List<Company> detectedCompanies,  InvestingExperience investingExperience)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String firstName,  Sector? selectedSector,  String rawBrandsText,  List<Company> detectedCompanies,  InvestingExperience? investingExperience)  $default,) {final _that = this;
 switch (_that) {
 case _OnboardingData():
 return $default(_that.firstName,_that.selectedSector,_that.rawBrandsText,_that.detectedCompanies,_that.investingExperience);case _:
@@ -195,7 +195,7 @@ return $default(_that.firstName,_that.selectedSector,_that.rawBrandsText,_that.d
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String firstName,  String selectedSector,  String rawBrandsText,  List<Company> detectedCompanies,  InvestingExperience investingExperience)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String firstName,  Sector? selectedSector,  String rawBrandsText,  List<Company> detectedCompanies,  InvestingExperience? investingExperience)?  $default,) {final _that = this;
 switch (_that) {
 case _OnboardingData() when $default != null:
 return $default(_that.firstName,_that.selectedSector,_that.rawBrandsText,_that.detectedCompanies,_that.investingExperience);case _:
@@ -210,11 +210,11 @@ return $default(_that.firstName,_that.selectedSector,_that.rawBrandsText,_that.d
 
 
 class _OnboardingData implements OnboardingData {
-  const _OnboardingData({this.firstName = '', this.selectedSector = '', this.rawBrandsText = '', final  List<Company> detectedCompanies = const [], this.investingExperience = InvestingExperience.beginner}): _detectedCompanies = detectedCompanies;
+  const _OnboardingData({this.firstName = '', this.selectedSector = null, this.rawBrandsText = '', final  List<Company> detectedCompanies = const [], this.investingExperience = null}): _detectedCompanies = detectedCompanies;
   
 
 @override@JsonKey() final  String firstName;
-@override@JsonKey() final  String selectedSector;
+@override@JsonKey() final  Sector? selectedSector;
 @override@JsonKey() final  String rawBrandsText;
  final  List<Company> _detectedCompanies;
 @override@JsonKey() List<Company> get detectedCompanies {
@@ -223,7 +223,7 @@ class _OnboardingData implements OnboardingData {
   return EqualUnmodifiableListView(_detectedCompanies);
 }
 
-@override@JsonKey() final  InvestingExperience investingExperience;
+@override@JsonKey() final  InvestingExperience? investingExperience;
 
 /// Create a copy of OnboardingData
 /// with the given fields replaced by the non-null parameter values.
@@ -255,7 +255,7 @@ abstract mixin class _$OnboardingDataCopyWith<$Res> implements $OnboardingDataCo
   factory _$OnboardingDataCopyWith(_OnboardingData value, $Res Function(_OnboardingData) _then) = __$OnboardingDataCopyWithImpl;
 @override @useResult
 $Res call({
- String firstName, String selectedSector, String rawBrandsText, List<Company> detectedCompanies, InvestingExperience investingExperience
+ String firstName, Sector? selectedSector, String rawBrandsText, List<Company> detectedCompanies, InvestingExperience? investingExperience
 });
 
 
@@ -272,14 +272,14 @@ class __$OnboardingDataCopyWithImpl<$Res>
 
 /// Create a copy of OnboardingData
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? firstName = null,Object? selectedSector = null,Object? rawBrandsText = null,Object? detectedCompanies = null,Object? investingExperience = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? firstName = null,Object? selectedSector = freezed,Object? rawBrandsText = null,Object? detectedCompanies = null,Object? investingExperience = freezed,}) {
   return _then(_OnboardingData(
 firstName: null == firstName ? _self.firstName : firstName // ignore: cast_nullable_to_non_nullable
-as String,selectedSector: null == selectedSector ? _self.selectedSector : selectedSector // ignore: cast_nullable_to_non_nullable
-as String,rawBrandsText: null == rawBrandsText ? _self.rawBrandsText : rawBrandsText // ignore: cast_nullable_to_non_nullable
+as String,selectedSector: freezed == selectedSector ? _self.selectedSector : selectedSector // ignore: cast_nullable_to_non_nullable
+as Sector?,rawBrandsText: null == rawBrandsText ? _self.rawBrandsText : rawBrandsText // ignore: cast_nullable_to_non_nullable
 as String,detectedCompanies: null == detectedCompanies ? _self._detectedCompanies : detectedCompanies // ignore: cast_nullable_to_non_nullable
-as List<Company>,investingExperience: null == investingExperience ? _self.investingExperience : investingExperience // ignore: cast_nullable_to_non_nullable
-as InvestingExperience,
+as List<Company>,investingExperience: freezed == investingExperience ? _self.investingExperience : investingExperience // ignore: cast_nullable_to_non_nullable
+as InvestingExperience?,
   ));
 }
 

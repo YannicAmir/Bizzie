@@ -16,6 +16,7 @@ import 'package:bizzie/features/notifications/presentation/bloc/notification_blo
 import 'package:bizzie/di/injection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class BizzieApp extends StatefulWidget {
   const BizzieApp({super.key});
@@ -27,6 +28,7 @@ class BizzieApp extends StatefulWidget {
 class _BizzieAppState extends State<BizzieApp> {
   late final IAuthRepository _authRepository;
   late final AuthBloc _authBloc;
+  late final GoRouter _router;
 
   @override
   void initState() {
@@ -47,6 +49,8 @@ class _BizzieAppState extends State<BizzieApp> {
     );
 
     _authBloc.add(const AuthStatusRequested());
+
+    _router = createRouter(_authBloc);
   }
 
   @override
@@ -70,7 +74,7 @@ class _BizzieAppState extends State<BizzieApp> {
         ],
         child: MaterialApp.router(
           theme: AppTheme.lightTheme,
-          routerConfig: router,
+          routerConfig: _router,
         ),
       ),
     );

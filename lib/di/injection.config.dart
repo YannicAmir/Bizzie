@@ -15,6 +15,7 @@ import 'package:firebase_remote_config/firebase_remote_config.dart' as _i627;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 
+import '../core/network/network_info.dart' as _i6;
 import '../features/notifications/data/datasources/fcm_remote_datasource.dart'
     as _i640;
 import '../features/notifications/data/datasources/local_notification_datasource.dart'
@@ -84,14 +85,13 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i999.UnsubscribeFromTopic>(
       () => _i999.UnsubscribeFromTopic(gh<_i622.INotificationRepository>()),
     );
+    gh.lazySingleton<_i6.NetworkInfo>(() => _i6.NetworkInfoImpl());
     gh.lazySingleton<_i329.IOnboardingRepository>(
       () => _i379.OnboardingRepositoryImpl(
         gh<_i974.FirebaseFirestore>(),
         gh<_i892.FirebaseMessaging>(),
+        gh<_i6.NetworkInfo>(),
       ),
-    );
-    gh.factory<_i593.OnboardingBloc>(
-      () => _i593.OnboardingBloc(gh<_i329.IOnboardingRepository>()),
     );
     gh.factory<_i687.NotificationBloc>(
       () => _i687.NotificationBloc(
@@ -101,6 +101,9 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i327.SubscribeToTopic>(),
         gh<_i999.UnsubscribeFromTopic>(),
       ),
+    );
+    gh.factory<_i593.OnboardingBloc>(
+      () => _i593.OnboardingBloc(gh<_i329.IOnboardingRepository>()),
     );
     return this;
   }

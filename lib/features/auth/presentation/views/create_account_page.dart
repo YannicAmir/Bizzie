@@ -22,7 +22,7 @@ class CreateAccountPage extends StatelessWidget {
       listener: (context, state) {
         state.maybeWhen(
           authenticated: (user) {
-            context.go(AppRoutes.home);
+            context.go(AppRoutes.onboardingBuildingProfile);
           },
           failure: (message) {
             ScaffoldMessenger.of(

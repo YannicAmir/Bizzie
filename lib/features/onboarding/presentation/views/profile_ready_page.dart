@@ -1,0 +1,132 @@
+import 'package:bizzie/app/routes/app_routes.dart';
+import 'package:bizzie/app/themes/app_colors.dart';
+import 'package:bizzie/app/themes/app_text_styles.dart';
+import 'package:bizzie/features/onboarding/presentation/bloc/onboarding_bloc.dart';
+import 'package:bizzie/features/onboarding/presentation/utils/onboarding_assets_helper.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import 'package:bizzie/app/themes/app_assets.dart';
+
+class ProfileReadyPage extends StatelessWidget {
+  const ProfileReadyPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<OnboardingBloc, OnboardingState>(
+      builder: (context, state) {
+        final selectedSector = state.onboardingData.selectedSector;
+        final firstName = state.onboardingData.firstName;
+
+        // Determine mascot asset based on selection
+        String mascotAsset = AppAssets.defaultMascot;
+        if (selectedSector != null) {
+          mascotAsset = OnboardingAssetsHelper.getMascotForSector(
+            selectedSector,
+          );
+        }
+
+        return Scaffold(
+          backgroundColor: Colors.white,
+          body: SafeArea(
+            child: Stack(
+              children: [
+                // Top Progress Bar (Visual only as per design)
+                Positioned(
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  child: Container(height: 4, color: AppColors.primary),
+                ),
+
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Spacer(flex: 2),
+
+                      // Mascot Image
+                      Center(
+                        child: AnimatedSwitcher(
+                          duration: const Duration(milliseconds: 500),
+                          child: Image.asset(
+                            mascotAsset,
+                            height: 320,
+                            fit: BoxFit.contain,
+                          ),
+                        ),
+                      ),
+
+                      const Spacer(flex: 1),
+
+                      // Heading
+                      RichText(
+                        text: TextSpan(
+                          style: AppTextStyles.h1.copyWith(
+                            fontSize: 40,
+                            height: 1.2,
+                            letterSpacing: 0.37,
+                            color: AppColors.textPrimary,
+                          ),
+                          children: [
+                            const TextSpan(text: 'Your profile is ready,\n'),
+                            TextSpan(
+                              text: '$firstName !',
+                              style: const TextStyle(color: AppColors.primary),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      const SizedBox(height: 16),
+
+                      // Description
+                      Text(
+                        'We have personalized your daily list of stocks & brands from your favorite sector.',
+                        style: AppTextStyles.bodyLarge.copyWith(
+                          fontSize: 17,
+                          color: AppColors.textSecondary,
+                          height: 1.5,
+                        ),
+                      ),
+
+                      const Spacer(flex: 3),
+
+                      // Continue Button
+                      SizedBox(
+                        width: double.infinity,
+                        height: 56,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            context.go(AppRoutes.home);
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.primary,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            elevation: 0,
+                          ),
+                          child: const Text(
+                            'Continue',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 17,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 32),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+}

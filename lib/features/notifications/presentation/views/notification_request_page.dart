@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:bizzie/app/themes/app_colors.dart';
 import 'package:bizzie/app/themes/app_text_styles.dart';
 import 'package:bizzie/features/notifications/presentation/bloc/notification_bloc.dart';
+import 'package:bizzie/app/routes/app_routes.dart';
 
 class NotificationRequestPage extends StatelessWidget {
   const NotificationRequestPage({super.key});
@@ -12,7 +13,10 @@ class NotificationRequestPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocListener<NotificationBloc, NotificationState>(
       listener: (context, state) {
-        state.maybeWhen(success: (_) => context.go('/home'), orElse: () {});
+        state.maybeWhen(
+          success: (_) => context.go(AppRoutes.onboardingExperience),
+          orElse: () {},
+        );
       },
       child: Scaffold(
         body: SafeArea(
@@ -233,7 +237,7 @@ class _ActionButtons extends StatelessWidget {
           height: 56,
           child: TextButton(
             onPressed: () {
-              context.go('/home');
+              context.go(AppRoutes.onboardingExperience);
             },
             style: TextButton.styleFrom(
               backgroundColor: AppColors.slate100,

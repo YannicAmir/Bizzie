@@ -1,13 +1,14 @@
-import 'dart:convert';
+import 'package:bizzie/core/network/network_info.dart';
 import 'package:bizzie/features/onboarding/data/datasources/dummy_price_data.dart';
 import 'package:bizzie/features/onboarding/domain/interfaces/i_onboarding_repository.dart';
+import 'package:bizzie/features/onboarding/domain/models/brand.dart';
 import 'package:bizzie/features/onboarding/domain/models/company.dart';
 import 'package:bizzie/features/onboarding/domain/models/historical_price.dart';
 import 'package:bizzie/features/onboarding/domain/models/onboarding_data.dart';
+import 'package:bizzie/features/onboarding/domain/models/sector.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:injectable/injectable.dart';
 import 'dart:io';
 
@@ -15,10 +16,13 @@ import 'dart:io';
 class OnboardingRepositoryImpl implements IOnboardingRepository {
   final FirebaseFirestore _firestore;
   final FirebaseMessaging _firebaseMessaging;
-  // We access RemoteConfig instance directly since we moved fetch to bootstrap
-  final FirebaseRemoteConfig _remoteConfig = FirebaseRemoteConfig.instance;
+  final NetworkInfo _networkInfo;
 
-  OnboardingRepositoryImpl(this._firestore, this._firebaseMessaging);
+  OnboardingRepositoryImpl(
+    this._firestore,
+    this._firebaseMessaging,
+    this._networkInfo,
+  );
 
   @override
   Future<List<HistoricalPrice>> getSp500History() async {
@@ -26,32 +30,66 @@ class OnboardingRepositoryImpl implements IOnboardingRepository {
   }
 
   @override
-  Future<List<String>> getSectors() async {
-    // We assume fetchAndActivate() was called in bootstrap
-    final jsonString = _remoteConfig.getString('stock_market_sectors');
-    if (jsonString.isEmpty) {
-      // Fallback
-      return [
-        "Technology",
-        "Health Care",
-        "Financials",
-        "Real Estate",
-        "Energy",
-        "Materials",
-        "Consumer Discretionary",
-        "Industrials",
-        "Utilities",
-        "Consumer Staples",
-        "Communication Services",
-      ];
-    }
-
+  Future<(List<Brand>, List<Brand>)> getDailyBrands(Sector? userSector) async {
     try {
-      final List<dynamic> decoded = jsonDecode(jsonString);
-      return decoded.map((e) => e.toString()).toList();
+      if (await _networkInfo.isConnected) {
+        final collection = _firestore.collection('daily_brands');
+
+        // Fetch the latest daily brand document
+        final snapshot = await collection
+            .orderBy('date', descending: true)
+            .limit(1)
+            .get();
+
+        if (snapshot.docs.isEmpty) {
+          return (const <Brand>[], const <Brand>[]);
+        }
+
+        final data = snapshot.docs.first.data();
+        final sectorsList = data['sectors'] as List<dynamic>? ?? [];
+
+        List<Brand> globalBrands = [];
+        List<Brand> sectorBrands = [];
+
+        for (final sectorMap in sectorsList) {
+          final sectorName = sectorMap['name'] as String? ?? '';
+          final productsList = sectorMap['products'] as List<dynamic>? ?? [];
+
+          final brands = productsList.map((p) {
+            final pMap = p as Map<String, dynamic>;
+            return Brand(
+              name: pMap['name'] as String? ?? '',
+              company: pMap['company'] as String? ?? '',
+              ticker: pMap['ticker'] as String? ?? '',
+              description: pMap['description'] as String? ?? '',
+              sector: sectorName,
+            );
+          }).toList();
+
+          if (sectorName == 'All Sectors') {
+            globalBrands.addAll(brands);
+          } else if (userSector != null &&
+              sectorName.toLowerCase() ==
+                  userSector.displayName.toLowerCase()) {
+            sectorBrands.addAll(brands);
+          }
+        }
+
+        return (globalBrands, sectorBrands);
+      } else {
+        return (const <Brand>[], const <Brand>[]);
+      }
     } catch (e) {
-      return [];
+      // Log error (should use a logger in real app)
+      return (const <Brand>[], const <Brand>[]);
     }
+  }
+
+  @override
+  Future<List<Sector>> getSectors() async {
+    // In a real app, this might come from RemoteConfig or API.
+    // Converting the hardcoded logic to return Sectors.
+    return Sector.values;
   }
 
   @override
@@ -115,9 +153,12 @@ class OnboardingRepositoryImpl implements IOnboardingRepository {
 
     // 3. Subscription Logic (Topics)
     if (fcmToken.isNotEmpty) {
-      final sanitizedSector = _sanitizeTopic(data.selectedSector);
-      if (sanitizedSector.isNotEmpty) {
-        await _firebaseMessaging.subscribeToTopic(sanitizedSector);
+      final selectedSector = data.selectedSector;
+      if (selectedSector != null) {
+        final sanitizedSector = _sanitizeTopic(selectedSector.displayName);
+        if (sanitizedSector.isNotEmpty) {
+          await _firebaseMessaging.subscribeToTopic(sanitizedSector);
+        }
       }
 
       for (final company in data.detectedCompanies) {
@@ -134,10 +175,12 @@ class OnboardingRepositoryImpl implements IOnboardingRepository {
     final userMap = {
       'uid': uid,
       'name': data.firstName,
-      'favoriteSector': _sanitizeTopic(data.selectedSector),
-      'favoriteSectorDisplay': data.selectedSector,
+      'favoriteSector': data.selectedSector != null
+          ? _sanitizeTopic(data.selectedSector!.displayName)
+          : '',
+      'favoriteSectorDisplay': data.selectedSector?.displayName ?? '',
       'watchlist': data.detectedCompanies.map((c) => c.toJson()).toList(),
-      'investingExperience': data.investingExperience.name,
+      'investingExperience': data.investingExperience?.name ?? 'beginner',
       'createdAt': FieldValue.serverTimestamp(),
       'isSubscribed': false,
       'fcmTokens': tokensMap,
