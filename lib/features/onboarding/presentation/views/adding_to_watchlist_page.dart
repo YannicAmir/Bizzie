@@ -8,6 +8,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:bizzie/app/routes/app_routes.dart';
 
+enum _WatchlistStepState { pending, active, completed }
+
 class AddingToWatchlistPage extends StatefulWidget {
   const AddingToWatchlistPage({super.key});
 
@@ -19,9 +21,12 @@ class _AddingToWatchlistPageState extends State<AddingToWatchlistPage> {
   @override
   void initState() {
     super.initState();
-    context.read<OnboardingBloc>().add(
-      const OnboardingEvent.startWatchlistAddition(),
-    );
+    // Wait for the build to complete before firing the event to ensure smooth entry
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<OnboardingBloc>().add(
+        const OnboardingEvent.startWatchlistAddition(),
+      );
+    });
   }
 
   @override
@@ -31,7 +36,30 @@ class _AddingToWatchlistPageState extends State<AddingToWatchlistPage> {
         final companies = state.onboardingData.detectedCompanies;
         final step = state.watchlistStep;
         final total = companies.length;
-        final isComplete = step >= total && total > 0;
+
+        // Completion is when step equals total counts.
+        // Step 0: Initial
+        // Step 1: Item 0 is Adding... (Active) -> then Done?
+        // Wait, the bloc logic:
+        // for i = 0 to count:
+        //   emit(step = i)
+        //   delay
+        //
+        // If count = 3.
+        // i=0: step=0. (Item 0 is Pending? Or Active?)
+        // Let's align with logic:
+        // If step = 0: All pending? Or Item 0 active?
+        // Let's assume Step k means "k items are fully added".
+        // So Step 0: 0 items added. Item 0 is being added (Active).
+        // Step 1: 1 item added. Item 1 is being added.
+        // Step k: k items added.
+
+        // So for index i:
+        // if i < step: Completed.
+        // if i == step: Active (Adding).
+        // if i > step: Pending.
+
+        final isComplete = step >= total;
 
         return Scaffold(
           backgroundColor: Colors.white,
@@ -41,25 +69,36 @@ class _AddingToWatchlistPageState extends State<AddingToWatchlistPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 48),
                   // Heading
-                  Container(
-                    width: 96,
-                    height: 96,
-                    decoration: BoxDecoration(
-                      gradient: const LinearGradient(
-                        colors: [Color(0xFF2B7FFF), Color(0xFF155DFC)],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
+                  Center(
+                    child: Container(
+                      width: 96,
+                      height: 96,
+                      decoration: BoxDecoration(
+                        gradient: const LinearGradient(
+                          colors: [Color(0xFF2B7FFF), Color(0xFF155DFC)],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        borderRadius: BorderRadius.circular(24),
                       ),
-                      borderRadius: BorderRadius.circular(24),
-                    ),
-                    child: Center(
-                      child: Image.asset(
-                        isComplete ? AppAssets.checkIcon : AppAssets.plusIcon,
-                        width: 48,
-                        height: 48,
-                        color: Colors.white,
+                      child: Center(
+                        child: isComplete
+                            ? Image.asset(
+                                AppAssets.onboardingLargeCheckIcon,
+                                width: 50,
+                                height: 50,
+                                fit: BoxFit.contain,
+                                color: Colors.white,
+                              )
+                            : Image.asset(
+                                AppAssets.onboardingLargePlusIcon,
+                                width: 50,
+                                height: 50,
+                                fit: BoxFit.contain,
+                                color: Colors.white,
+                              ),
                       ),
                     ),
                   ),
@@ -85,15 +124,18 @@ class _AddingToWatchlistPageState extends State<AddingToWatchlistPage> {
                       itemCount: companies.length,
                       separatorBuilder: (_, __) => const SizedBox(height: 12),
                       itemBuilder: (context, index) {
-                        // Items are "checked" as step progresses
-                        // If step=0, 0 items checked.
-                        // If step=1, item 0 is checked.
-                        final isAdded = index < step;
+                        _WatchlistStepState itemState;
+                        if (index < step) {
+                          itemState = _WatchlistStepState.completed;
+                        } else if (index == step) {
+                          itemState = _WatchlistStepState.active;
+                        } else {
+                          itemState = _WatchlistStepState.pending;
+                        }
+
                         return _WatchlistItem(
                           company: companies[index],
-                          isAdded: isAdded,
-                          // Show loader for the current item being added
-                          isLoading: !isComplete && index == step,
+                          state: itemState,
                         );
                       },
                     ),
@@ -110,9 +152,13 @@ class _AddingToWatchlistPageState extends State<AddingToWatchlistPage> {
                         child: TweenAnimationBuilder<double>(
                           tween: Tween<double>(
                             begin: 0,
-                            end: total > 0 ? step / total : 0,
+                            // Target: "step" items done. We want smooth fill for the current "active" item.
+                            // If step = 0 (Item 0 active), we want to animate 0 -> 1/total.
+                            // So end = (step + 1) / total.
+                            end: total > 0 ? (step + 1) / total : 0,
                           ),
-                          duration: const Duration(milliseconds: 500),
+                          duration: const Duration(milliseconds: 1500),
+                          curve: Curves.linear,
                           builder: (context, value, _) {
                             return LinearProgressIndicator(
                               value: value.clamp(0.0, 1.0),
@@ -125,15 +171,16 @@ class _AddingToWatchlistPageState extends State<AddingToWatchlistPage> {
                         ),
                       ),
                     ),
+                    const SizedBox(
+                      height: 16,
+                    ), // Adding some bottom padding for the bar
                   ] else ...[
                     SizedBox(
                       width: double.infinity,
                       height: 56,
                       child: ElevatedButton(
                         onPressed: () {
-                          // Navigate to next or complete
-                          // For now just print or go home?
-                          // The flow usually goes to Results or Main App
+                          // TODO: Navigate to notification request or next step
                           context.go(AppRoutes.notificationRequest);
                         },
                         style: ElevatedButton.styleFrom(
@@ -167,25 +214,61 @@ class _AddingToWatchlistPageState extends State<AddingToWatchlistPage> {
 
 class _WatchlistItem extends StatelessWidget {
   final Company company;
-  final bool isAdded;
-  final bool isLoading;
+  final _WatchlistStepState state;
 
-  const _WatchlistItem({
-    required this.company,
-    required this.isAdded,
-    required this.isLoading,
-  });
+  const _WatchlistItem({required this.company, required this.state});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    Color backgroundColor;
+    Color borderColor;
+    Color textColor;
+    Color iconBgColor;
+    Color iconColor;
+    IconData? iconData;
+    String subtitle;
+
+    switch (state) {
+      case _WatchlistStepState.completed:
+        backgroundColor = const Color(0xFFECFDF5); // Green-ish bg
+        borderColor = const Color(0xFFA4F4CF); // Green border
+        textColor = AppColors.textPrimary;
+        iconBgColor = const Color(0xFFD0FAE5);
+        iconColor = const Color(0xFF047857);
+        iconData = Icons.check;
+        subtitle = 'Added to watchlist';
+        break;
+      case _WatchlistStepState.active:
+        backgroundColor = const Color(0xFFEFF6FF); // Blue-ish bg
+        borderColor = const Color(0xFFBEDBFF); // Blue border
+        textColor = AppColors.textPrimary;
+        iconBgColor = const Color(0xFFDBEAFE);
+        iconColor = AppColors.primary;
+        iconData = Icons
+            .add; // Or create a custom loader if needed, but Figma showed Icon
+        subtitle = 'Adding to watchlist...';
+        break;
+      case _WatchlistStepState.pending:
+        backgroundColor = const Color(0xFFF8FAFC);
+        borderColor = const Color(0xFFE2E8F0);
+        textColor = AppColors.textTertiary;
+        iconBgColor = const Color(0xFFF1F5F9);
+        iconColor = AppColors.textTertiary;
+        iconData = Icons.add;
+        subtitle = 'Pending';
+        break;
+    }
+
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 300),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: backgroundColor,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: isAdded ? const Color(0xFFA4F4CF) : AppColors.inputBorder,
-        ),
+          color: borderColor,
+          width: 2,
+        ), // Width 2 to match Analysis steps usually
       ),
       child: Row(
         children: [
@@ -193,15 +276,16 @@ class _WatchlistItem extends StatelessWidget {
             width: 48,
             height: 48,
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: iconBgColor,
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: AppColors.inputBorder),
             ),
             child: Center(
-              child: Text(
-                company.ticker.substring(0, 1),
-                style: AppTextStyles.h3,
-              ),
+              // If active, maybe we want a spinner?
+              // User said "matches design" which showed Adding state having an icon (blue add)
+              // But strictly speaking, "animation" could imply a loader.
+              // Let's stick to the icon as per Figma reference unless user requested loader explicitly.
+              // Actually, Analysis page used static icons.
+              child: Icon(iconData, color: iconColor, size: 24),
             ),
           ),
           const SizedBox(width: 16),
@@ -213,36 +297,50 @@ class _WatchlistItem extends StatelessWidget {
                   company.name,
                   style: AppTextStyles.bodyLarge.copyWith(
                     fontWeight: FontWeight.w600,
+                    color: textColor,
                   ),
                 ),
                 Text(
-                  company.ticker,
+                  subtitle,
                   style: AppTextStyles.bodySmall.copyWith(
-                    color: AppColors.textTertiary,
-                    fontWeight: FontWeight.bold,
+                    color: state == _WatchlistStepState.pending
+                        ? AppColors.textTertiary
+                        : (state == _WatchlistStepState.active
+                              ? AppColors.primary
+                              : const Color(
+                                  0xFF047857,
+                                )), // Green text for added?
+                    // Figma "Added" subtitle color: usually textSecondary or Green.
+                    // Let's use textSecondary for now or match icon color if emphasized.
+                    // Safe bet: textSecondary for normal text, maybe specific color for 'Adding...'
                   ),
                 ),
               ],
             ),
           ),
-          if (isAdded)
-            Container(
-              width: 24,
-              height: 24,
-              decoration: const BoxDecoration(
-                shape: BoxShape.circle,
-                color: Color(0xFF10B981), // Green
+          // Checkmark circle for completed?
+          // if (state == _WatchlistStepState.completed)
+          // Container(
+          //   width: 24,
+          //   height: 24,
+          //   decoration: const BoxDecoration(
+          //     shape: BoxShape.circle,
+          //     color: Color(0xFF10B981), // Green
+          //   ),
+          //   child: const Icon(Icons.check, size: 16, color: Colors.white),
+          // )
+          if (state == _WatchlistStepState.active)
+            // Optional: Add a small loader here if desired to show activity
+            SizedBox(
+              width: 20,
+              height: 20,
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
+                valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
               ),
-              child: const Icon(Icons.check, size: 16, color: Colors.white),
-            )
-          else if (isLoading)
-            const SizedBox(
-              width: 24,
-              height: 24,
-              child: CircularProgressIndicator(strokeWidth: 2),
             )
           else
-            const SizedBox(width: 24, height: 24), // Placeholder
+            const SizedBox(width: 24, height: 24),
         ],
       ),
     );

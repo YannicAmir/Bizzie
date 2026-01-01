@@ -1,10 +1,18 @@
-import 'package:bizzie/app/themes/app_assets.dart';
 import 'package:bizzie/app/themes/app_colors.dart';
 import 'package:bizzie/app/themes/app_text_styles.dart';
 import 'package:flutter/material.dart';
 
 class MascotInfoCard extends StatelessWidget {
-  const MascotInfoCard({super.key});
+  final String name;
+  final String sectorName;
+  final String mascotAsset;
+
+  const MascotInfoCard({
+    super.key,
+    required this.name,
+    required this.sectorName,
+    required this.mascotAsset,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -74,10 +82,7 @@ class MascotInfoCard extends StatelessWidget {
                   ),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(14), // Inner radius
-                    child: Image.asset(
-                      AppAssets.defaultMascot,
-                      fit: BoxFit.cover,
-                    ),
+                    child: Image.asset(mascotAsset, fit: BoxFit.cover),
                   ),
                 ),
                 // Notification Dot
@@ -112,7 +117,7 @@ class MascotInfoCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Yannic',
+                name,
                 style: AppTextStyles.h2.copyWith(
                   fontSize: 19,
                   fontWeight: FontWeight.bold, // w700
@@ -124,7 +129,7 @@ class MascotInfoCard extends StatelessWidget {
               // Gap 2px (Figma gap-[1.994px])
               const SizedBox(height: 2),
               Text(
-                'Information Technology',
+                sectorName,
                 style: AppTextStyles.bodySmall.copyWith(
                   fontSize: 14,
                   fontWeight: FontWeight.w500, // Medium

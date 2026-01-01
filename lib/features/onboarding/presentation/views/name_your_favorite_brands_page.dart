@@ -5,8 +5,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:bizzie/app/themes/app_text_styles.dart';
 import 'package:bizzie/app/themes/app_colors.dart';
-import 'package:bizzie/app/themes/app_assets.dart';
+// import 'package:bizzie/app/themes/app_assets.dart'; // Unused now
 import 'package:bizzie/app/routes/app_routes.dart';
+import 'package:bizzie/features/onboarding/presentation/widgets/onboarding_header.dart';
+import 'package:bizzie/features/onboarding/presentation/widgets/onboarding_footer.dart';
 
 class NameYourFavoriteBrandsPage extends StatefulWidget {
   const NameYourFavoriteBrandsPage({super.key});
@@ -18,25 +20,17 @@ class NameYourFavoriteBrandsPage extends StatefulWidget {
 
 class _NameYourFavoriteBrandsPageState
     extends State<NameYourFavoriteBrandsPage> {
-  final TextEditingController _customBrandController = TextEditingController();
+  // Removed _customBrandController as requested
 
   @override
   void initState() {
     super.initState();
     // Load brands when entering the page
     context.read<OnboardingBloc>().add(const OnboardingEvent.loadBrands());
-
-    // Listen to controller
-    _customBrandController.addListener(() {
-      context.read<OnboardingBloc>().add(
-        OnboardingEvent.updateCustomBrandInput(_customBrandController.text),
-      );
-    });
   }
 
   @override
   void dispose() {
-    _customBrandController.dispose();
     super.dispose();
   }
 
@@ -47,150 +41,162 @@ class _NameYourFavoriteBrandsPageState
         final selectedSectorName =
             state.onboardingData.selectedSector?.displayName ?? 'Your Sector';
 
+        // Filter out selected brands from the lists so they move to "Your brands"
+        final availableSectorBrands = state.sectorBrands
+            .where((b) => !state.selectedBrands.contains(b))
+            .toList();
+        final availableGlobalBrands = state.globalBrands
+            .where((b) => !state.selectedBrands.contains(b))
+            .toList();
+
         return Scaffold(
           backgroundColor: AppColors.background,
-          appBar: AppBar(
-            backgroundColor: Colors.transparent,
-            elevation: 0,
-            leading: IconButton(
-              icon: Image.asset(AppAssets.backArrowIcon, width: 24, height: 24),
-              onPressed: () => context.pop(),
-            ),
-          ),
-          body: Column(
-            children: [
-              Expanded(
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const SizedBox(height: 16),
-                      Text(
-                        'Name your favorite brands & products',
-                        style: AppTextStyles.h2,
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        'We\'ll tell you if they\'re public...',
-                        style: AppTextStyles.bodyLarge.copyWith(
-                          color: AppColors.textSecondary,
-                        ),
-                      ),
-                      const SizedBox(height: 32),
+          body: SafeArea(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const OnboardingHeader(
+                  title: 'Select your favorite brands & product',
+                  subtitle: 'Select up to 5. You can search for more later',
+                  // No back button as requested
+                ),
+                Expanded(
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(height: 32),
 
-                      // Sector Specific Brands
-                      if (state.onboardingData.selectedSector != null) ...[
-                        Text(
-                          'Popular $selectedSectorName brands',
-                          style: AppTextStyles.caption.copyWith(
-                            color: AppColors.textSecondary,
-                            fontWeight: FontWeight.w600,
+                        // YOUR BRANDS Section (Only if selections exist)
+                        if (state.selectedBrands.isNotEmpty) ...[
+                          Text(
+                            'Your brands',
+                            style: AppTextStyles.bodyMedium.copyWith(
+                              color: AppColors.textSecondary,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
-                        ),
-                        const SizedBox(height: 12),
-                        Wrap(
-                          spacing: 8,
-                          runSpacing: 8,
-                          children: state.sectorBrands.map((brand) {
-                            return _BrandChip(
-                              brand: brand,
-                              isSelected: state.selectedBrands.contains(brand),
-                              onTap: () {
-                                context.read<OnboardingBloc>().add(
-                                  OnboardingEvent.toggleBrand(brand),
-                                );
-                              },
-                            );
-                          }).toList(),
-                        ),
-                        const SizedBox(height: 24),
-                      ],
-
-                      // Other Global Brands
-                      Text(
-                        'Other popular brands',
-                        style: AppTextStyles.caption.copyWith(
-                          color: AppColors.textSecondary,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-                      Wrap(
-                        spacing: 8,
-                        runSpacing: 8,
-                        children: state.globalBrands.map((brand) {
-                          return _BrandChip(
-                            brand: brand,
-                            isSelected: state.selectedBrands.contains(brand),
-                            onTap: () {
-                              context.read<OnboardingBloc>().add(
-                                OnboardingEvent.toggleBrand(brand),
+                          const SizedBox(height: 12),
+                          Wrap(
+                            spacing: 8,
+                            runSpacing: 8,
+                            alignment: WrapAlignment.start,
+                            children: state.selectedBrands.map((brand) {
+                              return _BrandChip(
+                                brand: brand,
+                                backgroundColor: const Color(0xFFDBEAFE),
+                                foregroundColor: const Color(0xFF1447E6),
+                                iconData: Icons.close,
+                                onTap: () {
+                                  context.read<OnboardingBloc>().add(
+                                    OnboardingEvent.toggleBrand(brand),
+                                  );
+                                },
                               );
-                            },
-                          );
-                        }).toList(),
-                      ),
+                            }).toList(),
+                          ),
+                          const SizedBox(height: 32),
+                        ],
 
-                      const SizedBox(height: 32),
-                      // Custom Input
-                      TextField(
-                        controller: _customBrandController,
-                        style: AppTextStyles.bodyMedium,
-                        decoration: InputDecoration(
-                          hintText: 'Enter any other brand...',
-                          hintStyle: AppTextStyles.bodyMedium.copyWith(
-                            color: AppColors.textTertiary,
+                        // Sector Specific Brands
+                        if (state.onboardingData.selectedSector != null &&
+                            availableSectorBrands.isNotEmpty) ...[
+                          Text(
+                            'Popular $selectedSectorName brands',
+                            style: AppTextStyles.bodyMedium.copyWith(
+                              color: AppColors.textSecondary,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
-                          filled: true,
-                          fillColor: AppColors.inputBackground,
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                            borderSide: BorderSide.none,
+                          const SizedBox(height: 12),
+                          Wrap(
+                            spacing: 8,
+                            runSpacing: 8,
+                            alignment: WrapAlignment.start,
+                            children: availableSectorBrands.map((brand) {
+                              return _BrandChip(
+                                brand: brand,
+                                backgroundColor: const Color(0xFFEFF6FF),
+                                foregroundColor: const Color(0xFF1447E6),
+                                borderColor: const Color(0xFFBEDBFF),
+                                iconData: Icons.add,
+                                onTap: () {
+                                  context.read<OnboardingBloc>().add(
+                                    OnboardingEvent.toggleBrand(brand),
+                                  );
+                                },
+                              );
+                            }).toList(),
                           ),
-                          contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 14,
+                          const SizedBox(height: 24),
+                        ],
+
+                        // Other Global Brands
+                        if (availableGlobalBrands.isNotEmpty) ...[
+                          Text(
+                            'Other popular brands',
+                            style: AppTextStyles.bodyMedium.copyWith(
+                              color: AppColors.textSecondary,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
-                        ),
-                      ),
-                      const SizedBox(height: 32),
-                    ],
+                          const SizedBox(height: 12),
+                          Wrap(
+                            spacing: 8,
+                            runSpacing: 8,
+                            alignment: WrapAlignment.start,
+                            children: availableGlobalBrands.map((brand) {
+                              return _BrandChip(
+                                brand: brand,
+                                backgroundColor: const Color(0xFFF1F5F9),
+                                foregroundColor: const Color(0xFF314158),
+                                iconData: Icons.add,
+                                onTap: () {
+                                  context.read<OnboardingBloc>().add(
+                                    OnboardingEvent.toggleBrand(brand),
+                                  );
+                                },
+                              );
+                            }).toList(),
+                          ),
+                        ],
+
+                        const SizedBox(height: 32),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-
-              // Bottom Button
-              Padding(
-                padding: EdgeInsets.fromLTRB(
-                  24,
-                  16,
-                  24,
-                  32 + MediaQuery.of(context).padding.bottom,
-                ),
-                child: SizedBox(
-                  width: double.infinity,
-                  height: 56,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      context.read<OnboardingBloc>().add(
-                        OnboardingEvent.uploadBrands(
-                          _customBrandController.text,
+                OnboardingFooter(
+                  primaryButton: SizedBox(
+                    width: double.infinity,
+                    child: FilledButton(
+                      onPressed: state.selectedBrands.isNotEmpty
+                          ? () {
+                              context.push(AppRoutes.onboardingAnalyzing);
+                            }
+                          : null,
+                      style: FilledButton.styleFrom(
+                        backgroundColor: AppColors.primary,
+                        disabledBackgroundColor: AppColors.primary.withValues(
+                          alpha: 0.5,
                         ),
-                      );
-                      context.push(AppRoutes.onboardingAnalyzing);
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primary,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                      ),
+                      child: Text(
+                        'Continue',
+                        style: AppTextStyles.button.copyWith(
+                          color: Colors.white,
+                        ),
                       ),
                     ),
-                    child: Text('Continue', style: AppTextStyles.button),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         );
       },
@@ -200,34 +206,59 @@ class _NameYourFavoriteBrandsPageState
 
 class _BrandChip extends StatelessWidget {
   final Brand brand;
-  final bool isSelected;
+  final Color backgroundColor;
+  final Color foregroundColor;
+  final Color? borderColor;
+  final IconData iconData;
   final VoidCallback onTap;
 
   const _BrandChip({
     required this.brand,
-    required this.isSelected,
+    required this.backgroundColor,
+    required this.foregroundColor,
+    required this.iconData,
     required this.onTap,
+    this.borderColor,
   });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.primary : AppColors.surface,
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(
-            color: isSelected ? AppColors.primary : AppColors.inputBorder,
-          ),
+          color: backgroundColor,
+          borderRadius: BorderRadius.circular(100),
+          border: borderColor != null
+              ? Border.all(color: borderColor!, width: 0.665)
+              : null,
         ),
-        child: Text(
-          brand.name,
-          style: AppTextStyles.bodyMedium.copyWith(
-            color: isSelected ? Colors.white : AppColors.textPrimary,
-            fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
-          ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (iconData == Icons.add) ...[
+              Icon(iconData, size: 20, color: foregroundColor),
+              Text(
+                brand.name,
+                style: AppTextStyles.bodyMedium.copyWith(
+                  color: foregroundColor,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ] else ...[
+              Text(
+                brand.name,
+                style: AppTextStyles.bodyMedium.copyWith(
+                  color: foregroundColor,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(width: 8),
+              Icon(iconData, size: 20, color: foregroundColor),
+            ],
+          ],
         ),
       ),
     );

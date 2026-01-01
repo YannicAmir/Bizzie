@@ -1,3 +1,4 @@
+import 'package:bizzie/app/themes/app_assets.dart';
 import 'package:bizzie/app/themes/app_colors.dart';
 import 'package:bizzie/app/themes/app_text_styles.dart';
 import 'package:bizzie/features/onboarding/domain/models/onboarding_data.dart';
@@ -6,6 +7,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:bizzie/app/routes/app_routes.dart';
+
+import 'package:bizzie/features/onboarding/presentation/widgets/onboarding_footer.dart';
+import 'package:bizzie/features/onboarding/presentation/widgets/onboarding_header.dart';
 
 class InvestingExperiencePage extends StatefulWidget {
   const InvestingExperiencePage({super.key});
@@ -25,129 +29,108 @@ class _InvestingExperiencePageState extends State<InvestingExperiencePage> {
     return BlocBuilder<OnboardingBloc, OnboardingState>(
       builder: (context, state) {
         final selectedExperience = state.onboardingData.investingExperience;
-        // Check if user has actually "touched"/selected this step?
-        // The bloc initializes with 'beginner' based on the model default I saw earlier:
-        // @Default(InvestingExperience.beginner) InvestingExperience investingExperience
-        // This means it's always selected by default?
-        // If the design requires "No selection made" initially, we might need to make it nullable in the model
-        // OR just assume beginner is default.
-        // The user prompt said: "no selection made view" vs "selection made view".
-        // This implies it SHOULD be nullable or have a 'none' state.
-        // Let's check OnboardingData again.
 
         return Scaffold(
           backgroundColor: Colors.white,
           body: SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: 24),
-                  // Back Button (Optional? Design usually has it)
-                  // Figma screenshot had a back chevron
-                  GestureDetector(
-                    onTap: () => context.pop(),
-                    child: Container(
-                      padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(14),
-                        border: Border.all(color: AppColors.inputBorder),
-                      ),
-                      child: const Icon(
-                        Icons.arrow_back_ios_new,
-                        size: 20,
-                        color: AppColors.textPrimary,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 32),
+            child: Column(
+              children: [
+                OnboardingHeader(title: 'Describe your investing experience'),
 
-                  Text(
-                    'Describe your\ninvesting experience',
-                    style: AppTextStyles.h1,
-                  ),
-                  const SizedBox(height: 12),
-                  Text(
-                    'This helps us customize your Bizzie experience.',
-                    style: AppTextStyles.bodyLarge.copyWith(
-                      color: AppColors.textSecondary,
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(height: 48),
+                        Center(
+                          child: Image.asset(
+                            AppAssets.onboardingBizzieMascotInvestingExperience,
+                            height: 230,
+                            fit: BoxFit.contain,
+                          ),
+                        ),
+                        Spacer(),
+                        // Options (Expert -> Intermediate -> Beginner)
+                        _ExperienceOption(
+                          title: "Expert",
+                          description: "I'm an experienced investor",
+                          iconPath: AppAssets.arrowUpIcon,
+                          isSelected:
+                              selectedExperience == InvestingExperience.expert,
+                          onTap: () => context.read<OnboardingBloc>().add(
+                            const OnboardingEvent.experienceSelected(
+                              InvestingExperience.expert,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        _ExperienceOption(
+                          title: "Intermediate",
+                          description: "I have some experience",
+                          iconPath: AppAssets.barChartIcon,
+                          isSelected:
+                              selectedExperience ==
+                              InvestingExperience.intermediate,
+                          onTap: () => context.read<OnboardingBloc>().add(
+                            const OnboardingEvent.experienceSelected(
+                              InvestingExperience.intermediate,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        _ExperienceOption(
+                          title: "Beginner",
+                          description: "I'm new to investing",
+                          iconPath: AppAssets.sparkleIcon,
+                          isSelected:
+                              selectedExperience ==
+                              InvestingExperience.beginner,
+                          onTap: () => context.read<OnboardingBloc>().add(
+                            const OnboardingEvent.experienceSelected(
+                              InvestingExperience.beginner,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 24),
+                      ],
                     ),
                   ),
-                  const SizedBox(height: 48),
+                ),
 
-                  // Options
-                  _ExperienceOption(
-                    title: "I'm a beginner",
-                    description: "I'm new to investing",
-                    icon: Icons.grass, // Placeholder
-                    isSelected:
-                        selectedExperience == InvestingExperience.beginner,
-                    onTap: () => context.read<OnboardingBloc>().add(
-                      const OnboardingEvent.experienceSelected(
-                        InvestingExperience.beginner,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  _ExperienceOption(
-                    title: "Intermediate",
-                    description: "I have some experience",
-                    icon: Icons.trending_up, // Placeholder
-                    isSelected:
-                        selectedExperience == InvestingExperience.intermediate,
-                    onTap: () => context.read<OnboardingBloc>().add(
-                      const OnboardingEvent.experienceSelected(
-                        InvestingExperience.intermediate,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  _ExperienceOption(
-                    title: "I'm an expert",
-                    description: "I'm an experienced investor",
-                    icon: Icons.verified, // Placeholder
-                    isSelected:
-                        selectedExperience == InvestingExperience.expert,
-                    onTap: () => context.read<OnboardingBloc>().add(
-                      const OnboardingEvent.experienceSelected(
-                        InvestingExperience.expert,
-                      ),
-                    ),
-                  ),
-
-                  const Spacer(),
-
-                  // Continue Button
-                  SizedBox(
+                OnboardingFooter(
+                  primaryButton: SizedBox(
                     width: double.infinity,
-                    height: 56,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        // Navigate to next page
-                        context.go(AppRoutes.onboardingFeatureHighlights);
-                      },
-                      style: ElevatedButton.styleFrom(
+                    child: FilledButton(
+                      onPressed: selectedExperience != null
+                          ? () {
+                              context.push(
+                                AppRoutes.onboardingFeatureHighlights,
+                              );
+                            }
+                          : null,
+                      style: FilledButton.styleFrom(
                         backgroundColor: AppColors.primary,
+                        disabledBackgroundColor: AppColors.primary.withValues(
+                          alpha: 0.5,
+                        ),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(16),
                         ),
+                        padding: const EdgeInsets.symmetric(vertical: 16),
                         elevation: 0,
                       ),
-                      child: const Text(
+                      child: Text(
                         'Continue',
-                        style: TextStyle(
+                        style: AppTextStyles.button.copyWith(
                           color: Colors.white,
-                          fontSize: 17,
-                          fontWeight: FontWeight.w600,
                         ),
                       ),
                     ),
                   ),
-                  const SizedBox(height: 32),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         );
@@ -159,14 +142,14 @@ class _InvestingExperiencePageState extends State<InvestingExperiencePage> {
 class _ExperienceOption extends StatelessWidget {
   final String title;
   final String description;
-  final IconData icon;
+  final String iconPath;
   final bool isSelected;
   final VoidCallback onTap;
 
   const _ExperienceOption({
     required this.title,
     required this.description,
-    required this.icon,
+    required this.iconPath,
     required this.isSelected,
     required this.onTap,
   });
@@ -191,12 +174,18 @@ class _ExperienceOption extends StatelessWidget {
               width: 48,
               height: 48,
               decoration: BoxDecoration(
-                color: isSelected ? Colors.white : const Color(0xFFF1F5F9),
+                color: Colors.white,
                 borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: AppColors.inputBorder, width: 2),
               ),
-              child: Icon(
-                icon,
-                color: isSelected ? AppColors.primary : AppColors.textTertiary,
+              child: Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: Image.asset(
+                  iconPath,
+                  color: isSelected
+                      ? AppColors.primary
+                      : AppColors.textTertiary,
+                ),
               ),
             ),
             const SizedBox(width: 16),

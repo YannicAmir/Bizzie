@@ -42,7 +42,7 @@ class OnboardingRepositoryImpl implements IOnboardingRepository {
             .get();
 
         if (snapshot.docs.isEmpty) {
-          return (const <Brand>[], const <Brand>[]);
+          return _getMockBrands(userSector);
         }
 
         final data = snapshot.docs.first.data();
@@ -77,12 +77,87 @@ class OnboardingRepositoryImpl implements IOnboardingRepository {
 
         return (globalBrands, sectorBrands);
       } else {
-        return (const <Brand>[], const <Brand>[]);
+        return _getMockBrands(userSector);
       }
     } catch (e) {
       // Log error (should use a logger in real app)
-      return (const <Brand>[], const <Brand>[]);
+      return _getMockBrands(userSector);
     }
+  }
+
+  (List<Brand>, List<Brand>) _getMockBrands(Sector? userSector) {
+    // Fallback Mock Data
+    final global = [
+      Brand(
+        name: 'Apple',
+        company: 'Apple Inc.',
+        ticker: 'AAPL',
+        sector: 'Information Technology',
+        description: 'Tech Giant',
+      ),
+      Brand(
+        name: 'Tesla',
+        company: 'Tesla Inc.',
+        ticker: 'TSLA',
+        sector: 'Consumer Discretionary',
+        description: 'EV Manufacturer',
+      ),
+      Brand(
+        name: 'Nike',
+        company: 'Nike Inc.',
+        ticker: 'NKE',
+        sector: 'Consumer Discretionary',
+        description: 'Sportswear',
+      ),
+      Brand(
+        name: 'Coca-Cola',
+        company: 'The Coca-Cola Company',
+        ticker: 'KO',
+        sector: 'Consumer Staples',
+        description: 'Beverage',
+      ),
+      Brand(
+        name: 'Netflix',
+        company: 'Netflix Inc.',
+        ticker: 'NFLX',
+        sector: 'Communication Services',
+        description: 'Streaming',
+      ),
+    ];
+
+    final sectorSpecific = <Brand>[];
+    if (userSector != null) {
+      // Add some generic mock brands based on sector just to show something
+      sectorSpecific.add(
+        Brand(
+          name: '${userSector.displayName} Brand A',
+          company: 'Company A',
+          ticker: 'AAA',
+          sector: userSector.displayName,
+          description: 'Mock Description',
+        ),
+      );
+      sectorSpecific.add(
+        Brand(
+          name: '${userSector.displayName} Brand B',
+          company: 'Company B',
+          ticker: 'BBB',
+          sector: userSector.displayName,
+          description: 'Mock Description',
+        ),
+      );
+      sectorSpecific.add(
+        Brand(
+          name: '${userSector.displayName} Consumer',
+          company: 'Company C',
+          ticker: 'CCC',
+          sector: userSector.displayName,
+          description: 'Mock Description',
+        ),
+      );
+    }
+
+    return (global, sectorSpecific);
   }
 
   @override

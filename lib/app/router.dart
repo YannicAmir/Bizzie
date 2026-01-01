@@ -100,10 +100,7 @@ GoRouter createRouter(AuthBloc authBloc) {
         path: AppRoutes.login,
         builder: (context, state) => const LoginPage(),
       ),
-      GoRoute(
-        path: AppRoutes.createAccount,
-        builder: (context, state) => const CreateAccountPage(),
-      ),
+
       GoRoute(
         path: AppRoutes.forgotPassword,
         builder: (context, state) => const ForgotPasswordPage(),
@@ -123,10 +120,7 @@ GoRouter createRouter(AuthBloc authBloc) {
         builder: (context, state) =>
             const Scaffold(body: Center(child: Text('Privacy Policy Screen'))),
       ),
-      GoRoute(
-        path: AppRoutes.notificationRequest,
-        builder: (context, state) => const NotificationRequestPage(),
-      ),
+
       GoRoute(
         path: AppRoutes.landing,
         builder: (context, state) => const LandingPage(),
@@ -187,6 +181,14 @@ GoRouter createRouter(AuthBloc authBloc) {
           GoRoute(
             path: AppRoutes.onboardingProfileReady,
             builder: (context, state) => const ProfileReadyPage(),
+          ),
+          GoRoute(
+            path: AppRoutes.createAccount,
+            builder: (context, state) => const CreateAccountPage(),
+          ),
+          GoRoute(
+            path: AppRoutes.notificationRequest,
+            builder: (context, state) => const NotificationRequestPage(),
           ),
         ],
       ),

@@ -94,23 +94,30 @@ class _BuildingProfilePageState extends State<BuildingProfilePage>
         final experience = state.onboardingData.investingExperience;
 
         // Carousel Items Data
+        final brandsCount = state.selectedBrands.length;
+
         final carouselItems = [
           _ProfileItemData(
+            // Figma: 109-228
             iconAsset: AppAssets.favoriteSectorIcon,
             title: selectedSector?.displayName ?? 'Your Sector',
-            subtitle: 'Selected Sector',
+            subtitle: 'Favorite Sector',
+            gradientColors: [const Color(0xFF2B7FFF), const Color(0xFF155DFC)],
           ),
           _ProfileItemData(
-            iconAsset: AppAssets
-                .investorClassificationIcon, // Need to add this asset or use placeholder
+            // Figma: 2-2545
+            iconAsset: AppAssets.investorClassificationIcon,
             title:
-                experience?.name.toUpperCase() ?? 'INVESTOR', // e.g., Beginner
-            subtitle: 'Investing Experience',
+                experience?.name.toUpperCase() ?? 'INVESTOR', // e.g., BEGINNER
+            subtitle: 'Investor Classification',
+            gradientColors: [const Color(0xFF2B7FFF), const Color(0xFF155DFC)],
           ),
-          const _ProfileItemData(
+          _ProfileItemData(
+            // Figma: 109-290
             iconAsset: AppAssets.favoriteBrandsIcon,
-            title: 'Your Brands', // Could ideally list brands if available
-            subtitle: 'Watchlist Created',
+            title: '$brandsCount',
+            subtitle: 'Favorite Brands Count',
+            gradientColors: [const Color(0xFF2B7FFF), const Color(0xFF155DFC)],
           ),
         ];
 
@@ -120,113 +127,153 @@ class _BuildingProfilePageState extends State<BuildingProfilePage>
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // "Building your profile" Header
-                Text(
-                  'Building your profile',
-                  style: AppTextStyles.h2.copyWith(fontSize: 24),
-                  textAlign: TextAlign.center,
+                // Carousel Items (Top)
+                // Carousel Items (Top)
+                SizedBox(
+                  height: 110, // Reduced height for Card
+                  child: PageView.builder(
+                    controller: _pageController,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: carouselItems.length,
+                    itemBuilder: (context, index) {
+                      final item = carouselItems[index];
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                        child: Container(
+                          padding: const EdgeInsets.all(16),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(16),
+                            border: Border.all(
+                              color: const Color(0xFFDBEAFE),
+                              width: 1,
+                            ),
+                          ),
+                          child: Row(
+                            children: [
+                              // Icon with Gradient Background
+                              Container(
+                                width: 48,
+                                height: 48,
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
+                                    colors: item.gradientColors,
+                                  ),
+                                  borderRadius: BorderRadius.circular(14),
+                                ),
+                                child: Center(
+                                  child: Image.asset(
+                                    item.iconAsset,
+                                    width: 24,
+                                    height: 24,
+                                    errorBuilder: (c, o, s) => const Icon(
+                                      Icons.check_circle,
+                                      size: 24,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+                              // Text Content
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    // Label (Subtitle)
+                                    Text(
+                                      item.subtitle,
+                                      style: const TextStyle(
+                                        fontFamily: 'Inter',
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w500,
+                                        color: Color(0xFF62748E),
+                                        height: 1.5, // 18px / 12px
+                                      ),
+                                    ),
+                                    // Value (Title)
+                                    Text(
+                                      item.title,
+                                      style: const TextStyle(
+                                        fontFamily: 'Inter',
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w600,
+                                        color: Color(0xFF0F172B),
+                                        height: 1.5, // 24px / 16px
+                                        letterSpacing: -0.3125,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  ),
                 ),
 
                 const SizedBox(height: 48),
 
-                // Progress Indicator + Carousel Stack
+                // Progress Indicator + "Building your profile" Text
                 SizedBox(
-                  width: 300,
-                  height: 300,
+                  width: 340, // Increased size
+                  height: 340,
                   child: Stack(
                     alignment: Alignment.center,
                     children: [
                       // Circular Progress Indicator
                       SizedBox(
-                        width: 280,
-                        height: 280,
+                        width: 340,
+                        height: 340,
                         child: CircularProgressIndicator(
                           value: _progressAnimation.value,
-                          strokeWidth: 12,
+                          strokeWidth: 15,
                           backgroundColor: AppColors.slate100,
                           color: AppColors.primary,
                           strokeCap: StrokeCap.round,
                         ),
                       ),
-
-                      // Center Content (Carousel)
-                      Container(
-                        width: 220, // Inner circle size
-                        height: 220,
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Colors.white,
-                          // Optional inner shadow or formatting
-                        ),
-                        child: PageView.builder(
-                          controller: _pageController,
-                          physics:
-                              const NeverScrollableScrollPhysics(), // Disable user swipe
-                          itemCount: carouselItems.length,
-                          itemBuilder: (context, index) {
-                            final item = carouselItems[index];
-                            return Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Image.asset(
-                                  item.iconAsset,
-                                  height: 60,
-                                  width: 60,
-                                  errorBuilder: (c, o, s) => const Icon(
-                                    Icons.check_circle,
-                                    size: 60,
-                                    color: AppColors.primary,
-                                  ),
-                                ),
-                                const SizedBox(height: 16),
-                                Text(
-                                  item.title,
-                                  style: AppTextStyles.bodyLarge.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                    color: AppColors.textPrimary,
-                                  ),
-                                  textAlign: TextAlign.center,
-                                ),
-                                Text(
-                                  item.subtitle,
-                                  style: AppTextStyles.bodySmall.copyWith(
-                                    color: AppColors.textSecondary,
-                                  ),
-                                  textAlign: TextAlign.center,
-                                ),
-                              ],
-                            );
-                          },
-                        ),
-                      ),
-
-                      // Percentage Text (Bottom positioned relative to circle)
-                      Positioned(
-                        bottom: 20,
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 12,
-                            vertical: 4,
+                      // Center Text
+                      Padding(
+                        padding: const EdgeInsets.all(40.0),
+                        child: Text(
+                          'Building your profile',
+                          style: AppTextStyles.h2.copyWith(
+                            fontSize: 28,
+                            fontWeight: FontWeight.w800,
+                            color: AppColors.textPrimary,
+                            height: 1.2,
+                            letterSpacing: 0.383,
                           ),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(20),
-                            border: Border.all(color: AppColors.slate200),
-                          ),
-                          child: Text(
-                            '${(_progressAnimation.value * 100).toInt()}%',
-                            style: AppTextStyles.bodyLarge.copyWith(
-                              fontWeight: FontWeight.bold,
-                              color: AppColors.primary,
-                            ),
-                          ),
+                          textAlign: TextAlign.center,
                         ),
                       ),
                     ],
                   ),
                 ),
 
-                const SizedBox(height: 48),
+                const SizedBox(height: 32),
+
+                // Percentage Text (Bottom)
+                Text(
+                  '   ${(_progressAnimation.value * 100).toInt()}%',
+                  style: AppTextStyles.bodyLarge.copyWith(
+                    fontWeight: FontWeight.w900,
+                    fontSize: 20,
+                    height: 1.5, // 30px / 20px
+                    letterSpacing: -0.449,
+                    color: AppColors.primary,
+                  ),
+                ),
+
+                const SizedBox(height: 32),
+
+                const SizedBox(height: 24),
               ],
             ),
           ),
@@ -240,10 +287,12 @@ class _ProfileItemData {
   final String iconAsset;
   final String title;
   final String subtitle;
+  final List<Color> gradientColors;
 
   const _ProfileItemData({
     required this.iconAsset,
     required this.title,
     required this.subtitle,
+    required this.gradientColors,
   });
 }

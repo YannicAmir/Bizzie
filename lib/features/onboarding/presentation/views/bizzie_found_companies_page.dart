@@ -9,6 +9,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bizzie/app/routes/app_routes.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:bizzie/features/onboarding/presentation/widgets/onboarding_footer.dart';
+
 class BizzieFoundCompaniesPage extends StatelessWidget {
   const BizzieFoundCompaniesPage({super.key});
 
@@ -25,86 +27,78 @@ class BizzieFoundCompaniesPage extends StatelessWidget {
         return Scaffold(
           backgroundColor: Colors.white,
           body: SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: 24),
-                  // Mascot Image (Placeholder for now, using a container/icon)
-                  Center(
-                    child: Container(
-                      width: 200,
-                      height: 200,
-                      decoration: const BoxDecoration(
-                        // color: Colors.blue.withOpacity(0.1), // Placeholder bg
-                        // shape: BoxShape.circle,
-                      ),
-                      // TODO: Replace with actual Mascot asset when available
-                      // child: Image.asset(AppAssets.bizzieMascot),
-                      child: Image.asset(
-                        AppAssets.onboardingBizzieMascotFoundCompanies,
-                        height: 180,
-                        // width: 300,
-                        fit: BoxFit.contain,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 32),
-                  // Header
-                  Text(
-                    'Bizzie found $companyCount ${companyCount == 1 ? 'company' : 'companies'}',
-                    style: AppTextStyles.h1.copyWith(
-                      color: AppColors.textPrimary,
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  Text(
-                    isSingle
-                        ? 'Check out the company that makes the product you love below!'
-                        : 'Check out the companies that make the products you love!',
-                    style: AppTextStyles.bodyLarge.copyWith(
-                      color: AppColors.textSecondary,
-                    ),
-                  ),
-                  const SizedBox(height: 32),
-
-                  // Companies List/Card
-                  if (isSingle)
-                    _SingleCompanyCard(company: companies.first)
-                  else
-                    _MultipleCompaniesList(companies: companies),
-
-                  const Spacer(),
-
-                  // Continue Button
-                  SizedBox(
-                    width: double.infinity,
-                    height: 56,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        context.push(AppRoutes.onboardingAddingWatchlist);
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.primary,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
+            child: Column(
+              children: [
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(height: 64),
+                        // Mascot Image
+                        Image.asset(
+                          AppAssets.onboardingBizzieMascotFoundCompanies,
+                          height: 238, // Match WelcomePage
+                          fit: BoxFit.contain,
                         ),
-                        elevation: 0,
-                      ),
-                      child: const Text(
-                        'Continue',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 17,
-                          fontWeight: FontWeight.w600,
+                        const SizedBox(height: 32),
+                        // Header
+                        Text(
+                          'Bizzie found $companyCount ${companyCount == 1 ? 'company' : 'companies'}',
+                          style: const TextStyle(
+                            fontFamily: 'Inter',
+                            fontSize: 36,
+                            fontWeight: FontWeight.w800,
+                            height: 1.2, // 43.2px / 36px
+                            letterSpacing: 0.369,
+                            color: AppColors.textPrimary,
+                          ),
                         ),
+                        const SizedBox(height: 12),
+                        Text(
+                          isSingle
+                              ? 'Check out the company that makes the product you love below!'
+                              : 'Check out the companies that make the products you love!',
+                          style: AppTextStyles.bodyLarge.copyWith(
+                            color: AppColors.textSecondary,
+                          ),
+                        ),
+                        const SizedBox(height: 32),
+
+                        // Companies List/Card
+                        if (isSingle) ...[
+                          _SingleCompanyCard(company: companies.first),
+                          const Spacer(),
+                        ] else
+                          _MultipleCompaniesList(companies: companies),
+                      ],
+                    ),
+                  ),
+                ),
+                OnboardingFooter(
+                  primaryButton: ElevatedButton(
+                    onPressed: () {
+                      context.push(AppRoutes.onboardingAddingWatchlist);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.primary,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      elevation: 0,
+                    ),
+                    child: const Text(
+                      'Continue',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 17,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
                   ),
-                  const SizedBox(height: 32),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         );
@@ -133,14 +127,15 @@ class _SingleCompanyCard extends StatelessWidget {
             width: 48,
             height: 48,
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: const Color(0xFFDBEAFE),
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: AppColors.inputBorder),
             ),
             child: Center(
-              child: Text(
-                company.ticker.substring(0, 1),
-                style: AppTextStyles.h3,
+              child: Image.asset(
+                AppAssets.arrowUpIcon,
+                width: 24,
+                height: 24,
+                color: AppColors.primary,
               ),
             ),
           ),
@@ -153,36 +148,20 @@ class _SingleCompanyCard extends StatelessWidget {
                   company.name,
                   style: AppTextStyles.bodyLarge.copyWith(
                     fontWeight: FontWeight.w600,
+                    color: AppColors.textPrimary,
                   ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
                 Text(
                   company.ticker,
                   style: AppTextStyles.bodySmall.copyWith(
                     color: AppColors.textTertiary,
-                    fontWeight: FontWeight.bold,
+                    fontWeight: FontWeight.normal,
                   ),
                 ),
               ],
             ),
-          ),
-          // Placeholder for Price/Change
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Text(
-                '\$152.00', // Mock
-                style: AppTextStyles.bodyMedium.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              Text(
-                '+2.4%', // Mock
-                style: AppTextStyles.bodySmall.copyWith(
-                  color: Colors.green,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ],
           ),
         ],
       ),
@@ -197,8 +176,7 @@ class _MultipleCompaniesList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 180, // Constrain height for horizontal or vertical
+    return Expanded(
       child: ListView.separated(
         scrollDirection: Axis.vertical,
         itemCount: companies.length,

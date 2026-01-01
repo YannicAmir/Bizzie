@@ -34,6 +34,12 @@ class AppAssets {
       'assets/images/onboarding/favorite_brands_icon.png';
   static const String investorClassificationIcon =
       'assets/images/onboarding/investor_classification_icon.png';
+  static const String onboardingLargeCheckIcon =
+      'assets/images/onboarding/onboarding_large_check_icon.png';
+  static const String onboardingLargePlusIcon =
+      'assets/images/onboarding/onboarding_large_plus_icon.png';
+  static const String arrowDownIcon =
+      'assets/images/onboarding/arrow_down_icon.png';
 
   // Shared
   static const String backArrowIcon =
@@ -69,4 +75,5 @@ class AppAssets {
       'assets/images/shared/bizzie_mascot_real_estate.png';
   static const String bizzieMascotUtilities =
       'assets/images/shared/bizzie_mascot_utilities.png';
+  static const String bellIcon = 'assets/images/shared/bell_icon.png';
 }

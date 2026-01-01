@@ -70,11 +70,12 @@ class ProfileReadyPage extends StatelessWidget {
                             color: AppColors.textPrimary,
                           ),
                           children: [
-                            const TextSpan(text: 'Your profile is ready,\n'),
+                            const TextSpan(text: 'Your profile is ready, '),
                             TextSpan(
-                              text: '$firstName !',
+                              text: firstName,
                               style: const TextStyle(color: AppColors.primary),
                             ),
+                            const TextSpan(text: '!'),
                           ],
                         ),
                       ),
@@ -83,7 +84,7 @@ class ProfileReadyPage extends StatelessWidget {
 
                       // Description
                       Text(
-                        'We have personalized your daily list of stocks & brands from your favorite sector.',
+                        'We have personalized Bizzie just for you. Let\'s get started!',
                         style: AppTextStyles.bodyLarge.copyWith(
                           fontSize: 17,
                           color: AppColors.textSecondary,

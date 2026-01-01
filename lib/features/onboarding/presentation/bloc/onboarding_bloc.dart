@@ -72,7 +72,20 @@ class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
     Emitter<OnboardingState> emit,
   ) async {
     // Reset simulation
-    emit(state.copyWith(analysisStep: 0, isAnalyzingBrands: true));
+    // Also Populate detected companies from selected brands here to ensure they represent user selection
+    final detectedCompanies = state.selectedBrands
+        .map((brand) => Company(ticker: brand.ticker, name: brand.company))
+        .toList();
+
+    emit(
+      state.copyWith(
+        analysisStep: 0,
+        isAnalyzingBrands: true,
+        onboardingData: state.onboardingData.copyWith(
+          detectedCompanies: detectedCompanies,
+        ),
+      ),
+    );
 
     // Simulate Step 1: Gathering brands (1.5s)
     await Future.delayed(const Duration(milliseconds: 1500));
@@ -117,7 +130,7 @@ class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
       // Calculate delay based on whether it is the last step
       // A bit of delay for simulation effect for each item
       if (i < count) {
-        await Future.delayed(const Duration(milliseconds: 1000));
+        await Future.delayed(const Duration(milliseconds: 1500));
       }
     }
     // Final small delay before completion state if desired, or handled in UI
