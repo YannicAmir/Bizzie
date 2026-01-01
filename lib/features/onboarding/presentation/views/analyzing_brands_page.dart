@@ -4,6 +4,7 @@ import 'package:bizzie/app/themes/app_text_styles.dart';
 import 'package:bizzie/features/onboarding/presentation/bloc/onboarding_bloc.dart';
 import 'package:bizzie/app/routes/app_routes.dart';
 import 'package:bizzie/features/onboarding/presentation/widgets/onboarding_footer.dart';
+import '../widgets/onboarding_header.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -50,26 +51,22 @@ class _AnalyzingBrandsPageState extends State<AnalyzingBrandsPage> {
           return SafeArea(
             child: Column(
               children: [
+                OnboardingHeader(
+                  progressIndicator: LinearProgressIndicator(
+                    value: 6 / 14,
+                    backgroundColor: AppColors.slate200,
+                    color: AppColors.primary,
+                    minHeight: 4,
+                  ),
+                  title: title,
+                ),
                 Expanded(
                   child: Padding(
                     padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const SizedBox(height: 160),
-                        // Header
-                        SizedBox(
-                          height: 80, // Fixed height to prevent jumpiness
-                          child: Text(
-                            title,
-                            style: AppTextStyles.h1.copyWith(
-                              color: AppColors.textPrimary,
-                              height: 1.2,
-                              fontSize: 32,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 8),
+                        const SizedBox(height: 48),
 
                         // Analysis Steps List
                         _AnalysisStepItem(

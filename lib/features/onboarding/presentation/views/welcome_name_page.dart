@@ -7,6 +7,7 @@ import '../../../../app/themes/app_colors.dart';
 import '../../../../app/themes/app_text_styles.dart';
 import '../bloc/onboarding_bloc.dart';
 import '../widgets/onboarding_footer.dart';
+import '../widgets/onboarding_header.dart';
 
 class WelcomeNamePage extends StatelessWidget {
   const WelcomeNamePage({super.key});
@@ -23,57 +24,70 @@ class WelcomeNamePage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Spacer(),
-
-                // Mascot
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                  child: Image.asset(
-                    AppAssets.onboardingBizzieMascotWelcome,
-                    height: 238, // Reduced by 15% (280 * 0.85)
-                    fit: BoxFit.contain,
+                OnboardingHeader(
+                  progressIndicator: LinearProgressIndicator(
+                    value: 2 / 14,
+                    backgroundColor: AppColors.slate200,
+                    color: AppColors.primary,
+                    minHeight: 4,
                   ),
                 ),
-
-                const SizedBox(height: 32),
-
-                // Text Content
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                Expanded(
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Rich Text for "Glad you joined us, Name !"
-                      RichText(
-                        text: TextSpan(
-                          style: AppTextStyles.h1.copyWith(
-                            fontSize: 40,
-                            height: 1.2,
-                            letterSpacing: 0.406,
-                          ),
+                      const Spacer(),
+
+                      // Mascot
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                        child: Image.asset(
+                          AppAssets.onboardingBizzieMascotWelcome,
+                          height: 238, // Reduced by 15% (280 * 0.85)
+                          fit: BoxFit.contain,
+                        ),
+                      ),
+
+                      const SizedBox(height: 32),
+
+                      // Text Content
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const TextSpan(text: 'Glad you joined us,\n'),
-                            TextSpan(
-                              text: firstName,
-                              style: TextStyle(color: AppColors.primary),
+                            // Rich Text for "Glad you joined us, Name !"
+                            RichText(
+                              text: TextSpan(
+                                style: AppTextStyles.h1.copyWith(
+                                  fontSize: 40,
+                                  height: 1.2,
+                                  letterSpacing: 0.406,
+                                ),
+                                children: [
+                                  const TextSpan(text: 'Glad you joined us,\n'),
+                                  TextSpan(
+                                    text: firstName,
+                                    style: TextStyle(color: AppColors.primary),
+                                  ),
+                                  const TextSpan(text: '!'),
+                                ],
+                              ),
                             ),
-                            const TextSpan(text: '!'),
+                            const SizedBox(height: 16),
+                            Text(
+                              "Let's take on the Stock Market together",
+                              style: AppTextStyles.bodyLarge.copyWith(
+                                color: AppColors.textSecondary,
+                              ),
+                            ),
                           ],
                         ),
                       ),
-                      const SizedBox(height: 16),
-                      Text(
-                        "Let's take on the Stock Market together",
-                        style: AppTextStyles.bodyLarge.copyWith(
-                          color: AppColors.textSecondary,
-                        ),
-                      ),
+
+                      const Spacer(),
                     ],
                   ),
                 ),
-
-                const Spacer(),
-
                 // Footer
                 OnboardingFooter(
                   primaryButton: FilledButton(

@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:bizzie/app/themes/app_assets.dart';
+import '../widgets/onboarding_header.dart';
 
 class BuildingProfilePage extends StatefulWidget {
   const BuildingProfilePage({super.key});
@@ -125,155 +126,172 @@ class _BuildingProfilePageState extends State<BuildingProfilePage>
           backgroundColor: Colors.white,
           body: SafeArea(
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // Carousel Items (Top)
-                // Carousel Items (Top)
-                SizedBox(
-                  height: 110, // Reduced height for Card
-                  child: PageView.builder(
-                    controller: _pageController,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: carouselItems.length,
-                    itemBuilder: (context, index) {
-                      final item = carouselItems[index];
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                        child: Container(
-                          padding: const EdgeInsets.all(16),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(16),
-                            border: Border.all(
-                              color: const Color(0xFFDBEAFE),
-                              width: 1,
-                            ),
-                          ),
-                          child: Row(
-                            children: [
-                              // Icon with Gradient Background
-                              Container(
-                                width: 48,
-                                height: 48,
-                                decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                    begin: Alignment.topLeft,
-                                    end: Alignment.bottomRight,
-                                    colors: item.gradientColors,
-                                  ),
-                                  borderRadius: BorderRadius.circular(14),
-                                ),
-                                child: Center(
-                                  child: Image.asset(
-                                    item.iconAsset,
-                                    width: 24,
-                                    height: 24,
-                                    errorBuilder: (c, o, s) => const Icon(
-                                      Icons.check_circle,
-                                      size: 24,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ),
+                OnboardingHeader(
+                  progressIndicator: LinearProgressIndicator(
+                    value: 13 / 14,
+                    backgroundColor: AppColors.slate200,
+                    color: AppColors.primary,
+                    minHeight: 4,
+                  ),
+                ),
+                Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      // Carousel Items (Top)
+                      SizedBox(
+                        height: 110, // Reduced height for Card
+                        child: PageView.builder(
+                          controller: _pageController,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: carouselItems.length,
+                          itemBuilder: (context, index) {
+                            final item = carouselItems[index];
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 24.0,
                               ),
-                              const SizedBox(width: 12),
-                              // Text Content
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.center,
+                              child: Container(
+                                padding: const EdgeInsets.all(16),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(16),
+                                  border: Border.all(
+                                    color: const Color(0xFFDBEAFE),
+                                    width: 1,
+                                  ),
+                                ),
+                                child: Row(
                                   children: [
-                                    // Label (Subtitle)
-                                    Text(
-                                      item.subtitle,
-                                      style: const TextStyle(
-                                        fontFamily: 'Inter',
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w500,
-                                        color: Color(0xFF62748E),
-                                        height: 1.5, // 18px / 12px
+                                    // Icon with Gradient Background
+                                    Container(
+                                      width: 48,
+                                      height: 48,
+                                      decoration: BoxDecoration(
+                                        gradient: LinearGradient(
+                                          begin: Alignment.topLeft,
+                                          end: Alignment.bottomRight,
+                                          colors: item.gradientColors,
+                                        ),
+                                        borderRadius: BorderRadius.circular(14),
+                                      ),
+                                      child: Center(
+                                        child: Image.asset(
+                                          item.iconAsset,
+                                          width: 24,
+                                          height: 24,
+                                          errorBuilder: (c, o, s) => const Icon(
+                                            Icons.check_circle,
+                                            size: 24,
+                                            color: Colors.white,
+                                          ),
+                                        ),
                                       ),
                                     ),
-                                    // Value (Title)
-                                    Text(
-                                      item.title,
-                                      style: const TextStyle(
-                                        fontFamily: 'Inter',
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w600,
-                                        color: Color(0xFF0F172B),
-                                        height: 1.5, // 24px / 16px
-                                        letterSpacing: -0.3125,
+                                    const SizedBox(width: 12),
+                                    // Text Content
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          // Label (Subtitle)
+                                          Text(
+                                            item.subtitle,
+                                            style: const TextStyle(
+                                              fontFamily: 'Inter',
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w500,
+                                              color: Color(0xFF62748E),
+                                              height: 1.5, // 18px / 12px
+                                            ),
+                                          ),
+                                          // Value (Title)
+                                          Text(
+                                            item.title,
+                                            style: const TextStyle(
+                                              fontFamily: 'Inter',
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w600,
+                                              color: Color(0xFF0F172B),
+                                              height: 1.5, // 24px / 16px
+                                              letterSpacing: -0.3125,
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ),
                                   ],
                                 ),
                               ),
-                            ],
-                          ),
+                            );
+                          },
                         ),
-                      );
-                    },
-                  ),
-                ),
+                      ),
 
-                const SizedBox(height: 48),
+                      const SizedBox(height: 48),
 
-                // Progress Indicator + "Building your profile" Text
-                SizedBox(
-                  width: 340, // Increased size
-                  height: 340,
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      // Circular Progress Indicator
+                      // Progress Indicator + "Building your profile" Text
                       SizedBox(
-                        width: 340,
+                        width: 340, // Increased size
                         height: 340,
-                        child: CircularProgressIndicator(
-                          value: _progressAnimation.value,
-                          strokeWidth: 15,
-                          backgroundColor: AppColors.slate100,
+                        child: Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            // Circular Progress Indicator
+                            SizedBox(
+                              width: 340,
+                              height: 340,
+                              child: CircularProgressIndicator(
+                                value: _progressAnimation.value,
+                                strokeWidth: 15,
+                                backgroundColor: AppColors.slate100,
+                                color: AppColors.primary,
+                                strokeCap: StrokeCap.round,
+                              ),
+                            ),
+                            // Center Text
+                            Padding(
+                              padding: const EdgeInsets.all(40.0),
+                              child: Text(
+                                'Building your profile',
+                                style: AppTextStyles.h2.copyWith(
+                                  fontSize: 28,
+                                  fontWeight: FontWeight.w800,
+                                  color: AppColors.textPrimary,
+                                  height: 1.2,
+                                  letterSpacing: 0.383,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      const SizedBox(height: 32),
+
+                      // Percentage Text (Bottom)
+                      Text(
+                        '   ${(_progressAnimation.value * 100).toInt()}%',
+                        style: AppTextStyles.bodyLarge.copyWith(
+                          fontWeight: FontWeight.w900,
+                          fontSize: 20,
+                          height: 1.5, // 30px / 20px
+                          letterSpacing: -0.449,
                           color: AppColors.primary,
-                          strokeCap: StrokeCap.round,
                         ),
                       ),
-                      // Center Text
-                      Padding(
-                        padding: const EdgeInsets.all(40.0),
-                        child: Text(
-                          'Building your profile',
-                          style: AppTextStyles.h2.copyWith(
-                            fontSize: 28,
-                            fontWeight: FontWeight.w800,
-                            color: AppColors.textPrimary,
-                            height: 1.2,
-                            letterSpacing: 0.383,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
+
+                      const SizedBox(height: 32),
+
+                      const SizedBox(height: 24),
                     ],
                   ),
                 ),
-
-                const SizedBox(height: 32),
-
-                // Percentage Text (Bottom)
-                Text(
-                  '   ${(_progressAnimation.value * 100).toInt()}%',
-                  style: AppTextStyles.bodyLarge.copyWith(
-                    fontWeight: FontWeight.w900,
-                    fontSize: 20,
-                    height: 1.5, // 30px / 20px
-                    letterSpacing: -0.449,
-                    color: AppColors.primary,
-                  ),
-                ),
-
-                const SizedBox(height: 32),
-
-                const SizedBox(height: 24),
               ],
             ),
           ),

@@ -80,8 +80,8 @@ class _SectorSelectionPageState extends State<SectorSelectionPage> {
               children: [
                 OnboardingHeader(
                   progressIndicator: LinearProgressIndicator(
-                    value: 0.25,
-                    backgroundColor: AppColors.background,
+                    value: 3 / 14,
+                    backgroundColor: AppColors.slate200,
                     color: AppColors.primary,
                     minHeight: 4,
                   ),

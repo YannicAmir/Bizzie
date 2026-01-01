@@ -15,6 +15,7 @@ import '../widgets/social_login_buttons.dart';
 import 'package:bizzie/features/onboarding/presentation/bloc/onboarding_bloc.dart';
 import 'package:bizzie/features/onboarding/presentation/utils/onboarding_assets_helper.dart';
 import 'package:bizzie/app/themes/app_assets.dart';
+import 'package:bizzie/features/onboarding/presentation/widgets/onboarding_header.dart';
 
 class CreateAccountPage extends StatelessWidget {
   const CreateAccountPage({super.key});
@@ -42,9 +43,15 @@ class CreateAccountPage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const _TopOnboardingBar(),
-                const SizedBox(height: 24),
-                const SizedBox(height: 24),
+                OnboardingHeader(
+                  progressIndicator: LinearProgressIndicator(
+                    value: 12 / 14,
+                    backgroundColor: AppColors.slate200,
+                    color: AppColors.primary,
+                    minHeight: 4,
+                  ),
+                ),
+                const SizedBox(height: 40),
 
                 // Removed _BackButton as requested
                 Padding(
@@ -100,27 +107,7 @@ class CreateAccountPage extends StatelessWidget {
   }
 }
 
-class _TopOnboardingBar extends StatelessWidget {
-  const _TopOnboardingBar();
-
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Container(
-          width: double.infinity,
-          height: 4,
-          color: AppColors.inputBorder,
-        ),
-        Container(
-          width: MediaQuery.of(context).size.width * 0.8,
-          height: 4,
-          color: AppColors.primary,
-        ),
-      ],
-    );
-  }
-}
+// _TopOnboardingBar removed
 
 class _CreateAccountHeader extends StatelessWidget {
   const _CreateAccountHeader();

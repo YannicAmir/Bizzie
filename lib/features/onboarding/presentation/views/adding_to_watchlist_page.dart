@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:bizzie/app/routes/app_routes.dart';
+import '../widgets/onboarding_header.dart';
 
 enum _WatchlistStepState { pending, active, completed }
 
@@ -64,146 +65,164 @@ class _AddingToWatchlistPageState extends State<AddingToWatchlistPage> {
         return Scaffold(
           backgroundColor: Colors.white,
           body: SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: 48),
-                  // Heading
-                  Center(
-                    child: Container(
-                      width: 96,
-                      height: 96,
-                      decoration: BoxDecoration(
-                        gradient: const LinearGradient(
-                          colors: [Color(0xFF2B7FFF), Color(0xFF155DFC)],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                        ),
-                        borderRadius: BorderRadius.circular(24),
-                      ),
-                      child: Center(
-                        child: isComplete
-                            ? Image.asset(
-                                AppAssets.onboardingLargeCheckIcon,
-                                width: 50,
-                                height: 50,
-                                fit: BoxFit.contain,
-                                color: Colors.white,
-                              )
-                            : Image.asset(
-                                AppAssets.onboardingLargePlusIcon,
-                                width: 50,
-                                height: 50,
-                                fit: BoxFit.contain,
-                                color: Colors.white,
+            child: Column(
+              children: [
+                OnboardingHeader(
+                  progressIndicator: LinearProgressIndicator(
+                    value: 8 / 14,
+                    backgroundColor: AppColors.slate200,
+                    color: AppColors.primary,
+                    minHeight: 4,
+                  ),
+                ),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(height: 48),
+                        // Heading
+                        Center(
+                          child: Container(
+                            width: 96,
+                            height: 96,
+                            decoration: BoxDecoration(
+                              gradient: const LinearGradient(
+                                colors: [Color(0xFF2B7FFF), Color(0xFF155DFC)],
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
                               ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-                  Text(
-                    isComplete ? 'Added to Watchlist' : 'Adding to Watchlist',
-                    style: AppTextStyles.h1,
-                  ),
-                  const SizedBox(height: 12),
-                  Text(
-                    isComplete
-                        ? 'Added the companies Bizzie found to your personal watchlist.'
-                        : 'Adding the companies Bizzie found to your personal watchlist.',
-                    style: AppTextStyles.bodyLarge.copyWith(
-                      color: AppColors.textSecondary,
-                    ),
-                  ),
-                  const SizedBox(height: 32),
-
-                  // Companies List
-                  Expanded(
-                    child: ListView.separated(
-                      itemCount: companies.length,
-                      separatorBuilder: (_, __) => const SizedBox(height: 12),
-                      itemBuilder: (context, index) {
-                        _WatchlistStepState itemState;
-                        if (index < step) {
-                          itemState = _WatchlistStepState.completed;
-                        } else if (index == step) {
-                          itemState = _WatchlistStepState.active;
-                        } else {
-                          itemState = _WatchlistStepState.pending;
-                        }
-
-                        return _WatchlistItem(
-                          company: companies[index],
-                          state: itemState,
-                        );
-                      },
-                    ),
-                  ),
-
-                  const SizedBox(height: 24),
-
-                  // Progress Bar or Button
-                  if (!isComplete) ...[
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(4),
-                      child: SizedBox(
-                        height: 8,
-                        child: TweenAnimationBuilder<double>(
-                          tween: Tween<double>(
-                            begin: 0,
-                            // Target: "step" items done. We want smooth fill for the current "active" item.
-                            // If step = 0 (Item 0 active), we want to animate 0 -> 1/total.
-                            // So end = (step + 1) / total.
-                            end: total > 0 ? (step + 1) / total : 0,
+                              borderRadius: BorderRadius.circular(24),
+                            ),
+                            child: Center(
+                              child: isComplete
+                                  ? Image.asset(
+                                      AppAssets.onboardingLargeCheckIcon,
+                                      width: 50,
+                                      height: 50,
+                                      fit: BoxFit.contain,
+                                      color: Colors.white,
+                                    )
+                                  : Image.asset(
+                                      AppAssets.onboardingLargePlusIcon,
+                                      width: 50,
+                                      height: 50,
+                                      fit: BoxFit.contain,
+                                      color: Colors.white,
+                                    ),
+                            ),
                           ),
-                          duration: const Duration(milliseconds: 1500),
-                          curve: Curves.linear,
-                          builder: (context, value, _) {
-                            return LinearProgressIndicator(
-                              value: value.clamp(0.0, 1.0),
-                              backgroundColor: AppColors.inputBackground,
-                              valueColor: const AlwaysStoppedAnimation<Color>(
-                                AppColors.primary,
+                        ),
+                        const SizedBox(height: 24),
+                        Text(
+                          isComplete
+                              ? 'Added to Watchlist'
+                              : 'Adding to Watchlist',
+                          style: AppTextStyles.h1,
+                        ),
+                        const SizedBox(height: 12),
+                        Text(
+                          isComplete
+                              ? 'Added the companies Bizzie found to your personal watchlist.'
+                              : 'Adding the companies Bizzie found to your personal watchlist.',
+                          style: AppTextStyles.bodyLarge.copyWith(
+                            color: AppColors.textSecondary,
+                          ),
+                        ),
+                        const SizedBox(height: 32),
+
+                        // Companies List
+                        Expanded(
+                          child: ListView.separated(
+                            itemCount: companies.length,
+                            separatorBuilder: (_, __) =>
+                                const SizedBox(height: 12),
+                            itemBuilder: (context, index) {
+                              _WatchlistStepState itemState;
+                              if (index < step) {
+                                itemState = _WatchlistStepState.completed;
+                              } else if (index == step) {
+                                itemState = _WatchlistStepState.active;
+                              } else {
+                                itemState = _WatchlistStepState.pending;
+                              }
+
+                              return _WatchlistItem(
+                                company: companies[index],
+                                state: itemState,
+                              );
+                            },
+                          ),
+                        ),
+
+                        const SizedBox(height: 24),
+
+                        // Progress Bar or Button
+                        if (!isComplete) ...[
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(4),
+                            child: SizedBox(
+                              height: 8,
+                              child: TweenAnimationBuilder<double>(
+                                tween: Tween<double>(
+                                  begin: 0,
+                                  // Target: "step" items done. We want smooth fill for the current "active" item.
+                                  // If step = 0 (Item 0 active), we want to animate 0 -> 1/total.
+                                  // So end = (step + 1) / total.
+                                  end: total > 0 ? (step + 1) / total : 0,
+                                ),
+                                duration: const Duration(milliseconds: 1500),
+                                curve: Curves.linear,
+                                builder: (context, value, _) {
+                                  return LinearProgressIndicator(
+                                    value: value.clamp(0.0, 1.0),
+                                    backgroundColor: AppColors.inputBackground,
+                                    valueColor:
+                                        const AlwaysStoppedAnimation<Color>(
+                                          AppColors.primary,
+                                        ),
+                                  );
+                                },
                               ),
-                            );
-                          },
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 16,
-                    ), // Adding some bottom padding for the bar
-                  ] else ...[
-                    SizedBox(
-                      width: double.infinity,
-                      height: 56,
-                      child: ElevatedButton(
-                        onPressed: () {
-                          // TODO: Navigate to notification request or next step
-                          context.go(AppRoutes.notificationRequest);
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.primary,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16),
+                            ),
                           ),
-                          elevation: 0,
-                        ),
-                        child: const Text(
-                          'Continue',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 17,
-                            fontWeight: FontWeight.w600,
+                          const SizedBox(
+                            height: 16,
+                          ), // Adding some bottom padding for the bar
+                        ] else ...[
+                          SizedBox(
+                            width: double.infinity,
+                            height: 56,
+                            child: ElevatedButton(
+                              onPressed: () {
+                                // TODO: Navigate to notification request or next step
+                                context.go(AppRoutes.notificationRequest);
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: AppColors.primary,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(16),
+                                ),
+                                elevation: 0,
+                              ),
+                              child: const Text(
+                                'Continue',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
                           ),
-                        ),
-                      ),
+                        ],
+                        const SizedBox(height: 32),
+                      ],
                     ),
-                  ],
-                  const SizedBox(height: 32),
-                ],
-              ),
+                  ),
+                ),
+              ],
             ),
           ),
         );

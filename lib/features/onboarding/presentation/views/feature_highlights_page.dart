@@ -12,6 +12,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:bizzie/app/routes/app_routes.dart';
 import 'package:bizzie/features/onboarding/presentation/widgets/onboarding_footer.dart';
+import '../widgets/onboarding_header.dart';
 
 class FeatureHighlightsPage extends StatefulWidget {
   const FeatureHighlightsPage({super.key});
@@ -140,46 +141,36 @@ class _FeatureHighlightsPageState extends State<FeatureHighlightsPage> {
           body: SafeArea(
             child: Column(
               children: [
-                // Top Bar with Skip
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(24, 16, 24, 0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      GestureDetector(
-                        onTap: () => context.pop(),
-                        child: Container(
-                          padding: const EdgeInsets.all(8),
-                          child: Image.asset(
-                            AppAssets.backArrowIcon,
-                            width: 24,
-                            height: 24,
-                          ),
+                // Top Bar with Skip (Replaced by OnboardingHeader)
+                OnboardingHeader(
+                  progressIndicator: LinearProgressIndicator(
+                    value: 11 / 14,
+                    backgroundColor: AppColors.slate200,
+                    color: AppColors.primary,
+                    minHeight: 4,
+                  ),
+                  onBackPressed: () => context.pop(),
+                  trailing: GestureDetector(
+                    onTap: () => context.go(AppRoutes.createAccount),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 8,
+                      ),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFF1F5F9),
+                        borderRadius: BorderRadius.circular(22),
+                      ),
+                      child: const Text(
+                        'Skip',
+                        style: TextStyle(
+                          color: Color(0xFF314158),
+                          fontSize: 15,
+                          fontWeight: FontWeight.w600,
+                          fontFamily: 'Inter',
                         ),
                       ),
-                      GestureDetector(
-                        onTap: () => context.go(AppRoutes.createAccount),
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 8,
-                          ),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFF1F5F9),
-                            borderRadius: BorderRadius.circular(22),
-                          ),
-                          child: const Text(
-                            'Skip',
-                            style: TextStyle(
-                              color: Color(0xFF314158),
-                              fontSize: 15,
-                              fontWeight: FontWeight.w600,
-                              fontFamily: 'Inter',
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
                 ),
                 SizedBox(height: 24),

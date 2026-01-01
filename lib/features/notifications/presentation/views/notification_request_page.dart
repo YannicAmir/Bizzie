@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:bizzie/app/themes/app_colors.dart';
 import 'package:bizzie/app/themes/app_text_styles.dart';
 import 'package:bizzie/features/notifications/presentation/bloc/notification_bloc.dart';
+import 'package:bizzie/features/onboarding/presentation/widgets/onboarding_header.dart';
 import 'package:bizzie/app/routes/app_routes.dart';
 
 class NotificationRequestPage extends StatelessWidget {
@@ -22,15 +23,23 @@ class NotificationRequestPage extends StatelessWidget {
         body: SafeArea(
           child: Column(
             children: [
-              const _ProgressBar(),
+              OnboardingHeader(
+                progressIndicator: LinearProgressIndicator(
+                  value: 9 / 14,
+                  backgroundColor: AppColors.slate200,
+                  color: AppColors.primary,
+                  minHeight: 4,
+                ),
+                onBackPressed: () => context.pop(),
+              ),
               Expanded(
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 24.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: const [
+                      // Space replaced by Header
                       SizedBox(height: 24),
-                      _BackButton(),
                       SizedBox(height: 64),
                       _NotificationCard(),
                       Spacer(),
@@ -50,50 +59,7 @@ class NotificationRequestPage extends StatelessWidget {
   }
 }
 
-class _ProgressBar extends StatelessWidget {
-  const _ProgressBar();
-
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Container(width: double.infinity, height: 4, color: AppColors.slate200),
-        Container(
-          width:
-              MediaQuery.of(context).size.width * 0.75, // Approximated progress
-          height: 4,
-          color: AppColors.primary,
-        ),
-      ],
-    );
-  }
-}
-
-class _BackButton extends StatelessWidget {
-  const _BackButton();
-
-  @override
-  Widget build(BuildContext context) {
-    return Align(
-      alignment: Alignment.centerLeft,
-      child: Container(
-        width: 40,
-        height: 40,
-        decoration: BoxDecoration(
-          color: AppColors.transparent,
-          borderRadius: BorderRadius.circular(14),
-        ),
-        child: IconButton(
-          onPressed: () => context.pop(),
-          icon: const Icon(Icons.arrow_back_ios_new, size: 20),
-          color: AppColors.slate900,
-          padding: EdgeInsets.zero,
-          constraints: const BoxConstraints(),
-        ),
-      ),
-    );
-  }
-}
+// _ProgressBar and _BackButton removed
 
 class _NotificationCard extends StatelessWidget {
   const _NotificationCard();

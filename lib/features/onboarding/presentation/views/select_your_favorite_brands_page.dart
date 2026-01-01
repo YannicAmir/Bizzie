@@ -10,16 +10,16 @@ import 'package:bizzie/app/routes/app_routes.dart';
 import 'package:bizzie/features/onboarding/presentation/widgets/onboarding_header.dart';
 import 'package:bizzie/features/onboarding/presentation/widgets/onboarding_footer.dart';
 
-class NameYourFavoriteBrandsPage extends StatefulWidget {
-  const NameYourFavoriteBrandsPage({super.key});
+class SelectYourFavoriteBrandsPage extends StatefulWidget {
+  const SelectYourFavoriteBrandsPage({super.key});
 
   @override
-  State<NameYourFavoriteBrandsPage> createState() =>
-      _NameYourFavoriteBrandsPageState();
+  State<SelectYourFavoriteBrandsPage> createState() =>
+      _SelectYourFavoriteBrandsPageState();
 }
 
-class _NameYourFavoriteBrandsPageState
-    extends State<NameYourFavoriteBrandsPage> {
+class _SelectYourFavoriteBrandsPageState
+    extends State<SelectYourFavoriteBrandsPage> {
   // Removed _customBrandController as requested
 
   @override
@@ -56,6 +56,12 @@ class _NameYourFavoriteBrandsPageState
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const OnboardingHeader(
+                  progressIndicator: LinearProgressIndicator(
+                    value: 5 / 14,
+                    backgroundColor: AppColors.slate200,
+                    color: AppColors.primary,
+                    minHeight: 4,
+                  ),
                   title: 'Select your favorite brands & product',
                   subtitle: 'Select up to 5. You can search for more later',
                   // No back button as requested

@@ -8,6 +8,7 @@ import '../../../../app/themes/app_colors.dart';
 import '../../../../app/themes/app_assets.dart';
 import '../utils/onboarding_assets_helper.dart';
 import '../widgets/onboarding_footer.dart';
+import '../widgets/onboarding_header.dart';
 
 class MeetYourBizziePage extends StatefulWidget {
   const MeetYourBizziePage({super.key});
@@ -37,6 +38,14 @@ class _MeetYourBizziePageState extends State<MeetYourBizziePage> {
           body: SafeArea(
             child: Column(
               children: [
+                OnboardingHeader(
+                  progressIndicator: LinearProgressIndicator(
+                    value: 4 / 14,
+                    backgroundColor: AppColors.slate200,
+                    color: AppColors.primary,
+                    minHeight: 4,
+                  ),
+                ),
                 Expanded(
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 24.0),

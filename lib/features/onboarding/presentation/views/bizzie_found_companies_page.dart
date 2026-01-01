@@ -10,6 +10,7 @@ import 'package:bizzie/app/routes/app_routes.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:bizzie/features/onboarding/presentation/widgets/onboarding_footer.dart';
+import '../widgets/onboarding_header.dart';
 
 class BizzieFoundCompaniesPage extends StatelessWidget {
   const BizzieFoundCompaniesPage({super.key});
@@ -29,39 +30,32 @@ class BizzieFoundCompaniesPage extends StatelessWidget {
           body: SafeArea(
             child: Column(
               children: [
+                OnboardingHeader(
+                  progressIndicator: LinearProgressIndicator(
+                    value: 7 / 14,
+                    backgroundColor: AppColors.slate200,
+                    color: AppColors.primary,
+                    minHeight: 4,
+                  ),
+                  title:
+                      'Bizzie found $companyCount ${companyCount == 1 ? 'company' : 'companies'}',
+                  subtitle: isSingle
+                      ? 'Check out the company that makes the product you love below!'
+                      : 'Check out the companies that make the products you love!',
+                ),
                 Expanded(
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 24.0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const SizedBox(height: 64),
-                        // Mascot Image
-                        Image.asset(
-                          AppAssets.onboardingBizzieMascotFoundCompanies,
-                          height: 238, // Match WelcomePage
-                          fit: BoxFit.contain,
-                        ),
                         const SizedBox(height: 32),
-                        // Header
-                        Text(
-                          'Bizzie found $companyCount ${companyCount == 1 ? 'company' : 'companies'}',
-                          style: const TextStyle(
-                            fontFamily: 'Inter',
-                            fontSize: 36,
-                            fontWeight: FontWeight.w800,
-                            height: 1.2, // 43.2px / 36px
-                            letterSpacing: 0.369,
-                            color: AppColors.textPrimary,
-                          ),
-                        ),
-                        const SizedBox(height: 12),
-                        Text(
-                          isSingle
-                              ? 'Check out the company that makes the product you love below!'
-                              : 'Check out the companies that make the products you love!',
-                          style: AppTextStyles.bodyLarge.copyWith(
-                            color: AppColors.textSecondary,
+                        // Mascot Image
+                        Center(
+                          child: Image.asset(
+                            AppAssets.onboardingBizzieMascotFoundCompanies,
+                            height: 238, // Match WelcomePage
+                            fit: BoxFit.contain,
                           ),
                         ),
                         const SizedBox(height: 32),

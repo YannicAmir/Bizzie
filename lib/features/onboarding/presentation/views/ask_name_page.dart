@@ -57,8 +57,8 @@ class _AskNamePageState extends State<AskNamePage> {
           children: [
             OnboardingHeader(
               progressIndicator: LinearProgressIndicator(
-                value: 0.15,
-                backgroundColor: AppColors.background,
+                value: 1 / 14,
+                backgroundColor: AppColors.slate200,
                 color: AppColors.primary,
                 minHeight: 4,
               ),
