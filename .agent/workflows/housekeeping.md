@@ -23,7 +23,8 @@ description: Scans and refactors code to enforce strict theme usage (AppTheme, A
         *   Inline `TextStyle` (e.g., `TextStyle(fontSize: ...)`).
         *   Direct use of `AppColors` or `AppTextStyles` where `Theme.of(context)` would be more appropriate.
         *   Style implementations that *should* be in `ThemeData` in `lib/app/themes/app_theme.dart` but are missing.
-        *   **NEW:** Functions returning Widgets (e.g., `Widget _buildRow() { ... }`).
+        *   Functions returning Widgets (e.g., `Widget _buildRow() { ... }`).
+        *   **NEW:** Non-lifecycle helper functions defined in the Widget class (e.g., `_calculate()`, `_formatDate()`).
 
 2.  **Theme Expansion (If Needed):**
     *   If a missing theme property is identified (e.g., a specific button style or text variation that is hardcoded):
@@ -34,8 +35,10 @@ description: Scans and refactors code to enforce strict theme usage (AppTheme, A
     *   **Colors:** Replace hardcoded colors with `AppColors.constants` or `Theme.of(context).colorScheme.constant`.
     *   **TextStyles:** Replace inline styles with `AppTextStyles.constant` or `Theme.of(context).textTheme.constant`.
     *   **New Theme Props:** Immediately use the newly added theme properties from Step 2.
-    *   **Best Practices:** Convert helper methods returning Widgets into standalone Widget classes.
-        *   **CRITICAL:** Do NOT change any logic. Simply extract the widget structure.
+    *   **Widget Helpers:** Convert methods returning Widgets into standalone Widget classes.
+    *   **Logic Helpers:** Move non-lifecycle logic methods to:
+        *   `lib/features/[feature]/presentation/utils/[feature_name]_utils.dart` (for UI helpers).
+        *   Or suggest moving to BLoC if it is business logic (but do not touch BLoC files unless explicitly asked).
     *   **Cleanup:** Remove unused imports.
 
 4.  **Verify:**
@@ -43,4 +46,4 @@ description: Scans and refactors code to enforce strict theme usage (AppTheme, A
     *   Ensure the code looks clean and consistent.
 
 5.  **Final Report:**
-    *   Summarize changes made (e.g., "Replaced 3 hardcoded colors. Extracted 2 helper methods to widgets").
+    *   Summarize changes made (e.g., "Replaced 3 colors. Extracted 1 widget. Moved 2 helpers to utils").

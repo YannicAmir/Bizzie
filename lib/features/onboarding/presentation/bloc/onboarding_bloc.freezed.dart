@@ -55,7 +55,7 @@ extension OnboardingEventPatterns on OnboardingEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Started value)?  started,TResult Function( _NameSubmitted value)?  nameSubmitted,TResult Function( _SectorSelected value)?  sectorSelected,TResult Function( _UploadBrands value)?  uploadBrands,TResult Function( _LoadSp500History value)?  loadSp500History,TResult Function( _ConfirmWatchlist value)?  confirmWatchlist,TResult Function( _LoadBrands value)?  loadBrands,TResult Function( _ToggleBrand value)?  toggleBrand,TResult Function( _UpdateCustomBrandInput value)?  updateCustomBrandInput,TResult Function( _ExperienceSelected value)?  experienceSelected,TResult Function( _CompleteOnboarding value)?  completeOnboarding,TResult Function( _StartAnalysis value)?  startAnalysis,TResult Function( _UpdateAnalysisStep value)?  updateAnalysisStep,TResult Function( _StartWatchlistAddition value)?  startWatchlistAddition,TResult Function( _UpdateWatchlistStep value)?  updateWatchlistStep,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Started value)?  started,TResult Function( _NameSubmitted value)?  nameSubmitted,TResult Function( _SectorSelected value)?  sectorSelected,TResult Function( _UploadBrands value)?  uploadBrands,TResult Function( _LoadSp500History value)?  loadSp500History,TResult Function( _ConfirmWatchlist value)?  confirmWatchlist,TResult Function( _LoadBrands value)?  loadBrands,TResult Function( _ToggleBrand value)?  toggleBrand,TResult Function( _UpdateCustomBrandInput value)?  updateCustomBrandInput,TResult Function( _ExperienceSelected value)?  experienceSelected,TResult Function( _CompleteOnboarding value)?  completeOnboarding,TResult Function( _StartAnalysis value)?  startAnalysis,TResult Function( _UpdateAnalysisStep value)?  updateAnalysisStep,TResult Function( _StartWatchlistAddition value)?  startWatchlistAddition,TResult Function( _UpdateWatchlistStep value)?  updateWatchlistStep,TResult Function( _HighlightPageChanged value)?  highlightPageChanged,TResult Function( _HighlightContinuePressed value)?  highlightContinuePressed,TResult Function( _HighlightSkipPressed value)?  highlightSkipPressed,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _Started() when started != null:
@@ -73,7 +73,10 @@ return completeOnboarding(_that);case _StartAnalysis() when startAnalysis != nul
 return startAnalysis(_that);case _UpdateAnalysisStep() when updateAnalysisStep != null:
 return updateAnalysisStep(_that);case _StartWatchlistAddition() when startWatchlistAddition != null:
 return startWatchlistAddition(_that);case _UpdateWatchlistStep() when updateWatchlistStep != null:
-return updateWatchlistStep(_that);case _:
+return updateWatchlistStep(_that);case _HighlightPageChanged() when highlightPageChanged != null:
+return highlightPageChanged(_that);case _HighlightContinuePressed() when highlightContinuePressed != null:
+return highlightContinuePressed(_that);case _HighlightSkipPressed() when highlightSkipPressed != null:
+return highlightSkipPressed(_that);case _:
   return orElse();
 
 }
@@ -91,7 +94,7 @@ return updateWatchlistStep(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Started value)  started,required TResult Function( _NameSubmitted value)  nameSubmitted,required TResult Function( _SectorSelected value)  sectorSelected,required TResult Function( _UploadBrands value)  uploadBrands,required TResult Function( _LoadSp500History value)  loadSp500History,required TResult Function( _ConfirmWatchlist value)  confirmWatchlist,required TResult Function( _LoadBrands value)  loadBrands,required TResult Function( _ToggleBrand value)  toggleBrand,required TResult Function( _UpdateCustomBrandInput value)  updateCustomBrandInput,required TResult Function( _ExperienceSelected value)  experienceSelected,required TResult Function( _CompleteOnboarding value)  completeOnboarding,required TResult Function( _StartAnalysis value)  startAnalysis,required TResult Function( _UpdateAnalysisStep value)  updateAnalysisStep,required TResult Function( _StartWatchlistAddition value)  startWatchlistAddition,required TResult Function( _UpdateWatchlistStep value)  updateWatchlistStep,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Started value)  started,required TResult Function( _NameSubmitted value)  nameSubmitted,required TResult Function( _SectorSelected value)  sectorSelected,required TResult Function( _UploadBrands value)  uploadBrands,required TResult Function( _LoadSp500History value)  loadSp500History,required TResult Function( _ConfirmWatchlist value)  confirmWatchlist,required TResult Function( _LoadBrands value)  loadBrands,required TResult Function( _ToggleBrand value)  toggleBrand,required TResult Function( _UpdateCustomBrandInput value)  updateCustomBrandInput,required TResult Function( _ExperienceSelected value)  experienceSelected,required TResult Function( _CompleteOnboarding value)  completeOnboarding,required TResult Function( _StartAnalysis value)  startAnalysis,required TResult Function( _UpdateAnalysisStep value)  updateAnalysisStep,required TResult Function( _StartWatchlistAddition value)  startWatchlistAddition,required TResult Function( _UpdateWatchlistStep value)  updateWatchlistStep,required TResult Function( _HighlightPageChanged value)  highlightPageChanged,required TResult Function( _HighlightContinuePressed value)  highlightContinuePressed,required TResult Function( _HighlightSkipPressed value)  highlightSkipPressed,}){
 final _that = this;
 switch (_that) {
 case _Started():
@@ -109,7 +112,10 @@ return completeOnboarding(_that);case _StartAnalysis():
 return startAnalysis(_that);case _UpdateAnalysisStep():
 return updateAnalysisStep(_that);case _StartWatchlistAddition():
 return startWatchlistAddition(_that);case _UpdateWatchlistStep():
-return updateWatchlistStep(_that);case _:
+return updateWatchlistStep(_that);case _HighlightPageChanged():
+return highlightPageChanged(_that);case _HighlightContinuePressed():
+return highlightContinuePressed(_that);case _HighlightSkipPressed():
+return highlightSkipPressed(_that);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -126,7 +132,7 @@ return updateWatchlistStep(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Started value)?  started,TResult? Function( _NameSubmitted value)?  nameSubmitted,TResult? Function( _SectorSelected value)?  sectorSelected,TResult? Function( _UploadBrands value)?  uploadBrands,TResult? Function( _LoadSp500History value)?  loadSp500History,TResult? Function( _ConfirmWatchlist value)?  confirmWatchlist,TResult? Function( _LoadBrands value)?  loadBrands,TResult? Function( _ToggleBrand value)?  toggleBrand,TResult? Function( _UpdateCustomBrandInput value)?  updateCustomBrandInput,TResult? Function( _ExperienceSelected value)?  experienceSelected,TResult? Function( _CompleteOnboarding value)?  completeOnboarding,TResult? Function( _StartAnalysis value)?  startAnalysis,TResult? Function( _UpdateAnalysisStep value)?  updateAnalysisStep,TResult? Function( _StartWatchlistAddition value)?  startWatchlistAddition,TResult? Function( _UpdateWatchlistStep value)?  updateWatchlistStep,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Started value)?  started,TResult? Function( _NameSubmitted value)?  nameSubmitted,TResult? Function( _SectorSelected value)?  sectorSelected,TResult? Function( _UploadBrands value)?  uploadBrands,TResult? Function( _LoadSp500History value)?  loadSp500History,TResult? Function( _ConfirmWatchlist value)?  confirmWatchlist,TResult? Function( _LoadBrands value)?  loadBrands,TResult? Function( _ToggleBrand value)?  toggleBrand,TResult? Function( _UpdateCustomBrandInput value)?  updateCustomBrandInput,TResult? Function( _ExperienceSelected value)?  experienceSelected,TResult? Function( _CompleteOnboarding value)?  completeOnboarding,TResult? Function( _StartAnalysis value)?  startAnalysis,TResult? Function( _UpdateAnalysisStep value)?  updateAnalysisStep,TResult? Function( _StartWatchlistAddition value)?  startWatchlistAddition,TResult? Function( _UpdateWatchlistStep value)?  updateWatchlistStep,TResult? Function( _HighlightPageChanged value)?  highlightPageChanged,TResult? Function( _HighlightContinuePressed value)?  highlightContinuePressed,TResult? Function( _HighlightSkipPressed value)?  highlightSkipPressed,}){
 final _that = this;
 switch (_that) {
 case _Started() when started != null:
@@ -144,7 +150,10 @@ return completeOnboarding(_that);case _StartAnalysis() when startAnalysis != nul
 return startAnalysis(_that);case _UpdateAnalysisStep() when updateAnalysisStep != null:
 return updateAnalysisStep(_that);case _StartWatchlistAddition() when startWatchlistAddition != null:
 return startWatchlistAddition(_that);case _UpdateWatchlistStep() when updateWatchlistStep != null:
-return updateWatchlistStep(_that);case _:
+return updateWatchlistStep(_that);case _HighlightPageChanged() when highlightPageChanged != null:
+return highlightPageChanged(_that);case _HighlightContinuePressed() when highlightContinuePressed != null:
+return highlightContinuePressed(_that);case _HighlightSkipPressed() when highlightSkipPressed != null:
+return highlightSkipPressed(_that);case _:
   return null;
 
 }
@@ -161,7 +170,7 @@ return updateWatchlistStep(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  started,TResult Function( String name)?  nameSubmitted,TResult Function( Sector sector)?  sectorSelected,TResult Function( String brandsText)?  uploadBrands,TResult Function()?  loadSp500History,TResult Function( List<Company> confirmedCompanies)?  confirmWatchlist,TResult Function()?  loadBrands,TResult Function( Brand brand)?  toggleBrand,TResult Function( String input)?  updateCustomBrandInput,TResult Function( InvestingExperience experience)?  experienceSelected,TResult Function( String uid,  String fcmToken)?  completeOnboarding,TResult Function()?  startAnalysis,TResult Function( int step)?  updateAnalysisStep,TResult Function()?  startWatchlistAddition,TResult Function( int step)?  updateWatchlistStep,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  started,TResult Function( String name)?  nameSubmitted,TResult Function( Sector sector)?  sectorSelected,TResult Function( String brandsText)?  uploadBrands,TResult Function()?  loadSp500History,TResult Function( List<Company> confirmedCompanies)?  confirmWatchlist,TResult Function()?  loadBrands,TResult Function( Brand brand)?  toggleBrand,TResult Function( String input)?  updateCustomBrandInput,TResult Function( InvestingExperience experience)?  experienceSelected,TResult Function( String uid,  String fcmToken)?  completeOnboarding,TResult Function()?  startAnalysis,TResult Function( int step)?  updateAnalysisStep,TResult Function()?  startWatchlistAddition,TResult Function( int step)?  updateWatchlistStep,TResult Function( int index)?  highlightPageChanged,TResult Function()?  highlightContinuePressed,TResult Function()?  highlightSkipPressed,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Started() when started != null:
 return started();case _NameSubmitted() when nameSubmitted != null:
@@ -178,7 +187,10 @@ return completeOnboarding(_that.uid,_that.fcmToken);case _StartAnalysis() when s
 return startAnalysis();case _UpdateAnalysisStep() when updateAnalysisStep != null:
 return updateAnalysisStep(_that.step);case _StartWatchlistAddition() when startWatchlistAddition != null:
 return startWatchlistAddition();case _UpdateWatchlistStep() when updateWatchlistStep != null:
-return updateWatchlistStep(_that.step);case _:
+return updateWatchlistStep(_that.step);case _HighlightPageChanged() when highlightPageChanged != null:
+return highlightPageChanged(_that.index);case _HighlightContinuePressed() when highlightContinuePressed != null:
+return highlightContinuePressed();case _HighlightSkipPressed() when highlightSkipPressed != null:
+return highlightSkipPressed();case _:
   return orElse();
 
 }
@@ -196,7 +208,7 @@ return updateWatchlistStep(_that.step);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  started,required TResult Function( String name)  nameSubmitted,required TResult Function( Sector sector)  sectorSelected,required TResult Function( String brandsText)  uploadBrands,required TResult Function()  loadSp500History,required TResult Function( List<Company> confirmedCompanies)  confirmWatchlist,required TResult Function()  loadBrands,required TResult Function( Brand brand)  toggleBrand,required TResult Function( String input)  updateCustomBrandInput,required TResult Function( InvestingExperience experience)  experienceSelected,required TResult Function( String uid,  String fcmToken)  completeOnboarding,required TResult Function()  startAnalysis,required TResult Function( int step)  updateAnalysisStep,required TResult Function()  startWatchlistAddition,required TResult Function( int step)  updateWatchlistStep,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  started,required TResult Function( String name)  nameSubmitted,required TResult Function( Sector sector)  sectorSelected,required TResult Function( String brandsText)  uploadBrands,required TResult Function()  loadSp500History,required TResult Function( List<Company> confirmedCompanies)  confirmWatchlist,required TResult Function()  loadBrands,required TResult Function( Brand brand)  toggleBrand,required TResult Function( String input)  updateCustomBrandInput,required TResult Function( InvestingExperience experience)  experienceSelected,required TResult Function( String uid,  String fcmToken)  completeOnboarding,required TResult Function()  startAnalysis,required TResult Function( int step)  updateAnalysisStep,required TResult Function()  startWatchlistAddition,required TResult Function( int step)  updateWatchlistStep,required TResult Function( int index)  highlightPageChanged,required TResult Function()  highlightContinuePressed,required TResult Function()  highlightSkipPressed,}) {final _that = this;
 switch (_that) {
 case _Started():
 return started();case _NameSubmitted():
@@ -213,7 +225,10 @@ return completeOnboarding(_that.uid,_that.fcmToken);case _StartAnalysis():
 return startAnalysis();case _UpdateAnalysisStep():
 return updateAnalysisStep(_that.step);case _StartWatchlistAddition():
 return startWatchlistAddition();case _UpdateWatchlistStep():
-return updateWatchlistStep(_that.step);case _:
+return updateWatchlistStep(_that.step);case _HighlightPageChanged():
+return highlightPageChanged(_that.index);case _HighlightContinuePressed():
+return highlightContinuePressed();case _HighlightSkipPressed():
+return highlightSkipPressed();case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -230,7 +245,7 @@ return updateWatchlistStep(_that.step);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  started,TResult? Function( String name)?  nameSubmitted,TResult? Function( Sector sector)?  sectorSelected,TResult? Function( String brandsText)?  uploadBrands,TResult? Function()?  loadSp500History,TResult? Function( List<Company> confirmedCompanies)?  confirmWatchlist,TResult? Function()?  loadBrands,TResult? Function( Brand brand)?  toggleBrand,TResult? Function( String input)?  updateCustomBrandInput,TResult? Function( InvestingExperience experience)?  experienceSelected,TResult? Function( String uid,  String fcmToken)?  completeOnboarding,TResult? Function()?  startAnalysis,TResult? Function( int step)?  updateAnalysisStep,TResult? Function()?  startWatchlistAddition,TResult? Function( int step)?  updateWatchlistStep,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  started,TResult? Function( String name)?  nameSubmitted,TResult? Function( Sector sector)?  sectorSelected,TResult? Function( String brandsText)?  uploadBrands,TResult? Function()?  loadSp500History,TResult? Function( List<Company> confirmedCompanies)?  confirmWatchlist,TResult? Function()?  loadBrands,TResult? Function( Brand brand)?  toggleBrand,TResult? Function( String input)?  updateCustomBrandInput,TResult? Function( InvestingExperience experience)?  experienceSelected,TResult? Function( String uid,  String fcmToken)?  completeOnboarding,TResult? Function()?  startAnalysis,TResult? Function( int step)?  updateAnalysisStep,TResult? Function()?  startWatchlistAddition,TResult? Function( int step)?  updateWatchlistStep,TResult? Function( int index)?  highlightPageChanged,TResult? Function()?  highlightContinuePressed,TResult? Function()?  highlightSkipPressed,}) {final _that = this;
 switch (_that) {
 case _Started() when started != null:
 return started();case _NameSubmitted() when nameSubmitted != null:
@@ -247,7 +262,10 @@ return completeOnboarding(_that.uid,_that.fcmToken);case _StartAnalysis() when s
 return startAnalysis();case _UpdateAnalysisStep() when updateAnalysisStep != null:
 return updateAnalysisStep(_that.step);case _StartWatchlistAddition() when startWatchlistAddition != null:
 return startWatchlistAddition();case _UpdateWatchlistStep() when updateWatchlistStep != null:
-return updateWatchlistStep(_that.step);case _:
+return updateWatchlistStep(_that.step);case _HighlightPageChanged() when highlightPageChanged != null:
+return highlightPageChanged(_that.index);case _HighlightContinuePressed() when highlightContinuePressed != null:
+return highlightContinuePressed();case _HighlightSkipPressed() when highlightSkipPressed != null:
+return highlightSkipPressed();case _:
   return null;
 
 }
@@ -1091,5 +1109,135 @@ as int,
 
 
 }
+
+/// @nodoc
+
+
+class _HighlightPageChanged implements OnboardingEvent {
+  const _HighlightPageChanged(this.index);
+  
+
+ final  int index;
+
+/// Create a copy of OnboardingEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$HighlightPageChangedCopyWith<_HighlightPageChanged> get copyWith => __$HighlightPageChangedCopyWithImpl<_HighlightPageChanged>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _HighlightPageChanged&&(identical(other.index, index) || other.index == index));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,index);
+
+@override
+String toString() {
+  return 'OnboardingEvent.highlightPageChanged(index: $index)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$HighlightPageChangedCopyWith<$Res> implements $OnboardingEventCopyWith<$Res> {
+  factory _$HighlightPageChangedCopyWith(_HighlightPageChanged value, $Res Function(_HighlightPageChanged) _then) = __$HighlightPageChangedCopyWithImpl;
+@useResult
+$Res call({
+ int index
+});
+
+
+
+
+}
+/// @nodoc
+class __$HighlightPageChangedCopyWithImpl<$Res>
+    implements _$HighlightPageChangedCopyWith<$Res> {
+  __$HighlightPageChangedCopyWithImpl(this._self, this._then);
+
+  final _HighlightPageChanged _self;
+  final $Res Function(_HighlightPageChanged) _then;
+
+/// Create a copy of OnboardingEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? index = null,}) {
+  return _then(_HighlightPageChanged(
+null == index ? _self.index : index // ignore: cast_nullable_to_non_nullable
+as int,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class _HighlightContinuePressed implements OnboardingEvent {
+  const _HighlightContinuePressed();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _HighlightContinuePressed);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'OnboardingEvent.highlightContinuePressed()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class _HighlightSkipPressed implements OnboardingEvent {
+  const _HighlightSkipPressed();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _HighlightSkipPressed);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'OnboardingEvent.highlightSkipPressed()';
+}
+
+
+}
+
+
+
 
 // dart format on

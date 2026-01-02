@@ -32,4 +32,11 @@ class OnboardingEvent with _$OnboardingEvent {
       _StartWatchlistAddition;
   const factory OnboardingEvent.updateWatchlistStep(int step) =
       _UpdateWatchlistStep;
+
+  // Feature Highlights
+  const factory OnboardingEvent.highlightPageChanged(int index) =
+      _HighlightPageChanged;
+  const factory OnboardingEvent.highlightContinuePressed() =
+      _HighlightContinuePressed;
+  const factory OnboardingEvent.highlightSkipPressed() = _HighlightSkipPressed;
 }

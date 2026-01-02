@@ -1,5 +1,5 @@
 import 'package:bizzie/app/themes/app_colors.dart';
-import 'package:bizzie/app/themes/app_text_styles.dart';
+
 import 'package:bizzie/app/themes/app_assets.dart';
 import 'package:bizzie/features/onboarding/domain/models/company.dart';
 import 'package:bizzie/features/onboarding/presentation/bloc/onboarding_bloc.dart';
@@ -19,23 +19,16 @@ class BizzieFoundCompaniesPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<OnboardingBloc, OnboardingState>(
       builder: (context, state) {
+        final theme = Theme.of(context);
         final companies = state.onboardingData.detectedCompanies;
-        final companyCount = companies.length;
-        // Default to "Multiple" view logic if 0 (shouldn't happen ideally) or > 1
-        // If 1, use Single view logic
-        final isSingle = companyCount == 1;
-
         return Scaffold(
-          backgroundColor: Colors.white,
+          backgroundColor: theme.scaffoldBackgroundColor,
           body: SafeArea(
             child: Column(
               children: [
                 OnboardingHeader(
-                  title:
-                      'Bizzie found $companyCount ${companyCount == 1 ? 'company' : 'companies'}',
-                  subtitle: isSingle
-                      ? 'Check out the company that makes the product you love below!'
-                      : 'Check out the companies that make the products you love!',
+                  title: state.foundCompaniesTitle,
+                  subtitle: state.foundCompaniesSubtitle,
                 ),
                 Expanded(
                   child: Padding(
@@ -55,7 +48,7 @@ class BizzieFoundCompaniesPage extends StatelessWidget {
                         const SizedBox(height: 32),
 
                         // Companies List/Card
-                        if (isSingle) ...[
+                        if (state.isSingleCompanyView) ...[
                           _SingleCompanyCard(company: companies.first),
                           const Spacer(),
                         ] else
@@ -70,15 +63,15 @@ class BizzieFoundCompaniesPage extends StatelessWidget {
                       context.push(AppRoutes.onboardingAddingWatchlist);
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primary,
+                      // backgroundColor: AppColors.primary, // Inherited from theme
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(16),
                       ),
                       elevation: 0,
                     ),
-                    child: const Text(
+                    child: Text(
                       'Continue',
-                      style: TextStyle(
+                      style: theme.textTheme.labelLarge?.copyWith(
                         color: Colors.white,
                         fontSize: 17,
                         fontWeight: FontWeight.w600,
@@ -102,10 +95,11 @@ class _SingleCompanyCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: theme.colorScheme.surface,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: AppColors.inputBorder),
       ),
@@ -115,7 +109,7 @@ class _SingleCompanyCard extends StatelessWidget {
             width: 48,
             height: 48,
             decoration: BoxDecoration(
-              color: const Color(0xFFDBEAFE),
+              color: AppColors.brandChipSelectedBackground,
               borderRadius: BorderRadius.circular(12),
             ),
             child: Center(
@@ -123,7 +117,7 @@ class _SingleCompanyCard extends StatelessWidget {
                 AppAssets.arrowUpIcon,
                 width: 24,
                 height: 24,
-                color: AppColors.primary,
+                color: theme.colorScheme.primary,
               ),
             ),
           ),
@@ -134,7 +128,7 @@ class _SingleCompanyCard extends StatelessWidget {
               children: [
                 Text(
                   company.name,
-                  style: AppTextStyles.bodyLarge.copyWith(
+                  style: theme.textTheme.bodyLarge?.copyWith(
                     fontWeight: FontWeight.w600,
                     color: AppColors.textPrimary,
                   ),
@@ -143,7 +137,7 @@ class _SingleCompanyCard extends StatelessWidget {
                 ),
                 Text(
                   company.ticker,
-                  style: AppTextStyles.bodySmall.copyWith(
+                  style: theme.textTheme.bodySmall?.copyWith(
                     color: AppColors.textTertiary,
                     fontWeight: FontWeight.normal,
                   ),

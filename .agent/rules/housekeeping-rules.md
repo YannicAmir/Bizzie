@@ -2,9 +2,10 @@
 trigger: manual
 description: Apply when running the housekeeping agent or refactoring UI execution
 ---
+
 # Housekeeping Rules
 
-These rules ensure strict adherence to the Bizzie Design System (`AppTheme`, `AppColors`, `AppTextStyles`).
+These rules ensure strict adherence to the Bizzie Design System (`AppTheme`, `AppColors`, `AppTextStyles`) and Flutter Best Practices.
 
 ## 1. Hierarchy of Usage
 When styling any UI element, you **MUST** attempt to use sources in this order:
@@ -27,12 +28,46 @@ If you encounter a hardcoded style that *should* be part of the global theme but
 *   **NO Hardcoded Colors**: usages of `Color(0xFF...)`, `Colors.red`, or `Colors.white` (unless strictly temporary debugging) are forbidden in production code. Use `AppColors` or `ColorScheme`.
 *   **NO Inline TextStyles**: usages of `TextStyle(fontSize: 20, fontWeight: ...)` are forbidden. Define a new style in `AppTextStyles` if it is a potentially reusable variant, or usage `copyWith` on an existing `AppTextStyle` for one-off overrides (e.g. changing color of a standard style).
 
-## 4. Flutter Best Practices
+## 4. Flutter Best Practices (UI Structure)
 *   **NO Helper Functions for Widgets**: Do not use helper methods (e.g. `_buildButton()`) to return Widgets.
     *   **Refactor**: Extract them into separate stateless or stateful widgets (e.g. `MyButton`).
     *   **Reason**: Helper functions do not have their own BuildContext, leading to unnecessary rebuilds and less performant code.
-*   **Preserve Logic**: You are **STRICTLY FORBIDDEN** from changing any business logic or behavior. Your goal is structural refactoring and style enforcement only.
 
-## 5. Formatting
+## 5. Flutter Best Practices (Logic Placement)
+*   **NO Non-Lifecycle Logic in Widgets**: Widgets should only contain code related to:
+    *   Variables (final fields).
+    *   Constructor.
+    *   Lifecycle methods: `initState`, `dispose`, `didUpdateWidget`, `didChangeDependencies`.
+    *   `build()`.
+*   **Prohibited**: Arbitrary helper functions like `_calculateTotal()`, `_validateInput()`, or `_fetchData()` defined directly in the Widget class.
+*   **Refactor Location**:
+    *   **Complex Business Logic**: Move to the BLoC/Cubit/ViewModel.
+    *   **UI Helpers/Formatters**: Move to a static utility class or extension method in `lib/features/[feature]/presentation/utils/` (create if missing).
+    *   **Simple Logic**: If absolutely necessary, keep it short, private, and well-named, but prefer extraction.
+*   **Preserve Logic**: You are **STRICTLY FORBIDDEN** from changing any business logic or behavior. Your goal is structural refactoring only.
+
+## 6. Formatting
 *   Maintain `snake_case` for filenames.
 *   Ensure imports are correct (relative or package absolute).
+
+# Logic Placement Rules
+## 1. No Business or Presentation Logic in Widgets
+*   **STRICTLY FORBIDDEN:** Do not define private helper methods in the Widget class that calculate derived state, format complex strings based on state, or determine UI logic (e.g., `_getTitle(step)`, `_calculateProgress()`).
+*   **BEST PRACTICE:** Move this logic to the **BLoC State** as a getter.
+    *   **Example (Bad):** `String _getTitle(int step) { ... }` in Widget.
+    *   **Example (Good):** `String get title { ... }` in `MyState` class.
+    *   **Usage:** `Text(state.title)` in Widget.
+*   **EXCEPTION:** Very simple, pure UI helpers that depend *only* on `BuildContext` (like theme lookups) or formatting that is strictly view-specific and not state-dependent can remain in compliance with separation of concerns.
+## 2. Widget Separation
+*   **AVOID** `_buildHelper()` methods that return `Widget` if they are large.
+*   **PREFER** extracting them into purely stateless `PrivateWidget` classes at the bottom of the file or in `widgets/` folder.
+*   This improves performance (const constructors) and readability.
+## 3. Strict State Enums
+*   **STRICTLY FORBIDDEN:** Do not define private enums in Widgets to represent UI state if that state is derived from BLoC data (e.g., `enum _StepState`).
+*   **STRICTLY FORBIDDEN:** Do not use logic in your Widget to map BLoC state to these private enums (e.g., `state.step == 1 ? _StepState.active : ...`).
+*   **BEST PRACTICE:** Define the Enum in the State file (publicly) and add getters in the State class to return the correct enum value.
+    *   **Example (Good):** `MyStepState get step1State => ...` inside `MyState` class.
+    *   **Usage:** `MyWidget(state: state.step1State)` in Widget.
+
+## 7. Optimization & Readability
+*   **Theme Caching:** If `Theme.of(context)` is accessed **2 or more times** within a single build method, you MUST assign it to a local variable `final theme = Theme.of(context);` at the top of the method. This improves readability and prevents excessive lookups.

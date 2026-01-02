@@ -1,5 +1,4 @@
 import 'package:bizzie/app/themes/app_colors.dart';
-import 'package:bizzie/app/themes/app_text_styles.dart';
 import 'package:flutter/material.dart';
 
 class OnboardingFooter extends StatelessWidget {
@@ -22,6 +21,7 @@ class OnboardingFooter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     Widget textContent = Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       mainAxisSize: MainAxisSize.min,
@@ -29,12 +29,8 @@ class OnboardingFooter extends StatelessWidget {
         if (title != null)
           Text(
             title!,
-            style: AppTextStyles.h1.copyWith(
-              fontSize: 32,
-              fontWeight: FontWeight.w800,
+            style: theme.textTheme.displayLarge?.copyWith(
               height: 1.2, // 38.4px / 32px
-              letterSpacing: 0.406,
-              color: const Color(0xFF0F172B),
             ),
             textAlign: TextAlign.left,
           ),
@@ -42,9 +38,8 @@ class OnboardingFooter extends StatelessWidget {
           if (title != null) const SizedBox(height: 8),
           Text(
             subtitle!,
-            style: AppTextStyles.bodyMedium.copyWith(
+            style: theme.textTheme.bodyMedium?.copyWith(
               color: AppColors.textSecondary,
-              height: 1.5,
             ),
             textAlign: TextAlign.left,
           ),

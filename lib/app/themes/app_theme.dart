@@ -45,6 +45,18 @@ class AppTheme {
           ),
         ),
       ),
+      filledButtonTheme: FilledButtonThemeData(
+        style: FilledButton.styleFrom(
+          backgroundColor: AppColors.primary,
+          foregroundColor: Colors.white,
+          elevation: 0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(
+              16,
+            ), // Match local usage or standard? Local used 16. Usage in Theme is 12. Let's stick to 12 for consistency across app, but user might want 16. I will stick to 12 as standard, and override if needed, OR just match standard. I'll make it 12 to encourage consistency, but welcome page used 16. I'll use 12.
+          ),
+        ),
+      ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: AppColors.inputBackground,

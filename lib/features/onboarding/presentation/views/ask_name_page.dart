@@ -3,8 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../app/routes/app_routes.dart';
 import '../../../../app/themes/app_assets.dart';
-import '../../../../app/themes/app_colors.dart';
-import '../../../../app/themes/app_text_styles.dart';
+
 import '../bloc/onboarding_bloc.dart';
 import '../widgets/onboarding_footer.dart';
 import '../widgets/onboarding_header.dart';
@@ -50,8 +49,9 @@ class _AskNamePageState extends State<AskNamePage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: theme.scaffoldBackgroundColor,
       body: SafeArea(
         child: Column(
           children: [
@@ -66,37 +66,13 @@ class _AskNamePageState extends State<AskNamePage> {
                     // Input Field
                     TextField(
                       controller: _nameController,
-                      style: AppTextStyles.bodyLarge,
+                      style: theme.textTheme.bodyLarge,
                       decoration: InputDecoration(
                         hintText: 'Enter your first name',
-                        hintStyle: AppTextStyles.inputHint,
                         contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 20,
+                          horizontal: 16,
                           vertical: 16,
                         ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(16),
-                          borderSide: BorderSide(
-                            color: AppColors.inputBorder,
-                            width: 2,
-                          ),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(16),
-                          borderSide: const BorderSide(
-                            color: Color(0xFFE2E8F0),
-                            width: 2,
-                          ),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(16),
-                          borderSide: BorderSide(
-                            color: AppColors.primary,
-                            width: 2,
-                          ),
-                        ),
-                        filled: true,
-                        fillColor: const Color(0xFFF8FAFC),
                       ),
                       onSubmitted: (_) => _submitName(),
                     ),
@@ -118,17 +94,15 @@ class _AskNamePageState extends State<AskNamePage> {
               primaryButton: FilledButton(
                 onPressed: _isButtonEnabled ? _submitName : null,
                 style: FilledButton.styleFrom(
-                  backgroundColor: AppColors.primary,
-                  disabledBackgroundColor: AppColors.primary.withValues(
+                  disabledBackgroundColor: theme.colorScheme.primary.withValues(
                     alpha: 0.5,
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
                   ),
                 ),
                 child: Text(
                   'Continue',
-                  style: AppTextStyles.button.copyWith(color: Colors.white),
+                  style: theme.textTheme.labelLarge?.copyWith(
+                    color: Colors.white,
+                  ),
                 ),
               ),
             ),

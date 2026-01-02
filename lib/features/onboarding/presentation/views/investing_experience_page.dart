@@ -1,6 +1,6 @@
 import 'package:bizzie/app/themes/app_assets.dart';
 import 'package:bizzie/app/themes/app_colors.dart';
-import 'package:bizzie/app/themes/app_text_styles.dart';
+
 import 'package:bizzie/features/onboarding/domain/models/onboarding_data.dart';
 import 'package:bizzie/features/onboarding/presentation/bloc/onboarding_bloc.dart';
 import 'package:flutter/material.dart';
@@ -29,9 +29,10 @@ class _InvestingExperiencePageState extends State<InvestingExperiencePage> {
     return BlocBuilder<OnboardingBloc, OnboardingState>(
       builder: (context, state) {
         final selectedExperience = state.onboardingData.investingExperience;
+        final theme = Theme.of(context);
 
         return Scaffold(
-          backgroundColor: Colors.white,
+          backgroundColor: theme.scaffoldBackgroundColor,
           body: SafeArea(
             child: Column(
               children: [
@@ -125,7 +126,7 @@ class _InvestingExperiencePageState extends State<InvestingExperiencePage> {
                       ),
                       child: Text(
                         'Continue',
-                        style: AppTextStyles.button.copyWith(
+                        style: theme.textTheme.labelLarge?.copyWith(
                           color: Colors.white,
                         ),
                       ),
@@ -158,15 +159,19 @@ class _ExperienceOption extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return GestureDetector(
       onTap: onTap,
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: isSelected ? const Color(0xFFEFF6FF) : Colors.white,
+          color: isSelected ? AppColors.mascotBackground : theme.cardColor,
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
-            color: isSelected ? const Color(0xFF2B7FFF) : AppColors.inputBorder,
+            color: isSelected
+                ? AppColors.blueGradientStart
+                : theme.inputDecorationTheme.enabledBorder?.borderSide.color ??
+                      AppColors.inputBorder,
             width: 2,
           ),
         ),
@@ -176,9 +181,18 @@ class _ExperienceOption extends StatelessWidget {
               width: 48,
               height: 48,
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: theme.cardColor,
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: AppColors.inputBorder, width: 2),
+                border: Border.all(
+                  color:
+                      theme
+                          .inputDecorationTheme
+                          .enabledBorder
+                          ?.borderSide
+                          .color ??
+                      AppColors.inputBorder,
+                  width: 2,
+                ),
               ),
               child: Padding(
                 padding: const EdgeInsets.all(12.0),
@@ -197,14 +211,14 @@ class _ExperienceOption extends StatelessWidget {
                 children: [
                   Text(
                     title,
-                    style: AppTextStyles.bodyMedium.copyWith(
+                    style: theme.textTheme.bodyMedium?.copyWith(
                       fontWeight: FontWeight.w600,
                       color: AppColors.textPrimary,
                     ),
                   ),
                   Text(
                     description,
-                    style: AppTextStyles.bodySmall.copyWith(
+                    style: theme.textTheme.bodySmall?.copyWith(
                       color: AppColors.textSecondary,
                     ),
                   ),

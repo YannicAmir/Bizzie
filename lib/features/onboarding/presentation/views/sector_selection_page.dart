@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../app/routes/app_routes.dart';
 import '../../../../app/themes/app_assets.dart';
 import '../../../../app/themes/app_colors.dart';
-import '../../../../app/themes/app_text_styles.dart';
+
 import '../utils/onboarding_assets_helper.dart';
 import '../bloc/onboarding_bloc.dart';
 import '../widgets/onboarding_footer.dart';
@@ -19,62 +19,18 @@ class SectorSelectionPage extends StatefulWidget {
 }
 
 class _SectorSelectionPageState extends State<SectorSelectionPage> {
-  Widget _buildMascot(Sector? sector) {
-    if (sector == null) {
-      return Image.asset(
-        AppAssets.defaultMascot,
-        fit: BoxFit.contain,
-        key: const ValueKey('default_mascot'),
-      );
-    }
-
-    final asset = OnboardingAssetsHelper.getMascotForSector(sector);
-
-    Widget child = Image.asset(
-      asset,
-      fit: BoxFit.contain,
-      key: ValueKey(sector.name), // Unique key for AnimatedSwitcher
-    );
-
-    // Apply Offsets
-    if (sector == Sector.financials) {
-      child = Transform.translate(offset: const Offset(-7, 0), child: child);
-    } else if (sector == Sector.communicationServices) {
-      child = Transform.translate(offset: const Offset(6, 0), child: child);
-    } else if (sector == Sector.consumerStaples) {
-      child = Transform.translate(offset: const Offset(20, 0), child: child);
-    } else if (sector == Sector.energy) {
-      child = Transform.translate(offset: const Offset(-22, 0), child: child);
-    } else if (sector == Sector.utilities) {
-      child = Transform.translate(offset: const Offset(7, 0), child: child);
-    }
-
-    // Apply Padding
-    final sectorsWithPadding = [
-      Sector.informationTechnology,
-      Sector.financials,
-      Sector.communicationServices,
-      Sector.consumerDiscretionary,
-      Sector.healthCare,
-      Sector.consumerStaples,
-    ];
-
-    if (sectorsWithPadding.contains(sector)) {
-      child = Padding(padding: const EdgeInsets.all(7.0), child: child);
-    }
-
-    return KeyedSubtree(key: ValueKey(sector.name), child: child);
-  }
+  // Moved _buildMascot to _SectorMascot class at bottom of file
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<OnboardingBloc, OnboardingState>(
       builder: (context, state) {
+        final theme = Theme.of(context);
         final selectedSector = state.onboardingData.selectedSector;
         final sectors = state.availableSectors;
 
         return Scaffold(
-          backgroundColor: AppColors.background,
+          backgroundColor: theme.scaffoldBackgroundColor,
           body: SafeArea(
             child: Column(
               children: [
@@ -100,7 +56,10 @@ class _SectorSelectionPageState extends State<SectorSelectionPage> {
                               child: child,
                             );
                           },
-                      child: _buildMascot(selectedSector),
+                      child: _SectorMascot(
+                        key: ValueKey(selectedSector?.name ?? 'default'),
+                        sector: selectedSector,
+                      ),
                     ),
                   ),
                 ),
@@ -169,8 +128,8 @@ class _SectorSelectionPageState extends State<SectorSelectionPage> {
                                                   BorderRadius.circular(4),
                                               border: Border.all(
                                                 color: isSelected
-                                                    ? AppColors.primary
-                                                    : const Color(0xFFCAD5E2),
+                                                    ? theme.colorScheme.primary
+                                                    : AppColors.inputBorder,
                                                 width: 2,
                                               ),
                                             ),
@@ -185,8 +144,8 @@ class _SectorSelectionPageState extends State<SectorSelectionPage> {
                                           const SizedBox(width: 8),
                                           Text(
                                             sector.displayName,
-                                            style: AppTextStyles.bodyMedium
-                                                .copyWith(
+                                            style: theme.textTheme.bodyMedium
+                                                ?.copyWith(
                                                   color: AppColors.textPrimary,
                                                   fontWeight: FontWeight.w600,
                                                   fontSize: 15,
@@ -216,17 +175,14 @@ class _SectorSelectionPageState extends State<SectorSelectionPage> {
                           }
                         : null,
                     style: FilledButton.styleFrom(
-                      backgroundColor: AppColors.primary,
-                      disabledBackgroundColor: AppColors.primary.withValues(
-                        alpha: 0.5,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
-                      ),
+                      disabledBackgroundColor: theme.colorScheme.primary
+                          .withValues(alpha: 0.5),
                     ),
                     child: Text(
                       'Continue',
-                      style: AppTextStyles.button.copyWith(color: Colors.white),
+                      style: theme.textTheme.labelLarge?.copyWith(
+                        color: Colors.white,
+                      ),
                     ),
                   ),
                 ),
@@ -236,5 +192,59 @@ class _SectorSelectionPageState extends State<SectorSelectionPage> {
         );
       },
     );
+  }
+}
+
+class _SectorMascot extends StatelessWidget {
+  final Sector? sector;
+
+  const _SectorMascot({super.key, this.sector});
+
+  @override
+  Widget build(BuildContext context) {
+    if (sector == null) {
+      return Image.asset(
+        AppAssets.defaultMascot,
+        fit: BoxFit.contain,
+        key: const ValueKey('default_mascot'),
+      );
+    }
+
+    final asset = OnboardingAssetsHelper.getMascotForSector(sector!);
+
+    Widget child = Image.asset(
+      asset,
+      fit: BoxFit.contain,
+      key: ValueKey(sector!.name), // Unique key for AnimatedSwitcher
+    );
+
+    // Apply Offsets
+    if (sector == Sector.financials) {
+      child = Transform.translate(offset: const Offset(-7, 0), child: child);
+    } else if (sector == Sector.communicationServices) {
+      child = Transform.translate(offset: const Offset(6, 0), child: child);
+    } else if (sector == Sector.consumerStaples) {
+      child = Transform.translate(offset: const Offset(20, 0), child: child);
+    } else if (sector == Sector.energy) {
+      child = Transform.translate(offset: const Offset(-22, 0), child: child);
+    } else if (sector == Sector.utilities) {
+      child = Transform.translate(offset: const Offset(7, 0), child: child);
+    }
+
+    // Apply Padding
+    final sectorsWithPadding = [
+      Sector.informationTechnology,
+      Sector.financials,
+      Sector.communicationServices,
+      Sector.consumerDiscretionary,
+      Sector.healthCare,
+      Sector.consumerStaples,
+    ];
+
+    if (sectorsWithPadding.contains(sector)) {
+      child = Padding(padding: const EdgeInsets.all(7.0), child: child);
+    }
+
+    return KeyedSubtree(key: ValueKey(sector!.name), child: child);
   }
 }

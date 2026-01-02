@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../app/routes/app_routes.dart';
 import '../../../../app/themes/app_assets.dart';
 import '../../../../app/themes/app_colors.dart';
-import '../../../../app/themes/app_text_styles.dart';
+
 import '../bloc/onboarding_bloc.dart';
 import '../widgets/onboarding_footer.dart';
 import '../widgets/onboarding_header.dart';
@@ -17,9 +17,10 @@ class WelcomeNamePage extends StatelessWidget {
     return BlocBuilder<OnboardingBloc, OnboardingState>(
       builder: (context, state) {
         final firstName = state.onboardingData.firstName;
+        final theme = Theme.of(context);
 
         return Scaffold(
-          backgroundColor: Colors.white,
+          backgroundColor: theme.scaffoldBackgroundColor,
           body: SafeArea(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -52,7 +53,7 @@ class WelcomeNamePage extends StatelessWidget {
                             // Rich Text for "Glad you joined us, Name !"
                             RichText(
                               text: TextSpan(
-                                style: AppTextStyles.h1.copyWith(
+                                style: theme.textTheme.displayLarge?.copyWith(
                                   fontSize: 40,
                                   height: 1.2,
                                   letterSpacing: 0.406,
@@ -61,7 +62,9 @@ class WelcomeNamePage extends StatelessWidget {
                                   const TextSpan(text: 'Glad you joined us,\n'),
                                   TextSpan(
                                     text: firstName,
-                                    style: TextStyle(color: AppColors.primary),
+                                    style: TextStyle(
+                                      color: theme.colorScheme.primary,
+                                    ),
                                   ),
                                   const TextSpan(text: '!'),
                                 ],
@@ -70,7 +73,7 @@ class WelcomeNamePage extends StatelessWidget {
                             const SizedBox(height: 16),
                             Text(
                               "Let's take on the Stock Market together",
-                              style: AppTextStyles.bodyLarge.copyWith(
+                              style: theme.textTheme.bodyLarge?.copyWith(
                                 color: AppColors.textSecondary,
                               ),
                             ),
@@ -89,15 +92,11 @@ class WelcomeNamePage extends StatelessWidget {
                       // Navigate to Sectors page
                       context.push(AppRoutes.onboardingSectors);
                     },
-                    style: FilledButton.styleFrom(
-                      backgroundColor: AppColors.primary,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                    ),
                     child: Text(
                       'Continue',
-                      style: AppTextStyles.button.copyWith(color: Colors.white),
+                      style: theme.textTheme.labelLarge?.copyWith(
+                        color: Colors.white,
+                      ),
                     ),
                   ),
                 ),

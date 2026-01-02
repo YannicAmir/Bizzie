@@ -1,4 +1,3 @@
-import 'package:bizzie/app/themes/app_text_styles.dart';
 import 'package:bizzie/features/onboarding/presentation/bloc/onboarding_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -23,6 +22,7 @@ class _MeetYourBizziePageState extends State<MeetYourBizziePage> {
     return BlocBuilder<OnboardingBloc, OnboardingState>(
       builder: (context, state) {
         final selectedSector = state.onboardingData.selectedSector;
+        final theme = Theme.of(context);
 
         // Determine mascot asset based on selection
         // Defaulting to defaultMascot if null (though flow shouldn't allow null here)
@@ -34,7 +34,7 @@ class _MeetYourBizziePageState extends State<MeetYourBizziePage> {
         }
 
         return Scaffold(
-          backgroundColor: Colors.white,
+          backgroundColor: theme.scaffoldBackgroundColor,
           body: SafeArea(
             child: Column(
               children: [
@@ -63,7 +63,7 @@ class _MeetYourBizziePageState extends State<MeetYourBizziePage> {
                         // Heading
                         Text(
                           'Got it! Meet your Bizzie',
-                          style: AppTextStyles.h1.copyWith(
+                          style: theme.textTheme.displayLarge?.copyWith(
                             fontSize: 40,
                             height: 1.2,
                             letterSpacing: 0.406,
@@ -75,7 +75,7 @@ class _MeetYourBizziePageState extends State<MeetYourBizziePage> {
                         // Description
                         Text(
                           '${selectedSector?.displayName ?? "Your"} Bizzie will send you a daily list of stocks & brands from your favorite sector.',
-                          style: AppTextStyles.bodyLarge.copyWith(
+                          style: theme.textTheme.bodyLarge?.copyWith(
                             fontSize: 17,
                             color: AppColors.textSecondary,
                             height: 1.5,
@@ -96,15 +96,13 @@ class _MeetYourBizziePageState extends State<MeetYourBizziePage> {
                       context.push(AppRoutes.onboardingBrands);
                     },
                     style: FilledButton.styleFrom(
-                      backgroundColor: AppColors.primary,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
-                      ),
                       minimumSize: const Size(double.infinity, 56),
                     ),
                     child: Text(
                       'Continue',
-                      style: AppTextStyles.button.copyWith(color: Colors.white),
+                      style: theme.textTheme.labelLarge?.copyWith(
+                        color: Colors.white,
+                      ),
                     ),
                   ),
                 ),

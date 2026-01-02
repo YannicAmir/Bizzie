@@ -27,7 +27,8 @@ mixin _$OnboardingState {
 // Updated to use Sector enum
  List<Sector> get availableSectors; List<HistoricalPrice> get sp500History;// Brand Data
  List<Brand> get globalBrands; List<Brand> get sectorBrands; List<Brand> get selectedBrands; String get customBrandInput;// Error message
- String? get failureMessage;
+ String? get failureMessage;// Feature Highlights Logic
+ List<FeatureHighlightItem> get featureHighlights; int get currentHighlightIndex; bool get shouldNavigateToCreateAccount;
 /// Create a copy of OnboardingState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -38,16 +39,16 @@ $OnboardingStateCopyWith<OnboardingState> get copyWith => _$OnboardingStateCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is OnboardingState&&(identical(other.onboardingData, onboardingData) || other.onboardingData == onboardingData)&&(identical(other.currentStep, currentStep) || other.currentStep == currentStep)&&(identical(other.status, status) || other.status == status)&&(identical(other.isSubmitting, isSubmitting) || other.isSubmitting == isSubmitting)&&(identical(other.isLoadingSectors, isLoadingSectors) || other.isLoadingSectors == isLoadingSectors)&&(identical(other.isAnalyzingBrands, isAnalyzingBrands) || other.isAnalyzingBrands == isAnalyzingBrands)&&(identical(other.isLoadingHistory, isLoadingHistory) || other.isLoadingHistory == isLoadingHistory)&&(identical(other.analysisStep, analysisStep) || other.analysisStep == analysisStep)&&(identical(other.watchlistStep, watchlistStep) || other.watchlistStep == watchlistStep)&&const DeepCollectionEquality().equals(other.availableSectors, availableSectors)&&const DeepCollectionEquality().equals(other.sp500History, sp500History)&&const DeepCollectionEquality().equals(other.globalBrands, globalBrands)&&const DeepCollectionEquality().equals(other.sectorBrands, sectorBrands)&&const DeepCollectionEquality().equals(other.selectedBrands, selectedBrands)&&(identical(other.customBrandInput, customBrandInput) || other.customBrandInput == customBrandInput)&&(identical(other.failureMessage, failureMessage) || other.failureMessage == failureMessage));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is OnboardingState&&(identical(other.onboardingData, onboardingData) || other.onboardingData == onboardingData)&&(identical(other.currentStep, currentStep) || other.currentStep == currentStep)&&(identical(other.status, status) || other.status == status)&&(identical(other.isSubmitting, isSubmitting) || other.isSubmitting == isSubmitting)&&(identical(other.isLoadingSectors, isLoadingSectors) || other.isLoadingSectors == isLoadingSectors)&&(identical(other.isAnalyzingBrands, isAnalyzingBrands) || other.isAnalyzingBrands == isAnalyzingBrands)&&(identical(other.isLoadingHistory, isLoadingHistory) || other.isLoadingHistory == isLoadingHistory)&&(identical(other.analysisStep, analysisStep) || other.analysisStep == analysisStep)&&(identical(other.watchlistStep, watchlistStep) || other.watchlistStep == watchlistStep)&&const DeepCollectionEquality().equals(other.availableSectors, availableSectors)&&const DeepCollectionEquality().equals(other.sp500History, sp500History)&&const DeepCollectionEquality().equals(other.globalBrands, globalBrands)&&const DeepCollectionEquality().equals(other.sectorBrands, sectorBrands)&&const DeepCollectionEquality().equals(other.selectedBrands, selectedBrands)&&(identical(other.customBrandInput, customBrandInput) || other.customBrandInput == customBrandInput)&&(identical(other.failureMessage, failureMessage) || other.failureMessage == failureMessage)&&const DeepCollectionEquality().equals(other.featureHighlights, featureHighlights)&&(identical(other.currentHighlightIndex, currentHighlightIndex) || other.currentHighlightIndex == currentHighlightIndex)&&(identical(other.shouldNavigateToCreateAccount, shouldNavigateToCreateAccount) || other.shouldNavigateToCreateAccount == shouldNavigateToCreateAccount));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,onboardingData,currentStep,status,isSubmitting,isLoadingSectors,isAnalyzingBrands,isLoadingHistory,analysisStep,watchlistStep,const DeepCollectionEquality().hash(availableSectors),const DeepCollectionEquality().hash(sp500History),const DeepCollectionEquality().hash(globalBrands),const DeepCollectionEquality().hash(sectorBrands),const DeepCollectionEquality().hash(selectedBrands),customBrandInput,failureMessage);
+int get hashCode => Object.hashAll([runtimeType,onboardingData,currentStep,status,isSubmitting,isLoadingSectors,isAnalyzingBrands,isLoadingHistory,analysisStep,watchlistStep,const DeepCollectionEquality().hash(availableSectors),const DeepCollectionEquality().hash(sp500History),const DeepCollectionEquality().hash(globalBrands),const DeepCollectionEquality().hash(sectorBrands),const DeepCollectionEquality().hash(selectedBrands),customBrandInput,failureMessage,const DeepCollectionEquality().hash(featureHighlights),currentHighlightIndex,shouldNavigateToCreateAccount]);
 
 @override
 String toString() {
-  return 'OnboardingState(onboardingData: $onboardingData, currentStep: $currentStep, status: $status, isSubmitting: $isSubmitting, isLoadingSectors: $isLoadingSectors, isAnalyzingBrands: $isAnalyzingBrands, isLoadingHistory: $isLoadingHistory, analysisStep: $analysisStep, watchlistStep: $watchlistStep, availableSectors: $availableSectors, sp500History: $sp500History, globalBrands: $globalBrands, sectorBrands: $sectorBrands, selectedBrands: $selectedBrands, customBrandInput: $customBrandInput, failureMessage: $failureMessage)';
+  return 'OnboardingState(onboardingData: $onboardingData, currentStep: $currentStep, status: $status, isSubmitting: $isSubmitting, isLoadingSectors: $isLoadingSectors, isAnalyzingBrands: $isAnalyzingBrands, isLoadingHistory: $isLoadingHistory, analysisStep: $analysisStep, watchlistStep: $watchlistStep, availableSectors: $availableSectors, sp500History: $sp500History, globalBrands: $globalBrands, sectorBrands: $sectorBrands, selectedBrands: $selectedBrands, customBrandInput: $customBrandInput, failureMessage: $failureMessage, featureHighlights: $featureHighlights, currentHighlightIndex: $currentHighlightIndex, shouldNavigateToCreateAccount: $shouldNavigateToCreateAccount)';
 }
 
 
@@ -58,7 +59,7 @@ abstract mixin class $OnboardingStateCopyWith<$Res>  {
   factory $OnboardingStateCopyWith(OnboardingState value, $Res Function(OnboardingState) _then) = _$OnboardingStateCopyWithImpl;
 @useResult
 $Res call({
- OnboardingData onboardingData, int currentStep, OnboardingStatus status, bool isSubmitting, bool isLoadingSectors, bool isAnalyzingBrands, bool isLoadingHistory, int analysisStep, int watchlistStep, List<Sector> availableSectors, List<HistoricalPrice> sp500History, List<Brand> globalBrands, List<Brand> sectorBrands, List<Brand> selectedBrands, String customBrandInput, String? failureMessage
+ OnboardingData onboardingData, int currentStep, OnboardingStatus status, bool isSubmitting, bool isLoadingSectors, bool isAnalyzingBrands, bool isLoadingHistory, int analysisStep, int watchlistStep, List<Sector> availableSectors, List<HistoricalPrice> sp500History, List<Brand> globalBrands, List<Brand> sectorBrands, List<Brand> selectedBrands, String customBrandInput, String? failureMessage, List<FeatureHighlightItem> featureHighlights, int currentHighlightIndex, bool shouldNavigateToCreateAccount
 });
 
 
@@ -75,7 +76,7 @@ class _$OnboardingStateCopyWithImpl<$Res>
 
 /// Create a copy of OnboardingState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? onboardingData = null,Object? currentStep = null,Object? status = null,Object? isSubmitting = null,Object? isLoadingSectors = null,Object? isAnalyzingBrands = null,Object? isLoadingHistory = null,Object? analysisStep = null,Object? watchlistStep = null,Object? availableSectors = null,Object? sp500History = null,Object? globalBrands = null,Object? sectorBrands = null,Object? selectedBrands = null,Object? customBrandInput = null,Object? failureMessage = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? onboardingData = null,Object? currentStep = null,Object? status = null,Object? isSubmitting = null,Object? isLoadingSectors = null,Object? isAnalyzingBrands = null,Object? isLoadingHistory = null,Object? analysisStep = null,Object? watchlistStep = null,Object? availableSectors = null,Object? sp500History = null,Object? globalBrands = null,Object? sectorBrands = null,Object? selectedBrands = null,Object? customBrandInput = null,Object? failureMessage = freezed,Object? featureHighlights = null,Object? currentHighlightIndex = null,Object? shouldNavigateToCreateAccount = null,}) {
   return _then(_self.copyWith(
 onboardingData: null == onboardingData ? _self.onboardingData : onboardingData // ignore: cast_nullable_to_non_nullable
 as OnboardingData,currentStep: null == currentStep ? _self.currentStep : currentStep // ignore: cast_nullable_to_non_nullable
@@ -93,7 +94,10 @@ as List<Brand>,sectorBrands: null == sectorBrands ? _self.sectorBrands : sectorB
 as List<Brand>,selectedBrands: null == selectedBrands ? _self.selectedBrands : selectedBrands // ignore: cast_nullable_to_non_nullable
 as List<Brand>,customBrandInput: null == customBrandInput ? _self.customBrandInput : customBrandInput // ignore: cast_nullable_to_non_nullable
 as String,failureMessage: freezed == failureMessage ? _self.failureMessage : failureMessage // ignore: cast_nullable_to_non_nullable
-as String?,
+as String?,featureHighlights: null == featureHighlights ? _self.featureHighlights : featureHighlights // ignore: cast_nullable_to_non_nullable
+as List<FeatureHighlightItem>,currentHighlightIndex: null == currentHighlightIndex ? _self.currentHighlightIndex : currentHighlightIndex // ignore: cast_nullable_to_non_nullable
+as int,shouldNavigateToCreateAccount: null == shouldNavigateToCreateAccount ? _self.shouldNavigateToCreateAccount : shouldNavigateToCreateAccount // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 /// Create a copy of OnboardingState
@@ -187,10 +191,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( OnboardingData onboardingData,  int currentStep,  OnboardingStatus status,  bool isSubmitting,  bool isLoadingSectors,  bool isAnalyzingBrands,  bool isLoadingHistory,  int analysisStep,  int watchlistStep,  List<Sector> availableSectors,  List<HistoricalPrice> sp500History,  List<Brand> globalBrands,  List<Brand> sectorBrands,  List<Brand> selectedBrands,  String customBrandInput,  String? failureMessage)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( OnboardingData onboardingData,  int currentStep,  OnboardingStatus status,  bool isSubmitting,  bool isLoadingSectors,  bool isAnalyzingBrands,  bool isLoadingHistory,  int analysisStep,  int watchlistStep,  List<Sector> availableSectors,  List<HistoricalPrice> sp500History,  List<Brand> globalBrands,  List<Brand> sectorBrands,  List<Brand> selectedBrands,  String customBrandInput,  String? failureMessage,  List<FeatureHighlightItem> featureHighlights,  int currentHighlightIndex,  bool shouldNavigateToCreateAccount)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _OnboardingState() when $default != null:
-return $default(_that.onboardingData,_that.currentStep,_that.status,_that.isSubmitting,_that.isLoadingSectors,_that.isAnalyzingBrands,_that.isLoadingHistory,_that.analysisStep,_that.watchlistStep,_that.availableSectors,_that.sp500History,_that.globalBrands,_that.sectorBrands,_that.selectedBrands,_that.customBrandInput,_that.failureMessage);case _:
+return $default(_that.onboardingData,_that.currentStep,_that.status,_that.isSubmitting,_that.isLoadingSectors,_that.isAnalyzingBrands,_that.isLoadingHistory,_that.analysisStep,_that.watchlistStep,_that.availableSectors,_that.sp500History,_that.globalBrands,_that.sectorBrands,_that.selectedBrands,_that.customBrandInput,_that.failureMessage,_that.featureHighlights,_that.currentHighlightIndex,_that.shouldNavigateToCreateAccount);case _:
   return orElse();
 
 }
@@ -208,10 +212,10 @@ return $default(_that.onboardingData,_that.currentStep,_that.status,_that.isSubm
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( OnboardingData onboardingData,  int currentStep,  OnboardingStatus status,  bool isSubmitting,  bool isLoadingSectors,  bool isAnalyzingBrands,  bool isLoadingHistory,  int analysisStep,  int watchlistStep,  List<Sector> availableSectors,  List<HistoricalPrice> sp500History,  List<Brand> globalBrands,  List<Brand> sectorBrands,  List<Brand> selectedBrands,  String customBrandInput,  String? failureMessage)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( OnboardingData onboardingData,  int currentStep,  OnboardingStatus status,  bool isSubmitting,  bool isLoadingSectors,  bool isAnalyzingBrands,  bool isLoadingHistory,  int analysisStep,  int watchlistStep,  List<Sector> availableSectors,  List<HistoricalPrice> sp500History,  List<Brand> globalBrands,  List<Brand> sectorBrands,  List<Brand> selectedBrands,  String customBrandInput,  String? failureMessage,  List<FeatureHighlightItem> featureHighlights,  int currentHighlightIndex,  bool shouldNavigateToCreateAccount)  $default,) {final _that = this;
 switch (_that) {
 case _OnboardingState():
-return $default(_that.onboardingData,_that.currentStep,_that.status,_that.isSubmitting,_that.isLoadingSectors,_that.isAnalyzingBrands,_that.isLoadingHistory,_that.analysisStep,_that.watchlistStep,_that.availableSectors,_that.sp500History,_that.globalBrands,_that.sectorBrands,_that.selectedBrands,_that.customBrandInput,_that.failureMessage);case _:
+return $default(_that.onboardingData,_that.currentStep,_that.status,_that.isSubmitting,_that.isLoadingSectors,_that.isAnalyzingBrands,_that.isLoadingHistory,_that.analysisStep,_that.watchlistStep,_that.availableSectors,_that.sp500History,_that.globalBrands,_that.sectorBrands,_that.selectedBrands,_that.customBrandInput,_that.failureMessage,_that.featureHighlights,_that.currentHighlightIndex,_that.shouldNavigateToCreateAccount);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -228,10 +232,10 @@ return $default(_that.onboardingData,_that.currentStep,_that.status,_that.isSubm
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( OnboardingData onboardingData,  int currentStep,  OnboardingStatus status,  bool isSubmitting,  bool isLoadingSectors,  bool isAnalyzingBrands,  bool isLoadingHistory,  int analysisStep,  int watchlistStep,  List<Sector> availableSectors,  List<HistoricalPrice> sp500History,  List<Brand> globalBrands,  List<Brand> sectorBrands,  List<Brand> selectedBrands,  String customBrandInput,  String? failureMessage)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( OnboardingData onboardingData,  int currentStep,  OnboardingStatus status,  bool isSubmitting,  bool isLoadingSectors,  bool isAnalyzingBrands,  bool isLoadingHistory,  int analysisStep,  int watchlistStep,  List<Sector> availableSectors,  List<HistoricalPrice> sp500History,  List<Brand> globalBrands,  List<Brand> sectorBrands,  List<Brand> selectedBrands,  String customBrandInput,  String? failureMessage,  List<FeatureHighlightItem> featureHighlights,  int currentHighlightIndex,  bool shouldNavigateToCreateAccount)?  $default,) {final _that = this;
 switch (_that) {
 case _OnboardingState() when $default != null:
-return $default(_that.onboardingData,_that.currentStep,_that.status,_that.isSubmitting,_that.isLoadingSectors,_that.isAnalyzingBrands,_that.isLoadingHistory,_that.analysisStep,_that.watchlistStep,_that.availableSectors,_that.sp500History,_that.globalBrands,_that.sectorBrands,_that.selectedBrands,_that.customBrandInput,_that.failureMessage);case _:
+return $default(_that.onboardingData,_that.currentStep,_that.status,_that.isSubmitting,_that.isLoadingSectors,_that.isAnalyzingBrands,_that.isLoadingHistory,_that.analysisStep,_that.watchlistStep,_that.availableSectors,_that.sp500History,_that.globalBrands,_that.sectorBrands,_that.selectedBrands,_that.customBrandInput,_that.failureMessage,_that.featureHighlights,_that.currentHighlightIndex,_that.shouldNavigateToCreateAccount);case _:
   return null;
 
 }
@@ -243,7 +247,7 @@ return $default(_that.onboardingData,_that.currentStep,_that.status,_that.isSubm
 
 
 class _OnboardingState extends OnboardingState {
-  const _OnboardingState({required this.onboardingData, this.currentStep = 0, this.status = OnboardingStatus.initial, this.isSubmitting = false, this.isLoadingSectors = false, this.isAnalyzingBrands = false, this.isLoadingHistory = false, this.analysisStep = 0, this.watchlistStep = 0, final  List<Sector> availableSectors = const [], final  List<HistoricalPrice> sp500History = const [], final  List<Brand> globalBrands = const [], final  List<Brand> sectorBrands = const [], final  List<Brand> selectedBrands = const [], this.customBrandInput = '', this.failureMessage}): _availableSectors = availableSectors,_sp500History = sp500History,_globalBrands = globalBrands,_sectorBrands = sectorBrands,_selectedBrands = selectedBrands,super._();
+  const _OnboardingState({required this.onboardingData, this.currentStep = 0, this.status = OnboardingStatus.initial, this.isSubmitting = false, this.isLoadingSectors = false, this.isAnalyzingBrands = false, this.isLoadingHistory = false, this.analysisStep = 0, this.watchlistStep = 0, final  List<Sector> availableSectors = const [], final  List<HistoricalPrice> sp500History = const [], final  List<Brand> globalBrands = const [], final  List<Brand> sectorBrands = const [], final  List<Brand> selectedBrands = const [], this.customBrandInput = '', this.failureMessage, final  List<FeatureHighlightItem> featureHighlights = const [], this.currentHighlightIndex = 0, this.shouldNavigateToCreateAccount = false}): _availableSectors = availableSectors,_sp500History = sp500History,_globalBrands = globalBrands,_sectorBrands = sectorBrands,_selectedBrands = selectedBrands,_featureHighlights = featureHighlights,super._();
   
 
 @override final  OnboardingData onboardingData;
@@ -308,6 +312,17 @@ class _OnboardingState extends OnboardingState {
 @override@JsonKey() final  String customBrandInput;
 // Error message
 @override final  String? failureMessage;
+// Feature Highlights Logic
+ final  List<FeatureHighlightItem> _featureHighlights;
+// Feature Highlights Logic
+@override@JsonKey() List<FeatureHighlightItem> get featureHighlights {
+  if (_featureHighlights is EqualUnmodifiableListView) return _featureHighlights;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_featureHighlights);
+}
+
+@override@JsonKey() final  int currentHighlightIndex;
+@override@JsonKey() final  bool shouldNavigateToCreateAccount;
 
 /// Create a copy of OnboardingState
 /// with the given fields replaced by the non-null parameter values.
@@ -319,16 +334,16 @@ _$OnboardingStateCopyWith<_OnboardingState> get copyWith => __$OnboardingStateCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _OnboardingState&&(identical(other.onboardingData, onboardingData) || other.onboardingData == onboardingData)&&(identical(other.currentStep, currentStep) || other.currentStep == currentStep)&&(identical(other.status, status) || other.status == status)&&(identical(other.isSubmitting, isSubmitting) || other.isSubmitting == isSubmitting)&&(identical(other.isLoadingSectors, isLoadingSectors) || other.isLoadingSectors == isLoadingSectors)&&(identical(other.isAnalyzingBrands, isAnalyzingBrands) || other.isAnalyzingBrands == isAnalyzingBrands)&&(identical(other.isLoadingHistory, isLoadingHistory) || other.isLoadingHistory == isLoadingHistory)&&(identical(other.analysisStep, analysisStep) || other.analysisStep == analysisStep)&&(identical(other.watchlistStep, watchlistStep) || other.watchlistStep == watchlistStep)&&const DeepCollectionEquality().equals(other._availableSectors, _availableSectors)&&const DeepCollectionEquality().equals(other._sp500History, _sp500History)&&const DeepCollectionEquality().equals(other._globalBrands, _globalBrands)&&const DeepCollectionEquality().equals(other._sectorBrands, _sectorBrands)&&const DeepCollectionEquality().equals(other._selectedBrands, _selectedBrands)&&(identical(other.customBrandInput, customBrandInput) || other.customBrandInput == customBrandInput)&&(identical(other.failureMessage, failureMessage) || other.failureMessage == failureMessage));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _OnboardingState&&(identical(other.onboardingData, onboardingData) || other.onboardingData == onboardingData)&&(identical(other.currentStep, currentStep) || other.currentStep == currentStep)&&(identical(other.status, status) || other.status == status)&&(identical(other.isSubmitting, isSubmitting) || other.isSubmitting == isSubmitting)&&(identical(other.isLoadingSectors, isLoadingSectors) || other.isLoadingSectors == isLoadingSectors)&&(identical(other.isAnalyzingBrands, isAnalyzingBrands) || other.isAnalyzingBrands == isAnalyzingBrands)&&(identical(other.isLoadingHistory, isLoadingHistory) || other.isLoadingHistory == isLoadingHistory)&&(identical(other.analysisStep, analysisStep) || other.analysisStep == analysisStep)&&(identical(other.watchlistStep, watchlistStep) || other.watchlistStep == watchlistStep)&&const DeepCollectionEquality().equals(other._availableSectors, _availableSectors)&&const DeepCollectionEquality().equals(other._sp500History, _sp500History)&&const DeepCollectionEquality().equals(other._globalBrands, _globalBrands)&&const DeepCollectionEquality().equals(other._sectorBrands, _sectorBrands)&&const DeepCollectionEquality().equals(other._selectedBrands, _selectedBrands)&&(identical(other.customBrandInput, customBrandInput) || other.customBrandInput == customBrandInput)&&(identical(other.failureMessage, failureMessage) || other.failureMessage == failureMessage)&&const DeepCollectionEquality().equals(other._featureHighlights, _featureHighlights)&&(identical(other.currentHighlightIndex, currentHighlightIndex) || other.currentHighlightIndex == currentHighlightIndex)&&(identical(other.shouldNavigateToCreateAccount, shouldNavigateToCreateAccount) || other.shouldNavigateToCreateAccount == shouldNavigateToCreateAccount));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,onboardingData,currentStep,status,isSubmitting,isLoadingSectors,isAnalyzingBrands,isLoadingHistory,analysisStep,watchlistStep,const DeepCollectionEquality().hash(_availableSectors),const DeepCollectionEquality().hash(_sp500History),const DeepCollectionEquality().hash(_globalBrands),const DeepCollectionEquality().hash(_sectorBrands),const DeepCollectionEquality().hash(_selectedBrands),customBrandInput,failureMessage);
+int get hashCode => Object.hashAll([runtimeType,onboardingData,currentStep,status,isSubmitting,isLoadingSectors,isAnalyzingBrands,isLoadingHistory,analysisStep,watchlistStep,const DeepCollectionEquality().hash(_availableSectors),const DeepCollectionEquality().hash(_sp500History),const DeepCollectionEquality().hash(_globalBrands),const DeepCollectionEquality().hash(_sectorBrands),const DeepCollectionEquality().hash(_selectedBrands),customBrandInput,failureMessage,const DeepCollectionEquality().hash(_featureHighlights),currentHighlightIndex,shouldNavigateToCreateAccount]);
 
 @override
 String toString() {
-  return 'OnboardingState(onboardingData: $onboardingData, currentStep: $currentStep, status: $status, isSubmitting: $isSubmitting, isLoadingSectors: $isLoadingSectors, isAnalyzingBrands: $isAnalyzingBrands, isLoadingHistory: $isLoadingHistory, analysisStep: $analysisStep, watchlistStep: $watchlistStep, availableSectors: $availableSectors, sp500History: $sp500History, globalBrands: $globalBrands, sectorBrands: $sectorBrands, selectedBrands: $selectedBrands, customBrandInput: $customBrandInput, failureMessage: $failureMessage)';
+  return 'OnboardingState(onboardingData: $onboardingData, currentStep: $currentStep, status: $status, isSubmitting: $isSubmitting, isLoadingSectors: $isLoadingSectors, isAnalyzingBrands: $isAnalyzingBrands, isLoadingHistory: $isLoadingHistory, analysisStep: $analysisStep, watchlistStep: $watchlistStep, availableSectors: $availableSectors, sp500History: $sp500History, globalBrands: $globalBrands, sectorBrands: $sectorBrands, selectedBrands: $selectedBrands, customBrandInput: $customBrandInput, failureMessage: $failureMessage, featureHighlights: $featureHighlights, currentHighlightIndex: $currentHighlightIndex, shouldNavigateToCreateAccount: $shouldNavigateToCreateAccount)';
 }
 
 
@@ -339,7 +354,7 @@ abstract mixin class _$OnboardingStateCopyWith<$Res> implements $OnboardingState
   factory _$OnboardingStateCopyWith(_OnboardingState value, $Res Function(_OnboardingState) _then) = __$OnboardingStateCopyWithImpl;
 @override @useResult
 $Res call({
- OnboardingData onboardingData, int currentStep, OnboardingStatus status, bool isSubmitting, bool isLoadingSectors, bool isAnalyzingBrands, bool isLoadingHistory, int analysisStep, int watchlistStep, List<Sector> availableSectors, List<HistoricalPrice> sp500History, List<Brand> globalBrands, List<Brand> sectorBrands, List<Brand> selectedBrands, String customBrandInput, String? failureMessage
+ OnboardingData onboardingData, int currentStep, OnboardingStatus status, bool isSubmitting, bool isLoadingSectors, bool isAnalyzingBrands, bool isLoadingHistory, int analysisStep, int watchlistStep, List<Sector> availableSectors, List<HistoricalPrice> sp500History, List<Brand> globalBrands, List<Brand> sectorBrands, List<Brand> selectedBrands, String customBrandInput, String? failureMessage, List<FeatureHighlightItem> featureHighlights, int currentHighlightIndex, bool shouldNavigateToCreateAccount
 });
 
 
@@ -356,7 +371,7 @@ class __$OnboardingStateCopyWithImpl<$Res>
 
 /// Create a copy of OnboardingState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? onboardingData = null,Object? currentStep = null,Object? status = null,Object? isSubmitting = null,Object? isLoadingSectors = null,Object? isAnalyzingBrands = null,Object? isLoadingHistory = null,Object? analysisStep = null,Object? watchlistStep = null,Object? availableSectors = null,Object? sp500History = null,Object? globalBrands = null,Object? sectorBrands = null,Object? selectedBrands = null,Object? customBrandInput = null,Object? failureMessage = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? onboardingData = null,Object? currentStep = null,Object? status = null,Object? isSubmitting = null,Object? isLoadingSectors = null,Object? isAnalyzingBrands = null,Object? isLoadingHistory = null,Object? analysisStep = null,Object? watchlistStep = null,Object? availableSectors = null,Object? sp500History = null,Object? globalBrands = null,Object? sectorBrands = null,Object? selectedBrands = null,Object? customBrandInput = null,Object? failureMessage = freezed,Object? featureHighlights = null,Object? currentHighlightIndex = null,Object? shouldNavigateToCreateAccount = null,}) {
   return _then(_OnboardingState(
 onboardingData: null == onboardingData ? _self.onboardingData : onboardingData // ignore: cast_nullable_to_non_nullable
 as OnboardingData,currentStep: null == currentStep ? _self.currentStep : currentStep // ignore: cast_nullable_to_non_nullable
@@ -374,7 +389,10 @@ as List<Brand>,sectorBrands: null == sectorBrands ? _self._sectorBrands : sector
 as List<Brand>,selectedBrands: null == selectedBrands ? _self._selectedBrands : selectedBrands // ignore: cast_nullable_to_non_nullable
 as List<Brand>,customBrandInput: null == customBrandInput ? _self.customBrandInput : customBrandInput // ignore: cast_nullable_to_non_nullable
 as String,failureMessage: freezed == failureMessage ? _self.failureMessage : failureMessage // ignore: cast_nullable_to_non_nullable
-as String?,
+as String?,featureHighlights: null == featureHighlights ? _self._featureHighlights : featureHighlights // ignore: cast_nullable_to_non_nullable
+as List<FeatureHighlightItem>,currentHighlightIndex: null == currentHighlightIndex ? _self.currentHighlightIndex : currentHighlightIndex // ignore: cast_nullable_to_non_nullable
+as int,shouldNavigateToCreateAccount: null == shouldNavigateToCreateAccount ? _self.shouldNavigateToCreateAccount : shouldNavigateToCreateAccount // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 

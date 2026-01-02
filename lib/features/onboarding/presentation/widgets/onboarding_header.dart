@@ -1,6 +1,6 @@
 import 'package:bizzie/app/themes/app_assets.dart';
 import 'package:bizzie/app/themes/app_colors.dart';
-import 'package:bizzie/app/themes/app_text_styles.dart';
+
 import 'package:flutter/material.dart';
 
 class OnboardingHeader extends StatelessWidget {
@@ -21,6 +21,7 @@ class OnboardingHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
@@ -58,21 +59,16 @@ class OnboardingHeader extends StatelessWidget {
                 if (title != null)
                   Text(
                     title!,
-                    style: AppTextStyles.h1.copyWith(
-                      fontSize: 32,
-                      fontWeight: FontWeight.w800,
+                    style: theme.textTheme.displayLarge?.copyWith(
                       height: 1.2, // 38.4px / 32px
-                      letterSpacing: 0.406,
-                      color: const Color(0xFF0F172B),
                     ),
                   ),
                 if (subtitle != null) ...[
                   const SizedBox(height: 16),
                   Text(
                     subtitle!,
-                    style: AppTextStyles.bodyMedium.copyWith(
+                    style: theme.textTheme.bodyMedium?.copyWith(
                       color: AppColors.textSecondary,
-                      height: 1.5,
                     ),
                   ),
                 ],

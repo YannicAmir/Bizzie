@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import '../../../../app/themes/app_assets.dart';
 import '../../../../app/themes/app_colors.dart';
-import '../../../../app/themes/app_text_styles.dart';
+
 import '../../data/datasources/dummy_price_data.dart';
 import '../widgets/onboarding_footer.dart';
 
@@ -25,9 +25,10 @@ class LandingPage extends StatelessWidget {
     // Checking dummy data from previous turn: "2025-12-29"... "2025-12-26". Yes, it's descending.
     // So we need to reverse it for the chart to look correct (time moving forward).
     final List<ChartData> reversedData = chartData.reversed.toList();
+    final theme = Theme.of(context);
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: theme.scaffoldBackgroundColor,
       body: SafeArea(
         child: Stack(
           children: [
@@ -43,10 +44,14 @@ class LandingPage extends StatelessWidget {
                 // Chart is visual only
                 child: ShaderMask(
                   shaderCallback: (Rect bounds) {
-                    return const LinearGradient(
+                    return LinearGradient(
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
-                      colors: [Colors.white, Colors.white, Colors.transparent],
+                      colors: [
+                        theme.scaffoldBackgroundColor,
+                        theme.scaffoldBackgroundColor,
+                        Colors.transparent,
+                      ],
                       stops: [0.0, 0.5, 1.0], // Fade out at bottom
                     ).createShader(bounds);
                   },
@@ -115,7 +120,9 @@ class LandingPage extends StatelessWidget {
                     ),
                     child: Text(
                       'Get Started',
-                      style: AppTextStyles.button.copyWith(color: Colors.white),
+                      style: theme.textTheme.labelLarge?.copyWith(
+                        color: Colors.white,
+                      ),
                     ),
                   ),
                   secondaryButton: Row(
@@ -123,7 +130,7 @@ class LandingPage extends StatelessWidget {
                     children: [
                       Text(
                         'Already have an account?',
-                        style: AppTextStyles.bodyMedium.copyWith(
+                        style: theme.textTheme.bodyMedium?.copyWith(
                           color: AppColors.textSecondary,
                         ),
                       ),
@@ -133,7 +140,7 @@ class LandingPage extends StatelessWidget {
                         },
                         child: Text(
                           'Login',
-                          style: AppTextStyles.bodyMedium.copyWith(
+                          style: theme.textTheme.bodyMedium?.copyWith(
                             color: AppColors.primary,
                             fontWeight: FontWeight.w600,
                           ),

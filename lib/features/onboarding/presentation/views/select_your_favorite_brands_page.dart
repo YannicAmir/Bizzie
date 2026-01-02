@@ -3,7 +3,6 @@ import 'package:bizzie/features/onboarding/domain/models/brand.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:bizzie/app/themes/app_text_styles.dart';
 import 'package:bizzie/app/themes/app_colors.dart';
 // import 'package:bizzie/app/themes/app_assets.dart'; // Unused now
 import 'package:bizzie/app/routes/app_routes.dart';
@@ -38,6 +37,7 @@ class _SelectYourFavoriteBrandsPageState
   Widget build(BuildContext context) {
     return BlocBuilder<OnboardingBloc, OnboardingState>(
       builder: (context, state) {
+        final theme = Theme.of(context);
         final selectedSectorName =
             state.onboardingData.selectedSector?.displayName ?? 'Your Sector';
 
@@ -50,7 +50,7 @@ class _SelectYourFavoriteBrandsPageState
             .toList();
 
         return Scaffold(
-          backgroundColor: AppColors.background,
+          backgroundColor: theme.scaffoldBackgroundColor,
           body: SafeArea(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -72,8 +72,8 @@ class _SelectYourFavoriteBrandsPageState
                         if (state.selectedBrands.isNotEmpty) ...[
                           Text(
                             'Your brands',
-                            style: AppTextStyles.bodyMedium.copyWith(
-                              color: AppColors.textSecondary,
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              color: AppColors.black,
                               fontWeight: FontWeight.w600,
                             ),
                           ),
@@ -85,8 +85,9 @@ class _SelectYourFavoriteBrandsPageState
                             children: state.selectedBrands.map((brand) {
                               return _BrandChip(
                                 brand: brand,
-                                backgroundColor: const Color(0xFFDBEAFE),
-                                foregroundColor: const Color(0xFF1447E6),
+                                backgroundColor:
+                                    AppColors.brandChipSelectedBackground,
+                                foregroundColor: AppColors.mascotSubtitle,
                                 iconData: Icons.close,
                                 onTap: () {
                                   context.read<OnboardingBloc>().add(
@@ -104,8 +105,8 @@ class _SelectYourFavoriteBrandsPageState
                             availableSectorBrands.isNotEmpty) ...[
                           Text(
                             'Popular $selectedSectorName brands',
-                            style: AppTextStyles.bodyMedium.copyWith(
-                              color: AppColors.textSecondary,
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              color: AppColors.black,
                               fontWeight: FontWeight.w600,
                             ),
                           ),
@@ -117,9 +118,9 @@ class _SelectYourFavoriteBrandsPageState
                             children: availableSectorBrands.map((brand) {
                               return _BrandChip(
                                 brand: brand,
-                                backgroundColor: const Color(0xFFEFF6FF),
-                                foregroundColor: const Color(0xFF1447E6),
-                                borderColor: const Color(0xFFBEDBFF),
+                                backgroundColor: AppColors.mascotBackground,
+                                foregroundColor: AppColors.mascotSubtitle,
+                                borderColor: AppColors.brandChipSectorBorder,
                                 iconData: Icons.add,
                                 onTap: () {
                                   context.read<OnboardingBloc>().add(
@@ -136,8 +137,8 @@ class _SelectYourFavoriteBrandsPageState
                         if (availableGlobalBrands.isNotEmpty) ...[
                           Text(
                             'Other popular brands',
-                            style: AppTextStyles.bodyMedium.copyWith(
-                              color: AppColors.textSecondary,
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              color: AppColors.black,
                               fontWeight: FontWeight.w600,
                             ),
                           ),
@@ -149,8 +150,9 @@ class _SelectYourFavoriteBrandsPageState
                             children: availableGlobalBrands.map((brand) {
                               return _BrandChip(
                                 brand: brand,
-                                backgroundColor: const Color(0xFFF1F5F9),
-                                foregroundColor: const Color(0xFF314158),
+                                backgroundColor: AppColors.slate100,
+                                foregroundColor:
+                                    AppColors.brandChipOtherForeground,
                                 iconData: Icons.add,
                                 onTap: () {
                                   context.read<OnboardingBloc>().add(
@@ -177,18 +179,13 @@ class _SelectYourFavoriteBrandsPageState
                             }
                           : null,
                       style: FilledButton.styleFrom(
-                        backgroundColor: AppColors.primary,
-                        disabledBackgroundColor: AppColors.primary.withValues(
-                          alpha: 0.5,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
-                        ),
+                        disabledBackgroundColor: theme.colorScheme.primary
+                            .withValues(alpha: 0.5),
                         padding: const EdgeInsets.symmetric(vertical: 16),
                       ),
                       child: Text(
                         'Continue',
-                        style: AppTextStyles.button.copyWith(
+                        style: theme.textTheme.labelLarge?.copyWith(
                           color: Colors.white,
                         ),
                       ),
@@ -223,6 +220,7 @@ class _BrandChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return GestureDetector(
       onTap: onTap,
       child: AnimatedContainer(
@@ -242,7 +240,7 @@ class _BrandChip extends StatelessWidget {
               Icon(iconData, size: 20, color: foregroundColor),
               Text(
                 brand.name,
-                style: AppTextStyles.bodyMedium.copyWith(
+                style: theme.textTheme.bodyMedium?.copyWith(
                   color: foregroundColor,
                   fontWeight: FontWeight.w600,
                 ),
@@ -250,7 +248,7 @@ class _BrandChip extends StatelessWidget {
             ] else ...[
               Text(
                 brand.name,
-                style: AppTextStyles.bodyMedium.copyWith(
+                style: theme.textTheme.bodyMedium?.copyWith(
                   color: foregroundColor,
                   fontWeight: FontWeight.w600,
                 ),

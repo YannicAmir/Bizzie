@@ -1,6 +1,6 @@
 import 'package:bizzie/app/themes/app_assets.dart';
 import 'package:bizzie/app/themes/app_colors.dart';
-import 'package:bizzie/app/themes/app_text_styles.dart';
+
 import 'package:bizzie/features/onboarding/presentation/bloc/onboarding_bloc.dart';
 import 'package:bizzie/app/routes/app_routes.dart';
 import 'package:bizzie/features/onboarding/presentation/widgets/onboarding_footer.dart';
@@ -23,29 +23,15 @@ class _AnalyzingBrandsPageState extends State<AnalyzingBrandsPage> {
     context.read<OnboardingBloc>().add(const OnboardingEvent.startAnalysis());
   }
 
-  String _getTitle(int step) {
-    if (step >= 3) return 'All done!';
-    switch (step) {
-      case 0:
-      case 1:
-        return 'Analyzing your\nbrands';
-      case 2:
-        return 'Identifying public\ncompanies';
-      case 3:
-        return 'Building your\nwatchlist';
-      default:
-        return 'Analyzing your\nbrands';
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: BlocBuilder<OnboardingBloc, OnboardingState>(
         builder: (context, state) {
+          final theme = Theme.of(context);
           final isDone = state.analysisStep >= 3;
-          final title = _getTitle(state.analysisStep);
+          final title = state.analysisTitle;
 
           return SafeArea(
             child: Column(
@@ -64,12 +50,12 @@ class _AnalyzingBrandsPageState extends State<AnalyzingBrandsPage> {
                             alignment: Alignment.centerLeft,
                             child: Text(
                               title,
-                              style: AppTextStyles.h1.copyWith(
+                              style: theme.textTheme.displayLarge?.copyWith(
                                 fontSize: 32,
                                 fontWeight: FontWeight.w800,
                                 height: 1.2,
                                 letterSpacing: 0.406,
-                                color: const Color(0xFF0F172B),
+                                color: AppColors.textPrimary,
                               ),
                             ),
                           ),
@@ -80,31 +66,19 @@ class _AnalyzingBrandsPageState extends State<AnalyzingBrandsPage> {
                         _AnalysisStepItem(
                           text: 'Analyzing your brands',
                           iconPath: AppAssets.searchIcon,
-                          state: state.analysisStep >= 1
-                              ? _StepState.completed
-                              : state.analysisStep == 0
-                              ? _StepState.active
-                              : _StepState.pending,
+                          state: state.stepAnalysisStatus,
                         ),
                         const SizedBox(height: 16),
                         _AnalysisStepItem(
                           text: 'Identifying public companies',
                           iconPath: AppAssets.arrowUpIcon,
-                          state: state.analysisStep >= 2
-                              ? _StepState.completed
-                              : state.analysisStep == 1
-                              ? _StepState.active
-                              : _StepState.pending,
+                          state: state.stepPublicCompaniesStatus,
                         ),
                         const SizedBox(height: 16),
                         _AnalysisStepItem(
                           text: 'Building your watchlist',
                           iconPath: AppAssets.circledCheckIcon,
-                          state: state.analysisStep >= 3
-                              ? _StepState.completed
-                              : state.analysisStep == 2
-                              ? _StepState.active
-                              : _StepState.pending,
+                          state: state.stepWatchlistStatus,
                         ),
 
                         const SizedBox(height: 48),
@@ -158,15 +132,14 @@ class _AnalyzingBrandsPageState extends State<AnalyzingBrandsPage> {
                         context.push(AppRoutes.onboardingFoundCompanies);
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.primary,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(16),
                         ),
                         elevation: 0,
                       ),
-                      child: const Text(
+                      child: Text(
                         'Show Me the Stocks',
-                        style: TextStyle(
+                        style: theme.textTheme.labelLarge?.copyWith(
                           color: Colors.white,
                           fontSize: 17,
                           fontWeight: FontWeight.w600,
@@ -184,12 +157,10 @@ class _AnalyzingBrandsPageState extends State<AnalyzingBrandsPage> {
   }
 }
 
-enum _StepState { pending, active, completed }
-
 class _AnalysisStepItem extends StatelessWidget {
   final String text;
   final String iconPath;
-  final _StepState state;
+  final AnalysisStepStatus state;
 
   const _AnalysisStepItem({
     required this.text,
@@ -199,6 +170,7 @@ class _AnalysisStepItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var theme = Theme.of(context);
     Color backgroundColor;
     Color borderColor;
     Color textColor;
@@ -206,25 +178,25 @@ class _AnalysisStepItem extends StatelessWidget {
     Color iconColor;
 
     switch (state) {
-      case _StepState.completed:
-        backgroundColor = const Color(0xFFECFDF5);
-        borderColor = const Color(0xFFA4F4CF);
+      case AnalysisStepStatus.completed:
+        backgroundColor = AppColors.successBackground;
+        borderColor = AppColors.successBorder;
         textColor = AppColors.textPrimary;
-        iconBgColor = const Color(0xFFD0FAE5);
-        iconColor = const Color(0xFF047857);
+        iconBgColor = AppColors.successIconBackground;
+        iconColor = AppColors.successText;
         break;
-      case _StepState.active:
-        backgroundColor = const Color(0xFFEFF6FF);
-        borderColor = const Color(0xFFBEDBFF);
+      case AnalysisStepStatus.active:
+        backgroundColor = AppColors.mascotBackground;
+        borderColor = AppColors.brandChipSectorBorder;
         textColor = AppColors.textPrimary;
-        iconBgColor = const Color(0xFFDBEAFE);
+        iconBgColor = AppColors.brandChipSelectedBackground;
         iconColor = AppColors.primary;
         break;
-      case _StepState.pending:
-        backgroundColor = const Color(0xFFF8FAFC);
-        borderColor = const Color(0xFFE2E8F0);
+      case AnalysisStepStatus.pending:
+        backgroundColor = AppColors.inputBackground;
+        borderColor = AppColors.inputBorder;
         textColor = AppColors.textTertiary;
-        iconBgColor = const Color(0xFFF1F5F9);
+        iconBgColor = AppColors.slate100;
         iconColor = AppColors.textTertiary;
         break;
     }
@@ -261,7 +233,7 @@ class _AnalysisStepItem extends StatelessWidget {
           Expanded(
             child: Text(
               text,
-              style: AppTextStyles.bodyMedium.copyWith(
+              style: theme.textTheme.bodyMedium?.copyWith(
                 color: textColor,
                 fontWeight: FontWeight.w600,
                 height: 1.3,

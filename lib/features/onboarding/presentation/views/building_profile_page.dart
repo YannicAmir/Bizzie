@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:bizzie/app/routes/app_routes.dart';
 import 'package:bizzie/app/themes/app_colors.dart';
-import 'package:bizzie/app/themes/app_text_styles.dart';
+
 import 'package:bizzie/features/onboarding/presentation/bloc/onboarding_bloc.dart';
 
 import 'package:flutter/material.dart';
@@ -91,6 +91,7 @@ class _BuildingProfilePageState extends State<BuildingProfilePage>
   Widget build(BuildContext context) {
     return BlocBuilder<OnboardingBloc, OnboardingState>(
       builder: (context, state) {
+        final theme = Theme.of(context);
         final selectedSector = state.onboardingData.selectedSector;
         final experience = state.onboardingData.investingExperience;
 
@@ -123,7 +124,7 @@ class _BuildingProfilePageState extends State<BuildingProfilePage>
         ];
 
         return Scaffold(
-          backgroundColor: Colors.white,
+          backgroundColor: theme.scaffoldBackgroundColor,
           body: SafeArea(
             child: Column(
               children: [
@@ -148,10 +149,10 @@ class _BuildingProfilePageState extends State<BuildingProfilePage>
                               child: Container(
                                 padding: const EdgeInsets.all(16),
                                 decoration: BoxDecoration(
-                                  color: Colors.white,
+                                  color: theme.cardColor,
                                   borderRadius: BorderRadius.circular(16),
                                   border: Border.all(
-                                    color: const Color(0xFFDBEAFE),
+                                    color: AppColors.inputBackground,
                                     width: 1,
                                   ),
                                 ),
@@ -194,25 +195,26 @@ class _BuildingProfilePageState extends State<BuildingProfilePage>
                                           // Label (Subtitle)
                                           Text(
                                             item.subtitle,
-                                            style: const TextStyle(
-                                              fontFamily: 'Inter',
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.w500,
-                                              color: Color(0xFF62748E),
-                                              height: 1.5, // 18px / 12px
-                                            ),
+                                            style: theme.textTheme.bodySmall
+                                                ?.copyWith(
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.w500,
+                                                  color:
+                                                      AppColors.textSecondary,
+                                                  height: 1.5, // 18px / 12px
+                                                ),
                                           ),
                                           // Value (Title)
                                           Text(
                                             item.title,
-                                            style: const TextStyle(
-                                              fontFamily: 'Inter',
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w600,
-                                              color: Color(0xFF0F172B),
-                                              height: 1.5, // 24px / 16px
-                                              letterSpacing: -0.3125,
-                                            ),
+                                            style: theme.textTheme.bodyLarge
+                                                ?.copyWith(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w600,
+                                                  color: AppColors.textPrimary,
+                                                  height: 1.5, // 24px / 16px
+                                                  letterSpacing: -0.3125,
+                                                ),
                                           ),
                                         ],
                                       ),
@@ -251,7 +253,7 @@ class _BuildingProfilePageState extends State<BuildingProfilePage>
                               padding: const EdgeInsets.all(40.0),
                               child: Text(
                                 'Building your profile',
-                                style: AppTextStyles.h2.copyWith(
+                                style: theme.textTheme.displayMedium?.copyWith(
                                   fontSize: 28,
                                   fontWeight: FontWeight.w800,
                                   color: AppColors.textPrimary,
@@ -270,7 +272,7 @@ class _BuildingProfilePageState extends State<BuildingProfilePage>
                       // Percentage Text (Bottom)
                       Text(
                         '   ${(_progressAnimation.value * 100).toInt()}%',
-                        style: AppTextStyles.bodyLarge.copyWith(
+                        style: theme.textTheme.bodyLarge?.copyWith(
                           fontWeight: FontWeight.w900,
                           fontSize: 20,
                           height: 1.5, // 30px / 20px

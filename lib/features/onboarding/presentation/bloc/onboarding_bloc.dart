@@ -4,6 +4,7 @@ import 'package:bizzie/features/onboarding/domain/models/onboarding_data.dart';
 import 'package:bizzie/features/onboarding/domain/models/sector.dart';
 import 'package:bizzie/features/onboarding/domain/models/brand.dart';
 import 'package:bizzie/features/onboarding/presentation/bloc/onboarding_state.dart';
+import 'package:bizzie/features/onboarding/presentation/models/feature_highlight_item.dart';
 export 'package:bizzie/features/onboarding/presentation/bloc/onboarding_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -33,6 +34,9 @@ class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
     on<_UpdateAnalysisStep>(_onUpdateAnalysisStep);
     on<_StartWatchlistAddition>(_onStartWatchlistAddition);
     on<_UpdateWatchlistStep>(_onUpdateWatchlistStep);
+    on<_HighlightPageChanged>(_onHighlightPageChanged);
+    on<_HighlightContinuePressed>(_onHighlightContinuePressed);
+    on<_HighlightSkipPressed>(_onHighlightSkipPressed);
   }
 
   Future<void> _onLoadBrands(
@@ -77,13 +81,16 @@ class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
         .map((brand) => Company(ticker: brand.ticker, name: brand.company))
         .toList();
 
+    final newData = state.onboardingData.copyWith(
+      detectedCompanies: detectedCompanies,
+    );
+
     emit(
       state.copyWith(
         analysisStep: 0,
         isAnalyzingBrands: true,
-        onboardingData: state.onboardingData.copyWith(
-          detectedCompanies: detectedCompanies,
-        ),
+        onboardingData: newData,
+        featureHighlights: _calculateFeatureHighlights(newData),
       ),
     );
 
@@ -180,12 +187,14 @@ class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
       final companies = await _repository.getTickersFromBrands(
         event.brandsText,
       );
+      final newData = state.onboardingData.copyWith(
+        detectedCompanies: companies,
+      );
       emit(
         state.copyWith(
           isAnalyzingBrands: false,
-          onboardingData: state.onboardingData.copyWith(
-            detectedCompanies: companies,
-          ),
+          onboardingData: newData,
+          featureHighlights: _calculateFeatureHighlights(newData),
         ),
       );
     } catch (e) {
@@ -235,11 +244,13 @@ class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
     _ConfirmWatchlist event,
     Emitter<OnboardingState> emit,
   ) {
+    final newData = state.onboardingData.copyWith(
+      detectedCompanies: event.confirmedCompanies,
+    );
     emit(
       state.copyWith(
-        onboardingData: state.onboardingData.copyWith(
-          detectedCompanies: event.confirmedCompanies,
-        ),
+        onboardingData: newData,
+        featureHighlights: _calculateFeatureHighlights(newData),
       ),
     );
   }
@@ -248,11 +259,14 @@ class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
     _ExperienceSelected event,
     Emitter<OnboardingState> emit,
   ) {
+    final newData = state.onboardingData.copyWith(
+      investingExperience: event.experience,
+    );
     emit(
       state.copyWith(
-        onboardingData: state.onboardingData.copyWith(
-          investingExperience: event.experience,
-        ),
+        onboardingData: newData,
+        featureHighlights: _calculateFeatureHighlights(newData),
+        currentHighlightIndex: 0,
       ),
     );
   }
@@ -281,5 +295,111 @@ class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
         ),
       );
     }
+  }
+
+  void _onHighlightPageChanged(
+    _HighlightPageChanged event,
+    Emitter<OnboardingState> emit,
+  ) {
+    emit(state.copyWith(currentHighlightIndex: event.index));
+  }
+
+  void _onHighlightContinuePressed(
+    _HighlightContinuePressed event,
+    Emitter<OnboardingState> emit,
+  ) {
+    if (state.currentHighlightIndex < state.featureHighlights.length - 1) {
+      emit(
+        state.copyWith(currentHighlightIndex: state.currentHighlightIndex + 1),
+      );
+    } else {
+      emit(state.copyWith(shouldNavigateToCreateAccount: true));
+      // Reset navigation flag immediately after emission to avoid double navigation
+      emit(state.copyWith(shouldNavigateToCreateAccount: false));
+    }
+  }
+
+  void _onHighlightSkipPressed(
+    _HighlightSkipPressed event,
+    Emitter<OnboardingState> emit,
+  ) {
+    emit(state.copyWith(shouldNavigateToCreateAccount: true));
+    emit(state.copyWith(shouldNavigateToCreateAccount: false));
+  }
+
+  List<FeatureHighlightItem> _calculateFeatureHighlights(OnboardingData data) {
+    final experience = data.investingExperience;
+    final company = data.detectedCompanies.firstOrNull?.name ?? 'Apple';
+
+    List<FeatureHighlightItem> items;
+    switch (experience) {
+      case InvestingExperience.expert:
+        items = [
+          FeatureHighlightItem(
+            title: 'Expert investors will love',
+            description:
+                'View the full financial history of $company and other companies',
+            type: FeatureHighlightType.historicalData,
+          ),
+          FeatureHighlightItem(
+            title: 'Expert investors will love',
+            description:
+                'Never miss quarterly or annual report releases from your watchlist',
+            type: FeatureHighlightType.financialReportAlerts,
+          ),
+          FeatureHighlightItem(
+            title: 'Expert investors will love',
+            description:
+                'Deep dive into 10-K and 10-Q reports with AI-powered summaries',
+            type: FeatureHighlightType.summaryIllustration,
+          ),
+        ];
+        break;
+      case InvestingExperience.intermediate:
+        items = [
+          FeatureHighlightItem(
+            title: 'Experienced investors will love',
+            description:
+                'Visualize Apple and other company financials at a glance',
+            type: FeatureHighlightType.visualFinancials,
+          ),
+          FeatureHighlightItem(
+            title: 'Experienced investors will love',
+            description:
+                'Easily find stocks by searching for your favorite brands',
+            type: FeatureHighlightType.brandSearch,
+          ),
+          FeatureHighlightItem(
+            title: 'Experienced investors will love',
+            description:
+                'Bizzie analyzes full reports and summarizes with quick insights',
+            type: FeatureHighlightType.summaryIllustration,
+          ),
+        ];
+        break;
+      case InvestingExperience.beginner:
+      default:
+        items = [
+          FeatureHighlightItem(
+            title: 'Beginners will love',
+            description: 'Bizzie makes complex topics easy to understand',
+            type: FeatureHighlightType.easyToUnderstand,
+          ),
+          FeatureHighlightItem(
+            title: 'Beginners will love',
+            description:
+                'Easily find stocks by searching for your favorite brands & products',
+            type: FeatureHighlightType.brandSearch,
+          ),
+          FeatureHighlightItem(
+            title: 'Beginners will love',
+            description:
+                'Get a daily list of stocks to explore--personalized just for you',
+            type: FeatureHighlightType.dailyPicks,
+          ),
+        ];
+        break;
+    }
+    return items;
   }
 }

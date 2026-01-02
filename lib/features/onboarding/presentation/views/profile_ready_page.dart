@@ -1,6 +1,6 @@
 import 'package:bizzie/app/routes/app_routes.dart';
 import 'package:bizzie/app/themes/app_colors.dart';
-import 'package:bizzie/app/themes/app_text_styles.dart';
+
 import 'package:bizzie/features/onboarding/presentation/bloc/onboarding_bloc.dart';
 import 'package:bizzie/features/onboarding/presentation/utils/onboarding_assets_helper.dart';
 import 'package:flutter/material.dart';
@@ -16,6 +16,7 @@ class ProfileReadyPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<OnboardingBloc, OnboardingState>(
       builder: (context, state) {
+        final theme = Theme.of(context);
         final selectedSector = state.onboardingData.selectedSector;
         final firstName = state.onboardingData.firstName;
 
@@ -28,7 +29,7 @@ class ProfileReadyPage extends StatelessWidget {
         }
 
         return Scaffold(
-          backgroundColor: Colors.white,
+          backgroundColor: theme.scaffoldBackgroundColor,
           body: SafeArea(
             child: Column(
               children: [
@@ -58,7 +59,7 @@ class ProfileReadyPage extends StatelessWidget {
                         // Heading
                         RichText(
                           text: TextSpan(
-                            style: AppTextStyles.h1.copyWith(
+                            style: theme.textTheme.displayLarge?.copyWith(
                               fontSize: 40,
                               height: 1.2,
                               letterSpacing: 0.37,
@@ -68,8 +69,8 @@ class ProfileReadyPage extends StatelessWidget {
                               const TextSpan(text: 'Your profile is ready, '),
                               TextSpan(
                                 text: firstName,
-                                style: const TextStyle(
-                                  color: AppColors.primary,
+                                style: TextStyle(
+                                  color: theme.colorScheme.primary,
                                 ),
                               ),
                               const TextSpan(text: '!'),
@@ -82,7 +83,7 @@ class ProfileReadyPage extends StatelessWidget {
                         // Description
                         Text(
                           'We have personalized Bizzie just for you. Let\'s get started!',
-                          style: AppTextStyles.bodyLarge.copyWith(
+                          style: theme.textTheme.bodyLarge?.copyWith(
                             fontSize: 17,
                             color: AppColors.textSecondary,
                             height: 1.5,
@@ -106,9 +107,9 @@ class ProfileReadyPage extends StatelessWidget {
                               ),
                               elevation: 0,
                             ),
-                            child: const Text(
+                            child: Text(
                               'Continue',
-                              style: TextStyle(
+                              style: theme.textTheme.labelLarge?.copyWith(
                                 color: Colors.white,
                                 fontSize: 17,
                                 fontWeight: FontWeight.w600,
