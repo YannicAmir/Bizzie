@@ -67,14 +67,7 @@ class _AddingToWatchlistPageState extends State<AddingToWatchlistPage> {
           body: SafeArea(
             child: Column(
               children: [
-                OnboardingHeader(
-                  progressIndicator: LinearProgressIndicator(
-                    value: 8 / 14,
-                    backgroundColor: AppColors.slate200,
-                    color: AppColors.primary,
-                    minHeight: 4,
-                  ),
-                ),
+                const OnboardingHeader(),
                 Expanded(
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 24.0),
@@ -158,7 +151,7 @@ class _AddingToWatchlistPageState extends State<AddingToWatchlistPage> {
 
                         const SizedBox(height: 24),
 
-                        // Progress Bar or Button
+                        // Progress Bar (Visible only when adding)
                         if (!isComplete) ...[
                           ClipRRect(
                             borderRadius: BorderRadius.circular(4),
@@ -187,16 +180,16 @@ class _AddingToWatchlistPageState extends State<AddingToWatchlistPage> {
                               ),
                             ),
                           ),
-                          const SizedBox(
-                            height: 16,
-                          ), // Adding some bottom padding for the bar
-                        ] else ...[
+                          const SizedBox(height: 16),
+                        ],
+
+                        // Continue Button (Visible only when complete)
+                        if (isComplete)
                           SizedBox(
                             width: double.infinity,
                             height: 56,
                             child: ElevatedButton(
                               onPressed: () {
-                                // TODO: Navigate to notification request or next step
                                 context.go(AppRoutes.notificationRequest);
                               },
                               style: ElevatedButton.styleFrom(
@@ -216,7 +209,6 @@ class _AddingToWatchlistPageState extends State<AddingToWatchlistPage> {
                               ),
                             ),
                           ),
-                        ],
                         const SizedBox(height: 32),
                       ],
                     ),

@@ -43,14 +43,7 @@ class CreateAccountPage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                OnboardingHeader(
-                  progressIndicator: LinearProgressIndicator(
-                    value: 12 / 14,
-                    backgroundColor: AppColors.slate200,
-                    color: AppColors.primary,
-                    minHeight: 4,
-                  ),
-                ),
+                const OnboardingHeader(),
                 const SizedBox(height: 40),
 
                 // Removed _BackButton as requested

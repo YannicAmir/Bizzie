@@ -1,5 +1,6 @@
 import 'package:bizzie/app/routes/app_routes.dart';
 import 'package:bizzie/features/auth/presentation/views/create_account_page.dart';
+import 'package:bizzie/features/onboarding/presentation/widgets/onboarding_shell.dart';
 import 'package:bizzie/features/auth/presentation/views/email_sent_page.dart';
 import 'package:bizzie/features/auth/presentation/views/forgot_password_page.dart';
 import 'package:bizzie/features/auth/presentation/views/login_page.dart';
@@ -130,68 +131,82 @@ GoRouter createRouter(AuthBloc authBloc) {
           return BlocProvider<OnboardingBloc>(
             create: (_) =>
                 getIt<OnboardingBloc>()..add(const OnboardingEvent.started()),
-            child: child,
+            child: OnboardingShell(child: child),
           );
         },
         routes: [
-          GoRoute(
-            path: AppRoutes.onboardingName,
-            builder: (context, state) => const AskNamePage(),
+          _buildNoTransitionRoute(
+            AppRoutes.onboardingName,
+            const AskNamePage(),
           ),
-          GoRoute(
-            path: AppRoutes.onboardingWelcome,
-            builder: (context, state) => const WelcomeNamePage(),
+          _buildNoTransitionRoute(
+            AppRoutes.onboardingWelcome,
+            const WelcomeNamePage(),
           ),
-          GoRoute(
-            path: AppRoutes.onboardingExperience,
-            builder: (context, state) => const InvestingExperiencePage(),
+          _buildNoTransitionRoute(
+            AppRoutes.onboardingExperience,
+            const InvestingExperiencePage(),
           ),
-          GoRoute(
-            path: AppRoutes.onboardingFeatureHighlights,
-            builder: (context, state) => const FeatureHighlightsPage(),
+          _buildNoTransitionRoute(
+            AppRoutes.onboardingFeatureHighlights,
+            const FeatureHighlightsPage(),
           ),
-          GoRoute(
-            path: AppRoutes.onboardingSectors,
-            builder: (context, state) => const SectorSelectionPage(),
+          _buildNoTransitionRoute(
+            AppRoutes.onboardingSectors,
+            const SectorSelectionPage(),
           ),
-          GoRoute(
-            path: AppRoutes.onboardingMeetBizzie,
-            builder: (context, state) => const MeetYourBizziePage(),
+          _buildNoTransitionRoute(
+            AppRoutes.onboardingMeetBizzie,
+            const MeetYourBizziePage(),
           ),
-          GoRoute(
-            path: AppRoutes.onboardingBrands,
-            builder: (context, state) => const SelectYourFavoriteBrandsPage(),
+          _buildNoTransitionRoute(
+            AppRoutes.onboardingBrands,
+            const SelectYourFavoriteBrandsPage(),
           ),
-          GoRoute(
-            path: AppRoutes.onboardingAnalyzing,
-            builder: (context, state) => const AnalyzingBrandsPage(),
+          _buildNoTransitionRoute(
+            AppRoutes.onboardingAnalyzing,
+            const AnalyzingBrandsPage(),
           ),
-          GoRoute(
-            path: AppRoutes.onboardingFoundCompanies,
-            builder: (context, state) => const BizzieFoundCompaniesPage(),
+          _buildNoTransitionRoute(
+            AppRoutes.onboardingFoundCompanies,
+            const BizzieFoundCompaniesPage(),
           ),
-          GoRoute(
-            path: AppRoutes.onboardingAddingWatchlist,
-            builder: (context, state) => const AddingToWatchlistPage(),
+          _buildNoTransitionRoute(
+            AppRoutes.onboardingAddingWatchlist,
+            const AddingToWatchlistPage(),
           ),
-          GoRoute(
-            path: AppRoutes.onboardingBuildingProfile,
-            builder: (context, state) => const BuildingProfilePage(),
+          _buildNoTransitionRoute(
+            AppRoutes.onboardingBuildingProfile,
+            const BuildingProfilePage(),
           ),
-          GoRoute(
-            path: AppRoutes.onboardingProfileReady,
-            builder: (context, state) => const ProfileReadyPage(),
+          _buildNoTransitionRoute(
+            AppRoutes.onboardingProfileReady,
+            const ProfileReadyPage(),
           ),
-          GoRoute(
-            path: AppRoutes.createAccount,
-            builder: (context, state) => const CreateAccountPage(),
+          _buildNoTransitionRoute(
+            AppRoutes.createAccount,
+            const CreateAccountPage(),
           ),
-          GoRoute(
-            path: AppRoutes.notificationRequest,
-            builder: (context, state) => const NotificationRequestPage(),
+          _buildNoTransitionRoute(
+            AppRoutes.notificationRequest,
+            const NotificationRequestPage(),
           ),
         ],
       ),
     ],
+  );
+}
+
+GoRoute _buildNoTransitionRoute(String path, Widget child) {
+  return GoRoute(
+    path: path,
+    pageBuilder: (context, state) => CustomTransitionPage(
+      key: state.pageKey,
+      child: child,
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        return child;
+      },
+      transitionDuration: Duration.zero,
+    ),
   );
 }

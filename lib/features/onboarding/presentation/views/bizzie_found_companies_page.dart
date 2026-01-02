@@ -31,12 +31,6 @@ class BizzieFoundCompaniesPage extends StatelessWidget {
             child: Column(
               children: [
                 OnboardingHeader(
-                  progressIndicator: LinearProgressIndicator(
-                    value: 7 / 14,
-                    backgroundColor: AppColors.slate200,
-                    color: AppColors.primary,
-                    minHeight: 4,
-                  ),
                   title:
                       'Bizzie found $companyCount ${companyCount == 1 ? 'company' : 'companies'}',
                   subtitle: isSingle

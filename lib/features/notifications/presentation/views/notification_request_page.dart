@@ -4,7 +4,8 @@ import 'package:go_router/go_router.dart';
 import 'package:bizzie/app/themes/app_colors.dart';
 import 'package:bizzie/app/themes/app_text_styles.dart';
 import 'package:bizzie/features/notifications/presentation/bloc/notification_bloc.dart';
-import 'package:bizzie/features/onboarding/presentation/widgets/onboarding_header.dart';
+import 'package:bizzie/features/onboarding/presentation/bloc/onboarding_bloc.dart';
+import 'package:bizzie/features/onboarding/presentation/widgets/onboarding_footer.dart';
 import 'package:bizzie/app/routes/app_routes.dart';
 
 class NotificationRequestPage extends StatelessWidget {
@@ -12,6 +13,16 @@ class NotificationRequestPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Access the first company from onboarding data
+    final firstCompany = context
+        .read<OnboardingBloc>()
+        .state
+        .onboardingData
+        .detectedCompanies
+        .firstOrNull;
+    final ticker = firstCompany?.ticker ?? 'NVDA';
+    final companyName = firstCompany?.name ?? 'NVIDIA';
+
     return BlocListener<NotificationBloc, NotificationState>(
       listener: (context, state) {
         state.maybeWhen(
@@ -20,34 +31,66 @@ class NotificationRequestPage extends StatelessWidget {
         );
       },
       child: Scaffold(
+        backgroundColor: Colors.white,
         body: SafeArea(
           child: Column(
             children: [
-              OnboardingHeader(
-                progressIndicator: LinearProgressIndicator(
-                  value: 9 / 14,
-                  backgroundColor: AppColors.slate200,
-                  color: AppColors.primary,
-                  minHeight: 4,
+              SizedBox(height: 80),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                child: Center(
+                  child: _NotificationCard(
+                    ticker: ticker,
+                    companyName: companyName,
+                  ),
                 ),
-                onBackPressed: () => context.pop(),
               ),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
-                      // Space replaced by Header
-                      SizedBox(height: 24),
-                      SizedBox(height: 64),
-                      _NotificationCard(),
-                      Spacer(),
-                      _Header(),
-                      Spacer(),
-                      _ActionButtons(),
-                      SizedBox(height: 24),
-                    ],
+              Spacer(),
+              OnboardingFooter(
+                title: 'Stay in the loop',
+                subtitle:
+                    'Get notifications on the companies in your watchlist',
+                primaryButton: ElevatedButton(
+                  onPressed: () {
+                    context.read<NotificationBloc>().add(
+                      const NotificationEvent.setupRequested(),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.primary,
+                    foregroundColor: AppColors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    elevation: 0,
+                  ),
+                  child: Text(
+                    'Enable Notifications',
+                    style: AppTextStyles.button.copyWith(
+                      color: AppColors.white,
+                    ),
+                  ),
+                ),
+                secondaryButton: SizedBox(
+                  width: double.infinity,
+                  height: 56,
+                  child: TextButton(
+                    onPressed: () {
+                      context.go(AppRoutes.onboardingExperience);
+                    },
+                    style: TextButton.styleFrom(
+                      backgroundColor: AppColors.slate100,
+                      foregroundColor: AppColors.slate700,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                    ),
+                    child: Text(
+                      'Maybe Later',
+                      style: AppTextStyles.button.copyWith(
+                        color: AppColors.slate700,
+                      ),
+                    ),
                   ),
                 ),
               ),
@@ -59,10 +102,11 @@ class NotificationRequestPage extends StatelessWidget {
   }
 }
 
-// _ProgressBar and _BackButton removed
-
 class _NotificationCard extends StatelessWidget {
-  const _NotificationCard();
+  final String ticker;
+  final String companyName;
+
+  const _NotificationCard({required this.ticker, required this.companyName});
 
   @override
   Widget build(BuildContext context) {
@@ -93,9 +137,9 @@ class _NotificationCard extends StatelessWidget {
               borderRadius: BorderRadius.circular(8),
             ),
             alignment: Alignment.center,
-            child: const Text(
-              'B',
-              style: TextStyle(
+            child: Text(
+              ticker.isNotEmpty ? ticker[0] : 'B',
+              style: const TextStyle(
                 color: AppColors.white,
                 fontWeight: FontWeight.bold,
                 fontSize: 20,
@@ -109,7 +153,7 @@ class _NotificationCard extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  'NVDA Earnings Update',
+                  '$ticker Earnings Update',
                   style: AppTextStyles.bodyLarge.copyWith(
                     fontWeight: FontWeight.w600,
                     fontSize: 15,
@@ -117,7 +161,7 @@ class _NotificationCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  'NVIDIA releases 10Q report in 2 days',
+                  '$companyName releases 10Q report in 2 days',
                   style: AppTextStyles.bodySmall.copyWith(
                     color: AppColors.textPrimary,
                     fontSize: 13,
@@ -135,90 +179,6 @@ class _NotificationCard extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-}
-
-class _Header extends StatelessWidget {
-  const _Header();
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Stay in the loop',
-          style: AppTextStyles.h1.copyWith(
-            color: AppColors.slate900,
-            fontSize: 30,
-          ),
-        ),
-        const SizedBox(height: 12),
-        Text(
-          'Get notifications on the companies in your watchlist',
-          style: AppTextStyles.bodyLarge.copyWith(
-            color: AppColors.textSecondary,
-            height: 1.5,
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _ActionButtons extends StatelessWidget {
-  const _ActionButtons();
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        SizedBox(
-          width: double.infinity,
-          height: 56,
-          child: ElevatedButton(
-            onPressed: () {
-              context.read<NotificationBloc>().add(
-                const NotificationEvent.setupRequested(),
-              );
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.primary,
-              foregroundColor: AppColors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
-              ),
-              elevation: 0,
-            ),
-            child: Text(
-              'Enable Notifications',
-              style: AppTextStyles.button.copyWith(color: AppColors.white),
-            ),
-          ),
-        ),
-        const SizedBox(height: 12),
-        SizedBox(
-          width: double.infinity,
-          height: 56,
-          child: TextButton(
-            onPressed: () {
-              context.go(AppRoutes.onboardingExperience);
-            },
-            style: TextButton.styleFrom(
-              backgroundColor: AppColors.slate100,
-              foregroundColor: AppColors.slate700,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
-              ),
-            ),
-            child: Text(
-              'Maybe Later',
-              style: AppTextStyles.button.copyWith(color: AppColors.slate700),
-            ),
-          ),
-        ),
-      ],
     );
   }
 }

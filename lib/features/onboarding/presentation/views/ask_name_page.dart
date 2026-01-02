@@ -55,15 +55,7 @@ class _AskNamePageState extends State<AskNamePage> {
       body: SafeArea(
         child: Column(
           children: [
-            OnboardingHeader(
-              progressIndicator: LinearProgressIndicator(
-                value: 1 / 14,
-                backgroundColor: AppColors.slate200,
-                color: AppColors.primary,
-                minHeight: 4,
-              ),
-              title: "Hi, I'm Bizzie! What's your name?",
-            ),
+            OnboardingHeader(title: "Hi, I'm Bizzie! What's your name?"),
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 24.0),

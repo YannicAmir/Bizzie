@@ -35,13 +35,7 @@ class _InvestingExperiencePageState extends State<InvestingExperiencePage> {
           body: SafeArea(
             child: Column(
               children: [
-                OnboardingHeader(
-                  progressIndicator: LinearProgressIndicator(
-                    value: 10 / 14,
-                    backgroundColor: AppColors.slate200,
-                    color: AppColors.primary,
-                    minHeight: 4,
-                  ),
+                const OnboardingHeader(
                   title: 'Describe your investing experience',
                 ),
 

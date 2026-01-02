@@ -32,14 +32,7 @@ class ProfileReadyPage extends StatelessWidget {
           body: SafeArea(
             child: Column(
               children: [
-                OnboardingHeader(
-                  progressIndicator: LinearProgressIndicator(
-                    value: 14 / 14,
-                    backgroundColor: AppColors.slate200,
-                    color: AppColors.primary,
-                    minHeight: 4,
-                  ),
-                ),
+                const OnboardingHeader(),
                 Expanded(
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 24.0),

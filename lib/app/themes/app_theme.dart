@@ -14,13 +14,19 @@ class AppTheme {
         surface: AppColors.surface,
         onSurface: AppColors.textPrimary,
       ),
-      textTheme: GoogleFonts.interTextTheme(
-        ThemeData.light().textTheme,
-      ).copyWith(
-        displayLarge: AppTextStyles.h1,
-        bodyLarge: AppTextStyles.bodyLarge,
-        bodyMedium: AppTextStyles.subtitle,
-      ),
+      textTheme: GoogleFonts.interTextTheme(ThemeData.light().textTheme)
+          .copyWith(
+            displayLarge: AppTextStyles.h1,
+            displayMedium: AppTextStyles.h2,
+            displaySmall: AppTextStyles.h3,
+            headlineMedium: AppTextStyles.h3, // Fallback for some defaults
+            titleMedium: AppTextStyles.subtitle,
+            bodyLarge: AppTextStyles.bodyLarge,
+            bodyMedium: AppTextStyles.bodyMedium,
+            bodySmall: AppTextStyles.bodySmall,
+            labelLarge: AppTextStyles.button,
+            labelSmall: AppTextStyles.caption,
+          ),
       appBarTheme: AppBarTheme(
         backgroundColor: AppColors.surface,
         surfaceTintColor:
@@ -56,6 +62,11 @@ class AppTheme {
         ),
         contentPadding: const EdgeInsets.symmetric(vertical: 16),
         hintStyle: const TextStyle(color: AppColors.textTertiary),
+      ),
+      progressIndicatorTheme: const ProgressIndicatorThemeData(
+        color: AppColors.primary,
+        linearTrackColor: AppColors.slate200,
+        linearMinHeight: 4,
       ),
     );
   }

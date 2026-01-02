@@ -127,14 +127,7 @@ class _BuildingProfilePageState extends State<BuildingProfilePage>
           body: SafeArea(
             child: Column(
               children: [
-                OnboardingHeader(
-                  progressIndicator: LinearProgressIndicator(
-                    value: 13 / 14,
-                    backgroundColor: AppColors.slate200,
-                    color: AppColors.primary,
-                    minHeight: 4,
-                  ),
-                ),
+                const OnboardingHeader(),
                 Expanded(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,

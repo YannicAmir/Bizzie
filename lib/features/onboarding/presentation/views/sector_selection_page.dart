@@ -74,18 +74,12 @@ class _SectorSelectionPageState extends State<SectorSelectionPage> {
         final sectors = state.availableSectors;
 
         return Scaffold(
-          backgroundColor: Colors.white,
+          backgroundColor: AppColors.background,
           body: SafeArea(
             child: Column(
               children: [
                 OnboardingHeader(
-                  progressIndicator: LinearProgressIndicator(
-                    value: 3 / 14,
-                    backgroundColor: AppColors.slate200,
-                    color: AppColors.primary,
-                    minHeight: 4,
-                  ),
-                  title: "Select the sector that\ninterests you most",
+                  title: "Select the sector that interests you most",
                   subtitle:
                       "Your favorite sector can be changed in your profile",
                   onBackPressed: null,

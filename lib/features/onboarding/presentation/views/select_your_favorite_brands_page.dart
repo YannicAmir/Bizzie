@@ -56,13 +56,7 @@ class _SelectYourFavoriteBrandsPageState
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const OnboardingHeader(
-                  progressIndicator: LinearProgressIndicator(
-                    value: 5 / 14,
-                    backgroundColor: AppColors.slate200,
-                    color: AppColors.primary,
-                    minHeight: 4,
-                  ),
-                  title: 'Select your favorite brands & product',
+                  title: 'Select your favorite brands & products',
                   subtitle: 'Select up to 5. You can search for more later',
                   // No back button as requested
                 ),

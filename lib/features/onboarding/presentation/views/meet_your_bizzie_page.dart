@@ -38,14 +38,7 @@ class _MeetYourBizziePageState extends State<MeetYourBizziePage> {
           body: SafeArea(
             child: Column(
               children: [
-                OnboardingHeader(
-                  progressIndicator: LinearProgressIndicator(
-                    value: 4 / 14,
-                    backgroundColor: AppColors.slate200,
-                    color: AppColors.primary,
-                    minHeight: 4,
-                  ),
-                ),
+                OnboardingHeader(),
                 Expanded(
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 24.0),

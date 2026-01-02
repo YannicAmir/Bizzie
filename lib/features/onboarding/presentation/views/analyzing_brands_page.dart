@@ -4,7 +4,6 @@ import 'package:bizzie/app/themes/app_text_styles.dart';
 import 'package:bizzie/features/onboarding/presentation/bloc/onboarding_bloc.dart';
 import 'package:bizzie/app/routes/app_routes.dart';
 import 'package:bizzie/features/onboarding/presentation/widgets/onboarding_footer.dart';
-import '../widgets/onboarding_header.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -51,21 +50,30 @@ class _AnalyzingBrandsPageState extends State<AnalyzingBrandsPage> {
           return SafeArea(
             child: Column(
               children: [
-                OnboardingHeader(
-                  progressIndicator: LinearProgressIndicator(
-                    value: 6 / 14,
-                    backgroundColor: AppColors.slate200,
-                    color: AppColors.primary,
-                    minHeight: 4,
-                  ),
-                  title: title,
-                ),
                 Expanded(
                   child: Padding(
                     padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        const SizedBox(height: 144),
+                        SizedBox(
+                          height:
+                              77, // Height for 2 lines of text (32 * 1.2 * 2 = 76.8)
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              title,
+                              style: AppTextStyles.h1.copyWith(
+                                fontSize: 32,
+                                fontWeight: FontWeight.w800,
+                                height: 1.2,
+                                letterSpacing: 0.406,
+                                color: const Color(0xFF0F172B),
+                              ),
+                            ),
+                          ),
+                        ),
                         const SizedBox(height: 48),
 
                         // Analysis Steps List
@@ -139,8 +147,12 @@ class _AnalyzingBrandsPageState extends State<AnalyzingBrandsPage> {
                     ),
                   ),
                 ),
-                if (isDone)
-                  OnboardingFooter(
+                Visibility(
+                  visible: isDone,
+                  maintainSize: true,
+                  maintainAnimation: true,
+                  maintainState: true,
+                  child: OnboardingFooter(
                     primaryButton: ElevatedButton(
                       onPressed: () {
                         context.push(AppRoutes.onboardingFoundCompanies);
@@ -161,9 +173,8 @@ class _AnalyzingBrandsPageState extends State<AnalyzingBrandsPage> {
                         ),
                       ),
                     ),
-                  )
-                else
-                  const SizedBox(height: 88),
+                  ),
+                ),
               ],
             ),
           );

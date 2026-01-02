@@ -143,12 +143,6 @@ class _FeatureHighlightsPageState extends State<FeatureHighlightsPage> {
               children: [
                 // Top Bar with Skip (Replaced by OnboardingHeader)
                 OnboardingHeader(
-                  progressIndicator: LinearProgressIndicator(
-                    value: 11 / 14,
-                    backgroundColor: AppColors.slate200,
-                    color: AppColors.primary,
-                    minHeight: 4,
-                  ),
                   onBackPressed: () => context.pop(),
                   trailing: GestureDetector(
                     onTap: () => context.go(AppRoutes.createAccount),
