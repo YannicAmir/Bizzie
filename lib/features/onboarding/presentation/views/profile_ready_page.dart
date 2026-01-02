@@ -20,7 +20,6 @@ class ProfileReadyPage extends StatelessWidget {
         final selectedSector = state.onboardingData.selectedSector;
         final firstName = state.onboardingData.firstName;
 
-        // Determine mascot asset based on selection
         String mascotAsset = AppAssets.defaultMascot;
         if (selectedSector != null) {
           mascotAsset = OnboardingAssetsHelper.getMascotForSector(
@@ -41,82 +40,11 @@ class ProfileReadyPage extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const Spacer(flex: 2),
-
-                        // Mascot Image
-                        Center(
-                          child: AnimatedSwitcher(
-                            duration: const Duration(milliseconds: 500),
-                            child: Image.asset(
-                              mascotAsset,
-                              height: 320,
-                              fit: BoxFit.contain,
-                            ),
-                          ),
-                        ),
-
+                        _ProfileMascot(mascotAsset: mascotAsset),
                         const Spacer(flex: 1),
-
-                        // Heading
-                        RichText(
-                          text: TextSpan(
-                            style: theme.textTheme.displayLarge?.copyWith(
-                              fontSize: 40,
-                              height: 1.2,
-                              letterSpacing: 0.37,
-                              color: AppColors.textPrimary,
-                            ),
-                            children: [
-                              const TextSpan(text: 'Your profile is ready, '),
-                              TextSpan(
-                                text: firstName,
-                                style: TextStyle(
-                                  color: theme.colorScheme.primary,
-                                ),
-                              ),
-                              const TextSpan(text: '!'),
-                            ],
-                          ),
-                        ),
-
-                        const SizedBox(height: 16),
-
-                        // Description
-                        Text(
-                          'We have personalized Bizzie just for you. Let\'s get started!',
-                          style: theme.textTheme.bodyLarge?.copyWith(
-                            fontSize: 17,
-                            color: AppColors.textSecondary,
-                            height: 1.5,
-                          ),
-                        ),
-
+                        _ProfileReadyHeader(firstName: firstName),
                         const Spacer(flex: 3),
-
-                        // Continue Button
-                        SizedBox(
-                          width: double.infinity,
-                          height: 56,
-                          child: ElevatedButton(
-                            onPressed: () {
-                              context.go(AppRoutes.home);
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: AppColors.primary,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(16),
-                              ),
-                              elevation: 0,
-                            ),
-                            child: Text(
-                              'Continue',
-                              style: theme.textTheme.labelLarge?.copyWith(
-                                color: Colors.white,
-                                fontSize: 17,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ),
-                        ),
+                        const _ContinueButton(),
                         const SizedBox(height: 32),
                       ],
                     ),
@@ -127,6 +55,96 @@ class ProfileReadyPage extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+}
+
+class _ProfileMascot extends StatelessWidget {
+  final String mascotAsset;
+
+  const _ProfileMascot({required this.mascotAsset});
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedSwitcher(
+      duration: const Duration(milliseconds: 500),
+      child: Image.asset(mascotAsset, height: 272, fit: BoxFit.contain),
+    );
+  }
+}
+
+class _ProfileReadyHeader extends StatelessWidget {
+  final String firstName;
+
+  const _ProfileReadyHeader({required this.firstName});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        RichText(
+          text: TextSpan(
+            style: theme.textTheme.displayLarge?.copyWith(
+              fontSize: 40,
+              height: 1.2,
+              letterSpacing: 0.37,
+              color: AppColors.textPrimary,
+            ),
+            children: [
+              const TextSpan(text: 'Your profile is ready, '),
+              TextSpan(
+                text: firstName,
+                style: TextStyle(color: theme.colorScheme.primary),
+              ),
+              const TextSpan(text: '!'),
+            ],
+          ),
+        ),
+        const SizedBox(height: 16),
+        Text(
+          'We have personalized Bizzie just for you. Let\'s get started!',
+          style: theme.textTheme.bodyLarge?.copyWith(
+            fontSize: 17,
+            color: AppColors.textSecondary,
+            height: 1.5,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _ContinueButton extends StatelessWidget {
+  const _ContinueButton();
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return SizedBox(
+      width: double.infinity,
+      height: 56,
+      child: ElevatedButton(
+        onPressed: () {
+          context.go(AppRoutes.home);
+        },
+        style: ElevatedButton.styleFrom(
+          backgroundColor: AppColors.primary,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          elevation: 0,
+        ),
+        child: Text(
+          'Continue',
+          style: theme.textTheme.labelLarge?.copyWith(
+            color: Colors.white,
+            fontSize: 17,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ),
     );
   }
 }

@@ -42,7 +42,7 @@ class _AskNamePageState extends State<AskNamePage> {
     if (_isButtonEnabled) {
       final name = _nameController.text.trim();
       context.read<OnboardingBloc>().add(OnboardingEvent.nameSubmitted(name));
-      // Navigate to Welcome Page
+
       context.push(AppRoutes.onboardingWelcome);
     }
   }
@@ -63,33 +63,16 @@ class _AskNamePageState extends State<AskNamePage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const SizedBox(height: 24),
-                    // Input Field
-                    TextField(
+                    _NameInputField(
                       controller: _nameController,
-                      style: theme.textTheme.bodyLarge,
-                      decoration: InputDecoration(
-                        hintText: 'Enter your first name',
-                        contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 16,
-                        ),
-                      ),
-                      onSubmitted: (_) => _submitName(),
+                      onSubmitted: _submitName,
                     ),
                     const SizedBox(height: 24),
-                    // Mascot centered
-                    Center(
-                      child: Image.asset(
-                        AppAssets.onboardingBizzieMascotAskName,
-                        height: 225, // Reduced by 10% (250 * 0.9)
-                        fit: BoxFit.contain,
-                      ),
-                    ),
+                    const _AskNameMascot(),
                   ],
                 ),
               ),
             ),
-            // Footer
             OnboardingFooter(
               primaryButton: FilledButton(
                 onPressed: _isButtonEnabled ? _submitName : null,
@@ -108,6 +91,45 @@ class _AskNamePageState extends State<AskNamePage> {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _NameInputField extends StatelessWidget {
+  final TextEditingController controller;
+  final VoidCallback onSubmitted;
+
+  const _NameInputField({required this.controller, required this.onSubmitted});
+
+  @override
+  Widget build(BuildContext context) {
+    var theme = Theme.of(context);
+    return TextField(
+      controller: controller,
+      style: theme.textTheme.bodyLarge,
+      decoration: InputDecoration(
+        hintText: 'Enter your first name',
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 16,
+        ),
+      ),
+      onSubmitted: (_) => onSubmitted(),
+    );
+  }
+}
+
+class _AskNameMascot extends StatelessWidget {
+  const _AskNameMascot();
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Image.asset(
+        AppAssets.onboardingBizzieMascotAskName,
+        height: 225,
+        fit: BoxFit.contain,
       ),
     );
   }

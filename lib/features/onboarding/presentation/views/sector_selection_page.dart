@@ -11,15 +11,8 @@ import '../widgets/onboarding_footer.dart';
 import '../widgets/onboarding_header.dart';
 import '../../domain/models/sector.dart';
 
-class SectorSelectionPage extends StatefulWidget {
+class SectorSelectionPage extends StatelessWidget {
   const SectorSelectionPage({super.key});
-
-  @override
-  State<SectorSelectionPage> createState() => _SectorSelectionPageState();
-}
-
-class _SectorSelectionPageState extends State<SectorSelectionPage> {
-  // Moved _buildMascot to _SectorMascot class at bottom of file
 
   @override
   Widget build(BuildContext context) {
@@ -40,10 +33,7 @@ class _SectorSelectionPageState extends State<SectorSelectionPage> {
                       "Your favorite sector can be changed in your profile",
                   onBackPressed: null,
                 ),
-
                 const SizedBox(height: 32),
-
-                // Mascot Display Area
                 Center(
                   child: SizedBox(
                     height: 250,
@@ -73,104 +63,26 @@ class _SectorSelectionPageState extends State<SectorSelectionPage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          // Sectors Wrap
-                          if (state.isLoadingSectors)
-                            const Center(child: CircularProgressIndicator())
-                          else
-                            Wrap(
-                              spacing: 12,
-                              runSpacing: 12,
-                              children: sectors.map((sector) {
-                                final isSelected = sector == selectedSector;
-                                return Material(
-                                  color: Colors.transparent,
-                                  child: InkWell(
-                                    onTap: () {
-                                      context.read<OnboardingBloc>().add(
-                                        OnboardingEvent.sectorSelected(sector),
-                                      );
-                                    },
-                                    borderRadius: BorderRadius.circular(100),
-                                    child: AnimatedContainer(
-                                      duration: const Duration(
-                                        milliseconds: 200,
-                                      ),
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 16.0,
-                                        vertical: 12.0,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        color: isSelected
-                                            ? AppColors.mascotBackground
-                                            : AppColors.inputBackground,
-                                        borderRadius: BorderRadius.circular(
-                                          100,
-                                        ),
-                                        border: Border.all(
-                                          color: isSelected
-                                              ? AppColors.primary
-                                              : AppColors.inputBorder,
-                                          width: 2,
-                                        ),
-                                      ),
-                                      child: Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          // Checkbox
-                                          Container(
-                                            width: 20,
-                                            height: 20,
-                                            decoration: BoxDecoration(
-                                              color: isSelected
-                                                  ? AppColors.primary
-                                                  : Colors.white,
-                                              borderRadius:
-                                                  BorderRadius.circular(4),
-                                              border: Border.all(
-                                                color: isSelected
-                                                    ? theme.colorScheme.primary
-                                                    : AppColors.inputBorder,
-                                                width: 2,
-                                              ),
-                                            ),
-                                            child: isSelected
-                                                ? const Icon(
-                                                    Icons.check,
-                                                    size: 14,
-                                                    color: Colors.white,
-                                                  )
-                                                : null,
-                                          ),
-                                          const SizedBox(width: 8),
-                                          Text(
-                                            sector.displayName,
-                                            style: theme.textTheme.bodyMedium
-                                                ?.copyWith(
-                                                  color: AppColors.textPrimary,
-                                                  fontWeight: FontWeight.w600,
-                                                  fontSize: 15,
-                                                ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                );
-                              }).toList(),
-                            ),
+                          _SectorList(
+                            isLoading: state.isLoadingSectors,
+                            sectors: sectors,
+                            selectedSector: selectedSector,
+                            onSectorSelected: (sector) {
+                              context.read<OnboardingBloc>().add(
+                                OnboardingEvent.sectorSelected(sector),
+                              );
+                            },
+                          ),
                           const SizedBox(height: 32),
                         ],
                       ),
                     ),
                   ),
                 ),
-
-                // Footer
                 OnboardingFooter(
                   primaryButton: FilledButton(
                     onPressed: selectedSector != null
                         ? () {
-                            // Navigate to Meet Your Bizzie Page
                             context.push(AppRoutes.onboardingMeetBizzie);
                           }
                         : null,
@@ -215,10 +127,8 @@ class _SectorMascot extends StatelessWidget {
     Widget child = Image.asset(
       asset,
       fit: BoxFit.contain,
-      key: ValueKey(sector!.name), // Unique key for AnimatedSwitcher
+      key: ValueKey(sector!.name),
     );
-
-    // Apply Offsets
     if (sector == Sector.financials) {
       child = Transform.translate(offset: const Offset(-7, 0), child: child);
     } else if (sector == Sector.communicationServices) {
@@ -230,8 +140,6 @@ class _SectorMascot extends StatelessWidget {
     } else if (sector == Sector.utilities) {
       child = Transform.translate(offset: const Offset(7, 0), child: child);
     }
-
-    // Apply Padding
     final sectorsWithPadding = [
       Sector.informationTechnology,
       Sector.financials,
@@ -240,11 +148,111 @@ class _SectorMascot extends StatelessWidget {
       Sector.healthCare,
       Sector.consumerStaples,
     ];
-
     if (sectorsWithPadding.contains(sector)) {
       child = Padding(padding: const EdgeInsets.all(7.0), child: child);
     }
-
     return KeyedSubtree(key: ValueKey(sector!.name), child: child);
+  }
+}
+
+class _SectorList extends StatelessWidget {
+  final bool isLoading;
+  final List<Sector> sectors;
+  final Sector? selectedSector;
+  final ValueChanged<Sector> onSectorSelected;
+
+  const _SectorList({
+    required this.isLoading,
+    required this.sectors,
+    required this.selectedSector,
+    required this.onSectorSelected,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    if (isLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    return Wrap(
+      spacing: 12,
+      runSpacing: 12,
+      children: sectors.map((sector) {
+        return _SectorChip(
+          sector: sector,
+          isSelected: sector == selectedSector,
+          onTap: () => onSectorSelected(sector),
+        );
+      }).toList(),
+    );
+  }
+}
+
+class _SectorChip extends StatelessWidget {
+  final Sector sector;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  const _SectorChip({
+    required this.sector,
+    required this.isSelected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(100),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+          decoration: BoxDecoration(
+            color: isSelected
+                ? AppColors.mascotBackground
+                : AppColors.inputBackground,
+            borderRadius: BorderRadius.circular(100),
+            border: Border.all(
+              color: isSelected ? AppColors.primary : AppColors.inputBorder,
+              width: 2,
+            ),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 20,
+                height: 20,
+                decoration: BoxDecoration(
+                  color: isSelected ? AppColors.primary : Colors.white,
+                  borderRadius: BorderRadius.circular(4),
+                  border: Border.all(
+                    color: isSelected
+                        ? theme.colorScheme.primary
+                        : AppColors.inputBorder,
+                    width: 2,
+                  ),
+                ),
+                child: isSelected
+                    ? const Icon(Icons.check, size: 14, color: Colors.white)
+                    : null,
+              ),
+              const SizedBox(width: 8),
+              Text(
+                sector.displayName,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: AppColors.textPrimary,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 15,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

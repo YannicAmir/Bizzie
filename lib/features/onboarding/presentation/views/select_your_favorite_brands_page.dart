@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:bizzie/app/themes/app_colors.dart';
-// import 'package:bizzie/app/themes/app_assets.dart'; // Unused now
 import 'package:bizzie/app/routes/app_routes.dart';
 import 'package:bizzie/features/onboarding/presentation/widgets/onboarding_header.dart';
 import 'package:bizzie/features/onboarding/presentation/widgets/onboarding_footer.dart';
@@ -19,12 +18,9 @@ class SelectYourFavoriteBrandsPage extends StatefulWidget {
 
 class _SelectYourFavoriteBrandsPageState
     extends State<SelectYourFavoriteBrandsPage> {
-  // Removed _customBrandController as requested
-
   @override
   void initState() {
     super.initState();
-    // Load brands when entering the page
     context.read<OnboardingBloc>().add(const OnboardingEvent.loadBrands());
   }
 
@@ -41,7 +37,6 @@ class _SelectYourFavoriteBrandsPageState
         final selectedSectorName =
             state.onboardingData.selectedSector?.displayName ?? 'Your Sector';
 
-        // Filter out selected brands from the lists so they move to "Your brands"
         final availableSectorBrands = state.sectorBrands
             .where((b) => !state.selectedBrands.contains(b))
             .toList();
@@ -58,7 +53,6 @@ class _SelectYourFavoriteBrandsPageState
                 const OnboardingHeader(
                   title: 'Select your favorite brands & products',
                   subtitle: 'Select up to 5. You can search for more later',
-                  // No back button as requested
                 ),
                 Expanded(
                   child: SingleChildScrollView(
@@ -68,101 +62,31 @@ class _SelectYourFavoriteBrandsPageState
                       children: [
                         const SizedBox(height: 32),
 
-                        // YOUR BRANDS Section (Only if selections exist)
-                        if (state.selectedBrands.isNotEmpty) ...[
-                          Text(
-                            'Your brands',
-                            style: theme.textTheme.bodyMedium?.copyWith(
-                              color: AppColors.black,
-                              fontWeight: FontWeight.w600,
-                            ),
+                        if (state.selectedBrands.isNotEmpty)
+                          _SelectedBrandsSection(
+                            brands: state.selectedBrands,
+                            onToggle: (brand) => context
+                                .read<OnboardingBloc>()
+                                .add(OnboardingEvent.toggleBrand(brand)),
                           ),
-                          const SizedBox(height: 12),
-                          Wrap(
-                            spacing: 8,
-                            runSpacing: 8,
-                            alignment: WrapAlignment.start,
-                            children: state.selectedBrands.map((brand) {
-                              return _BrandChip(
-                                brand: brand,
-                                backgroundColor:
-                                    AppColors.brandChipSelectedBackground,
-                                foregroundColor: AppColors.mascotSubtitle,
-                                iconData: Icons.close,
-                                onTap: () {
-                                  context.read<OnboardingBloc>().add(
-                                    OnboardingEvent.toggleBrand(brand),
-                                  );
-                                },
-                              );
-                            }).toList(),
-                          ),
-                          const SizedBox(height: 32),
-                        ],
 
-                        // Sector Specific Brands
                         if (state.onboardingData.selectedSector != null &&
-                            availableSectorBrands.isNotEmpty) ...[
-                          Text(
-                            'Popular $selectedSectorName brands',
-                            style: theme.textTheme.bodyMedium?.copyWith(
-                              color: AppColors.black,
-                              fontWeight: FontWeight.w600,
-                            ),
+                            availableSectorBrands.isNotEmpty)
+                          _SectorBrandsSection(
+                            sectorName: selectedSectorName,
+                            brands: availableSectorBrands,
+                            onToggle: (brand) => context
+                                .read<OnboardingBloc>()
+                                .add(OnboardingEvent.toggleBrand(brand)),
                           ),
-                          const SizedBox(height: 12),
-                          Wrap(
-                            spacing: 8,
-                            runSpacing: 8,
-                            alignment: WrapAlignment.start,
-                            children: availableSectorBrands.map((brand) {
-                              return _BrandChip(
-                                brand: brand,
-                                backgroundColor: AppColors.mascotBackground,
-                                foregroundColor: AppColors.mascotSubtitle,
-                                borderColor: AppColors.brandChipSectorBorder,
-                                iconData: Icons.add,
-                                onTap: () {
-                                  context.read<OnboardingBloc>().add(
-                                    OnboardingEvent.toggleBrand(brand),
-                                  );
-                                },
-                              );
-                            }).toList(),
-                          ),
-                          const SizedBox(height: 24),
-                        ],
 
-                        // Other Global Brands
-                        if (availableGlobalBrands.isNotEmpty) ...[
-                          Text(
-                            'Other popular brands',
-                            style: theme.textTheme.bodyMedium?.copyWith(
-                              color: AppColors.black,
-                              fontWeight: FontWeight.w600,
-                            ),
+                        if (availableGlobalBrands.isNotEmpty)
+                          _GlobalBrandsSection(
+                            brands: availableGlobalBrands,
+                            onToggle: (brand) => context
+                                .read<OnboardingBloc>()
+                                .add(OnboardingEvent.toggleBrand(brand)),
                           ),
-                          const SizedBox(height: 12),
-                          Wrap(
-                            spacing: 8,
-                            runSpacing: 8,
-                            alignment: WrapAlignment.start,
-                            children: availableGlobalBrands.map((brand) {
-                              return _BrandChip(
-                                brand: brand,
-                                backgroundColor: AppColors.slate100,
-                                foregroundColor:
-                                    AppColors.brandChipOtherForeground,
-                                iconData: Icons.add,
-                                onTap: () {
-                                  context.read<OnboardingBloc>().add(
-                                    OnboardingEvent.toggleBrand(brand),
-                                  );
-                                },
-                              );
-                            }).toList(),
-                          ),
-                        ],
 
                         const SizedBox(height: 32),
                       ],
@@ -197,6 +121,131 @@ class _SelectYourFavoriteBrandsPageState
           ),
         );
       },
+    );
+  }
+}
+
+class _SelectedBrandsSection extends StatelessWidget {
+  final List<Brand> brands;
+  final ValueChanged<Brand> onToggle;
+
+  const _SelectedBrandsSection({required this.brands, required this.onToggle});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Your brands',
+          style: theme.textTheme.bodyMedium?.copyWith(
+            color: AppColors.black,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        const SizedBox(height: 12),
+        Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          alignment: WrapAlignment.start,
+          children: brands.map((brand) {
+            return _BrandChip(
+              brand: brand,
+              backgroundColor: AppColors.brandChipSelectedBackground,
+              foregroundColor: AppColors.mascotSubtitle,
+              iconData: Icons.close,
+              onTap: () => onToggle(brand),
+            );
+          }).toList(),
+        ),
+        const SizedBox(height: 32),
+      ],
+    );
+  }
+}
+
+class _SectorBrandsSection extends StatelessWidget {
+  final String sectorName;
+  final List<Brand> brands;
+  final ValueChanged<Brand> onToggle;
+
+  const _SectorBrandsSection({
+    required this.sectorName,
+    required this.brands,
+    required this.onToggle,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Popular $sectorName brands',
+          style: theme.textTheme.bodyMedium?.copyWith(
+            color: AppColors.black,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        const SizedBox(height: 12),
+        Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          alignment: WrapAlignment.start,
+          children: brands.map((brand) {
+            return _BrandChip(
+              brand: brand,
+              backgroundColor: AppColors.mascotBackground,
+              foregroundColor: AppColors.mascotSubtitle,
+              borderColor: AppColors.brandChipSectorBorder,
+              iconData: Icons.add,
+              onTap: () => onToggle(brand),
+            );
+          }).toList(),
+        ),
+        const SizedBox(height: 24),
+      ],
+    );
+  }
+}
+
+class _GlobalBrandsSection extends StatelessWidget {
+  final List<Brand> brands;
+  final ValueChanged<Brand> onToggle;
+
+  const _GlobalBrandsSection({required this.brands, required this.onToggle});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Other popular brands',
+          style: theme.textTheme.bodyMedium?.copyWith(
+            color: AppColors.black,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        const SizedBox(height: 12),
+        Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          alignment: WrapAlignment.start,
+          children: brands.map((brand) {
+            return _BrandChip(
+              brand: brand,
+              backgroundColor: AppColors.slate100,
+              foregroundColor: AppColors.brandChipOtherForeground,
+              iconData: Icons.add,
+              onTap: () => onToggle(brand),
+            );
+          }).toList(),
+        ),
+      ],
     );
   }
 }

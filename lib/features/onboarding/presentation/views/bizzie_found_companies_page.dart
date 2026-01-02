@@ -37,17 +37,8 @@ class BizzieFoundCompaniesPage extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const SizedBox(height: 32),
-                        // Mascot Image
-                        Center(
-                          child: Image.asset(
-                            AppAssets.onboardingBizzieMascotFoundCompanies,
-                            height: 238, // Match WelcomePage
-                            fit: BoxFit.contain,
-                          ),
-                        ),
+                        const _FoundCompaniesMascot(),
                         const SizedBox(height: 32),
-
-                        // Companies List/Card
                         if (state.isSingleCompanyView) ...[
                           _SingleCompanyCard(company: companies.first),
                           const Spacer(),
@@ -57,33 +48,57 @@ class BizzieFoundCompaniesPage extends StatelessWidget {
                     ),
                   ),
                 ),
-                OnboardingFooter(
-                  primaryButton: ElevatedButton(
-                    onPressed: () {
-                      context.push(AppRoutes.onboardingAddingWatchlist);
-                    },
-                    style: ElevatedButton.styleFrom(
-                      // backgroundColor: AppColors.primary, // Inherited from theme
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      elevation: 0,
-                    ),
-                    child: Text(
-                      'Continue',
-                      style: theme.textTheme.labelLarge?.copyWith(
-                        color: Colors.white,
-                        fontSize: 17,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-                ),
+                const _ContinueButton(),
               ],
             ),
           ),
         );
       },
+    );
+  }
+}
+
+class _FoundCompaniesMascot extends StatelessWidget {
+  const _FoundCompaniesMascot();
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Image.asset(
+        AppAssets.onboardingBizzieMascotFoundCompanies,
+        height: 238,
+        fit: BoxFit.contain,
+      ),
+    );
+  }
+}
+
+class _ContinueButton extends StatelessWidget {
+  const _ContinueButton();
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return OnboardingFooter(
+      primaryButton: ElevatedButton(
+        onPressed: () {
+          context.push(AppRoutes.onboardingAddingWatchlist);
+        },
+        style: ElevatedButton.styleFrom(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          elevation: 0,
+        ),
+        child: Text(
+          'Continue',
+          style: theme.textTheme.labelLarge?.copyWith(
+            color: Colors.white,
+            fontSize: 17,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ),
     );
   }
 }

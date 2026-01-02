@@ -11,18 +11,8 @@ import 'package:bizzie/app/routes/app_routes.dart';
 import 'package:bizzie/features/onboarding/presentation/widgets/onboarding_footer.dart';
 import 'package:bizzie/features/onboarding/presentation/widgets/onboarding_header.dart';
 
-class InvestingExperiencePage extends StatefulWidget {
+class InvestingExperiencePage extends StatelessWidget {
   const InvestingExperiencePage({super.key});
-
-  @override
-  State<InvestingExperiencePage> createState() =>
-      _InvestingExperiencePageState();
-}
-
-class _InvestingExperiencePageState extends State<InvestingExperiencePage> {
-  // Local state to track selection before saving to Bloc on continue,
-  // OR update Bloc immediately. Bloc is usually better for "source of truth".
-  // However, "continue button enabled only when selection made" implies checking state.
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +29,6 @@ class _InvestingExperiencePageState extends State<InvestingExperiencePage> {
                 const OnboardingHeader(
                   title: 'Describe your investing experience',
                 ),
-
                 Expanded(
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 24.0),
@@ -47,54 +36,10 @@ class _InvestingExperiencePageState extends State<InvestingExperiencePage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const SizedBox(height: 48),
-                        Center(
-                          child: Image.asset(
-                            AppAssets.onboardingBizzieMascotInvestingExperience,
-                            height: 230,
-                            fit: BoxFit.contain,
-                          ),
-                        ),
-                        Spacer(),
-                        // Options (Expert -> Intermediate -> Beginner)
-                        _ExperienceOption(
-                          title: "Expert",
-                          description: "I'm an experienced investor",
-                          iconPath: AppAssets.arrowUpIcon,
-                          isSelected:
-                              selectedExperience == InvestingExperience.expert,
-                          onTap: () => context.read<OnboardingBloc>().add(
-                            const OnboardingEvent.experienceSelected(
-                              InvestingExperience.expert,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-                        _ExperienceOption(
-                          title: "Intermediate",
-                          description: "I have some experience",
-                          iconPath: AppAssets.barChartIcon,
-                          isSelected:
-                              selectedExperience ==
-                              InvestingExperience.intermediate,
-                          onTap: () => context.read<OnboardingBloc>().add(
-                            const OnboardingEvent.experienceSelected(
-                              InvestingExperience.intermediate,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-                        _ExperienceOption(
-                          title: "Beginner",
-                          description: "I'm new to investing",
-                          iconPath: AppAssets.sparkleIcon,
-                          isSelected:
-                              selectedExperience ==
-                              InvestingExperience.beginner,
-                          onTap: () => context.read<OnboardingBloc>().add(
-                            const OnboardingEvent.experienceSelected(
-                              InvestingExperience.beginner,
-                            ),
-                          ),
+                        const _InvestingExperienceMascot(),
+                        const Spacer(),
+                        _ExperienceOptionsList(
+                          selectedExperience: selectedExperience,
                         ),
                         const SizedBox(height: 24),
                       ],
@@ -102,42 +47,112 @@ class _InvestingExperiencePageState extends State<InvestingExperiencePage> {
                   ),
                 ),
 
-                OnboardingFooter(
-                  primaryButton: SizedBox(
-                    width: double.infinity,
-                    child: FilledButton(
-                      onPressed: selectedExperience != null
-                          ? () {
-                              context.push(
-                                AppRoutes.onboardingFeatureHighlights,
-                              );
-                            }
-                          : null,
-                      style: FilledButton.styleFrom(
-                        backgroundColor: AppColors.primary,
-                        disabledBackgroundColor: AppColors.primary.withValues(
-                          alpha: 0.5,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        elevation: 0,
-                      ),
-                      child: Text(
-                        'Continue',
-                        style: theme.textTheme.labelLarge?.copyWith(
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
+                _ContinueButton(selectedExperience: selectedExperience),
               ],
             ),
           ),
         );
       },
+    );
+  }
+}
+
+class _InvestingExperienceMascot extends StatelessWidget {
+  const _InvestingExperienceMascot();
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Image.asset(
+        AppAssets.onboardingBizzieMascotInvestingExperience,
+        height: 230,
+        fit: BoxFit.contain,
+      ),
+    );
+  }
+}
+
+class _ExperienceOptionsList extends StatelessWidget {
+  final InvestingExperience? selectedExperience;
+
+  const _ExperienceOptionsList({required this.selectedExperience});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        _ExperienceOption(
+          title: "Expert",
+          description: "I'm an experienced investor",
+          iconPath: AppAssets.arrowUpIcon,
+          isSelected: selectedExperience == InvestingExperience.expert,
+          onTap: () => context.read<OnboardingBloc>().add(
+            const OnboardingEvent.experienceSelected(
+              InvestingExperience.expert,
+            ),
+          ),
+        ),
+        const SizedBox(height: 16),
+        _ExperienceOption(
+          title: "Intermediate",
+          description: "I have some experience",
+          iconPath: AppAssets.barChartIcon,
+          isSelected: selectedExperience == InvestingExperience.intermediate,
+          onTap: () => context.read<OnboardingBloc>().add(
+            const OnboardingEvent.experienceSelected(
+              InvestingExperience.intermediate,
+            ),
+          ),
+        ),
+        const SizedBox(height: 16),
+        _ExperienceOption(
+          title: "Beginner",
+          description: "I'm new to investing",
+          iconPath: AppAssets.sparkleIcon,
+          isSelected: selectedExperience == InvestingExperience.beginner,
+          onTap: () => context.read<OnboardingBloc>().add(
+            const OnboardingEvent.experienceSelected(
+              InvestingExperience.beginner,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _ContinueButton extends StatelessWidget {
+  final InvestingExperience? selectedExperience;
+
+  const _ContinueButton({required this.selectedExperience});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return OnboardingFooter(
+      primaryButton: SizedBox(
+        width: double.infinity,
+        child: FilledButton(
+          onPressed: selectedExperience != null
+              ? () {
+                  context.push(AppRoutes.onboardingFeatureHighlights);
+                }
+              : null,
+          style: FilledButton.styleFrom(
+            backgroundColor: AppColors.primary,
+            disabledBackgroundColor: AppColors.primary.withValues(alpha: 0.5),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
+            padding: const EdgeInsets.symmetric(vertical: 16),
+            elevation: 0,
+          ),
+          child: Text(
+            'Continue',
+            style: theme.textTheme.labelLarge?.copyWith(color: Colors.white),
+          ),
+        ),
+      ),
     );
   }
 }

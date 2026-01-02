@@ -31,65 +31,16 @@ class WelcomeNamePage extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const Spacer(),
-
-                      // Mascot
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                        child: Image.asset(
-                          AppAssets.onboardingBizzieMascotWelcome,
-                          height: 238, // Reduced by 15% (280 * 0.85)
-                          fit: BoxFit.contain,
-                        ),
-                      ),
-
+                      const _WelcomeMascot(),
                       const SizedBox(height: 32),
-
-                      // Text Content
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            // Rich Text for "Glad you joined us, Name !"
-                            RichText(
-                              text: TextSpan(
-                                style: theme.textTheme.displayLarge?.copyWith(
-                                  fontSize: 40,
-                                  height: 1.2,
-                                  letterSpacing: 0.406,
-                                ),
-                                children: [
-                                  const TextSpan(text: 'Glad you joined us,\n'),
-                                  TextSpan(
-                                    text: firstName,
-                                    style: TextStyle(
-                                      color: theme.colorScheme.primary,
-                                    ),
-                                  ),
-                                  const TextSpan(text: '!'),
-                                ],
-                              ),
-                            ),
-                            const SizedBox(height: 16),
-                            Text(
-                              "Let's take on the Stock Market together",
-                              style: theme.textTheme.bodyLarge?.copyWith(
-                                color: AppColors.textSecondary,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-
+                      _WelcomeTextContent(firstName: firstName),
                       const Spacer(),
                     ],
                   ),
                 ),
-                // Footer
                 OnboardingFooter(
                   primaryButton: FilledButton(
                     onPressed: () {
-                      // Navigate to Sectors page
                       context.push(AppRoutes.onboardingSectors);
                     },
                     child: Text(
@@ -105,6 +56,65 @@ class WelcomeNamePage extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+}
+
+class _WelcomeMascot extends StatelessWidget {
+  const _WelcomeMascot();
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 24.0),
+      child: Image.asset(
+        AppAssets.onboardingBizzieMascotWelcome,
+        height: 238,
+        fit: BoxFit.contain,
+      ),
+    );
+  }
+}
+
+class _WelcomeTextContent extends StatelessWidget {
+  final String firstName;
+
+  const _WelcomeTextContent({required this.firstName});
+
+  @override
+  Widget build(BuildContext context) {
+    var theme = Theme.of(context);
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 24.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          RichText(
+            text: TextSpan(
+              style: theme.textTheme.displayLarge?.copyWith(
+                fontSize: 40,
+                height: 1.2,
+                letterSpacing: 0.406,
+              ),
+              children: [
+                const TextSpan(text: 'Glad you joined us,\n'),
+                TextSpan(
+                  text: firstName,
+                  style: TextStyle(color: theme.colorScheme.primary),
+                ),
+                const TextSpan(text: '!'),
+              ],
+            ),
+          ),
+          const SizedBox(height: 16),
+          Text(
+            "Let's take on the Stock Market together",
+            style: theme.textTheme.bodyLarge?.copyWith(
+              color: AppColors.textSecondary,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

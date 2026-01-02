@@ -38,52 +38,12 @@ class NotificationRequestPage extends StatelessWidget {
                     ),
                   ),
                   const Spacer(),
-                  OnboardingFooter(
+                  const OnboardingFooter(
                     title: 'Stay in the loop',
                     subtitle:
                         'Get notifications on the companies in your watchlist',
-                    primaryButton: ElevatedButton(
-                      onPressed: () {
-                        context.read<NotificationBloc>().add(
-                          const NotificationEvent.setupRequested(),
-                        );
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.primary,
-                        foregroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        elevation: 0,
-                      ),
-                      child: Text(
-                        'Enable Notifications',
-                        style: Theme.of(
-                          context,
-                        ).textTheme.labelLarge?.copyWith(color: Colors.white),
-                      ),
-                    ),
-                    secondaryButton: SizedBox(
-                      width: double.infinity,
-                      height: 56,
-                      child: TextButton(
-                        onPressed: () {
-                          context.go(AppRoutes.onboardingExperience);
-                        },
-                        style: TextButton.styleFrom(
-                          backgroundColor: AppColors.slate100,
-                          foregroundColor: AppColors.slate700,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                        ),
-                        child: Text(
-                          'Maybe Later',
-                          style: Theme.of(context).textTheme.labelLarge
-                              ?.copyWith(color: AppColors.slate700),
-                        ),
-                      ),
-                    ),
+                    primaryButton: _EnableNotificationsButton(),
+                    secondaryButton: _MaybeLaterButton(),
                   ),
                 ],
               ),
@@ -91,6 +51,63 @@ class NotificationRequestPage extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+}
+
+class _EnableNotificationsButton extends StatelessWidget {
+  const _EnableNotificationsButton();
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      onPressed: () {
+        context.read<NotificationBloc>().add(
+          const NotificationEvent.setupRequested(),
+        );
+      },
+      style: ElevatedButton.styleFrom(
+        backgroundColor: AppColors.primary,
+        foregroundColor: Colors.white,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        elevation: 0,
+      ),
+      child: Text(
+        'Enable Notifications',
+        style: Theme.of(
+          context,
+        ).textTheme.labelLarge?.copyWith(color: Colors.white),
+      ),
+    );
+  }
+}
+
+class _MaybeLaterButton extends StatelessWidget {
+  const _MaybeLaterButton();
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: double.infinity,
+      height: 56,
+      child: TextButton(
+        onPressed: () {
+          context.go(AppRoutes.onboardingExperience);
+        },
+        style: TextButton.styleFrom(
+          backgroundColor: AppColors.slate100,
+          foregroundColor: AppColors.slate700,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+        ),
+        child: Text(
+          'Maybe Later',
+          style: Theme.of(
+            context,
+          ).textTheme.labelLarge?.copyWith(color: AppColors.slate700),
+        ),
+      ),
     );
   }
 }

@@ -9,23 +9,15 @@ import '../utils/onboarding_assets_helper.dart';
 import '../widgets/onboarding_footer.dart';
 import '../widgets/onboarding_header.dart';
 
-class MeetYourBizziePage extends StatefulWidget {
+class MeetYourBizziePage extends StatelessWidget {
   const MeetYourBizziePage({super.key});
 
-  @override
-  State<MeetYourBizziePage> createState() => _MeetYourBizziePageState();
-}
-
-class _MeetYourBizziePageState extends State<MeetYourBizziePage> {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<OnboardingBloc, OnboardingState>(
       builder: (context, state) {
         final selectedSector = state.onboardingData.selectedSector;
         final theme = Theme.of(context);
-
-        // Determine mascot asset based on selection
-        // Defaulting to defaultMascot if null (though flow shouldn't allow null here)
         String mascotAsset = AppAssets.defaultMascot;
         if (selectedSector != null) {
           mascotAsset = OnboardingAssetsHelper.getMascotForSector(
@@ -46,8 +38,6 @@ class _MeetYourBizziePageState extends State<MeetYourBizziePage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const Spacer(flex: 2),
-
-                        // Mascot Image (Left Aligned)
                         AnimatedSwitcher(
                           duration: const Duration(milliseconds: 500),
                           child: Image.asset(
@@ -57,10 +47,7 @@ class _MeetYourBizziePageState extends State<MeetYourBizziePage> {
                             key: ValueKey(mascotAsset),
                           ),
                         ),
-
                         const SizedBox(height: 32),
-
-                        // Heading
                         Text(
                           'Got it! Meet your Bizzie',
                           style: theme.textTheme.displayLarge?.copyWith(
@@ -69,10 +56,7 @@ class _MeetYourBizziePageState extends State<MeetYourBizziePage> {
                             letterSpacing: 0.406,
                           ),
                         ),
-
                         const SizedBox(height: 16),
-
-                        // Description
                         Text(
                           '${selectedSector?.displayName ?? "Your"} Bizzie will send you a daily list of stocks & brands from your favorite sector.',
                           style: theme.textTheme.bodyLarge?.copyWith(
@@ -81,18 +65,14 @@ class _MeetYourBizziePageState extends State<MeetYourBizziePage> {
                             height: 1.5,
                           ),
                         ),
-
                         const SizedBox(height: 128),
                       ],
                     ),
                   ),
                 ),
-
-                // Footer
                 OnboardingFooter(
                   primaryButton: FilledButton(
                     onPressed: () {
-                      // Navigate to Brand Selection Page
                       context.push(AppRoutes.onboardingBrands);
                     },
                     style: FilledButton.styleFrom(

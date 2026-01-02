@@ -45,8 +45,6 @@ class CreateAccountPage extends StatelessWidget {
               children: [
                 const OnboardingHeader(),
                 const SizedBox(height: 40),
-
-                // Removed _BackButton as requested
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 24.0),
                   child: BlocBuilder<OnboardingBloc, OnboardingState>(
@@ -99,8 +97,6 @@ class CreateAccountPage extends StatelessWidget {
     );
   }
 }
-
-// _TopOnboardingBar removed
 
 class _CreateAccountHeader extends StatelessWidget {
   const _CreateAccountHeader();
