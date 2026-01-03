@@ -53,10 +53,10 @@ void main() {
     mockResetPassword = MockResetPassword();
     mockDeleteAccount = MockDeleteAccount();
 
-    // Default stub for authStateChanges used in AuthStatusRequested
     when(
       () => mockAuthRepository.authStateChanges,
     ).thenAnswer((_) => Stream.value(null));
+    when(() => mockAuthRepository.currentUser).thenReturn(null);
 
     authBloc = AuthBloc(
       authRepository: mockAuthRepository,
@@ -75,8 +75,8 @@ void main() {
 
   const tUser = UserModel(id: '1', email: 'test@example.com');
 
-  test('initial state is AuthState.initial', () {
-    expect(authBloc.state, const AuthState.initial());
+  test('initial state is AuthState.unauthenticated', () {
+    expect(authBloc.state, const AuthState.unauthenticated());
   });
 
   group('AuthEmailSignInRequested', () {
@@ -93,14 +93,13 @@ void main() {
         return authBloc;
       },
       // act
-      act:
-          (bloc) => bloc.add(const AuthEmailSignInRequested(tEmail, tPassword)),
+      act: (bloc) =>
+          bloc.add(const AuthEmailSignInRequested(tEmail, tPassword)),
       // assert
-      expect:
-          () => [
-            const AuthState.loading(),
-            const AuthState.failure('Exception: Sign in failed'),
-          ],
+      expect: () => [
+        const AuthState.loading(),
+        const AuthState.failure('Exception: Sign in failed'),
+      ],
     );
   });
 
@@ -226,11 +225,10 @@ void main() {
       // act
       act: (bloc) => bloc.add(const AuthDeleteAccountRequested()),
       // assert
-      expect:
-          () => [
-            const AuthState.loading(),
-            const AuthState.failure('Exception: Delete failed'),
-          ],
+      expect: () => [
+        const AuthState.loading(),
+        const AuthState.failure('Exception: Delete failed'),
+      ],
     );
   });
 }
