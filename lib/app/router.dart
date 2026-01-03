@@ -41,14 +41,9 @@ GoRouter createRouter(AuthBloc authBloc) {
       );
 
       final isGoingToLogin = state.uri.path == AppRoutes.login;
-      // final isGoingToCreateAccount = state.uri.path == AppRoutes.createAccount; // Removed
       final isGoingToLanding = state.uri.path == AppRoutes.landing;
 
-      // If not authenticated and trying to go to a protected route (like Home),
-      // redirect to Landing (or Login).
-      // Here we allow specific routes to be public.
       if (!isAuthenticated) {
-        // List of public routes
         const publicRoutes = [
           AppRoutes.landing,
           AppRoutes.login,
@@ -75,13 +70,9 @@ GoRouter createRouter(AuthBloc authBloc) {
         final isPublic = publicRoutes.any((route) => state.uri.path == route);
 
         if (!isPublic) {
-          // Redirect to Landing if trying to access protected route (Home)
           return AppRoutes.landing;
         }
       } else {
-        // If authenticated, redirect away from Landing/Login pages to Home
-        // Note: We exclude CreateAccount here to allow the page's BlocListener to handle
-        // the navigation to BuildingProfilePage upon successful sign-up.
         if (isGoingToLanding || isGoingToLogin) {
           return AppRoutes.home;
         }
@@ -123,7 +114,6 @@ GoRouter createRouter(AuthBloc authBloc) {
         path: AppRoutes.landing,
         builder: (context, state) => const LandingPage(),
       ),
-      // Inner Shell for Onboarding UI (Progress Bar, etc.)
       ShellRoute(
         builder: (context, state, child) {
           return OnboardingShell(child: child);
