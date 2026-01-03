@@ -27,7 +27,6 @@ class OnboardingShell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Get current location from router state
     final String location = GoRouterState.of(context).uri.path;
     final double progress = _getProgressValue(location);
 

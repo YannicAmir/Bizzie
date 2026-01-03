@@ -18,7 +18,6 @@ class TimestampConverter implements JsonConverter<DateTime, Timestamp> {
 
 @freezed
 abstract class UserModel with _$UserModel {
-  // We apply explicitToJson so sub-models like Company turn into Maps correctly
   const factory UserModel({
     required String uid,
     required String name,

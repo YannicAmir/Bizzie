@@ -133,8 +133,6 @@ class RemoteAuthDataSourceImpl implements RemoteAuthDataSource {
   Future<void> deleteAccount() async {
     final user = _firebaseAuth.currentUser;
     if (user != null) {
-      // Note: This might throw 'requires-recent-login' if the session is stale.
-      // The UI/Bloc layer must handle this error code specifically.
       await user.delete();
     } else {
       throw Exception('No user signed in to delete.');

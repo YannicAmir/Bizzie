@@ -53,9 +53,7 @@ class SectorSelectionPage extends StatelessWidget {
                     ),
                   ),
                 ),
-
                 const SizedBox(height: 32),
-
                 Expanded(
                   child: SingleChildScrollView(
                     child: Padding(

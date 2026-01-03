@@ -20,7 +20,6 @@ class _AnalyzingBrandsPageState extends State<AnalyzingBrandsPage> {
   @override
   void initState() {
     super.initState();
-    // Start analysis when page loads
     context.read<OnboardingBloc>().add(const OnboardingEvent.startAnalysis());
   }
 
@@ -44,16 +43,12 @@ class _AnalyzingBrandsPageState extends State<AnalyzingBrandsPage> {
                         const SizedBox(height: 144),
                         _AnalysisTitle(title: state.analysisTitle),
                         const SizedBox(height: 48),
-
                         _AnalysisStepsList(state: state),
-
                         const SizedBox(height: 48),
-
                         _AnalysisProgressBar(
                           isDone: isDone,
                           analysisStep: state.analysisStep,
                         ),
-
                         const Spacer(),
                       ],
                     ),
@@ -78,7 +73,7 @@ class _AnalysisTitle extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return SizedBox(
-      height: 77, // Height for 2 lines of text (32 * 1.2 * 2 = 76.8)
+      height: 77,
       child: Align(
         alignment: Alignment.centerLeft,
         child: Text(

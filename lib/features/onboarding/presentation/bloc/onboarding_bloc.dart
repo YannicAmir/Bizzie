@@ -26,15 +26,11 @@ class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
     on<_Started>(_onStarted);
     on<_NameSubmitted>(_onNameSubmitted);
     on<_SectorSelected>(_onSectorSelected);
-
-    on<_UploadBrands>(_onUploadBrands);
-    on<_ConfirmWatchlist>(_onConfirmWatchlist);
     on<_ExperienceSelected>(_onExperienceSelected);
     on<_CompleteOnboarding>(_onCompleteOnboarding);
     on<_LoadSp500History>(_onLoadSp500History);
     on<_LoadBrands>(_onLoadBrands);
     on<_ToggleBrand>(_onToggleBrand);
-    on<_UpdateCustomBrandInput>(_onUpdateCustomBrandInput);
     on<_StartAnalysis>(_onStartAnalysis);
     on<_UpdateAnalysisStep>(_onUpdateAnalysisStep);
     on<_StartWatchlistAddition>(_onStartWatchlistAddition);
@@ -48,7 +44,7 @@ class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
     _LoadBrands event,
     Emitter<OnboardingState> emit,
   ) async {
-    _logger.info('DEBUG: OnboardingBloc _onLoadBrands STARTED'); // START LOG
+    _logger.info('DEBUG: OnboardingBloc _onLoadBrands STARTED');
     try {
       final (global, sector) = await _repository.getDailyBrands(
         state.onboardingData.selectedSector,
@@ -59,7 +55,6 @@ class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
       emit(state.copyWith(globalBrands: global, sectorBrands: sector));
     } catch (e, stack) {
       _logger.severe('DEBUG: OnboardingBloc _onLoadBrands ERROR', e, stack);
-      // Handle error
     }
   }
 
@@ -73,19 +68,10 @@ class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
     emit(state.copyWith(selectedBrands: currentSelected));
   }
 
-  void _onUpdateCustomBrandInput(
-    _UpdateCustomBrandInput event,
-    Emitter<OnboardingState> emit,
-  ) {
-    emit(state.copyWith(customBrandInput: event.input));
-  }
-
   Future<void> _onStartAnalysis(
     _StartAnalysis event,
     Emitter<OnboardingState> emit,
   ) async {
-    // Reset simulation
-    // Also Populate detected companies from selected brands here to ensure they represent user selection
     final detectedCompanies = state.selectedBrands
         .map((brand) => Company(ticker: brand.ticker, name: brand.company))
         .toList();
@@ -103,17 +89,12 @@ class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
       ),
     );
 
-    // Simulate Step 1: Gathering brands (1.5s)
     await Future.delayed(const Duration(milliseconds: 1500));
     if (isClosed) return;
     add(const OnboardingEvent.updateAnalysisStep(1));
-
-    // Simulate Step 2: Identifying public companies (1.5s)
     await Future.delayed(const Duration(milliseconds: 1500));
     if (isClosed) return;
     add(const OnboardingEvent.updateAnalysisStep(2));
-
-    // Simulate Step 3: Building watchlist (1.5s)
     await Future.delayed(const Duration(milliseconds: 1500));
     if (isClosed) return;
     add(const OnboardingEvent.updateAnalysisStep(3));
@@ -124,7 +105,6 @@ class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
     Emitter<OnboardingState> emit,
   ) {
     emit(state.copyWith(analysisStep: event.step));
-    // If we reached step 3, we are effectively done with "Analyzing" visualization
     if (event.step == 3) {
       emit(state.copyWith(isAnalyzingBrands: false));
     }
@@ -134,26 +114,18 @@ class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
     _StartWatchlistAddition event,
     Emitter<OnboardingState> emit,
   ) async {
-    // Reset simulation
     emit(state.copyWith(watchlistStep: 0, isAnalyzingBrands: true));
 
     final count = state.onboardingData.detectedCompanies.length;
-    // Simulate adding each company (one by one)
-    // We update step from 0 to count
     for (int i = 0; i <= count; i++) {
       if (isClosed) return;
       add(OnboardingEvent.updateWatchlistStep(i));
-      // Calculate delay based on whether it is the last step
-      // A bit of delay for simulation effect for each item
       if (i < count) {
         await Future.delayed(const Duration(milliseconds: 1500));
       }
     }
-    // Final small delay before completion state if desired, or handled in UI
     await Future.delayed(const Duration(milliseconds: 500));
-    // At the end we are done
     if (isClosed) return;
-    // The UI will detect completion when watchlistStep == count
     emit(state.copyWith(isAnalyzingBrands: false));
   }
 
@@ -179,40 +151,7 @@ class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
     }
   }
 
-  Future<void> _onUploadBrands(
-    _UploadBrands event,
-    Emitter<OnboardingState> emit,
-  ) async {
-    emit(
-      state.copyWith(
-        onboardingData: state.onboardingData.copyWith(
-          rawBrandsText: event.brandsText,
-        ),
-        isAnalyzingBrands: true,
-      ),
-    );
-
-    try {
-      final companies = await _repository.getTickersFromBrands(
-        event.brandsText,
-      );
-      final newData = state.onboardingData.copyWith(
-        detectedCompanies: companies,
-      );
-      emit(
-        state.copyWith(
-          isAnalyzingBrands: false,
-          onboardingData: newData,
-          featureHighlights: _calculateFeatureHighlights(newData),
-        ),
-      );
-    } catch (e) {
-      emit(state.copyWith(isAnalyzingBrands: false));
-    }
-  }
-
   Future<void> _onStarted(_Started event, Emitter<OnboardingState> emit) async {
-    // Fire S&P 500 load immediately on start as well, or via UI event
     add(const OnboardingEvent.loadSp500History());
 
     emit(state.copyWith(isLoadingSectors: true));
@@ -223,7 +162,7 @@ class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
       emit(
         state.copyWith(
           isLoadingSectors: false,
-          // In a real app we might handle error state explicitly,
+          // In prod, might handle error state explicitly,
           // for now just fallback to empty list or retriable state
         ),
       );
@@ -234,7 +173,7 @@ class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
     emit(
       state.copyWith(
         onboardingData: state.onboardingData.copyWith(firstName: event.name),
-        currentStep: 2, // Move to next step logic could also be in UI router
+        currentStep: 2,
       ),
     );
   }
@@ -245,21 +184,6 @@ class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
         onboardingData: state.onboardingData.copyWith(
           selectedSector: event.sector,
         ),
-      ),
-    );
-  }
-
-  void _onConfirmWatchlist(
-    _ConfirmWatchlist event,
-    Emitter<OnboardingState> emit,
-  ) {
-    final newData = state.onboardingData.copyWith(
-      detectedCompanies: event.confirmedCompanies,
-    );
-    emit(
-      state.copyWith(
-        onboardingData: newData,
-        featureHighlights: _calculateFeatureHighlights(newData),
       ),
     );
   }

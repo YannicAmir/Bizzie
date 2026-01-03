@@ -69,8 +69,7 @@ class OnboardingFooter extends StatelessWidget {
           if (primaryButton != null && secondaryButton != null)
             const SizedBox(height: 16),
           if (secondaryButton != null) secondaryButton!,
-          if (!shiftDown)
-            const SizedBox(height: 16), // Bottom safe area padding
+          if (!shiftDown) const SizedBox(height: 16),
         ],
       ),
     );

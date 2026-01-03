@@ -32,7 +32,6 @@ class OnboardingHeader extends StatelessWidget {
             padding: const EdgeInsets.fromLTRB(24, 16, 24, 0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-
               children: [
                 if (onBackPressed != null)
                   GestureDetector(
@@ -59,9 +58,7 @@ class OnboardingHeader extends StatelessWidget {
                 if (title != null)
                   Text(
                     title!,
-                    style: theme.textTheme.displayLarge?.copyWith(
-                      height: 1.2, // 38.4px / 32px
-                    ),
+                    style: theme.textTheme.displayLarge?.copyWith(height: 1.2),
                   ),
                 if (subtitle != null) ...[
                   const SizedBox(height: 16),

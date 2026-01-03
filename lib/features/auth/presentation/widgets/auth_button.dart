@@ -11,14 +11,16 @@ class AuthButton extends StatelessWidget {
     this.borderRadius = 16,
     this.backgroundColor = AppColors.primary,
     this.textStyle,
+    this.isLoading = false,
   });
 
   final String text;
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
   final double height;
   final double borderRadius;
   final Color backgroundColor;
   final TextStyle? textStyle;
+  final bool isLoading;
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +28,7 @@ class AuthButton extends StatelessWidget {
       width: double.infinity,
       height: height,
       child: ElevatedButton(
-        onPressed: onPressed,
+        onPressed: isLoading ? null : onPressed,
         style: ElevatedButton.styleFrom(
           backgroundColor: backgroundColor,
           foregroundColor: Colors.white,
@@ -34,13 +36,23 @@ class AuthButton extends StatelessWidget {
             borderRadius: BorderRadius.circular(borderRadius),
           ),
           elevation: 0,
+          disabledBackgroundColor: backgroundColor.withValues(alpha: 0.7),
         ),
-        child: Text(
-          text,
-          style: (textStyle ?? AppTextStyles.button).copyWith(
-            color: Colors.white,
-          ),
-        ),
+        child: isLoading
+            ? const SizedBox(
+                height: 24,
+                width: 24,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2.5,
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                ),
+              )
+            : Text(
+                text,
+                style: (textStyle ?? AppTextStyles.button).copyWith(
+                  color: Colors.white,
+                ),
+              ),
       ),
     );
   }

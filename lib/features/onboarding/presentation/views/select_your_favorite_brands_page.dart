@@ -61,7 +61,6 @@ class _SelectYourFavoriteBrandsPageState
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const SizedBox(height: 32),
-
                         if (state.selectedBrands.isNotEmpty)
                           _SelectedBrandsSection(
                             brands: state.selectedBrands,
@@ -69,7 +68,6 @@ class _SelectYourFavoriteBrandsPageState
                                 .read<OnboardingBloc>()
                                 .add(OnboardingEvent.toggleBrand(brand)),
                           ),
-
                         if (state.onboardingData.selectedSector != null &&
                             availableSectorBrands.isNotEmpty)
                           _SectorBrandsSection(
@@ -79,7 +77,6 @@ class _SelectYourFavoriteBrandsPageState
                                 .read<OnboardingBloc>()
                                 .add(OnboardingEvent.toggleBrand(brand)),
                           ),
-
                         if (availableGlobalBrands.isNotEmpty)
                           _GlobalBrandsSection(
                             brands: availableGlobalBrands,
@@ -87,7 +84,6 @@ class _SelectYourFavoriteBrandsPageState
                                 .read<OnboardingBloc>()
                                 .add(OnboardingEvent.toggleBrand(brand)),
                           ),
-
                         const SizedBox(height: 32),
                       ],
                     ),

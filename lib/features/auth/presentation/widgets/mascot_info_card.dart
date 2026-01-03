@@ -48,7 +48,6 @@ class MascotInfoCard extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          // Mascot Image & Dot
           SizedBox(
             width: 64,
             height: 64,
@@ -61,10 +60,7 @@ class MascotInfoCard extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: AppColors.white,
                     borderRadius: BorderRadius.circular(16),
-                    border: Border.all(
-                      color: AppColors.white,
-                      width: 2, // Figma 1.994px
-                    ),
+                    border: Border.all(color: AppColors.white, width: 2),
                     boxShadow: [
                       BoxShadow(
                         color: AppColors.black.withValues(alpha: 0.1),
@@ -81,24 +77,20 @@ class MascotInfoCard extends StatelessWidget {
                     ],
                   ),
                   child: ClipRRect(
-                    borderRadius: BorderRadius.circular(14), // Inner radius
+                    borderRadius: BorderRadius.circular(14),
                     child: Image.asset(mascotAsset, fit: BoxFit.cover),
                   ),
                 ),
-                // Notification Dot
                 Positioned(
                   top: -4,
-                  right: -4, // Overlapping edge
+                  right: -4,
                   child: Container(
                     width: 16,
                     height: 16,
                     decoration: BoxDecoration(
-                      color: AppColors.primary, // #155DFC
+                      color: AppColors.primary,
                       shape: BoxShape.circle,
-                      border: Border.all(
-                        color: AppColors.white,
-                        width: 2, // Figma 1.994px
-                      ),
+                      border: Border.all(color: AppColors.white, width: 2),
                       boxShadow: [
                         BoxShadow(
                           color: AppColors.black.withValues(alpha: 0.1),
@@ -112,7 +104,7 @@ class MascotInfoCard extends StatelessWidget {
               ],
             ),
           ),
-          const SizedBox(width: 16), // Gap between image and text
+          const SizedBox(width: 16),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -120,20 +112,19 @@ class MascotInfoCard extends StatelessWidget {
                 name,
                 style: AppTextStyles.h2.copyWith(
                   fontSize: 19,
-                  fontWeight: FontWeight.bold, // w700
+                  fontWeight: FontWeight.bold,
                   color: AppColors.textPrimary,
-                  height: 28.5 / 19, // Line height ratio
+                  height: 28.5 / 19,
                   letterSpacing: -0.4453,
                 ),
               ),
-              // Gap 2px (Figma gap-[1.994px])
               const SizedBox(height: 2),
               Text(
                 sectorName,
                 style: AppTextStyles.bodySmall.copyWith(
                   fontSize: 14,
-                  fontWeight: FontWeight.w500, // Medium
-                  color: AppColors.mascotSubtitle, // Distinct blue from primary
+                  fontWeight: FontWeight.w500,
+                  color: AppColors.mascotSubtitle,
                   height: 21 / 14,
                   letterSpacing: -0.1504,
                 ),

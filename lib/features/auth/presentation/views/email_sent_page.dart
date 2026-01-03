@@ -21,7 +21,6 @@ class EmailSentPage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const SizedBox(height: 192),
-                  // Mascot
                   Image.asset(
                     AppAssets.authEmailSentMascot,
                     width: 160,
@@ -29,7 +28,6 @@ class EmailSentPage extends StatelessWidget {
                     fit: BoxFit.contain,
                   ),
                   const SizedBox(height: 32),
-                  // Title
                   Text(
                     'Check Your Email',
                     style: AppTextStyles.h1.copyWith(
@@ -39,7 +37,6 @@ class EmailSentPage extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 32),
-                  // Body Text
                   Text(
                     'If your account is associated with this email address, you will receive an email to reset your password. If you don\'t, please try another email.',
                     style: AppTextStyles.bodyLarge.copyWith(
@@ -50,7 +47,6 @@ class EmailSentPage extends StatelessWidget {
                 ],
               ),
             ),
-            // Floating Button at Bottom
             Positioned(
               left: 24,
               right: 24,

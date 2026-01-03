@@ -15,7 +15,7 @@ class SocialLoginButtons extends StatelessWidget {
       children: [
         SizedBox(
           width: double.infinity,
-          height: 58, // Figma: ~57.5px
+          height: 58,
           child: ElevatedButton.icon(
             onPressed: () {
               context.read<AuthBloc>().add(
@@ -34,15 +34,13 @@ class SocialLoginButtons extends StatelessWidget {
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.appleBlack,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16), // Figma: 16px
+                borderRadius: BorderRadius.circular(16),
               ),
               elevation: 0,
             ),
           ),
         ),
-        const SizedBox(
-          height: 12,
-        ), // Gap between social buttons (Figma: ~11.998px)
+        const SizedBox(height: 12),
         SizedBox(
           width: double.infinity,
           height: 58,
@@ -58,7 +56,7 @@ class SocialLoginButtons extends StatelessWidget {
               style: AppTextStyles.button.copyWith(color: AppColors.googleText),
             ),
             style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.googleBackground, // #F1F5F9
+              backgroundColor: AppColors.googleBackground,
               foregroundColor: AppColors.textPrimary,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16),

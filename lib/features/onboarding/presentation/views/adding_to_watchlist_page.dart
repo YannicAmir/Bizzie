@@ -20,7 +20,6 @@ class _AddingToWatchlistPageState extends State<AddingToWatchlistPage> {
   @override
   void initState() {
     super.initState();
-    // Wait for the build to complete before firing the event to ensure smooth entry
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<OnboardingBloc>().add(
         const OnboardingEvent.startWatchlistAddition(),
@@ -46,7 +45,6 @@ class _AddingToWatchlistPageState extends State<AddingToWatchlistPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const SizedBox(height: 80),
-                        // Heading
                         _WatchlistStatusIcon(
                           isWatchlistComplete: state.isWatchlistComplete,
                         ),
@@ -69,12 +67,8 @@ class _AddingToWatchlistPageState extends State<AddingToWatchlistPage> {
                           ),
                         ),
                         const SizedBox(height: 32),
-
                         Expanded(child: _WatchlistCompaniesList(state: state)),
-
                         const SizedBox(height: 24),
-
-                        // Progress Bar (Visible only when adding)
                         if (!state.isWatchlistComplete) ...[
                           _WatchlistProgressBar(
                             currentStep: state.watchlistStep,
@@ -83,8 +77,6 @@ class _AddingToWatchlistPageState extends State<AddingToWatchlistPage> {
                           ),
                           const SizedBox(height: 16),
                         ],
-
-                        // Continue Button (Visible only when complete)
                         if (state.isWatchlistComplete)
                           _WatchlistContinueButton(
                             onPressed: () {
@@ -216,9 +208,6 @@ class _WatchlistProgressBar extends StatelessWidget {
         child: TweenAnimationBuilder<double>(
           tween: Tween<double>(
             begin: 0,
-            // Target: "step" items done. We want smooth fill for the current "active" item.
-            // If step = 0 (Item 0 active), we want to animate 0 -> 1/total.
-            // So end = (step + 1) / total.
             end: totalSteps > 0 ? (currentStep + 1) / totalSteps : 0,
           ),
           duration: const Duration(milliseconds: 1500),

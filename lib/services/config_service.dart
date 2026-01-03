@@ -14,7 +14,6 @@ class RemoteConfigKeys {
 class ConfigService {
   final FirebaseRemoteConfig _remoteConfig;
 
-  // Defaults - Safety Net
   static const _defaultGeminiModel = 'gemini-3-flash-preview';
   static const _defaultSectors = [
     "Energy",
@@ -50,7 +49,6 @@ class ConfigService {
       ),
     );
 
-    // 1. Set Defaults
     await remoteConfig.setDefaults({
       RemoteConfigKeys.geminiModelName: _defaultGeminiModel,
       RemoteConfigKeys.stockMarketSectors: jsonEncode(_defaultSectors),
@@ -61,13 +59,10 @@ class ConfigService {
       await remoteConfig.fetchAndActivate();
     } catch (e) {
       debugPrint('Remote Config fetch failed: $e');
-      // Fallback to defaults or cached values
     }
 
     return ConfigService(remoteConfig);
   }
-
-  // 2. Strongly Typed Getters
 
   String get geminiModelName =>
       _remoteConfig.getString(RemoteConfigKeys.geminiModelName);
@@ -94,7 +89,6 @@ class ConfigService {
     }
   }
 
-  // 3. Generic Getters (Kept for backward compatibility/testing)
   String getString(String key) => _remoteConfig.getString(key);
   bool getBool(String key) => _remoteConfig.getBool(key);
   int getInt(String key) => _remoteConfig.getInt(key);
