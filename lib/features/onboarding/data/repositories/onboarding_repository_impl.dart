@@ -1,4 +1,4 @@
-import 'package:bizzie/core/network/network_info.dart';
+import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:bizzie/features/onboarding/data/datasources/dummy_price_data.dart';
 import 'package:bizzie/features/onboarding/domain/interfaces/i_onboarding_repository.dart';
 import 'package:bizzie/features/onboarding/domain/models/brand.dart';
@@ -6,23 +6,21 @@ import 'package:bizzie/features/onboarding/domain/models/company.dart';
 import 'package:bizzie/features/onboarding/domain/models/historical_price.dart';
 import 'package:bizzie/features/onboarding/domain/models/onboarding_data.dart';
 import 'package:bizzie/features/onboarding/domain/models/sector.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:injectable/injectable.dart';
 import 'dart:io';
 
+import 'package:bizzie/features/onboarding/data/datasources/onboarding_remote_datasource.dart';
+import 'package:bizzie/features/onboarding/data/dtos/user_dto.dart';
+
 @LazySingleton(as: IOnboardingRepository)
 class OnboardingRepositoryImpl implements IOnboardingRepository {
-  final FirebaseFirestore _firestore;
+  final IOnboardingRemoteDataSource _remoteDataSource;
   final FirebaseMessaging _firebaseMessaging;
-  final NetworkInfo _networkInfo;
+  final _logger = BizzieLogger('OnboardingRepositoryImpl');
 
-  OnboardingRepositoryImpl(
-    this._firestore,
-    this._firebaseMessaging,
-    this._networkInfo,
-  );
+  OnboardingRepositoryImpl(this._remoteDataSource, this._firebaseMessaging);
 
   @override
   Future<List<HistoricalPrice>> getSp500History() async {
@@ -31,58 +29,48 @@ class OnboardingRepositoryImpl implements IOnboardingRepository {
 
   @override
   Future<(List<Brand>, List<Brand>)> getDailyBrands(Sector? userSector) async {
-    try {
-      if (await _networkInfo.isConnected) {
-        final collection = _firestore.collection('daily_brands');
+    _logger.info('DEBUG: Repository getDailyBrands called'); // START LOG
+    final dailyBrandsDto = await _remoteDataSource.fetchDailyBrands();
 
-        // Fetch the latest daily brand document
-        final snapshot = await collection
-            .orderBy('date', descending: true)
-            .limit(1)
-            .get();
-
-        if (snapshot.docs.isEmpty) {
-          return _getMockBrands(userSector);
-        }
-
-        final data = snapshot.docs.first.data();
-        final sectorsList = data['sectors'] as List<dynamic>? ?? [];
-
-        List<Brand> globalBrands = [];
-        List<Brand> sectorBrands = [];
-
-        for (final sectorMap in sectorsList) {
-          final sectorName = sectorMap['name'] as String? ?? '';
-          final productsList = sectorMap['products'] as List<dynamic>? ?? [];
-
-          final brands = productsList.map((p) {
-            final pMap = p as Map<String, dynamic>;
-            return Brand(
-              name: pMap['name'] as String? ?? '',
-              company: pMap['company'] as String? ?? '',
-              ticker: pMap['ticker'] as String? ?? '',
-              description: pMap['description'] as String? ?? '',
-              sector: sectorName,
-            );
-          }).toList();
-
-          if (sectorName == 'All Sectors') {
-            globalBrands.addAll(brands);
-          } else if (userSector != null &&
-              sectorName.toLowerCase() ==
-                  userSector.displayName.toLowerCase()) {
-            sectorBrands.addAll(brands);
-          }
-        }
-
-        return (globalBrands, sectorBrands);
-      } else {
-        return _getMockBrands(userSector);
-      }
-    } catch (e) {
-      // Log error (should use a logger in real app)
-      return _getMockBrands(userSector);
+    if (dailyBrandsDto == null) {
+      _logger.warning('DEBUG: dailyBrandsDto is NULL - using mocks');
+      return _getMockBrands(userSector); // Fallback to mocks if no data
     }
+
+    // DEBUG LOGGING
+    _logger.info(
+      'DEBUG: DTO Sectors found: ${dailyBrandsDto.sectors.map((s) => s.name).toList()}',
+    );
+    _logger.info('DEBUG: User Sector: ${userSector?.displayName}');
+
+    final globalBrands = <Brand>[];
+    final sectorBrands = <Brand>[];
+
+    for (final sectorDto in dailyBrandsDto.sectors) {
+      // Create Brand objects from products
+      final brands = sectorDto.products.map((p) {
+        return Brand(
+          name: p.name,
+          company: p.company,
+          ticker: p.ticker,
+          sector: sectorDto.name, // Use the sector name from the parent
+          description: p.description,
+        );
+      }).toList();
+
+      if (sectorDto.name == 'All Sectors') {
+        globalBrands.addAll(brands);
+      } else if (userSector != null &&
+          sectorDto.name == userSector.displayName) {
+        sectorBrands.addAll(brands);
+      }
+    }
+
+    // If for some reason global is empty (e.g. data issue), fallback?
+    // For now, let's trust the data or return empty.
+    // If "All Sectors" wasn't found in JSON, globalBrands will be empty.
+
+    return (globalBrands, sectorBrands);
   }
 
   (List<Brand>, List<Brand>) _getMockBrands(Sector? userSector) {
@@ -127,7 +115,6 @@ class OnboardingRepositoryImpl implements IOnboardingRepository {
 
     final sectorSpecific = <Brand>[];
     if (userSector != null) {
-      // Add some generic mock brands based on sector just to show something
       sectorSpecific.add(
         Brand(
           name: '${userSector.displayName} Brand A',
@@ -162,18 +149,17 @@ class OnboardingRepositoryImpl implements IOnboardingRepository {
 
   @override
   Future<List<Sector>> getSectors() async {
-    // In a real app, this might come from RemoteConfig or API.
-    // Converting the hardcoded logic to return Sectors.
-    return Sector.values;
+    final sectorStrings = _remoteDataSource.getStockMarketSectors();
+    return sectorStrings
+        .map((s) => Sector.fromString(s))
+        .whereType<Sector>() // Filter out nulls (unmatched strings)
+        .toList();
   }
 
   @override
   Future<List<Company>> getTickersFromBrands(String brandsText) async {
-    // Dummy implementation as AI Service is removed
-    // In a real scenario, this would call a backend endpoint
-    await Future.delayed(const Duration(seconds: 1)); // Simulate latency
-
-    // Simple mock logic: return some companies based on text presence, or just generic ones
+    // Dummy implementation
+    await Future.delayed(const Duration(seconds: 1));
     final List<Company> mockCompanies = [];
     final lowerText = brandsText.toLowerCase();
 
@@ -189,14 +175,11 @@ class OnboardingRepositoryImpl implements IOnboardingRepository {
     if (lowerText.contains('tesla')) {
       mockCompanies.add(const Company(ticker: 'TSLA', name: 'Tesla, Inc.'));
     }
-
-    // Default if nothing matches
     if (mockCompanies.isEmpty) {
       mockCompanies.add(
         const Company(ticker: 'SPY', name: 'SPDR S&P 500 ETF Trust'),
       );
     }
-
     return mockCompanies;
   }
 
@@ -204,10 +187,8 @@ class OnboardingRepositoryImpl implements IOnboardingRepository {
   Future<void> completeOnboarding({
     required OnboardingData data,
     required String uid,
-    required String fcmToken,
   }) async {
     // 1. Prepare Data
-    // UUID Generation
     final deviceInfo = DeviceInfoPlugin();
     String deviceUuid;
     if (Platform.isIOS) {
@@ -220,14 +201,21 @@ class OnboardingRepositoryImpl implements IOnboardingRepository {
       deviceUuid = 'unknown_platform_device';
     }
 
-    // 2. Initial FCM Token Map
+    // Fetch FCM Token Internally
+    String? fcmToken;
+    try {
+      fcmToken = await _firebaseMessaging.getToken();
+    } catch (e) {
+      // Log or handle error if token fetch fails
+      _logger.severe('Failed to fetch FCM token: $e');
+    }
+
     Map<String, String> tokensMap = {};
-    if (fcmToken.isNotEmpty) {
+    if (fcmToken != null && fcmToken.isNotEmpty) {
       tokensMap[deviceUuid] = fcmToken;
     }
 
-    // 3. Subscription Logic (Topics)
-    if (fcmToken.isNotEmpty) {
+    if (fcmToken != null && fcmToken.isNotEmpty) {
       final selectedSector = data.selectedSector;
       if (selectedSector != null) {
         final sanitizedSector = _sanitizeTopic(selectedSector.displayName);
@@ -244,24 +232,20 @@ class OnboardingRepositoryImpl implements IOnboardingRepository {
       }
     }
 
-    // 4. Create User Document
-    final userDocPath = _firestore.collection('users').doc(uid);
-
-    final userMap = {
-      'uid': uid,
-      'name': data.firstName,
-      'favoriteSector': data.selectedSector != null
+    final userDto = UserDto(
+      uid: uid,
+      name: data.firstName,
+      favoriteSector: data.selectedSector != null
           ? _sanitizeTopic(data.selectedSector!.displayName)
           : '',
-      'favoriteSectorDisplay': data.selectedSector?.displayName ?? '',
-      'watchlist': data.detectedCompanies.map((c) => c.toJson()).toList(),
-      'investingExperience': data.investingExperience?.name ?? 'beginner',
-      'createdAt': FieldValue.serverTimestamp(),
-      'isSubscribed': false,
-      'fcmTokens': tokensMap,
-    };
+      favoriteSectorDisplay: data.selectedSector?.displayName ?? '',
+      watchlist: data.detectedCompanies.map((c) => c.toJson()).toList(),
+      investingExperience: data.investingExperience?.name ?? 'beginner',
+      isSubscribed: false,
+      fcmTokens: tokensMap,
+    );
 
-    await userDocPath.set(userMap);
+    await _remoteDataSource.saveUserProfile(userDto);
   }
 
   String _sanitizeTopic(String input) {

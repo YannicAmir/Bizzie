@@ -1,6 +1,10 @@
 import 'dart:async';
 import 'package:bizzie/app/routes/app_routes.dart';
 import 'package:bizzie/app/themes/app_colors.dart';
+import 'package:bizzie/core/logging/bizzie_logger.dart';
+
+import 'package:bizzie/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:bizzie/features/auth/presentation/bloc/auth_state.dart';
 
 import 'package:bizzie/features/onboarding/presentation/bloc/onboarding_bloc.dart';
 
@@ -24,6 +28,10 @@ class _BuildingProfilePageState extends State<BuildingProfilePage>
   late PageController _pageController;
   late _CarouselAutoScroller _autoScroller;
 
+  bool _isAnimationComplete = false;
+  bool _isProfileSaved = false;
+  final _logger = BizzieLogger('BuildingProfilePage');
+
   @override
   void initState() {
     super.initState();
@@ -40,7 +48,7 @@ class _BuildingProfilePageState extends State<BuildingProfilePage>
           })
           ..addStatusListener((status) {
             if (status == AnimationStatus.completed) {
-              _onLoadingComplete();
+              _onAnimationComplete();
             }
           });
 
@@ -49,11 +57,43 @@ class _BuildingProfilePageState extends State<BuildingProfilePage>
     _pageController = PageController();
     _autoScroller = _CarouselAutoScroller(_pageController);
     _autoScroller.start();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _checkAuthAndTrigger();
+    });
   }
 
-  void _onLoadingComplete() {
-    _autoScroller.stop();
-    context.go(AppRoutes.onboardingProfileReady);
+  void _checkAuthAndTrigger() {
+    final authState = context.read<AuthBloc>().state;
+    authState.mapOrNull(authenticated: (_) => _triggerSave());
+  }
+
+  void _triggerSave() {
+    if (_isProfileSaved) return;
+    context.read<OnboardingBloc>().add(
+      const OnboardingEvent.completeOnboarding(),
+    );
+  }
+
+  void _onAnimationComplete() {
+    setState(() {
+      _isAnimationComplete = true;
+    });
+    _tryNavigate();
+  }
+
+  void _onProfileSaveSuccess() {
+    setState(() {
+      _isProfileSaved = true;
+    });
+    _tryNavigate();
+  }
+
+  void _tryNavigate() {
+    if (_isAnimationComplete && _isProfileSaved) {
+      _autoScroller.stop();
+      context.go(AppRoutes.onboardingProfileReady);
+    }
   }
 
   @override
@@ -66,73 +106,118 @@ class _BuildingProfilePageState extends State<BuildingProfilePage>
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<OnboardingBloc, OnboardingState>(
-      builder: (context, state) {
-        final theme = Theme.of(context);
-        final selectedSector = state.onboardingData.selectedSector;
-        final experience = state.onboardingData.investingExperience;
-        final brandsCount = state.selectedBrands.length;
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<AuthBloc, AuthState>(
+          listener: (context, state) {
+            state.mapOrNull(
+              authenticated: (authState) {
+                if (!_isProfileSaved && !_isAnimationComplete) {
+                  _triggerSave();
+                }
+              },
+            );
+          },
+        ),
+        BlocListener<OnboardingBloc, OnboardingState>(
+          listener: (context, state) {
+            if (state.status == OnboardingStatus.success) {
+              _onProfileSaveSuccess();
+            } else if (state.status == OnboardingStatus.failure) {
+              _logger.severe(
+                'Background profile save failed: ${state.failureMessage}',
+              );
+            }
+          },
+        ),
+      ],
+      child: BlocBuilder<OnboardingBloc, OnboardingState>(
+        builder: (context, state) {
+          final theme = Theme.of(context);
+          final selectedSector = state.onboardingData.selectedSector;
+          final experience = state.onboardingData.investingExperience;
+          final brandsCount = state.selectedBrands.length;
 
-        final carouselItems = [
-          _ProfileItemData(
-            iconAsset: AppAssets.favoriteSectorIcon,
-            title: selectedSector?.displayName ?? 'Your Sector',
-            subtitle: 'Favorite Sector',
-            gradientColors: [const Color(0xFF2B7FFF), const Color(0xFF155DFC)],
-          ),
-          _ProfileItemData(
-            iconAsset: AppAssets.investorClassificationIcon,
-            title:
-                experience?.name.toUpperCase() ?? 'INVESTOR', // e.g., BEGINNER
-            subtitle: 'Investor Classification',
-            gradientColors: [const Color(0xFF2B7FFF), const Color(0xFF155DFC)],
-          ),
-          _ProfileItemData(
-            iconAsset: AppAssets.favoriteBrandsIcon,
-            title: '$brandsCount',
-            subtitle: 'Favorite Brands Count',
-            gradientColors: [const Color(0xFF2B7FFF), const Color(0xFF155DFC)],
-          ),
-        ];
-
-        return Scaffold(
-          backgroundColor: theme.scaffoldBackgroundColor,
-          body: SafeArea(
-            child: Column(
-              children: [
-                const OnboardingHeader(),
-                Expanded(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      _ProfileCarousel(
-                        pageController: _pageController,
-                        carouselItems: carouselItems,
-                      ),
-                      const SizedBox(height: 48),
-                      _ProfileCreationProgress(
-                        progressAnimation: _progressAnimation,
-                      ),
-                      const SizedBox(height: 32),
-                      Text(
-                        '   ${(_progressAnimation.value * 100).toInt()}%',
-                        style: theme.textTheme.bodyLarge?.copyWith(
-                          fontWeight: FontWeight.w900,
-                          fontSize: 20,
-                          height: 1.5,
-                          letterSpacing: -0.449,
-                          color: AppColors.primary,
-                        ),
-                      ),
-                      const SizedBox(height: 56),
-                    ],
-                  ),
-                ),
+          final carouselItems = [
+            _ProfileItemData(
+              iconAsset: AppAssets.favoriteSectorIcon,
+              title: selectedSector?.displayName ?? 'Your Sector',
+              subtitle: 'Favorite Sector',
+              gradientColors: [
+                const Color(0xFF2B7FFF),
+                const Color(0xFF155DFC),
               ],
             ),
-          ),
-        );
-      },
+            _ProfileItemData(
+              iconAsset: AppAssets.investorClassificationIcon,
+              title: experience?.name.toUpperCase() ?? 'INVESTOR',
+              subtitle: 'Investor Classification',
+              gradientColors: [
+                const Color(0xFF2B7FFF),
+                const Color(0xFF155DFC),
+              ],
+            ),
+            _ProfileItemData(
+              iconAsset: AppAssets.favoriteBrandsIcon,
+              title: '$brandsCount',
+              subtitle: 'Favorite Brands Count',
+              gradientColors: [
+                const Color(0xFF2B7FFF),
+                const Color(0xFF155DFC),
+              ],
+            ),
+          ];
+
+          return Scaffold(
+            backgroundColor: theme.scaffoldBackgroundColor,
+            body: SafeArea(
+              child: Column(
+                children: [
+                  const OnboardingHeader(),
+                  Expanded(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        _ProfileCarousel(
+                          pageController: _pageController,
+                          carouselItems: carouselItems,
+                        ),
+                        const SizedBox(height: 48),
+                        _ProfileCreationProgress(
+                          progressAnimation: _progressAnimation,
+                        ),
+                        const SizedBox(height: 32),
+                        if (_isAnimationComplete && !_isProfileSaved)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 8.0),
+                            child: Text(
+                              'Finishing up...',
+                              style: theme.textTheme.bodyMedium?.copyWith(
+                                color: AppColors.textSecondary,
+                              ),
+                            ),
+                          )
+                        else
+                          Text(
+                            '   ${(_progressAnimation.value * 100).toInt()}%',
+                            style: theme.textTheme.bodyLarge?.copyWith(
+                              fontWeight: FontWeight.w900,
+                              fontSize: 20,
+                              height: 1.5,
+                              letterSpacing: -0.449,
+                              color: AppColors.primary,
+                            ),
+                          ),
+                        const SizedBox(height: 56),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
     );
   }
 }

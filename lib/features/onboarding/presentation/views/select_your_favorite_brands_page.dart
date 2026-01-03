@@ -183,7 +183,7 @@ class _SectorBrandsSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Popular $sectorName brands',
+          'Popular $sectorName brands & products',
           style: theme.textTheme.bodyMedium?.copyWith(
             color: AppColors.black,
             fontWeight: FontWeight.w600,
@@ -224,7 +224,7 @@ class _GlobalBrandsSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Other popular brands',
+          'Other popular brands & products',
           style: theme.textTheme.bodyMedium?.copyWith(
             color: AppColors.black,
             fontWeight: FontWeight.w600,

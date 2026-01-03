@@ -25,9 +25,6 @@ import 'package:go_router/go_router.dart';
 import 'package:bizzie/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:bizzie/features/auth/presentation/bloc/auth_state.dart';
 import 'package:bizzie/shared/utils/go_router_refresh_stream.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:bizzie/features/onboarding/presentation/bloc/onboarding_bloc.dart';
-import 'package:bizzie/di/injection.dart';
 
 GoRouter createRouter(AuthBloc authBloc) {
   return GoRouter(
@@ -126,13 +123,10 @@ GoRouter createRouter(AuthBloc authBloc) {
         path: AppRoutes.landing,
         builder: (context, state) => const LandingPage(),
       ),
+      // Inner Shell for Onboarding UI (Progress Bar, etc.)
       ShellRoute(
         builder: (context, state, child) {
-          return BlocProvider<OnboardingBloc>(
-            create: (_) =>
-                getIt<OnboardingBloc>()..add(const OnboardingEvent.started()),
-            child: OnboardingShell(child: child),
-          );
+          return OnboardingShell(child: child);
         },
         routes: [
           _buildNoTransitionRoute(

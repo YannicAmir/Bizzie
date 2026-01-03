@@ -17,10 +17,7 @@ class OnboardingEvent with _$OnboardingEvent {
   const factory OnboardingEvent.experienceSelected(
     InvestingExperience experience,
   ) = _ExperienceSelected;
-  const factory OnboardingEvent.completeOnboarding({
-    required String uid,
-    required String fcmToken,
-  }) = _CompleteOnboarding;
+  const factory OnboardingEvent.completeOnboarding() = _CompleteOnboarding;
 
   // Analysis
   const factory OnboardingEvent.startAnalysis() = _StartAnalysis;

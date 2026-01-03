@@ -1,3 +1,5 @@
+import 'package:bizzie/core/logging/bizzie_logger.dart';
+import 'package:bizzie/features/auth/domain/interfaces/i_auth_repository.dart';
 import 'package:bizzie/features/onboarding/domain/interfaces/i_onboarding_repository.dart';
 import 'package:bizzie/features/onboarding/domain/models/company.dart';
 import 'package:bizzie/features/onboarding/domain/models/onboarding_data.dart';
@@ -16,8 +18,11 @@ part 'onboarding_bloc.freezed.dart';
 @injectable
 class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
   final IOnboardingRepository _repository;
+  final IAuthRepository _authRepository;
+  final _logger = BizzieLogger('OnboardingBloc');
 
-  OnboardingBloc(this._repository) : super(OnboardingState.initial()) {
+  OnboardingBloc(this._repository, this._authRepository)
+    : super(OnboardingState.initial()) {
     on<_Started>(_onStarted);
     on<_NameSubmitted>(_onNameSubmitted);
     on<_SectorSelected>(_onSectorSelected);
@@ -43,13 +48,17 @@ class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
     _LoadBrands event,
     Emitter<OnboardingState> emit,
   ) async {
-    // Assuming loading state if needed, or just silent update
+    _logger.info('DEBUG: OnboardingBloc _onLoadBrands STARTED'); // START LOG
     try {
       final (global, sector) = await _repository.getDailyBrands(
         state.onboardingData.selectedSector,
       );
+      _logger.info(
+        'DEBUG: Bloc loadBrands result - Global: ${global.length}, Sector: ${sector.length}',
+      );
       emit(state.copyWith(globalBrands: global, sectorBrands: sector));
-    } catch (e) {
+    } catch (e, stack) {
+      _logger.severe('DEBUG: OnboardingBloc _onLoadBrands ERROR', e, stack);
       // Handle error
     }
   }
@@ -278,10 +287,14 @@ class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
     emit(state.copyWith(isSubmitting: true, failureMessage: null));
 
     try {
+      final currentUser = _authRepository.currentUser;
+      if (currentUser == null) {
+        throw Exception('User is not authenticated');
+      }
+
       await _repository.completeOnboarding(
         data: state.onboardingData,
-        uid: event.uid,
-        fcmToken: event.fcmToken,
+        uid: currentUser.id,
       );
       emit(
         state.copyWith(status: OnboardingStatus.success, isSubmitting: false),

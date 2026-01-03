@@ -26,6 +26,5 @@ abstract class IOnboardingRepository {
   Future<void> completeOnboarding({
     required OnboardingData data,
     required String uid,
-    required String fcmToken,
   });
 }

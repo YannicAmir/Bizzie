@@ -1,8 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart' as firebase;
+import 'package:injectable/injectable.dart';
+
 import '../../domain/interfaces/i_auth_repository.dart';
 import '../../domain/models/user_model.dart';
 import '../datasources/remote_auth_data_source.dart';
 
+@LazySingleton(as: IAuthRepository)
 class AuthRepositoryImpl implements IAuthRepository {
   final RemoteAuthDataSource remoteDataSource;
 
@@ -14,6 +17,13 @@ class AuthRepositoryImpl implements IAuthRepository {
       if (firebaseUser == null) return null;
       return _mapFirebaseUserToUserModel(firebaseUser);
     });
+  }
+
+  @override
+  UserModel? get currentUser {
+    final firebaseUser = remoteDataSource.currentUser;
+    if (firebaseUser == null) return null;
+    return _mapFirebaseUserToUserModel(firebaseUser);
   }
 
   @override

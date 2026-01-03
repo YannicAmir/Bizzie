@@ -170,7 +170,7 @@ return highlightSkipPressed(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  started,TResult Function( String name)?  nameSubmitted,TResult Function( Sector sector)?  sectorSelected,TResult Function( String brandsText)?  uploadBrands,TResult Function()?  loadSp500History,TResult Function( List<Company> confirmedCompanies)?  confirmWatchlist,TResult Function()?  loadBrands,TResult Function( Brand brand)?  toggleBrand,TResult Function( String input)?  updateCustomBrandInput,TResult Function( InvestingExperience experience)?  experienceSelected,TResult Function( String uid,  String fcmToken)?  completeOnboarding,TResult Function()?  startAnalysis,TResult Function( int step)?  updateAnalysisStep,TResult Function()?  startWatchlistAddition,TResult Function( int step)?  updateWatchlistStep,TResult Function( int index)?  highlightPageChanged,TResult Function()?  highlightContinuePressed,TResult Function()?  highlightSkipPressed,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  started,TResult Function( String name)?  nameSubmitted,TResult Function( Sector sector)?  sectorSelected,TResult Function( String brandsText)?  uploadBrands,TResult Function()?  loadSp500History,TResult Function( List<Company> confirmedCompanies)?  confirmWatchlist,TResult Function()?  loadBrands,TResult Function( Brand brand)?  toggleBrand,TResult Function( String input)?  updateCustomBrandInput,TResult Function( InvestingExperience experience)?  experienceSelected,TResult Function()?  completeOnboarding,TResult Function()?  startAnalysis,TResult Function( int step)?  updateAnalysisStep,TResult Function()?  startWatchlistAddition,TResult Function( int step)?  updateWatchlistStep,TResult Function( int index)?  highlightPageChanged,TResult Function()?  highlightContinuePressed,TResult Function()?  highlightSkipPressed,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Started() when started != null:
 return started();case _NameSubmitted() when nameSubmitted != null:
@@ -183,7 +183,7 @@ return loadBrands();case _ToggleBrand() when toggleBrand != null:
 return toggleBrand(_that.brand);case _UpdateCustomBrandInput() when updateCustomBrandInput != null:
 return updateCustomBrandInput(_that.input);case _ExperienceSelected() when experienceSelected != null:
 return experienceSelected(_that.experience);case _CompleteOnboarding() when completeOnboarding != null:
-return completeOnboarding(_that.uid,_that.fcmToken);case _StartAnalysis() when startAnalysis != null:
+return completeOnboarding();case _StartAnalysis() when startAnalysis != null:
 return startAnalysis();case _UpdateAnalysisStep() when updateAnalysisStep != null:
 return updateAnalysisStep(_that.step);case _StartWatchlistAddition() when startWatchlistAddition != null:
 return startWatchlistAddition();case _UpdateWatchlistStep() when updateWatchlistStep != null:
@@ -208,7 +208,7 @@ return highlightSkipPressed();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  started,required TResult Function( String name)  nameSubmitted,required TResult Function( Sector sector)  sectorSelected,required TResult Function( String brandsText)  uploadBrands,required TResult Function()  loadSp500History,required TResult Function( List<Company> confirmedCompanies)  confirmWatchlist,required TResult Function()  loadBrands,required TResult Function( Brand brand)  toggleBrand,required TResult Function( String input)  updateCustomBrandInput,required TResult Function( InvestingExperience experience)  experienceSelected,required TResult Function( String uid,  String fcmToken)  completeOnboarding,required TResult Function()  startAnalysis,required TResult Function( int step)  updateAnalysisStep,required TResult Function()  startWatchlistAddition,required TResult Function( int step)  updateWatchlistStep,required TResult Function( int index)  highlightPageChanged,required TResult Function()  highlightContinuePressed,required TResult Function()  highlightSkipPressed,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  started,required TResult Function( String name)  nameSubmitted,required TResult Function( Sector sector)  sectorSelected,required TResult Function( String brandsText)  uploadBrands,required TResult Function()  loadSp500History,required TResult Function( List<Company> confirmedCompanies)  confirmWatchlist,required TResult Function()  loadBrands,required TResult Function( Brand brand)  toggleBrand,required TResult Function( String input)  updateCustomBrandInput,required TResult Function( InvestingExperience experience)  experienceSelected,required TResult Function()  completeOnboarding,required TResult Function()  startAnalysis,required TResult Function( int step)  updateAnalysisStep,required TResult Function()  startWatchlistAddition,required TResult Function( int step)  updateWatchlistStep,required TResult Function( int index)  highlightPageChanged,required TResult Function()  highlightContinuePressed,required TResult Function()  highlightSkipPressed,}) {final _that = this;
 switch (_that) {
 case _Started():
 return started();case _NameSubmitted():
@@ -221,7 +221,7 @@ return loadBrands();case _ToggleBrand():
 return toggleBrand(_that.brand);case _UpdateCustomBrandInput():
 return updateCustomBrandInput(_that.input);case _ExperienceSelected():
 return experienceSelected(_that.experience);case _CompleteOnboarding():
-return completeOnboarding(_that.uid,_that.fcmToken);case _StartAnalysis():
+return completeOnboarding();case _StartAnalysis():
 return startAnalysis();case _UpdateAnalysisStep():
 return updateAnalysisStep(_that.step);case _StartWatchlistAddition():
 return startWatchlistAddition();case _UpdateWatchlistStep():
@@ -245,7 +245,7 @@ return highlightSkipPressed();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  started,TResult? Function( String name)?  nameSubmitted,TResult? Function( Sector sector)?  sectorSelected,TResult? Function( String brandsText)?  uploadBrands,TResult? Function()?  loadSp500History,TResult? Function( List<Company> confirmedCompanies)?  confirmWatchlist,TResult? Function()?  loadBrands,TResult? Function( Brand brand)?  toggleBrand,TResult? Function( String input)?  updateCustomBrandInput,TResult? Function( InvestingExperience experience)?  experienceSelected,TResult? Function( String uid,  String fcmToken)?  completeOnboarding,TResult? Function()?  startAnalysis,TResult? Function( int step)?  updateAnalysisStep,TResult? Function()?  startWatchlistAddition,TResult? Function( int step)?  updateWatchlistStep,TResult? Function( int index)?  highlightPageChanged,TResult? Function()?  highlightContinuePressed,TResult? Function()?  highlightSkipPressed,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  started,TResult? Function( String name)?  nameSubmitted,TResult? Function( Sector sector)?  sectorSelected,TResult? Function( String brandsText)?  uploadBrands,TResult? Function()?  loadSp500History,TResult? Function( List<Company> confirmedCompanies)?  confirmWatchlist,TResult? Function()?  loadBrands,TResult? Function( Brand brand)?  toggleBrand,TResult? Function( String input)?  updateCustomBrandInput,TResult? Function( InvestingExperience experience)?  experienceSelected,TResult? Function()?  completeOnboarding,TResult? Function()?  startAnalysis,TResult? Function( int step)?  updateAnalysisStep,TResult? Function()?  startWatchlistAddition,TResult? Function( int step)?  updateWatchlistStep,TResult? Function( int index)?  highlightPageChanged,TResult? Function()?  highlightContinuePressed,TResult? Function()?  highlightSkipPressed,}) {final _that = this;
 switch (_that) {
 case _Started() when started != null:
 return started();case _NameSubmitted() when nameSubmitted != null:
@@ -258,7 +258,7 @@ return loadBrands();case _ToggleBrand() when toggleBrand != null:
 return toggleBrand(_that.brand);case _UpdateCustomBrandInput() when updateCustomBrandInput != null:
 return updateCustomBrandInput(_that.input);case _ExperienceSelected() when experienceSelected != null:
 return experienceSelected(_that.experience);case _CompleteOnboarding() when completeOnboarding != null:
-return completeOnboarding(_that.uid,_that.fcmToken);case _StartAnalysis() when startAnalysis != null:
+return completeOnboarding();case _StartAnalysis() when startAnalysis != null:
 return startAnalysis();case _UpdateAnalysisStep() when updateAnalysisStep != null:
 return updateAnalysisStep(_that.step);case _StartWatchlistAddition() when startWatchlistAddition != null:
 return startWatchlistAddition();case _UpdateWatchlistStep() when updateWatchlistStep != null:
@@ -850,69 +850,33 @@ as InvestingExperience,
 
 
 class _CompleteOnboarding implements OnboardingEvent {
-  const _CompleteOnboarding({required this.uid, required this.fcmToken});
+  const _CompleteOnboarding();
   
 
- final  String uid;
- final  String fcmToken;
 
-/// Create a copy of OnboardingEvent
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-_$CompleteOnboardingCopyWith<_CompleteOnboarding> get copyWith => __$CompleteOnboardingCopyWithImpl<_CompleteOnboarding>(this, _$identity);
+
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CompleteOnboarding&&(identical(other.uid, uid) || other.uid == uid)&&(identical(other.fcmToken, fcmToken) || other.fcmToken == fcmToken));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CompleteOnboarding);
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,uid,fcmToken);
+int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'OnboardingEvent.completeOnboarding(uid: $uid, fcmToken: $fcmToken)';
+  return 'OnboardingEvent.completeOnboarding()';
 }
 
 
 }
 
-/// @nodoc
-abstract mixin class _$CompleteOnboardingCopyWith<$Res> implements $OnboardingEventCopyWith<$Res> {
-  factory _$CompleteOnboardingCopyWith(_CompleteOnboarding value, $Res Function(_CompleteOnboarding) _then) = __$CompleteOnboardingCopyWithImpl;
-@useResult
-$Res call({
- String uid, String fcmToken
-});
 
 
-
-
-}
-/// @nodoc
-class __$CompleteOnboardingCopyWithImpl<$Res>
-    implements _$CompleteOnboardingCopyWith<$Res> {
-  __$CompleteOnboardingCopyWithImpl(this._self, this._then);
-
-  final _CompleteOnboarding _self;
-  final $Res Function(_CompleteOnboarding) _then;
-
-/// Create a copy of OnboardingEvent
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? uid = null,Object? fcmToken = null,}) {
-  return _then(_CompleteOnboarding(
-uid: null == uid ? _self.uid : uid // ignore: cast_nullable_to_non_nullable
-as String,fcmToken: null == fcmToken ? _self.fcmToken : fcmToken // ignore: cast_nullable_to_non_nullable
-as String,
-  ));
-}
-
-
-}
 
 /// @nodoc
 
