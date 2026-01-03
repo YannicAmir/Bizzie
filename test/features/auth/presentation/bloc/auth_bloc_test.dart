@@ -164,15 +164,15 @@ void main() {
       'authResetPasswordRequested_success_callsUseCaseAndNoStateEmission',
       // arrange
       build: () {
-        when(() => mockResetPassword(any())).thenAnswer(
-          (_) async => const Right(null),
-        ); // Using Right(null) as void
+        when(
+          () => mockResetPassword(any()),
+        ).thenAnswer((_) async => const Right(null));
         return authBloc;
       },
       // act
       act: (bloc) => bloc.add(const AuthResetPasswordRequested(tEmail)),
       // assert
-      expect: () => [], // No state emitted on success unless loading handled?
+      expect: () => [],
       verify: (_) {
         verify(() => mockResetPassword(tEmail)).called(1);
       },

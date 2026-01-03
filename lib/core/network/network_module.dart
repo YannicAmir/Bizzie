@@ -15,7 +15,6 @@ abstract class NetworkModule {
     dio.interceptors.add(
       InterceptorsWrapper(
         onRequest: (options, handler) {
-          // Appending the API key to every request query parameters
           options.queryParameters['apikey'] = Env.fmpApiKey;
           return handler.next(options);
         },

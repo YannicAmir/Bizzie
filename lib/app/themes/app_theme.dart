@@ -19,7 +19,7 @@ class AppTheme {
             displayLarge: AppTextStyles.h1,
             displayMedium: AppTextStyles.h2,
             displaySmall: AppTextStyles.h3,
-            headlineMedium: AppTextStyles.h3, // Fallback for some defaults
+            headlineMedium: AppTextStyles.h3,
             titleMedium: AppTextStyles.subtitle,
             bodyLarge: AppTextStyles.bodyLarge,
             bodyMedium: AppTextStyles.bodyMedium,
@@ -29,9 +29,8 @@ class AppTheme {
           ),
       appBarTheme: AppBarTheme(
         backgroundColor: AppColors.surface,
-        surfaceTintColor:
-            Colors.transparent, // Prevents primary color tint on scroll
-        scrolledUnderElevation: 0, // Removes shadow on scroll
+        surfaceTintColor: Colors.transparent,
+        scrolledUnderElevation: 0,
         elevation: 0,
         iconTheme: const IconThemeData(color: AppColors.textPrimary, size: 20),
       ),
@@ -51,9 +50,7 @@ class AppTheme {
           foregroundColor: Colors.white,
           elevation: 0,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(
-              16,
-            ), // Match local usage or standard? Local used 16. Usage in Theme is 12. Let's stick to 12 for consistency across app, but user might want 16. I will stick to 12 as standard, and override if needed, OR just match standard. I'll make it 12 to encourage consistency, but welcome page used 16. I'll use 12.
+            borderRadius: BorderRadius.circular(16),
           ),
         ),
       ),
