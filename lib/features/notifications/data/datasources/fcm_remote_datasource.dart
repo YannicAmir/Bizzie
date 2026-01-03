@@ -21,9 +21,6 @@ class FcmRemoteDataSource {
     return settings;
   }
 
-  // Returns the FCM token for this device.
-  // Note: This token is specific to the Firebase Project (Bizzie Dev, QA, or Prod)
-  // that the app is currently running against (determined by flavor).
   Future<String?> getToken() => _firebaseMessaging.getToken();
 
   Stream<RemoteMessage> get onMessage => FirebaseMessaging.onMessage;

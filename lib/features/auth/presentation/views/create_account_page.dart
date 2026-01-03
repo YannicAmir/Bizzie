@@ -12,6 +12,10 @@ import '../widgets/auth_footer.dart';
 import '../widgets/create_account_form.dart';
 import '../widgets/mascot_info_card.dart';
 import '../widgets/social_login_buttons.dart';
+import 'package:bizzie/features/onboarding/presentation/bloc/onboarding_bloc.dart';
+import 'package:bizzie/features/onboarding/presentation/utils/onboarding_assets_helper.dart';
+import 'package:bizzie/app/themes/app_assets.dart';
+import 'package:bizzie/features/onboarding/presentation/widgets/onboarding_header.dart';
 
 class CreateAccountPage extends StatelessWidget {
   const CreateAccountPage({super.key});
@@ -22,7 +26,7 @@ class CreateAccountPage extends StatelessWidget {
       listener: (context, state) {
         state.maybeWhen(
           authenticated: (user) {
-            context.go(AppRoutes.home);
+            context.go(AppRoutes.onboardingBuildingProfile);
           },
           failure: (message) {
             ScaffoldMessenger.of(
@@ -32,90 +36,64 @@ class CreateAccountPage extends StatelessWidget {
           orElse: () {},
         );
       },
-      child: Scaffold(
-        backgroundColor: AppColors.background,
-        body: SafeArea(
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const _TopOnboardingBar(),
-                const SizedBox(height: 24),
-                const _BackButton(),
-                const SizedBox(height: 24),
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 24.0),
-                  child: MascotInfoCard(),
-                ),
-                const SizedBox(height: 32),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const _CreateAccountHeader(),
-                      const SizedBox(height: 32),
-                      const CreateAccountForm(),
-                      const SizedBox(height: 24),
-                      const AuthDivider(),
-                      const SizedBox(height: 24),
-                      const SocialLoginButtons(),
-                      const SizedBox(height: 48),
-                      const AuthFooter(),
-                      const SizedBox(height: 20),
-                    ],
+      child: GestureDetector(
+        onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+        child: Scaffold(
+          backgroundColor: AppColors.background,
+          body: SafeArea(
+            child: SingleChildScrollView(
+              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const OnboardingHeader(),
+                  const SizedBox(height: 40),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                    child: BlocBuilder<OnboardingBloc, OnboardingState>(
+                      builder: (context, onboardingState) {
+                        final data = onboardingState.onboardingData;
+                        final selectedSector = data.selectedSector;
+                        final name = data.firstName.isEmpty
+                            ? 'Friend'
+                            : data.firstName;
+                        final sectorName =
+                            selectedSector?.displayName ?? 'Your Sector';
+                        final mascotAsset = selectedSector != null
+                            ? OnboardingAssetsHelper.getMascotForSector(
+                                selectedSector,
+                              )
+                            : AppAssets.defaultMascot;
+
+                        return MascotInfoCard(
+                          name: name,
+                          sectorName: sectorName,
+                          mascotAsset: mascotAsset,
+                        );
+                      },
+                    ),
                   ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _TopOnboardingBar extends StatelessWidget {
-  const _TopOnboardingBar();
-
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Container(
-          width: double.infinity,
-          height: 4,
-          color: AppColors.inputBorder,
-        ),
-        Container(
-          width: MediaQuery.of(context).size.width * 0.8,
-          height: 4,
-          color: AppColors.primary,
-        ),
-      ],
-    );
-  }
-}
-
-class _BackButton extends StatelessWidget {
-  const _BackButton();
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-      child: InkWell(
-        onTap: () => context.pop(),
-        borderRadius: BorderRadius.circular(14),
-        child: Container(
-          width: 40,
-          height: 40,
-          decoration: BoxDecoration(borderRadius: BorderRadius.circular(14)),
-          child: const Center(
-            child: Icon(
-              Icons.arrow_back_ios_new,
-              size: 24,
-              color: AppColors.black,
+                  const SizedBox(height: 32),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const _CreateAccountHeader(),
+                        const SizedBox(height: 32),
+                        const CreateAccountForm(),
+                        const SizedBox(height: 24),
+                        const AuthDivider(),
+                        const SizedBox(height: 24),
+                        const SocialLoginButtons(),
+                        const SizedBox(height: 48),
+                        const AuthFooter(),
+                        const SizedBox(height: 20),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),

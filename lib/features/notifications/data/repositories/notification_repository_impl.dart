@@ -30,7 +30,6 @@ class NotificationRepositoryImpl implements INotificationRepository {
     return _fcmRemoteDataSource.onMessage.map((remoteMessage) {
       final notification = remoteMessage.notification;
 
-      // If notification data exists, show local notification (Foreground)
       if (notification != null) {
         _localNotificationDataSource.showNotification(
           id: notification.hashCode,

@@ -1,4 +1,5 @@
 import 'package:bizzie/core/logging/bizzie_logger.dart';
+import 'package:bizzie/services/config_service.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter/foundation.dart';
@@ -15,9 +16,15 @@ Future<void> bootstrap(
   WidgetsFlutterBinding.ensureInitialized();
   BizzieLogger.init(dev: !kReleaseMode);
 
-  configureDependencies(environment.name);
   await Firebase.initializeApp(options: firebaseOptions);
+  await configureDependencies(environment.name);
   await GoogleSignIn.instance.initialize();
+
+  try {
+    await ConfigService.init();
+  } catch (e) {
+    debugPrint('Failed to initialize ConfigService: $e');
+  }
 
   runApp(const BizzieApp());
 }

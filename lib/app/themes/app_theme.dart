@@ -14,18 +14,23 @@ class AppTheme {
         surface: AppColors.surface,
         onSurface: AppColors.textPrimary,
       ),
-      textTheme: GoogleFonts.interTextTheme(
-        ThemeData.light().textTheme,
-      ).copyWith(
-        displayLarge: AppTextStyles.h1,
-        bodyLarge: AppTextStyles.bodyLarge,
-        bodyMedium: AppTextStyles.subtitle,
-      ),
+      textTheme: GoogleFonts.interTextTheme(ThemeData.light().textTheme)
+          .copyWith(
+            displayLarge: AppTextStyles.h1,
+            displayMedium: AppTextStyles.h2,
+            displaySmall: AppTextStyles.h3,
+            headlineMedium: AppTextStyles.h3,
+            titleMedium: AppTextStyles.subtitle,
+            bodyLarge: AppTextStyles.bodyLarge,
+            bodyMedium: AppTextStyles.bodyMedium,
+            bodySmall: AppTextStyles.bodySmall,
+            labelLarge: AppTextStyles.button,
+            labelSmall: AppTextStyles.caption,
+          ),
       appBarTheme: AppBarTheme(
         backgroundColor: AppColors.surface,
-        surfaceTintColor:
-            Colors.transparent, // Prevents primary color tint on scroll
-        scrolledUnderElevation: 0, // Removes shadow on scroll
+        surfaceTintColor: Colors.transparent,
+        scrolledUnderElevation: 0,
         elevation: 0,
         iconTheme: const IconThemeData(color: AppColors.textPrimary, size: 20),
       ),
@@ -36,6 +41,16 @@ class AppTheme {
           elevation: 0,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
+          ),
+        ),
+      ),
+      filledButtonTheme: FilledButtonThemeData(
+        style: FilledButton.styleFrom(
+          backgroundColor: AppColors.primary,
+          foregroundColor: Colors.white,
+          elevation: 0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
           ),
         ),
       ),
@@ -56,6 +71,11 @@ class AppTheme {
         ),
         contentPadding: const EdgeInsets.symmetric(vertical: 16),
         hintStyle: const TextStyle(color: AppColors.textTertiary),
+      ),
+      progressIndicatorTheme: const ProgressIndicatorThemeData(
+        color: AppColors.primary,
+        linearTrackColor: AppColors.slate200,
+        linearMinHeight: 4,
       ),
     );
   }

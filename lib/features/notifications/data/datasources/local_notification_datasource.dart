@@ -47,7 +47,6 @@ class LocalNotificationDataSource {
           priority: Priority.high,
         );
 
-    // Sync permissions with FLNP to ensure it knows we can show alerts
     final iOSPlatform = _flutterLocalNotificationsPlugin
         .resolvePlatformSpecificImplementation<
           IOSFlutterLocalNotificationsPlugin

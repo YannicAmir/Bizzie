@@ -51,7 +51,7 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
       await _requestPermission();
       _logger.info('Permission request completed.');
       final token = await _getFcmToken();
-      _logger.info('FCM Token: $token'); // For debugging as requested
+      _logger.info('FCM Token: $token');
 
       _messageSubscription = _listenToMessages().listen((message) {
         add(NotificationEvent.messageReceived(message));
@@ -70,10 +70,6 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
     try {
       await _subscribeToTopic(event.topic);
     } catch (e) {
-      // For now, we might want to emit a failure or just log it.
-      // Keeping state as is or emitting failure.
-      // Since this is often a fire-and-forget or part of a larger flow,
-      // I'll emit failure if it fails, but ideally we'd have a specific state for this.
       emit(NotificationState.failure("Failed to subscribe: ${e.toString()}"));
     }
   }
@@ -94,9 +90,6 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
     Emitter<NotificationState> emit,
   ) {
     emit(NotificationState.messageReceivedState(event.message));
-    // Immediately revert to success or keep it?
-    // Usually we might use a Listener in UI to react to this state,
-    // so strictly speaking it's a transient state.
   }
 
   @override

@@ -43,7 +43,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
        _signOut = signOut,
        _resetPassword = resetPassword,
        _deleteAccount = deleteAccount,
-       super(const AuthState.initial()) {
+       super(
+         authRepository.currentUser != null
+             ? AuthState.authenticated(authRepository.currentUser!)
+             : const AuthState.unauthenticated(),
+       ) {
     on<AuthStatusRequested>(_onAuthStatusRequested);
     on<AuthLogoutRequested>(_onLogoutRequested);
     on<AuthGoogleSignInRequested>(_onGoogleSignInRequested);

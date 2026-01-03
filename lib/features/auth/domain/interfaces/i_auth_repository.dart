@@ -2,6 +2,7 @@ import '../models/user_model.dart';
 
 abstract class IAuthRepository {
   Stream<UserModel?> get authStateChanges;
+  UserModel? get currentUser;
   Future<UserModel> signInWithEmail({
     required String email,
     required String password,

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../bloc/auth_bloc.dart';
 import '../bloc/auth_event.dart';
+import '../bloc/auth_state.dart';
 import 'package:bizzie/shared/utils/validators.dart';
 
 class CreateAccountForm extends StatefulWidget {
@@ -44,7 +45,6 @@ class _CreateAccountFormState extends State<CreateAccountForm> {
       key: _formKey,
       child: Column(
         children: [
-          // Email Field
           AuthTextField(
             controller: _emailController,
             hintText: 'Email address',
@@ -54,7 +54,6 @@ class _CreateAccountFormState extends State<CreateAccountForm> {
             validator: Validators.validateEmail,
           ),
           const SizedBox(height: 16),
-          // Password Field
           AuthTextField(
             controller: _passwordController,
             hintText: 'Password',
@@ -68,14 +67,22 @@ class _CreateAccountFormState extends State<CreateAccountForm> {
             },
             onSubmitted: _onCreateAccountPressed,
             textInputAction: TextInputAction.done,
-            validator:
-                (value) => Validators.validatePassword(value, minLength: 8),
+            validator: (value) =>
+                Validators.validatePassword(value, minLength: 8),
           ),
           const SizedBox(height: 24),
-          // Create Account Button
-          AuthButton(
-            text: 'Create Account',
-            onPressed: _onCreateAccountPressed,
+          BlocBuilder<AuthBloc, AuthState>(
+            builder: (context, state) {
+              final isLoading = state.maybeWhen(
+                loading: () => true,
+                orElse: () => false,
+              );
+              return AuthButton(
+                text: 'Create Account',
+                onPressed: _onCreateAccountPressed,
+                isLoading: isLoading,
+              );
+            },
           ),
         ],
       ),

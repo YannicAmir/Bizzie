@@ -9,4 +9,20 @@ class AppRoutes {
   static const String terms = '/terms';
   static const String privacy = '/privacy';
   static const String notificationRequest = '/notifications-request';
+  static const String landing = '/landing';
+  static const String onboardingName = '/onboarding/name';
+  static const String onboardingWelcome = '/onboarding/welcome';
+  static const String onboardingSectors = '/onboarding/sectors';
+  static const String onboardingMeetBizzie = '/onboarding/meet-bizzie';
+  static const String onboardingBrands = '/onboarding/brands';
+  static const String onboardingAnalyzing = '/onboarding/analyzing';
+  static const String onboardingFoundCompanies = '/onboarding/found-companies';
+  static const String onboardingAddingWatchlist =
+      '/onboarding/adding-watchlist';
+  static const String onboardingBuildingProfile =
+      '/onboarding/building-profile';
+  static const String onboardingProfileReady = '/onboarding/profile-ready';
+  static const String onboardingExperience = '/onboarding/experience';
+  static const String onboardingFeatureHighlights = '/onboarding/highlights';
+  static const String navHome = '/home';
 }

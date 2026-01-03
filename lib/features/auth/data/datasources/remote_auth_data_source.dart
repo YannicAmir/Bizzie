@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'package:injectable/injectable.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -6,6 +7,7 @@ import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 abstract class RemoteAuthDataSource {
   Stream<User?> get authStateChanges;
+  User? get currentUser;
   Future<User> signInWithEmail({
     required String email,
     required String password,
@@ -21,6 +23,7 @@ abstract class RemoteAuthDataSource {
   Future<void> deleteAccount();
 }
 
+@LazySingleton(as: RemoteAuthDataSource)
 class RemoteAuthDataSourceImpl implements RemoteAuthDataSource {
   final FirebaseAuth _firebaseAuth;
   final GoogleSignIn _googleSignIn;
@@ -33,6 +36,9 @@ class RemoteAuthDataSourceImpl implements RemoteAuthDataSource {
 
   @override
   Stream<User?> get authStateChanges => _firebaseAuth.authStateChanges();
+
+  @override
+  User? get currentUser => _firebaseAuth.currentUser;
 
   @override
   Future<User> signInWithEmail({
@@ -127,8 +133,6 @@ class RemoteAuthDataSourceImpl implements RemoteAuthDataSource {
   Future<void> deleteAccount() async {
     final user = _firebaseAuth.currentUser;
     if (user != null) {
-      // Note: This might throw 'requires-recent-login' if the session is stale.
-      // The UI/Bloc layer must handle this error code specifically.
       await user.delete();
     } else {
       throw Exception('No user signed in to delete.');

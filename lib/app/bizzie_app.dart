@@ -12,10 +12,12 @@ import 'package:bizzie/features/auth/domain/usecases/sign_out.dart';
 import 'package:bizzie/features/auth/domain/usecases/sign_up_with_email.dart';
 import 'package:bizzie/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:bizzie/features/auth/presentation/bloc/auth_event.dart';
+import 'package:bizzie/features/onboarding/presentation/bloc/onboarding_bloc.dart';
 import 'package:bizzie/features/notifications/presentation/bloc/notification_bloc.dart';
 import 'package:bizzie/di/injection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class BizzieApp extends StatefulWidget {
   const BizzieApp({super.key});
@@ -27,6 +29,7 @@ class BizzieApp extends StatefulWidget {
 class _BizzieAppState extends State<BizzieApp> {
   late final IAuthRepository _authRepository;
   late final AuthBloc _authBloc;
+  late final GoRouter _router;
 
   @override
   void initState() {
@@ -47,6 +50,8 @@ class _BizzieAppState extends State<BizzieApp> {
     );
 
     _authBloc.add(const AuthStatusRequested());
+
+    _router = createRouter(_authBloc);
   }
 
   @override
@@ -67,10 +72,14 @@ class _BizzieAppState extends State<BizzieApp> {
           BlocProvider<NotificationBloc>(
             create: (_) => getIt<NotificationBloc>(),
           ),
+          BlocProvider<OnboardingBloc>(
+            create: (_) =>
+                getIt<OnboardingBloc>()..add(const OnboardingEvent.started()),
+          ),
         ],
         child: MaterialApp.router(
           theme: AppTheme.lightTheme,
-          routerConfig: router,
+          routerConfig: _router,
         ),
       ),
     );

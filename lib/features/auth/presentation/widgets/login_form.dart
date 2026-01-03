@@ -8,6 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import '../bloc/auth_bloc.dart';
 import '../bloc/auth_event.dart';
+import '../bloc/auth_state.dart';
 import 'package:bizzie/shared/utils/validators.dart';
 
 class LoginForm extends StatefulWidget {
@@ -56,7 +57,6 @@ class _LoginFormState extends State<LoginForm> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          // Email Field
           AuthTextField(
             controller: _emailController,
             hintText: 'Email address',
@@ -66,7 +66,6 @@ class _LoginFormState extends State<LoginForm> {
             validator: Validators.validateEmail,
           ),
           const SizedBox(height: 16),
-          // Password Field
           AuthTextField(
             controller: _passwordController,
             hintText: 'Password',
@@ -82,7 +81,6 @@ class _LoginFormState extends State<LoginForm> {
             textInputAction: TextInputAction.done,
           ),
           const SizedBox(height: 16),
-          // Forgot Password
           GestureDetector(
             onTap: () {
               context.push(AppRoutes.forgotPassword);
@@ -93,8 +91,19 @@ class _LoginFormState extends State<LoginForm> {
             ),
           ),
           const SizedBox(height: 24),
-          // Login Button
-          AuthButton(text: 'Log In', onPressed: _onLoginPressed),
+          BlocBuilder<AuthBloc, AuthState>(
+            builder: (context, state) {
+              final isLoading = state.maybeWhen(
+                loading: () => true,
+                orElse: () => false,
+              );
+              return AuthButton(
+                text: 'Log In',
+                onPressed: _onLoginPressed,
+                isLoading: isLoading,
+              );
+            },
+          ),
         ],
       ),
     );
