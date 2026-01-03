@@ -36,60 +36,64 @@ class CreateAccountPage extends StatelessWidget {
           orElse: () {},
         );
       },
-      child: Scaffold(
-        backgroundColor: AppColors.background,
-        body: SafeArea(
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const OnboardingHeader(),
-                const SizedBox(height: 40),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                  child: BlocBuilder<OnboardingBloc, OnboardingState>(
-                    builder: (context, onboardingState) {
-                      final data = onboardingState.onboardingData;
-                      final selectedSector = data.selectedSector;
-                      final name = data.firstName.isEmpty
-                          ? 'Friend'
-                          : data.firstName;
-                      final sectorName =
-                          selectedSector?.displayName ?? 'Your Sector';
-                      final mascotAsset = selectedSector != null
-                          ? OnboardingAssetsHelper.getMascotForSector(
-                              selectedSector,
-                            )
-                          : AppAssets.defaultMascot;
+      child: GestureDetector(
+        onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+        child: Scaffold(
+          backgroundColor: AppColors.background,
+          body: SafeArea(
+            child: SingleChildScrollView(
+              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const OnboardingHeader(),
+                  const SizedBox(height: 40),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                    child: BlocBuilder<OnboardingBloc, OnboardingState>(
+                      builder: (context, onboardingState) {
+                        final data = onboardingState.onboardingData;
+                        final selectedSector = data.selectedSector;
+                        final name = data.firstName.isEmpty
+                            ? 'Friend'
+                            : data.firstName;
+                        final sectorName =
+                            selectedSector?.displayName ?? 'Your Sector';
+                        final mascotAsset = selectedSector != null
+                            ? OnboardingAssetsHelper.getMascotForSector(
+                                selectedSector,
+                              )
+                            : AppAssets.defaultMascot;
 
-                      return MascotInfoCard(
-                        name: name,
-                        sectorName: sectorName,
-                        mascotAsset: mascotAsset,
-                      );
-                    },
+                        return MascotInfoCard(
+                          name: name,
+                          sectorName: sectorName,
+                          mascotAsset: mascotAsset,
+                        );
+                      },
+                    ),
                   ),
-                ),
-                const SizedBox(height: 32),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const _CreateAccountHeader(),
-                      const SizedBox(height: 32),
-                      const CreateAccountForm(),
-                      const SizedBox(height: 24),
-                      const AuthDivider(),
-                      const SizedBox(height: 24),
-                      const SocialLoginButtons(),
-                      const SizedBox(height: 48),
-                      const AuthFooter(),
-                      const SizedBox(height: 20),
-                    ],
+                  const SizedBox(height: 32),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const _CreateAccountHeader(),
+                        const SizedBox(height: 32),
+                        const CreateAccountForm(),
+                        const SizedBox(height: 24),
+                        const AuthDivider(),
+                        const SizedBox(height: 24),
+                        const SocialLoginButtons(),
+                        const SizedBox(height: 48),
+                        const AuthFooter(),
+                        const SizedBox(height: 20),
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),

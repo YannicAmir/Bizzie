@@ -36,6 +36,7 @@ class _SelectYourFavoriteBrandsPageState
         final theme = Theme.of(context);
         final selectedSectorName =
             state.onboardingData.selectedSector?.displayName ?? 'Your Sector';
+        final isMaxBrandsReached = state.selectedBrands.length >= 5;
 
         final availableSectorBrands = state.sectorBrands
             .where((b) => !state.selectedBrands.contains(b))
@@ -73,6 +74,7 @@ class _SelectYourFavoriteBrandsPageState
                           _SectorBrandsSection(
                             sectorName: selectedSectorName,
                             brands: availableSectorBrands,
+                            isMaxReached: isMaxBrandsReached,
                             onToggle: (brand) => context
                                 .read<OnboardingBloc>()
                                 .add(OnboardingEvent.toggleBrand(brand)),
@@ -80,6 +82,7 @@ class _SelectYourFavoriteBrandsPageState
                         if (availableGlobalBrands.isNotEmpty)
                           _GlobalBrandsSection(
                             brands: availableGlobalBrands,
+                            isMaxReached: isMaxBrandsReached,
                             onToggle: (brand) => context
                                 .read<OnboardingBloc>()
                                 .add(OnboardingEvent.toggleBrand(brand)),
@@ -104,7 +107,7 @@ class _SelectYourFavoriteBrandsPageState
                         padding: const EdgeInsets.symmetric(vertical: 16),
                       ),
                       child: Text(
-                        'Continue',
+                        'Continue (${state.selectedBrands.length})',
                         style: theme.textTheme.labelLarge?.copyWith(
                           color: Colors.white,
                         ),
@@ -164,11 +167,13 @@ class _SelectedBrandsSection extends StatelessWidget {
 class _SectorBrandsSection extends StatelessWidget {
   final String sectorName;
   final List<Brand> brands;
+  final bool isMaxReached;
   final ValueChanged<Brand> onToggle;
 
   const _SectorBrandsSection({
     required this.sectorName,
     required this.brands,
+    required this.isMaxReached,
     required this.onToggle,
   });
 
@@ -193,11 +198,17 @@ class _SectorBrandsSection extends StatelessWidget {
           children: brands.map((brand) {
             return _BrandChip(
               brand: brand,
-              backgroundColor: AppColors.mascotBackground,
-              foregroundColor: AppColors.mascotSubtitle,
-              borderColor: AppColors.brandChipSectorBorder,
-              iconData: Icons.add,
-              onTap: () => onToggle(brand),
+              backgroundColor: isMaxReached
+                  ? AppColors.slate100
+                  : AppColors.mascotBackground,
+              foregroundColor: isMaxReached
+                  ? AppColors.textTertiary
+                  : AppColors.mascotSubtitle,
+              borderColor: isMaxReached
+                  ? null
+                  : AppColors.brandChipSectorBorder,
+              iconData: isMaxReached ? null : Icons.add,
+              onTap: isMaxReached ? null : () => onToggle(brand),
             );
           }).toList(),
         ),
@@ -209,9 +220,14 @@ class _SectorBrandsSection extends StatelessWidget {
 
 class _GlobalBrandsSection extends StatelessWidget {
   final List<Brand> brands;
+  final bool isMaxReached;
   final ValueChanged<Brand> onToggle;
 
-  const _GlobalBrandsSection({required this.brands, required this.onToggle});
+  const _GlobalBrandsSection({
+    required this.brands,
+    required this.isMaxReached,
+    required this.onToggle,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -235,9 +251,11 @@ class _GlobalBrandsSection extends StatelessWidget {
             return _BrandChip(
               brand: brand,
               backgroundColor: AppColors.slate100,
-              foregroundColor: AppColors.brandChipOtherForeground,
-              iconData: Icons.add,
-              onTap: () => onToggle(brand),
+              foregroundColor: isMaxReached
+                  ? AppColors.textTertiary
+                  : AppColors.brandChipOtherForeground,
+              iconData: isMaxReached ? null : Icons.add,
+              onTap: isMaxReached ? null : () => onToggle(brand),
             );
           }).toList(),
         ),
@@ -251,15 +269,15 @@ class _BrandChip extends StatelessWidget {
   final Color backgroundColor;
   final Color foregroundColor;
   final Color? borderColor;
-  final IconData iconData;
-  final VoidCallback onTap;
+  final IconData? iconData;
+  final VoidCallback? onTap;
 
   const _BrandChip({
     required this.brand,
     required this.backgroundColor,
     required this.foregroundColor,
-    required this.iconData,
-    required this.onTap,
+    this.iconData,
+    this.onTap,
     this.borderColor,
   });
 
@@ -298,8 +316,10 @@ class _BrandChip extends StatelessWidget {
                   fontWeight: FontWeight.w600,
                 ),
               ),
-              const SizedBox(width: 8),
-              Icon(iconData, size: 20, color: foregroundColor),
+              if (iconData != null) ...[
+                const SizedBox(width: 8),
+                Icon(iconData, size: 20, color: foregroundColor),
+              ],
             ],
           ],
         ),

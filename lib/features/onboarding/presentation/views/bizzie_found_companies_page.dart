@@ -36,7 +36,7 @@ class BizzieFoundCompaniesPage extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const SizedBox(height: 32),
+                        const SizedBox(height: 24),
                         const _FoundCompaniesMascot(),
                         const SizedBox(height: 32),
                         if (state.isSingleCompanyView) ...[
@@ -66,7 +66,7 @@ class _FoundCompaniesMascot extends StatelessWidget {
     return Center(
       child: Image.asset(
         AppAssets.onboardingBizzieMascotFoundCompanies,
-        height: 238,
+        height: 179,
         fit: BoxFit.contain,
       ),
     );
