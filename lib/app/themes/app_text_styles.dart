@@ -48,7 +48,7 @@ class AppTextStyles {
     fontSize: 14,
     fontWeight: FontWeight.normal,
     color: AppColors.textPrimary,
-    letterSpacing: -0.2, // Small negative spacing often good for small text
+    letterSpacing: -0.2,
   );
 
   static final TextStyle bodyMedium = GoogleFonts.inter(
@@ -64,6 +64,13 @@ class AppTextStyles {
     height: 1.5,
     letterSpacing: -0.2344,
     color: AppColors.textTertiary,
+  );
+
+  static final TextStyle smallTimeAgo = GoogleFonts.inter(
+    fontSize: 12,
+    fontWeight: FontWeight.bold,
+    height: 1.5,
+    color: AppColors.primary,
   );
 
   // Buttons & Interactive

@@ -25,6 +25,9 @@ import 'package:go_router/go_router.dart';
 import 'package:bizzie/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:bizzie/features/auth/presentation/bloc/auth_state.dart';
 import 'package:bizzie/shared/utils/go_router_refresh_stream.dart';
+import 'package:bizzie/features/onboarding/presentation/bloc/onboarding_bloc.dart';
+import 'package:bizzie/di/injection.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 GoRouter createRouter(AuthBloc authBloc) {
   return GoRouter(
@@ -110,70 +113,81 @@ GoRouter createRouter(AuthBloc authBloc) {
             const Scaffold(body: Center(child: Text('Privacy Policy Screen'))),
       ),
 
-      GoRoute(
-        path: AppRoutes.landing,
-        builder: (context, state) => const LandingPage(),
-      ),
       ShellRoute(
         builder: (context, state, child) {
-          return OnboardingShell(child: child);
+          return BlocProvider<OnboardingBloc>(
+            create: (_) =>
+                getIt<OnboardingBloc>()..add(const OnboardingEvent.started()),
+            child: child,
+          );
         },
         routes: [
-          _buildNoTransitionRoute(
-            AppRoutes.onboardingName,
-            const AskNamePage(),
+          GoRoute(
+            path: AppRoutes.landing,
+            builder: (context, state) => const LandingPage(),
           ),
-          _buildNoTransitionRoute(
-            AppRoutes.onboardingWelcome,
-            const WelcomeNamePage(),
-          ),
-          _buildNoTransitionRoute(
-            AppRoutes.onboardingExperience,
-            const InvestingExperiencePage(),
-          ),
-          _buildNoTransitionRoute(
-            AppRoutes.onboardingFeatureHighlights,
-            const FeatureHighlightsPage(),
-          ),
-          _buildNoTransitionRoute(
-            AppRoutes.onboardingSectors,
-            const SectorSelectionPage(),
-          ),
-          _buildNoTransitionRoute(
-            AppRoutes.onboardingMeetBizzie,
-            const MeetYourBizziePage(),
-          ),
-          _buildNoTransitionRoute(
-            AppRoutes.onboardingBrands,
-            const SelectYourFavoriteBrandsPage(),
-          ),
-          _buildNoTransitionRoute(
-            AppRoutes.onboardingAnalyzing,
-            const AnalyzingBrandsPage(),
-          ),
-          _buildNoTransitionRoute(
-            AppRoutes.onboardingFoundCompanies,
-            const BizzieFoundCompaniesPage(),
-          ),
-          _buildNoTransitionRoute(
-            AppRoutes.onboardingAddingWatchlist,
-            const AddingToWatchlistPage(),
-          ),
-          _buildNoTransitionRoute(
-            AppRoutes.onboardingBuildingProfile,
-            const BuildingProfilePage(),
-          ),
-          _buildNoTransitionRoute(
-            AppRoutes.onboardingProfileReady,
-            const ProfileReadyPage(),
-          ),
-          _buildNoTransitionRoute(
-            AppRoutes.createAccount,
-            const CreateAccountPage(),
-          ),
-          _buildNoTransitionRoute(
-            AppRoutes.notificationRequest,
-            const NotificationRequestPage(),
+          ShellRoute(
+            builder: (context, state, child) {
+              return OnboardingShell(child: child);
+            },
+            routes: [
+              _buildNoTransitionRoute(
+                AppRoutes.onboardingName,
+                const AskNamePage(),
+              ),
+              _buildNoTransitionRoute(
+                AppRoutes.onboardingWelcome,
+                const WelcomeNamePage(),
+              ),
+              _buildNoTransitionRoute(
+                AppRoutes.onboardingExperience,
+                const InvestingExperiencePage(),
+              ),
+              _buildNoTransitionRoute(
+                AppRoutes.onboardingFeatureHighlights,
+                const FeatureHighlightsPage(),
+              ),
+              _buildNoTransitionRoute(
+                AppRoutes.onboardingSectors,
+                const SectorSelectionPage(),
+              ),
+              _buildNoTransitionRoute(
+                AppRoutes.onboardingMeetBizzie,
+                const MeetYourBizziePage(),
+              ),
+              _buildNoTransitionRoute(
+                AppRoutes.onboardingBrands,
+                const SelectYourFavoriteBrandsPage(),
+              ),
+              _buildNoTransitionRoute(
+                AppRoutes.onboardingAnalyzing,
+                const AnalyzingBrandsPage(),
+              ),
+              _buildNoTransitionRoute(
+                AppRoutes.onboardingFoundCompanies,
+                const BizzieFoundCompaniesPage(),
+              ),
+              _buildNoTransitionRoute(
+                AppRoutes.onboardingAddingWatchlist,
+                const AddingToWatchlistPage(),
+              ),
+              _buildNoTransitionRoute(
+                AppRoutes.onboardingBuildingProfile,
+                const BuildingProfilePage(),
+              ),
+              _buildNoTransitionRoute(
+                AppRoutes.onboardingProfileReady,
+                const ProfileReadyPage(),
+              ),
+              _buildNoTransitionRoute(
+                AppRoutes.createAccount,
+                const CreateAccountPage(),
+              ),
+              _buildNoTransitionRoute(
+                AppRoutes.notificationRequest,
+                const NotificationRequestPage(),
+              ),
+            ],
           ),
         ],
       ),

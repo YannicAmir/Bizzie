@@ -74,6 +74,7 @@ class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
   ) async {
     final detectedCompanies = state.selectedBrands
         .map((brand) => Company(ticker: brand.ticker, name: brand.company))
+        .toSet()
         .toList();
 
     final newData = state.onboardingData.copyWith(

@@ -40,7 +40,7 @@ void main() {
       // Arrange
       when(
         () => mockRemoteDataSource.getStockMarketSectors(),
-      ).thenReturn(['Health Care', 'Information Technology']);
+      ).thenReturn(['Healthcare', 'Information Technology']);
 
       // Act
       final result = await repository.getSectors();

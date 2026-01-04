@@ -3,7 +3,7 @@ enum Sector {
   financials('Financials'),
   communicationServices('Communication Services'),
   consumerDiscretionary('Consumer Discretionary'),
-  healthCare('Health Care'),
+  healthCare('Healthcare'),
   industrials('Industrials'),
   consumerStaples('Consumer Staples'),
   energy('Energy'),
