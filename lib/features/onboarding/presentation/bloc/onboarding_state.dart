@@ -96,9 +96,13 @@ abstract class OnboardingState with _$OnboardingState {
   String get watchlistTitle =>
       isWatchlistComplete ? 'Added to Watchlist' : 'Adding to Watchlist';
 
-  String get watchlistSubtitle => isWatchlistComplete
-      ? 'Added the companies Bizzie found to your personal watchlist.'
-      : 'Adding the companies Bizzie found to your personal watchlist.';
+  String get watchlistSubtitle {
+    final count = onboardingData.detectedCompanies.length;
+    final companyText = count == 1 ? 'company' : 'companies';
+    return isWatchlistComplete
+        ? 'Added the $companyText Bizzie found to your personal watchlist.'
+        : 'Adding the $companyText Bizzie found to your personal watchlist.';
+  }
 
   AnalysisStepStatus getWatchlistItemStatus(int index) {
     if (index < watchlistStep) return AnalysisStepStatus.completed;

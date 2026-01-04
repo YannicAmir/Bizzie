@@ -107,7 +107,7 @@ class SummaryIllustration extends StatelessWidget {
                             ),
                           ),
                           Text(
-                            'FY \${DateTime.now().year}',
+                            'FY ${DateTime.now().year}',
                             style: AppTextStyles.smallLink.copyWith(
                               color: AppColors.textTertiary,
                             ),

@@ -12,7 +12,7 @@ import 'package:bizzie/features/auth/domain/usecases/sign_out.dart';
 import 'package:bizzie/features/auth/domain/usecases/sign_up_with_email.dart';
 import 'package:bizzie/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:bizzie/features/auth/presentation/bloc/auth_event.dart';
-import 'package:bizzie/features/onboarding/presentation/bloc/onboarding_bloc.dart';
+
 import 'package:bizzie/features/notifications/presentation/bloc/notification_bloc.dart';
 import 'package:bizzie/di/injection.dart';
 import 'package:flutter/material.dart';
@@ -71,10 +71,6 @@ class _BizzieAppState extends State<BizzieApp> {
           BlocProvider<AuthBloc>.value(value: _authBloc),
           BlocProvider<NotificationBloc>(
             create: (_) => getIt<NotificationBloc>(),
-          ),
-          BlocProvider<OnboardingBloc>(
-            create: (_) =>
-                getIt<OnboardingBloc>()..add(const OnboardingEvent.started()),
           ),
         ],
         child: MaterialApp.router(

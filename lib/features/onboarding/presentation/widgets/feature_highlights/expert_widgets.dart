@@ -331,7 +331,7 @@ class _AlertItem extends StatelessWidget {
         ),
         Text(
           timeAgo,
-          style: AppTextStyles.smallLinkBold.copyWith(
+          style: AppTextStyles.smallTimeAgo.copyWith(
             color: AppColors.primary,
             fontWeight: FontWeight.w600,
           ),

@@ -171,7 +171,7 @@ class _NotificationCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  '$companyName releases 10Q report in 2 days',
+                  '$companyName releases earnings in 2 days',
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
                     color: AppColors.textPrimary,
                     fontSize: 13,
