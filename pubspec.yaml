@@ -36,6 +36,11 @@ dependencies:
   device_info_plus: ^12.3.0
   syncfusion_flutter_charts: ^32.1.21
   dio: ^5.9.0
+  path_provider: ^2.1.5
+  shared_preferences: ^2.5.4
+  firebase_storage: ^13.0.5
+  equatable: ^2.0.8
+  bloc: ^9.2.0
 
 dev_dependencies:
   flutter_test:

@@ -15,12 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$Brand {
 
- String get name;// Product Name (e.g. "Mobil 1")
- String get company;// Company Name (e.g. "Exxon Mobil")
- String get ticker;// Ticker (e.g. "XOM")
- String get description;// Description
- String? get sector;// Inferred from parent sector name in JSON
- String? get imageUrl;
+ String get name; String get company; String get ticker; String get description; String? get sector; String? get imageUrl;
 /// Create a copy of Brand
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -223,15 +218,10 @@ class _Brand implements Brand {
   factory _Brand.fromJson(Map<String, dynamic> json) => _$BrandFromJson(json);
 
 @override final  String name;
-// Product Name (e.g. "Mobil 1")
 @override final  String company;
-// Company Name (e.g. "Exxon Mobil")
 @override final  String ticker;
-// Ticker (e.g. "XOM")
 @override final  String description;
-// Description
 @override final  String? sector;
-// Inferred from parent sector name in JSON
 @override final  String? imageUrl;
 
 /// Create a copy of Brand

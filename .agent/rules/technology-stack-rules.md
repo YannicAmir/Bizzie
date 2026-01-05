@@ -19,12 +19,13 @@ This document serves as the **Single Source of Truth** for the tools, libraries,
 * **Dependency Injection:** `get_it` + `injectable`
 * **Charts & Graphs:** `syncfusion_flutter_charts` (Standard for all data visualization)
 * **Generative UI:** `genui` + `genui_firebase_ai`
+* **Local Storage:** `shared_preferences`
 
 ## 3. Backend & Infrastructure (Firebase)
 * **Authentication:** `firebase_auth` (Email, Google, Apple)
 * **Database:** Cloud Firestore (`cloud_firestore`)
 * **Cloud Functions/Tasks:** Google Cloud Platform (Scheduled Tasks)
-* **Storage:** Firebase Storage (if needed for user uploads)
+* **Storage:** Firebase Storage 
 
 ## 4. Security & Secrets
 * **RASP (Runtime App Self Protection):** `freerasp` (Detects rooting, tampering, hooks)

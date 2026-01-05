@@ -14,21 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$OnboardingState {
 
- OnboardingData get onboardingData; int get currentStep; OnboardingStatus get status;// Loading states
- bool get isSubmitting; bool get isLoadingSectors; bool get isAnalyzingBrands; bool get isLoadingHistory;// Analysis Simulation (0-3)
-// 0: Initial
-// 1: Analyzing your brands
-// 2: Identifying public companies
-// 3: Building your watchlist (Complete)
- int get analysisStep;// Watchlist Simulation (0-N)
-// 0: Initial
-// N: Complete (based on detectedCompanies.length)
- int get watchlistStep;// Data from API/RemoteConfig
-// Updated to use Sector enum
- List<Sector> get availableSectors; List<HistoricalPrice> get sp500History;// Brand Data
- List<Brand> get globalBrands; List<Brand> get sectorBrands; List<Brand> get selectedBrands; String get customBrandInput;// Error message
- String? get failureMessage;// Feature Highlights Logic
- List<FeatureHighlightItem> get featureHighlights; int get currentHighlightIndex; bool get shouldNavigateToCreateAccount;
+ OnboardingData get onboardingData; int get currentStep; OnboardingStatus get status; bool get isSubmitting; bool get isLoadingSectors; bool get isAnalyzingBrands; bool get isLoadingHistory; int get analysisStep; int get watchlistStep; List<Sector> get availableSectors; List<HistoricalPrice> get sp500History; List<Brand> get globalBrands; List<Brand> get sectorBrands; List<Brand> get selectedBrands; String get customBrandInput; String? get failureMessage; List<FeatureHighlightItem> get featureHighlights; int get currentHighlightIndex; bool get shouldNavigateToCreateAccount;
 /// Create a copy of OnboardingState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -253,26 +239,13 @@ class _OnboardingState extends OnboardingState {
 @override final  OnboardingData onboardingData;
 @override@JsonKey() final  int currentStep;
 @override@JsonKey() final  OnboardingStatus status;
-// Loading states
 @override@JsonKey() final  bool isSubmitting;
 @override@JsonKey() final  bool isLoadingSectors;
 @override@JsonKey() final  bool isAnalyzingBrands;
 @override@JsonKey() final  bool isLoadingHistory;
-// Analysis Simulation (0-3)
-// 0: Initial
-// 1: Analyzing your brands
-// 2: Identifying public companies
-// 3: Building your watchlist (Complete)
 @override@JsonKey() final  int analysisStep;
-// Watchlist Simulation (0-N)
-// 0: Initial
-// N: Complete (based on detectedCompanies.length)
 @override@JsonKey() final  int watchlistStep;
-// Data from API/RemoteConfig
-// Updated to use Sector enum
  final  List<Sector> _availableSectors;
-// Data from API/RemoteConfig
-// Updated to use Sector enum
 @override@JsonKey() List<Sector> get availableSectors {
   if (_availableSectors is EqualUnmodifiableListView) return _availableSectors;
   // ignore: implicit_dynamic_type
@@ -286,9 +259,7 @@ class _OnboardingState extends OnboardingState {
   return EqualUnmodifiableListView(_sp500History);
 }
 
-// Brand Data
  final  List<Brand> _globalBrands;
-// Brand Data
 @override@JsonKey() List<Brand> get globalBrands {
   if (_globalBrands is EqualUnmodifiableListView) return _globalBrands;
   // ignore: implicit_dynamic_type
@@ -310,11 +281,8 @@ class _OnboardingState extends OnboardingState {
 }
 
 @override@JsonKey() final  String customBrandInput;
-// Error message
 @override final  String? failureMessage;
-// Feature Highlights Logic
  final  List<FeatureHighlightItem> _featureHighlights;
-// Feature Highlights Logic
 @override@JsonKey() List<FeatureHighlightItem> get featureHighlights {
   if (_featureHighlights is EqualUnmodifiableListView) return _featureHighlights;
   // ignore: implicit_dynamic_type

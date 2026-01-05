@@ -14,9 +14,11 @@ import 'package:dio/dio.dart' as _i361;
 import 'package:firebase_auth/firebase_auth.dart' as _i59;
 import 'package:firebase_messaging/firebase_messaging.dart' as _i892;
 import 'package:firebase_remote_config/firebase_remote_config.dart' as _i627;
+import 'package:firebase_storage/firebase_storage.dart' as _i457;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:google_sign_in/google_sign_in.dart' as _i116;
 import 'package:injectable/injectable.dart' as _i526;
+import 'package:shared_preferences/shared_preferences.dart' as _i460;
 
 import '../core/network/network_info.dart' as _i6;
 import '../core/network/network_module.dart' as _i419;
@@ -50,6 +52,10 @@ import '../features/onboarding/data/repositories/onboarding_repository_impl.dart
 import '../features/onboarding/domain/interfaces/i_onboarding_repository.dart'
     as _i329;
 import '../features/onboarding/presentation/bloc/onboarding_bloc.dart' as _i593;
+import '../features/search/data/repositories/stock_repository.dart' as _i392;
+import '../features/search/domain/interfaces/i_stock_repository.dart' as _i456;
+import '../features/search/domain/services/stock_search_service.dart' as _i269;
+import '../features/search/presentation/bloc/search_bloc.dart' as _i348;
 import '../services/config_service.dart' as _i216;
 import '../services/firestore_service.dart' as _i52;
 import 'register_module.dart' as _i291;
@@ -63,6 +69,10 @@ extension GetItInjectableX on _i174.GetIt {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
     final registerModule = _$RegisterModule();
     final networkModule = _$NetworkModule();
+    await gh.factoryAsync<_i460.SharedPreferences>(
+      () => registerModule.prefs,
+      preResolve: true,
+    );
     gh.factory<_i640.FcmRemoteDataSource>(() => _i640.FcmRemoteDataSource());
     await gh.singletonAsync<_i982.LocalNotificationDataSource>(() {
       final i = _i982.LocalNotificationDataSource();
@@ -82,6 +92,13 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i59.FirebaseAuth>(() => registerModule.firebaseAuth);
     gh.lazySingleton<_i116.GoogleSignIn>(() => registerModule.googleSignIn);
+    gh.lazySingleton<_i457.FirebaseStorage>(() => registerModule.storage);
+    gh.lazySingleton<_i456.IStockRepository>(
+      () => _i392.StockRepository(
+        gh<_i457.FirebaseStorage>(),
+        gh<_i460.SharedPreferences>(),
+      ),
+    );
     gh.lazySingleton<_i622.INotificationRepository>(
       () => _i648.NotificationRepositoryImpl(
         gh<_i640.FcmRemoteDataSource>(),
@@ -122,6 +139,9 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i892.FirebaseMessaging>(),
       ),
     );
+    gh.lazySingleton<_i269.StockSearchService>(
+      () => _i269.StockSearchService(gh<_i456.IStockRepository>()),
+    );
     gh.factory<_i687.NotificationBloc>(
       () => _i687.NotificationBloc(
         gh<_i332.RequestNotificationPermission>(),
@@ -141,6 +161,9 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i570.AuthRepositoryImpl(
         remoteDataSource: gh<_i877.RemoteAuthDataSource>(),
       ),
+    );
+    gh.factory<_i348.SearchBloc>(
+      () => _i348.SearchBloc(gh<_i269.StockSearchService>()),
     );
     gh.factory<_i593.OnboardingBloc>(
       () => _i593.OnboardingBloc(
