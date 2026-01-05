@@ -1,6 +1,8 @@
+import 'package:injectable/injectable.dart';
 import '../../../../core/usecase/usecase.dart';
 import '../interfaces/i_auth_repository.dart';
 
+@lazySingleton
 class DeleteAccount implements UseCase<void, NoParams> {
   final IAuthRepository repository;
 

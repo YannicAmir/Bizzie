@@ -1,5 +1,5 @@
 import 'package:bizzie/app/themes/app_colors.dart';
-import 'package:bizzie/features/onboarding/presentation/bloc/onboarding_bloc.dart'; // For AnalysisStepStatus
+import 'package:bizzie/features/onboarding/presentation/bloc/onboarding_bloc.dart';
 import 'package:flutter/material.dart';
 
 class OnboardingStatusCard extends StatelessWidget {

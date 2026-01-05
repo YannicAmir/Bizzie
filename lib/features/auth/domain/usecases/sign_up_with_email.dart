@@ -1,8 +1,10 @@
+import 'package:injectable/injectable.dart';
 import '../../../../core/usecase/usecase.dart';
 import '../interfaces/i_auth_repository.dart';
 import '../models/user_model.dart';
 import 'sign_in_with_email.dart'; // Reuse params
 
+@lazySingleton
 class SignUpWithEmail implements UseCase<UserModel, SignInWithEmailParams> {
   final IAuthRepository repository;
 

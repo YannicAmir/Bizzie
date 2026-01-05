@@ -1,4 +1,3 @@
-import 'package:bizzie/app/routes/app_routes.dart';
 import 'package:bizzie/app/themes/app_assets.dart';
 import 'package:bizzie/app/themes/app_colors.dart';
 import 'package:bizzie/app/themes/app_text_styles.dart';
@@ -21,9 +20,6 @@ class LoginPage extends StatelessWidget {
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
         state.maybeWhen(
-          authenticated: (user) {
-            context.go(AppRoutes.home);
-          },
           failure: (message) {
             ScaffoldMessenger.of(
               context,
@@ -47,29 +43,22 @@ class LoginPage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 10),
-                // Mascot
                 Center(
                   child: Image.asset(
                     AppAssets.defaultMascot,
-                    height:
-                        120, // Verify height from Figma if possible, keeping 120 for now
+                    height: 120,
                     fit: BoxFit.contain,
                   ),
                 ),
                 const SizedBox(height: 32),
-                // Titles
                 const _LoginHeader(),
                 const SizedBox(height: 24),
-                // Form
                 const LoginForm(),
                 const SizedBox(height: 24),
-                // OR Divider
                 const AuthDivider(),
                 const SizedBox(height: 24),
-                // Social Buttons
                 const SocialLoginButtons(),
                 const SizedBox(height: 48),
-                // Footer
                 const AuthFooter(),
                 const SizedBox(height: 20),
               ],
@@ -92,8 +81,7 @@ class _LoginHeader extends StatelessWidget {
         Text(
           'Welcome Back!',
           style: AppTextStyles.h1.copyWith(
-            fontSize: 32, // Figma says 32/33, keeping 32 standard
-            // letterSpacing: 0.406, // from AppTextStyles.h1
+            fontSize: 32,
             color: AppColors.textPrimary,
           ),
         ),
@@ -101,8 +89,7 @@ class _LoginHeader extends StatelessWidget {
         Text(
           'Log in to continue',
           style: AppTextStyles.subtitle.copyWith(
-            fontSize:
-                16, // Figma says 16px typical for subtitle here? Previous was 17
+            fontSize: 16,
             color: AppColors.textSecondary,
           ),
         ),

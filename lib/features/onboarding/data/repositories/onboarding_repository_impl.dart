@@ -28,7 +28,7 @@ class OnboardingRepositoryImpl implements IOnboardingRepository {
 
   @override
   Future<(List<Brand>, List<Brand>)> getDailyBrands(Sector? userSector) async {
-    _logger.info('DEBUG: Repository getDailyBrands called'); // START LOG
+    _logger.info('DEBUG: Repository getDailyBrands called');
     final dailyBrandsDto = await _remoteDataSource.fetchDailyBrands();
 
     if (dailyBrandsDto == null) {

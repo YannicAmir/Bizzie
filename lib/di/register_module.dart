@@ -3,12 +3,13 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:injectable/injectable.dart';
 
 @module
 abstract class RegisterModule {
-  // Firestore
   @lazySingleton
   FirebaseFirestore get firestore => FirebaseFirestore.instance;
 
@@ -23,6 +24,12 @@ abstract class RegisterModule {
 
   @lazySingleton
   GoogleSignIn get googleSignIn => GoogleSignIn.instance;
+
+  @lazySingleton
+  FirebaseStorage get storage => FirebaseStorage.instance;
+
+  @preResolve
+  Future<SharedPreferences> get prefs => SharedPreferences.getInstance();
 
   // We need a way to get the API key.
   // For now, assuming it's available via an environment variable or a constant.

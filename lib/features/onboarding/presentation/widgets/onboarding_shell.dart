@@ -16,7 +16,7 @@ class OnboardingShell extends StatelessWidget {
     if (path == AppRoutes.onboardingAnalyzing) return 6 / 14;
     if (path == AppRoutes.onboardingFoundCompanies) return 7 / 14;
     if (path == AppRoutes.onboardingAddingWatchlist) return 8 / 14;
-    if (path == AppRoutes.notificationRequest) return 9 / 14;
+    if (path == AppRoutes.onboardingNotifications) return 9 / 14;
     if (path == AppRoutes.onboardingExperience) return 10 / 14;
     if (path == AppRoutes.onboardingFeatureHighlights) return 11 / 14;
     if (path == AppRoutes.createAccount) return 12 / 14;

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:injectable/injectable.dart';
 
 import '../../../../core/usecase/usecase.dart';
 import '../../domain/interfaces/i_auth_repository.dart';
@@ -15,6 +16,7 @@ import '../../domain/usecases/sign_up_with_email.dart';
 import 'auth_event.dart';
 import 'auth_state.dart';
 
+@lazySingleton
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final IAuthRepository _authRepository;
   final SignInWithGoogle _signInWithGoogle;
@@ -81,7 +83,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     AuthGoogleSignInRequested event,
     Emitter<AuthState> emit,
   ) async {
-    emit(const AuthState.loading());
+    emit(const AuthState.loading(method: 'google'));
     try {
       await _signInWithGoogle(NoParams());
     } catch (e) {
@@ -93,7 +95,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     AuthAppleSignInRequested event,
     Emitter<AuthState> emit,
   ) async {
-    emit(const AuthState.loading());
+    emit(const AuthState.loading(method: 'apple'));
     try {
       await _signInWithApple(NoParams());
     } catch (e) {
@@ -105,7 +107,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     AuthEmailSignInRequested event,
     Emitter<AuthState> emit,
   ) async {
-    emit(const AuthState.loading());
+    emit(const AuthState.loading(method: 'email_signin'));
     try {
       await _signInWithEmail(
         SignInWithEmailParams(email: event.email, password: event.password),
@@ -119,7 +121,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     AuthEmailSignUpRequested event,
     Emitter<AuthState> emit,
   ) async {
-    emit(const AuthState.loading());
+    emit(const AuthState.loading(method: 'email_signup'));
     try {
       await _signUpWithEmail(
         SignInWithEmailParams(email: event.email, password: event.password),
@@ -133,7 +135,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     AuthLogoutRequested event,
     Emitter<AuthState> emit,
   ) async {
-    emit(const AuthState.loading()); // Optional, commonly just log out
     try {
       await _signOut(NoParams());
     } catch (e) {

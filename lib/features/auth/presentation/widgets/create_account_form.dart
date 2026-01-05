@@ -74,7 +74,7 @@ class _CreateAccountFormState extends State<CreateAccountForm> {
           BlocBuilder<AuthBloc, AuthState>(
             builder: (context, state) {
               final isLoading = state.maybeWhen(
-                loading: () => true,
+                loading: (method) => method == 'email_signup',
                 orElse: () => false,
               );
               return AuthButton(

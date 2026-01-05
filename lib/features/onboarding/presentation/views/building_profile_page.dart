@@ -192,8 +192,12 @@ class _BuildingProfilePageState extends State<BuildingProfilePage>
                             padding: const EdgeInsets.only(top: 8.0),
                             child: Text(
                               'Finishing up...',
-                              style: theme.textTheme.bodyMedium?.copyWith(
-                                color: AppColors.textSecondary,
+                              style: theme.textTheme.displayMedium?.copyWith(
+                                fontSize: 28,
+                                fontWeight: FontWeight.w800,
+                                color: AppColors.textPrimary,
+                                height: 1.2,
+                                letterSpacing: 0.383,
                               ),
                             ),
                           )

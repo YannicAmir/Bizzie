@@ -29,9 +29,7 @@ class OnboardingFooter extends StatelessWidget {
         if (title != null)
           Text(
             title!,
-            style: theme.textTheme.displayLarge?.copyWith(
-              height: 1.2, // 38.4px / 32px
-            ),
+            style: theme.textTheme.displayLarge?.copyWith(height: 1.2),
             textAlign: TextAlign.left,
           ),
         if (subtitle != null) ...[

@@ -5,6 +5,12 @@ import 'package:bizzie/features/auth/presentation/bloc/auth_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:bizzie/features/home/presentation/widgets/home_search_bar.dart';
+import 'package:bizzie/features/search/presentation/delegates/stock_search_delegate.dart';
+import 'package:bizzie/features/search/presentation/bloc/search_bloc.dart';
+import 'package:bizzie/di/injection.dart';
+import 'package:bizzie/features/user/domain/interfaces/user_repository.dart';
+import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -12,7 +18,16 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Bizzie Home')),
+      appBar: AppBar(
+        title: HomeSearchBar(
+          onTap: () {
+            showSearch(
+              context: context,
+              delegate: StockSearchDelegate(getIt<SearchBloc>()),
+            );
+          },
+        ),
+      ),
       body: Center(
         child: BlocBuilder<AuthBloc, AuthState>(
           builder: (context, state) {
@@ -44,8 +59,21 @@ class HomePage extends StatelessWidget {
                   const SizedBox(height: 20),
                   ElevatedButton(
                     onPressed: () =>
-                        context.push(AppRoutes.notificationRequest),
+                        context.push(AppRoutes.onboardingNotifications),
                     child: const Text('Notification Shortcut'),
+                  ),
+                  const SizedBox(height: 20),
+                  Text(
+                    'Local storage: ${getIt<IUserRepository>().getCachedFavoriteSector() ?? "None"}',
+                  ),
+                  const SizedBox(height: 10),
+                  BlocBuilder<UserBloc, UserState>(
+                    builder: (context, userState) {
+                      return userState.maybeWhen(
+                        loaded: (user) => Text('DB: ${user.createdAt}'),
+                        orElse: () => const Text('DB: Loading...'),
+                      );
+                    },
                   ),
                 ],
               ),
@@ -66,7 +94,7 @@ class HomePage extends StatelessWidget {
                   const SizedBox(height: 20),
                   ElevatedButton(
                     onPressed: () =>
-                        context.push(AppRoutes.notificationRequest),
+                        context.push(AppRoutes.onboardingNotifications),
                     child: const Text('Notification Shortcut'),
                   ),
                 ],

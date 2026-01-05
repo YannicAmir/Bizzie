@@ -1,7 +1,6 @@
 import 'dart:developer' as developer;
 import 'package:logging/logging.dart';
 
-/// Centralized logger for Bizzie application.
 class BizzieLogger {
   factory BizzieLogger(String name) {
     if (_instances.containsKey(name)) return _instances[name]!;
@@ -15,8 +14,6 @@ class BizzieLogger {
   static final Map<String, BizzieLogger> _instances = {};
   final Logger _logger;
 
-  /// Initializes the logger.
-  /// [dev] - strict boolean to determine if we are in a development environment.
   static void init({required bool dev}) {
     if (dev) {
       Logger.root.level = Level.ALL;
@@ -34,20 +31,16 @@ class BizzieLogger {
     }
   }
 
-  /// Exposes the LogRecord stream for telemetry tools.
   static Stream<LogRecord> get logRecord => Logger.root.onRecord;
 
-  /// Log an info message.
   void info(String message, [Object? error]) {
     _logger.info(message, error);
   }
 
-  /// Log a warning message.
   void warning(String message, [Object? error]) {
     _logger.warning(message, error);
   }
 
-  /// Log a severe message (error).
   void severe(String message, [Object? error, StackTrace? stack]) {
     _logger.severe(message, error, stack);
   }

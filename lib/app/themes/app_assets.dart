@@ -1,5 +1,5 @@
 class AppAssets {
-  AppAssets._(); // Private constructor to prevent instantiation
+  AppAssets._();
 
   // Auth Feature
   static const String authAppleIcon = 'assets/images/auth/apple_icon.png';
@@ -41,6 +41,10 @@ class AppAssets {
   static const String arrowDownIcon =
       'assets/images/onboarding/arrow_down_icon.png';
 
+  // Search Feature
+  static const String searchIconLarge =
+      'assets/images/search/search_icon_large.png';
+
   // Shared
   static const String backArrowIcon =
       'assets/images/shared/back_arrow_icon.png';
@@ -76,4 +80,7 @@ class AppAssets {
   static const String bizzieMascotUtilities =
       'assets/images/shared/bizzie_mascot_utilities.png';
   static const String bellIcon = 'assets/images/shared/bell_icon.png';
+  static const String businessIcon = 'assets/images/shared/business_icon.png';
+  static const String clearTextfieldIcon =
+      'assets/images/shared/clear_textfield_icon.png';
 }

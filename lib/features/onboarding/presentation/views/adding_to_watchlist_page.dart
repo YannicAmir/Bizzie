@@ -80,7 +80,7 @@ class _AddingToWatchlistPageState extends State<AddingToWatchlistPage> {
                         if (state.isWatchlistComplete)
                           _WatchlistContinueButton(
                             onPressed: () {
-                              context.go(AppRoutes.notificationRequest);
+                              context.go(AppRoutes.onboardingNotifications);
                             },
                           ),
                         const SizedBox(height: 32),
