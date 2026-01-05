@@ -105,7 +105,7 @@ void main() {
 
   group('AuthSignOutRequested', () {
     blocTest<AuthBloc, AuthState>(
-      'authLogoutRequested_success_emitsLoadingAndCallsUseCase',
+      'authLogoutRequested_success_callsUseCase',
       // arrange
       build: () {
         when(() => mockSignOut(any())).thenAnswer((_) async {});
@@ -114,7 +114,7 @@ void main() {
       // act
       act: (bloc) => bloc.add(const AuthLogoutRequested()),
       // assert
-      expect: () => [const AuthState.loading()],
+      expect: () => [],
       verify: (_) {
         verify(() => mockSignOut(any())).called(1);
       },
