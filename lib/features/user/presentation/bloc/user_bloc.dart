@@ -39,6 +39,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
           emit(
             UserState.failure(
               failure.message,
+              uid: event.uid,
               cachedSector: _getUserUseCase.cachedSector,
             ),
           );

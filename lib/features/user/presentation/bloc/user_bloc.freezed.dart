@@ -435,14 +435,14 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function( String? cachedSector)?  loading,TResult Function( UserModel user)?  loaded,TResult Function()?  needsProfile,TResult Function( String message,  String? cachedSector)?  failure,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function( String? cachedSector)?  loading,TResult Function( UserModel user)?  loaded,TResult Function()?  needsProfile,TResult Function( String message,  String uid,  String? cachedSector)?  failure,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial();case _Loading() when loading != null:
 return loading(_that.cachedSector);case _Loaded() when loaded != null:
 return loaded(_that.user);case _NeedsProfile() when needsProfile != null:
 return needsProfile();case _Failure() when failure != null:
-return failure(_that.message,_that.cachedSector);case _:
+return failure(_that.message,_that.uid,_that.cachedSector);case _:
   return orElse();
 
 }
@@ -460,14 +460,14 @@ return failure(_that.message,_that.cachedSector);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function( String? cachedSector)  loading,required TResult Function( UserModel user)  loaded,required TResult Function()  needsProfile,required TResult Function( String message,  String? cachedSector)  failure,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function( String? cachedSector)  loading,required TResult Function( UserModel user)  loaded,required TResult Function()  needsProfile,required TResult Function( String message,  String uid,  String? cachedSector)  failure,}) {final _that = this;
 switch (_that) {
 case _Initial():
 return initial();case _Loading():
 return loading(_that.cachedSector);case _Loaded():
 return loaded(_that.user);case _NeedsProfile():
 return needsProfile();case _Failure():
-return failure(_that.message,_that.cachedSector);case _:
+return failure(_that.message,_that.uid,_that.cachedSector);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -484,14 +484,14 @@ return failure(_that.message,_that.cachedSector);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function( String? cachedSector)?  loading,TResult? Function( UserModel user)?  loaded,TResult? Function()?  needsProfile,TResult? Function( String message,  String? cachedSector)?  failure,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function( String? cachedSector)?  loading,TResult? Function( UserModel user)?  loaded,TResult? Function()?  needsProfile,TResult? Function( String message,  String uid,  String? cachedSector)?  failure,}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial();case _Loading() when loading != null:
 return loading(_that.cachedSector);case _Loaded() when loaded != null:
 return loaded(_that.user);case _NeedsProfile() when needsProfile != null:
 return needsProfile();case _Failure() when failure != null:
-return failure(_that.message,_that.cachedSector);case _:
+return failure(_that.message,_that.uid,_that.cachedSector);case _:
   return null;
 
 }
@@ -708,10 +708,11 @@ String toString() {
 
 
 class _Failure implements UserState {
-  const _Failure(this.message, {this.cachedSector});
+  const _Failure(this.message, {required this.uid, this.cachedSector});
   
 
  final  String message;
+ final  String uid;
  final  String? cachedSector;
 
 /// Create a copy of UserState
@@ -724,16 +725,16 @@ _$FailureCopyWith<_Failure> get copyWith => __$FailureCopyWithImpl<_Failure>(thi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Failure&&(identical(other.message, message) || other.message == message)&&(identical(other.cachedSector, cachedSector) || other.cachedSector == cachedSector));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Failure&&(identical(other.message, message) || other.message == message)&&(identical(other.uid, uid) || other.uid == uid)&&(identical(other.cachedSector, cachedSector) || other.cachedSector == cachedSector));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,message,cachedSector);
+int get hashCode => Object.hash(runtimeType,message,uid,cachedSector);
 
 @override
 String toString() {
-  return 'UserState.failure(message: $message, cachedSector: $cachedSector)';
+  return 'UserState.failure(message: $message, uid: $uid, cachedSector: $cachedSector)';
 }
 
 
@@ -744,7 +745,7 @@ abstract mixin class _$FailureCopyWith<$Res> implements $UserStateCopyWith<$Res>
   factory _$FailureCopyWith(_Failure value, $Res Function(_Failure) _then) = __$FailureCopyWithImpl;
 @useResult
 $Res call({
- String message, String? cachedSector
+ String message, String uid, String? cachedSector
 });
 
 
@@ -761,9 +762,10 @@ class __$FailureCopyWithImpl<$Res>
 
 /// Create a copy of UserState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? message = null,Object? cachedSector = freezed,}) {
+@pragma('vm:prefer-inline') $Res call({Object? message = null,Object? uid = null,Object? cachedSector = freezed,}) {
   return _then(_Failure(
 null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
+as String,uid: null == uid ? _self.uid : uid // ignore: cast_nullable_to_non_nullable
 as String,cachedSector: freezed == cachedSector ? _self.cachedSector : cachedSector // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
