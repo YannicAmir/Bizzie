@@ -52,10 +52,18 @@ import '../features/onboarding/data/repositories/onboarding_repository_impl.dart
 import '../features/onboarding/domain/interfaces/i_onboarding_repository.dart'
     as _i329;
 import '../features/onboarding/presentation/bloc/onboarding_bloc.dart' as _i593;
+import '../features/search/data/datasources/stock_local_datasource.dart'
+    as _i191;
 import '../features/search/data/repositories/stock_repository.dart' as _i392;
 import '../features/search/domain/interfaces/i_stock_repository.dart' as _i456;
 import '../features/search/domain/services/stock_search_service.dart' as _i269;
 import '../features/search/presentation/bloc/search_bloc.dart' as _i348;
+import '../features/user/data/datasources/user_local_datasource.dart' as _i147;
+import '../features/user/data/datasources/user_remote_datasource.dart' as _i481;
+import '../features/user/data/repositories/user_repository_impl.dart' as _i272;
+import '../features/user/domain/interfaces/user_repository.dart' as _i615;
+import '../features/user/domain/usecases/get_user_usecase.dart' as _i561;
+import '../features/user/presentation/bloc/user_bloc.dart' as _i200;
 import '../services/config_service.dart' as _i216;
 import '../services/firestore_service.dart' as _i52;
 import 'register_module.dart' as _i291;
@@ -93,12 +101,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i59.FirebaseAuth>(() => registerModule.firebaseAuth);
     gh.lazySingleton<_i116.GoogleSignIn>(() => registerModule.googleSignIn);
     gh.lazySingleton<_i457.FirebaseStorage>(() => registerModule.storage);
-    gh.lazySingleton<_i456.IStockRepository>(
-      () => _i392.StockRepository(
-        gh<_i457.FirebaseStorage>(),
-        gh<_i460.SharedPreferences>(),
-      ),
-    );
     gh.lazySingleton<_i622.INotificationRepository>(
       () => _i648.NotificationRepositoryImpl(
         gh<_i640.FcmRemoteDataSource>(),
@@ -132,15 +134,27 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i999.UnsubscribeFromTopic>(
       () => _i999.UnsubscribeFromTopic(gh<_i622.INotificationRepository>()),
     );
+    gh.factory<_i191.IStockLocalDataSource>(
+      () => _i191.StockLocalDataSource(gh<_i460.SharedPreferences>()),
+    );
+    gh.factory<_i147.IUserLocalDataSource>(
+      () => _i147.UserLocalDataSource(gh<_i460.SharedPreferences>()),
+    );
     gh.lazySingleton<_i6.NetworkInfo>(() => _i6.NetworkInfoImpl());
+    gh.factory<_i481.IUserRemoteDataSource>(
+      () => _i481.UserRemoteDataSource(gh<_i52.FirestoreService>()),
+    );
+    gh.lazySingleton<_i615.IUserRepository>(
+      () => _i272.UserRepositoryImpl(
+        gh<_i481.IUserRemoteDataSource>(),
+        gh<_i147.IUserLocalDataSource>(),
+      ),
+    );
     gh.lazySingleton<_i329.IOnboardingRepository>(
       () => _i379.OnboardingRepositoryImpl(
         gh<_i1016.IOnboardingRemoteDataSource>(),
         gh<_i892.FirebaseMessaging>(),
       ),
-    );
-    gh.lazySingleton<_i269.StockSearchService>(
-      () => _i269.StockSearchService(gh<_i456.IStockRepository>()),
     );
     gh.factory<_i687.NotificationBloc>(
       () => _i687.NotificationBloc(
@@ -157,19 +171,34 @@ extension GetItInjectableX on _i174.GetIt {
         googleSignIn: gh<_i116.GoogleSignIn>(),
       ),
     );
+    gh.lazySingleton<_i456.IStockRepository>(
+      () => _i392.StockRepository(
+        gh<_i457.FirebaseStorage>(),
+        gh<_i191.IStockLocalDataSource>(),
+      ),
+    );
+    gh.lazySingleton<_i561.GetUserUseCase>(
+      () => _i561.GetUserUseCase(gh<_i615.IUserRepository>()),
+    );
     gh.lazySingleton<_i685.IAuthRepository>(
       () => _i570.AuthRepositoryImpl(
         remoteDataSource: gh<_i877.RemoteAuthDataSource>(),
       ),
     );
-    gh.factory<_i348.SearchBloc>(
-      () => _i348.SearchBloc(gh<_i269.StockSearchService>()),
+    gh.lazySingleton<_i200.UserBloc>(
+      () => _i200.UserBloc(gh<_i561.GetUserUseCase>()),
+    );
+    gh.lazySingleton<_i269.StockSearchService>(
+      () => _i269.StockSearchService(gh<_i456.IStockRepository>()),
     );
     gh.factory<_i593.OnboardingBloc>(
       () => _i593.OnboardingBloc(
         gh<_i329.IOnboardingRepository>(),
         gh<_i685.IAuthRepository>(),
       ),
+    );
+    gh.factory<_i348.SearchBloc>(
+      () => _i348.SearchBloc(gh<_i269.StockSearchService>()),
     );
     return this;
   }

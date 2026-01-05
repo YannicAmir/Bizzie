@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:bizzie/features/search/presentation/bloc/search_bloc.dart';
-import 'package:bizzie/features/search/presentation/views/search_page_placeholder.dart';
+import 'package:bizzie/features/search/presentation/views/search_page.dart';
+import 'package:bizzie/app/themes/app_assets.dart';
 
 class StockSearchDelegate extends SearchDelegate<String?> {
   final SearchBloc searchBloc;
@@ -11,7 +12,7 @@ class StockSearchDelegate extends SearchDelegate<String?> {
   List<Widget> buildActions(BuildContext context) {
     return [
       IconButton(
-        icon: const Icon(Icons.clear),
+        icon: Image.asset(AppAssets.clearTextfieldIcon, width: 24, height: 24),
         onPressed: () {
           query = '';
           searchBloc.add(const SearchEvent.cleared());
@@ -23,7 +24,7 @@ class StockSearchDelegate extends SearchDelegate<String?> {
   @override
   Widget buildLeading(BuildContext context) {
     return IconButton(
-      icon: const Icon(Icons.arrow_back),
+      icon: Image.asset(AppAssets.backArrowIcon, width: 24, height: 24),
       onPressed: () {
         close(context, null);
       },
@@ -33,12 +34,12 @@ class StockSearchDelegate extends SearchDelegate<String?> {
   @override
   Widget buildResults(BuildContext context) {
     searchBloc.add(SearchEvent.queryChanged(query));
-    return SearchPagePlaceholder(searchBloc: searchBloc);
+    return SearchPage(searchBloc: searchBloc);
   }
 
   @override
   Widget buildSuggestions(BuildContext context) {
     searchBloc.add(SearchEvent.queryChanged(query));
-    return SearchPagePlaceholder(searchBloc: searchBloc);
+    return SearchPage(searchBloc: searchBloc);
   }
 }

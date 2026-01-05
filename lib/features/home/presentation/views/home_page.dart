@@ -5,6 +5,10 @@ import 'package:bizzie/features/auth/presentation/bloc/auth_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:bizzie/features/home/presentation/widgets/home_search_bar.dart';
+import 'package:bizzie/features/search/presentation/delegates/stock_search_delegate.dart';
+import 'package:bizzie/features/search/presentation/bloc/search_bloc.dart';
+import 'package:bizzie/di/injection.dart'; // for getIt
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -12,7 +16,16 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Bizzie Home')),
+      appBar: AppBar(
+        title: HomeSearchBar(
+          onTap: () {
+            showSearch(
+              context: context,
+              delegate: StockSearchDelegate(getIt<SearchBloc>()),
+            );
+          },
+        ),
+      ),
       body: Center(
         child: BlocBuilder<AuthBloc, AuthState>(
           builder: (context, state) {
