@@ -3,12 +3,15 @@ import 'package:bizzie/services/dtos/fmp_config.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/foundation.dart';
 import 'package:injectable/injectable.dart';
+import 'package:bizzie/core/logging/bizzie_logger.dart';
 
 class RemoteConfigKeys {
   static const String fmpConfig = 'fmp_config';
   static const String geminiModelName = 'gemini_model_name';
   static const String stockMarketSectors = 'stock_market_sectors';
 }
+
+final _logger = BizzieLogger('ConfigService');
 
 @singleton
 class ConfigService {
@@ -58,7 +61,7 @@ class ConfigService {
     try {
       await remoteConfig.fetchAndActivate();
     } catch (e) {
-      debugPrint('Remote Config fetch failed: $e');
+      _logger.warning('Remote Config fetch failed', e);
     }
 
     return ConfigService(remoteConfig);
@@ -74,7 +77,7 @@ class ConfigService {
     try {
       return List<String>.from(jsonDecode(jsonString));
     } catch (e) {
-      debugPrint('Error parsing stockMarketSectors: $e');
+      _logger.severe('Error parsing stockMarketSectors', e);
       return _defaultSectors;
     }
   }
@@ -84,7 +87,7 @@ class ConfigService {
     try {
       return FmpConfig.fromJson(jsonDecode(jsonString));
     } catch (e) {
-      debugPrint('Error parsing fmpConfig: $e');
+      _logger.severe('Error parsing fmpConfig', e);
       return FmpConfig.fromJson(_defaultFmpConfig);
     }
   }
