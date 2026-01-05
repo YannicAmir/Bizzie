@@ -27,7 +27,6 @@ class SearchPage extends StatelessWidget {
   }
 
   Widget _buildInitialView(BuildContext context) {
-    // Figma Mock Data for "Information Technology"
     final recommendedStocks = [
       {'s': 'AAPL', 'n': 'Apple Inc.', 'icon': AppAssets.businessIcon},
       {'s': 'MSFT', 'n': 'Microsoft Corp.', 'icon': AppAssets.businessIcon},

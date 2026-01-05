@@ -94,7 +94,7 @@ class _LoginFormState extends State<LoginForm> {
           BlocBuilder<AuthBloc, AuthState>(
             builder: (context, state) {
               final isLoading = state.maybeWhen(
-                loading: () => true,
+                loading: (method) => method == 'email_signin',
                 orElse: () => false,
               );
               return AuthButton(

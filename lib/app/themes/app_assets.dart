@@ -1,5 +1,5 @@
 class AppAssets {
-  AppAssets._(); // Private constructor to prevent instantiation
+  AppAssets._();
 
   // Auth Feature
   static const String authAppleIcon = 'assets/images/auth/apple_icon.png';

@@ -1,4 +1,5 @@
 import 'package:bizzie/core/logging/bizzie_logger.dart';
+import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/features/onboarding/domain/models/user_model.dart';
 import 'package:bizzie/features/user/domain/usecases/get_user_usecase.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -21,20 +22,27 @@ class UserBloc extends Bloc<UserEvent, UserState> {
   }
 
   Future<void> _onLoadUser(_LoadUser event, Emitter<UserState> emit) async {
-    emit(UserState.loading(cachedSector: _getUserUseCase.cachedSector));
+    if (!event.silent) {
+      emit(UserState.loading(cachedSector: _getUserUseCase.cachedSector));
+    }
     _logger.info('Loading user profile for uid: ${event.uid}');
 
     final result = await _getUserUseCase(event.uid);
 
     result.fold(
       (failure) {
-        _logger.severe('Failed to load user profile', failure.message);
-        emit(
-          UserState.failure(
-            failure.message,
-            cachedSector: _getUserUseCase.cachedSector,
-          ),
-        );
+        if (failure is UserNotFoundFailure) {
+          _logger.info('User profile not found, needs creation');
+          emit(const UserState.needsProfile());
+        } else {
+          _logger.severe('Failed to load user profile', failure.message);
+          emit(
+            UserState.failure(
+              failure.message,
+              cachedSector: _getUserUseCase.cachedSector,
+            ),
+          );
+        }
       },
       (user) {
         _logger.info('User profile loaded successfully');

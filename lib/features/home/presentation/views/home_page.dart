@@ -8,7 +8,9 @@ import 'package:go_router/go_router.dart';
 import 'package:bizzie/features/home/presentation/widgets/home_search_bar.dart';
 import 'package:bizzie/features/search/presentation/delegates/stock_search_delegate.dart';
 import 'package:bizzie/features/search/presentation/bloc/search_bloc.dart';
-import 'package:bizzie/di/injection.dart'; // for getIt
+import 'package:bizzie/di/injection.dart';
+import 'package:bizzie/features/user/domain/interfaces/user_repository.dart';
+import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -57,8 +59,21 @@ class HomePage extends StatelessWidget {
                   const SizedBox(height: 20),
                   ElevatedButton(
                     onPressed: () =>
-                        context.push(AppRoutes.notificationRequest),
+                        context.push(AppRoutes.onboardingNotifications),
                     child: const Text('Notification Shortcut'),
+                  ),
+                  const SizedBox(height: 20),
+                  Text(
+                    'Local storage: ${getIt<IUserRepository>().getCachedFavoriteSector() ?? "None"}',
+                  ),
+                  const SizedBox(height: 10),
+                  BlocBuilder<UserBloc, UserState>(
+                    builder: (context, userState) {
+                      return userState.maybeWhen(
+                        loaded: (user) => Text('DB: ${user.createdAt}'),
+                        orElse: () => const Text('DB: Loading...'),
+                      );
+                    },
                   ),
                 ],
               ),
@@ -79,7 +94,7 @@ class HomePage extends StatelessWidget {
                   const SizedBox(height: 20),
                   ElevatedButton(
                     onPressed: () =>
-                        context.push(AppRoutes.notificationRequest),
+                        context.push(AppRoutes.onboardingNotifications),
                     child: const Text('Notification Shortcut'),
                   ),
                 ],

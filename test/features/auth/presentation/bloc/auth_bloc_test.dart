@@ -97,7 +97,7 @@ void main() {
           bloc.add(const AuthEmailSignInRequested(tEmail, tPassword)),
       // assert
       expect: () => [
-        const AuthState.loading(),
+        const AuthState.loading(method: 'email_signin'),
         const AuthState.failure('Exception: Sign in failed'),
       ],
     );
@@ -132,7 +132,7 @@ void main() {
       // act
       act: (bloc) => bloc.add(const AuthGoogleSignInRequested()),
       // assert
-      expect: () => [const AuthState.loading()],
+      expect: () => [const AuthState.loading(method: 'google')],
       verify: (_) {
         verify(() => mockSignInWithGoogle(any())).called(1);
       },
@@ -150,7 +150,7 @@ void main() {
       // act
       act: (bloc) => bloc.add(const AuthAppleSignInRequested()),
       // assert
-      expect: () => [const AuthState.loading()],
+      expect: () => [const AuthState.loading(method: 'apple')],
       verify: (_) {
         verify(() => mockSignInWithApple(any())).called(1);
       },

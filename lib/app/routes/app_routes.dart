@@ -1,5 +1,5 @@
 class AppRoutes {
-  AppRoutes._(); // Private constructor to prevent instantiation
+  AppRoutes._();
 
   static const String home = '/';
   static const String login = '/login';
@@ -8,7 +8,7 @@ class AppRoutes {
   static const String emailSent = '/email-sent';
   static const String terms = '/terms';
   static const String privacy = '/privacy';
-  static const String notificationRequest = '/notifications-request';
+  static const String onboardingNotifications = '/onboarding/notifications';
   static const String landing = '/landing';
   static const String onboardingName = '/onboarding/name';
   static const String onboardingWelcome = '/onboarding/welcome';
@@ -25,4 +25,5 @@ class AppRoutes {
   static const String onboardingExperience = '/onboarding/experience';
   static const String onboardingFeatureHighlights = '/onboarding/highlights';
   static const String navHome = '/home';
+  static const String splash = '/splash';
 }

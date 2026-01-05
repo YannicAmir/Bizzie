@@ -26,6 +26,14 @@ import '../features/auth/data/datasources/remote_auth_data_source.dart'
     as _i877;
 import '../features/auth/data/repositories/auth_repository_impl.dart' as _i570;
 import '../features/auth/domain/interfaces/i_auth_repository.dart' as _i685;
+import '../features/auth/domain/usecases/delete_account.dart' as _i739;
+import '../features/auth/domain/usecases/reset_password.dart' as _i73;
+import '../features/auth/domain/usecases/sign_in_with_apple.dart' as _i538;
+import '../features/auth/domain/usecases/sign_in_with_email.dart' as _i33;
+import '../features/auth/domain/usecases/sign_in_with_google.dart' as _i345;
+import '../features/auth/domain/usecases/sign_out.dart' as _i472;
+import '../features/auth/domain/usecases/sign_up_with_email.dart' as _i588;
+import '../features/auth/presentation/bloc/auth_bloc.dart' as _i59;
 import '../features/notifications/data/datasources/fcm_remote_datasource.dart'
     as _i640;
 import '../features/notifications/data/datasources/local_notification_datasource.dart'
@@ -188,8 +196,41 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i200.UserBloc>(
       () => _i200.UserBloc(gh<_i561.GetUserUseCase>()),
     );
+    gh.lazySingleton<_i739.DeleteAccount>(
+      () => _i739.DeleteAccount(gh<_i685.IAuthRepository>()),
+    );
+    gh.lazySingleton<_i73.ResetPassword>(
+      () => _i73.ResetPassword(gh<_i685.IAuthRepository>()),
+    );
+    gh.lazySingleton<_i538.SignInWithApple>(
+      () => _i538.SignInWithApple(gh<_i685.IAuthRepository>()),
+    );
+    gh.lazySingleton<_i33.SignInWithEmail>(
+      () => _i33.SignInWithEmail(gh<_i685.IAuthRepository>()),
+    );
+    gh.lazySingleton<_i345.SignInWithGoogle>(
+      () => _i345.SignInWithGoogle(gh<_i685.IAuthRepository>()),
+    );
+    gh.lazySingleton<_i472.SignOut>(
+      () => _i472.SignOut(gh<_i685.IAuthRepository>()),
+    );
+    gh.lazySingleton<_i588.SignUpWithEmail>(
+      () => _i588.SignUpWithEmail(gh<_i685.IAuthRepository>()),
+    );
     gh.lazySingleton<_i269.StockSearchService>(
       () => _i269.StockSearchService(gh<_i456.IStockRepository>()),
+    );
+    gh.lazySingleton<_i59.AuthBloc>(
+      () => _i59.AuthBloc(
+        authRepository: gh<_i685.IAuthRepository>(),
+        signInWithGoogle: gh<_i345.SignInWithGoogle>(),
+        signInWithApple: gh<_i538.SignInWithApple>(),
+        signInWithEmail: gh<_i33.SignInWithEmail>(),
+        signUpWithEmail: gh<_i588.SignUpWithEmail>(),
+        signOut: gh<_i472.SignOut>(),
+        resetPassword: gh<_i73.ResetPassword>(),
+        deleteAccount: gh<_i739.DeleteAccount>(),
+      ),
     );
     gh.factory<_i593.OnboardingBloc>(
       () => _i593.OnboardingBloc(

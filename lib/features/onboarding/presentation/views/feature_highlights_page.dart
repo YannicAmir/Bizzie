@@ -33,11 +33,14 @@ class _FeatureHighlightsPageState extends State<FeatureHighlightsPage> {
       listenWhen: (previous, current) {
         return previous.currentHighlightIndex !=
                 current.currentHighlightIndex ||
-            current.shouldNavigateToCreateAccount;
+            current.shouldNavigateToCreateAccount ||
+            current.shouldNavigateToBuildingProfile;
       },
       listener: (context, state) {
         if (state.shouldNavigateToCreateAccount) {
           context.go(AppRoutes.createAccount);
+        } else if (state.shouldNavigateToBuildingProfile) {
+          context.go(AppRoutes.onboardingBuildingProfile);
         } else if (_pageController.hasClients &&
             _pageController.page?.round() != state.currentHighlightIndex) {
           _pageController.animateToPage(

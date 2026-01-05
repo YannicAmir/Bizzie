@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$UserDto {
 
- String get uid; String get name; String get favoriteSector;// ignore: invalid_annotation_target
+ String get uid; String get name; String get favoriteSector;
 @JsonKey(name: 'favoriteSectorDisplay') String? get favoriteSectorDisplay; List<Map<String, dynamic>> get watchlist; String get investingExperience;@TimestampConverter() DateTime get createdAt; bool get isSubscribed; Map<String, String> get fcmTokens;
 /// Create a copy of UserDto
 /// with the given fields replaced by the non-null parameter values.
@@ -224,7 +224,7 @@ class _UserDto extends UserDto {
 @override final  String uid;
 @override final  String name;
 @override final  String favoriteSector;
-// ignore: invalid_annotation_target
+
 @override@JsonKey(name: 'favoriteSectorDisplay') final  String? favoriteSectorDisplay;
  final  List<Map<String, dynamic>> _watchlist;
 @override List<Map<String, dynamic>> get watchlist {

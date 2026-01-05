@@ -62,8 +62,6 @@ class GlobalErrorPage extends StatelessWidget {
       }
     }
 
-    // For error state, we might ideally want a "Sad Mascot", but we'll use the standard one for now
-    // or the default welcome one which is friendly.
     final String assetPath;
     if (sector != null) {
       assetPath = OnboardingAssetsHelper.getMascotForSector(sector);
@@ -76,9 +74,6 @@ class GlobalErrorPage extends StatelessWidget {
       child: Image.asset(
         assetPath,
         fit: BoxFit.contain,
-        opacity: const AlwaysStoppedAnimation(
-          0.8,
-        ), // Slightly faded for error? Optional style choice.
         errorBuilder: (context, error, stackTrace) {
           return const Icon(
             Icons.error_outline,

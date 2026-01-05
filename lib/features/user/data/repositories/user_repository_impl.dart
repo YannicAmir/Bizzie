@@ -27,7 +27,7 @@ class UserRepositoryImpl implements IUserRepository {
       final userDto = await _remoteDataSource.getUser(uid);
 
       if (userDto == null) {
-        return Left(ServerFailure('User not found'));
+        return Left(UserNotFoundFailure());
       }
 
       final user = userDto.toDomain();

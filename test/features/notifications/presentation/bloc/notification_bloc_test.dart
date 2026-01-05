@@ -70,7 +70,6 @@ void main() {
       expect: () => [
         const NotificationState.loading(),
         const NotificationState.success(tToken),
-        // Note: The stream listener will emit messageReceived immediately because of Stream.value
         NotificationState.messageReceivedState(tMessage),
       ],
       verify: (_) {
@@ -104,7 +103,7 @@ void main() {
       verify: (_) {
         verify(() => mockSubscribeToTopic('topic')).called(1);
       },
-      expect: () => [], // No state change on success
+      expect: () => [],
     );
 
     blocTest<NotificationBloc, NotificationState>(
@@ -139,7 +138,7 @@ void main() {
       verify: (_) {
         verify(() => mockUnsubscribeFromTopic('topic')).called(1);
       },
-      expect: () => [], // No state change on success
+      expect: () => [],
     );
 
     blocTest<NotificationBloc, NotificationState>(

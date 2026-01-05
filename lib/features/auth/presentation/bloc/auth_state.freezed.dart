@@ -128,11 +128,11 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( UserModel user)?  authenticated,TResult Function()?  unauthenticated,TResult Function( String message)?  failure,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function( String? method)?  loading,TResult Function( UserModel user)?  authenticated,TResult Function()?  unauthenticated,TResult Function( String message)?  failure,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case AuthInitial() when initial != null:
 return initial();case AuthLoading() when loading != null:
-return loading();case AuthAuthenticated() when authenticated != null:
+return loading(_that.method);case AuthAuthenticated() when authenticated != null:
 return authenticated(_that.user);case AuthUnauthenticated() when unauthenticated != null:
 return unauthenticated();case AuthFailure() when failure != null:
 return failure(_that.message);case _:
@@ -153,11 +153,11 @@ return failure(_that.message);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( UserModel user)  authenticated,required TResult Function()  unauthenticated,required TResult Function( String message)  failure,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function( String? method)  loading,required TResult Function( UserModel user)  authenticated,required TResult Function()  unauthenticated,required TResult Function( String message)  failure,}) {final _that = this;
 switch (_that) {
 case AuthInitial():
 return initial();case AuthLoading():
-return loading();case AuthAuthenticated():
+return loading(_that.method);case AuthAuthenticated():
 return authenticated(_that.user);case AuthUnauthenticated():
 return unauthenticated();case AuthFailure():
 return failure(_that.message);}
@@ -174,11 +174,11 @@ return failure(_that.message);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( UserModel user)?  authenticated,TResult? Function()?  unauthenticated,TResult? Function( String message)?  failure,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function( String? method)?  loading,TResult? Function( UserModel user)?  authenticated,TResult? Function()?  unauthenticated,TResult? Function( String message)?  failure,}) {final _that = this;
 switch (_that) {
 case AuthInitial() when initial != null:
 return initial();case AuthLoading() when loading != null:
-return loading();case AuthAuthenticated() when authenticated != null:
+return loading(_that.method);case AuthAuthenticated() when authenticated != null:
 return authenticated(_that.user);case AuthUnauthenticated() when unauthenticated != null:
 return unauthenticated();case AuthFailure() when failure != null:
 return failure(_that.message);case _:
@@ -225,33 +225,67 @@ String toString() {
 
 
 class AuthLoading implements AuthState {
-  const AuthLoading();
+  const AuthLoading({this.method});
   
 
+ final  String? method;
 
-
+/// Create a copy of AuthState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$AuthLoadingCopyWith<AuthLoading> get copyWith => _$AuthLoadingCopyWithImpl<AuthLoading>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AuthLoading);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AuthLoading&&(identical(other.method, method) || other.method == method));
 }
 
 
 @override
-int get hashCode => runtimeType.hashCode;
+int get hashCode => Object.hash(runtimeType,method);
 
 @override
 String toString() {
-  return 'AuthState.loading()';
+  return 'AuthState.loading(method: $method)';
 }
 
 
 }
 
+/// @nodoc
+abstract mixin class $AuthLoadingCopyWith<$Res> implements $AuthStateCopyWith<$Res> {
+  factory $AuthLoadingCopyWith(AuthLoading value, $Res Function(AuthLoading) _then) = _$AuthLoadingCopyWithImpl;
+@useResult
+$Res call({
+ String? method
+});
 
 
+
+
+}
+/// @nodoc
+class _$AuthLoadingCopyWithImpl<$Res>
+    implements $AuthLoadingCopyWith<$Res> {
+  _$AuthLoadingCopyWithImpl(this._self, this._then);
+
+  final AuthLoading _self;
+  final $Res Function(AuthLoading) _then;
+
+/// Create a copy of AuthState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? method = freezed,}) {
+  return _then(AuthLoading(
+method: freezed == method ? _self.method : method // ignore: cast_nullable_to_non_nullable
+as String?,
+  ));
+}
+
+
+}
 
 /// @nodoc
 

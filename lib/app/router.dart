@@ -1,4 +1,6 @@
 import 'package:bizzie/app/routes/app_routes.dart';
+import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
+
 import 'package:bizzie/features/auth/presentation/views/create_account_page.dart';
 import 'package:bizzie/features/onboarding/presentation/widgets/onboarding_shell.dart';
 import 'package:bizzie/features/auth/presentation/views/email_sent_page.dart';
@@ -28,70 +30,132 @@ import 'package:bizzie/shared/utils/go_router_refresh_stream.dart';
 import 'package:bizzie/features/onboarding/presentation/bloc/onboarding_bloc.dart';
 import 'package:bizzie/di/injection.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:async/async.dart';
 
-GoRouter createRouter(AuthBloc authBloc) {
+GoRouter createRouter(AuthBloc authBloc, UserBloc userBloc) {
   return GoRouter(
-    initialLocation: AppRoutes.landing,
-    refreshListenable: GoRouterRefreshStream(authBloc.stream),
+    initialLocation: AppRoutes.splash,
+    refreshListenable: GoRouterRefreshStream(
+      StreamGroup.merge([authBloc.stream, userBloc.stream]),
+    ),
     redirect: (context, state) {
       final authState = authBloc.state;
-      final bool isAuthenticated = authState.when(
-        initial: () => false,
-        loading: () => false,
+      // Check if Auth is truly determined (auth/unauth/failure).
+      // If Initial or Loading, we're not ready to redirect.
+      final bool isAuthDetermined = authState.maybeMap(
         authenticated: (_) => true,
-        unauthenticated: () => false,
-        failure: (_) => false,
+        unauthenticated: (_) => true,
+        failure: (_) =>
+            true, // Treat failure as determined (likely to stay on splash or go to error?) - usually unauth or stay.
+        orElse: () => false,
+      );
+
+      final bool isAuthenticated = authState.maybeMap(
+        authenticated: (_) => true,
+        orElse: () => false,
+      );
+
+      final userState = userBloc.state;
+      final bool needsProfile = userState.maybeWhen(
+        needsProfile: () => true,
+        orElse: () => false,
       );
 
       final isGoingToLogin = state.uri.path == AppRoutes.login;
       final isGoingToLanding = state.uri.path == AppRoutes.landing;
+      final isSplash = state.uri.path == AppRoutes.splash;
 
-      if (!isAuthenticated) {
-        const publicRoutes = [
-          AppRoutes.landing,
-          AppRoutes.login,
-          AppRoutes.createAccount,
-          AppRoutes.forgotPassword,
-          AppRoutes.emailSent,
-          AppRoutes.terms,
-          AppRoutes.privacy,
-          AppRoutes.onboardingName,
-          AppRoutes.onboardingWelcome,
-          AppRoutes.onboardingSectors,
-          AppRoutes.onboardingMeetBizzie,
-          AppRoutes.onboardingExperience,
-          AppRoutes.onboardingFeatureHighlights,
-          AppRoutes.onboardingBrands,
-          AppRoutes.onboardingAnalyzing,
-          AppRoutes.onboardingFoundCompanies,
-          AppRoutes.onboardingAddingWatchlist,
-          AppRoutes.onboardingBuildingProfile,
-          AppRoutes.onboardingProfileReady,
-          AppRoutes.notificationRequest,
-        ];
+      const publicRoutes = [
+        AppRoutes.landing,
+        AppRoutes.login,
+        AppRoutes.createAccount,
+        AppRoutes.forgotPassword,
+        AppRoutes.emailSent,
+        AppRoutes.terms,
+        AppRoutes.privacy,
+        AppRoutes.onboardingName,
+        AppRoutes.onboardingWelcome,
+        AppRoutes.onboardingSectors,
+        AppRoutes.onboardingMeetBizzie,
+        AppRoutes.onboardingExperience,
+        AppRoutes.onboardingFeatureHighlights,
+        AppRoutes.onboardingBrands,
+        AppRoutes.onboardingAnalyzing,
+        AppRoutes.onboardingFoundCompanies,
+        AppRoutes.onboardingAddingWatchlist,
+        AppRoutes.onboardingBuildingProfile,
+        AppRoutes.onboardingProfileReady,
+        AppRoutes.onboardingNotifications,
+        AppRoutes.splash,
+      ];
 
-        final isPublic = publicRoutes.any((route) => state.uri.path == route);
+      final isPublic = publicRoutes.any((route) => state.uri.path == route);
 
-        if (!isPublic) {
-          return AppRoutes.landing;
-        }
-      } else {
-        if (isGoingToLanding || isGoingToLogin) {
-          return AppRoutes.home;
+      // If Auth is NOT determined yet (Initial/Loading):
+      // 1. If we are on a PUBLIC route (e.g. Login page doing Apple Sign In), let them stay there.
+      // 2. If we are on a PRIVATE route, redirect to Splash to wait.
+      if (!isAuthDetermined) {
+        if (isPublic) {
+          return null; // Stay on current public page (e.g. Login)
+        } else {
+          // If not public (e.g. Home), and we don't know auth yet, go to Splash.
+          if (!isSplash) return AppRoutes.splash;
+          return null;
         }
       }
 
+      // Auth IS Determined below here.
+
+      if (!isAuthenticated) {
+        if (!isPublic) {
+          return AppRoutes.landing;
+        }
+
+        // If we are still on Splash but Unauthenticated, go to Landing
+        if (isSplash) {
+          return AppRoutes.landing;
+        }
+      } else {
+        // Authenticated
+        final isUserLoading = userState.maybeWhen(
+          initial: () => true,
+          loading: (_) => true,
+          orElse: () => false,
+        );
+
+        if (isUserLoading) {
+          // If on Splash, keep waiting (return null).
+          // If we were on landing/login, we might arguably want to stay there or show loading.
+          // But usually 'User Loading' means we are fetching profile.
+          // If we are on Splash, stay on Splash.
+          if (isSplash) return null;
+          return null;
+        }
+
+        if (needsProfile) {
+          if (!state.uri.path.startsWith('/onboarding') &&
+              state.uri.path != AppRoutes.onboardingName) {
+            return AppRoutes.onboardingName;
+          }
+        } else if (isGoingToLanding || isGoingToLogin || isSplash) {
+          return AppRoutes.home;
+        }
+      }
       return null;
     },
     routes: [
       GoRoute(
+        path: AppRoutes.splash,
+        builder: (context, state) => const Scaffold(
+          backgroundColor: Colors.white,
+          body: SizedBox.shrink(),
+        ),
+      ),
+      GoRoute(
         path: AppRoutes.home,
         builder: (context, state) => const HomePage(),
       ),
-      GoRoute(
-        path: AppRoutes.login,
-        builder: (context, state) => const LoginPage(),
-      ),
+      _buildNoTransitionRoute(AppRoutes.login, const LoginPage()),
 
       GoRoute(
         path: AppRoutes.forgotPassword,
@@ -184,7 +248,7 @@ GoRouter createRouter(AuthBloc authBloc) {
                 const CreateAccountPage(),
               ),
               _buildNoTransitionRoute(
-                AppRoutes.notificationRequest,
+                AppRoutes.onboardingNotifications,
                 const NotificationRequestPage(),
               ),
             ],

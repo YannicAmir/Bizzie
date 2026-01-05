@@ -15,3 +15,7 @@ class ServerFailure extends Failure {
 class CacheFailure extends Failure {
   const CacheFailure(super.message);
 }
+
+class UserNotFoundFailure extends Failure {
+  const UserNotFoundFailure() : super('User not found');
+}

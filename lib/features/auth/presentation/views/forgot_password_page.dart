@@ -78,7 +78,6 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const SizedBox(height: 24),
-                  // Title
                   Text(
                     'Reset Password',
                     style: AppTextStyles.h1.copyWith(
@@ -86,7 +85,6 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                     ),
                   ),
                   const SizedBox(height: 12),
-                  // Subtitle
                   Text(
                     'We\'ll email you a link to reset your password',
                     style: AppTextStyles.subtitle.copyWith(
@@ -96,8 +94,6 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                     ),
                   ),
                   const SizedBox(height: 32),
-
-                  // Email Field
                   AuthTextField(
                     controller: _emailController,
                     hintText: 'Email address',
@@ -111,8 +107,6 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                     borderColor: const Color(0xFFDEE2E6),
                   ),
                   const SizedBox(height: 24),
-
-                  // Button
                   AuthButton(
                     text: 'Send Reset Link',
                     onPressed: _onSendResetLinkPressed,
@@ -123,10 +117,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-
                   const SizedBox(height: 78),
-
-                  // Mascot
                   Center(
                     child: Image.asset(
                       AppAssets.authForgotPasswordMascot,

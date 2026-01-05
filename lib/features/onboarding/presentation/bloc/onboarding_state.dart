@@ -35,6 +35,7 @@ abstract class OnboardingState with _$OnboardingState {
     @Default([]) List<FeatureHighlightItem> featureHighlights,
     @Default(0) int currentHighlightIndex,
     @Default(false) bool shouldNavigateToCreateAccount,
+    @Default(false) bool shouldNavigateToBuildingProfile,
   }) = _OnboardingState;
 
   const OnboardingState._();

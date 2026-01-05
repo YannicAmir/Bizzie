@@ -162,7 +162,7 @@ class _LoginRow extends StatelessWidget {
         ),
         TextButton(
           onPressed: () {
-            context.go(AppRoutes.login);
+            context.push(AppRoutes.login);
           },
           child: Text(
             'Login',

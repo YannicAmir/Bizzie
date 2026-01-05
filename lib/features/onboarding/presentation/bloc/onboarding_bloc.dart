@@ -251,9 +251,16 @@ class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
         state.copyWith(currentHighlightIndex: state.currentHighlightIndex + 1),
       );
     } else {
-      emit(state.copyWith(shouldNavigateToCreateAccount: true));
-      // Reset navigation flag immediately after emission to avoid double navigation
-      emit(state.copyWith(shouldNavigateToCreateAccount: false));
+      final hasUser = _authRepository.currentUser != null;
+
+      if (hasUser) {
+        add(const OnboardingEvent.completeOnboarding());
+        emit(state.copyWith(shouldNavigateToBuildingProfile: true));
+        emit(state.copyWith(shouldNavigateToBuildingProfile: false));
+      } else {
+        emit(state.copyWith(shouldNavigateToCreateAccount: true));
+        emit(state.copyWith(shouldNavigateToCreateAccount: false));
+      }
     }
   }
 
@@ -261,8 +268,14 @@ class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
     _HighlightSkipPressed event,
     Emitter<OnboardingState> emit,
   ) {
-    emit(state.copyWith(shouldNavigateToCreateAccount: true));
-    emit(state.copyWith(shouldNavigateToCreateAccount: false));
+    if (_authRepository.currentUser != null) {
+      add(const OnboardingEvent.completeOnboarding());
+      emit(state.copyWith(shouldNavigateToBuildingProfile: true));
+      emit(state.copyWith(shouldNavigateToBuildingProfile: false));
+    } else {
+      emit(state.copyWith(shouldNavigateToCreateAccount: true));
+      emit(state.copyWith(shouldNavigateToCreateAccount: false));
+    }
   }
 
   List<FeatureHighlightItem> _calculateFeatureHighlights(OnboardingData data) {

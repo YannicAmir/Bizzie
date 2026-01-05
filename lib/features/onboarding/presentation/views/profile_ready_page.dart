@@ -1,6 +1,9 @@
 import 'package:bizzie/app/routes/app_routes.dart';
 import 'package:bizzie/app/themes/app_colors.dart';
 
+import 'package:bizzie/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:bizzie/features/auth/presentation/bloc/auth_state.dart';
+import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
 import 'package:bizzie/features/onboarding/presentation/bloc/onboarding_bloc.dart';
 import 'package:bizzie/features/onboarding/presentation/utils/onboarding_assets_helper.dart';
 import 'package:flutter/material.dart';
@@ -9,8 +12,24 @@ import 'package:go_router/go_router.dart';
 import 'package:bizzie/app/themes/app_assets.dart';
 import '../widgets/onboarding_header.dart';
 
-class ProfileReadyPage extends StatelessWidget {
+class ProfileReadyPage extends StatefulWidget {
   const ProfileReadyPage({super.key});
+
+  @override
+  State<ProfileReadyPage> createState() => _ProfileReadyPageState();
+}
+
+class _ProfileReadyPageState extends State<ProfileReadyPage> {
+  @override
+  void initState() {
+    super.initState();
+    final authState = context.read<AuthBloc>().state;
+    authState.mapOrNull(
+      authenticated: (u) => context.read<UserBloc>().add(
+        UserEvent.loadUser(u.user.id, silent: true),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
