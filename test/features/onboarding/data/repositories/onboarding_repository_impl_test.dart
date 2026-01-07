@@ -105,14 +105,16 @@ void main() {
         () => mockFirebaseMessaging.subscribeToTopic(any()),
       ).thenAnswer((_) async {});
       when(
-        () => mockRemoteDataSource.saveUserProfile(any()),
+        () => mockRemoteDataSource.saveUserProfile(any(), any()),
       ).thenAnswer((_) async {});
 
       // Act
       await repository.completeOnboarding(data: tData, uid: tUid);
 
       // Assert
-      verify(() => mockRemoteDataSource.saveUserProfile(any())).called(1);
+      verify(
+        () => mockRemoteDataSource.saveUserProfile(any(), any()),
+      ).called(1);
     });
 
     test('getDailyBrands_remoteThrows_throwsException', () async {
@@ -139,7 +141,7 @@ void main() {
         () => mockFirebaseMessaging.subscribeToTopic(any()),
       ).thenAnswer((_) async {});
       when(
-        () => mockRemoteDataSource.saveUserProfile(any()),
+        () => mockRemoteDataSource.saveUserProfile(any(), any()),
       ).thenThrow(Exception('Save Failed'));
 
       // Act & Assert

@@ -30,7 +30,10 @@ class UserRepositoryImpl implements IUserRepository {
         return Left(UserNotFoundFailure());
       }
 
-      final user = userDto.toDomain();
+      final watchlistDtos = await _remoteDataSource.getWatchlist(uid);
+      final watchlist = watchlistDtos.map((dto) => dto.toDomain()).toList();
+
+      final user = userDto.toDomain().copyWith(watchlist: watchlist);
       await _localDataSource.cacheFavoriteSector(user.favoriteSector);
       return Right(user);
     } catch (e, stack) {

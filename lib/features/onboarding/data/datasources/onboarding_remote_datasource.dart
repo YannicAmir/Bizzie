@@ -1,12 +1,16 @@
 import 'package:bizzie/features/onboarding/data/dtos/daily_brands_dto.dart';
 import 'package:bizzie/features/onboarding/data/dtos/user_dto.dart';
+import 'package:bizzie/features/watchlist/data/dtos/watchlist_item_dto.dart';
 import 'package:bizzie/services/config_service.dart';
 import 'package:bizzie/services/firestore_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:injectable/injectable.dart';
 
 abstract class IOnboardingRemoteDataSource {
-  Future<void> saveUserProfile(UserDto user);
+  Future<void> saveUserProfile(
+    UserDto user,
+    List<WatchlistItemDto> watchlistItems,
+  );
   Future<DailyBrandsDto?> fetchDailyBrands();
   bool getOnboardingConfig(String key);
   List<String> getStockMarketSectors();
@@ -30,12 +34,25 @@ class OnboardingRemoteDataSource implements IOnboardingRemoteDataSource {
   }
 
   @override
-  Future<void> saveUserProfile(UserDto user) async {
-    final data = user.toJson();
+  Future<void> saveUserProfile(
+    UserDto user,
+    List<WatchlistItemDto> watchlistItems,
+  ) async {
+    final batch = _firestoreService.instance.batch();
 
-    data['createdAt'] = FieldValue.serverTimestamp();
+    final userRef = _firestoreService.instance
+        .collection('users')
+        .doc(user.uid);
+    final userData = user.toJson();
+    userData['createdAt'] = FieldValue.serverTimestamp();
+    batch.set(userRef, userData);
 
-    await _firestoreService.setDocument(path: 'users/${user.uid}', data: data);
+    for (final item in watchlistItems) {
+      final itemRef = userRef.collection('watchlist').doc(item.ticker);
+      batch.set(itemRef, item.toJson());
+    }
+
+    await batch.commit();
   }
 
   @override

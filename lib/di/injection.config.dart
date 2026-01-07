@@ -162,7 +162,7 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i147.UserLocalDataSource(gh<_i460.SharedPreferences>()),
     );
     gh.lazySingleton<_i6.NetworkInfo>(() => _i6.NetworkInfoImpl());
-    gh.factory<_i481.IUserRemoteDataSource>(
+    gh.lazySingleton<_i481.IUserRemoteDataSource>(
       () => _i481.UserRemoteDataSource(gh<_i52.FirestoreService>()),
     );
     gh.lazySingleton<_i615.IUserRepository>(

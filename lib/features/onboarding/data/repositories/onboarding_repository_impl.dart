@@ -12,6 +12,7 @@ import 'dart:io';
 
 import 'package:bizzie/features/onboarding/data/datasources/onboarding_remote_datasource.dart';
 import 'package:bizzie/features/onboarding/data/dtos/user_dto.dart';
+import 'package:bizzie/features/watchlist/data/dtos/watchlist_item_dto.dart';
 
 @LazySingleton(as: IOnboardingRepository)
 class OnboardingRepositoryImpl implements IOnboardingRepository {
@@ -194,6 +195,10 @@ class OnboardingRepositoryImpl implements IOnboardingRepository {
       }
     }
 
+    final watchlistItems = data.detectedCompanies.map((c) {
+      return WatchlistItemDto.fromDomain(c);
+    }).toList();
+
     final userDto = UserDto(
       uid: uid,
       name: data.firstName,
@@ -201,13 +206,12 @@ class OnboardingRepositoryImpl implements IOnboardingRepository {
           ? _sanitizeTopic(data.selectedSector!.displayName)
           : '',
       favoriteSectorDisplay: data.selectedSector?.displayName ?? '',
-      watchlist: data.detectedCompanies.map((c) => c.toJson()).toList(),
       investingExperience: data.investingExperience?.name ?? 'beginner',
       isSubscribed: false,
       fcmTokens: tokensMap,
     );
 
-    await _remoteDataSource.saveUserProfile(userDto);
+    await _remoteDataSource.saveUserProfile(userDto, watchlistItems);
   }
 
   String _sanitizeTopic(String input) {

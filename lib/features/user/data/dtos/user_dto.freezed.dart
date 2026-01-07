@@ -15,8 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$UserDto {
 
- String get uid; String get name; String get favoriteSector;
-@JsonKey(name: 'favoriteSectorDisplay') String? get favoriteSectorDisplay; List<Map<String, dynamic>> get watchlist; String get investingExperience;@TimestampConverter() DateTime get createdAt; bool get isSubscribed; Map<String, String> get fcmTokens;
+ String get uid; String get name; String get favoriteSector;@JsonKey(name: 'favoriteSectorDisplay') String? get favoriteSectorDisplay; String get investingExperience;@TimestampConverter() DateTime get createdAt; bool get isSubscribed; Map<String, String> get fcmTokens;
 /// Create a copy of UserDto
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -29,16 +28,16 @@ $UserDtoCopyWith<UserDto> get copyWith => _$UserDtoCopyWithImpl<UserDto>(this as
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is UserDto&&(identical(other.uid, uid) || other.uid == uid)&&(identical(other.name, name) || other.name == name)&&(identical(other.favoriteSector, favoriteSector) || other.favoriteSector == favoriteSector)&&(identical(other.favoriteSectorDisplay, favoriteSectorDisplay) || other.favoriteSectorDisplay == favoriteSectorDisplay)&&const DeepCollectionEquality().equals(other.watchlist, watchlist)&&(identical(other.investingExperience, investingExperience) || other.investingExperience == investingExperience)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.isSubscribed, isSubscribed) || other.isSubscribed == isSubscribed)&&const DeepCollectionEquality().equals(other.fcmTokens, fcmTokens));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is UserDto&&(identical(other.uid, uid) || other.uid == uid)&&(identical(other.name, name) || other.name == name)&&(identical(other.favoriteSector, favoriteSector) || other.favoriteSector == favoriteSector)&&(identical(other.favoriteSectorDisplay, favoriteSectorDisplay) || other.favoriteSectorDisplay == favoriteSectorDisplay)&&(identical(other.investingExperience, investingExperience) || other.investingExperience == investingExperience)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.isSubscribed, isSubscribed) || other.isSubscribed == isSubscribed)&&const DeepCollectionEquality().equals(other.fcmTokens, fcmTokens));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,uid,name,favoriteSector,favoriteSectorDisplay,const DeepCollectionEquality().hash(watchlist),investingExperience,createdAt,isSubscribed,const DeepCollectionEquality().hash(fcmTokens));
+int get hashCode => Object.hash(runtimeType,uid,name,favoriteSector,favoriteSectorDisplay,investingExperience,createdAt,isSubscribed,const DeepCollectionEquality().hash(fcmTokens));
 
 @override
 String toString() {
-  return 'UserDto(uid: $uid, name: $name, favoriteSector: $favoriteSector, favoriteSectorDisplay: $favoriteSectorDisplay, watchlist: $watchlist, investingExperience: $investingExperience, createdAt: $createdAt, isSubscribed: $isSubscribed, fcmTokens: $fcmTokens)';
+  return 'UserDto(uid: $uid, name: $name, favoriteSector: $favoriteSector, favoriteSectorDisplay: $favoriteSectorDisplay, investingExperience: $investingExperience, createdAt: $createdAt, isSubscribed: $isSubscribed, fcmTokens: $fcmTokens)';
 }
 
 
@@ -49,7 +48,7 @@ abstract mixin class $UserDtoCopyWith<$Res>  {
   factory $UserDtoCopyWith(UserDto value, $Res Function(UserDto) _then) = _$UserDtoCopyWithImpl;
 @useResult
 $Res call({
- String uid, String name, String favoriteSector,@JsonKey(name: 'favoriteSectorDisplay') String? favoriteSectorDisplay, List<Map<String, dynamic>> watchlist, String investingExperience,@TimestampConverter() DateTime createdAt, bool isSubscribed, Map<String, String> fcmTokens
+ String uid, String name, String favoriteSector,@JsonKey(name: 'favoriteSectorDisplay') String? favoriteSectorDisplay, String investingExperience,@TimestampConverter() DateTime createdAt, bool isSubscribed, Map<String, String> fcmTokens
 });
 
 
@@ -66,14 +65,13 @@ class _$UserDtoCopyWithImpl<$Res>
 
 /// Create a copy of UserDto
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? uid = null,Object? name = null,Object? favoriteSector = null,Object? favoriteSectorDisplay = freezed,Object? watchlist = null,Object? investingExperience = null,Object? createdAt = null,Object? isSubscribed = null,Object? fcmTokens = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? uid = null,Object? name = null,Object? favoriteSector = null,Object? favoriteSectorDisplay = freezed,Object? investingExperience = null,Object? createdAt = null,Object? isSubscribed = null,Object? fcmTokens = null,}) {
   return _then(_self.copyWith(
 uid: null == uid ? _self.uid : uid // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,favoriteSector: null == favoriteSector ? _self.favoriteSector : favoriteSector // ignore: cast_nullable_to_non_nullable
 as String,favoriteSectorDisplay: freezed == favoriteSectorDisplay ? _self.favoriteSectorDisplay : favoriteSectorDisplay // ignore: cast_nullable_to_non_nullable
-as String?,watchlist: null == watchlist ? _self.watchlist : watchlist // ignore: cast_nullable_to_non_nullable
-as List<Map<String, dynamic>>,investingExperience: null == investingExperience ? _self.investingExperience : investingExperience // ignore: cast_nullable_to_non_nullable
+as String?,investingExperience: null == investingExperience ? _self.investingExperience : investingExperience // ignore: cast_nullable_to_non_nullable
 as String,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as DateTime,isSubscribed: null == isSubscribed ? _self.isSubscribed : isSubscribed // ignore: cast_nullable_to_non_nullable
 as bool,fcmTokens: null == fcmTokens ? _self.fcmTokens : fcmTokens // ignore: cast_nullable_to_non_nullable
@@ -162,10 +160,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String uid,  String name,  String favoriteSector, @JsonKey(name: 'favoriteSectorDisplay')  String? favoriteSectorDisplay,  List<Map<String, dynamic>> watchlist,  String investingExperience, @TimestampConverter()  DateTime createdAt,  bool isSubscribed,  Map<String, String> fcmTokens)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String uid,  String name,  String favoriteSector, @JsonKey(name: 'favoriteSectorDisplay')  String? favoriteSectorDisplay,  String investingExperience, @TimestampConverter()  DateTime createdAt,  bool isSubscribed,  Map<String, String> fcmTokens)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _UserDto() when $default != null:
-return $default(_that.uid,_that.name,_that.favoriteSector,_that.favoriteSectorDisplay,_that.watchlist,_that.investingExperience,_that.createdAt,_that.isSubscribed,_that.fcmTokens);case _:
+return $default(_that.uid,_that.name,_that.favoriteSector,_that.favoriteSectorDisplay,_that.investingExperience,_that.createdAt,_that.isSubscribed,_that.fcmTokens);case _:
   return orElse();
 
 }
@@ -183,10 +181,10 @@ return $default(_that.uid,_that.name,_that.favoriteSector,_that.favoriteSectorDi
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String uid,  String name,  String favoriteSector, @JsonKey(name: 'favoriteSectorDisplay')  String? favoriteSectorDisplay,  List<Map<String, dynamic>> watchlist,  String investingExperience, @TimestampConverter()  DateTime createdAt,  bool isSubscribed,  Map<String, String> fcmTokens)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String uid,  String name,  String favoriteSector, @JsonKey(name: 'favoriteSectorDisplay')  String? favoriteSectorDisplay,  String investingExperience, @TimestampConverter()  DateTime createdAt,  bool isSubscribed,  Map<String, String> fcmTokens)  $default,) {final _that = this;
 switch (_that) {
 case _UserDto():
-return $default(_that.uid,_that.name,_that.favoriteSector,_that.favoriteSectorDisplay,_that.watchlist,_that.investingExperience,_that.createdAt,_that.isSubscribed,_that.fcmTokens);case _:
+return $default(_that.uid,_that.name,_that.favoriteSector,_that.favoriteSectorDisplay,_that.investingExperience,_that.createdAt,_that.isSubscribed,_that.fcmTokens);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -203,10 +201,10 @@ return $default(_that.uid,_that.name,_that.favoriteSector,_that.favoriteSectorDi
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String uid,  String name,  String favoriteSector, @JsonKey(name: 'favoriteSectorDisplay')  String? favoriteSectorDisplay,  List<Map<String, dynamic>> watchlist,  String investingExperience, @TimestampConverter()  DateTime createdAt,  bool isSubscribed,  Map<String, String> fcmTokens)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String uid,  String name,  String favoriteSector, @JsonKey(name: 'favoriteSectorDisplay')  String? favoriteSectorDisplay,  String investingExperience, @TimestampConverter()  DateTime createdAt,  bool isSubscribed,  Map<String, String> fcmTokens)?  $default,) {final _that = this;
 switch (_that) {
 case _UserDto() when $default != null:
-return $default(_that.uid,_that.name,_that.favoriteSector,_that.favoriteSectorDisplay,_that.watchlist,_that.investingExperience,_that.createdAt,_that.isSubscribed,_that.fcmTokens);case _:
+return $default(_that.uid,_that.name,_that.favoriteSector,_that.favoriteSectorDisplay,_that.investingExperience,_that.createdAt,_that.isSubscribed,_that.fcmTokens);case _:
   return null;
 
 }
@@ -218,21 +216,13 @@ return $default(_that.uid,_that.name,_that.favoriteSector,_that.favoriteSectorDi
 @JsonSerializable()
 
 class _UserDto extends UserDto {
-  const _UserDto({required this.uid, required this.name, required this.favoriteSector, @JsonKey(name: 'favoriteSectorDisplay') this.favoriteSectorDisplay, required final  List<Map<String, dynamic>> watchlist, required this.investingExperience, @TimestampConverter() required this.createdAt, this.isSubscribed = false, required final  Map<String, String> fcmTokens}): _watchlist = watchlist,_fcmTokens = fcmTokens,super._();
+  const _UserDto({required this.uid, required this.name, required this.favoriteSector, @JsonKey(name: 'favoriteSectorDisplay') this.favoriteSectorDisplay, required this.investingExperience, @TimestampConverter() required this.createdAt, this.isSubscribed = false, required final  Map<String, String> fcmTokens}): _fcmTokens = fcmTokens,super._();
   factory _UserDto.fromJson(Map<String, dynamic> json) => _$UserDtoFromJson(json);
 
 @override final  String uid;
 @override final  String name;
 @override final  String favoriteSector;
-
 @override@JsonKey(name: 'favoriteSectorDisplay') final  String? favoriteSectorDisplay;
- final  List<Map<String, dynamic>> _watchlist;
-@override List<Map<String, dynamic>> get watchlist {
-  if (_watchlist is EqualUnmodifiableListView) return _watchlist;
-  // ignore: implicit_dynamic_type
-  return EqualUnmodifiableListView(_watchlist);
-}
-
 @override final  String investingExperience;
 @override@TimestampConverter() final  DateTime createdAt;
 @override@JsonKey() final  bool isSubscribed;
@@ -257,16 +247,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _UserDto&&(identical(other.uid, uid) || other.uid == uid)&&(identical(other.name, name) || other.name == name)&&(identical(other.favoriteSector, favoriteSector) || other.favoriteSector == favoriteSector)&&(identical(other.favoriteSectorDisplay, favoriteSectorDisplay) || other.favoriteSectorDisplay == favoriteSectorDisplay)&&const DeepCollectionEquality().equals(other._watchlist, _watchlist)&&(identical(other.investingExperience, investingExperience) || other.investingExperience == investingExperience)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.isSubscribed, isSubscribed) || other.isSubscribed == isSubscribed)&&const DeepCollectionEquality().equals(other._fcmTokens, _fcmTokens));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _UserDto&&(identical(other.uid, uid) || other.uid == uid)&&(identical(other.name, name) || other.name == name)&&(identical(other.favoriteSector, favoriteSector) || other.favoriteSector == favoriteSector)&&(identical(other.favoriteSectorDisplay, favoriteSectorDisplay) || other.favoriteSectorDisplay == favoriteSectorDisplay)&&(identical(other.investingExperience, investingExperience) || other.investingExperience == investingExperience)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.isSubscribed, isSubscribed) || other.isSubscribed == isSubscribed)&&const DeepCollectionEquality().equals(other._fcmTokens, _fcmTokens));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,uid,name,favoriteSector,favoriteSectorDisplay,const DeepCollectionEquality().hash(_watchlist),investingExperience,createdAt,isSubscribed,const DeepCollectionEquality().hash(_fcmTokens));
+int get hashCode => Object.hash(runtimeType,uid,name,favoriteSector,favoriteSectorDisplay,investingExperience,createdAt,isSubscribed,const DeepCollectionEquality().hash(_fcmTokens));
 
 @override
 String toString() {
-  return 'UserDto(uid: $uid, name: $name, favoriteSector: $favoriteSector, favoriteSectorDisplay: $favoriteSectorDisplay, watchlist: $watchlist, investingExperience: $investingExperience, createdAt: $createdAt, isSubscribed: $isSubscribed, fcmTokens: $fcmTokens)';
+  return 'UserDto(uid: $uid, name: $name, favoriteSector: $favoriteSector, favoriteSectorDisplay: $favoriteSectorDisplay, investingExperience: $investingExperience, createdAt: $createdAt, isSubscribed: $isSubscribed, fcmTokens: $fcmTokens)';
 }
 
 
@@ -277,7 +267,7 @@ abstract mixin class _$UserDtoCopyWith<$Res> implements $UserDtoCopyWith<$Res> {
   factory _$UserDtoCopyWith(_UserDto value, $Res Function(_UserDto) _then) = __$UserDtoCopyWithImpl;
 @override @useResult
 $Res call({
- String uid, String name, String favoriteSector,@JsonKey(name: 'favoriteSectorDisplay') String? favoriteSectorDisplay, List<Map<String, dynamic>> watchlist, String investingExperience,@TimestampConverter() DateTime createdAt, bool isSubscribed, Map<String, String> fcmTokens
+ String uid, String name, String favoriteSector,@JsonKey(name: 'favoriteSectorDisplay') String? favoriteSectorDisplay, String investingExperience,@TimestampConverter() DateTime createdAt, bool isSubscribed, Map<String, String> fcmTokens
 });
 
 
@@ -294,14 +284,13 @@ class __$UserDtoCopyWithImpl<$Res>
 
 /// Create a copy of UserDto
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? uid = null,Object? name = null,Object? favoriteSector = null,Object? favoriteSectorDisplay = freezed,Object? watchlist = null,Object? investingExperience = null,Object? createdAt = null,Object? isSubscribed = null,Object? fcmTokens = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? uid = null,Object? name = null,Object? favoriteSector = null,Object? favoriteSectorDisplay = freezed,Object? investingExperience = null,Object? createdAt = null,Object? isSubscribed = null,Object? fcmTokens = null,}) {
   return _then(_UserDto(
 uid: null == uid ? _self.uid : uid // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,favoriteSector: null == favoriteSector ? _self.favoriteSector : favoriteSector // ignore: cast_nullable_to_non_nullable
 as String,favoriteSectorDisplay: freezed == favoriteSectorDisplay ? _self.favoriteSectorDisplay : favoriteSectorDisplay // ignore: cast_nullable_to_non_nullable
-as String?,watchlist: null == watchlist ? _self._watchlist : watchlist // ignore: cast_nullable_to_non_nullable
-as List<Map<String, dynamic>>,investingExperience: null == investingExperience ? _self.investingExperience : investingExperience // ignore: cast_nullable_to_non_nullable
+as String?,investingExperience: null == investingExperience ? _self.investingExperience : investingExperience // ignore: cast_nullable_to_non_nullable
 as String,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as DateTime,isSubscribed: null == isSubscribed ? _self.isSubscribed : isSubscribed // ignore: cast_nullable_to_non_nullable
 as bool,fcmTokens: null == fcmTokens ? _self._fcmTokens : fcmTokens // ignore: cast_nullable_to_non_nullable
