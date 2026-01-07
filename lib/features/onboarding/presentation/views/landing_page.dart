@@ -10,6 +10,8 @@ import '../../../../app/themes/app_colors.dart';
 import '../../data/datasources/dummy_price_data.dart';
 import '../widgets/onboarding_footer.dart';
 
+import 'package:bizzie/shared/widgets/buttons/bizzie_primary_button.dart';
+
 class LandingPage extends StatelessWidget {
   const LandingPage({super.key});
 
@@ -40,25 +42,14 @@ class LandingPage extends StatelessWidget {
                   title: 'Meet Bizzie!',
                   subtitle:
                       'Your friend to take with you on your Stock Market journey',
-                  primaryButton: FilledButton(
+                  primaryButton: BizziePrimaryButton(
                     onPressed: () {
                       context.read<OnboardingBloc>().add(
                         const OnboardingEvent.loadBrands(),
                       );
                       context.push(AppRoutes.onboardingName);
                     },
-                    style: FilledButton.styleFrom(
-                      backgroundColor: AppColors.primary,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                    ),
-                    child: Text(
-                      'Get Started',
-                      style: theme.textTheme.labelLarge?.copyWith(
-                        color: Colors.white,
-                      ),
-                    ),
+                    title: 'Get Started',
                   ),
                   secondaryButton: const _LoginRow(),
                 ),

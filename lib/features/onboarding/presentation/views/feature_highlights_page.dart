@@ -11,6 +11,8 @@ import 'package:bizzie/features/onboarding/presentation/widgets/onboarding_foote
 import '../widgets/onboarding_header.dart';
 import '../widgets/feature_highlights/feature_highlight_factory.dart';
 
+import 'package:bizzie/shared/widgets/buttons/bizzie_primary_button.dart';
+
 class FeatureHighlightsPage extends StatefulWidget {
   const FeatureHighlightsPage({super.key});
 
@@ -207,19 +209,11 @@ class _ContinueButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
+    return BizziePrimaryButton(
       onPressed: () => context.read<OnboardingBloc>().add(
         const OnboardingEvent.highlightContinuePressed(),
       ),
-      style: ElevatedButton.styleFrom(
-        backgroundColor: AppColors.primary,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        elevation: 0,
-      ),
-      child: Text(
-        isLastPage ? 'Continue' : 'Next',
-        style: AppTextStyles.button.copyWith(color: AppColors.white),
-      ),
+      title: isLastPage ? 'Continue' : 'Next',
     );
   }
 }

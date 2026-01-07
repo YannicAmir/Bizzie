@@ -7,7 +7,7 @@ import 'package:bizzie/core/logging/bizzie_logger.dart';
 
 class RemoteConfigKeys {
   static const String fmpConfig = 'fmp_config';
-  static const String geminiModelName = 'gemini_model_name';
+  static const String geminiModelName = 'gemini_model_front_end';
   static const String stockMarketSectors = 'stock_market_sectors';
 }
 
@@ -17,7 +17,7 @@ final _logger = BizzieLogger('ConfigService');
 class ConfigService {
   final FirebaseRemoteConfig _remoteConfig;
 
-  static const _defaultGeminiModel = 'gemini-3-flash-preview';
+  static const _defaultGeminiModel = 'gemini-2.5-flash';
   static const _defaultSectors = [
     "Energy",
     "Materials",

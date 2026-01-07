@@ -60,11 +60,24 @@ import '../features/onboarding/data/repositories/onboarding_repository_impl.dart
 import '../features/onboarding/domain/interfaces/i_onboarding_repository.dart'
     as _i329;
 import '../features/onboarding/presentation/bloc/onboarding_bloc.dart' as _i593;
+import '../features/search/data/datasources/ai_product_search_service.dart'
+    as _i977;
 import '../features/search/data/datasources/stock_local_datasource.dart'
     as _i191;
+import '../features/search/data/repositories/recommended_brands_repository.dart'
+    as _i230;
 import '../features/search/data/repositories/stock_repository.dart' as _i392;
+import '../features/search/domain/interfaces/i_recommended_brands_repository.dart'
+    as _i1012;
 import '../features/search/domain/interfaces/i_stock_repository.dart' as _i456;
 import '../features/search/domain/services/stock_search_service.dart' as _i269;
+import '../features/search/domain/usecases/find_stock_for_product_usecase.dart'
+    as _i691;
+import '../features/search/domain/usecases/get_recommended_brands_usecase.dart'
+    as _i693;
+import '../features/search/domain/usecases/get_search_dashboard_data_usecase.dart'
+    as _i555;
+import '../features/search/domain/usecases/search_stocks_usecase.dart' as _i130;
 import '../features/search/presentation/bloc/search_bloc.dart' as _i348;
 import '../features/user/data/datasources/user_local_datasource.dart' as _i147;
 import '../features/user/data/datasources/user_remote_datasource.dart' as _i481;
@@ -173,10 +186,25 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i999.UnsubscribeFromTopic>(),
       ),
     );
+    gh.singleton<_i977.AiProductSearchService>(
+      () => _i977.AiProductSearchService(gh<_i216.ConfigService>()),
+    );
     gh.lazySingleton<_i877.RemoteAuthDataSource>(
       () => _i877.RemoteAuthDataSourceImpl(
         firebaseAuth: gh<_i59.FirebaseAuth>(),
         googleSignIn: gh<_i116.GoogleSignIn>(),
+      ),
+    );
+    gh.lazySingleton<_i1012.IRecommendedBrandsRepository>(
+      () => _i230.RecommendedBrandsRepository(gh<_i974.FirebaseFirestore>()),
+    );
+    gh.factory<_i691.FindStockForProductUseCase>(
+      () =>
+          _i691.FindStockForProductUseCase(gh<_i977.AiProductSearchService>()),
+    );
+    gh.lazySingleton<_i693.GetRecommendedBrandsUseCase>(
+      () => _i693.GetRecommendedBrandsUseCase(
+        gh<_i1012.IRecommendedBrandsRepository>(),
       ),
     );
     gh.lazySingleton<_i456.IStockRepository>(
@@ -217,6 +245,13 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i588.SignUpWithEmail>(
       () => _i588.SignUpWithEmail(gh<_i685.IAuthRepository>()),
     );
+    gh.factory<_i555.GetSearchDashboardDataUseCase>(
+      () => _i555.GetSearchDashboardDataUseCase(
+        gh<_i685.IAuthRepository>(),
+        gh<_i561.GetUserUseCase>(),
+        gh<_i693.GetRecommendedBrandsUseCase>(),
+      ),
+    );
     gh.lazySingleton<_i269.StockSearchService>(
       () => _i269.StockSearchService(gh<_i456.IStockRepository>()),
     );
@@ -238,8 +273,15 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i685.IAuthRepository>(),
       ),
     );
+    gh.factory<_i130.SearchStocksUseCase>(
+      () => _i130.SearchStocksUseCase(gh<_i269.StockSearchService>()),
+    );
     gh.factory<_i348.SearchBloc>(
-      () => _i348.SearchBloc(gh<_i269.StockSearchService>()),
+      () => _i348.SearchBloc(
+        gh<_i130.SearchStocksUseCase>(),
+        gh<_i555.GetSearchDashboardDataUseCase>(),
+        gh<_i691.FindStockForProductUseCase>(),
+      ),
     );
     return this;
   }

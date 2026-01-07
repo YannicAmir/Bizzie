@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$StockSymbol {
 
-@JsonKey(name: 's') String get symbol;@JsonKey(name: 'n') String get name;
+@JsonKey(name: 's') String get symbol;@JsonKey(name: 'n') String get name;@JsonKey(name: 'private') bool get isPrivate;
 /// Create a copy of StockSymbol
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $StockSymbolCopyWith<StockSymbol> get copyWith => _$StockSymbolCopyWithImpl<Stoc
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is StockSymbol&&(identical(other.symbol, symbol) || other.symbol == symbol)&&(identical(other.name, name) || other.name == name));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is StockSymbol&&(identical(other.symbol, symbol) || other.symbol == symbol)&&(identical(other.name, name) || other.name == name)&&(identical(other.isPrivate, isPrivate) || other.isPrivate == isPrivate));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,symbol,name);
+int get hashCode => Object.hash(runtimeType,symbol,name,isPrivate);
 
 @override
 String toString() {
-  return 'StockSymbol(symbol: $symbol, name: $name)';
+  return 'StockSymbol(symbol: $symbol, name: $name, isPrivate: $isPrivate)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $StockSymbolCopyWith<$Res>  {
   factory $StockSymbolCopyWith(StockSymbol value, $Res Function(StockSymbol) _then) = _$StockSymbolCopyWithImpl;
 @useResult
 $Res call({
-@JsonKey(name: 's') String symbol,@JsonKey(name: 'n') String name
+@JsonKey(name: 's') String symbol,@JsonKey(name: 'n') String name,@JsonKey(name: 'private') bool isPrivate
 });
 
 
@@ -65,11 +65,12 @@ class _$StockSymbolCopyWithImpl<$Res>
 
 /// Create a copy of StockSymbol
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? symbol = null,Object? name = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? symbol = null,Object? name = null,Object? isPrivate = null,}) {
   return _then(_self.copyWith(
 symbol: null == symbol ? _self.symbol : symbol // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
-as String,
+as String,isPrivate: null == isPrivate ? _self.isPrivate : isPrivate // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 
@@ -154,10 +155,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 's')  String symbol, @JsonKey(name: 'n')  String name)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 's')  String symbol, @JsonKey(name: 'n')  String name, @JsonKey(name: 'private')  bool isPrivate)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _StockSymbol() when $default != null:
-return $default(_that.symbol,_that.name);case _:
+return $default(_that.symbol,_that.name,_that.isPrivate);case _:
   return orElse();
 
 }
@@ -175,10 +176,10 @@ return $default(_that.symbol,_that.name);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 's')  String symbol, @JsonKey(name: 'n')  String name)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 's')  String symbol, @JsonKey(name: 'n')  String name, @JsonKey(name: 'private')  bool isPrivate)  $default,) {final _that = this;
 switch (_that) {
 case _StockSymbol():
-return $default(_that.symbol,_that.name);case _:
+return $default(_that.symbol,_that.name,_that.isPrivate);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -195,10 +196,10 @@ return $default(_that.symbol,_that.name);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 's')  String symbol, @JsonKey(name: 'n')  String name)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 's')  String symbol, @JsonKey(name: 'n')  String name, @JsonKey(name: 'private')  bool isPrivate)?  $default,) {final _that = this;
 switch (_that) {
 case _StockSymbol() when $default != null:
-return $default(_that.symbol,_that.name);case _:
+return $default(_that.symbol,_that.name,_that.isPrivate);case _:
   return null;
 
 }
@@ -210,11 +211,12 @@ return $default(_that.symbol,_that.name);case _:
 @JsonSerializable()
 
 class _StockSymbol implements StockSymbol {
-  const _StockSymbol({@JsonKey(name: 's') required this.symbol, @JsonKey(name: 'n') required this.name});
+  const _StockSymbol({@JsonKey(name: 's') required this.symbol, @JsonKey(name: 'n') required this.name, @JsonKey(name: 'private') this.isPrivate = false});
   factory _StockSymbol.fromJson(Map<String, dynamic> json) => _$StockSymbolFromJson(json);
 
 @override@JsonKey(name: 's') final  String symbol;
 @override@JsonKey(name: 'n') final  String name;
+@override@JsonKey(name: 'private') final  bool isPrivate;
 
 /// Create a copy of StockSymbol
 /// with the given fields replaced by the non-null parameter values.
@@ -229,16 +231,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _StockSymbol&&(identical(other.symbol, symbol) || other.symbol == symbol)&&(identical(other.name, name) || other.name == name));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _StockSymbol&&(identical(other.symbol, symbol) || other.symbol == symbol)&&(identical(other.name, name) || other.name == name)&&(identical(other.isPrivate, isPrivate) || other.isPrivate == isPrivate));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,symbol,name);
+int get hashCode => Object.hash(runtimeType,symbol,name,isPrivate);
 
 @override
 String toString() {
-  return 'StockSymbol(symbol: $symbol, name: $name)';
+  return 'StockSymbol(symbol: $symbol, name: $name, isPrivate: $isPrivate)';
 }
 
 
@@ -249,7 +251,7 @@ abstract mixin class _$StockSymbolCopyWith<$Res> implements $StockSymbolCopyWith
   factory _$StockSymbolCopyWith(_StockSymbol value, $Res Function(_StockSymbol) _then) = __$StockSymbolCopyWithImpl;
 @override @useResult
 $Res call({
-@JsonKey(name: 's') String symbol,@JsonKey(name: 'n') String name
+@JsonKey(name: 's') String symbol,@JsonKey(name: 'n') String name,@JsonKey(name: 'private') bool isPrivate
 });
 
 
@@ -266,11 +268,12 @@ class __$StockSymbolCopyWithImpl<$Res>
 
 /// Create a copy of StockSymbol
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? symbol = null,Object? name = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? symbol = null,Object? name = null,Object? isPrivate = null,}) {
   return _then(_StockSymbol(
 symbol: null == symbol ? _self.symbol : symbol // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
-as String,
+as String,isPrivate: null == isPrivate ? _self.isPrivate : isPrivate // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 

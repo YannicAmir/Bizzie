@@ -2,12 +2,10 @@ import 'package:bizzie/app/routes/app_routes.dart';
 import 'package:bizzie/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:bizzie/features/auth/presentation/bloc/auth_event.dart';
 import 'package:bizzie/features/auth/presentation/bloc/auth_state.dart';
+import 'package:bizzie/shared/widgets/inputs/bizzie_search_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:bizzie/features/home/presentation/widgets/home_search_bar.dart';
-import 'package:bizzie/features/search/presentation/delegates/stock_search_delegate.dart';
-import 'package:bizzie/features/search/presentation/bloc/search_bloc.dart';
 import 'package:bizzie/di/injection.dart';
 import 'package:bizzie/features/user/domain/interfaces/user_repository.dart';
 import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
@@ -19,12 +17,10 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: HomeSearchBar(
+        title: BizzieSearchBar(
+          readOnly: true,
           onTap: () {
-            showSearch(
-              context: context,
-              delegate: StockSearchDelegate(getIt<SearchBloc>()),
-            );
+            context.push(AppRoutes.search);
           },
         ),
       ),

@@ -41,7 +41,7 @@ This document serves as the **Single Source of Truth** for the tools, libraries,
 ## 6. External Integrations & APIs
 * **Financial Data:** Financial Modeling Prep API
 * **Deep Linking:** Branch.io
-* **AI/LLM:** Google Gemini API
+* **AI/LLM:** Google Gemini API, genui, genui_firebase_ai & firebase_ai
 * **In-App Purchases / Subscriptions:** RevenueCat
 
 ## 7. CI/CD Pipeline

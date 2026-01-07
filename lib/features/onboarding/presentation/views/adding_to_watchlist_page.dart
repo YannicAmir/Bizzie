@@ -9,6 +9,8 @@ import 'package:bizzie/app/routes/app_routes.dart';
 import 'package:bizzie/features/onboarding/presentation/widgets/onboarding_status_card.dart';
 import '../widgets/onboarding_header.dart';
 
+import 'package:bizzie/shared/widgets/buttons/bizzie_primary_button.dart';
+
 class AddingToWatchlistPage extends StatefulWidget {
   const AddingToWatchlistPage({super.key});
 
@@ -78,12 +80,13 @@ class _AddingToWatchlistPageState extends State<AddingToWatchlistPage> {
                           const SizedBox(height: 16),
                         ],
                         if (state.isWatchlistComplete)
-                          _WatchlistContinueButton(
+                          BizziePrimaryButton(
                             onPressed: () {
                               context.go(AppRoutes.onboardingNotifications);
                             },
+                            title: 'Continue',
                           ),
-                        const SizedBox(height: 32),
+                        const SizedBox(height: 16),
                       ],
                     ),
                   ),
@@ -221,39 +224,6 @@ class _WatchlistProgressBar extends StatelessWidget {
               ),
             );
           },
-        ),
-      ),
-    );
-  }
-}
-
-class _WatchlistContinueButton extends StatelessWidget {
-  final VoidCallback onPressed;
-
-  const _WatchlistContinueButton({required this.onPressed});
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return SizedBox(
-      width: double.infinity,
-      height: 56,
-      child: ElevatedButton(
-        onPressed: onPressed,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.primary,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-          ),
-          elevation: 0,
-        ),
-        child: Text(
-          'Continue',
-          style: theme.textTheme.labelLarge?.copyWith(
-            color: Colors.white,
-            fontSize: 17,
-            fontWeight: FontWeight.w600,
-          ),
         ),
       ),
     );

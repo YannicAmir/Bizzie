@@ -1,5 +1,6 @@
 import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:bizzie/services/config_service.dart';
+import 'package:bizzie/features/search/domain/services/stock_search_service.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter/foundation.dart';
@@ -35,6 +36,8 @@ Future<void> bootstrap(
   if (currentUser != null) {
     getIt<UserBloc>().add(UserEvent.loadUser(currentUser.uid));
   }
+
+  getIt<StockSearchService>().initialize();
 
   runApp(const BizzieApp());
 }

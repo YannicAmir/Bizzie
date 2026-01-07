@@ -43,6 +43,7 @@ dependencies:
   bloc: ^9.2.0
   flutter_native_splash: ^2.4.6
   async: ^2.13.0
+  firebase_ai: ^3.6.1
 
 dev_dependencies:
   flutter_test:

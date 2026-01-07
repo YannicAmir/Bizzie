@@ -11,6 +11,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:bizzie/app/themes/app_assets.dart';
 import '../widgets/onboarding_header.dart';
+import 'package:bizzie/shared/widgets/buttons/bizzie_primary_button.dart';
 
 class ProfileReadyPage extends StatefulWidget {
   const ProfileReadyPage({super.key});
@@ -140,29 +141,14 @@ class _ContinueButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     return SizedBox(
       width: double.infinity,
       height: 56,
-      child: ElevatedButton(
+      child: BizziePrimaryButton(
         onPressed: () {
           context.go(AppRoutes.home);
         },
-        style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.primary,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-          ),
-          elevation: 0,
-        ),
-        child: Text(
-          'Continue',
-          style: theme.textTheme.labelLarge?.copyWith(
-            color: Colors.white,
-            fontSize: 17,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
+        title: 'Continue',
       ),
     );
   }

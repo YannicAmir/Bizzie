@@ -7,6 +7,7 @@ import 'package:bizzie/app/themes/app_colors.dart';
 import 'package:bizzie/app/routes/app_routes.dart';
 import 'package:bizzie/features/onboarding/presentation/widgets/onboarding_header.dart';
 import 'package:bizzie/features/onboarding/presentation/widgets/onboarding_footer.dart';
+import 'package:bizzie/shared/widgets/buttons/bizzie_primary_button.dart';
 
 class SelectYourFavoriteBrandsPage extends StatefulWidget {
   const SelectYourFavoriteBrandsPage({super.key});
@@ -95,23 +96,13 @@ class _SelectYourFavoriteBrandsPageState
                 OnboardingFooter(
                   primaryButton: SizedBox(
                     width: double.infinity,
-                    child: FilledButton(
+                    child: BizziePrimaryButton(
                       onPressed: state.selectedBrands.isNotEmpty
                           ? () {
                               context.push(AppRoutes.onboardingAnalyzing);
                             }
                           : null,
-                      style: FilledButton.styleFrom(
-                        disabledBackgroundColor: theme.colorScheme.primary
-                            .withValues(alpha: 0.5),
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                      ),
-                      child: Text(
-                        'Continue (${state.selectedBrands.length})',
-                        style: theme.textTheme.labelLarge?.copyWith(
-                          color: Colors.white,
-                        ),
-                      ),
+                      title: 'Continue (${state.selectedBrands.length})',
                     ),
                   ),
                 ),

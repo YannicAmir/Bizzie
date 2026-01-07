@@ -9,6 +9,8 @@ import '../bloc/onboarding_bloc.dart';
 import '../widgets/onboarding_footer.dart';
 import '../widgets/onboarding_header.dart';
 
+import 'package:bizzie/shared/widgets/buttons/bizzie_primary_button.dart';
+
 class WelcomeNamePage extends StatelessWidget {
   const WelcomeNamePage({super.key});
 
@@ -39,16 +41,11 @@ class WelcomeNamePage extends StatelessWidget {
                   ),
                 ),
                 OnboardingFooter(
-                  primaryButton: FilledButton(
+                  primaryButton: BizziePrimaryButton(
                     onPressed: () {
                       context.push(AppRoutes.onboardingSectors);
                     },
-                    child: Text(
-                      'Continue',
-                      style: theme.textTheme.labelLarge?.copyWith(
-                        color: Colors.white,
-                      ),
-                    ),
+                    title: 'Continue',
                   ),
                 ),
               ],

@@ -9,6 +9,8 @@ import '../utils/onboarding_assets_helper.dart';
 import '../widgets/onboarding_footer.dart';
 import '../widgets/onboarding_header.dart';
 
+import 'package:bizzie/shared/widgets/buttons/bizzie_primary_button.dart';
+
 class MeetYourBizziePage extends StatelessWidget {
   const MeetYourBizziePage({super.key});
 
@@ -71,19 +73,13 @@ class MeetYourBizziePage extends StatelessWidget {
                   ),
                 ),
                 OnboardingFooter(
-                  primaryButton: FilledButton(
+                  primaryButton: BizziePrimaryButton(
                     onPressed: () {
                       context.push(AppRoutes.onboardingBrands);
                     },
-                    style: FilledButton.styleFrom(
-                      minimumSize: const Size(double.infinity, 56),
-                    ),
-                    child: Text(
-                      'Continue',
-                      style: theme.textTheme.labelLarge?.copyWith(
-                        color: Colors.white,
-                      ),
-                    ),
+                    title: 'Continue',
+                    width: double.infinity,
+                    height: 56,
                   ),
                 ),
               ],

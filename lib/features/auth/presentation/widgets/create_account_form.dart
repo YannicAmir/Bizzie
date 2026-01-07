@@ -1,5 +1,5 @@
 import 'package:bizzie/app/themes/app_assets.dart';
-import 'package:bizzie/features/auth/presentation/widgets/auth_button.dart';
+import 'package:bizzie/shared/widgets/buttons/bizzie_primary_button.dart';
 import 'package:bizzie/features/auth/presentation/widgets/auth_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -77,8 +77,8 @@ class _CreateAccountFormState extends State<CreateAccountForm> {
                 loading: (method) => method == 'email_signup',
                 orElse: () => false,
               );
-              return AuthButton(
-                text: 'Create Account',
+              return BizziePrimaryButton(
+                title: 'Create Account',
                 onPressed: _onCreateAccountPressed,
                 isLoading: isLoading,
               );
