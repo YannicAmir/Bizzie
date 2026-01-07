@@ -9,6 +9,7 @@ abstract class StockSymbol with _$StockSymbol {
   const factory StockSymbol({
     @JsonKey(name: 's') required String symbol,
     @JsonKey(name: 'n') required String name,
+    @Default(false) @JsonKey(name: 'private') bool isPrivate,
   }) = _StockSymbol;
 
   factory StockSymbol.fromJson(Map<String, dynamic> json) =>

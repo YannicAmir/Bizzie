@@ -11,6 +11,7 @@ import 'package:go_router/go_router.dart';
 
 import 'package:bizzie/features/onboarding/presentation/widgets/onboarding_footer.dart';
 import '../widgets/onboarding_header.dart';
+import 'package:bizzie/shared/widgets/buttons/bizzie_primary_button.dart';
 
 class BizzieFoundCompaniesPage extends StatelessWidget {
   const BizzieFoundCompaniesPage({super.key});
@@ -78,26 +79,12 @@ class _ContinueButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     return OnboardingFooter(
-      primaryButton: ElevatedButton(
+      primaryButton: BizziePrimaryButton(
         onPressed: () {
           context.push(AppRoutes.onboardingAddingWatchlist);
         },
-        style: ElevatedButton.styleFrom(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-          ),
-          elevation: 0,
-        ),
-        child: Text(
-          'Continue',
-          style: theme.textTheme.labelLarge?.copyWith(
-            color: Colors.white,
-            fontSize: 17,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
+        title: 'Continue',
       ),
     );
   }

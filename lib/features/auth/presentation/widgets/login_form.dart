@@ -1,7 +1,7 @@
 import 'package:bizzie/app/routes/app_routes.dart';
 import 'package:bizzie/app/themes/app_assets.dart';
 import 'package:bizzie/app/themes/app_text_styles.dart';
-import 'package:bizzie/features/auth/presentation/widgets/auth_button.dart';
+import 'package:bizzie/shared/widgets/buttons/bizzie_primary_button.dart';
 import 'package:bizzie/features/auth/presentation/widgets/auth_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -97,8 +97,8 @@ class _LoginFormState extends State<LoginForm> {
                 loading: (method) => method == 'email_signin',
                 orElse: () => false,
               );
-              return AuthButton(
-                text: 'Log In',
+              return BizziePrimaryButton(
+                title: 'Log In',
                 onPressed: _onLoginPressed,
                 isLoading: isLoading,
               );

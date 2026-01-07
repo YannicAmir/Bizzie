@@ -25,5 +25,6 @@ class AppRoutes {
   static const String onboardingExperience = '/onboarding/experience';
   static const String onboardingFeatureHighlights = '/onboarding/highlights';
   static const String navHome = '/home';
+  static const String search = '/search';
   static const String splash = '/splash';
 }

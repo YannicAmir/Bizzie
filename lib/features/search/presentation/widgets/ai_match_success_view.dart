@@ -1,0 +1,72 @@
+import 'package:flutter/material.dart';
+import 'package:bizzie/app/themes/app_colors.dart';
+import 'package:bizzie/app/themes/app_text_styles.dart';
+import 'package:bizzie/features/search/domain/models/stock_symbol.dart';
+import 'package:bizzie/features/search/presentation/widgets/company_list_tile.dart';
+
+class AiMatchSuccessView extends StatelessWidget {
+  final String productName;
+  final StockSymbol stock;
+
+  const AiMatchSuccessView({
+    super.key,
+    required this.productName,
+    required this.stock,
+  });
+
+  String get _headerText => stock.isPrivate
+      ? "No stocks related to '$productName'"
+      : "Stocks related to '$productName'";
+
+  String get _symbolText => stock.isPrivate ? "PRIVATE" : stock.symbol;
+
+  void _handleTap(BuildContext context) {
+    if (stock.isPrivate) return;
+    // TODO: Navigate to stock details
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 24.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SizedBox(height: 36),
+          Text(
+            _headerText,
+            style: AppTextStyles.bodyLarge.copyWith(
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          const SizedBox(height: 12),
+          Container(
+            decoration: BoxDecoration(
+              color: AppColors.white,
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.black.withValues(alpha: 0.05),
+                  blurRadius: 2,
+                  offset: const Offset(0, 1),
+                ),
+              ],
+            ),
+            child: CompanyListTile(
+              symbol: _symbolText,
+              name: stock.name,
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 8,
+              ),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
+              onTap: () => _handleTap(context),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}

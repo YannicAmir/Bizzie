@@ -5,4 +5,6 @@ class SearchEvent with _$SearchEvent {
   const factory SearchEvent.started() = _Started;
   const factory SearchEvent.queryChanged(String query) = _QueryChanged;
   const factory SearchEvent.cleared() = _Cleared;
+  const factory SearchEvent.aiSearchRequested(String query) =
+      _AiSearchRequested;
 }

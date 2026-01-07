@@ -34,6 +34,11 @@ class AppTheme {
         elevation: 0,
         iconTheme: const IconThemeData(color: AppColors.textPrimary, size: 20),
       ),
+      dividerTheme: const DividerThemeData(
+        color: AppColors.inputBorder,
+        thickness: 0.67,
+        space: 1,
+      ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.primary,

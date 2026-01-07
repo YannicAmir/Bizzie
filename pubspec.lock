@@ -410,7 +410,7 @@ packages:
     source: hosted
     version: "7.0.1"
   firebase_ai:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: firebase_ai
       sha256: f2037222b3658aafe461044a954fc6b1dea4d3598b3b46ada2f45465ed35f1ef

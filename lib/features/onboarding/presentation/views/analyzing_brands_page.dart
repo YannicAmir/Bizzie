@@ -8,6 +8,7 @@ import 'package:bizzie/features/onboarding/presentation/widgets/onboarding_statu
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:bizzie/shared/widgets/buttons/bizzie_primary_button.dart';
 
 class AnalyzingBrandsPage extends StatefulWidget {
   const AnalyzingBrandsPage({super.key});
@@ -186,31 +187,17 @@ class _ShowStocksButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     return Visibility(
       visible: isDone,
       maintainSize: true,
       maintainAnimation: true,
       maintainState: true,
       child: OnboardingFooter(
-        primaryButton: ElevatedButton(
+        primaryButton: BizziePrimaryButton(
           onPressed: () {
             context.push(AppRoutes.onboardingFoundCompanies);
           },
-          style: ElevatedButton.styleFrom(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16),
-            ),
-            elevation: 0,
-          ),
-          child: Text(
-            'Show Me the Stocks',
-            style: theme.textTheme.labelLarge?.copyWith(
-              color: Colors.white,
-              fontSize: 17,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
+          title: 'Show Me the Stocks',
         ),
       ),
     );

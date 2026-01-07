@@ -2,7 +2,7 @@ import 'package:bizzie/app/routes/app_routes.dart';
 import 'package:bizzie/app/themes/app_assets.dart';
 import 'package:bizzie/app/themes/app_colors.dart';
 import 'package:bizzie/app/themes/app_text_styles.dart';
-import 'package:bizzie/features/auth/presentation/widgets/auth_button.dart';
+import 'package:bizzie/shared/widgets/buttons/bizzie_primary_button.dart';
 import 'package:bizzie/features/auth/presentation/widgets/auth_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -107,15 +107,9 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                     borderColor: const Color(0xFFDEE2E6),
                   ),
                   const SizedBox(height: 24),
-                  AuthButton(
-                    text: 'Send Reset Link',
+                  BizziePrimaryButton(
+                    title: 'Send Reset Link',
                     onPressed: _onSendResetLinkPressed,
-                    height: 56,
-                    borderRadius: 12,
-                    backgroundColor: const Color(0xFF1A5CE5),
-                    textStyle: AppTextStyles.button.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
                   ),
                   const SizedBox(height: 78),
                   Center(

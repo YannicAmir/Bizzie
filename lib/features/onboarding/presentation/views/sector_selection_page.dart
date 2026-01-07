@@ -10,6 +10,7 @@ import '../bloc/onboarding_bloc.dart';
 import '../widgets/onboarding_footer.dart';
 import '../widgets/onboarding_header.dart';
 import '../../domain/models/sector.dart';
+import 'package:bizzie/shared/widgets/buttons/bizzie_primary_button.dart';
 
 class SectorSelectionPage extends StatelessWidget {
   const SectorSelectionPage({super.key});
@@ -78,22 +79,13 @@ class SectorSelectionPage extends StatelessWidget {
                   ),
                 ),
                 OnboardingFooter(
-                  primaryButton: FilledButton(
+                  primaryButton: BizziePrimaryButton(
                     onPressed: selectedSector != null
                         ? () {
                             context.push(AppRoutes.onboardingMeetBizzie);
                           }
                         : null,
-                    style: FilledButton.styleFrom(
-                      disabledBackgroundColor: theme.colorScheme.primary
-                          .withValues(alpha: 0.5),
-                    ),
-                    child: Text(
-                      'Continue',
-                      style: theme.textTheme.labelLarge?.copyWith(
-                        color: Colors.white,
-                      ),
-                    ),
+                    title: 'Continue',
                   ),
                 ),
               ],

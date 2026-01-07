@@ -1,5 +1,7 @@
 import 'package:bizzie/app/routes/app_routes.dart';
 import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
+import 'package:bizzie/features/search/presentation/views/search_page.dart';
+import 'package:bizzie/features/search/presentation/bloc/search_bloc.dart';
 
 import 'package:bizzie/features/auth/presentation/views/create_account_page.dart';
 import 'package:bizzie/features/onboarding/presentation/widgets/onboarding_shell.dart';
@@ -156,6 +158,25 @@ GoRouter createRouter(AuthBloc authBloc, UserBloc userBloc) {
         builder: (context, state) => const HomePage(),
       ),
       _buildNoTransitionRoute(AppRoutes.login, const LoginPage()),
+
+      GoRoute(
+        path: AppRoutes.search,
+        pageBuilder: (context, state) {
+          return CustomTransitionPage(
+            key: state.pageKey,
+            child: BlocProvider<SearchBloc>(
+              create: (_) =>
+                  getIt<SearchBloc>()..add(const SearchEvent.started()),
+              child: const SearchPage(),
+            ),
+            transitionsBuilder:
+                (context, animation, secondaryAnimation, child) {
+                  return child;
+                },
+            transitionDuration: Duration.zero,
+          );
+        },
+      ),
 
       GoRoute(
         path: AppRoutes.forgotPassword,

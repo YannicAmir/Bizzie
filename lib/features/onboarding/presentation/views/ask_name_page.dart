@@ -7,6 +7,7 @@ import '../../../../app/themes/app_assets.dart';
 import '../bloc/onboarding_bloc.dart';
 import '../widgets/onboarding_footer.dart';
 import '../widgets/onboarding_header.dart';
+import 'package:bizzie/shared/widgets/buttons/bizzie_primary_button.dart';
 
 class AskNamePage extends StatefulWidget {
   const AskNamePage({super.key});
@@ -74,19 +75,9 @@ class _AskNamePageState extends State<AskNamePage> {
               ),
             ),
             OnboardingFooter(
-              primaryButton: FilledButton(
+              primaryButton: BizziePrimaryButton(
                 onPressed: _isButtonEnabled ? _submitName : null,
-                style: FilledButton.styleFrom(
-                  disabledBackgroundColor: theme.colorScheme.primary.withValues(
-                    alpha: 0.5,
-                  ),
-                ),
-                child: Text(
-                  'Continue',
-                  style: theme.textTheme.labelLarge?.copyWith(
-                    color: Colors.white,
-                  ),
-                ),
+                title: 'Continue',
               ),
             ),
           ],

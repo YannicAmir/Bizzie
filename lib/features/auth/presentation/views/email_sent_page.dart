@@ -1,7 +1,7 @@
 import 'package:bizzie/app/routes/app_routes.dart';
 import 'package:bizzie/app/themes/app_assets.dart';
 import 'package:bizzie/app/themes/app_text_styles.dart';
-import 'package:bizzie/features/auth/presentation/widgets/auth_button.dart';
+import 'package:bizzie/shared/widgets/buttons/bizzie_primary_button.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -51,8 +51,8 @@ class EmailSentPage extends StatelessWidget {
               left: 24,
               right: 24,
               bottom: 16,
-              child: AuthButton(
-                text: 'Back to Login',
+              child: BizziePrimaryButton(
+                title: 'Back to Login',
                 onPressed: () => context.go(AppRoutes.login),
               ),
             ),
