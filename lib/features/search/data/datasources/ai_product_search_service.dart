@@ -36,9 +36,9 @@ Rules:
    - "s": The stock ticker symbol (e.g., "AAPL").
    - "n": The company name (e.g., "Apple Inc.").
 2. If the company is private, return a JSON object with:
-   - "s": "PRIVATE"
+   - "s": "Private"
    - "n": The company name.
-   - "private": true
+   - "isPrivate": true
 3. If the brand is not found, return the JSON literal: null.
 
 Output must be valid JSON only.
