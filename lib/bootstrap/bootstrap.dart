@@ -13,6 +13,8 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
 
+final _logger = BizzieLogger('Bootstrap');
+
 Future<void> bootstrap(
   Environment environment,
   FirebaseOptions firebaseOptions,
@@ -29,7 +31,7 @@ Future<void> bootstrap(
   try {
     await ConfigService.init();
   } catch (e) {
-    debugPrint('Failed to initialize ConfigService: $e');
+    _logger.severe('Failed to initialize ConfigService', e);
   }
 
   final currentUser = FirebaseAuth.instance.currentUser;

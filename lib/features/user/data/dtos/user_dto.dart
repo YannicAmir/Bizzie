@@ -1,4 +1,5 @@
-import 'package:bizzie/features/onboarding/domain/models/company.dart';
+// ignore_for_file: invalid_annotation_target
+
 import 'package:bizzie/features/onboarding/domain/models/onboarding_data.dart';
 import 'package:bizzie/features/onboarding/domain/models/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -25,9 +26,7 @@ abstract class UserDto with _$UserDto {
     required String uid,
     required String name,
     required String favoriteSector,
-    // ignore: invalid_annotation_target
     @JsonKey(name: 'favoriteSectorDisplay') String? favoriteSectorDisplay,
-    required List<Map<String, dynamic>> watchlist,
     required String investingExperience,
     @TimestampConverter() required DateTime createdAt,
     @Default(false) bool isSubscribed,
@@ -42,7 +41,7 @@ abstract class UserDto with _$UserDto {
       uid: uid,
       name: name,
       favoriteSector: favoriteSector,
-      watchlist: watchlist.map((e) => Company.fromJson(e)).toList(),
+      watchlist: [],
       investingExperience: InvestingExperience.values.firstWhere(
         (e) => e.name == investingExperience,
         orElse: () => InvestingExperience.beginner,

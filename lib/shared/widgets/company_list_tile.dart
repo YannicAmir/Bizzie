@@ -1,5 +1,5 @@
 import 'package:bizzie/app/themes/app_assets.dart';
-import 'package:bizzie/app/themes/app_colors.dart';
+
 import 'package:flutter/material.dart';
 
 class CompanyListTile extends StatelessWidget {
@@ -8,6 +8,7 @@ class CompanyListTile extends StatelessWidget {
   final VoidCallback onTap;
   final EdgeInsetsGeometry? contentPadding;
   final ShapeBorder? shape;
+  final Widget? trailing;
   final bool showLeading;
 
   const CompanyListTile({
@@ -18,6 +19,7 @@ class CompanyListTile extends StatelessWidget {
     this.contentPadding,
     this.shape,
     this.showLeading = true,
+    this.trailing,
   });
 
   @override
@@ -34,8 +36,8 @@ class CompanyListTile extends StatelessWidget {
           ? Container(
               width: 48,
               height: 48,
-              decoration: const BoxDecoration(
-                color: AppColors.mascotBackground,
+              decoration: BoxDecoration(
+                color: theme.colorScheme.secondaryContainer,
                 shape: BoxShape.circle,
               ),
               padding: const EdgeInsets.all(12),
@@ -51,13 +53,13 @@ class CompanyListTile extends StatelessWidget {
       ),
       subtitle: Text(
         name,
-        style: theme.textTheme.titleMedium?.copyWith(
-          fontSize: 15,
-          color: AppColors.textSecondary,
+        style: theme.textTheme.bodyMedium?.copyWith(
+          color: theme.colorScheme.onSurfaceVariant,
         ),
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
       ),
+      trailing: trailing,
     );
   }
 }

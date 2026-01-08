@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:bizzie/app/themes/app_colors.dart';
-import 'package:bizzie/app/themes/app_text_styles.dart';
+
 import 'package:bizzie/features/search/domain/models/stock_symbol.dart';
-import 'package:bizzie/features/search/presentation/widgets/company_list_tile.dart';
+import 'package:bizzie/shared/widgets/company_list_tile.dart';
 
 class AiMatchSuccessView extends StatelessWidget {
   final String productName;
@@ -27,6 +27,8 @@ class AiMatchSuccessView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24.0),
       child: Column(
@@ -35,14 +37,14 @@ class AiMatchSuccessView extends StatelessWidget {
           const SizedBox(height: 36),
           Text(
             _headerText,
-            style: AppTextStyles.bodyLarge.copyWith(
+            style: theme.textTheme.bodyLarge?.copyWith(
               fontWeight: FontWeight.w600,
             ),
           ),
           const SizedBox(height: 12),
           Container(
             decoration: BoxDecoration(
-              color: AppColors.white,
+              color: theme.colorScheme.surface,
               borderRadius: BorderRadius.circular(16),
               boxShadow: [
                 BoxShadow(

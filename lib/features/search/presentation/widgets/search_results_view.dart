@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:bizzie/app/themes/app_colors.dart';
 import 'package:bizzie/features/search/domain/models/stock_symbol.dart';
 import 'package:bizzie/features/search/presentation/bloc/search_bloc.dart';
-import 'package:bizzie/features/search/presentation/widgets/company_list_tile.dart';
+import 'package:bizzie/shared/widgets/company_list_tile.dart';
 import 'package:bizzie/shared/widgets/buttons/bizzie_primary_button.dart';
 
 class SearchResultsView extends StatelessWidget {
@@ -61,7 +60,7 @@ class _ProductSearchFooter extends StatelessWidget {
           Text(
             'Not seeing what you\'re looking for?',
             style: theme.textTheme.bodySmall?.copyWith(
-              color: AppColors.textSecondary,
+              color: theme.colorScheme.onSurfaceVariant,
             ),
           ),
           const SizedBox(height: 8),

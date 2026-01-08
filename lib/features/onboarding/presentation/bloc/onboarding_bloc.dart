@@ -1,10 +1,14 @@
 import 'package:bizzie/core/logging/bizzie_logger.dart';
+import 'package:bizzie/core/usecase/usecase.dart';
 import 'package:bizzie/features/auth/domain/interfaces/i_auth_repository.dart';
-import 'package:bizzie/features/onboarding/domain/interfaces/i_onboarding_repository.dart';
 import 'package:bizzie/features/onboarding/domain/models/company.dart';
 import 'package:bizzie/features/onboarding/domain/models/onboarding_data.dart';
 import 'package:bizzie/features/onboarding/domain/models/sector.dart';
 import 'package:bizzie/features/onboarding/domain/models/brand.dart';
+import 'package:bizzie/features/onboarding/domain/usecases/complete_onboarding_usecase.dart';
+import 'package:bizzie/features/onboarding/domain/usecases/get_daily_brands_usecase.dart';
+import 'package:bizzie/features/onboarding/domain/usecases/get_sectors_usecase.dart';
+import 'package:bizzie/features/onboarding/domain/usecases/get_sp500_history_usecase.dart';
 import 'package:bizzie/features/onboarding/presentation/bloc/onboarding_state.dart';
 import 'package:bizzie/features/onboarding/presentation/models/feature_highlight_item.dart';
 export 'package:bizzie/features/onboarding/presentation/bloc/onboarding_state.dart';
@@ -17,12 +21,20 @@ part 'onboarding_bloc.freezed.dart';
 
 @injectable
 class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
-  final IOnboardingRepository _repository;
   final IAuthRepository _authRepository;
+  final CompleteOnboardingUseCase _completeOnboardingUseCase;
+  final GetDailyBrandsUseCase _getDailyBrandsUseCase;
+  final GetSectorsUseCase _getSectorsUseCase;
+  final GetSp500HistoryUseCase _getSp500HistoryUseCase;
   final _logger = BizzieLogger('OnboardingBloc');
 
-  OnboardingBloc(this._repository, this._authRepository)
-    : super(OnboardingState.initial()) {
+  OnboardingBloc(
+    this._authRepository,
+    this._completeOnboardingUseCase,
+    this._getDailyBrandsUseCase,
+    this._getSectorsUseCase,
+    this._getSp500HistoryUseCase,
+  ) : super(OnboardingState.initial()) {
     on<_Started>(_onStarted);
     on<_NameSubmitted>(_onNameSubmitted);
     on<_SectorSelected>(_onSectorSelected);
@@ -44,18 +56,25 @@ class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
     _LoadBrands event,
     Emitter<OnboardingState> emit,
   ) async {
-    _logger.info('DEBUG: OnboardingBloc _onLoadBrands STARTED');
-    try {
-      final (global, sector) = await _repository.getDailyBrands(
-        state.onboardingData.selectedSector,
-      );
-      _logger.info(
-        'DEBUG: Bloc loadBrands result - Global: ${global.length}, Sector: ${sector.length}',
-      );
-      emit(state.copyWith(globalBrands: global, sectorBrands: sector));
-    } catch (e, stack) {
-      _logger.severe('DEBUG: OnboardingBloc _onLoadBrands ERROR', e, stack);
-    }
+    _logger.info('OnboardingBloc _onLoadBrands STARTED');
+    final result = await _getDailyBrandsUseCase(
+      GetDailyBrandsParams(sector: state.onboardingData.selectedSector),
+    );
+
+    result.fold(
+      (failure) {
+        _logger.warning('Bloc loadBrands failed: ${failure.message}');
+        // TODO: In prod, might want to emit a failure state or show a snackbar.
+        // For now, we log it.
+      },
+      (brands) {
+        final (global, sector) = brands;
+        _logger.info(
+          'Bloc loadBrands result - Global: ${global.length}, Sector: ${sector.length}',
+        );
+        emit(state.copyWith(globalBrands: global, sectorBrands: sector));
+      },
+    );
   }
 
   void _onToggleBrand(_ToggleBrand event, Emitter<OnboardingState> emit) {
@@ -142,32 +161,33 @@ class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
     Emitter<OnboardingState> emit,
   ) async {
     emit(state.copyWith(isLoadingHistory: true));
-    try {
-      final history = await _repository.getSp500History();
-      emit(state.copyWith(isLoadingHistory: false, sp500History: history));
-    } catch (e) {
-      // Handle error gracefully, maybe show a snackbar or retry button
-      // For now, just stop loading
-      emit(state.copyWith(isLoadingHistory: false));
-    }
+    final result = await _getSp500HistoryUseCase(NoParams());
+    result.fold(
+      (failure) {
+        // Handle error gracefully
+        emit(state.copyWith(isLoadingHistory: false));
+      },
+      (history) {
+        emit(state.copyWith(isLoadingHistory: false, sp500History: history));
+      },
+    );
   }
 
   Future<void> _onStarted(_Started event, Emitter<OnboardingState> emit) async {
     add(const OnboardingEvent.loadSp500History());
 
     emit(state.copyWith(isLoadingSectors: true));
-    try {
-      final sectors = await _repository.getSectors();
-      emit(state.copyWith(isLoadingSectors: false, availableSectors: sectors));
-    } catch (e) {
-      emit(
-        state.copyWith(
-          isLoadingSectors: false,
-          // In prod, might handle error state explicitly,
-          // for now just fallback to empty list or retriable state
-        ),
-      );
-    }
+    final result = await _getSectorsUseCase(NoParams());
+    result.fold(
+      (failure) {
+        emit(state.copyWith(isLoadingSectors: false));
+      },
+      (sectors) {
+        emit(
+          state.copyWith(isLoadingSectors: false, availableSectors: sectors),
+        );
+      },
+    );
   }
 
   void _onNameSubmitted(_NameSubmitted event, Emitter<OnboardingState> emit) {
@@ -211,28 +231,34 @@ class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
   ) async {
     emit(state.copyWith(isSubmitting: true, failureMessage: null));
 
-    try {
-      final currentUser = _authRepository.currentUser;
-      if (currentUser == null) {
-        throw Exception('User is not authenticated');
-      }
-
-      await _repository.completeOnboarding(
-        data: state.onboardingData,
-        uid: currentUser.id,
-      );
-      emit(
-        state.copyWith(status: OnboardingStatus.success, isSubmitting: false),
-      );
-    } catch (e) {
+    final currentUser = _authRepository.currentUser;
+    if (currentUser == null) {
       emit(
         state.copyWith(
           status: OnboardingStatus.failure,
           isSubmitting: false,
-          failureMessage: e.toString(),
+          failureMessage: 'User is not authenticated',
         ),
       );
+      return;
     }
+
+    final result = await _completeOnboardingUseCase(
+      CompleteOnboardingParams(data: state.onboardingData, uid: currentUser.id),
+    );
+
+    result.fold(
+      (failure) => emit(
+        state.copyWith(
+          status: OnboardingStatus.failure,
+          isSubmitting: false,
+          failureMessage: failure.message,
+        ),
+      ),
+      (_) => emit(
+        state.copyWith(status: OnboardingStatus.success, isSubmitting: false),
+      ),
+    );
   }
 
   void _onHighlightPageChanged(

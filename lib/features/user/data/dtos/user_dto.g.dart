@@ -11,9 +11,6 @@ _UserDto _$UserDtoFromJson(Map<String, dynamic> json) => _UserDto(
   name: json['name'] as String,
   favoriteSector: json['favoriteSector'] as String,
   favoriteSectorDisplay: json['favoriteSectorDisplay'] as String?,
-  watchlist: (json['watchlist'] as List<dynamic>)
-      .map((e) => e as Map<String, dynamic>)
-      .toList(),
   investingExperience: json['investingExperience'] as String,
   createdAt: const TimestampConverter().fromJson(
     json['createdAt'] as Timestamp,
@@ -27,7 +24,6 @@ Map<String, dynamic> _$UserDtoToJson(_UserDto instance) => <String, dynamic>{
   'name': instance.name,
   'favoriteSector': instance.favoriteSector,
   'favoriteSectorDisplay': instance.favoriteSectorDisplay,
-  'watchlist': instance.watchlist,
   'investingExperience': instance.investingExperience,
   'createdAt': const TimestampConverter().toJson(instance.createdAt),
   'isSubscribed': instance.isSubscribed,

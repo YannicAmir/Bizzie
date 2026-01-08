@@ -10,7 +10,6 @@ abstract class UserDto with _$UserDto {
     required String name,
     required String favoriteSector,
     required String favoriteSectorDisplay,
-    required List<Map<String, dynamic>> watchlist,
     required String investingExperience,
     @Default(false) bool isSubscribed,
     required Map<String, String> fcmTokens,

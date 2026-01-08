@@ -45,11 +45,22 @@ class FirestoreService {
     return reference.snapshots();
   }
 
+  Stream<QuerySnapshot<Map<String, dynamic>>> getCollectionStream({
+    required String path,
+  }) {
+    final reference = _firestore.collection(path);
+    return reference.snapshots();
+  }
+
   Future<DocumentReference<Map<String, dynamic>>> addDocument({
     required String collectionPath,
     required Map<String, dynamic> data,
   }) async {
     final collection = _firestore.collection(collectionPath);
     return await collection.add(data);
+  }
+
+  Future<void> deleteDocument({required String path}) async {
+    await _firestore.doc(path).delete();
   }
 }

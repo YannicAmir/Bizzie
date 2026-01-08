@@ -24,11 +24,23 @@ class MockQuerySnapshot extends Mock
 class MockQueryDocumentSnapshot extends Mock
     implements QueryDocumentSnapshot<Map<String, dynamic>> {}
 
+class MockWriteBatch extends Mock implements WriteBatch {}
+
+class MockDocumentReference extends Mock
+    implements DocumentReference<Map<String, dynamic>> {}
+
+class FakeDocumentReference extends Fake
+    implements DocumentReference<Map<String, dynamic>> {}
+
 void main() {
   late OnboardingRemoteDataSource dataSource;
   late MockFirestoreService mockFirestoreService;
   late MockConfigService mockConfigService;
   late MockFirebaseFirestore mockFirestore;
+
+  setUpAll(() {
+    registerFallbackValue(FakeDocumentReference());
+  });
 
   setUp(() {
     mockFirestoreService = MockFirestoreService();
@@ -70,34 +82,38 @@ void main() {
       verify(() => mockConfigService.getBool(tKey)).called(1);
     });
 
-    test('saveUserProfile_validUser_callsSetDocument', () async {
+    test('saveUserProfile_validUser_callsBatchCommit', () async {
       // Arrange
-      const tUser = UserDto(
+      final tUser = UserDto(
         uid: '123',
         name: 'John',
         fcmTokens: {},
-        watchlist: [],
         investingExperience: 'beginner',
         isSubscribed: false,
         favoriteSector: '',
         favoriteSectorDisplay: '',
       );
+
+      final mockBatch = MockWriteBatch();
+      final mockUserRef = MockDocumentReference();
+      final mockUsersCollection = MockCollectionReference();
+
+      when(() => mockFirestore.batch()).thenReturn(mockBatch);
       when(
-        () => mockFirestoreService.setDocument(
-          path: any(named: 'path'),
-          data: any(named: 'data'),
-        ),
-      ).thenAnswer((_) async {});
+        () => mockFirestore.collection('users'),
+      ).thenReturn(mockUsersCollection);
+      when(() => mockUsersCollection.doc(any())).thenReturn(mockUserRef);
+      when(() => mockBatch.set(any(), any())).thenReturn(null);
+      when(() => mockBatch.commit()).thenAnswer((_) async {});
 
       // Act
-      await dataSource.saveUserProfile(tUser);
+      await dataSource.saveUserProfile(tUser, []);
 
       // Assert
+      verify(() => mockFirestore.batch()).called(1);
+      verify(() => mockBatch.commit()).called(1);
       verify(
-        () => mockFirestoreService.setDocument(
-          path: 'users/123',
-          data: any(named: 'data'),
-        ),
+        () => mockBatch.set<Map<String, dynamic>>(any(), any(), any()),
       ).called(1);
     });
 

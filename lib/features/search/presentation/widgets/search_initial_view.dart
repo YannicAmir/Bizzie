@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:bizzie/app/themes/app_colors.dart';
 import 'package:bizzie/features/onboarding/domain/models/company.dart';
-import 'package:bizzie/features/search/presentation/widgets/company_list_tile.dart';
+import 'package:bizzie/shared/widgets/company_list_tile.dart';
 
 class SearchInitialView extends StatelessWidget {
   final String? favoriteSector;

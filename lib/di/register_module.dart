@@ -3,6 +3,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -27,6 +28,9 @@ abstract class RegisterModule {
 
   @lazySingleton
   FirebaseStorage get storage => FirebaseStorage.instance;
+
+  @lazySingleton
+  DeviceInfoPlugin get deviceInfo => DeviceInfoPlugin();
 
   @preResolve
   Future<SharedPreferences> get prefs => SharedPreferences.getInstance();

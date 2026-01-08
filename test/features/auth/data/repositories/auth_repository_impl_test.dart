@@ -4,18 +4,26 @@ import 'package:bizzie/features/auth/domain/models/user_model.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MockRemoteAuthDataSource extends Mock implements RemoteAuthDataSource {}
+
+class MockSharedPreferences extends Mock implements SharedPreferences {}
 
 class MockUser extends Mock implements firebase_auth.User {}
 
 void main() {
   late AuthRepositoryImpl repository;
   late MockRemoteAuthDataSource mockRemoteDataSource;
+  late MockSharedPreferences mockSharedPreferences;
 
   setUp(() {
     mockRemoteDataSource = MockRemoteAuthDataSource();
-    repository = AuthRepositoryImpl(remoteDataSource: mockRemoteDataSource);
+    mockSharedPreferences = MockSharedPreferences();
+    repository = AuthRepositoryImpl(
+      remoteDataSource: mockRemoteDataSource,
+      sharedPreferences: mockSharedPreferences,
+    );
   });
 
   const tEmail = 'test@example.com';
@@ -131,6 +139,22 @@ void main() {
       // assert
       expect(() => call(), throwsException);
       verify(() => mockRemoteDataSource.deleteAccount());
+      verifyNoMoreInteractions(mockRemoteDataSource);
+    });
+  });
+
+  group('signOut', () {
+    test('signOut_success_callsClearAndRemoteSignOut', () async {
+      // arrange
+      when(() => mockSharedPreferences.clear()).thenAnswer((_) async => true);
+      when(() => mockRemoteDataSource.signOut()).thenAnswer((_) async {});
+
+      // act
+      await repository.signOut();
+
+      // assert
+      verify(() => mockSharedPreferences.clear()).called(1);
+      verify(() => mockRemoteDataSource.signOut()).called(1);
       verifyNoMoreInteractions(mockRemoteDataSource);
     });
   });
