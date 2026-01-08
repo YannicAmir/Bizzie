@@ -1,24 +1,23 @@
 import 'package:bizzie/features/onboarding/data/dtos/daily_brands_dto.dart';
 import 'package:bizzie/features/onboarding/data/dtos/user_dto.dart';
 import 'package:bizzie/features/onboarding/data/repositories/onboarding_repository_impl.dart';
+import 'package:bizzie/features/onboarding/domain/models/company.dart';
 import 'package:bizzie/features/onboarding/domain/models/onboarding_data.dart';
 import 'package:bizzie/features/onboarding/domain/models/sector.dart';
+import 'package:bizzie/features/onboarding/domain/models/user_model.dart';
 import 'package:bizzie/features/onboarding/data/datasources/onboarding_remote_datasource.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:bizzie/core/error/failures.dart';
 import 'package:mocktail/mocktail.dart';
 
 class MockOnboardingRemoteDataSource extends Mock
     implements IOnboardingRemoteDataSource {}
-
-class MockFirebaseMessaging extends Mock implements FirebaseMessaging {}
 
 class FakeUserDto extends Fake implements UserDto {}
 
 void main() {
   late OnboardingRepositoryImpl repository;
   late MockOnboardingRemoteDataSource mockRemoteDataSource;
-  late MockFirebaseMessaging mockFirebaseMessaging;
 
   setUpAll(() {
     registerFallbackValue(FakeUserDto());
@@ -26,11 +25,7 @@ void main() {
 
   setUp(() {
     mockRemoteDataSource = MockOnboardingRemoteDataSource();
-    mockFirebaseMessaging = MockFirebaseMessaging();
-    repository = OnboardingRepositoryImpl(
-      mockRemoteDataSource,
-      mockFirebaseMessaging,
-    );
+    repository = OnboardingRepositoryImpl(mockRemoteDataSource);
   });
 
   group('OnboardingRepositoryImpl', () {
@@ -46,8 +41,11 @@ void main() {
       final result = await repository.getSectors();
 
       // Assert
-      expect(result.length, 2);
-      expect(result.last, Sector.informationTechnology);
+      expect(result.isRight(), true);
+      result.fold((_) => fail('Should be Right'), (sectors) {
+        expect(sectors.length, 2);
+        expect(sectors.last, Sector.informationTechnology);
+      });
     });
 
     test('getDailyBrands_remoteReturnsNull_returnsMockData', () async {
@@ -60,7 +58,12 @@ void main() {
       final result = await repository.getDailyBrands(tSector);
 
       // Assert
-      expect(result.$1.isNotEmpty, true);
+      // Assert
+      expect(result.isRight(), true);
+      result.fold((_) => fail('Should be Right'), (r) {
+        final (global, _) = r;
+        expect(global.isNotEmpty, true);
+      });
       verify(() => mockRemoteDataSource.fetchDailyBrands()).called(1);
     });
 
@@ -90,26 +93,34 @@ void main() {
       final result = await repository.getDailyBrands(tSector);
 
       // Assert
-      expect(result.$1.length, 1);
-      expect(result.$1.first.name, 'Prod1');
+      // Assert
+      expect(result.isRight(), true);
+      result.fold((_) => fail('Should be Right'), (r) {
+        final (global, _) = r;
+        expect(global.length, 1);
+        expect(global.first.name, 'Prod1');
+      });
     });
 
-    test('completeOnboarding_validData_callsSaveUserProfile', () async {
+    test('saveUserProfile_validData_callsSaveUserProfile', () async {
       // Arrange
-      const tUid = 'uid_123';
-      const tData = OnboardingData(firstName: 'John');
-      when(
-        () => mockFirebaseMessaging.getToken(),
-      ).thenAnswer((_) async => 'fcm_token');
-      when(
-        () => mockFirebaseMessaging.subscribeToTopic(any()),
-      ).thenAnswer((_) async {});
+      final tUser = UserModel(
+        uid: 'uid_123',
+        name: 'John',
+        favoriteSector: 'Technology',
+        watchlist: [const Company(ticker: 'AAPL', name: 'Apple')],
+        investingExperience: InvestingExperience.beginner,
+        createdAt: DateTime.now(),
+        isSubscribed: false,
+        fcmTokens: {},
+      );
+
       when(
         () => mockRemoteDataSource.saveUserProfile(any(), any()),
       ).thenAnswer((_) async {});
 
       // Act
-      await repository.completeOnboarding(data: tData, uid: tUid);
+      await repository.saveUserProfile(tUser);
 
       // Assert
       verify(
@@ -123,31 +134,43 @@ void main() {
         () => mockRemoteDataSource.fetchDailyBrands(),
       ).thenThrow(Exception('Firestore Error'));
 
-      // Act & Assert
-      expect(
-        () => repository.getDailyBrands(tSector),
-        throwsA(isA<Exception>()),
+      // Act
+      final result = await repository.getDailyBrands(tSector);
+
+      // Assert
+      expect(result.isLeft(), true);
+      result.fold(
+        (l) => expect(l, isA<ServerFailure>()),
+        (_) => fail('Should be Left'),
       );
     });
 
-    test('completeOnboarding_saveThrows_throwsException', () async {
+    test('saveUserProfile_saveThrows_throwsException', () async {
       // Arrange
-      const tUid = 'uid_123';
-      const tData = OnboardingData(firstName: 'John');
-      when(
-        () => mockFirebaseMessaging.getToken(),
-      ).thenAnswer((_) async => 'fcm_token');
-      when(
-        () => mockFirebaseMessaging.subscribeToTopic(any()),
-      ).thenAnswer((_) async {});
+      final tUser = UserModel(
+        uid: 'uid_123',
+        name: 'John',
+        favoriteSector: 'Technology',
+        watchlist: [],
+        investingExperience: InvestingExperience.beginner,
+        createdAt: DateTime.now(),
+        isSubscribed: false,
+        fcmTokens: {},
+      );
+
       when(
         () => mockRemoteDataSource.saveUserProfile(any(), any()),
       ).thenThrow(Exception('Save Failed'));
 
       // Act & Assert
-      expect(
-        () => repository.completeOnboarding(data: tData, uid: tUid),
-        throwsA(isA<Exception>()),
+      // Act
+      final result = await repository.saveUserProfile(tUser);
+
+      // Assert
+      expect(result.isLeft(), true);
+      result.fold(
+        (l) => expect(l, isA<ServerFailure>()),
+        (_) => fail('Should be Left'),
       );
     });
   });

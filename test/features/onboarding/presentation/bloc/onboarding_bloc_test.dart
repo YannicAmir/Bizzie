@@ -1,30 +1,64 @@
 import 'package:bloc_test/bloc_test.dart';
+import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/features/auth/domain/models/user_model.dart';
 import 'package:bizzie/features/auth/domain/interfaces/i_auth_repository.dart';
-import 'package:bizzie/features/onboarding/domain/interfaces/i_onboarding_repository.dart';
 import 'package:bizzie/features/onboarding/domain/models/brand.dart';
 import 'package:bizzie/features/onboarding/domain/models/onboarding_data.dart';
+import 'package:bizzie/features/onboarding/domain/usecases/complete_onboarding_usecase.dart';
+import 'package:dartz/dartz.dart';
+import 'package:bizzie/features/onboarding/domain/usecases/get_daily_brands_usecase.dart';
+import 'package:bizzie/features/onboarding/domain/usecases/get_sectors_usecase.dart';
+import 'package:bizzie/features/onboarding/domain/usecases/get_sp500_history_usecase.dart';
 import 'package:bizzie/features/onboarding/presentation/bloc/onboarding_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
-class MockOnboardingRepository extends Mock implements IOnboardingRepository {}
+import 'package:bizzie/core/usecase/usecase.dart';
 
 class MockAuthRepository extends Mock implements IAuthRepository {}
 
+class MockCompleteOnboardingUseCase extends Mock
+    implements CompleteOnboardingUseCase {}
+
+class MockGetDailyBrandsUseCase extends Mock implements GetDailyBrandsUseCase {}
+
+class MockGetSectorsUseCase extends Mock implements GetSectorsUseCase {}
+
+class MockGetSp500HistoryUseCase extends Mock
+    implements GetSp500HistoryUseCase {}
+
+class FakeNoParams extends Fake implements NoParams {}
+
 void main() {
   late OnboardingBloc bloc;
-  late MockOnboardingRepository mockRepository;
   late MockAuthRepository mockAuthRepository;
+  late MockCompleteOnboardingUseCase mockCompleteOnboardingUseCase;
+  late MockGetDailyBrandsUseCase mockGetDailyBrandsUseCase;
+  late MockGetSectorsUseCase mockGetSectorsUseCase;
+  late MockGetSp500HistoryUseCase mockGetSp500HistoryUseCase;
 
   setUpAll(() {
     registerFallbackValue(const OnboardingData());
+    registerFallbackValue(
+      const CompleteOnboardingParams(data: OnboardingData(), uid: ''),
+    );
+    registerFallbackValue(FakeNoParams());
   });
 
   setUp(() {
-    mockRepository = MockOnboardingRepository();
     mockAuthRepository = MockAuthRepository();
-    bloc = OnboardingBloc(mockRepository, mockAuthRepository);
+    mockCompleteOnboardingUseCase = MockCompleteOnboardingUseCase();
+    mockGetDailyBrandsUseCase = MockGetDailyBrandsUseCase();
+    mockGetSectorsUseCase = MockGetSectorsUseCase();
+    mockGetSp500HistoryUseCase = MockGetSp500HistoryUseCase();
+
+    bloc = OnboardingBloc(
+      mockAuthRepository,
+      mockCompleteOnboardingUseCase,
+      mockGetDailyBrandsUseCase,
+      mockGetSectorsUseCase,
+      mockGetSp500HistoryUseCase,
+    );
   });
 
   tearDown(() {
@@ -45,9 +79,11 @@ void main() {
       // arrange
       build: () {
         when(
-          () => mockRepository.getSp500History(),
-        ).thenAnswer((_) async => []);
-        when(() => mockRepository.getSectors()).thenAnswer((_) async => []);
+          () => mockGetSp500HistoryUseCase(any()),
+        ).thenAnswer((_) async => const Right([]));
+        when(
+          () => mockGetSectorsUseCase(any()),
+        ).thenAnswer((_) async => const Right([]));
         return bloc;
       },
       // act
@@ -128,9 +164,9 @@ void main() {
       // arrange
       build: () {
         when(
-          () => mockRepository.getSp500History(),
-        ).thenThrow(Exception('API Failure'));
-        when(() => mockRepository.getSectors()).thenAnswer((_) async => []);
+          () => mockGetSp500HistoryUseCase(any()),
+        ).thenAnswer((_) async => const Left(ServerFailure('API Failure')));
+
         return bloc;
       },
       // act
@@ -167,13 +203,13 @@ void main() {
           onboardingData: OnboardingData(),
           isSubmitting: false,
           status: OnboardingStatus.failure,
-          failureMessage: 'Exception: User is not authenticated',
+          failureMessage: 'User is not authenticated',
         ),
       ],
     );
 
     blocTest<OnboardingBloc, OnboardingState>(
-      'completeOnboarding_repoThrows_emitsFailure',
+      'completeOnboarding_useCaseFailure_emitsFailure',
       // arrange
       build: () {
         when(() => mockAuthRepository.currentUser).thenReturn(
@@ -184,11 +220,8 @@ void main() {
           ),
         );
         when(
-          () => mockRepository.completeOnboarding(
-            data: any(named: 'data'),
-            uid: any(named: 'uid'),
-          ),
-        ).thenThrow(Exception('Repo Error'));
+          () => mockCompleteOnboardingUseCase(any()),
+        ).thenAnswer((_) async => Left(ServerFailure('UseCase Error')));
         return bloc;
       },
       // act
@@ -203,7 +236,39 @@ void main() {
           onboardingData: OnboardingData(),
           isSubmitting: false,
           status: OnboardingStatus.failure,
-          failureMessage: 'Exception: Repo Error',
+          failureMessage: 'UseCase Error',
+        ),
+      ],
+    );
+
+    blocTest<OnboardingBloc, OnboardingState>(
+      'completeOnboarding_success_emitsSuccess',
+      // arrange
+      build: () {
+        when(() => mockAuthRepository.currentUser).thenReturn(
+          const UserModel(
+            id: '123',
+            email: 'test@test.com',
+            displayName: 'Test',
+          ),
+        );
+        when(
+          () => mockCompleteOnboardingUseCase(any()),
+        ).thenAnswer((_) async => const Right(null));
+        return bloc;
+      },
+      // act
+      act: (bloc) => bloc.add(const OnboardingEvent.completeOnboarding()),
+      // assert
+      expect: () => [
+        const OnboardingState(
+          onboardingData: OnboardingData(),
+          isSubmitting: true,
+        ),
+        const OnboardingState(
+          onboardingData: OnboardingData(),
+          isSubmitting: false,
+          status: OnboardingStatus.success,
         ),
       ],
     );

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:bizzie/core/utils/string_utils.dart';
@@ -33,9 +34,16 @@ class WatchlistRepositoryImpl implements IWatchlistRepository {
 
       await _remoteDataSource.addWatchlistItem(dto, uid);
 
-      final topic = StringUtils.sanitizeTicker(company.ticker);
-      if (topic.isNotEmpty) {
-        await _firebaseMessaging.subscribeToTopic(topic);
+      try {
+        final topic = StringUtils.sanitizeTicker(company.ticker);
+        if (topic.isNotEmpty) {
+          await _firebaseMessaging.subscribeToTopic(topic);
+        }
+      } catch (e) {
+        _logger.warning(
+          'Failed to subscribe to topic for ${company.ticker} (proceeding)',
+          e,
+        );
       }
 
       final currentList = _localDataSource.getSubscribedTickers();
@@ -59,9 +67,16 @@ class WatchlistRepositoryImpl implements IWatchlistRepository {
     try {
       await _remoteDataSource.removeWatchlistItem(ticker, uid);
 
-      final topic = StringUtils.sanitizeTicker(ticker);
-      if (topic.isNotEmpty) {
-        await _firebaseMessaging.unsubscribeFromTopic(topic);
+      try {
+        final topic = StringUtils.sanitizeTicker(ticker);
+        if (topic.isNotEmpty) {
+          await _firebaseMessaging.unsubscribeFromTopic(topic);
+        }
+      } catch (e) {
+        _logger.warning(
+          'Failed to unsubscribe from topic for $ticker (proceeding)',
+          e,
+        );
       }
 
       final currentList = _localDataSource.getSubscribedTickers();
@@ -114,14 +129,27 @@ class WatchlistRepositoryImpl implements IWatchlistRepository {
 
   @override
   Stream<Either<Failure, List<Company>>> getWatchlistStream(String uid) {
-    return _remoteDataSource.getWatchlistStream(uid).map((dtos) {
-      try {
-        final companies = dtos.map((dto) => dto.toDomain()).toList();
-        return Right(companies);
-      } catch (e, stack) {
-        _logger.severe('Failed to map watchlist stream', e, stack);
-        return Left(ServerFailure(e.toString()));
-      }
-    });
+    return _remoteDataSource
+        .getWatchlistStream(uid)
+        .transform(
+          StreamTransformer<
+            List<WatchlistItemDto>,
+            Either<Failure, List<Company>>
+          >.fromHandlers(
+            handleData: (dtos, sink) {
+              try {
+                final companies = dtos.map((dto) => dto.toDomain()).toList();
+                sink.add(Right(companies));
+              } catch (e, stack) {
+                _logger.severe('Failed to map watchlist stream', e, stack);
+                sink.add(Left(ServerFailure(e.toString())));
+              }
+            },
+            handleError: (error, stack, sink) {
+              _logger.severe('Watchlist stream error', error, stack);
+              sink.add(Left(ServerFailure(error.toString())));
+            },
+          ),
+        );
   }
 }

@@ -28,6 +28,14 @@ class AppTextStyles {
     color: AppColors.textPrimary,
   );
 
+  static final TextStyle sectionHeader = GoogleFonts.inter(
+    fontSize: 22,
+    fontWeight: FontWeight.w700, // Bold
+    height: 1.5,
+    letterSpacing: -0.258,
+    color: AppColors.textPrimary,
+  );
+
   // Body Texts
   static final TextStyle subtitle = GoogleFonts.inter(
     fontSize: 17,

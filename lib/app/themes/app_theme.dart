@@ -13,6 +13,8 @@ class AppTheme {
         primary: AppColors.primary,
         surface: AppColors.surface,
         onSurface: AppColors.textPrimary,
+        onSurfaceVariant: AppColors.textSecondary,
+        secondaryContainer: AppColors.mascotBackground,
       ),
       textTheme: GoogleFonts.interTextTheme(ThemeData.light().textTheme)
           .copyWith(
