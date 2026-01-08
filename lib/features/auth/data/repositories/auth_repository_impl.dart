@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart' as firebase;
 import 'package:injectable/injectable.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../domain/interfaces/i_auth_repository.dart';
 import '../../domain/models/user_model.dart';
@@ -8,8 +9,12 @@ import '../datasources/remote_auth_data_source.dart';
 @LazySingleton(as: IAuthRepository)
 class AuthRepositoryImpl implements IAuthRepository {
   final RemoteAuthDataSource remoteDataSource;
+  final SharedPreferences sharedPreferences;
 
-  AuthRepositoryImpl({required this.remoteDataSource});
+  AuthRepositoryImpl({
+    required this.remoteDataSource,
+    required this.sharedPreferences,
+  });
 
   @override
   Stream<UserModel?> get authStateChanges {
@@ -64,6 +69,7 @@ class AuthRepositoryImpl implements IAuthRepository {
 
   @override
   Future<void> signOut() async {
+    await sharedPreferences.clear();
     return remoteDataSource.signOut();
   }
 

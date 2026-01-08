@@ -1,4 +1,5 @@
 import 'package:bizzie/core/logging/bizzie_logger.dart';
+import 'package:bizzie/core/utils/string_utils.dart';
 import 'package:bizzie/features/onboarding/data/datasources/dummy_price_data.dart';
 import 'package:bizzie/features/onboarding/domain/interfaces/i_onboarding_repository.dart';
 import 'package:bizzie/features/onboarding/domain/models/brand.dart';
@@ -181,14 +182,16 @@ class OnboardingRepositoryImpl implements IOnboardingRepository {
     if (fcmToken != null && fcmToken.isNotEmpty) {
       final selectedSector = data.selectedSector;
       if (selectedSector != null) {
-        final sanitizedSector = _sanitizeTopic(selectedSector.displayName);
+        final sanitizedSector = StringUtils.sanitizeTopic(
+          selectedSector.displayName,
+        );
         if (sanitizedSector.isNotEmpty) {
           await _firebaseMessaging.subscribeToTopic(sanitizedSector);
         }
       }
 
       for (final company in data.detectedCompanies) {
-        final sanitizedTicker = _sanitizeTopic(company.ticker);
+        final sanitizedTicker = StringUtils.sanitizeTicker(company.ticker);
         if (sanitizedTicker.isNotEmpty) {
           await _firebaseMessaging.subscribeToTopic(sanitizedTicker);
         }
@@ -203,7 +206,7 @@ class OnboardingRepositoryImpl implements IOnboardingRepository {
       uid: uid,
       name: data.firstName,
       favoriteSector: data.selectedSector != null
-          ? _sanitizeTopic(data.selectedSector!.displayName)
+          ? StringUtils.sanitizeTopic(data.selectedSector!.displayName)
           : '',
       favoriteSectorDisplay: data.selectedSector?.displayName ?? '',
       investingExperience: data.investingExperience?.name ?? 'beginner',
@@ -212,13 +215,5 @@ class OnboardingRepositoryImpl implements IOnboardingRepository {
     );
 
     await _remoteDataSource.saveUserProfile(userDto, watchlistItems);
-  }
-
-  String _sanitizeTopic(String input) {
-    return input
-        .trim()
-        .replaceAll(' ', '_')
-        .replaceAll(RegExp(r'[^a-zA-Z0-9_]'), '')
-        .toLowerCase();
   }
 }

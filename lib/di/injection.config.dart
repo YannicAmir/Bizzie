@@ -85,6 +85,23 @@ import '../features/user/data/repositories/user_repository_impl.dart' as _i272;
 import '../features/user/domain/interfaces/user_repository.dart' as _i615;
 import '../features/user/domain/usecases/get_user_usecase.dart' as _i561;
 import '../features/user/presentation/bloc/user_bloc.dart' as _i200;
+import '../features/watchlist/data/datasources/watchlist_local_datasource.dart'
+    as _i114;
+import '../features/watchlist/data/datasources/watchlist_remote_datasource.dart'
+    as _i444;
+import '../features/watchlist/data/repositories/watchlist_repository_impl.dart'
+    as _i259;
+import '../features/watchlist/domain/interfaces/watchlist_repository.dart'
+    as _i1039;
+import '../features/watchlist/domain/usecases/add_to_watchlist_usecase.dart'
+    as _i258;
+import '../features/watchlist/domain/usecases/get_watchlist_usecase.dart'
+    as _i759;
+import '../features/watchlist/domain/usecases/remove_from_watchlist_usecase.dart'
+    as _i320;
+import '../features/watchlist/domain/usecases/sync_watchlist_usecase.dart'
+    as _i1003;
+import '../features/watchlist/presentation/bloc/watchlist_bloc.dart' as _i63;
 import '../services/config_service.dart' as _i216;
 import '../services/firestore_service.dart' as _i52;
 import 'register_module.dart' as _i291;
@@ -138,6 +155,9 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i216.ConfigService>(),
       ),
     );
+    gh.factory<_i444.IWatchlistRemoteDataSource>(
+      () => _i444.WatchlistRemoteDataSource(gh<_i52.FirestoreService>()),
+    );
     gh.factory<_i69.GetFcmToken>(
       () => _i69.GetFcmToken(gh<_i622.INotificationRepository>()),
     );
@@ -165,6 +185,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i481.IUserRemoteDataSource>(
       () => _i481.UserRemoteDataSource(gh<_i52.FirestoreService>()),
     );
+    gh.factory<_i114.IWatchlistLocalDataSource>(
+      () => _i114.WatchlistLocalDataSource(gh<_i460.SharedPreferences>()),
+    );
     gh.lazySingleton<_i615.IUserRepository>(
       () => _i272.UserRepositoryImpl(
         gh<_i481.IUserRemoteDataSource>(),
@@ -174,6 +197,13 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i329.IOnboardingRepository>(
       () => _i379.OnboardingRepositoryImpl(
         gh<_i1016.IOnboardingRemoteDataSource>(),
+        gh<_i892.FirebaseMessaging>(),
+      ),
+    );
+    gh.lazySingleton<_i1039.IWatchlistRepository>(
+      () => _i259.WatchlistRepositoryImpl(
+        gh<_i444.IWatchlistRemoteDataSource>(),
+        gh<_i114.IWatchlistLocalDataSource>(),
         gh<_i892.FirebaseMessaging>(),
       ),
     );
@@ -216,13 +246,44 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i561.GetUserUseCase>(
       () => _i561.GetUserUseCase(gh<_i615.IUserRepository>()),
     );
+    gh.lazySingleton<_i200.UserBloc>(
+      () => _i200.UserBloc(gh<_i561.GetUserUseCase>()),
+    );
     gh.lazySingleton<_i685.IAuthRepository>(
       () => _i570.AuthRepositoryImpl(
         remoteDataSource: gh<_i877.RemoteAuthDataSource>(),
+        sharedPreferences: gh<_i460.SharedPreferences>(),
       ),
     );
-    gh.lazySingleton<_i200.UserBloc>(
-      () => _i200.UserBloc(gh<_i561.GetUserUseCase>()),
+    gh.factory<_i258.AddToWatchlistUseCase>(
+      () => _i258.AddToWatchlistUseCase(gh<_i1039.IWatchlistRepository>()),
+    );
+    gh.factory<_i320.RemoveFromWatchlistUseCase>(
+      () => _i320.RemoveFromWatchlistUseCase(gh<_i1039.IWatchlistRepository>()),
+    );
+    gh.factory<_i1003.SyncWatchlistUseCase>(
+      () => _i1003.SyncWatchlistUseCase(gh<_i1039.IWatchlistRepository>()),
+    );
+    gh.lazySingleton<_i759.GetWatchlistUseCase>(
+      () => _i759.GetWatchlistUseCase(gh<_i1039.IWatchlistRepository>()),
+    );
+    gh.lazySingleton<_i269.StockSearchService>(
+      () => _i269.StockSearchService(gh<_i456.IStockRepository>()),
+    );
+    gh.factory<_i63.WatchlistBloc>(
+      () => _i63.WatchlistBloc(
+        gh<_i759.GetWatchlistUseCase>(),
+        gh<_i258.AddToWatchlistUseCase>(),
+        gh<_i320.RemoveFromWatchlistUseCase>(),
+        gh<_i1003.SyncWatchlistUseCase>(),
+        gh<_i685.IAuthRepository>(),
+      ),
+    );
+    gh.factory<_i593.OnboardingBloc>(
+      () => _i593.OnboardingBloc(
+        gh<_i329.IOnboardingRepository>(),
+        gh<_i685.IAuthRepository>(),
+      ),
     );
     gh.lazySingleton<_i739.DeleteAccount>(
       () => _i739.DeleteAccount(gh<_i685.IAuthRepository>()),
@@ -245,15 +306,15 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i588.SignUpWithEmail>(
       () => _i588.SignUpWithEmail(gh<_i685.IAuthRepository>()),
     );
+    gh.factory<_i130.SearchStocksUseCase>(
+      () => _i130.SearchStocksUseCase(gh<_i269.StockSearchService>()),
+    );
     gh.factory<_i555.GetSearchDashboardDataUseCase>(
       () => _i555.GetSearchDashboardDataUseCase(
         gh<_i685.IAuthRepository>(),
         gh<_i561.GetUserUseCase>(),
         gh<_i693.GetRecommendedBrandsUseCase>(),
       ),
-    );
-    gh.lazySingleton<_i269.StockSearchService>(
-      () => _i269.StockSearchService(gh<_i456.IStockRepository>()),
     );
     gh.lazySingleton<_i59.AuthBloc>(
       () => _i59.AuthBloc(
@@ -266,15 +327,6 @@ extension GetItInjectableX on _i174.GetIt {
         resetPassword: gh<_i73.ResetPassword>(),
         deleteAccount: gh<_i739.DeleteAccount>(),
       ),
-    );
-    gh.factory<_i593.OnboardingBloc>(
-      () => _i593.OnboardingBloc(
-        gh<_i329.IOnboardingRepository>(),
-        gh<_i685.IAuthRepository>(),
-      ),
-    );
-    gh.factory<_i130.SearchStocksUseCase>(
-      () => _i130.SearchStocksUseCase(gh<_i269.StockSearchService>()),
     );
     gh.factory<_i348.SearchBloc>(
       () => _i348.SearchBloc(
