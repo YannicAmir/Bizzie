@@ -156,7 +156,7 @@ class OnboardingRepositoryImpl implements IOnboardingRepository {
   @override
   Future<Either<Failure, List<Sector>>> getSectors() async {
     try {
-      final sectorStrings = await _remoteDataSource.getStockMarketSectors();
+      final sectorStrings = _remoteDataSource.getStockMarketSectors();
       final sectors = sectorStrings
           .map((s) => Sector.fromString(s))
           .whereType<Sector>()
