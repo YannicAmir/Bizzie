@@ -12,7 +12,6 @@ class BizzieBottomNavWrapper extends StatelessWidget {
   void _onTap(BuildContext context, int index) {
     HapticFeedback.lightImpact();
     if (index == navigationShell.currentIndex) {
-      // Pop to root of the current branch
       navigationShell.goBranch(
         index,
         initialLocation: index == navigationShell.currentIndex,
