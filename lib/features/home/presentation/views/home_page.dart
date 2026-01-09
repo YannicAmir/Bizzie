@@ -41,7 +41,7 @@ class _HomePageState extends State<HomePage> {
         title: BizzieSearchBar(
           readOnly: true,
           onTap: () {
-            context.push(AppRoutes.search);
+            context.push(AppRoutes.search, extra: 'home');
           },
         ),
       ),
@@ -53,54 +53,59 @@ class _HomePageState extends State<HomePage> {
           child: BlocBuilder<AuthBloc, AuthState>(
             builder: (context, state) {
               return state.maybeWhen(
-                authenticated: (user) => Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text('Welcome, ${user.id}!'),
-                    const SizedBox(height: 20),
-                    ElevatedButton(
-                      onPressed: () {
-                        context.read<AuthBloc>().add(
-                          const AuthLogoutRequested(),
-                        );
-                      },
-                      child: const Text('Logout'),
+                authenticated: (user) => SingleChildScrollView(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 24.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text('Welcome, ${user.id}!'),
+                        const SizedBox(height: 20),
+                        ElevatedButton(
+                          onPressed: () {
+                            context.read<AuthBloc>().add(
+                              const AuthLogoutRequested(),
+                            );
+                          },
+                          child: const Text('Logout'),
+                        ),
+                        const SizedBox(height: 10),
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.red,
+                            foregroundColor: Colors.white,
+                          ),
+                          onPressed: () {
+                            context.read<AuthBloc>().add(
+                              const AuthDeleteAccountRequested(),
+                            );
+                          },
+                          child: const Text('Delete Account'),
+                        ),
+                        const SizedBox(height: 20),
+                        ElevatedButton(
+                          onPressed: () =>
+                              context.push(AppRoutes.onboardingNotifications),
+                          child: const Text('Notification Shortcut'),
+                        ),
+                        const SizedBox(height: 20),
+                        Text(
+                          'Local storage: ${getIt<IUserRepository>().getCachedFavoriteSector() ?? "None"}',
+                        ),
+                        const SizedBox(height: 10),
+                        BlocBuilder<UserBloc, UserState>(
+                          builder: (context, userState) {
+                            return userState.maybeWhen(
+                              loaded: (user) => Text('DB: ${user.createdAt}'),
+                              orElse: () => const Text('DB: Loading...'),
+                            );
+                          },
+                        ),
+                        const SizedBox(height: 20),
+                        const HomeWatchlistWidget(),
+                      ],
                     ),
-                    const SizedBox(height: 10),
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.red,
-                        foregroundColor: Colors.white,
-                      ),
-                      onPressed: () {
-                        context.read<AuthBloc>().add(
-                          const AuthDeleteAccountRequested(),
-                        );
-                      },
-                      child: const Text('Delete Account'),
-                    ),
-                    const SizedBox(height: 20),
-                    ElevatedButton(
-                      onPressed: () =>
-                          context.push(AppRoutes.onboardingNotifications),
-                      child: const Text('Notification Shortcut'),
-                    ),
-                    const SizedBox(height: 20),
-                    Text(
-                      'Local storage: ${getIt<IUserRepository>().getCachedFavoriteSector() ?? "None"}',
-                    ),
-                    const SizedBox(height: 10),
-                    BlocBuilder<UserBloc, UserState>(
-                      builder: (context, userState) {
-                        return userState.maybeWhen(
-                          loaded: (user) => Text('DB: ${user.createdAt}'),
-                          orElse: () => const Text('DB: Loading...'),
-                        );
-                      },
-                    ),
-                    const SizedBox(height: 20),
-                    const HomeWatchlistWidget(),
-                  ],
+                  ),
                 ),
                 orElse: () => Column(
                   mainAxisAlignment: MainAxisAlignment.center,

@@ -45,6 +45,20 @@ class AppAssets {
   static const String searchIconLarge =
       'assets/images/search/search_icon_large.png';
 
+  // Home Feature
+  static const String homeUnselectedIcon =
+      'assets/images/home/home_unselected_icon.svg';
+  static const String homeSelectedIcon =
+      'assets/images/home/home_selected_icon.svg';
+  static const String homeReportsUnselectedIcon =
+      'assets/images/home/reports_unselected_icon.svg';
+  static const String homeReportsSelectedIcon =
+      'assets/images/home/reports_selected_icon.svg';
+  static const String homeProfileUnselectedIcon =
+      'assets/images/home/profile_unselected_icon.svg';
+  static const String homeProfileSelectedIcon =
+      'assets/images/home/profile_selected_icon.svg';
+
   // Shared
   static const String backArrowIcon =
       'assets/images/shared/back_arrow_icon.png';

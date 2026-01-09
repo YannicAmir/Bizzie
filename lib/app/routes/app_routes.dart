@@ -8,6 +8,16 @@ class AppRoutes {
   static const String emailSent = '/email-sent';
   static const String terms = '/terms';
   static const String privacy = '/privacy';
+  static const String notificationRequest = '/notifications';
+  static const String companyProfile = '/company/:ticker';
+
+  static const String reports = '/reports';
+  static const String profile = '/profile';
+
+  // Namespaced Company Profile Routes for Bottom Nav Stacks
+  static const String companyProfileHome = 'companyProfileHome';
+  static const String companyProfileReports = 'companyProfileReports';
+  static const String companyProfileProfile = 'companyProfileProfile';
   static const String onboardingNotifications = '/onboarding/notifications';
   static const String landing = '/landing';
   static const String onboardingName = '/onboarding/name';

@@ -45,7 +45,11 @@ class HomeWatchlistWidget extends StatelessWidget {
                       symbol: company.ticker,
                       name: company.name,
                       onTap: () {
-                        // TODO: Navigate to company profile
+                        context.pushNamed(
+                          AppRoutes.companyProfileHome,
+                          pathParameters: {'ticker': company.ticker},
+                          extra: company,
+                        );
                       },
                       // Placeholder for future pricing info
                       trailing: Text(

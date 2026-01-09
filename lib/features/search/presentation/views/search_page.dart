@@ -11,7 +11,9 @@ import 'package:bizzie/features/search/presentation/widgets/ai_no_match_view.dar
 import 'package:bizzie/shared/widgets/loading/bizzie_loader.dart';
 
 class SearchPage extends StatefulWidget {
-  const SearchPage({super.key});
+  final String? sourceTab;
+
+  const SearchPage({super.key, this.sourceTab});
 
   @override
   State<SearchPage> createState() => _SearchPageState();
@@ -75,13 +77,17 @@ class _SearchPageState extends State<SearchPage> {
             initial: (state) => SearchInitialView(
               favoriteSector: state.favoriteSector,
               recommendedBrands: state.recommendedBrands,
+              sourceTab: widget.sourceTab,
             ),
             loading: (state) => BizzieLoader(
               message: 'Fetching stocks',
               sectorName: state.favoriteSector,
             ),
-            loaded: (data) =>
-                SearchResultsView(results: data.results, query: data.query),
+            loaded: (data) => SearchResultsView(
+              results: data.results,
+              query: data.query,
+              sourceTab: widget.sourceTab,
+            ),
             localEmpty: (state) => AiSearchPromptView(
               query: state.query,
               onSearchTap: () {
@@ -95,6 +101,7 @@ class _SearchPageState extends State<SearchPage> {
             aiSuccess: (state) => AiMatchSuccessView(
               productName: state.productQuery,
               stock: state.stock,
+              sourceTab: widget.sourceTab,
             ),
             aiEmpty: (state) => AiNoMatchView(
               productName: state.productQuery,

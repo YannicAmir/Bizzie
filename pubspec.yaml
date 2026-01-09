@@ -44,6 +44,7 @@ dependencies:
   flutter_native_splash: ^2.4.6
   async: ^2.13.0
   firebase_ai: ^3.6.1
+  flutter_svg: ^2.2.3
 
 dev_dependencies:
   flutter_test:
@@ -67,6 +68,7 @@ flutter:
     - assets/images/auth/
     - assets/images/onboarding/
     - assets/images/search/
+    - assets/images/home/
 
   # To add custom fonts to your application, add a fonts section here,
   # in this "flutter" section. Each entry in this list should have a

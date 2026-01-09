@@ -4,15 +4,20 @@ import 'package:bizzie/features/search/domain/models/stock_symbol.dart';
 import 'package:bizzie/features/search/presentation/bloc/search_bloc.dart';
 import 'package:bizzie/shared/widgets/company_list_tile.dart';
 import 'package:bizzie/shared/widgets/buttons/bizzie_primary_button.dart';
+import 'package:bizzie/app/routes/app_routes.dart';
+import 'package:bizzie/features/onboarding/domain/models/company.dart';
+import 'package:go_router/go_router.dart';
 
 class SearchResultsView extends StatelessWidget {
   final List<StockSymbol> results;
   final String query;
+  final String? sourceTab;
 
   const SearchResultsView({
     super.key,
     required this.results,
     required this.query,
+    this.sourceTab,
   });
 
   @override
@@ -31,7 +36,17 @@ class SearchResultsView extends StatelessWidget {
                 name: stock.name,
                 showLeading: false,
                 onTap: () {
-                  // TODO: Handle selection
+                  final String routeName = switch (sourceTab) {
+                    'reports' => AppRoutes.companyProfileReports,
+                    'profile' => AppRoutes.companyProfileProfile,
+                    _ => AppRoutes.companyProfileHome,
+                  };
+
+                  context.goNamed(
+                    routeName,
+                    pathParameters: {'ticker': stock.symbol},
+                    extra: Company(ticker: stock.symbol, name: stock.name),
+                  );
                 },
               );
             },
