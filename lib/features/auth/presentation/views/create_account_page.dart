@@ -13,8 +13,7 @@ import '../widgets/create_account_form.dart';
 import '../widgets/mascot_info_card.dart';
 import '../widgets/social_login_buttons.dart';
 import 'package:bizzie/features/onboarding/presentation/bloc/onboarding_bloc.dart';
-import 'package:bizzie/features/onboarding/presentation/utils/onboarding_assets_helper.dart';
-import 'package:bizzie/app/themes/app_assets.dart';
+
 import 'package:bizzie/features/onboarding/presentation/widgets/onboarding_header.dart';
 
 class CreateAccountPage extends StatelessWidget {
@@ -52,23 +51,10 @@ class CreateAccountPage extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(horizontal: 24.0),
                     child: BlocBuilder<OnboardingBloc, OnboardingState>(
                       builder: (context, onboardingState) {
-                        final data = onboardingState.onboardingData;
-                        final selectedSector = data.selectedSector;
-                        final name = data.firstName.isEmpty
-                            ? 'Friend'
-                            : data.firstName;
-                        final sectorName =
-                            selectedSector?.displayName ?? 'Your Sector';
-                        final mascotAsset = selectedSector != null
-                            ? OnboardingAssetsHelper.getMascotForSector(
-                                selectedSector,
-                              )
-                            : AppAssets.defaultMascot;
-
                         return MascotInfoCard(
-                          name: name,
-                          sectorName: sectorName,
-                          mascotAsset: mascotAsset,
+                          name: onboardingState.greetingName,
+                          sectorName: onboardingState.displaySectorName,
+                          mascotAsset: onboardingState.mascotAsset,
                         );
                       },
                     ),

@@ -5,9 +5,8 @@ part 'watchlist_event.freezed.dart';
 
 @freezed
 class WatchlistEvent with _$WatchlistEvent {
-  const factory WatchlistEvent.syncRequested() = _SyncRequested;
-  const factory WatchlistEvent.addRequested(Company company) = _AddRequested;
-  const factory WatchlistEvent.removeRequested(String ticker) =
-      _RemoveRequested;
-  const factory WatchlistEvent.loadRequested() = _LoadRequested;
+  const factory WatchlistEvent.syncRequested() = SyncRequested;
+  const factory WatchlistEvent.addRequested(Company company) = AddRequested;
+  const factory WatchlistEvent.removeRequested(String ticker) = RemoveRequested;
+  const factory WatchlistEvent.loadRequested() = LoadRequested;
 }

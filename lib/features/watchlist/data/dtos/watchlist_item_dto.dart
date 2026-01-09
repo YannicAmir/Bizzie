@@ -1,4 +1,4 @@
-import 'package:bizzie/features/user/data/dtos/user_dto.dart'; // For TimestampConverter
+import 'package:bizzie/features/user/data/dtos/user_dto.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:bizzie/features/onboarding/domain/models/company.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';

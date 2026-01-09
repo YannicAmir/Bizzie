@@ -1,5 +1,3 @@
-import 'package:bizzie/app/themes/app_colors.dart';
-import 'package:bizzie/app/themes/app_text_styles.dart';
 import 'package:flutter/material.dart';
 
 class AuthDivider extends StatelessWidget {
@@ -9,23 +7,15 @@ class AuthDivider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Row(
       children: [
-        const Expanded(
-          child: Divider(color: AppColors.inputBorder, thickness: 1),
-        ),
+        const Expanded(child: Divider()),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Text(
-            text,
-            style: AppTextStyles.caption.copyWith(
-              color: AppColors.textTertiary,
-            ),
-          ),
+          child: Text(text, style: theme.textTheme.labelSmall),
         ),
-        const Expanded(
-          child: Divider(color: AppColors.inputBorder, thickness: 1),
-        ),
+        const Expanded(child: Divider()),
       ],
     );
   }

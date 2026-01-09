@@ -1,10 +1,15 @@
+import 'package:bizzie/core/error/failures.dart';
+import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase;
+import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../domain/interfaces/i_auth_repository.dart';
 import '../../domain/models/user_model.dart';
 import '../datasources/remote_auth_data_source.dart';
+
+final _logger = BizzieLogger('AuthRepositoryImpl');
 
 @LazySingleton(as: IAuthRepository)
 class AuthRepositoryImpl implements IAuthRepository {
@@ -32,55 +37,112 @@ class AuthRepositoryImpl implements IAuthRepository {
   }
 
   @override
-  Future<UserModel> signInWithEmail({
+  Future<Either<Failure, UserModel>> signInWithEmail({
     required String email,
     required String password,
   }) async {
-    final firebaseUser = await remoteDataSource.signInWithEmail(
-      email: email,
-      password: password,
-    );
-    return _mapFirebaseUserToUserModel(firebaseUser);
+    try {
+      final firebaseUser = await remoteDataSource.signInWithEmail(
+        email: email,
+        password: password,
+      );
+      return Right(_mapFirebaseUserToUserModel(firebaseUser));
+    } on firebase.FirebaseAuthException catch (e) {
+      _logger.warning('SignInWithEmail failed', e);
+      return Left(ServerFailure(e.message ?? 'Authentication failed'));
+    } catch (e) {
+      _logger.severe('SignInWithEmail unknown error', e);
+      return Left(ServerFailure(e.toString()));
+    }
   }
 
   @override
-  Future<UserModel> signUpWithEmail({
+  Future<Either<Failure, UserModel>> signUpWithEmail({
     required String email,
     required String password,
   }) async {
-    final firebaseUser = await remoteDataSource.signUpWithEmail(
-      email: email,
-      password: password,
-    );
-    return _mapFirebaseUserToUserModel(firebaseUser);
+    try {
+      final firebaseUser = await remoteDataSource.signUpWithEmail(
+        email: email,
+        password: password,
+      );
+      return Right(_mapFirebaseUserToUserModel(firebaseUser));
+    } on firebase.FirebaseAuthException catch (e) {
+      _logger.warning('SignUpWithEmail failed', e);
+      return Left(ServerFailure(e.message ?? 'Registration failed'));
+    } catch (e) {
+      _logger.severe('SignUpWithEmail unknown error', e);
+      return Left(ServerFailure(e.toString()));
+    }
   }
 
   @override
-  Future<UserModel> signInWithGoogle() async {
-    final firebaseUser = await remoteDataSource.signInWithGoogle();
-    return _mapFirebaseUserToUserModel(firebaseUser);
+  Future<Either<Failure, UserModel>> signInWithGoogle() async {
+    try {
+      final firebaseUser = await remoteDataSource.signInWithGoogle();
+      return Right(_mapFirebaseUserToUserModel(firebaseUser));
+    } on firebase.FirebaseAuthException catch (e) {
+      _logger.warning('SignInWithGoogle failed', e);
+      return Left(ServerFailure(e.message ?? 'Google Sign-In failed'));
+    } catch (e) {
+      _logger.severe('SignInWithGoogle unknown error', e);
+      return Left(ServerFailure(e.toString()));
+    }
   }
 
   @override
-  Future<UserModel> signInWithApple() async {
-    final firebaseUser = await remoteDataSource.signInWithApple();
-    return _mapFirebaseUserToUserModel(firebaseUser);
+  Future<Either<Failure, UserModel>> signInWithApple() async {
+    try {
+      final firebaseUser = await remoteDataSource.signInWithApple();
+      return Right(_mapFirebaseUserToUserModel(firebaseUser));
+    } on firebase.FirebaseAuthException catch (e) {
+      _logger.warning('SignInWithApple failed', e);
+      return Left(ServerFailure(e.message ?? 'Apple Sign-In failed'));
+    } catch (e) {
+      _logger.severe('SignInWithApple unknown error', e);
+      return Left(ServerFailure(e.toString()));
+    }
   }
 
   @override
-  Future<void> signOut() async {
-    await sharedPreferences.clear();
-    return remoteDataSource.signOut();
+  Future<Either<Failure, void>> signOut() async {
+    try {
+      await sharedPreferences.clear();
+
+      await remoteDataSource.signOut();
+      return const Right(null);
+    } catch (e) {
+      _logger.severe('SignOut failed', e);
+      return Left(ServerFailure(e.toString()));
+    }
   }
 
   @override
-  Future<void> resetPassword({required String email}) async {
-    return remoteDataSource.resetPassword(email: email);
+  Future<Either<Failure, void>> resetPassword({required String email}) async {
+    try {
+      await remoteDataSource.resetPassword(email: email);
+      return const Right(null);
+    } on firebase.FirebaseAuthException catch (e) {
+      _logger.warning('ResetPassword failed', e);
+      return Left(ServerFailure(e.message ?? 'Password reset failed'));
+    } catch (e) {
+      _logger.severe('ResetPassword unknown error', e);
+      return Left(ServerFailure(e.toString()));
+    }
   }
 
   @override
-  Future<void> deleteAccount() async {
-    return remoteDataSource.deleteAccount();
+  Future<Either<Failure, void>> deleteAccount() async {
+    try {
+      await remoteDataSource.deleteAccount();
+      return const Right(null);
+    } on firebase.FirebaseAuthException catch (e) {
+      _logger.warning('DeleteAccount failed', e);
+      return Left(ServerFailure(e.message ?? 'Account deletion failed'));
+    } catch (e) {
+      _logger.severe('DeleteAccount unknown error', e);
+      return Left(ServerFailure(e.toString()));
+    }
   }
 
   UserModel _mapFirebaseUserToUserModel(firebase.User user) {

@@ -1,51 +1,70 @@
 import 'dart:io';
 import 'package:device_info_plus/device_info_plus.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:bizzie/core/interfaces/i_notification_service.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
+import 'package:bizzie/features/notifications/data/datasources/local_notification_datasource.dart';
+import 'package:bizzie/features/notifications/domain/interfaces/i_notification_repository.dart';
 import 'package:injectable/injectable.dart';
 
 final _logger = BizzieLogger('NotificationService');
 
 @LazySingleton(as: INotificationService)
 class NotificationService implements INotificationService {
-  final FirebaseMessaging _firebaseMessaging;
+  final INotificationRepository _notificationRepository;
+  final LocalNotificationDataSource _localNotificationDataSource;
   final DeviceInfoPlugin _deviceInfo;
 
-  NotificationService(this._firebaseMessaging, this._deviceInfo);
+  NotificationService(
+    this._notificationRepository,
+    this._localNotificationDataSource,
+    this._deviceInfo,
+  ) {
+    _initialize();
+  }
+
+  void _initialize() {
+    _notificationRepository.onMessage.listen((message) {
+      if (message.title.isNotEmpty || message.body.isNotEmpty) {
+        _logger.info('Received message, showing local notification');
+        _localNotificationDataSource.showNotification(
+          id: DateTime.now().millisecondsSinceEpoch ~/ 1000,
+          title: message.title,
+          body: message.body,
+          payload: message.data.toString(),
+        );
+      }
+    });
+  }
 
   @override
   Future<String?> getFcmToken() async {
-    try {
-      return await _firebaseMessaging.getToken();
-    } catch (e) {
-      _logger.severe('Failed to fetch FCM token: $e');
+    final result = await _notificationRepository.getFcmToken();
+    return result.fold((failure) {
+      _logger.severe('Failed to fetch FCM token: ${failure.message}');
       return null;
-    }
+    }, (token) => token);
   }
 
   @override
   Future<void> subscribeToTopic(String topic) async {
     _logger.info('Subscribing to topic: $topic');
-    try {
-      await _firebaseMessaging.subscribeToTopic(topic);
-      _logger.info('Successfully subscribed to topic: $topic');
-    } catch (e) {
-      _logger.severe('Failed to subscribe to topic $topic: $e');
-      rethrow;
-    }
+    final result = await _notificationRepository.subscribeToTopic(topic);
+    result.fold((failure) {
+      _logger.severe('Failed to subscribe to topic $topic: ${failure.message}');
+      throw Exception(failure.message);
+    }, (_) => _logger.info('Successfully subscribed to topic: $topic'));
   }
 
   @override
   Future<void> unsubscribeFromTopic(String topic) async {
     _logger.info('Unsubscribing from topic: $topic');
-    try {
-      await _firebaseMessaging.unsubscribeFromTopic(topic);
-      _logger.info('Successfully unsubscribed from topic: $topic');
-    } catch (e) {
-      _logger.severe('Failed to unsubscribe from topic $topic: $e');
-      rethrow;
-    }
+    final result = await _notificationRepository.unsubscribeFromTopic(topic);
+    result.fold((failure) {
+      _logger.severe(
+        'Failed to unsubscribe from topic $topic: ${failure.message}',
+      );
+      throw Exception(failure.message);
+    }, (_) => _logger.info('Successfully unsubscribed from topic: $topic'));
   }
 
   @override

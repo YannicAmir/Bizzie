@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bizzie/features/search/presentation/bloc/search_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:bizzie/features/search/presentation/widgets/search_app_bar.dart';
 import 'package:bizzie/features/search/presentation/widgets/search_initial_view.dart';
 import 'package:bizzie/features/search/presentation/widgets/search_results_view.dart';
@@ -45,8 +46,10 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   void _onCancelTapped() {
-    if (Navigator.canPop(context)) {
-      Navigator.pop(context);
+    FocusScope.of(context).unfocus();
+
+    if (context.canPop()) {
+      context.pop();
     }
   }
 
@@ -57,10 +60,8 @@ class _SearchPageState extends State<SearchPage> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     return Scaffold(
-      backgroundColor: theme.scaffoldBackgroundColor,
+      resizeToAvoidBottomInset: false,
       appBar: SearchAppBar(
         controller: _searchController,
         focusNode: _focusNode,

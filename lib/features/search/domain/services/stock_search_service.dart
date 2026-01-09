@@ -1,19 +1,9 @@
-import 'dart:convert';
 import 'package:injectable/injectable.dart';
-import 'package:flutter/foundation.dart';
 import 'package:bizzie/features/search/domain/interfaces/i_stock_repository.dart';
 import 'package:bizzie/features/search/domain/models/stock_symbol.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
 
 final _logger = BizzieLogger('StockSearchService');
-
-List<StockSymbol> _parseStocks(String jsonContent) {
-  final Map<String, dynamic> data = jsonDecode(jsonContent);
-  final List<dynamic> list = data['stocks'] as List<dynamic>;
-  return list
-      .map((e) => StockSymbol.fromJson(e as Map<String, dynamic>))
-      .toList();
-}
 
 @lazySingleton
 class StockSearchService {
@@ -27,28 +17,28 @@ class StockSearchService {
   Future<void> initialize() async {
     if (_isInitialized) return;
 
+    _logger.info('Initializing StockSearchService');
+
     final hasFile = await _repository.hasLocalFile();
 
     if (!hasFile) {
+      _logger.info('No local stock list found, syncing...');
       await _repository.syncStockList();
     } else {
+      _logger.info('Local stock list found. Starting background sync.');
       _repository.syncStockList();
     }
 
-    final fileResult = await _repository.getLocalStockListFile();
+    final result = await _repository.getAllStocks();
 
-    await fileResult.fold(
-      (failure) async {
+    result.fold(
+      (failure) {
         _logger.severe('Failed to load stock list: ${failure.message}');
       },
-      (file) async {
-        try {
-          final content = await file.readAsString();
-          _allStocks = await compute(_parseStocks, content);
-          _isInitialized = true;
-        } catch (e) {
-          _logger.severe('Failed to parse stock list: $e');
-        }
+      (stocks) {
+        _logger.info('Stock list loaded successfully: ${stocks.length} items');
+        _allStocks = stocks;
+        _isInitialized = true;
       },
     );
   }
@@ -57,15 +47,6 @@ class StockSearchService {
     if (query.isEmpty) return [];
 
     final q = query.toLowerCase();
-
-    // We want a single pass or efficient filtering.
-    // Given 37k items, a full iteration is fast (~5-10ms).
-    // Note: We need to limit to 7 items total.
-    // We can collect matches into buckets and stop early?
-    // Or just filter all and sort?
-    // Filtering 37k items is cheap. Sorting all matches might be slightly more expensive but okay.
-    // Optimization: "Short-circuit" if we have enough Rank 1 matches?
-    // Let's implement the standard filter + sort + take(7) approach first.
 
     final matches = _allStocks.where((s) {
       final sLower = s.symbol.toLowerCase();

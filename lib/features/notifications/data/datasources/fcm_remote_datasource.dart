@@ -8,7 +8,7 @@ final _logger = BizzieLogger('FcmRemoteDataSource');
 class FcmRemoteDataSource {
   final FirebaseMessaging _firebaseMessaging;
 
-  FcmRemoteDataSource() : _firebaseMessaging = FirebaseMessaging.instance;
+  FcmRemoteDataSource(this._firebaseMessaging);
 
   Future<NotificationSettings> requestPermission() async {
     _logger.info('Requesting permission...');

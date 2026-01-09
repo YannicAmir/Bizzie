@@ -1,6 +1,4 @@
 import 'package:bizzie/app/routes/app_routes.dart';
-import 'package:bizzie/app/themes/app_colors.dart';
-import 'package:bizzie/app/themes/app_text_styles.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -10,31 +8,35 @@ class AuthFooter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final linkStyle = theme.textTheme.bodySmall?.copyWith(
+      fontWeight: FontWeight.bold,
+      color: theme.colorScheme.primary,
+      decoration: TextDecoration.underline,
+    );
+
     return Center(
       child: RichText(
         textAlign: TextAlign.center,
         text: TextSpan(
-          style: AppTextStyles.bodyLarge.copyWith(
-            fontSize: 14,
-            color: AppColors.textSecondary,
+          style: theme.textTheme.bodySmall?.copyWith(
+            color: theme.colorScheme.onSurfaceVariant,
             height: 1.5,
           ),
           children: [
             const TextSpan(text: 'By continuing, you agree to our '),
             TextSpan(
               text: 'Terms of Service',
-              style: AppTextStyles.smallLinkBold.copyWith(fontSize: 14),
-              recognizer:
-                  TapGestureRecognizer()
-                    ..onTap = () => context.push(AppRoutes.terms),
+              style: linkStyle,
+              recognizer: TapGestureRecognizer()
+                ..onTap = () => context.push(AppRoutes.terms),
             ),
             const TextSpan(text: ' and '),
             TextSpan(
               text: 'Privacy Policy',
-              style: AppTextStyles.smallLinkBold.copyWith(fontSize: 14),
-              recognizer:
-                  TapGestureRecognizer()
-                    ..onTap = () => context.push(AppRoutes.privacy),
+              style: linkStyle,
+              recognizer: TapGestureRecognizer()
+                ..onTap = () => context.push(AppRoutes.privacy),
             ),
           ],
         ),

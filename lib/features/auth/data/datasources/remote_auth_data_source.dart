@@ -1,9 +1,11 @@
-import 'dart:developer';
+import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:injectable/injectable.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
+
+final _logger = BizzieLogger('RemoteAuthDataSource');
 
 abstract class RemoteAuthDataSource {
   Stream<User?> get authStateChanges;
@@ -103,12 +105,13 @@ class RemoteAuthDataSourceImpl implements RemoteAuthDataSource {
           .signInWithCredential(credential);
       return userCredential.user!;
     } on PlatformException catch (e) {
-      log(
+      _logger.severe(
         'Apple Sign-In Error: Code=${e.code}, Message=${e.message}, Details=${e.details}',
+        e,
       );
       rethrow;
     } catch (e) {
-      log('Apple Sign-In Generic Error: $e');
+      _logger.severe('Apple Sign-In Generic Error', e);
       rethrow;
     }
   }

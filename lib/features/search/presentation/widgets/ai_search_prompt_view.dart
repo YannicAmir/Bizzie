@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:bizzie/app/themes/app_colors.dart';
-import 'package:bizzie/app/themes/app_text_styles.dart';
 import 'package:bizzie/shared/widgets/buttons/bizzie_primary_button.dart';
 
 class AiSearchPromptView extends StatelessWidget {
@@ -15,6 +13,7 @@ class AiSearchPromptView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24.0),
       child: Column(
@@ -24,7 +23,7 @@ class AiSearchPromptView extends StatelessWidget {
           Text(
             'Searching a brand or product?',
             textAlign: TextAlign.center,
-            style: AppTextStyles.bodyLarge.copyWith(
+            style: theme.textTheme.bodyLarge?.copyWith(
               fontWeight: FontWeight.w600,
             ),
           ),
@@ -32,8 +31,8 @@ class AiSearchPromptView extends StatelessWidget {
           Text(
             'Bizzie\'s AI can check if "$query" is owned by a public company.',
             textAlign: TextAlign.center,
-            style: AppTextStyles.bodyMedium.copyWith(
-              color: AppColors.textSecondary,
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: theme.colorScheme.onSurfaceVariant,
               height: 1.5,
             ),
           ),

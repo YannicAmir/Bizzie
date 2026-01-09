@@ -164,7 +164,6 @@ class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
     final result = await _getSp500HistoryUseCase(NoParams());
     result.fold(
       (failure) {
-        // Handle error gracefully
         emit(state.copyWith(isLoadingHistory: false));
       },
       (history) {

@@ -1,5 +1,3 @@
-import 'package:bizzie/app/themes/app_colors.dart';
-import 'package:bizzie/app/themes/app_text_styles.dart';
 import 'package:flutter/material.dart';
 
 class BizziePrimaryButton extends StatelessWidget {
@@ -20,33 +18,38 @@ class BizziePrimaryButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return SizedBox(
       width: width,
       height: height,
       child: ElevatedButton(
         onPressed: isLoading ? null : onPressed,
         style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.primary,
-          foregroundColor: AppColors.white,
+          backgroundColor: theme.colorScheme.primary,
+          foregroundColor: theme.colorScheme.onPrimary,
           elevation: 0,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
           ),
-          shadowColor: AppColors.black.withValues(alpha: 0.1),
-          disabledBackgroundColor: AppColors.primary.withValues(alpha: 0.5),
+          shadowColor: theme.shadowColor.withValues(alpha: 0.1),
+          disabledBackgroundColor: theme.colorScheme.primary.withValues(
+            alpha: 0.5,
+          ),
         ),
         child: isLoading
-            ? const SizedBox(
+            ? SizedBox(
                 width: 24,
                 height: 24,
                 child: CircularProgressIndicator(
-                  color: AppColors.white,
+                  color: theme.colorScheme.onPrimary,
                   strokeWidth: 2.5,
                 ),
               )
             : Text(
                 title,
-                style: AppTextStyles.button.copyWith(color: AppColors.white),
+                style: theme.textTheme.labelLarge?.copyWith(
+                  color: theme.colorScheme.onPrimary,
+                ),
               ),
       ),
     );

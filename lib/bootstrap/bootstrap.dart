@@ -10,8 +10,6 @@ import 'package:bizzie/core/enums/environment.dart';
 
 import 'package:bizzie/di/injection.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
 
 final _logger = BizzieLogger('Bootstrap');
 
@@ -32,11 +30,6 @@ Future<void> bootstrap(
     await ConfigService.init();
   } catch (e) {
     _logger.severe('Failed to initialize ConfigService', e);
-  }
-
-  final currentUser = FirebaseAuth.instance.currentUser;
-  if (currentUser != null) {
-    getIt<UserBloc>().add(UserEvent.loadUser(currentUser.uid));
   }
 
   getIt<StockSearchService>().initialize();

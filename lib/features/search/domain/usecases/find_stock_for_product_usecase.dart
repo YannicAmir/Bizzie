@@ -1,14 +1,16 @@
+import 'package:bizzie/core/error/failures.dart';
+import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
-import 'package:bizzie/features/search/data/datasources/ai_product_search_service.dart';
+import 'package:bizzie/features/search/domain/interfaces/i_ai_product_search_repository.dart';
 import 'package:bizzie/features/search/domain/models/stock_symbol.dart';
 
 @injectable
 class FindStockForProductUseCase {
-  final AiProductSearchService _aiService;
+  final IAiProductSearchRepository _repository;
 
-  FindStockForProductUseCase(this._aiService);
+  FindStockForProductUseCase(this._repository);
 
-  Future<StockSymbol?> execute(String query) async {
-    return _aiService.findStockForProduct(query);
+  Future<Either<Failure, StockSymbol?>> execute(String query) async {
+    return _repository.findStockForProduct(query);
   }
 }

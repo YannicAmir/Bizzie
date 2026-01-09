@@ -1,6 +1,4 @@
 import 'package:bizzie/app/themes/app_assets.dart';
-import 'package:bizzie/app/themes/app_colors.dart';
-import 'package:bizzie/app/themes/app_text_styles.dart';
 import 'package:bizzie/features/auth/presentation/widgets/auth_divider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -17,6 +15,7 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
         state.maybeWhen(
@@ -29,7 +28,7 @@ class LoginPage extends StatelessWidget {
         );
       },
       child: Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: theme.scaffoldBackgroundColor,
         appBar: AppBar(
           leading: IconButton(
             icon: const Icon(Icons.arrow_back_ios_new),
@@ -75,22 +74,17 @@ class _LoginHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          'Welcome Back!',
-          style: AppTextStyles.h1.copyWith(
-            fontSize: 32,
-            color: AppColors.textPrimary,
-          ),
-        ),
+        Text('Welcome Back!', style: theme.textTheme.displayLarge),
         const SizedBox(height: 8),
         Text(
           'Log in to continue',
-          style: AppTextStyles.subtitle.copyWith(
+          style: theme.textTheme.titleMedium?.copyWith(
             fontSize: 16,
-            color: AppColors.textSecondary,
+            color: theme.colorScheme.onSurfaceVariant,
           ),
         ),
       ],

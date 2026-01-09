@@ -4,7 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../../../core/usecase/usecase.dart';
-import '../../domain/interfaces/i_auth_repository.dart';
+import '../../domain/usecases/get_auth_stream.dart';
+import '../../domain/usecases/get_current_user.dart';
 import '../../domain/models/user_model.dart';
 import '../../domain/usecases/delete_account.dart';
 import '../../domain/usecases/reset_password.dart';
@@ -18,7 +19,8 @@ import 'auth_state.dart';
 
 @lazySingleton
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
-  final IAuthRepository _authRepository;
+  final GetAuthStream _getAuthStream;
+
   final SignInWithGoogle _signInWithGoogle;
   final SignInWithApple _signInWithApple;
   final SignInWithEmail _signInWithEmail;
@@ -29,7 +31,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   StreamSubscription<UserModel?>? _authSubscription;
 
   AuthBloc({
-    required IAuthRepository authRepository,
+    required GetAuthStream getAuthStream,
+    required GetCurrentUser getCurrentUser,
     required SignInWithGoogle signInWithGoogle,
     required SignInWithApple signInWithApple,
     required SignInWithEmail signInWithEmail,
@@ -37,7 +40,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     required SignOut signOut,
     required ResetPassword resetPassword,
     required DeleteAccount deleteAccount,
-  }) : _authRepository = authRepository,
+  }) : _getAuthStream = getAuthStream,
+
        _signInWithGoogle = signInWithGoogle,
        _signInWithApple = signInWithApple,
        _signInWithEmail = signInWithEmail,
@@ -46,8 +50,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
        _resetPassword = resetPassword,
        _deleteAccount = deleteAccount,
        super(
-         authRepository.currentUser != null
-             ? AuthState.authenticated(authRepository.currentUser!)
+         getCurrentUser(NoParams()) != null
+             ? AuthState.authenticated(getCurrentUser(NoParams())!)
              : const AuthState.unauthenticated(),
        ) {
     on<AuthStatusRequested>(_onAuthStatusRequested);
@@ -66,9 +70,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     Emitter<AuthState> emit,
   ) async {
     await _authSubscription?.cancel();
-    _authSubscription = _authRepository.authStateChanges.listen(
-      (user) => add(AuthStatusChanged(user)),
-    );
+    _authSubscription = _getAuthStream(
+      NoParams(),
+    ).listen((user) => add(AuthStatusChanged(user)));
   }
 
   void _onAuthStatusChanged(AuthStatusChanged event, Emitter<AuthState> emit) {
@@ -84,11 +88,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     Emitter<AuthState> emit,
   ) async {
     emit(const AuthState.loading(method: 'google'));
-    try {
-      await _signInWithGoogle(NoParams());
-    } catch (e) {
-      emit(AuthState.failure(e.toString()));
-    }
+    final result = await _signInWithGoogle(NoParams());
+    result.fold(
+      (failure) => emit(AuthState.failure(failure.message)),
+      (_) {}, // Success is handled by _onAuthStatusChanged via stream
+    );
   }
 
   Future<void> _onAppleSignInRequested(
@@ -96,11 +100,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     Emitter<AuthState> emit,
   ) async {
     emit(const AuthState.loading(method: 'apple'));
-    try {
-      await _signInWithApple(NoParams());
-    } catch (e) {
-      emit(AuthState.failure(e.toString()));
-    }
+    final result = await _signInWithApple(NoParams());
+    result.fold(
+      (failure) => emit(AuthState.failure(failure.message)),
+      (_) {}, // Success is handled by _onAuthStatusChanged via stream
+    );
   }
 
   Future<void> _onEmailSignInRequested(
@@ -108,13 +112,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     Emitter<AuthState> emit,
   ) async {
     emit(const AuthState.loading(method: 'email_signin'));
-    try {
-      await _signInWithEmail(
-        SignInWithEmailParams(email: event.email, password: event.password),
-      );
-    } catch (e) {
-      emit(AuthState.failure(e.toString()));
-    }
+    final result = await _signInWithEmail(
+      SignInWithEmailParams(email: event.email, password: event.password),
+    );
+    result.fold(
+      (failure) => emit(AuthState.failure(failure.message)),
+      (_) {}, // Success is handled by _onAuthStatusChanged via stream
+    );
   }
 
   Future<void> _onEmailSignUpRequested(
@@ -122,35 +126,37 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     Emitter<AuthState> emit,
   ) async {
     emit(const AuthState.loading(method: 'email_signup'));
-    try {
-      await _signUpWithEmail(
-        SignInWithEmailParams(email: event.email, password: event.password),
-      );
-    } catch (e) {
-      emit(AuthState.failure(e.toString()));
-    }
+    final result = await _signUpWithEmail(
+      SignUpWithEmailParams(email: event.email, password: event.password),
+    );
+    result.fold(
+      (failure) => emit(AuthState.failure(failure.message)),
+      (_) {}, // Success is handled by _onAuthStatusChanged via stream
+    );
   }
 
   Future<void> _onLogoutRequested(
     AuthLogoutRequested event,
     Emitter<AuthState> emit,
   ) async {
-    try {
-      await _signOut(NoParams());
-    } catch (e) {
-      emit(AuthState.failure(e.toString()));
-    }
+    final result = await _signOut(NoParams());
+    result.fold(
+      (failure) => emit(AuthState.failure(failure.message)),
+      (_) {}, // Success handled by stream
+    );
   }
 
   Future<void> _onResetPasswordRequested(
     AuthResetPasswordRequested event,
     Emitter<AuthState> emit,
   ) async {
-    try {
-      await _resetPassword(event.email);
-    } catch (e) {
-      emit(AuthState.failure(e.toString()));
-    }
+    final result = await _resetPassword(
+      ResetPasswordParams(email: event.email),
+    );
+    result.fold(
+      (failure) => emit(AuthState.failure(failure.message)),
+      (_) {}, // Success - UI should likely show a snackbar (side effect)
+    );
   }
 
   Future<void> _onDeleteAccountRequested(
@@ -158,11 +164,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     Emitter<AuthState> emit,
   ) async {
     emit(const AuthState.loading());
-    try {
-      await _deleteAccount(NoParams());
-    } catch (e) {
-      emit(AuthState.failure(e.toString()));
-    }
+    final result = await _deleteAccount(NoParams());
+    result.fold(
+      (failure) => emit(AuthState.failure(failure.message)),
+      (_) {}, // Success handled by stream which will emit null user
+    );
   }
 
   @override

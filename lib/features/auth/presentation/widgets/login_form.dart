@@ -1,6 +1,5 @@
 import 'package:bizzie/app/routes/app_routes.dart';
 import 'package:bizzie/app/themes/app_assets.dart';
-import 'package:bizzie/app/themes/app_text_styles.dart';
 import 'package:bizzie/shared/widgets/buttons/bizzie_primary_button.dart';
 import 'package:bizzie/features/auth/presentation/widgets/auth_text_field.dart';
 import 'package:flutter/material.dart';
@@ -52,6 +51,7 @@ class _LoginFormState extends State<LoginForm> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Form(
       key: _formKey,
       child: Column(
@@ -87,7 +87,10 @@ class _LoginFormState extends State<LoginForm> {
             },
             child: Text(
               'Forgot Password?',
-              style: AppTextStyles.forgotPassword,
+              style: theme.textTheme.bodySmall?.copyWith(
+                fontWeight: FontWeight.w600,
+                color: theme.colorScheme.primary,
+              ),
             ),
           ),
           const SizedBox(height: 24),

@@ -1,3 +1,5 @@
+import 'package:dartz/dartz.dart';
+import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/features/auth/data/datasources/remote_auth_data_source.dart';
 import 'package:bizzie/features/auth/data/repositories/auth_repository_impl.dart';
 import 'package:bizzie/features/auth/domain/models/user_model.dart';
@@ -31,9 +33,10 @@ void main() {
   const tUid = '123';
   final tFirebaseUser = MockUser();
   const tUserModel = UserModel(id: tUid, email: tEmail);
+  const tFailure = ServerFailure('Exception');
 
   group('signInWithEmail', () {
-    test('signInWithEmail_success_returnsUserModel', () async {
+    test('signInWithEmail_success_returnsRightUserModel', () async {
       // arrange
       when(() => tFirebaseUser.uid).thenReturn(tUid);
       when(() => tFirebaseUser.email).thenReturn(tEmail);
@@ -51,7 +54,7 @@ void main() {
       );
 
       // assert
-      expect(result, equals(tUserModel));
+      expect(result, equals(const Right(tUserModel)));
       verify(
         () => mockRemoteDataSource.signInWithEmail(
           email: tEmail,
@@ -61,7 +64,7 @@ void main() {
       verifyNoMoreInteractions(mockRemoteDataSource);
     });
 
-    test('signInWithEmail_failure_throwsException', () async {
+    test('signInWithEmail_failure_returnsLeftServerFailure', () async {
       // arrange
       when(
         () => mockRemoteDataSource.signInWithEmail(
@@ -71,10 +74,13 @@ void main() {
       ).thenThrow(Exception());
 
       // act
-      final call = repository.signInWithEmail;
+      final result = await repository.signInWithEmail(
+        email: tEmail,
+        password: tPassword,
+      );
 
       // assert
-      expect(() => call(email: tEmail, password: tPassword), throwsException);
+      expect(result, equals(const Left(tFailure)));
       verify(
         () => mockRemoteDataSource.signInWithEmail(
           email: tEmail,
@@ -86,76 +92,82 @@ void main() {
   });
 
   group('resetPassword', () {
-    test('resetPassword_success_callsRemoteDataSource', () async {
+    test('resetPassword_success_returnsRightVoid', () async {
       // arrange
       when(
         () => mockRemoteDataSource.resetPassword(email: any(named: 'email')),
       ).thenAnswer((_) async {});
 
       // act
-      await repository.resetPassword(email: tEmail);
+      final result = await repository.resetPassword(email: tEmail);
 
       // assert
+      expect(result, equals(const Right(null)));
       verify(() => mockRemoteDataSource.resetPassword(email: tEmail));
       verifyNoMoreInteractions(mockRemoteDataSource);
     });
 
-    test('resetPassword_failure_throwsException', () async {
+    test('resetPassword_failure_returnsLeftServerFailure', () async {
       // arrange
       when(
         () => mockRemoteDataSource.resetPassword(email: any(named: 'email')),
       ).thenThrow(Exception());
 
       // act
-      final call = repository.resetPassword;
+      final result = await repository.resetPassword(email: tEmail);
 
       // assert
-      expect(() => call(email: tEmail), throwsException);
+      expect(result, equals(const Left(tFailure)));
       verify(() => mockRemoteDataSource.resetPassword(email: tEmail));
       verifyNoMoreInteractions(mockRemoteDataSource);
     });
   });
 
   group('deleteAccount', () {
-    test('deleteAccount_success_callsRemoteDataSource', () async {
+    test('deleteAccount_success_returnsRightVoid', () async {
       // arrange
       when(() => mockRemoteDataSource.deleteAccount()).thenAnswer((_) async {});
 
       // act
-      await repository.deleteAccount();
+      final result = await repository.deleteAccount();
 
       // assert
+      expect(result, equals(const Right(null)));
       verify(() => mockRemoteDataSource.deleteAccount());
       verifyNoMoreInteractions(mockRemoteDataSource);
     });
 
-    test('deleteAccount_failure_throwsException', () async {
+    test('deleteAccount_failure_returnsLeftServerFailure', () async {
       // arrange
       when(() => mockRemoteDataSource.deleteAccount()).thenThrow(Exception());
 
       // act
-      final call = repository.deleteAccount;
+      final result = await repository.deleteAccount();
 
       // assert
-      expect(() => call(), throwsException);
+      expect(result, equals(const Left(tFailure)));
       verify(() => mockRemoteDataSource.deleteAccount());
       verifyNoMoreInteractions(mockRemoteDataSource);
     });
   });
 
   group('signOut', () {
-    test('signOut_success_callsClearAndRemoteSignOut', () async {
-      // arrange
-      when(() => mockSharedPreferences.clear()).thenAnswer((_) async => true);
-      when(() => mockRemoteDataSource.signOut()).thenAnswer((_) async {});
+    test(
+      'signOut_success_callsClearAndRemoteSignOut_returnsRightVoid',
+      () async {
+        // arrange
+        when(() => mockSharedPreferences.clear()).thenAnswer((_) async => true);
+        when(() => mockRemoteDataSource.signOut()).thenAnswer((_) async {});
 
-      // act
-      await repository.signOut();
+        // act
+        final result = await repository.signOut();
 
-      // assert
-      verify(() => mockSharedPreferences.clear()).called(1);
-      verify(() => mockRemoteDataSource.signOut()).called(1);
-      verifyNoMoreInteractions(mockRemoteDataSource);
-    });
+        // assert
+        expect(result, equals(const Right(null)));
+        verify(() => mockSharedPreferences.clear()).called(1);
+        verify(() => mockRemoteDataSource.signOut()).called(1);
+        verifyNoMoreInteractions(mockRemoteDataSource);
+      },
+    );
   });
 }

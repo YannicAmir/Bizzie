@@ -16,6 +16,8 @@ import 'package:firebase_auth/firebase_auth.dart' as _i59;
 import 'package:firebase_messaging/firebase_messaging.dart' as _i892;
 import 'package:firebase_remote_config/firebase_remote_config.dart' as _i627;
 import 'package:firebase_storage/firebase_storage.dart' as _i457;
+import 'package:flutter_local_notifications/flutter_local_notifications.dart'
+    as _i163;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:google_sign_in/google_sign_in.dart' as _i116;
 import 'package:injectable/injectable.dart' as _i526;
@@ -29,6 +31,8 @@ import '../features/auth/data/datasources/remote_auth_data_source.dart'
 import '../features/auth/data/repositories/auth_repository_impl.dart' as _i570;
 import '../features/auth/domain/interfaces/i_auth_repository.dart' as _i685;
 import '../features/auth/domain/usecases/delete_account.dart' as _i739;
+import '../features/auth/domain/usecases/get_auth_stream.dart' as _i427;
+import '../features/auth/domain/usecases/get_current_user.dart' as _i318;
 import '../features/auth/domain/usecases/reset_password.dart' as _i73;
 import '../features/auth/domain/usecases/sign_in_with_apple.dart' as _i538;
 import '../features/auth/domain/usecases/sign_in_with_email.dart' as _i33;
@@ -72,11 +76,20 @@ import '../features/onboarding/domain/usecases/get_sp500_history_usecase.dart'
 import '../features/onboarding/presentation/bloc/onboarding_bloc.dart' as _i593;
 import '../features/search/data/datasources/ai_product_search_service.dart'
     as _i977;
+import '../features/search/data/datasources/recommended_brands_remote_datasource.dart'
+    as _i792;
 import '../features/search/data/datasources/stock_local_datasource.dart'
     as _i191;
+import '../features/search/data/datasources/stock_remote_datasource.dart'
+    as _i60;
+import '../features/search/data/datasources/vertex_ai_provider.dart' as _i501;
+import '../features/search/data/repositories/ai_product_search_repository.dart'
+    as _i1008;
 import '../features/search/data/repositories/recommended_brands_repository.dart'
     as _i230;
 import '../features/search/data/repositories/stock_repository.dart' as _i392;
+import '../features/search/domain/interfaces/i_ai_product_search_repository.dart'
+    as _i608;
 import '../features/search/domain/interfaces/i_recommended_brands_repository.dart'
     as _i1012;
 import '../features/search/domain/interfaces/i_stock_repository.dart' as _i456;
@@ -130,16 +143,14 @@ extension GetItInjectableX on _i174.GetIt {
       () => registerModule.prefs,
       preResolve: true,
     );
-    gh.factory<_i640.FcmRemoteDataSource>(() => _i640.FcmRemoteDataSource());
-    await gh.singletonAsync<_i982.LocalNotificationDataSource>(() {
-      final i = _i982.LocalNotificationDataSource();
-      return i.init().then((_) => i);
-    }, preResolve: true);
     await gh.singletonAsync<_i216.ConfigService>(
       () => _i216.ConfigService.init(),
       preResolve: true,
     );
     gh.singleton<_i52.FirestoreService>(() => _i52.FirestoreService.init());
+    gh.lazySingleton<_i163.FlutterLocalNotificationsPlugin>(
+      () => registerModule.flutterLocalNotificationsPlugin,
+    );
     gh.lazySingleton<_i974.FirebaseFirestore>(() => registerModule.firestore);
     gh.lazySingleton<_i892.FirebaseMessaging>(
       () => registerModule.firebaseMessaging,
@@ -151,12 +162,7 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i116.GoogleSignIn>(() => registerModule.googleSignIn);
     gh.lazySingleton<_i457.FirebaseStorage>(() => registerModule.storage);
     gh.lazySingleton<_i833.DeviceInfoPlugin>(() => registerModule.deviceInfo);
-    gh.lazySingleton<_i622.INotificationRepository>(
-      () => _i648.NotificationRepositoryImpl(
-        gh<_i640.FcmRemoteDataSource>(),
-        gh<_i982.LocalNotificationDataSource>(),
-      ),
-    );
+    gh.factory<_i501.IVertexAIProvider>(() => _i501.VertexAIProvider());
     gh.singleton<_i361.Dio>(
       () => networkModule.fmpDio(gh<_i216.ConfigService>()),
       instanceName: 'FmpDio',
@@ -170,32 +176,15 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i444.IWatchlistRemoteDataSource>(
       () => _i444.WatchlistRemoteDataSource(gh<_i52.FirestoreService>()),
     );
-    gh.factory<_i69.GetFcmToken>(
-      () => _i69.GetFcmToken(gh<_i622.INotificationRepository>()),
-    );
-    gh.factory<_i954.ListenToMessages>(
-      () => _i954.ListenToMessages(gh<_i622.INotificationRepository>()),
-    );
-    gh.factory<_i332.RequestNotificationPermission>(
-      () => _i332.RequestNotificationPermission(
-        gh<_i622.INotificationRepository>(),
-      ),
-    );
-    gh.factory<_i327.SubscribeToTopic>(
-      () => _i327.SubscribeToTopic(gh<_i622.INotificationRepository>()),
-    );
-    gh.factory<_i999.UnsubscribeFromTopic>(
-      () => _i999.UnsubscribeFromTopic(gh<_i622.INotificationRepository>()),
-    );
-    gh.lazySingleton<_i430.INotificationService>(
-      () => _i941.NotificationService(
-        gh<_i892.FirebaseMessaging>(),
-        gh<_i833.DeviceInfoPlugin>(),
-      ),
-    );
     gh.factory<_i191.IStockLocalDataSource>(
       () => _i191.StockLocalDataSource(gh<_i460.SharedPreferences>()),
     );
+    await gh.singletonAsync<_i982.LocalNotificationDataSource>(() {
+      final i = _i982.LocalNotificationDataSource(
+        gh<_i163.FlutterLocalNotificationsPlugin>(),
+      );
+      return i.init().then((_) => i);
+    }, preResolve: true);
     gh.factory<_i147.IUserLocalDataSource>(
       () => _i147.UserLocalDataSource(gh<_i460.SharedPreferences>()),
     );
@@ -206,10 +195,27 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i114.IWatchlistLocalDataSource>(
       () => _i114.WatchlistLocalDataSource(gh<_i460.SharedPreferences>()),
     );
+    gh.singleton<_i977.AiProductSearchService>(
+      () => _i977.AiProductSearchService(
+        gh<_i216.ConfigService>(),
+        gh<_i501.IVertexAIProvider>(),
+      ),
+    );
+    gh.factory<_i60.IStockRemoteDataSource>(
+      () => _i60.StockRemoteDataSource(gh<_i457.FirebaseStorage>()),
+    );
+    gh.factory<_i640.FcmRemoteDataSource>(
+      () => _i640.FcmRemoteDataSource(gh<_i892.FirebaseMessaging>()),
+    );
     gh.lazySingleton<_i615.IUserRepository>(
       () => _i272.UserRepositoryImpl(
         gh<_i481.IUserRemoteDataSource>(),
         gh<_i147.IUserLocalDataSource>(),
+      ),
+    );
+    gh.factory<_i792.IRecommendedBrandsRemoteDataSource>(
+      () => _i792.RecommendedBrandsRemoteDataSource(
+        gh<_i974.FirebaseFirestore>(),
       ),
     );
     gh.lazySingleton<_i1039.IWatchlistRepository>(
@@ -219,17 +225,11 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i892.FirebaseMessaging>(),
       ),
     );
-    gh.factory<_i687.NotificationBloc>(
-      () => _i687.NotificationBloc(
-        gh<_i332.RequestNotificationPermission>(),
-        gh<_i69.GetFcmToken>(),
-        gh<_i954.ListenToMessages>(),
-        gh<_i327.SubscribeToTopic>(),
-        gh<_i999.UnsubscribeFromTopic>(),
+    gh.lazySingleton<_i456.IStockRepository>(
+      () => _i392.StockRepository(
+        gh<_i60.IStockRemoteDataSource>(),
+        gh<_i191.IStockLocalDataSource>(),
       ),
-    );
-    gh.singleton<_i977.AiProductSearchService>(
-      () => _i977.AiProductSearchService(gh<_i216.ConfigService>()),
     );
     gh.lazySingleton<_i877.RemoteAuthDataSource>(
       () => _i877.RemoteAuthDataSourceImpl(
@@ -237,34 +237,35 @@ extension GetItInjectableX on _i174.GetIt {
         googleSignIn: gh<_i116.GoogleSignIn>(),
       ),
     );
-    gh.lazySingleton<_i1012.IRecommendedBrandsRepository>(
-      () => _i230.RecommendedBrandsRepository(gh<_i974.FirebaseFirestore>()),
-    );
     gh.lazySingleton<_i329.IOnboardingRepository>(
       () => _i379.OnboardingRepositoryImpl(
         gh<_i1016.IOnboardingRemoteDataSource>(),
       ),
     );
-    gh.factory<_i691.FindStockForProductUseCase>(
-      () =>
-          _i691.FindStockForProductUseCase(gh<_i977.AiProductSearchService>()),
-    );
-    gh.lazySingleton<_i693.GetRecommendedBrandsUseCase>(
-      () => _i693.GetRecommendedBrandsUseCase(
-        gh<_i1012.IRecommendedBrandsRepository>(),
-      ),
-    );
-    gh.lazySingleton<_i456.IStockRepository>(
-      () => _i392.StockRepository(
-        gh<_i457.FirebaseStorage>(),
-        gh<_i191.IStockLocalDataSource>(),
+    gh.lazySingleton<_i1012.IRecommendedBrandsRepository>(
+      () => _i230.RecommendedBrandsRepository(
+        gh<_i792.IRecommendedBrandsRemoteDataSource>(),
       ),
     );
     gh.lazySingleton<_i561.GetUserUseCase>(
       () => _i561.GetUserUseCase(gh<_i615.IUserRepository>()),
     );
+    gh.lazySingleton<_i608.IAiProductSearchRepository>(
+      () =>
+          _i1008.AiProductSearchRepository(gh<_i977.AiProductSearchService>()),
+    );
+    gh.lazySingleton<_i622.INotificationRepository>(
+      () => _i648.NotificationRepositoryImpl(gh<_i640.FcmRemoteDataSource>()),
+    );
     gh.lazySingleton<_i200.UserBloc>(
       () => _i200.UserBloc(gh<_i561.GetUserUseCase>()),
+    );
+    gh.lazySingleton<_i430.INotificationService>(
+      () => _i941.NotificationService(
+        gh<_i622.INotificationRepository>(),
+        gh<_i982.LocalNotificationDataSource>(),
+        gh<_i833.DeviceInfoPlugin>(),
+      ),
     );
     gh.factory<_i592.GetDailyBrandsUseCase>(
       () => _i592.GetDailyBrandsUseCase(gh<_i329.IOnboardingRepository>()),
@@ -311,6 +312,39 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i685.IAuthRepository>(),
       ),
     );
+    gh.lazySingleton<_i427.GetAuthStream>(
+      () => _i427.GetAuthStream(gh<_i685.IAuthRepository>()),
+    );
+    gh.lazySingleton<_i318.GetCurrentUser>(
+      () => _i318.GetCurrentUser(gh<_i685.IAuthRepository>()),
+    );
+    gh.lazySingleton<_i693.GetRecommendedBrandsUseCase>(
+      () => _i693.GetRecommendedBrandsUseCase(
+        gh<_i1012.IRecommendedBrandsRepository>(),
+      ),
+    );
+    gh.factory<_i69.GetFcmToken>(
+      () => _i69.GetFcmToken(gh<_i622.INotificationRepository>()),
+    );
+    gh.factory<_i954.ListenToMessages>(
+      () => _i954.ListenToMessages(gh<_i622.INotificationRepository>()),
+    );
+    gh.factory<_i332.RequestNotificationPermission>(
+      () => _i332.RequestNotificationPermission(
+        gh<_i622.INotificationRepository>(),
+      ),
+    );
+    gh.factory<_i327.SubscribeToTopic>(
+      () => _i327.SubscribeToTopic(gh<_i622.INotificationRepository>()),
+    );
+    gh.factory<_i999.UnsubscribeFromTopic>(
+      () => _i999.UnsubscribeFromTopic(gh<_i622.INotificationRepository>()),
+    );
+    gh.factory<_i691.FindStockForProductUseCase>(
+      () => _i691.FindStockForProductUseCase(
+        gh<_i608.IAiProductSearchRepository>(),
+      ),
+    );
     gh.lazySingleton<_i739.DeleteAccount>(
       () => _i739.DeleteAccount(gh<_i685.IAuthRepository>()),
     );
@@ -353,7 +387,8 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i59.AuthBloc>(
       () => _i59.AuthBloc(
-        authRepository: gh<_i685.IAuthRepository>(),
+        getAuthStream: gh<_i427.GetAuthStream>(),
+        getCurrentUser: gh<_i318.GetCurrentUser>(),
         signInWithGoogle: gh<_i345.SignInWithGoogle>(),
         signInWithApple: gh<_i538.SignInWithApple>(),
         signInWithEmail: gh<_i33.SignInWithEmail>(),
@@ -361,6 +396,15 @@ extension GetItInjectableX on _i174.GetIt {
         signOut: gh<_i472.SignOut>(),
         resetPassword: gh<_i73.ResetPassword>(),
         deleteAccount: gh<_i739.DeleteAccount>(),
+      ),
+    );
+    gh.factory<_i687.NotificationBloc>(
+      () => _i687.NotificationBloc(
+        gh<_i332.RequestNotificationPermission>(),
+        gh<_i69.GetFcmToken>(),
+        gh<_i954.ListenToMessages>(),
+        gh<_i327.SubscribeToTopic>(),
+        gh<_i999.UnsubscribeFromTopic>(),
       ),
     );
     gh.factory<_i348.SearchBloc>(

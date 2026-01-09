@@ -7,10 +7,15 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:injectable/injectable.dart';
 
 @module
 abstract class RegisterModule {
+  @lazySingleton
+  FlutterLocalNotificationsPlugin get flutterLocalNotificationsPlugin =>
+      FlutterLocalNotificationsPlugin();
+
   @lazySingleton
   FirebaseFirestore get firestore => FirebaseFirestore.instance;
 
