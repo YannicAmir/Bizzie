@@ -1,19 +1,21 @@
 import 'dart:io';
 import 'package:bizzie/features/search/data/datasources/stock_local_datasource.dart';
+import 'package:bizzie/features/search/data/datasources/stock_remote_datasource.dart';
 import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/features/search/domain/interfaces/i_stock_repository.dart';
+import 'package:bizzie/features/search/data/dtos/stock_symbol_dto.dart';
+import 'package:bizzie/features/search/domain/models/stock_symbol.dart';
+import 'package:flutter/foundation.dart';
+import 'dart:convert';
 
 @LazySingleton(as: IStockRepository)
 class StockRepository implements IStockRepository {
-  final FirebaseStorage _storage;
+  final IStockRemoteDataSource _remoteDataSource;
   final IStockLocalDataSource _localDataSource;
 
-  static const String _storagePath = 'system_data/stock_list.json';
-
-  StockRepository(this._storage, this._localDataSource);
+  StockRepository(this._remoteDataSource, this._localDataSource);
 
   @override
   Future<Either<Failure, File>> getLocalStockListFile() async {
@@ -37,16 +39,14 @@ class StockRepository implements IStockRepository {
   @override
   Future<Either<Failure, void>> syncStockList() async {
     try {
-      final ref = _storage.ref().child(_storagePath);
-      final metadata = await ref.getMetadata();
-      final remoteUpdated = metadata.updated?.millisecondsSinceEpoch ?? 0;
+      final remoteUpdated = await _remoteDataSource.getRemoteUpdatedTime();
       final localUpdated = _localDataSource.getLastUpdatedTime();
       final bool hasFile = await hasLocalFile();
 
       if (!hasFile || remoteUpdated > localUpdated) {
         final file = await _localDataSource.getLocalStockFile();
 
-        await ref.writeToFile(file);
+        await _remoteDataSource.downloadStockFile(file);
 
         await _localDataSource.setLastUpdatedTime(remoteUpdated);
       }
@@ -56,4 +56,26 @@ class StockRepository implements IStockRepository {
       return Left(ServerFailure(e.toString()));
     }
   }
+
+  @override
+  Future<Either<Failure, List<StockSymbol>>> getAllStocks() async {
+    try {
+      final result = await getLocalStockListFile();
+      return result.fold((failure) => Left(failure), (file) async {
+        final content = await file.readAsString();
+        final stocks = await compute(_parseStocks, content);
+        return Right(stocks);
+      });
+    } catch (e) {
+      return Left(CacheFailure(e.toString()));
+    }
+  }
+}
+
+List<StockSymbol> _parseStocks(String jsonContent) {
+  final Map<String, dynamic> data = jsonDecode(jsonContent);
+  final List<dynamic> list = data['stocks'] as List<dynamic>;
+  return list
+      .map((e) => StockSymbolDto.fromJson(e as Map<String, dynamic>).toDomain())
+      .toList();
 }

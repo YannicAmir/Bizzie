@@ -6,6 +6,7 @@ import 'package:bizzie/features/onboarding/presentation/models/feature_highlight
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:bizzie/app/themes/app_assets.dart';
 import 'package:bizzie/features/onboarding/presentation/utils/onboarding_assets_helper.dart';
+import 'package:bizzie/features/onboarding/presentation/utils/brand_display_helper.dart';
 
 part 'onboarding_state.freezed.dart';
 
@@ -121,38 +122,7 @@ abstract class OnboardingState with _$OnboardingState {
       onboardingData.detectedCompanies.firstOrNull?.name ?? 'NVIDIA';
 
   List<Brand> get dailyPicksDisplayBrands {
-    final List<Brand> displayBrands = [];
-    if (selectedBrands.isNotEmpty) {
-      displayBrands.addAll(selectedBrands.take(2));
-    }
-    if (displayBrands.isEmpty) {
-      displayBrands.add(
-        const Brand(
-          name: 'Apple Inc.',
-          company: 'Apple Inc.',
-          ticker: 'AAPL',
-          description: '',
-        ),
-      );
-      displayBrands.add(
-        const Brand(
-          name: 'Microsoft',
-          company: 'Microsoft',
-          ticker: 'MSFT',
-          description: '',
-        ),
-      );
-    } else if (displayBrands.length == 1) {
-      displayBrands.add(
-        const Brand(
-          name: 'Microsoft',
-          company: 'Microsoft',
-          ticker: 'MSFT',
-          description: '',
-        ),
-      );
-    }
-    return displayBrands;
+    return BrandDisplayHelper.getDailyPicksDisplayBrands(selectedBrands);
   }
 
   String get greetingName =>

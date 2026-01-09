@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bizzie/features/search/presentation/bloc/search_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:bizzie/features/search/presentation/widgets/search_app_bar.dart';
 import 'package:bizzie/features/search/presentation/widgets/search_initial_view.dart';
 import 'package:bizzie/features/search/presentation/widgets/search_results_view.dart';
@@ -45,8 +46,8 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   void _onCancelTapped() {
-    if (Navigator.canPop(context)) {
-      Navigator.pop(context);
+    if (context.canPop()) {
+      context.pop();
     }
   }
 

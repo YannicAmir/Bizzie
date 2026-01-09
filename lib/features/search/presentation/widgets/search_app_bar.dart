@@ -22,8 +22,6 @@ class SearchAppBar extends StatelessWidget implements PreferredSizeWidget {
     final theme = Theme.of(context);
 
     return AppBar(
-      backgroundColor: theme.scaffoldBackgroundColor,
-      elevation: 0,
       automaticallyImplyLeading: false,
       titleSpacing: 16,
       title: BizzieSearchBar(
@@ -36,8 +34,14 @@ class SearchAppBar extends StatelessWidget implements PreferredSizeWidget {
         Padding(
           padding: const EdgeInsets.only(right: 16.0, left: 12.0),
           child: Center(
-            child: GestureDetector(
-              onTap: onCancel,
+            child: TextButton(
+              onPressed: onCancel,
+              style: TextButton.styleFrom(
+                padding: EdgeInsets.zero,
+                minimumSize: Size.zero,
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                foregroundColor: theme.colorScheme.primary,
+              ),
               child: Text(
                 'Cancel',
                 style: theme.textTheme.bodyLarge?.copyWith(

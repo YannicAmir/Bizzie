@@ -38,4 +38,12 @@ class AppShadows {
       blurRadius: 3,
     ),
   ];
+
+  static final List<BoxShadow> standardCard = [
+    BoxShadow(
+      color: Colors.black.withValues(alpha: 0.05),
+      blurRadius: 2,
+      offset: const Offset(0, 1),
+    ),
+  ];
 }

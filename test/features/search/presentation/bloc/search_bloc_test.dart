@@ -1,4 +1,5 @@
 import 'package:bloc_test/bloc_test.dart';
+import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/features/onboarding/domain/models/company.dart';
 import 'package:bizzie/features/search/domain/models/stock_symbol.dart';
 import 'package:bizzie/features/search/domain/usecases/find_stock_for_product_usecase.dart';
@@ -109,7 +110,7 @@ void main() {
       build: () {
         when(
           () => mockFindStock.execute(any()),
-        ).thenAnswer((_) async => tStocks.first);
+        ).thenAnswer((_) async => Right(tStocks.first));
         return bloc;
       },
       // act
@@ -125,7 +126,9 @@ void main() {
       'aiSearchRequested_noMatch_emitsAiSearchingAndAiEmpty',
       // arrange
       build: () {
-        when(() => mockFindStock.execute(any())).thenAnswer((_) async => null);
+        when(
+          () => mockFindStock.execute(any()),
+        ).thenAnswer((_) async => const Right(null));
         return bloc;
       },
       // act
@@ -139,12 +142,12 @@ void main() {
     );
 
     blocTest<SearchBloc, SearchState>(
-      'aiSearchRequested_serviceThrows_emitsAiSearchingAndFailure',
+      'aiSearchRequested_useCaseFails_emitsAiSearchingAndFailure',
       // arrange
       build: () {
         when(
           () => mockFindStock.execute(any()),
-        ).thenThrow(Exception('AI Error'));
+        ).thenAnswer((_) async => Left(ServerFailure('AI Error')));
         return bloc;
       },
       // act
@@ -152,7 +155,7 @@ void main() {
       // assert
       expect: () => [
         const SearchState.aiSearching('Crash'),
-        const SearchState.failure('AI Search failed: Exception: AI Error'),
+        const SearchState.failure('AI Search failed: AI Error'),
       ],
     );
   });

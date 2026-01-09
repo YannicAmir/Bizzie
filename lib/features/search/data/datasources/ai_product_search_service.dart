@@ -1,9 +1,9 @@
 import 'dart:convert';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
-import 'package:bizzie/features/search/domain/models/stock_symbol.dart';
+import 'package:bizzie/features/search/data/datasources/vertex_ai_provider.dart';
+import 'package:bizzie/features/search/data/dtos/stock_symbol_dto.dart';
 import 'package:bizzie/services/config_service.dart';
 import 'package:firebase_ai/firebase_ai.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:injectable/injectable.dart';
 
 final _logger = BizzieLogger('AiProductSearchService');
@@ -11,16 +11,16 @@ final _logger = BizzieLogger('AiProductSearchService');
 @singleton
 class AiProductSearchService {
   final ConfigService _configService;
+  final IVertexAIProvider _vertexAIProvider;
 
-  AiProductSearchService(this._configService);
+  AiProductSearchService(this._configService, this._vertexAIProvider);
 
-  Future<StockSymbol?> findStockForProduct(String query) async {
+  Future<StockSymbolDto?> findStockForProduct(String query) async {
     try {
       final modelName = _configService.geminiModelName;
-      final vertexInstance = FirebaseAI.vertexAI(auth: FirebaseAuth.instance);
-      final model = vertexInstance.generativeModel(
-        model: modelName,
-        generationConfig: GenerationConfig(
+      final model = _vertexAIProvider.getModel(
+        modelName,
+        GenerationConfig(
           responseMimeType: 'application/json',
           temperature: 0.1,
         ),
@@ -63,7 +63,7 @@ Output must be valid JSON only.
       final json = jsonDecode(cleanText);
       if (json == null) return null;
 
-      return StockSymbol.fromJson(json);
+      return StockSymbolDto.fromJson(json);
     } catch (e) {
       _logger.warning('AI Search failed for query: $query', e);
       return null;

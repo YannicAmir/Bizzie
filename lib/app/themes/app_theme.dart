@@ -96,6 +96,7 @@ class AppTheme {
           innerContainerShadows: AppShadows.mascotInner,
           badgeShadows: AppShadows.mascotBadge,
           subtitleColor: AppColors.mascotSubtitle,
+          cardShadow: AppShadows.standardCard,
         ),
         SocialLoginThemeExtension(
           appleBackgroundColor: AppColors.appleBlack,
@@ -117,6 +118,7 @@ class MascotThemeExtension extends ThemeExtension<MascotThemeExtension> {
   final List<BoxShadow> innerContainerShadows;
   final List<BoxShadow> badgeShadows;
   final Color subtitleColor;
+  final List<BoxShadow> cardShadow;
 
   const MascotThemeExtension({
     required this.gradientColors,
@@ -125,6 +127,7 @@ class MascotThemeExtension extends ThemeExtension<MascotThemeExtension> {
     required this.innerContainerShadows,
     required this.badgeShadows,
     required this.subtitleColor,
+    required this.cardShadow,
   });
 
   @override
@@ -135,6 +138,7 @@ class MascotThemeExtension extends ThemeExtension<MascotThemeExtension> {
     List<BoxShadow>? innerContainerShadows,
     List<BoxShadow>? badgeShadows,
     Color? subtitleColor,
+    List<BoxShadow>? cardShadow,
   }) {
     return MascotThemeExtension(
       gradientColors: gradientColors ?? this.gradientColors,
@@ -144,6 +148,7 @@ class MascotThemeExtension extends ThemeExtension<MascotThemeExtension> {
           innerContainerShadows ?? this.innerContainerShadows,
       badgeShadows: badgeShadows ?? this.badgeShadows,
       subtitleColor: subtitleColor ?? this.subtitleColor,
+      cardShadow: cardShadow ?? this.cardShadow,
     );
   }
 
@@ -166,6 +171,7 @@ class MascotThemeExtension extends ThemeExtension<MascotThemeExtension> {
       )!,
       badgeShadows: BoxShadow.lerpList(badgeShadows, other.badgeShadows, t)!,
       subtitleColor: Color.lerp(subtitleColor, other.subtitleColor, t)!,
+      cardShadow: BoxShadow.lerpList(cardShadow, other.cardShadow, t)!,
     );
   }
 }

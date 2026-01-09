@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:bizzie/app/themes/app_colors.dart';
+import 'package:bizzie/app/themes/app_theme.dart';
 
 import 'package:bizzie/features/search/domain/models/stock_symbol.dart';
 import 'package:bizzie/shared/widgets/company_list_tile.dart';
@@ -46,13 +46,7 @@ class AiMatchSuccessView extends StatelessWidget {
             decoration: BoxDecoration(
               color: theme.colorScheme.surface,
               borderRadius: BorderRadius.circular(16),
-              boxShadow: [
-                BoxShadow(
-                  color: AppColors.black.withValues(alpha: 0.05),
-                  blurRadius: 2,
-                  offset: const Offset(0, 1),
-                ),
-              ],
+              boxShadow: theme.extension<MascotThemeExtension>()?.cardShadow,
             ),
             child: CompanyListTile(
               symbol: _symbolText,

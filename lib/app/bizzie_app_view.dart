@@ -46,9 +46,7 @@ class _BizzieAppViewState extends State<BizzieAppView> {
       listener: (context, state) {
         state.whenOrNull(
           authenticated: (user) {
-            context.read<UserBloc>().add(
-              UserEvent.loadUser(user.id, silent: true),
-            );
+            context.read<UserBloc>().add(UserEvent.loadUser(user.id));
           },
           unauthenticated: () {
             context.read<UserBloc>().add(const UserEvent.clear());

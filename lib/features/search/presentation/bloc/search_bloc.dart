@@ -1,3 +1,4 @@
+import 'package:async/async.dart';
 import 'package:bloc/bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
@@ -20,6 +21,8 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
   final GetSearchDashboardDataUseCase _dashboardDataUseCase;
   final FindStockForProductUseCase _findStockForProductUseCase;
 
+  CancelableOperation? _searchOperation;
+
   String? _cachedFavoriteSector;
   List<Company>? _cachedRecommendedBrands;
 
@@ -32,6 +35,12 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     on<_QueryChanged>(_onQueryChanged);
     on<_Cleared>(_onCleared);
     on<_AiSearchRequested>(_onAiSearchRequested);
+  }
+
+  @override
+  Future<void> close() {
+    _searchOperation?.cancel();
+    return super.close();
   }
 
   Future<void> _onStarted(_Started event, Emitter<SearchState> emit) async {
@@ -49,12 +58,13 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
           );
         },
         (data) {
+          final limitedBrands = data.recommendedBrands.take(5).toList();
           _cachedFavoriteSector = data.favoriteSector;
-          _cachedRecommendedBrands = data.recommendedBrands;
+          _cachedRecommendedBrands = limitedBrands;
           emit(
             SearchState.initial(
               favoriteSector: data.favoriteSector,
-              recommendedBrands: data.recommendedBrands,
+              recommendedBrands: limitedBrands,
             ),
           );
         },
@@ -70,22 +80,28 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     Emitter<SearchState> emit,
   ) async {
     if (event.query.isEmpty) {
-      emit(
-        SearchState.initial(
-          favoriteSector: _cachedFavoriteSector,
-          recommendedBrands: _cachedRecommendedBrands ?? [],
-        ),
-      );
+      add(const SearchEvent.cleared());
       return;
     }
 
     emit(SearchState.loading(favoriteSector: _cachedFavoriteSector));
-    final results = await _searchStocksUseCase.execute(event.query);
 
-    if (results.isEmpty) {
-      emit(SearchState.localEmpty(event.query));
-    } else {
-      emit(SearchState.loaded(results: results, query: event.query));
+    await _searchOperation?.cancel();
+
+    _searchOperation = CancelableOperation.fromFuture(
+      _searchStocksUseCase.execute(event.query),
+    );
+
+    try {
+      final results = await _searchOperation!.value;
+      if (results.isEmpty) {
+        emit(SearchState.localEmpty(event.query));
+      } else {
+        emit(SearchState.loaded(results: results, query: event.query));
+      }
+    } catch (e) {
+      if (_searchOperation?.isCanceled == true) return;
+      emit(SearchState.failure("Search failed: $e"));
     }
   }
 
@@ -95,12 +111,21 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
   ) async {
     emit(SearchState.aiSearching(event.query));
     try {
-      final stock = await _findStockForProductUseCase.execute(event.query);
-      if (stock != null) {
-        emit(SearchState.aiSuccess(productQuery: event.query, stock: stock));
-      } else {
-        emit(SearchState.aiEmpty(event.query));
-      }
+      final result = await _findStockForProductUseCase.execute(event.query);
+      result.fold(
+        (failure) {
+          emit(SearchState.failure('AI Search failed: ${failure.message}'));
+        },
+        (stock) {
+          if (stock != null) {
+            emit(
+              SearchState.aiSuccess(productQuery: event.query, stock: stock),
+            );
+          } else {
+            emit(SearchState.aiEmpty(event.query));
+          }
+        },
+      );
     } catch (e) {
       emit(SearchState.failure('AI Search failed: $e'));
     }
