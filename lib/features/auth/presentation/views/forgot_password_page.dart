@@ -1,7 +1,5 @@
 import 'package:bizzie/app/routes/app_routes.dart';
 import 'package:bizzie/app/themes/app_assets.dart';
-import 'package:bizzie/app/themes/app_colors.dart';
-import 'package:bizzie/app/themes/app_text_styles.dart';
 import 'package:bizzie/shared/widgets/buttons/bizzie_primary_button.dart';
 import 'package:bizzie/features/auth/presentation/widgets/auth_text_field.dart';
 import 'package:flutter/material.dart';
@@ -41,6 +39,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
         state.maybeWhen(
@@ -53,16 +52,16 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
         );
       },
       child: Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: theme.scaffoldBackgroundColor,
         appBar: AppBar(
           backgroundColor: Colors.transparent,
           elevation: 0,
           leading: Padding(
             padding: const EdgeInsets.only(left: 8.0, top: 8.0),
             child: IconButton(
-              icon: const Icon(
+              icon: Icon(
                 Icons.arrow_back_ios_new,
-                color: AppColors.textPrimary,
+                color: theme.colorScheme.onSurface,
                 size: 20,
               ),
               onPressed: () => context.pop(),
@@ -80,16 +79,16 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                   const SizedBox(height: 24),
                   Text(
                     'Reset Password',
-                    style: AppTextStyles.h1.copyWith(
-                      color: const Color(0xFF0F172B),
+                    style: theme.textTheme.displayLarge?.copyWith(
+                      color: theme.colorScheme.onSurface,
                     ),
                   ),
                   const SizedBox(height: 12),
                   Text(
                     'We\'ll email you a link to reset your password',
-                    style: AppTextStyles.subtitle.copyWith(
+                    style: theme.textTheme.titleMedium?.copyWith(
                       fontSize: 16,
-                      color: const Color(0xFF45556C),
+                      color: theme.colorScheme.onSurfaceVariant,
                       height: 1.5,
                     ),
                   ),
@@ -102,9 +101,6 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                     textInputAction: TextInputAction.done,
                     onSubmitted: _onSendResetLinkPressed,
                     validator: Validators.validateEmail,
-                    borderRadius: 8,
-                    fillColor: const Color(0xFFF8F9FA),
-                    borderColor: const Color(0xFFDEE2E6),
                   ),
                   const SizedBox(height: 24),
                   BizziePrimaryButton(

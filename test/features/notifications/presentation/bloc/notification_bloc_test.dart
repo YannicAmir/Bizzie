@@ -1,4 +1,5 @@
 import 'package:bloc_test/bloc_test.dart';
+import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/features/notifications/domain/models/notification_message.dart';
 import 'package:bizzie/features/notifications/domain/usecases/get_fcm_token.dart';
 import 'package:bizzie/features/notifications/domain/usecases/listen_to_messages.dart';
@@ -6,6 +7,7 @@ import 'package:bizzie/features/notifications/domain/usecases/request_notificati
 import 'package:bizzie/features/notifications/domain/usecases/subscribe_to_topic.dart';
 import 'package:bizzie/features/notifications/domain/usecases/unsubscribe_from_topic.dart';
 import 'package:bizzie/features/notifications/presentation/bloc/notification_bloc.dart';
+import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -59,8 +61,12 @@ void main() {
     blocTest<NotificationBloc, NotificationState>(
       'setupRequested_success_emitsLoadingAndSuccess',
       build: () {
-        when(() => mockRequestPermission()).thenAnswer((_) async {});
-        when(() => mockGetFcmToken()).thenAnswer((_) async => tToken);
+        when(
+          () => mockRequestPermission(),
+        ).thenAnswer((_) async => const Right(null));
+        when(
+          () => mockGetFcmToken(),
+        ).thenAnswer((_) async => const Right(tToken));
         when(
           () => mockListenToMessages(),
         ).thenAnswer((_) => Stream.value(tMessage));
@@ -80,22 +86,44 @@ void main() {
     );
 
     blocTest<NotificationBloc, NotificationState>(
-      'setupRequested_failure_emitsLoadingAndFailure',
+      'setupRequested_permissionFailure_emitsLoadingAndFailure',
       build: () {
-        when(() => mockRequestPermission()).thenThrow(Exception('Error'));
+        when(
+          () => mockRequestPermission(),
+        ).thenAnswer((_) async => Left(ServerFailure('Permission Error')));
         return bloc;
       },
       act: (bloc) => bloc.add(const NotificationEvent.setupRequested()),
       expect: () => [
         const NotificationState.loading(),
-        const NotificationState.failure('Exception: Error'),
+        const NotificationState.failure('Permission Error'),
+      ],
+    );
+
+    blocTest<NotificationBloc, NotificationState>(
+      'setupRequested_tokenFailure_emitsLoadingAndFailure',
+      build: () {
+        when(
+          () => mockRequestPermission(),
+        ).thenAnswer((_) async => const Right(null));
+        when(
+          () => mockGetFcmToken(),
+        ).thenAnswer((_) async => Left(ServerFailure('Token Error')));
+        return bloc;
+      },
+      act: (bloc) => bloc.add(const NotificationEvent.setupRequested()),
+      expect: () => [
+        const NotificationState.loading(),
+        const NotificationState.failure('Token Error'),
       ],
     );
 
     blocTest<NotificationBloc, NotificationState>(
       'subscribeToTopicRequested_added_callsSubscribeToTopic',
       build: () {
-        when(() => mockSubscribeToTopic(any())).thenAnswer((_) async {});
+        when(
+          () => mockSubscribeToTopic(any()),
+        ).thenAnswer((_) async => const Right(null));
         return bloc;
       },
       act: (bloc) =>
@@ -111,7 +139,7 @@ void main() {
       build: () {
         when(
           () => mockSubscribeToTopic(any()),
-        ).thenThrow(Exception('Subscribe Error'));
+        ).thenAnswer((_) async => Left(ServerFailure('Subscribe Error')));
         return bloc;
       },
       act: (bloc) =>
@@ -120,16 +148,16 @@ void main() {
         verify(() => mockSubscribeToTopic('topic')).called(1);
       },
       expect: () => [
-        const NotificationState.failure(
-          'Failed to subscribe: Exception: Subscribe Error',
-        ),
+        const NotificationState.failure('Failed to subscribe: Subscribe Error'),
       ],
     );
 
     blocTest<NotificationBloc, NotificationState>(
       'unsubscribeFromTopicRequested_added_callsUnsubscribeFromTopic',
       build: () {
-        when(() => mockUnsubscribeFromTopic(any())).thenAnswer((_) async {});
+        when(
+          () => mockUnsubscribeFromTopic(any()),
+        ).thenAnswer((_) async => const Right(null));
         return bloc;
       },
       act: (bloc) => bloc.add(
@@ -146,7 +174,7 @@ void main() {
       build: () {
         when(
           () => mockUnsubscribeFromTopic(any()),
-        ).thenThrow(Exception('Unsubscribe Error'));
+        ).thenAnswer((_) async => Left(ServerFailure('Unsubscribe Error')));
         return bloc;
       },
       act: (bloc) => bloc.add(
@@ -157,7 +185,7 @@ void main() {
       },
       expect: () => [
         const NotificationState.failure(
-          'Failed to unsubscribe: Exception: Unsubscribe Error',
+          'Failed to unsubscribe: Unsubscribe Error',
         ),
       ],
     );

@@ -1,3 +1,5 @@
+import 'package:bizzie/core/error/failures.dart';
+import 'package:dartz/dartz.dart';
 import 'package:bizzie/core/usecase/usecase.dart';
 import 'package:bizzie/features/auth/domain/interfaces/i_auth_repository.dart';
 import 'package:bizzie/features/auth/domain/models/user_model.dart';
@@ -17,31 +19,34 @@ void main() {
   });
 
   const tUser = UserModel(id: '1', email: 'test@gmail.com');
+  const tFailure = ServerFailure('Test Failure');
 
-  test('signInWithGoogle_success_returnsUser', () async {
+  test('signInWithGoogle_success_returnsRightUser', () async {
     // arrange
     when(
       () => mockAuthRepository.signInWithGoogle(),
-    ).thenAnswer((_) async => tUser);
+    ).thenAnswer((_) async => const Right(tUser));
 
     // act
     final result = await usecase(NoParams());
 
     // assert
-    expect(result, tUser);
+    expect(result, const Right(tUser));
     verify(() => mockAuthRepository.signInWithGoogle());
     verifyNoMoreInteractions(mockAuthRepository);
   });
 
-  test('signInWithGoogle_failure_throwsException', () async {
+  test('signInWithGoogle_failure_returnsLeftFailure', () async {
     // arrange
-    when(() => mockAuthRepository.signInWithGoogle()).thenThrow(Exception());
+    when(
+      () => mockAuthRepository.signInWithGoogle(),
+    ).thenAnswer((_) async => const Left(tFailure));
 
     // act
-    final call = usecase.call;
+    final result = await usecase(NoParams());
 
     // assert
-    expect(() => call(NoParams()), throwsException);
+    expect(result, const Left(tFailure));
     verify(() => mockAuthRepository.signInWithGoogle());
     verifyNoMoreInteractions(mockAuthRepository);
   });

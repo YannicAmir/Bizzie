@@ -44,45 +44,60 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
     Emitter<NotificationState> emit,
   ) async {
     emit(const NotificationState.loading());
-    try {
-      _logger.info(
-        'SetupRequested event received. calling requestPermission...',
-      );
-      await _requestPermission();
-      _logger.info('Permission request completed.');
-      final token = await _getFcmToken();
-      _logger.info('FCM Token: $token');
 
-      _messageSubscription = _listenToMessages().listen((message) {
-        add(NotificationEvent.messageReceived(message));
-      });
+    _logger.info('SetupRequested event received. calling requestPermission...');
+    final permissionResult = await _requestPermission();
 
-      emit(NotificationState.success(token));
-    } catch (e) {
-      emit(NotificationState.failure(e.toString()));
-    }
+    await permissionResult.fold(
+      (failure) async {
+        emit(NotificationState.failure(failure.message));
+      },
+      (_) async {
+        _logger.info('Permission request completed.');
+        final tokenResult = await _getFcmToken();
+
+        tokenResult.fold(
+          (failure) {
+            emit(NotificationState.failure(failure.message));
+          },
+          (token) {
+            _logger.info('FCM Token: $token');
+
+            _messageSubscription = _listenToMessages().listen((message) {
+              add(NotificationEvent.messageReceived(message));
+            });
+
+            emit(NotificationState.success(token));
+          },
+        );
+      },
+    );
   }
 
   Future<void> _onSubscribeToTopicRequested(
     _SubscribeToTopicRequested event,
     Emitter<NotificationState> emit,
   ) async {
-    try {
-      await _subscribeToTopic(event.topic);
-    } catch (e) {
-      emit(NotificationState.failure("Failed to subscribe: ${e.toString()}"));
-    }
+    final result = await _subscribeToTopic(event.topic);
+    result.fold(
+      (failure) => emit(
+        NotificationState.failure("Failed to subscribe: ${failure.message}"),
+      ),
+      (_) => null,
+    );
   }
 
   Future<void> _onUnsubscribeFromTopicRequested(
     _UnsubscribeFromTopicRequested event,
     Emitter<NotificationState> emit,
   ) async {
-    try {
-      await _unsubscribeFromTopic(event.topic);
-    } catch (e) {
-      emit(NotificationState.failure("Failed to unsubscribe: ${e.toString()}"));
-    }
+    final result = await _unsubscribeFromTopic(event.topic);
+    result.fold(
+      (failure) => emit(
+        NotificationState.failure("Failed to unsubscribe: ${failure.message}"),
+      ),
+      (_) => null,
+    );
   }
 
   void _onMessageReceived(

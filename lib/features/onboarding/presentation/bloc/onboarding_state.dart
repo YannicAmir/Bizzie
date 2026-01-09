@@ -4,6 +4,8 @@ import 'package:bizzie/features/onboarding/domain/models/sector.dart';
 import 'package:bizzie/features/onboarding/domain/models/brand.dart';
 import 'package:bizzie/features/onboarding/presentation/models/feature_highlight_item.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:bizzie/app/themes/app_assets.dart';
+import 'package:bizzie/features/onboarding/presentation/utils/onboarding_assets_helper.dart';
 
 part 'onboarding_state.freezed.dart';
 
@@ -151,5 +153,18 @@ abstract class OnboardingState with _$OnboardingState {
       );
     }
     return displayBrands;
+  }
+
+  String get greetingName =>
+      onboardingData.firstName.isEmpty ? 'Friend' : onboardingData.firstName;
+
+  String get displaySectorName =>
+      onboardingData.selectedSector?.displayName ?? 'Your Sector';
+
+  String get mascotAsset {
+    final sector = onboardingData.selectedSector;
+    return sector != null
+        ? OnboardingAssetsHelper.getMascotForSector(sector)
+        : AppAssets.defaultMascot;
   }
 }

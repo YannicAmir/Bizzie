@@ -16,6 +16,8 @@ import 'package:firebase_auth/firebase_auth.dart' as _i59;
 import 'package:firebase_messaging/firebase_messaging.dart' as _i892;
 import 'package:firebase_remote_config/firebase_remote_config.dart' as _i627;
 import 'package:firebase_storage/firebase_storage.dart' as _i457;
+import 'package:flutter_local_notifications/flutter_local_notifications.dart'
+    as _i163;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:google_sign_in/google_sign_in.dart' as _i116;
 import 'package:injectable/injectable.dart' as _i526;
@@ -29,6 +31,8 @@ import '../features/auth/data/datasources/remote_auth_data_source.dart'
 import '../features/auth/data/repositories/auth_repository_impl.dart' as _i570;
 import '../features/auth/domain/interfaces/i_auth_repository.dart' as _i685;
 import '../features/auth/domain/usecases/delete_account.dart' as _i739;
+import '../features/auth/domain/usecases/get_auth_stream.dart' as _i427;
+import '../features/auth/domain/usecases/get_current_user.dart' as _i318;
 import '../features/auth/domain/usecases/reset_password.dart' as _i73;
 import '../features/auth/domain/usecases/sign_in_with_apple.dart' as _i538;
 import '../features/auth/domain/usecases/sign_in_with_email.dart' as _i33;
@@ -130,16 +134,14 @@ extension GetItInjectableX on _i174.GetIt {
       () => registerModule.prefs,
       preResolve: true,
     );
-    gh.factory<_i640.FcmRemoteDataSource>(() => _i640.FcmRemoteDataSource());
-    await gh.singletonAsync<_i982.LocalNotificationDataSource>(() {
-      final i = _i982.LocalNotificationDataSource();
-      return i.init().then((_) => i);
-    }, preResolve: true);
     await gh.singletonAsync<_i216.ConfigService>(
       () => _i216.ConfigService.init(),
       preResolve: true,
     );
     gh.singleton<_i52.FirestoreService>(() => _i52.FirestoreService.init());
+    gh.lazySingleton<_i163.FlutterLocalNotificationsPlugin>(
+      () => registerModule.flutterLocalNotificationsPlugin,
+    );
     gh.lazySingleton<_i974.FirebaseFirestore>(() => registerModule.firestore);
     gh.lazySingleton<_i892.FirebaseMessaging>(
       () => registerModule.firebaseMessaging,
@@ -151,12 +153,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i116.GoogleSignIn>(() => registerModule.googleSignIn);
     gh.lazySingleton<_i457.FirebaseStorage>(() => registerModule.storage);
     gh.lazySingleton<_i833.DeviceInfoPlugin>(() => registerModule.deviceInfo);
-    gh.lazySingleton<_i622.INotificationRepository>(
-      () => _i648.NotificationRepositoryImpl(
-        gh<_i640.FcmRemoteDataSource>(),
-        gh<_i982.LocalNotificationDataSource>(),
-      ),
-    );
     gh.singleton<_i361.Dio>(
       () => networkModule.fmpDio(gh<_i216.ConfigService>()),
       instanceName: 'FmpDio',
@@ -170,32 +166,15 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i444.IWatchlistRemoteDataSource>(
       () => _i444.WatchlistRemoteDataSource(gh<_i52.FirestoreService>()),
     );
-    gh.factory<_i69.GetFcmToken>(
-      () => _i69.GetFcmToken(gh<_i622.INotificationRepository>()),
-    );
-    gh.factory<_i954.ListenToMessages>(
-      () => _i954.ListenToMessages(gh<_i622.INotificationRepository>()),
-    );
-    gh.factory<_i332.RequestNotificationPermission>(
-      () => _i332.RequestNotificationPermission(
-        gh<_i622.INotificationRepository>(),
-      ),
-    );
-    gh.factory<_i327.SubscribeToTopic>(
-      () => _i327.SubscribeToTopic(gh<_i622.INotificationRepository>()),
-    );
-    gh.factory<_i999.UnsubscribeFromTopic>(
-      () => _i999.UnsubscribeFromTopic(gh<_i622.INotificationRepository>()),
-    );
-    gh.lazySingleton<_i430.INotificationService>(
-      () => _i941.NotificationService(
-        gh<_i892.FirebaseMessaging>(),
-        gh<_i833.DeviceInfoPlugin>(),
-      ),
-    );
     gh.factory<_i191.IStockLocalDataSource>(
       () => _i191.StockLocalDataSource(gh<_i460.SharedPreferences>()),
     );
+    await gh.singletonAsync<_i982.LocalNotificationDataSource>(() {
+      final i = _i982.LocalNotificationDataSource(
+        gh<_i163.FlutterLocalNotificationsPlugin>(),
+      );
+      return i.init().then((_) => i);
+    }, preResolve: true);
     gh.factory<_i147.IUserLocalDataSource>(
       () => _i147.UserLocalDataSource(gh<_i460.SharedPreferences>()),
     );
@@ -205,6 +184,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i114.IWatchlistLocalDataSource>(
       () => _i114.WatchlistLocalDataSource(gh<_i460.SharedPreferences>()),
+    );
+    gh.factory<_i640.FcmRemoteDataSource>(
+      () => _i640.FcmRemoteDataSource(gh<_i892.FirebaseMessaging>()),
     );
     gh.lazySingleton<_i615.IUserRepository>(
       () => _i272.UserRepositoryImpl(
@@ -217,15 +199,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i444.IWatchlistRemoteDataSource>(),
         gh<_i114.IWatchlistLocalDataSource>(),
         gh<_i892.FirebaseMessaging>(),
-      ),
-    );
-    gh.factory<_i687.NotificationBloc>(
-      () => _i687.NotificationBloc(
-        gh<_i332.RequestNotificationPermission>(),
-        gh<_i69.GetFcmToken>(),
-        gh<_i954.ListenToMessages>(),
-        gh<_i327.SubscribeToTopic>(),
-        gh<_i999.UnsubscribeFromTopic>(),
       ),
     );
     gh.singleton<_i977.AiProductSearchService>(
@@ -263,8 +236,18 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i561.GetUserUseCase>(
       () => _i561.GetUserUseCase(gh<_i615.IUserRepository>()),
     );
+    gh.lazySingleton<_i622.INotificationRepository>(
+      () => _i648.NotificationRepositoryImpl(gh<_i640.FcmRemoteDataSource>()),
+    );
     gh.lazySingleton<_i200.UserBloc>(
       () => _i200.UserBloc(gh<_i561.GetUserUseCase>()),
+    );
+    gh.lazySingleton<_i430.INotificationService>(
+      () => _i941.NotificationService(
+        gh<_i622.INotificationRepository>(),
+        gh<_i982.LocalNotificationDataSource>(),
+        gh<_i833.DeviceInfoPlugin>(),
+      ),
     );
     gh.factory<_i592.GetDailyBrandsUseCase>(
       () => _i592.GetDailyBrandsUseCase(gh<_i329.IOnboardingRepository>()),
@@ -311,6 +294,29 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i685.IAuthRepository>(),
       ),
     );
+    gh.lazySingleton<_i427.GetAuthStream>(
+      () => _i427.GetAuthStream(gh<_i685.IAuthRepository>()),
+    );
+    gh.lazySingleton<_i318.GetCurrentUser>(
+      () => _i318.GetCurrentUser(gh<_i685.IAuthRepository>()),
+    );
+    gh.factory<_i69.GetFcmToken>(
+      () => _i69.GetFcmToken(gh<_i622.INotificationRepository>()),
+    );
+    gh.factory<_i954.ListenToMessages>(
+      () => _i954.ListenToMessages(gh<_i622.INotificationRepository>()),
+    );
+    gh.factory<_i332.RequestNotificationPermission>(
+      () => _i332.RequestNotificationPermission(
+        gh<_i622.INotificationRepository>(),
+      ),
+    );
+    gh.factory<_i327.SubscribeToTopic>(
+      () => _i327.SubscribeToTopic(gh<_i622.INotificationRepository>()),
+    );
+    gh.factory<_i999.UnsubscribeFromTopic>(
+      () => _i999.UnsubscribeFromTopic(gh<_i622.INotificationRepository>()),
+    );
     gh.lazySingleton<_i739.DeleteAccount>(
       () => _i739.DeleteAccount(gh<_i685.IAuthRepository>()),
     );
@@ -353,7 +359,8 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i59.AuthBloc>(
       () => _i59.AuthBloc(
-        authRepository: gh<_i685.IAuthRepository>(),
+        getAuthStream: gh<_i427.GetAuthStream>(),
+        getCurrentUser: gh<_i318.GetCurrentUser>(),
         signInWithGoogle: gh<_i345.SignInWithGoogle>(),
         signInWithApple: gh<_i538.SignInWithApple>(),
         signInWithEmail: gh<_i33.SignInWithEmail>(),
@@ -361,6 +368,15 @@ extension GetItInjectableX on _i174.GetIt {
         signOut: gh<_i472.SignOut>(),
         resetPassword: gh<_i73.ResetPassword>(),
         deleteAccount: gh<_i739.DeleteAccount>(),
+      ),
+    );
+    gh.factory<_i687.NotificationBloc>(
+      () => _i687.NotificationBloc(
+        gh<_i332.RequestNotificationPermission>(),
+        gh<_i69.GetFcmToken>(),
+        gh<_i954.ListenToMessages>(),
+        gh<_i327.SubscribeToTopic>(),
+        gh<_i999.UnsubscribeFromTopic>(),
       ),
     );
     gh.factory<_i348.SearchBloc>(

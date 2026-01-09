@@ -3,6 +3,13 @@ name: PR Checks
 on:
   pull_request:
     branches: [ "main" ]
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   quality-gate:
@@ -22,6 +29,14 @@ jobs:
         with:
           channel: 'stable'
           cache: true
+
+      - name: Cache Pub dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.pub-cache
+          key: ${{ runner.os }}-pub-${{ hashFiles('**/pubspec.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-pub-
 
       - name: Decode Firebase Configuration
         run: |

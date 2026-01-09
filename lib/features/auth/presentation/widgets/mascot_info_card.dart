@@ -1,5 +1,4 @@
-import 'package:bizzie/app/themes/app_colors.dart';
-import 'package:bizzie/app/themes/app_text_styles.dart';
+import 'package:bizzie/app/themes/app_theme.dart';
 import 'package:flutter/material.dart';
 
 class MascotInfoCard extends StatelessWidget {
@@ -16,34 +15,21 @@ class MascotInfoCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final mascotTheme = theme.extension<MascotThemeExtension>()!;
+
     return Container(
       padding: const EdgeInsets.all(21),
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
+        gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [
-            AppColors.mascotCardGradientStart,
-            AppColors.mascotCardGradientEnd,
-          ],
-          transform: GradientRotation(165 * 3.14159 / 180),
+          colors: mascotTheme.gradientColors,
+          transform: const GradientRotation(165 * 3.14159 / 180),
         ),
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: AppColors.mascotCardBorder, width: 0.665),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.black.withValues(alpha: 0.1),
-            offset: const Offset(0, 1),
-            blurRadius: 3,
-            spreadRadius: 0,
-          ),
-          BoxShadow(
-            color: AppColors.black.withValues(alpha: 0.1),
-            offset: const Offset(0, 1),
-            blurRadius: 2,
-            spreadRadius: -1,
-          ),
-        ],
+        border: Border.all(color: mascotTheme.borderColor, width: 0.665),
+        boxShadow: mascotTheme.cardShadows,
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -58,23 +44,10 @@ class MascotInfoCard extends StatelessWidget {
                   width: 64,
                   height: 64,
                   decoration: BoxDecoration(
-                    color: AppColors.white,
+                    color: Colors.white,
                     borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: AppColors.white, width: 2),
-                    boxShadow: [
-                      BoxShadow(
-                        color: AppColors.black.withValues(alpha: 0.1),
-                        offset: const Offset(0, 4),
-                        blurRadius: 6,
-                        spreadRadius: -1,
-                      ),
-                      BoxShadow(
-                        color: AppColors.black.withValues(alpha: 0.1),
-                        offset: const Offset(0, 2),
-                        blurRadius: 4,
-                        spreadRadius: -2,
-                      ),
-                    ],
+                    border: Border.all(color: Colors.white, width: 2),
+                    boxShadow: mascotTheme.innerContainerShadows,
                   ),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(14),
@@ -88,16 +61,10 @@ class MascotInfoCard extends StatelessWidget {
                     width: 16,
                     height: 16,
                     decoration: BoxDecoration(
-                      color: AppColors.primary,
+                      color: theme.colorScheme.primary,
                       shape: BoxShape.circle,
-                      border: Border.all(color: AppColors.white, width: 2),
-                      boxShadow: [
-                        BoxShadow(
-                          color: AppColors.black.withValues(alpha: 0.1),
-                          offset: const Offset(0, 1),
-                          blurRadius: 3,
-                        ),
-                      ],
+                      border: Border.all(color: Colors.white, width: 2),
+                      boxShadow: mascotTheme.badgeShadows,
                     ),
                   ),
                 ),
@@ -110,23 +77,20 @@ class MascotInfoCard extends StatelessWidget {
             children: [
               Text(
                 name,
-                style: AppTextStyles.h2.copyWith(
+                style: theme.textTheme.displayMedium?.copyWith(
                   fontSize: 19,
                   fontWeight: FontWeight.bold,
-                  color: AppColors.textPrimary,
+                  color: theme.colorScheme.onSurface,
                   height: 28.5 / 19,
-                  letterSpacing: -0.4453,
                 ),
               ),
               const SizedBox(height: 2),
               Text(
                 sectorName,
-                style: AppTextStyles.bodySmall.copyWith(
-                  fontSize: 14,
+                style: theme.textTheme.bodySmall?.copyWith(
                   fontWeight: FontWeight.w500,
-                  color: AppColors.mascotSubtitle,
+                  color: mascotTheme.subtitleColor,
                   height: 21 / 14,
-                  letterSpacing: -0.1504,
                 ),
               ),
             ],

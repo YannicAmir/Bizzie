@@ -1,3 +1,5 @@
+import 'package:bizzie/core/error/failures.dart';
+import 'package:dartz/dartz.dart';
 import 'package:bizzie/features/auth/domain/interfaces/i_auth_repository.dart';
 import 'package:bizzie/features/auth/domain/models/user_model.dart';
 import 'package:bizzie/features/auth/domain/usecases/sign_in_with_email.dart';
@@ -18,15 +20,16 @@ void main() {
   const tEmail = 'test@example.com';
   const tPassword = 'password123';
   const tUser = UserModel(id: '1', email: tEmail);
+  const tFailure = ServerFailure('Test Failure');
 
-  test('signInWithEmail_success_returnsUser', () async {
+  test('signInWithEmail_success_returnsRightUser', () async {
     // arrange
     when(
       () => mockAuthRepository.signInWithEmail(
         email: any(named: 'email'),
         password: any(named: 'password'),
       ),
-    ).thenAnswer((_) async => tUser);
+    ).thenAnswer((_) async => const Right(tUser));
 
     // act
     final result = await usecase(
@@ -34,7 +37,7 @@ void main() {
     );
 
     // assert
-    expect(result, tUser);
+    expect(result, const Right(tUser));
     verify(
       () => mockAuthRepository.signInWithEmail(
         email: tEmail,
@@ -44,23 +47,22 @@ void main() {
     verifyNoMoreInteractions(mockAuthRepository);
   });
 
-  test('signInWithEmail_failure_throwsException', () async {
+  test('signInWithEmail_failure_returnsLeftFailure', () async {
     // arrange
     when(
       () => mockAuthRepository.signInWithEmail(
         email: any(named: 'email'),
         password: any(named: 'password'),
       ),
-    ).thenThrow(Exception());
+    ).thenAnswer((_) async => const Left(tFailure));
 
     // act
-    final call = usecase.call;
+    final result = await usecase(
+      SignInWithEmailParams(email: tEmail, password: tPassword),
+    );
 
     // assert
-    expect(
-      () => call(SignInWithEmailParams(email: tEmail, password: tPassword)),
-      throwsException,
-    );
+    expect(result, const Left(tFailure));
     verify(
       () => mockAuthRepository.signInWithEmail(
         email: tEmail,

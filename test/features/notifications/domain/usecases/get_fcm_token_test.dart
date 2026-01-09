@@ -1,5 +1,7 @@
+import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/features/notifications/domain/interfaces/i_notification_repository.dart';
 import 'package:bizzie/features/notifications/domain/usecases/get_fcm_token.dart';
+import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -19,26 +21,30 @@ void main() {
 
   test('getFcmToken_called_returnsTokenFromRepository', () async {
     // arrange
-    when(() => mockRepository.getFcmToken()).thenAnswer((_) async => tToken);
+    when(
+      () => mockRepository.getFcmToken(),
+    ).thenAnswer((_) async => const Right(tToken));
 
     // act
     final result = await usecase();
 
     // assert
-    expect(result, tToken);
+    expect(result, const Right(tToken));
     verify(() => mockRepository.getFcmToken()).called(1);
     verifyNoMoreInteractions(mockRepository);
   });
 
-  test('getFcmToken_repositoryThrows_throwsException', () async {
+  test('getFcmToken_repositoryThrows_returnsFailure', () async {
     // arrange
-    when(() => mockRepository.getFcmToken()).thenThrow(Exception('Error'));
+    when(
+      () => mockRepository.getFcmToken(),
+    ).thenAnswer((_) async => Left(ServerFailure('Error')));
 
     // act
-    final call = usecase.call;
+    final result = await usecase();
 
     // assert
-    expect(call, throwsException);
+    expect(result, Left(ServerFailure('Error')));
     verify(() => mockRepository.getFcmToken()).called(1);
     verifyNoMoreInteractions(mockRepository);
   });

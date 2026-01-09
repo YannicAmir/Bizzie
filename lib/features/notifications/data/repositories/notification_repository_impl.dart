@@ -1,43 +1,41 @@
 import 'dart:async';
+import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
+import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/features/notifications/data/datasources/fcm_remote_datasource.dart';
-import 'package:bizzie/features/notifications/data/datasources/local_notification_datasource.dart';
 import 'package:bizzie/features/notifications/domain/interfaces/i_notification_repository.dart';
 import 'package:bizzie/features/notifications/domain/models/notification_message.dart';
 
 @LazySingleton(as: INotificationRepository)
 class NotificationRepositoryImpl implements INotificationRepository {
   final FcmRemoteDataSource _fcmRemoteDataSource;
-  final LocalNotificationDataSource _localNotificationDataSource;
 
-  NotificationRepositoryImpl(
-    this._fcmRemoteDataSource,
-    this._localNotificationDataSource,
-  );
+  NotificationRepositoryImpl(this._fcmRemoteDataSource);
 
   @override
-  Future<void> requestPermission() async {
-    await _fcmRemoteDataSource.requestPermission();
+  Future<Either<Failure, void>> requestPermission() async {
+    try {
+      await _fcmRemoteDataSource.requestPermission();
+      return const Right(null);
+    } catch (e) {
+      return Left(ServerFailure(e.toString()));
+    }
   }
 
   @override
-  Future<String?> getFcmToken() async {
-    return await _fcmRemoteDataSource.getToken();
+  Future<Either<Failure, String?>> getFcmToken() async {
+    try {
+      final token = await _fcmRemoteDataSource.getToken();
+      return Right(token);
+    } catch (e) {
+      return Left(ServerFailure(e.toString()));
+    }
   }
 
   @override
   Stream<NotificationMessage> get onMessage {
     return _fcmRemoteDataSource.onMessage.map((remoteMessage) {
       final notification = remoteMessage.notification;
-
-      if (notification != null) {
-        _localNotificationDataSource.showNotification(
-          id: notification.hashCode,
-          title: notification.title ?? '',
-          body: notification.body ?? '',
-          payload: remoteMessage.data.toString(),
-        );
-      }
 
       return NotificationMessage(
         title: notification?.title ?? 'No Title',
@@ -49,10 +47,22 @@ class NotificationRepositoryImpl implements INotificationRepository {
   }
 
   @override
-  Future<void> subscribeToTopic(String topic) =>
-      _fcmRemoteDataSource.subscribeToTopic(topic);
+  Future<Either<Failure, void>> subscribeToTopic(String topic) async {
+    try {
+      await _fcmRemoteDataSource.subscribeToTopic(topic);
+      return const Right(null);
+    } catch (e) {
+      return Left(ServerFailure(e.toString()));
+    }
+  }
 
   @override
-  Future<void> unsubscribeFromTopic(String topic) =>
-      _fcmRemoteDataSource.unsubscribeFromTopic(topic);
+  Future<Either<Failure, void>> unsubscribeFromTopic(String topic) async {
+    try {
+      await _fcmRemoteDataSource.unsubscribeFromTopic(topic);
+      return const Right(null);
+    } catch (e) {
+      return Left(ServerFailure(e.toString()));
+    }
+  }
 }

@@ -1,3 +1,5 @@
+import 'package:bizzie/core/error/failures.dart';
+import 'package:dartz/dartz.dart';
 import 'package:bizzie/core/usecase/usecase.dart';
 import 'package:bizzie/features/auth/domain/interfaces/i_auth_repository.dart';
 import 'package:bizzie/features/auth/domain/usecases/delete_account.dart';
@@ -15,27 +17,34 @@ void main() {
     usecase = DeleteAccount(mockAuthRepository);
   });
 
-  test('deleteAccount_success_callsRepository', () async {
+  const tFailure = ServerFailure('Test Failure');
+
+  test('deleteAccount_success_returnsRightVoid', () async {
     // arrange
-    when(() => mockAuthRepository.deleteAccount()).thenAnswer((_) async {});
+    when(
+      () => mockAuthRepository.deleteAccount(),
+    ).thenAnswer((_) async => const Right(null));
 
     // act
-    await usecase(NoParams());
+    final result = await usecase(NoParams());
 
     // assert
+    expect(result, const Right(null));
     verify(() => mockAuthRepository.deleteAccount());
     verifyNoMoreInteractions(mockAuthRepository);
   });
 
-  test('deleteAccount_failure_throwsException', () async {
+  test('deleteAccount_failure_returnsLeftFailure', () async {
     // arrange
-    when(() => mockAuthRepository.deleteAccount()).thenThrow(Exception());
+    when(
+      () => mockAuthRepository.deleteAccount(),
+    ).thenAnswer((_) async => const Left(tFailure));
 
     // act
-    final call = usecase.call;
+    final result = await usecase(NoParams());
 
     // assert
-    expect(() => call(NoParams()), throwsException);
+    expect(result, const Left(tFailure));
     verify(() => mockAuthRepository.deleteAccount());
     verifyNoMoreInteractions(mockAuthRepository);
   });

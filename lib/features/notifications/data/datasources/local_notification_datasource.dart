@@ -1,4 +1,5 @@
 import 'package:bizzie/core/logging/bizzie_logger.dart';
+import 'package:bizzie/shared/constants/notification_constants.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:injectable/injectable.dart';
 
@@ -8,8 +9,7 @@ final _logger = BizzieLogger('LocalNotificationDataSource');
 class LocalNotificationDataSource {
   final FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin;
 
-  LocalNotificationDataSource()
-    : _flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+  LocalNotificationDataSource(this._flutterLocalNotificationsPlugin);
 
   @PostConstruct(preResolve: true)
   Future<void> init() async {
@@ -29,7 +29,12 @@ class LocalNotificationDataSource {
           iOS: initializationSettingsDarwin,
         );
 
-    await _flutterLocalNotificationsPlugin.initialize(initializationSettings);
+    try {
+      await _flutterLocalNotificationsPlugin.initialize(initializationSettings);
+      _logger.info('Initialized local notifications');
+    } catch (e) {
+      _logger.severe('Failed to initialize local notifications', e);
+    }
   }
 
   Future<void> showNotification({
@@ -40,23 +45,12 @@ class LocalNotificationDataSource {
   }) async {
     const AndroidNotificationDetails androidNotificationDetails =
         AndroidNotificationDetails(
-          'default_channel_id',
-          'Default Channel',
-          channelDescription: 'Default channel for app notifications',
+          NotificationConstants.channelId,
+          NotificationConstants.channelName,
+          channelDescription: NotificationConstants.channelDescription,
           importance: Importance.max,
           priority: Priority.high,
         );
-
-    final iOSPlatform = _flutterLocalNotificationsPlugin
-        .resolvePlatformSpecificImplementation<
-          IOSFlutterLocalNotificationsPlugin
-        >();
-    final bool? result = await iOSPlatform?.requestPermissions(
-      alert: true,
-      badge: true,
-      sound: true,
-    );
-    _logger.info('Permission sync result: $result');
 
     _logger.info('Showing notification id=$id title=$title');
     const NotificationDetails notificationDetails = NotificationDetails(
@@ -69,12 +63,16 @@ class LocalNotificationDataSource {
       ),
     );
 
-    await _flutterLocalNotificationsPlugin.show(
-      id,
-      title,
-      body,
-      notificationDetails,
-      payload: payload,
-    );
+    try {
+      await _flutterLocalNotificationsPlugin.show(
+        id,
+        title,
+        body,
+        notificationDetails,
+        payload: payload,
+      );
+    } catch (e) {
+      _logger.severe('Failed to show notification', e);
+    }
   }
 }

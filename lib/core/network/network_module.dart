@@ -7,8 +7,6 @@ import 'package:bizzie/services/config_service.dart';
 abstract class NetworkModule {
   @Named('FmpDio')
   @singleton
-  @Named('FmpDio')
-  @singleton
   Dio fmpDio(ConfigService configService) {
     final dio = Dio(BaseOptions(baseUrl: configService.fmpConfig.baseUrl));
 

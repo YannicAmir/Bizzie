@@ -1,4 +1,5 @@
 import 'package:bizzie/app/routes/app_routes.dart';
+import 'package:bizzie/app/routes/app_router_redirect.dart';
 import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
 import 'package:bizzie/features/search/presentation/views/search_page.dart';
 import 'package:bizzie/features/search/presentation/bloc/search_bloc.dart';
@@ -27,7 +28,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:bizzie/features/auth/presentation/bloc/auth_bloc.dart';
-import 'package:bizzie/features/auth/presentation/bloc/auth_state.dart';
+
 import 'package:bizzie/shared/utils/go_router_refresh_stream.dart';
 import 'package:bizzie/features/onboarding/presentation/bloc/onboarding_bloc.dart';
 import 'package:bizzie/di/injection.dart';
@@ -42,108 +43,13 @@ GoRouter createRouter(AuthBloc authBloc, UserBloc userBloc) {
     ),
     redirect: (context, state) {
       final authState = authBloc.state;
-      // Check if Auth is truly determined (auth/unauth/failure).
-      // If Initial or Loading, we're not ready to redirect.
-      final bool isAuthDetermined = authState.maybeMap(
-        authenticated: (_) => true,
-        unauthenticated: (_) => true,
-        failure: (_) =>
-            true, // Treat failure as determined (likely to stay on splash or go to error?) - usually unauth or stay.
-        orElse: () => false,
-      );
-
-      final bool isAuthenticated = authState.maybeMap(
-        authenticated: (_) => true,
-        orElse: () => false,
-      );
-
       final userState = userBloc.state;
-      final bool needsProfile = userState.maybeWhen(
-        needsProfile: () => true,
-        orElse: () => false,
-      );
 
-      final isGoingToLogin = state.uri.path == AppRoutes.login;
-      final isGoingToLanding = state.uri.path == AppRoutes.landing;
-      final isSplash = state.uri.path == AppRoutes.splash;
-
-      const publicRoutes = [
-        AppRoutes.landing,
-        AppRoutes.login,
-        AppRoutes.createAccount,
-        AppRoutes.forgotPassword,
-        AppRoutes.emailSent,
-        AppRoutes.terms,
-        AppRoutes.privacy,
-        AppRoutes.onboardingName,
-        AppRoutes.onboardingWelcome,
-        AppRoutes.onboardingSectors,
-        AppRoutes.onboardingMeetBizzie,
-        AppRoutes.onboardingExperience,
-        AppRoutes.onboardingFeatureHighlights,
-        AppRoutes.onboardingBrands,
-        AppRoutes.onboardingAnalyzing,
-        AppRoutes.onboardingFoundCompanies,
-        AppRoutes.onboardingAddingWatchlist,
-        AppRoutes.onboardingBuildingProfile,
-        AppRoutes.onboardingProfileReady,
-        AppRoutes.onboardingNotifications,
-        AppRoutes.splash,
-      ];
-
-      final isPublic = publicRoutes.any((route) => state.uri.path == route);
-
-      // If Auth is NOT determined yet (Initial/Loading):
-      // 1. If we are on a PUBLIC route (e.g. Login page doing Apple Sign In), let them stay there.
-      // 2. If we are on a PRIVATE route, redirect to Splash to wait.
-      if (!isAuthDetermined) {
-        if (isPublic) {
-          return null; // Stay on current public page (e.g. Login)
-        } else {
-          // If not public (e.g. Home), and we don't know auth yet, go to Splash.
-          if (!isSplash) return AppRoutes.splash;
-          return null;
-        }
-      }
-
-      // Auth IS Determined below here.
-
-      if (!isAuthenticated) {
-        if (!isPublic) {
-          return AppRoutes.landing;
-        }
-
-        // If we are still on Splash but Unauthenticated, go to Landing
-        if (isSplash) {
-          return AppRoutes.landing;
-        }
-      } else {
-        // Authenticated
-        final isUserLoading = userState.maybeWhen(
-          initial: () => true,
-          loading: (_) => true,
-          orElse: () => false,
-        );
-
-        if (isUserLoading) {
-          // If on Splash, keep waiting (return null).
-          // If we were on landing/login, we might arguably want to stay there or show loading.
-          // But usually 'User Loading' means we are fetching profile.
-          // If we are on Splash, stay on Splash.
-          if (isSplash) return null;
-          return null;
-        }
-
-        if (needsProfile) {
-          if (!state.uri.path.startsWith('/onboarding') &&
-              state.uri.path != AppRoutes.onboardingName) {
-            return AppRoutes.onboardingName;
-          }
-        } else if (isGoingToLanding || isGoingToLogin || isSplash) {
-          return AppRoutes.home;
-        }
-      }
-      return null;
+      return AppRouterRedirect(
+        authState: authState,
+        userState: userState,
+        state: state,
+      ).computeRedirect();
     },
     routes: [
       GoRoute(

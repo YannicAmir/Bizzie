@@ -1,22 +1,27 @@
 import 'package:bizzie/core/usecase/usecase.dart';
-import 'package:bizzie/features/auth/domain/interfaces/i_auth_repository.dart';
+
 import 'package:bizzie/features/auth/domain/models/user_model.dart';
 import 'package:bizzie/features/auth/domain/usecases/delete_account.dart';
 import 'package:bizzie/features/auth/domain/usecases/reset_password.dart';
 import 'package:bizzie/features/auth/domain/usecases/sign_in_with_apple.dart';
 import 'package:bizzie/features/auth/domain/usecases/sign_in_with_email.dart';
+import 'package:bizzie/features/auth/domain/usecases/get_auth_stream.dart';
+import 'package:bizzie/features/auth/domain/usecases/get_current_user.dart';
 import 'package:bizzie/features/auth/domain/usecases/sign_in_with_google.dart';
 import 'package:bizzie/features/auth/domain/usecases/sign_out.dart';
 import 'package:bizzie/features/auth/domain/usecases/sign_up_with_email.dart';
 import 'package:bizzie/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:bizzie/features/auth/presentation/bloc/auth_event.dart';
 import 'package:bizzie/features/auth/presentation/bloc/auth_state.dart';
+import 'package:bizzie/core/error/failures.dart';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
-class MockAuthRepository extends Mock implements IAuthRepository {}
+class MockGetAuthStream extends Mock implements GetAuthStream {}
+
+class MockGetCurrentUser extends Mock implements GetCurrentUser {}
 
 class MockSignInWithGoogle extends Mock implements SignInWithGoogle {}
 
@@ -34,7 +39,8 @@ class MockDeleteAccount extends Mock implements DeleteAccount {}
 
 void main() {
   late AuthBloc authBloc;
-  late MockAuthRepository mockAuthRepository;
+  late MockGetAuthStream mockGetAuthStream;
+  late MockGetCurrentUser mockGetCurrentUser;
   late MockSignInWithGoogle mockSignInWithGoogle;
   late MockSignInWithApple mockSignInWithApple;
   late MockSignInWithEmail mockSignInWithEmail;
@@ -44,7 +50,8 @@ void main() {
   late MockDeleteAccount mockDeleteAccount;
 
   setUp(() {
-    mockAuthRepository = MockAuthRepository();
+    mockGetAuthStream = MockGetAuthStream();
+    mockGetCurrentUser = MockGetCurrentUser();
     mockSignInWithGoogle = MockSignInWithGoogle();
     mockSignInWithApple = MockSignInWithApple();
     mockSignInWithEmail = MockSignInWithEmail();
@@ -53,13 +60,12 @@ void main() {
     mockResetPassword = MockResetPassword();
     mockDeleteAccount = MockDeleteAccount();
 
-    when(
-      () => mockAuthRepository.authStateChanges,
-    ).thenAnswer((_) => Stream.value(null));
-    when(() => mockAuthRepository.currentUser).thenReturn(null);
+    when(() => mockGetAuthStream(any())).thenAnswer((_) => Stream.value(null));
+    when(() => mockGetCurrentUser(any())).thenReturn(null);
 
     authBloc = AuthBloc(
-      authRepository: mockAuthRepository,
+      getAuthStream: mockGetAuthStream,
+      getCurrentUser: mockGetCurrentUser,
       signInWithGoogle: mockSignInWithGoogle,
       signInWithApple: mockSignInWithApple,
       signInWithEmail: mockSignInWithEmail,
@@ -71,9 +77,13 @@ void main() {
   });
 
   registerFallbackValue(NoParams());
+  registerFallbackValue(NoParams());
   registerFallbackValue(SignInWithEmailParams(email: 'test', password: 'test'));
+  registerFallbackValue(ResetPasswordParams(email: 'test'));
+  registerFallbackValue(SignUpWithEmailParams(email: 'test', password: 'test'));
 
   const tUser = UserModel(id: '1', email: 'test@example.com');
+  const tFailure = ServerFailure('Test Failure');
 
   test('initial state is AuthState.unauthenticated', () {
     expect(authBloc.state, const AuthState.unauthenticated());
@@ -89,7 +99,7 @@ void main() {
       build: () {
         when(
           () => mockSignInWithEmail(any()),
-        ).thenThrow(Exception('Sign in failed'));
+        ).thenAnswer((_) async => const Left(tFailure));
         return authBloc;
       },
       // act
@@ -98,7 +108,7 @@ void main() {
       // assert
       expect: () => [
         const AuthState.loading(method: 'email_signin'),
-        const AuthState.failure('Exception: Sign in failed'),
+        const AuthState.failure('Test Failure'),
       ],
     );
   });
@@ -108,7 +118,9 @@ void main() {
       'authLogoutRequested_success_callsUseCase',
       // arrange
       build: () {
-        when(() => mockSignOut(any())).thenAnswer((_) async {});
+        when(
+          () => mockSignOut(any()),
+        ).thenAnswer((_) async => const Right(null));
         return authBloc;
       },
       // act
@@ -126,7 +138,9 @@ void main() {
       'authGoogleSignInRequested_success_callsUseCaseAndEmitsLoading',
       // arrange
       build: () {
-        when(() => mockSignInWithGoogle(any())).thenAnswer((_) async => tUser);
+        when(
+          () => mockSignInWithGoogle(any()),
+        ).thenAnswer((_) async => const Right(tUser));
         return authBloc;
       },
       // act
@@ -144,7 +158,9 @@ void main() {
       'authAppleSignInRequested_success_callsUseCaseAndEmitsLoading',
       // arrange
       build: () {
-        when(() => mockSignInWithApple(any())).thenAnswer((_) async => tUser);
+        when(
+          () => mockSignInWithApple(any()),
+        ).thenAnswer((_) async => const Right(tUser));
         return authBloc;
       },
       // act
@@ -174,7 +190,7 @@ void main() {
       // assert
       expect: () => [],
       verify: (_) {
-        verify(() => mockResetPassword(tEmail)).called(1);
+        verify(() => mockResetPassword(any())).called(1);
       },
     );
 
@@ -184,13 +200,13 @@ void main() {
       build: () {
         when(
           () => mockResetPassword(any()),
-        ).thenThrow(Exception('Reset failed'));
+        ).thenAnswer((_) async => const Left(tFailure));
         return authBloc;
       },
       // act
       act: (bloc) => bloc.add(const AuthResetPasswordRequested(tEmail)),
       // assert
-      expect: () => [const AuthState.failure('Exception: Reset failed')],
+      expect: () => [const AuthState.failure('Test Failure')],
     );
   });
 
@@ -219,7 +235,7 @@ void main() {
       build: () {
         when(
           () => mockDeleteAccount(any()),
-        ).thenThrow(Exception('Delete failed'));
+        ).thenAnswer((_) async => const Left(tFailure));
         return authBloc;
       },
       // act
@@ -227,7 +243,7 @@ void main() {
       // assert
       expect: () => [
         const AuthState.loading(),
-        const AuthState.failure('Exception: Delete failed'),
+        const AuthState.failure('Test Failure'),
       ],
     );
   });
