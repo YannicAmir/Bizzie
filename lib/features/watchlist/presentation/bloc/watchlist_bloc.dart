@@ -1,6 +1,5 @@
 import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:bizzie/features/auth/domain/interfaces/i_auth_repository.dart';
-import 'package:bizzie/features/onboarding/domain/models/company.dart';
 import 'package:bizzie/features/watchlist/domain/usecases/add_to_watchlist_usecase.dart';
 import 'package:bizzie/features/watchlist/domain/usecases/get_watchlist_usecase.dart';
 import 'package:bizzie/features/watchlist/domain/usecases/remove_from_watchlist_usecase.dart';
@@ -28,19 +27,18 @@ class WatchlistBloc extends Bloc<WatchlistEvent, WatchlistState> {
     this._syncWatchlistUseCase,
     this._authRepository,
   ) : super(const WatchlistState.initial()) {
-    on<WatchlistEvent>((event, emit) async {
-      await event.map(
-        syncRequested: (_) => _onSyncRequested(emit),
-        addRequested: (e) => _onAddRequested(e.company, emit),
-        removeRequested: (e) => _onRemoveRequested(e.ticker, emit),
-        loadRequested: (_) => _onLoadRequested(emit),
-      );
-    });
+    on<SyncRequested>(_onSyncRequested);
+    on<AddRequested>(_onAddRequested);
+    on<RemoveRequested>(_onRemoveRequested);
+    on<LoadRequested>(_onLoadRequested);
   }
 
   String? get _uid => _authRepository.currentUser?.id;
 
-  Future<void> _onLoadRequested(Emitter<WatchlistState> emit) async {
+  Future<void> _onLoadRequested(
+    LoadRequested event,
+    Emitter<WatchlistState> emit,
+  ) async {
     final uid = _uid;
     if (uid == null) {
       emit(const WatchlistState.failure("User not authenticated"));
@@ -64,7 +62,10 @@ class WatchlistBloc extends Bloc<WatchlistEvent, WatchlistState> {
     );
   }
 
-  Future<void> _onSyncRequested(Emitter<WatchlistState> emit) async {
+  Future<void> _onSyncRequested(
+    SyncRequested event,
+    Emitter<WatchlistState> emit,
+  ) async {
     final uid = _uid;
     if (uid == null) return;
 
@@ -97,7 +98,7 @@ class WatchlistBloc extends Bloc<WatchlistEvent, WatchlistState> {
   }
 
   Future<void> _onAddRequested(
-    Company company,
+    AddRequested event,
     Emitter<WatchlistState> emit,
   ) async {
     final uid = _uid;
@@ -107,18 +108,18 @@ class WatchlistBloc extends Bloc<WatchlistEvent, WatchlistState> {
     }
 
     final result = await _addToWatchlistUseCase(
-      AddToWatchlistParams(company: company, uid: uid),
+      AddToWatchlistParams(company: event.company, uid: uid),
     );
 
     result.fold((failure) => emit(WatchlistState.failure(failure.message)), (
       _,
     ) {
-      _logger.info("Added ${company.ticker}, waiting for stream update");
+      _logger.info("Added ${event.company.ticker}, waiting for stream update");
     });
   }
 
   Future<void> _onRemoveRequested(
-    String ticker,
+    RemoveRequested event,
     Emitter<WatchlistState> emit,
   ) async {
     final uid = _uid;
@@ -128,13 +129,13 @@ class WatchlistBloc extends Bloc<WatchlistEvent, WatchlistState> {
     }
 
     final result = await _removeFromWatchlistUseCase(
-      RemoveFromWatchlistParams(ticker: ticker, uid: uid),
+      RemoveFromWatchlistParams(ticker: event.ticker, uid: uid),
     );
 
     result.fold((failure) => emit(WatchlistState.failure(failure.message)), (
       _,
     ) {
-      _logger.info("Removed $ticker, waiting for stream update");
+      _logger.info("Removed ${event.ticker}, waiting for stream update");
     });
   }
 }

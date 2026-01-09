@@ -55,13 +55,13 @@ extension WatchlistEventPatterns on WatchlistEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _SyncRequested value)?  syncRequested,TResult Function( _AddRequested value)?  addRequested,TResult Function( _RemoveRequested value)?  removeRequested,TResult Function( _LoadRequested value)?  loadRequested,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( SyncRequested value)?  syncRequested,TResult Function( AddRequested value)?  addRequested,TResult Function( RemoveRequested value)?  removeRequested,TResult Function( LoadRequested value)?  loadRequested,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
-case _SyncRequested() when syncRequested != null:
-return syncRequested(_that);case _AddRequested() when addRequested != null:
-return addRequested(_that);case _RemoveRequested() when removeRequested != null:
-return removeRequested(_that);case _LoadRequested() when loadRequested != null:
+case SyncRequested() when syncRequested != null:
+return syncRequested(_that);case AddRequested() when addRequested != null:
+return addRequested(_that);case RemoveRequested() when removeRequested != null:
+return removeRequested(_that);case LoadRequested() when loadRequested != null:
 return loadRequested(_that);case _:
   return orElse();
 
@@ -80,13 +80,13 @@ return loadRequested(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _SyncRequested value)  syncRequested,required TResult Function( _AddRequested value)  addRequested,required TResult Function( _RemoveRequested value)  removeRequested,required TResult Function( _LoadRequested value)  loadRequested,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( SyncRequested value)  syncRequested,required TResult Function( AddRequested value)  addRequested,required TResult Function( RemoveRequested value)  removeRequested,required TResult Function( LoadRequested value)  loadRequested,}){
 final _that = this;
 switch (_that) {
-case _SyncRequested():
-return syncRequested(_that);case _AddRequested():
-return addRequested(_that);case _RemoveRequested():
-return removeRequested(_that);case _LoadRequested():
+case SyncRequested():
+return syncRequested(_that);case AddRequested():
+return addRequested(_that);case RemoveRequested():
+return removeRequested(_that);case LoadRequested():
 return loadRequested(_that);case _:
   throw StateError('Unexpected subclass');
 
@@ -104,13 +104,13 @@ return loadRequested(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _SyncRequested value)?  syncRequested,TResult? Function( _AddRequested value)?  addRequested,TResult? Function( _RemoveRequested value)?  removeRequested,TResult? Function( _LoadRequested value)?  loadRequested,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( SyncRequested value)?  syncRequested,TResult? Function( AddRequested value)?  addRequested,TResult? Function( RemoveRequested value)?  removeRequested,TResult? Function( LoadRequested value)?  loadRequested,}){
 final _that = this;
 switch (_that) {
-case _SyncRequested() when syncRequested != null:
-return syncRequested(_that);case _AddRequested() when addRequested != null:
-return addRequested(_that);case _RemoveRequested() when removeRequested != null:
-return removeRequested(_that);case _LoadRequested() when loadRequested != null:
+case SyncRequested() when syncRequested != null:
+return syncRequested(_that);case AddRequested() when addRequested != null:
+return addRequested(_that);case RemoveRequested() when removeRequested != null:
+return removeRequested(_that);case LoadRequested() when loadRequested != null:
 return loadRequested(_that);case _:
   return null;
 
@@ -130,10 +130,10 @@ return loadRequested(_that);case _:
 
 @optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  syncRequested,TResult Function( Company company)?  addRequested,TResult Function( String ticker)?  removeRequested,TResult Function()?  loadRequested,required TResult orElse(),}) {final _that = this;
 switch (_that) {
-case _SyncRequested() when syncRequested != null:
-return syncRequested();case _AddRequested() when addRequested != null:
-return addRequested(_that.company);case _RemoveRequested() when removeRequested != null:
-return removeRequested(_that.ticker);case _LoadRequested() when loadRequested != null:
+case SyncRequested() when syncRequested != null:
+return syncRequested();case AddRequested() when addRequested != null:
+return addRequested(_that.company);case RemoveRequested() when removeRequested != null:
+return removeRequested(_that.ticker);case LoadRequested() when loadRequested != null:
 return loadRequested();case _:
   return orElse();
 
@@ -154,10 +154,10 @@ return loadRequested();case _:
 
 @optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  syncRequested,required TResult Function( Company company)  addRequested,required TResult Function( String ticker)  removeRequested,required TResult Function()  loadRequested,}) {final _that = this;
 switch (_that) {
-case _SyncRequested():
-return syncRequested();case _AddRequested():
-return addRequested(_that.company);case _RemoveRequested():
-return removeRequested(_that.ticker);case _LoadRequested():
+case SyncRequested():
+return syncRequested();case AddRequested():
+return addRequested(_that.company);case RemoveRequested():
+return removeRequested(_that.ticker);case LoadRequested():
 return loadRequested();case _:
   throw StateError('Unexpected subclass');
 
@@ -177,10 +177,10 @@ return loadRequested();case _:
 
 @optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  syncRequested,TResult? Function( Company company)?  addRequested,TResult? Function( String ticker)?  removeRequested,TResult? Function()?  loadRequested,}) {final _that = this;
 switch (_that) {
-case _SyncRequested() when syncRequested != null:
-return syncRequested();case _AddRequested() when addRequested != null:
-return addRequested(_that.company);case _RemoveRequested() when removeRequested != null:
-return removeRequested(_that.ticker);case _LoadRequested() when loadRequested != null:
+case SyncRequested() when syncRequested != null:
+return syncRequested();case AddRequested() when addRequested != null:
+return addRequested(_that.company);case RemoveRequested() when removeRequested != null:
+return removeRequested(_that.ticker);case LoadRequested() when loadRequested != null:
 return loadRequested();case _:
   return null;
 
@@ -192,8 +192,8 @@ return loadRequested();case _:
 /// @nodoc
 
 
-class _SyncRequested implements WatchlistEvent {
-  const _SyncRequested();
+class SyncRequested implements WatchlistEvent {
+  const SyncRequested();
   
 
 
@@ -203,7 +203,7 @@ class _SyncRequested implements WatchlistEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SyncRequested);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SyncRequested);
 }
 
 
@@ -224,8 +224,8 @@ String toString() {
 /// @nodoc
 
 
-class _AddRequested implements WatchlistEvent {
-  const _AddRequested(this.company);
+class AddRequested implements WatchlistEvent {
+  const AddRequested(this.company);
   
 
  final  Company company;
@@ -234,13 +234,13 @@ class _AddRequested implements WatchlistEvent {
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-_$AddRequestedCopyWith<_AddRequested> get copyWith => __$AddRequestedCopyWithImpl<_AddRequested>(this, _$identity);
+$AddRequestedCopyWith<AddRequested> get copyWith => _$AddRequestedCopyWithImpl<AddRequested>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AddRequested&&(identical(other.company, company) || other.company == company));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AddRequested&&(identical(other.company, company) || other.company == company));
 }
 
 
@@ -256,8 +256,8 @@ String toString() {
 }
 
 /// @nodoc
-abstract mixin class _$AddRequestedCopyWith<$Res> implements $WatchlistEventCopyWith<$Res> {
-  factory _$AddRequestedCopyWith(_AddRequested value, $Res Function(_AddRequested) _then) = __$AddRequestedCopyWithImpl;
+abstract mixin class $AddRequestedCopyWith<$Res> implements $WatchlistEventCopyWith<$Res> {
+  factory $AddRequestedCopyWith(AddRequested value, $Res Function(AddRequested) _then) = _$AddRequestedCopyWithImpl;
 @useResult
 $Res call({
  Company company
@@ -268,17 +268,17 @@ $CompanyCopyWith<$Res> get company;
 
 }
 /// @nodoc
-class __$AddRequestedCopyWithImpl<$Res>
-    implements _$AddRequestedCopyWith<$Res> {
-  __$AddRequestedCopyWithImpl(this._self, this._then);
+class _$AddRequestedCopyWithImpl<$Res>
+    implements $AddRequestedCopyWith<$Res> {
+  _$AddRequestedCopyWithImpl(this._self, this._then);
 
-  final _AddRequested _self;
-  final $Res Function(_AddRequested) _then;
+  final AddRequested _self;
+  final $Res Function(AddRequested) _then;
 
 /// Create a copy of WatchlistEvent
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? company = null,}) {
-  return _then(_AddRequested(
+  return _then(AddRequested(
 null == company ? _self.company : company // ignore: cast_nullable_to_non_nullable
 as Company,
   ));
@@ -299,8 +299,8 @@ $CompanyCopyWith<$Res> get company {
 /// @nodoc
 
 
-class _RemoveRequested implements WatchlistEvent {
-  const _RemoveRequested(this.ticker);
+class RemoveRequested implements WatchlistEvent {
+  const RemoveRequested(this.ticker);
   
 
  final  String ticker;
@@ -309,13 +309,13 @@ class _RemoveRequested implements WatchlistEvent {
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-_$RemoveRequestedCopyWith<_RemoveRequested> get copyWith => __$RemoveRequestedCopyWithImpl<_RemoveRequested>(this, _$identity);
+$RemoveRequestedCopyWith<RemoveRequested> get copyWith => _$RemoveRequestedCopyWithImpl<RemoveRequested>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _RemoveRequested&&(identical(other.ticker, ticker) || other.ticker == ticker));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is RemoveRequested&&(identical(other.ticker, ticker) || other.ticker == ticker));
 }
 
 
@@ -331,8 +331,8 @@ String toString() {
 }
 
 /// @nodoc
-abstract mixin class _$RemoveRequestedCopyWith<$Res> implements $WatchlistEventCopyWith<$Res> {
-  factory _$RemoveRequestedCopyWith(_RemoveRequested value, $Res Function(_RemoveRequested) _then) = __$RemoveRequestedCopyWithImpl;
+abstract mixin class $RemoveRequestedCopyWith<$Res> implements $WatchlistEventCopyWith<$Res> {
+  factory $RemoveRequestedCopyWith(RemoveRequested value, $Res Function(RemoveRequested) _then) = _$RemoveRequestedCopyWithImpl;
 @useResult
 $Res call({
  String ticker
@@ -343,17 +343,17 @@ $Res call({
 
 }
 /// @nodoc
-class __$RemoveRequestedCopyWithImpl<$Res>
-    implements _$RemoveRequestedCopyWith<$Res> {
-  __$RemoveRequestedCopyWithImpl(this._self, this._then);
+class _$RemoveRequestedCopyWithImpl<$Res>
+    implements $RemoveRequestedCopyWith<$Res> {
+  _$RemoveRequestedCopyWithImpl(this._self, this._then);
 
-  final _RemoveRequested _self;
-  final $Res Function(_RemoveRequested) _then;
+  final RemoveRequested _self;
+  final $Res Function(RemoveRequested) _then;
 
 /// Create a copy of WatchlistEvent
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? ticker = null,}) {
-  return _then(_RemoveRequested(
+  return _then(RemoveRequested(
 null == ticker ? _self.ticker : ticker // ignore: cast_nullable_to_non_nullable
 as String,
   ));
@@ -365,8 +365,8 @@ as String,
 /// @nodoc
 
 
-class _LoadRequested implements WatchlistEvent {
-  const _LoadRequested();
+class LoadRequested implements WatchlistEvent {
+  const LoadRequested();
   
 
 
@@ -376,7 +376,7 @@ class _LoadRequested implements WatchlistEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _LoadRequested);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is LoadRequested);
 }
 
 

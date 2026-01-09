@@ -32,14 +32,12 @@ class SearchAppBar extends StatelessWidget implements PreferredSizeWidget {
       ),
       actions: [
         Padding(
-          padding: const EdgeInsets.only(right: 16.0, left: 12.0),
+          padding: const EdgeInsets.only(right: 8.0),
           child: Center(
             child: TextButton(
               onPressed: onCancel,
               style: TextButton.styleFrom(
-                padding: EdgeInsets.zero,
-                minimumSize: Size.zero,
-                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                minimumSize: const Size(48, 48),
                 foregroundColor: theme.colorScheme.primary,
               ),
               child: Text(

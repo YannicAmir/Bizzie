@@ -46,6 +46,8 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   void _onCancelTapped() {
+    FocusScope.of(context).unfocus();
+
     if (context.canPop()) {
       context.pop();
     }
@@ -58,10 +60,8 @@ class _SearchPageState extends State<SearchPage> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     return Scaffold(
-      backgroundColor: theme.scaffoldBackgroundColor,
+      resizeToAvoidBottomInset: false,
       appBar: SearchAppBar(
         controller: _searchController,
         focusNode: _focusNode,

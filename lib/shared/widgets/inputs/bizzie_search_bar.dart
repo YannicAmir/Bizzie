@@ -1,6 +1,4 @@
 import 'package:bizzie/app/themes/app_assets.dart';
-import 'package:bizzie/app/themes/app_colors.dart';
-import 'package:bizzie/app/themes/app_text_styles.dart';
 import 'package:flutter/material.dart';
 
 class BizzieSearchBar extends StatelessWidget {
@@ -25,64 +23,86 @@ class BizzieSearchBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return GestureDetector(
       onTap: readOnly ? onTap : null,
       behavior: HitTestBehavior.opaque,
-      child: Container(
-        height: 48,
-        decoration: BoxDecoration(
-          color: AppColors.inputBackground,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: AppColors.inputBorder, width: 0.67),
-        ),
-        child: IgnorePointer(
-          ignoring: readOnly,
-          child: TextField(
-            controller: controller,
-            focusNode: focusNode,
-            readOnly: readOnly,
-            onChanged: onChanged,
-            style: AppTextStyles.bodyLarge.copyWith(
-              color: AppColors.textPrimary,
+      child: IgnorePointer(
+        ignoring: readOnly,
+        child: TextField(
+          controller: controller,
+          focusNode: focusNode,
+          readOnly: readOnly,
+          onChanged: onChanged,
+          style: theme.textTheme.bodyLarge?.copyWith(
+            color: theme.colorScheme.onSurface,
+          ),
+          textAlignVertical: TextAlignVertical.center,
+          decoration: InputDecoration(
+            filled: true,
+            fillColor: theme.inputDecorationTheme.fillColor,
+            hintText: hintText,
+            hintStyle: theme.inputDecorationTheme.hintStyle?.copyWith(
+              color: theme.colorScheme.onSurfaceVariant,
             ),
-            textAlignVertical: TextAlignVertical.center,
-            decoration: InputDecoration(
-              hintText: hintText,
-              hintStyle: AppTextStyles.inputHint.copyWith(
-                color: AppColors.textTertiary,
+            prefixIcon: Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Image.asset(
+                AppAssets.searchIconLarge,
+                width: 24,
+                height: 24,
               ),
-              prefixIcon: Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: Image.asset(
-                  AppAssets.searchIconLarge,
-                  width: 24,
-                  height: 24,
-                ),
-              ),
-              suffixIcon: controller != null
-                  ? ValueListenableBuilder<TextEditingValue>(
-                      valueListenable: controller!,
-                      builder: (context, value, child) {
-                        if (value.text.isEmpty) return const SizedBox.shrink();
-                        return IconButton(
-                          icon: Image.asset(
-                            AppAssets.clearTextfieldIcon,
-                            width: 24,
-                            height: 24,
-                          ),
-                          onPressed: onClear,
-                        );
-                      },
-                    )
-                  : null,
-              border: InputBorder.none,
-              focusedBorder: InputBorder.none,
-              enabledBorder: InputBorder.none,
-              errorBorder: InputBorder.none,
-              disabledBorder: InputBorder.none,
-              contentPadding: const EdgeInsets.symmetric(vertical: 0),
-              isDense: true,
             ),
+            suffixIcon: controller != null
+                ? ValueListenableBuilder<TextEditingValue>(
+                    valueListenable: controller!,
+                    builder: (context, value, child) {
+                      if (value.text.isEmpty) return const SizedBox.shrink();
+                      return IconButton(
+                        icon: Image.asset(
+                          AppAssets.clearTextfieldIcon,
+                          width: 24,
+                          height: 24,
+                        ),
+                        onPressed: onClear,
+                      );
+                    },
+                  )
+                : null,
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(16),
+              borderSide: BorderSide.none,
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(16),
+              borderSide: BorderSide(
+                color: theme.dividerTheme.color ?? theme.colorScheme.outline,
+                width: 0.67,
+              ),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(16),
+              borderSide: BorderSide(
+                color: theme.dividerTheme.color ?? theme.colorScheme.outline,
+                width: 0.67,
+              ),
+            ),
+            errorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(16),
+              borderSide: BorderSide(
+                color: theme.dividerTheme.color ?? theme.colorScheme.outline,
+                width: 0.67,
+              ),
+            ),
+            disabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(16),
+              borderSide: BorderSide(
+                color: theme.dividerTheme.color ?? theme.colorScheme.outline,
+                width: 0.67,
+              ),
+            ),
+            contentPadding: const EdgeInsets.symmetric(vertical: 0),
+            isDense: true,
           ),
         ),
       ),

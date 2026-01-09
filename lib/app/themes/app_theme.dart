@@ -105,6 +105,18 @@ class AppTheme {
           googleForegroundColor: AppColors.textPrimary,
           googleTextColor: AppColors.googleText,
         ),
+        BadgeThemeExtension(
+          neutralBackground: AppColors.mascotBackground,
+          neutralText: AppColors.primary,
+          criticalBackground: AppColors.red100,
+          criticalText: AppColors.criticalText,
+          goodBackground: AppColors.successBackground,
+          goodText: AppColors.goodText,
+          warningBackground: AppColors.warningBackground,
+          warningText: AppColors.warningText,
+          issueBackground: AppColors.orange100,
+          issueText: AppColors.orange700,
+        ),
       ],
     );
   }
@@ -242,6 +254,94 @@ class SocialLoginThemeExtension
         t,
       )!,
       googleTextColor: Color.lerp(googleTextColor, other.googleTextColor, t)!,
+    );
+  }
+}
+
+@immutable
+class BadgeThemeExtension extends ThemeExtension<BadgeThemeExtension> {
+  final Color neutralBackground;
+  final Color neutralText;
+  final Color criticalBackground;
+  final Color criticalText;
+  final Color goodBackground;
+  final Color goodText;
+  final Color warningBackground;
+  final Color warningText;
+  final Color issueBackground;
+  final Color issueText;
+
+  const BadgeThemeExtension({
+    required this.neutralBackground,
+    required this.neutralText,
+    required this.criticalBackground,
+    required this.criticalText,
+    required this.goodBackground,
+    required this.goodText,
+    required this.warningBackground,
+    required this.warningText,
+    required this.issueBackground,
+    required this.issueText,
+  });
+
+  @override
+  BadgeThemeExtension copyWith({
+    Color? neutralBackground,
+    Color? neutralText,
+    Color? criticalBackground,
+    Color? criticalText,
+    Color? goodBackground,
+    Color? goodText,
+    Color? warningBackground,
+    Color? warningText,
+    Color? issueBackground,
+    Color? issueText,
+  }) {
+    return BadgeThemeExtension(
+      neutralBackground: neutralBackground ?? this.neutralBackground,
+      neutralText: neutralText ?? this.neutralText,
+      criticalBackground: criticalBackground ?? this.criticalBackground,
+      criticalText: criticalText ?? this.criticalText,
+      goodBackground: goodBackground ?? this.goodBackground,
+      goodText: goodText ?? this.goodText,
+      warningBackground: warningBackground ?? this.warningBackground,
+      warningText: warningText ?? this.warningText,
+      issueBackground: issueBackground ?? this.issueBackground,
+      issueText: issueText ?? this.issueText,
+    );
+  }
+
+  @override
+  BadgeThemeExtension lerp(
+    ThemeExtension<BadgeThemeExtension>? other,
+    double t,
+  ) {
+    if (other is! BadgeThemeExtension) {
+      return this;
+    }
+    return BadgeThemeExtension(
+      neutralBackground: Color.lerp(
+        neutralBackground,
+        other.neutralBackground,
+        t,
+      )!,
+      neutralText: Color.lerp(neutralText, other.neutralText, t)!,
+      criticalBackground: Color.lerp(
+        criticalBackground,
+        other.criticalBackground,
+        t,
+      )!,
+      criticalText: Color.lerp(criticalText, other.criticalText, t)!,
+      goodBackground: Color.lerp(goodBackground, other.goodBackground, t)!,
+      goodText: Color.lerp(goodText, other.goodText, t)!,
+      warningBackground: Color.lerp(
+        warningBackground,
+        other.warningBackground,
+        t,
+      )!,
+      warningText: Color.lerp(warningText, other.warningText, t)!,
+      issueBackground: Color.lerp(issueBackground, other.issueBackground, t)!,
+      issueText: Color.lerp(issueText, other.issueText, t)!,
     );
   }
 }

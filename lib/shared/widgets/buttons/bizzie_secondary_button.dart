@@ -1,5 +1,3 @@
-import 'package:bizzie/app/themes/app_colors.dart';
-import 'package:bizzie/app/themes/app_text_styles.dart';
 import 'package:flutter/material.dart';
 
 class BizzieSecondaryButton extends StatelessWidget {
@@ -18,14 +16,15 @@ class BizzieSecondaryButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return SizedBox(
       width: width,
       height: height,
       child: FilledButton(
         onPressed: onPressed,
         style: FilledButton.styleFrom(
-          backgroundColor: AppColors.slate100,
-          foregroundColor: AppColors.slate700,
+          backgroundColor: theme.colorScheme.surfaceContainerHighest,
+          foregroundColor: theme.colorScheme.onSurfaceVariant,
           elevation: 0,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
@@ -33,7 +32,9 @@ class BizzieSecondaryButton extends StatelessWidget {
         ),
         child: Text(
           title,
-          style: AppTextStyles.button.copyWith(color: AppColors.slate700),
+          style: theme.textTheme.labelLarge?.copyWith(
+            color: theme.colorScheme.onSurfaceVariant,
+          ),
         ),
       ),
     );
