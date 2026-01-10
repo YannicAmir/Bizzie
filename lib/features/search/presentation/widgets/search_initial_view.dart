@@ -2,15 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:bizzie/core/utils/string_extensions.dart';
 import 'package:bizzie/features/onboarding/domain/models/company.dart';
 import 'package:bizzie/shared/widgets/company_list_tile.dart';
+import 'package:bizzie/app/routes/app_routes.dart';
+import 'package:go_router/go_router.dart';
 
 class SearchInitialView extends StatelessWidget {
   final String? favoriteSector;
   final List<Company> recommendedBrands;
+  final String? sourceTab;
 
   const SearchInitialView({
     super.key,
     this.favoriteSector,
     required this.recommendedBrands,
+    this.sourceTab,
   });
 
   @override
@@ -55,7 +59,17 @@ class SearchInitialView extends StatelessWidget {
                   symbol: brand.ticker,
                   name: brand.name,
                   onTap: () {
-                    // TODO: Navigate to details
+                    final String routeName = switch (sourceTab) {
+                      'reports' => AppRoutes.companyProfileReports,
+                      'profile' => AppRoutes.companyProfileProfile,
+                      _ => AppRoutes.companyProfileHome,
+                    };
+
+                    context.goNamed(
+                      routeName,
+                      pathParameters: {'ticker': brand.ticker},
+                      extra: brand,
+                    );
                   },
                 );
               },

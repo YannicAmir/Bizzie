@@ -3,15 +3,20 @@ import 'package:bizzie/app/themes/app_theme.dart';
 
 import 'package:bizzie/features/search/domain/models/stock_symbol.dart';
 import 'package:bizzie/shared/widgets/company_list_tile.dart';
+import 'package:bizzie/app/routes/app_routes.dart';
+import 'package:bizzie/features/onboarding/domain/models/company.dart';
+import 'package:go_router/go_router.dart';
 
 class AiMatchSuccessView extends StatelessWidget {
   final String productName;
   final StockSymbol stock;
+  final String? sourceTab;
 
   const AiMatchSuccessView({
     super.key,
     required this.productName,
     required this.stock,
+    this.sourceTab,
   });
 
   String get _headerText => stock.isPrivate
@@ -22,7 +27,18 @@ class AiMatchSuccessView extends StatelessWidget {
 
   void _handleTap(BuildContext context) {
     if (stock.isPrivate) return;
-    // TODO: Navigate to stock details
+
+    final String routeName = switch (sourceTab) {
+      'reports' => AppRoutes.companyProfileReports,
+      'profile' => AppRoutes.companyProfileProfile,
+      _ => AppRoutes.companyProfileHome,
+    };
+
+    context.goNamed(
+      routeName,
+      pathParameters: {'ticker': stock.symbol},
+      extra: Company(ticker: stock.symbol, name: stock.name),
+    );
   }
 
   @override

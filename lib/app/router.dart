@@ -24,6 +24,11 @@ import 'package:bizzie/features/onboarding/presentation/views/adding_to_watchlis
 import 'package:bizzie/features/onboarding/presentation/views/investing_experience_page.dart';
 import 'package:bizzie/features/onboarding/presentation/views/sector_selection_page.dart';
 import 'package:bizzie/features/onboarding/presentation/views/welcome_name_page.dart';
+import 'package:bizzie/features/company_profile/presentation/views/company_profile_page.dart';
+import 'package:bizzie/features/reports/presentation/views/reports_page.dart';
+import 'package:bizzie/features/profile/presentation/views/profile_page.dart';
+import 'package:bizzie/shared/widgets/navigation/bizzie_bottom_nav_wrapper.dart';
+import 'package:bizzie/features/onboarding/domain/models/company.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -59,21 +64,58 @@ GoRouter createRouter(AuthBloc authBloc, UserBloc userBloc) {
           body: SizedBox.shrink(),
         ),
       ),
-      GoRoute(
-        path: AppRoutes.home,
-        builder: (context, state) => const HomePage(),
-      ),
       _buildNoTransitionRoute(AppRoutes.login, const LoginPage()),
+
+      StatefulShellRoute.indexedStack(
+        builder: (context, state, navigationShell) {
+          return BizzieBottomNavWrapper(navigationShell: navigationShell);
+        },
+        branches: [
+          // BRANCH 1: HOME
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: AppRoutes.home,
+                builder: (context, state) => const HomePage(),
+                routes: [_buildCompanyRoute(AppRoutes.companyProfileHome)],
+              ),
+            ],
+          ),
+
+          // BRANCH 2: REPORTS
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: AppRoutes.reports,
+                builder: (context, state) => const ReportsPage(),
+                routes: [_buildCompanyRoute(AppRoutes.companyProfileReports)],
+              ),
+            ],
+          ),
+
+          // BRANCH 3: PROFILE
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: AppRoutes.profile,
+                builder: (context, state) => const ProfilePage(),
+                routes: [_buildCompanyRoute(AppRoutes.companyProfileProfile)],
+              ),
+            ],
+          ),
+        ],
+      ),
 
       GoRoute(
         path: AppRoutes.search,
         pageBuilder: (context, state) {
+          final sourceTab = state.extra as String?;
           return CustomTransitionPage(
             key: state.pageKey,
             child: BlocProvider<SearchBloc>(
               create: (_) =>
                   getIt<SearchBloc>()..add(const SearchEvent.started()),
-              child: const SearchPage(),
+              child: SearchPage(sourceTab: sourceTab),
             ),
             transitionsBuilder:
                 (context, animation, secondaryAnimation, child) {
@@ -197,5 +239,17 @@ GoRoute _buildNoTransitionRoute(String path, Widget child) {
       },
       transitionDuration: Duration.zero,
     ),
+  );
+}
+
+GoRoute _buildCompanyRoute(String routeName) {
+  return GoRoute(
+    path: 'company/:ticker',
+    name: routeName,
+    builder: (context, state) {
+      final ticker = state.pathParameters['ticker']!;
+      final company = state.extra as Company?;
+      return CompanyProfilePage(ticker: ticker, company: company);
+    },
   );
 }
