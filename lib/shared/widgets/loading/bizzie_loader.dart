@@ -1,14 +1,16 @@
-import 'package:bizzie/app/themes/app_colors.dart';
+import 'package:bizzie/app/themes/app_text_styles.dart';
 import 'package:bizzie/app/themes/app_assets.dart';
-import 'package:bizzie/features/onboarding/domain/models/sector.dart';
-import 'package:bizzie/features/onboarding/presentation/utils/onboarding_assets_helper.dart';
 import 'package:flutter/material.dart';
 
 class BizzieLoader extends StatelessWidget {
   final String message;
-  final String? sectorName;
+  final String mascotAssetPath;
 
-  const BizzieLoader({super.key, required this.message, this.sectorName});
+  const BizzieLoader({
+    super.key,
+    required this.message,
+    this.mascotAssetPath = AppAssets.defaultMascot,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -29,50 +31,20 @@ class BizzieLoader extends StatelessWidget {
                   color: theme.colorScheme.primary,
                 ),
               ),
-              SizedBox(height: 90, child: _MascotView(sectorName: sectorName)),
+              SizedBox(
+                height: 90,
+                child: Image.asset(mascotAssetPath, fit: BoxFit.contain),
+              ),
             ],
           ),
           const SizedBox(height: 64),
           Text(
             message,
             textAlign: TextAlign.center,
-            style: theme.textTheme.displayMedium?.copyWith(
-              fontSize: 18,
-              fontWeight: FontWeight.w800,
-              color: AppColors.textPrimary,
-              height: 1.2,
-              letterSpacing: 0.383,
-            ),
+            style: AppTextStyles.loaderMessage,
           ),
         ],
       ),
     );
-  }
-}
-
-class _MascotView extends StatelessWidget {
-  final String? sectorName;
-
-  const _MascotView({this.sectorName});
-
-  @override
-  Widget build(BuildContext context) {
-    Sector? sector;
-    if (sectorName != null) {
-      try {
-        sector = Sector.values.byName(sectorName!);
-      } catch (_) {
-        sector = Sector.fromString(sectorName!);
-      }
-    }
-
-    final String assetPath;
-    if (sector != null) {
-      assetPath = OnboardingAssetsHelper.getMascotForSector(sector);
-    } else {
-      assetPath = AppAssets.defaultMascot;
-    }
-
-    return Image.asset(assetPath, fit: BoxFit.contain);
   }
 }

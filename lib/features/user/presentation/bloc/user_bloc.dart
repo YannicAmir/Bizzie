@@ -23,7 +23,8 @@ class UserBloc extends Bloc<UserEvent, UserState> {
 
   Future<void> _onLoadUser(_LoadUser event, Emitter<UserState> emit) async {
     if (!event.silent) {
-      emit(UserState.loading(cachedSector: _getUserUseCase.cachedSector));
+      final cached = _getUserUseCase.cachedSector;
+      emit(UserState.loading(cachedSector: cached));
     }
     _logger.info('Loading user profile for uid: ${event.uid}');
 

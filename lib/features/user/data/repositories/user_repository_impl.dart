@@ -34,6 +34,9 @@ class UserRepositoryImpl implements IUserRepository {
       final watchlist = watchlistDtos.map((dto) => dto.toDomain()).toList();
 
       final user = userDto.toDomain().copyWith(watchlist: watchlist);
+      _logger.info(
+        'Caching favorite sector from user profile: ${user.favoriteSector}',
+      );
       await _localDataSource.cacheFavoriteSector(user.favoriteSector);
       return Right(user);
     } catch (e, stack) {

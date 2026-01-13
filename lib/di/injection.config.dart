@@ -74,6 +74,19 @@ import '../features/onboarding/domain/usecases/get_sectors_usecase.dart'
 import '../features/onboarding/domain/usecases/get_sp500_history_usecase.dart'
     as _i952;
 import '../features/onboarding/presentation/bloc/onboarding_bloc.dart' as _i593;
+import '../features/reports/data/datasources/reports_remote_datasource.dart'
+    as _i532;
+import '../features/reports/data/repositories/reports_repository_impl.dart'
+    as _i1028;
+import '../features/reports/domain/interfaces/i_reports_repository.dart'
+    as _i882;
+import '../features/reports/domain/usecases/get_dashboard_reports_usecase.dart'
+    as _i273;
+import '../features/reports/domain/usecases/get_user_activity_use_case.dart'
+    as _i1014;
+import '../features/reports/domain/usecases/mark_reports_viewed_use_case.dart'
+    as _i261;
+import '../features/reports/presentation/bloc/reports_bloc.dart' as _i1023;
 import '../features/search/data/datasources/ai_product_search_service.dart'
     as _i977;
 import '../features/search/data/datasources/recommended_brands_remote_datasource.dart'
@@ -204,6 +217,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i60.IStockRemoteDataSource>(
       () => _i60.StockRemoteDataSource(gh<_i457.FirebaseStorage>()),
     );
+    gh.lazySingleton<_i532.IReportsRemoteDataSource>(
+      () => _i532.ReportsRemoteDataSource(gh<_i52.FirestoreService>()),
+    );
     gh.factory<_i640.FcmRemoteDataSource>(
       () => _i640.FcmRemoteDataSource(gh<_i892.FirebaseMessaging>()),
     );
@@ -275,6 +291,12 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i952.GetSp500HistoryUseCase>(
       () => _i952.GetSp500HistoryUseCase(gh<_i329.IOnboardingRepository>()),
+    );
+    gh.lazySingleton<_i882.IReportsRepository>(
+      () => _i1028.ReportsRepositoryImpl(
+        gh<_i532.IReportsRemoteDataSource>(),
+        gh<_i456.IStockRepository>(),
+      ),
     );
     gh.lazySingleton<_i685.IAuthRepository>(
       () => _i570.AuthRepositoryImpl(
@@ -369,6 +391,15 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i130.SearchStocksUseCase>(
       () => _i130.SearchStocksUseCase(gh<_i269.StockSearchService>()),
     );
+    gh.lazySingleton<_i273.GetDashboardReportsUseCase>(
+      () => _i273.GetDashboardReportsUseCase(gh<_i882.IReportsRepository>()),
+    );
+    gh.factory<_i1014.GetUserActivityUseCase>(
+      () => _i1014.GetUserActivityUseCase(gh<_i882.IReportsRepository>()),
+    );
+    gh.factory<_i261.MarkReportsViewedUseCase>(
+      () => _i261.MarkReportsViewedUseCase(gh<_i882.IReportsRepository>()),
+    );
     gh.factory<_i555.GetSearchDashboardDataUseCase>(
       () => _i555.GetSearchDashboardDataUseCase(
         gh<_i685.IAuthRepository>(),
@@ -405,6 +436,15 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i954.ListenToMessages>(),
         gh<_i327.SubscribeToTopic>(),
         gh<_i999.UnsubscribeFromTopic>(),
+      ),
+    );
+    gh.factory<_i1023.ReportsBloc>(
+      () => _i1023.ReportsBloc(
+        gh<_i273.GetDashboardReportsUseCase>(),
+        gh<_i1039.IWatchlistRepository>(),
+        gh<_i685.IAuthRepository>(),
+        gh<_i1014.GetUserActivityUseCase>(),
+        gh<_i261.MarkReportsViewedUseCase>(),
       ),
     );
     gh.factory<_i348.SearchBloc>(

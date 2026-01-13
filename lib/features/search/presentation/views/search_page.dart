@@ -9,6 +9,9 @@ import 'package:bizzie/features/search/presentation/widgets/ai_search_prompt_vie
 import 'package:bizzie/features/search/presentation/widgets/ai_match_success_view.dart';
 import 'package:bizzie/features/search/presentation/widgets/ai_no_match_view.dart';
 import 'package:bizzie/shared/widgets/loading/bizzie_loader.dart';
+import 'package:bizzie/features/user/presentation/bloc/user_state_extensions.dart';
+
+import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
 
 class SearchPage extends StatefulWidget {
   final String? sourceTab;
@@ -62,6 +65,10 @@ class _SearchPageState extends State<SearchPage> {
 
   @override
   Widget build(BuildContext context) {
+    final mascotAsset = context.select(
+      (UserBloc bloc) => bloc.state.mascotAsset,
+    );
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: SearchAppBar(
@@ -81,7 +88,7 @@ class _SearchPageState extends State<SearchPage> {
             ),
             loading: (state) => BizzieLoader(
               message: 'Fetching stocks',
-              sectorName: state.favoriteSector,
+              mascotAssetPath: mascotAsset,
             ),
             loaded: (data) => SearchResultsView(
               results: data.results,
@@ -96,8 +103,10 @@ class _SearchPageState extends State<SearchPage> {
                 );
               },
             ),
-            aiSearching: (state) =>
-                BizzieLoader(message: 'Searching for "${state.query}"'),
+            aiSearching: (state) => BizzieLoader(
+              message: 'Searching for "${state.query}"',
+              mascotAssetPath: mascotAsset,
+            ),
             aiSuccess: (state) => AiMatchSuccessView(
               productName: state.productQuery,
               stock: state.stock,

@@ -17,6 +17,7 @@ class AppTheme {
         onSurfaceVariant: AppColors.textSecondary,
         secondaryContainer: AppColors.mascotBackground,
       ),
+      dividerColor: AppColors.inputBorder,
       textTheme: GoogleFonts.interTextTheme(ThemeData.light().textTheme)
           .copyWith(
             displayLarge: AppTextStyles.h1,

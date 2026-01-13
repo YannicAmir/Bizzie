@@ -97,4 +97,6 @@ class AppAssets {
   static const String businessIcon = 'assets/images/shared/business_icon.png';
   static const String clearTextfieldIcon =
       'assets/images/shared/clear_textfield_icon.png';
+  static const String modalCloseIcon =
+      'assets/images/shared/modal_close_icon.svg';
 }

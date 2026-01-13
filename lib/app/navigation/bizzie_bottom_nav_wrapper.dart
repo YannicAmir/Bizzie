@@ -3,6 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:bizzie/features/reports/presentation/bloc/reports_bloc.dart';
+import 'package:bizzie/features/reports/presentation/bloc/reports_state.dart';
+import 'package:bizzie/features/reports/presentation/extensions/reports_state_extensions.dart';
 
 class BizzieBottomNavWrapper extends StatelessWidget {
   final StatefulNavigationShell navigationShell;
@@ -76,23 +80,15 @@ class BizzieBottomNavWrapper extends StatelessWidget {
                 label: 'Home',
               ),
               BottomNavigationBarItem(
-                icon: SvgPicture.asset(
-                  AppAssets.homeReportsUnselectedIcon,
-                  width: 24,
-                  height: 24,
-                  colorFilter: ColorFilter.mode(
-                    theme.colorScheme.onSurfaceVariant,
-                    BlendMode.srcIn,
-                  ),
+                icon: _ReportsTabIcon(
+                  iconPath: AppAssets.homeReportsUnselectedIcon,
+                  theme: theme,
+                  isActive: false,
                 ),
-                activeIcon: SvgPicture.asset(
-                  AppAssets.homeReportsSelectedIcon,
-                  width: 24,
-                  height: 24,
-                  colorFilter: ColorFilter.mode(
-                    theme.colorScheme.primary,
-                    BlendMode.srcIn,
-                  ),
+                activeIcon: _ReportsTabIcon(
+                  iconPath: AppAssets.homeReportsSelectedIcon,
+                  theme: theme,
+                  isActive: true,
                 ),
                 label: 'Reports',
               ),
@@ -121,6 +117,43 @@ class BizzieBottomNavWrapper extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+class _ReportsTabIcon extends StatelessWidget {
+  final String iconPath;
+  final ThemeData theme;
+  final bool isActive;
+
+  const _ReportsTabIcon({
+    required this.iconPath,
+    required this.theme,
+    required this.isActive,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<ReportsBloc, ReportsState>(
+      builder: (context, state) {
+        final unreadCount = state.unreadCount;
+
+        return Badge(
+          isLabelVisible: unreadCount > 0,
+          label: Text(unreadCount > 9 ? '9+' : unreadCount.toString()),
+          child: SvgPicture.asset(
+            iconPath,
+            width: 24,
+            height: 24,
+            colorFilter: ColorFilter.mode(
+              isActive
+                  ? theme.colorScheme.primary
+                  : theme.colorScheme.onSurfaceVariant,
+              BlendMode.srcIn,
+            ),
+          ),
+        );
+      },
     );
   }
 }

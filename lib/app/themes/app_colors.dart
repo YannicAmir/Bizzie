@@ -90,4 +90,9 @@ class AppColors {
   static const Color successBorder = Color(0xFFA4F4CF);
   static const Color successIconBackground = Color(0xFFD0FAE5);
   static const Color successText = Color(0xFF047857);
+
+  // Semantic
+  static const Color success = Color(0xFF16A34A);
+  static const Color error = Color(0xFFDC2626);
+  static const Color slate600 = Color(0xFF475569);
 }
