@@ -58,3 +58,14 @@ ios/config/
 **/google-services.json
 lib/config/firebase/
 
+
+# Agentic Enforced Best Practices
+# Secrets
+ios/Runner/GoogleService-Info.plist
+macos/Runner/GoogleService-Info.plist
+android/key.properties
+lib/firebase_options.dart
+
+# Build Artifacts
+**/ephemeral/
+coverage/

@@ -52,6 +52,13 @@ class AppTextStyles {
     letterSpacing: -0.4316,
   );
 
+  static final TextStyle bodyLargeBold = GoogleFonts.inter(
+    fontSize: 17,
+    fontWeight: FontWeight.w600,
+    color: AppColors.textPrimary,
+    letterSpacing: -0.4316,
+  );
+
   static final TextStyle bodySmall = GoogleFonts.inter(
     fontSize: 14,
     fontWeight: FontWeight.normal,
@@ -64,6 +71,20 @@ class AppTextStyles {
     fontWeight: FontWeight.normal,
     color: AppColors.textPrimary,
     letterSpacing: -0.2344,
+  );
+
+  static final TextStyle bodyMediumBold = GoogleFonts.inter(
+    fontSize: 15,
+    fontWeight: FontWeight.w600,
+    color: AppColors.textPrimary,
+    letterSpacing: -0.2344,
+  );
+
+  static final TextStyle bodySmallMedium = GoogleFonts.inter(
+    fontSize: 14,
+    fontWeight: FontWeight.w500,
+    color: AppColors.textPrimary,
+    letterSpacing: -0.2,
   );
 
   static final TextStyle caption = GoogleFonts.inter(
@@ -119,5 +140,12 @@ class AppTextStyles {
     letterSpacing: -0.4316,
     color: AppColors.textSecondary,
     height: 1.0,
+  );
+  static final TextStyle loaderMessage = GoogleFonts.inter(
+    fontSize: 18,
+    fontWeight: FontWeight.w800,
+    height: 1.2,
+    letterSpacing: 0.383,
+    color: AppColors.textPrimary,
   );
 }

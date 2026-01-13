@@ -1,7 +1,7 @@
 import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
 
-import 'package:bizzie/shared/widgets/loading/global_error_page.dart';
-import 'package:bizzie/shared/widgets/loading/global_loading_page.dart';
+import 'package:bizzie/app/pages/global_error_page.dart';
+import 'package:bizzie/app/pages/global_loading_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

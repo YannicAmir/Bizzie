@@ -37,6 +37,14 @@ class _BizzieAppViewState extends State<BizzieAppView> {
 
     if (isDetermined) {
       FlutterNativeSplash.remove();
+
+      currentState.mapOrNull(
+        authenticated: (state) {
+          context.read<UserBloc>().add(
+            UserEvent.loadUser(state.user.id, silent: false),
+          );
+        },
+      );
     }
   }
 
@@ -46,7 +54,9 @@ class _BizzieAppViewState extends State<BizzieAppView> {
       listener: (context, state) {
         state.whenOrNull(
           authenticated: (user) {
-            context.read<UserBloc>().add(UserEvent.loadUser(user.id));
+            context.read<UserBloc>().add(
+              UserEvent.loadUser(user.id, silent: false),
+            );
           },
           unauthenticated: () {
             context.read<UserBloc>().add(const UserEvent.clear());

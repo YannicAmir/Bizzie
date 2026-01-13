@@ -17,7 +17,10 @@ enum Sector {
   static Sector? fromString(String value) {
     try {
       return Sector.values.firstWhere(
-        (e) => e.displayName.toLowerCase() == value.toLowerCase(),
+        (e) =>
+            e.displayName.toLowerCase() == value.toLowerCase() ||
+            e.name.toLowerCase() == value.replaceAll('_', '').toLowerCase() ||
+            e.name == value,
       );
     } catch (_) {
       return null;
