@@ -101,12 +101,20 @@ void main() {
         ),
       ).thenAnswer((_) async {});
 
+      when(
+        () => mockLocalDataSource.init(
+          onNotificationTap: any(named: 'onNotificationTap'),
+        ),
+      ).thenAnswer((_) async {});
+
       // Re-instantiate service to trigger listener attached to new stream
       service = NotificationService(
         mockRepository,
         mockLocalDataSource,
         mockDeviceInfo,
       );
+
+      await service.initialize();
 
       // act
       controller.add(tMessage);

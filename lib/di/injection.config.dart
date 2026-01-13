@@ -276,13 +276,14 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i200.UserBloc>(
       () => _i200.UserBloc(gh<_i561.GetUserUseCase>()),
     );
-    gh.lazySingleton<_i430.INotificationService>(
-      () => _i941.NotificationService(
+    await gh.lazySingletonAsync<_i430.INotificationService>(() {
+      final i = _i941.NotificationService(
         gh<_i622.INotificationRepository>(),
         gh<_i982.LocalNotificationDataSource>(),
         gh<_i833.DeviceInfoPlugin>(),
-      ),
-    );
+      );
+      return i.initialize().then((_) => i);
+    }, preResolve: true);
     gh.factory<_i592.GetDailyBrandsUseCase>(
       () => _i592.GetDailyBrandsUseCase(gh<_i329.IOnboardingRepository>()),
     );

@@ -12,7 +12,7 @@ class LocalNotificationDataSource {
   LocalNotificationDataSource(this._flutterLocalNotificationsPlugin);
 
   @PostConstruct(preResolve: true)
-  Future<void> init() async {
+  Future<void> init({Function(String?)? onNotificationTap}) async {
     const AndroidInitializationSettings initializationSettingsAndroid =
         AndroidInitializationSettings('@mipmap/ic_launcher');
 
@@ -30,7 +30,14 @@ class LocalNotificationDataSource {
         );
 
     try {
-      await _flutterLocalNotificationsPlugin.initialize(initializationSettings);
+      await _flutterLocalNotificationsPlugin.initialize(
+        initializationSettings,
+        onDidReceiveNotificationResponse: (response) {
+          if (onNotificationTap != null) {
+            onNotificationTap(response.payload);
+          }
+        },
+      );
       _logger.info('Initialized local notifications');
     } catch (e) {
       _logger.severe('Failed to initialize local notifications', e);

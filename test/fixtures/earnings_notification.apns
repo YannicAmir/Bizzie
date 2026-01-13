@@ -1,0 +1,15 @@
+{
+    "Simulator Target Bundle": "com.bizzie.app",
+    "aps": {
+        "alert": {
+            "title": "Earnings Reminder: TSLA",
+            "body": "Tesla reports earnings tomorrow!"
+        },
+        "sound": "default"
+    },
+    "type": "earnings_notification",
+    "ticker": "TSLA",
+    "eventDate": "2024-03-20T00:00:00Z",
+    "daysRemaining": "1",
+    "gcm.message_id": "123"
+}

@@ -1,4 +1,8 @@
+import 'dart:async';
+
 import 'package:bizzie/app/global_overlay_wrapper.dart';
+import 'package:bizzie/core/interfaces/i_notification_service.dart';
+import 'package:bizzie/di/injection.dart';
 import 'package:bizzie/app/router.dart';
 import 'package:bizzie/app/themes/app_theme.dart';
 import 'package:bizzie/features/auth/presentation/bloc/auth_bloc.dart';
@@ -11,8 +15,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:bizzie/features/notifications/domain/models/notification_route.dart';
+
 class BizzieAppView extends StatefulWidget {
-  const BizzieAppView({super.key});
+  final NotificationRoute? initialNotificationRoute;
+
+  const BizzieAppView({super.key, this.initialNotificationRoute});
 
   @override
   State<BizzieAppView> createState() => _BizzieAppViewState();
@@ -20,11 +28,22 @@ class BizzieAppView extends StatefulWidget {
 
 class _BizzieAppViewState extends State<BizzieAppView> {
   late final GoRouter _router;
+  late final StreamSubscription _notificationSubscription;
+
+  @override
+  void dispose() {
+    _notificationSubscription.cancel();
+    super.dispose();
+  }
 
   @override
   void initState() {
     super.initState();
-    _router = createRouter(context.read<AuthBloc>(), context.read<UserBloc>());
+    _router = createRouter(
+      context.read<AuthBloc>(),
+      context.read<UserBloc>(),
+      initialLocation: widget.initialNotificationRoute?.path,
+    );
     context.read<AuthBloc>().add(const AuthEvent.statusRequested());
 
     final currentState = context.read<AuthBloc>().state;
@@ -46,6 +65,16 @@ class _BizzieAppViewState extends State<BizzieAppView> {
         },
       );
     }
+
+    _setupNotifications();
+  }
+
+  void _setupNotifications() {
+    final notificationService = getIt<INotificationService>();
+    _notificationSubscription = notificationService.routeStream.listen((route) {
+      _router.go(route.path, extra: route.extra);
+    });
+    notificationService.setupInteractions();
   }
 
   @override
