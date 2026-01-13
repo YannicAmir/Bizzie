@@ -1,3 +1,4 @@
+import 'package:bizzie/core/interfaces/i_notification_service.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:bizzie/services/config_service.dart';
 import 'package:bizzie/features/search/domain/services/stock_search_service.dart';
@@ -33,6 +34,8 @@ Future<void> bootstrap(
   }
 
   getIt<StockSearchService>().initialize();
+  getIt<StockSearchService>().initialize();
 
-  runApp(const BizzieApp());
+  final initialRoute = await getIt<INotificationService>().getInitialRoute();
+  runApp(BizzieApp(initialNotificationRoute: initialRoute));
 }

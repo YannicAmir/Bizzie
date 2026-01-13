@@ -9,8 +9,12 @@ import 'package:bizzie/di/injection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:bizzie/features/notifications/domain/models/notification_route.dart';
+
 class BizzieApp extends StatelessWidget {
-  const BizzieApp({super.key});
+  final NotificationRoute? initialNotificationRoute;
+
+  const BizzieApp({super.key, this.initialNotificationRoute});
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +31,7 @@ class BizzieApp extends StatelessWidget {
               getIt<ReportsBloc>()..add(const ReportsEvent.started()),
         ),
       ],
-      child: const BizzieAppView(),
+      child: BizzieAppView(initialNotificationRoute: initialNotificationRoute),
     );
   }
 }

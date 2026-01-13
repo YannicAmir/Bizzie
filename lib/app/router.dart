@@ -40,9 +40,13 @@ import 'package:bizzie/di/injection.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:async/async.dart';
 
-GoRouter createRouter(AuthBloc authBloc, UserBloc userBloc) {
+GoRouter createRouter(
+  AuthBloc authBloc,
+  UserBloc userBloc, {
+  String? initialLocation,
+}) {
   return GoRouter(
-    initialLocation: AppRoutes.splash,
+    initialLocation: initialLocation ?? AppRoutes.splash,
     refreshListenable: GoRouterRefreshStream(
       StreamGroup.merge([authBloc.stream, userBloc.stream]),
     ),

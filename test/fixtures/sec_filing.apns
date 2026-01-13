@@ -1,0 +1,17 @@
+{
+    "Simulator Target Bundle": "com.bizzie.app",
+    "aps": {
+        "alert": {
+            "title": "New SEC Filing: AAPL",
+            "body": "Apple Inc. released an 8-K report."
+        },
+        "sound": "default"
+    },
+    "type": "sec_filing",
+    "ticker": "AAPL",
+    "formType": "8-K",
+    "topic": "AAPL",
+    "isEarnings": "true",
+    "link": "https://example.com",
+    "gcm.message_id": "123"
+}

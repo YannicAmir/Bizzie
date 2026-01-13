@@ -1,4 +1,9 @@
+import 'dart:async';
 import 'dart:io';
+
+import 'package:bizzie/app/routes/app_routes.dart';
+import 'package:bizzie/features/notifications/domain/models/notification_route.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:bizzie/core/interfaces/i_notification_service.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
@@ -14,15 +19,29 @@ class NotificationService implements INotificationService {
   final LocalNotificationDataSource _localNotificationDataSource;
   final DeviceInfoPlugin _deviceInfo;
 
+  final _routeController = StreamController<NotificationRoute>.broadcast();
+
   NotificationService(
     this._notificationRepository,
     this._localNotificationDataSource,
     this._deviceInfo,
-  ) {
-    _initialize();
+  );
+
+  @PostConstruct(preResolve: true)
+  Future<void> initialize() async {
+    await _initialize();
   }
 
-  void _initialize() {
+  Future<void> _initialize() async {
+    await _localNotificationDataSource.init(
+      onNotificationTap: (payload) {
+        if (payload != null) {
+          _logger.info('Local notification tapped with payload: $payload');
+          _handlePayload(payload);
+        }
+      },
+    );
+
     _notificationRepository.onMessage.listen((message) {
       if (message.title.isNotEmpty || message.body.isNotEmpty) {
         _logger.info('Received message, showing local notification');
@@ -77,6 +96,53 @@ class NotificationService implements INotificationService {
       return androidInfo.id;
     } else {
       return 'unknown_platform_device';
+    }
+  }
+
+  @override
+  Stream<NotificationRoute> get routeStream => _routeController.stream;
+
+  @override
+  Future<void> setupInteractions() async {
+    _logger.info('Setting up notification interactions');
+
+    FirebaseMessaging.onMessageOpenedApp.listen((message) {
+      _logger.info('App opened from background state by notification');
+      _handleMessage(message);
+    });
+  }
+
+  @override
+  Future<NotificationRoute?> getInitialRoute() async {
+    final initialMessage = await FirebaseMessaging.instance.getInitialMessage();
+    if (initialMessage != null) {
+      _logger.info('App opened from terminated state by notification');
+      return _parseMessage(initialMessage);
+    }
+    return null;
+  }
+
+  NotificationRoute? _parseMessage(RemoteMessage message) {
+    final type = message.data['type'];
+    _logger.info('Parsing notification type: $type');
+
+    if (type == 'sec_filing' || type == 'earnings_notification') {
+      return const NotificationRoute(AppRoutes.reports);
+    }
+    return null;
+  }
+
+  void _handleMessage(RemoteMessage message) {
+    final route = _parseMessage(message);
+    if (route != null) {
+      _routeController.add(route);
+    }
+  }
+
+  void _handlePayload(String payload) {
+    if (payload.contains('sec_filing') ||
+        payload.contains('earnings_notification')) {
+      _routeController.add(const NotificationRoute(AppRoutes.reports));
     }
   }
 }
