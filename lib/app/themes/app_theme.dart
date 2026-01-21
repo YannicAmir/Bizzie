@@ -16,6 +16,8 @@ class AppTheme {
         onSurface: AppColors.textPrimary,
         onSurfaceVariant: AppColors.textSecondary,
         secondaryContainer: AppColors.mascotBackground,
+        inverseSurface: AppColors.tooltipBackground,
+        tertiaryContainer: AppColors.slate100,
       ),
       dividerColor: AppColors.inputBorder,
       textTheme: GoogleFonts.interTextTheme(ThemeData.light().textTheme)
@@ -37,20 +39,34 @@ class AppTheme {
         scrolledUnderElevation: 0,
         elevation: 0,
         iconTheme: const IconThemeData(color: AppColors.textPrimary, size: 20),
+        titleTextStyle: AppTextStyles.h3,
       ),
       dividerTheme: const DividerThemeData(
         color: AppColors.inputBorder,
         thickness: 0.67,
         space: 1,
       ),
+      tabBarTheme: TabBarThemeData(
+        labelColor: AppColors.primary,
+        unselectedLabelColor: AppColors.textSecondary,
+        indicator: UnderlineTabIndicator(
+          borderSide: BorderSide(color: AppColors.primary, width: 3.0),
+        ),
+        indicatorSize: TabBarIndicatorSize.tab,
+        dividerColor: AppColors.inputBorder,
+        labelStyle: AppTextStyles.bodyLargeBold,
+        unselectedLabelStyle: AppTextStyles.bodyLarge,
+      ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.primary,
           foregroundColor: AppColors.surface,
+          padding: const EdgeInsets.symmetric(horizontal: 12),
           elevation: 0,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(10),
           ),
+          textStyle: AppTextStyles.bodyLargeBold,
         ),
       ),
       filledButtonTheme: FilledButtonThemeData(
@@ -117,6 +133,8 @@ class AppTheme {
           warningText: AppColors.warningText,
           issueBackground: AppColors.orange100,
           issueText: AppColors.orange700,
+          voidBackground: AppColors.voidBackground,
+          voidText: AppColors.voidText,
         ),
       ],
     );
@@ -271,6 +289,8 @@ class BadgeThemeExtension extends ThemeExtension<BadgeThemeExtension> {
   final Color warningText;
   final Color issueBackground;
   final Color issueText;
+  final Color voidBackground;
+  final Color voidText;
 
   const BadgeThemeExtension({
     required this.neutralBackground,
@@ -283,6 +303,8 @@ class BadgeThemeExtension extends ThemeExtension<BadgeThemeExtension> {
     required this.warningText,
     required this.issueBackground,
     required this.issueText,
+    required this.voidBackground,
+    required this.voidText,
   });
 
   @override
@@ -297,6 +319,8 @@ class BadgeThemeExtension extends ThemeExtension<BadgeThemeExtension> {
     Color? warningText,
     Color? issueBackground,
     Color? issueText,
+    Color? voidBackground,
+    Color? voidText,
   }) {
     return BadgeThemeExtension(
       neutralBackground: neutralBackground ?? this.neutralBackground,
@@ -309,6 +333,8 @@ class BadgeThemeExtension extends ThemeExtension<BadgeThemeExtension> {
       warningText: warningText ?? this.warningText,
       issueBackground: issueBackground ?? this.issueBackground,
       issueText: issueText ?? this.issueText,
+      voidBackground: voidBackground ?? this.voidBackground,
+      voidText: voidText ?? this.voidText,
     );
   }
 
@@ -343,6 +369,8 @@ class BadgeThemeExtension extends ThemeExtension<BadgeThemeExtension> {
       warningText: Color.lerp(warningText, other.warningText, t)!,
       issueBackground: Color.lerp(issueBackground, other.issueBackground, t)!,
       issueText: Color.lerp(issueText, other.issueText, t)!,
+      voidBackground: Color.lerp(voidBackground, other.voidBackground, t)!,
+      voidText: Color.lerp(voidText, other.voidText, t)!,
     );
   }
 }

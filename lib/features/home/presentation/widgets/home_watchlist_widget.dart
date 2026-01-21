@@ -1,9 +1,13 @@
 import 'package:bizzie/app/routes/app_routes.dart';
+import 'package:bizzie/app/themes/app_assets.dart';
 import 'package:bizzie/app/themes/app_colors.dart';
 import 'package:bizzie/app/themes/app_text_styles.dart';
 import 'package:bizzie/features/watchlist/presentation/bloc/watchlist_bloc.dart';
 import 'package:bizzie/features/watchlist/presentation/bloc/watchlist_state.dart';
+import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
 import 'package:bizzie/shared/widgets/company_list_tile.dart';
+import 'package:bizzie/shared/widgets/error/bizzie_error.dart';
+import 'package:bizzie/shared/widgets/states/bizzie_empty_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -15,15 +19,32 @@ class HomeWatchlistWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return BlocBuilder<WatchlistBloc, WatchlistState>(
-      builder: (context, state) {
+    return BlocBuilder<UserBloc, UserState>(
+      builder: (context, userState) {
+        final mascot = userState.maybeMap(
+          loaded: (u) => AppAssets.getMascotForSector(u.user.favoriteSector),
+          orElse: () => AppAssets.defaultMascot,
+        );
+
+        return BlocBuilder<WatchlistBloc, WatchlistState>(
+          builder: (context, state) {
         return state.maybeWhen(
           initial: () => const _LoadingState(),
           loading: () => const _LoadingState(),
-          failure: (message) => _ErrorState(message: message),
+          failure: (f) => Center(
+            child: BizzieError(
+              message: 'Error loading watchlist',
+              mascotAssetPath: mascot,
+            ),
+          ),
           loaded: (companies) {
             if (companies.isEmpty) {
-              return const _EmptyState();
+              return BizzieEmptyState(
+                mascotAsset: mascot,
+                title: 'No watchlist',
+                message: 'You have no companies in your watchlist',
+                isFullPage: true,
+              );
             }
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -51,7 +72,7 @@ class HomeWatchlistWidget extends StatelessWidget {
                           extra: company,
                         );
                       },
-                      // Placeholder for future pricing info
+                      // Placeholder for future more info
                       trailing: Text(
                         "\$--.--",
                         style: theme.textTheme.bodyMedium?.copyWith(
@@ -67,6 +88,8 @@ class HomeWatchlistWidget extends StatelessWidget {
           },
           orElse: () => const SizedBox.shrink(),
         );
+          },
+        );
       },
     );
   }
@@ -81,51 +104,6 @@ class _LoadingState extends StatelessWidget {
       child: Padding(
         padding: EdgeInsets.all(24.0),
         child: CircularProgressIndicator(),
-      ),
-    );
-  }
-}
-
-class _ErrorState extends StatelessWidget {
-  final String message;
-  const _ErrorState({required this.message});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(24.0),
-      child: Center(
-        child: Text(
-          'Error loading watchlist: $message',
-          style: AppTextStyles.bodyMedium.copyWith(
-            color: AppColors.criticalText,
-          ),
-          textAlign: TextAlign.center,
-        ),
-      ),
-    );
-  }
-}
-
-class _EmptyState extends StatelessWidget {
-  const _EmptyState();
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Padding(
-      padding: const EdgeInsets.all(24.0),
-      child: Center(
-        child: Column(
-          children: [
-            Text('Your Watchlist is empty', style: theme.textTheme.titleMedium),
-            const SizedBox(height: 8),
-            TextButton(
-              onPressed: () => context.push(AppRoutes.search),
-              child: const Text('Search for companies'),
-            ),
-          ],
-        ),
       ),
     );
   }

@@ -1,0 +1,32 @@
+import 'package:bizzie/core/error/failures.dart';
+import 'package:bizzie/features/company_profile/domain/models/income_statement.dart';
+import 'package:bizzie/features/company_profile/domain/models/balance_sheet.dart';
+import 'package:bizzie/features/company_profile/domain/models/cash_flow_statement.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+
+part 'financial_statements_state.freezed.dart';
+
+@freezed
+abstract class FinancialStatementsState with _$FinancialStatementsState {
+  const factory FinancialStatementsState({
+    @Default(false) bool isLoadingIncome,
+    @Default(false) bool isLoadingBalance,
+    @Default(false) bool isLoadingCashFlow,
+    Failure? incomeError,
+    Failure? balanceError,
+    Failure? cashFlowError,
+    DateTime? lastUpdatedIncome,
+    DateTime? lastUpdatedBalance,
+    DateTime? lastUpdatedCashFlow,
+    @Default([]) List<IncomeStatement> annualIncomeStatements,
+    @Default([]) List<IncomeStatement> quarterlyIncomeStatements,
+    @Default([]) List<BalanceSheet> annualBalanceSheets,
+    @Default([]) List<BalanceSheet> quarterlyBalanceSheets,
+    @Default([]) List<CashFlowStatement> annualCashFlowStatements,
+    @Default([]) List<CashFlowStatement> quarterlyCashFlowStatements,
+    @Default('USD') String reportedCurrency,
+  }) = _FinancialStatementsState;
+
+  factory FinancialStatementsState.initial() =>
+      const FinancialStatementsState();
+}

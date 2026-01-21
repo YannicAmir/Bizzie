@@ -30,7 +30,7 @@ class BottomModalHeader extends StatelessWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(title, style: theme.textTheme.displayMedium),
+                  Text(title, style: theme.textTheme.displaySmall),
                   if (subtitle != null) ...[
                     const SizedBox(height: 4),
                     subtitle!,

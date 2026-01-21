@@ -1,0 +1,560 @@
+import 'package:bizzie/app/themes/app_colors.dart';
+import 'package:bizzie/core/error/failures.dart';
+import 'package:bizzie/features/company_profile/domain/models/financial_data_point.dart';
+import 'package:bizzie/features/company_profile/presentation/bloc/company_more/company_more_bloc.dart';
+import 'package:bizzie/features/company_profile/presentation/bloc/company_more/company_more_event.dart';
+import 'package:bizzie/features/company_profile/presentation/bloc/company_more/company_more_state.dart';
+import 'package:bizzie/features/company_profile/presentation/widgets/shared/financial_data_table.dart';
+import 'package:bizzie/features/company_profile/presentation/widgets/shared/metric_summary_card.dart';
+import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
+import 'package:bizzie/app/themes/app_assets.dart';
+import 'package:bizzie/shared/widgets/states/bizzie_empty_state.dart';
+import 'package:bizzie/shared/widgets/error/bizzie_error.dart';
+import 'package:bizzie/shared/constants/app_constants.dart';
+import 'package:bizzie/shared/widgets/app_badge.dart';
+import 'package:bizzie/shared/widgets/charts/bizzie_bar_chart.dart'; // Fixed Import
+import 'package:bizzie/shared/widgets/charts/bizzie_expandable_chart.dart';
+import 'package:bizzie/shared/widgets/loading/bizzie_loader.dart';
+import 'package:bizzie/shared/widgets/modals/app_bottom_modal.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
+
+enum MoreMetricType {
+  roe('Return on Equity (ROE)'),
+  peRatio('PE Ratio'),
+  pfcfRatio('Price to FCF Ratio');
+
+  final String label;
+  const MoreMetricType(this.label);
+}
+
+class MoreTab extends StatefulWidget {
+  final String ticker;
+
+  const MoreTab({super.key, required this.ticker});
+
+  @override
+  State<MoreTab> createState() => _MoreTabState();
+}
+
+class _MoreTabState extends State<MoreTab> with AutomaticKeepAliveClientMixin {
+  MoreMetricType _selectedMetric = MoreMetricType.roe;
+
+  @override
+  bool get wantKeepAlive => true;
+
+  @override
+  void initState() {
+    super.initState();
+    context.read<CompanyMoreBloc>().add(
+      CompanyMoreEvent.loadAll(widget.ticker),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    super.build(context);
+
+    // Number formatter
+    final numberFormat = NumberFormat.decimalPattern('en_US');
+
+    return SingleChildScrollView(
+      padding: AppConstants.pagePadding,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildMetricSelector(context),
+          AppConstants.mainSectionSpacing,
+          BlocBuilder<CompanyMoreBloc, CompanyMoreState>(
+            builder: (context, state) {
+              final status = _getStatusForMetric(_selectedMetric, state);
+
+              if (status == MoreDataStatus.initial ||
+                  status == MoreDataStatus.loading) {
+                return _LoadingState(metricLabel: _selectedMetric.label);
+              }
+
+              if (status == MoreDataStatus.failure) {
+                final error = _getErrorForMetric(_selectedMetric, state);
+                return _ErrorState(
+                  message: error?.message ?? 'Error loading data',
+                  onRetry: () => context.read<CompanyMoreBloc>().add(
+                    CompanyMoreEvent.loadAll(widget.ticker),
+                  ),
+                );
+              }
+
+              return _buildContent(context, state, numberFormat);
+            },
+          ),
+          const SizedBox(height: 24),
+        ],
+      ),
+    );
+  }
+
+  MoreDataStatus _getStatusForMetric(
+    MoreMetricType type,
+    CompanyMoreState state,
+  ) {
+    switch (type) {
+      case MoreMetricType.roe:
+        return state.keyMetricsStatus;
+      case MoreMetricType.peRatio:
+      case MoreMetricType.pfcfRatio:
+        return state.ratiosStatus;
+    }
+  }
+
+  Failure? _getErrorForMetric(MoreMetricType type, CompanyMoreState state) {
+    switch (type) {
+      case MoreMetricType.roe:
+        return state.keyMetricsError;
+      case MoreMetricType.peRatio:
+      case MoreMetricType.pfcfRatio:
+        return state.ratiosError;
+    }
+  }
+
+  Widget _buildContent(
+    BuildContext context,
+    CompanyMoreState data,
+    NumberFormat numberFormat,
+  ) {
+    final List<FinancialDataPoint> dataPoints = _getDataPoints(data);
+
+    // Sort Oldest -> Newest for Chart/Calc
+    final sortedPoints = List<FinancialDataPoint>.from(dataPoints)
+      ..sort((a, b) => a.date.compareTo(b.date));
+
+    // ---- Summary Logic ----
+    String valueStr = '-';
+    String badgeText = '-';
+    AppBadgeStyle badgeStyle = AppBadgeStyle.neutral;
+    String subtitle = 'No data available';
+
+    if (sortedPoints.isNotEmpty) {
+      final currentPoint = sortedPoints.last;
+      final currentDate = DateTime.tryParse(currentPoint.date);
+
+      // Default: 5 year lookback for Annual (assuming annual here)
+      // If we support quarterly later, we'd toggle this.
+      const lookbackYears = 5;
+
+      FinancialDataPoint referencePoint = sortedPoints.first;
+
+      if (currentDate != null) {
+        final cutoffDate = DateTime(
+          currentDate.year - lookbackYears,
+          currentDate.month,
+          currentDate.day,
+        );
+        try {
+          referencePoint = sortedPoints.firstWhere((p) {
+            final d = DateTime.tryParse(p.date);
+            if (d == null) return false;
+            return d.isAfter(cutoffDate) || d.isAtSameMomentAs(cutoffDate);
+          });
+        } catch (_) {}
+      }
+
+      final currentValue = currentPoint.value;
+      final referenceValue = referencePoint.value;
+      final delta = currentValue - referenceValue;
+
+      // Avoid div by zero
+      final growthPercentage = (referenceValue.abs() < 0.001)
+          ? 0.0
+          : (delta / referenceValue.abs()) * 100; // Standard growth formula
+
+      final isPositive = delta >= 0;
+      final absDelta = delta.abs();
+
+      // Badge Style: Generally, Higher ROE/FCF is Good. High PE might be bad or good depending on context.
+      // Let's assume Green = Increase for all for simplicity, unless PE?
+      // Actually, standard: Green = Up, Red = Down.
+      if (_selectedMetric != MoreMetricType.roe) {
+        badgeStyle = AppBadgeStyle.neutral;
+      } else {
+        badgeStyle = isPositive ? AppBadgeStyle.good : AppBadgeStyle.critical;
+      }
+
+      // Formatting
+      if (_selectedMetric == MoreMetricType.roe) {
+        valueStr = '${(currentValue * 100).toStringAsFixed(2)}%';
+      } else {
+        valueStr = currentValue.toStringAsFixed(2);
+      }
+
+      badgeText =
+          '${growthPercentage > 0 ? '+' : ''}${growthPercentage.toStringAsFixed(1)}%';
+
+      String referenceLabel;
+      final refDate = DateTime.tryParse(referencePoint.date);
+      if (refDate != null) {
+        referenceLabel = DateFormat('yyyy').format(refDate);
+      } else {
+        referenceLabel = referencePoint.period.isEmpty
+            ? referencePoint.date
+            : referencePoint.period;
+      }
+
+      subtitle =
+          '${isPositive ? 'Increased' : 'Decreased'} by ${numberFormat.format(absDelta)} since $referenceLabel';
+      if (_selectedMetric == MoreMetricType.roe) {
+        subtitle =
+            '${isPositive ? 'Increased' : 'Decreased'} by ${(absDelta * 100).toStringAsFixed(2)}% since $referenceLabel';
+      }
+    }
+
+    // ---- Chart Data ----
+    final chartData = sortedPoints.map((p) {
+      final date = DateTime.tryParse(p.date); // '2025-09-27'
+      String label = p.date;
+      if (date != null) {
+        label = DateFormat("MMM ''yy").format(date); // Jun '23
+      }
+      // For ROE, value is small (0.15), multiply by 100 for chart?
+      // SharesTab chart uses raw value. BizzieBarChart handles it.
+      // It looks better if we multiply percs by 100.
+      double val = p.value;
+      if (_selectedMetric == MoreMetricType.roe) {
+        val = p.value * 100;
+      }
+      return BizzieChartData(label, val);
+    }).toList();
+
+    // Custom formatter for the chart
+    NumberFormat chartFormatter;
+    if (_selectedMetric == MoreMetricType.roe) {
+      // 2 decimal places + % sign (literal)
+      chartFormatter = NumberFormat("#,##0.00'%'", 'en_US');
+    } else {
+      // 2 decimal places fixed
+      chartFormatter = NumberFormat("#,##0.00", 'en_US');
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (sortedPoints.isNotEmpty) ...[
+          MetricSummaryCard(
+            title: _selectedMetric.label,
+            value: valueStr,
+            badgeText: badgeText,
+            badgeStyle: badgeStyle,
+            subtitle: subtitle,
+          ),
+          AppConstants.mainSectionSpacing,
+          AnimatedSize(
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeInOut,
+            child: BizzieExpandableChart(
+              key: ValueKey('${_selectedMetric.name}_${chartData.length}'),
+              data: chartData,
+              numberFormat: chartFormatter,
+            ),
+          ),
+          AppConstants.mainSectionSpacing,
+          FinancialDataTable(
+            data: sortedPoints,
+            metricLabel: _selectedMetric == MoreMetricType.roe
+                ? 'ROE'
+                : 'Value',
+            currency: '',
+            isPercentage:
+                _selectedMetric == MoreMetricType.roe, // Ensure Table handles %
+            isNeutralColor: _selectedMetric != MoreMetricType.roe,
+            dateFormat: FinancialDateFormat.fullDate,
+            onViewMore: () => _showAllHistory(
+              context,
+              sortedPoints,
+              '${_selectedMetric.label} Data',
+            ),
+          ),
+        ] else
+          const _EmptyState(),
+      ],
+    );
+  }
+
+  List<FinancialDataPoint> _getDataPoints(CompanyMoreState data) {
+    List<FinancialDataPoint> result = [];
+    switch (_selectedMetric) {
+      case MoreMetricType.roe:
+        for (var item in data.keyMetrics) {
+          result.add(
+            FinancialDataPoint(
+              date: item.date,
+              period: item.period,
+              value: item.returnOnEquity,
+            ),
+          );
+        }
+        break;
+      case MoreMetricType.peRatio:
+        for (var item in data.ratios) {
+          result.add(
+            FinancialDataPoint(
+              date: item.date,
+              period: item.period,
+              value: item.priceToEarningsRatio,
+            ),
+          );
+        }
+        break;
+      case MoreMetricType.pfcfRatio:
+        for (var item in data.ratios) {
+          result.add(
+            FinancialDataPoint(
+              date: item.date,
+              period: item.period,
+              value: item.priceToFreeCashFlowRatio,
+            ),
+          );
+        }
+        break;
+    }
+    return result;
+  }
+
+  Widget _buildMetricSelector(BuildContext context) {
+    return InkWell(
+      onTap: () => _showSelectorModal(context),
+      borderRadius: BorderRadius.circular(AppConstants.mainSectionBorderRadius),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(
+            AppConstants.mainSectionBorderRadius,
+          ),
+          border: Border.all(color: AppColors.slate200, width: 0.665),
+        ),
+        padding: const EdgeInsets.all(16),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              _selectedMetric.label,
+              style: GoogleFonts.inter(
+                fontSize: 17,
+                fontWeight: FontWeight.w600,
+                color: AppColors.textPrimary,
+                letterSpacing: -0.43,
+              ),
+            ),
+            const Icon(Icons.keyboard_arrow_down, color: AppColors.slate500),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showSelectorModal(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) {
+        return AppBottomModal(
+          title: 'Select Metric',
+          builder: (context, scrollController) {
+            return ListView.separated(
+              controller: scrollController,
+              itemCount: MoreMetricType.values.length,
+              separatorBuilder: (context, index) =>
+                  const Divider(height: 1, color: AppColors.slate50),
+              itemBuilder: (context, index) {
+                final item = MoreMetricType.values[index];
+                final isSelected = item == _selectedMetric;
+
+                return InkWell(
+                  onTap: () {
+                    setState(() {
+                      _selectedMetric = item;
+                    });
+                    Navigator.pop(context);
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 16,
+                    ),
+                    color: isSelected ? AppColors.slate50 : Colors.white,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          item.label,
+                          style: GoogleFonts.inter(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w500,
+                            color: isSelected
+                                ? AppColors.primary
+                                : AppColors.textPrimary,
+                          ),
+                        ),
+                        if (isSelected)
+                          const Icon(
+                            Icons.check,
+                            color: AppColors.primary,
+                            size: 20,
+                          ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            );
+          },
+        );
+      },
+    );
+  }
+
+  void _showAllHistory(
+    BuildContext context,
+    List<FinancialDataPoint> data,
+    String title,
+  ) {
+    final sortedData = List<FinancialDataPoint>.from(data)
+      ..sort((a, b) => b.date.compareTo(a.date));
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) {
+        return AppBottomModal(
+          title: title,
+          builder: (context, scrollController) {
+            return Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 12,
+                  ),
+                  child: FinancialTableHeader(
+                    metricLabel: _selectedMetric == MoreMetricType.roe
+                        ? 'ROE'
+                        : 'Value',
+                    dateFormat: FinancialDateFormat.fullDate,
+                  ),
+                ),
+                const Divider(height: 1, color: AppColors.slate50),
+                Expanded(
+                  child: ListView.separated(
+                    controller: scrollController,
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    itemCount: sortedData.length,
+                    separatorBuilder: (context, index) =>
+                        const Divider(height: 1, color: AppColors.slate50),
+                    itemBuilder: (context, index) {
+                      final item = sortedData[index];
+                      return Container(
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        child: FinancialTableRow(
+                          item: item,
+                          index: index,
+                          allData: sortedData,
+                          currency: '',
+                          isInverseGrowth: false,
+                          isPercentage: _selectedMetric == MoreMetricType.roe,
+                          isNeutralColor: _selectedMetric != MoreMetricType.roe,
+                          dateFormat: FinancialDateFormat.fullDate,
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+}
+
+class _LoadingState extends StatelessWidget {
+  final String metricLabel;
+  const _LoadingState({required this.metricLabel});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocSelector<UserBloc, UserState, String>(
+      selector: (state) => state.maybeMap(
+        loaded: (u) => AppAssets.getMascotForSector(u.user.favoriteSector),
+        orElse: () => AppAssets.defaultMascot,
+      ),
+      builder: (context, mascot) {
+        return Padding(
+          padding: const EdgeInsets.only(top: 80),
+          child: BizzieLoader(
+            message: 'Loading $metricLabel...',
+            mascotAssetPath: mascot,
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _ErrorState extends StatelessWidget {
+  final String message;
+  final VoidCallback onRetry;
+
+  const _ErrorState({required this.message, required this.onRetry});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocSelector<UserBloc, UserState, String>(
+      selector: (state) => state.maybeMap(
+        loaded: (u) => AppAssets.getMascotForSector(u.user.favoriteSector),
+        orElse: () => AppAssets.defaultMascot,
+      ),
+      builder: (context, mascot) {
+        return Padding(
+          padding: const EdgeInsets.only(top: 80),
+          child: BizzieError(
+            message: 'Error loading data',
+            mascotAssetPath: mascot,
+            onRetry: onRetry,
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _EmptyState extends StatelessWidget {
+  const _EmptyState();
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocSelector<UserBloc, UserState, String>(
+      selector: (state) => state.maybeMap(
+        loaded: (u) => AppAssets.getMascotForSector(u.user.favoriteSector),
+        orElse: () => AppAssets.defaultMascot,
+      ),
+      builder: (context, mascot) {
+        return SizedBox(
+          height: 300,
+          child: BizzieEmptyState(
+            mascotAsset: mascot,
+            message: 'No data available for this metric',
+          ),
+        );
+      },
+    );
+  }
+}

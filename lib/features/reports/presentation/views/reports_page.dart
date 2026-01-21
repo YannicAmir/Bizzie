@@ -1,10 +1,12 @@
 import 'package:bizzie/app/routes/app_routes.dart';
+import 'package:bizzie/app/themes/app_assets.dart';
 import 'package:bizzie/features/reports/presentation/bloc/reports_bloc.dart';
 import 'package:bizzie/features/reports/presentation/bloc/reports_event.dart';
 import 'package:bizzie/features/reports/presentation/bloc/reports_state.dart';
 import 'package:bizzie/features/reports/presentation/widgets/recent_filings_section.dart';
 import 'package:bizzie/features/reports/presentation/widgets/upcoming_earnings_section.dart';
 import 'package:bizzie/shared/widgets/buttons/bizzie_primary_button.dart';
+import 'package:bizzie/shared/widgets/error/bizzie_error.dart';
 import 'package:bizzie/shared/widgets/inputs/bizzie_search_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -49,7 +51,21 @@ class _ReportsPageState extends State<ReportsPage> {
           builder: (context, state) {
             return state.maybeWhen(
               loading: () => const Center(child: CircularProgressIndicator()),
-              failure: (message) => Center(child: Text('Error: $message')),
+              failure: (message) => BlocBuilder<UserBloc, UserState>(
+                builder: (context, userState) {
+                  final mascot = userState.maybeMap(
+                    loaded: (u) =>
+                        AppAssets.getMascotForSector(u.user.favoriteSector),
+                    orElse: () => AppAssets.defaultMascot,
+                  );
+                  return Center(
+                    child: BizzieError(
+                      message: 'Error loading reports',
+                      mascotAssetPath: mascot,
+                    ),
+                  );
+                },
+              ),
               loaded: (feed, lastViewedReports, todaysFilings) {
                 final bool isUpcomingEmpty = feed.upcomingEarnings.isEmpty;
                 final bool isRecentEmpty = todaysFilings.isEmpty;

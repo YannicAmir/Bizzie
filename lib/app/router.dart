@@ -28,7 +28,6 @@ import 'package:bizzie/features/company_profile/presentation/views/company_profi
 import 'package:bizzie/features/reports/presentation/views/reports_page.dart';
 import 'package:bizzie/features/profile/presentation/views/profile_page.dart';
 import 'package:bizzie/app/navigation/bizzie_bottom_nav_wrapper.dart';
-import 'package:bizzie/features/onboarding/domain/models/company.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -252,8 +251,8 @@ GoRoute _buildCompanyRoute(String routeName) {
     name: routeName,
     builder: (context, state) {
       final ticker = state.pathParameters['ticker']!;
-      final company = state.extra as Company?;
-      return CompanyProfilePage(ticker: ticker, company: company);
+
+      return CompanyProfilePage(ticker: ticker);
     },
   );
 }

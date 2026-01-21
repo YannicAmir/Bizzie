@@ -52,6 +52,13 @@ class AppTextStyles {
     letterSpacing: -0.4316,
   );
 
+  static final TextStyle bodyLargeSecondary = GoogleFonts.inter(
+    fontSize: 17,
+    fontWeight: FontWeight.normal,
+    color: AppColors.textSecondary,
+    letterSpacing: -0.4316,
+  );
+
   static final TextStyle bodyLargeBold = GoogleFonts.inter(
     fontSize: 17,
     fontWeight: FontWeight.w600,
@@ -59,10 +66,38 @@ class AppTextStyles {
     letterSpacing: -0.4316,
   );
 
+  static final TextStyle bodyLargeBoldSecondary = GoogleFonts.inter(
+    fontSize: 17,
+    fontWeight: FontWeight.w600,
+    color: AppColors.textSecondary,
+    letterSpacing: -0.4316,
+  );
+
   static final TextStyle bodySmall = GoogleFonts.inter(
-    fontSize: 14,
+    fontSize: 13,
     fontWeight: FontWeight.normal,
     color: AppColors.textPrimary,
+    letterSpacing: -0.2,
+  );
+
+  static final TextStyle bodySmallSecondary = GoogleFonts.inter(
+    fontSize: 13,
+    fontWeight: FontWeight.normal,
+    color: AppColors.textSecondary,
+    letterSpacing: -0.2,
+  );
+
+  static final TextStyle bodySmallBold = GoogleFonts.inter(
+    fontSize: 13,
+    fontWeight: FontWeight.w600,
+    color: AppColors.textPrimary,
+    letterSpacing: -0.2,
+  );
+
+  static final TextStyle bodySmallBoldSecondary = GoogleFonts.inter(
+    fontSize: 13,
+    fontWeight: FontWeight.w600,
+    color: AppColors.textSecondary,
     letterSpacing: -0.2,
   );
 
@@ -77,6 +112,13 @@ class AppTextStyles {
     fontSize: 15,
     fontWeight: FontWeight.w600,
     color: AppColors.textPrimary,
+    letterSpacing: -0.2344,
+  );
+
+  static final TextStyle bodyMediumBoldSecondary = GoogleFonts.inter(
+    fontSize: 15,
+    fontWeight: FontWeight.w600,
+    color: AppColors.textSecondary,
     letterSpacing: -0.2344,
   );
 

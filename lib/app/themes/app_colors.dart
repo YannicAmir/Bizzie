@@ -69,6 +69,12 @@ class AppColors {
   static const Color warningBackground = Color(0xFFFEFCE8);
   static const Color warningText = Color(0xFF9D6600);
 
+  static const Color yellowHighlightBackground = Color(0xFFFEF9C2);
+  static const Color yellowHighlightText = Color(0xFF9D6600);
+
+  static const Color voidBackground = Color(0xFFF1F5F9);
+  static const Color voidText = Color(0xFF64748B);
+
   // Slates
   static const Color slate50 = Color(0xFFF8FAFC);
   static const Color slate100 = Color(0xFFF1F5F9);
@@ -95,4 +101,7 @@ class AppColors {
   static const Color success = Color(0xFF16A34A);
   static const Color error = Color(0xFFDC2626);
   static const Color slate600 = Color(0xFF475569);
+
+  // Tooltips
+  static const Color tooltipBackground = Color(0xFF0F172B);
 }

@@ -1,4 +1,5 @@
 import 'package:bizzie/app/themes/app_assets.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:flutter/material.dart';
 
@@ -41,7 +42,7 @@ class CompanyListTile extends StatelessWidget {
                 shape: BoxShape.circle,
               ),
               padding: const EdgeInsets.all(12),
-              child: Image.asset(AppAssets.businessIcon),
+              child: SvgPicture.asset(AppAssets.businessIcon),
             )
           : null,
       title: Text(

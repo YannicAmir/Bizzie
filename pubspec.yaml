@@ -48,6 +48,11 @@ dependencies:
   rxdart: ^0.28.0
   intl: ^0.20.2
   url_launcher: ^6.3.2
+  cached_network_image: ^3.4.1
+  smooth_page_indicator: ^2.0.1
+  timeago: ^3.7.1
+  custom_refresh_indicator: ^4.0.1
+  bloc_concurrency: ^0.3.0
 
 dev_dependencies:
   flutter_test:
@@ -72,6 +77,8 @@ flutter:
     - assets/images/onboarding/
     - assets/images/search/
     - assets/images/home/
+    - assets/images/company_profile/
+    - assets/images/branding/
 
   # To add custom fonts to your application, add a fonts section here,
   # in this "flutter" section. Each entry in this list should have a
