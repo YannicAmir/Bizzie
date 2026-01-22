@@ -1,4 +1,5 @@
 import 'package:bizzie/app/themes/app_colors.dart';
+import 'package:bizzie/app/themes/app_text_styles.dart';
 import 'package:bizzie/features/company_profile/domain/models/balance_sheet.dart';
 import 'package:bizzie/features/company_profile/domain/models/income_statement.dart';
 import 'package:bizzie/features/company_profile/presentation/widgets/financial_statements/balance_sheet_pie_chart.dart';
@@ -8,7 +9,6 @@ import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:bizzie/shared/utils/currency_formatter.dart';
 import 'package:bizzie/shared/widgets/modals/app_bottom_modal.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class BalanceSheetView extends StatefulWidget {
@@ -89,10 +89,11 @@ class _BalanceSheetViewState extends State<BalanceSheetView> {
     BalanceSheet statement,
     PageController controller,
   ) {
+    final currency = statement.reportedCurrency;
     final charts = [
       BalanceSheetPieChart(
         key: const ValueKey('assets_chart'),
-        title: 'Assets vs Liabilities & Equity',
+        currency: currency,
         data: [
           BalanceSheetPieChartData(
             'Assets',
@@ -113,7 +114,7 @@ class _BalanceSheetViewState extends State<BalanceSheetView> {
       ),
       BalanceSheetPieChart(
         key: const ValueKey('ratio_chart'),
-        title: 'Current Ratio Breakdown',
+        currency: currency,
         data: [
           BalanceSheetPieChartData(
             'Current Assets',
@@ -129,7 +130,7 @@ class _BalanceSheetViewState extends State<BalanceSheetView> {
       ),
       BalanceSheetPieChart(
         key: const ValueKey('capital_chart'),
-        title: 'Capital Structure',
+        currency: currency,
         data: [
           BalanceSheetPieChartData(
             'L.T. Debt',
@@ -153,7 +154,7 @@ class _BalanceSheetViewState extends State<BalanceSheetView> {
     return Column(
       children: [
         SizedBox(
-          height: 320,
+          height: 400,
           child: PageView(controller: controller, children: charts),
         ),
         AppConstants.secondarySectionSpacing,
@@ -322,22 +323,14 @@ class _BalanceSheetViewState extends State<BalanceSheetView> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: Colors.white,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
       builder: (context) {
         return AppBottomModal(
-          title: 'Full Balance Sheet History',
+          title: 'Full History',
           builder: (context, scrollController) {
             return Column(
               children: [
-                // Header
                 Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 20,
-                    vertical: 12,
-                  ),
+                  padding: AppConstants.bottomModalPadding,
                   child: Row(
                     children: [
                       Expanded(
@@ -345,11 +338,7 @@ class _BalanceSheetViewState extends State<BalanceSheetView> {
                         child: Text(
                           'Year',
                           textAlign: TextAlign.left,
-                          style: GoogleFonts.inter(
-                            fontSize: 13,
-                            fontWeight: FontWeight.w600,
-                            color: AppColors.slate500,
-                          ),
+                          style: AppTextStyles.bodyMediumBoldSecondary,
                         ),
                       ),
                       Expanded(
@@ -357,11 +346,7 @@ class _BalanceSheetViewState extends State<BalanceSheetView> {
                         child: Text(
                           'Assets',
                           textAlign: TextAlign.center,
-                          style: GoogleFonts.inter(
-                            fontSize: 13,
-                            fontWeight: FontWeight.w600,
-                            color: AppColors.slate500,
-                          ),
+                          style: AppTextStyles.bodyMediumBoldSecondary,
                         ),
                       ),
                       Expanded(
@@ -369,11 +354,7 @@ class _BalanceSheetViewState extends State<BalanceSheetView> {
                         child: Text(
                           'Liabilities',
                           textAlign: TextAlign.center,
-                          style: GoogleFonts.inter(
-                            fontSize: 13,
-                            fontWeight: FontWeight.w600,
-                            color: AppColors.slate500,
-                          ),
+                          style: AppTextStyles.bodyMediumBoldSecondary,
                         ),
                       ),
                       Expanded(
@@ -381,25 +362,18 @@ class _BalanceSheetViewState extends State<BalanceSheetView> {
                         child: Text(
                           'Equity',
                           textAlign: TextAlign.right,
-                          style: GoogleFonts.inter(
-                            fontSize: 13,
-                            fontWeight: FontWeight.w600,
-                            color: AppColors.slate500,
-                          ),
+                          style: AppTextStyles.bodyMediumBoldSecondary,
                         ),
                       ),
                     ],
                   ),
                 ),
-                const Divider(height: 1, color: AppColors.slate50),
-                // List
+                AppConstants.subSectionSpacing,
                 Expanded(
-                  child: ListView.separated(
+                  child: ListView.builder(
                     controller: scrollController,
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    padding: AppConstants.bottomModalPadding,
                     itemCount: dataset.length,
-                    separatorBuilder: (context, index) =>
-                        const Divider(height: 1, color: AppColors.slate50),
                     itemBuilder: (context, index) {
                       final item = dataset[index];
                       // Date processing
@@ -408,7 +382,7 @@ class _BalanceSheetViewState extends State<BalanceSheetView> {
                       if (date != null) {
                         if (item.period.isNotEmpty) {
                           // e.g. Q4 2024
-                          year = '${item.period} ${date.year}';
+                          year = '${item.period} | ${date.year}';
                         } else {
                           year = date.year.toString();
                         }
@@ -436,11 +410,11 @@ class _BalanceSheetViewState extends State<BalanceSheetView> {
                         locale: locale,
                       );
                       final equityColor = equityVal >= 0
-                          ? AppColors.successText
-                          : AppColors.red800;
+                          ? AppColors.goodText
+                          : AppColors.criticalText;
 
                       return Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        padding: AppConstants.dataRowVerticalPadding,
                         child: Row(
                           children: [
                             Expanded(
@@ -448,11 +422,7 @@ class _BalanceSheetViewState extends State<BalanceSheetView> {
                               child: Text(
                                 year,
                                 textAlign: TextAlign.left,
-                                style: GoogleFonts.inter(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w600,
-                                  color: AppColors.textPrimary,
-                                ),
+                                style: AppTextStyles.bodyMedium,
                               ),
                             ),
                             Expanded(
@@ -460,11 +430,7 @@ class _BalanceSheetViewState extends State<BalanceSheetView> {
                               child: Text(
                                 assets,
                                 textAlign: TextAlign.center,
-                                style: GoogleFonts.inter(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w600,
-                                  color: AppColors.textPrimary,
-                                ),
+                                style: AppTextStyles.bodyMediumBold,
                               ),
                             ),
                             Expanded(
@@ -472,11 +438,7 @@ class _BalanceSheetViewState extends State<BalanceSheetView> {
                               child: Text(
                                 liabilities,
                                 textAlign: TextAlign.center,
-                                style: GoogleFonts.inter(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w600,
-                                  color: AppColors.textPrimary,
-                                ),
+                                style: AppTextStyles.bodyMediumBold,
                               ),
                             ),
                             Expanded(
@@ -484,9 +446,7 @@ class _BalanceSheetViewState extends State<BalanceSheetView> {
                               child: Text(
                                 equity,
                                 textAlign: TextAlign.right,
-                                style: GoogleFonts.inter(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w600,
+                                style: AppTextStyles.bodyMediumBold.copyWith(
                                   color: equityColor,
                                 ),
                               ),

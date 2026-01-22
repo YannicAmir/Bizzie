@@ -6,6 +6,15 @@ class AppConstants {
   static const double mainSectionContainerPadding = 12.0;
 
   static const EdgeInsets pagePadding = EdgeInsets.fromLTRB(16, 16, 16, 24);
+  static const EdgeInsets selectionModalItemPadding = EdgeInsets.symmetric(
+    horizontal: 16,
+    vertical: 4,
+  );
+
+  static const EdgeInsets dropdownButtonPadding = EdgeInsets.symmetric(
+    vertical: 16,
+    horizontal: 12,
+  );
   static const double newsPagePadding = 16.0;
   static const EdgeInsets bottomModalPadding = EdgeInsets.symmetric(
     horizontal: 20,

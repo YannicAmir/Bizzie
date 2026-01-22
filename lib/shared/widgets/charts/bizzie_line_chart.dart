@@ -5,6 +5,7 @@ import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:bizzie/shared/models/chart_data_point.dart';
 import 'package:bizzie/shared/widgets/charts/bizzie_chart_tooltip.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 class BizzieLineChart extends StatelessWidget {
@@ -17,6 +18,7 @@ class BizzieLineChart extends StatelessWidget {
   final int maximumYLabels;
   final String Function(String)? xLabelFormatter;
   final String Function(String)? tooltipLabelFormatter;
+  final NumberFormat? numberFormat;
   final double? minY;
   final double? maxY;
 
@@ -31,6 +33,7 @@ class BizzieLineChart extends StatelessWidget {
     this.maximumYLabels = 2,
     this.xLabelFormatter,
     this.tooltipLabelFormatter,
+    this.numberFormat,
     this.minY,
     this.maxY,
   });
@@ -102,7 +105,13 @@ class BizzieLineChart extends StatelessWidget {
             enable: true,
             color: tooltipColor ?? theme.colorScheme.inverseSurface,
           ),
-          lineType: TrackballLineType.vertical,
+          markerSettings: TrackballMarkerSettings(
+            markerVisibility: TrackballVisibilityMode.visible,
+            color: effectiveLineColor.withValues(alpha: 0.2),
+            width: 10,
+            height: 10,
+          ),
+          lineType: TrackballLineType.none,
           builder: (BuildContext context, TrackballDetails trackballDetails) {
             final point = trackballDetails.point;
             if (point == null) {
@@ -123,6 +132,7 @@ class BizzieLineChart extends StatelessWidget {
               label: label,
               value: yValue.toDouble(),
               backgroundColor: tooltipColor,
+              numberFormat: numberFormat,
             );
           },
         ),

@@ -23,8 +23,12 @@ import 'package:bizzie/features/company_profile/presentation/bloc/company_shares
 import 'package:bizzie/features/company_profile/presentation/bloc/company_shares/company_shares_event.dart';
 import 'package:bizzie/di/injection.dart';
 import 'package:flutter/material.dart';
-import 'package:bizzie/features/company_profile/presentation/bloc/company_more/company_more_bloc.dart';
-import 'package:bizzie/features/company_profile/presentation/bloc/company_more/company_more_event.dart';
+import 'package:bizzie/features/company_profile/presentation/bloc/company_roe/company_roe_bloc.dart';
+import 'package:bizzie/features/company_profile/presentation/bloc/company_roe/company_roe_event.dart';
+import 'package:bizzie/features/company_profile/presentation/bloc/company_pe_ratio/company_pe_ratio_bloc.dart';
+import 'package:bizzie/features/company_profile/presentation/bloc/company_pe_ratio/company_pe_ratio_event.dart';
+import 'package:bizzie/features/company_profile/presentation/bloc/company_pfcf_ratio/company_pfcf_ratio_bloc.dart';
+import 'package:bizzie/features/company_profile/presentation/bloc/company_pfcf_ratio/company_pfcf_ratio_event.dart';
 import 'package:bizzie/features/company_profile/presentation/bloc/historical_price_eod/historical_price_eod_bloc.dart';
 import 'package:bizzie/features/company_profile/presentation/bloc/historical_price_eod/historical_price_eod_event.dart';
 import 'package:bizzie/features/company_profile/presentation/enums/company_profile_tab.dart';
@@ -92,7 +96,21 @@ class CompanyProfilePage extends StatelessWidget {
               getIt<FinancialStatementsBloc>()
                 ..add(FinancialStatementsEvent.loadIncomeStatements(ticker)),
         ),
-        BlocProvider(create: (context) => getIt<CompanyMoreBloc>()),
+        BlocProvider(
+          create: (context) =>
+              getIt<CompanyRoeBloc>()
+                ..add(CompanyRoeEvent.loadRequested(ticker)),
+        ),
+        BlocProvider(
+          create: (context) =>
+              getIt<CompanyPeRatioBloc>()
+                ..add(CompanyPeRatioEvent.loadRequested(ticker)),
+        ),
+        BlocProvider(
+          create: (context) =>
+              getIt<CompanyPfcfRatioBloc>()
+                ..add(CompanyPfcfRatioEvent.loadRequested(ticker)),
+        ),
         BlocProvider(
           create: (context) =>
               getIt<HistoricalPriceEodBloc>()
@@ -173,9 +191,6 @@ class _CompanyProfileViewState extends State<_CompanyProfileView>
         );
         break;
       case CompanyProfileTab.more:
-        context.read<CompanyMoreBloc>().add(
-          CompanyMoreEvent.stalenessCheckRequested(widget.ticker),
-        );
         break;
       case CompanyProfileTab.business:
         context.read<CompanyBusinessBloc>().add(

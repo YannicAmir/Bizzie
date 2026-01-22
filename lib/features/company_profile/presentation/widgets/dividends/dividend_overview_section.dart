@@ -1,5 +1,6 @@
 import 'package:bizzie/app/themes/app_colors.dart';
 import 'package:bizzie/app/themes/app_text_styles.dart';
+import 'package:bizzie/features/company_profile/presentation/widgets/shared/metric_summary_card.dart';
 import 'package:bizzie/features/company_profile/domain/models/dividend_event.dart';
 import 'package:bizzie/features/company_profile/presentation/utils/dividend_formatters.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
@@ -19,50 +20,15 @@ class DividendOverviewSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final annualDiv = latestEvent.annualizedDividend;
+    final yieldVal = latestEvent.calculateYield(currentPrice: currentPrice);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _DividendSummaryCard(event: latestEvent, price: currentPrice),
-        AppConstants.mainSectionSpacing,
-        _DividendDatesRow(event: latestEvent),
-        AppConstants.subSectionSpacing,
-        _DividendGrowthRow(history: history),
-      ],
-    );
-  }
-}
-
-class _DividendSummaryCard extends StatelessWidget {
-  final DividendEvent event;
-  final double price;
-
-  const _DividendSummaryCard({required this.event, required this.price});
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final annualDiv = event.annualizedDividend;
-    final yieldVal = event.calculateYield(currentPrice: price);
-
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(AppConstants.mainSectionContainerPadding),
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surface,
-        borderRadius: BorderRadius.circular(
-          AppConstants.mainSectionBorderRadius,
-        ),
-        border: Border.all(
-          color: theme.dividerColor,
-          width: AppConstants.defaultBorderWidth,
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text('Forward Dividend & Yield', style: AppTextStyles.h3),
-          AppConstants.subSectionSpacing,
-          Row(
+        MetricSummaryCard(
+          title: 'Forward Dividend & Yield',
+          valueWidget: Row(
             crossAxisAlignment: CrossAxisAlignment.baseline,
             textBaseline: TextBaseline.alphabetic,
             children: [
@@ -77,10 +43,13 @@ class _DividendSummaryCard extends StatelessWidget {
               ),
             ],
           ),
-          AppConstants.subSectionSpacing,
-          Text('Annual dividend per share', style: AppTextStyles.bodySmall),
-        ],
-      ),
+          subtitle: 'Annual dividend per share',
+        ),
+        AppConstants.mainSectionSpacing,
+        _DividendDatesRow(event: latestEvent),
+        AppConstants.subSectionSpacing,
+        _DividendGrowthRow(history: history),
+      ],
     );
   }
 }

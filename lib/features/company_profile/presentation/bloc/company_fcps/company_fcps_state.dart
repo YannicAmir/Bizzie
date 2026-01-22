@@ -1,4 +1,5 @@
 import 'package:bizzie/core/error/failures.dart';
+import 'package:bizzie/features/company_profile/domain/models/chart_data_point.dart';
 import 'package:bizzie/features/company_profile/domain/models/fcps_stats.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
@@ -10,6 +11,8 @@ class CompanyFcpsState with _$CompanyFcpsState {
   const factory CompanyFcpsState.loading() = _Loading;
   const factory CompanyFcpsState.loaded({
     required FcpsStats fcpsStats,
+    required List<ChartDataPoint> annualChartData,
+    required List<ChartDataPoint> quarterlyChartData,
     DateTime? lastUpdated,
   }) = _Loaded;
   const factory CompanyFcpsState.failure(Failure failure) = _Failure;

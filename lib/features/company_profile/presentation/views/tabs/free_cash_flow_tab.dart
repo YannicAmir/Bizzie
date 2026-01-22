@@ -1,18 +1,17 @@
 import 'package:bizzie/app/themes/app_assets.dart';
 import 'package:bizzie/features/company_profile/presentation/bloc/company_free_cash_flow/company_free_cash_flow_bloc.dart';
+import 'package:bizzie/features/company_profile/presentation/bloc/company_free_cash_flow/company_free_cash_flow_event.dart';
 import 'package:bizzie/features/company_profile/presentation/bloc/company_free_cash_flow/company_free_cash_flow_state.dart';
+import 'package:bizzie/features/company_profile/presentation/widgets/shared/company_profile_error_state.dart';
+import 'package:bizzie/features/company_profile/presentation/widgets/shared/company_profile_loading_state.dart';
 import 'package:bizzie/features/company_profile/presentation/widgets/shared/financial_highlights_section.dart';
 import 'package:bizzie/features/company_profile/presentation/widgets/shared/financial_data_table.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:bizzie/shared/widgets/charts/bizzie_bar_chart.dart';
 import 'package:bizzie/shared/widgets/charts/bizzie_expandable_chart.dart';
-import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
 import 'package:bizzie/shared/widgets/states/bizzie_empty_state.dart';
-import 'package:bizzie/shared/widgets/error/bizzie_error.dart';
 import 'package:bizzie/shared/widgets/inputs/bizzie_switch.dart';
-import 'package:bizzie/shared/widgets/loading/bizzie_loader.dart';
 import 'package:bizzie/shared/widgets/modals/app_bottom_modal.dart';
-import 'package:bizzie/app/themes/app_colors.dart';
 import 'package:bizzie/features/company_profile/domain/models/financial_data_point.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -29,7 +28,7 @@ class FreeCashFlowTab extends StatefulWidget {
 
 class _FreeCashFlowTabState extends State<FreeCashFlowTab>
     with AutomaticKeepAliveClientMixin {
-  int _selectedIndex = 0; // 0 = Yearly, 1 = Quarterly
+  int _selectedIndex = 0;
 
   @override
   bool get wantKeepAlive => true;
@@ -41,29 +40,26 @@ class _FreeCashFlowTabState extends State<FreeCashFlowTab>
     return BlocBuilder<CompanyFreeCashFlowBloc, CompanyFreeCashFlowState>(
       builder: (context, state) {
         return state.map(
-          initial: (_) => const _LoadingState(),
-          loading: (_) => const _LoadingState(),
-          failure: (f) => BlocSelector<UserBloc, UserState, String>(
-            selector: (state) => state.maybeMap(
-              loaded: (u) =>
-                  AppAssets.getMascotForSector(u.user.favoriteSector),
-              orElse: () => AppAssets.defaultMascot,
+          initial: (_) => const CompanyProfileLoadingState(
+            message: 'Loading free cash flow',
+          ),
+          loading: (_) => const CompanyProfileLoadingState(
+            message: 'Loading free cash flow',
+          ),
+          failure: (e) => CompanyProfileErrorState(
+            message: 'Error loading free cash flow',
+            onRetry: () => context.read<CompanyFreeCashFlowBloc>().add(
+              CompanyFreeCashFlowEvent.loadRequested(widget.ticker),
             ),
-            builder: (context, mascot) {
-              return Center(
-                child: BizzieError(
-                  message: 'Error loading free cash flow',
-                  mascotAssetPath: mascot,
-                ),
-              );
-            },
           ),
           loaded: (loadedState) {
             final stats = loadedState.fcfStats;
             final isAnnual = _selectedIndex == 0;
-            final dataPoints = isAnnual ? stats.annualFcf : stats.quarterlyFcf;
+            final chartData = isAnnual
+                ? loadedState.annualChartData
+                : loadedState.quarterlyChartData;
 
-            if (dataPoints.isEmpty) {
+            if (chartData.isEmpty) {
               return SingleChildScrollView(
                 padding: AppConstants.pagePadding,
                 child: Column(
@@ -78,7 +74,7 @@ class _FreeCashFlowTabState extends State<FreeCashFlowTab>
                         });
                       },
                     ),
-                    const SizedBox(height: 48),
+                    AppConstants.emptyStateTopSpacing,
                     const BizzieEmptyState(
                       mascotAsset: AppAssets.defaultMascot,
                       message:
@@ -88,22 +84,6 @@ class _FreeCashFlowTabState extends State<FreeCashFlowTab>
                 ),
               );
             }
-
-            final reversedPoints = dataPoints.reversed.toList();
-            final chartData = reversedPoints.map((p) {
-              String label;
-              final date = DateTime.tryParse(p.date);
-              if (date != null) {
-                if (isAnnual) {
-                  label = DateFormat('yyyy').format(date);
-                } else {
-                  label = DateFormat("MMM ''yy").format(date);
-                }
-              } else {
-                label = p.date;
-              }
-              return BizzieChartData(label, p.value);
-            }).toList();
 
             return SingleChildScrollView(
               padding: AppConstants.pagePadding,
@@ -120,16 +100,14 @@ class _FreeCashFlowTabState extends State<FreeCashFlowTab>
                     },
                   ),
                   AppConstants.mainSectionSpacing,
-                  AnimatedSize(
-                    duration: const Duration(milliseconds: 300),
-                    curve: Curves.easeInOut,
-                    child: BizzieExpandableChart(
-                      key: ValueKey('fcf_chart_$isAnnual'),
-                      data: chartData,
-                      numberFormat: NumberFormat.compactSimpleCurrency(
-                        locale: Localizations.localeOf(context).toString(),
-                        name: stats.reportedCurrency,
-                      ),
+                  BizzieExpandableChart(
+                    key: ValueKey('fcf_chart_$isAnnual'),
+                    data: chartData
+                        .map((p) => BizzieChartData(p.label, p.value))
+                        .toList(),
+                    numberFormat: NumberFormat.compactSimpleCurrency(
+                      locale: Localizations.localeOf(context).toString(),
+                      name: stats.reportedCurrency,
                     ),
                   ),
                   AppConstants.mainSectionSpacing,
@@ -183,10 +161,6 @@ class _FreeCashFlowTabState extends State<FreeCashFlowTab>
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: Colors.white,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
       builder: (context) {
         return AppBottomModal(
           title: title,
@@ -194,10 +168,7 @@ class _FreeCashFlowTabState extends State<FreeCashFlowTab>
             return Column(
               children: [
                 Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 20,
-                    vertical: 12,
-                  ),
+                  padding: AppConstants.bottomModalPadding,
                   child: FinancialTableHeader(
                     metricLabel: 'FCF',
                     dateFormat: isAnnual
@@ -208,18 +179,16 @@ class _FreeCashFlowTabState extends State<FreeCashFlowTab>
                         : 'Quarter Ended',
                   ),
                 ),
-                const Divider(height: 1, color: AppColors.slate50),
+                AppConstants.subSectionSpacing,
                 Expanded(
-                  child: ListView.separated(
+                  child: ListView.builder(
                     controller: scrollController,
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    padding: AppConstants.bottomModalPadding,
                     itemCount: sortedData.length,
-                    separatorBuilder: (context, index) =>
-                        const Divider(height: 1, color: AppColors.slate50),
                     itemBuilder: (context, index) {
                       final item = sortedData[index];
                       return Container(
-                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        padding: AppConstants.dataRowVerticalPadding,
                         child: FinancialTableRow(
                           item: item,
                           index: index,
@@ -236,26 +205,6 @@ class _FreeCashFlowTabState extends State<FreeCashFlowTab>
               ],
             );
           },
-        );
-      },
-    );
-  }
-}
-
-class _LoadingState extends StatelessWidget {
-  const _LoadingState();
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocSelector<UserBloc, UserState, String>(
-      selector: (state) => state.maybeMap(
-        loaded: (u) => AppAssets.getMascotForSector(u.user.favoriteSector),
-        orElse: () => AppAssets.defaultMascot,
-      ),
-      builder: (context, mascot) {
-        return BizzieLoader(
-          message: 'Loading Free Cash Flow',
-          mascotAssetPath: mascot,
         );
       },
     );

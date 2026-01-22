@@ -1,4 +1,5 @@
 import 'package:bizzie/app/themes/app_colors.dart';
+import 'package:bizzie/app/themes/app_text_styles.dart';
 import 'package:bizzie/features/company_profile/domain/models/income_statement.dart';
 import 'package:bizzie/features/company_profile/presentation/widgets/financial_statements/financial_statement_chart.dart';
 import 'package:bizzie/features/company_profile/presentation/widgets/financial_statements/financial_statement_selector.dart';
@@ -7,7 +8,6 @@ import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:bizzie/shared/utils/currency_formatter.dart';
 import 'package:bizzie/shared/widgets/modals/app_bottom_modal.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class IncomeStatementView extends StatefulWidget {
   final List<IncomeStatement> annualData;
@@ -129,17 +129,7 @@ class _IncomeStatementViewState extends State<IncomeStatementView> {
       ),
     ];
 
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(
-          AppConstants.mainSectionBorderRadius,
-        ),
-        border: Border.all(color: AppColors.slate200, width: 0.665),
-      ),
-      padding: const EdgeInsets.all(AppConstants.mainSectionContainerPadding),
-      child: FinancialStatementChart(data: data, currency: widget.currency),
-    );
+    return FinancialStatementChart(data: data, currency: widget.currency);
   }
 
   Widget _buildTableFor(
@@ -204,22 +194,14 @@ class _IncomeStatementViewState extends State<IncomeStatementView> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: Colors.white,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
       builder: (context) {
         return AppBottomModal(
           title: 'Full History',
           builder: (context, scrollController) {
             return Column(
               children: [
-                // Header
                 Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 20,
-                    vertical: 12,
-                  ),
+                  padding: AppConstants.bottomModalPadding,
                   child: Row(
                     children: [
                       Expanded(
@@ -227,11 +209,7 @@ class _IncomeStatementViewState extends State<IncomeStatementView> {
                         child: Text(
                           'Year',
                           textAlign: TextAlign.left,
-                          style: GoogleFonts.inter(
-                            fontSize: 13,
-                            fontWeight: FontWeight.w600,
-                            color: AppColors.slate500,
-                          ),
+                          style: AppTextStyles.bodyMediumBoldSecondary,
                         ),
                       ),
                       Expanded(
@@ -239,11 +217,7 @@ class _IncomeStatementViewState extends State<IncomeStatementView> {
                         child: Text(
                           'Revenue',
                           textAlign: TextAlign.center,
-                          style: GoogleFonts.inter(
-                            fontSize: 13,
-                            fontWeight: FontWeight.w600,
-                            color: AppColors.slate500,
-                          ),
+                          style: AppTextStyles.bodyMediumBoldSecondary,
                         ),
                       ),
                       Expanded(
@@ -251,11 +225,7 @@ class _IncomeStatementViewState extends State<IncomeStatementView> {
                         child: Text(
                           'Net Income',
                           textAlign: TextAlign.center,
-                          style: GoogleFonts.inter(
-                            fontSize: 13,
-                            fontWeight: FontWeight.w600,
-                            color: AppColors.slate500,
-                          ),
+                          style: AppTextStyles.bodyMediumBoldSecondary,
                         ),
                       ),
                       Expanded(
@@ -263,25 +233,18 @@ class _IncomeStatementViewState extends State<IncomeStatementView> {
                         child: Text(
                           'Margin %',
                           textAlign: TextAlign.right,
-                          style: GoogleFonts.inter(
-                            fontSize: 13,
-                            fontWeight: FontWeight.w600,
-                            color: AppColors.slate500,
-                          ),
+                          style: AppTextStyles.bodyMediumBoldSecondary,
                         ),
                       ),
                     ],
                   ),
                 ),
-                const Divider(height: 1, color: AppColors.slate50),
-                // List
+                AppConstants.subSectionSpacing,
                 Expanded(
-                  child: ListView.separated(
+                  child: ListView.builder(
                     controller: scrollController,
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    padding: AppConstants.bottomModalPadding,
                     itemCount: dataset.length,
-                    separatorBuilder: (context, index) =>
-                        const Divider(height: 1, color: AppColors.slate50),
                     itemBuilder: (context, index) {
                       final item = dataset[index];
                       final date = DateTime.tryParse(item.date);
@@ -314,7 +277,7 @@ class _IncomeStatementViewState extends State<IncomeStatementView> {
                       }
 
                       return Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        padding: AppConstants.dataRowVerticalPadding,
                         child: Row(
                           children: [
                             Expanded(
@@ -322,11 +285,7 @@ class _IncomeStatementViewState extends State<IncomeStatementView> {
                               child: Text(
                                 year,
                                 textAlign: TextAlign.left,
-                                style: GoogleFonts.inter(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w600,
-                                  color: AppColors.textPrimary,
-                                ),
+                                style: AppTextStyles.bodyMedium,
                               ),
                             ),
                             Expanded(
@@ -334,11 +293,7 @@ class _IncomeStatementViewState extends State<IncomeStatementView> {
                               child: Text(
                                 revenue,
                                 textAlign: TextAlign.center,
-                                style: GoogleFonts.inter(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w600,
-                                  color: AppColors.textPrimary,
-                                ),
+                                style: AppTextStyles.bodyMediumBold,
                               ),
                             ),
                             Expanded(
@@ -346,11 +301,7 @@ class _IncomeStatementViewState extends State<IncomeStatementView> {
                               child: Text(
                                 netIncome,
                                 textAlign: TextAlign.center,
-                                style: GoogleFonts.inter(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w600,
-                                  color: AppColors.textPrimary,
-                                ),
+                                style: AppTextStyles.bodyMediumBold,
                               ),
                             ),
                             Expanded(
@@ -358,9 +309,7 @@ class _IncomeStatementViewState extends State<IncomeStatementView> {
                               child: Text(
                                 marginStr,
                                 textAlign: TextAlign.right,
-                                style: GoogleFonts.inter(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w600,
+                                style: AppTextStyles.bodyMediumBold.copyWith(
                                   color: marginColor,
                                 ),
                               ),

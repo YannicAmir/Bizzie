@@ -63,10 +63,6 @@ class _SecFilingsCardState extends State<SecFilingsCard> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
       builder: (context) {
         return AppBottomModal(
           title: _isAnnual ? 'All 10-K Filings' : 'All 10-Q Filings',
@@ -228,7 +224,7 @@ class _FilingItem extends StatelessWidget {
       title = 'FY${filing.year.isNotEmpty ? ' ${filing.year}' : ''}';
     } else {
       title =
-          '${filing.period.isNotEmpty ? filing.period.toUpperCase() : ''}${filing.year.isNotEmpty ? ' ${filing.year}' : ''}';
+          '${filing.period.isNotEmpty ? filing.period.toUpperCase() : ''} | ${filing.year.isNotEmpty ? filing.year : ''}';
     }
 
     return GestureDetector(

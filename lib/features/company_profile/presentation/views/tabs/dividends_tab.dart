@@ -17,6 +17,7 @@ import 'package:bizzie/shared/widgets/charts/bizzie_expandable_chart.dart';
 import 'package:bizzie/shared/widgets/states/bizzie_empty_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 
 class DividendsTab extends StatefulWidget {
   final String ticker;
@@ -89,6 +90,10 @@ class _DividendsLoadedState extends StatelessWidget {
     }
 
     final latest = dividendInfo.history.first;
+    final numberFormat = NumberFormat.simpleCurrency(
+      locale: Localizations.localeOf(context).toString(),
+      name: 'USD',
+    );
 
     return SingleChildScrollView(
       padding: AppConstants.pagePadding,
@@ -104,6 +109,7 @@ class _DividendsLoadedState extends StatelessWidget {
           BizzieExpandableChart(
             data: dividendInfo.history.toChartData(),
             positiveColor: AppColors.primary,
+            numberFormat: numberFormat,
           ),
           AppConstants.mainSectionSpacing,
           DividendPaymentHistorySection(history: dividendInfo.history),

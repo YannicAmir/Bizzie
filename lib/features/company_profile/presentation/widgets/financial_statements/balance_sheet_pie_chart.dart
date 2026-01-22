@@ -1,7 +1,9 @@
 import 'package:bizzie/app/themes/app_colors.dart';
 import 'package:bizzie/app/themes/app_text_styles.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
+import 'package:bizzie/shared/widgets/charts/bizzie_chart_tooltip.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 class BalanceSheetPieChartData {
@@ -16,17 +18,25 @@ class BalanceSheetPieChart extends StatelessWidget {
   final String title;
   final List<BalanceSheetPieChartData> data;
   final double? totalValue;
+  final String currency;
 
   const BalanceSheetPieChart({
     super.key,
-    required this.title,
+    this.title = 'Chart',
     required this.data,
     this.totalValue,
+    this.currency = 'USD',
   });
 
   @override
   Widget build(BuildContext context) {
-    // Tooltip behavior for the chart with custom formatting
+    final theme = Theme.of(context);
+    final numberFormat = NumberFormat.compactSimpleCurrency(
+      locale: Localizations.localeOf(context).toString(),
+      name: currency,
+    );
+
+    // Tooltip behavior for the chart with shared widget
     final TooltipBehavior tooltipBehavior = TooltipBehavior(
       enable: true,
       builder:
@@ -38,17 +48,10 @@ class BalanceSheetPieChart extends StatelessWidget {
             int seriesIndex,
           ) {
             final item = data as BalanceSheetPieChartData;
-            final formattedValue = _formatValue(item.value);
-            return Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: Colors.black.withValues(alpha: 0.8),
-                borderRadius: BorderRadius.circular(4),
-              ),
-              child: Text(
-                '${item.label}: $formattedValue',
-                style: const TextStyle(color: Colors.white, fontSize: 12),
-              ),
+            return BizzieChartTooltip(
+              label: item.label,
+              value: item.value,
+              numberFormat: numberFormat,
             );
           },
     );
@@ -124,65 +127,83 @@ class BalanceSheetPieChart extends StatelessWidget {
       );
     }
 
-    return SizedBox(
-      height: 320, // Increased height
-      child: SfCircularChart(
-        margin: EdgeInsets.zero,
-        annotations: <CircularChartAnnotation>[
-          if (centerWidget != null)
-            CircularChartAnnotation(widget: centerWidget),
-        ],
-        tooltipBehavior: tooltipBehavior, // Enable tooltips
-        series: <CircularSeries>[
-          DoughnutSeries<BalanceSheetPieChartData, String>(
-            dataSource: data,
-            xValueMapper: (BalanceSheetPieChartData data, _) => data.label,
-            yValueMapper: (BalanceSheetPieChartData data, _) => data.value,
-            pointColorMapper: (BalanceSheetPieChartData data, _) => data.color,
-            innerRadius: '80%',
-            radius: '58%', // Reduced radius to afford more label space
-            startAngle: 270,
-            endAngle: 270,
-            strokeColor: Colors.white,
-            strokeWidth: 3,
-            cornerStyle: CornerStyle.bothCurve,
-            animationDuration: AppConstants.kChartAnimationDuration,
-            enableTooltip: true, // Ensure series allows tooltips
-            dataLabelSettings: DataLabelSettings(
-              isVisible: true,
-              labelPosition: ChartDataLabelPosition.outside,
-              labelIntersectAction: LabelIntersectAction.shift,
-              connectorLineSettings: const ConnectorLineSettings(
-                type: ConnectorType.line,
-                length: '20%', // Push labels out further
-                width: 0,
-                color: Colors.transparent,
+    return Container(
+      padding: const EdgeInsets.all(AppConstants.mainSectionContainerPadding),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surface,
+        borderRadius: BorderRadius.circular(
+          AppConstants.mainSectionBorderRadius,
+        ),
+        border: Border.all(
+          color: theme.dividerColor,
+          width: AppConstants.defaultBorderWidth,
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(title, style: AppTextStyles.h3),
+          AppConstants.secondarySectionSpacing,
+          SfCircularChart(
+            margin: EdgeInsets.zero,
+            annotations: <CircularChartAnnotation>[
+              if (centerWidget != null)
+                CircularChartAnnotation(widget: centerWidget),
+            ],
+            tooltipBehavior: tooltipBehavior, // Enable tooltips
+            series: <CircularSeries>[
+              DoughnutSeries<BalanceSheetPieChartData, String>(
+                dataSource: data,
+                xValueMapper: (BalanceSheetPieChartData data, _) => data.label,
+                yValueMapper: (BalanceSheetPieChartData data, _) => data.value,
+                pointColorMapper: (BalanceSheetPieChartData data, _) =>
+                    data.color,
+                innerRadius: '80%',
+                radius: '58%', // Reduced radius to afford more label space
+                startAngle: 270,
+                endAngle: 270,
+                strokeColor: Colors.white,
+                strokeWidth: 3,
+                cornerStyle: CornerStyle.bothCurve,
+                animationDuration: AppConstants.kChartAnimationDuration,
+                enableTooltip: true, // Ensure series allows tooltips
+                dataLabelSettings: DataLabelSettings(
+                  isVisible: true,
+                  labelPosition: ChartDataLabelPosition.outside,
+                  labelIntersectAction: LabelIntersectAction.shift,
+                  connectorLineSettings: const ConnectorLineSettings(
+                    type: ConnectorType.line,
+                    length: '20%', // Push labels out further
+                    width: 0,
+                    color: Colors.transparent,
+                  ),
+                  builder:
+                      (
+                        dynamic data,
+                        dynamic point,
+                        dynamic series,
+                        int pointIndex,
+                        int seriesIndex,
+                      ) {
+                        final item = data as BalanceSheetPieChartData;
+                        // Percent removed per user request
+
+                        final formattedValue = _formatValue(item.value);
+
+                        return Text(
+                          '${item.label}\n$formattedValue',
+                          textAlign: TextAlign.center,
+                          style: AppTextStyles.bodySmall.copyWith(
+                            color: item.color,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 12, // Larger font
+                            height: 1.2,
+                          ),
+                        );
+                      },
+                ),
               ),
-              builder:
-                  (
-                    dynamic data,
-                    dynamic point,
-                    dynamic series,
-                    int pointIndex,
-                    int seriesIndex,
-                  ) {
-                    final item = data as BalanceSheetPieChartData;
-                    // Percent removed per user request
-
-                    final formattedValue = _formatValue(item.value);
-
-                    return Text(
-                      '${item.label}\n$formattedValue',
-                      textAlign: TextAlign.center,
-                      style: AppTextStyles.bodySmall.copyWith(
-                        color: item.color,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 12, // Larger font
-                        height: 1.2,
-                      ),
-                    );
-                  },
-            ),
+            ],
           ),
         ],
       ),

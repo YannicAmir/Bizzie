@@ -2,7 +2,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 
 import 'package:injectable/injectable.dart';
+import 'package:bizzie/features/company_profile/domain/models/chart_data_point.dart';
+import 'package:bizzie/features/company_profile/domain/models/financial_data_point.dart';
+import 'package:bizzie/features/company_profile/domain/models/shares_summary_data.dart';
 import 'package:bizzie/features/company_profile/domain/usecases/get_share_stats_usecase.dart';
+import 'package:bizzie/shared/utils/bizzie_date_formatter.dart';
 import 'company_shares_event.dart';
 import 'company_shares_state.dart';
 
@@ -42,6 +46,22 @@ class CompanySharesBloc extends Bloc<CompanySharesEvent, CompanySharesState> {
       (data) => emit(
         CompanySharesState.loaded(
           shareStats: data,
+          annualChartData: _toChartData(
+            data.annualWeightedAverageShares,
+            isAnnual: true,
+          ),
+          quarterlyChartData: _toChartData(
+            data.quarterlyWeightedAverageShares,
+            isAnnual: false,
+          ),
+          annualSummary: _computeSummary(
+            data.annualWeightedAverageShares,
+            isAnnual: true,
+          ),
+          quarterlySummary: _computeSummary(
+            data.quarterlyWeightedAverageShares,
+            isAnnual: false,
+          ),
           lastUpdated: DateTime.now(),
         ),
       ),
@@ -70,6 +90,81 @@ class CompanySharesBloc extends Bloc<CompanySharesEvent, CompanySharesState> {
       initial: (_) => add(
         CompanySharesEvent.loadRequested(event.ticker, forceRefresh: true),
       ),
+    );
+  }
+
+  List<ChartDataPoint> _toChartData(
+    List<FinancialDataPoint> dataPoints, {
+    required bool isAnnual,
+  }) {
+    final sorted = List<FinancialDataPoint>.from(dataPoints)
+      ..sort((a, b) => a.date.compareTo(b.date));
+
+    return sorted.map((p) {
+      final label = BizzieDateFormatter.formatChartLabel(
+        p.date,
+        isAnnual: isAnnual,
+      );
+      return ChartDataPoint(label: label, value: p.value);
+    }).toList();
+  }
+
+  SharesSummaryData _computeSummary(
+    List<FinancialDataPoint> dataPoints, {
+    required bool isAnnual,
+  }) {
+    if (dataPoints.isEmpty) {
+      return const SharesSummaryData(
+        currentValue: 0,
+        growthPercentage: 0,
+        absoluteDelta: 0,
+        isPositive: false,
+        referenceLabel: '',
+      );
+    }
+
+    final sorted = List<FinancialDataPoint>.from(dataPoints)
+      ..sort((a, b) => a.date.compareTo(b.date));
+
+    final currentPoint = sorted.last;
+    var referencePoint = sorted.first;
+
+    final currentDate = DateTime.tryParse(currentPoint.date);
+    if (currentDate != null) {
+      final lookbackYears = isAnnual ? 5 : 1;
+      final cutoffDate = DateTime(
+        currentDate.year - lookbackYears,
+        currentDate.month,
+        currentDate.day,
+      );
+
+      for (final p in sorted) {
+        final d = DateTime.tryParse(p.date);
+        if (d != null && (d.isAfter(cutoffDate) || d == cutoffDate)) {
+          referencePoint = p;
+          break;
+        }
+      }
+    }
+
+    final currentValue = currentPoint.value;
+    final referenceValue = referencePoint.value;
+    final delta = currentValue - referenceValue;
+    final growthPercentage = referenceValue == 0
+        ? 0.0
+        : (delta / referenceValue) * 100;
+
+    final referenceLabel = BizzieDateFormatter.formatReferenceLabel(
+      referencePoint.date,
+      isAnnual: isAnnual,
+    );
+
+    return SharesSummaryData(
+      currentValue: currentValue,
+      growthPercentage: growthPercentage,
+      absoluteDelta: delta.abs(),
+      isPositive: delta >= 0,
+      referenceLabel: referenceLabel,
     );
   }
 }

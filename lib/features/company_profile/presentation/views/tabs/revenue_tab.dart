@@ -12,7 +12,6 @@ import 'package:bizzie/shared/widgets/charts/bizzie_expandable_chart.dart';
 import 'package:bizzie/shared/widgets/states/bizzie_empty_state.dart';
 import 'package:bizzie/shared/widgets/inputs/bizzie_switch.dart';
 import 'package:bizzie/shared/widgets/modals/app_bottom_modal.dart';
-import 'package:bizzie/app/themes/app_colors.dart';
 import 'package:bizzie/features/company_profile/domain/models/financial_data_point.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -179,13 +178,12 @@ class _RevenueTabState extends State<RevenueTab>
                         : 'Quarter Ended',
                   ),
                 ),
+                AppConstants.subSectionSpacing,
                 Expanded(
-                  child: ListView.separated(
+                  child: ListView.builder(
                     controller: scrollController,
                     padding: AppConstants.bottomModalPadding,
                     itemCount: sortedData.length,
-                    separatorBuilder: (context, index) =>
-                        const Divider(height: 1, color: AppColors.slate50),
                     itemBuilder: (context, index) {
                       final item = sortedData[index];
                       return Container(

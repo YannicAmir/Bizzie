@@ -128,12 +128,12 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( ShareStats shareStats,  DateTime? lastUpdated)?  loaded,TResult Function( Failure failure)?  failure,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( ShareStats shareStats,  List<ChartDataPoint> annualChartData,  List<ChartDataPoint> quarterlyChartData,  SharesSummaryData annualSummary,  SharesSummaryData quarterlySummary,  DateTime? lastUpdated)?  loaded,TResult Function( Failure failure)?  failure,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial();case _Loading() when loading != null:
 return loading();case _Loaded() when loaded != null:
-return loaded(_that.shareStats,_that.lastUpdated);case _Failure() when failure != null:
+return loaded(_that.shareStats,_that.annualChartData,_that.quarterlyChartData,_that.annualSummary,_that.quarterlySummary,_that.lastUpdated);case _Failure() when failure != null:
 return failure(_that.failure);case _:
   return orElse();
 
@@ -152,12 +152,12 @@ return failure(_that.failure);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( ShareStats shareStats,  DateTime? lastUpdated)  loaded,required TResult Function( Failure failure)  failure,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( ShareStats shareStats,  List<ChartDataPoint> annualChartData,  List<ChartDataPoint> quarterlyChartData,  SharesSummaryData annualSummary,  SharesSummaryData quarterlySummary,  DateTime? lastUpdated)  loaded,required TResult Function( Failure failure)  failure,}) {final _that = this;
 switch (_that) {
 case _Initial():
 return initial();case _Loading():
 return loading();case _Loaded():
-return loaded(_that.shareStats,_that.lastUpdated);case _Failure():
+return loaded(_that.shareStats,_that.annualChartData,_that.quarterlyChartData,_that.annualSummary,_that.quarterlySummary,_that.lastUpdated);case _Failure():
 return failure(_that.failure);case _:
   throw StateError('Unexpected subclass');
 
@@ -175,12 +175,12 @@ return failure(_that.failure);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( ShareStats shareStats,  DateTime? lastUpdated)?  loaded,TResult? Function( Failure failure)?  failure,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( ShareStats shareStats,  List<ChartDataPoint> annualChartData,  List<ChartDataPoint> quarterlyChartData,  SharesSummaryData annualSummary,  SharesSummaryData quarterlySummary,  DateTime? lastUpdated)?  loaded,TResult? Function( Failure failure)?  failure,}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial();case _Loading() when loading != null:
 return loading();case _Loaded() when loaded != null:
-return loaded(_that.shareStats,_that.lastUpdated);case _Failure() when failure != null:
+return loaded(_that.shareStats,_that.annualChartData,_that.quarterlyChartData,_that.annualSummary,_that.quarterlySummary,_that.lastUpdated);case _Failure() when failure != null:
 return failure(_that.failure);case _:
   return null;
 
@@ -257,10 +257,26 @@ String toString() {
 
 
 class _Loaded implements CompanySharesState {
-  const _Loaded({required this.shareStats, this.lastUpdated});
+  const _Loaded({required this.shareStats, required final  List<ChartDataPoint> annualChartData, required final  List<ChartDataPoint> quarterlyChartData, required this.annualSummary, required this.quarterlySummary, this.lastUpdated}): _annualChartData = annualChartData,_quarterlyChartData = quarterlyChartData;
   
 
  final  ShareStats shareStats;
+ final  List<ChartDataPoint> _annualChartData;
+ List<ChartDataPoint> get annualChartData {
+  if (_annualChartData is EqualUnmodifiableListView) return _annualChartData;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_annualChartData);
+}
+
+ final  List<ChartDataPoint> _quarterlyChartData;
+ List<ChartDataPoint> get quarterlyChartData {
+  if (_quarterlyChartData is EqualUnmodifiableListView) return _quarterlyChartData;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_quarterlyChartData);
+}
+
+ final  SharesSummaryData annualSummary;
+ final  SharesSummaryData quarterlySummary;
  final  DateTime? lastUpdated;
 
 /// Create a copy of CompanySharesState
@@ -273,16 +289,16 @@ _$LoadedCopyWith<_Loaded> get copyWith => __$LoadedCopyWithImpl<_Loaded>(this, _
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Loaded&&(identical(other.shareStats, shareStats) || other.shareStats == shareStats)&&(identical(other.lastUpdated, lastUpdated) || other.lastUpdated == lastUpdated));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Loaded&&(identical(other.shareStats, shareStats) || other.shareStats == shareStats)&&const DeepCollectionEquality().equals(other._annualChartData, _annualChartData)&&const DeepCollectionEquality().equals(other._quarterlyChartData, _quarterlyChartData)&&(identical(other.annualSummary, annualSummary) || other.annualSummary == annualSummary)&&(identical(other.quarterlySummary, quarterlySummary) || other.quarterlySummary == quarterlySummary)&&(identical(other.lastUpdated, lastUpdated) || other.lastUpdated == lastUpdated));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,shareStats,lastUpdated);
+int get hashCode => Object.hash(runtimeType,shareStats,const DeepCollectionEquality().hash(_annualChartData),const DeepCollectionEquality().hash(_quarterlyChartData),annualSummary,quarterlySummary,lastUpdated);
 
 @override
 String toString() {
-  return 'CompanySharesState.loaded(shareStats: $shareStats, lastUpdated: $lastUpdated)';
+  return 'CompanySharesState.loaded(shareStats: $shareStats, annualChartData: $annualChartData, quarterlyChartData: $quarterlyChartData, annualSummary: $annualSummary, quarterlySummary: $quarterlySummary, lastUpdated: $lastUpdated)';
 }
 
 
@@ -293,7 +309,7 @@ abstract mixin class _$LoadedCopyWith<$Res> implements $CompanySharesStateCopyWi
   factory _$LoadedCopyWith(_Loaded value, $Res Function(_Loaded) _then) = __$LoadedCopyWithImpl;
 @useResult
 $Res call({
- ShareStats shareStats, DateTime? lastUpdated
+ ShareStats shareStats, List<ChartDataPoint> annualChartData, List<ChartDataPoint> quarterlyChartData, SharesSummaryData annualSummary, SharesSummaryData quarterlySummary, DateTime? lastUpdated
 });
 
 
@@ -310,10 +326,14 @@ class __$LoadedCopyWithImpl<$Res>
 
 /// Create a copy of CompanySharesState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? shareStats = null,Object? lastUpdated = freezed,}) {
+@pragma('vm:prefer-inline') $Res call({Object? shareStats = null,Object? annualChartData = null,Object? quarterlyChartData = null,Object? annualSummary = null,Object? quarterlySummary = null,Object? lastUpdated = freezed,}) {
   return _then(_Loaded(
 shareStats: null == shareStats ? _self.shareStats : shareStats // ignore: cast_nullable_to_non_nullable
-as ShareStats,lastUpdated: freezed == lastUpdated ? _self.lastUpdated : lastUpdated // ignore: cast_nullable_to_non_nullable
+as ShareStats,annualChartData: null == annualChartData ? _self._annualChartData : annualChartData // ignore: cast_nullable_to_non_nullable
+as List<ChartDataPoint>,quarterlyChartData: null == quarterlyChartData ? _self._quarterlyChartData : quarterlyChartData // ignore: cast_nullable_to_non_nullable
+as List<ChartDataPoint>,annualSummary: null == annualSummary ? _self.annualSummary : annualSummary // ignore: cast_nullable_to_non_nullable
+as SharesSummaryData,quarterlySummary: null == quarterlySummary ? _self.quarterlySummary : quarterlySummary // ignore: cast_nullable_to_non_nullable
+as SharesSummaryData,lastUpdated: freezed == lastUpdated ? _self.lastUpdated : lastUpdated // ignore: cast_nullable_to_non_nullable
 as DateTime?,
   ));
 }

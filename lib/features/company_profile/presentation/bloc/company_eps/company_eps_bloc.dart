@@ -1,6 +1,9 @@
+import 'package:bizzie/features/company_profile/domain/models/chart_data_point.dart';
+import 'package:bizzie/features/company_profile/domain/models/financial_data_point.dart';
 import 'package:bizzie/features/company_profile/domain/usecases/get_eps_stats_usecase.dart';
 import 'package:bizzie/features/company_profile/presentation/bloc/company_eps/company_eps_event.dart';
 import 'package:bizzie/features/company_profile/presentation/bloc/company_eps/company_eps_state.dart';
+import 'package:bizzie/shared/utils/bizzie_date_formatter.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:injectable/injectable.dart';
@@ -40,7 +43,12 @@ class CompanyEpsBloc extends Bloc<CompanyEpsEvent, CompanyEpsState> {
     result.fold(
       (failure) => emit(CompanyEpsState.failure(failure)),
       (stats) => emit(
-        CompanyEpsState.loaded(epsStats: stats, lastUpdated: DateTime.now()),
+        CompanyEpsState.loaded(
+          epsStats: stats,
+          annualChartData: _toChartData(stats.annualEps, isAnnual: true),
+          quarterlyChartData: _toChartData(stats.quarterlyEps, isAnnual: false),
+          lastUpdated: DateTime.now(),
+        ),
       ),
     );
   }
@@ -63,5 +71,18 @@ class CompanyEpsBloc extends Bloc<CompanyEpsEvent, CompanyEpsState> {
       initial: (_) =>
           add(CompanyEpsEvent.loadRequested(event.ticker, forceRefresh: true)),
     );
+  }
+
+  List<ChartDataPoint> _toChartData(
+    List<FinancialDataPoint> dataPoints, {
+    required bool isAnnual,
+  }) {
+    return dataPoints.reversed.map((p) {
+      final label = BizzieDateFormatter.formatChartLabel(
+        p.date,
+        isAnnual: isAnnual,
+      );
+      return ChartDataPoint(label: label, value: p.value);
+    }).toList();
   }
 }

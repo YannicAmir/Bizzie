@@ -2,6 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:injectable/injectable.dart';
 import 'package:bizzie/features/company_profile/domain/usecases/get_historical_eod_prices_use_case.dart';
+import 'package:bizzie/shared/utils/market_hours_helper.dart';
 import 'historical_price_eod_event.dart';
 import 'historical_price_eod_state.dart';
 
@@ -49,17 +50,14 @@ class HistoricalPriceEodBloc
   Future<void> _onStalenessCheckRequested(StalenessCheckRequested event) async {
     state.mapOrNull(
       loaded: (loadedState) {
-        final lastUpdated = loadedState.lastUpdated;
-        if (lastUpdated != null) {
-          final difference = DateTime.now().difference(lastUpdated);
-          if (difference.inHours >= 24) {
-            add(
-              HistoricalPriceEodEvent.loadRequested(
-                event.ticker,
-                forceRefresh: true,
-              ),
-            );
-          }
+        final isStale = MarketHoursHelper.isDataStale(loadedState.lastUpdated);
+        if (isStale) {
+          add(
+            HistoricalPriceEodEvent.loadRequested(
+              event.ticker,
+              forceRefresh: true,
+            ),
+          );
         }
       },
       failure: (_) => add(

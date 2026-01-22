@@ -1,11 +1,11 @@
 import 'package:bizzie/app/themes/app_text_styles.dart';
-import 'package:bizzie/app/themes/app_theme.dart';
 import 'package:bizzie/features/company_profile/domain/enums/ratio_category.dart';
 import 'package:bizzie/features/company_profile/domain/models/security_details.dart';
 import 'package:bizzie/features/company_profile/presentation/utils/market_cap_category_extensions.dart';
 import 'package:bizzie/features/company_profile/presentation/utils/ratio_category_extensions.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:bizzie/shared/utils/currency_formatter.dart';
+import 'package:bizzie/shared/widgets/app_badge.dart';
 import 'package:flutter/material.dart';
 
 class KeyMetricsSection extends StatelessWidget {
@@ -16,7 +16,6 @@ class KeyMetricsSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final badgeTheme = theme.extension<BadgeThemeExtension>()!;
 
     return Container(
       padding: const EdgeInsets.all(AppConstants.mainSectionContainerPadding),
@@ -34,7 +33,7 @@ class KeyMetricsSection extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text('Key Metrics', style: AppTextStyles.h3),
-          const SizedBox(height: 16),
+          AppConstants.secondarySectionSpacing,
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -44,13 +43,10 @@ class KeyMetricsSection extends StatelessWidget {
                   details.marketCap ?? 0,
                   '\$',
                 ),
-                badge: _Badge(
+                badge: AppBadge(
                   text: details.marketCapCategory.label,
-                  backgroundColor: details.marketCapCategory
-                      .getBadgeBackgroundColor(badgeTheme),
-                  textColor: details.marketCapCategory.getBadgeTextColor(
-                    badgeTheme,
-                  ),
+                  style: AppBadgeStyle.neutral,
+                  isLarge: true,
                 ),
                 alignment: CrossAxisAlignment.start,
               ),
@@ -58,15 +54,12 @@ class KeyMetricsSection extends StatelessWidget {
               _MetricItem(
                 label: 'PE TTM',
                 value: details.peRatioTTM?.toStringAsFixed(2) ?? '-',
-                badge: _Badge(
+                badge: AppBadge(
                   text: details.peRatioCategory == RatioCategory.negative
                       ? 'Neg. EPS'
                       : details.peRatioCategory.label,
-                  backgroundColor: details.peRatioCategory
-                      .getBadgeBackgroundColor(badgeTheme),
-                  textColor: details.peRatioCategory.getBadgeTextColor(
-                    badgeTheme,
-                  ),
+                  style: details.peRatioCategory.badgeStyle,
+                  isLarge: true,
                 ),
                 alignment: CrossAxisAlignment.center,
               ),
@@ -75,15 +68,12 @@ class KeyMetricsSection extends StatelessWidget {
                 label: 'PFCF TTM',
                 value:
                     details.priceToFreeCashFlowTTM?.toStringAsFixed(2) ?? '-',
-                badge: _Badge(
+                badge: AppBadge(
                   text: details.pfcfRatioCategory == RatioCategory.negative
                       ? 'Neg. FCF'
                       : details.pfcfRatioCategory.label,
-                  backgroundColor: details.pfcfRatioCategory
-                      .getBadgeBackgroundColor(badgeTheme),
-                  textColor: details.pfcfRatioCategory.getBadgeTextColor(
-                    badgeTheme,
-                  ),
+                  style: details.pfcfRatioCategory.badgeStyle,
+                  isLarge: true,
                 ),
                 alignment: CrossAxisAlignment.end,
               ),
@@ -120,45 +110,15 @@ class _MetricItem extends StatelessWidget {
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),
-          const SizedBox(height: 4),
+          AppConstants.subSectionSpacing,
           Text(
             value,
             style: AppTextStyles.bodyLargeBold,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),
-          if (badge != null) ...[const SizedBox(height: 6), badge!],
+          if (badge != null) ...[AppConstants.subSectionSpacing, badge!],
         ],
-      ),
-    );
-  }
-}
-
-class _Badge extends StatelessWidget {
-  final String text;
-  final Color backgroundColor;
-  final Color textColor;
-
-  const _Badge({
-    required this.text,
-    required this.backgroundColor,
-    required this.textColor,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      decoration: BoxDecoration(
-        color: backgroundColor,
-        borderRadius: BorderRadius.circular(6),
-        border: Border.all(color: Colors.transparent), // Just for safety
-      ),
-      child: Text(
-        text,
-        style: AppTextStyles.bodyMediumBold.copyWith(color: textColor),
-        maxLines: 1,
-        overflow: TextOverflow.ellipsis,
       ),
     );
   }

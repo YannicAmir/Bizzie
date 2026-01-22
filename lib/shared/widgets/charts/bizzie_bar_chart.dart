@@ -108,6 +108,7 @@ class BizzieBarChart extends StatelessWidget {
             return BizzieChartTooltip(
               label: point.x as String,
               value: (point.y as num).toDouble(),
+              numberFormat: numberFormat,
             );
           },
         ),

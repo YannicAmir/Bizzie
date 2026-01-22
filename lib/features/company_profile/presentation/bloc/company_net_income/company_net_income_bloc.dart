@@ -1,6 +1,9 @@
+import 'package:bizzie/features/company_profile/domain/models/chart_data_point.dart';
+import 'package:bizzie/features/company_profile/domain/models/financial_data_point.dart';
 import 'package:bizzie/features/company_profile/domain/usecases/get_net_income_stats_usecase.dart';
 import 'package:bizzie/features/company_profile/presentation/bloc/company_net_income/company_net_income_event.dart';
 import 'package:bizzie/features/company_profile/presentation/bloc/company_net_income/company_net_income_state.dart';
+import 'package:bizzie/shared/utils/bizzie_date_formatter.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:injectable/injectable.dart';
@@ -43,6 +46,11 @@ class CompanyNetIncomeBloc
       (stats) => emit(
         CompanyNetIncomeState.loaded(
           netIncomeStats: stats,
+          annualChartData: _toChartData(stats.annualNetIncome, isAnnual: true),
+          quarterlyChartData: _toChartData(
+            stats.quarterlyNetIncome,
+            isAnnual: false,
+          ),
           lastUpdated: DateTime.now(),
         ),
       ),
@@ -72,5 +80,18 @@ class CompanyNetIncomeBloc
         CompanyNetIncomeEvent.loadRequested(event.ticker, forceRefresh: true),
       ),
     );
+  }
+
+  List<ChartDataPoint> _toChartData(
+    List<FinancialDataPoint> dataPoints, {
+    required bool isAnnual,
+  }) {
+    return dataPoints.reversed.map((p) {
+      final label = BizzieDateFormatter.formatChartLabel(
+        p.date,
+        isAnnual: isAnnual,
+      );
+      return ChartDataPoint(label: label, value: p.value);
+    }).toList();
   }
 }

@@ -8,26 +8,18 @@ class BizzieDateFormatter {
       final date = DateTime.tryParse(dateStr);
       if (date == null) return "Unknown";
 
-      final yesterday = now.subtract(const Duration(days: 1));
-      final isYesterday =
-          date.year == yesterday.year &&
-          date.month == yesterday.month &&
-          date.day == yesterday.day;
       final isToday =
           date.year == now.year &&
           date.month == now.month &&
           date.day == now.day;
 
-      // TODO: Replace with actual market close time or generic time if available
-      const timeSuffix = "at 4:00 PM EST";
-
       if (isToday) {
-        return "Today $timeSuffix";
-      } else if (isYesterday) {
-        return "Yesterday $timeSuffix";
+        final fifteenMinutesAgo = now.subtract(const Duration(minutes: 15));
+        final timeFormatter = DateFormat('h:mm a');
+        return "Today at ${timeFormatter.format(fifteenMinutesAgo)} (15 min delay)";
       } else {
-        final formatter = DateFormat('EEE, MMM dd yyyy');
-        return "${formatter.format(date)} $timeSuffix";
+        final dateFormatter = DateFormat('MMM dd, yyyy');
+        return "${dateFormatter.format(date)} at 4:00 PM EST";
       }
     } catch (e, stack) {
       debugPrint('Error formatting date: $e\n$stack');
@@ -47,7 +39,17 @@ class BizzieDateFormatter {
     return DateFormat("MMM ''yy").format(date);
   }
 
+  static String formatMonthYearFull(String dateStr) {
+    final date = DateTime.tryParse(dateStr);
+    if (date == null) return dateStr;
+    return DateFormat('MMM yyyy').format(date);
+  }
+
   static String formatChartLabel(String dateStr, {required bool isAnnual}) {
     return isAnnual ? formatYearOnly(dateStr) : formatMonthYearShort(dateStr);
+  }
+
+  static String formatReferenceLabel(String dateStr, {required bool isAnnual}) {
+    return isAnnual ? formatYearOnly(dateStr) : formatMonthYearFull(dateStr);
   }
 }

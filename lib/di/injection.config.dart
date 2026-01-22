@@ -100,14 +100,18 @@ import '../features/company_profile/presentation/bloc/company_fcps/company_fcps_
     as _i19;
 import '../features/company_profile/presentation/bloc/company_free_cash_flow/company_free_cash_flow_bloc.dart'
     as _i30;
-import '../features/company_profile/presentation/bloc/company_more/company_more_bloc.dart'
-    as _i294;
 import '../features/company_profile/presentation/bloc/company_net_income/company_net_income_bloc.dart'
     as _i313;
 import '../features/company_profile/presentation/bloc/company_news/company_news_bloc.dart'
     as _i624;
+import '../features/company_profile/presentation/bloc/company_pe_ratio/company_pe_ratio_bloc.dart'
+    as _i843;
+import '../features/company_profile/presentation/bloc/company_pfcf_ratio/company_pfcf_ratio_bloc.dart'
+    as _i20;
 import '../features/company_profile/presentation/bloc/company_revenue/company_revenue_bloc.dart'
     as _i122;
+import '../features/company_profile/presentation/bloc/company_roe/company_roe_bloc.dart'
+    as _i652;
 import '../features/company_profile/presentation/bloc/company_security/company_security_bloc.dart'
     as _i721;
 import '../features/company_profile/presentation/bloc/company_shares/company_shares_bloc.dart'
@@ -430,6 +434,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i721.CompanySecurityBloc>(
       () => _i721.CompanySecurityBloc(gh<_i113.GetSecurityDetailsUseCase>()),
     );
+    gh.factory<_i652.CompanyRoeBloc>(
+      () => _i652.CompanyRoeBloc(gh<_i717.GetKeyMetricsUseCase>()),
+    );
     gh.lazySingleton<_i629.GetCompanyNewsUseCase>(
       () => _i629.GetCompanyNewsUseCase(gh<_i1051.INewsRepository>()),
     );
@@ -441,12 +448,6 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i65.CompanyDividendsBloc>(
       () => _i65.CompanyDividendsBloc(gh<_i804.GetDividendInfoUseCase>()),
-    );
-    gh.factory<_i294.CompanyMoreBloc>(
-      () => _i294.CompanyMoreBloc(
-        gh<_i762.GetRatiosUseCase>(),
-        gh<_i717.GetKeyMetricsUseCase>(),
-      ),
     );
     gh.lazySingleton<_i547.GetHistoricalEodPricesUseCase>(
       () => _i547.GetHistoricalEodPricesUseCase(gh<_i865.IPriceRepository>()),
@@ -537,6 +538,12 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i318.GetCurrentUser>(
       () => _i318.GetCurrentUser(gh<_i685.IAuthRepository>()),
+    );
+    gh.factory<_i843.CompanyPeRatioBloc>(
+      () => _i843.CompanyPeRatioBloc(gh<_i762.GetRatiosUseCase>()),
+    );
+    gh.factory<_i20.CompanyPfcfRatioBloc>(
+      () => _i20.CompanyPfcfRatioBloc(gh<_i762.GetRatiosUseCase>()),
     );
     gh.lazySingleton<_i693.GetRecommendedBrandsUseCase>(
       () => _i693.GetRecommendedBrandsUseCase(

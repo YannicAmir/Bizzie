@@ -2,9 +2,9 @@ import 'package:bizzie/app/themes/app_colors.dart';
 import 'package:bizzie/app/themes/app_text_styles.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class FinancialStatementsTable extends StatelessWidget {
+  final String title;
   final List<FinancialStatementTableRow> rows;
   final VoidCallback? onViewAll;
   final bool showPercentage;
@@ -14,6 +14,7 @@ class FinancialStatementsTable extends StatelessWidget {
 
   const FinancialStatementsTable({
     super.key,
+    this.title = 'Table',
     required this.rows,
     this.onViewAll,
     this.showPercentage = true,
@@ -24,26 +25,35 @@ class FinancialStatementsTable extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Flex distribution
-    // Default (with %): Metric(3), Amount(2), %(2), Growth(2) = 9
-    // Without %: Metric(4), Amount(3), Growth(3) = 10 (or similar)
+    final theme = Theme.of(context);
     final metricFlex = showPercentage ? 3 : 2;
     final amountFlex = showPercentage ? 2 : 3;
     final growthFlex = showPercentage ? 2 : 1;
 
     return Container(
+      width: double.infinity,
       decoration: BoxDecoration(
-        color: Colors.white,
         borderRadius: BorderRadius.circular(
           AppConstants.mainSectionBorderRadius,
         ),
-        border: Border.all(color: AppColors.slate200, width: 0.665),
+        border: Border.all(
+          color: theme.dividerColor,
+          width: AppConstants.defaultBorderWidth,
+        ),
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Header
           Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(
+              AppConstants.mainSectionContainerPadding,
+            ),
+            child: Text(title, style: AppTextStyles.h3),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(
+              AppConstants.mainSectionContainerPadding,
+            ),
             child: Row(
               children: [
                 Expanded(
@@ -66,48 +76,28 @@ class FinancialStatementsTable extends StatelessWidget {
               ],
             ),
           ),
-          const Divider(height: 1, color: AppColors.slate50),
-          // Rows
-          ListView.separated(
+          ListView.builder(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             itemCount: rows.length,
-            separatorBuilder: (context, index) =>
-                const Divider(height: 1, color: AppColors.slate50),
             itemBuilder: (context, index) {
               final row = rows[index];
               return Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16.0,
-                  vertical: 16.0,
+                padding: const EdgeInsets.all(
+                  AppConstants.mainSectionContainerPadding,
                 ),
                 child: Row(
                   children: [
                     Expanded(
                       flex: metricFlex,
-                      child: Text(
-                        row.metric,
-                        style: GoogleFonts.inter(
-                          fontSize: 15,
-                          fontWeight: row.isBold
-                              ? FontWeight.w800
-                              : FontWeight.w600,
-                          color: AppColors.textPrimary,
-                        ),
-                      ),
+                      child: Text(row.metric, style: AppTextStyles.bodyMedium),
                     ),
                     Expanded(
                       flex: amountFlex,
                       child: Text(
                         row.amount,
                         textAlign: amountTextAlign,
-                        style: GoogleFonts.inter(
-                          fontSize: 15,
-                          fontWeight: row.isBold
-                              ? FontWeight.w800
-                              : FontWeight.w600,
-                          color: AppColors.textPrimary,
-                        ),
+                        style: AppTextStyles.bodyMediumBold,
                       ),
                     ),
                     if (showPercentage)
@@ -116,11 +106,7 @@ class FinancialStatementsTable extends StatelessWidget {
                         child: Text(
                           row.percentage,
                           textAlign: TextAlign.right,
-                          style: GoogleFonts.inter(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w600,
-                            color: AppColors.textPrimary,
-                          ),
+                          style: AppTextStyles.bodyMediumBold,
                         ),
                       ),
                     Expanded(
@@ -128,9 +114,7 @@ class FinancialStatementsTable extends StatelessWidget {
                       child: Text(
                         row.growth,
                         textAlign: TextAlign.right,
-                        style: GoogleFonts.inter(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w600,
+                        style: AppTextStyles.bodyMediumBold.copyWith(
                           color: row.growthColor,
                         ),
                       ),
@@ -155,10 +139,8 @@ class FinancialStatementsTable extends StatelessWidget {
                   padding: const EdgeInsets.only(left: 16.0),
                   child: Text(
                     'View All',
-                    style: AppTextStyles.smallLinkBold.copyWith(
-                      color: AppColors.primary,
-                      decoration: TextDecoration.none,
-                      fontSize: 14,
+                    style: AppTextStyles.bodyMediumBold.copyWith(
+                      color: theme.primaryColor,
                     ),
                   ),
                 ),
@@ -173,14 +155,7 @@ class FinancialStatementsTable extends StatelessWidget {
   Widget _buildHeaderCell(String text, AlignmentGeometry alignment) {
     return Align(
       alignment: alignment,
-      child: Text(
-        text,
-        style: GoogleFonts.inter(
-          fontSize: 13,
-          fontWeight: FontWeight.w600,
-          color: AppColors.slate500,
-        ),
-      ),
+      child: Text(text, style: AppTextStyles.bodyMediumBoldSecondary),
     );
   }
 }

@@ -38,7 +38,7 @@ class SecurityOverviewCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SecurityHeader(securityDetails: securityDetails),
-          const SizedBox(height: 16),
+          AppConstants.secondarySectionSpacing,
           PriceDisplay(
             price: priceState.currentPriceFormatted,
             change: priceState.changeFormatted,

@@ -2,7 +2,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 
 import 'package:injectable/injectable.dart';
+import 'package:bizzie/features/company_profile/domain/models/chart_data_point.dart';
+import 'package:bizzie/features/company_profile/domain/models/financial_data_point.dart';
 import 'package:bizzie/features/company_profile/domain/usecases/get_free_cash_flow_stats_usecase.dart';
+import 'package:bizzie/shared/utils/bizzie_date_formatter.dart';
 import 'company_free_cash_flow_event.dart';
 import 'company_free_cash_flow_state.dart';
 
@@ -43,6 +46,8 @@ class CompanyFreeCashFlowBloc
       (data) => emit(
         CompanyFreeCashFlowState.loaded(
           fcfStats: data,
+          annualChartData: _toChartData(data.annualFcf, isAnnual: true),
+          quarterlyChartData: _toChartData(data.quarterlyFcf, isAnnual: false),
           lastUpdated: DateTime.now(),
         ),
       ),
@@ -78,5 +83,18 @@ class CompanyFreeCashFlowBloc
         ),
       ),
     );
+  }
+
+  List<ChartDataPoint> _toChartData(
+    List<FinancialDataPoint> dataPoints, {
+    required bool isAnnual,
+  }) {
+    return dataPoints.reversed.map((p) {
+      final label = BizzieDateFormatter.formatChartLabel(
+        p.date,
+        isAnnual: isAnnual,
+      );
+      return ChartDataPoint(label: label, value: p.value);
+    }).toList();
   }
 }
