@@ -6,7 +6,7 @@ import 'package:bizzie/features/company_profile/presentation/widgets/financial_s
 import 'package:bizzie/features/company_profile/presentation/widgets/financial_statements/financial_statements_table.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:bizzie/shared/utils/currency_formatter.dart';
-import 'package:bizzie/shared/widgets/modals/app_bottom_modal.dart';
+import 'package:bizzie/shared/widgets/modals/app_history_modal.dart';
 import 'package:flutter/material.dart';
 
 class CashFlowStatementView extends StatefulWidget {
@@ -277,149 +277,141 @@ class _CashFlowStatementViewState extends State<CashFlowStatementView>
   }
 
   void _showFullHistory(BuildContext context, List<CashFlowStatement> dataset) {
-    showModalBottomSheet(
+    AppHistoryModalHelper.show<CashFlowStatement>(
       context: context,
-      isScrollControlled: true,
-      builder: (context) {
-        return AppBottomModal(
-          title: 'Full History',
-          builder: (context, scrollController) {
-            return Column(
-              children: [
-                // Header
-                Padding(
-                  padding: AppConstants.bottomModalPadding,
-                  child: Row(
-                    children: [
-                      Expanded(
-                        flex: 2,
-                        child: Text(
-                          'Year',
-                          textAlign: TextAlign.left,
-                          style: AppTextStyles.bodyMediumBoldSecondary,
-                        ),
-                      ),
-                      Expanded(
-                        flex: 3,
-                        child: Text(
-                          'O.C.F',
-                          textAlign: TextAlign.center,
-                          style: AppTextStyles.bodyMediumBoldSecondary,
-                        ),
-                      ),
-                      Expanded(
-                        flex: 3,
-                        child: Text(
-                          'CapEx',
-                          textAlign: TextAlign.center,
-                          style: AppTextStyles.bodyMediumBoldSecondary,
-                        ),
-                      ),
-                      Expanded(
-                        flex: 2,
-                        child: Text(
-                          'Free C.F',
-                          textAlign: TextAlign.right,
-                          style: AppTextStyles.bodyMediumBoldSecondary,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                AppConstants.subSectionSpacing,
-                Expanded(
-                  child: ListView.builder(
-                    controller: scrollController,
-                    padding: AppConstants.bottomModalPadding,
-                    itemCount: dataset.length,
-                    itemBuilder: (context, index) {
-                      final item = dataset[index];
-                      final date = DateTime.tryParse(item.date);
-                      String yearText = item.date;
-
-                      if (item.period.isNotEmpty) {
-                        if (date != null) {
-                          yearText = '${item.period} ${date.year}';
-                        } else {
-                          yearText = item.period;
-                        }
-                      } else if (date != null) {
-                        yearText = date.year.toString();
-                      }
-
-                      final ocf = CurrencyFormatter.formatCompact(
-                        item.operatingCashFlow,
-                        widget.currency,
-                        locale: Localizations.localeOf(context).toString(),
-                      );
-
-                      final capex = CurrencyFormatter.formatCompact(
-                        item.capitalExpenditure,
-                        widget.currency,
-                        locale: Localizations.localeOf(context).toString(),
-                      );
-
-                      final freeCf = CurrencyFormatter.formatCompact(
-                        item.freeCashFlow,
-                        widget.currency,
-                        locale: Localizations.localeOf(context).toString(),
-                      );
-
-                      final fcfColor = item.freeCashFlow >= 0
-                          ? AppColors.goodText
-                          : AppColors.criticalText;
-
-                      return Padding(
-                        padding: AppConstants.dataRowVerticalPadding,
-                        child: Row(
-                          children: [
-                            Expanded(
-                              flex: 2,
-                              child: Text(
-                                yearText,
-                                textAlign: TextAlign.left,
-                                style: AppTextStyles.bodyMedium,
-                              ),
-                            ),
-                            Expanded(
-                              flex: 3,
-                              child: Text(
-                                ocf,
-                                textAlign: TextAlign.center,
-                                style: AppTextStyles.bodyMediumBold,
-                              ),
-                            ),
-                            Expanded(
-                              flex: 3,
-                              child: Text(
-                                capex,
-                                textAlign: TextAlign.center,
-                                style: AppTextStyles.bodyMediumBold,
-                              ),
-                            ),
-                            Expanded(
-                              flex: 2,
-                              child: Text(
-                                freeCf,
-                                textAlign: TextAlign.right,
-                                style: AppTextStyles.bodyMediumBold.copyWith(
-                                  color: fcfColor,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                  ),
-                ),
-              ],
-            );
-          },
-        );
-      },
+      title: 'Cash Flow History',
+      header: const _CashFlowHistoryHeader(),
+      data: dataset,
+      itemBuilder: (context, item, index) =>
+          _CashFlowHistoryRow(item: item, currency: widget.currency),
     );
   }
 }
 
 enum _GrowthColorBehavior { standard, inverted, neutral }
+
+class _CashFlowHistoryHeader extends StatelessWidget {
+  const _CashFlowHistoryHeader();
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Expanded(
+          flex: 2,
+          child: Text(
+            'Year',
+            textAlign: TextAlign.left,
+            style: AppTextStyles.bodyMediumBoldSecondary,
+          ),
+        ),
+        Expanded(
+          flex: 3,
+          child: Text(
+            'O.C.F',
+            textAlign: TextAlign.center,
+            style: AppTextStyles.bodyMediumBoldSecondary,
+          ),
+        ),
+        Expanded(
+          flex: 3,
+          child: Text(
+            'CapEx',
+            textAlign: TextAlign.center,
+            style: AppTextStyles.bodyMediumBoldSecondary,
+          ),
+        ),
+        Expanded(
+          flex: 2,
+          child: Text(
+            'Free C.F',
+            textAlign: TextAlign.right,
+            style: AppTextStyles.bodyMediumBoldSecondary,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _CashFlowHistoryRow extends StatelessWidget {
+  final CashFlowStatement item;
+  final String currency;
+
+  const _CashFlowHistoryRow({required this.item, required this.currency});
+
+  @override
+  Widget build(BuildContext context) {
+    final date = DateTime.tryParse(item.date);
+    String yearText = item.date;
+
+    if (item.period.isNotEmpty) {
+      if (date != null) {
+        yearText = '${item.period} | ${date.year}';
+      } else {
+        yearText = item.period;
+      }
+    } else if (date != null) {
+      yearText = date.year.toString();
+    }
+
+    final ocf = CurrencyFormatter.formatCompact(
+      item.operatingCashFlow,
+      currency,
+      locale: Localizations.localeOf(context).toString(),
+    );
+
+    final capex = CurrencyFormatter.formatCompact(
+      item.capitalExpenditure,
+      currency,
+      locale: Localizations.localeOf(context).toString(),
+    );
+
+    final freeCf = CurrencyFormatter.formatCompact(
+      item.freeCashFlow,
+      currency,
+      locale: Localizations.localeOf(context).toString(),
+    );
+
+    final fcfColor = item.freeCashFlow >= 0
+        ? AppColors.goodText
+        : AppColors.criticalText;
+
+    return Row(
+      children: [
+        Expanded(
+          flex: 2,
+          child: Text(
+            yearText,
+            textAlign: TextAlign.left,
+            style: AppTextStyles.bodyMedium,
+          ),
+        ),
+        Expanded(
+          flex: 3,
+          child: Text(
+            ocf,
+            textAlign: TextAlign.center,
+            style: AppTextStyles.bodyMediumBold,
+          ),
+        ),
+        Expanded(
+          flex: 3,
+          child: Text(
+            capex,
+            textAlign: TextAlign.center,
+            style: AppTextStyles.bodyMediumBold,
+          ),
+        ),
+        Expanded(
+          flex: 2,
+          child: Text(
+            freeCf,
+            textAlign: TextAlign.right,
+            style: AppTextStyles.bodyMediumBold.copyWith(color: fcfColor),
+          ),
+        ),
+      ],
+    );
+  }
+}

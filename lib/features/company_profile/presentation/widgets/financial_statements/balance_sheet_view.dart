@@ -7,7 +7,7 @@ import 'package:bizzie/features/company_profile/presentation/widgets/financial_s
 import 'package:bizzie/features/company_profile/presentation/widgets/financial_statements/financial_statements_table.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:bizzie/shared/utils/currency_formatter.dart';
-import 'package:bizzie/shared/widgets/modals/app_bottom_modal.dart';
+import 'package:bizzie/shared/widgets/modals/app_history_modal.dart';
 import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
@@ -30,8 +30,6 @@ class BalanceSheetView extends StatefulWidget {
 }
 
 class _BalanceSheetViewState extends State<BalanceSheetView> {
-  // We prioritize Quarterly data as per user request ("simply use quarterly")
-  // We prioritize Quarterly data as per user request ("simply use quarterly")
   BalanceSheet? _selectedStatement;
   final PageController _pageController = PageController();
   late List<BalanceSheet> _activeData;
@@ -55,8 +53,6 @@ class _BalanceSheetViewState extends State<BalanceSheetView> {
   }
 
   void _initSelectedStatements() {
-    // User requested "simply use quarterly balance sheet".
-    // Fallback to annual only if quarterly is empty for robustness,
     if (widget.quarterlyData.isNotEmpty) {
       _activeData = widget.quarterlyData;
       _activeIncomeData = widget.quarterlyIncome;
@@ -66,7 +62,6 @@ class _BalanceSheetViewState extends State<BalanceSheetView> {
     }
 
     if (_activeData.isNotEmpty) {
-      // Preserve selection if possible
       if (_selectedStatement != null &&
           mounted &&
           _activeData.any((e) => e.date == _selectedStatement!.date)) {
@@ -164,8 +159,8 @@ class _BalanceSheetViewState extends State<BalanceSheetView> {
           effect: const ExpandingDotsEffect(
             dotHeight: 6,
             dotWidth: 6,
-            activeDotColor: Color(0xFF2563EB), // Royal Blue (matches News Tab)
-            dotColor: Color(0xFFE2E8F0), // Slate 200
+            activeDotColor: Color(0xFF2563EB),
+            dotColor: Color(0xFFE2E8F0),
           ),
         ),
       ],
@@ -173,16 +168,6 @@ class _BalanceSheetViewState extends State<BalanceSheetView> {
   }
 
   Widget _buildTableFor(BalanceSheet currentItem, List<BalanceSheet> dataset) {
-    // 1) totalNonCurrentAssets
-    // 2) totalCurrentAssets
-    // 3) Total Assets
-    // 4) totalCurrentLiabilities
-    // 5) totalNonCurrentLiabilities
-    // 6) Total Liabilities
-    // 7) roe (return on equity)
-
-    // Find previous statement first (needed for Growth calcs)
-    // Find previous statement first (needed for Growth calcs)
     BalanceSheet? prevStatement;
     if (dataset.isNotEmpty) {
       final index = dataset.indexOf(currentItem);
@@ -191,21 +176,16 @@ class _BalanceSheetViewState extends State<BalanceSheetView> {
       }
     }
 
-    // Calculate ROE
-    // We need netIncome from the matching period in IncomeStatement
     double? netIncome;
     String roeStr = '-';
 
     if (_activeIncomeData != null) {
       try {
-        // Match by date
         final incomeStatement = _activeIncomeData!.firstWhere(
           (e) => e.date == currentItem.date,
         );
         netIncome = incomeStatement.netIncome;
-      } catch (e) {
-        // No matching income statement found
-      }
+      } catch (e) {}
     }
 
     if (netIncome != null && currentItem.totalEquity != 0) {
@@ -213,7 +193,6 @@ class _BalanceSheetViewState extends State<BalanceSheetView> {
       roeStr = '${roe.toStringAsFixed(1)}%';
     }
 
-    // Calculate ROE Growth
     String roeGrowthStr = '-';
     Color roeGrowthColor = AppColors.textPrimary;
 
@@ -227,7 +206,7 @@ class _BalanceSheetViewState extends State<BalanceSheetView> {
 
         if (prevEquity != 0) {
           final prevRoe = (prevNetIncome / prevEquity) * 100;
-          // Current ROE
+
           double? currentRoe;
           if (netIncome != null && currentItem.totalEquity != 0) {
             currentRoe = (netIncome / currentItem.totalEquity) * 100;
@@ -246,9 +225,7 @@ class _BalanceSheetViewState extends State<BalanceSheetView> {
             }
           }
         }
-      } catch (e) {
-        // Missing previous income data
-      }
+      } catch (e) {}
     }
 
     final rows = [
@@ -297,11 +274,10 @@ class _BalanceSheetViewState extends State<BalanceSheetView> {
         prevStatement?.totalEquity,
         currentItem.totalAssets,
       ),
-      // ROE Row
       FinancialStatementTableRow(
         metric: 'ROE',
         amount: roeStr,
-        percentage: '', // N/A for ROE
+        percentage: '',
         growth: roeGrowthStr,
         growthColor: roeGrowthColor,
       ),
@@ -320,148 +296,12 @@ class _BalanceSheetViewState extends State<BalanceSheetView> {
     BuildContext context,
     List<BalanceSheet> dataset,
   ) {
-    showModalBottomSheet(
+    AppHistoryModalHelper.show<BalanceSheet>(
       context: context,
-      isScrollControlled: true,
-      builder: (context) {
-        return AppBottomModal(
-          title: 'Full History',
-          builder: (context, scrollController) {
-            return Column(
-              children: [
-                Padding(
-                  padding: AppConstants.bottomModalPadding,
-                  child: Row(
-                    children: [
-                      Expanded(
-                        flex: 2,
-                        child: Text(
-                          'Year',
-                          textAlign: TextAlign.left,
-                          style: AppTextStyles.bodyMediumBoldSecondary,
-                        ),
-                      ),
-                      Expanded(
-                        flex: 3,
-                        child: Text(
-                          'Assets',
-                          textAlign: TextAlign.center,
-                          style: AppTextStyles.bodyMediumBoldSecondary,
-                        ),
-                      ),
-                      Expanded(
-                        flex: 3,
-                        child: Text(
-                          'Liabilities',
-                          textAlign: TextAlign.center,
-                          style: AppTextStyles.bodyMediumBoldSecondary,
-                        ),
-                      ),
-                      Expanded(
-                        flex: 2,
-                        child: Text(
-                          'Equity',
-                          textAlign: TextAlign.right,
-                          style: AppTextStyles.bodyMediumBoldSecondary,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                AppConstants.subSectionSpacing,
-                Expanded(
-                  child: ListView.builder(
-                    controller: scrollController,
-                    padding: AppConstants.bottomModalPadding,
-                    itemCount: dataset.length,
-                    itemBuilder: (context, index) {
-                      final item = dataset[index];
-                      // Date processing
-                      final date = DateTime.tryParse(item.date);
-                      String year = item.date;
-                      if (date != null) {
-                        if (item.period.isNotEmpty) {
-                          // e.g. Q4 2024
-                          year = '${item.period} | ${date.year}';
-                        } else {
-                          year = date.year.toString();
-                        }
-                      }
-
-                      final currency = item.reportedCurrency;
-                      final locale = Localizations.localeOf(context).toString();
-
-                      final assets = CurrencyFormatter.formatCompact(
-                        item.totalAssets,
-                        currency,
-                        locale: locale,
-                      );
-
-                      final liabilities = CurrencyFormatter.formatCompact(
-                        item.totalLiabilities,
-                        currency,
-                        locale: locale,
-                      );
-
-                      final equityVal = item.totalEquity;
-                      final equity = CurrencyFormatter.formatCompact(
-                        equityVal,
-                        currency,
-                        locale: locale,
-                      );
-                      final equityColor = equityVal >= 0
-                          ? AppColors.goodText
-                          : AppColors.criticalText;
-
-                      return Padding(
-                        padding: AppConstants.dataRowVerticalPadding,
-                        child: Row(
-                          children: [
-                            Expanded(
-                              flex: 2,
-                              child: Text(
-                                year,
-                                textAlign: TextAlign.left,
-                                style: AppTextStyles.bodyMedium,
-                              ),
-                            ),
-                            Expanded(
-                              flex: 3,
-                              child: Text(
-                                assets,
-                                textAlign: TextAlign.center,
-                                style: AppTextStyles.bodyMediumBold,
-                              ),
-                            ),
-                            Expanded(
-                              flex: 3,
-                              child: Text(
-                                liabilities,
-                                textAlign: TextAlign.center,
-                                style: AppTextStyles.bodyMediumBold,
-                              ),
-                            ),
-                            Expanded(
-                              flex: 2,
-                              child: Text(
-                                equity,
-                                textAlign: TextAlign.right,
-                                style: AppTextStyles.bodyMediumBold.copyWith(
-                                  color: equityColor,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                  ),
-                ),
-              ],
-            );
-          },
-        );
-      },
+      title: 'Net Worth History',
+      header: const _NetWorthHistoryHeader(),
+      data: dataset,
+      itemBuilder: (context, item, index) => _NetWorthHistoryRow(item: item),
     );
   }
 
@@ -473,21 +313,18 @@ class _BalanceSheetViewState extends State<BalanceSheetView> {
     bool isBold = false,
     bool isLiability = false,
   }) {
-    // Amount Formatting
     final amountStr = CurrencyFormatter.formatCompact(
       amount,
-      'USD', // Assuming USD or get from data if available. DTO has reportedCurrency.
+      'USD',
       locale: Localizations.localeOf(context).toString(),
     );
 
-    // % of Total Assets
     String percentStr = '-';
     if (totalAssets != null && totalAssets != 0) {
       final percent = (amount / totalAssets) * 100;
       percentStr = '${percent.toStringAsFixed(1)}%';
     }
 
-    // QoQ Growth
     String growthStr = '-';
     Color growthColor = AppColors.textPrimary;
 
@@ -495,11 +332,9 @@ class _BalanceSheetViewState extends State<BalanceSheetView> {
       final growth = (amount - previous) / previous.abs() * 100;
       if (growth > 0) {
         growthStr = '+${growth.toStringAsFixed(1)}%';
-        // For Liabilities, positive growth is Bad (Red)
         growthColor = isLiability ? AppColors.red800 : AppColors.successText;
       } else if (growth < 0) {
         growthStr = '${growth.toStringAsFixed(1)}%';
-        // For Liabilities, negative growth is Good (Green)
         growthColor = isLiability ? AppColors.successText : AppColors.red800;
       } else {
         growthStr = '0.0%';
@@ -537,6 +372,131 @@ class _BalanceSheetViewState extends State<BalanceSheetView> {
         _buildChartsCarousel(_selectedStatement!, _pageController),
         AppConstants.mainSectionSpacing,
         _buildTableFor(_selectedStatement!, _activeData),
+      ],
+    );
+  }
+}
+
+class _NetWorthHistoryHeader extends StatelessWidget {
+  const _NetWorthHistoryHeader();
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Expanded(
+          flex: 2,
+          child: Text(
+            'Year',
+            textAlign: TextAlign.left,
+            style: AppTextStyles.bodyMediumBoldSecondary,
+          ),
+        ),
+        Expanded(
+          flex: 3,
+          child: Text(
+            'Assets',
+            textAlign: TextAlign.center,
+            style: AppTextStyles.bodyMediumBoldSecondary,
+          ),
+        ),
+        Expanded(
+          flex: 3,
+          child: Text(
+            'Liabilities',
+            textAlign: TextAlign.center,
+            style: AppTextStyles.bodyMediumBoldSecondary,
+          ),
+        ),
+        Expanded(
+          flex: 2,
+          child: Text(
+            'Equity',
+            textAlign: TextAlign.right,
+            style: AppTextStyles.bodyMediumBoldSecondary,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _NetWorthHistoryRow extends StatelessWidget {
+  final BalanceSheet item;
+
+  const _NetWorthHistoryRow({required this.item});
+
+  @override
+  Widget build(BuildContext context) {
+    final date = DateTime.tryParse(item.date);
+    String year = item.date;
+    if (date != null) {
+      if (item.period.isNotEmpty) {
+        year = '${item.period} | ${date.year}';
+      } else {
+        year = date.year.toString();
+      }
+    }
+
+    final currency = item.reportedCurrency;
+    final locale = Localizations.localeOf(context).toString();
+
+    final assets = CurrencyFormatter.formatCompact(
+      item.totalAssets,
+      currency,
+      locale: locale,
+    );
+
+    final liabilities = CurrencyFormatter.formatCompact(
+      item.totalLiabilities,
+      currency,
+      locale: locale,
+    );
+
+    final equityVal = item.totalEquity;
+    final equity = CurrencyFormatter.formatCompact(
+      equityVal,
+      currency,
+      locale: locale,
+    );
+    final equityColor = equityVal >= 0
+        ? AppColors.goodText
+        : AppColors.criticalText;
+
+    return Row(
+      children: [
+        Expanded(
+          flex: 2,
+          child: Text(
+            year,
+            textAlign: TextAlign.left,
+            style: AppTextStyles.bodyMedium,
+          ),
+        ),
+        Expanded(
+          flex: 3,
+          child: Text(
+            assets,
+            textAlign: TextAlign.center,
+            style: AppTextStyles.bodyMediumBold,
+          ),
+        ),
+        Expanded(
+          flex: 3,
+          child: Text(
+            liabilities,
+            textAlign: TextAlign.center,
+            style: AppTextStyles.bodyMediumBold,
+          ),
+        ),
+        Expanded(
+          flex: 2,
+          child: Text(
+            equity,
+            textAlign: TextAlign.right,
+            style: AppTextStyles.bodyMediumBold.copyWith(color: equityColor),
+          ),
+        ),
       ],
     );
   }

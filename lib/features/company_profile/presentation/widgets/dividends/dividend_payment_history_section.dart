@@ -3,7 +3,7 @@ import 'package:bizzie/features/company_profile/domain/extensions/dividend_event
 import 'package:bizzie/features/company_profile/domain/models/dividend_event.dart';
 import 'package:bizzie/features/company_profile/presentation/utils/dividend_payment_history_utils.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
-import 'package:bizzie/shared/widgets/modals/app_bottom_modal.dart';
+import 'package:bizzie/shared/widgets/modals/app_history_modal.dart';
 import 'package:bizzie/shared/widgets/tables/bizzie_data_table.dart';
 import 'package:flutter/material.dart';
 
@@ -46,44 +46,16 @@ class DividendPaymentHistorySection extends StatelessWidget {
     BuildContext context,
     List<DividendEvent> history,
   ) {
-    showModalBottomSheet(
+    AppHistoryModalHelper.show<DividendEvent>(
       context: context,
-      isScrollControlled: true,
-      builder: (context) {
-        return AppBottomModal(
-          title: 'All Dividend Payments',
-          builder: (context, scrollController) {
-            return Column(
-              children: [
-                Padding(
-                  padding: AppConstants.bottomModalPadding,
-                  child: _TableHeaderRow(),
-                ),
-                AppConstants.subSectionSpacing,
-                Expanded(
-                  child: ListView.builder(
-                    controller: scrollController,
-                    padding: AppConstants.bottomModalPadding,
-                    itemCount: history.length,
-                    itemBuilder: (context, index) {
-                      final event = history[index];
-                      final previousEvent = index + 1 < history.length
-                          ? history[index + 1]
-                          : null;
-                      return Container(
-                        padding: AppConstants.dataRowVerticalPadding,
-                        child: _DividendTableRow(
-                          event: event,
-                          previousEvent: previousEvent,
-                        ),
-                      );
-                    },
-                  ),
-                ),
-              ],
-            );
-          },
-        );
+      title: 'All Dividend Payments',
+      header: const _TableHeaderRow(),
+      data: history,
+      itemBuilder: (context, event, index) {
+        final previousEvent = index + 1 < history.length
+            ? history[index + 1]
+            : null;
+        return _DividendTableRow(event: event, previousEvent: previousEvent);
       },
     );
   }

@@ -12,7 +12,7 @@ class MoreFeature {
 
 final List<MoreFeature> defaultMoreFeatures = [
   MoreFeature(
-    label: 'Return on Equity (ROE)',
+    label: 'ROE',
     builder: (ticker) => RoeTab(ticker: ticker),
   ),
   MoreFeature(

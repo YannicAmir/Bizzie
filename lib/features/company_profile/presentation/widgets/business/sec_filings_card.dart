@@ -1,7 +1,7 @@
 import 'package:bizzie/app/themes/app_colors.dart';
 import 'package:bizzie/app/themes/app_text_styles.dart';
 import 'package:bizzie/features/company_profile/domain/models/sec_filing.dart';
-import 'package:bizzie/shared/widgets/modals/app_bottom_modal.dart';
+import 'package:bizzie/shared/widgets/modals/app_history_modal.dart';
 import 'package:bizzie/shared/utils/url_launcher_utils.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:flutter/material.dart';
@@ -60,25 +60,13 @@ class _SecFilingsCardState extends State<SecFilingsCard> {
   }
 
   void _showAllFilings(BuildContext context, List<SecFiling> filings) {
-    showModalBottomSheet(
+    AppHistoryModalHelper.show<SecFiling>(
       context: context,
-      isScrollControlled: true,
-      builder: (context) {
-        return AppBottomModal(
-          title: _isAnnual ? 'All 10-K Filings' : 'All 10-Q Filings',
-          builder: (context, scrollController) {
-            return ListView.separated(
-              controller: scrollController,
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              itemCount: filings.length,
-              separatorBuilder: (context, index) => const SizedBox(height: 16),
-              itemBuilder: (context, index) {
-                return _FilingItem(filing: filings[index], isAnnual: _isAnnual);
-              },
-            );
-          },
-        );
-      },
+      title: _isAnnual ? 'All 10-K Filings' : 'All 10-Q Filings',
+      header: const SizedBox.shrink(),
+      data: filings,
+      itemBuilder: (context, filing, index) =>
+          _FilingItem(filing: filing, isAnnual: _isAnnual),
     );
   }
 }

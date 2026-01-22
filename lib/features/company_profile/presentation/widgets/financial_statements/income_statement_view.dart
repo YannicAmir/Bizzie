@@ -6,7 +6,7 @@ import 'package:bizzie/features/company_profile/presentation/widgets/financial_s
 import 'package:bizzie/features/company_profile/presentation/widgets/financial_statements/financial_statements_table.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:bizzie/shared/utils/currency_formatter.dart';
-import 'package:bizzie/shared/widgets/modals/app_bottom_modal.dart';
+import 'package:bizzie/shared/widgets/modals/app_history_modal.dart';
 import 'package:flutter/material.dart';
 
 class IncomeStatementView extends StatefulWidget {
@@ -191,140 +191,13 @@ class _IncomeStatementViewState extends State<IncomeStatementView> {
   }
 
   void _showFullHistory(BuildContext context, List<IncomeStatement> dataset) {
-    showModalBottomSheet(
+    AppHistoryModalHelper.show<IncomeStatement>(
       context: context,
-      isScrollControlled: true,
-      builder: (context) {
-        return AppBottomModal(
-          title: 'Full History',
-          builder: (context, scrollController) {
-            return Column(
-              children: [
-                Padding(
-                  padding: AppConstants.bottomModalPadding,
-                  child: Row(
-                    children: [
-                      Expanded(
-                        flex: 2,
-                        child: Text(
-                          'Year',
-                          textAlign: TextAlign.left,
-                          style: AppTextStyles.bodyMediumBoldSecondary,
-                        ),
-                      ),
-                      Expanded(
-                        flex: 3,
-                        child: Text(
-                          'Revenue',
-                          textAlign: TextAlign.center,
-                          style: AppTextStyles.bodyMediumBoldSecondary,
-                        ),
-                      ),
-                      Expanded(
-                        flex: 3,
-                        child: Text(
-                          'Net Income',
-                          textAlign: TextAlign.center,
-                          style: AppTextStyles.bodyMediumBoldSecondary,
-                        ),
-                      ),
-                      Expanded(
-                        flex: 2,
-                        child: Text(
-                          'Margin %',
-                          textAlign: TextAlign.right,
-                          style: AppTextStyles.bodyMediumBoldSecondary,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                AppConstants.subSectionSpacing,
-                Expanded(
-                  child: ListView.builder(
-                    controller: scrollController,
-                    padding: AppConstants.bottomModalPadding,
-                    itemCount: dataset.length,
-                    itemBuilder: (context, index) {
-                      final item = dataset[index];
-                      final date = DateTime.tryParse(item.date);
-                      final year = date != null
-                          ? date.year.toString()
-                          : item.date;
-
-                      final revenue = CurrencyFormatter.formatCompact(
-                        item.revenue,
-                        widget.currency,
-                        locale: Localizations.localeOf(context).toString(),
-                      );
-
-                      final netIncome = CurrencyFormatter.formatCompact(
-                        item.netIncome,
-                        widget.currency,
-                        locale: Localizations.localeOf(context).toString(),
-                      );
-
-                      String marginStr = '-';
-                      Color marginColor = AppColors.textPrimary;
-                      if (item.revenue != 0) {
-                        final margin = (item.netIncome / item.revenue) * 100;
-                        marginStr = '${margin.toStringAsFixed(1)}%';
-                        if (margin > 0) {
-                          marginColor = AppColors.successText;
-                        } else if (margin < 0) {
-                          marginColor = AppColors.red800;
-                        }
-                      }
-
-                      return Padding(
-                        padding: AppConstants.dataRowVerticalPadding,
-                        child: Row(
-                          children: [
-                            Expanded(
-                              flex: 2,
-                              child: Text(
-                                year,
-                                textAlign: TextAlign.left,
-                                style: AppTextStyles.bodyMedium,
-                              ),
-                            ),
-                            Expanded(
-                              flex: 3,
-                              child: Text(
-                                revenue,
-                                textAlign: TextAlign.center,
-                                style: AppTextStyles.bodyMediumBold,
-                              ),
-                            ),
-                            Expanded(
-                              flex: 3,
-                              child: Text(
-                                netIncome,
-                                textAlign: TextAlign.center,
-                                style: AppTextStyles.bodyMediumBold,
-                              ),
-                            ),
-                            Expanded(
-                              flex: 2,
-                              child: Text(
-                                marginStr,
-                                textAlign: TextAlign.right,
-                                style: AppTextStyles.bodyMediumBold.copyWith(
-                                  color: marginColor,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                  ),
-                ),
-              ],
-            );
-          },
-        );
-      },
+      title: 'Earnings History',
+      header: const _EarningsHistoryHeader(),
+      data: dataset,
+      itemBuilder: (context, item, index) =>
+          _EarningsHistoryRow(item: item, currency: widget.currency),
     );
   }
 
@@ -380,6 +253,134 @@ class _IncomeStatementViewState extends State<IncomeStatementView> {
       percentage: percentStr,
       growth: growthStr,
       growthColor: growthColor,
+    );
+  }
+}
+
+class _EarningsHistoryHeader extends StatelessWidget {
+  const _EarningsHistoryHeader();
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Expanded(
+          flex: 2,
+          child: Text(
+            'Year',
+            textAlign: TextAlign.left,
+            style: AppTextStyles.bodyMediumBoldSecondary,
+          ),
+        ),
+        Expanded(
+          flex: 3,
+          child: Text(
+            'Revenue',
+            textAlign: TextAlign.center,
+            style: AppTextStyles.bodyMediumBoldSecondary,
+          ),
+        ),
+        Expanded(
+          flex: 3,
+          child: Text(
+            'Net Income',
+            textAlign: TextAlign.center,
+            style: AppTextStyles.bodyMediumBoldSecondary,
+          ),
+        ),
+        Expanded(
+          flex: 2,
+          child: Text(
+            'Margin %',
+            textAlign: TextAlign.right,
+            style: AppTextStyles.bodyMediumBoldSecondary,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _EarningsHistoryRow extends StatelessWidget {
+  final IncomeStatement item;
+  final String currency;
+
+  const _EarningsHistoryRow({required this.item, required this.currency});
+
+  @override
+  Widget build(BuildContext context) {
+    final date = DateTime.tryParse(item.date);
+    String year = item.date;
+
+    if (item.period.isNotEmpty) {
+      if (date != null) {
+        year = '${item.period} | ${date.year}';
+      } else {
+        year = item.period;
+      }
+    } else if (date != null) {
+      year = date.year.toString();
+    }
+
+    final revenue = CurrencyFormatter.formatCompact(
+      item.revenue,
+      currency,
+      locale: Localizations.localeOf(context).toString(),
+    );
+
+    final netIncome = CurrencyFormatter.formatCompact(
+      item.netIncome,
+      currency,
+      locale: Localizations.localeOf(context).toString(),
+    );
+
+    String marginStr = '-';
+    Color marginColor = AppColors.textPrimary;
+    if (item.revenue != 0) {
+      final margin = (item.netIncome / item.revenue) * 100;
+      marginStr = '${margin.toStringAsFixed(1)}%';
+      if (margin > 0) {
+        marginColor = AppColors.successText;
+      } else if (margin < 0) {
+        marginColor = AppColors.red800;
+      }
+    }
+
+    return Row(
+      children: [
+        Expanded(
+          flex: 2,
+          child: Text(
+            year,
+            textAlign: TextAlign.left,
+            style: AppTextStyles.bodyMedium,
+          ),
+        ),
+        Expanded(
+          flex: 3,
+          child: Text(
+            revenue,
+            textAlign: TextAlign.center,
+            style: AppTextStyles.bodyMediumBold,
+          ),
+        ),
+        Expanded(
+          flex: 3,
+          child: Text(
+            netIncome,
+            textAlign: TextAlign.center,
+            style: AppTextStyles.bodyMediumBold,
+          ),
+        ),
+        Expanded(
+          flex: 2,
+          child: Text(
+            marginStr,
+            textAlign: TextAlign.right,
+            style: AppTextStyles.bodyMediumBold.copyWith(color: marginColor),
+          ),
+        ),
+      ],
     );
   }
 }

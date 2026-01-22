@@ -1,8 +1,13 @@
+import 'package:bizzie/app/themes/app_assets.dart';
 import 'package:bizzie/features/company_profile/presentation/models/more_feature.dart';
+import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
+import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:bizzie/shared/widgets/buttons/app_dropdown_button.dart';
 import 'package:bizzie/shared/widgets/modals/app_bottom_modal.dart';
 import 'package:bizzie/shared/widgets/modals/app_modal_list_item.dart';
+import 'package:bizzie/shared/widgets/states/bizzie_empty_state.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class MoreTab extends StatefulWidget {
   final String ticker;
@@ -28,13 +33,13 @@ class _MoreTabState extends State<MoreTab> with AutomaticKeepAliveClientMixin {
     super.build(context);
 
     if (_features.isEmpty) {
-      return const Center(child: Text('No features available'));
+      return _MoreTabEmptyState(ticker: widget.ticker);
     }
 
     return Column(
       children: [
         Padding(
-          padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+          padding: AppConstants.moreTabDropdownButtonPadding,
           child: AppDropdownButton(
             label: _features[_selectedIndex].label,
             onTap: () => _showSelectorModal(context),
@@ -73,6 +78,38 @@ class _MoreTabState extends State<MoreTab> with AutomaticKeepAliveClientMixin {
               },
             );
           },
+        );
+      },
+    );
+  }
+}
+
+class _MoreTabEmptyState extends StatelessWidget {
+  final String ticker;
+
+  const _MoreTabEmptyState({required this.ticker});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocSelector<UserBloc, UserState, String>(
+      selector: (state) => state.maybeMap(
+        loaded: (u) => AppAssets.getMascotForSector(u.user.favoriteSector),
+        orElse: () => AppAssets.defaultMascot,
+      ),
+      builder: (context, mascot) {
+        return LayoutBuilder(
+          builder: (context, constraints) => SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            child: SizedBox(
+              height: constraints.maxHeight,
+              child: BizzieEmptyState(
+                mascotAsset: mascot,
+                title: 'No more features',
+                message: 'Select more features to show here',
+                isFullPage: true,
+              ),
+            ),
+          ),
         );
       },
     );

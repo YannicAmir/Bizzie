@@ -12,7 +12,7 @@ import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:bizzie/shared/widgets/app_badge.dart';
 import 'package:bizzie/shared/widgets/charts/bizzie_bar_chart.dart';
 import 'package:bizzie/shared/widgets/charts/bizzie_expandable_chart.dart';
-import 'package:bizzie/shared/widgets/modals/app_bottom_modal.dart';
+import 'package:bizzie/shared/widgets/modals/app_history_modal.dart';
 import 'package:bizzie/shared/widgets/states/bizzie_empty_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -143,49 +143,23 @@ class _PfcfRatioLoadedContent extends StatelessWidget {
     final sortedData = List<FinancialDataPoint>.from(data)
       ..sort((a, b) => b.date.compareTo(a.date));
 
-    showModalBottomSheet(
+    AppHistoryModalHelper.show<FinancialDataPoint>(
       context: context,
-      isScrollControlled: true,
-      builder: (context) {
-        return AppBottomModal(
-          title: 'P/FCF Ratio History',
-          builder: (context, scrollController) {
-            return Column(
-              children: [
-                Padding(
-                  padding: AppConstants.bottomModalPadding,
-                  child: FinancialTableHeader(
-                    metricLabel: 'P/FCF',
-                    dateFormat: FinancialDateFormat.fullDate,
-                  ),
-                ),
-                AppConstants.subSectionSpacing,
-                Expanded(
-                  child: ListView.builder(
-                    controller: scrollController,
-                    padding: AppConstants.bottomModalPadding,
-                    itemCount: sortedData.length,
-                    itemBuilder: (context, index) {
-                      return Padding(
-                        padding: AppConstants.dataRowVerticalPadding,
-                        child: FinancialTableRow(
-                          item: sortedData[index],
-                          index: index,
-                          allData: sortedData,
-                          currency: '',
-                          isInverseGrowth: false,
-                          isNeutralColor: true,
-                          dateFormat: FinancialDateFormat.fullDate,
-                        ),
-                      );
-                    },
-                  ),
-                ),
-              ],
-            );
-          },
-        );
-      },
+      title: 'P/FCF Ratio History',
+      header: const FinancialTableHeader(
+        metricLabel: 'P/FCF',
+        dateFormat: FinancialDateFormat.fullDate,
+      ),
+      data: sortedData,
+      itemBuilder: (context, item, index) => FinancialTableRow(
+        item: item,
+        index: index,
+        allData: sortedData,
+        currency: '',
+        isInverseGrowth: false,
+        isNeutralColor: true,
+        dateFormat: FinancialDateFormat.fullDate,
+      ),
     );
   }
 }

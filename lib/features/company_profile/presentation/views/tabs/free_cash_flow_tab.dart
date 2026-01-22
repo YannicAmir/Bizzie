@@ -11,7 +11,7 @@ import 'package:bizzie/shared/widgets/charts/bizzie_bar_chart.dart';
 import 'package:bizzie/shared/widgets/charts/bizzie_expandable_chart.dart';
 import 'package:bizzie/shared/widgets/states/bizzie_empty_state.dart';
 import 'package:bizzie/shared/widgets/inputs/bizzie_switch.dart';
-import 'package:bizzie/shared/widgets/modals/app_bottom_modal.dart';
+import 'package:bizzie/shared/widgets/modals/app_history_modal.dart';
 import 'package:bizzie/features/company_profile/domain/models/financial_data_point.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -133,8 +133,8 @@ class _FreeCashFlowTabState extends State<FreeCashFlowTab>
                       context,
                       isAnnual ? stats.annualFcf : stats.quarterlyFcf,
                       isAnnual
-                          ? 'Yearly Free Cash Flow Data'
-                          : 'Quarterly Free Cash Flow Data',
+                          ? 'Yearly Free Cash Flow'
+                          : 'Quarterly Free Cash Flow',
                       stats.reportedCurrency,
                       isAnnual,
                     ),
@@ -158,55 +158,26 @@ class _FreeCashFlowTabState extends State<FreeCashFlowTab>
     final sortedData = List<FinancialDataPoint>.from(data)
       ..sort((a, b) => b.date.compareTo(a.date));
 
-    showModalBottomSheet(
+    AppHistoryModalHelper.show<FinancialDataPoint>(
       context: context,
-      isScrollControlled: true,
-      builder: (context) {
-        return AppBottomModal(
-          title: title,
-          builder: (context, scrollController) {
-            return Column(
-              children: [
-                Padding(
-                  padding: AppConstants.bottomModalPadding,
-                  child: FinancialTableHeader(
-                    metricLabel: 'FCF',
-                    dateFormat: isAnnual
-                        ? FinancialDateFormat.monthYear
-                        : FinancialDateFormat.quarterShort,
-                    periodHeaderLabel: isAnnual
-                        ? 'Year Ended'
-                        : 'Quarter Ended',
-                  ),
-                ),
-                AppConstants.subSectionSpacing,
-                Expanded(
-                  child: ListView.builder(
-                    controller: scrollController,
-                    padding: AppConstants.bottomModalPadding,
-                    itemCount: sortedData.length,
-                    itemBuilder: (context, index) {
-                      final item = sortedData[index];
-                      return Container(
-                        padding: AppConstants.dataRowVerticalPadding,
-                        child: FinancialTableRow(
-                          item: item,
-                          index: index,
-                          allData: sortedData,
-                          currency: currency,
-                          dateFormat: isAnnual
-                              ? FinancialDateFormat.monthYear
-                              : FinancialDateFormat.quarterShort,
-                        ),
-                      );
-                    },
-                  ),
-                ),
-              ],
-            );
-          },
-        );
-      },
+      title: title,
+      header: FinancialTableHeader(
+        metricLabel: 'FCF',
+        dateFormat: isAnnual
+            ? FinancialDateFormat.monthYear
+            : FinancialDateFormat.quarterShort,
+        periodHeaderLabel: isAnnual ? 'Year Ended' : 'Quarter Ended',
+      ),
+      data: sortedData,
+      itemBuilder: (context, item, index) => FinancialTableRow(
+        item: item,
+        index: index,
+        allData: sortedData,
+        currency: currency,
+        dateFormat: isAnnual
+            ? FinancialDateFormat.monthYear
+            : FinancialDateFormat.quarterShort,
+      ),
     );
   }
 }

@@ -10,6 +10,12 @@ class AppConstants {
     horizontal: 16,
     vertical: 4,
   );
+  static const EdgeInsets moreTabDropdownButtonPadding = EdgeInsets.fromLTRB(
+    16,
+    16,
+    16,
+    0,
+  );
 
   static const EdgeInsets dropdownButtonPadding = EdgeInsets.symmetric(
     vertical: 16,
