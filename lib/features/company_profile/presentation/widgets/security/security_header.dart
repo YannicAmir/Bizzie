@@ -54,15 +54,13 @@ class _CompanyLogo extends StatelessWidget {
       ),
       alignment: Alignment.center,
       child: imageUrl != null && imageUrl!.isNotEmpty
-          ? ClipRRect(
-              borderRadius: BorderRadius.circular(
-                AppConstants.mainSectionBorderRadius,
-              ),
+          ? Padding(
+              padding: const EdgeInsets.all(8.0),
               child: CachedNetworkImage(
                 imageUrl: imageUrl!,
                 width: double.infinity,
                 height: double.infinity,
-                fit: BoxFit.cover,
+                fit: BoxFit.contain,
                 errorWidget: (context, url, error) => const _PlaceholderLogo(),
               ),
             )

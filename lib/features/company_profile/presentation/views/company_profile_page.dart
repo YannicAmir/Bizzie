@@ -1,40 +1,40 @@
+import 'package:bizzie/di/injection.dart';
 import 'package:bizzie/features/company_profile/presentation/bloc/company_business/company_business_bloc.dart';
 import 'package:bizzie/features/company_profile/presentation/bloc/company_business/company_business_event.dart';
-import 'package:bizzie/features/company_profile/presentation/widgets/company_profile_body.dart';
-import 'package:bizzie/features/company_profile/presentation/widgets/company_watchlist_button.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:bizzie/features/company_profile/presentation/bloc/company_news/company_news_bloc.dart';
-import 'package:bizzie/features/company_profile/presentation/bloc/company_news/company_news_event.dart';
 import 'package:bizzie/features/company_profile/presentation/bloc/company_dividends/company_dividends_bloc.dart';
 import 'package:bizzie/features/company_profile/presentation/bloc/company_dividends/company_dividends_event.dart';
-import 'package:bizzie/features/company_profile/presentation/bloc/company_revenue/company_revenue_bloc.dart';
-import 'package:bizzie/features/company_profile/presentation/bloc/company_revenue/company_revenue_event.dart';
-import 'package:bizzie/features/company_profile/presentation/bloc/company_net_income/company_net_income_bloc.dart';
-import 'package:bizzie/features/company_profile/presentation/bloc/company_net_income/company_net_income_event.dart';
-import 'package:bizzie/features/company_profile/presentation/bloc/financial_statements/financial_statements_bloc.dart';
-import 'package:bizzie/features/company_profile/presentation/bloc/financial_statements/financial_statements_event.dart';
 import 'package:bizzie/features/company_profile/presentation/bloc/company_eps/company_eps_bloc.dart';
 import 'package:bizzie/features/company_profile/presentation/bloc/company_eps/company_eps_event.dart';
-import 'package:bizzie/features/company_profile/presentation/bloc/company_free_cash_flow/company_free_cash_flow_bloc.dart';
-import 'package:bizzie/features/company_profile/presentation/bloc/company_free_cash_flow/company_free_cash_flow_event.dart';
 import 'package:bizzie/features/company_profile/presentation/bloc/company_fcps/company_fcps_bloc.dart';
 import 'package:bizzie/features/company_profile/presentation/bloc/company_fcps/company_fcps_event.dart';
-import 'package:bizzie/features/company_profile/presentation/bloc/company_shares/company_shares_bloc.dart';
-import 'package:bizzie/features/company_profile/presentation/bloc/company_shares/company_shares_event.dart';
-import 'package:bizzie/di/injection.dart';
-import 'package:flutter/material.dart';
-import 'package:bizzie/features/company_profile/presentation/bloc/company_roe/company_roe_bloc.dart';
-import 'package:bizzie/features/company_profile/presentation/bloc/company_roe/company_roe_event.dart';
+import 'package:bizzie/features/company_profile/presentation/bloc/company_free_cash_flow/company_free_cash_flow_bloc.dart';
+import 'package:bizzie/features/company_profile/presentation/bloc/company_free_cash_flow/company_free_cash_flow_event.dart';
+import 'package:bizzie/features/company_profile/presentation/bloc/company_net_income/company_net_income_bloc.dart';
+import 'package:bizzie/features/company_profile/presentation/bloc/company_net_income/company_net_income_event.dart';
+import 'package:bizzie/features/company_profile/presentation/bloc/company_news/company_news_bloc.dart';
+import 'package:bizzie/features/company_profile/presentation/bloc/company_news/company_news_event.dart';
 import 'package:bizzie/features/company_profile/presentation/bloc/company_pe_ratio/company_pe_ratio_bloc.dart';
 import 'package:bizzie/features/company_profile/presentation/bloc/company_pe_ratio/company_pe_ratio_event.dart';
 import 'package:bizzie/features/company_profile/presentation/bloc/company_pfcf_ratio/company_pfcf_ratio_bloc.dart';
 import 'package:bizzie/features/company_profile/presentation/bloc/company_pfcf_ratio/company_pfcf_ratio_event.dart';
+import 'package:bizzie/features/company_profile/presentation/bloc/company_revenue/company_revenue_bloc.dart';
+import 'package:bizzie/features/company_profile/presentation/bloc/company_revenue/company_revenue_event.dart';
+import 'package:bizzie/features/company_profile/presentation/bloc/company_roe/company_roe_bloc.dart';
+import 'package:bizzie/features/company_profile/presentation/bloc/company_roe/company_roe_event.dart';
+import 'package:bizzie/features/company_profile/presentation/bloc/company_security/company_security_bloc.dart';
+import 'package:bizzie/features/company_profile/presentation/bloc/company_security/company_security_event.dart';
+import 'package:bizzie/features/company_profile/presentation/bloc/company_shares/company_shares_bloc.dart';
+import 'package:bizzie/features/company_profile/presentation/bloc/company_shares/company_shares_event.dart';
+import 'package:bizzie/features/company_profile/presentation/bloc/financial_statements/financial_statements_bloc.dart';
+import 'package:bizzie/features/company_profile/presentation/bloc/financial_statements/financial_statements_event.dart';
 import 'package:bizzie/features/company_profile/presentation/bloc/historical_price_eod/historical_price_eod_bloc.dart';
 import 'package:bizzie/features/company_profile/presentation/bloc/historical_price_eod/historical_price_eod_event.dart';
 import 'package:bizzie/features/company_profile/presentation/enums/company_profile_tab.dart';
-
-import 'package:bizzie/features/company_profile/presentation/bloc/company_security/company_security_bloc.dart';
-import 'package:bizzie/features/company_profile/presentation/bloc/company_security/company_security_event.dart';
+import 'package:bizzie/features/company_profile/presentation/enums/financial_statement_type.dart';
+import 'package:bizzie/features/company_profile/presentation/widgets/company_profile_body.dart';
+import 'package:bizzie/features/company_profile/presentation/widgets/company_watchlist_button.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CompanyProfilePage extends StatelessWidget {
   final String ticker;
@@ -198,7 +198,17 @@ class _CompanyProfileViewState extends State<_CompanyProfileView>
         );
         break;
       case CompanyProfileTab.security:
+        context.read<CompanySecurityBloc>().add(
+          CompanySecurityEvent.stalenessCheckRequested(widget.ticker),
+        );
+        break;
       case CompanyProfileTab.financialStatements:
+        context.read<FinancialStatementsBloc>().add(
+          FinancialStatementsEvent.stalenessCheckRequested(
+            widget.ticker,
+            type: FinancialStatementType.income,
+          ),
+        );
         break;
     }
   }

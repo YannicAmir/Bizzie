@@ -46,7 +46,6 @@ class _IncomeStatementViewState extends State<IncomeStatementView> {
 
   void _initSelectedStatements() {
     if (widget.annualData.isNotEmpty) {
-      // Sort desc just in case, or assume sorted
       _selectedAnnualStatement = widget.annualData.first;
     }
     if (widget.quarterlyData.isNotEmpty) {
@@ -69,7 +68,7 @@ class _IncomeStatementViewState extends State<IncomeStatementView> {
             data: widget.annualData,
             selectedItem: _selectedAnnualStatement,
             onSelect: (item) => setState(() => _selectedAnnualStatement = item),
-            dateFormat: 'MMM d, yyyy', // e.g. Sep 28, 2024
+            dateFormat: 'MMM d, yyyy',
           ),
           AppConstants.mainSectionSpacing,
         ],
@@ -147,7 +146,7 @@ class _IncomeStatementViewState extends State<IncomeStatementView> {
         'Revenue',
         currentItem.revenue,
         prevStatement?.revenue,
-        currentItem.revenue, // Pass total revenue for margin calc
+        currentItem.revenue,
         true,
       ),
       _buildRow(
@@ -208,18 +207,11 @@ class _IncomeStatementViewState extends State<IncomeStatementView> {
     double totalRevenue, [
     bool isBold = false,
   ]) {
-    // Amount
     final amountStr = CurrencyFormatter.formatCompact(
       current,
       widget.currency,
       locale: Localizations.localeOf(context).toString(),
     );
-
-    // % (Percent of Revenue?) usually common size analysis
-    // or just % change?
-    // Design says "%" and "Growth".
-    // "Growth" is clearly YoY change.
-    // "%" is likely "Margin" (as % of Revenue).
 
     String percentStr = '-';
     if (totalRevenue != 0) {
@@ -227,15 +219,11 @@ class _IncomeStatementViewState extends State<IncomeStatementView> {
       percentStr = '${margin.toStringAsFixed(1)}%';
     }
 
-    // Growth
     String growthStr = '-';
     Color growthColor = AppColors.textPrimary;
 
     if (previous != null && previous != 0) {
-      final growth =
-          (current - previous) /
-          previous.abs() *
-          100; // .abs() for denominator usually?
+      final growth = (current - previous) / previous.abs() * 100;
       if (growth > 0) {
         growthStr = '+${growth.toStringAsFixed(1)}%';
         growthColor = AppColors.successText;

@@ -1,14 +1,14 @@
+import 'package:bizzie/features/company_profile/presentation/enums/financial_statement_type.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:bizzie/shared/widgets/inputs/bizzie_switch.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bizzie/features/company_profile/presentation/bloc/financial_statements/financial_statements_bloc.dart';
-
+import 'package:bizzie/features/company_profile/presentation/bloc/financial_statements/financial_statements_event.dart';
 import 'package:bizzie/features/company_profile/presentation/bloc/financial_statements/financial_statements_state.dart';
 import 'package:bizzie/features/company_profile/presentation/widgets/financial_statements/income_statement_view.dart';
 import 'package:bizzie/features/company_profile/presentation/widgets/financial_statements/balance_sheet_view.dart';
 import 'package:bizzie/features/company_profile/presentation/widgets/financial_statements/cash_flow_statement_view.dart';
-
 import 'package:bizzie/shared/widgets/loading/bizzie_loader.dart';
 import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
 import 'package:bizzie/features/user/presentation/bloc/user_state_extensions.dart';
@@ -40,24 +40,18 @@ class _FinancialStatementsTabState extends State<FinancialStatementsTab>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           BizzieSwitch(
-            options: const [
-              'Income Statement',
-              'Balance Sheet',
-              'Cash Flow Statement',
-            ],
+            options: FinancialStatementType.values.map((e) => e.label).toList(),
             selectedIndex: _selectedIndex,
             onChanged: (index) {
               setState(() {
                 _selectedIndex = index;
               });
-              final bloc = context.read<FinancialStatementsBloc>();
-              if (index == 0) {
-                bloc.checkIncomeStaleness(widget.ticker);
-              } else if (index == 1) {
-                bloc.checkBalanceStaleness(widget.ticker);
-              } else if (index == 2) {
-                bloc.checkCashFlowStaleness(widget.ticker);
-              }
+              context.read<FinancialStatementsBloc>().add(
+                FinancialStatementsEvent.stalenessCheckRequested(
+                  widget.ticker,
+                  type: FinancialStatementType.values[index],
+                ),
+              );
             },
           ),
           AppConstants.mainSectionSpacing,

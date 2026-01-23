@@ -3,7 +3,8 @@ import 'package:bizzie/app/themes/app_text_styles.dart';
 import 'package:bizzie/app/themes/app_theme.dart';
 import 'package:bizzie/features/company_profile/domain/enums/chart_time_frame.dart';
 import 'package:bizzie/features/company_profile/domain/extensions/historical_price_eod_extensions.dart';
-import 'package:bizzie/features/company_profile/presentation/bloc/price_chart/price_chart_cubit.dart';
+import 'package:bizzie/features/company_profile/presentation/bloc/price_chart/price_chart_bloc.dart';
+import 'package:bizzie/features/company_profile/presentation/bloc/price_chart/price_chart_event.dart';
 import 'package:bizzie/features/company_profile/presentation/bloc/price_chart/price_chart_state.dart';
 import 'package:bizzie/features/company_profile/presentation/utils/chart_time_frame_extensions.dart';
 import 'package:bizzie/features/company_profile/presentation/utils/historical_price_chart_extensions.dart';
@@ -33,7 +34,7 @@ class PriceChartWidget extends StatelessWidget {
           width: AppConstants.defaultBorderWidth,
         ),
       ),
-      child: BlocBuilder<PriceChartCubit, PriceChartState>(
+      child: BlocBuilder<PriceChartBloc, PriceChartState>(
         builder: (context, state) {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -44,7 +45,9 @@ class PriceChartWidget extends StatelessWidget {
                 selectedTimeFrame: state.selectedTimeFrame,
                 primaryColor: primaryColor,
                 onTimeFrameChanged: (frame) {
-                  context.read<PriceChartCubit>().timeFrameChanged(frame);
+                  context.read<PriceChartBloc>().add(
+                    PriceChartEvent.timeFrameChanged(frame),
+                  );
                 },
               ),
               AppConstants.secondarySectionSpacing,

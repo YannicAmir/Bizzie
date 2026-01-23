@@ -128,11 +128,11 @@ return loadRequested(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  syncRequested,TResult Function( Company company)?  addRequested,TResult Function( String ticker)?  removeRequested,TResult Function()?  loadRequested,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  syncRequested,TResult Function( String ticker,  String? name)?  addRequested,TResult Function( String ticker)?  removeRequested,TResult Function()?  loadRequested,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case SyncRequested() when syncRequested != null:
 return syncRequested();case AddRequested() when addRequested != null:
-return addRequested(_that.company);case RemoveRequested() when removeRequested != null:
+return addRequested(_that.ticker,_that.name);case RemoveRequested() when removeRequested != null:
 return removeRequested(_that.ticker);case LoadRequested() when loadRequested != null:
 return loadRequested();case _:
   return orElse();
@@ -152,11 +152,11 @@ return loadRequested();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  syncRequested,required TResult Function( Company company)  addRequested,required TResult Function( String ticker)  removeRequested,required TResult Function()  loadRequested,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  syncRequested,required TResult Function( String ticker,  String? name)  addRequested,required TResult Function( String ticker)  removeRequested,required TResult Function()  loadRequested,}) {final _that = this;
 switch (_that) {
 case SyncRequested():
 return syncRequested();case AddRequested():
-return addRequested(_that.company);case RemoveRequested():
+return addRequested(_that.ticker,_that.name);case RemoveRequested():
 return removeRequested(_that.ticker);case LoadRequested():
 return loadRequested();case _:
   throw StateError('Unexpected subclass');
@@ -175,11 +175,11 @@ return loadRequested();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  syncRequested,TResult? Function( Company company)?  addRequested,TResult? Function( String ticker)?  removeRequested,TResult? Function()?  loadRequested,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  syncRequested,TResult? Function( String ticker,  String? name)?  addRequested,TResult? Function( String ticker)?  removeRequested,TResult? Function()?  loadRequested,}) {final _that = this;
 switch (_that) {
 case SyncRequested() when syncRequested != null:
 return syncRequested();case AddRequested() when addRequested != null:
-return addRequested(_that.company);case RemoveRequested() when removeRequested != null:
+return addRequested(_that.ticker,_that.name);case RemoveRequested() when removeRequested != null:
 return removeRequested(_that.ticker);case LoadRequested() when loadRequested != null:
 return loadRequested();case _:
   return null;
@@ -225,10 +225,11 @@ String toString() {
 
 
 class AddRequested implements WatchlistEvent {
-  const AddRequested(this.company);
+  const AddRequested({required this.ticker, this.name});
   
 
- final  Company company;
+ final  String ticker;
+ final  String? name;
 
 /// Create a copy of WatchlistEvent
 /// with the given fields replaced by the non-null parameter values.
@@ -240,16 +241,16 @@ $AddRequestedCopyWith<AddRequested> get copyWith => _$AddRequestedCopyWithImpl<A
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AddRequested&&(identical(other.company, company) || other.company == company));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AddRequested&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.name, name) || other.name == name));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,company);
+int get hashCode => Object.hash(runtimeType,ticker,name);
 
 @override
 String toString() {
-  return 'WatchlistEvent.addRequested(company: $company)';
+  return 'WatchlistEvent.addRequested(ticker: $ticker, name: $name)';
 }
 
 
@@ -260,11 +261,11 @@ abstract mixin class $AddRequestedCopyWith<$Res> implements $WatchlistEventCopyW
   factory $AddRequestedCopyWith(AddRequested value, $Res Function(AddRequested) _then) = _$AddRequestedCopyWithImpl;
 @useResult
 $Res call({
- Company company
+ String ticker, String? name
 });
 
 
-$CompanyCopyWith<$Res> get company;
+
 
 }
 /// @nodoc
@@ -277,23 +278,15 @@ class _$AddRequestedCopyWithImpl<$Res>
 
 /// Create a copy of WatchlistEvent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? company = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? ticker = null,Object? name = freezed,}) {
   return _then(AddRequested(
-null == company ? _self.company : company // ignore: cast_nullable_to_non_nullable
-as Company,
+ticker: null == ticker ? _self.ticker : ticker // ignore: cast_nullable_to_non_nullable
+as String,name: freezed == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 
-/// Create a copy of WatchlistEvent
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$CompanyCopyWith<$Res> get company {
-  
-  return $CompanyCopyWith<$Res>(_self.company, (value) {
-    return _then(_self.copyWith(company: value));
-  });
-}
+
 }
 
 /// @nodoc

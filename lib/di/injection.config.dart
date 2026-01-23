@@ -120,8 +120,8 @@ import '../features/company_profile/presentation/bloc/financial_statements/finan
     as _i947;
 import '../features/company_profile/presentation/bloc/historical_price_eod/historical_price_eod_bloc.dart'
     as _i707;
-import '../features/company_profile/presentation/bloc/price_chart/price_chart_cubit.dart'
-    as _i585;
+import '../features/company_profile/presentation/bloc/price_chart/price_chart_bloc.dart'
+    as _i19;
 import '../features/notifications/data/datasources/fcm_remote_datasource.dart'
     as _i640;
 import '../features/notifications/data/datasources/local_notification_datasource.dart'
@@ -238,7 +238,7 @@ extension GetItInjectableX on _i174.GetIt {
       () => registerModule.prefs,
       preResolve: true,
     );
-    gh.factory<_i585.PriceChartCubit>(() => _i585.PriceChartCubit());
+    gh.factory<_i19.PriceChartBloc>(() => _i19.PriceChartBloc());
     await gh.singletonAsync<_i216.ConfigService>(
       () => _i216.ConfigService.init(),
       preResolve: true,

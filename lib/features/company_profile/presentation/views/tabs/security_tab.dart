@@ -17,7 +17,8 @@ import 'package:bizzie/features/company_profile/presentation/widgets/security/se
 import 'package:bizzie/features/company_profile/presentation/widgets/security/key_metrics_section.dart';
 import 'package:bizzie/features/company_profile/presentation/bloc/company_security/company_security_state_extensions.dart';
 import 'package:bizzie/features/company_profile/presentation/bloc/historical_price_eod/historical_price_eod_state_extensions.dart';
-import 'package:bizzie/features/company_profile/presentation/bloc/price_chart/price_chart_cubit.dart';
+import 'package:bizzie/features/company_profile/presentation/bloc/price_chart/price_chart_bloc.dart';
+import 'package:bizzie/features/company_profile/presentation/bloc/price_chart/price_chart_event.dart';
 import 'package:bizzie/di/injection.dart';
 
 class SecurityTab extends StatefulWidget {
@@ -106,7 +107,8 @@ class _SecurityContent extends StatelessWidget {
           BlocProvider(
             key: ValueKey('price_chart_${prices.length}'),
             create: (context) =>
-                getIt<PriceChartCubit>()..fullHistoryChanged(prices),
+                getIt<PriceChartBloc>()
+                  ..add(PriceChartEvent.historyUpdated(prices)),
             child: const PriceChartWidget(),
           ),
         ],

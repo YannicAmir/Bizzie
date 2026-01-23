@@ -3,12 +3,15 @@ import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:injectable/injectable.dart';
 import 'package:intl/intl.dart';
 
+import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:bizzie/features/company_profile/domain/models/chart_data_point.dart';
 import 'package:bizzie/features/company_profile/domain/models/financial_data_point.dart';
 import 'package:bizzie/features/company_profile/domain/usecases/get_ratios_usecase.dart';
 
 import 'company_pe_ratio_event.dart';
 import 'company_pe_ratio_state.dart';
+
+final _logger = BizzieLogger('CompanyPeRatioBloc');
 
 @injectable
 class CompanyPeRatioBloc
@@ -24,6 +27,7 @@ class CompanyPeRatioBloc
     CompanyPeRatioEvent event,
     Emitter<CompanyPeRatioState> emit,
   ) async {
+    _logger.info('Handling event: $event');
     await event.map(
       loadRequested: (e) async => _onLoadRequested(e, emit),
       stalenessCheckRequested: (e) async => _onStalenessCheckRequested(e),
@@ -34,15 +38,31 @@ class CompanyPeRatioBloc
     LoadRequested event,
     Emitter<CompanyPeRatioState> emit,
   ) async {
-    if (_shouldSkipLoad(event.forceRefresh)) return;
+    if (_shouldSkipLoad(event.forceRefresh)) {
+      _logger.info(
+        'Skip loading PE Ratio: already loaded and no force refresh',
+      );
+      return;
+    }
 
+    _logger.info(
+      'Loading PE Ratio stats for ${event.ticker} (force=${event.forceRefresh})',
+    );
     emit(const CompanyPeRatioState.loading());
 
     final result = await _getRatios(event.ticker);
 
     result.fold(
-      (failure) => emit(CompanyPeRatioState.failure(failure)),
-      (ratios) => _emitLoadedState(ratios, emit),
+      (failure) {
+        _logger.severe('Failed to load PE Ratio stats', failure);
+        emit(CompanyPeRatioState.failure(failure));
+      },
+      (ratios) {
+        _logger.info(
+          'Successfully loaded PE Ratio stats: ${ratios.length} points',
+        );
+        _emitLoadedState(ratios, emit);
+      },
     );
   }
 
@@ -58,6 +78,7 @@ class CompanyPeRatioBloc
     final sortedPoints = _extractSortedDataPoints(ratios);
 
     if (sortedPoints.isEmpty) {
+      _logger.info('PE Ratio data points empty after extraction');
       emit(_emptyLoadedState());
       return;
     }
@@ -68,6 +89,9 @@ class CompanyPeRatioBloc
     final referenceLabel = _formatReferenceLabel(referencePoint);
     final chartData = _buildChartData(sortedPoints);
 
+    _logger.info(
+      'Emitting loaded state: current=${currentPoint.value}, growth=${growth.percentage}%',
+    );
     emit(
       CompanyPeRatioState.loaded(
         dataPoints: sortedPoints,
@@ -159,27 +183,44 @@ class CompanyPeRatioBloc
   }
 
   Future<void> _onStalenessCheckRequested(StalenessCheckRequested event) async {
+    _logger.info('Staleness check requested for ${event.ticker}');
     state.mapOrNull(
       loaded: (loadedState) {
         final lastUpdated = loadedState.lastUpdated;
         if (lastUpdated != null) {
           final difference = DateTime.now().difference(lastUpdated);
           if (difference.inHours >= 24) {
+            _logger.info(
+              'PE Ratio stale (TTL expired: ${difference.inHours}h). Triggering load.',
+            );
             add(
               CompanyPeRatioEvent.loadRequested(
                 event.ticker,
                 forceRefresh: true,
               ),
             );
+          } else {
+            _logger.info('PE Ratio still fresh (Last updated: $lastUpdated)');
           }
+        } else {
+          _logger.info('PE Ratio lastUpdated is null. Triggering load.');
+          add(
+            CompanyPeRatioEvent.loadRequested(event.ticker, forceRefresh: true),
+          );
         }
       },
-      failure: (_) => add(
-        CompanyPeRatioEvent.loadRequested(event.ticker, forceRefresh: true),
-      ),
-      initial: (_) => add(
-        CompanyPeRatioEvent.loadRequested(event.ticker, forceRefresh: true),
-      ),
+      failure: (_) {
+        _logger.info('PE Ratio in failure state. Triggering retry.');
+        add(
+          CompanyPeRatioEvent.loadRequested(event.ticker, forceRefresh: true),
+        );
+      },
+      initial: (_) {
+        _logger.info('PE Ratio in initial state. Triggering load.');
+        add(
+          CompanyPeRatioEvent.loadRequested(event.ticker, forceRefresh: true),
+        );
+      },
     );
   }
 }

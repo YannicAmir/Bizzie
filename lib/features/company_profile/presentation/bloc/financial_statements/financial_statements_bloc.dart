@@ -1,3 +1,5 @@
+import 'package:bizzie/core/logging/bizzie_logger.dart';
+import 'package:bizzie/features/company_profile/presentation/enums/financial_statement_type.dart';
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/features/company_profile/domain/interfaces/i_financial_repository.dart';
 import 'package:bizzie/features/company_profile/presentation/bloc/financial_statements/financial_statements_event.dart';
@@ -9,6 +11,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:injectable/injectable.dart';
 
+final _logger = BizzieLogger('FinancialStatementsBloc');
+
 @injectable
 class FinancialStatementsBloc
     extends Bloc<FinancialStatementsEvent, FinancialStatementsState> {
@@ -16,9 +20,20 @@ class FinancialStatementsBloc
 
   FinancialStatementsBloc(this._repository)
     : super(FinancialStatementsState.initial()) {
-    on<LoadIncomeStatements>(_onLoadIncomeStatements, transformer: droppable());
-    on<LoadBalanceSheets>(_onLoadBalanceSheets, transformer: droppable());
-    on<LoadCashFlows>(_onLoadCashFlows, transformer: droppable());
+    on<FinancialStatementsEvent>(_onEvent, transformer: droppable());
+  }
+
+  Future<void> _onEvent(
+    FinancialStatementsEvent event,
+    Emitter<FinancialStatementsState> emit,
+  ) async {
+    _logger.info('Handling event: $event');
+    await event.map(
+      loadIncomeStatements: (e) async => _onLoadIncomeStatements(e, emit),
+      loadBalanceSheets: (e) async => _onLoadBalanceSheets(e, emit),
+      loadCashFlows: (e) async => _onLoadCashFlows(e, emit),
+      stalenessCheckRequested: (e) async => _onStalenessCheckRequested(e, emit),
+    );
   }
 
   Future<void> _onLoadIncomeStatements(
@@ -27,9 +42,15 @@ class FinancialStatementsBloc
   ) async {
     if (!e.forceRefresh &&
         (state.isLoadingIncome || state.annualIncomeStatements.isNotEmpty)) {
+      _logger.info(
+        'Skip loading income statements: force=${e.forceRefresh}, loading=${state.isLoadingIncome}, hasData=${state.annualIncomeStatements.isNotEmpty}',
+      );
       return;
     }
 
+    _logger.info(
+      'Loading income statements for ${e.ticker} (force=${e.forceRefresh})',
+    );
     emit(state.copyWith(isLoadingIncome: true, incomeError: null));
 
     final results = await Future.wait([
@@ -47,6 +68,7 @@ class FinancialStatementsBloc
     annualEither.fold((f) => error = f, (data) => annualData = data);
 
     if (error != null) {
+      _logger.severe('Failed to load annual income statements', error);
       emit(state.copyWith(isLoadingIncome: false, incomeError: error));
       return;
     }
@@ -54,6 +76,7 @@ class FinancialStatementsBloc
     quarterlyEither.fold((f) => error = f, (data) => quarterlyData = data);
 
     if (error != null) {
+      _logger.severe('Failed to load quarterly income statements', error);
       emit(state.copyWith(isLoadingIncome: false, incomeError: error));
       return;
     }
@@ -67,6 +90,9 @@ class FinancialStatementsBloc
               ? quarterlyData.first.reportedCurrency
               : 'USD');
 
+    _logger.info(
+      'Successfully loaded income statements: annual=${annualData.length}, quarterly=${quarterlyData.length}, currency=$currency',
+    );
     emit(
       state.copyWith(
         isLoadingIncome: false,
@@ -84,8 +110,10 @@ class FinancialStatementsBloc
   ) async {
     if (!e.forceRefresh &&
         (state.isLoadingBalance || state.annualBalanceSheets.isNotEmpty)) {
+      _logger.info('Skip loading balance sheets');
       return;
     }
+    _logger.info('Loading balance sheets for ${e.ticker}');
     emit(state.copyWith(isLoadingBalance: true, balanceError: null));
 
     final results = await Future.wait([
@@ -102,12 +130,14 @@ class FinancialStatementsBloc
 
     annualEither.fold((f) => error = f, (data) => annualData = data);
     if (error != null) {
+      _logger.severe('Failed to load annual balance sheets', error);
       emit(state.copyWith(isLoadingBalance: false, balanceError: error));
       return;
     }
 
     quarterlyEither.fold((f) => error = f, (data) => quarterlyData = data);
     if (error != null) {
+      _logger.severe('Failed to load quarterly balance sheets', error);
       emit(state.copyWith(isLoadingBalance: false, balanceError: error));
       return;
     }
@@ -115,6 +145,7 @@ class FinancialStatementsBloc
     annualData.sort((a, b) => b.date.compareTo(a.date));
     quarterlyData.sort((a, b) => b.date.compareTo(a.date));
 
+    _logger.info('Successfully loaded balance sheets');
     emit(
       state.copyWith(
         isLoadingBalance: false,
@@ -132,8 +163,10 @@ class FinancialStatementsBloc
     if (!e.forceRefresh &&
         (state.isLoadingCashFlow ||
             state.annualCashFlowStatements.isNotEmpty)) {
+      _logger.info('Skip loading cash flows');
       return;
     }
+    _logger.info('Loading cash flows for ${e.ticker}');
     emit(state.copyWith(isLoadingCashFlow: true, cashFlowError: null));
 
     final results = await Future.wait([
@@ -150,12 +183,14 @@ class FinancialStatementsBloc
 
     annualEither.fold((f) => error = f, (data) => annualData = data);
     if (error != null) {
+      _logger.severe('Failed to load annual cash flows', error);
       emit(state.copyWith(isLoadingCashFlow: false, cashFlowError: error));
       return;
     }
 
     quarterlyEither.fold((f) => error = f, (data) => quarterlyData = data);
     if (error != null) {
+      _logger.severe('Failed to load quarterly cash flows', error);
       emit(state.copyWith(isLoadingCashFlow: false, cashFlowError: error));
       return;
     }
@@ -163,6 +198,7 @@ class FinancialStatementsBloc
     annualData.sort((a, b) => b.date.compareTo(a.date));
     quarterlyData.sort((a, b) => b.date.compareTo(a.date));
 
+    _logger.info('Successfully loaded cash flows');
     emit(
       state.copyWith(
         isLoadingCashFlow: false,
@@ -173,41 +209,71 @@ class FinancialStatementsBloc
     );
   }
 
-  void checkIncomeStaleness(String ticker) {
-    if (state.lastUpdatedIncome != null &&
-        DateTime.now().difference(state.lastUpdatedIncome!) >
-            const Duration(hours: 24)) {
-      add(
-        FinancialStatementsEvent.loadIncomeStatements(
-          ticker,
-          forceRefresh: true,
-        ),
-      );
-    } else if (state.annualIncomeStatements.isEmpty && !state.isLoadingIncome) {
-      add(FinancialStatementsEvent.loadIncomeStatements(ticker));
-    }
-  }
-
-  void checkBalanceStaleness(String ticker) {
-    if (state.lastUpdatedBalance != null &&
-        DateTime.now().difference(state.lastUpdatedBalance!) >
-            const Duration(hours: 24)) {
-      add(
-        FinancialStatementsEvent.loadBalanceSheets(ticker, forceRefresh: true),
-      );
-    } else if (state.annualBalanceSheets.isEmpty && !state.isLoadingBalance) {
-      add(FinancialStatementsEvent.loadBalanceSheets(ticker));
-    }
-  }
-
-  void checkCashFlowStaleness(String ticker) {
-    if (state.lastUpdatedCashFlow != null &&
-        DateTime.now().difference(state.lastUpdatedCashFlow!) >
-            const Duration(hours: 24)) {
-      add(FinancialStatementsEvent.loadCashFlows(ticker, forceRefresh: true));
-    } else if (state.annualCashFlowStatements.isEmpty &&
-        !state.isLoadingCashFlow) {
-      add(FinancialStatementsEvent.loadCashFlows(ticker));
+  Future<void> _onStalenessCheckRequested(
+    StalenessCheckRequested e,
+    Emitter<FinancialStatementsState> emit,
+  ) async {
+    _logger.info('Staleness check requested for ${e.type}');
+    switch (e.type) {
+      case FinancialStatementType.income:
+        if (state.lastUpdatedIncome != null &&
+            DateTime.now().difference(state.lastUpdatedIncome!) >
+                const Duration(hours: 24)) {
+          _logger.info(
+            'Income statements stale (TTL expired). Triggering load.',
+          );
+          add(
+            FinancialStatementsEvent.loadIncomeStatements(
+              e.ticker,
+              forceRefresh: true,
+            ),
+          );
+        } else if (state.annualIncomeStatements.isEmpty &&
+            !state.isLoadingIncome) {
+          _logger.info('Income statements empty. Triggering load.');
+          add(FinancialStatementsEvent.loadIncomeStatements(e.ticker));
+        } else {
+          _logger.info('Income statements still fresh.');
+        }
+        break;
+      case FinancialStatementType.balance:
+        if (state.lastUpdatedBalance != null &&
+            DateTime.now().difference(state.lastUpdatedBalance!) >
+                const Duration(hours: 24)) {
+          _logger.info('Balance sheets stale (TTL expired). Triggering load.');
+          add(
+            FinancialStatementsEvent.loadBalanceSheets(
+              e.ticker,
+              forceRefresh: true,
+            ),
+          );
+        } else if (state.annualBalanceSheets.isEmpty &&
+            !state.isLoadingBalance) {
+          _logger.info('Balance sheets empty. Triggering load.');
+          add(FinancialStatementsEvent.loadBalanceSheets(e.ticker));
+        } else {
+          _logger.info('Balance sheets still fresh.');
+        }
+        break;
+      case FinancialStatementType.cashFlow:
+        if (state.lastUpdatedCashFlow != null &&
+            DateTime.now().difference(state.lastUpdatedCashFlow!) >
+                const Duration(hours: 24)) {
+          _logger.info('Cash flows stale (TTL expired). Triggering load.');
+          add(
+            FinancialStatementsEvent.loadCashFlows(
+              e.ticker,
+              forceRefresh: true,
+            ),
+          );
+        } else if (state.annualCashFlowStatements.isEmpty &&
+            !state.isLoadingCashFlow) {
+          _logger.info('Cash flows empty. Triggering load.');
+          add(FinancialStatementsEvent.loadCashFlows(e.ticker));
+        } else {
+          _logger.info('Cash flows still fresh.');
+        }
+        break;
     }
   }
 }

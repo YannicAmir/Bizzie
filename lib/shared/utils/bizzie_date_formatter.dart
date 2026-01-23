@@ -13,13 +13,41 @@ class BizzieDateFormatter {
           date.month == now.month &&
           date.day == now.day;
 
+      final timeZone = now.timeZoneName;
+
       if (isToday) {
-        final fifteenMinutesAgo = now.subtract(const Duration(minutes: 15));
+        final nowUtc = now.toUtc();
+        final etTime = nowUtc.subtract(const Duration(hours: 5));
+
+        final isAfterMarketCloseBuffer =
+            etTime.hour > 16 || (etTime.hour == 16 && etTime.minute >= 15);
+
         final timeFormatter = DateFormat('h:mm a');
-        return "Today at ${timeFormatter.format(fifteenMinutesAgo)} (15 min delay)";
+
+        if (isAfterMarketCloseBuffer) {
+          final marketCloseUtc = DateTime.utc(
+            etTime.year,
+            etTime.month,
+            etTime.day,
+            21,
+          );
+          final marketCloseLocal = marketCloseUtc.toLocal();
+          return "Today at ${timeFormatter.format(marketCloseLocal)} ${marketCloseLocal.timeZoneName}";
+        }
+
+        final fifteenMinutesAgo = now.subtract(const Duration(minutes: 15));
+        return "Today at ${timeFormatter.format(fifteenMinutesAgo)} $timeZone (15 min delay)";
       } else {
         final dateFormatter = DateFormat('MMM dd, yyyy');
-        return "${dateFormatter.format(date)} at 4:00 PM EST";
+        final marketCloseUtc = DateTime.utc(
+          date.year,
+          date.month,
+          date.day,
+          21,
+        );
+        final marketCloseLocal = marketCloseUtc.toLocal();
+        final timeFormatter = DateFormat('h:mm a');
+        return "${dateFormatter.format(date)} at ${timeFormatter.format(marketCloseLocal)} ${marketCloseLocal.timeZoneName}";
       }
     } catch (e, stack) {
       debugPrint('Error formatting date: $e\n$stack');

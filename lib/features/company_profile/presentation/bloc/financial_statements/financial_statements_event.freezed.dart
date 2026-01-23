@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$FinancialStatementsEvent {
 
- String get ticker; bool get forceRefresh;
+ String get ticker;
 /// Create a copy of FinancialStatementsEvent
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $FinancialStatementsEventCopyWith<FinancialStatementsEvent> get copyWith => _$Fi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is FinancialStatementsEvent&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.forceRefresh, forceRefresh) || other.forceRefresh == forceRefresh));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is FinancialStatementsEvent&&(identical(other.ticker, ticker) || other.ticker == ticker));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,ticker,forceRefresh);
+int get hashCode => Object.hash(runtimeType,ticker);
 
 @override
 String toString() {
-  return 'FinancialStatementsEvent(ticker: $ticker, forceRefresh: $forceRefresh)';
+  return 'FinancialStatementsEvent(ticker: $ticker)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $FinancialStatementsEventCopyWith<$Res>  {
   factory $FinancialStatementsEventCopyWith(FinancialStatementsEvent value, $Res Function(FinancialStatementsEvent) _then) = _$FinancialStatementsEventCopyWithImpl;
 @useResult
 $Res call({
- String ticker, bool forceRefresh
+ String ticker
 });
 
 
@@ -62,11 +62,10 @@ class _$FinancialStatementsEventCopyWithImpl<$Res>
 
 /// Create a copy of FinancialStatementsEvent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? ticker = null,Object? forceRefresh = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? ticker = null,}) {
   return _then(_self.copyWith(
 ticker: null == ticker ? _self.ticker : ticker // ignore: cast_nullable_to_non_nullable
-as String,forceRefresh: null == forceRefresh ? _self.forceRefresh : forceRefresh // ignore: cast_nullable_to_non_nullable
-as bool,
+as String,
   ));
 }
 
@@ -87,13 +86,14 @@ extension FinancialStatementsEventPatterns on FinancialStatementsEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( LoadIncomeStatements value)?  loadIncomeStatements,TResult Function( LoadBalanceSheets value)?  loadBalanceSheets,TResult Function( LoadCashFlows value)?  loadCashFlows,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( LoadIncomeStatements value)?  loadIncomeStatements,TResult Function( LoadBalanceSheets value)?  loadBalanceSheets,TResult Function( LoadCashFlows value)?  loadCashFlows,TResult Function( StalenessCheckRequested value)?  stalenessCheckRequested,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case LoadIncomeStatements() when loadIncomeStatements != null:
 return loadIncomeStatements(_that);case LoadBalanceSheets() when loadBalanceSheets != null:
 return loadBalanceSheets(_that);case LoadCashFlows() when loadCashFlows != null:
-return loadCashFlows(_that);case _:
+return loadCashFlows(_that);case StalenessCheckRequested() when stalenessCheckRequested != null:
+return stalenessCheckRequested(_that);case _:
   return orElse();
 
 }
@@ -111,13 +111,14 @@ return loadCashFlows(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( LoadIncomeStatements value)  loadIncomeStatements,required TResult Function( LoadBalanceSheets value)  loadBalanceSheets,required TResult Function( LoadCashFlows value)  loadCashFlows,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( LoadIncomeStatements value)  loadIncomeStatements,required TResult Function( LoadBalanceSheets value)  loadBalanceSheets,required TResult Function( LoadCashFlows value)  loadCashFlows,required TResult Function( StalenessCheckRequested value)  stalenessCheckRequested,}){
 final _that = this;
 switch (_that) {
 case LoadIncomeStatements():
 return loadIncomeStatements(_that);case LoadBalanceSheets():
 return loadBalanceSheets(_that);case LoadCashFlows():
-return loadCashFlows(_that);case _:
+return loadCashFlows(_that);case StalenessCheckRequested():
+return stalenessCheckRequested(_that);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -134,13 +135,14 @@ return loadCashFlows(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( LoadIncomeStatements value)?  loadIncomeStatements,TResult? Function( LoadBalanceSheets value)?  loadBalanceSheets,TResult? Function( LoadCashFlows value)?  loadCashFlows,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( LoadIncomeStatements value)?  loadIncomeStatements,TResult? Function( LoadBalanceSheets value)?  loadBalanceSheets,TResult? Function( LoadCashFlows value)?  loadCashFlows,TResult? Function( StalenessCheckRequested value)?  stalenessCheckRequested,}){
 final _that = this;
 switch (_that) {
 case LoadIncomeStatements() when loadIncomeStatements != null:
 return loadIncomeStatements(_that);case LoadBalanceSheets() when loadBalanceSheets != null:
 return loadBalanceSheets(_that);case LoadCashFlows() when loadCashFlows != null:
-return loadCashFlows(_that);case _:
+return loadCashFlows(_that);case StalenessCheckRequested() when stalenessCheckRequested != null:
+return stalenessCheckRequested(_that);case _:
   return null;
 
 }
@@ -157,12 +159,13 @@ return loadCashFlows(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String ticker,  bool forceRefresh)?  loadIncomeStatements,TResult Function( String ticker,  bool forceRefresh)?  loadBalanceSheets,TResult Function( String ticker,  bool forceRefresh)?  loadCashFlows,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String ticker,  bool forceRefresh)?  loadIncomeStatements,TResult Function( String ticker,  bool forceRefresh)?  loadBalanceSheets,TResult Function( String ticker,  bool forceRefresh)?  loadCashFlows,TResult Function( String ticker,  FinancialStatementType type)?  stalenessCheckRequested,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case LoadIncomeStatements() when loadIncomeStatements != null:
 return loadIncomeStatements(_that.ticker,_that.forceRefresh);case LoadBalanceSheets() when loadBalanceSheets != null:
 return loadBalanceSheets(_that.ticker,_that.forceRefresh);case LoadCashFlows() when loadCashFlows != null:
-return loadCashFlows(_that.ticker,_that.forceRefresh);case _:
+return loadCashFlows(_that.ticker,_that.forceRefresh);case StalenessCheckRequested() when stalenessCheckRequested != null:
+return stalenessCheckRequested(_that.ticker,_that.type);case _:
   return orElse();
 
 }
@@ -180,12 +183,13 @@ return loadCashFlows(_that.ticker,_that.forceRefresh);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String ticker,  bool forceRefresh)  loadIncomeStatements,required TResult Function( String ticker,  bool forceRefresh)  loadBalanceSheets,required TResult Function( String ticker,  bool forceRefresh)  loadCashFlows,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String ticker,  bool forceRefresh)  loadIncomeStatements,required TResult Function( String ticker,  bool forceRefresh)  loadBalanceSheets,required TResult Function( String ticker,  bool forceRefresh)  loadCashFlows,required TResult Function( String ticker,  FinancialStatementType type)  stalenessCheckRequested,}) {final _that = this;
 switch (_that) {
 case LoadIncomeStatements():
 return loadIncomeStatements(_that.ticker,_that.forceRefresh);case LoadBalanceSheets():
 return loadBalanceSheets(_that.ticker,_that.forceRefresh);case LoadCashFlows():
-return loadCashFlows(_that.ticker,_that.forceRefresh);case _:
+return loadCashFlows(_that.ticker,_that.forceRefresh);case StalenessCheckRequested():
+return stalenessCheckRequested(_that.ticker,_that.type);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -202,12 +206,13 @@ return loadCashFlows(_that.ticker,_that.forceRefresh);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String ticker,  bool forceRefresh)?  loadIncomeStatements,TResult? Function( String ticker,  bool forceRefresh)?  loadBalanceSheets,TResult? Function( String ticker,  bool forceRefresh)?  loadCashFlows,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String ticker,  bool forceRefresh)?  loadIncomeStatements,TResult? Function( String ticker,  bool forceRefresh)?  loadBalanceSheets,TResult? Function( String ticker,  bool forceRefresh)?  loadCashFlows,TResult? Function( String ticker,  FinancialStatementType type)?  stalenessCheckRequested,}) {final _that = this;
 switch (_that) {
 case LoadIncomeStatements() when loadIncomeStatements != null:
 return loadIncomeStatements(_that.ticker,_that.forceRefresh);case LoadBalanceSheets() when loadBalanceSheets != null:
 return loadBalanceSheets(_that.ticker,_that.forceRefresh);case LoadCashFlows() when loadCashFlows != null:
-return loadCashFlows(_that.ticker,_that.forceRefresh);case _:
+return loadCashFlows(_that.ticker,_that.forceRefresh);case StalenessCheckRequested() when stalenessCheckRequested != null:
+return stalenessCheckRequested(_that.ticker,_that.type);case _:
   return null;
 
 }
@@ -223,7 +228,7 @@ class LoadIncomeStatements implements FinancialStatementsEvent {
   
 
 @override final  String ticker;
-@override@JsonKey() final  bool forceRefresh;
+@JsonKey() final  bool forceRefresh;
 
 /// Create a copy of FinancialStatementsEvent
 /// with the given fields replaced by the non-null parameter values.
@@ -291,7 +296,7 @@ class LoadBalanceSheets implements FinancialStatementsEvent {
   
 
 @override final  String ticker;
-@override@JsonKey() final  bool forceRefresh;
+@JsonKey() final  bool forceRefresh;
 
 /// Create a copy of FinancialStatementsEvent
 /// with the given fields replaced by the non-null parameter values.
@@ -359,7 +364,7 @@ class LoadCashFlows implements FinancialStatementsEvent {
   
 
 @override final  String ticker;
-@override@JsonKey() final  bool forceRefresh;
+@JsonKey() final  bool forceRefresh;
 
 /// Create a copy of FinancialStatementsEvent
 /// with the given fields replaced by the non-null parameter values.
@@ -413,6 +418,74 @@ class _$LoadCashFlowsCopyWithImpl<$Res>
 null == ticker ? _self.ticker : ticker // ignore: cast_nullable_to_non_nullable
 as String,forceRefresh: null == forceRefresh ? _self.forceRefresh : forceRefresh // ignore: cast_nullable_to_non_nullable
 as bool,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class StalenessCheckRequested implements FinancialStatementsEvent {
+  const StalenessCheckRequested(this.ticker, {this.type = FinancialStatementType.income});
+  
+
+@override final  String ticker;
+@JsonKey() final  FinancialStatementType type;
+
+/// Create a copy of FinancialStatementsEvent
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$StalenessCheckRequestedCopyWith<StalenessCheckRequested> get copyWith => _$StalenessCheckRequestedCopyWithImpl<StalenessCheckRequested>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is StalenessCheckRequested&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.type, type) || other.type == type));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,ticker,type);
+
+@override
+String toString() {
+  return 'FinancialStatementsEvent.stalenessCheckRequested(ticker: $ticker, type: $type)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $StalenessCheckRequestedCopyWith<$Res> implements $FinancialStatementsEventCopyWith<$Res> {
+  factory $StalenessCheckRequestedCopyWith(StalenessCheckRequested value, $Res Function(StalenessCheckRequested) _then) = _$StalenessCheckRequestedCopyWithImpl;
+@override @useResult
+$Res call({
+ String ticker, FinancialStatementType type
+});
+
+
+
+
+}
+/// @nodoc
+class _$StalenessCheckRequestedCopyWithImpl<$Res>
+    implements $StalenessCheckRequestedCopyWith<$Res> {
+  _$StalenessCheckRequestedCopyWithImpl(this._self, this._then);
+
+  final StalenessCheckRequested _self;
+  final $Res Function(StalenessCheckRequested) _then;
+
+/// Create a copy of FinancialStatementsEvent
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? ticker = null,Object? type = null,}) {
+  return _then(StalenessCheckRequested(
+null == ticker ? _self.ticker : ticker // ignore: cast_nullable_to_non_nullable
+as String,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
+as FinancialStatementType,
   ));
 }
 

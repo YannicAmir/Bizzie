@@ -1,3 +1,4 @@
+import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:bizzie/features/company_profile/domain/models/chart_data_point.dart';
 import 'package:bizzie/features/company_profile/domain/models/financial_data_point.dart';
 import 'package:bizzie/features/company_profile/domain/usecases/get_eps_stats_usecase.dart';
@@ -7,6 +8,8 @@ import 'package:bizzie/shared/utils/bizzie_date_formatter.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:injectable/injectable.dart';
+
+final _logger = BizzieLogger('CompanyEpsBloc');
 
 @injectable
 class CompanyEpsBloc extends Bloc<CompanyEpsEvent, CompanyEpsState> {
@@ -21,6 +24,7 @@ class CompanyEpsBloc extends Bloc<CompanyEpsEvent, CompanyEpsState> {
     CompanyEpsEvent event,
     Emitter<CompanyEpsState> emit,
   ) async {
+    _logger.info('Handling event: $event');
     await event.map(
       loadRequested: (e) async => _onLoadRequested(e, emit),
       stalenessCheckRequested: (e) async => _onStalenessCheckRequested(e),
@@ -33,43 +37,69 @@ class CompanyEpsBloc extends Bloc<CompanyEpsEvent, CompanyEpsState> {
   ) async {
     if (!event.forceRefresh &&
         state.maybeMap(loaded: (_) => true, orElse: () => false)) {
+      _logger.info('Skip loading EPS: already loaded and no force refresh');
       return;
     }
 
+    _logger.info(
+      'Loading EPS stats for ${event.ticker} (force=${event.forceRefresh})',
+    );
     emit(const CompanyEpsState.loading());
 
     final result = await _getEpsStatsUseCase(event.ticker);
 
     result.fold(
-      (failure) => emit(CompanyEpsState.failure(failure)),
-      (stats) => emit(
-        CompanyEpsState.loaded(
-          epsStats: stats,
-          annualChartData: _toChartData(stats.annualEps, isAnnual: true),
-          quarterlyChartData: _toChartData(stats.quarterlyEps, isAnnual: false),
-          lastUpdated: DateTime.now(),
-        ),
-      ),
+      (failure) {
+        _logger.severe('Failed to load EPS stats', failure);
+        emit(CompanyEpsState.failure(failure));
+      },
+      (stats) {
+        _logger.info('Successfully loaded EPS stats');
+        emit(
+          CompanyEpsState.loaded(
+            epsStats: stats,
+            annualChartData: _toChartData(stats.annualEps, isAnnual: true),
+            quarterlyChartData: _toChartData(
+              stats.quarterlyEps,
+              isAnnual: false,
+            ),
+            lastUpdated: DateTime.now(),
+          ),
+        );
+      },
     );
   }
 
   Future<void> _onStalenessCheckRequested(StalenessCheckRequested event) async {
+    _logger.info('Staleness check requested for ${event.ticker}');
     state.mapOrNull(
       loaded: (loadedState) {
         final lastUpdated = loadedState.lastUpdated;
         if (lastUpdated != null) {
           final difference = DateTime.now().difference(lastUpdated);
           if (difference.inHours >= 24) {
+            _logger.info(
+              'EPS stale (TTL expired: ${difference.inHours}h). Triggering load.',
+            );
             add(
               CompanyEpsEvent.loadRequested(event.ticker, forceRefresh: true),
             );
+          } else {
+            _logger.info('EPS still fresh (Last updated: $lastUpdated)');
           }
+        } else {
+          _logger.info('EPS lastUpdated is null. Triggering load.');
+          add(CompanyEpsEvent.loadRequested(event.ticker, forceRefresh: true));
         }
       },
-      failure: (_) =>
-          add(CompanyEpsEvent.loadRequested(event.ticker, forceRefresh: true)),
-      initial: (_) =>
-          add(CompanyEpsEvent.loadRequested(event.ticker, forceRefresh: true)),
+      failure: (_) {
+        _logger.info('EPS in failure state. Triggering retry.');
+        add(CompanyEpsEvent.loadRequested(event.ticker, forceRefresh: true));
+      },
+      initial: (_) {
+        _logger.info('EPS in initial state. Triggering load.');
+        add(CompanyEpsEvent.loadRequested(event.ticker, forceRefresh: true));
+      },
     );
   }
 

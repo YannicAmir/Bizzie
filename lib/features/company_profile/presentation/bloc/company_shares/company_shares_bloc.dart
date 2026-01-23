@@ -2,6 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 
 import 'package:injectable/injectable.dart';
+import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:bizzie/features/company_profile/domain/models/chart_data_point.dart';
 import 'package:bizzie/features/company_profile/domain/models/financial_data_point.dart';
 import 'package:bizzie/features/company_profile/domain/models/shares_summary_data.dart';
@@ -9,6 +10,8 @@ import 'package:bizzie/features/company_profile/domain/usecases/get_share_stats_
 import 'package:bizzie/shared/utils/bizzie_date_formatter.dart';
 import 'company_shares_event.dart';
 import 'company_shares_state.dart';
+
+final _logger = BizzieLogger('CompanySharesBloc');
 
 @injectable
 class CompanySharesBloc extends Bloc<CompanySharesEvent, CompanySharesState> {
@@ -22,6 +25,7 @@ class CompanySharesBloc extends Bloc<CompanySharesEvent, CompanySharesState> {
     CompanySharesEvent event,
     Emitter<CompanySharesState> emit,
   ) async {
+    _logger.info('Handling event: $event');
     await event.map(
       loadRequested: (e) async => _onLoadRequested(e, emit),
       stalenessCheckRequested: (e) async => _onStalenessCheckRequested(e),
@@ -34,62 +38,85 @@ class CompanySharesBloc extends Bloc<CompanySharesEvent, CompanySharesState> {
   ) async {
     if (!event.forceRefresh &&
         state.maybeMap(loaded: (_) => true, orElse: () => false)) {
+      _logger.info('Skip loading Shares: already loaded and no force refresh');
       return;
     }
 
+    _logger.info(
+      'Loading Shares stats for ${event.ticker} (force=${event.forceRefresh})',
+    );
     emit(const CompanySharesState.loading());
 
     final result = await _getShareStats(event.ticker);
 
     result.fold(
-      (failure) => emit(CompanySharesState.failure(failure)),
-      (data) => emit(
-        CompanySharesState.loaded(
-          shareStats: data,
-          annualChartData: _toChartData(
-            data.annualWeightedAverageShares,
-            isAnnual: true,
+      (failure) {
+        _logger.severe('Failed to load Shares stats', failure);
+        emit(CompanySharesState.failure(failure));
+      },
+      (data) {
+        _logger.info('Successfully loaded Shares stats');
+        emit(
+          CompanySharesState.loaded(
+            shareStats: data,
+            annualChartData: _toChartData(
+              data.annualWeightedAverageShares,
+              isAnnual: true,
+            ),
+            quarterlyChartData: _toChartData(
+              data.quarterlyWeightedAverageShares,
+              isAnnual: false,
+            ),
+            annualSummary: _computeSummary(
+              data.annualWeightedAverageShares,
+              isAnnual: true,
+            ),
+            quarterlySummary: _computeSummary(
+              data.quarterlyWeightedAverageShares,
+              isAnnual: false,
+            ),
+            lastUpdated: DateTime.now(),
           ),
-          quarterlyChartData: _toChartData(
-            data.quarterlyWeightedAverageShares,
-            isAnnual: false,
-          ),
-          annualSummary: _computeSummary(
-            data.annualWeightedAverageShares,
-            isAnnual: true,
-          ),
-          quarterlySummary: _computeSummary(
-            data.quarterlyWeightedAverageShares,
-            isAnnual: false,
-          ),
-          lastUpdated: DateTime.now(),
-        ),
-      ),
+        );
+      },
     );
   }
 
   Future<void> _onStalenessCheckRequested(StalenessCheckRequested event) async {
+    _logger.info('Staleness check requested for ${event.ticker}');
     state.mapOrNull(
       loaded: (loadedState) {
         final lastUpdated = loadedState.lastUpdated;
         if (lastUpdated != null) {
           final difference = DateTime.now().difference(lastUpdated);
           if (difference.inHours >= 24) {
+            _logger.info(
+              'Shares stale (TTL expired: ${difference.inHours}h). Triggering load.',
+            );
             add(
               CompanySharesEvent.loadRequested(
                 event.ticker,
                 forceRefresh: true,
               ),
             );
+          } else {
+            _logger.info('Shares still fresh (Last updated: $lastUpdated)');
           }
+        } else {
+          _logger.info('Shares lastUpdated is null. Triggering load.');
+          add(
+            CompanySharesEvent.loadRequested(event.ticker, forceRefresh: true),
+          );
         }
       },
-      failure: (_) => add(
-        CompanySharesEvent.loadRequested(event.ticker, forceRefresh: true),
-      ),
-      initial: (_) => add(
-        CompanySharesEvent.loadRequested(event.ticker, forceRefresh: true),
-      ),
+      failure: (_) {
+        _logger.info('Shares in failure state. Triggering retry.');
+        add(CompanySharesEvent.loadRequested(event.ticker, forceRefresh: true));
+      },
+      initial: (_) {
+        _logger.info('Shares in initial state. Triggering load.');
+        add(CompanySharesEvent.loadRequested(event.ticker, forceRefresh: true));
+      },
     );
   }
 

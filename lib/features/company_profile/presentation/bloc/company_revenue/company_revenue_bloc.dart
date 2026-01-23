@@ -1,3 +1,4 @@
+import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:bizzie/features/company_profile/domain/models/chart_data_point.dart';
 import 'package:bizzie/features/company_profile/domain/models/financial_data_point.dart';
 import 'package:bizzie/features/company_profile/domain/usecases/get_revenue_stats_usecase.dart';
@@ -7,6 +8,8 @@ import 'package:bizzie/shared/utils/bizzie_date_formatter.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
+
+final _logger = BizzieLogger('CompanyRevenueBloc');
 
 @injectable
 class CompanyRevenueBloc
@@ -22,6 +25,7 @@ class CompanyRevenueBloc
     CompanyRevenueEvent event,
     Emitter<CompanyRevenueState> emit,
   ) async {
+    _logger.info('Handling event: $event');
     await event.map(
       loadRequested: (e) async => _onLoadRequested(e, emit),
       stalenessCheckRequested: (e) async => _onStalenessCheckRequested(e),
@@ -34,51 +38,78 @@ class CompanyRevenueBloc
   ) async {
     if (!event.forceRefresh &&
         state.maybeMap(loaded: (_) => true, orElse: () => false)) {
+      _logger.info('Skip loading Revenue: already loaded and no force refresh');
       return;
     }
 
+    _logger.info(
+      'Loading Revenue stats for ${event.ticker} (force=${event.forceRefresh})',
+    );
     emit(const CompanyRevenueState.loading());
 
     final result = await _getRevenueStatsUseCase(event.ticker);
 
     result.fold(
-      (failure) => emit(CompanyRevenueState.failure(failure)),
-      (stats) => emit(
-        CompanyRevenueState.loaded(
-          revenueStats: stats,
-          annualChartData: _toChartData(stats.annualRevenue, isAnnual: true),
-          quarterlyChartData: _toChartData(
-            stats.quarterlyRevenue,
-            isAnnual: false,
+      (failure) {
+        _logger.severe('Failed to load Revenue stats', failure);
+        emit(CompanyRevenueState.failure(failure));
+      },
+      (stats) {
+        _logger.info('Successfully loaded Revenue stats');
+        emit(
+          CompanyRevenueState.loaded(
+            revenueStats: stats,
+            annualChartData: _toChartData(stats.annualRevenue, isAnnual: true),
+            quarterlyChartData: _toChartData(
+              stats.quarterlyRevenue,
+              isAnnual: false,
+            ),
+            lastUpdated: DateTime.now(),
           ),
-          lastUpdated: DateTime.now(),
-        ),
-      ),
+        );
+      },
     );
   }
 
   Future<void> _onStalenessCheckRequested(StalenessCheckRequested event) async {
+    _logger.info('Staleness check requested for ${event.ticker}');
     state.mapOrNull(
       loaded: (loadedState) {
         final lastUpdated = loadedState.lastUpdated;
         if (lastUpdated != null) {
           final difference = DateTime.now().difference(lastUpdated);
           if (difference.inHours >= 24) {
+            _logger.info(
+              'Revenue stale (TTL expired: ${difference.inHours}h). Triggering load.',
+            );
             add(
               CompanyRevenueEvent.loadRequested(
                 event.ticker,
                 forceRefresh: true,
               ),
             );
+          } else {
+            _logger.info('Revenue still fresh (Last updated: $lastUpdated)');
           }
+        } else {
+          _logger.info('Revenue lastUpdated is null. Triggering load.');
+          add(
+            CompanyRevenueEvent.loadRequested(event.ticker, forceRefresh: true),
+          );
         }
       },
-      failure: (_) => add(
-        CompanyRevenueEvent.loadRequested(event.ticker, forceRefresh: true),
-      ),
-      initial: (_) => add(
-        CompanyRevenueEvent.loadRequested(event.ticker, forceRefresh: true),
-      ),
+      failure: (_) {
+        _logger.info('Revenue in failure state. Triggering retry.');
+        add(
+          CompanyRevenueEvent.loadRequested(event.ticker, forceRefresh: true),
+        );
+      },
+      initial: (_) {
+        _logger.info('Revenue in initial state. Triggering load.');
+        add(
+          CompanyRevenueEvent.loadRequested(event.ticker, forceRefresh: true),
+        );
+      },
     );
   }
 

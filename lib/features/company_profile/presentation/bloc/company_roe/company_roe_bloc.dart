@@ -3,12 +3,15 @@ import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:injectable/injectable.dart';
 import 'package:intl/intl.dart';
 
+import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:bizzie/features/company_profile/domain/models/chart_data_point.dart';
 import 'package:bizzie/features/company_profile/domain/models/financial_data_point.dart';
 import 'package:bizzie/features/company_profile/domain/usecases/get_key_metrics_usecase.dart';
 
 import 'company_roe_event.dart';
 import 'company_roe_state.dart';
+
+final _logger = BizzieLogger('CompanyRoeBloc');
 
 @injectable
 class CompanyRoeBloc extends Bloc<CompanyRoeEvent, CompanyRoeState> {
@@ -22,6 +25,7 @@ class CompanyRoeBloc extends Bloc<CompanyRoeEvent, CompanyRoeState> {
     CompanyRoeEvent event,
     Emitter<CompanyRoeState> emit,
   ) async {
+    _logger.info('Handling event: $event');
     await event.map(
       loadRequested: (e) async => _onLoadRequested(e, emit),
       stalenessCheckRequested: (e) async => _onStalenessCheckRequested(e),
@@ -32,15 +36,29 @@ class CompanyRoeBloc extends Bloc<CompanyRoeEvent, CompanyRoeState> {
     LoadRequested event,
     Emitter<CompanyRoeState> emit,
   ) async {
-    if (_shouldSkipLoad(event.forceRefresh)) return;
+    if (_shouldSkipLoad(event.forceRefresh)) {
+      _logger.info('Skip loading ROE: already loaded and no force refresh');
+      return;
+    }
 
+    _logger.info(
+      'Loading ROE stats for ${event.ticker} (force=${event.forceRefresh})',
+    );
     emit(const CompanyRoeState.loading());
 
     final result = await _getKeyMetrics(event.ticker);
 
     result.fold(
-      (failure) => emit(CompanyRoeState.failure(failure)),
-      (keyMetrics) => _emitLoadedState(keyMetrics, emit),
+      (failure) {
+        _logger.severe('Failed to load ROE stats', failure);
+        emit(CompanyRoeState.failure(failure));
+      },
+      (keyMetrics) {
+        _logger.info(
+          'Successfully loaded ROE stats: ${keyMetrics.length} points',
+        );
+        _emitLoadedState(keyMetrics, emit);
+      },
     );
   }
 
@@ -56,6 +74,7 @@ class CompanyRoeBloc extends Bloc<CompanyRoeEvent, CompanyRoeState> {
     final sortedPoints = _extractSortedDataPoints(keyMetrics);
 
     if (sortedPoints.isEmpty) {
+      _logger.info('ROE metrics empty after extraction');
       emit(_emptyLoadedState());
       return;
     }
@@ -66,6 +85,9 @@ class CompanyRoeBloc extends Bloc<CompanyRoeEvent, CompanyRoeState> {
     final referenceLabel = _formatReferenceLabel(referencePoint);
     final chartData = _buildChartData(sortedPoints);
 
+    _logger.info(
+      'Emitting loaded state: current=${currentPoint.value}, growth=${growth.percentage}%',
+    );
     emit(
       CompanyRoeState.loaded(
         dataPoints: sortedPoints,
@@ -157,22 +179,35 @@ class CompanyRoeBloc extends Bloc<CompanyRoeEvent, CompanyRoeState> {
   }
 
   Future<void> _onStalenessCheckRequested(StalenessCheckRequested event) async {
+    _logger.info('Staleness check requested for ${event.ticker}');
     state.mapOrNull(
       loaded: (loadedState) {
         final lastUpdated = loadedState.lastUpdated;
         if (lastUpdated != null) {
           final difference = DateTime.now().difference(lastUpdated);
           if (difference.inHours >= 24) {
+            _logger.info(
+              'ROE stale (TTL expired: ${difference.inHours}h). Triggering load.',
+            );
             add(
               CompanyRoeEvent.loadRequested(event.ticker, forceRefresh: true),
             );
+          } else {
+            _logger.info('ROE still fresh (Last updated: $lastUpdated)');
           }
+        } else {
+          _logger.info('ROE lastUpdated is null. Triggering load.');
+          add(CompanyRoeEvent.loadRequested(event.ticker, forceRefresh: true));
         }
       },
-      failure: (_) =>
-          add(CompanyRoeEvent.loadRequested(event.ticker, forceRefresh: true)),
-      initial: (_) =>
-          add(CompanyRoeEvent.loadRequested(event.ticker, forceRefresh: true)),
+      failure: (_) {
+        _logger.info('ROE in failure state. Triggering retry.');
+        add(CompanyRoeEvent.loadRequested(event.ticker, forceRefresh: true));
+      },
+      initial: (_) {
+        _logger.info('ROE in initial state. Triggering load.');
+        add(CompanyRoeEvent.loadRequested(event.ticker, forceRefresh: true));
+      },
     );
   }
 }
