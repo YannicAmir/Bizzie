@@ -89,7 +89,7 @@ class _TimeFrameSelector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 36,
+      height: AppConstants.buttonHeight,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         itemCount: ChartTimeFrame.values.length,
@@ -101,11 +101,13 @@ class _TimeFrameSelector extends StatelessWidget {
             onTap: () => onTimeFrameChanged(frame),
             child: Container(
               width: 55,
-              height: 36,
+              height: AppConstants.buttonHeight,
               alignment: Alignment.center,
               decoration: BoxDecoration(
                 color: isSelected ? primaryColor : AppColors.slate100,
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(
+                  AppConstants.componyProfileButtonBorderRadius,
+                ),
               ),
               child: Text(
                 frame.label,

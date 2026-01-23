@@ -25,9 +25,6 @@ class MascotRefreshIndicator extends StatelessWidget {
 
         return CustomRefreshIndicator(
           onRefresh: () async {
-            // Trigger the actual refresh logic
-            // We await it slightly to ensure the "loading" state is triggered in the BLoC
-            // before we collapse this indicator.
             await onRefresh();
           },
           builder:

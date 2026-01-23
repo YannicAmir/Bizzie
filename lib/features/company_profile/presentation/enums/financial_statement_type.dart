@@ -1,7 +1,7 @@
 enum FinancialStatementType {
-  income('Income Statement'),
+  income('Income'),
   balance('Balance Sheet'),
-  cashFlow('Cash Flow Statement');
+  cashFlow('Cash Flow');
 
   final String label;
   const FinancialStatementType(this.label);

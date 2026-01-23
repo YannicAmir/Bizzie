@@ -168,7 +168,7 @@ class FinancialStatementTableRow {
   final Color growthColor;
   final bool isBold;
 
-  FinancialStatementTableRow({
+  const FinancialStatementTableRow({
     required this.metric,
     required this.amount,
     required this.percentage,

@@ -123,7 +123,9 @@ class _FilingTabButton extends StatelessWidget {
           color: isActive
               ? theme.colorScheme.primary
               : theme.colorScheme.tertiaryContainer,
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(
+            AppConstants.componyProfileButtonBorderRadius,
+          ),
         ),
         alignment: Alignment.center,
         child: Text(

@@ -22,4 +22,22 @@ abstract class FinancialStatementsEvent with _$FinancialStatementsEvent {
     String ticker, {
     @Default(FinancialStatementType.income) FinancialStatementType type,
   }) = StalenessCheckRequested;
+
+  const factory FinancialStatementsEvent.viewTypeChanged(
+    String ticker,
+    FinancialStatementType type,
+  ) = ViewTypeChanged;
+
+  const factory FinancialStatementsEvent.incomeDateSelected(
+    String date, {
+    required bool isAnnual,
+  }) = IncomeDateSelected;
+  const factory FinancialStatementsEvent.balanceDateSelected(
+    String date, {
+    required bool isAnnual,
+  }) = BalanceDateSelected;
+  const factory FinancialStatementsEvent.cashFlowDateSelected(
+    String date, {
+    required bool isAnnual,
+  }) = CashFlowDateSelected;
 }

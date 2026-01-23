@@ -33,6 +33,10 @@ class FinancialStatementsBloc
       loadBalanceSheets: (e) async => _onLoadBalanceSheets(e, emit),
       loadCashFlows: (e) async => _onLoadCashFlows(e, emit),
       stalenessCheckRequested: (e) async => _onStalenessCheckRequested(e, emit),
+      viewTypeChanged: (e) async => _onViewTypeChanged(e, emit),
+      incomeDateSelected: (e) async => _onIncomeDateSelected(e, emit),
+      balanceDateSelected: (e) async => _onBalanceDateSelected(e, emit),
+      cashFlowDateSelected: (e) async => _onCashFlowDateSelected(e, emit),
     );
   }
 
@@ -100,6 +104,12 @@ class FinancialStatementsBloc
         quarterlyIncomeStatements: quarterlyData,
         reportedCurrency: currency,
         lastUpdatedIncome: DateTime.now(),
+        selectedAnnualIncomeDate:
+            state.selectedAnnualIncomeDate ??
+            (annualData.isNotEmpty ? annualData.first.date : null),
+        selectedQuarterlyIncomeDate:
+            state.selectedQuarterlyIncomeDate ??
+            (quarterlyData.isNotEmpty ? quarterlyData.first.date : null),
       ),
     );
   }
@@ -152,6 +162,12 @@ class FinancialStatementsBloc
         annualBalanceSheets: annualData,
         quarterlyBalanceSheets: quarterlyData,
         lastUpdatedBalance: DateTime.now(),
+        selectedAnnualBalanceDate:
+            state.selectedAnnualBalanceDate ??
+            (annualData.isNotEmpty ? annualData.first.date : null),
+        selectedQuarterlyBalanceDate:
+            state.selectedQuarterlyBalanceDate ??
+            (quarterlyData.isNotEmpty ? quarterlyData.first.date : null),
       ),
     );
   }
@@ -205,6 +221,12 @@ class FinancialStatementsBloc
         annualCashFlowStatements: annualData,
         quarterlyCashFlowStatements: quarterlyData,
         lastUpdatedCashFlow: DateTime.now(),
+        selectedAnnualCashFlowDate:
+            state.selectedAnnualCashFlowDate ??
+            (annualData.isNotEmpty ? annualData.first.date : null),
+        selectedQuarterlyCashFlowDate:
+            state.selectedQuarterlyCashFlowDate ??
+            (quarterlyData.isNotEmpty ? quarterlyData.first.date : null),
       ),
     );
   }
@@ -274,6 +296,56 @@ class FinancialStatementsBloc
           _logger.info('Cash flows still fresh.');
         }
         break;
+    }
+  }
+
+  Future<void> _onViewTypeChanged(
+    ViewTypeChanged e,
+    Emitter<FinancialStatementsState> emit,
+  ) async {
+    _logger.info('View type changed to ${e.type}');
+    if (state.selectedType == e.type) return;
+
+    emit(state.copyWith(selectedType: e.type));
+
+    add(
+      FinancialStatementsEvent.stalenessCheckRequested(e.ticker, type: e.type),
+    );
+  }
+
+  Future<void> _onIncomeDateSelected(
+    IncomeDateSelected e,
+    Emitter<FinancialStatementsState> emit,
+  ) async {
+    _logger.info('Income date selected: ${e.date}, annual=${e.isAnnual}');
+    if (e.isAnnual) {
+      emit(state.copyWith(selectedAnnualIncomeDate: e.date));
+    } else {
+      emit(state.copyWith(selectedQuarterlyIncomeDate: e.date));
+    }
+  }
+
+  Future<void> _onBalanceDateSelected(
+    BalanceDateSelected e,
+    Emitter<FinancialStatementsState> emit,
+  ) async {
+    _logger.info('Balance date selected: ${e.date}, annual=${e.isAnnual}');
+    if (e.isAnnual) {
+      emit(state.copyWith(selectedAnnualBalanceDate: e.date));
+    } else {
+      emit(state.copyWith(selectedQuarterlyBalanceDate: e.date));
+    }
+  }
+
+  Future<void> _onCashFlowDateSelected(
+    CashFlowDateSelected e,
+    Emitter<FinancialStatementsState> emit,
+  ) async {
+    _logger.info('Cash flow date selected: ${e.date}, annual=${e.isAnnual}');
+    if (e.isAnnual) {
+      emit(state.copyWith(selectedAnnualCashFlowDate: e.date));
+    } else {
+      emit(state.copyWith(selectedQuarterlyCashFlowDate: e.date));
     }
   }
 }

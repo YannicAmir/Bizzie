@@ -1,78 +1,33 @@
-import 'package:bizzie/app/themes/app_colors.dart';
-import 'package:bizzie/app/themes/app_text_styles.dart';
-import 'package:bizzie/features/company_profile/domain/models/balance_sheet.dart';
-import 'package:bizzie/features/company_profile/domain/models/income_statement.dart';
+import 'package:bizzie/app/themes/app_theme.dart';
+import 'package:bizzie/features/company_profile/presentation/bloc/financial_statements/financial_statements_bloc.dart';
+import 'package:bizzie/features/company_profile/presentation/bloc/financial_statements/financial_statements_event.dart';
+import 'package:bizzie/features/company_profile/presentation/bloc/financial_statements/financial_statements_state.dart';
+import 'package:bizzie/features/company_profile/presentation/bloc/financial_statements/financial_statements_state_extensions.dart';
+import 'package:bizzie/features/company_profile/presentation/models/financial_history_row_data.dart';
 import 'package:bizzie/features/company_profile/presentation/widgets/financial_statements/balance_sheet_pie_chart.dart';
 import 'package:bizzie/features/company_profile/presentation/widgets/financial_statements/financial_statement_selector.dart';
 import 'package:bizzie/features/company_profile/presentation/widgets/financial_statements/financial_statements_table.dart';
+import 'package:bizzie/features/company_profile/domain/models/balance_sheet.dart';
+import 'package:bizzie/app/themes/app_colors.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
-import 'package:bizzie/shared/utils/currency_formatter.dart';
 import 'package:bizzie/shared/widgets/modals/app_history_modal.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
+import 'package:bizzie/features/user/presentation/bloc/user_state_extensions.dart';
+import 'package:bizzie/shared/widgets/states/bizzie_empty_state.dart';
+import 'package:bizzie/features/company_profile/presentation/widgets/financial_statements/shared/financial_history_row.dart';
 
 class BalanceSheetView extends StatefulWidget {
-  final List<BalanceSheet> annualData;
-  final List<BalanceSheet> quarterlyData;
-  final List<IncomeStatement>? annualIncome;
-  final List<IncomeStatement>? quarterlyIncome;
-
-  const BalanceSheetView({
-    super.key,
-    required this.annualData,
-    required this.quarterlyData,
-    this.annualIncome,
-    this.quarterlyIncome,
-  });
+  const BalanceSheetView({super.key});
 
   @override
   State<BalanceSheetView> createState() => _BalanceSheetViewState();
 }
 
 class _BalanceSheetViewState extends State<BalanceSheetView> {
-  BalanceSheet? _selectedStatement;
   final PageController _pageController = PageController();
-  late List<BalanceSheet> _activeData;
-  late List<IncomeStatement>? _activeIncomeData;
-
-  @override
-  void initState() {
-    super.initState();
-    _initSelectedStatements();
-  }
-
-  @override
-  void didUpdateWidget(covariant BalanceSheetView oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (widget.annualData != oldWidget.annualData ||
-        widget.quarterlyData != oldWidget.quarterlyData ||
-        widget.annualIncome != oldWidget.annualIncome ||
-        widget.quarterlyIncome != oldWidget.quarterlyIncome) {
-      _initSelectedStatements();
-    }
-  }
-
-  void _initSelectedStatements() {
-    if (widget.quarterlyData.isNotEmpty) {
-      _activeData = widget.quarterlyData;
-      _activeIncomeData = widget.quarterlyIncome;
-    } else {
-      _activeData = widget.annualData;
-      _activeIncomeData = widget.annualIncome;
-    }
-
-    if (_activeData.isNotEmpty) {
-      if (_selectedStatement != null &&
-          mounted &&
-          _activeData.any((e) => e.date == _selectedStatement!.date)) {
-        _selectedStatement = _activeData.firstWhere(
-          (e) => e.date == _selectedStatement!.date,
-        );
-      } else {
-        _selectedStatement = _activeData.first;
-      }
-    }
-  }
 
   @override
   void dispose() {
@@ -80,10 +35,146 @@ class _BalanceSheetViewState extends State<BalanceSheetView> {
     super.dispose();
   }
 
-  Widget _buildChartsCarousel(
-    BalanceSheet statement,
-    PageController controller,
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<FinancialStatementsBloc, FinancialStatementsState>(
+      builder: (context, state) {
+        final locale = Localizations.localeOf(context).toString();
+        if (state.annualBalanceSheets.isEmpty &&
+            state.quarterlyBalanceSheets.isEmpty) {
+          final userState = context.watch<UserBloc>().state;
+          return BizzieEmptyState(
+            message: 'No balance sheet data available for this company.',
+            mascotAsset: userState.mascotAsset,
+          );
+        }
+
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (state.quarterlyBalanceSheets.isNotEmpty) ...[
+              _BalanceSheetSection(
+                title: 'On',
+                data: state.quarterlyBalanceSheets,
+                selectedItem: state.quarterlyBalanceSheets.firstWhere(
+                  (e) => e.date == state.selectedQuarterlyBalanceDate,
+                  orElse: () => state.quarterlyBalanceSheets.first,
+                ),
+                onSelect: (date) => context.read<FinancialStatementsBloc>().add(
+                  FinancialStatementsEvent.balanceDateSelected(
+                    date,
+                    isAnnual: false,
+                  ),
+                ),
+                pageController: _pageController,
+                rows: [
+                  ...state.balanceRows(locale: locale, isAnnual: false),
+                  state.roeRow(isAnnual: false),
+                ],
+                historyBuilder: (item) =>
+                    state.balanceHistoryRowData(item, locale),
+              ),
+            ],
+          ],
+        );
+      },
+    );
+  }
+}
+
+class _BalanceSheetSection extends StatelessWidget {
+  final String title;
+  final List<BalanceSheet> data;
+  final BalanceSheet selectedItem;
+  final ValueChanged<String> onSelect;
+  final PageController? pageController;
+  final List<FinancialStatementTableRow> rows;
+  final FinancialHistoryRowData Function(BalanceSheet) historyBuilder;
+
+  const _BalanceSheetSection({
+    required this.title,
+    required this.data,
+    required this.selectedItem,
+    required this.onSelect,
+    required this.pageController,
+    required this.rows,
+    required this.historyBuilder,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        FinancialStatementSelector<BalanceSheet>(
+          title: title,
+          items: data,
+          selectedItem: selectedItem,
+          onItemSelected: (item) => onSelect(item.date),
+          dateStringExtractor: (item) => item.date,
+          periodExtractor: (item) => item.period,
+          modalTitle: 'Balance Sheet Periods',
+        ),
+        AppConstants.mainSectionSpacing,
+        if (pageController != null) ...[
+          _BalanceSheetCharts(
+            statement: selectedItem,
+            controller: pageController!,
+          ),
+          AppConstants.mainSectionSpacing,
+        ],
+        FinancialStatementsTable(
+          rows: rows,
+          onViewAll: () => _showBalanceSheetHistory(context, data),
+          showPercentage: false,
+          amountAlignment: Alignment.center,
+          amountTextAlign: TextAlign.center,
+        ),
+      ],
+    );
+  }
+
+  void _showBalanceSheetHistory(
+    BuildContext context,
+    List<BalanceSheet> dataset,
   ) {
+    AppHistoryModalHelper.show<BalanceSheet>(
+      context: context,
+      title: 'Net Worth History',
+      header: const FinancialHistoryHeader(
+        label: 'Year',
+        header1: 'Assets',
+        header2: 'Liabilities',
+        header3: 'Equity',
+      ),
+      data: dataset,
+      itemBuilder: (context, item, index) {
+        final data = historyBuilder(item);
+        return FinancialHistoryRow(
+          label: data.label,
+          value1: data.value1,
+          value2: data.value2,
+          value3: data.value3,
+          value3Color: data.value3Color,
+        );
+      },
+    );
+  }
+}
+
+class _BalanceSheetCharts extends StatelessWidget {
+  final BalanceSheet statement;
+  final PageController controller;
+
+  const _BalanceSheetCharts({
+    required this.statement,
+    required this.controller,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final badgeTheme = theme.extension<BadgeThemeExtension>();
     final currency = statement.reportedCurrency;
     final charts = [
       BalanceSheetPieChart(
@@ -93,17 +184,17 @@ class _BalanceSheetViewState extends State<BalanceSheetView> {
           BalanceSheetPieChartData(
             'Assets',
             statement.totalAssets,
-            AppColors.successText,
+            badgeTheme?.goodText ?? AppColors.successText,
           ),
           BalanceSheetPieChartData(
             'Liabilities',
             statement.totalLiabilities,
-            AppColors.error,
+            badgeTheme?.criticalText ?? AppColors.criticalText,
           ),
           BalanceSheetPieChartData(
             'Equity',
             statement.totalEquity,
-            AppColors.primary,
+            badgeTheme?.neutralText ?? AppColors.primary,
           ),
         ],
       ),
@@ -114,12 +205,12 @@ class _BalanceSheetViewState extends State<BalanceSheetView> {
           BalanceSheetPieChartData(
             'Current Assets',
             statement.totalCurrentAssets,
-            AppColors.successText,
+            badgeTheme?.goodText ?? AppColors.successText,
           ),
           BalanceSheetPieChartData(
             'Current Liabilities',
             statement.totalCurrentLiabilities,
-            AppColors.error,
+            badgeTheme?.criticalText ?? AppColors.criticalText,
           ),
         ],
       ),
@@ -130,17 +221,17 @@ class _BalanceSheetViewState extends State<BalanceSheetView> {
           BalanceSheetPieChartData(
             'L.T. Debt',
             statement.longTermDebt,
-            AppColors.error,
+            badgeTheme?.criticalText ?? AppColors.criticalText,
           ),
           BalanceSheetPieChartData(
             'S.T. Debt',
             statement.shortTermDebt,
-            Colors.red[900]!,
+            AppColors.darkCritical,
           ),
           BalanceSheetPieChartData(
             'Equity',
             statement.totalEquity,
-            AppColors.primary,
+            badgeTheme?.neutralText ?? AppColors.primary,
           ),
         ],
       ),
@@ -156,345 +247,11 @@ class _BalanceSheetViewState extends State<BalanceSheetView> {
         SmoothPageIndicator(
           controller: controller,
           count: charts.length,
-          effect: const ExpandingDotsEffect(
+          effect: ExpandingDotsEffect(
             dotHeight: 6,
             dotWidth: 6,
-            activeDotColor: Color(0xFF2563EB),
-            dotColor: Color(0xFFE2E8F0),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildTableFor(BalanceSheet currentItem, List<BalanceSheet> dataset) {
-    BalanceSheet? prevStatement;
-    if (dataset.isNotEmpty) {
-      final index = dataset.indexOf(currentItem);
-      if (index != -1 && index + 1 < dataset.length) {
-        prevStatement = dataset[index + 1];
-      }
-    }
-
-    double? netIncome;
-    String roeStr = '-';
-
-    if (_activeIncomeData != null) {
-      try {
-        final incomeStatement = _activeIncomeData!.firstWhere(
-          (e) => e.date == currentItem.date,
-        );
-        netIncome = incomeStatement.netIncome;
-      } catch (e) {}
-    }
-
-    if (netIncome != null && currentItem.totalEquity != 0) {
-      final roe = (netIncome / currentItem.totalEquity) * 100;
-      roeStr = '${roe.toStringAsFixed(1)}%';
-    }
-
-    String roeGrowthStr = '-';
-    Color roeGrowthColor = AppColors.textPrimary;
-
-    if (prevStatement != null && _activeIncomeData != null) {
-      try {
-        final prevIncome = _activeIncomeData!.firstWhere(
-          (e) => e.date == prevStatement!.date,
-        );
-        final prevNetIncome = prevIncome.netIncome;
-        final prevEquity = prevStatement.totalEquity;
-
-        if (prevEquity != 0) {
-          final prevRoe = (prevNetIncome / prevEquity) * 100;
-
-          double? currentRoe;
-          if (netIncome != null && currentItem.totalEquity != 0) {
-            currentRoe = (netIncome / currentItem.totalEquity) * 100;
-          }
-
-          if (currentRoe != null && prevRoe != 0) {
-            final growth = (currentRoe - prevRoe) / prevRoe.abs() * 100;
-            if (growth > 0) {
-              roeGrowthStr = '+${growth.toStringAsFixed(1)}%';
-              roeGrowthColor = AppColors.successText;
-            } else if (growth < 0) {
-              roeGrowthStr = '${growth.toStringAsFixed(1)}%';
-              roeGrowthColor = AppColors.red800;
-            } else {
-              roeGrowthStr = '0.0%';
-            }
-          }
-        }
-      } catch (e) {}
-    }
-
-    final rows = [
-      _buildRow(
-        'Total Current Assets',
-        currentItem.totalCurrentAssets,
-        prevStatement?.totalCurrentAssets,
-        currentItem.totalAssets,
-      ),
-      _buildRow(
-        'Total Non-Current Assets',
-        currentItem.totalNonCurrentAssets,
-        prevStatement?.totalNonCurrentAssets,
-        currentItem.totalAssets,
-      ),
-      _buildRow(
-        'Total Assets',
-        currentItem.totalAssets,
-        prevStatement?.totalAssets,
-        currentItem.totalAssets,
-      ),
-      _buildRow(
-        'Total Current Liabilities',
-        currentItem.totalCurrentLiabilities,
-        prevStatement?.totalCurrentLiabilities,
-        currentItem.totalAssets,
-        isLiability: true,
-      ),
-      _buildRow(
-        'Total Non-Current Liabilities',
-        currentItem.totalNonCurrentLiabilities,
-        prevStatement?.totalNonCurrentLiabilities,
-        currentItem.totalAssets,
-        isLiability: true,
-      ),
-      _buildRow(
-        'Total Liabilities',
-        currentItem.totalLiabilities,
-        prevStatement?.totalLiabilities,
-        currentItem.totalAssets,
-        isLiability: true,
-      ),
-      _buildRow(
-        'Total Equity',
-        currentItem.totalEquity,
-        prevStatement?.totalEquity,
-        currentItem.totalAssets,
-      ),
-      FinancialStatementTableRow(
-        metric: 'ROE',
-        amount: roeStr,
-        percentage: '',
-        growth: roeGrowthStr,
-        growthColor: roeGrowthColor,
-      ),
-    ];
-
-    return FinancialStatementsTable(
-      rows: rows,
-      onViewAll: () => _showBalanceSheetHistory(context, dataset),
-      showPercentage: false,
-      amountAlignment: Alignment.center,
-      amountTextAlign: TextAlign.center,
-    );
-  }
-
-  void _showBalanceSheetHistory(
-    BuildContext context,
-    List<BalanceSheet> dataset,
-  ) {
-    AppHistoryModalHelper.show<BalanceSheet>(
-      context: context,
-      title: 'Net Worth History',
-      header: const _NetWorthHistoryHeader(),
-      data: dataset,
-      itemBuilder: (context, item, index) => _NetWorthHistoryRow(item: item),
-    );
-  }
-
-  FinancialStatementTableRow _buildRow(
-    String metric,
-    double amount,
-    double? previous,
-    double? totalAssets, {
-    bool isBold = false,
-    bool isLiability = false,
-  }) {
-    final amountStr = CurrencyFormatter.formatCompact(
-      amount,
-      'USD',
-      locale: Localizations.localeOf(context).toString(),
-    );
-
-    String percentStr = '-';
-    if (totalAssets != null && totalAssets != 0) {
-      final percent = (amount / totalAssets) * 100;
-      percentStr = '${percent.toStringAsFixed(1)}%';
-    }
-
-    String growthStr = '-';
-    Color growthColor = AppColors.textPrimary;
-
-    if (previous != null && previous != 0) {
-      final growth = (amount - previous) / previous.abs() * 100;
-      if (growth > 0) {
-        growthStr = '+${growth.toStringAsFixed(1)}%';
-        growthColor = isLiability ? AppColors.red800 : AppColors.successText;
-      } else if (growth < 0) {
-        growthStr = '${growth.toStringAsFixed(1)}%';
-        growthColor = isLiability ? AppColors.successText : AppColors.red800;
-      } else {
-        growthStr = '0.0%';
-      }
-    }
-
-    return FinancialStatementTableRow(
-      metric: metric,
-      amount: amountStr,
-      percentage: percentStr,
-      growth: growthStr,
-      growthColor: growthColor,
-      isBold: isBold,
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    if (_activeData.isEmpty) {
-      return const Center(child: Text('No Balance Sheet Data'));
-    }
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        FinancialStatementSelector<BalanceSheet>(
-          title: '',
-          items: _activeData,
-          selectedItem: _selectedStatement!,
-          onItemSelected: (item) => setState(() => _selectedStatement = item),
-          dateStringExtractor: (item) => item.date,
-          periodExtractor: (item) => item.period,
-        ),
-        AppConstants.mainSectionSpacing,
-        _buildChartsCarousel(_selectedStatement!, _pageController),
-        AppConstants.mainSectionSpacing,
-        _buildTableFor(_selectedStatement!, _activeData),
-      ],
-    );
-  }
-}
-
-class _NetWorthHistoryHeader extends StatelessWidget {
-  const _NetWorthHistoryHeader();
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          flex: 2,
-          child: Text(
-            'Year',
-            textAlign: TextAlign.left,
-            style: AppTextStyles.bodyMediumBoldSecondary,
-          ),
-        ),
-        Expanded(
-          flex: 3,
-          child: Text(
-            'Assets',
-            textAlign: TextAlign.center,
-            style: AppTextStyles.bodyMediumBoldSecondary,
-          ),
-        ),
-        Expanded(
-          flex: 3,
-          child: Text(
-            'Liabilities',
-            textAlign: TextAlign.center,
-            style: AppTextStyles.bodyMediumBoldSecondary,
-          ),
-        ),
-        Expanded(
-          flex: 2,
-          child: Text(
-            'Equity',
-            textAlign: TextAlign.right,
-            style: AppTextStyles.bodyMediumBoldSecondary,
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _NetWorthHistoryRow extends StatelessWidget {
-  final BalanceSheet item;
-
-  const _NetWorthHistoryRow({required this.item});
-
-  @override
-  Widget build(BuildContext context) {
-    final date = DateTime.tryParse(item.date);
-    String year = item.date;
-    if (date != null) {
-      if (item.period.isNotEmpty) {
-        year = '${item.period} | ${date.year}';
-      } else {
-        year = date.year.toString();
-      }
-    }
-
-    final currency = item.reportedCurrency;
-    final locale = Localizations.localeOf(context).toString();
-
-    final assets = CurrencyFormatter.formatCompact(
-      item.totalAssets,
-      currency,
-      locale: locale,
-    );
-
-    final liabilities = CurrencyFormatter.formatCompact(
-      item.totalLiabilities,
-      currency,
-      locale: locale,
-    );
-
-    final equityVal = item.totalEquity;
-    final equity = CurrencyFormatter.formatCompact(
-      equityVal,
-      currency,
-      locale: locale,
-    );
-    final equityColor = equityVal >= 0
-        ? AppColors.goodText
-        : AppColors.criticalText;
-
-    return Row(
-      children: [
-        Expanded(
-          flex: 2,
-          child: Text(
-            year,
-            textAlign: TextAlign.left,
-            style: AppTextStyles.bodyMedium,
-          ),
-        ),
-        Expanded(
-          flex: 3,
-          child: Text(
-            assets,
-            textAlign: TextAlign.center,
-            style: AppTextStyles.bodyMediumBold,
-          ),
-        ),
-        Expanded(
-          flex: 3,
-          child: Text(
-            liabilities,
-            textAlign: TextAlign.center,
-            style: AppTextStyles.bodyMediumBold,
-          ),
-        ),
-        Expanded(
-          flex: 2,
-          child: Text(
-            equity,
-            textAlign: TextAlign.right,
-            style: AppTextStyles.bodyMediumBold.copyWith(color: equityColor),
+            activeDotColor: theme.colorScheme.primary,
+            dotColor: theme.colorScheme.onSurfaceVariant,
           ),
         ),
       ],

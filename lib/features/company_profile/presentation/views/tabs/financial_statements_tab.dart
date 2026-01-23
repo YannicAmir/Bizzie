@@ -12,6 +12,7 @@ import 'package:bizzie/features/company_profile/presentation/widgets/financial_s
 import 'package:bizzie/shared/widgets/loading/bizzie_loader.dart';
 import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
 import 'package:bizzie/features/user/presentation/bloc/user_state_extensions.dart';
+import 'package:bizzie/features/company_profile/presentation/widgets/shared/company_profile_error_state.dart';
 
 class FinancialStatementsTab extends StatefulWidget {
   final String ticker;
@@ -24,108 +25,43 @@ class FinancialStatementsTab extends StatefulWidget {
 
 class _FinancialStatementsTabState extends State<FinancialStatementsTab>
     with AutomaticKeepAliveClientMixin {
-  int _selectedIndex = 0;
-
   @override
   bool get wantKeepAlive => true;
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    final mascot = context.watch<UserBloc>().state.mascotAsset;
+    final mascot = context.select((UserBloc bloc) => bloc.state.mascotAsset);
 
     return SingleChildScrollView(
       padding: AppConstants.pagePadding,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          BizzieSwitch(
-            options: FinancialStatementType.values.map((e) => e.label).toList(),
-            selectedIndex: _selectedIndex,
-            onChanged: (index) {
-              setState(() {
-                _selectedIndex = index;
-              });
-              context.read<FinancialStatementsBloc>().add(
-                FinancialStatementsEvent.stalenessCheckRequested(
-                  widget.ticker,
-                  type: FinancialStatementType.values[index],
-                ),
-              );
-            },
-          ),
-          AppConstants.mainSectionSpacing,
           BlocBuilder<FinancialStatementsBloc, FinancialStatementsState>(
             builder: (context, state) {
-              return IndexedStack(
-                index: _selectedIndex,
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Builder(
-                    builder: (context) {
-                      if (state.isLoadingIncome) {
-                        return Padding(
-                          padding: const EdgeInsets.only(top: 120),
-                          child: BizzieLoader(
-                            message: 'Loading Income Statement',
-                            mascotAssetPath: mascot,
-                          ),
-                        );
-                      }
-                      final error = state.incomeError;
-                      if (error != null) {
-                        return Center(child: Text('Error: ${error.message}'));
-                      }
-                      return IncomeStatementView(
-                        annualData: state.annualIncomeStatements,
-                        quarterlyData: state.quarterlyIncomeStatements,
-                        currency: state.reportedCurrency,
+                  BizzieSwitch(
+                    options: FinancialStatementType.values
+                        .map((e) => e.label)
+                        .toList(),
+                    selectedIndex: state.selectedType.index,
+                    onChanged: (index) {
+                      context.read<FinancialStatementsBloc>().add(
+                        FinancialStatementsEvent.viewTypeChanged(
+                          widget.ticker,
+                          FinancialStatementType.values[index],
+                        ),
                       );
                     },
                   ),
-                  Builder(
-                    builder: (context) {
-                      if (state.isLoadingBalance) {
-                        return Padding(
-                          padding: const EdgeInsets.only(top: 120),
-                          child: BizzieLoader(
-                            message: 'Loading Balance Sheet',
-                            mascotAssetPath: mascot,
-                          ),
-                        );
-                      }
-                      final error = state.balanceError;
-                      if (error != null) {
-                        return Center(child: Text('Error: ${error.message}'));
-                      }
-                      return BalanceSheetView(
-                        annualData: state.annualBalanceSheets,
-                        quarterlyData: state.quarterlyBalanceSheets,
-                        annualIncome: state.annualIncomeStatements,
-                        quarterlyIncome: state.quarterlyIncomeStatements,
-                      );
-                    },
-                  ),
-                  Builder(
-                    builder: (context) {
-                      if (state.isLoadingCashFlow) {
-                        return Padding(
-                          padding: const EdgeInsets.only(top: 120),
-                          child: BizzieLoader(
-                            message: 'Loading Cash Flow Statement',
-                            mascotAssetPath: mascot,
-                          ),
-                        );
-                      }
-                      final error = state.cashFlowError;
-                      if (error != null) {
-                        return Center(child: Text('Error: ${error.message}'));
-                      }
-                      return CashFlowStatementView(
-                        annualData: state.annualCashFlowStatements,
-                        quarterlyData: state.quarterlyCashFlowStatements,
-                        currency: state.reportedCurrency,
-                      );
-                    },
+                  AppConstants.mainSectionSpacing,
+                  _ActiveStatementSwitcher(
+                    state: state,
+                    ticker: widget.ticker,
+                    mascotAsset: mascot,
                   ),
                 ],
               );
@@ -134,5 +70,105 @@ class _FinancialStatementsTabState extends State<FinancialStatementsTab>
         ],
       ),
     );
+  }
+}
+
+class _ActiveStatementSwitcher extends StatelessWidget {
+  final FinancialStatementsState state;
+  final String ticker;
+  final String mascotAsset;
+
+  const _ActiveStatementSwitcher({
+    required this.state,
+    required this.ticker,
+    required this.mascotAsset,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return switch (state.selectedType) {
+      FinancialStatementType.income => _FinancialStatementLoader(
+        isLoading: state.isLoadingIncome,
+        error: state.incomeError?.message,
+        loadingMessage: 'Loading Income Statement',
+        mascotAsset: mascotAsset,
+        errorMessage: 'Error loading income statement',
+        onRetry: () {
+          context.read<FinancialStatementsBloc>().add(
+            FinancialStatementsEvent.loadIncomeStatements(
+              ticker,
+              forceRefresh: true,
+            ),
+          );
+        },
+        child: const IncomeStatementView(),
+      ),
+      FinancialStatementType.balance => _FinancialStatementLoader(
+        isLoading: state.isLoadingBalance,
+        error: state.balanceError?.message,
+        loadingMessage: 'Loading Balance Sheet',
+        mascotAsset: mascotAsset,
+        errorMessage: 'Error loading balance sheet',
+        onRetry: () {
+          context.read<FinancialStatementsBloc>().add(
+            FinancialStatementsEvent.loadBalanceSheets(
+              ticker,
+              forceRefresh: true,
+            ),
+          );
+        },
+        child: const BalanceSheetView(),
+      ),
+      FinancialStatementType.cashFlow => _FinancialStatementLoader(
+        isLoading: state.isLoadingCashFlow,
+        error: state.cashFlowError?.message,
+        loadingMessage: 'Loading Cash Flow Statement',
+        mascotAsset: mascotAsset,
+        errorMessage: 'Error loading cash flow statement',
+        onRetry: () {
+          context.read<FinancialStatementsBloc>().add(
+            FinancialStatementsEvent.loadCashFlows(ticker, forceRefresh: true),
+          );
+        },
+        child: const CashFlowStatementView(),
+      ),
+    };
+  }
+}
+
+class _FinancialStatementLoader extends StatelessWidget {
+  final bool isLoading;
+  final String? error;
+  final String loadingMessage;
+  final String mascotAsset;
+  final String errorMessage;
+  final VoidCallback onRetry;
+  final Widget child;
+
+  const _FinancialStatementLoader({
+    required this.isLoading,
+    required this.error,
+    required this.loadingMessage,
+    required this.mascotAsset,
+    required this.errorMessage,
+    required this.onRetry,
+    required this.child,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    if (isLoading) {
+      return Padding(
+        padding: const EdgeInsets.only(top: 120),
+        child: BizzieLoader(
+          message: loadingMessage,
+          mascotAssetPath: mascotAsset,
+        ),
+      );
+    }
+    if (error != null) {
+      return CompanyProfileErrorState(message: errorMessage, onRetry: onRetry);
+    }
+    return child;
   }
 }

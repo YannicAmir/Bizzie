@@ -40,13 +40,10 @@ class BottomModalHeader extends StatelessWidget {
               const Spacer(),
               InkWell(
                 onTap: onClose ?? () => Navigator.pop(context),
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 6),
-                  child: SvgPicture.asset(
-                    AppAssets.modalCloseIcon,
-                    width: 24,
-                    height: 24,
-                  ),
+                child: SvgPicture.asset(
+                  AppAssets.modalCloseIcon,
+                  width: 24,
+                  height: 24,
                 ),
               ),
             ],

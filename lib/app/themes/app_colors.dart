@@ -102,6 +102,8 @@ class AppColors {
   static const Color error = Color(0xFFDC2626);
   static const Color slate600 = Color(0xFF475569);
 
+  static const Color darkCritical = Color.fromARGB(255, 183, 28, 28);
+
   // Tooltips
   static const Color tooltipBackground = Color(0xFF0F172B);
 }

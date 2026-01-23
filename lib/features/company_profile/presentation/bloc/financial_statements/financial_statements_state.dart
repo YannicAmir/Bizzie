@@ -1,4 +1,5 @@
 import 'package:bizzie/core/error/failures.dart';
+import 'package:bizzie/features/company_profile/presentation/enums/financial_statement_type.dart';
 import 'package:bizzie/features/company_profile/domain/models/income_statement.dart';
 import 'package:bizzie/features/company_profile/domain/models/balance_sheet.dart';
 import 'package:bizzie/features/company_profile/domain/models/cash_flow_statement.dart';
@@ -25,6 +26,13 @@ abstract class FinancialStatementsState with _$FinancialStatementsState {
     @Default([]) List<CashFlowStatement> annualCashFlowStatements,
     @Default([]) List<CashFlowStatement> quarterlyCashFlowStatements,
     @Default('USD') String reportedCurrency,
+    @Default(FinancialStatementType.income) FinancialStatementType selectedType,
+    String? selectedAnnualIncomeDate,
+    String? selectedQuarterlyIncomeDate,
+    String? selectedAnnualBalanceDate,
+    String? selectedQuarterlyBalanceDate,
+    String? selectedAnnualCashFlowDate,
+    String? selectedQuarterlyCashFlowDate,
   }) = _FinancialStatementsState;
 
   factory FinancialStatementsState.initial() =>

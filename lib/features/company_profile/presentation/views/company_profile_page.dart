@@ -33,6 +33,7 @@ import 'package:bizzie/features/company_profile/presentation/enums/company_profi
 import 'package:bizzie/features/company_profile/presentation/enums/financial_statement_type.dart';
 import 'package:bizzie/features/company_profile/presentation/widgets/company_profile_body.dart';
 import 'package:bizzie/features/company_profile/presentation/widgets/company_watchlist_button.dart';
+import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -229,6 +230,7 @@ class _CompanyProfileViewState extends State<_CompanyProfileView>
         leading: BackButton(color: theme.colorScheme.onSurface),
         centerTitle: false,
         title: Text(widget.ticker),
+        actionsPadding: AppConstants.appBarActionsPadding,
         actions: [
           CompanyWatchlistButton(
             ticker: widget.ticker,
@@ -239,7 +241,7 @@ class _CompanyProfileViewState extends State<_CompanyProfileView>
           controller: _tabController,
           isScrollable: true,
           tabAlignment: TabAlignment.start,
-          padding: const EdgeInsets.only(left: 24),
+          padding: AppConstants.appBarBottomTabsPadding,
           tabs: _tabs.map((tab) => Tab(text: tab.label)).toList(),
         ),
       ),

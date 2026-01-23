@@ -23,7 +23,6 @@ class BizzieChartTooltip extends StatelessWidget {
 
     String formattedValue;
     if (numberFormat != null) {
-      // Ensure 2 decimal places for tooltips
       numberFormat!.maximumFractionDigits = 2;
       numberFormat!.minimumFractionDigits = 2;
       formattedValue = numberFormat!.format(value);

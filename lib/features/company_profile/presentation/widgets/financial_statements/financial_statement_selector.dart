@@ -12,6 +12,7 @@ class FinancialStatementSelector<T> extends StatelessWidget {
   final String Function(T) dateStringExtractor;
   final String Function(T)? periodExtractor;
   final String dateFormat;
+  final String modalTitle;
 
   const FinancialStatementSelector({
     super.key,
@@ -21,7 +22,8 @@ class FinancialStatementSelector<T> extends StatelessWidget {
     required this.onItemSelected,
     required this.dateStringExtractor,
     this.periodExtractor,
-    this.dateFormat = 'MMM d, yyyy', // Default used in Income Statement
+    this.dateFormat = 'MMM d, yyyy',
+    required this.modalTitle,
   });
 
   String _formatItemLabel(T item) {
@@ -44,8 +46,11 @@ class FinancialStatementSelector<T> extends StatelessWidget {
   Widget build(BuildContext context) {
     final formattedLabel = _formatItemLabel(selectedItem);
 
+    final separator = title == 'On' ? ' ' : ' - ';
     return AppDropdownButton(
-      label: title.isNotEmpty ? '$title - $formattedLabel' : formattedLabel,
+      label: title.isNotEmpty
+          ? '$title$separator$formattedLabel'
+          : formattedLabel,
       onTap: () => _showSelectorModal(context),
     );
   }
@@ -56,7 +61,7 @@ class FinancialStatementSelector<T> extends StatelessWidget {
       isScrollControlled: true,
       builder: (context) {
         return AppBottomModal(
-          title: 'Select Period', // Could be parameter if needed
+          title: modalTitle,
           builder: (context, scrollController) {
             return ListView.builder(
               controller: scrollController,
