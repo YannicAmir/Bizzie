@@ -2,6 +2,7 @@ import 'package:bizzie/app/themes/app_text_styles.dart';
 import 'package:bizzie/features/company_profile/domain/extensions/dividend_event_list_extensions.dart';
 import 'package:bizzie/features/company_profile/domain/models/dividend_event.dart';
 import 'package:bizzie/features/company_profile/presentation/utils/dividend_payment_history_utils.dart';
+import 'package:bizzie/features/company_profile/presentation/utils/dividend_extensions.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:bizzie/shared/widgets/modals/app_history_modal.dart';
 import 'package:bizzie/shared/widgets/tables/bizzie_data_table.dart';
@@ -27,6 +28,7 @@ class DividendPaymentHistorySection extends StatelessWidget {
           : null,
       header: const _TableHeaderRow(),
       footer: _FooterRow(
+        displayedEvents: displayedEvents,
         totalPaid: displayedEvents.totalDividends,
         avgPerQuarter: displayedEvents.averageDividend,
       ),
@@ -94,16 +96,21 @@ class _TableHeaderRow extends StatelessWidget {
 }
 
 class _FooterRow extends StatelessWidget {
+  final List<DividendEvent> displayedEvents;
   final double totalPaid;
   final double avgPerQuarter;
 
-  const _FooterRow({required this.totalPaid, required this.avgPerQuarter});
+  const _FooterRow({
+    required this.displayedEvents,
+    required this.totalPaid,
+    required this.avgPerQuarter,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
-        _FooterColumn(label: 'Total (Last 8 Quarters)', value: totalPaid),
+        _FooterColumn(label: displayedEvents.totalPaidLabel, value: totalPaid),
         const Spacer(),
         _FooterColumn(label: 'Average per Quarter', value: avgPerQuarter),
       ],

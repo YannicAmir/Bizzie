@@ -22,65 +22,89 @@ void main() {
     );
 
     group('getSecFilingsModalTitle', () {
-      test('returns 10-K label for domestic annual filings', () {
+      test('getSecFilingsModalTitle_domesticAnnual_returns10KLabel', () {
+        // arrange
         const domesticProfile = profile;
-        expect(
-          domesticProfile.getSecFilingsModalTitle(true),
-          'All 10-K Filings',
-        );
+
+        // act
+        final result = domesticProfile.getSecFilingsModalTitle(true);
+
+        // assert
+        expect(result, 'All 10-K Filings');
       });
 
-      test('returns 10-Q label for domestic quarterly filings', () {
+      test('getSecFilingsModalTitle_domesticQuarterly_returns10QLabel', () {
+        // arrange
         const domesticProfile = profile;
-        expect(
-          domesticProfile.getSecFilingsModalTitle(false),
-          'All 10-Q Filings',
-        );
+
+        // act
+        final result = domesticProfile.getSecFilingsModalTitle(false);
+
+        // assert
+        expect(result, 'All 10-Q Filings');
       });
 
-      test('returns Annual label for foreign annual filings', () {
+      test('getSecFilingsModalTitle_foreignAnnual_returnsAnnualLabel', () {
+        // arrange
         final foreignProfile = profile.copyWith(isForeignCompany: true);
-        expect(
-          foreignProfile.getSecFilingsModalTitle(true),
-          'All Annual Filings',
-        );
+
+        // act
+        final result = foreignProfile.getSecFilingsModalTitle(true);
+
+        // assert
+        expect(result, 'All Annual Filings');
       });
 
-      test('returns Quarterly label for foreign quarterly filings', () {
-        final foreignProfile = profile.copyWith(isForeignCompany: true);
-        expect(
-          foreignProfile.getSecFilingsModalTitle(false),
-          'All Quarterly Filings',
-        );
-      });
+      test(
+        'getSecFilingsModalTitle_foreignQuarterly_returnsQuarterlyLabel',
+        () {
+          // arrange
+          final foreignProfile = profile.copyWith(isForeignCompany: true);
+
+          // act
+          final result = foreignProfile.getSecFilingsModalTitle(false);
+
+          // assert
+          expect(result, 'All Quarterly Filings');
+        },
+      );
     });
 
     group('getProxyFilingTitle', () {
-      test('returns Proxy Filing label for domestic companies', () {
+      test('getProxyFilingTitle_domestic_returnsProxyFilingLabel', () {
+        // arrange
         const domesticProfile = profile;
-        expect(
-          domesticProfile.getProxyFilingTitle(),
-          'Latest Proxy Filing (DEF 14A)',
-        );
+
+        // act
+        final result = domesticProfile.getProxyFilingTitle();
+
+        // assert
+        expect(result, 'Latest Proxy Filing (DEF 14A)');
       });
 
-      test('returns Proxy Filing label with custom form type for domestic', () {
+      test('getProxyFilingTitle_domesticCustomForm_returnsCustomLabel', () {
+        // arrange
         final domesticProfile = profile.copyWith(proxyFilingFormType: 'CUSTOM');
-        expect(
-          domesticProfile.getProxyFilingTitle(),
-          'Latest Proxy Filing (CUSTOM)',
-        );
+
+        // act
+        final result = domesticProfile.getProxyFilingTitle();
+
+        // assert
+        expect(result, 'Latest Proxy Filing (CUSTOM)');
       });
 
-      test('returns Annual Filing label for foreign companies', () {
+      test('getProxyFilingTitle_foreign_returnsAnnualFilingLabel', () {
+        // arrange
         final foreignProfile = profile.copyWith(
           isForeignCompany: true,
           proxyFilingFormType: '20-F',
         );
-        expect(
-          foreignProfile.getProxyFilingTitle(),
-          'Latest Annual Filing (20-F)',
-        );
+
+        // act
+        final result = foreignProfile.getProxyFilingTitle();
+
+        // assert
+        expect(result, 'Latest Annual Filing (20-F)');
       });
     });
   });
