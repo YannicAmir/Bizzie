@@ -2,6 +2,7 @@ import 'package:bizzie/app/themes/app_assets.dart';
 import 'package:bizzie/app/themes/app_colors.dart';
 import 'package:bizzie/app/themes/app_text_styles.dart';
 import 'package:bizzie/features/company_profile/domain/models/business_profile.dart';
+import 'package:bizzie/features/company_profile/presentation/utils/business_profile_extensions.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -57,7 +58,7 @@ class CompanyInfoCard extends StatelessWidget {
           const SizedBox(height: 16),
           _InfoRow(
             iconPath: AppAssets.companyProfileDocIcon,
-            text: 'Latest Proxy Filing (DEF 14A)',
+            text: profile.getProxyFilingTitle(),
             textColor: AppColors.primary,
             isBold: true,
             onTap: profile.def14aUrl != null
