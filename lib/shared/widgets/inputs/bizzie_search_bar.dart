@@ -1,5 +1,6 @@
 import 'package:bizzie/app/themes/app_assets.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class BizzieSearchBar extends StatelessWidget {
   const BizzieSearchBar({
@@ -10,6 +11,7 @@ class BizzieSearchBar extends StatelessWidget {
     this.focusNode,
     this.onChanged,
     this.onClear,
+    this.inputFormatters,
     this.hintText = 'Search for stocks',
   });
 
@@ -19,6 +21,7 @@ class BizzieSearchBar extends StatelessWidget {
   final FocusNode? focusNode;
   final ValueChanged<String>? onChanged;
   final VoidCallback? onClear;
+  final List<TextInputFormatter>? inputFormatters;
   final String hintText;
 
   @override
@@ -34,6 +37,7 @@ class BizzieSearchBar extends StatelessWidget {
           focusNode: focusNode,
           readOnly: readOnly,
           onChanged: onChanged,
+          inputFormatters: inputFormatters,
           style: theme.textTheme.bodyLarge?.copyWith(
             color: theme.colorScheme.onSurface,
           ),

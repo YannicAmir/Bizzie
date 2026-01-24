@@ -60,6 +60,12 @@ class StockSearchService {
       final aName = a.name.toLowerCase();
       final bName = b.name.toLowerCase();
 
+      // Rank 0: Exact Symbol Match
+      final aExactSym = aSym == q;
+      final bExactSym = bSym == q;
+      if (aExactSym && !bExactSym) return -1;
+      if (!aExactSym && bExactSym) return 1;
+
       // Rank 1: Symbol Starts With
       final aStartsSym = aSym.startsWith(q);
       final bStartsSym = bSym.startsWith(q);

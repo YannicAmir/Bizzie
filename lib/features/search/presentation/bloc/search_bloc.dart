@@ -79,7 +79,9 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     _QueryChanged event,
     Emitter<SearchState> emit,
   ) async {
-    if (event.query.isEmpty) {
+    final normalized = _normalizeQuery(event.query);
+
+    if (normalized.isEmpty) {
       add(const SearchEvent.cleared());
       return;
     }
@@ -89,7 +91,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     await _searchOperation?.cancel();
 
     _searchOperation = CancelableOperation.fromFuture(
-      _searchStocksUseCase.execute(event.query),
+      _searchStocksUseCase.execute(normalized),
     );
 
     try {
@@ -109,9 +111,11 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     _AiSearchRequested event,
     Emitter<SearchState> emit,
   ) async {
+    final normalized = _normalizeQuery(event.query);
     emit(SearchState.aiSearching(event.query));
+
     try {
-      final result = await _findStockForProductUseCase.execute(event.query);
+      final result = await _findStockForProductUseCase.execute(normalized);
       result.fold(
         (failure) {
           emit(SearchState.failure('AI Search failed: ${failure.message}'));
@@ -138,5 +142,10 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
         recommendedBrands: _cachedRecommendedBrands ?? [],
       ),
     );
+  }
+
+  String _normalizeQuery(String query) {
+    final noPunctuation = query.replaceAll(RegExp(r'[^\w\s]'), '');
+    return noPunctuation.trim().replaceAll(RegExp(r'\s+'), ' ');
   }
 }

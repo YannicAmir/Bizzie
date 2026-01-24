@@ -1,5 +1,6 @@
 import 'package:bizzie/shared/widgets/error/bizzie_error.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bizzie/features/search/presentation/bloc/search_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -78,6 +79,7 @@ class _SearchPageState extends State<SearchPage> {
         onChanged: _onSearchChanged,
         onClear: _onClearTapped,
         onCancel: _onCancelTapped,
+        inputFormatters: [FilteringTextInputFormatter.deny(RegExp(r'^\s+'))],
       ),
       body: BlocBuilder<SearchBloc, SearchState>(
         builder: (context, state) {
