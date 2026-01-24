@@ -1,12 +1,11 @@
-import 'package:bizzie/app/themes/app_colors.dart';
 import 'package:bizzie/app/themes/app_text_styles.dart';
 import 'package:bizzie/features/company_profile/domain/models/financial_data_point.dart';
+import 'package:bizzie/features/company_profile/presentation/utils/financial_data_table_extensions.dart';
+import 'package:bizzie/features/company_profile/presentation/enums/financial_table_enums.dart';
 import 'package:bizzie/shared/widgets/tables/bizzie_data_table.dart';
-import 'package:bizzie/shared/utils/bizzie_date_formatter.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
-enum FinancialDateFormat { period, fullDate, monthYear, quarterShort }
+export 'package:bizzie/features/company_profile/presentation/enums/financial_table_enums.dart';
 
 class FinancialDataTable extends StatelessWidget {
   final List<FinancialDataPoint> data;
@@ -20,6 +19,7 @@ class FinancialDataTable extends StatelessWidget {
   final bool isNeutralColor;
   final FinancialDateFormat dateFormat;
   final String? periodHeaderLabel;
+  final Widget? footer;
 
   const FinancialDataTable({
     super.key,
@@ -34,6 +34,7 @@ class FinancialDataTable extends StatelessWidget {
     this.isNeutralColor = false,
     this.dateFormat = FinancialDateFormat.period,
     this.periodHeaderLabel,
+    this.footer,
   });
 
   @override
@@ -58,6 +59,7 @@ class FinancialDataTable extends StatelessWidget {
           ? onViewMore
           : null,
       viewMoreLabel: 'View All',
+      footer: footer,
       children: [
         for (final (index, item) in displayData.indexed)
           FinancialTableRow(
@@ -72,128 +74,6 @@ class FinancialDataTable extends StatelessWidget {
           ),
       ],
     );
-  }
-
-  static Widget _buildGrowthCell(
-    double? growth,
-    bool isInverseGrowth,
-    bool isNeutralColor,
-  ) {
-    if (growth == null) {
-      return Text(
-        '-',
-        textAlign: TextAlign.right,
-        style: AppTextStyles.bodyMediumBold.copyWith(color: AppColors.slate500),
-      );
-    }
-
-    final isPositive = growth > 0;
-    final isNegative = growth < 0;
-
-    final Color color;
-    if (isNeutralColor) {
-      color = AppColors.textPrimary;
-    } else if (isInverseGrowth) {
-      color = isPositive
-          ? AppColors.red800
-          : isNegative
-          ? AppColors.green700
-          : AppColors.textPrimary;
-    } else {
-      color = isPositive
-          ? AppColors.green700
-          : isNegative
-          ? AppColors.red800
-          : AppColors.textPrimary;
-    }
-
-    final sign = isPositive ? '+' : '';
-    final percentVal = (growth * 100);
-    final fmt = NumberFormat("0.0", "en_US");
-
-    return Text(
-      '$sign${fmt.format(percentVal)}%',
-      textAlign: TextAlign.right,
-      style: AppTextStyles.bodyMediumBold.copyWith(color: color),
-    );
-  }
-
-  static String _formatCurrency(
-    BuildContext context,
-    double value,
-    String currency,
-    bool isPercentage,
-  ) {
-    if (isPercentage) {
-      // Assuming value is 0.15 for 15%
-      final fmt = NumberFormat.percentPattern(
-        Localizations.localeOf(context).toString(),
-      );
-      fmt.maximumFractionDigits = 2;
-      return fmt.format(value);
-    }
-
-    final fmt = NumberFormat.compactSimpleCurrency(
-      locale: Localizations.localeOf(context).toString(),
-      name: currency,
-    );
-    fmt.maximumFractionDigits = 2;
-    fmt.minimumFractionDigits = 2;
-
-    // If currency is empty, use compact pattern for simpler reading (e.g. 15.13B)
-    if (currency.isEmpty) {
-      final compactFmt = NumberFormat.compact(
-        locale: Localizations.localeOf(context).toString(),
-      );
-      compactFmt.maximumFractionDigits = 2;
-      return compactFmt.format(value);
-    }
-
-    return fmt.format(value);
-  }
-
-  static String _formatDate(
-    String dateStr,
-    FinancialDateFormat format,
-    String? period,
-  ) {
-    try {
-      final dt = DateTime.parse(dateStr);
-      switch (format) {
-        case FinancialDateFormat.fullDate:
-          return BizzieDateFormatter.formatMonthYearFull(dateStr);
-        case FinancialDateFormat.monthYear:
-          return BizzieDateFormatter.formatMonthYearFull(dateStr);
-        case FinancialDateFormat.quarterShort:
-          String quarter = '';
-          if (period != null && period.startsWith('Q')) {
-            quarter = period;
-          } else {
-            int q = ((dt.month - 1) / 3).floor() + 1;
-            quarter = 'Q$q';
-          }
-          return "$quarter | ${BizzieDateFormatter.formatMonthYearFull(dateStr)}";
-        case FinancialDateFormat.period:
-          return _formatPeriod(dateStr, period);
-      }
-    } catch (_) {
-      return dateStr;
-    }
-  }
-
-  static String _formatPeriod(String date, String? period) {
-    try {
-      final dt = DateTime.parse(date);
-      if (period == 'FY' || period == 'annual') {
-        return dt.year.toString();
-      }
-      if (period != null && period.startsWith('Q')) {
-        return '$period ${dt.year}';
-      }
-      return dt.year.toString();
-    } catch (_) {
-      return date;
-    }
   }
 }
 
@@ -271,31 +151,24 @@ class FinancialTableRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double? growth;
-    if (index + 1 < allData.length) {
-      final prevItem = allData[index + 1];
-      if (prevItem.value != 0) {
-        growth = (item.value - prevItem.value) / prevItem.value.abs();
-      }
-    }
+    final growth = allData.calculateGrowthAtIndex(index);
 
     return Row(
       children: [
         Expanded(
           flex: 3,
           child: Text(
-            FinancialDataTable._formatDate(item.date, dateFormat, item.period),
+            item.formatDate(dateFormat),
             style: AppTextStyles.bodyMedium,
           ),
         ),
         Expanded(
           flex: 2,
           child: Text(
-            FinancialDataTable._formatCurrency(
-              context,
-              item.value,
-              currency,
-              isPercentage,
+            item.formatCurrency(
+              context: context,
+              currency: currency,
+              isPercentage: isPercentage,
             ),
             textAlign: TextAlign.center,
             style: AppTextStyles.bodyMediumBold,
@@ -303,13 +176,40 @@ class FinancialTableRow extends StatelessWidget {
         ),
         Expanded(
           flex: 2,
-          child: FinancialDataTable._buildGrowthCell(
-            growth,
-            isInverseGrowth,
-            isNeutralColor,
+          child: _GrowthCell(
+            growth: growth,
+            isInverseGrowth: isInverseGrowth,
+            isNeutralColor: isNeutralColor,
           ),
         ),
       ],
+    );
+  }
+}
+
+class _GrowthCell extends StatelessWidget {
+  final double? growth;
+  final bool isInverseGrowth;
+  final bool isNeutralColor;
+
+  const _GrowthCell({
+    required this.growth,
+    required this.isInverseGrowth,
+    required this.isNeutralColor,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      growth.formattedPercent,
+      textAlign: TextAlign.right,
+      style: AppTextStyles.bodyMediumBold.copyWith(
+        color: growth.getGrowthColor(
+          context: context,
+          isInverse: isInverseGrowth,
+          isNeutral: isNeutralColor,
+        ),
+      ),
     );
   }
 }
