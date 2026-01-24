@@ -2,7 +2,7 @@ import 'package:bizzie/app/themes/app_assets.dart';
 import 'package:bizzie/app/themes/app_colors.dart';
 import 'package:bizzie/app/themes/app_text_styles.dart';
 import 'package:bizzie/features/reports/domain/models/upcoming_earnings.dart';
-import 'package:bizzie/features/reports/presentation/widgets/reports_empty_state.dart';
+import 'package:bizzie/shared/widgets/states/bizzie_empty_state.dart';
 import 'package:bizzie/features/reports/presentation/widgets/upcoming_earnings_modal.dart';
 import 'package:bizzie/features/reports/presentation/widgets/upcoming_earnings_tile.dart';
 import 'package:flutter/material.dart';
@@ -34,7 +34,7 @@ class UpcomingEarningsSection extends StatelessWidget {
           child: Text('Upcoming', style: AppTextStyles.sectionHeader),
         ),
         if (earnings.isEmpty)
-          ReportsEmptyState(
+          BizzieEmptyState(
             mascotAsset: mascotAsset,
             message: 'There are no upcoming notifications',
           )
@@ -64,7 +64,7 @@ class UpcomingEarningsSection extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(vertical: 16),
                       alignment: Alignment.center,
                       child: Text(
-                        'View More',
+                        'View All',
                         style: AppTextStyles.bodyMediumBold.copyWith(
                           color: theme.colorScheme.primary,
                         ),
@@ -79,10 +79,11 @@ class UpcomingEarningsSection extends StatelessWidget {
   }
 
   void _showAllEarningsModal(BuildContext context) {
+    final theme = Theme.of(context);
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: Colors.white,
+      backgroundColor: theme.colorScheme.surface,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),

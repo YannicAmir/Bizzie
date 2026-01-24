@@ -1,5 +1,6 @@
 import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:bizzie/features/auth/domain/interfaces/i_auth_repository.dart';
+import 'package:bizzie/features/onboarding/domain/models/company.dart';
 import 'package:bizzie/features/watchlist/domain/usecases/add_to_watchlist_usecase.dart';
 import 'package:bizzie/features/watchlist/domain/usecases/get_watchlist_usecase.dart';
 import 'package:bizzie/features/watchlist/domain/usecases/remove_from_watchlist_usecase.dart';
@@ -107,14 +108,19 @@ class WatchlistBloc extends Bloc<WatchlistEvent, WatchlistState> {
       return;
     }
 
+    final company = Company(
+      ticker: event.ticker,
+      name: event.name ?? event.ticker,
+    );
+
     final result = await _addToWatchlistUseCase(
-      AddToWatchlistParams(company: event.company, uid: uid),
+      AddToWatchlistParams(company: company, uid: uid),
     );
 
     result.fold((failure) => emit(WatchlistState.failure(failure.message)), (
       _,
     ) {
-      _logger.info("Added ${event.company.ticker}, waiting for stream update");
+      _logger.info("Added ${event.ticker}, waiting for stream update");
     });
   }
 

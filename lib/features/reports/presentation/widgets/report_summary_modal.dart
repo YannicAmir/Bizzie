@@ -3,7 +3,7 @@ import 'package:bizzie/features/reports/domain/models/financial_report.dart';
 import 'package:bizzie/features/reports/domain/models/financial_report_extensions.dart';
 import 'package:bizzie/features/reports/presentation/widgets/metric_card.dart';
 import 'package:bizzie/shared/widgets/buttons/bizzie_primary_button.dart';
-import 'package:bizzie/shared/widgets/modals/bottom_modal_header.dart';
+import 'package:bizzie/shared/widgets/modals/app_bottom_modal.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -16,138 +16,116 @@ class ReportSummaryModal extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DraggableScrollableSheet(
-      initialChildSize: 0.875,
-      minChildSize: 0.5,
-      maxChildSize: 0.875,
+    final theme = Theme.of(context);
+    return AppBottomModal(
+      title: 'AI Summary',
+      subtitle: Text(
+        '${report.ticker} • ${report.filingDate != null ? DateFormat('MMM d, yyyy').format(report.filingDate!) : 'Date Unknown'} • ${report.formType}',
+        style: theme.textTheme.bodySmall?.copyWith(color: theme.hintColor),
+        overflow: TextOverflow.ellipsis,
+      ),
       builder: (context, scrollController) {
-        final theme = Theme.of(context);
-        return Container(
-          decoration: BoxDecoration(
-            color: theme.colorScheme.surface,
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-          ),
-          child: Column(
-            children: [
-              BottomModalHeader(
-                title: 'AI Summary',
-                subtitle: Text(
-                  '${report.ticker} • ${report.filingDate != null ? DateFormat('MMM d, yyyy').format(report.filingDate!) : 'Date Unknown'} • ${report.formType}',
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: theme.hintColor,
-                  ),
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-              Expanded(
-                child: ListView(
-                  controller: scrollController,
-                  padding: const EdgeInsets.all(16),
-                  children: [
-                    Text('Operations', style: theme.textTheme.displaySmall),
-                    const SizedBox(height: 16),
-                    MetricCard.fromMetricWithDriver(
-                      title: 'Revenue',
-                      metric: report.income.revenue,
-                      currencyCode: report.summary.reportingCurrency,
-                    ),
-                    const SizedBox(height: 12),
-                    MetricCard.fromMetric(
-                      title: 'Cost of Revenue',
-                      metric: report.income.costOfRevenue,
-                      isInverse: true,
-                      currencyCode: report.summary.reportingCurrency,
-                    ),
-                    const SizedBox(height: 12),
-                    MetricCard.fromMetricWithDriver(
-                      title: 'Total Expenses',
-                      metric: report.income.totalExpenses,
-                      isInverse: true,
-                      currencyCode: report.summary.reportingCurrency,
-                    ),
-                    const SizedBox(height: 12),
-                    MetricCard.fromMetricWithDriver(
-                      title: 'Net Income',
-                      metric: report.income.netIncome,
-                      currencyCode: report.summary.reportingCurrency,
-                    ),
-                    const SizedBox(height: 12),
-                    MetricCard.fromMetric(
-                      title: 'Earnings Per Share',
-                      metric: report.income.eps,
-                      currencyCode: report.summary.reportingCurrency,
-                    ),
+        return ListView(
+          controller: scrollController,
+          padding: const EdgeInsets.all(16),
+          children: [
+            Text('Operations', style: theme.textTheme.displaySmall),
+            const SizedBox(height: 16),
+            MetricCard.fromMetricWithDriver(
+              title: 'Revenue',
+              metric: report.income.revenue,
+              currencyCode: report.summary.reportingCurrency,
+            ),
+            const SizedBox(height: 12),
+            MetricCard.fromMetric(
+              title: 'Cost of Revenue',
+              metric: report.income.costOfRevenue,
+              isInverse: true,
+              currencyCode: report.summary.reportingCurrency,
+            ),
+            const SizedBox(height: 12),
+            MetricCard.fromMetricWithDriver(
+              title: 'Total Expenses',
+              metric: report.income.totalExpenses,
+              isInverse: true,
+              currencyCode: report.summary.reportingCurrency,
+            ),
+            const SizedBox(height: 12),
+            MetricCard.fromMetricWithDriver(
+              title: 'Net Income',
+              metric: report.income.netIncome,
+              currencyCode: report.summary.reportingCurrency,
+            ),
+            const SizedBox(height: 12),
+            MetricCard.fromMetric(
+              title: 'Earnings Per Share',
+              metric: report.income.eps,
+              currencyCode: report.summary.reportingCurrency,
+            ),
 
-                    const SizedBox(height: 32),
+            const SizedBox(height: 32),
 
-                    Text('Balance Sheet', style: theme.textTheme.displaySmall),
-                    const SizedBox(height: 16),
-                    MetricCard.fromMetric(
-                      title: 'Total Assets',
-                      metric: report.balanceSheet.totalAssets,
-                      currencyCode: report.summary.reportingCurrency,
-                    ),
-                    const SizedBox(height: 12),
-                    MetricCard.fromMetric(
-                      title: 'Total Liabilities',
-                      metric: report.balanceSheet.totalLiabilities,
-                      isInverse: true,
-                      currencyCode: report.summary.reportingCurrency,
-                    ),
-                    const SizedBox(height: 12),
-                    MetricCard.fromMetric(
-                      title: 'Stockholder\'s Equity',
-                      metric: report.balanceSheet.equity,
-                      currencyCode: report.summary.reportingCurrency,
-                    ),
+            Text('Balance Sheet', style: theme.textTheme.displaySmall),
+            const SizedBox(height: 16),
+            MetricCard.fromMetric(
+              title: 'Total Assets',
+              metric: report.balanceSheet.totalAssets,
+              currencyCode: report.summary.reportingCurrency,
+            ),
+            const SizedBox(height: 12),
+            MetricCard.fromMetric(
+              title: 'Total Liabilities',
+              metric: report.balanceSheet.totalLiabilities,
+              isInverse: true,
+              currencyCode: report.summary.reportingCurrency,
+            ),
+            const SizedBox(height: 12),
+            MetricCard.fromMetric(
+              title: 'Stockholder\'s Equity',
+              metric: report.balanceSheet.equity,
+              currencyCode: report.summary.reportingCurrency,
+            ),
 
-                    const SizedBox(height: 32),
+            const SizedBox(height: 32),
 
-                    Text('Cash Flow', style: theme.textTheme.displaySmall),
-                    const SizedBox(height: 16),
-                    MetricCard.fromMetricWithDriver(
-                      title: 'Free Cash Flow',
-                      metric: report.cashFlow.freeCashFlow,
-                      currencyCode: report.summary.reportingCurrency,
-                    ),
+            Text('Cash Flow', style: theme.textTheme.displaySmall),
+            const SizedBox(height: 16),
+            MetricCard.fromMetricWithDriver(
+              title: 'Free Cash Flow',
+              metric: report.cashFlow.freeCashFlow,
+              currencyCode: report.summary.reportingCurrency,
+            ),
 
-                    const SizedBox(height: 32),
+            const SizedBox(height: 32),
 
-                    if (!report.formType.contains('8-K')) ...[
-                      Text(
-                        'Stock Repurchasing',
-                        style: theme.textTheme.displaySmall,
-                      ),
-                      const SizedBox(height: 16),
-                      _StockActivityCard(activity: report.stockActivity),
-                      const SizedBox(height: 32),
-                    ],
+            if (!report.formType.contains('8-K')) ...[
+              Text('Stock Repurchasing', style: theme.textTheme.displaySmall),
+              const SizedBox(height: 16),
+              _StockActivityCard(activity: report.stockActivity),
+              const SizedBox(height: 32),
+            ],
 
-                    Text(
-                      'Forward Looking Statements',
-                      style: theme.textTheme.displaySmall,
-                    ),
-                    const SizedBox(height: 16),
-                    _ForwardLookingSection(text: report.summary.forwardLooking),
-                    const SizedBox(height: 32),
+            Text(
+              'Forward Looking Statements',
+              style: theme.textTheme.displaySmall,
+            ),
+            const SizedBox(height: 16),
+            _ForwardLookingSection(text: report.summary.forwardLooking),
+            const SizedBox(height: 32),
 
-                    const _AiDisclaimerSection(),
-                    if (filingUrl != null) ...[
-                      const SizedBox(height: 32),
-                      BizziePrimaryButton(
-                        onPressed: () {
-                          launchUrl(Uri.parse(filingUrl!));
-                        },
-                        title: 'View Full SEC Filing',
-                        height: 48,
-                      ),
-                    ],
-                    const SizedBox(height: 32),
-                  ],
-                ),
+            const _AiDisclaimerSection(),
+            if (filingUrl != null) ...[
+              const SizedBox(height: 32),
+              BizziePrimaryButton(
+                onPressed: () {
+                  launchUrl(Uri.parse(filingUrl!));
+                },
+                title: 'View Full SEC Filing',
+                height: 48,
               ),
             ],
-          ),
+            const SizedBox(height: 32),
+          ],
         );
       },
     );

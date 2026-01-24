@@ -1,7 +1,7 @@
 import 'package:bizzie/app/themes/app_assets.dart';
 import 'package:bizzie/app/themes/app_text_styles.dart';
 import 'package:bizzie/features/reports/presentation/models/filing_view_model.dart';
-import 'package:bizzie/features/reports/presentation/widgets/reports_empty_state.dart';
+import 'package:bizzie/shared/widgets/states/bizzie_empty_state.dart';
 import 'package:bizzie/features/reports/presentation/widgets/sec_filing_card.dart';
 import 'package:flutter/material.dart';
 
@@ -29,7 +29,7 @@ class RecentFilingsSection extends StatelessWidget {
           child: Text('Recent', style: AppTextStyles.sectionHeader),
         ),
         if (recentFilings.isEmpty)
-          ReportsEmptyState(
+          BizzieEmptyState(
             mascotAsset: mascotAsset,
             message: 'There are no recent notifications',
           )

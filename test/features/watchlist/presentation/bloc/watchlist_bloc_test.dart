@@ -126,9 +126,7 @@ void main() {
         return bloc;
       },
       act: (bloc) => bloc.add(
-        const WatchlistEvent.addRequested(
-          Company(ticker: 'AAPL', name: 'Apple'),
-        ),
+        const WatchlistEvent.addRequested(ticker: 'AAPL', name: 'Apple'),
       ),
       expect: () => [], // No state emitted on success, relies on stream
       verify: (_) {
@@ -146,9 +144,7 @@ void main() {
         return bloc;
       },
       act: (bloc) => bloc.add(
-        const WatchlistEvent.addRequested(
-          Company(ticker: 'AAPL', name: 'Apple'),
-        ),
+        const WatchlistEvent.addRequested(ticker: 'AAPL', name: 'Apple'),
       ),
       expect: () => [const WatchlistState.failure('Add Error')],
     );

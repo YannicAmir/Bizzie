@@ -1,3 +1,4 @@
+import 'package:bizzie/app/themes/app_text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:bizzie/app/themes/app_theme.dart';
 
@@ -6,8 +7,14 @@ enum AppBadgeStyle { neutral, critical, good, warning, issue }
 class AppBadge extends StatelessWidget {
   final String text;
   final AppBadgeStyle style;
+  final bool isLarge;
 
-  const AppBadge({super.key, required this.text, required this.style});
+  const AppBadge({
+    super.key,
+    required this.text,
+    required this.style,
+    this.isLarge = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -57,11 +64,9 @@ class AppBadge extends StatelessWidget {
       ),
       child: Text(
         text,
-        style: theme.textTheme.bodySmall?.copyWith(
-          fontSize: 12,
-          fontWeight: FontWeight.bold,
-          color: textColor,
-        ),
+        style: isLarge
+            ? AppTextStyles.bodyMediumBold.copyWith(color: textColor)
+            : AppTextStyles.bodySmallBold.copyWith(color: textColor),
       ),
     );
   }

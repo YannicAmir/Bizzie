@@ -11,6 +11,9 @@ class AppAssets {
   static const String authShowPasswordIcon =
       'assets/images/auth/show_password_icon.png';
 
+  static const String splashLogo = 'assets/images/branding/splash_logo.png';
+  static const String appIcon = 'assets/images/branding/app_icon.png';
+
   static const String authForgotPasswordMascot =
       'assets/images/auth/forgot_password_mascot.png';
 
@@ -59,6 +62,18 @@ class AppAssets {
   static const String homeProfileSelectedIcon =
       'assets/images/home/profile_selected_icon.svg';
 
+  // Company Profile Feature
+  static const String companyProfileWebsiteIcon =
+      'assets/images/company_profile/website_icon.svg';
+  static const String companyProfileLocationIcon =
+      'assets/images/company_profile/location_icon.svg';
+  static const String companyProfileDocIcon =
+      'assets/images/company_profile/doc_icon.svg';
+  static const String totalRevenueIcon =
+      'assets/images/company_profile/total_revenue_icon.png';
+  static const String chartGrowthIcon =
+      'assets/images/company_profile/chart_growth_icon.png';
+
   // Shared
   static const String backArrowIcon =
       'assets/images/shared/back_arrow_icon.png';
@@ -94,9 +109,45 @@ class AppAssets {
   static const String bizzieMascotUtilities =
       'assets/images/shared/bizzie_mascot_utilities.png';
   static const String bellIcon = 'assets/images/shared/bell_icon.png';
-  static const String businessIcon = 'assets/images/shared/business_icon.png';
+  static const String businessIcon = 'assets/images/shared/business_icon.svg';
   static const String clearTextfieldIcon =
       'assets/images/shared/clear_textfield_icon.png';
   static const String modalCloseIcon =
       'assets/images/shared/modal_close_icon.svg';
+
+  static String getMascotForSector(String sector) {
+    final normalized = sector.trim().toLowerCase();
+    switch (normalized) {
+      case 'information technology':
+      case 'technology':
+        return bizzieMascotIT;
+      case 'financials':
+        return bizzieMascotFinancials;
+      case 'communication services':
+        return bizzieMascotCommunicationServices;
+      case 'consumer discretionary':
+        return bizzieMascotConsumerDiscretionary;
+      case 'consumer staples':
+        return bizzieMascotConsumerStaples;
+      case 'energy':
+        return bizzieMascotEnergy;
+      case 'healthcare':
+      case 'health care':
+        return bizzieMascotHealthcare;
+      case 'industrials':
+        return bizzieMascotIndustrials;
+      case 'materials':
+        return bizzieMascotMaterials;
+      case 'real estate':
+        return bizzieMascotRealEstate;
+      case 'utilities':
+        return bizzieMascotUtilities;
+      default:
+        // Use partial match as fallback
+        if (normalized.contains('tech')) return bizzieMascotIT;
+        if (normalized.contains('finance')) return bizzieMascotFinancials;
+        if (normalized.contains('health')) return bizzieMascotHealthcare;
+        return defaultMascot;
+    }
+  }
 }

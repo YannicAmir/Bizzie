@@ -1,3 +1,4 @@
+import 'package:bizzie/shared/widgets/error/bizzie_error.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bizzie/features/search/presentation/bloc/search_bloc.dart';
@@ -116,8 +117,12 @@ class _SearchPageState extends State<SearchPage> {
               productName: state.productQuery,
               onRetry: _onRetryTapped,
             ),
-            // TODO: Add aiFailure
-            failure: (f) => Center(child: Text('Error: ${f.message}')),
+            failure: (f) => Center(
+              child: BizzieError(
+                message: 'Error loading search',
+                mascotAssetPath: mascotAsset,
+              ),
+            ),
           );
         },
       ),
