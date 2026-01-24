@@ -1,6 +1,7 @@
 import 'package:bizzie/app/themes/app_colors.dart';
 import 'package:bizzie/app/themes/app_text_styles.dart';
 import 'package:bizzie/features/company_profile/presentation/widgets/shared/metric_summary_card.dart';
+import 'package:bizzie/features/company_profile/domain/extensions/dividend_event_extensions.dart';
 import 'package:bizzie/features/company_profile/domain/models/dividend_event.dart';
 import 'package:bizzie/features/company_profile/presentation/utils/dividend_formatters.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
@@ -20,8 +21,12 @@ class DividendOverviewSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final annualDiv = latestEvent.annualizedDividend;
-    final yieldVal = latestEvent.calculateYield(currentPrice: currentPrice);
+    final annualDiv = latestEvent.isStale
+        ? 0.0
+        : latestEvent.annualizedDividend;
+    final yieldVal = latestEvent.isStale
+        ? 0.0
+        : latestEvent.calculateYield(currentPrice: currentPrice);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -34,12 +39,14 @@ class DividendOverviewSection extends StatelessWidget {
             children: [
               Text(
                 '\$${annualDiv.toStringAsFixed(2)}',
-                style: AppTextStyles.h3,
+                style: AppTextStyles.bodyLargeBold,
               ),
               AppConstants.subSectionHorizontalSpacing,
               Text(
-                '${yieldVal.toStringAsFixed(2)}%',
-                style: AppTextStyles.h3.copyWith(color: AppColors.primary),
+                '(${yieldVal.toStringAsFixed(2)}%)',
+                style: AppTextStyles.bodyLargeBold.copyWith(
+                  color: AppColors.primary,
+                ),
               ),
             ],
           ),

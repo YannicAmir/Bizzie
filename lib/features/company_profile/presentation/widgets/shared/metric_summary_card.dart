@@ -54,7 +54,7 @@ class MetricSummaryCard extends StatelessWidget {
                   if (valueWidget != null)
                     valueWidget!
                   else if (value != null)
-                    Text(value!, style: AppTextStyles.h3),
+                    Text(value!, style: AppTextStyles.bodyLargeBold),
                 ],
               ),
               if (badgeText != null && badgeStyle != null)
