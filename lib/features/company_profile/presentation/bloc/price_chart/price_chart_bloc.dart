@@ -1,5 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
+import 'package:bizzie/features/company_profile/domain/enums/chart_time_frame.dart';
+import 'package:bizzie/features/company_profile/domain/models/historical_price_eod.dart';
 import 'package:bizzie/features/company_profile/presentation/bloc/price_chart/price_chart_event.dart';
 import 'package:bizzie/features/company_profile/presentation/bloc/price_chart/price_chart_state.dart';
 import 'package:bizzie/features/company_profile/presentation/utils/historical_price_chart_extensions.dart';
@@ -18,8 +20,9 @@ class PriceChartBloc extends Bloc<PriceChartEvent, PriceChartState> {
     _logger.info('Handling HistoryUpdated: ${event.history.length} points');
     if (event.history == state.fullHistory) return;
 
-    emit(state.copyWith(fullHistory: event.history));
-    _updateViewData(emit);
+    final filtered = _calculateViewData(event.history, state.selectedTimeFrame);
+
+    emit(state.copyWith(fullHistory: event.history, viewData: filtered));
   }
 
   void _onTimeFrameChanged(
@@ -29,19 +32,20 @@ class PriceChartBloc extends Bloc<PriceChartEvent, PriceChartState> {
     _logger.info('Handling TimeFrameChanged: ${event.timeFrame}');
     if (event.timeFrame == state.selectedTimeFrame) return;
 
-    emit(state.copyWith(selectedTimeFrame: event.timeFrame));
-    _updateViewData(emit);
+    final filtered = _calculateViewData(state.fullHistory, event.timeFrame);
+
+    emit(
+      state.copyWith(selectedTimeFrame: event.timeFrame, viewData: filtered),
+    );
   }
 
-  void _updateViewData(Emitter<PriceChartState> emit) {
-    _logger.info(
-      'Updating view data for timeframe: ${state.selectedTimeFrame}',
-    );
-    final filtered = state.fullHistory
-        .filterByTimeFrame(state.selectedTimeFrame)
-        .downsample();
+  List<HistoricalPriceEod> _calculateViewData(
+    List<HistoricalPriceEod> history,
+    ChartTimeFrame timeFrame,
+  ) {
+    _logger.info('Calculating view data for timeframe: $timeFrame');
+    if (history.isEmpty) return [];
 
-    _logger.info('View data updated: ${filtered.length} points');
-    emit(state.copyWith(viewData: filtered));
+    return history.filterByTimeFrame(timeFrame).downsample();
   }
 }

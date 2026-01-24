@@ -5,12 +5,9 @@ import 'package:bizzie/features/company_profile/domain/models/business_profile.d
 import 'package:bizzie/features/company_profile/domain/models/share_stats.dart';
 
 abstract class ISecurityRepository {
-  // Tab 1: Security Details (Overview)
   Future<Either<Failure, SecurityDetails>> getSecurityDetails(String ticker);
 
-  // Tab 2: Business Profile (Bio, Executives, Filings)
   Future<Either<Failure, BusinessProfile>> getBusinessProfile(String ticker);
 
-  // Share Statistics
   Future<Either<Failure, ShareStats>> getShareStats(String ticker);
 }

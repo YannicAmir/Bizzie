@@ -14,10 +14,8 @@ import 'package:bizzie/features/company_profile/domain/models/company_ratios.dar
 import 'package:bizzie/features/company_profile/domain/models/key_metrics.dart';
 
 abstract class IFinancialRepository {
-  // --- Dividends (Tab 4) ---
   Future<Either<Failure, DividendInfo>> getDividendInfo(String ticker);
 
-  // --- Financial Stats (Charts) ---
   Future<Either<Failure, RevenueStats>> getRevenueStats(String ticker);
   Future<Either<Failure, NetIncomeStats>> getNetIncomeStats(String ticker);
   Future<Either<Failure, EpsStats>> getEpsStats(String ticker);
@@ -26,10 +24,8 @@ abstract class IFinancialRepository {
   );
   Future<Either<Failure, FcpsStats>> getFcpsStats(String ticker);
 
-  // --- Full Financials (Tab 11) ---
   Future<Either<Failure, FullFinancials>> getFullFinancials(String ticker);
 
-  // --- Detailed Statements (Internal/View More) ---
   Future<Either<Failure, List<IncomeStatement>>> getIncomeStatements(
     String ticker, {
     String period = 'annual',
@@ -45,7 +41,6 @@ abstract class IFinancialRepository {
     String period = 'annual',
   });
 
-  // --- Ratios & Metrics (More Tab) ---
   Future<Either<Failure, List<CompanyRatios>>> getRatios(
     String ticker, {
     String period = 'annual',

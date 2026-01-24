@@ -73,13 +73,13 @@ class BizzieDateFormatter {
   static String formatMonthYearShort(String dateStr) {
     final date = DateTime.tryParse(dateStr);
     if (date == null) return dateStr;
-    return DateFormat("MMM ''yy").format(date);
+    return DateFormat("MMM dd, ''yy").format(date);
   }
 
   static String formatMonthYearFull(String dateStr) {
     final date = DateTime.tryParse(dateStr);
     if (date == null) return dateStr;
-    return DateFormat('MMM yyyy').format(date);
+    return DateFormat('MMM dd, yyyy').format(date);
   }
 
   static String formatChartLabel(String dateStr, {required bool isAnnual}) {
@@ -87,6 +87,6 @@ class BizzieDateFormatter {
   }
 
   static String formatReferenceLabel(String dateStr, {required bool isAnnual}) {
-    return isAnnual ? formatYearOnly(dateStr) : formatMonthYearFull(dateStr);
+    return formatMonthYearFull(dateStr);
   }
 }

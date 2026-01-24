@@ -160,9 +160,9 @@ class FinancialDataTable extends StatelessWidget {
       final dt = DateTime.parse(dateStr);
       switch (format) {
         case FinancialDateFormat.fullDate:
-          return DateFormat('MMM d yyyy').format(dt);
+          return DateFormat('MMM dd, yyyy').format(dt);
         case FinancialDateFormat.monthYear:
-          return DateFormat('MMM yyyy').format(dt);
+          return DateFormat('MMM dd, yyyy').format(dt);
         case FinancialDateFormat.quarterShort:
           String quarter = '';
           if (period != null && period.startsWith('Q')) {
@@ -171,7 +171,7 @@ class FinancialDataTable extends StatelessWidget {
             int q = ((dt.month - 1) / 3).floor() + 1;
             quarter = 'Q$q';
           }
-          return "$quarter | ${DateFormat("MMM yyyy").format(dt)}";
+          return "$quarter | ${DateFormat("MMM dd, yyyy").format(dt)}";
         case FinancialDateFormat.period:
           return _formatPeriod(dateStr, period);
       }

@@ -1,4 +1,3 @@
-import 'package:bizzie/app/themes/app_colors.dart';
 import 'package:bizzie/shared/widgets/error/bizzie_error.dart';
 import 'package:bizzie/features/onboarding/domain/models/sector.dart';
 import 'package:bizzie/features/onboarding/presentation/utils/onboarding_assets_helper.dart';
@@ -30,7 +29,6 @@ class GlobalErrorPage extends StatelessWidget {
     }
 
     return Scaffold(
-      backgroundColor: AppColors.background,
       body: BizzieError(
         message:
             'We couldn\'t load your profile. Please check your connection and try again.',
