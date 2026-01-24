@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:bizzie/shared/widgets/inputs/bizzie_search_bar.dart';
 
 class SearchAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -8,6 +9,8 @@ class SearchAppBar extends StatelessWidget implements PreferredSizeWidget {
   final VoidCallback onClear;
   final VoidCallback onCancel;
 
+  final List<TextInputFormatter>? inputFormatters;
+
   const SearchAppBar({
     super.key,
     required this.controller,
@@ -15,6 +18,7 @@ class SearchAppBar extends StatelessWidget implements PreferredSizeWidget {
     required this.onChanged,
     required this.onClear,
     required this.onCancel,
+    this.inputFormatters,
   });
 
   @override
@@ -29,6 +33,7 @@ class SearchAppBar extends StatelessWidget implements PreferredSizeWidget {
         focusNode: focusNode,
         onChanged: onChanged,
         onClear: onClear,
+        inputFormatters: inputFormatters,
       ),
       actions: [
         Padding(

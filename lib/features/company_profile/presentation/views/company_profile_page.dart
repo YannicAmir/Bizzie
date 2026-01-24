@@ -35,6 +35,7 @@ import 'package:bizzie/features/company_profile/presentation/widgets/company_pro
 import 'package:bizzie/features/company_profile/presentation/widgets/company_watchlist_button.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CompanyProfilePage extends StatelessWidget {
@@ -148,6 +149,7 @@ class _CompanyProfileViewState extends State<_CompanyProfileView>
   void _handleTabSelection() {
     if (_tabController.indexIsChanging || !mounted) return;
 
+    HapticFeedback.lightImpact();
     final currentTab = _tabs[_tabController.index];
 
     switch (currentTab) {

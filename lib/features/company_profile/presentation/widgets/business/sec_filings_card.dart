@@ -1,20 +1,18 @@
 import 'package:bizzie/app/themes/app_colors.dart';
 import 'package:bizzie/app/themes/app_text_styles.dart';
 import 'package:bizzie/features/company_profile/domain/models/sec_filing.dart';
+import 'package:bizzie/features/company_profile/domain/models/business_profile.dart';
 import 'package:bizzie/shared/widgets/modals/app_history_modal.dart';
 import 'package:bizzie/shared/utils/url_launcher_utils.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
+import 'package:bizzie/shared/utils/bizzie_date_formatter.dart';
+import 'package:bizzie/features/company_profile/presentation/utils/business_profile_extensions.dart';
 import 'package:flutter/material.dart';
 
 class SecFilingsCard extends StatefulWidget {
-  final List<SecFiling> annualFilings;
-  final List<SecFiling> quarterlyFilings;
+  final BusinessProfile profile;
 
-  const SecFilingsCard({
-    super.key,
-    required this.annualFilings,
-    required this.quarterlyFilings,
-  });
+  const SecFilingsCard({super.key, required this.profile});
 
   @override
   State<SecFilingsCard> createState() => _SecFilingsCardState();
@@ -46,11 +44,14 @@ class _SecFilingsCardState extends State<SecFilingsCard> {
           const SizedBox(height: 16),
           _FilingTabs(
             isAnnual: _isAnnual,
+            isForeign: widget.profile.isForeignCompany,
             onTabChanged: (isAnnual) => setState(() => _isAnnual = isAnnual),
           ),
           const SizedBox(height: 16),
           _FilingsList(
-            filings: _isAnnual ? widget.annualFilings : widget.quarterlyFilings,
+            filings: _isAnnual
+                ? widget.profile.annualFilings
+                : widget.profile.quarterlyFilings,
             isAnnual: _isAnnual,
             onShowAll: (filings) => _showAllFilings(context, filings),
           ),
@@ -62,7 +63,7 @@ class _SecFilingsCardState extends State<SecFilingsCard> {
   void _showAllFilings(BuildContext context, List<SecFiling> filings) {
     AppHistoryModalHelper.show<SecFiling>(
       context: context,
-      title: _isAnnual ? 'All 10-K Filings' : 'All 10-Q Filings',
+      title: widget.profile.getSecFilingsModalTitle(_isAnnual),
       header: const SizedBox.shrink(),
       data: filings,
       itemBuilder: (context, filing, index) =>
@@ -73,9 +74,14 @@ class _SecFilingsCardState extends State<SecFilingsCard> {
 
 class _FilingTabs extends StatelessWidget {
   final bool isAnnual;
+  final bool isForeign;
   final ValueChanged<bool> onTabChanged;
 
-  const _FilingTabs({required this.isAnnual, required this.onTabChanged});
+  const _FilingTabs({
+    required this.isAnnual,
+    required this.isForeign,
+    required this.onTabChanged,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -83,7 +89,7 @@ class _FilingTabs extends StatelessWidget {
       children: [
         Expanded(
           child: _FilingTabButton(
-            title: '10-K (Annual)',
+            title: isForeign ? 'Annual' : '10-K (Annual)',
             isActive: isAnnual,
             onTap: () => onTabChanged(true),
           ),
@@ -91,7 +97,7 @@ class _FilingTabs extends StatelessWidget {
         const SizedBox(width: 8),
         Expanded(
           child: _FilingTabButton(
-            title: '10-Q (Quarterly)',
+            title: isForeign ? 'Quarterly' : '10-Q (Quarterly)',
             isActive: !isAnnual,
             onTap: () => onTabChanged(false),
           ),
@@ -210,11 +216,13 @@ class _FilingItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String title;
+    final formattedDate = BizzieDateFormatter.formatMonthYearFull(filing.date);
+
     if (isAnnual) {
-      title = 'FY${filing.year.isNotEmpty ? ' ${filing.year}' : ''}';
+      title = 'FY | $formattedDate';
     } else {
       title =
-          '${filing.period.isNotEmpty ? filing.period.toUpperCase() : ''} | ${filing.year.isNotEmpty ? filing.year : ''}';
+          '${filing.period.isNotEmpty ? filing.period.toUpperCase() : ''} | $formattedDate';
     }
 
     return GestureDetector(

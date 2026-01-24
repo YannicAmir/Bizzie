@@ -67,10 +67,7 @@ class _BusinessLoadedView extends StatelessWidget {
           AppConstants.mainSectionSpacing,
           CompanyDescriptionCard(description: profile.description),
           AppConstants.mainSectionSpacing,
-          SecFilingsCard(
-            annualFilings: profile.annualFilings,
-            quarterlyFilings: profile.quarterlyFilings,
-          ),
+          SecFilingsCard(profile: profile),
         ],
       ),
     );

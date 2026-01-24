@@ -3,6 +3,7 @@ import 'package:injectable/injectable.dart';
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/features/company_profile/data/datasources/company_firestore_data_source.dart';
 import 'package:bizzie/features/company_profile/data/datasources/company_remote_data_source.dart';
+import 'package:bizzie/features/company_profile/data/dtos/fmp_sec_filing_dto.dart';
 import 'package:bizzie/features/company_profile/data/dtos/legacy_income_statement_dto.dart';
 import 'package:bizzie/features/company_profile/data/dtos/profile_dtos.dart';
 import 'package:bizzie/features/company_profile/domain/interfaces/i_security_repository.dart';
@@ -18,6 +19,8 @@ abstract class _Consts {
   static const String quarter = 'quarter';
   static const String usd = 'USD';
   static const String def14a = 'DEF 14A';
+  static const String form20F = '20-F';
+  static const String form6K = '6-K';
 }
 
 @LazySingleton(as: ISecurityRepository)
@@ -83,10 +86,31 @@ class SecurityRepositoryImpl implements ISecurityRepository {
     String ticker,
   ) async {
     try {
-      final profile = await _getProfileAndCache(ticker);
-      final executives = await _getExecutivesAndCache(ticker);
-      final def14aUrl = await _getProxyUrlAndCache(ticker);
-      final filings = await _getSecFilingsForProfile(ticker);
+      // Parallelize all non-dependent requests for maximum performance
+      final results = await Future.wait([
+        _getProfileAndCache(ticker),
+        _getExecutivesAndCache(ticker),
+        _remoteDataSource.getSecFilings(ticker),
+        _fetchLegacyIncomeStatements(ticker, _Consts.annual),
+        _fetchLegacyIncomeStatements(ticker, _Consts.quarter),
+      ]);
+
+      final profile = results[0] as ProfileDto;
+      final executives = results[1] as List<CompanyExecutive>;
+      final secSearchFilings = results[2] as List<FmpSecFilingDto>;
+      final annualIncome = results[3] as List<LegacyIncomeStatementDto>;
+      final quarterlyIncome = results[4] as List<LegacyIncomeStatementDto>;
+
+      final isForeign = secSearchFilings.any(
+        (f) => f.formType == _Consts.form20F || f.formType == _Consts.form6K,
+      );
+
+      final def14aUrlData = await _getProxyOrAnnualUrl(
+        ticker,
+        secSearchFilings,
+      );
+      final annualFilings = _mapIncomeStatementsToFilings(annualIncome);
+      final quarterlyFilings = _mapIncomeStatementsToFilings(quarterlyIncome);
 
       return right(
         BusinessProfile(
@@ -104,9 +128,12 @@ class SecurityRepositoryImpl implements ISecurityRepository {
           phone: profile.phone ?? '',
           fullTimeEmployees: profile.fullTimeEmployees ?? 'N/A',
           executives: executives,
-          def14aUrl: def14aUrl,
-          annualFilings: filings.annual,
-          quarterlyFilings: filings.quarterly,
+          def14aUrl: def14aUrlData.url,
+          isForeignCompany: isForeign,
+          proxyFilingFormType:
+              def14aUrlData.formType ?? (isForeign ? '20-F' : 'DEF 14A'),
+          annualFilings: annualFilings,
+          quarterlyFilings: quarterlyFilings,
         ),
       );
     } catch (e) {
@@ -211,62 +238,53 @@ class SecurityRepositoryImpl implements ISecurityRepository {
         [];
   }
 
-  Future<String?> _getProxyUrlAndCache(String ticker) async {
-    String? url = await _localDataSource.getCachedProxyUrl(ticker);
-    if (url != null) return url;
+  Future<({String? url, String? formType})> _getProxyOrAnnualUrl(
+    String ticker,
+    List<FmpSecFilingDto> filings,
+  ) async {
+    String? cachedUrl = await _localDataSource.getCachedProxyUrl(ticker);
 
-    try {
-      final filings = await _remoteDataSource.getSecFilings(ticker);
-      final proxy = filings
-          .where((f) => f.formType == _Consts.def14a)
+    if (cachedUrl != null) {
+      final found = filings
+          .where((f) => (f.finalLink ?? f.link) == cachedUrl)
           .firstOrNull;
-      if (proxy != null) {
-        url = proxy.finalLink ?? proxy.link;
-        if (url != null) {
-          await _localDataSource.cacheProxyUrl(ticker, url);
-        }
+      if (found != null) {
+        return (url: cachedUrl, formType: found.formType);
       }
-    } catch (_) {}
-    return url;
+    }
+
+    var target = filings.where((f) => f.formType == _Consts.def14a).firstOrNull;
+    target ??= filings.where((f) => f.formType == _Consts.form20F).firstOrNull;
+
+    if (target != null) {
+      final url = target.finalLink ?? target.link;
+      if (url != null) {
+        await _localDataSource.cacheProxyUrl(ticker, url);
+        return (url: url, formType: target.formType);
+      }
+    }
+
+    return (url: null, formType: null);
   }
 
-  Future<({List<SecFiling> annual, List<SecFiling> quarterly})>
-  _getSecFilingsForProfile(String ticker) async {
-    List<SecFiling> annualFilings = [];
-    List<SecFiling> quarterlyFilings = [];
-
-    try {
-      final annualIncome = await _fetchLegacyIncomeStatements(
-        ticker,
-        _Consts.annual,
-      );
-      final quarterIncome = await _fetchLegacyIncomeStatements(
-        ticker,
-        _Consts.quarter,
-      );
-
-      List<SecFiling> map(List<LegacyIncomeStatementDto> list) {
-        return list
-            .where(
-              (e) =>
-                  (e.finalLink?.isNotEmpty ?? false) ||
-                  (e.link?.isNotEmpty ?? false),
-            )
-            .map(
-              (e) => SecFiling(
-                date: e.date,
-                year: e.date.substring(0, 4),
-                period: e.period,
-                link: e.finalLink ?? e.link ?? '',
-              ),
-            )
-            .toList();
-      }
-
-      annualFilings = map(annualIncome);
-      quarterlyFilings = map(quarterIncome);
-    } catch (_) {}
-    return (annual: annualFilings, quarterly: quarterlyFilings);
+  List<SecFiling> _mapIncomeStatementsToFilings(
+    List<LegacyIncomeStatementDto> data,
+  ) {
+    return data
+        .where(
+          (e) =>
+              (e.finalLink?.isNotEmpty ?? false) ||
+              (e.link?.isNotEmpty ?? false),
+        )
+        .map(
+          (e) => SecFiling(
+            date: e.date,
+            year: (e.date.length >= 4) ? e.date.substring(0, 4) : '',
+            period: e.period,
+            link: e.finalLink ?? e.link ?? '',
+          ),
+        )
+        .toList();
   }
 
   Future<List<LegacyIncomeStatementDto>> _fetchLegacyIncomeStatements(

@@ -55,7 +55,7 @@ class _NewsCardBackground extends StatelessWidget {
                   AppColors.black.withValues(alpha: 0.3),
                   BlendMode.darken,
                 ),
-                placeholderScale: 64 / 48,
+                placeholderScale: 120 / 48,
               ),
             ),
           ),

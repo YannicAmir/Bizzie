@@ -4,6 +4,10 @@ import 'package:intl/intl.dart';
 final _logger = BizzieLogger('BizzieDateFormatter');
 
 class BizzieDateFormatter {
+  static const String fullDateFormat = "MMM. dd, yyyy";
+  static const String shortDateFormat = "MMM. dd, ''yy";
+  static const String monthYearFormat = "MMM. yyyy";
+
   static String formatLastUpdated(String dateStr) {
     try {
       final now = DateTime.now();
@@ -57,7 +61,7 @@ class BizzieDateFormatter {
   }
 
   static String _formatHistoricalDate(DateTime date) {
-    final dateFormatter = DateFormat('MMM dd, yyyy');
+    final dateFormatter = DateFormat(fullDateFormat);
     final marketCloseUtc = DateTime.utc(date.year, date.month, date.day, 21);
     final marketCloseLocal = marketCloseUtc.toLocal();
     final timeFormatter = DateFormat('h:mm a');
@@ -73,13 +77,19 @@ class BizzieDateFormatter {
   static String formatMonthYearShort(String dateStr) {
     final date = DateTime.tryParse(dateStr);
     if (date == null) return dateStr;
-    return DateFormat("MMM dd, ''yy").format(date);
+    return DateFormat(shortDateFormat).format(date);
   }
 
   static String formatMonthYearFull(String dateStr) {
     final date = DateTime.tryParse(dateStr);
     if (date == null) return dateStr;
-    return DateFormat('MMM dd, yyyy').format(date);
+    return DateFormat(fullDateFormat).format(date);
+  }
+
+  static String formatMonthYearOnly(String dateStr) {
+    final date = DateTime.tryParse(dateStr);
+    if (date == null) return dateStr;
+    return DateFormat(monthYearFormat).format(date);
   }
 
   static String formatChartLabel(String dateStr, {required bool isAnnual}) {

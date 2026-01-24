@@ -158,5 +158,50 @@ void main() {
         const SearchState.failure('AI Search failed: AI Error'),
       ],
     );
+    blocTest<SearchBloc, SearchState>(
+      'queryChanged_normalizesInput_collapsesSpacesAndRemovesPunctuation',
+      // arrange
+      build: () {
+        when(
+          () => mockSearchStocks.execute('AAPL Inc'),
+        ).thenAnswer((_) async => tStocks);
+        return bloc;
+      },
+      // act
+      act: (bloc) => bloc.add(const SearchEvent.queryChanged('AAPL !!  Inc ')),
+      // assert
+      expect: () => [
+        const SearchState.loading(),
+        SearchState.loaded(results: tStocks, query: 'AAPL !!  Inc '),
+      ],
+      verify: (_) {
+        verify(() => mockSearchStocks.execute('AAPL Inc')).called(1);
+      },
+    );
+
+    blocTest<SearchBloc, SearchState>(
+      'aiSearchRequested_normalizesInput_collapsesSpacesAndRemovesPunctuation',
+      // arrange
+      build: () {
+        when(
+          () => mockFindStock.execute('MacBook Pro'),
+        ).thenAnswer((_) async => Right(tStocks.first));
+        return bloc;
+      },
+      // act
+      act: (bloc) =>
+          bloc.add(const SearchEvent.aiSearchRequested('MacBook  Pro??')),
+      // assert
+      expect: () => [
+        const SearchState.aiSearching('MacBook  Pro??'),
+        SearchState.aiSuccess(
+          productQuery: 'MacBook  Pro??',
+          stock: tStocks.first,
+        ),
+      ],
+      verify: (_) {
+        verify(() => mockFindStock.execute('MacBook Pro')).called(1);
+      },
+    );
   });
 }

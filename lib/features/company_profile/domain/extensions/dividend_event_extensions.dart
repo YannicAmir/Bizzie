@@ -15,3 +15,12 @@ extension DividendEventListExtensions on List<DividendEvent> {
     }).toList();
   }
 }
+
+extension DividendEventExtension on DividendEvent {
+  bool get isStale {
+    final recordDate = DateTime.tryParse(date);
+    if (recordDate == null) return true;
+    final currentYear = DateTime.now().year;
+    return recordDate.year < (currentYear - 1);
+  }
+}

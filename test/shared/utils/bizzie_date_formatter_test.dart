@@ -13,7 +13,7 @@ void main() {
     test('formatLastUpdated_handlesHistoricalDate', () {
       const dateStr = '2023-01-15T12:00:00Z';
       final formatted = BizzieDateFormatter.formatLastUpdated(dateStr);
-      expect(formatted.contains('Jan 15, 2023'), true);
+      expect(formatted.contains('Jan. 15, 2023'), true);
     });
 
     test('formatYearOnly', () {
@@ -24,14 +24,14 @@ void main() {
     test('formatMonthYearShort', () {
       expect(
         BizzieDateFormatter.formatMonthYearShort('2023-09-30'),
-        "Sep 30, '23",
+        "Sep. 30, '23",
       );
     });
 
     test('formatMonthYearFull', () {
       expect(
         BizzieDateFormatter.formatMonthYearFull('2023-09-30'),
-        'Sep 30, 2023',
+        'Sep. 30, 2023',
       );
     });
 
@@ -42,7 +42,7 @@ void main() {
       );
       expect(
         BizzieDateFormatter.formatChartLabel('2023-09-30', isAnnual: false),
-        "Sep 30, '23",
+        "Sep. 30, '23",
       );
     });
   });

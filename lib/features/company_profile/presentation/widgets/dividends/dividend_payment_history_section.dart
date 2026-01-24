@@ -2,6 +2,8 @@ import 'package:bizzie/app/themes/app_text_styles.dart';
 import 'package:bizzie/features/company_profile/domain/extensions/dividend_event_list_extensions.dart';
 import 'package:bizzie/features/company_profile/domain/models/dividend_event.dart';
 import 'package:bizzie/features/company_profile/presentation/utils/dividend_payment_history_utils.dart';
+import 'package:bizzie/features/company_profile/presentation/utils/dividend_extensions.dart';
+import 'package:bizzie/features/company_profile/presentation/widgets/shared/financial_table_footer.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:bizzie/shared/widgets/modals/app_history_modal.dart';
 import 'package:bizzie/shared/widgets/tables/bizzie_data_table.dart';
@@ -26,9 +28,17 @@ class DividendPaymentHistorySection extends StatelessWidget {
           ? () => _showAllPaymentHistory(context, sortedHistory)
           : null,
       header: const _TableHeaderRow(),
-      footer: _FooterRow(
-        totalPaid: displayedEvents.totalDividends,
-        avgPerQuarter: displayedEvents.averageDividend,
+      footer: FinancialTableFooter(
+        columns: [
+          FinancialTableFooterColumnData(
+            label: displayedEvents.totalPaidLabel,
+            value: '\$${displayedEvents.totalDividends.toStringAsFixed(2)}',
+          ),
+          FinancialTableFooterColumnData(
+            label: 'Average per Quarter',
+            value: '\$${displayedEvents.averageDividend.toStringAsFixed(2)}',
+          ),
+        ],
       ),
       children: [
         for (final (index, event) in displayedEvents.indexed)
@@ -87,46 +97,6 @@ class _TableHeaderRow extends StatelessWidget {
             style: AppTextStyles.bodyMediumBoldSecondary,
             textAlign: TextAlign.end,
           ),
-        ),
-      ],
-    );
-  }
-}
-
-class _FooterRow extends StatelessWidget {
-  final double totalPaid;
-  final double avgPerQuarter;
-
-  const _FooterRow({required this.totalPaid, required this.avgPerQuarter});
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        _FooterColumn(label: 'Total (Last 8 Quarters)', value: totalPaid),
-        const Spacer(),
-        _FooterColumn(label: 'Average per Quarter', value: avgPerQuarter),
-      ],
-    );
-  }
-}
-
-class _FooterColumn extends StatelessWidget {
-  final String label;
-  final double value;
-
-  const _FooterColumn({required this.label, required this.value});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(label, style: AppTextStyles.bodyMediumBoldSecondary),
-        AppConstants.subSectionSpacing,
-        Text(
-          '\$${value.toStringAsFixed(2)}',
-          style: AppTextStyles.bodyLargeBold,
         ),
       ],
     );

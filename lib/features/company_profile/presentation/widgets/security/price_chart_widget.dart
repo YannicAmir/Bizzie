@@ -65,6 +65,8 @@ class PriceChartWidget extends StatelessWidget {
                             state.selectedTimeFrame.formatDateForTooltip(label),
                         minY: state.viewData.minPrice,
                         maxY: state.viewData.maxPrice,
+                        showHorizontalGridLines: true,
+                        showTrackballLines: true,
                       ),
               ),
             ],

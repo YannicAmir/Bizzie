@@ -18,6 +18,8 @@ class BusinessProfile extends Equatable {
   final String fullTimeEmployees;
   final List<CompanyExecutive> executives;
   final String? def14aUrl;
+  final bool isForeignCompany;
+  final String proxyFilingFormType;
   final List<SecFiling> annualFilings;
   final List<SecFiling> quarterlyFilings;
 
@@ -37,6 +39,8 @@ class BusinessProfile extends Equatable {
     required this.fullTimeEmployees,
     required this.executives,
     this.def14aUrl,
+    this.isForeignCompany = false,
+    this.proxyFilingFormType = 'DEF 14A',
     this.annualFilings = const [],
     this.quarterlyFilings = const [],
   });
@@ -55,5 +59,7 @@ class BusinessProfile extends Equatable {
     fullTimeEmployees,
     executives,
     def14aUrl,
+    isForeignCompany,
+    proxyFilingFormType,
   ];
 }

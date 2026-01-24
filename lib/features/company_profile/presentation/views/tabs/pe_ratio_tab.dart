@@ -1,12 +1,15 @@
 import 'package:bizzie/app/themes/app_assets.dart';
+import 'package:bizzie/features/company_profile/domain/extensions/financial_data_point_list_extensions.dart';
 import 'package:bizzie/features/company_profile/domain/models/chart_data_point.dart';
 import 'package:bizzie/features/company_profile/domain/models/financial_data_point.dart';
 import 'package:bizzie/features/company_profile/presentation/bloc/company_pe_ratio/company_pe_ratio_bloc.dart';
 import 'package:bizzie/features/company_profile/presentation/bloc/company_pe_ratio/company_pe_ratio_event.dart';
 import 'package:bizzie/features/company_profile/presentation/bloc/company_pe_ratio/company_pe_ratio_state.dart';
+import 'package:bizzie/features/company_profile/presentation/utils/metric_summary_presentation_extensions.dart';
 import 'package:bizzie/features/company_profile/presentation/widgets/shared/company_profile_error_state.dart';
 import 'package:bizzie/features/company_profile/presentation/widgets/shared/company_profile_loading_state.dart';
 import 'package:bizzie/features/company_profile/presentation/widgets/shared/financial_data_table.dart';
+import 'package:bizzie/features/company_profile/presentation/widgets/shared/financial_table_footer.dart';
 import 'package:bizzie/features/company_profile/presentation/widgets/shared/metric_summary_card.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:bizzie/shared/widgets/app_badge.dart';
@@ -57,6 +60,7 @@ class PeRatioTab extends StatelessWidget {
                 isPositive: isPositive,
                 referenceLabel: referenceLabel,
                 ticker: ticker,
+                lastUpdated: lastUpdated,
               ),
         );
       },
@@ -73,6 +77,7 @@ class _PeRatioLoadedContent extends StatelessWidget {
   final bool isPositive;
   final String referenceLabel;
   final String ticker;
+  final DateTime? lastUpdated;
 
   const _PeRatioLoadedContent({
     required this.dataPoints,
@@ -83,6 +88,7 @@ class _PeRatioLoadedContent extends StatelessWidget {
     required this.isPositive,
     required this.referenceLabel,
     required this.ticker,
+    this.lastUpdated,
   });
 
   @override
@@ -97,13 +103,8 @@ class _PeRatioLoadedContent extends StatelessWidget {
       );
     }
 
-    final valueStr = currentValue.toStringAsFixed(2);
-    final badgeText =
-        '${growthPercentage > 0 ? '+' : ''}${growthPercentage.toStringAsFixed(1)}%';
-    const badgeStyle = AppBadgeStyle.neutral;
-    final subtitle =
-        '${isPositive ? 'Increased' : 'Decreased'} by ${absoluteDelta.toStringAsFixed(2)} since $referenceLabel';
-    final chartFormatter = NumberFormat('#,##0.00', 'en_US');
+    final asOfPrefix = dataPoints.getAsOfPrefix(lastUpdated);
+    final dynamicAvg = dataPoints.getDynamicAverageColumn('P/E Ratio');
 
     return SingleChildScrollView(
       padding: AppConstants.pagePadding,
@@ -112,10 +113,15 @@ class _PeRatioLoadedContent extends StatelessWidget {
         children: [
           MetricSummaryCard(
             title: 'P/E Ratio',
-            value: valueStr,
-            badgeText: badgeText,
-            badgeStyle: badgeStyle,
-            subtitle: subtitle,
+            value: currentValue.formattedRatioValue,
+            badgeText: growthPercentage.formattedRatioBadge,
+            badgeStyle: AppBadgeStyle.neutral,
+            subtitle: MetricSummarySubtitleHelper.getSubtitle(
+              asOfPrefix: asOfPrefix,
+              isPositive: isPositive,
+              absoluteDelta: absoluteDelta,
+              referenceLabel: referenceLabel,
+            ),
           ),
           AppConstants.mainSectionSpacing,
           BizzieExpandableChart(
@@ -123,7 +129,7 @@ class _PeRatioLoadedContent extends StatelessWidget {
             data: chartData
                 .map((p) => BizzieChartData(p.label, p.value))
                 .toList(),
-            numberFormat: chartFormatter,
+            numberFormat: NumberFormat('#,##0.00', 'en_US'),
           ),
           AppConstants.mainSectionSpacing,
           FinancialDataTable(
@@ -133,6 +139,19 @@ class _PeRatioLoadedContent extends StatelessWidget {
             isNeutralColor: true,
             dateFormat: FinancialDateFormat.fullDate,
             onViewMore: () => _showAllHistory(context, dataPoints),
+            footer: FinancialTableFooter(
+              columns: [
+                FinancialTableFooterColumnData(
+                  label: 'Avg. P/E Ratio',
+                  value: dataPoints.averageValue.formattedRatioValue,
+                ),
+                if (dynamicAvg != null)
+                  FinancialTableFooterColumnData(
+                    label: dynamicAvg.label,
+                    value: dynamicAvg.value,
+                  ),
+              ],
+            ),
           ),
         ],
       ),
