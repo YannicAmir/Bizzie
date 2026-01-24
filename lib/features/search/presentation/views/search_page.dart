@@ -72,7 +72,7 @@ class _SearchPageState extends State<SearchPage> {
     );
 
     return Scaffold(
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: true,
       appBar: SearchAppBar(
         controller: _searchController,
         focusNode: _focusNode,

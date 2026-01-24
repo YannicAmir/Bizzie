@@ -53,7 +53,7 @@ void main() {
     test('formatDate_returnsDetailedString', () {
       expect(
         DividendPaymentHistoryUtils.formatDate('2023-10-01'),
-        'Oct 01, 2023',
+        'Oct. 01, 2023',
       );
       expect(DividendPaymentHistoryUtils.formatDate('invalid'), 'invalid');
     });

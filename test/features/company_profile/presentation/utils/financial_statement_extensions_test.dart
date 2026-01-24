@@ -22,7 +22,7 @@ void main() {
         operatingExpenses: 0,
         costAndExpenses: 0,
       );
-      expect(statement.formattedPeriod, 'FY | Sep 30, 2023');
+      expect(statement.formattedPeriod, 'FY | Sep. 30, 2023');
     });
 
     test('BalanceSheet_formattedPeriod_returnsPeriodAndDate', () {
@@ -43,7 +43,7 @@ void main() {
         longTermDebt: 0,
         shortTermDebt: 0,
       );
-      expect(statement.formattedPeriod, 'Q3 | Sep 30, 2023');
+      expect(statement.formattedPeriod, 'Q3 | Sep. 30, 2023');
     });
 
     test('CashFlowStatement_formattedPeriod_returnsPeriodAndDate', () {
@@ -61,7 +61,7 @@ void main() {
         cashAtBeginningOfPeriod: 0,
         cashAtEndOfPeriod: 0,
       );
-      expect(statement.formattedPeriod, 'FY | Sep 30, 2023');
+      expect(statement.formattedPeriod, 'FY | Sep. 30, 2023');
     });
 
     test('handlesEmptyPeriod_returnsOnlyDate', () {
@@ -80,7 +80,7 @@ void main() {
         operatingExpenses: 0,
         costAndExpenses: 0,
       );
-      expect(statement.formattedPeriod, 'Sep 30, 2023');
+      expect(statement.formattedPeriod, 'Sep. 30, 2023');
     });
   });
 }

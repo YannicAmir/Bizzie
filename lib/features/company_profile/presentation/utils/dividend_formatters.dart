@@ -1,17 +1,13 @@
-import 'package:intl/intl.dart';
+import 'package:bizzie/shared/utils/bizzie_date_formatter.dart';
 
 class DividendFormatters {
   static String formatAmount(double amount) {
     return '\$${amount.toStringAsFixed(2)}';
   }
 
-  static String formatDate(String date, {String format = 'MMM yyyy'}) {
+  static String formatDate(String date) {
     if (date.isEmpty) return 'TBD';
-    try {
-      return DateFormat(format).format(DateTime.parse(date));
-    } catch (_) {
-      return date;
-    }
+    return BizzieDateFormatter.formatMonthYearOnly(date);
   }
 
   static String formatGrowthRate(double growth) {
@@ -20,22 +16,17 @@ class DividendFormatters {
   }
 
   static String formatDisplayValue(String val) {
-    if (val == 'N/A' || val.isEmpty) return 'TBD';
+    if (val == 'N/A' || val.isEmpty || val == 'TBD') return 'TBD';
 
     if (val.startsWith(r'$') || val.startsWith('+') || val.startsWith('-')) {
       return val;
     }
 
-    try {
-      final parsed = DateTime.parse(val);
-      return DateFormat('MMM d, yyyy').format(parsed);
-    } catch (_) {
-      return val;
-    }
+    return BizzieDateFormatter.formatMonthYearFull(val);
   }
 
   static String formatOptionalDate(String? date) {
-    if (date == null || date.isEmpty) return 'N/A';
+    if (date == null || date.isEmpty || date == 'N/A') return 'TBD';
     return formatDisplayValue(date);
   }
 }

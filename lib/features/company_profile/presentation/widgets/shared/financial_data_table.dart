@@ -2,6 +2,7 @@ import 'package:bizzie/app/themes/app_colors.dart';
 import 'package:bizzie/app/themes/app_text_styles.dart';
 import 'package:bizzie/features/company_profile/domain/models/financial_data_point.dart';
 import 'package:bizzie/shared/widgets/tables/bizzie_data_table.dart';
+import 'package:bizzie/shared/utils/bizzie_date_formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -160,9 +161,9 @@ class FinancialDataTable extends StatelessWidget {
       final dt = DateTime.parse(dateStr);
       switch (format) {
         case FinancialDateFormat.fullDate:
-          return DateFormat('MMM dd, yyyy').format(dt);
+          return BizzieDateFormatter.formatMonthYearFull(dateStr);
         case FinancialDateFormat.monthYear:
-          return DateFormat('MMM dd, yyyy').format(dt);
+          return BizzieDateFormatter.formatMonthYearFull(dateStr);
         case FinancialDateFormat.quarterShort:
           String quarter = '';
           if (period != null && period.startsWith('Q')) {
@@ -171,7 +172,7 @@ class FinancialDataTable extends StatelessWidget {
             int q = ((dt.month - 1) / 3).floor() + 1;
             quarter = 'Q$q';
           }
-          return "$quarter | ${DateFormat("MMM dd, yyyy").format(dt)}";
+          return "$quarter | ${BizzieDateFormatter.formatMonthYearFull(dateStr)}";
         case FinancialDateFormat.period:
           return _formatPeriod(dateStr, period);
       }

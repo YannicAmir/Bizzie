@@ -9,7 +9,7 @@ void main() {
     });
 
     test('formatDate_formatsWithDefaultParameters', () {
-      expect(DividendFormatters.formatDate('2023-01-15'), 'Jan 2023');
+      expect(DividendFormatters.formatDate('2023-01-15'), 'Jan. 2023');
       expect(DividendFormatters.formatDate(''), 'TBD');
       expect(DividendFormatters.formatDate('invalid'), 'invalid');
     });
@@ -23,7 +23,7 @@ void main() {
     test('formatDisplayValue_identifiesAndFormatsProperly', () {
       expect(
         DividendFormatters.formatDisplayValue('2023-01-15'),
-        'Jan 15, 2023',
+        'Jan. 15, 2023',
       );
       expect(DividendFormatters.formatDisplayValue(r'$1.20'), r'$1.20');
       expect(DividendFormatters.formatDisplayValue('+5%'), '+5%');
@@ -32,11 +32,11 @@ void main() {
     });
 
     test('formatOptionalDate_handlesNullAndEmpty', () {
-      expect(DividendFormatters.formatOptionalDate(null), 'N/A');
-      expect(DividendFormatters.formatOptionalDate(''), 'N/A');
+      expect(DividendFormatters.formatOptionalDate(null), 'TBD');
+      expect(DividendFormatters.formatOptionalDate(''), 'TBD');
       expect(
         DividendFormatters.formatOptionalDate('2023-01-15'),
-        'Jan 15, 2023',
+        'Jan. 15, 2023',
       );
     });
   });

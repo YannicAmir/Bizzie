@@ -21,6 +21,8 @@ class BizzieLineChart extends StatelessWidget {
   final NumberFormat? numberFormat;
   final double? minY;
   final double? maxY;
+  final bool showHorizontalGridLines;
+  final bool showTrackballLines;
 
   const BizzieLineChart({
     super.key,
@@ -36,6 +38,8 @@ class BizzieLineChart extends StatelessWidget {
     this.numberFormat,
     this.minY,
     this.maxY,
+    this.showHorizontalGridLines = false,
+    this.showTrackballLines = false,
   });
 
   @override
@@ -88,7 +92,10 @@ class BizzieLineChart extends StatelessWidget {
         primaryYAxis: NumericAxis(
           isVisible: true,
           opposedPosition: true,
-          majorGridLines: const MajorGridLines(width: 0),
+          majorGridLines: MajorGridLines(
+            width: showHorizontalGridLines ? 0.67 : 0,
+            color: theme.dividerColor,
+          ),
           axisLine: const AxisLine(width: 0),
           majorTickLines: const MajorTickLines(size: 0),
           labelStyle: AppTextStyles.bodySmallSecondary,
@@ -111,7 +118,11 @@ class BizzieLineChart extends StatelessWidget {
             width: 10,
             height: 10,
           ),
-          lineType: TrackballLineType.none,
+          lineType: showTrackballLines
+              ? TrackballLineType.vertical
+              : TrackballLineType.none,
+          lineColor: theme.colorScheme.onSurfaceVariant,
+          lineDashArray: const <double>[5, 5],
           builder: (BuildContext context, TrackballDetails trackballDetails) {
             final point = trackballDetails.point;
             if (point == null) {

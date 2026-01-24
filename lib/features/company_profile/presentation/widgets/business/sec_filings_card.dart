@@ -5,6 +5,7 @@ import 'package:bizzie/features/company_profile/domain/models/business_profile.d
 import 'package:bizzie/shared/widgets/modals/app_history_modal.dart';
 import 'package:bizzie/shared/utils/url_launcher_utils.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
+import 'package:bizzie/shared/utils/bizzie_date_formatter.dart';
 import 'package:bizzie/features/company_profile/presentation/utils/business_profile_extensions.dart';
 import 'package:flutter/material.dart';
 
@@ -215,11 +216,13 @@ class _FilingItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String title;
+    final formattedDate = BizzieDateFormatter.formatMonthYearFull(filing.date);
+
     if (isAnnual) {
-      title = 'FY${filing.year.isNotEmpty ? ' ${filing.year}' : ''}';
+      title = 'FY | $formattedDate';
     } else {
       title =
-          '${filing.period.isNotEmpty ? filing.period.toUpperCase() : ''} | ${filing.year.isNotEmpty ? filing.year : ''}';
+          '${filing.period.isNotEmpty ? filing.period.toUpperCase() : ''} | $formattedDate';
     }
 
     return GestureDetector(
