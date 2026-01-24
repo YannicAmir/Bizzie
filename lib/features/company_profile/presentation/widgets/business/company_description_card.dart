@@ -14,11 +14,18 @@ class CompanyDescriptionCard extends StatefulWidget {
 
 class _CompanyDescriptionCardState extends State<CompanyDescriptionCard> {
   bool _isExpanded = false;
+  final ScrollController _scrollController = ScrollController();
 
   void _toggleExpand() {
     setState(() {
       _isExpanded = !_isExpanded;
     });
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
   }
 
   @override
@@ -48,13 +55,15 @@ class _CompanyDescriptionCardState extends State<CompanyDescriptionCard> {
               final span = TextSpan(text: widget.description, style: textStyle);
               final textScaler = MediaQuery.textScalerOf(context);
 
+              final double availableWidth = constraints.maxWidth - 16.0;
+
               final tp = TextPainter(
                 text: span,
                 textDirection: TextDirection.ltr,
                 maxLines: 6,
                 textScaler: textScaler,
               );
-              tp.layout(maxWidth: constraints.maxWidth);
+              tp.layout(maxWidth: availableWidth);
 
               final bool isOverflowing = tp.didExceedMaxLines;
               final double collapsedHeight = tp.height;
@@ -64,8 +73,8 @@ class _CompanyDescriptionCardState extends State<CompanyDescriptionCard> {
                 textDirection: TextDirection.ltr,
                 textScaler: textScaler,
               );
-              tpFull.layout(maxWidth: constraints.maxWidth);
-              final double fullHeight = tpFull.height + 20.0;
+              tpFull.layout(maxWidth: availableWidth);
+              final double fullHeight = tpFull.height + 8.0;
 
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -73,20 +82,35 @@ class _CompanyDescriptionCardState extends State<CompanyDescriptionCard> {
                   AnimatedContainer(
                     duration: const Duration(milliseconds: 600),
                     curve: Curves.easeInOut,
-                    height: _isExpanded ? fullHeight : collapsedHeight,
+                    height: _isExpanded
+                        ? (fullHeight > 400 ? 400 : fullHeight)
+                        : collapsedHeight,
                     clipBehavior: Clip.hardEdge,
                     decoration: const BoxDecoration(),
-                    child: Text(
-                      widget.description,
-                      style: textStyle,
-                      overflow: TextOverflow.visible,
+                    child: Scrollbar(
+                      controller: _scrollController,
+                      thumbVisibility: _isExpanded && fullHeight > 400,
+                      child: SingleChildScrollView(
+                        controller: _scrollController,
+                        physics: _isExpanded && fullHeight > 400
+                            ? const AlwaysScrollableScrollPhysics()
+                            : const NeverScrollableScrollPhysics(),
+                        child: Padding(
+                          padding: const EdgeInsets.only(right: 16.0),
+                          child: Text(
+                            widget.description,
+                            style: textStyle,
+                            overflow: TextOverflow.visible,
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                   if (isOverflowing)
                     GestureDetector(
                       onTap: _toggleExpand,
                       child: Padding(
-                        padding: const EdgeInsets.only(top: 8.0),
+                        padding: const EdgeInsets.only(top: 12.0),
                         child: Text(
                           _isExpanded ? 'View Less' : 'View All',
                           style: AppTextStyles.bodyMediumBold.copyWith(
