@@ -29,6 +29,8 @@ import 'package:bizzie/features/company_profile/presentation/bloc/financial_stat
 import 'package:bizzie/features/company_profile/presentation/bloc/financial_statements/financial_statements_event.dart';
 import 'package:bizzie/features/company_profile/presentation/bloc/historical_price_eod/historical_price_eod_bloc.dart';
 import 'package:bizzie/features/company_profile/presentation/bloc/historical_price_eod/historical_price_eod_event.dart';
+import 'package:bizzie/features/company_profile/presentation/bloc/upcoming_earnings/upcoming_earnings_bloc.dart';
+import 'package:bizzie/features/company_profile/presentation/bloc/upcoming_earnings/upcoming_earnings_event.dart';
 import 'package:bizzie/features/company_profile/presentation/enums/company_profile_tab.dart';
 import 'package:bizzie/features/company_profile/presentation/enums/financial_statement_type.dart';
 import 'package:bizzie/features/company_profile/presentation/widgets/company_profile_body.dart';
@@ -118,6 +120,11 @@ class CompanyProfilePage extends StatelessWidget {
               getIt<HistoricalPriceEodBloc>()
                 ..add(HistoricalPriceEodEvent.loadRequested(ticker)),
         ),
+        BlocProvider(
+          create: (context) =>
+              getIt<UpcomingEarningsBloc>()
+                ..add(UpcomingEarningsEvent.loadRequested(ticker)),
+        ),
       ],
       child: _CompanyProfileView(ticker: ticker),
     );
@@ -203,6 +210,9 @@ class _CompanyProfileViewState extends State<_CompanyProfileView>
       case CompanyProfileTab.security:
         context.read<CompanySecurityBloc>().add(
           CompanySecurityEvent.stalenessCheckRequested(widget.ticker),
+        );
+        context.read<UpcomingEarningsBloc>().add(
+          UpcomingEarningsEvent.stalenessCheckRequested(widget.ticker),
         );
         break;
       case CompanyProfileTab.financialStatements:

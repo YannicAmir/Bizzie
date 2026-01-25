@@ -4,6 +4,7 @@ import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/features/company_profile/data/datasources/company_firestore_data_source.dart';
 import 'package:bizzie/features/company_profile/data/datasources/company_remote_data_source.dart';
 import 'package:bizzie/features/company_profile/data/dtos/fmp_sec_filing_dto.dart';
+import 'package:bizzie/features/company_profile/data/dtos/earnings_report_dto.dart';
 import 'package:bizzie/features/company_profile/data/dtos/legacy_income_statement_dto.dart';
 import 'package:bizzie/features/company_profile/data/dtos/profile_dtos.dart';
 import 'package:bizzie/features/company_profile/domain/interfaces/i_security_repository.dart';
@@ -86,7 +87,6 @@ class SecurityRepositoryImpl implements ISecurityRepository {
     String ticker,
   ) async {
     try {
-      // Parallelize all non-dependent requests for maximum performance
       final results = await Future.wait([
         _getProfileAndCache(ticker),
         _getExecutivesAndCache(ticker),
@@ -176,6 +176,43 @@ class SecurityRepositoryImpl implements ISecurityRepository {
           ),
         ),
       );
+    } catch (e) {
+      return left(ServerFailure(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, DateTime?>> getUpcomingEarningsDate(
+    String ticker,
+  ) async {
+    try {
+      List<EarningsReportDto>? earnings = await _localDataSource
+          .getCachedEarningsReports(ticker);
+
+      if (earnings == null) {
+        earnings = await _remoteDataSource.getEarningsReports(ticker);
+        await _localDataSource.cacheEarningsReports(ticker, earnings);
+      }
+
+      final now = DateTime.now();
+      final oneDayAgo = now.subtract(const Duration(days: 1));
+      final sevenDaysFromNow = now.add(const Duration(days: 7));
+
+      final upcoming = earnings.where((e) {
+        final date = DateTime.tryParse(e.date);
+        if (date == null) return false;
+        return date.isAfter(oneDayAgo) && date.isBefore(sevenDaysFromNow);
+      }).toList();
+
+      if (upcoming.isEmpty) return right(null);
+
+      upcoming.sort((a, b) {
+        final dateA = DateTime.parse(a.date);
+        final dateB = DateTime.parse(b.date);
+        return dateA.compareTo(dateB);
+      });
+
+      return right(DateTime.parse(upcoming.first.date));
     } catch (e) {
       return left(ServerFailure(e.toString()));
     }

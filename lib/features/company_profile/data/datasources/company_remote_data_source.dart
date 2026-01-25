@@ -15,6 +15,7 @@ import 'package:bizzie/features/company_profile/data/dtos/market_dtos.dart';
 import 'package:bizzie/features/company_profile/data/dtos/fmp_sec_filing_dto.dart';
 import 'package:bizzie/features/company_profile/data/dtos/balance_sheet_dto.dart';
 import 'package:bizzie/features/company_profile/data/dtos/key_metrics_dto.dart';
+import 'package:bizzie/features/company_profile/data/dtos/earnings_report_dto.dart';
 import 'package:bizzie/services/config_service.dart';
 
 abstract class CompanyRemoteDataSource {
@@ -51,6 +52,7 @@ abstract class CompanyRemoteDataSource {
   Future<List<HistoricalPriceEodDto>> getHistoricalEodPrices(String ticker);
   Future<List<FmpSecFilingDto>> getSecFilings(String ticker, {String? type});
   Future<double?> getExchangeRate(String pair);
+  Future<List<EarningsReportDto>> getEarningsReports(String ticker);
 }
 
 @LazySingleton(as: CompanyRemoteDataSource)
@@ -58,6 +60,7 @@ class CompanyRemoteDataSourceImpl implements CompanyRemoteDataSource {
   static const int _defaultLimit = 1000;
   static const int _legacyLimit = 1000;
   static const int _newsLimit = 100;
+  static const int _companyEarningsLimit = 10;
 
   final Dio _dio;
   final ConfigService _configService;
@@ -316,6 +319,20 @@ class CompanyRemoteDataSourceImpl implements CompanyRemoteDataSource {
     );
     return (response.data as List)
         .map((e) => HistoricalPriceEodDto.fromJson(e))
+        .toList();
+  }
+
+  @override
+  Future<List<EarningsReportDto>> getEarningsReports(String ticker) async {
+    final response = await _dio.get(
+      '$_baseUrl/earnings',
+      queryParameters: {
+        'symbol': _sanitize(ticker),
+        'limit': _companyEarningsLimit,
+      },
+    );
+    return (response.data as List)
+        .map((e) => EarningsReportDto.fromJson(e))
         .toList();
   }
 }

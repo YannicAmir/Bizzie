@@ -90,6 +90,8 @@ import '../features/company_profile/domain/usecases/get_security_details_usecase
     as _i113;
 import '../features/company_profile/domain/usecases/get_share_stats_usecase.dart'
     as _i454;
+import '../features/company_profile/domain/usecases/get_upcoming_earnings_usecase.dart'
+    as _i358;
 import '../features/company_profile/presentation/bloc/company_business/company_business_bloc.dart'
     as _i174;
 import '../features/company_profile/presentation/bloc/company_dividends/company_dividends_bloc.dart'
@@ -122,6 +124,8 @@ import '../features/company_profile/presentation/bloc/historical_price_eod/histo
     as _i707;
 import '../features/company_profile/presentation/bloc/price_chart/price_chart_bloc.dart'
     as _i19;
+import '../features/company_profile/presentation/bloc/upcoming_earnings/upcoming_earnings_bloc.dart'
+    as _i936;
 import '../features/notifications/data/datasources/fcm_remote_datasource.dart'
     as _i640;
 import '../features/notifications/data/datasources/local_notification_datasource.dart'
@@ -383,6 +387,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i454.GetShareStatsUseCase>(
       () => _i454.GetShareStatsUseCase(gh<_i555.ISecurityRepository>()),
     );
+    gh.lazySingleton<_i358.GetUpcomingEarningsUseCase>(
+      () => _i358.GetUpcomingEarningsUseCase(gh<_i555.ISecurityRepository>()),
+    );
     gh.factory<_i947.FinancialStatementsBloc>(
       () => _i947.FinancialStatementsBloc(gh<_i979.IFinancialRepository>()),
     );
@@ -454,6 +461,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i397.GetPriceHistoryUseCase>(
       () => _i397.GetPriceHistoryUseCase(gh<_i865.IPriceRepository>()),
+    );
+    gh.factory<_i936.UpcomingEarningsBloc>(
+      () => _i936.UpcomingEarningsBloc(gh<_i358.GetUpcomingEarningsUseCase>()),
     );
     gh.lazySingleton<_i200.UserBloc>(
       () => _i200.UserBloc(gh<_i561.GetUserUseCase>()),

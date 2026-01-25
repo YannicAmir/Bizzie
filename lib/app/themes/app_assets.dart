@@ -73,6 +73,8 @@ class AppAssets {
       'assets/images/company_profile/total_revenue_icon.png';
   static const String chartGrowthIcon =
       'assets/images/company_profile/chart_growth_icon.png';
+  static const String companyProfileCalendarIcon =
+      'assets/images/company_profile/upcoming_earnings_calendar_icon.svg';
 
   // Shared
   static const String backArrowIcon =

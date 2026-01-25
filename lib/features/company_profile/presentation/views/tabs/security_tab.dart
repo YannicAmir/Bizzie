@@ -14,6 +14,7 @@ import 'package:bizzie/features/company_profile/presentation/widgets/security/pr
 import 'package:bizzie/features/company_profile/presentation/widgets/shared/company_profile_error_state.dart';
 import 'package:bizzie/features/company_profile/presentation/widgets/shared/company_profile_loading_state.dart';
 import 'package:bizzie/features/company_profile/presentation/widgets/security/security_overview_card.dart';
+import 'package:bizzie/features/company_profile/presentation/widgets/security/upcoming_earnings_widget.dart';
 import 'package:bizzie/features/company_profile/presentation/widgets/security/key_metrics_section.dart';
 import 'package:bizzie/features/company_profile/presentation/bloc/company_security/company_security_state_extensions.dart';
 import 'package:bizzie/features/company_profile/presentation/bloc/historical_price_eod/historical_price_eod_state_extensions.dart';
@@ -101,6 +102,7 @@ class _SecurityContent extends StatelessWidget {
             securityDetails: securityDetails,
             prices: prices,
           ),
+          const UpcomingEarningsWidget(),
           AppConstants.mainSectionSpacing,
           KeyMetricsSection(details: securityDetails),
           AppConstants.mainSectionSpacing,
