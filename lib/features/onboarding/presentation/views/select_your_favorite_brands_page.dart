@@ -9,26 +9,8 @@ import 'package:bizzie/features/onboarding/presentation/widgets/onboarding_heade
 import 'package:bizzie/features/onboarding/presentation/widgets/onboarding_footer.dart';
 import 'package:bizzie/shared/widgets/buttons/bizzie_primary_button.dart';
 
-class SelectYourFavoriteBrandsPage extends StatefulWidget {
+class SelectYourFavoriteBrandsPage extends StatelessWidget {
   const SelectYourFavoriteBrandsPage({super.key});
-
-  @override
-  State<SelectYourFavoriteBrandsPage> createState() =>
-      _SelectYourFavoriteBrandsPageState();
-}
-
-class _SelectYourFavoriteBrandsPageState
-    extends State<SelectYourFavoriteBrandsPage> {
-  @override
-  void initState() {
-    super.initState();
-    context.read<OnboardingBloc>().add(const OnboardingEvent.loadBrands());
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {

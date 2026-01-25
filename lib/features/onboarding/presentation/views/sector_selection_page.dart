@@ -82,6 +82,9 @@ class SectorSelectionPage extends StatelessWidget {
                   primaryButton: BizziePrimaryButton(
                     onPressed: selectedSector != null
                         ? () {
+                            context.read<OnboardingBloc>().add(
+                              const OnboardingEvent.loadBrands(),
+                            );
                             context.push(AppRoutes.onboardingMeetBizzie);
                           }
                         : null,
