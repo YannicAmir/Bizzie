@@ -26,6 +26,7 @@ void main() {
     description: 'Tech giant',
     currency: 'USD',
     isEtf: false,
+    isFund: false,
     isActivelyTrading: true,
     price: 150.0,
     changesPercentage: 1.5,

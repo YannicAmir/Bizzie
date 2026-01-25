@@ -62,6 +62,7 @@ class SecurityRepositoryImpl implements ISecurityRepository {
           description: profile.description ?? '',
           currency: profile.currency ?? _Consts.usd,
           isEtf: profile.isEtf ?? false,
+          isFund: profile.isFund ?? false,
           isActivelyTrading: profile.isActivelyTrading ?? true,
           price: quote.price ?? 0.0,
           changesPercentage: quote.changesPercentage ?? 0.0,
