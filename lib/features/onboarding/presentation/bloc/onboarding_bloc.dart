@@ -109,13 +109,13 @@ class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
       ),
     );
 
-    await Future.delayed(const Duration(milliseconds: 1500));
+    await Future.delayed(const Duration(milliseconds: 1000));
     if (isClosed) return;
     add(const OnboardingEvent.updateAnalysisStep(1));
-    await Future.delayed(const Duration(milliseconds: 1500));
+    await Future.delayed(const Duration(milliseconds: 1000));
     if (isClosed) return;
     add(const OnboardingEvent.updateAnalysisStep(2));
-    await Future.delayed(const Duration(milliseconds: 1500));
+    await Future.delayed(const Duration(milliseconds: 1000));
     if (isClosed) return;
     add(const OnboardingEvent.updateAnalysisStep(3));
   }
@@ -141,7 +141,7 @@ class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
       if (isClosed) return;
       add(OnboardingEvent.updateWatchlistStep(i));
       if (i < count) {
-        await Future.delayed(const Duration(milliseconds: 1500));
+        await Future.delayed(const Duration(milliseconds: 1000));
       }
     }
     await Future.delayed(const Duration(milliseconds: 500));

@@ -45,11 +45,6 @@ class _AnalyzingBrandsPageState extends State<AnalyzingBrandsPage> {
                         _AnalysisTitle(title: state.analysisTitle),
                         const SizedBox(height: 48),
                         _AnalysisStepsList(state: state),
-                        const SizedBox(height: 48),
-                        _AnalysisProgressBar(
-                          isDone: isDone,
-                          analysisStep: state.analysisStep,
-                        ),
                         const Spacer(),
                       ],
                     ),
@@ -134,48 +129,6 @@ class _AnalysisStepsList extends StatelessWidget {
           status: state.stepWatchlistStatus,
         ),
       ],
-    );
-  }
-}
-
-class _AnalysisProgressBar extends StatelessWidget {
-  final bool isDone;
-  final int analysisStep;
-
-  const _AnalysisProgressBar({
-    required this.isDone,
-    required this.analysisStep,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 8,
-      width: double.infinity,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(4),
-        color: AppColors.inputBackground,
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(4),
-        child: TweenAnimationBuilder<double>(
-          tween: Tween<double>(
-            begin: 0,
-            end: isDone ? 1.0 : (analysisStep + 1.0) / 3.0,
-          ),
-          duration: const Duration(milliseconds: 1500),
-          curve: Curves.linear,
-          builder: (context, value, _) {
-            return LinearProgressIndicator(
-              value: value.clamp(0.0, 1.0),
-              backgroundColor: Colors.transparent,
-              valueColor: const AlwaysStoppedAnimation<Color>(
-                AppColors.primary,
-              ),
-            );
-          },
-        ),
-      ),
     );
   }
 }

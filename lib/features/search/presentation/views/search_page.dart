@@ -1,3 +1,4 @@
+import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:bizzie/shared/widgets/error/bizzie_error.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -79,6 +80,7 @@ class _SearchPageState extends State<SearchPage> {
         onChanged: _onSearchChanged,
         onClear: _onClearTapped,
         onCancel: _onCancelTapped,
+        maxLength: AppConstants.textfieldCharLimit,
         inputFormatters: [FilteringTextInputFormatter.deny(RegExp(r'^\s+'))],
       ),
       body: BlocBuilder<SearchBloc, SearchState>(

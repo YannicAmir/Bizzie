@@ -13,6 +13,7 @@ class BizzieSearchBar extends StatelessWidget {
     this.onClear,
     this.inputFormatters,
     this.hintText = 'Search for stocks',
+    this.maxLength,
   });
 
   final bool readOnly;
@@ -23,6 +24,7 @@ class BizzieSearchBar extends StatelessWidget {
   final VoidCallback? onClear;
   final List<TextInputFormatter>? inputFormatters;
   final String hintText;
+  final int? maxLength;
 
   @override
   Widget build(BuildContext context) {
@@ -38,11 +40,13 @@ class BizzieSearchBar extends StatelessWidget {
           readOnly: readOnly,
           onChanged: onChanged,
           inputFormatters: inputFormatters,
+          maxLength: maxLength,
           style: theme.textTheme.bodyLarge?.copyWith(
             color: theme.colorScheme.onSurface,
           ),
           textAlignVertical: TextAlignVertical.center,
           decoration: InputDecoration(
+            counterText: '',
             filled: true,
             fillColor: theme.inputDecorationTheme.fillColor,
             hintText: hintText,

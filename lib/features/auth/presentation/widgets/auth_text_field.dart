@@ -1,5 +1,6 @@
 import 'package:bizzie/app/themes/app_assets.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class AuthTextField extends StatelessWidget {
   const AuthTextField({
@@ -14,6 +15,8 @@ class AuthTextField extends StatelessWidget {
     this.keyboardType,
     this.textInputAction,
     this.validator,
+    this.maxLength,
+    this.inputFormatters,
   });
 
   final TextEditingController controller;
@@ -26,6 +29,8 @@ class AuthTextField extends StatelessWidget {
   final TextInputType? keyboardType;
   final TextInputAction? textInputAction;
   final String? Function(String?)? validator;
+  final int? maxLength;
+  final List<TextInputFormatter>? inputFormatters;
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +42,10 @@ class AuthTextField extends StatelessWidget {
       textInputAction: textInputAction,
       onFieldSubmitted: onSubmitted != null ? (_) => onSubmitted!() : null,
       style: theme.textTheme.bodyLarge,
+      maxLength: maxLength,
+      inputFormatters: inputFormatters,
       decoration: InputDecoration(
+        counterText: '',
         prefixIcon: Padding(
           padding: const EdgeInsets.all(12.0),
           child: Image.asset(iconPath, width: 24, height: 24),

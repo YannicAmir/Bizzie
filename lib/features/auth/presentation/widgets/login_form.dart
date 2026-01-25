@@ -1,5 +1,6 @@
 import 'package:bizzie/app/routes/app_routes.dart';
 import 'package:bizzie/app/themes/app_assets.dart';
+import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:bizzie/shared/widgets/buttons/bizzie_primary_button.dart';
 import 'package:bizzie/features/auth/presentation/widgets/auth_text_field.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +10,7 @@ import '../bloc/auth_bloc.dart';
 import '../bloc/auth_event.dart';
 import '../bloc/auth_state.dart';
 import 'package:bizzie/shared/utils/validators.dart';
+import 'package:flutter/services.dart';
 
 class LoginForm extends StatefulWidget {
   final GlobalKey<FormState>? formKey;
@@ -64,6 +66,8 @@ class _LoginFormState extends State<LoginForm> {
             keyboardType: TextInputType.emailAddress,
             textInputAction: TextInputAction.next,
             validator: Validators.validateEmail,
+            maxLength: AppConstants.textfieldCharLimit,
+            inputFormatters: [FilteringTextInputFormatter.deny(RegExp(r'\s'))],
           ),
           const SizedBox(height: 16),
           AuthTextField(
@@ -79,6 +83,8 @@ class _LoginFormState extends State<LoginForm> {
             },
             onSubmitted: _onLoginPressed,
             textInputAction: TextInputAction.done,
+            maxLength: AppConstants.passwordFieldCharLimit,
+            inputFormatters: [FilteringTextInputFormatter.deny(RegExp(r'\s'))],
           ),
           const SizedBox(height: 16),
           GestureDetector(

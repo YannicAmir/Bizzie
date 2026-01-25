@@ -8,7 +8,7 @@ class SearchAppBar extends StatelessWidget implements PreferredSizeWidget {
   final ValueChanged<String> onChanged;
   final VoidCallback onClear;
   final VoidCallback onCancel;
-
+  final int? maxLength;
   final List<TextInputFormatter>? inputFormatters;
 
   const SearchAppBar({
@@ -18,6 +18,7 @@ class SearchAppBar extends StatelessWidget implements PreferredSizeWidget {
     required this.onChanged,
     required this.onClear,
     required this.onCancel,
+    this.maxLength,
     this.inputFormatters,
   });
 
@@ -33,6 +34,7 @@ class SearchAppBar extends StatelessWidget implements PreferredSizeWidget {
         focusNode: focusNode,
         onChanged: onChanged,
         onClear: onClear,
+        maxLength: maxLength,
         inputFormatters: inputFormatters,
       ),
       actions: [

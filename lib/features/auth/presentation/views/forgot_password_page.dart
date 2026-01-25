@@ -1,5 +1,6 @@
 import 'package:bizzie/app/routes/app_routes.dart';
 import 'package:bizzie/app/themes/app_assets.dart';
+import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:bizzie/shared/widgets/buttons/bizzie_primary_button.dart';
 import 'package:bizzie/features/auth/presentation/widgets/auth_text_field.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +11,7 @@ import '../bloc/auth_bloc.dart';
 import '../bloc/auth_event.dart';
 import '../bloc/auth_state.dart';
 import 'package:bizzie/shared/utils/validators.dart';
+import 'package:flutter/services.dart';
 
 class ForgotPasswordPage extends StatefulWidget {
   const ForgotPasswordPage({super.key});
@@ -101,6 +103,10 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                     textInputAction: TextInputAction.done,
                     onSubmitted: _onSendResetLinkPressed,
                     validator: Validators.validateEmail,
+                    maxLength: AppConstants.textfieldCharLimit,
+                    inputFormatters: [
+                      FilteringTextInputFormatter.deny(RegExp(r'\s')),
+                    ],
                   ),
                   const SizedBox(height: 24),
                   BizziePrimaryButton(

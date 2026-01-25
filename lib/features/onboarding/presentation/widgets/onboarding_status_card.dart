@@ -21,7 +21,7 @@ class OnboardingStatusCard extends StatelessWidget {
     final theme = Theme.of(context);
 
     return AnimatedContainer(
-      duration: const Duration(milliseconds: 300),
+      duration: const Duration(milliseconds: 200),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: status.backgroundColor,
