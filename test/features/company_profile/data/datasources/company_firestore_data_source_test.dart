@@ -75,7 +75,7 @@ void main() {
 
     test('getCachedProfile_cacheExpired_returnsNull', () async {
       // arrange
-      final expiredDate = DateTime.now().subtract(const Duration(hours: 25));
+      final expiredDate = DateTime.now().subtract(const Duration(days: 5));
       final entry = FirestoreCacheEntry(
         data: tProfile,
         lastUpdated: expiredDate,
