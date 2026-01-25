@@ -30,6 +30,7 @@ void main() {
     description: 'Apple description',
     currency: 'USD',
     isEtf: false,
+    isFund: false,
     isActivelyTrading: true,
   );
 
@@ -149,6 +150,46 @@ void main() {
       verify: (_) {
         // assert
         verify(() => mockGetSecurityDetails(tTicker)).called(1);
+      },
+    );
+
+    blocTest<CompanySecurityBloc, CompanySecurityState>(
+      'loadRequested_unsupported_emitsLoadingAndUnsupported',
+      build: () {
+        // arrange
+        const unsupportedDetails = SecurityDetails(
+          ticker: tTicker,
+          name: 'ETF',
+          sector: 'N/A',
+          industry: 'N/A',
+          description: '',
+          currency: 'USD',
+          isEtf: true,
+          isFund: false,
+          isActivelyTrading: true,
+        );
+        when(
+          () => mockGetSecurityDetails(tTicker),
+        ).thenAnswer((_) async => const Right(unsupportedDetails));
+        return bloc;
+      },
+      act: (bloc) {
+        // act
+        bloc.add(const CompanySecurityEvent.loadRequested(tTicker));
+      },
+      expect: () {
+        // assert
+        return [
+          const CompanySecurityState.loading(),
+          isA<CompanySecurityState>().having(
+            (s) => s.maybeMap(
+              unsupported: (u) => u.securityDetails.isEtf,
+              orElse: () => false,
+            ),
+            'isEtf',
+            true,
+          ),
+        ];
       },
     );
   });

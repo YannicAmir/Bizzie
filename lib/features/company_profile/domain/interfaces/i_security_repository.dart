@@ -10,4 +10,6 @@ abstract class ISecurityRepository {
   Future<Either<Failure, BusinessProfile>> getBusinessProfile(String ticker);
 
   Future<Either<Failure, ShareStats>> getShareStats(String ticker);
+
+  Future<Either<Failure, DateTime?>> getUpcomingEarningsDate(String ticker);
 }

@@ -20,6 +20,7 @@ abstract class ProfileDto with _$ProfileDto {
     String? exchangeShortName,
     String? currency,
     bool? isEtf,
+    bool? isFund,
     bool? isActivelyTrading,
     String? companyName,
     String? image,

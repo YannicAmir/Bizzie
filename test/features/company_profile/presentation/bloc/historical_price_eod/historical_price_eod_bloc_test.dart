@@ -188,8 +188,7 @@ void main() {
       },
       seed: () => HistoricalPriceEodState.loaded(
         tPrices,
-        // Seeds a state that is guaranteed to be stale (2 days ago)
-        lastUpdated: DateTime.now().subtract(const Duration(days: 2)),
+        lastUpdated: DateTime.now().subtract(const Duration(days: 10)),
       ),
       act: (bloc) {
         // act

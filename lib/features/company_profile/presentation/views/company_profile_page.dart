@@ -29,6 +29,10 @@ import 'package:bizzie/features/company_profile/presentation/bloc/financial_stat
 import 'package:bizzie/features/company_profile/presentation/bloc/financial_statements/financial_statements_event.dart';
 import 'package:bizzie/features/company_profile/presentation/bloc/historical_price_eod/historical_price_eod_bloc.dart';
 import 'package:bizzie/features/company_profile/presentation/bloc/historical_price_eod/historical_price_eod_event.dart';
+import 'package:bizzie/features/company_profile/presentation/bloc/upcoming_earnings/upcoming_earnings_bloc.dart';
+import 'package:bizzie/features/company_profile/presentation/bloc/upcoming_earnings/upcoming_earnings_event.dart';
+import 'package:bizzie/features/company_profile/presentation/widgets/shared/coming_soon_placeholder.dart';
+import 'package:bizzie/features/company_profile/presentation/bloc/company_security/company_security_state.dart';
 import 'package:bizzie/features/company_profile/presentation/enums/company_profile_tab.dart';
 import 'package:bizzie/features/company_profile/presentation/enums/financial_statement_type.dart';
 import 'package:bizzie/features/company_profile/presentation/widgets/company_profile_body.dart';
@@ -118,6 +122,11 @@ class CompanyProfilePage extends StatelessWidget {
               getIt<HistoricalPriceEodBloc>()
                 ..add(HistoricalPriceEodEvent.loadRequested(ticker)),
         ),
+        BlocProvider(
+          create: (context) =>
+              getIt<UpcomingEarningsBloc>()
+                ..add(UpcomingEarningsEvent.loadRequested(ticker)),
+        ),
       ],
       child: _CompanyProfileView(ticker: ticker),
     );
@@ -204,6 +213,9 @@ class _CompanyProfileViewState extends State<_CompanyProfileView>
         context.read<CompanySecurityBloc>().add(
           CompanySecurityEvent.stalenessCheckRequested(widget.ticker),
         );
+        context.read<UpcomingEarningsBloc>().add(
+          UpcomingEarningsEvent.stalenessCheckRequested(widget.ticker),
+        );
         break;
       case CompanyProfileTab.financialStatements:
         context.read<FinancialStatementsBloc>().add(
@@ -227,31 +239,53 @@ class _CompanyProfileViewState extends State<_CompanyProfileView>
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Scaffold(
-      appBar: AppBar(
-        leading: BackButton(color: theme.colorScheme.onSurface),
-        centerTitle: false,
-        title: Text(widget.ticker),
-        actionsPadding: AppConstants.appBarActionsPadding,
-        actions: [
-          CompanyWatchlistButton(
-            ticker: widget.ticker,
-            companyName: widget.ticker,
+    return BlocBuilder<CompanySecurityBloc, CompanySecurityState>(
+      builder: (context, state) {
+        final isUnsupported = state.maybeMap(
+          unsupported: (_) => true,
+          orElse: () => false,
+        );
+
+        final isEtf = state.maybeMap(
+          unsupported: (s) => s.securityDetails.isEtf,
+          orElse: () => false,
+        );
+
+        return Scaffold(
+          appBar: AppBar(
+            leading: BackButton(color: theme.colorScheme.onSurface),
+            centerTitle: false,
+            title: Text(widget.ticker),
+            actionsPadding: AppConstants.appBarActionsPadding,
+            actions: isUnsupported
+                ? null
+                : [
+                    CompanyWatchlistButton(
+                      ticker: widget.ticker,
+                      companyName: widget.ticker,
+                    ),
+                  ],
+            bottom: isUnsupported
+                ? null
+                : TabBar(
+                    controller: _tabController,
+                    isScrollable: true,
+                    tabAlignment: TabAlignment.start,
+                    padding: AppConstants.appBarBottomTabsPadding,
+                    tabs: _tabs.map((tab) => Tab(text: tab.label)).toList(),
+                  ),
           ),
-        ],
-        bottom: TabBar(
-          controller: _tabController,
-          isScrollable: true,
-          tabAlignment: TabAlignment.start,
-          padding: AppConstants.appBarBottomTabsPadding,
-          tabs: _tabs.map((tab) => Tab(text: tab.label)).toList(),
-        ),
-      ),
-      body: CompanyProfileBody(
-        ticker: widget.ticker,
-        tabController: _tabController,
-        tabs: _tabs,
-      ),
+          body: isUnsupported
+              ? ComingSoonPlaceholder(
+                  type: isEtf ? ComingSoonType.etf : ComingSoonType.fund,
+                )
+              : CompanyProfileBody(
+                  ticker: widget.ticker,
+                  tabController: _tabController,
+                  tabs: _tabs,
+                ),
+        );
+      },
     );
   }
 }

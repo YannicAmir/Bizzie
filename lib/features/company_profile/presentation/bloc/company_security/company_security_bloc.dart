@@ -60,7 +60,16 @@ class CompanySecurityBloc
         _logger.info(
           'Successfully loaded Security details for ${event.ticker}',
         );
-        emit(CompanySecurityState.loaded(details, lastUpdated: DateTime.now()));
+        if (details.isEtf || details.isFund) {
+          _logger.info(
+            'Security is unsupported (ETF or Fund). Emitting unsupported state.',
+          );
+          emit(CompanySecurityState.unsupported(details));
+        } else {
+          emit(
+            CompanySecurityState.loaded(details, lastUpdated: DateTime.now()),
+          );
+        }
       },
     );
   }

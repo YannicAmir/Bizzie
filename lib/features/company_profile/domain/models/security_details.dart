@@ -40,6 +40,7 @@ class SecurityDetails extends Equatable {
   final String description;
   final String currency;
   final bool isEtf;
+  final bool isFund;
   final bool isActivelyTrading;
   final double? price;
   final double? changesPercentage;
@@ -62,6 +63,7 @@ class SecurityDetails extends Equatable {
     required this.description,
     required this.currency,
     required this.isEtf,
+    required this.isFund,
     required this.isActivelyTrading,
     this.price,
     this.changesPercentage,
@@ -86,6 +88,7 @@ class SecurityDetails extends Equatable {
     description,
     currency,
     isEtf,
+    isFund,
     isActivelyTrading,
     price,
     changesPercentage,

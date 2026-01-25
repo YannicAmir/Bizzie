@@ -55,13 +55,14 @@ extension CompanySecurityStatePatterns on CompanySecurityState {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Initial value)?  initial,TResult Function( _Loading value)?  loading,TResult Function( _Loaded value)?  loaded,TResult Function( _Failure value)?  failure,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Initial value)?  initial,TResult Function( _Loading value)?  loading,TResult Function( _Loaded value)?  loaded,TResult Function( _Unsupported value)?  unsupported,TResult Function( _Failure value)?  failure,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial(_that);case _Loading() when loading != null:
 return loading(_that);case _Loaded() when loaded != null:
-return loaded(_that);case _Failure() when failure != null:
+return loaded(_that);case _Unsupported() when unsupported != null:
+return unsupported(_that);case _Failure() when failure != null:
 return failure(_that);case _:
   return orElse();
 
@@ -80,13 +81,14 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Initial value)  initial,required TResult Function( _Loading value)  loading,required TResult Function( _Loaded value)  loaded,required TResult Function( _Failure value)  failure,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Initial value)  initial,required TResult Function( _Loading value)  loading,required TResult Function( _Loaded value)  loaded,required TResult Function( _Unsupported value)  unsupported,required TResult Function( _Failure value)  failure,}){
 final _that = this;
 switch (_that) {
 case _Initial():
 return initial(_that);case _Loading():
 return loading(_that);case _Loaded():
-return loaded(_that);case _Failure():
+return loaded(_that);case _Unsupported():
+return unsupported(_that);case _Failure():
 return failure(_that);case _:
   throw StateError('Unexpected subclass');
 
@@ -104,13 +106,14 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Initial value)?  initial,TResult? Function( _Loading value)?  loading,TResult? Function( _Loaded value)?  loaded,TResult? Function( _Failure value)?  failure,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Initial value)?  initial,TResult? Function( _Loading value)?  loading,TResult? Function( _Loaded value)?  loaded,TResult? Function( _Unsupported value)?  unsupported,TResult? Function( _Failure value)?  failure,}){
 final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial(_that);case _Loading() when loading != null:
 return loading(_that);case _Loaded() when loaded != null:
-return loaded(_that);case _Failure() when failure != null:
+return loaded(_that);case _Unsupported() when unsupported != null:
+return unsupported(_that);case _Failure() when failure != null:
 return failure(_that);case _:
   return null;
 
@@ -128,12 +131,13 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( SecurityDetails securityDetails,  DateTime? lastUpdated)?  loaded,TResult Function( Failure failure)?  failure,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( SecurityDetails securityDetails,  DateTime? lastUpdated)?  loaded,TResult Function( SecurityDetails securityDetails)?  unsupported,TResult Function( Failure failure)?  failure,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial();case _Loading() when loading != null:
 return loading();case _Loaded() when loaded != null:
-return loaded(_that.securityDetails,_that.lastUpdated);case _Failure() when failure != null:
+return loaded(_that.securityDetails,_that.lastUpdated);case _Unsupported() when unsupported != null:
+return unsupported(_that.securityDetails);case _Failure() when failure != null:
 return failure(_that.failure);case _:
   return orElse();
 
@@ -152,12 +156,13 @@ return failure(_that.failure);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( SecurityDetails securityDetails,  DateTime? lastUpdated)  loaded,required TResult Function( Failure failure)  failure,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( SecurityDetails securityDetails,  DateTime? lastUpdated)  loaded,required TResult Function( SecurityDetails securityDetails)  unsupported,required TResult Function( Failure failure)  failure,}) {final _that = this;
 switch (_that) {
 case _Initial():
 return initial();case _Loading():
 return loading();case _Loaded():
-return loaded(_that.securityDetails,_that.lastUpdated);case _Failure():
+return loaded(_that.securityDetails,_that.lastUpdated);case _Unsupported():
+return unsupported(_that.securityDetails);case _Failure():
 return failure(_that.failure);case _:
   throw StateError('Unexpected subclass');
 
@@ -175,12 +180,13 @@ return failure(_that.failure);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( SecurityDetails securityDetails,  DateTime? lastUpdated)?  loaded,TResult? Function( Failure failure)?  failure,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( SecurityDetails securityDetails,  DateTime? lastUpdated)?  loaded,TResult? Function( SecurityDetails securityDetails)?  unsupported,TResult? Function( Failure failure)?  failure,}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial();case _Loading() when loading != null:
 return loading();case _Loaded() when loaded != null:
-return loaded(_that.securityDetails,_that.lastUpdated);case _Failure() when failure != null:
+return loaded(_that.securityDetails,_that.lastUpdated);case _Unsupported() when unsupported != null:
+return unsupported(_that.securityDetails);case _Failure() when failure != null:
 return failure(_that.failure);case _:
   return null;
 
@@ -315,6 +321,72 @@ class __$LoadedCopyWithImpl<$Res>
 null == securityDetails ? _self.securityDetails : securityDetails // ignore: cast_nullable_to_non_nullable
 as SecurityDetails,lastUpdated: freezed == lastUpdated ? _self.lastUpdated : lastUpdated // ignore: cast_nullable_to_non_nullable
 as DateTime?,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class _Unsupported implements CompanySecurityState {
+  const _Unsupported(this.securityDetails);
+  
+
+ final  SecurityDetails securityDetails;
+
+/// Create a copy of CompanySecurityState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$UnsupportedCopyWith<_Unsupported> get copyWith => __$UnsupportedCopyWithImpl<_Unsupported>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Unsupported&&(identical(other.securityDetails, securityDetails) || other.securityDetails == securityDetails));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,securityDetails);
+
+@override
+String toString() {
+  return 'CompanySecurityState.unsupported(securityDetails: $securityDetails)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$UnsupportedCopyWith<$Res> implements $CompanySecurityStateCopyWith<$Res> {
+  factory _$UnsupportedCopyWith(_Unsupported value, $Res Function(_Unsupported) _then) = __$UnsupportedCopyWithImpl;
+@useResult
+$Res call({
+ SecurityDetails securityDetails
+});
+
+
+
+
+}
+/// @nodoc
+class __$UnsupportedCopyWithImpl<$Res>
+    implements _$UnsupportedCopyWith<$Res> {
+  __$UnsupportedCopyWithImpl(this._self, this._then);
+
+  final _Unsupported _self;
+  final $Res Function(_Unsupported) _then;
+
+/// Create a copy of CompanySecurityState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? securityDetails = null,}) {
+  return _then(_Unsupported(
+null == securityDetails ? _self.securityDetails : securityDetails // ignore: cast_nullable_to_non_nullable
+as SecurityDetails,
   ));
 }
 

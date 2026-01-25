@@ -6,6 +6,7 @@ import 'package:bizzie/features/company_profile/data/dtos/governance_dtos.dart';
 import 'package:bizzie/features/company_profile/data/dtos/legacy_income_statement_dto.dart';
 import 'package:bizzie/features/company_profile/data/dtos/profile_dtos.dart';
 import 'package:bizzie/features/company_profile/data/dtos/ratios_ttm_dto.dart';
+import 'package:bizzie/features/company_profile/data/dtos/earnings_report_dto.dart';
 import 'package:bizzie/features/company_profile/data/repositories/security_repository_impl.dart';
 import 'package:bizzie/features/company_profile/domain/models/business_profile.dart';
 import 'package:bizzie/features/company_profile/domain/models/security_details.dart';
@@ -289,6 +290,89 @@ void main() {
         expect(r.currentSharesOutstanding, 16000000000.0);
         expect(r.annualWeightedAverageShares.length, 1);
       });
+    });
+  });
+
+  group('SecurityRepositoryImpl - UpcomingEarnings', () {
+    final tEarningsReports = [
+      EarningsReportDto(
+        symbol: tTicker,
+        date: DateTime.now().add(const Duration(days: 2)).toIso8601String(),
+      ),
+      EarningsReportDto(
+        symbol: tTicker,
+        date: DateTime.now()
+            .subtract(const Duration(days: 2))
+            .toIso8601String(),
+      ),
+      EarningsReportDto(
+        symbol: tTicker,
+        date: DateTime.now().add(const Duration(days: 10)).toIso8601String(),
+      ),
+    ];
+
+    test('getUpcomingEarningsDate_success_returnsNearestValidDate', () async {
+      // arrange
+      when(
+        () => mockLocalDataSource.getCachedEarningsReports(tTicker),
+      ).thenAnswer((_) async => null);
+      when(
+        () => mockRemoteDataSource.getEarningsReports(tTicker),
+      ).thenAnswer((_) async => tEarningsReports);
+      when(
+        () => mockLocalDataSource.cacheEarningsReports(tTicker, any()),
+      ).thenAnswer((_) async => Future.value());
+
+      // act
+      final result = await repository.getUpcomingEarningsDate(tTicker);
+
+      // assert
+      expect(result.isRight(), true);
+      result.fold((l) => fail('Should return right'), (r) {
+        expect(r, isA<DateTime>());
+        // Should be the one in 2 days
+        final expectedDate = DateTime.parse(tEarningsReports[0].date);
+        expect(r?.year, expectedDate.year);
+        expect(r?.month, expectedDate.month);
+        expect(r?.day, expectedDate.day);
+      });
+    });
+
+    test('getUpcomingEarningsDate_noUpcoming_returnsRightNull', () async {
+      // arrange
+      final tPastEarnings = [
+        EarningsReportDto(
+          symbol: tTicker,
+          date: DateTime.now()
+              .subtract(const Duration(days: 10))
+              .toIso8601String(),
+        ),
+      ];
+      when(
+        () => mockLocalDataSource.getCachedEarningsReports(tTicker),
+      ).thenAnswer((_) async => tPastEarnings);
+
+      // act
+      final result = await repository.getUpcomingEarningsDate(tTicker);
+
+      // assert
+      expect(result.isRight(), true);
+      result.fold((l) => fail('Should return right'), (r) {
+        expect(r, null);
+      });
+    });
+
+    test('getUpcomingEarningsDate_failure_returnsLeftFailure', () async {
+      // arrange
+      when(
+        () => mockLocalDataSource.getCachedEarningsReports(tTicker),
+      ).thenThrow(Exception('Error'));
+
+      // act
+      final result = await repository.getUpcomingEarningsDate(tTicker);
+
+      // assert
+      expect(result.isLeft(), true);
     });
   });
 }

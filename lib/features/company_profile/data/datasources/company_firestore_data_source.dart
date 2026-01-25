@@ -12,6 +12,7 @@ import 'package:bizzie/features/company_profile/data/dtos/ratios_dto.dart';
 import 'package:bizzie/features/company_profile/data/dtos/income_statement_dto.dart';
 import 'package:bizzie/features/company_profile/data/dtos/balance_sheet_dto.dart';
 import 'package:bizzie/features/company_profile/data/dtos/historical_price_eod_dto.dart';
+import 'package:bizzie/features/company_profile/data/dtos/earnings_report_dto.dart';
 
 abstract class CompanyFirestoreDataSource {
   Future<void> cacheProfile(String ticker, ProfileDto profile);
@@ -123,6 +124,12 @@ abstract class CompanyFirestoreDataSource {
 
   Future<void> cacheExchangeRate(String pair, double rate);
   Future<double?> getCachedExchangeRate(String pair);
+
+  Future<void> cacheEarningsReports(
+    String ticker,
+    List<EarningsReportDto> reports,
+  );
+  Future<List<EarningsReportDto>?> getCachedEarningsReports(String ticker);
 }
 
 @LazySingleton(as: CompanyFirestoreDataSource)
@@ -730,6 +737,37 @@ class CompanyFirestoreDataSourceImpl implements CompanyFirestoreDataSource {
         (data) => data,
       ),
       fallbackTtl: const Duration(hours: 24),
+    );
+  }
+
+  @override
+  Future<void> cacheEarningsReports(
+    String ticker,
+    List<EarningsReportDto> reports,
+  ) async {
+    await _getDocRef<List<EarningsReportDto>>(
+      ticker,
+      'financials',
+      'earnings_reports',
+      (json) =>
+          (json as List).map((e) => EarningsReportDto.fromJson(e)).toList(),
+      (data) => data.map((e) => e.toJson()).toList(),
+    ).set(FirestoreCacheEntry(data: reports, lastUpdated: DateTime.now()));
+  }
+
+  @override
+  Future<List<EarningsReportDto>?> getCachedEarningsReports(
+    String ticker,
+  ) async {
+    return _fetchWithCacheFirst(
+      _getDocRef<List<EarningsReportDto>>(
+        ticker,
+        'financials',
+        'earnings_reports',
+        (json) =>
+            (json as List).map((e) => EarningsReportDto.fromJson(e)).toList(),
+        (data) => data.map((e) => e.toJson()).toList(),
+      ),
     );
   }
 }

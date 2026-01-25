@@ -12,5 +12,8 @@ class CompanySecurityState with _$CompanySecurityState {
     SecurityDetails securityDetails, {
     DateTime? lastUpdated,
   }) = _Loaded;
+  const factory CompanySecurityState.unsupported(
+    SecurityDetails securityDetails,
+  ) = _Unsupported;
   const factory CompanySecurityState.failure(Failure failure) = _Failure;
 }
