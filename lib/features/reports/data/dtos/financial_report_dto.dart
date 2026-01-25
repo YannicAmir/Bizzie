@@ -1,4 +1,5 @@
 // ignore_for_file: invalid_annotation_target
+import 'package:bizzie/core/utils/timestamp_converter.dart';
 import 'package:bizzie/features/reports/domain/models/financial_report.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:bizzie/core/utils/json_converters.dart';
@@ -19,7 +20,7 @@ abstract class FinancialReportDto with _$FinancialReportDto {
     @JsonKey(name: 'stockActivity')
     required ReportStockActivityDto stockActivity,
     String? filingDate,
-    DateTime? dateAnalyzed,
+    @TimestampConverter() DateTime? dateAnalyzed,
     String? formType,
     String? ticker,
   }) = _FinancialReportDto;

@@ -31,7 +31,7 @@ class RecentFilingsSection extends StatelessWidget {
         if (recentFilings.isEmpty)
           BizzieEmptyState(
             mascotAsset: mascotAsset,
-            message: 'There are no recent notifications',
+            message: 'There are no recent reports',
           )
         else
           ListView.separated(

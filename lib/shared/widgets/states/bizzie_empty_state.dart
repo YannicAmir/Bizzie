@@ -23,6 +23,7 @@ class BizzieEmptyState extends StatelessWidget {
       padding: const EdgeInsets.all(24.0),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           SizedBox(
             height: isFullPage ? 180 : 120,
@@ -44,9 +45,6 @@ class BizzieEmptyState extends StatelessWidget {
       ),
     );
 
-    if (isFullPage) {
-      return Center(child: content);
-    }
-    return content;
+    return Center(child: content);
   }
 }

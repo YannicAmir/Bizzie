@@ -158,7 +158,6 @@ class _CompanyProfileViewState extends State<_CompanyProfileView>
   void _handleTabSelection() {
     if (_tabController.indexIsChanging || !mounted) return;
 
-    HapticFeedback.lightImpact();
     final currentTab = _tabs[_tabController.index];
 
     switch (currentTab) {
@@ -279,10 +278,20 @@ class _CompanyProfileViewState extends State<_CompanyProfileView>
               ? ComingSoonPlaceholder(
                   type: isEtf ? ComingSoonType.etf : ComingSoonType.fund,
                 )
-              : CompanyProfileBody(
-                  ticker: widget.ticker,
-                  tabController: _tabController,
-                  tabs: _tabs,
+              : NotificationListener<ScrollNotification>(
+                  onNotification: (notification) {
+                    if (notification is ScrollStartNotification &&
+                        notification.dragDetails != null &&
+                        notification.metrics.axis == Axis.horizontal) {
+                      HapticFeedback.lightImpact();
+                    }
+                    return false;
+                  },
+                  child: CompanyProfileBody(
+                    ticker: widget.ticker,
+                    tabController: _tabController,
+                    tabs: _tabs,
+                  ),
                 ),
         );
       },
