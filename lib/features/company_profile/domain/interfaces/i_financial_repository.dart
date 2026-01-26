@@ -5,7 +5,6 @@ import 'package:bizzie/features/company_profile/domain/models/net_income_stats.d
 import 'package:bizzie/features/company_profile/domain/models/eps_stats.dart';
 import 'package:bizzie/features/company_profile/domain/models/free_cash_flow_stats.dart';
 import 'package:bizzie/features/company_profile/domain/models/fcps_stats.dart';
-import 'package:bizzie/features/company_profile/domain/models/dividend_info.dart';
 import 'package:bizzie/features/company_profile/domain/models/full_financials.dart';
 import 'package:bizzie/features/company_profile/domain/models/income_statement.dart';
 import 'package:bizzie/features/company_profile/domain/models/balance_sheet.dart';
@@ -14,8 +13,6 @@ import 'package:bizzie/features/company_profile/domain/models/company_ratios.dar
 import 'package:bizzie/features/company_profile/domain/models/key_metrics.dart';
 
 abstract class IFinancialRepository {
-  Future<Either<Failure, DividendInfo>> getDividendInfo(String ticker);
-
   Future<Either<Failure, NetIncomeStats>> getNetIncomeStats(String ticker);
   Future<Either<Failure, EpsStats>> getEpsStats(String ticker);
   Future<Either<Failure, FreeCashFlowStats>> getFreeCashFlowStats(

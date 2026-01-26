@@ -6,6 +6,8 @@ final getIt = GetIt.instance;
 
 @InjectableInit(
   initializerName: 'init',
+
+  // Security Feature
   preferRelativeImports: true,
   asExtension: true,
 )

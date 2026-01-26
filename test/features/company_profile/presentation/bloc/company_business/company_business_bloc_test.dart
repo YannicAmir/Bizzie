@@ -1,9 +1,9 @@
 import 'package:bizzie/core/error/failures.dart';
-import 'package:bizzie/features/company_profile/domain/models/business_profile.dart';
-import 'package:bizzie/features/company_profile/domain/usecases/get_business_profile_usecase.dart';
-import 'package:bizzie/features/company_profile/presentation/bloc/company_business/company_business_bloc.dart';
-import 'package:bizzie/features/company_profile/presentation/bloc/company_business/company_business_event.dart';
-import 'package:bizzie/features/company_profile/presentation/bloc/company_business/company_business_state.dart';
+import 'package:bizzie/features/company_profile/business/domain/models/business_profile.dart';
+import 'package:bizzie/features/company_profile/business/domain/usecases/get_business_profile_usecase.dart';
+import 'package:bizzie/features/company_profile/business/presentation/bloc/company_business_bloc.dart';
+import 'package:bizzie/features/company_profile/business/presentation/bloc/company_business_event.dart';
+import 'package:bizzie/features/company_profile/business/presentation/bloc/company_business_state.dart';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';

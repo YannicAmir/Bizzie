@@ -1,9 +1,9 @@
 import 'package:bizzie/features/company_profile/domain/enums/market_cap_category.dart';
 import 'package:bizzie/features/company_profile/domain/enums/ratio_category.dart';
-import 'package:bizzie/features/company_profile/domain/models/news_article.dart';
+import 'package:bizzie/features/company_profile/news/domain/models/news_article.dart';
 import 'package:bizzie/features/company_profile/presentation/utils/market_cap_category_extensions.dart';
 import 'package:bizzie/features/company_profile/presentation/utils/mascot_utils.dart';
-import 'package:bizzie/features/company_profile/presentation/utils/news_article_extensions.dart';
+import 'package:bizzie/features/company_profile/news/presentation/utils/news_article_extensions.dart';
 import 'package:bizzie/features/company_profile/presentation/utils/ratio_category_extensions.dart';
 import 'package:bizzie/features/onboarding/domain/models/onboarding_data.dart';
 import 'package:bizzie/features/onboarding/domain/models/user_model.dart';

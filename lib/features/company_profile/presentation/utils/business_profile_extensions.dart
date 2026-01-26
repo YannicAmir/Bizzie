@@ -1,4 +1,4 @@
-import 'package:bizzie/features/company_profile/domain/models/business_profile.dart';
+import 'package:bizzie/features/company_profile/business/domain/models/business_profile.dart';
 
 extension BusinessProfilePresentationX on BusinessProfile {
   String getSecFilingsModalTitle(bool isAnnual) {

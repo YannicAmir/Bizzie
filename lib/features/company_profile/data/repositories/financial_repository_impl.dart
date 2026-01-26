@@ -14,8 +14,6 @@ import 'package:bizzie/features/company_profile/domain/interfaces/i_financial_re
 import 'package:bizzie/features/company_profile/domain/models/balance_sheet.dart';
 import 'package:bizzie/features/company_profile/domain/models/cash_flow_statement.dart';
 import 'package:bizzie/features/company_profile/domain/models/company_ratios.dart';
-import 'package:bizzie/features/company_profile/domain/models/dividend_event.dart';
-import 'package:bizzie/features/company_profile/domain/models/dividend_info.dart';
 import 'package:bizzie/features/company_profile/domain/models/eps_stats.dart';
 import 'package:bizzie/features/company_profile/domain/models/fcps_stats.dart';
 import 'package:bizzie/features/company_profile/domain/models/financial_data_point.dart';
@@ -38,38 +36,6 @@ class FinancialRepositoryImpl implements IFinancialRepository {
   final CompanyFirestoreDataSource _localDataSource;
 
   FinancialRepositoryImpl(this._remoteDataSource, this._localDataSource);
-
-  @override
-  Future<Either<Failure, DividendInfo>> getDividendInfo(String ticker) async {
-    try {
-      var local = await _localDataSource.getCachedDividends(ticker);
-      if (local == null) {
-        local = await _remoteDataSource.getDividends(ticker);
-        await _localDataSource.cacheDividends(ticker, local);
-      }
-      return right(
-        DividendInfo(
-          symbol: ticker,
-          history: local
-              .map(
-                (e) => DividendEvent(
-                  date: e.date,
-                  dividend: e.dividend ?? 0.0,
-                  adjDividend: e.adjDividend ?? 0.0,
-                  recordDate: e.recordDate,
-                  paymentDate: e.paymentDate,
-                  declarationDate: e.declarationDate,
-                  frequency: e.frequency,
-                  yield: e.yield,
-                ),
-              )
-              .toList(),
-        ),
-      );
-    } catch (e) {
-      return left(ServerFailure(e.toString()));
-    }
-  }
 
   @override
   Future<Either<Failure, NetIncomeStats>> getNetIncomeStats(
