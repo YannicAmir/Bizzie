@@ -88,11 +88,7 @@ class _WelcomeTextContent extends StatelessWidget {
         children: [
           RichText(
             text: TextSpan(
-              style: theme.textTheme.displayLarge?.copyWith(
-                fontSize: 40,
-                height: 1.2,
-                letterSpacing: 0.406,
-              ),
+              style: theme.textTheme.displayLarge,
               children: [
                 const TextSpan(text: 'Glad you joined us,\n'),
                 TextSpan(

@@ -23,7 +23,7 @@ class BizzieSecondaryButton extends StatelessWidget {
       child: FilledButton(
         onPressed: onPressed,
         style: FilledButton.styleFrom(
-          backgroundColor: theme.colorScheme.surfaceContainerHighest,
+          backgroundColor: theme.colorScheme.tertiaryContainer,
           foregroundColor: theme.colorScheme.onSurfaceVariant,
           elevation: 0,
           shape: RoundedRectangleBorder(

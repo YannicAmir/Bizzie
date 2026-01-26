@@ -79,12 +79,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const SizedBox(height: 24),
-                  Text(
-                    'Reset Password',
-                    style: theme.textTheme.displayLarge?.copyWith(
-                      color: theme.colorScheme.onSurface,
-                    ),
-                  ),
+                  Text('Reset Password', style: theme.textTheme.displayLarge),
                   const SizedBox(height: 12),
                   Text(
                     'We\'ll email you a link to reset your password',

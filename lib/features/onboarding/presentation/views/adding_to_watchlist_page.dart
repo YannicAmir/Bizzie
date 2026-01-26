@@ -53,19 +53,13 @@ class _AddingToWatchlistPageState extends State<AddingToWatchlistPage> {
                         const SizedBox(height: 24),
                         Text(
                           state.watchlistTitle,
-                          style: theme.textTheme.displayLarge?.copyWith(
-                            fontSize: 32,
-                            fontWeight: FontWeight.w800,
-                            height: 1.2,
-                            letterSpacing: 0.406,
-                            color: AppColors.textPrimary,
-                          ),
+                          style: theme.textTheme.displayLarge,
                         ),
                         const SizedBox(height: 12),
                         Text(
                           state.watchlistSubtitle,
                           style: theme.textTheme.bodyLarge?.copyWith(
-                            color: AppColors.textSecondary,
+                            color: theme.colorScheme.onSurfaceVariant,
                           ),
                         ),
                         const SizedBox(height: 32),

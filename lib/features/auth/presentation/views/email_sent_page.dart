@@ -28,14 +28,7 @@ class EmailSentPage extends StatelessWidget {
                     fit: BoxFit.contain,
                   ),
                   const SizedBox(height: 32),
-                  Text(
-                    'Check Your Email',
-                    style: theme.textTheme.displayLarge?.copyWith(
-                      fontSize: 40,
-                      height: 1.2,
-                      letterSpacing: 0.37,
-                    ),
-                  ),
+                  Text('Check Your Email', style: theme.textTheme.displayLarge),
                   const SizedBox(height: 32),
                   Text(
                     'If your account is associated with this email address, you will receive an email to reset your password. If you don\'t, please try another email.',

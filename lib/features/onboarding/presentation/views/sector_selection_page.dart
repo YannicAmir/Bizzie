@@ -1,9 +1,11 @@
+import 'package:bizzie/app/themes/app_theme.dart';
+import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../app/routes/app_routes.dart';
 import '../../../../app/themes/app_assets.dart';
-import '../../../../app/themes/app_colors.dart';
 
 import '../utils/onboarding_assets_helper.dart';
 import '../bloc/onboarding_bloc.dart';
@@ -36,7 +38,7 @@ class SectorSelectionPage extends StatelessWidget {
                       "Your favorite sector can be changed in your profile",
                   onBackPressed: null,
                 ),
-                const SizedBox(height: 32),
+                AppConstants.onboardSectionSpacing,
                 Center(
                   child: SizedBox(
                     height: 250,
@@ -56,7 +58,7 @@ class SectorSelectionPage extends StatelessWidget {
                     ),
                   ),
                 ),
-                const SizedBox(height: 32),
+                AppConstants.onboardSectionSpacing,
                 Expanded(
                   child: SingleChildScrollView(
                     child: Padding(
@@ -69,12 +71,14 @@ class SectorSelectionPage extends StatelessWidget {
                             sectors: sectors,
                             selectedSector: selectedSector,
                             onSectorSelected: (sector) {
+                              HapticFeedback.lightImpact();
+
                               context.read<OnboardingBloc>().add(
                                 OnboardingEvent.sectorSelected(sector),
                               );
                             },
                           ),
-                          const SizedBox(height: 32),
+                          AppConstants.onboardSectionSpacing,
                         ],
                       ),
                     ),
@@ -84,7 +88,6 @@ class SectorSelectionPage extends StatelessWidget {
                   primaryButton: BizziePrimaryButton(
                     onPressed: selectedSector != null
                         ? () {
-                            // Pre-fetch brands to warm up cache
                             getIt<ISelectBrandsRepository>().getDailyBrands(
                               selectedSector,
                             );
@@ -198,55 +201,60 @@ class _SectorChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(100),
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
-          decoration: BoxDecoration(
+    final badgeTheme = theme.extension<BadgeThemeExtension>();
+
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(100),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+        decoration: BoxDecoration(
+          color: isSelected
+              ? badgeTheme?.neutralBackground
+              : theme.colorScheme.tertiaryContainer,
+          borderRadius: BorderRadius.circular(100),
+          border: Border.all(
             color: isSelected
-                ? AppColors.mascotBackground
-                : AppColors.inputBackground,
-            borderRadius: BorderRadius.circular(100),
-            border: Border.all(
-              color: isSelected ? AppColors.primary : AppColors.inputBorder,
-              width: 2,
+                ? theme.colorScheme.primary
+                : theme.colorScheme.outline,
+            width: 2,
+          ),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 20,
+              height: 20,
+              decoration: BoxDecoration(
+                color: isSelected
+                    ? theme.colorScheme.primary
+                    : theme.colorScheme.surface,
+                borderRadius: BorderRadius.circular(4),
+                border: Border.all(
+                  color: isSelected
+                      ? theme.colorScheme.primary
+                      : theme.colorScheme.outline,
+                  width: 2,
+                ),
+              ),
+              child: isSelected
+                  ? Icon(
+                      Icons.check,
+                      size: 14,
+                      color: theme.colorScheme.surface,
+                    )
+                  : null,
             ),
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                width: 20,
-                height: 20,
-                decoration: BoxDecoration(
-                  color: isSelected ? AppColors.primary : Colors.white,
-                  borderRadius: BorderRadius.circular(4),
-                  border: Border.all(
-                    color: isSelected
-                        ? theme.colorScheme.primary
-                        : AppColors.inputBorder,
-                    width: 2,
-                  ),
-                ),
-                child: isSelected
-                    ? const Icon(Icons.check, size: 14, color: Colors.white)
-                    : null,
+            const SizedBox(width: 8),
+            Text(
+              sector.displayName,
+              style: theme.textTheme.bodyMedium?.copyWith(
+                fontWeight: FontWeight.w600,
               ),
-              const SizedBox(width: 8),
-              Text(
-                sector.displayName,
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  color: AppColors.textPrimary,
-                  fontWeight: FontWeight.w600,
-                  fontSize: 15,
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

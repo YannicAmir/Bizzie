@@ -1,12 +1,12 @@
-import 'package:bizzie/app/themes/app_colors.dart';
-
 import 'package:bizzie/app/themes/app_assets.dart';
+import 'package:bizzie/app/themes/app_theme.dart';
 import 'package:bizzie/features/onboarding/domain/models/company.dart';
 import 'package:bizzie/features/onboarding/presentation/bloc/onboarding_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:bizzie/app/routes/app_routes.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:bizzie/features/onboarding/presentation/widgets/onboarding_footer.dart';
@@ -98,12 +98,14 @@ class _SingleCompanyCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final badgeTheme = theme.extension<BadgeThemeExtension>();
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: theme.colorScheme.surface,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.inputBorder),
+        border: Border.all(color: theme.colorScheme.outline),
       ),
       child: Row(
         children: [
@@ -111,15 +113,14 @@ class _SingleCompanyCard extends StatelessWidget {
             width: 48,
             height: 48,
             decoration: BoxDecoration(
-              color: AppColors.brandChipSelectedBackground,
+              color: badgeTheme?.neutralBackground,
               borderRadius: BorderRadius.circular(12),
             ),
             child: Center(
-              child: Image.asset(
-                AppAssets.arrowUpIcon,
-                width: 24,
-                height: 24,
-                color: theme.colorScheme.primary,
+              child: SvgPicture.asset(
+                AppAssets.businessIcon,
+                width: 20,
+                height: 20,
               ),
             ),
           ),
@@ -127,23 +128,19 @@ class _SingleCompanyCard extends StatelessWidget {
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Text(
                   company.name,
                   style: theme.textTheme.bodyLarge?.copyWith(
                     fontWeight: FontWeight.w600,
-                    color: AppColors.textPrimary,
+                    color: theme.colorScheme.tertiary,
                   ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
-                Text(
-                  company.ticker,
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: AppColors.textTertiary,
-                    fontWeight: FontWeight.normal,
-                  ),
-                ),
+                const SizedBox(height: 4),
+                Text(company.ticker, style: theme.textTheme.bodyMedium),
               ],
             ),
           ),

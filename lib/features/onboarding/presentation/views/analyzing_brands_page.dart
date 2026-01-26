@@ -1,5 +1,4 @@
 import 'package:bizzie/app/themes/app_assets.dart';
-import 'package:bizzie/app/themes/app_colors.dart';
 
 import 'package:bizzie/features/onboarding/presentation/bloc/onboarding_bloc.dart';
 import 'package:bizzie/app/routes/app_routes.dart';
@@ -72,16 +71,7 @@ class _AnalysisTitle extends StatelessWidget {
       height: 77,
       child: Align(
         alignment: Alignment.centerLeft,
-        child: Text(
-          title,
-          style: theme.textTheme.displayLarge?.copyWith(
-            fontSize: 32,
-            fontWeight: FontWeight.w800,
-            height: 1.2,
-            letterSpacing: 0.406,
-            color: AppColors.textPrimary,
-          ),
-        ),
+        child: Text(title, style: theme.textTheme.displayLarge),
       ),
     );
   }

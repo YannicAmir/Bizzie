@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:bizzie/app/themes/app_colors.dart';
+import 'package:bizzie/app/themes/app_assets.dart';
 
 import 'package:bizzie/features/notifications/presentation/bloc/notification_bloc.dart';
 import 'package:bizzie/features/onboarding/presentation/bloc/onboarding_bloc.dart';
@@ -95,10 +96,11 @@ class _NotificationCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface.withValues(alpha: 0.95),
+        color: theme.colorScheme.surface.withValues(alpha: 0.95),
         borderRadius: BorderRadius.circular(24),
         border: Border.all(
           color: AppColors.slate200.withValues(alpha: 0.5),
@@ -114,22 +116,9 @@ class _NotificationCard extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Container(
-            width: 38,
-            height: 38,
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.primary,
-              borderRadius: BorderRadius.circular(8),
-            ),
-            alignment: Alignment.center,
-            child: Text(
-              ticker.isNotEmpty ? ticker[0] : 'B',
-              style: TextStyle(
-                color: Theme.of(context).colorScheme.onPrimary,
-                fontWeight: FontWeight.bold,
-                fontSize: 20,
-              ),
-            ),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: Image.asset(AppAssets.appIcon, width: 44, height: 44),
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -137,29 +126,31 @@ class _NotificationCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text(
-                  '$ticker Earnings Update',
-                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 15,
-                  ),
+                Row(
+                  children: [
+                    Text(
+                      '$ticker Earnings Update',
+                      style: theme.textTheme.bodyLarge?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const Spacer(),
+                    Text(
+                      'now',
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 2),
                 Text(
                   '$companyName releases earnings in 2 days',
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  style: theme.textTheme.bodyMedium?.copyWith(
                     color: AppColors.textPrimary,
-                    fontSize: 13,
                   ),
                 ),
               ],
-            ),
-          ),
-          Text(
-            'now',
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: AppColors.textSecondary,
-              fontSize: 13,
             ),
           ),
         ],

@@ -101,10 +101,7 @@ class _NameInputField extends StatelessWidget {
       style: theme.textTheme.bodyLarge,
       decoration: InputDecoration(
         hintText: 'Enter your first name',
-        contentPadding: const EdgeInsets.symmetric(
-          horizontal: 16,
-          vertical: 16,
-        ),
+        contentPadding: const EdgeInsets.all(16),
       ),
       onSubmitted: (_) => onSubmitted(),
     );

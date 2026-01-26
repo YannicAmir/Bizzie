@@ -20,11 +20,12 @@ class AppTheme {
         secondaryContainer: AppColors.mascotBackground,
         inverseSurface: AppColors.tooltipBackground,
         tertiaryContainer: AppColors.slate100,
+        outline: AppColors.inputBorder,
       ),
       dividerColor: AppColors.inputBorder,
       textTheme: GoogleFonts.interTextTheme(ThemeData.light().textTheme)
           .copyWith(
-            displayLarge: AppTextStyles.h1,
+            displayLarge: AppTextStyles.h1.copyWith(height: 1.2),
             displayMedium: AppTextStyles.h2,
             displaySmall: AppTextStyles.h3,
             headlineMedium: AppTextStyles.h3,
