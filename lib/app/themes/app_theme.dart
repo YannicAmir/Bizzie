@@ -13,6 +13,7 @@ class AppTheme {
         seedColor: AppColors.primary,
         primary: AppColors.primary,
         secondary: AppColors.watchlistActiveBackground,
+        tertiary: AppColors.black,
         surface: AppColors.surface,
         onSurface: AppColors.textPrimary,
         onSurfaceVariant: AppColors.textSecondary,

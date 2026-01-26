@@ -25,13 +25,9 @@ class BizziePrimaryButton extends StatelessWidget {
       child: ElevatedButton(
         onPressed: isLoading ? null : onPressed,
         style: ElevatedButton.styleFrom(
-          backgroundColor: theme.colorScheme.primary,
-          foregroundColor: theme.colorScheme.onPrimary,
-          elevation: 0,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
           ),
-          shadowColor: theme.shadowColor.withValues(alpha: 0.1),
           disabledBackgroundColor: theme.colorScheme.primary.withValues(
             alpha: 0.5,
           ),

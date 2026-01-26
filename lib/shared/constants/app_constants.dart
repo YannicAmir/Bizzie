@@ -56,4 +56,8 @@ class AppConstants {
 
   static const int textfieldCharLimit = 100;
   static const int passwordFieldCharLimit = 128;
+
+  // Onboarding
+  static const SizedBox onboardSectionSpacing = SizedBox(height: 32);
+  static const SizedBox onboardSecondarySectionSpacing = SizedBox(height: 16);
 }

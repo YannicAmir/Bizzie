@@ -1,4 +1,3 @@
-import 'package:bizzie/features/onboarding/data/dtos/daily_brands_dto.dart';
 import 'package:bizzie/features/onboarding/data/dtos/user_dto.dart';
 import 'package:bizzie/features/watchlist/data/dtos/watchlist_item_dto.dart';
 import 'package:bizzie/services/config_service.dart';
@@ -11,7 +10,7 @@ abstract class IOnboardingRemoteDataSource {
     UserDto user,
     List<WatchlistItemDto> watchlistItems,
   );
-  Future<DailyBrandsDto?> fetchDailyBrands();
+
   bool getOnboardingConfig(String key);
   List<String> getStockMarketSectors();
 }
@@ -53,20 +52,5 @@ class OnboardingRemoteDataSource implements IOnboardingRemoteDataSource {
     }
 
     await batch.commit();
-  }
-
-  @override
-  Future<DailyBrandsDto?> fetchDailyBrands() async {
-    final snapshot = await _firestoreService.instance
-        .collection('daily_brands')
-        .orderBy('date', descending: true)
-        .limit(1)
-        .get();
-
-    if (snapshot.docs.isEmpty) {
-      return null;
-    }
-
-    return DailyBrandsDto.fromJson(snapshot.docs.first.data());
   }
 }

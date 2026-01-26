@@ -1,12 +1,11 @@
-import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:bizzie/core/usecase/usecase.dart';
 import 'package:bizzie/features/auth/domain/interfaces/i_auth_repository.dart';
 import 'package:bizzie/features/onboarding/domain/models/company.dart';
 import 'package:bizzie/features/onboarding/domain/models/onboarding_data.dart';
 import 'package:bizzie/features/onboarding/domain/models/sector.dart';
-import 'package:bizzie/features/onboarding/domain/models/brand.dart';
+import 'package:bizzie/features/onboarding/select_brands/domain/models/brand.dart';
 import 'package:bizzie/features/onboarding/domain/usecases/complete_onboarding_usecase.dart';
-import 'package:bizzie/features/onboarding/domain/usecases/get_daily_brands_usecase.dart';
+
 import 'package:bizzie/features/onboarding/domain/usecases/get_sectors_usecase.dart';
 import 'package:bizzie/features/onboarding/domain/usecases/get_sp500_history_usecase.dart';
 import 'package:bizzie/features/onboarding/presentation/bloc/onboarding_state.dart';
@@ -23,15 +22,13 @@ part 'onboarding_bloc.freezed.dart';
 class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
   final IAuthRepository _authRepository;
   final CompleteOnboardingUseCase _completeOnboardingUseCase;
-  final GetDailyBrandsUseCase _getDailyBrandsUseCase;
+
   final GetSectorsUseCase _getSectorsUseCase;
   final GetSp500HistoryUseCase _getSp500HistoryUseCase;
-  final _logger = BizzieLogger('OnboardingBloc');
 
   OnboardingBloc(
     this._authRepository,
     this._completeOnboardingUseCase,
-    this._getDailyBrandsUseCase,
     this._getSectorsUseCase,
     this._getSp500HistoryUseCase,
   ) : super(OnboardingState.initial()) {
@@ -41,7 +38,6 @@ class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
     on<_ExperienceSelected>(_onExperienceSelected);
     on<_CompleteOnboarding>(_onCompleteOnboarding);
     on<_LoadSp500History>(_onLoadSp500History);
-    on<_LoadBrands>(_onLoadBrands);
     on<_ToggleBrand>(_onToggleBrand);
     on<_StartAnalysis>(_onStartAnalysis);
     on<_UpdateAnalysisStep>(_onUpdateAnalysisStep);
@@ -50,31 +46,6 @@ class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
     on<_HighlightPageChanged>(_onHighlightPageChanged);
     on<_HighlightContinuePressed>(_onHighlightContinuePressed);
     on<_HighlightSkipPressed>(_onHighlightSkipPressed);
-  }
-
-  Future<void> _onLoadBrands(
-    _LoadBrands event,
-    Emitter<OnboardingState> emit,
-  ) async {
-    _logger.info('OnboardingBloc _onLoadBrands STARTED');
-    final result = await _getDailyBrandsUseCase(
-      GetDailyBrandsParams(sector: state.onboardingData.selectedSector),
-    );
-
-    result.fold(
-      (failure) {
-        _logger.warning('Bloc loadBrands failed: ${failure.message}');
-        // TODO: In prod, might want to emit a failure state or show a snackbar.
-        // For now, we log it.
-      },
-      (brands) {
-        final (global, sector) = brands;
-        _logger.info(
-          'Bloc loadBrands result - Global: ${global.length}, Sector: ${sector.length}',
-        );
-        emit(state.copyWith(globalBrands: global, sectorBrands: sector));
-      },
-    );
   }
 
   void _onToggleBrand(_ToggleBrand event, Emitter<OnboardingState> emit) {

@@ -6,7 +6,7 @@ import 'package:bizzie/features/onboarding/data/datasources/dummy_price_data.dar
 import 'package:bizzie/features/onboarding/data/datasources/onboarding_remote_datasource.dart';
 import 'package:bizzie/features/onboarding/data/dtos/user_dto.dart';
 import 'package:bizzie/features/onboarding/domain/interfaces/i_onboarding_repository.dart';
-import 'package:bizzie/features/onboarding/domain/models/brand.dart';
+
 import 'package:bizzie/features/onboarding/domain/models/historical_price.dart';
 import 'package:bizzie/features/onboarding/domain/models/sector.dart';
 import 'package:bizzie/features/onboarding/domain/models/user_model.dart';
@@ -31,126 +31,6 @@ class OnboardingRepositoryImpl implements IOnboardingRepository {
       _logger.severe('Failed to get SP500 history', e, stack);
       return Left(ServerFailure(e.toString()));
     }
-  }
-
-  @override
-  Future<Either<Failure, (List<Brand>, List<Brand>)>> getDailyBrands(
-    Sector? userSector,
-  ) async {
-    _logger.info('Repository getDailyBrands called');
-    try {
-      final dailyBrandsDto = await _remoteDataSource.fetchDailyBrands();
-
-      if (dailyBrandsDto == null) {
-        _logger.warning('dailyBrandsDto is NULL - using mocks');
-        return Right(_getMockBrands(userSector));
-      }
-
-      _logger.info(
-        'DTO Sectors found: ${dailyBrandsDto.sectors.map((s) => s.name).toList()}',
-      );
-      _logger.info('User Sector: ${userSector?.displayName}');
-
-      final globalBrands = <Brand>[];
-      final sectorBrands = <Brand>[];
-
-      for (final sectorDto in dailyBrandsDto.sectors) {
-        final brands = sectorDto.products.map((p) {
-          return Brand(
-            name: p.name,
-            company: p.company,
-            ticker: p.ticker,
-            sector: sectorDto.name,
-            description: p.description,
-          );
-        }).toList();
-
-        if (sectorDto.name == 'All Sectors') {
-          globalBrands.addAll(brands);
-        } else if (userSector != null &&
-            sectorDto.name == userSector.displayName) {
-          sectorBrands.addAll(brands);
-        }
-      }
-
-      return Right((globalBrands, sectorBrands));
-    } catch (e, stack) {
-      _logger.severe('Failed to get daily brands', e, stack);
-      return Left(ServerFailure(e.toString()));
-    }
-  }
-
-  (List<Brand>, List<Brand>) _getMockBrands(Sector? userSector) {
-    final global = [
-      Brand(
-        name: 'iPhone',
-        company: 'Apple Inc.',
-        ticker: 'AAPL',
-        sector: 'Information Technology',
-        description: 'Tech Giant',
-      ),
-      Brand(
-        name: 'Tesla',
-        company: 'Tesla Inc.',
-        ticker: 'TSLA',
-        sector: 'Consumer Discretionary',
-        description: 'EV Manufacturer',
-      ),
-      Brand(
-        name: 'Nike',
-        company: 'Nike Inc.',
-        ticker: 'NKE',
-        sector: 'Consumer Discretionary',
-        description: 'Sportswear',
-      ),
-      Brand(
-        name: 'Coca-Cola',
-        company: 'The Coca-Cola Company',
-        ticker: 'KO',
-        sector: 'Consumer Staples',
-        description: 'Beverage',
-      ),
-      Brand(
-        name: 'Netflix',
-        company: 'Netflix Inc.',
-        ticker: 'NFLX',
-        sector: 'Communication Services',
-        description: 'Streaming',
-      ),
-    ];
-
-    final sectorSpecific = <Brand>[];
-    if (userSector != null) {
-      sectorSpecific.add(
-        Brand(
-          name: '${userSector.displayName} Brand A',
-          company: 'Company A',
-          ticker: 'AAA',
-          sector: userSector.displayName,
-          description: 'Mock Description',
-        ),
-      );
-      sectorSpecific.add(
-        Brand(
-          name: '${userSector.displayName} Brand B',
-          company: 'Company B',
-          ticker: 'BBB',
-          sector: userSector.displayName,
-          description: 'Mock Description',
-        ),
-      );
-      sectorSpecific.add(
-        Brand(
-          name: '${userSector.displayName} Consumer',
-          company: 'Company C',
-          ticker: 'CCC',
-          sector: userSector.displayName,
-          description: 'Mock Description',
-        ),
-      );
-    }
-
-    return (global, sectorSpecific);
   }
 
   @override

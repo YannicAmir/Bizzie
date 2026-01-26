@@ -63,4 +63,19 @@ class FirestoreService {
   Future<void> deleteDocument({required String path}) async {
     await _firestore.doc(path).delete();
   }
+
+  Future<Map<String, dynamic>?> getLatestDocument({
+    required String collectionPath,
+    required String orderBy,
+    bool descending = true,
+  }) async {
+    final querySnapshot = await _firestore
+        .collection(collectionPath)
+        .orderBy(orderBy, descending: descending)
+        .limit(1)
+        .get();
+
+    if (querySnapshot.docs.isEmpty) return null;
+    return querySnapshot.docs.first.data();
+  }
 }

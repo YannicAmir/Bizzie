@@ -1,5 +1,5 @@
-import 'package:bizzie/features/onboarding/domain/interfaces/i_onboarding_repository.dart';
-import 'package:bizzie/features/onboarding/domain/models/brand.dart';
+import 'package:bizzie/features/onboarding/select_brands/domain/interfaces/i_select_brands_repository.dart';
+import 'package:bizzie/features/onboarding/select_brands/domain/models/brand_listing.dart';
 import 'package:bizzie/features/onboarding/domain/models/sector.dart';
 import 'package:injectable/injectable.dart';
 
@@ -10,19 +10,13 @@ import 'package:equatable/equatable.dart';
 
 @injectable
 class GetDailyBrandsUseCase
-    implements
-        UseCase<
-          Either<Failure, (List<Brand>, List<Brand>)>,
-          GetDailyBrandsParams
-        > {
-  final IOnboardingRepository _repository;
+    implements UseCase<Either<Failure, BrandListing>, GetDailyBrandsParams> {
+  final ISelectBrandsRepository _repository;
 
   GetDailyBrandsUseCase(this._repository);
 
   @override
-  Future<Either<Failure, (List<Brand>, List<Brand>)>> call(
-    GetDailyBrandsParams params,
-  ) {
+  Future<Either<Failure, BrandListing>> call(GetDailyBrandsParams params) {
     return _repository.getDailyBrands(params.sector);
   }
 }
