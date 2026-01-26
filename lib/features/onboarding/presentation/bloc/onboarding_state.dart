@@ -1,7 +1,7 @@
 import 'package:bizzie/features/onboarding/domain/models/historical_price.dart';
 import 'package:bizzie/features/onboarding/domain/models/onboarding_data.dart';
 import 'package:bizzie/features/onboarding/domain/models/sector.dart';
-import 'package:bizzie/features/onboarding/domain/models/brand.dart';
+import 'package:bizzie/features/onboarding/select_brands/domain/models/brand.dart';
 import 'package:bizzie/features/onboarding/presentation/models/feature_highlight_item.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:bizzie/app/themes/app_assets.dart';
@@ -30,8 +30,7 @@ abstract class OnboardingState with _$OnboardingState {
     @Default(0) int watchlistStep,
     @Default([]) List<Sector> availableSectors,
     @Default([]) List<HistoricalPrice> sp500History,
-    @Default([]) List<Brand> globalBrands,
-    @Default([]) List<Brand> sectorBrands,
+
     @Default([]) List<Brand> selectedBrands,
     @Default('') String customBrandInput,
     String? failureMessage,

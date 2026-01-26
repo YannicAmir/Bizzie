@@ -41,48 +41,60 @@ void main() {
   });
 
   group('NotificationService', () {
-    test('getFcmToken_returnsToken_whenSuccessful', () async {
+    test('getFcmToken_success_returnsToken', () async {
+      // arrange
       when(
         () => mockRepository.getFcmToken(),
       ).thenAnswer((_) async => const Right('token'));
 
+      // act
       final result = await service.getFcmToken();
 
+      // assert
       expect(result, 'token');
       verify(() => mockRepository.getFcmToken()).called(1);
     });
 
-    test('getFcmToken_returnsNull_whenFailure', () async {
+    test('getFcmToken_failure_returnsNull', () async {
+      // arrange
       when(
         () => mockRepository.getFcmToken(),
       ).thenAnswer((_) async => const Left(ServerFailure('Error')));
 
+      // act
       final result = await service.getFcmToken();
 
+      // assert
       expect(result, isNull);
     });
 
-    test('subscribeToTopic_callsSubscribe', () async {
+    test('subscribeToTopic_validTopic_callsRepository', () async {
+      // arrange
       when(
         () => mockRepository.subscribeToTopic(any()),
       ).thenAnswer((_) async => const Right(null));
 
+      // act
       await service.subscribeToTopic('test_topic');
 
+      // assert
       verify(() => mockRepository.subscribeToTopic('test_topic')).called(1);
     });
 
-    test('unsubscribeFromTopic_callsUnsubscribe', () async {
+    test('unsubscribeFromTopic_validTopic_callsRepository', () async {
+      // arrange
       when(
         () => mockRepository.unsubscribeFromTopic(any()),
       ).thenAnswer((_) async => const Right(null));
 
+      // act
       await service.unsubscribeFromTopic('test_topic');
 
+      // assert
       verify(() => mockRepository.unsubscribeFromTopic('test_topic')).called(1);
     });
 
-    test('onMessage_triggersLocalNotification', () async {
+    test('onMessage_receivedMessage_triggersLocalNotification', () async {
       // arrange
       final tMessage = const NotificationMessage(
         title: 'Title',

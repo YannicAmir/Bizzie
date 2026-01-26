@@ -53,4 +53,11 @@ class AppConstants {
   static const double chartPlotOffsetStart = 15.0;
 
   static const double kChartAnimationDuration = 600;
+
+  static const int textfieldCharLimit = 100;
+  static const int passwordFieldCharLimit = 128;
+
+  // Onboarding
+  static const SizedBox onboardSectionSpacing = SizedBox(height: 32);
+  static const SizedBox onboardSecondarySectionSpacing = SizedBox(height: 16);
 }

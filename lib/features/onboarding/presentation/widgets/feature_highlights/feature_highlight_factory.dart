@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:bizzie/features/onboarding/domain/models/brand.dart';
+import 'package:bizzie/features/onboarding/select_brands/domain/models/brand.dart';
 import 'package:bizzie/features/onboarding/presentation/bloc/onboarding_bloc.dart';
 import 'package:bizzie/features/onboarding/presentation/models/feature_highlight_item.dart';
 import 'package:bizzie/features/onboarding/presentation/widgets/feature_highlights/expert_widgets.dart';

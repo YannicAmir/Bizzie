@@ -53,32 +53,18 @@ class _AddingToWatchlistPageState extends State<AddingToWatchlistPage> {
                         const SizedBox(height: 24),
                         Text(
                           state.watchlistTitle,
-                          style: theme.textTheme.displayLarge?.copyWith(
-                            fontSize: 32,
-                            fontWeight: FontWeight.w800,
-                            height: 1.2,
-                            letterSpacing: 0.406,
-                            color: AppColors.textPrimary,
-                          ),
+                          style: theme.textTheme.displayLarge,
                         ),
                         const SizedBox(height: 12),
                         Text(
                           state.watchlistSubtitle,
                           style: theme.textTheme.bodyLarge?.copyWith(
-                            color: AppColors.textSecondary,
+                            color: theme.colorScheme.onSurfaceVariant,
                           ),
                         ),
                         const SizedBox(height: 32),
                         Expanded(child: _WatchlistCompaniesList(state: state)),
                         const SizedBox(height: 24),
-                        if (!state.isWatchlistComplete) ...[
-                          _WatchlistProgressBar(
-                            currentStep: state.watchlistStep,
-                            totalSteps:
-                                state.onboardingData.detectedCompanies.length,
-                          ),
-                          const SizedBox(height: 16),
-                        ],
                         if (state.isWatchlistComplete)
                           BizziePrimaryButton(
                             onPressed: () {
@@ -187,43 +173,6 @@ class _WatchlistStatusIcon extends StatelessWidget {
                   color: Colors.white,
                   filterQuality: FilterQuality.high,
                 ),
-        ),
-      ),
-    );
-  }
-}
-
-class _WatchlistProgressBar extends StatelessWidget {
-  final int currentStep;
-  final int totalSteps;
-
-  const _WatchlistProgressBar({
-    required this.currentStep,
-    required this.totalSteps,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(4),
-      child: SizedBox(
-        height: 8,
-        child: TweenAnimationBuilder<double>(
-          tween: Tween<double>(
-            begin: 0,
-            end: totalSteps > 0 ? (currentStep + 1) / totalSteps : 0,
-          ),
-          duration: const Duration(milliseconds: 1500),
-          curve: Curves.linear,
-          builder: (context, value, _) {
-            return LinearProgressIndicator(
-              value: value.clamp(0.0, 1.0),
-              backgroundColor: AppColors.inputBackground,
-              valueColor: const AlwaysStoppedAnimation<Color>(
-                AppColors.primary,
-              ),
-            );
-          },
         ),
       ),
     );

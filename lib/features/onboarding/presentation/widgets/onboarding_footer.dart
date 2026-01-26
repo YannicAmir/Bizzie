@@ -1,4 +1,3 @@
-import 'package:bizzie/app/themes/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class OnboardingFooter extends StatelessWidget {
@@ -29,7 +28,7 @@ class OnboardingFooter extends StatelessWidget {
         if (title != null)
           Text(
             title!,
-            style: theme.textTheme.displayLarge?.copyWith(height: 1.2),
+            style: theme.textTheme.displayLarge,
             textAlign: TextAlign.left,
           ),
         if (subtitle != null) ...[
@@ -37,7 +36,7 @@ class OnboardingFooter extends StatelessWidget {
           Text(
             subtitle!,
             style: theme.textTheme.bodyMedium?.copyWith(
-              color: AppColors.textSecondary,
+              color: theme.colorScheme.onSurfaceVariant,
             ),
             textAlign: TextAlign.left,
           ),

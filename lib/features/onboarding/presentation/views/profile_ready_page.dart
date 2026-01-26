@@ -106,12 +106,7 @@ class _ProfileReadyHeader extends StatelessWidget {
       children: [
         RichText(
           text: TextSpan(
-            style: theme.textTheme.displayLarge?.copyWith(
-              fontSize: 40,
-              height: 1.2,
-              letterSpacing: 0.37,
-              color: AppColors.textPrimary,
-            ),
+            style: theme.textTheme.displayLarge,
             children: [
               const TextSpan(text: 'Your profile is ready, '),
               TextSpan(

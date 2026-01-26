@@ -1,4 +1,4 @@
-import 'package:bizzie/features/onboarding/domain/models/brand.dart';
+import 'package:bizzie/features/onboarding/select_brands/domain/models/brand.dart';
 
 class BrandDisplayHelper {
   static List<Brand> getDailyPicksDisplayBrands(List<Brand> selectedBrands) {

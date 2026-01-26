@@ -15,7 +15,7 @@ import 'package:bizzie/features/onboarding/presentation/views/ask_name_page.dart
 import 'package:bizzie/features/onboarding/presentation/views/landing_page.dart';
 import 'package:bizzie/features/onboarding/presentation/views/feature_highlights_page.dart';
 import 'package:bizzie/features/onboarding/presentation/views/meet_your_bizzie_page.dart';
-import 'package:bizzie/features/onboarding/presentation/views/select_your_favorite_brands_page.dart';
+import 'package:bizzie/features/onboarding/select_brands/presentation/views/select_your_favorite_brands_page.dart';
 import 'package:bizzie/features/onboarding/presentation/views/analyzing_brands_page.dart';
 import 'package:bizzie/features/onboarding/presentation/views/bizzie_found_companies_page.dart';
 import 'package:bizzie/features/onboarding/presentation/views/building_profile_page.dart';

@@ -1,4 +1,5 @@
 import 'package:bizzie/app/themes/app_colors.dart';
+import 'package:bizzie/app/themes/app_theme.dart';
 import 'package:bizzie/features/onboarding/presentation/bloc/onboarding_bloc.dart';
 import 'package:flutter/material.dart';
 
@@ -19,9 +20,10 @@ class OnboardingStatusCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final badgeTheme = theme.extension<BadgeThemeExtension>();
 
     return AnimatedContainer(
-      duration: const Duration(milliseconds: 300),
+      duration: const Duration(milliseconds: 200),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: status.backgroundColor,
@@ -56,10 +58,10 @@ class OnboardingStatusCard extends StatelessWidget {
                     subtitle!,
                     style: theme.textTheme.bodySmall?.copyWith(
                       color: status == AnalysisStepStatus.pending
-                          ? AppColors.textTertiary
+                          ? badgeTheme?.voidText
                           : (status == AnalysisStepStatus.active
-                                ? AppColors.primary
-                                : AppColors.successText),
+                                ? badgeTheme?.neutralText
+                                : badgeTheme?.goodText),
                     ),
                   ),
                 ],

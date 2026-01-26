@@ -184,9 +184,8 @@ class _ExperienceOption extends StatelessWidget {
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
             color: isSelected
-                ? AppColors.blueGradientStart
-                : theme.inputDecorationTheme.enabledBorder?.borderSide.color ??
-                      AppColors.inputBorder,
+                ? theme.colorScheme.primary
+                : theme.colorScheme.outline,
             width: 2,
           ),
         ),
@@ -198,24 +197,15 @@ class _ExperienceOption extends StatelessWidget {
               decoration: BoxDecoration(
                 color: theme.cardColor,
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(
-                  color:
-                      theme
-                          .inputDecorationTheme
-                          .enabledBorder
-                          ?.borderSide
-                          .color ??
-                      AppColors.inputBorder,
-                  width: 2,
-                ),
+                border: Border.all(color: theme.colorScheme.outline, width: 2),
               ),
               child: Padding(
                 padding: const EdgeInsets.all(12.0),
                 child: Image.asset(
                   iconPath,
                   color: isSelected
-                      ? AppColors.primary
-                      : AppColors.textTertiary,
+                      ? theme.colorScheme.primary
+                      : theme.colorScheme.onSurfaceVariant,
                 ),
               ),
             ),
@@ -226,15 +216,15 @@ class _ExperienceOption extends StatelessWidget {
                 children: [
                   Text(
                     title,
-                    style: theme.textTheme.bodyMedium?.copyWith(
+                    style: theme.textTheme.bodyLarge?.copyWith(
                       fontWeight: FontWeight.w600,
-                      color: AppColors.textPrimary,
                     ),
                   ),
+                  const SizedBox(height: 4),
                   Text(
                     description,
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: AppColors.textSecondary,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: theme.colorScheme.onSurfaceVariant,
                     ),
                   ),
                 ],

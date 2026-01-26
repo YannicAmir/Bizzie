@@ -2,11 +2,11 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/features/auth/domain/models/user_model.dart';
 import 'package:bizzie/features/auth/domain/interfaces/i_auth_repository.dart';
-import 'package:bizzie/features/onboarding/domain/models/brand.dart';
+import 'package:bizzie/features/onboarding/select_brands/domain/models/brand.dart';
 import 'package:bizzie/features/onboarding/domain/models/onboarding_data.dart';
 import 'package:bizzie/features/onboarding/domain/usecases/complete_onboarding_usecase.dart';
 import 'package:dartz/dartz.dart';
-import 'package:bizzie/features/onboarding/domain/usecases/get_daily_brands_usecase.dart';
+
 import 'package:bizzie/features/onboarding/domain/usecases/get_sectors_usecase.dart';
 import 'package:bizzie/features/onboarding/domain/usecases/get_sp500_history_usecase.dart';
 import 'package:bizzie/features/onboarding/presentation/bloc/onboarding_bloc.dart';
@@ -20,8 +20,6 @@ class MockAuthRepository extends Mock implements IAuthRepository {}
 class MockCompleteOnboardingUseCase extends Mock
     implements CompleteOnboardingUseCase {}
 
-class MockGetDailyBrandsUseCase extends Mock implements GetDailyBrandsUseCase {}
-
 class MockGetSectorsUseCase extends Mock implements GetSectorsUseCase {}
 
 class MockGetSp500HistoryUseCase extends Mock
@@ -33,7 +31,7 @@ void main() {
   late OnboardingBloc bloc;
   late MockAuthRepository mockAuthRepository;
   late MockCompleteOnboardingUseCase mockCompleteOnboardingUseCase;
-  late MockGetDailyBrandsUseCase mockGetDailyBrandsUseCase;
+
   late MockGetSectorsUseCase mockGetSectorsUseCase;
   late MockGetSp500HistoryUseCase mockGetSp500HistoryUseCase;
 
@@ -48,14 +46,13 @@ void main() {
   setUp(() {
     mockAuthRepository = MockAuthRepository();
     mockCompleteOnboardingUseCase = MockCompleteOnboardingUseCase();
-    mockGetDailyBrandsUseCase = MockGetDailyBrandsUseCase();
+
     mockGetSectorsUseCase = MockGetSectorsUseCase();
     mockGetSp500HistoryUseCase = MockGetSp500HistoryUseCase();
 
     bloc = OnboardingBloc(
       mockAuthRepository,
       mockCompleteOnboardingUseCase,
-      mockGetDailyBrandsUseCase,
       mockGetSectorsUseCase,
       mockGetSp500HistoryUseCase,
     );

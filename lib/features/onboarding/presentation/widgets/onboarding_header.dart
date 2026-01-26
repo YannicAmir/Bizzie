@@ -1,5 +1,5 @@
 import 'package:bizzie/app/themes/app_assets.dart';
-import 'package:bizzie/app/themes/app_colors.dart';
+import 'package:bizzie/shared/constants/app_constants.dart';
 
 import 'package:flutter/material.dart';
 
@@ -56,16 +56,13 @@ class OnboardingHeader extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 if (title != null)
-                  Text(
-                    title!,
-                    style: theme.textTheme.displayLarge?.copyWith(height: 1.2),
-                  ),
+                  Text(title!, style: theme.textTheme.displayLarge),
                 if (subtitle != null) ...[
-                  const SizedBox(height: 16),
+                  AppConstants.onboardSecondarySectionSpacing,
                   Text(
                     subtitle!,
                     style: theme.textTheme.bodyMedium?.copyWith(
-                      color: AppColors.textSecondary,
+                      color: theme.colorScheme.onSurfaceVariant,
                     ),
                   ),
                 ],

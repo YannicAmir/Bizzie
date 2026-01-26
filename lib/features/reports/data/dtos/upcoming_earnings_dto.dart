@@ -1,4 +1,5 @@
 // ignore_for_file: invalid_annotation_target
+import 'package:bizzie/core/utils/timestamp_converter.dart';
 import 'package:bizzie/features/reports/domain/models/upcoming_earnings.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
@@ -11,8 +12,8 @@ abstract class UpcomingEarningsDto with _$UpcomingEarningsDto {
   const factory UpcomingEarningsDto({
     @JsonKey(includeFromJson: false, includeToJson: false) String? id,
     required String symbol,
-    required String date,
-    String? expireAt,
+    @TimestampConverter() required DateTime date,
+    @TimestampConverter() DateTime? expireAt,
   }) = _UpcomingEarningsDto;
 
   factory UpcomingEarningsDto.fromJson(Map<String, dynamic> json) =>
@@ -22,7 +23,7 @@ abstract class UpcomingEarningsDto with _$UpcomingEarningsDto {
     return UpcomingEarnings(
       symbol: symbol,
       companyName: companyName ?? symbol,
-      date: DateTime.tryParse(date),
+      date: date,
     );
   }
 }

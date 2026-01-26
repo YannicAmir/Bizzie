@@ -1,6 +1,4 @@
-import 'package:bizzie/features/onboarding/presentation/bloc/onboarding_bloc.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bizzie/app/routes/app_routes.dart';
 import 'package:go_router/go_router.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
@@ -44,9 +42,6 @@ class LandingPage extends StatelessWidget {
                       'Your friend to take with you on your Stock Market journey',
                   primaryButton: BizziePrimaryButton(
                     onPressed: () {
-                      context.read<OnboardingBloc>().add(
-                        const OnboardingEvent.loadBrands(),
-                      );
                       context.push(AppRoutes.onboardingName);
                     },
                     title: 'Get Started',

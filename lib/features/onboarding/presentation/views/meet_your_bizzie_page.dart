@@ -1,9 +1,9 @@
 import 'package:bizzie/features/onboarding/presentation/bloc/onboarding_bloc.dart';
+import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../app/routes/app_routes.dart';
-import '../../../../app/themes/app_colors.dart';
 import '../../../../app/themes/app_assets.dart';
 import '../utils/onboarding_assets_helper.dart';
 import '../widgets/onboarding_footer.dart';
@@ -49,22 +49,16 @@ class MeetYourBizziePage extends StatelessWidget {
                             key: ValueKey(mascotAsset),
                           ),
                         ),
-                        const SizedBox(height: 32),
+                        AppConstants.onboardSectionSpacing,
                         Text(
                           'Got it! Meet your Bizzie',
-                          style: theme.textTheme.displayLarge?.copyWith(
-                            fontSize: 40,
-                            height: 1.2,
-                            letterSpacing: 0.406,
-                          ),
+                          style: theme.textTheme.displayLarge,
                         ),
-                        const SizedBox(height: 16),
+                        AppConstants.onboardSecondarySectionSpacing,
                         Text(
                           '${selectedSector?.displayName ?? "Your"} Bizzie will send you a daily list of stocks & brands from your favorite sector.',
                           style: theme.textTheme.bodyLarge?.copyWith(
-                            fontSize: 17,
-                            color: AppColors.textSecondary,
-                            height: 1.5,
+                            color: theme.colorScheme.onSurfaceVariant,
                           ),
                         ),
                         const SizedBox(height: 128),

@@ -118,7 +118,7 @@ class AppAssets {
       'assets/images/shared/modal_close_icon.svg';
 
   static String getMascotForSector(String sector) {
-    final normalized = sector.trim().toLowerCase();
+    final normalized = sector.trim().replaceAll('_', ' ').toLowerCase();
     switch (normalized) {
       case 'information technology':
       case 'technology':
@@ -145,7 +145,6 @@ class AppAssets {
       case 'utilities':
         return bizzieMascotUtilities;
       default:
-        // Use partial match as fallback
         if (normalized.contains('tech')) return bizzieMascotIT;
         if (normalized.contains('finance')) return bizzieMascotFinancials;
         if (normalized.contains('health')) return bizzieMascotHealthcare;

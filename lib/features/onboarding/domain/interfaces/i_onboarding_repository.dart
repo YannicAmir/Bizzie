@@ -1,5 +1,5 @@
 import 'package:bizzie/core/error/failures.dart';
-import 'package:bizzie/features/onboarding/domain/models/brand.dart';
+
 import 'package:dartz/dartz.dart';
 import 'package:bizzie/features/onboarding/domain/models/historical_price.dart';
 
@@ -10,10 +10,6 @@ abstract class IOnboardingRepository {
   Future<Either<Failure, List<Sector>>> getSectors();
 
   Future<Either<Failure, List<HistoricalPrice>>> getSp500History();
-
-  Future<Either<Failure, (List<Brand>, List<Brand>)>> getDailyBrands(
-    Sector? userSector,
-  );
 
   Future<Either<Failure, void>> saveUserProfile(UserModel user);
 }

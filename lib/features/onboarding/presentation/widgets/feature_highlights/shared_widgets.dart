@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:bizzie/app/themes/app_colors.dart';
 import 'package:bizzie/app/themes/app_text_styles.dart';
 import 'package:bizzie/app/themes/app_assets.dart';
-import 'package:bizzie/features/onboarding/domain/models/brand.dart';
+import 'package:bizzie/features/onboarding/select_brands/domain/models/brand.dart';
 
 class FeatureHighlightCard extends StatelessWidget {
   final Widget child;
