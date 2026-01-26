@@ -1,9 +1,9 @@
 import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:bizzie/features/company_profile/domain/models/chart_data_point.dart';
 import 'package:bizzie/features/company_profile/domain/models/financial_data_point.dart';
-import 'package:bizzie/features/company_profile/domain/usecases/get_net_income_stats_usecase.dart';
-import 'package:bizzie/features/company_profile/presentation/bloc/company_net_income/company_net_income_event.dart';
-import 'package:bizzie/features/company_profile/presentation/bloc/company_net_income/company_net_income_state.dart';
+import 'package:bizzie/features/company_profile/net_income/domain/usecases/get_net_income_stats_usecase.dart';
+import 'company_net_income_event.dart';
+import 'company_net_income_state.dart';
 import 'package:bizzie/shared/utils/bizzie_date_formatter.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';

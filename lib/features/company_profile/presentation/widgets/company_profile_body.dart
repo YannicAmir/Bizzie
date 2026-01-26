@@ -6,7 +6,7 @@ import 'package:bizzie/features/company_profile/presentation/views/tabs/fcps_tab
 import 'package:bizzie/features/company_profile/presentation/views/tabs/financial_statements_tab.dart';
 import 'package:bizzie/features/company_profile/presentation/views/tabs/free_cash_flow_tab.dart';
 import 'package:bizzie/features/company_profile/presentation/views/tabs/more_tab.dart';
-import 'package:bizzie/features/company_profile/presentation/views/tabs/net_income_tab.dart';
+import 'package:bizzie/features/company_profile/net_income/presentation/views/net_income_tab.dart';
 import 'package:bizzie/features/company_profile/news/presentation/views/news_tab.dart';
 import 'package:bizzie/features/company_profile/revenue/presentation/views/revenue_tab.dart';
 import 'package:bizzie/features/company_profile/security/presentation/views/security_tab.dart';

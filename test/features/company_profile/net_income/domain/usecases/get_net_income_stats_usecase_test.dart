@@ -1,19 +1,19 @@
 import 'package:bizzie/core/error/failures.dart';
-import 'package:bizzie/features/company_profile/domain/interfaces/i_financial_repository.dart';
-import 'package:bizzie/features/company_profile/domain/models/net_income_stats.dart';
-import 'package:bizzie/features/company_profile/domain/usecases/get_net_income_stats_usecase.dart';
+import 'package:bizzie/features/company_profile/net_income/domain/interfaces/i_net_income_repository.dart';
+import 'package:bizzie/features/company_profile/net_income/domain/models/net_income_stats.dart';
+import 'package:bizzie/features/company_profile/net_income/domain/usecases/get_net_income_stats_usecase.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
-class MockIFinancialRepository extends Mock implements IFinancialRepository {}
+class MockINetIncomeRepository extends Mock implements INetIncomeRepository {}
 
 void main() {
   late GetNetIncomeStatsUseCase useCase;
-  late MockIFinancialRepository mockRepository;
+  late MockINetIncomeRepository mockRepository;
 
   setUp(() {
-    mockRepository = MockIFinancialRepository();
+    mockRepository = MockINetIncomeRepository();
     useCase = GetNetIncomeStatsUseCase(mockRepository);
   });
 

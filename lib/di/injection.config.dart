@@ -84,14 +84,20 @@ import '../features/company_profile/domain/usecases/get_historical_eod_prices_us
     as _i547;
 import '../features/company_profile/domain/usecases/get_key_metrics_usecase.dart'
     as _i717;
-import '../features/company_profile/domain/usecases/get_net_income_stats_usecase.dart'
-    as _i304;
 import '../features/company_profile/domain/usecases/get_price_history_usecase.dart'
     as _i397;
 import '../features/company_profile/domain/usecases/get_ratios_usecase.dart'
     as _i762;
 import '../features/company_profile/domain/usecases/get_share_stats_usecase.dart'
     as _i454;
+import '../features/company_profile/net_income/data/repositories/net_income_repository_impl.dart'
+    as _i13;
+import '../features/company_profile/net_income/domain/interfaces/i_net_income_repository.dart'
+    as _i814;
+import '../features/company_profile/net_income/domain/usecases/get_net_income_stats_usecase.dart'
+    as _i775;
+import '../features/company_profile/net_income/presentation/bloc/company_net_income_bloc.dart'
+    as _i614;
 import '../features/company_profile/news/data/repositories/news_repository_impl.dart'
     as _i368;
 import '../features/company_profile/news/domain/interfaces/i_news_repository.dart'
@@ -106,8 +112,6 @@ import '../features/company_profile/presentation/bloc/company_fcps/company_fcps_
     as _i19;
 import '../features/company_profile/presentation/bloc/company_free_cash_flow/company_free_cash_flow_bloc.dart'
     as _i30;
-import '../features/company_profile/presentation/bloc/company_net_income/company_net_income_bloc.dart'
-    as _i313;
 import '../features/company_profile/presentation/bloc/company_pe_ratio/company_pe_ratio_bloc.dart'
     as _i843;
 import '../features/company_profile/presentation/bloc/company_pfcf_ratio/company_pfcf_ratio_bloc.dart'
@@ -376,6 +380,12 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i151.CompanyFirestoreDataSource>(),
       ),
     );
+    gh.lazySingleton<_i814.INetIncomeRepository>(
+      () => _i13.NetIncomeRepositoryImpl(
+        gh<_i140.CompanyRemoteDataSource>(),
+        gh<_i151.CompanyFirestoreDataSource>(),
+      ),
+    );
     gh.lazySingleton<_i877.RemoteAuthDataSource>(
       () => _i877.RemoteAuthDataSourceImpl(
         firebaseAuth: gh<_i59.FirebaseAuth>(),
@@ -420,9 +430,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i717.GetKeyMetricsUseCase>(
       () => _i717.GetKeyMetricsUseCase(gh<_i979.IFinancialRepository>()),
     );
-    gh.lazySingleton<_i304.GetNetIncomeStatsUseCase>(
-      () => _i304.GetNetIncomeStatsUseCase(gh<_i979.IFinancialRepository>()),
-    );
     gh.lazySingleton<_i762.GetRatiosUseCase>(
       () => _i762.GetRatiosUseCase(gh<_i979.IFinancialRepository>()),
     );
@@ -458,6 +465,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i622.INotificationRepository>(
       () => _i648.NotificationRepositoryImpl(gh<_i640.FcmRemoteDataSource>()),
     );
+    gh.lazySingleton<_i775.GetNetIncomeStatsUseCase>(
+      () => _i775.GetNetIncomeStatsUseCase(gh<_i814.INetIncomeRepository>()),
+    );
     gh.lazySingleton<_i547.GetHistoricalEodPricesUseCase>(
       () => _i547.GetHistoricalEodPricesUseCase(gh<_i865.IPriceRepository>()),
     );
@@ -478,6 +488,9 @@ extension GetItInjectableX on _i174.GetIt {
       );
       return i.initialize().then((_) => i);
     }, preResolve: true);
+    gh.factory<_i614.CompanyNetIncomeBloc>(
+      () => _i614.CompanyNetIncomeBloc(gh<_i775.GetNetIncomeStatsUseCase>()),
+    );
     gh.factory<_i30.CompanyFreeCashFlowBloc>(
       () =>
           _i30.CompanyFreeCashFlowBloc(gh<_i708.GetFreeCashFlowStatsUseCase>()),
@@ -564,9 +577,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i920.GetSectorsUseCase>(),
         gh<_i952.GetSp500HistoryUseCase>(),
       ),
-    );
-    gh.factory<_i313.CompanyNetIncomeBloc>(
-      () => _i313.CompanyNetIncomeBloc(gh<_i304.GetNetIncomeStatsUseCase>()),
     );
     gh.factory<_i505.CompanyBusinessBloc>(
       () => _i505.CompanyBusinessBloc(gh<_i582.GetBusinessProfileUseCase>()),

@@ -9,8 +9,8 @@ import 'package:bizzie/features/company_profile/presentation/bloc/company_fcps/c
 import 'package:bizzie/features/company_profile/presentation/bloc/company_fcps/company_fcps_event.dart';
 import 'package:bizzie/features/company_profile/presentation/bloc/company_free_cash_flow/company_free_cash_flow_bloc.dart';
 import 'package:bizzie/features/company_profile/presentation/bloc/company_free_cash_flow/company_free_cash_flow_event.dart';
-import 'package:bizzie/features/company_profile/presentation/bloc/company_net_income/company_net_income_bloc.dart';
-import 'package:bizzie/features/company_profile/presentation/bloc/company_net_income/company_net_income_event.dart';
+import 'package:bizzie/features/company_profile/net_income/presentation/bloc/company_net_income_bloc.dart';
+import 'package:bizzie/features/company_profile/net_income/presentation/bloc/company_net_income_event.dart';
 import 'package:bizzie/features/company_profile/news/presentation/bloc/company_news/company_news_bloc.dart';
 import 'package:bizzie/features/company_profile/news/presentation/bloc/company_news/company_news_event.dart';
 import 'package:bizzie/features/company_profile/presentation/bloc/company_pe_ratio/company_pe_ratio_bloc.dart';

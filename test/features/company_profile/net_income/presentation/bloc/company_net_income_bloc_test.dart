@@ -1,10 +1,10 @@
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/features/company_profile/domain/models/financial_data_point.dart';
-import 'package:bizzie/features/company_profile/domain/models/net_income_stats.dart';
-import 'package:bizzie/features/company_profile/domain/usecases/get_net_income_stats_usecase.dart';
-import 'package:bizzie/features/company_profile/presentation/bloc/company_net_income/company_net_income_bloc.dart';
-import 'package:bizzie/features/company_profile/presentation/bloc/company_net_income/company_net_income_event.dart';
-import 'package:bizzie/features/company_profile/presentation/bloc/company_net_income/company_net_income_state.dart';
+import 'package:bizzie/features/company_profile/net_income/domain/models/net_income_stats.dart';
+import 'package:bizzie/features/company_profile/net_income/domain/usecases/get_net_income_stats_usecase.dart';
+import 'package:bizzie/features/company_profile/net_income/presentation/bloc/company_net_income_bloc.dart';
+import 'package:bizzie/features/company_profile/net_income/presentation/bloc/company_net_income_event.dart';
+import 'package:bizzie/features/company_profile/net_income/presentation/bloc/company_net_income_state.dart';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';

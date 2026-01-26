@@ -21,7 +21,6 @@ import 'package:bizzie/features/company_profile/domain/models/free_cash_flow_sta
 import 'package:bizzie/features/company_profile/domain/models/full_financials.dart';
 import 'package:bizzie/features/company_profile/domain/models/income_statement.dart';
 import 'package:bizzie/features/company_profile/domain/models/key_metrics.dart';
-import 'package:bizzie/features/company_profile/domain/models/net_income_stats.dart';
 
 abstract class _Consts {
   static const String annual = 'annual';
@@ -36,38 +35,6 @@ class FinancialRepositoryImpl implements IFinancialRepository {
   final CompanyFirestoreDataSource _localDataSource;
 
   FinancialRepositoryImpl(this._remoteDataSource, this._localDataSource);
-
-  @override
-  Future<Either<Failure, NetIncomeStats>> getNetIncomeStats(
-    String ticker,
-  ) async {
-    try {
-      final annual = await _fetchStableIncomeStatements(ticker, _Consts.annual);
-      final quart = await _fetchStableIncomeStatements(ticker, _Consts.quarter);
-
-      final conversion = await _getCurrencyMultiplier(
-        annual.firstOrNull?.reportedCurrency ??
-            quart.firstOrNull?.reportedCurrency,
-        ticker,
-      );
-
-      return right(
-        NetIncomeStats(
-          reportedCurrency: conversion.targetCurrency,
-          annualNetIncome: _mapStableIncomeDataPoints(
-            annual,
-            (d) => (d.netIncome ?? 0.0) * conversion.multiplier,
-          ),
-          quarterlyNetIncome: _mapStableIncomeDataPoints(
-            quart,
-            (d) => (d.netIncome ?? 0.0) * conversion.multiplier,
-          ),
-        ),
-      );
-    } catch (e) {
-      return left(ServerFailure(e.toString()));
-    }
-  }
 
   @override
   Future<Either<Failure, EpsStats>> getEpsStats(String ticker) async {
