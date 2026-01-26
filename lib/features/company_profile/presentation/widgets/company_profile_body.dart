@@ -1,16 +1,16 @@
 import 'package:bizzie/features/company_profile/business/presentation/views/business_tab.dart';
 
 import 'package:bizzie/features/company_profile/dividends/presentation/views/dividends_tab.dart';
-import 'package:bizzie/features/company_profile/presentation/views/tabs/eps_tab.dart';
-import 'package:bizzie/features/company_profile/presentation/views/tabs/fcps_tab.dart';
+import 'package:bizzie/features/company_profile/eps/presentation/views/eps_tab.dart';
+import 'package:bizzie/features/company_profile/fcps/presentation/views/fcps_tab.dart';
 import 'package:bizzie/features/company_profile/presentation/views/tabs/financial_statements_tab.dart';
-import 'package:bizzie/features/company_profile/presentation/views/tabs/free_cash_flow_tab.dart';
+import 'package:bizzie/features/company_profile/free_cash_flow/presentation/views/free_cash_flow_tab.dart';
 import 'package:bizzie/features/company_profile/presentation/views/tabs/more_tab.dart';
 import 'package:bizzie/features/company_profile/net_income/presentation/views/net_income_tab.dart';
 import 'package:bizzie/features/company_profile/news/presentation/views/news_tab.dart';
 import 'package:bizzie/features/company_profile/revenue/presentation/views/revenue_tab.dart';
 import 'package:bizzie/features/company_profile/security/presentation/views/security_tab.dart';
-import 'package:bizzie/features/company_profile/presentation/views/tabs/shares_tab.dart';
+import 'package:bizzie/features/company_profile/shares/presentation/views/shares_tab.dart';
 import 'package:flutter/material.dart';
 
 import 'package:bizzie/features/company_profile/presentation/enums/company_profile_tab.dart';

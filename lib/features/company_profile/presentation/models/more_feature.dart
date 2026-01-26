@@ -1,6 +1,6 @@
-import 'package:bizzie/features/company_profile/presentation/views/tabs/pe_ratio_tab.dart';
-import 'package:bizzie/features/company_profile/presentation/views/tabs/pfcf_ratio_tab.dart';
-import 'package:bizzie/features/company_profile/presentation/views/tabs/roe_tab.dart';
+import 'package:bizzie/features/company_profile/pe_ratio/presentation/views/pe_ratio_tab.dart';
+import 'package:bizzie/features/company_profile/pfcf_ratio/presentation/views/pfcf_ratio_tab.dart';
+import 'package:bizzie/features/company_profile/roe/presentation/views/roe_tab.dart';
 import 'package:flutter/widgets.dart';
 
 class MoreFeature {
