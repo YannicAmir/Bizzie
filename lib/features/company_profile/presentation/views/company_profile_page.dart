@@ -17,8 +17,8 @@ import 'package:bizzie/features/company_profile/presentation/bloc/company_pe_rat
 import 'package:bizzie/features/company_profile/presentation/bloc/company_pe_ratio/company_pe_ratio_event.dart';
 import 'package:bizzie/features/company_profile/presentation/bloc/company_pfcf_ratio/company_pfcf_ratio_bloc.dart';
 import 'package:bizzie/features/company_profile/presentation/bloc/company_pfcf_ratio/company_pfcf_ratio_event.dart';
-import 'package:bizzie/features/company_profile/presentation/bloc/company_revenue/company_revenue_bloc.dart';
-import 'package:bizzie/features/company_profile/presentation/bloc/company_revenue/company_revenue_event.dart';
+import 'package:bizzie/features/company_profile/revenue/presentation/bloc/company_revenue_bloc.dart';
+import 'package:bizzie/features/company_profile/revenue/presentation/bloc/company_revenue_event.dart';
 import 'package:bizzie/features/company_profile/presentation/bloc/company_roe/company_roe_bloc.dart';
 import 'package:bizzie/features/company_profile/presentation/bloc/company_roe/company_roe_event.dart';
 import 'package:bizzie/features/company_profile/presentation/bloc/company_security/company_security_bloc.dart';

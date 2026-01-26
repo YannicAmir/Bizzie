@@ -24,7 +24,6 @@ import 'package:bizzie/features/company_profile/domain/models/full_financials.da
 import 'package:bizzie/features/company_profile/domain/models/income_statement.dart';
 import 'package:bizzie/features/company_profile/domain/models/key_metrics.dart';
 import 'package:bizzie/features/company_profile/domain/models/net_income_stats.dart';
-import 'package:bizzie/features/company_profile/domain/models/revenue_stats.dart';
 
 abstract class _Consts {
   static const String annual = 'annual';
@@ -65,36 +64,6 @@ class FinancialRepositoryImpl implements IFinancialRepository {
                 ),
               )
               .toList(),
-        ),
-      );
-    } catch (e) {
-      return left(ServerFailure(e.toString()));
-    }
-  }
-
-  @override
-  Future<Either<Failure, RevenueStats>> getRevenueStats(String ticker) async {
-    try {
-      final annual = await _fetchStableIncomeStatements(ticker, _Consts.annual);
-      final quart = await _fetchStableIncomeStatements(ticker, _Consts.quarter);
-
-      final conversion = await _getCurrencyMultiplier(
-        annual.firstOrNull?.reportedCurrency ??
-            quart.firstOrNull?.reportedCurrency,
-        ticker,
-      );
-
-      return right(
-        RevenueStats(
-          reportedCurrency: conversion.targetCurrency,
-          annualRevenue: _mapStableIncomeDataPoints(
-            annual,
-            (d) => (d.revenue ?? 0.0) * conversion.multiplier,
-          ),
-          quarterlyRevenue: _mapStableIncomeDataPoints(
-            quart,
-            (d) => (d.revenue ?? 0.0) * conversion.multiplier,
-          ),
         ),
       );
     } catch (e) {

@@ -1,19 +1,19 @@
 import 'package:bizzie/core/error/failures.dart';
-import 'package:bizzie/features/company_profile/domain/interfaces/i_financial_repository.dart';
-import 'package:bizzie/features/company_profile/domain/models/revenue_stats.dart';
-import 'package:bizzie/features/company_profile/domain/usecases/get_revenue_stats_usecase.dart';
+import 'package:bizzie/features/company_profile/revenue/domain/interfaces/i_revenue_repository.dart';
+import 'package:bizzie/features/company_profile/revenue/domain/models/revenue_stats.dart';
+import 'package:bizzie/features/company_profile/revenue/domain/usecases/get_revenue_stats_usecase.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
-class MockIFinancialRepository extends Mock implements IFinancialRepository {}
+class MockIRevenueRepository extends Mock implements IRevenueRepository {}
 
 void main() {
   late GetRevenueStatsUseCase useCase;
-  late MockIFinancialRepository mockRepository;
+  late MockIRevenueRepository mockRepository;
 
   setUp(() {
-    mockRepository = MockIFinancialRepository();
+    mockRepository = MockIRevenueRepository();
     useCase = GetRevenueStatsUseCase(mockRepository);
   });
 

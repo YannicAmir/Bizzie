@@ -1,10 +1,10 @@
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/features/company_profile/domain/models/financial_data_point.dart';
-import 'package:bizzie/features/company_profile/domain/models/revenue_stats.dart';
-import 'package:bizzie/features/company_profile/domain/usecases/get_revenue_stats_usecase.dart';
-import 'package:bizzie/features/company_profile/presentation/bloc/company_revenue/company_revenue_bloc.dart';
-import 'package:bizzie/features/company_profile/presentation/bloc/company_revenue/company_revenue_event.dart';
-import 'package:bizzie/features/company_profile/presentation/bloc/company_revenue/company_revenue_state.dart';
+import 'package:bizzie/features/company_profile/revenue/domain/models/revenue_stats.dart';
+import 'package:bizzie/features/company_profile/revenue/domain/usecases/get_revenue_stats_usecase.dart';
+import 'package:bizzie/features/company_profile/revenue/presentation/bloc/company_revenue_bloc.dart';
+import 'package:bizzie/features/company_profile/revenue/presentation/bloc/company_revenue_event.dart';
+import 'package:bizzie/features/company_profile/revenue/presentation/bloc/company_revenue_state.dart';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';

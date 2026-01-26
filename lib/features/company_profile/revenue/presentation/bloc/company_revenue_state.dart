@@ -1,6 +1,6 @@
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/features/company_profile/domain/models/chart_data_point.dart';
-import 'package:bizzie/features/company_profile/domain/models/revenue_stats.dart';
+import 'package:bizzie/features/company_profile/revenue/domain/models/revenue_stats.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'company_revenue_state.freezed.dart';

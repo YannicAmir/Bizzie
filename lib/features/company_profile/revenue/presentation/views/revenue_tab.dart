@@ -1,7 +1,7 @@
 import 'package:bizzie/app/themes/app_assets.dart';
-import 'package:bizzie/features/company_profile/presentation/bloc/company_revenue/company_revenue_bloc.dart';
-import 'package:bizzie/features/company_profile/presentation/bloc/company_revenue/company_revenue_event.dart';
-import 'package:bizzie/features/company_profile/presentation/bloc/company_revenue/company_revenue_state.dart';
+import 'package:bizzie/features/company_profile/revenue/presentation/bloc/company_revenue_bloc.dart';
+import 'package:bizzie/features/company_profile/revenue/presentation/bloc/company_revenue_event.dart';
+import 'package:bizzie/features/company_profile/revenue/presentation/bloc/company_revenue_state.dart';
 import 'package:bizzie/features/company_profile/presentation/widgets/shared/company_profile_error_state.dart';
 import 'package:bizzie/features/company_profile/presentation/widgets/shared/company_profile_loading_state.dart';
 import 'package:bizzie/features/company_profile/presentation/widgets/shared/financial_highlights_section.dart';
