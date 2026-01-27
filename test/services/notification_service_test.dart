@@ -59,7 +59,7 @@ void main() {
       // arrange
       when(
         () => mockRepository.getFcmToken(),
-      ).thenAnswer((_) async => const Left(ServerFailure('Error')));
+      ).thenAnswer((_) async => const Left(Failure.server('Error')));
 
       // act
       final result = await service.getFcmToken();

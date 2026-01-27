@@ -32,10 +32,10 @@ class SecurityRepositoryImpl implements ISecurityRepository {
       final quoteResult = await _companyRepository.getQuote(ticker);
 
       if (profileResult.isLeft()) {
-        return left(ServerFailure('Failed to fetch profile'));
+        return left(Failure.server('Failed to fetch profile'));
       }
       if (quoteResult.isLeft()) {
-        return left(ServerFailure('Failed to fetch quote'));
+        return left(Failure.server('Failed to fetch quote'));
       }
 
       final profile = profileResult.getOrElse(() => throw Exception());
@@ -60,7 +60,7 @@ class SecurityRepositoryImpl implements ISecurityRepository {
         ),
       );
     } catch (e) {
-      return left(ServerFailure(e.toString()));
+      return left(Failure.server(e.toString()));
     }
   }
 
@@ -98,7 +98,7 @@ class SecurityRepositoryImpl implements ISecurityRepository {
 
       return right(upcoming.first.toDateTime());
     } catch (e) {
-      return left(ServerFailure(e.toString()));
+      return left(Failure.server(e.toString()));
     }
   }
 }

@@ -65,7 +65,7 @@ void main() {
         final result = await repository.requestPermission();
 
         // assert
-        expect(result, Left(ServerFailure('Exception: Error')));
+        expect(result, Left(Failure.server('Exception: Error')));
         verify(() => mockFcmDataSource.requestPermission()).called(1);
       },
     );
@@ -92,7 +92,7 @@ void main() {
       final result = await repository.getFcmToken();
 
       // assert
-      expect(result, Left(ServerFailure('Exception: Error')));
+      expect(result, Left(Failure.server('Exception: Error')));
       verify(() => mockFcmDataSource.getToken()).called(1);
     });
   });

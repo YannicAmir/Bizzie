@@ -3,12 +3,12 @@ import 'package:bizzie/features/onboarding/domain/interfaces/i_onboarding_reposi
 import 'package:bizzie/features/onboarding/domain/models/company.dart';
 import 'package:bizzie/features/onboarding/domain/models/onboarding_data.dart';
 import 'package:bizzie/features/onboarding/domain/models/user_model.dart';
+import 'package:bizzie/features/onboarding/domain/models/complete_onboarding_params.dart';
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/core/interfaces/i_notification_service.dart';
 import 'package:bizzie/core/usecase/usecase.dart';
 import 'package:bizzie/core/utils/string_utils.dart';
 import 'package:dartz/dartz.dart';
-import 'package:equatable/equatable.dart';
 import 'package:injectable/injectable.dart';
 
 @injectable
@@ -84,14 +84,4 @@ class CompleteOnboardingUseCase
       }
     }
   }
-}
-
-class CompleteOnboardingParams extends Equatable {
-  final OnboardingData data;
-  final String uid;
-
-  const CompleteOnboardingParams({required this.data, required this.uid});
-
-  @override
-  List<Object?> get props => [data, uid];
 }

@@ -88,7 +88,7 @@ void main() {
       'loadRequested_failure_emitsLoadingAndFailure',
       build: () {
         // arrange
-        const failure = ServerFailure('Server error');
+        const failure = Failure.server('Server error');
         when(
           () => mockGetPeRatio(tTicker),
         ).thenAnswer((_) async => const Left(failure));
@@ -102,7 +102,7 @@ void main() {
         // assert
         return [
           const CompanyPeRatioState.loading(),
-          const CompanyPeRatioState.failure(ServerFailure('Server error')),
+          const CompanyPeRatioState.failure(Failure.server('Server error')),
         ];
       },
     );

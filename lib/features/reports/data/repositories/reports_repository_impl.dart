@@ -66,14 +66,14 @@ class ReportsRepositoryImpl implements IReportsRepository {
           })
           .onErrorReturnWith((error, stackTrace) {
             if (error is ServerException) {
-              return Left(ServerFailure(error.message));
+              return Left(Failure.server(error.message));
             }
             return Left(
-              ServerFailure("Unexpected error fetching reports: $error"),
+              Failure.server("Unexpected error fetching reports: $error"),
             );
           });
     } catch (e) {
-      return Stream.value(Left(ServerFailure("Unexpected error: $e")));
+      return Stream.value(Left(Failure.server("Unexpected error: $e")));
     }
   }
 
@@ -84,9 +84,9 @@ class ReportsRepositoryImpl implements IReportsRepository {
         .map<Either<Failure, UserActivity>>((dto) => Right(dto.toDomain()))
         .onErrorReturnWith((error, stackTrace) {
           if (error is ServerException) {
-            return Left(ServerFailure(error.message));
+            return Left(Failure.server(error.message));
           }
-          return Left(ServerFailure("Unexpected error: $error"));
+          return Left(Failure.server("Unexpected error: $error"));
         });
   }
 

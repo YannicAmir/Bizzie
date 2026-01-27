@@ -24,10 +24,10 @@ class StockRepository implements IStockRepository {
       if (await file.exists()) {
         return Right(file);
       } else {
-        return Left(const CacheFailure('Stock list file not found'));
+        return Left(const Failure.cache('Stock list file not found'));
       }
     } catch (e) {
-      return Left(CacheFailure(e.toString()));
+      return Left(Failure.cache(e.toString()));
     }
   }
 
@@ -53,7 +53,7 @@ class StockRepository implements IStockRepository {
 
       return const Right(null);
     } catch (e) {
-      return Left(ServerFailure(e.toString()));
+      return Left(Failure.server(e.toString()));
     }
   }
 
@@ -67,7 +67,7 @@ class StockRepository implements IStockRepository {
         return Right(stocks);
       });
     } catch (e) {
-      return Left(CacheFailure(e.toString()));
+      return Left(Failure.cache(e.toString()));
     }
   }
 }

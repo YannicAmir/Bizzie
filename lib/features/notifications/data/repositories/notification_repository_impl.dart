@@ -18,7 +18,7 @@ class NotificationRepositoryImpl implements INotificationRepository {
       await _fcmRemoteDataSource.requestPermission();
       return const Right(null);
     } catch (e) {
-      return Left(ServerFailure(e.toString()));
+      return Left(Failure.server(e.toString()));
     }
   }
 
@@ -28,7 +28,7 @@ class NotificationRepositoryImpl implements INotificationRepository {
       final token = await _fcmRemoteDataSource.getToken();
       return Right(token);
     } catch (e) {
-      return Left(ServerFailure(e.toString()));
+      return Left(Failure.server(e.toString()));
     }
   }
 
@@ -52,7 +52,7 @@ class NotificationRepositoryImpl implements INotificationRepository {
       await _fcmRemoteDataSource.subscribeToTopic(topic);
       return const Right(null);
     } catch (e) {
-      return Left(ServerFailure(e.toString()));
+      return Left(Failure.server(e.toString()));
     }
   }
 
@@ -62,7 +62,7 @@ class NotificationRepositoryImpl implements INotificationRepository {
       await _fcmRemoteDataSource.unsubscribeFromTopic(topic);
       return const Right(null);
     } catch (e) {
-      return Left(ServerFailure(e.toString()));
+      return Left(Failure.server(e.toString()));
     }
   }
 }

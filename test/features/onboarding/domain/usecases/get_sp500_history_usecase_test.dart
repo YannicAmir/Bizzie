@@ -44,7 +44,7 @@ void main() {
 
   test('call_repositoryFailure_returnsLeftFailure', () async {
     // Arrange
-    const tFailure = ServerFailure('Server Error');
+    const tFailure = Failure.server('Server Error');
     when(
       () => mockRepository.getSp500History(),
     ).thenAnswer((_) async => const Left(tFailure));

@@ -43,7 +43,7 @@ void main() {
 
     test('call_failure_returnsServerFailure', () async {
       // arrange
-      const tFailure = ServerFailure('Server error');
+      const tFailure = Failure.server('Server error');
       when(
         () => mockRepository.getFreeCashFlowStats(tTicker),
       ).thenAnswer((_) async => const Left(tFailure));

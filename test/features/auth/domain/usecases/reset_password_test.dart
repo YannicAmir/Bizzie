@@ -17,7 +17,7 @@ void main() {
   });
 
   const tEmail = 'test@example.com';
-  const tFailure = ServerFailure('Test Failure');
+  const tFailure = Failure.server('Test Failure');
 
   test('resetPassword_success_returnsRightVoid', () async {
     // arrange

@@ -67,7 +67,7 @@ class FinancialStatementsRepositoryImpl
             .toList(),
       );
     } catch (e) {
-      return left(ServerFailure(e.toString()));
+      return left(Failure.server(e.toString()));
     }
   }
 
@@ -93,7 +93,7 @@ class FinancialStatementsRepositoryImpl
             .toList(),
       );
     } catch (e) {
-      return left(ServerFailure(e.toString()));
+      return left(Failure.server(e.toString()));
     }
   }
 
@@ -119,7 +119,7 @@ class FinancialStatementsRepositoryImpl
             .toList(),
       );
     } catch (e) {
-      return left(ServerFailure(e.toString()));
+      return left(Failure.server(e.toString()));
     }
   }
 
@@ -187,7 +187,7 @@ class FinancialStatementsRepositoryImpl
         ),
       );
     } catch (e) {
-      return left(ServerFailure(e.toString()));
+      return left(Failure.server(e.toString()));
     }
   }
 

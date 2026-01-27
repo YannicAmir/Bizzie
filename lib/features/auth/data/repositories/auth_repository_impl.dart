@@ -49,10 +49,10 @@ class AuthRepositoryImpl implements IAuthRepository {
       return Right(_mapFirebaseUserToUserModel(firebaseUser));
     } on firebase.FirebaseAuthException catch (e) {
       _logger.warning('SignInWithEmail failed', e);
-      return Left(ServerFailure(e.message ?? 'Authentication failed'));
+      return Left(Failure.server(e.message ?? 'Authentication failed'));
     } catch (e) {
       _logger.severe('SignInWithEmail unknown error', e);
-      return Left(ServerFailure(e.toString()));
+      return Left(Failure.server(e.toString()));
     }
   }
 
@@ -69,10 +69,10 @@ class AuthRepositoryImpl implements IAuthRepository {
       return Right(_mapFirebaseUserToUserModel(firebaseUser));
     } on firebase.FirebaseAuthException catch (e) {
       _logger.warning('SignUpWithEmail failed', e);
-      return Left(ServerFailure(e.message ?? 'Registration failed'));
+      return Left(Failure.server(e.message ?? 'Registration failed'));
     } catch (e) {
       _logger.severe('SignUpWithEmail unknown error', e);
-      return Left(ServerFailure(e.toString()));
+      return Left(Failure.server(e.toString()));
     }
   }
 
@@ -83,10 +83,10 @@ class AuthRepositoryImpl implements IAuthRepository {
       return Right(_mapFirebaseUserToUserModel(firebaseUser));
     } on firebase.FirebaseAuthException catch (e) {
       _logger.warning('SignInWithGoogle failed', e);
-      return Left(ServerFailure(e.message ?? 'Google Sign-In failed'));
+      return Left(Failure.server(e.message ?? 'Google Sign-In failed'));
     } catch (e) {
       _logger.severe('SignInWithGoogle unknown error', e);
-      return Left(ServerFailure(e.toString()));
+      return Left(Failure.server(e.toString()));
     }
   }
 
@@ -97,10 +97,10 @@ class AuthRepositoryImpl implements IAuthRepository {
       return Right(_mapFirebaseUserToUserModel(firebaseUser));
     } on firebase.FirebaseAuthException catch (e) {
       _logger.warning('SignInWithApple failed', e);
-      return Left(ServerFailure(e.message ?? 'Apple Sign-In failed'));
+      return Left(Failure.server(e.message ?? 'Apple Sign-In failed'));
     } catch (e) {
       _logger.severe('SignInWithApple unknown error', e);
-      return Left(ServerFailure(e.toString()));
+      return Left(Failure.server(e.toString()));
     }
   }
 
@@ -113,7 +113,7 @@ class AuthRepositoryImpl implements IAuthRepository {
       return const Right(null);
     } catch (e) {
       _logger.severe('SignOut failed', e);
-      return Left(ServerFailure(e.toString()));
+      return Left(Failure.server(e.toString()));
     }
   }
 
@@ -124,10 +124,10 @@ class AuthRepositoryImpl implements IAuthRepository {
       return const Right(null);
     } on firebase.FirebaseAuthException catch (e) {
       _logger.warning('ResetPassword failed', e);
-      return Left(ServerFailure(e.message ?? 'Password reset failed'));
+      return Left(Failure.server(e.message ?? 'Password reset failed'));
     } catch (e) {
       _logger.severe('ResetPassword unknown error', e);
-      return Left(ServerFailure(e.toString()));
+      return Left(Failure.server(e.toString()));
     }
   }
 
@@ -138,10 +138,10 @@ class AuthRepositoryImpl implements IAuthRepository {
       return const Right(null);
     } on firebase.FirebaseAuthException catch (e) {
       _logger.warning('DeleteAccount failed', e);
-      return Left(ServerFailure(e.message ?? 'Account deletion failed'));
+      return Left(Failure.server(e.message ?? 'Account deletion failed'));
     } catch (e) {
       _logger.severe('DeleteAccount unknown error', e);
-      return Left(ServerFailure(e.toString()));
+      return Left(Failure.server(e.toString()));
     }
   }
 

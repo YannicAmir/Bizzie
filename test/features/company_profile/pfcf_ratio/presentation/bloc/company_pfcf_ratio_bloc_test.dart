@@ -126,7 +126,7 @@ void main() {
       'loadRequested_failure_emitsLoadingAndFailure',
       build: () {
         // arrange
-        const failure = ServerFailure('Server error');
+        const failure = Failure.server('Server error');
         when(
           () => mockGetPfcfRatio(tTicker),
         ).thenAnswer((_) async => const Left(failure));
@@ -140,7 +140,7 @@ void main() {
         // assert
         return [
           const CompanyPfcfRatioState.loading(),
-          const CompanyPfcfRatioState.failure(ServerFailure('Server error')),
+          const CompanyPfcfRatioState.failure(Failure.server('Server error')),
         ];
       },
     );

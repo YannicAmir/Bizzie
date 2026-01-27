@@ -90,7 +90,7 @@ void main() {
       build: () {
         when(
           () => mockRequestPermission(),
-        ).thenAnswer((_) async => Left(ServerFailure('Permission Error')));
+        ).thenAnswer((_) async => Left(Failure.server('Permission Error')));
         return bloc;
       },
       act: (bloc) => bloc.add(const NotificationEvent.setupRequested()),
@@ -108,7 +108,7 @@ void main() {
         ).thenAnswer((_) async => const Right(null));
         when(
           () => mockGetFcmToken(),
-        ).thenAnswer((_) async => Left(ServerFailure('Token Error')));
+        ).thenAnswer((_) async => Left(Failure.server('Token Error')));
         return bloc;
       },
       act: (bloc) => bloc.add(const NotificationEvent.setupRequested()),
@@ -139,7 +139,7 @@ void main() {
       build: () {
         when(
           () => mockSubscribeToTopic(any()),
-        ).thenAnswer((_) async => Left(ServerFailure('Subscribe Error')));
+        ).thenAnswer((_) async => Left(Failure.server('Subscribe Error')));
         return bloc;
       },
       act: (bloc) =>
@@ -174,7 +174,7 @@ void main() {
       build: () {
         when(
           () => mockUnsubscribeFromTopic(any()),
-        ).thenAnswer((_) async => Left(ServerFailure('Unsubscribe Error')));
+        ).thenAnswer((_) async => Left(Failure.server('Unsubscribe Error')));
         return bloc;
       },
       act: (bloc) => bloc.add(

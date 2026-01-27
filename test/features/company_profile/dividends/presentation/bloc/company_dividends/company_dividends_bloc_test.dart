@@ -71,7 +71,7 @@ void main() {
       'loadRequested_failure_emitsLoadingAndError',
       build: () {
         // arrange
-        const failure = ServerFailure('Server error');
+        const failure = Failure.server('Server error');
         when(
           () => mockGetDividendInfo(tTicker),
         ).thenAnswer((_) async => const Left(failure));
@@ -85,7 +85,7 @@ void main() {
         // assert
         return [
           const CompanyDividendsState.loading(),
-          const CompanyDividendsState.error(ServerFailure('Server error')),
+          const CompanyDividendsState.error(Failure.server('Server error')),
         ];
       },
     );

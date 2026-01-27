@@ -34,7 +34,7 @@ class PeRatioRepositoryImpl implements IPeRatioRepository {
       await _localDataSource.cacheRatios(ticker, remote, isTtm: false);
       return right(remote.map((d) => d.toPeRatio()).toList());
     } catch (e) {
-      return left(ServerFailure(e.toString()));
+      return left(Failure.server(e.toString()));
     }
   }
 }

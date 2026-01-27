@@ -73,7 +73,7 @@ void main() {
       'loadRequested_failure_emitsLoadingAndFailure',
       build: () {
         // arrange
-        const failure = ServerFailure('Server error');
+        const failure = Failure.server('Server error');
         when(
           () => mockGetFcpsStats(tTicker),
         ).thenAnswer((_) async => const Left(failure));
@@ -87,7 +87,7 @@ void main() {
         // assert
         return [
           const CompanyFcpsState.loading(),
-          const CompanyFcpsState.failure(ServerFailure('Server error')),
+          const CompanyFcpsState.failure(Failure.server('Server error')),
         ];
       },
     );

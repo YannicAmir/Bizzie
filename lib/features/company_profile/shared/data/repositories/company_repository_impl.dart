@@ -22,13 +22,13 @@ class CompanyRepositoryImpl implements ICompanyRepository {
 
       final remote = await _remoteDataSource.getProfile(ticker);
       if (remote.isEmpty) {
-        return left(const ServerFailure('Profile not found'));
+        return left(const Failure.server('Profile not found'));
       }
       final profile = remote.first;
       await _localDataSource.cacheProfile(ticker, profile);
       return right(profile.toDomain());
     } catch (e) {
-      return left(ServerFailure(e.toString()));
+      return left(Failure.server(e.toString()));
     }
   }
 
@@ -40,13 +40,13 @@ class CompanyRepositoryImpl implements ICompanyRepository {
 
       final remote = await _remoteDataSource.getQuote(ticker);
       if (remote.isEmpty) {
-        return left(const ServerFailure('Quote not found'));
+        return left(const Failure.server('Quote not found'));
       }
       final quote = remote.first;
       await _localDataSource.cacheQuote(ticker, quote);
       return right(quote.toDomain());
     } catch (e) {
-      return left(ServerFailure(e.toString()));
+      return left(Failure.server(e.toString()));
     }
   }
 }

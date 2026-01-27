@@ -9,6 +9,7 @@ import 'package:bizzie/features/reports/presentation/models/filing_view_model.da
 import 'package:bizzie/features/reports/domain/usecases/get_dashboard_reports_usecase.dart';
 import 'package:bizzie/features/reports/domain/usecases/get_user_activity_use_case.dart';
 import 'package:bizzie/features/reports/domain/usecases/mark_reports_viewed_use_case.dart';
+import 'package:bizzie/features/reports/domain/models/mark_reports_viewed_params.dart';
 import 'package:bizzie/features/watchlist/domain/interfaces/watchlist_repository.dart';
 import 'package:bloc/bloc.dart';
 import 'package:injectable/injectable.dart';

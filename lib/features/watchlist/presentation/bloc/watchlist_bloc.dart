@@ -8,6 +8,9 @@ import 'package:bizzie/features/watchlist/domain/usecases/sync_watchlist_usecase
 import 'package:bloc/bloc.dart';
 import 'package:injectable/injectable.dart';
 
+import 'package:bizzie/features/watchlist/domain/models/add_to_watchlist_params.dart';
+import 'package:bizzie/features/watchlist/domain/models/remove_from_watchlist_params.dart';
+import 'package:bizzie/features/watchlist/domain/models/sync_watchlist_params.dart';
 import 'watchlist_event.dart';
 import 'watchlist_state.dart';
 

@@ -73,7 +73,7 @@ void main() {
       'loadRequested_failure_emitsLoadingAndFailure',
       build: () {
         // arrange
-        const failure = ServerFailure('Server error');
+        const failure = Failure.server('Server error');
         when(
           () => mockGetEpsStatsUseCase(tTicker),
         ).thenAnswer((_) async => const Left(failure));
@@ -87,7 +87,7 @@ void main() {
         // assert
         return [
           const CompanyEpsState.loading(),
-          const CompanyEpsState.failure(ServerFailure('Server error')),
+          const CompanyEpsState.failure(Failure.server('Server error')),
         ];
       },
     );

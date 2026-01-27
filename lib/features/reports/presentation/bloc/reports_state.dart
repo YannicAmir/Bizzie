@@ -13,5 +13,5 @@ class ReportsState with _$ReportsState {
     DateTime? lastViewedReports,
     @Default([]) List<FilingViewModel> todaysFilings,
   }) = Loaded;
-  const factory ReportsState.failure(String message) = Failure;
+  const factory ReportsState.failure(String message) = ReportsFailure;
 }

@@ -3,6 +3,9 @@ import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/features/auth/domain/interfaces/i_auth_repository.dart';
 import 'package:bizzie/features/auth/domain/models/user_model.dart';
 import 'package:bizzie/features/onboarding/domain/models/company.dart';
+import 'package:bizzie/features/watchlist/domain/models/add_to_watchlist_params.dart';
+import 'package:bizzie/features/watchlist/domain/models/remove_from_watchlist_params.dart';
+import 'package:bizzie/features/watchlist/domain/models/sync_watchlist_params.dart';
 import 'package:bizzie/features/watchlist/domain/usecases/add_to_watchlist_usecase.dart';
 import 'package:bizzie/features/watchlist/domain/usecases/get_watchlist_usecase.dart';
 import 'package:bizzie/features/watchlist/domain/usecases/remove_from_watchlist_usecase.dart';
@@ -106,7 +109,7 @@ void main() {
         when(() => mockAuthRepository.currentUser).thenReturn(tUser);
         when(
           () => mockGetWatchlistUseCase(tUid),
-        ).thenAnswer((_) async => Stream.value(Left(ServerFailure('Error'))));
+        ).thenAnswer((_) async => Stream.value(Left(Failure.server('Error'))));
         return bloc;
       },
       act: (bloc) => bloc.add(const WatchlistEvent.loadRequested()),
@@ -140,7 +143,7 @@ void main() {
         when(() => mockAuthRepository.currentUser).thenReturn(tUser);
         when(
           () => mockAddToWatchlistUseCase(any()),
-        ).thenAnswer((_) async => Left(ServerFailure('Add Error')));
+        ).thenAnswer((_) async => Left(Failure.server('Add Error')));
         return bloc;
       },
       act: (bloc) => bloc.add(
@@ -171,7 +174,7 @@ void main() {
         when(() => mockAuthRepository.currentUser).thenReturn(tUser);
         when(
           () => mockRemoveFromWatchlistUseCase(any()),
-        ).thenAnswer((_) async => Left(ServerFailure('Remove Error')));
+        ).thenAnswer((_) async => Left(Failure.server('Remove Error')));
         return bloc;
       },
       act: (bloc) => bloc.add(const WatchlistEvent.removeRequested("AAPL")),

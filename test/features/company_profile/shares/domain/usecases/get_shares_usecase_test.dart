@@ -48,7 +48,7 @@ void main() {
     'should return a Failure when the repository call is unsuccessful',
     () async {
       // arrange
-      const tFailure = ServerFailure('Server Failure');
+      const tFailure = Failure.server('Server Failure');
       when(
         () => mockRepository.getShareStats(any()),
       ).thenAnswer((_) async => const Left(tFailure));

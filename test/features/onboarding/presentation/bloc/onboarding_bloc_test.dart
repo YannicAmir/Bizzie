@@ -4,6 +4,7 @@ import 'package:bizzie/features/auth/domain/models/user_model.dart';
 import 'package:bizzie/features/auth/domain/interfaces/i_auth_repository.dart';
 import 'package:bizzie/features/onboarding/select_brands/domain/models/brand.dart';
 import 'package:bizzie/features/onboarding/domain/models/onboarding_data.dart';
+import 'package:bizzie/features/onboarding/domain/models/complete_onboarding_params.dart';
 import 'package:bizzie/features/onboarding/domain/usecases/complete_onboarding_usecase.dart';
 import 'package:dartz/dartz.dart';
 
@@ -162,7 +163,7 @@ void main() {
       build: () {
         when(
           () => mockGetSp500HistoryUseCase(any()),
-        ).thenAnswer((_) async => const Left(ServerFailure('API Failure')));
+        ).thenAnswer((_) async => const Left(Failure.server('API Failure')));
 
         return bloc;
       },
@@ -218,7 +219,7 @@ void main() {
         );
         when(
           () => mockCompleteOnboardingUseCase(any()),
-        ).thenAnswer((_) async => Left(ServerFailure('UseCase Error')));
+        ).thenAnswer((_) async => Left(Failure.server('UseCase Error')));
         return bloc;
       },
       // act

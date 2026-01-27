@@ -17,7 +17,7 @@ void main() {
     usecase = DeleteAccount(mockAuthRepository);
   });
 
-  const tFailure = ServerFailure('Test Failure');
+  const tFailure = Failure.server('Test Failure');
 
   test('deleteAccount_success_returnsRightVoid', () async {
     // arrange

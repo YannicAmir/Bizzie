@@ -1,5 +1,6 @@
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/features/watchlist/domain/interfaces/watchlist_repository.dart';
+import 'package:bizzie/features/watchlist/domain/models/sync_watchlist_params.dart';
 import 'package:bizzie/features/watchlist/domain/usecases/sync_watchlist_usecase.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -36,7 +37,7 @@ void main() {
 
   test('call_repositoryFailure_returnsLeftFailure', () async {
     // arrange
-    final tFailure = ServerFailure('Test Error');
+    final tFailure = Failure.server('Test Error');
     when(
       () => mockRepository.syncSubscriptions(tTickers),
     ).thenAnswer((_) async => Left(tFailure));

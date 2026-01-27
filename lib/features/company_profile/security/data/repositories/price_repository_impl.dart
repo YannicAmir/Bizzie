@@ -30,7 +30,7 @@ class PriceRepositoryImpl implements IPriceRepository {
         ),
       );
     } catch (e) {
-      return left(ServerFailure(e.toString()));
+      return left(Failure.server(e.toString()));
     }
   }
 
@@ -49,7 +49,7 @@ class PriceRepositoryImpl implements IPriceRepository {
 
       return right(dtos.map((e) => e.toDomain()).toList());
     } catch (e) {
-      return left(ServerFailure(e.toString()));
+      return left(Failure.server(e.toString()));
     }
   }
 }

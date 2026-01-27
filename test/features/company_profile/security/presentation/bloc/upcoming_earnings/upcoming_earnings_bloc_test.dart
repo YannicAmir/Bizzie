@@ -88,7 +88,7 @@ void main() {
         // arrange
         when(
           () => mockGetUpcomingEarnings(any()),
-        ).thenAnswer((_) async => const Left(ServerFailure('error')));
+        ).thenAnswer((_) async => const Left(Failure.server('error')));
         return bloc;
       },
       act: (bloc) {
@@ -99,7 +99,7 @@ void main() {
         // assert
         return [
           const UpcomingEarningsState.loading(),
-          const UpcomingEarningsState.failure(ServerFailure('error')),
+          const UpcomingEarningsState.failure(Failure.server('error')),
         ];
       },
     );
@@ -241,7 +241,7 @@ void main() {
         ).thenAnswer((_) async => Right(tDate));
         return bloc;
       },
-      seed: () => const UpcomingEarningsState.failure(ServerFailure('error')),
+      seed: () => const UpcomingEarningsState.failure(Failure.server('error')),
       act: (bloc) {
         // act
         bloc.add(const UpcomingEarningsEvent.stalenessCheckRequested(tTicker));

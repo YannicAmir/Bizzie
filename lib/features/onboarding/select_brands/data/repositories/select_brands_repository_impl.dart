@@ -38,11 +38,11 @@ class SelectBrandsRepositoryImpl implements ISelectBrandsRepository {
       return Right(_mapDtoToBrands(dailyBrandsDto, userSector));
     } on ServerException catch (e) {
       _logger.severe('Server error during getDailyBrands: ${e.message}');
-      return Left(ServerFailure(e.message));
+      return Left(Failure.server(e.message));
     } catch (e, stack) {
       _logger.severe('Unexpected error during getDailyBrands', e, stack);
       return Left(
-        ServerFailure('An unexpected error occurred: ${e.toString()}'),
+        Failure.server('An unexpected error occurred: ${e.toString()}'),
       );
     }
   }

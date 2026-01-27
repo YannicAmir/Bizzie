@@ -49,7 +49,7 @@ $Res call({
 });
 
 
-
+$FailureCopyWith<$Res>? get incomeError;$FailureCopyWith<$Res>? get balanceError;$FailureCopyWith<$Res>? get cashFlowError;
 
 }
 /// @nodoc
@@ -90,7 +90,43 @@ as String?,selectedQuarterlyCashFlowDate: freezed == selectedQuarterlyCashFlowDa
 as String?,
   ));
 }
+/// Create a copy of FinancialStatementsState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$FailureCopyWith<$Res>? get incomeError {
+    if (_self.incomeError == null) {
+    return null;
+  }
 
+  return $FailureCopyWith<$Res>(_self.incomeError!, (value) {
+    return _then(_self.copyWith(incomeError: value));
+  });
+}/// Create a copy of FinancialStatementsState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$FailureCopyWith<$Res>? get balanceError {
+    if (_self.balanceError == null) {
+    return null;
+  }
+
+  return $FailureCopyWith<$Res>(_self.balanceError!, (value) {
+    return _then(_self.copyWith(balanceError: value));
+  });
+}/// Create a copy of FinancialStatementsState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$FailureCopyWith<$Res>? get cashFlowError {
+    if (_self.cashFlowError == null) {
+    return null;
+  }
+
+  return $FailureCopyWith<$Res>(_self.cashFlowError!, (value) {
+    return _then(_self.copyWith(cashFlowError: value));
+  });
+}
 }
 
 
@@ -325,7 +361,7 @@ $Res call({
 });
 
 
-
+@override $FailureCopyWith<$Res>? get incomeError;@override $FailureCopyWith<$Res>? get balanceError;@override $FailureCopyWith<$Res>? get cashFlowError;
 
 }
 /// @nodoc
@@ -367,7 +403,43 @@ as String?,
   ));
 }
 
+/// Create a copy of FinancialStatementsState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$FailureCopyWith<$Res>? get incomeError {
+    if (_self.incomeError == null) {
+    return null;
+  }
 
+  return $FailureCopyWith<$Res>(_self.incomeError!, (value) {
+    return _then(_self.copyWith(incomeError: value));
+  });
+}/// Create a copy of FinancialStatementsState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$FailureCopyWith<$Res>? get balanceError {
+    if (_self.balanceError == null) {
+    return null;
+  }
+
+  return $FailureCopyWith<$Res>(_self.balanceError!, (value) {
+    return _then(_self.copyWith(balanceError: value));
+  });
+}/// Create a copy of FinancialStatementsState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$FailureCopyWith<$Res>? get cashFlowError {
+    if (_self.cashFlowError == null) {
+    return null;
+  }
+
+  return $FailureCopyWith<$Res>(_self.cashFlowError!, (value) {
+    return _then(_self.copyWith(cashFlowError: value));
+  });
+}
 }
 
 // dart format on

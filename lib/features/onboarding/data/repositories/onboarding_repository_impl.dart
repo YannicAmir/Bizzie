@@ -29,7 +29,7 @@ class OnboardingRepositoryImpl implements IOnboardingRepository {
       return Right(history);
     } catch (e, stack) {
       _logger.severe('Failed to get SP500 history', e, stack);
-      return Left(ServerFailure(e.toString()));
+      return Left(Failure.server(e.toString()));
     }
   }
 
@@ -44,7 +44,7 @@ class OnboardingRepositoryImpl implements IOnboardingRepository {
       return Right(sectors);
     } catch (e, stack) {
       _logger.severe('Failed to get sectors', e, stack);
-      return Left(ServerFailure(e.toString()));
+      return Left(Failure.server(e.toString()));
     }
   }
 
@@ -69,7 +69,7 @@ class OnboardingRepositoryImpl implements IOnboardingRepository {
       return const Right(null);
     } catch (e, stack) {
       _logger.severe('Failed to save user profile', e, stack);
-      return Left(ServerFailure(e.toString()));
+      return Left(Failure.server(e.toString()));
     }
   }
 }

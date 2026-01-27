@@ -152,7 +152,7 @@ void main() {
       build: () {
         when(
           () => mockGetIncomeStatements(any()),
-        ).thenAnswer((_) async => const Left(ServerFailure('error')));
+        ).thenAnswer((_) async => const Left(Failure.server('error')));
         return bloc;
       },
       act: (bloc) => bloc.add(
@@ -169,7 +169,7 @@ void main() {
             .having(
               (s) => s.incomeError,
               'incomeError',
-              const ServerFailure('error'),
+              const Failure.server('error'),
             ),
       ],
     );

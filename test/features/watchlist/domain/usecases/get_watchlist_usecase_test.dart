@@ -37,7 +37,7 @@ void main() {
 
   test('call_repositoryStreamEmitsFailure_delegatesFailureStream', () async {
     // arrange
-    final tFailure = ServerFailure('Test Error');
+    final tFailure = Failure.server('Test Error');
     when(
       () => mockRepository.getWatchlistStream(tUid),
     ).thenAnswer((_) => Stream.value(Left(tFailure)));

@@ -49,7 +49,7 @@ class NetIncomeRepositoryImpl implements INetIncomeRepository {
         ),
       );
     } catch (e) {
-      return left(ServerFailure(e.toString()));
+      return left(Failure.server(e.toString()));
     }
   }
 

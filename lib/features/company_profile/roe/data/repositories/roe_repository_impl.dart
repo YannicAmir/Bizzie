@@ -34,7 +34,7 @@ class RoeRepositoryImpl implements IRoeRepository {
       await _localDataSource.cacheKeyMetrics(ticker, remote, isTtm: false);
       return right(remote.map((d) => d.toRoe()).toList());
     } catch (e) {
-      return left(ServerFailure(e.toString()));
+      return left(Failure.server(e.toString()));
     }
   }
 }

@@ -373,7 +373,7 @@ $Res call({
 });
 
 
-
+$FailureCopyWith<$Res> get failure;
 
 }
 /// @nodoc
@@ -393,7 +393,16 @@ as Failure,
   ));
 }
 
-
+/// Create a copy of CompanyDividendsState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$FailureCopyWith<$Res> get failure {
+  
+  return $FailureCopyWith<$Res>(_self.failure, (value) {
+    return _then(_self.copyWith(failure: value));
+  });
+}
 }
 
 // dart format on

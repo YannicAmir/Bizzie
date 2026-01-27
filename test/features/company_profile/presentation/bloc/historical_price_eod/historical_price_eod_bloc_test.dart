@@ -71,7 +71,7 @@ void main() {
       'loadRequested_failure_emitsLoadingAndFailure',
       build: () {
         // arrange
-        const failure = ServerFailure('Server error');
+        const failure = Failure.server('Server error');
         when(
           () => mockGetPrices(tTicker),
         ).thenAnswer((_) async => const Left(failure));
@@ -85,7 +85,7 @@ void main() {
         // assert
         return [
           const HistoricalPriceEodState.loading(),
-          const HistoricalPriceEodState.failure(ServerFailure('Server error')),
+          const HistoricalPriceEodState.failure(Failure.server('Server error')),
         ];
       },
     );
@@ -218,7 +218,7 @@ void main() {
         ).thenAnswer((_) async => const Right(tPrices));
         return bloc;
       },
-      seed: () => const HistoricalPriceEodState.failure(ServerFailure('error')),
+      seed: () => const HistoricalPriceEodState.failure(Failure.server('error')),
       act: (bloc) {
         // act
         bloc.add(

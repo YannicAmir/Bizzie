@@ -88,7 +88,7 @@ void main() {
       'loadRequested_failure_emitsLoadingAndFailure',
       build: () {
         // arrange
-        const failure = ServerFailure('Server error');
+        const failure = Failure.server('Server error');
         when(
           () => mockGetRoe(tTicker),
         ).thenAnswer((_) async => const Left(failure));
@@ -102,7 +102,7 @@ void main() {
         // assert
         return [
           const CompanyRoeState.loading(),
-          const CompanyRoeState.failure(ServerFailure('Server error')),
+          const CompanyRoeState.failure(Failure.server('Server error')),
         ];
       },
     );

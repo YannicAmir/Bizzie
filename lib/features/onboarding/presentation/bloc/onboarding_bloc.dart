@@ -1,6 +1,7 @@
 import 'package:bizzie/core/usecase/usecase.dart';
 import 'package:bizzie/features/auth/domain/interfaces/i_auth_repository.dart';
 import 'package:bizzie/features/onboarding/domain/models/company.dart';
+import 'package:bizzie/features/onboarding/domain/models/complete_onboarding_params.dart';
 import 'package:bizzie/features/onboarding/domain/models/onboarding_data.dart';
 import 'package:bizzie/features/onboarding/domain/models/sector.dart';
 import 'package:bizzie/features/onboarding/select_brands/domain/models/brand.dart';

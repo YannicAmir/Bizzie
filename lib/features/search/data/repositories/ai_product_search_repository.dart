@@ -19,7 +19,7 @@ class AiProductSearchRepository implements IAiProductSearchRepository {
       final dto = await _service.findStockForProduct(query);
       return Right(dto?.toDomain());
     } catch (e) {
-      return Left(ServerFailure(e.toString()));
+      return Left(Failure.server(e.toString()));
     }
   }
 }

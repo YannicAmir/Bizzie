@@ -94,7 +94,7 @@ class BusinessRepositoryImpl implements IBusinessRepository {
         ),
       );
     } catch (e) {
-      return left(ServerFailure(e.toString()));
+      return left(Failure.server(e.toString()));
     }
   }
 

@@ -37,7 +37,7 @@ void main() {
 
   test('call_repositoryFailure_returnsFailure', () {
     // arrange
-    const tFailure = ServerFailure('Test Error');
+    const tFailure = Failure.server('Test Error');
     when(
       () => mockRepository.getReportsFeed(any()),
     ).thenAnswer((_) => Stream.value(const Left(tFailure)));

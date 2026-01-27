@@ -72,7 +72,7 @@ void main() {
       'loadRequested_failure_emitsLoadingAndFailure',
       build: () {
         // arrange
-        const failure = ServerFailure('Server error');
+        const failure = Failure.server('Server error');
         when(
           () => mockGetCompanyNews(tTicker),
         ).thenAnswer((_) async => const Left(failure));
@@ -86,7 +86,7 @@ void main() {
         // assert
         return [
           const CompanyNewsState.loading(),
-          const CompanyNewsState.failure(ServerFailure('Server error')),
+          const CompanyNewsState.failure(Failure.server('Server error')),
         ];
       },
     );

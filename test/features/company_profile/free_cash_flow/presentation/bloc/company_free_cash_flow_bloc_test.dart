@@ -74,7 +74,7 @@ void main() {
       'loadRequested_failure_emitsLoadingAndFailure',
       build: () {
         // arrange
-        const failure = ServerFailure('Server error');
+        const failure = Failure.server('Server error');
         when(
           () => mockGetFreeCashFlowStats(tTicker),
         ).thenAnswer((_) async => const Left(failure));
@@ -88,7 +88,7 @@ void main() {
         // assert
         return [
           const CompanyFreeCashFlowState.loading(),
-          const CompanyFreeCashFlowState.failure(ServerFailure('Server error')),
+          const CompanyFreeCashFlowState.failure(Failure.server('Server error')),
         ];
       },
     );
