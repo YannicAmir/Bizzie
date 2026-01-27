@@ -1,4 +1,4 @@
-import 'package:bizzie/features/company_profile/presentation/enums/financial_statement_type.dart';
+import 'package:bizzie/features/company_profile/financial_statements/presentation/enums/financial_statement_type.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'financial_statements_event.freezed.dart';

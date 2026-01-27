@@ -5,7 +5,7 @@ import 'package:bizzie/features/company_profile/eps/presentation/views/eps_tab.d
 import 'package:bizzie/features/company_profile/fcps/presentation/views/fcps_tab.dart';
 import 'package:bizzie/features/company_profile/financial_statements/presentation/views/financial_statements_tab.dart';
 import 'package:bizzie/features/company_profile/free_cash_flow/presentation/views/free_cash_flow_tab.dart';
-import 'package:bizzie/features/company_profile/presentation/views/tabs/more_tab.dart';
+import 'package:bizzie/features/company_profile/more/presentation/views/more_tab.dart';
 import 'package:bizzie/features/company_profile/net_income/presentation/views/net_income_tab.dart';
 import 'package:bizzie/features/company_profile/news/presentation/views/news_tab.dart';
 import 'package:bizzie/features/company_profile/revenue/presentation/views/revenue_tab.dart';
@@ -13,7 +13,7 @@ import 'package:bizzie/features/company_profile/security/presentation/views/secu
 import 'package:bizzie/features/company_profile/shares/presentation/views/shares_tab.dart';
 import 'package:flutter/material.dart';
 
-import 'package:bizzie/features/company_profile/presentation/enums/company_profile_tab.dart';
+import 'package:bizzie/features/company_profile/shared/presentation/enums/company_profile_tab.dart';
 
 class CompanyProfileBody extends StatelessWidget {
   final String ticker;

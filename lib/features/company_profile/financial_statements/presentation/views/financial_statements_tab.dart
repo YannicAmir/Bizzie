@@ -1,4 +1,4 @@
-import 'package:bizzie/features/company_profile/presentation/enums/financial_statement_type.dart';
+import 'package:bizzie/features/company_profile/financial_statements/presentation/enums/financial_statement_type.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:bizzie/shared/widgets/inputs/bizzie_switch.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +12,7 @@ import 'package:bizzie/features/company_profile/financial_statements/presentatio
 import 'package:bizzie/shared/widgets/loading/bizzie_loader.dart';
 import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
 import 'package:bizzie/features/user/presentation/bloc/user_state_extensions.dart';
-import 'package:bizzie/features/company_profile/presentation/widgets/shared/company_profile_error_state.dart';
+import 'package:bizzie/features/company_profile/shared/presentation/widgets/company_profile_error_state.dart';
 
 class FinancialStatementsTab extends StatefulWidget {
   final String ticker;

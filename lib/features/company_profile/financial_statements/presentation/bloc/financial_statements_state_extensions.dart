@@ -3,9 +3,9 @@ import 'package:bizzie/features/company_profile/financial_statements/domain/mode
 import 'package:bizzie/features/company_profile/financial_statements/domain/models/cash_flow_statement.dart';
 import 'package:bizzie/features/company_profile/financial_statements/domain/models/income_statement.dart';
 import 'package:bizzie/features/company_profile/financial_statements/presentation/bloc/financial_statements_state.dart';
-import 'package:bizzie/features/company_profile/presentation/enums/growth_color_behavior.dart';
-import 'package:bizzie/features/company_profile/presentation/models/financial_history_row_data.dart';
-import 'package:bizzie/features/company_profile/presentation/utils/financial_statement_extensions.dart';
+import 'package:bizzie/features/company_profile/shared/presentation/enums/growth_color_behavior.dart';
+import 'package:bizzie/features/company_profile/shared/presentation/models/financial_history_row_data.dart';
+import 'package:bizzie/features/company_profile/financial_statements/presentation/utils/financial_statement_extensions.dart';
 import 'package:bizzie/features/company_profile/financial_statements/presentation/widgets/financial_statements_table.dart';
 import 'package:bizzie/shared/utils/currency_formatter.dart';
 import 'package:flutter/material.dart';

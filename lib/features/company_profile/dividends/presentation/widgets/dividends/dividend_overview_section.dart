@@ -1,6 +1,6 @@
 import 'package:bizzie/app/themes/app_colors.dart';
 import 'package:bizzie/app/themes/app_text_styles.dart';
-import 'package:bizzie/features/company_profile/presentation/widgets/shared/metric_summary_card.dart';
+import 'package:bizzie/features/company_profile/shared/presentation/widgets/metric_summary_card.dart';
 import 'package:bizzie/features/company_profile/dividends/domain/extensions/dividend_event_extensions.dart';
 import 'package:bizzie/features/company_profile/dividends/domain/models/dividend_event.dart';
 import 'package:bizzie/features/company_profile/dividends/presentation/utils/dividend_formatters.dart';

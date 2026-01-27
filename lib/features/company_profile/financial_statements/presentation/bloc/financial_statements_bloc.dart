@@ -1,5 +1,5 @@
 import 'package:bizzie/core/logging/bizzie_logger.dart';
-import 'package:bizzie/features/company_profile/presentation/enums/financial_statement_type.dart';
+import 'package:bizzie/features/company_profile/financial_statements/presentation/enums/financial_statement_type.dart';
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/features/company_profile/financial_statements/presentation/bloc/financial_statements_event.dart';
 import 'package:bizzie/features/company_profile/financial_statements/presentation/bloc/financial_statements_state.dart';

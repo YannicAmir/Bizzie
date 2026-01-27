@@ -1,5 +1,5 @@
 import 'package:bizzie/features/company_profile/shared/domain/enums/chart_time_frame.dart';
-import 'package:bizzie/features/company_profile/presentation/utils/chart_time_frame_extensions.dart';
+import 'package:bizzie/features/company_profile/shared/presentation/utils/chart_time_frame_extensions.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

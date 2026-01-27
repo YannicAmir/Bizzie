@@ -24,7 +24,7 @@ import 'package:bizzie/features/onboarding/presentation/views/adding_to_watchlis
 import 'package:bizzie/features/onboarding/presentation/views/investing_experience_page.dart';
 import 'package:bizzie/features/onboarding/presentation/views/sector_selection_page.dart';
 import 'package:bizzie/features/onboarding/presentation/views/welcome_name_page.dart';
-import 'package:bizzie/features/company_profile/presentation/views/company_profile_page.dart';
+import 'package:bizzie/features/company_profile/cp/presentation/views/company_profile_page.dart';
 import 'package:bizzie/features/reports/presentation/views/reports_page.dart';
 import 'package:bizzie/features/profile/presentation/views/profile_page.dart';
 import 'package:bizzie/app/navigation/bizzie_bottom_nav_wrapper.dart';

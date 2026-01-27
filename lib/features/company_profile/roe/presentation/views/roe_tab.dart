@@ -4,10 +4,10 @@ import 'package:bizzie/features/company_profile/shared/domain/models/financial_d
 import '../bloc/company_roe_bloc.dart';
 import '../bloc/company_roe_event.dart';
 import '../bloc/company_roe_state.dart';
-import 'package:bizzie/features/company_profile/presentation/widgets/shared/company_profile_error_state.dart';
-import 'package:bizzie/features/company_profile/presentation/widgets/shared/company_profile_loading_state.dart';
-import 'package:bizzie/features/company_profile/presentation/widgets/shared/financial_data_table.dart';
-import 'package:bizzie/features/company_profile/presentation/widgets/shared/metric_summary_card.dart';
+import 'package:bizzie/features/company_profile/shared/presentation/widgets/company_profile_error_state.dart';
+import 'package:bizzie/features/company_profile/shared/presentation/widgets/company_profile_loading_state.dart';
+import 'package:bizzie/features/company_profile/shared/presentation/widgets/financial_data_table.dart';
+import 'package:bizzie/features/company_profile/shared/presentation/widgets/metric_summary_card.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:bizzie/shared/widgets/app_badge.dart';
 import 'package:bizzie/shared/widgets/charts/bizzie_bar_chart.dart';

@@ -5,8 +5,8 @@ import 'package:bizzie/features/company_profile/news/presentation/bloc/company_n
 import 'package:bizzie/features/company_profile/news/presentation/bloc/company_news/company_news_state.dart';
 import 'package:bizzie/features/company_profile/news/presentation/widgets/news_carousel.dart';
 import 'package:bizzie/features/company_profile/news/presentation/widgets/news_list_tile.dart';
-import 'package:bizzie/features/company_profile/presentation/widgets/shared/company_profile_error_state.dart';
-import 'package:bizzie/features/company_profile/presentation/widgets/shared/company_profile_loading_state.dart';
+import 'package:bizzie/features/company_profile/shared/presentation/widgets/company_profile_error_state.dart';
+import 'package:bizzie/features/company_profile/shared/presentation/widgets/company_profile_loading_state.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:bizzie/shared/widgets/loading/mascot_refresh_indicator.dart';
 import 'package:flutter/material.dart';

@@ -2,7 +2,7 @@ import 'package:bizzie/app/themes/app_assets.dart';
 import 'package:bizzie/app/themes/app_colors.dart';
 import 'package:bizzie/app/themes/app_text_styles.dart';
 import 'package:bizzie/features/company_profile/business/domain/models/business_profile.dart';
-import 'package:bizzie/features/company_profile/presentation/utils/business_profile_extensions.dart';
+import 'package:bizzie/features/company_profile/business/presentation/utils/business_profile_extensions.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';

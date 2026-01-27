@@ -6,7 +6,7 @@ import 'package:bizzie/shared/widgets/modals/app_history_modal.dart';
 import 'package:bizzie/shared/utils/url_launcher_utils.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:bizzie/shared/utils/bizzie_date_formatter.dart';
-import 'package:bizzie/features/company_profile/presentation/utils/business_profile_extensions.dart';
+import 'package:bizzie/features/company_profile/business/presentation/utils/business_profile_extensions.dart';
 import 'package:flutter/material.dart';
 
 class SecFilingsCard extends StatefulWidget {

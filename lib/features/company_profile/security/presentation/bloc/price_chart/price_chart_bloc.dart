@@ -4,7 +4,7 @@ import 'package:bizzie/features/company_profile/shared/domain/enums/chart_time_f
 import 'package:bizzie/features/company_profile/security/domain/models/historical_price_eod.dart';
 import 'package:bizzie/features/company_profile/security/presentation/bloc/price_chart/price_chart_event.dart';
 import 'package:bizzie/features/company_profile/security/presentation/bloc/price_chart/price_chart_state.dart';
-import 'package:bizzie/features/company_profile/presentation/utils/historical_price_chart_extensions.dart';
+import 'package:bizzie/features/company_profile/security/presentation/utils/historical_price_chart_extensions.dart';
 import 'package:injectable/injectable.dart';
 
 final _logger = BizzieLogger('PriceChartBloc');

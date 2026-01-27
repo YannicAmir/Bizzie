@@ -3,7 +3,7 @@ import 'package:bizzie/features/company_profile/financial_statements/presentatio
 import 'package:bizzie/features/company_profile/financial_statements/presentation/bloc/financial_statements_event.dart';
 import 'package:bizzie/features/company_profile/financial_statements/presentation/bloc/financial_statements_state.dart';
 import 'package:bizzie/features/company_profile/financial_statements/presentation/bloc/financial_statements_state_extensions.dart';
-import 'package:bizzie/features/company_profile/presentation/models/financial_history_row_data.dart';
+import 'package:bizzie/features/company_profile/shared/presentation/models/financial_history_row_data.dart';
 import 'package:bizzie/features/company_profile/financial_statements/presentation/widgets/financial_statement_chart.dart';
 import 'package:bizzie/features/company_profile/financial_statements/presentation/widgets/financial_statement_selector.dart';
 import 'package:bizzie/features/company_profile/financial_statements/presentation/widgets/financial_statements_table.dart';

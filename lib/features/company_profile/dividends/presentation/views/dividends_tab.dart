@@ -9,8 +9,8 @@ import 'package:bizzie/features/company_profile/security/presentation/bloc/compa
 import 'package:bizzie/app/themes/app_assets.dart';
 import 'package:bizzie/features/company_profile/dividends/presentation/widgets/dividends/dividend_overview_section.dart';
 import 'package:bizzie/features/company_profile/dividends/presentation/widgets/dividends/dividend_payment_history_section.dart';
-import 'package:bizzie/features/company_profile/presentation/widgets/shared/company_profile_error_state.dart';
-import 'package:bizzie/features/company_profile/presentation/widgets/shared/company_profile_loading_state.dart';
+import 'package:bizzie/features/company_profile/shared/presentation/widgets/company_profile_error_state.dart';
+import 'package:bizzie/features/company_profile/shared/presentation/widgets/company_profile_loading_state.dart';
 import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:bizzie/shared/widgets/charts/bizzie_expandable_chart.dart';

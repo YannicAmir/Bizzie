@@ -1,5 +1,5 @@
 import 'package:bizzie/features/company_profile/business/domain/models/business_profile.dart';
-import 'package:bizzie/features/company_profile/presentation/utils/business_profile_extensions.dart';
+import 'package:bizzie/features/company_profile/business/presentation/utils/business_profile_extensions.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

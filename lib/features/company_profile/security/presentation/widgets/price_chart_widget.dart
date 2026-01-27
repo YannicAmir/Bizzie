@@ -6,8 +6,8 @@ import 'package:bizzie/features/company_profile/security/domain/extensions/histo
 import 'package:bizzie/features/company_profile/security/presentation/bloc/price_chart/price_chart_bloc.dart';
 import 'package:bizzie/features/company_profile/security/presentation/bloc/price_chart/price_chart_event.dart';
 import 'package:bizzie/features/company_profile/security/presentation/bloc/price_chart/price_chart_state.dart';
-import 'package:bizzie/features/company_profile/presentation/utils/chart_time_frame_extensions.dart';
-import 'package:bizzie/features/company_profile/presentation/utils/historical_price_chart_extensions.dart';
+import 'package:bizzie/features/company_profile/shared/presentation/utils/chart_time_frame_extensions.dart';
+import 'package:bizzie/features/company_profile/security/presentation/utils/historical_price_chart_extensions.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:bizzie/shared/widgets/charts/bizzie_line_chart.dart';
 import 'package:flutter/material.dart';

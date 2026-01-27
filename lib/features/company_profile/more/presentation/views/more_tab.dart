@@ -1,5 +1,5 @@
 import 'package:bizzie/app/themes/app_assets.dart';
-import 'package:bizzie/features/company_profile/presentation/models/more_feature.dart';
+import 'package:bizzie/features/company_profile/more/presentation/models/more_feature.dart';
 import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:bizzie/shared/widgets/buttons/app_dropdown_button.dart';

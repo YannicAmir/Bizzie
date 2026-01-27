@@ -5,8 +5,8 @@ import 'package:bizzie/features/company_profile/business/presentation/bloc/compa
 import 'package:bizzie/features/company_profile/business/presentation/widgets/company_info_card.dart';
 import 'package:bizzie/features/company_profile/business/presentation/widgets/company_description_card.dart';
 import 'package:bizzie/features/company_profile/business/presentation/widgets/sec_filings_card.dart';
-import 'package:bizzie/features/company_profile/presentation/widgets/shared/company_profile_error_state.dart';
-import 'package:bizzie/features/company_profile/presentation/widgets/shared/company_profile_loading_state.dart';
+import 'package:bizzie/features/company_profile/shared/presentation/widgets/company_profile_error_state.dart';
+import 'package:bizzie/features/company_profile/shared/presentation/widgets/company_profile_loading_state.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';

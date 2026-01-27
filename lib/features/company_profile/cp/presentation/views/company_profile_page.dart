@@ -31,12 +31,12 @@ import 'package:bizzie/features/company_profile/security/presentation/bloc/histo
 import 'package:bizzie/features/company_profile/security/presentation/bloc/historical_price_eod/historical_price_eod_event.dart';
 import 'package:bizzie/features/company_profile/security/presentation/bloc/upcoming_earnings/upcoming_earnings_bloc.dart';
 import 'package:bizzie/features/company_profile/security/presentation/bloc/upcoming_earnings/upcoming_earnings_event.dart';
-import 'package:bizzie/features/company_profile/presentation/widgets/shared/coming_soon_placeholder.dart';
+import 'package:bizzie/features/company_profile/shared/presentation/widgets/coming_soon_placeholder.dart';
 import 'package:bizzie/features/company_profile/security/presentation/bloc/company_security_state.dart';
-import 'package:bizzie/features/company_profile/presentation/enums/company_profile_tab.dart';
-import 'package:bizzie/features/company_profile/presentation/enums/financial_statement_type.dart';
-import 'package:bizzie/features/company_profile/presentation/widgets/company_profile_body.dart';
-import 'package:bizzie/features/company_profile/presentation/widgets/company_watchlist_button.dart';
+import 'package:bizzie/features/company_profile/shared/presentation/enums/company_profile_tab.dart';
+import 'package:bizzie/features/company_profile/financial_statements/presentation/enums/financial_statement_type.dart';
+import 'package:bizzie/features/company_profile/cp/presentation/widgets/company_profile_body.dart';
+import 'package:bizzie/features/company_profile/cp/presentation/widgets/company_watchlist_button.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

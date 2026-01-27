@@ -3,7 +3,7 @@ import 'package:bizzie/features/company_profile/dividends/domain/extensions/divi
 import 'package:bizzie/features/company_profile/dividends/domain/models/dividend_event.dart';
 import 'package:bizzie/features/company_profile/dividends/presentation/utils/dividend_payment_history_utils.dart';
 import 'package:bizzie/features/company_profile/dividends/presentation/utils/dividend_extensions.dart';
-import 'package:bizzie/features/company_profile/presentation/widgets/shared/financial_table_footer.dart';
+import 'package:bizzie/features/company_profile/shared/presentation/widgets/financial_table_footer.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:bizzie/shared/widgets/modals/app_history_modal.dart';
 import 'package:bizzie/shared/widgets/tables/bizzie_data_table.dart';

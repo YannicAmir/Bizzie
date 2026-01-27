@@ -1,8 +1,8 @@
 import 'package:bizzie/app/themes/app_text_styles.dart';
 import 'package:bizzie/features/company_profile/shared/domain/enums/ratio_category.dart';
 import 'package:bizzie/features/company_profile/security/domain/models/security_details.dart';
-import 'package:bizzie/features/company_profile/presentation/utils/market_cap_category_extensions.dart';
-import 'package:bizzie/features/company_profile/presentation/utils/ratio_category_extensions.dart';
+import 'package:bizzie/features/company_profile/security/presentation/utils/market_cap_category_extensions.dart';
+import 'package:bizzie/features/company_profile/shared/presentation/utils/ratio_category_extensions.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:bizzie/shared/utils/currency_formatter.dart';
 import 'package:bizzie/shared/widgets/app_badge.dart';

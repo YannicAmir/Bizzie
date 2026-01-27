@@ -1,5 +1,5 @@
 import 'package:bizzie/features/company_profile/shared/domain/models/financial_data_point.dart';
-import 'package:bizzie/features/company_profile/presentation/utils/metric_summary_presentation_extensions.dart';
+import 'package:bizzie/features/company_profile/shared/presentation/utils/metric_summary_presentation_extensions.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
