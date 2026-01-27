@@ -1,20 +1,10 @@
+import 'package:bizzie/core/utils/timestamp_converter.dart';
 import 'package:bizzie/features/onboarding/domain/models/company.dart';
-import 'package:bizzie/features/onboarding/domain/models/onboarding_data.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:bizzie/features/user/domain/enums/investing_experience.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'user_model.freezed.dart';
 part 'user_model.g.dart';
-
-class TimestampConverter implements JsonConverter<DateTime, Timestamp> {
-  const TimestampConverter();
-
-  @override
-  DateTime fromJson(Timestamp timestamp) => timestamp.toDate();
-
-  @override
-  Timestamp toJson(DateTime date) => Timestamp.fromDate(date);
-}
 
 @freezed
 abstract class UserModel with _$UserModel {

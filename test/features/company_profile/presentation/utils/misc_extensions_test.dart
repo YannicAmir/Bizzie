@@ -5,8 +5,8 @@ import 'package:bizzie/features/company_profile/security/presentation/utils/mark
 import 'package:bizzie/features/company_profile/shared/presentation/utils/mascot_utils.dart';
 import 'package:bizzie/features/company_profile/news/presentation/utils/news_article_extensions.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/utils/ratio_category_extensions.dart';
-import 'package:bizzie/features/onboarding/domain/models/onboarding_data.dart';
-import 'package:bizzie/features/onboarding/domain/models/user_model.dart';
+import 'package:bizzie/features/user/domain/enums/investing_experience.dart';
+import 'package:bizzie/features/user/domain/models/user_model.dart';
 import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
 import 'package:bizzie/shared/widgets/app_badge.dart';
 import 'package:flutter_test/flutter_test.dart';

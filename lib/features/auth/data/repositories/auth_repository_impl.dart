@@ -46,12 +46,14 @@ class AuthRepositoryImpl implements IAuthRepository {
         email: email,
         password: password,
       );
-      return Right(_mapFirebaseUserToUserModel(firebaseUser));
+      final user = _mapFirebaseUserToUserModel(firebaseUser);
+      _logger.info('SignInWithEmail successful for user: ${user.id}');
+      return Right(user);
     } on firebase.FirebaseAuthException catch (e) {
-      _logger.warning('SignInWithEmail failed', e);
+      _logger.warning('SignInWithEmail failed: ${e.code}', e);
       return Left(Failure.server(e.message ?? 'Authentication failed'));
-    } catch (e) {
-      _logger.severe('SignInWithEmail unknown error', e);
+    } catch (e, s) {
+      _logger.severe('SignInWithEmail unknown error', e, s);
       return Left(Failure.server(e.toString()));
     }
   }
@@ -66,12 +68,14 @@ class AuthRepositoryImpl implements IAuthRepository {
         email: email,
         password: password,
       );
-      return Right(_mapFirebaseUserToUserModel(firebaseUser));
+      final user = _mapFirebaseUserToUserModel(firebaseUser);
+      _logger.info('SignUpWithEmail successful for user: ${user.id}');
+      return Right(user);
     } on firebase.FirebaseAuthException catch (e) {
-      _logger.warning('SignUpWithEmail failed', e);
+      _logger.warning('SignUpWithEmail failed: ${e.code}', e);
       return Left(Failure.server(e.message ?? 'Registration failed'));
-    } catch (e) {
-      _logger.severe('SignUpWithEmail unknown error', e);
+    } catch (e, s) {
+      _logger.severe('SignUpWithEmail unknown error', e, s);
       return Left(Failure.server(e.toString()));
     }
   }
@@ -80,12 +84,14 @@ class AuthRepositoryImpl implements IAuthRepository {
   Future<Either<Failure, UserModel>> signInWithGoogle() async {
     try {
       final firebaseUser = await remoteDataSource.signInWithGoogle();
-      return Right(_mapFirebaseUserToUserModel(firebaseUser));
+      final user = _mapFirebaseUserToUserModel(firebaseUser);
+      _logger.info('SignInWithGoogle successful for user: ${user.id}');
+      return Right(user);
     } on firebase.FirebaseAuthException catch (e) {
-      _logger.warning('SignInWithGoogle failed', e);
+      _logger.warning('SignInWithGoogle failed: ${e.code}', e);
       return Left(Failure.server(e.message ?? 'Google Sign-In failed'));
-    } catch (e) {
-      _logger.severe('SignInWithGoogle unknown error', e);
+    } catch (e, s) {
+      _logger.severe('SignInWithGoogle unknown error', e, s);
       return Left(Failure.server(e.toString()));
     }
   }
@@ -94,12 +100,14 @@ class AuthRepositoryImpl implements IAuthRepository {
   Future<Either<Failure, UserModel>> signInWithApple() async {
     try {
       final firebaseUser = await remoteDataSource.signInWithApple();
-      return Right(_mapFirebaseUserToUserModel(firebaseUser));
+      final user = _mapFirebaseUserToUserModel(firebaseUser);
+      _logger.info('SignInWithApple successful for user: ${user.id}');
+      return Right(user);
     } on firebase.FirebaseAuthException catch (e) {
-      _logger.warning('SignInWithApple failed', e);
+      _logger.warning('SignInWithApple failed: ${e.code}', e);
       return Left(Failure.server(e.message ?? 'Apple Sign-In failed'));
-    } catch (e) {
-      _logger.severe('SignInWithApple unknown error', e);
+    } catch (e, s) {
+      _logger.severe('SignInWithApple unknown error', e, s);
       return Left(Failure.server(e.toString()));
     }
   }
@@ -107,12 +115,13 @@ class AuthRepositoryImpl implements IAuthRepository {
   @override
   Future<Either<Failure, void>> signOut() async {
     try {
+      _logger.info('Starting SignOut process');
       await sharedPreferences.clear();
-
       await remoteDataSource.signOut();
+      _logger.info('SignOut successful');
       return const Right(null);
-    } catch (e) {
-      _logger.severe('SignOut failed', e);
+    } catch (e, s) {
+      _logger.severe('SignOut failed', e, s);
       return Left(Failure.server(e.toString()));
     }
   }
@@ -121,12 +130,13 @@ class AuthRepositoryImpl implements IAuthRepository {
   Future<Either<Failure, void>> resetPassword({required String email}) async {
     try {
       await remoteDataSource.resetPassword(email: email);
+      _logger.info('ResetPassword email sent successfully to: $email');
       return const Right(null);
     } on firebase.FirebaseAuthException catch (e) {
-      _logger.warning('ResetPassword failed', e);
+      _logger.warning('ResetPassword failed: ${e.code}', e);
       return Left(Failure.server(e.message ?? 'Password reset failed'));
-    } catch (e) {
-      _logger.severe('ResetPassword unknown error', e);
+    } catch (e, s) {
+      _logger.severe('ResetPassword unknown error', e, s);
       return Left(Failure.server(e.toString()));
     }
   }
@@ -135,12 +145,13 @@ class AuthRepositoryImpl implements IAuthRepository {
   Future<Either<Failure, void>> deleteAccount() async {
     try {
       await remoteDataSource.deleteAccount();
+      _logger.info('DeleteAccount successful');
       return const Right(null);
     } on firebase.FirebaseAuthException catch (e) {
-      _logger.warning('DeleteAccount failed', e);
+      _logger.warning('DeleteAccount failed: ${e.code}', e);
       return Left(Failure.server(e.message ?? 'Account deletion failed'));
-    } catch (e) {
-      _logger.severe('DeleteAccount unknown error', e);
+    } catch (e, s) {
+      _logger.severe('DeleteAccount unknown error', e, s);
       return Left(Failure.server(e.toString()));
     }
   }

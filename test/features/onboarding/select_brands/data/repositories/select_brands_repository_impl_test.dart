@@ -1,6 +1,6 @@
 import 'package:bizzie/core/error/exceptions.dart';
 import 'package:bizzie/core/error/failures.dart';
-import 'package:bizzie/features/onboarding/domain/models/sector.dart';
+import 'package:bizzie/core/domain/models/sector.dart';
 import 'package:bizzie/features/onboarding/select_brands/data/datasources/select_brands_remote_datasource.dart';
 import 'package:bizzie/features/onboarding/select_brands/data/dtos/daily_brands_dto.dart';
 import 'package:bizzie/features/onboarding/select_brands/data/repositories/select_brands_repository_impl.dart';

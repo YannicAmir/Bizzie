@@ -8,8 +8,8 @@ import 'package:bizzie/features/onboarding/data/dtos/user_dto.dart';
 import 'package:bizzie/features/onboarding/domain/interfaces/i_onboarding_repository.dart';
 
 import 'package:bizzie/features/onboarding/domain/models/historical_price.dart';
-import 'package:bizzie/features/onboarding/domain/models/sector.dart';
-import 'package:bizzie/features/onboarding/domain/models/user_model.dart';
+import 'package:bizzie/core/domain/models/sector.dart';
+import 'package:bizzie/features/user/domain/models/user_model.dart';
 import 'package:bizzie/features/watchlist/data/dtos/watchlist_item_dto.dart';
 import 'package:injectable/injectable.dart';
 

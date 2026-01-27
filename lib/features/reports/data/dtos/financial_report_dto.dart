@@ -13,11 +13,10 @@ abstract class FinancialReportDto with _$FinancialReportDto {
 
   const factory FinancialReportDto({
     required String id,
-    @JsonKey(name: 'summary') required ReportSummaryDto summary,
-    @JsonKey(name: 'balanceSheet') required ReportBalanceSheetDto balanceSheet,
-    @JsonKey(name: 'cashFlow') required ReportCashFlowDto cashFlow,
-    @JsonKey(name: 'income') required ReportIncomeDto income,
-    @JsonKey(name: 'stockActivity')
+    required ReportSummaryDto summary,
+    required ReportBalanceSheetDto balanceSheet,
+    required ReportCashFlowDto cashFlow,
+    required ReportIncomeDto income,
     required ReportStockActivityDto stockActivity,
     String? filingDate,
     @TimestampConverter() DateTime? dateAnalyzed,

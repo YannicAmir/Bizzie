@@ -1,5 +1,5 @@
 import '../../../../app/themes/app_assets.dart';
-import '../../domain/models/sector.dart';
+import 'package:bizzie/core/domain/models/sector.dart';
 
 class OnboardingAssetsHelper {
   static String getMascotForSector(Sector sector) {

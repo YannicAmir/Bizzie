@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$UserDto {
 
- String get uid; String get name; String get favoriteSector;@JsonKey(name: 'favoriteSectorDisplay') String? get favoriteSectorDisplay; String get investingExperience;@TimestampConverter() DateTime get createdAt; bool get isSubscribed; Map<String, String> get fcmTokens;
+ String get uid; String get name; String get favoriteSector; String? get favoriteSectorDisplay; String get investingExperience;@TimestampConverter() DateTime get createdAt; bool get isSubscribed; Map<String, String> get fcmTokens;
 /// Create a copy of UserDto
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -48,7 +48,7 @@ abstract mixin class $UserDtoCopyWith<$Res>  {
   factory $UserDtoCopyWith(UserDto value, $Res Function(UserDto) _then) = _$UserDtoCopyWithImpl;
 @useResult
 $Res call({
- String uid, String name, String favoriteSector,@JsonKey(name: 'favoriteSectorDisplay') String? favoriteSectorDisplay, String investingExperience,@TimestampConverter() DateTime createdAt, bool isSubscribed, Map<String, String> fcmTokens
+ String uid, String name, String favoriteSector, String? favoriteSectorDisplay, String investingExperience,@TimestampConverter() DateTime createdAt, bool isSubscribed, Map<String, String> fcmTokens
 });
 
 
@@ -160,7 +160,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String uid,  String name,  String favoriteSector, @JsonKey(name: 'favoriteSectorDisplay')  String? favoriteSectorDisplay,  String investingExperience, @TimestampConverter()  DateTime createdAt,  bool isSubscribed,  Map<String, String> fcmTokens)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String uid,  String name,  String favoriteSector,  String? favoriteSectorDisplay,  String investingExperience, @TimestampConverter()  DateTime createdAt,  bool isSubscribed,  Map<String, String> fcmTokens)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _UserDto() when $default != null:
 return $default(_that.uid,_that.name,_that.favoriteSector,_that.favoriteSectorDisplay,_that.investingExperience,_that.createdAt,_that.isSubscribed,_that.fcmTokens);case _:
@@ -181,7 +181,7 @@ return $default(_that.uid,_that.name,_that.favoriteSector,_that.favoriteSectorDi
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String uid,  String name,  String favoriteSector, @JsonKey(name: 'favoriteSectorDisplay')  String? favoriteSectorDisplay,  String investingExperience, @TimestampConverter()  DateTime createdAt,  bool isSubscribed,  Map<String, String> fcmTokens)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String uid,  String name,  String favoriteSector,  String? favoriteSectorDisplay,  String investingExperience, @TimestampConverter()  DateTime createdAt,  bool isSubscribed,  Map<String, String> fcmTokens)  $default,) {final _that = this;
 switch (_that) {
 case _UserDto():
 return $default(_that.uid,_that.name,_that.favoriteSector,_that.favoriteSectorDisplay,_that.investingExperience,_that.createdAt,_that.isSubscribed,_that.fcmTokens);case _:
@@ -201,7 +201,7 @@ return $default(_that.uid,_that.name,_that.favoriteSector,_that.favoriteSectorDi
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String uid,  String name,  String favoriteSector, @JsonKey(name: 'favoriteSectorDisplay')  String? favoriteSectorDisplay,  String investingExperience, @TimestampConverter()  DateTime createdAt,  bool isSubscribed,  Map<String, String> fcmTokens)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String uid,  String name,  String favoriteSector,  String? favoriteSectorDisplay,  String investingExperience, @TimestampConverter()  DateTime createdAt,  bool isSubscribed,  Map<String, String> fcmTokens)?  $default,) {final _that = this;
 switch (_that) {
 case _UserDto() when $default != null:
 return $default(_that.uid,_that.name,_that.favoriteSector,_that.favoriteSectorDisplay,_that.investingExperience,_that.createdAt,_that.isSubscribed,_that.fcmTokens);case _:
@@ -216,13 +216,13 @@ return $default(_that.uid,_that.name,_that.favoriteSector,_that.favoriteSectorDi
 @JsonSerializable()
 
 class _UserDto extends UserDto {
-  const _UserDto({required this.uid, required this.name, required this.favoriteSector, @JsonKey(name: 'favoriteSectorDisplay') this.favoriteSectorDisplay, required this.investingExperience, @TimestampConverter() required this.createdAt, this.isSubscribed = false, required final  Map<String, String> fcmTokens}): _fcmTokens = fcmTokens,super._();
+  const _UserDto({required this.uid, required this.name, required this.favoriteSector, this.favoriteSectorDisplay, required this.investingExperience, @TimestampConverter() required this.createdAt, this.isSubscribed = false, required final  Map<String, String> fcmTokens}): _fcmTokens = fcmTokens,super._();
   factory _UserDto.fromJson(Map<String, dynamic> json) => _$UserDtoFromJson(json);
 
 @override final  String uid;
 @override final  String name;
 @override final  String favoriteSector;
-@override@JsonKey(name: 'favoriteSectorDisplay') final  String? favoriteSectorDisplay;
+@override final  String? favoriteSectorDisplay;
 @override final  String investingExperience;
 @override@TimestampConverter() final  DateTime createdAt;
 @override@JsonKey() final  bool isSubscribed;
@@ -267,7 +267,7 @@ abstract mixin class _$UserDtoCopyWith<$Res> implements $UserDtoCopyWith<$Res> {
   factory _$UserDtoCopyWith(_UserDto value, $Res Function(_UserDto) _then) = __$UserDtoCopyWithImpl;
 @override @useResult
 $Res call({
- String uid, String name, String favoriteSector,@JsonKey(name: 'favoriteSectorDisplay') String? favoriteSectorDisplay, String investingExperience,@TimestampConverter() DateTime createdAt, bool isSubscribed, Map<String, String> fcmTokens
+ String uid, String name, String favoriteSector, String? favoriteSectorDisplay, String investingExperience,@TimestampConverter() DateTime createdAt, bool isSubscribed, Map<String, String> fcmTokens
 });
 
 

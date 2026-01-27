@@ -1,5 +1,5 @@
 import 'package:bizzie/features/onboarding/domain/interfaces/i_onboarding_repository.dart';
-import 'package:bizzie/features/onboarding/domain/models/sector.dart';
+import 'package:bizzie/core/domain/models/sector.dart';
 import 'package:injectable/injectable.dart';
 
 import 'package:bizzie/core/error/failures.dart';

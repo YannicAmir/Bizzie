@@ -6,7 +6,7 @@ import 'package:bizzie/features/onboarding/select_brands/domain/interfaces/i_sel
 import 'package:bizzie/features/onboarding/select_brands/domain/models/brand.dart';
 import 'package:bizzie/features/onboarding/select_brands/domain/models/brand_listing.dart';
 import 'package:bizzie/features/onboarding/select_brands/data/dtos/daily_brands_dto.dart';
-import 'package:bizzie/features/onboarding/domain/models/sector.dart';
+import 'package:bizzie/core/domain/models/sector.dart';
 import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
 

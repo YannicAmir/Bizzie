@@ -11,7 +11,7 @@ import '../utils/onboarding_assets_helper.dart';
 import '../bloc/onboarding_bloc.dart';
 import '../widgets/onboarding_footer.dart';
 import '../widgets/onboarding_header.dart';
-import '../../domain/models/sector.dart';
+import 'package:bizzie/core/domain/models/sector.dart';
 import 'package:bizzie/di/injection.dart';
 import 'package:bizzie/features/onboarding/select_brands/domain/interfaces/i_select_brands_repository.dart';
 import 'package:bizzie/shared/widgets/buttons/bizzie_primary_button.dart';

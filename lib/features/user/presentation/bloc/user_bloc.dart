@@ -1,6 +1,6 @@
 import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:bizzie/core/error/failures.dart';
-import 'package:bizzie/features/onboarding/domain/models/user_model.dart';
+import 'package:bizzie/features/user/domain/models/user_model.dart';
 import 'package:bizzie/features/user/domain/usecases/get_user_usecase.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';

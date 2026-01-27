@@ -17,9 +17,7 @@ _UserModel _$UserModelFromJson(Map<String, dynamic> json) => _UserModel(
     _$InvestingExperienceEnumMap,
     json['investingExperience'],
   ),
-  createdAt: const TimestampConverter().fromJson(
-    json['createdAt'] as Timestamp,
-  ),
+  createdAt: const TimestampConverter().fromJson(json['createdAt'] as Object),
   isSubscribed: json['isSubscribed'] as bool,
   fcmTokens: Map<String, String>.from(json['fcmTokens'] as Map),
 );

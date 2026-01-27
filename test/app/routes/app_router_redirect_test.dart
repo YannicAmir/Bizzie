@@ -3,8 +3,9 @@ import 'package:bizzie/app/routes/app_routes.dart';
 import 'package:bizzie/features/auth/domain/models/user_model.dart'
     as auth_user;
 import 'package:bizzie/features/auth/presentation/bloc/auth_state.dart';
-import 'package:bizzie/features/onboarding/domain/models/onboarding_data.dart';
-import 'package:bizzie/features/onboarding/domain/models/user_model.dart'
+
+import 'package:bizzie/features/user/domain/enums/investing_experience.dart';
+import 'package:bizzie/features/user/domain/models/user_model.dart'
     as onboarding_user;
 import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';

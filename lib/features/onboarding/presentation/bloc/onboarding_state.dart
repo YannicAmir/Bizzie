@@ -1,6 +1,6 @@
 import 'package:bizzie/features/onboarding/domain/models/historical_price.dart';
 import 'package:bizzie/features/onboarding/domain/models/onboarding_data.dart';
-import 'package:bizzie/features/onboarding/domain/models/sector.dart';
+import 'package:bizzie/core/domain/models/sector.dart';
 import 'package:bizzie/features/onboarding/select_brands/domain/models/brand.dart';
 import 'package:bizzie/features/onboarding/presentation/models/feature_highlight_item.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';

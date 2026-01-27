@@ -47,11 +47,18 @@ class RemoteAuthDataSourceImpl implements RemoteAuthDataSource {
     required String email,
     required String password,
   }) async {
-    final credential = await _firebaseAuth.signInWithEmailAndPassword(
-      email: email,
-      password: password,
-    );
-    return credential.user!;
+    _logger.info('Attempting sign in with email: $email');
+    try {
+      final credential = await _firebaseAuth.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      _logger.info('Sign in success for uid: ${credential.user?.uid}');
+      return credential.user!;
+    } catch (e, s) {
+      _logger.severe('Sign in failed for email: $email', e, s);
+      rethrow;
+    }
   }
 
   @override
@@ -59,34 +66,52 @@ class RemoteAuthDataSourceImpl implements RemoteAuthDataSource {
     required String email,
     required String password,
   }) async {
-    final credential = await _firebaseAuth.createUserWithEmailAndPassword(
-      email: email,
-      password: password,
-    );
-    return credential.user!;
+    _logger.info('Attempting sign up with email: $email');
+    try {
+      final credential = await _firebaseAuth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      _logger.info('Sign up success for uid: ${credential.user?.uid}');
+      return credential.user!;
+    } catch (e, s) {
+      _logger.severe('Sign up failed for email: $email', e, s);
+      rethrow;
+    }
   }
 
   @override
   Future<User> signInWithGoogle() async {
-    final GoogleSignInAccount googleUser = await _googleSignIn.authenticate();
+    _logger.info('Starting Google Sign-In flow');
+    try {
+      final GoogleSignInAccount googleUser = await _googleSignIn.authenticate();
+      _logger.info('Google User authenticated: ${googleUser.email}');
 
-    final GoogleSignInAuthentication googleAuth = googleUser.authentication;
-    final GoogleSignInClientAuthorization? authorization = await googleUser
-        .authorizationClient
-        .authorizationForScopes([]);
+      final GoogleSignInAuthentication googleAuth = googleUser.authentication;
+      final GoogleSignInClientAuthorization? authorization = await googleUser
+          .authorizationClient
+          .authorizationForScopes([]);
 
-    final AuthCredential credential = GoogleAuthProvider.credential(
-      accessToken: authorization?.accessToken,
-      idToken: googleAuth.idToken,
-    );
+      final AuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: authorization?.accessToken,
+        idToken: googleAuth.idToken,
+      );
 
-    final UserCredential userCredential = await _firebaseAuth
-        .signInWithCredential(credential);
-    return userCredential.user!;
+      final UserCredential userCredential = await _firebaseAuth
+          .signInWithCredential(credential);
+      _logger.info(
+        'Google Sign-In success for uid: ${userCredential.user?.uid}',
+      );
+      return userCredential.user!;
+    } catch (e, s) {
+      _logger.severe('Google Sign-In failed', e, s);
+      rethrow;
+    }
   }
 
   @override
   Future<User> signInWithApple() async {
+    _logger.info('Starting Apple Sign-In flow');
     try {
       final appleCredential = await SignInWithApple.getAppleIDCredential(
         scopes: [
@@ -103,42 +128,69 @@ class RemoteAuthDataSourceImpl implements RemoteAuthDataSource {
 
       final UserCredential userCredential = await _firebaseAuth
           .signInWithCredential(credential);
+      _logger.info(
+        'Apple Sign-In success for uid: ${userCredential.user?.uid}',
+      );
       return userCredential.user!;
-    } on PlatformException catch (e) {
+    } on PlatformException catch (e, s) {
       _logger.severe(
-        'Apple Sign-In Error: Code=${e.code}, Message=${e.message}, Details=${e.details}',
+        'Apple Sign-In Platform Error: Code=${e.code}, Message=${e.message}, Details=${e.details}',
         e,
+        s,
       );
       rethrow;
-    } catch (e) {
-      _logger.severe('Apple Sign-In Generic Error', e);
+    } catch (e, s) {
+      _logger.severe('Apple Sign-In Generic Error', e, s);
       rethrow;
     }
   }
 
   @override
   Future<void> signOut() async {
+    final uid = _firebaseAuth.currentUser?.uid;
+    _logger.info('Attempting sign out for user: $uid');
     try {
-      await _googleSignIn.signOut();
-    } catch (_) {
-      // Ignore if google sign in fails to sign out
-      // (e.g. user not did not sign in with google)
+      try {
+        await _googleSignIn.signOut();
+      } catch (_) {
+        // Ignore if google sign in fails to sign out
+        // (e.g. user not did not sign in with google)
+      }
+      await _firebaseAuth.signOut();
+      _logger.info('Sign out successful for uid: $uid');
+    } catch (e, s) {
+      _logger.severe('Sign out failed for uid: $uid', e, s);
+      rethrow;
     }
-    await _firebaseAuth.signOut();
   }
 
   @override
   Future<void> resetPassword({required String email}) async {
-    await _firebaseAuth.sendPasswordResetEmail(email: email);
+    _logger.info('Attempting to send password reset email to: $email');
+    try {
+      await _firebaseAuth.sendPasswordResetEmail(email: email);
+      _logger.info('Password reset email sent successfully to: $email');
+    } catch (e, s) {
+      _logger.severe('Failed to send password reset email to: $email', e, s);
+      rethrow;
+    }
   }
 
   @override
   Future<void> deleteAccount() async {
-    final user = _firebaseAuth.currentUser;
-    if (user != null) {
-      await user.delete();
-    } else {
-      throw Exception('No user signed in to delete.');
+    final uid = _firebaseAuth.currentUser?.uid;
+    _logger.info('Attempting to delete account for uid: $uid');
+    try {
+      final user = _firebaseAuth.currentUser;
+      if (user != null) {
+        await user.delete();
+        _logger.info('Account deleted successfully for uid: $uid');
+      } else {
+        throw Exception('No user signed in to delete.');
+      }
+    } catch (e, s) {
+      _logger.severe('Failed to delete account for uid: $uid', e, s);
+      rethrow;
     }
   }
 }
