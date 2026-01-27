@@ -59,8 +59,7 @@ class FinancialStatementsRepositoryImpl
       return right(
         dtos
             .map(
-              (d) => _toBalanceSheet(
-                d,
+              (d) => d.toDomain(
                 multiplier: conversion.multiplier,
                 targetCurrency: conversion.targetCurrency,
               ),
@@ -86,8 +85,7 @@ class FinancialStatementsRepositoryImpl
       return right(
         dtos
             .map(
-              (d) => _toIncomeStatement(
-                d,
+              (d) => d.toDomain(
                 multiplier: conversion.multiplier,
                 targetCurrency: conversion.targetCurrency,
               ),
@@ -113,8 +111,7 @@ class FinancialStatementsRepositoryImpl
       return right(
         dtos
             .map(
-              (d) => _toCashFlowStatement(
-                d,
+              (d) => d.toDomain(
                 multiplier: conversion.multiplier,
                 targetCurrency: conversion.targetCurrency,
               ),
@@ -151,45 +148,42 @@ class FinancialStatementsRepositoryImpl
       final multiplier = conversion.multiplier;
       final targetCurrency = conversion.targetCurrency;
 
-      IncomeStatement mapInc(LegacyIncomeStatementDto d) => IncomeStatement(
-        date: d.date,
-        symbol: d.symbol,
-        reportedCurrency: targetCurrency,
-        period: d.period,
-        revenue: (d.revenue ?? 0) * multiplier,
-        grossProfit: (d.grossProfit ?? 0) * multiplier,
-        operatingIncome: (d.operatingIncome ?? 0) * multiplier,
-        netIncome: (d.netIncome ?? 0) * multiplier,
-        eps: (d.eps ?? 0) * multiplier,
-        ebitda: (d.ebitda ?? 0) * multiplier,
-        costOfRevenue: (d.costOfRevenue ?? 0) * multiplier,
-        operatingExpenses: (d.operatingExpenses ?? 0) * multiplier,
-        costAndExpenses: (d.costAndExpenses ?? 0) * multiplier,
-      );
-
-      CashFlowStatement mapCash(CashFlowStatementDto d) => CashFlowStatement(
-        date: d.date,
-        symbol: d.symbol,
-        reportedCurrency: targetCurrency,
-        period: d.period,
-        operatingCashFlow: d.operatingCashFlow * multiplier,
-        investingCashFlow: d.netCashProvidedByInvestingActivities * multiplier,
-        financingCashFlow: d.netCashProvidedByFinancingActivities * multiplier,
-        capitalExpenditure: d.capitalExpenditure * multiplier,
-        freeCashFlow: d.freeCashFlow * multiplier,
-        dividendsPaid: d.netDividendsPaid * multiplier,
-        cashAtBeginningOfPeriod: d.cashAtBeginningOfPeriod * multiplier,
-        cashAtEndOfPeriod: d.cashAtEndOfPeriod * multiplier,
-      );
-
       return right(
         FullFinancials(
-          annualIncomeStatements: incA.map(mapInc).toList(),
-          quarterlyIncomeStatements: incQ.map(mapInc).toList(),
+          annualIncomeStatements: incA
+              .map(
+                (d) => d.toDomain(
+                  multiplier: multiplier,
+                  targetCurrency: targetCurrency,
+                ),
+              )
+              .toList(),
+          quarterlyIncomeStatements: incQ
+              .map(
+                (d) => d.toDomain(
+                  multiplier: multiplier,
+                  targetCurrency: targetCurrency,
+                ),
+              )
+              .toList(),
           annualBalanceSheets: balA,
           quarterlyBalanceSheets: balQ,
-          annualCashFlows: cashA.map(mapCash).toList(),
-          quarterlyCashFlows: cashQ.map(mapCash).toList(),
+          annualCashFlows: cashA
+              .map(
+                (d) => d.toDomain(
+                  multiplier: multiplier,
+                  targetCurrency: targetCurrency,
+                ),
+              )
+              .toList(),
+          quarterlyCashFlows: cashQ
+              .map(
+                (d) => d.toDomain(
+                  multiplier: multiplier,
+                  targetCurrency: targetCurrency,
+                ),
+              )
+              .toList(),
         ),
       );
     } catch (e) {
@@ -290,74 +284,5 @@ class FinancialStatementsRepositoryImpl
     }
 
     return (multiplier: 1.0, targetCurrency: reportedCurrency);
-  }
-
-  IncomeStatement _toIncomeStatement(
-    IncomeStatementDto d, {
-    double multiplier = 1.0,
-    String? targetCurrency,
-  }) {
-    return IncomeStatement(
-      date: d.date,
-      symbol: d.symbol,
-      reportedCurrency: targetCurrency ?? d.reportedCurrency,
-      period: d.period,
-      revenue: (d.revenue ?? 0.0) * multiplier,
-      grossProfit: (d.grossProfit ?? 0.0) * multiplier,
-      operatingIncome: (d.operatingIncome ?? 0.0) * multiplier,
-      netIncome: (d.netIncome ?? 0.0) * multiplier,
-      eps: (d.epsDiluted ?? 0.0) * multiplier,
-      ebitda: (d.ebitda ?? 0.0) * multiplier,
-      costOfRevenue: (d.costOfRevenue ?? 0.0) * multiplier,
-      operatingExpenses: (d.operatingExpenses ?? 0.0) * multiplier,
-      costAndExpenses: (d.costAndExpenses ?? 0.0) * multiplier,
-    );
-  }
-
-  BalanceSheet _toBalanceSheet(
-    BalanceSheetDto d, {
-    double multiplier = 1.0,
-    String? targetCurrency,
-  }) {
-    return BalanceSheet(
-      date: d.date,
-      symbol: d.symbol,
-      reportedCurrency: targetCurrency ?? d.reportedCurrency,
-      period: d.period ?? '',
-      totalAssets: (d.totalAssets ?? 0) * multiplier,
-      totalLiabilities: (d.totalLiabilities ?? 0) * multiplier,
-      totalEquity: (d.totalEquity ?? 0) * multiplier,
-      cashAndShortTermInvestments:
-          (d.cashAndShortTermInvestments ?? 0) * multiplier,
-      totalDebt: (d.totalDebt ?? 0) * multiplier,
-      totalCurrentAssets: (d.totalCurrentAssets ?? 0) * multiplier,
-      totalNonCurrentAssets: (d.totalNonCurrentAssets ?? 0) * multiplier,
-      totalCurrentLiabilities: (d.totalCurrentLiabilities ?? 0) * multiplier,
-      totalNonCurrentLiabilities:
-          (d.totalNonCurrentLiabilities ?? 0) * multiplier,
-      longTermDebt: (d.longTermDebt ?? 0) * multiplier,
-      shortTermDebt: (d.shortTermDebt ?? 0) * multiplier,
-    );
-  }
-
-  CashFlowStatement _toCashFlowStatement(
-    CashFlowStatementDto d, {
-    double multiplier = 1.0,
-    String? targetCurrency,
-  }) {
-    return CashFlowStatement(
-      date: d.date,
-      symbol: d.symbol,
-      reportedCurrency: targetCurrency ?? d.reportedCurrency,
-      period: d.period,
-      operatingCashFlow: d.operatingCashFlow * multiplier,
-      investingCashFlow: d.netCashProvidedByInvestingActivities * multiplier,
-      financingCashFlow: d.netCashProvidedByFinancingActivities * multiplier,
-      capitalExpenditure: d.capitalExpenditure * multiplier,
-      freeCashFlow: d.freeCashFlow * multiplier,
-      dividendsPaid: d.netDividendsPaid * multiplier,
-      cashAtBeginningOfPeriod: d.cashAtBeginningOfPeriod * multiplier,
-      cashAtEndOfPeriod: d.cashAtEndOfPeriod * multiplier,
-    );
   }
 }

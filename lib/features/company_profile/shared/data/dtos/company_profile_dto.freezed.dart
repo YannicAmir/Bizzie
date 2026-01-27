@@ -234,8 +234,8 @@ return $default(_that.symbol,_that.price,_that.changesPercentage,_that.change,_t
 /// @nodoc
 @JsonSerializable()
 
-class _ProfileDto implements ProfileDto {
-  const _ProfileDto({this.symbol, this.price, this.changesPercentage, this.change, this.marketCap, this.beta, this.description, this.sector, this.industry, this.exchange, this.exchangeShortName, this.currency, this.isEtf, this.isFund, this.isActivelyTrading, this.companyName, this.image, this.ceo, this.website, this.address, this.city, this.state, this.zip, this.phone, this.fullTimeEmployees, this.ipoDate, this.country});
+class _ProfileDto extends ProfileDto {
+  const _ProfileDto({this.symbol, this.price, this.changesPercentage, this.change, this.marketCap, this.beta, this.description, this.sector, this.industry, this.exchange, this.exchangeShortName, this.currency, this.isEtf, this.isFund, this.isActivelyTrading, this.companyName, this.image, this.ceo, this.website, this.address, this.city, this.state, this.zip, this.phone, this.fullTimeEmployees, this.ipoDate, this.country}): super._();
   factory _ProfileDto.fromJson(Map<String, dynamic> json) => _$ProfileDtoFromJson(json);
 
 @override final  String? symbol;

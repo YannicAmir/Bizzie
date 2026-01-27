@@ -6,9 +6,7 @@ import 'package:bizzie/features/company_profile/security/data/datasources/securi
 import 'package:bizzie/features/company_profile/security/domain/interfaces/i_price_repository.dart';
 import 'package:bizzie/features/company_profile/security/domain/models/historical_price_eod.dart';
 import 'package:bizzie/features/company_profile/security/data/dtos/historical_price_eod_dto.dart';
-import 'package:bizzie/features/company_profile/security/data/dtos/historical_price_dto.dart';
 import 'package:bizzie/features/company_profile/security/domain/models/price_history.dart';
-import 'package:bizzie/features/company_profile/security/domain/models/price_point.dart';
 
 @LazySingleton(as: IPriceRepository)
 class PriceRepositoryImpl implements IPriceRepository {
@@ -28,16 +26,12 @@ class PriceRepositoryImpl implements IPriceRepository {
       return right(
         PriceHistory(
           symbol: ticker,
-          history: local.map(_toPricePoint).toList(),
+          history: local.map((e) => e.toDomain()).toList(),
         ),
       );
     } catch (e) {
       return left(ServerFailure(e.toString()));
     }
-  }
-
-  PricePoint _toPricePoint(HistoricalPriceDto e) {
-    return PricePoint(date: e.date, close: e.price ?? 0, volume: e.volume);
   }
 
   @override

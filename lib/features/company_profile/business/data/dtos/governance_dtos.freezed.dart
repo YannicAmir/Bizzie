@@ -482,8 +482,8 @@ return $default(_that.name,_that.title,_that.pay,_that.currencyPay,_that.gender,
 /// @nodoc
 @JsonSerializable()
 
-class _ExecutiveDto implements ExecutiveDto {
-  const _ExecutiveDto({required this.name, required this.title, this.pay, this.currencyPay, this.gender, this.yearBorn});
+class _ExecutiveDto extends ExecutiveDto {
+  const _ExecutiveDto({required this.name, required this.title, this.pay, this.currencyPay, this.gender, this.yearBorn}): super._();
   factory _ExecutiveDto.fromJson(Map<String, dynamic> json) => _$ExecutiveDtoFromJson(json);
 
 @override final  String name;

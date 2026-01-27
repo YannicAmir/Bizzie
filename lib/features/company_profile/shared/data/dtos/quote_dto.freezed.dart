@@ -217,8 +217,8 @@ return $default(_that.symbol,_that.name,_that.price,_that.change,_that.changesPe
 /// @nodoc
 @JsonSerializable()
 
-class _QuoteDto implements QuoteDto {
-  const _QuoteDto({required this.symbol, required this.name, this.price, this.change, this.changesPercentage, this.marketCap, this.pe, this.eps, this.volume, this.sharesOutstanding});
+class _QuoteDto extends QuoteDto {
+  const _QuoteDto({required this.symbol, required this.name, this.price, this.change, this.changesPercentage, this.marketCap, this.pe, this.eps, this.volume, this.sharesOutstanding}): super._();
   factory _QuoteDto.fromJson(Map<String, dynamic> json) => _$QuoteDtoFromJson(json);
 
 @override final  String symbol;

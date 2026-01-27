@@ -210,8 +210,8 @@ return $default(_that.symbol,_that.priceToEarningsRatioTTM,_that.priceToFreeCash
 /// @nodoc
 @JsonSerializable()
 
-class _RatiosTtmDto implements RatiosTtmDto {
-  const _RatiosTtmDto({this.symbol, this.priceToEarningsRatioTTM, this.priceToFreeCashFlowRatioTTM});
+class _RatiosTtmDto extends RatiosTtmDto {
+  const _RatiosTtmDto({this.symbol, this.priceToEarningsRatioTTM, this.priceToFreeCashFlowRatioTTM}): super._();
   factory _RatiosTtmDto.fromJson(Map<String, dynamic> json) => _$RatiosTtmDtoFromJson(json);
 
 @override final  String? symbol;

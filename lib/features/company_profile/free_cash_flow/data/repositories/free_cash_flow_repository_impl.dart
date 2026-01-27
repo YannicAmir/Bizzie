@@ -110,13 +110,7 @@ class FreeCashFlowRepositoryImpl implements IFreeCashFlowRepository {
   ) {
     return data
         .where((d) => d.date.isNotEmpty)
-        .map(
-          (d) => FinancialDataPoint(
-            date: d.date,
-            period: d.period,
-            value: extractor(d).toDouble(),
-          ),
-        )
+        .map((d) => d.toFinancialDataPoint(extractor(d).toDouble()))
         .toList();
   }
 }

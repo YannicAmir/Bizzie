@@ -1,3 +1,4 @@
+import 'package:bizzie/features/company_profile/security/domain/models/price_point.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'historical_price_dto.freezed.dart';
@@ -12,6 +13,12 @@ abstract class HistoricalPriceDto with _$HistoricalPriceDto {
     double? volume,
   }) = _HistoricalPriceDto;
 
+  const HistoricalPriceDto._();
+
   factory HistoricalPriceDto.fromJson(Map<String, dynamic> json) =>
       _$HistoricalPriceDtoFromJson(json);
+
+  PricePoint toDomain() {
+    return PricePoint(date: date, close: price ?? 0, volume: volume);
+  }
 }

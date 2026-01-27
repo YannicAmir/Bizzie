@@ -214,8 +214,8 @@ return $default(_that.symbol,_that.publishedDate,_that.title,_that.image,_that.s
 /// @nodoc
 @JsonSerializable()
 
-class _NewsDto implements NewsDto {
-  const _NewsDto({required this.symbol, required this.publishedDate, required this.title, this.image, required this.site, required this.url, this.text});
+class _NewsDto extends NewsDto {
+  const _NewsDto({required this.symbol, required this.publishedDate, required this.title, this.image, required this.site, required this.url, this.text}): super._();
   factory _NewsDto.fromJson(Map<String, dynamic> json) => _$NewsDtoFromJson(json);
 
 @override final  String symbol;

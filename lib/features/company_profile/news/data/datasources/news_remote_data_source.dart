@@ -2,11 +2,6 @@ import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 import 'package:bizzie/services/config_service.dart';
 import 'package:bizzie/features/company_profile/news/data/dtos/news_dto.dart';
-// Monolithic had getSecFilings in shared or financial statements. Let's check plan.
-// Plan said News Refactor: getStockNews, getPressReleases.
-// Monolithic code had getStockNews.
-// Wait, I put getSecFilings in FinancialStatementsRemoteDataSource.
-// So here only getStockNews.
 
 abstract class NewsRemoteDataSource {
   Future<List<NewsDto>> getStockNews(String ticker);

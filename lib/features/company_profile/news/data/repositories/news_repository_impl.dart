@@ -6,7 +6,6 @@ import 'package:bizzie/features/company_profile/news/data/datasources/news_remot
 import 'package:bizzie/features/company_profile/news/data/dtos/news_dto.dart';
 import 'package:bizzie/features/company_profile/news/domain/interfaces/i_news_repository.dart';
 import 'package:bizzie/features/company_profile/news/domain/models/company_news.dart';
-import 'package:bizzie/features/company_profile/news/domain/models/news_article.dart';
 
 @LazySingleton(as: INewsRepository)
 class NewsRepositoryImpl implements INewsRepository {
@@ -27,22 +26,11 @@ class NewsRepositoryImpl implements INewsRepository {
       return right(
         CompanyNews(
           symbol: ticker,
-          articles: local.map(_toNewsArticle).toList(),
+          articles: local.map((NewsDto e) => e.toDomain()).toList(),
         ),
       );
     } catch (e) {
       return left(ServerFailure(e.toString()));
     }
-  }
-
-  NewsArticle _toNewsArticle(NewsDto e) {
-    return NewsArticle(
-      title: e.title,
-      publishedDate: e.publishedDate,
-      site: e.site,
-      url: e.url,
-      image: e.image,
-      text: e.text,
-    );
   }
 }

@@ -55,9 +55,7 @@ class FcpsRepositoryImpl implements IFcpsRepository {
             final fcps =
                 (cf.freeCashFlow / (income.weightedAverageShsOutDil ?? 1)) *
                 conversion.multiplier;
-            result.add(
-              FinancialDataPoint(date: cf.date, period: cf.period, value: fcps),
-            );
+            result.add(cf.toFinancialDataPoint(fcps));
           }
         }
         return result;

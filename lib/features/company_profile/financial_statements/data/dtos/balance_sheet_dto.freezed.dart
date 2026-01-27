@@ -227,8 +227,8 @@ return $default(_that.date,_that.symbol,_that.reportedCurrency,_that.cik,_that.f
 /// @nodoc
 @JsonSerializable()
 
-class _BalanceSheetDto implements BalanceSheetDto {
-  const _BalanceSheetDto({required this.date, required this.symbol, required this.reportedCurrency, required this.cik, required this.fillingDate, required this.acceptedDate, required this.calendarYear, required this.period, required this.totalAssets, required this.totalLiabilities, required this.totalEquity, required this.totalCurrentAssets, required this.totalNonCurrentAssets, required this.totalCurrentLiabilities, required this.totalNonCurrentLiabilities, required this.longTermDebt, required this.shortTermDebt, required this.cashAndShortTermInvestments, required this.netDebt, required this.totalDebt});
+class _BalanceSheetDto extends BalanceSheetDto {
+  const _BalanceSheetDto({required this.date, required this.symbol, required this.reportedCurrency, required this.cik, required this.fillingDate, required this.acceptedDate, required this.calendarYear, required this.period, required this.totalAssets, required this.totalLiabilities, required this.totalEquity, required this.totalCurrentAssets, required this.totalNonCurrentAssets, required this.totalCurrentLiabilities, required this.totalNonCurrentLiabilities, required this.longTermDebt, required this.shortTermDebt, required this.cashAndShortTermInvestments, required this.netDebt, required this.totalDebt}): super._();
   factory _BalanceSheetDto.fromJson(Map<String, dynamic> json) => _$BalanceSheetDtoFromJson(json);
 
 @override final  String date;

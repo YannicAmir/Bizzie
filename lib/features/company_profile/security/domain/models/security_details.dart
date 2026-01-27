@@ -1,8 +1,54 @@
+import 'package:bizzie/features/company_profile/shared/domain/models/company_profile.dart';
+import 'package:bizzie/features/company_profile/shared/domain/models/stock_quote.dart';
 import 'package:equatable/equatable.dart';
 import 'package:bizzie/features/company_profile/shared/domain/enums/market_cap_category.dart';
 import 'package:bizzie/features/company_profile/shared/domain/enums/ratio_category.dart';
 
 class SecurityDetails extends Equatable {
+  factory SecurityDetails.fromProfileAndQuote({
+    required CompanyProfile profile,
+    required StockQuote quote,
+    double? peRatioTTM,
+    double? pfcfTTM,
+  }) {
+    return SecurityDetails(
+      ticker: profile.symbol,
+      name: profile.companyName ?? profile.symbol,
+      sector: profile.sector ?? 'N/A',
+      industry: profile.industry ?? 'N/A',
+      description: profile.description ?? '',
+      currency: profile.currency ?? 'USD',
+      isEtf: profile.isEtf ?? false,
+      isFund: profile.isFund ?? false,
+      isActivelyTrading: profile.isActivelyTrading ?? true,
+      price: quote.price ?? 0.0,
+      changesPercentage: quote.changesPercentage ?? 0.0,
+      change: quote.change ?? 0.0,
+      marketCap: quote.marketCap ?? 0.0,
+      peRatioTTM: peRatioTTM ?? quote.pe,
+      priceToFreeCashFlowTTM: pfcfTTM,
+      beta: profile.beta,
+      image: profile.image ?? '',
+      exchangeShortName: _deriveExchange(profile),
+      country: profile.country ?? '',
+      ipoDate: profile.ipoDate ?? '',
+      website: profile.website ?? '',
+    );
+  }
+
+  static String _deriveExchange(CompanyProfile profile) {
+    if (profile.exchangeShortName != null &&
+        profile.exchangeShortName!.isNotEmpty) {
+      return profile.exchangeShortName!;
+    }
+    if (profile.exchange != null) {
+      if (profile.exchange!.contains('Nasdaq')) return 'NASDAQ';
+      if (profile.exchange!.contains('New York')) return 'NYSE';
+      return profile.exchange!;
+    }
+    return 'N/A';
+  }
+
   MarketCapCategory get marketCapCategory {
     final cap = marketCap ?? 0;
     if (cap >= 200000000000) return MarketCapCategory.mega;

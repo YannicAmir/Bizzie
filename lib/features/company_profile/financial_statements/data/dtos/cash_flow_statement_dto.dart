@@ -1,3 +1,5 @@
+import 'package:bizzie/features/company_profile/financial_statements/domain/models/cash_flow_statement.dart';
+import 'package:bizzie/features/company_profile/shared/domain/models/financial_data_point.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'cash_flow_statement_dto.freezed.dart';
@@ -55,6 +57,32 @@ abstract class CashFlowStatementDto with _$CashFlowStatementDto {
     required double interestPaid,
   }) = _CashFlowStatementDto;
 
+  const CashFlowStatementDto._();
+
   factory CashFlowStatementDto.fromJson(Map<String, dynamic> json) =>
       _$CashFlowStatementDtoFromJson(json);
+
+  FinancialDataPoint toFinancialDataPoint(double value) {
+    return FinancialDataPoint(date: date, period: period, value: value);
+  }
+
+  CashFlowStatement toDomain({
+    double multiplier = 1.0,
+    String? targetCurrency,
+  }) {
+    return CashFlowStatement(
+      date: date,
+      symbol: symbol,
+      reportedCurrency: targetCurrency ?? reportedCurrency,
+      period: period,
+      operatingCashFlow: operatingCashFlow * multiplier,
+      investingCashFlow: netCashProvidedByInvestingActivities * multiplier,
+      financingCashFlow: netCashProvidedByFinancingActivities * multiplier,
+      capitalExpenditure: capitalExpenditure * multiplier,
+      freeCashFlow: freeCashFlow * multiplier,
+      dividendsPaid: netDividendsPaid * multiplier,
+      cashAtBeginningOfPeriod: cashAtBeginningOfPeriod * multiplier,
+      cashAtEndOfPeriod: cashAtEndOfPeriod * multiplier,
+    );
+  }
 }

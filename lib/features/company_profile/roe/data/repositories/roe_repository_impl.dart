@@ -3,7 +3,6 @@ import 'package:injectable/injectable.dart';
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/features/company_profile/shared/data/datasources/ratios_firestore_data_source.dart';
 import 'package:bizzie/features/company_profile/shared/data/datasources/ratios_remote_data_source.dart';
-import 'package:bizzie/features/company_profile/roe/data/dtos/key_metrics_dto.dart';
 import '../../domain/interfaces/i_roe_repository.dart';
 import '../../domain/models/roe.dart';
 
@@ -28,23 +27,14 @@ class RoeRepositoryImpl implements IRoeRepository {
         ticker,
         isTtm: period == _Consts.ttm,
       );
-      if (local != null) return right(local.map(_toRoe).toList());
+      if (local != null) return right(local.map((d) => d.toRoe()).toList());
 
       final remote = await _remoteDataSource.getKeyMetrics(ticker);
 
       await _localDataSource.cacheKeyMetrics(ticker, remote, isTtm: false);
-      return right(remote.map(_toRoe).toList());
+      return right(remote.map((d) => d.toRoe()).toList());
     } catch (e) {
       return left(ServerFailure(e.toString()));
     }
-  }
-
-  Roe _toRoe(KeyMetricsDto d) {
-    return Roe(
-      symbol: d.symbol ?? '',
-      date: d.date ?? '',
-      period: d.period ?? '',
-      returnOnEquity: d.returnOnEquity ?? 0,
-    );
   }
 }

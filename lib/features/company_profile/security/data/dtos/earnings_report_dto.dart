@@ -17,6 +17,10 @@ abstract class EarningsReportDto with _$EarningsReportDto {
     String? lastUpdated,
   }) = _EarningsReportDto;
 
+  const EarningsReportDto._();
+
   factory EarningsReportDto.fromJson(Map<String, dynamic> json) =>
       _$EarningsReportDtoFromJson(json);
+
+  DateTime? toDateTime() => DateTime.tryParse(date);
 }

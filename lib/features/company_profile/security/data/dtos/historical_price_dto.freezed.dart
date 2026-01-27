@@ -211,8 +211,8 @@ return $default(_that.date,_that.price,_that.close,_that.volume);case _:
 /// @nodoc
 @JsonSerializable()
 
-class _HistoricalPriceDto implements HistoricalPriceDto {
-  const _HistoricalPriceDto({required this.date, this.price, this.close, this.volume});
+class _HistoricalPriceDto extends HistoricalPriceDto {
+  const _HistoricalPriceDto({required this.date, this.price, this.close, this.volume}): super._();
   factory _HistoricalPriceDto.fromJson(Map<String, dynamic> json) => _$HistoricalPriceDtoFromJson(json);
 
 @override final  String date;

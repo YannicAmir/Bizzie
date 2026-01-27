@@ -3,7 +3,6 @@ import 'package:injectable/injectable.dart';
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/features/company_profile/shared/data/datasources/ratios_firestore_data_source.dart';
 import 'package:bizzie/features/company_profile/shared/data/datasources/ratios_remote_data_source.dart';
-import 'package:bizzie/features/company_profile/shared/data/dtos/ratios_dto.dart';
 import '../../domain/interfaces/i_pe_ratio_repository.dart';
 import '../../domain/models/pe_ratio.dart';
 
@@ -28,23 +27,14 @@ class PeRatioRepositoryImpl implements IPeRatioRepository {
         ticker,
         isTtm: period == _Consts.ttm,
       );
-      if (local != null) return right(local.map(_toPeRatio).toList());
+      if (local != null) return right(local.map((d) => d.toPeRatio()).toList());
 
       final remote = await _remoteDataSource.getRatios(ticker);
 
       await _localDataSource.cacheRatios(ticker, remote, isTtm: false);
-      return right(remote.map(_toPeRatio).toList());
+      return right(remote.map((d) => d.toPeRatio()).toList());
     } catch (e) {
       return left(ServerFailure(e.toString()));
     }
-  }
-
-  PeRatio _toPeRatio(RatiosDto d) {
-    return PeRatio(
-      symbol: d.symbol ?? '',
-      date: d.date ?? '',
-      period: d.period ?? '',
-      priceToEarningsRatio: d.priceToEarningsRatio ?? 0,
-    );
   }
 }

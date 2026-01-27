@@ -11,6 +11,8 @@ abstract class RatiosTtmDto with _$RatiosTtmDto {
     double? priceToFreeCashFlowRatioTTM,
   }) = _RatiosTtmDto;
 
+  const RatiosTtmDto._();
+
   factory RatiosTtmDto.fromJson(Map<String, dynamic> json) =>
       _$RatiosTtmDtoFromJson(json);
 }

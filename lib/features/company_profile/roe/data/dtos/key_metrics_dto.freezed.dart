@@ -211,8 +211,8 @@ return $default(_that.symbol,_that.date,_that.period,_that.returnOnEquity);case 
 /// @nodoc
 @JsonSerializable()
 
-class _KeyMetricsDto implements KeyMetricsDto {
-  const _KeyMetricsDto({this.symbol, this.date, this.period, this.returnOnEquity});
+class _KeyMetricsDto extends KeyMetricsDto {
+  const _KeyMetricsDto({this.symbol, this.date, this.period, this.returnOnEquity}): super._();
   factory _KeyMetricsDto.fromJson(Map<String, dynamic> json) => _$KeyMetricsDtoFromJson(json);
 
 @override final  String? symbol;

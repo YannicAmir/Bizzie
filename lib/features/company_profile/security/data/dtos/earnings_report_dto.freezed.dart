@@ -214,8 +214,8 @@ return $default(_that.symbol,_that.date,_that.epsActual,_that.epsEstimated,_that
 /// @nodoc
 @JsonSerializable()
 
-class _EarningsReportDto implements EarningsReportDto {
-  const _EarningsReportDto({required this.symbol, required this.date, this.epsActual, this.epsEstimated, this.revenueActual, this.revenueEstimated, this.lastUpdated});
+class _EarningsReportDto extends EarningsReportDto {
+  const _EarningsReportDto({required this.symbol, required this.date, this.epsActual, this.epsEstimated, this.revenueActual, this.revenueEstimated, this.lastUpdated}): super._();
   factory _EarningsReportDto.fromJson(Map<String, dynamic> json) => _$EarningsReportDtoFromJson(json);
 
 @override final  String symbol;

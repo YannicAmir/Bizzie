@@ -122,19 +122,7 @@ class BusinessRepositoryImpl implements IBusinessRepository {
       } catch (_) {}
     }
 
-    return localExec
-            ?.map(
-              (e) => CompanyExecutive(
-                name: e.name,
-                title: e.title,
-                totalPay: e.pay,
-                currencyPay: e.currencyPay,
-                gender: e.gender,
-                yearBorn: e.yearBorn,
-              ),
-            )
-            .toList() ??
-        [];
+    return localExec?.map((e) => e.toDomain()).toList() ?? [];
   }
 
   Future<({String? url, String? formType})> _getProxyOrAnnualUrl(
@@ -175,14 +163,7 @@ class BusinessRepositoryImpl implements IBusinessRepository {
               (e.finalLink?.isNotEmpty ?? false) ||
               (e.link?.isNotEmpty ?? false),
         )
-        .map(
-          (e) => SecFiling(
-            date: e.date,
-            year: (e.date.length >= 4) ? e.date.substring(0, 4) : '',
-            period: e.period,
-            link: e.finalLink ?? e.link ?? '',
-          ),
-        )
+        .map((e) => e.toSecFiling())
         .toList();
   }
 

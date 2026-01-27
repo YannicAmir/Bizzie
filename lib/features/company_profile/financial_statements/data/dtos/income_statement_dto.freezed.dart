@@ -239,8 +239,8 @@ return $default(_that.date,_that.symbol,_that.reportedCurrency,_that.cik,_that.f
 /// @nodoc
 @JsonSerializable()
 
-class _IncomeStatementDto implements IncomeStatementDto {
-  const _IncomeStatementDto({required this.date, required this.symbol, required this.reportedCurrency, required this.cik, required this.filingDate, required this.acceptedDate, required this.fiscalYear, required this.period, this.revenue, this.costOfRevenue, this.grossProfit, this.researchAndDevelopmentExpenses, this.generalAndAdministrativeExpenses, this.sellingAndMarketingExpenses, this.sellingGeneralAndAdministrativeExpenses, this.otherExpenses, this.operatingExpenses, this.costAndExpenses, this.interestIncome, this.interestExpense, this.depreciationAndAmortization, this.ebitda, this.ebit, this.operatingIncome, this.totalOtherIncomeExpensesNet, this.incomeBeforeTax, this.incomeTaxExpense, this.netIncome, this.eps, this.epsDiluted, this.weightedAverageShsOut, this.weightedAverageShsOutDil});
+class _IncomeStatementDto extends IncomeStatementDto {
+  const _IncomeStatementDto({required this.date, required this.symbol, required this.reportedCurrency, required this.cik, required this.filingDate, required this.acceptedDate, required this.fiscalYear, required this.period, this.revenue, this.costOfRevenue, this.grossProfit, this.researchAndDevelopmentExpenses, this.generalAndAdministrativeExpenses, this.sellingAndMarketingExpenses, this.sellingGeneralAndAdministrativeExpenses, this.otherExpenses, this.operatingExpenses, this.costAndExpenses, this.interestIncome, this.interestExpense, this.depreciationAndAmortization, this.ebitda, this.ebit, this.operatingIncome, this.totalOtherIncomeExpensesNet, this.incomeBeforeTax, this.incomeTaxExpense, this.netIncome, this.eps, this.epsDiluted, this.weightedAverageShsOut, this.weightedAverageShsOutDil}): super._();
   factory _IncomeStatementDto.fromJson(Map<String, dynamic> json) => _$IncomeStatementDtoFromJson(json);
 
 @override final  String date;

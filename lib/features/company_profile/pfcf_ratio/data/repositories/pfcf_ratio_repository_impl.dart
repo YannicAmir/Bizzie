@@ -3,7 +3,6 @@ import 'package:injectable/injectable.dart';
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/features/company_profile/shared/data/datasources/ratios_firestore_data_source.dart';
 import 'package:bizzie/features/company_profile/shared/data/datasources/ratios_remote_data_source.dart';
-import 'package:bizzie/features/company_profile/shared/data/dtos/ratios_dto.dart';
 import '../../domain/interfaces/i_pfcf_ratio_repository.dart';
 import '../../domain/models/pfcf_ratio.dart';
 
@@ -28,23 +27,16 @@ class PfcfRatioRepositoryImpl implements IPfcfRatioRepository {
         ticker,
         isTtm: period == _Consts.ttm,
       );
-      if (local != null) return right(local.map(_toPfcfRatio).toList());
+      if (local != null) {
+        return right(local.map((d) => d.toPfcfRatio()).toList());
+      }
 
       final remote = await _remoteDataSource.getRatios(ticker);
 
       await _localDataSource.cacheRatios(ticker, remote, isTtm: false);
-      return right(remote.map(_toPfcfRatio).toList());
+      return right(remote.map((d) => d.toPfcfRatio()).toList());
     } catch (e) {
       return left(ServerFailure(e.toString()));
     }
-  }
-
-  PfcfRatio _toPfcfRatio(RatiosDto d) {
-    return PfcfRatio(
-      symbol: d.symbol ?? '',
-      date: d.date ?? '',
-      period: d.period ?? '',
-      priceToFreeCashFlowRatio: d.priceToFreeCashFlowRatio ?? 0,
-    );
   }
 }
