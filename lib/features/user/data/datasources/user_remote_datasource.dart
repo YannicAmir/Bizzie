@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:bizzie/features/user/data/dtos/user_dto.dart';
 import 'package:bizzie/features/watchlist/data/dtos/watchlist_item_dto.dart';
 import 'package:bizzie/services/firestore_service.dart';
@@ -33,7 +34,13 @@ class UserRemoteDataSource implements IUserRemoteDataSource {
       }
       return user;
     } catch (e, s) {
-      _logger.severe('Failed to fetch user profile for UID: $uid', e, s);
+      if (e is FirebaseException && e.code == 'permission-denied') {
+        _logger.warning(
+          'Failed to fetch user profile (expected on logout) for UID: $uid',
+        );
+      } else {
+        _logger.severe('Failed to fetch user profile for UID: $uid', e, s);
+      }
       rethrow;
     }
   }
@@ -52,7 +59,13 @@ class UserRemoteDataSource implements IUserRemoteDataSource {
       );
       return watchlist;
     } catch (e, s) {
-      _logger.severe('Failed to fetch watchlist for UID: $uid', e, s);
+      if (e is FirebaseException && e.code == 'permission-denied') {
+        _logger.warning(
+          'Failed to fetch watchlist (expected on logout) for UID: $uid',
+        );
+      } else {
+        _logger.severe('Failed to fetch watchlist for UID: $uid', e, s);
+      }
       rethrow;
     }
   }

@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:bizzie/features/watchlist/data/dtos/watchlist_item_dto.dart';
 import 'package:bizzie/services/firestore_service.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
@@ -59,7 +60,13 @@ class WatchlistRemoteDataSource implements IWatchlistRemoteDataSource {
           toJson: (dto) => dto.toJson(),
         )
         .handleError((e, s) {
-          _logger.severe('Error in Watchlist stream for UID: $uid', e, s);
+          if (e is FirebaseException && e.code == 'permission-denied') {
+            _logger.warning(
+              'Watchlist stream permission denied (expected on logout) for UID: $uid',
+            );
+          } else {
+            _logger.severe('Error in Watchlist stream for UID: $uid', e, s);
+          }
         });
   }
 }

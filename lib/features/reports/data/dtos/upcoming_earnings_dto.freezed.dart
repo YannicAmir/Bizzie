@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$UpcomingEarningsDto {
 
-@JsonKey(includeFromJson: false, includeToJson: false) String? get id; String get symbol;@TimestampConverter() DateTime get date;@TimestampConverter() DateTime? get expireAt;
+@JsonKey(includeToJson: false) String? get id; String get symbol;@TimestampConverter() DateTime get date;@TimestampConverter() DateTime? get expireAt;
 /// Create a copy of UpcomingEarningsDto
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -48,7 +48,7 @@ abstract mixin class $UpcomingEarningsDtoCopyWith<$Res>  {
   factory $UpcomingEarningsDtoCopyWith(UpcomingEarningsDto value, $Res Function(UpcomingEarningsDto) _then) = _$UpcomingEarningsDtoCopyWithImpl;
 @useResult
 $Res call({
-@JsonKey(includeFromJson: false, includeToJson: false) String? id, String symbol,@TimestampConverter() DateTime date,@TimestampConverter() DateTime? expireAt
+@JsonKey(includeToJson: false) String? id, String symbol,@TimestampConverter() DateTime date,@TimestampConverter() DateTime? expireAt
 });
 
 
@@ -156,7 +156,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(includeFromJson: false, includeToJson: false)  String? id,  String symbol, @TimestampConverter()  DateTime date, @TimestampConverter()  DateTime? expireAt)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(includeToJson: false)  String? id,  String symbol, @TimestampConverter()  DateTime date, @TimestampConverter()  DateTime? expireAt)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _UpcomingEarningsDto() when $default != null:
 return $default(_that.id,_that.symbol,_that.date,_that.expireAt);case _:
@@ -177,7 +177,7 @@ return $default(_that.id,_that.symbol,_that.date,_that.expireAt);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(includeFromJson: false, includeToJson: false)  String? id,  String symbol, @TimestampConverter()  DateTime date, @TimestampConverter()  DateTime? expireAt)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(includeToJson: false)  String? id,  String symbol, @TimestampConverter()  DateTime date, @TimestampConverter()  DateTime? expireAt)  $default,) {final _that = this;
 switch (_that) {
 case _UpcomingEarningsDto():
 return $default(_that.id,_that.symbol,_that.date,_that.expireAt);case _:
@@ -197,7 +197,7 @@ return $default(_that.id,_that.symbol,_that.date,_that.expireAt);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(includeFromJson: false, includeToJson: false)  String? id,  String symbol, @TimestampConverter()  DateTime date, @TimestampConverter()  DateTime? expireAt)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(includeToJson: false)  String? id,  String symbol, @TimestampConverter()  DateTime date, @TimestampConverter()  DateTime? expireAt)?  $default,) {final _that = this;
 switch (_that) {
 case _UpcomingEarningsDto() when $default != null:
 return $default(_that.id,_that.symbol,_that.date,_that.expireAt);case _:
@@ -212,10 +212,10 @@ return $default(_that.id,_that.symbol,_that.date,_that.expireAt);case _:
 @JsonSerializable()
 
 class _UpcomingEarningsDto extends UpcomingEarningsDto {
-  const _UpcomingEarningsDto({@JsonKey(includeFromJson: false, includeToJson: false) this.id, required this.symbol, @TimestampConverter() required this.date, @TimestampConverter() this.expireAt}): super._();
+  const _UpcomingEarningsDto({@JsonKey(includeToJson: false) this.id, required this.symbol, @TimestampConverter() required this.date, @TimestampConverter() this.expireAt}): super._();
   factory _UpcomingEarningsDto.fromJson(Map<String, dynamic> json) => _$UpcomingEarningsDtoFromJson(json);
 
-@override@JsonKey(includeFromJson: false, includeToJson: false) final  String? id;
+@override@JsonKey(includeToJson: false) final  String? id;
 @override final  String symbol;
 @override@TimestampConverter() final  DateTime date;
 @override@TimestampConverter() final  DateTime? expireAt;
@@ -253,7 +253,7 @@ abstract mixin class _$UpcomingEarningsDtoCopyWith<$Res> implements $UpcomingEar
   factory _$UpcomingEarningsDtoCopyWith(_UpcomingEarningsDto value, $Res Function(_UpcomingEarningsDto) _then) = __$UpcomingEarningsDtoCopyWithImpl;
 @override @useResult
 $Res call({
-@JsonKey(includeFromJson: false, includeToJson: false) String? id, String symbol,@TimestampConverter() DateTime date,@TimestampConverter() DateTime? expireAt
+@JsonKey(includeToJson: false) String? id, String symbol,@TimestampConverter() DateTime date,@TimestampConverter() DateTime? expireAt
 });
 
 

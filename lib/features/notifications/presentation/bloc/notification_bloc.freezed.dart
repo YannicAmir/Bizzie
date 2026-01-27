@@ -55,14 +55,15 @@ extension NotificationEventPatterns on NotificationEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _SetupRequested value)?  setupRequested,TResult Function( _SubscribeToTopicRequested value)?  subscribeToTopicRequested,TResult Function( _UnsubscribeFromTopicRequested value)?  unsubscribeFromTopicRequested,TResult Function( _MessageReceived value)?  messageReceived,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _SetupRequested value)?  setupRequested,TResult Function( _SubscribeToTopicRequested value)?  subscribeToTopicRequested,TResult Function( _UnsubscribeFromTopicRequested value)?  unsubscribeFromTopicRequested,TResult Function( _MessageReceived value)?  messageReceived,TResult Function( _Reset value)?  reset,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _SetupRequested() when setupRequested != null:
 return setupRequested(_that);case _SubscribeToTopicRequested() when subscribeToTopicRequested != null:
 return subscribeToTopicRequested(_that);case _UnsubscribeFromTopicRequested() when unsubscribeFromTopicRequested != null:
 return unsubscribeFromTopicRequested(_that);case _MessageReceived() when messageReceived != null:
-return messageReceived(_that);case _:
+return messageReceived(_that);case _Reset() when reset != null:
+return reset(_that);case _:
   return orElse();
 
 }
@@ -80,14 +81,15 @@ return messageReceived(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _SetupRequested value)  setupRequested,required TResult Function( _SubscribeToTopicRequested value)  subscribeToTopicRequested,required TResult Function( _UnsubscribeFromTopicRequested value)  unsubscribeFromTopicRequested,required TResult Function( _MessageReceived value)  messageReceived,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _SetupRequested value)  setupRequested,required TResult Function( _SubscribeToTopicRequested value)  subscribeToTopicRequested,required TResult Function( _UnsubscribeFromTopicRequested value)  unsubscribeFromTopicRequested,required TResult Function( _MessageReceived value)  messageReceived,required TResult Function( _Reset value)  reset,}){
 final _that = this;
 switch (_that) {
 case _SetupRequested():
 return setupRequested(_that);case _SubscribeToTopicRequested():
 return subscribeToTopicRequested(_that);case _UnsubscribeFromTopicRequested():
 return unsubscribeFromTopicRequested(_that);case _MessageReceived():
-return messageReceived(_that);case _:
+return messageReceived(_that);case _Reset():
+return reset(_that);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -104,14 +106,15 @@ return messageReceived(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _SetupRequested value)?  setupRequested,TResult? Function( _SubscribeToTopicRequested value)?  subscribeToTopicRequested,TResult? Function( _UnsubscribeFromTopicRequested value)?  unsubscribeFromTopicRequested,TResult? Function( _MessageReceived value)?  messageReceived,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _SetupRequested value)?  setupRequested,TResult? Function( _SubscribeToTopicRequested value)?  subscribeToTopicRequested,TResult? Function( _UnsubscribeFromTopicRequested value)?  unsubscribeFromTopicRequested,TResult? Function( _MessageReceived value)?  messageReceived,TResult? Function( _Reset value)?  reset,}){
 final _that = this;
 switch (_that) {
 case _SetupRequested() when setupRequested != null:
 return setupRequested(_that);case _SubscribeToTopicRequested() when subscribeToTopicRequested != null:
 return subscribeToTopicRequested(_that);case _UnsubscribeFromTopicRequested() when unsubscribeFromTopicRequested != null:
 return unsubscribeFromTopicRequested(_that);case _MessageReceived() when messageReceived != null:
-return messageReceived(_that);case _:
+return messageReceived(_that);case _Reset() when reset != null:
+return reset(_that);case _:
   return null;
 
 }
@@ -128,13 +131,14 @@ return messageReceived(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  setupRequested,TResult Function( String topic)?  subscribeToTopicRequested,TResult Function( String topic)?  unsubscribeFromTopicRequested,TResult Function( NotificationMessage message)?  messageReceived,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  setupRequested,TResult Function( String topic)?  subscribeToTopicRequested,TResult Function( String topic)?  unsubscribeFromTopicRequested,TResult Function( NotificationMessage message)?  messageReceived,TResult Function()?  reset,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _SetupRequested() when setupRequested != null:
 return setupRequested();case _SubscribeToTopicRequested() when subscribeToTopicRequested != null:
 return subscribeToTopicRequested(_that.topic);case _UnsubscribeFromTopicRequested() when unsubscribeFromTopicRequested != null:
 return unsubscribeFromTopicRequested(_that.topic);case _MessageReceived() when messageReceived != null:
-return messageReceived(_that.message);case _:
+return messageReceived(_that.message);case _Reset() when reset != null:
+return reset();case _:
   return orElse();
 
 }
@@ -152,13 +156,14 @@ return messageReceived(_that.message);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  setupRequested,required TResult Function( String topic)  subscribeToTopicRequested,required TResult Function( String topic)  unsubscribeFromTopicRequested,required TResult Function( NotificationMessage message)  messageReceived,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  setupRequested,required TResult Function( String topic)  subscribeToTopicRequested,required TResult Function( String topic)  unsubscribeFromTopicRequested,required TResult Function( NotificationMessage message)  messageReceived,required TResult Function()  reset,}) {final _that = this;
 switch (_that) {
 case _SetupRequested():
 return setupRequested();case _SubscribeToTopicRequested():
 return subscribeToTopicRequested(_that.topic);case _UnsubscribeFromTopicRequested():
 return unsubscribeFromTopicRequested(_that.topic);case _MessageReceived():
-return messageReceived(_that.message);case _:
+return messageReceived(_that.message);case _Reset():
+return reset();case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -175,13 +180,14 @@ return messageReceived(_that.message);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  setupRequested,TResult? Function( String topic)?  subscribeToTopicRequested,TResult? Function( String topic)?  unsubscribeFromTopicRequested,TResult? Function( NotificationMessage message)?  messageReceived,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  setupRequested,TResult? Function( String topic)?  subscribeToTopicRequested,TResult? Function( String topic)?  unsubscribeFromTopicRequested,TResult? Function( NotificationMessage message)?  messageReceived,TResult? Function()?  reset,}) {final _that = this;
 switch (_that) {
 case _SetupRequested() when setupRequested != null:
 return setupRequested();case _SubscribeToTopicRequested() when subscribeToTopicRequested != null:
 return subscribeToTopicRequested(_that.topic);case _UnsubscribeFromTopicRequested() when unsubscribeFromTopicRequested != null:
 return unsubscribeFromTopicRequested(_that.topic);case _MessageReceived() when messageReceived != null:
-return messageReceived(_that.message);case _:
+return messageReceived(_that.message);case _Reset() when reset != null:
+return reset();case _:
   return null;
 
 }
@@ -427,6 +433,38 @@ $NotificationMessageCopyWith<$Res> get message {
   });
 }
 }
+
+/// @nodoc
+
+
+class _Reset implements NotificationEvent {
+  const _Reset();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Reset);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'NotificationEvent.reset()';
+}
+
+
+}
+
+
+
 
 /// @nodoc
 mixin _$NotificationState {

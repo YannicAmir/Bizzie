@@ -10,6 +10,11 @@ import 'package:bizzie/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:bizzie/features/auth/presentation/bloc/auth_event.dart';
 import 'package:bizzie/features/auth/presentation/bloc/auth_state.dart';
 import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
+import 'package:bizzie/features/notifications/presentation/bloc/notification_bloc.dart';
+import 'package:bizzie/features/watchlist/presentation/bloc/watchlist_bloc.dart';
+import 'package:bizzie/features/watchlist/presentation/bloc/watchlist_event.dart';
+import 'package:bizzie/features/reports/presentation/bloc/reports_bloc.dart';
+import 'package:bizzie/features/reports/presentation/bloc/reports_event.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -66,6 +71,10 @@ class _BizzieAppViewState extends State<BizzieAppView> {
           context.read<UserBloc>().add(
             UserEvent.loadUser(state.user.id, silent: isFromCreateAccount),
           );
+          context.read<WatchlistBloc>().add(
+            const WatchlistEvent.loadRequested(),
+          );
+          context.read<ReportsBloc>().add(const ReportsEvent.started());
         },
       );
     }
@@ -93,9 +102,18 @@ class _BizzieAppViewState extends State<BizzieAppView> {
             context.read<UserBloc>().add(
               UserEvent.loadUser(user.id, silent: isFromCreateAccount),
             );
+            context.read<WatchlistBloc>().add(
+              const WatchlistEvent.loadRequested(),
+            );
+            context.read<ReportsBloc>().add(const ReportsEvent.started());
           },
           unauthenticated: () {
             context.read<UserBloc>().add(const UserEvent.clear());
+            context.read<WatchlistBloc>().add(const WatchlistEvent.reset());
+            context.read<ReportsBloc>().add(const ReportsEvent.reset());
+            context.read<NotificationBloc>().add(
+              const NotificationEvent.reset(),
+            );
           },
         );
 

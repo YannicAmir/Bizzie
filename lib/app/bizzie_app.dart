@@ -4,7 +4,6 @@ import 'package:bizzie/features/notifications/presentation/bloc/notification_blo
 import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
 import 'package:bizzie/features/watchlist/presentation/bloc/watchlist_bloc.dart';
 import 'package:bizzie/features/reports/presentation/bloc/reports_bloc.dart';
-import 'package:bizzie/features/reports/presentation/bloc/reports_event.dart';
 import 'package:bizzie/di/injection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -26,10 +25,7 @@ class BizzieApp extends StatelessWidget {
         ),
         BlocProvider<UserBloc>(create: (_) => getIt<UserBloc>()),
         BlocProvider<WatchlistBloc>(create: (_) => getIt<WatchlistBloc>()),
-        BlocProvider<ReportsBloc>(
-          create: (_) =>
-              getIt<ReportsBloc>()..add(const ReportsEvent.started()),
-        ),
+        BlocProvider<ReportsBloc>(create: (_) => getIt<ReportsBloc>()),
       ],
       child: BizzieAppView(initialNotificationRoute: initialNotificationRoute),
     );

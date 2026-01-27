@@ -8,6 +8,7 @@ part of 'sec_filing_dto.dart';
 
 _SecFilingDto _$SecFilingDtoFromJson(Map<String, dynamic> json) =>
     _SecFilingDto(
+      id: json['id'] as String?,
       symbol: json['symbol'] as String,
       companyName: json['companyName'] as String,
       filingDate: json['filingDate'] as String,

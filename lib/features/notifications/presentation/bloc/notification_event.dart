@@ -9,4 +9,5 @@ class NotificationEvent with _$NotificationEvent {
       _UnsubscribeFromTopicRequested;
   const factory NotificationEvent.messageReceived(NotificationMessage message) =
       _MessageReceived;
+  const factory NotificationEvent.reset() = _Reset;
 }

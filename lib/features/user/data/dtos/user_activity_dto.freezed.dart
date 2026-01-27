@@ -15,9 +15,6 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$UserActivityDto {
 
-// Using Object? to handle Timestamp/String flexibly if needed,
-// but standard approach is DateTime with logic in remote_datasource or converter.
-// We will use DateTime and rely on standard converters or explicit parsing.
 @TimestampConverter() DateTime? get lastViewedReports;
 /// Create a copy of UserActivityDto
 /// with the given fields replaced by the non-null parameter values.
@@ -215,9 +212,6 @@ class _UserActivityDto extends UserActivityDto {
   const _UserActivityDto({@TimestampConverter() this.lastViewedReports}): super._();
   factory _UserActivityDto.fromJson(Map<String, dynamic> json) => _$UserActivityDtoFromJson(json);
 
-// Using Object? to handle Timestamp/String flexibly if needed,
-// but standard approach is DateTime with logic in remote_datasource or converter.
-// We will use DateTime and rely on standard converters or explicit parsing.
 @override@TimestampConverter() final  DateTime? lastViewedReports;
 
 /// Create a copy of UserActivityDto

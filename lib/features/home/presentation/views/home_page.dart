@@ -2,8 +2,6 @@ import 'package:bizzie/app/routes/app_routes.dart';
 import 'package:bizzie/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:bizzie/features/auth/presentation/bloc/auth_event.dart';
 import 'package:bizzie/features/auth/presentation/bloc/auth_state.dart';
-import 'package:bizzie/features/watchlist/presentation/bloc/watchlist_bloc.dart';
-import 'package:bizzie/features/watchlist/presentation/bloc/watchlist_event.dart';
 import 'package:bizzie/shared/widgets/inputs/bizzie_search_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -21,17 +19,9 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  void _onAuthenticated(BuildContext context) {
-    final watchlistBloc = context.read<WatchlistBloc>();
-    watchlistBloc.add(const WatchlistEvent.loadRequested());
-    watchlistBloc.add(const WatchlistEvent.syncRequested());
-  }
-
   @override
   void initState() {
     super.initState();
-    final authState = context.read<AuthBloc>().state;
-    authState.mapOrNull(authenticated: (_) => _onAuthenticated(context));
   }
 
   @override
@@ -48,7 +38,13 @@ class _HomePageState extends State<HomePage> {
       body: Center(
         child: BlocListener<AuthBloc, AuthState>(
           listener: (context, state) {
-            state.mapOrNull(authenticated: (_) => _onAuthenticated(context));
+            state.maybeWhen(
+              authenticated: (_) {},
+              failure: (message) => ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(SnackBar(content: Text(message))),
+              orElse: () => null,
+            );
           },
           child: BlocBuilder<AuthBloc, AuthState>(
             builder: (context, state) {
@@ -97,6 +93,10 @@ class _HomePageState extends State<HomePage> {
                           builder: (context, userState) {
                             return userState.maybeWhen(
                               loaded: (user) => Text('DB: ${user.createdAt}'),
+                              failure: (message, _, __) => Text(
+                                'DB Error: $message',
+                                style: const TextStyle(color: Colors.red),
+                              ),
                               orElse: () => const Text('DB: Loading...'),
                             );
                           },

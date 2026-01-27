@@ -37,6 +37,14 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
     on<_SubscribeToTopicRequested>(_onSubscribeToTopicRequested);
     on<_UnsubscribeFromTopicRequested>(_onUnsubscribeFromTopicRequested);
     on<_MessageReceived>(_onMessageReceived);
+    on<_Reset>(_onReset);
+  }
+
+  void _onReset(_Reset event, Emitter<NotificationState> emit) {
+    _logger.info('Resetting NotificationBloc - canceling subscription');
+    _messageSubscription?.cancel();
+    _messageSubscription = null;
+    emit(const NotificationState.initial());
   }
 
   Future<void> _onSetupRequested(

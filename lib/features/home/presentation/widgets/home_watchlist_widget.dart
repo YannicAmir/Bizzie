@@ -8,8 +8,11 @@ import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
 import 'package:bizzie/shared/widgets/company_list_tile.dart';
 import 'package:bizzie/shared/widgets/error/bizzie_error.dart';
 import 'package:bizzie/shared/widgets/states/bizzie_empty_state.dart';
+import 'package:bizzie/shared/widgets/loading/bizzie_loader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:bizzie/features/user/domain/interfaces/user_repository.dart';
+import 'package:bizzie/di/injection.dart';
 import 'package:go_router/go_router.dart';
 
 class HomeWatchlistWidget extends StatelessWidget {
@@ -21,16 +24,19 @@ class HomeWatchlistWidget extends StatelessWidget {
 
     return BlocBuilder<UserBloc, UserState>(
       builder: (context, userState) {
+        final cachedSector = getIt<IUserRepository>().getCachedFavoriteSector();
         final mascot = userState.maybeMap(
           loaded: (u) => AppAssets.getMascotForSector(u.user.favoriteSector),
-          orElse: () => AppAssets.defaultMascot,
+          orElse: () => cachedSector != null
+              ? AppAssets.getMascotForSector(cachedSector)
+              : AppAssets.defaultMascot,
         );
 
         return BlocBuilder<WatchlistBloc, WatchlistState>(
           builder: (context, state) {
             return state.maybeWhen(
-              initial: () => const _LoadingState(),
-              loading: () => const _LoadingState(),
+              initial: () => _LoadingState(mascotAssetPath: mascot),
+              loading: () => _LoadingState(mascotAssetPath: mascot),
               failure: (f) => Center(
                 child: BizzieError(
                   message: 'Error loading watchlist',
@@ -99,15 +105,14 @@ class HomeWatchlistWidget extends StatelessWidget {
 }
 
 class _LoadingState extends StatelessWidget {
-  const _LoadingState();
+  final String mascotAssetPath;
+  const _LoadingState({required this.mascotAssetPath});
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
-      child: Padding(
-        padding: EdgeInsets.all(24.0),
-        child: CircularProgressIndicator(),
-      ),
+    return BizzieLoader(
+      message: 'Loading your watchlist...',
+      mascotAssetPath: mascotAssetPath,
     );
   }
 }
