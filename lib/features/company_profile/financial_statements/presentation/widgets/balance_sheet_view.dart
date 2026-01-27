@@ -67,10 +67,7 @@ class _BalanceSheetViewState extends State<BalanceSheetView> {
                   ),
                 ),
                 pageController: _pageController,
-                rows: [
-                  ...state.balanceRows(locale: locale, isAnnual: false),
-                  state.roeRow(isAnnual: false),
-                ],
+                rows: [...state.balanceRows(locale: locale, isAnnual: false)],
                 historyBuilder: (item) =>
                     state.balanceHistoryRowData(item, locale),
               ),
