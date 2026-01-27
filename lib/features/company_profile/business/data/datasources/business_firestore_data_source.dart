@@ -1,16 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:injectable/injectable.dart';
 import 'package:bizzie/core/data/models/firestore_cache_entry.dart';
-import 'package:bizzie/features/company_profile/business/data/dtos/profile_dtos.dart';
 import 'package:bizzie/features/company_profile/business/data/dtos/governance_dtos.dart';
 
 abstract class BusinessFirestoreDataSource {
-  Future<void> cacheProfile(String ticker, ProfileDto profile);
-  Future<ProfileDto?> getCachedProfile(String ticker);
-
-  Future<void> cacheQuote(String ticker, QuoteDto quote);
-  Future<QuoteDto?> getCachedQuote(String ticker);
-
   Future<void> cacheGovernance(
     String ticker,
     GovernanceDto governance,
@@ -128,55 +121,6 @@ class BusinessFirestoreDataSourceImpl implements BusinessFirestoreDataSource {
     } catch (_) {}
 
     return null;
-  }
-
-  @override
-  Future<void> cacheProfile(String ticker, ProfileDto profile) async {
-    await _getDocRef<ProfileDto>(
-      ticker,
-      'info',
-      'profile',
-      (json) => ProfileDto.fromJson(json as Map<String, dynamic>),
-      (data) => data.toJson(),
-    ).set(FirestoreCacheEntry(data: profile, lastUpdated: DateTime.now()));
-  }
-
-  @override
-  Future<ProfileDto?> getCachedProfile(String ticker) async {
-    return _fetchWithCacheFirst(
-      _getDocRef<ProfileDto>(
-        ticker,
-        'info',
-        'profile',
-        (json) => ProfileDto.fromJson(json as Map<String, dynamic>),
-        (data) => data.toJson(),
-      ),
-    );
-  }
-
-  @override
-  Future<void> cacheQuote(String ticker, QuoteDto quote) async {
-    await _getDocRef<QuoteDto>(
-      ticker,
-      'market',
-      'quote',
-      (json) => QuoteDto.fromJson(json as Map<String, dynamic>),
-      (data) => data.toJson(),
-    ).set(FirestoreCacheEntry(data: quote, lastUpdated: DateTime.now()));
-  }
-
-  @override
-  Future<QuoteDto?> getCachedQuote(String ticker) async {
-    return _fetchWithCacheFirst(
-      _getDocRef<QuoteDto>(
-        ticker,
-        'market',
-        'quote',
-        (json) => QuoteDto.fromJson(json as Map<String, dynamic>),
-        (data) => data.toJson(),
-      ),
-      fallbackTtl: const Duration(minutes: 5),
-    );
   }
 
   @override

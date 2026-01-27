@@ -7,13 +7,9 @@ import 'package:bizzie/features/company_profile/security/data/dtos/historical_pr
 // Checking profile_dtos.dart... QuoteDto is in profile_dtos.dart which is now in business/data/dtos/profile_dtos.dart.
 // Actually, earlier I saw QuoteDto being used in PriceRepository.
 // Let's check imports.
-import 'package:bizzie/features/company_profile/business/data/dtos/profile_dtos.dart'; // Verified location of QuoteDto.
 
 abstract class SecurityRemoteDataSource {
   Future<List<HistoricalPriceDto>> getHistoricalPrice(String ticker);
-  Future<List<QuoteDto>> getQuote(
-    String ticker,
-  ); // Quote is often used for price, keep it here or shared? Plan said extract methods.
   Future<List<HistoricalPriceEodDto>> getHistoricalEodPrices(String ticker);
   Future<List<EarningsReportDto>> getEarningsReports(String ticker);
 }
@@ -54,15 +50,6 @@ class SecurityRemoteDataSourceImpl implements SecurityRemoteDataSource {
     final history = response.data['historical'] as List?;
     if (history == null) return [];
     return history.map((e) => HistoricalPriceDto.fromJson(e)).toList();
-  }
-
-  @override
-  Future<List<QuoteDto>> getQuote(String ticker) async {
-    final response = await _dio.get(
-      '$_baseUrl/quote',
-      queryParameters: {'symbol': _sanitize(ticker)},
-    );
-    return (response.data as List).map((e) => QuoteDto.fromJson(e)).toList();
   }
 
   @override

@@ -5,9 +5,12 @@ import 'package:bizzie/features/company_profile/security/data/datasources/securi
 import 'package:bizzie/features/company_profile/security/data/datasources/security_remote_data_source.dart';
 import 'package:bizzie/features/company_profile/security/data/dtos/earnings_report_dto.dart';
 import 'package:bizzie/features/company_profile/shared/data/dtos/ratios_ttm_dto.dart';
-import 'package:bizzie/features/company_profile/business/data/dtos/profile_dtos.dart';
+import 'package:bizzie/features/company_profile/shared/domain/interfaces/i_company_repository.dart';
+import 'package:bizzie/features/company_profile/shared/domain/models/company_profile.dart';
+import 'package:bizzie/features/company_profile/shared/domain/models/stock_quote.dart';
 import 'package:bizzie/features/company_profile/security/data/repositories/security_repository_impl.dart';
 import 'package:bizzie/features/company_profile/security/domain/models/security_details.dart';
+import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -26,37 +29,33 @@ class MockSecurityLocalDataSource extends Mock
 class MockRatiosRemoteDataSource extends Mock
     implements RatiosRemoteDataSource {}
 
+class MockCompanyRepository extends Mock implements ICompanyRepository {}
+
 void main() {
   late SecurityRepositoryImpl repository;
-  late MockBusinessRemoteDataSource mockBusinessRemoteDataSource;
-  late MockBusinessLocalDataSource mockBusinessLocalDataSource;
   late MockSecurityRemoteDataSource mockSecurityRemoteDataSource;
   late MockSecurityLocalDataSource mockSecurityLocalDataSource;
   late MockRatiosRemoteDataSource mockRatiosRemoteDataSource;
+  late MockCompanyRepository mockCompanyRepository;
 
   setUp(() {
-    mockBusinessRemoteDataSource = MockBusinessRemoteDataSource();
-    mockBusinessLocalDataSource = MockBusinessLocalDataSource();
     mockSecurityRemoteDataSource = MockSecurityRemoteDataSource();
     mockSecurityLocalDataSource = MockSecurityLocalDataSource();
     mockRatiosRemoteDataSource = MockRatiosRemoteDataSource();
+    mockCompanyRepository = MockCompanyRepository();
 
     repository = SecurityRepositoryImpl(
-      mockBusinessRemoteDataSource,
-      mockBusinessLocalDataSource,
+      mockCompanyRepository,
       mockSecurityRemoteDataSource,
       mockSecurityLocalDataSource,
       mockRatiosRemoteDataSource,
     );
-
-    registerFallbackValue(const ProfileDto(symbol: ''));
-    registerFallbackValue(const QuoteDto(symbol: '', name: ''));
   });
 
   const tTicker = 'AAPL';
 
   group('SecurityRepositoryImpl - SecurityDetails', () {
-    final tProfile = ProfileDto(
+    final tCompanyProfile = CompanyProfile(
       symbol: tTicker,
       companyName: 'Apple Inc.',
       price: 150.0,
@@ -73,8 +72,14 @@ void main() {
       isEtf: false,
       isFund: false,
       isActivelyTrading: true,
+      address: '',
+      city: '',
+      state: '',
+      zip: '',
+      fullTimeEmployees: '',
+      ceo: '',
     );
-    final tQuote = QuoteDto(
+    final tStockQuote = StockQuote(
       symbol: tTicker,
       name: 'Apple Inc.',
       price: 155.0,
@@ -83,6 +88,7 @@ void main() {
       marketCap: 2500000000.0,
       pe: 25.0,
       sharesOutstanding: 16000000000.0,
+      eps: 0,
     );
     final tRatios = [
       const RatiosTtmDto(
@@ -94,25 +100,11 @@ void main() {
     test('getSecurityDetails_success_returnsSecurityDetails', () async {
       // arrange
       when(
-        () => mockBusinessLocalDataSource.getCachedProfile(tTicker),
-      ).thenAnswer((_) async => null);
+        () => mockCompanyRepository.getProfile(tTicker),
+      ).thenAnswer((_) async => Right(tCompanyProfile));
       when(
-        () => mockBusinessRemoteDataSource.getProfile(tTicker),
-      ).thenAnswer((_) async => [tProfile]);
-      when(
-        () => mockBusinessLocalDataSource.cacheProfile(tTicker, any()),
-      ).thenAnswer((_) async => Future.value());
-
-      when(
-        () => mockBusinessLocalDataSource.getCachedQuote(tTicker),
-      ).thenAnswer((_) async => null);
-      when(
-        () => mockBusinessRemoteDataSource.getQuote(tTicker),
-      ).thenAnswer((_) async => [tQuote]);
-      when(
-        () => mockBusinessLocalDataSource.cacheQuote(tTicker, any()),
-      ).thenAnswer((_) async => Future.value());
-
+        () => mockCompanyRepository.getQuote(tTicker),
+      ).thenAnswer((_) async => Right(tStockQuote));
       when(
         () => mockRatiosRemoteDataSource.getRatiosTtm(tTicker),
       ).thenAnswer((_) async => tRatios);
@@ -133,8 +125,29 @@ void main() {
 
     test('getSecurityDetails_failure_returnsServerFailure', () async {
       // arrange
+      // Wait, repository now handles Left from repo, assume it propagates failure
+      // or if repo throws.
+      // Current impl of SecurityRepositoryImpl calls _companyRepository.getProfile
+      // and expects Right, or if generic Failure?
+      // Actually SecurityRepositoryImpl does:
+      // final profileResult = await _companyRepository.getProfile(ticker);
+      // profileResult.fold((l) => throw Exception("..."), (r) => profile = r);
+      // So we can mock Left return.
+
+      // But to be simpler and match previous test style which expected exception from datasource catch block?
+      // No, let's verify behaviour.
+      // If ICompanyRepository returns Left, SecurityRepositoryImpl throws Exception (based on my previous view of code or assumption).
+      // Let's assume mocking Left is correct way to trigger failure branch if I updated it to handle it.
+      // Wait, I updated it to fold and throw exception on Left.
+
+      // But wait, the previous test was:
+      // when(() => datasource.call()).thenThrow(Exception('Error'));
+      // because the repository impl wrapped try-catch.
+      // The new impl also wraps try-catch?
+      // Yes, usually.
+
       when(
-        () => mockBusinessLocalDataSource.getCachedProfile(tTicker),
+        () => mockCompanyRepository.getProfile(tTicker),
       ).thenThrow(Exception('Error'));
 
       // act

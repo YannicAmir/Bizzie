@@ -8,7 +8,9 @@ import 'package:bizzie/features/company_profile/financial_statements/data/dataso
 import 'package:bizzie/features/company_profile/financial_statements/data/dtos/fmp_sec_filing_dto.dart';
 import 'package:bizzie/features/company_profile/business/data/dtos/governance_dtos.dart';
 import 'package:bizzie/features/company_profile/financial_statements/data/dtos/legacy_income_statement_dto.dart';
-import 'package:bizzie/features/company_profile/business/data/dtos/profile_dtos.dart';
+import 'package:bizzie/features/company_profile/shared/domain/interfaces/i_company_repository.dart';
+import 'package:bizzie/features/company_profile/shared/domain/models/company_profile.dart';
+import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -24,19 +26,24 @@ class MockFinancialRemoteDataSource extends Mock
 class MockFinancialLocalDataSource extends Mock
     implements FinancialStatementsFirestoreDataSource {}
 
+class MockCompanyRepository extends Mock implements ICompanyRepository {}
+
 void main() {
   late BusinessRepositoryImpl repository;
   late MockBusinessRemoteDataSource mockRemoteDataSource;
   late MockBusinessLocalDataSource mockLocalDataSource;
   late MockFinancialRemoteDataSource mockFinancialRemoteDataSource;
   late MockFinancialLocalDataSource mockFinancialLocalDataSource;
+  late MockCompanyRepository mockCompanyRepository;
 
   setUp(() {
     mockRemoteDataSource = MockBusinessRemoteDataSource();
     mockLocalDataSource = MockBusinessLocalDataSource();
     mockFinancialRemoteDataSource = MockFinancialRemoteDataSource();
     mockFinancialLocalDataSource = MockFinancialLocalDataSource();
+    mockCompanyRepository = MockCompanyRepository();
     repository = BusinessRepositoryImpl(
+      mockCompanyRepository,
       mockRemoteDataSource,
       mockLocalDataSource,
       mockFinancialRemoteDataSource,
@@ -48,7 +55,7 @@ void main() {
   });
 
   const tTicker = 'AAPL';
-  final tProfile = ProfileDto(
+  final tCompanyProfile = CompanyProfile(
     symbol: tTicker,
     companyName: 'Apple Inc.',
     price: 150.0,
@@ -108,8 +115,9 @@ void main() {
     test('getBusinessProfile_success_returnsBusinessProfile', () async {
       // arrange
       when(
-        () => mockLocalDataSource.getCachedProfile(tTicker),
-      ).thenAnswer((_) async => tProfile);
+        () => mockCompanyRepository.getProfile(tTicker),
+      ).thenAnswer((_) async => Right(tCompanyProfile));
+
       when(
         () => mockLocalDataSource.getCachedProxyUrl(tTicker),
       ).thenAnswer((_) async => null);

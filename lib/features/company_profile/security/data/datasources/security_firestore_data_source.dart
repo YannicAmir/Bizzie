@@ -4,14 +4,10 @@ import 'package:bizzie/core/data/models/firestore_cache_entry.dart';
 import 'package:bizzie/features/company_profile/security/data/dtos/historical_price_dto.dart';
 import 'package:bizzie/features/company_profile/security/data/dtos/earnings_report_dto.dart';
 import 'package:bizzie/features/company_profile/security/data/dtos/historical_price_eod_dto.dart';
-import 'package:bizzie/features/company_profile/business/data/dtos/profile_dtos.dart'; // For QuoteDto
 
 abstract class SecurityFirestoreDataSource {
   Future<void> cachePrices(String ticker, List<HistoricalPriceDto> prices);
   Future<List<HistoricalPriceDto>?> getCachedPrices(String ticker);
-
-  Future<void> cacheQuote(String ticker, QuoteDto quote);
-  Future<QuoteDto?> getCachedQuote(String ticker);
 
   Future<void> cacheHistoricalEodPrices(
     String ticker,
@@ -158,31 +154,6 @@ class SecurityFirestoreDataSourceImpl implements SecurityFirestoreDataSource {
             (json as List).map((e) => HistoricalPriceDto.fromJson(e)).toList(),
         (data) => data.map((e) => e.toJson()).toList(),
       ),
-    );
-  }
-
-  @override
-  Future<void> cacheQuote(String ticker, QuoteDto quote) async {
-    await _getDocRef<QuoteDto>(
-      ticker,
-      'market',
-      'quote',
-      (json) => QuoteDto.fromJson(json as Map<String, dynamic>),
-      (data) => data.toJson(),
-    ).set(FirestoreCacheEntry(data: quote, lastUpdated: DateTime.now()));
-  }
-
-  @override
-  Future<QuoteDto?> getCachedQuote(String ticker) async {
-    return _fetchWithCacheFirst(
-      _getDocRef<QuoteDto>(
-        ticker,
-        'market',
-        'quote',
-        (json) => QuoteDto.fromJson(json as Map<String, dynamic>),
-        (data) => data.toJson(),
-      ),
-      fallbackTtl: const Duration(minutes: 5),
     );
   }
 

@@ -7,11 +7,12 @@ import 'package:bizzie/features/company_profile/financial_statements/data/dataso
 import 'package:bizzie/features/company_profile/financial_statements/data/datasources/financial_statements_remote_data_source.dart';
 import 'package:bizzie/features/company_profile/financial_statements/data/dtos/fmp_sec_filing_dto.dart';
 import 'package:bizzie/features/company_profile/financial_statements/data/dtos/legacy_income_statement_dto.dart';
-import 'package:bizzie/features/company_profile/business/data/dtos/profile_dtos.dart';
 import 'package:bizzie/features/company_profile/business/domain/interfaces/i_business_repository.dart';
 import 'package:bizzie/features/company_profile/business/domain/models/business_profile.dart';
 import 'package:bizzie/features/company_profile/business/domain/models/company_executive.dart';
 import 'package:bizzie/features/company_profile/business/domain/models/sec_filing.dart';
+import 'package:bizzie/features/company_profile/shared/domain/interfaces/i_company_repository.dart';
+import 'package:bizzie/features/company_profile/shared/domain/models/company_profile.dart';
 
 abstract class _Consts {
   static const String annual = 'annual';
@@ -24,12 +25,14 @@ abstract class _Consts {
 
 @LazySingleton(as: IBusinessRepository)
 class BusinessRepositoryImpl implements IBusinessRepository {
+  final ICompanyRepository _companyRepository;
   final BusinessRemoteDataSource _remoteDataSource;
   final BusinessFirestoreDataSource _localDataSource;
   final FinancialStatementsRemoteDataSource _financialRemoteDataSource;
   final FinancialStatementsFirestoreDataSource _financialLocalDataSource;
 
   BusinessRepositoryImpl(
+    this._companyRepository,
     this._remoteDataSource,
     this._localDataSource,
     this._financialRemoteDataSource,
@@ -42,14 +45,14 @@ class BusinessRepositoryImpl implements IBusinessRepository {
   ) async {
     try {
       final results = await Future.wait([
-        _getProfileAndCache(ticker),
+        _getCompanyProfile(ticker),
         _getExecutivesAndCache(ticker),
         _financialRemoteDataSource.getSecFilings(ticker),
         _fetchLegacyIncomeStatements(ticker, _Consts.annual),
         _fetchLegacyIncomeStatements(ticker, _Consts.quarter),
       ]);
 
-      final profile = results[0] as ProfileDto;
+      final profile = results[0] as CompanyProfile;
       final executives = results[1] as List<CompanyExecutive>;
       final secSearchFilings = results[2] as List<FmpSecFilingDto>;
       final annualIncome = results[3] as List<LegacyIncomeStatementDto>;
@@ -68,7 +71,7 @@ class BusinessRepositoryImpl implements IBusinessRepository {
 
       return right(
         BusinessProfile(
-          symbol: profile.symbol ?? ticker,
+          symbol: profile.symbol,
           companyName: profile.companyName ?? ticker,
           sector: profile.sector ?? 'N/A',
           industry: profile.industry ?? 'N/A',
@@ -95,17 +98,12 @@ class BusinessRepositoryImpl implements IBusinessRepository {
     }
   }
 
-  Future<ProfileDto> _getProfileAndCache(String ticker) async {
-    final local = await _localDataSource.getCachedProfile(ticker);
-    if (local != null) return local;
-
-    final remote = await _remoteDataSource.getProfile(ticker);
-    if (remote.isEmpty) {
-      throw Exception("Profile not found");
-    }
-    final profile = remote.first;
-    await _localDataSource.cacheProfile(ticker, profile);
-    return profile;
+  Future<CompanyProfile> _getCompanyProfile(String ticker) async {
+    final result = await _companyRepository.getProfile(ticker);
+    return result.fold(
+      (failure) => throw Exception(failure.message),
+      (profile) => profile,
+    );
   }
 
   Future<List<CompanyExecutive>> _getExecutivesAndCache(String ticker) async {

@@ -1,20 +1,14 @@
-import 'package:bizzie/features/company_profile/business/data/datasources/business_firestore_data_source.dart';
-import 'package:bizzie/features/company_profile/business/data/datasources/business_remote_data_source.dart';
 import 'package:bizzie/features/company_profile/financial_statements/data/datasources/financial_statements_firestore_data_source.dart';
 import 'package:bizzie/features/company_profile/financial_statements/data/datasources/financial_statements_remote_data_source.dart';
 import 'package:bizzie/features/company_profile/business/data/dtos/governance_dtos.dart';
 import 'package:bizzie/features/company_profile/financial_statements/data/dtos/legacy_income_statement_dto.dart';
-import 'package:bizzie/features/company_profile/business/data/dtos/profile_dtos.dart';
+import 'package:bizzie/features/company_profile/shared/domain/interfaces/i_company_repository.dart';
+import 'package:bizzie/features/company_profile/shared/domain/models/stock_quote.dart';
 import 'package:bizzie/features/company_profile/shares/data/repositories/shares_repository_impl.dart';
 import 'package:bizzie/features/company_profile/shares/domain/models/share_stats.dart';
+import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-
-class MockBusinessRemoteDataSource extends Mock
-    implements BusinessRemoteDataSource {}
-
-class MockBusinessLocalDataSource extends Mock
-    implements BusinessFirestoreDataSource {}
 
 class MockFinancialRemoteDataSource extends Mock
     implements FinancialStatementsRemoteDataSource {}
@@ -22,21 +16,20 @@ class MockFinancialRemoteDataSource extends Mock
 class MockFinancialLocalDataSource extends Mock
     implements FinancialStatementsFirestoreDataSource {}
 
+class MockCompanyRepository extends Mock implements ICompanyRepository {}
+
 void main() {
   late SharesRepositoryImpl repository;
-  late MockBusinessRemoteDataSource mockBusinessRemoteDataSource;
-  late MockBusinessLocalDataSource mockBusinessLocalDataSource;
   late MockFinancialRemoteDataSource mockFinancialRemoteDataSource;
   late MockFinancialLocalDataSource mockFinancialLocalDataSource;
+  late MockCompanyRepository mockCompanyRepository;
 
   setUp(() {
-    mockBusinessRemoteDataSource = MockBusinessRemoteDataSource();
-    mockBusinessLocalDataSource = MockBusinessLocalDataSource();
     mockFinancialRemoteDataSource = MockFinancialRemoteDataSource();
     mockFinancialLocalDataSource = MockFinancialLocalDataSource();
+    mockCompanyRepository = MockCompanyRepository();
     repository = SharesRepositoryImpl(
-      mockBusinessRemoteDataSource,
-      mockBusinessLocalDataSource,
+      mockCompanyRepository,
       mockFinancialRemoteDataSource,
       mockFinancialLocalDataSource,
     );
@@ -48,7 +41,7 @@ void main() {
   const tTicker = 'AAPL';
 
   group('SharesRepositoryImpl - ShareStats', () {
-    final tQuote = QuoteDto(
+    final tStockQuote = StockQuote(
       symbol: tTicker,
       name: 'Apple Inc.',
       price: 155.0,
@@ -78,8 +71,9 @@ void main() {
     test('getShareStats_success_returnsShareStats', () async {
       // arrange
       when(
-        () => mockBusinessLocalDataSource.getCachedQuote(tTicker),
-      ).thenAnswer((_) async => tQuote);
+        () => mockCompanyRepository.getQuote(tTicker),
+      ).thenAnswer((_) async => Right(tStockQuote));
+
       when(
         () => mockFinancialLocalDataSource.getCachedLegacyIncomeStatements(
           tTicker,
