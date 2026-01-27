@@ -104,6 +104,7 @@ class BizzieLineChart extends StatelessWidget {
           decimalPlaces: 2,
           maximumLabels: maximumYLabels,
           plotOffsetStart: AppConstants.chartPlotOffsetStart,
+          plotOffsetEnd: AppConstants.chartPlotOffsetStart,
         ),
         trackballBehavior: TrackballBehavior(
           enable: true,
