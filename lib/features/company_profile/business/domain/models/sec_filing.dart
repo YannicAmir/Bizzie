@@ -1,18 +1,13 @@
-import 'package:equatable/equatable.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-class SecFiling extends Equatable {
-  final String date;
-  final String year;
-  final String period;
-  final String link;
+part 'sec_filing.freezed.dart';
 
-  const SecFiling({
-    required this.date,
-    required this.year,
-    required this.period,
-    required this.link,
-  });
-
-  @override
-  List<Object?> get props => [date, year, period, link];
+@freezed
+abstract class SecFiling with _$SecFiling {
+  const factory SecFiling({
+    required String date,
+    required String year,
+    required String period,
+    required String link,
+  }) = _SecFiling;
 }

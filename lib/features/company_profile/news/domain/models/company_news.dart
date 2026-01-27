@@ -1,12 +1,12 @@
 import 'package:bizzie/features/company_profile/news/domain/models/news_article.dart';
-import 'package:equatable/equatable.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-class CompanyNews extends Equatable {
-  final String symbol;
-  final List<NewsArticle> articles;
+part 'company_news.freezed.dart';
 
-  const CompanyNews({required this.symbol, required this.articles});
-
-  @override
-  List<Object?> get props => [symbol, articles];
+@freezed
+abstract class CompanyNews with _$CompanyNews {
+  const factory CompanyNews({
+    required String symbol,
+    required List<NewsArticle> articles,
+  }) = _CompanyNews;
 }

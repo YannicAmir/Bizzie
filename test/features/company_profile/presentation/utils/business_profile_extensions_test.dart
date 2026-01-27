@@ -109,32 +109,3 @@ void main() {
     });
   });
 }
-
-extension on BusinessProfile {
-  BusinessProfile copyWith({
-    bool? isForeignCompany,
-    String? proxyFilingFormType,
-  }) {
-    return BusinessProfile(
-      symbol: symbol,
-      companyName: companyName,
-      sector: sector,
-      industry: industry,
-      description: description,
-      ceo: ceo,
-      website: website,
-      address: address,
-      city: city,
-      state: state,
-      zip: zip,
-      phone: phone,
-      fullTimeEmployees: fullTimeEmployees,
-      executives: executives,
-      def14aUrl: def14aUrl,
-      isForeignCompany: isForeignCompany ?? this.isForeignCompany,
-      proxyFilingFormType: proxyFilingFormType ?? this.proxyFilingFormType,
-      annualFilings: annualFilings,
-      quarterlyFilings: quarterlyFilings,
-    );
-  }
-}

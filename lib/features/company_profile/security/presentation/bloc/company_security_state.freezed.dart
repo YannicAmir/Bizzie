@@ -303,7 +303,7 @@ $Res call({
 });
 
 
-
+$SecurityDetailsCopyWith<$Res> get securityDetails;
 
 }
 /// @nodoc
@@ -324,7 +324,16 @@ as DateTime?,
   ));
 }
 
-
+/// Create a copy of CompanySecurityState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$SecurityDetailsCopyWith<$Res> get securityDetails {
+  
+  return $SecurityDetailsCopyWith<$Res>(_self.securityDetails, (value) {
+    return _then(_self.copyWith(securityDetails: value));
+  });
+}
 }
 
 /// @nodoc
@@ -370,7 +379,7 @@ $Res call({
 });
 
 
-
+$SecurityDetailsCopyWith<$Res> get securityDetails;
 
 }
 /// @nodoc
@@ -390,7 +399,16 @@ as SecurityDetails,
   ));
 }
 
-
+/// Create a copy of CompanySecurityState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$SecurityDetailsCopyWith<$Res> get securityDetails {
+  
+  return $SecurityDetailsCopyWith<$Res>(_self.securityDetails, (value) {
+    return _then(_self.copyWith(securityDetails: value));
+  });
+}
 }
 
 /// @nodoc

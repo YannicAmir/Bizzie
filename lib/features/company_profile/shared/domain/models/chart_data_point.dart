@@ -1,11 +1,9 @@
-import 'package:equatable/equatable.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-class ChartDataPoint extends Equatable {
-  final String label;
-  final double value;
+part 'chart_data_point.freezed.dart';
 
-  const ChartDataPoint({required this.label, required this.value});
-
-  @override
-  List<Object?> get props => [label, value];
+@freezed
+abstract class ChartDataPoint with _$ChartDataPoint {
+  const factory ChartDataPoint({required String label, required double value}) =
+      _ChartDataPoint;
 }

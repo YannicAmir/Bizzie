@@ -311,7 +311,7 @@ $Res call({
 });
 
 
-
+$FcpsStatsCopyWith<$Res> get fcpsStats;
 
 }
 /// @nodoc
@@ -334,7 +334,16 @@ as DateTime?,
   ));
 }
 
-
+/// Create a copy of CompanyFcpsState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$FcpsStatsCopyWith<$Res> get fcpsStats {
+  
+  return $FcpsStatsCopyWith<$Res>(_self.fcpsStats, (value) {
+    return _then(_self.copyWith(fcpsStats: value));
+  });
+}
 }
 
 /// @nodoc

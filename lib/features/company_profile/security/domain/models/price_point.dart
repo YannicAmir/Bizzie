@@ -1,12 +1,12 @@
-import 'package:equatable/equatable.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-class PricePoint extends Equatable {
-  final String date;
-  final double close;
-  final double? volume;
+part 'price_point.freezed.dart';
 
-  const PricePoint({required this.date, required this.close, this.volume});
-
-  @override
-  List<Object?> get props => [date, close, volume];
+@freezed
+abstract class PricePoint with _$PricePoint {
+  const factory PricePoint({
+    required String date,
+    required double close,
+    double? volume,
+  }) = _PricePoint;
 }

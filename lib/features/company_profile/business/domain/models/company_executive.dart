@@ -1,29 +1,15 @@
-import 'package:equatable/equatable.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-class CompanyExecutive extends Equatable {
-  final String name;
-  final String title;
-  final String? gender;
-  final double? totalPay;
-  final String? currencyPay;
-  final int? yearBorn;
+part 'company_executive.freezed.dart';
 
-  const CompanyExecutive({
-    required this.name,
-    required this.title,
-    this.gender,
-    this.totalPay,
-    this.currencyPay,
-    this.yearBorn,
-  });
-
-  @override
-  List<Object?> get props => [
-    name,
-    title,
-    gender,
-    totalPay,
-    currencyPay,
-    yearBorn,
-  ];
+@freezed
+abstract class CompanyExecutive with _$CompanyExecutive {
+  const factory CompanyExecutive({
+    required String name,
+    required String title,
+    String? gender,
+    double? totalPay,
+    String? currencyPay,
+    int? yearBorn,
+  }) = _CompanyExecutive;
 }

@@ -297,7 +297,7 @@ $Res call({
 });
 
 
-
+$BusinessProfileCopyWith<$Res> get businessProfile;
 
 }
 /// @nodoc
@@ -318,7 +318,16 @@ as DateTime?,
   ));
 }
 
-
+/// Create a copy of CompanyBusinessState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$BusinessProfileCopyWith<$Res> get businessProfile {
+  
+  return $BusinessProfileCopyWith<$Res>(_self.businessProfile, (value) {
+    return _then(_self.copyWith(businessProfile: value));
+  });
+}
 }
 
 /// @nodoc

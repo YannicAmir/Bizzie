@@ -1,32 +1,18 @@
 import 'package:bizzie/features/company_profile/financial_statements/domain/models/balance_sheet.dart';
 import 'package:bizzie/features/company_profile/financial_statements/domain/models/cash_flow_statement.dart';
 import 'package:bizzie/features/company_profile/financial_statements/domain/models/income_statement.dart';
-import 'package:equatable/equatable.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-class FullFinancials extends Equatable {
-  final List<IncomeStatement> annualIncomeStatements;
-  final List<IncomeStatement> quarterlyIncomeStatements;
-  final List<BalanceSheet> annualBalanceSheets;
-  final List<BalanceSheet> quarterlyBalanceSheets;
-  final List<CashFlowStatement> annualCashFlows;
-  final List<CashFlowStatement> quarterlyCashFlows;
+part 'full_financials.freezed.dart';
 
-  const FullFinancials({
-    required this.annualIncomeStatements,
-    required this.quarterlyIncomeStatements,
-    required this.annualBalanceSheets,
-    required this.quarterlyBalanceSheets,
-    required this.annualCashFlows,
-    required this.quarterlyCashFlows,
-  });
-
-  @override
-  List<Object?> get props => [
-    annualIncomeStatements,
-    quarterlyIncomeStatements,
-    annualBalanceSheets,
-    quarterlyBalanceSheets,
-    annualCashFlows,
-    quarterlyCashFlows,
-  ];
+@freezed
+abstract class FullFinancials with _$FullFinancials {
+  const factory FullFinancials({
+    required List<IncomeStatement> annualIncomeStatements,
+    required List<IncomeStatement> quarterlyIncomeStatements,
+    required List<BalanceSheet> annualBalanceSheets,
+    required List<BalanceSheet> quarterlyBalanceSheets,
+    required List<CashFlowStatement> annualCashFlows,
+    required List<CashFlowStatement> quarterlyCashFlows,
+  }) = _FullFinancials;
 }

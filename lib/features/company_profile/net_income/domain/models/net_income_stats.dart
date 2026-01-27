@@ -1,21 +1,13 @@
 import 'package:bizzie/features/company_profile/shared/domain/models/financial_data_point.dart';
-import 'package:equatable/equatable.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-class NetIncomeStats extends Equatable {
-  final String reportedCurrency;
-  final List<FinancialDataPoint> annualNetIncome;
-  final List<FinancialDataPoint> quarterlyNetIncome;
+part 'net_income_stats.freezed.dart';
 
-  const NetIncomeStats({
-    required this.reportedCurrency,
-    required this.annualNetIncome,
-    required this.quarterlyNetIncome,
-  });
-
-  @override
-  List<Object?> get props => [
-    reportedCurrency,
-    annualNetIncome,
-    quarterlyNetIncome,
-  ];
+@freezed
+abstract class NetIncomeStats with _$NetIncomeStats {
+  const factory NetIncomeStats({
+    required String reportedCurrency,
+    required List<FinancialDataPoint> annualNetIncome,
+    required List<FinancialDataPoint> quarterlyNetIncome,
+  }) = _NetIncomeStats;
 }

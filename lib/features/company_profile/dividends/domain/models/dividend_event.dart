@@ -1,25 +1,21 @@
-import 'package:equatable/equatable.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-class DividendEvent extends Equatable {
-  final String date;
-  final double dividend;
-  final double adjDividend;
-  final double? yield;
-  final String? recordDate;
-  final String? paymentDate;
-  final String? declarationDate;
-  final String? frequency;
+part 'dividend_event.freezed.dart';
 
-  const DividendEvent({
-    required this.date,
-    required this.dividend,
-    required this.adjDividend,
-    this.yield,
-    this.recordDate,
-    this.paymentDate,
-    this.declarationDate,
-    this.frequency,
-  });
+@freezed
+abstract class DividendEvent with _$DividendEvent {
+  const DividendEvent._();
+
+  const factory DividendEvent({
+    required String date,
+    required double dividend,
+    required double adjDividend,
+    double? yield,
+    String? recordDate,
+    String? paymentDate,
+    String? declarationDate,
+    String? frequency,
+  }) = _DividendEvent;
 
   int get frequencyMultiplier {
     final freq = frequency?.toLowerCase() ?? '';
@@ -42,16 +38,4 @@ class DividendEvent extends Equatable {
     if (previous == null || previous.dividend <= 0) return 0.0;
     return ((dividend - previous.dividend) / previous.dividend) * 100;
   }
-
-  @override
-  List<Object?> get props => [
-    date,
-    dividend,
-    adjDividend,
-    yield,
-    recordDate,
-    paymentDate,
-    declarationDate,
-    frequency,
-  ];
 }

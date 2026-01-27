@@ -311,7 +311,7 @@ $Res call({
 });
 
 
-
+$FreeCashFlowStatsCopyWith<$Res> get fcfStats;
 
 }
 /// @nodoc
@@ -334,7 +334,16 @@ as DateTime?,
   ));
 }
 
-
+/// Create a copy of CompanyFreeCashFlowState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$FreeCashFlowStatsCopyWith<$Res> get fcfStats {
+  
+  return $FreeCashFlowStatsCopyWith<$Res>(_self.fcfStats, (value) {
+    return _then(_self.copyWith(fcfStats: value));
+  });
+}
 }
 
 /// @nodoc

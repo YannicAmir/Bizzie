@@ -311,7 +311,7 @@ $Res call({
 });
 
 
-
+$EpsStatsCopyWith<$Res> get epsStats;
 
 }
 /// @nodoc
@@ -334,7 +334,16 @@ as DateTime?,
   ));
 }
 
-
+/// Create a copy of CompanyEpsState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$EpsStatsCopyWith<$Res> get epsStats {
+  
+  return $EpsStatsCopyWith<$Res>(_self.epsStats, (value) {
+    return _then(_self.copyWith(epsStats: value));
+  });
+}
 }
 
 /// @nodoc

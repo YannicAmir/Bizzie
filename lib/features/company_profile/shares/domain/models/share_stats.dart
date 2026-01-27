@@ -1,21 +1,13 @@
 import 'package:bizzie/features/company_profile/shared/domain/models/financial_data_point.dart';
-import 'package:equatable/equatable.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-class ShareStats extends Equatable {
-  final double currentSharesOutstanding;
-  final List<FinancialDataPoint> annualWeightedAverageShares;
-  final List<FinancialDataPoint> quarterlyWeightedAverageShares;
+part 'share_stats.freezed.dart';
 
-  const ShareStats({
-    required this.currentSharesOutstanding,
-    required this.annualWeightedAverageShares,
-    required this.quarterlyWeightedAverageShares,
-  });
-
-  @override
-  List<Object?> get props => [
-    currentSharesOutstanding,
-    annualWeightedAverageShares,
-    quarterlyWeightedAverageShares,
-  ];
+@freezed
+abstract class ShareStats with _$ShareStats {
+  const factory ShareStats({
+    required double currentSharesOutstanding,
+    required List<FinancialDataPoint> annualWeightedAverageShares,
+    required List<FinancialDataPoint> quarterlyWeightedAverageShares,
+  }) = _ShareStats;
 }

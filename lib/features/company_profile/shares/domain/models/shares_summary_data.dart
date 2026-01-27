@@ -1,26 +1,14 @@
-import 'package:equatable/equatable.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-class SharesSummaryData extends Equatable {
-  final double currentValue;
-  final double growthPercentage;
-  final double absoluteDelta;
-  final bool isPositive;
-  final String referenceLabel;
+part 'shares_summary_data.freezed.dart';
 
-  const SharesSummaryData({
-    required this.currentValue,
-    required this.growthPercentage,
-    required this.absoluteDelta,
-    required this.isPositive,
-    required this.referenceLabel,
-  });
-
-  @override
-  List<Object?> get props => [
-    currentValue,
-    growthPercentage,
-    absoluteDelta,
-    isPositive,
-    referenceLabel,
-  ];
+@freezed
+abstract class SharesSummaryData with _$SharesSummaryData {
+  const factory SharesSummaryData({
+    required double currentValue,
+    required double growthPercentage,
+    required double absoluteDelta,
+    required bool isPositive,
+    required String referenceLabel,
+  }) = _SharesSummaryData;
 }

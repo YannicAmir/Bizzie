@@ -1,47 +1,21 @@
-import 'package:equatable/equatable.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-class CashFlowStatement extends Equatable {
-  final String date;
-  final String symbol;
-  final String reportedCurrency;
-  final String period;
-  final double operatingCashFlow;
-  final double investingCashFlow;
-  final double financingCashFlow;
-  final double capitalExpenditure;
-  final double freeCashFlow;
-  final double dividendsPaid;
-  final double cashAtBeginningOfPeriod;
-  final double cashAtEndOfPeriod;
+part 'cash_flow_statement.freezed.dart';
 
-  const CashFlowStatement({
-    required this.date,
-    required this.symbol,
-    required this.reportedCurrency,
-    required this.period,
-    required this.operatingCashFlow,
-    required this.investingCashFlow,
-    required this.financingCashFlow,
-    required this.capitalExpenditure,
-    required this.freeCashFlow,
-    required this.dividendsPaid,
-    required this.cashAtBeginningOfPeriod,
-    required this.cashAtEndOfPeriod,
-  });
-
-  @override
-  List<Object?> get props => [
-    date,
-    symbol,
-    reportedCurrency,
-    period,
-    operatingCashFlow,
-    investingCashFlow,
-    financingCashFlow,
-    capitalExpenditure,
-    freeCashFlow,
-    dividendsPaid,
-    cashAtBeginningOfPeriod,
-    cashAtEndOfPeriod,
-  ];
+@freezed
+abstract class CashFlowStatement with _$CashFlowStatement {
+  const factory CashFlowStatement({
+    required String date,
+    required String symbol,
+    required String reportedCurrency,
+    required String period,
+    required double operatingCashFlow,
+    required double investingCashFlow,
+    required double financingCashFlow,
+    required double capitalExpenditure,
+    required double freeCashFlow,
+    required double dividendsPaid,
+    required double cashAtBeginningOfPeriod,
+    required double cashAtEndOfPeriod,
+  }) = _CashFlowStatement;
 }

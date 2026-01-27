@@ -1,18 +1,13 @@
-import 'package:equatable/equatable.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-class HistoricalPriceEod extends Equatable {
-  final String symbol;
-  final String date;
-  final double price;
-  final double volume;
+part 'historical_price_eod.freezed.dart';
 
-  const HistoricalPriceEod({
-    required this.symbol,
-    required this.date,
-    required this.price,
-    required this.volume,
-  });
-
-  @override
-  List<Object?> get props => [symbol, date, price, volume];
+@freezed
+abstract class HistoricalPriceEod with _$HistoricalPriceEod {
+  const factory HistoricalPriceEod({
+    required String symbol,
+    required String date,
+    required double price,
+    required double volume,
+  }) = _HistoricalPriceEod;
 }

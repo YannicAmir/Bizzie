@@ -1,16 +1,12 @@
-import 'package:equatable/equatable.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-class FinancialDataPoint extends Equatable {
-  final String date;
-  final String period;
-  final double value;
+part 'financial_data_point.freezed.dart';
 
-  const FinancialDataPoint({
-    required this.date,
-    required this.period,
-    required this.value,
-  });
-
-  @override
-  List<Object?> get props => [date, period, value];
+@freezed
+abstract class FinancialDataPoint with _$FinancialDataPoint {
+  const factory FinancialDataPoint({
+    required String date,
+    required String period,
+    required double value,
+  }) = _FinancialDataPoint;
 }

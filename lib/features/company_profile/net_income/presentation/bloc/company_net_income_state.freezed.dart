@@ -311,7 +311,7 @@ $Res call({
 });
 
 
-
+$NetIncomeStatsCopyWith<$Res> get netIncomeStats;
 
 }
 /// @nodoc
@@ -334,7 +334,16 @@ as DateTime?,
   ));
 }
 
-
+/// Create a copy of CompanyNetIncomeState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$NetIncomeStatsCopyWith<$Res> get netIncomeStats {
+  
+  return $NetIncomeStatsCopyWith<$Res>(_self.netIncomeStats, (value) {
+    return _then(_self.copyWith(netIncomeStats: value));
+  });
+}
 }
 
 /// @nodoc

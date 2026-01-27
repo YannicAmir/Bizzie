@@ -311,7 +311,7 @@ $Res call({
 });
 
 
-
+$RevenueStatsCopyWith<$Res> get revenueStats;
 
 }
 /// @nodoc
@@ -334,7 +334,16 @@ as DateTime?,
   ));
 }
 
-
+/// Create a copy of CompanyRevenueState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$RevenueStatsCopyWith<$Res> get revenueStats {
+  
+  return $RevenueStatsCopyWith<$Res>(_self.revenueStats, (value) {
+    return _then(_self.copyWith(revenueStats: value));
+  });
+}
 }
 
 /// @nodoc

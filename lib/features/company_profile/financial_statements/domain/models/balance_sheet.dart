@@ -1,57 +1,24 @@
-import 'package:equatable/equatable.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-class BalanceSheet extends Equatable {
-  final String date;
-  final String symbol;
-  final String reportedCurrency;
-  final String period;
-  final double totalAssets;
-  final double totalLiabilities;
-  final double totalEquity;
-  final double cashAndShortTermInvestments;
-  final double totalDebt;
+part 'balance_sheet.freezed.dart';
 
-  final double totalCurrentAssets;
-  final double totalNonCurrentAssets;
-  final double totalCurrentLiabilities;
-  final double totalNonCurrentLiabilities;
-  final double longTermDebt;
-  final double shortTermDebt;
-
-  const BalanceSheet({
-    required this.date,
-    required this.symbol,
-    required this.reportedCurrency,
-    required this.period,
-    required this.totalAssets,
-    required this.totalLiabilities,
-    required this.totalEquity,
-    required this.cashAndShortTermInvestments,
-    required this.totalDebt,
-    required this.totalCurrentAssets,
-    required this.totalNonCurrentAssets,
-    required this.totalCurrentLiabilities,
-    required this.totalNonCurrentLiabilities,
-    required this.longTermDebt,
-    required this.shortTermDebt,
-  });
-
-  @override
-  List<Object?> get props => [
-    date,
-    symbol,
-    reportedCurrency,
-    period,
-    totalAssets,
-    totalLiabilities,
-    totalEquity,
-    cashAndShortTermInvestments,
-    totalDebt,
-    totalCurrentAssets,
-    totalNonCurrentAssets,
-    totalCurrentLiabilities,
-    totalNonCurrentLiabilities,
-    longTermDebt,
-    shortTermDebt,
-  ];
+@freezed
+abstract class BalanceSheet with _$BalanceSheet {
+  const factory BalanceSheet({
+    required String date,
+    required String symbol,
+    required String reportedCurrency,
+    required String period,
+    required double totalAssets,
+    required double totalLiabilities,
+    required double totalEquity,
+    required double cashAndShortTermInvestments,
+    required double totalDebt,
+    required double totalCurrentAssets,
+    required double totalNonCurrentAssets,
+    required double totalCurrentLiabilities,
+    required double totalNonCurrentLiabilities,
+    required double longTermDebt,
+    required double shortTermDebt,
+  }) = _BalanceSheet;
 }

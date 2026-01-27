@@ -1,17 +1,13 @@
 import 'package:bizzie/features/company_profile/shared/domain/models/financial_data_point.dart';
-import 'package:equatable/equatable.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-class FreeCashFlowStats extends Equatable {
-  final String reportedCurrency;
-  final List<FinancialDataPoint> annualFcf;
-  final List<FinancialDataPoint> quarterlyFcf;
+part 'free_cash_flow_stats.freezed.dart';
 
-  const FreeCashFlowStats({
-    required this.reportedCurrency,
-    required this.annualFcf,
-    required this.quarterlyFcf,
-  });
-
-  @override
-  List<Object?> get props => [reportedCurrency, annualFcf, quarterlyFcf];
+@freezed
+abstract class FreeCashFlowStats with _$FreeCashFlowStats {
+  const factory FreeCashFlowStats({
+    required String reportedCurrency,
+    required List<FinancialDataPoint> annualFcf,
+    required List<FinancialDataPoint> quarterlyFcf,
+  }) = _FreeCashFlowStats;
 }

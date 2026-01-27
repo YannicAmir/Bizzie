@@ -297,7 +297,7 @@ $Res call({
 });
 
 
-
+$DividendInfoCopyWith<$Res> get dividendInfo;
 
 }
 /// @nodoc
@@ -318,7 +318,16 @@ as DateTime?,
   ));
 }
 
-
+/// Create a copy of CompanyDividendsState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$DividendInfoCopyWith<$Res> get dividendInfo {
+  
+  return $DividendInfoCopyWith<$Res>(_self.dividendInfo, (value) {
+    return _then(_self.copyWith(dividendInfo: value));
+  });
+}
 }
 
 /// @nodoc

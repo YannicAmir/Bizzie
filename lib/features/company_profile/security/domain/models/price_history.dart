@@ -1,12 +1,12 @@
 import 'package:bizzie/features/company_profile/security/domain/models/price_point.dart';
-import 'package:equatable/equatable.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-class PriceHistory extends Equatable {
-  final String symbol;
-  final List<PricePoint> history;
+part 'price_history.freezed.dart';
 
-  const PriceHistory({required this.symbol, required this.history});
-
-  @override
-  List<Object?> get props => [symbol, history];
+@freezed
+abstract class PriceHistory with _$PriceHistory {
+  const factory PriceHistory({
+    required String symbol,
+    required List<PricePoint> history,
+  }) = _PriceHistory;
 }

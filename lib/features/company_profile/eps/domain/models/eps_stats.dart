@@ -1,17 +1,13 @@
 import 'package:bizzie/features/company_profile/shared/domain/models/financial_data_point.dart';
-import 'package:equatable/equatable.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-class EpsStats extends Equatable {
-  final String reportedCurrency;
-  final List<FinancialDataPoint> annualEps;
-  final List<FinancialDataPoint> quarterlyEps;
+part 'eps_stats.freezed.dart';
 
-  const EpsStats({
-    required this.reportedCurrency,
-    required this.annualEps,
-    required this.quarterlyEps,
-  });
-
-  @override
-  List<Object?> get props => [reportedCurrency, annualEps, quarterlyEps];
+@freezed
+abstract class EpsStats with _$EpsStats {
+  const factory EpsStats({
+    required String reportedCurrency,
+    required List<FinancialDataPoint> annualEps,
+    required List<FinancialDataPoint> quarterlyEps,
+  }) = _EpsStats;
 }

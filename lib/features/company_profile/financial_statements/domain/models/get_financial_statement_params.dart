@@ -1,14 +1,11 @@
-import 'package:equatable/equatable.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-class GetFinancialStatementParams extends Equatable {
-  final String ticker;
-  final String period;
+part 'get_financial_statement_params.freezed.dart';
 
-  const GetFinancialStatementParams({
-    required this.ticker,
-    this.period = 'annual',
-  });
-
-  @override
-  List<Object?> get props => [ticker, period];
+@freezed
+abstract class GetFinancialStatementParams with _$GetFinancialStatementParams {
+  const factory GetFinancialStatementParams({
+    required String ticker,
+    @Default('annual') String period,
+  }) = _GetFinancialStatementParams;
 }

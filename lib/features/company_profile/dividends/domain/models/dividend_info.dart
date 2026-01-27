@@ -1,12 +1,12 @@
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'dividend_event.dart';
-import 'package:equatable/equatable.dart';
 
-class DividendInfo extends Equatable {
-  final String symbol;
-  final List<DividendEvent> history;
+part 'dividend_info.freezed.dart';
 
-  const DividendInfo({required this.symbol, required this.history});
-
-  @override
-  List<Object?> get props => [symbol, history];
+@freezed
+abstract class DividendInfo with _$DividendInfo {
+  const factory DividendInfo({
+    required String symbol,
+    required List<DividendEvent> history,
+  }) = _DividendInfo;
 }

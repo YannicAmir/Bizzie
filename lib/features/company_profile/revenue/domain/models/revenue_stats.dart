@@ -1,21 +1,13 @@
 import 'package:bizzie/features/company_profile/shared/domain/models/financial_data_point.dart';
-import 'package:equatable/equatable.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-class RevenueStats extends Equatable {
-  final String reportedCurrency;
-  final List<FinancialDataPoint> annualRevenue;
-  final List<FinancialDataPoint> quarterlyRevenue;
+part 'revenue_stats.freezed.dart';
 
-  const RevenueStats({
-    required this.reportedCurrency,
-    required this.annualRevenue,
-    required this.quarterlyRevenue,
-  });
-
-  @override
-  List<Object?> get props => [
-    reportedCurrency,
-    annualRevenue,
-    quarterlyRevenue,
-  ];
+@freezed
+abstract class RevenueStats with _$RevenueStats {
+  const factory RevenueStats({
+    required String reportedCurrency,
+    required List<FinancialDataPoint> annualRevenue,
+    required List<FinancialDataPoint> quarterlyRevenue,
+  }) = _RevenueStats;
 }

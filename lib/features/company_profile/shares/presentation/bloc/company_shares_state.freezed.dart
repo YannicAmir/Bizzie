@@ -313,7 +313,7 @@ $Res call({
 });
 
 
-
+$ShareStatsCopyWith<$Res> get shareStats;$SharesSummaryDataCopyWith<$Res> get annualSummary;$SharesSummaryDataCopyWith<$Res> get quarterlySummary;
 
 }
 /// @nodoc
@@ -338,7 +338,34 @@ as DateTime?,
   ));
 }
 
-
+/// Create a copy of CompanySharesState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$ShareStatsCopyWith<$Res> get shareStats {
+  
+  return $ShareStatsCopyWith<$Res>(_self.shareStats, (value) {
+    return _then(_self.copyWith(shareStats: value));
+  });
+}/// Create a copy of CompanySharesState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$SharesSummaryDataCopyWith<$Res> get annualSummary {
+  
+  return $SharesSummaryDataCopyWith<$Res>(_self.annualSummary, (value) {
+    return _then(_self.copyWith(annualSummary: value));
+  });
+}/// Create a copy of CompanySharesState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$SharesSummaryDataCopyWith<$Res> get quarterlySummary {
+  
+  return $SharesSummaryDataCopyWith<$Res>(_self.quarterlySummary, (value) {
+    return _then(_self.copyWith(quarterlySummary: value));
+  });
+}
 }
 
 /// @nodoc
