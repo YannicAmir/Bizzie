@@ -1,4 +1,5 @@
 import 'package:bizzie/di/injection.dart';
+import 'package:bizzie/features/onboarding/domain/models/company.dart';
 import 'package:bizzie/features/company_profile/business/presentation/bloc/company_business_bloc.dart';
 import 'package:bizzie/features/company_profile/business/presentation/bloc/company_business_event.dart';
 import 'package:bizzie/features/company_profile/dividends/presentation/bloc/company_dividends/company_dividends_bloc.dart';
@@ -44,8 +45,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CompanyProfilePage extends StatelessWidget {
   final String ticker;
+  final Company? initialCompany;
 
-  const CompanyProfilePage({super.key, required this.ticker});
+  const CompanyProfilePage({
+    super.key,
+    required this.ticker,
+    this.initialCompany,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -128,15 +134,19 @@ class CompanyProfilePage extends StatelessWidget {
                 ..add(UpcomingEarningsEvent.loadRequested(ticker)),
         ),
       ],
-      child: _CompanyProfileView(ticker: ticker),
+      child: _CompanyProfileView(
+        ticker: ticker,
+        initialCompany: initialCompany,
+      ),
     );
   }
 }
 
 class _CompanyProfileView extends StatefulWidget {
   final String ticker;
+  final Company? initialCompany;
 
-  const _CompanyProfileView({required this.ticker});
+  const _CompanyProfileView({required this.ticker, this.initialCompany});
 
   @override
   State<_CompanyProfileView> createState() => _CompanyProfileViewState();
@@ -261,7 +271,12 @@ class _CompanyProfileViewState extends State<_CompanyProfileView>
                 : [
                     CompanyWatchlistButton(
                       ticker: widget.ticker,
-                      companyName: widget.ticker,
+                      companyName: state.maybeMap(
+                        loaded: (s) => s.securityDetails.name,
+                        unsupported: (s) => s.securityDetails.name,
+                        orElse: () =>
+                            widget.initialCompany?.name ?? widget.ticker,
+                      ),
                     ),
                   ],
             bottom: isUnsupported

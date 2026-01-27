@@ -2,6 +2,22 @@ import 'package:bizzie/services/firestore_service.dart';
 import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+class TestDto {
+  final String id;
+  final String name;
+
+  TestDto({this.id = '', required this.name});
+
+  factory TestDto.fromJson(Map<String, dynamic> json) {
+    return TestDto(
+      id: json['id'] as String? ?? '',
+      name: json['name'] as String? ?? '',
+    );
+  }
+
+  Map<String, dynamic> toJson() => {'name': name};
+}
+
 void main() {
   late FakeFirebaseFirestore fakeFirestore;
   late FirestoreService firestoreService;
@@ -11,147 +27,91 @@ void main() {
     firestoreService = FirestoreService(fakeFirestore);
   });
 
-  group('FirestoreService', () {
-    test('setDocument_validData_savesToFirestore', () async {
-      // arrange
-      final data = {'name': 'Test'};
-      final path = 'users/123';
+  group('FirestoreService (Generic API)', () {
+    test('setDocument saves typed data to Firestore', () async {
+      final dto = TestDto(name: 'TestItem');
+      const path = 'items/123';
 
-      // act
-      await firestoreService.setDocument(path: path, data: data);
-
-      // assert
-      final snapshot = await fakeFirestore.doc(path).get();
-      expect(snapshot.exists, isTrue);
-      expect(snapshot.data(), equals(data));
-    });
-
-    test('updateDocument_existingDocument_updatesData', () async {
-      // arrange
-      final path = 'users/123';
-      await fakeFirestore.doc(path).set({'name': 'Original', 'age': 25});
-      final updateData = {'name': 'Updated'};
-
-      // act
-      await firestoreService.updateDocument(path: path, data: updateData);
-
-      // assert
-      final snapshot = await fakeFirestore.doc(path).get();
-      expect(snapshot.data(), equals({'name': 'Updated', 'age': 25}));
-    });
-
-    test('getDocument_existingDocument_returnsSnapshot', () async {
-      // arrange
-      final path = 'users/123';
-      final data = {'name': 'Test'};
-      await fakeFirestore.doc(path).set(data);
-
-      // act
-      final result = await firestoreService.getDocument(path: path);
-
-      // assert
-      expect(result.exists, isTrue);
-      expect(result.data(), equals(data));
-    });
-
-    test('addDocument_validData_addsToCollection', () async {
-      // arrange
-      final collectionPath = 'items';
-      final data = {'name': 'New Item'};
-
-      // act
-      final docRef = await firestoreService.addDocument(
-        collectionPath: collectionPath,
-        data: data,
+      await firestoreService.setDocument<TestDto>(
+        path: path,
+        value: dto,
+        toJson: (d) => d.toJson(),
       );
 
-      // assert
-      final snapshot = await docRef.get();
-      expect(snapshot.exists, isTrue);
-      expect(snapshot.data(), equals(data));
-    });
-
-    test('deleteDocument_existingDocument_removesFromFirestore', () async {
-      // arrange
-      final path = 'users/123';
-      await fakeFirestore.doc(path).set({'name': 'To Delete'});
-
-      // act
-      await firestoreService.deleteDocument(path: path);
-
-      // assert
       final snapshot = await fakeFirestore.doc(path).get();
-      expect(snapshot.exists, isFalse);
+      expect(snapshot.exists, isTrue);
+      expect(snapshot.data()?['name'], 'TestItem');
     });
 
-    group('getLatestDocument', () {
-      test('getLatestDocument_emptyCollection_returnsNull', () async {
-        // arrange
-        const collectionPath = 'empty_collection';
+    test('getDocument returns typed data and injects ID', () async {
+      const path = 'items/123';
+      await fakeFirestore.doc(path).set({'name': 'Existing'});
 
-        // act
-        final result = await firestoreService.getLatestDocument(
-          collectionPath: collectionPath,
-          orderBy: 'date',
-        );
+      final result = await firestoreService.getDocument<TestDto>(
+        path: path,
+        fromJson: TestDto.fromJson,
+        toJson: (d) => d.toJson(),
+      );
 
-        // assert
-        expect(result, isNull);
+      expect(result, isNotNull);
+      expect(result?.name, 'Existing');
+      expect(result?.id, '123'); // Verify ID injection
+    });
+
+    test('getCollection returns list of typed data', () async {
+      const collectionPath = 'items';
+      await fakeFirestore.collection(collectionPath).doc('1').set({
+        'name': 'A',
+      });
+      await fakeFirestore.collection(collectionPath).doc('2').set({
+        'name': 'B',
       });
 
-      test('getLatestDocument_multipleDocuments_returnsLatest', () async {
-        // arrange
-        final collectionPath = 'items';
-        await fakeFirestore.collection(collectionPath).add({
-          'id': 1,
-          'date': DateTime(2026, 1, 1).toIso8601String(),
-        });
-        await fakeFirestore.collection(collectionPath).add({
-          'id': 2,
-          'date': DateTime(2026, 1, 3).toIso8601String(),
-        });
-        await fakeFirestore.collection(collectionPath).add({
-          'id': 3,
-          'date': DateTime(2026, 1, 2).toIso8601String(),
-        });
+      final results = await firestoreService.getCollection<TestDto>(
+        path: collectionPath,
+        fromJson: TestDto.fromJson,
+        toJson: (d) => d.toJson(),
+      );
 
-        // act
-        final result = await firestoreService.getLatestDocument(
-          collectionPath: collectionPath,
-          orderBy: 'date',
-          descending: true,
-        );
+      expect(results.length, 2);
+      expect(results.any((e) => e.name == 'A' && e.id == '1'), isTrue);
+      expect(results.any((e) => e.name == 'B' && e.id == '2'), isTrue);
+    });
 
-        // assert
-        expect(result?['id'], equals(2));
-      });
+    test('getLatestDocument returns the single latest matching doc', () async {
+      const path = 'logs';
+      await fakeFirestore.collection(path).add({'name': 'old', 'ts': 1});
+      await fakeFirestore.collection(path).add({'name': 'new', 'ts': 100});
+      await fakeFirestore.collection(path).add({'name': 'mid', 'ts': 50});
 
-      test('getLatestDocument_ascendingOrder_returnsEarliest', () async {
-        // arrange
-        final collectionPath = 'items_asc';
-        await fakeFirestore.collection(collectionPath).add({
-          'id': 1,
-          'date': 'A',
-        });
-        await fakeFirestore.collection(collectionPath).add({
-          'id': 2,
-          'date': 'C',
-        });
-        await fakeFirestore.collection(collectionPath).add({
-          'id': 3,
-          'date': 'B',
-        });
+      final latest = await firestoreService.getLatestDocument<TestDto>(
+        collectionPath: path,
+        orderBy: 'ts',
+        fromJson: TestDto.fromJson,
+        toJson: (d) => d.toJson(),
+      );
 
-        // act
-        final result = await firestoreService.getLatestDocument(
-          collectionPath: collectionPath,
-          orderBy: 'date',
-          descending: false,
-        );
+      expect(latest?.name, 'new');
+    });
 
-        // assert
-        expect(result?['id'], equals(1));
-      });
+    test('batch performs atomic multiple sets', () async {
+      final batch = firestoreService.batch();
+
+      batch.setDocument<TestDto>(
+        path: 'items/b1',
+        value: TestDto(name: 'Batch1'),
+        toJson: (d) => d.toJson(),
+      );
+
+      batch.setRaw(path: 'items/b2', data: {'name': 'BatchRaw'});
+
+      await batch.commit();
+
+      final s1 = await fakeFirestore.doc('items/b1').get();
+      final s2 = await fakeFirestore.doc('items/b2').get();
+
+      expect(s1.data()?['name'], 'Batch1');
+      expect(s2.data()?['name'], 'BatchRaw');
     });
   });
 }

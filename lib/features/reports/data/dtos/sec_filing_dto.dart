@@ -11,7 +11,7 @@ part 'sec_filing_dto.g.dart';
 abstract class SecFilingDto with _$SecFilingDto {
   const SecFilingDto._();
   const factory SecFilingDto({
-    @JsonKey(includeFromJson: false, includeToJson: false) String? id,
+    @JsonKey(includeToJson: false) String? id,
     required String symbol,
     required String companyName,
     required String filingDate,

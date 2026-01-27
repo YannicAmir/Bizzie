@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:bizzie/app/global_overlay_wrapper.dart';
 import 'package:bizzie/core/interfaces/i_notification_service.dart';
 import 'package:bizzie/di/injection.dart';
+import 'package:bizzie/app/routes/app_routes.dart';
 import 'package:bizzie/app/router.dart';
 import 'package:bizzie/app/themes/app_theme.dart';
 import 'package:bizzie/features/auth/presentation/bloc/auth_bloc.dart';
@@ -59,8 +60,11 @@ class _BizzieAppViewState extends State<BizzieAppView> {
 
       currentState.mapOrNull(
         authenticated: (state) {
+          final currentPath = _router.routeInformationProvider.value.uri.path;
+          final isFromCreateAccount = currentPath == AppRoutes.createAccount;
+
           context.read<UserBloc>().add(
-            UserEvent.loadUser(state.user.id, silent: false),
+            UserEvent.loadUser(state.user.id, silent: isFromCreateAccount),
           );
         },
       );
@@ -83,8 +87,11 @@ class _BizzieAppViewState extends State<BizzieAppView> {
       listener: (context, state) {
         state.whenOrNull(
           authenticated: (user) {
+            final currentPath = _router.routeInformationProvider.value.uri.path;
+            final isFromCreateAccount = currentPath == AppRoutes.createAccount;
+
             context.read<UserBloc>().add(
-              UserEvent.loadUser(user.id, silent: false),
+              UserEvent.loadUser(user.id, silent: isFromCreateAccount),
             );
           },
           unauthenticated: () {
