@@ -9,14 +9,13 @@ import 'package:bizzie/features/company_profile/shared/presentation/widgets/comp
 import 'package:bizzie/features/company_profile/shared/presentation/widgets/financial_data_table.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/widgets/metric_summary_card.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
-import 'package:bizzie/shared/widgets/app_badge.dart';
 import 'package:bizzie/shared/widgets/charts/bizzie_bar_chart.dart';
 import 'package:bizzie/shared/widgets/charts/bizzie_expandable_chart.dart';
 import 'package:bizzie/shared/widgets/modals/app_history_modal.dart';
 import 'package:bizzie/shared/widgets/states/bizzie_empty_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
+import '../extensions/roe_presentation_helper.dart';
 
 class RoeTab extends StatelessWidget {
   final String ticker;
@@ -97,14 +96,15 @@ class _RoeLoadedContent extends StatelessWidget {
       );
     }
 
-    final valueStr = '${(currentValue * 100).toStringAsFixed(2)}%';
-    final badgeText =
-        '${growthPercentage > 0 ? '+' : ''}${growthPercentage.toStringAsFixed(1)}%';
-    final badgeStyle = isPositive ? AppBadgeStyle.good : AppBadgeStyle.critical;
-    final subtitle =
-        '${isPositive ? 'Increased' : 'Decreased'} by ${(absoluteDelta * 100).toStringAsFixed(2)}% since $referenceLabel';
+    final summary = RoePresentationHelper.formatSummary(
+      currentValue: currentValue,
+      growthPercentage: growthPercentage,
+      absoluteDelta: absoluteDelta,
+      isPositive: isPositive,
+      referenceLabel: referenceLabel,
+    );
 
-    final chartFormatter = NumberFormat("#,##0.00'%'", 'en_US');
+    final chartFormatter = RoePresentationHelper.chartFormatter;
 
     return SingleChildScrollView(
       padding: AppConstants.pagePadding,
@@ -113,10 +113,10 @@ class _RoeLoadedContent extends StatelessWidget {
         children: [
           MetricSummaryCard(
             title: 'Return on Equity (ROE)',
-            value: valueStr,
-            badgeText: badgeText,
-            badgeStyle: badgeStyle,
-            subtitle: subtitle,
+            value: summary.valueStr,
+            badgeText: summary.badgeText,
+            badgeStyle: summary.badgeStyle,
+            subtitle: summary.subtitle,
           ),
           AppConstants.mainSectionSpacing,
           BizzieExpandableChart(

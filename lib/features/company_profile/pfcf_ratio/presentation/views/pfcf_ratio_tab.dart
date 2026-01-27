@@ -118,7 +118,8 @@ class _PfcfRatioLoadedContent extends StatelessWidget {
             subtitle: MetricSummarySubtitleHelper.getSubtitle(
               asOfPrefix: asOfPrefix,
               isPositive: isPositive,
-              absoluteDelta: absoluteDelta,
+              formattedDelta: absoluteDelta.formattedRatioValue,
+              isChangeZero: absoluteDelta == 0,
               referenceLabel: referenceLabel,
             ),
           ),

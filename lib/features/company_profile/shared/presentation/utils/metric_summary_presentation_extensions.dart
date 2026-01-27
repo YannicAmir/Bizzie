@@ -17,13 +17,11 @@ extension MetricSummaryListX on List<FinancialDataPoint> {
   }
 
   ({String label, String value})? getDynamicAverageColumn(String metricSuffix) {
-    // Try 5Y
     final avg5Y = getAverageOfLatest(5);
     if (avg5Y != null) {
       return (label: '5Y Avg. $metricSuffix', value: avg5Y.formattedRatioValue);
     }
 
-    // Try 3Y
     final avg3Y = getAverageOfLatest(3);
     if (avg3Y != null) {
       return (label: '3Y Avg. $metricSuffix', value: avg3Y.formattedRatioValue);
@@ -46,11 +44,14 @@ class MetricSummarySubtitleHelper {
   static String getSubtitle({
     required String asOfPrefix,
     required bool isPositive,
-    required double absoluteDelta,
+    required String formattedDelta,
+    required bool isChangeZero,
     required String referenceLabel,
   }) {
+    if (isChangeZero) {
+      return '${asOfPrefix}No change since $referenceLabel';
+    }
     final action = isPositive ? 'Increased' : 'Decreased';
-    final delta = absoluteDelta.toStringAsFixed(2);
-    return '$asOfPrefix$action by $delta since $referenceLabel';
+    return '$asOfPrefix$action by $formattedDelta since $referenceLabel';
   }
 }

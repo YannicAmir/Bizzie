@@ -13,10 +13,10 @@ import 'package:bizzie/shared/widgets/states/bizzie_empty_state.dart';
 import 'package:bizzie/shared/widgets/inputs/bizzie_switch.dart';
 import 'package:bizzie/shared/widgets/modals/app_history_modal.dart';
 import 'package:bizzie/features/company_profile/shared/domain/models/financial_data_point.dart';
-import 'package:bizzie/shared/widgets/app_badge.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import '../extensions/shares_presentation_helper.dart';
 
 class SharesTab extends StatefulWidget {
   final String ticker;
@@ -91,14 +91,10 @@ class _SharesTabState extends State<SharesTab>
               );
             }
 
-            final badgeStyle = summary.isPositive
-                ? AppBadgeStyle.critical
-                : AppBadgeStyle.good;
-            final valueStr = numberFormat.format(summary.currentValue);
-            final badgeText =
-                '${summary.growthPercentage > 0 ? '+' : ''}${summary.growthPercentage.toStringAsFixed(1)}%';
-            final subtitle =
-                '${summary.isPositive ? 'Increased' : 'Decreased'} by ${numberFormat.format(summary.absoluteDelta)} since ${summary.referenceLabel}';
+            final summaryFormatted = SharesPresentationHelper.formatSummary(
+              summary,
+              numberFormat,
+            );
 
             return SingleChildScrollView(
               padding: AppConstants.pagePadding,
@@ -117,10 +113,10 @@ class _SharesTabState extends State<SharesTab>
                   AppConstants.mainSectionSpacing,
                   MetricSummaryCard(
                     title: 'Outstanding Shares',
-                    value: valueStr,
-                    badgeText: badgeText,
-                    badgeStyle: badgeStyle,
-                    subtitle: subtitle,
+                    value: summaryFormatted.valueStr,
+                    badgeText: summaryFormatted.badgeText,
+                    badgeStyle: summaryFormatted.badgeStyle,
+                    subtitle: summaryFormatted.subtitle,
                   ),
                   AppConstants.mainSectionSpacing,
                   BizzieExpandableChart(
