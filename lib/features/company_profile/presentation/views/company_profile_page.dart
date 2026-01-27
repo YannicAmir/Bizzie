@@ -25,8 +25,8 @@ import 'package:bizzie/features/company_profile/security/presentation/bloc/compa
 import 'package:bizzie/features/company_profile/security/presentation/bloc/company_security_event.dart';
 import 'package:bizzie/features/company_profile/shares/presentation/bloc/company_shares_bloc.dart';
 import 'package:bizzie/features/company_profile/shares/presentation/bloc/company_shares_event.dart';
-import 'package:bizzie/features/company_profile/presentation/bloc/financial_statements/financial_statements_bloc.dart';
-import 'package:bizzie/features/company_profile/presentation/bloc/financial_statements/financial_statements_event.dart';
+import 'package:bizzie/features/company_profile/financial_statements/presentation/bloc/financial_statements_bloc.dart';
+import 'package:bizzie/features/company_profile/financial_statements/presentation/bloc/financial_statements_event.dart';
 import 'package:bizzie/features/company_profile/presentation/bloc/historical_price_eod/historical_price_eod_bloc.dart';
 import 'package:bizzie/features/company_profile/presentation/bloc/historical_price_eod/historical_price_eod_event.dart';
 import 'package:bizzie/features/company_profile/security/presentation/bloc/upcoming_earnings/upcoming_earnings_bloc.dart';

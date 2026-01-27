@@ -1,43 +1,56 @@
 import 'package:bizzie/core/error/failures.dart';
-import 'package:bizzie/features/company_profile/domain/interfaces/i_financial_repository.dart';
-import 'package:bizzie/features/company_profile/domain/models/balance_sheet.dart';
-import 'package:bizzie/features/company_profile/domain/models/cash_flow_statement.dart';
-import 'package:bizzie/features/company_profile/domain/models/income_statement.dart';
-import 'package:bizzie/features/company_profile/presentation/bloc/financial_statements/financial_statements_bloc.dart';
-import 'package:bizzie/features/company_profile/presentation/bloc/financial_statements/financial_statements_event.dart';
-import 'package:bizzie/features/company_profile/presentation/bloc/financial_statements/financial_statements_state.dart';
+import 'package:bizzie/features/company_profile/financial_statements/domain/models/balance_sheet.dart';
+import 'package:bizzie/features/company_profile/financial_statements/domain/models/cash_flow_statement.dart';
+import 'package:bizzie/features/company_profile/financial_statements/domain/models/get_financial_statement_params.dart';
+import 'package:bizzie/features/company_profile/financial_statements/domain/models/income_statement.dart';
+import 'package:bizzie/features/company_profile/financial_statements/domain/usecases/get_balance_sheets_usecase.dart';
+import 'package:bizzie/features/company_profile/financial_statements/domain/usecases/get_cash_flow_statements_usecase.dart';
+import 'package:bizzie/features/company_profile/financial_statements/domain/usecases/get_income_statements_usecase.dart';
+import 'package:bizzie/features/company_profile/financial_statements/presentation/bloc/financial_statements_bloc.dart';
+import 'package:bizzie/features/company_profile/financial_statements/presentation/bloc/financial_statements_event.dart';
+import 'package:bizzie/features/company_profile/financial_statements/presentation/bloc/financial_statements_state.dart';
 import 'package:bizzie/features/company_profile/presentation/enums/financial_statement_type.dart';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
-class MockFinancialRepository extends Mock implements IFinancialRepository {}
+class MockGetIncomeStatementsUseCase extends Mock
+    implements GetIncomeStatementsUseCase {}
+
+class MockGetBalanceSheetsUseCase extends Mock
+    implements GetBalanceSheetsUseCase {}
+
+class MockGetCashFlowStatementsUseCase extends Mock
+    implements GetCashFlowStatementsUseCase {}
 
 void main() {
   late FinancialStatementsBloc bloc;
-  late MockFinancialRepository mockRepository;
+  late MockGetIncomeStatementsUseCase mockGetIncomeStatements;
+  late MockGetBalanceSheetsUseCase mockGetBalanceSheets;
+  late MockGetCashFlowStatementsUseCase mockGetCashFlowStatements;
 
   setUp(() {
-    mockRepository = MockFinancialRepository();
-    bloc = FinancialStatementsBloc(mockRepository);
+    mockGetIncomeStatements = MockGetIncomeStatementsUseCase();
+    mockGetBalanceSheets = MockGetBalanceSheetsUseCase();
+    mockGetCashFlowStatements = MockGetCashFlowStatementsUseCase();
+    bloc = FinancialStatementsBloc(
+      mockGetIncomeStatements,
+      mockGetBalanceSheets,
+      mockGetCashFlowStatements,
+    );
 
-    // Default mocks to avoid "subtype of Null" errors
+    registerFallbackValue(const GetFinancialStatementParams(ticker: ''));
+
+    // Default mocks
     when(
-      () => mockRepository.getIncomeStatements(
-        any(),
-        period: any(named: 'period'),
-      ),
+      () => mockGetIncomeStatements(any()),
     ).thenAnswer((_) async => Right(List.from([])));
     when(
-      () =>
-          mockRepository.getBalanceSheets(any(), period: any(named: 'period')),
+      () => mockGetBalanceSheets(any()),
     ).thenAnswer((_) async => Right(List.from([])));
     when(
-      () => mockRepository.getCashFlowStatements(
-        any(),
-        period: any(named: 'period'),
-      ),
+      () => mockGetCashFlowStatements(any()),
     ).thenAnswer((_) async => Right(List.from([])));
   });
 
@@ -100,10 +113,20 @@ void main() {
       'loadIncomeStatements_success_emitsLoadingAndLoaded',
       build: () {
         when(
-          () => mockRepository.getIncomeStatements(tTicker, period: 'annual'),
+          () => mockGetIncomeStatements(
+            const GetFinancialStatementParams(
+              ticker: tTicker,
+              period: 'annual',
+            ),
+          ),
         ).thenAnswer((_) async => Right(List.from([tIncome])));
         when(
-          () => mockRepository.getIncomeStatements(tTicker, period: 'quarter'),
+          () => mockGetIncomeStatements(
+            const GetFinancialStatementParams(
+              ticker: tTicker,
+              period: 'quarter',
+            ),
+          ),
         ).thenAnswer((_) async => Right(List.from([tIncome])));
         return bloc;
       },
@@ -128,10 +151,7 @@ void main() {
       'loadIncomeStatements_failure_emitsLoadingAndFailure',
       build: () {
         when(
-          () => mockRepository.getIncomeStatements(
-            tTicker,
-            period: any(named: 'period'),
-          ),
+          () => mockGetIncomeStatements(any()),
         ).thenAnswer((_) async => const Left(ServerFailure('error')));
         return bloc;
       },
@@ -160,10 +180,20 @@ void main() {
       'loadBalanceSheets_success_emitsLoadingAndLoaded',
       build: () {
         when(
-          () => mockRepository.getBalanceSheets(tTicker, period: 'annual'),
+          () => mockGetBalanceSheets(
+            const GetFinancialStatementParams(
+              ticker: tTicker,
+              period: 'annual',
+            ),
+          ),
         ).thenAnswer((_) async => Right(List.from([tBalance])));
         when(
-          () => mockRepository.getBalanceSheets(tTicker, period: 'quarter'),
+          () => mockGetBalanceSheets(
+            const GetFinancialStatementParams(
+              ticker: tTicker,
+              period: 'quarter',
+            ),
+          ),
         ).thenAnswer((_) async => Right(List.from([tBalance])));
         return bloc;
       },
@@ -189,11 +219,20 @@ void main() {
       'loadCashFlows_success_emitsLoadingAndLoaded',
       build: () {
         when(
-          () => mockRepository.getCashFlowStatements(tTicker, period: 'annual'),
+          () => mockGetCashFlowStatements(
+            const GetFinancialStatementParams(
+              ticker: tTicker,
+              period: 'annual',
+            ),
+          ),
         ).thenAnswer((_) async => Right(List.from([tCashFlow])));
         when(
-          () =>
-              mockRepository.getCashFlowStatements(tTicker, period: 'quarter'),
+          () => mockGetCashFlowStatements(
+            const GetFinancialStatementParams(
+              ticker: tTicker,
+              period: 'quarter',
+            ),
+          ),
         ).thenAnswer((_) async => Right(List.from([tCashFlow])));
         return bloc;
       },
@@ -221,10 +260,7 @@ void main() {
       'viewTypeChanged_emitsNewTypeAndTriggersStalenessCheck',
       build: () {
         when(
-          () => mockRepository.getBalanceSheets(
-            tTicker,
-            period: any(named: 'period'),
-          ),
+          () => mockGetBalanceSheets(any()),
         ).thenAnswer((_) async => Right(List.from([tBalance])));
         return bloc;
       },
@@ -278,10 +314,7 @@ void main() {
       'stalenessCheckRequested_empty_triggersLoad',
       build: () {
         when(
-          () => mockRepository.getIncomeStatements(
-            tTicker,
-            period: any(named: 'period'),
-          ),
+          () => mockGetIncomeStatements(any()),
         ).thenAnswer((_) async => Right(List.from([tIncome])));
         return bloc;
       },
@@ -326,10 +359,7 @@ void main() {
       'stalenessCheckRequested_stale_triggersLoad',
       build: () {
         when(
-          () => mockRepository.getIncomeStatements(
-            tTicker,
-            period: any(named: 'period'),
-          ),
+          () => mockGetIncomeStatements(any()),
         ).thenAnswer((_) async => Right(List.from([tIncome])));
         return bloc;
       },

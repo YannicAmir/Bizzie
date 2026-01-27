@@ -1,12 +1,12 @@
 import 'package:bizzie/app/themes/app_colors.dart';
-import 'package:bizzie/features/company_profile/domain/models/balance_sheet.dart';
-import 'package:bizzie/features/company_profile/domain/models/cash_flow_statement.dart';
-import 'package:bizzie/features/company_profile/domain/models/income_statement.dart';
-import 'package:bizzie/features/company_profile/presentation/bloc/financial_statements/financial_statements_state.dart';
+import 'package:bizzie/features/company_profile/financial_statements/domain/models/balance_sheet.dart';
+import 'package:bizzie/features/company_profile/financial_statements/domain/models/cash_flow_statement.dart';
+import 'package:bizzie/features/company_profile/financial_statements/domain/models/income_statement.dart';
+import 'package:bizzie/features/company_profile/financial_statements/presentation/bloc/financial_statements_state.dart';
 import 'package:bizzie/features/company_profile/presentation/enums/growth_color_behavior.dart';
 import 'package:bizzie/features/company_profile/presentation/models/financial_history_row_data.dart';
 import 'package:bizzie/features/company_profile/presentation/utils/financial_statement_extensions.dart';
-import 'package:bizzie/features/company_profile/presentation/widgets/financial_statements/financial_statements_table.dart';
+import 'package:bizzie/features/company_profile/financial_statements/presentation/widgets/financial_statements_table.dart';
 import 'package:bizzie/shared/utils/currency_formatter.dart';
 import 'package:flutter/material.dart';
 

@@ -1,19 +1,20 @@
 import 'package:bizzie/core/error/failures.dart';
-import 'package:bizzie/features/company_profile/domain/interfaces/i_financial_repository.dart';
-import 'package:bizzie/features/company_profile/domain/models/full_financials.dart';
-import 'package:bizzie/features/company_profile/domain/usecases/get_full_financials_usecase.dart';
+import 'package:bizzie/features/company_profile/financial_statements/domain/interfaces/i_financial_statements_repository.dart';
+import 'package:bizzie/features/company_profile/financial_statements/domain/models/full_financials.dart';
+import 'package:bizzie/features/company_profile/financial_statements/domain/usecases/get_full_financials_usecase.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
-class MockIFinancialRepository extends Mock implements IFinancialRepository {}
+class MockIFinancialStatementsRepository extends Mock
+    implements IFinancialStatementsRepository {}
 
 void main() {
   late GetFullFinancialsUseCase useCase;
-  late MockIFinancialRepository mockRepository;
+  late MockIFinancialStatementsRepository mockRepository;
 
   setUp(() {
-    mockRepository = MockIFinancialRepository();
+    mockRepository = MockIFinancialStatementsRepository();
     useCase = GetFullFinancialsUseCase(mockRepository);
   });
 

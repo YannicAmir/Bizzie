@@ -7,13 +7,11 @@ import 'package:bizzie/features/company_profile/data/dtos/balance_sheet_dto.dart
 import 'package:bizzie/features/company_profile/data/dtos/cash_flow_statement_dto.dart';
 import 'package:bizzie/features/company_profile/data/dtos/income_statement_dto.dart';
 import 'package:bizzie/features/company_profile/data/dtos/legacy_income_statement_dto.dart';
-
-import 'package:bizzie/features/company_profile/domain/interfaces/i_financial_repository.dart';
-import 'package:bizzie/features/company_profile/domain/models/balance_sheet.dart';
-import 'package:bizzie/features/company_profile/domain/models/cash_flow_statement.dart';
-
-import 'package:bizzie/features/company_profile/domain/models/full_financials.dart';
-import 'package:bizzie/features/company_profile/domain/models/income_statement.dart';
+import '../../domain/interfaces/i_financial_statements_repository.dart';
+import '../../domain/models/balance_sheet.dart';
+import '../../domain/models/cash_flow_statement.dart';
+import '../../domain/models/full_financials.dart';
+import '../../domain/models/income_statement.dart';
 
 abstract class _Consts {
   static const String annual = 'annual';
@@ -21,12 +19,16 @@ abstract class _Consts {
   static const String usd = 'USD';
 }
 
-@LazySingleton(as: IFinancialRepository)
-class FinancialRepositoryImpl implements IFinancialRepository {
+@LazySingleton(as: IFinancialStatementsRepository)
+class FinancialStatementsRepositoryImpl
+    implements IFinancialStatementsRepository {
   final CompanyRemoteDataSource _remoteDataSource;
   final CompanyFirestoreDataSource _localDataSource;
 
-  FinancialRepositoryImpl(this._remoteDataSource, this._localDataSource);
+  FinancialStatementsRepositoryImpl(
+    this._remoteDataSource,
+    this._localDataSource,
+  );
 
   @override
   Future<Either<Failure, List<BalanceSheet>>> getBalanceSheets(

@@ -3,7 +3,7 @@ import 'package:bizzie/features/company_profile/business/presentation/views/busi
 import 'package:bizzie/features/company_profile/dividends/presentation/views/dividends_tab.dart';
 import 'package:bizzie/features/company_profile/eps/presentation/views/eps_tab.dart';
 import 'package:bizzie/features/company_profile/fcps/presentation/views/fcps_tab.dart';
-import 'package:bizzie/features/company_profile/presentation/views/tabs/financial_statements_tab.dart';
+import 'package:bizzie/features/company_profile/financial_statements/presentation/views/financial_statements_tab.dart';
 import 'package:bizzie/features/company_profile/free_cash_flow/presentation/views/free_cash_flow_tab.dart';
 import 'package:bizzie/features/company_profile/presentation/views/tabs/more_tab.dart';
 import 'package:bizzie/features/company_profile/net_income/presentation/views/net_income_tab.dart';

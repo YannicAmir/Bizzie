@@ -1,8 +1,8 @@
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/features/company_profile/presentation/enums/financial_statement_type.dart';
-import 'package:bizzie/features/company_profile/domain/models/income_statement.dart';
-import 'package:bizzie/features/company_profile/domain/models/balance_sheet.dart';
-import 'package:bizzie/features/company_profile/domain/models/cash_flow_statement.dart';
+import 'package:bizzie/features/company_profile/financial_statements/domain/models/balance_sheet.dart';
+import 'package:bizzie/features/company_profile/financial_statements/domain/models/cash_flow_statement.dart';
+import 'package:bizzie/features/company_profile/financial_statements/domain/models/income_statement.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'financial_statements_state.freezed.dart';

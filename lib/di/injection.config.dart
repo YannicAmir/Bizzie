@@ -52,8 +52,6 @@ import '../features/company_profile/data/datasources/company_firestore_data_sour
     as _i151;
 import '../features/company_profile/data/datasources/company_remote_data_source.dart'
     as _i140;
-import '../features/company_profile/data/repositories/financial_repository_impl.dart'
-    as _i314;
 import '../features/company_profile/data/repositories/price_repository_impl.dart'
     as _i787;
 import '../features/company_profile/dividends/data/repositories/dividend_repository_impl.dart'
@@ -64,12 +62,8 @@ import '../features/company_profile/dividends/domain/usecases/get_dividend_info_
     as _i754;
 import '../features/company_profile/dividends/presentation/bloc/company_dividends/company_dividends_bloc.dart'
     as _i723;
-import '../features/company_profile/domain/interfaces/i_financial_repository.dart'
-    as _i979;
 import '../features/company_profile/domain/interfaces/i_price_repository.dart'
     as _i865;
-import '../features/company_profile/domain/usecases/get_full_financials_usecase.dart'
-    as _i645;
 import '../features/company_profile/domain/usecases/get_historical_eod_prices_use_case.dart'
     as _i547;
 import '../features/company_profile/domain/usecases/get_price_history_usecase.dart'
@@ -90,6 +84,20 @@ import '../features/company_profile/fcps/domain/usecases/get_fcps_stats_usecase.
     as _i805;
 import '../features/company_profile/fcps/presentation/bloc/company_fcps_bloc.dart'
     as _i178;
+import '../features/company_profile/financial_statements/data/repositories/financial_statements_repository_impl.dart'
+    as _i741;
+import '../features/company_profile/financial_statements/domain/interfaces/i_financial_statements_repository.dart'
+    as _i865;
+import '../features/company_profile/financial_statements/domain/usecases/get_balance_sheets_usecase.dart'
+    as _i1054;
+import '../features/company_profile/financial_statements/domain/usecases/get_cash_flow_statements_usecase.dart'
+    as _i64;
+import '../features/company_profile/financial_statements/domain/usecases/get_full_financials_usecase.dart'
+    as _i606;
+import '../features/company_profile/financial_statements/domain/usecases/get_income_statements_usecase.dart'
+    as _i204;
+import '../features/company_profile/financial_statements/presentation/bloc/financial_statements_bloc.dart'
+    as _i191;
 import '../features/company_profile/free_cash_flow/data/repositories/free_cash_flow_repository_impl.dart'
     as _i269;
 import '../features/company_profile/free_cash_flow/domain/interfaces/i_free_cash_flow_repository.dart'
@@ -130,8 +138,6 @@ import '../features/company_profile/pfcf_ratio/domain/usecases/get_pfcf_ratio_us
     as _i912;
 import '../features/company_profile/pfcf_ratio/presentation/bloc/company_pfcf_ratio_bloc.dart'
     as _i62;
-import '../features/company_profile/presentation/bloc/financial_statements/financial_statements_bloc.dart'
-    as _i947;
 import '../features/company_profile/presentation/bloc/historical_price_eod/historical_price_eod_bloc.dart'
     as _i707;
 import '../features/company_profile/presentation/bloc/price_chart/price_chart_bloc.dart'
@@ -418,12 +424,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i151.CompanyFirestoreDataSource>(),
       ),
     );
-    gh.lazySingleton<_i979.IFinancialRepository>(
-      () => _i314.FinancialRepositoryImpl(
-        gh<_i140.CompanyRemoteDataSource>(),
-        gh<_i151.CompanyFirestoreDataSource>(),
-      ),
-    );
     gh.lazySingleton<_i814.INetIncomeRepository>(
       () => _i13.NetIncomeRepositoryImpl(
         gh<_i140.CompanyRemoteDataSource>(),
@@ -452,12 +452,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i140.CompanyRemoteDataSource>(),
         gh<_i151.CompanyFirestoreDataSource>(),
       ),
-    );
-    gh.factory<_i947.FinancialStatementsBloc>(
-      () => _i947.FinancialStatementsBloc(gh<_i979.IFinancialRepository>()),
-    );
-    gh.lazySingleton<_i645.GetFullFinancialsUseCase>(
-      () => _i645.GetFullFinancialsUseCase(gh<_i979.IFinancialRepository>()),
     );
     gh.lazySingleton<_i1012.IRecommendedBrandsRepository>(
       () => _i230.RecommendedBrandsRepository(
@@ -581,6 +575,12 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i912.GetPfcfRatioUseCase>(
       () => _i912.GetPfcfRatioUseCase(gh<_i1019.IPfcfRatioRepository>()),
+    );
+    gh.lazySingleton<_i865.IFinancialStatementsRepository>(
+      () => _i741.FinancialStatementsRepositoryImpl(
+        gh<_i140.CompanyRemoteDataSource>(),
+        gh<_i151.CompanyFirestoreDataSource>(),
+      ),
     );
     gh.factory<_i874.CompleteOnboardingUseCase>(
       () => _i874.CompleteOnboardingUseCase(
@@ -735,6 +735,26 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i683.CompanyEpsBloc>(
       () => _i683.CompanyEpsBloc(gh<_i107.GetEpsStatsUseCase>()),
     );
+    gh.lazySingleton<_i1054.GetBalanceSheetsUseCase>(
+      () => _i1054.GetBalanceSheetsUseCase(
+        gh<_i865.IFinancialStatementsRepository>(),
+      ),
+    );
+    gh.lazySingleton<_i64.GetCashFlowStatementsUseCase>(
+      () => _i64.GetCashFlowStatementsUseCase(
+        gh<_i865.IFinancialStatementsRepository>(),
+      ),
+    );
+    gh.lazySingleton<_i606.GetFullFinancialsUseCase>(
+      () => _i606.GetFullFinancialsUseCase(
+        gh<_i865.IFinancialStatementsRepository>(),
+      ),
+    );
+    gh.lazySingleton<_i204.GetIncomeStatementsUseCase>(
+      () => _i204.GetIncomeStatementsUseCase(
+        gh<_i865.IFinancialStatementsRepository>(),
+      ),
+    );
     gh.factory<_i130.SearchStocksUseCase>(
       () => _i130.SearchStocksUseCase(gh<_i269.StockSearchService>()),
     );
@@ -772,6 +792,13 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i73.UpcomingEarningsBloc>(
       () => _i73.UpcomingEarningsBloc(gh<_i1055.GetUpcomingEarningsUseCase>()),
+    );
+    gh.factory<_i191.FinancialStatementsBloc>(
+      () => _i191.FinancialStatementsBloc(
+        gh<_i204.GetIncomeStatementsUseCase>(),
+        gh<_i1054.GetBalanceSheetsUseCase>(),
+        gh<_i64.GetCashFlowStatementsUseCase>(),
+      ),
     );
     gh.factory<_i687.NotificationBloc>(
       () => _i687.NotificationBloc(

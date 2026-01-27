@@ -1,12 +1,15 @@
 import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:bizzie/features/company_profile/presentation/enums/financial_statement_type.dart';
 import 'package:bizzie/core/error/failures.dart';
-import 'package:bizzie/features/company_profile/domain/interfaces/i_financial_repository.dart';
-import 'package:bizzie/features/company_profile/presentation/bloc/financial_statements/financial_statements_event.dart';
-import 'package:bizzie/features/company_profile/presentation/bloc/financial_statements/financial_statements_state.dart';
-import 'package:bizzie/features/company_profile/domain/models/income_statement.dart';
-import 'package:bizzie/features/company_profile/domain/models/balance_sheet.dart';
-import 'package:bizzie/features/company_profile/domain/models/cash_flow_statement.dart';
+import 'package:bizzie/features/company_profile/financial_statements/presentation/bloc/financial_statements_event.dart';
+import 'package:bizzie/features/company_profile/financial_statements/presentation/bloc/financial_statements_state.dart';
+import 'package:bizzie/features/company_profile/financial_statements/domain/models/balance_sheet.dart';
+import 'package:bizzie/features/company_profile/financial_statements/domain/models/cash_flow_statement.dart';
+import 'package:bizzie/features/company_profile/financial_statements/domain/models/get_financial_statement_params.dart';
+import 'package:bizzie/features/company_profile/financial_statements/domain/models/income_statement.dart';
+import 'package:bizzie/features/company_profile/financial_statements/domain/usecases/get_balance_sheets_usecase.dart';
+import 'package:bizzie/features/company_profile/financial_statements/domain/usecases/get_cash_flow_statements_usecase.dart';
+import 'package:bizzie/features/company_profile/financial_statements/domain/usecases/get_income_statements_usecase.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:injectable/injectable.dart';
@@ -14,12 +17,18 @@ import 'package:injectable/injectable.dart';
 final _logger = BizzieLogger('FinancialStatementsBloc');
 
 @injectable
+@injectable
 class FinancialStatementsBloc
     extends Bloc<FinancialStatementsEvent, FinancialStatementsState> {
-  final IFinancialRepository _repository;
+  final GetIncomeStatementsUseCase _getIncomeStatements;
+  final GetBalanceSheetsUseCase _getBalanceSheets;
+  final GetCashFlowStatementsUseCase _getCashFlowStatements;
 
-  FinancialStatementsBloc(this._repository)
-    : super(FinancialStatementsState.initial()) {
+  FinancialStatementsBloc(
+    this._getIncomeStatements,
+    this._getBalanceSheets,
+    this._getCashFlowStatements,
+  ) : super(FinancialStatementsState.initial()) {
     on<FinancialStatementsEvent>(_onEvent, transformer: droppable());
   }
 
@@ -58,8 +67,12 @@ class FinancialStatementsBloc
     emit(state.copyWith(isLoadingIncome: true, incomeError: null));
 
     final results = await Future.wait([
-      _repository.getIncomeStatements(e.ticker, period: 'annual'),
-      _repository.getIncomeStatements(e.ticker, period: 'quarter'),
+      _getIncomeStatements(
+        GetFinancialStatementParams(ticker: e.ticker, period: 'annual'),
+      ),
+      _getIncomeStatements(
+        GetFinancialStatementParams(ticker: e.ticker, period: 'quarter'),
+      ),
     ]);
 
     final annualEither = results[0];
@@ -127,8 +140,12 @@ class FinancialStatementsBloc
     emit(state.copyWith(isLoadingBalance: true, balanceError: null));
 
     final results = await Future.wait([
-      _repository.getBalanceSheets(e.ticker, period: 'annual'),
-      _repository.getBalanceSheets(e.ticker, period: 'quarter'),
+      _getBalanceSheets(
+        GetFinancialStatementParams(ticker: e.ticker, period: 'annual'),
+      ),
+      _getBalanceSheets(
+        GetFinancialStatementParams(ticker: e.ticker, period: 'quarter'),
+      ),
     ]);
 
     final annualEither = results[0];
@@ -186,8 +203,12 @@ class FinancialStatementsBloc
     emit(state.copyWith(isLoadingCashFlow: true, cashFlowError: null));
 
     final results = await Future.wait([
-      _repository.getCashFlowStatements(e.ticker, period: 'annual'),
-      _repository.getCashFlowStatements(e.ticker, period: 'quarter'),
+      _getCashFlowStatements(
+        GetFinancialStatementParams(ticker: e.ticker, period: 'annual'),
+      ),
+      _getCashFlowStatements(
+        GetFinancialStatementParams(ticker: e.ticker, period: 'quarter'),
+      ),
     ]);
 
     final annualEither = results[0];

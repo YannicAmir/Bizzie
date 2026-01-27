@@ -1,12 +1,12 @@
-import 'package:bizzie/features/company_profile/presentation/bloc/financial_statements/financial_statements_bloc.dart';
-import 'package:bizzie/features/company_profile/presentation/bloc/financial_statements/financial_statements_event.dart';
-import 'package:bizzie/features/company_profile/presentation/bloc/financial_statements/financial_statements_state.dart';
-import 'package:bizzie/features/company_profile/presentation/bloc/financial_statements/financial_statements_state_extensions.dart';
+import 'package:bizzie/features/company_profile/financial_statements/presentation/bloc/financial_statements_bloc.dart';
+import 'package:bizzie/features/company_profile/financial_statements/presentation/bloc/financial_statements_event.dart';
+import 'package:bizzie/features/company_profile/financial_statements/presentation/bloc/financial_statements_state.dart';
+import 'package:bizzie/features/company_profile/financial_statements/presentation/bloc/financial_statements_state_extensions.dart';
 import 'package:bizzie/features/company_profile/presentation/models/financial_history_row_data.dart';
-import 'package:bizzie/features/company_profile/presentation/widgets/financial_statements/financial_statement_chart.dart';
-import 'package:bizzie/features/company_profile/presentation/widgets/financial_statements/financial_statement_selector.dart';
-import 'package:bizzie/features/company_profile/presentation/widgets/financial_statements/financial_statements_table.dart';
-import 'package:bizzie/features/company_profile/domain/models/income_statement.dart';
+import 'package:bizzie/features/company_profile/financial_statements/presentation/widgets/financial_statement_chart.dart';
+import 'package:bizzie/features/company_profile/financial_statements/presentation/widgets/financial_statement_selector.dart';
+import 'package:bizzie/features/company_profile/financial_statements/presentation/widgets/financial_statements_table.dart';
+import 'package:bizzie/features/company_profile/financial_statements/domain/models/income_statement.dart';
 import 'package:bizzie/app/themes/app_colors.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:bizzie/shared/widgets/modals/app_history_modal.dart';
@@ -15,7 +15,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
 import 'package:bizzie/features/user/presentation/bloc/user_state_extensions.dart';
 import 'package:bizzie/shared/widgets/states/bizzie_empty_state.dart';
-import 'package:bizzie/features/company_profile/presentation/widgets/financial_statements/shared/financial_history_row.dart';
+import 'package:bizzie/features/company_profile/financial_statements/presentation/widgets/shared/financial_history_row.dart';
 
 class IncomeStatementView extends StatelessWidget {
   const IncomeStatementView({super.key});
