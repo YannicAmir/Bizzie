@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
-import 'package:bizzie/features/company_profile/domain/enums/market_cap_category.dart';
-import 'package:bizzie/features/company_profile/domain/enums/ratio_category.dart';
+import 'package:bizzie/features/company_profile/shared/domain/enums/market_cap_category.dart';
+import 'package:bizzie/features/company_profile/shared/domain/enums/ratio_category.dart';
 
 class SecurityDetails extends Equatable {
   MarketCapCategory get marketCapCategory {

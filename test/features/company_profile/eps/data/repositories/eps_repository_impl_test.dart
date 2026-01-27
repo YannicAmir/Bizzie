@@ -1,23 +1,25 @@
-import 'package:bizzie/features/company_profile/data/datasources/company_firestore_data_source.dart';
-import 'package:bizzie/features/company_profile/data/datasources/company_remote_data_source.dart';
-import 'package:bizzie/features/company_profile/data/dtos/income_statement_dto.dart';
+import 'package:bizzie/features/company_profile/financial_statements/data/datasources/financial_statements_firestore_data_source.dart';
+import 'package:bizzie/features/company_profile/financial_statements/data/datasources/financial_statements_remote_data_source.dart';
+import 'package:bizzie/features/company_profile/financial_statements/data/dtos/income_statement_dto.dart';
 import 'package:bizzie/features/company_profile/eps/data/repositories/eps_repository_impl.dart';
 import 'package:bizzie/features/company_profile/eps/domain/models/eps_stats.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
-class MockRemoteDataSource extends Mock implements CompanyRemoteDataSource {}
+class MockFinancialRemoteDataSource extends Mock
+    implements FinancialStatementsRemoteDataSource {}
 
-class MockLocalDataSource extends Mock implements CompanyFirestoreDataSource {}
+class MockFinancialLocalDataSource extends Mock
+    implements FinancialStatementsFirestoreDataSource {}
 
 void main() {
   late EpsRepositoryImpl repository;
-  late MockRemoteDataSource mockRemoteDataSource;
-  late MockLocalDataSource mockLocalDataSource;
+  late MockFinancialRemoteDataSource mockRemoteDataSource;
+  late MockFinancialLocalDataSource mockLocalDataSource;
 
   setUp(() {
-    mockRemoteDataSource = MockRemoteDataSource();
-    mockLocalDataSource = MockLocalDataSource();
+    mockRemoteDataSource = MockFinancialRemoteDataSource();
+    mockLocalDataSource = MockFinancialLocalDataSource();
     repository = EpsRepositoryImpl(mockRemoteDataSource, mockLocalDataSource);
   });
 

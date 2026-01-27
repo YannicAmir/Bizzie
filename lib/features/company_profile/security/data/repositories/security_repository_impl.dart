@@ -1,8 +1,19 @@
 import 'package:bizzie/core/error/failures.dart';
-import 'package:bizzie/features/company_profile/data/datasources/company_firestore_data_source.dart';
-import 'package:bizzie/features/company_profile/data/datasources/company_remote_data_source.dart';
-import 'package:bizzie/features/company_profile/data/dtos/earnings_report_dto.dart';
-import 'package:bizzie/features/company_profile/data/dtos/profile_dtos.dart';
+import 'package:bizzie/features/company_profile/business/data/datasources/business_firestore_data_source.dart';
+import 'package:bizzie/features/company_profile/business/data/datasources/business_remote_data_source.dart';
+import 'package:bizzie/features/company_profile/security/data/datasources/security_firestore_data_source.dart';
+import 'package:bizzie/features/company_profile/security/data/datasources/security_remote_data_source.dart';
+import 'package:bizzie/features/company_profile/shared/data/datasources/ratios_remote_data_source.dart'; // No firestore for ratios used here?
+// Implementation used local.getCachedRatios for TTM?
+// Actually implementation lines 34: _remoteDataSource.getRatiosTtm.
+// Lines 30: double? peRatioTTM;
+// It calls remote directly inside try-catch.
+// It uses _localDataSource for Profile and Quote.
+// So: Business (Profile, Quote), Ratios (TTM), Security (Earnings).
+// It needs: BusinessRemote, BusinessFirestore, RatiosRemote, SecurityRemote, SecurityFirestore.
+
+import 'package:bizzie/features/company_profile/security/data/dtos/earnings_report_dto.dart';
+import 'package:bizzie/features/company_profile/business/data/dtos/profile_dtos.dart';
 import 'package:bizzie/features/company_profile/security/domain/interfaces/i_security_repository.dart';
 import 'package:bizzie/features/company_profile/security/domain/models/security_details.dart';
 import 'package:dartz/dartz.dart';
@@ -14,10 +25,19 @@ abstract class _Consts {
 
 @LazySingleton(as: ISecurityRepository)
 class SecurityRepositoryImpl implements ISecurityRepository {
-  final CompanyRemoteDataSource _remoteDataSource;
-  final CompanyFirestoreDataSource _localDataSource;
+  final BusinessRemoteDataSource _businessRemoteDataSource;
+  final BusinessFirestoreDataSource _businessLocalDataSource;
+  final SecurityRemoteDataSource _securityRemoteDataSource;
+  final SecurityFirestoreDataSource _securityLocalDataSource;
+  final RatiosRemoteDataSource _ratiosRemoteDataSource;
 
-  SecurityRepositoryImpl(this._remoteDataSource, this._localDataSource);
+  SecurityRepositoryImpl(
+    this._businessRemoteDataSource,
+    this._businessLocalDataSource,
+    this._securityRemoteDataSource,
+    this._securityLocalDataSource,
+    this._ratiosRemoteDataSource,
+  );
 
   @override
   Future<Either<Failure, SecurityDetails>> getSecurityDetails(
@@ -31,7 +51,7 @@ class SecurityRepositoryImpl implements ISecurityRepository {
       double? pfcfTTM;
 
       try {
-        final ttmRatios = await _remoteDataSource.getRatiosTtm(ticker);
+        final ttmRatios = await _ratiosRemoteDataSource.getRatiosTtm(ticker);
         if (ttmRatios.isNotEmpty) {
           final ratio = ttmRatios.first;
           peRatioTTM = ratio.priceToEarningsRatioTTM;
@@ -76,12 +96,12 @@ class SecurityRepositoryImpl implements ISecurityRepository {
     String ticker,
   ) async {
     try {
-      List<EarningsReportDto>? earnings = await _localDataSource
+      List<EarningsReportDto>? earnings = await _securityLocalDataSource
           .getCachedEarningsReports(ticker);
 
       if (earnings == null) {
-        earnings = await _remoteDataSource.getEarningsReports(ticker);
-        await _localDataSource.cacheEarningsReports(ticker, earnings);
+        earnings = await _securityRemoteDataSource.getEarningsReports(ticker);
+        await _securityLocalDataSource.cacheEarningsReports(ticker, earnings);
       }
 
       final now = DateTime.now();
@@ -109,28 +129,28 @@ class SecurityRepositoryImpl implements ISecurityRepository {
   }
 
   Future<ProfileDto> _getProfileAndCache(String ticker) async {
-    final local = await _localDataSource.getCachedProfile(ticker);
+    final local = await _businessLocalDataSource.getCachedProfile(ticker);
     if (local != null) return local;
 
-    final remote = await _remoteDataSource.getProfile(ticker);
+    final remote = await _businessRemoteDataSource.getProfile(ticker);
     if (remote.isEmpty) {
       throw Exception("Profile not found");
     }
     final profile = remote.first;
-    await _localDataSource.cacheProfile(ticker, profile);
+    await _businessLocalDataSource.cacheProfile(ticker, profile);
     return profile;
   }
 
   Future<QuoteDto> _getQuoteAndCache(String ticker) async {
-    final local = await _localDataSource.getCachedQuote(ticker);
+    final local = await _businessLocalDataSource.getCachedQuote(ticker);
     if (local != null) return local;
 
-    final remote = await _remoteDataSource.getQuote(ticker);
+    final remote = await _businessRemoteDataSource.getQuote(ticker);
     if (remote.isEmpty) {
       throw Exception("Quote not found");
     }
     final quote = remote.first;
-    await _localDataSource.cacheQuote(ticker, quote);
+    await _businessLocalDataSource.cacheQuote(ticker, quote);
     return quote;
   }
 

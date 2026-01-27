@@ -1,11 +1,11 @@
 import 'package:bizzie/app/themes/app_colors.dart';
 import 'package:bizzie/app/themes/app_text_styles.dart';
 import 'package:bizzie/app/themes/app_theme.dart';
-import 'package:bizzie/features/company_profile/domain/enums/chart_time_frame.dart';
-import 'package:bizzie/features/company_profile/domain/extensions/historical_price_eod_extensions.dart';
-import 'package:bizzie/features/company_profile/presentation/bloc/price_chart/price_chart_bloc.dart';
-import 'package:bizzie/features/company_profile/presentation/bloc/price_chart/price_chart_event.dart';
-import 'package:bizzie/features/company_profile/presentation/bloc/price_chart/price_chart_state.dart';
+import 'package:bizzie/features/company_profile/shared/domain/enums/chart_time_frame.dart';
+import 'package:bizzie/features/company_profile/security/domain/extensions/historical_price_eod_extensions.dart';
+import 'package:bizzie/features/company_profile/security/presentation/bloc/price_chart/price_chart_bloc.dart';
+import 'package:bizzie/features/company_profile/security/presentation/bloc/price_chart/price_chart_event.dart';
+import 'package:bizzie/features/company_profile/security/presentation/bloc/price_chart/price_chart_state.dart';
 import 'package:bizzie/features/company_profile/presentation/utils/chart_time_frame_extensions.dart';
 import 'package:bizzie/features/company_profile/presentation/utils/historical_price_chart_extensions.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';

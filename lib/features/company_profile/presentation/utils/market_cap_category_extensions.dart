@@ -1,4 +1,4 @@
-import 'package:bizzie/features/company_profile/domain/enums/market_cap_category.dart';
+import 'package:bizzie/features/company_profile/shared/domain/enums/market_cap_category.dart';
 
 extension MarketCapCategoryX on MarketCapCategory {
   String get label {

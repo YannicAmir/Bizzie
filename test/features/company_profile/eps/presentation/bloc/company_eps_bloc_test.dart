@@ -1,6 +1,6 @@
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/features/company_profile/eps/domain/models/eps_stats.dart';
-import 'package:bizzie/features/company_profile/domain/models/financial_data_point.dart';
+import 'package:bizzie/features/company_profile/shared/domain/models/financial_data_point.dart';
 import 'package:bizzie/features/company_profile/eps/domain/usecases/get_eps_stats_usecase.dart';
 import 'package:bizzie/features/company_profile/eps/presentation/bloc/company_eps_bloc.dart';
 import 'package:bizzie/features/company_profile/eps/presentation/bloc/company_eps_event.dart';

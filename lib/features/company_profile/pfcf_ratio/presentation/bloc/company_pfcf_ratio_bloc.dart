@@ -4,8 +4,8 @@ import 'package:injectable/injectable.dart';
 import 'package:intl/intl.dart';
 
 import 'package:bizzie/core/logging/bizzie_logger.dart';
-import 'package:bizzie/features/company_profile/domain/models/chart_data_point.dart';
-import 'package:bizzie/features/company_profile/domain/models/financial_data_point.dart';
+import 'package:bizzie/features/company_profile/shared/domain/models/chart_data_point.dart';
+import 'package:bizzie/features/company_profile/shared/domain/models/financial_data_point.dart';
 import 'package:bizzie/features/company_profile/pfcf_ratio/domain/usecases/get_pfcf_ratio_usecase.dart';
 
 import 'company_pfcf_ratio_event.dart';

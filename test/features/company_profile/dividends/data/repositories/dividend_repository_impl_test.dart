@@ -1,23 +1,25 @@
-import 'package:bizzie/features/company_profile/data/datasources/company_firestore_data_source.dart';
-import 'package:bizzie/features/company_profile/data/datasources/company_remote_data_source.dart';
-import 'package:bizzie/features/company_profile/data/dtos/market_dtos.dart';
+import 'package:bizzie/features/company_profile/dividends/data/datasources/dividends_firestore_data_source.dart';
+import 'package:bizzie/features/company_profile/dividends/data/datasources/dividends_remote_data_source.dart';
+import 'package:bizzie/features/company_profile/dividends/data/dtos/dividend_dto.dart';
 import 'package:bizzie/features/company_profile/dividends/data/repositories/dividend_repository_impl.dart';
 import 'package:bizzie/features/company_profile/dividends/domain/models/dividend_info.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
-class MockRemoteDataSource extends Mock implements CompanyRemoteDataSource {}
+class MockDividendsRemoteDataSource extends Mock
+    implements DividendsRemoteDataSource {}
 
-class MockLocalDataSource extends Mock implements CompanyFirestoreDataSource {}
+class MockDividendsLocalDataSource extends Mock
+    implements DividendsFirestoreDataSource {}
 
 void main() {
   late DividendRepositoryImpl repository;
-  late MockRemoteDataSource mockRemoteDataSource;
-  late MockLocalDataSource mockLocalDataSource;
+  late MockDividendsRemoteDataSource mockRemoteDataSource;
+  late MockDividendsLocalDataSource mockLocalDataSource;
 
   setUp(() {
-    mockRemoteDataSource = MockRemoteDataSource();
-    mockLocalDataSource = MockLocalDataSource();
+    mockRemoteDataSource = MockDividendsRemoteDataSource();
+    mockLocalDataSource = MockDividendsLocalDataSource();
     repository = DividendRepositoryImpl(
       mockRemoteDataSource,
       mockLocalDataSource,

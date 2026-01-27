@@ -1,5 +1,5 @@
 import 'package:bizzie/core/error/failures.dart';
-import 'package:bizzie/features/company_profile/domain/models/financial_data_point.dart';
+import 'package:bizzie/features/company_profile/shared/domain/models/financial_data_point.dart';
 import 'package:bizzie/features/company_profile/fcps/domain/models/fcps_stats.dart';
 import 'package:bizzie/features/company_profile/fcps/domain/usecases/get_fcps_stats_usecase.dart';
 import 'package:bizzie/features/company_profile/fcps/presentation/bloc/company_fcps_bloc.dart';

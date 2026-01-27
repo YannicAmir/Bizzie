@@ -1,17 +1,17 @@
 import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
 import 'package:bizzie/core/error/failures.dart';
-import 'package:bizzie/features/company_profile/data/datasources/company_firestore_data_source.dart';
-import 'package:bizzie/features/company_profile/data/datasources/company_remote_data_source.dart';
-import 'package:bizzie/features/company_profile/data/dtos/market_dtos.dart';
+import 'package:bizzie/features/company_profile/news/data/datasources/news_firestore_data_source.dart';
+import 'package:bizzie/features/company_profile/news/data/datasources/news_remote_data_source.dart';
+import 'package:bizzie/features/company_profile/news/data/dtos/news_dto.dart';
 import 'package:bizzie/features/company_profile/news/domain/interfaces/i_news_repository.dart';
 import 'package:bizzie/features/company_profile/news/domain/models/company_news.dart';
 import 'package:bizzie/features/company_profile/news/domain/models/news_article.dart';
 
 @LazySingleton(as: INewsRepository)
 class NewsRepositoryImpl implements INewsRepository {
-  final CompanyRemoteDataSource _remoteDataSource;
-  final CompanyFirestoreDataSource _localDataSource;
+  final NewsRemoteDataSource _remoteDataSource;
+  final NewsFirestoreDataSource _localDataSource;
 
   NewsRepositoryImpl(this._remoteDataSource, this._localDataSource);
 

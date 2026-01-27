@@ -1,5 +1,5 @@
-import 'package:bizzie/features/company_profile/domain/enums/market_cap_category.dart';
-import 'package:bizzie/features/company_profile/domain/enums/ratio_category.dart';
+import 'package:bizzie/features/company_profile/shared/domain/enums/market_cap_category.dart';
+import 'package:bizzie/features/company_profile/shared/domain/enums/ratio_category.dart';
 import 'package:bizzie/features/company_profile/news/domain/models/news_article.dart';
 import 'package:bizzie/features/company_profile/presentation/utils/market_cap_category_extensions.dart';
 import 'package:bizzie/features/company_profile/presentation/utils/mascot_utils.dart';

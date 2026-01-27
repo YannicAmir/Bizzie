@@ -1,4 +1,4 @@
-import 'package:bizzie/features/company_profile/domain/enums/ratio_category.dart';
+import 'package:bizzie/features/company_profile/shared/domain/enums/ratio_category.dart';
 import 'package:bizzie/shared/widgets/app_badge.dart';
 
 extension RatioCategoryX on RatioCategory {

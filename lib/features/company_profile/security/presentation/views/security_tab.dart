@@ -2,14 +2,14 @@ import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:bizzie/features/company_profile/domain/models/historical_price_eod.dart';
+import 'package:bizzie/features/company_profile/security/domain/models/historical_price_eod.dart';
 import 'package:bizzie/features/company_profile/security/domain/models/security_details.dart';
 import 'package:bizzie/features/company_profile/security/presentation/bloc/company_security_bloc.dart';
 import 'package:bizzie/features/company_profile/security/presentation/bloc/company_security_event.dart';
 import 'package:bizzie/features/company_profile/security/presentation/bloc/company_security_state.dart';
-import 'package:bizzie/features/company_profile/presentation/bloc/historical_price_eod/historical_price_eod_bloc.dart';
-import 'package:bizzie/features/company_profile/presentation/bloc/historical_price_eod/historical_price_eod_event.dart';
-import 'package:bizzie/features/company_profile/presentation/bloc/historical_price_eod/historical_price_eod_state.dart';
+import 'package:bizzie/features/company_profile/security/presentation/bloc/historical_price_eod/historical_price_eod_bloc.dart';
+import 'package:bizzie/features/company_profile/security/presentation/bloc/historical_price_eod/historical_price_eod_event.dart';
+import 'package:bizzie/features/company_profile/security/presentation/bloc/historical_price_eod/historical_price_eod_state.dart';
 import 'package:bizzie/features/company_profile/security/presentation/widgets/price_chart_widget.dart';
 import 'package:bizzie/features/company_profile/presentation/widgets/shared/company_profile_error_state.dart';
 import 'package:bizzie/features/company_profile/presentation/widgets/shared/company_profile_loading_state.dart';
@@ -17,9 +17,9 @@ import 'package:bizzie/features/company_profile/security/presentation/widgets/se
 import 'package:bizzie/features/company_profile/security/presentation/widgets/upcoming_earnings_widget.dart';
 import 'package:bizzie/features/company_profile/security/presentation/widgets/key_metrics_section.dart';
 import 'package:bizzie/features/company_profile/security/presentation/bloc/company_security_state_extensions.dart';
-import 'package:bizzie/features/company_profile/presentation/bloc/historical_price_eod/historical_price_eod_state_extensions.dart';
-import 'package:bizzie/features/company_profile/presentation/bloc/price_chart/price_chart_bloc.dart';
-import 'package:bizzie/features/company_profile/presentation/bloc/price_chart/price_chart_event.dart';
+import 'package:bizzie/features/company_profile/security/presentation/bloc/historical_price_eod/historical_price_eod_state_extensions.dart';
+import 'package:bizzie/features/company_profile/security/presentation/bloc/price_chart/price_chart_bloc.dart';
+import 'package:bizzie/features/company_profile/security/presentation/bloc/price_chart/price_chart_event.dart';
 import 'package:bizzie/di/injection.dart';
 
 class SecurityTab extends StatefulWidget {

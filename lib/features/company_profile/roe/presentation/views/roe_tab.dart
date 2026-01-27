@@ -1,6 +1,6 @@
 import 'package:bizzie/app/themes/app_assets.dart';
-import 'package:bizzie/features/company_profile/domain/models/chart_data_point.dart';
-import 'package:bizzie/features/company_profile/domain/models/financial_data_point.dart';
+import 'package:bizzie/features/company_profile/shared/domain/models/chart_data_point.dart';
+import 'package:bizzie/features/company_profile/shared/domain/models/financial_data_point.dart';
 import '../bloc/company_roe_bloc.dart';
 import '../bloc/company_roe_event.dart';
 import '../bloc/company_roe_state.dart';

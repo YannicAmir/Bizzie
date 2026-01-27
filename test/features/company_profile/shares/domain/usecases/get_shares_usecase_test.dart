@@ -1,5 +1,5 @@
 import 'package:bizzie/core/error/failures.dart';
-import 'package:bizzie/features/company_profile/domain/models/financial_data_point.dart';
+import 'package:bizzie/features/company_profile/shared/domain/models/financial_data_point.dart';
 import 'package:bizzie/features/company_profile/shares/domain/interfaces/i_shares_repository.dart';
 import 'package:bizzie/features/company_profile/shares/domain/models/share_stats.dart';
 import 'package:bizzie/features/company_profile/shares/domain/usecases/get_shares_usecase.dart';

@@ -1,15 +1,17 @@
 import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
 import 'package:bizzie/core/error/failures.dart';
-import 'package:bizzie/features/company_profile/data/datasources/company_firestore_data_source.dart';
-import 'package:bizzie/features/company_profile/data/datasources/company_remote_data_source.dart';
-import 'package:bizzie/features/company_profile/data/dtos/fmp_sec_filing_dto.dart';
-import 'package:bizzie/features/company_profile/data/dtos/legacy_income_statement_dto.dart';
-import 'package:bizzie/features/company_profile/data/dtos/profile_dtos.dart';
+import 'package:bizzie/features/company_profile/business/data/datasources/business_firestore_data_source.dart';
+import 'package:bizzie/features/company_profile/business/data/datasources/business_remote_data_source.dart';
+import 'package:bizzie/features/company_profile/financial_statements/data/datasources/financial_statements_firestore_data_source.dart';
+import 'package:bizzie/features/company_profile/financial_statements/data/datasources/financial_statements_remote_data_source.dart';
+import 'package:bizzie/features/company_profile/financial_statements/data/dtos/fmp_sec_filing_dto.dart';
+import 'package:bizzie/features/company_profile/financial_statements/data/dtos/legacy_income_statement_dto.dart';
+import 'package:bizzie/features/company_profile/business/data/dtos/profile_dtos.dart';
 import 'package:bizzie/features/company_profile/business/domain/interfaces/i_business_repository.dart';
 import 'package:bizzie/features/company_profile/business/domain/models/business_profile.dart';
 import 'package:bizzie/features/company_profile/business/domain/models/company_executive.dart';
-import 'package:bizzie/features/company_profile/domain/models/sec_filing.dart';
+import 'package:bizzie/features/company_profile/business/domain/models/sec_filing.dart';
 
 abstract class _Consts {
   static const String annual = 'annual';
@@ -22,10 +24,17 @@ abstract class _Consts {
 
 @LazySingleton(as: IBusinessRepository)
 class BusinessRepositoryImpl implements IBusinessRepository {
-  final CompanyRemoteDataSource _remoteDataSource;
-  final CompanyFirestoreDataSource _localDataSource;
+  final BusinessRemoteDataSource _remoteDataSource;
+  final BusinessFirestoreDataSource _localDataSource;
+  final FinancialStatementsRemoteDataSource _financialRemoteDataSource;
+  final FinancialStatementsFirestoreDataSource _financialLocalDataSource;
 
-  BusinessRepositoryImpl(this._remoteDataSource, this._localDataSource);
+  BusinessRepositoryImpl(
+    this._remoteDataSource,
+    this._localDataSource,
+    this._financialRemoteDataSource,
+    this._financialLocalDataSource,
+  );
 
   @override
   Future<Either<Failure, BusinessProfile>> getBusinessProfile(
@@ -35,7 +44,7 @@ class BusinessRepositoryImpl implements IBusinessRepository {
       final results = await Future.wait([
         _getProfileAndCache(ticker),
         _getExecutivesAndCache(ticker),
-        _remoteDataSource.getSecFilings(ticker),
+        _financialRemoteDataSource.getSecFilings(ticker),
         _fetchLegacyIncomeStatements(ticker, _Consts.annual),
         _fetchLegacyIncomeStatements(ticker, _Consts.quarter),
       ]);
@@ -183,17 +192,15 @@ class BusinessRepositoryImpl implements IBusinessRepository {
     String ticker,
     String period,
   ) async {
-    final local = await _localDataSource.getCachedLegacyIncomeStatements(
-      ticker,
-      period: period,
-    );
+    final local = await _financialLocalDataSource
+        .getCachedLegacyIncomeStatements(ticker, period: period);
     if (local != null) return local;
 
-    final remote = await _remoteDataSource.getLegacyIncomeStatements(
+    final remote = await _financialRemoteDataSource.getLegacyIncomeStatements(
       ticker,
       period: period,
     );
-    await _localDataSource.cacheLegacyIncomeStatements(
+    await _financialLocalDataSource.cacheLegacyIncomeStatements(
       ticker,
       remote,
       period: period,

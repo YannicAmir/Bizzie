@@ -1,7 +1,7 @@
 import 'package:bizzie/core/error/failures.dart';
-import 'package:bizzie/features/company_profile/domain/interfaces/i_price_repository.dart';
-import 'package:bizzie/features/company_profile/domain/models/historical_price_eod.dart';
-import 'package:bizzie/features/company_profile/domain/usecases/get_historical_eod_prices_use_case.dart';
+import 'package:bizzie/features/company_profile/security/domain/interfaces/i_price_repository.dart';
+import 'package:bizzie/features/company_profile/security/domain/models/historical_price_eod.dart';
+import 'package:bizzie/features/company_profile/security/domain/usecases/get_historical_eod_prices_use_case.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';

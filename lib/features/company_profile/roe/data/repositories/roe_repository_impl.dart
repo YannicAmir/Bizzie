@@ -1,9 +1,9 @@
 import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
 import 'package:bizzie/core/error/failures.dart';
-import 'package:bizzie/features/company_profile/data/datasources/company_firestore_data_source.dart';
-import 'package:bizzie/features/company_profile/data/datasources/company_remote_data_source.dart';
-import 'package:bizzie/features/company_profile/data/dtos/key_metrics_dto.dart';
+import 'package:bizzie/features/company_profile/shared/data/datasources/ratios_firestore_data_source.dart';
+import 'package:bizzie/features/company_profile/shared/data/datasources/ratios_remote_data_source.dart';
+import 'package:bizzie/features/company_profile/roe/data/dtos/key_metrics_dto.dart';
 import '../../domain/interfaces/i_roe_repository.dart';
 import '../../domain/models/roe.dart';
 
@@ -13,8 +13,8 @@ abstract class _Consts {
 
 @LazySingleton(as: IRoeRepository)
 class RoeRepositoryImpl implements IRoeRepository {
-  final CompanyRemoteDataSource _remoteDataSource;
-  final CompanyFirestoreDataSource _localDataSource;
+  final RatiosRemoteDataSource _remoteDataSource;
+  final RatiosFirestoreDataSource _localDataSource;
 
   RoeRepositoryImpl(this._remoteDataSource, this._localDataSource);
 

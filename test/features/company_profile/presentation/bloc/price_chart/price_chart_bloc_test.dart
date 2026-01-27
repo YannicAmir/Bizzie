@@ -1,8 +1,8 @@
-import 'package:bizzie/features/company_profile/domain/enums/chart_time_frame.dart';
-import 'package:bizzie/features/company_profile/domain/models/historical_price_eod.dart';
-import 'package:bizzie/features/company_profile/presentation/bloc/price_chart/price_chart_bloc.dart';
-import 'package:bizzie/features/company_profile/presentation/bloc/price_chart/price_chart_event.dart';
-import 'package:bizzie/features/company_profile/presentation/bloc/price_chart/price_chart_state.dart';
+import 'package:bizzie/features/company_profile/shared/domain/enums/chart_time_frame.dart';
+import 'package:bizzie/features/company_profile/security/domain/models/historical_price_eod.dart';
+import 'package:bizzie/features/company_profile/security/presentation/bloc/price_chart/price_chart_bloc.dart';
+import 'package:bizzie/features/company_profile/security/presentation/bloc/price_chart/price_chart_event.dart';
+import 'package:bizzie/features/company_profile/security/presentation/bloc/price_chart/price_chart_state.dart';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 

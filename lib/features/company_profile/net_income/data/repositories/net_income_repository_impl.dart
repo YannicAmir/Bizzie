@@ -1,8 +1,8 @@
 import 'package:bizzie/core/error/failures.dart';
-import 'package:bizzie/features/company_profile/data/datasources/company_firestore_data_source.dart';
-import 'package:bizzie/features/company_profile/data/datasources/company_remote_data_source.dart';
-import 'package:bizzie/features/company_profile/data/dtos/income_statement_dto.dart';
-import 'package:bizzie/features/company_profile/domain/models/financial_data_point.dart';
+import 'package:bizzie/features/company_profile/financial_statements/data/datasources/financial_statements_firestore_data_source.dart';
+import 'package:bizzie/features/company_profile/financial_statements/data/datasources/financial_statements_remote_data_source.dart';
+import 'package:bizzie/features/company_profile/financial_statements/data/dtos/income_statement_dto.dart';
+import 'package:bizzie/features/company_profile/shared/domain/models/financial_data_point.dart';
 import 'package:bizzie/features/company_profile/net_income/domain/interfaces/i_net_income_repository.dart';
 import 'package:bizzie/features/company_profile/net_income/domain/models/net_income_stats.dart';
 import 'package:dartz/dartz.dart';
@@ -16,8 +16,8 @@ abstract class _Consts {
 
 @LazySingleton(as: INetIncomeRepository)
 class NetIncomeRepositoryImpl implements INetIncomeRepository {
-  final CompanyRemoteDataSource _remoteDataSource;
-  final CompanyFirestoreDataSource _localDataSource;
+  final FinancialStatementsRemoteDataSource _remoteDataSource;
+  final FinancialStatementsFirestoreDataSource _localDataSource;
 
   NetIncomeRepositoryImpl(this._remoteDataSource, this._localDataSource);
 

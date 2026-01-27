@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:bizzie/features/company_profile/domain/models/financial_data_point.dart';
+import 'package:bizzie/features/company_profile/shared/domain/models/financial_data_point.dart';
 
 class FcpsStats extends Equatable {
   final List<FinancialDataPoint> annualFcps;

@@ -1,25 +1,25 @@
 import 'package:bizzie/core/error/failures.dart';
-import 'package:bizzie/features/company_profile/data/datasources/company_firestore_data_source.dart';
-import 'package:bizzie/features/company_profile/data/datasources/company_remote_data_source.dart';
-import 'package:bizzie/features/company_profile/data/dtos/market_dtos.dart';
+import 'package:bizzie/features/company_profile/news/data/datasources/news_firestore_data_source.dart';
+import 'package:bizzie/features/company_profile/news/data/datasources/news_remote_data_source.dart';
+import 'package:bizzie/features/company_profile/news/data/dtos/news_dto.dart';
 import 'package:bizzie/features/company_profile/news/data/repositories/news_repository_impl.dart';
 import 'package:bizzie/features/company_profile/news/domain/models/company_news.dart';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
-class MockRemoteDataSource extends Mock implements CompanyRemoteDataSource {}
+class MockNewsRemoteDataSource extends Mock implements NewsRemoteDataSource {}
 
-class MockLocalDataSource extends Mock implements CompanyFirestoreDataSource {}
+class MockNewsLocalDataSource extends Mock implements NewsFirestoreDataSource {}
 
 void main() {
   late NewsRepositoryImpl repository;
-  late MockRemoteDataSource mockRemoteDataSource;
-  late MockLocalDataSource mockLocalDataSource;
+  late MockNewsRemoteDataSource mockRemoteDataSource;
+  late MockNewsLocalDataSource mockLocalDataSource;
 
   setUp(() {
-    mockRemoteDataSource = MockRemoteDataSource();
-    mockLocalDataSource = MockLocalDataSource();
+    mockRemoteDataSource = MockNewsRemoteDataSource();
+    mockLocalDataSource = MockNewsLocalDataSource();
     repository = NewsRepositoryImpl(mockRemoteDataSource, mockLocalDataSource);
   });
 

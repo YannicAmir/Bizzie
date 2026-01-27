@@ -1,4 +1,4 @@
-import 'package:bizzie/features/company_profile/domain/enums/chart_time_frame.dart';
+import 'package:bizzie/features/company_profile/shared/domain/enums/chart_time_frame.dart';
 import 'package:intl/intl.dart';
 
 extension ChartTimeFrameX on ChartTimeFrame {

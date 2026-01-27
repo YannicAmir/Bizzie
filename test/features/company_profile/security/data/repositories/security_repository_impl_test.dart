@@ -1,28 +1,52 @@
-import 'package:bizzie/features/company_profile/data/datasources/company_firestore_data_source.dart';
-import 'package:bizzie/features/company_profile/data/datasources/company_remote_data_source.dart';
-import 'package:bizzie/features/company_profile/data/dtos/earnings_report_dto.dart';
-import 'package:bizzie/features/company_profile/data/dtos/ratios_ttm_dto.dart';
-import 'package:bizzie/features/company_profile/data/dtos/profile_dtos.dart';
+import 'package:bizzie/features/company_profile/business/data/datasources/business_firestore_data_source.dart';
+import 'package:bizzie/features/company_profile/business/data/datasources/business_remote_data_source.dart';
+import 'package:bizzie/features/company_profile/shared/data/datasources/ratios_remote_data_source.dart';
+import 'package:bizzie/features/company_profile/security/data/datasources/security_firestore_data_source.dart';
+import 'package:bizzie/features/company_profile/security/data/datasources/security_remote_data_source.dart';
+import 'package:bizzie/features/company_profile/security/data/dtos/earnings_report_dto.dart';
+import 'package:bizzie/features/company_profile/shared/data/dtos/ratios_ttm_dto.dart';
+import 'package:bizzie/features/company_profile/business/data/dtos/profile_dtos.dart';
 import 'package:bizzie/features/company_profile/security/data/repositories/security_repository_impl.dart';
 import 'package:bizzie/features/company_profile/security/domain/models/security_details.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
-class MockRemoteDataSource extends Mock implements CompanyRemoteDataSource {}
+class MockBusinessRemoteDataSource extends Mock
+    implements BusinessRemoteDataSource {}
 
-class MockLocalDataSource extends Mock implements CompanyFirestoreDataSource {}
+class MockBusinessLocalDataSource extends Mock
+    implements BusinessFirestoreDataSource {}
+
+class MockSecurityRemoteDataSource extends Mock
+    implements SecurityRemoteDataSource {}
+
+class MockSecurityLocalDataSource extends Mock
+    implements SecurityFirestoreDataSource {}
+
+class MockRatiosRemoteDataSource extends Mock
+    implements RatiosRemoteDataSource {}
 
 void main() {
   late SecurityRepositoryImpl repository;
-  late MockRemoteDataSource mockRemoteDataSource;
-  late MockLocalDataSource mockLocalDataSource;
+  late MockBusinessRemoteDataSource mockBusinessRemoteDataSource;
+  late MockBusinessLocalDataSource mockBusinessLocalDataSource;
+  late MockSecurityRemoteDataSource mockSecurityRemoteDataSource;
+  late MockSecurityLocalDataSource mockSecurityLocalDataSource;
+  late MockRatiosRemoteDataSource mockRatiosRemoteDataSource;
 
   setUp(() {
-    mockRemoteDataSource = MockRemoteDataSource();
-    mockLocalDataSource = MockLocalDataSource();
+    mockBusinessRemoteDataSource = MockBusinessRemoteDataSource();
+    mockBusinessLocalDataSource = MockBusinessLocalDataSource();
+    mockSecurityRemoteDataSource = MockSecurityRemoteDataSource();
+    mockSecurityLocalDataSource = MockSecurityLocalDataSource();
+    mockRatiosRemoteDataSource = MockRatiosRemoteDataSource();
+
     repository = SecurityRepositoryImpl(
-      mockRemoteDataSource,
-      mockLocalDataSource,
+      mockBusinessRemoteDataSource,
+      mockBusinessLocalDataSource,
+      mockSecurityRemoteDataSource,
+      mockSecurityLocalDataSource,
+      mockRatiosRemoteDataSource,
     );
 
     registerFallbackValue(const ProfileDto(symbol: ''));
@@ -70,27 +94,27 @@ void main() {
     test('getSecurityDetails_success_returnsSecurityDetails', () async {
       // arrange
       when(
-        () => mockLocalDataSource.getCachedProfile(tTicker),
+        () => mockBusinessLocalDataSource.getCachedProfile(tTicker),
       ).thenAnswer((_) async => null);
       when(
-        () => mockRemoteDataSource.getProfile(tTicker),
+        () => mockBusinessRemoteDataSource.getProfile(tTicker),
       ).thenAnswer((_) async => [tProfile]);
       when(
-        () => mockLocalDataSource.cacheProfile(tTicker, any()),
+        () => mockBusinessLocalDataSource.cacheProfile(tTicker, any()),
       ).thenAnswer((_) async => Future.value());
 
       when(
-        () => mockLocalDataSource.getCachedQuote(tTicker),
+        () => mockBusinessLocalDataSource.getCachedQuote(tTicker),
       ).thenAnswer((_) async => null);
       when(
-        () => mockRemoteDataSource.getQuote(tTicker),
+        () => mockBusinessRemoteDataSource.getQuote(tTicker),
       ).thenAnswer((_) async => [tQuote]);
       when(
-        () => mockLocalDataSource.cacheQuote(tTicker, any()),
+        () => mockBusinessLocalDataSource.cacheQuote(tTicker, any()),
       ).thenAnswer((_) async => Future.value());
 
       when(
-        () => mockRemoteDataSource.getRatiosTtm(tTicker),
+        () => mockRatiosRemoteDataSource.getRatiosTtm(tTicker),
       ).thenAnswer((_) async => tRatios);
 
       // act
@@ -110,7 +134,7 @@ void main() {
     test('getSecurityDetails_failure_returnsServerFailure', () async {
       // arrange
       when(
-        () => mockLocalDataSource.getCachedProfile(tTicker),
+        () => mockBusinessLocalDataSource.getCachedProfile(tTicker),
       ).thenThrow(Exception('Error'));
 
       // act
@@ -142,13 +166,13 @@ void main() {
     test('getUpcomingEarningsDate_success_returnsNearestValidDate', () async {
       // arrange
       when(
-        () => mockLocalDataSource.getCachedEarningsReports(tTicker),
+        () => mockSecurityLocalDataSource.getCachedEarningsReports(tTicker),
       ).thenAnswer((_) async => null);
       when(
-        () => mockRemoteDataSource.getEarningsReports(tTicker),
+        () => mockSecurityRemoteDataSource.getEarningsReports(tTicker),
       ).thenAnswer((_) async => tEarningsReports);
       when(
-        () => mockLocalDataSource.cacheEarningsReports(tTicker, any()),
+        () => mockSecurityLocalDataSource.cacheEarningsReports(tTicker, any()),
       ).thenAnswer((_) async => Future.value());
 
       // act
@@ -176,7 +200,7 @@ void main() {
         ),
       ];
       when(
-        () => mockLocalDataSource.getCachedEarningsReports(tTicker),
+        () => mockSecurityLocalDataSource.getCachedEarningsReports(tTicker),
       ).thenAnswer((_) async => tPastEarnings);
 
       // act
@@ -192,7 +216,7 @@ void main() {
     test('getUpcomingEarningsDate_failure_returnsLeftFailure', () async {
       // arrange
       when(
-        () => mockLocalDataSource.getCachedEarningsReports(tTicker),
+        () => mockSecurityLocalDataSource.getCachedEarningsReports(tTicker),
       ).thenThrow(Exception('Error'));
 
       // act

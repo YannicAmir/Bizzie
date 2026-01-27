@@ -1,5 +1,5 @@
 import 'package:bizzie/app/themes/app_colors.dart';
-import 'package:bizzie/features/company_profile/domain/models/financial_data_point.dart';
+import 'package:bizzie/features/company_profile/shared/domain/models/financial_data_point.dart';
 import 'package:bizzie/features/company_profile/presentation/enums/financial_table_enums.dart';
 import 'package:bizzie/shared/utils/bizzie_date_formatter.dart';
 import 'package:flutter/material.dart';

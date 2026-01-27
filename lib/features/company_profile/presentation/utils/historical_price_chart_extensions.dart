@@ -1,7 +1,7 @@
 import 'dart:math';
 
-import 'package:bizzie/features/company_profile/domain/enums/chart_time_frame.dart';
-import 'package:bizzie/features/company_profile/domain/models/historical_price_eod.dart';
+import 'package:bizzie/features/company_profile/shared/domain/enums/chart_time_frame.dart';
+import 'package:bizzie/features/company_profile/security/domain/models/historical_price_eod.dart';
 
 extension HistoricalPriceListX on List<HistoricalPriceEod> {
   List<HistoricalPriceEod> filterByTimeFrame(ChartTimeFrame frame) {

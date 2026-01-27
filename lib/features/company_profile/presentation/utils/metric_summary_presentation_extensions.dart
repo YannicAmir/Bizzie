@@ -1,5 +1,5 @@
-import 'package:bizzie/features/company_profile/domain/extensions/financial_data_point_list_extensions.dart';
-import 'package:bizzie/features/company_profile/domain/models/financial_data_point.dart';
+import 'package:bizzie/features/company_profile/shared/domain/extensions/financial_data_point_list_extensions.dart';
+import 'package:bizzie/features/company_profile/shared/domain/models/financial_data_point.dart';
 import 'package:bizzie/shared/utils/bizzie_date_formatter.dart';
 
 extension MetricSummaryListX on List<FinancialDataPoint> {

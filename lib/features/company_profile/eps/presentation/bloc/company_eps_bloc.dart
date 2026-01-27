@@ -1,6 +1,6 @@
 import 'package:bizzie/core/logging/bizzie_logger.dart';
-import 'package:bizzie/features/company_profile/domain/models/chart_data_point.dart';
-import 'package:bizzie/features/company_profile/domain/models/financial_data_point.dart';
+import 'package:bizzie/features/company_profile/shared/domain/models/chart_data_point.dart';
+import 'package:bizzie/features/company_profile/shared/domain/models/financial_data_point.dart';
 import 'package:bizzie/features/company_profile/eps/domain/usecases/get_eps_stats_usecase.dart';
 import 'company_eps_event.dart';
 import 'company_eps_state.dart';

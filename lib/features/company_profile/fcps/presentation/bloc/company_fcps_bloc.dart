@@ -3,8 +3,8 @@ import 'package:bloc_concurrency/bloc_concurrency.dart';
 
 import 'package:injectable/injectable.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
-import 'package:bizzie/features/company_profile/domain/models/chart_data_point.dart';
-import 'package:bizzie/features/company_profile/domain/models/financial_data_point.dart';
+import 'package:bizzie/features/company_profile/shared/domain/models/chart_data_point.dart';
+import 'package:bizzie/features/company_profile/shared/domain/models/financial_data_point.dart';
 import 'package:bizzie/shared/utils/bizzie_date_formatter.dart';
 import '../../domain/usecases/get_fcps_stats_usecase.dart';
 import 'company_fcps_event.dart';
