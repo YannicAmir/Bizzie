@@ -106,7 +106,7 @@ class ReportsRemoteDataSource implements IReportsRemoteDataSource {
 
     return _firestoreService
         .getDocumentStream<UserActivityDto>(
-          path: 'users/$uid/activity/reports',
+          path: 'users/$uid/${FirestoreConstants.activities}/reports',
           fromJson: UserActivityDto.fromJson,
           toJson: (dto) => dto.toJson(),
         )
@@ -127,7 +127,7 @@ class ReportsRemoteDataSource implements IReportsRemoteDataSource {
     _logger.info('Updating UserActivity for UID: $uid');
     try {
       await _firestoreService.setDocument<UserActivityDto>(
-        path: 'users/$uid/activity/reports',
+        path: 'users/$uid/${FirestoreConstants.activities}/reports',
         value: activity,
         toJson: (dto) => dto.toJson(),
       );
