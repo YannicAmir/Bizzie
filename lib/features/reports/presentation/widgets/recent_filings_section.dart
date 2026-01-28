@@ -1,5 +1,4 @@
 import 'package:bizzie/app/themes/app_assets.dart';
-import 'package:bizzie/app/themes/app_text_styles.dart';
 import 'package:bizzie/features/reports/presentation/models/filing_view_model.dart';
 import 'package:bizzie/shared/widgets/states/bizzie_empty_state.dart';
 import 'package:bizzie/features/reports/presentation/widgets/sec_filing_card.dart';
@@ -19,6 +18,7 @@ class RecentFilingsSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final recentFilings = filings;
 
     return Column(
@@ -26,7 +26,7 @@ class RecentFilingsSection extends StatelessWidget {
       children: [
         Padding(
           padding: const EdgeInsets.only(bottom: 16),
-          child: Text('Recent', style: AppTextStyles.sectionHeader),
+          child: Text('Recent', style: theme.textTheme.displaySmall),
         ),
         if (recentFilings.isEmpty)
           BizzieEmptyState(

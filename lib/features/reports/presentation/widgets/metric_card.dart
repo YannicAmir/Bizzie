@@ -1,6 +1,8 @@
 import 'package:bizzie/app/themes/app_theme.dart';
 import 'package:bizzie/features/reports/domain/models/financial_report.dart';
 import 'package:bizzie/features/reports/presentation/utils/reports_utils.dart';
+import 'package:bizzie/shared/constants/app_constants.dart';
+import 'package:bizzie/shared/widgets/app_badge.dart';
 import 'package:flutter/material.dart';
 
 class MetricCard extends StatelessWidget {
@@ -80,7 +82,7 @@ class MetricCard extends StatelessWidget {
     final isGood = isInverse ? !isPositive : isPositive;
 
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(AppConstants.mainSectionContainerPadding),
       decoration: BoxDecoration(
         color: theme.cardColor,
         borderRadius: BorderRadius.circular(12),
@@ -98,7 +100,7 @@ class MetricCard extends StatelessWidget {
             isGood: isGood,
           ),
           if (driver != null && driver!.isNotEmpty) ...[
-            const SizedBox(height: 12),
+            const SizedBox(height: 16),
             _DriverSection(driver: driver!),
           ],
         ],
@@ -121,15 +123,11 @@ class _HeaderRow extends StatelessWidget {
       children: [
         Text(
           title,
-          style: theme.textTheme.bodySmall?.copyWith(
+          style: theme.textTheme.headlineMedium?.copyWith(
             color: theme.hintColor,
-            fontWeight: FontWeight.w500,
           ),
         ),
-        Text(
-          amount,
-          style: theme.textTheme.headlineSmall?.copyWith(fontSize: 15),
-        ),
+        Text(amount, style: theme.textTheme.headlineMedium),
       ],
     );
   }
@@ -152,36 +150,22 @@ class _TrendRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final badgeTheme = theme.extension<BadgeThemeExtension>();
-    final trendColor = isGood
-        ? badgeTheme?.goodText ?? Colors.green
-        : theme.colorScheme.error;
+    final trendColor = isGood ? badgeTheme?.goodText : badgeTheme?.criticalText;
     final trendIcon = isPositive ? Icons.trending_up : Icons.trending_down;
 
     return Row(
       children: [
-        Icon(trendIcon, size: 14, color: trendColor),
+        Icon(trendIcon, size: 20, color: trendColor),
         const SizedBox(width: 4),
         Text(
           changeAmount,
-          style: theme.textTheme.bodySmall?.copyWith(
-            color: trendColor,
-            fontWeight: FontWeight.w600,
-          ),
+          style: theme.textTheme.headlineMedium?.copyWith(color: trendColor),
         ),
         const Spacer(),
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-          decoration: BoxDecoration(
-            color: trendColor.withValues(alpha: 0.1),
-            borderRadius: BorderRadius.circular(4),
-          ),
-          child: Text(
-            changePercent,
-            style: theme.textTheme.labelSmall?.copyWith(
-              color: trendColor,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
+        AppBadge(
+          text: changePercent,
+          style: isGood ? AppBadgeStyle.good : AppBadgeStyle.critical,
+          isLarge: true,
         ),
       ],
     );
@@ -200,14 +184,8 @@ class _DriverSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Divider(height: 1),
-        const SizedBox(height: 12),
-        Text(
-          driver,
-          style: theme.textTheme.bodySmall?.copyWith(
-            color: theme.textTheme.bodyMedium?.color, // Use standard body color
-            height: 1.4,
-          ),
-        ),
+        const SizedBox(height: 16),
+        Text(driver, style: theme.textTheme.bodyMedium),
       ],
     );
   }

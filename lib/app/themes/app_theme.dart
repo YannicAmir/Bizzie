@@ -28,7 +28,7 @@ class AppTheme {
             displayLarge: AppTextStyles.h1.copyWith(height: 1.2),
             displayMedium: AppTextStyles.h2,
             displaySmall: AppTextStyles.h3,
-            headlineMedium: AppTextStyles.h3,
+            headlineMedium: AppTextStyles.bodyLargeBold,
             titleMedium: AppTextStyles.subtitle,
             bodyLarge: AppTextStyles.bodyLarge,
             bodyMedium: AppTextStyles.bodyMedium,
