@@ -33,7 +33,7 @@ void main() {
   const tUid = '123';
   final tFirebaseUser = MockUser();
   const tUserModel = UserModel(id: tUid, email: tEmail);
-  const tFailure = ServerFailure('Exception');
+  const tFailure = Failure.server('Exception');
 
   group('signInWithEmail', () {
     test('signInWithEmail_success_returnsRightUserModel', () async {

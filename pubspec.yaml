@@ -39,7 +39,6 @@ dependencies:
   path_provider: ^2.1.5
   shared_preferences: ^2.5.4
   firebase_storage: ^13.0.5
-  equatable: ^2.0.8
   bloc: ^9.2.0
   flutter_native_splash: ^2.4.6
   async: ^2.13.0

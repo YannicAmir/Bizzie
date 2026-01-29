@@ -6,8 +6,12 @@ import 'package:bizzie/features/watchlist/domain/usecases/get_watchlist_usecase.
 import 'package:bizzie/features/watchlist/domain/usecases/remove_from_watchlist_usecase.dart';
 import 'package:bizzie/features/watchlist/domain/usecases/sync_watchlist_usecase.dart';
 import 'package:bloc/bloc.dart';
+import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:injectable/injectable.dart';
 
+import 'package:bizzie/features/watchlist/domain/models/add_to_watchlist_params.dart';
+import 'package:bizzie/features/watchlist/domain/models/remove_from_watchlist_params.dart';
+import 'package:bizzie/features/watchlist/domain/models/sync_watchlist_params.dart';
 import 'watchlist_event.dart';
 import 'watchlist_state.dart';
 
@@ -31,7 +35,13 @@ class WatchlistBloc extends Bloc<WatchlistEvent, WatchlistState> {
     on<SyncRequested>(_onSyncRequested);
     on<AddRequested>(_onAddRequested);
     on<RemoveRequested>(_onRemoveRequested);
-    on<LoadRequested>(_onLoadRequested);
+    on<LoadRequested>(_onLoadRequested, transformer: restartable());
+    on<Reset>(_onReset);
+  }
+
+  void _onReset(Reset event, Emitter<WatchlistState> emit) {
+    _logger.info('Resetting WatchlistBloc');
+    emit(const WatchlistState.initial());
   }
 
   String? get _uid => _authRepository.currentUser?.id;
@@ -52,13 +62,15 @@ class WatchlistBloc extends Bloc<WatchlistEvent, WatchlistState> {
 
     await emit.forEach(
       stream,
-      onData: (result) => result.fold(
-        (failure) => WatchlistState.failure(failure.message),
-        (companies) => WatchlistState.loaded(companies),
-      ),
+      onData: (result) {
+        return result.fold(
+          (failure) => WatchlistState.failure(failure.message),
+          (companies) => WatchlistState.loaded(companies),
+        );
+      },
       onError: (error, stack) {
         _logger.severe('Watchlist stream error', error, stack);
-        return WatchlistState.failure("Stream Error: $error");
+        return WatchlistState.failure('Stream Error');
       },
     );
   }

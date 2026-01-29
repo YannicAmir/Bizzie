@@ -17,4 +17,5 @@ class ReportsEvent with _$ReportsEvent {
   const factory ReportsEvent.viewed() = Viewed;
   const factory ReportsEvent.activityUpdated(DateTime? lastViewedReports) =
       ActivityUpdated;
+  const factory ReportsEvent.reset() = Reset;
 }

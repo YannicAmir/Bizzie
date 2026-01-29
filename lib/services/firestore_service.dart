@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:injectable/injectable.dart';
+import 'package:rxdart/rxdart.dart';
 
 @singleton
 class FirestoreService {
@@ -7,75 +8,202 @@ class FirestoreService {
 
   FirestoreService(this._firestore);
 
-  FirebaseFirestore get instance => _firestore;
-
   @factoryMethod
   static FirestoreService init() {
     return FirestoreService(FirebaseFirestore.instance);
   }
 
-  Future<void> setDocument({
+  CollectionReference<T> _getCollectionRef<T>(
+    String path,
+    T Function(Map<String, dynamic> json) fromJson,
+    Map<String, dynamic> Function(T value) toJson,
+  ) {
+    return _firestore
+        .collection(path)
+        .withConverter<T>(
+          fromFirestore: (snapshot, _) {
+            final data = Map<String, dynamic>.from(snapshot.data() ?? {});
+            data['id'] = snapshot.id;
+            return fromJson(data);
+          },
+          toFirestore: (value, _) => toJson(value),
+        );
+  }
+
+  DocumentReference<T> _getDocRef<T>(
+    String path,
+    T Function(Map<String, dynamic> json) fromJson,
+    Map<String, dynamic> Function(T value) toJson,
+  ) {
+    return _firestore
+        .doc(path)
+        .withConverter<T>(
+          fromFirestore: (snapshot, _) {
+            final data = Map<String, dynamic>.from(snapshot.data() ?? {});
+            data['id'] = snapshot.id;
+            return fromJson(data);
+          },
+          toFirestore: (value, _) => toJson(value),
+        );
+  }
+
+  Stream<T?> getDocumentStream<T>({
     required String path,
-    required Map<String, dynamic> data,
-    bool merge = false,
+    required T Function(Map<String, dynamic> json) fromJson,
+    required Map<String, dynamic> Function(T value) toJson,
+  }) {
+    return _getDocRef<T>(
+      path,
+      fromJson,
+      toJson,
+    ).snapshots().map((s) => s.data());
+  }
+
+  Stream<List<T>> getCollectionStream<T>({
+    required String path,
+    required T Function(Map<String, dynamic> json) fromJson,
+    required Map<String, dynamic> Function(T value) toJson,
+    Query<T> Function(Query<T> query)? queryBuilder,
+  }) {
+    Query<T> query = _getCollectionRef<T>(path, fromJson, toJson);
+    if (queryBuilder != null) {
+      query = queryBuilder(query);
+    }
+    return query.snapshots().map((s) => s.docs.map((d) => d.data()).toList());
+  }
+
+  Future<List<T>> getCollection<T>({
+    required String path,
+    required T Function(Map<String, dynamic> json) fromJson,
+    required Map<String, dynamic> Function(T value) toJson,
+    Query<T> Function(Query<T> query)? queryBuilder,
   }) async {
-    final reference = _firestore.doc(path);
-    await reference.set(data, SetOptions(merge: merge));
+    Query<T> query = _getCollectionRef<T>(path, fromJson, toJson);
+    if (queryBuilder != null) {
+      query = queryBuilder(query);
+    }
+    final snapshot = await query.get();
+    return snapshot.docs.map((doc) => doc.data()).toList();
+  }
+
+  Future<T?> getDocument<T>({
+    required String path,
+    required T Function(Map<String, dynamic> json) fromJson,
+    required Map<String, dynamic> Function(T value) toJson,
+  }) async {
+    final snapshot = await _getDocRef<T>(path, fromJson, toJson).get();
+    return snapshot.data();
+  }
+
+  Future<T?> getLatestDocument<T>({
+    required String collectionPath,
+    required String orderBy,
+    required T Function(Map<String, dynamic> json) fromJson,
+    required Map<String, dynamic> Function(T value) toJson,
+    bool descending = true,
+  }) async {
+    final querySnapshot = await _getCollectionRef<T>(
+      collectionPath,
+      fromJson,
+      toJson,
+    ).orderBy(orderBy, descending: descending).limit(1).get();
+
+    if (querySnapshot.docs.isEmpty) return null;
+    return querySnapshot.docs.first.data();
+  }
+
+  Future<void> setDocument<T>({
+    required String path,
+    required T value,
+    required Map<String, dynamic> Function(T value) toJson,
+    bool merge = true,
+  }) async {
+    final data = toJson(value);
+    await _firestore.doc(path).set(data, SetOptions(merge: merge));
   }
 
   Future<void> updateDocument({
     required String path,
     required Map<String, dynamic> data,
   }) async {
-    final reference = _firestore.doc(path);
-    await reference.update(data);
-  }
-
-  Future<DocumentSnapshot<Map<String, dynamic>>> getDocument({
-    required String path,
-  }) async {
-    final reference = _firestore.doc(path);
-    return await reference.get();
-  }
-
-  Stream<DocumentSnapshot<Map<String, dynamic>>> getDocumentStream({
-    required String path,
-  }) {
-    final reference = _firestore.doc(path);
-    return reference.snapshots();
-  }
-
-  Stream<QuerySnapshot<Map<String, dynamic>>> getCollectionStream({
-    required String path,
-  }) {
-    final reference = _firestore.collection(path);
-    return reference.snapshots();
-  }
-
-  Future<DocumentReference<Map<String, dynamic>>> addDocument({
-    required String collectionPath,
-    required Map<String, dynamic> data,
-  }) async {
-    final collection = _firestore.collection(collectionPath);
-    return await collection.add(data);
+    await _firestore.doc(path).update(data);
   }
 
   Future<void> deleteDocument({required String path}) async {
     await _firestore.doc(path).delete();
   }
 
-  Future<Map<String, dynamic>?> getLatestDocument({
-    required String collectionPath,
-    required String orderBy,
-    bool descending = true,
-  }) async {
-    final querySnapshot = await _firestore
-        .collection(collectionPath)
-        .orderBy(orderBy, descending: descending)
-        .limit(1)
-        .get();
+  Stream<List<T>> getCollectionStreamChunked<T>({
+    required String path,
+    required String whereInField,
+    required List<dynamic> values,
+    required T Function(Map<String, dynamic> json) fromJson,
+    required Map<String, dynamic> Function(T value) toJson,
+    int chunkSize = 30,
+    Query<T> Function(Query<T> query)? queryBuilder,
+  }) {
+    if (values.isEmpty) return Stream.value([]);
 
-    if (querySnapshot.docs.isEmpty) return null;
-    return querySnapshot.docs.first.data();
+    final chunks = <List<dynamic>>[];
+    for (var i = 0; i < values.length; i += chunkSize) {
+      chunks.add(
+        values.sublist(
+          i,
+          i + chunkSize > values.length ? values.length : i + chunkSize,
+        ),
+      );
+    }
+
+    final streams = chunks.map((chunk) {
+      Query<T> query = _getCollectionRef<T>(
+        path,
+        fromJson,
+        toJson,
+      ).where(whereInField, whereIn: chunk);
+      if (queryBuilder != null) {
+        query = queryBuilder(query);
+      }
+      return query.snapshots().map((s) => s.docs.map((d) => d.data()).toList());
+    }).toList();
+
+    return Rx.combineLatest<List<T>, List<T>>(
+      streams,
+      (valuesList) => valuesList.expand((x) => x).toList(),
+    );
   }
+
+  BizzieBatch batch() => BizzieBatch(_firestore.batch(), _firestore);
+}
+
+class BizzieBatch {
+  final WriteBatch _batch;
+  final FirebaseFirestore _firestore;
+
+  BizzieBatch(this._batch, this._firestore);
+
+  void setDocument<T>({
+    required String path,
+    required T value,
+    required Map<String, dynamic> Function(T value) toJson,
+    bool merge = true,
+  }) {
+    final reference = _firestore.doc(path);
+    _batch.set(reference, toJson(value), SetOptions(merge: merge));
+  }
+
+  void setRaw({
+    required String path,
+    required Map<String, dynamic> data,
+    bool merge = true,
+  }) {
+    final reference = _firestore.doc(path);
+    _batch.set(reference, data, SetOptions(merge: merge));
+  }
+
+  void deleteDocument({required String path}) {
+    final reference = _firestore.doc(path);
+    _batch.delete(reference);
+  }
+
+  Future<void> commit() => _batch.commit();
 }

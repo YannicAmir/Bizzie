@@ -12,9 +12,7 @@ _UserDto _$UserDtoFromJson(Map<String, dynamic> json) => _UserDto(
   favoriteSector: json['favoriteSector'] as String,
   favoriteSectorDisplay: json['favoriteSectorDisplay'] as String?,
   investingExperience: json['investingExperience'] as String,
-  createdAt: const TimestampConverter().fromJson(
-    json['createdAt'] as Timestamp,
-  ),
+  createdAt: const TimestampConverter().fromJson(json['createdAt'] as Object),
   isSubscribed: json['isSubscribed'] as bool? ?? false,
   fcmTokens: Map<String, String>.from(json['fcmTokens'] as Map),
 );

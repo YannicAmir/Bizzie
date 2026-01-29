@@ -1,7 +1,7 @@
 import 'package:bizzie/core/error/failures.dart';
-import 'package:bizzie/features/company_profile/domain/interfaces/i_price_repository.dart';
-import 'package:bizzie/features/company_profile/domain/models/price_history.dart';
-import 'package:bizzie/features/company_profile/domain/usecases/get_price_history_usecase.dart';
+import 'package:bizzie/features/company_profile/security/domain/interfaces/i_price_repository.dart';
+import 'package:bizzie/features/company_profile/security/domain/models/price_history.dart';
+import 'package:bizzie/features/company_profile/security/domain/usecases/get_price_history_usecase.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
@@ -38,7 +38,7 @@ void main() {
 
     test('call_failure_returnsServerFailure', () async {
       // arrange
-      const tFailure = ServerFailure('Server error');
+      const tFailure = Failure.server('Server error');
       when(
         () => mockRepository.getPriceHistory(tTicker),
       ).thenAnswer((_) async => const Left(tFailure));

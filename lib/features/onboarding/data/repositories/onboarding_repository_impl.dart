@@ -8,8 +8,8 @@ import 'package:bizzie/features/onboarding/data/dtos/user_dto.dart';
 import 'package:bizzie/features/onboarding/domain/interfaces/i_onboarding_repository.dart';
 
 import 'package:bizzie/features/onboarding/domain/models/historical_price.dart';
-import 'package:bizzie/features/onboarding/domain/models/sector.dart';
-import 'package:bizzie/features/onboarding/domain/models/user_model.dart';
+import 'package:bizzie/core/domain/models/sector.dart';
+import 'package:bizzie/features/user/domain/models/user_model.dart';
 import 'package:bizzie/features/watchlist/data/dtos/watchlist_item_dto.dart';
 import 'package:injectable/injectable.dart';
 
@@ -29,7 +29,7 @@ class OnboardingRepositoryImpl implements IOnboardingRepository {
       return Right(history);
     } catch (e, stack) {
       _logger.severe('Failed to get SP500 history', e, stack);
-      return Left(ServerFailure(e.toString()));
+      return Left(Failure.server(e.toString()));
     }
   }
 
@@ -44,7 +44,7 @@ class OnboardingRepositoryImpl implements IOnboardingRepository {
       return Right(sectors);
     } catch (e, stack) {
       _logger.severe('Failed to get sectors', e, stack);
-      return Left(ServerFailure(e.toString()));
+      return Left(Failure.server(e.toString()));
     }
   }
 
@@ -69,7 +69,7 @@ class OnboardingRepositoryImpl implements IOnboardingRepository {
       return const Right(null);
     } catch (e, stack) {
       _logger.severe('Failed to save user profile', e, stack);
-      return Left(ServerFailure(e.toString()));
+      return Left(Failure.server(e.toString()));
     }
   }
 }

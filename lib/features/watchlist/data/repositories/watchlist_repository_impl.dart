@@ -55,7 +55,7 @@ class WatchlistRepositoryImpl implements IWatchlistRepository {
       return const Right(null);
     } catch (e, stack) {
       _logger.severe('Failed to add to watchlist: ${company.ticker}', e, stack);
-      return Left(ServerFailure(e.toString()));
+      return Left(Failure.server(e.toString()));
     }
   }
 
@@ -88,7 +88,7 @@ class WatchlistRepositoryImpl implements IWatchlistRepository {
       return const Right(null);
     } catch (e, stack) {
       _logger.severe('Failed to remove from watchlist: $ticker', e, stack);
-      return Left(ServerFailure(e.toString()));
+      return Left(Failure.server(e.toString()));
     }
   }
 
@@ -123,7 +123,7 @@ class WatchlistRepositoryImpl implements IWatchlistRepository {
       return const Right(null);
     } catch (e, stack) {
       _logger.severe('Failed to sync watchlist subscriptions', e, stack);
-      return Left(ServerFailure(e.toString()));
+      return Left(Failure.server(e.toString()));
     }
   }
 
@@ -142,12 +142,12 @@ class WatchlistRepositoryImpl implements IWatchlistRepository {
                 sink.add(Right(companies));
               } catch (e, stack) {
                 _logger.severe('Failed to map watchlist stream', e, stack);
-                sink.add(Left(ServerFailure(e.toString())));
+                sink.add(Left(Failure.server(e.toString())));
               }
             },
             handleError: (error, stack, sink) {
               _logger.severe('Watchlist stream error', error, stack);
-              sink.add(Left(ServerFailure(error.toString())));
+              sink.add(Left(Failure.server(error.toString())));
             },
           ),
         );

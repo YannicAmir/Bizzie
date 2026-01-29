@@ -19,7 +19,7 @@ void main() {
   });
 
   const tUser = UserModel(id: '1', email: 'test@gmail.com');
-  const tFailure = ServerFailure('Test Failure');
+  const tFailure = Failure.server('Test Failure');
 
   test('signInWithGoogle_success_returnsRightUser', () async {
     // arrange

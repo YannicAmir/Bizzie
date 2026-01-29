@@ -20,7 +20,7 @@ void main() {
   const tEmail = 'test@example.com';
   const tPassword = 'password123';
   const tUser = UserModel(id: '1', email: tEmail);
-  const tFailure = ServerFailure('Test Failure');
+  const tFailure = Failure.server('Test Failure');
 
   test('signInWithEmail_success_returnsRightUser', () async {
     // arrange

@@ -19,7 +19,7 @@ void main() {
   });
 
   const tUser = UserModel(id: '1', email: 'test@apple.com');
-  const tFailure = ServerFailure('Test Failure');
+  const tFailure = Failure.server('Test Failure');
 
   test('signInWithApple_success_returnsRightUser', () async {
     // arrange

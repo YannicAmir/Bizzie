@@ -55,13 +55,13 @@ extension ReportsStatePatterns on ReportsState {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( Initial value)?  initial,TResult Function( Loading value)?  loading,TResult Function( Loaded value)?  loaded,TResult Function( Failure value)?  failure,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( Initial value)?  initial,TResult Function( Loading value)?  loading,TResult Function( Loaded value)?  loaded,TResult Function( ReportsFailure value)?  failure,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case Initial() when initial != null:
 return initial(_that);case Loading() when loading != null:
 return loading(_that);case Loaded() when loaded != null:
-return loaded(_that);case Failure() when failure != null:
+return loaded(_that);case ReportsFailure() when failure != null:
 return failure(_that);case _:
   return orElse();
 
@@ -80,13 +80,13 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( Initial value)  initial,required TResult Function( Loading value)  loading,required TResult Function( Loaded value)  loaded,required TResult Function( Failure value)  failure,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( Initial value)  initial,required TResult Function( Loading value)  loading,required TResult Function( Loaded value)  loaded,required TResult Function( ReportsFailure value)  failure,}){
 final _that = this;
 switch (_that) {
 case Initial():
 return initial(_that);case Loading():
 return loading(_that);case Loaded():
-return loaded(_that);case Failure():
+return loaded(_that);case ReportsFailure():
 return failure(_that);case _:
   throw StateError('Unexpected subclass');
 
@@ -104,13 +104,13 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( Initial value)?  initial,TResult? Function( Loading value)?  loading,TResult? Function( Loaded value)?  loaded,TResult? Function( Failure value)?  failure,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( Initial value)?  initial,TResult? Function( Loading value)?  loading,TResult? Function( Loaded value)?  loaded,TResult? Function( ReportsFailure value)?  failure,}){
 final _that = this;
 switch (_that) {
 case Initial() when initial != null:
 return initial(_that);case Loading() when loading != null:
 return loading(_that);case Loaded() when loaded != null:
-return loaded(_that);case Failure() when failure != null:
+return loaded(_that);case ReportsFailure() when failure != null:
 return failure(_that);case _:
   return null;
 
@@ -133,7 +133,7 @@ switch (_that) {
 case Initial() when initial != null:
 return initial();case Loading() when loading != null:
 return loading();case Loaded() when loaded != null:
-return loaded(_that.feed,_that.lastViewedReports,_that.todaysFilings);case Failure() when failure != null:
+return loaded(_that.feed,_that.lastViewedReports,_that.todaysFilings);case ReportsFailure() when failure != null:
 return failure(_that.message);case _:
   return orElse();
 
@@ -157,7 +157,7 @@ switch (_that) {
 case Initial():
 return initial();case Loading():
 return loading();case Loaded():
-return loaded(_that.feed,_that.lastViewedReports,_that.todaysFilings);case Failure():
+return loaded(_that.feed,_that.lastViewedReports,_that.todaysFilings);case ReportsFailure():
 return failure(_that.message);case _:
   throw StateError('Unexpected subclass');
 
@@ -180,7 +180,7 @@ switch (_that) {
 case Initial() when initial != null:
 return initial();case Loading() when loading != null:
 return loading();case Loaded() when loaded != null:
-return loaded(_that.feed,_that.lastViewedReports,_that.todaysFilings);case Failure() when failure != null:
+return loaded(_that.feed,_that.lastViewedReports,_that.todaysFilings);case ReportsFailure() when failure != null:
 return failure(_that.message);case _:
   return null;
 
@@ -341,8 +341,8 @@ $ReportsFeedCopyWith<$Res> get feed {
 /// @nodoc
 
 
-class Failure implements ReportsState {
-  const Failure(this.message);
+class ReportsFailure implements ReportsState {
+  const ReportsFailure(this.message);
   
 
  final  String message;
@@ -351,13 +351,13 @@ class Failure implements ReportsState {
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-$FailureCopyWith<Failure> get copyWith => _$FailureCopyWithImpl<Failure>(this, _$identity);
+$ReportsFailureCopyWith<ReportsFailure> get copyWith => _$ReportsFailureCopyWithImpl<ReportsFailure>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Failure&&(identical(other.message, message) || other.message == message));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ReportsFailure&&(identical(other.message, message) || other.message == message));
 }
 
 
@@ -373,8 +373,8 @@ String toString() {
 }
 
 /// @nodoc
-abstract mixin class $FailureCopyWith<$Res> implements $ReportsStateCopyWith<$Res> {
-  factory $FailureCopyWith(Failure value, $Res Function(Failure) _then) = _$FailureCopyWithImpl;
+abstract mixin class $ReportsFailureCopyWith<$Res> implements $ReportsStateCopyWith<$Res> {
+  factory $ReportsFailureCopyWith(ReportsFailure value, $Res Function(ReportsFailure) _then) = _$ReportsFailureCopyWithImpl;
 @useResult
 $Res call({
  String message
@@ -385,17 +385,17 @@ $Res call({
 
 }
 /// @nodoc
-class _$FailureCopyWithImpl<$Res>
-    implements $FailureCopyWith<$Res> {
-  _$FailureCopyWithImpl(this._self, this._then);
+class _$ReportsFailureCopyWithImpl<$Res>
+    implements $ReportsFailureCopyWith<$Res> {
+  _$ReportsFailureCopyWithImpl(this._self, this._then);
 
-  final Failure _self;
-  final $Res Function(Failure) _then;
+  final ReportsFailure _self;
+  final $Res Function(ReportsFailure) _then;
 
 /// Create a copy of ReportsState
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? message = null,}) {
-  return _then(Failure(
+  return _then(ReportsFailure(
 null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
 as String,
   ));

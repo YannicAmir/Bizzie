@@ -1,9 +1,10 @@
 import 'package:bizzie/features/onboarding/data/dtos/user_dto.dart';
 import 'package:bizzie/features/onboarding/data/repositories/onboarding_repository_impl.dart';
 import 'package:bizzie/features/onboarding/domain/models/company.dart';
-import 'package:bizzie/features/onboarding/domain/models/onboarding_data.dart';
-import 'package:bizzie/features/onboarding/domain/models/sector.dart';
-import 'package:bizzie/features/onboarding/domain/models/user_model.dart';
+
+import 'package:bizzie/core/domain/models/sector.dart';
+import 'package:bizzie/features/user/domain/enums/investing_experience.dart';
+import 'package:bizzie/features/user/domain/models/user_model.dart';
 import 'package:bizzie/features/onboarding/data/datasources/onboarding_remote_datasource.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:bizzie/core/error/failures.dart';

@@ -1,7 +1,7 @@
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/core/usecase/usecase.dart';
 import 'package:bizzie/features/onboarding/domain/interfaces/i_onboarding_repository.dart';
-import 'package:bizzie/features/onboarding/domain/models/sector.dart';
+import 'package:bizzie/core/domain/models/sector.dart';
 import 'package:bizzie/features/onboarding/domain/usecases/get_sectors_usecase.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -37,7 +37,7 @@ void main() {
 
   test('call_repositoryFailure_returnsLeftFailure', () async {
     // Arrange
-    const tFailure = ServerFailure('Server Error');
+    const tFailure = Failure.server('Server Error');
     when(
       () => mockRepository.getSectors(),
     ).thenAnswer((_) async => const Left(tFailure));

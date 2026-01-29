@@ -3,6 +3,7 @@ import 'package:bizzie/app/routes/app_router_redirect.dart';
 import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
 import 'package:bizzie/features/search/presentation/views/search_page.dart';
 import 'package:bizzie/features/search/presentation/bloc/search_bloc.dart';
+import 'package:bizzie/features/onboarding/domain/models/company.dart';
 
 import 'package:bizzie/features/auth/presentation/views/create_account_page.dart';
 import 'package:bizzie/features/onboarding/presentation/widgets/onboarding_shell.dart';
@@ -24,7 +25,7 @@ import 'package:bizzie/features/onboarding/presentation/views/adding_to_watchlis
 import 'package:bizzie/features/onboarding/presentation/views/investing_experience_page.dart';
 import 'package:bizzie/features/onboarding/presentation/views/sector_selection_page.dart';
 import 'package:bizzie/features/onboarding/presentation/views/welcome_name_page.dart';
-import 'package:bizzie/features/company_profile/presentation/views/company_profile_page.dart';
+import 'package:bizzie/features/company_profile/cp/presentation/views/company_profile_page.dart';
 import 'package:bizzie/features/reports/presentation/views/reports_page.dart';
 import 'package:bizzie/features/profile/presentation/views/profile_page.dart';
 import 'package:bizzie/app/navigation/bizzie_bottom_nav_wrapper.dart';
@@ -251,8 +252,9 @@ GoRoute _buildCompanyRoute(String routeName) {
     name: routeName,
     builder: (context, state) {
       final ticker = state.pathParameters['ticker']!;
+      final initialCompany = state.extra as Company?;
 
-      return CompanyProfilePage(ticker: ticker);
+      return CompanyProfilePage(ticker: ticker, initialCompany: initialCompany);
     },
   );
 }

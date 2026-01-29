@@ -3,7 +3,7 @@ import 'package:bizzie/features/onboarding/select_brands/data/dtos/daily_brands_
 import 'package:bizzie/services/firestore_service.dart';
 import 'package:bizzie/core/error/exceptions.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'package:injectable/injectable.dart';
 
 final _logger = BizzieLogger('SelectBrandsRemoteDataSource');
@@ -22,24 +22,24 @@ class SelectBrandsRemoteDataSource implements ISelectBrandsRemoteDataSource {
   Future<DailyBrandsDto?> fetchDailyBrands() async {
     _logger.info('Fetching daily brands document');
     try {
-      final data = await _firestoreService.getLatestDocument(
-        collectionPath: 'daily_brands',
-        orderBy: 'date',
-      );
+      final dailyBrands = await _firestoreService
+          .getLatestDocument<DailyBrandsDto>(
+            collectionPath: 'daily_brands',
+            orderBy: 'date',
+            fromJson: DailyBrandsDto.fromJson,
+            toJson: (dto) => dto.toJson(),
+          );
 
-      if (data == null) {
+      if (dailyBrands == null) {
         _logger.warning('No daily brands document found in Firestore');
         return null;
       }
 
       _logger.info('Daily brands document successfully retrieved');
-      return DailyBrandsDto.fromJson(data);
-    } on FirebaseException catch (e) {
-      _logger.severe('Firebase error while fetching daily brands', e);
-      throw ServerException(message: e.message ?? 'Firestore error');
+      return dailyBrands;
     } catch (e, stack) {
-      _logger.severe('Unexpected error while fetching daily brands', e, stack);
-      throw ServerException(message: e.toString());
+      _logger.severe('Error while fetching daily brands', e, stack);
+      throw ServerException(message: 'Failed to fetch daily brands: $e');
     }
   }
 }

@@ -1,5 +1,4 @@
 import 'package:bizzie/app/themes/app_assets.dart';
-import 'package:bizzie/app/themes/app_colors.dart';
 import 'package:bizzie/app/themes/app_text_styles.dart';
 import 'package:bizzie/features/reports/domain/models/upcoming_earnings.dart';
 import 'package:bizzie/shared/widgets/states/bizzie_empty_state.dart';
@@ -31,7 +30,7 @@ class UpcomingEarningsSection extends StatelessWidget {
       children: [
         Padding(
           padding: const EdgeInsets.only(bottom: 16),
-          child: Text('Upcoming', style: AppTextStyles.sectionHeader),
+          child: Text('Upcoming', style: theme.textTheme.displaySmall),
         ),
         if (earnings.isEmpty)
           BizzieEmptyState(
@@ -43,7 +42,10 @@ class UpcomingEarningsSection extends StatelessWidget {
             decoration: BoxDecoration(
               color: theme.cardColor,
               borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: AppColors.slate300, width: 0.665),
+              border: Border.all(
+                color: theme.dividerColor,
+                width: theme.dividerTheme.thickness ?? .665,
+              ),
             ),
             child: Column(
               children: [

@@ -1,5 +1,5 @@
-import 'package:bizzie/features/company_profile/domain/models/business_profile.dart';
-import 'package:bizzie/features/company_profile/presentation/utils/business_profile_extensions.dart';
+import 'package:bizzie/features/company_profile/business/domain/models/business_profile.dart';
+import 'package:bizzie/features/company_profile/business/presentation/utils/business_profile_extensions.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -108,33 +108,4 @@ void main() {
       });
     });
   });
-}
-
-extension on BusinessProfile {
-  BusinessProfile copyWith({
-    bool? isForeignCompany,
-    String? proxyFilingFormType,
-  }) {
-    return BusinessProfile(
-      symbol: symbol,
-      companyName: companyName,
-      sector: sector,
-      industry: industry,
-      description: description,
-      ceo: ceo,
-      website: website,
-      address: address,
-      city: city,
-      state: state,
-      zip: zip,
-      phone: phone,
-      fullTimeEmployees: fullTimeEmployees,
-      executives: executives,
-      def14aUrl: def14aUrl,
-      isForeignCompany: isForeignCompany ?? this.isForeignCompany,
-      proxyFilingFormType: proxyFilingFormType ?? this.proxyFilingFormType,
-      annualFilings: annualFilings,
-      quarterlyFilings: quarterlyFilings,
-    );
-  }
 }

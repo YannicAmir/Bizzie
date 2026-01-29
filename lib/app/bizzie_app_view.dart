@@ -3,12 +3,18 @@ import 'dart:async';
 import 'package:bizzie/app/global_overlay_wrapper.dart';
 import 'package:bizzie/core/interfaces/i_notification_service.dart';
 import 'package:bizzie/di/injection.dart';
+import 'package:bizzie/app/routes/app_routes.dart';
 import 'package:bizzie/app/router.dart';
 import 'package:bizzie/app/themes/app_theme.dart';
 import 'package:bizzie/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:bizzie/features/auth/presentation/bloc/auth_event.dart';
 import 'package:bizzie/features/auth/presentation/bloc/auth_state.dart';
 import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
+import 'package:bizzie/features/notifications/presentation/bloc/notification_bloc.dart';
+import 'package:bizzie/features/watchlist/presentation/bloc/watchlist_bloc.dart';
+import 'package:bizzie/features/watchlist/presentation/bloc/watchlist_event.dart';
+import 'package:bizzie/features/reports/presentation/bloc/reports_bloc.dart';
+import 'package:bizzie/features/reports/presentation/bloc/reports_event.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -59,9 +65,16 @@ class _BizzieAppViewState extends State<BizzieAppView> {
 
       currentState.mapOrNull(
         authenticated: (state) {
+          final currentPath = _router.routeInformationProvider.value.uri.path;
+          final isFromCreateAccount = currentPath == AppRoutes.createAccount;
+
           context.read<UserBloc>().add(
-            UserEvent.loadUser(state.user.id, silent: false),
+            UserEvent.loadUser(state.user.id, silent: isFromCreateAccount),
           );
+          context.read<WatchlistBloc>().add(
+            const WatchlistEvent.loadRequested(),
+          );
+          context.read<ReportsBloc>().add(const ReportsEvent.started());
         },
       );
     }
@@ -83,12 +96,24 @@ class _BizzieAppViewState extends State<BizzieAppView> {
       listener: (context, state) {
         state.whenOrNull(
           authenticated: (user) {
+            final currentPath = _router.routeInformationProvider.value.uri.path;
+            final isFromCreateAccount = currentPath == AppRoutes.createAccount;
+
             context.read<UserBloc>().add(
-              UserEvent.loadUser(user.id, silent: false),
+              UserEvent.loadUser(user.id, silent: isFromCreateAccount),
             );
+            context.read<WatchlistBloc>().add(
+              const WatchlistEvent.loadRequested(),
+            );
+            context.read<ReportsBloc>().add(const ReportsEvent.started());
           },
           unauthenticated: () {
             context.read<UserBloc>().add(const UserEvent.clear());
+            context.read<WatchlistBloc>().add(const WatchlistEvent.reset());
+            context.read<ReportsBloc>().add(const ReportsEvent.reset());
+            context.read<NotificationBloc>().add(
+              const NotificationEvent.reset(),
+            );
           },
         );
 

@@ -2,6 +2,7 @@ import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/features/onboarding/presentation/bloc/onboarding_bloc.dart';
 import 'package:bizzie/features/onboarding/select_brands/domain/models/brand.dart';
 import 'package:bizzie/features/onboarding/select_brands/domain/models/brand_listing.dart';
+import 'package:bizzie/features/onboarding/select_brands/domain/models/get_daily_brands_params.dart';
 import 'package:bizzie/features/onboarding/select_brands/domain/usecases/get_daily_brands_usecase.dart';
 import 'package:bizzie/features/onboarding/select_brands/presentation/bloc/select_brands_bloc.dart';
 import 'package:bloc_test/bloc_test.dart';
@@ -76,7 +77,7 @@ void main() {
         ).thenReturn(OnboardingState.initial());
         when(
           () => mockGetDailyBrandsUseCase(any()),
-        ).thenAnswer((_) async => const Left(ServerFailure('error')));
+        ).thenAnswer((_) async => const Left(Failure.server('error')));
         return bloc;
       },
       act: (bloc) => bloc.add(const SelectBrandsEvent.started()),

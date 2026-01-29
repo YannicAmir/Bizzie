@@ -38,13 +38,13 @@ void main() {
     // arrange
     when(
       () => mockRepository.getFcmToken(),
-    ).thenAnswer((_) async => Left(ServerFailure('Error')));
+    ).thenAnswer((_) async => Left(Failure.server('Error')));
 
     // act
     final result = await usecase();
 
     // assert
-    expect(result, Left(ServerFailure('Error')));
+    expect(result, Left(Failure.server('Error')));
     verify(() => mockRepository.getFcmToken()).called(1);
     verifyNoMoreInteractions(mockRepository);
   });

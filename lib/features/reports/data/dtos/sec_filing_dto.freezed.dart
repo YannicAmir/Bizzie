@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$SecFilingDto {
 
-@JsonKey(includeFromJson: false, includeToJson: false) String? get id; String get symbol; String get companyName; String get filingDate; String get formType; String get link; String get summary;@ForceDoubleNullable() double? get eps;@ForceDoubleNullable() double? get revenue; String? get sentiment; String? get topic; bool get isEarnings; Object? get createdAt; Object? get analyzedAt; String? get deepAnalysisId; String? get deepAnalysisStatus;
+@JsonKey(includeToJson: false) String? get id; String get symbol; String get companyName; String get filingDate; String get formType; String get link; String get summary;@ForceDoubleNullable() double? get eps;@ForceDoubleNullable() double? get revenue; String? get sentiment; String? get topic; bool get isEarnings; Object? get createdAt; Object? get analyzedAt; String? get deepAnalysisId; String? get deepAnalysisStatus;
 /// Create a copy of SecFilingDto
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -48,7 +48,7 @@ abstract mixin class $SecFilingDtoCopyWith<$Res>  {
   factory $SecFilingDtoCopyWith(SecFilingDto value, $Res Function(SecFilingDto) _then) = _$SecFilingDtoCopyWithImpl;
 @useResult
 $Res call({
-@JsonKey(includeFromJson: false, includeToJson: false) String? id, String symbol, String companyName, String filingDate, String formType, String link, String summary,@ForceDoubleNullable() double? eps,@ForceDoubleNullable() double? revenue, String? sentiment, String? topic, bool isEarnings, Object? createdAt, Object? analyzedAt, String? deepAnalysisId, String? deepAnalysisStatus
+@JsonKey(includeToJson: false) String? id, String symbol, String companyName, String filingDate, String formType, String link, String summary,@ForceDoubleNullable() double? eps,@ForceDoubleNullable() double? revenue, String? sentiment, String? topic, bool isEarnings, Object? createdAt, Object? analyzedAt, String? deepAnalysisId, String? deepAnalysisStatus
 });
 
 
@@ -166,7 +166,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(includeFromJson: false, includeToJson: false)  String? id,  String symbol,  String companyName,  String filingDate,  String formType,  String link,  String summary, @ForceDoubleNullable()  double? eps, @ForceDoubleNullable()  double? revenue,  String? sentiment,  String? topic,  bool isEarnings,  Object? createdAt,  Object? analyzedAt,  String? deepAnalysisId,  String? deepAnalysisStatus)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(includeToJson: false)  String? id,  String symbol,  String companyName,  String filingDate,  String formType,  String link,  String summary, @ForceDoubleNullable()  double? eps, @ForceDoubleNullable()  double? revenue,  String? sentiment,  String? topic,  bool isEarnings,  Object? createdAt,  Object? analyzedAt,  String? deepAnalysisId,  String? deepAnalysisStatus)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _SecFilingDto() when $default != null:
 return $default(_that.id,_that.symbol,_that.companyName,_that.filingDate,_that.formType,_that.link,_that.summary,_that.eps,_that.revenue,_that.sentiment,_that.topic,_that.isEarnings,_that.createdAt,_that.analyzedAt,_that.deepAnalysisId,_that.deepAnalysisStatus);case _:
@@ -187,7 +187,7 @@ return $default(_that.id,_that.symbol,_that.companyName,_that.filingDate,_that.f
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(includeFromJson: false, includeToJson: false)  String? id,  String symbol,  String companyName,  String filingDate,  String formType,  String link,  String summary, @ForceDoubleNullable()  double? eps, @ForceDoubleNullable()  double? revenue,  String? sentiment,  String? topic,  bool isEarnings,  Object? createdAt,  Object? analyzedAt,  String? deepAnalysisId,  String? deepAnalysisStatus)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(includeToJson: false)  String? id,  String symbol,  String companyName,  String filingDate,  String formType,  String link,  String summary, @ForceDoubleNullable()  double? eps, @ForceDoubleNullable()  double? revenue,  String? sentiment,  String? topic,  bool isEarnings,  Object? createdAt,  Object? analyzedAt,  String? deepAnalysisId,  String? deepAnalysisStatus)  $default,) {final _that = this;
 switch (_that) {
 case _SecFilingDto():
 return $default(_that.id,_that.symbol,_that.companyName,_that.filingDate,_that.formType,_that.link,_that.summary,_that.eps,_that.revenue,_that.sentiment,_that.topic,_that.isEarnings,_that.createdAt,_that.analyzedAt,_that.deepAnalysisId,_that.deepAnalysisStatus);case _:
@@ -207,7 +207,7 @@ return $default(_that.id,_that.symbol,_that.companyName,_that.filingDate,_that.f
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(includeFromJson: false, includeToJson: false)  String? id,  String symbol,  String companyName,  String filingDate,  String formType,  String link,  String summary, @ForceDoubleNullable()  double? eps, @ForceDoubleNullable()  double? revenue,  String? sentiment,  String? topic,  bool isEarnings,  Object? createdAt,  Object? analyzedAt,  String? deepAnalysisId,  String? deepAnalysisStatus)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(includeToJson: false)  String? id,  String symbol,  String companyName,  String filingDate,  String formType,  String link,  String summary, @ForceDoubleNullable()  double? eps, @ForceDoubleNullable()  double? revenue,  String? sentiment,  String? topic,  bool isEarnings,  Object? createdAt,  Object? analyzedAt,  String? deepAnalysisId,  String? deepAnalysisStatus)?  $default,) {final _that = this;
 switch (_that) {
 case _SecFilingDto() when $default != null:
 return $default(_that.id,_that.symbol,_that.companyName,_that.filingDate,_that.formType,_that.link,_that.summary,_that.eps,_that.revenue,_that.sentiment,_that.topic,_that.isEarnings,_that.createdAt,_that.analyzedAt,_that.deepAnalysisId,_that.deepAnalysisStatus);case _:
@@ -222,10 +222,10 @@ return $default(_that.id,_that.symbol,_that.companyName,_that.filingDate,_that.f
 @JsonSerializable()
 
 class _SecFilingDto extends SecFilingDto {
-  const _SecFilingDto({@JsonKey(includeFromJson: false, includeToJson: false) this.id, required this.symbol, required this.companyName, required this.filingDate, required this.formType, required this.link, required this.summary, @ForceDoubleNullable() this.eps, @ForceDoubleNullable() this.revenue, this.sentiment, this.topic, this.isEarnings = false, this.createdAt, this.analyzedAt, this.deepAnalysisId, this.deepAnalysisStatus}): super._();
+  const _SecFilingDto({@JsonKey(includeToJson: false) this.id, required this.symbol, required this.companyName, required this.filingDate, required this.formType, required this.link, required this.summary, @ForceDoubleNullable() this.eps, @ForceDoubleNullable() this.revenue, this.sentiment, this.topic, this.isEarnings = false, this.createdAt, this.analyzedAt, this.deepAnalysisId, this.deepAnalysisStatus}): super._();
   factory _SecFilingDto.fromJson(Map<String, dynamic> json) => _$SecFilingDtoFromJson(json);
 
-@override@JsonKey(includeFromJson: false, includeToJson: false) final  String? id;
+@override@JsonKey(includeToJson: false) final  String? id;
 @override final  String symbol;
 @override final  String companyName;
 @override final  String filingDate;
@@ -275,7 +275,7 @@ abstract mixin class _$SecFilingDtoCopyWith<$Res> implements $SecFilingDtoCopyWi
   factory _$SecFilingDtoCopyWith(_SecFilingDto value, $Res Function(_SecFilingDto) _then) = __$SecFilingDtoCopyWithImpl;
 @override @useResult
 $Res call({
-@JsonKey(includeFromJson: false, includeToJson: false) String? id, String symbol, String companyName, String filingDate, String formType, String link, String summary,@ForceDoubleNullable() double? eps,@ForceDoubleNullable() double? revenue, String? sentiment, String? topic, bool isEarnings, Object? createdAt, Object? analyzedAt, String? deepAnalysisId, String? deepAnalysisStatus
+@JsonKey(includeToJson: false) String? id, String symbol, String companyName, String filingDate, String formType, String link, String summary,@ForceDoubleNullable() double? eps,@ForceDoubleNullable() double? revenue, String? sentiment, String? topic, bool isEarnings, Object? createdAt, Object? analyzedAt, String? deepAnalysisId, String? deepAnalysisStatus
 });
 
 

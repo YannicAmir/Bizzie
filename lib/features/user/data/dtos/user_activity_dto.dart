@@ -10,9 +10,6 @@ part 'user_activity_dto.g.dart';
 abstract class UserActivityDto with _$UserActivityDto {
   const UserActivityDto._();
   const factory UserActivityDto({
-    // Using Object? to handle Timestamp/String flexibly if needed,
-    // but standard approach is DateTime with logic in remote_datasource or converter.
-    // We will use DateTime and rely on standard converters or explicit parsing.
     @TimestampConverter() DateTime? lastViewedReports,
   }) = _UserActivityDto;
 

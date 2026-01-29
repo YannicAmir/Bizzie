@@ -38,13 +38,13 @@ void main() {
       // arrange
       when(
         () => mockRepository.requestPermission(),
-      ).thenAnswer((_) async => Left(ServerFailure('Error')));
+      ).thenAnswer((_) async => Left(Failure.server('Error')));
 
       // act
       final result = await usecase();
 
       // assert
-      expect(result, Left(ServerFailure('Error')));
+      expect(result, Left(Failure.server('Error')));
       verify(() => mockRepository.requestPermission()).called(1);
       verifyNoMoreInteractions(mockRepository);
     },

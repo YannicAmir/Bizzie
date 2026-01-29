@@ -1,5 +1,5 @@
-import 'package:bizzie/features/company_profile/domain/models/financial_data_point.dart';
-import 'package:bizzie/features/company_profile/presentation/utils/metric_summary_presentation_extensions.dart';
+import 'package:bizzie/features/company_profile/shared/domain/models/financial_data_point.dart';
+import 'package:bizzie/features/company_profile/shared/presentation/utils/metric_summary_presentation_extensions.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -129,14 +129,15 @@ void main() {
       // arrange
       const asOfPrefix = 'As of Oct. 27, 2023 | ';
       const isPositive = true;
-      const absoluteDelta = 1.25;
+      const formattedDelta = '1.25';
       const referenceLabel = 'last year';
 
       // act
       final result = MetricSummarySubtitleHelper.getSubtitle(
         asOfPrefix: asOfPrefix,
         isPositive: isPositive,
-        absoluteDelta: absoluteDelta,
+        formattedDelta: formattedDelta,
+        isChangeZero: false,
         referenceLabel: referenceLabel,
       );
 
@@ -148,14 +149,15 @@ void main() {
       // arrange
       const asOfPrefix = 'As of Oct. 27, 2023 | ';
       const isPositive = false;
-      const absoluteDelta = 0.5;
+      const formattedDelta = '0.50';
       const referenceLabel = 'last quarter';
 
       // act
       final result = MetricSummarySubtitleHelper.getSubtitle(
         asOfPrefix: asOfPrefix,
         isPositive: isPositive,
-        absoluteDelta: absoluteDelta,
+        formattedDelta: formattedDelta,
+        isChangeZero: false,
         referenceLabel: referenceLabel,
       );
 
@@ -164,6 +166,26 @@ void main() {
         result,
         'As of Oct. 27, 2023 | Decreased by 0.50 since last quarter',
       );
+    });
+
+    test('getSubtitle_zeroChange_returnsNoChangeString', () {
+      // arrange
+      const asOfPrefix = 'As of Oct. 27, 2023 | ';
+      const isPositive = false;
+      const formattedDelta = '0.00';
+      const referenceLabel = 'last quarter';
+
+      // act
+      final result = MetricSummarySubtitleHelper.getSubtitle(
+        asOfPrefix: asOfPrefix,
+        isPositive: isPositive,
+        formattedDelta: formattedDelta,
+        isChangeZero: true,
+        referenceLabel: referenceLabel,
+      );
+
+      // assert
+      expect(result, 'As of Oct. 27, 2023 | No change since last quarter');
     });
   });
 }

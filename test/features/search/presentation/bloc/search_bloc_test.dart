@@ -147,7 +147,7 @@ void main() {
       build: () {
         when(
           () => mockFindStock.execute(any()),
-        ).thenAnswer((_) async => Left(ServerFailure('AI Error')));
+        ).thenAnswer((_) async => Left(Failure.server('AI Error')));
         return bloc;
       },
       // act

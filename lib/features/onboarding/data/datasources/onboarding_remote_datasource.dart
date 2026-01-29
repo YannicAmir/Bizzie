@@ -2,8 +2,11 @@ import 'package:bizzie/features/onboarding/data/dtos/user_dto.dart';
 import 'package:bizzie/features/watchlist/data/dtos/watchlist_item_dto.dart';
 import 'package:bizzie/services/config_service.dart';
 import 'package:bizzie/services/firestore_service.dart';
+import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:injectable/injectable.dart';
+
+final _logger = BizzieLogger('OnboardingRemoteDataSource');
 
 abstract class IOnboardingRemoteDataSource {
   Future<void> saveUserProfile(
@@ -37,20 +40,33 @@ class OnboardingRemoteDataSource implements IOnboardingRemoteDataSource {
     UserDto user,
     List<WatchlistItemDto> watchlistItems,
   ) async {
-    final batch = _firestoreService.instance.batch();
+    _logger.info('Starting user profile save for UID: ${user.uid}');
+    try {
+      final batch = _firestoreService.batch();
 
-    final userRef = _firestoreService.instance
-        .collection('users')
-        .doc(user.uid);
-    final userData = user.toJson();
-    userData['createdAt'] = FieldValue.serverTimestamp();
-    batch.set(userRef, userData);
+      final userPath = 'users/${user.uid}';
+      final userData = user.toJson();
+      // Keep FieldValue dependency for now as it's SDK specific, but used via service batch
+      userData['createdAt'] = FieldValue.serverTimestamp();
 
-    for (final item in watchlistItems) {
-      final itemRef = userRef.collection('watchlist').doc(item.ticker);
-      batch.set(itemRef, item.toJson());
+      batch.setRaw(path: userPath, data: userData);
+
+      for (final item in watchlistItems) {
+        final itemPath = '$userPath/watchlist/${item.ticker}';
+        batch.setDocument<WatchlistItemDto>(
+          path: itemPath,
+          value: item,
+          toJson: (i) => i.toJson(),
+        );
+      }
+
+      await batch.commit();
+      _logger.info(
+        'Successfully saved user profile and ${watchlistItems.length} watchlist items',
+      );
+    } catch (e, s) {
+      _logger.severe('Failed to save user profile for UID: ${user.uid}', e, s);
+      rethrow;
     }
-
-    await batch.commit();
   }
 }

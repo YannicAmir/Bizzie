@@ -1,6 +1,7 @@
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/features/onboarding/select_brands/domain/interfaces/i_select_brands_repository.dart';
 import 'package:bizzie/features/onboarding/select_brands/domain/models/brand_listing.dart';
+import 'package:bizzie/features/onboarding/select_brands/domain/models/get_daily_brands_params.dart';
 import 'package:bizzie/features/onboarding/select_brands/domain/usecases/get_daily_brands_usecase.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -37,7 +38,7 @@ void main() {
 
     test('execute_repositoryFailure_returnsFailure', () async {
       // arrange
-      const tFailure = ServerFailure('error');
+      const tFailure = Failure.server('error');
       when(
         () => mockRepository.getDailyBrands(any()),
       ).thenAnswer((_) async => const Left(tFailure));

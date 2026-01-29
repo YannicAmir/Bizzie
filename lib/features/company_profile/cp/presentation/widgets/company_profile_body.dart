@@ -1,0 +1,64 @@
+import 'package:bizzie/features/company_profile/business/presentation/views/business_tab.dart';
+
+import 'package:bizzie/features/company_profile/dividends/presentation/views/dividends_tab.dart';
+import 'package:bizzie/features/company_profile/eps/presentation/views/eps_tab.dart';
+import 'package:bizzie/features/company_profile/fcps/presentation/views/fcps_tab.dart';
+import 'package:bizzie/features/company_profile/financial_statements/presentation/views/financial_statements_tab.dart';
+import 'package:bizzie/features/company_profile/free_cash_flow/presentation/views/free_cash_flow_tab.dart';
+import 'package:bizzie/features/company_profile/more/presentation/views/more_tab.dart';
+import 'package:bizzie/features/company_profile/net_income/presentation/views/net_income_tab.dart';
+import 'package:bizzie/features/company_profile/news/presentation/views/news_tab.dart';
+import 'package:bizzie/features/company_profile/revenue/presentation/views/revenue_tab.dart';
+import 'package:bizzie/features/company_profile/security/presentation/views/security_tab.dart';
+import 'package:bizzie/features/company_profile/shares/presentation/views/shares_tab.dart';
+import 'package:flutter/material.dart';
+
+import 'package:bizzie/features/company_profile/shared/presentation/enums/company_profile_tab.dart';
+
+class CompanyProfileBody extends StatelessWidget {
+  final String ticker;
+  final TabController tabController;
+  final List<CompanyProfileTab> tabs;
+
+  const CompanyProfileBody({
+    super.key,
+    required this.ticker,
+    required this.tabController,
+    required this.tabs,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return TabBarView(
+      controller: tabController,
+      children: tabs.map((tab) {
+        switch (tab) {
+          case CompanyProfileTab.security:
+            return SecurityTab(ticker: ticker);
+          case CompanyProfileTab.business:
+            return BusinessTab(ticker: ticker);
+          case CompanyProfileTab.news:
+            return NewsTab(ticker: ticker);
+          case CompanyProfileTab.dividends:
+            return DividendsTab(ticker: ticker);
+          case CompanyProfileTab.revenue:
+            return RevenueTab(ticker: ticker);
+          case CompanyProfileTab.netIncome:
+            return NetIncomeTab(ticker: ticker);
+          case CompanyProfileTab.eps:
+            return EpsTab(ticker: ticker);
+          case CompanyProfileTab.freeCash:
+            return FreeCashFlowTab(ticker: ticker);
+          case CompanyProfileTab.fcps:
+            return FcpsTab(ticker: ticker);
+          case CompanyProfileTab.shares:
+            return SharesTab(ticker: ticker);
+          case CompanyProfileTab.financialStatements:
+            return FinancialStatementsTab(ticker: ticker);
+          case CompanyProfileTab.more:
+            return MoreTab(ticker: ticker);
+        }
+      }).toList(),
+    );
+  }
+}

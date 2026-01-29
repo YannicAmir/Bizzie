@@ -48,7 +48,7 @@ class RecommendedBrandsRepository implements IRecommendedBrandsRepository {
       return Right(brands);
     } catch (e) {
       _logger.severe('Failed to fetch brands by sector: $e');
-      return Left(ServerFailure(e.toString()));
+      return Left(Failure.server(e.toString()));
     }
   }
 

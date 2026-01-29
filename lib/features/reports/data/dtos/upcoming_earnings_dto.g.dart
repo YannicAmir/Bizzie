@@ -8,6 +8,7 @@ part of 'upcoming_earnings_dto.dart';
 
 _UpcomingEarningsDto _$UpcomingEarningsDtoFromJson(Map<String, dynamic> json) =>
     _UpcomingEarningsDto(
+      id: json['id'] as String?,
       symbol: json['symbol'] as String,
       date: const TimestampConverter().fromJson(json['date'] as Object),
       expireAt: _$JsonConverterFromJson<Object, DateTime>(

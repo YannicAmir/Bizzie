@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$FinancialReportDto {
 
- String get id;@JsonKey(name: 'summary') ReportSummaryDto get summary;@JsonKey(name: 'balanceSheet') ReportBalanceSheetDto get balanceSheet;@JsonKey(name: 'cashFlow') ReportCashFlowDto get cashFlow;@JsonKey(name: 'income') ReportIncomeDto get income;@JsonKey(name: 'stockActivity') ReportStockActivityDto get stockActivity; String? get filingDate;@TimestampConverter() DateTime? get dateAnalyzed; String? get formType; String? get ticker;
+ String get id; ReportSummaryDto get summary; ReportBalanceSheetDto get balanceSheet; ReportCashFlowDto get cashFlow; ReportIncomeDto get income; ReportStockActivityDto get stockActivity; String? get filingDate;@TimestampConverter() DateTime? get dateAnalyzed; String? get formType; String? get ticker;
 /// Create a copy of FinancialReportDto
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -48,7 +48,7 @@ abstract mixin class $FinancialReportDtoCopyWith<$Res>  {
   factory $FinancialReportDtoCopyWith(FinancialReportDto value, $Res Function(FinancialReportDto) _then) = _$FinancialReportDtoCopyWithImpl;
 @useResult
 $Res call({
- String id,@JsonKey(name: 'summary') ReportSummaryDto summary,@JsonKey(name: 'balanceSheet') ReportBalanceSheetDto balanceSheet,@JsonKey(name: 'cashFlow') ReportCashFlowDto cashFlow,@JsonKey(name: 'income') ReportIncomeDto income,@JsonKey(name: 'stockActivity') ReportStockActivityDto stockActivity, String? filingDate,@TimestampConverter() DateTime? dateAnalyzed, String? formType, String? ticker
+ String id, ReportSummaryDto summary, ReportBalanceSheetDto balanceSheet, ReportCashFlowDto cashFlow, ReportIncomeDto income, ReportStockActivityDto stockActivity, String? filingDate,@TimestampConverter() DateTime? dateAnalyzed, String? formType, String? ticker
 });
 
 
@@ -207,7 +207,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id, @JsonKey(name: 'summary')  ReportSummaryDto summary, @JsonKey(name: 'balanceSheet')  ReportBalanceSheetDto balanceSheet, @JsonKey(name: 'cashFlow')  ReportCashFlowDto cashFlow, @JsonKey(name: 'income')  ReportIncomeDto income, @JsonKey(name: 'stockActivity')  ReportStockActivityDto stockActivity,  String? filingDate, @TimestampConverter()  DateTime? dateAnalyzed,  String? formType,  String? ticker)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  ReportSummaryDto summary,  ReportBalanceSheetDto balanceSheet,  ReportCashFlowDto cashFlow,  ReportIncomeDto income,  ReportStockActivityDto stockActivity,  String? filingDate, @TimestampConverter()  DateTime? dateAnalyzed,  String? formType,  String? ticker)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _FinancialReportDto() when $default != null:
 return $default(_that.id,_that.summary,_that.balanceSheet,_that.cashFlow,_that.income,_that.stockActivity,_that.filingDate,_that.dateAnalyzed,_that.formType,_that.ticker);case _:
@@ -228,7 +228,7 @@ return $default(_that.id,_that.summary,_that.balanceSheet,_that.cashFlow,_that.i
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id, @JsonKey(name: 'summary')  ReportSummaryDto summary, @JsonKey(name: 'balanceSheet')  ReportBalanceSheetDto balanceSheet, @JsonKey(name: 'cashFlow')  ReportCashFlowDto cashFlow, @JsonKey(name: 'income')  ReportIncomeDto income, @JsonKey(name: 'stockActivity')  ReportStockActivityDto stockActivity,  String? filingDate, @TimestampConverter()  DateTime? dateAnalyzed,  String? formType,  String? ticker)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  ReportSummaryDto summary,  ReportBalanceSheetDto balanceSheet,  ReportCashFlowDto cashFlow,  ReportIncomeDto income,  ReportStockActivityDto stockActivity,  String? filingDate, @TimestampConverter()  DateTime? dateAnalyzed,  String? formType,  String? ticker)  $default,) {final _that = this;
 switch (_that) {
 case _FinancialReportDto():
 return $default(_that.id,_that.summary,_that.balanceSheet,_that.cashFlow,_that.income,_that.stockActivity,_that.filingDate,_that.dateAnalyzed,_that.formType,_that.ticker);case _:
@@ -248,7 +248,7 @@ return $default(_that.id,_that.summary,_that.balanceSheet,_that.cashFlow,_that.i
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id, @JsonKey(name: 'summary')  ReportSummaryDto summary, @JsonKey(name: 'balanceSheet')  ReportBalanceSheetDto balanceSheet, @JsonKey(name: 'cashFlow')  ReportCashFlowDto cashFlow, @JsonKey(name: 'income')  ReportIncomeDto income, @JsonKey(name: 'stockActivity')  ReportStockActivityDto stockActivity,  String? filingDate, @TimestampConverter()  DateTime? dateAnalyzed,  String? formType,  String? ticker)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  ReportSummaryDto summary,  ReportBalanceSheetDto balanceSheet,  ReportCashFlowDto cashFlow,  ReportIncomeDto income,  ReportStockActivityDto stockActivity,  String? filingDate, @TimestampConverter()  DateTime? dateAnalyzed,  String? formType,  String? ticker)?  $default,) {final _that = this;
 switch (_that) {
 case _FinancialReportDto() when $default != null:
 return $default(_that.id,_that.summary,_that.balanceSheet,_that.cashFlow,_that.income,_that.stockActivity,_that.filingDate,_that.dateAnalyzed,_that.formType,_that.ticker);case _:
@@ -263,15 +263,15 @@ return $default(_that.id,_that.summary,_that.balanceSheet,_that.cashFlow,_that.i
 @JsonSerializable()
 
 class _FinancialReportDto extends FinancialReportDto {
-  const _FinancialReportDto({required this.id, @JsonKey(name: 'summary') required this.summary, @JsonKey(name: 'balanceSheet') required this.balanceSheet, @JsonKey(name: 'cashFlow') required this.cashFlow, @JsonKey(name: 'income') required this.income, @JsonKey(name: 'stockActivity') required this.stockActivity, this.filingDate, @TimestampConverter() this.dateAnalyzed, this.formType, this.ticker}): super._();
+  const _FinancialReportDto({required this.id, required this.summary, required this.balanceSheet, required this.cashFlow, required this.income, required this.stockActivity, this.filingDate, @TimestampConverter() this.dateAnalyzed, this.formType, this.ticker}): super._();
   factory _FinancialReportDto.fromJson(Map<String, dynamic> json) => _$FinancialReportDtoFromJson(json);
 
 @override final  String id;
-@override@JsonKey(name: 'summary') final  ReportSummaryDto summary;
-@override@JsonKey(name: 'balanceSheet') final  ReportBalanceSheetDto balanceSheet;
-@override@JsonKey(name: 'cashFlow') final  ReportCashFlowDto cashFlow;
-@override@JsonKey(name: 'income') final  ReportIncomeDto income;
-@override@JsonKey(name: 'stockActivity') final  ReportStockActivityDto stockActivity;
+@override final  ReportSummaryDto summary;
+@override final  ReportBalanceSheetDto balanceSheet;
+@override final  ReportCashFlowDto cashFlow;
+@override final  ReportIncomeDto income;
+@override final  ReportStockActivityDto stockActivity;
 @override final  String? filingDate;
 @override@TimestampConverter() final  DateTime? dateAnalyzed;
 @override final  String? formType;
@@ -310,7 +310,7 @@ abstract mixin class _$FinancialReportDtoCopyWith<$Res> implements $FinancialRep
   factory _$FinancialReportDtoCopyWith(_FinancialReportDto value, $Res Function(_FinancialReportDto) _then) = __$FinancialReportDtoCopyWithImpl;
 @override @useResult
 $Res call({
- String id,@JsonKey(name: 'summary') ReportSummaryDto summary,@JsonKey(name: 'balanceSheet') ReportBalanceSheetDto balanceSheet,@JsonKey(name: 'cashFlow') ReportCashFlowDto cashFlow,@JsonKey(name: 'income') ReportIncomeDto income,@JsonKey(name: 'stockActivity') ReportStockActivityDto stockActivity, String? filingDate,@TimestampConverter() DateTime? dateAnalyzed, String? formType, String? ticker
+ String id, ReportSummaryDto summary, ReportBalanceSheetDto balanceSheet, ReportCashFlowDto cashFlow, ReportIncomeDto income, ReportStockActivityDto stockActivity, String? filingDate,@TimestampConverter() DateTime? dateAnalyzed, String? formType, String? ticker
 });
 
 

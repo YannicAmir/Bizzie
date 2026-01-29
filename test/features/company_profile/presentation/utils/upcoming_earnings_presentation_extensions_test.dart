@@ -1,4 +1,4 @@
-import 'package:bizzie/features/company_profile/presentation/utils/upcoming_earnings_presentation_extensions.dart';
+import 'package:bizzie/features/company_profile/security/presentation/utils/upcoming_earnings_presentation_extensions.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

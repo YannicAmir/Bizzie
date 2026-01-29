@@ -69,7 +69,7 @@ class _ReportsPageState extends State<ReportsPage> {
               loaded: (feed, lastViewedReports, todaysFilings) {
                 final bool isUpcomingEmpty = feed.upcomingEarnings.isEmpty;
                 final bool isRecentEmpty = todaysFilings.isEmpty;
-                final mascotAsset = context.read<UserBloc>().state.mascotAsset;
+                final mascotAsset = context.watch<UserBloc>().state.mascotAsset;
 
                 if (isUpcomingEmpty && isRecentEmpty) {
                   return _ReportsEmptyState(mascotAsset: mascotAsset);

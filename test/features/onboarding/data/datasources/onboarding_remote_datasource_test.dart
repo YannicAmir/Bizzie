@@ -11,20 +11,7 @@ class MockFirestoreService extends Mock implements FirestoreService {}
 
 class MockConfigService extends Mock implements ConfigService {}
 
-class MockFirebaseFirestore extends Mock implements FirebaseFirestore {}
-
-class MockCollectionReference extends Mock
-    implements CollectionReference<Map<String, dynamic>> {}
-
-class MockQuery extends Mock implements Query<Map<String, dynamic>> {}
-
-class MockQuerySnapshot extends Mock
-    implements QuerySnapshot<Map<String, dynamic>> {}
-
-class MockQueryDocumentSnapshot extends Mock
-    implements QueryDocumentSnapshot<Map<String, dynamic>> {}
-
-class MockWriteBatch extends Mock implements WriteBatch {}
+class MockBizzieBatch extends Mock implements BizzieBatch {}
 
 class MockDocumentReference extends Mock
     implements DocumentReference<Map<String, dynamic>> {}
@@ -36,7 +23,6 @@ void main() {
   late OnboardingRemoteDataSource dataSource;
   late MockFirestoreService mockFirestoreService;
   late MockConfigService mockConfigService;
-  late MockFirebaseFirestore mockFirestore;
 
   setUpAll(() {
     registerFallbackValue(FakeDocumentReference());
@@ -45,9 +31,6 @@ void main() {
   setUp(() {
     mockFirestoreService = MockFirestoreService();
     mockConfigService = MockConfigService();
-    mockFirestore = MockFirebaseFirestore();
-
-    when(() => mockFirestoreService.instance).thenReturn(mockFirestore);
 
     dataSource = OnboardingRemoteDataSource(
       mockFirestoreService,
@@ -94,26 +77,28 @@ void main() {
         favoriteSectorDisplay: '',
       );
 
-      final mockBatch = MockWriteBatch();
-      final mockUserRef = MockDocumentReference();
-      final mockUsersCollection = MockCollectionReference();
+      final mockBizzieBatch = MockBizzieBatch();
 
-      when(() => mockFirestore.batch()).thenReturn(mockBatch);
+      when(() => mockFirestoreService.batch()).thenReturn(mockBizzieBatch);
       when(
-        () => mockFirestore.collection('users'),
-      ).thenReturn(mockUsersCollection);
-      when(() => mockUsersCollection.doc(any())).thenReturn(mockUserRef);
-      when(() => mockBatch.set(any(), any())).thenReturn(null);
-      when(() => mockBatch.commit()).thenAnswer((_) async {});
+        () => mockBizzieBatch.setRaw(
+          path: any(named: 'path'),
+          data: any(named: 'data'),
+        ),
+      ).thenReturn(null);
+      when(() => mockBizzieBatch.commit()).thenAnswer((_) async {});
 
       // Act
       await dataSource.saveUserProfile(tUser, []);
 
       // Assert
-      verify(() => mockFirestore.batch()).called(1);
-      verify(() => mockBatch.commit()).called(1);
+      verify(() => mockFirestoreService.batch()).called(1);
+      verify(() => mockBizzieBatch.commit()).called(1);
       verify(
-        () => mockBatch.set<Map<String, dynamic>>(any(), any(), any()),
+        () => mockBizzieBatch.setRaw(
+          path: 'users/123',
+          data: any(named: 'data'),
+        ),
       ).called(1);
     });
   });

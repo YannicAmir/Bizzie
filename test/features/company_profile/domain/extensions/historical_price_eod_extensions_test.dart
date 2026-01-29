@@ -1,5 +1,5 @@
-import 'package:bizzie/features/company_profile/domain/extensions/historical_price_eod_extensions.dart';
-import 'package:bizzie/features/company_profile/domain/models/historical_price_eod.dart';
+import 'package:bizzie/features/company_profile/security/domain/extensions/historical_price_eod_extensions.dart';
+import 'package:bizzie/features/company_profile/security/domain/models/historical_price_eod.dart';
 import 'package:bizzie/shared/models/chart_data_point.dart';
 import 'package:flutter_test/flutter_test.dart';
 

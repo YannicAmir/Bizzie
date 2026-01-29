@@ -74,7 +74,7 @@ class CreateAccountPage extends StatelessWidget {
                         const SocialLoginButtons(),
                         const SizedBox(height: 48),
                         const AuthFooter(),
-                        const SizedBox(height: 20),
+                        const SizedBox(height: 24),
                       ],
                     ),
                   ),

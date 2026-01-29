@@ -108,6 +108,13 @@ class AppTextStyles {
     letterSpacing: -0.2344,
   );
 
+  static final TextStyle bodyMediumSecondary = GoogleFonts.inter(
+    fontSize: 15,
+    fontWeight: FontWeight.normal,
+    color: AppColors.textSecondary,
+    letterSpacing: -0.2344,
+  );
+
   static final TextStyle bodyMediumBold = GoogleFonts.inter(
     fontSize: 15,
     fontWeight: FontWeight.w600,
@@ -120,13 +127,6 @@ class AppTextStyles {
     fontWeight: FontWeight.w600,
     color: AppColors.textSecondary,
     letterSpacing: -0.2344,
-  );
-
-  static final TextStyle bodySmallMedium = GoogleFonts.inter(
-    fontSize: 14,
-    fontWeight: FontWeight.w500,
-    color: AppColors.textPrimary,
-    letterSpacing: -0.2,
   );
 
   static final TextStyle caption = GoogleFonts.inter(

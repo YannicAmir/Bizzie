@@ -10,7 +10,7 @@ part 'upcoming_earnings_dto.g.dart';
 abstract class UpcomingEarningsDto with _$UpcomingEarningsDto {
   const UpcomingEarningsDto._();
   const factory UpcomingEarningsDto({
-    @JsonKey(includeFromJson: false, includeToJson: false) String? id,
+    @JsonKey(includeToJson: false) String? id,
     required String symbol,
     @TimestampConverter() required DateTime date,
     @TimestampConverter() DateTime? expireAt,

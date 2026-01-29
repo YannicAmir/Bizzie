@@ -17,7 +17,7 @@ void main() {
     usecase = SignOut(mockAuthRepository);
   });
 
-  const tFailure = ServerFailure('Test Failure');
+  const tFailure = Failure.server('Test Failure');
 
   test('signOut_success_returnsRightVoid', () async {
     // arrange

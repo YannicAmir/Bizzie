@@ -1,6 +1,7 @@
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/features/onboarding/domain/models/company.dart';
 import 'package:bizzie/features/watchlist/domain/interfaces/watchlist_repository.dart';
+import 'package:bizzie/features/watchlist/domain/models/add_to_watchlist_params.dart';
 import 'package:bizzie/features/watchlist/domain/usecases/add_to_watchlist_usecase.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -38,7 +39,7 @@ void main() {
 
   test('execute_repositoryFailure_returnsFailure', () async {
     // arrange
-    final tFailure = ServerFailure('Test Error');
+    final tFailure = Failure.server('Test Error');
     when(
       () => mockRepository.addToWatchlist(tCompany, tUid),
     ).thenAnswer((_) async => Left(tFailure));

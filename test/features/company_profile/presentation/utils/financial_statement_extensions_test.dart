@@ -1,7 +1,7 @@
-import 'package:bizzie/features/company_profile/domain/models/balance_sheet.dart';
-import 'package:bizzie/features/company_profile/domain/models/cash_flow_statement.dart';
-import 'package:bizzie/features/company_profile/domain/models/income_statement.dart';
-import 'package:bizzie/features/company_profile/presentation/utils/financial_statement_extensions.dart';
+import 'package:bizzie/features/company_profile/financial_statements/domain/models/balance_sheet.dart';
+import 'package:bizzie/features/company_profile/financial_statements/domain/models/cash_flow_statement.dart';
+import 'package:bizzie/features/company_profile/financial_statements/domain/models/income_statement.dart';
+import 'package:bizzie/features/company_profile/financial_statements/presentation/utils/financial_statement_extensions.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

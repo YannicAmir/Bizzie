@@ -1,10 +1,10 @@
 import 'package:bizzie/features/onboarding/domain/models/company.dart';
-import 'package:bizzie/features/onboarding/domain/models/sector.dart';
+import 'package:bizzie/core/domain/models/sector.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-part 'onboarding_data.freezed.dart';
+import 'package:bizzie/features/user/domain/enums/investing_experience.dart';
 
-enum InvestingExperience { beginner, intermediate, expert }
+part 'onboarding_data.freezed.dart';
 
 @freezed
 abstract class OnboardingData with _$OnboardingData {

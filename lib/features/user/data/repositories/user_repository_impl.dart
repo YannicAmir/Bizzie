@@ -1,6 +1,6 @@
 import 'package:bizzie/core/error/failures.dart';
 
-import 'package:bizzie/features/onboarding/domain/models/user_model.dart';
+import 'package:bizzie/features/user/domain/models/user_model.dart';
 import 'package:bizzie/features/user/data/datasources/user_remote_datasource.dart';
 import 'package:bizzie/features/user/domain/interfaces/user_repository.dart';
 import 'package:dartz/dartz.dart';
@@ -27,7 +27,7 @@ class UserRepositoryImpl implements IUserRepository {
       final userDto = await _remoteDataSource.getUser(uid);
 
       if (userDto == null) {
-        return Left(UserNotFoundFailure());
+        return Left(Failure.userNotFound());
       }
 
       final watchlistDtos = await _remoteDataSource.getWatchlist(uid);
@@ -41,7 +41,7 @@ class UserRepositoryImpl implements IUserRepository {
       return Right(user);
     } catch (e, stack) {
       _logger.severe('Failed to get user', e, stack);
-      return Left(ServerFailure(e.toString()));
+      return Left(Failure.server(e.toString()));
     }
   }
 }

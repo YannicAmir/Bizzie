@@ -5,6 +5,7 @@ import 'package:bizzie/features/onboarding/select_brands/presentation/bloc/selec
 import 'package:bizzie/features/onboarding/select_brands/presentation/models/select_brands_view_model.dart';
 import 'package:bizzie/features/onboarding/presentation/bloc/onboarding_bloc.dart';
 import 'package:bizzie/features/onboarding/select_brands/domain/models/brand.dart';
+import 'package:bizzie/features/onboarding/select_brands/domain/models/get_daily_brands_params.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 

@@ -1,9 +1,9 @@
 import 'package:bizzie/core/error/failures.dart';
-import 'package:bizzie/features/company_profile/domain/models/historical_price_eod.dart';
-import 'package:bizzie/features/company_profile/domain/usecases/get_historical_eod_prices_use_case.dart';
-import 'package:bizzie/features/company_profile/presentation/bloc/historical_price_eod/historical_price_eod_bloc.dart';
-import 'package:bizzie/features/company_profile/presentation/bloc/historical_price_eod/historical_price_eod_event.dart';
-import 'package:bizzie/features/company_profile/presentation/bloc/historical_price_eod/historical_price_eod_state.dart';
+import 'package:bizzie/features/company_profile/security/domain/models/historical_price_eod.dart';
+import 'package:bizzie/features/company_profile/security/domain/usecases/get_historical_eod_prices_use_case.dart';
+import 'package:bizzie/features/company_profile/security/presentation/bloc/historical_price_eod/historical_price_eod_bloc.dart';
+import 'package:bizzie/features/company_profile/security/presentation/bloc/historical_price_eod/historical_price_eod_event.dart';
+import 'package:bizzie/features/company_profile/security/presentation/bloc/historical_price_eod/historical_price_eod_state.dart';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -71,7 +71,7 @@ void main() {
       'loadRequested_failure_emitsLoadingAndFailure',
       build: () {
         // arrange
-        const failure = ServerFailure('Server error');
+        const failure = Failure.server('Server error');
         when(
           () => mockGetPrices(tTicker),
         ).thenAnswer((_) async => const Left(failure));
@@ -85,7 +85,7 @@ void main() {
         // assert
         return [
           const HistoricalPriceEodState.loading(),
-          const HistoricalPriceEodState.failure(ServerFailure('Server error')),
+          const HistoricalPriceEodState.failure(Failure.server('Server error')),
         ];
       },
     );
@@ -218,7 +218,7 @@ void main() {
         ).thenAnswer((_) async => const Right(tPrices));
         return bloc;
       },
-      seed: () => const HistoricalPriceEodState.failure(ServerFailure('error')),
+      seed: () => const HistoricalPriceEodState.failure(Failure.server('error')),
       act: (bloc) {
         // act
         bloc.add(

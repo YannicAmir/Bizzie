@@ -1,5 +1,6 @@
 import 'package:bizzie/app/themes/app_assets.dart';
 import 'package:bizzie/app/themes/app_colors.dart';
+import 'package:bizzie/app/themes/app_text_styles.dart';
 
 import 'package:bizzie/features/reports/domain/models/sec_filing.dart';
 import 'package:bizzie/shared/widgets/app_badge.dart';
@@ -44,21 +45,22 @@ class SecFilingCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: theme.cardColor,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.slate300, width: 0.665),
+        border: Border.all(
+          color: theme.dividerColor,
+          width: theme.dividerTheme.thickness ?? .665,
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _Header(filing: filing, lastViewed: lastViewed),
           if (showFinancials) ...[
-            const Divider(height: 1),
             _FinancialsRow(
               filing: filing,
               currencyFormatter: currencyFormatter,
               epsFormatter: epsFormatter,
             ),
           ],
-          Divider(height: 1),
           Padding(
             padding: const EdgeInsets.all(16),
             child: Text(
@@ -146,50 +148,32 @@ class _Header extends StatelessWidget {
           const SizedBox(height: 8),
           Row(
             children: [
-              Text(
-                filing.symbol,
-                style: theme.textTheme.bodyLarge?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
+              Text(filing.symbol, style: theme.textTheme.headlineMedium),
               const SizedBox(width: 8),
-              AppBadge(text: filing.formType, style: AppBadgeStyle.neutral),
+              AppBadge(
+                text: filing.formType,
+                style: AppBadgeStyle.neutral,
+                isLarge: true,
+              ),
               if (filing.topic != null) ...[
                 const SizedBox(width: 8),
-                Text(filing.topic!, style: theme.textTheme.bodyMedium),
+                Text(filing.topic ?? '', style: theme.textTheme.bodyMedium),
               ],
               const Spacer(),
-              Row(
-                children: [
-                  Icon(
-                    Icons.calendar_today_outlined,
-                    size: 14,
-                    color: AppColors.slate500,
-                  ),
-                  const SizedBox(width: 4),
-                  if (filing.filingDate != null)
-                    Text(
-                      DateFormat('MMM d, yyyy').format(filing.filingDate!),
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: AppColors.slate500,
-                      ),
-                    )
-                  else
-                    Text(
-                      'Date Unknown',
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: AppColors.slate500,
-                      ),
-                    ),
-                ],
-              ),
+              if (filing.filingDate != null)
+                Text(
+                  DateFormat('MMM d, yyyy').format(filing.filingDate!),
+                  style: theme.textTheme.bodyMedium,
+                )
+              else
+                Text('Date Unknown', style: theme.textTheme.bodyMedium),
             ],
           ),
           const SizedBox(height: 4),
           Text(
             filing.companyName,
             style: theme.textTheme.bodyMedium?.copyWith(
-              color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.7),
+              color: theme.colorScheme.onSurfaceVariant,
             ),
           ),
         ],
@@ -220,13 +204,11 @@ class _FinancialsRow extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Revenue', style: theme.textTheme.labelSmall),
+                Text('Revenue', style: AppTextStyles.bodyMediumSecondary),
                 const SizedBox(height: 4),
                 Text(
-                  currencyFormatter.format(filing.revenue!),
-                  style: theme.textTheme.bodyLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+                  currencyFormatter.format(filing.revenue),
+                  style: theme.textTheme.headlineMedium,
                 ),
               ],
             ),
@@ -235,13 +217,11 @@ class _FinancialsRow extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Earnings', style: theme.textTheme.labelSmall),
+                Text('Earnings', style: AppTextStyles.bodyMediumSecondary),
                 const SizedBox(height: 4),
                 Text(
-                  epsFormatter.format(filing.eps!),
-                  style: theme.textTheme.bodyLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+                  epsFormatter.format(filing.eps),
+                  style: theme.textTheme.headlineMedium,
                 ),
               ],
             ),
@@ -359,9 +339,8 @@ class _ActionButton extends StatelessWidget {
           const SizedBox(width: 8),
           Text(
             label,
-            style: theme.textTheme.labelLarge?.copyWith(
+            style: theme.textTheme.headlineMedium?.copyWith(
               color: theme.colorScheme.primary,
-              fontSize: 15,
             ),
           ),
         ],

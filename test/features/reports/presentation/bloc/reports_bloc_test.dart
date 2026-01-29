@@ -124,7 +124,7 @@ void main() {
       'reportsUpdated_failure_emitsFailure',
       build: () => bloc,
       act: (bloc) => bloc.add(
-        const ReportsEvent.reportsUpdated(Left(ServerFailure("Error"))),
+        const ReportsEvent.reportsUpdated(Left(Failure.server("Error"))),
       ),
       expect: () => [const ReportsState.failure("Error")],
     );

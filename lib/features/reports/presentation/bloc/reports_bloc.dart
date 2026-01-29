@@ -1,16 +1,15 @@
-import 'dart:async';
-
 import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:bizzie/features/auth/domain/interfaces/i_auth_repository.dart';
-
 import 'package:bizzie/features/reports/domain/models/financial_report.dart';
 import 'package:bizzie/features/reports/domain/models/reports_feed.dart';
 import 'package:bizzie/features/reports/presentation/models/filing_view_model.dart';
 import 'package:bizzie/features/reports/domain/usecases/get_dashboard_reports_usecase.dart';
 import 'package:bizzie/features/reports/domain/usecases/get_user_activity_use_case.dart';
 import 'package:bizzie/features/reports/domain/usecases/mark_reports_viewed_use_case.dart';
+import 'package:bizzie/features/reports/domain/models/mark_reports_viewed_params.dart';
 import 'package:bizzie/features/watchlist/domain/interfaces/watchlist_repository.dart';
 import 'package:bloc/bloc.dart';
+import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:injectable/injectable.dart';
 
 import 'reports_event.dart';
@@ -26,9 +25,6 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
   final GetUserActivityUseCase _getUserActivityUseCase;
   final MarkReportsViewedUseCase _markReportsViewedUseCase;
 
-  StreamSubscription? _watchlistSubscription;
-  StreamSubscription? _reportsSubscription;
-  StreamSubscription? _activitySubscription;
   DateTime? _lastViewedReports;
 
   ReportsBloc(
@@ -38,23 +34,22 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
     this._getUserActivityUseCase,
     this._markReportsViewedUseCase,
   ) : super(const ReportsState.initial()) {
-    on<Started>(_onStarted);
-    on<WatchlistUpdated>(_onWatchlistUpdated);
+    on<Started>(_onStarted, transformer: restartable());
+    on<WatchlistUpdated>(_onWatchlistUpdated, transformer: restartable());
     on<ReportsUpdated>(_onReportsUpdated);
     on<Refresh>(_onRefresh);
     on<Viewed>(_onViewed);
     on<ActivityUpdated>(_onActivityUpdated);
+    on<Reset>(_onReset);
+  }
+
+  void _onReset(Reset event, Emitter<ReportsState> emit) {
+    _logger.info('Resetting ReportsBloc');
+    _lastViewedReports = null;
+    emit(const ReportsState.initial());
   }
 
   String? get _uid => _authRepository.currentUser?.id;
-
-  @override
-  Future<void> close() {
-    _watchlistSubscription?.cancel();
-    _reportsSubscription?.cancel();
-    _activitySubscription?.cancel();
-    return super.close();
-  }
 
   Future<void> _onStarted(Started event, Emitter<ReportsState> emit) async {
     final uid = _uid;
@@ -65,9 +60,12 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
 
     emit(const ReportsState.loading());
 
-    _activitySubscription?.cancel();
-    _activitySubscription = _getUserActivityUseCase(uid).listen(
-      (result) {
+    final activityStream = _getUserActivityUseCase(uid);
+    final watchlistStream = _watchlistRepository.getWatchlistStream(uid);
+
+    final activityFuture = emit.onEach(
+      activityStream,
+      onData: (result) {
         result.fold(
           (failure) => _logger.warning(
             'Failed to receive user activity: ${failure.message}',
@@ -85,20 +83,24 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
       },
     );
 
-    _watchlistSubscription?.cancel();
-    _watchlistSubscription = _watchlistRepository
-        .getWatchlistStream(uid)
-        .listen((result) {
-          result.fold(
-            (failure) => _logger.warning(
-              'Failed to fetch watchlist: ${failure.message}',
-            ),
-            (companies) {
-              final tickers = companies.map((c) => c.ticker).toList();
-              add(ReportsEvent.watchlistUpdated(tickers));
-            },
-          );
-        });
+    final watchlistFuture = emit.onEach(
+      watchlistStream,
+      onData: (result) {
+        result.fold(
+          (failure) =>
+              _logger.warning('Failed to fetch watchlist: ${failure.message}'),
+          (companies) {
+            final tickers = companies.map((c) => c.ticker).toList();
+            add(ReportsEvent.watchlistUpdated(tickers));
+          },
+        );
+      },
+      onError: (e, s) {
+        _logger.severe('Failed to listen to watchlist stream', e, s);
+      },
+    );
+
+    await Future.wait([activityFuture, watchlistFuture]);
   }
 
   Future<void> _onWatchlistUpdated(
@@ -109,10 +111,12 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
       emit(const ReportsState.loading());
     }
 
-    _reportsSubscription?.cancel();
-    _reportsSubscription = _getReportsUseCase(
-      event.tickers,
-    ).listen((result) => add(ReportsEvent.reportsUpdated(result)));
+    final stream = _getReportsUseCase(event.tickers);
+
+    await emit.onEach(
+      stream,
+      onData: (result) => add(ReportsEvent.reportsUpdated(result)),
+    );
   }
 
   Future<void> _onReportsUpdated(

@@ -83,7 +83,7 @@ void main() {
   registerFallbackValue(SignUpWithEmailParams(email: 'test', password: 'test'));
 
   const tUser = UserModel(id: '1', email: 'test@example.com');
-  const tFailure = ServerFailure('Test Failure');
+  const tFailure = Failure.server('Test Failure');
 
   test('initial state is AuthState.unauthenticated', () {
     expect(authBloc.state, const AuthState.unauthenticated());

@@ -1,7 +1,9 @@
+import 'package:bizzie/app/themes/app_text_styles.dart';
 import 'package:bizzie/app/themes/app_theme.dart';
 import 'package:bizzie/features/reports/domain/models/financial_report.dart';
 import 'package:bizzie/features/reports/domain/models/financial_report_extensions.dart';
 import 'package:bizzie/features/reports/presentation/widgets/metric_card.dart';
+import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:bizzie/shared/widgets/buttons/bizzie_primary_button.dart';
 import 'package:bizzie/shared/widgets/modals/app_bottom_modal.dart';
 import 'package:flutter/material.dart';
@@ -21,42 +23,42 @@ class ReportSummaryModal extends StatelessWidget {
       title: 'AI Summary',
       subtitle: Text(
         '${report.ticker} • ${report.filingDate != null ? DateFormat('MMM d, yyyy').format(report.filingDate!) : 'Date Unknown'} • ${report.formType}',
-        style: theme.textTheme.bodySmall?.copyWith(color: theme.hintColor),
+        style: AppTextStyles.bodyMediumSecondary,
         overflow: TextOverflow.ellipsis,
       ),
       builder: (context, scrollController) {
         return ListView(
           controller: scrollController,
-          padding: const EdgeInsets.all(16),
+          padding: AppConstants.reportModalPadding,
           children: [
             Text('Operations', style: theme.textTheme.displaySmall),
-            const SizedBox(height: 16),
+            AppConstants.secondarySectionSpacing,
             MetricCard.fromMetricWithDriver(
               title: 'Revenue',
               metric: report.income.revenue,
               currencyCode: report.summary.reportingCurrency,
             ),
-            const SizedBox(height: 12),
+            AppConstants.secondarySectionSpacing,
             MetricCard.fromMetric(
               title: 'Cost of Revenue',
               metric: report.income.costOfRevenue,
               isInverse: true,
               currencyCode: report.summary.reportingCurrency,
             ),
-            const SizedBox(height: 12),
+            AppConstants.secondarySectionSpacing,
             MetricCard.fromMetricWithDriver(
               title: 'Total Expenses',
               metric: report.income.totalExpenses,
               isInverse: true,
               currencyCode: report.summary.reportingCurrency,
             ),
-            const SizedBox(height: 12),
+            AppConstants.secondarySectionSpacing,
             MetricCard.fromMetricWithDriver(
               title: 'Net Income',
               metric: report.income.netIncome,
               currencyCode: report.summary.reportingCurrency,
             ),
-            const SizedBox(height: 12),
+            AppConstants.secondarySectionSpacing,
             MetricCard.fromMetric(
               title: 'Earnings Per Share',
               metric: report.income.eps,
@@ -66,20 +68,20 @@ class ReportSummaryModal extends StatelessWidget {
             const SizedBox(height: 32),
 
             Text('Balance Sheet', style: theme.textTheme.displaySmall),
-            const SizedBox(height: 16),
+            AppConstants.secondarySectionSpacing,
             MetricCard.fromMetric(
               title: 'Total Assets',
               metric: report.balanceSheet.totalAssets,
               currencyCode: report.summary.reportingCurrency,
             ),
-            const SizedBox(height: 12),
+            AppConstants.secondarySectionSpacing,
             MetricCard.fromMetric(
               title: 'Total Liabilities',
               metric: report.balanceSheet.totalLiabilities,
               isInverse: true,
               currencyCode: report.summary.reportingCurrency,
             ),
-            const SizedBox(height: 12),
+            AppConstants.secondarySectionSpacing,
             MetricCard.fromMetric(
               title: 'Stockholder\'s Equity',
               metric: report.balanceSheet.equity,
@@ -89,7 +91,7 @@ class ReportSummaryModal extends StatelessWidget {
             const SizedBox(height: 32),
 
             Text('Cash Flow', style: theme.textTheme.displaySmall),
-            const SizedBox(height: 16),
+            AppConstants.secondarySectionSpacing,
             MetricCard.fromMetricWithDriver(
               title: 'Free Cash Flow',
               metric: report.cashFlow.freeCashFlow,
@@ -100,18 +102,17 @@ class ReportSummaryModal extends StatelessWidget {
 
             if (!report.formType.contains('8-K')) ...[
               Text('Stock Repurchasing', style: theme.textTheme.displaySmall),
-              const SizedBox(height: 16),
+              AppConstants.secondarySectionSpacing,
               _StockActivityCard(activity: report.stockActivity),
               const SizedBox(height: 32),
+              Text(
+                'Forward Looking Statements',
+                style: theme.textTheme.displaySmall,
+              ),
+              AppConstants.secondarySectionSpacing,
+              _ForwardLookingSection(text: report.summary.forwardLooking),
+              const SizedBox(height: 32),
             ],
-
-            Text(
-              'Forward Looking Statements',
-              style: theme.textTheme.displaySmall,
-            ),
-            const SizedBox(height: 16),
-            _ForwardLookingSection(text: report.summary.forwardLooking),
-            const SizedBox(height: 32),
 
             const _AiDisclaimerSection(),
             if (filingUrl != null) ...[
@@ -120,7 +121,7 @@ class ReportSummaryModal extends StatelessWidget {
                 onPressed: () {
                   launchUrl(Uri.parse(filingUrl!));
                 },
-                title: 'View Full SEC Filing',
+                title: 'View full SEC filing',
                 height: 48,
               ),
             ],
@@ -203,14 +204,16 @@ class _ActivityColumn extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: theme.textTheme.labelSmall),
+        Text(
+          label,
+          style: theme.textTheme.headlineMedium?.copyWith(
+            color: theme.hintColor,
+          ),
+        ),
         const SizedBox(height: 4),
         Text(
           value,
-          style: theme.textTheme.displaySmall?.copyWith(
-            fontSize: 15,
-            color: valueColor,
-          ),
+          style: theme.textTheme.headlineMedium?.copyWith(color: valueColor),
         ),
       ],
     );
@@ -272,9 +275,8 @@ class _AiDisclaimerSection extends StatelessWidget {
               Expanded(
                 child: Text(
                   'AI-Generated Summary',
-                  style: theme.textTheme.displaySmall?.copyWith(
-                    fontSize: 14,
-                    color: theme.textTheme.bodyLarge?.color,
+                  style: theme.textTheme.headlineMedium?.copyWith(
+                    color: theme.hintColor,
                   ),
                 ),
               ),
@@ -283,10 +285,7 @@ class _AiDisclaimerSection extends StatelessWidget {
           const SizedBox(height: 8),
           Text(
             'This summary was produced by AI and may contain inaccuracies. It is not financial advice. Always verify key data against the full SEC filing before making investment decisions.',
-            style: theme.textTheme.bodySmall?.copyWith(
-              color: theme.textTheme.bodyMedium?.color,
-              height: 1.5,
-            ),
+            style: theme.textTheme.bodyMedium,
           ),
         ],
       ),

@@ -54,7 +54,7 @@ void main() {
       // Arrange
       when(
         () => mockRepository.findStockForProduct(any()),
-      ).thenAnswer((_) async => Left(ServerFailure('API Error')));
+      ).thenAnswer((_) async => Left(Failure.server('API Error')));
 
       // Act
       final result = await useCase.execute(tQuery);

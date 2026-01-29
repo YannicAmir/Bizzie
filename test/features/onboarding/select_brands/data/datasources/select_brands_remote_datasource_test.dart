@@ -12,6 +12,10 @@ void main() {
   late SelectBrandsRemoteDataSource dataSource;
   late MockFirestoreService mockFirestoreService;
 
+  setUpAll(() {
+    registerFallbackValue(DailyBrandsDto(date: DateTime.now(), sectors: []));
+  });
+
   setUp(() {
     mockFirestoreService = MockFirestoreService();
     dataSource = SelectBrandsRemoteDataSource(mockFirestoreService);
@@ -38,11 +42,13 @@ void main() {
     test('fetchDailyBrands_success_returnsDailyBrandsDto', () async {
       // arrange
       when(
-        () => mockFirestoreService.getLatestDocument(
+        () => mockFirestoreService.getLatestDocument<DailyBrandsDto>(
           collectionPath: any(named: 'collectionPath'),
           orderBy: any(named: 'orderBy'),
+          fromJson: any(named: 'fromJson'),
+          toJson: any(named: 'toJson'),
         ),
-      ).thenAnswer((_) async => tDailyBrandsData);
+      ).thenAnswer((_) async => DailyBrandsDto.fromJson(tDailyBrandsData));
 
       // act
       final result = await dataSource.fetchDailyBrands();
@@ -51,9 +57,11 @@ void main() {
       expect(result, isA<DailyBrandsDto>());
       expect(result?.sectors.first.name, 'All Sectors');
       verify(
-        () => mockFirestoreService.getLatestDocument(
+        () => mockFirestoreService.getLatestDocument<DailyBrandsDto>(
           collectionPath: 'daily_brands',
           orderBy: 'date',
+          fromJson: any(named: 'fromJson'),
+          toJson: any(named: 'toJson'),
         ),
       ).called(1);
     });
@@ -61,9 +69,11 @@ void main() {
     test('fetchDailyBrands_empty_returnsNull', () async {
       // arrange
       when(
-        () => mockFirestoreService.getLatestDocument(
+        () => mockFirestoreService.getLatestDocument<DailyBrandsDto>(
           collectionPath: any(named: 'collectionPath'),
           orderBy: any(named: 'orderBy'),
+          fromJson: any(named: 'fromJson'),
+          toJson: any(named: 'toJson'),
         ),
       ).thenAnswer((_) async => null);
 
@@ -77,9 +87,11 @@ void main() {
     test('fetchDailyBrands_firebaseException_throwsServerException', () async {
       // arrange
       when(
-        () => mockFirestoreService.getLatestDocument(
+        () => mockFirestoreService.getLatestDocument<DailyBrandsDto>(
           collectionPath: any(named: 'collectionPath'),
           orderBy: any(named: 'orderBy'),
+          fromJson: any(named: 'fromJson'),
+          toJson: any(named: 'toJson'),
         ),
       ).thenThrow(
         FirebaseException(plugin: 'firestore', message: 'connection error'),
@@ -97,9 +109,11 @@ void main() {
       () async {
         // arrange
         when(
-          () => mockFirestoreService.getLatestDocument(
+          () => mockFirestoreService.getLatestDocument<DailyBrandsDto>(
             collectionPath: any(named: 'collectionPath'),
             orderBy: any(named: 'orderBy'),
+            fromJson: any(named: 'fromJson'),
+            toJson: any(named: 'toJson'),
           ),
         ).thenThrow(Exception('unexpected'));
 
