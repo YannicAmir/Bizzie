@@ -13,7 +13,7 @@ void main() {
   late MockFirestoreService mockFirestoreService;
 
   setUpAll(() {
-    registerFallbackValue(DailyBrandsDto.fromJson({}));
+    registerFallbackValue(DailyBrandsDto(date: DateTime.now(), sectors: []));
   });
 
   setUp(() {
