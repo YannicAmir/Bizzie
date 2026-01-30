@@ -89,10 +89,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   ) async {
     emit(const AuthState.loading(method: 'google'));
     final result = await _signInWithGoogle(NoParams());
-    result.fold(
-      (failure) => emit(AuthState.failure(failure.message)),
-      (_) {}, // Success is handled by _onAuthStatusChanged via stream
-    );
+    result.fold((failure) => emit(AuthState.failure(failure)), (_) {});
   }
 
   Future<void> _onAppleSignInRequested(
@@ -101,10 +98,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   ) async {
     emit(const AuthState.loading(method: 'apple'));
     final result = await _signInWithApple(NoParams());
-    result.fold(
-      (failure) => emit(AuthState.failure(failure.message)),
-      (_) {}, // Success is handled by _onAuthStatusChanged via stream
-    );
+    result.fold((failure) => emit(AuthState.failure(failure)), (_) {});
   }
 
   Future<void> _onEmailSignInRequested(
@@ -115,10 +109,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     final result = await _signInWithEmail(
       SignInWithEmailParams(email: event.email, password: event.password),
     );
-    result.fold(
-      (failure) => emit(AuthState.failure(failure.message)),
-      (_) {}, // Success is handled by _onAuthStatusChanged via stream
-    );
+    result.fold((failure) => emit(AuthState.failure(failure)), (_) {});
   }
 
   Future<void> _onEmailSignUpRequested(
@@ -129,10 +120,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     final result = await _signUpWithEmail(
       SignUpWithEmailParams(email: event.email, password: event.password),
     );
-    result.fold(
-      (failure) => emit(AuthState.failure(failure.message)),
-      (_) {}, // Success is handled by _onAuthStatusChanged via stream
-    );
+    result.fold((failure) => emit(AuthState.failure(failure)), (_) {});
   }
 
   Future<void> _onLogoutRequested(
@@ -140,10 +128,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     Emitter<AuthState> emit,
   ) async {
     final result = await _signOut(NoParams());
-    result.fold(
-      (failure) => emit(AuthState.failure(failure.message)),
-      (_) {}, // Success handled by stream
-    );
+    result.fold((failure) => emit(AuthState.failure(failure)), (_) {});
   }
 
   Future<void> _onResetPasswordRequested(
@@ -153,10 +138,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     final result = await _resetPassword(
       ResetPasswordParams(email: event.email),
     );
-    result.fold(
-      (failure) => emit(AuthState.failure(failure.message)),
-      (_) {}, // Success - UI should likely show a snackbar (side effect)
-    );
+    result.fold((failure) => emit(AuthState.failure(failure)), (_) {});
   }
 
   Future<void> _onDeleteAccountRequested(
@@ -165,10 +147,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   ) async {
     emit(const AuthState.loading());
     final result = await _deleteAccount(NoParams());
-    result.fold(
-      (failure) => emit(AuthState.failure(failure.message)),
-      (_) {}, // Success handled by stream which will emit null user
-    );
+    result.fold((failure) => emit(AuthState.failure(failure)), (_) {});
   }
 
   @override

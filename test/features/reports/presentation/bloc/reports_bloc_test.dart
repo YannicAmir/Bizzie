@@ -126,7 +126,7 @@ void main() {
       act: (bloc) => bloc.add(
         const ReportsEvent.reportsUpdated(Left(Failure.server("Error"))),
       ),
-      expect: () => [const ReportsState.failure("Error")],
+      expect: () => [const ReportsState.failure(Failure.server("Error"))],
     );
   });
 }

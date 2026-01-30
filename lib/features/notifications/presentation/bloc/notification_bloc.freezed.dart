@@ -55,14 +55,14 @@ extension NotificationEventPatterns on NotificationEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _SetupRequested value)?  setupRequested,TResult Function( _SubscribeToTopicRequested value)?  subscribeToTopicRequested,TResult Function( _UnsubscribeFromTopicRequested value)?  unsubscribeFromTopicRequested,TResult Function( _MessageReceived value)?  messageReceived,TResult Function( _Reset value)?  reset,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( NotificationSetupRequested value)?  setupRequested,TResult Function( NotificationSubscribeToTopicRequested value)?  subscribeToTopicRequested,TResult Function( NotificationUnsubscribeFromTopicRequested value)?  unsubscribeFromTopicRequested,TResult Function( NotificationMessageReceived value)?  messageReceived,TResult Function( NotificationReset value)?  reset,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
-case _SetupRequested() when setupRequested != null:
-return setupRequested(_that);case _SubscribeToTopicRequested() when subscribeToTopicRequested != null:
-return subscribeToTopicRequested(_that);case _UnsubscribeFromTopicRequested() when unsubscribeFromTopicRequested != null:
-return unsubscribeFromTopicRequested(_that);case _MessageReceived() when messageReceived != null:
-return messageReceived(_that);case _Reset() when reset != null:
+case NotificationSetupRequested() when setupRequested != null:
+return setupRequested(_that);case NotificationSubscribeToTopicRequested() when subscribeToTopicRequested != null:
+return subscribeToTopicRequested(_that);case NotificationUnsubscribeFromTopicRequested() when unsubscribeFromTopicRequested != null:
+return unsubscribeFromTopicRequested(_that);case NotificationMessageReceived() when messageReceived != null:
+return messageReceived(_that);case NotificationReset() when reset != null:
 return reset(_that);case _:
   return orElse();
 
@@ -81,14 +81,14 @@ return reset(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _SetupRequested value)  setupRequested,required TResult Function( _SubscribeToTopicRequested value)  subscribeToTopicRequested,required TResult Function( _UnsubscribeFromTopicRequested value)  unsubscribeFromTopicRequested,required TResult Function( _MessageReceived value)  messageReceived,required TResult Function( _Reset value)  reset,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( NotificationSetupRequested value)  setupRequested,required TResult Function( NotificationSubscribeToTopicRequested value)  subscribeToTopicRequested,required TResult Function( NotificationUnsubscribeFromTopicRequested value)  unsubscribeFromTopicRequested,required TResult Function( NotificationMessageReceived value)  messageReceived,required TResult Function( NotificationReset value)  reset,}){
 final _that = this;
 switch (_that) {
-case _SetupRequested():
-return setupRequested(_that);case _SubscribeToTopicRequested():
-return subscribeToTopicRequested(_that);case _UnsubscribeFromTopicRequested():
-return unsubscribeFromTopicRequested(_that);case _MessageReceived():
-return messageReceived(_that);case _Reset():
+case NotificationSetupRequested():
+return setupRequested(_that);case NotificationSubscribeToTopicRequested():
+return subscribeToTopicRequested(_that);case NotificationUnsubscribeFromTopicRequested():
+return unsubscribeFromTopicRequested(_that);case NotificationMessageReceived():
+return messageReceived(_that);case NotificationReset():
 return reset(_that);case _:
   throw StateError('Unexpected subclass');
 
@@ -106,14 +106,14 @@ return reset(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _SetupRequested value)?  setupRequested,TResult? Function( _SubscribeToTopicRequested value)?  subscribeToTopicRequested,TResult? Function( _UnsubscribeFromTopicRequested value)?  unsubscribeFromTopicRequested,TResult? Function( _MessageReceived value)?  messageReceived,TResult? Function( _Reset value)?  reset,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( NotificationSetupRequested value)?  setupRequested,TResult? Function( NotificationSubscribeToTopicRequested value)?  subscribeToTopicRequested,TResult? Function( NotificationUnsubscribeFromTopicRequested value)?  unsubscribeFromTopicRequested,TResult? Function( NotificationMessageReceived value)?  messageReceived,TResult? Function( NotificationReset value)?  reset,}){
 final _that = this;
 switch (_that) {
-case _SetupRequested() when setupRequested != null:
-return setupRequested(_that);case _SubscribeToTopicRequested() when subscribeToTopicRequested != null:
-return subscribeToTopicRequested(_that);case _UnsubscribeFromTopicRequested() when unsubscribeFromTopicRequested != null:
-return unsubscribeFromTopicRequested(_that);case _MessageReceived() when messageReceived != null:
-return messageReceived(_that);case _Reset() when reset != null:
+case NotificationSetupRequested() when setupRequested != null:
+return setupRequested(_that);case NotificationSubscribeToTopicRequested() when subscribeToTopicRequested != null:
+return subscribeToTopicRequested(_that);case NotificationUnsubscribeFromTopicRequested() when unsubscribeFromTopicRequested != null:
+return unsubscribeFromTopicRequested(_that);case NotificationMessageReceived() when messageReceived != null:
+return messageReceived(_that);case NotificationReset() when reset != null:
 return reset(_that);case _:
   return null;
 
@@ -133,11 +133,11 @@ return reset(_that);case _:
 
 @optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  setupRequested,TResult Function( String topic)?  subscribeToTopicRequested,TResult Function( String topic)?  unsubscribeFromTopicRequested,TResult Function( NotificationMessage message)?  messageReceived,TResult Function()?  reset,required TResult orElse(),}) {final _that = this;
 switch (_that) {
-case _SetupRequested() when setupRequested != null:
-return setupRequested();case _SubscribeToTopicRequested() when subscribeToTopicRequested != null:
-return subscribeToTopicRequested(_that.topic);case _UnsubscribeFromTopicRequested() when unsubscribeFromTopicRequested != null:
-return unsubscribeFromTopicRequested(_that.topic);case _MessageReceived() when messageReceived != null:
-return messageReceived(_that.message);case _Reset() when reset != null:
+case NotificationSetupRequested() when setupRequested != null:
+return setupRequested();case NotificationSubscribeToTopicRequested() when subscribeToTopicRequested != null:
+return subscribeToTopicRequested(_that.topic);case NotificationUnsubscribeFromTopicRequested() when unsubscribeFromTopicRequested != null:
+return unsubscribeFromTopicRequested(_that.topic);case NotificationMessageReceived() when messageReceived != null:
+return messageReceived(_that.message);case NotificationReset() when reset != null:
 return reset();case _:
   return orElse();
 
@@ -158,11 +158,11 @@ return reset();case _:
 
 @optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  setupRequested,required TResult Function( String topic)  subscribeToTopicRequested,required TResult Function( String topic)  unsubscribeFromTopicRequested,required TResult Function( NotificationMessage message)  messageReceived,required TResult Function()  reset,}) {final _that = this;
 switch (_that) {
-case _SetupRequested():
-return setupRequested();case _SubscribeToTopicRequested():
-return subscribeToTopicRequested(_that.topic);case _UnsubscribeFromTopicRequested():
-return unsubscribeFromTopicRequested(_that.topic);case _MessageReceived():
-return messageReceived(_that.message);case _Reset():
+case NotificationSetupRequested():
+return setupRequested();case NotificationSubscribeToTopicRequested():
+return subscribeToTopicRequested(_that.topic);case NotificationUnsubscribeFromTopicRequested():
+return unsubscribeFromTopicRequested(_that.topic);case NotificationMessageReceived():
+return messageReceived(_that.message);case NotificationReset():
 return reset();case _:
   throw StateError('Unexpected subclass');
 
@@ -182,11 +182,11 @@ return reset();case _:
 
 @optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  setupRequested,TResult? Function( String topic)?  subscribeToTopicRequested,TResult? Function( String topic)?  unsubscribeFromTopicRequested,TResult? Function( NotificationMessage message)?  messageReceived,TResult? Function()?  reset,}) {final _that = this;
 switch (_that) {
-case _SetupRequested() when setupRequested != null:
-return setupRequested();case _SubscribeToTopicRequested() when subscribeToTopicRequested != null:
-return subscribeToTopicRequested(_that.topic);case _UnsubscribeFromTopicRequested() when unsubscribeFromTopicRequested != null:
-return unsubscribeFromTopicRequested(_that.topic);case _MessageReceived() when messageReceived != null:
-return messageReceived(_that.message);case _Reset() when reset != null:
+case NotificationSetupRequested() when setupRequested != null:
+return setupRequested();case NotificationSubscribeToTopicRequested() when subscribeToTopicRequested != null:
+return subscribeToTopicRequested(_that.topic);case NotificationUnsubscribeFromTopicRequested() when unsubscribeFromTopicRequested != null:
+return unsubscribeFromTopicRequested(_that.topic);case NotificationMessageReceived() when messageReceived != null:
+return messageReceived(_that.message);case NotificationReset() when reset != null:
 return reset();case _:
   return null;
 
@@ -198,8 +198,8 @@ return reset();case _:
 /// @nodoc
 
 
-class _SetupRequested implements NotificationEvent {
-  const _SetupRequested();
+class NotificationSetupRequested implements NotificationEvent {
+  const NotificationSetupRequested();
   
 
 
@@ -209,7 +209,7 @@ class _SetupRequested implements NotificationEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SetupRequested);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is NotificationSetupRequested);
 }
 
 
@@ -230,8 +230,8 @@ String toString() {
 /// @nodoc
 
 
-class _SubscribeToTopicRequested implements NotificationEvent {
-  const _SubscribeToTopicRequested(this.topic);
+class NotificationSubscribeToTopicRequested implements NotificationEvent {
+  const NotificationSubscribeToTopicRequested(this.topic);
   
 
  final  String topic;
@@ -240,13 +240,13 @@ class _SubscribeToTopicRequested implements NotificationEvent {
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-_$SubscribeToTopicRequestedCopyWith<_SubscribeToTopicRequested> get copyWith => __$SubscribeToTopicRequestedCopyWithImpl<_SubscribeToTopicRequested>(this, _$identity);
+$NotificationSubscribeToTopicRequestedCopyWith<NotificationSubscribeToTopicRequested> get copyWith => _$NotificationSubscribeToTopicRequestedCopyWithImpl<NotificationSubscribeToTopicRequested>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SubscribeToTopicRequested&&(identical(other.topic, topic) || other.topic == topic));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is NotificationSubscribeToTopicRequested&&(identical(other.topic, topic) || other.topic == topic));
 }
 
 
@@ -262,8 +262,8 @@ String toString() {
 }
 
 /// @nodoc
-abstract mixin class _$SubscribeToTopicRequestedCopyWith<$Res> implements $NotificationEventCopyWith<$Res> {
-  factory _$SubscribeToTopicRequestedCopyWith(_SubscribeToTopicRequested value, $Res Function(_SubscribeToTopicRequested) _then) = __$SubscribeToTopicRequestedCopyWithImpl;
+abstract mixin class $NotificationSubscribeToTopicRequestedCopyWith<$Res> implements $NotificationEventCopyWith<$Res> {
+  factory $NotificationSubscribeToTopicRequestedCopyWith(NotificationSubscribeToTopicRequested value, $Res Function(NotificationSubscribeToTopicRequested) _then) = _$NotificationSubscribeToTopicRequestedCopyWithImpl;
 @useResult
 $Res call({
  String topic
@@ -274,17 +274,17 @@ $Res call({
 
 }
 /// @nodoc
-class __$SubscribeToTopicRequestedCopyWithImpl<$Res>
-    implements _$SubscribeToTopicRequestedCopyWith<$Res> {
-  __$SubscribeToTopicRequestedCopyWithImpl(this._self, this._then);
+class _$NotificationSubscribeToTopicRequestedCopyWithImpl<$Res>
+    implements $NotificationSubscribeToTopicRequestedCopyWith<$Res> {
+  _$NotificationSubscribeToTopicRequestedCopyWithImpl(this._self, this._then);
 
-  final _SubscribeToTopicRequested _self;
-  final $Res Function(_SubscribeToTopicRequested) _then;
+  final NotificationSubscribeToTopicRequested _self;
+  final $Res Function(NotificationSubscribeToTopicRequested) _then;
 
 /// Create a copy of NotificationEvent
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? topic = null,}) {
-  return _then(_SubscribeToTopicRequested(
+  return _then(NotificationSubscribeToTopicRequested(
 null == topic ? _self.topic : topic // ignore: cast_nullable_to_non_nullable
 as String,
   ));
@@ -296,8 +296,8 @@ as String,
 /// @nodoc
 
 
-class _UnsubscribeFromTopicRequested implements NotificationEvent {
-  const _UnsubscribeFromTopicRequested(this.topic);
+class NotificationUnsubscribeFromTopicRequested implements NotificationEvent {
+  const NotificationUnsubscribeFromTopicRequested(this.topic);
   
 
  final  String topic;
@@ -306,13 +306,13 @@ class _UnsubscribeFromTopicRequested implements NotificationEvent {
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-_$UnsubscribeFromTopicRequestedCopyWith<_UnsubscribeFromTopicRequested> get copyWith => __$UnsubscribeFromTopicRequestedCopyWithImpl<_UnsubscribeFromTopicRequested>(this, _$identity);
+$NotificationUnsubscribeFromTopicRequestedCopyWith<NotificationUnsubscribeFromTopicRequested> get copyWith => _$NotificationUnsubscribeFromTopicRequestedCopyWithImpl<NotificationUnsubscribeFromTopicRequested>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _UnsubscribeFromTopicRequested&&(identical(other.topic, topic) || other.topic == topic));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is NotificationUnsubscribeFromTopicRequested&&(identical(other.topic, topic) || other.topic == topic));
 }
 
 
@@ -328,8 +328,8 @@ String toString() {
 }
 
 /// @nodoc
-abstract mixin class _$UnsubscribeFromTopicRequestedCopyWith<$Res> implements $NotificationEventCopyWith<$Res> {
-  factory _$UnsubscribeFromTopicRequestedCopyWith(_UnsubscribeFromTopicRequested value, $Res Function(_UnsubscribeFromTopicRequested) _then) = __$UnsubscribeFromTopicRequestedCopyWithImpl;
+abstract mixin class $NotificationUnsubscribeFromTopicRequestedCopyWith<$Res> implements $NotificationEventCopyWith<$Res> {
+  factory $NotificationUnsubscribeFromTopicRequestedCopyWith(NotificationUnsubscribeFromTopicRequested value, $Res Function(NotificationUnsubscribeFromTopicRequested) _then) = _$NotificationUnsubscribeFromTopicRequestedCopyWithImpl;
 @useResult
 $Res call({
  String topic
@@ -340,17 +340,17 @@ $Res call({
 
 }
 /// @nodoc
-class __$UnsubscribeFromTopicRequestedCopyWithImpl<$Res>
-    implements _$UnsubscribeFromTopicRequestedCopyWith<$Res> {
-  __$UnsubscribeFromTopicRequestedCopyWithImpl(this._self, this._then);
+class _$NotificationUnsubscribeFromTopicRequestedCopyWithImpl<$Res>
+    implements $NotificationUnsubscribeFromTopicRequestedCopyWith<$Res> {
+  _$NotificationUnsubscribeFromTopicRequestedCopyWithImpl(this._self, this._then);
 
-  final _UnsubscribeFromTopicRequested _self;
-  final $Res Function(_UnsubscribeFromTopicRequested) _then;
+  final NotificationUnsubscribeFromTopicRequested _self;
+  final $Res Function(NotificationUnsubscribeFromTopicRequested) _then;
 
 /// Create a copy of NotificationEvent
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? topic = null,}) {
-  return _then(_UnsubscribeFromTopicRequested(
+  return _then(NotificationUnsubscribeFromTopicRequested(
 null == topic ? _self.topic : topic // ignore: cast_nullable_to_non_nullable
 as String,
   ));
@@ -362,8 +362,8 @@ as String,
 /// @nodoc
 
 
-class _MessageReceived implements NotificationEvent {
-  const _MessageReceived(this.message);
+class NotificationMessageReceived implements NotificationEvent {
+  const NotificationMessageReceived(this.message);
   
 
  final  NotificationMessage message;
@@ -372,13 +372,13 @@ class _MessageReceived implements NotificationEvent {
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-_$MessageReceivedCopyWith<_MessageReceived> get copyWith => __$MessageReceivedCopyWithImpl<_MessageReceived>(this, _$identity);
+$NotificationMessageReceivedCopyWith<NotificationMessageReceived> get copyWith => _$NotificationMessageReceivedCopyWithImpl<NotificationMessageReceived>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _MessageReceived&&(identical(other.message, message) || other.message == message));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is NotificationMessageReceived&&(identical(other.message, message) || other.message == message));
 }
 
 
@@ -394,8 +394,8 @@ String toString() {
 }
 
 /// @nodoc
-abstract mixin class _$MessageReceivedCopyWith<$Res> implements $NotificationEventCopyWith<$Res> {
-  factory _$MessageReceivedCopyWith(_MessageReceived value, $Res Function(_MessageReceived) _then) = __$MessageReceivedCopyWithImpl;
+abstract mixin class $NotificationMessageReceivedCopyWith<$Res> implements $NotificationEventCopyWith<$Res> {
+  factory $NotificationMessageReceivedCopyWith(NotificationMessageReceived value, $Res Function(NotificationMessageReceived) _then) = _$NotificationMessageReceivedCopyWithImpl;
 @useResult
 $Res call({
  NotificationMessage message
@@ -406,17 +406,17 @@ $NotificationMessageCopyWith<$Res> get message;
 
 }
 /// @nodoc
-class __$MessageReceivedCopyWithImpl<$Res>
-    implements _$MessageReceivedCopyWith<$Res> {
-  __$MessageReceivedCopyWithImpl(this._self, this._then);
+class _$NotificationMessageReceivedCopyWithImpl<$Res>
+    implements $NotificationMessageReceivedCopyWith<$Res> {
+  _$NotificationMessageReceivedCopyWithImpl(this._self, this._then);
 
-  final _MessageReceived _self;
-  final $Res Function(_MessageReceived) _then;
+  final NotificationMessageReceived _self;
+  final $Res Function(NotificationMessageReceived) _then;
 
 /// Create a copy of NotificationEvent
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? message = null,}) {
-  return _then(_MessageReceived(
+  return _then(NotificationMessageReceived(
 null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
 as NotificationMessage,
   ));
@@ -437,8 +437,8 @@ $NotificationMessageCopyWith<$Res> get message {
 /// @nodoc
 
 
-class _Reset implements NotificationEvent {
-  const _Reset();
+class NotificationReset implements NotificationEvent {
+  const NotificationReset();
   
 
 
@@ -448,7 +448,7 @@ class _Reset implements NotificationEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Reset);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is NotificationReset);
 }
 
 
@@ -510,14 +510,14 @@ extension NotificationStatePatterns on NotificationState {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Initial value)?  initial,TResult Function( _Loading value)?  loading,TResult Function( _Success value)?  success,TResult Function( _Failure value)?  failure,TResult Function( _MessageReceivedState value)?  messageReceivedState,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( NotificationInitial value)?  initial,TResult Function( NotificationLoading value)?  loading,TResult Function( NotificationSuccess value)?  success,TResult Function( NotificationFailure value)?  failure,TResult Function( NotificationMessageReceivedState value)?  messageReceivedState,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
-case _Initial() when initial != null:
-return initial(_that);case _Loading() when loading != null:
-return loading(_that);case _Success() when success != null:
-return success(_that);case _Failure() when failure != null:
-return failure(_that);case _MessageReceivedState() when messageReceivedState != null:
+case NotificationInitial() when initial != null:
+return initial(_that);case NotificationLoading() when loading != null:
+return loading(_that);case NotificationSuccess() when success != null:
+return success(_that);case NotificationFailure() when failure != null:
+return failure(_that);case NotificationMessageReceivedState() when messageReceivedState != null:
 return messageReceivedState(_that);case _:
   return orElse();
 
@@ -536,14 +536,14 @@ return messageReceivedState(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Initial value)  initial,required TResult Function( _Loading value)  loading,required TResult Function( _Success value)  success,required TResult Function( _Failure value)  failure,required TResult Function( _MessageReceivedState value)  messageReceivedState,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( NotificationInitial value)  initial,required TResult Function( NotificationLoading value)  loading,required TResult Function( NotificationSuccess value)  success,required TResult Function( NotificationFailure value)  failure,required TResult Function( NotificationMessageReceivedState value)  messageReceivedState,}){
 final _that = this;
 switch (_that) {
-case _Initial():
-return initial(_that);case _Loading():
-return loading(_that);case _Success():
-return success(_that);case _Failure():
-return failure(_that);case _MessageReceivedState():
+case NotificationInitial():
+return initial(_that);case NotificationLoading():
+return loading(_that);case NotificationSuccess():
+return success(_that);case NotificationFailure():
+return failure(_that);case NotificationMessageReceivedState():
 return messageReceivedState(_that);case _:
   throw StateError('Unexpected subclass');
 
@@ -561,14 +561,14 @@ return messageReceivedState(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Initial value)?  initial,TResult? Function( _Loading value)?  loading,TResult? Function( _Success value)?  success,TResult? Function( _Failure value)?  failure,TResult? Function( _MessageReceivedState value)?  messageReceivedState,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( NotificationInitial value)?  initial,TResult? Function( NotificationLoading value)?  loading,TResult? Function( NotificationSuccess value)?  success,TResult? Function( NotificationFailure value)?  failure,TResult? Function( NotificationMessageReceivedState value)?  messageReceivedState,}){
 final _that = this;
 switch (_that) {
-case _Initial() when initial != null:
-return initial(_that);case _Loading() when loading != null:
-return loading(_that);case _Success() when success != null:
-return success(_that);case _Failure() when failure != null:
-return failure(_that);case _MessageReceivedState() when messageReceivedState != null:
+case NotificationInitial() when initial != null:
+return initial(_that);case NotificationLoading() when loading != null:
+return loading(_that);case NotificationSuccess() when success != null:
+return success(_that);case NotificationFailure() when failure != null:
+return failure(_that);case NotificationMessageReceivedState() when messageReceivedState != null:
 return messageReceivedState(_that);case _:
   return null;
 
@@ -588,11 +588,11 @@ return messageReceivedState(_that);case _:
 
 @optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( String? fcmToken)?  success,TResult Function( String message)?  failure,TResult Function( NotificationMessage message)?  messageReceivedState,required TResult orElse(),}) {final _that = this;
 switch (_that) {
-case _Initial() when initial != null:
-return initial();case _Loading() when loading != null:
-return loading();case _Success() when success != null:
-return success(_that.fcmToken);case _Failure() when failure != null:
-return failure(_that.message);case _MessageReceivedState() when messageReceivedState != null:
+case NotificationInitial() when initial != null:
+return initial();case NotificationLoading() when loading != null:
+return loading();case NotificationSuccess() when success != null:
+return success(_that.fcmToken);case NotificationFailure() when failure != null:
+return failure(_that.message);case NotificationMessageReceivedState() when messageReceivedState != null:
 return messageReceivedState(_that.message);case _:
   return orElse();
 
@@ -613,11 +613,11 @@ return messageReceivedState(_that.message);case _:
 
 @optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( String? fcmToken)  success,required TResult Function( String message)  failure,required TResult Function( NotificationMessage message)  messageReceivedState,}) {final _that = this;
 switch (_that) {
-case _Initial():
-return initial();case _Loading():
-return loading();case _Success():
-return success(_that.fcmToken);case _Failure():
-return failure(_that.message);case _MessageReceivedState():
+case NotificationInitial():
+return initial();case NotificationLoading():
+return loading();case NotificationSuccess():
+return success(_that.fcmToken);case NotificationFailure():
+return failure(_that.message);case NotificationMessageReceivedState():
 return messageReceivedState(_that.message);case _:
   throw StateError('Unexpected subclass');
 
@@ -637,11 +637,11 @@ return messageReceivedState(_that.message);case _:
 
 @optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( String? fcmToken)?  success,TResult? Function( String message)?  failure,TResult? Function( NotificationMessage message)?  messageReceivedState,}) {final _that = this;
 switch (_that) {
-case _Initial() when initial != null:
-return initial();case _Loading() when loading != null:
-return loading();case _Success() when success != null:
-return success(_that.fcmToken);case _Failure() when failure != null:
-return failure(_that.message);case _MessageReceivedState() when messageReceivedState != null:
+case NotificationInitial() when initial != null:
+return initial();case NotificationLoading() when loading != null:
+return loading();case NotificationSuccess() when success != null:
+return success(_that.fcmToken);case NotificationFailure() when failure != null:
+return failure(_that.message);case NotificationMessageReceivedState() when messageReceivedState != null:
 return messageReceivedState(_that.message);case _:
   return null;
 
@@ -653,8 +653,8 @@ return messageReceivedState(_that.message);case _:
 /// @nodoc
 
 
-class _Initial implements NotificationState {
-  const _Initial();
+class NotificationInitial implements NotificationState {
+  const NotificationInitial();
   
 
 
@@ -664,7 +664,7 @@ class _Initial implements NotificationState {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Initial);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is NotificationInitial);
 }
 
 
@@ -685,8 +685,8 @@ String toString() {
 /// @nodoc
 
 
-class _Loading implements NotificationState {
-  const _Loading();
+class NotificationLoading implements NotificationState {
+  const NotificationLoading();
   
 
 
@@ -696,7 +696,7 @@ class _Loading implements NotificationState {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Loading);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is NotificationLoading);
 }
 
 
@@ -717,8 +717,8 @@ String toString() {
 /// @nodoc
 
 
-class _Success implements NotificationState {
-  const _Success(this.fcmToken);
+class NotificationSuccess implements NotificationState {
+  const NotificationSuccess(this.fcmToken);
   
 
  final  String? fcmToken;
@@ -727,13 +727,13 @@ class _Success implements NotificationState {
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-_$SuccessCopyWith<_Success> get copyWith => __$SuccessCopyWithImpl<_Success>(this, _$identity);
+$NotificationSuccessCopyWith<NotificationSuccess> get copyWith => _$NotificationSuccessCopyWithImpl<NotificationSuccess>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Success&&(identical(other.fcmToken, fcmToken) || other.fcmToken == fcmToken));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is NotificationSuccess&&(identical(other.fcmToken, fcmToken) || other.fcmToken == fcmToken));
 }
 
 
@@ -749,8 +749,8 @@ String toString() {
 }
 
 /// @nodoc
-abstract mixin class _$SuccessCopyWith<$Res> implements $NotificationStateCopyWith<$Res> {
-  factory _$SuccessCopyWith(_Success value, $Res Function(_Success) _then) = __$SuccessCopyWithImpl;
+abstract mixin class $NotificationSuccessCopyWith<$Res> implements $NotificationStateCopyWith<$Res> {
+  factory $NotificationSuccessCopyWith(NotificationSuccess value, $Res Function(NotificationSuccess) _then) = _$NotificationSuccessCopyWithImpl;
 @useResult
 $Res call({
  String? fcmToken
@@ -761,17 +761,17 @@ $Res call({
 
 }
 /// @nodoc
-class __$SuccessCopyWithImpl<$Res>
-    implements _$SuccessCopyWith<$Res> {
-  __$SuccessCopyWithImpl(this._self, this._then);
+class _$NotificationSuccessCopyWithImpl<$Res>
+    implements $NotificationSuccessCopyWith<$Res> {
+  _$NotificationSuccessCopyWithImpl(this._self, this._then);
 
-  final _Success _self;
-  final $Res Function(_Success) _then;
+  final NotificationSuccess _self;
+  final $Res Function(NotificationSuccess) _then;
 
 /// Create a copy of NotificationState
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? fcmToken = freezed,}) {
-  return _then(_Success(
+  return _then(NotificationSuccess(
 freezed == fcmToken ? _self.fcmToken : fcmToken // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
@@ -783,8 +783,8 @@ as String?,
 /// @nodoc
 
 
-class _Failure implements NotificationState {
-  const _Failure(this.message);
+class NotificationFailure implements NotificationState {
+  const NotificationFailure(this.message);
   
 
  final  String message;
@@ -793,13 +793,13 @@ class _Failure implements NotificationState {
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-_$FailureCopyWith<_Failure> get copyWith => __$FailureCopyWithImpl<_Failure>(this, _$identity);
+$NotificationFailureCopyWith<NotificationFailure> get copyWith => _$NotificationFailureCopyWithImpl<NotificationFailure>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Failure&&(identical(other.message, message) || other.message == message));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is NotificationFailure&&(identical(other.message, message) || other.message == message));
 }
 
 
@@ -815,8 +815,8 @@ String toString() {
 }
 
 /// @nodoc
-abstract mixin class _$FailureCopyWith<$Res> implements $NotificationStateCopyWith<$Res> {
-  factory _$FailureCopyWith(_Failure value, $Res Function(_Failure) _then) = __$FailureCopyWithImpl;
+abstract mixin class $NotificationFailureCopyWith<$Res> implements $NotificationStateCopyWith<$Res> {
+  factory $NotificationFailureCopyWith(NotificationFailure value, $Res Function(NotificationFailure) _then) = _$NotificationFailureCopyWithImpl;
 @useResult
 $Res call({
  String message
@@ -827,17 +827,17 @@ $Res call({
 
 }
 /// @nodoc
-class __$FailureCopyWithImpl<$Res>
-    implements _$FailureCopyWith<$Res> {
-  __$FailureCopyWithImpl(this._self, this._then);
+class _$NotificationFailureCopyWithImpl<$Res>
+    implements $NotificationFailureCopyWith<$Res> {
+  _$NotificationFailureCopyWithImpl(this._self, this._then);
 
-  final _Failure _self;
-  final $Res Function(_Failure) _then;
+  final NotificationFailure _self;
+  final $Res Function(NotificationFailure) _then;
 
 /// Create a copy of NotificationState
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? message = null,}) {
-  return _then(_Failure(
+  return _then(NotificationFailure(
 null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
 as String,
   ));
@@ -849,8 +849,8 @@ as String,
 /// @nodoc
 
 
-class _MessageReceivedState implements NotificationState {
-  const _MessageReceivedState(this.message);
+class NotificationMessageReceivedState implements NotificationState {
+  const NotificationMessageReceivedState(this.message);
   
 
  final  NotificationMessage message;
@@ -859,13 +859,13 @@ class _MessageReceivedState implements NotificationState {
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-_$MessageReceivedStateCopyWith<_MessageReceivedState> get copyWith => __$MessageReceivedStateCopyWithImpl<_MessageReceivedState>(this, _$identity);
+$NotificationMessageReceivedStateCopyWith<NotificationMessageReceivedState> get copyWith => _$NotificationMessageReceivedStateCopyWithImpl<NotificationMessageReceivedState>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _MessageReceivedState&&(identical(other.message, message) || other.message == message));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is NotificationMessageReceivedState&&(identical(other.message, message) || other.message == message));
 }
 
 
@@ -881,8 +881,8 @@ String toString() {
 }
 
 /// @nodoc
-abstract mixin class _$MessageReceivedStateCopyWith<$Res> implements $NotificationStateCopyWith<$Res> {
-  factory _$MessageReceivedStateCopyWith(_MessageReceivedState value, $Res Function(_MessageReceivedState) _then) = __$MessageReceivedStateCopyWithImpl;
+abstract mixin class $NotificationMessageReceivedStateCopyWith<$Res> implements $NotificationStateCopyWith<$Res> {
+  factory $NotificationMessageReceivedStateCopyWith(NotificationMessageReceivedState value, $Res Function(NotificationMessageReceivedState) _then) = _$NotificationMessageReceivedStateCopyWithImpl;
 @useResult
 $Res call({
  NotificationMessage message
@@ -893,17 +893,17 @@ $NotificationMessageCopyWith<$Res> get message;
 
 }
 /// @nodoc
-class __$MessageReceivedStateCopyWithImpl<$Res>
-    implements _$MessageReceivedStateCopyWith<$Res> {
-  __$MessageReceivedStateCopyWithImpl(this._self, this._then);
+class _$NotificationMessageReceivedStateCopyWithImpl<$Res>
+    implements $NotificationMessageReceivedStateCopyWith<$Res> {
+  _$NotificationMessageReceivedStateCopyWithImpl(this._self, this._then);
 
-  final _MessageReceivedState _self;
-  final $Res Function(_MessageReceivedState) _then;
+  final NotificationMessageReceivedState _self;
+  final $Res Function(NotificationMessageReceivedState) _then;
 
 /// Create a copy of NotificationState
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? message = null,}) {
-  return _then(_MessageReceivedState(
+  return _then(NotificationMessageReceivedState(
 null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
 as NotificationMessage,
   ));

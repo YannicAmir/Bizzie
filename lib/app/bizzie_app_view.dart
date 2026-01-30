@@ -69,12 +69,15 @@ class _BizzieAppViewState extends State<BizzieAppView> {
           final isFromCreateAccount = currentPath == AppRoutes.createAccount;
 
           context.read<UserBloc>().add(
-            UserEvent.loadUser(state.user.id, silent: isFromCreateAccount),
+            UserEvent.loadUser(uid: state.user.id, silent: isFromCreateAccount),
           );
           context.read<WatchlistBloc>().add(
             const WatchlistEvent.loadRequested(),
           );
           context.read<ReportsBloc>().add(const ReportsEvent.started());
+          context.read<NotificationBloc>().add(
+            const NotificationEvent.setupRequested(),
+          );
         },
       );
     }
@@ -100,12 +103,15 @@ class _BizzieAppViewState extends State<BizzieAppView> {
             final isFromCreateAccount = currentPath == AppRoutes.createAccount;
 
             context.read<UserBloc>().add(
-              UserEvent.loadUser(user.id, silent: isFromCreateAccount),
+              UserEvent.loadUser(uid: user.id, silent: isFromCreateAccount),
             );
             context.read<WatchlistBloc>().add(
               const WatchlistEvent.loadRequested(),
             );
             context.read<ReportsBloc>().add(const ReportsEvent.started());
+            context.read<NotificationBloc>().add(
+              const NotificationEvent.setupRequested(),
+            );
           },
           unauthenticated: () {
             context.read<UserBloc>().add(const UserEvent.clear());

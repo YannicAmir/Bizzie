@@ -27,7 +27,7 @@ class _ProfileReadyPageState extends State<ProfileReadyPage> {
     final authState = context.read<AuthBloc>().state;
     authState.mapOrNull(
       authenticated: (u) => context.read<UserBloc>().add(
-        UserEvent.loadUser(u.user.id, silent: true),
+        UserEvent.loadUser(uid: u.user.id, silent: true),
       ),
     );
   }

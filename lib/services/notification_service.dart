@@ -42,14 +42,28 @@ class NotificationService implements INotificationService {
       },
     );
 
+    await FirebaseMessaging.instance
+        .setForegroundNotificationPresentationOptions(
+          alert: true,
+          badge: true,
+          sound: true,
+        );
+
     _notificationRepository.onMessage.listen((message) {
+      _logger.info(
+        'Foreground message received: ${message.title} - ${message.body}',
+      );
       if (message.title.isNotEmpty || message.body.isNotEmpty) {
-        _logger.info('Received message, showing local notification');
+        _logger.info('Showing local notification for foreground message');
         _localNotificationDataSource.showNotification(
           id: DateTime.now().millisecondsSinceEpoch ~/ 1000,
           title: message.title,
           body: message.body,
           payload: message.data.toString(),
+        );
+      } else {
+        _logger.warning(
+          'Received foreground message with empty title and body',
         );
       }
     });

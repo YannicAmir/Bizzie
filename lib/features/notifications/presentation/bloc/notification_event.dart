@@ -1,13 +1,13 @@
 part of 'notification_bloc.dart';
 
 @freezed
-class NotificationEvent with _$NotificationEvent {
-  const factory NotificationEvent.setupRequested() = _SetupRequested;
+abstract class NotificationEvent with _$NotificationEvent {
+  const factory NotificationEvent.setupRequested() = NotificationSetupRequested;
   const factory NotificationEvent.subscribeToTopicRequested(String topic) =
-      _SubscribeToTopicRequested;
+      NotificationSubscribeToTopicRequested;
   const factory NotificationEvent.unsubscribeFromTopicRequested(String topic) =
-      _UnsubscribeFromTopicRequested;
+      NotificationUnsubscribeFromTopicRequested;
   const factory NotificationEvent.messageReceived(NotificationMessage message) =
-      _MessageReceived;
-  const factory NotificationEvent.reset() = _Reset;
+      NotificationMessageReceived;
+  const factory NotificationEvent.reset() = NotificationReset;
 }

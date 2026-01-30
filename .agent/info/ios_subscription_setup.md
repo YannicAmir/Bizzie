@@ -93,13 +93,19 @@ This is the "Master Key" that allows RevenueCat to verify subscriptions securely
     - **App Store Package Name**: Your Bundle ID (e.g., `com.yannicamir.bizzie`).
     - **App Store Connect Shared Secret**: Paste the secret generated in Step 1C.
 
-### B. Finding your API Key (REVENUECAT_PUBLIC_API_KEY_IOS)
-To get your public API key for the app:
-1. In the RevenueCat Dashboard, select your project (**Bizzie**).
-2. Click on **Project Settings** (gear icon) in the left sidebar.
-3. Click on **API Keys**.
-4. You will see a section labeled **Public API Keys**.
-5. Copy the key titled **App Store** (it usually starts with `appl_...`). This is your `REVENUECAT_PUBLIC_API_KEY_IOS`.
+### B. Finding your API Keys (REVENUECAT_PUBLIC_API_KEY_IOS)
+Based on your dashboard (Jan 29, 2026), here are the keys for each environment. You should use **Public SDK Keys** for the Flutter app.
+
+| Environment | RevenueCat App Name | Public SDK Key (appl_...) |
+| :--- | :--- | :--- |
+| **Dev** | `Bizzie (Dev)` | `dev_api_key` |
+| **QA** | `Bizzie (QA)` | `qa_api_key` |
+| **Prod** | `Bizzie: Stock Market Companion` | `prod_api_key` |
+
+> [!IMPORTANT]
+> **What about "Secret API Keys"?**
+> - **Public SDK Keys**: Used in the Flutter app. They only allow non-sensitive actions like making purchases and fetching offerings.
+> - **Secret API Keys**: Used ONLY for server-side code (e.g., Cloud Functions). You should generate one if your backend needs to call the RevenueCat REST API directly (e.g., to override a subscription). **NEVER** put a Secret API Key in the Flutter code or Git.
 
 ### C. Adding Multiple Flavors (Dev, QA, Prod Bundle IDs)
 Since your project uses flavors, you need to tell RevenueCat about all of them so they all "agree" on the same products.

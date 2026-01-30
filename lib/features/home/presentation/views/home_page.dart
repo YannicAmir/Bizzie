@@ -40,9 +40,9 @@ class _HomePageState extends State<HomePage> {
           listener: (context, state) {
             state.maybeWhen(
               authenticated: (_) {},
-              failure: (message) => ScaffoldMessenger.of(
+              failure: (failure) => ScaffoldMessenger.of(
                 context,
-              ).showSnackBar(SnackBar(content: Text(message))),
+              ).showSnackBar(SnackBar(content: Text(failure.message))),
               orElse: () => null,
             );
           },

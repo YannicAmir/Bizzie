@@ -27,10 +27,10 @@ class CreateAccountPage extends StatelessWidget {
           authenticated: (user) {
             context.go(AppRoutes.onboardingBuildingProfile);
           },
-          failure: (message) {
+          failure: (failure) {
             ScaffoldMessenger.of(
               context,
-            ).showSnackBar(SnackBar(content: Text(message)));
+            ).showSnackBar(SnackBar(content: Text(failure.message)));
           },
           orElse: () {},
         );

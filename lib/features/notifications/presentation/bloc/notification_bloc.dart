@@ -33,14 +33,16 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
     this._subscribeToTopic,
     this._unsubscribeFromTopic,
   ) : super(const NotificationState.initial()) {
-    on<_SetupRequested>(_onSetupRequested);
-    on<_SubscribeToTopicRequested>(_onSubscribeToTopicRequested);
-    on<_UnsubscribeFromTopicRequested>(_onUnsubscribeFromTopicRequested);
-    on<_MessageReceived>(_onMessageReceived);
-    on<_Reset>(_onReset);
+    on<NotificationSetupRequested>(_onSetupRequested);
+    on<NotificationSubscribeToTopicRequested>(_onSubscribeToTopicRequested);
+    on<NotificationUnsubscribeFromTopicRequested>(
+      _onUnsubscribeFromTopicRequested,
+    );
+    on<NotificationMessageReceived>(_onMessageReceived);
+    on<NotificationReset>(_onReset);
   }
 
-  void _onReset(_Reset event, Emitter<NotificationState> emit) {
+  void _onReset(NotificationReset event, Emitter<NotificationState> emit) {
     _logger.info('Resetting NotificationBloc - canceling subscription');
     _messageSubscription?.cancel();
     _messageSubscription = null;
@@ -48,7 +50,7 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
   }
 
   Future<void> _onSetupRequested(
-    _SetupRequested event,
+    NotificationSetupRequested event,
     Emitter<NotificationState> emit,
   ) async {
     emit(const NotificationState.loading());
@@ -83,7 +85,7 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
   }
 
   Future<void> _onSubscribeToTopicRequested(
-    _SubscribeToTopicRequested event,
+    NotificationSubscribeToTopicRequested event,
     Emitter<NotificationState> emit,
   ) async {
     final result = await _subscribeToTopic(event.topic);
@@ -96,7 +98,7 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
   }
 
   Future<void> _onUnsubscribeFromTopicRequested(
-    _UnsubscribeFromTopicRequested event,
+    NotificationUnsubscribeFromTopicRequested event,
     Emitter<NotificationState> emit,
   ) async {
     final result = await _unsubscribeFromTopic(event.topic);
@@ -109,9 +111,10 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
   }
 
   void _onMessageReceived(
-    _MessageReceived event,
+    NotificationMessageReceived event,
     Emitter<NotificationState> emit,
   ) {
+    _logger.info('MessageReceived event: ${event.message.title}');
     emit(NotificationState.messageReceivedState(event.message));
   }
 

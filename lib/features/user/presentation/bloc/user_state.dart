@@ -1,14 +1,14 @@
 part of 'user_bloc.dart';
 
 @freezed
-class UserState with _$UserState {
-  const factory UserState.initial() = _Initial;
-  const factory UserState.loading({String? cachedSector}) = _Loading;
-  const factory UserState.loaded(UserModel user) = _Loaded;
-  const factory UserState.needsProfile() = _NeedsProfile;
+abstract class UserState with _$UserState {
+  const factory UserState.initial() = UserInitial;
+  const factory UserState.loading({String? cachedSector}) = UserLoading;
+  const factory UserState.loaded(UserModel user) = UserLoaded;
+  const factory UserState.needsProfile() = UserNeedsProfile;
   const factory UserState.failure(
-    String message, {
+    Failure failure, {
     required String uid,
     String? cachedSector,
-  }) = _Failure;
+  }) = UserFailure;
 }

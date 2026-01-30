@@ -1,6 +1,7 @@
 import 'package:bizzie/features/reports/domain/models/reports_feed.dart';
 import 'package:bizzie/features/reports/presentation/models/filing_view_model.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:bizzie/core/error/failures.dart';
 
 part 'reports_state.freezed.dart';
 
@@ -13,5 +14,5 @@ class ReportsState with _$ReportsState {
     DateTime? lastViewedReports,
     @Default([]) List<FilingViewModel> todaysFilings,
   }) = Loaded;
-  const factory ReportsState.failure(String message) = ReportsFailure;
+  const factory ReportsState.failure(Failure failure) = ReportsFailure;
 }

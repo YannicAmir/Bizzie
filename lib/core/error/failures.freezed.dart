@@ -211,8 +211,8 @@ return userNotFound(_that.message);case _:
 /// @nodoc
 
 
-class ServerFailure implements Failure {
-  const ServerFailure(this.message);
+class ServerFailure extends Failure {
+  const ServerFailure(this.message): super._();
   
 
 @override final  String message;
@@ -277,8 +277,8 @@ as String,
 /// @nodoc
 
 
-class CacheFailure implements Failure {
-  const CacheFailure(this.message);
+class CacheFailure extends Failure {
+  const CacheFailure(this.message): super._();
   
 
 @override final  String message;
@@ -343,8 +343,8 @@ as String,
 /// @nodoc
 
 
-class UserNotFoundFailure implements Failure {
-  const UserNotFoundFailure([this.message = 'User not found']);
+class UserNotFoundFailure extends Failure {
+  const UserNotFoundFailure([this.message = 'User not found']): super._();
   
 
 @override@JsonKey() final  String message;

@@ -1,4 +1,5 @@
 import 'package:bizzie/core/logging/bizzie_logger.dart';
+import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/features/auth/domain/interfaces/i_auth_repository.dart';
 import 'package:bizzie/features/reports/domain/models/financial_report.dart';
 import 'package:bizzie/features/reports/domain/models/reports_feed.dart';
@@ -54,7 +55,7 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
   Future<void> _onStarted(Started event, Emitter<ReportsState> emit) async {
     final uid = _uid;
     if (uid == null) {
-      emit(const ReportsState.failure("User not authenticated"));
+      emit(ReportsState.failure(Failure.server("User not authenticated")));
       return;
     }
 
@@ -123,43 +124,40 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
     ReportsUpdated event,
     Emitter<ReportsState> emit,
   ) async {
-    event.result.fold(
-      (failure) => emit(ReportsState.failure(failure.message)),
-      (feed) {
-        final currentLastViewed =
-            _lastViewedReports ??
-            state.mapOrNull(loaded: (s) => s.lastViewedReports);
+    event.result.fold((failure) => emit(ReportsState.failure(failure)), (feed) {
+      final currentLastViewed =
+          _lastViewedReports ??
+          state.mapOrNull(loaded: (s) => s.lastViewedReports);
 
-        final now = DateTime.now();
-        final todaysFilings = feed.filings
-            .where((f) {
-              return f.createdAt != null &&
-                  f.createdAt!.year == now.year &&
-                  f.createdAt!.month == now.month &&
-                  f.createdAt!.day == now.day;
-            })
-            .map((filing) {
-              final report = feed.currentReports
-                  .cast<FinancialReport?>()
-                  .firstWhere(
-                    (r) =>
-                        r?.ticker == filing.symbol &&
-                        r?.formType == filing.formType,
-                    orElse: () => null,
-                  );
-              return FilingViewModel(filing: filing, report: report);
-            })
-            .toList();
+      final now = DateTime.now();
+      final todaysFilings = feed.filings
+          .where((f) {
+            return f.createdAt != null &&
+                f.createdAt!.year == now.year &&
+                f.createdAt!.month == now.month &&
+                f.createdAt!.day == now.day;
+          })
+          .map((filing) {
+            final report = feed.currentReports
+                .cast<FinancialReport?>()
+                .firstWhere(
+                  (r) =>
+                      r?.ticker == filing.symbol &&
+                      r?.formType == filing.formType,
+                  orElse: () => null,
+                );
+            return FilingViewModel(filing: filing, report: report);
+          })
+          .toList();
 
-        emit(
-          ReportsState.loaded(
-            feed,
-            lastViewedReports: currentLastViewed,
-            todaysFilings: todaysFilings,
-          ),
-        );
-      },
-    );
+      emit(
+        ReportsState.loaded(
+          feed,
+          lastViewedReports: currentLastViewed,
+          todaysFilings: todaysFilings,
+        ),
+      );
+    });
   }
 
   Future<void> _onRefresh(Refresh event, Emitter<ReportsState> emit) async {

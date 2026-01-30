@@ -22,6 +22,15 @@ class AuthRepositoryImpl implements IAuthRepository {
   });
 
   @override
+  Future<void> initialize() async {
+    try {
+      await remoteDataSource.initialize();
+    } catch (e, s) {
+      _logger.severe('Auth initialization failed', e, s);
+    }
+  }
+
+  @override
   Stream<UserModel?> get authStateChanges {
     return remoteDataSource.authStateChanges.map((firebaseUser) {
       if (firebaseUser == null) return null;

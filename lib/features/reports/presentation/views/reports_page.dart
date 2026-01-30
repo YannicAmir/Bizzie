@@ -51,7 +51,7 @@ class _ReportsPageState extends State<ReportsPage> {
           builder: (context, state) {
             return state.maybeWhen(
               loading: () => const Center(child: CircularProgressIndicator()),
-              failure: (message) => BlocBuilder<UserBloc, UserState>(
+              failure: (failure) => BlocBuilder<UserBloc, UserState>(
                 builder: (context, userState) {
                   final mascot = userState.maybeMap(
                     loaded: (u) =>
