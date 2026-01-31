@@ -18,6 +18,7 @@ class NotificationService implements INotificationService {
   final INotificationRepository _notificationRepository;
   final LocalNotificationDataSource _localNotificationDataSource;
   final DeviceInfoPlugin _deviceInfo;
+  final FirebaseMessaging _firebaseMessaging;
 
   final _routeController = StreamController<NotificationRoute>.broadcast();
 
@@ -25,6 +26,7 @@ class NotificationService implements INotificationService {
     this._notificationRepository,
     this._localNotificationDataSource,
     this._deviceInfo,
+    this._firebaseMessaging,
   );
 
   @PostConstruct(preResolve: true)
@@ -42,12 +44,11 @@ class NotificationService implements INotificationService {
       },
     );
 
-    await FirebaseMessaging.instance
-        .setForegroundNotificationPresentationOptions(
-          alert: true,
-          badge: true,
-          sound: true,
-        );
+    await _firebaseMessaging.setForegroundNotificationPresentationOptions(
+      alert: false,
+      badge: true,
+      sound: true,
+    );
 
     _notificationRepository.onMessage.listen((message) {
       _logger.info(
@@ -128,7 +129,7 @@ class NotificationService implements INotificationService {
 
   @override
   Future<NotificationRoute?> getInitialRoute() async {
-    final initialMessage = await FirebaseMessaging.instance.getInitialMessage();
+    final initialMessage = await _firebaseMessaging.getInitialMessage();
     if (initialMessage != null) {
       _logger.info('App opened from terminated state by notification');
       return _parseMessage(initialMessage);

@@ -4,6 +4,7 @@ import 'package:bizzie/features/notifications/data/datasources/local_notificatio
 import 'package:bizzie/features/notifications/domain/interfaces/i_notification_repository.dart';
 import 'package:bizzie/features/notifications/domain/models/notification_message.dart';
 import 'package:bizzie/services/notification_service.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:dartz/dartz.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -17,26 +18,40 @@ class MockLocalNotificationDataSource extends Mock
 
 class MockDeviceInfoPlugin extends Mock implements DeviceInfoPlugin {}
 
+class MockFirebaseMessaging extends Mock implements FirebaseMessaging {}
+
 void main() {
   late NotificationService service;
   late MockINotificationRepository mockRepository;
   late MockLocalNotificationDataSource mockLocalDataSource;
   late MockDeviceInfoPlugin mockDeviceInfo;
+  late MockFirebaseMessaging mockFirebaseMessaging;
 
   setUp(() {
     mockRepository = MockINotificationRepository();
     mockLocalDataSource = MockLocalNotificationDataSource();
     mockDeviceInfo = MockDeviceInfoPlugin();
+    mockFirebaseMessaging = MockFirebaseMessaging();
 
     // Stub onMessage to prevent null pointer in init()
     when(
       () => mockRepository.onMessage,
     ).thenAnswer((_) => const Stream.empty());
 
+    // Stub FirebaseMessaging methods
+    when(
+      () => mockFirebaseMessaging.setForegroundNotificationPresentationOptions(
+        alert: false,
+        badge: any(named: 'badge'),
+        sound: any(named: 'sound'),
+      ),
+    ).thenAnswer((_) async {});
+
     service = NotificationService(
       mockRepository,
       mockLocalDataSource,
       mockDeviceInfo,
+      mockFirebaseMessaging,
     );
   });
 
@@ -124,6 +139,7 @@ void main() {
         mockRepository,
         mockLocalDataSource,
         mockDeviceInfo,
+        mockFirebaseMessaging,
       );
 
       await service.initialize();

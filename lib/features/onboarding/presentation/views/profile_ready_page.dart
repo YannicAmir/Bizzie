@@ -141,7 +141,7 @@ class _ContinueButton extends StatelessWidget {
       height: 56,
       child: BizziePrimaryButton(
         onPressed: () {
-          context.go(AppRoutes.home);
+          context.go('${AppRoutes.paywall}?animate=false');
         },
         title: 'Continue',
       ),

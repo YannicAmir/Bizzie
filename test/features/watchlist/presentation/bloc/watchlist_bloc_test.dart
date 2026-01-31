@@ -86,7 +86,7 @@ void main() {
         ).thenAnswer((_) async => Stream.value(const Right([])));
         return bloc;
       },
-      act: (bloc) => bloc.add(const WatchlistEvent.loadRequested()),
+      act: (bloc) => bloc.add(const WatchlistEvent.loadRequested(uid: tUid)),
       expect: () => [
         const WatchlistState.loading(),
         const WatchlistState.loaded([]),
@@ -114,7 +114,7 @@ void main() {
         );
         return bloc;
       },
-      act: (bloc) => bloc.add(const WatchlistEvent.loadRequested()),
+      act: (bloc) => bloc.add(const WatchlistEvent.loadRequested(uid: tUid)),
       expect: () => [
         const WatchlistState.loading(),
         const WatchlistState.failure(Failure.server('Error')),

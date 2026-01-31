@@ -40,6 +40,11 @@ import 'package:bizzie/di/injection.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:async/async.dart';
 
+import 'package:bizzie/features/subscription/presentation/bloc/subscription_bloc.dart';
+import 'package:bizzie/features/subscription/presentation/bloc/subscription_event.dart';
+import 'package:bizzie/features/subscription/presentation/views/discounted_subscription_page.dart';
+import 'package:bizzie/features/subscription/presentation/views/subscription_page.dart';
+
 GoRouter createRouter(
   AuthBloc authBloc,
   UserBloc userBloc, {
@@ -228,7 +233,58 @@ GoRouter createRouter(
           ),
         ],
       ),
+      _buildPaywallRoute(
+        path: AppRoutes.paywall,
+        child: const SubscriptionPage(),
+      ),
+      _buildPaywallRoute(
+        path: AppRoutes.discountedPaywall,
+        child: const DiscountedSubscriptionPage(),
+      ),
     ],
+  );
+}
+
+GoRoute _buildPaywallRoute({required String path, required Widget child}) {
+  return GoRoute(
+    path: path,
+    pageBuilder: (context, state) {
+      final animate = state.uri.queryParameters['animate'] != 'false';
+
+      final pageChild = BlocProvider<SubscriptionBloc>(
+        create: (_) =>
+            getIt<SubscriptionBloc>()
+              ..add(const SubscriptionEvent.initialized()),
+        child: child,
+      );
+
+      if (!animate) {
+        return NoTransitionPage(
+          key: state.pageKey,
+          name: state.name,
+          child: pageChild,
+        );
+      }
+
+      return CustomTransitionPage(
+        key: state.pageKey,
+        fullscreenDialog: true,
+        child: pageChild,
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          const begin = Offset(0.0, 1.0);
+          const end = Offset.zero;
+          const curve = Curves.easeInOut;
+          var tween = Tween(
+            begin: begin,
+            end: end,
+          ).chain(CurveTween(curve: curve));
+          return SlideTransition(
+            position: animation.drive(tween),
+            child: child,
+          );
+        },
+      );
+    },
   );
 }
 

@@ -53,12 +53,14 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
   String? get _uid => _authRepository.currentUser?.id;
 
   Future<void> _onStarted(Started event, Emitter<ReportsState> emit) async {
-    final uid = _uid;
+    final uid = event.uid ?? _uid;
     if (uid == null) {
+      _logger.warning('Started event without UID and repository UID is null');
       emit(ReportsState.failure(Failure.server("User not authenticated")));
       return;
     }
 
+    _logger.info('Starting ReportsBloc for UID: $uid');
     emit(const ReportsState.loading());
 
     final activityStream = _getUserActivityUseCase(uid);

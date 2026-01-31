@@ -12,10 +12,6 @@ class SyncIdentityUseCase extends UseCase<Either<Failure, void>, String?> {
 
   @override
   Future<Either<Failure, void>> call(String? uid) async {
-    if (uid != null) {
-      return _repository.logIn(uid);
-    } else {
-      return _repository.logOut();
-    }
+    return _repository.syncIdentity(uid);
   }
 }

@@ -106,4 +106,5 @@ class AppColors {
 
   // Tooltips
   static const Color tooltipBackground = Color(0xFF0F172B);
+  static const Color discountBadgeBackground = Color(0xFFD34F18);
 }

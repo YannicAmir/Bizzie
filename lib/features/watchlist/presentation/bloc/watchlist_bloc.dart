@@ -51,12 +51,16 @@ class WatchlistBloc extends Bloc<WatchlistEvent, WatchlistState> {
     LoadRequested event,
     Emitter<WatchlistState> emit,
   ) async {
-    final uid = _uid;
+    final uid = event.uid ?? _uid;
     if (uid == null) {
+      _logger.warning(
+        'LoadRequested event without UID and repository UID is null',
+      );
       emit(WatchlistState.failure(Failure.server("User not authenticated")));
       return;
     }
 
+    _logger.info('Loading watchlist for UID: $uid');
     emit(const WatchlistState.loading());
 
     final stream = await _getWatchlistUseCase(uid);

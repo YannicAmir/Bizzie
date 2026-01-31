@@ -299,6 +299,8 @@ import '../features/subscription/domain/interfaces/i_subscription_remote_data_so
     as _i971;
 import '../features/subscription/domain/interfaces/i_subscription_repository.dart'
     as _i659;
+import '../features/subscription/domain/usecases/get_offerings_use_case.dart'
+    as _i343;
 import '../features/subscription/domain/usecases/get_subscription_status_use_case.dart'
     as _i217;
 import '../features/subscription/domain/usecases/purchase_subscription_use_case.dart'
@@ -544,14 +546,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i200.UserBloc>(
       () => _i200.UserBloc(gh<_i561.GetUserUseCase>()),
     );
-    await gh.lazySingletonAsync<_i430.INotificationService>(() {
-      final i = _i941.NotificationService(
-        gh<_i622.INotificationRepository>(),
-        gh<_i982.LocalNotificationDataSource>(),
-        gh<_i833.DeviceInfoPlugin>(),
-      );
-      return i.initialize().then((_) => i);
-    }, preResolve: true);
     gh.lazySingleton<_i654.GetCompanyNewsUseCase>(
       () => _i654.GetCompanyNewsUseCase(gh<_i15.INewsRepository>()),
     );
@@ -573,6 +567,15 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i806.FinancialStatementsFirestoreDataSource>(),
       ),
     );
+    await gh.lazySingletonAsync<_i430.INotificationService>(() {
+      final i = _i941.NotificationService(
+        gh<_i622.INotificationRepository>(),
+        gh<_i982.LocalNotificationDataSource>(),
+        gh<_i833.DeviceInfoPlugin>(),
+        gh<_i892.FirebaseMessaging>(),
+      );
+      return i.initialize().then((_) => i);
+    }, preResolve: true);
     gh.lazySingleton<_i473.DividendsRemoteDataSource>(
       () => _i473.DividendsRemoteDataSourceImpl(
         gh<_i361.Dio>(instanceName: 'FmpDio'),
@@ -750,6 +753,9 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i608.IAiProductSearchRepository>(),
       ),
     );
+    gh.lazySingleton<_i343.GetOfferingsUseCase>(
+      () => _i343.GetOfferingsUseCase(gh<_i659.ISubscriptionRepository>()),
+    );
     gh.lazySingleton<_i217.GetSubscriptionStatusUseCase>(
       () => _i217.GetSubscriptionStatusUseCase(
         gh<_i659.ISubscriptionRepository>(),
@@ -908,6 +914,16 @@ extension GetItInjectableX on _i174.GetIt {
         deleteAccount: gh<_i739.DeleteAccount>(),
       ),
     );
+    gh.factory<_i1066.SubscriptionBloc>(
+      () => _i1066.SubscriptionBloc(
+        gh<_i630.WatchSubscriptionStatusUseCase>(),
+        gh<_i15.SyncIdentityUseCase>(),
+        gh<_i803.PurchaseSubscriptionUseCase>(),
+        gh<_i566.RestorePurchasesUseCase>(),
+        gh<_i343.GetOfferingsUseCase>(),
+        gh<_i59.AuthBloc>(),
+      ),
+    );
     gh.factory<_i191.FinancialStatementsBloc>(
       () => _i191.FinancialStatementsBloc(
         gh<_i204.GetIncomeStatementsUseCase>(),
@@ -930,15 +946,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i342.HistoricalPriceEodBloc>(
       () => _i342.HistoricalPriceEodBloc(
         gh<_i925.GetHistoricalEodPricesUseCase>(),
-      ),
-    );
-    gh.factory<_i1066.SubscriptionBloc>(
-      () => _i1066.SubscriptionBloc(
-        gh<_i630.WatchSubscriptionStatusUseCase>(),
-        gh<_i15.SyncIdentityUseCase>(),
-        gh<_i803.PurchaseSubscriptionUseCase>(),
-        gh<_i566.RestorePurchasesUseCase>(),
-        gh<_i59.AuthBloc>(),
       ),
     );
     gh.lazySingleton<_i872.IBusinessRepository>(

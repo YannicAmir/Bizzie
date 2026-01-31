@@ -10,6 +10,6 @@ class WatchlistEvent with _$WatchlistEvent {
     String? name,
   }) = AddRequested;
   const factory WatchlistEvent.removeRequested(String ticker) = RemoveRequested;
-  const factory WatchlistEvent.loadRequested() = LoadRequested;
+  const factory WatchlistEvent.loadRequested({String? uid}) = LoadRequested;
   const factory WatchlistEvent.reset() = Reset;
 }

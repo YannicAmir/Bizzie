@@ -72,9 +72,11 @@ class _BizzieAppViewState extends State<BizzieAppView> {
             UserEvent.loadUser(uid: state.user.id, silent: isFromCreateAccount),
           );
           context.read<WatchlistBloc>().add(
-            const WatchlistEvent.loadRequested(),
+            WatchlistEvent.loadRequested(uid: state.user.id),
           );
-          context.read<ReportsBloc>().add(const ReportsEvent.started());
+          context.read<ReportsBloc>().add(
+            ReportsEvent.started(uid: state.user.id),
+          );
           context.read<NotificationBloc>().add(
             const NotificationEvent.setupRequested(),
           );
@@ -106,9 +108,9 @@ class _BizzieAppViewState extends State<BizzieAppView> {
               UserEvent.loadUser(uid: user.id, silent: isFromCreateAccount),
             );
             context.read<WatchlistBloc>().add(
-              const WatchlistEvent.loadRequested(),
+              WatchlistEvent.loadRequested(uid: user.id),
             );
-            context.read<ReportsBloc>().add(const ReportsEvent.started());
+            context.read<ReportsBloc>().add(ReportsEvent.started(uid: user.id));
             context.read<NotificationBloc>().add(
               const NotificationEvent.setupRequested(),
             );

@@ -84,6 +84,16 @@ class _HomePageState extends State<HomePage> {
                               context.push(AppRoutes.onboardingNotifications),
                           child: const Text('Notification Shortcut'),
                         ),
+                        const SizedBox(height: 10),
+                        ElevatedButton(
+                          onPressed: () => context.push(AppRoutes.paywall),
+                          child: const Text('Paywall Shortcut'),
+                        ),
+                        ElevatedButton(
+                          onPressed: () =>
+                              context.push(AppRoutes.discountedPaywall),
+                          child: const Text('Discounted Paywall Shortcut'),
+                        ),
                         const SizedBox(height: 20),
                         Text(
                           'Local storage: ${getIt<IUserRepository>().getCachedFavoriteSector() ?? "None"}',
@@ -126,6 +136,16 @@ class _HomePageState extends State<HomePage> {
                       onPressed: () =>
                           context.push(AppRoutes.onboardingNotifications),
                       child: const Text('Notification Shortcut'),
+                    ),
+                    const SizedBox(height: 10),
+                    ElevatedButton(
+                      onPressed: () => context.push(AppRoutes.paywall),
+                      child: const Text('Paywall Shortcut'),
+                    ),
+                    ElevatedButton(
+                      onPressed: () =>
+                          context.push(AppRoutes.discountedPaywall),
+                      child: const Text('Discounted Paywall Shortcut'),
                     ),
                   ],
                 ),

@@ -16,4 +16,6 @@ abstract class SubscriptionEvent with _$SubscriptionEvent {
       SubscriptionRestoreRequested;
   const factory SubscriptionEvent.userIdentityChanged(String? uid) =
       SubscriptionUserIdentityChanged;
+  const factory SubscriptionEvent.offeringsRequested() =
+      SubscriptionOfferingsRequested;
 }

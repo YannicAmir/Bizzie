@@ -9,6 +9,8 @@ import 'package:bizzie/features/user/domain/models/user_model.dart';
 import 'package:bizzie/services/firestore_service.dart';
 import 'package:injectable/injectable.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
+import 'package:bizzie/features/subscription/domain/constants/subscription_constants.dart';
+import 'package:bizzie/core/error/subscription_error_mapper.dart';
 
 final _logger = BizzieLogger('SubscriptionRepositoryImpl');
 
@@ -40,7 +42,9 @@ class SubscriptionRepositoryImpl implements ISubscriptionRepository {
           if (user == null) return SubscriptionStatus.initial();
           return SubscriptionStatus(
             isSubscribed: user.isSubscribed,
-            activeEntitlements: user.isSubscribed ? {'plus'} : {},
+            activeEntitlements: user.isSubscribed
+                ? {SubscriptionConstants.entitlementPlus}
+                : {},
           );
         });
   }
@@ -52,7 +56,7 @@ class SubscriptionRepositoryImpl implements ISubscriptionRepository {
       return Right(dto.toDomain());
     } catch (e, s) {
       _logger.severe('Failed to get subscription status', e, s);
-      return Left(Failure.server(e.toString()));
+      return Left(SubscriptionErrorMapper.map(e));
     }
   }
 
@@ -63,7 +67,7 @@ class SubscriptionRepositoryImpl implements ISubscriptionRepository {
       return Right(dto.toDomain());
     } catch (e, s) {
       _logger.severe('Failed to get offerings', e, s);
-      return Left(Failure.server(e.toString()));
+      return Left(SubscriptionErrorMapper.map(e));
     }
   }
 
@@ -76,7 +80,7 @@ class SubscriptionRepositoryImpl implements ISubscriptionRepository {
       return Right(dto.toDomain());
     } catch (e, s) {
       _logger.severe('Purchase failed for ${package.identifier}', e, s);
-      return Left(Failure.server(e.toString()));
+      return Left(SubscriptionErrorMapper.map(e));
     }
   }
 
@@ -87,7 +91,16 @@ class SubscriptionRepositoryImpl implements ISubscriptionRepository {
       return Right(dto.toDomain());
     } catch (e, s) {
       _logger.severe('Restore purchases failed', e, s);
-      return Left(Failure.server(e.toString()));
+      return Left(SubscriptionErrorMapper.map(e));
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> syncIdentity(String? uid) async {
+    if (uid != null) {
+      return logIn(uid);
+    } else {
+      return logOut();
     }
   }
 
@@ -98,7 +111,7 @@ class SubscriptionRepositoryImpl implements ISubscriptionRepository {
       return const Right(null);
     } catch (e, s) {
       _logger.severe('Login to subscription service failed for $uid', e, s);
-      return Left(Failure.server(e.toString()));
+      return Left(SubscriptionErrorMapper.map(e));
     }
   }
 
@@ -109,7 +122,7 @@ class SubscriptionRepositoryImpl implements ISubscriptionRepository {
       return const Right(null);
     } catch (e, s) {
       _logger.severe('Logout from subscription service failed', e, s);
-      return Left(Failure.server(e.toString()));
+      return Left(SubscriptionErrorMapper.map(e));
     }
   }
 }

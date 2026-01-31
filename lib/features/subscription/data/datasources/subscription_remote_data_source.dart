@@ -5,7 +5,9 @@ import 'package:bizzie/features/subscription/data/dtos/subscription_status_dto.d
 import 'package:bizzie/features/subscription/data/dtos/subscription_offering_dto.dart';
 import 'package:bizzie/features/subscription/domain/models/subscription_package.dart';
 import 'package:bizzie/features/subscription/domain/interfaces/i_subscription_remote_data_source.dart';
+
 import 'package:injectable/injectable.dart';
+
 import 'package:bizzie/core/logging/bizzie_logger.dart';
 
 final _logger = BizzieLogger('SubscriptionRemoteDataSource');
@@ -22,6 +24,7 @@ class SubscriptionRemoteDataSource implements ISubscriptionRemoteDataSource {
   Future<void> initialize() async {
     try {
       _logger.info('Initializing Subscription SDK...');
+      await Purchases.setLogLevel(LogLevel.debug);
       if (Platform.isIOS) {
         await Purchases.configure(
           PurchasesConfiguration(_env.revenueCatApiKeyIos),
@@ -48,14 +51,27 @@ class SubscriptionRemoteDataSource implements ISubscriptionRemoteDataSource {
     try {
       _logger.info('Fetching offerings from RevenueCat...');
       final offerings = await Purchases.getOfferings();
+
+      _logger.info('All Available Offerings: ${offerings.all.keys.toList()}');
       final current = offerings.current;
 
       if (current == null) {
-        _logger.warning('No current offering found in RevenueCat');
+        _logger.warning(
+          'No current offering found in RevenueCat. Available identifiers: ${offerings.all.keys}',
+        );
         return const SubscriptionOfferingDto(
           identifier: 'none',
           serverDescription: 'No offerings found',
           availablePackages: [],
+        );
+      }
+
+      _logger.info(
+        'Current offering "${current.identifier}" has ${current.availablePackages.length} packages',
+      );
+      for (final package in current.availablePackages) {
+        _logger.info(
+          ' - Package: ${package.identifier}, Offering: ${package.presentedOfferingContext.offeringIdentifier}, Product: ${package.storeProduct.identifier}',
         );
       }
 

@@ -8,14 +8,11 @@ sealed class Failure with _$Failure {
 
   const factory Failure.server(String message) = ServerFailure;
   const factory Failure.cache(String message) = CacheFailure;
+  const factory Failure.payment(String message) = PaymentFailure;
+  const factory Failure.cancel([
+    @Default('Operation cancelled') String message,
+  ]) = CancelFailure;
   const factory Failure.userNotFound([
     @Default('User not found') String message,
   ]) = UserNotFoundFailure;
-
-  @override
-  String get message => when(
-    server: (msg) => msg,
-    cache: (msg) => msg,
-    userNotFound: (msg) => msg,
-  );
 }

@@ -19,6 +19,8 @@ abstract class ISubscriptionRepository {
 
   Future<Either<Failure, SubscriptionStatus>> restorePurchases();
 
+  Future<Either<Failure, void>> syncIdentity(String? uid);
+
   Future<Either<Failure, void>> logIn(String uid);
 
   Future<Either<Failure, void>> logOut();

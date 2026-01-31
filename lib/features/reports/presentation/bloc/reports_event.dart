@@ -7,7 +7,7 @@ part 'reports_event.freezed.dart';
 
 @freezed
 class ReportsEvent with _$ReportsEvent {
-  const factory ReportsEvent.started() = Started;
+  const factory ReportsEvent.started({String? uid}) = Started;
   const factory ReportsEvent.refresh() = Refresh;
   const factory ReportsEvent.watchlistUpdated(List<String> tickers) =
       WatchlistUpdated;
