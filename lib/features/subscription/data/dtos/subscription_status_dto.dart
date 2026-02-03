@@ -19,12 +19,6 @@ abstract class SubscriptionStatusDto with _$SubscriptionStatusDto {
       _$SubscriptionStatusDtoFromJson(json);
 
   factory SubscriptionStatusDto.fromRevenueCat(CustomerInfo info) {
-    // DEBUG LOG
-    // ignore: avoid_print
-    print(
-      'DTO fromRevenueCat: Active Entitlements: ${info.entitlements.active.keys}',
-    );
-
     final entitlement = info.entitlements.active['plus'];
     return SubscriptionStatusDto(
       isSubscribed: entitlement != null,
