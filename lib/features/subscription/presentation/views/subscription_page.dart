@@ -19,10 +19,32 @@ class SubscriptionPage extends StatefulWidget {
   State<SubscriptionPage> createState() => _SubscriptionPageState();
 }
 
-class _SubscriptionPageState extends State<SubscriptionPage> {
-  // Flag to prevent double-triggering the success overlay
-  // (e.g. from Restore Success + Stream Update happening in rapid succession)
+class _SubscriptionPageState extends State<SubscriptionPage>
+    with WidgetsBindingObserver {
   bool _hasShownSuccess = false;
+
+  bool _pendingSuccessOverlay = false;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed && _pendingSuccessOverlay) {
+      _pendingSuccessOverlay = false;
+      _safeShowSuccessOverlay();
+      return;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -48,22 +70,17 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
                   loaded: (s) => s.isLocalSuccessOverride,
                   orElse: () => false,
                 )) {
-                  _safeShowSuccessOverlay();
+                  _scheduleSuccessOverlay();
                 }
 
-                // Handle Restore Success:
-                // If the user is now subscribed (via restore) and loading has finished,
-                // trigger the success flow if it hasn't been triggered already.
                 if (state.status.isSubscribed && !state.isLoading) {
-                  // Verify we aren't in a transient error state
                   if (state.failure == null) {
-                    _safeShowSuccessOverlay();
+                    _scheduleSuccessOverlay();
                   }
                 }
               },
               child: BlocBuilder<SubscriptionBloc, SubscriptionState>(
                 buildWhen: (previous, current) {
-                  // Allow rebuilds even if subscribed so we can transition out of loading states.
                   return true;
                 },
                 builder: (context, subscriptionState) {
@@ -94,6 +111,14 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
         );
       },
     );
+  }
+
+  void _scheduleSuccessOverlay() {
+    if (WidgetsBinding.instance.lifecycleState != AppLifecycleState.resumed) {
+      _pendingSuccessOverlay = true;
+    } else {
+      _safeShowSuccessOverlay();
+    }
   }
 
   void _safeShowSuccessOverlay() {
