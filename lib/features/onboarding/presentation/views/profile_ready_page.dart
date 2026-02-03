@@ -1,4 +1,3 @@
-import 'package:bizzie/app/routes/app_routes.dart';
 import 'package:bizzie/app/themes/app_colors.dart';
 
 import 'package:bizzie/features/auth/presentation/bloc/auth_bloc.dart';
@@ -141,7 +140,13 @@ class _ContinueButton extends StatelessWidget {
       height: 56,
       child: BizziePrimaryButton(
         onPressed: () {
-          context.go('${AppRoutes.paywall}?animate=false');
+          // Navigate to 'home_subscribe'. This atomically builds the stack [Home, Paywall].
+          // Because 'animate=onboarding' is set, the transition is Instant (No Flash).
+          // Because parentNavigatorKey is Root, it covers the Nav Bar (Full Screen).
+          context.goNamed(
+            'home_subscribe',
+            queryParameters: {'animate': 'onboarding'},
+          );
         },
         title: 'Continue',
       ),

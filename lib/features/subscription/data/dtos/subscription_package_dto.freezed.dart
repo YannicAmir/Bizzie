@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$SubscriptionPackageDto {
 
- String get id; String get identifier; String get packageType; String get title; String get description; String get priceString; double get price; String get currencyCode;
+ String get id; String get identifier; String get productId; String get packageType; String get title; String get description; String get priceString; double get price; String get currencyCode; bool get isEligibleForTrial;
 /// Create a copy of SubscriptionPackageDto
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $SubscriptionPackageDtoCopyWith<SubscriptionPackageDto> get copyWith => _$Subscr
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SubscriptionPackageDto&&(identical(other.id, id) || other.id == id)&&(identical(other.identifier, identifier) || other.identifier == identifier)&&(identical(other.packageType, packageType) || other.packageType == packageType)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.priceString, priceString) || other.priceString == priceString)&&(identical(other.price, price) || other.price == price)&&(identical(other.currencyCode, currencyCode) || other.currencyCode == currencyCode));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SubscriptionPackageDto&&(identical(other.id, id) || other.id == id)&&(identical(other.identifier, identifier) || other.identifier == identifier)&&(identical(other.productId, productId) || other.productId == productId)&&(identical(other.packageType, packageType) || other.packageType == packageType)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.priceString, priceString) || other.priceString == priceString)&&(identical(other.price, price) || other.price == price)&&(identical(other.currencyCode, currencyCode) || other.currencyCode == currencyCode)&&(identical(other.isEligibleForTrial, isEligibleForTrial) || other.isEligibleForTrial == isEligibleForTrial));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,identifier,packageType,title,description,priceString,price,currencyCode);
+int get hashCode => Object.hash(runtimeType,id,identifier,productId,packageType,title,description,priceString,price,currencyCode,isEligibleForTrial);
 
 @override
 String toString() {
-  return 'SubscriptionPackageDto(id: $id, identifier: $identifier, packageType: $packageType, title: $title, description: $description, priceString: $priceString, price: $price, currencyCode: $currencyCode)';
+  return 'SubscriptionPackageDto(id: $id, identifier: $identifier, productId: $productId, packageType: $packageType, title: $title, description: $description, priceString: $priceString, price: $price, currencyCode: $currencyCode, isEligibleForTrial: $isEligibleForTrial)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $SubscriptionPackageDtoCopyWith<$Res>  {
   factory $SubscriptionPackageDtoCopyWith(SubscriptionPackageDto value, $Res Function(SubscriptionPackageDto) _then) = _$SubscriptionPackageDtoCopyWithImpl;
 @useResult
 $Res call({
- String id, String identifier, String packageType, String title, String description, String priceString, double price, String currencyCode
+ String id, String identifier, String productId, String packageType, String title, String description, String priceString, double price, String currencyCode, bool isEligibleForTrial
 });
 
 
@@ -65,17 +65,19 @@ class _$SubscriptionPackageDtoCopyWithImpl<$Res>
 
 /// Create a copy of SubscriptionPackageDto
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? identifier = null,Object? packageType = null,Object? title = null,Object? description = null,Object? priceString = null,Object? price = null,Object? currencyCode = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? identifier = null,Object? productId = null,Object? packageType = null,Object? title = null,Object? description = null,Object? priceString = null,Object? price = null,Object? currencyCode = null,Object? isEligibleForTrial = null,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,identifier: null == identifier ? _self.identifier : identifier // ignore: cast_nullable_to_non_nullable
+as String,productId: null == productId ? _self.productId : productId // ignore: cast_nullable_to_non_nullable
 as String,packageType: null == packageType ? _self.packageType : packageType // ignore: cast_nullable_to_non_nullable
 as String,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
 as String,description: null == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
 as String,priceString: null == priceString ? _self.priceString : priceString // ignore: cast_nullable_to_non_nullable
 as String,price: null == price ? _self.price : price // ignore: cast_nullable_to_non_nullable
 as double,currencyCode: null == currencyCode ? _self.currencyCode : currencyCode // ignore: cast_nullable_to_non_nullable
-as String,
+as String,isEligibleForTrial: null == isEligibleForTrial ? _self.isEligibleForTrial : isEligibleForTrial // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 
@@ -160,10 +162,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String identifier,  String packageType,  String title,  String description,  String priceString,  double price,  String currencyCode)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String identifier,  String productId,  String packageType,  String title,  String description,  String priceString,  double price,  String currencyCode,  bool isEligibleForTrial)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _SubscriptionPackageDto() when $default != null:
-return $default(_that.id,_that.identifier,_that.packageType,_that.title,_that.description,_that.priceString,_that.price,_that.currencyCode);case _:
+return $default(_that.id,_that.identifier,_that.productId,_that.packageType,_that.title,_that.description,_that.priceString,_that.price,_that.currencyCode,_that.isEligibleForTrial);case _:
   return orElse();
 
 }
@@ -181,10 +183,10 @@ return $default(_that.id,_that.identifier,_that.packageType,_that.title,_that.de
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String identifier,  String packageType,  String title,  String description,  String priceString,  double price,  String currencyCode)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String identifier,  String productId,  String packageType,  String title,  String description,  String priceString,  double price,  String currencyCode,  bool isEligibleForTrial)  $default,) {final _that = this;
 switch (_that) {
 case _SubscriptionPackageDto():
-return $default(_that.id,_that.identifier,_that.packageType,_that.title,_that.description,_that.priceString,_that.price,_that.currencyCode);case _:
+return $default(_that.id,_that.identifier,_that.productId,_that.packageType,_that.title,_that.description,_that.priceString,_that.price,_that.currencyCode,_that.isEligibleForTrial);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -201,10 +203,10 @@ return $default(_that.id,_that.identifier,_that.packageType,_that.title,_that.de
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String identifier,  String packageType,  String title,  String description,  String priceString,  double price,  String currencyCode)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String identifier,  String productId,  String packageType,  String title,  String description,  String priceString,  double price,  String currencyCode,  bool isEligibleForTrial)?  $default,) {final _that = this;
 switch (_that) {
 case _SubscriptionPackageDto() when $default != null:
-return $default(_that.id,_that.identifier,_that.packageType,_that.title,_that.description,_that.priceString,_that.price,_that.currencyCode);case _:
+return $default(_that.id,_that.identifier,_that.productId,_that.packageType,_that.title,_that.description,_that.priceString,_that.price,_that.currencyCode,_that.isEligibleForTrial);case _:
   return null;
 
 }
@@ -216,17 +218,19 @@ return $default(_that.id,_that.identifier,_that.packageType,_that.title,_that.de
 @JsonSerializable()
 
 class _SubscriptionPackageDto extends SubscriptionPackageDto {
-  const _SubscriptionPackageDto({required this.id, required this.identifier, required this.packageType, required this.title, required this.description, required this.priceString, required this.price, required this.currencyCode}): super._();
+  const _SubscriptionPackageDto({required this.id, required this.identifier, required this.productId, required this.packageType, required this.title, required this.description, required this.priceString, required this.price, required this.currencyCode, this.isEligibleForTrial = false}): super._();
   factory _SubscriptionPackageDto.fromJson(Map<String, dynamic> json) => _$SubscriptionPackageDtoFromJson(json);
 
 @override final  String id;
 @override final  String identifier;
+@override final  String productId;
 @override final  String packageType;
 @override final  String title;
 @override final  String description;
 @override final  String priceString;
 @override final  double price;
 @override final  String currencyCode;
+@override@JsonKey() final  bool isEligibleForTrial;
 
 /// Create a copy of SubscriptionPackageDto
 /// with the given fields replaced by the non-null parameter values.
@@ -241,16 +245,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SubscriptionPackageDto&&(identical(other.id, id) || other.id == id)&&(identical(other.identifier, identifier) || other.identifier == identifier)&&(identical(other.packageType, packageType) || other.packageType == packageType)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.priceString, priceString) || other.priceString == priceString)&&(identical(other.price, price) || other.price == price)&&(identical(other.currencyCode, currencyCode) || other.currencyCode == currencyCode));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SubscriptionPackageDto&&(identical(other.id, id) || other.id == id)&&(identical(other.identifier, identifier) || other.identifier == identifier)&&(identical(other.productId, productId) || other.productId == productId)&&(identical(other.packageType, packageType) || other.packageType == packageType)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.priceString, priceString) || other.priceString == priceString)&&(identical(other.price, price) || other.price == price)&&(identical(other.currencyCode, currencyCode) || other.currencyCode == currencyCode)&&(identical(other.isEligibleForTrial, isEligibleForTrial) || other.isEligibleForTrial == isEligibleForTrial));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,identifier,packageType,title,description,priceString,price,currencyCode);
+int get hashCode => Object.hash(runtimeType,id,identifier,productId,packageType,title,description,priceString,price,currencyCode,isEligibleForTrial);
 
 @override
 String toString() {
-  return 'SubscriptionPackageDto(id: $id, identifier: $identifier, packageType: $packageType, title: $title, description: $description, priceString: $priceString, price: $price, currencyCode: $currencyCode)';
+  return 'SubscriptionPackageDto(id: $id, identifier: $identifier, productId: $productId, packageType: $packageType, title: $title, description: $description, priceString: $priceString, price: $price, currencyCode: $currencyCode, isEligibleForTrial: $isEligibleForTrial)';
 }
 
 
@@ -261,7 +265,7 @@ abstract mixin class _$SubscriptionPackageDtoCopyWith<$Res> implements $Subscrip
   factory _$SubscriptionPackageDtoCopyWith(_SubscriptionPackageDto value, $Res Function(_SubscriptionPackageDto) _then) = __$SubscriptionPackageDtoCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String identifier, String packageType, String title, String description, String priceString, double price, String currencyCode
+ String id, String identifier, String productId, String packageType, String title, String description, String priceString, double price, String currencyCode, bool isEligibleForTrial
 });
 
 
@@ -278,17 +282,19 @@ class __$SubscriptionPackageDtoCopyWithImpl<$Res>
 
 /// Create a copy of SubscriptionPackageDto
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? identifier = null,Object? packageType = null,Object? title = null,Object? description = null,Object? priceString = null,Object? price = null,Object? currencyCode = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? identifier = null,Object? productId = null,Object? packageType = null,Object? title = null,Object? description = null,Object? priceString = null,Object? price = null,Object? currencyCode = null,Object? isEligibleForTrial = null,}) {
   return _then(_SubscriptionPackageDto(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,identifier: null == identifier ? _self.identifier : identifier // ignore: cast_nullable_to_non_nullable
+as String,productId: null == productId ? _self.productId : productId // ignore: cast_nullable_to_non_nullable
 as String,packageType: null == packageType ? _self.packageType : packageType // ignore: cast_nullable_to_non_nullable
 as String,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
 as String,description: null == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
 as String,priceString: null == priceString ? _self.priceString : priceString // ignore: cast_nullable_to_non_nullable
 as String,price: null == price ? _self.price : price // ignore: cast_nullable_to_non_nullable
 as double,currencyCode: null == currencyCode ? _self.currencyCode : currencyCode // ignore: cast_nullable_to_non_nullable
-as String,
+as String,isEligibleForTrial: null == isEligibleForTrial ? _self.isEligibleForTrial : isEligibleForTrial // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 

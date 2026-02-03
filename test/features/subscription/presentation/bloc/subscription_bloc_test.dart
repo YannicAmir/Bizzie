@@ -47,6 +47,7 @@ void main() {
   final tAnnualPackage = SubscriptionPackage(
     id: 'annual_id',
     identifier: 'annual_plus',
+    productId: 'io.getbizzie.bizzieapp.plus.annual.full.dev',
     packageType: 'annual',
     title: 'Annual Plus',
     description: 'Annual Plus description',
@@ -58,6 +59,7 @@ void main() {
   final tMonthlyPackage = SubscriptionPackage(
     id: 'monthly_id',
     identifier: 'monthly_plus',
+    productId: 'io.getbizzie.bizzieapp.plus.monthly.full.dev',
     packageType: 'monthly',
     title: 'Monthly Plus',
     description: 'Monthly Plus description',
@@ -69,6 +71,7 @@ void main() {
   final tDiscountPackage = SubscriptionPackage(
     id: 'discount_id',
     identifier: 'annual_plus_discount',
+    productId: 'io.getbizzie.bizzieapp.plus.annual.discount.dev',
     packageType: 'annual',
     title: 'Discounted Plus',
     description: 'Discounted description',
@@ -119,6 +122,7 @@ void main() {
       () => mockGetOfferings(any()),
     ).thenAnswer((_) async => Right(tOffering));
     when(() => mockWatchStatus(any())).thenAnswer((_) => const Stream.empty());
+    when(() => mockWatchStatus.refresh()).thenAnswer((_) async {});
   });
 
   SubscriptionBloc createBloc() {
@@ -195,6 +199,11 @@ void main() {
             (s) => s.status.isSubscribed,
             'subscribed',
             true,
+          ),
+          isA<SubscriptionStateLoaded>().having(
+            (s) => s.offerings,
+            'offerings',
+            tOffering,
           ),
         ],
         verify: (_) {
@@ -346,8 +355,52 @@ void main() {
             'subscribed',
             true,
           ),
+          // Side effect: Status change triggers offerings fetch
+          isA<SubscriptionStateLoaded>().having(
+            (s) => s.offerings,
+            'offerings',
+            tOffering,
+          ),
         ],
       );
+    });
+    group('Expiration Timer', () {
+      test('statusUpdated_withFutureExpiration_schedulesRefresh', () async {
+        final bloc = createBloc();
+        final now = DateTime.now();
+        final expirationDate = now.add(const Duration(milliseconds: 100));
+        final tExpiringStatus = tStatus.copyWith(
+          isSubscribed: true,
+          expirationDate: expirationDate,
+        );
+
+        // 1. Emit status with future expiration
+        bloc.add(SubscriptionEvent.statusUpdated(tExpiringStatus));
+
+        // 2. Initial state check
+        await expectLater(
+          bloc.stream,
+          emits(
+            isA<SubscriptionState>().having(
+              (s) => s.status.isSubscribed,
+              'subscribed',
+              true,
+            ),
+          ),
+        );
+
+        // 3. Wait for timer (expiration + buffer of 2s in implementation)
+        // Since the implementation adds 2 seconds buffer, we need to wait > 2.1s
+        await Future.delayed(const Duration(milliseconds: 2200));
+
+        // 4. Verify refresh was called
+        verify(() => mockWatchStatus.refresh()).called(1);
+        verify(
+          () => mockGetOfferings(any()),
+        ).called(2); // 1 from status change, 1 from expiration refresh
+
+        bloc.close();
+      });
     });
   });
 }

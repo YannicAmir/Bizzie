@@ -55,7 +55,7 @@ extension SubscriptionEventPatterns on SubscriptionEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( SubscriptionEventInitialized value)?  initialized,TResult Function( SubscriptionStatusUpdated value)?  statusUpdated,TResult Function( SubscriptionPurchaseRequested value)?  purchaseRequested,TResult Function( SubscriptionRestoreRequested value)?  restoreRequested,TResult Function( SubscriptionUserIdentityChanged value)?  userIdentityChanged,TResult Function( SubscriptionOfferingsRequested value)?  offeringsRequested,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( SubscriptionEventInitialized value)?  initialized,TResult Function( SubscriptionStatusUpdated value)?  statusUpdated,TResult Function( SubscriptionPurchaseRequested value)?  purchaseRequested,TResult Function( SubscriptionRestoreRequested value)?  restoreRequested,TResult Function( SubscriptionUserIdentityChanged value)?  userIdentityChanged,TResult Function( SubscriptionOfferingsRequested value)?  offeringsRequested,TResult Function( SubscriptionPlanToggled value)?  planToggled,TResult Function( SubscriptionAppResumed value)?  appResumed,TResult Function( SubscriptionExpirationReached value)?  expirationReached,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case SubscriptionEventInitialized() when initialized != null:
@@ -64,7 +64,10 @@ return statusUpdated(_that);case SubscriptionPurchaseRequested() when purchaseRe
 return purchaseRequested(_that);case SubscriptionRestoreRequested() when restoreRequested != null:
 return restoreRequested(_that);case SubscriptionUserIdentityChanged() when userIdentityChanged != null:
 return userIdentityChanged(_that);case SubscriptionOfferingsRequested() when offeringsRequested != null:
-return offeringsRequested(_that);case _:
+return offeringsRequested(_that);case SubscriptionPlanToggled() when planToggled != null:
+return planToggled(_that);case SubscriptionAppResumed() when appResumed != null:
+return appResumed(_that);case SubscriptionExpirationReached() when expirationReached != null:
+return expirationReached(_that);case _:
   return orElse();
 
 }
@@ -82,7 +85,7 @@ return offeringsRequested(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( SubscriptionEventInitialized value)  initialized,required TResult Function( SubscriptionStatusUpdated value)  statusUpdated,required TResult Function( SubscriptionPurchaseRequested value)  purchaseRequested,required TResult Function( SubscriptionRestoreRequested value)  restoreRequested,required TResult Function( SubscriptionUserIdentityChanged value)  userIdentityChanged,required TResult Function( SubscriptionOfferingsRequested value)  offeringsRequested,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( SubscriptionEventInitialized value)  initialized,required TResult Function( SubscriptionStatusUpdated value)  statusUpdated,required TResult Function( SubscriptionPurchaseRequested value)  purchaseRequested,required TResult Function( SubscriptionRestoreRequested value)  restoreRequested,required TResult Function( SubscriptionUserIdentityChanged value)  userIdentityChanged,required TResult Function( SubscriptionOfferingsRequested value)  offeringsRequested,required TResult Function( SubscriptionPlanToggled value)  planToggled,required TResult Function( SubscriptionAppResumed value)  appResumed,required TResult Function( SubscriptionExpirationReached value)  expirationReached,}){
 final _that = this;
 switch (_that) {
 case SubscriptionEventInitialized():
@@ -91,7 +94,10 @@ return statusUpdated(_that);case SubscriptionPurchaseRequested():
 return purchaseRequested(_that);case SubscriptionRestoreRequested():
 return restoreRequested(_that);case SubscriptionUserIdentityChanged():
 return userIdentityChanged(_that);case SubscriptionOfferingsRequested():
-return offeringsRequested(_that);case _:
+return offeringsRequested(_that);case SubscriptionPlanToggled():
+return planToggled(_that);case SubscriptionAppResumed():
+return appResumed(_that);case SubscriptionExpirationReached():
+return expirationReached(_that);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -108,7 +114,7 @@ return offeringsRequested(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( SubscriptionEventInitialized value)?  initialized,TResult? Function( SubscriptionStatusUpdated value)?  statusUpdated,TResult? Function( SubscriptionPurchaseRequested value)?  purchaseRequested,TResult? Function( SubscriptionRestoreRequested value)?  restoreRequested,TResult? Function( SubscriptionUserIdentityChanged value)?  userIdentityChanged,TResult? Function( SubscriptionOfferingsRequested value)?  offeringsRequested,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( SubscriptionEventInitialized value)?  initialized,TResult? Function( SubscriptionStatusUpdated value)?  statusUpdated,TResult? Function( SubscriptionPurchaseRequested value)?  purchaseRequested,TResult? Function( SubscriptionRestoreRequested value)?  restoreRequested,TResult? Function( SubscriptionUserIdentityChanged value)?  userIdentityChanged,TResult? Function( SubscriptionOfferingsRequested value)?  offeringsRequested,TResult? Function( SubscriptionPlanToggled value)?  planToggled,TResult? Function( SubscriptionAppResumed value)?  appResumed,TResult? Function( SubscriptionExpirationReached value)?  expirationReached,}){
 final _that = this;
 switch (_that) {
 case SubscriptionEventInitialized() when initialized != null:
@@ -117,7 +123,10 @@ return statusUpdated(_that);case SubscriptionPurchaseRequested() when purchaseRe
 return purchaseRequested(_that);case SubscriptionRestoreRequested() when restoreRequested != null:
 return restoreRequested(_that);case SubscriptionUserIdentityChanged() when userIdentityChanged != null:
 return userIdentityChanged(_that);case SubscriptionOfferingsRequested() when offeringsRequested != null:
-return offeringsRequested(_that);case _:
+return offeringsRequested(_that);case SubscriptionPlanToggled() when planToggled != null:
+return planToggled(_that);case SubscriptionAppResumed() when appResumed != null:
+return appResumed(_that);case SubscriptionExpirationReached() when expirationReached != null:
+return expirationReached(_that);case _:
   return null;
 
 }
@@ -134,7 +143,7 @@ return offeringsRequested(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initialized,TResult Function( SubscriptionStatus status)?  statusUpdated,TResult Function( SubscriptionPackage package)?  purchaseRequested,TResult Function()?  restoreRequested,TResult Function( String? uid)?  userIdentityChanged,TResult Function()?  offeringsRequested,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initialized,TResult Function( SubscriptionStatus status)?  statusUpdated,TResult Function( SubscriptionPackage package)?  purchaseRequested,TResult Function()?  restoreRequested,TResult Function( String? uid)?  userIdentityChanged,TResult Function()?  offeringsRequested,TResult Function( bool isAnnual)?  planToggled,TResult Function()?  appResumed,TResult Function()?  expirationReached,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case SubscriptionEventInitialized() when initialized != null:
 return initialized();case SubscriptionStatusUpdated() when statusUpdated != null:
@@ -142,7 +151,10 @@ return statusUpdated(_that.status);case SubscriptionPurchaseRequested() when pur
 return purchaseRequested(_that.package);case SubscriptionRestoreRequested() when restoreRequested != null:
 return restoreRequested();case SubscriptionUserIdentityChanged() when userIdentityChanged != null:
 return userIdentityChanged(_that.uid);case SubscriptionOfferingsRequested() when offeringsRequested != null:
-return offeringsRequested();case _:
+return offeringsRequested();case SubscriptionPlanToggled() when planToggled != null:
+return planToggled(_that.isAnnual);case SubscriptionAppResumed() when appResumed != null:
+return appResumed();case SubscriptionExpirationReached() when expirationReached != null:
+return expirationReached();case _:
   return orElse();
 
 }
@@ -160,7 +172,7 @@ return offeringsRequested();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initialized,required TResult Function( SubscriptionStatus status)  statusUpdated,required TResult Function( SubscriptionPackage package)  purchaseRequested,required TResult Function()  restoreRequested,required TResult Function( String? uid)  userIdentityChanged,required TResult Function()  offeringsRequested,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initialized,required TResult Function( SubscriptionStatus status)  statusUpdated,required TResult Function( SubscriptionPackage package)  purchaseRequested,required TResult Function()  restoreRequested,required TResult Function( String? uid)  userIdentityChanged,required TResult Function()  offeringsRequested,required TResult Function( bool isAnnual)  planToggled,required TResult Function()  appResumed,required TResult Function()  expirationReached,}) {final _that = this;
 switch (_that) {
 case SubscriptionEventInitialized():
 return initialized();case SubscriptionStatusUpdated():
@@ -168,7 +180,10 @@ return statusUpdated(_that.status);case SubscriptionPurchaseRequested():
 return purchaseRequested(_that.package);case SubscriptionRestoreRequested():
 return restoreRequested();case SubscriptionUserIdentityChanged():
 return userIdentityChanged(_that.uid);case SubscriptionOfferingsRequested():
-return offeringsRequested();case _:
+return offeringsRequested();case SubscriptionPlanToggled():
+return planToggled(_that.isAnnual);case SubscriptionAppResumed():
+return appResumed();case SubscriptionExpirationReached():
+return expirationReached();case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -185,7 +200,7 @@ return offeringsRequested();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initialized,TResult? Function( SubscriptionStatus status)?  statusUpdated,TResult? Function( SubscriptionPackage package)?  purchaseRequested,TResult? Function()?  restoreRequested,TResult? Function( String? uid)?  userIdentityChanged,TResult? Function()?  offeringsRequested,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initialized,TResult? Function( SubscriptionStatus status)?  statusUpdated,TResult? Function( SubscriptionPackage package)?  purchaseRequested,TResult? Function()?  restoreRequested,TResult? Function( String? uid)?  userIdentityChanged,TResult? Function()?  offeringsRequested,TResult? Function( bool isAnnual)?  planToggled,TResult? Function()?  appResumed,TResult? Function()?  expirationReached,}) {final _that = this;
 switch (_that) {
 case SubscriptionEventInitialized() when initialized != null:
 return initialized();case SubscriptionStatusUpdated() when statusUpdated != null:
@@ -193,7 +208,10 @@ return statusUpdated(_that.status);case SubscriptionPurchaseRequested() when pur
 return purchaseRequested(_that.package);case SubscriptionRestoreRequested() when restoreRequested != null:
 return restoreRequested();case SubscriptionUserIdentityChanged() when userIdentityChanged != null:
 return userIdentityChanged(_that.uid);case SubscriptionOfferingsRequested() when offeringsRequested != null:
-return offeringsRequested();case _:
+return offeringsRequested();case SubscriptionPlanToggled() when planToggled != null:
+return planToggled(_that.isAnnual);case SubscriptionAppResumed() when appResumed != null:
+return appResumed();case SubscriptionExpirationReached() when expirationReached != null:
+return expirationReached();case _:
   return null;
 
 }
@@ -505,6 +523,136 @@ int get hashCode => runtimeType.hashCode;
 @override
 String toString() {
   return 'SubscriptionEvent.offeringsRequested()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class SubscriptionPlanToggled implements SubscriptionEvent {
+  const SubscriptionPlanToggled({required this.isAnnual});
+  
+
+ final  bool isAnnual;
+
+/// Create a copy of SubscriptionEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$SubscriptionPlanToggledCopyWith<SubscriptionPlanToggled> get copyWith => _$SubscriptionPlanToggledCopyWithImpl<SubscriptionPlanToggled>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SubscriptionPlanToggled&&(identical(other.isAnnual, isAnnual) || other.isAnnual == isAnnual));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,isAnnual);
+
+@override
+String toString() {
+  return 'SubscriptionEvent.planToggled(isAnnual: $isAnnual)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $SubscriptionPlanToggledCopyWith<$Res> implements $SubscriptionEventCopyWith<$Res> {
+  factory $SubscriptionPlanToggledCopyWith(SubscriptionPlanToggled value, $Res Function(SubscriptionPlanToggled) _then) = _$SubscriptionPlanToggledCopyWithImpl;
+@useResult
+$Res call({
+ bool isAnnual
+});
+
+
+
+
+}
+/// @nodoc
+class _$SubscriptionPlanToggledCopyWithImpl<$Res>
+    implements $SubscriptionPlanToggledCopyWith<$Res> {
+  _$SubscriptionPlanToggledCopyWithImpl(this._self, this._then);
+
+  final SubscriptionPlanToggled _self;
+  final $Res Function(SubscriptionPlanToggled) _then;
+
+/// Create a copy of SubscriptionEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? isAnnual = null,}) {
+  return _then(SubscriptionPlanToggled(
+isAnnual: null == isAnnual ? _self.isAnnual : isAnnual // ignore: cast_nullable_to_non_nullable
+as bool,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class SubscriptionAppResumed implements SubscriptionEvent {
+  const SubscriptionAppResumed();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SubscriptionAppResumed);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'SubscriptionEvent.appResumed()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class SubscriptionExpirationReached implements SubscriptionEvent {
+  const SubscriptionExpirationReached();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SubscriptionExpirationReached);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'SubscriptionEvent.expirationReached()';
 }
 
 

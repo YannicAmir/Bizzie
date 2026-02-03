@@ -18,4 +18,9 @@ abstract class SubscriptionEvent with _$SubscriptionEvent {
       SubscriptionUserIdentityChanged;
   const factory SubscriptionEvent.offeringsRequested() =
       SubscriptionOfferingsRequested;
+  const factory SubscriptionEvent.planToggled({required bool isAnnual}) =
+      SubscriptionPlanToggled;
+  const factory SubscriptionEvent.appResumed() = SubscriptionAppResumed;
+  const factory SubscriptionEvent.expirationReached() =
+      SubscriptionExpirationReached;
 }

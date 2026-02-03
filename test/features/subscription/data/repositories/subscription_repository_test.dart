@@ -2,40 +2,31 @@ import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/features/subscription/data/dtos/subscription_offering_dto.dart';
 import 'package:bizzie/features/subscription/data/dtos/subscription_status_dto.dart';
 import 'package:bizzie/features/subscription/data/repositories/subscription_repository_impl.dart';
-import 'package:bizzie/features/subscription/domain/interfaces/i_subscription_remote_data_source.dart';
+import 'package:bizzie/features/subscription/data/interfaces/i_subscription_remote_data_source.dart';
 import 'package:bizzie/features/subscription/domain/models/subscription_offering.dart';
 import 'package:bizzie/features/subscription/domain/models/subscription_package.dart';
 import 'package:bizzie/features/subscription/domain/models/subscription_status.dart';
-import 'package:bizzie/features/user/domain/models/user_model.dart';
-import 'package:bizzie/services/firestore_service.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:bizzie/features/user/domain/enums/investing_experience.dart';
 import 'package:mocktail/mocktail.dart';
 
 class MockSubscriptionRemoteDataSource extends Mock
     implements ISubscriptionRemoteDataSource {}
-
-class MockFirestoreService extends Mock implements FirestoreService {}
 
 class MockSubscriptionPackage extends Mock implements SubscriptionPackage {}
 
 void main() {
   late SubscriptionRepositoryImpl repository;
   late MockSubscriptionRemoteDataSource mockRemoteDataSource;
-  late MockFirestoreService mockFirestoreService;
 
   setUp(() {
     mockRemoteDataSource = MockSubscriptionRemoteDataSource();
-    mockFirestoreService = MockFirestoreService();
-    repository = SubscriptionRepositoryImpl(
-      mockRemoteDataSource,
-      mockFirestoreService,
-    );
+    repository = SubscriptionRepositoryImpl(mockRemoteDataSource);
 
     final tFakePackage = SubscriptionPackage(
       id: 'id',
       identifier: 'identifier',
+      productId: 'io.getbizzie.bizzieapp.plus.annual.full.dev',
       packageType: 'custom',
       title: 'title',
       description: 'description',
@@ -68,23 +59,11 @@ void main() {
     });
 
     group('watchSubscriptionStatus', () {
-      test('watchSubscriptionStatus_success_emitsSubscriptionStatus', () {
+      test('watchSubscriptionStatus_delegatesToRemoteDataSource', () {
         // arrange
-        final tUserModel = UserModel(
-          uid: tUserId,
-          name: 'Test user',
-          favoriteSector: 'Technology',
-          investingExperience: InvestingExperience.beginner,
-          createdAt: DateTime.now(),
-          isSubscribed: true,
-        );
         when(
-          () => mockFirestoreService.getDocumentStream<UserModel>(
-            path: any(named: 'path'),
-            fromJson: any(named: 'fromJson'),
-            toJson: any(named: 'toJson'),
-          ),
-        ).thenAnswer((_) => Stream.fromIterable([tUserModel]));
+          () => mockRemoteDataSource.watchSubscriptionStatus(),
+        ).thenAnswer((_) => Stream.value(tStatusDto));
 
         // act
         final result = repository.watchSubscriptionStatus(tUserId);
@@ -100,32 +79,7 @@ void main() {
             ),
           ),
         );
-      });
-
-      test('watchSubscriptionStatus_userNull_emitsInitialStatus', () {
-        // arrange
-        when(
-          () => mockFirestoreService.getDocumentStream<UserModel>(
-            path: any(named: 'path'),
-            fromJson: any(named: 'fromJson'),
-            toJson: any(named: 'toJson'),
-          ),
-        ).thenAnswer((_) => Stream.fromIterable([null]));
-
-        // act
-        final result = repository.watchSubscriptionStatus(tUserId);
-
-        // assert
-        expect(
-          result,
-          emits(
-            isA<SubscriptionStatus>().having(
-              (s) => s.isSubscribed,
-              'isSubscribed',
-              false,
-            ),
-          ),
-        );
+        verify(() => mockRemoteDataSource.watchSubscriptionStatus()).called(1);
       });
     });
 
@@ -170,6 +124,9 @@ void main() {
 
       test('getOfferings_success_returnsSubscriptionOffering', () async {
         // arrange
+        when(
+          () => mockRemoteDataSource.checkTrialEligibility(any()),
+        ).thenAnswer((_) async => {});
         when(
           () => mockRemoteDataSource.getOfferings(),
         ).thenAnswer((_) async => tOfferingDto);

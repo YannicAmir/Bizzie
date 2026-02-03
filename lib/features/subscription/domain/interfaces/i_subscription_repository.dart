@@ -9,6 +9,8 @@ abstract class ISubscriptionRepository {
 
   Stream<SubscriptionStatus> watchSubscriptionStatus(String userId);
 
+  Future<void> refreshSubscriptionStatus();
+
   Future<Either<Failure, SubscriptionStatus>> getSubscriptionStatus();
 
   Future<Either<Failure, SubscriptionOffering>> getOfferings();

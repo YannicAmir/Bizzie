@@ -29,6 +29,7 @@ abstract class SubscriptionState with _$SubscriptionState {
     SubscriptionPackage? discountAnnualPackage,
     @Default(false) bool isLocalSuccessOverride,
     @Default(false) bool isPurchasing,
+    @Default(true) bool isAnnualSelection,
   }) = SubscriptionStateLoaded;
 
   const factory SubscriptionState.failure({

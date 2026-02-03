@@ -25,6 +25,7 @@ class CreateAccountPage extends StatelessWidget {
       listener: (context, state) {
         state.maybeWhen(
           authenticated: (user) {
+            FocusScope.of(context).unfocus();
             context.go(AppRoutes.onboardingBuildingProfile);
           },
           failure: (failure) {
@@ -38,7 +39,6 @@ class CreateAccountPage extends StatelessWidget {
       child: GestureDetector(
         onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
         child: Scaffold(
-          backgroundColor: AppColors.background,
           body: SafeArea(
             child: SingleChildScrollView(
               keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,

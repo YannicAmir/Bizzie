@@ -7,7 +7,10 @@ abstract class ISubscriptionRemoteDataSource {
   Future<void> logIn(String uid);
   Future<void> logOut();
   Future<SubscriptionOfferingDto> getOfferings();
+  Future<Map<String, bool>> checkTrialEligibility(List<String> productIds);
   Future<SubscriptionStatusDto> purchasePackage(SubscriptionPackage package);
   Future<SubscriptionStatusDto> restorePurchases();
   Future<SubscriptionStatusDto> getSubscriptionStatus();
+  Future<void> refreshSubscriptionStatus();
+  Stream<SubscriptionStatusDto> watchSubscriptionStatus();
 }

@@ -13,6 +13,9 @@ import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:bizzie/shared/widgets/buttons/bizzie_primary_button.dart';
 import 'package:bizzie/shared/widgets/error/bizzie_error.dart';
 import 'package:bizzie/shared/widgets/loading/bizzie_loader.dart';
+import 'package:bizzie/features/subscription/presentation/widgets/subscription_success_overlay.dart';
+import 'package:bizzie/app/routes/app_routes.dart';
+import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -21,35 +24,71 @@ class DiscountedSubscriptionPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Scaffold(
       body: SafeArea(
-        child: BlocBuilder<UserBloc, UserState>(
-          builder: (context, userState) {
-            return BlocBuilder<SubscriptionBloc, SubscriptionState>(
-              builder: (context, subscriptionState) {
-                return subscriptionState.map(
-                  initial: (_) => BizzieLoader(
-                    message: 'Loading subscription',
-                    mascotAssetPath: userState.mascotAsset,
-                  ),
-                  loading: (_) => BizzieLoader(
-                    message: 'Loading subscription',
-                    mascotAssetPath: userState.mascotAsset,
-                  ),
-                  loaded: (s) => _DiscountedSubscriptionLoadedContent(
-                    state: s,
-                    userState: userState,
-                  ),
-                  failure: (s) => BizzieError(
-                    message: s.failure.message,
-                    onRetry: () => context.read<SubscriptionBloc>().add(
-                      const SubscriptionEvent.offeringsRequested(),
-                    ),
-                  ),
-                );
-              },
-            );
+        child: BlocListener<SubscriptionBloc, SubscriptionState>(
+          listener: (context, state) {
+            if (state.failure != null) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(state.failure!.message),
+                  backgroundColor: theme.colorScheme.error,
+                ),
+              );
+            }
+
+            if (state.maybeMap(
+              loaded: (s) => s.isLocalSuccessOverride,
+              orElse: () => false,
+            )) {
+              final userState = context.read<UserBloc>().state;
+              final userName = userState.maybeMap(
+                loaded: (s) => s.user.name,
+                orElse: () => null,
+              );
+
+              SubscriptionSuccessOverlay.show(
+                context,
+                userName: userName ?? 'Friend',
+                onDismiss: () {
+                  context.go(AppRoutes.home);
+                },
+              );
+            }
           },
+          child: BlocBuilder<UserBloc, UserState>(
+            builder: (context, userState) {
+              return BlocBuilder<SubscriptionBloc, SubscriptionState>(
+                buildWhen: (previous, current) {
+                  return !current.status.isSubscribed;
+                },
+                builder: (context, subscriptionState) {
+                  return subscriptionState.map(
+                    initial: (_) => BizzieLoader(
+                      message: 'Loading subscription',
+                      mascotAssetPath: userState.mascotAsset,
+                    ),
+                    loading: (_) => BizzieLoader(
+                      message: 'Loading subscription',
+                      mascotAssetPath: userState.mascotAsset,
+                    ),
+                    loaded: (s) => _DiscountedSubscriptionLoadedContent(
+                      state: s,
+                      userState: userState,
+                    ),
+                    failure: (s) => BizzieError(
+                      message: s.failure.message,
+                      onRetry: () => context.read<SubscriptionBloc>().add(
+                        const SubscriptionEvent.offeringsRequested(),
+                      ),
+                    ),
+                  );
+                },
+              );
+            },
+          ),
         ),
       ),
     );

@@ -4,12 +4,9 @@ import 'package:bizzie/features/subscription/domain/models/subscription_status.d
 import 'package:bizzie/features/subscription/domain/models/subscription_package.dart';
 import 'package:bizzie/features/subscription/domain/models/subscription_offering.dart';
 import 'package:bizzie/features/subscription/domain/interfaces/i_subscription_repository.dart';
-import 'package:bizzie/features/subscription/domain/interfaces/i_subscription_remote_data_source.dart';
-import 'package:bizzie/features/user/domain/models/user_model.dart';
-import 'package:bizzie/services/firestore_service.dart';
+import 'package:bizzie/features/subscription/data/interfaces/i_subscription_remote_data_source.dart';
 import 'package:injectable/injectable.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
-import 'package:bizzie/features/subscription/domain/constants/subscription_constants.dart';
 import 'package:bizzie/core/error/subscription_error_mapper.dart';
 
 final _logger = BizzieLogger('SubscriptionRepositoryImpl');
@@ -17,9 +14,8 @@ final _logger = BizzieLogger('SubscriptionRepositoryImpl');
 @LazySingleton(as: ISubscriptionRepository)
 class SubscriptionRepositoryImpl implements ISubscriptionRepository {
   final ISubscriptionRemoteDataSource _remoteDataSource;
-  final FirestoreService _firestoreService;
 
-  SubscriptionRepositoryImpl(this._remoteDataSource, this._firestoreService);
+  SubscriptionRepositoryImpl(this._remoteDataSource);
 
   @override
   Future<void> initialize() async {
@@ -32,21 +28,18 @@ class SubscriptionRepositoryImpl implements ISubscriptionRepository {
 
   @override
   Stream<SubscriptionStatus> watchSubscriptionStatus(String userId) {
-    return _firestoreService
-        .getDocumentStream<UserModel>(
-          path: 'users/$userId',
-          fromJson: UserModel.fromJson,
-          toJson: (user) => user.toJson(),
-        )
-        .map((user) {
-          if (user == null) return SubscriptionStatus.initial();
-          return SubscriptionStatus(
-            isSubscribed: user.isSubscribed,
-            activeEntitlements: user.isSubscribed
-                ? {SubscriptionConstants.entitlementPlus}
-                : {},
-          );
-        });
+    return _remoteDataSource.watchSubscriptionStatus().map((dto) {
+      return dto.toDomain();
+    }).asBroadcastStream();
+  }
+
+  @override
+  Future<void> refreshSubscriptionStatus() async {
+    try {
+      await _remoteDataSource.refreshSubscriptionStatus();
+    } catch (e, s) {
+      _logger.severe('Failed to refresh subscription status (repo)', e, s);
+    }
   }
 
   @override
@@ -55,8 +48,7 @@ class SubscriptionRepositoryImpl implements ISubscriptionRepository {
       final dto = await _remoteDataSource.getSubscriptionStatus();
       return Right(dto.toDomain());
     } catch (e, s) {
-      _logger.severe('Failed to get subscription status', e, s);
-      return Left(SubscriptionErrorMapper.map(e));
+      return Left(_handleError(e, s, 'Failed to get subscription status'));
     }
   }
 
@@ -64,10 +56,24 @@ class SubscriptionRepositoryImpl implements ISubscriptionRepository {
   Future<Either<Failure, SubscriptionOffering>> getOfferings() async {
     try {
       final dto = await _remoteDataSource.getOfferings();
-      return Right(dto.toDomain());
+      final domain = dto.toDomain();
+
+      final productIds = domain.availablePackages
+          .map((e) => e.productId)
+          .toList();
+
+      final eligibilityMap = await _remoteDataSource.checkTrialEligibility(
+        productIds,
+      );
+
+      final updatedPackages = domain.availablePackages.map((package) {
+        final isEligible = eligibilityMap[package.productId] ?? false;
+        return package.copyWith(isEligibleForTrial: isEligible);
+      }).toList();
+
+      return Right(domain.copyWith(availablePackages: updatedPackages));
     } catch (e, s) {
-      _logger.severe('Failed to get offerings', e, s);
-      return Left(SubscriptionErrorMapper.map(e));
+      return Left(_handleError(e, s, 'Failed to get offerings'));
     }
   }
 
@@ -79,8 +85,9 @@ class SubscriptionRepositoryImpl implements ISubscriptionRepository {
       final dto = await _remoteDataSource.purchasePackage(package);
       return Right(dto.toDomain());
     } catch (e, s) {
-      _logger.severe('Purchase failed for ${package.identifier}', e, s);
-      return Left(SubscriptionErrorMapper.map(e));
+      return Left(
+        _handleError(e, s, 'Purchase failed for ${package.identifier}'),
+      );
     }
   }
 
@@ -90,8 +97,7 @@ class SubscriptionRepositoryImpl implements ISubscriptionRepository {
       final dto = await _remoteDataSource.restorePurchases();
       return Right(dto.toDomain());
     } catch (e, s) {
-      _logger.severe('Restore purchases failed', e, s);
-      return Left(SubscriptionErrorMapper.map(e));
+      return Left(_handleError(e, s, 'Restore purchases failed'));
     }
   }
 
@@ -110,8 +116,9 @@ class SubscriptionRepositoryImpl implements ISubscriptionRepository {
       await _remoteDataSource.logIn(uid);
       return const Right(null);
     } catch (e, s) {
-      _logger.severe('Login to subscription service failed for $uid', e, s);
-      return Left(SubscriptionErrorMapper.map(e));
+      return Left(
+        _handleError(e, s, 'Login to subscription service failed for $uid'),
+      );
     }
   }
 
@@ -121,8 +128,27 @@ class SubscriptionRepositoryImpl implements ISubscriptionRepository {
       await _remoteDataSource.logOut();
       return const Right(null);
     } catch (e, s) {
-      _logger.severe('Logout from subscription service failed', e, s);
-      return Left(SubscriptionErrorMapper.map(e));
+      return Left(
+        _handleError(e, s, 'Logout from subscription service failed'),
+      );
     }
+  }
+
+  Failure _handleError(dynamic error, StackTrace stackTrace, String message) {
+    final failure = SubscriptionErrorMapper.map(error);
+
+    failure.maybeMap(
+      cancel: (_) {
+        _logger.info('$message: User cancelled.');
+      },
+      payment: (f) {
+        _logger.warning('$message: Payment issue - ${f.message}');
+      },
+      orElse: () {
+        _logger.severe(message, error, stackTrace);
+      },
+    );
+
+    return failure;
   }
 }

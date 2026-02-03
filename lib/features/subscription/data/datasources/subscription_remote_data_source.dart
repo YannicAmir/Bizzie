@@ -1,18 +1,21 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:bizzie/env/app_env.dart';
 import 'package:bizzie/features/subscription/data/dtos/subscription_status_dto.dart';
 import 'package:bizzie/features/subscription/data/dtos/subscription_offering_dto.dart';
 import 'package:bizzie/features/subscription/domain/models/subscription_package.dart';
-import 'package:bizzie/features/subscription/domain/interfaces/i_subscription_remote_data_source.dart';
+import 'package:bizzie/features/subscription/data/interfaces/i_subscription_remote_data_source.dart';
 
 import 'package:injectable/injectable.dart';
+
+import 'package:rxdart/rxdart.dart';
 
 import 'package:bizzie/core/logging/bizzie_logger.dart';
 
 final _logger = BizzieLogger('SubscriptionRemoteDataSource');
 
-@LazySingleton(as: ISubscriptionRemoteDataSource)
+@LazySingleton(as: ISubscriptionRemoteDataSource, env: ['prod', 'qa', 'dev'])
 class SubscriptionRemoteDataSource implements ISubscriptionRemoteDataSource {
   final AppEnv _env;
 
@@ -52,7 +55,6 @@ class SubscriptionRemoteDataSource implements ISubscriptionRemoteDataSource {
       _logger.info('Fetching offerings from RevenueCat...');
       final offerings = await Purchases.getOfferings();
 
-      _logger.info('All Available Offerings: ${offerings.all.keys.toList()}');
       final current = offerings.current;
 
       if (current == null) {
@@ -66,23 +68,37 @@ class SubscriptionRemoteDataSource implements ISubscriptionRemoteDataSource {
         );
       }
 
-      _logger.info(
-        'Current offering "${current.identifier}" has ${current.availablePackages.length} packages',
-      );
-      for (final package in current.availablePackages) {
-        _logger.info(
-          ' - Package: ${package.identifier}, Offering: ${package.presentedOfferingContext.offeringIdentifier}, Product: ${package.storeProduct.identifier}',
-        );
-      }
-
       _cachedRcPackages.clear();
       for (final package in current.availablePackages) {
         _cachedRcPackages[package.identifier] = package;
+        _logger.info(
+          'Package: ${package.identifier}, Product: ${package.storeProduct.identifier}, Trial: ${package.storeProduct.introductoryPrice != null}',
+        );
       }
 
       return SubscriptionOfferingDto.fromRevenueCat(current);
     } catch (e, s) {
       _logger.severe('Failed to fetch offerings', e, s);
+      rethrow;
+    }
+  }
+
+  @override
+  Future<Map<String, bool>> checkTrialEligibility(
+    List<String> productIds,
+  ) async {
+    try {
+      final eligibilityMap =
+          await Purchases.checkTrialOrIntroductoryPriceEligibility(productIds);
+
+      return eligibilityMap.map(
+        (key, value) => MapEntry(
+          key,
+          value.status == IntroEligibilityStatus.introEligibilityStatusEligible,
+        ),
+      );
+    } catch (e, s) {
+      _logger.severe('Failed to check trial eligibility', e, s);
       rethrow;
     }
   }
@@ -134,6 +150,50 @@ class SubscriptionRemoteDataSource implements ISubscriptionRemoteDataSource {
     } catch (e, s) {
       _logger.severe('Failed to get customer info', e, s);
       rethrow;
+    }
+  }
+
+  final _statusSubject = BehaviorSubject<SubscriptionStatusDto>();
+  bool _isListening = false;
+
+  @override
+  Stream<SubscriptionStatusDto> watchSubscriptionStatus() {
+    if (!_isListening) {
+      _isListening = true;
+
+      getSubscriptionStatus().then((dto) {
+        if (!_statusSubject.isClosed) {
+          _statusSubject.add(dto);
+        }
+      });
+
+      Purchases.addCustomerInfoUpdateListener((info) {
+        _logger.info(
+          'CustomerInfo updated from RevenueCat listener. Active Entitlements: ${info.entitlements.active.keys}',
+        );
+        if (!_statusSubject.isClosed) {
+          _statusSubject.add(SubscriptionStatusDto.fromRevenueCat(info));
+        }
+      });
+    }
+
+    return _statusSubject.stream;
+  }
+
+  @override
+  Future<void> refreshSubscriptionStatus() async {
+    try {
+      _logger.info('Manually refreshing subscription status...');
+      await Purchases.invalidateCustomerInfoCache();
+      final customerInfo = await Purchases.getCustomerInfo();
+      _logger.info(
+        'Manual refresh complete. Active Entitlements: ${customerInfo.entitlements.active.keys}',
+      );
+      if (!_statusSubject.isClosed) {
+        _statusSubject.add(SubscriptionStatusDto.fromRevenueCat(customerInfo));
+      }
+    } catch (e, s) {
+      _logger.severe('Failed to refresh subscription status', e, s);
     }
   }
 }

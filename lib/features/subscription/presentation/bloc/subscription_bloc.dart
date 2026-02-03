@@ -12,13 +12,14 @@ import 'package:bizzie/features/subscription/domain/usecases/get_offerings_use_c
 import 'package:injectable/injectable.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
 
-import 'package:bizzie/features/subscription/domain/models/subscription_offering_extensions.dart';
+import 'package:bizzie/features/subscription/domain/extensions/subscription_offering_extensions.dart';
+import 'package:bizzie/features/subscription/domain/models/subscription_status.dart';
 import 'subscription_event.dart';
 import 'subscription_state.dart';
 
 final _logger = BizzieLogger('SubscriptionBloc');
 
-@injectable
+@lazySingleton
 class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
   final WatchSubscriptionStatusUseCase _watchSubscriptionStatus;
   final SyncIdentityUseCase _syncIdentity;
@@ -44,6 +45,9 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
     on<SubscriptionRestoreRequested>(_onRestoreRequested);
     on<SubscriptionUserIdentityChanged>(_onUserIdentityChanged);
     on<SubscriptionOfferingsRequested>(_onOfferingsRequested);
+    on<SubscriptionPlanToggled>(_onPlanToggled);
+    on<SubscriptionAppResumed>(_onAppResumed);
+    on<SubscriptionExpirationReached>(_onExpirationReached);
 
     _authSubscription = _authBloc.stream.listen((authState) {
       if (authState is AuthAuthenticated) {
@@ -54,6 +58,16 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
     });
   }
 
+  Future<void> _onAppResumed(
+    SubscriptionAppResumed event,
+    Emitter<SubscriptionState> emit,
+  ) async {
+    _logger.info('App resumed, refreshing subscription status');
+    // Force a status refresh
+    _watchSubscriptionStatus.refresh();
+    add(const SubscriptionEvent.offeringsRequested());
+  }
+
   Future<void> _onInitialized(
     SubscriptionEventInitialized event,
     Emitter<SubscriptionState> emit,
@@ -61,8 +75,9 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
     final authState = _authBloc.state;
     if (authState is AuthAuthenticated) {
       add(SubscriptionEvent.userIdentityChanged(authState.user.id));
+    } else {
+      add(const SubscriptionEvent.offeringsRequested());
     }
-    add(const SubscriptionEvent.offeringsRequested());
   }
 
   Future<void> _onUserIdentityChanged(
@@ -70,17 +85,23 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
     Emitter<SubscriptionState> emit,
   ) async {
     _logger.info('User identity changed to: ${event.uid}');
-    await _syncIdentity(event.uid);
 
     await _statusSubscription?.cancel();
+    _statusSubscription = null;
+
+    await _syncIdentity(event.uid);
 
     if (event.uid != null) {
       _logger.info('Watching subscription status for user: ${event.uid}');
-      _statusSubscription = _watchSubscriptionStatus(event.uid!).listen((
-        status,
-      ) {
-        add(SubscriptionEvent.statusUpdated(status));
-      });
+      _statusSubscription = _watchSubscriptionStatus(event.uid!).listen(
+        (status) {
+          add(SubscriptionStatusUpdated(status));
+        },
+        onError: (error, stack) {
+          _logger.severe('Subscription status stream error', error, stack);
+        },
+      );
+      add(const SubscriptionEvent.offeringsRequested());
     } else {
       _logger.info('User logged out, resetting subscription state');
       emit(SubscriptionState.initialState());
@@ -91,6 +112,20 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
     SubscriptionStatusUpdated event,
     Emitter<SubscriptionState> emit,
   ) {
+    final oldStatus = state.status;
+    final newStatus = event.status;
+
+    // If entitlement status changed (e.g. Expired -> Active or Active -> Expired),
+    // we MUST re-fetch offerings to update the "Intro Eligibility" (Trial Available) flag.
+    if (oldStatus.isSubscribed != newStatus.isSubscribed) {
+      _logger.info(
+        'Entitlement status changed (${oldStatus.isSubscribed} -> ${newStatus.isSubscribed}). Refreshing offerings.',
+      );
+      add(const SubscriptionEvent.offeringsRequested());
+    }
+
+    _scheduleExpirationTimer(newStatus);
+
     state.map(
       initial: (s) => emit(s.copyWith(status: event.status)),
       loading: (s) => emit(s.copyWith(status: event.status)),
@@ -103,6 +138,43 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
       },
       failure: (s) => emit(s.copyWith(status: event.status)),
     );
+  }
+
+  Timer? _expirationTimer;
+
+  void _scheduleExpirationTimer(SubscriptionStatus status) {
+    _expirationTimer?.cancel();
+    _expirationTimer = null;
+
+    if (status.isSubscribed && status.expirationDate != null) {
+      final now = DateTime.now();
+      if (status.expirationDate!.isAfter(now)) {
+        final duration = status.expirationDate!.difference(now);
+        // Add a small buffer (2 seconds) to ensure server side processing is complete/SDK cache is likely invalidated
+        final timerDuration = duration + const Duration(seconds: 2);
+
+        _logger.info(
+          'Scheduling proactive expiration refresh in ${timerDuration.inSeconds} seconds (at ${status.expirationDate}).',
+        );
+
+        _expirationTimer = Timer(timerDuration, () {
+          _logger.info('Expiration timer fired. Triggering refresh.');
+          add(const SubscriptionEvent.expirationReached());
+        });
+      }
+    }
+  }
+
+  Future<void> _onExpirationReached(
+    SubscriptionExpirationReached event,
+    Emitter<SubscriptionState> emit,
+  ) async {
+    _logger.info(
+      'Processing expiration event. Invalidating cache and refreshing.',
+    );
+    // Force a status refresh
+    _watchSubscriptionStatus.refresh();
+    add(const SubscriptionEvent.offeringsRequested());
   }
 
   Future<void> _onPurchaseRequested(
@@ -168,7 +240,9 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
         emit(SubscriptionState.failure(status: state.status, failure: failure));
       },
       (status) {
-        _logger.info('Restore purchases successful');
+        _logger.info(
+          'Restore purchases successful. Active: ${status.isSubscribed}',
+        );
         emit(SubscriptionState.initial(status: status));
         add(const SubscriptionEvent.offeringsRequested());
       },
@@ -202,8 +276,19 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
     );
   }
 
+  void _onPlanToggled(
+    SubscriptionPlanToggled event,
+    Emitter<SubscriptionState> emit,
+  ) {
+    state.maybeMap(
+      loaded: (s) => emit(s.copyWith(isAnnualSelection: event.isAnnual)),
+      orElse: () => null,
+    );
+  }
+
   @override
   Future<void> close() {
+    _expirationTimer?.cancel();
     _statusSubscription?.cancel();
     _authSubscription?.cancel();
     return super.close();

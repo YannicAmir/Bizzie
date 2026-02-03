@@ -295,8 +295,6 @@ import '../features/subscription/data/datasources/subscription_remote_data_sourc
     as _i1061;
 import '../features/subscription/data/repositories/subscription_repository_impl.dart'
     as _i221;
-import '../features/subscription/domain/interfaces/i_subscription_remote_data_source.dart'
-    as _i971;
 import '../features/subscription/domain/interfaces/i_subscription_repository.dart'
     as _i659;
 import '../features/subscription/domain/usecases/get_offerings_use_case.dart'
@@ -342,8 +340,8 @@ import '../services/notification_service.dart' as _i941;
 import 'register_module.dart' as _i291;
 
 const String _qa = 'qa';
-const String _dev = 'dev';
 const String _prod = 'prod';
+const String _dev = 'dev';
 
 extension GetItInjectableX on _i174.GetIt {
   // initializes the registration of main-scope dependencies inside of GetIt
@@ -405,6 +403,10 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i481.IUserRemoteDataSource>(
       () => _i481.UserRemoteDataSource(gh<_i52.FirestoreService>()),
     );
+    gh.lazySingleton<_i1061.SubscriptionRemoteDataSource>(
+      () => _i1061.SubscriptionRemoteDataSource(gh<_i915.AppEnv>()),
+      registerFor: {_prod, _qa, _dev},
+    );
     gh.factory<_i114.IWatchlistLocalDataSource>(
       () => _i114.WatchlistLocalDataSource(gh<_i460.SharedPreferences>()),
     );
@@ -448,6 +450,11 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i877.RemoteAuthDataSourceImpl(
         gh<_i59.FirebaseAuth>(),
         gh<_i116.GoogleSignIn>(),
+      ),
+    );
+    gh.lazySingleton<_i659.ISubscriptionRepository>(
+      () => _i221.SubscriptionRepositoryImpl(
+        gh<_i1061.SubscriptionRemoteDataSource>(),
       ),
     );
     gh.lazySingleton<_i1039.IWatchlistRepository>(
@@ -519,6 +526,30 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i561.GetUserUseCase>(
       () => _i561.GetUserUseCase(gh<_i615.IUserRepository>()),
     );
+    gh.lazySingleton<_i343.GetOfferingsUseCase>(
+      () => _i343.GetOfferingsUseCase(gh<_i659.ISubscriptionRepository>()),
+    );
+    gh.lazySingleton<_i217.GetSubscriptionStatusUseCase>(
+      () => _i217.GetSubscriptionStatusUseCase(
+        gh<_i659.ISubscriptionRepository>(),
+      ),
+    );
+    gh.lazySingleton<_i803.PurchaseSubscriptionUseCase>(
+      () => _i803.PurchaseSubscriptionUseCase(
+        gh<_i659.ISubscriptionRepository>(),
+      ),
+    );
+    gh.lazySingleton<_i566.RestorePurchasesUseCase>(
+      () => _i566.RestorePurchasesUseCase(gh<_i659.ISubscriptionRepository>()),
+    );
+    gh.lazySingleton<_i15.SyncIdentityUseCase>(
+      () => _i15.SyncIdentityUseCase(gh<_i659.ISubscriptionRepository>()),
+    );
+    gh.lazySingleton<_i630.WatchSubscriptionStatusUseCase>(
+      () => _i630.WatchSubscriptionStatusUseCase(
+        gh<_i659.ISubscriptionRepository>(),
+      ),
+    );
     gh.lazySingleton<_i608.IAiProductSearchRepository>(
       () =>
           _i1008.AiProductSearchRepository(gh<_i977.AiProductSearchService>()),
@@ -539,9 +570,6 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i422.GetDailyBrandsUseCase>(
       () => _i422.GetDailyBrandsUseCase(gh<_i990.ISelectBrandsRepository>()),
-    );
-    gh.lazySingleton<_i971.ISubscriptionRemoteDataSource>(
-      () => _i1061.SubscriptionRemoteDataSource(gh<_i915.AppEnv>()),
     );
     gh.lazySingleton<_i200.UserBloc>(
       () => _i200.UserBloc(gh<_i561.GetUserUseCase>()),
@@ -622,12 +650,6 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i423.RatiosRemoteDataSourceImpl(
         gh<_i361.Dio>(instanceName: 'FmpDio'),
         gh<_i216.ConfigService>(),
-      ),
-    );
-    gh.lazySingleton<_i659.ISubscriptionRepository>(
-      () => _i221.SubscriptionRepositoryImpl(
-        gh<_i971.ISubscriptionRemoteDataSource>(),
-        gh<_i52.FirestoreService>(),
       ),
     );
     gh.lazySingleton<_i706.BusinessRemoteDataSource>(
@@ -751,30 +773,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i691.FindStockForProductUseCase>(
       () => _i691.FindStockForProductUseCase(
         gh<_i608.IAiProductSearchRepository>(),
-      ),
-    );
-    gh.lazySingleton<_i343.GetOfferingsUseCase>(
-      () => _i343.GetOfferingsUseCase(gh<_i659.ISubscriptionRepository>()),
-    );
-    gh.lazySingleton<_i217.GetSubscriptionStatusUseCase>(
-      () => _i217.GetSubscriptionStatusUseCase(
-        gh<_i659.ISubscriptionRepository>(),
-      ),
-    );
-    gh.lazySingleton<_i803.PurchaseSubscriptionUseCase>(
-      () => _i803.PurchaseSubscriptionUseCase(
-        gh<_i659.ISubscriptionRepository>(),
-      ),
-    );
-    gh.lazySingleton<_i566.RestorePurchasesUseCase>(
-      () => _i566.RestorePurchasesUseCase(gh<_i659.ISubscriptionRepository>()),
-    );
-    gh.lazySingleton<_i15.SyncIdentityUseCase>(
-      () => _i15.SyncIdentityUseCase(gh<_i659.ISubscriptionRepository>()),
-    );
-    gh.lazySingleton<_i630.WatchSubscriptionStatusUseCase>(
-      () => _i630.WatchSubscriptionStatusUseCase(
-        gh<_i659.ISubscriptionRepository>(),
       ),
     );
     gh.factory<_i178.CompanyFcpsBloc>(
@@ -914,7 +912,7 @@ extension GetItInjectableX on _i174.GetIt {
         deleteAccount: gh<_i739.DeleteAccount>(),
       ),
     );
-    gh.factory<_i1066.SubscriptionBloc>(
+    gh.lazySingleton<_i1066.SubscriptionBloc>(
       () => _i1066.SubscriptionBloc(
         gh<_i630.WatchSubscriptionStatusUseCase>(),
         gh<_i15.SyncIdentityUseCase>(),

@@ -38,5 +38,7 @@ Future<void> bootstrap(
   getIt<StockSearchService>().initialize();
 
   final initialRoute = await getIt<INotificationService>().getInitialRoute();
-  runApp(BizzieApp(initialNotificationRoute: initialRoute));
+  runApp(
+    BizzieApp(environment: environment, initialNotificationRoute: initialRoute),
+  );
 }
