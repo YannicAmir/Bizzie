@@ -46,8 +46,10 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
     on<SubscriptionUserIdentityChanged>(_onUserIdentityChanged);
     on<SubscriptionOfferingsRequested>(_onOfferingsRequested);
     on<SubscriptionPlanToggled>(_onPlanToggled);
+    on<SubscriptionPurchaseUICompleted>(_onPurchaseUICompleted);
     on<SubscriptionAppResumed>(_onAppResumed);
     on<SubscriptionExpirationReached>(_onExpirationReached);
+    on<SubscriptionResetPurchaseState>(_onResetPurchaseState);
 
     _authSubscription = _authBloc.stream.listen((authState) {
       if (authState is AuthAuthenticated) {
@@ -56,6 +58,30 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
         add(const SubscriptionEvent.userIdentityChanged(null));
       }
     });
+  }
+
+  Future<void> _onResetPurchaseState(
+    SubscriptionResetPurchaseState event,
+    Emitter<SubscriptionState> emit,
+  ) async {
+    _logger.info('Resetting purchase state (Safety Fallback)');
+    state.mapOrNull(
+      loaded: (s) =>
+          emit(s.copyWith(isPurchasing: false, isLocalSuccessOverride: false)),
+    );
+  }
+
+  Future<void> _onPurchaseUICompleted(
+    SubscriptionPurchaseUICompleted event,
+    Emitter<SubscriptionState> emit,
+  ) async {
+    state.mapOrNull(
+      loaded: (s) {
+        emit(s.copyWith(isPurchasing: false, isLocalSuccessOverride: false));
+        // Now that UI is ready, refresh offerings to reflect new eligibility
+        add(const SubscriptionEvent.offeringsRequested());
+      },
+    );
   }
 
   Future<void> _onAppResumed(
@@ -130,11 +156,9 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
       initial: (s) => emit(s.copyWith(status: event.status)),
       loading: (s) => emit(s.copyWith(status: event.status)),
       loaded: (s) {
-        if (s.isLocalSuccessOverride && event.status.isSubscribed) {
-          emit(s.copyWith(status: event.status, isLocalSuccessOverride: false));
-        } else if (!s.isLocalSuccessOverride) {
-          emit(s.copyWith(status: event.status));
-        }
+        // Do NOT clear isLocalSuccessOverride here.
+        // We rely on purchaseUICompleted event to clear it to avoid race conditions.
+        emit(s.copyWith(status: event.status));
       },
       failure: (s) => emit(s.copyWith(status: event.status)),
     );
@@ -216,7 +240,7 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
             s.copyWith(
               status: status,
               isLocalSuccessOverride: true,
-              isPurchasing: false,
+              isPurchasing: true,
             ),
           ),
           orElse: () => emit(SubscriptionState.initial(status: status)),
@@ -253,6 +277,21 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
     SubscriptionOfferingsRequested event,
     Emitter<SubscriptionState> emit,
   ) async {
+    // If we are in the middle of a purchase flow (isPurchasing = true),
+    // we MUST NOT update the state with new offerings.
+    // Doing so would:
+    // 1. Reset isPurchasing to false (unfreezing the UI early).
+    // 2. Update the UI with "post-purchase" data (e.g. removing free trial text)
+    //    while the native dialog is possibly still visible.
+    //
+    // The UI will signal completion via _onPurchaseUICompleted, at which point
+    // we will re-fetch offerings.
+    final currentState = state;
+    if (currentState is SubscriptionStateLoaded && currentState.isPurchasing) {
+      _logger.info('Offerings requested but blocked by active purchase flow.');
+      return;
+    }
+
     _logger.info('Offerings requested');
     final result = await _getOfferings(NoParams());
 

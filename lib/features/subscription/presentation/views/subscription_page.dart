@@ -24,11 +24,21 @@ class _SubscriptionPageState extends State<SubscriptionPage>
   bool _hasShownSuccess = false;
 
   bool _pendingSuccessOverlay = false;
+  bool? _wasSubscribed;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    // Initialize _wasSubscribed based on current BLoC state to handle initial load
+    final state = context.read<SubscriptionBloc>().state;
+    _wasSubscribed = state.status.isSubscribed;
+
+    // Safety: Reset purchase state when entering the page.
+    // This prevents "Infinite Loading" if a previous session left the BLoC in a dirty state.
+    context.read<SubscriptionBloc>().add(
+      const SubscriptionEvent.resetPurchaseState(),
+    );
   }
 
   @override
@@ -66,17 +76,28 @@ class _SubscriptionPageState extends State<SubscriptionPage>
                   );
                 }
 
+                bool shouldShowOverlay = false;
+
+                // Case 1: Explicit Purchase Success Override (e.g. Upgrade or new Purchase)
                 if (state.maybeMap(
                   loaded: (s) => s.isLocalSuccessOverride,
                   orElse: () => false,
                 )) {
-                  _scheduleSuccessOverlay();
+                  shouldShowOverlay = true;
                 }
 
-                if (state.status.isSubscribed && !state.isLoading) {
-                  if (state.failure == null) {
-                    _scheduleSuccessOverlay();
-                  }
+                // Case 2: State Transition (False -> True)
+                // This handles Restores or background updates where isLocalSuccessOverride might not be set
+                final isSubscribed = state.status.isSubscribed;
+                if (isSubscribed && (_wasSubscribed == false)) {
+                  shouldShowOverlay = true;
+                }
+
+                // Update tracker
+                _wasSubscribed = isSubscribed;
+
+                if (shouldShowOverlay) {
+                  _scheduleSuccessOverlay();
                 }
               },
               child: BlocBuilder<SubscriptionBloc, SubscriptionState>(
@@ -114,9 +135,14 @@ class _SubscriptionPageState extends State<SubscriptionPage>
   }
 
   void _scheduleSuccessOverlay() {
-    if (WidgetsBinding.instance.lifecycleState != AppLifecycleState.resumed) {
+    final currentState = WidgetsBinding.instance.lifecycleState;
+    print('[SubPage] _scheduleSuccessOverlay called. Lifecycle: $currentState');
+
+    if (currentState != AppLifecycleState.resumed) {
+      print('[SubPage] App not resumed. Setting Pending = true');
       _pendingSuccessOverlay = true;
     } else {
+      print('[SubPage] App resumed. Showing immediately.');
       _safeShowSuccessOverlay();
     }
   }
@@ -141,6 +167,12 @@ class _SubscriptionPageState extends State<SubscriptionPage>
           context.go(AppRoutes.home);
         }
       },
+    );
+
+    // Signal to the Bloc that the UI has handled the success state and is resumed,
+    // so it can safely transition out of the purchase/loading state.
+    context.read<SubscriptionBloc>().add(
+      const SubscriptionEvent.purchaseUICompleted(),
     );
   }
 }

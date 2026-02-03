@@ -35,7 +35,9 @@ abstract class SubscriptionPackageDto with _$SubscriptionPackageDto {
       priceString: p.storeProduct.priceString,
       price: p.storeProduct.price,
       currencyCode: p.storeProduct.currencyCode,
-      isEligibleForTrial: false,
+      // This represents STATIC availability of a trial.
+      // The Repository will combine this with dynamic eligibility checks.
+      isEligibleForTrial: p.storeProduct.introductoryPrice != null,
     );
   }
 

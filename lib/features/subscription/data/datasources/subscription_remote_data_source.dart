@@ -91,6 +91,11 @@ class SubscriptionRemoteDataSource implements ISubscriptionRemoteDataSource {
       final eligibilityMap =
           await Purchases.checkTrialOrIntroductoryPriceEligibility(productIds);
 
+      _logger.info('Trial Eligibility Check Results:');
+      eligibilityMap.forEach((key, value) {
+        _logger.info('Product: $key, Status: ${value.status}');
+      });
+
       return eligibilityMap.map(
         (key, value) => MapEntry(
           key,

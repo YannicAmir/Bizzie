@@ -62,13 +62,45 @@ class SubscriptionRepositoryImpl implements ISubscriptionRepository {
           .map((e) => e.productId)
           .toList();
 
+      // Fetch current status to determine if this is an "Upgrade" scenario
+      final statusDto = await _remoteDataSource.getSubscriptionStatus();
+      final currentDomainStatus = statusDto.toDomain();
+      final isCurrentlySubscribed = currentDomainStatus.isSubscribed;
+      final activeProductIds = currentDomainStatus.activeProductIds;
+
       final eligibilityMap = await _remoteDataSource.checkTrialEligibility(
         productIds,
       );
 
       final updatedPackages = domain.availablePackages.map((package) {
-        final isEligible = eligibilityMap[package.productId] ?? false;
-        return package.copyWith(isEligibleForTrial: isEligible);
+        final isDynamicallyEligible =
+            eligibilityMap[package.productId] ?? false;
+
+        // STATIC check comes from DTO (introPrice != null).
+        // DYNAMIC check comes from RevenueCat (isDynamicallyEligible).
+        final isStaticallyEligible = package.isEligibleForTrial;
+
+        bool finalEligibility = isDynamicallyEligible;
+
+        // OVERRIDE LOGIC:
+        // If RC says "Ineligible" but the product has a trial, AND the user is currently subscribed (Upgrade User),
+        // we assume Apple will offer the trial (Upgrade Offer).
+        //
+        // CRITICAL REFINEMENT:
+        // We MUST NOT override if the user is currently subscribed to THIS specific product.
+        // If activeProductIds contains package.productId, it means they are already on this plan (or it expired recently).
+        // In that case, no trial should be shown.
+        if (!isDynamicallyEligible &&
+            isStaticallyEligible &&
+            isCurrentlySubscribed &&
+            !activeProductIds.contains(package.productId)) {
+          _logger.info(
+            'Overriding eligibility for ${package.identifier} due to Upgrade Scenario.',
+          );
+          finalEligibility = true;
+        }
+
+        return package.copyWith(isEligibleForTrial: finalEligibility);
       }).toList();
 
       return Right(domain.copyWith(availablePackages: updatedPackages));

@@ -11,6 +11,7 @@ abstract class SubscriptionStatusDto with _$SubscriptionStatusDto {
   const factory SubscriptionStatusDto({
     required bool isSubscribed,
     required Set<String> activeEntitlements,
+    required Set<String> activeProductIds,
     DateTime? expirationDate,
   }) = _SubscriptionStatusDto;
 
@@ -18,10 +19,19 @@ abstract class SubscriptionStatusDto with _$SubscriptionStatusDto {
       _$SubscriptionStatusDtoFromJson(json);
 
   factory SubscriptionStatusDto.fromRevenueCat(CustomerInfo info) {
+    // DEBUG LOG
+    // ignore: avoid_print
+    print(
+      'DTO fromRevenueCat: Active Entitlements: ${info.entitlements.active.keys}',
+    );
+
     final entitlement = info.entitlements.active['plus'];
     return SubscriptionStatusDto(
       isSubscribed: entitlement != null,
       activeEntitlements: info.entitlements.active.keys.toSet(),
+      activeProductIds: info.entitlements.active.values
+          .map((e) => e.productIdentifier)
+          .toSet(),
       expirationDate: entitlement?.expirationDate != null
           ? DateTime.parse(entitlement!.expirationDate!)
           : null,
@@ -32,6 +42,7 @@ abstract class SubscriptionStatusDto with _$SubscriptionStatusDto {
     return SubscriptionStatus(
       isSubscribed: isSubscribed,
       activeEntitlements: activeEntitlements,
+      activeProductIds: activeProductIds,
       expirationDate: expirationDate,
     );
   }

@@ -14,6 +14,8 @@ abstract class SubscriptionEvent with _$SubscriptionEvent {
   ) = SubscriptionPurchaseRequested;
   const factory SubscriptionEvent.restoreRequested() =
       SubscriptionRestoreRequested;
+  const factory SubscriptionEvent.purchaseUICompleted() =
+      SubscriptionPurchaseUICompleted;
   const factory SubscriptionEvent.userIdentityChanged(String? uid) =
       SubscriptionUserIdentityChanged;
   const factory SubscriptionEvent.offeringsRequested() =
@@ -23,4 +25,6 @@ abstract class SubscriptionEvent with _$SubscriptionEvent {
   const factory SubscriptionEvent.appResumed() = SubscriptionAppResumed;
   const factory SubscriptionEvent.expirationReached() =
       SubscriptionExpirationReached;
+  const factory SubscriptionEvent.resetPurchaseState() =
+      SubscriptionResetPurchaseState;
 }

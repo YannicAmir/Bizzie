@@ -13,6 +13,9 @@ _SubscriptionStatusDto _$SubscriptionStatusDtoFromJson(
   activeEntitlements: (json['activeEntitlements'] as List<dynamic>)
       .map((e) => e as String)
       .toSet(),
+  activeProductIds: (json['activeProductIds'] as List<dynamic>)
+      .map((e) => e as String)
+      .toSet(),
   expirationDate: json['expirationDate'] == null
       ? null
       : DateTime.parse(json['expirationDate'] as String),
@@ -23,5 +26,6 @@ Map<String, dynamic> _$SubscriptionStatusDtoToJson(
 ) => <String, dynamic>{
   'isSubscribed': instance.isSubscribed,
   'activeEntitlements': instance.activeEntitlements.toList(),
+  'activeProductIds': instance.activeProductIds.toList(),
   'expirationDate': instance.expirationDate?.toIso8601String(),
 };

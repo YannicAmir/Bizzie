@@ -42,6 +42,7 @@ void main() {
     const tStatusDto = SubscriptionStatusDto(
       isSubscribed: true,
       activeEntitlements: {'plus'},
+      activeProductIds: {'productId'},
     );
     final tStatus = tStatusDto.toDomain();
 
