@@ -140,9 +140,6 @@ class _ContinueButton extends StatelessWidget {
       height: 56,
       child: BizziePrimaryButton(
         onPressed: () {
-          // Navigate to 'home_subscribe'. This atomically builds the stack [Home, Paywall].
-          // Because 'animate=onboarding' is set, the transition is Instant (No Flash).
-          // Because parentNavigatorKey is Root, it covers the Nav Bar (Full Screen).
           context.goNamed(
             'home_subscribe',
             queryParameters: {'animate': 'onboarding'},
