@@ -13,4 +13,5 @@ abstract class ISubscriptionRemoteDataSource {
   Future<SubscriptionStatusDto> getSubscriptionStatus();
   Future<void> refreshSubscriptionStatus();
   Stream<SubscriptionStatusDto> watchSubscriptionStatus();
+  Future<void> dispose();
 }

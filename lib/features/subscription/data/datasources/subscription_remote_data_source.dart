@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:purchases_flutter/purchases_flutter.dart';
+import 'package:flutter/foundation.dart';
 import 'package:bizzie/env/app_env.dart';
 import 'package:bizzie/features/subscription/data/dtos/subscription_status_dto.dart';
 import 'package:bizzie/features/subscription/data/dtos/subscription_offering_dto.dart';
@@ -11,7 +12,9 @@ import 'package:injectable/injectable.dart';
 
 import 'package:rxdart/rxdart.dart';
 
+import 'package:bizzie/core/error/exceptions.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
+import 'package:bizzie/core/utils/retry_util.dart';
 
 final _logger = BizzieLogger('SubscriptionRemoteDataSource');
 
@@ -20,18 +23,25 @@ class SubscriptionRemoteDataSource implements ISubscriptionRemoteDataSource {
   final AppEnv _env;
 
   final Map<String, Package> _cachedRcPackages = {};
+  bool _isInitialized = false;
 
   SubscriptionRemoteDataSource(this._env);
 
   @override
   Future<void> initialize() async {
+    if (_isInitialized) {
+      _logger.info('Subscription SDK already initialized. Skipping.');
+      return;
+    }
+
     try {
       _logger.info('Initializing Subscription SDK...');
-      await Purchases.setLogLevel(LogLevel.debug);
+      await Purchases.setLogLevel(kDebugMode ? LogLevel.debug : LogLevel.error);
       if (Platform.isIOS) {
         await Purchases.configure(
           PurchasesConfiguration(_env.revenueCatApiKeyIos),
         );
+        _isInitialized = true;
       }
     } catch (e, s) {
       _logger.severe('Subscription initialization failed', e, s);
@@ -41,60 +51,78 @@ class SubscriptionRemoteDataSource implements ISubscriptionRemoteDataSource {
 
   @override
   Future<void> logIn(String uid) async {
-    await Purchases.logIn(uid);
+    _logger.info('Logging in user to RevenueCat: $uid');
+    try {
+      await Purchases.logIn(uid);
+      _logger.info('RevenueCat logIn successful for: $uid');
+
+      await refreshSubscriptionStatus();
+    } catch (e, s) {
+      _logger.severe('RevenueCat logIn failed for uid: $uid', e, s);
+      rethrow;
+    }
   }
 
   @override
   Future<void> logOut() async {
-    await Purchases.logOut();
+    _logger.info('Logging out user from RevenueCat');
+    try {
+      await Purchases.logOut();
+
+      _cachedRcPackages.clear();
+      if (!_statusSubject.isClosed) {
+        _statusSubject.add(SubscriptionStatusDto.initial());
+      }
+
+      _logger.info('RevenueCat logOut successful');
+    } catch (e, s) {
+      _logger.severe('RevenueCat logOut failed', e, s);
+      rethrow;
+    }
   }
 
   @override
   Future<SubscriptionOfferingDto> getOfferings() async {
-    try {
-      _logger.info('Fetching offerings from RevenueCat...');
-      final offerings = await Purchases.getOfferings();
+    return RetryUtil.retry(
+      task: () async {
+        _logger.info('Fetching offerings from RevenueCat...');
+        final offerings = await Purchases.getOfferings();
 
-      final current = offerings.current;
+        final current = offerings.current;
 
-      if (current == null) {
-        _logger.warning(
-          'No current offering found in RevenueCat. Available identifiers: ${offerings.all.keys}',
-        );
-        return const SubscriptionOfferingDto(
-          identifier: 'none',
-          serverDescription: 'No offerings found',
-          availablePackages: [],
-        );
-      }
+        if (current == null) {
+          _logger.warning(
+            'No current offering found in RevenueCat. Available identifiers: ${offerings.all.keys}',
+          );
+          return const SubscriptionOfferingDto(
+            identifier: 'none',
+            serverDescription: 'No offerings found',
+            availablePackages: [],
+          );
+        }
 
-      _cachedRcPackages.clear();
-      for (final package in current.availablePackages) {
-        _cachedRcPackages[package.identifier] = package;
-        _logger.info(
-          'Package: ${package.identifier}, Product: ${package.storeProduct.identifier}, Trial: ${package.storeProduct.introductoryPrice != null}',
-        );
-      }
+        _cachedRcPackages.clear();
+        for (final package in current.availablePackages) {
+          _cachedRcPackages[package.identifier] = package;
+        }
 
-      return SubscriptionOfferingDto.fromRevenueCat(current);
-    } catch (e, s) {
-      _logger.severe('Failed to fetch offerings', e, s);
-      rethrow;
-    }
+        return SubscriptionOfferingDto.fromRevenueCat(current);
+      },
+    ).catchError((e, s) {
+      _logger.severe('Failed to fetch offerings after retries', e, s);
+      throw e;
+    });
   }
 
   @override
   Future<Map<String, bool>> checkTrialEligibility(
     List<String> productIds,
   ) async {
+    _logger.info('Checking trial eligibility for products: $productIds');
     try {
       final eligibilityMap =
           await Purchases.checkTrialOrIntroductoryPriceEligibility(productIds);
-
-      _logger.info('Trial Eligibility Check Results:');
-      eligibilityMap.forEach((key, value) {
-        _logger.info('Product: $key, Status: ${value.status}');
-      });
+      _logger.info('Trial eligibility check complete');
 
       return eligibilityMap.map(
         (key, value) => MapEntry(
@@ -112,58 +140,76 @@ class SubscriptionRemoteDataSource implements ISubscriptionRemoteDataSource {
   Future<SubscriptionStatusDto> purchasePackage(
     SubscriptionPackage package,
   ) async {
-    try {
-      _logger.info('Initiating purchase for package: ${package.identifier}');
-      final rcPackage = _cachedRcPackages[package.identifier];
+    return RetryUtil.retry(
+      maxRetries: 2,
+      retryIf: (e) {
+        final error = e.toString().toLowerCase();
+        return error.contains('timeout') || error.contains('socket');
+      },
+      task: () async {
+        _logger.info('Initiating purchase for package: ${package.identifier}');
+        final rcPackage = _cachedRcPackages[package.identifier];
 
-      if (rcPackage == null) {
-        final error = 'Package ${package.identifier} not found in cache';
-        _logger.severe(error);
-        throw Exception(
-          '$error. Ensure getOfferings() was called before purchasing.',
+        if (rcPackage == null) {
+          final error = 'Package ${package.identifier} not found in cache';
+          _logger.severe(error);
+          throw SubscriptionException(
+            message:
+                '$error. Ensure getOfferings() was called before purchasing.',
+          );
+        }
+
+        final params = PurchaseParams.package(rcPackage);
+        final purchaseResult = await Purchases.purchase(params);
+
+        _logger.info('Purchase successful for ${package.identifier}');
+        return SubscriptionStatusDto.fromRevenueCat(
+          purchaseResult.customerInfo,
         );
-      }
-
-      final params = PurchaseParams.package(rcPackage);
-      final purchaseResult = await Purchases.purchase(params);
-
-      _logger.info('Purchase successful for ${package.identifier}');
-      return SubscriptionStatusDto.fromRevenueCat(purchaseResult.customerInfo);
-    } catch (e, s) {
+      },
+    ).catchError((e, s) {
       _logger.severe('Purchase failed for ${package.identifier}', e, s);
-      rethrow;
-    }
+      throw e;
+    });
   }
 
   @override
   Future<SubscriptionStatusDto> restorePurchases() async {
-    try {
-      _logger.info('Restoring purchases...');
-      final customerInfo = await Purchases.restorePurchases();
-      return SubscriptionStatusDto.fromRevenueCat(customerInfo);
-    } catch (e, s) {
-      _logger.severe('Restore purchases failed', e, s);
-      rethrow;
-    }
+    return RetryUtil.retry(
+      task: () async {
+        _logger.info('Restoring purchases...');
+        final customerInfo = await Purchases.restorePurchases();
+        return SubscriptionStatusDto.fromRevenueCat(customerInfo);
+      },
+    ).catchError((e, s) {
+      _logger.severe('Restore purchases failed after retries', e, s);
+      throw e;
+    });
   }
 
   @override
   Future<SubscriptionStatusDto> getSubscriptionStatus() async {
-    try {
-      final customerInfo = await Purchases.getCustomerInfo();
-      return SubscriptionStatusDto.fromRevenueCat(customerInfo);
-    } catch (e, s) {
-      _logger.severe('Failed to get customer info', e, s);
-      rethrow;
-    }
+    return RetryUtil.retry(
+      task: () async {
+        _logger.info('Fetching current subscription status...');
+        final customerInfo = await Purchases.getCustomerInfo();
+        _logger.info('Fetched subscription status successfully');
+        return SubscriptionStatusDto.fromRevenueCat(customerInfo);
+      },
+    ).catchError((e, s) {
+      _logger.severe('Failed to get customer info after retries', e, s);
+      throw e;
+    });
   }
 
   final _statusSubject = BehaviorSubject<SubscriptionStatusDto>();
   bool _isListening = false;
+  CustomerInfoUpdateListener? _rcListener;
 
   @override
   Stream<SubscriptionStatusDto> watchSubscriptionStatus() {
     if (!_isListening) {
+      _logger.info('Starting subscription status listener');
       _isListening = true;
 
       getSubscriptionStatus().then((dto) {
@@ -172,14 +218,13 @@ class SubscriptionRemoteDataSource implements ISubscriptionRemoteDataSource {
         }
       });
 
-      Purchases.addCustomerInfoUpdateListener((info) {
-        _logger.info(
-          'CustomerInfo updated from RevenueCat listener. Active Entitlements: ${info.entitlements.active.keys}',
-        );
+      _rcListener = (info) {
+        _logger.info('Subscription update received from RevenueCat');
         if (!_statusSubject.isClosed) {
           _statusSubject.add(SubscriptionStatusDto.fromRevenueCat(info));
         }
-      });
+      };
+      Purchases.addCustomerInfoUpdateListener(_rcListener!);
     }
 
     return _statusSubject.stream;
@@ -187,18 +232,33 @@ class SubscriptionRemoteDataSource implements ISubscriptionRemoteDataSource {
 
   @override
   Future<void> refreshSubscriptionStatus() async {
-    try {
-      _logger.info('Manually refreshing subscription status...');
-      await Purchases.invalidateCustomerInfoCache();
-      final customerInfo = await Purchases.getCustomerInfo();
-      _logger.info(
-        'Manual refresh complete. Active Entitlements: ${customerInfo.entitlements.active.keys}',
+    return RetryUtil.retry(
+      task: () async {
+        _logger.info('Manually refreshing subscription status...');
+        await Purchases.invalidateCustomerInfoCache();
+        final customerInfo = await Purchases.getCustomerInfo();
+        if (!_statusSubject.isClosed) {
+          _statusSubject.add(
+            SubscriptionStatusDto.fromRevenueCat(customerInfo),
+          );
+        }
+      },
+    ).catchError((e, s) {
+      _logger.severe(
+        'Failed to refresh subscription status after retries',
+        e,
+        s,
       );
-      if (!_statusSubject.isClosed) {
-        _statusSubject.add(SubscriptionStatusDto.fromRevenueCat(customerInfo));
-      }
-    } catch (e, s) {
-      _logger.severe('Failed to refresh subscription status', e, s);
+    });
+  }
+
+  @override
+  Future<void> dispose() async {
+    _logger.info('Disposing SubscriptionRemoteDataSource...');
+    if (_rcListener != null) {
+      Purchases.removeCustomerInfoUpdateListener(_rcListener!);
+      _rcListener = null;
     }
+    await _statusSubject.close();
   }
 }

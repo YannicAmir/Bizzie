@@ -136,13 +136,10 @@ class _SubscriptionPageState extends State<SubscriptionPage>
 
   void _scheduleSuccessOverlay() {
     final currentState = WidgetsBinding.instance.lifecycleState;
-    print('[SubPage] _scheduleSuccessOverlay called. Lifecycle: $currentState');
 
     if (currentState != AppLifecycleState.resumed) {
-      print('[SubPage] App not resumed. Setting Pending = true');
       _pendingSuccessOverlay = true;
     } else {
-      print('[SubPage] App resumed. Showing immediately.');
       _safeShowSuccessOverlay();
     }
   }

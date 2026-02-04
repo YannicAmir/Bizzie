@@ -15,6 +15,12 @@ abstract class SubscriptionOfferingDto with _$SubscriptionOfferingDto {
     required List<SubscriptionPackageDto> availablePackages,
   }) = _SubscriptionOfferingDto;
 
+  factory SubscriptionOfferingDto.initial() => const SubscriptionOfferingDto(
+    identifier: '',
+    serverDescription: '',
+    availablePackages: [],
+  );
+
   factory SubscriptionOfferingDto.fromJson(Map<String, dynamic> json) =>
       _$SubscriptionOfferingDtoFromJson(json);
 

@@ -15,6 +15,12 @@ abstract class SubscriptionStatusDto with _$SubscriptionStatusDto {
     DateTime? expirationDate,
   }) = _SubscriptionStatusDto;
 
+  factory SubscriptionStatusDto.initial() => const SubscriptionStatusDto(
+    isSubscribed: false,
+    activeEntitlements: {},
+    activeProductIds: {},
+  );
+
   factory SubscriptionStatusDto.fromJson(Map<String, dynamic> json) =>
       _$SubscriptionStatusDtoFromJson(json);
 
@@ -26,10 +32,17 @@ abstract class SubscriptionStatusDto with _$SubscriptionStatusDto {
       activeProductIds: info.entitlements.active.values
           .map((e) => e.productIdentifier)
           .toSet(),
-      expirationDate: entitlement?.expirationDate != null
-          ? DateTime.parse(entitlement!.expirationDate!)
-          : null,
+      expirationDate: _safeParseDate(entitlement?.expirationDate),
     );
+  }
+
+  static DateTime? _safeParseDate(String? dateString) {
+    if (dateString == null) return null;
+    try {
+      return DateTime.parse(dateString);
+    } catch (e) {
+      return null;
+    }
   }
 
   SubscriptionStatus toDomain() {

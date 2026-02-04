@@ -28,7 +28,11 @@ class SubscriptionRepositoryImpl implements ISubscriptionRepository {
 
   @override
   Stream<SubscriptionStatus> watchSubscriptionStatus(String userId) {
+    _logger.info('Starting subscription status watch for user: $userId');
     return _remoteDataSource.watchSubscriptionStatus().map((dto) {
+      _logger.info(
+        'Subscription update received in repo for $userId (Active: ${dto.isSubscribed})',
+      );
       return dto.toDomain();
     }).asBroadcastStream();
   }
@@ -44,8 +48,12 @@ class SubscriptionRepositoryImpl implements ISubscriptionRepository {
 
   @override
   Future<Either<Failure, SubscriptionStatus>> getSubscriptionStatus() async {
+    _logger.info('Fetching current subscription status...');
     try {
       final dto = await _remoteDataSource.getSubscriptionStatus();
+      _logger.info(
+        'Successfully retrieved subscription status (Active: ${dto.isSubscribed})',
+      );
       return Right(dto.toDomain());
     } catch (e, s) {
       return Left(_handleError(e, s, 'Failed to get subscription status'));
@@ -54,6 +62,7 @@ class SubscriptionRepositoryImpl implements ISubscriptionRepository {
 
   @override
   Future<Either<Failure, SubscriptionOffering>> getOfferings() async {
+    _logger.info('Retrieving subscription offerings...');
     try {
       final dto = await _remoteDataSource.getOfferings();
       final domain = dto.toDomain();
@@ -62,6 +71,7 @@ class SubscriptionRepositoryImpl implements ISubscriptionRepository {
           .map((e) => e.productId)
           .toList();
 
+      _logger.info('Checking trial eligibility for products: $productIds');
       final eligibilityMap = await _remoteDataSource.checkTrialEligibility(
         productIds,
       );
@@ -70,18 +80,14 @@ class SubscriptionRepositoryImpl implements ISubscriptionRepository {
         final isDynamicallyEligible =
             eligibilityMap[package.productId] ?? false;
 
-        // STATIC check comes from DTO (introPrice != null).
-        // DYNAMIC check comes from RevenueCat (isDynamicallyEligible).
-        // final isStaticallyEligible = package.isEligibleForTrial;
-
         bool finalEligibility = isDynamicallyEligible;
-
-        // REVERTED: Upgrade Logic Override removed.
-        // We trust RevenueCat. Active Upgrades are Ineligible. Expired are Eligible.
 
         return package.copyWith(isEligibleForTrial: finalEligibility);
       }).toList();
 
+      _logger.info(
+        'Offerings retrieved successfully with trial eligibility data.',
+      );
       return Right(domain.copyWith(availablePackages: updatedPackages));
     } catch (e, s) {
       return Left(_handleError(e, s, 'Failed to get offerings'));
@@ -92,8 +98,14 @@ class SubscriptionRepositoryImpl implements ISubscriptionRepository {
   Future<Either<Failure, SubscriptionStatus>> purchasePackage(
     SubscriptionPackage package,
   ) async {
+    _logger.info(
+      'Attempting to purchase package: ${package.identifier} (Product: ${package.productId})',
+    );
     try {
       final dto = await _remoteDataSource.purchasePackage(package);
+      _logger.info(
+        'Purchase flow completed successfully for ${package.identifier}',
+      );
       return Right(dto.toDomain());
     } catch (e, s) {
       return Left(
