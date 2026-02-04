@@ -19,8 +19,10 @@ class SubscriptionRepositoryImpl implements ISubscriptionRepository {
 
   @override
   Future<void> initialize() async {
+    _logger.info('Initializing subscription service...');
     try {
       await _remoteDataSource.initialize();
+      _logger.info('Subscription service initialized successfully.');
     } catch (e, s) {
       _logger.severe('Subscription initialization failed', e, s);
     }
@@ -38,11 +40,14 @@ class SubscriptionRepositoryImpl implements ISubscriptionRepository {
   }
 
   @override
-  Future<void> refreshSubscriptionStatus() async {
+  Future<Either<Failure, void>> refreshSubscriptionStatus() async {
+    _logger.info('Manually refreshing subscription status...');
     try {
       await _remoteDataSource.refreshSubscriptionStatus();
+      _logger.info('Subscription status refresh command sent successfully.');
+      return const Right(null);
     } catch (e, s) {
-      _logger.severe('Failed to refresh subscription status (repo)', e, s);
+      return Left(_handleError(e, s, 'Failed to refresh subscription status'));
     }
   }
 
@@ -116,8 +121,12 @@ class SubscriptionRepositoryImpl implements ISubscriptionRepository {
 
   @override
   Future<Either<Failure, SubscriptionStatus>> restorePurchases() async {
+    _logger.info('Restoring purchases...');
     try {
       final dto = await _remoteDataSource.restorePurchases();
+      _logger.info(
+        'Restore purchases completed. Status: Subscribed=${dto.isSubscribed}',
+      );
       return Right(dto.toDomain());
     } catch (e, s) {
       return Left(_handleError(e, s, 'Restore purchases failed'));
@@ -135,8 +144,10 @@ class SubscriptionRepositoryImpl implements ISubscriptionRepository {
 
   @override
   Future<Either<Failure, void>> logIn(String uid) async {
+    _logger.info('Logging in to subscription service for uid: $uid');
     try {
       await _remoteDataSource.logIn(uid);
+      _logger.info('Successfully logged in to subscription service for $uid');
       return const Right(null);
     } catch (e, s) {
       return Left(
@@ -147,8 +158,10 @@ class SubscriptionRepositoryImpl implements ISubscriptionRepository {
 
   @override
   Future<Either<Failure, void>> logOut() async {
+    _logger.info('Logging out of subscription service...');
     try {
       await _remoteDataSource.logOut();
+      _logger.info('Successfully logged out of subscription service.');
       return const Right(null);
     } catch (e, s) {
       return Left(

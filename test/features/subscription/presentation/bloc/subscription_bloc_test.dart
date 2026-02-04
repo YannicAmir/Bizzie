@@ -14,15 +14,20 @@ import 'package:bizzie/features/subscription/domain/usecases/purchase_subscripti
 import 'package:bizzie/features/subscription/domain/usecases/restore_purchases_use_case.dart';
 import 'package:bizzie/features/subscription/domain/usecases/sync_identity_use_case.dart';
 import 'package:bizzie/features/subscription/domain/usecases/watch_subscription_status_use_case.dart';
+import 'package:bizzie/features/subscription/domain/usecases/refresh_subscription_status_use_case.dart';
 import 'package:bizzie/features/subscription/presentation/bloc/subscription_bloc.dart';
 import 'package:bizzie/features/subscription/presentation/bloc/subscription_event.dart';
 import 'package:bizzie/features/subscription/presentation/bloc/subscription_state.dart';
+import 'package:bizzie/features/subscription/domain/enums/subscription_package_type.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
 class MockWatchSubscriptionStatusUseCase extends Mock
     implements WatchSubscriptionStatusUseCase {}
+
+class MockRefreshSubscriptionStatusUseCase extends Mock
+    implements RefreshSubscriptionStatusUseCase {}
 
 class MockSyncIdentityUseCase extends Mock implements SyncIdentityUseCase {}
 
@@ -38,6 +43,7 @@ class MockAuthBloc extends MockBloc<AuthEvent, AuthState> implements AuthBloc {}
 
 void main() {
   late MockWatchSubscriptionStatusUseCase mockWatchStatus;
+  late MockRefreshSubscriptionStatusUseCase mockRefreshStatus;
   late MockSyncIdentityUseCase mockSyncIdentity;
   late MockPurchaseSubscriptionUseCase mockPurchase;
   late MockRestorePurchasesUseCase mockRestore;
@@ -48,7 +54,7 @@ void main() {
     id: 'annual_id',
     identifier: 'annual_plus',
     productId: 'io.getbizzie.bizzieapp.plus.annual.full.dev',
-    packageType: 'annual',
+    packageType: SubscriptionPackageType.annual,
     title: 'Annual Plus',
     description: 'Annual Plus description',
     priceString: '\$99.00',
@@ -60,7 +66,7 @@ void main() {
     id: 'monthly_id',
     identifier: 'monthly_plus',
     productId: 'io.getbizzie.bizzieapp.plus.monthly.full.dev',
-    packageType: 'monthly',
+    packageType: SubscriptionPackageType.monthly,
     title: 'Monthly Plus',
     description: 'Monthly Plus description',
     priceString: '\$9.99',
@@ -72,7 +78,7 @@ void main() {
     id: 'discount_id',
     identifier: 'annual_plus_discount',
     productId: 'io.getbizzie.bizzieapp.plus.annual.discount.dev',
-    packageType: 'annual',
+    packageType: SubscriptionPackageType.annual,
     title: 'Discounted Plus',
     description: 'Discounted description',
     priceString: '\$49.00',
@@ -98,13 +104,13 @@ void main() {
 
   setUp(() {
     mockWatchStatus = MockWatchSubscriptionStatusUseCase();
+    mockRefreshStatus = MockRefreshSubscriptionStatusUseCase();
     mockSyncIdentity = MockSyncIdentityUseCase();
     mockPurchase = MockPurchaseSubscriptionUseCase();
     mockRestore = MockRestorePurchasesUseCase();
     mockGetOfferings = MockGetOfferingsUseCase();
     mockAuthBloc = MockAuthBloc();
 
-    // Default auth state
     when(
       () => mockAuthBloc.state,
     ).thenReturn(const AuthState.unauthenticated());
@@ -114,7 +120,6 @@ void main() {
       initialState: const AuthState.unauthenticated(),
     );
 
-    // Default global stubs
     when(
       () => mockSyncIdentity(any()),
     ).thenAnswer((_) async => const Right(null));
@@ -122,12 +127,15 @@ void main() {
       () => mockGetOfferings(any()),
     ).thenAnswer((_) async => Right(tOffering));
     when(() => mockWatchStatus(any())).thenAnswer((_) => const Stream.empty());
-    when(() => mockWatchStatus.refresh()).thenAnswer((_) async {});
+    when(
+      () => mockRefreshStatus(any()),
+    ).thenAnswer((_) async => const Right(null));
   });
 
   SubscriptionBloc createBloc() {
     return SubscriptionBloc(
       mockWatchStatus,
+      mockRefreshStatus,
       mockSyncIdentity,
       mockPurchase,
       mockRestore,
@@ -279,7 +287,7 @@ void main() {
             true,
           ),
           isA<SubscriptionStateLoaded>()
-              .having((s) => s.isPurchasing, 'isPurchasing', false)
+              .having((s) => s.isPurchasing, 'isPurchasing', true)
               .having((s) => s.isLocalSuccessOverride, 'localSuccess', true)
               .having((s) => s.status.isSubscribed, 'subscribed', true),
         ],
@@ -394,7 +402,7 @@ void main() {
         await Future.delayed(const Duration(milliseconds: 2200));
 
         // 4. Verify refresh was called
-        verify(() => mockWatchStatus.refresh()).called(1);
+        verify(() => mockRefreshStatus(any())).called(1);
         verify(
           () => mockGetOfferings(any()),
         ).called(2); // 1 from status change, 1 from expiration refresh

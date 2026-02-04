@@ -6,6 +6,7 @@ import 'package:bizzie/features/subscription/data/interfaces/i_subscription_remo
 import 'package:bizzie/features/subscription/domain/models/subscription_offering.dart';
 import 'package:bizzie/features/subscription/domain/models/subscription_package.dart';
 import 'package:bizzie/features/subscription/domain/models/subscription_status.dart';
+import 'package:bizzie/features/subscription/domain/enums/subscription_package_type.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
@@ -27,7 +28,7 @@ void main() {
       id: 'id',
       identifier: 'identifier',
       productId: 'io.getbizzie.bizzieapp.plus.annual.full.dev',
-      packageType: 'custom',
+      packageType: SubscriptionPackageType.annual,
       title: 'title',
       description: 'description',
       priceString: '\$0.00',
@@ -157,6 +158,7 @@ void main() {
       setUp(() {
         tPackage = MockSubscriptionPackage();
         when(() => tPackage.identifier).thenReturn('annual_plus');
+        when(() => tPackage.productId).thenReturn('productId');
       });
 
       test('purchasePackage_success_returnsSubscriptionStatus', () async {

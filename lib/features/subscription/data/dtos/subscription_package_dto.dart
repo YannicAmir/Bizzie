@@ -1,4 +1,5 @@
 import 'package:bizzie/features/subscription/domain/models/subscription_package.dart';
+import 'package:bizzie/features/subscription/domain/enums/subscription_package_type.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 
@@ -12,7 +13,7 @@ abstract class SubscriptionPackageDto with _$SubscriptionPackageDto {
     required String id,
     required String identifier,
     required String productId,
-    required String packageType,
+    required SubscriptionPackageType packageType,
     required String title,
     required String description,
     required String priceString,
@@ -25,7 +26,7 @@ abstract class SubscriptionPackageDto with _$SubscriptionPackageDto {
     id: '',
     identifier: '',
     productId: '',
-    packageType: '',
+    packageType: SubscriptionPackageType.unknown,
     title: '',
     description: '',
     priceString: '',
@@ -41,7 +42,7 @@ abstract class SubscriptionPackageDto with _$SubscriptionPackageDto {
       id: p.identifier,
       identifier: p.identifier,
       productId: p.storeProduct.identifier,
-      packageType: p.packageType.toString(),
+      packageType: _mapPackageType(p.packageType),
       title: p.storeProduct.title,
       description: p.storeProduct.description,
       priceString: p.storeProduct.priceString,
@@ -49,6 +50,27 @@ abstract class SubscriptionPackageDto with _$SubscriptionPackageDto {
       currencyCode: p.storeProduct.currencyCode,
       isEligibleForTrial: p.storeProduct.introductoryPrice != null,
     );
+  }
+
+  static SubscriptionPackageType _mapPackageType(PackageType type) {
+    switch (type) {
+      case PackageType.monthly:
+        return SubscriptionPackageType.monthly;
+      case PackageType.annual:
+        return SubscriptionPackageType.annual;
+      case PackageType.sixMonth:
+        return SubscriptionPackageType.sixMonth;
+      case PackageType.threeMonth:
+        return SubscriptionPackageType.threeMonth;
+      case PackageType.twoMonth:
+        return SubscriptionPackageType.twoMonth;
+      case PackageType.weekly:
+        return SubscriptionPackageType.weekly;
+      case PackageType.lifetime:
+        return SubscriptionPackageType.lifetime;
+      default:
+        return SubscriptionPackageType.unknown;
+    }
   }
 
   SubscriptionPackage toDomain() {

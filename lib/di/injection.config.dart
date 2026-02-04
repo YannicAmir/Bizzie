@@ -305,6 +305,8 @@ import '../features/subscription/domain/usecases/get_subscription_status_use_cas
     as _i217;
 import '../features/subscription/domain/usecases/purchase_subscription_use_case.dart'
     as _i803;
+import '../features/subscription/domain/usecases/refresh_subscription_status_use_case.dart'
+    as _i423;
 import '../features/subscription/domain/usecases/restore_purchases_use_case.dart'
     as _i566;
 import '../features/subscription/domain/usecases/sync_identity_use_case.dart'
@@ -766,6 +768,11 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i659.ISubscriptionRepository>(),
       ),
     );
+    gh.lazySingleton<_i423.RefreshSubscriptionStatusUseCase>(
+      () => _i423.RefreshSubscriptionStatusUseCase(
+        gh<_i659.ISubscriptionRepository>(),
+      ),
+    );
     gh.lazySingleton<_i566.RestorePurchasesUseCase>(
       () => _i566.RestorePurchasesUseCase(gh<_i659.ISubscriptionRepository>()),
     );
@@ -914,16 +921,6 @@ extension GetItInjectableX on _i174.GetIt {
         deleteAccount: gh<_i739.DeleteAccount>(),
       ),
     );
-    gh.lazySingleton<_i1066.SubscriptionBloc>(
-      () => _i1066.SubscriptionBloc(
-        gh<_i630.WatchSubscriptionStatusUseCase>(),
-        gh<_i15.SyncIdentityUseCase>(),
-        gh<_i803.PurchaseSubscriptionUseCase>(),
-        gh<_i566.RestorePurchasesUseCase>(),
-        gh<_i343.GetOfferingsUseCase>(),
-        gh<_i59.AuthBloc>(),
-      ),
-    );
     gh.factory<_i191.FinancialStatementsBloc>(
       () => _i191.FinancialStatementsBloc(
         gh<_i204.GetIncomeStatementsUseCase>(),
@@ -961,6 +958,17 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i709.SelectBrandsBloc(
         gh<_i593.OnboardingBloc>(),
         gh<_i422.GetDailyBrandsUseCase>(),
+      ),
+    );
+    gh.lazySingleton<_i1066.SubscriptionBloc>(
+      () => _i1066.SubscriptionBloc(
+        gh<_i630.WatchSubscriptionStatusUseCase>(),
+        gh<_i423.RefreshSubscriptionStatusUseCase>(),
+        gh<_i15.SyncIdentityUseCase>(),
+        gh<_i803.PurchaseSubscriptionUseCase>(),
+        gh<_i566.RestorePurchasesUseCase>(),
+        gh<_i343.GetOfferingsUseCase>(),
+        gh<_i59.AuthBloc>(),
       ),
     );
     gh.factory<_i723.CompanyDividendsBloc>(

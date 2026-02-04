@@ -54,6 +54,7 @@ dependencies:
   bloc_concurrency: ^0.3.0
   purchases_flutter: ^9.10.8
   package_info_plus: ^9.0.0
+  collection: ^1.19.1
 
 dev_dependencies:
   flutter_test:

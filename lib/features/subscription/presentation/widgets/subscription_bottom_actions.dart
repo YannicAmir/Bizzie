@@ -1,5 +1,6 @@
 import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:bizzie/features/subscription/domain/models/subscription_package.dart';
+import 'package:bizzie/features/subscription/domain/extensions/subscription_package_extensions.dart';
 import 'package:bizzie/shared/widgets/buttons/bizzie_primary_button.dart';
 import 'package:flutter/material.dart';
 

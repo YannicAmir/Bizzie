@@ -5,6 +5,7 @@ import 'package:bloc/bloc.dart';
 import 'package:bizzie/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:bizzie/features/auth/presentation/bloc/auth_state.dart';
 import 'package:bizzie/features/subscription/domain/usecases/watch_subscription_status_use_case.dart';
+import 'package:bizzie/features/subscription/domain/usecases/refresh_subscription_status_use_case.dart';
 import 'package:bizzie/features/subscription/domain/usecases/sync_identity_use_case.dart';
 import 'package:bizzie/features/subscription/domain/usecases/purchase_subscription_use_case.dart';
 import 'package:bizzie/features/subscription/domain/usecases/restore_purchases_use_case.dart';
@@ -22,6 +23,7 @@ final _logger = BizzieLogger('SubscriptionBloc');
 @lazySingleton
 class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
   final WatchSubscriptionStatusUseCase _watchSubscriptionStatus;
+  final RefreshSubscriptionStatusUseCase _refreshSubscriptionStatus;
   final SyncIdentityUseCase _syncIdentity;
   final PurchaseSubscriptionUseCase _purchaseSubscription;
   final RestorePurchasesUseCase _restorePurchases;
@@ -33,6 +35,7 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
 
   SubscriptionBloc(
     this._watchSubscriptionStatus,
+    this._refreshSubscriptionStatus,
     this._syncIdentity,
     this._purchaseSubscription,
     this._restorePurchases,
@@ -89,8 +92,8 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
     Emitter<SubscriptionState> emit,
   ) async {
     _logger.info('App resumed, refreshing subscription status');
-    // Force a status refresh
-    _watchSubscriptionStatus.refresh();
+
+    _refreshSubscriptionStatus(NoParams());
     add(const SubscriptionEvent.offeringsRequested());
   }
 
@@ -197,7 +200,7 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
       'Processing expiration event. Invalidating cache and refreshing.',
     );
     // Force a status refresh
-    _watchSubscriptionStatus.refresh();
+    _refreshSubscriptionStatus(NoParams());
     add(const SubscriptionEvent.offeringsRequested());
   }
 

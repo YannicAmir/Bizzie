@@ -14,8 +14,4 @@ class WatchSubscriptionStatusUseCase
   Stream<SubscriptionStatus> call(String userId) {
     return _repository.watchSubscriptionStatus(userId);
   }
-
-  Future<void> refresh() async {
-    return _repository.refreshSubscriptionStatus();
-  }
 }

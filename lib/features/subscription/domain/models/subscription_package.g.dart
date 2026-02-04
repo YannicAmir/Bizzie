@@ -11,7 +11,10 @@ _SubscriptionPackage _$SubscriptionPackageFromJson(Map<String, dynamic> json) =>
       id: json['id'] as String,
       identifier: json['identifier'] as String,
       productId: json['productId'] as String,
-      packageType: json['packageType'] as String,
+      packageType: $enumDecode(
+        _$SubscriptionPackageTypeEnumMap,
+        json['packageType'],
+      ),
       title: json['title'] as String,
       description: json['description'] as String,
       priceString: json['priceString'] as String,
@@ -26,11 +29,22 @@ Map<String, dynamic> _$SubscriptionPackageToJson(
   'id': instance.id,
   'identifier': instance.identifier,
   'productId': instance.productId,
-  'packageType': instance.packageType,
+  'packageType': _$SubscriptionPackageTypeEnumMap[instance.packageType]!,
   'title': instance.title,
   'description': instance.description,
   'priceString': instance.priceString,
   'price': instance.price,
   'currencyCode': instance.currencyCode,
   'isEligibleForTrial': instance.isEligibleForTrial,
+};
+
+const _$SubscriptionPackageTypeEnumMap = {
+  SubscriptionPackageType.monthly: 'monthly',
+  SubscriptionPackageType.annual: 'annual',
+  SubscriptionPackageType.sixMonth: 'sixMonth',
+  SubscriptionPackageType.threeMonth: 'threeMonth',
+  SubscriptionPackageType.twoMonth: 'twoMonth',
+  SubscriptionPackageType.weekly: 'weekly',
+  SubscriptionPackageType.lifetime: 'lifetime',
+  SubscriptionPackageType.unknown: 'unknown',
 };
