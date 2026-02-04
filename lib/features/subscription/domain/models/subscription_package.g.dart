@@ -46,5 +46,6 @@ const _$SubscriptionPackageTypeEnumMap = {
   SubscriptionPackageType.twoMonth: 'twoMonth',
   SubscriptionPackageType.weekly: 'weekly',
   SubscriptionPackageType.lifetime: 'lifetime',
+  SubscriptionPackageType.custom: 'custom',
   SubscriptionPackageType.unknown: 'unknown',
 };

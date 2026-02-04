@@ -139,5 +139,55 @@ void main() {
       // assert
       expect(result, equals('Auto-renews for \$9.99/month. Cancel anytime.'));
     });
+
+    group('isDiscount', () {
+      test('isDiscount_identifierContainsDiscount_returnsTrue', () {
+        // arrange
+        final package = tAnnualPackage.copyWith(
+          identifier: 'annual_discount_plan',
+        );
+
+        // act
+        final result = package.isDiscount;
+
+        // assert
+        expect(result, isTrue);
+      });
+
+      test('isDiscount_productIdContainsDiscount_returnsTrue', () {
+        // arrange
+        final package = tAnnualPackage.copyWith(
+          productId: 'io.getbizzie.annual.discount',
+        );
+
+        // act
+        final result = package.isDiscount;
+
+        // assert
+        expect(result, isTrue);
+      });
+
+      test('isDiscount_noDiscountMarker_returnsFalse', () {
+        // arrange
+        const package = tAnnualPackage;
+
+        // act
+        final result = package.isDiscount;
+
+        // assert
+        expect(result, isFalse);
+      });
+
+      test('isDiscount_caseInsensitiveMatch_returnsTrue', () {
+        // arrange
+        final package = tAnnualPackage.copyWith(identifier: 'ANNUAL_DISCOUNT');
+
+        // act
+        final result = package.isDiscount;
+
+        // assert
+        expect(result, isTrue);
+      });
+    });
   });
 }

@@ -81,7 +81,6 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
     state.mapOrNull(
       loaded: (s) {
         emit(s.copyWith(isPurchasing: false, isLocalSuccessOverride: false));
-        // Now that UI is ready, refresh offerings to reflect new eligibility
         add(const SubscriptionEvent.offeringsRequested());
       },
     );
@@ -144,8 +143,6 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
     final oldStatus = state.status;
     final newStatus = event.status;
 
-    // If entitlement status changed (e.g. Expired -> Active or Active -> Expired),
-    // we MUST re-fetch offerings to update the "Intro Eligibility" (Trial Available) flag.
     if (oldStatus.isSubscribed != newStatus.isSubscribed) {
       _logger.info(
         'Entitlement status changed (${oldStatus.isSubscribed} -> ${newStatus.isSubscribed}). Refreshing offerings.',
@@ -159,8 +156,6 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
       initial: (s) => emit(s.copyWith(status: event.status)),
       loading: (s) => emit(s.copyWith(status: event.status)),
       loaded: (s) {
-        // Do NOT clear isLocalSuccessOverride here.
-        // We rely on purchaseUICompleted event to clear it to avoid race conditions.
         emit(s.copyWith(status: event.status));
       },
       failure: (s) => emit(s.copyWith(status: event.status)),
@@ -177,7 +172,6 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
       final now = DateTime.now();
       if (status.expirationDate!.isAfter(now)) {
         final duration = status.expirationDate!.difference(now);
-        // Add a small buffer (2 seconds) to ensure server side processing is complete/SDK cache is likely invalidated
         final timerDuration = duration + const Duration(seconds: 2);
 
         _logger.info(
@@ -199,7 +193,6 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
     _logger.info(
       'Processing expiration event. Invalidating cache and refreshing.',
     );
-    // Force a status refresh
     _refreshSubscriptionStatus(NoParams());
     add(const SubscriptionEvent.offeringsRequested());
   }
@@ -280,15 +273,6 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
     SubscriptionOfferingsRequested event,
     Emitter<SubscriptionState> emit,
   ) async {
-    // If we are in the middle of a purchase flow (isPurchasing = true),
-    // we MUST NOT update the state with new offerings.
-    // Doing so would:
-    // 1. Reset isPurchasing to false (unfreezing the UI early).
-    // 2. Update the UI with "post-purchase" data (e.g. removing free trial text)
-    //    while the native dialog is possibly still visible.
-    //
-    // The UI will signal completion via _onPurchaseUICompleted, at which point
-    // we will re-fetch offerings.
     final currentState = state;
     if (currentState is SubscriptionStateLoaded && currentState.isPurchasing) {
       _logger.info('Offerings requested but blocked by active purchase flow.');

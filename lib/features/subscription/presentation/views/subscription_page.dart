@@ -1,6 +1,7 @@
 import 'package:bizzie/features/subscription/presentation/bloc/subscription_bloc.dart';
 import 'package:bizzie/features/subscription/presentation/bloc/subscription_event.dart';
 import 'package:bizzie/features/subscription/presentation/bloc/subscription_state.dart';
+import 'package:bizzie/features/subscription/presentation/extensions/subscription_state_extensions.dart';
 import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
 import 'package:bizzie/features/user/presentation/bloc/user_state_extensions.dart';
 import 'package:bizzie/features/subscription/presentation/widgets/subscription_loaded_content.dart';
@@ -30,12 +31,9 @@ class _SubscriptionPageState extends State<SubscriptionPage>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    // Initialize _wasSubscribed based on current BLoC state to handle initial load
     final state = context.read<SubscriptionBloc>().state;
     _wasSubscribed = state.status.isSubscribed;
 
-    // Safety: Reset purchase state when entering the page.
-    // This prevents "Infinite Loading" if a previous session left the BLoC in a dirty state.
     context.read<SubscriptionBloc>().add(
       const SubscriptionEvent.resetPurchaseState(),
     );
@@ -75,10 +73,8 @@ class _SubscriptionPageState extends State<SubscriptionPage>
                     ),
                   );
                 }
-
                 bool shouldShowOverlay = false;
 
-                // Case 1: Explicit Purchase Success Override (e.g. Upgrade or new Purchase)
                 if (state.maybeMap(
                   loaded: (s) => s.isLocalSuccessOverride,
                   orElse: () => false,
@@ -86,14 +82,10 @@ class _SubscriptionPageState extends State<SubscriptionPage>
                   shouldShowOverlay = true;
                 }
 
-                // Case 2: State Transition (False -> True)
-                // This handles Restores or background updates where isLocalSuccessOverride might not be set
                 final isSubscribed = state.status.isSubscribed;
                 if (isSubscribed && (_wasSubscribed == false)) {
                   shouldShowOverlay = true;
                 }
-
-                // Update tracker
                 _wasSubscribed = isSubscribed;
 
                 if (shouldShowOverlay) {
@@ -101,9 +93,6 @@ class _SubscriptionPageState extends State<SubscriptionPage>
                 }
               },
               child: BlocBuilder<SubscriptionBloc, SubscriptionState>(
-                buildWhen: (previous, current) {
-                  return true;
-                },
                 builder: (context, subscriptionState) {
                   return subscriptionState.map(
                     initial: (_) => BizzieLoader(
@@ -166,8 +155,6 @@ class _SubscriptionPageState extends State<SubscriptionPage>
       },
     );
 
-    // Signal to the Bloc that the UI has handled the success state and is resumed,
-    // so it can safely transition out of the purchase/loading state.
     context.read<SubscriptionBloc>().add(
       const SubscriptionEvent.purchaseUICompleted(),
     );

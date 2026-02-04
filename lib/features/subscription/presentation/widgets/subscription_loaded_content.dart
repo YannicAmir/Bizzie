@@ -2,6 +2,7 @@ import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:bizzie/features/subscription/presentation/bloc/subscription_bloc.dart';
 import 'package:bizzie/features/subscription/presentation/bloc/subscription_event.dart';
 import 'package:bizzie/features/subscription/presentation/bloc/subscription_state.dart';
+import 'package:bizzie/features/subscription/presentation/extensions/subscription_state_extensions.dart';
 import 'package:bizzie/features/subscription/presentation/widgets/subscription_bottom_actions.dart';
 import 'package:bizzie/features/subscription/presentation/widgets/subscription_close_button.dart';
 import 'package:bizzie/features/subscription/presentation/widgets/subscription_feature_highlights.dart';
@@ -25,6 +26,9 @@ class SubscriptionLoadedContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isAnnual = state.isAnnualSelection;
+    final selectedPackage = isAnnual
+        ? state.annualPackage
+        : state.monthlyPackage;
 
     return Stack(
       children: [
@@ -49,7 +53,7 @@ class SubscriptionLoadedContent extends StatelessWidget {
                   title: 'Annual',
                   package: state.annualPackage,
                   isSelected: isAnnual,
-                  badgeText: 'Save 43%',
+                  badgeText: state.annualSavingsText,
                   onTap: () => context.read<SubscriptionBloc>().add(
                     const SubscriptionEvent.planToggled(isAnnual: true),
                   ),
@@ -74,18 +78,15 @@ class SubscriptionLoadedContent extends StatelessWidget {
           left: 0,
           right: 0,
           child: SubscriptionBottomActions(
-            isAnnual: isAnnual,
             isLoading: state.isPurchasing,
-            selectedPackage: isAnnual
-                ? state.annualPackage
-                : state.monthlyPackage,
+            buttonTitle: selectedPackage?.isEligibleForTrial ?? false
+                ? 'Start Free Trial'
+                : 'Continue',
+            disclaimer: state.renewalDisclaimerText,
             onTap: () {
-              final package = isAnnual
-                  ? state.annualPackage
-                  : state.monthlyPackage;
-              if (package != null) {
+              if (selectedPackage != null) {
                 context.read<SubscriptionBloc>().add(
-                  SubscriptionEvent.purchaseRequested(package),
+                  SubscriptionEvent.purchaseRequested(selectedPackage),
                 );
               }
             },

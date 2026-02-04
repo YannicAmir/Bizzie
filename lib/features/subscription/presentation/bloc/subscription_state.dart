@@ -40,21 +40,3 @@ abstract class SubscriptionState with _$SubscriptionState {
   factory SubscriptionState.initialState() =>
       SubscriptionState.initial(status: SubscriptionStatus.initial());
 }
-
-extension SubscriptionStateX on SubscriptionState {
-  bool get isLoading => this is SubscriptionStateLoading;
-  Failure? get failure =>
-      maybeMap(failure: (f) => f.failure, orElse: () => null);
-
-  SubscriptionPackage? get annualPackage =>
-      maybeMap(loaded: (s) => s.annualPackage, orElse: () => null);
-
-  SubscriptionPackage? get monthlyPackage =>
-      maybeMap(loaded: (s) => s.monthlyPackage, orElse: () => null);
-
-  SubscriptionPackage? get discountAnnualPackage =>
-      maybeMap(loaded: (s) => s.discountAnnualPackage, orElse: () => null);
-
-  bool get isPurchasing =>
-      maybeMap(loaded: (s) => s.isPurchasing, orElse: () => false);
-}

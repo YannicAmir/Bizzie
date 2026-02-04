@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:bizzie/app/themes/app_colors.dart';
+import 'package:bizzie/shared/widgets/animations/bizzie_confetti.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -44,7 +45,7 @@ class _SubscriptionSuccessOverlayState extends State<SubscriptionSuccessOverlay>
   late AnimationController _checkController;
   late Animation<double> _checkAnimation;
   late AnimationController _confettiController;
-  final List<_ConfettiParticle> _particles = [];
+  final List<BizzieConfettiParticle> _particles = [];
   final Random _random = Random();
 
   @override
@@ -93,7 +94,7 @@ class _SubscriptionSuccessOverlayState extends State<SubscriptionSuccessOverlay>
     final colors = [AppColors.primary, AppColors.success];
     for (int i = 0; i < 60; i++) {
       _particles.add(
-        _ConfettiParticle(
+        BizzieConfettiParticle(
           color: colors[_random.nextInt(colors.length)],
           random: _random,
         ),
@@ -116,7 +117,7 @@ class _SubscriptionSuccessOverlayState extends State<SubscriptionSuccessOverlay>
       body: Stack(
         children: [
           CustomPaint(
-            painter: _ConfettiPainter(particles: _particles),
+            painter: BizzieConfettiPainter(particles: _particles),
             size: Size.infinite,
           ),
           Center(
@@ -184,61 +185,4 @@ class _SubscriptionSuccessOverlayState extends State<SubscriptionSuccessOverlay>
       ),
     );
   }
-}
-
-class _ConfettiParticle {
-  late double x;
-  late double y;
-  late double vx;
-  late double vy;
-  late double size;
-  late double rotation;
-  late double rotationSpeed;
-  final Color color;
-
-  _ConfettiParticle({required this.color, required Random random}) {
-    x = random.nextDouble() * 400;
-    y = -20 - random.nextDouble() * 100;
-    vx = (random.nextDouble() - 0.5) * 4;
-    vy = random.nextDouble() * 5 + 2;
-    size = random.nextDouble() * 8 + 4;
-    rotation = random.nextDouble() * 2 * pi;
-    rotationSpeed = (random.nextDouble() - 0.5) * 0.2;
-  }
-
-  void update() {
-    x += vx;
-    y += vy;
-    rotation += rotationSpeed;
-  }
-}
-
-class _ConfettiPainter extends CustomPainter {
-  final List<_ConfettiParticle> particles;
-
-  _ConfettiPainter({required this.particles});
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint();
-    for (var p in particles) {
-      paint.color = p.color;
-      final rect = Rect.fromCenter(
-        center: Offset(p.x % size.width, p.y),
-        width: p.size,
-        height: p.size * 0.6,
-      );
-      canvas.save();
-      canvas.translate(rect.center.dx, rect.center.dy);
-      canvas.rotate(p.rotation);
-      canvas.drawRect(
-        Rect.fromLTWH(-p.size / 2, -p.size * 0.3, p.size, p.size * 0.6),
-        paint,
-      );
-      canvas.restore();
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
 }

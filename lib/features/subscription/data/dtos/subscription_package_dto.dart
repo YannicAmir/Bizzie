@@ -68,6 +68,8 @@ abstract class SubscriptionPackageDto with _$SubscriptionPackageDto {
         return SubscriptionPackageType.weekly;
       case PackageType.lifetime:
         return SubscriptionPackageType.lifetime;
+      case PackageType.custom:
+        return SubscriptionPackageType.custom;
       default:
         return SubscriptionPackageType.unknown;
     }

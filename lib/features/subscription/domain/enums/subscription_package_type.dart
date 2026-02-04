@@ -15,6 +15,8 @@ enum SubscriptionPackageType {
   weekly,
   @JsonValue('lifetime')
   lifetime,
+  @JsonValue('custom')
+  custom,
   @JsonValue('unknown')
   unknown,
 }
