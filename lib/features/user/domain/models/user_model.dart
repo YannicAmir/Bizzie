@@ -12,11 +12,11 @@ abstract class UserModel with _$UserModel {
     required String uid,
     required String name,
     required String favoriteSector,
-    required List<Company> watchlist,
+    @Default([]) List<Company> watchlist,
     required InvestingExperience investingExperience,
     @TimestampConverter() required DateTime createdAt,
     required bool isSubscribed,
-    required Map<String, String> fcmTokens,
+    @Default({}) Map<String, String> fcmTokens,
   }) = _UserModel;
 
   factory UserModel.fromJson(Map<String, dynamic> json) =>

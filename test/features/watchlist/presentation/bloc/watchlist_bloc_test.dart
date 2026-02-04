@@ -86,7 +86,7 @@ void main() {
         ).thenAnswer((_) async => Stream.value(const Right([])));
         return bloc;
       },
-      act: (bloc) => bloc.add(const WatchlistEvent.loadRequested()),
+      act: (bloc) => bloc.add(const WatchlistEvent.loadRequested(uid: tUid)),
       expect: () => [
         const WatchlistState.loading(),
         const WatchlistState.loaded([]),
@@ -100,22 +100,24 @@ void main() {
         return bloc;
       },
       act: (bloc) => bloc.add(const WatchlistEvent.loadRequested()),
-      expect: () => [const WatchlistState.failure("User not authenticated")],
+      expect: () => [
+        WatchlistState.failure(Failure.server("User not authenticated")),
+      ],
     );
 
     blocTest<WatchlistBloc, WatchlistState>(
       'loadRequested_useCaseFailure_emitsLoadingThenFailure',
       build: () {
         when(() => mockAuthRepository.currentUser).thenReturn(tUser);
-        when(
-          () => mockGetWatchlistUseCase(tUid),
-        ).thenAnswer((_) async => Stream.value(Left(Failure.server('Error'))));
+        when(() => mockGetWatchlistUseCase(tUid)).thenAnswer(
+          (_) async => Stream.value(const Left(Failure.server('Error'))),
+        );
         return bloc;
       },
-      act: (bloc) => bloc.add(const WatchlistEvent.loadRequested()),
+      act: (bloc) => bloc.add(const WatchlistEvent.loadRequested(uid: tUid)),
       expect: () => [
         const WatchlistState.loading(),
-        const WatchlistState.failure('Error'),
+        const WatchlistState.failure(Failure.server('Error')),
       ],
     );
 
@@ -143,13 +145,13 @@ void main() {
         when(() => mockAuthRepository.currentUser).thenReturn(tUser);
         when(
           () => mockAddToWatchlistUseCase(any()),
-        ).thenAnswer((_) async => Left(Failure.server('Add Error')));
+        ).thenAnswer((_) async => const Left(Failure.server('Add Error')));
         return bloc;
       },
       act: (bloc) => bloc.add(
         const WatchlistEvent.addRequested(ticker: 'AAPL', name: 'Apple'),
       ),
-      expect: () => [const WatchlistState.failure('Add Error')],
+      expect: () => [const WatchlistState.failure(Failure.server('Add Error'))],
     );
 
     blocTest<WatchlistBloc, WatchlistState>(
@@ -174,11 +176,13 @@ void main() {
         when(() => mockAuthRepository.currentUser).thenReturn(tUser);
         when(
           () => mockRemoveFromWatchlistUseCase(any()),
-        ).thenAnswer((_) async => Left(Failure.server('Remove Error')));
+        ).thenAnswer((_) async => const Left(Failure.server('Remove Error')));
         return bloc;
       },
       act: (bloc) => bloc.add(const WatchlistEvent.removeRequested("AAPL")),
-      expect: () => [const WatchlistState.failure('Remove Error')],
+      expect: () => [
+        const WatchlistState.failure(Failure.server('Remove Error')),
+      ],
     );
   });
 }

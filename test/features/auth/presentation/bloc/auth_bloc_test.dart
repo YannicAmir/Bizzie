@@ -108,7 +108,7 @@ void main() {
       // assert
       expect: () => [
         const AuthState.loading(method: 'email_signin'),
-        const AuthState.failure('Test Failure'),
+        const AuthState.failure(tFailure),
       ],
     );
   });
@@ -206,7 +206,7 @@ void main() {
       // act
       act: (bloc) => bloc.add(const AuthResetPasswordRequested(tEmail)),
       // assert
-      expect: () => [const AuthState.failure('Test Failure')],
+      expect: () => [const AuthState.failure(tFailure)],
     );
   });
 
@@ -243,7 +243,7 @@ void main() {
       // assert
       expect: () => [
         const AuthState.loading(),
-        const AuthState.failure('Test Failure'),
+        const AuthState.failure(tFailure),
       ],
     );
   });

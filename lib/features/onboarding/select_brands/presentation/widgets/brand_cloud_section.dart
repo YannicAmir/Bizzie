@@ -41,9 +41,13 @@ class BrandCloudSection extends StatelessWidget {
             spacing: 8,
             runSpacing: 8,
             alignment: WrapAlignment.start,
-            children: brands.map((vm) {
+            children: brands.asMap().entries.map((entry) {
+              final index = entry.key;
+              final vm = entry.value;
+              final key = ValueKey('${vm.brand.name}_$index');
+
               final child = BrandChip(
-                key: ValueKey(vm.brand.name),
+                key: key,
                 brand: vm.brand,
                 backgroundColor: chipBackgroundColor,
                 foregroundColor: chipForegroundColor,
@@ -57,10 +61,7 @@ class BrandCloudSection extends StatelessWidget {
               );
 
               if (vm.shouldAnimate) {
-                return BizzieEntranceScale(
-                  key: ValueKey(vm.brand.name),
-                  child: child,
-                );
+                return BizzieEntranceScale(key: key, child: child);
               }
               return child;
             }).toList(),

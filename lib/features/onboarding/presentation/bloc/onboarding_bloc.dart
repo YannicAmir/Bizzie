@@ -52,11 +52,14 @@ class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
 
   void _onToggleBrand(_ToggleBrand event, Emitter<OnboardingState> emit) {
     final currentSelected = List<Brand>.from(state.selectedBrands);
-    if (currentSelected.contains(event.brand)) {
-      currentSelected.remove(event.brand);
+    final index = currentSelected.indexWhere((b) => b.name == event.brand.name);
+
+    if (index != -1) {
+      currentSelected.removeAt(index);
     } else {
       currentSelected.add(event.brand);
     }
+
     emit(state.copyWith(selectedBrands: currentSelected));
   }
 

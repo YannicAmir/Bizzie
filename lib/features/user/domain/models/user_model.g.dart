@@ -10,16 +10,22 @@ _UserModel _$UserModelFromJson(Map<String, dynamic> json) => _UserModel(
   uid: json['uid'] as String,
   name: json['name'] as String,
   favoriteSector: json['favoriteSector'] as String,
-  watchlist: (json['watchlist'] as List<dynamic>)
-      .map((e) => Company.fromJson(e as Map<String, dynamic>))
-      .toList(),
+  watchlist:
+      (json['watchlist'] as List<dynamic>?)
+          ?.map((e) => Company.fromJson(e as Map<String, dynamic>))
+          .toList() ??
+      const [],
   investingExperience: $enumDecode(
     _$InvestingExperienceEnumMap,
     json['investingExperience'],
   ),
   createdAt: const TimestampConverter().fromJson(json['createdAt'] as Object),
   isSubscribed: json['isSubscribed'] as bool,
-  fcmTokens: Map<String, String>.from(json['fcmTokens'] as Map),
+  fcmTokens:
+      (json['fcmTokens'] as Map<String, dynamic>?)?.map(
+        (k, e) => MapEntry(k, e as String),
+      ) ??
+      const {},
 );
 
 Map<String, dynamic> _$UserModelToJson(_UserModel instance) =>

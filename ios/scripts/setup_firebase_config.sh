@@ -45,19 +45,29 @@ if [ -f "$SOURCE_PATH" ]; then
     echo "🔧 Updating GIDClientID in Info.plist..."
 
     # 1. Extract CLIENT_ID from GoogleService-Info.plist
-    CLIENT_ID=$(/usr/libexec/PlistBuddy -c "Print :CLIENT_ID" "${SOURCE_PATH}")
+    # We use || true to prevent script failure if CLIENT_ID is missing from source
+    CLIENT_ID=$(/usr/libexec/PlistBuddy -c "Print :CLIENT_ID" "${SOURCE_PATH}" 2>/dev/null || echo "")
 
     if [ -z "$CLIENT_ID" ]; then
-        echo "⚠️ WARNING: CLIENT_ID not found in ${SOURCE_PATH}. Google Sign-In may fail."
+        echo "⚠️ WARNING: CLIENT_ID not found in ${SOURCE_PATH}. Checking for alternative keys..."
+        # Sometimes it is called OAUTH_CLIENT_ID or similar
+        CLIENT_ID=$(/usr/libexec/PlistBuddy -c "Print :REVERSED_CLIENT_ID" "${SOURCE_PATH}" 2>/dev/null | rev | cut -d. -f2- | rev || echo "")
+    fi
+
+    if [ -z "$CLIENT_ID" ]; then
+        echo "⚠️ WARNING: Could not extract CLIENT_ID. Google Sign-In may fail."
     else
         echo "Found CLIENT_ID: $CLIENT_ID"
 
         # 2. Add/Update GIDClientID in the App's Info.plist
-        # Try to delete if exists to ensure we don't error on 'Add' and don't skip if 'Set' fails on missing
-        /usr/libexec/PlistBuddy -c "Delete :GIDClientID" "${INFO_PLIST_PATH}" 2>/dev/null || true
-        /usr/libexec/PlistBuddy -c "Add :GIDClientID string ${CLIENT_ID}" "${INFO_PLIST_PATH}"
-
-        echo "✅ Successfully updated GIDClientID in Info.plist"
+        # Check if Info.plist exists first
+        if [ -f "$INFO_PLIST_PATH" ]; then
+            /usr/libexec/PlistBuddy -c "Delete :GIDClientID" "${INFO_PLIST_PATH}" 2>/dev/null || true
+            /usr/libexec/PlistBuddy -c "Add :GIDClientID string ${CLIENT_ID}" "${INFO_PLIST_PATH}"
+            echo "✅ Successfully updated GIDClientID in Info.plist"
+        else
+            echo "⚠️ WARNING: Info.plist not found at ${INFO_PLIST_PATH}. Skipping GIDClientID update."
+        fi
     fi
 
 else

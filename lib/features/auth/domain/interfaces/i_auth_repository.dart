@@ -3,6 +3,7 @@ import 'package:bizzie/core/error/failures.dart';
 import '../models/user_model.dart';
 
 abstract class IAuthRepository {
+  Future<void> initialize();
   Stream<UserModel?> get authStateChanges;
   UserModel? get currentUser;
   Future<Either<Failure, UserModel>> signInWithEmail({

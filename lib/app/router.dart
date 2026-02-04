@@ -40,12 +40,18 @@ import 'package:bizzie/di/injection.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:async/async.dart';
 
+import 'package:bizzie/features/subscription/presentation/views/discounted_subscription_page.dart';
+import 'package:bizzie/features/subscription/presentation/views/subscription_page.dart';
+
+final _rootNavigatorKey = GlobalKey<NavigatorState>();
+
 GoRouter createRouter(
   AuthBloc authBloc,
   UserBloc userBloc, {
   String? initialLocation,
 }) {
   return GoRouter(
+    navigatorKey: _rootNavigatorKey,
     initialLocation: initialLocation ?? AppRoutes.splash,
     refreshListenable: GoRouterRefreshStream(
       StreamGroup.merge([authBloc.stream, userBloc.stream]),
@@ -81,7 +87,15 @@ GoRouter createRouter(
               GoRoute(
                 path: AppRoutes.home,
                 builder: (context, state) => const HomePage(),
-                routes: [_buildCompanyRoute(AppRoutes.companyProfileHome)],
+                routes: [
+                  _buildCompanyRoute(AppRoutes.companyProfileHome),
+                  _buildPaywallRoute(
+                    path: 'subscribe',
+                    name: 'home_subscribe',
+                    parentNavigatorKey: _rootNavigatorKey,
+                    child: const SubscriptionPage(),
+                  ),
+                ],
               ),
             ],
           ),
@@ -228,7 +242,66 @@ GoRouter createRouter(
           ),
         ],
       ),
+      _buildPaywallRoute(
+        path: AppRoutes.paywall,
+        child: const SubscriptionPage(),
+      ),
+      _buildPaywallRoute(
+        path: AppRoutes.discountedPaywall,
+        child: const DiscountedSubscriptionPage(),
+      ),
     ],
+  );
+}
+
+GoRoute _buildPaywallRoute({
+  required String path,
+  required Widget child,
+  String? name,
+  GlobalKey<NavigatorState>? parentNavigatorKey,
+}) {
+  return GoRoute(
+    path: path,
+    name: name,
+    parentNavigatorKey: parentNavigatorKey,
+    pageBuilder: (context, state) {
+      final animateParam = state.uri.queryParameters['animate'];
+      final animate = animateParam != 'false';
+      final isOnboarding = animateParam == 'onboarding';
+
+      final pageChild = child;
+
+      if (!animate) {
+        return NoTransitionPage(
+          key: state.pageKey,
+          name: state.name,
+          child: pageChild,
+        );
+      }
+
+      return CustomTransitionPage(
+        key: state.pageKey,
+        fullscreenDialog: true,
+        child: pageChild,
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          if (isOnboarding && animation.status == AnimationStatus.forward) {
+            return child;
+          }
+          const begin = Offset(0.0, 1.0);
+          const end = Offset.zero;
+          const curve = Curves.easeInOut;
+          var tween = Tween(
+            begin: begin,
+            end: end,
+          ).chain(CurveTween(curve: curve));
+
+          return SlideTransition(
+            position: animation.drive(tween),
+            child: child,
+          );
+        },
+      );
+    },
   );
 }
 

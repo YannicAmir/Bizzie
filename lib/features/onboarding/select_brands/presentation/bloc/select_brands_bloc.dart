@@ -138,7 +138,10 @@ class SelectBrandsBloc extends Bloc<SelectBrandsEvent, SelectBrandsState> {
     List<Brand> masterBrands,
     Set<Brand> selectedBrands,
   ) {
-    return masterBrands.where((b) => !selectedBrands.contains(b)).map((brand) {
+    final selectedNames = selectedBrands.map((b) => b.name).toSet();
+    return masterBrands.where((b) => !selectedNames.contains(b.name)).map((
+      brand,
+    ) {
       final shouldAnimate = !_initialStaticItems.contains(brand.name);
       return SelectBrandsViewModel(
         brand: brand,

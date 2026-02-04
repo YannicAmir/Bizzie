@@ -4,3 +4,8 @@ class ServerException implements Exception {
 }
 
 class CacheException implements Exception {}
+
+class SubscriptionException implements Exception {
+  final String message;
+  SubscriptionException({required this.message});
+}

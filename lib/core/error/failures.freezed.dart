@@ -86,12 +86,14 @@ extension FailurePatterns on Failure {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( ServerFailure value)?  server,TResult Function( CacheFailure value)?  cache,TResult Function( UserNotFoundFailure value)?  userNotFound,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( ServerFailure value)?  server,TResult Function( CacheFailure value)?  cache,TResult Function( PaymentFailure value)?  payment,TResult Function( CancelFailure value)?  cancel,TResult Function( UserNotFoundFailure value)?  userNotFound,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case ServerFailure() when server != null:
 return server(_that);case CacheFailure() when cache != null:
-return cache(_that);case UserNotFoundFailure() when userNotFound != null:
+return cache(_that);case PaymentFailure() when payment != null:
+return payment(_that);case CancelFailure() when cancel != null:
+return cancel(_that);case UserNotFoundFailure() when userNotFound != null:
 return userNotFound(_that);case _:
   return orElse();
 
@@ -110,12 +112,14 @@ return userNotFound(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( ServerFailure value)  server,required TResult Function( CacheFailure value)  cache,required TResult Function( UserNotFoundFailure value)  userNotFound,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( ServerFailure value)  server,required TResult Function( CacheFailure value)  cache,required TResult Function( PaymentFailure value)  payment,required TResult Function( CancelFailure value)  cancel,required TResult Function( UserNotFoundFailure value)  userNotFound,}){
 final _that = this;
 switch (_that) {
 case ServerFailure():
 return server(_that);case CacheFailure():
-return cache(_that);case UserNotFoundFailure():
+return cache(_that);case PaymentFailure():
+return payment(_that);case CancelFailure():
+return cancel(_that);case UserNotFoundFailure():
 return userNotFound(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
@@ -130,12 +134,14 @@ return userNotFound(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( ServerFailure value)?  server,TResult? Function( CacheFailure value)?  cache,TResult? Function( UserNotFoundFailure value)?  userNotFound,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( ServerFailure value)?  server,TResult? Function( CacheFailure value)?  cache,TResult? Function( PaymentFailure value)?  payment,TResult? Function( CancelFailure value)?  cancel,TResult? Function( UserNotFoundFailure value)?  userNotFound,}){
 final _that = this;
 switch (_that) {
 case ServerFailure() when server != null:
 return server(_that);case CacheFailure() when cache != null:
-return cache(_that);case UserNotFoundFailure() when userNotFound != null:
+return cache(_that);case PaymentFailure() when payment != null:
+return payment(_that);case CancelFailure() when cancel != null:
+return cancel(_that);case UserNotFoundFailure() when userNotFound != null:
 return userNotFound(_that);case _:
   return null;
 
@@ -153,11 +159,13 @@ return userNotFound(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String message)?  server,TResult Function( String message)?  cache,TResult Function( String message)?  userNotFound,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String message)?  server,TResult Function( String message)?  cache,TResult Function( String message)?  payment,TResult Function( String message)?  cancel,TResult Function( String message)?  userNotFound,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case ServerFailure() when server != null:
 return server(_that.message);case CacheFailure() when cache != null:
-return cache(_that.message);case UserNotFoundFailure() when userNotFound != null:
+return cache(_that.message);case PaymentFailure() when payment != null:
+return payment(_that.message);case CancelFailure() when cancel != null:
+return cancel(_that.message);case UserNotFoundFailure() when userNotFound != null:
 return userNotFound(_that.message);case _:
   return orElse();
 
@@ -176,11 +184,13 @@ return userNotFound(_that.message);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String message)  server,required TResult Function( String message)  cache,required TResult Function( String message)  userNotFound,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String message)  server,required TResult Function( String message)  cache,required TResult Function( String message)  payment,required TResult Function( String message)  cancel,required TResult Function( String message)  userNotFound,}) {final _that = this;
 switch (_that) {
 case ServerFailure():
 return server(_that.message);case CacheFailure():
-return cache(_that.message);case UserNotFoundFailure():
+return cache(_that.message);case PaymentFailure():
+return payment(_that.message);case CancelFailure():
+return cancel(_that.message);case UserNotFoundFailure():
 return userNotFound(_that.message);}
 }
 /// A variant of `when` that fallback to returning `null`
@@ -195,11 +205,13 @@ return userNotFound(_that.message);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String message)?  server,TResult? Function( String message)?  cache,TResult? Function( String message)?  userNotFound,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String message)?  server,TResult? Function( String message)?  cache,TResult? Function( String message)?  payment,TResult? Function( String message)?  cancel,TResult? Function( String message)?  userNotFound,}) {final _that = this;
 switch (_that) {
 case ServerFailure() when server != null:
 return server(_that.message);case CacheFailure() when cache != null:
-return cache(_that.message);case UserNotFoundFailure() when userNotFound != null:
+return cache(_that.message);case PaymentFailure() when payment != null:
+return payment(_that.message);case CancelFailure() when cancel != null:
+return cancel(_that.message);case UserNotFoundFailure() when userNotFound != null:
 return userNotFound(_that.message);case _:
   return null;
 
@@ -211,8 +223,8 @@ return userNotFound(_that.message);case _:
 /// @nodoc
 
 
-class ServerFailure implements Failure {
-  const ServerFailure(this.message);
+class ServerFailure extends Failure {
+  const ServerFailure(this.message): super._();
   
 
 @override final  String message;
@@ -277,8 +289,8 @@ as String,
 /// @nodoc
 
 
-class CacheFailure implements Failure {
-  const CacheFailure(this.message);
+class CacheFailure extends Failure {
+  const CacheFailure(this.message): super._();
   
 
 @override final  String message;
@@ -343,8 +355,140 @@ as String,
 /// @nodoc
 
 
-class UserNotFoundFailure implements Failure {
-  const UserNotFoundFailure([this.message = 'User not found']);
+class PaymentFailure extends Failure {
+  const PaymentFailure(this.message): super._();
+  
+
+@override final  String message;
+
+/// Create a copy of Failure
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$PaymentFailureCopyWith<PaymentFailure> get copyWith => _$PaymentFailureCopyWithImpl<PaymentFailure>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PaymentFailure&&(identical(other.message, message) || other.message == message));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,message);
+
+@override
+String toString() {
+  return 'Failure.payment(message: $message)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $PaymentFailureCopyWith<$Res> implements $FailureCopyWith<$Res> {
+  factory $PaymentFailureCopyWith(PaymentFailure value, $Res Function(PaymentFailure) _then) = _$PaymentFailureCopyWithImpl;
+@override @useResult
+$Res call({
+ String message
+});
+
+
+
+
+}
+/// @nodoc
+class _$PaymentFailureCopyWithImpl<$Res>
+    implements $PaymentFailureCopyWith<$Res> {
+  _$PaymentFailureCopyWithImpl(this._self, this._then);
+
+  final PaymentFailure _self;
+  final $Res Function(PaymentFailure) _then;
+
+/// Create a copy of Failure
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? message = null,}) {
+  return _then(PaymentFailure(
+null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class CancelFailure extends Failure {
+  const CancelFailure([this.message = 'Operation cancelled']): super._();
+  
+
+@override@JsonKey() final  String message;
+
+/// Create a copy of Failure
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$CancelFailureCopyWith<CancelFailure> get copyWith => _$CancelFailureCopyWithImpl<CancelFailure>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CancelFailure&&(identical(other.message, message) || other.message == message));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,message);
+
+@override
+String toString() {
+  return 'Failure.cancel(message: $message)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $CancelFailureCopyWith<$Res> implements $FailureCopyWith<$Res> {
+  factory $CancelFailureCopyWith(CancelFailure value, $Res Function(CancelFailure) _then) = _$CancelFailureCopyWithImpl;
+@override @useResult
+$Res call({
+ String message
+});
+
+
+
+
+}
+/// @nodoc
+class _$CancelFailureCopyWithImpl<$Res>
+    implements $CancelFailureCopyWith<$Res> {
+  _$CancelFailureCopyWithImpl(this._self, this._then);
+
+  final CancelFailure _self;
+  final $Res Function(CancelFailure) _then;
+
+/// Create a copy of Failure
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? message = null,}) {
+  return _then(CancelFailure(
+null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class UserNotFoundFailure extends Failure {
+  const UserNotFoundFailure([this.message = 'User not found']): super._();
   
 
 @override@JsonKey() final  String message;

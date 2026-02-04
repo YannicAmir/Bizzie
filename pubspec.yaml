@@ -52,6 +52,9 @@ dependencies:
   timeago: ^3.7.1
   custom_refresh_indicator: ^4.0.1
   bloc_concurrency: ^0.3.0
+  purchases_flutter: ^9.10.8
+  package_info_plus: ^9.0.0
+  collection: ^1.19.1
 
 dev_dependencies:
   flutter_test:

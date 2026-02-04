@@ -137,10 +137,10 @@ return reset(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  started,TResult Function()?  refresh,TResult Function( List<String> tickers)?  watchlistUpdated,TResult Function( Either<Failure, ReportsFeed> result)?  reportsUpdated,TResult Function()?  viewed,TResult Function( DateTime? lastViewedReports)?  activityUpdated,TResult Function()?  reset,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String? uid)?  started,TResult Function()?  refresh,TResult Function( List<String> tickers)?  watchlistUpdated,TResult Function( Either<Failure, ReportsFeed> result)?  reportsUpdated,TResult Function()?  viewed,TResult Function( DateTime? lastViewedReports)?  activityUpdated,TResult Function()?  reset,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case Started() when started != null:
-return started();case Refresh() when refresh != null:
+return started(_that.uid);case Refresh() when refresh != null:
 return refresh();case WatchlistUpdated() when watchlistUpdated != null:
 return watchlistUpdated(_that.tickers);case ReportsUpdated() when reportsUpdated != null:
 return reportsUpdated(_that.result);case Viewed() when viewed != null:
@@ -164,10 +164,10 @@ return reset();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  started,required TResult Function()  refresh,required TResult Function( List<String> tickers)  watchlistUpdated,required TResult Function( Either<Failure, ReportsFeed> result)  reportsUpdated,required TResult Function()  viewed,required TResult Function( DateTime? lastViewedReports)  activityUpdated,required TResult Function()  reset,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String? uid)  started,required TResult Function()  refresh,required TResult Function( List<String> tickers)  watchlistUpdated,required TResult Function( Either<Failure, ReportsFeed> result)  reportsUpdated,required TResult Function()  viewed,required TResult Function( DateTime? lastViewedReports)  activityUpdated,required TResult Function()  reset,}) {final _that = this;
 switch (_that) {
 case Started():
-return started();case Refresh():
+return started(_that.uid);case Refresh():
 return refresh();case WatchlistUpdated():
 return watchlistUpdated(_that.tickers);case ReportsUpdated():
 return reportsUpdated(_that.result);case Viewed():
@@ -190,10 +190,10 @@ return reset();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  started,TResult? Function()?  refresh,TResult? Function( List<String> tickers)?  watchlistUpdated,TResult? Function( Either<Failure, ReportsFeed> result)?  reportsUpdated,TResult? Function()?  viewed,TResult? Function( DateTime? lastViewedReports)?  activityUpdated,TResult? Function()?  reset,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String? uid)?  started,TResult? Function()?  refresh,TResult? Function( List<String> tickers)?  watchlistUpdated,TResult? Function( Either<Failure, ReportsFeed> result)?  reportsUpdated,TResult? Function()?  viewed,TResult? Function( DateTime? lastViewedReports)?  activityUpdated,TResult? Function()?  reset,}) {final _that = this;
 switch (_that) {
 case Started() when started != null:
-return started();case Refresh() when refresh != null:
+return started(_that.uid);case Refresh() when refresh != null:
 return refresh();case WatchlistUpdated() when watchlistUpdated != null:
 return watchlistUpdated(_that.tickers);case ReportsUpdated() when reportsUpdated != null:
 return reportsUpdated(_that.result);case Viewed() when viewed != null:
@@ -211,33 +211,67 @@ return reset();case _:
 
 
 class Started implements ReportsEvent {
-  const Started();
+  const Started({this.uid});
   
 
+ final  String? uid;
 
-
+/// Create a copy of ReportsEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$StartedCopyWith<Started> get copyWith => _$StartedCopyWithImpl<Started>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Started);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Started&&(identical(other.uid, uid) || other.uid == uid));
 }
 
 
 @override
-int get hashCode => runtimeType.hashCode;
+int get hashCode => Object.hash(runtimeType,uid);
 
 @override
 String toString() {
-  return 'ReportsEvent.started()';
+  return 'ReportsEvent.started(uid: $uid)';
 }
 
 
 }
 
+/// @nodoc
+abstract mixin class $StartedCopyWith<$Res> implements $ReportsEventCopyWith<$Res> {
+  factory $StartedCopyWith(Started value, $Res Function(Started) _then) = _$StartedCopyWithImpl;
+@useResult
+$Res call({
+ String? uid
+});
 
 
+
+
+}
+/// @nodoc
+class _$StartedCopyWithImpl<$Res>
+    implements $StartedCopyWith<$Res> {
+  _$StartedCopyWithImpl(this._self, this._then);
+
+  final Started _self;
+  final $Res Function(Started) _then;
+
+/// Create a copy of ReportsEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? uid = freezed,}) {
+  return _then(Started(
+uid: freezed == uid ? _self.uid : uid // ignore: cast_nullable_to_non_nullable
+as String?,
+  ));
+}
+
+
+}
 
 /// @nodoc
 

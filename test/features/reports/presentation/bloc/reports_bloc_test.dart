@@ -84,7 +84,7 @@ void main() {
         ).thenAnswer((_) => Stream.value(const Right(ReportsFeed())));
         return bloc;
       },
-      act: (bloc) => bloc.add(const ReportsEvent.started()),
+      act: (bloc) => bloc.add(const ReportsEvent.started(uid: 'test_uid')),
       expect: () => [
         const ReportsState.loading(),
         const ReportsState.loaded(
@@ -126,7 +126,7 @@ void main() {
       act: (bloc) => bloc.add(
         const ReportsEvent.reportsUpdated(Left(Failure.server("Error"))),
       ),
-      expect: () => [const ReportsState.failure("Error")],
+      expect: () => [const ReportsState.failure(Failure.server("Error"))],
     );
   });
 }

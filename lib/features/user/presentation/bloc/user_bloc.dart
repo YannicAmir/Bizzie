@@ -17,11 +17,14 @@ class UserBloc extends Bloc<UserEvent, UserState> {
   final GetUserUseCase _getUserUseCase;
 
   UserBloc(this._getUserUseCase) : super(const UserState.initial()) {
-    on<_LoadUser>(_onLoadUser);
-    on<_Clear>(_onClear);
+    on<UserLoadRequested>(_onLoadUser);
+    on<UserClearRequested>(_onClear);
   }
 
-  Future<void> _onLoadUser(_LoadUser event, Emitter<UserState> emit) async {
+  Future<void> _onLoadUser(
+    UserLoadRequested event,
+    Emitter<UserState> emit,
+  ) async {
     if (!event.silent) {
       final cached = _getUserUseCase.cachedSector;
       emit(UserState.loading(cachedSector: cached));
@@ -39,7 +42,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
           _logger.severe('Failed to load user profile', failure.message);
           emit(
             UserState.failure(
-              failure.message,
+              failure,
               uid: event.uid,
               cachedSector: _getUserUseCase.cachedSector,
             ),
@@ -53,7 +56,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     );
   }
 
-  void _onClear(_Clear event, Emitter<UserState> emit) {
+  void _onClear(UserClearRequested event, Emitter<UserState> emit) {
     _logger.info('Clearing user profile');
     emit(const UserState.initial());
   }

@@ -8,6 +8,7 @@ import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 final _logger = BizzieLogger('RemoteAuthDataSource');
 
 abstract class RemoteAuthDataSource {
+  Future<void> initialize();
   Stream<User?> get authStateChanges;
   User? get currentUser;
   Future<User> signInWithEmail({
@@ -30,11 +31,12 @@ class RemoteAuthDataSourceImpl implements RemoteAuthDataSource {
   final FirebaseAuth _firebaseAuth;
   final GoogleSignIn _googleSignIn;
 
-  RemoteAuthDataSourceImpl({
-    FirebaseAuth? firebaseAuth,
-    GoogleSignIn? googleSignIn,
-  }) : _firebaseAuth = firebaseAuth ?? FirebaseAuth.instance,
-       _googleSignIn = googleSignIn ?? GoogleSignIn.instance;
+  RemoteAuthDataSourceImpl(this._firebaseAuth, this._googleSignIn);
+
+  @override
+  Future<void> initialize() async {
+    await _googleSignIn.initialize();
+  }
 
   @override
   Stream<User?> get authStateChanges => _firebaseAuth.authStateChanges();

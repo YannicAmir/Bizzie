@@ -10,7 +10,7 @@ description: This is used when UI needs to be built for a feature
 
 **Architecture Guide:** Please refer to the [Architecture Guide](../rules/architecture-guide.md) for detailed breakdown of the architecture and strictly follow the archtecture detailed there.
 
-**Adherance:** Strictly adhere to the rules outline in [UI Building Rules](../rules/ui-coding-rules.md)
+**Adherance:** Strictly adhere to the rules outline in [Best Practice Rules](../rules/best-practice-rules.md)
 
 **Prerequisites:**
 > * **Check:** Do presentation/views/* and/or presentation/widgets/* with actual coded UI exist for this feature? If so, stop **UIBuilder** and continue with [Build UI from Mock](build-ui-from-mock.md) instead. If not, continue with **UIBuilder**.

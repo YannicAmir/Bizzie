@@ -175,45 +175,60 @@ class _BuildingProfilePageState extends State<BuildingProfilePage>
                 children: [
                   const OnboardingHeader(),
                   Expanded(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        _ProfileCarousel(
-                          pageController: _pageController,
-                          carouselItems: carouselItems,
-                        ),
-                        const SizedBox(height: 48),
-                        _ProfileCreationProgress(
-                          progressAnimation: _progressAnimation,
-                        ),
-                        const SizedBox(height: 32),
-                        if (_isAnimationComplete && !_isProfileSaved)
-                          Padding(
-                            padding: const EdgeInsets.only(top: 8.0),
-                            child: Text(
-                              'Finishing up...',
-                              style: theme.textTheme.displayMedium?.copyWith(
-                                fontSize: 28,
-                                fontWeight: FontWeight.w800,
-                                color: AppColors.textPrimary,
-                                height: 1.2,
-                                letterSpacing: 0.383,
+                    child: LayoutBuilder(
+                      builder: (context, constraints) {
+                        return SingleChildScrollView(
+                          child: ConstrainedBox(
+                            constraints: BoxConstraints(
+                              minHeight: constraints.maxHeight,
+                            ),
+                            child: IntrinsicHeight(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  _ProfileCarousel(
+                                    pageController: _pageController,
+                                    carouselItems: carouselItems,
+                                  ),
+                                  const SizedBox(height: 48),
+                                  _ProfileCreationProgress(
+                                    progressAnimation: _progressAnimation,
+                                  ),
+                                  const SizedBox(height: 32),
+                                  if (_isAnimationComplete && !_isProfileSaved)
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 8.0),
+                                      child: Text(
+                                        'Finishing up...',
+                                        style: theme.textTheme.displayMedium
+                                            ?.copyWith(
+                                              fontSize: 28,
+                                              fontWeight: FontWeight.w800,
+                                              color: AppColors.textPrimary,
+                                              height: 1.2,
+                                              letterSpacing: 0.383,
+                                            ),
+                                      ),
+                                    )
+                                  else
+                                    Text(
+                                      '   ${(_progressAnimation.value * 100).toInt()}%',
+                                      style: theme.textTheme.bodyLarge
+                                          ?.copyWith(
+                                            fontWeight: FontWeight.w900,
+                                            fontSize: 20,
+                                            height: 1.5,
+                                            letterSpacing: -0.449,
+                                            color: AppColors.primary,
+                                          ),
+                                    ),
+                                  const SizedBox(height: 56),
+                                ],
                               ),
                             ),
-                          )
-                        else
-                          Text(
-                            '   ${(_progressAnimation.value * 100).toInt()}%',
-                            style: theme.textTheme.bodyLarge?.copyWith(
-                              fontWeight: FontWeight.w900,
-                              fontSize: 20,
-                              height: 1.5,
-                              letterSpacing: -0.449,
-                              color: AppColors.primary,
-                            ),
                           ),
-                        const SizedBox(height: 56),
-                      ],
+                        );
+                      },
                     ),
                   ),
                 ],

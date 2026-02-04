@@ -37,4 +37,6 @@ class AppRoutes {
   static const String navHome = '/home';
   static const String search = '/search';
   static const String splash = '/splash';
+  static const String paywall = '/paywall';
+  static const String discountedPaywall = '/discounted-paywall';
 }

@@ -68,7 +68,7 @@ class _BrandsListContent extends StatelessWidget {
           return state.map(
             initial: (_) => const SizedBox.shrink(),
             error: (errorState) => BizzieError(
-              message: errorState.message,
+              message: 'Error loading brands',
               onRetry: () {
                 context.read<SelectBrandsBloc>().add(
                   const SelectBrandsEvent.started(),

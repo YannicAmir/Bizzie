@@ -1,6 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:injectable/injectable.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:bizzie/core/logging/bizzie_logger.dart';
+
+final _logger = BizzieLogger('FirestoreService');
 
 @singleton
 class FirestoreService {
@@ -56,7 +59,16 @@ class FirestoreService {
       path,
       fromJson,
       toJson,
-    ).snapshots().map((s) => s.data());
+    ).snapshots().map((s) => s.data()).handleError((e, s) {
+      if (e is FirebaseException && e.code == 'permission-denied') {
+        _logger.warning(
+          'Firestore permission denied for $path - likely during logout session clearing',
+          e,
+        );
+        return;
+      }
+      throw e;
+    });
   }
 
   Stream<List<T>> getCollectionStream<T>({
@@ -69,7 +81,19 @@ class FirestoreService {
     if (queryBuilder != null) {
       query = queryBuilder(query);
     }
-    return query.snapshots().map((s) => s.docs.map((d) => d.data()).toList());
+    return query
+        .snapshots()
+        .map((s) => s.docs.map((d) => d.data()).toList())
+        .handleError((e, s) {
+          if (e is FirebaseException && e.code == 'permission-denied') {
+            _logger.warning(
+              'Firestore permission denied for $path - likely during logout session clearing',
+              e,
+            );
+            return;
+          }
+          throw e;
+        });
   }
 
   Future<List<T>> getCollection<T>({

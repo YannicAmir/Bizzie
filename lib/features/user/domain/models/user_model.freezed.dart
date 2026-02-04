@@ -216,14 +216,14 @@ return $default(_that.uid,_that.name,_that.favoriteSector,_that.watchlist,_that.
 @JsonSerializable()
 
 class _UserModel implements UserModel {
-  const _UserModel({required this.uid, required this.name, required this.favoriteSector, required final  List<Company> watchlist, required this.investingExperience, @TimestampConverter() required this.createdAt, required this.isSubscribed, required final  Map<String, String> fcmTokens}): _watchlist = watchlist,_fcmTokens = fcmTokens;
+  const _UserModel({required this.uid, required this.name, required this.favoriteSector, final  List<Company> watchlist = const [], required this.investingExperience, @TimestampConverter() required this.createdAt, required this.isSubscribed, final  Map<String, String> fcmTokens = const {}}): _watchlist = watchlist,_fcmTokens = fcmTokens;
   factory _UserModel.fromJson(Map<String, dynamic> json) => _$UserModelFromJson(json);
 
 @override final  String uid;
 @override final  String name;
 @override final  String favoriteSector;
  final  List<Company> _watchlist;
-@override List<Company> get watchlist {
+@override@JsonKey() List<Company> get watchlist {
   if (_watchlist is EqualUnmodifiableListView) return _watchlist;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableListView(_watchlist);
@@ -233,7 +233,7 @@ class _UserModel implements UserModel {
 @override@TimestampConverter() final  DateTime createdAt;
 @override final  bool isSubscribed;
  final  Map<String, String> _fcmTokens;
-@override Map<String, String> get fcmTokens {
+@override@JsonKey() Map<String, String> get fcmTokens {
   if (_fcmTokens is EqualUnmodifiableMapView) return _fcmTokens;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableMapView(_fcmTokens);

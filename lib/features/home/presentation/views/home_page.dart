@@ -10,29 +10,60 @@ import 'package:bizzie/di/injection.dart';
 import 'package:bizzie/features/user/domain/interfaces/user_repository.dart';
 import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
 import 'package:bizzie/features/home/presentation/widgets/home_watchlist_widget.dart';
+import 'package:bizzie/shared/widgets/badges/bizzie_plus_badge.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  final Object? extra;
+
+  const HomePage({super.key, this.extra});
 
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
+  bool _pendingPaywall = false;
+
   @override
   void initState() {
     super.initState();
+    if (widget.extra == 'open_paywall_onboarding') {
+      _pendingPaywall = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        context.push('${AppRoutes.paywall}?animate=onboarding');
+
+        if (mounted) {
+          setState(() {
+            _pendingPaywall = false;
+          });
+        }
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    if (_pendingPaywall) {
+      return Scaffold(
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(
-        title: BizzieSearchBar(
-          readOnly: true,
-          onTap: () {
-            context.push(AppRoutes.search, extra: 'home');
-          },
+        title: Row(
+          children: [
+            Expanded(
+              child: BizzieSearchBar(
+                readOnly: true,
+                onTap: () {
+                  context.push(AppRoutes.search, extra: 'home');
+                },
+              ),
+            ),
+            const SizedBox(width: 8),
+            const BizziePlusBadge(),
+          ],
         ),
       ),
       body: Center(
@@ -40,9 +71,9 @@ class _HomePageState extends State<HomePage> {
           listener: (context, state) {
             state.maybeWhen(
               authenticated: (_) {},
-              failure: (message) => ScaffoldMessenger.of(
+              failure: (failure) => ScaffoldMessenger.of(
                 context,
-              ).showSnackBar(SnackBar(content: Text(message))),
+              ).showSnackBar(SnackBar(content: Text(failure.message))),
               orElse: () => null,
             );
           },
@@ -83,6 +114,16 @@ class _HomePageState extends State<HomePage> {
                           onPressed: () =>
                               context.push(AppRoutes.onboardingNotifications),
                           child: const Text('Notification Shortcut'),
+                        ),
+                        const SizedBox(height: 10),
+                        ElevatedButton(
+                          onPressed: () => context.push(AppRoutes.paywall),
+                          child: const Text('Paywall Shortcut'),
+                        ),
+                        ElevatedButton(
+                          onPressed: () =>
+                              context.push(AppRoutes.discountedPaywall),
+                          child: const Text('Discounted Paywall Shortcut'),
                         ),
                         const SizedBox(height: 20),
                         Text(
@@ -126,6 +167,16 @@ class _HomePageState extends State<HomePage> {
                       onPressed: () =>
                           context.push(AppRoutes.onboardingNotifications),
                       child: const Text('Notification Shortcut'),
+                    ),
+                    const SizedBox(height: 10),
+                    ElevatedButton(
+                      onPressed: () => context.push(AppRoutes.paywall),
+                      child: const Text('Paywall Shortcut'),
+                    ),
+                    ElevatedButton(
+                      onPressed: () =>
+                          context.push(AppRoutes.discountedPaywall),
+                      child: const Text('Discounted Paywall Shortcut'),
                     ),
                   ],
                 ),

@@ -25,12 +25,13 @@ class CreateAccountPage extends StatelessWidget {
       listener: (context, state) {
         state.maybeWhen(
           authenticated: (user) {
+            FocusScope.of(context).unfocus();
             context.go(AppRoutes.onboardingBuildingProfile);
           },
-          failure: (message) {
+          failure: (failure) {
             ScaffoldMessenger.of(
               context,
-            ).showSnackBar(SnackBar(content: Text(message)));
+            ).showSnackBar(SnackBar(content: Text(failure.message)));
           },
           orElse: () {},
         );
@@ -38,7 +39,6 @@ class CreateAccountPage extends StatelessWidget {
       child: GestureDetector(
         onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
         child: Scaffold(
-          backgroundColor: AppColors.background,
           body: SafeArea(
             child: SingleChildScrollView(
               keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,

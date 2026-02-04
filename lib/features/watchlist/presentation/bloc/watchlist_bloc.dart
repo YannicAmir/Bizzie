@@ -1,4 +1,5 @@
 import 'package:bizzie/core/logging/bizzie_logger.dart';
+import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/features/auth/domain/interfaces/i_auth_repository.dart';
 import 'package:bizzie/features/onboarding/domain/models/company.dart';
 import 'package:bizzie/features/watchlist/domain/usecases/add_to_watchlist_usecase.dart';
@@ -50,12 +51,16 @@ class WatchlistBloc extends Bloc<WatchlistEvent, WatchlistState> {
     LoadRequested event,
     Emitter<WatchlistState> emit,
   ) async {
-    final uid = _uid;
+    final uid = event.uid ?? _uid;
     if (uid == null) {
-      emit(const WatchlistState.failure("User not authenticated"));
+      _logger.warning(
+        'LoadRequested event without UID and repository UID is null',
+      );
+      emit(WatchlistState.failure(Failure.server("User not authenticated")));
       return;
     }
 
+    _logger.info('Loading watchlist for UID: $uid');
     emit(const WatchlistState.loading());
 
     final stream = await _getWatchlistUseCase(uid);
@@ -64,13 +69,13 @@ class WatchlistBloc extends Bloc<WatchlistEvent, WatchlistState> {
       stream,
       onData: (result) {
         return result.fold(
-          (failure) => WatchlistState.failure(failure.message),
+          (failure) => WatchlistState.failure(failure),
           (companies) => WatchlistState.loaded(companies),
         );
       },
       onError: (error, stack) {
         _logger.severe('Watchlist stream error', error, stack);
-        return WatchlistState.failure('Stream Error');
+        return WatchlistState.failure(Failure.server('Stream Error'));
       },
     );
   }
@@ -116,7 +121,7 @@ class WatchlistBloc extends Bloc<WatchlistEvent, WatchlistState> {
   ) async {
     final uid = _uid;
     if (uid == null) {
-      emit(const WatchlistState.failure("User not authenticated"));
+      emit(WatchlistState.failure(Failure.server("User not authenticated")));
       return;
     }
 
@@ -129,9 +134,7 @@ class WatchlistBloc extends Bloc<WatchlistEvent, WatchlistState> {
       AddToWatchlistParams(company: company, uid: uid),
     );
 
-    result.fold((failure) => emit(WatchlistState.failure(failure.message)), (
-      _,
-    ) {
+    result.fold((failure) => emit(WatchlistState.failure(failure)), (_) {
       _logger.info("Added ${event.ticker}, waiting for stream update");
     });
   }
@@ -142,7 +145,7 @@ class WatchlistBloc extends Bloc<WatchlistEvent, WatchlistState> {
   ) async {
     final uid = _uid;
     if (uid == null) {
-      emit(const WatchlistState.failure("User not authenticated"));
+      emit(WatchlistState.failure(Failure.server("User not authenticated")));
       return;
     }
 
@@ -150,9 +153,7 @@ class WatchlistBloc extends Bloc<WatchlistEvent, WatchlistState> {
       RemoveFromWatchlistParams(ticker: event.ticker, uid: uid),
     );
 
-    result.fold((failure) => emit(WatchlistState.failure(failure.message)), (
-      _,
-    ) {
+    result.fold((failure) => emit(WatchlistState.failure(failure)), (_) {
       _logger.info("Removed ${event.ticker}, waiting for stream update");
     });
   }

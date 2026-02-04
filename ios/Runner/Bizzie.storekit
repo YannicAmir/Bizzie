@@ -1,0 +1,135 @@
+{
+  "appPolicies" : {
+    "eula" : "",
+    "policies" : [
+      {
+        "locale" : "en_US",
+        "policyText" : "",
+        "policyURL" : ""
+      }
+    ]
+  },
+  "identifier" : "33B22283",
+  "nonRenewingSubscriptions" : [
+
+  ],
+  "products" : [
+
+  ],
+  "settings" : {
+    "_askToBuyEnabled" : false,
+    "_billingGracePeriodEnabled" : false,
+    "_billingIssuesEnabled" : false,
+    "_disableDialogs" : false,
+    "_failTransactionsEnabled" : false,
+    "_locale" : "en_US",
+    "_renewalBillingIssuesEnabled" : false,
+    "_storefront" : "USA",
+    "_storeKitErrors" : [
+    ],
+    "_timeRate" : 5
+  },
+  "subscriptionGroups" : [
+    {
+      "id" : "21910954",
+      "localizations" : [
+
+      ],
+      "name" : "Bizzie Plus",
+      "subscriptions" : [
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "143.99",
+          "familyShareable" : false,
+          "groupNumber" : 3,
+          "internalID" : "6758458964",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "Discounted rate for one year of Bizzie Plus access",
+              "displayName" : "Bizzie Plus: Discount Annual",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "io.getbizzie.bizzieapp.plus.annual.discount.dev",
+          "recurringSubscriptionPeriod" : "P1Y",
+          "referenceName" : "Premium Annual (Discount)",
+          "subscriptionGroupID" : "21910954",
+          "type" : "RecurringSubscription",
+          "winbackOffers" : [
+
+          ]
+        },
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "239.99",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "6758458797",
+          "introductoryOffer" : {
+            "internalID" : "4E66160C",
+            "paymentMode" : "free",
+            "subscriptionPeriod" : "P1W"
+          },
+          "localizations" : [
+            {
+              "description" : "Unlimited Bizzie Plus access for one full year",
+              "displayName" : "Bizzie Plus: Annual",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "io.getbizzie.bizzieapp.plus.annual.full.dev",
+          "recurringSubscriptionPeriod" : "P1Y",
+          "referenceName" : "Premium Annual (Full)",
+          "subscriptionGroupID" : "21910954",
+          "type" : "RecurringSubscription",
+          "winbackOffers" : [
+
+          ]
+        },
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "34.99",
+          "familyShareable" : false,
+          "groupNumber" : 2,
+          "internalID" : "6758459076",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "Unlimited Bizzie Plus access for one full month",
+              "displayName" : "Bizzie Plus: Monthly",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "io.getbizzie.bizzieapp.plus.monthly.full.dev",
+          "recurringSubscriptionPeriod" : "P1M",
+          "referenceName" : "Premium Monthly (Full)",
+          "subscriptionGroupID" : "21910954",
+          "type" : "RecurringSubscription",
+          "winbackOffers" : [
+
+          ]
+        }
+      ]
+    }
+  ],
+  "version" : {
+    "major" : 4,
+    "minor" : 0
+  }
+}

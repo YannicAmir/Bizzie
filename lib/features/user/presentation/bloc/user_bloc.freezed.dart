@@ -55,12 +55,11 @@ extension UserEventPatterns on UserEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Started value)?  started,TResult Function( _LoadUser value)?  loadUser,TResult Function( _Clear value)?  clear,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( UserLoadRequested value)?  loadUser,TResult Function( UserClearRequested value)?  clear,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
-case _Started() when started != null:
-return started(_that);case _LoadUser() when loadUser != null:
-return loadUser(_that);case _Clear() when clear != null:
+case UserLoadRequested() when loadUser != null:
+return loadUser(_that);case UserClearRequested() when clear != null:
 return clear(_that);case _:
   return orElse();
 
@@ -79,12 +78,11 @@ return clear(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Started value)  started,required TResult Function( _LoadUser value)  loadUser,required TResult Function( _Clear value)  clear,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( UserLoadRequested value)  loadUser,required TResult Function( UserClearRequested value)  clear,}){
 final _that = this;
 switch (_that) {
-case _Started():
-return started(_that);case _LoadUser():
-return loadUser(_that);case _Clear():
+case UserLoadRequested():
+return loadUser(_that);case UserClearRequested():
 return clear(_that);case _:
   throw StateError('Unexpected subclass');
 
@@ -102,12 +100,11 @@ return clear(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Started value)?  started,TResult? Function( _LoadUser value)?  loadUser,TResult? Function( _Clear value)?  clear,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( UserLoadRequested value)?  loadUser,TResult? Function( UserClearRequested value)?  clear,}){
 final _that = this;
 switch (_that) {
-case _Started() when started != null:
-return started(_that);case _LoadUser() when loadUser != null:
-return loadUser(_that);case _Clear() when clear != null:
+case UserLoadRequested() when loadUser != null:
+return loadUser(_that);case UserClearRequested() when clear != null:
 return clear(_that);case _:
   return null;
 
@@ -125,11 +122,10 @@ return clear(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  started,TResult Function( String uid,  bool silent)?  loadUser,TResult Function()?  clear,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String uid,  bool silent)?  loadUser,TResult Function()?  clear,required TResult orElse(),}) {final _that = this;
 switch (_that) {
-case _Started() when started != null:
-return started();case _LoadUser() when loadUser != null:
-return loadUser(_that.uid,_that.silent);case _Clear() when clear != null:
+case UserLoadRequested() when loadUser != null:
+return loadUser(_that.uid,_that.silent);case UserClearRequested() when clear != null:
 return clear();case _:
   return orElse();
 
@@ -148,11 +144,10 @@ return clear();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  started,required TResult Function( String uid,  bool silent)  loadUser,required TResult Function()  clear,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String uid,  bool silent)  loadUser,required TResult Function()  clear,}) {final _that = this;
 switch (_that) {
-case _Started():
-return started();case _LoadUser():
-return loadUser(_that.uid,_that.silent);case _Clear():
+case UserLoadRequested():
+return loadUser(_that.uid,_that.silent);case UserClearRequested():
 return clear();case _:
   throw StateError('Unexpected subclass');
 
@@ -170,11 +165,10 @@ return clear();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  started,TResult? Function( String uid,  bool silent)?  loadUser,TResult? Function()?  clear,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String uid,  bool silent)?  loadUser,TResult? Function()?  clear,}) {final _that = this;
 switch (_that) {
-case _Started() when started != null:
-return started();case _LoadUser() when loadUser != null:
-return loadUser(_that.uid,_that.silent);case _Clear() when clear != null:
+case UserLoadRequested() when loadUser != null:
+return loadUser(_that.uid,_that.silent);case UserClearRequested() when clear != null:
 return clear();case _:
   return null;
 
@@ -186,40 +180,8 @@ return clear();case _:
 /// @nodoc
 
 
-class _Started implements UserEvent {
-  const _Started();
-  
-
-
-
-
-
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Started);
-}
-
-
-@override
-int get hashCode => runtimeType.hashCode;
-
-@override
-String toString() {
-  return 'UserEvent.started()';
-}
-
-
-}
-
-
-
-
-/// @nodoc
-
-
-class _LoadUser implements UserEvent {
-  const _LoadUser(this.uid, {this.silent = false});
+class UserLoadRequested implements UserEvent {
+  const UserLoadRequested({required this.uid, this.silent = false});
   
 
  final  String uid;
@@ -229,13 +191,13 @@ class _LoadUser implements UserEvent {
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-_$LoadUserCopyWith<_LoadUser> get copyWith => __$LoadUserCopyWithImpl<_LoadUser>(this, _$identity);
+$UserLoadRequestedCopyWith<UserLoadRequested> get copyWith => _$UserLoadRequestedCopyWithImpl<UserLoadRequested>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _LoadUser&&(identical(other.uid, uid) || other.uid == uid)&&(identical(other.silent, silent) || other.silent == silent));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is UserLoadRequested&&(identical(other.uid, uid) || other.uid == uid)&&(identical(other.silent, silent) || other.silent == silent));
 }
 
 
@@ -251,8 +213,8 @@ String toString() {
 }
 
 /// @nodoc
-abstract mixin class _$LoadUserCopyWith<$Res> implements $UserEventCopyWith<$Res> {
-  factory _$LoadUserCopyWith(_LoadUser value, $Res Function(_LoadUser) _then) = __$LoadUserCopyWithImpl;
+abstract mixin class $UserLoadRequestedCopyWith<$Res> implements $UserEventCopyWith<$Res> {
+  factory $UserLoadRequestedCopyWith(UserLoadRequested value, $Res Function(UserLoadRequested) _then) = _$UserLoadRequestedCopyWithImpl;
 @useResult
 $Res call({
  String uid, bool silent
@@ -263,18 +225,18 @@ $Res call({
 
 }
 /// @nodoc
-class __$LoadUserCopyWithImpl<$Res>
-    implements _$LoadUserCopyWith<$Res> {
-  __$LoadUserCopyWithImpl(this._self, this._then);
+class _$UserLoadRequestedCopyWithImpl<$Res>
+    implements $UserLoadRequestedCopyWith<$Res> {
+  _$UserLoadRequestedCopyWithImpl(this._self, this._then);
 
-  final _LoadUser _self;
-  final $Res Function(_LoadUser) _then;
+  final UserLoadRequested _self;
+  final $Res Function(UserLoadRequested) _then;
 
 /// Create a copy of UserEvent
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? uid = null,Object? silent = null,}) {
-  return _then(_LoadUser(
-null == uid ? _self.uid : uid // ignore: cast_nullable_to_non_nullable
+  return _then(UserLoadRequested(
+uid: null == uid ? _self.uid : uid // ignore: cast_nullable_to_non_nullable
 as String,silent: null == silent ? _self.silent : silent // ignore: cast_nullable_to_non_nullable
 as bool,
   ));
@@ -286,8 +248,8 @@ as bool,
 /// @nodoc
 
 
-class _Clear implements UserEvent {
-  const _Clear();
+class UserClearRequested implements UserEvent {
+  const UserClearRequested();
   
 
 
@@ -297,7 +259,7 @@ class _Clear implements UserEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Clear);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is UserClearRequested);
 }
 
 
@@ -359,14 +321,14 @@ extension UserStatePatterns on UserState {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Initial value)?  initial,TResult Function( _Loading value)?  loading,TResult Function( _Loaded value)?  loaded,TResult Function( _NeedsProfile value)?  needsProfile,TResult Function( _Failure value)?  failure,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( UserInitial value)?  initial,TResult Function( UserLoading value)?  loading,TResult Function( UserLoaded value)?  loaded,TResult Function( UserNeedsProfile value)?  needsProfile,TResult Function( UserFailure value)?  failure,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
-case _Initial() when initial != null:
-return initial(_that);case _Loading() when loading != null:
-return loading(_that);case _Loaded() when loaded != null:
-return loaded(_that);case _NeedsProfile() when needsProfile != null:
-return needsProfile(_that);case _Failure() when failure != null:
+case UserInitial() when initial != null:
+return initial(_that);case UserLoading() when loading != null:
+return loading(_that);case UserLoaded() when loaded != null:
+return loaded(_that);case UserNeedsProfile() when needsProfile != null:
+return needsProfile(_that);case UserFailure() when failure != null:
 return failure(_that);case _:
   return orElse();
 
@@ -385,14 +347,14 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Initial value)  initial,required TResult Function( _Loading value)  loading,required TResult Function( _Loaded value)  loaded,required TResult Function( _NeedsProfile value)  needsProfile,required TResult Function( _Failure value)  failure,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( UserInitial value)  initial,required TResult Function( UserLoading value)  loading,required TResult Function( UserLoaded value)  loaded,required TResult Function( UserNeedsProfile value)  needsProfile,required TResult Function( UserFailure value)  failure,}){
 final _that = this;
 switch (_that) {
-case _Initial():
-return initial(_that);case _Loading():
-return loading(_that);case _Loaded():
-return loaded(_that);case _NeedsProfile():
-return needsProfile(_that);case _Failure():
+case UserInitial():
+return initial(_that);case UserLoading():
+return loading(_that);case UserLoaded():
+return loaded(_that);case UserNeedsProfile():
+return needsProfile(_that);case UserFailure():
 return failure(_that);case _:
   throw StateError('Unexpected subclass');
 
@@ -410,14 +372,14 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Initial value)?  initial,TResult? Function( _Loading value)?  loading,TResult? Function( _Loaded value)?  loaded,TResult? Function( _NeedsProfile value)?  needsProfile,TResult? Function( _Failure value)?  failure,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( UserInitial value)?  initial,TResult? Function( UserLoading value)?  loading,TResult? Function( UserLoaded value)?  loaded,TResult? Function( UserNeedsProfile value)?  needsProfile,TResult? Function( UserFailure value)?  failure,}){
 final _that = this;
 switch (_that) {
-case _Initial() when initial != null:
-return initial(_that);case _Loading() when loading != null:
-return loading(_that);case _Loaded() when loaded != null:
-return loaded(_that);case _NeedsProfile() when needsProfile != null:
-return needsProfile(_that);case _Failure() when failure != null:
+case UserInitial() when initial != null:
+return initial(_that);case UserLoading() when loading != null:
+return loading(_that);case UserLoaded() when loaded != null:
+return loaded(_that);case UserNeedsProfile() when needsProfile != null:
+return needsProfile(_that);case UserFailure() when failure != null:
 return failure(_that);case _:
   return null;
 
@@ -435,14 +397,14 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function( String? cachedSector)?  loading,TResult Function( UserModel user)?  loaded,TResult Function()?  needsProfile,TResult Function( String message,  String uid,  String? cachedSector)?  failure,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function( String? cachedSector)?  loading,TResult Function( UserModel user)?  loaded,TResult Function()?  needsProfile,TResult Function( Failure failure,  String uid,  String? cachedSector)?  failure,required TResult orElse(),}) {final _that = this;
 switch (_that) {
-case _Initial() when initial != null:
-return initial();case _Loading() when loading != null:
-return loading(_that.cachedSector);case _Loaded() when loaded != null:
-return loaded(_that.user);case _NeedsProfile() when needsProfile != null:
-return needsProfile();case _Failure() when failure != null:
-return failure(_that.message,_that.uid,_that.cachedSector);case _:
+case UserInitial() when initial != null:
+return initial();case UserLoading() when loading != null:
+return loading(_that.cachedSector);case UserLoaded() when loaded != null:
+return loaded(_that.user);case UserNeedsProfile() when needsProfile != null:
+return needsProfile();case UserFailure() when failure != null:
+return failure(_that.failure,_that.uid,_that.cachedSector);case _:
   return orElse();
 
 }
@@ -460,14 +422,14 @@ return failure(_that.message,_that.uid,_that.cachedSector);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function( String? cachedSector)  loading,required TResult Function( UserModel user)  loaded,required TResult Function()  needsProfile,required TResult Function( String message,  String uid,  String? cachedSector)  failure,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function( String? cachedSector)  loading,required TResult Function( UserModel user)  loaded,required TResult Function()  needsProfile,required TResult Function( Failure failure,  String uid,  String? cachedSector)  failure,}) {final _that = this;
 switch (_that) {
-case _Initial():
-return initial();case _Loading():
-return loading(_that.cachedSector);case _Loaded():
-return loaded(_that.user);case _NeedsProfile():
-return needsProfile();case _Failure():
-return failure(_that.message,_that.uid,_that.cachedSector);case _:
+case UserInitial():
+return initial();case UserLoading():
+return loading(_that.cachedSector);case UserLoaded():
+return loaded(_that.user);case UserNeedsProfile():
+return needsProfile();case UserFailure():
+return failure(_that.failure,_that.uid,_that.cachedSector);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -484,14 +446,14 @@ return failure(_that.message,_that.uid,_that.cachedSector);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function( String? cachedSector)?  loading,TResult? Function( UserModel user)?  loaded,TResult? Function()?  needsProfile,TResult? Function( String message,  String uid,  String? cachedSector)?  failure,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function( String? cachedSector)?  loading,TResult? Function( UserModel user)?  loaded,TResult? Function()?  needsProfile,TResult? Function( Failure failure,  String uid,  String? cachedSector)?  failure,}) {final _that = this;
 switch (_that) {
-case _Initial() when initial != null:
-return initial();case _Loading() when loading != null:
-return loading(_that.cachedSector);case _Loaded() when loaded != null:
-return loaded(_that.user);case _NeedsProfile() when needsProfile != null:
-return needsProfile();case _Failure() when failure != null:
-return failure(_that.message,_that.uid,_that.cachedSector);case _:
+case UserInitial() when initial != null:
+return initial();case UserLoading() when loading != null:
+return loading(_that.cachedSector);case UserLoaded() when loaded != null:
+return loaded(_that.user);case UserNeedsProfile() when needsProfile != null:
+return needsProfile();case UserFailure() when failure != null:
+return failure(_that.failure,_that.uid,_that.cachedSector);case _:
   return null;
 
 }
@@ -502,8 +464,8 @@ return failure(_that.message,_that.uid,_that.cachedSector);case _:
 /// @nodoc
 
 
-class _Initial implements UserState {
-  const _Initial();
+class UserInitial implements UserState {
+  const UserInitial();
   
 
 
@@ -513,7 +475,7 @@ class _Initial implements UserState {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Initial);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is UserInitial);
 }
 
 
@@ -534,8 +496,8 @@ String toString() {
 /// @nodoc
 
 
-class _Loading implements UserState {
-  const _Loading({this.cachedSector});
+class UserLoading implements UserState {
+  const UserLoading({this.cachedSector});
   
 
  final  String? cachedSector;
@@ -544,13 +506,13 @@ class _Loading implements UserState {
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-_$LoadingCopyWith<_Loading> get copyWith => __$LoadingCopyWithImpl<_Loading>(this, _$identity);
+$UserLoadingCopyWith<UserLoading> get copyWith => _$UserLoadingCopyWithImpl<UserLoading>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Loading&&(identical(other.cachedSector, cachedSector) || other.cachedSector == cachedSector));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is UserLoading&&(identical(other.cachedSector, cachedSector) || other.cachedSector == cachedSector));
 }
 
 
@@ -566,8 +528,8 @@ String toString() {
 }
 
 /// @nodoc
-abstract mixin class _$LoadingCopyWith<$Res> implements $UserStateCopyWith<$Res> {
-  factory _$LoadingCopyWith(_Loading value, $Res Function(_Loading) _then) = __$LoadingCopyWithImpl;
+abstract mixin class $UserLoadingCopyWith<$Res> implements $UserStateCopyWith<$Res> {
+  factory $UserLoadingCopyWith(UserLoading value, $Res Function(UserLoading) _then) = _$UserLoadingCopyWithImpl;
 @useResult
 $Res call({
  String? cachedSector
@@ -578,17 +540,17 @@ $Res call({
 
 }
 /// @nodoc
-class __$LoadingCopyWithImpl<$Res>
-    implements _$LoadingCopyWith<$Res> {
-  __$LoadingCopyWithImpl(this._self, this._then);
+class _$UserLoadingCopyWithImpl<$Res>
+    implements $UserLoadingCopyWith<$Res> {
+  _$UserLoadingCopyWithImpl(this._self, this._then);
 
-  final _Loading _self;
-  final $Res Function(_Loading) _then;
+  final UserLoading _self;
+  final $Res Function(UserLoading) _then;
 
 /// Create a copy of UserState
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? cachedSector = freezed,}) {
-  return _then(_Loading(
+  return _then(UserLoading(
 cachedSector: freezed == cachedSector ? _self.cachedSector : cachedSector // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
@@ -600,8 +562,8 @@ as String?,
 /// @nodoc
 
 
-class _Loaded implements UserState {
-  const _Loaded(this.user);
+class UserLoaded implements UserState {
+  const UserLoaded(this.user);
   
 
  final  UserModel user;
@@ -610,13 +572,13 @@ class _Loaded implements UserState {
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-_$LoadedCopyWith<_Loaded> get copyWith => __$LoadedCopyWithImpl<_Loaded>(this, _$identity);
+$UserLoadedCopyWith<UserLoaded> get copyWith => _$UserLoadedCopyWithImpl<UserLoaded>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Loaded&&(identical(other.user, user) || other.user == user));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is UserLoaded&&(identical(other.user, user) || other.user == user));
 }
 
 
@@ -632,8 +594,8 @@ String toString() {
 }
 
 /// @nodoc
-abstract mixin class _$LoadedCopyWith<$Res> implements $UserStateCopyWith<$Res> {
-  factory _$LoadedCopyWith(_Loaded value, $Res Function(_Loaded) _then) = __$LoadedCopyWithImpl;
+abstract mixin class $UserLoadedCopyWith<$Res> implements $UserStateCopyWith<$Res> {
+  factory $UserLoadedCopyWith(UserLoaded value, $Res Function(UserLoaded) _then) = _$UserLoadedCopyWithImpl;
 @useResult
 $Res call({
  UserModel user
@@ -644,17 +606,17 @@ $UserModelCopyWith<$Res> get user;
 
 }
 /// @nodoc
-class __$LoadedCopyWithImpl<$Res>
-    implements _$LoadedCopyWith<$Res> {
-  __$LoadedCopyWithImpl(this._self, this._then);
+class _$UserLoadedCopyWithImpl<$Res>
+    implements $UserLoadedCopyWith<$Res> {
+  _$UserLoadedCopyWithImpl(this._self, this._then);
 
-  final _Loaded _self;
-  final $Res Function(_Loaded) _then;
+  final UserLoaded _self;
+  final $Res Function(UserLoaded) _then;
 
 /// Create a copy of UserState
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? user = null,}) {
-  return _then(_Loaded(
+  return _then(UserLoaded(
 null == user ? _self.user : user // ignore: cast_nullable_to_non_nullable
 as UserModel,
   ));
@@ -675,8 +637,8 @@ $UserModelCopyWith<$Res> get user {
 /// @nodoc
 
 
-class _NeedsProfile implements UserState {
-  const _NeedsProfile();
+class UserNeedsProfile implements UserState {
+  const UserNeedsProfile();
   
 
 
@@ -686,7 +648,7 @@ class _NeedsProfile implements UserState {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _NeedsProfile);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is UserNeedsProfile);
 }
 
 
@@ -707,11 +669,11 @@ String toString() {
 /// @nodoc
 
 
-class _Failure implements UserState {
-  const _Failure(this.message, {required this.uid, this.cachedSector});
+class UserFailure implements UserState {
+  const UserFailure(this.failure, {required this.uid, this.cachedSector});
   
 
- final  String message;
+ final  Failure failure;
  final  String uid;
  final  String? cachedSector;
 
@@ -719,59 +681,68 @@ class _Failure implements UserState {
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-_$FailureCopyWith<_Failure> get copyWith => __$FailureCopyWithImpl<_Failure>(this, _$identity);
+$UserFailureCopyWith<UserFailure> get copyWith => _$UserFailureCopyWithImpl<UserFailure>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Failure&&(identical(other.message, message) || other.message == message)&&(identical(other.uid, uid) || other.uid == uid)&&(identical(other.cachedSector, cachedSector) || other.cachedSector == cachedSector));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is UserFailure&&(identical(other.failure, failure) || other.failure == failure)&&(identical(other.uid, uid) || other.uid == uid)&&(identical(other.cachedSector, cachedSector) || other.cachedSector == cachedSector));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,message,uid,cachedSector);
+int get hashCode => Object.hash(runtimeType,failure,uid,cachedSector);
 
 @override
 String toString() {
-  return 'UserState.failure(message: $message, uid: $uid, cachedSector: $cachedSector)';
+  return 'UserState.failure(failure: $failure, uid: $uid, cachedSector: $cachedSector)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class _$FailureCopyWith<$Res> implements $UserStateCopyWith<$Res> {
-  factory _$FailureCopyWith(_Failure value, $Res Function(_Failure) _then) = __$FailureCopyWithImpl;
+abstract mixin class $UserFailureCopyWith<$Res> implements $UserStateCopyWith<$Res> {
+  factory $UserFailureCopyWith(UserFailure value, $Res Function(UserFailure) _then) = _$UserFailureCopyWithImpl;
 @useResult
 $Res call({
- String message, String uid, String? cachedSector
+ Failure failure, String uid, String? cachedSector
 });
 
 
-
+$FailureCopyWith<$Res> get failure;
 
 }
 /// @nodoc
-class __$FailureCopyWithImpl<$Res>
-    implements _$FailureCopyWith<$Res> {
-  __$FailureCopyWithImpl(this._self, this._then);
+class _$UserFailureCopyWithImpl<$Res>
+    implements $UserFailureCopyWith<$Res> {
+  _$UserFailureCopyWithImpl(this._self, this._then);
 
-  final _Failure _self;
-  final $Res Function(_Failure) _then;
+  final UserFailure _self;
+  final $Res Function(UserFailure) _then;
 
 /// Create a copy of UserState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? message = null,Object? uid = null,Object? cachedSector = freezed,}) {
-  return _then(_Failure(
-null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
-as String,uid: null == uid ? _self.uid : uid // ignore: cast_nullable_to_non_nullable
+@pragma('vm:prefer-inline') $Res call({Object? failure = null,Object? uid = null,Object? cachedSector = freezed,}) {
+  return _then(UserFailure(
+null == failure ? _self.failure : failure // ignore: cast_nullable_to_non_nullable
+as Failure,uid: null == uid ? _self.uid : uid // ignore: cast_nullable_to_non_nullable
 as String,cachedSector: freezed == cachedSector ? _self.cachedSector : cachedSector // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }
 
-
+/// Create a copy of UserState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$FailureCopyWith<$Res> get failure {
+  
+  return $FailureCopyWith<$Res>(_self.failure, (value) {
+    return _then(_self.copyWith(failure: value));
+  });
+}
 }
 
 // dart format on

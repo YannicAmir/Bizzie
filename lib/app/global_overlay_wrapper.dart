@@ -28,7 +28,7 @@ class GlobalOverlayWrapper extends StatelessWidget {
                 failure: (failureState) => GlobalErrorPage(
                   sectorName: failureState.cachedSector,
                   onRetry: () => context.read<UserBloc>().add(
-                    UserEvent.loadUser(failureState.uid),
+                    UserEvent.loadUser(uid: failureState.uid),
                   ),
                 ),
                 orElse: () => const SizedBox.shrink(),

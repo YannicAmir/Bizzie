@@ -1,4 +1,3 @@
-import 'package:bizzie/app/routes/app_routes.dart';
 import 'package:bizzie/app/themes/app_colors.dart';
 
 import 'package:bizzie/features/auth/presentation/bloc/auth_bloc.dart';
@@ -27,7 +26,7 @@ class _ProfileReadyPageState extends State<ProfileReadyPage> {
     final authState = context.read<AuthBloc>().state;
     authState.mapOrNull(
       authenticated: (u) => context.read<UserBloc>().add(
-        UserEvent.loadUser(u.user.id, silent: true),
+        UserEvent.loadUser(uid: u.user.id, silent: true),
       ),
     );
   }
@@ -141,7 +140,10 @@ class _ContinueButton extends StatelessWidget {
       height: 56,
       child: BizziePrimaryButton(
         onPressed: () {
-          context.go(AppRoutes.home);
+          context.goNamed(
+            'home_subscribe',
+            queryParameters: {'animate': 'onboarding'},
+          );
         },
         title: 'Continue',
       ),
