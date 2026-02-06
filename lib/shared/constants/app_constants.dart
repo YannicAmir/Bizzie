@@ -11,6 +11,9 @@ class AppConstants {
   static const double bizzieSwitchHeight = 48.0;
 
   static const EdgeInsets pagePadding = EdgeInsets.fromLTRB(16, 16, 16, 24);
+  static const EdgeInsets profileTabWidgetPadding = EdgeInsets.symmetric(
+    horizontal: 16,
+  );
 
   static const EdgeInsets reportModalPadding = EdgeInsets.fromLTRB(
     16,

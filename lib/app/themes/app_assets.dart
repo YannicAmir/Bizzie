@@ -116,6 +116,8 @@ class AppAssets {
       'assets/images/shared/clear_textfield_icon.png';
   static const String modalCloseIcon =
       'assets/images/shared/modal_close_icon.svg';
+  static const String bizziePlusIcon =
+      'assets/images/shared/bizzie_plus_icon.svg';
 
   static String getMascotForSector(String sector) {
     final normalized = sector.trim().replaceAll('_', ' ').toLowerCase();

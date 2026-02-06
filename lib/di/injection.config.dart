@@ -208,6 +208,11 @@ import '../features/company_profile/shares/domain/usecases/get_shares_usecase.da
     as _i240;
 import '../features/company_profile/shares/presentation/bloc/company_shares_bloc.dart'
     as _i807;
+import '../features/market/data/datasources/market_remote_datasource.dart'
+    as _i454;
+import '../features/market/data/repositories/market_repository_impl.dart'
+    as _i27;
+import '../features/market/domain/interfaces/i_market_repository.dart' as _i607;
 import '../features/notifications/data/datasources/fcm_remote_datasource.dart'
     as _i640;
 import '../features/notifications/data/datasources/local_notification_datasource.dart'
@@ -250,6 +255,13 @@ import '../features/onboarding/select_brands/domain/usecases/get_daily_brands_us
     as _i422;
 import '../features/onboarding/select_brands/presentation/bloc/select_brands_bloc.dart'
     as _i709;
+import '../features/profile/data/repositories/profile_repository_impl.dart'
+    as _i13;
+import '../features/profile/domain/interfaces/i_profile_repository.dart'
+    as _i107;
+import '../features/profile/domain/usecases/get_profile_display_data_usecase.dart'
+    as _i687;
+import '../features/profile/presentation/bloc/profile_bloc.dart' as _i570;
 import '../features/reports/data/datasources/reports_remote_datasource.dart'
     as _i532;
 import '../features/reports/data/repositories/reports_repository_impl.dart'
@@ -482,6 +494,9 @@ extension GetItInjectableX on _i174.GetIt {
       () =>
           _i584.DividendsFirestoreDataSourceImpl(gh<_i974.FirebaseFirestore>()),
     );
+    gh.lazySingleton<_i107.IProfileRepository>(
+      () => _i13.ProfileRepositoryImpl(gh<_i216.ConfigService>()),
+    );
     gh.singleton<_i361.Dio>(
       () => networkModule.fmpDio(gh<_i216.ConfigService>(), gh<_i915.AppEnv>()),
       instanceName: 'FmpDio',
@@ -551,6 +566,12 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i654.GetCompanyNewsUseCase>(
       () => _i654.GetCompanyNewsUseCase(gh<_i15.INewsRepository>()),
+    );
+    gh.lazySingleton<_i454.MarketRemoteDataSource>(
+      () => _i454.MarketRemoteDataSourceImpl(
+        gh<_i361.Dio>(instanceName: 'FmpDio'),
+        gh<_i216.ConfigService>(),
+      ),
     );
     gh.factory<_i920.GetSectorsUseCase>(
       () => _i920.GetSectorsUseCase(gh<_i329.IOnboardingRepository>()),
@@ -659,6 +680,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i269.StockSearchService>(
       () => _i269.StockSearchService(gh<_i456.IStockRepository>()),
     );
+    gh.lazySingleton<_i607.IMarketRepository>(
+      () => _i27.MarketRepositoryImpl(gh<_i454.MarketRemoteDataSource>()),
+    );
     gh.lazySingleton<_i203.IRevenueRepository>(
       () => _i517.RevenueRepositoryImpl(
         gh<_i348.FinancialStatementsRemoteDataSource>(),
@@ -669,6 +693,14 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i286.CompanyRemoteDataSourceImpl(
         gh<_i361.Dio>(instanceName: 'FmpDio'),
         gh<_i216.ConfigService>(),
+      ),
+    );
+    gh.lazySingleton<_i687.GetProfileDisplayDataUseCase>(
+      () => _i687.GetProfileDisplayDataUseCase(
+        gh<_i685.IAuthRepository>(),
+        gh<_i615.IUserRepository>(),
+        gh<_i107.IProfileRepository>(),
+        gh<_i607.IMarketRepository>(),
       ),
     );
     gh.lazySingleton<_i368.IFcpsRepository>(
@@ -736,6 +768,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i999.UnsubscribeFromTopic>(
       () => _i999.UnsubscribeFromTopic(gh<_i622.INotificationRepository>()),
+    );
+    gh.factory<_i570.ProfileBloc>(
+      () => _i570.ProfileBloc(gh<_i687.GetProfileDisplayDataUseCase>()),
     );
     gh.lazySingleton<_i786.ISharesRepository>(
       () => _i272.SharesRepositoryImpl(

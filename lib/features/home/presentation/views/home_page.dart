@@ -2,6 +2,7 @@ import 'package:bizzie/app/routes/app_routes.dart';
 import 'package:bizzie/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:bizzie/features/auth/presentation/bloc/auth_event.dart';
 import 'package:bizzie/features/auth/presentation/bloc/auth_state.dart';
+import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:bizzie/shared/widgets/inputs/bizzie_search_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -82,7 +83,7 @@ class _HomePageState extends State<HomePage> {
               return state.maybeWhen(
                 authenticated: (user) => SingleChildScrollView(
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 24.0),
+                    padding: AppConstants.pagePadding,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [

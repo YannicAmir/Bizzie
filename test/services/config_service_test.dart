@@ -135,4 +135,103 @@ void main() {
       expect(result.baseUrl, contains('financialmodelingprep'));
     });
   });
+
+  group('Sector Metadata', () {
+    const mockEvaluatedDescriptions =
+        '{"Technology": "Tech Companies", "Consumer Staples": "Essential Goods"}';
+
+    test('getSectorDescription_exactMatch_returnsValue', () {
+      // arrange
+      when(
+        () => mockRemoteConfig.getString(RemoteConfigKeys.sectorDescriptions),
+      ).thenReturn(mockEvaluatedDescriptions);
+
+      // act
+      final result = configService.getSectorDescription('Technology');
+
+      // assert
+      expect(result, 'Tech Companies');
+    });
+
+    test('getSectorDescription_normalizedMatch_returnsValue', () {
+      // arrange
+      when(
+        () => mockRemoteConfig.getString(RemoteConfigKeys.sectorDescriptions),
+      ).thenReturn(mockEvaluatedDescriptions);
+
+      // act
+      final result = configService.getSectorDescription('consumer_staples');
+
+      // assert
+      expect(result, 'Essential Goods');
+    });
+
+    test('getSectorDescription_noMatch_returnsEmpty', () {
+      // arrange
+      when(
+        () => mockRemoteConfig.getString(RemoteConfigKeys.sectorDescriptions),
+      ).thenReturn(mockEvaluatedDescriptions);
+
+      // act
+      final result = configService.getSectorDescription('Unknown Sector');
+
+      // assert
+      expect(result, isEmpty);
+    });
+
+    test('getSectorDisplayName_exactMatch_returnsKey', () {
+      // arrange
+      when(
+        () => mockRemoteConfig.getString(RemoteConfigKeys.sectorDescriptions),
+      ).thenReturn(mockEvaluatedDescriptions);
+
+      // act
+      final result = configService.getSectorDisplayName('Technology');
+
+      // assert
+      expect(result, 'Technology');
+    });
+
+    test('getSectorDisplayName_normalizedMatch_returnsTitleCaseKey', () {
+      // arrange
+      when(
+        () => mockRemoteConfig.getString(RemoteConfigKeys.sectorDescriptions),
+      ).thenReturn(mockEvaluatedDescriptions);
+
+      // act
+      final result = configService.getSectorDisplayName('consumer_staples');
+
+      // assert
+      expect(result, 'Consumer Staples');
+    });
+
+    test('getSectorDisplayName_noMatch_returnsSmartFallback', () {
+      // arrange
+      when(
+        () => mockRemoteConfig.getString(RemoteConfigKeys.sectorDescriptions),
+      ).thenReturn(mockEvaluatedDescriptions);
+
+      // act
+      final result = configService.getSectorDisplayName('new_emerging_market');
+
+      // assert
+      expect(result, 'New Emerging Market');
+    });
+
+    test('getSectorMetaData_invalidJson_returnsDefaults', () {
+      // arrange
+      when(
+        () => mockRemoteConfig.getString(RemoteConfigKeys.sectorDescriptions),
+      ).thenReturn('invalid-json');
+
+      // act
+      final description = configService.getSectorDescription('Energy');
+      final displayName = configService.getSectorDisplayName('energy');
+
+      // assert
+      expect(description, isNotEmpty);
+      expect(description, contains('oil'));
+      expect(displayName, 'Energy');
+    });
+  });
 }

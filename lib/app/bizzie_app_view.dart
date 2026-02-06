@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:bizzie/app/l10n/bizzie_localizations.dart';
 
 import 'package:bizzie/app/global_overlay_wrapper.dart';
 import 'package:bizzie/core/interfaces/i_notification_service.dart';
@@ -161,6 +162,8 @@ class _BizzieAppViewState extends State<BizzieAppView>
       },
       child: MaterialApp.router(
         theme: AppTheme.lightTheme,
+        localizationsDelegates: const [BizzieLocalizationsDelegate()],
+        supportedLocales: BizzieLocalizations.supportedLocales,
         routerConfig: _router,
         debugShowCheckedModeBanner: widget.environment == Environment.dev,
         builder: (context, child) => GlobalOverlayWrapper(child: child),
