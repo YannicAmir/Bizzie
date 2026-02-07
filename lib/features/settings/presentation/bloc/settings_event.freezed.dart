@@ -55,17 +55,18 @@ extension SettingsEventPatterns on SettingsEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Started value)?  started,TResult Function( _ToggledNotifications value)?  toggledNotifications,TResult Function( _SignedOut value)?  signedOut,TResult Function( _RefreshSubscription value)?  refreshSubscription,TResult Function( _OpenUrl value)?  openUrl,TResult Function( _SubmitFeedback value)?  submitFeedback,TResult Function( _ResetPassword value)?  resetPassword,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( Started value)?  started,TResult Function( ToggledNotifications value)?  toggledNotifications,TResult Function( SignedOut value)?  signedOut,TResult Function( RefreshSubscription value)?  refreshSubscription,TResult Function( OpenUrl value)?  openUrl,TResult Function( SubmitFeedback value)?  submitFeedback,TResult Function( ResetPassword value)?  resetPassword,TResult Function( OpenedSettings value)?  openedSettings,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
-case _Started() when started != null:
-return started(_that);case _ToggledNotifications() when toggledNotifications != null:
-return toggledNotifications(_that);case _SignedOut() when signedOut != null:
-return signedOut(_that);case _RefreshSubscription() when refreshSubscription != null:
-return refreshSubscription(_that);case _OpenUrl() when openUrl != null:
-return openUrl(_that);case _SubmitFeedback() when submitFeedback != null:
-return submitFeedback(_that);case _ResetPassword() when resetPassword != null:
-return resetPassword(_that);case _:
+case Started() when started != null:
+return started(_that);case ToggledNotifications() when toggledNotifications != null:
+return toggledNotifications(_that);case SignedOut() when signedOut != null:
+return signedOut(_that);case RefreshSubscription() when refreshSubscription != null:
+return refreshSubscription(_that);case OpenUrl() when openUrl != null:
+return openUrl(_that);case SubmitFeedback() when submitFeedback != null:
+return submitFeedback(_that);case ResetPassword() when resetPassword != null:
+return resetPassword(_that);case OpenedSettings() when openedSettings != null:
+return openedSettings(_that);case _:
   return orElse();
 
 }
@@ -83,17 +84,18 @@ return resetPassword(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Started value)  started,required TResult Function( _ToggledNotifications value)  toggledNotifications,required TResult Function( _SignedOut value)  signedOut,required TResult Function( _RefreshSubscription value)  refreshSubscription,required TResult Function( _OpenUrl value)  openUrl,required TResult Function( _SubmitFeedback value)  submitFeedback,required TResult Function( _ResetPassword value)  resetPassword,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( Started value)  started,required TResult Function( ToggledNotifications value)  toggledNotifications,required TResult Function( SignedOut value)  signedOut,required TResult Function( RefreshSubscription value)  refreshSubscription,required TResult Function( OpenUrl value)  openUrl,required TResult Function( SubmitFeedback value)  submitFeedback,required TResult Function( ResetPassword value)  resetPassword,required TResult Function( OpenedSettings value)  openedSettings,}){
 final _that = this;
 switch (_that) {
-case _Started():
-return started(_that);case _ToggledNotifications():
-return toggledNotifications(_that);case _SignedOut():
-return signedOut(_that);case _RefreshSubscription():
-return refreshSubscription(_that);case _OpenUrl():
-return openUrl(_that);case _SubmitFeedback():
-return submitFeedback(_that);case _ResetPassword():
-return resetPassword(_that);case _:
+case Started():
+return started(_that);case ToggledNotifications():
+return toggledNotifications(_that);case SignedOut():
+return signedOut(_that);case RefreshSubscription():
+return refreshSubscription(_that);case OpenUrl():
+return openUrl(_that);case SubmitFeedback():
+return submitFeedback(_that);case ResetPassword():
+return resetPassword(_that);case OpenedSettings():
+return openedSettings(_that);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -110,17 +112,18 @@ return resetPassword(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Started value)?  started,TResult? Function( _ToggledNotifications value)?  toggledNotifications,TResult? Function( _SignedOut value)?  signedOut,TResult? Function( _RefreshSubscription value)?  refreshSubscription,TResult? Function( _OpenUrl value)?  openUrl,TResult? Function( _SubmitFeedback value)?  submitFeedback,TResult? Function( _ResetPassword value)?  resetPassword,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( Started value)?  started,TResult? Function( ToggledNotifications value)?  toggledNotifications,TResult? Function( SignedOut value)?  signedOut,TResult? Function( RefreshSubscription value)?  refreshSubscription,TResult? Function( OpenUrl value)?  openUrl,TResult? Function( SubmitFeedback value)?  submitFeedback,TResult? Function( ResetPassword value)?  resetPassword,TResult? Function( OpenedSettings value)?  openedSettings,}){
 final _that = this;
 switch (_that) {
-case _Started() when started != null:
-return started(_that);case _ToggledNotifications() when toggledNotifications != null:
-return toggledNotifications(_that);case _SignedOut() when signedOut != null:
-return signedOut(_that);case _RefreshSubscription() when refreshSubscription != null:
-return refreshSubscription(_that);case _OpenUrl() when openUrl != null:
-return openUrl(_that);case _SubmitFeedback() when submitFeedback != null:
-return submitFeedback(_that);case _ResetPassword() when resetPassword != null:
-return resetPassword(_that);case _:
+case Started() when started != null:
+return started(_that);case ToggledNotifications() when toggledNotifications != null:
+return toggledNotifications(_that);case SignedOut() when signedOut != null:
+return signedOut(_that);case RefreshSubscription() when refreshSubscription != null:
+return refreshSubscription(_that);case OpenUrl() when openUrl != null:
+return openUrl(_that);case SubmitFeedback() when submitFeedback != null:
+return submitFeedback(_that);case ResetPassword() when resetPassword != null:
+return resetPassword(_that);case OpenedSettings() when openedSettings != null:
+return openedSettings(_that);case _:
   return null;
 
 }
@@ -137,16 +140,17 @@ return resetPassword(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  started,TResult Function( bool enable)?  toggledNotifications,TResult Function()?  signedOut,TResult Function()?  refreshSubscription,TResult Function( String url)?  openUrl,TResult Function( String message)?  submitFeedback,TResult Function()?  resetPassword,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  started,TResult Function( bool enable)?  toggledNotifications,TResult Function()?  signedOut,TResult Function()?  refreshSubscription,TResult Function( String url)?  openUrl,TResult Function( String message)?  submitFeedback,TResult Function()?  resetPassword,TResult Function()?  openedSettings,required TResult orElse(),}) {final _that = this;
 switch (_that) {
-case _Started() when started != null:
-return started();case _ToggledNotifications() when toggledNotifications != null:
-return toggledNotifications(_that.enable);case _SignedOut() when signedOut != null:
-return signedOut();case _RefreshSubscription() when refreshSubscription != null:
-return refreshSubscription();case _OpenUrl() when openUrl != null:
-return openUrl(_that.url);case _SubmitFeedback() when submitFeedback != null:
-return submitFeedback(_that.message);case _ResetPassword() when resetPassword != null:
-return resetPassword();case _:
+case Started() when started != null:
+return started();case ToggledNotifications() when toggledNotifications != null:
+return toggledNotifications(_that.enable);case SignedOut() when signedOut != null:
+return signedOut();case RefreshSubscription() when refreshSubscription != null:
+return refreshSubscription();case OpenUrl() when openUrl != null:
+return openUrl(_that.url);case SubmitFeedback() when submitFeedback != null:
+return submitFeedback(_that.message);case ResetPassword() when resetPassword != null:
+return resetPassword();case OpenedSettings() when openedSettings != null:
+return openedSettings();case _:
   return orElse();
 
 }
@@ -164,16 +168,17 @@ return resetPassword();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  started,required TResult Function( bool enable)  toggledNotifications,required TResult Function()  signedOut,required TResult Function()  refreshSubscription,required TResult Function( String url)  openUrl,required TResult Function( String message)  submitFeedback,required TResult Function()  resetPassword,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  started,required TResult Function( bool enable)  toggledNotifications,required TResult Function()  signedOut,required TResult Function()  refreshSubscription,required TResult Function( String url)  openUrl,required TResult Function( String message)  submitFeedback,required TResult Function()  resetPassword,required TResult Function()  openedSettings,}) {final _that = this;
 switch (_that) {
-case _Started():
-return started();case _ToggledNotifications():
-return toggledNotifications(_that.enable);case _SignedOut():
-return signedOut();case _RefreshSubscription():
-return refreshSubscription();case _OpenUrl():
-return openUrl(_that.url);case _SubmitFeedback():
-return submitFeedback(_that.message);case _ResetPassword():
-return resetPassword();case _:
+case Started():
+return started();case ToggledNotifications():
+return toggledNotifications(_that.enable);case SignedOut():
+return signedOut();case RefreshSubscription():
+return refreshSubscription();case OpenUrl():
+return openUrl(_that.url);case SubmitFeedback():
+return submitFeedback(_that.message);case ResetPassword():
+return resetPassword();case OpenedSettings():
+return openedSettings();case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -190,16 +195,17 @@ return resetPassword();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  started,TResult? Function( bool enable)?  toggledNotifications,TResult? Function()?  signedOut,TResult? Function()?  refreshSubscription,TResult? Function( String url)?  openUrl,TResult? Function( String message)?  submitFeedback,TResult? Function()?  resetPassword,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  started,TResult? Function( bool enable)?  toggledNotifications,TResult? Function()?  signedOut,TResult? Function()?  refreshSubscription,TResult? Function( String url)?  openUrl,TResult? Function( String message)?  submitFeedback,TResult? Function()?  resetPassword,TResult? Function()?  openedSettings,}) {final _that = this;
 switch (_that) {
-case _Started() when started != null:
-return started();case _ToggledNotifications() when toggledNotifications != null:
-return toggledNotifications(_that.enable);case _SignedOut() when signedOut != null:
-return signedOut();case _RefreshSubscription() when refreshSubscription != null:
-return refreshSubscription();case _OpenUrl() when openUrl != null:
-return openUrl(_that.url);case _SubmitFeedback() when submitFeedback != null:
-return submitFeedback(_that.message);case _ResetPassword() when resetPassword != null:
-return resetPassword();case _:
+case Started() when started != null:
+return started();case ToggledNotifications() when toggledNotifications != null:
+return toggledNotifications(_that.enable);case SignedOut() when signedOut != null:
+return signedOut();case RefreshSubscription() when refreshSubscription != null:
+return refreshSubscription();case OpenUrl() when openUrl != null:
+return openUrl(_that.url);case SubmitFeedback() when submitFeedback != null:
+return submitFeedback(_that.message);case ResetPassword() when resetPassword != null:
+return resetPassword();case OpenedSettings() when openedSettings != null:
+return openedSettings();case _:
   return null;
 
 }
@@ -210,8 +216,8 @@ return resetPassword();case _:
 /// @nodoc
 
 
-class _Started implements SettingsEvent {
-  const _Started();
+class Started implements SettingsEvent {
+  const Started();
   
 
 
@@ -221,7 +227,7 @@ class _Started implements SettingsEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Started);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Started);
 }
 
 
@@ -242,8 +248,8 @@ String toString() {
 /// @nodoc
 
 
-class _ToggledNotifications implements SettingsEvent {
-  const _ToggledNotifications(this.enable);
+class ToggledNotifications implements SettingsEvent {
+  const ToggledNotifications(this.enable);
   
 
  final  bool enable;
@@ -252,13 +258,13 @@ class _ToggledNotifications implements SettingsEvent {
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-_$ToggledNotificationsCopyWith<_ToggledNotifications> get copyWith => __$ToggledNotificationsCopyWithImpl<_ToggledNotifications>(this, _$identity);
+$ToggledNotificationsCopyWith<ToggledNotifications> get copyWith => _$ToggledNotificationsCopyWithImpl<ToggledNotifications>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ToggledNotifications&&(identical(other.enable, enable) || other.enable == enable));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ToggledNotifications&&(identical(other.enable, enable) || other.enable == enable));
 }
 
 
@@ -274,8 +280,8 @@ String toString() {
 }
 
 /// @nodoc
-abstract mixin class _$ToggledNotificationsCopyWith<$Res> implements $SettingsEventCopyWith<$Res> {
-  factory _$ToggledNotificationsCopyWith(_ToggledNotifications value, $Res Function(_ToggledNotifications) _then) = __$ToggledNotificationsCopyWithImpl;
+abstract mixin class $ToggledNotificationsCopyWith<$Res> implements $SettingsEventCopyWith<$Res> {
+  factory $ToggledNotificationsCopyWith(ToggledNotifications value, $Res Function(ToggledNotifications) _then) = _$ToggledNotificationsCopyWithImpl;
 @useResult
 $Res call({
  bool enable
@@ -286,17 +292,17 @@ $Res call({
 
 }
 /// @nodoc
-class __$ToggledNotificationsCopyWithImpl<$Res>
-    implements _$ToggledNotificationsCopyWith<$Res> {
-  __$ToggledNotificationsCopyWithImpl(this._self, this._then);
+class _$ToggledNotificationsCopyWithImpl<$Res>
+    implements $ToggledNotificationsCopyWith<$Res> {
+  _$ToggledNotificationsCopyWithImpl(this._self, this._then);
 
-  final _ToggledNotifications _self;
-  final $Res Function(_ToggledNotifications) _then;
+  final ToggledNotifications _self;
+  final $Res Function(ToggledNotifications) _then;
 
 /// Create a copy of SettingsEvent
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? enable = null,}) {
-  return _then(_ToggledNotifications(
+  return _then(ToggledNotifications(
 null == enable ? _self.enable : enable // ignore: cast_nullable_to_non_nullable
 as bool,
   ));
@@ -308,8 +314,8 @@ as bool,
 /// @nodoc
 
 
-class _SignedOut implements SettingsEvent {
-  const _SignedOut();
+class SignedOut implements SettingsEvent {
+  const SignedOut();
   
 
 
@@ -319,7 +325,7 @@ class _SignedOut implements SettingsEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SignedOut);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SignedOut);
 }
 
 
@@ -340,8 +346,8 @@ String toString() {
 /// @nodoc
 
 
-class _RefreshSubscription implements SettingsEvent {
-  const _RefreshSubscription();
+class RefreshSubscription implements SettingsEvent {
+  const RefreshSubscription();
   
 
 
@@ -351,7 +357,7 @@ class _RefreshSubscription implements SettingsEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _RefreshSubscription);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is RefreshSubscription);
 }
 
 
@@ -372,8 +378,8 @@ String toString() {
 /// @nodoc
 
 
-class _OpenUrl implements SettingsEvent {
-  const _OpenUrl(this.url);
+class OpenUrl implements SettingsEvent {
+  const OpenUrl(this.url);
   
 
  final  String url;
@@ -382,13 +388,13 @@ class _OpenUrl implements SettingsEvent {
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-_$OpenUrlCopyWith<_OpenUrl> get copyWith => __$OpenUrlCopyWithImpl<_OpenUrl>(this, _$identity);
+$OpenUrlCopyWith<OpenUrl> get copyWith => _$OpenUrlCopyWithImpl<OpenUrl>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _OpenUrl&&(identical(other.url, url) || other.url == url));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is OpenUrl&&(identical(other.url, url) || other.url == url));
 }
 
 
@@ -404,8 +410,8 @@ String toString() {
 }
 
 /// @nodoc
-abstract mixin class _$OpenUrlCopyWith<$Res> implements $SettingsEventCopyWith<$Res> {
-  factory _$OpenUrlCopyWith(_OpenUrl value, $Res Function(_OpenUrl) _then) = __$OpenUrlCopyWithImpl;
+abstract mixin class $OpenUrlCopyWith<$Res> implements $SettingsEventCopyWith<$Res> {
+  factory $OpenUrlCopyWith(OpenUrl value, $Res Function(OpenUrl) _then) = _$OpenUrlCopyWithImpl;
 @useResult
 $Res call({
  String url
@@ -416,17 +422,17 @@ $Res call({
 
 }
 /// @nodoc
-class __$OpenUrlCopyWithImpl<$Res>
-    implements _$OpenUrlCopyWith<$Res> {
-  __$OpenUrlCopyWithImpl(this._self, this._then);
+class _$OpenUrlCopyWithImpl<$Res>
+    implements $OpenUrlCopyWith<$Res> {
+  _$OpenUrlCopyWithImpl(this._self, this._then);
 
-  final _OpenUrl _self;
-  final $Res Function(_OpenUrl) _then;
+  final OpenUrl _self;
+  final $Res Function(OpenUrl) _then;
 
 /// Create a copy of SettingsEvent
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? url = null,}) {
-  return _then(_OpenUrl(
+  return _then(OpenUrl(
 null == url ? _self.url : url // ignore: cast_nullable_to_non_nullable
 as String,
   ));
@@ -438,8 +444,8 @@ as String,
 /// @nodoc
 
 
-class _SubmitFeedback implements SettingsEvent {
-  const _SubmitFeedback(this.message);
+class SubmitFeedback implements SettingsEvent {
+  const SubmitFeedback(this.message);
   
 
  final  String message;
@@ -448,13 +454,13 @@ class _SubmitFeedback implements SettingsEvent {
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-_$SubmitFeedbackCopyWith<_SubmitFeedback> get copyWith => __$SubmitFeedbackCopyWithImpl<_SubmitFeedback>(this, _$identity);
+$SubmitFeedbackCopyWith<SubmitFeedback> get copyWith => _$SubmitFeedbackCopyWithImpl<SubmitFeedback>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SubmitFeedback&&(identical(other.message, message) || other.message == message));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SubmitFeedback&&(identical(other.message, message) || other.message == message));
 }
 
 
@@ -470,8 +476,8 @@ String toString() {
 }
 
 /// @nodoc
-abstract mixin class _$SubmitFeedbackCopyWith<$Res> implements $SettingsEventCopyWith<$Res> {
-  factory _$SubmitFeedbackCopyWith(_SubmitFeedback value, $Res Function(_SubmitFeedback) _then) = __$SubmitFeedbackCopyWithImpl;
+abstract mixin class $SubmitFeedbackCopyWith<$Res> implements $SettingsEventCopyWith<$Res> {
+  factory $SubmitFeedbackCopyWith(SubmitFeedback value, $Res Function(SubmitFeedback) _then) = _$SubmitFeedbackCopyWithImpl;
 @useResult
 $Res call({
  String message
@@ -482,17 +488,17 @@ $Res call({
 
 }
 /// @nodoc
-class __$SubmitFeedbackCopyWithImpl<$Res>
-    implements _$SubmitFeedbackCopyWith<$Res> {
-  __$SubmitFeedbackCopyWithImpl(this._self, this._then);
+class _$SubmitFeedbackCopyWithImpl<$Res>
+    implements $SubmitFeedbackCopyWith<$Res> {
+  _$SubmitFeedbackCopyWithImpl(this._self, this._then);
 
-  final _SubmitFeedback _self;
-  final $Res Function(_SubmitFeedback) _then;
+  final SubmitFeedback _self;
+  final $Res Function(SubmitFeedback) _then;
 
 /// Create a copy of SettingsEvent
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? message = null,}) {
-  return _then(_SubmitFeedback(
+  return _then(SubmitFeedback(
 null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
 as String,
   ));
@@ -504,8 +510,8 @@ as String,
 /// @nodoc
 
 
-class _ResetPassword implements SettingsEvent {
-  const _ResetPassword();
+class ResetPassword implements SettingsEvent {
+  const ResetPassword();
   
 
 
@@ -515,7 +521,7 @@ class _ResetPassword implements SettingsEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ResetPassword);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ResetPassword);
 }
 
 
@@ -525,6 +531,38 @@ int get hashCode => runtimeType.hashCode;
 @override
 String toString() {
   return 'SettingsEvent.resetPassword()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class OpenedSettings implements SettingsEvent {
+  const OpenedSettings();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is OpenedSettings);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'SettingsEvent.openedSettings()';
 }
 
 

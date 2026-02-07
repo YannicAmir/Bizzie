@@ -14,6 +14,7 @@ _UserDto _$UserDtoFromJson(Map<String, dynamic> json) => _UserDto(
   investingExperience: json['investingExperience'] as String,
   createdAt: const TimestampConverter().fromJson(json['createdAt'] as Object),
   isSubscribed: json['isSubscribed'] as bool? ?? false,
+  notificationsEnabled: json['notificationsEnabled'] as bool? ?? true,
   fcmTokens: Map<String, String>.from(json['fcmTokens'] as Map),
 );
 
@@ -25,5 +26,6 @@ Map<String, dynamic> _$UserDtoToJson(_UserDto instance) => <String, dynamic>{
   'investingExperience': instance.investingExperience,
   'createdAt': const TimestampConverter().toJson(instance.createdAt),
   'isSubscribed': instance.isSubscribed,
+  'notificationsEnabled': instance.notificationsEnabled,
   'fcmTokens': instance.fcmTokens,
 };

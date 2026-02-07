@@ -4,12 +4,13 @@ part 'settings_event.freezed.dart';
 
 @freezed
 class SettingsEvent with _$SettingsEvent {
-  const factory SettingsEvent.started() = _Started;
+  const factory SettingsEvent.started() = Started;
   const factory SettingsEvent.toggledNotifications(bool enable) =
-      _ToggledNotifications;
-  const factory SettingsEvent.signedOut() = _SignedOut;
-  const factory SettingsEvent.refreshSubscription() = _RefreshSubscription;
-  const factory SettingsEvent.openUrl(String url) = _OpenUrl;
-  const factory SettingsEvent.submitFeedback(String message) = _SubmitFeedback;
-  const factory SettingsEvent.resetPassword() = _ResetPassword;
+      ToggledNotifications;
+  const factory SettingsEvent.signedOut() = SignedOut;
+  const factory SettingsEvent.refreshSubscription() = RefreshSubscription;
+  const factory SettingsEvent.openUrl(String url) = OpenUrl;
+  const factory SettingsEvent.submitFeedback(String message) = SubmitFeedback;
+  const factory SettingsEvent.resetPassword() = ResetPassword;
+  const factory SettingsEvent.openedSettings() = OpenedSettings;
 }

@@ -5,6 +5,10 @@ import 'package:bizzie/features/settings/presentation/bloc/settings_event.dart';
 import 'package:bizzie/features/settings/presentation/bloc/settings_state.dart';
 import 'package:bizzie/features/settings/presentation/widgets/settings_section.dart';
 import 'package:bizzie/features/settings/presentation/widgets/settings_tile.dart';
+import 'package:bizzie/shared/widgets/buttons/bizzie_primary_button.dart';
+import 'package:bizzie/shared/widgets/buttons/bizzie_secondary_button.dart';
+import 'package:bizzie/shared/widgets/modals/app_bottom_modal.dart';
+import 'package:bizzie/core/error/failures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -70,10 +74,52 @@ class _SettingsViewContentState extends State<_SettingsViewContent>
       body: BlocConsumer<SettingsBloc, SettingsState>(
         listener: (context, state) {
           state.mapOrNull(
-            failure: (f) {
-              ScaffoldMessenger.of(
-                context,
-              ).showSnackBar(SnackBar(content: Text(f.failure.message)));
+            failure: (fState) {
+              fState.failure.maybeWhen(
+                permission: (_) {
+                  showModalBottomSheet(
+                    context: context,
+                    isScrollControlled: true,
+                    builder: (sheetContext) => BlocProvider.value(
+                      value: context.read<SettingsBloc>(),
+                      child: AppBottomModal(
+                        title: 'Enable Notifications',
+                        useDraggable: false,
+                        contentPadding: const EdgeInsets.all(24),
+                        builder: (modalContext, _) => Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              'Please enable notifications in your system settings to receive important market alerts and filing updates.',
+                              style: AppTextStyles.bodyMedium,
+                            ),
+                            const SizedBox(height: 24),
+                            BizziePrimaryButton(
+                              title: 'Open Settings',
+                              onPressed: () {
+                                modalContext.read<SettingsBloc>().add(
+                                  const SettingsEvent.openedSettings(),
+                                );
+                                Navigator.pop(sheetContext);
+                              },
+                            ),
+                            const SizedBox(height: 12),
+                            BizzieSecondaryButton(
+                              title: 'Cancel',
+                              onPressed: () => Navigator.pop(sheetContext),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                },
+                orElse: () {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text(fState.failure.message)),
+                  );
+                },
+              );
             },
           );
         },
@@ -136,13 +182,10 @@ class _SettingsViewContentState extends State<_SettingsViewContent>
                     children: [
                       SettingsTile(
                         title: 'Notifications',
-                        subtitle:
-                            data.isAppNotificationsEnabled &&
-                                !data.isSystemNotificationsEnabled
-                            ? const _SystemNotificationWarningBanner()
-                            : null,
                         trailing: Switch.adaptive(
-                          value: data.isAppNotificationsEnabled,
+                          value:
+                              data.isAppNotificationsEnabled &&
+                              data.isSystemNotificationsEnabled,
                           onChanged: (value) {
                             context.read<SettingsBloc>().add(
                               SettingsEvent.toggledNotifications(value),
@@ -224,30 +267,6 @@ class _SettingsViewContentState extends State<_SettingsViewContent>
             orElse: () => const SizedBox.shrink(),
           );
         },
-      ),
-    );
-  }
-}
-
-class _SystemNotificationWarningBanner extends StatelessWidget {
-  const _SystemNotificationWarningBanner();
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Padding(
-      padding: const EdgeInsets.only(top: 4.0),
-      child: Row(
-        children: [
-          Icon(Icons.info_outline, size: 14, color: theme.colorScheme.error),
-          const SizedBox(width: 4),
-          Text(
-            'Disabled in System Settings',
-            style: AppTextStyles.caption.copyWith(
-              color: theme.colorScheme.error,
-            ),
-          ),
-        ],
       ),
     );
   }

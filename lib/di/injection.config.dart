@@ -24,6 +24,7 @@ import 'package:injectable/injectable.dart' as _i526;
 import 'package:shared_preferences/shared_preferences.dart' as _i460;
 
 import '../core/interfaces/i_notification_service.dart' as _i430;
+import '../core/interfaces/i_permission_service.dart' as _i202;
 import '../core/network/network_info.dart' as _i6;
 import '../core/network/network_module.dart' as _i419;
 import '../core/services/app_info_service.dart' as _i248;
@@ -311,6 +312,8 @@ import '../features/settings/domain/usecases/get_settings_display_data_usecase.d
 import '../features/settings/domain/usecases/launch_url_usecase.dart' as _i936;
 import '../features/settings/domain/usecases/manage_subscription_usecase.dart'
     as _i829;
+import '../features/settings/domain/usecases/open_app_settings_usecase.dart'
+    as _i579;
 import '../features/settings/domain/usecases/reset_password_usecase.dart'
     as _i244;
 import '../features/settings/domain/usecases/sign_out_usecase.dart' as _i83;
@@ -373,6 +376,7 @@ import '../features/watchlist/presentation/bloc/watchlist_bloc.dart' as _i63;
 import '../services/config_service.dart' as _i216;
 import '../services/firestore_service.dart' as _i52;
 import '../services/notification_service.dart' as _i941;
+import '../services/permission_service.dart' as _i165;
 import 'register_module.dart' as _i291;
 
 const String _qa = 'qa';
@@ -446,6 +450,12 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i248.IAppInfoService>(() => _i248.AppInfoServiceImpl());
     gh.factory<_i114.IWatchlistLocalDataSource>(
       () => _i114.WatchlistLocalDataSource(gh<_i460.SharedPreferences>()),
+    );
+    gh.lazySingleton<_i202.IPermissionService>(
+      () => _i165.PermissionServiceImpl(),
+    );
+    gh.lazySingleton<_i579.OpenAppSettingsUseCase>(
+      () => _i579.OpenAppSettingsUseCase(gh<_i202.IPermissionService>()),
     );
     gh.singleton<_i977.AiProductSearchService>(
       () => _i977.AiProductSearchService(
@@ -773,9 +783,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i244.ResetPasswordUseCase>(
       () => _i244.ResetPasswordUseCase(gh<_i685.IAuthRepository>()),
     );
-    gh.lazySingleton<_i596.ToggleNotificationsUseCase>(
-      () => _i596.ToggleNotificationsUseCase(gh<_i430.INotificationService>()),
-    );
     gh.lazySingleton<_i607.IMarketRepository>(
       () => _i27.MarketRepositoryImpl(
         gh<_i454.MarketRemoteDataSource>(),
@@ -981,11 +988,30 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i423.RatiosRemoteDataSource>(),
       ),
     );
+    gh.lazySingleton<_i596.ToggleNotificationsUseCase>(
+      () => _i596.ToggleNotificationsUseCase(
+        gh<_i430.INotificationService>(),
+        gh<_i685.IAuthRepository>(),
+        gh<_i615.IUserRepository>(),
+      ),
+    );
     gh.factory<_i555.GetSearchDashboardDataUseCase>(
       () => _i555.GetSearchDashboardDataUseCase(
         gh<_i685.IAuthRepository>(),
         gh<_i561.GetUserUseCase>(),
         gh<_i693.GetRecommendedBrandsUseCase>(),
+      ),
+    );
+    gh.factory<_i419.SettingsBloc>(
+      () => _i419.SettingsBloc(
+        gh<_i594.GetSettingsDisplayDataUseCase>(),
+        gh<_i596.ToggleNotificationsUseCase>(),
+        gh<_i526.SubmitFeedbackUseCase>(),
+        gh<_i936.LaunchUrlUseCase>(),
+        gh<_i83.SignOutUseCase>(),
+        gh<_i244.ResetPasswordUseCase>(),
+        gh<_i685.IAuthRepository>(),
+        gh<_i579.OpenAppSettingsUseCase>(),
       ),
     );
     gh.factory<_i754.GetDividendInfoUseCase>(
@@ -1005,17 +1031,6 @@ extension GetItInjectableX on _i174.GetIt {
         signOut: gh<_i472.SignOut>(),
         resetPassword: gh<_i73.ResetPassword>(),
         deleteAccount: gh<_i739.DeleteAccount>(),
-      ),
-    );
-    gh.factory<_i419.SettingsBloc>(
-      () => _i419.SettingsBloc(
-        gh<_i594.GetSettingsDisplayDataUseCase>(),
-        gh<_i596.ToggleNotificationsUseCase>(),
-        gh<_i526.SubmitFeedbackUseCase>(),
-        gh<_i936.LaunchUrlUseCase>(),
-        gh<_i83.SignOutUseCase>(),
-        gh<_i244.ResetPasswordUseCase>(),
-        gh<_i685.IAuthRepository>(),
       ),
     );
     gh.factory<_i191.FinancialStatementsBloc>(

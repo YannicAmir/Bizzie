@@ -18,6 +18,7 @@ abstract class UserDto with _$UserDto {
     required String investingExperience,
     @TimestampConverter() required DateTime createdAt,
     @Default(false) bool isSubscribed,
+    @Default(true) bool notificationsEnabled,
     required Map<String, String> fcmTokens,
   }) = _UserDto;
 
@@ -32,6 +33,7 @@ abstract class UserDto with _$UserDto {
       investingExperience: domain.investingExperience.name,
       createdAt: domain.createdAt,
       isSubscribed: domain.isSubscribed,
+      notificationsEnabled: domain.notificationsEnabled,
       fcmTokens: domain.fcmTokens,
     );
   }
@@ -48,6 +50,7 @@ abstract class UserDto with _$UserDto {
       ),
       createdAt: createdAt,
       isSubscribed: isSubscribed,
+      notificationsEnabled: notificationsEnabled,
       fcmTokens: fcmTokens,
     );
   }

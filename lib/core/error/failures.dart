@@ -15,4 +15,7 @@ sealed class Failure with _$Failure {
   const factory Failure.userNotFound([
     @Default('User not found') String message,
   ]) = UserNotFoundFailure;
+  const factory Failure.permission([
+    @Default('Permission denied') String message,
+  ]) = PermissionFailure;
 }
