@@ -65,6 +65,9 @@ class _EnableNotificationsButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return BizziePrimaryButton(
       onPressed: () {
+        context.read<OnboardingBloc>().add(
+          const OnboardingEvent.notificationsToggled(true),
+        );
         context.read<NotificationBloc>().add(
           const NotificationEvent.setupRequested(),
         );
@@ -81,6 +84,9 @@ class _MaybeLaterButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return BizzieSecondaryButton(
       onPressed: () {
+        context.read<OnboardingBloc>().add(
+          const OnboardingEvent.notificationsToggled(false),
+        );
         context.go(AppRoutes.onboardingExperience);
       },
       title: 'Maybe Later',

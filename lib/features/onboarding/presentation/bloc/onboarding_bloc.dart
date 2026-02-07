@@ -48,6 +48,20 @@ class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
     on<_HighlightPageChanged>(_onHighlightPageChanged);
     on<_HighlightContinuePressed>(_onHighlightContinuePressed);
     on<_HighlightSkipPressed>(_onHighlightSkipPressed);
+    on<_NotificationsToggled>(_onNotificationsToggled);
+  }
+
+  void _onNotificationsToggled(
+    _NotificationsToggled event,
+    Emitter<OnboardingState> emit,
+  ) {
+    emit(
+      state.copyWith(
+        onboardingData: state.onboardingData.copyWith(
+          notificationsEnabled: event.enabled,
+        ),
+      ),
+    );
   }
 
   void _onToggleBrand(_ToggleBrand event, Emitter<OnboardingState> emit) {

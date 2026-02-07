@@ -10,6 +10,7 @@ final _logger = BizzieLogger('UserRemoteDataSource');
 abstract class IUserRemoteDataSource {
   Future<UserDto?> getUser(String uid);
   Future<List<WatchlistItemDto>> getWatchlist(String uid);
+  Future<void> updateUser(UserDto user);
 }
 
 @LazySingleton(as: IUserRemoteDataSource)
@@ -41,6 +42,27 @@ class UserRemoteDataSource implements IUserRemoteDataSource {
       } else {
         _logger.severe('Failed to fetch user profile for UID: $uid', e, s);
       }
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> updateUser(UserDto user) async {
+    _logger.info('Updating user profile for UID: ${user.uid}');
+    try {
+      await _firestoreService.setDocument<UserDto>(
+        path: 'users/${user.uid}',
+        value: user,
+        toJson: (dto) => dto.toJson(),
+        merge: true,
+      );
+      _logger.info('Successfully updated user profile for UID: ${user.uid}');
+    } catch (e, s) {
+      _logger.severe(
+        'Failed to update user profile for UID: ${user.uid}',
+        e,
+        s,
+      );
       rethrow;
     }
   }

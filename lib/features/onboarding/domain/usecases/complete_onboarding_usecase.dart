@@ -28,12 +28,14 @@ class CompleteOnboardingUseCase
     try {
       _logger.info('Starting onboarding completion for user ${params.uid}');
 
-      final deviceUuid = await _notificationService.getDeviceUuid();
-      final fcmToken = await _notificationService.getFcmToken();
+      if (params.data.notificationsEnabled) {
+        final deviceUuid = await _notificationService.getDeviceUuid();
+        final fcmToken = await _notificationService.getFcmToken();
 
-      if (fcmToken != null) {
-        tokensMap[deviceUuid] = fcmToken;
-        await _subscribeToTopics(params.data);
+        if (fcmToken != null) {
+          tokensMap[deviceUuid] = fcmToken;
+          await _subscribeToTopics(params.data);
+        }
       }
     } catch (e) {
       _logger.warning('Failed to setup notifications (proceeding anyway)', e);
@@ -50,6 +52,7 @@ class CompleteOnboardingUseCase
           params.data.investingExperience ?? InvestingExperience.beginner,
       createdAt: DateTime.now(),
       isSubscribed: false,
+      notificationsEnabled: params.data.notificationsEnabled,
       fcmTokens: tokensMap,
     );
 

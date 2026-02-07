@@ -16,6 +16,7 @@ abstract class UserModel with _$UserModel {
     required InvestingExperience investingExperience,
     @TimestampConverter() required DateTime createdAt,
     required bool isSubscribed,
+    @Default(true) bool notificationsEnabled,
     @Default({}) Map<String, String> fcmTokens,
   }) = _UserModel;
 

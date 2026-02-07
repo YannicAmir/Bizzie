@@ -42,6 +42,7 @@ import 'package:async/async.dart';
 
 import 'package:bizzie/features/subscription/presentation/views/discounted_subscription_page.dart';
 import 'package:bizzie/features/subscription/presentation/views/subscription_page.dart';
+import 'package:bizzie/features/settings/presentation/views/settings_view.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
 
@@ -249,6 +250,22 @@ GoRouter createRouter(
       _buildPaywallRoute(
         path: AppRoutes.discountedPaywall,
         child: const DiscountedSubscriptionPage(),
+      ),
+      GoRoute(
+        path: AppRoutes.settings,
+        pageBuilder: (context, state) => CustomTransitionPage(
+          key: state.pageKey,
+          child: const SettingsView(),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return SlideTransition(
+              position: Tween<Offset>(
+                begin: const Offset(0, 1),
+                end: Offset.zero,
+              ).animate(animation),
+              child: child,
+            );
+          },
+        ),
       ),
     ],
   );

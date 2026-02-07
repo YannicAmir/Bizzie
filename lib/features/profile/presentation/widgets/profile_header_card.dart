@@ -7,6 +7,8 @@ import 'package:bizzie/features/subscription/presentation/bloc/subscription_stat
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:go_router/go_router.dart';
+import 'package:bizzie/app/routes/app_routes.dart';
 
 class ProfileHeaderCard extends StatelessWidget {
   const ProfileHeaderCard({super.key});
@@ -81,13 +83,16 @@ class _SettingsButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Container(
-      padding: const EdgeInsets.all(8),
-      decoration: BoxDecoration(
-        color: theme.colorScheme.onPrimary.withValues(alpha: 0.2),
-        shape: BoxShape.circle,
+    return GestureDetector(
+      onTap: () => context.push(AppRoutes.settings),
+      child: Container(
+        padding: const EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          color: theme.colorScheme.onPrimary.withValues(alpha: 0.2),
+          shape: BoxShape.circle,
+        ),
+        child: Icon(Icons.settings, color: theme.colorScheme.surface),
       ),
-      child: Icon(Icons.settings, color: theme.colorScheme.surface),
     );
   }
 }

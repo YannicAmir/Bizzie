@@ -10,6 +10,10 @@ import 'package:dartz/dartz.dart';
 
 import 'package:bizzie/features/onboarding/domain/usecases/get_sectors_usecase.dart';
 import 'package:bizzie/features/onboarding/domain/usecases/get_sp500_history_usecase.dart';
+import 'package:bizzie/core/domain/models/sector.dart';
+import 'package:bizzie/features/user/domain/enums/investing_experience.dart';
+import 'package:bizzie/features/onboarding/domain/models/company.dart';
+import 'package:bizzie/features/onboarding/presentation/models/feature_highlight_item.dart';
 import 'package:bizzie/features/onboarding/presentation/bloc/onboarding_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
@@ -73,7 +77,7 @@ void main() {
     });
 
     blocTest<OnboardingBloc, OnboardingState>(
-      'loadSp500History_success_emitsLoadingAndData',
+      'started_success_emitsLoadingAndData',
       // arrange
       build: () {
         when(
@@ -81,6 +85,40 @@ void main() {
         ).thenAnswer((_) async => const Right([]));
         when(
           () => mockGetSectorsUseCase(any()),
+        ).thenAnswer((_) async => const Right([Sector.financials]));
+        return bloc;
+      },
+      // act
+      act: (bloc) => bloc.add(const OnboardingEvent.started()),
+      // assert
+      expect: () => [
+        isA<OnboardingState>().having(
+          (s) => s.isLoadingSectors,
+          'isLoadingSectors',
+          true,
+        ),
+        isA<OnboardingState>()
+            .having((s) => s.isLoadingSectors, 'isLoadingSectors', false)
+            .having((s) => s.availableSectors, 'availableSectors', [
+              Sector.financials,
+            ]),
+        isA<OnboardingState>().having(
+          (s) => s.isLoadingHistory,
+          'isLoadingHistory',
+          true,
+        ),
+        isA<OnboardingState>()
+            .having((s) => s.isLoadingHistory, 'isLoadingHistory', false)
+            .having((s) => s.sp500History, 'sp500History', []),
+      ],
+    );
+
+    blocTest<OnboardingBloc, OnboardingState>(
+      'loadSp500History_success_emitsLoadingAndData',
+      // arrange
+      build: () {
+        when(
+          () => mockGetSp500HistoryUseCase(any()),
         ).thenAnswer((_) async => const Right([]));
         return bloc;
       },
@@ -111,6 +149,75 @@ void main() {
         const OnboardingState(
           onboardingData: OnboardingData(firstName: 'New Name'),
           currentStep: 2,
+        ),
+      ],
+    );
+
+    blocTest<OnboardingBloc, OnboardingState>(
+      'sectorSelected_validSector_updatesData',
+      // arrange
+      build: () => bloc,
+      // act
+      act: (bloc) =>
+          bloc.add(const OnboardingEvent.sectorSelected(Sector.financials)),
+      // assert
+      expect: () => [
+        const OnboardingState(
+          onboardingData: OnboardingData(selectedSector: Sector.financials),
+        ),
+      ],
+    );
+
+    blocTest<OnboardingBloc, OnboardingState>(
+      'experienceSelected_expert_updatesDataAndCalculatesHighlights',
+      // arrange
+      build: () => bloc,
+      // act
+      act: (bloc) => bloc.add(
+        const OnboardingEvent.experienceSelected(InvestingExperience.expert),
+      ),
+      // assert
+      expect: () => [
+        isA<OnboardingState>()
+            .having(
+              (s) => s.onboardingData.investingExperience,
+              'experience',
+              InvestingExperience.expert,
+            )
+            .having((s) => s.featureHighlights.length, 'highlights length', 3)
+            .having(
+              (s) => s.featureHighlights.first.type,
+              'first highlight type',
+              FeatureHighlightType.historicalData,
+            ),
+      ],
+    );
+
+    blocTest<OnboardingBloc, OnboardingState>(
+      'notificationsToggled_true_updatesData',
+      // arrange
+      build: () => bloc,
+      // act
+      act: (bloc) => bloc.add(const OnboardingEvent.notificationsToggled(true)),
+      // assert
+      expect: () => [
+        const OnboardingState(
+          onboardingData: OnboardingData(notificationsEnabled: true),
+        ),
+      ],
+    );
+
+    blocTest<OnboardingBloc, OnboardingState>(
+      'highlightPageChanged_validIndex_updatesIndex',
+      // arrange
+      build: () => bloc,
+      // act
+      act: (bloc) => bloc.add(const OnboardingEvent.highlightPageChanged(2)),
+      // assert
+      expect: () => [
+        const OnboardingState(
+          onboardingData: OnboardingData(),
+          currentHighlightIndex: 2,
         ),
       ],
     );
@@ -268,6 +375,164 @@ void main() {
           isSubmitting: false,
           status: OnboardingStatus.success,
         ),
+      ],
+    );
+
+    blocTest<OnboardingBloc, OnboardingState>(
+      'startAnalysis_progressesThroughSteps',
+      // arrange
+      build: () => bloc,
+      seed: () => const OnboardingState(
+        onboardingData: OnboardingData(),
+        selectedBrands: [
+          Brand(
+            name: 'Apple',
+            company: 'Apple',
+            ticker: 'AAPL',
+            description: '',
+            sector: '',
+          ),
+        ],
+      ),
+      // act
+      act: (bloc) => bloc.add(const OnboardingEvent.startAnalysis()),
+      // wait for all Delayed and internal events
+      wait: const Duration(milliseconds: 3500),
+      // assert
+      expect: () => [
+        isA<OnboardingState>()
+            .having((s) => s.isAnalyzingBrands, 'isAnalyzingBrands', true)
+            .having((s) => s.analysisStep, 'step 0', 0),
+        isA<OnboardingState>().having((s) => s.analysisStep, 'step 1', 1),
+        isA<OnboardingState>().having((s) => s.analysisStep, 'step 2', 2),
+        isA<OnboardingState>().having((s) => s.analysisStep, 'step 3', 3),
+        isA<OnboardingState>().having(
+          (s) => s.isAnalyzingBrands,
+          'isAnalyzingBrands',
+          false,
+        ),
+      ],
+    );
+
+    blocTest<OnboardingBloc, OnboardingState>(
+      'startWatchlistAddition_progressesThroughCompanies',
+      // arrange
+      build: () => bloc,
+      seed: () => OnboardingState(
+        onboardingData: const OnboardingData().copyWith(
+          detectedCompanies: [
+            const Company(ticker: 'AAPL', name: 'Apple'),
+            const Company(ticker: 'MSFT', name: 'Microsoft'),
+          ],
+        ),
+      ),
+      // act
+      act: (bloc) => bloc.add(const OnboardingEvent.startWatchlistAddition()),
+      wait: const Duration(milliseconds: 4000),
+      // assert
+      expect: () => [
+        isA<OnboardingState>()
+            .having((s) => s.isAnalyzingBrands, 'isAnalyzingBrands', true)
+            .having((s) => s.watchlistStep, 'step 0', 0),
+        isA<OnboardingState>().having((s) => s.watchlistStep, 'step 1', 1),
+        isA<OnboardingState>().having((s) => s.watchlistStep, 'step 2', 2),
+        isA<OnboardingState>().having(
+          (s) => s.isAnalyzingBrands,
+          'isAnalyzingBrands',
+          false,
+        ),
+      ],
+    );
+
+    blocTest<OnboardingBloc, OnboardingState>(
+      'highlightContinuePressed_incrementsIndexOrNavigates',
+      // arrange
+      build: () {
+        when(() => mockAuthRepository.currentUser).thenReturn(null);
+        return bloc;
+      },
+      seed: () => const OnboardingState(
+        onboardingData: OnboardingData(),
+        featureHighlights: [
+          FeatureHighlightItem(
+            title: 'T1',
+            description: 'D1',
+            type: FeatureHighlightType.historicalData,
+          ),
+          FeatureHighlightItem(
+            title: 'T2',
+            description: 'D2',
+            type: FeatureHighlightType.dailyPicks,
+          ),
+        ],
+        currentHighlightIndex: 0,
+      ),
+      // act
+      act: (bloc) {
+        bloc.add(const OnboardingEvent.highlightContinuePressed());
+        bloc.add(const OnboardingEvent.highlightContinuePressed());
+      },
+      // assert
+      expect: () => [
+        isA<OnboardingState>().having(
+          (s) => s.currentHighlightIndex,
+          'index becomes 1',
+          1,
+        ),
+        // On the second press, it reaches the end and sees no user
+        isA<OnboardingState>().having(
+          (s) => s.shouldNavigateToCreateAccount,
+          'nav to create account',
+          true,
+        ),
+        isA<OnboardingState>().having(
+          (s) => s.shouldNavigateToCreateAccount,
+          'reset nav state',
+          false,
+        ),
+      ],
+    );
+
+    blocTest<OnboardingBloc, OnboardingState>(
+      'highlightSkipPressed_navigatesToBuildingProfileIfUserExists',
+      // arrange
+      build: () {
+        when(() => mockAuthRepository.currentUser).thenReturn(
+          const UserModel(
+            id: '123',
+            email: 'test@test.com',
+            displayName: 'Test',
+          ),
+        );
+        when(
+          () => mockCompleteOnboardingUseCase(any()),
+        ).thenAnswer((_) async => const Right(null));
+        return bloc;
+      },
+      // act
+      act: (bloc) => bloc.add(const OnboardingEvent.highlightSkipPressed()),
+      // assert
+      expect: () => [
+        isA<OnboardingState>().having(
+          (s) => s.shouldNavigateToBuildingProfile,
+          'nav to building profile',
+          true,
+        ),
+        isA<OnboardingState>().having(
+          (s) => s.shouldNavigateToBuildingProfile,
+          'reset nav state',
+          false,
+        ),
+        // Note: completeOnboarding is also triggered, which adds isSubmitting: true etc.
+        // But since it's added as an event, those states will follow.
+        isA<OnboardingState>().having(
+          (s) => s.isSubmitting,
+          'isSubmitting',
+          true,
+        ),
+        isA<OnboardingState>()
+            .having((s) => s.status, 'status success', OnboardingStatus.success)
+            .having((s) => s.isSubmitting, 'not submitting', false),
       ],
     );
   });

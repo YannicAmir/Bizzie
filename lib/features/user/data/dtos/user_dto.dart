@@ -1,5 +1,3 @@
-// ignore_for_file: invalid_annotation_target
-
 import 'package:bizzie/core/utils/timestamp_converter.dart';
 import 'package:bizzie/features/user/domain/enums/investing_experience.dart';
 import 'package:bizzie/features/user/domain/models/user_model.dart';
@@ -25,6 +23,18 @@ abstract class UserDto with _$UserDto {
 
   factory UserDto.fromJson(Map<String, dynamic> json) =>
       _$UserDtoFromJson(json);
+
+  factory UserDto.fromDomain(UserModel domain) {
+    return UserDto(
+      uid: domain.uid,
+      name: domain.name,
+      favoriteSector: domain.favoriteSector,
+      investingExperience: domain.investingExperience.name,
+      createdAt: domain.createdAt,
+      isSubscribed: domain.isSubscribed,
+      fcmTokens: domain.fcmTokens,
+    );
+  }
 
   UserModel toDomain() {
     return UserModel(

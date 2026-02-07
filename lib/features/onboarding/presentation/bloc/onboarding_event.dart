@@ -11,6 +11,9 @@ class OnboardingEvent with _$OnboardingEvent {
   const factory OnboardingEvent.experienceSelected(
     InvestingExperience experience,
   ) = _ExperienceSelected;
+  const factory OnboardingEvent.notificationsToggled(bool enabled) =
+      _NotificationsToggled;
+
   const factory OnboardingEvent.completeOnboarding() = _CompleteOnboarding;
 
   // Analysis

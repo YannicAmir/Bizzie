@@ -13,6 +13,7 @@ class AppRoutes {
 
   static const String reports = '/reports';
   static const String profile = '/profile';
+  static const String settings = '/settings';
 
   // Namespaced Company Profile Routes for Bottom Nav Stacks
   static const String companyProfileHome = 'companyProfileHome';
