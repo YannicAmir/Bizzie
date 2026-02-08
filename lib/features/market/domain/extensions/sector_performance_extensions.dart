@@ -5,10 +5,7 @@ import 'package:collection/collection.dart';
 
 final _logger = BizzieLogger('SectorPerformanceExtensions');
 
-/// Extension on `List<SectorPerformance>` for sector-based performance lookups.
 extension SectorPerformanceListX on List<SectorPerformance> {
-  /// Returns the average change for the given sector API name.
-  /// Returns `null` if not found.
   double? getAverageChangeForSector(String sectorApiName) {
     final targetNormalized = normalizeSectorKey(sectorApiName);
 
@@ -26,8 +23,6 @@ extension SectorPerformanceListX on List<SectorPerformance> {
     return item.averageChange;
   }
 
-  /// Returns the date for the given sector API name.
-  /// Returns `null` if not found.
   String? getDateForSector(String sectorApiName) {
     final targetNormalized = normalizeSectorKey(sectorApiName);
 

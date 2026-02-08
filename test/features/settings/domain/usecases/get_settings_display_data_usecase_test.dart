@@ -102,7 +102,7 @@ void main() {
               isAppNotificationsEnabled: true,
               isSystemNotificationsEnabled: true,
               appVersion: tAppVersion,
-              favoriteSector: 'Information Technology',
+              favoriteSector: 'Technology',
             ),
           ),
         );
@@ -191,7 +191,7 @@ void main() {
               isAppNotificationsEnabled: true,
               isSystemNotificationsEnabled: true,
               appVersion: 'Unknown',
-              favoriteSector: 'Information Technology',
+              favoriteSector: 'Technology',
             ),
           ),
         );

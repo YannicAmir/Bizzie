@@ -89,6 +89,9 @@ void main() {
         () => mockConfigService.getSectorDisplayName(any()),
       ).thenReturn(tSectorDisplayName);
       when(
+        () => mockConfigService.getSectorApiName(any()),
+      ).thenReturn('technology');
+      when(
         () => mockMarketRepository.getSectorPeList(),
       ).thenAnswer((_) async => Right(tSectorPeList));
       when(
@@ -172,6 +175,9 @@ void main() {
       when(() => mockConfigService.getSectorDescription(any())).thenReturn('d');
       when(() => mockConfigService.getSectorDisplayName(any())).thenReturn('n');
       when(
+        () => mockConfigService.getSectorApiName(any()),
+      ).thenReturn('technology');
+      when(
         () => mockMarketRepository.getSectorPeList(),
       ).thenAnswer((_) async => Right(tPeListWithDate));
       when(
@@ -207,6 +213,9 @@ void main() {
       when(() => mockConfigService.getSectorDescription(any())).thenReturn('d');
       when(() => mockConfigService.getSectorDisplayName(any())).thenReturn('n');
       when(
+        () => mockConfigService.getSectorApiName(any()),
+      ).thenReturn('technology');
+      when(
         () => mockMarketRepository.getSectorPeList(),
       ).thenAnswer((_) async => Right(tPeListNoMatch));
       when(
@@ -236,6 +245,9 @@ void main() {
         when(
           () => mockConfigService.getSectorDisplayName(any()),
         ).thenReturn('n');
+        when(
+          () => mockConfigService.getSectorApiName(any()),
+        ).thenReturn('technology');
         when(
           () => mockMarketRepository.getSectorPeList(),
         ).thenAnswer((_) async => const Left(ServerFailure('PE Error')));

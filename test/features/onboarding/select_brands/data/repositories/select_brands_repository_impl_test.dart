@@ -78,34 +78,29 @@ void main() {
         expect(global.length, 1);
         expect(global.first.name, 'Global Item');
         expect(sector.length, 1);
-        // Note: In tDailyBrandsDto, the sector name is 'Tech'.
-        // Sector.informationTechnology.displayName is 'Information Technology' (usually).
-        // We need them to match or adjust mock data.
-        // Let's adjust mock data to match Information Technology.
         expect(sector.first.name, 'Tech Item');
       });
       verify(() => mockRemoteDataSource.fetchDailyBrands()).called(1);
     });
 
-    test('getDailyBrands_remoteNull_returnsMockBrands', () async {
+    test('getDailyBrands_remoteNull_returnsFailure', () async {
       // arrange
       when(
         () => mockRemoteDataSource.fetchDailyBrands(),
       ).thenAnswer((_) async => null);
-      when(
-        () => mockConfigService.getSectorDisplayName(any()),
-      ).thenReturn('Information Technology');
 
       // act
       final result = await repository.getDailyBrands(tUserSector);
 
       // assert
-      expect(result.isRight(), isTrue);
-      // Verify mocks are returned (based on the _getMockBrands logic)
-      result.fold((l) => fail('Should be right'), (r) {
-        expect(r.globalBrands, isNotEmpty); // Global mocks
-        expect(r.sectorBrands, isNotEmpty); // Sector mocks
-      });
+      expect(result.isLeft(), isTrue);
+      result.fold(
+        (failure) => expect(
+          failure.message,
+          'Failed to load brands. Please try again later.',
+        ),
+        (_) => fail('Should be Left'),
+      );
     });
 
     test('getDailyBrands_serverException_returnsServerFailure', () async {
