@@ -10,7 +10,6 @@ _UserModel _$UserModelFromJson(Map<String, dynamic> json) => _UserModel(
   uid: json['uid'] as String,
   name: json['name'] as String,
   favoriteSector: json['favoriteSector'] as String,
-  favoriteSectorDisplay: json['favoriteSectorDisplay'] as String,
   watchlist:
       (json['watchlist'] as List<dynamic>?)
           ?.map((e) => Company.fromJson(e as Map<String, dynamic>))
@@ -35,7 +34,6 @@ Map<String, dynamic> _$UserModelToJson(_UserModel instance) =>
       'uid': instance.uid,
       'name': instance.name,
       'favoriteSector': instance.favoriteSector,
-      'favoriteSectorDisplay': instance.favoriteSectorDisplay,
       'watchlist': instance.watchlist,
       'investingExperience':
           _$InvestingExperienceEnumMap[instance.investingExperience]!,

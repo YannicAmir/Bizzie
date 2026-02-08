@@ -15,6 +15,7 @@ import 'package:bizzie/core/domain/models/sector.dart';
 import 'package:bizzie/di/injection.dart';
 import 'package:bizzie/features/onboarding/select_brands/domain/interfaces/i_select_brands_repository.dart';
 import 'package:bizzie/shared/widgets/buttons/bizzie_primary_button.dart';
+import 'package:bizzie/shared/models/sector_view_model.dart';
 
 class SectorSelectionPage extends StatelessWidget {
   const SectorSelectionPage({super.key});
@@ -156,7 +157,7 @@ class _SectorMascot extends StatelessWidget {
 
 class _SectorList extends StatelessWidget {
   final bool isLoading;
-  final List<Sector> sectors;
+  final List<SectorViewModel> sectors;
   final Sector? selectedSector;
   final ValueChanged<Sector> onSectorSelected;
 
@@ -176,11 +177,11 @@ class _SectorList extends StatelessWidget {
     return Wrap(
       spacing: 12,
       runSpacing: 12,
-      children: sectors.map((sector) {
+      children: sectors.map((viewModel) {
         return _SectorChip(
-          sector: sector,
-          isSelected: sector == selectedSector,
-          onTap: () => onSectorSelected(sector),
+          viewModel: viewModel,
+          isSelected: viewModel.sector == selectedSector,
+          onTap: () => onSectorSelected(viewModel.sector),
         );
       }).toList(),
     );
@@ -188,12 +189,12 @@ class _SectorList extends StatelessWidget {
 }
 
 class _SectorChip extends StatelessWidget {
-  final Sector sector;
+  final SectorViewModel viewModel;
   final bool isSelected;
   final VoidCallback onTap;
 
   const _SectorChip({
-    required this.sector,
+    required this.viewModel,
     required this.isSelected,
     required this.onTap,
   });
@@ -249,7 +250,7 @@ class _SectorChip extends StatelessWidget {
             ),
             const SizedBox(width: 8),
             Text(
-              sector.displayName,
+              viewModel.displayName,
               style: theme.textTheme.bodyMedium?.copyWith(
                 fontWeight: FontWeight.w600,
               ),

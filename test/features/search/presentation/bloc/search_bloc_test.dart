@@ -8,6 +8,7 @@ import 'package:bizzie/features/search/domain/usecases/search_stocks_usecase.dar
 import 'package:bizzie/features/search/presentation/bloc/search_bloc.dart';
 // Event and State are parts of SearchBloc, so we don't import them directly.
 import 'package:dartz/dartz.dart';
+import 'package:bizzie/features/user/domain/usecases/watch_user_usecase.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -19,18 +20,29 @@ class MockGetSearchDashboardDataUseCase extends Mock
 class MockFindStockForProductUseCase extends Mock
     implements FindStockForProductUseCase {}
 
+class MockWatchUserUseCase extends Mock implements WatchUserUseCase {}
+
 void main() {
   late SearchBloc bloc;
   late MockSearchStocksUseCase mockSearchStocks;
   late MockGetSearchDashboardDataUseCase mockDashboardData;
   late MockFindStockForProductUseCase mockFindStock;
+  late MockWatchUserUseCase mockWatchUser;
 
   setUp(() {
     mockSearchStocks = MockSearchStocksUseCase();
     mockDashboardData = MockGetSearchDashboardDataUseCase();
     mockFindStock = MockFindStockForProductUseCase();
+    mockWatchUser = MockWatchUserUseCase();
 
-    bloc = SearchBloc(mockSearchStocks, mockDashboardData, mockFindStock);
+    when(() => mockWatchUser.call()).thenAnswer((_) => const Stream.empty());
+
+    bloc = SearchBloc(
+      mockSearchStocks,
+      mockDashboardData,
+      mockFindStock,
+      mockWatchUser,
+    );
   });
 
   final tStocks = [const StockSymbol(symbol: 'AAPL', name: 'Apple Inc.')];

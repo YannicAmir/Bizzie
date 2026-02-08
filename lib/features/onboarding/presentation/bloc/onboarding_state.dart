@@ -1,12 +1,13 @@
 import 'package:bizzie/features/onboarding/domain/models/historical_price.dart';
 import 'package:bizzie/features/onboarding/domain/models/onboarding_data.dart';
-import 'package:bizzie/core/domain/models/sector.dart';
 import 'package:bizzie/features/onboarding/select_brands/domain/models/brand.dart';
 import 'package:bizzie/features/onboarding/presentation/models/feature_highlight_item.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:bizzie/app/themes/app_assets.dart';
 import 'package:bizzie/features/onboarding/presentation/utils/onboarding_assets_helper.dart';
 import 'package:bizzie/features/onboarding/presentation/utils/brand_display_helper.dart';
+
+import 'package:bizzie/shared/models/sector_view_model.dart';
 
 part 'onboarding_state.freezed.dart';
 
@@ -28,7 +29,7 @@ abstract class OnboardingState with _$OnboardingState {
 
     @Default(0) int analysisStep,
     @Default(0) int watchlistStep,
-    @Default([]) List<Sector> availableSectors,
+    @Default([]) List<SectorViewModel> availableSectors,
     @Default([]) List<HistoricalPrice> sp500History,
 
     @Default([]) List<Brand> selectedBrands,
@@ -127,8 +128,16 @@ abstract class OnboardingState with _$OnboardingState {
   String get greetingName =>
       onboardingData.firstName.isEmpty ? 'Friend' : onboardingData.firstName;
 
-  String get displaySectorName =>
-      onboardingData.selectedSector?.displayName ?? 'Your Sector';
+  String get displaySectorName {
+    final sector = onboardingData.selectedSector;
+    if (sector == null) return '';
+    final viewModel = availableSectors.firstWhere(
+      (s) => s.sector == sector,
+      orElse: () =>
+          SectorViewModel(sector: sector, displayName: '', description: ''),
+    );
+    return viewModel.displayName;
+  }
 
   String get mascotAsset {
     final sector = onboardingData.selectedSector;

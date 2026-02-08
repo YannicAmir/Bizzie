@@ -6,4 +6,5 @@ abstract class IUserRepository {
   Future<Either<Failure, UserModel>> getUser(String uid);
   Future<Either<Failure, void>> updateUser(UserModel user);
   String? getCachedFavoriteSector();
+  Stream<UserModel> get userStream;
 }

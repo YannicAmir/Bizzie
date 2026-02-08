@@ -2,21 +2,20 @@ import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:bizzie/core/usecase/usecase.dart';
 import 'package:bizzie/features/auth/domain/interfaces/i_auth_repository.dart';
-import 'package:bizzie/features/market/domain/extensions/market_data_extensions.dart';
+import 'package:bizzie/features/market/domain/extensions/sector_pe_extensions.dart';
+import 'package:bizzie/features/market/domain/extensions/sector_performance_extensions.dart';
 import 'package:bizzie/features/market/domain/entities/sector_pe.dart';
 import 'package:bizzie/features/market/domain/entities/sector_performance.dart';
 import 'package:bizzie/features/market/domain/interfaces/i_market_repository.dart';
-import 'package:bizzie/features/profile/domain/interfaces/i_profile_repository.dart';
 import 'package:bizzie/features/profile/domain/models/profile_display_data.dart';
 import 'package:bizzie/features/user/domain/interfaces/user_repository.dart';
+import 'package:bizzie/services/config_service.dart';
 import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
 
 final _logger = BizzieLogger('GetProfileDisplayDataUseCase');
 
 typedef MarketDataRecord = ({
-  String description,
-  String displayName,
   List<SectorPe> peList,
   List<SectorPerformance> performanceList,
 });
@@ -26,14 +25,14 @@ class GetProfileDisplayDataUseCase
     implements UseCase<Either<Failure, ProfileDisplayData>, NoParams> {
   final IAuthRepository _authRepository;
   final IUserRepository _userRepository;
-  final IProfileRepository _profileRepository;
   final IMarketRepository _marketRepository;
+  final ConfigService _configService;
 
   GetProfileDisplayDataUseCase(
     this._authRepository,
     this._userRepository,
-    this._profileRepository,
     this._marketRepository,
+    this._configService,
   );
 
   @override
@@ -54,10 +53,9 @@ class GetProfileDisplayDataUseCase
       },
       (userModel) async {
         final sectorName = userModel.favoriteSector;
+        final sectorApiName = _configService.getSectorApiName(sectorName);
 
         final results = await (
-          _profileRepository.getSectorDescription(sectorName),
-          _profileRepository.getSectorDisplayName(sectorName),
           _marketRepository.getSectorPeList(),
           _marketRepository.getSectorPerformanceList(),
         ).wait;
@@ -65,18 +63,21 @@ class GetProfileDisplayDataUseCase
         return _aggregateSectorData(results).map((data) {
           _logger.info('Successfully aggregated all data');
 
-          final peDate = data.peList.getDateForSector(sectorName);
-          final perfDate = data.performanceList.getDateForSector(sectorName);
+          final peDate = data.peList.getDateForSector(sectorApiName);
+          final perfDate = data.performanceList.getDateForSector(sectorApiName);
           final marketDateStr = peDate ?? perfDate;
+
+          final displayName = _configService.getSectorDisplayName(sectorName);
+          final description = _configService.getSectorDescription(sectorName);
 
           return ProfileDisplayData(
             displayName: userModel.name,
-            sectorName: data.displayName,
-            sectorDescription: data.description,
+            sectorName: displayName,
+            sectorDescription: description,
             joinedDate: userModel.createdAt,
-            sectorPe: data.peList.getPeForSector(sectorName),
+            sectorPe: data.peList.getPeForSector(sectorApiName),
             sectorAverageChange: data.performanceList.getAverageChangeForSector(
-              sectorName,
+              sectorApiName,
             ),
             marketDataDate: marketDateStr != null
                 ? DateTime.tryParse(marketDateStr)
@@ -88,45 +89,20 @@ class GetProfileDisplayDataUseCase
   }
 
   Either<Failure, MarketDataRecord> _aggregateSectorData(
-    (
-      Either<Failure, String>,
-      Either<Failure, String>,
-      Either<Failure, List<SectorPe>>,
-      Either<Failure, List<SectorPerformance>>,
-    )
+    (Either<Failure, List<SectorPe>>, Either<Failure, List<SectorPerformance>>)
     results,
   ) {
-    final (descRes, nameRes, peRes, perfRes) = results;
+    final (peRes, perfRes) = results;
 
-    return descRes.fold(
+    return peRes.fold(
       (f) {
-        _logger.warning('Failed to fetch sector description', f);
+        _logger.warning('Failed to fetch PE list', f);
         return Left(f);
       },
-      (desc) => nameRes.fold(
-        (f) {
-          _logger.warning('Failed to fetch sector display name', f);
-          return Left(f);
-        },
-        (name) => peRes.fold(
-          (f) {
-            _logger.warning('Failed to fetch PE list', f);
-            return Left(f);
-          },
-          (peList) => perfRes.fold(
-            (f) {
-              _logger.warning('Failed to fetch performance list', f);
-              return Left(f);
-            },
-            (perfList) => Right((
-              description: desc,
-              displayName: name,
-              peList: peList,
-              performanceList: perfList,
-            )),
-          ),
-        ),
-      ),
+      (peList) => perfRes.fold((f) {
+        _logger.warning('Failed to fetch performance list', f);
+        return Left(f);
+      }, (perfList) => Right((peList: peList, performanceList: perfList))),
     );
   }
 }

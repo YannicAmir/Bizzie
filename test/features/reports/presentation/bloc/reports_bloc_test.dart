@@ -10,6 +10,7 @@ import 'package:bizzie/features/reports/presentation/bloc/reports_event.dart';
 import 'package:bizzie/features/reports/presentation/bloc/reports_state.dart';
 import 'package:bizzie/features/user/domain/models/user_activity.dart';
 import 'package:bizzie/features/watchlist/domain/interfaces/watchlist_repository.dart';
+import 'package:bizzie/features/user/domain/usecases/watch_user_usecase.dart';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -28,6 +29,8 @@ class MockGetUserActivityUseCase extends Mock
 class MockMarkReportsViewedUseCase extends Mock
     implements MarkReportsViewedUseCase {}
 
+class MockWatchUserUseCase extends Mock implements WatchUserUseCase {}
+
 class MockUserModel extends Mock implements UserModel {}
 
 void main() {
@@ -37,6 +40,7 @@ void main() {
   late MockIAuthRepository mockAuthRepository;
   late MockGetUserActivityUseCase mockGetUserActivityUseCase;
   late MockMarkReportsViewedUseCase mockMarkReportsViewedUseCase;
+  late MockWatchUserUseCase mockWatchUser;
   late MockUserModel mockUser;
 
   setUp(() {
@@ -45,10 +49,12 @@ void main() {
     mockAuthRepository = MockIAuthRepository();
     mockGetUserActivityUseCase = MockGetUserActivityUseCase();
     mockMarkReportsViewedUseCase = MockMarkReportsViewedUseCase();
+    mockWatchUser = MockWatchUserUseCase();
     mockUser = MockUserModel();
 
     when(() => mockAuthRepository.currentUser).thenReturn(mockUser);
     when(() => mockUser.id).thenReturn('test_uid');
+    when(() => mockWatchUser.call()).thenAnswer((_) => const Stream.empty());
 
     bloc = ReportsBloc(
       mockGetReportsUseCase,
@@ -56,6 +62,7 @@ void main() {
       mockAuthRepository,
       mockGetUserActivityUseCase,
       mockMarkReportsViewedUseCase,
+      mockWatchUser,
     );
   });
 

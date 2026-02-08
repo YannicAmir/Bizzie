@@ -58,7 +58,6 @@ void main() {
     uid: tUserId,
     name: 'Test User',
     favoriteSector: 'Technology',
-    favoriteSectorDisplay: 'Technology',
     investingExperience: InvestingExperience.beginner,
     createdAt: DateTime(2023, 1, 1),
     isSubscribed: true,
@@ -103,6 +102,7 @@ void main() {
               isAppNotificationsEnabled: true,
               isSystemNotificationsEnabled: true,
               appVersion: tAppVersion,
+              favoriteSector: 'Information Technology',
             ),
           ),
         );
@@ -191,6 +191,7 @@ void main() {
               isAppNotificationsEnabled: true,
               isSystemNotificationsEnabled: true,
               appVersion: 'Unknown',
+              favoriteSector: 'Information Technology',
             ),
           ),
         );

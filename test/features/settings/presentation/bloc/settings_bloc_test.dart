@@ -84,19 +84,21 @@ void main() {
     uid: '123',
     name: 'Test User',
     favoriteSector: 'Technology',
-    favoriteSectorDisplay: 'Technology',
     investingExperience: InvestingExperience.beginner,
     createdAt: DateTime(2023),
     isSubscribed: false,
     notificationsEnabled: true,
   );
 
+  final tSubscriptionStatus = SubscriptionStatus.initial();
+
   final tSettingsData = SettingsDisplayData(
     user: tUser,
-    subscriptionStatus: SubscriptionStatus.initial(),
+    subscriptionStatus: tSubscriptionStatus,
     isAppNotificationsEnabled: true,
     isSystemNotificationsEnabled: true,
     appVersion: '1.0.0',
+    favoriteSector: 'Information Technology',
   );
 
   group('SettingsBloc Initialization', () {
@@ -209,6 +211,7 @@ void main() {
           tSettingsData.copyWith(
             isSystemNotificationsEnabled: false,
             isAppNotificationsEnabled: false,
+            favoriteSector: 'Information Technology',
           ),
         ),
       ],

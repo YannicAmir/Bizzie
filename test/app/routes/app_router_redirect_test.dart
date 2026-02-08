@@ -34,7 +34,6 @@ void main() {
       uid: tUserId,
       name: 'Test',
       favoriteSector: 'Tech',
-      favoriteSectorDisplay: 'Tech',
       watchlist: [],
       investingExperience: InvestingExperience.beginner,
       createdAt: DateTime.now(),

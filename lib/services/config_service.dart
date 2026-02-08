@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:bizzie/core/utils/sector_normalizer.dart';
 import 'package:bizzie/services/dtos/fmp_config.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/foundation.dart';
@@ -13,6 +14,24 @@ class RemoteConfigKeys {
 }
 
 final _logger = BizzieLogger('ConfigService');
+
+const _sectorApiAliases = {
+  'informationtechnology': 'Technology',
+  'information_technology': 'Technology',
+  'technology': 'Technology',
+  'financials': 'Financial Services',
+  'communicationservices': 'Communication Services',
+  'telecommunicationservices': 'Communication Services',
+  'consumerdiscretionary': 'Consumer Cyclical',
+  'consumerstaples': 'Consumer Defensive',
+  'healthcare': 'Healthcare',
+  'materials': 'Basic Materials',
+  'industrials': 'Industrials',
+  'energy': 'Energy',
+  'utilities': 'Utilities',
+  'realestate': 'Real Estate',
+  'real_estate': 'Real Estate',
+};
 
 @singleton
 class ConfigService {
@@ -126,6 +145,11 @@ class ConfigService {
   int getInt(String key) => _remoteConfig.getInt(key);
   double getDouble(String key) => _remoteConfig.getDouble(key);
 
+  String getSectorApiName(String sectorName) {
+    final normalized = normalizeSectorKey(sectorName);
+    return _sectorApiAliases[normalized] ?? sectorName;
+  }
+
   String getSectorDescription(String sectorName) {
     final match = _getSectorMetaData(sectorName);
     return match?.value ?? "";
@@ -166,17 +190,13 @@ class ConfigService {
       return (key: sectorName, value: descriptionsMap[sectorName].toString());
     }
 
-    final normalizedInput = _normalizeSectorKey(sectorName);
+    final normalizedInput = normalizeSectorKey(sectorName);
     for (final entry in descriptionsMap.entries) {
-      if (_normalizeSectorKey(entry.key) == normalizedInput) {
+      if (normalizeSectorKey(entry.key) == normalizedInput) {
         return (key: entry.key, value: entry.value.toString());
       }
     }
 
     return null;
-  }
-
-  String _normalizeSectorKey(String key) {
-    return key.toLowerCase().replaceAll(' ', '').replaceAll('_', '').trim();
   }
 }

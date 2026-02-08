@@ -7,6 +7,7 @@ import 'package:bizzie/features/onboarding/select_brands/domain/models/brand.dar
 import 'package:bizzie/features/onboarding/select_brands/domain/models/brand_listing.dart';
 import 'package:bizzie/features/onboarding/select_brands/data/dtos/daily_brands_dto.dart';
 import 'package:bizzie/core/domain/models/sector.dart';
+import 'package:bizzie/services/config_service.dart';
 import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
 
@@ -15,8 +16,9 @@ final _logger = BizzieLogger('SelectBrandsRepositoryImpl');
 @LazySingleton(as: ISelectBrandsRepository)
 class SelectBrandsRepositoryImpl implements ISelectBrandsRepository {
   final ISelectBrandsRemoteDataSource _remoteDataSource;
+  final ConfigService _configService;
 
-  SelectBrandsRepositoryImpl(this._remoteDataSource);
+  SelectBrandsRepositoryImpl(this._remoteDataSource, this._configService);
 
   DailyBrandsDto? _cachedDto;
 
@@ -30,8 +32,10 @@ class SelectBrandsRepositoryImpl implements ISelectBrandsRepository {
           _cachedDto ?? await _remoteDataSource.fetchDailyBrands();
 
       if (dailyBrandsDto == null) {
-        _logger.warning('dailyBrandsDto is NULL - using mocks');
-        return Right(_getMockBrands(userSector));
+        _logger.warning('dailyBrandsDto is NULL - returning failure');
+        return const Left(
+          Failure.server('Failed to load brands. Please try again later.'),
+        );
       }
 
       _cachedDto = dailyBrandsDto;
@@ -63,7 +67,8 @@ class SelectBrandsRepositoryImpl implements ISelectBrandsRepository {
       if (sectorDto.name == 'All Sectors') {
         globalBrands.addAll(brands);
       } else if (userSector != null &&
-          sectorDto.name == userSector.displayName) {
+          sectorDto.name ==
+              _configService.getSectorDisplayName(userSector.name)) {
         sectorBrands.addAll(brands);
       }
     }
@@ -79,78 +84,5 @@ class SelectBrandsRepositoryImpl implements ISelectBrandsRepository {
       sector: sectorName,
       description: product.description,
     );
-  }
-
-  BrandListing _getMockBrands(Sector? userSector) {
-    final global = [
-      Brand(
-        name: 'iPhone',
-        company: 'Apple Inc.',
-        ticker: 'AAPL',
-        sector: 'Information Technology',
-        description: 'Tech Giant',
-      ),
-      Brand(
-        name: 'Tesla',
-        company: 'Tesla Inc.',
-        ticker: 'TSLA',
-        sector: 'Consumer Discretionary',
-        description: 'EV Manufacturer',
-      ),
-      Brand(
-        name: 'Nike',
-        company: 'Nike Inc.',
-        ticker: 'NKE',
-        sector: 'Consumer Discretionary',
-        description: 'Sportswear',
-      ),
-      Brand(
-        name: 'Coca-Cola',
-        company: 'The Coca-Cola Company',
-        ticker: 'KO',
-        sector: 'Consumer Staples',
-        description: 'Beverage',
-      ),
-      Brand(
-        name: 'Netflix',
-        company: 'Netflix Inc.',
-        ticker: 'NFLX',
-        sector: 'Communication Services',
-        description: 'Streaming',
-      ),
-    ];
-
-    final sectorSpecific = <Brand>[];
-    if (userSector != null) {
-      sectorSpecific.add(
-        Brand(
-          name: '${userSector.displayName} Brand A',
-          company: 'Company A',
-          ticker: 'AAA',
-          sector: userSector.displayName,
-          description: 'Mock Description',
-        ),
-      );
-      sectorSpecific.add(
-        Brand(
-          name: '${userSector.displayName} Brand B',
-          company: 'Company B',
-          ticker: 'BBB',
-          sector: userSector.displayName,
-          description: 'Mock Description',
-        ),
-      );
-      sectorSpecific.add(
-        Brand(
-          name: '${userSector.displayName} Consumer',
-          company: 'Company C',
-          ticker: 'CCC',
-          sector: userSector.displayName,
-          description: 'Mock Description',
-        ),
-      );
-    }
-
-    return BrandListing(globalBrands: global, sectorBrands: sectorSpecific);
   }
 }

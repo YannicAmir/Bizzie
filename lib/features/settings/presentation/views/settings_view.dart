@@ -2,7 +2,9 @@ import 'package:bizzie/app/themes/app_text_styles.dart';
 import 'package:bizzie/di/injection.dart';
 import 'package:bizzie/features/settings/presentation/bloc/settings_bloc.dart';
 import 'package:bizzie/features/settings/presentation/bloc/settings_event.dart';
+import 'package:bizzie/core/domain/models/sector.dart';
 import 'package:bizzie/features/settings/presentation/bloc/settings_state.dart';
+import 'package:bizzie/features/settings/presentation/widgets/change_sector_modal.dart';
 import 'package:bizzie/features/settings/presentation/widgets/settings_section.dart';
 import 'package:bizzie/features/settings/presentation/widgets/settings_tile.dart';
 import 'package:bizzie/shared/widgets/buttons/bizzie_primary_button.dart';
@@ -144,7 +146,19 @@ class _SettingsViewContentState extends State<_SettingsViewContent>
                       SettingsTile(
                         title: 'Favorite Sector',
                         onTap: () {
-                          // Navigate to Sector Selection
+                          final currentSector = Sector.fromString(
+                            data.favoriteSector,
+                          );
+                          if (currentSector != null) {
+                            showModalBottomSheet(
+                              context: context,
+                              isScrollControlled: true,
+                              backgroundColor: Colors.transparent,
+                              builder: (_) => ChangeSectorModal(
+                                currentSector: currentSector,
+                              ),
+                            );
+                          }
                         },
                       ),
                       const Divider(height: 1, indent: 52),

@@ -97,6 +97,7 @@ class GetSettingsDisplayDataUseCase
               isAppNotificationsEnabled: user.notificationsEnabled,
               isSystemNotificationsEnabled: isSystemAuthorized,
               appVersion: appVersion,
+              favoriteSector: user.favoriteSector,
             ),
           );
         },

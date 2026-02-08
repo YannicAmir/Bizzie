@@ -123,15 +123,19 @@ class AppAssets {
     final normalized = sector.trim().replaceAll('_', ' ').toLowerCase();
     switch (normalized) {
       case 'information technology':
+      case 'informationtechnology':
       case 'technology':
         return bizzieMascotIT;
       case 'financials':
         return bizzieMascotFinancials;
       case 'communication services':
+      case 'communicationservices':
         return bizzieMascotCommunicationServices;
       case 'consumer discretionary':
+      case 'consumerdiscretionary':
         return bizzieMascotConsumerDiscretionary;
       case 'consumer staples':
+      case 'consumerstaples':
         return bizzieMascotConsumerStaples;
       case 'energy':
         return bizzieMascotEnergy;
@@ -143,6 +147,7 @@ class AppAssets {
       case 'materials':
         return bizzieMascotMaterials;
       case 'real estate':
+      case 'realestate':
         return bizzieMascotRealEstate;
       case 'utilities':
         return bizzieMascotUtilities;

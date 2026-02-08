@@ -56,7 +56,7 @@ class MeetYourBizziePage extends StatelessWidget {
                         ),
                         AppConstants.onboardSecondarySectionSpacing,
                         Text(
-                          '${selectedSector?.displayName ?? "Your"} Bizzie will send you a daily list of stocks & brands from your favorite sector.',
+                          '${state.displaySectorName} Bizzie will be there with you on your stock market journey.',
                           style: theme.textTheme.bodyLarge?.copyWith(
                             color: theme.colorScheme.onSurfaceVariant,
                           ),

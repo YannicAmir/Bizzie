@@ -74,7 +74,6 @@ void main() {
         investingExperience: 'beginner',
         isSubscribed: false,
         favoriteSector: '',
-        favoriteSectorDisplay: '',
         createdAt: DateTime(2023),
       );
 

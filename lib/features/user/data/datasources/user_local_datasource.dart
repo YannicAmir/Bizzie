@@ -1,5 +1,8 @@
+import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:injectable/injectable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+final _logger = BizzieLogger('UserLocalDataSource');
 
 abstract class IUserLocalDataSource {
   Future<void> cacheFavoriteSector(String sector);
@@ -16,11 +19,14 @@ class UserLocalDataSource implements IUserLocalDataSource {
 
   @override
   Future<void> cacheFavoriteSector(String sector) async {
+    _logger.info('Caching favorite sector: $sector');
     await _prefs.setString(_kFavoriteSectorKey, sector);
   }
 
   @override
   String? getCachedFavoriteSector() {
-    return _prefs.getString(_kFavoriteSectorKey);
+    final sector = _prefs.getString(_kFavoriteSectorKey);
+    _logger.info('Retrieved cached favorite sector: $sector');
+    return sector;
   }
 }

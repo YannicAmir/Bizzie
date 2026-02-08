@@ -1,8 +1,10 @@
+import 'dart:async';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:bizzie/core/usecase/usecase.dart';
 import 'package:bizzie/features/profile/domain/usecases/get_profile_display_data_usecase.dart';
 import 'package:bizzie/features/profile/presentation/bloc/profile_event.dart';
 import 'package:bizzie/features/profile/presentation/bloc/profile_state.dart';
+import 'package:bizzie/features/user/domain/usecases/watch_user_usecase.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
@@ -11,12 +13,24 @@ final _logger = BizzieLogger('ProfileBloc');
 @injectable
 class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   final GetProfileDisplayDataUseCase _getProfileDisplayDataUseCase;
+  final WatchUserUseCase _watchUserUseCase;
+  StreamSubscription? _userSubscription;
 
-  ProfileBloc(this._getProfileDisplayDataUseCase)
+  ProfileBloc(this._getProfileDisplayDataUseCase, this._watchUserUseCase)
     : super(const ProfileState.initial()) {
+    _userSubscription = _watchUserUseCase().listen((_) {
+      add(const ProfileEvent.started());
+    });
+
     on<ProfileEvent>((event, emit) async {
       await event.map(started: (_) => _onStarted(emit));
     });
+  }
+
+  @override
+  Future<void> close() {
+    _userSubscription?.cancel();
+    return super.close();
   }
 
   Future<void> _onStarted(Emitter<ProfileState> emit) async {

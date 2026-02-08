@@ -14,7 +14,6 @@ abstract class UserDto with _$UserDto {
     required String uid,
     required String name,
     required String favoriteSector,
-    String? favoriteSectorDisplay,
     required String investingExperience,
     @TimestampConverter() required DateTime createdAt,
     @Default(false) bool isSubscribed,
@@ -35,7 +34,6 @@ abstract class UserDto with _$UserDto {
       isSubscribed: domain.isSubscribed,
       notificationsEnabled: domain.notificationsEnabled,
       fcmTokens: domain.fcmTokens,
-      favoriteSectorDisplay: domain.favoriteSectorDisplay,
     );
   }
 
@@ -53,7 +51,6 @@ abstract class UserDto with _$UserDto {
       isSubscribed: isSubscribed,
       notificationsEnabled: notificationsEnabled,
       fcmTokens: fcmTokens,
-      favoriteSectorDisplay: favoriteSectorDisplay ?? favoriteSector,
     );
   }
 }

@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$OnboardingState {
 
- OnboardingData get onboardingData; int get currentStep; OnboardingStatus get status; bool get isSubmitting; bool get isLoadingSectors; bool get isAnalyzingBrands; bool get isLoadingHistory; int get analysisStep; int get watchlistStep; List<Sector> get availableSectors; List<HistoricalPrice> get sp500History; List<Brand> get selectedBrands; String get customBrandInput; String? get failureMessage; List<FeatureHighlightItem> get featureHighlights; int get currentHighlightIndex; bool get shouldNavigateToCreateAccount; bool get shouldNavigateToBuildingProfile;
+ OnboardingData get onboardingData; int get currentStep; OnboardingStatus get status; bool get isSubmitting; bool get isLoadingSectors; bool get isAnalyzingBrands; bool get isLoadingHistory; int get analysisStep; int get watchlistStep; List<SectorViewModel> get availableSectors; List<HistoricalPrice> get sp500History; List<Brand> get selectedBrands; String get customBrandInput; String? get failureMessage; List<FeatureHighlightItem> get featureHighlights; int get currentHighlightIndex; bool get shouldNavigateToCreateAccount; bool get shouldNavigateToBuildingProfile;
 /// Create a copy of OnboardingState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -45,7 +45,7 @@ abstract mixin class $OnboardingStateCopyWith<$Res>  {
   factory $OnboardingStateCopyWith(OnboardingState value, $Res Function(OnboardingState) _then) = _$OnboardingStateCopyWithImpl;
 @useResult
 $Res call({
- OnboardingData onboardingData, int currentStep, OnboardingStatus status, bool isSubmitting, bool isLoadingSectors, bool isAnalyzingBrands, bool isLoadingHistory, int analysisStep, int watchlistStep, List<Sector> availableSectors, List<HistoricalPrice> sp500History, List<Brand> selectedBrands, String customBrandInput, String? failureMessage, List<FeatureHighlightItem> featureHighlights, int currentHighlightIndex, bool shouldNavigateToCreateAccount, bool shouldNavigateToBuildingProfile
+ OnboardingData onboardingData, int currentStep, OnboardingStatus status, bool isSubmitting, bool isLoadingSectors, bool isAnalyzingBrands, bool isLoadingHistory, int analysisStep, int watchlistStep, List<SectorViewModel> availableSectors, List<HistoricalPrice> sp500History, List<Brand> selectedBrands, String customBrandInput, String? failureMessage, List<FeatureHighlightItem> featureHighlights, int currentHighlightIndex, bool shouldNavigateToCreateAccount, bool shouldNavigateToBuildingProfile
 });
 
 
@@ -74,7 +74,7 @@ as bool,isLoadingHistory: null == isLoadingHistory ? _self.isLoadingHistory : is
 as bool,analysisStep: null == analysisStep ? _self.analysisStep : analysisStep // ignore: cast_nullable_to_non_nullable
 as int,watchlistStep: null == watchlistStep ? _self.watchlistStep : watchlistStep // ignore: cast_nullable_to_non_nullable
 as int,availableSectors: null == availableSectors ? _self.availableSectors : availableSectors // ignore: cast_nullable_to_non_nullable
-as List<Sector>,sp500History: null == sp500History ? _self.sp500History : sp500History // ignore: cast_nullable_to_non_nullable
+as List<SectorViewModel>,sp500History: null == sp500History ? _self.sp500History : sp500History // ignore: cast_nullable_to_non_nullable
 as List<HistoricalPrice>,selectedBrands: null == selectedBrands ? _self.selectedBrands : selectedBrands // ignore: cast_nullable_to_non_nullable
 as List<Brand>,customBrandInput: null == customBrandInput ? _self.customBrandInput : customBrandInput // ignore: cast_nullable_to_non_nullable
 as String,failureMessage: freezed == failureMessage ? _self.failureMessage : failureMessage // ignore: cast_nullable_to_non_nullable
@@ -176,7 +176,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( OnboardingData onboardingData,  int currentStep,  OnboardingStatus status,  bool isSubmitting,  bool isLoadingSectors,  bool isAnalyzingBrands,  bool isLoadingHistory,  int analysisStep,  int watchlistStep,  List<Sector> availableSectors,  List<HistoricalPrice> sp500History,  List<Brand> selectedBrands,  String customBrandInput,  String? failureMessage,  List<FeatureHighlightItem> featureHighlights,  int currentHighlightIndex,  bool shouldNavigateToCreateAccount,  bool shouldNavigateToBuildingProfile)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( OnboardingData onboardingData,  int currentStep,  OnboardingStatus status,  bool isSubmitting,  bool isLoadingSectors,  bool isAnalyzingBrands,  bool isLoadingHistory,  int analysisStep,  int watchlistStep,  List<SectorViewModel> availableSectors,  List<HistoricalPrice> sp500History,  List<Brand> selectedBrands,  String customBrandInput,  String? failureMessage,  List<FeatureHighlightItem> featureHighlights,  int currentHighlightIndex,  bool shouldNavigateToCreateAccount,  bool shouldNavigateToBuildingProfile)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _OnboardingState() when $default != null:
 return $default(_that.onboardingData,_that.currentStep,_that.status,_that.isSubmitting,_that.isLoadingSectors,_that.isAnalyzingBrands,_that.isLoadingHistory,_that.analysisStep,_that.watchlistStep,_that.availableSectors,_that.sp500History,_that.selectedBrands,_that.customBrandInput,_that.failureMessage,_that.featureHighlights,_that.currentHighlightIndex,_that.shouldNavigateToCreateAccount,_that.shouldNavigateToBuildingProfile);case _:
@@ -197,7 +197,7 @@ return $default(_that.onboardingData,_that.currentStep,_that.status,_that.isSubm
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( OnboardingData onboardingData,  int currentStep,  OnboardingStatus status,  bool isSubmitting,  bool isLoadingSectors,  bool isAnalyzingBrands,  bool isLoadingHistory,  int analysisStep,  int watchlistStep,  List<Sector> availableSectors,  List<HistoricalPrice> sp500History,  List<Brand> selectedBrands,  String customBrandInput,  String? failureMessage,  List<FeatureHighlightItem> featureHighlights,  int currentHighlightIndex,  bool shouldNavigateToCreateAccount,  bool shouldNavigateToBuildingProfile)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( OnboardingData onboardingData,  int currentStep,  OnboardingStatus status,  bool isSubmitting,  bool isLoadingSectors,  bool isAnalyzingBrands,  bool isLoadingHistory,  int analysisStep,  int watchlistStep,  List<SectorViewModel> availableSectors,  List<HistoricalPrice> sp500History,  List<Brand> selectedBrands,  String customBrandInput,  String? failureMessage,  List<FeatureHighlightItem> featureHighlights,  int currentHighlightIndex,  bool shouldNavigateToCreateAccount,  bool shouldNavigateToBuildingProfile)  $default,) {final _that = this;
 switch (_that) {
 case _OnboardingState():
 return $default(_that.onboardingData,_that.currentStep,_that.status,_that.isSubmitting,_that.isLoadingSectors,_that.isAnalyzingBrands,_that.isLoadingHistory,_that.analysisStep,_that.watchlistStep,_that.availableSectors,_that.sp500History,_that.selectedBrands,_that.customBrandInput,_that.failureMessage,_that.featureHighlights,_that.currentHighlightIndex,_that.shouldNavigateToCreateAccount,_that.shouldNavigateToBuildingProfile);case _:
@@ -217,7 +217,7 @@ return $default(_that.onboardingData,_that.currentStep,_that.status,_that.isSubm
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( OnboardingData onboardingData,  int currentStep,  OnboardingStatus status,  bool isSubmitting,  bool isLoadingSectors,  bool isAnalyzingBrands,  bool isLoadingHistory,  int analysisStep,  int watchlistStep,  List<Sector> availableSectors,  List<HistoricalPrice> sp500History,  List<Brand> selectedBrands,  String customBrandInput,  String? failureMessage,  List<FeatureHighlightItem> featureHighlights,  int currentHighlightIndex,  bool shouldNavigateToCreateAccount,  bool shouldNavigateToBuildingProfile)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( OnboardingData onboardingData,  int currentStep,  OnboardingStatus status,  bool isSubmitting,  bool isLoadingSectors,  bool isAnalyzingBrands,  bool isLoadingHistory,  int analysisStep,  int watchlistStep,  List<SectorViewModel> availableSectors,  List<HistoricalPrice> sp500History,  List<Brand> selectedBrands,  String customBrandInput,  String? failureMessage,  List<FeatureHighlightItem> featureHighlights,  int currentHighlightIndex,  bool shouldNavigateToCreateAccount,  bool shouldNavigateToBuildingProfile)?  $default,) {final _that = this;
 switch (_that) {
 case _OnboardingState() when $default != null:
 return $default(_that.onboardingData,_that.currentStep,_that.status,_that.isSubmitting,_that.isLoadingSectors,_that.isAnalyzingBrands,_that.isLoadingHistory,_that.analysisStep,_that.watchlistStep,_that.availableSectors,_that.sp500History,_that.selectedBrands,_that.customBrandInput,_that.failureMessage,_that.featureHighlights,_that.currentHighlightIndex,_that.shouldNavigateToCreateAccount,_that.shouldNavigateToBuildingProfile);case _:
@@ -232,7 +232,7 @@ return $default(_that.onboardingData,_that.currentStep,_that.status,_that.isSubm
 
 
 class _OnboardingState extends OnboardingState {
-  const _OnboardingState({required this.onboardingData, this.currentStep = 0, this.status = OnboardingStatus.initial, this.isSubmitting = false, this.isLoadingSectors = false, this.isAnalyzingBrands = false, this.isLoadingHistory = false, this.analysisStep = 0, this.watchlistStep = 0, final  List<Sector> availableSectors = const [], final  List<HistoricalPrice> sp500History = const [], final  List<Brand> selectedBrands = const [], this.customBrandInput = '', this.failureMessage, final  List<FeatureHighlightItem> featureHighlights = const [], this.currentHighlightIndex = 0, this.shouldNavigateToCreateAccount = false, this.shouldNavigateToBuildingProfile = false}): _availableSectors = availableSectors,_sp500History = sp500History,_selectedBrands = selectedBrands,_featureHighlights = featureHighlights,super._();
+  const _OnboardingState({required this.onboardingData, this.currentStep = 0, this.status = OnboardingStatus.initial, this.isSubmitting = false, this.isLoadingSectors = false, this.isAnalyzingBrands = false, this.isLoadingHistory = false, this.analysisStep = 0, this.watchlistStep = 0, final  List<SectorViewModel> availableSectors = const [], final  List<HistoricalPrice> sp500History = const [], final  List<Brand> selectedBrands = const [], this.customBrandInput = '', this.failureMessage, final  List<FeatureHighlightItem> featureHighlights = const [], this.currentHighlightIndex = 0, this.shouldNavigateToCreateAccount = false, this.shouldNavigateToBuildingProfile = false}): _availableSectors = availableSectors,_sp500History = sp500History,_selectedBrands = selectedBrands,_featureHighlights = featureHighlights,super._();
   
 
 @override final  OnboardingData onboardingData;
@@ -244,8 +244,8 @@ class _OnboardingState extends OnboardingState {
 @override@JsonKey() final  bool isLoadingHistory;
 @override@JsonKey() final  int analysisStep;
 @override@JsonKey() final  int watchlistStep;
- final  List<Sector> _availableSectors;
-@override@JsonKey() List<Sector> get availableSectors {
+ final  List<SectorViewModel> _availableSectors;
+@override@JsonKey() List<SectorViewModel> get availableSectors {
   if (_availableSectors is EqualUnmodifiableListView) return _availableSectors;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableListView(_availableSectors);
@@ -308,7 +308,7 @@ abstract mixin class _$OnboardingStateCopyWith<$Res> implements $OnboardingState
   factory _$OnboardingStateCopyWith(_OnboardingState value, $Res Function(_OnboardingState) _then) = __$OnboardingStateCopyWithImpl;
 @override @useResult
 $Res call({
- OnboardingData onboardingData, int currentStep, OnboardingStatus status, bool isSubmitting, bool isLoadingSectors, bool isAnalyzingBrands, bool isLoadingHistory, int analysisStep, int watchlistStep, List<Sector> availableSectors, List<HistoricalPrice> sp500History, List<Brand> selectedBrands, String customBrandInput, String? failureMessage, List<FeatureHighlightItem> featureHighlights, int currentHighlightIndex, bool shouldNavigateToCreateAccount, bool shouldNavigateToBuildingProfile
+ OnboardingData onboardingData, int currentStep, OnboardingStatus status, bool isSubmitting, bool isLoadingSectors, bool isAnalyzingBrands, bool isLoadingHistory, int analysisStep, int watchlistStep, List<SectorViewModel> availableSectors, List<HistoricalPrice> sp500History, List<Brand> selectedBrands, String customBrandInput, String? failureMessage, List<FeatureHighlightItem> featureHighlights, int currentHighlightIndex, bool shouldNavigateToCreateAccount, bool shouldNavigateToBuildingProfile
 });
 
 
@@ -337,7 +337,7 @@ as bool,isLoadingHistory: null == isLoadingHistory ? _self.isLoadingHistory : is
 as bool,analysisStep: null == analysisStep ? _self.analysisStep : analysisStep // ignore: cast_nullable_to_non_nullable
 as int,watchlistStep: null == watchlistStep ? _self.watchlistStep : watchlistStep // ignore: cast_nullable_to_non_nullable
 as int,availableSectors: null == availableSectors ? _self._availableSectors : availableSectors // ignore: cast_nullable_to_non_nullable
-as List<Sector>,sp500History: null == sp500History ? _self._sp500History : sp500History // ignore: cast_nullable_to_non_nullable
+as List<SectorViewModel>,sp500History: null == sp500History ? _self._sp500History : sp500History // ignore: cast_nullable_to_non_nullable
 as List<HistoricalPrice>,selectedBrands: null == selectedBrands ? _self._selectedBrands : selectedBrands // ignore: cast_nullable_to_non_nullable
 as List<Brand>,customBrandInput: null == customBrandInput ? _self.customBrandInput : customBrandInput // ignore: cast_nullable_to_non_nullable
 as String,failureMessage: freezed == failureMessage ? _self.failureMessage : failureMessage // ignore: cast_nullable_to_non_nullable

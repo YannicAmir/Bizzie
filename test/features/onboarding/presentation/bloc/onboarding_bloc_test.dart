@@ -15,6 +15,8 @@ import 'package:bizzie/features/user/domain/enums/investing_experience.dart';
 import 'package:bizzie/features/onboarding/domain/models/company.dart';
 import 'package:bizzie/features/onboarding/presentation/models/feature_highlight_item.dart';
 import 'package:bizzie/features/onboarding/presentation/bloc/onboarding_bloc.dart';
+import 'package:bizzie/shared/models/sector_view_model.dart';
+import 'package:bizzie/services/config_service.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -30,6 +32,8 @@ class MockGetSectorsUseCase extends Mock implements GetSectorsUseCase {}
 class MockGetSp500HistoryUseCase extends Mock
     implements GetSp500HistoryUseCase {}
 
+class MockConfigService extends Mock implements ConfigService {}
+
 class FakeNoParams extends Fake implements NoParams {}
 
 void main() {
@@ -39,6 +43,7 @@ void main() {
 
   late MockGetSectorsUseCase mockGetSectorsUseCase;
   late MockGetSp500HistoryUseCase mockGetSp500HistoryUseCase;
+  late MockConfigService mockConfigService;
 
   setUpAll(() {
     registerFallbackValue(const OnboardingData());
@@ -54,12 +59,14 @@ void main() {
 
     mockGetSectorsUseCase = MockGetSectorsUseCase();
     mockGetSp500HistoryUseCase = MockGetSp500HistoryUseCase();
+    mockConfigService = MockConfigService();
 
     bloc = OnboardingBloc(
       mockAuthRepository,
       mockCompleteOnboardingUseCase,
       mockGetSectorsUseCase,
       mockGetSp500HistoryUseCase,
+      mockConfigService,
     );
   });
 
@@ -86,6 +93,12 @@ void main() {
         when(
           () => mockGetSectorsUseCase(any()),
         ).thenAnswer((_) async => const Right([Sector.financials]));
+        when(
+          () => mockConfigService.getSectorDisplayName(any()),
+        ).thenReturn('Financials');
+        when(
+          () => mockConfigService.getSectorDescription(any()),
+        ).thenReturn('Description');
         return bloc;
       },
       // act
@@ -99,9 +112,16 @@ void main() {
         ),
         isA<OnboardingState>()
             .having((s) => s.isLoadingSectors, 'isLoadingSectors', false)
-            .having((s) => s.availableSectors, 'availableSectors', [
+            .having(
+              (s) => s.availableSectors.length,
+              'availableSectors length',
+              1,
+            )
+            .having(
+              (s) => s.availableSectors.first.sector,
+              'first sector',
               Sector.financials,
-            ]),
+            ),
         isA<OnboardingState>().having(
           (s) => s.isLoadingHistory,
           'isLoadingHistory',
@@ -157,14 +177,33 @@ void main() {
       'sectorSelected_validSector_updatesData',
       // arrange
       build: () => bloc,
+      seed: () => OnboardingState(
+        onboardingData: const OnboardingData(),
+        availableSectors: [
+          SectorViewModel(
+            sector: Sector.financials,
+            displayName: 'Financials',
+            description: 'Desc',
+          ),
+        ],
+      ),
       // act
-      act: (bloc) =>
-          bloc.add(const OnboardingEvent.sectorSelected(Sector.financials)),
+      act: (bloc) {
+        bloc.add(const OnboardingEvent.sectorSelected(Sector.financials));
+      },
       // assert
       expect: () => [
-        const OnboardingState(
-          onboardingData: OnboardingData(selectedSector: Sector.financials),
-        ),
+        isA<OnboardingState>()
+            .having(
+              (s) => s.onboardingData.selectedSector,
+              'selectedSector',
+              Sector.financials,
+            )
+            .having(
+              (s) => s.displaySectorName,
+              'displaySectorName',
+              'Financials',
+            ),
       ],
     );
 

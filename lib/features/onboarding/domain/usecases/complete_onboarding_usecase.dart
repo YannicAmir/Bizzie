@@ -44,10 +44,7 @@ class CompleteOnboardingUseCase
     final user = UserModel(
       uid: params.uid,
       name: params.data.firstName,
-      favoriteSector: StringUtils.sanitizeTopic(
-        params.data.selectedSector?.displayName ?? '',
-      ),
-      favoriteSectorDisplay: params.data.selectedSector?.displayName ?? '',
+      favoriteSector: params.data.selectedSector?.name ?? '',
       watchlist: params.data.detectedCompanies
           .map((c) => Company(ticker: c.ticker, name: c.name))
           .toList(),
@@ -76,9 +73,7 @@ class CompleteOnboardingUseCase
   Future<void> _subscribeToTopics(OnboardingData data) async {
     final selectedSector = data.selectedSector;
     if (selectedSector != null) {
-      final sanitizedSector = StringUtils.sanitizeTopic(
-        selectedSector.displayName,
-      );
+      final sanitizedSector = StringUtils.sanitizeTopic(selectedSector.name);
       if (sanitizedSector.isNotEmpty) {
         await _notificationService.subscribeToTopic(sanitizedSector);
       }

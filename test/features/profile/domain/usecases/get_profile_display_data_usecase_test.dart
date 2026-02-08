@@ -5,12 +5,12 @@ import 'package:bizzie/features/auth/domain/models/user_model.dart' as auth;
 import 'package:bizzie/features/market/domain/entities/sector_pe.dart';
 import 'package:bizzie/features/market/domain/entities/sector_performance.dart';
 import 'package:bizzie/features/market/domain/interfaces/i_market_repository.dart';
-import 'package:bizzie/features/profile/domain/interfaces/i_profile_repository.dart';
 import 'package:bizzie/features/profile/domain/models/profile_display_data.dart';
 import 'package:bizzie/features/profile/domain/usecases/get_profile_display_data_usecase.dart';
 import 'package:bizzie/features/user/domain/enums/investing_experience.dart';
 import 'package:bizzie/features/user/domain/interfaces/user_repository.dart';
 import 'package:bizzie/features/user/domain/models/user_model.dart';
+import 'package:bizzie/services/config_service.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
@@ -19,27 +19,27 @@ class MockAuthRepository extends Mock implements IAuthRepository {}
 
 class MockUserRepository extends Mock implements IUserRepository {}
 
-class MockProfileRepository extends Mock implements IProfileRepository {}
-
 class MockMarketRepository extends Mock implements IMarketRepository {}
+
+class MockConfigService extends Mock implements ConfigService {}
 
 void main() {
   late MockAuthRepository mockAuthRepository;
   late MockUserRepository mockUserRepository;
-  late MockProfileRepository mockProfileRepository;
   late MockMarketRepository mockMarketRepository;
+  late MockConfigService mockConfigService;
   late GetProfileDisplayDataUseCase useCase;
 
   setUp(() {
     mockAuthRepository = MockAuthRepository();
     mockUserRepository = MockUserRepository();
-    mockProfileRepository = MockProfileRepository();
     mockMarketRepository = MockMarketRepository();
+    mockConfigService = MockConfigService();
     useCase = GetProfileDisplayDataUseCase(
       mockAuthRepository,
       mockUserRepository,
-      mockProfileRepository,
       mockMarketRepository,
+      mockConfigService,
     );
   });
 
@@ -51,10 +51,10 @@ void main() {
       uid: tUserId,
       name: 'Test User',
       favoriteSector: 'technology',
-      favoriteSectorDisplay: 'Technology',
       investingExperience: InvestingExperience.beginner,
       createdAt: tJoinedDate,
       isSubscribed: false,
+      watchlist: [],
     );
     const tSectorDescription = 'Tech Companies';
     const tSectorDisplayName = 'Technology';
@@ -83,11 +83,11 @@ void main() {
         () => mockUserRepository.getUser(tUserId),
       ).thenAnswer((_) async => Right(tUser));
       when(
-        () => mockProfileRepository.getSectorDescription('technology'),
-      ).thenAnswer((_) async => const Right(tSectorDescription));
+        () => mockConfigService.getSectorDescription(any()),
+      ).thenReturn(tSectorDescription);
       when(
-        () => mockProfileRepository.getSectorDisplayName('technology'),
-      ).thenAnswer((_) async => const Right(tSectorDisplayName));
+        () => mockConfigService.getSectorDisplayName(any()),
+      ).thenReturn(tSectorDisplayName);
       when(
         () => mockMarketRepository.getSectorPeList(),
       ).thenAnswer((_) async => Right(tSectorPeList));
@@ -144,7 +144,6 @@ void main() {
       expect(result, const Left(ServerFailure('User Error')));
       verify(() => mockAuthRepository.currentUser).called(1);
       verify(() => mockUserRepository.getUser(tUserId)).called(1);
-      verifyZeroInteractions(mockProfileRepository);
     });
 
     test('call_marketDatePriority_prioritizesPeListDate', () async {
@@ -170,12 +169,8 @@ void main() {
       when(
         () => mockUserRepository.getUser(tUserId),
       ).thenAnswer((_) async => Right(tUser));
-      when(
-        () => mockProfileRepository.getSectorDescription(any()),
-      ).thenAnswer((_) async => const Right('d'));
-      when(
-        () => mockProfileRepository.getSectorDisplayName(any()),
-      ).thenAnswer((_) async => const Right('n'));
+      when(() => mockConfigService.getSectorDescription(any())).thenReturn('d');
+      when(() => mockConfigService.getSectorDisplayName(any())).thenReturn('n');
       when(
         () => mockMarketRepository.getSectorPeList(),
       ).thenAnswer((_) async => Right(tPeListWithDate));
@@ -209,12 +204,8 @@ void main() {
       when(
         () => mockUserRepository.getUser(tUserId),
       ).thenAnswer((_) async => Right(tUser));
-      when(
-        () => mockProfileRepository.getSectorDescription(any()),
-      ).thenAnswer((_) async => const Right('d'));
-      when(
-        () => mockProfileRepository.getSectorDisplayName(any()),
-      ).thenAnswer((_) async => const Right('n'));
+      when(() => mockConfigService.getSectorDescription(any())).thenReturn('d');
+      when(() => mockConfigService.getSectorDisplayName(any())).thenReturn('n');
       when(
         () => mockMarketRepository.getSectorPeList(),
       ).thenAnswer((_) async => Right(tPeListNoMatch));
@@ -233,35 +224,6 @@ void main() {
     });
 
     group('Linear Failure Chain Verification', () {
-      test(
-        'given_descriptionFails_when_call_then_returnsLeftFailure',
-        () async {
-          // arrange
-          when(() => mockAuthRepository.currentUser).thenReturn(tAuthUser);
-          when(
-            () => mockUserRepository.getUser(tUserId),
-          ).thenAnswer((_) async => Right(tUser));
-          when(
-            () => mockProfileRepository.getSectorDescription('technology'),
-          ).thenAnswer((_) async => const Left(ServerFailure('Desc Error')));
-          when(
-            () => mockProfileRepository.getSectorDisplayName('technology'),
-          ).thenAnswer((_) async => const Right('n'));
-          when(
-            () => mockMarketRepository.getSectorPeList(),
-          ).thenAnswer((_) async => const Right([]));
-          when(
-            () => mockMarketRepository.getSectorPerformanceList(),
-          ).thenAnswer((_) async => const Right([]));
-
-          // act
-          final result = await useCase(NoParams());
-
-          // assert
-          expect(result, const Left(ServerFailure('Desc Error')));
-        },
-      );
-
       test('given_peListFails_when_call_then_returnsLeftFailure', () async {
         // arrange
         when(() => mockAuthRepository.currentUser).thenReturn(tAuthUser);
@@ -269,11 +231,11 @@ void main() {
           () => mockUserRepository.getUser(tUserId),
         ).thenAnswer((_) async => Right(tUser));
         when(
-          () => mockProfileRepository.getSectorDescription('technology'),
-        ).thenAnswer((_) async => const Right('d'));
+          () => mockConfigService.getSectorDescription(any()),
+        ).thenReturn('d');
         when(
-          () => mockProfileRepository.getSectorDisplayName('technology'),
-        ).thenAnswer((_) async => const Right('n'));
+          () => mockConfigService.getSectorDisplayName(any()),
+        ).thenReturn('n');
         when(
           () => mockMarketRepository.getSectorPeList(),
         ).thenAnswer((_) async => const Left(ServerFailure('PE Error')));

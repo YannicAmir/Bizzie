@@ -1,7 +1,9 @@
+import 'dart:async';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/features/user/domain/models/user_model.dart';
 import 'package:bizzie/features/user/domain/usecases/get_user_usecase.dart';
+import 'package:bizzie/features/user/domain/usecases/watch_user_usecase.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
@@ -15,10 +17,23 @@ final _logger = BizzieLogger('UserBloc');
 @lazySingleton
 class UserBloc extends Bloc<UserEvent, UserState> {
   final GetUserUseCase _getUserUseCase;
+  final WatchUserUseCase _watchUserUseCase;
+  StreamSubscription? _userSubscription;
 
-  UserBloc(this._getUserUseCase) : super(const UserState.initial()) {
+  UserBloc(this._getUserUseCase, this._watchUserUseCase)
+    : super(const UserState.initial()) {
+    _userSubscription = _watchUserUseCase().listen((user) {
+      add(UserLoadRequested(uid: user.uid, silent: true));
+    });
+
     on<UserLoadRequested>(_onLoadUser);
     on<UserClearRequested>(_onClear);
+  }
+
+  @override
+  Future<void> close() {
+    _userSubscription?.cancel();
+    return super.close();
   }
 
   Future<void> _onLoadUser(

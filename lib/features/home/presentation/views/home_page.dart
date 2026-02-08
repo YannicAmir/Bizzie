@@ -7,8 +7,6 @@ import 'package:bizzie/shared/widgets/inputs/bizzie_search_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:bizzie/di/injection.dart';
-import 'package:bizzie/features/user/domain/interfaces/user_repository.dart';
 import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
 import 'package:bizzie/features/home/presentation/widgets/home_watchlist_widget.dart';
 import 'package:bizzie/shared/widgets/badges/bizzie_plus_badge.dart';
@@ -112,12 +110,6 @@ class _HomePageState extends State<HomePage> {
                         ),
                         const SizedBox(height: 20),
                         ElevatedButton(
-                          onPressed: () =>
-                              context.push(AppRoutes.onboardingNotifications),
-                          child: const Text('Notification Shortcut'),
-                        ),
-                        const SizedBox(height: 10),
-                        ElevatedButton(
                           onPressed: () => context.push(AppRoutes.paywall),
                           child: const Text('Paywall Shortcut'),
                         ),
@@ -127,22 +119,7 @@ class _HomePageState extends State<HomePage> {
                           child: const Text('Discounted Paywall Shortcut'),
                         ),
                         const SizedBox(height: 20),
-                        Text(
-                          'Local storage: ${getIt<IUserRepository>().getCachedFavoriteSector() ?? "None"}',
-                        ),
-                        const SizedBox(height: 10),
-                        BlocBuilder<UserBloc, UserState>(
-                          builder: (context, userState) {
-                            return userState.maybeWhen(
-                              loaded: (user) => Text('DB: ${user.createdAt}'),
-                              failure: (message, _, __) => Text(
-                                'DB Error: $message',
-                                style: const TextStyle(color: Colors.red),
-                              ),
-                              orElse: () => const Text('DB: Loading...'),
-                            );
-                          },
-                        ),
+                        _DebugInfo(),
                         const SizedBox(height: 20),
                         const HomeWatchlistWidget(),
                       ],
@@ -186,6 +163,43 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
       ),
+    );
+  }
+}
+
+class _DebugInfo extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<UserBloc, UserState>(
+      builder: (context, state) {
+        return state.maybeWhen(
+          loaded: (user) => Column(
+            children: [
+              Text('Local storage: ${user.favoriteSector}'),
+              const SizedBox(height: 10),
+              Text('DB: ${user.createdAt}'),
+            ],
+          ),
+          loading: (cachedSector) => Column(
+            children: [
+              Text('Local storage: ${cachedSector ?? "Loading..."}'),
+              const SizedBox(height: 10),
+              const Text('DB: Loading...'),
+            ],
+          ),
+          failure: (failure, _, cachedSector) => Column(
+            children: [
+              Text('Local storage: ${cachedSector ?? "Error"}'),
+              const SizedBox(height: 10),
+              Text(
+                'DB Error: ${failure.message}',
+                style: const TextStyle(color: Colors.red),
+              ),
+            ],
+          ),
+          orElse: () => const Text('Loading debug data...'),
+        );
+      },
     );
   }
 }

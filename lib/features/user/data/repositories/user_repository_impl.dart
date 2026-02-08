@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/features/user/data/dtos/user_dto.dart';
 import 'package:bizzie/features/user/domain/models/user_model.dart';
@@ -15,7 +16,12 @@ class UserRepositoryImpl implements IUserRepository {
   final IUserRemoteDataSource _remoteDataSource;
   final IUserLocalDataSource _localDataSource;
 
+  final _userStreamController = StreamController<UserModel>.broadcast();
+
   UserRepositoryImpl(this._remoteDataSource, this._localDataSource);
+
+  @override
+  Stream<UserModel> get userStream => _userStreamController.stream;
 
   @override
   String? getCachedFavoriteSector() {
@@ -35,10 +41,21 @@ class UserRepositoryImpl implements IUserRepository {
       final watchlist = watchlistDtos.map((dto) => dto.toDomain()).toList();
 
       final user = userDto.toDomain().copyWith(watchlist: watchlist);
-      _logger.info(
-        'Caching favorite sector from user profile: ${user.favoriteSector}',
-      );
-      await _localDataSource.cacheFavoriteSector(user.favoriteSector);
+
+      // Only seed local cache from remote if it's currently empty
+      // This prevents reactive fetches from overwriting a fresh local change with stale remote data
+      final currentCached = _localDataSource.getCachedFavoriteSector();
+      if (user.favoriteSector.isNotEmpty && currentCached == null) {
+        _logger.info(
+          'Seeding local cache from remote profile: ${user.favoriteSector}',
+        );
+        await _localDataSource.cacheFavoriteSector(user.favoriteSector);
+      } else {
+        _logger.info(
+          'Skipping local cache update. Current: $currentCached, Remote: ${user.favoriteSector}',
+        );
+      }
+
       return Right(user);
     } catch (e, stack) {
       _logger.severe('Failed to get user', e, stack);
@@ -49,10 +66,15 @@ class UserRepositoryImpl implements IUserRepository {
   @override
   Future<Either<Failure, void>> updateUser(UserModel user) async {
     try {
+      _logger.info('Updating user in remote and local: ${user.favoriteSector}');
       await _remoteDataSource.updateUser(UserDto.fromDomain(user));
       if (user.favoriteSector.isNotEmpty) {
         await _localDataSource.cacheFavoriteSector(user.favoriteSector);
       }
+
+      // Emit user update
+      _userStreamController.add(user);
+
       return const Right(null);
     } catch (e, stack) {
       _logger.severe('Failed to update user', e, stack);

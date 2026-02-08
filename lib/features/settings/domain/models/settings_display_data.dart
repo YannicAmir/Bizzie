@@ -12,5 +12,6 @@ abstract class SettingsDisplayData with _$SettingsDisplayData {
     required bool isAppNotificationsEnabled,
     required bool isSystemNotificationsEnabled,
     required String appVersion,
+    required String favoriteSector,
   }) = _SettingsDisplayData;
 }
