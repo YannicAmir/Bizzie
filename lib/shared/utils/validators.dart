@@ -10,7 +10,7 @@ class Validators {
     return null;
   }
 
-  static String? validatePassword(String? value, {int minLength = 6}) {
+  static String? validatePassword(String? value, {int minLength = 8}) {
     if (value == null || value.isEmpty) {
       return 'Please enter a password';
     }

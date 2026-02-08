@@ -18,4 +18,10 @@ sealed class Failure with _$Failure {
   const factory Failure.permission([
     @Default('Permission denied') String message,
   ]) = PermissionFailure;
+  const factory Failure.passwordMismatch([
+    @Default('Passwords do not match') String message,
+  ]) = PasswordMismatchFailure;
+  const factory Failure.reauthentication([
+    @Default('Reauthentication failed') String message,
+  ]) = ReauthenticationFailure;
 }

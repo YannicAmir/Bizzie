@@ -3,11 +3,11 @@ class AppAssets {
 
   // Auth Feature
   static const String authAppleIcon = 'assets/images/auth/apple_icon.png';
-  static const String authEmailIcon = 'assets/images/auth/email_icon.png';
+  static const String authEmailIcon = 'assets/images/auth/email_icon.svg';
   static const String authGoogleIcon = 'assets/images/auth/google_icon.png';
   static const String authHidePasswordIcon =
       'assets/images/auth/hide_password_icon.png';
-  static const String authLockIcon = 'assets/images/auth/lock_icon.png';
+  static const String authLockIcon = 'assets/images/auth/lock_icon.svg';
   static const String authShowPasswordIcon =
       'assets/images/auth/show_password_icon.png';
 

@@ -1,3 +1,4 @@
+import 'package:bizzie/app/routes/app_routes.dart';
 import 'package:bizzie/app/themes/app_assets.dart';
 import 'package:bizzie/app/themes/app_text_styles.dart';
 import 'package:bizzie/di/injection.dart';
@@ -148,7 +149,7 @@ class _SettingsViewContentState extends State<_SettingsViewContent>
                       SettingsTile(
                         title: 'Edit Profile',
                         onTap: () {
-                          // Navigate to Edit Profile
+                          context.pushNamed(AppRoutes.editProfile);
                         },
                       ),
                       const Divider(height: 1, indent: 52),

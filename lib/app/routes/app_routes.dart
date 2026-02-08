@@ -14,6 +14,12 @@ class AppRoutes {
   static const String reports = '/reports';
   static const String profile = '/profile';
   static const String settings = '/settings';
+  static const String editProfile = '/edit-profile';
+  static const String changePassword = '/change-password';
+
+  // Relative paths for nested routes
+  static const String editProfilePath = 'edit-profile';
+  static const String changePasswordPath = 'change-password';
 
   // Namespaced Company Profile Routes for Bottom Nav Stacks
   static const String companyProfileHome = 'companyProfileHome';

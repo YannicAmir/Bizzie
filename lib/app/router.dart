@@ -28,6 +28,8 @@ import 'package:bizzie/features/onboarding/presentation/views/welcome_name_page.
 import 'package:bizzie/features/company_profile/cp/presentation/views/company_profile_page.dart';
 import 'package:bizzie/features/reports/presentation/views/reports_page.dart';
 import 'package:bizzie/features/profile/presentation/views/profile_page.dart';
+import 'package:bizzie/features/profile/presentation/views/change_password_view.dart';
+import 'package:bizzie/features/profile/presentation/views/edit_profile_view.dart';
 import 'package:bizzie/app/navigation/bizzie_bottom_nav_wrapper.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -274,6 +276,20 @@ GoRouter createRouter(
             );
           },
         ),
+        routes: [
+          GoRoute(
+            path: AppRoutes.editProfilePath,
+            name: AppRoutes.editProfile,
+            builder: (context, state) => const EditProfileView(),
+            routes: [
+              GoRoute(
+                path: AppRoutes.changePasswordPath,
+                name: AppRoutes.changePassword,
+                builder: (context, state) => const ChangePasswordView(),
+              ),
+            ],
+          ),
+        ],
       ),
     ],
   );

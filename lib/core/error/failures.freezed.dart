@@ -86,7 +86,7 @@ extension FailurePatterns on Failure {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( ServerFailure value)?  server,TResult Function( CacheFailure value)?  cache,TResult Function( PaymentFailure value)?  payment,TResult Function( CancelFailure value)?  cancel,TResult Function( UserNotFoundFailure value)?  userNotFound,TResult Function( PermissionFailure value)?  permission,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( ServerFailure value)?  server,TResult Function( CacheFailure value)?  cache,TResult Function( PaymentFailure value)?  payment,TResult Function( CancelFailure value)?  cancel,TResult Function( UserNotFoundFailure value)?  userNotFound,TResult Function( PermissionFailure value)?  permission,TResult Function( PasswordMismatchFailure value)?  passwordMismatch,TResult Function( ReauthenticationFailure value)?  reauthentication,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case ServerFailure() when server != null:
@@ -95,7 +95,9 @@ return cache(_that);case PaymentFailure() when payment != null:
 return payment(_that);case CancelFailure() when cancel != null:
 return cancel(_that);case UserNotFoundFailure() when userNotFound != null:
 return userNotFound(_that);case PermissionFailure() when permission != null:
-return permission(_that);case _:
+return permission(_that);case PasswordMismatchFailure() when passwordMismatch != null:
+return passwordMismatch(_that);case ReauthenticationFailure() when reauthentication != null:
+return reauthentication(_that);case _:
   return orElse();
 
 }
@@ -113,7 +115,7 @@ return permission(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( ServerFailure value)  server,required TResult Function( CacheFailure value)  cache,required TResult Function( PaymentFailure value)  payment,required TResult Function( CancelFailure value)  cancel,required TResult Function( UserNotFoundFailure value)  userNotFound,required TResult Function( PermissionFailure value)  permission,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( ServerFailure value)  server,required TResult Function( CacheFailure value)  cache,required TResult Function( PaymentFailure value)  payment,required TResult Function( CancelFailure value)  cancel,required TResult Function( UserNotFoundFailure value)  userNotFound,required TResult Function( PermissionFailure value)  permission,required TResult Function( PasswordMismatchFailure value)  passwordMismatch,required TResult Function( ReauthenticationFailure value)  reauthentication,}){
 final _that = this;
 switch (_that) {
 case ServerFailure():
@@ -122,7 +124,9 @@ return cache(_that);case PaymentFailure():
 return payment(_that);case CancelFailure():
 return cancel(_that);case UserNotFoundFailure():
 return userNotFound(_that);case PermissionFailure():
-return permission(_that);}
+return permission(_that);case PasswordMismatchFailure():
+return passwordMismatch(_that);case ReauthenticationFailure():
+return reauthentication(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -136,7 +140,7 @@ return permission(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( ServerFailure value)?  server,TResult? Function( CacheFailure value)?  cache,TResult? Function( PaymentFailure value)?  payment,TResult? Function( CancelFailure value)?  cancel,TResult? Function( UserNotFoundFailure value)?  userNotFound,TResult? Function( PermissionFailure value)?  permission,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( ServerFailure value)?  server,TResult? Function( CacheFailure value)?  cache,TResult? Function( PaymentFailure value)?  payment,TResult? Function( CancelFailure value)?  cancel,TResult? Function( UserNotFoundFailure value)?  userNotFound,TResult? Function( PermissionFailure value)?  permission,TResult? Function( PasswordMismatchFailure value)?  passwordMismatch,TResult? Function( ReauthenticationFailure value)?  reauthentication,}){
 final _that = this;
 switch (_that) {
 case ServerFailure() when server != null:
@@ -145,7 +149,9 @@ return cache(_that);case PaymentFailure() when payment != null:
 return payment(_that);case CancelFailure() when cancel != null:
 return cancel(_that);case UserNotFoundFailure() when userNotFound != null:
 return userNotFound(_that);case PermissionFailure() when permission != null:
-return permission(_that);case _:
+return permission(_that);case PasswordMismatchFailure() when passwordMismatch != null:
+return passwordMismatch(_that);case ReauthenticationFailure() when reauthentication != null:
+return reauthentication(_that);case _:
   return null;
 
 }
@@ -162,7 +168,7 @@ return permission(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String message)?  server,TResult Function( String message)?  cache,TResult Function( String message)?  payment,TResult Function( String message)?  cancel,TResult Function( String message)?  userNotFound,TResult Function( String message)?  permission,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String message)?  server,TResult Function( String message)?  cache,TResult Function( String message)?  payment,TResult Function( String message)?  cancel,TResult Function( String message)?  userNotFound,TResult Function( String message)?  permission,TResult Function( String message)?  passwordMismatch,TResult Function( String message)?  reauthentication,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case ServerFailure() when server != null:
 return server(_that.message);case CacheFailure() when cache != null:
@@ -170,7 +176,9 @@ return cache(_that.message);case PaymentFailure() when payment != null:
 return payment(_that.message);case CancelFailure() when cancel != null:
 return cancel(_that.message);case UserNotFoundFailure() when userNotFound != null:
 return userNotFound(_that.message);case PermissionFailure() when permission != null:
-return permission(_that.message);case _:
+return permission(_that.message);case PasswordMismatchFailure() when passwordMismatch != null:
+return passwordMismatch(_that.message);case ReauthenticationFailure() when reauthentication != null:
+return reauthentication(_that.message);case _:
   return orElse();
 
 }
@@ -188,7 +196,7 @@ return permission(_that.message);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String message)  server,required TResult Function( String message)  cache,required TResult Function( String message)  payment,required TResult Function( String message)  cancel,required TResult Function( String message)  userNotFound,required TResult Function( String message)  permission,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String message)  server,required TResult Function( String message)  cache,required TResult Function( String message)  payment,required TResult Function( String message)  cancel,required TResult Function( String message)  userNotFound,required TResult Function( String message)  permission,required TResult Function( String message)  passwordMismatch,required TResult Function( String message)  reauthentication,}) {final _that = this;
 switch (_that) {
 case ServerFailure():
 return server(_that.message);case CacheFailure():
@@ -196,7 +204,9 @@ return cache(_that.message);case PaymentFailure():
 return payment(_that.message);case CancelFailure():
 return cancel(_that.message);case UserNotFoundFailure():
 return userNotFound(_that.message);case PermissionFailure():
-return permission(_that.message);}
+return permission(_that.message);case PasswordMismatchFailure():
+return passwordMismatch(_that.message);case ReauthenticationFailure():
+return reauthentication(_that.message);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -210,7 +220,7 @@ return permission(_that.message);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String message)?  server,TResult? Function( String message)?  cache,TResult? Function( String message)?  payment,TResult? Function( String message)?  cancel,TResult? Function( String message)?  userNotFound,TResult? Function( String message)?  permission,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String message)?  server,TResult? Function( String message)?  cache,TResult? Function( String message)?  payment,TResult? Function( String message)?  cancel,TResult? Function( String message)?  userNotFound,TResult? Function( String message)?  permission,TResult? Function( String message)?  passwordMismatch,TResult? Function( String message)?  reauthentication,}) {final _that = this;
 switch (_that) {
 case ServerFailure() when server != null:
 return server(_that.message);case CacheFailure() when cache != null:
@@ -218,7 +228,9 @@ return cache(_that.message);case PaymentFailure() when payment != null:
 return payment(_that.message);case CancelFailure() when cancel != null:
 return cancel(_that.message);case UserNotFoundFailure() when userNotFound != null:
 return userNotFound(_that.message);case PermissionFailure() when permission != null:
-return permission(_that.message);case _:
+return permission(_that.message);case PasswordMismatchFailure() when passwordMismatch != null:
+return passwordMismatch(_that.message);case ReauthenticationFailure() when reauthentication != null:
+return reauthentication(_that.message);case _:
   return null;
 
 }
@@ -614,6 +626,138 @@ class _$PermissionFailureCopyWithImpl<$Res>
 /// with the given fields replaced by the non-null parameter values.
 @override @pragma('vm:prefer-inline') $Res call({Object? message = null,}) {
   return _then(PermissionFailure(
+null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class PasswordMismatchFailure extends Failure {
+  const PasswordMismatchFailure([this.message = 'Passwords do not match']): super._();
+  
+
+@override@JsonKey() final  String message;
+
+/// Create a copy of Failure
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$PasswordMismatchFailureCopyWith<PasswordMismatchFailure> get copyWith => _$PasswordMismatchFailureCopyWithImpl<PasswordMismatchFailure>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PasswordMismatchFailure&&(identical(other.message, message) || other.message == message));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,message);
+
+@override
+String toString() {
+  return 'Failure.passwordMismatch(message: $message)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $PasswordMismatchFailureCopyWith<$Res> implements $FailureCopyWith<$Res> {
+  factory $PasswordMismatchFailureCopyWith(PasswordMismatchFailure value, $Res Function(PasswordMismatchFailure) _then) = _$PasswordMismatchFailureCopyWithImpl;
+@override @useResult
+$Res call({
+ String message
+});
+
+
+
+
+}
+/// @nodoc
+class _$PasswordMismatchFailureCopyWithImpl<$Res>
+    implements $PasswordMismatchFailureCopyWith<$Res> {
+  _$PasswordMismatchFailureCopyWithImpl(this._self, this._then);
+
+  final PasswordMismatchFailure _self;
+  final $Res Function(PasswordMismatchFailure) _then;
+
+/// Create a copy of Failure
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? message = null,}) {
+  return _then(PasswordMismatchFailure(
+null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class ReauthenticationFailure extends Failure {
+  const ReauthenticationFailure([this.message = 'Reauthentication failed']): super._();
+  
+
+@override@JsonKey() final  String message;
+
+/// Create a copy of Failure
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$ReauthenticationFailureCopyWith<ReauthenticationFailure> get copyWith => _$ReauthenticationFailureCopyWithImpl<ReauthenticationFailure>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ReauthenticationFailure&&(identical(other.message, message) || other.message == message));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,message);
+
+@override
+String toString() {
+  return 'Failure.reauthentication(message: $message)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $ReauthenticationFailureCopyWith<$Res> implements $FailureCopyWith<$Res> {
+  factory $ReauthenticationFailureCopyWith(ReauthenticationFailure value, $Res Function(ReauthenticationFailure) _then) = _$ReauthenticationFailureCopyWithImpl;
+@override @useResult
+$Res call({
+ String message
+});
+
+
+
+
+}
+/// @nodoc
+class _$ReauthenticationFailureCopyWithImpl<$Res>
+    implements $ReauthenticationFailureCopyWith<$Res> {
+  _$ReauthenticationFailureCopyWithImpl(this._self, this._then);
+
+  final ReauthenticationFailure _self;
+  final $Res Function(ReauthenticationFailure) _then;
+
+/// Create a copy of Failure
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? message = null,}) {
+  return _then(ReauthenticationFailure(
 null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
 as String,
   ));

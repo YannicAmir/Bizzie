@@ -260,8 +260,16 @@ import '../features/onboarding/select_brands/domain/usecases/get_daily_brands_us
     as _i422;
 import '../features/onboarding/select_brands/presentation/bloc/select_brands_bloc.dart'
     as _i709;
+import '../features/profile/domain/usecases/change_password_usecase.dart'
+    as _i797;
+import '../features/profile/domain/usecases/delete_account_usecase.dart' as _i5;
 import '../features/profile/domain/usecases/get_profile_display_data_usecase.dart'
     as _i687;
+import '../features/profile/domain/usecases/update_profile_usecase.dart'
+    as _i586;
+import '../features/profile/presentation/bloc/change_password_bloc.dart'
+    as _i980;
+import '../features/profile/presentation/bloc/edit_profile_bloc.dart' as _i875;
 import '../features/profile/presentation/bloc/profile_bloc.dart' as _i570;
 import '../features/reports/data/datasources/reports_remote_datasource.dart'
     as _i532;
@@ -767,6 +775,12 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i836.WatchUserUseCase>(),
       ),
     );
+    gh.factory<_i797.ChangePasswordUseCase>(
+      () => _i797.ChangePasswordUseCase(gh<_i685.IAuthRepository>()),
+    );
+    gh.factory<_i5.DeleteAccountUseCase>(
+      () => _i5.DeleteAccountUseCase(gh<_i685.IAuthRepository>()),
+    );
     gh.lazySingleton<_i427.GetAuthStream>(
       () => _i427.GetAuthStream(gh<_i685.IAuthRepository>()),
     );
@@ -815,6 +829,12 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i376.ICompanyRepository>(),
         gh<_i348.FinancialStatementsRemoteDataSource>(),
         gh<_i806.FinancialStatementsFirestoreDataSource>(),
+      ),
+    );
+    gh.factory<_i586.UpdateProfileUseCase>(
+      () => _i586.UpdateProfileUseCase(
+        gh<_i615.IUserRepository>(),
+        gh<_i685.IAuthRepository>(),
       ),
     );
     gh.lazySingleton<_i925.UpdateFavoriteSectorUseCase>(
@@ -982,6 +1002,14 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i659.ISubscriptionRepository>(),
       ),
     );
+    gh.factory<_i875.EditProfileBloc>(
+      () => _i875.EditProfileBloc(
+        gh<_i318.GetCurrentUser>(),
+        gh<_i561.GetUserUseCase>(),
+        gh<_i586.UpdateProfileUseCase>(),
+        gh<_i5.DeleteAccountUseCase>(),
+      ),
+    );
     gh.lazySingleton<_i829.ManageSubscriptionUseCase>(
       () =>
           _i829.ManageSubscriptionUseCase(gh<_i659.ISubscriptionRepository>()),
@@ -1008,6 +1036,9 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i607.IMarketRepository>(),
         gh<_i216.ConfigService>(),
       ),
+    );
+    gh.factory<_i980.ChangePasswordBloc>(
+      () => _i980.ChangePasswordBloc(gh<_i797.ChangePasswordUseCase>()),
     );
     gh.lazySingleton<_i158.ISecurityRepository>(
       () => _i503.SecurityRepositoryImpl(

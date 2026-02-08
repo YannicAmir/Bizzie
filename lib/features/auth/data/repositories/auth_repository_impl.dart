@@ -22,6 +22,55 @@ class AuthRepositoryImpl implements IAuthRepository {
   });
 
   @override
+  Future<Either<Failure, void>> updateEmail(String newEmail) async {
+    try {
+      final user = remoteDataSource.currentUser;
+      if (user == null) {
+        return const Left(Failure.userNotFound());
+      }
+      await user.verifyBeforeUpdateEmail(newEmail);
+      _logger.info('Verification email sent to $newEmail');
+      return const Right(null);
+    } on firebase.FirebaseAuthException catch (e) {
+      _logger.warning('UpdateEmail failed: ${e.code}', e);
+      return Left(Failure.server(e.message ?? 'Update email failed'));
+    } catch (e, s) {
+      _logger.severe('UpdateEmail unknown error', e, s);
+      return Left(Failure.server(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> updatePassword({
+    required String oldPassword,
+    required String newPassword,
+  }) async {
+    try {
+      final user = remoteDataSource.currentUser;
+      if (user == null || user.email == null) {
+        return const Left(Failure.userNotFound());
+      }
+      final cred = firebase.EmailAuthProvider.credential(
+        email: user.email!,
+        password: oldPassword,
+      );
+      await user.reauthenticateWithCredential(cred);
+      await user.updatePassword(newPassword);
+      _logger.info('UpdatePassword successful');
+      return const Right(null);
+    } on firebase.FirebaseAuthException catch (e) {
+      _logger.warning('UpdatePassword failed: ${e.code}', e);
+      if (e.code == 'wrong-password' || e.code == 'invalid-credential') {
+        return const Left(Failure.reauthentication());
+      }
+      return Left(Failure.server(e.message ?? 'Update password failed'));
+    } catch (e, s) {
+      _logger.severe('UpdatePassword unknown error', e, s);
+      return Left(Failure.server(e.toString()));
+    }
+  }
+
+  @override
   Future<void> initialize() async {
     try {
       await remoteDataSource.initialize();

@@ -14,6 +14,11 @@ abstract class IAuthRepository {
     required String email,
     required String password,
   });
+  Future<Either<Failure, void>> updateEmail(String newEmail);
+  Future<Either<Failure, void>> updatePassword({
+    required String oldPassword,
+    required String newPassword,
+  });
   Future<Either<Failure, UserModel>> signInWithGoogle();
   Future<Either<Failure, UserModel>> signInWithApple();
   Future<Either<Failure, void>> signOut();
