@@ -256,12 +256,20 @@ GoRouter createRouter(
         pageBuilder: (context, state) => CustomTransitionPage(
           key: state.pageKey,
           child: const SettingsView(),
+          transitionDuration: const Duration(milliseconds: 50),
+          reverseTransitionDuration: const Duration(milliseconds: 50),
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
             return SlideTransition(
-              position: Tween<Offset>(
-                begin: const Offset(0, 1),
-                end: Offset.zero,
-              ).animate(animation),
+              position:
+                  Tween<Offset>(
+                    begin: const Offset(0.0, 1.0),
+                    end: Offset.zero,
+                  ).animate(
+                    CurvedAnimation(
+                      parent: animation,
+                      curve: Curves.easeOutQuart,
+                    ),
+                  ),
               child: child,
             );
           },

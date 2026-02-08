@@ -38,7 +38,7 @@ class BottomModalHeader extends StatelessWidget {
                 ],
               ),
               const Spacer(),
-              InkWell(
+              GestureDetector(
                 onTap: onClose ?? () => Navigator.pop(context),
                 child: SvgPicture.asset(
                   AppAssets.modalCloseIcon,

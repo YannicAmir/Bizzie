@@ -1,3 +1,4 @@
+import 'package:bizzie/app/themes/app_assets.dart';
 import 'package:bizzie/app/themes/app_text_styles.dart';
 import 'package:bizzie/di/injection.dart';
 import 'package:bizzie/features/settings/presentation/bloc/settings_bloc.dart';
@@ -13,6 +14,7 @@ import 'package:bizzie/shared/widgets/modals/app_bottom_modal.dart';
 import 'package:bizzie/core/error/failures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 
 class SettingsView extends StatelessWidget {
@@ -67,9 +69,16 @@ class _SettingsViewContentState extends State<_SettingsViewContent>
         centerTitle: false,
         automaticallyImplyLeading: false,
         actions: [
-          IconButton(
-            icon: const Icon(Icons.close),
-            onPressed: () => context.pop(),
+          GestureDetector(
+            onTap: () => context.pop(),
+            child: Padding(
+              padding: const EdgeInsets.only(right: 16.0),
+              child: SvgPicture.asset(
+                AppAssets.modalCloseIcon,
+                width: 24,
+                height: 24,
+              ),
+            ),
           ),
         ],
       ),
