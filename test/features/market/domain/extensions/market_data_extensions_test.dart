@@ -210,6 +210,22 @@ void main() {
           pe: 4,
         ),
         const SectorPe(date: 'd', sector: 'Healthcare', exchange: 'e', pe: 5),
+        const SectorPe(
+          date: 'd',
+          sector: 'Financial Services',
+          exchange: 'e',
+          pe: 6,
+        ),
+        const SectorPe(
+          date: 'd',
+          sector: 'Basic Materials',
+          exchange: 'e',
+          pe: 7,
+        ),
+        const SectorPe(date: 'd', sector: 'Energy', exchange: 'e', pe: 8),
+        const SectorPe(date: 'd', sector: 'Industrials', exchange: 'e', pe: 9),
+        const SectorPe(date: 'd', sector: 'Utilities', exchange: 'e', pe: 10),
+        const SectorPe(date: 'd', sector: 'Real Estate', exchange: 'e', pe: 11),
       ];
 
       final aliases = {
@@ -218,6 +234,12 @@ void main() {
         'ConsumerStaples': 3.0,
         'telecommunicationservices': 4.0,
         'Healthcare': 5.0,
+        'financials': 6.0,
+        'materials': 7.0,
+        'energy': 8.0,
+        'industrials': 9.0,
+        'utilities': 10.0,
+        'real_estate': 11.0,
       };
 
       aliases.forEach((alias, expectedPe) {

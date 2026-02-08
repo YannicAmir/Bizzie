@@ -58,6 +58,7 @@ void main() {
     uid: tUserId,
     name: 'Test User',
     favoriteSector: 'Technology',
+    favoriteSectorDisplay: 'Technology',
     investingExperience: InvestingExperience.beginner,
     createdAt: DateTime(2023, 1, 1),
     isSubscribed: true,

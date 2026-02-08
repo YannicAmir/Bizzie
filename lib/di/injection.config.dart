@@ -783,6 +783,12 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i244.ResetPasswordUseCase>(
       () => _i244.ResetPasswordUseCase(gh<_i685.IAuthRepository>()),
     );
+    gh.lazySingleton<_i596.ToggleNotificationsUseCase>(
+      () => _i596.ToggleNotificationsUseCase(
+        gh<_i685.IAuthRepository>(),
+        gh<_i615.IUserRepository>(),
+      ),
+    );
     gh.lazySingleton<_i607.IMarketRepository>(
       () => _i27.MarketRepositoryImpl(
         gh<_i454.MarketRemoteDataSource>(),
@@ -986,13 +992,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i481.SecurityRemoteDataSource>(),
         gh<_i595.SecurityFirestoreDataSource>(),
         gh<_i423.RatiosRemoteDataSource>(),
-      ),
-    );
-    gh.lazySingleton<_i596.ToggleNotificationsUseCase>(
-      () => _i596.ToggleNotificationsUseCase(
-        gh<_i430.INotificationService>(),
-        gh<_i685.IAuthRepository>(),
-        gh<_i615.IUserRepository>(),
       ),
     );
     gh.factory<_i555.GetSearchDashboardDataUseCase>(

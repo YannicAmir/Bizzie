@@ -12,6 +12,7 @@ abstract class UserModel with _$UserModel {
     required String uid,
     required String name,
     required String favoriteSector,
+    required String favoriteSectorDisplay,
     @Default([]) List<Company> watchlist,
     required InvestingExperience investingExperience,
     @TimestampConverter() required DateTime createdAt,

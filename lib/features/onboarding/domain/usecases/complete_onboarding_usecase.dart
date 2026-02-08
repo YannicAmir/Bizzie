@@ -44,7 +44,10 @@ class CompleteOnboardingUseCase
     final user = UserModel(
       uid: params.uid,
       name: params.data.firstName,
-      favoriteSector: params.data.selectedSector?.displayName ?? '',
+      favoriteSector: StringUtils.sanitizeTopic(
+        params.data.selectedSector?.displayName ?? '',
+      ),
+      favoriteSectorDisplay: params.data.selectedSector?.displayName ?? '',
       watchlist: params.data.detectedCompanies
           .map((c) => Company(ticker: c.ticker, name: c.name))
           .toList(),

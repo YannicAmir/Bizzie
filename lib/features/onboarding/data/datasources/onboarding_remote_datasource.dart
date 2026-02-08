@@ -1,4 +1,4 @@
-import 'package:bizzie/features/onboarding/data/dtos/user_dto.dart';
+import 'package:bizzie/features/user/data/dtos/user_dto.dart';
 import 'package:bizzie/features/watchlist/data/dtos/watchlist_item_dto.dart';
 import 'package:bizzie/services/config_service.dart';
 import 'package:bizzie/services/firestore_service.dart';
@@ -46,7 +46,6 @@ class OnboardingRemoteDataSource implements IOnboardingRemoteDataSource {
 
       final userPath = 'users/${user.uid}';
       final userData = user.toJson();
-      // Keep FieldValue dependency for now as it's SDK specific, but used via service batch
       userData['createdAt'] = FieldValue.serverTimestamp();
 
       batch.setRaw(path: userPath, data: userData);

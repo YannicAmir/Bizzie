@@ -6,11 +6,41 @@ import 'package:collection/collection.dart';
 final _logger = BizzieLogger('MarketDataExtensions');
 
 final _sectorAliases = {
+  // Information Technology
   'informationtechnology': 'Technology',
-  'consumerdiscretionary': 'Consumer Cyclical',
-  'consumerstaples': 'Consumer Defensive',
+  'information_technology': 'Technology',
+
+  // Financials
+  'financials': 'Financial Services',
+
+  // Communication Services
+  'communicationservices': 'Communication Services',
   'telecommunicationservices': 'Communication Services',
+
+  // Consumer Discretionary
+  'consumerdiscretionary': 'Consumer Cyclical',
+
+  // Consumer Staples
+  'consumerstaples': 'Consumer Defensive',
+
+  // Healthcare
   'healthcare': 'Healthcare',
+
+  // Materials
+  'materials': 'Basic Materials',
+
+  // Industrials
+  'industrials': 'Industrials',
+
+  // Energy
+  'energy': 'Energy',
+
+  // Utilities
+  'utilities': 'Utilities',
+
+  // Real Estate
+  'realestate': 'Real Estate',
+  'real_estate': 'Real Estate',
 };
 
 String _normalize(String input) {

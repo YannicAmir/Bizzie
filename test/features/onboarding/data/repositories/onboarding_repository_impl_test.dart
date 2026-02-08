@@ -1,4 +1,4 @@
-import 'package:bizzie/features/onboarding/data/dtos/user_dto.dart';
+import 'package:bizzie/features/user/data/dtos/user_dto.dart';
 import 'package:bizzie/features/onboarding/data/repositories/onboarding_repository_impl.dart';
 import 'package:bizzie/features/onboarding/domain/models/company.dart';
 
@@ -51,7 +51,8 @@ void main() {
       final tUser = UserModel(
         uid: 'uid_123',
         name: 'John',
-        favoriteSector: 'Technology',
+        favoriteSector: 'technology',
+        favoriteSectorDisplay: 'Technology',
         watchlist: [const Company(ticker: 'AAPL', name: 'Apple')],
         investingExperience: InvestingExperience.beginner,
         createdAt: DateTime.now(),
@@ -77,7 +78,8 @@ void main() {
       final tUser = UserModel(
         uid: 'uid_123',
         name: 'John',
-        favoriteSector: 'Technology',
+        favoriteSector: 'technology',
+        favoriteSectorDisplay: 'Technology',
         watchlist: [],
         investingExperience: InvestingExperience.beginner,
         createdAt: DateTime.now(),

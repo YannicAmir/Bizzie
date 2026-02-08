@@ -1,6 +1,6 @@
 // ignore_for_file: subtype_of_sealed_class
 import 'package:bizzie/features/onboarding/data/datasources/onboarding_remote_datasource.dart';
-import 'package:bizzie/features/onboarding/data/dtos/user_dto.dart';
+import 'package:bizzie/features/user/data/dtos/user_dto.dart';
 import 'package:bizzie/services/config_service.dart';
 import 'package:bizzie/services/firestore_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -75,6 +75,7 @@ void main() {
         isSubscribed: false,
         favoriteSector: '',
         favoriteSectorDisplay: '',
+        createdAt: DateTime(2023),
       );
 
       final mockBizzieBatch = MockBizzieBatch();

@@ -4,7 +4,7 @@ import 'package:dartz/dartz.dart';
 import 'package:bizzie/core/utils/string_utils.dart';
 import 'package:bizzie/features/onboarding/data/datasources/dummy_price_data.dart';
 import 'package:bizzie/features/onboarding/data/datasources/onboarding_remote_datasource.dart';
-import 'package:bizzie/features/onboarding/data/dtos/user_dto.dart';
+import 'package:bizzie/features/user/data/dtos/user_dto.dart';
 import 'package:bizzie/features/onboarding/domain/interfaces/i_onboarding_repository.dart';
 
 import 'package:bizzie/features/onboarding/domain/models/historical_price.dart';
@@ -55,14 +55,9 @@ class OnboardingRepositoryImpl implements IOnboardingRepository {
         return WatchlistItemDto.fromDomain(c);
       }).toList();
 
-      final userDto = UserDto(
-        uid: user.uid,
-        name: user.name,
+      final userDto = UserDto.fromDomain(user).copyWith(
         favoriteSector: StringUtils.sanitizeTopic(user.favoriteSector),
         favoriteSectorDisplay: user.favoriteSector,
-        investingExperience: user.investingExperience.name,
-        isSubscribed: user.isSubscribed,
-        fcmTokens: user.fcmTokens,
       );
 
       await _remoteDataSource.saveUserProfile(userDto, watchlistItems);
