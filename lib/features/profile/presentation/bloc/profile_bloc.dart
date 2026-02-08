@@ -5,6 +5,7 @@ import 'package:bizzie/features/profile/domain/usecases/get_profile_display_data
 import 'package:bizzie/features/profile/presentation/bloc/profile_event.dart';
 import 'package:bizzie/features/profile/presentation/bloc/profile_state.dart';
 import 'package:bizzie/features/user/domain/usecases/watch_user_usecase.dart';
+import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
@@ -22,9 +23,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       add(const ProfileEvent.started());
     });
 
-    on<ProfileEvent>((event, emit) async {
-      await event.map(started: (_) => _onStarted(emit));
-    });
+    on<Started>(_onStarted, transformer: restartable());
   }
 
   @override
@@ -33,7 +32,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     return super.close();
   }
 
-  Future<void> _onStarted(Emitter<ProfileState> emit) async {
+  Future<void> _onStarted(Started event, Emitter<ProfileState> emit) async {
     _logger.info('Fetching profile display data...');
     emit(const ProfileState.loading());
 

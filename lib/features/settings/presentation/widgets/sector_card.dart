@@ -31,7 +31,6 @@ class SectorCard extends StatelessWidget {
         margin: const EdgeInsets.only(bottom: 12),
         padding: const EdgeInsets.all(AppConstants.mainSectionContainerPadding),
         decoration: BoxDecoration(
-          color: Colors.white,
           borderRadius: BorderRadius.circular(16),
           border: isSelected
               ? Border.all(color: theme.colorScheme.primary, width: 1.5)
