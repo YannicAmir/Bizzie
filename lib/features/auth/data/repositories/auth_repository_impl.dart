@@ -8,6 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../domain/interfaces/i_auth_repository.dart';
 import '../../domain/models/user_model.dart';
+import 'package:bizzie/core/utils/retry_util.dart';
 import '../datasources/remote_auth_data_source.dart';
 
 final _logger = BizzieLogger('AuthRepositoryImpl');
@@ -221,7 +222,9 @@ class AuthRepositoryImpl implements IAuthRepository {
     String password,
   ) async {
     try {
-      await remoteDataSource.reauthenticateWithPassword(password);
+      await RetryUtil.retry(
+        task: () => remoteDataSource.reauthenticateWithPassword(password),
+      );
       _logger.info('ReauthenticateWithPassword successful');
       return const Right(null);
     } on UserNotSignedInException {
@@ -241,7 +244,9 @@ class AuthRepositoryImpl implements IAuthRepository {
   @override
   Future<Either<Failure, void>> reauthenticateWithGoogle() async {
     try {
-      await remoteDataSource.reauthenticateWithGoogle();
+      await RetryUtil.retry(
+        task: () => remoteDataSource.reauthenticateWithGoogle(),
+      );
       _logger.info('ReauthenticateWithGoogle successful');
       return const Right(null);
     } on UserNotSignedInException {
@@ -258,7 +263,9 @@ class AuthRepositoryImpl implements IAuthRepository {
   @override
   Future<Either<Failure, void>> reauthenticateWithApple() async {
     try {
-      await remoteDataSource.reauthenticateWithApple();
+      await RetryUtil.retry(
+        task: () => remoteDataSource.reauthenticateWithApple(),
+      );
       _logger.info('ReauthenticateWithApple successful');
       return const Right(null);
     } on firebase.FirebaseAuthException catch (e) {

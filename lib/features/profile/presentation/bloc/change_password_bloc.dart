@@ -1,7 +1,6 @@
 import 'package:bizzie/features/profile/domain/usecases/change_password_usecase.dart';
 import 'package:bizzie/features/profile/presentation/bloc/change_password_event.dart';
 import 'package:bizzie/features/profile/presentation/bloc/change_password_state.dart';
-import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -78,16 +77,6 @@ class ChangePasswordBloc
       form: (currentState) async {
         if (currentState.isSubmitting) return;
 
-        _logger.info('Save requested');
-
-        if (currentState.newPassword != currentState.confirmPassword) {
-          _logger.warning('Password mismatch validation failure');
-          emit(
-            currentState.copyWith(failure: const Failure.passwordMismatch()),
-          );
-          return;
-        }
-
         _logger.info('Updating password...');
         emit(currentState.copyWith(isSubmitting: true, failure: null));
 
@@ -95,6 +84,7 @@ class ChangePasswordBloc
           ChangePasswordParams(
             oldPassword: currentState.oldPassword,
             newPassword: currentState.newPassword,
+            confirmPassword: currentState.confirmPassword,
           ),
         );
 

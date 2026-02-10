@@ -23,7 +23,6 @@ class EditProfileState with _$EditProfileState {
     @Default(false) bool isSubmitting,
     Failure? saveFailure,
     @Default(false) bool isShowReauthModal,
-    String? reauthTitle,
     ReauthAction? pendingReauthAction,
     @Default(false) bool isReauthSubmitting,
     Failure? reauthFailure,

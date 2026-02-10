@@ -14,7 +14,8 @@ class UpdateProfileParams {
 }
 
 @injectable
-class UpdateProfileUseCase implements UseCase<void, UpdateProfileParams> {
+class UpdateProfileUseCase
+    implements UseCase<Either<Failure, void>, UpdateProfileParams> {
   final IUserRepository _userRepository;
   final IAuthRepository _authRepository;
 

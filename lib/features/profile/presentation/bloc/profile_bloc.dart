@@ -19,9 +19,14 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
 
   ProfileBloc(this._getProfileDisplayDataUseCase, this._watchUserUseCase)
     : super(const ProfileState.initial()) {
-    _userSubscription = _watchUserUseCase().listen((_) {
-      add(const ProfileEvent.started());
-    });
+    _userSubscription = _watchUserUseCase().listen(
+      (_) {
+        add(const ProfileEvent.started());
+      },
+      onError: (Object error, StackTrace stackTrace) {
+        _logger.severe('User stream error', error, stackTrace);
+      },
+    );
 
     on<Started>(_onStarted, transformer: restartable());
   }

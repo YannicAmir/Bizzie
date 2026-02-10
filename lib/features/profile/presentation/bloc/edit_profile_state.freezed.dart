@@ -165,7 +165,7 @@ return form(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String? favoriteSector)?  initial,TResult Function( String? favoriteSector)?  loading,TResult Function( String? favoriteSector)?  success,TResult Function( Failure failure,  String? favoriteSector)?  failure,TResult Function( String? favoriteSector)?  deleted,TResult Function( String firstName,  String email,  String originalFirstName,  String originalEmail,  String? favoriteSector,  bool isSubmitting,  Failure? saveFailure,  bool isShowReauthModal,  String? reauthTitle,  ReauthAction? pendingReauthAction,  bool isReauthSubmitting,  Failure? reauthFailure,  int reauthAttempts,  List<String> providers,  bool isReauthPasswordVisible,  bool isDeleting,  bool isShowDeleteConfirmation)?  form,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String? favoriteSector)?  initial,TResult Function( String? favoriteSector)?  loading,TResult Function( String? favoriteSector)?  success,TResult Function( Failure failure,  String? favoriteSector)?  failure,TResult Function( String? favoriteSector)?  deleted,TResult Function( String firstName,  String email,  String originalFirstName,  String originalEmail,  String? favoriteSector,  bool isSubmitting,  Failure? saveFailure,  bool isShowReauthModal,  ReauthAction? pendingReauthAction,  bool isReauthSubmitting,  Failure? reauthFailure,  int reauthAttempts,  List<String> providers,  bool isReauthPasswordVisible,  bool isDeleting,  bool isShowDeleteConfirmation)?  form,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial(_that.favoriteSector);case _Loading() when loading != null:
@@ -173,7 +173,7 @@ return loading(_that.favoriteSector);case _Success() when success != null:
 return success(_that.favoriteSector);case _Failure() when failure != null:
 return failure(_that.failure,_that.favoriteSector);case _Deleted() when deleted != null:
 return deleted(_that.favoriteSector);case _Form() when form != null:
-return form(_that.firstName,_that.email,_that.originalFirstName,_that.originalEmail,_that.favoriteSector,_that.isSubmitting,_that.saveFailure,_that.isShowReauthModal,_that.reauthTitle,_that.pendingReauthAction,_that.isReauthSubmitting,_that.reauthFailure,_that.reauthAttempts,_that.providers,_that.isReauthPasswordVisible,_that.isDeleting,_that.isShowDeleteConfirmation);case _:
+return form(_that.firstName,_that.email,_that.originalFirstName,_that.originalEmail,_that.favoriteSector,_that.isSubmitting,_that.saveFailure,_that.isShowReauthModal,_that.pendingReauthAction,_that.isReauthSubmitting,_that.reauthFailure,_that.reauthAttempts,_that.providers,_that.isReauthPasswordVisible,_that.isDeleting,_that.isShowDeleteConfirmation);case _:
   return orElse();
 
 }
@@ -191,7 +191,7 @@ return form(_that.firstName,_that.email,_that.originalFirstName,_that.originalEm
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String? favoriteSector)  initial,required TResult Function( String? favoriteSector)  loading,required TResult Function( String? favoriteSector)  success,required TResult Function( Failure failure,  String? favoriteSector)  failure,required TResult Function( String? favoriteSector)  deleted,required TResult Function( String firstName,  String email,  String originalFirstName,  String originalEmail,  String? favoriteSector,  bool isSubmitting,  Failure? saveFailure,  bool isShowReauthModal,  String? reauthTitle,  ReauthAction? pendingReauthAction,  bool isReauthSubmitting,  Failure? reauthFailure,  int reauthAttempts,  List<String> providers,  bool isReauthPasswordVisible,  bool isDeleting,  bool isShowDeleteConfirmation)  form,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String? favoriteSector)  initial,required TResult Function( String? favoriteSector)  loading,required TResult Function( String? favoriteSector)  success,required TResult Function( Failure failure,  String? favoriteSector)  failure,required TResult Function( String? favoriteSector)  deleted,required TResult Function( String firstName,  String email,  String originalFirstName,  String originalEmail,  String? favoriteSector,  bool isSubmitting,  Failure? saveFailure,  bool isShowReauthModal,  ReauthAction? pendingReauthAction,  bool isReauthSubmitting,  Failure? reauthFailure,  int reauthAttempts,  List<String> providers,  bool isReauthPasswordVisible,  bool isDeleting,  bool isShowDeleteConfirmation)  form,}) {final _that = this;
 switch (_that) {
 case _Initial():
 return initial(_that.favoriteSector);case _Loading():
@@ -199,7 +199,7 @@ return loading(_that.favoriteSector);case _Success():
 return success(_that.favoriteSector);case _Failure():
 return failure(_that.failure,_that.favoriteSector);case _Deleted():
 return deleted(_that.favoriteSector);case _Form():
-return form(_that.firstName,_that.email,_that.originalFirstName,_that.originalEmail,_that.favoriteSector,_that.isSubmitting,_that.saveFailure,_that.isShowReauthModal,_that.reauthTitle,_that.pendingReauthAction,_that.isReauthSubmitting,_that.reauthFailure,_that.reauthAttempts,_that.providers,_that.isReauthPasswordVisible,_that.isDeleting,_that.isShowDeleteConfirmation);case _:
+return form(_that.firstName,_that.email,_that.originalFirstName,_that.originalEmail,_that.favoriteSector,_that.isSubmitting,_that.saveFailure,_that.isShowReauthModal,_that.pendingReauthAction,_that.isReauthSubmitting,_that.reauthFailure,_that.reauthAttempts,_that.providers,_that.isReauthPasswordVisible,_that.isDeleting,_that.isShowDeleteConfirmation);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -216,7 +216,7 @@ return form(_that.firstName,_that.email,_that.originalFirstName,_that.originalEm
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String? favoriteSector)?  initial,TResult? Function( String? favoriteSector)?  loading,TResult? Function( String? favoriteSector)?  success,TResult? Function( Failure failure,  String? favoriteSector)?  failure,TResult? Function( String? favoriteSector)?  deleted,TResult? Function( String firstName,  String email,  String originalFirstName,  String originalEmail,  String? favoriteSector,  bool isSubmitting,  Failure? saveFailure,  bool isShowReauthModal,  String? reauthTitle,  ReauthAction? pendingReauthAction,  bool isReauthSubmitting,  Failure? reauthFailure,  int reauthAttempts,  List<String> providers,  bool isReauthPasswordVisible,  bool isDeleting,  bool isShowDeleteConfirmation)?  form,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String? favoriteSector)?  initial,TResult? Function( String? favoriteSector)?  loading,TResult? Function( String? favoriteSector)?  success,TResult? Function( Failure failure,  String? favoriteSector)?  failure,TResult? Function( String? favoriteSector)?  deleted,TResult? Function( String firstName,  String email,  String originalFirstName,  String originalEmail,  String? favoriteSector,  bool isSubmitting,  Failure? saveFailure,  bool isShowReauthModal,  ReauthAction? pendingReauthAction,  bool isReauthSubmitting,  Failure? reauthFailure,  int reauthAttempts,  List<String> providers,  bool isReauthPasswordVisible,  bool isDeleting,  bool isShowDeleteConfirmation)?  form,}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial(_that.favoriteSector);case _Loading() when loading != null:
@@ -224,7 +224,7 @@ return loading(_that.favoriteSector);case _Success() when success != null:
 return success(_that.favoriteSector);case _Failure() when failure != null:
 return failure(_that.failure,_that.favoriteSector);case _Deleted() when deleted != null:
 return deleted(_that.favoriteSector);case _Form() when form != null:
-return form(_that.firstName,_that.email,_that.originalFirstName,_that.originalEmail,_that.favoriteSector,_that.isSubmitting,_that.saveFailure,_that.isShowReauthModal,_that.reauthTitle,_that.pendingReauthAction,_that.isReauthSubmitting,_that.reauthFailure,_that.reauthAttempts,_that.providers,_that.isReauthPasswordVisible,_that.isDeleting,_that.isShowDeleteConfirmation);case _:
+return form(_that.firstName,_that.email,_that.originalFirstName,_that.originalEmail,_that.favoriteSector,_that.isSubmitting,_that.saveFailure,_that.isShowReauthModal,_that.pendingReauthAction,_that.isReauthSubmitting,_that.reauthFailure,_that.reauthAttempts,_that.providers,_that.isReauthPasswordVisible,_that.isDeleting,_that.isShowDeleteConfirmation);case _:
   return null;
 
 }
@@ -577,7 +577,7 @@ as String?,
 
 
 class _Form extends EditProfileState {
-  const _Form({required this.firstName, required this.email, required this.originalFirstName, required this.originalEmail, this.favoriteSector, this.isSubmitting = false, this.saveFailure, this.isShowReauthModal = false, this.reauthTitle, this.pendingReauthAction, this.isReauthSubmitting = false, this.reauthFailure, this.reauthAttempts = 0, final  List<String> providers = const [], this.isReauthPasswordVisible = false, this.isDeleting = false, this.isShowDeleteConfirmation = false}): _providers = providers,super._();
+  const _Form({required this.firstName, required this.email, required this.originalFirstName, required this.originalEmail, this.favoriteSector, this.isSubmitting = false, this.saveFailure, this.isShowReauthModal = false, this.pendingReauthAction, this.isReauthSubmitting = false, this.reauthFailure, this.reauthAttempts = 0, final  List<String> providers = const [], this.isReauthPasswordVisible = false, this.isDeleting = false, this.isShowDeleteConfirmation = false}): _providers = providers,super._();
   
 
  final  String firstName;
@@ -588,7 +588,6 @@ class _Form extends EditProfileState {
 @JsonKey() final  bool isSubmitting;
  final  Failure? saveFailure;
 @JsonKey() final  bool isShowReauthModal;
- final  String? reauthTitle;
  final  ReauthAction? pendingReauthAction;
 @JsonKey() final  bool isReauthSubmitting;
  final  Failure? reauthFailure;
@@ -614,16 +613,16 @@ _$FormCopyWith<_Form> get copyWith => __$FormCopyWithImpl<_Form>(this, _$identit
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Form&&(identical(other.firstName, firstName) || other.firstName == firstName)&&(identical(other.email, email) || other.email == email)&&(identical(other.originalFirstName, originalFirstName) || other.originalFirstName == originalFirstName)&&(identical(other.originalEmail, originalEmail) || other.originalEmail == originalEmail)&&(identical(other.favoriteSector, favoriteSector) || other.favoriteSector == favoriteSector)&&(identical(other.isSubmitting, isSubmitting) || other.isSubmitting == isSubmitting)&&(identical(other.saveFailure, saveFailure) || other.saveFailure == saveFailure)&&(identical(other.isShowReauthModal, isShowReauthModal) || other.isShowReauthModal == isShowReauthModal)&&(identical(other.reauthTitle, reauthTitle) || other.reauthTitle == reauthTitle)&&(identical(other.pendingReauthAction, pendingReauthAction) || other.pendingReauthAction == pendingReauthAction)&&(identical(other.isReauthSubmitting, isReauthSubmitting) || other.isReauthSubmitting == isReauthSubmitting)&&(identical(other.reauthFailure, reauthFailure) || other.reauthFailure == reauthFailure)&&(identical(other.reauthAttempts, reauthAttempts) || other.reauthAttempts == reauthAttempts)&&const DeepCollectionEquality().equals(other._providers, _providers)&&(identical(other.isReauthPasswordVisible, isReauthPasswordVisible) || other.isReauthPasswordVisible == isReauthPasswordVisible)&&(identical(other.isDeleting, isDeleting) || other.isDeleting == isDeleting)&&(identical(other.isShowDeleteConfirmation, isShowDeleteConfirmation) || other.isShowDeleteConfirmation == isShowDeleteConfirmation));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Form&&(identical(other.firstName, firstName) || other.firstName == firstName)&&(identical(other.email, email) || other.email == email)&&(identical(other.originalFirstName, originalFirstName) || other.originalFirstName == originalFirstName)&&(identical(other.originalEmail, originalEmail) || other.originalEmail == originalEmail)&&(identical(other.favoriteSector, favoriteSector) || other.favoriteSector == favoriteSector)&&(identical(other.isSubmitting, isSubmitting) || other.isSubmitting == isSubmitting)&&(identical(other.saveFailure, saveFailure) || other.saveFailure == saveFailure)&&(identical(other.isShowReauthModal, isShowReauthModal) || other.isShowReauthModal == isShowReauthModal)&&(identical(other.pendingReauthAction, pendingReauthAction) || other.pendingReauthAction == pendingReauthAction)&&(identical(other.isReauthSubmitting, isReauthSubmitting) || other.isReauthSubmitting == isReauthSubmitting)&&(identical(other.reauthFailure, reauthFailure) || other.reauthFailure == reauthFailure)&&(identical(other.reauthAttempts, reauthAttempts) || other.reauthAttempts == reauthAttempts)&&const DeepCollectionEquality().equals(other._providers, _providers)&&(identical(other.isReauthPasswordVisible, isReauthPasswordVisible) || other.isReauthPasswordVisible == isReauthPasswordVisible)&&(identical(other.isDeleting, isDeleting) || other.isDeleting == isDeleting)&&(identical(other.isShowDeleteConfirmation, isShowDeleteConfirmation) || other.isShowDeleteConfirmation == isShowDeleteConfirmation));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,firstName,email,originalFirstName,originalEmail,favoriteSector,isSubmitting,saveFailure,isShowReauthModal,reauthTitle,pendingReauthAction,isReauthSubmitting,reauthFailure,reauthAttempts,const DeepCollectionEquality().hash(_providers),isReauthPasswordVisible,isDeleting,isShowDeleteConfirmation);
+int get hashCode => Object.hash(runtimeType,firstName,email,originalFirstName,originalEmail,favoriteSector,isSubmitting,saveFailure,isShowReauthModal,pendingReauthAction,isReauthSubmitting,reauthFailure,reauthAttempts,const DeepCollectionEquality().hash(_providers),isReauthPasswordVisible,isDeleting,isShowDeleteConfirmation);
 
 @override
 String toString() {
-  return 'EditProfileState.form(firstName: $firstName, email: $email, originalFirstName: $originalFirstName, originalEmail: $originalEmail, favoriteSector: $favoriteSector, isSubmitting: $isSubmitting, saveFailure: $saveFailure, isShowReauthModal: $isShowReauthModal, reauthTitle: $reauthTitle, pendingReauthAction: $pendingReauthAction, isReauthSubmitting: $isReauthSubmitting, reauthFailure: $reauthFailure, reauthAttempts: $reauthAttempts, providers: $providers, isReauthPasswordVisible: $isReauthPasswordVisible, isDeleting: $isDeleting, isShowDeleteConfirmation: $isShowDeleteConfirmation)';
+  return 'EditProfileState.form(firstName: $firstName, email: $email, originalFirstName: $originalFirstName, originalEmail: $originalEmail, favoriteSector: $favoriteSector, isSubmitting: $isSubmitting, saveFailure: $saveFailure, isShowReauthModal: $isShowReauthModal, pendingReauthAction: $pendingReauthAction, isReauthSubmitting: $isReauthSubmitting, reauthFailure: $reauthFailure, reauthAttempts: $reauthAttempts, providers: $providers, isReauthPasswordVisible: $isReauthPasswordVisible, isDeleting: $isDeleting, isShowDeleteConfirmation: $isShowDeleteConfirmation)';
 }
 
 
@@ -634,7 +633,7 @@ abstract mixin class _$FormCopyWith<$Res> implements $EditProfileStateCopyWith<$
   factory _$FormCopyWith(_Form value, $Res Function(_Form) _then) = __$FormCopyWithImpl;
 @override @useResult
 $Res call({
- String firstName, String email, String originalFirstName, String originalEmail, String? favoriteSector, bool isSubmitting, Failure? saveFailure, bool isShowReauthModal, String? reauthTitle, ReauthAction? pendingReauthAction, bool isReauthSubmitting, Failure? reauthFailure, int reauthAttempts, List<String> providers, bool isReauthPasswordVisible, bool isDeleting, bool isShowDeleteConfirmation
+ String firstName, String email, String originalFirstName, String originalEmail, String? favoriteSector, bool isSubmitting, Failure? saveFailure, bool isShowReauthModal, ReauthAction? pendingReauthAction, bool isReauthSubmitting, Failure? reauthFailure, int reauthAttempts, List<String> providers, bool isReauthPasswordVisible, bool isDeleting, bool isShowDeleteConfirmation
 });
 
 
@@ -651,7 +650,7 @@ class __$FormCopyWithImpl<$Res>
 
 /// Create a copy of EditProfileState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? firstName = null,Object? email = null,Object? originalFirstName = null,Object? originalEmail = null,Object? favoriteSector = freezed,Object? isSubmitting = null,Object? saveFailure = freezed,Object? isShowReauthModal = null,Object? reauthTitle = freezed,Object? pendingReauthAction = freezed,Object? isReauthSubmitting = null,Object? reauthFailure = freezed,Object? reauthAttempts = null,Object? providers = null,Object? isReauthPasswordVisible = null,Object? isDeleting = null,Object? isShowDeleteConfirmation = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? firstName = null,Object? email = null,Object? originalFirstName = null,Object? originalEmail = null,Object? favoriteSector = freezed,Object? isSubmitting = null,Object? saveFailure = freezed,Object? isShowReauthModal = null,Object? pendingReauthAction = freezed,Object? isReauthSubmitting = null,Object? reauthFailure = freezed,Object? reauthAttempts = null,Object? providers = null,Object? isReauthPasswordVisible = null,Object? isDeleting = null,Object? isShowDeleteConfirmation = null,}) {
   return _then(_Form(
 firstName: null == firstName ? _self.firstName : firstName // ignore: cast_nullable_to_non_nullable
 as String,email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
@@ -661,8 +660,7 @@ as String,favoriteSector: freezed == favoriteSector ? _self.favoriteSector : fav
 as String?,isSubmitting: null == isSubmitting ? _self.isSubmitting : isSubmitting // ignore: cast_nullable_to_non_nullable
 as bool,saveFailure: freezed == saveFailure ? _self.saveFailure : saveFailure // ignore: cast_nullable_to_non_nullable
 as Failure?,isShowReauthModal: null == isShowReauthModal ? _self.isShowReauthModal : isShowReauthModal // ignore: cast_nullable_to_non_nullable
-as bool,reauthTitle: freezed == reauthTitle ? _self.reauthTitle : reauthTitle // ignore: cast_nullable_to_non_nullable
-as String?,pendingReauthAction: freezed == pendingReauthAction ? _self.pendingReauthAction : pendingReauthAction // ignore: cast_nullable_to_non_nullable
+as bool,pendingReauthAction: freezed == pendingReauthAction ? _self.pendingReauthAction : pendingReauthAction // ignore: cast_nullable_to_non_nullable
 as ReauthAction?,isReauthSubmitting: null == isReauthSubmitting ? _self.isReauthSubmitting : isReauthSubmitting // ignore: cast_nullable_to_non_nullable
 as bool,reauthFailure: freezed == reauthFailure ? _self.reauthFailure : reauthFailure // ignore: cast_nullable_to_non_nullable
 as Failure?,reauthAttempts: null == reauthAttempts ? _self.reauthAttempts : reauthAttempts // ignore: cast_nullable_to_non_nullable

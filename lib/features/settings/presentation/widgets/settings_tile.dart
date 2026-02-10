@@ -23,6 +23,7 @@ class SettingsTile extends StatelessWidget {
 
     return GestureDetector(
       onTap: onTap,
+      behavior: HitTestBehavior.opaque,
       child: Container(
         height: 64,
         padding: const EdgeInsets.symmetric(horizontal: 16),

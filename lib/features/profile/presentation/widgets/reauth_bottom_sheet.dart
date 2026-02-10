@@ -4,6 +4,7 @@ import 'package:bizzie/features/profile/presentation/bloc/edit_profile_bloc.dart
 import 'package:bizzie/features/profile/presentation/bloc/edit_profile_event.dart';
 import 'package:bizzie/features/profile/presentation/bloc/edit_profile_state.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
+import 'package:bizzie/features/profile/domain/enums/reauth_action.dart';
 import 'package:bizzie/shared/widgets/buttons/bizzie_primary_button.dart';
 import 'package:bizzie/shared/widgets/buttons/social_login_button.dart';
 import 'package:bizzie/shared/widgets/inputs/auth_text_field.dart';
@@ -50,7 +51,10 @@ class _ReAuthBottomSheetState extends State<ReAuthBottomSheet> {
             form: (formState) {
               return AppBottomModal(
                 useDraggable: false,
-                title: formState.reauthTitle ?? 'Verify Identity',
+                title:
+                    formState.pendingReauthAction == ReauthAction.deleteAccount
+                    ? 'Confirm Account Deletion'
+                    : 'Verify Identity',
                 subtitle: const Text(
                   'For your security, please verify your identity to continue.',
                 ),

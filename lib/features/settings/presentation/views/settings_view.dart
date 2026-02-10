@@ -206,7 +206,6 @@ class _SettingsViewContentState extends State<_SettingsViewContent>
                       SettingsTile(
                         title: 'Send Feedback',
                         onTap: () {
-                          // Show Feedback Dialog
                           context.read<SettingsBloc>().add(
                             const SettingsEvent.submitFeedback('User Feedback'),
                           );

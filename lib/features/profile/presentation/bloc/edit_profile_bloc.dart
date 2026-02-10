@@ -9,10 +9,8 @@ import 'package:bizzie/core/error/failures.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
-import 'package:bizzie/features/auth/domain/usecases/reauthenticate_with_password_usecase.dart';
-import 'package:bizzie/features/auth/domain/usecases/reauthenticate_with_google_usecase.dart';
-import 'package:bizzie/features/auth/domain/usecases/reauthenticate_with_apple_usecase.dart';
-import 'package:bizzie/core/utils/retry_util.dart';
+import 'package:bizzie/features/auth/domain/usecases/reauthenticate_usecase.dart';
+import 'package:bizzie/features/auth/domain/enums/auth_provider.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:bizzie/features/profile/domain/enums/reauth_action.dart';
 
@@ -20,22 +18,20 @@ final _logger = BizzieLogger('EditProfileBloc');
 
 @injectable
 class EditProfileBloc extends Bloc<EditProfileEvent, EditProfileState> {
+  static const int maxReauthAttempts = 3;
+
   final GetCurrentUser _getCurrentUser;
   final GetUserUseCase _getUserUseCase;
   final UpdateProfileUseCase _updateProfileUseCase;
   final DeleteAccountUseCase _deleteAccountUseCase;
-  final ReauthenticateWithPasswordUseCase _reauthenticateWithPasswordUseCase;
-  final ReauthenticateWithGoogleUseCase _reauthenticateWithGoogleUseCase;
-  final ReauthenticateWithAppleUseCase _reauthenticateWithAppleUseCase;
+  final ReauthenticateUseCase _reauthenticateUseCase;
 
   EditProfileBloc(
     this._getCurrentUser,
     this._getUserUseCase,
     this._updateProfileUseCase,
     this._deleteAccountUseCase,
-    this._reauthenticateWithPasswordUseCase,
-    this._reauthenticateWithGoogleUseCase,
-    this._reauthenticateWithAppleUseCase,
+    this._reauthenticateUseCase,
   ) : super(
         EditProfileState.initial(favoriteSector: _getUserUseCase.cachedSector),
       ) {
@@ -55,11 +51,13 @@ class EditProfileBloc extends Bloc<EditProfileEvent, EditProfileState> {
   }
 
   Future<void> _onStarted(Started event, Emitter<EditProfileState> emit) async {
+    _logger.info('EditProfile started');
     final cachedSector = _getUserUseCase.cachedSector;
     emit(EditProfileState.loading(favoriteSector: cachedSector));
 
     final currentUser = _getCurrentUser();
     if (currentUser == null) {
+      _logger.severe('User not found during EditProfile initialization');
       emit(
         EditProfileState.failure(
           const Failure.userNotFound(),
@@ -73,9 +71,11 @@ class EditProfileBloc extends Bloc<EditProfileEvent, EditProfileState> {
 
     userResult.fold(
       (failure) {
+        _logger.severe('Failed to load user profile: $failure');
         emit(EditProfileState.failure(failure, favoriteSector: cachedSector));
       },
       (userModel) {
+        _logger.info('User profile loaded successfully');
         emit(
           EditProfileState.form(
             firstName: userModel.name,
@@ -122,6 +122,7 @@ class EditProfileBloc extends Bloc<EditProfileEvent, EditProfileState> {
       form: (currentState) async {
         if (currentState.isSubmitting) return;
 
+        _logger.info('Profile update initiated');
         emit(currentState.copyWith(isSubmitting: true, saveFailure: null));
 
         final result = await _updateProfileUseCase(
@@ -136,6 +137,7 @@ class EditProfileBloc extends Bloc<EditProfileEvent, EditProfileState> {
           (failure) {
             failure.maybeMap(
               reauthentication: (_) {
+                _logger.info('Sensitive update requires re-authentication');
                 emit(
                   currentState.copyWith(
                     isSubmitting: false,
@@ -146,6 +148,7 @@ class EditProfileBloc extends Bloc<EditProfileEvent, EditProfileState> {
                 );
               },
               orElse: () {
+                _logger.severe('Profile update failed: $failure');
                 emit(
                   currentState.copyWith(
                     isSubmitting: false,
@@ -156,6 +159,7 @@ class EditProfileBloc extends Bloc<EditProfileEvent, EditProfileState> {
             );
           },
           (_) {
+            _logger.info('Profile updated successfully');
             emit(
               EditProfileState.success(
                 favoriteSector: currentState.favoriteSector,
@@ -179,7 +183,6 @@ class EditProfileBloc extends Bloc<EditProfileEvent, EditProfileState> {
           currentState.copyWith(
             isShowReauthModal: true,
             pendingReauthAction: ReauthAction.deleteAccount,
-            reauthTitle: 'Confirm Account Deletion',
           ),
         );
       },
@@ -194,6 +197,7 @@ class EditProfileBloc extends Bloc<EditProfileEvent, EditProfileState> {
       form: (currentState) async {
         if (currentState.isDeleting) return;
 
+        _logger.info('Account deletion initiated');
         emit(
           currentState.copyWith(
             isDeleting: true,
@@ -204,14 +208,20 @@ class EditProfileBloc extends Bloc<EditProfileEvent, EditProfileState> {
         final result = await _deleteAccountUseCase(NoParams());
 
         result.fold(
-          (failure) => emit(
-            currentState.copyWith(isDeleting: false, saveFailure: failure),
-          ),
-          (_) => emit(
-            EditProfileState.deleted(
-              favoriteSector: currentState.favoriteSector,
-            ),
-          ),
+          (failure) {
+            _logger.severe('Account deletion failed: $failure');
+            emit(
+              currentState.copyWith(isDeleting: false, saveFailure: failure),
+            );
+          },
+          (_) {
+            _logger.info('Account deleted successfully');
+            emit(
+              EditProfileState.deleted(
+                favoriteSector: currentState.favoriteSector,
+              ),
+            );
+          },
         );
       },
     );
@@ -232,47 +242,10 @@ class EditProfileBloc extends Bloc<EditProfileEvent, EditProfileState> {
     ReauthenticateWithPassword event,
     Emitter<EditProfileState> emit,
   ) async {
-    _logger.info('Reauth with Password initiated');
-    await state.mapOrNull(
-      form: (currentState) async {
-        emit(
-          currentState.copyWith(isReauthSubmitting: true, reauthFailure: null),
-        );
-
-        try {
-          final result = await RetryUtil.retry(
-            task: () => _reauthenticateWithPasswordUseCase(
-              ReauthenticateWithPasswordParams(password: event.password),
-            ),
-          );
-
-          await result.fold((failure) async {
-            emit(
-              currentState.copyWith(
-                isReauthSubmitting: false,
-                reauthFailure: const Failure.reauthentication(
-                  'This password you provided is incorrect',
-                ),
-                reauthAttempts: currentState.reauthAttempts + 1,
-              ),
-            );
-            _checkRetryLimit(
-              emit,
-              currentState,
-              currentState.reauthAttempts + 1,
-            );
-          }, (_) async => await _onReauthSuccess(emit, currentState));
-        } catch (e) {
-          emit(
-            currentState.copyWith(
-              isReauthSubmitting: false,
-              reauthFailure: const Failure.server(
-                'Network error. Please try again.',
-              ),
-            ),
-          );
-        }
-      },
+    await _handleReauthentication(
+      emit,
+      AuthProvider.password,
+      password: event.password,
     );
   }
 
@@ -295,83 +268,14 @@ class EditProfileBloc extends Bloc<EditProfileEvent, EditProfileState> {
     ReauthenticateWithGoogle event,
     Emitter<EditProfileState> emit,
   ) async {
-    await state.mapOrNull(
-      form: (currentState) async {
-        emit(
-          currentState.copyWith(isReauthSubmitting: true, reauthFailure: null),
-        );
-        try {
-          final result = await RetryUtil.retry(
-            task: () => _reauthenticateWithGoogleUseCase(NoParams()),
-          );
-          await result.fold((failure) async {
-            emit(
-              currentState.copyWith(
-                isReauthSubmitting: false,
-                reauthFailure: failure,
-                reauthAttempts: currentState.reauthAttempts + 1,
-              ),
-            );
-            _checkRetryLimit(
-              emit,
-              currentState,
-              currentState.reauthAttempts + 1,
-            );
-          }, (_) async => await _onReauthSuccess(emit, currentState));
-        } catch (e) {
-          emit(
-            currentState.copyWith(
-              isReauthSubmitting: false,
-              reauthFailure: const Failure.server(
-                'Network error. Please try again.',
-              ),
-            ),
-          );
-        }
-      },
-    );
+    await _handleReauthentication(emit, AuthProvider.google);
   }
 
   Future<void> _onReauthenticateWithApple(
     ReauthenticateWithApple event,
     Emitter<EditProfileState> emit,
   ) async {
-    _logger.info('Reauth with Apple initiated');
-    await state.mapOrNull(
-      form: (currentState) async {
-        emit(
-          currentState.copyWith(isReauthSubmitting: true, reauthFailure: null),
-        );
-        try {
-          final result = await RetryUtil.retry(
-            task: () => _reauthenticateWithAppleUseCase(NoParams()),
-          );
-          await result.fold((failure) async {
-            emit(
-              currentState.copyWith(
-                isReauthSubmitting: false,
-                reauthFailure: failure,
-                reauthAttempts: currentState.reauthAttempts + 1,
-              ),
-            );
-            _checkRetryLimit(
-              emit,
-              currentState,
-              currentState.reauthAttempts + 1,
-            );
-          }, (_) async => await _onReauthSuccess(emit, currentState));
-        } catch (e) {
-          emit(
-            currentState.copyWith(
-              isReauthSubmitting: false,
-              reauthFailure: const Failure.server(
-                'Network error. Please try again.',
-              ),
-            ),
-          );
-        }
-      },
-    );
+    await _handleReauthentication(emit, AuthProvider.apple);
   }
 
   Future<void> _onReauthModalDismissed(
@@ -394,35 +298,60 @@ class EditProfileBloc extends Bloc<EditProfileEvent, EditProfileState> {
     );
   }
 
-  void _checkRetryLimit(
+  Future<void> _handleReauthentication(
     Emitter<EditProfileState> emit,
-    EditProfileState formState,
-    int attempts,
-  ) {
-    if (attempts >= 3) {
-      formState.mapOrNull(
-        form: (currentState) {
+    AuthProvider provider, {
+    String? password,
+  }) async {
+    _logger.info('Reauth with ${provider.name} initiated');
+    await state.mapOrNull(
+      form: (currentState) async {
+        emit(
+          currentState.copyWith(isReauthSubmitting: true, reauthFailure: null),
+        );
+
+        final result = await _reauthenticateUseCase(
+          ReauthenticateParams(provider: provider, password: password),
+        );
+
+        await result.fold((failure) async {
+          _logger.severe('${provider.name} re-authentication failed: $failure');
+
+          final newAttempts = currentState.reauthAttempts + 1;
           emit(
             currentState.copyWith(
-              isShowReauthModal: false,
-              reauthFailure: null,
-              pendingReauthAction: null,
+              isReauthSubmitting: false,
+              reauthFailure: failure,
+              reauthAttempts: newAttempts,
             ),
           );
-        },
-      );
-    }
+
+          if (newAttempts >= maxReauthAttempts) {
+            _logger.warning(
+              'Max re-auth attempts reached ($maxReauthAttempts)',
+            );
+
+            emit(
+              currentState.copyWith(
+                isReauthSubmitting: false,
+                reauthFailure: null,
+                reauthAttempts: newAttempts,
+                isShowReauthModal: false,
+                pendingReauthAction: null,
+              ),
+            );
+          }
+        }, (_) async => await _onReauthSuccess(emit));
+      },
+    );
   }
 
-  Future<void> _onReauthSuccess(
-    Emitter<EditProfileState> emit,
-    dynamic _,
-  ) async {
+  Future<void> _onReauthSuccess(Emitter<EditProfileState> emit) async {
     _logger.info('Reauth Success Handler triggered');
     await state.mapOrNull(
       form: (currentState) async {
         _logger.info(
-          'Current state pending action: ${currentState.pendingReauthAction}',
+          'Resuming pending action: ${currentState.pendingReauthAction}',
         );
         var newState = currentState.copyWith(
           isShowReauthModal: false,
@@ -431,11 +360,18 @@ class EditProfileBloc extends Bloc<EditProfileEvent, EditProfileState> {
           isReauthSubmitting: false,
         );
 
-        if (currentState.pendingReauthAction == ReauthAction.save) {
-          emit(newState);
-          add(const EditProfileEvent.saveRequested());
-        } else {
-          emit(newState);
+        emit(newState);
+
+        switch (currentState.pendingReauthAction) {
+          case ReauthAction.save:
+            await _onSaveRequested(const SaveRequested(), emit);
+          case ReauthAction.deleteAccount:
+            await _onShowDeleteConfirmation(
+              const ShowDeleteConfirmation(),
+              emit,
+            );
+          case null:
+            break;
         }
       },
     );

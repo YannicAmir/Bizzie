@@ -5,7 +5,7 @@ import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
 
 @injectable
-class DeleteAccountUseCase implements UseCase<void, NoParams> {
+class DeleteAccountUseCase implements UseCase<Either<Failure, void>, NoParams> {
   final IAuthRepository _authRepository;
 
   DeleteAccountUseCase(this._authRepository);
