@@ -13,6 +13,8 @@ import 'package:bizzie/shared/widgets/buttons/bizzie_primary_button.dart';
 import 'package:bizzie/shared/widgets/buttons/bizzie_secondary_button.dart';
 import 'package:bizzie/shared/widgets/modals/app_bottom_modal.dart';
 import 'package:bizzie/core/error/failures.dart';
+import 'package:bizzie/features/subscription/domain/enums/membership_scenario.dart';
+import 'package:bizzie/features/subscription/domain/extensions/subscription_status_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -155,7 +157,9 @@ class _SettingsViewContentState extends State<_SettingsViewContent>
                       const Divider(height: 1, indent: 52),
                       SettingsTile(
                         title: 'Membership',
-                        trailing: !data.subscriptionStatus.isSubscribed
+                        trailing:
+                            data.subscriptionStatus.scenario ==
+                                MembershipScenario.notSubscribed
                             ? Container(
                                 decoration: BoxDecoration(
                                   color: theme.colorScheme.primary,
@@ -177,7 +181,15 @@ class _SettingsViewContentState extends State<_SettingsViewContent>
                               )
                             : null,
                         onTap: () {
-                          // Navigate to Manage Subscription
+                          if (data.subscriptionStatus.scenario ==
+                              MembershipScenario.notSubscribed) {
+                            context.pushNamed(AppRoutes.discountedPaywall);
+                          } else {
+                            context.pushNamed(
+                              AppRoutes.subscriptionDetails,
+                              extra: data.subscriptionStatus,
+                            );
+                          }
                         },
                       ),
                     ],

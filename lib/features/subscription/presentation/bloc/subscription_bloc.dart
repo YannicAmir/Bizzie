@@ -48,6 +48,7 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
     on<SubscriptionRestoreRequested>(_onRestoreRequested);
     on<SubscriptionUserIdentityChanged>(_onUserIdentityChanged);
     on<SubscriptionOfferingsRequested>(_onOfferingsRequested);
+    on<SubscriptionRefreshRequested>(_onRefreshRequested);
     on<SubscriptionPlanToggled>(_onPlanToggled);
     on<SubscriptionPurchaseUICompleted>(_onPurchaseUICompleted);
     on<SubscriptionAppResumed>(_onAppResumed);
@@ -90,10 +91,19 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
     SubscriptionAppResumed event,
     Emitter<SubscriptionState> emit,
   ) async {
-    _logger.info('App resumed, refreshing subscription status');
+    _logger.info('App resumed, refreshing subscription status and offerings');
 
-    _refreshSubscriptionStatus(NoParams());
+    await _refreshSubscriptionStatus(NoParams());
+
     add(const SubscriptionEvent.offeringsRequested());
+  }
+
+  Future<void> _onRefreshRequested(
+    SubscriptionRefreshRequested event,
+    Emitter<SubscriptionState> emit,
+  ) async {
+    _logger.info('Manual subscription status refresh requested');
+    await _refreshSubscriptionStatus(NoParams());
   }
 
   Future<void> _onInitialized(
@@ -117,7 +127,19 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
     await _statusSubscription?.cancel();
     _statusSubscription = null;
 
-    await _syncIdentity(event.uid);
+    final result = await _syncIdentity(event.uid);
+
+    result.fold(
+      (failure) {
+        _logger.severe(
+          'Failed to sync identity with subscription service',
+          failure.message,
+        );
+      },
+      (_) {
+        _logger.info('Identity sync successful for: ${event.uid}');
+      },
+    );
 
     if (event.uid != null) {
       _logger.info('Watching subscription status for user: ${event.uid}');
@@ -129,8 +151,13 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
           _logger.severe('Subscription status stream error', error, stack);
         },
       );
+
+      _refreshSubscriptionStatus(NoParams());
+
       add(const SubscriptionEvent.offeringsRequested());
-    } else {
+    }
+
+    if (event.uid == null) {
       _logger.info('User logged out, resetting subscription state');
       emit(SubscriptionState.initialState());
     }
@@ -289,6 +316,7 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
       },
       (offering) {
         _logger.info('Offerings fetched successfully');
+
         emit(
           SubscriptionState.loaded(
             status: state.status,

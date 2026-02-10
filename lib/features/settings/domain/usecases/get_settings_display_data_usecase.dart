@@ -83,25 +83,27 @@ class GetSettingsDisplayDataUseCase
         _logger.severe('Failed to fetch user', f);
         return Left(f);
       },
-      (user) => subRes.fold(
-        (f) {
-          _logger.severe('Failed to fetch subscription status', f);
-          return Left(f);
-        },
-        (subStatus) {
-          _logger.info('Successfully aggregated settings data');
-          return Right(
-            SettingsDisplayData(
-              user: user,
-              subscriptionStatus: subStatus,
-              isAppNotificationsEnabled: user.notificationsEnabled,
-              isSystemNotificationsEnabled: isSystemAuthorized,
-              appVersion: appVersion,
-              favoriteSector: user.favoriteSector,
-            ),
+      (user) {
+        final safeSubStatus = subRes.fold((f) {
+          _logger.warning(
+            'Failed to fetch subscription status (using default)',
+            f,
           );
-        },
-      ),
+          return SubscriptionStatus.initial();
+        }, (s) => s);
+
+        _logger.info('Successfully aggregated settings data');
+        return Right(
+          SettingsDisplayData(
+            user: user,
+            subscriptionStatus: safeSubStatus,
+            isAppNotificationsEnabled: user.notificationsEnabled,
+            isSystemNotificationsEnabled: isSystemAuthorized,
+            appVersion: appVersion,
+            favoriteSector: user.favoriteSector,
+          ),
+        );
+      },
     );
   }
 }

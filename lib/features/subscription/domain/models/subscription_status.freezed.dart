@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$SubscriptionStatus {
 
- bool get isSubscribed; Set<String> get activeEntitlements; Set<String> get activeProductIds; DateTime? get expirationDate;
+ bool get isSubscribed; Set<String> get activeEntitlements; Set<String> get activeProductIds; DateTime? get expirationDate; String? get managementURL; String? get activePlanId; SubscriptionPeriodType get periodType;
 /// Create a copy of SubscriptionStatus
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $SubscriptionStatusCopyWith<SubscriptionStatus> get copyWith => _$SubscriptionSt
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SubscriptionStatus&&(identical(other.isSubscribed, isSubscribed) || other.isSubscribed == isSubscribed)&&const DeepCollectionEquality().equals(other.activeEntitlements, activeEntitlements)&&const DeepCollectionEquality().equals(other.activeProductIds, activeProductIds)&&(identical(other.expirationDate, expirationDate) || other.expirationDate == expirationDate));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SubscriptionStatus&&(identical(other.isSubscribed, isSubscribed) || other.isSubscribed == isSubscribed)&&const DeepCollectionEquality().equals(other.activeEntitlements, activeEntitlements)&&const DeepCollectionEquality().equals(other.activeProductIds, activeProductIds)&&(identical(other.expirationDate, expirationDate) || other.expirationDate == expirationDate)&&(identical(other.managementURL, managementURL) || other.managementURL == managementURL)&&(identical(other.activePlanId, activePlanId) || other.activePlanId == activePlanId)&&(identical(other.periodType, periodType) || other.periodType == periodType));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,isSubscribed,const DeepCollectionEquality().hash(activeEntitlements),const DeepCollectionEquality().hash(activeProductIds),expirationDate);
+int get hashCode => Object.hash(runtimeType,isSubscribed,const DeepCollectionEquality().hash(activeEntitlements),const DeepCollectionEquality().hash(activeProductIds),expirationDate,managementURL,activePlanId,periodType);
 
 @override
 String toString() {
-  return 'SubscriptionStatus(isSubscribed: $isSubscribed, activeEntitlements: $activeEntitlements, activeProductIds: $activeProductIds, expirationDate: $expirationDate)';
+  return 'SubscriptionStatus(isSubscribed: $isSubscribed, activeEntitlements: $activeEntitlements, activeProductIds: $activeProductIds, expirationDate: $expirationDate, managementURL: $managementURL, activePlanId: $activePlanId, periodType: $periodType)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $SubscriptionStatusCopyWith<$Res>  {
   factory $SubscriptionStatusCopyWith(SubscriptionStatus value, $Res Function(SubscriptionStatus) _then) = _$SubscriptionStatusCopyWithImpl;
 @useResult
 $Res call({
- bool isSubscribed, Set<String> activeEntitlements, Set<String> activeProductIds, DateTime? expirationDate
+ bool isSubscribed, Set<String> activeEntitlements, Set<String> activeProductIds, DateTime? expirationDate, String? managementURL, String? activePlanId, SubscriptionPeriodType periodType
 });
 
 
@@ -62,13 +62,16 @@ class _$SubscriptionStatusCopyWithImpl<$Res>
 
 /// Create a copy of SubscriptionStatus
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? isSubscribed = null,Object? activeEntitlements = null,Object? activeProductIds = null,Object? expirationDate = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? isSubscribed = null,Object? activeEntitlements = null,Object? activeProductIds = null,Object? expirationDate = freezed,Object? managementURL = freezed,Object? activePlanId = freezed,Object? periodType = null,}) {
   return _then(_self.copyWith(
 isSubscribed: null == isSubscribed ? _self.isSubscribed : isSubscribed // ignore: cast_nullable_to_non_nullable
 as bool,activeEntitlements: null == activeEntitlements ? _self.activeEntitlements : activeEntitlements // ignore: cast_nullable_to_non_nullable
 as Set<String>,activeProductIds: null == activeProductIds ? _self.activeProductIds : activeProductIds // ignore: cast_nullable_to_non_nullable
 as Set<String>,expirationDate: freezed == expirationDate ? _self.expirationDate : expirationDate // ignore: cast_nullable_to_non_nullable
-as DateTime?,
+as DateTime?,managementURL: freezed == managementURL ? _self.managementURL : managementURL // ignore: cast_nullable_to_non_nullable
+as String?,activePlanId: freezed == activePlanId ? _self.activePlanId : activePlanId // ignore: cast_nullable_to_non_nullable
+as String?,periodType: null == periodType ? _self.periodType : periodType // ignore: cast_nullable_to_non_nullable
+as SubscriptionPeriodType,
   ));
 }
 
@@ -153,10 +156,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool isSubscribed,  Set<String> activeEntitlements,  Set<String> activeProductIds,  DateTime? expirationDate)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool isSubscribed,  Set<String> activeEntitlements,  Set<String> activeProductIds,  DateTime? expirationDate,  String? managementURL,  String? activePlanId,  SubscriptionPeriodType periodType)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _SubscriptionStatus() when $default != null:
-return $default(_that.isSubscribed,_that.activeEntitlements,_that.activeProductIds,_that.expirationDate);case _:
+return $default(_that.isSubscribed,_that.activeEntitlements,_that.activeProductIds,_that.expirationDate,_that.managementURL,_that.activePlanId,_that.periodType);case _:
   return orElse();
 
 }
@@ -174,10 +177,10 @@ return $default(_that.isSubscribed,_that.activeEntitlements,_that.activeProductI
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool isSubscribed,  Set<String> activeEntitlements,  Set<String> activeProductIds,  DateTime? expirationDate)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool isSubscribed,  Set<String> activeEntitlements,  Set<String> activeProductIds,  DateTime? expirationDate,  String? managementURL,  String? activePlanId,  SubscriptionPeriodType periodType)  $default,) {final _that = this;
 switch (_that) {
 case _SubscriptionStatus():
-return $default(_that.isSubscribed,_that.activeEntitlements,_that.activeProductIds,_that.expirationDate);case _:
+return $default(_that.isSubscribed,_that.activeEntitlements,_that.activeProductIds,_that.expirationDate,_that.managementURL,_that.activePlanId,_that.periodType);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -194,10 +197,10 @@ return $default(_that.isSubscribed,_that.activeEntitlements,_that.activeProductI
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool isSubscribed,  Set<String> activeEntitlements,  Set<String> activeProductIds,  DateTime? expirationDate)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool isSubscribed,  Set<String> activeEntitlements,  Set<String> activeProductIds,  DateTime? expirationDate,  String? managementURL,  String? activePlanId,  SubscriptionPeriodType periodType)?  $default,) {final _that = this;
 switch (_that) {
 case _SubscriptionStatus() when $default != null:
-return $default(_that.isSubscribed,_that.activeEntitlements,_that.activeProductIds,_that.expirationDate);case _:
+return $default(_that.isSubscribed,_that.activeEntitlements,_that.activeProductIds,_that.expirationDate,_that.managementURL,_that.activePlanId,_that.periodType);case _:
   return null;
 
 }
@@ -209,7 +212,7 @@ return $default(_that.isSubscribed,_that.activeEntitlements,_that.activeProductI
 
 
 class _SubscriptionStatus implements SubscriptionStatus {
-  const _SubscriptionStatus({required this.isSubscribed, required final  Set<String> activeEntitlements, required final  Set<String> activeProductIds, this.expirationDate}): _activeEntitlements = activeEntitlements,_activeProductIds = activeProductIds;
+  const _SubscriptionStatus({required this.isSubscribed, required final  Set<String> activeEntitlements, required final  Set<String> activeProductIds, this.expirationDate, this.managementURL, this.activePlanId, this.periodType = SubscriptionPeriodType.unknown}): _activeEntitlements = activeEntitlements,_activeProductIds = activeProductIds;
   
 
 @override final  bool isSubscribed;
@@ -228,6 +231,9 @@ class _SubscriptionStatus implements SubscriptionStatus {
 }
 
 @override final  DateTime? expirationDate;
+@override final  String? managementURL;
+@override final  String? activePlanId;
+@override@JsonKey() final  SubscriptionPeriodType periodType;
 
 /// Create a copy of SubscriptionStatus
 /// with the given fields replaced by the non-null parameter values.
@@ -239,16 +245,16 @@ _$SubscriptionStatusCopyWith<_SubscriptionStatus> get copyWith => __$Subscriptio
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SubscriptionStatus&&(identical(other.isSubscribed, isSubscribed) || other.isSubscribed == isSubscribed)&&const DeepCollectionEquality().equals(other._activeEntitlements, _activeEntitlements)&&const DeepCollectionEquality().equals(other._activeProductIds, _activeProductIds)&&(identical(other.expirationDate, expirationDate) || other.expirationDate == expirationDate));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SubscriptionStatus&&(identical(other.isSubscribed, isSubscribed) || other.isSubscribed == isSubscribed)&&const DeepCollectionEquality().equals(other._activeEntitlements, _activeEntitlements)&&const DeepCollectionEquality().equals(other._activeProductIds, _activeProductIds)&&(identical(other.expirationDate, expirationDate) || other.expirationDate == expirationDate)&&(identical(other.managementURL, managementURL) || other.managementURL == managementURL)&&(identical(other.activePlanId, activePlanId) || other.activePlanId == activePlanId)&&(identical(other.periodType, periodType) || other.periodType == periodType));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,isSubscribed,const DeepCollectionEquality().hash(_activeEntitlements),const DeepCollectionEquality().hash(_activeProductIds),expirationDate);
+int get hashCode => Object.hash(runtimeType,isSubscribed,const DeepCollectionEquality().hash(_activeEntitlements),const DeepCollectionEquality().hash(_activeProductIds),expirationDate,managementURL,activePlanId,periodType);
 
 @override
 String toString() {
-  return 'SubscriptionStatus(isSubscribed: $isSubscribed, activeEntitlements: $activeEntitlements, activeProductIds: $activeProductIds, expirationDate: $expirationDate)';
+  return 'SubscriptionStatus(isSubscribed: $isSubscribed, activeEntitlements: $activeEntitlements, activeProductIds: $activeProductIds, expirationDate: $expirationDate, managementURL: $managementURL, activePlanId: $activePlanId, periodType: $periodType)';
 }
 
 
@@ -259,7 +265,7 @@ abstract mixin class _$SubscriptionStatusCopyWith<$Res> implements $Subscription
   factory _$SubscriptionStatusCopyWith(_SubscriptionStatus value, $Res Function(_SubscriptionStatus) _then) = __$SubscriptionStatusCopyWithImpl;
 @override @useResult
 $Res call({
- bool isSubscribed, Set<String> activeEntitlements, Set<String> activeProductIds, DateTime? expirationDate
+ bool isSubscribed, Set<String> activeEntitlements, Set<String> activeProductIds, DateTime? expirationDate, String? managementURL, String? activePlanId, SubscriptionPeriodType periodType
 });
 
 
@@ -276,13 +282,16 @@ class __$SubscriptionStatusCopyWithImpl<$Res>
 
 /// Create a copy of SubscriptionStatus
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? isSubscribed = null,Object? activeEntitlements = null,Object? activeProductIds = null,Object? expirationDate = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? isSubscribed = null,Object? activeEntitlements = null,Object? activeProductIds = null,Object? expirationDate = freezed,Object? managementURL = freezed,Object? activePlanId = freezed,Object? periodType = null,}) {
   return _then(_SubscriptionStatus(
 isSubscribed: null == isSubscribed ? _self.isSubscribed : isSubscribed // ignore: cast_nullable_to_non_nullable
 as bool,activeEntitlements: null == activeEntitlements ? _self._activeEntitlements : activeEntitlements // ignore: cast_nullable_to_non_nullable
 as Set<String>,activeProductIds: null == activeProductIds ? _self._activeProductIds : activeProductIds // ignore: cast_nullable_to_non_nullable
 as Set<String>,expirationDate: freezed == expirationDate ? _self.expirationDate : expirationDate // ignore: cast_nullable_to_non_nullable
-as DateTime?,
+as DateTime?,managementURL: freezed == managementURL ? _self.managementURL : managementURL // ignore: cast_nullable_to_non_nullable
+as String?,activePlanId: freezed == activePlanId ? _self.activePlanId : activePlanId // ignore: cast_nullable_to_non_nullable
+as String?,periodType: null == periodType ? _self.periodType : periodType // ignore: cast_nullable_to_non_nullable
+as SubscriptionPeriodType,
   ));
 }
 

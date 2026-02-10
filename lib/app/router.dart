@@ -46,6 +46,8 @@ import 'package:bizzie/features/subscription/presentation/views/discounted_subsc
 import 'package:bizzie/features/subscription/presentation/views/subscription_page.dart';
 import 'package:bizzie/features/settings/presentation/views/settings_view.dart';
 
+import 'package:bizzie/features/subscription/presentation/views/subscription_details_page.dart';
+
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
 
 GoRouter createRouter(
@@ -247,10 +249,12 @@ GoRouter createRouter(
       ),
       _buildPaywallRoute(
         path: AppRoutes.paywall,
+        name: AppRoutes.paywall,
         child: const SubscriptionPage(),
       ),
       _buildPaywallRoute(
         path: AppRoutes.discountedPaywall,
+        name: AppRoutes.discountedPaywall,
         child: const DiscountedSubscriptionPage(),
       ),
       GoRoute(
@@ -288,6 +292,13 @@ GoRouter createRouter(
                 builder: (context, state) => const ChangePasswordView(),
               ),
             ],
+          ),
+          GoRoute(
+            path: AppRoutes.subscriptionDetailsPath,
+            name: AppRoutes.subscriptionDetails,
+            builder: (context, state) {
+              return const SubscriptionDetailsPage();
+            },
           ),
         ],
       ),

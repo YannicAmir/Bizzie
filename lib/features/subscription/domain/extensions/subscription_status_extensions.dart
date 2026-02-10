@@ -1,0 +1,70 @@
+import 'package:bizzie/features/subscription/domain/enums/membership_scenario.dart';
+import 'package:bizzie/features/subscription/domain/enums/subscription_period_type.dart';
+import 'package:bizzie/features/subscription/domain/models/subscription_status.dart';
+import 'package:flutter/foundation.dart';
+
+extension SubscriptionStatusExtensions on SubscriptionStatus {
+  bool get isAnnual {
+    final planId = activePlanId?.toLowerCase();
+    if (planId != null) return planId.contains('annual');
+    return activeProductIds.any((id) => id.toLowerCase().contains('annual'));
+  }
+
+  bool get isMonthly {
+    final planId = activePlanId?.toLowerCase();
+    if (planId != null) return planId.contains('monthly');
+    return activeProductIds.any((id) => id.toLowerCase().contains('monthly'));
+  }
+
+  bool get isFreeTrial =>
+      periodType == SubscriptionPeriodType.trial ||
+      periodType == SubscriptionPeriodType.intro;
+
+  MembershipScenario get scenario {
+    if (!isSubscribed) {
+      return MembershipScenario.notSubscribed;
+    }
+
+    debugPrint('[SubscriptionStatusExtensions] isSubscribed: $isSubscribed');
+    debugPrint('[SubscriptionStatusExtensions] periodType: $periodType');
+    debugPrint('[SubscriptionStatusExtensions] isFreeTrial: $isFreeTrial');
+
+    if (isFreeTrial) {
+      return MembershipScenario.freeTrial;
+    }
+
+    if (isAnnual) {
+      return MembershipScenario.annual;
+    }
+
+    if (isMonthly) {
+      return MembershipScenario.monthly;
+    }
+
+    return MembershipScenario.annual;
+  }
+
+  String get planTitle {
+    switch (scenario) {
+      case MembershipScenario.annual:
+        return 'Annual Plan';
+      case MembershipScenario.monthly:
+        return 'Monthly Plan';
+      case MembershipScenario.freeTrial:
+        return 'Free Trial';
+      case MembershipScenario.notSubscribed:
+        return 'Subscription Plan';
+    }
+  }
+
+  String? get trialRemainingText {
+    if (!isFreeTrial || expirationDate == null) return null;
+
+    final diff = expirationDate!.difference(DateTime.now());
+    if (diff.inDays > 0) {
+      return '${diff.inDays} days left in your free trial.';
+    } else {
+      return 'Your free trial ends today.';
+    }
+  }
+}

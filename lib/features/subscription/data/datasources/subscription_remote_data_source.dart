@@ -212,11 +212,22 @@ class SubscriptionRemoteDataSource implements ISubscriptionRemoteDataSource {
       _logger.info('Starting subscription status listener');
       _isListening = true;
 
-      getSubscriptionStatus().then((dto) {
-        if (!_statusSubject.isClosed) {
-          _statusSubject.add(dto);
-        }
-      });
+      getSubscriptionStatus()
+          .then((dto) {
+            if (!_statusSubject.isClosed) {
+              _statusSubject.add(dto);
+            }
+          })
+          .catchError((e, s) {
+            _logger.severe(
+              'Failed to get initial subscription status in watch stream',
+              e,
+              s,
+            );
+            if (!_statusSubject.isClosed && !_statusSubject.hasValue) {
+              _statusSubject.add(SubscriptionStatusDto.initial());
+            }
+          });
 
       _rcListener = (info) {
         _logger.info('Subscription update received from RevenueCat');
@@ -235,6 +246,15 @@ class SubscriptionRemoteDataSource implements ISubscriptionRemoteDataSource {
     return RetryUtil.retry(
       task: () async {
         _logger.info('Manually refreshing subscription status...');
+        try {
+          await Purchases.syncPurchases();
+        } catch (e) {
+          _logger.warning(
+            'Sync purchases failed (expected in Simulator/Offline)',
+            e,
+          );
+        }
+
         await Purchases.invalidateCustomerInfoCache();
         final customerInfo = await Purchases.getCustomerInfo();
         if (!_statusSubject.isClosed) {

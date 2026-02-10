@@ -20,6 +20,8 @@ class AppRoutes {
   // Relative paths for nested routes
   static const String editProfilePath = 'edit-profile';
   static const String changePasswordPath = 'change-password';
+  static const String subscriptionDetailsPath = 'subscription-details';
+  static const String subscriptionDetails = '/subscription-details';
 
   // Namespaced Company Profile Routes for Bottom Nav Stacks
   static const String companyProfileHome = 'companyProfileHome';

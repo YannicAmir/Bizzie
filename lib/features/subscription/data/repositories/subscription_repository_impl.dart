@@ -3,6 +3,7 @@ import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/features/subscription/domain/models/subscription_status.dart';
 import 'package:bizzie/features/subscription/domain/models/subscription_package.dart';
 import 'package:bizzie/features/subscription/domain/models/subscription_offering.dart';
+import 'package:bizzie/features/subscription/domain/extensions/subscription_offering_extensions.dart'; // Added extension import
 import 'package:bizzie/features/subscription/domain/interfaces/i_subscription_repository.dart';
 import 'package:bizzie/features/subscription/data/interfaces/i_subscription_remote_data_source.dart';
 import 'package:injectable/injectable.dart';
@@ -31,11 +32,39 @@ class SubscriptionRepositoryImpl implements ISubscriptionRepository {
   @override
   Stream<SubscriptionStatus> watchSubscriptionStatus(String userId) {
     _logger.info('Starting subscription status watch for user: $userId');
-    return _remoteDataSource.watchSubscriptionStatus().map((dto) {
+    return _remoteDataSource.watchSubscriptionStatus().asyncMap((dto) async {
+      var domainStatus = dto.toDomain();
+
+      // Truth Reconciliation (Stream):
+      // Apply the same defensive logic as getSubscriptionStatus to ensure the stream is consistent.
+      if (domainStatus.isSubscribed) {
+        final offeringsResult = await getOfferings();
+
+        offeringsResult.fold(
+          (f) => _logger.warning(
+            'Failed to fetch offerings for stream verification',
+            f,
+          ),
+          (offering) {
+            final annualTrial =
+                offering.annualPackage?.isEligibleForTrial ?? false;
+            final monthlyTrial =
+                offering.monthlyPackage?.isEligibleForTrial ?? false;
+
+            if (annualTrial || monthlyTrial) {
+              _logger.warning(
+                'Sticky Entitlement detected in Stream! Overriding isSubscribed to false.',
+              );
+              domainStatus = domainStatus.copyWith(isSubscribed: false);
+            }
+          },
+        );
+      }
+
       _logger.info(
-        'Subscription update received in repo for $userId (Active: ${dto.isSubscribed})',
+        'Subscription update received in repo for $userId (Active: ${domainStatus.isSubscribed})',
       );
-      return dto.toDomain();
+      return domainStatus;
     }).asBroadcastStream();
   }
 
@@ -56,10 +85,37 @@ class SubscriptionRepositoryImpl implements ISubscriptionRepository {
     _logger.info('Fetching current subscription status...');
     try {
       final dto = await _remoteDataSource.getSubscriptionStatus();
+      var domainStatus = dto.toDomain();
+
+      if (domainStatus.isSubscribed) {
+        _logger.info(
+          'Status is TRUE. Performing Defensive Override check via Offerings...',
+        );
+        final offeringsResult = await getOfferings();
+
+        offeringsResult.fold(
+          (f) =>
+              _logger.warning('Failed to fetch offerings for verification', f),
+          (offering) {
+            final annualTrial =
+                offering.annualPackage?.isEligibleForTrial ?? false;
+            final monthlyTrial =
+                offering.monthlyPackage?.isEligibleForTrial ?? false;
+
+            if (annualTrial || monthlyTrial) {
+              _logger.warning(
+                'Sticky Entitlement detected in Repo! Overriding isSubscribed to false because trial eligibility is true.',
+              );
+              domainStatus = domainStatus.copyWith(isSubscribed: false);
+            }
+          },
+        );
+      }
+
       _logger.info(
-        'Successfully retrieved subscription status (Active: ${dto.isSubscribed})',
+        'Successfully retrieved subscription status (Active: ${domainStatus.isSubscribed})',
       );
-      return Right(dto.toDomain());
+      return Right(domainStatus);
     } catch (e, s) {
       return Left(_handleError(e, s, 'Failed to get subscription status'));
     }

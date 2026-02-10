@@ -14,7 +14,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 class SubscriptionPage extends StatefulWidget {
-  const SubscriptionPage({super.key});
+  final bool isUpgradeFlow;
+
+  const SubscriptionPage({super.key, this.isUpgradeFlow = false});
 
   @override
   State<SubscriptionPage> createState() => _SubscriptionPageState();
@@ -150,7 +152,11 @@ class _SubscriptionPageState extends State<SubscriptionPage>
       userName: userName ?? 'Friend',
       onDismiss: () {
         if (mounted) {
-          context.go(AppRoutes.home);
+          if (widget.isUpgradeFlow) {
+            context.pop(true);
+          } else {
+            context.go(AppRoutes.home);
+          }
         }
       },
     );
