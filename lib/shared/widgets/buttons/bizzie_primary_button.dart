@@ -1,3 +1,4 @@
+import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:flutter/material.dart';
 
 class BizziePrimaryButton extends StatelessWidget {
@@ -7,7 +8,7 @@ class BizziePrimaryButton extends StatelessWidget {
     required this.onPressed,
     this.isLoading = false,
     this.width = double.infinity,
-    this.height = 54,
+    this.height = AppConstants.mainButtonHeight,
   });
 
   final String title;

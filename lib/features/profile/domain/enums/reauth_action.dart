@@ -1,0 +1,1 @@
+enum ReauthAction { save, deleteAccount }

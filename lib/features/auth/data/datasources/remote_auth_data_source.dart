@@ -1,3 +1,4 @@
+import 'package:bizzie/core/error/exceptions.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:injectable/injectable.dart';
 import 'package:flutter/services.dart';
@@ -24,6 +25,14 @@ abstract class RemoteAuthDataSource {
   Future<void> signOut();
   Future<void> resetPassword({required String email});
   Future<void> deleteAccount();
+  Future<void> reauthenticateWithApple();
+  Future<void> reauthenticateWithPassword(String password);
+  Future<void> reauthenticateWithGoogle();
+  Future<void> updateUserEmail(String newEmail);
+  Future<void> updateUserPassword({
+    required String oldPassword,
+    required String newPassword,
+  });
 }
 
 @LazySingleton(as: RemoteAuthDataSource)
@@ -143,6 +152,125 @@ class RemoteAuthDataSourceImpl implements RemoteAuthDataSource {
       rethrow;
     } catch (e, s) {
       _logger.severe('Apple Sign-In Generic Error', e, s);
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> reauthenticateWithApple() async {
+    final uid = _firebaseAuth.currentUser?.uid;
+    _logger.info('Starting Apple Re-auth flow for uid: $uid');
+    try {
+      final appleCredential = await SignInWithApple.getAppleIDCredential(
+        scopes: [],
+      );
+
+      final OAuthProvider provider = OAuthProvider('apple.com');
+      final AuthCredential credential = provider.credential(
+        idToken: appleCredential.identityToken,
+        accessToken: appleCredential.authorizationCode,
+      );
+
+      final user = _firebaseAuth.currentUser;
+      if (user == null) {
+        throw UserNotSignedInException();
+      }
+      await user.reauthenticateWithCredential(credential);
+      _logger.info('Apple Re-auth success for uid: $uid');
+    } on PlatformException catch (e, s) {
+      _logger.severe(
+        'Apple Re-auth Platform Error: Code=${e.code}, Message=${e.message}, Details=${e.details}',
+        e,
+        s,
+      );
+      rethrow;
+    } catch (e, s) {
+      _logger.severe('Apple Re-auth Generic Error', e, s);
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> reauthenticateWithPassword(String password) async {
+    final user = _firebaseAuth.currentUser;
+    if (user == null || user.email == null) {
+      throw UserNotSignedInException();
+    }
+    _logger.info('Starting Password Re-auth flow for uid: ${user.uid}');
+    try {
+      final cred = EmailAuthProvider.credential(
+        email: user.email!,
+        password: password,
+      );
+      await user.reauthenticateWithCredential(cred);
+      _logger.info('Password Re-auth success for uid: ${user.uid}');
+    } catch (e, s) {
+      _logger.severe('Password Re-auth failed', e, s);
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> reauthenticateWithGoogle() async {
+    final user = _firebaseAuth.currentUser;
+    if (user == null) {
+      throw UserNotSignedInException();
+    }
+    _logger.info('Starting Google Re-auth flow for uid: ${user.uid}');
+    try {
+      final GoogleSignInAccount googleUser = await _googleSignIn.authenticate();
+      final GoogleSignInAuthentication googleAuth = googleUser.authentication;
+      final GoogleSignInClientAuthorization? authorization = await googleUser
+          .authorizationClient
+          .authorizationForScopes([]);
+      final AuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: authorization?.accessToken,
+        idToken: googleAuth.idToken,
+      );
+      await user.reauthenticateWithCredential(credential);
+      _logger.info('Google Re-auth success for uid: ${user.uid}');
+    } catch (e, s) {
+      _logger.severe('Google Re-auth failed', e, s);
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> updateUserEmail(String newEmail) async {
+    final user = _firebaseAuth.currentUser;
+    if (user == null) {
+      throw UserNotSignedInException();
+    }
+    _logger.info('Attempting to update email for uid: ${user.uid}');
+    try {
+      await user.verifyBeforeUpdateEmail(newEmail);
+      _logger.info('Verification email sent to $newEmail');
+    } catch (e, s) {
+      _logger.severe('Update email failed for uid: ${user.uid}', e, s);
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> updateUserPassword({
+    required String oldPassword,
+    required String newPassword,
+  }) async {
+    final user = _firebaseAuth.currentUser;
+    if (user == null || user.email == null) {
+      throw UserNotSignedInException();
+    }
+    _logger.info('Attempting to update password for uid: ${user.uid}');
+    try {
+      final cred = EmailAuthProvider.credential(
+        email: user.email!,
+        password: oldPassword,
+      );
+      await user.reauthenticateWithCredential(cred);
+      await user.updatePassword(newPassword);
+      _logger.info('Password update success for uid: ${user.uid}');
+    } catch (e, s) {
+      _logger.severe('Password update failed for uid: ${user.uid}', e, s);
       rethrow;
     }
   }

@@ -7,7 +7,8 @@ class AppConstants {
   static const double defaultBorderWidth = 0.665;
   static const double tabHeight = 40.0;
   static const double mainSectionContainerPadding = 12.0;
-  static const double buttonHeight = 40.0;
+  static const double mainButtonHeight = 54.0;
+  static const double smallButtonHeight = 40.0;
   static const double bizzieSwitchHeight = 48.0;
 
   static const EdgeInsets pagePadding = EdgeInsets.fromLTRB(16, 16, 16, 24);

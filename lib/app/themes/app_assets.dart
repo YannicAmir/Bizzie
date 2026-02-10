@@ -6,10 +6,10 @@ class AppAssets {
   static const String authEmailIcon = 'assets/images/auth/email_icon.svg';
   static const String authGoogleIcon = 'assets/images/auth/google_icon.png';
   static const String authHidePasswordIcon =
-      'assets/images/auth/hide_password_icon.png';
+      'assets/images/auth/hide_password_icon.svg';
   static const String authLockIcon = 'assets/images/auth/lock_icon.svg';
   static const String authShowPasswordIcon =
-      'assets/images/auth/show_password_icon.png';
+      'assets/images/auth/show_password_icon.svg';
 
   static const String splashLogo = 'assets/images/branding/splash_logo.png';
   static const String appIcon = 'assets/images/branding/app_icon.png';

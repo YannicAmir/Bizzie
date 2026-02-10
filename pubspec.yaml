@@ -57,6 +57,7 @@ dependencies:
   purchases_flutter: ^9.10.8
   package_info_plus: ^9.0.0
   collection: ^1.19.1
+  equatable: ^2.0.8
 
 dev_dependencies:
   flutter_test:

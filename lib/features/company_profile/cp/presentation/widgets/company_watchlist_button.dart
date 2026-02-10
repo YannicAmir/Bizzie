@@ -51,7 +51,7 @@ class CompanyWatchlistButton extends StatelessWidget {
           child: AnimatedContainer(
             duration: animationDuration,
             curve: animationCurve,
-            height: AppConstants.buttonHeight,
+            height: AppConstants.smallButtonHeight,
             padding: const EdgeInsets.symmetric(horizontal: 12),
             decoration: BoxDecoration(
               color: backgroundColor,

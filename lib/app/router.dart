@@ -258,8 +258,8 @@ GoRouter createRouter(
         pageBuilder: (context, state) => CustomTransitionPage(
           key: state.pageKey,
           child: const SettingsView(),
-          transitionDuration: const Duration(milliseconds: 50),
-          reverseTransitionDuration: const Duration(milliseconds: 50),
+          transitionDuration: const Duration(milliseconds: 100),
+          reverseTransitionDuration: const Duration(milliseconds: 100),
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
             return SlideTransition(
               position:

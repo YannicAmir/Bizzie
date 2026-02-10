@@ -31,7 +31,10 @@ class AppBottomModal extends StatelessWidget {
     if (!useDraggable) {
       return Container(
         padding: EdgeInsets.only(
-          bottom: MediaQuery.of(context).padding.bottom + 16,
+          bottom:
+              MediaQuery.of(context).viewInsets.bottom +
+              MediaQuery.of(context).padding.bottom +
+              16,
         ),
         decoration: BoxDecoration(
           color: theme.colorScheme.surface,

@@ -40,6 +40,9 @@ void main() {
       // arrange
       when(() => tFirebaseUser.uid).thenReturn(tUid);
       when(() => tFirebaseUser.email).thenReturn(tEmail);
+      when(() => tFirebaseUser.displayName).thenReturn(null);
+      when(() => tFirebaseUser.photoURL).thenReturn(null);
+      when(() => tFirebaseUser.providerData).thenReturn([]);
       when(
         () => mockRemoteDataSource.signInWithEmail(
           email: any(named: 'email'),
@@ -127,6 +130,7 @@ void main() {
     test('deleteAccount_success_returnsRightVoid', () async {
       // arrange
       when(() => mockRemoteDataSource.deleteAccount()).thenAnswer((_) async {});
+      when(() => mockSharedPreferences.clear()).thenAnswer((_) async => true);
 
       // act
       final result = await repository.deleteAccount();
@@ -134,7 +138,7 @@ void main() {
       // assert
       expect(result, equals(const Right(null)));
       verify(() => mockRemoteDataSource.deleteAccount());
-      verifyNoMoreInteractions(mockRemoteDataSource);
+      verify(() => mockSharedPreferences.clear());
     });
 
     test('deleteAccount_failure_returnsLeftServerFailure', () async {

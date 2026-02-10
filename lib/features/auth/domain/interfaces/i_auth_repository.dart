@@ -24,4 +24,7 @@ abstract class IAuthRepository {
   Future<Either<Failure, void>> signOut();
   Future<Either<Failure, void>> resetPassword({required String email});
   Future<Either<Failure, void>> deleteAccount();
+  Future<Either<Failure, void>> reauthenticateWithPassword(String password);
+  Future<Either<Failure, void>> reauthenticateWithGoogle();
+  Future<Either<Failure, void>> reauthenticateWithApple();
 }

@@ -1,5 +1,4 @@
 import 'package:bizzie/app/routes/app_routes.dart';
-import 'package:bizzie/app/themes/app_assets.dart';
 import 'package:bizzie/app/themes/app_text_styles.dart';
 import 'package:bizzie/di/injection.dart';
 import 'package:bizzie/features/settings/presentation/bloc/settings_bloc.dart';
@@ -9,13 +8,13 @@ import 'package:bizzie/features/settings/presentation/bloc/settings_state.dart';
 import 'package:bizzie/features/settings/presentation/widgets/change_sector_modal.dart';
 import 'package:bizzie/features/settings/presentation/widgets/settings_section.dart';
 import 'package:bizzie/features/settings/presentation/widgets/settings_tile.dart';
+import 'package:bizzie/shared/widgets/app_bar/bizzie_app_bar.dart';
 import 'package:bizzie/shared/widgets/buttons/bizzie_primary_button.dart';
 import 'package:bizzie/shared/widgets/buttons/bizzie_secondary_button.dart';
 import 'package:bizzie/shared/widgets/modals/app_bottom_modal.dart';
 import 'package:bizzie/core/error/failures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 
 class SettingsView extends StatelessWidget {
@@ -65,24 +64,7 @@ class _SettingsViewContentState extends State<_SettingsViewContent>
 
     return Scaffold(
       backgroundColor: theme.colorScheme.surface,
-      appBar: AppBar(
-        title: Text('Settings', style: theme.textTheme.displayMedium),
-        centerTitle: false,
-        automaticallyImplyLeading: false,
-        actions: [
-          GestureDetector(
-            onTap: () => context.pop(),
-            child: Padding(
-              padding: const EdgeInsets.only(right: 16.0),
-              child: SvgPicture.asset(
-                AppAssets.modalCloseIcon,
-                width: 24,
-                height: 24,
-              ),
-            ),
-          ),
-        ],
-      ),
+      appBar: const BizzieAppBar(title: 'Settings'),
       body: BlocConsumer<SettingsBloc, SettingsState>(
         listener: (context, state) {
           state.mapOrNull(
@@ -96,16 +78,15 @@ class _SettingsViewContentState extends State<_SettingsViewContent>
                       value: context.read<SettingsBloc>(),
                       child: AppBottomModal(
                         title: 'Enable Notifications',
+                        subtitle: Text(
+                          'Please enable notifications in your system settings to receive important market alerts and filing updates.',
+                        ),
                         useDraggable: false,
                         contentPadding: const EdgeInsets.all(24),
                         builder: (modalContext, _) => Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Text(
-                              'Please enable notifications in your system settings to receive important market alerts and filing updates.',
-                              style: AppTextStyles.bodyMedium,
-                            ),
-                            const SizedBox(height: 24),
+                            const SizedBox(height: 8),
                             BizziePrimaryButton(
                               title: 'Open Settings',
                               onPressed: () {
@@ -115,7 +96,7 @@ class _SettingsViewContentState extends State<_SettingsViewContent>
                                 Navigator.pop(sheetContext);
                               },
                             ),
-                            const SizedBox(height: 12),
+                            const SizedBox(height: 16),
                             BizzieSecondaryButton(
                               title: 'Cancel',
                               onPressed: () => Navigator.pop(sheetContext),
@@ -163,7 +144,7 @@ class _SettingsViewContentState extends State<_SettingsViewContent>
                             showModalBottomSheet(
                               context: context,
                               isScrollControlled: true,
-                              backgroundColor: Colors.transparent,
+                              backgroundColor: theme.colorScheme.scrim,
                               builder: (_) => ChangeSectorModal(
                                 currentSector: currentSector,
                               ),

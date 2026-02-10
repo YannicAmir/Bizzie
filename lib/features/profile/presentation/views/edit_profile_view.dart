@@ -1,6 +1,8 @@
+import 'package:bizzie/features/profile/presentation/widgets/delete_account_confirmation_sheet.dart';
+import 'package:bizzie/features/profile/domain/enums/reauth_action.dart';
 import 'package:bizzie/features/profile/presentation/widgets/profile_field_with_header.dart';
-import 'package:bizzie/features/user/domain/usecases/get_user_usecase.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
+import 'package:bizzie/shared/widgets/app_bar/bizzie_app_bar.dart';
 import 'package:bizzie/shared/widgets/loading/bizzie_loader.dart';
 import 'package:bizzie/shared/widgets/error/bizzie_error.dart';
 import 'package:bizzie/app/routes/app_routes.dart';
@@ -15,6 +17,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:get_it/get_it.dart';
+import 'package:bizzie/features/profile/presentation/widgets/reauth_bottom_sheet.dart';
 
 class EditProfileView extends StatelessWidget {
   const EditProfileView({super.key});
@@ -42,13 +45,6 @@ class _EditProfileViewContentState extends State<_EditProfileViewContent> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController(text: '••••••••');
   final _formKey = GlobalKey<FormState>();
-  late final GetUserUseCase _getUserUseCase;
-
-  @override
-  void initState() {
-    super.initState();
-    _getUserUseCase = GetIt.I<GetUserUseCase>();
-  }
 
   @override
   void dispose() {
@@ -68,29 +64,111 @@ class _EditProfileViewContentState extends State<_EditProfileViewContent> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<EditProfileBloc, EditProfileState>(
-      listener: (context, state) {
-        state.mapOrNull(
-          success: (_) => context.pop(),
-          form: (s) {
-            if (s.saveFailure != null) {
-              ScaffoldMessenger.of(
-                context,
-              ).showSnackBar(SnackBar(content: Text(s.saveFailure!.message)));
-            }
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<EditProfileBloc, EditProfileState>(
+          listenWhen: (previous, current) {
+            final wasShowing = previous.maybeMap(
+              form: (f) => f.isShowReauthModal,
+              orElse: () => false,
+            );
+            final isShowing = current.maybeMap(
+              form: (f) => f.isShowReauthModal,
+              orElse: () => false,
+            );
+            return !wasShowing && isShowing;
           },
-          failure: (s) {
-            ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(SnackBar(content: Text(s.failure.message)));
+          listener: (context, state) {
+            showModalBottomSheet(
+              context: context,
+              isScrollControlled: true,
+              builder: (_) => BlocProvider.value(
+                value: context.read<EditProfileBloc>(),
+                child: const ReAuthBottomSheet(),
+              ),
+            ).then((_) {
+              if (!context.mounted) return;
+              final bloc = context.read<EditProfileBloc>();
+              final currentState = bloc.state;
+              final stillThinkingOpen = currentState.maybeMap(
+                form: (f) => f.isShowReauthModal,
+                orElse: () => false,
+              );
+
+              if (stillThinkingOpen) {
+                bloc.add(const EditProfileEvent.reauthModalDismissed());
+              } else {
+                currentState.mapOrNull(
+                  form: (f) {
+                    if (f.pendingReauthAction == ReauthAction.deleteAccount) {
+                      bloc.add(const EditProfileEvent.showDeleteConfirmation());
+                    }
+                  },
+                );
+              }
+            });
           },
-        );
-      },
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text('Edit Profile'),
-          leading: BackButton(color: Theme.of(context).colorScheme.onSurface),
         ),
+        BlocListener<EditProfileBloc, EditProfileState>(
+          listenWhen: (previous, current) {
+            final wasShowing = previous.maybeMap(
+              form: (f) => f.isShowDeleteConfirmation,
+              orElse: () => false,
+            );
+            final isShowing = current.maybeMap(
+              form: (f) => f.isShowDeleteConfirmation,
+              orElse: () => false,
+            );
+            return !wasShowing && isShowing;
+          },
+          listener: (context, state) {
+            showModalBottomSheet(
+              context: context,
+              isScrollControlled: true,
+              builder: (_) => BlocProvider.value(
+                value: context.read<EditProfileBloc>(),
+                child: const DeleteAccountConfirmationSheet(),
+              ),
+            ).then((_) {
+              if (!context.mounted) return;
+              final bloc = context.read<EditProfileBloc>();
+              final stillShowing = bloc.state.maybeMap(
+                form: (f) => f.isShowDeleteConfirmation,
+                orElse: () => false,
+              );
+              if (stillShowing) {
+                bloc.add(const EditProfileEvent.deleteConfirmationDismissed());
+              }
+            });
+          },
+        ),
+        BlocListener<EditProfileBloc, EditProfileState>(
+          listener: (context, state) {
+            state.mapOrNull(
+              success: (_) => context.pop(),
+              deleted: (_) {
+                // Do not pop here. The global router listener will redirect
+                // to login/onboarding once the auth state changes.
+                // Popping manually causes a race condition crash.
+              },
+              form: (s) {
+                if (s.saveFailure != null) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text(s.saveFailure!.message)),
+                  );
+                }
+              },
+              failure: (s) {
+                ScaffoldMessenger.of(
+                  context,
+                ).showSnackBar(SnackBar(content: Text(s.failure.message)));
+              },
+            );
+          },
+        ),
+      ],
+      child: Scaffold(
+        appBar: const BizzieAppBar(title: 'Edit Profile'),
         body: SafeArea(
           child: BlocConsumer<EditProfileBloc, EditProfileState>(
             listener: (context, state) {
@@ -114,10 +192,10 @@ class _EditProfileViewContentState extends State<_EditProfileViewContent> {
             },
             builder: (context, state) {
               return state.map(
-                initial: (_) => BizzieLoader(
+                initial: (s) => BizzieLoader(
                   message: 'Loading your profile...',
                   mascotAssetPath: AppAssets.getMascotForSector(
-                    _getUserUseCase.cachedSector ?? '',
+                    s.favoriteSector ?? '',
                   ),
                 ),
                 loading: (s) => BizzieLoader(
@@ -126,7 +204,12 @@ class _EditProfileViewContentState extends State<_EditProfileViewContent> {
                     s.favoriteSector ?? '',
                   ),
                 ),
-                success: (_) => const SizedBox.shrink(),
+                success: (s) => BizzieLoader(
+                  message: 'Profile updated successfully!',
+                  mascotAssetPath: AppAssets.getMascotForSector(
+                    s.favoriteSector ?? '',
+                  ),
+                ),
                 failure: (s) => BizzieError(
                   message: s.failure.message,
                   mascotAssetPath: AppAssets.getMascotForSector(
@@ -136,20 +219,13 @@ class _EditProfileViewContentState extends State<_EditProfileViewContent> {
                     const EditProfileEvent.started(),
                   ),
                 ),
+                deleted: (s) => BizzieLoader(
+                  message: 'Deleting account',
+                  mascotAssetPath: AppAssets.getMascotForSector(
+                    s.favoriteSector ?? '',
+                  ),
+                ),
                 form: (s) {
-                  if (_firstNameController.text.isEmpty &&
-                      s.firstName.isNotEmpty) {
-                    _firstNameController.text = s.firstName;
-                  }
-                  if (_emailController.text.isEmpty && s.email.isNotEmpty) {
-                    _emailController.text = s.email;
-                  }
-
-                  final hasChanges =
-                      s.firstName != s.originalFirstName ||
-                      s.email != s.originalEmail;
-                  final canSave = hasChanges && !s.isSubmitting;
-
                   return Padding(
                     padding: AppConstants.pagePadding,
                     child: Form(
@@ -167,18 +243,26 @@ class _EditProfileViewContentState extends State<_EditProfileViewContent> {
                             onEmailChanged: (val) => context
                                 .read<EditProfileBloc>()
                                 .add(EditProfileEvent.emailChanged(val)),
+                            hasPasswordProvider: s.hasPasswordProvider,
+                            onPasswordTap: () =>
+                                context.pushNamed(AppRoutes.changePassword),
                           ),
                           const Spacer(),
                           BizziePrimaryButton(
                             title: 'Save Changes',
-                            onPressed: canSave
+                            onPressed: state.canSave
                                 ? () => _onSavePressed(context)
                                 : null,
                             isLoading: s.isSubmitting,
                           ),
                           const SizedBox(height: 16),
                           _DeleteAccountButton(
-                            onPressed: () => _showDeleteConfirmation(context),
+                            onPressed: s.isDeleting || s.isSubmitting
+                                ? null
+                                : () => context.read<EditProfileBloc>().add(
+                                    const EditProfileEvent.deleteAccountRequested(),
+                                  ),
+                            isLoading: s.isDeleting,
                           ),
                         ],
                       ),
@@ -192,34 +276,6 @@ class _EditProfileViewContentState extends State<_EditProfileViewContent> {
       ),
     );
   }
-
-  void _showDeleteConfirmation(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Delete Account?'),
-        content: const Text(
-          'This action cannot be undone. Are you sure you want to delete your account?',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(),
-            child: const Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () {
-              Navigator.of(ctx).pop();
-              context.read<EditProfileBloc>().add(
-                const EditProfileEvent.deleteAccountRequested(),
-              );
-            },
-            style: TextButton.styleFrom(foregroundColor: Colors.red),
-            child: const Text('Delete'),
-          ),
-        ],
-      ),
-    );
-  }
 }
 
 class _ProfileForm extends StatelessWidget {
@@ -228,6 +284,8 @@ class _ProfileForm extends StatelessWidget {
   final TextEditingController passwordController;
   final ValueChanged<String> onFirstNameChanged;
   final ValueChanged<String> onEmailChanged;
+  final bool hasPasswordProvider;
+  final VoidCallback onPasswordTap;
 
   const _ProfileForm({
     required this.firstNameController,
@@ -235,6 +293,8 @@ class _ProfileForm extends StatelessWidget {
     required this.passwordController,
     required this.onFirstNameChanged,
     required this.onEmailChanged,
+    required this.hasPasswordProvider,
+    required this.onPasswordTap,
   });
 
   @override
@@ -248,49 +308,63 @@ class _ProfileForm extends StatelessWidget {
             controller: firstNameController,
             hintText: '',
             iconPath: AppAssets.homeProfileUnselectedIcon,
-            validator: (val) =>
-                val == null || val.isEmpty ? 'Name cannot be empty' : null,
+            validator: Validators.validateName,
             onChanged: onFirstNameChanged,
           ),
         ),
-        ProfileFieldWithHeader(
-          header: 'Email',
-          child: AuthTextField(
-            controller: emailController,
-            hintText: '',
-            iconPath: AppAssets.authEmailIcon,
-            validator: Validators.validateEmail,
-            onChanged: onEmailChanged,
-            keyboardType: TextInputType.emailAddress,
+        if (hasPasswordProvider) ...[
+          ProfileFieldWithHeader(
+            header: 'Email',
+            child: AuthTextField(
+              controller: emailController,
+              hintText: '',
+              iconPath: AppAssets.authEmailIcon,
+              readOnly: true,
+              hideReadOnlyFocus: true,
+              validator: Validators.validateEmail,
+              onChanged: onEmailChanged,
+              keyboardType: TextInputType.emailAddress,
+            ),
           ),
-        ),
-        ProfileFieldWithHeader(
-          header: 'Password',
-          bottomMargin: 0,
-          child: AuthTextField(
-            controller: passwordController,
-            hintText: '',
-            iconPath: AppAssets.authLockIcon,
-            readOnly: true,
-            onTap: () => context.pushNamed(AppRoutes.changePassword),
+          ProfileFieldWithHeader(
+            header: 'Password',
+            bottomMargin: 0,
+            child: AuthTextField(
+              controller: passwordController,
+              hintText: '',
+              iconPath: AppAssets.authLockIcon,
+              readOnly: true,
+              onTap: onPasswordTap,
+            ),
           ),
-        ),
+        ],
       ],
     );
   }
 }
 
 class _DeleteAccountButton extends StatelessWidget {
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
 
-  const _DeleteAccountButton({required this.onPressed});
+  final bool isLoading;
+  const _DeleteAccountButton({required this.onPressed, this.isLoading = false});
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    if (isLoading) {
+      return const Center(
+        child: Padding(
+          padding: EdgeInsets.all(8.0),
+          child: CircularProgressIndicator.adaptive(),
+        ),
+      );
+    }
     return TextButton(
       onPressed: onPressed,
       style: TextButton.styleFrom(
-        foregroundColor: Theme.of(context).colorScheme.error,
+        foregroundColor: theme.colorScheme.error,
+        splashFactory: NoSplash.splashFactory,
       ),
       child: const Text('Delete Account'),
     );

@@ -38,6 +38,12 @@ import '../features/auth/domain/interfaces/i_auth_repository.dart' as _i685;
 import '../features/auth/domain/usecases/delete_account.dart' as _i739;
 import '../features/auth/domain/usecases/get_auth_stream.dart' as _i427;
 import '../features/auth/domain/usecases/get_current_user.dart' as _i318;
+import '../features/auth/domain/usecases/reauthenticate_with_apple_usecase.dart'
+    as _i787;
+import '../features/auth/domain/usecases/reauthenticate_with_google_usecase.dart'
+    as _i413;
+import '../features/auth/domain/usecases/reauthenticate_with_password_usecase.dart'
+    as _i265;
 import '../features/auth/domain/usecases/reset_password.dart' as _i73;
 import '../features/auth/domain/usecases/sign_in_with_apple.dart' as _i538;
 import '../features/auth/domain/usecases/sign_in_with_email.dart' as _i33;
@@ -775,6 +781,16 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i836.WatchUserUseCase>(),
       ),
     );
+    gh.factory<_i787.ReauthenticateWithAppleUseCase>(
+      () => _i787.ReauthenticateWithAppleUseCase(gh<_i685.IAuthRepository>()),
+    );
+    gh.factory<_i413.ReauthenticateWithGoogleUseCase>(
+      () => _i413.ReauthenticateWithGoogleUseCase(gh<_i685.IAuthRepository>()),
+    );
+    gh.factory<_i265.ReauthenticateWithPasswordUseCase>(
+      () =>
+          _i265.ReauthenticateWithPasswordUseCase(gh<_i685.IAuthRepository>()),
+    );
     gh.factory<_i797.ChangePasswordUseCase>(
       () => _i797.ChangePasswordUseCase(gh<_i685.IAuthRepository>()),
     );
@@ -1002,14 +1018,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i659.ISubscriptionRepository>(),
       ),
     );
-    gh.factory<_i875.EditProfileBloc>(
-      () => _i875.EditProfileBloc(
-        gh<_i318.GetCurrentUser>(),
-        gh<_i561.GetUserUseCase>(),
-        gh<_i586.UpdateProfileUseCase>(),
-        gh<_i5.DeleteAccountUseCase>(),
-      ),
-    );
     gh.lazySingleton<_i829.ManageSubscriptionUseCase>(
       () =>
           _i829.ManageSubscriptionUseCase(gh<_i659.ISubscriptionRepository>()),
@@ -1138,6 +1146,17 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i723.CompanyDividendsBloc>(
       () => _i723.CompanyDividendsBloc(gh<_i754.GetDividendInfoUseCase>()),
+    );
+    gh.factory<_i875.EditProfileBloc>(
+      () => _i875.EditProfileBloc(
+        gh<_i318.GetCurrentUser>(),
+        gh<_i561.GetUserUseCase>(),
+        gh<_i586.UpdateProfileUseCase>(),
+        gh<_i5.DeleteAccountUseCase>(),
+        gh<_i265.ReauthenticateWithPasswordUseCase>(),
+        gh<_i413.ReauthenticateWithGoogleUseCase>(),
+        gh<_i787.ReauthenticateWithAppleUseCase>(),
+      ),
     );
     gh.factory<_i62.CompanyPfcfRatioBloc>(
       () => _i62.CompanyPfcfRatioBloc(gh<_i912.GetPfcfRatioUseCase>()),
