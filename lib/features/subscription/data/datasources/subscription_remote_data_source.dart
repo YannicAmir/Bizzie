@@ -55,8 +55,6 @@ class SubscriptionRemoteDataSource implements ISubscriptionRemoteDataSource {
     try {
       await Purchases.logIn(uid);
       _logger.info('RevenueCat logIn successful for: $uid');
-
-      await refreshSubscriptionStatus();
     } catch (e, s) {
       _logger.severe('RevenueCat logIn failed for uid: $uid', e, s);
       rethrow;
@@ -245,17 +243,8 @@ class SubscriptionRemoteDataSource implements ISubscriptionRemoteDataSource {
   Future<void> refreshSubscriptionStatus() async {
     return RetryUtil.retry(
       task: () async {
-        _logger.info('Manually refreshing subscription status...');
-        try {
-          await Purchases.syncPurchases();
-        } catch (e) {
-          _logger.warning(
-            'Sync purchases failed (expected in Simulator/Offline)',
-            e,
-          );
-        }
+        _logger.info('Refreshing subscription status (Gentle Refresh)...');
 
-        await Purchases.invalidateCustomerInfoCache();
         final customerInfo = await Purchases.getCustomerInfo();
         if (!_statusSubject.isClosed) {
           _statusSubject.add(

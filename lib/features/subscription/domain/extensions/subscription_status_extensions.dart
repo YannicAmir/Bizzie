@@ -1,7 +1,6 @@
 import 'package:bizzie/features/subscription/domain/enums/membership_scenario.dart';
 import 'package:bizzie/features/subscription/domain/enums/subscription_period_type.dart';
 import 'package:bizzie/features/subscription/domain/models/subscription_status.dart';
-import 'package:flutter/foundation.dart';
 
 extension SubscriptionStatusExtensions on SubscriptionStatus {
   bool get isAnnual {
@@ -24,10 +23,6 @@ extension SubscriptionStatusExtensions on SubscriptionStatus {
     if (!isSubscribed) {
       return MembershipScenario.notSubscribed;
     }
-
-    debugPrint('[SubscriptionStatusExtensions] isSubscribed: $isSubscribed');
-    debugPrint('[SubscriptionStatusExtensions] periodType: $periodType');
-    debugPrint('[SubscriptionStatusExtensions] isFreeTrial: $isFreeTrial');
 
     if (isFreeTrial) {
       return MembershipScenario.freeTrial;

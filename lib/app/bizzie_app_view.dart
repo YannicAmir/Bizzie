@@ -73,35 +73,6 @@ class _BizzieAppViewState extends State<BizzieAppView>
     );
     context.read<AuthBloc>().add(const AuthEvent.statusRequested());
 
-    final currentState = context.read<AuthBloc>().state;
-    final isDetermined = currentState.maybeMap(
-      authenticated: (_) => true,
-      unauthenticated: (_) => true,
-      failure: (_) => true,
-      orElse: () => false,
-    );
-
-    if (isDetermined) {
-      FlutterNativeSplash.remove();
-
-      currentState.mapOrNull(
-        authenticated: (state) {
-          final currentPath = _router.routeInformationProvider.value.uri.path;
-          final isFromCreateAccount = currentPath == AppRoutes.createAccount;
-
-          context.read<UserBloc>().add(
-            UserEvent.loadUser(uid: state.user.id, silent: isFromCreateAccount),
-          );
-          context.read<WatchlistBloc>().add(
-            WatchlistEvent.loadRequested(uid: state.user.id),
-          );
-          context.read<NotificationBloc>().add(
-            const NotificationEvent.setupRequested(),
-          );
-        },
-      );
-    }
-
     _setupNotifications();
   }
 

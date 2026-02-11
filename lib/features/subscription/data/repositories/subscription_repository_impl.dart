@@ -35,8 +35,6 @@ class SubscriptionRepositoryImpl implements ISubscriptionRepository {
     return _remoteDataSource.watchSubscriptionStatus().asyncMap((dto) async {
       var domainStatus = dto.toDomain();
 
-      // Truth Reconciliation (Stream):
-      // Apply the same defensive logic as getSubscriptionStatus to ensure the stream is consistent.
       if (domainStatus.isSubscribed) {
         final offeringsResult = await getOfferings();
 

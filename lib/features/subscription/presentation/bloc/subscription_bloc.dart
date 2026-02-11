@@ -91,9 +91,7 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
     SubscriptionAppResumed event,
     Emitter<SubscriptionState> emit,
   ) async {
-    _logger.info('App resumed, refreshing subscription status and offerings');
-
-    await _refreshSubscriptionStatus(NoParams());
+    _logger.info('App resumed, refreshing offerings');
 
     add(const SubscriptionEvent.offeringsRequested());
   }
@@ -151,8 +149,6 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
           _logger.severe('Subscription status stream error', error, stack);
         },
       );
-
-      _refreshSubscriptionStatus(NoParams());
 
       add(const SubscriptionEvent.offeringsRequested());
     }
@@ -217,10 +213,7 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
     SubscriptionExpirationReached event,
     Emitter<SubscriptionState> emit,
   ) async {
-    _logger.info(
-      'Processing expiration event. Invalidating cache and refreshing.',
-    );
-    _refreshSubscriptionStatus(NoParams());
+    _logger.info('Processing expiration event. Refreshing offerings.');
     add(const SubscriptionEvent.offeringsRequested());
   }
 

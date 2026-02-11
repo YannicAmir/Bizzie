@@ -58,14 +58,6 @@ abstract class SubscriptionStatusDto with _$SubscriptionStatusDto {
 
       activePlanId = plusEntitlement.productIdentifier;
       expirationDate = DateTime.tryParse(plusEntitlement.expirationDate ?? '');
-      // Diagnostic Logging (Purest Gold Observability)
-      debugPrint(
-        '[SubscriptionStatusDto] RAW PeriodType: ${plusEntitlement.periodType}',
-      );
-      debugPrint('[SubscriptionStatusDto] MAPPED PeriodType: $periodType');
-      debugPrint(
-        '[SubscriptionStatusDto] activePlanId: ${plusEntitlement.productIdentifier}',
-      );
 
       _logger.info(
         'Processing Active Entitlement: ${plusEntitlement.productIdentifier} '
