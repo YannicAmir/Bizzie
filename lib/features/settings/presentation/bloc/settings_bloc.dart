@@ -6,6 +6,7 @@ import 'package:bizzie/features/settings/domain/usecases/launch_url_usecase.dart
 import 'package:bizzie/features/settings/domain/usecases/open_app_settings_usecase.dart';
 import 'package:bizzie/features/settings/domain/usecases/reset_password_usecase.dart';
 import 'package:bizzie/features/settings/domain/usecases/sign_out_usecase.dart';
+import 'package:bizzie/features/settings/domain/usecases/get_subscription_status_usecase.dart';
 import 'package:bizzie/features/settings/domain/usecases/submit_feedback_usecase.dart';
 import 'package:bizzie/features/settings/domain/usecases/toggle_notifications_usecase.dart';
 import 'package:bizzie/features/settings/presentation/bloc/settings_event.dart';
@@ -26,6 +27,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
   final ResetPasswordUseCase _resetPasswordUseCase;
   final IAuthRepository _authRepository;
   final OpenAppSettingsUseCase _openAppSettingsUseCase;
+  final GetSubscriptionStatusUseCase _getSubscriptionStatusUseCase;
 
   SettingsBloc(
     this._getSettingsDisplayDataUseCase,
@@ -36,6 +38,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     this._resetPasswordUseCase,
     this._authRepository,
     this._openAppSettingsUseCase,
+    this._getSubscriptionStatusUseCase,
   ) : super(const SettingsState.initial()) {
     on<SettingsEvent>((event, emit) async {
       await event.map(
@@ -155,8 +158,25 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     dynamic event,
     Emitter<SettingsState> emit,
   ) async {
-    // To be implemented
-    _logger.info('Refreshing subscription (To Be Implemented)');
+    _logger.info('Refreshing subscription status');
+    final result = await _getSubscriptionStatusUseCase(NoParams());
+
+    result.fold(
+      (failure) => _logger.warning('Failed to refresh subscription', failure),
+      (status) {
+        _logger.info('Subscription refreshed successfully');
+        state.maybeMap(
+          loaded: (loadedState) {
+            emit(
+              loadedState.copyWith(
+                data: loadedState.data.copyWith(subscriptionStatus: status),
+              ),
+            );
+          },
+          orElse: () => null,
+        );
+      },
+    );
   }
 
   Future<void> _onOpenUrl(dynamic event, Emitter<SettingsState> emit) async {

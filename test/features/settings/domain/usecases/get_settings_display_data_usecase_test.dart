@@ -71,56 +71,12 @@ void main() {
   const tAppVersion = '1.0.0';
 
   group('GetSettingsDisplayDataUseCase', () {
-    test(
-      'should return SettingsDisplayData when all repositories return success',
-      () async {
-        // Arrange
-        when(() => mockAuthRepository.currentUser).thenReturn(tAuthUser);
-        when(
-          () => mockUserRepository.getUser(tUserId),
-        ).thenAnswer((_) async => Right(tDomainUser));
-        when(
-          () => mockSubscriptionRepository.getSubscriptionStatus(),
-        ).thenAnswer((_) async => const Right(tSubscriptionStatus));
-        when(
-          () => mockAppInfoService.getAppVersion(),
-        ).thenAnswer((_) async => tAppVersion);
-        when(
-          () => mockNotificationService.isSystemAuthorized(),
-        ).thenAnswer((_) async => true);
-
-        // Act
-        final result = await useCase(NoParams());
-
-        // Assert
-        expect(
-          result,
-          Right(
-            SettingsDisplayData(
-              user: tDomainUser,
-              subscriptionStatus: tSubscriptionStatus,
-              isAppNotificationsEnabled: true,
-              isSystemNotificationsEnabled: true,
-              appVersion: tAppVersion,
-              favoriteSector: 'Technology',
-            ),
-          ),
-        );
-        verify(() => mockUserRepository.getUser(tUserId)).called(1);
-        verify(
-          () => mockSubscriptionRepository.getSubscriptionStatus(),
-        ).called(1);
-        verify(() => mockAppInfoService.getAppVersion()).called(1);
-        verify(() => mockNotificationService.isSystemAuthorized()).called(1);
-      },
-    );
-
-    test('should return Failure when IUserRepository fails', () async {
-      // Arrange
+    test('call_allSuccess_returnsSettingsDisplayData', () async {
+      // arrange
       when(() => mockAuthRepository.currentUser).thenReturn(tAuthUser);
       when(
         () => mockUserRepository.getUser(tUserId),
-      ).thenAnswer((_) async => const Left(Failure.server('Server Error')));
+      ).thenAnswer((_) async => Right(tDomainUser));
       when(
         () => mockSubscriptionRepository.getSubscriptionStatus(),
       ).thenAnswer((_) async => const Right(tSubscriptionStatus));
@@ -131,23 +87,40 @@ void main() {
         () => mockNotificationService.isSystemAuthorized(),
       ).thenAnswer((_) async => true);
 
-      // Act
+      // act
       final result = await useCase(NoParams());
 
-      // Assert
-      expect(result, const Left(Failure.server('Server Error')));
+      // assert
+      expect(
+        result,
+        Right(
+          SettingsDisplayData(
+            user: tDomainUser,
+            subscriptionStatus: tSubscriptionStatus,
+            isAppNotificationsEnabled: tDomainUser.notificationsEnabled,
+            isSystemNotificationsEnabled: true,
+            appVersion: tAppVersion,
+            favoriteSector: tDomainUser.favoriteSector,
+          ),
+        ),
+      );
       verify(() => mockUserRepository.getUser(tUserId)).called(1);
+      verify(
+        () => mockSubscriptionRepository.getSubscriptionStatus(),
+      ).called(1);
+      verify(() => mockAppInfoService.getAppVersion()).called(1);
+      verify(() => mockNotificationService.isSystemAuthorized()).called(1);
     });
 
-    test('should return Failure when ISubscriptionRepository fails', () async {
-      // Arrange
+    test('call_userRepositoryFailure_returnsFailure', () async {
+      // arrange
       when(() => mockAuthRepository.currentUser).thenReturn(tAuthUser);
       when(
         () => mockUserRepository.getUser(tUserId),
-      ).thenAnswer((_) async => Right(tDomainUser));
+      ).thenAnswer((_) async => const Left(ServerFailure('Server Error')));
       when(
         () => mockSubscriptionRepository.getSubscriptionStatus(),
-      ).thenAnswer((_) async => const Left(Failure.server('Sub Error')));
+      ).thenAnswer((_) async => const Right(tSubscriptionStatus));
       when(
         () => mockAppInfoService.getAppVersion(),
       ).thenAnswer((_) async => tAppVersion);
@@ -155,48 +128,84 @@ void main() {
         () => mockNotificationService.isSystemAuthorized(),
       ).thenAnswer((_) async => true);
 
-      // Act
+      // act
       final result = await useCase(NoParams());
 
-      // Assert
-      expect(result, const Left(Failure.server('Sub Error')));
+      // assert
+      expect(result, const Left(ServerFailure('Server Error')));
+      verify(() => mockUserRepository.getUser(tUserId)).called(1);
     });
 
     test(
-      'should return "Unknown" version when AppInfoService throws exception (Non-critical failure)',
+      'call_subscriptionRepositoryFailure_returnsInitialStatus (Fail-Open)',
       () async {
-        // Arrange
+        // arrange
         when(() => mockAuthRepository.currentUser).thenReturn(tAuthUser);
         when(
           () => mockUserRepository.getUser(tUserId),
         ).thenAnswer((_) async => Right(tDomainUser));
         when(
           () => mockSubscriptionRepository.getSubscriptionStatus(),
-        ).thenAnswer((_) async => const Right(tSubscriptionStatus));
-        when(() => mockAppInfoService.getAppVersion()).thenThrow(Exception());
+        ).thenAnswer((_) async => const Left(ServerFailure('Sub Error')));
+        when(
+          () => mockAppInfoService.getAppVersion(),
+        ).thenAnswer((_) async => tAppVersion);
         when(
           () => mockNotificationService.isSystemAuthorized(),
         ).thenAnswer((_) async => true);
 
-        // Act
+        // act
         final result = await useCase(NoParams());
 
-        // Assert
+        // assert
         expect(
           result,
           Right(
             SettingsDisplayData(
               user: tDomainUser,
-              subscriptionStatus: tSubscriptionStatus,
-              isAppNotificationsEnabled: true,
+              subscriptionStatus: SubscriptionStatus.initial(),
+              isAppNotificationsEnabled: tDomainUser.notificationsEnabled,
               isSystemNotificationsEnabled: true,
-              appVersion: 'Unknown',
-              favoriteSector: 'Technology',
+              appVersion: tAppVersion,
+              favoriteSector: tDomainUser.favoriteSector,
             ),
           ),
         );
-        verify(() => mockAppInfoService.getAppVersion()).called(1);
       },
     );
+
+    test('call_appInfoServiceFailure_returnsUnknownVersion', () async {
+      // arrange
+      when(() => mockAuthRepository.currentUser).thenReturn(tAuthUser);
+      when(
+        () => mockUserRepository.getUser(tUserId),
+      ).thenAnswer((_) async => Right(tDomainUser));
+      when(
+        () => mockSubscriptionRepository.getSubscriptionStatus(),
+      ).thenAnswer((_) async => const Right(tSubscriptionStatus));
+      when(() => mockAppInfoService.getAppVersion()).thenThrow(Exception());
+      when(
+        () => mockNotificationService.isSystemAuthorized(),
+      ).thenAnswer((_) async => true);
+
+      // act
+      final result = await useCase(NoParams());
+
+      // assert
+      expect(
+        result,
+        Right(
+          SettingsDisplayData(
+            user: tDomainUser,
+            subscriptionStatus: tSubscriptionStatus,
+            isAppNotificationsEnabled: tDomainUser.notificationsEnabled,
+            isSystemNotificationsEnabled: true,
+            appVersion: 'Unknown',
+            favoriteSector: tDomainUser.favoriteSector,
+          ),
+        ),
+      );
+      verify(() => mockAppInfoService.getAppVersion()).called(1);
+    });
   });
 }

@@ -41,21 +41,14 @@ class GetSettingsDisplayDataUseCase
       return const Left(CacheFailure('User not found'));
     }
 
-    final futures = await Future.wait([
+    final (userRes, subRes, appVersion, isSystemAuthorized) = await (
       _userRepository.getUser(user.id),
       _subscriptionRepository.getSubscriptionStatus(),
       _getAppVersionSafe(),
       _notificationService.isSystemAuthorized(),
-    ]);
+    ).wait;
 
-    final results = (
-      futures[0] as Either<Failure, domain.UserModel>,
-      futures[1] as Either<Failure, SubscriptionStatus>,
-      futures[2] as String,
-      futures[3] as bool,
-    );
-
-    return _aggregateData(results);
+    return _aggregateData((userRes, subRes, appVersion, isSystemAuthorized));
   }
 
   Future<String> _getAppVersionSafe() async {

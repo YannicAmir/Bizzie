@@ -315,9 +315,9 @@ import '../features/search/domain/usecases/search_stocks_usecase.dart' as _i130;
 import '../features/search/presentation/bloc/search_bloc.dart' as _i348;
 import '../features/settings/domain/usecases/get_settings_display_data_usecase.dart'
     as _i594;
+import '../features/settings/domain/usecases/get_subscription_status_usecase.dart'
+    as _i714;
 import '../features/settings/domain/usecases/launch_url_usecase.dart' as _i936;
-import '../features/settings/domain/usecases/manage_subscription_usecase.dart'
-    as _i829;
 import '../features/settings/domain/usecases/open_app_settings_usecase.dart'
     as _i579;
 import '../features/settings/domain/usecases/reset_password_usecase.dart'
@@ -1006,9 +1006,10 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i659.ISubscriptionRepository>(),
       ),
     );
-    gh.lazySingleton<_i829.ManageSubscriptionUseCase>(
-      () =>
-          _i829.ManageSubscriptionUseCase(gh<_i659.ISubscriptionRepository>()),
+    gh.lazySingleton<_i714.GetSubscriptionStatusUseCase>(
+      () => _i714.GetSubscriptionStatusUseCase(
+        gh<_i659.ISubscriptionRepository>(),
+      ),
     );
     gh.lazySingleton<_i273.GetDashboardReportsUseCase>(
       () => _i273.GetDashboardReportsUseCase(gh<_i882.IReportsRepository>()),
@@ -1024,6 +1025,19 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i423.CompanyPeRatioBloc>(
       () => _i423.CompanyPeRatioBloc(gh<_i657.GetPeRatioUseCase>()),
+    );
+    gh.factory<_i419.SettingsBloc>(
+      () => _i419.SettingsBloc(
+        gh<_i594.GetSettingsDisplayDataUseCase>(),
+        gh<_i596.ToggleNotificationsUseCase>(),
+        gh<_i526.SubmitFeedbackUseCase>(),
+        gh<_i936.LaunchUrlUseCase>(),
+        gh<_i83.SignOutUseCase>(),
+        gh<_i244.ResetPasswordUseCase>(),
+        gh<_i685.IAuthRepository>(),
+        gh<_i579.OpenAppSettingsUseCase>(),
+        gh<_i714.GetSubscriptionStatusUseCase>(),
+      ),
     );
     gh.lazySingleton<_i687.GetProfileDisplayDataUseCase>(
       () => _i687.GetProfileDisplayDataUseCase(
@@ -1049,18 +1063,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i685.IAuthRepository>(),
         gh<_i561.GetUserUseCase>(),
         gh<_i693.GetRecommendedBrandsUseCase>(),
-      ),
-    );
-    gh.factory<_i419.SettingsBloc>(
-      () => _i419.SettingsBloc(
-        gh<_i594.GetSettingsDisplayDataUseCase>(),
-        gh<_i596.ToggleNotificationsUseCase>(),
-        gh<_i526.SubmitFeedbackUseCase>(),
-        gh<_i936.LaunchUrlUseCase>(),
-        gh<_i83.SignOutUseCase>(),
-        gh<_i244.ResetPasswordUseCase>(),
-        gh<_i685.IAuthRepository>(),
-        gh<_i579.OpenAppSettingsUseCase>(),
       ),
     );
     gh.factory<_i754.GetDividendInfoUseCase>(

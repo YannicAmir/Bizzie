@@ -11,6 +11,7 @@ import 'package:bizzie/features/settings/domain/usecases/reset_password_usecase.
 import 'package:bizzie/features/settings/domain/usecases/sign_out_usecase.dart';
 import 'package:bizzie/features/settings/domain/usecases/submit_feedback_usecase.dart';
 import 'package:bizzie/features/settings/domain/usecases/toggle_notifications_usecase.dart';
+import 'package:bizzie/features/settings/domain/usecases/get_subscription_status_usecase.dart';
 import 'package:bizzie/features/settings/presentation/bloc/settings_bloc.dart';
 import 'package:bizzie/features/settings/presentation/bloc/settings_event.dart';
 import 'package:bizzie/features/settings/presentation/bloc/settings_state.dart';
@@ -41,6 +42,9 @@ class MockAuthRepository extends Mock implements IAuthRepository {}
 class MockOpenAppSettingsUseCase extends Mock
     implements OpenAppSettingsUseCase {}
 
+class MockGetSubscriptionStatusUseCase extends Mock
+    implements GetSubscriptionStatusUseCase {}
+
 void main() {
   late MockGetSettingsDisplayDataUseCase mockGetSettingsDisplayDataUseCase;
   late MockToggleNotificationsUseCase mockToggleNotificationsUseCase;
@@ -50,6 +54,7 @@ void main() {
   late MockResetPasswordUseCase mockResetPasswordUseCase;
   late MockAuthRepository mockAuthRepository;
   late MockOpenAppSettingsUseCase mockOpenAppSettingsUseCase;
+  late MockGetSubscriptionStatusUseCase mockGetSubscriptionStatusUseCase;
   late SettingsBloc settingsBloc;
 
   setUp(() {
@@ -61,6 +66,7 @@ void main() {
     mockResetPasswordUseCase = MockResetPasswordUseCase();
     mockAuthRepository = MockAuthRepository();
     mockOpenAppSettingsUseCase = MockOpenAppSettingsUseCase();
+    mockGetSubscriptionStatusUseCase = MockGetSubscriptionStatusUseCase();
 
     settingsBloc = SettingsBloc(
       mockGetSettingsDisplayDataUseCase,
@@ -71,6 +77,7 @@ void main() {
       mockResetPasswordUseCase,
       mockAuthRepository,
       mockOpenAppSettingsUseCase,
+      mockGetSubscriptionStatusUseCase,
     );
 
     registerFallbackValue(NoParams());
