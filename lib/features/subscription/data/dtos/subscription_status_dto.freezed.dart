@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$SubscriptionStatusDto implements DiagnosticableTreeMixin {
 
- bool get isSubscribed; Set<String> get activeEntitlements; Set<String> get activeProductIds; DateTime? get expirationDate; String? get managementURL; String? get periodType; String? get activePlanId;
+ bool get isSubscribed; Set<String> get activeEntitlements; Set<String> get activeProductIds; DateTime? get expirationDate; DateTime? get latestPurchaseDate; String? get managementURL; String? get periodType; String? get activePlanId;
 /// Create a copy of SubscriptionStatusDto
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -29,21 +29,21 @@ $SubscriptionStatusDtoCopyWith<SubscriptionStatusDto> get copyWith => _$Subscrip
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
   properties
     ..add(DiagnosticsProperty('type', 'SubscriptionStatusDto'))
-    ..add(DiagnosticsProperty('isSubscribed', isSubscribed))..add(DiagnosticsProperty('activeEntitlements', activeEntitlements))..add(DiagnosticsProperty('activeProductIds', activeProductIds))..add(DiagnosticsProperty('expirationDate', expirationDate))..add(DiagnosticsProperty('managementURL', managementURL))..add(DiagnosticsProperty('periodType', periodType))..add(DiagnosticsProperty('activePlanId', activePlanId));
+    ..add(DiagnosticsProperty('isSubscribed', isSubscribed))..add(DiagnosticsProperty('activeEntitlements', activeEntitlements))..add(DiagnosticsProperty('activeProductIds', activeProductIds))..add(DiagnosticsProperty('expirationDate', expirationDate))..add(DiagnosticsProperty('latestPurchaseDate', latestPurchaseDate))..add(DiagnosticsProperty('managementURL', managementURL))..add(DiagnosticsProperty('periodType', periodType))..add(DiagnosticsProperty('activePlanId', activePlanId));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SubscriptionStatusDto&&(identical(other.isSubscribed, isSubscribed) || other.isSubscribed == isSubscribed)&&const DeepCollectionEquality().equals(other.activeEntitlements, activeEntitlements)&&const DeepCollectionEquality().equals(other.activeProductIds, activeProductIds)&&(identical(other.expirationDate, expirationDate) || other.expirationDate == expirationDate)&&(identical(other.managementURL, managementURL) || other.managementURL == managementURL)&&(identical(other.periodType, periodType) || other.periodType == periodType)&&(identical(other.activePlanId, activePlanId) || other.activePlanId == activePlanId));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SubscriptionStatusDto&&(identical(other.isSubscribed, isSubscribed) || other.isSubscribed == isSubscribed)&&const DeepCollectionEquality().equals(other.activeEntitlements, activeEntitlements)&&const DeepCollectionEquality().equals(other.activeProductIds, activeProductIds)&&(identical(other.expirationDate, expirationDate) || other.expirationDate == expirationDate)&&(identical(other.latestPurchaseDate, latestPurchaseDate) || other.latestPurchaseDate == latestPurchaseDate)&&(identical(other.managementURL, managementURL) || other.managementURL == managementURL)&&(identical(other.periodType, periodType) || other.periodType == periodType)&&(identical(other.activePlanId, activePlanId) || other.activePlanId == activePlanId));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,isSubscribed,const DeepCollectionEquality().hash(activeEntitlements),const DeepCollectionEquality().hash(activeProductIds),expirationDate,managementURL,periodType,activePlanId);
+int get hashCode => Object.hash(runtimeType,isSubscribed,const DeepCollectionEquality().hash(activeEntitlements),const DeepCollectionEquality().hash(activeProductIds),expirationDate,latestPurchaseDate,managementURL,periodType,activePlanId);
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'SubscriptionStatusDto(isSubscribed: $isSubscribed, activeEntitlements: $activeEntitlements, activeProductIds: $activeProductIds, expirationDate: $expirationDate, managementURL: $managementURL, periodType: $periodType, activePlanId: $activePlanId)';
+  return 'SubscriptionStatusDto(isSubscribed: $isSubscribed, activeEntitlements: $activeEntitlements, activeProductIds: $activeProductIds, expirationDate: $expirationDate, latestPurchaseDate: $latestPurchaseDate, managementURL: $managementURL, periodType: $periodType, activePlanId: $activePlanId)';
 }
 
 
@@ -54,7 +54,7 @@ abstract mixin class $SubscriptionStatusDtoCopyWith<$Res>  {
   factory $SubscriptionStatusDtoCopyWith(SubscriptionStatusDto value, $Res Function(SubscriptionStatusDto) _then) = _$SubscriptionStatusDtoCopyWithImpl;
 @useResult
 $Res call({
- bool isSubscribed, Set<String> activeEntitlements, Set<String> activeProductIds, DateTime? expirationDate, String? managementURL, String? periodType, String? activePlanId
+ bool isSubscribed, Set<String> activeEntitlements, Set<String> activeProductIds, DateTime? expirationDate, DateTime? latestPurchaseDate, String? managementURL, String? periodType, String? activePlanId
 });
 
 
@@ -71,12 +71,13 @@ class _$SubscriptionStatusDtoCopyWithImpl<$Res>
 
 /// Create a copy of SubscriptionStatusDto
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? isSubscribed = null,Object? activeEntitlements = null,Object? activeProductIds = null,Object? expirationDate = freezed,Object? managementURL = freezed,Object? periodType = freezed,Object? activePlanId = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? isSubscribed = null,Object? activeEntitlements = null,Object? activeProductIds = null,Object? expirationDate = freezed,Object? latestPurchaseDate = freezed,Object? managementURL = freezed,Object? periodType = freezed,Object? activePlanId = freezed,}) {
   return _then(_self.copyWith(
 isSubscribed: null == isSubscribed ? _self.isSubscribed : isSubscribed // ignore: cast_nullable_to_non_nullable
 as bool,activeEntitlements: null == activeEntitlements ? _self.activeEntitlements : activeEntitlements // ignore: cast_nullable_to_non_nullable
 as Set<String>,activeProductIds: null == activeProductIds ? _self.activeProductIds : activeProductIds // ignore: cast_nullable_to_non_nullable
 as Set<String>,expirationDate: freezed == expirationDate ? _self.expirationDate : expirationDate // ignore: cast_nullable_to_non_nullable
+as DateTime?,latestPurchaseDate: freezed == latestPurchaseDate ? _self.latestPurchaseDate : latestPurchaseDate // ignore: cast_nullable_to_non_nullable
 as DateTime?,managementURL: freezed == managementURL ? _self.managementURL : managementURL // ignore: cast_nullable_to_non_nullable
 as String?,periodType: freezed == periodType ? _self.periodType : periodType // ignore: cast_nullable_to_non_nullable
 as String?,activePlanId: freezed == activePlanId ? _self.activePlanId : activePlanId // ignore: cast_nullable_to_non_nullable
@@ -165,10 +166,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool isSubscribed,  Set<String> activeEntitlements,  Set<String> activeProductIds,  DateTime? expirationDate,  String? managementURL,  String? periodType,  String? activePlanId)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool isSubscribed,  Set<String> activeEntitlements,  Set<String> activeProductIds,  DateTime? expirationDate,  DateTime? latestPurchaseDate,  String? managementURL,  String? periodType,  String? activePlanId)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _SubscriptionStatusDto() when $default != null:
-return $default(_that.isSubscribed,_that.activeEntitlements,_that.activeProductIds,_that.expirationDate,_that.managementURL,_that.periodType,_that.activePlanId);case _:
+return $default(_that.isSubscribed,_that.activeEntitlements,_that.activeProductIds,_that.expirationDate,_that.latestPurchaseDate,_that.managementURL,_that.periodType,_that.activePlanId);case _:
   return orElse();
 
 }
@@ -186,10 +187,10 @@ return $default(_that.isSubscribed,_that.activeEntitlements,_that.activeProductI
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool isSubscribed,  Set<String> activeEntitlements,  Set<String> activeProductIds,  DateTime? expirationDate,  String? managementURL,  String? periodType,  String? activePlanId)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool isSubscribed,  Set<String> activeEntitlements,  Set<String> activeProductIds,  DateTime? expirationDate,  DateTime? latestPurchaseDate,  String? managementURL,  String? periodType,  String? activePlanId)  $default,) {final _that = this;
 switch (_that) {
 case _SubscriptionStatusDto():
-return $default(_that.isSubscribed,_that.activeEntitlements,_that.activeProductIds,_that.expirationDate,_that.managementURL,_that.periodType,_that.activePlanId);case _:
+return $default(_that.isSubscribed,_that.activeEntitlements,_that.activeProductIds,_that.expirationDate,_that.latestPurchaseDate,_that.managementURL,_that.periodType,_that.activePlanId);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -206,10 +207,10 @@ return $default(_that.isSubscribed,_that.activeEntitlements,_that.activeProductI
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool isSubscribed,  Set<String> activeEntitlements,  Set<String> activeProductIds,  DateTime? expirationDate,  String? managementURL,  String? periodType,  String? activePlanId)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool isSubscribed,  Set<String> activeEntitlements,  Set<String> activeProductIds,  DateTime? expirationDate,  DateTime? latestPurchaseDate,  String? managementURL,  String? periodType,  String? activePlanId)?  $default,) {final _that = this;
 switch (_that) {
 case _SubscriptionStatusDto() when $default != null:
-return $default(_that.isSubscribed,_that.activeEntitlements,_that.activeProductIds,_that.expirationDate,_that.managementURL,_that.periodType,_that.activePlanId);case _:
+return $default(_that.isSubscribed,_that.activeEntitlements,_that.activeProductIds,_that.expirationDate,_that.latestPurchaseDate,_that.managementURL,_that.periodType,_that.activePlanId);case _:
   return null;
 
 }
@@ -221,7 +222,7 @@ return $default(_that.isSubscribed,_that.activeEntitlements,_that.activeProductI
 @JsonSerializable()
 
 class _SubscriptionStatusDto extends SubscriptionStatusDto with DiagnosticableTreeMixin {
-  const _SubscriptionStatusDto({required this.isSubscribed, required final  Set<String> activeEntitlements, required final  Set<String> activeProductIds, this.expirationDate, this.managementURL, this.periodType, this.activePlanId}): _activeEntitlements = activeEntitlements,_activeProductIds = activeProductIds,super._();
+  const _SubscriptionStatusDto({required this.isSubscribed, required final  Set<String> activeEntitlements, required final  Set<String> activeProductIds, this.expirationDate, this.latestPurchaseDate, this.managementURL, this.periodType, this.activePlanId}): _activeEntitlements = activeEntitlements,_activeProductIds = activeProductIds,super._();
   factory _SubscriptionStatusDto.fromJson(Map<String, dynamic> json) => _$SubscriptionStatusDtoFromJson(json);
 
 @override final  bool isSubscribed;
@@ -240,6 +241,7 @@ class _SubscriptionStatusDto extends SubscriptionStatusDto with DiagnosticableTr
 }
 
 @override final  DateTime? expirationDate;
+@override final  DateTime? latestPurchaseDate;
 @override final  String? managementURL;
 @override final  String? periodType;
 @override final  String? activePlanId;
@@ -258,21 +260,21 @@ Map<String, dynamic> toJson() {
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
   properties
     ..add(DiagnosticsProperty('type', 'SubscriptionStatusDto'))
-    ..add(DiagnosticsProperty('isSubscribed', isSubscribed))..add(DiagnosticsProperty('activeEntitlements', activeEntitlements))..add(DiagnosticsProperty('activeProductIds', activeProductIds))..add(DiagnosticsProperty('expirationDate', expirationDate))..add(DiagnosticsProperty('managementURL', managementURL))..add(DiagnosticsProperty('periodType', periodType))..add(DiagnosticsProperty('activePlanId', activePlanId));
+    ..add(DiagnosticsProperty('isSubscribed', isSubscribed))..add(DiagnosticsProperty('activeEntitlements', activeEntitlements))..add(DiagnosticsProperty('activeProductIds', activeProductIds))..add(DiagnosticsProperty('expirationDate', expirationDate))..add(DiagnosticsProperty('latestPurchaseDate', latestPurchaseDate))..add(DiagnosticsProperty('managementURL', managementURL))..add(DiagnosticsProperty('periodType', periodType))..add(DiagnosticsProperty('activePlanId', activePlanId));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SubscriptionStatusDto&&(identical(other.isSubscribed, isSubscribed) || other.isSubscribed == isSubscribed)&&const DeepCollectionEquality().equals(other._activeEntitlements, _activeEntitlements)&&const DeepCollectionEquality().equals(other._activeProductIds, _activeProductIds)&&(identical(other.expirationDate, expirationDate) || other.expirationDate == expirationDate)&&(identical(other.managementURL, managementURL) || other.managementURL == managementURL)&&(identical(other.periodType, periodType) || other.periodType == periodType)&&(identical(other.activePlanId, activePlanId) || other.activePlanId == activePlanId));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SubscriptionStatusDto&&(identical(other.isSubscribed, isSubscribed) || other.isSubscribed == isSubscribed)&&const DeepCollectionEquality().equals(other._activeEntitlements, _activeEntitlements)&&const DeepCollectionEquality().equals(other._activeProductIds, _activeProductIds)&&(identical(other.expirationDate, expirationDate) || other.expirationDate == expirationDate)&&(identical(other.latestPurchaseDate, latestPurchaseDate) || other.latestPurchaseDate == latestPurchaseDate)&&(identical(other.managementURL, managementURL) || other.managementURL == managementURL)&&(identical(other.periodType, periodType) || other.periodType == periodType)&&(identical(other.activePlanId, activePlanId) || other.activePlanId == activePlanId));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,isSubscribed,const DeepCollectionEquality().hash(_activeEntitlements),const DeepCollectionEquality().hash(_activeProductIds),expirationDate,managementURL,periodType,activePlanId);
+int get hashCode => Object.hash(runtimeType,isSubscribed,const DeepCollectionEquality().hash(_activeEntitlements),const DeepCollectionEquality().hash(_activeProductIds),expirationDate,latestPurchaseDate,managementURL,periodType,activePlanId);
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'SubscriptionStatusDto(isSubscribed: $isSubscribed, activeEntitlements: $activeEntitlements, activeProductIds: $activeProductIds, expirationDate: $expirationDate, managementURL: $managementURL, periodType: $periodType, activePlanId: $activePlanId)';
+  return 'SubscriptionStatusDto(isSubscribed: $isSubscribed, activeEntitlements: $activeEntitlements, activeProductIds: $activeProductIds, expirationDate: $expirationDate, latestPurchaseDate: $latestPurchaseDate, managementURL: $managementURL, periodType: $periodType, activePlanId: $activePlanId)';
 }
 
 
@@ -283,7 +285,7 @@ abstract mixin class _$SubscriptionStatusDtoCopyWith<$Res> implements $Subscript
   factory _$SubscriptionStatusDtoCopyWith(_SubscriptionStatusDto value, $Res Function(_SubscriptionStatusDto) _then) = __$SubscriptionStatusDtoCopyWithImpl;
 @override @useResult
 $Res call({
- bool isSubscribed, Set<String> activeEntitlements, Set<String> activeProductIds, DateTime? expirationDate, String? managementURL, String? periodType, String? activePlanId
+ bool isSubscribed, Set<String> activeEntitlements, Set<String> activeProductIds, DateTime? expirationDate, DateTime? latestPurchaseDate, String? managementURL, String? periodType, String? activePlanId
 });
 
 
@@ -300,12 +302,13 @@ class __$SubscriptionStatusDtoCopyWithImpl<$Res>
 
 /// Create a copy of SubscriptionStatusDto
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? isSubscribed = null,Object? activeEntitlements = null,Object? activeProductIds = null,Object? expirationDate = freezed,Object? managementURL = freezed,Object? periodType = freezed,Object? activePlanId = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? isSubscribed = null,Object? activeEntitlements = null,Object? activeProductIds = null,Object? expirationDate = freezed,Object? latestPurchaseDate = freezed,Object? managementURL = freezed,Object? periodType = freezed,Object? activePlanId = freezed,}) {
   return _then(_SubscriptionStatusDto(
 isSubscribed: null == isSubscribed ? _self.isSubscribed : isSubscribed // ignore: cast_nullable_to_non_nullable
 as bool,activeEntitlements: null == activeEntitlements ? _self._activeEntitlements : activeEntitlements // ignore: cast_nullable_to_non_nullable
 as Set<String>,activeProductIds: null == activeProductIds ? _self._activeProductIds : activeProductIds // ignore: cast_nullable_to_non_nullable
 as Set<String>,expirationDate: freezed == expirationDate ? _self.expirationDate : expirationDate // ignore: cast_nullable_to_non_nullable
+as DateTime?,latestPurchaseDate: freezed == latestPurchaseDate ? _self.latestPurchaseDate : latestPurchaseDate // ignore: cast_nullable_to_non_nullable
 as DateTime?,managementURL: freezed == managementURL ? _self.managementURL : managementURL // ignore: cast_nullable_to_non_nullable
 as String?,periodType: freezed == periodType ? _self.periodType : periodType // ignore: cast_nullable_to_non_nullable
 as String?,activePlanId: freezed == activePlanId ? _self.activePlanId : activePlanId // ignore: cast_nullable_to_non_nullable

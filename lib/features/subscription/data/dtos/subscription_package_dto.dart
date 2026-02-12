@@ -20,6 +20,7 @@ abstract class SubscriptionPackageDto with _$SubscriptionPackageDto {
     required double price,
     required String currencyCode,
     @Default(false) bool isEligibleForTrial,
+    @Default(false) bool hasFreeTrial,
   }) = _SubscriptionPackageDto;
 
   factory SubscriptionPackageDto.empty() => const SubscriptionPackageDto(
@@ -49,6 +50,7 @@ abstract class SubscriptionPackageDto with _$SubscriptionPackageDto {
       price: p.storeProduct.price,
       currencyCode: p.storeProduct.currencyCode,
       isEligibleForTrial: p.storeProduct.introductoryPrice != null,
+      hasFreeTrial: p.storeProduct.introductoryPrice != null,
     );
   }
 
@@ -87,6 +89,7 @@ abstract class SubscriptionPackageDto with _$SubscriptionPackageDto {
       price: price,
       currencyCode: currencyCode,
       isEligibleForTrial: isEligibleForTrial,
+      hasFreeTrial: hasFreeTrial,
     );
   }
 }

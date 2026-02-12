@@ -5,6 +5,7 @@ import 'package:bizzie/features/subscription/domain/extensions/subscription_stat
 import 'package:bizzie/features/subscription/domain/models/subscription_status.dart';
 import 'package:bizzie/features/subscription/presentation/bloc/subscription_bloc.dart';
 import 'package:bizzie/features/subscription/presentation/bloc/subscription_state.dart';
+import 'package:bizzie/features/subscription/presentation/bloc/subscription_event.dart';
 import 'package:bizzie/features/subscription/presentation/widgets/subscription_gift_modal.dart';
 import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
 import 'package:bizzie/features/user/presentation/bloc/user_state_extensions.dart';
@@ -27,6 +28,14 @@ class SubscriptionDetailsPage extends StatefulWidget {
 }
 
 class _SubscriptionDetailsPageState extends State<SubscriptionDetailsPage> {
+  @override
+  void initState() {
+    super.initState();
+    context.read<SubscriptionBloc>().add(
+      const SubscriptionEvent.offeringsRequested(),
+    );
+  }
+
   void _showGiftModal() {
     showModalBottomSheet(
       context: context,

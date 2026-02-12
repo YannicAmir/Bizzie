@@ -21,6 +21,7 @@ _SubscriptionPackage _$SubscriptionPackageFromJson(Map<String, dynamic> json) =>
       price: (json['price'] as num).toDouble(),
       currencyCode: json['currencyCode'] as String,
       isEligibleForTrial: json['isEligibleForTrial'] as bool? ?? false,
+      hasFreeTrial: json['hasFreeTrial'] as bool? ?? false,
     );
 
 Map<String, dynamic> _$SubscriptionPackageToJson(
@@ -36,6 +37,7 @@ Map<String, dynamic> _$SubscriptionPackageToJson(
   'price': instance.price,
   'currencyCode': instance.currencyCode,
   'isEligibleForTrial': instance.isEligibleForTrial,
+  'hasFreeTrial': instance.hasFreeTrial,
 };
 
 const _$SubscriptionPackageTypeEnumMap = {

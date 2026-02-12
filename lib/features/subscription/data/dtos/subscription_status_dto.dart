@@ -5,8 +5,12 @@ import 'package:bizzie/features/subscription/domain/models/subscription_status.d
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 
+import 'package:bizzie/core/logging/bizzie_logger.dart';
+
 part 'subscription_status_dto.freezed.dart';
 part 'subscription_status_dto.g.dart';
+
+final _logger = BizzieLogger('SubscriptionStatusDto');
 
 @freezed
 abstract class SubscriptionStatusDto with _$SubscriptionStatusDto {
@@ -16,6 +20,7 @@ abstract class SubscriptionStatusDto with _$SubscriptionStatusDto {
     required Set<String> activeEntitlements,
     required Set<String> activeProductIds,
     DateTime? expirationDate,
+    DateTime? latestPurchaseDate,
     String? managementURL,
     String? periodType,
     String? activePlanId,
@@ -36,6 +41,7 @@ abstract class SubscriptionStatusDto with _$SubscriptionStatusDto {
     final activeEntitlements = info.entitlements.active.keys.toSet();
     final activeProductIds = info.activeSubscriptions.toSet();
     DateTime? expirationDate;
+    DateTime? latestPurchaseDate;
     String? periodType;
     String? activePlanId;
 
@@ -43,10 +49,23 @@ abstract class SubscriptionStatusDto with _$SubscriptionStatusDto {
         info.entitlements.active[SubscriptionConstants.entitlementPlus];
 
     if (plusEntitlement != null) {
-      expirationDate = DateTime.tryParse(plusEntitlement.expirationDate ?? '');
+      final expStr = plusEntitlement.expirationDate;
+      if (expStr != null) {
+        expirationDate = DateTime.tryParse(expStr)?.toUtc();
+      }
+
+      final purStr = plusEntitlement.latestPurchaseDate;
+      latestPurchaseDate = DateTime.tryParse(purStr)?.toUtc();
 
       final isExpired =
-          expirationDate != null && expirationDate.isBefore(DateTime.now());
+          expirationDate != null &&
+          expirationDate.isBefore(DateTime.now().toUtc());
+
+      _logger.info(
+        'RC Entitlement Debug: Product=${plusEntitlement.productIdentifier}, '
+        'PeriodType=${plusEntitlement.periodType}, Exp=$expirationDate, '
+        'Pur=$latestPurchaseDate, IsExpired=$isExpired, Now=${DateTime.now().toUtc()}',
+      );
 
       if (!isExpired) {
         isSubscribed = true;
@@ -63,7 +82,7 @@ abstract class SubscriptionStatusDto with _$SubscriptionStatusDto {
     }
 
     if (expirationDate == null && info.latestExpirationDate != null) {
-      expirationDate = DateTime.tryParse(info.latestExpirationDate!);
+      expirationDate = DateTime.tryParse(info.latestExpirationDate!)?.toUtc();
     }
 
     return SubscriptionStatusDto(
@@ -71,6 +90,7 @@ abstract class SubscriptionStatusDto with _$SubscriptionStatusDto {
       activeEntitlements: activeEntitlements,
       activeProductIds: activeProductIds,
       expirationDate: expirationDate,
+      latestPurchaseDate: latestPurchaseDate,
       managementURL: info.managementURL,
       periodType: periodType,
       activePlanId: activePlanId,
@@ -83,6 +103,7 @@ abstract class SubscriptionStatusDto with _$SubscriptionStatusDto {
       activeEntitlements: activeEntitlements,
       activeProductIds: activeProductIds,
       expirationDate: expirationDate,
+      latestPurchaseDate: latestPurchaseDate,
       managementURL: managementURL,
       periodType: SubscriptionPeriodType.fromString(periodType),
       activePlanId: activePlanId,

@@ -206,7 +206,7 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
     _expirationTimer = null;
 
     if (status.isSubscribed && status.expirationDate != null) {
-      final now = DateTime.now();
+      final now = DateTime.now().toUtc();
       if (status.expirationDate!.isAfter(now)) {
         final duration = status.expirationDate!.difference(now);
         final timerDuration = duration + const Duration(seconds: 2);
@@ -317,6 +317,19 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
     }
 
     _logger.info('Offerings requested');
+
+    final status = state.status;
+    if (status.isSubscribed && status.expirationDate != null) {
+      final now = DateTime.now().toUtc();
+      final diff = status.expirationDate!.difference(now);
+      if (diff.inMinutes < 35) {
+        _logger.info(
+          'Near expiration (diff: ${diff.inMinutes}m). Forcing refresh before offerings.',
+        );
+        await _refreshSubscriptionStatus(NoParams());
+      }
+    }
+
     final result = await _getOfferings(NoParams());
 
     result.fold(

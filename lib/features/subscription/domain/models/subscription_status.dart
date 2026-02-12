@@ -11,6 +11,7 @@ abstract class SubscriptionStatus with _$SubscriptionStatus {
     required Set<String> activeEntitlements,
     required Set<String> activeProductIds,
     DateTime? expirationDate,
+    DateTime? latestPurchaseDate,
     String? managementURL,
     String? activePlanId,
     @Default(SubscriptionPeriodType.unknown) SubscriptionPeriodType periodType,

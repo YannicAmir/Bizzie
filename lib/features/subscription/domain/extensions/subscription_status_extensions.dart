@@ -4,20 +4,24 @@ import 'package:bizzie/features/subscription/domain/models/subscription_status.d
 
 extension SubscriptionStatusExtensions on SubscriptionStatus {
   bool get isAnnual {
+    if (!isSubscribed) return false;
     final planId = activePlanId?.toLowerCase();
     if (planId != null) return planId.contains('annual');
     return activeProductIds.any((id) => id.toLowerCase().contains('annual'));
   }
 
   bool get isMonthly {
+    if (!isSubscribed) return false;
     final planId = activePlanId?.toLowerCase();
     if (planId != null) return planId.contains('monthly');
     return activeProductIds.any((id) => id.toLowerCase().contains('monthly'));
   }
 
-  bool get isFreeTrial =>
-      periodType == SubscriptionPeriodType.trial ||
-      periodType == SubscriptionPeriodType.intro;
+  bool get isFreeTrial {
+    if (!isSubscribed) return false;
+    return periodType == SubscriptionPeriodType.trial ||
+        periodType == SubscriptionPeriodType.intro;
+  }
 
   MembershipScenario get scenario {
     if (!isSubscribed) {
@@ -55,7 +59,7 @@ extension SubscriptionStatusExtensions on SubscriptionStatus {
   String? get trialRemainingText {
     if (!isFreeTrial || expirationDate == null) return null;
 
-    final diff = expirationDate!.difference(DateTime.now());
+    final diff = expirationDate!.difference(DateTime.now().toUtc());
     if (diff.inDays > 0) {
       return '${diff.inDays} days left in your free trial.';
     } else {
