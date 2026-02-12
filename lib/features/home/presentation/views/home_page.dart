@@ -83,10 +83,9 @@ class _HomePageState extends State<HomePage> {
                   child: Padding(
                     padding: AppConstants.pagePadding,
                     child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Text('Welcome, ${user.id}!'),
-                        const SizedBox(height: 20),
                         ElevatedButton(
                           onPressed: () {
                             context.read<AuthBloc>().add(
@@ -95,30 +94,6 @@ class _HomePageState extends State<HomePage> {
                           },
                           child: const Text('Logout'),
                         ),
-                        const SizedBox(height: 10),
-                        ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.red,
-                            foregroundColor: Colors.white,
-                          ),
-                          onPressed: () {
-                            context.read<AuthBloc>().add(
-                              const AuthDeleteAccountRequested(),
-                            );
-                          },
-                          child: const Text('Delete Account'),
-                        ),
-                        const SizedBox(height: 20),
-                        ElevatedButton(
-                          onPressed: () => context.push(AppRoutes.paywall),
-                          child: const Text('Paywall Shortcut'),
-                        ),
-                        ElevatedButton(
-                          onPressed: () =>
-                              context.push(AppRoutes.discountedPaywall),
-                          child: const Text('Discounted Paywall Shortcut'),
-                        ),
-                        const SizedBox(height: 20),
                         _DebugInfo(),
                         const SizedBox(height: 20),
                         const HomeWatchlistWidget(),

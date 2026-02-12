@@ -261,21 +261,19 @@ GoRouter createRouter(
         path: AppRoutes.settings,
         pageBuilder: (context, state) => CustomTransitionPage(
           key: state.pageKey,
+          fullscreenDialog: true,
           child: const SettingsView(),
-          transitionDuration: const Duration(milliseconds: 100),
-          reverseTransitionDuration: const Duration(milliseconds: 100),
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            const begin = Offset(0.0, 1.0);
+            const end = Offset.zero;
+            const curve = Curves.easeInOut;
+            var tween = Tween(
+              begin: begin,
+              end: end,
+            ).chain(CurveTween(curve: curve));
+
             return SlideTransition(
-              position:
-                  Tween<Offset>(
-                    begin: const Offset(0.0, 1.0),
-                    end: Offset.zero,
-                  ).animate(
-                    CurvedAnimation(
-                      parent: animation,
-                      curve: Curves.easeOutQuart,
-                    ),
-                  ),
+              position: animation.drive(tween),
               child: child,
             );
           },

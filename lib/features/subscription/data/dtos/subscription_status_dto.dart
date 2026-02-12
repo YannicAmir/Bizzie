@@ -4,7 +4,6 @@ import 'package:bizzie/features/subscription/domain/constants/subscription_const
 import 'package:bizzie/features/subscription/domain/models/subscription_status.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
-import 'package:logging/logging.dart';
 
 part 'subscription_status_dto.freezed.dart';
 part 'subscription_status_dto.g.dart';
@@ -32,8 +31,6 @@ abstract class SubscriptionStatusDto with _$SubscriptionStatusDto {
   factory SubscriptionStatusDto.fromJson(Map<String, dynamic> json) =>
       _$SubscriptionStatusDtoFromJson(json);
 
-  static final _logger = Logger('SubscriptionStatusDto');
-
   factory SubscriptionStatusDto.fromRevenueCat(CustomerInfo info) {
     bool isSubscribed = false;
     final activeEntitlements = info.entitlements.active.keys.toSet();
@@ -46,31 +43,23 @@ abstract class SubscriptionStatusDto with _$SubscriptionStatusDto {
         info.entitlements.active[SubscriptionConstants.entitlementPlus];
 
     if (plusEntitlement != null) {
-      isSubscribed = true;
-
-      if (plusEntitlement.periodType == PeriodType.trial) {
-        periodType = 'trial';
-      } else if (plusEntitlement.periodType == PeriodType.intro) {
-        periodType = 'intro';
-      } else {
-        periodType = 'normal';
-      }
-
-      activePlanId = plusEntitlement.productIdentifier;
       expirationDate = DateTime.tryParse(plusEntitlement.expirationDate ?? '');
 
-      _logger.info(
-        'Processing Active Entitlement: ${plusEntitlement.productIdentifier} '
-        '| PeriodType: ${plusEntitlement.periodType} '
-        '| MappedAs: $periodType',
-      );
+      final isExpired =
+          expirationDate != null && expirationDate.isBefore(DateTime.now());
 
-      if (expirationDate != null && expirationDate.isBefore(DateTime.now())) {
-        isSubscribed = false;
-        _logger.warning('Entitlement detected but already expired!');
+      if (!isExpired) {
+        isSubscribed = true;
+        activePlanId = plusEntitlement.productIdentifier;
+
+        if (plusEntitlement.periodType == PeriodType.trial) {
+          periodType = 'trial';
+        } else if (plusEntitlement.periodType == PeriodType.intro) {
+          periodType = 'intro';
+        } else {
+          periodType = 'normal';
+        }
       }
-    } else {
-      _logger.info('No active "plus" entitlement found in CustomerInfo.');
     }
 
     if (expirationDate == null && info.latestExpirationDate != null) {

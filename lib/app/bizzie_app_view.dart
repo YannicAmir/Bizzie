@@ -72,6 +72,7 @@ class _BizzieAppViewState extends State<BizzieAppView>
       initialLocation: widget.initialNotificationRoute?.path,
     );
     context.read<AuthBloc>().add(const AuthEvent.statusRequested());
+    context.read<SubscriptionBloc>().add(const SubscriptionEvent.initialized());
 
     _setupNotifications();
   }

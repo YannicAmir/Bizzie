@@ -51,12 +51,26 @@ class SubscriptionRemoteDataSource implements ISubscriptionRemoteDataSource {
 
   @override
   Future<void> logIn(String uid) async {
-    _logger.info('Logging in user to RevenueCat: $uid');
+    _logger.info('Logging in user to RevenueCat (High-Fidelity Sync): $uid');
     try {
+      // Standard LogIn first to anchor subsequent syncs to this UID
       await Purchases.logIn(uid);
-      _logger.info('RevenueCat logIn successful for: $uid');
+      _logger.info(
+        'RevenueCat logIn successful for: $uid. Now forcing High-Fidelity Sync.',
+      );
+
+      // Quadruple Tap: Force server-side truth reconciliation AFTER login
+      await Purchases.invalidateCustomerInfoCache();
+      await Purchases.syncPurchases();
+
+      // Fetch the final reconciled status
+      final customerInfo = await Purchases.getCustomerInfo();
+
+      if (!_statusSubject.isClosed) {
+        _statusSubject.add(SubscriptionStatusDto.fromRevenueCat(customerInfo));
+      }
     } catch (e, s) {
-      _logger.severe('RevenueCat logIn failed for uid: $uid', e, s);
+      _logger.severe('RevenueCat logIn/Sync failed for uid: $uid', e, s);
       rethrow;
     }
   }
@@ -243,9 +257,14 @@ class SubscriptionRemoteDataSource implements ISubscriptionRemoteDataSource {
   Future<void> refreshSubscriptionStatus() async {
     return RetryUtil.retry(
       task: () async {
-        _logger.info('Refreshing subscription status (Gentle Refresh)...');
+        _logger.info(
+          'Refreshing subscription status (High-Fidelity Reconcilliation)...',
+        );
 
+        await Purchases.syncPurchases();
+        await Purchases.invalidateCustomerInfoCache();
         final customerInfo = await Purchases.getCustomerInfo();
+
         if (!_statusSubject.isClosed) {
           _statusSubject.add(
             SubscriptionStatusDto.fromRevenueCat(customerInfo),

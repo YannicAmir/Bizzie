@@ -54,14 +54,6 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
     on<SubscriptionAppResumed>(_onAppResumed);
     on<SubscriptionExpirationReached>(_onExpirationReached);
     on<SubscriptionResetPurchaseState>(_onResetPurchaseState);
-
-    _authSubscription = _authBloc.stream.listen((authState) {
-      if (authState is AuthAuthenticated) {
-        add(SubscriptionEvent.userIdentityChanged(authState.user.id));
-      } else if (authState is AuthUnauthenticated) {
-        add(const SubscriptionEvent.userIdentityChanged(null));
-      }
-    });
   }
 
   Future<void> _onResetPurchaseState(
@@ -91,7 +83,9 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
     SubscriptionAppResumed event,
     Emitter<SubscriptionState> emit,
   ) async {
-    _logger.info('App resumed, refreshing offerings');
+    _logger.info('App resumed, refreshing subscription status and offerings');
+
+    await _refreshSubscriptionStatus(NoParams());
 
     add(const SubscriptionEvent.offeringsRequested());
   }
@@ -114,13 +108,30 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
     } else {
       add(const SubscriptionEvent.offeringsRequested());
     }
+
+    await _authSubscription?.cancel();
+    _authSubscription = _authBloc.stream.listen((authState) {
+      if (authState is AuthAuthenticated) {
+        add(SubscriptionEvent.userIdentityChanged(authState.user.id));
+      } else if (authState is AuthUnauthenticated) {
+        add(const SubscriptionEvent.userIdentityChanged(null));
+      }
+    });
   }
 
   Future<void> _onUserIdentityChanged(
     SubscriptionUserIdentityChanged event,
     Emitter<SubscriptionState> emit,
   ) async {
+    if (_lastSyncedUid == event.uid && _statusSubscription != null) {
+      _logger.info(
+        'Identity already synced for ${event.uid}. Skipping redundant refresh.',
+      );
+      return;
+    }
+
     _logger.info('User identity changed to: ${event.uid}');
+    _lastSyncedUid = event.uid;
 
     await _statusSubscription?.cancel();
     _statusSubscription = null;
@@ -136,6 +147,7 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
       },
       (_) {
         _logger.info('Identity sync successful for: ${event.uid}');
+        _refreshSubscriptionStatus(NoParams());
       },
     );
 
@@ -158,6 +170,8 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
       emit(SubscriptionState.initialState());
     }
   }
+
+  String? _lastSyncedUid;
 
   void _onStatusUpdated(
     SubscriptionStatusUpdated event,
@@ -213,7 +227,10 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
     SubscriptionExpirationReached event,
     Emitter<SubscriptionState> emit,
   ) async {
-    _logger.info('Processing expiration event. Refreshing offerings.');
+    _logger.info(
+      'Processing expiration event. Invalidating cache and refreshing.',
+    );
+    _refreshSubscriptionStatus(NoParams());
     add(const SubscriptionEvent.offeringsRequested());
   }
 
