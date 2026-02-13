@@ -1,9 +1,11 @@
 import 'dart:async';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:bizzie/core/error/failures.dart';
+import 'package:bizzie/features/user/domain/interfaces/user_repository.dart';
 import 'package:bizzie/features/user/domain/models/user_model.dart';
 import 'package:bizzie/features/user/domain/usecases/get_user_usecase.dart';
 import 'package:bizzie/features/user/domain/usecases/watch_user_usecase.dart';
+import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
@@ -18,24 +20,20 @@ final _logger = BizzieLogger('UserBloc');
 class UserBloc extends Bloc<UserEvent, UserState> {
   final GetUserUseCase _getUserUseCase;
   final WatchUserUseCase _watchUserUseCase;
-  StreamSubscription? _userSubscription;
+  final IUserRepository _userRepository;
 
-  UserBloc(this._getUserUseCase, this._watchUserUseCase)
+  UserBloc(this._getUserUseCase, this._watchUserUseCase, this._userRepository)
     : super(const UserState.initial()) {
-    _userSubscription = _watchUserUseCase().listen((user) {
-      add(UserLoadRequested(uid: user.uid, silent: true));
-    });
-
-    on<UserLoadRequested>(_onLoadUser);
+    on<UserLoadRequested>(_onLoadUser, transformer: restartable());
     on<UserClearRequested>(_onClear);
   }
 
-  @override
-  Future<void> close() {
-    _userSubscription?.cancel();
-    return super.close();
-  }
-
+  /// Starts a persistent Firestore stream for the given [event.uid].
+  ///
+  /// Uses [emit.forEach] to keep the subscription alive and emit new states
+  /// whenever the underlying data changes. The [restartable()] transformer
+  /// ensures that if a new [UserLoadRequested] arrives, the previous
+  /// stream subscription is cancelled before starting a new one.
   Future<void> _onLoadUser(
     UserLoadRequested event,
     Emitter<UserState> emit,
@@ -44,35 +42,39 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       final cached = _getUserUseCase.cachedSector;
       emit(UserState.loading(cachedSector: cached));
     }
-    _logger.info('Loading user profile for uid: ${event.uid}');
+    _logger.info('Starting persistent stream for uid: ${event.uid}');
 
-    final result = await _getUserUseCase(event.uid);
-
-    result.fold(
-      (failure) {
-        if (failure is UserNotFoundFailure) {
-          _logger.info('User profile not found, needs creation');
-          emit(const UserState.needsProfile());
-        } else {
-          _logger.severe('Failed to load user profile', failure.message);
-          emit(
-            UserState.failure(
-              failure,
-              uid: event.uid,
-              cachedSector: _getUserUseCase.cachedSector,
-            ),
-          );
-        }
+    await emit.forEach<UserModel>(
+      _watchUserUseCase(event.uid),
+      onData: (user) {
+        _logger.info('User stream emitted update for uid: ${user.uid}');
+        return UserState.loaded(user);
       },
-      (user) {
-        _logger.info('User profile loaded successfully');
-        emit(UserState.loaded(user));
+      onError: (error, stackTrace) {
+        _logger.severe('User stream error', error, stackTrace);
+        return UserState.failure(
+          Failure.server(error.toString()),
+          uid: event.uid,
+          cachedSector: _getUserUseCase.cachedSector,
+        );
       },
     );
   }
 
+  /// Stops the active Firestore stream and resets the state to [initial].
+  ///
+  /// Calls [IUserRepository.dispose] which closes the internal
+  /// [BehaviorSubject] — this causes [emit.forEach] in [_onLoadUser]
+  /// to complete naturally via the stream's `done` event.
   void _onClear(UserClearRequested event, Emitter<UserState> emit) {
-    _logger.info('Clearing user profile');
+    _logger.info('Clearing user profile and stopping stream');
+    _userRepository.dispose();
     emit(const UserState.initial());
+  }
+
+  @override
+  Future<void> close() {
+    _userRepository.dispose();
+    return super.close();
   }
 }

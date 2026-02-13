@@ -10,6 +10,7 @@ import 'package:bizzie/features/subscription/domain/usecases/sync_identity_use_c
 import 'package:bizzie/features/subscription/domain/usecases/purchase_subscription_use_case.dart';
 import 'package:bizzie/features/subscription/domain/usecases/restore_purchases_use_case.dart';
 import 'package:bizzie/features/subscription/domain/usecases/get_offerings_use_case.dart';
+import 'package:bizzie/features/subscription/domain/usecases/sync_subscription_use_case.dart';
 import 'package:injectable/injectable.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
 
@@ -29,9 +30,12 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
   final RestorePurchasesUseCase _restorePurchases;
   final GetOfferingsUseCase _getOfferings;
   final AuthBloc _authBloc;
+  final SyncSubscriptionUseCase _syncSubscription;
+  final Stream<bool> _isSubscribedStream;
 
   StreamSubscription? _statusSubscription;
   StreamSubscription? _authSubscription;
+  Timer? _backgroundSyncTimer;
 
   SubscriptionBloc(
     this._watchSubscriptionStatus,
@@ -41,6 +45,8 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
     this._restorePurchases,
     this._getOfferings,
     this._authBloc,
+    this._syncSubscription,
+    @Named('isSubscribedStream') this._isSubscribedStream,
   ) : super(SubscriptionState.initialState()) {
     on<SubscriptionEventInitialized>(_onInitialized);
     on<SubscriptionStatusUpdated>(_onStatusUpdated);
@@ -71,12 +77,22 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
     SubscriptionPurchaseUICompleted event,
     Emitter<SubscriptionState> emit,
   ) async {
+    final wasSuccessful = state.maybeMap(
+      loaded: (s) => s.isLocalSuccessOverride,
+      orElse: () => false,
+    );
+
     state.mapOrNull(
       loaded: (s) {
         emit(s.copyWith(isPurchasing: false, isLocalSuccessOverride: false));
         add(const SubscriptionEvent.offeringsRequested());
       },
     );
+
+    // Start the background sync safeguard ONLY after a successful purchase.
+    if (wasSuccessful) {
+      _startBackgroundSyncSafeguard();
+    }
   }
 
   Future<void> _onAppResumed(
@@ -363,8 +379,55 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
     );
   }
 
+  /// Background sync safeguard — "Self-Healing" mechanism.
+  ///
+  /// After a successful purchase, waits 10 seconds then checks if Firestore
+  /// has updated `isSubscribed`. If still `false`, triggers a manual sync
+  /// via the Firebase Callable Function.
+  ///
+  /// Guards:
+  /// - Cancels any existing timer before starting (prevents stacking).
+  /// - Timer is cancelled on `close()` (prevents firing post-logout).
+  /// - Silent: does NOT emit any Bloc state or affect UI.
+  void _startBackgroundSyncSafeguard() {
+    _backgroundSyncTimer?.cancel();
+    _logger.info('Background sync safeguard started (10s countdown).');
+
+    _backgroundSyncTimer = Timer(const Duration(seconds: 10), () async {
+      _logger.info('Background sync timer fired. Checking Firestore status...');
+
+      try {
+        final isSubscribed = await _isSubscribedStream.first;
+
+        if (isSubscribed) {
+          _logger.info(
+            'Firestore already shows isSubscribed=true. No sync needed.',
+          );
+          return;
+        }
+
+        _logger.warning(
+          'Firestore still shows isSubscribed=false after 10s. '
+          'Triggering manual backend sync...',
+        );
+
+        final result = await _syncSubscription(NoParams());
+        result.fold(
+          (failure) => _logger.severe(
+            'Background sync failed (graceful degradation): '
+            '${failure.message}',
+          ),
+          (_) => _logger.info('Background sync completed successfully.'),
+        );
+      } catch (e, s) {
+        _logger.severe('Background sync safeguard error (silent)', e, s);
+      }
+    });
+  }
+
   @override
   Future<void> close() {
+    _backgroundSyncTimer?.cancel();
     _expirationTimer?.cancel();
     _statusSubscription?.cancel();
     _authSubscription?.cancel();

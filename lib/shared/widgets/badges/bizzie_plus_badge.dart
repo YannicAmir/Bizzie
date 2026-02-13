@@ -1,5 +1,4 @@
-import 'package:bizzie/features/subscription/presentation/bloc/subscription_bloc.dart';
-import 'package:bizzie/features/subscription/presentation/bloc/subscription_state.dart';
+import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -9,9 +8,14 @@ class BizziePlusBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return BlocBuilder<SubscriptionBloc, SubscriptionState>(
+    return BlocBuilder<UserBloc, UserState>(
       builder: (context, state) {
-        if (!state.status.isSubscribed) {
+        final isSubscribed = state.maybeMap(
+          loaded: (s) => s.user.isSubscribed,
+          orElse: () => false,
+        );
+
+        if (!isSubscribed) {
           return const SizedBox.shrink();
         }
 

@@ -2,8 +2,7 @@ import 'package:bizzie/app/l10n/bizzie_localizations.dart';
 import 'package:bizzie/app/themes/app_assets.dart';
 import 'package:bizzie/features/profile/presentation/l10n/profile_localizations.dart';
 import 'package:bizzie/app/themes/app_text_styles.dart';
-import 'package:bizzie/features/subscription/presentation/bloc/subscription_bloc.dart';
-import 'package:bizzie/features/subscription/presentation/bloc/subscription_state.dart';
+import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
@@ -27,9 +26,14 @@ class ProfileHeaderCard extends StatelessWidget {
             Positioned(
               top: 60,
               left: 16,
-              child: BlocBuilder<SubscriptionBloc, SubscriptionState>(
+              child: BlocBuilder<UserBloc, UserState>(
                 builder: (context, state) {
-                  if (state.status.isSubscribed) {
+                  final isSubscribed = state.maybeMap(
+                    loaded: (s) => s.user.isSubscribed,
+                    orElse: () => false,
+                  );
+
+                  if (isSubscribed) {
                     return const _PremiumBadge();
                   }
                   return const SizedBox.shrink();

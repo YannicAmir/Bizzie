@@ -1,8 +1,6 @@
 import 'package:bizzie/features/profile/presentation/bloc/profile_bloc.dart';
 import 'package:bizzie/features/profile/presentation/bloc/profile_state.dart';
 import 'package:bizzie/features/profile/domain/models/profile_display_data.dart';
-import 'package:bizzie/features/subscription/presentation/bloc/subscription_bloc.dart';
-import 'package:bizzie/features/subscription/presentation/bloc/subscription_state.dart';
 import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
 import 'package:bizzie/features/user/presentation/bloc/user_state_extensions.dart';
 import 'package:bizzie/app/themes/app_assets.dart';
@@ -127,11 +125,17 @@ class _ProfileLoadedView extends StatelessWidget {
           ),
         ),
         const Spacer(),
-        BlocBuilder<SubscriptionBloc, SubscriptionState>(
-          builder: (context, subState) {
-            if (subState.status.isSubscribed) {
+        BlocBuilder<UserBloc, UserState>(
+          builder: (context, state) {
+            final isSubscribed = state.maybeMap(
+              loaded: (s) => s.user.isSubscribed,
+              orElse: () => false,
+            );
+
+            if (isSubscribed) {
               return const SizedBox.shrink();
             }
+
             return Padding(
               padding: AppConstants.profileTabWidgetPadding,
               child: const ProfilePremiumCard(),

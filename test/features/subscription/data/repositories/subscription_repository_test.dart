@@ -1,4 +1,5 @@
 import 'package:bizzie/core/error/failures.dart';
+import 'package:bizzie/core/interfaces/i_firebase_functions_service.dart';
 import 'package:bizzie/features/subscription/data/dtos/subscription_offering_dto.dart';
 import 'package:bizzie/features/subscription/data/dtos/subscription_status_dto.dart';
 import 'package:bizzie/features/subscription/data/repositories/subscription_repository_impl.dart';
@@ -14,15 +15,23 @@ import 'package:mocktail/mocktail.dart';
 class MockSubscriptionRemoteDataSource extends Mock
     implements ISubscriptionRemoteDataSource {}
 
+class MockFirebaseFunctionsService extends Mock
+    implements IFirebaseFunctionsService {}
+
 class MockSubscriptionPackage extends Mock implements SubscriptionPackage {}
 
 void main() {
   late SubscriptionRepositoryImpl repository;
   late MockSubscriptionRemoteDataSource mockRemoteDataSource;
+  late MockFirebaseFunctionsService mockFunctionsService;
 
   setUp(() {
     mockRemoteDataSource = MockSubscriptionRemoteDataSource();
-    repository = SubscriptionRepositoryImpl(mockRemoteDataSource);
+    mockFunctionsService = MockFirebaseFunctionsService();
+    repository = SubscriptionRepositoryImpl(
+      mockRemoteDataSource,
+      mockFunctionsService,
+    );
 
     final tFakePackage = SubscriptionPackage(
       id: 'id',

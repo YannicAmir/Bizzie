@@ -13,6 +13,7 @@ import 'package:bizzie/features/subscription/domain/usecases/get_offerings_use_c
 import 'package:bizzie/features/subscription/domain/usecases/purchase_subscription_use_case.dart';
 import 'package:bizzie/features/subscription/domain/usecases/restore_purchases_use_case.dart';
 import 'package:bizzie/features/subscription/domain/usecases/sync_identity_use_case.dart';
+import 'package:bizzie/features/subscription/domain/usecases/sync_subscription_use_case.dart';
 import 'package:bizzie/features/subscription/domain/usecases/watch_subscription_status_use_case.dart';
 import 'package:bizzie/features/subscription/domain/usecases/refresh_subscription_status_use_case.dart';
 import 'package:bizzie/features/subscription/presentation/bloc/subscription_bloc.dart';
@@ -39,6 +40,9 @@ class MockRestorePurchasesUseCase extends Mock
 
 class MockGetOfferingsUseCase extends Mock implements GetOfferingsUseCase {}
 
+class MockSyncSubscriptionUseCase extends Mock
+    implements SyncSubscriptionUseCase {}
+
 class MockAuthBloc extends MockBloc<AuthEvent, AuthState> implements AuthBloc {}
 
 void main() {
@@ -48,7 +52,9 @@ void main() {
   late MockPurchaseSubscriptionUseCase mockPurchase;
   late MockRestorePurchasesUseCase mockRestore;
   late MockGetOfferingsUseCase mockGetOfferings;
+  late MockSyncSubscriptionUseCase mockSyncSubscription;
   late MockAuthBloc mockAuthBloc;
+  late StreamController<bool> isSubscribedController;
 
   final tAnnualPackage = SubscriptionPackage(
     id: 'annual_id',
@@ -109,7 +115,9 @@ void main() {
     mockPurchase = MockPurchaseSubscriptionUseCase();
     mockRestore = MockRestorePurchasesUseCase();
     mockGetOfferings = MockGetOfferingsUseCase();
+    mockSyncSubscription = MockSyncSubscriptionUseCase();
     mockAuthBloc = MockAuthBloc();
+    isSubscribedController = StreamController<bool>.broadcast();
 
     when(
       () => mockAuthBloc.state,
@@ -141,6 +149,8 @@ void main() {
       mockRestore,
       mockGetOfferings,
       mockAuthBloc,
+      mockSyncSubscription,
+      isSubscribedController.stream,
     );
   }
 

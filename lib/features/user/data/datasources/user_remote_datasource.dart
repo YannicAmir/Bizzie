@@ -9,6 +9,7 @@ final _logger = BizzieLogger('UserRemoteDataSource');
 
 abstract class IUserRemoteDataSource {
   Future<UserDto?> getUser(String uid);
+  Stream<UserDto?> watchUser(String uid);
   Future<List<WatchlistItemDto>> getWatchlist(String uid);
   Future<void> updateUser(UserDto user);
 }
@@ -44,6 +45,16 @@ class UserRemoteDataSource implements IUserRemoteDataSource {
       }
       rethrow;
     }
+  }
+
+  @override
+  Stream<UserDto?> watchUser(String uid) {
+    _logger.info('Starting real-time user stream for UID: $uid');
+    return _firestoreService.getDocumentStream<UserDto>(
+      path: 'users/$uid',
+      fromJson: UserDto.fromJson,
+      toJson: (dto) => dto.toJson(),
+    );
   }
 
   @override

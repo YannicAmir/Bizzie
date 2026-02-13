@@ -9,7 +9,10 @@
 // coverage:ignore-file
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
+import 'dart:async' as _i687;
+
 import 'package:cloud_firestore/cloud_firestore.dart' as _i974;
+import 'package:cloud_functions/cloud_functions.dart' as _i809;
 import 'package:device_info_plus/device_info_plus.dart' as _i833;
 import 'package:dio/dio.dart' as _i361;
 import 'package:firebase_auth/firebase_auth.dart' as _i59;
@@ -24,6 +27,7 @@ import 'package:injectable/injectable.dart' as _i526;
 import 'package:shared_preferences/shared_preferences.dart' as _i460;
 
 import '../core/domain/models/sector.dart' as _i162;
+import '../core/interfaces/i_firebase_functions_service.dart' as _i347;
 import '../core/interfaces/i_notification_service.dart' as _i430;
 import '../core/interfaces/i_permission_service.dart' as _i202;
 import '../core/network/network_info.dart' as _i6;
@@ -340,6 +344,7 @@ import '../features/subscription/data/interfaces/i_subscription_remote_data_sour
     as _i592;
 import '../features/subscription/data/repositories/subscription_repository_impl.dart'
     as _i221;
+import '../features/subscription/di/subscription_module.dart' as _i364;
 import '../features/subscription/domain/interfaces/i_subscription_repository.dart'
     as _i659;
 import '../features/subscription/domain/usecases/get_offerings_use_case.dart'
@@ -354,6 +359,8 @@ import '../features/subscription/domain/usecases/restore_purchases_use_case.dart
     as _i566;
 import '../features/subscription/domain/usecases/sync_identity_use_case.dart'
     as _i15;
+import '../features/subscription/domain/usecases/sync_subscription_use_case.dart'
+    as _i25;
 import '../features/subscription/domain/usecases/watch_subscription_status_use_case.dart'
     as _i630;
 import '../features/subscription/presentation/bloc/subscription_bloc.dart'
@@ -383,6 +390,7 @@ import '../features/watchlist/domain/usecases/sync_watchlist_usecase.dart'
     as _i1003;
 import '../features/watchlist/presentation/bloc/watchlist_bloc.dart' as _i63;
 import '../services/config_service.dart' as _i216;
+import '../services/firebase_functions_service.dart' as _i382;
 import '../services/firestore_service.dart' as _i52;
 import '../services/notification_service.dart' as _i941;
 import '../services/permission_service.dart' as _i165;
@@ -401,11 +409,15 @@ extension GetItInjectableX on _i174.GetIt {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
     final registerModule = _$RegisterModule();
     final networkModule = _$NetworkModule();
+    final subscriptionModule = _$SubscriptionModule();
     await gh.factoryAsync<_i460.SharedPreferences>(
       () => registerModule.prefs,
       preResolve: true,
     );
     gh.factory<_i682.PriceChartBloc>(() => _i682.PriceChartBloc());
+    gh.singleton<_i809.FirebaseFunctions>(
+      () => networkModule.firebaseFunctions,
+    );
     await gh.singletonAsync<_i216.ConfigService>(
       () => _i216.ConfigService.init(),
       preResolve: true,
@@ -542,6 +554,9 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i191.IStockLocalDataSource>(),
       ),
     );
+    gh.lazySingleton<_i347.IFirebaseFunctionsService>(
+      () => _i382.FirebaseFunctionsService(gh<_i809.FirebaseFunctions>()),
+    );
     gh.singleton<_i915.AppEnv>(() => _i343.ProdEnvImpl(), registerFor: {_prod});
     gh.lazySingleton<_i584.DividendsFirestoreDataSource>(
       () =>
@@ -581,6 +596,10 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i592.ISubscriptionRemoteDataSource>(
       () => _i1061.SubscriptionRemoteDataSource(gh<_i915.AppEnv>()),
       registerFor: {_prod, _qa, _dev},
+    );
+    gh.lazySingleton<_i687.Stream<bool>>(
+      () => subscriptionModule.isSubscribedStream(gh<_i615.IUserRepository>()),
+      instanceName: 'isSubscribedStream',
     );
     gh.lazySingleton<_i1012.IRecommendedBrandsRepository>(
       () => _i230.RecommendedBrandsRepository(
@@ -648,15 +667,16 @@ extension GetItInjectableX on _i174.GetIt {
       );
       return i.initialize().then((_) => i);
     }, preResolve: true);
-    gh.lazySingleton<_i659.ISubscriptionRepository>(
-      () => _i221.SubscriptionRepositoryImpl(
-        gh<_i592.ISubscriptionRemoteDataSource>(),
-      ),
-    );
     gh.lazySingleton<_i473.DividendsRemoteDataSource>(
       () => _i473.DividendsRemoteDataSourceImpl(
         gh<_i361.Dio>(instanceName: 'FmpDio'),
         gh<_i216.ConfigService>(),
+      ),
+    );
+    gh.lazySingleton<_i659.ISubscriptionRepository>(
+      () => _i221.SubscriptionRepositoryImpl(
+        gh<_i592.ISubscriptionRemoteDataSource>(),
+        gh<_i347.IFirebaseFunctionsService>(),
       ),
     );
     gh.lazySingleton<_i581.IFreeCashFlowRepository>(
@@ -768,12 +788,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i320.RemoveFromWatchlistUseCase>(),
         gh<_i1003.SyncWatchlistUseCase>(),
         gh<_i685.IAuthRepository>(),
-      ),
-    );
-    gh.lazySingleton<_i200.UserBloc>(
-      () => _i200.UserBloc(
-        gh<_i561.GetUserUseCase>(),
-        gh<_i836.WatchUserUseCase>(),
       ),
     );
     gh.factory<_i205.ReauthenticateUseCase>(
@@ -891,6 +905,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i15.SyncIdentityUseCase>(
       () => _i15.SyncIdentityUseCase(gh<_i659.ISubscriptionRepository>()),
     );
+    gh.lazySingleton<_i25.SyncSubscriptionUseCase>(
+      () => _i25.SyncSubscriptionUseCase(gh<_i659.ISubscriptionRepository>()),
+    );
     gh.lazySingleton<_i630.WatchSubscriptionStatusUseCase>(
       () => _i630.WatchSubscriptionStatusUseCase(
         gh<_i659.ISubscriptionRepository>(),
@@ -905,6 +922,13 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i178.CompanyFcpsBloc>(
       () => _i178.CompanyFcpsBloc(gh<_i805.GetFcpsStatsUseCase>()),
+    );
+    gh.lazySingleton<_i200.UserBloc>(
+      () => _i200.UserBloc(
+        gh<_i561.GetUserUseCase>(),
+        gh<_i836.WatchUserUseCase>(),
+        gh<_i615.IUserRepository>(),
+      ),
     );
     gh.lazySingleton<_i1019.IPfcfRatioRepository>(
       () => _i398.PfcfRatioRepositoryImpl(
@@ -1065,6 +1089,14 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i693.GetRecommendedBrandsUseCase>(),
       ),
     );
+    gh.factory<_i348.SearchBloc>(
+      () => _i348.SearchBloc(
+        gh<_i130.SearchStocksUseCase>(),
+        gh<_i555.GetSearchDashboardDataUseCase>(),
+        gh<_i691.FindStockForProductUseCase>(),
+        gh<_i615.IUserRepository>(),
+      ),
+    );
     gh.factory<_i754.GetDividendInfoUseCase>(
       () => _i754.GetDividendInfoUseCase(gh<_i468.IDividendRepository>()),
     );
@@ -1082,6 +1114,12 @@ extension GetItInjectableX on _i174.GetIt {
         signOut: gh<_i472.SignOut>(),
         resetPassword: gh<_i73.ResetPassword>(),
         deleteAccount: gh<_i739.DeleteAccount>(),
+      ),
+    );
+    gh.factory<_i570.ProfileBloc>(
+      () => _i570.ProfileBloc(
+        gh<_i687.GetProfileDisplayDataUseCase>(),
+        gh<_i615.IUserRepository>(),
       ),
     );
     gh.factory<_i191.FinancialStatementsBloc>(
@@ -1123,17 +1161,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i422.GetDailyBrandsUseCase>(),
       ),
     );
-    gh.lazySingleton<_i1066.SubscriptionBloc>(
-      () => _i1066.SubscriptionBloc(
-        gh<_i630.WatchSubscriptionStatusUseCase>(),
-        gh<_i423.RefreshSubscriptionStatusUseCase>(),
-        gh<_i15.SyncIdentityUseCase>(),
-        gh<_i803.PurchaseSubscriptionUseCase>(),
-        gh<_i566.RestorePurchasesUseCase>(),
-        gh<_i343.GetOfferingsUseCase>(),
-        gh<_i59.AuthBloc>(),
-      ),
-    );
     gh.factory<_i723.CompanyDividendsBloc>(
       () => _i723.CompanyDividendsBloc(gh<_i754.GetDividendInfoUseCase>()),
     );
@@ -1157,6 +1184,12 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i106.GetFreeCashFlowStatsUseCase>(),
       ),
     );
+    gh.lazySingleton<_i190.GetSecurityDetailsUseCase>(
+      () => _i190.GetSecurityDetailsUseCase(gh<_i158.ISecurityRepository>()),
+    );
+    gh.lazySingleton<_i1055.GetUpcomingEarningsUseCase>(
+      () => _i1055.GetUpcomingEarningsUseCase(gh<_i158.ISecurityRepository>()),
+    );
     gh.factory<_i1023.ReportsBloc>(
       () => _i1023.ReportsBloc(
         gh<_i273.GetDashboardReportsUseCase>(),
@@ -1164,30 +1197,23 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i685.IAuthRepository>(),
         gh<_i1014.GetUserActivityUseCase>(),
         gh<_i261.MarkReportsViewedUseCase>(),
-        gh<_i836.WatchUserUseCase>(),
+        gh<_i615.IUserRepository>(),
       ),
-    );
-    gh.lazySingleton<_i190.GetSecurityDetailsUseCase>(
-      () => _i190.GetSecurityDetailsUseCase(gh<_i158.ISecurityRepository>()),
-    );
-    gh.lazySingleton<_i1055.GetUpcomingEarningsUseCase>(
-      () => _i1055.GetUpcomingEarningsUseCase(gh<_i158.ISecurityRepository>()),
     );
     gh.factory<_i683.CompanyEpsBloc>(
       () => _i683.CompanyEpsBloc(gh<_i107.GetEpsStatsUseCase>()),
     );
-    gh.factory<_i570.ProfileBloc>(
-      () => _i570.ProfileBloc(
-        gh<_i687.GetProfileDisplayDataUseCase>(),
-        gh<_i836.WatchUserUseCase>(),
-      ),
-    );
-    gh.factory<_i348.SearchBloc>(
-      () => _i348.SearchBloc(
-        gh<_i130.SearchStocksUseCase>(),
-        gh<_i555.GetSearchDashboardDataUseCase>(),
-        gh<_i691.FindStockForProductUseCase>(),
-        gh<_i836.WatchUserUseCase>(),
+    gh.lazySingleton<_i1066.SubscriptionBloc>(
+      () => _i1066.SubscriptionBloc(
+        gh<_i630.WatchSubscriptionStatusUseCase>(),
+        gh<_i423.RefreshSubscriptionStatusUseCase>(),
+        gh<_i15.SyncIdentityUseCase>(),
+        gh<_i803.PurchaseSubscriptionUseCase>(),
+        gh<_i566.RestorePurchasesUseCase>(),
+        gh<_i343.GetOfferingsUseCase>(),
+        gh<_i59.AuthBloc>(),
+        gh<_i25.SyncSubscriptionUseCase>(),
+        gh<_i687.Stream<bool>>(instanceName: 'isSubscribedStream'),
       ),
     );
     gh.factory<_i73.UpcomingEarningsBloc>(
@@ -1209,3 +1235,5 @@ extension GetItInjectableX on _i174.GetIt {
 class _$RegisterModule extends _i291.RegisterModule {}
 
 class _$NetworkModule extends _i419.NetworkModule {}
+
+class _$SubscriptionModule extends _i364.SubscriptionModule {}

@@ -8,13 +8,12 @@ import 'package:bizzie/features/settings/presentation/bloc/settings_state.dart';
 import 'package:bizzie/features/settings/presentation/widgets/change_sector_modal.dart';
 import 'package:bizzie/features/settings/presentation/widgets/settings_section.dart';
 import 'package:bizzie/features/settings/presentation/widgets/settings_tile.dart';
+import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
 import 'package:bizzie/shared/widgets/app_bar/bizzie_app_bar.dart';
 import 'package:bizzie/shared/widgets/buttons/bizzie_primary_button.dart';
 import 'package:bizzie/shared/widgets/buttons/bizzie_secondary_button.dart';
 import 'package:bizzie/shared/widgets/modals/app_bottom_modal.dart';
 import 'package:bizzie/core/error/failures.dart';
-import 'package:bizzie/features/subscription/domain/enums/membership_scenario.dart';
-import 'package:bizzie/features/subscription/domain/extensions/subscription_status_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -157,10 +156,18 @@ class _SettingsViewContentState extends State<_SettingsViewContent>
                       const Divider(height: 1, indent: 52),
                       SettingsTile(
                         title: 'Membership',
-                        trailing:
-                            data.subscriptionStatus.scenario ==
-                                MembershipScenario.notSubscribed
-                            ? Container(
+                        trailing: Builder(
+                          builder: (context) {
+                            final isSubscribed = context
+                                .watch<UserBloc>()
+                                .state
+                                .maybeMap(
+                                  loaded: (s) => s.user.isSubscribed,
+                                  orElse: () => false,
+                                );
+
+                            if (!isSubscribed) {
+                              return Container(
                                 decoration: BoxDecoration(
                                   color: theme.colorScheme.primary,
                                   borderRadius: BorderRadius.circular(50),
@@ -178,17 +185,24 @@ class _SettingsViewContentState extends State<_SettingsViewContent>
                                     ),
                                   ),
                                 ),
-                              )
-                            : null,
+                              );
+                            }
+                            return const SizedBox.shrink();
+                          },
+                        ),
                         onTap: () {
-                          if (data.subscriptionStatus.scenario ==
-                              MembershipScenario.notSubscribed) {
-                            context.pushNamed(AppRoutes.discountedPaywall);
+                          final isSubscribed = context
+                              .read<UserBloc>()
+                              .state
+                              .maybeMap(
+                                loaded: (s) => s.user.isSubscribed,
+                                orElse: () => false,
+                              );
+
+                          if (isSubscribed) {
+                            context.pushNamed(AppRoutes.subscriptionDetails);
                           } else {
-                            context.pushNamed(
-                              AppRoutes.subscriptionDetails,
-                              extra: data.subscriptionStatus,
-                            );
+                            context.pushNamed(AppRoutes.discountedPaywall);
                           }
                         },
                       ),

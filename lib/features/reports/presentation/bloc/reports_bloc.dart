@@ -10,7 +10,7 @@ import 'package:bizzie/features/reports/domain/usecases/get_user_activity_use_ca
 import 'package:bizzie/features/reports/domain/usecases/mark_reports_viewed_use_case.dart';
 import 'package:bizzie/features/reports/domain/models/mark_reports_viewed_params.dart';
 import 'package:bizzie/features/watchlist/domain/interfaces/watchlist_repository.dart';
-import 'package:bizzie/features/user/domain/usecases/watch_user_usecase.dart';
+import 'package:bizzie/features/user/domain/interfaces/user_repository.dart';
 import 'package:bloc/bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:injectable/injectable.dart';
@@ -27,7 +27,7 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
   final IAuthRepository _authRepository;
   final GetUserActivityUseCase _getUserActivityUseCase;
   final MarkReportsViewedUseCase _markReportsViewedUseCase;
-  final WatchUserUseCase _watchUserUseCase;
+  final IUserRepository _userRepository;
   StreamSubscription? _userSubscription;
 
   DateTime? _lastViewedReports;
@@ -38,9 +38,9 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
     this._authRepository,
     this._getUserActivityUseCase,
     this._markReportsViewedUseCase,
-    this._watchUserUseCase,
+    this._userRepository,
   ) : super(const ReportsState.initial()) {
-    _userSubscription = _watchUserUseCase().listen((_) {
+    _userSubscription = _userRepository.userStream.listen((_) {
       add(const ReportsEvent.started());
     });
 

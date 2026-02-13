@@ -24,4 +24,17 @@ sealed class Failure with _$Failure {
   const factory Failure.reauthentication([
     @Default('Reauthentication failed') String message,
   ]) = ReauthenticationFailure;
+
+  /// Common getter for the error message across all variants.
+  @override
+  String get message => when(
+    server: (m) => m,
+    cache: (m) => m,
+    payment: (m) => m,
+    cancel: (m) => m,
+    userNotFound: (m) => m,
+    permission: (m) => m,
+    passwordMismatch: (m) => m,
+    reauthentication: (m) => m,
+  );
 }
