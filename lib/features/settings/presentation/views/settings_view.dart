@@ -156,39 +156,11 @@ class _SettingsViewContentState extends State<_SettingsViewContent>
                       const Divider(height: 1, indent: 52),
                       SettingsTile(
                         title: 'Membership',
-                        trailing: Builder(
-                          builder: (context) {
-                            final isSubscribed = context
-                                .watch<UserBloc>()
-                                .state
-                                .maybeMap(
-                                  loaded: (s) => s.user.isSubscribed,
-                                  orElse: () => false,
-                                );
-
-                            if (!isSubscribed) {
-                              return Container(
-                                decoration: BoxDecoration(
-                                  color: theme.colorScheme.primary,
-                                  borderRadius: BorderRadius.circular(50),
-                                ),
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 12.0,
-                                    vertical: 6.0,
-                                  ),
-                                  child: Text(
-                                    '40% OFF',
-                                    style: theme.textTheme.bodyMedium?.copyWith(
-                                      color: theme.colorScheme.surface,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ),
-                              );
-                            }
-                            return const SizedBox.shrink();
-                          },
+                        trailing: context.watch<UserBloc>().state.maybeMap(
+                          loaded: (s) => s.user.isSubscribed
+                              ? null
+                              : const _DiscountBadge(),
+                          orElse: () => null,
                         ),
                         onTap: () {
                           final isSubscribed = context
@@ -297,6 +269,32 @@ class _SettingsViewContentState extends State<_SettingsViewContent>
             orElse: () => const SizedBox.shrink(),
           );
         },
+      ),
+    );
+  }
+}
+
+class _DiscountBadge extends StatelessWidget {
+  const _DiscountBadge();
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Container(
+      decoration: BoxDecoration(
+        color: theme.colorScheme.primary,
+        borderRadius: BorderRadius.circular(50),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 6.0),
+        child: Text(
+          '40% OFF',
+          style: theme.textTheme.bodyMedium?.copyWith(
+            color: theme.colorScheme.surface,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
       ),
     );
   }

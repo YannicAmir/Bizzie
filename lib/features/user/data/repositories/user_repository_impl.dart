@@ -9,6 +9,7 @@ import 'package:bizzie/features/user/data/datasources/user_local_datasource.dart
 import 'package:injectable/injectable.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:bizzie/features/auth/domain/interfaces/i_auth_repository.dart';
+import 'package:bizzie/features/watchlist/data/dtos/watchlist_item_dto.dart';
 import 'package:rxdart/rxdart.dart';
 
 final _logger = BizzieLogger('UserRepositoryImpl');
@@ -46,22 +47,27 @@ class UserRepositoryImpl implements IUserRepository {
   Stream<UserModel> watchUser(String uid) {
     _logger.info('Starting reactive watch for user $uid');
 
-    return Rx.combineLatest2(
-      _remoteDataSource.watchUser(uid).where((dto) => dto != null),
+    return Rx.combineLatest2<UserDto, List<WatchlistItemDto>, UserModel>(
+      _remoteDataSource.watchUser(uid).whereType<UserDto>(),
       _remoteDataSource.watchWatchlist(uid),
-      (userDto, watchlistDtos) {
-        final watchlist = watchlistDtos.map((dto) => dto.toDomain()).toList();
-        final user = userDto!.toDomain().copyWith(watchlist: watchlist);
+      (userDto, List<WatchlistItemDto> watchlistDtos) {
+        try {
+          final watchlist = watchlistDtos.map((dto) => dto.toDomain()).toList();
+          final user = userDto.toDomain().copyWith(watchlist: watchlist);
 
-        if (user.favoriteSector.isNotEmpty &&
-            _localDataSource.getCachedFavoriteSector() == null) {
-          _logger.info(
-            'Seeding local cache from stream: ${user.favoriteSector}',
-          );
-          _localDataSource.cacheFavoriteSector(user.favoriteSector);
+          if (user.favoriteSector.isNotEmpty &&
+              _localDataSource.getCachedFavoriteSector() == null) {
+            _logger.info(
+              'Seeding local cache from stream: ${user.favoriteSector}',
+            );
+            _localDataSource.cacheFavoriteSector(user.favoriteSector);
+          }
+
+          return user;
+        } catch (e, stack) {
+          _logger.severe('Failed to map UserDto to Domain', e, stack);
+          rethrow;
         }
-
-        return user;
       },
     ).handleError((Object e, StackTrace s) {
       _logger.severe('User stream error for $uid', e, s);
