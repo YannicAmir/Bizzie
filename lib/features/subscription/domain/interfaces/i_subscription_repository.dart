@@ -26,4 +26,6 @@ abstract class ISubscriptionRepository {
   Future<Either<Failure, void>> logIn(String uid);
 
   Future<Either<Failure, void>> logOut();
+
+  Future<Either<Failure, void>> syncSubscriptionWithBackend();
 }

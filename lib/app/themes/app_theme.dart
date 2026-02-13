@@ -14,6 +14,7 @@ class AppTheme {
         primary: AppColors.primary,
         secondary: AppColors.watchlistActiveBackground,
         tertiary: AppColors.black,
+        onTertiary: AppColors.textTertiary,
         surface: AppColors.surface,
         onSurface: AppColors.textPrimary,
         onSurfaceVariant: AppColors.textSecondary,
@@ -21,6 +22,7 @@ class AppTheme {
         inverseSurface: AppColors.tooltipBackground,
         tertiaryContainer: AppColors.slate100,
         outline: AppColors.inputBorder,
+        scrim: AppColors.transparent,
       ),
       dividerColor: AppColors.inputBorder,
       textTheme: GoogleFonts.interTextTheme(ThemeData.light().textTheme)
@@ -42,7 +44,7 @@ class AppTheme {
         scrolledUnderElevation: 0,
         elevation: 0,
         iconTheme: const IconThemeData(color: AppColors.textPrimary, size: 20),
-        titleTextStyle: AppTextStyles.h3,
+        titleTextStyle: AppTextStyles.h2,
       ),
       dividerTheme: const DividerThemeData(
         color: AppColors.inputBorder,
@@ -97,7 +99,10 @@ class AppTheme {
           borderRadius: BorderRadius.circular(12),
           borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
         ),
-        contentPadding: const EdgeInsets.symmetric(vertical: 16),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 16,
+        ),
         hintStyle: const TextStyle(color: AppColors.textTertiary),
       ),
       progressIndicatorTheme: const ProgressIndicatorThemeData(

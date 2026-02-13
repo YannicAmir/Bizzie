@@ -20,6 +20,7 @@ This document serves as the **Single Source of Truth** for the tools, libraries,
 * **Charts & Graphs:** `syncfusion_flutter_charts` (Standard for all data visualization)
 * **Generative UI:** `genui` + `genui_firebase_ai`
 * **Local Storage:** `shared_preferences`
+* **Cloud Functions:** Firebase Cloud Functions `cloud_functions`
 
 ## 3. Backend & Infrastructure (Firebase)
 * **Authentication:** `firebase_auth` (Email, Google, Apple)

@@ -4,5 +4,9 @@ import 'package:dartz/dartz.dart';
 
 abstract class IUserRepository {
   Future<Either<Failure, UserModel>> getUser(String uid);
+  Future<Either<Failure, void>> updateUser(UserModel user);
   String? getCachedFavoriteSector();
+  Stream<UserModel> get userStream;
+  Stream<UserModel> watchUser(String uid);
+  void dispose();
 }

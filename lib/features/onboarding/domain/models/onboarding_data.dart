@@ -14,5 +14,6 @@ abstract class OnboardingData with _$OnboardingData {
     @Default('') String rawBrandsText,
     @Default([]) List<Company> detectedCompanies,
     @Default(null) InvestingExperience? investingExperience,
+    @Default(false) bool notificationsEnabled,
   }) = _OnboardingData;
 }

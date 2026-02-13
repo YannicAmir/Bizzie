@@ -134,14 +134,13 @@ class _BuildingProfilePageState extends State<BuildingProfilePage>
       child: BlocBuilder<OnboardingBloc, OnboardingState>(
         builder: (context, state) {
           final theme = Theme.of(context);
-          final selectedSector = state.onboardingData.selectedSector;
           final experience = state.onboardingData.investingExperience;
           final brandsCount = state.selectedBrands.length;
 
           final carouselItems = [
             _ProfileItemData(
               iconAsset: AppAssets.favoriteSectorIcon,
-              title: selectedSector?.displayName ?? 'Your Sector',
+              title: state.displaySectorName,
               subtitle: 'Favorite Sector',
               gradientColors: [
                 const Color(0xFF2B7FFF),

@@ -1,6 +1,9 @@
 import 'package:bizzie/core/error/failures.dart';
+import 'package:bizzie/core/interfaces/i_firebase_functions_service.dart';
 import 'package:bizzie/features/subscription/data/dtos/subscription_offering_dto.dart';
+import 'package:bizzie/features/subscription/data/dtos/subscription_package_dto.dart';
 import 'package:bizzie/features/subscription/data/dtos/subscription_status_dto.dart';
+import 'package:bizzie/features/subscription/data/dtos/sync_subscription_response_dto.dart';
 import 'package:bizzie/features/subscription/data/repositories/subscription_repository_impl.dart';
 import 'package:bizzie/features/subscription/data/interfaces/i_subscription_remote_data_source.dart';
 import 'package:bizzie/features/subscription/domain/models/subscription_offering.dart';
@@ -14,15 +17,23 @@ import 'package:mocktail/mocktail.dart';
 class MockSubscriptionRemoteDataSource extends Mock
     implements ISubscriptionRemoteDataSource {}
 
+class MockFirebaseFunctionsService extends Mock
+    implements IFirebaseFunctionsService {}
+
 class MockSubscriptionPackage extends Mock implements SubscriptionPackage {}
 
 void main() {
   late SubscriptionRepositoryImpl repository;
   late MockSubscriptionRemoteDataSource mockRemoteDataSource;
+  late MockFirebaseFunctionsService mockFunctionsService;
 
   setUp(() {
     mockRemoteDataSource = MockSubscriptionRemoteDataSource();
-    repository = SubscriptionRepositoryImpl(mockRemoteDataSource);
+    mockFunctionsService = MockFirebaseFunctionsService();
+    repository = SubscriptionRepositoryImpl(
+      mockRemoteDataSource,
+      mockFunctionsService,
+    );
 
     final tFakePackage = SubscriptionPackage(
       id: 'id',
@@ -85,6 +96,40 @@ void main() {
       });
     });
 
+    group('refreshSubscriptionStatus', () {
+      test('refreshSubscriptionStatus_success_returnsRight', () async {
+        // arrange
+        when(
+          () => mockRemoteDataSource.refreshSubscriptionStatus(),
+        ).thenAnswer((_) async {});
+
+        // act
+        final result = await repository.refreshSubscriptionStatus();
+
+        // assert
+        expect(result, const Right(null));
+        verify(
+          () => mockRemoteDataSource.refreshSubscriptionStatus(),
+        ).called(1);
+      });
+
+      test('refreshSubscriptionStatus_error_returnsFailure', () async {
+        // arrange
+        when(
+          () => mockRemoteDataSource.refreshSubscriptionStatus(),
+        ).thenThrow(Exception());
+
+        // act
+        final result = await repository.refreshSubscriptionStatus();
+
+        // assert
+        expect(result, isA<Left<Failure, void>>());
+        verify(
+          () => mockRemoteDataSource.refreshSubscriptionStatus(),
+        ).called(1);
+      });
+    });
+
     group('getSubscriptionStatus', () {
       test('getSubscriptionStatus_success_returnsSubscriptionStatus', () async {
         // arrange
@@ -117,27 +162,60 @@ void main() {
     });
 
     group('getOfferings', () {
-      const tOfferingDto = SubscriptionOfferingDto(
+      final tOfferingDto = SubscriptionOfferingDto(
         identifier: 'default',
         serverDescription: 'Default offering',
-        availablePackages: [],
+        availablePackages: [
+          SubscriptionPackageDto(
+            id: 'id1',
+            identifier: 'identifier1',
+            productId: 'prod1',
+            packageType: SubscriptionPackageType.annual,
+            title: 'title1',
+            description: 'desc1',
+            priceString: '\$0.00',
+            price: 0.0,
+            currencyCode: 'USD',
+          ),
+          SubscriptionPackageDto(
+            id: 'id2',
+            identifier: 'identifier2',
+            productId: 'prod2',
+            packageType: SubscriptionPackageType.monthly,
+            title: 'title2',
+            description: 'desc2',
+            priceString: '\$0.00',
+            price: 0.0,
+            currencyCode: 'USD',
+          ),
+        ],
       );
-      final tOffering = tOfferingDto.toDomain();
 
-      test('getOfferings_success_returnsSubscriptionOffering', () async {
+      test('getOfferings_success_mergesTrialEligibilityCorrectly', () async {
         // arrange
-        when(
-          () => mockRemoteDataSource.checkTrialEligibility(any()),
-        ).thenAnswer((_) async => {});
         when(
           () => mockRemoteDataSource.getOfferings(),
         ).thenAnswer((_) async => tOfferingDto);
+        when(
+          () => mockRemoteDataSource.checkTrialEligibility(any()),
+        ).thenAnswer((_) async => {'prod1': true, 'prod2': false});
 
         // act
         final result = await repository.getOfferings();
 
         // assert
-        expect(result, Right(tOffering));
+        expect(result.isRight(), true);
+        result.fold((l) => fail('Should be Right'), (r) {
+          expect(r.availablePackages.length, 2);
+          expect(r.availablePackages[0].productId, 'prod1');
+          expect(r.availablePackages[0].isEligibleForTrial, true);
+          expect(r.availablePackages[1].productId, 'prod2');
+          expect(r.availablePackages[1].isEligibleForTrial, false);
+        });
+        verify(() => mockRemoteDataSource.getOfferings()).called(1);
+        verify(
+          () => mockRemoteDataSource.checkTrialEligibility(['prod1', 'prod2']),
+        ).called(1);
       });
 
       test('getOfferings_error_returnsFailure', () async {
@@ -245,7 +323,7 @@ void main() {
     });
 
     group('logIn', () {
-      test('logIn_success_returnsRightNull', () async {
+      test('logIn_success_returnsRight', () async {
         // arrange
         when(() => mockRemoteDataSource.logIn(any())).thenAnswer((_) async {});
 
@@ -269,7 +347,7 @@ void main() {
     });
 
     group('logOut', () {
-      test('logOut_success_returnsRightNull', () async {
+      test('logOut_success_returnsRight', () async {
         // arrange
         when(() => mockRemoteDataSource.logOut()).thenAnswer((_) async {});
 
@@ -289,6 +367,38 @@ void main() {
 
         // assert
         expect(result, isA<Left<Failure, void>>());
+      });
+    });
+
+    group('syncSubscriptionWithBackend', () {
+      final tSyncResponse = SyncSubscriptionResponseDto(active: true);
+
+      test('syncSubscriptionWithBackend_success_returnsRight', () async {
+        // arrange
+        when(
+          () => mockFunctionsService.syncUserSubscription(),
+        ).thenAnswer((_) async => tSyncResponse);
+
+        // act
+        final result = await repository.syncSubscriptionWithBackend();
+
+        // assert
+        expect(result, const Right(null));
+        verify(() => mockFunctionsService.syncUserSubscription()).called(1);
+      });
+
+      test('syncSubscriptionWithBackend_error_returnsFailure', () async {
+        // arrange
+        when(
+          () => mockFunctionsService.syncUserSubscription(),
+        ).thenThrow(Exception('Cloud error'));
+
+        // act
+        final result = await repository.syncSubscriptionWithBackend();
+
+        // assert
+        expect(result, isA<Left<Failure, void>>());
+        verify(() => mockFunctionsService.syncUserSubscription()).called(1);
       });
     });
   });

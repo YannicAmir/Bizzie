@@ -4,19 +4,27 @@ import 'package:bizzie/core/domain/models/sector.dart';
 import 'package:bizzie/features/onboarding/select_brands/data/datasources/select_brands_remote_datasource.dart';
 import 'package:bizzie/features/onboarding/select_brands/data/dtos/daily_brands_dto.dart';
 import 'package:bizzie/features/onboarding/select_brands/data/repositories/select_brands_repository_impl.dart';
+import 'package:bizzie/services/config_service.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
 class MockSelectBrandsRemoteDataSource extends Mock
     implements ISelectBrandsRemoteDataSource {}
 
+class MockConfigService extends Mock implements ConfigService {}
+
 void main() {
   late SelectBrandsRepositoryImpl repository;
   late MockSelectBrandsRemoteDataSource mockRemoteDataSource;
+  late MockConfigService mockConfigService;
 
   setUp(() {
     mockRemoteDataSource = MockSelectBrandsRemoteDataSource();
-    repository = SelectBrandsRepositoryImpl(mockRemoteDataSource);
+    mockConfigService = MockConfigService();
+    repository = SelectBrandsRepositoryImpl(
+      mockRemoteDataSource,
+      mockConfigService,
+    );
   });
 
   final tDailyBrandsDto = DailyBrandsDto(
@@ -55,6 +63,9 @@ void main() {
       when(
         () => mockRemoteDataSource.fetchDailyBrands(),
       ).thenAnswer((_) async => tDailyBrandsDto);
+      when(
+        () => mockConfigService.getSectorDisplayName(any()),
+      ).thenReturn('Information Technology');
 
       // act
       final result = await repository.getDailyBrands(tUserSector);
@@ -67,16 +78,12 @@ void main() {
         expect(global.length, 1);
         expect(global.first.name, 'Global Item');
         expect(sector.length, 1);
-        // Note: In tDailyBrandsDto, the sector name is 'Tech'.
-        // Sector.informationTechnology.displayName is 'Information Technology' (usually).
-        // We need them to match or adjust mock data.
-        // Let's adjust mock data to match Information Technology.
         expect(sector.first.name, 'Tech Item');
       });
       verify(() => mockRemoteDataSource.fetchDailyBrands()).called(1);
     });
 
-    test('getDailyBrands_remoteNull_returnsMockBrands', () async {
+    test('getDailyBrands_remoteNull_returnsFailure', () async {
       // arrange
       when(
         () => mockRemoteDataSource.fetchDailyBrands(),
@@ -86,12 +93,14 @@ void main() {
       final result = await repository.getDailyBrands(tUserSector);
 
       // assert
-      expect(result.isRight(), isTrue);
-      // Verify mocks are returned (based on the _getMockBrands logic)
-      result.fold((l) => fail('Should be right'), (r) {
-        expect(r.globalBrands, isNotEmpty); // Global mocks
-        expect(r.sectorBrands, isNotEmpty); // Sector mocks
-      });
+      expect(result.isLeft(), isTrue);
+      result.fold(
+        (failure) => expect(
+          failure.message,
+          'Failed to load brands. Please try again later.',
+        ),
+        (_) => fail('Should be Left'),
+      );
     });
 
     test('getDailyBrands_serverException_returnsServerFailure', () async {

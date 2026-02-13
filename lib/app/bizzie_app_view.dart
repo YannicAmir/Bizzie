@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:bizzie/app/l10n/bizzie_localizations.dart';
 
 import 'package:bizzie/app/global_overlay_wrapper.dart';
 import 'package:bizzie/core/interfaces/i_notification_service.dart';
@@ -71,35 +72,7 @@ class _BizzieAppViewState extends State<BizzieAppView>
       initialLocation: widget.initialNotificationRoute?.path,
     );
     context.read<AuthBloc>().add(const AuthEvent.statusRequested());
-
-    final currentState = context.read<AuthBloc>().state;
-    final isDetermined = currentState.maybeMap(
-      authenticated: (_) => true,
-      unauthenticated: (_) => true,
-      failure: (_) => true,
-      orElse: () => false,
-    );
-
-    if (isDetermined) {
-      FlutterNativeSplash.remove();
-
-      currentState.mapOrNull(
-        authenticated: (state) {
-          final currentPath = _router.routeInformationProvider.value.uri.path;
-          final isFromCreateAccount = currentPath == AppRoutes.createAccount;
-
-          context.read<UserBloc>().add(
-            UserEvent.loadUser(uid: state.user.id, silent: isFromCreateAccount),
-          );
-          context.read<WatchlistBloc>().add(
-            WatchlistEvent.loadRequested(uid: state.user.id),
-          );
-          context.read<NotificationBloc>().add(
-            const NotificationEvent.setupRequested(),
-          );
-        },
-      );
-    }
+    context.read<SubscriptionBloc>().add(const SubscriptionEvent.initialized());
 
     _setupNotifications();
   }
@@ -161,6 +134,8 @@ class _BizzieAppViewState extends State<BizzieAppView>
       },
       child: MaterialApp.router(
         theme: AppTheme.lightTheme,
+        localizationsDelegates: const [BizzieLocalizationsDelegate()],
+        supportedLocales: BizzieLocalizations.supportedLocales,
         routerConfig: _router,
         debugShowCheckedModeBanner: widget.environment == Environment.dev,
         builder: (context, child) => GlobalOverlayWrapper(child: child),

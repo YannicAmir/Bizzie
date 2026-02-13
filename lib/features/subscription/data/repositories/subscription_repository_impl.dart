@@ -1,5 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:bizzie/core/error/failures.dart';
+import 'package:bizzie/core/interfaces/i_firebase_functions_service.dart';
 import 'package:bizzie/features/subscription/domain/models/subscription_status.dart';
 import 'package:bizzie/features/subscription/domain/models/subscription_package.dart';
 import 'package:bizzie/features/subscription/domain/models/subscription_offering.dart';
@@ -14,8 +15,9 @@ final _logger = BizzieLogger('SubscriptionRepositoryImpl');
 @LazySingleton(as: ISubscriptionRepository)
 class SubscriptionRepositoryImpl implements ISubscriptionRepository {
   final ISubscriptionRemoteDataSource _remoteDataSource;
+  final IFirebaseFunctionsService _functionsService;
 
-  SubscriptionRepositoryImpl(this._remoteDataSource);
+  SubscriptionRepositoryImpl(this._remoteDataSource, this._functionsService);
 
   @override
   Future<void> initialize() async {
@@ -32,10 +34,12 @@ class SubscriptionRepositoryImpl implements ISubscriptionRepository {
   Stream<SubscriptionStatus> watchSubscriptionStatus(String userId) {
     _logger.info('Starting subscription status watch for user: $userId');
     return _remoteDataSource.watchSubscriptionStatus().map((dto) {
+      final domainStatus = dto.toDomain();
       _logger.info(
-        'Subscription update received in repo for $userId (Active: ${dto.isSubscribed})',
+        'Subscription update received in repo for $userId '
+        '(Active: ${domainStatus.isSubscribed})',
       );
-      return dto.toDomain();
+      return domainStatus;
     }).asBroadcastStream();
   }
 
@@ -56,10 +60,13 @@ class SubscriptionRepositoryImpl implements ISubscriptionRepository {
     _logger.info('Fetching current subscription status...');
     try {
       final dto = await _remoteDataSource.getSubscriptionStatus();
+      final domainStatus = dto.toDomain();
+
       _logger.info(
-        'Successfully retrieved subscription status (Active: ${dto.isSubscribed})',
+        'Successfully retrieved subscription status '
+        '(Active: ${domainStatus.isSubscribed})',
       );
-      return Right(dto.toDomain());
+      return Right(domainStatus);
     } catch (e, s) {
       return Left(_handleError(e, s, 'Failed to get subscription status'));
     }
@@ -167,6 +174,19 @@ class SubscriptionRepositoryImpl implements ISubscriptionRepository {
       return Left(
         _handleError(e, s, 'Logout from subscription service failed'),
       );
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> syncSubscriptionWithBackend() async {
+    _logger.info('Triggering manual subscription sync with backend...');
+    try {
+      final resultDto = await _functionsService.syncUserSubscription();
+      final result = resultDto.toDomain();
+      _logger.info('Backend sync completed. Active: ${result.isActive}');
+      return const Right(null);
+    } catch (e, s) {
+      return Left(_handleError(e, s, 'Manual subscription sync failed'));
     }
   }
 

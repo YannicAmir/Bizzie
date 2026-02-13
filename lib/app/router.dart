@@ -28,6 +28,8 @@ import 'package:bizzie/features/onboarding/presentation/views/welcome_name_page.
 import 'package:bizzie/features/company_profile/cp/presentation/views/company_profile_page.dart';
 import 'package:bizzie/features/reports/presentation/views/reports_page.dart';
 import 'package:bizzie/features/profile/presentation/views/profile_page.dart';
+import 'package:bizzie/features/profile/presentation/views/change_password_view.dart';
+import 'package:bizzie/features/profile/presentation/views/edit_profile_view.dart';
 import 'package:bizzie/app/navigation/bizzie_bottom_nav_wrapper.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -42,6 +44,9 @@ import 'package:async/async.dart';
 
 import 'package:bizzie/features/subscription/presentation/views/discounted_subscription_page.dart';
 import 'package:bizzie/features/subscription/presentation/views/subscription_page.dart';
+import 'package:bizzie/features/settings/presentation/views/settings_view.dart';
+
+import 'package:bizzie/features/subscription/presentation/views/subscription_details_page.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
 
@@ -244,11 +249,56 @@ GoRouter createRouter(
       ),
       _buildPaywallRoute(
         path: AppRoutes.paywall,
+        name: AppRoutes.paywall,
         child: const SubscriptionPage(),
       ),
       _buildPaywallRoute(
         path: AppRoutes.discountedPaywall,
+        name: AppRoutes.discountedPaywall,
         child: const DiscountedSubscriptionPage(),
+      ),
+      GoRoute(
+        path: AppRoutes.settings,
+        pageBuilder: (context, state) => CustomTransitionPage(
+          key: state.pageKey,
+          fullscreenDialog: true,
+          child: const SettingsView(),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            const begin = Offset(0.0, 1.0);
+            const end = Offset.zero;
+            const curve = Curves.easeInOut;
+            var tween = Tween(
+              begin: begin,
+              end: end,
+            ).chain(CurveTween(curve: curve));
+
+            return SlideTransition(
+              position: animation.drive(tween),
+              child: child,
+            );
+          },
+        ),
+        routes: [
+          GoRoute(
+            path: AppRoutes.editProfilePath,
+            name: AppRoutes.editProfile,
+            builder: (context, state) => const EditProfileView(),
+            routes: [
+              GoRoute(
+                path: AppRoutes.changePasswordPath,
+                name: AppRoutes.changePassword,
+                builder: (context, state) => const ChangePasswordView(),
+              ),
+            ],
+          ),
+          GoRoute(
+            path: AppRoutes.subscriptionDetailsPath,
+            name: AppRoutes.subscriptionDetails,
+            builder: (context, state) {
+              return const SubscriptionDetailsPage();
+            },
+          ),
+        ],
       ),
     ],
   );
@@ -325,7 +375,14 @@ GoRoute _buildCompanyRoute(String routeName) {
     name: routeName,
     builder: (context, state) {
       final ticker = state.pathParameters['ticker']!;
-      final initialCompany = state.extra as Company?;
+      Company? initialCompany;
+
+      final extra = state.extra;
+      if (extra is Company) {
+        initialCompany = extra;
+      } else if (extra is Map<String, dynamic>) {
+        initialCompany = Company.fromJson(extra);
+      }
 
       return CompanyProfilePage(ticker: ticker, initialCompany: initialCompany);
     },

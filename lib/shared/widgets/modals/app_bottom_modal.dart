@@ -9,6 +9,8 @@ class AppBottomModal extends StatelessWidget {
   final double minChildSize;
   final double maxChildSize;
   final Widget? subtitle;
+  final bool useDraggable;
+  final EdgeInsets? contentPadding;
 
   const AppBottomModal({
     super.key,
@@ -18,11 +20,43 @@ class AppBottomModal extends StatelessWidget {
     this.minChildSize = 0.5,
     this.maxChildSize = 0.875,
     this.subtitle,
+    this.useDraggable = true,
+    this.contentPadding,
   });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+
+    if (!useDraggable) {
+      return Container(
+        padding: EdgeInsets.only(
+          bottom:
+              MediaQuery.of(context).viewInsets.bottom +
+              MediaQuery.of(context).padding.bottom +
+              16,
+        ),
+        decoration: BoxDecoration(
+          color: theme.colorScheme.surface,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            BottomModalHeader(
+              title: title,
+              subtitle: subtitle,
+              onClose: () => Navigator.pop(context),
+            ),
+            Padding(
+              padding: contentPadding ?? EdgeInsets.zero,
+              child: builder(context, ScrollController()),
+            ),
+          ],
+        ),
+      );
+    }
+
     return DraggableScrollableSheet(
       initialChildSize: initialChildSize,
       minChildSize: minChildSize,
@@ -41,7 +75,12 @@ class AppBottomModal extends StatelessWidget {
                 subtitle: subtitle,
                 onClose: () => Navigator.pop(context),
               ),
-              Expanded(child: builder(context, scrollController)),
+              Expanded(
+                child: Padding(
+                  padding: contentPadding ?? EdgeInsets.zero,
+                  child: builder(context, scrollController),
+                ),
+              ),
             ],
           ),
         );

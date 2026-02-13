@@ -28,12 +28,14 @@ class CompleteOnboardingUseCase
     try {
       _logger.info('Starting onboarding completion for user ${params.uid}');
 
-      final deviceUuid = await _notificationService.getDeviceUuid();
-      final fcmToken = await _notificationService.getFcmToken();
+      if (params.data.notificationsEnabled) {
+        final deviceUuid = await _notificationService.getDeviceUuid();
+        final fcmToken = await _notificationService.getFcmToken();
 
-      if (fcmToken != null) {
-        tokensMap[deviceUuid] = fcmToken;
-        await _subscribeToTopics(params.data);
+        if (fcmToken != null) {
+          tokensMap[deviceUuid] = fcmToken;
+          await _subscribeToTopics(params.data);
+        }
       }
     } catch (e) {
       _logger.warning('Failed to setup notifications (proceeding anyway)', e);
@@ -42,7 +44,7 @@ class CompleteOnboardingUseCase
     final user = UserModel(
       uid: params.uid,
       name: params.data.firstName,
-      favoriteSector: params.data.selectedSector?.displayName ?? '',
+      favoriteSector: params.data.selectedSector?.name ?? '',
       watchlist: params.data.detectedCompanies
           .map((c) => Company(ticker: c.ticker, name: c.name))
           .toList(),
@@ -50,6 +52,7 @@ class CompleteOnboardingUseCase
           params.data.investingExperience ?? InvestingExperience.beginner,
       createdAt: DateTime.now(),
       isSubscribed: false,
+      notificationsEnabled: params.data.notificationsEnabled,
       fcmTokens: tokensMap,
     );
 
@@ -70,9 +73,7 @@ class CompleteOnboardingUseCase
   Future<void> _subscribeToTopics(OnboardingData data) async {
     final selectedSector = data.selectedSector;
     if (selectedSector != null) {
-      final sanitizedSector = StringUtils.sanitizeTopic(
-        selectedSector.displayName,
-      );
+      final sanitizedSector = StringUtils.sanitizeTopic(selectedSector.name);
       if (sanitizedSector.isNotEmpty) {
         await _notificationService.subscribeToTopic(sanitizedSector);
       }

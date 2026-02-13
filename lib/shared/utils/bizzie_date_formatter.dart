@@ -99,4 +99,14 @@ class BizzieDateFormatter {
   static String formatReferenceLabel(String dateStr, {required bool isAnnual}) {
     return formatMonthYearFull(dateStr);
   }
+
+  static String formatApiDate(DateTime date) {
+    return DateFormat('yyyy-MM-dd').format(date);
+  }
+
+  static String formatApiDateFromStr(String dateStr) {
+    final date = DateTime.tryParse(dateStr);
+    if (date == null) return dateStr;
+    return formatApiDate(date);
+  }
 }

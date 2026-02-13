@@ -8,4 +8,5 @@ abstract class INotificationService {
   Stream<NotificationRoute> get routeStream;
   Future<void> setupInteractions();
   Future<NotificationRoute?> getInitialRoute();
+  Future<bool> isSystemAuthorized();
 }

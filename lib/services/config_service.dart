@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:bizzie/core/utils/sector_normalizer.dart';
 import 'package:bizzie/services/dtos/fmp_config.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/foundation.dart';
@@ -9,9 +10,28 @@ class RemoteConfigKeys {
   static const String fmpConfig = 'fmp_config';
   static const String geminiModelName = 'gemini_model_front_end';
   static const String stockMarketSectors = 'stock_market_sectors';
+  static const String sectorDescriptions = 'sector_descriptions';
 }
 
 final _logger = BizzieLogger('ConfigService');
+
+const _sectorApiAliases = {
+  'informationtechnology': 'Technology',
+  'information_technology': 'Technology',
+  'technology': 'Technology',
+  'financials': 'Financial Services',
+  'communicationservices': 'Communication Services',
+  'telecommunicationservices': 'Communication Services',
+  'consumerdiscretionary': 'Consumer Cyclical',
+  'consumerstaples': 'Consumer Defensive',
+  'healthcare': 'Healthcare',
+  'materials': 'Basic Materials',
+  'industrials': 'Industrials',
+  'energy': 'Energy',
+  'utilities': 'Utilities',
+  'realestate': 'Real Estate',
+  'real_estate': 'Real Estate',
+};
 
 @singleton
 class ConfigService {
@@ -37,6 +57,31 @@ class ConfigService {
     "v3Url": "https://financialmodelingprep.com/api/v3",
   };
 
+  static const _defaultSectorDescriptions = {
+    "Energy":
+        "Companies involved in oil, gas, and consumable fuels—typically excluding renewable energy firms.",
+    "Materials":
+        "Suppliers of raw goods used in manufacturing, such as chemicals, construction materials, and packaging.",
+    "Industrials":
+        "Businesses using heavy equipment, including those in transportation, aerospace, defense, and construction.",
+    "Consumer Discretionary":
+        "Businesses selling non-essential goods and services, such as automobiles, luxury items, leisure, and retail.",
+    "Consumer Staples":
+        "Providers of essential daily goods that people buy regardless of the economy, including food, beverages, and household products.",
+    "Health Care":
+        "Firms providing medical services, biotechnology, pharmaceuticals, and healthcare equipment.",
+    "Financials":
+        "Institutions handling money, transaction processing, and risk, including banks, insurance carriers, and investment firms.",
+    "Information Technology":
+        "Developers of software, hardware, semiconductors, and IT services that drive digital infrastructure.",
+    "Communication Services":
+        "Providers of telecommunications, media, entertainment, and interactive social media content.",
+    "Utilities":
+        "Regulated providers of essential infrastructure services like electricity, natural gas, water, and renewable power.",
+    "Real Estate":
+        "Companies involved in property development, management, and Real Estate Investment Trusts (REITs).",
+  };
+
   ConfigService(this._remoteConfig);
 
   @factoryMethod
@@ -56,6 +101,9 @@ class ConfigService {
       RemoteConfigKeys.geminiModelName: _defaultGeminiModel,
       RemoteConfigKeys.stockMarketSectors: jsonEncode(_defaultSectors),
       RemoteConfigKeys.fmpConfig: jsonEncode(_defaultFmpConfig),
+      RemoteConfigKeys.sectorDescriptions: jsonEncode(
+        _defaultSectorDescriptions,
+      ),
     });
 
     try {
@@ -96,4 +144,59 @@ class ConfigService {
   bool getBool(String key) => _remoteConfig.getBool(key);
   int getInt(String key) => _remoteConfig.getInt(key);
   double getDouble(String key) => _remoteConfig.getDouble(key);
+
+  String getSectorApiName(String sectorName) {
+    final normalized = normalizeSectorKey(sectorName);
+    return _sectorApiAliases[normalized] ?? sectorName;
+  }
+
+  String getSectorDescription(String sectorName) {
+    final match = _getSectorMetaData(sectorName);
+    return match?.value ?? "";
+  }
+
+  String getSectorDisplayName(String sectorName) {
+    final match = _getSectorMetaData(sectorName);
+    if (match != null) {
+      return match.key;
+    }
+
+    return sectorName
+        .split('_')
+        .map((word) {
+          if (word.isEmpty) return '';
+          return '${word[0].toUpperCase()}${word.substring(1)}';
+        })
+        .join(' ');
+  }
+
+  ({String key, String value})? _getSectorMetaData(String sectorName) {
+    Map<String, dynamic> descriptionsMap;
+    try {
+      final jsonString = _remoteConfig.getString(
+        RemoteConfigKeys.sectorDescriptions,
+      );
+      if (jsonString.isEmpty) {
+        descriptionsMap = _defaultSectorDescriptions;
+      } else {
+        descriptionsMap = jsonDecode(jsonString) as Map<String, dynamic>;
+      }
+    } catch (e) {
+      _logger.severe('Error parsing sectorDescriptions', e);
+      descriptionsMap = _defaultSectorDescriptions;
+    }
+
+    if (descriptionsMap.containsKey(sectorName)) {
+      return (key: sectorName, value: descriptionsMap[sectorName].toString());
+    }
+
+    final normalizedInput = normalizeSectorKey(sectorName);
+    for (final entry in descriptionsMap.entries) {
+      if (normalizeSectorKey(entry.key) == normalizedInput) {
+        return (key: entry.key, value: entry.value.toString());
+      }
+    }
+
+    return null;
+  }
 }

@@ -20,6 +20,7 @@ abstract class SubscriptionPackageDto with _$SubscriptionPackageDto {
     required double price,
     required String currencyCode,
     @Default(false) bool isEligibleForTrial,
+    @Default(false) bool hasFreeTrial,
   }) = _SubscriptionPackageDto;
 
   factory SubscriptionPackageDto.empty() => const SubscriptionPackageDto(
@@ -42,17 +43,23 @@ abstract class SubscriptionPackageDto with _$SubscriptionPackageDto {
       id: p.identifier,
       identifier: p.identifier,
       productId: p.storeProduct.identifier,
-      packageType: _mapPackageType(p.packageType),
+      packageType: _mapPackageType(p.packageType, p.storeProduct.identifier),
       title: p.storeProduct.title,
       description: p.storeProduct.description,
       priceString: p.storeProduct.priceString,
       price: p.storeProduct.price,
       currencyCode: p.storeProduct.currencyCode,
       isEligibleForTrial: p.storeProduct.introductoryPrice != null,
+      hasFreeTrial: p.storeProduct.introductoryPrice != null,
     );
   }
 
-  static SubscriptionPackageType _mapPackageType(PackageType type) {
+  static SubscriptionPackageType _mapPackageType(
+    PackageType type,
+    String productId,
+  ) {
+    final lowerId = productId.toLowerCase();
+
     switch (type) {
       case PackageType.monthly:
         return SubscriptionPackageType.monthly;
@@ -69,9 +76,12 @@ abstract class SubscriptionPackageDto with _$SubscriptionPackageDto {
       case PackageType.lifetime:
         return SubscriptionPackageType.lifetime;
       case PackageType.custom:
-        return SubscriptionPackageType.custom;
-      default:
-        return SubscriptionPackageType.unknown;
+      case PackageType.unknown:
+        if (lowerId.contains('annual')) return SubscriptionPackageType.annual;
+        if (lowerId.contains('monthly')) return SubscriptionPackageType.monthly;
+        return type == PackageType.custom
+            ? SubscriptionPackageType.custom
+            : SubscriptionPackageType.unknown;
     }
   }
 
@@ -87,6 +97,7 @@ abstract class SubscriptionPackageDto with _$SubscriptionPackageDto {
       price: price,
       currencyCode: currencyCode,
       isEligibleForTrial: isEligibleForTrial,
+      hasFreeTrial: hasFreeTrial,
     );
   }
 }

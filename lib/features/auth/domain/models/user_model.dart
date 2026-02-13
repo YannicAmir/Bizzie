@@ -9,5 +9,6 @@ abstract class UserModel with _$UserModel {
     required String email,
     String? displayName,
     String? photoUrl,
+    @Default([]) List<String> providers,
   }) = _UserModel;
 }

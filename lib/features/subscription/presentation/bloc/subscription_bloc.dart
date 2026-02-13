@@ -10,6 +10,7 @@ import 'package:bizzie/features/subscription/domain/usecases/sync_identity_use_c
 import 'package:bizzie/features/subscription/domain/usecases/purchase_subscription_use_case.dart';
 import 'package:bizzie/features/subscription/domain/usecases/restore_purchases_use_case.dart';
 import 'package:bizzie/features/subscription/domain/usecases/get_offerings_use_case.dart';
+import 'package:bizzie/features/subscription/domain/usecases/sync_subscription_use_case.dart';
 import 'package:injectable/injectable.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
 
@@ -29,9 +30,12 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
   final RestorePurchasesUseCase _restorePurchases;
   final GetOfferingsUseCase _getOfferings;
   final AuthBloc _authBloc;
+  final SyncSubscriptionUseCase _syncSubscription;
+  final Stream<bool> _isSubscribedStream;
 
   StreamSubscription? _statusSubscription;
   StreamSubscription? _authSubscription;
+  Timer? _backgroundSyncTimer;
 
   SubscriptionBloc(
     this._watchSubscriptionStatus,
@@ -41,6 +45,8 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
     this._restorePurchases,
     this._getOfferings,
     this._authBloc,
+    this._syncSubscription,
+    @Named('isSubscribedStream') this._isSubscribedStream,
   ) : super(SubscriptionState.initialState()) {
     on<SubscriptionEventInitialized>(_onInitialized);
     on<SubscriptionStatusUpdated>(_onStatusUpdated);
@@ -48,19 +54,12 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
     on<SubscriptionRestoreRequested>(_onRestoreRequested);
     on<SubscriptionUserIdentityChanged>(_onUserIdentityChanged);
     on<SubscriptionOfferingsRequested>(_onOfferingsRequested);
+    on<SubscriptionRefreshRequested>(_onRefreshRequested);
     on<SubscriptionPlanToggled>(_onPlanToggled);
     on<SubscriptionPurchaseUICompleted>(_onPurchaseUICompleted);
     on<SubscriptionAppResumed>(_onAppResumed);
     on<SubscriptionExpirationReached>(_onExpirationReached);
     on<SubscriptionResetPurchaseState>(_onResetPurchaseState);
-
-    _authSubscription = _authBloc.stream.listen((authState) {
-      if (authState is AuthAuthenticated) {
-        add(SubscriptionEvent.userIdentityChanged(authState.user.id));
-      } else if (authState is AuthUnauthenticated) {
-        add(const SubscriptionEvent.userIdentityChanged(null));
-      }
-    });
   }
 
   Future<void> _onResetPurchaseState(
@@ -78,22 +77,41 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
     SubscriptionPurchaseUICompleted event,
     Emitter<SubscriptionState> emit,
   ) async {
+    final wasSuccessful = state.maybeMap(
+      loaded: (s) => s.isLocalSuccessOverride,
+      orElse: () => false,
+    );
+
     state.mapOrNull(
       loaded: (s) {
         emit(s.copyWith(isPurchasing: false, isLocalSuccessOverride: false));
         add(const SubscriptionEvent.offeringsRequested());
       },
     );
+
+    // Start the background sync safeguard ONLY after a successful purchase.
+    if (wasSuccessful) {
+      _startBackgroundSyncSafeguard();
+    }
   }
 
   Future<void> _onAppResumed(
     SubscriptionAppResumed event,
     Emitter<SubscriptionState> emit,
   ) async {
-    _logger.info('App resumed, refreshing subscription status');
+    _logger.info('App resumed, refreshing subscription status and offerings');
 
-    _refreshSubscriptionStatus(NoParams());
+    await _refreshSubscriptionStatus(NoParams());
+
     add(const SubscriptionEvent.offeringsRequested());
+  }
+
+  Future<void> _onRefreshRequested(
+    SubscriptionRefreshRequested event,
+    Emitter<SubscriptionState> emit,
+  ) async {
+    _logger.info('Manual subscription status refresh requested');
+    await _refreshSubscriptionStatus(NoParams());
   }
 
   Future<void> _onInitialized(
@@ -106,18 +124,48 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
     } else {
       add(const SubscriptionEvent.offeringsRequested());
     }
+
+    await _authSubscription?.cancel();
+    _authSubscription = _authBloc.stream.listen((authState) {
+      if (authState is AuthAuthenticated) {
+        add(SubscriptionEvent.userIdentityChanged(authState.user.id));
+      } else if (authState is AuthUnauthenticated) {
+        add(const SubscriptionEvent.userIdentityChanged(null));
+      }
+    });
   }
 
   Future<void> _onUserIdentityChanged(
     SubscriptionUserIdentityChanged event,
     Emitter<SubscriptionState> emit,
   ) async {
+    if (_lastSyncedUid == event.uid && _statusSubscription != null) {
+      _logger.info(
+        'Identity already synced for ${event.uid}. Skipping redundant refresh.',
+      );
+      return;
+    }
+
     _logger.info('User identity changed to: ${event.uid}');
+    _lastSyncedUid = event.uid;
 
     await _statusSubscription?.cancel();
     _statusSubscription = null;
 
-    await _syncIdentity(event.uid);
+    final result = await _syncIdentity(event.uid);
+
+    result.fold(
+      (failure) {
+        _logger.severe(
+          'Failed to sync identity with subscription service',
+          failure.message,
+        );
+      },
+      (_) {
+        _logger.info('Identity sync successful for: ${event.uid}');
+        _refreshSubscriptionStatus(NoParams());
+      },
+    );
 
     if (event.uid != null) {
       _logger.info('Watching subscription status for user: ${event.uid}');
@@ -129,12 +177,17 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
           _logger.severe('Subscription status stream error', error, stack);
         },
       );
+
       add(const SubscriptionEvent.offeringsRequested());
-    } else {
+    }
+
+    if (event.uid == null) {
       _logger.info('User logged out, resetting subscription state');
       emit(SubscriptionState.initialState());
     }
   }
+
+  String? _lastSyncedUid;
 
   void _onStatusUpdated(
     SubscriptionStatusUpdated event,
@@ -169,7 +222,7 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
     _expirationTimer = null;
 
     if (status.isSubscribed && status.expirationDate != null) {
-      final now = DateTime.now();
+      final now = DateTime.now().toUtc();
       if (status.expirationDate!.isAfter(now)) {
         final duration = status.expirationDate!.difference(now);
         final timerDuration = duration + const Duration(seconds: 2);
@@ -280,6 +333,19 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
     }
 
     _logger.info('Offerings requested');
+
+    final status = state.status;
+    if (status.isSubscribed && status.expirationDate != null) {
+      final now = DateTime.now().toUtc();
+      final diff = status.expirationDate!.difference(now);
+      if (diff.inMinutes < 35) {
+        _logger.info(
+          'Near expiration (diff: ${diff.inMinutes}m). Forcing refresh before offerings.',
+        );
+        await _refreshSubscriptionStatus(NoParams());
+      }
+    }
+
     final result = await _getOfferings(NoParams());
 
     result.fold(
@@ -289,6 +355,7 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
       },
       (offering) {
         _logger.info('Offerings fetched successfully');
+
         emit(
           SubscriptionState.loaded(
             status: state.status,
@@ -312,8 +379,45 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
     );
   }
 
+  void _startBackgroundSyncSafeguard() {
+    _backgroundSyncTimer?.cancel();
+    _logger.info('Background sync safeguard started (10s countdown).');
+
+    _backgroundSyncTimer = Timer(const Duration(seconds: 10), () async {
+      _logger.info('Background sync timer fired. Checking Firestore status...');
+
+      try {
+        final isSubscribed = await _isSubscribedStream.first;
+
+        if (isSubscribed) {
+          _logger.info(
+            'Firestore already shows isSubscribed=true. No sync needed.',
+          );
+          return;
+        }
+
+        _logger.warning(
+          'Firestore still shows isSubscribed=false after 10s. '
+          'Triggering manual backend sync...',
+        );
+
+        final result = await _syncSubscription(NoParams());
+        result.fold(
+          (failure) => _logger.severe(
+            'Background sync failed (graceful degradation): '
+            '${failure.message}',
+          ),
+          (_) => _logger.info('Background sync completed successfully.'),
+        );
+      } catch (e, s) {
+        _logger.severe('Background sync safeguard error (silent)', e, s);
+      }
+    });
+  }
+
   @override
   Future<void> close() {
+    _backgroundSyncTimer?.cancel();
     _expirationTimer?.cancel();
     _statusSubscription?.cancel();
     _authSubscription?.cancel();

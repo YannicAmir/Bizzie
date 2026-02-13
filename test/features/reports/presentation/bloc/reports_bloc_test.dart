@@ -1,6 +1,6 @@
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/features/auth/domain/interfaces/i_auth_repository.dart';
-import 'package:bizzie/features/auth/domain/models/user_model.dart';
+import 'package:bizzie/features/auth/domain/models/user_model.dart' as auth;
 import 'package:bizzie/features/reports/domain/models/reports_feed.dart';
 import 'package:bizzie/features/reports/domain/usecases/get_dashboard_reports_usecase.dart';
 import 'package:bizzie/features/reports/domain/usecases/get_user_activity_use_case.dart';
@@ -10,6 +10,8 @@ import 'package:bizzie/features/reports/presentation/bloc/reports_event.dart';
 import 'package:bizzie/features/reports/presentation/bloc/reports_state.dart';
 import 'package:bizzie/features/user/domain/models/user_activity.dart';
 import 'package:bizzie/features/watchlist/domain/interfaces/watchlist_repository.dart';
+import 'package:bizzie/features/user/domain/interfaces/user_repository.dart';
+import 'package:bizzie/features/user/domain/models/user_model.dart';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -28,7 +30,9 @@ class MockGetUserActivityUseCase extends Mock
 class MockMarkReportsViewedUseCase extends Mock
     implements MarkReportsViewedUseCase {}
 
-class MockUserModel extends Mock implements UserModel {}
+class MockIUserRepository extends Mock implements IUserRepository {}
+
+class MockAuthUserModel extends Mock implements auth.UserModel {}
 
 void main() {
   late ReportsBloc bloc;
@@ -37,7 +41,8 @@ void main() {
   late MockIAuthRepository mockAuthRepository;
   late MockGetUserActivityUseCase mockGetUserActivityUseCase;
   late MockMarkReportsViewedUseCase mockMarkReportsViewedUseCase;
-  late MockUserModel mockUser;
+  late MockIUserRepository mockUserRepository;
+  late MockAuthUserModel mockUser;
 
   setUp(() {
     mockGetReportsUseCase = MockGetDashboardReportsUseCase();
@@ -45,10 +50,14 @@ void main() {
     mockAuthRepository = MockIAuthRepository();
     mockGetUserActivityUseCase = MockGetUserActivityUseCase();
     mockMarkReportsViewedUseCase = MockMarkReportsViewedUseCase();
-    mockUser = MockUserModel();
+    mockUserRepository = MockIUserRepository();
+    mockUser = MockAuthUserModel();
 
     when(() => mockAuthRepository.currentUser).thenReturn(mockUser);
     when(() => mockUser.id).thenReturn('test_uid');
+    when(
+      () => mockUserRepository.userStream,
+    ).thenAnswer((_) => const Stream<UserModel>.empty());
 
     bloc = ReportsBloc(
       mockGetReportsUseCase,
@@ -56,6 +65,7 @@ void main() {
       mockAuthRepository,
       mockGetUserActivityUseCase,
       mockMarkReportsViewedUseCase,
+      mockUserRepository,
     );
   });
 

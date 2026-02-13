@@ -15,6 +15,10 @@ export 'package:bizzie/features/onboarding/select_brands/presentation/bloc/selec
 import 'package:bizzie/features/onboarding/select_brands/domain/usecases/get_daily_brands_usecase.dart';
 import 'package:bizzie/features/onboarding/select_brands/domain/models/brand_listing.dart';
 
+import 'package:bizzie/core/logging/bizzie_logger.dart';
+
+final _logger = BizzieLogger('SelectBrandsBloc');
+
 @injectable
 class SelectBrandsBloc extends Bloc<SelectBrandsEvent, SelectBrandsState> {
   final Set<String> _initialStaticItems = {};
@@ -28,6 +32,7 @@ class SelectBrandsBloc extends Bloc<SelectBrandsEvent, SelectBrandsState> {
 
   SelectBrandsBloc(this._onboardingBloc, this._getDailyBrandsUseCase)
     : super(const SelectBrandsState.initial()) {
+    _logger.info('Initializing SelectBrandsBloc');
     on<Started>(_onStarted);
     on<Updated>(_onUpdated);
     on<ToggleBrand>(_onToggleBrand);
@@ -43,6 +48,7 @@ class SelectBrandsBloc extends Bloc<SelectBrandsEvent, SelectBrandsState> {
 
   @override
   Future<void> close() {
+    _logger.info('Closing SelectBrandsBloc');
     _onboardingSubscription?.cancel();
     return super.close();
   }
@@ -54,16 +60,27 @@ class SelectBrandsBloc extends Bloc<SelectBrandsEvent, SelectBrandsState> {
     final onboardingState = _onboardingBloc.state;
     final userSector = onboardingState.onboardingData.selectedSector;
 
+    _logger.info(
+      'Fetching daily brands for sector: ${userSector?.name ?? 'Global'}',
+    );
+
     final result = await _getDailyBrandsUseCase(
       GetDailyBrandsParams(sector: userSector),
     );
 
-    result.fold((failure) => emit(SelectBrandsState.error(failure.message)), (
-      listing,
-    ) {
-      _storeMasterData(listing);
-      _emitLoadedState(emit);
-    });
+    result.fold(
+      (failure) {
+        _logger.severe('Failed to fetch daily brands: ${failure.message}');
+        emit(SelectBrandsState.error(failure.message));
+      },
+      (listing) {
+        _logger.info(
+          'Successfully fetched brands. Sector brands: ${listing.sectorBrands.length}, Global brands: ${listing.globalBrands.length}',
+        );
+        _storeMasterData(listing);
+        _emitLoadedState(emit);
+      },
+    );
   }
 
   void _onUpdated(Updated event, Emitter<SelectBrandsState> emit) {
@@ -75,6 +92,13 @@ class SelectBrandsBloc extends Bloc<SelectBrandsEvent, SelectBrandsState> {
         final newSelectedNames = event.selectedBrands
             .map((b) => b.name)
             .toSet();
+
+        if (oldSelectedNames.length != newSelectedNames.length) {
+          _logger.info(
+            'Brands updated. Selected count: ${newSelectedNames.length}',
+          );
+        }
+
         final newlyAddedNames = newSelectedNames.difference(oldSelectedNames);
 
         _emitLoadedState(emit, newlyAddedNames: newlyAddedNames);
@@ -114,14 +138,13 @@ class SelectBrandsBloc extends Bloc<SelectBrandsEvent, SelectBrandsState> {
         sectorBrands: sectorViewModels,
         globalBrands: globalViewModels,
         selectedBrands: selectedViewModels,
-        sectorName:
-            onboardingState.onboardingData.selectedSector?.displayName ??
-            'Your Sector',
+        sectorName: onboardingState.displaySectorName,
       ),
     );
   }
 
   void _onToggleBrand(ToggleBrand event, Emitter<SelectBrandsState> emit) {
+    _logger.info('Toggling brand: ${event.brand.name}');
     _onboardingBloc.add(OnboardingEvent.toggleBrand(event.brand));
     if (_initialStaticItems.contains(event.brand.name)) {
       _initialStaticItems.remove(event.brand.name);

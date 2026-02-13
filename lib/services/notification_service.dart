@@ -160,4 +160,11 @@ class NotificationService implements INotificationService {
       _routeController.add(const NotificationRoute(AppRoutes.reports));
     }
   }
+
+  @override
+  Future<bool> isSystemAuthorized() async {
+    final settings = await _firebaseMessaging.getNotificationSettings();
+    return settings.authorizationStatus == AuthorizationStatus.authorized ||
+        settings.authorizationStatus == AuthorizationStatus.provisional;
+  }
 }

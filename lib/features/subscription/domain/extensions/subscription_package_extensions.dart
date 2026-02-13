@@ -2,8 +2,15 @@ import 'package:bizzie/features/subscription/domain/enums/subscription_package_t
 import 'package:bizzie/features/subscription/domain/models/subscription_package.dart';
 
 extension SubscriptionPackageX on SubscriptionPackage {
-  bool get isAnnual => packageType == SubscriptionPackageType.annual;
-  bool get isMonthly => packageType == SubscriptionPackageType.monthly;
+  bool get isAnnual =>
+      packageType == SubscriptionPackageType.annual ||
+      identifier.toLowerCase().contains('annual') ||
+      productId.toLowerCase().contains('annual');
+
+  bool get isMonthly =>
+      packageType == SubscriptionPackageType.monthly ||
+      identifier.toLowerCase().contains('monthly') ||
+      productId.toLowerCase().contains('monthly');
 
   bool get isDiscount =>
       identifier.toLowerCase().contains('discount') ||

@@ -12,13 +12,18 @@ import 'package:bizzie/features/onboarding/domain/usecases/get_sectors_usecase.d
 import 'package:bizzie/features/onboarding/domain/usecases/get_sp500_history_usecase.dart';
 import 'package:bizzie/features/onboarding/presentation/bloc/onboarding_state.dart';
 import 'package:bizzie/features/onboarding/presentation/models/feature_highlight_item.dart';
+import 'package:bizzie/services/config_service.dart';
+import 'package:bizzie/shared/models/sector_view_model.dart';
 export 'package:bizzie/features/onboarding/presentation/bloc/onboarding_state.dart';
+import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 
 part 'onboarding_event.dart';
 part 'onboarding_bloc.freezed.dart';
+
+final _logger = BizzieLogger('OnboardingBloc');
 
 @injectable
 class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
@@ -27,12 +32,14 @@ class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
 
   final GetSectorsUseCase _getSectorsUseCase;
   final GetSp500HistoryUseCase _getSp500HistoryUseCase;
+  final ConfigService _configService;
 
   OnboardingBloc(
     this._authRepository,
     this._completeOnboardingUseCase,
     this._getSectorsUseCase,
     this._getSp500HistoryUseCase,
+    this._configService,
   ) : super(OnboardingState.initial()) {
     on<_Started>(_onStarted);
     on<_NameSubmitted>(_onNameSubmitted);
@@ -48,6 +55,20 @@ class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
     on<_HighlightPageChanged>(_onHighlightPageChanged);
     on<_HighlightContinuePressed>(_onHighlightContinuePressed);
     on<_HighlightSkipPressed>(_onHighlightSkipPressed);
+    on<_NotificationsToggled>(_onNotificationsToggled);
+  }
+
+  void _onNotificationsToggled(
+    _NotificationsToggled event,
+    Emitter<OnboardingState> emit,
+  ) {
+    emit(
+      state.copyWith(
+        onboardingData: state.onboardingData.copyWith(
+          notificationsEnabled: event.enabled,
+        ),
+      ),
+    );
   }
 
   void _onToggleBrand(_ToggleBrand event, Emitter<OnboardingState> emit) {
@@ -136,30 +157,51 @@ class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
     _LoadSp500History event,
     Emitter<OnboardingState> emit,
   ) async {
+    _logger.info('Loading S&P 500 history');
     emit(state.copyWith(isLoadingHistory: true));
     final result = await _getSp500HistoryUseCase(NoParams());
     result.fold(
       (failure) {
+        _logger.warning('Failed to load S&P 500 history: ${failure.message}');
         emit(state.copyWith(isLoadingHistory: false));
       },
       (history) {
+        _logger.info('Successfully loaded S&P 500 history');
         emit(state.copyWith(isLoadingHistory: false, sp500History: history));
       },
     );
   }
 
   Future<void> _onStarted(_Started event, Emitter<OnboardingState> emit) async {
+    _logger.info('Onboarding started');
     add(const OnboardingEvent.loadSp500History());
 
     emit(state.copyWith(isLoadingSectors: true));
     final result = await _getSectorsUseCase(NoParams());
     result.fold(
       (failure) {
+        _logger.warning(
+          'Failed to fetch available sectors: ${failure.message}',
+        );
         emit(state.copyWith(isLoadingSectors: false));
       },
       (sectors) {
+        _logger.info('Fetched ${sectors.length} sectors');
+        final sectorViewModels = sectors
+            .map(
+              (s) => SectorViewModel(
+                sector: s,
+                displayName: _configService.getSectorDisplayName(s.name),
+                description: _configService.getSectorDescription(s.name),
+              ),
+            )
+            .toList();
+
         emit(
-          state.copyWith(isLoadingSectors: false, availableSectors: sectors),
+          state.copyWith(
+            isLoadingSectors: false,
+            availableSectors: sectorViewModels,
+          ),
         );
       },
     );
@@ -222,14 +264,21 @@ class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
       CompleteOnboardingParams(data: state.onboardingData, uid: currentUser.id),
     );
 
+    _logger.info('Onboarding completion successful');
     result.fold(
-      (failure) => emit(
-        state.copyWith(
-          status: OnboardingStatus.failure,
-          isSubmitting: false,
-          failureMessage: failure.message,
-        ),
-      ),
+      (failure) {
+        _logger.severe(
+          'Onboarding completion failed: ${failure.message}',
+          failure.message,
+        );
+        emit(
+          state.copyWith(
+            status: OnboardingStatus.failure,
+            isSubmitting: false,
+            failureMessage: failure.message,
+          ),
+        );
+      },
       (_) => emit(
         state.copyWith(status: OnboardingStatus.success, isSubmitting: false),
       ),

@@ -1,26 +1,40 @@
 enum Sector {
-  informationTechnology('Information Technology'),
-  financials('Financials'),
-  communicationServices('Communication Services'),
-  consumerDiscretionary('Consumer Discretionary'),
-  healthCare('Healthcare'),
-  industrials('Industrials'),
-  consumerStaples('Consumer Staples'),
-  energy('Energy'),
-  utilities('Utilities'),
-  materials('Materials'),
-  realEstate('Real Estate');
+  energy,
+  materials,
+  industrials,
+  consumerDiscretionary,
+  consumerStaples,
+  healthCare,
+  financials,
+  informationTechnology,
+  communicationServices,
+  utilities,
+  realEstate;
 
-  final String displayName;
-  const Sector(this.displayName);
+  const Sector();
+
+  String get displayName => switch (this) {
+    Sector.energy => 'Energy',
+    Sector.materials => 'Materials',
+    Sector.industrials => 'Industrials',
+    Sector.consumerDiscretionary => 'Consumer Discretionary',
+    Sector.consumerStaples => 'Consumer Staples',
+    Sector.healthCare => 'Health Care',
+    Sector.financials => 'Financials',
+    Sector.informationTechnology => 'Information Technology',
+    Sector.communicationServices => 'Communication Services',
+    Sector.utilities => 'Utilities',
+    Sector.realEstate => 'Real Estate',
+  };
 
   static Sector? fromString(String value) {
     try {
+      final normalizedValue = value
+          .toLowerCase()
+          .replaceAll(' ', '')
+          .replaceAll('_', '');
       return Sector.values.firstWhere(
-        (e) =>
-            e.displayName.toLowerCase() == value.toLowerCase() ||
-            e.name.toLowerCase() == value.replaceAll('_', '').toLowerCase() ||
-            e.name == value,
+        (e) => e.name.toLowerCase() == normalizedValue || e.name == value,
       );
     } catch (_) {
       return null;

@@ -23,10 +23,7 @@ _FinancialReportDto _$FinancialReportDtoFromJson(Map<String, dynamic> json) =>
         json['stockActivity'] as Map<String, dynamic>,
       ),
       filingDate: json['filingDate'] as String?,
-      dateAnalyzed: _$JsonConverterFromJson<Object, DateTime>(
-        json['dateAnalyzed'],
-        const TimestampConverter().fromJson,
-      ),
+      dateAnalyzed: const TimestampConverter().fromJson(json['dateAnalyzed']),
       formType: json['formType'] as String?,
       ticker: json['ticker'] as String?,
     );
@@ -40,18 +37,13 @@ Map<String, dynamic> _$FinancialReportDtoToJson(_FinancialReportDto instance) =>
       'income': instance.income,
       'stockActivity': instance.stockActivity,
       'filingDate': instance.filingDate,
-      'dateAnalyzed': _$JsonConverterToJson<Object, DateTime>(
+      'dateAnalyzed': _$JsonConverterToJson<Object?, DateTime>(
         instance.dateAnalyzed,
         const TimestampConverter().toJson,
       ),
       'formType': instance.formType,
       'ticker': instance.ticker,
     };
-
-Value? _$JsonConverterFromJson<Json, Value>(
-  Object? json,
-  Value? Function(Json json) fromJson,
-) => json == null ? null : fromJson(json as Json);
 
 Json? _$JsonConverterToJson<Json, Value>(
   Value? value,

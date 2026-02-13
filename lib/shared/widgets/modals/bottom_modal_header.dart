@@ -27,18 +27,20 @@ class BottomModalHeader extends StatelessWidget {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(title, style: theme.textTheme.displaySmall),
-                  if (subtitle != null) ...[
-                    const SizedBox(height: 4),
-                    subtitle!,
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(title, style: theme.textTheme.displaySmall),
+                    if (subtitle != null) ...[
+                      const SizedBox(height: 4),
+                      subtitle!,
+                    ],
                   ],
-                ],
+                ),
               ),
-              const Spacer(),
-              InkWell(
+
+              GestureDetector(
                 onTap: onClose ?? () => Navigator.pop(context),
                 child: SvgPicture.asset(
                   AppAssets.modalCloseIcon,

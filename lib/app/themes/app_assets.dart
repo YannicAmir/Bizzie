@@ -3,13 +3,13 @@ class AppAssets {
 
   // Auth Feature
   static const String authAppleIcon = 'assets/images/auth/apple_icon.png';
-  static const String authEmailIcon = 'assets/images/auth/email_icon.png';
+  static const String authEmailIcon = 'assets/images/auth/email_icon.svg';
   static const String authGoogleIcon = 'assets/images/auth/google_icon.png';
   static const String authHidePasswordIcon =
-      'assets/images/auth/hide_password_icon.png';
-  static const String authLockIcon = 'assets/images/auth/lock_icon.png';
+      'assets/images/auth/hide_password_icon.svg';
+  static const String authLockIcon = 'assets/images/auth/lock_icon.svg';
   static const String authShowPasswordIcon =
-      'assets/images/auth/show_password_icon.png';
+      'assets/images/auth/show_password_icon.svg';
 
   static const String splashLogo = 'assets/images/branding/splash_logo.png';
   static const String appIcon = 'assets/images/branding/app_icon.png';
@@ -116,20 +116,26 @@ class AppAssets {
       'assets/images/shared/clear_textfield_icon.png';
   static const String modalCloseIcon =
       'assets/images/shared/modal_close_icon.svg';
+  static const String bizziePlusIcon =
+      'assets/images/shared/bizzie_plus_icon.svg';
 
   static String getMascotForSector(String sector) {
     final normalized = sector.trim().replaceAll('_', ' ').toLowerCase();
     switch (normalized) {
       case 'information technology':
+      case 'informationtechnology':
       case 'technology':
         return bizzieMascotIT;
       case 'financials':
         return bizzieMascotFinancials;
       case 'communication services':
+      case 'communicationservices':
         return bizzieMascotCommunicationServices;
       case 'consumer discretionary':
+      case 'consumerdiscretionary':
         return bizzieMascotConsumerDiscretionary;
       case 'consumer staples':
+      case 'consumerstaples':
         return bizzieMascotConsumerStaples;
       case 'energy':
         return bizzieMascotEnergy;
@@ -141,6 +147,7 @@ class AppAssets {
       case 'materials':
         return bizzieMascotMaterials;
       case 'real estate':
+      case 'realestate':
         return bizzieMascotRealEstate;
       case 'utilities':
         return bizzieMascotUtilities;

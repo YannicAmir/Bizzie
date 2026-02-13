@@ -55,18 +55,11 @@ class HomeWatchlistWidget extends StatelessWidget {
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                      child: Text(
-                        'Watchlist',
-                        style: AppTextStyles.sectionHeader,
-                      ),
-                    ),
+                    Text('Watchlist', style: AppTextStyles.sectionHeader),
                     const SizedBox(height: 12),
                     ListView.separated(
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
-                      padding: const EdgeInsets.symmetric(horizontal: 24.0),
                       itemCount: companies.length,
                       separatorBuilder: (context, index) => const Divider(),
                       itemBuilder: (context, index) {

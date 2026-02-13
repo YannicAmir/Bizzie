@@ -81,14 +81,13 @@ extension SubscriptionStateX on SubscriptionState {
     SubscriptionPackage? package,
     bool isAnnual,
   ) {
-    if (package?.renewalDisclaimer != null) return package!.renewalDisclaimer;
+    if (package != null) return package.renewalDisclaimer;
 
-    if (isAnnual) {
-      final price = s.annualPackage?.priceString ?? '\$240';
-      return 'Auto-renews for $price/year. Cancel anytime.';
-    } else {
-      final price = s.monthlyPackage?.priceString ?? '\$34.95';
-      return 'Auto-renews for $price/month. Cancel anytime.';
-    }
+    final price = isAnnual
+        ? (s.annualPackage?.priceString ?? '\$240')
+        : (s.monthlyPackage?.priceString ?? '\$34.95');
+    final period = isAnnual ? 'year' : 'month';
+
+    return 'Auto-renews for $price/$period. Cancel anytime.';
   }
 }

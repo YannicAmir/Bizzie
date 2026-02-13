@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$UserModel {
 
- String get id; String get email; String? get displayName; String? get photoUrl;
+ String get id; String get email; String? get displayName; String? get photoUrl; List<String> get providers;
 /// Create a copy of UserModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $UserModelCopyWith<UserModel> get copyWith => _$UserModelCopyWithImpl<UserModel>
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is UserModel&&(identical(other.id, id) || other.id == id)&&(identical(other.email, email) || other.email == email)&&(identical(other.displayName, displayName) || other.displayName == displayName)&&(identical(other.photoUrl, photoUrl) || other.photoUrl == photoUrl));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is UserModel&&(identical(other.id, id) || other.id == id)&&(identical(other.email, email) || other.email == email)&&(identical(other.displayName, displayName) || other.displayName == displayName)&&(identical(other.photoUrl, photoUrl) || other.photoUrl == photoUrl)&&const DeepCollectionEquality().equals(other.providers, providers));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,email,displayName,photoUrl);
+int get hashCode => Object.hash(runtimeType,id,email,displayName,photoUrl,const DeepCollectionEquality().hash(providers));
 
 @override
 String toString() {
-  return 'UserModel(id: $id, email: $email, displayName: $displayName, photoUrl: $photoUrl)';
+  return 'UserModel(id: $id, email: $email, displayName: $displayName, photoUrl: $photoUrl, providers: $providers)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $UserModelCopyWith<$Res>  {
   factory $UserModelCopyWith(UserModel value, $Res Function(UserModel) _then) = _$UserModelCopyWithImpl;
 @useResult
 $Res call({
- String id, String email, String? displayName, String? photoUrl
+ String id, String email, String? displayName, String? photoUrl, List<String> providers
 });
 
 
@@ -62,13 +62,14 @@ class _$UserModelCopyWithImpl<$Res>
 
 /// Create a copy of UserModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? email = null,Object? displayName = freezed,Object? photoUrl = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? email = null,Object? displayName = freezed,Object? photoUrl = freezed,Object? providers = null,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
 as String,displayName: freezed == displayName ? _self.displayName : displayName // ignore: cast_nullable_to_non_nullable
 as String?,photoUrl: freezed == photoUrl ? _self.photoUrl : photoUrl // ignore: cast_nullable_to_non_nullable
-as String?,
+as String?,providers: null == providers ? _self.providers : providers // ignore: cast_nullable_to_non_nullable
+as List<String>,
   ));
 }
 
@@ -153,10 +154,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String email,  String? displayName,  String? photoUrl)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String email,  String? displayName,  String? photoUrl,  List<String> providers)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _UserModel() when $default != null:
-return $default(_that.id,_that.email,_that.displayName,_that.photoUrl);case _:
+return $default(_that.id,_that.email,_that.displayName,_that.photoUrl,_that.providers);case _:
   return orElse();
 
 }
@@ -174,10 +175,10 @@ return $default(_that.id,_that.email,_that.displayName,_that.photoUrl);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String email,  String? displayName,  String? photoUrl)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String email,  String? displayName,  String? photoUrl,  List<String> providers)  $default,) {final _that = this;
 switch (_that) {
 case _UserModel():
-return $default(_that.id,_that.email,_that.displayName,_that.photoUrl);case _:
+return $default(_that.id,_that.email,_that.displayName,_that.photoUrl,_that.providers);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -194,10 +195,10 @@ return $default(_that.id,_that.email,_that.displayName,_that.photoUrl);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String email,  String? displayName,  String? photoUrl)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String email,  String? displayName,  String? photoUrl,  List<String> providers)?  $default,) {final _that = this;
 switch (_that) {
 case _UserModel() when $default != null:
-return $default(_that.id,_that.email,_that.displayName,_that.photoUrl);case _:
+return $default(_that.id,_that.email,_that.displayName,_that.photoUrl,_that.providers);case _:
   return null;
 
 }
@@ -209,13 +210,20 @@ return $default(_that.id,_that.email,_that.displayName,_that.photoUrl);case _:
 
 
 class _UserModel implements UserModel {
-  const _UserModel({required this.id, required this.email, this.displayName, this.photoUrl});
+  const _UserModel({required this.id, required this.email, this.displayName, this.photoUrl, final  List<String> providers = const []}): _providers = providers;
   
 
 @override final  String id;
 @override final  String email;
 @override final  String? displayName;
 @override final  String? photoUrl;
+ final  List<String> _providers;
+@override@JsonKey() List<String> get providers {
+  if (_providers is EqualUnmodifiableListView) return _providers;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_providers);
+}
+
 
 /// Create a copy of UserModel
 /// with the given fields replaced by the non-null parameter values.
@@ -227,16 +235,16 @@ _$UserModelCopyWith<_UserModel> get copyWith => __$UserModelCopyWithImpl<_UserMo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _UserModel&&(identical(other.id, id) || other.id == id)&&(identical(other.email, email) || other.email == email)&&(identical(other.displayName, displayName) || other.displayName == displayName)&&(identical(other.photoUrl, photoUrl) || other.photoUrl == photoUrl));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _UserModel&&(identical(other.id, id) || other.id == id)&&(identical(other.email, email) || other.email == email)&&(identical(other.displayName, displayName) || other.displayName == displayName)&&(identical(other.photoUrl, photoUrl) || other.photoUrl == photoUrl)&&const DeepCollectionEquality().equals(other._providers, _providers));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,email,displayName,photoUrl);
+int get hashCode => Object.hash(runtimeType,id,email,displayName,photoUrl,const DeepCollectionEquality().hash(_providers));
 
 @override
 String toString() {
-  return 'UserModel(id: $id, email: $email, displayName: $displayName, photoUrl: $photoUrl)';
+  return 'UserModel(id: $id, email: $email, displayName: $displayName, photoUrl: $photoUrl, providers: $providers)';
 }
 
 
@@ -247,7 +255,7 @@ abstract mixin class _$UserModelCopyWith<$Res> implements $UserModelCopyWith<$Re
   factory _$UserModelCopyWith(_UserModel value, $Res Function(_UserModel) _then) = __$UserModelCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String email, String? displayName, String? photoUrl
+ String id, String email, String? displayName, String? photoUrl, List<String> providers
 });
 
 
@@ -264,13 +272,14 @@ class __$UserModelCopyWithImpl<$Res>
 
 /// Create a copy of UserModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? email = null,Object? displayName = freezed,Object? photoUrl = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? email = null,Object? displayName = freezed,Object? photoUrl = freezed,Object? providers = null,}) {
   return _then(_UserModel(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
 as String,displayName: freezed == displayName ? _self.displayName : displayName // ignore: cast_nullable_to_non_nullable
 as String?,photoUrl: freezed == photoUrl ? _self.photoUrl : photoUrl // ignore: cast_nullable_to_non_nullable
-as String?,
+as String?,providers: null == providers ? _self._providers : providers // ignore: cast_nullable_to_non_nullable
+as List<String>,
   ));
 }
 

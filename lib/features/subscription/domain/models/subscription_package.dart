@@ -17,6 +17,7 @@ abstract class SubscriptionPackage with _$SubscriptionPackage {
     required double price,
     required String currencyCode,
     @Default(false) bool isEligibleForTrial,
+    @Default(false) bool hasFreeTrial,
   }) = _SubscriptionPackage;
   factory SubscriptionPackage.fromJson(Map<String, dynamic> json) =>
       _$SubscriptionPackageFromJson(json);

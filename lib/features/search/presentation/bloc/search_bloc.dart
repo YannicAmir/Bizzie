@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:async/async.dart';
 import 'package:bloc/bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -8,6 +9,7 @@ import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:bizzie/features/search/domain/usecases/search_stocks_usecase.dart';
 import 'package:bizzie/features/search/domain/usecases/get_search_dashboard_data_usecase.dart';
 import 'package:bizzie/features/search/domain/usecases/find_stock_for_product_usecase.dart';
+import 'package:bizzie/features/user/domain/interfaces/user_repository.dart';
 
 part 'search_event.dart';
 part 'search_state.dart';
@@ -20,6 +22,8 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
   final SearchStocksUseCase _searchStocksUseCase;
   final GetSearchDashboardDataUseCase _dashboardDataUseCase;
   final FindStockForProductUseCase _findStockForProductUseCase;
+  final IUserRepository _userRepository;
+  StreamSubscription? _userSubscription;
 
   CancelableOperation? _searchOperation;
 
@@ -30,7 +34,12 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     this._searchStocksUseCase,
     this._dashboardDataUseCase,
     this._findStockForProductUseCase,
+    this._userRepository,
   ) : super(const SearchState.initial()) {
+    _userSubscription = _userRepository.userStream.listen((_) {
+      add(const SearchEvent.started());
+    });
+
     on<_Started>(_onStarted);
     on<_QueryChanged>(_onQueryChanged);
     on<_Cleared>(_onCleared);
@@ -40,6 +49,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
   @override
   Future<void> close() {
     _searchOperation?.cancel();
+    _userSubscription?.cancel();
     return super.close();
   }
 

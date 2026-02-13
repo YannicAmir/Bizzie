@@ -19,6 +19,12 @@ _SubscriptionStatusDto _$SubscriptionStatusDtoFromJson(
   expirationDate: json['expirationDate'] == null
       ? null
       : DateTime.parse(json['expirationDate'] as String),
+  latestPurchaseDate: json['latestPurchaseDate'] == null
+      ? null
+      : DateTime.parse(json['latestPurchaseDate'] as String),
+  managementURL: json['managementURL'] as String?,
+  periodType: json['periodType'] as String?,
+  activePlanId: json['activePlanId'] as String?,
 );
 
 Map<String, dynamic> _$SubscriptionStatusDtoToJson(
@@ -28,4 +34,8 @@ Map<String, dynamic> _$SubscriptionStatusDtoToJson(
   'activeEntitlements': instance.activeEntitlements.toList(),
   'activeProductIds': instance.activeProductIds.toList(),
   'expirationDate': instance.expirationDate?.toIso8601String(),
+  'latestPurchaseDate': instance.latestPurchaseDate?.toIso8601String(),
+  'managementURL': instance.managementURL,
+  'periodType': instance.periodType,
+  'activePlanId': instance.activePlanId,
 };

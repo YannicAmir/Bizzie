@@ -15,4 +15,26 @@ sealed class Failure with _$Failure {
   const factory Failure.userNotFound([
     @Default('User not found') String message,
   ]) = UserNotFoundFailure;
+  const factory Failure.permission([
+    @Default('Permission denied') String message,
+  ]) = PermissionFailure;
+  const factory Failure.passwordMismatch([
+    @Default('Passwords do not match') String message,
+  ]) = PasswordMismatchFailure;
+  const factory Failure.reauthentication([
+    @Default('Reauthentication failed') String message,
+  ]) = ReauthenticationFailure;
+
+  /// Common getter for the error message across all variants.
+  @override
+  String get message => when(
+    server: (m) => m,
+    cache: (m) => m,
+    payment: (m) => m,
+    cancel: (m) => m,
+    userNotFound: (m) => m,
+    permission: (m) => m,
+    passwordMismatch: (m) => m,
+    reauthentication: (m) => m,
+  );
 }

@@ -9,3 +9,5 @@ class SubscriptionException implements Exception {
   final String message;
   SubscriptionException({required this.message});
 }
+
+class UserNotSignedInException implements Exception {}

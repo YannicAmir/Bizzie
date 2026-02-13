@@ -8,12 +8,14 @@ class AppBadge extends StatelessWidget {
   final String text;
   final AppBadgeStyle style;
   final bool isLarge;
+  final bool isExtraLarge;
 
   const AppBadge({
     super.key,
     required this.text,
     required this.style,
     this.isLarge = false,
+    this.isExtraLarge = false,
   });
 
   @override
@@ -64,7 +66,9 @@ class AppBadge extends StatelessWidget {
       ),
       child: Text(
         text,
-        style: isLarge
+        style: isExtraLarge
+            ? AppTextStyles.bodyLargeBold.copyWith(color: textColor)
+            : isLarge
             ? AppTextStyles.bodyMediumBold.copyWith(color: textColor)
             : AppTextStyles.bodySmallBold.copyWith(color: textColor),
       ),

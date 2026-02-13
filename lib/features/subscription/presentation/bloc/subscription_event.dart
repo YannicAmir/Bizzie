@@ -20,6 +20,8 @@ abstract class SubscriptionEvent with _$SubscriptionEvent {
       SubscriptionUserIdentityChanged;
   const factory SubscriptionEvent.offeringsRequested() =
       SubscriptionOfferingsRequested;
+  const factory SubscriptionEvent.refreshRequested() =
+      SubscriptionRefreshRequested;
   const factory SubscriptionEvent.planToggled({required bool isAnnual}) =
       SubscriptionPlanToggled;
   const factory SubscriptionEvent.appResumed() = SubscriptionAppResumed;
