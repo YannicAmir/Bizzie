@@ -42,7 +42,7 @@ class SearchInitialView extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            (favoriteSector ?? '').toTitleCase(),
+            (favoriteSector ?? '').formatAsSector(),
             style: theme.textTheme.bodyLarge?.copyWith(
               fontWeight: FontWeight.w600,
             ),

@@ -1,3 +1,5 @@
+import 'package:bizzie/core/domain/models/sector.dart';
+
 extension StringCaseExtension on String {
   String toTitleCase() {
     if (isEmpty) {
@@ -11,5 +13,11 @@ extension StringCaseExtension on String {
               : '',
         )
         .join(' ');
+  }
+
+  String formatAsSector() {
+    if (isEmpty) return this;
+    final sector = Sector.fromString(this);
+    return sector?.displayName ?? toTitleCase();
   }
 }
