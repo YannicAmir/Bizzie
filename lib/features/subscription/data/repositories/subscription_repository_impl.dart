@@ -181,9 +181,9 @@ class SubscriptionRepositoryImpl implements ISubscriptionRepository {
   Future<Either<Failure, void>> syncSubscriptionWithBackend() async {
     _logger.info('Triggering manual subscription sync with backend...');
     try {
-      final result = await _functionsService.syncUserSubscription();
-      final isActive = result['active'] == true;
-      _logger.info('Backend sync completed. Active: $isActive');
+      final resultDto = await _functionsService.syncUserSubscription();
+      final result = resultDto.toDomain();
+      _logger.info('Backend sync completed. Active: ${result.isActive}');
       return const Right(null);
     } catch (e, s) {
       return Left(_handleError(e, s, 'Manual subscription sync failed'));

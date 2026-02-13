@@ -375,7 +375,14 @@ GoRoute _buildCompanyRoute(String routeName) {
     name: routeName,
     builder: (context, state) {
       final ticker = state.pathParameters['ticker']!;
-      final initialCompany = state.extra as Company?;
+      Company? initialCompany;
+
+      final extra = state.extra;
+      if (extra is Company) {
+        initialCompany = extra;
+      } else if (extra is Map<String, dynamic>) {
+        initialCompany = Company.fromJson(extra);
+      }
 
       return CompanyProfilePage(ticker: ticker, initialCompany: initialCompany);
     },

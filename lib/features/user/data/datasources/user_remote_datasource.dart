@@ -11,6 +11,7 @@ abstract class IUserRemoteDataSource {
   Future<UserDto?> getUser(String uid);
   Stream<UserDto?> watchUser(String uid);
   Future<List<WatchlistItemDto>> getWatchlist(String uid);
+  Stream<List<WatchlistItemDto>> watchWatchlist(String uid);
   Future<void> updateUser(UserDto user);
 }
 
@@ -101,5 +102,15 @@ class UserRemoteDataSource implements IUserRemoteDataSource {
       }
       rethrow;
     }
+  }
+
+  @override
+  Stream<List<WatchlistItemDto>> watchWatchlist(String uid) {
+    _logger.info('Starting real-time watchlist stream for UID: $uid');
+    return _firestoreService.getCollectionStream<WatchlistItemDto>(
+      path: 'users/$uid/watchlist',
+      fromJson: WatchlistItemDto.fromJson,
+      toJson: (dto) => dto.toJson(),
+    );
   }
 }

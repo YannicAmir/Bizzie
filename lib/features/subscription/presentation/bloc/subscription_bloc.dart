@@ -379,16 +379,6 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
     );
   }
 
-  /// Background sync safeguard — "Self-Healing" mechanism.
-  ///
-  /// After a successful purchase, waits 10 seconds then checks if Firestore
-  /// has updated `isSubscribed`. If still `false`, triggers a manual sync
-  /// via the Firebase Callable Function.
-  ///
-  /// Guards:
-  /// - Cancels any existing timer before starting (prevents stacking).
-  /// - Timer is cancelled on `close()` (prevents firing post-logout).
-  /// - Silent: does NOT emit any Bloc state or affect UI.
   void _startBackgroundSyncSafeguard() {
     _backgroundSyncTimer?.cancel();
     _logger.info('Background sync safeguard started (10s countdown).');
