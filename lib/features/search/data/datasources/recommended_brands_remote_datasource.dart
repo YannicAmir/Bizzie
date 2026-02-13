@@ -60,19 +60,28 @@ class RecommendedBrandsRemoteDataSource
     String targetSector,
     String originalSector,
   ) {
+    String normalize(String s) =>
+        s.toLowerCase().replaceAll(' ', '').replaceAll('_', '');
+
+    final normalizedTarget = normalize(targetSector);
+    final normalizedOriginal = normalize(originalSector);
+
     var sectorData = sectors.firstWhere(
-      (s) => s['name'] == targetSector,
+      (s) => normalize(s['name'] ?? '') == normalizedTarget,
       orElse: () => {},
     );
+
     if (sectorData.isEmpty) {
       sectorData = sectors.firstWhere(
-        (s) => s['name'] == originalSector,
+        (s) => normalize(s['name'] ?? '') == normalizedOriginal,
         orElse: () => {},
       );
     }
 
     if (sectorData.isEmpty) {
-      _logger.warning('Sector $targetSector not found. Checking for fallback.');
+      _logger.warning(
+        'Sector $targetSector ($normalizedTarget) not found. Checking for fallback.',
+      );
       if (sectors.isNotEmpty) {
         sectorData = sectors.first;
         _logger.info(

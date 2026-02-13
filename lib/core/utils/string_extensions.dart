@@ -6,7 +6,7 @@ extension StringCaseExtension on String {
       return this;
     }
 
-    return split('_')
+    return split(RegExp(r'[ _]'))
         .map(
           (word) => word.isNotEmpty
               ? '${word[0].toUpperCase()}${word.substring(1).toLowerCase()}'
