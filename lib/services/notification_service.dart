@@ -9,6 +9,8 @@ import 'package:bizzie/core/interfaces/i_notification_service.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:bizzie/features/notifications/data/datasources/local_notification_datasource.dart';
 import 'package:bizzie/features/notifications/domain/interfaces/i_notification_repository.dart';
+import 'package:bizzie/core/interfaces/i_local_storage_service.dart';
+import 'package:bizzie/features/user/domain/interfaces/user_repository.dart';
 import 'package:injectable/injectable.dart';
 
 final _logger = BizzieLogger('NotificationService');
@@ -19,6 +21,8 @@ class NotificationService implements INotificationService {
   final LocalNotificationDataSource _localNotificationDataSource;
   final DeviceInfoPlugin _deviceInfo;
   final FirebaseMessaging _firebaseMessaging;
+  final ILocalStorageService _localStorageService;
+  final IUserRepository _userRepository;
 
   final _routeController = StreamController<NotificationRoute>.broadcast();
 
@@ -27,6 +31,8 @@ class NotificationService implements INotificationService {
     this._localNotificationDataSource,
     this._deviceInfo,
     this._firebaseMessaging,
+    this._localStorageService,
+    this._userRepository,
   );
 
   @PostConstruct(preResolve: true)
@@ -49,6 +55,13 @@ class NotificationService implements INotificationService {
       badge: true,
       sound: true,
     );
+
+    await syncFcmToken();
+
+    _firebaseMessaging.onTokenRefresh.listen((token) {
+      _logger.info('FCM token refreshed');
+      syncFcmToken();
+    });
 
     _notificationRepository.onMessage.listen((message) {
       _logger.info(
@@ -77,6 +90,43 @@ class NotificationService implements INotificationService {
       _logger.severe('Failed to fetch FCM token: ${failure.message}');
       return null;
     }, (token) => token);
+  }
+
+  @override
+  Future<void> syncFcmToken({bool force = false}) async {
+    _logger.info('Syncing FCM token (force: $force)');
+
+    final token = await getFcmToken();
+    if (token == null) {
+      _logger.warning('Failed to get FCM token, aborting sync');
+      return;
+    }
+
+    final deviceId = await getDeviceUuid();
+    final lastSyncedToken = _localStorageService.getString(
+      'last_synced_fcm_token',
+    );
+
+    if (force || token != lastSyncedToken) {
+      _logger.info('Token changed or force sync. Updating backend.');
+      final result = await _userRepository.updateFcmToken(deviceId, token);
+
+      result.fold(
+        (failure) => _logger.severe('Failed to update FCM token', failure),
+        (_) {
+          _logger.info('FCM token updated successfully. Updating cache.');
+          _localStorageService.setString('last_synced_fcm_token', token);
+        },
+      );
+    } else {
+      _logger.info('Token matches last synced token. Skipping update.');
+    }
+  }
+
+  @override
+  Future<void> clearCachedToken() async {
+    _logger.info('Clearing cached FCM token');
+    await _localStorageService.remove('last_synced_fcm_token');
   }
 
   @override
@@ -143,6 +193,8 @@ class NotificationService implements INotificationService {
 
     if (type == 'sec_filing' || type == 'earnings_notification') {
       return const NotificationRoute(AppRoutes.reports);
+    } else if (type == 'subscription_drip') {
+      return const NotificationRoute(AppRoutes.discountedPaywall);
     }
     return null;
   }
@@ -158,6 +210,10 @@ class NotificationService implements INotificationService {
     if (payload.contains('sec_filing') ||
         payload.contains('earnings_notification')) {
       _routeController.add(const NotificationRoute(AppRoutes.reports));
+    } else if (payload.contains('subscription_drip')) {
+      _routeController.add(
+        const NotificationRoute(AppRoutes.discountedPaywall),
+      );
     }
   }
 

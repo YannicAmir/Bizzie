@@ -1,9 +1,9 @@
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
+import 'package:bizzie/core/interfaces/i_notification_service.dart';
 import 'package:bizzie/core/usecase/usecase.dart';
 import 'package:bizzie/features/auth/domain/interfaces/i_auth_repository.dart';
 import 'package:bizzie/features/user/domain/interfaces/user_repository.dart';
-import 'package:bizzie/features/user/domain/models/user_model.dart';
 import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
 
@@ -14,23 +14,43 @@ class ToggleNotificationsUseCase
     implements UseCase<Either<Failure, void>, bool> {
   final IAuthRepository _authRepository;
   final IUserRepository _userRepository;
+  final INotificationService _notificationService;
 
-  ToggleNotificationsUseCase(this._authRepository, this._userRepository);
+  ToggleNotificationsUseCase(
+    this._authRepository,
+    this._userRepository,
+    this._notificationService,
+  );
 
   @override
-  Future<Either<Failure, void>> call(bool params) async {
+  Future<Either<Failure, void>> call(bool enable) async {
     _logger.info(
-      'Executing ToggleNotificationsUseCase: Setting enable to $params',
+      'Executing ToggleNotificationsUseCase: Setting enable to $enable',
     );
 
     final authRes = _getAuthenticatedUserId();
 
     return await authRes.fold((failure) async => Left(failure), (userId) async {
-      final fetchRes = await _fetchUserModel(userId);
+      String? token;
+      String? deviceId;
 
-      return await fetchRes.fold(
-        (failure) async => Left(failure),
-        (user) async => _updateNotificationStatusInRepo(user, params),
+      if (enable) {
+        try {
+          token = await _notificationService.getFcmToken();
+          deviceId = await _notificationService.getDeviceUuid();
+          _logger.info(
+            "Preemptive token fetch: ${token != null ? 'Success' : 'Failed'}",
+          );
+        } catch (e) {
+          _logger.warning("Failed to fetch token during toggle on", e);
+        }
+      }
+
+      return await _updateNotificationStatusInRepo(
+        userId,
+        enable,
+        deviceId: deviceId,
+        token: token,
       );
     });
   }
@@ -44,20 +64,17 @@ class ToggleNotificationsUseCase
     return Right(currentUser.id);
   }
 
-  Future<Either<Failure, UserModel>> _fetchUserModel(String userId) async {
-    final result = await _userRepository.getUser(userId);
-    if (result.isLeft()) {
-      _logger.warning('Failed to fetch user model for notification toggle');
-    }
-    return result;
-  }
-
   Future<Either<Failure, void>> _updateNotificationStatusInRepo(
-    UserModel user,
-    bool enable,
-  ) async {
-    final updatedUser = user.copyWith(notificationsEnabled: enable);
-    final result = await _userRepository.updateUser(updatedUser);
+    String userId,
+    bool enable, {
+    String? deviceId,
+    String? token,
+  }) async {
+    final result = await _userRepository.updateNotificationSettings(
+      enable,
+      deviceId: deviceId,
+      token: token,
+    );
 
     result.fold(
       (failure) => _logger.warning(

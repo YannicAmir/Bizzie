@@ -28,11 +28,13 @@ import 'package:shared_preferences/shared_preferences.dart' as _i460;
 
 import '../core/domain/models/sector.dart' as _i162;
 import '../core/interfaces/i_firebase_functions_service.dart' as _i347;
+import '../core/interfaces/i_local_storage_service.dart' as _i583;
 import '../core/interfaces/i_notification_service.dart' as _i430;
 import '../core/interfaces/i_permission_service.dart' as _i202;
 import '../core/network/network_info.dart' as _i6;
 import '../core/network/network_module.dart' as _i419;
 import '../core/services/app_info_service.dart' as _i248;
+import '../core/services/local_storage_service.dart' as _i1003;
 import '../env/app_env.dart' as _i915;
 import '../env/env_impl.dart' as _i343;
 import '../features/auth/data/datasources/remote_auth_data_source.dart'
@@ -231,6 +233,8 @@ import '../features/notifications/data/repositories/notification_repository_impl
     as _i648;
 import '../features/notifications/domain/interfaces/i_notification_repository.dart'
     as _i622;
+import '../features/notifications/domain/usecases/clear_cached_token.dart'
+    as _i961;
 import '../features/notifications/domain/usecases/get_fcm_token.dart' as _i69;
 import '../features/notifications/domain/usecases/listen_to_messages.dart'
     as _i954;
@@ -500,6 +504,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i640.FcmRemoteDataSource>(
       () => _i640.FcmRemoteDataSource(gh<_i892.FirebaseMessaging>()),
     );
+    gh.lazySingleton<_i583.ILocalStorageService>(
+      () => _i1003.LocalStorageService(gh<_i460.SharedPreferences>()),
+    );
     gh.lazySingleton<_i634.NewsFirestoreDataSource>(
       () => _i634.NewsFirestoreDataSourceImpl(gh<_i974.FirebaseFirestore>()),
     );
@@ -639,15 +646,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i806.FinancialStatementsFirestoreDataSource>(),
       ),
     );
-    await gh.lazySingletonAsync<_i430.INotificationService>(() {
-      final i = _i941.NotificationService(
-        gh<_i622.INotificationRepository>(),
-        gh<_i982.LocalNotificationDataSource>(),
-        gh<_i833.DeviceInfoPlugin>(),
-        gh<_i892.FirebaseMessaging>(),
-      );
-      return i.initialize().then((_) => i);
-    }, preResolve: true);
     gh.lazySingleton<_i473.DividendsRemoteDataSource>(
       () => _i473.DividendsRemoteDataSourceImpl(
         gh<_i361.Dio>(instanceName: 'FmpDio'),
@@ -706,12 +704,6 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i706.BusinessRemoteDataSourceImpl(
         gh<_i361.Dio>(instanceName: 'FmpDio'),
         gh<_i216.ConfigService>(),
-      ),
-    );
-    gh.factory<_i874.CompleteOnboardingUseCase>(
-      () => _i874.CompleteOnboardingUseCase(
-        gh<_i329.IOnboardingRepository>(),
-        gh<_i430.INotificationService>(),
       ),
     );
     gh.factory<_i258.AddToWatchlistUseCase>(
@@ -822,15 +814,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i376.ICompanyRepository>(),
         gh<_i348.FinancialStatementsRemoteDataSource>(),
         gh<_i806.FinancialStatementsFirestoreDataSource>(),
-      ),
-    );
-    gh.factory<_i593.OnboardingBloc>(
-      () => _i593.OnboardingBloc(
-        gh<_i685.IAuthRepository>(),
-        gh<_i874.CompleteOnboardingUseCase>(),
-        gh<_i920.GetSectorsUseCase>(),
-        gh<_i952.GetSp500HistoryUseCase>(),
-        gh<_i216.ConfigService>(),
       ),
     );
     gh.lazySingleton<_i943.IPeRatioRepository>(
@@ -1037,15 +1020,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i1033.CompanyRoeBloc>(
       () => _i1033.CompanyRoeBloc(gh<_i231.GetRoeUseCase>()),
     );
-    gh.factory<_i687.NotificationBloc>(
-      () => _i687.NotificationBloc(
-        gh<_i332.RequestNotificationPermission>(),
-        gh<_i69.GetFcmToken>(),
-        gh<_i954.ListenToMessages>(),
-        gh<_i327.SubscribeToTopic>(),
-        gh<_i999.UnsubscribeFromTopic>(),
-      ),
-    );
     gh.factory<_i342.HistoricalPriceEodBloc>(
       () => _i342.HistoricalPriceEodBloc(
         gh<_i925.GetHistoricalEodPricesUseCase>(),
@@ -1060,20 +1034,22 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i806.FinancialStatementsFirestoreDataSource>(),
       ),
     );
-    gh.factory<_i709.SelectBrandsBloc>(
-      () => _i709.SelectBrandsBloc(
-        gh<_i593.OnboardingBloc>(),
-        gh<_i422.GetDailyBrandsUseCase>(),
-      ),
-    );
     gh.factory<_i723.CompanyDividendsBloc>(
       () => _i723.CompanyDividendsBloc(gh<_i754.GetDividendInfoUseCase>()),
     );
-    gh.lazySingleton<_i596.ToggleNotificationsUseCase>(
-      () => _i596.ToggleNotificationsUseCase(
-        gh<_i685.IAuthRepository>(),
+    await gh.lazySingletonAsync<_i430.INotificationService>(() {
+      final i = _i941.NotificationService(
+        gh<_i622.INotificationRepository>(),
+        gh<_i982.LocalNotificationDataSource>(),
+        gh<_i833.DeviceInfoPlugin>(),
+        gh<_i892.FirebaseMessaging>(),
+        gh<_i583.ILocalStorageService>(),
         gh<_i615.IUserRepository>(),
-      ),
+      );
+      return i.initialize().then((_) => i);
+    }, preResolve: true);
+    gh.lazySingleton<_i961.ClearCachedToken>(
+      () => _i961.ClearCachedToken(gh<_i430.INotificationService>()),
     );
     gh.factory<_i62.CompanyPfcfRatioBloc>(
       () => _i62.CompanyPfcfRatioBloc(gh<_i912.GetPfcfRatioUseCase>()),
@@ -1146,17 +1122,21 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i683.CompanyEpsBloc>(
       () => _i683.CompanyEpsBloc(gh<_i107.GetEpsStatsUseCase>()),
     );
-    gh.factory<_i419.SettingsBloc>(
-      () => _i419.SettingsBloc(
-        gh<_i594.GetSettingsDisplayDataUseCase>(),
-        gh<_i596.ToggleNotificationsUseCase>(),
-        gh<_i526.SubmitFeedbackUseCase>(),
-        gh<_i936.LaunchUrlUseCase>(),
-        gh<_i83.SignOutUseCase>(),
-        gh<_i244.ResetPasswordUseCase>(),
+    gh.factory<_i687.NotificationBloc>(
+      () => _i687.NotificationBloc(
+        gh<_i332.RequestNotificationPermission>(),
+        gh<_i69.GetFcmToken>(),
+        gh<_i954.ListenToMessages>(),
+        gh<_i327.SubscribeToTopic>(),
+        gh<_i999.UnsubscribeFromTopic>(),
+        gh<_i961.ClearCachedToken>(),
+      ),
+    );
+    gh.lazySingleton<_i596.ToggleNotificationsUseCase>(
+      () => _i596.ToggleNotificationsUseCase(
         gh<_i685.IAuthRepository>(),
-        gh<_i579.OpenAppSettingsUseCase>(),
-        gh<_i714.GetSubscriptionStatusUseCase>(),
+        gh<_i615.IUserRepository>(),
+        gh<_i430.INotificationService>(),
       ),
     );
     gh.lazySingleton<_i687.GetProfileDisplayDataUseCase>(
@@ -1195,6 +1175,12 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i615.IUserRepository>(),
       ),
     );
+    gh.factory<_i874.CompleteOnboardingUseCase>(
+      () => _i874.CompleteOnboardingUseCase(
+        gh<_i329.IOnboardingRepository>(),
+        gh<_i430.INotificationService>(),
+      ),
+    );
     gh.factory<_i73.UpcomingEarningsBloc>(
       () => _i73.UpcomingEarningsBloc(gh<_i1055.GetUpcomingEarningsUseCase>()),
     );
@@ -1222,11 +1208,39 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i205.ReauthenticateUseCase>(),
       ),
     );
+    gh.factory<_i593.OnboardingBloc>(
+      () => _i593.OnboardingBloc(
+        gh<_i685.IAuthRepository>(),
+        gh<_i874.CompleteOnboardingUseCase>(),
+        gh<_i920.GetSectorsUseCase>(),
+        gh<_i952.GetSp500HistoryUseCase>(),
+        gh<_i216.ConfigService>(),
+      ),
+    );
     gh.lazySingleton<_i200.UserBloc>(
       () => _i200.UserBloc(
         gh<_i561.GetUserUseCase>(),
         gh<_i836.WatchUserUseCase>(),
         gh<_i615.IUserRepository>(),
+      ),
+    );
+    gh.factory<_i419.SettingsBloc>(
+      () => _i419.SettingsBloc(
+        gh<_i594.GetSettingsDisplayDataUseCase>(),
+        gh<_i596.ToggleNotificationsUseCase>(),
+        gh<_i526.SubmitFeedbackUseCase>(),
+        gh<_i936.LaunchUrlUseCase>(),
+        gh<_i83.SignOutUseCase>(),
+        gh<_i244.ResetPasswordUseCase>(),
+        gh<_i685.IAuthRepository>(),
+        gh<_i579.OpenAppSettingsUseCase>(),
+        gh<_i714.GetSubscriptionStatusUseCase>(),
+      ),
+    );
+    gh.factory<_i709.SelectBrandsBloc>(
+      () => _i709.SelectBrandsBloc(
+        gh<_i593.OnboardingBloc>(),
+        gh<_i422.GetDailyBrandsUseCase>(),
       ),
     );
     return this;

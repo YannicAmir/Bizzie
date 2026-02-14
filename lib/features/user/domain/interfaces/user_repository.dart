@@ -8,5 +8,12 @@ abstract class IUserRepository {
   String? getCachedFavoriteSector();
   Stream<UserModel> get userStream;
   Stream<UserModel> watchUser(String uid);
+  Future<Either<Failure, void>> updateFcmToken(String deviceId, String token);
+  Future<Either<Failure, void>> removeFcmToken(String deviceId);
+  Future<Either<Failure, void>> updateNotificationSettings(
+    bool enabled, {
+    String? deviceId,
+    String? token,
+  });
   void dispose();
 }

@@ -1,6 +1,8 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:bizzie/core/error/failures.dart';
+import 'package:bizzie/core/usecase/usecase.dart';
 import 'package:bizzie/features/notifications/domain/models/notification_message.dart';
+import 'package:bizzie/features/notifications/domain/usecases/clear_cached_token.dart';
 import 'package:bizzie/features/notifications/domain/usecases/get_fcm_token.dart';
 import 'package:bizzie/features/notifications/domain/usecases/listen_to_messages.dart';
 import 'package:bizzie/features/notifications/domain/usecases/request_notification_permission.dart';
@@ -22,6 +24,8 @@ class MockSubscribeToTopic extends Mock implements SubscribeToTopic {}
 
 class MockUnsubscribeFromTopic extends Mock implements UnsubscribeFromTopic {}
 
+class MockClearCachedToken extends Mock implements ClearCachedToken {}
+
 void main() {
   late NotificationBloc bloc;
   late MockRequestNotificationPermission mockRequestPermission;
@@ -29,6 +33,12 @@ void main() {
   late MockListenToMessages mockListenToMessages;
   late MockSubscribeToTopic mockSubscribeToTopic;
   late MockUnsubscribeFromTopic mockUnsubscribeFromTopic;
+  late MockClearCachedToken mockClearCachedToken;
+
+  setUpAll(() {
+    registerFallbackValue(NotificationEvent.setupRequested());
+    registerFallbackValue(NoParams());
+  });
 
   setUp(() {
     mockRequestPermission = MockRequestNotificationPermission();
@@ -36,12 +46,14 @@ void main() {
     mockListenToMessages = MockListenToMessages();
     mockSubscribeToTopic = MockSubscribeToTopic();
     mockUnsubscribeFromTopic = MockUnsubscribeFromTopic();
+    mockClearCachedToken = MockClearCachedToken();
     bloc = NotificationBloc(
       mockRequestPermission,
       mockGetFcmToken,
       mockListenToMessages,
       mockSubscribeToTopic,
       mockUnsubscribeFromTopic,
+      mockClearCachedToken,
     );
   });
 
@@ -54,140 +66,200 @@ void main() {
   );
 
   group('NotificationBloc', () {
-    test('initialState_isInitial', () {
+    test('notificationBloc_initialState_isInitial', () {
       expect(bloc.state, const NotificationState.initial());
     });
 
-    blocTest<NotificationBloc, NotificationState>(
-      'setupRequested_success_emitsLoadingAndSuccess',
-      build: () {
-        when(
-          () => mockRequestPermission(),
-        ).thenAnswer((_) async => const Right(null));
-        when(
-          () => mockGetFcmToken(),
-        ).thenAnswer((_) async => const Right(tToken));
-        when(
-          () => mockListenToMessages(),
-        ).thenAnswer((_) => Stream.value(tMessage));
-        return bloc;
-      },
-      act: (bloc) => bloc.add(const NotificationEvent.setupRequested()),
-      expect: () => [
-        const NotificationState.loading(),
-        const NotificationState.success(tToken),
-        NotificationState.messageReceivedState(tMessage),
-      ],
-      verify: (_) {
-        verify(() => mockRequestPermission()).called(1);
-        verify(() => mockGetFcmToken()).called(1);
-        verify(() => mockListenToMessages()).called(1);
-      },
-    );
+    group('setupRequested', () {
+      blocTest<NotificationBloc, NotificationState>(
+        'notificationBloc_setupRequested_emitsLoadingAndSuccess',
+        build: () {
+          // arrange
+          when(
+            () => mockRequestPermission(),
+          ).thenAnswer((_) async => const Right(null));
+          when(
+            () => mockGetFcmToken(),
+          ).thenAnswer((_) async => const Right(tToken));
+          when(
+            () => mockListenToMessages(),
+          ).thenAnswer((_) => Stream.value(tMessage));
+          return bloc;
+        },
+        act: (bloc) => bloc.add(const NotificationEvent.setupRequested()),
+        expect: () => [
+          // assert
+          const NotificationState.loading(),
+          const NotificationState.success(tToken),
+          NotificationState.messageReceivedState(tMessage),
+        ],
+        verify: (_) {
+          verify(() => mockRequestPermission()).called(1);
+          verify(() => mockGetFcmToken()).called(1);
+          verify(() => mockListenToMessages()).called(1);
+        },
+      );
 
-    blocTest<NotificationBloc, NotificationState>(
-      'setupRequested_permissionFailure_emitsLoadingAndFailure',
-      build: () {
-        when(
-          () => mockRequestPermission(),
-        ).thenAnswer((_) async => Left(Failure.server('Permission Error')));
-        return bloc;
-      },
-      act: (bloc) => bloc.add(const NotificationEvent.setupRequested()),
-      expect: () => [
-        const NotificationState.loading(),
-        const NotificationState.failure('Permission Error'),
-      ],
-    );
+      blocTest<NotificationBloc, NotificationState>(
+        'notificationBloc_setupRequested_permissionFailure_emitsLoadingAndFailure',
+        build: () {
+          // arrange
+          when(
+            () => mockRequestPermission(),
+          ).thenAnswer((_) async => Left(Failure.server('Permission Error')));
+          return bloc;
+        },
+        act: (bloc) => bloc.add(const NotificationEvent.setupRequested()),
+        expect: () => [
+          // assert
+          const NotificationState.loading(),
+          const NotificationState.failure('Permission Error'),
+        ],
+      );
 
-    blocTest<NotificationBloc, NotificationState>(
-      'setupRequested_tokenFailure_emitsLoadingAndFailure',
-      build: () {
-        when(
-          () => mockRequestPermission(),
-        ).thenAnswer((_) async => const Right(null));
-        when(
-          () => mockGetFcmToken(),
-        ).thenAnswer((_) async => Left(Failure.server('Token Error')));
-        return bloc;
-      },
-      act: (bloc) => bloc.add(const NotificationEvent.setupRequested()),
-      expect: () => [
-        const NotificationState.loading(),
-        const NotificationState.failure('Token Error'),
-      ],
-    );
+      blocTest<NotificationBloc, NotificationState>(
+        'notificationBloc_setupRequested_tokenFailure_emitsLoadingAndFailure',
+        build: () {
+          // arrange
+          when(
+            () => mockRequestPermission(),
+          ).thenAnswer((_) async => const Right(null));
+          when(
+            () => mockGetFcmToken(),
+          ).thenAnswer((_) async => Left(Failure.server('Token Error')));
+          return bloc;
+        },
+        act: (bloc) => bloc.add(const NotificationEvent.setupRequested()),
+        expect: () => [
+          // assert
+          const NotificationState.loading(),
+          const NotificationState.failure('Token Error'),
+        ],
+      );
+    });
 
-    blocTest<NotificationBloc, NotificationState>(
-      'subscribeToTopicRequested_added_callsSubscribeToTopic',
-      build: () {
-        when(
-          () => mockSubscribeToTopic(any()),
-        ).thenAnswer((_) async => const Right(null));
-        return bloc;
-      },
-      act: (bloc) =>
-          bloc.add(const NotificationEvent.subscribeToTopicRequested('topic')),
-      verify: (_) {
-        verify(() => mockSubscribeToTopic('topic')).called(1);
-      },
-      expect: () => [],
-    );
-
-    blocTest<NotificationBloc, NotificationState>(
-      'subscribeToTopicRequested_failure_emitsFailure',
-      build: () {
-        when(
-          () => mockSubscribeToTopic(any()),
-        ).thenAnswer((_) async => Left(Failure.server('Subscribe Error')));
-        return bloc;
-      },
-      act: (bloc) =>
-          bloc.add(const NotificationEvent.subscribeToTopicRequested('topic')),
-      verify: (_) {
-        verify(() => mockSubscribeToTopic('topic')).called(1);
-      },
-      expect: () => [
-        const NotificationState.failure('Failed to subscribe: Subscribe Error'),
-      ],
-    );
-
-    blocTest<NotificationBloc, NotificationState>(
-      'unsubscribeFromTopicRequested_added_callsUnsubscribeFromTopic',
-      build: () {
-        when(
-          () => mockUnsubscribeFromTopic(any()),
-        ).thenAnswer((_) async => const Right(null));
-        return bloc;
-      },
-      act: (bloc) => bloc.add(
-        const NotificationEvent.unsubscribeFromTopicRequested('topic'),
-      ),
-      verify: (_) {
-        verify(() => mockUnsubscribeFromTopic('topic')).called(1);
-      },
-      expect: () => [],
-    );
-
-    blocTest<NotificationBloc, NotificationState>(
-      'unsubscribeFromTopicRequested_failure_emitsFailure',
-      build: () {
-        when(
-          () => mockUnsubscribeFromTopic(any()),
-        ).thenAnswer((_) async => Left(Failure.server('Unsubscribe Error')));
-        return bloc;
-      },
-      act: (bloc) => bloc.add(
-        const NotificationEvent.unsubscribeFromTopicRequested('topic'),
-      ),
-      verify: (_) {
-        verify(() => mockUnsubscribeFromTopic('topic')).called(1);
-      },
-      expect: () => [
-        const NotificationState.failure(
-          'Failed to unsubscribe: Unsubscribe Error',
+    group('subscribeToTopicRequested', () {
+      blocTest<NotificationBloc, NotificationState>(
+        'notificationBloc_subscribeToTopicRequested_success_emitsNothingButCallsUseCase',
+        build: () {
+          // arrange
+          when(
+            () => mockSubscribeToTopic(any()),
+          ).thenAnswer((_) async => const Right(null));
+          return bloc;
+        },
+        act: (bloc) => bloc.add(
+          const NotificationEvent.subscribeToTopicRequested('topic'),
         ),
-      ],
-    );
+        verify: (_) {
+          // assert
+          verify(() => mockSubscribeToTopic('topic')).called(1);
+        },
+        expect: () => [],
+      );
+
+      blocTest<NotificationBloc, NotificationState>(
+        'notificationBloc_subscribeToTopicRequested_failure_emitsFailure',
+        build: () {
+          // arrange
+          when(
+            () => mockSubscribeToTopic(any()),
+          ).thenAnswer((_) async => Left(Failure.server('Subscribe Error')));
+          return bloc;
+        },
+        act: (bloc) => bloc.add(
+          const NotificationEvent.subscribeToTopicRequested('topic'),
+        ),
+        verify: (_) {
+          // assert
+          verify(() => mockSubscribeToTopic('topic')).called(1);
+        },
+        expect: () => [
+          // assert
+          const NotificationState.failure(
+            'Failed to subscribe: Subscribe Error',
+          ),
+        ],
+      );
+    });
+
+    group('unsubscribeFromTopicRequested', () {
+      blocTest<NotificationBloc, NotificationState>(
+        'notificationBloc_unsubscribeFromTopicRequested_success_emitsNothingButCallsUseCase',
+        build: () {
+          // arrange
+          when(
+            () => mockUnsubscribeFromTopic(any()),
+          ).thenAnswer((_) async => const Right(null));
+          return bloc;
+        },
+        act: (bloc) => bloc.add(
+          const NotificationEvent.unsubscribeFromTopicRequested('topic'),
+        ),
+        verify: (_) {
+          // assert
+          verify(() => mockUnsubscribeFromTopic('topic')).called(1);
+        },
+        expect: () => [],
+      );
+
+      blocTest<NotificationBloc, NotificationState>(
+        'notificationBloc_unsubscribeFromTopicRequested_failure_emitsFailure',
+        build: () {
+          // arrange
+          when(
+            () => mockUnsubscribeFromTopic(any()),
+          ).thenAnswer((_) async => Left(Failure.server('Unsubscribe Error')));
+          return bloc;
+        },
+        act: (bloc) => bloc.add(
+          const NotificationEvent.unsubscribeFromTopicRequested('topic'),
+        ),
+        verify: (_) {
+          // assert
+          verify(() => mockUnsubscribeFromTopic('topic')).called(1);
+        },
+        expect: () => [
+          // assert
+          const NotificationState.failure(
+            'Failed to unsubscribe: Unsubscribe Error',
+          ),
+        ],
+      );
+    });
+
+    group('reset', () {
+      blocTest<NotificationBloc, NotificationState>(
+        'notificationBloc_reset_success_clearsCacheAndEmitsInitial',
+        build: () {
+          // arrange
+          when(
+            () => mockClearCachedToken(any()),
+          ).thenAnswer((_) async => const Right(null));
+          return bloc;
+        },
+        act: (bloc) => bloc.add(const NotificationEvent.reset()),
+        expect: () => [
+          // assert
+          const NotificationState.initial(),
+        ],
+        verify: (_) {
+          // assert
+          verify(() => mockClearCachedToken(any())).called(1);
+        },
+      );
+    });
+
+    group('messageReceived', () {
+      blocTest<NotificationBloc, NotificationState>(
+        'notificationBloc_messageReceived_emitsMessageReceivedState',
+        build: () => bloc,
+        act: (bloc) => bloc.add(NotificationEvent.messageReceived(tMessage)),
+        expect: () => [
+          // assert
+          NotificationState.messageReceivedState(tMessage),
+        ],
+      );
+    });
   });
 }

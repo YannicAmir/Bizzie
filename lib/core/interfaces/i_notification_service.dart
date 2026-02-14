@@ -9,4 +9,6 @@ abstract class INotificationService {
   Future<void> setupInteractions();
   Future<NotificationRoute?> getInitialRoute();
   Future<bool> isSystemAuthorized();
+  Future<void> syncFcmToken({bool force = false});
+  Future<void> clearCachedToken();
 }
