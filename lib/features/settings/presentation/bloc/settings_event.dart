@@ -10,7 +10,6 @@ class SettingsEvent with _$SettingsEvent {
   const factory SettingsEvent.signedOut() = SignedOut;
   const factory SettingsEvent.refreshSubscription() = RefreshSubscription;
   const factory SettingsEvent.openUrl(String url) = OpenUrl;
-  const factory SettingsEvent.submitFeedback(String message) = SubmitFeedback;
   const factory SettingsEvent.resetPassword() = ResetPassword;
   const factory SettingsEvent.openedSettings() = OpenedSettings;
 }

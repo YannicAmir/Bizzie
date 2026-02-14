@@ -14,7 +14,9 @@ class TimestampConverter implements JsonConverter<DateTime, Object?> {
     } else if (json is String) {
       return DateTime.parse(json);
     }
-    throw FormatException('Invalid date format: $json');
+    throw FormatException(
+      'Invalid date format: array, or something else: $json',
+    );
   }
 
   @override

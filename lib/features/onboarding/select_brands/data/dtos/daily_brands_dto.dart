@@ -1,4 +1,4 @@
-import 'package:bizzie/shared/utils/json_converters.dart';
+import 'package:bizzie/core/utils/timestamp_converter.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'daily_brands_dto.freezed.dart';

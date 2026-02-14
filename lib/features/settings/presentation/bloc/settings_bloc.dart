@@ -7,7 +7,6 @@ import 'package:bizzie/features/settings/domain/usecases/open_app_settings_useca
 import 'package:bizzie/features/settings/domain/usecases/reset_password_usecase.dart';
 import 'package:bizzie/features/settings/domain/usecases/sign_out_usecase.dart';
 import 'package:bizzie/features/settings/domain/usecases/get_subscription_status_usecase.dart';
-import 'package:bizzie/features/settings/domain/usecases/submit_feedback_usecase.dart';
 import 'package:bizzie/features/settings/domain/usecases/toggle_notifications_usecase.dart';
 import 'package:bizzie/features/settings/presentation/bloc/settings_event.dart';
 import 'package:bizzie/features/settings/presentation/bloc/settings_state.dart';
@@ -21,7 +20,6 @@ final _logger = BizzieLogger('SettingsBloc');
 class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
   final GetSettingsDisplayDataUseCase _getSettingsDisplayDataUseCase;
   final ToggleNotificationsUseCase _toggleNotificationsUseCase;
-  final SubmitFeedbackUseCase _submitFeedbackUseCase;
   final LaunchUrlUseCase _launchUrlUseCase;
   final SignOutUseCase _signOutUseCase;
   final ResetPasswordUseCase _resetPasswordUseCase;
@@ -32,7 +30,6 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
   SettingsBloc(
     this._getSettingsDisplayDataUseCase,
     this._toggleNotificationsUseCase,
-    this._submitFeedbackUseCase,
     this._launchUrlUseCase,
     this._signOutUseCase,
     this._resetPasswordUseCase,
@@ -44,7 +41,6 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
       await event.map(
         started: (e) => _onStarted(e, emit),
         toggledNotifications: (e) => _onToggledNotifications(e, emit),
-        submitFeedback: (e) => _onSubmitFeedback(e, emit),
         openUrl: (e) => _onOpenUrl(e, emit),
         signedOut: (e) => _onSignedOut(e, emit),
         refreshSubscription: (e) => _onRefreshSubscription(e, emit),
@@ -182,13 +178,5 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
   Future<void> _onOpenUrl(dynamic event, Emitter<SettingsState> emit) async {
     final url = event.url as String;
     await _launchUrlUseCase(url);
-  }
-
-  Future<void> _onSubmitFeedback(
-    dynamic event,
-    Emitter<SettingsState> emit,
-  ) async {
-    final message = event.message as String;
-    await _submitFeedbackUseCase(message);
   }
 }

@@ -11,6 +11,7 @@ import 'package:bizzie/features/settings/presentation/widgets/settings_tile.dart
 import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
 import 'package:bizzie/shared/widgets/app_bar/bizzie_app_bar.dart';
 import 'package:bizzie/shared/widgets/buttons/bizzie_primary_button.dart';
+import 'package:bizzie/features/feedback/presentation/widgets/feedback_modal.dart';
 import 'package:bizzie/shared/widgets/buttons/bizzie_secondary_button.dart';
 import 'package:bizzie/shared/widgets/modals/app_bottom_modal.dart';
 import 'package:bizzie/core/error/failures.dart';
@@ -204,14 +205,7 @@ class _SettingsViewContentState extends State<_SettingsViewContent>
                       SettingsTile(
                         title: 'Send Feedback',
                         onTap: () {
-                          context.read<SettingsBloc>().add(
-                            const SettingsEvent.submitFeedback('User Feedback'),
-                          );
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Feedback Submitted!'),
-                            ),
-                          );
+                          FeedbackModal.show(context);
                         },
                       ),
                       const Divider(height: 1, indent: 52),

@@ -9,7 +9,6 @@ import 'package:bizzie/features/settings/domain/usecases/launch_url_usecase.dart
 import 'package:bizzie/features/settings/domain/usecases/open_app_settings_usecase.dart';
 import 'package:bizzie/features/settings/domain/usecases/reset_password_usecase.dart';
 import 'package:bizzie/features/settings/domain/usecases/sign_out_usecase.dart';
-import 'package:bizzie/features/settings/domain/usecases/submit_feedback_usecase.dart';
 import 'package:bizzie/features/settings/domain/usecases/toggle_notifications_usecase.dart';
 import 'package:bizzie/features/settings/domain/usecases/get_subscription_status_usecase.dart';
 import 'package:bizzie/features/settings/presentation/bloc/settings_bloc.dart';
@@ -29,8 +28,6 @@ class MockGetSettingsDisplayDataUseCase extends Mock
 class MockToggleNotificationsUseCase extends Mock
     implements ToggleNotificationsUseCase {}
 
-class MockSubmitFeedbackUseCase extends Mock implements SubmitFeedbackUseCase {}
-
 class MockLaunchUrlUseCase extends Mock implements LaunchUrlUseCase {}
 
 class MockSignOutUseCase extends Mock implements SignOutUseCase {}
@@ -48,7 +45,6 @@ class MockGetSubscriptionStatusUseCase extends Mock
 void main() {
   late MockGetSettingsDisplayDataUseCase mockGetSettingsDisplayDataUseCase;
   late MockToggleNotificationsUseCase mockToggleNotificationsUseCase;
-  late MockSubmitFeedbackUseCase mockSubmitFeedbackUseCase;
   late MockLaunchUrlUseCase mockLaunchUrlUseCase;
   late MockSignOutUseCase mockSignOutUseCase;
   late MockResetPasswordUseCase mockResetPasswordUseCase;
@@ -60,7 +56,6 @@ void main() {
   setUp(() {
     mockGetSettingsDisplayDataUseCase = MockGetSettingsDisplayDataUseCase();
     mockToggleNotificationsUseCase = MockToggleNotificationsUseCase();
-    mockSubmitFeedbackUseCase = MockSubmitFeedbackUseCase();
     mockLaunchUrlUseCase = MockLaunchUrlUseCase();
     mockSignOutUseCase = MockSignOutUseCase();
     mockResetPasswordUseCase = MockResetPasswordUseCase();
@@ -71,7 +66,6 @@ void main() {
     settingsBloc = SettingsBloc(
       mockGetSettingsDisplayDataUseCase,
       mockToggleNotificationsUseCase,
-      mockSubmitFeedbackUseCase,
       mockLaunchUrlUseCase,
       mockSignOutUseCase,
       mockResetPasswordUseCase,
@@ -294,24 +288,6 @@ void main() {
         // assert
         verify(() => mockLaunchUrlUseCase('https://test.com')).called(1);
         verifyNoMoreInteractions(mockLaunchUrlUseCase);
-      },
-    );
-
-    blocTest<SettingsBloc, SettingsState>(
-      'submitFeedback_validMessage_callsUseCaseWithCorrectMessage',
-      build: () {
-        // arrange
-        when(
-          () => mockSubmitFeedbackUseCase(any()),
-        ).thenAnswer((_) async => const Right(null));
-        return settingsBloc;
-      },
-      act: (bloc) => bloc.add(const SettingsEvent.submitFeedback('Feedback')),
-      expect: () => [],
-      verify: (_) {
-        // assert
-        verify(() => mockSubmitFeedbackUseCase('Feedback')).called(1);
-        verifyNoMoreInteractions(mockSubmitFeedbackUseCase);
       },
     );
 

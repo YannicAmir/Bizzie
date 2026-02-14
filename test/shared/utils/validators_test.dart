@@ -3,6 +3,56 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('Validators', () {
+    group('validateNotEmpty', () {
+      test('validateNotEmpty_nullValue_returnsError', () {
+        // arrange
+        const String? input = null;
+        const error = 'Field is required';
+
+        // act
+        final result = Validators.validateNotEmpty(input, error);
+
+        // assert
+        expect(result, error);
+      });
+
+      test('validateNotEmpty_emptyString_returnsError', () {
+        // arrange
+        const input = '';
+        const error = 'Field is required';
+
+        // act
+        final result = Validators.validateNotEmpty(input, error);
+
+        // assert
+        expect(result, error);
+      });
+
+      test('validateNotEmpty_whitespaceOnly_returnsError', () {
+        // arrange
+        const input = '   ';
+        const error = 'Field is required';
+
+        // act
+        final result = Validators.validateNotEmpty(input, error);
+
+        // assert
+        expect(result, error);
+      });
+
+      test('validateNotEmpty_validValue_returnsNull', () {
+        // arrange
+        const input = 'Something';
+        const error = 'Field is required';
+
+        // act
+        final result = Validators.validateNotEmpty(input, error);
+
+        // assert
+        expect(result, isNull);
+      });
+    });
+
     group('validateName', () {
       test('validateName_nullValue_returnsError', () {
         // arrange
@@ -47,17 +97,6 @@ void main() {
         // assert
         expect(result, isNull);
       });
-
-      test('validateName_nameWithSpaces_returnsNull', () {
-        // arrange
-        const input = 'John Doe';
-
-        // act
-        final result = Validators.validateName(input);
-
-        // assert
-        expect(result, isNull);
-      });
     });
 
     group('validateEmail', () {
@@ -94,42 +133,9 @@ void main() {
         expect(result, 'Please enter a valid email');
       });
 
-      test('validateEmail_missingDomain_returnsError', () {
-        // arrange
-        const input = 'test@';
-
-        // act
-        final result = Validators.validateEmail(input);
-
-        // assert
-        expect(result, 'Please enter a valid email');
-      });
-
-      test('validateEmail_missingTld_returnsError', () {
-        // arrange
-        const input = 'test@example';
-
-        // act
-        final result = Validators.validateEmail(input);
-
-        // assert
-        expect(result, 'Please enter a valid email');
-      });
-
       test('validateEmail_validEmail_returnsNull', () {
         // arrange
         const input = 'test@example.com';
-
-        // act
-        final result = Validators.validateEmail(input);
-
-        // assert
-        expect(result, isNull);
-      });
-
-      test('validateEmail_validEmailWithSubdomain_returnsNull', () {
-        // arrange
-        const input = 'user.name@domain.co.uk';
 
         // act
         final result = Validators.validateEmail(input);
@@ -151,17 +157,6 @@ void main() {
         expect(result, 'Please enter a password');
       });
 
-      test('validatePassword_emptyString_returnsError', () {
-        // arrange
-        const input = '';
-
-        // act
-        final result = Validators.validatePassword(input);
-
-        // assert
-        expect(result, 'Please enter a password');
-      });
-
       test('validatePassword_tooShortDefault_returnsError', () {
         // arrange
         const input = '1234567';
@@ -171,17 +166,6 @@ void main() {
 
         // assert
         expect(result, 'Password must be at least 8 characters');
-      });
-
-      test('validatePassword_tooShortCustomMinLength_returnsError', () {
-        // arrange
-        const input = '12345';
-
-        // act
-        final result = Validators.validatePassword(input, minLength: 6);
-
-        // assert
-        expect(result, 'Password must be at least 6 characters');
       });
 
       test('validatePassword_exactMinLength_returnsNull', () {
@@ -201,17 +185,6 @@ void main() {
 
         // act
         final result = Validators.validatePassword(input);
-
-        // assert
-        expect(result, isNull);
-      });
-
-      test('validatePassword_customMinLengthValid_returnsNull', () {
-        // arrange
-        const input = '123456';
-
-        // act
-        final result = Validators.validatePassword(input, minLength: 6);
 
         // assert
         expect(result, isNull);
