@@ -12,6 +12,7 @@ import 'package:bizzie/features/user/domain/interfaces/user_repository.dart';
 import 'package:bizzie/features/user/domain/models/user_model.dart' as domain;
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:bizzie/services/config_service.dart';
 import 'package:mocktail/mocktail.dart';
 
 import 'package:bizzie/core/interfaces/i_notification_service.dart';
@@ -27,6 +28,8 @@ class MockIAppInfoService extends Mock implements IAppInfoService {}
 
 class MockINotificationService extends Mock implements INotificationService {}
 
+class MockConfigService extends Mock implements ConfigService {}
+
 void main() {
   late GetSettingsDisplayDataUseCase useCase;
   late MockIAuthRepository mockAuthRepository;
@@ -34,6 +37,7 @@ void main() {
   late MockISubscriptionRepository mockSubscriptionRepository;
   late MockIAppInfoService mockAppInfoService;
   late MockINotificationService mockNotificationService;
+  late MockConfigService mockConfigService;
 
   setUp(() {
     mockAuthRepository = MockIAuthRepository();
@@ -41,6 +45,7 @@ void main() {
     mockSubscriptionRepository = MockISubscriptionRepository();
     mockAppInfoService = MockIAppInfoService();
     mockNotificationService = MockINotificationService();
+    mockConfigService = MockConfigService();
 
     useCase = GetSettingsDisplayDataUseCase(
       mockAuthRepository,
@@ -48,6 +53,7 @@ void main() {
       mockSubscriptionRepository,
       mockAppInfoService,
       mockNotificationService,
+      mockConfigService,
     );
   });
 
@@ -86,6 +92,12 @@ void main() {
       when(
         () => mockNotificationService.isSystemAuthorized(),
       ).thenAnswer((_) async => true);
+      when(
+        () => mockConfigService.privacyPolicyUrl,
+      ).thenReturn('https://privacy.com');
+      when(
+        () => mockConfigService.termsOfServiceUrl,
+      ).thenReturn('https://terms.com');
 
       // act
       final result = await useCase(NoParams());
@@ -101,6 +113,8 @@ void main() {
             isSystemNotificationsEnabled: true,
             appVersion: tAppVersion,
             favoriteSector: tDomainUser.favoriteSector,
+            privacyPolicyUrl: 'https://privacy.com',
+            termsOfServiceUrl: 'https://terms.com',
           ),
         ),
       );
@@ -153,6 +167,12 @@ void main() {
         when(
           () => mockNotificationService.isSystemAuthorized(),
         ).thenAnswer((_) async => true);
+        when(
+          () => mockConfigService.privacyPolicyUrl,
+        ).thenReturn('https://privacy.com');
+        when(
+          () => mockConfigService.termsOfServiceUrl,
+        ).thenReturn('https://terms.com');
 
         // act
         final result = await useCase(NoParams());
@@ -168,6 +188,8 @@ void main() {
               isSystemNotificationsEnabled: true,
               appVersion: tAppVersion,
               favoriteSector: tDomainUser.favoriteSector,
+              privacyPolicyUrl: 'https://privacy.com',
+              termsOfServiceUrl: 'https://terms.com',
             ),
           ),
         );
@@ -187,6 +209,12 @@ void main() {
       when(
         () => mockNotificationService.isSystemAuthorized(),
       ).thenAnswer((_) async => true);
+      when(
+        () => mockConfigService.privacyPolicyUrl,
+      ).thenReturn('https://privacy.com');
+      when(
+        () => mockConfigService.termsOfServiceUrl,
+      ).thenReturn('https://terms.com');
 
       // act
       final result = await useCase(NoParams());
@@ -202,6 +230,8 @@ void main() {
             isSystemNotificationsEnabled: true,
             appVersion: 'Unknown',
             favoriteSector: tDomainUser.favoriteSector,
+            privacyPolicyUrl: 'https://privacy.com',
+            termsOfServiceUrl: 'https://terms.com',
           ),
         ),
       );

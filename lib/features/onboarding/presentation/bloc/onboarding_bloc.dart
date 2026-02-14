@@ -12,13 +12,14 @@ import 'package:bizzie/features/onboarding/domain/usecases/get_sectors_usecase.d
 import 'package:bizzie/features/onboarding/domain/usecases/get_sp500_history_usecase.dart';
 import 'package:bizzie/features/onboarding/presentation/bloc/onboarding_state.dart';
 import 'package:bizzie/features/onboarding/presentation/models/feature_highlight_item.dart';
-import 'package:bizzie/services/config_service.dart';
-import 'package:bizzie/shared/models/sector_view_model.dart';
-export 'package:bizzie/features/onboarding/presentation/bloc/onboarding_state.dart';
+import 'package:bizzie/core/interfaces/i_config_service.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
+import 'package:bizzie/shared/models/sector_view_model.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
+
+export 'onboarding_state.dart';
 
 part 'onboarding_event.dart';
 part 'onboarding_bloc.freezed.dart';
@@ -32,7 +33,7 @@ class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
 
   final GetSectorsUseCase _getSectorsUseCase;
   final GetSp500HistoryUseCase _getSp500HistoryUseCase;
-  final ConfigService _configService;
+  final IConfigService _configService;
 
   OnboardingBloc(
     this._authRepository,

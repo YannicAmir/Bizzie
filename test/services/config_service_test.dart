@@ -78,6 +78,32 @@ void main() {
       expect(result, 'gemini-pro');
     });
 
+    test('privacyPolicyUrl_returnsValue', () {
+      // arrange
+      when(
+        () => mockRemoteConfig.getString(RemoteConfigKeys.privacyPolicyUrl),
+      ).thenReturn('https://bizzie.app/privacy');
+
+      // act
+      final result = configService.privacyPolicyUrl;
+
+      // assert
+      expect(result, 'https://bizzie.app/privacy');
+    });
+
+    test('termsOfServiceUrl_returnsValue', () {
+      // arrange
+      when(
+        () => mockRemoteConfig.getString(RemoteConfigKeys.termsOfServiceUrl),
+      ).thenReturn('https://bizzie.app/terms');
+
+      // act
+      final result = configService.termsOfServiceUrl;
+
+      // assert
+      expect(result, 'https://bizzie.app/terms');
+    });
+
     test('stockMarketSectors_validJson_returnsList', () {
       // arrange
       final sectors = ['Tech', 'Bio', 'Energy'];

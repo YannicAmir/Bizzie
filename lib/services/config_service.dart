@@ -1,6 +1,7 @@
 import 'dart:convert';
+import 'package:bizzie/core/data/dtos/fmp_config.dart';
+import 'package:bizzie/core/interfaces/i_config_service.dart';
 import 'package:bizzie/core/utils/sector_normalizer.dart';
-import 'package:bizzie/services/dtos/fmp_config.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/foundation.dart';
 import 'package:injectable/injectable.dart';
@@ -11,6 +12,8 @@ class RemoteConfigKeys {
   static const String geminiModelName = 'gemini_model_front_end';
   static const String stockMarketSectors = 'stock_market_sectors';
   static const String sectorDescriptions = 'sector_descriptions';
+  static const String privacyPolicyUrl = 'privacy_policy_url';
+  static const String termsOfServiceUrl = 'terms_of_service_url';
 }
 
 final _logger = BizzieLogger('ConfigService');
@@ -33,8 +36,8 @@ const _sectorApiAliases = {
   'real_estate': 'Real Estate',
 };
 
-@singleton
-class ConfigService {
+@Singleton(as: IConfigService)
+class ConfigService implements IConfigService {
   final FirebaseRemoteConfig _remoteConfig;
 
   static const _defaultGeminiModel = 'gemini-2.5-flash';
@@ -104,6 +107,8 @@ class ConfigService {
       RemoteConfigKeys.sectorDescriptions: jsonEncode(
         _defaultSectorDescriptions,
       ),
+      RemoteConfigKeys.privacyPolicyUrl: 'https://bizzie.app/privacy',
+      RemoteConfigKeys.termsOfServiceUrl: 'https://bizzie.app/terms',
     });
 
     try {
@@ -115,9 +120,19 @@ class ConfigService {
     return ConfigService(remoteConfig);
   }
 
+  @override
   String get geminiModelName =>
       _remoteConfig.getString(RemoteConfigKeys.geminiModelName);
 
+  @override
+  String get privacyPolicyUrl =>
+      _remoteConfig.getString(RemoteConfigKeys.privacyPolicyUrl);
+
+  @override
+  String get termsOfServiceUrl =>
+      _remoteConfig.getString(RemoteConfigKeys.termsOfServiceUrl);
+
+  @override
   List<String> get stockMarketSectors {
     final jsonString = _remoteConfig.getString(
       RemoteConfigKeys.stockMarketSectors,
@@ -130,6 +145,7 @@ class ConfigService {
     }
   }
 
+  @override
   FmpConfig get fmpConfig {
     final jsonString = _remoteConfig.getString(RemoteConfigKeys.fmpConfig);
     try {
@@ -140,21 +156,28 @@ class ConfigService {
     }
   }
 
+  @override
   String getString(String key) => _remoteConfig.getString(key);
+  @override
   bool getBool(String key) => _remoteConfig.getBool(key);
+  @override
   int getInt(String key) => _remoteConfig.getInt(key);
+  @override
   double getDouble(String key) => _remoteConfig.getDouble(key);
 
+  @override
   String getSectorApiName(String sectorName) {
     final normalized = normalizeSectorKey(sectorName);
     return _sectorApiAliases[normalized] ?? sectorName;
   }
 
+  @override
   String getSectorDescription(String sectorName) {
     final match = _getSectorMetaData(sectorName);
     return match?.value ?? "";
   }
 
+  @override
   String getSectorDisplayName(String sectorName) {
     final match = _getSectorMetaData(sectorName);
     if (match != null) {

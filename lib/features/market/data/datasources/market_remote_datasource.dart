@@ -3,7 +3,7 @@ import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/features/market/data/dtos/market_data_snapshot.dart';
 import 'package:bizzie/features/market/data/dtos/sector_pe_dto.dart';
 import 'package:bizzie/features/market/data/dtos/sector_performance_dto.dart';
-import 'package:bizzie/services/config_service.dart';
+import 'package:bizzie/core/interfaces/i_config_service.dart';
 import 'package:bizzie/shared/utils/bizzie_date_formatter.dart';
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
@@ -17,7 +17,7 @@ abstract class MarketRemoteDataSource {
 @LazySingleton(as: MarketRemoteDataSource)
 class MarketRemoteDataSourceImpl implements MarketRemoteDataSource {
   final Dio _dio;
-  final ConfigService _configService;
+  final IConfigService _configService;
 
   MarketRemoteDataSourceImpl(@Named('FmpDio') this._dio, this._configService);
 
