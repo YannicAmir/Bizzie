@@ -8,7 +8,7 @@ part of 'daily_brands_dto.dart';
 
 _DailyBrandsDto _$DailyBrandsDtoFromJson(Map<String, dynamic> json) =>
     _DailyBrandsDto(
-      date: const TimestampConverter().fromJson(json['date'] as Object),
+      date: const TimestampConverter().fromJson(json['date']),
       sectors: (json['sectors'] as List<dynamic>)
           .map((e) => DailyBrandSectorDto.fromJson(e as Map<String, dynamic>))
           .toList(),

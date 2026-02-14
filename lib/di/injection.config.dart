@@ -218,6 +218,15 @@ import '../features/company_profile/shares/domain/usecases/get_shares_usecase.da
     as _i240;
 import '../features/company_profile/shares/presentation/bloc/company_shares_bloc.dart'
     as _i807;
+import '../features/feedback/data/datasources/feedback_remote_data_source.dart'
+    as _i291;
+import '../features/feedback/data/repositories/feedback_repository_impl.dart'
+    as _i326;
+import '../features/feedback/domain/interfaces/i_feedback_repository.dart'
+    as _i826;
+import '../features/feedback/domain/usecases/submit_feedback_usecase.dart'
+    as _i82;
+import '../features/feedback/presentation/bloc/feedback_bloc.dart' as _i673;
 import '../features/market/data/datasources/market_local_datasource.dart'
     as _i1009;
 import '../features/market/data/datasources/market_remote_datasource.dart'
@@ -331,8 +340,6 @@ import '../features/settings/domain/usecases/open_app_settings_usecase.dart'
 import '../features/settings/domain/usecases/reset_password_usecase.dart'
     as _i244;
 import '../features/settings/domain/usecases/sign_out_usecase.dart' as _i83;
-import '../features/settings/domain/usecases/submit_feedback_usecase.dart'
-    as _i526;
 import '../features/settings/domain/usecases/toggle_notifications_usecase.dart'
     as _i596;
 import '../features/settings/domain/usecases/update_favorite_sector_usecase.dart'
@@ -442,9 +449,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i457.FirebaseStorage>(() => registerModule.storage);
     gh.lazySingleton<_i833.DeviceInfoPlugin>(() => registerModule.deviceInfo);
     gh.lazySingleton<_i936.LaunchUrlUseCase>(() => _i936.LaunchUrlUseCase());
-    gh.lazySingleton<_i526.SubmitFeedbackUseCase>(
-      () => _i526.SubmitFeedbackUseCase(),
-    );
     gh.factory<_i501.IVertexAIProvider>(() => _i501.VertexAIProvider());
     gh.factory<_i1016.IOnboardingRemoteDataSource>(
       () => _i1016.OnboardingRemoteDataSource(
@@ -509,6 +513,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i634.NewsFirestoreDataSource>(
       () => _i634.NewsFirestoreDataSourceImpl(gh<_i974.FirebaseFirestore>()),
+    );
+    gh.lazySingleton<_i291.IFeedbackRemoteDataSource>(
+      () => _i291.FeedbackRemoteDataSource(gh<_i974.FirebaseFirestore>()),
     );
     gh.lazySingleton<_i958.RatiosFirestoreDataSource>(
       () => _i958.RatiosFirestoreDataSourceImpl(gh<_i974.FirebaseFirestore>()),
@@ -606,6 +613,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i608.IAiProductSearchRepository>(
       () =>
           _i1008.AiProductSearchRepository(gh<_i977.AiProductSearchService>()),
+    );
+    gh.lazySingleton<_i826.IFeedbackRepository>(
+      () => _i326.FeedbackRepositoryImpl(gh<_i291.IFeedbackRemoteDataSource>()),
     );
     gh.lazySingleton<_i15.INewsRepository>(
       () => _i368.NewsRepositoryImpl(
@@ -1193,11 +1203,31 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i582.GetBusinessProfileUseCase>(
       () => _i582.GetBusinessProfileUseCase(gh<_i872.IBusinessRepository>()),
     );
+    gh.lazySingleton<_i82.SubmitFeedbackUseCase>(
+      () => _i82.SubmitFeedbackUseCase(
+        gh<_i826.IFeedbackRepository>(),
+        gh<_i685.IAuthRepository>(),
+        gh<_i430.INotificationService>(),
+        gh<_i615.IUserRepository>(),
+      ),
+    );
     gh.factory<_i505.CompanyBusinessBloc>(
       () => _i505.CompanyBusinessBloc(gh<_i582.GetBusinessProfileUseCase>()),
     );
     gh.factory<_i410.CompanySecurityBloc>(
       () => _i410.CompanySecurityBloc(gh<_i190.GetSecurityDetailsUseCase>()),
+    );
+    gh.factory<_i419.SettingsBloc>(
+      () => _i419.SettingsBloc(
+        gh<_i594.GetSettingsDisplayDataUseCase>(),
+        gh<_i596.ToggleNotificationsUseCase>(),
+        gh<_i936.LaunchUrlUseCase>(),
+        gh<_i83.SignOutUseCase>(),
+        gh<_i244.ResetPasswordUseCase>(),
+        gh<_i685.IAuthRepository>(),
+        gh<_i579.OpenAppSettingsUseCase>(),
+        gh<_i714.GetSubscriptionStatusUseCase>(),
+      ),
     );
     gh.factory<_i875.EditProfileBloc>(
       () => _i875.EditProfileBloc(
@@ -1224,18 +1254,8 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i615.IUserRepository>(),
       ),
     );
-    gh.factory<_i419.SettingsBloc>(
-      () => _i419.SettingsBloc(
-        gh<_i594.GetSettingsDisplayDataUseCase>(),
-        gh<_i596.ToggleNotificationsUseCase>(),
-        gh<_i526.SubmitFeedbackUseCase>(),
-        gh<_i936.LaunchUrlUseCase>(),
-        gh<_i83.SignOutUseCase>(),
-        gh<_i244.ResetPasswordUseCase>(),
-        gh<_i685.IAuthRepository>(),
-        gh<_i579.OpenAppSettingsUseCase>(),
-        gh<_i714.GetSubscriptionStatusUseCase>(),
-      ),
+    gh.factory<_i673.FeedbackBloc>(
+      () => _i673.FeedbackBloc(gh<_i82.SubmitFeedbackUseCase>()),
     );
     gh.factory<_i709.SelectBrandsBloc>(
       () => _i709.SelectBrandsBloc(

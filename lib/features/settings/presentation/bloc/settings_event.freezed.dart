@@ -55,7 +55,7 @@ extension SettingsEventPatterns on SettingsEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( Started value)?  started,TResult Function( ToggledNotifications value)?  toggledNotifications,TResult Function( SignedOut value)?  signedOut,TResult Function( RefreshSubscription value)?  refreshSubscription,TResult Function( OpenUrl value)?  openUrl,TResult Function( SubmitFeedback value)?  submitFeedback,TResult Function( ResetPassword value)?  resetPassword,TResult Function( OpenedSettings value)?  openedSettings,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( Started value)?  started,TResult Function( ToggledNotifications value)?  toggledNotifications,TResult Function( SignedOut value)?  signedOut,TResult Function( RefreshSubscription value)?  refreshSubscription,TResult Function( OpenUrl value)?  openUrl,TResult Function( ResetPassword value)?  resetPassword,TResult Function( OpenedSettings value)?  openedSettings,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case Started() when started != null:
@@ -63,8 +63,7 @@ return started(_that);case ToggledNotifications() when toggledNotifications != n
 return toggledNotifications(_that);case SignedOut() when signedOut != null:
 return signedOut(_that);case RefreshSubscription() when refreshSubscription != null:
 return refreshSubscription(_that);case OpenUrl() when openUrl != null:
-return openUrl(_that);case SubmitFeedback() when submitFeedback != null:
-return submitFeedback(_that);case ResetPassword() when resetPassword != null:
+return openUrl(_that);case ResetPassword() when resetPassword != null:
 return resetPassword(_that);case OpenedSettings() when openedSettings != null:
 return openedSettings(_that);case _:
   return orElse();
@@ -84,7 +83,7 @@ return openedSettings(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( Started value)  started,required TResult Function( ToggledNotifications value)  toggledNotifications,required TResult Function( SignedOut value)  signedOut,required TResult Function( RefreshSubscription value)  refreshSubscription,required TResult Function( OpenUrl value)  openUrl,required TResult Function( SubmitFeedback value)  submitFeedback,required TResult Function( ResetPassword value)  resetPassword,required TResult Function( OpenedSettings value)  openedSettings,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( Started value)  started,required TResult Function( ToggledNotifications value)  toggledNotifications,required TResult Function( SignedOut value)  signedOut,required TResult Function( RefreshSubscription value)  refreshSubscription,required TResult Function( OpenUrl value)  openUrl,required TResult Function( ResetPassword value)  resetPassword,required TResult Function( OpenedSettings value)  openedSettings,}){
 final _that = this;
 switch (_that) {
 case Started():
@@ -92,8 +91,7 @@ return started(_that);case ToggledNotifications():
 return toggledNotifications(_that);case SignedOut():
 return signedOut(_that);case RefreshSubscription():
 return refreshSubscription(_that);case OpenUrl():
-return openUrl(_that);case SubmitFeedback():
-return submitFeedback(_that);case ResetPassword():
+return openUrl(_that);case ResetPassword():
 return resetPassword(_that);case OpenedSettings():
 return openedSettings(_that);case _:
   throw StateError('Unexpected subclass');
@@ -112,7 +110,7 @@ return openedSettings(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( Started value)?  started,TResult? Function( ToggledNotifications value)?  toggledNotifications,TResult? Function( SignedOut value)?  signedOut,TResult? Function( RefreshSubscription value)?  refreshSubscription,TResult? Function( OpenUrl value)?  openUrl,TResult? Function( SubmitFeedback value)?  submitFeedback,TResult? Function( ResetPassword value)?  resetPassword,TResult? Function( OpenedSettings value)?  openedSettings,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( Started value)?  started,TResult? Function( ToggledNotifications value)?  toggledNotifications,TResult? Function( SignedOut value)?  signedOut,TResult? Function( RefreshSubscription value)?  refreshSubscription,TResult? Function( OpenUrl value)?  openUrl,TResult? Function( ResetPassword value)?  resetPassword,TResult? Function( OpenedSettings value)?  openedSettings,}){
 final _that = this;
 switch (_that) {
 case Started() when started != null:
@@ -120,8 +118,7 @@ return started(_that);case ToggledNotifications() when toggledNotifications != n
 return toggledNotifications(_that);case SignedOut() when signedOut != null:
 return signedOut(_that);case RefreshSubscription() when refreshSubscription != null:
 return refreshSubscription(_that);case OpenUrl() when openUrl != null:
-return openUrl(_that);case SubmitFeedback() when submitFeedback != null:
-return submitFeedback(_that);case ResetPassword() when resetPassword != null:
+return openUrl(_that);case ResetPassword() when resetPassword != null:
 return resetPassword(_that);case OpenedSettings() when openedSettings != null:
 return openedSettings(_that);case _:
   return null;
@@ -140,15 +137,14 @@ return openedSettings(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  started,TResult Function( bool enable)?  toggledNotifications,TResult Function()?  signedOut,TResult Function()?  refreshSubscription,TResult Function( String url)?  openUrl,TResult Function( String message)?  submitFeedback,TResult Function()?  resetPassword,TResult Function()?  openedSettings,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  started,TResult Function( bool enable)?  toggledNotifications,TResult Function()?  signedOut,TResult Function()?  refreshSubscription,TResult Function( String url)?  openUrl,TResult Function()?  resetPassword,TResult Function()?  openedSettings,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case Started() when started != null:
 return started();case ToggledNotifications() when toggledNotifications != null:
 return toggledNotifications(_that.enable);case SignedOut() when signedOut != null:
 return signedOut();case RefreshSubscription() when refreshSubscription != null:
 return refreshSubscription();case OpenUrl() when openUrl != null:
-return openUrl(_that.url);case SubmitFeedback() when submitFeedback != null:
-return submitFeedback(_that.message);case ResetPassword() when resetPassword != null:
+return openUrl(_that.url);case ResetPassword() when resetPassword != null:
 return resetPassword();case OpenedSettings() when openedSettings != null:
 return openedSettings();case _:
   return orElse();
@@ -168,15 +164,14 @@ return openedSettings();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  started,required TResult Function( bool enable)  toggledNotifications,required TResult Function()  signedOut,required TResult Function()  refreshSubscription,required TResult Function( String url)  openUrl,required TResult Function( String message)  submitFeedback,required TResult Function()  resetPassword,required TResult Function()  openedSettings,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  started,required TResult Function( bool enable)  toggledNotifications,required TResult Function()  signedOut,required TResult Function()  refreshSubscription,required TResult Function( String url)  openUrl,required TResult Function()  resetPassword,required TResult Function()  openedSettings,}) {final _that = this;
 switch (_that) {
 case Started():
 return started();case ToggledNotifications():
 return toggledNotifications(_that.enable);case SignedOut():
 return signedOut();case RefreshSubscription():
 return refreshSubscription();case OpenUrl():
-return openUrl(_that.url);case SubmitFeedback():
-return submitFeedback(_that.message);case ResetPassword():
+return openUrl(_that.url);case ResetPassword():
 return resetPassword();case OpenedSettings():
 return openedSettings();case _:
   throw StateError('Unexpected subclass');
@@ -195,15 +190,14 @@ return openedSettings();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  started,TResult? Function( bool enable)?  toggledNotifications,TResult? Function()?  signedOut,TResult? Function()?  refreshSubscription,TResult? Function( String url)?  openUrl,TResult? Function( String message)?  submitFeedback,TResult? Function()?  resetPassword,TResult? Function()?  openedSettings,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  started,TResult? Function( bool enable)?  toggledNotifications,TResult? Function()?  signedOut,TResult? Function()?  refreshSubscription,TResult? Function( String url)?  openUrl,TResult? Function()?  resetPassword,TResult? Function()?  openedSettings,}) {final _that = this;
 switch (_that) {
 case Started() when started != null:
 return started();case ToggledNotifications() when toggledNotifications != null:
 return toggledNotifications(_that.enable);case SignedOut() when signedOut != null:
 return signedOut();case RefreshSubscription() when refreshSubscription != null:
 return refreshSubscription();case OpenUrl() when openUrl != null:
-return openUrl(_that.url);case SubmitFeedback() when submitFeedback != null:
-return submitFeedback(_that.message);case ResetPassword() when resetPassword != null:
+return openUrl(_that.url);case ResetPassword() when resetPassword != null:
 return resetPassword();case OpenedSettings() when openedSettings != null:
 return openedSettings();case _:
   return null;
@@ -434,72 +428,6 @@ class _$OpenUrlCopyWithImpl<$Res>
 @pragma('vm:prefer-inline') $Res call({Object? url = null,}) {
   return _then(OpenUrl(
 null == url ? _self.url : url // ignore: cast_nullable_to_non_nullable
-as String,
-  ));
-}
-
-
-}
-
-/// @nodoc
-
-
-class SubmitFeedback implements SettingsEvent {
-  const SubmitFeedback(this.message);
-  
-
- final  String message;
-
-/// Create a copy of SettingsEvent
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-$SubmitFeedbackCopyWith<SubmitFeedback> get copyWith => _$SubmitFeedbackCopyWithImpl<SubmitFeedback>(this, _$identity);
-
-
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SubmitFeedback&&(identical(other.message, message) || other.message == message));
-}
-
-
-@override
-int get hashCode => Object.hash(runtimeType,message);
-
-@override
-String toString() {
-  return 'SettingsEvent.submitFeedback(message: $message)';
-}
-
-
-}
-
-/// @nodoc
-abstract mixin class $SubmitFeedbackCopyWith<$Res> implements $SettingsEventCopyWith<$Res> {
-  factory $SubmitFeedbackCopyWith(SubmitFeedback value, $Res Function(SubmitFeedback) _then) = _$SubmitFeedbackCopyWithImpl;
-@useResult
-$Res call({
- String message
-});
-
-
-
-
-}
-/// @nodoc
-class _$SubmitFeedbackCopyWithImpl<$Res>
-    implements $SubmitFeedbackCopyWith<$Res> {
-  _$SubmitFeedbackCopyWithImpl(this._self, this._then);
-
-  final SubmitFeedback _self;
-  final $Res Function(SubmitFeedback) _then;
-
-/// Create a copy of SettingsEvent
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? message = null,}) {
-  return _then(SubmitFeedback(
-null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
 as String,
   ));
 }

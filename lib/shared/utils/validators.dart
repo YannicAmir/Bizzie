@@ -1,4 +1,11 @@
 class Validators {
+  static String? validateNotEmpty(String? value, String error) {
+    if (value == null || value.trim().isEmpty) {
+      return error;
+    }
+    return null;
+  }
+
   static String? validateName(String? value) {
     if (value == null || value.trim().isEmpty) {
       return 'Name cannot be empty';
