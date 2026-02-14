@@ -13,6 +13,14 @@ abstract class IUserRemoteDataSource {
   Future<List<WatchlistItemDto>> getWatchlist(String uid);
   Stream<List<WatchlistItemDto>> watchWatchlist(String uid);
   Future<void> updateUser(UserDto user);
+  Future<void> updateFcmToken(String uid, String deviceId, String token);
+  Future<void> removeFcmToken(String uid, String deviceId);
+  Future<void> updateNotificationSettings(
+    String uid,
+    bool enabled, {
+    String? deviceId,
+    String? token,
+  });
 }
 
 @LazySingleton(as: IUserRemoteDataSource)
@@ -75,6 +83,54 @@ class UserRemoteDataSource implements IUserRemoteDataSource {
         e,
         s,
       );
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> updateFcmToken(String uid, String deviceId, String token) async {
+    _logger.info('Updating FCM token for device $deviceId');
+    try {
+      await _firestoreService.updateDocument(
+        path: 'users/$uid',
+        data: {'fcmTokens.$deviceId': token},
+      );
+    } catch (e, s) {
+      _logger.severe('Failed to update FCM token', e, s);
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> removeFcmToken(String uid, String deviceId) async {
+    _logger.info('Removing FCM token for device $deviceId');
+    try {
+      await _firestoreService.updateDocument(
+        path: 'users/$uid',
+        data: {'fcmTokens.$deviceId': FieldValue.delete()},
+      );
+    } catch (e, s) {
+      _logger.severe('Failed to remove FCM token', e, s);
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> updateNotificationSettings(
+    String uid,
+    bool enabled, {
+    String? deviceId,
+    String? token,
+  }) async {
+    _logger.info('Updating notification settings: $enabled');
+    try {
+      final Map<String, dynamic> data = {'notificationsEnabled': enabled};
+      if (enabled && deviceId != null && token != null) {
+        data['fcmTokens.$deviceId'] = token;
+      }
+      await _firestoreService.updateDocument(path: 'users/$uid', data: data);
+    } catch (e, s) {
+      _logger.severe('Failed to update notification settings', e, s);
       rethrow;
     }
   }

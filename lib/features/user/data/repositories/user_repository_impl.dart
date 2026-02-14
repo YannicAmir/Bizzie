@@ -128,4 +128,61 @@ class UserRepositoryImpl implements IUserRepository {
       return const Left(ServerFailure('Failed to update user'));
     }
   }
+
+  @override
+  Future<Either<Failure, void>> updateFcmToken(
+    String deviceId,
+    String token,
+  ) async {
+    final user = _authRepository.currentUser;
+    if (user == null) {
+      return Left(Failure.userNotFound());
+    }
+    try {
+      await _remoteDataSource.updateFcmToken(user.id, deviceId, token);
+      return const Right(null);
+    } catch (e, stack) {
+      _logger.severe('Failed to update FCM token', e, stack);
+      return Left(Failure.server(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> removeFcmToken(String deviceId) async {
+    final user = _authRepository.currentUser;
+    if (user == null) {
+      return Left(Failure.userNotFound());
+    }
+    try {
+      await _remoteDataSource.removeFcmToken(user.id, deviceId);
+      return const Right(null);
+    } catch (e, stack) {
+      _logger.severe('Failed to remove FCM token', e, stack);
+      return Left(Failure.server(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> updateNotificationSettings(
+    bool enabled, {
+    String? deviceId,
+    String? token,
+  }) async {
+    final user = _authRepository.currentUser;
+    if (user == null) {
+      return Left(Failure.userNotFound());
+    }
+    try {
+      await _remoteDataSource.updateNotificationSettings(
+        user.id,
+        enabled,
+        deviceId: deviceId,
+        token: token,
+      );
+      return const Right(null);
+    } catch (e, stack) {
+      _logger.severe('Failed to update notification settings', e, stack);
+      return Left(Failure.server(e.toString()));
+    }
+  }
 }

@@ -1,0 +1,12 @@
+{
+    "Simulator Target Bundle": "com.bizzie.app",
+    "aps": {
+        "alert": {
+            "title": "Exclusive Offer 🚀",
+            "body": "Get 50% off Bizzie Pro for a limited time! Tap to claim your discount."
+        },
+        "sound": "default"
+    },
+    "type": "subscription_drip",
+    "gcm.message_id": "drip_123"
+}

@@ -9,6 +9,8 @@ import 'package:bizzie/features/notifications/domain/usecases/listen_to_messages
 import 'package:bizzie/features/notifications/domain/usecases/request_notification_permission.dart';
 import 'package:bizzie/features/notifications/domain/usecases/subscribe_to_topic.dart';
 import 'package:bizzie/features/notifications/domain/usecases/unsubscribe_from_topic.dart';
+import 'package:bizzie/features/notifications/domain/usecases/clear_cached_token.dart';
+import 'package:bizzie/core/usecase/usecase.dart';
 
 part 'notification_event.dart';
 part 'notification_state.dart';
@@ -23,6 +25,7 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
   final ListenToMessages _listenToMessages;
   final SubscribeToTopic _subscribeToTopic;
   final UnsubscribeFromTopic _unsubscribeFromTopic;
+  final ClearCachedToken _clearCachedToken;
 
   StreamSubscription<NotificationMessage>? _messageSubscription;
 
@@ -32,6 +35,7 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
     this._listenToMessages,
     this._subscribeToTopic,
     this._unsubscribeFromTopic,
+    this._clearCachedToken,
   ) : super(const NotificationState.initial()) {
     on<NotificationSetupRequested>(_onSetupRequested);
     on<NotificationSubscribeToTopicRequested>(_onSubscribeToTopicRequested);
@@ -42,10 +46,14 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
     on<NotificationReset>(_onReset);
   }
 
-  void _onReset(NotificationReset event, Emitter<NotificationState> emit) {
+  Future<void> _onReset(
+    NotificationReset event,
+    Emitter<NotificationState> emit,
+  ) async {
     _logger.info('Resetting NotificationBloc - canceling subscription');
     _messageSubscription?.cancel();
     _messageSubscription = null;
+    await _clearCachedToken(NoParams());
     emit(const NotificationState.initial());
   }
 
