@@ -1,8 +1,8 @@
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/features/market/data/datasources/market_remote_datasource.dart';
 import 'package:bizzie/features/market/data/dtos/market_data_snapshot.dart';
-import 'package:bizzie/services/config_service.dart';
-import 'package:bizzie/services/dtos/fmp_config.dart';
+import 'package:bizzie/core/interfaces/i_config_service.dart';
+import 'package:bizzie/core/data/dtos/fmp_config.dart';
 import 'package:bizzie/shared/utils/bizzie_date_formatter.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -10,7 +10,7 @@ import 'package:mocktail/mocktail.dart';
 
 class MockDio extends Mock implements Dio {}
 
-class MockConfigService extends Mock implements ConfigService {}
+class MockConfigService extends Mock implements IConfigService {}
 
 class MockResponse extends Mock implements Response {}
 

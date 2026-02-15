@@ -9,7 +9,7 @@ import 'package:bizzie/features/market/domain/entities/sector_performance.dart';
 import 'package:bizzie/features/market/domain/interfaces/i_market_repository.dart';
 import 'package:bizzie/features/profile/domain/models/profile_display_data.dart';
 import 'package:bizzie/features/user/domain/interfaces/user_repository.dart';
-import 'package:bizzie/services/config_service.dart';
+import 'package:bizzie/core/interfaces/i_config_service.dart';
 import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
 
@@ -26,7 +26,7 @@ class GetProfileDisplayDataUseCase
   final IAuthRepository _authRepository;
   final IUserRepository _userRepository;
   final IMarketRepository _marketRepository;
-  final ConfigService _configService;
+  final IConfigService _configService;
 
   GetProfileDisplayDataUseCase(
     this._authRepository,

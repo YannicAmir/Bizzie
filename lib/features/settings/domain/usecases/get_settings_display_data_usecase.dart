@@ -1,4 +1,5 @@
 import 'package:bizzie/core/error/failures.dart';
+import 'package:bizzie/core/interfaces/i_config_service.dart';
 import 'package:bizzie/core/interfaces/i_notification_service.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:bizzie/core/services/app_info_service.dart';
@@ -22,6 +23,7 @@ class GetSettingsDisplayDataUseCase
   final ISubscriptionRepository _subscriptionRepository;
   final IAppInfoService _appInfoService;
   final INotificationService _notificationService;
+  final IConfigService _configService;
 
   GetSettingsDisplayDataUseCase(
     this._authRepository,
@@ -29,6 +31,7 @@ class GetSettingsDisplayDataUseCase
     this._subscriptionRepository,
     this._appInfoService,
     this._notificationService,
+    this._configService,
   );
 
   @override
@@ -94,6 +97,8 @@ class GetSettingsDisplayDataUseCase
             isSystemNotificationsEnabled: isSystemAuthorized,
             appVersion: appVersion,
             favoriteSector: user.favoriteSector,
+            privacyPolicyUrl: _configService.privacyPolicyUrl,
+            termsOfServiceUrl: _configService.termsOfServiceUrl,
           ),
         );
       },

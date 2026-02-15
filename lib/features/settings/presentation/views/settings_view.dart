@@ -213,9 +213,7 @@ class _SettingsViewContentState extends State<_SettingsViewContent>
                         title: 'Privacy Policy',
                         onTap: () {
                           context.read<SettingsBloc>().add(
-                            const SettingsEvent.openUrl(
-                              'https://bizzie.app/privacy',
-                            ),
+                            SettingsEvent.openUrl(data.privacyPolicyUrl),
                           );
                         },
                       ),
@@ -224,9 +222,7 @@ class _SettingsViewContentState extends State<_SettingsViewContent>
                         title: 'Terms of Service',
                         onTap: () {
                           context.read<SettingsBloc>().add(
-                            const SettingsEvent.openUrl(
-                              'https://bizzie.app/terms',
-                            ),
+                            SettingsEvent.openUrl(data.termsOfServiceUrl),
                           );
                         },
                       ),

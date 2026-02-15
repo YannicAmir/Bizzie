@@ -1,13 +1,13 @@
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/core/error/exceptions.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
+import 'package:bizzie/core/domain/models/sector.dart';
+import 'package:bizzie/core/interfaces/i_config_service.dart';
 import 'package:bizzie/features/onboarding/select_brands/data/datasources/select_brands_remote_datasource.dart';
+import 'package:bizzie/features/onboarding/select_brands/data/dtos/daily_brands_dto.dart';
 import 'package:bizzie/features/onboarding/select_brands/domain/interfaces/i_select_brands_repository.dart';
 import 'package:bizzie/features/onboarding/select_brands/domain/models/brand.dart';
 import 'package:bizzie/features/onboarding/select_brands/domain/models/brand_listing.dart';
-import 'package:bizzie/features/onboarding/select_brands/data/dtos/daily_brands_dto.dart';
-import 'package:bizzie/core/domain/models/sector.dart';
-import 'package:bizzie/services/config_service.dart';
 import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
 
@@ -16,7 +16,7 @@ final _logger = BizzieLogger('SelectBrandsRepositoryImpl');
 @LazySingleton(as: ISelectBrandsRepository)
 class SelectBrandsRepositoryImpl implements ISelectBrandsRepository {
   final ISelectBrandsRemoteDataSource _remoteDataSource;
-  final ConfigService _configService;
+  final IConfigService _configService;
 
   SelectBrandsRepositoryImpl(this._remoteDataSource, this._configService);
 

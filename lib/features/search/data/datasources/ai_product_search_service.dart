@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:bizzie/features/search/data/datasources/vertex_ai_provider.dart';
 import 'package:bizzie/features/search/data/dtos/stock_symbol_dto.dart';
-import 'package:bizzie/services/config_service.dart';
+import 'package:bizzie/core/interfaces/i_config_service.dart';
 import 'package:firebase_ai/firebase_ai.dart';
 import 'package:injectable/injectable.dart';
 
@@ -10,7 +10,7 @@ final _logger = BizzieLogger('AiProductSearchService');
 
 @singleton
 class AiProductSearchService {
-  final ConfigService _configService;
+  final IConfigService _configService;
   final IVertexAIProvider _vertexAIProvider;
 
   AiProductSearchService(this._configService, this._vertexAIProvider);

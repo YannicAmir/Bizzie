@@ -1,6 +1,5 @@
 import 'package:bizzie/app/routes/app_routes.dart';
 import 'package:bizzie/app/themes/app_assets.dart';
-import 'package:bizzie/app/themes/app_colors.dart';
 import 'package:bizzie/app/themes/app_text_styles.dart';
 import 'package:bizzie/features/watchlist/presentation/bloc/watchlist_bloc.dart';
 import 'package:bizzie/features/watchlist/presentation/bloc/watchlist_state.dart';
@@ -20,8 +19,6 @@ class HomeWatchlistWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     return BlocBuilder<UserBloc, UserState>(
       builder: (context, userState) {
         final cachedSector = getIt<IUserRepository>().getCachedFavoriteSector();
@@ -74,13 +71,6 @@ class HomeWatchlistWidget extends StatelessWidget {
                               extra: company,
                             );
                           },
-                          // Placeholder for future more info
-                          trailing: Text(
-                            "\$--.--",
-                            style: theme.textTheme.bodyMedium?.copyWith(
-                              color: AppColors.textSecondary,
-                            ),
-                          ),
                         );
                       },
                     ),

@@ -1,12 +1,9 @@
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
-import 'package:bizzie/services/config_service.dart';
+import 'package:bizzie/core/interfaces/i_config_service.dart';
 import 'package:bizzie/features/company_profile/security/data/dtos/historical_price_dto.dart';
 import 'package:bizzie/features/company_profile/security/data/dtos/earnings_report_dto.dart';
 import 'package:bizzie/features/company_profile/security/data/dtos/historical_price_eod_dto.dart';
-// Checking profile_dtos.dart... QuoteDto is in profile_dtos.dart which is now in business/data/dtos/profile_dtos.dart.
-// Actually, earlier I saw QuoteDto being used in PriceRepository.
-// Let's check imports.
 
 abstract class SecurityRemoteDataSource {
   Future<List<HistoricalPriceDto>> getHistoricalPrice(String ticker);
@@ -19,7 +16,7 @@ class SecurityRemoteDataSourceImpl implements SecurityRemoteDataSource {
   static const int _companyEarningsLimit = 10;
 
   final Dio _dio;
-  final ConfigService _configService;
+  final IConfigService _configService;
 
   SecurityRemoteDataSourceImpl(@Named('FmpDio') this._dio, this._configService);
 

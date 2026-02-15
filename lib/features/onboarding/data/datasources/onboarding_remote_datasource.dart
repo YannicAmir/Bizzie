@@ -1,6 +1,6 @@
+import 'package:bizzie/core/interfaces/i_config_service.dart';
 import 'package:bizzie/features/user/data/dtos/user_dto.dart';
 import 'package:bizzie/features/watchlist/data/dtos/watchlist_item_dto.dart';
-import 'package:bizzie/services/config_service.dart';
 import 'package:bizzie/services/firestore_service.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -21,7 +21,7 @@ abstract class IOnboardingRemoteDataSource {
 @Injectable(as: IOnboardingRemoteDataSource)
 class OnboardingRemoteDataSource implements IOnboardingRemoteDataSource {
   final FirestoreService _firestoreService;
-  final ConfigService _configService;
+  final IConfigService _configService;
 
   OnboardingRemoteDataSource(this._firestoreService, this._configService);
 

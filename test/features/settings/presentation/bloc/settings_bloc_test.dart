@@ -99,7 +99,9 @@ void main() {
     isAppNotificationsEnabled: true,
     isSystemNotificationsEnabled: true,
     appVersion: '1.0.0',
-    favoriteSector: 'Information Technology',
+    favoriteSector: 'Technology',
+    privacyPolicyUrl: 'https://privacy.com',
+    termsOfServiceUrl: 'https://terms.com',
   );
 
   group('SettingsBloc Initialization', () {
@@ -212,7 +214,7 @@ void main() {
           tSettingsData.copyWith(
             isSystemNotificationsEnabled: false,
             isAppNotificationsEnabled: false,
-            favoriteSector: 'Information Technology',
+            favoriteSector: 'Technology',
           ),
         ),
       ],

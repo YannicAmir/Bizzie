@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
-import 'package:bizzie/services/config_service.dart';
+import 'package:bizzie/core/interfaces/i_config_service.dart';
 import 'package:bizzie/features/company_profile/financial_statements/data/dtos/financial_dtos.dart';
 import 'package:bizzie/features/company_profile/financial_statements/data/dtos/income_statement_dto.dart';
 import 'package:bizzie/features/company_profile/financial_statements/data/dtos/cash_flow_statement_dto.dart';
@@ -40,7 +40,7 @@ class FinancialStatementsRemoteDataSourceImpl
   static const int _legacyLimit = 1000;
 
   final Dio _dio;
-  final ConfigService _configService;
+  final IConfigService _configService;
 
   FinancialStatementsRemoteDataSourceImpl(
     @Named('FmpDio') this._dio,

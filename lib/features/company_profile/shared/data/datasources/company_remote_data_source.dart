@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
-import 'package:bizzie/services/config_service.dart';
+import 'package:bizzie/core/interfaces/i_config_service.dart';
 import 'package:bizzie/features/company_profile/shared/data/dtos/company_profile_dto.dart';
 import 'package:bizzie/features/company_profile/shared/data/dtos/quote_dto.dart';
 
@@ -12,7 +12,7 @@ abstract class CompanyRemoteDataSource {
 @LazySingleton(as: CompanyRemoteDataSource)
 class CompanyRemoteDataSourceImpl implements CompanyRemoteDataSource {
   final Dio _dio;
-  final ConfigService _configService;
+  final IConfigService _configService;
 
   CompanyRemoteDataSourceImpl(@Named('FmpDio') this._dio, this._configService);
 

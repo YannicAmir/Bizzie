@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
-import 'package:bizzie/services/config_service.dart';
+import 'package:bizzie/core/interfaces/i_config_service.dart';
 import 'package:bizzie/features/company_profile/dividends/data/dtos/dividend_dto.dart';
 
 abstract class DividendsRemoteDataSource {
@@ -10,7 +10,7 @@ abstract class DividendsRemoteDataSource {
 @LazySingleton(as: DividendsRemoteDataSource)
 class DividendsRemoteDataSourceImpl implements DividendsRemoteDataSource {
   final Dio _dio;
-  final ConfigService _configService;
+  final IConfigService _configService;
 
   DividendsRemoteDataSourceImpl(
     @Named('FmpDio') this._dio,
