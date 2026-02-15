@@ -13,6 +13,8 @@ import 'package:bizzie/features/watchlist/domain/usecases/remove_from_watchlist_
 import 'package:bizzie/features/watchlist/domain/usecases/sync_watchlist_usecase.dart';
 import 'package:bizzie/features/watchlist/presentation/bloc/watchlist_bloc.dart';
 import 'package:bizzie/features/watchlist/presentation/bloc/watchlist_event.dart';
+import 'package:bizzie/features/watchlist/domain/enums/watchlist_badge_type.dart';
+import 'package:bizzie/features/watchlist/domain/models/watchlist_event_status.dart';
 import 'package:bizzie/features/watchlist/presentation/bloc/watchlist_state.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -204,5 +206,111 @@ void main() {
         const WatchlistState.failure(Failure.server('Remove Error')),
       ],
     );
+    blocTest<WatchlistBloc, WatchlistState>(
+      'removeRequested_failure_emitsFailureState',
+      build: () {
+        when(() => mockAuthRepository.currentUser).thenReturn(tUser);
+        when(
+          () => mockRemoveFromWatchlistUseCase(any()),
+        ).thenAnswer((_) async => const Left(Failure.server('Remove Error')));
+        return bloc;
+      },
+      act: (bloc) => bloc.add(const WatchlistEvent.removeRequested("AAPL")),
+      expect: () => [
+        const WatchlistState.failure(Failure.server('Remove Error')),
+      ],
+    );
+
+    group('LoadWatchlistEvents', () {
+      blocTest<WatchlistBloc, WatchlistState>(
+        'loadWatchlistEvents_success_emitsLoadedWithNewEvents',
+        build: () {
+          when(() => mockGetWatchlistEventsUseCase(any())).thenAnswer(
+            (_) async => Right({
+              'AAPL': WatchlistEventStatus(
+                badgeText: 'Earnings',
+                badgeType: WatchlistBadgeType.neutral,
+                eventDate: DateTime.now(),
+                lastUpdated: DateTime.now(),
+              ),
+            }),
+          );
+          return bloc;
+        },
+        seed: () => const WatchlistState.loaded([
+          Company(ticker: 'AAPL', name: 'Apple'),
+        ]),
+        act: (bloc) =>
+            bloc.add(const WatchlistEvent.loadWatchlistEvents(['AAPL'])),
+        expect: () => [
+          isA<WatchlistState>().having(
+            (p0) => p0.maybeMap(
+              loaded: (s) => s.events.containsKey('AAPL'),
+              orElse: () => false,
+            ),
+            'has event',
+            true,
+          ),
+        ],
+      );
+
+      blocTest<WatchlistBloc, WatchlistState>(
+        'loadWatchlistEvents_failure_logsWarningAndEmitsNothing',
+        build: () {
+          when(
+            () => mockGetWatchlistEventsUseCase(any()),
+          ).thenAnswer((_) async => const Left(Failure.server('Error')));
+          return bloc;
+        },
+        seed: () => const WatchlistState.loaded([
+          Company(ticker: 'AAPL', name: 'Apple'),
+        ]),
+        act: (bloc) =>
+            bloc.add(const WatchlistEvent.loadWatchlistEvents(['AAPL'])),
+        expect: () => [],
+      );
+
+      blocTest<WatchlistBloc, WatchlistState>(
+        'loadWatchlistEvents_notLoaded_doesNothing',
+        build: () => bloc,
+        act: (bloc) =>
+            bloc.add(const WatchlistEvent.loadWatchlistEvents(['AAPL'])),
+        expect: () => [],
+        verify: (_) {
+          verifyNever(() => mockGetWatchlistEventsUseCase(any()));
+        },
+      );
+    });
+
+    group('Reset', () {
+      blocTest<WatchlistBloc, WatchlistState>(
+        'reset_emitsInitial',
+        build: () => bloc,
+        seed: () => const WatchlistState.loaded([]),
+        act: (bloc) => bloc.add(const WatchlistEvent.reset()),
+        expect: () => [const WatchlistState.initial()],
+      );
+    });
+
+    group('SyncRequested', () {
+      blocTest<WatchlistBloc, WatchlistState>(
+        'syncRequested_success_callsSyncUseCase',
+        build: () {
+          when(() => mockAuthRepository.currentUser).thenReturn(tUser);
+          when(
+            () => mockGetWatchlistUseCase(tUid),
+          ).thenAnswer((_) async => Stream.value(const Right([])));
+          when(
+            () => mockSyncWatchlistUseCase(any()),
+          ).thenAnswer((_) async => const Right(null));
+          return bloc;
+        },
+        act: (bloc) => bloc.add(const WatchlistEvent.syncRequested()),
+        expect: () => [],
+        verify: (_) {
+          verify(() => mockSyncWatchlistUseCase(any())).called(1);
+        },
+      );
+    });
   });
 }
