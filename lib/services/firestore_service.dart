@@ -110,6 +110,29 @@ class FirestoreService {
     return snapshot.docs.map((doc) => doc.data()).toList();
   }
 
+  Future<List<T>> getCollectionFuture<T>({
+    required String path,
+    required T Function(Map<String, dynamic> json) fromJson,
+    required Map<String, dynamic> Function(T value) toJson,
+    String? whereInField,
+    List<dynamic>? whereInValues,
+    Query<T> Function(Query<T> query)? queryBuilder,
+  }) async {
+    Query<T> query = _getCollectionRef<T>(path, fromJson, toJson);
+
+    if (whereInField != null && whereInValues != null) {
+      if (whereInValues.isEmpty) return [];
+      query = query.where(whereInField, whereIn: whereInValues);
+    }
+
+    if (queryBuilder != null) {
+      query = queryBuilder(query);
+    }
+
+    final snapshot = await query.get();
+    return snapshot.docs.map((doc) => doc.data()).toList();
+  }
+
   Future<T?> getDocument<T>({
     required String path,
     required T Function(Map<String, dynamic> json) fromJson,

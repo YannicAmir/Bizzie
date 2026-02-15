@@ -2,7 +2,7 @@ import 'package:bizzie/features/profile/presentation/bloc/profile_bloc.dart';
 import 'package:bizzie/features/profile/presentation/bloc/profile_state.dart';
 import 'package:bizzie/features/profile/domain/models/profile_display_data.dart';
 import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
-import 'package:bizzie/features/user/presentation/bloc/user_state_extensions.dart';
+import 'package:bizzie/features/user/presentation/extensions/user_state_extensions.dart';
 import 'package:bizzie/app/themes/app_assets.dart';
 import 'package:bizzie/app/themes/app_text_styles.dart';
 import 'package:bizzie/features/profile/presentation/widgets/profile_avatar.dart';

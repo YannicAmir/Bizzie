@@ -12,7 +12,7 @@ import 'package:bizzie/features/search/presentation/widgets/ai_search_prompt_vie
 import 'package:bizzie/features/search/presentation/widgets/ai_match_success_view.dart';
 import 'package:bizzie/features/search/presentation/widgets/ai_no_match_view.dart';
 import 'package:bizzie/shared/widgets/loading/bizzie_loader.dart';
-import 'package:bizzie/features/user/presentation/bloc/user_state_extensions.dart';
+import 'package:bizzie/features/user/presentation/extensions/user_state_extensions.dart';
 
 import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
 

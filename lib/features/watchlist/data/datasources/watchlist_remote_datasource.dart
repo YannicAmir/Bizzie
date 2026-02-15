@@ -1,3 +1,4 @@
+import 'package:bizzie/features/watchlist/data/interfaces/i_watchlist_remote_datasource.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:bizzie/features/watchlist/data/dtos/watchlist_item_dto.dart';
 import 'package:bizzie/services/firestore_service.dart';
@@ -5,12 +6,6 @@ import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:injectable/injectable.dart';
 
 final _logger = BizzieLogger('WatchlistRemoteDataSource');
-
-abstract class IWatchlistRemoteDataSource {
-  Future<void> addWatchlistItem(WatchlistItemDto item, String uid);
-  Future<void> removeWatchlistItem(String ticker, String uid);
-  Stream<List<WatchlistItemDto>> getWatchlistStream(String uid);
-}
 
 @Injectable(as: IWatchlistRemoteDataSource)
 class WatchlistRemoteDataSource implements IWatchlistRemoteDataSource {

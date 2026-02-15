@@ -9,6 +9,7 @@ class AppBadge extends StatelessWidget {
   final AppBadgeStyle style;
   final bool isLarge;
   final bool isExtraLarge;
+  final bool noBackground;
 
   const AppBadge({
     super.key,
@@ -16,6 +17,7 @@ class AppBadge extends StatelessWidget {
     required this.style,
     this.isLarge = false,
     this.isExtraLarge = false,
+    this.noBackground = false,
   });
 
   @override
@@ -59,9 +61,11 @@ class AppBadge extends StatelessWidget {
     }
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      padding: noBackground
+          ? EdgeInsets.all(0)
+          : const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
-        color: backgroundColor,
+        color: noBackground ? theme.colorScheme.surface : backgroundColor,
         borderRadius: BorderRadius.circular(8),
       ),
       child: Text(

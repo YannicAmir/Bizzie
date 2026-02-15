@@ -130,5 +130,101 @@ void main() {
       // assert
       expect(result, 'not-a-date');
     });
+
+    group('formatHumanFriendlyDate', () {
+      test('returnsTodayForCurrentDate', () {
+        // arrange
+        final date = DateTime.now();
+
+        // act
+        final result = BizzieDateFormatter.formatHumanFriendlyDate(date);
+
+        // assert
+        expect(result, 'Today');
+      });
+
+      test('returnsTomorrowForNextDay', () {
+        // arrange
+        final date = DateTime.now().add(const Duration(days: 1));
+
+        // act
+        final result = BizzieDateFormatter.formatHumanFriendlyDate(date);
+
+        // assert
+        expect(result, 'Tomorrow');
+      });
+
+      test('returnsYesterdayForPreviousDay', () {
+        // arrange
+        final date = DateTime.now().subtract(const Duration(days: 1));
+
+        // act
+        final result = BizzieDateFormatter.formatHumanFriendlyDate(date);
+
+        // assert
+        expect(result, 'Yesterday');
+      });
+
+      test('returnsInXDaysForFutureDatesWithinTargetRange', () {
+        // arrange
+        final date = DateTime.now().add(const Duration(days: 3));
+
+        // act
+        final result = BizzieDateFormatter.formatHumanFriendlyDate(date);
+
+        // assert
+        expect(result, 'In 3 days');
+      });
+
+      test('returnsIn7DaysForTargetUpperBoundary', () {
+        // arrange
+        final date = DateTime.now().add(const Duration(days: 7));
+
+        // act
+        final result = BizzieDateFormatter.formatHumanFriendlyDate(date);
+
+        // assert
+        expect(result, 'In 7 days');
+      });
+
+      test('returnsStandardFormatFor8DaysFuture', () {
+        // arrange
+        final date = DateTime.now().add(const Duration(days: 8));
+
+        // act
+        final result = BizzieDateFormatter.formatHumanFriendlyDate(date);
+
+        // assert
+        expect(result.contains('In'), false);
+        expect(result.length, greaterThan(3));
+      });
+
+      test('returnsXDaysAgoForPastDates', () {
+        // arrange
+        final date = DateTime.now().subtract(const Duration(days: 5));
+
+        // act
+        final result = BizzieDateFormatter.formatHumanFriendlyDate(date);
+
+        // assert
+        expect(result, '5 days ago');
+      });
+
+      test('returnsStandardFormatForDistantDates', () {
+        // arrange
+        final date = DateTime.now().add(const Duration(days: 30));
+
+        // act
+        final result = BizzieDateFormatter.formatHumanFriendlyDate(date);
+
+        // assert
+        // Just verify it's not one of the special strings since the exact month depends on when the test runs
+        expect(result.contains('In'), false);
+        expect(result.contains('Today'), false);
+        expect(result.contains('Tomorrow'), false);
+        expect(result.contains('Yesterday'), false);
+        expect(result.length, greaterThan(3)); // e.g. "Mar 15"
+      });
+    });
   });
 }

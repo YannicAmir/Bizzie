@@ -109,4 +109,25 @@ class BizzieDateFormatter {
     if (date == null) return dateStr;
     return formatApiDate(date);
   }
+
+  static String formatHumanFriendlyDate(DateTime date) {
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final eventDay = DateTime(date.year, date.month, date.day);
+    final difference = eventDay.difference(today).inDays;
+
+    if (difference == 0) {
+      return 'Today';
+    } else if (difference == 1) {
+      return 'Tomorrow';
+    } else if (difference == -1) {
+      return 'Yesterday';
+    } else if (difference > 0 && difference <= 7) {
+      return 'In $difference days';
+    } else if (difference < 0) {
+      return '${difference.abs()} days ago';
+    } else {
+      return DateFormat('MMM d').format(date);
+    }
+  }
 }

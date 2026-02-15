@@ -1,0 +1,1 @@
+enum WatchlistBadgeType { neutral, warning }

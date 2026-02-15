@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:bizzie/shared/widgets/loading/bizzie_loader.dart';
-import 'package:bizzie/shared/widgets/badges/bizzie_plus_badge.dart';
 
 class HomePage extends StatefulWidget {
   final Object? extra;
@@ -49,19 +48,11 @@ class _HomePageState extends State<HomePage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Row(
-          children: [
-            Expanded(
-              child: BizzieSearchBar(
-                readOnly: true,
-                onTap: () {
-                  context.push(AppRoutes.search, extra: 'home');
-                },
-              ),
-            ),
-            const SizedBox(width: 8),
-            const BizziePlusBadge(),
-          ],
+        title: BizzieSearchBar(
+          readOnly: true,
+          onTap: () {
+            context.push(AppRoutes.search, extra: 'home');
+          },
         ),
       ),
       body: BlocListener<AuthBloc, AuthState>(

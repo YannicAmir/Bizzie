@@ -3,11 +3,15 @@ import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/features/auth/domain/interfaces/i_auth_repository.dart';
 import 'package:bizzie/features/onboarding/domain/models/company.dart';
 import 'package:bizzie/features/watchlist/domain/usecases/add_to_watchlist_usecase.dart';
+import 'package:bizzie/features/watchlist/domain/usecases/get_enriched_watchlist_usecase.dart';
 import 'package:bizzie/features/watchlist/domain/usecases/get_watchlist_usecase.dart';
+import 'package:bizzie/features/watchlist/domain/usecases/get_watchlist_events_usecase.dart';
 import 'package:bizzie/features/watchlist/domain/usecases/remove_from_watchlist_usecase.dart';
 import 'package:bizzie/features/watchlist/domain/usecases/sync_watchlist_usecase.dart';
+import 'package:bizzie/features/watchlist/domain/models/watchlist_event_status.dart';
 import 'package:bloc/bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
+import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
 
 import 'package:bizzie/features/watchlist/domain/models/add_to_watchlist_params.dart';
@@ -21,6 +25,8 @@ final _logger = BizzieLogger('WatchlistBloc');
 @injectable
 class WatchlistBloc extends Bloc<WatchlistEvent, WatchlistState> {
   final GetWatchlistUseCase _getWatchlistUseCase;
+  final GetEnrichedWatchlistUseCase _getEnrichedWatchlistUseCase;
+  final GetWatchlistEventsUseCase _getWatchlistEventsUseCase;
   final AddToWatchlistUseCase _addToWatchlistUseCase;
   final RemoveFromWatchlistUseCase _removeFromWatchlistUseCase;
   final SyncWatchlistUseCase _syncWatchlistUseCase;
@@ -28,6 +34,8 @@ class WatchlistBloc extends Bloc<WatchlistEvent, WatchlistState> {
 
   WatchlistBloc(
     this._getWatchlistUseCase,
+    this._getEnrichedWatchlistUseCase,
+    this._getWatchlistEventsUseCase,
     this._addToWatchlistUseCase,
     this._removeFromWatchlistUseCase,
     this._syncWatchlistUseCase,
@@ -37,6 +45,7 @@ class WatchlistBloc extends Bloc<WatchlistEvent, WatchlistState> {
     on<AddRequested>(_onAddRequested);
     on<RemoveRequested>(_onRemoveRequested);
     on<LoadRequested>(_onLoadRequested, transformer: restartable());
+    on<LoadWatchlistEvents>(_onLoadWatchlistEvents);
     on<Reset>(_onReset);
   }
 
@@ -63,19 +72,40 @@ class WatchlistBloc extends Bloc<WatchlistEvent, WatchlistState> {
     _logger.info('Loading watchlist for UID: $uid');
     emit(const WatchlistState.loading());
 
-    final stream = await _getWatchlistUseCase(uid);
-
-    await emit.forEach(
-      stream,
+    await emit.forEach<
+      Either<Failure, (List<Company>, Map<String, WatchlistEventStatus>)>
+    >(
+      _getEnrichedWatchlistUseCase(uid),
       onData: (result) {
         return result.fold(
           (failure) => WatchlistState.failure(failure),
-          (companies) => WatchlistState.loaded(companies),
+          (data) => WatchlistState.loaded(data.$1, events: data.$2),
         );
       },
       onError: (error, stack) {
         _logger.severe('Watchlist stream error', error, stack);
         return WatchlistState.failure(Failure.server('Stream Error'));
+      },
+    );
+  }
+
+  Future<void> _onLoadWatchlistEvents(
+    LoadWatchlistEvents event,
+    Emitter<WatchlistState> emit,
+  ) async {
+    final companies = state.maybeMap(
+      loaded: (s) => s.companies,
+      orElse: () => null,
+    );
+
+    if (companies == null) return;
+
+    final result = await _getWatchlistEventsUseCase(event.tickers);
+
+    result.fold(
+      (failure) => _logger.warning('Failed to load watchlist events', failure),
+      (events) {
+        emit(WatchlistState.loaded(companies, events: events));
       },
     );
   }
