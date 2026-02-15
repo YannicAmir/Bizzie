@@ -1,10 +1,6 @@
+import 'package:bizzie/features/watchlist/data/interfaces/i_watchlist_local_datasource.dart';
 import 'package:injectable/injectable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-abstract class IWatchlistLocalDataSource {
-  Future<void> cacheSubscribedTickers(List<String> tickers);
-  List<String> getSubscribedTickers();
-}
 
 @Injectable(as: IWatchlistLocalDataSource)
 class WatchlistLocalDataSource implements IWatchlistLocalDataSource {

@@ -1,7 +1,7 @@
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/features/onboarding/domain/models/company.dart';
-import 'package:bizzie/features/watchlist/data/datasources/watchlist_local_datasource.dart';
-import 'package:bizzie/features/watchlist/data/datasources/watchlist_remote_datasource.dart';
+import 'package:bizzie/features/watchlist/data/interfaces/i_watchlist_local_datasource.dart';
+import 'package:bizzie/features/watchlist/data/interfaces/i_watchlist_remote_datasource.dart';
 import 'package:bizzie/features/watchlist/data/dtos/watchlist_item_dto.dart';
 import 'package:bizzie/features/watchlist/data/repositories/watchlist_repository_impl.dart';
 import 'package:dartz/dartz.dart';

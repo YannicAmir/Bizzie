@@ -1,3 +1,4 @@
+import 'package:bizzie/shared/widgets/badges/bizzie_plus_badge.dart';
 import 'package:bizzie/app/themes/app_assets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -14,6 +15,7 @@ class BizzieSearchBar extends StatelessWidget {
     this.inputFormatters,
     this.hintText = 'Search for stocks',
     this.maxLength,
+    this.showPlusBadge = true,
   });
 
   final bool readOnly;
@@ -25,95 +27,112 @@ class BizzieSearchBar extends StatelessWidget {
   final List<TextInputFormatter>? inputFormatters;
   final String hintText;
   final int? maxLength;
+  final bool showPlusBadge;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return GestureDetector(
-      onTap: readOnly ? onTap : null,
-      behavior: HitTestBehavior.opaque,
-      child: IgnorePointer(
-        ignoring: readOnly,
-        child: TextField(
-          controller: controller,
-          focusNode: focusNode,
-          readOnly: readOnly,
-          onChanged: onChanged,
-          inputFormatters: inputFormatters,
-          maxLength: maxLength,
-          style: theme.textTheme.bodyLarge?.copyWith(
-            color: theme.colorScheme.onSurface,
-          ),
-          textAlignVertical: TextAlignVertical.center,
-          decoration: InputDecoration(
-            counterText: '',
-            filled: true,
-            fillColor: theme.inputDecorationTheme.fillColor,
-            hintText: hintText,
-            hintStyle: theme.inputDecorationTheme.hintStyle?.copyWith(
-              color: theme.colorScheme.onSurfaceVariant,
-            ),
-            prefixIcon: Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: Image.asset(
-                AppAssets.searchIconLarge,
-                width: 24,
-                height: 24,
+    return Row(
+      children: [
+        Expanded(
+          child: GestureDetector(
+            onTap: readOnly ? onTap : null,
+            behavior: HitTestBehavior.opaque,
+            child: IgnorePointer(
+              ignoring: readOnly,
+              child: TextField(
+                controller: controller,
+                focusNode: focusNode,
+                readOnly: readOnly,
+                onChanged: onChanged,
+                inputFormatters: inputFormatters,
+                maxLength: maxLength,
+                style: theme.textTheme.bodyLarge?.copyWith(
+                  color: theme.colorScheme.onSurface,
+                ),
+                textAlignVertical: TextAlignVertical.center,
+                decoration: InputDecoration(
+                  counterText: '',
+                  filled: true,
+                  fillColor: theme.inputDecorationTheme.fillColor,
+                  hintText: hintText,
+                  hintStyle: theme.inputDecorationTheme.hintStyle?.copyWith(
+                    color: theme.colorScheme.onSurfaceVariant,
+                  ),
+                  prefixIcon: Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: Image.asset(
+                      AppAssets.searchIconLarge,
+                      width: 24,
+                      height: 24,
+                    ),
+                  ),
+                  suffixIcon: controller != null
+                      ? ValueListenableBuilder<TextEditingValue>(
+                          valueListenable: controller!,
+                          builder: (context, value, child) {
+                            if (value.text.isEmpty) {
+                              return const SizedBox.shrink();
+                            }
+                            return IconButton(
+                              icon: Image.asset(
+                                AppAssets.clearTextfieldIcon,
+                                width: 24,
+                                height: 24,
+                              ),
+                              onPressed: onClear,
+                            );
+                          },
+                        )
+                      : null,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(16),
+                    borderSide: BorderSide.none,
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(16),
+                    borderSide: BorderSide(
+                      color:
+                          theme.dividerTheme.color ?? theme.colorScheme.outline,
+                      width: 0.67,
+                    ),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(16),
+                    borderSide: BorderSide(
+                      color:
+                          theme.dividerTheme.color ?? theme.colorScheme.outline,
+                      width: 0.67,
+                    ),
+                  ),
+                  errorBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(16),
+                    borderSide: BorderSide(
+                      color:
+                          theme.dividerTheme.color ?? theme.colorScheme.outline,
+                      width: 0.67,
+                    ),
+                  ),
+                  disabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(16),
+                    borderSide: BorderSide(
+                      color:
+                          theme.dividerTheme.color ?? theme.colorScheme.outline,
+                      width: 0.67,
+                    ),
+                  ),
+                  contentPadding: const EdgeInsets.symmetric(vertical: 0),
+                  isDense: true,
+                ),
               ),
             ),
-            suffixIcon: controller != null
-                ? ValueListenableBuilder<TextEditingValue>(
-                    valueListenable: controller!,
-                    builder: (context, value, child) {
-                      if (value.text.isEmpty) return const SizedBox.shrink();
-                      return IconButton(
-                        icon: Image.asset(
-                          AppAssets.clearTextfieldIcon,
-                          width: 24,
-                          height: 24,
-                        ),
-                        onPressed: onClear,
-                      );
-                    },
-                  )
-                : null,
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(16),
-              borderSide: BorderSide.none,
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(16),
-              borderSide: BorderSide(
-                color: theme.dividerTheme.color ?? theme.colorScheme.outline,
-                width: 0.67,
-              ),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(16),
-              borderSide: BorderSide(
-                color: theme.dividerTheme.color ?? theme.colorScheme.outline,
-                width: 0.67,
-              ),
-            ),
-            errorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(16),
-              borderSide: BorderSide(
-                color: theme.dividerTheme.color ?? theme.colorScheme.outline,
-                width: 0.67,
-              ),
-            ),
-            disabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(16),
-              borderSide: BorderSide(
-                color: theme.dividerTheme.color ?? theme.colorScheme.outline,
-                width: 0.67,
-              ),
-            ),
-            contentPadding: const EdgeInsets.symmetric(vertical: 0),
-            isDense: true,
           ),
         ),
-      ),
+        if (showPlusBadge) ...[
+          const SizedBox(width: 8),
+          const BizziePlusBadge(),
+        ],
+      ],
     );
   }
 }

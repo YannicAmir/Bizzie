@@ -38,43 +38,36 @@ class UpcomingEarningsSection extends StatelessWidget {
             message: 'There are no upcoming notifications',
           )
         else
-          Container(
-            decoration: BoxDecoration(
-              color: theme.cardColor,
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(
-                color: theme.dividerColor,
-                width: theme.dividerTheme.thickness ?? .665,
-              ),
-            ),
-            child: Column(
-              children: [
-                ...List.generate(displayedEarnings.length, (index) {
-                  final isLastItem =
-                      !showViewMore && index == displayedEarnings.length - 1;
-
-                  return UpcomingEarningsTile(
+          Column(
+            children: [
+              ...List.generate(displayedEarnings.length, (index) {
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 16),
+                  child: UpcomingEarningsTile(
                     earnings: displayedEarnings[index],
-                    isLast: isLastItem,
-                  );
-                }),
-                if (showViewMore)
-                  InkWell(
-                    onTap: () => _showAllEarningsModal(context),
-                    child: Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      alignment: Alignment.center,
-                      child: Text(
-                        'View All',
-                        style: AppTextStyles.bodyMediumBold.copyWith(
-                          color: theme.colorScheme.primary,
-                        ),
+                    isLast:
+                        !showViewMore && index == displayedEarnings.length - 1,
+                  ),
+                );
+              }),
+              if (showViewMore)
+                InkWell(
+                  onTap: () => _showAllEarningsModal(context),
+                  splashColor: theme.colorScheme.scrim,
+                  highlightColor: theme.colorScheme.scrim,
+                  child: Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    alignment: Alignment.center,
+                    child: Text(
+                      'View All',
+                      style: AppTextStyles.bodyMediumBold.copyWith(
+                        color: theme.colorScheme.primary,
                       ),
                     ),
                   ),
-              ],
-            ),
+                ),
+            ],
           ),
       ],
     );

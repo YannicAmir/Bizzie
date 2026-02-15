@@ -15,7 +15,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
-import 'package:bizzie/features/user/presentation/bloc/user_state_extensions.dart';
+import 'package:bizzie/features/user/presentation/extensions/user_state_extensions.dart';
 import 'package:bizzie/shared/widgets/states/bizzie_empty_state.dart';
 import 'package:bizzie/features/company_profile/financial_statements/presentation/widgets/shared/financial_history_row.dart';
 

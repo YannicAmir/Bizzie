@@ -8,6 +8,7 @@ import 'package:bizzie/features/watchlist/domain/models/remove_from_watchlist_pa
 import 'package:bizzie/features/watchlist/domain/models/sync_watchlist_params.dart';
 import 'package:bizzie/features/watchlist/domain/usecases/add_to_watchlist_usecase.dart';
 import 'package:bizzie/features/watchlist/domain/usecases/get_watchlist_usecase.dart';
+import 'package:bizzie/features/watchlist/domain/usecases/get_enriched_watchlist_usecase.dart';
 import 'package:bizzie/features/watchlist/domain/usecases/remove_from_watchlist_usecase.dart';
 import 'package:bizzie/features/watchlist/domain/usecases/sync_watchlist_usecase.dart';
 import 'package:bizzie/features/watchlist/presentation/bloc/watchlist_bloc.dart';
@@ -17,7 +18,15 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
+import 'package:bizzie/features/watchlist/domain/usecases/get_watchlist_events_usecase.dart';
+
 class MockGetWatchlistUseCase extends Mock implements GetWatchlistUseCase {}
+
+class MockGetWatchlistEventsUseCase extends Mock
+    implements GetWatchlistEventsUseCase {}
+
+class MockGetEnrichedWatchlistUseCase extends Mock
+    implements GetEnrichedWatchlistUseCase {}
 
 class MockAddToWatchlistUseCase extends Mock implements AddToWatchlistUseCase {}
 
@@ -31,6 +40,8 @@ class MockAuthRepository extends Mock implements IAuthRepository {}
 void main() {
   late WatchlistBloc bloc;
   late MockGetWatchlistUseCase mockGetWatchlistUseCase;
+  late MockGetEnrichedWatchlistUseCase mockGetEnrichedWatchlistUseCase;
+  late MockGetWatchlistEventsUseCase mockGetWatchlistEventsUseCase;
   late MockAddToWatchlistUseCase mockAddToWatchlistUseCase;
   late MockRemoveFromWatchlistUseCase mockRemoveFromWatchlistUseCase;
   late MockSyncWatchlistUseCase mockSyncWatchlistUseCase;
@@ -51,13 +62,22 @@ void main() {
 
   setUp(() {
     mockGetWatchlistUseCase = MockGetWatchlistUseCase();
+    mockGetEnrichedWatchlistUseCase = MockGetEnrichedWatchlistUseCase();
+    mockGetWatchlistEventsUseCase = MockGetWatchlistEventsUseCase();
     mockAddToWatchlistUseCase = MockAddToWatchlistUseCase();
     mockRemoveFromWatchlistUseCase = MockRemoveFromWatchlistUseCase();
     mockSyncWatchlistUseCase = MockSyncWatchlistUseCase();
     mockAuthRepository = MockAuthRepository();
 
+    // Default stubbing for GetWatchlistEventsUseCase to return empty map
+    when(
+      () => mockGetWatchlistEventsUseCase(any()),
+    ).thenAnswer((_) async => const Right({}));
+
     bloc = WatchlistBloc(
       mockGetWatchlistUseCase,
+      mockGetEnrichedWatchlistUseCase,
+      mockGetWatchlistEventsUseCase,
       mockAddToWatchlistUseCase,
       mockRemoveFromWatchlistUseCase,
       mockSyncWatchlistUseCase,
@@ -82,8 +102,8 @@ void main() {
       build: () {
         when(() => mockAuthRepository.currentUser).thenReturn(tUser);
         when(
-          () => mockGetWatchlistUseCase(tUid),
-        ).thenAnswer((_) async => Stream.value(const Right([])));
+          () => mockGetEnrichedWatchlistUseCase(tUid),
+        ).thenAnswer((_) => Stream.value(const Right(([], {}))));
         return bloc;
       },
       act: (bloc) => bloc.add(const WatchlistEvent.loadRequested(uid: tUid)),
@@ -109,9 +129,9 @@ void main() {
       'loadRequested_useCaseFailure_emitsLoadingThenFailure',
       build: () {
         when(() => mockAuthRepository.currentUser).thenReturn(tUser);
-        when(() => mockGetWatchlistUseCase(tUid)).thenAnswer(
-          (_) async => Stream.value(const Left(Failure.server('Error'))),
-        );
+        when(
+          () => mockGetEnrichedWatchlistUseCase(tUid),
+        ).thenAnswer((_) => Stream.value(const Left(Failure.server('Error'))));
         return bloc;
       },
       act: (bloc) => bloc.add(const WatchlistEvent.loadRequested(uid: tUid)),

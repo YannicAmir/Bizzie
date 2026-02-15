@@ -3,7 +3,7 @@ import 'package:bizzie/features/subscription/presentation/bloc/subscription_even
 import 'package:bizzie/features/subscription/presentation/bloc/subscription_state.dart';
 import 'package:bizzie/features/subscription/presentation/extensions/subscription_state_extensions.dart';
 import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
-import 'package:bizzie/features/user/presentation/bloc/user_state_extensions.dart';
+import 'package:bizzie/features/user/presentation/extensions/user_state_extensions.dart';
 import 'package:bizzie/features/subscription/presentation/widgets/subscription_loaded_content.dart';
 import 'package:bizzie/shared/widgets/error/bizzie_error.dart';
 import 'package:bizzie/shared/widgets/loading/bizzie_loader.dart';

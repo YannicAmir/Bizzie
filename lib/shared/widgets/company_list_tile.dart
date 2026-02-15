@@ -1,4 +1,5 @@
 import 'package:bizzie/app/themes/app_assets.dart';
+import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:flutter/material.dart';
@@ -27,40 +28,60 @@ class CompanyListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return ListTile(
+    return GestureDetector(
       onTap: onTap,
-      contentPadding:
-          contentPadding ??
-          const EdgeInsets.symmetric(horizontal: 0, vertical: 4),
-      shape: shape,
-      leading: showLeading
-          ? Container(
-              width: 48,
-              height: 48,
-              decoration: BoxDecoration(
-                color: theme.colorScheme.secondaryContainer,
-                shape: BoxShape.circle,
+      child: Container(
+        padding:
+            contentPadding ??
+            const EdgeInsets.all(AppConstants.mainSectionContainerPadding),
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: theme.dividerColor,
+            width: theme.dividerTheme.thickness ?? .665,
+          ),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Row(
+          children: [
+            if (showLeading) ...[
+              Container(
+                width: 48,
+                height: 48,
+                decoration: BoxDecoration(
+                  color: theme.colorScheme.secondaryContainer,
+                  shape: BoxShape.circle,
+                ),
+                padding: const EdgeInsets.all(12),
+                child: SvgPicture.asset(AppAssets.businessIcon),
               ),
-              padding: const EdgeInsets.all(12),
-              child: SvgPicture.asset(AppAssets.businessIcon),
-            )
-          : null,
-      title: Text(
-        symbol,
-        style: theme.textTheme.bodyLarge?.copyWith(
-          fontWeight: FontWeight.w600,
-          color: theme.colorScheme.onSurface,
+              const SizedBox(width: 16),
+            ],
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    symbol,
+                    style: theme.textTheme.bodyLarge?.copyWith(
+                      fontWeight: FontWeight.w600,
+                      color: theme.colorScheme.onSurface,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    name,
+                    style: theme.textTheme.bodyMedium,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
+            ),
+            if (trailing != null) ...[const SizedBox(width: 16), trailing!],
+          ],
         ),
       ),
-      subtitle: Text(
-        name,
-        style: theme.textTheme.bodyMedium?.copyWith(
-          color: theme.colorScheme.onSurfaceVariant,
-        ),
-        maxLines: 1,
-        overflow: TextOverflow.ellipsis,
-      ),
-      trailing: trailing,
     );
   }
 }

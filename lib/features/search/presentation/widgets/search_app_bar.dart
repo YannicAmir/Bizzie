@@ -36,6 +36,7 @@ class SearchAppBar extends StatelessWidget implements PreferredSizeWidget {
         onClear: onClear,
         maxLength: maxLength,
         inputFormatters: inputFormatters,
+        showPlusBadge: false,
       ),
       actions: [
         Padding(
@@ -46,6 +47,7 @@ class SearchAppBar extends StatelessWidget implements PreferredSizeWidget {
               style: TextButton.styleFrom(
                 minimumSize: const Size(48, 48),
                 foregroundColor: theme.colorScheme.primary,
+                splashFactory: NoSplash.splashFactory,
               ),
               child: Text(
                 'Cancel',

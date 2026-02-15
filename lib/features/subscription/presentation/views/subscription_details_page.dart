@@ -8,7 +8,7 @@ import 'package:bizzie/features/subscription/presentation/bloc/subscription_stat
 import 'package:bizzie/features/subscription/presentation/bloc/subscription_event.dart';
 import 'package:bizzie/features/subscription/presentation/widgets/subscription_gift_modal.dart';
 import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
-import 'package:bizzie/features/user/presentation/bloc/user_state_extensions.dart';
+import 'package:bizzie/features/user/presentation/extensions/user_state_extensions.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:bizzie/shared/utils/url_launcher_utils.dart';
 import 'package:bizzie/shared/widgets/app_bar/bizzie_app_bar.dart';

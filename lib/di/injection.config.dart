@@ -384,16 +384,38 @@ import '../features/user/domain/interfaces/user_repository.dart' as _i615;
 import '../features/user/domain/usecases/get_user_usecase.dart' as _i561;
 import '../features/user/domain/usecases/watch_user_usecase.dart' as _i836;
 import '../features/user/presentation/bloc/user_bloc.dart' as _i200;
+import '../features/watchlist/data/datasources/watchlist_events_local_datasource_impl.dart'
+    as _i525;
+import '../features/watchlist/data/datasources/watchlist_events_remote_datasource_impl.dart'
+    as _i361;
 import '../features/watchlist/data/datasources/watchlist_local_datasource.dart'
     as _i114;
 import '../features/watchlist/data/datasources/watchlist_remote_datasource.dart'
     as _i444;
+import '../features/watchlist/data/interfaces/i_watchlist_events_local_datasource.dart'
+    as _i885;
+import '../features/watchlist/data/interfaces/i_watchlist_events_remote_datasource.dart'
+    as _i826;
+import '../features/watchlist/data/interfaces/i_watchlist_local_datasource.dart'
+    as _i192;
+import '../features/watchlist/data/interfaces/i_watchlist_remote_datasource.dart'
+    as _i255;
+import '../features/watchlist/data/repositories/watchlist_events_repository_impl.dart'
+    as _i586;
 import '../features/watchlist/data/repositories/watchlist_repository_impl.dart'
     as _i259;
+import '../features/watchlist/domain/interfaces/i_watchlist_events_repository.dart'
+    as _i877;
 import '../features/watchlist/domain/interfaces/watchlist_repository.dart'
     as _i1039;
+import '../features/watchlist/domain/services/watchlist_event_evaluator.dart'
+    as _i807;
 import '../features/watchlist/domain/usecases/add_to_watchlist_usecase.dart'
     as _i258;
+import '../features/watchlist/domain/usecases/get_enriched_watchlist_usecase.dart'
+    as _i856;
+import '../features/watchlist/domain/usecases/get_watchlist_events_usecase.dart'
+    as _i212;
 import '../features/watchlist/domain/usecases/get_watchlist_usecase.dart'
     as _i759;
 import '../features/watchlist/domain/usecases/remove_from_watchlist_usecase.dart'
@@ -446,10 +468,10 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i457.FirebaseStorage>(() => registerModule.storage);
     gh.lazySingleton<_i833.DeviceInfoPlugin>(() => registerModule.deviceInfo);
     gh.lazySingleton<_i936.LaunchUrlUseCase>(() => _i936.LaunchUrlUseCase());
-    gh.factory<_i501.IVertexAIProvider>(() => _i501.VertexAIProvider());
-    gh.factory<_i444.IWatchlistRemoteDataSource>(
-      () => _i444.WatchlistRemoteDataSource(gh<_i52.FirestoreService>()),
+    gh.lazySingleton<_i807.WatchlistEventEvaluator>(
+      () => _i807.WatchlistEventEvaluator(),
     );
+    gh.factory<_i501.IVertexAIProvider>(() => _i501.VertexAIProvider());
     await gh.singletonAsync<_i937.IConfigService>(
       () => _i216.ConfigService.init(),
       preResolve: true,
@@ -457,12 +479,22 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i191.IStockLocalDataSource>(
       () => _i191.StockLocalDataSource(gh<_i460.SharedPreferences>()),
     );
+    gh.lazySingleton<_i885.IWatchlistEventsLocalDataSource>(
+      () => _i525.WatchlistEventsLocalDataSourceImpl(
+        gh<_i460.SharedPreferences>(),
+      ),
+    );
     await gh.singletonAsync<_i982.LocalNotificationDataSource>(() {
       final i = _i982.LocalNotificationDataSource(
         gh<_i163.FlutterLocalNotificationsPlugin>(),
       );
       return i.init().then((_) => i);
     }, preResolve: true);
+    gh.lazySingleton<_i826.IWatchlistEventsRemoteDataSource>(
+      () => _i361.WatchlistEventsRemoteDataSourceImpl(
+        gh<_i52.FirestoreService>(),
+      ),
+    );
     gh.factory<_i147.IUserLocalDataSource>(
       () => _i147.UserLocalDataSource(gh<_i460.SharedPreferences>()),
     );
@@ -472,7 +504,7 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i481.UserRemoteDataSource(gh<_i52.FirestoreService>()),
     );
     gh.lazySingleton<_i248.IAppInfoService>(() => _i248.AppInfoServiceImpl());
-    gh.factory<_i114.IWatchlistLocalDataSource>(
+    gh.factory<_i192.IWatchlistLocalDataSource>(
       () => _i114.WatchlistLocalDataSource(gh<_i460.SharedPreferences>()),
     );
     gh.lazySingleton<_i202.IPermissionService>(
@@ -494,6 +526,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i6.ISelectBrandsRemoteDataSource>(
       () => _i6.SelectBrandsRemoteDataSource(gh<_i52.FirestoreService>()),
     );
+    gh.factory<_i255.IWatchlistRemoteDataSource>(
+      () => _i444.WatchlistRemoteDataSource(gh<_i52.FirestoreService>()),
+    );
     gh.factory<_i640.FcmRemoteDataSource>(
       () => _i640.FcmRemoteDataSource(gh<_i892.FirebaseMessaging>()),
     );
@@ -514,6 +549,13 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i974.FirebaseFirestore>(),
       ),
     );
+    gh.lazySingleton<_i877.IWatchlistEventsRepository>(
+      () => _i586.WatchlistEventsRepositoryImpl(
+        gh<_i885.IWatchlistEventsLocalDataSource>(),
+        gh<_i826.IWatchlistEventsRemoteDataSource>(),
+        gh<_i807.WatchlistEventEvaluator>(),
+      ),
+    );
     gh.singleton<_i977.AiProductSearchService>(
       () => _i977.AiProductSearchService(
         gh<_i937.IConfigService>(),
@@ -524,13 +566,6 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i877.RemoteAuthDataSourceImpl(
         gh<_i59.FirebaseAuth>(),
         gh<_i116.GoogleSignIn>(),
-      ),
-    );
-    gh.lazySingleton<_i1039.IWatchlistRepository>(
-      () => _i259.WatchlistRepositoryImpl(
-        gh<_i444.IWatchlistRemoteDataSource>(),
-        gh<_i114.IWatchlistLocalDataSource>(),
-        gh<_i892.FirebaseMessaging>(),
       ),
     );
     gh.lazySingleton<_i595.SecurityFirestoreDataSource>(
@@ -613,6 +648,13 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i792.IRecommendedBrandsRemoteDataSource>(),
       ),
     );
+    gh.lazySingleton<_i1039.IWatchlistRepository>(
+      () => _i259.WatchlistRepositoryImpl(
+        gh<_i255.IWatchlistRemoteDataSource>(),
+        gh<_i192.IWatchlistLocalDataSource>(),
+        gh<_i892.FirebaseMessaging>(),
+      ),
+    );
     gh.lazySingleton<_i608.IAiProductSearchRepository>(
       () =>
           _i1008.AiProductSearchRepository(gh<_i977.AiProductSearchService>()),
@@ -670,6 +712,11 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i231.GetRoeUseCase>(
       () => _i231.GetRoeUseCase(gh<_i1025.IRoeRepository>()),
+    );
+    gh.lazySingleton<_i212.GetWatchlistEventsUseCase>(
+      () => _i212.GetWatchlistEventsUseCase(
+        gh<_i877.IWatchlistEventsRepository>(),
+      ),
     );
     gh.lazySingleton<_i814.INetIncomeRepository>(
       () => _i13.NetIncomeRepositoryImpl(
@@ -764,15 +811,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i329.IOnboardingRepository>(
       () => _i379.OnboardingRepositoryImpl(
         gh<_i1016.IOnboardingRemoteDataSource>(),
-      ),
-    );
-    gh.factory<_i63.WatchlistBloc>(
-      () => _i63.WatchlistBloc(
-        gh<_i759.GetWatchlistUseCase>(),
-        gh<_i258.AddToWatchlistUseCase>(),
-        gh<_i320.RemoveFromWatchlistUseCase>(),
-        gh<_i1003.SyncWatchlistUseCase>(),
-        gh<_i685.IAuthRepository>(),
       ),
     );
     gh.factory<_i205.ReauthenticateUseCase>(
@@ -896,6 +934,12 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i240.GetSharesUseCase>(
       () => _i240.GetSharesUseCase(gh<_i786.ISharesRepository>()),
+    );
+    gh.lazySingleton<_i856.GetEnrichedWatchlistUseCase>(
+      () => _i856.GetEnrichedWatchlistUseCase(
+        gh<_i759.GetWatchlistUseCase>(),
+        gh<_i212.GetWatchlistEventsUseCase>(),
+      ),
     );
     gh.lazySingleton<_i657.GetPeRatioUseCase>(
       () => _i657.GetPeRatioUseCase(gh<_i943.IPeRatioRepository>()),
@@ -1085,6 +1129,17 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i687.Stream<bool>>(
       () => subscriptionModule.isSubscribedStream(gh<_i615.IUserRepository>()),
       instanceName: 'isSubscribedStream',
+    );
+    gh.factory<_i63.WatchlistBloc>(
+      () => _i63.WatchlistBloc(
+        gh<_i759.GetWatchlistUseCase>(),
+        gh<_i856.GetEnrichedWatchlistUseCase>(),
+        gh<_i212.GetWatchlistEventsUseCase>(),
+        gh<_i258.AddToWatchlistUseCase>(),
+        gh<_i320.RemoveFromWatchlistUseCase>(),
+        gh<_i1003.SyncWatchlistUseCase>(),
+        gh<_i685.IAuthRepository>(),
+      ),
     );
     gh.factory<_i807.CompanySharesBloc>(
       () => _i807.CompanySharesBloc(gh<_i240.GetSharesUseCase>()),

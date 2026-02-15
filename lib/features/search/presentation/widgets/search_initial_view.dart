@@ -37,22 +37,20 @@ class SearchInitialView extends StatelessWidget {
     }
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 24.0),
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             (favoriteSector ?? '').formatAsSector(),
-            style: theme.textTheme.bodyLarge?.copyWith(
-              fontWeight: FontWeight.w600,
-            ),
+            style: theme.textTheme.displaySmall,
           ),
           const SizedBox(height: 16),
           Expanded(
             child: ListView.separated(
               padding: EdgeInsets.zero,
               itemCount: recommendedBrands.length,
-              separatorBuilder: (context, index) => const Divider(),
+              separatorBuilder: (context, index) => const SizedBox(height: 16),
               itemBuilder: (context, index) {
                 final brand = recommendedBrands[index];
                 return CompanyListTile(
