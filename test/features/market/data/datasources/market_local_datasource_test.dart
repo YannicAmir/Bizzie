@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:bizzie/core/constants/storage_constants.dart';
 import 'package:bizzie/features/market/data/datasources/market_local_datasource.dart';
 import 'package:bizzie/features/market/data/dtos/market_data_snapshot.dart';
 import 'package:bizzie/features/market/data/dtos/sector_pe_dto.dart';
@@ -50,7 +51,7 @@ void main() {
     cacheTimestamp: 123456789,
   );
 
-  const kMarketDataKey = 'market_data_snapshot';
+  const kMarketDataKey = StorageConstants.marketDataSnapshot;
 
   group('getLastKnownMarketData', () {
     test('getLastKnownMarketData_success_returnsDecodedSnapshot', () async {
