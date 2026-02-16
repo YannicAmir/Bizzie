@@ -6,6 +6,7 @@ import 'package:bizzie/features/settings/presentation/bloc/select_sector_state.d
 import 'package:bizzie/features/settings/presentation/widgets/sector_card.dart';
 import 'package:bizzie/shared/widgets/buttons/bizzie_primary_button.dart';
 import 'package:bizzie/shared/widgets/modals/app_bottom_modal.dart';
+import 'package:bizzie/shared/widgets/modals/bizzie_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -24,9 +25,11 @@ class ChangeSectorModal extends StatelessWidget {
           state.maybeMap(
             success: (_) => context.pop(),
             failure: (f) {
-              ScaffoldMessenger.of(
+              BizzieSnackBar.show(
                 context,
-              ).showSnackBar(SnackBar(content: Text(f.failure.message)));
+                message: f.failure.message,
+                type: BizzieSnackBarType.error,
+              );
             },
             orElse: () {},
           );

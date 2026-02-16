@@ -7,7 +7,9 @@ import 'package:bizzie/shared/utils/validators.dart';
 import 'package:bizzie/shared/widgets/buttons/bizzie_primary_button.dart';
 import 'package:bizzie/shared/widgets/inputs/bizzie_text_field.dart';
 import 'package:bizzie/shared/widgets/modals/app_bottom_modal.dart';
+import 'package:bizzie/shared/widgets/modals/bizzie_snackbar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
@@ -46,14 +48,21 @@ class _FeedbackModalState extends State<FeedbackModal> {
           state.whenOrNull(
             success: (isCoolingDown) {
               context.pop();
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Thank you for your feedback!')),
+
+              HapticFeedback.lightImpact();
+
+              BizzieSnackBar.show(
+                context,
+                message: 'Thank you for your feedback!',
+                type: BizzieSnackBarType.success,
               );
             },
             failure: (failure, isCoolingDown) {
-              ScaffoldMessenger.of(
+              BizzieSnackBar.show(
                 context,
-              ).showSnackBar(SnackBar(content: Text(failure.message)));
+                message: failure.message,
+                type: BizzieSnackBarType.error,
+              );
             },
           );
         },

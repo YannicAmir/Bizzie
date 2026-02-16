@@ -17,6 +17,7 @@ import 'package:bizzie/features/subscription/presentation/widgets/discount_plan_
 import 'package:bizzie/features/subscription/presentation/widgets/savings_summary_card.dart';
 import 'package:bizzie/features/subscription/presentation/widgets/subscription_bottom_actions.dart';
 import 'package:bizzie/app/routes/app_routes.dart';
+import 'package:bizzie/shared/widgets/modals/bizzie_snackbar.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -26,18 +27,15 @@ class DiscountedSubscriptionPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     return Scaffold(
       body: SafeArea(
         child: BlocListener<SubscriptionBloc, SubscriptionState>(
           listener: (context, state) {
             if (state.failure != null) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(state.failure!.message),
-                  backgroundColor: theme.colorScheme.error,
-                ),
+              BizzieSnackBar.show(
+                context,
+                message: state.failure!.message,
+                type: BizzieSnackBarType.error,
               );
             }
 

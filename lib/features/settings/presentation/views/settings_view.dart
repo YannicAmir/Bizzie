@@ -15,6 +15,7 @@ import 'package:bizzie/features/feedback/presentation/widgets/feedback_modal.dar
 import 'package:bizzie/shared/widgets/buttons/bizzie_secondary_button.dart';
 import 'package:bizzie/shared/widgets/modals/app_bottom_modal.dart';
 import 'package:bizzie/core/error/failures.dart';
+import 'package:bizzie/shared/widgets/modals/bizzie_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -110,8 +111,10 @@ class _SettingsViewContentState extends State<_SettingsViewContent>
                   );
                 },
                 orElse: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(fState.failure.message)),
+                  BizzieSnackBar.show(
+                    context,
+                    message: fState.failure.message,
+                    type: BizzieSnackBarType.error,
                   );
                 },
               );
