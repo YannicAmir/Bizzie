@@ -23,6 +23,8 @@ class AppTheme {
         tertiaryContainer: AppColors.slate100,
         outline: AppColors.inputBorder,
         scrim: AppColors.transparent,
+        error: AppColors.darkCritical,
+        surfaceBright: AppColors.success,
       ),
       dividerColor: AppColors.inputBorder,
       textTheme: GoogleFonts.interTextTheme(ThemeData.light().textTheme)

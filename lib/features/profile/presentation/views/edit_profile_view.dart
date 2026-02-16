@@ -13,6 +13,7 @@ import 'package:bizzie/shared/utils/validators.dart';
 import 'package:bizzie/shared/widgets/buttons/bizzie_primary_button.dart';
 import 'package:bizzie/shared/widgets/inputs/auth_text_field.dart';
 import 'package:bizzie/app/themes/app_assets.dart';
+import 'package:bizzie/shared/widgets/modals/bizzie_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -153,15 +154,19 @@ class _EditProfileViewContentState extends State<_EditProfileViewContent> {
               },
               form: (s) {
                 if (s.saveFailure != null) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(s.saveFailure!.message)),
+                  BizzieSnackBar.show(
+                    context,
+                    message: s.saveFailure!.message,
+                    type: BizzieSnackBarType.error,
                   );
                 }
               },
               failure: (s) {
-                ScaffoldMessenger.of(
+                BizzieSnackBar.show(
                   context,
-                ).showSnackBar(SnackBar(content: Text(s.failure.message)));
+                  message: s.failure.message,
+                  type: BizzieSnackBarType.error,
+                );
               },
             );
           },

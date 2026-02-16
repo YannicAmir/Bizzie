@@ -4,6 +4,7 @@ import 'package:bizzie/features/home/presentation/widgets/home_watchlist_widget.
 import 'package:bizzie/features/auth/presentation/bloc/auth_state.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:bizzie/shared/widgets/inputs/bizzie_search_bar.dart';
+import 'package:bizzie/shared/widgets/modals/bizzie_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -59,9 +60,11 @@ class _HomePageState extends State<HomePage> {
         listener: (context, state) {
           state.maybeWhen(
             authenticated: (_) {},
-            failure: (failure) => ScaffoldMessenger.of(
+            failure: (failure) => BizzieSnackBar.show(
               context,
-            ).showSnackBar(SnackBar(content: Text(failure.message))),
+              message: failure.message,
+              type: BizzieSnackBarType.error,
+            ),
             orElse: () => null,
           );
         },

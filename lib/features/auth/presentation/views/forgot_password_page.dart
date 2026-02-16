@@ -3,6 +3,7 @@ import 'package:bizzie/app/themes/app_assets.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:bizzie/shared/widgets/buttons/bizzie_primary_button.dart';
 import 'package:bizzie/shared/widgets/inputs/auth_text_field.dart';
+import 'package:bizzie/shared/widgets/modals/bizzie_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -46,9 +47,11 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
       listener: (context, state) {
         state.maybeWhen(
           failure: (failure) {
-            ScaffoldMessenger.of(
+            BizzieSnackBar.show(
               context,
-            ).showSnackBar(SnackBar(content: Text(failure.message)));
+              message: failure.message,
+              type: BizzieSnackBarType.error,
+            );
           },
           orElse: () {},
         );

@@ -9,6 +9,7 @@ import 'package:bizzie/shared/widgets/error/bizzie_error.dart';
 import 'package:bizzie/shared/widgets/loading/bizzie_loader.dart';
 import 'package:bizzie/features/subscription/presentation/widgets/subscription_success_overlay.dart';
 import 'package:bizzie/app/routes/app_routes.dart';
+import 'package:bizzie/shared/widgets/modals/bizzie_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -58,8 +59,6 @@ class _SubscriptionPageState extends State<SubscriptionPage>
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     return BlocSelector<UserBloc, UserState, String>(
       selector: (state) => state.mascotAsset,
       builder: (context, mascotAsset) {
@@ -68,11 +67,10 @@ class _SubscriptionPageState extends State<SubscriptionPage>
             child: BlocListener<SubscriptionBloc, SubscriptionState>(
               listener: (context, state) {
                 if (state.failure != null) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(state.failure!.message),
-                      backgroundColor: theme.colorScheme.error,
-                    ),
+                  BizzieSnackBar.show(
+                    context,
+                    message: state.failure!.message,
+                    type: BizzieSnackBarType.error,
                   );
                 }
                 bool shouldShowOverlay = false;
