@@ -6,18 +6,18 @@ import 'package:bizzie/features/settings/domain/usecases/update_favorite_sector_
 import 'package:bizzie/features/settings/presentation/bloc/select_sector_bloc.dart';
 import 'package:bizzie/features/settings/presentation/bloc/select_sector_event.dart';
 import 'package:bizzie/features/settings/presentation/bloc/select_sector_state.dart';
-import 'package:bizzie/services/config_service.dart';
+import 'package:bizzie/core/interfaces/i_sector_service.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
 class MockUpdateFavoriteSectorUseCase extends Mock
     implements UpdateFavoriteSectorUseCase {}
 
-class MockConfigService extends Mock implements ConfigService {}
+class MockSectorService extends Mock implements ISectorService {}
 
 void main() {
   late MockUpdateFavoriteSectorUseCase mockUpdateFavoriteSectorUseCase;
-  late MockConfigService mockConfigService;
+  late MockSectorService mockSectorService;
 
   setUpAll(() {
     registerFallbackValue(Sector.energy);
@@ -25,14 +25,14 @@ void main() {
 
   setUp(() {
     mockUpdateFavoriteSectorUseCase = MockUpdateFavoriteSectorUseCase();
-    mockConfigService = MockConfigService();
+    mockSectorService = MockSectorService();
 
     // arrange
     when(
-      () => mockConfigService.getSectorDisplayName(any()),
+      () => mockSectorService.getSectorDisplayName(any()),
     ).thenAnswer((invocation) => invocation.positionalArguments[0] as String);
     when(
-      () => mockConfigService.getSectorDescription(any()),
+      () => mockSectorService.getSectorDescription(any()),
     ).thenReturn('Description');
   });
 
@@ -48,7 +48,7 @@ void main() {
           final bloc = SelectSectorBloc(
             initialSector,
             mockUpdateFavoriteSectorUseCase,
-            mockConfigService,
+            mockSectorService,
           );
 
           // assert
@@ -64,7 +64,7 @@ void main() {
           final bloc = SelectSectorBloc(
             null,
             mockUpdateFavoriteSectorUseCase,
-            mockConfigService,
+            mockSectorService,
           );
 
           // assert
@@ -82,7 +82,7 @@ void main() {
       build: () => SelectSectorBloc(
         Sector.healthCare,
         mockUpdateFavoriteSectorUseCase,
-        mockConfigService,
+        mockSectorService,
       ),
       act: (bloc) =>
           bloc.add(const SelectSectorEvent.selectSector(Sector.energy)),
@@ -108,7 +108,7 @@ void main() {
         build: () => SelectSectorBloc(
           Sector.healthCare,
           mockUpdateFavoriteSectorUseCase,
-          mockConfigService,
+          mockSectorService,
         ),
         act: (bloc) {
           bloc.add(const SelectSectorEvent.selectSector(Sector.energy));
@@ -144,7 +144,7 @@ void main() {
         build: () => SelectSectorBloc(
           Sector.healthCare,
           mockUpdateFavoriteSectorUseCase,
-          mockConfigService,
+          mockSectorService,
         ),
         act: (bloc) => bloc.add(const SelectSectorEvent.saveChanges()),
         // assert
@@ -165,7 +165,7 @@ void main() {
         build: () => SelectSectorBloc(
           Sector.healthCare,
           mockUpdateFavoriteSectorUseCase,
-          mockConfigService,
+          mockSectorService,
         ),
         act: (bloc) {
           bloc.add(const SelectSectorEvent.selectSector(Sector.energy));
@@ -202,7 +202,7 @@ void main() {
           final bloc = SelectSectorBloc(
             initialSector,
             mockUpdateFavoriteSectorUseCase,
-            mockConfigService,
+            mockSectorService,
           );
 
           // assert

@@ -1,11 +1,10 @@
 import 'dart:convert';
 import 'package:bizzie/core/data/dtos/fmp_config.dart';
 import 'package:bizzie/core/interfaces/i_config_service.dart';
-import 'package:bizzie/core/utils/sector_normalizer.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
-import 'package:flutter/foundation.dart';
 import 'package:injectable/injectable.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
+import 'package:bizzie/env/app_env.dart';
 
 class RemoteConfigKeys {
   static const String fmpConfig = 'fmp_config';
@@ -14,27 +13,13 @@ class RemoteConfigKeys {
   static const String sectorDescriptions = 'sector_descriptions';
   static const String privacyPolicyUrl = 'privacy_policy_url';
   static const String termsOfServiceUrl = 'terms_of_service_url';
+  static const String minAppVersion = 'min_app_version';
+  static const String appStoreLink = 'app_store_link';
+  static const String playStoreLink = 'play_store_link';
+  static const String maintenanceMode = 'maintenance_mode';
 }
 
 final _logger = BizzieLogger('ConfigService');
-
-const _sectorApiAliases = {
-  'informationtechnology': 'Technology',
-  'information_technology': 'Technology',
-  'technology': 'Technology',
-  'financials': 'Financial Services',
-  'communicationservices': 'Communication Services',
-  'telecommunicationservices': 'Communication Services',
-  'consumerdiscretionary': 'Consumer Cyclical',
-  'consumerstaples': 'Consumer Defensive',
-  'healthcare': 'Healthcare',
-  'materials': 'Basic Materials',
-  'industrials': 'Industrials',
-  'energy': 'Energy',
-  'utilities': 'Utilities',
-  'realestate': 'Real Estate',
-  'real_estate': 'Real Estate',
-};
 
 @Singleton(as: IConfigService)
 class ConfigService implements IConfigService {
@@ -89,14 +74,12 @@ class ConfigService implements IConfigService {
 
   @factoryMethod
   @preResolve
-  static Future<ConfigService> init() async {
+  static Future<ConfigService> init(AppEnv env) async {
     final remoteConfig = FirebaseRemoteConfig.instance;
     await remoteConfig.setConfigSettings(
       RemoteConfigSettings(
         fetchTimeout: const Duration(minutes: 1),
-        minimumFetchInterval: kReleaseMode
-            ? const Duration(hours: 1)
-            : Duration.zero,
+        minimumFetchInterval: env.minimumFetchInterval,
       ),
     );
 
@@ -109,6 +92,10 @@ class ConfigService implements IConfigService {
       ),
       RemoteConfigKeys.privacyPolicyUrl: 'https://bizzie.app/privacy',
       RemoteConfigKeys.termsOfServiceUrl: 'https://bizzie.app/terms',
+      RemoteConfigKeys.minAppVersion: '1.0.0',
+      RemoteConfigKeys.appStoreLink: 'https://bizzie.app',
+      RemoteConfigKeys.playStoreLink: 'https://bizzie.app',
+      RemoteConfigKeys.maintenanceMode: false,
     });
 
     try {
@@ -133,6 +120,22 @@ class ConfigService implements IConfigService {
       _remoteConfig.getString(RemoteConfigKeys.termsOfServiceUrl);
 
   @override
+  String get minAppVersion =>
+      _remoteConfig.getString(RemoteConfigKeys.minAppVersion);
+
+  @override
+  String get appStoreLink =>
+      _remoteConfig.getString(RemoteConfigKeys.appStoreLink);
+
+  @override
+  String get playStoreLink =>
+      _remoteConfig.getString(RemoteConfigKeys.playStoreLink);
+
+  @override
+  bool get maintenanceMode =>
+      _remoteConfig.getBool(RemoteConfigKeys.maintenanceMode);
+
+  @override
   List<String> get stockMarketSectors {
     final jsonString = _remoteConfig.getString(
       RemoteConfigKeys.stockMarketSectors,
@@ -142,6 +145,20 @@ class ConfigService implements IConfigService {
     } catch (e) {
       _logger.severe('Error parsing stockMarketSectors', e);
       return _defaultSectors;
+    }
+  }
+
+  @override
+  Map<String, String> get sectorDescriptions {
+    final jsonString = _remoteConfig.getString(
+      RemoteConfigKeys.sectorDescriptions,
+    );
+    try {
+      final Map<String, dynamic> decoded = jsonDecode(jsonString);
+      return decoded.map((key, value) => MapEntry(key, value.toString()));
+    } catch (e) {
+      _logger.severe('Error parsing sectorDescriptions', e);
+      return _defaultSectorDescriptions;
     }
   }
 
@@ -166,60 +183,11 @@ class ConfigService implements IConfigService {
   double getDouble(String key) => _remoteConfig.getDouble(key);
 
   @override
-  String getSectorApiName(String sectorName) {
-    final normalized = normalizeSectorKey(sectorName);
-    return _sectorApiAliases[normalized] ?? sectorName;
-  }
+  Future<bool> fetchAndActivate() => _remoteConfig.fetchAndActivate();
 
   @override
-  String getSectorDescription(String sectorName) {
-    final match = _getSectorMetaData(sectorName);
-    return match?.value ?? "";
-  }
+  Future<bool> activate() => _remoteConfig.activate();
 
   @override
-  String getSectorDisplayName(String sectorName) {
-    final match = _getSectorMetaData(sectorName);
-    if (match != null) {
-      return match.key;
-    }
-
-    return sectorName
-        .split('_')
-        .map((word) {
-          if (word.isEmpty) return '';
-          return '${word[0].toUpperCase()}${word.substring(1)}';
-        })
-        .join(' ');
-  }
-
-  ({String key, String value})? _getSectorMetaData(String sectorName) {
-    Map<String, dynamic> descriptionsMap;
-    try {
-      final jsonString = _remoteConfig.getString(
-        RemoteConfigKeys.sectorDescriptions,
-      );
-      if (jsonString.isEmpty) {
-        descriptionsMap = _defaultSectorDescriptions;
-      } else {
-        descriptionsMap = jsonDecode(jsonString) as Map<String, dynamic>;
-      }
-    } catch (e) {
-      _logger.severe('Error parsing sectorDescriptions', e);
-      descriptionsMap = _defaultSectorDescriptions;
-    }
-
-    if (descriptionsMap.containsKey(sectorName)) {
-      return (key: sectorName, value: descriptionsMap[sectorName].toString());
-    }
-
-    final normalizedInput = normalizeSectorKey(sectorName);
-    for (final entry in descriptionsMap.entries) {
-      if (normalizeSectorKey(entry.key) == normalizedInput) {
-        return (key: entry.key, value: entry.value.toString());
-      }
-    }
-
-    return null;
-  }
+  Stream<void> get onConfigUpdated => _remoteConfig.onConfigUpdated;
 }

@@ -218,7 +218,6 @@ void main() {
         final result = BizzieDateFormatter.formatHumanFriendlyDate(date);
 
         // assert
-        // Just verify it's not one of the special strings since the exact month depends on when the test runs
         expect(result.contains('In'), false);
         expect(result.contains('Today'), false);
         expect(result.contains('Tomorrow'), false);

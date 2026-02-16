@@ -16,7 +16,7 @@ import 'package:bizzie/features/onboarding/domain/models/company.dart';
 import 'package:bizzie/features/onboarding/presentation/models/feature_highlight_item.dart';
 import 'package:bizzie/features/onboarding/presentation/bloc/onboarding_bloc.dart';
 import 'package:bizzie/shared/models/sector_view_model.dart';
-import 'package:bizzie/services/config_service.dart';
+import 'package:bizzie/core/interfaces/i_sector_service.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -32,7 +32,7 @@ class MockGetSectorsUseCase extends Mock implements GetSectorsUseCase {}
 class MockGetSp500HistoryUseCase extends Mock
     implements GetSp500HistoryUseCase {}
 
-class MockConfigService extends Mock implements ConfigService {}
+class MockSectorService extends Mock implements ISectorService {}
 
 class FakeNoParams extends Fake implements NoParams {}
 
@@ -43,7 +43,7 @@ void main() {
 
   late MockGetSectorsUseCase mockGetSectorsUseCase;
   late MockGetSp500HistoryUseCase mockGetSp500HistoryUseCase;
-  late MockConfigService mockConfigService;
+  late MockSectorService mockSectorService;
 
   setUpAll(() {
     registerFallbackValue(const OnboardingData());
@@ -59,14 +59,14 @@ void main() {
 
     mockGetSectorsUseCase = MockGetSectorsUseCase();
     mockGetSp500HistoryUseCase = MockGetSp500HistoryUseCase();
-    mockConfigService = MockConfigService();
+    mockSectorService = MockSectorService();
 
     bloc = OnboardingBloc(
       mockAuthRepository,
       mockCompleteOnboardingUseCase,
       mockGetSectorsUseCase,
       mockGetSp500HistoryUseCase,
-      mockConfigService,
+      mockSectorService,
     );
   });
 
@@ -94,10 +94,10 @@ void main() {
           () => mockGetSectorsUseCase(any()),
         ).thenAnswer((_) async => const Right([Sector.financials]));
         when(
-          () => mockConfigService.getSectorDisplayName(any()),
+          () => mockSectorService.getSectorDisplayName(any()),
         ).thenReturn('Financials');
         when(
-          () => mockConfigService.getSectorDescription(any()),
+          () => mockSectorService.getSectorDescription(any()),
         ).thenReturn('Description');
         return bloc;
       },
