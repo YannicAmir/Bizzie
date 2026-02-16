@@ -1,11 +1,12 @@
 import 'dart:convert';
+import 'package:bizzie/core/constants/storage_constants.dart';
 import 'package:bizzie/features/market/data/dtos/market_data_snapshot.dart';
 import 'package:injectable/injectable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
 
 final _logger = BizzieLogger('MarketLocalDataSource');
-const String _kMarketDataKey = 'market_data_snapshot';
+const String _kMarketDataKey = StorageConstants.marketDataSnapshot;
 
 abstract class MarketLocalDataSource {
   Future<MarketDataSnapshot?> getLastKnownMarketData();

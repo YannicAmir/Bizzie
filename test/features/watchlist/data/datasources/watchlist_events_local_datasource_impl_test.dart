@@ -1,5 +1,6 @@
 import 'dart:convert';
-import 'package:bizzie/features/watchlist/constants/watchlist_constants.dart';
+import 'package:bizzie/core/constants/storage_constants.dart';
+
 import 'package:bizzie/features/watchlist/data/datasources/watchlist_events_local_datasource_impl.dart';
 import 'package:bizzie/features/watchlist/data/dtos/watchlist_event_status_dto.dart';
 import 'package:bizzie/features/watchlist/domain/enums/watchlist_badge_type.dart';
@@ -39,7 +40,7 @@ void main() {
       // assert
       expect(result, isEmpty);
       verify(
-        () => mockPrefs.getString(WatchlistConstants.eventsCacheKey),
+        () => mockPrefs.getString(StorageConstants.watchlistEventsCache),
       ).called(1);
     });
 
@@ -66,7 +67,7 @@ void main() {
       // assert
       expect(result, isEmpty);
       verify(
-        () => mockPrefs.remove(WatchlistConstants.eventsCacheKey),
+        () => mockPrefs.remove(StorageConstants.watchlistEventsCache),
       ).called(1);
     });
 
@@ -81,7 +82,7 @@ void main() {
 
       // assert
       verify(
-        () => mockPrefs.setString(WatchlistConstants.eventsCacheKey, any()),
+        () => mockPrefs.setString(StorageConstants.watchlistEventsCache, any()),
       ).called(1);
     });
   });

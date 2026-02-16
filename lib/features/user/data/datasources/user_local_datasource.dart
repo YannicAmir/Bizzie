@@ -1,3 +1,4 @@
+import 'package:bizzie/core/constants/storage_constants.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:injectable/injectable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -13,7 +14,7 @@ abstract class IUserLocalDataSource {
 class UserLocalDataSource implements IUserLocalDataSource {
   final SharedPreferences _prefs;
 
-  static const _kFavoriteSectorKey = 'user_favorite_sector';
+  static const _kFavoriteSectorKey = StorageConstants.userFavoriteSector;
 
   UserLocalDataSource(this._prefs);
 

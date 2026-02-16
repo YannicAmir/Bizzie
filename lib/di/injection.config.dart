@@ -30,6 +30,7 @@ import '../core/domain/models/sector.dart' as _i162;
 import '../core/interfaces/i_config_service.dart' as _i937;
 import '../core/interfaces/i_connectivity_service.dart' as _i28;
 import '../core/interfaces/i_firebase_functions_service.dart' as _i347;
+import '../core/interfaces/i_in_app_review_service.dart' as _i65;
 import '../core/interfaces/i_lifecycle_service.dart' as _i961;
 import '../core/interfaces/i_local_storage_service.dart' as _i583;
 import '../core/interfaces/i_notification_service.dart' as _i430;
@@ -42,6 +43,18 @@ import '../core/services/app_info_service.dart' as _i248;
 import '../core/services/local_storage_service.dart' as _i1003;
 import '../env/app_env.dart' as _i915;
 import '../env/env_impl.dart' as _i343;
+import '../features/app_ratings/data/datasources/app_ratings_local_datasource.dart'
+    as _i488;
+import '../features/app_ratings/data/interfaces/i_app_ratings_local_datasource.dart'
+    as _i705;
+import '../features/app_ratings/data/repositories/app_ratings_repository_impl.dart'
+    as _i437;
+import '../features/app_ratings/domain/interfaces/i_app_ratings_repository.dart'
+    as _i507;
+import '../features/app_ratings/domain/usecases/track_rating_conditions_usecase.dart'
+    as _i849;
+import '../features/app_ratings/presentation/bloc/app_ratings_bloc.dart'
+    as _i896;
 import '../features/app_status/data/datasources/local_app_status_data_source.dart'
     as _i788;
 import '../features/app_status/data/repositories/app_status_repository_impl.dart'
@@ -439,6 +452,7 @@ import '../features/watchlist/presentation/bloc/watchlist_bloc.dart' as _i63;
 import '../services/config_service.dart' as _i216;
 import '../services/firebase_functions_service.dart' as _i382;
 import '../services/firestore_service.dart' as _i52;
+import '../services/in_app_review_service.dart' as _i286;
 import '../services/lifecycle_service.dart' as _i1007;
 import '../services/notification_service.dart' as _i941;
 import '../services/permission_service.dart' as _i165;
@@ -487,6 +501,9 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i807.WatchlistEventEvaluator(),
     );
     gh.singleton<_i28.IConnectivityService>(() => _i332.ConnectivityService());
+    gh.lazySingleton<_i705.IAppRatingsLocalDataSource>(
+      () => _i488.AppRatingsLocalDataSource(gh<_i460.SharedPreferences>()),
+    );
     gh.factory<_i501.IVertexAIProvider>(() => _i501.VertexAIProvider());
     gh.singleton<_i961.ILifecycleService>(
       () => _i1007.LifecycleService(),
@@ -542,6 +559,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i1009.MarketLocalDataSource>(
       () => _i1009.MarketLocalDataSourceImpl(gh<_i460.SharedPreferences>()),
     );
+    gh.lazySingleton<_i65.IInAppReviewService>(
+      () => _i286.InAppReviewService(),
+    );
     gh.factory<_i6.ISelectBrandsRemoteDataSource>(
       () => _i6.SelectBrandsRemoteDataSource(gh<_i52.FirestoreService>()),
     );
@@ -579,6 +599,11 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i877.RemoteAuthDataSourceImpl(
         gh<_i59.FirebaseAuth>(),
         gh<_i116.GoogleSignIn>(),
+      ),
+    );
+    gh.lazySingleton<_i507.IAppRatingsRepository>(
+      () => _i437.AppRatingsRepositoryImpl(
+        gh<_i705.IAppRatingsLocalDataSource>(),
       ),
     );
     gh.lazySingleton<_i595.SecurityFirestoreDataSource>(
@@ -726,6 +751,10 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i937.IConfigService>(),
       ),
     );
+    gh.factory<_i849.TrackRatingConditionsUseCase>(
+      () =>
+          _i849.TrackRatingConditionsUseCase(gh<_i507.IAppRatingsRepository>()),
+    );
     gh.lazySingleton<_i231.GetRoeUseCase>(
       () => _i231.GetRoeUseCase(gh<_i1025.IRoeRepository>()),
     );
@@ -739,6 +768,9 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i348.FinancialStatementsRemoteDataSource>(),
         gh<_i806.FinancialStatementsFirestoreDataSource>(),
       ),
+    );
+    gh.factory<_i896.AppRatingsBloc>(
+      () => _i896.AppRatingsBloc(gh<_i849.TrackRatingConditionsUseCase>()),
     );
     gh.lazySingleton<_i659.ISubscriptionRepository>(
       () => _i221.SubscriptionRepositoryImpl(

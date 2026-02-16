@@ -1,3 +1,4 @@
+import 'package:bizzie/core/constants/storage_constants.dart';
 import 'package:bizzie/features/watchlist/data/interfaces/i_watchlist_local_datasource.dart';
 import 'package:injectable/injectable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -6,7 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class WatchlistLocalDataSource implements IWatchlistLocalDataSource {
   final SharedPreferences _prefs;
 
-  static const _kSubscribedTickersKey = 'user_subscribed_tickers';
+  static const _kSubscribedTickersKey = StorageConstants.userSubscribedTickers;
 
   WatchlistLocalDataSource(this._prefs);
 
