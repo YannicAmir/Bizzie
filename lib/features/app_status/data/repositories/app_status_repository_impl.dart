@@ -1,6 +1,7 @@
 import 'package:bizzie/core/interfaces/i_config_service.dart';
 import 'package:bizzie/core/interfaces/i_connectivity_service.dart';
 import 'package:bizzie/core/interfaces/i_lifecycle_service.dart';
+import 'package:bizzie/core/enums/bizzie_lifecycle_state.dart';
 import 'package:bizzie/core/services/app_info_service.dart';
 import 'package:bizzie/features/app_status/domain/interfaces/i_local_app_status_data_source.dart';
 import 'package:bizzie/features/app_status/domain/interfaces/i_app_status_repository.dart';
@@ -50,9 +51,21 @@ class AppStatusRepositoryImpl implements IAppStatusRepository {
     final realTimeStream = _configService.onConfigUpdated.map(
       (_) => 'realtime',
     );
-    final pollStream = Stream.periodic(
-      const Duration(minutes: 30),
-    ).map((_) => 'poll');
+
+    final pollStream = _lifecycleService.onLifecycleChanged
+        .map((state) => state == BizzieLifecycleState.foreground)
+        .switchMap((isForeground) {
+          if (isForeground) {
+            _logger.info('App in foreground - Starting 30m Poll Timer');
+            return Stream.periodic(
+              const Duration(minutes: 30),
+            ).map((_) => 'poll');
+          } else {
+            _logger.info('App in background - Stopping Poll Timer');
+            return const Stream<String>.empty();
+          }
+        });
+
     final connectivityStream = _connectivityService.onConnectivityChanged
         .debounceTime(const Duration(seconds: 5))
         .map(
@@ -91,12 +104,37 @@ class AppStatusRepositoryImpl implements IAppStatusRepository {
       return const AppStatus.noInternet();
     }
 
+    if (source == 'default' || source == 'poll') {
+      final lastFetch = _configService.lastFetchTime;
+      if (lastFetch.millisecondsSinceEpoch > 0) {
+        final diff = DateTime.now().difference(lastFetch);
+        if (diff < const Duration(minutes: 5)) {
+          _logger.info(
+            'Skipping fetchAndActivate ($source). Last fetch was ${diff.inMinutes}m ago.',
+          );
+          return await _validateCurrentConfig();
+        }
+      }
+    }
+
     try {
       return await _fetchAndValidateRemoteConfig(source);
     } catch (e) {
       _logger.warning('Error checking status, falling back to cache: $e');
       return await _checkCachedStatus();
     }
+  }
+
+  Future<AppStatus> _validateCurrentConfig() async {
+    final minVersion = _configService.minAppVersion.trim();
+    final appStoreLink = _configService.appStoreLink.trim();
+    final playStoreLink = _configService.playStoreLink.trim();
+
+    if (_configService.maintenanceMode) {
+      return const AppStatus.maintenance();
+    }
+
+    return await _determineStatus(minVersion, appStoreLink, playStoreLink);
   }
 
   Future<AppStatus> _fetchAndValidateRemoteConfig(String source) async {

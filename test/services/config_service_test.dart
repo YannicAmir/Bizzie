@@ -217,5 +217,18 @@ void main() {
       // assert
       expect(result.baseUrl, contains('financialmodelingprep'));
     });
+
+    test('lastFetchTime_returnsRemoteConfigValue', () {
+      // arrange
+      final time = DateTime(2025, 1, 1);
+      when(() => mockRemoteConfig.lastFetchTime).thenReturn(time);
+
+      // act
+      final result = configService.lastFetchTime;
+
+      // assert
+      expect(result, time);
+      verify(() => mockRemoteConfig.lastFetchTime).called(1);
+    });
   });
 }

@@ -9,7 +9,19 @@ final _logger = BizzieLogger('ConnectivityService');
 
 @Singleton(as: IConnectivityService)
 class ConnectivityService implements IConnectivityService {
-  final _internetConnection = InternetConnection();
+  final _internetConnection = InternetConnection.createInstance(
+    customCheckOptions: [
+      InternetCheckOption(
+        uri: Uri.parse('https://clients3.google.com/generate_204'),
+        timeout: const Duration(seconds: 10),
+      ),
+      InternetCheckOption(
+        uri: Uri.parse('https://1.1.1.1'),
+        timeout: const Duration(seconds: 10),
+      ),
+    ],
+    checkInterval: const Duration(seconds: 30),
+  );
 
   ConnectivityService();
 

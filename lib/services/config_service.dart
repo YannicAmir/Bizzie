@@ -136,6 +136,9 @@ class ConfigService implements IConfigService {
       _remoteConfig.getBool(RemoteConfigKeys.maintenanceMode);
 
   @override
+  DateTime get lastFetchTime => _remoteConfig.lastFetchTime;
+
+  @override
   List<String> get stockMarketSectors {
     final jsonString = _remoteConfig.getString(
       RemoteConfigKeys.stockMarketSectors,
