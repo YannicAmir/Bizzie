@@ -1,3 +1,4 @@
+import 'package:bizzie/core/constants/storage_constants.dart';
 import 'package:bizzie/features/app_status/data/datasources/local_app_status_data_source.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
@@ -17,9 +18,9 @@ void main() {
   group('LocalAppStatusDataSource', () {
     const tVersion = '1.0.0';
     const tUrl = 'https://example.com';
-    const tKeyCachedMinAppVersion = 'cached_min_app_version';
-    const tKeyCachedAppStoreLink = 'cached_app_store_link';
-    const tKeyCachedPlayStoreLink = 'cached_play_store_link';
+    const tKeyCachedMinAppVersion = StorageConstants.cachedMinAppVersion;
+    const tKeyCachedAppStoreLink = StorageConstants.cachedAppStoreLink;
+    const tKeyCachedPlayStoreLink = StorageConstants.cachedPlayStoreLink;
 
     group('cacheMinAppVersion', () {
       test('cacheMinAppVersion_success_callsSharedPreferences', () async {

@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:bizzie/core/constants/storage_constants.dart';
 import 'package:injectable/injectable.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -17,7 +18,7 @@ abstract class IStockLocalDataSource {
 class StockLocalDataSource implements IStockLocalDataSource {
   final SharedPreferences _prefs;
 
-  static const String _prefsKey = 'stock_list_last_updated';
+  static const String _prefsKey = StorageConstants.stockListLastUpdated;
   static const String _localFileName = 'stock_list.json';
 
   StockLocalDataSource(this._prefs);

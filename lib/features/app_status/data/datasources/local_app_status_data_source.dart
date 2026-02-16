@@ -1,3 +1,4 @@
+import 'package:bizzie/core/constants/storage_constants.dart';
 import 'package:bizzie/features/app_status/domain/interfaces/i_local_app_status_data_source.dart';
 import 'package:injectable/injectable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -8,9 +9,9 @@ class LocalAppStatusDataSource implements ILocalAppStatusDataSource {
 
   LocalAppStatusDataSource(this._prefs);
 
-  static const _keyCachedMinAppVersion = 'cached_min_app_version';
-  static const _keyCachedAppStoreLink = 'cached_app_store_link';
-  static const _keyCachedPlayStoreLink = 'cached_play_store_link';
+  static const _keyCachedMinAppVersion = StorageConstants.cachedMinAppVersion;
+  static const _keyCachedAppStoreLink = StorageConstants.cachedAppStoreLink;
+  static const _keyCachedPlayStoreLink = StorageConstants.cachedPlayStoreLink;
 
   @override
   Future<void> cacheMinAppVersion(String version) async {

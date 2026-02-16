@@ -41,6 +41,8 @@ import 'package:bizzie/features/company_profile/cp/presentation/widgets/company_
 import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:bizzie/features/app_ratings/presentation/bloc/app_ratings_bloc.dart';
+import 'package:bizzie/core/interfaces/i_in_app_review_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CompanyProfilePage extends StatelessWidget {
@@ -133,6 +135,7 @@ class CompanyProfilePage extends StatelessWidget {
               getIt<UpcomingEarningsBloc>()
                 ..add(UpcomingEarningsEvent.loadRequested(ticker)),
         ),
+        BlocProvider(create: (context) => getIt<AppRatingsBloc>()),
       ],
       child: _CompanyProfileView(
         ticker: ticker,
@@ -163,12 +166,20 @@ class _CompanyProfileViewState extends State<_CompanyProfileView>
     super.initState();
     _tabController = TabController(length: _tabs.length, vsync: this);
     _tabController.addListener(_handleTabSelection);
+
+    context.read<AppRatingsBloc>().add(
+      const AppRatingsEvent.interactionDetected(),
+    );
   }
 
   void _handleTabSelection() {
     if (_tabController.indexIsChanging || !mounted) return;
 
     final currentTab = _tabs[_tabController.index];
+
+    context.read<AppRatingsBloc>().add(
+      const AppRatingsEvent.interactionDetected(),
+    );
 
     switch (currentTab) {
       case CompanyProfileTab.news:
@@ -248,68 +259,78 @@ class _CompanyProfileViewState extends State<_CompanyProfileView>
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return BlocBuilder<CompanySecurityBloc, CompanySecurityState>(
-      builder: (context, state) {
-        final isUnsupported = state.maybeMap(
-          unsupported: (_) => true,
-          orElse: () => false,
-        );
-
-        final isEtf = state.maybeMap(
-          unsupported: (s) => s.securityDetails.isEtf,
-          orElse: () => false,
-        );
-
-        return Scaffold(
-          appBar: AppBar(
-            leading: BackButton(color: theme.colorScheme.onSurface),
-            centerTitle: false,
-            title: Text(widget.ticker),
-            actionsPadding: AppConstants.appBarActionsPadding,
-            actions: isUnsupported
-                ? null
-                : [
-                    CompanyWatchlistButton(
-                      ticker: widget.ticker,
-                      companyName: state.maybeMap(
-                        loaded: (s) => s.securityDetails.name,
-                        unsupported: (s) => s.securityDetails.name,
-                        orElse: () =>
-                            widget.initialCompany?.name ?? widget.ticker,
-                      ),
-                    ),
-                  ],
-            bottom: isUnsupported
-                ? null
-                : TabBar(
-                    controller: _tabController,
-                    isScrollable: true,
-                    tabAlignment: TabAlignment.start,
-                    padding: AppConstants.appBarBottomTabsPadding,
-                    tabs: _tabs.map((tab) => Tab(text: tab.label)).toList(),
-                  ),
-          ),
-          body: isUnsupported
-              ? ComingSoonPlaceholder(
-                  type: isEtf ? ComingSoonType.etf : ComingSoonType.fund,
-                )
-              : NotificationListener<ScrollNotification>(
-                  onNotification: (notification) {
-                    if (notification is ScrollStartNotification &&
-                        notification.dragDetails != null &&
-                        notification.metrics.axis == Axis.horizontal) {
-                      HapticFeedback.lightImpact();
-                    }
-                    return false;
-                  },
-                  child: CompanyProfileBody(
-                    ticker: widget.ticker,
-                    tabController: _tabController,
-                    tabs: _tabs,
-                  ),
-                ),
+    return BlocListener<AppRatingsBloc, AppRatingsState>(
+      listener: (context, state) {
+        state.maybeMap(
+          requestReview: (_) {
+            getIt<IInAppReviewService>().requestReview();
+          },
+          orElse: () {},
         );
       },
+      child: BlocBuilder<CompanySecurityBloc, CompanySecurityState>(
+        builder: (context, state) {
+          final isUnsupported = state.maybeMap(
+            unsupported: (_) => true,
+            orElse: () => false,
+          );
+
+          final isEtf = state.maybeMap(
+            unsupported: (s) => s.securityDetails.isEtf,
+            orElse: () => false,
+          );
+
+          return Scaffold(
+            appBar: AppBar(
+              leading: BackButton(color: theme.colorScheme.onSurface),
+              centerTitle: false,
+              title: Text(widget.ticker),
+              actionsPadding: AppConstants.appBarActionsPadding,
+              actions: isUnsupported
+                  ? null
+                  : [
+                      CompanyWatchlistButton(
+                        ticker: widget.ticker,
+                        companyName: state.maybeMap(
+                          loaded: (s) => s.securityDetails.name,
+                          unsupported: (s) => s.securityDetails.name,
+                          orElse: () =>
+                              widget.initialCompany?.name ?? widget.ticker,
+                        ),
+                      ),
+                    ],
+              bottom: isUnsupported
+                  ? null
+                  : TabBar(
+                      controller: _tabController,
+                      isScrollable: true,
+                      tabAlignment: TabAlignment.start,
+                      padding: AppConstants.appBarBottomTabsPadding,
+                      tabs: _tabs.map((tab) => Tab(text: tab.label)).toList(),
+                    ),
+            ),
+            body: isUnsupported
+                ? ComingSoonPlaceholder(
+                    type: isEtf ? ComingSoonType.etf : ComingSoonType.fund,
+                  )
+                : NotificationListener<ScrollNotification>(
+                    onNotification: (notification) {
+                      if (notification is ScrollStartNotification &&
+                          notification.dragDetails != null &&
+                          notification.metrics.axis == Axis.horizontal) {
+                        HapticFeedback.lightImpact();
+                      }
+                      return false;
+                    },
+                    child: CompanyProfileBody(
+                      ticker: widget.ticker,
+                      tabController: _tabController,
+                      tabs: _tabs,
+                    ),
+                  ),
+          );
+        },
+      ),
     );
   }
 }

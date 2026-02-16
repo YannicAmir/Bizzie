@@ -1,6 +1,6 @@
 import 'dart:convert';
+import 'package:bizzie/core/constants/storage_constants.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
-import 'package:bizzie/features/watchlist/constants/watchlist_constants.dart';
 import 'package:bizzie/features/watchlist/data/interfaces/i_watchlist_events_local_datasource.dart';
 import 'package:bizzie/features/watchlist/data/dtos/watchlist_event_status_dto.dart';
 import 'package:injectable/injectable.dart';
@@ -17,7 +17,7 @@ class WatchlistEventsLocalDataSourceImpl
 
   @override
   Future<Map<String, WatchlistEventStatusDto>> getCachedEvents() async {
-    final jsonString = _prefs.getString(WatchlistConstants.eventsCacheKey);
+    final jsonString = _prefs.getString(StorageConstants.watchlistEventsCache);
     if (jsonString == null) return {};
 
     try {
@@ -37,7 +37,7 @@ class WatchlistEventsLocalDataSourceImpl
         e,
         stack,
       );
-      await _prefs.remove(WatchlistConstants.eventsCacheKey);
+      await _prefs.remove(StorageConstants.watchlistEventsCache);
       return {};
     }
   }
@@ -47,7 +47,7 @@ class WatchlistEventsLocalDataSourceImpl
     try {
       final jsonMap = events.map((key, value) => MapEntry(key, value.toJson()));
       await _prefs.setString(
-        WatchlistConstants.eventsCacheKey,
+        StorageConstants.watchlistEventsCache,
         jsonEncode(jsonMap),
       );
       _logger.info('Successfully cached ${events.length} events');
