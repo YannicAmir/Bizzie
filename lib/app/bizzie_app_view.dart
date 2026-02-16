@@ -18,6 +18,7 @@ import 'package:bizzie/features/reports/presentation/bloc/reports_bloc.dart';
 import 'package:bizzie/features/reports/presentation/bloc/reports_event.dart';
 import 'package:bizzie/features/subscription/presentation/bloc/subscription_bloc.dart';
 import 'package:bizzie/features/subscription/presentation/bloc/subscription_event.dart';
+import 'package:bizzie/features/app_status/presentation/bloc/app_status_bloc.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -59,6 +60,7 @@ class _BizzieAppViewState extends State<BizzieAppView>
       context.read<SubscriptionBloc>().add(
         const SubscriptionEvent.appResumed(),
       );
+      context.read<AppStatusBloc>().add(const AppStatusEvent.refreshed());
     }
   }
 
@@ -73,6 +75,7 @@ class _BizzieAppViewState extends State<BizzieAppView>
     );
     context.read<AuthBloc>().add(const AuthEvent.statusRequested());
     context.read<SubscriptionBloc>().add(const SubscriptionEvent.initialized());
+    context.read<AppStatusBloc>().add(const AppStatusEvent.started());
 
     _setupNotifications();
   }

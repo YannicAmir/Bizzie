@@ -12,7 +12,7 @@ import 'package:bizzie/features/onboarding/domain/usecases/get_sectors_usecase.d
 import 'package:bizzie/features/onboarding/domain/usecases/get_sp500_history_usecase.dart';
 import 'package:bizzie/features/onboarding/presentation/bloc/onboarding_state.dart';
 import 'package:bizzie/features/onboarding/presentation/models/feature_highlight_item.dart';
-import 'package:bizzie/core/interfaces/i_config_service.dart';
+import 'package:bizzie/core/interfaces/i_sector_service.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:bizzie/shared/models/sector_view_model.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -33,14 +33,14 @@ class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
 
   final GetSectorsUseCase _getSectorsUseCase;
   final GetSp500HistoryUseCase _getSp500HistoryUseCase;
-  final IConfigService _configService;
+  final ISectorService _sectorService;
 
   OnboardingBloc(
     this._authRepository,
     this._completeOnboardingUseCase,
     this._getSectorsUseCase,
     this._getSp500HistoryUseCase,
-    this._configService,
+    this._sectorService,
   ) : super(OnboardingState.initial()) {
     on<_Started>(_onStarted);
     on<_NameSubmitted>(_onNameSubmitted);
@@ -192,8 +192,8 @@ class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
             .map(
               (s) => SectorViewModel(
                 sector: s,
-                displayName: _configService.getSectorDisplayName(s.name),
-                description: _configService.getSectorDescription(s.name),
+                displayName: _sectorService.getSectorDisplayName(s.name),
+                description: _sectorService.getSectorDescription(s.name),
               ),
             )
             .toList();

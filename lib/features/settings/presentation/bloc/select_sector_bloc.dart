@@ -3,7 +3,7 @@ import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:bizzie/features/settings/domain/usecases/update_favorite_sector_usecase.dart';
 import 'package:bizzie/features/settings/presentation/bloc/select_sector_event.dart';
 import 'package:bizzie/features/settings/presentation/bloc/select_sector_state.dart';
-import 'package:bizzie/core/interfaces/i_config_service.dart';
+import 'package:bizzie/core/interfaces/i_sector_service.dart';
 import 'package:bizzie/shared/models/sector_view_model.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -14,13 +14,13 @@ final _logger = BizzieLogger('SelectSectorBloc');
 @injectable
 class SelectSectorBloc extends Bloc<SelectSectorEvent, SelectSectorState> {
   final UpdateFavoriteSectorUseCase _updateFavoriteSectorUseCase;
-  final IConfigService _configService;
+  final ISectorService _sectorService;
 
   SelectSectorBloc(
     @factoryParam Sector? initialSector,
     this._updateFavoriteSectorUseCase,
-    this._configService,
-  ) : super(_buildInitialState(initialSector, _configService)) {
+    this._sectorService,
+  ) : super(_buildInitialState(initialSector, _sectorService)) {
     _logger.info(
       'Initializing SelectSectorBloc with initialSector: ${initialSector?.name}',
     );
@@ -30,18 +30,18 @@ class SelectSectorBloc extends Bloc<SelectSectorEvent, SelectSectorState> {
 
   static SelectSectorState _buildInitialState(
     Sector? initialSector,
-    IConfigService configService,
+    ISectorService sectorService,
   ) {
     final effectiveInitialSector =
         initialSector ?? Sector.informationTechnology;
     final initialViewModel = _resolveViewModel(
       effectiveInitialSector,
-      configService,
+      sectorService,
     );
 
     final availableSectors =
         Sector.values.map((s) {
-          return _resolveViewModel(s, configService);
+          return _resolveViewModel(s, sectorService);
         }).toList()..sort((a, b) {
           if (a.sector == effectiveInitialSector) return -1;
           if (b.sector == effectiveInitialSector) return 1;
@@ -57,12 +57,12 @@ class SelectSectorBloc extends Bloc<SelectSectorEvent, SelectSectorState> {
 
   static SectorViewModel _resolveViewModel(
     Sector sector,
-    IConfigService configService,
+    ISectorService sectorService,
   ) {
     return SectorViewModel(
       sector: sector,
-      displayName: configService.getSectorDisplayName(sector.name),
-      description: configService.getSectorDescription(sector.name),
+      displayName: sectorService.getSectorDisplayName(sector.name),
+      description: sectorService.getSectorDescription(sector.name),
     );
   }
 
@@ -70,7 +70,7 @@ class SelectSectorBloc extends Bloc<SelectSectorEvent, SelectSectorState> {
     _logger.info('User selected sector: ${event.sector.name}');
     emit(
       state.copyWith(
-        selectedSector: _resolveViewModel(event.sector, _configService),
+        selectedSector: _resolveViewModel(event.sector, _sectorService),
         availableSectors: state.availableSectors,
       ),
     );

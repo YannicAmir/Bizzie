@@ -10,7 +10,7 @@ import 'package:bizzie/features/profile/domain/usecases/get_profile_display_data
 import 'package:bizzie/features/user/domain/enums/investing_experience.dart';
 import 'package:bizzie/features/user/domain/interfaces/user_repository.dart';
 import 'package:bizzie/features/user/domain/models/user_model.dart';
-import 'package:bizzie/services/config_service.dart';
+import 'package:bizzie/core/interfaces/i_sector_service.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
@@ -21,25 +21,25 @@ class MockUserRepository extends Mock implements IUserRepository {}
 
 class MockMarketRepository extends Mock implements IMarketRepository {}
 
-class MockConfigService extends Mock implements ConfigService {}
+class MockSectorService extends Mock implements ISectorService {}
 
 void main() {
   late MockAuthRepository mockAuthRepository;
   late MockUserRepository mockUserRepository;
   late MockMarketRepository mockMarketRepository;
-  late MockConfigService mockConfigService;
+  late MockSectorService mockSectorService;
   late GetProfileDisplayDataUseCase useCase;
 
   setUp(() {
     mockAuthRepository = MockAuthRepository();
     mockUserRepository = MockUserRepository();
     mockMarketRepository = MockMarketRepository();
-    mockConfigService = MockConfigService();
+    mockSectorService = MockSectorService();
     useCase = GetProfileDisplayDataUseCase(
       mockAuthRepository,
       mockUserRepository,
       mockMarketRepository,
-      mockConfigService,
+      mockSectorService,
     );
   });
 
@@ -83,13 +83,13 @@ void main() {
         () => mockUserRepository.getUser(tUserId),
       ).thenAnswer((_) async => Right(tUser));
       when(
-        () => mockConfigService.getSectorDescription(any()),
+        () => mockSectorService.getSectorDescription(any()),
       ).thenReturn(tSectorDescription);
       when(
-        () => mockConfigService.getSectorDisplayName(any()),
+        () => mockSectorService.getSectorDisplayName(any()),
       ).thenReturn(tSectorDisplayName);
       when(
-        () => mockConfigService.getSectorApiName(any()),
+        () => mockSectorService.getSectorApiName(any()),
       ).thenReturn('technology');
       when(
         () => mockMarketRepository.getSectorPeList(),
@@ -172,10 +172,10 @@ void main() {
       when(
         () => mockUserRepository.getUser(tUserId),
       ).thenAnswer((_) async => Right(tUser));
-      when(() => mockConfigService.getSectorDescription(any())).thenReturn('d');
-      when(() => mockConfigService.getSectorDisplayName(any())).thenReturn('n');
+      when(() => mockSectorService.getSectorDescription(any())).thenReturn('d');
+      when(() => mockSectorService.getSectorDisplayName(any())).thenReturn('n');
       when(
-        () => mockConfigService.getSectorApiName(any()),
+        () => mockSectorService.getSectorApiName(any()),
       ).thenReturn('technology');
       when(
         () => mockMarketRepository.getSectorPeList(),
@@ -210,10 +210,10 @@ void main() {
       when(
         () => mockUserRepository.getUser(tUserId),
       ).thenAnswer((_) async => Right(tUser));
-      when(() => mockConfigService.getSectorDescription(any())).thenReturn('d');
-      when(() => mockConfigService.getSectorDisplayName(any())).thenReturn('n');
+      when(() => mockSectorService.getSectorDescription(any())).thenReturn('d');
+      when(() => mockSectorService.getSectorDisplayName(any())).thenReturn('n');
       when(
-        () => mockConfigService.getSectorApiName(any()),
+        () => mockSectorService.getSectorApiName(any()),
       ).thenReturn('technology');
       when(
         () => mockMarketRepository.getSectorPeList(),
@@ -240,13 +240,13 @@ void main() {
           () => mockUserRepository.getUser(tUserId),
         ).thenAnswer((_) async => Right(tUser));
         when(
-          () => mockConfigService.getSectorDescription(any()),
+          () => mockSectorService.getSectorDescription(any()),
         ).thenReturn('d');
         when(
-          () => mockConfigService.getSectorDisplayName(any()),
+          () => mockSectorService.getSectorDisplayName(any()),
         ).thenReturn('n');
         when(
-          () => mockConfigService.getSectorApiName(any()),
+          () => mockSectorService.getSectorApiName(any()),
         ).thenReturn('technology');
         when(
           () => mockMarketRepository.getSectorPeList(),

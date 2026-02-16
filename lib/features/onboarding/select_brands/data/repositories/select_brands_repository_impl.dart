@@ -2,7 +2,7 @@ import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/core/error/exceptions.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:bizzie/core/domain/models/sector.dart';
-import 'package:bizzie/core/interfaces/i_config_service.dart';
+import 'package:bizzie/core/interfaces/i_sector_service.dart';
 import 'package:bizzie/features/onboarding/select_brands/data/datasources/select_brands_remote_datasource.dart';
 import 'package:bizzie/features/onboarding/select_brands/data/dtos/daily_brands_dto.dart';
 import 'package:bizzie/features/onboarding/select_brands/domain/interfaces/i_select_brands_repository.dart';
@@ -16,9 +16,9 @@ final _logger = BizzieLogger('SelectBrandsRepositoryImpl');
 @LazySingleton(as: ISelectBrandsRepository)
 class SelectBrandsRepositoryImpl implements ISelectBrandsRepository {
   final ISelectBrandsRemoteDataSource _remoteDataSource;
-  final IConfigService _configService;
+  final ISectorService _sectorService;
 
-  SelectBrandsRepositoryImpl(this._remoteDataSource, this._configService);
+  SelectBrandsRepositoryImpl(this._remoteDataSource, this._sectorService);
 
   DailyBrandsDto? _cachedDto;
 
@@ -68,7 +68,7 @@ class SelectBrandsRepositoryImpl implements ISelectBrandsRepository {
         globalBrands.addAll(brands);
       } else if (userSector != null &&
           sectorDto.name ==
-              _configService.getSectorDisplayName(userSector.name)) {
+              _sectorService.getSectorDisplayName(userSector.name)) {
         sectorBrands.addAll(brands);
       }
     }

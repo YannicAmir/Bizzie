@@ -5,6 +5,8 @@ import 'package:mocktail/mocktail.dart';
 
 class MockFirebaseRemoteConfig extends Mock implements FirebaseRemoteConfig {}
 
+class MockRemoteConfigUpdate extends Mock implements RemoteConfigUpdate {}
+
 void main() {
   late MockFirebaseRemoteConfig mockRemoteConfig;
   late ConfigService configService;
@@ -65,7 +67,7 @@ void main() {
       verify(() => mockRemoteConfig.getDouble('test_double')).called(1);
     });
 
-    test('geminiModelName_returnsValue', () {
+    test('geminiModelName_remoteConfigValue_returnsValue', () {
       // arrange
       when(
         () => mockRemoteConfig.getString(RemoteConfigKeys.geminiModelName),
@@ -78,7 +80,7 @@ void main() {
       expect(result, 'gemini-pro');
     });
 
-    test('privacyPolicyUrl_returnsValue', () {
+    test('privacyPolicyUrl_remoteConfigValue_returnsValue', () {
       // arrange
       when(
         () => mockRemoteConfig.getString(RemoteConfigKeys.privacyPolicyUrl),
@@ -91,7 +93,7 @@ void main() {
       expect(result, 'https://bizzie.app/privacy');
     });
 
-    test('termsOfServiceUrl_returnsValue', () {
+    test('termsOfServiceUrl_remoteConfigValue_returnsValue', () {
       // arrange
       when(
         () => mockRemoteConfig.getString(RemoteConfigKeys.termsOfServiceUrl),
@@ -102,6 +104,32 @@ void main() {
 
       // assert
       expect(result, 'https://bizzie.app/terms');
+    });
+
+    test('maintenanceMode_remoteConfigValue_returnsCorrectBool', () {
+      // arrange
+      when(
+        () => mockRemoteConfig.getBool(RemoteConfigKeys.maintenanceMode),
+      ).thenReturn(true);
+
+      // act
+      final result = configService.maintenanceMode;
+
+      // assert
+      expect(result, true);
+    });
+
+    test('onConfigUpdated_stream_emitsWhenRemoteConfigUpdates', () {
+      // arrange
+      final mockUpdate = MockRemoteConfigUpdate();
+      final stream = Stream<RemoteConfigUpdate>.fromIterable([mockUpdate]);
+      when(() => mockRemoteConfig.onConfigUpdated).thenAnswer((_) => stream);
+
+      // act
+      final result = configService.onConfigUpdated;
+
+      // assert
+      expect(result, emitsInOrder([mockUpdate]));
     });
 
     test('stockMarketSectors_validJson_returnsList', () {
@@ -132,6 +160,35 @@ void main() {
       expect(result, contains('Energy'));
     });
 
+    test('sectorDescriptions_validJson_returnsMap', () {
+      // arrange
+      const json = '{"Energy": "Energy desc", "Tech": "Tech desc"}';
+      when(
+        () => mockRemoteConfig.getString(RemoteConfigKeys.sectorDescriptions),
+      ).thenReturn(json);
+
+      // act
+      final result = configService.sectorDescriptions;
+
+      // assert
+      expect(result['Energy'], 'Energy desc');
+      expect(result['Tech'], 'Tech desc');
+    });
+
+    test('sectorDescriptions_invalidJson_returnsDefaults', () {
+      // arrange
+      when(
+        () => mockRemoteConfig.getString(RemoteConfigKeys.sectorDescriptions),
+      ).thenReturn('invalid-json');
+
+      // act
+      final result = configService.sectorDescriptions;
+
+      // assert
+      expect(result, isNotEmpty);
+      expect(result.containsKey('Energy'), isTrue);
+    });
+
     test('fmpConfig_validJson_returnsConfig', () {
       // arrange
       when(
@@ -160,104 +217,18 @@ void main() {
       // assert
       expect(result.baseUrl, contains('financialmodelingprep'));
     });
-  });
 
-  group('Sector Metadata', () {
-    const mockEvaluatedDescriptions =
-        '{"Technology": "Tech Companies", "Consumer Staples": "Essential Goods"}';
-
-    test('getSectorDescription_exactMatch_returnsValue', () {
+    test('lastFetchTime_returnsRemoteConfigValue', () {
       // arrange
-      when(
-        () => mockRemoteConfig.getString(RemoteConfigKeys.sectorDescriptions),
-      ).thenReturn(mockEvaluatedDescriptions);
+      final time = DateTime(2025, 1, 1);
+      when(() => mockRemoteConfig.lastFetchTime).thenReturn(time);
 
       // act
-      final result = configService.getSectorDescription('Technology');
+      final result = configService.lastFetchTime;
 
       // assert
-      expect(result, 'Tech Companies');
-    });
-
-    test('getSectorDescription_normalizedMatch_returnsValue', () {
-      // arrange
-      when(
-        () => mockRemoteConfig.getString(RemoteConfigKeys.sectorDescriptions),
-      ).thenReturn(mockEvaluatedDescriptions);
-
-      // act
-      final result = configService.getSectorDescription('consumer_staples');
-
-      // assert
-      expect(result, 'Essential Goods');
-    });
-
-    test('getSectorDescription_noMatch_returnsEmpty', () {
-      // arrange
-      when(
-        () => mockRemoteConfig.getString(RemoteConfigKeys.sectorDescriptions),
-      ).thenReturn(mockEvaluatedDescriptions);
-
-      // act
-      final result = configService.getSectorDescription('Unknown Sector');
-
-      // assert
-      expect(result, isEmpty);
-    });
-
-    test('getSectorDisplayName_exactMatch_returnsKey', () {
-      // arrange
-      when(
-        () => mockRemoteConfig.getString(RemoteConfigKeys.sectorDescriptions),
-      ).thenReturn(mockEvaluatedDescriptions);
-
-      // act
-      final result = configService.getSectorDisplayName('Technology');
-
-      // assert
-      expect(result, 'Technology');
-    });
-
-    test('getSectorDisplayName_normalizedMatch_returnsTitleCaseKey', () {
-      // arrange
-      when(
-        () => mockRemoteConfig.getString(RemoteConfigKeys.sectorDescriptions),
-      ).thenReturn(mockEvaluatedDescriptions);
-
-      // act
-      final result = configService.getSectorDisplayName('consumer_staples');
-
-      // assert
-      expect(result, 'Consumer Staples');
-    });
-
-    test('getSectorDisplayName_noMatch_returnsSmartFallback', () {
-      // arrange
-      when(
-        () => mockRemoteConfig.getString(RemoteConfigKeys.sectorDescriptions),
-      ).thenReturn(mockEvaluatedDescriptions);
-
-      // act
-      final result = configService.getSectorDisplayName('new_emerging_market');
-
-      // assert
-      expect(result, 'New Emerging Market');
-    });
-
-    test('getSectorMetaData_invalidJson_returnsDefaults', () {
-      // arrange
-      when(
-        () => mockRemoteConfig.getString(RemoteConfigKeys.sectorDescriptions),
-      ).thenReturn('invalid-json');
-
-      // act
-      final description = configService.getSectorDescription('Energy');
-      final displayName = configService.getSectorDisplayName('energy');
-
-      // assert
-      expect(description, isNotEmpty);
-      expect(description, contains('oil'));
-      expect(displayName, 'Energy');
+      expect(result, time);
+      verify(() => mockRemoteConfig.lastFetchTime).called(1);
     });
   });
 }

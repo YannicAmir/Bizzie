@@ -4,26 +4,26 @@ import 'package:bizzie/core/domain/models/sector.dart';
 import 'package:bizzie/features/onboarding/select_brands/data/datasources/select_brands_remote_datasource.dart';
 import 'package:bizzie/features/onboarding/select_brands/data/dtos/daily_brands_dto.dart';
 import 'package:bizzie/features/onboarding/select_brands/data/repositories/select_brands_repository_impl.dart';
-import 'package:bizzie/services/config_service.dart';
+import 'package:bizzie/core/interfaces/i_sector_service.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
 class MockSelectBrandsRemoteDataSource extends Mock
     implements ISelectBrandsRemoteDataSource {}
 
-class MockConfigService extends Mock implements ConfigService {}
+class MockSectorService extends Mock implements ISectorService {}
 
 void main() {
   late SelectBrandsRepositoryImpl repository;
   late MockSelectBrandsRemoteDataSource mockRemoteDataSource;
-  late MockConfigService mockConfigService;
+  late MockSectorService mockSectorService;
 
   setUp(() {
     mockRemoteDataSource = MockSelectBrandsRemoteDataSource();
-    mockConfigService = MockConfigService();
+    mockSectorService = MockSectorService();
     repository = SelectBrandsRepositoryImpl(
       mockRemoteDataSource,
-      mockConfigService,
+      mockSectorService,
     );
   });
 
@@ -64,7 +64,7 @@ void main() {
         () => mockRemoteDataSource.fetchDailyBrands(),
       ).thenAnswer((_) async => tDailyBrandsDto);
       when(
-        () => mockConfigService.getSectorDisplayName(any()),
+        () => mockSectorService.getSectorDisplayName(any()),
       ).thenReturn('Information Technology');
 
       // act

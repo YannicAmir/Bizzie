@@ -9,7 +9,7 @@ import 'package:bizzie/features/market/domain/entities/sector_performance.dart';
 import 'package:bizzie/features/market/domain/interfaces/i_market_repository.dart';
 import 'package:bizzie/features/profile/domain/models/profile_display_data.dart';
 import 'package:bizzie/features/user/domain/interfaces/user_repository.dart';
-import 'package:bizzie/core/interfaces/i_config_service.dart';
+import 'package:bizzie/core/interfaces/i_sector_service.dart';
 import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
 
@@ -26,13 +26,13 @@ class GetProfileDisplayDataUseCase
   final IAuthRepository _authRepository;
   final IUserRepository _userRepository;
   final IMarketRepository _marketRepository;
-  final IConfigService _configService;
+  final ISectorService _sectorService;
 
   GetProfileDisplayDataUseCase(
     this._authRepository,
     this._userRepository,
     this._marketRepository,
-    this._configService,
+    this._sectorService,
   );
 
   @override
@@ -53,7 +53,7 @@ class GetProfileDisplayDataUseCase
       },
       (userModel) async {
         final sectorName = userModel.favoriteSector;
-        final sectorApiName = _configService.getSectorApiName(sectorName);
+        final sectorApiName = _sectorService.getSectorApiName(sectorName);
 
         final results = await (
           _marketRepository.getSectorPeList(),
@@ -67,8 +67,8 @@ class GetProfileDisplayDataUseCase
           final perfDate = data.performanceList.getDateForSector(sectorApiName);
           final marketDateStr = peDate ?? perfDate;
 
-          final displayName = _configService.getSectorDisplayName(sectorName);
-          final description = _configService.getSectorDescription(sectorName);
+          final displayName = _sectorService.getSectorDisplayName(sectorName);
+          final description = _sectorService.getSectorDescription(sectorName);
 
           return ProfileDisplayData(
             displayName: userModel.name,

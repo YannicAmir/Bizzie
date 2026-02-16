@@ -12,6 +12,9 @@ class DevEnvImpl implements AppEnv {
 
   @override
   String get revenueCatApiKeyIos => DevEnv.revenueCatApiKeyIos;
+
+  @override
+  Duration get minimumFetchInterval => Duration.zero;
 }
 
 @Environment('qa')
@@ -22,6 +25,9 @@ class QaEnvImpl implements AppEnv {
 
   @override
   String get revenueCatApiKeyIos => QaEnv.revenueCatApiKeyIos;
+
+  @override
+  Duration get minimumFetchInterval => const Duration(hours: 1);
 }
 
 @Environment('prod')
@@ -32,4 +38,7 @@ class ProdEnvImpl implements AppEnv {
 
   @override
   String get revenueCatApiKeyIos => ProdEnv.revenueCatApiKeyIos;
+
+  @override
+  Duration get minimumFetchInterval => const Duration(hours: 1);
 }
