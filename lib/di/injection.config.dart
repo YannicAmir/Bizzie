@@ -30,6 +30,7 @@ import '../core/domain/models/sector.dart' as _i162;
 import '../core/interfaces/i_config_service.dart' as _i937;
 import '../core/interfaces/i_connectivity_service.dart' as _i28;
 import '../core/interfaces/i_firebase_functions_service.dart' as _i347;
+import '../core/interfaces/i_lifecycle_service.dart' as _i961;
 import '../core/interfaces/i_local_storage_service.dart' as _i583;
 import '../core/interfaces/i_notification_service.dart' as _i430;
 import '../core/interfaces/i_permission_service.dart' as _i202;
@@ -438,6 +439,7 @@ import '../features/watchlist/presentation/bloc/watchlist_bloc.dart' as _i63;
 import '../services/config_service.dart' as _i216;
 import '../services/firebase_functions_service.dart' as _i382;
 import '../services/firestore_service.dart' as _i52;
+import '../services/lifecycle_service.dart' as _i1007;
 import '../services/notification_service.dart' as _i941;
 import '../services/permission_service.dart' as _i165;
 import '../services/sector_service.dart' as _i155;
@@ -486,6 +488,10 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.singleton<_i28.IConnectivityService>(() => _i332.ConnectivityService());
     gh.factory<_i501.IVertexAIProvider>(() => _i501.VertexAIProvider());
+    gh.singleton<_i961.ILifecycleService>(
+      () => _i1007.LifecycleService(),
+      dispose: (i) => i.dispose(),
+    );
     gh.factory<_i191.IStockLocalDataSource>(
       () => _i191.StockLocalDataSource(gh<_i460.SharedPreferences>()),
     );
@@ -614,6 +620,15 @@ extension GetItInjectableX on _i174.GetIt {
       () =>
           _i379.BusinessFirestoreDataSourceImpl(gh<_i974.FirebaseFirestore>()),
     );
+    gh.factory<_i308.IAppStatusRepository>(
+      () => _i1043.AppStatusRepositoryImpl(
+        gh<_i937.IConfigService>(),
+        gh<_i384.ILocalAppStatusDataSource>(),
+        gh<_i28.IConnectivityService>(),
+        gh<_i248.IAppInfoService>(),
+        gh<_i961.ILifecycleService>(),
+      ),
+    );
     gh.factory<_i1016.IOnboardingRemoteDataSource>(
       () => _i1016.OnboardingRemoteDataSource(
         gh<_i52.FirestoreService>(),
@@ -660,6 +675,9 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i892.FirebaseMessaging>(),
       ),
     );
+    gh.factory<_i983.AppStatusBloc>(
+      () => _i983.AppStatusBloc(gh<_i308.IAppStatusRepository>()),
+    );
     gh.lazySingleton<_i423.RatiosRemoteDataSource>(
       () => _i423.RatiosRemoteDataSourceImpl(
         gh<_i361.Dio>(instanceName: 'FmpDio'),
@@ -700,14 +718,6 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i1043.NewsRemoteDataSourceImpl(
         gh<_i361.Dio>(instanceName: 'FmpDio'),
         gh<_i937.IConfigService>(),
-      ),
-    );
-    gh.factory<_i308.IAppStatusRepository>(
-      () => _i1043.AppStatusRepositoryImpl(
-        gh<_i937.IConfigService>(),
-        gh<_i384.ILocalAppStatusDataSource>(),
-        gh<_i28.IConnectivityService>(),
-        gh<_i248.IAppInfoService>(),
       ),
     );
     gh.lazySingleton<_i481.SecurityRemoteDataSource>(
@@ -889,9 +899,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i423.RatiosRemoteDataSource>(),
         gh<_i958.RatiosFirestoreDataSource>(),
       ),
-    );
-    gh.factory<_i983.AppStatusBloc>(
-      () => _i983.AppStatusBloc(gh<_i308.IAppStatusRepository>()),
     );
     gh.lazySingleton<_i343.GetOfferingsUseCase>(
       () => _i343.GetOfferingsUseCase(gh<_i659.ISubscriptionRepository>()),

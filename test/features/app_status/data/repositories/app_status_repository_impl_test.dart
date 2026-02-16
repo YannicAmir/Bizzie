@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:bizzie/core/interfaces/i_config_service.dart';
 import 'package:bizzie/core/interfaces/i_connectivity_service.dart';
+import 'package:bizzie/core/interfaces/i_lifecycle_service.dart';
 import 'package:bizzie/core/services/app_info_service.dart';
 import 'package:bizzie/features/app_status/data/repositories/app_status_repository_impl.dart';
 import 'package:bizzie/features/app_status/domain/interfaces/i_local_app_status_data_source.dart';
@@ -17,23 +18,35 @@ class MockLocalAppStatusDataSource extends Mock
 
 class MockAppInfoService extends Mock implements IAppInfoService {}
 
+class MockLifecycleService extends Mock implements ILifecycleService {}
+
 void main() {
   late AppStatusRepositoryImpl repository;
   late MockConfigService mockConfigService;
   late MockConnectivityService mockConnectivityService;
   late MockLocalAppStatusDataSource mockLocalDataSource;
   late MockAppInfoService mockAppInfoService;
+  late MockLifecycleService mockLifecycleService;
 
   setUp(() {
     mockConfigService = MockConfigService();
     mockConnectivityService = MockConnectivityService();
     mockLocalDataSource = MockLocalAppStatusDataSource();
     mockAppInfoService = MockAppInfoService();
+    mockLifecycleService = MockLifecycleService();
+
+    // Default: App is in foreground
+    when(() => mockLifecycleService.isForeground).thenReturn(true);
+    when(
+      () => mockLifecycleService.onLifecycleChanged,
+    ).thenAnswer((_) => const Stream.empty());
+
     repository = AppStatusRepositoryImpl(
       mockConfigService,
       mockLocalDataSource,
       mockConnectivityService,
       mockAppInfoService,
+      mockLifecycleService,
     );
   });
 
@@ -228,7 +241,7 @@ void main() {
         );
       });
 
-      test('watchStatus_connectivityDisconnected_emitsNoInternet', () async {
+      test('watchStatus_debouncesConnectivityUpdates', () async {
         // arrange
         final connectivityController = StreamController<bool>();
         when(
@@ -260,19 +273,97 @@ void main() {
         when(
           () => mockLocalDataSource.cachePlayStoreLink(any()),
         ).thenAnswer((_) async {});
+      });
 
-        // act & assert
-        final results = <AppStatus>[];
-        final subscription = repository.watchStatus().listen(results.add);
+      test('watchStatus_backgroundApp_skipsChecks', () async {
+        // arrange
+        when(() => mockLifecycleService.isForeground).thenReturn(false);
+
+        final configUpdateController = StreamController<void>();
+        when(
+          () => mockLocalDataSource.getCachedMinAppVersion(),
+        ).thenReturn(null);
+        when(
+          () => mockConnectivityService.hasInternetConnection,
+        ).thenAnswer((_) async => true);
+        when(
+          () => mockConfigService.fetchAndActivate(),
+        ).thenAnswer((_) async => true);
+
+        when(
+          () => mockConfigService.onConfigUpdated,
+        ).thenAnswer((_) => configUpdateController.stream);
+        when(
+          () => mockConnectivityService.onConnectivityChanged,
+        ).thenAnswer((_) => const Stream.empty());
+        when(
+          () => mockAppInfoService.getAppVersion(),
+        ).thenAnswer((_) async => '1.0.0');
+
+        // act
+        final subscription = repository.watchStatus().listen((_) {});
 
         await Future.delayed(Duration.zero);
-        connectivityController.add(false);
+        clearInteractions(mockConfigService);
+
+        configUpdateController.add(null);
         await Future.delayed(Duration.zero);
 
-        expect(results, contains(const AppStatus.noInternet()));
+        // assert
+        verifyNever(() => mockConfigService.fetchAndActivate());
 
         subscription.cancel();
-        connectivityController.close();
+        configUpdateController.close();
+      });
+
+      test('watchStatus_foregroundApp_processesChecks', () async {
+        // arrange
+        when(() => mockLifecycleService.isForeground).thenReturn(true);
+
+        final configUpdateController = StreamController<void>();
+        when(
+          () => mockLocalDataSource.getCachedMinAppVersion(),
+        ).thenReturn(null);
+        when(
+          () => mockConnectivityService.hasInternetConnection,
+        ).thenAnswer((_) async => true);
+        when(
+          () => mockConfigService.fetchAndActivate(),
+        ).thenAnswer((_) async => true);
+        when(
+          () => mockConfigService.onConfigUpdated,
+        ).thenAnswer((_) => configUpdateController.stream);
+        when(
+          () => mockConnectivityService.onConnectivityChanged,
+        ).thenAnswer((_) => const Stream.empty());
+        when(() => mockConfigService.maintenanceMode).thenReturn(false);
+        when(() => mockConfigService.minAppVersion).thenReturn('1.0.0');
+        when(
+          () => mockAppInfoService.getAppVersion(),
+        ).thenAnswer((_) async => '1.0.0');
+        when(
+          () => mockLocalDataSource.cacheMinAppVersion(any()),
+        ).thenAnswer((_) async {});
+        when(
+          () => mockLocalDataSource.cacheAppStoreLink(any()),
+        ).thenAnswer((_) async {});
+        when(
+          () => mockLocalDataSource.cachePlayStoreLink(any()),
+        ).thenAnswer((_) async {});
+
+        // act
+        final subscription = repository.watchStatus().listen((_) {});
+        await Future.delayed(Duration.zero);
+        clearInteractions(mockConfigService);
+
+        configUpdateController.add(null);
+        await Future.delayed(Duration.zero);
+
+        // assert
+        verify(() => mockConfigService.fetchAndActivate()).called(1);
+
+        subscription.cancel();
+        configUpdateController.close();
       });
     });
   });
