@@ -3,6 +3,7 @@ import 'package:bizzie/core/error/exceptions.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:bizzie/core/domain/models/sector.dart';
 import 'package:bizzie/core/interfaces/i_sector_service.dart';
+import 'package:bizzie/core/utils/sector_normalizer.dart';
 import 'package:bizzie/features/onboarding/select_brands/data/datasources/select_brands_remote_datasource.dart';
 import 'package:bizzie/features/onboarding/select_brands/data/dtos/daily_brands_dto.dart';
 import 'package:bizzie/features/onboarding/select_brands/domain/interfaces/i_select_brands_repository.dart';
@@ -64,11 +65,14 @@ class SelectBrandsRepositoryImpl implements ISelectBrandsRepository {
           .map((p) => _mapProductToBrand(p, sectorDto.name))
           .toList();
 
-      if (sectorDto.name == 'All Sectors') {
+      if (normalizeSectorKey(sectorDto.name) ==
+          normalizeSectorKey('All Sectors')) {
         globalBrands.addAll(brands);
       } else if (userSector != null &&
-          sectorDto.name ==
-              _sectorService.getSectorDisplayName(userSector.name)) {
+          normalizeSectorKey(sectorDto.name) ==
+              normalizeSectorKey(
+                _sectorService.getSectorDisplayName(userSector.name),
+              )) {
         sectorBrands.addAll(brands);
       }
     }

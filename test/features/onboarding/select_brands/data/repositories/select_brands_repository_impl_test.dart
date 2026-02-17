@@ -83,6 +83,46 @@ void main() {
       verify(() => mockRemoteDataSource.fetchDailyBrands()).called(1);
     });
 
+    test(
+      'getDailyBrands_healthcareNormalization_returnsMappedBrands',
+      () async {
+        // arrange
+        final healthcareDto = DailyBrandsDto(
+          date: DateTime(2026, 1, 25),
+          sectors: [
+            DailyBrandSectorDto(
+              name: 'Healthcare',
+              products: [
+                DailyBrandProductDto(
+                  name: 'Health Item',
+                  company: 'Health Corp',
+                  ticker: 'HLTH',
+                  description: 'desc',
+                ),
+              ],
+            ),
+          ],
+        );
+
+        when(
+          () => mockRemoteDataSource.fetchDailyBrands(),
+        ).thenAnswer((_) async => healthcareDto);
+        when(
+          () => mockSectorService.getSectorDisplayName(Sector.healthCare.name),
+        ).thenReturn('Health Care');
+
+        // act
+        final result = await repository.getDailyBrands(Sector.healthCare);
+
+        // assert
+        expect(result.isRight(), isTrue);
+        result.fold((l) => fail('Should be right'), (r) {
+          expect(r.sectorBrands.length, 1);
+          expect(r.sectorBrands.first.name, 'Health Item');
+        });
+      },
+    );
+
     test('getDailyBrands_remoteNull_returnsFailure', () async {
       // arrange
       when(
