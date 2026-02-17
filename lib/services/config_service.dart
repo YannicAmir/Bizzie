@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:bizzie/core/data/dtos/fmp_config.dart';
 import 'package:bizzie/core/interfaces/i_config_service.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
-import 'package:injectable/injectable.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:bizzie/env/app_env.dart';
 
@@ -17,11 +16,11 @@ class RemoteConfigKeys {
   static const String appStoreLink = 'app_store_link';
   static const String playStoreLink = 'play_store_link';
   static const String maintenanceMode = 'maintenance_mode';
+  static const String contactEmail = 'contact_email';
 }
 
 final _logger = BizzieLogger('ConfigService');
 
-@Singleton(as: IConfigService)
 class ConfigService implements IConfigService {
   final FirebaseRemoteConfig _remoteConfig;
 
@@ -72,8 +71,6 @@ class ConfigService implements IConfigService {
 
   ConfigService(this._remoteConfig);
 
-  @factoryMethod
-  @preResolve
   static Future<ConfigService> init(AppEnv env) async {
     final remoteConfig = FirebaseRemoteConfig.instance;
     await remoteConfig.setConfigSettings(
@@ -96,6 +93,7 @@ class ConfigService implements IConfigService {
       RemoteConfigKeys.appStoreLink: 'https://bizzie.app',
       RemoteConfigKeys.playStoreLink: 'https://bizzie.app',
       RemoteConfigKeys.maintenanceMode: false,
+      RemoteConfigKeys.contactEmail: 'yannic@getbizzie.io',
     });
 
     try {
@@ -110,6 +108,10 @@ class ConfigService implements IConfigService {
   @override
   String get geminiModelName =>
       _remoteConfig.getString(RemoteConfigKeys.geminiModelName);
+
+  @override
+  String get securityWatcherMail =>
+      _remoteConfig.getString(RemoteConfigKeys.contactEmail);
 
   @override
   String get privacyPolicyUrl =>

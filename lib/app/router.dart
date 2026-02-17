@@ -45,10 +45,11 @@ import 'package:async/async.dart';
 import 'package:bizzie/features/subscription/presentation/views/discounted_subscription_page.dart';
 import 'package:bizzie/features/subscription/presentation/views/subscription_page.dart';
 import 'package:bizzie/features/settings/presentation/views/settings_view.dart';
+import 'package:bizzie/features/security/presentation/views/security_lockout_screen.dart';
 
 import 'package:bizzie/features/subscription/presentation/views/subscription_details_page.dart';
 
-final _rootNavigatorKey = GlobalKey<NavigatorState>();
+final rootNavigatorKey = GlobalKey<NavigatorState>();
 
 GoRouter createRouter(
   AuthBloc authBloc,
@@ -56,7 +57,7 @@ GoRouter createRouter(
   String? initialLocation,
 }) {
   return GoRouter(
-    navigatorKey: _rootNavigatorKey,
+    navigatorKey: rootNavigatorKey,
     initialLocation: initialLocation ?? AppRoutes.splash,
     refreshListenable: GoRouterRefreshStream(
       StreamGroup.merge([authBloc.stream, userBloc.stream]),
@@ -97,7 +98,7 @@ GoRouter createRouter(
                   _buildPaywallRoute(
                     path: 'subscribe',
                     name: 'home_subscribe',
-                    parentNavigatorKey: _rootNavigatorKey,
+                    parentNavigatorKey: rootNavigatorKey,
                     child: const SubscriptionPage(),
                   ),
                 ],
@@ -299,6 +300,11 @@ GoRouter createRouter(
             },
           ),
         ],
+      ),
+      GoRoute(
+        path: AppRoutes.securityLockout,
+        pageBuilder: (context, state) =>
+            const NoTransitionPage(child: SecurityLockoutScreen()),
       ),
     ],
   );

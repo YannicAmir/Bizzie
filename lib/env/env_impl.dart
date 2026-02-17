@@ -14,6 +14,12 @@ class DevEnvImpl implements AppEnv {
   String get revenueCatApiKeyIos => DevEnv.revenueCatApiKeyIos;
 
   @override
+  String get appleTeamId => DevEnv.appleTeamId;
+
+  @override
+  String get bundleId => DevEnv.bundleId;
+
+  @override
   Duration get minimumFetchInterval => Duration.zero;
 }
 
@@ -22,12 +28,14 @@ class DevEnvImpl implements AppEnv {
 class QaEnvImpl implements AppEnv {
   @override
   String get fmpApiKey => QaEnv.fmpApiKey;
-
   @override
   String get revenueCatApiKeyIos => QaEnv.revenueCatApiKeyIos;
-
   @override
-  Duration get minimumFetchInterval => const Duration(hours: 1);
+  String get appleTeamId => QaEnv.appleTeamId;
+  @override
+  String get bundleId => QaEnv.bundleId;
+  @override
+  Duration get minimumFetchInterval => const Duration(seconds: 10);
 }
 
 @Environment('prod')
@@ -35,10 +43,12 @@ class QaEnvImpl implements AppEnv {
 class ProdEnvImpl implements AppEnv {
   @override
   String get fmpApiKey => ProdEnv.fmpApiKey;
-
   @override
   String get revenueCatApiKeyIos => ProdEnv.revenueCatApiKeyIos;
-
+  @override
+  String get appleTeamId => ProdEnv.appleTeamId;
+  @override
+  String get bundleId => ProdEnv.bundleId;
   @override
   Duration get minimumFetchInterval => const Duration(hours: 1);
 }

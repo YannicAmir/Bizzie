@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class GenericStatusPage extends StatelessWidget {
-  final String imageAsset;
+  final String? imageAsset;
+  final IconData? icon;
+  final Color? iconColor;
   final String title;
   final String description;
   final String? buttonText;
@@ -14,14 +16,19 @@ class GenericStatusPage extends StatelessWidget {
 
   const GenericStatusPage({
     super.key,
-    required this.imageAsset,
+    this.imageAsset,
+    this.icon,
+    this.iconColor,
     required this.title,
     required this.description,
     this.buttonText,
     this.onButtonPressed,
     this.isLargeImage = false,
     this.isLoading = false,
-  });
+  }) : assert(
+         imageAsset != null || icon != null,
+         'Either imageAsset or icon must be provided',
+       );
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +54,13 @@ class GenericStatusPage extends StatelessWidget {
                         SizedBox(
                           height: isLargeImage ? 320 : 250,
                           width: isLargeImage ? 320 : 250,
-                          child: Image.asset(imageAsset, fit: BoxFit.contain),
+                          child: icon != null
+                              ? Icon(
+                                  icon,
+                                  size: 160,
+                                  color: iconColor ?? theme.primaryColor,
+                                )
+                              : Image.asset(imageAsset!, fit: BoxFit.contain),
                         ),
                         const SizedBox(height: 32),
                         Text(title, style: theme.textTheme.displayLarge),

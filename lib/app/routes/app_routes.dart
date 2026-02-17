@@ -21,7 +21,10 @@ class AppRoutes {
   static const String editProfilePath = 'edit-profile';
   static const String changePasswordPath = 'change-password';
   static const String subscriptionDetailsPath = 'subscription-details';
-  static const String subscriptionDetails = '/subscription-details';
+  static const String subscriptionDetails = 'subscription_details';
+
+  // Security
+  static const String securityLockout = '/security-lockout';
 
   // Namespaced Company Profile Routes for Bottom Nav Stacks
   static const String companyProfileHome = 'companyProfileHome';
