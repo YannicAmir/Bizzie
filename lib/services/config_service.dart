@@ -35,7 +35,7 @@ class ConfigService implements IConfigService {
     "Industrials",
     "Consumer Discretionary",
     "Consumer Staples",
-    "Healthcare",
+    "Health Care",
     "Financials",
     "Information Technology",
     "Communication Services",
