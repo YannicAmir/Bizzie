@@ -9,4 +9,10 @@ abstract class DevEnv {
 
   @EnviedField(varName: 'REVENUECAT_PUBLIC_API_KEY_IOS')
   static final String revenueCatApiKeyIos = _DevEnv.revenueCatApiKeyIos;
+
+  @EnviedField(varName: 'APPLE_TEAM_ID')
+  static final String appleTeamId = _DevEnv.appleTeamId;
+
+  @EnviedField(varName: 'BUNDLE_ID')
+  static final String bundleId = _DevEnv.bundleId;
 }

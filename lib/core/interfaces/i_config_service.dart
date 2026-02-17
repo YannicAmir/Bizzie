@@ -2,6 +2,7 @@ import 'package:bizzie/core/data/dtos/fmp_config.dart';
 
 abstract class IConfigService {
   String get geminiModelName;
+  String get securityWatcherMail;
   List<String> get stockMarketSectors;
   Map<String, String> get sectorDescriptions;
   FmpConfig get fmpConfig;

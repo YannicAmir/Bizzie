@@ -19,6 +19,8 @@ import 'package:bizzie/features/reports/presentation/bloc/reports_event.dart';
 import 'package:bizzie/features/subscription/presentation/bloc/subscription_bloc.dart';
 import 'package:bizzie/features/subscription/presentation/bloc/subscription_event.dart';
 import 'package:bizzie/features/app_status/presentation/bloc/app_status_bloc.dart';
+import 'package:bizzie/services/security_service.dart';
+import 'package:bizzie/features/security/presentation/views/security_lockout_screen.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -145,7 +147,18 @@ class _BizzieAppViewState extends State<BizzieAppView>
         supportedLocales: BizzieLocalizations.supportedLocales,
         routerConfig: _router,
         debugShowCheckedModeBanner: widget.environment == Environment.dev,
-        builder: (context, child) => GlobalOverlayWrapper(child: child),
+        builder: (context, child) {
+          return ValueListenableBuilder<bool>(
+            valueListenable: getIt<SecurityService>().isThreatDetected,
+            builder: (context, isThreat, _) {
+              if (isThreat) {
+                FlutterNativeSplash.remove();
+                return const SecurityLockoutScreen();
+              }
+              return GlobalOverlayWrapper(child: child!);
+            },
+          );
+        },
       ),
     );
   }
