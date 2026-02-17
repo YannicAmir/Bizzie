@@ -57,6 +57,7 @@ class IncomeStatementView extends StatelessWidget {
                 rows: state.incomeRows(locale: locale, isAnnual: true),
                 historyBuilder: (item) =>
                     state.incomeHistoryRowData(item, locale),
+                historyLimit: state.freePlanHistoryCount,
               ),
               AppConstants.mainSectionSpacing,
             ],
@@ -79,6 +80,7 @@ class IncomeStatementView extends StatelessWidget {
                 rows: state.incomeRows(locale: locale, isAnnual: false),
                 historyBuilder: (item) =>
                     state.incomeHistoryRowData(item, locale),
+                historyLimit: state.freePlanHistoryCount,
               ),
             ],
           ],
@@ -97,6 +99,7 @@ class _IncomeStatementSection extends StatelessWidget {
   final String currency;
   final List<FinancialStatementTableRow> rows;
   final FinancialHistoryRowData Function(IncomeStatement) historyBuilder;
+  final int historyLimit;
 
   const _IncomeStatementSection({
     required this.title,
@@ -107,6 +110,7 @@ class _IncomeStatementSection extends StatelessWidget {
     required this.currency,
     required this.rows,
     required this.historyBuilder,
+    required this.historyLimit,
   });
 
   @override
@@ -123,6 +127,7 @@ class _IncomeStatementSection extends StatelessWidget {
           periodExtractor: (item) => item.period,
           dateFormat: dateFormat,
           modalTitle: 'Income Statement Periods',
+          historyLimit: historyLimit,
         ),
         AppConstants.mainSectionSpacing,
         _IncomeStatementChart(statement: selectedItem, currency: currency),

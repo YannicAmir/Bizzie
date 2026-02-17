@@ -63,6 +63,7 @@ class _DividendsTabState extends State<DividendsTab>
                 dividendInfo: data.dividendInfo,
                 ticker: widget.ticker,
                 currentPrice: currentPrice,
+                historyLimit: data.historyLimit,
               ),
             );
           },
@@ -76,11 +77,13 @@ class _DividendsLoadedState extends StatelessWidget {
   final DividendInfo dividendInfo;
   final String ticker;
   final double currentPrice;
+  final int historyLimit;
 
   const _DividendsLoadedState({
     required this.dividendInfo,
     required this.ticker,
     required this.currentPrice,
+    required this.historyLimit,
   });
 
   @override
@@ -110,9 +113,14 @@ class _DividendsLoadedState extends StatelessWidget {
             data: dividendInfo.history.toChartData(),
             positiveColor: AppColors.primary,
             numberFormat: numberFormat,
+            visibleCount: historyLimit,
+            thresholdCount: historyLimit,
           ),
           AppConstants.mainSectionSpacing,
-          DividendPaymentHistorySection(history: dividendInfo.history),
+          DividendPaymentHistorySection(
+            history: dividendInfo.history,
+            historyLimit: historyLimit,
+          ),
         ],
       ),
     );

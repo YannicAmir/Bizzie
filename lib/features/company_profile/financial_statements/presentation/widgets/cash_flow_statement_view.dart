@@ -57,6 +57,7 @@ class CashFlowStatementView extends StatelessWidget {
                 rows: state.cashFlowRows(locale: locale, isAnnual: true),
                 historyBuilder: (item) =>
                     state.cashFlowHistoryRowData(item, locale),
+                historyLimit: state.freePlanHistoryCount,
               ),
               AppConstants.mainSectionSpacing,
             ],
@@ -79,6 +80,7 @@ class CashFlowStatementView extends StatelessWidget {
                 rows: state.cashFlowRows(locale: locale, isAnnual: false),
                 historyBuilder: (item) =>
                     state.cashFlowHistoryRowData(item, locale),
+                historyLimit: state.freePlanHistoryCount,
               ),
             ],
           ],
@@ -97,6 +99,7 @@ class _CashFlowStatementSection extends StatelessWidget {
   final String currency;
   final List<FinancialStatementTableRow> rows;
   final FinancialHistoryRowData Function(CashFlowStatement) historyBuilder;
+  final int historyLimit;
 
   const _CashFlowStatementSection({
     required this.title,
@@ -107,6 +110,7 @@ class _CashFlowStatementSection extends StatelessWidget {
     required this.currency,
     required this.rows,
     required this.historyBuilder,
+    required this.historyLimit,
   });
 
   @override
@@ -123,6 +127,7 @@ class _CashFlowStatementSection extends StatelessWidget {
           periodExtractor: (item) => item.period,
           dateFormat: dateFormat,
           modalTitle: 'Cash Flow Statement Periods',
+          historyLimit: historyLimit,
         ),
         AppConstants.mainSectionSpacing,
         _CashFlowStatementChart(statement: selectedItem, currency: currency),
@@ -180,22 +185,23 @@ class _CashFlowStatementChart extends StatelessWidget {
     final freeCf = statement.freeCashFlow;
     final green = badgeTheme?.goodText ?? AppColors.successText;
     final red = badgeTheme?.criticalText ?? AppColors.criticalText;
+    final primary = theme.colorScheme.primary;
 
     final data = [
       FinancialStatementChartData(
         'O.C.F',
         statement.operatingCashFlow,
-        badgeTheme?.neutralText ?? AppColors.primary,
+        badgeTheme?.neutralText ?? primary,
       ),
       FinancialStatementChartData(
         'I.C.F',
         statement.investingCashFlow,
-        badgeTheme?.neutralText ?? AppColors.primary,
+        badgeTheme?.neutralText ?? primary,
       ),
       FinancialStatementChartData(
         'Fin.C.F',
         statement.financingCashFlow,
-        badgeTheme?.neutralText ?? AppColors.primary,
+        badgeTheme?.neutralText ?? primary,
       ),
       FinancialStatementChartData(
         'Free.C.F',

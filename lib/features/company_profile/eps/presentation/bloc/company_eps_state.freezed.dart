@@ -128,12 +128,12 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( EpsStats epsStats,  List<ChartDataPoint> annualChartData,  List<ChartDataPoint> quarterlyChartData,  DateTime? lastUpdated)?  loaded,TResult Function( Failure failure)?  failure,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( EpsStats epsStats,  List<ChartDataPoint> annualChartData,  List<ChartDataPoint> quarterlyChartData,  int historyLimit,  DateTime? lastUpdated)?  loaded,TResult Function( Failure failure)?  failure,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial();case _Loading() when loading != null:
 return loading();case _Loaded() when loaded != null:
-return loaded(_that.epsStats,_that.annualChartData,_that.quarterlyChartData,_that.lastUpdated);case _Failure() when failure != null:
+return loaded(_that.epsStats,_that.annualChartData,_that.quarterlyChartData,_that.historyLimit,_that.lastUpdated);case _Failure() when failure != null:
 return failure(_that.failure);case _:
   return orElse();
 
@@ -152,12 +152,12 @@ return failure(_that.failure);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( EpsStats epsStats,  List<ChartDataPoint> annualChartData,  List<ChartDataPoint> quarterlyChartData,  DateTime? lastUpdated)  loaded,required TResult Function( Failure failure)  failure,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( EpsStats epsStats,  List<ChartDataPoint> annualChartData,  List<ChartDataPoint> quarterlyChartData,  int historyLimit,  DateTime? lastUpdated)  loaded,required TResult Function( Failure failure)  failure,}) {final _that = this;
 switch (_that) {
 case _Initial():
 return initial();case _Loading():
 return loading();case _Loaded():
-return loaded(_that.epsStats,_that.annualChartData,_that.quarterlyChartData,_that.lastUpdated);case _Failure():
+return loaded(_that.epsStats,_that.annualChartData,_that.quarterlyChartData,_that.historyLimit,_that.lastUpdated);case _Failure():
 return failure(_that.failure);case _:
   throw StateError('Unexpected subclass');
 
@@ -175,12 +175,12 @@ return failure(_that.failure);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( EpsStats epsStats,  List<ChartDataPoint> annualChartData,  List<ChartDataPoint> quarterlyChartData,  DateTime? lastUpdated)?  loaded,TResult? Function( Failure failure)?  failure,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( EpsStats epsStats,  List<ChartDataPoint> annualChartData,  List<ChartDataPoint> quarterlyChartData,  int historyLimit,  DateTime? lastUpdated)?  loaded,TResult? Function( Failure failure)?  failure,}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial();case _Loading() when loading != null:
 return loading();case _Loaded() when loaded != null:
-return loaded(_that.epsStats,_that.annualChartData,_that.quarterlyChartData,_that.lastUpdated);case _Failure() when failure != null:
+return loaded(_that.epsStats,_that.annualChartData,_that.quarterlyChartData,_that.historyLimit,_that.lastUpdated);case _Failure() when failure != null:
 return failure(_that.failure);case _:
   return null;
 
@@ -257,7 +257,7 @@ String toString() {
 
 
 class _Loaded implements CompanyEpsState {
-  const _Loaded({required this.epsStats, required final  List<ChartDataPoint> annualChartData, required final  List<ChartDataPoint> quarterlyChartData, this.lastUpdated}): _annualChartData = annualChartData,_quarterlyChartData = quarterlyChartData;
+  const _Loaded({required this.epsStats, required final  List<ChartDataPoint> annualChartData, required final  List<ChartDataPoint> quarterlyChartData, required this.historyLimit, this.lastUpdated}): _annualChartData = annualChartData,_quarterlyChartData = quarterlyChartData;
   
 
  final  EpsStats epsStats;
@@ -275,6 +275,7 @@ class _Loaded implements CompanyEpsState {
   return EqualUnmodifiableListView(_quarterlyChartData);
 }
 
+ final  int historyLimit;
  final  DateTime? lastUpdated;
 
 /// Create a copy of CompanyEpsState
@@ -287,16 +288,16 @@ _$LoadedCopyWith<_Loaded> get copyWith => __$LoadedCopyWithImpl<_Loaded>(this, _
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Loaded&&(identical(other.epsStats, epsStats) || other.epsStats == epsStats)&&const DeepCollectionEquality().equals(other._annualChartData, _annualChartData)&&const DeepCollectionEquality().equals(other._quarterlyChartData, _quarterlyChartData)&&(identical(other.lastUpdated, lastUpdated) || other.lastUpdated == lastUpdated));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Loaded&&(identical(other.epsStats, epsStats) || other.epsStats == epsStats)&&const DeepCollectionEquality().equals(other._annualChartData, _annualChartData)&&const DeepCollectionEquality().equals(other._quarterlyChartData, _quarterlyChartData)&&(identical(other.historyLimit, historyLimit) || other.historyLimit == historyLimit)&&(identical(other.lastUpdated, lastUpdated) || other.lastUpdated == lastUpdated));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,epsStats,const DeepCollectionEquality().hash(_annualChartData),const DeepCollectionEquality().hash(_quarterlyChartData),lastUpdated);
+int get hashCode => Object.hash(runtimeType,epsStats,const DeepCollectionEquality().hash(_annualChartData),const DeepCollectionEquality().hash(_quarterlyChartData),historyLimit,lastUpdated);
 
 @override
 String toString() {
-  return 'CompanyEpsState.loaded(epsStats: $epsStats, annualChartData: $annualChartData, quarterlyChartData: $quarterlyChartData, lastUpdated: $lastUpdated)';
+  return 'CompanyEpsState.loaded(epsStats: $epsStats, annualChartData: $annualChartData, quarterlyChartData: $quarterlyChartData, historyLimit: $historyLimit, lastUpdated: $lastUpdated)';
 }
 
 
@@ -307,7 +308,7 @@ abstract mixin class _$LoadedCopyWith<$Res> implements $CompanyEpsStateCopyWith<
   factory _$LoadedCopyWith(_Loaded value, $Res Function(_Loaded) _then) = __$LoadedCopyWithImpl;
 @useResult
 $Res call({
- EpsStats epsStats, List<ChartDataPoint> annualChartData, List<ChartDataPoint> quarterlyChartData, DateTime? lastUpdated
+ EpsStats epsStats, List<ChartDataPoint> annualChartData, List<ChartDataPoint> quarterlyChartData, int historyLimit, DateTime? lastUpdated
 });
 
 
@@ -324,12 +325,13 @@ class __$LoadedCopyWithImpl<$Res>
 
 /// Create a copy of CompanyEpsState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? epsStats = null,Object? annualChartData = null,Object? quarterlyChartData = null,Object? lastUpdated = freezed,}) {
+@pragma('vm:prefer-inline') $Res call({Object? epsStats = null,Object? annualChartData = null,Object? quarterlyChartData = null,Object? historyLimit = null,Object? lastUpdated = freezed,}) {
   return _then(_Loaded(
 epsStats: null == epsStats ? _self.epsStats : epsStats // ignore: cast_nullable_to_non_nullable
 as EpsStats,annualChartData: null == annualChartData ? _self._annualChartData : annualChartData // ignore: cast_nullable_to_non_nullable
 as List<ChartDataPoint>,quarterlyChartData: null == quarterlyChartData ? _self._quarterlyChartData : quarterlyChartData // ignore: cast_nullable_to_non_nullable
-as List<ChartDataPoint>,lastUpdated: freezed == lastUpdated ? _self.lastUpdated : lastUpdated // ignore: cast_nullable_to_non_nullable
+as List<ChartDataPoint>,historyLimit: null == historyLimit ? _self.historyLimit : historyLimit // ignore: cast_nullable_to_non_nullable
+as int,lastUpdated: freezed == lastUpdated ? _self.lastUpdated : lastUpdated // ignore: cast_nullable_to_non_nullable
 as DateTime?,
   ));
 }

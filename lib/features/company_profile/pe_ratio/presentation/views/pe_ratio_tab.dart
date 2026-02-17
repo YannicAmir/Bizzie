@@ -50,6 +50,7 @@ class PeRatioTab extends StatelessWidget {
                 absoluteDelta,
                 isPositive,
                 referenceLabel,
+                historyLimit,
                 lastUpdated,
               ) => _PeRatioLoadedContent(
                 dataPoints: dataPoints,
@@ -59,6 +60,7 @@ class PeRatioTab extends StatelessWidget {
                 absoluteDelta: absoluteDelta,
                 isPositive: isPositive,
                 referenceLabel: referenceLabel,
+                historyLimit: historyLimit,
                 ticker: ticker,
                 lastUpdated: lastUpdated,
               ),
@@ -76,6 +78,7 @@ class _PeRatioLoadedContent extends StatelessWidget {
   final double absoluteDelta;
   final bool isPositive;
   final String referenceLabel;
+  final int historyLimit;
   final String ticker;
   final DateTime? lastUpdated;
 
@@ -87,6 +90,7 @@ class _PeRatioLoadedContent extends StatelessWidget {
     required this.absoluteDelta,
     required this.isPositive,
     required this.referenceLabel,
+    required this.historyLimit,
     required this.ticker,
     this.lastUpdated,
   });
@@ -131,6 +135,8 @@ class _PeRatioLoadedContent extends StatelessWidget {
                 .map((p) => BizzieChartData(p.label, p.value))
                 .toList(),
             numberFormat: NumberFormat('#,##0.00', 'en_US'),
+            visibleCount: historyLimit,
+            thresholdCount: historyLimit,
           ),
           AppConstants.mainSectionSpacing,
           FinancialDataTable(
@@ -140,6 +146,7 @@ class _PeRatioLoadedContent extends StatelessWidget {
             isNeutralColor: true,
             dateFormat: FinancialDateFormat.fullDate,
             onViewMore: () => _showAllHistory(context, dataPoints),
+            limit: historyLimit,
             footer: FinancialTableFooter(
               columns: [
                 FinancialTableFooterColumnData(

@@ -17,6 +17,7 @@ class CompanyPeRatioState with _$CompanyPeRatioState {
     required double absoluteDelta,
     required bool isPositive,
     required String referenceLabel,
+    required int historyLimit,
     DateTime? lastUpdated,
   }) = _Loaded;
   const factory CompanyPeRatioState.failure(Failure failure) = _Failure;

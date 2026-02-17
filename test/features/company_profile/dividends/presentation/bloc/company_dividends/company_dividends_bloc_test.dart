@@ -10,16 +10,23 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
+import 'package:bizzie/core/interfaces/i_config_service.dart';
+
 class MockGetDividendInfoUseCase extends Mock
     implements GetDividendInfoUseCase {}
+
+class MockConfigService extends Mock implements IConfigService {}
 
 void main() {
   late CompanyDividendsBloc bloc;
   late MockGetDividendInfoUseCase mockGetDividendInfo;
+  late MockConfigService mockConfigService;
 
   setUp(() {
     mockGetDividendInfo = MockGetDividendInfoUseCase();
-    bloc = CompanyDividendsBloc(mockGetDividendInfo);
+    mockConfigService = MockConfigService();
+    when(() => mockConfigService.freePlanHistoryCount).thenReturn(8);
+    bloc = CompanyDividendsBloc(mockGetDividendInfo, mockConfigService);
   });
 
   const tTicker = 'AAPL';
@@ -96,7 +103,7 @@ void main() {
         // arrange
         return bloc;
       },
-      seed: () => CompanyDividendsState.loaded(tDividendInfo),
+      seed: () => CompanyDividendsState.loaded(tDividendInfo, historyLimit: 8),
       act: (bloc) {
         // act
         bloc.add(const CompanyDividendsEvent.loadRequested(tTicker));
@@ -120,7 +127,7 @@ void main() {
         ).thenAnswer((_) async => Right(tDividendInfo));
         return bloc;
       },
-      seed: () => CompanyDividendsState.loaded(tDividendInfo),
+      seed: () => CompanyDividendsState.loaded(tDividendInfo, historyLimit: 8),
       act: (bloc) {
         // act
         bloc.add(
@@ -185,6 +192,7 @@ void main() {
       },
       seed: () => CompanyDividendsState.loaded(
         tDividendInfo,
+        historyLimit: 8,
         lastUpdated: DateTime.now(),
       ),
       act: (bloc) {
@@ -212,6 +220,7 @@ void main() {
       },
       seed: () => CompanyDividendsState.loaded(
         tDividendInfo,
+        historyLimit: 8,
         lastUpdated: DateTime.now().subtract(const Duration(hours: 25)),
       ),
       act: (bloc) {

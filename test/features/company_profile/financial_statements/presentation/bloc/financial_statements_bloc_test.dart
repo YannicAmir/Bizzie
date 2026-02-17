@@ -10,6 +10,7 @@ import 'package:bizzie/features/company_profile/financial_statements/presentatio
 import 'package:bizzie/features/company_profile/financial_statements/presentation/bloc/financial_statements_event.dart';
 import 'package:bizzie/features/company_profile/financial_statements/presentation/bloc/financial_statements_state.dart';
 import 'package:bizzie/features/company_profile/financial_statements/presentation/enums/financial_statement_type.dart';
+import 'package:bizzie/core/interfaces/i_config_service.dart';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -24,25 +25,32 @@ class MockGetBalanceSheetsUseCase extends Mock
 class MockGetCashFlowStatementsUseCase extends Mock
     implements GetCashFlowStatementsUseCase {}
 
+class MockConfigService extends Mock implements IConfigService {}
+
 void main() {
   late FinancialStatementsBloc bloc;
   late MockGetIncomeStatementsUseCase mockGetIncomeStatements;
   late MockGetBalanceSheetsUseCase mockGetBalanceSheets;
   late MockGetCashFlowStatementsUseCase mockGetCashFlowStatements;
+  late MockConfigService mockConfigService;
 
   setUp(() {
     mockGetIncomeStatements = MockGetIncomeStatementsUseCase();
     mockGetBalanceSheets = MockGetBalanceSheetsUseCase();
     mockGetCashFlowStatements = MockGetCashFlowStatementsUseCase();
+    mockConfigService = MockConfigService();
+
+    when(() => mockConfigService.freePlanHistoryCount).thenReturn(5);
+
     bloc = FinancialStatementsBloc(
       mockGetIncomeStatements,
       mockGetBalanceSheets,
       mockGetCashFlowStatements,
+      mockConfigService,
     );
 
     registerFallbackValue(const GetFinancialStatementParams(ticker: ''));
 
-    // Default mocks
     when(
       () => mockGetIncomeStatements(any()),
     ).thenAnswer((_) async => Right(List.from([])));
@@ -105,7 +113,10 @@ void main() {
   );
 
   test('initialState_isCorrect', () {
-    expect(bloc.state, FinancialStatementsState.initial());
+    expect(
+      bloc.state,
+      FinancialStatementsState.initial(freePlanHistoryCount: 5),
+    );
   });
 
   group('FinancialStatementsBloc - loadIncomeStatements', () {
@@ -342,10 +353,11 @@ void main() {
     blocTest<FinancialStatementsBloc, FinancialStatementsState>(
       'stalenessCheckRequested_fresh_doesNothing',
       build: () => bloc,
-      seed: () => FinancialStatementsState.initial().copyWith(
-        annualIncomeStatements: [tIncome],
-        lastUpdatedIncome: DateTime.now(),
-      ),
+      seed: () =>
+          FinancialStatementsState.initial(freePlanHistoryCount: 5).copyWith(
+            annualIncomeStatements: [tIncome],
+            lastUpdatedIncome: DateTime.now(),
+          ),
       act: (bloc) => bloc.add(
         const FinancialStatementsEvent.stalenessCheckRequested(
           tTicker,
@@ -363,10 +375,13 @@ void main() {
         ).thenAnswer((_) async => Right(List.from([tIncome])));
         return bloc;
       },
-      seed: () => FinancialStatementsState.initial().copyWith(
-        annualIncomeStatements: [tIncome],
-        lastUpdatedIncome: DateTime.now().subtract(const Duration(hours: 25)),
-      ),
+      seed: () =>
+          FinancialStatementsState.initial(freePlanHistoryCount: 5).copyWith(
+            annualIncomeStatements: [tIncome],
+            lastUpdatedIncome: DateTime.now().subtract(
+              const Duration(hours: 25),
+            ),
+          ),
       act: (bloc) => bloc.add(
         const FinancialStatementsEvent.stalenessCheckRequested(
           tTicker,

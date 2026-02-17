@@ -42,8 +42,10 @@ class _BusinessTabState extends State<BusinessTab>
             ),
           ),
           loaded: (loaded) {
-            final profile = loaded.businessProfile;
-            return _BusinessLoadedView(profile: profile);
+            return _BusinessLoadedView(
+              profile: loaded.businessProfile,
+              historyLimit: loaded.historyLimit,
+            );
           },
         );
       },
@@ -52,9 +54,13 @@ class _BusinessTabState extends State<BusinessTab>
 }
 
 class _BusinessLoadedView extends StatelessWidget {
-  const _BusinessLoadedView({required this.profile});
+  const _BusinessLoadedView({
+    required this.profile,
+    required this.historyLimit,
+  });
 
   final BusinessProfile profile;
+  final int historyLimit;
 
   @override
   Widget build(BuildContext context) {
@@ -67,7 +73,7 @@ class _BusinessLoadedView extends StatelessWidget {
           AppConstants.mainSectionSpacing,
           CompanyDescriptionCard(description: profile.description),
           AppConstants.mainSectionSpacing,
-          SecFilingsCard(profile: profile),
+          SecFilingsCard(profile: profile, historyCount: historyLimit),
         ],
       ),
     );

@@ -9,16 +9,22 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:bizzie/core/interfaces/i_config_service.dart';
 
 class MockGetFcpsStatsUseCase extends Mock implements GetFcpsStatsUseCase {}
+
+class MockConfigService extends Mock implements IConfigService {}
 
 void main() {
   late CompanyFcpsBloc bloc;
   late MockGetFcpsStatsUseCase mockGetFcpsStats;
+  late MockConfigService mockConfigService;
 
   setUp(() {
     mockGetFcpsStats = MockGetFcpsStatsUseCase();
-    bloc = CompanyFcpsBloc(mockGetFcpsStats);
+    mockConfigService = MockConfigService();
+    when(() => mockConfigService.freePlanHistoryCount).thenReturn(7);
+    bloc = CompanyFcpsBloc(mockGetFcpsStats, mockConfigService);
   });
 
   const tTicker = 'AAPL';
@@ -102,6 +108,7 @@ void main() {
         fcpsStats: tFcpsStats,
         annualChartData: [],
         quarterlyChartData: [],
+        historyLimit: 7,
       ),
       act: (bloc) {
         // act
@@ -130,6 +137,7 @@ void main() {
         fcpsStats: tFcpsStats,
         annualChartData: [],
         quarterlyChartData: [],
+        historyLimit: 7,
       ),
       act: (bloc) {
         // act
@@ -192,6 +200,7 @@ void main() {
         fcpsStats: tFcpsStats,
         annualChartData: const [],
         quarterlyChartData: const [],
+        historyLimit: 7,
         lastUpdated: DateTime.now(),
       ),
       act: (bloc) {
@@ -221,6 +230,7 @@ void main() {
         fcpsStats: tFcpsStats,
         annualChartData: const [],
         quarterlyChartData: const [],
+        historyLimit: 7,
         lastUpdated: DateTime.now().subtract(const Duration(hours: 25)),
       ),
       act: (bloc) {

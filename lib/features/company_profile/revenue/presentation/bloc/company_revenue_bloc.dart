@@ -5,6 +5,7 @@ import 'package:bizzie/features/company_profile/revenue/domain/usecases/get_reve
 import 'package:bizzie/features/company_profile/revenue/presentation/bloc/company_revenue_event.dart';
 import 'package:bizzie/features/company_profile/revenue/presentation/bloc/company_revenue_state.dart';
 import 'package:bizzie/shared/utils/bizzie_date_formatter.dart';
+import 'package:bizzie/core/interfaces/i_config_service.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
@@ -15,8 +16,9 @@ final _logger = BizzieLogger('CompanyRevenueBloc');
 class CompanyRevenueBloc
     extends Bloc<CompanyRevenueEvent, CompanyRevenueState> {
   final GetRevenueStatsUseCase _getRevenueStatsUseCase;
+  final IConfigService _configService;
 
-  CompanyRevenueBloc(this._getRevenueStatsUseCase)
+  CompanyRevenueBloc(this._getRevenueStatsUseCase, this._configService)
     : super(const CompanyRevenueState.initial()) {
     on<CompanyRevenueEvent>(_onEvent, transformer: droppable());
   }
@@ -64,6 +66,7 @@ class CompanyRevenueBloc
               stats.quarterlyRevenue,
               isAnnual: false,
             ),
+            historyLimit: _configService.freePlanHistoryCount,
             lastUpdated: DateTime.now(),
           ),
         );

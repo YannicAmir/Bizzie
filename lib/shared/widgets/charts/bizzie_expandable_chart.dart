@@ -1,8 +1,13 @@
+import 'package:bizzie/app/themes/app_assets.dart';
 import 'package:bizzie/app/themes/app_colors.dart';
 import 'package:bizzie/app/themes/app_text_styles.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:bizzie/shared/widgets/charts/bizzie_bar_chart.dart';
+import 'package:bizzie/shared/utils/paywall_helper.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
 import 'package:intl/intl.dart';
 
 class BizzieExpandableChart extends StatefulWidget {
@@ -18,8 +23,8 @@ class BizzieExpandableChart extends StatefulWidget {
     super.key,
     this.title = 'Chart',
     required this.data,
-    this.visibleCount = AppConstants.chartVisibleCount,
-    this.thresholdCount = 10,
+    required this.visibleCount,
+    required this.thresholdCount,
     this.numberFormat,
     this.positiveColor = AppColors.primary,
     this.negativeColor = AppColors.error,
@@ -35,54 +40,88 @@ class _BizzieExpandableChartState extends State<BizzieExpandableChart> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final showToggle = widget.data.length > widget.thresholdCount;
-    final currentVisibleCount = showToggle
-        ? (_isExpanded ? null : widget.visibleCount)
-        : null;
+    final effectiveThreshold = widget.thresholdCount;
+    final showToggle = widget.data.length > effectiveThreshold;
 
-    return Container(
-      padding: const EdgeInsets.all(AppConstants.mainSectionContainerPadding),
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surface,
-        borderRadius: BorderRadius.circular(
-          AppConstants.mainSectionBorderRadius,
-        ),
-        border: Border.all(
-          color: theme.dividerColor,
-          width: AppConstants.defaultBorderWidth,
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(widget.title, style: AppTextStyles.h3),
-          AppConstants.secondarySectionSpacing,
-          BizzieBarChart(
-            key: ValueKey(_isExpanded),
-            data: widget.data,
-            visibleCount: currentVisibleCount,
-            numberFormat: widget.numberFormat,
-            positiveColor: widget.positiveColor,
-            negativeColor: widget.negativeColor,
+    return BlocBuilder<UserBloc, UserState>(
+      builder: (context, state) {
+        final isSubscribed = state.maybeMap(
+          loaded: (s) => s.user.isSubscribed,
+          orElse: () => false,
+        );
+
+        final currentVisibleCount = showToggle
+            ? (_isExpanded ? null : widget.visibleCount)
+            : null;
+
+        return Container(
+          padding: const EdgeInsets.all(
+            AppConstants.mainSectionContainerPadding,
           ),
-          if (showToggle) ...[
-            AppConstants.secondarySectionSpacing,
-            GestureDetector(
-              onTap: () {
-                setState(() {
-                  _isExpanded = !_isExpanded;
-                });
-              },
-              child: Text(
-                _isExpanded ? 'View Less' : 'View All',
-                style: AppTextStyles.bodyMediumBold.copyWith(
-                  color: AppColors.primary,
-                ),
-              ),
+          decoration: BoxDecoration(
+            color: theme.colorScheme.surface,
+            borderRadius: BorderRadius.circular(
+              AppConstants.mainSectionBorderRadius,
             ),
-          ],
-        ],
-      ),
+            border: Border.all(
+              color: theme.dividerColor,
+              width: AppConstants.defaultBorderWidth,
+            ),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(widget.title, style: AppTextStyles.h3),
+              AppConstants.secondarySectionSpacing,
+              BizzieBarChart(
+                key: ValueKey(_isExpanded),
+                data: widget.data,
+                visibleCount: currentVisibleCount,
+                numberFormat: widget.numberFormat,
+                positiveColor: widget.positiveColor,
+                negativeColor: widget.negativeColor,
+              ),
+              if (showToggle) ...[
+                AppConstants.secondarySectionSpacing,
+                GestureDetector(
+                  onTap: () {
+                    if (isSubscribed) {
+                      setState(() {
+                        _isExpanded = !_isExpanded;
+                      });
+                    } else {
+                      PaywallHelper.showPaywallSequence(context);
+                    }
+                  },
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        _isExpanded ? 'View Less' : 'View All',
+                        style: AppTextStyles.bodyMediumBold.copyWith(
+                          color: theme.colorScheme.primary,
+                        ),
+                      ),
+                      if (!isSubscribed) ...[
+                        const SizedBox(width: 6),
+                        SvgPicture.asset(
+                          AppAssets.authLockIcon,
+                          width: 15,
+                          height: 15,
+                          colorFilter: ColorFilter.mode(
+                            theme.colorScheme.primary,
+                            BlendMode.srcIn,
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+              ],
+            ],
+          ),
+        );
+      },
     );
   }
 }

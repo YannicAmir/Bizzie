@@ -4,6 +4,7 @@ import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:bizzie/features/company_profile/business/domain/usecases/get_business_profile_usecase.dart';
 import 'package:bizzie/features/company_profile/business/presentation/bloc/company_business_event.dart';
 import 'package:bizzie/features/company_profile/business/presentation/bloc/company_business_state.dart';
+import 'package:bizzie/core/interfaces/i_config_service.dart';
 import 'package:bloc/bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:injectable/injectable.dart';
@@ -14,8 +15,9 @@ final _logger = BizzieLogger('CompanyBusinessBloc');
 class CompanyBusinessBloc
     extends Bloc<CompanyBusinessEvent, CompanyBusinessState> {
   final GetBusinessProfileUseCase _getBusinessProfileUseCase;
+  final IConfigService _configService;
 
-  CompanyBusinessBloc(this._getBusinessProfileUseCase)
+  CompanyBusinessBloc(this._getBusinessProfileUseCase, this._configService)
     : super(const CompanyBusinessState.initial()) {
     on<CompanyBusinessEvent>(_onEvent, transformer: droppable());
   }
@@ -57,7 +59,13 @@ class CompanyBusinessBloc
       },
       (profile) {
         _logger.info('Successfully loaded company business profile');
-        emit(CompanyBusinessState.loaded(profile, lastUpdated: DateTime.now()));
+        emit(
+          CompanyBusinessState.loaded(
+            profile,
+            historyLimit: _configService.freePlanHistoryCount,
+            lastUpdated: DateTime.now(),
+          ),
+        );
       },
     );
   }

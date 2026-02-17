@@ -1,3 +1,4 @@
+import 'package:bizzie/core/interfaces/i_config_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:injectable/injectable.dart';
@@ -16,8 +17,10 @@ final _logger = BizzieLogger('CompanyRoeBloc');
 @injectable
 class CompanyRoeBloc extends Bloc<CompanyRoeEvent, CompanyRoeState> {
   final GetRoeUseCase _getRoeStats;
+  final IConfigService _configService;
 
-  CompanyRoeBloc(this._getRoeStats) : super(const CompanyRoeState.initial()) {
+  CompanyRoeBloc(this._getRoeStats, this._configService)
+    : super(const CompanyRoeState.initial()) {
     on<CompanyRoeEvent>(_onEvent, transformer: droppable());
   }
 
@@ -97,6 +100,7 @@ class CompanyRoeBloc extends Bloc<CompanyRoeEvent, CompanyRoeState> {
         absoluteDelta: growth.delta.abs(),
         isPositive: growth.delta >= 0,
         referenceLabel: referenceLabel,
+        historyLimit: _configService.freePlanHistoryCount,
         lastUpdated: DateTime.now(),
       ),
     );
@@ -174,6 +178,7 @@ class CompanyRoeBloc extends Bloc<CompanyRoeEvent, CompanyRoeState> {
       absoluteDelta: 0,
       isPositive: false,
       referenceLabel: '',
+      historyLimit: _configService.freePlanHistoryCount,
       lastUpdated: DateTime.now(),
     );
   }

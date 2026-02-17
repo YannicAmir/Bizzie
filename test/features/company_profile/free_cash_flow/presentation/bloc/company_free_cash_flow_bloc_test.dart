@@ -9,17 +9,23 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:bizzie/core/interfaces/i_config_service.dart';
 
 class MockGetFreeCashFlowStatsUseCase extends Mock
     implements GetFreeCashFlowStatsUseCase {}
 
+class MockConfigService extends Mock implements IConfigService {}
+
 void main() {
   late CompanyFreeCashFlowBloc bloc;
   late MockGetFreeCashFlowStatsUseCase mockGetFreeCashFlowStats;
+  late MockConfigService mockConfigService;
 
   setUp(() {
     mockGetFreeCashFlowStats = MockGetFreeCashFlowStatsUseCase();
-    bloc = CompanyFreeCashFlowBloc(mockGetFreeCashFlowStats);
+    mockConfigService = MockConfigService();
+    when(() => mockConfigService.freePlanHistoryCount).thenReturn(7);
+    bloc = CompanyFreeCashFlowBloc(mockGetFreeCashFlowStats, mockConfigService);
   });
 
   const tTicker = 'AAPL';
@@ -88,7 +94,9 @@ void main() {
         // assert
         return [
           const CompanyFreeCashFlowState.loading(),
-          const CompanyFreeCashFlowState.failure(Failure.server('Server error')),
+          const CompanyFreeCashFlowState.failure(
+            Failure.server('Server error'),
+          ),
         ];
       },
     );
@@ -103,6 +111,7 @@ void main() {
         fcfStats: tFcfStats,
         annualChartData: [],
         quarterlyChartData: [],
+        historyLimit: 7,
       ),
       act: (bloc) {
         // act
@@ -131,6 +140,7 @@ void main() {
         fcfStats: tFcfStats,
         annualChartData: [],
         quarterlyChartData: [],
+        historyLimit: 7,
       ),
       act: (bloc) {
         // act
@@ -198,6 +208,7 @@ void main() {
         fcfStats: tFcfStats,
         annualChartData: const [],
         quarterlyChartData: const [],
+        historyLimit: 7,
         lastUpdated: DateTime.now(),
       ),
       act: (bloc) {
@@ -229,6 +240,7 @@ void main() {
         fcfStats: tFcfStats,
         annualChartData: const [],
         quarterlyChartData: const [],
+        historyLimit: 7,
         lastUpdated: DateTime.now().subtract(const Duration(hours: 25)),
       ),
       act: (bloc) {

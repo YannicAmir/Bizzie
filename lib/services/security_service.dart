@@ -7,19 +7,32 @@ import 'package:bizzie/core/config/flavor_config.dart';
 import 'package:freerasp/freerasp.dart';
 import 'package:logging/logging.dart';
 import 'package:bizzie/features/auth/domain/interfaces/i_auth_repository.dart';
-import 'package:bizzie/di/injection.dart';
 import 'package:bizzie/core/constants/security_constants.dart';
+import 'package:injectable/injectable.dart';
 
 final _logger = Logger('SecurityService');
 
+@preResolve
+@Singleton()
 class SecurityService {
   final AppEnv _env;
   final IConfigService _configService;
-  final IAuthRepository? _authRepository;
+  final IAuthRepository _authRepository;
 
   final ValueNotifier<bool> isThreatDetected = ValueNotifier(false);
 
-  SecurityService(this._env, this._configService, [this._authRepository]);
+  SecurityService(this._env, this._configService, this._authRepository);
+
+  @factoryMethod
+  static Future<SecurityService> create(
+    AppEnv env,
+    IConfigService configService,
+    IAuthRepository authRepository,
+  ) async {
+    final service = SecurityService(env, configService, authRepository);
+    await service.init();
+    return service;
+  }
 
   Future<void> init() async {
     if (!Platform.isIOS) {
@@ -94,8 +107,7 @@ class SecurityService {
     _logger.severe('Initiating graceful shutdown due to security threat...');
 
     try {
-      final authRepo = _authRepository ?? getIt<IAuthRepository>();
-      await authRepo.signOut();
+      await _authRepository.signOut();
       _logger.info('User forcefully signed out due to security threat.');
     } catch (e) {
       _logger.warning('Failed to sign out during graceful shutdown: $e');

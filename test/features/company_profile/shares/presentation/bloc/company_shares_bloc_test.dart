@@ -10,16 +10,22 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:bizzie/core/interfaces/i_config_service.dart';
 
 class MockGetSharesUseCase extends Mock implements GetSharesUseCase {}
+
+class MockConfigService extends Mock implements IConfigService {}
 
 void main() {
   late CompanySharesBloc bloc;
   late MockGetSharesUseCase mockGetShares;
+  late MockConfigService mockConfigService;
 
   setUp(() {
     mockGetShares = MockGetSharesUseCase();
-    bloc = CompanySharesBloc(mockGetShares);
+    mockConfigService = MockConfigService();
+    when(() => mockConfigService.freePlanHistoryCount).thenReturn(7);
+    bloc = CompanySharesBloc(mockGetShares, mockConfigService);
   });
 
   const tTicker = 'AAPL';
@@ -122,6 +128,7 @@ void main() {
         shareStats: tShareStats,
         annualChartData: const [],
         quarterlyChartData: const [],
+        historyLimit: 7,
         annualSummary: const SharesSummaryData(
           currentValue: 0,
           growthPercentage: 0,
@@ -189,6 +196,7 @@ void main() {
         shareStats: tShareStats,
         annualChartData: const [],
         quarterlyChartData: const [],
+        historyLimit: 7,
         annualSummary: const SharesSummaryData(
           currentValue: 0,
           growthPercentage: 0,
@@ -232,6 +240,7 @@ void main() {
         shareStats: tShareStats,
         annualChartData: const [],
         quarterlyChartData: const [],
+        historyLimit: 7,
         annualSummary: const SharesSummaryData(
           currentValue: 0,
           growthPercentage: 0,

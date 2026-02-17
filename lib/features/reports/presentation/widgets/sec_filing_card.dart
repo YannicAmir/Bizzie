@@ -1,9 +1,13 @@
 import 'package:bizzie/app/themes/app_assets.dart';
 import 'package:bizzie/app/themes/app_colors.dart';
+import 'package:bizzie/shared/utils/paywall_helper.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
 
 import 'package:bizzie/features/reports/domain/models/sec_filing.dart';
 import 'package:bizzie/shared/widgets/app_badge.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:intl/intl.dart';
 
@@ -250,32 +254,57 @@ class _SummarizeButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return _ActionButton(
-      icon: Image.asset(
-        AppAssets.sparkleIcon,
-        width: 16,
-        height: 16,
-        color: theme.colorScheme.primary,
-      ),
-      label: 'Summarize',
-      onTap: () {
-        if (financialReport != null) {
-          showModalBottomSheet(
-            context: context,
-            isScrollControlled: true,
-            backgroundColor: Colors.transparent,
-            builder: (context) => ReportSummaryModal(
-              report: financialReport!,
-              filingUrl: filing.link,
-            ),
-          );
-        } else {
-          showModalBottomSheet(
-            context: context,
-            backgroundColor: Colors.transparent,
-            builder: (context) => const _AnalysisInProgressModal(),
-          );
-        }
+    return BlocBuilder<UserBloc, UserState>(
+      builder: (context, state) {
+        final isSubscribed = state.maybeMap(
+          loaded: (s) => s.user.isSubscribed,
+          orElse: () => false,
+        );
+
+        return _ActionButton(
+          icon: Image.asset(
+            AppAssets.sparkleIcon,
+            width: 16,
+            height: 16,
+            color: theme.colorScheme.primary,
+          ),
+          prefixIcon: !isSubscribed
+              ? SvgPicture.asset(
+                  AppAssets.authLockIcon,
+                  width: 15,
+                  height: 15,
+                  colorFilter: ColorFilter.mode(
+                    theme.colorScheme.primary,
+                    BlendMode.srcIn,
+                  ),
+                )
+              : null,
+          label: 'Summarize',
+          onTap: () {
+            if (!isSubscribed) {
+              PaywallHelper.showPaywallSequence(context);
+              return;
+            }
+
+            if (financialReport != null) {
+              showModalBottomSheet(
+                context: context,
+                isScrollControlled: true,
+                backgroundColor: theme.colorScheme.scrim,
+                builder: (context) => ReportSummaryModal(
+                  report: financialReport!,
+                  filingUrl: filing.link,
+                ),
+              );
+            } else {
+              showModalBottomSheet(
+                context: context,
+                backgroundColor: theme.colorScheme.scrim,
+                builder: (context) => const _AnalysisInProgressModal(),
+              );
+            }
+          },
+        );
       },
     );
   }
@@ -328,11 +357,13 @@ class _AnalysisInProgressModal extends StatelessWidget {
 
 class _ActionButton extends StatelessWidget {
   final Widget icon;
+  final Widget? prefixIcon;
   final String label;
   final VoidCallback onTap;
 
   const _ActionButton({
     required this.icon,
+    this.prefixIcon,
     required this.label,
     required this.onTap,
   });
@@ -344,6 +375,7 @@ class _ActionButton extends StatelessWidget {
       onTap: onTap,
       child: Row(
         children: [
+          if (prefixIcon != null) ...[prefixIcon!, const SizedBox(width: 4)],
           icon,
           const SizedBox(width: 8),
           Text(

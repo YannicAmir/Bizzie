@@ -70,6 +70,7 @@ class _BalanceSheetViewState extends State<BalanceSheetView> {
                 rows: [...state.balanceRows(locale: locale, isAnnual: false)],
                 historyBuilder: (item) =>
                     state.balanceHistoryRowData(item, locale),
+                historyLimit: state.freePlanHistoryCount,
               ),
             ],
           ],
@@ -87,6 +88,7 @@ class _BalanceSheetSection extends StatelessWidget {
   final PageController? pageController;
   final List<FinancialStatementTableRow> rows;
   final FinancialHistoryRowData Function(BalanceSheet) historyBuilder;
+  final int historyLimit;
 
   const _BalanceSheetSection({
     required this.title,
@@ -96,6 +98,7 @@ class _BalanceSheetSection extends StatelessWidget {
     required this.pageController,
     required this.rows,
     required this.historyBuilder,
+    required this.historyLimit,
   });
 
   @override
@@ -111,6 +114,7 @@ class _BalanceSheetSection extends StatelessWidget {
           dateStringExtractor: (item) => item.date,
           periodExtractor: (item) => item.period,
           modalTitle: 'Balance Sheet Periods',
+          historyLimit: historyLimit,
         ),
         AppConstants.mainSectionSpacing,
         if (pageController != null) ...[

@@ -8,16 +8,22 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:bizzie/core/interfaces/i_config_service.dart';
 
 class MockGetRoeUseCase extends Mock implements GetRoeUseCase {}
+
+class MockConfigService extends Mock implements IConfigService {}
 
 void main() {
   late CompanyRoeBloc bloc;
   late MockGetRoeUseCase mockGetRoe;
+  late MockConfigService mockConfigService;
 
   setUp(() {
     mockGetRoe = MockGetRoeUseCase();
-    bloc = CompanyRoeBloc(mockGetRoe);
+    mockConfigService = MockConfigService();
+    when(() => mockConfigService.freePlanHistoryCount).thenReturn(7);
+    bloc = CompanyRoeBloc(mockGetRoe, mockConfigService);
   });
 
   const tTicker = 'AAPL';
@@ -121,6 +127,7 @@ void main() {
         absoluteDelta: 0.1,
         isPositive: true,
         referenceLabel: '2018',
+        historyLimit: 7,
       ),
       act: (bloc) {
         // act
@@ -153,6 +160,7 @@ void main() {
         absoluteDelta: 0.1,
         isPositive: true,
         referenceLabel: '2018',
+        historyLimit: 7,
       ),
       act: (bloc) {
         // act
@@ -221,6 +229,7 @@ void main() {
         absoluteDelta: 0.1,
         isPositive: true,
         referenceLabel: '2018',
+        historyLimit: 7,
         lastUpdated: DateTime.now(),
       ),
       act: (bloc) {
@@ -254,6 +263,7 @@ void main() {
         absoluteDelta: 0.1,
         isPositive: true,
         referenceLabel: '2018',
+        historyLimit: 7,
         lastUpdated: DateTime.now().subtract(const Duration(hours: 25)),
       ),
       act: (bloc) {

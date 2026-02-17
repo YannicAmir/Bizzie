@@ -9,6 +9,7 @@ import 'package:bizzie/shared/utils/bizzie_date_formatter.dart';
 import '../../domain/usecases/get_free_cash_flow_stats_usecase.dart';
 import 'company_free_cash_flow_event.dart';
 import 'company_free_cash_flow_state.dart';
+import 'package:bizzie/core/interfaces/i_config_service.dart';
 
 final _logger = BizzieLogger('CompanyFreeCashFlowBloc');
 
@@ -16,7 +17,9 @@ final _logger = BizzieLogger('CompanyFreeCashFlowBloc');
 class CompanyFreeCashFlowBloc
     extends Bloc<CompanyFreeCashFlowEvent, CompanyFreeCashFlowState> {
   final GetFreeCashFlowStatsUseCase _getFreeCashFlowStats;
-  CompanyFreeCashFlowBloc(this._getFreeCashFlowStats)
+  final IConfigService _configService;
+
+  CompanyFreeCashFlowBloc(this._getFreeCashFlowStats, this._configService)
     : super(const CompanyFreeCashFlowState.initial()) {
     on<CompanyFreeCashFlowEvent>(_onEvent, transformer: droppable());
   }
@@ -66,6 +69,7 @@ class CompanyFreeCashFlowBloc
               data.quarterlyFcf,
               isAnnual: false,
             ),
+            historyLimit: _configService.freePlanHistoryCount,
             lastUpdated: DateTime.now(),
           ),
         );

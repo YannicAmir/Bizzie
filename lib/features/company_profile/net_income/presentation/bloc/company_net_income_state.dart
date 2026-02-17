@@ -13,6 +13,7 @@ class CompanyNetIncomeState with _$CompanyNetIncomeState {
     required NetIncomeStats netIncomeStats,
     required List<ChartDataPoint> annualChartData,
     required List<ChartDataPoint> quarterlyChartData,
+    required int historyLimit,
     DateTime? lastUpdated,
   }) = _Loaded;
   const factory CompanyNetIncomeState.failure(Failure failure) = _Failure;

@@ -13,6 +13,7 @@ class CompanyEpsState with _$CompanyEpsState {
     required EpsStats epsStats,
     required List<ChartDataPoint> annualChartData,
     required List<ChartDataPoint> quarterlyChartData,
+    required int historyLimit,
     DateTime? lastUpdated,
   }) = _Loaded;
   const factory CompanyEpsState.failure(Failure failure) = _Failure;

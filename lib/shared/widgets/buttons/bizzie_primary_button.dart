@@ -9,6 +9,7 @@ class BizziePrimaryButton extends StatelessWidget {
     this.isLoading = false,
     this.width = double.infinity,
     this.height = AppConstants.mainButtonHeight,
+    this.prefixIcon,
   });
 
   final String title;
@@ -16,6 +17,7 @@ class BizziePrimaryButton extends StatelessWidget {
   final bool isLoading;
   final double? width;
   final double height;
+  final Widget? prefixIcon;
 
   @override
   Widget build(BuildContext context) {
@@ -42,11 +44,20 @@ class BizziePrimaryButton extends StatelessWidget {
                   strokeWidth: 2.5,
                 ),
               )
-            : Text(
-                title,
-                style: theme.textTheme.labelLarge?.copyWith(
-                  color: theme.colorScheme.onPrimary,
-                ),
+            : Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  if (prefixIcon != null) ...[
+                    prefixIcon!,
+                    const SizedBox(width: 8),
+                  ],
+                  Text(
+                    title,
+                    style: theme.textTheme.labelLarge?.copyWith(
+                      color: theme.colorScheme.onPrimary,
+                    ),
+                  ),
+                ],
               ),
       ),
     );

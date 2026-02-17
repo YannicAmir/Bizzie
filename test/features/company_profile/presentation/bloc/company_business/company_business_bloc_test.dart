@@ -9,16 +9,26 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
+import 'package:bizzie/core/interfaces/i_config_service.dart';
+
 class MockGetBusinessProfileUseCase extends Mock
     implements GetBusinessProfileUseCase {}
+
+class MockConfigService extends Mock implements IConfigService {}
 
 void main() {
   late CompanyBusinessBloc bloc;
   late MockGetBusinessProfileUseCase mockGetBusinessProfileUseCase;
+  late MockConfigService mockConfigService;
 
   setUp(() {
     mockGetBusinessProfileUseCase = MockGetBusinessProfileUseCase();
-    bloc = CompanyBusinessBloc(mockGetBusinessProfileUseCase);
+    mockConfigService = MockConfigService();
+    when(() => mockConfigService.freePlanHistoryCount).thenReturn(7);
+    bloc = CompanyBusinessBloc(
+      mockGetBusinessProfileUseCase,
+      mockConfigService,
+    );
   });
 
   const tTicker = 'AAPL';
@@ -112,7 +122,8 @@ void main() {
         ).thenAnswer((_) async => Right(tBusinessProfile));
         return bloc;
       },
-      seed: () => CompanyBusinessState.loaded(tBusinessProfile),
+      seed: () =>
+          CompanyBusinessState.loaded(tBusinessProfile, historyLimit: 7),
       act: (bloc) {
         // act
         bloc.add(const CompanyBusinessEvent.loadRequested(tTicker));
@@ -136,7 +147,8 @@ void main() {
         ).thenAnswer((_) async => Right(tBusinessProfile));
         return bloc;
       },
-      seed: () => CompanyBusinessState.loaded(tBusinessProfile),
+      seed: () =>
+          CompanyBusinessState.loaded(tBusinessProfile, historyLimit: 7),
       act: (bloc) {
         // act
         bloc.add(
@@ -202,6 +214,7 @@ void main() {
       },
       seed: () => CompanyBusinessState.loaded(
         tBusinessProfile,
+        historyLimit: 7,
         lastUpdated: DateTime.now(),
       ),
       act: (bloc) {
@@ -229,6 +242,7 @@ void main() {
       },
       seed: () => CompanyBusinessState.loaded(
         tBusinessProfile,
+        historyLimit: 7,
         lastUpdated: DateTime.now().subtract(const Duration(hours: 25)),
       ),
       act: (bloc) {

@@ -1,7 +1,11 @@
-import 'package:bizzie/app/themes/app_colors.dart';
+import 'package:bizzie/app/themes/app_assets.dart';
 import 'package:bizzie/app/themes/app_text_styles.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
+import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
+import 'package:bizzie/shared/utils/paywall_helper.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class FinancialStatementsTable extends StatelessWidget {
   final String title;
@@ -125,26 +129,54 @@ class FinancialStatementsTable extends StatelessWidget {
             },
           ),
           if (onViewAll != null) ...[
-            const Divider(height: 1, color: AppColors.slate50),
-            InkWell(
-              onTap: onViewAll,
-              borderRadius: const BorderRadius.vertical(
-                bottom: Radius.circular(16),
-              ),
-              child: Container(
-                width: double.infinity,
-                padding: const EdgeInsets.symmetric(vertical: 12),
-                alignment: Alignment.centerLeft,
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 16.0),
-                  child: Text(
-                    'View All',
-                    style: AppTextStyles.bodyMediumBold.copyWith(
-                      color: theme.primaryColor,
+            BlocBuilder<UserBloc, UserState>(
+              builder: (context, state) {
+                final isSubscribed = state.maybeMap(
+                  loaded: (s) => s.user.isSubscribed,
+                  orElse: () => false,
+                );
+
+                return GestureDetector(
+                  onTap: () {
+                    if (isSubscribed) {
+                      onViewAll?.call();
+                    } else {
+                      PaywallHelper.showPaywallSequence(context);
+                    }
+                  },
+                  child: Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    alignment: Alignment.centerLeft,
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 16.0),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            'View All',
+                            style: AppTextStyles.bodyMediumBold.copyWith(
+                              color: theme.primaryColor,
+                            ),
+                          ),
+                          if (!isSubscribed) ...[
+                            const SizedBox(width: 6),
+                            SvgPicture.asset(
+                              AppAssets.authLockIcon,
+                              width: 15,
+                              height: 15,
+                              colorFilter: ColorFilter.mode(
+                                theme.primaryColor,
+                                BlendMode.srcIn,
+                              ),
+                            ),
+                          ],
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              ),
+                );
+              },
             ),
           ],
         ],

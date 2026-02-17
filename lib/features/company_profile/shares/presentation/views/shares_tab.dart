@@ -127,6 +127,8 @@ class _SharesTabState extends State<SharesTab>
                         .map((p) => BizzieChartData(p.label, p.value))
                         .toList(),
                     numberFormat: numberFormat,
+                    visibleCount: loadedState.historyLimit,
+                    thresholdCount: loadedState.historyLimit,
                   ),
                   AppConstants.mainSectionSpacing,
                   FinancialDataTable(
@@ -150,6 +152,7 @@ class _SharesTabState extends State<SharesTab>
                       isAnnual ? 'Yearly Shares Data' : 'Quarterly Shares Data',
                       isAnnual,
                     ),
+                    limit: loadedState.historyLimit,
                   ),
                 ],
               ),

@@ -17,6 +17,7 @@ class CompanyPfcfRatioState with _$CompanyPfcfRatioState {
     required double absoluteDelta,
     required bool isPositive,
     required String referenceLabel,
+    required int historyLimit,
     DateTime? lastUpdated,
   }) = _Loaded;
   const factory CompanyPfcfRatioState.failure(Failure failure) = _Failure;

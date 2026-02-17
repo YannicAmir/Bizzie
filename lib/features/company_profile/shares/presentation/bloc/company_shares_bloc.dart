@@ -1,3 +1,4 @@
+import 'package:bizzie/core/interfaces/i_config_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 
@@ -16,7 +17,9 @@ final _logger = BizzieLogger('CompanySharesBloc');
 @injectable
 class CompanySharesBloc extends Bloc<CompanySharesEvent, CompanySharesState> {
   final GetSharesUseCase _getShares;
-  CompanySharesBloc(this._getShares)
+  final IConfigService _configService;
+
+  CompanySharesBloc(this._getShares, this._configService)
     : super(const CompanySharesState.initial()) {
     on<CompanySharesEvent>(_onEvent, transformer: droppable());
   }
@@ -76,6 +79,7 @@ class CompanySharesBloc extends Bloc<CompanySharesEvent, CompanySharesState> {
               isAnnual: false,
             ),
             lastUpdated: DateTime.now(),
+            historyLimit: _configService.freePlanHistoryCount,
           ),
         );
       },
