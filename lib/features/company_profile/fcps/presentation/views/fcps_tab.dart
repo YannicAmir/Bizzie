@@ -51,6 +51,7 @@ class _FcpsTabState extends State<FcpsTab> with AutomaticKeepAliveClientMixin {
           ),
           loaded: (loadedState) {
             final stats = loadedState.fcpsStats;
+            final historyLimit = loadedState.historyLimit;
             final isAnnual = _selectedIndex == 0;
             final chartData = isAnnual
                 ? loadedState.annualChartData
@@ -105,6 +106,8 @@ class _FcpsTabState extends State<FcpsTab> with AutomaticKeepAliveClientMixin {
                       locale: Localizations.localeOf(context).toString(),
                       name: stats.reportedCurrency,
                     ),
+                    visibleCount: historyLimit,
+                    thresholdCount: historyLimit,
                   ),
                   AppConstants.mainSectionSpacing,
                   FinancialHighlightsSection(
@@ -125,6 +128,7 @@ class _FcpsTabState extends State<FcpsTab> with AutomaticKeepAliveClientMixin {
                     dateFormat: isAnnual
                         ? FinancialDateFormat.monthYear
                         : FinancialDateFormat.quarterShort,
+                    limit: historyLimit,
                     onViewMore: () => _showAllHistory(
                       context,
                       isAnnual ? stats.annualFcps : stats.quarterlyFcps,

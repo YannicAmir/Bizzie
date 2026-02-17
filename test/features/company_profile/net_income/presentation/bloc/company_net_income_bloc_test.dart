@@ -9,17 +9,23 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:bizzie/core/interfaces/i_config_service.dart';
 
 class MockGetNetIncomeStatsUseCase extends Mock
     implements GetNetIncomeStatsUseCase {}
 
+class MockConfigService extends Mock implements IConfigService {}
+
 void main() {
   late CompanyNetIncomeBloc bloc;
   late MockGetNetIncomeStatsUseCase mockGetNetIncomeStats;
+  late MockConfigService mockConfigService;
 
   setUp(() {
     mockGetNetIncomeStats = MockGetNetIncomeStatsUseCase();
-    bloc = CompanyNetIncomeBloc(mockGetNetIncomeStats);
+    mockConfigService = MockConfigService();
+    when(() => mockConfigService.freePlanHistoryCount).thenReturn(7);
+    bloc = CompanyNetIncomeBloc(mockGetNetIncomeStats, mockConfigService);
   });
 
   const tTicker = 'AAPL';
@@ -104,6 +110,7 @@ void main() {
         netIncomeStats: tNetIncomeStats,
         annualChartData: [],
         quarterlyChartData: [],
+        historyLimit: 7,
       ),
       act: (bloc) {
         // act
@@ -132,6 +139,7 @@ void main() {
         netIncomeStats: tNetIncomeStats,
         annualChartData: [],
         quarterlyChartData: [],
+        historyLimit: 7,
       ),
       act: (bloc) {
         // act
@@ -199,6 +207,7 @@ void main() {
         netIncomeStats: tNetIncomeStats,
         annualChartData: const [],
         quarterlyChartData: const [],
+        historyLimit: 7,
         lastUpdated: DateTime.now(),
       ),
       act: (bloc) {
@@ -228,6 +237,7 @@ void main() {
         netIncomeStats: tNetIncomeStats,
         annualChartData: const [],
         quarterlyChartData: const [],
+        historyLimit: 7,
         lastUpdated: DateTime.now().subtract(const Duration(hours: 25)),
       ),
       act: (bloc) {

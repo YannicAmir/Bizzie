@@ -13,6 +13,7 @@ class CompanyRevenueState with _$CompanyRevenueState {
     required RevenueStats revenueStats,
     required List<ChartDataPoint> annualChartData,
     required List<ChartDataPoint> quarterlyChartData,
+    required int historyLimit,
     DateTime? lastUpdated,
   }) = _Loaded;
   const factory CompanyRevenueState.failure(Failure failure) = _Failure;

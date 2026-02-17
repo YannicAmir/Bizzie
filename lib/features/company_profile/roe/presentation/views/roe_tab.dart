@@ -46,6 +46,7 @@ class RoeTab extends StatelessWidget {
                 absoluteDelta,
                 isPositive,
                 referenceLabel,
+                historyLimit,
                 lastUpdated,
               ) => _RoeLoadedContent(
                 dataPoints: dataPoints,
@@ -55,6 +56,7 @@ class RoeTab extends StatelessWidget {
                 absoluteDelta: absoluteDelta,
                 isPositive: isPositive,
                 referenceLabel: referenceLabel,
+                historyLimit: historyLimit,
                 ticker: ticker,
               ),
         );
@@ -71,6 +73,7 @@ class _RoeLoadedContent extends StatelessWidget {
   final double absoluteDelta;
   final bool isPositive;
   final String referenceLabel;
+  final int historyLimit;
   final String ticker;
 
   const _RoeLoadedContent({
@@ -81,6 +84,7 @@ class _RoeLoadedContent extends StatelessWidget {
     required this.absoluteDelta,
     required this.isPositive,
     required this.referenceLabel,
+    required this.historyLimit,
     required this.ticker,
   });
 
@@ -125,6 +129,8 @@ class _RoeLoadedContent extends StatelessWidget {
                 .map((p) => BizzieChartData(p.label, p.value))
                 .toList(),
             numberFormat: chartFormatter,
+            visibleCount: historyLimit,
+            thresholdCount: historyLimit,
           ),
           AppConstants.mainSectionSpacing,
           FinancialDataTable(
@@ -134,6 +140,7 @@ class _RoeLoadedContent extends StatelessWidget {
             isPercentage: true,
             dateFormat: FinancialDateFormat.fullDate,
             onViewMore: () => _showAllHistory(context, dataPoints),
+            limit: historyLimit,
           ),
         ],
       ),

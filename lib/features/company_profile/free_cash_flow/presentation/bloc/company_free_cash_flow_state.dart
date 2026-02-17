@@ -13,6 +13,7 @@ class CompanyFreeCashFlowState with _$CompanyFreeCashFlowState {
     required FreeCashFlowStats fcfStats,
     required List<ChartDataPoint> annualChartData,
     required List<ChartDataPoint> quarterlyChartData,
+    required int historyLimit,
     DateTime? lastUpdated,
   }) = _Loaded;
   const factory CompanyFreeCashFlowState.failure(Failure failure) = _Failure;

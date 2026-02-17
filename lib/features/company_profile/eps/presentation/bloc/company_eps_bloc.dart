@@ -5,8 +5,9 @@ import 'package:bizzie/features/company_profile/eps/domain/usecases/get_eps_stat
 import 'company_eps_event.dart';
 import 'company_eps_state.dart';
 import 'package:bizzie/shared/utils/bizzie_date_formatter.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:bizzie/core/interfaces/i_config_service.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
 final _logger = BizzieLogger('CompanyEpsBloc');
@@ -14,8 +15,9 @@ final _logger = BizzieLogger('CompanyEpsBloc');
 @injectable
 class CompanyEpsBloc extends Bloc<CompanyEpsEvent, CompanyEpsState> {
   final GetEpsStatsUseCase _getEpsStatsUseCase;
+  final IConfigService _configService;
 
-  CompanyEpsBloc(this._getEpsStatsUseCase)
+  CompanyEpsBloc(this._getEpsStatsUseCase, this._configService)
     : super(const CompanyEpsState.initial()) {
     on<CompanyEpsEvent>(_onEvent, transformer: droppable());
   }
@@ -63,6 +65,7 @@ class CompanyEpsBloc extends Bloc<CompanyEpsEvent, CompanyEpsState> {
               stats.quarterlyEps,
               isAnnual: false,
             ),
+            historyLimit: _configService.freePlanHistoryCount,
             lastUpdated: DateTime.now(),
           ),
         );

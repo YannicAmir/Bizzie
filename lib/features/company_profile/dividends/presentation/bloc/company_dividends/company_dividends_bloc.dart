@@ -6,14 +6,17 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:injectable/injectable.dart';
 
+import 'package:bizzie/core/interfaces/i_config_service.dart';
+
 final _logger = BizzieLogger('CompanyDividendsBloc');
 
 @injectable
 class CompanyDividendsBloc
     extends Bloc<CompanyDividendsEvent, CompanyDividendsState> {
   final GetDividendInfoUseCase _getDividendInfo;
+  final IConfigService _configService;
 
-  CompanyDividendsBloc(this._getDividendInfo)
+  CompanyDividendsBloc(this._getDividendInfo, this._configService)
     : super(const CompanyDividendsState.initial()) {
     on<CompanyDividendsEvent>(_onEvent, transformer: droppable());
   }
@@ -55,7 +58,13 @@ class CompanyDividendsBloc
       },
       (info) {
         _logger.info('Successfully loaded dividends');
-        emit(CompanyDividendsState.loaded(info, lastUpdated: DateTime.now()));
+        emit(
+          CompanyDividendsState.loaded(
+            info,
+            historyLimit: _configService.freePlanHistoryCount,
+            lastUpdated: DateTime.now(),
+          ),
+        );
       },
     );
   }

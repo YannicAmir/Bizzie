@@ -7,12 +7,14 @@ class AppModalListItem extends StatelessWidget {
   final String label;
   final bool isSelected;
   final VoidCallback onTap;
+  final Widget? suffix;
 
   const AppModalListItem({
     super.key,
     required this.label,
     required this.isSelected,
     required this.onTap,
+    this.suffix,
   });
 
   @override
@@ -47,7 +49,9 @@ class AppModalListItem extends StatelessWidget {
                     : AppTextStyles.bodyMedium,
               ),
             ),
-            if (isSelected)
+            if (suffix != null)
+              suffix!
+            else if (isSelected)
               Icon(Icons.check, color: badgeTheme?.neutralText, size: 20),
           ],
         ),

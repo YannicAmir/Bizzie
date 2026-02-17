@@ -8,11 +8,21 @@ import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:bizzie/shared/utils/bizzie_date_formatter.dart';
 import 'package:bizzie/features/company_profile/business/presentation/utils/business_profile_extensions.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:bizzie/app/themes/app_assets.dart';
+import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
+import 'package:bizzie/shared/utils/paywall_helper.dart';
 
 class SecFilingsCard extends StatefulWidget {
   final BusinessProfile profile;
+  final int historyCount;
 
-  const SecFilingsCard({super.key, required this.profile});
+  const SecFilingsCard({
+    super.key,
+    required this.profile,
+    required this.historyCount,
+  });
 
   @override
   State<SecFilingsCard> createState() => _SecFilingsCardState();
@@ -54,6 +64,7 @@ class _SecFilingsCardState extends State<SecFilingsCard> {
                 : widget.profile.quarterlyFilings,
             isAnnual: _isAnnual,
             onShowAll: (filings) => _showAllFilings(context, filings),
+            historyCount: widget.historyCount,
           ),
         ],
       ),
@@ -151,17 +162,20 @@ class _FilingsList extends StatelessWidget {
   final List<SecFiling> filings;
   final bool isAnnual;
   final Function(List<SecFiling>) onShowAll;
+  final int historyCount;
 
   const _FilingsList({
     required this.filings,
     required this.isAnnual,
     required this.onShowAll,
+    required this.historyCount,
   });
 
   @override
   Widget build(BuildContext context) {
-    final displayFilings = filings.take(5).toList();
-    final hasMore = filings.length > 5;
+    final theme = Theme.of(context);
+    final displayFilings = filings.take(historyCount).toList();
+    final hasMore = filings.length > historyCount;
 
     if (displayFilings.isEmpty) {
       return Center(
@@ -192,14 +206,46 @@ class _FilingsList extends StatelessWidget {
         ),
         if (hasMore) ...[
           const SizedBox(height: 16),
-          GestureDetector(
-            onTap: () => onShowAll(filings),
-            child: Text(
-              'View All',
-              style: AppTextStyles.bodyMediumBold.copyWith(
-                color: AppColors.primary,
-              ),
-            ),
+          BlocBuilder<UserBloc, UserState>(
+            builder: (context, state) {
+              final isSubscribed = state.maybeMap(
+                loaded: (s) => s.user.isSubscribed,
+                orElse: () => false,
+              );
+
+              return GestureDetector(
+                onTap: () {
+                  if (isSubscribed) {
+                    onShowAll(filings);
+                  } else {
+                    PaywallHelper.showPaywallSequence(context);
+                  }
+                },
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      'View All',
+                      style: AppTextStyles.bodyMediumBold.copyWith(
+                        color: theme.colorScheme.primary,
+                      ),
+                    ),
+                    if (!isSubscribed) ...[
+                      const SizedBox(width: 6),
+                      SvgPicture.asset(
+                        AppAssets.authLockIcon,
+                        width: 15,
+                        height: 15,
+                        colorFilter: ColorFilter.mode(
+                          theme.colorScheme.primary,
+                          BlendMode.srcIn,
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+              );
+            },
           ),
         ],
       ],
@@ -215,6 +261,8 @@ class _FilingItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     String title;
     final formattedDate = BizzieDateFormatter.formatMonthYearFull(filing.date);
 
@@ -236,7 +284,7 @@ class _FilingItem extends StatelessWidget {
             Text(
               'View →',
               style: AppTextStyles.bodyMediumBold.copyWith(
-                color: AppColors.primary,
+                color: theme.colorScheme.primary,
               ),
             ),
           ],

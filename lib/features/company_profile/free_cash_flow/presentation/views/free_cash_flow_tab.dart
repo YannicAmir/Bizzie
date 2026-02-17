@@ -109,6 +109,8 @@ class _FreeCashFlowTabState extends State<FreeCashFlowTab>
                       locale: Localizations.localeOf(context).toString(),
                       name: stats.reportedCurrency,
                     ),
+                    visibleCount: loadedState.historyLimit,
+                    thresholdCount: loadedState.historyLimit,
                   ),
                   AppConstants.mainSectionSpacing,
                   FinancialHighlightsSection(
@@ -138,6 +140,7 @@ class _FreeCashFlowTabState extends State<FreeCashFlowTab>
                       stats.reportedCurrency,
                       isAnnual,
                     ),
+                    limit: loadedState.historyLimit,
                   ),
                 ],
               ),

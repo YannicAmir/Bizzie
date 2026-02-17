@@ -9,15 +9,22 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
+import 'package:bizzie/core/interfaces/i_config_service.dart';
+
 class MockGetPeRatioUseCase extends Mock implements GetPeRatioUseCase {}
+
+class MockConfigService extends Mock implements IConfigService {}
 
 void main() {
   late CompanyPeRatioBloc bloc;
   late MockGetPeRatioUseCase mockGetPeRatio;
+  late MockConfigService mockConfigService;
 
   setUp(() {
     mockGetPeRatio = MockGetPeRatioUseCase();
-    bloc = CompanyPeRatioBloc(mockGetPeRatio);
+    mockConfigService = MockConfigService();
+    when(() => mockConfigService.freePlanHistoryCount).thenReturn(7);
+    bloc = CompanyPeRatioBloc(mockGetPeRatio, mockConfigService);
   });
 
   const tTicker = 'AAPL';
@@ -121,6 +128,7 @@ void main() {
         absoluteDelta: 1.0,
         isPositive: true,
         referenceLabel: '2018',
+        historyLimit: 7,
       ),
       act: (bloc) {
         // act
@@ -153,6 +161,7 @@ void main() {
         absoluteDelta: 1.0,
         isPositive: true,
         referenceLabel: '2018',
+        historyLimit: 7,
       ),
       act: (bloc) {
         // act
@@ -221,6 +230,7 @@ void main() {
         absoluteDelta: 1.0,
         isPositive: true,
         referenceLabel: '2018',
+        historyLimit: 7,
         lastUpdated: DateTime.now(),
       ),
       act: (bloc) {
@@ -254,6 +264,7 @@ void main() {
         absoluteDelta: 1.0,
         isPositive: true,
         referenceLabel: '2018',
+        historyLimit: 7,
         lastUpdated: DateTime.now().subtract(const Duration(hours: 25)),
       ),
       act: (bloc) {

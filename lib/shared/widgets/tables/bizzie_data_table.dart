@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:bizzie/app/themes/app_assets.dart';
+import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
+import 'package:bizzie/shared/utils/paywall_helper.dart';
 
 import 'package:bizzie/app/themes/app_text_styles.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
@@ -63,19 +68,51 @@ class BizzieDataTable extends StatelessWidget {
           }),
           if (onViewMore != null) ...[
             AppConstants.subSectionSpacing,
-            GestureDetector(
-              onTap: onViewMore,
-              child: Padding(
-                padding: const EdgeInsets.all(
-                  AppConstants.mainSectionContainerPadding,
-                ),
-                child: Text(
-                  viewMoreLabel ?? 'View All',
-                  style: AppTextStyles.bodyMediumBold.copyWith(
-                    color: theme.primaryColor,
+            BlocBuilder<UserBloc, UserState>(
+              builder: (context, state) {
+                final isSubscribed = state.maybeMap(
+                  loaded: (s) => s.user.isSubscribed,
+                  orElse: () => false,
+                );
+
+                return GestureDetector(
+                  onTap: () {
+                    if (isSubscribed) {
+                      onViewMore?.call();
+                    } else {
+                      PaywallHelper.showPaywallSequence(context);
+                    }
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.all(
+                      AppConstants.mainSectionContainerPadding,
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          viewMoreLabel ?? 'View All',
+                          style: AppTextStyles.bodyMediumBold.copyWith(
+                            color: theme.primaryColor,
+                          ),
+                        ),
+                        if (!isSubscribed) ...[
+                          const SizedBox(width: 6),
+                          SvgPicture.asset(
+                            AppAssets.authLockIcon,
+                            width: 15,
+                            height: 15,
+                            colorFilter: ColorFilter.mode(
+                              theme.primaryColor,
+                              BlendMode.srcIn,
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
                   ),
-                ),
-              ),
+                );
+              },
             ),
           ],
 

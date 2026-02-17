@@ -2,25 +2,30 @@ import 'package:bizzie/app/themes/app_text_styles.dart';
 import 'package:bizzie/features/company_profile/dividends/domain/extensions/dividend_event_list_extensions.dart';
 import 'package:bizzie/features/company_profile/dividends/domain/models/dividend_event.dart';
 import 'package:bizzie/features/company_profile/dividends/presentation/utils/dividend_payment_history_utils.dart';
-import 'package:bizzie/features/company_profile/dividends/presentation/utils/dividend_extensions.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/widgets/financial_table_footer.dart';
-import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:bizzie/shared/widgets/modals/app_history_modal.dart';
 import 'package:bizzie/shared/widgets/tables/bizzie_data_table.dart';
 import 'package:flutter/material.dart';
 
 class DividendPaymentHistorySection extends StatelessWidget {
   final List<DividendEvent> history;
+  final int historyLimit;
 
-  const DividendPaymentHistorySection({super.key, required this.history});
+  const DividendPaymentHistorySection({
+    super.key,
+    required this.history,
+    required this.historyLimit,
+  });
 
   @override
   Widget build(BuildContext context) {
     final sortedHistory = history.sortedByDateDesc;
-    final displayedEvents = sortedHistory
-        .take(AppConstants.dividendTableRowCount)
-        .toList();
-    final hasMore = sortedHistory.length > AppConstants.dividendTableRowCount;
+    final displayedEvents = sortedHistory.take(historyLimit).toList();
+    final hasMore = sortedHistory.length > historyLimit;
+
+    final totalPaidLabel = displayedEvents.length < historyLimit
+        ? 'Total'
+        : 'Total (Last $historyLimit Quarters)';
 
     return BizzieDataTable(
       title: 'Table',
@@ -31,7 +36,7 @@ class DividendPaymentHistorySection extends StatelessWidget {
       footer: FinancialTableFooter(
         columns: [
           FinancialTableFooterColumnData(
-            label: displayedEvents.totalPaidLabel,
+            label: totalPaidLabel,
             value: '\$${displayedEvents.totalDividends.toStringAsFixed(2)}',
           ),
           FinancialTableFooterColumnData(

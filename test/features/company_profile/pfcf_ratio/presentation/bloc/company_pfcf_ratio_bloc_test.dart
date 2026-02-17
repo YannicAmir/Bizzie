@@ -8,16 +8,22 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:bizzie/core/interfaces/i_config_service.dart';
 
 class MockGetPfcfRatioUseCase extends Mock implements GetPfcfRatioUseCase {}
+
+class MockConfigService extends Mock implements IConfigService {}
 
 void main() {
   late CompanyPfcfRatioBloc bloc;
   late MockGetPfcfRatioUseCase mockGetPfcfRatio;
+  late MockConfigService mockConfigService;
 
   setUp(() {
     mockGetPfcfRatio = MockGetPfcfRatioUseCase();
-    bloc = CompanyPfcfRatioBloc(mockGetPfcfRatio);
+    mockConfigService = MockConfigService();
+    when(() => mockConfigService.freePlanHistoryCount).thenReturn(7);
+    bloc = CompanyPfcfRatioBloc(mockGetPfcfRatio, mockConfigService);
   });
 
   const tTicker = 'AAPL';
@@ -159,6 +165,7 @@ void main() {
         absoluteDelta: 1.0,
         isPositive: true,
         referenceLabel: '2018',
+        historyLimit: 7,
       ),
       act: (bloc) {
         // act
@@ -217,6 +224,7 @@ void main() {
         absoluteDelta: 1.0,
         isPositive: true,
         referenceLabel: '2018',
+        historyLimit: 7,
         lastUpdated: DateTime.now(),
       ),
       act: (bloc) {
@@ -250,6 +258,7 @@ void main() {
         absoluteDelta: 1.0,
         isPositive: true,
         referenceLabel: '2018',
+        historyLimit: 7,
         lastUpdated: DateTime.now().subtract(const Duration(hours: 25)),
       ),
       act: (bloc) {

@@ -105,6 +105,8 @@ class _EpsTabState extends State<EpsTab> with AutomaticKeepAliveClientMixin {
                       locale: Localizations.localeOf(context).toString(),
                       name: stats.reportedCurrency,
                     ),
+                    visibleCount: loadedState.historyLimit,
+                    thresholdCount: loadedState.historyLimit,
                   ),
                   AppConstants.mainSectionSpacing,
                   FinancialHighlightsSection(
@@ -132,6 +134,7 @@ class _EpsTabState extends State<EpsTab> with AutomaticKeepAliveClientMixin {
                       stats.reportedCurrency,
                       isAnnual,
                     ),
+                    limit: loadedState.historyLimit,
                   ),
                 ],
               ),

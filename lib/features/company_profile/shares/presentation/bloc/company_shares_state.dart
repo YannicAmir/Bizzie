@@ -16,6 +16,7 @@ class CompanySharesState with _$CompanySharesState {
     required List<ChartDataPoint> quarterlyChartData,
     required SharesSummaryData annualSummary,
     required SharesSummaryData quarterlySummary,
+    required int historyLimit,
     DateTime? lastUpdated,
   }) = _Loaded;
   const factory CompanySharesState.failure(Failure failure) = _Failure;

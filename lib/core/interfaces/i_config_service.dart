@@ -12,6 +12,7 @@ abstract class IConfigService {
   String get appStoreLink;
   String get playStoreLink;
   bool get maintenanceMode;
+  int get freePlanHistoryCount;
   DateTime get lastFetchTime;
 
   String getString(String key);

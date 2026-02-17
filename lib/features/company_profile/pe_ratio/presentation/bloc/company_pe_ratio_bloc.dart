@@ -3,6 +3,7 @@ import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:injectable/injectable.dart';
 import 'package:intl/intl.dart';
 
+import 'package:bizzie/core/interfaces/i_config_service.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:bizzie/features/company_profile/shared/domain/models/chart_data_point.dart';
 import 'package:bizzie/features/company_profile/shared/domain/models/financial_data_point.dart';
@@ -17,8 +18,9 @@ final _logger = BizzieLogger('CompanyPeRatioBloc');
 class CompanyPeRatioBloc
     extends Bloc<CompanyPeRatioEvent, CompanyPeRatioState> {
   final GetPeRatioUseCase _getPeRatio;
+  final IConfigService _configService;
 
-  CompanyPeRatioBloc(this._getPeRatio)
+  CompanyPeRatioBloc(this._getPeRatio, this._configService)
     : super(const CompanyPeRatioState.initial()) {
     on<CompanyPeRatioEvent>(_onEvent, transformer: droppable());
   }
@@ -101,6 +103,7 @@ class CompanyPeRatioBloc
         absoluteDelta: growth.delta.abs(),
         isPositive: growth.delta >= 0,
         referenceLabel: referenceLabel,
+        historyLimit: _configService.freePlanHistoryCount,
         lastUpdated: DateTime.now(),
       ),
     );
@@ -178,6 +181,7 @@ class CompanyPeRatioBloc
       absoluteDelta: 0,
       isPositive: false,
       referenceLabel: '',
+      historyLimit: _configService.freePlanHistoryCount,
       lastUpdated: DateTime.now(),
     );
   }

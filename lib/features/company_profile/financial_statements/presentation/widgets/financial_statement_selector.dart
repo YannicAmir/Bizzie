@@ -1,7 +1,12 @@
+import 'package:bizzie/app/themes/app_assets.dart';
+import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
+import 'package:bizzie/shared/utils/paywall_helper.dart';
 import 'package:bizzie/shared/widgets/buttons/app_dropdown_button.dart';
 import 'package:bizzie/shared/widgets/modals/app_bottom_modal.dart';
 import 'package:bizzie/shared/widgets/modals/app_modal_list_item.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 
 class FinancialStatementSelector<T> extends StatelessWidget {
@@ -13,6 +18,7 @@ class FinancialStatementSelector<T> extends StatelessWidget {
   final String Function(T)? periodExtractor;
   final String dateFormat;
   final String modalTitle;
+  final int historyLimit;
 
   const FinancialStatementSelector({
     super.key,
@@ -24,6 +30,7 @@ class FinancialStatementSelector<T> extends StatelessWidget {
     this.periodExtractor,
     this.dateFormat = 'MMM d, yyyy',
     required this.modalTitle,
+    required this.historyLimit,
   });
 
   String _formatItemLabel(T item) {
@@ -71,12 +78,38 @@ class FinancialStatementSelector<T> extends StatelessWidget {
                 final label = _formatItemLabel(item);
                 final isSelected = item == selectedItem;
 
-                return AppModalListItem(
-                  label: label,
-                  isSelected: isSelected,
-                  onTap: () {
-                    onItemSelected(item);
-                    Navigator.pop(context);
+                return BlocBuilder<UserBloc, UserState>(
+                  builder: (context, state) {
+                    final isSubscribed = state.maybeMap(
+                      loaded: (s) => s.user.isSubscribed,
+                      orElse: () => false,
+                    );
+
+                    final isLocked = !isSubscribed && index >= historyLimit;
+
+                    return AppModalListItem(
+                      label: label,
+                      isSelected: isSelected,
+                      suffix: isLocked
+                          ? SvgPicture.asset(
+                              AppAssets.authLockIcon,
+                              width: 18,
+                              height: 18,
+                              colorFilter: ColorFilter.mode(
+                                Theme.of(context).primaryColor,
+                                BlendMode.srcIn,
+                              ),
+                            )
+                          : null,
+                      onTap: () {
+                        if (isLocked) {
+                          PaywallHelper.showPaywallSequence(context);
+                        } else {
+                          onItemSelected(item);
+                          Navigator.pop(context);
+                        }
+                      },
+                    );
                   },
                 );
               },

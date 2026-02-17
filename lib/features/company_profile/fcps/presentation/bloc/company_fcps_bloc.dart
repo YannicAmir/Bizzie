@@ -2,6 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 
 import 'package:injectable/injectable.dart';
+import 'package:bizzie/core/interfaces/i_config_service.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:bizzie/features/company_profile/shared/domain/models/chart_data_point.dart';
 import 'package:bizzie/features/company_profile/shared/domain/models/financial_data_point.dart';
@@ -15,7 +16,9 @@ final _logger = BizzieLogger('CompanyFcpsBloc');
 @injectable
 class CompanyFcpsBloc extends Bloc<CompanyFcpsEvent, CompanyFcpsState> {
   final GetFcpsStatsUseCase _getFcpsStats;
-  CompanyFcpsBloc(this._getFcpsStats)
+  final IConfigService _configService;
+
+  CompanyFcpsBloc(this._getFcpsStats, this._configService)
     : super(const CompanyFcpsState.initial()) {
     on<CompanyFcpsEvent>(_onEvent, transformer: droppable());
   }
@@ -63,6 +66,7 @@ class CompanyFcpsBloc extends Bloc<CompanyFcpsEvent, CompanyFcpsState> {
               data.quarterlyFcps,
               isAnnual: false,
             ),
+            historyLimit: _configService.freePlanHistoryCount,
             lastUpdated: DateTime.now(),
           ),
         );

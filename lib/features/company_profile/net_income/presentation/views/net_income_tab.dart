@@ -106,6 +106,8 @@ class _NetIncomeTabState extends State<NetIncomeTab>
                       locale: Localizations.localeOf(context).toString(),
                       name: stats.reportedCurrency,
                     ),
+                    visibleCount: loadedState.historyLimit,
+                    thresholdCount: loadedState.historyLimit,
                   ),
                   AppConstants.mainSectionSpacing,
                   FinancialHighlightsSection(
@@ -137,6 +139,7 @@ class _NetIncomeTabState extends State<NetIncomeTab>
                       stats.reportedCurrency,
                       isAnnual,
                     ),
+                    limit: loadedState.historyLimit,
                   ),
                 ],
               ),

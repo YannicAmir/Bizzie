@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:bizzie/core/data/dtos/fmp_config.dart';
 import 'package:bizzie/core/interfaces/i_config_service.dart';
+import 'package:injectable/injectable.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:bizzie/env/app_env.dart';
@@ -17,10 +18,13 @@ class RemoteConfigKeys {
   static const String playStoreLink = 'play_store_link';
   static const String maintenanceMode = 'maintenance_mode';
   static const String contactEmail = 'contact_email';
+  static const String freePlanHistoryCount = 'free_plan_history_count';
 }
 
 final _logger = BizzieLogger('ConfigService');
 
+@preResolve
+@Singleton(as: IConfigService)
 class ConfigService implements IConfigService {
   final FirebaseRemoteConfig _remoteConfig;
 
@@ -71,16 +75,15 @@ class ConfigService implements IConfigService {
 
   ConfigService(this._remoteConfig);
 
-  static Future<ConfigService> init(AppEnv env) async {
-    final remoteConfig = FirebaseRemoteConfig.instance;
-    await remoteConfig.setConfigSettings(
+  Future<void> initialize(AppEnv env) async {
+    await _remoteConfig.setConfigSettings(
       RemoteConfigSettings(
         fetchTimeout: const Duration(minutes: 1),
         minimumFetchInterval: env.minimumFetchInterval,
       ),
     );
 
-    await remoteConfig.setDefaults({
+    await _remoteConfig.setDefaults({
       RemoteConfigKeys.geminiModelName: _defaultGeminiModel,
       RemoteConfigKeys.stockMarketSectors: jsonEncode(_defaultSectors),
       RemoteConfigKeys.fmpConfig: jsonEncode(_defaultFmpConfig),
@@ -94,15 +97,21 @@ class ConfigService implements IConfigService {
       RemoteConfigKeys.playStoreLink: 'https://bizzie.app',
       RemoteConfigKeys.maintenanceMode: false,
       RemoteConfigKeys.contactEmail: 'yannic@getbizzie.io',
+      RemoteConfigKeys.freePlanHistoryCount: 5,
     });
 
     try {
-      await remoteConfig.fetchAndActivate();
+      await _remoteConfig.fetchAndActivate();
     } catch (e) {
       _logger.warning('Remote Config fetch failed', e);
     }
+  }
 
-    return ConfigService(remoteConfig);
+  @factoryMethod
+  static Future<ConfigService> init(AppEnv env) async {
+    final service = ConfigService(FirebaseRemoteConfig.instance);
+    await service.initialize(env);
+    return service;
   }
 
   @override
@@ -136,6 +145,10 @@ class ConfigService implements IConfigService {
   @override
   bool get maintenanceMode =>
       _remoteConfig.getBool(RemoteConfigKeys.maintenanceMode);
+
+  @override
+  int get freePlanHistoryCount =>
+      _remoteConfig.getInt(RemoteConfigKeys.freePlanHistoryCount);
 
   @override
   DateTime get lastFetchTime => _remoteConfig.lastFetchTime;

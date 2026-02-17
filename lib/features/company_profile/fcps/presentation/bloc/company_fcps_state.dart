@@ -13,6 +13,7 @@ class CompanyFcpsState with _$CompanyFcpsState {
     required FcpsStats fcpsStats,
     required List<ChartDataPoint> annualChartData,
     required List<ChartDataPoint> quarterlyChartData,
+    required int historyLimit,
     DateTime? lastUpdated,
   }) = _Loaded;
   const factory CompanyFcpsState.failure(Failure failure) = _Failure;

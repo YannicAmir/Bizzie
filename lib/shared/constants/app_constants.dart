@@ -45,7 +45,6 @@ class AppConstants {
     vertical: 16,
   );
 
-  static const int chartVisibleCount = 7;
   static const int dividendTableRowCount = 8;
   static const double dateCardHeight = 120.0;
 

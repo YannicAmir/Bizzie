@@ -106,6 +106,8 @@ class _RevenueTabState extends State<RevenueTab>
                       locale: Localizations.localeOf(context).toString(),
                       name: stats.reportedCurrency,
                     ),
+                    visibleCount: loadedState.historyLimit,
+                    thresholdCount: loadedState.historyLimit,
                   ),
                   AppConstants.mainSectionSpacing,
                   FinancialHighlightsSection(
@@ -135,6 +137,7 @@ class _RevenueTabState extends State<RevenueTab>
                       stats.reportedCurrency,
                       isAnnual,
                     ),
+                    limit: loadedState.historyLimit,
                   ),
                 ],
               ),

@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:bizzie/app/themes/app_assets.dart';
+import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
+import 'package:bizzie/shared/utils/paywall_helper.dart';
 import 'package:bizzie/features/search/domain/models/stock_symbol.dart';
 import 'package:bizzie/features/search/presentation/bloc/search_bloc.dart';
 import 'package:bizzie/shared/widgets/company_list_tile.dart';
@@ -66,30 +70,55 @@ class _ProductSearchFooter extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.fromLTRB(24, 16, 24, 24),
-      child: Column(
-        children: [
-          const SizedBox(height: 16),
-          Text(
-            'Not seeing what you\'re looking for?',
-            style: theme.textTheme.bodySmall?.copyWith(
-              color: theme.colorScheme.onSurfaceVariant,
-            ),
+
+    return BlocBuilder<UserBloc, UserState>(
+      builder: (context, state) {
+        final isSubscribed = state.maybeMap(
+          loaded: (s) => s.user.isSubscribed,
+          orElse: () => false,
+        );
+
+        return Container(
+          width: double.infinity,
+          padding: const EdgeInsets.fromLTRB(24, 16, 24, 24),
+          child: Column(
+            children: [
+              const SizedBox(height: 16),
+              Text(
+                'Not seeing what you\'re looking for?',
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: theme.colorScheme.onSurfaceVariant,
+                ),
+              ),
+              const SizedBox(height: 8),
+              BizziePrimaryButton(
+                title: 'Search products for "$query"',
+                prefixIcon: !isSubscribed
+                    ? SvgPicture.asset(
+                        AppAssets.authLockIcon,
+                        width: 18,
+                        height: 18,
+                        colorFilter: ColorFilter.mode(
+                          theme.colorScheme.surface,
+                          BlendMode.srcIn,
+                        ),
+                      )
+                    : null,
+                onPressed: () {
+                  if (isSubscribed) {
+                    context.read<SearchBloc>().add(
+                      SearchEvent.aiSearchRequested(query),
+                    );
+                  } else {
+                    PaywallHelper.showPaywallSequence(context);
+                  }
+                },
+              ),
+              const SizedBox(height: 16),
+            ],
           ),
-          const SizedBox(height: 8),
-          BizziePrimaryButton(
-            title: 'Search products for "$query"',
-            onPressed: () {
-              context.read<SearchBloc>().add(
-                SearchEvent.aiSearchRequested(query),
-              );
-            },
-          ),
-          const SizedBox(height: 16),
-        ],
-      ),
+        );
+      },
     );
   }
 }

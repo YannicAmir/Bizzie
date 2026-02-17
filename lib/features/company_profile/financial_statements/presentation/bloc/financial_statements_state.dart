@@ -33,8 +33,10 @@ abstract class FinancialStatementsState with _$FinancialStatementsState {
     String? selectedQuarterlyBalanceDate,
     String? selectedAnnualCashFlowDate,
     String? selectedQuarterlyCashFlowDate,
+    required int freePlanHistoryCount,
   }) = _FinancialStatementsState;
 
-  factory FinancialStatementsState.initial() =>
-      const FinancialStatementsState();
+  factory FinancialStatementsState.initial({
+    required int freePlanHistoryCount,
+  }) => FinancialStatementsState(freePlanHistoryCount: freePlanHistoryCount);
 }

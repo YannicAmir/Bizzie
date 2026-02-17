@@ -28,7 +28,7 @@ class FinancialDataTable extends StatelessWidget {
     required this.metricLabel,
     required this.currency,
     this.onViewMore,
-    this.limit = 5,
+    required this.limit,
     this.isInverseGrowth = false,
     this.isPercentage = false,
     this.isNeutralColor = false,

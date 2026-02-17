@@ -5,6 +5,7 @@ import 'package:bizzie/features/company_profile/net_income/domain/usecases/get_n
 import 'company_net_income_event.dart';
 import 'company_net_income_state.dart';
 import 'package:bizzie/shared/utils/bizzie_date_formatter.dart';
+import 'package:bizzie/core/interfaces/i_config_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:injectable/injectable.dart';
@@ -15,8 +16,9 @@ final _logger = BizzieLogger('CompanyNetIncomeBloc');
 class CompanyNetIncomeBloc
     extends Bloc<CompanyNetIncomeEvent, CompanyNetIncomeState> {
   final GetNetIncomeStatsUseCase _getNetIncomeStatsUseCase;
+  final IConfigService _configService;
 
-  CompanyNetIncomeBloc(this._getNetIncomeStatsUseCase)
+  CompanyNetIncomeBloc(this._getNetIncomeStatsUseCase, this._configService)
     : super(const CompanyNetIncomeState.initial()) {
     on<CompanyNetIncomeEvent>(_onEvent, transformer: droppable());
   }
@@ -69,6 +71,7 @@ class CompanyNetIncomeBloc
               stats.quarterlyNetIncome,
               isAnnual: false,
             ),
+            historyLimit: _configService.freePlanHistoryCount,
             lastUpdated: DateTime.now(),
           ),
         );

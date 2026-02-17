@@ -128,12 +128,12 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( BusinessProfile businessProfile,  DateTime? lastUpdated)?  loaded,TResult Function( Failure failure)?  failure,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( BusinessProfile businessProfile,  int historyLimit,  DateTime? lastUpdated)?  loaded,TResult Function( Failure failure)?  failure,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial();case _Loading() when loading != null:
 return loading();case _Loaded() when loaded != null:
-return loaded(_that.businessProfile,_that.lastUpdated);case _Failure() when failure != null:
+return loaded(_that.businessProfile,_that.historyLimit,_that.lastUpdated);case _Failure() when failure != null:
 return failure(_that.failure);case _:
   return orElse();
 
@@ -152,12 +152,12 @@ return failure(_that.failure);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( BusinessProfile businessProfile,  DateTime? lastUpdated)  loaded,required TResult Function( Failure failure)  failure,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( BusinessProfile businessProfile,  int historyLimit,  DateTime? lastUpdated)  loaded,required TResult Function( Failure failure)  failure,}) {final _that = this;
 switch (_that) {
 case _Initial():
 return initial();case _Loading():
 return loading();case _Loaded():
-return loaded(_that.businessProfile,_that.lastUpdated);case _Failure():
+return loaded(_that.businessProfile,_that.historyLimit,_that.lastUpdated);case _Failure():
 return failure(_that.failure);case _:
   throw StateError('Unexpected subclass');
 
@@ -175,12 +175,12 @@ return failure(_that.failure);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( BusinessProfile businessProfile,  DateTime? lastUpdated)?  loaded,TResult? Function( Failure failure)?  failure,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( BusinessProfile businessProfile,  int historyLimit,  DateTime? lastUpdated)?  loaded,TResult? Function( Failure failure)?  failure,}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial();case _Loading() when loading != null:
 return loading();case _Loaded() when loaded != null:
-return loaded(_that.businessProfile,_that.lastUpdated);case _Failure() when failure != null:
+return loaded(_that.businessProfile,_that.historyLimit,_that.lastUpdated);case _Failure() when failure != null:
 return failure(_that.failure);case _:
   return null;
 
@@ -257,10 +257,11 @@ String toString() {
 
 
 class _Loaded implements CompanyBusinessState {
-  const _Loaded(this.businessProfile, {this.lastUpdated});
+  const _Loaded(this.businessProfile, {required this.historyLimit, this.lastUpdated});
   
 
  final  BusinessProfile businessProfile;
+ final  int historyLimit;
  final  DateTime? lastUpdated;
 
 /// Create a copy of CompanyBusinessState
@@ -273,16 +274,16 @@ _$LoadedCopyWith<_Loaded> get copyWith => __$LoadedCopyWithImpl<_Loaded>(this, _
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Loaded&&(identical(other.businessProfile, businessProfile) || other.businessProfile == businessProfile)&&(identical(other.lastUpdated, lastUpdated) || other.lastUpdated == lastUpdated));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Loaded&&(identical(other.businessProfile, businessProfile) || other.businessProfile == businessProfile)&&(identical(other.historyLimit, historyLimit) || other.historyLimit == historyLimit)&&(identical(other.lastUpdated, lastUpdated) || other.lastUpdated == lastUpdated));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,businessProfile,lastUpdated);
+int get hashCode => Object.hash(runtimeType,businessProfile,historyLimit,lastUpdated);
 
 @override
 String toString() {
-  return 'CompanyBusinessState.loaded(businessProfile: $businessProfile, lastUpdated: $lastUpdated)';
+  return 'CompanyBusinessState.loaded(businessProfile: $businessProfile, historyLimit: $historyLimit, lastUpdated: $lastUpdated)';
 }
 
 
@@ -293,7 +294,7 @@ abstract mixin class _$LoadedCopyWith<$Res> implements $CompanyBusinessStateCopy
   factory _$LoadedCopyWith(_Loaded value, $Res Function(_Loaded) _then) = __$LoadedCopyWithImpl;
 @useResult
 $Res call({
- BusinessProfile businessProfile, DateTime? lastUpdated
+ BusinessProfile businessProfile, int historyLimit, DateTime? lastUpdated
 });
 
 
@@ -310,10 +311,11 @@ class __$LoadedCopyWithImpl<$Res>
 
 /// Create a copy of CompanyBusinessState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? businessProfile = null,Object? lastUpdated = freezed,}) {
+@pragma('vm:prefer-inline') $Res call({Object? businessProfile = null,Object? historyLimit = null,Object? lastUpdated = freezed,}) {
   return _then(_Loaded(
 null == businessProfile ? _self.businessProfile : businessProfile // ignore: cast_nullable_to_non_nullable
-as BusinessProfile,lastUpdated: freezed == lastUpdated ? _self.lastUpdated : lastUpdated // ignore: cast_nullable_to_non_nullable
+as BusinessProfile,historyLimit: null == historyLimit ? _self.historyLimit : historyLimit // ignore: cast_nullable_to_non_nullable
+as int,lastUpdated: freezed == lastUpdated ? _self.lastUpdated : lastUpdated // ignore: cast_nullable_to_non_nullable
 as DateTime?,
   ));
 }

@@ -10,6 +10,7 @@ class CompanyBusinessState with _$CompanyBusinessState {
   const factory CompanyBusinessState.loading() = _Loading;
   const factory CompanyBusinessState.loaded(
     BusinessProfile businessProfile, {
+    required int historyLimit,
     DateTime? lastUpdated,
   }) = _Loaded;
   const factory CompanyBusinessState.failure(Failure failure) = _Failure;

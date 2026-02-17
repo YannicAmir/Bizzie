@@ -3,6 +3,7 @@ import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:injectable/injectable.dart';
 import 'package:intl/intl.dart';
 
+import 'package:bizzie/core/interfaces/i_config_service.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:bizzie/features/company_profile/shared/domain/models/chart_data_point.dart';
 import 'package:bizzie/features/company_profile/shared/domain/models/financial_data_point.dart';
@@ -17,8 +18,9 @@ final _logger = BizzieLogger('CompanyPfcfRatioBloc');
 class CompanyPfcfRatioBloc
     extends Bloc<CompanyPfcfRatioEvent, CompanyPfcfRatioState> {
   final GetPfcfRatioUseCase _getPfcfRatio;
+  final IConfigService _configService;
 
-  CompanyPfcfRatioBloc(this._getPfcfRatio)
+  CompanyPfcfRatioBloc(this._getPfcfRatio, this._configService)
     : super(const CompanyPfcfRatioState.initial()) {
     on<CompanyPfcfRatioEvent>(_onEvent, transformer: droppable());
   }
@@ -101,6 +103,7 @@ class CompanyPfcfRatioBloc
         absoluteDelta: growth.delta.abs(),
         isPositive: growth.delta >= 0,
         referenceLabel: referenceLabel,
+        historyLimit: _configService.freePlanHistoryCount,
         lastUpdated: DateTime.now(),
       ),
     );
@@ -187,6 +190,7 @@ class CompanyPfcfRatioBloc
       absoluteDelta: 0,
       isPositive: false,
       referenceLabel: '',
+      historyLimit: _configService.freePlanHistoryCount,
       lastUpdated: DateTime.now(),
     );
   }

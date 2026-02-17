@@ -10,6 +10,7 @@ class CompanyDividendsState with _$CompanyDividendsState {
   const factory CompanyDividendsState.loading() = _Loading;
   const factory CompanyDividendsState.loaded(
     DividendInfo dividendInfo, {
+    required int historyLimit,
     DateTime? lastUpdated,
   }) = _Loaded;
   const factory CompanyDividendsState.error(Failure failure) = _Error;

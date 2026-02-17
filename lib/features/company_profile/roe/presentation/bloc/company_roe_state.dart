@@ -17,6 +17,7 @@ class CompanyRoeState with _$CompanyRoeState {
     required double absoluteDelta,
     required bool isPositive,
     required String referenceLabel,
+    required int historyLimit,
     DateTime? lastUpdated,
   }) = _Loaded;
   const factory CompanyRoeState.failure(Failure failure) = _Failure;

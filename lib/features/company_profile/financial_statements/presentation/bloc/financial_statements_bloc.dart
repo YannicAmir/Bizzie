@@ -10,13 +10,13 @@ import 'package:bizzie/features/company_profile/financial_statements/domain/mode
 import 'package:bizzie/features/company_profile/financial_statements/domain/usecases/get_balance_sheets_usecase.dart';
 import 'package:bizzie/features/company_profile/financial_statements/domain/usecases/get_cash_flow_statements_usecase.dart';
 import 'package:bizzie/features/company_profile/financial_statements/domain/usecases/get_income_statements_usecase.dart';
+import 'package:bizzie/core/interfaces/i_config_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:injectable/injectable.dart';
 
 final _logger = BizzieLogger('FinancialStatementsBloc');
 
-@injectable
 @injectable
 class FinancialStatementsBloc
     extends Bloc<FinancialStatementsEvent, FinancialStatementsState> {
@@ -28,7 +28,12 @@ class FinancialStatementsBloc
     this._getIncomeStatements,
     this._getBalanceSheets,
     this._getCashFlowStatements,
-  ) : super(FinancialStatementsState.initial()) {
+    IConfigService configService,
+  ) : super(
+        FinancialStatementsState.initial(
+          freePlanHistoryCount: configService.freePlanHistoryCount,
+        ),
+      ) {
     on<FinancialStatementsEvent>(_onEvent, transformer: droppable());
   }
 
