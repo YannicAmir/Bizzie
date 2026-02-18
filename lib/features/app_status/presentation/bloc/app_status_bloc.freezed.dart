@@ -125,12 +125,12 @@ return statusChanged(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  started,TResult Function()?  refreshed,TResult Function( AppStatus status)?  statusChanged,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  started,TResult Function()?  refreshed,TResult Function( AppStatus status,  bool isManualRefresh)?  statusChanged,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Started() when started != null:
 return started();case _Refreshed() when refreshed != null:
 return refreshed();case _StatusChanged() when statusChanged != null:
-return statusChanged(_that.status);case _:
+return statusChanged(_that.status,_that.isManualRefresh);case _:
   return orElse();
 
 }
@@ -148,12 +148,12 @@ return statusChanged(_that.status);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  started,required TResult Function()  refreshed,required TResult Function( AppStatus status)  statusChanged,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  started,required TResult Function()  refreshed,required TResult Function( AppStatus status,  bool isManualRefresh)  statusChanged,}) {final _that = this;
 switch (_that) {
 case _Started():
 return started();case _Refreshed():
 return refreshed();case _StatusChanged():
-return statusChanged(_that.status);case _:
+return statusChanged(_that.status,_that.isManualRefresh);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -170,12 +170,12 @@ return statusChanged(_that.status);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  started,TResult? Function()?  refreshed,TResult? Function( AppStatus status)?  statusChanged,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  started,TResult? Function()?  refreshed,TResult? Function( AppStatus status,  bool isManualRefresh)?  statusChanged,}) {final _that = this;
 switch (_that) {
 case _Started() when started != null:
 return started();case _Refreshed() when refreshed != null:
 return refreshed();case _StatusChanged() when statusChanged != null:
-return statusChanged(_that.status);case _:
+return statusChanged(_that.status,_that.isManualRefresh);case _:
   return null;
 
 }
@@ -251,10 +251,11 @@ String toString() {
 
 
 class _StatusChanged implements AppStatusEvent {
-  const _StatusChanged(this.status);
+  const _StatusChanged(this.status, {this.isManualRefresh = false});
   
 
  final  AppStatus status;
+@JsonKey() final  bool isManualRefresh;
 
 /// Create a copy of AppStatusEvent
 /// with the given fields replaced by the non-null parameter values.
@@ -266,16 +267,16 @@ _$StatusChangedCopyWith<_StatusChanged> get copyWith => __$StatusChangedCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _StatusChanged&&(identical(other.status, status) || other.status == status));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _StatusChanged&&(identical(other.status, status) || other.status == status)&&(identical(other.isManualRefresh, isManualRefresh) || other.isManualRefresh == isManualRefresh));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,status);
+int get hashCode => Object.hash(runtimeType,status,isManualRefresh);
 
 @override
 String toString() {
-  return 'AppStatusEvent.statusChanged(status: $status)';
+  return 'AppStatusEvent.statusChanged(status: $status, isManualRefresh: $isManualRefresh)';
 }
 
 
@@ -286,7 +287,7 @@ abstract mixin class _$StatusChangedCopyWith<$Res> implements $AppStatusEventCop
   factory _$StatusChangedCopyWith(_StatusChanged value, $Res Function(_StatusChanged) _then) = __$StatusChangedCopyWithImpl;
 @useResult
 $Res call({
- AppStatus status
+ AppStatus status, bool isManualRefresh
 });
 
 
@@ -303,10 +304,11 @@ class __$StatusChangedCopyWithImpl<$Res>
 
 /// Create a copy of AppStatusEvent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? status = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? status = null,Object? isManualRefresh = null,}) {
   return _then(_StatusChanged(
 null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
-as AppStatus,
+as AppStatus,isManualRefresh: null == isManualRefresh ? _self.isManualRefresh : isManualRefresh // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 

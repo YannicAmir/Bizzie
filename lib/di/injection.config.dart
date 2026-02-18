@@ -68,6 +68,8 @@ import '../features/app_status/domain/interfaces/i_app_status_repository.dart'
     as _i308;
 import '../features/app_status/domain/interfaces/i_local_app_status_data_source.dart'
     as _i384;
+import '../features/app_status/presentation/analytics/app_status_tracker.dart'
+    as _i4;
 import '../features/app_status/presentation/bloc/app_status_bloc.dart' as _i983;
 import '../features/auth/data/datasources/remote_auth_data_source.dart'
     as _i877;
@@ -724,11 +726,11 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i892.FirebaseMessaging>(),
       ),
     );
-    gh.factory<_i983.AppStatusBloc>(
-      () => _i983.AppStatusBloc(gh<_i308.IAppStatusRepository>()),
-    );
     gh.factory<_i837.AppRatingsTracker>(
       () => _i837.AppRatingsTracker(gh<_i529.IAnalyticsService>()),
+    );
+    gh.factory<_i4.AppStatusTracker>(
+      () => _i4.AppStatusTracker(gh<_i529.IAnalyticsService>()),
     );
     gh.lazySingleton<_i951.OnboardingTracker>(
       () => _i951.OnboardingTracker(gh<_i529.IAnalyticsService>()),
@@ -893,6 +895,12 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.singleton<_i1050.ISectorService>(
       () => _i155.SectorService(gh<_i937.IConfigService>()),
+    );
+    gh.factory<_i983.AppStatusBloc>(
+      () => _i983.AppStatusBloc(
+        gh<_i308.IAppStatusRepository>(),
+        gh<_i4.AppStatusTracker>(),
+      ),
     );
     gh.lazySingleton<_i805.GetFcpsStatsUseCase>(
       () => _i805.GetFcpsStatsUseCase(gh<_i368.IFcpsRepository>()),

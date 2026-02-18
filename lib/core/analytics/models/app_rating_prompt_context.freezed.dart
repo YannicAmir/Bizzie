@@ -17,7 +17,8 @@ mixin _$AppRatingPromptContext {
 // Company Information
  String get ticker; String get companyName; String get sector; String get industry;// User Profile
  String get experienceLevel; String get favoriteSector; bool get isPremium; int get watchlistCount;// Engagement & Status
- bool get notificationsEnabled; int get interactionCount; int get promptAttempts; String get currentTab; int get thresholdCount;
+ bool get notificationsEnabled; int get interactionCount; int get promptAttempts; String get currentTab;// Represents the specific value fetched from Remote Config (review_prompt_event_count)
+ int get thresholdCount;
 /// Create a copy of AppRatingPromptContext
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -239,6 +240,7 @@ class _AppRatingPromptContext extends AppRatingPromptContext {
 @override final  int interactionCount;
 @override final  int promptAttempts;
 @override final  String currentTab;
+// Represents the specific value fetched from Remote Config (review_prompt_event_count)
 @override final  int thresholdCount;
 
 /// Create a copy of AppRatingPromptContext

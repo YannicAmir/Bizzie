@@ -1,5 +1,7 @@
+import 'package:bizzie/features/app_status/domain/enums/app_status_type.dart';
 import 'package:bizzie/features/app_status/domain/interfaces/i_app_status_repository.dart';
 import 'package:bizzie/features/app_status/domain/models/app_status.dart';
+import 'package:bizzie/features/app_status/presentation/analytics/app_status_tracker.dart';
 import 'package:bizzie/features/app_status/presentation/bloc/app_status_bloc.dart';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -7,13 +9,38 @@ import 'package:mocktail/mocktail.dart';
 
 class MockAppStatusRepository extends Mock implements IAppStatusRepository {}
 
+class MockAppStatusTracker extends Mock implements AppStatusTracker {}
+
 void main() {
+  setUpAll(() {
+    registerFallbackValue(AppStatusType.normal);
+  });
+
   late AppStatusBloc bloc;
   late MockAppStatusRepository mockRepository;
+  late MockAppStatusTracker mockTracker;
 
   setUp(() {
     mockRepository = MockAppStatusRepository();
-    bloc = AppStatusBloc(mockRepository);
+    mockTracker = MockAppStatusTracker();
+
+    when(
+      () => mockTracker.updateStatusProperty(any()),
+    ).thenAnswer((_) async {});
+    when(
+      () => mockTracker.logStatusNormal(
+        isManualRefresh: any(named: 'isManualRefresh'),
+      ),
+    ).thenAnswer((_) async {});
+    when(
+      () => mockTracker.logStatusBlocked(
+        type: any(named: 'type'),
+        minVersion: any(named: 'minVersion'),
+      ),
+    ).thenAnswer((_) async {});
+    when(() => mockTracker.logStatusRefresh()).thenAnswer((_) async {});
+
+    bloc = AppStatusBloc(mockRepository, mockTracker);
   });
 
   tearDown(() {
@@ -46,6 +73,12 @@ void main() {
       verify: (_) {
         // assert
         verify(() => mockRepository.watchStatus()).called(1);
+        verify(
+          () => mockTracker.updateStatusProperty(AppStatusType.normal),
+        ).called(1);
+        verify(
+          () => mockTracker.logStatusNormal(isManualRefresh: false),
+        ).called(1);
       },
     );
 
@@ -74,6 +107,13 @@ void main() {
       verify: (_) {
         // assert
         verify(() => mockRepository.checkStatus()).called(1);
+        verify(() => mockTracker.logStatusRefresh()).called(1);
+        verify(
+          () => mockTracker.updateStatusProperty(AppStatusType.normal),
+        ).called(1);
+        verify(
+          () => mockTracker.logStatusNormal(isManualRefresh: true),
+        ).called(1);
       },
     );
 
