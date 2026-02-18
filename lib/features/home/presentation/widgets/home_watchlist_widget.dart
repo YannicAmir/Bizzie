@@ -29,14 +29,27 @@ class HomeWatchlistWidget extends StatelessWidget {
             return state.map(
               initial: (_) => _LoadingState(mascotAssetPath: mascot),
               loading: (_) => _LoadingState(mascotAssetPath: mascot),
-              failure: (f) => Center(
-                child: BizzieError(
-                  message: 'Error loading watchlist',
-                  mascotAssetPath: mascot,
-                ),
-              ),
+              failure: (f) {
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  context.read<HomeBloc>().add(
+                    HomeEvent.watchlistLoadFailed(error: f.failure.message),
+                  );
+                });
+                return Center(
+                  child: BizzieError(
+                    message: 'Error loading watchlist',
+                    mascotAssetPath: mascot,
+                  ),
+                );
+              },
               success: (s) => const SizedBox.shrink(),
               loaded: (s) {
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  context.read<HomeBloc>().add(
+                    HomeEvent.watchlistLoaded(itemCount: s.companies.length),
+                  );
+                });
+
                 if (s.companies.isEmpty) {
                   return _EmptyState(mascotAssetPath: mascot);
                 }

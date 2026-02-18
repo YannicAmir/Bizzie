@@ -90,5 +90,58 @@ void main() {
         verify(() => mockAnalytics.logHomeEmptyStateViewed()).called(1);
       },
     );
+
+    blocTest<HomeBloc, HomeState>(
+      'watchlistLoadFailed_callsLogHomeWatchlistError',
+      build: () {
+        // arrange
+        when(
+          () => mockAnalytics.logHomeWatchlistError(
+            message: any(named: 'message'),
+          ),
+        ).thenAnswer((_) async {});
+        return bloc;
+      },
+      act: (bloc) =>
+          bloc.add(const HomeEvent.watchlistLoadFailed(error: 'Fail')),
+      // assert
+      verify: (_) {
+        verify(
+          () => mockAnalytics.logHomeWatchlistError(message: 'Fail'),
+        ).called(1);
+      },
+    );
+
+    blocTest<HomeBloc, HomeState>(
+      'watchlistLoaded_callsLogHomeWatchlistLoadedWithDuration',
+      build: () {
+        // arrange
+        when(() => mockAnalytics.logHomeViewed()).thenAnswer((_) async {});
+        when(
+          () => mockAnalytics.logHomeWatchlistLoaded(
+            itemCount: any(named: 'itemCount'),
+            durationMs: any(named: 'durationMs'),
+          ),
+        ).thenAnswer((_) async {});
+        return bloc;
+      },
+      act: (bloc) async {
+        bloc.add(const HomeEvent.started());
+        await Future.delayed(const Duration(milliseconds: 100));
+        bloc.add(const HomeEvent.watchlistLoaded(itemCount: 3));
+      },
+      // assert
+      verify: (_) {
+        verify(
+          () => mockAnalytics.logHomeWatchlistLoaded(
+            itemCount: 3,
+            durationMs: any(
+              named: 'durationMs',
+              that: greaterThanOrEqualTo(100),
+            ),
+          ),
+        ).called(1);
+      },
+    );
   });
 }

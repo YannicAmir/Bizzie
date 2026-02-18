@@ -36,4 +36,25 @@ class HomeAnalytics {
       parameters: {'screen_name': _screenName},
     );
   }
+
+  Future<void> logHomeWatchlistError({required String message}) async {
+    await _analytics.logEvent(
+      name: 'home_watchlist_load_error',
+      parameters: {'screen_name': _screenName, 'error_message': message},
+    );
+  }
+
+  Future<void> logHomeWatchlistLoaded({
+    required int itemCount,
+    required int durationMs,
+  }) async {
+    await _analytics.logEvent(
+      name: 'home_watchlist_load_success',
+      parameters: {
+        'screen_name': _screenName,
+        'item_count': itemCount,
+        'duration_ms': durationMs,
+      },
+    );
+  }
 }
