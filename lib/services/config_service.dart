@@ -19,6 +19,7 @@ class RemoteConfigKeys {
   static const String maintenanceMode = 'maintenance_mode';
   static const String contactEmail = 'contact_email';
   static const String freePlanHistoryCount = 'free_plan_history_count';
+  static const String reviewPromptEventCount = 'review_prompt_event_count';
 }
 
 final _logger = BizzieLogger('ConfigService');
@@ -98,6 +99,7 @@ class ConfigService implements IConfigService {
       RemoteConfigKeys.maintenanceMode: false,
       RemoteConfigKeys.contactEmail: 'yannic@getbizzie.io',
       RemoteConfigKeys.freePlanHistoryCount: 5,
+      RemoteConfigKeys.reviewPromptEventCount: 3,
     });
 
     try {
@@ -149,6 +151,10 @@ class ConfigService implements IConfigService {
   @override
   int get freePlanHistoryCount =>
       _remoteConfig.getInt(RemoteConfigKeys.freePlanHistoryCount);
+
+  @override
+  int get reviewPromptEventCount =>
+      _remoteConfig.getInt(RemoteConfigKeys.reviewPromptEventCount);
 
   @override
   DateTime get lastFetchTime => _remoteConfig.lastFetchTime;

@@ -1,3 +1,4 @@
+import 'package:bizzie/core/interfaces/i_in_app_review_service.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:bizzie/core/usecase/usecase.dart';
 import 'package:bizzie/features/app_ratings/domain/usecases/track_rating_conditions_usecase.dart';
@@ -14,8 +15,9 @@ final _logger = BizzieLogger('AppRatingsBloc');
 @injectable
 class AppRatingsBloc extends Bloc<AppRatingsEvent, AppRatingsState> {
   final TrackRatingConditionsUseCase _trackRatingConditionsUseCase;
+  final IInAppReviewService _reviewService;
 
-  AppRatingsBloc(this._trackRatingConditionsUseCase)
+  AppRatingsBloc(this._trackRatingConditionsUseCase, this._reviewService)
     : super(const AppRatingsState.initial()) {
     on<_InteractionDetected>(_onInteractionDetected);
   }
@@ -27,23 +29,25 @@ class AppRatingsBloc extends Bloc<AppRatingsEvent, AppRatingsState> {
     try {
       final result = await _trackRatingConditionsUseCase(NoParams());
 
-      result.fold(
-        (failure) {
+      await result.fold(
+        (failure) async {
           _logger.severe(
             'Failure tracking rating conditions: ${failure.message}',
           );
           emit(const AppRatingsState.idle());
         },
-        (shouldRequestReview) {
+        (shouldRequestReview) async {
+          _logger.info(
+            'Rating conditions evaluation result: shouldRequestReview=$shouldRequestReview',
+          );
           if (shouldRequestReview) {
             _logger.info(
-              'Rating conditions met. Emitting requestReview state.',
+              'Rating conditions met. Requesting review via service.',
             );
+            await _reviewService.requestReview();
             emit(const AppRatingsState.requestReview());
-            emit(const AppRatingsState.idle());
-          } else {
-            emit(const AppRatingsState.idle());
           }
+          emit(const AppRatingsState.idle());
         },
       );
     } catch (e, s) {

@@ -1,3 +1,4 @@
+import 'package:bizzie/core/interfaces/i_in_app_review_service.dart';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/core/usecase/usecase.dart';
@@ -10,17 +11,23 @@ import 'package:mocktail/mocktail.dart';
 class MockTrackRatingConditionsUseCase extends Mock
     implements TrackRatingConditionsUseCase {}
 
+class MockInAppReviewService extends Mock implements IInAppReviewService {}
+
 void main() {
   setUpAll(() {
     registerFallbackValue(NoParams());
   });
 
   late MockTrackRatingConditionsUseCase mockUseCase;
+  late MockInAppReviewService mockReviewService;
   late AppRatingsBloc bloc;
 
   setUp(() {
     mockUseCase = MockTrackRatingConditionsUseCase();
-    bloc = AppRatingsBloc(mockUseCase);
+    mockReviewService = MockInAppReviewService();
+    bloc = AppRatingsBloc(mockUseCase, mockReviewService);
+
+    when(() => mockReviewService.requestReview()).thenAnswer((_) async {});
   });
 
   tearDown(() {
@@ -96,6 +103,7 @@ void main() {
       ],
       verify: (_) {
         verify(() => mockUseCase(any())).called(1);
+        verifyNever(() => mockReviewService.requestReview());
       },
     );
 
@@ -116,6 +124,7 @@ void main() {
       ],
       verify: (_) {
         verify(() => mockUseCase(any())).called(1);
+        verifyNever(() => mockReviewService.requestReview());
       },
     );
   });

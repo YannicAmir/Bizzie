@@ -1,4 +1,5 @@
 import 'package:bizzie/core/error/failures.dart';
+import 'package:bizzie/core/interfaces/i_config_service.dart';
 import 'package:bizzie/core/usecase/usecase.dart';
 import 'package:bizzie/features/app_ratings/domain/interfaces/i_app_ratings_repository.dart';
 import 'package:bizzie/features/app_ratings/domain/usecases/track_rating_conditions_usecase.dart';
@@ -8,13 +9,18 @@ import 'package:mocktail/mocktail.dart';
 
 class MockAppRatingsRepository extends Mock implements IAppRatingsRepository {}
 
+class MockConfigService extends Mock implements IConfigService {}
+
 void main() {
   late MockAppRatingsRepository mockRepository;
+  late MockConfigService mockConfigService;
   late TrackRatingConditionsUseCase useCase;
 
   setUp(() {
     mockRepository = MockAppRatingsRepository();
-    useCase = TrackRatingConditionsUseCase(mockRepository);
+    mockConfigService = MockConfigService();
+    useCase = TrackRatingConditionsUseCase(mockRepository, mockConfigService);
+    when(() => mockConfigService.reviewPromptEventCount).thenReturn(3);
   });
 
   group('TrackRatingConditionsUseCase', () {
@@ -46,6 +52,9 @@ void main() {
         () => mockRepository.incrementInteractionCount(),
       ).thenAnswer((_) async => {});
       when(() => mockRepository.getPromptAttempts()).thenAnswer((_) async => 1);
+      when(
+        () => mockRepository.getInteractionCount(),
+      ).thenAnswer((_) async => 0);
 
       // act
       final result = await useCase(NoParams());
@@ -53,18 +62,22 @@ void main() {
       // assert
       expect(result, const Right(false));
       verify(() => mockRepository.getPromptAttempts()).called(1);
-      verifyNever(() => mockRepository.getInteractionCount());
+      verify(() => mockRepository.getInteractionCount()).called(1);
     });
 
     test('call_whenInteractionThresholdNotMet_returnsRightFalse', () async {
       // arrange
+      const threshold = 5;
+      when(
+        () => mockConfigService.reviewPromptEventCount,
+      ).thenReturn(threshold);
       when(
         () => mockRepository.incrementInteractionCount(),
       ).thenAnswer((_) async => {});
       when(() => mockRepository.getPromptAttempts()).thenAnswer((_) async => 0);
       when(
         () => mockRepository.getInteractionCount(),
-      ).thenAnswer((_) async => 6);
+      ).thenAnswer((_) async => threshold - 1);
 
       // act
       final result = await useCase(NoParams());
@@ -78,6 +91,10 @@ void main() {
       'call_whenConditionsMet_incrementsAttemptsAndReturnsRightTrue',
       () async {
         // arrange
+        const threshold = 5;
+        when(
+          () => mockConfigService.reviewPromptEventCount,
+        ).thenReturn(threshold);
         when(
           () => mockRepository.incrementInteractionCount(),
         ).thenAnswer((_) async => {});
@@ -86,7 +103,7 @@ void main() {
         ).thenAnswer((_) async => 0);
         when(
           () => mockRepository.getInteractionCount(),
-        ).thenAnswer((_) async => 7);
+        ).thenAnswer((_) async => threshold);
         when(
           () => mockRepository.incrementPromptAttempts(),
         ).thenAnswer((_) async => {});

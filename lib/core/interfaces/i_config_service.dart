@@ -13,6 +13,7 @@ abstract class IConfigService {
   String get playStoreLink;
   bool get maintenanceMode;
   int get freePlanHistoryCount;
+  int get reviewPromptEventCount;
   DateTime get lastFetchTime;
 
   String getString(String key);

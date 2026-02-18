@@ -788,10 +788,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i937.IConfigService>(),
       ),
     );
-    gh.factory<_i849.TrackRatingConditionsUseCase>(
-      () =>
-          _i849.TrackRatingConditionsUseCase(gh<_i507.IAppRatingsRepository>()),
-    );
     gh.lazySingleton<_i231.GetRoeUseCase>(
       () => _i231.GetRoeUseCase(gh<_i1025.IRoeRepository>()),
     );
@@ -805,9 +801,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i348.FinancialStatementsRemoteDataSource>(),
         gh<_i806.FinancialStatementsFirestoreDataSource>(),
       ),
-    );
-    gh.factory<_i896.AppRatingsBloc>(
-      () => _i896.AppRatingsBloc(gh<_i849.TrackRatingConditionsUseCase>()),
     );
     gh.lazySingleton<_i659.ISubscriptionRepository>(
       () => _i221.SubscriptionRepositoryImpl(
@@ -879,6 +872,12 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i517.RevenueRepositoryImpl(
         gh<_i348.FinancialStatementsRemoteDataSource>(),
         gh<_i806.FinancialStatementsFirestoreDataSource>(),
+      ),
+    );
+    gh.factory<_i849.TrackRatingConditionsUseCase>(
+      () => _i849.TrackRatingConditionsUseCase(
+        gh<_i507.IAppRatingsRepository>(),
+        gh<_i937.IConfigService>(),
       ),
     );
     gh.lazySingleton<_i368.IFcpsRepository>(
@@ -1027,6 +1026,12 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i106.GetFreeCashFlowStatsUseCase>(
       () => _i106.GetFreeCashFlowStatsUseCase(
         gh<_i581.IFreeCashFlowRepository>(),
+      ),
+    );
+    gh.factory<_i896.AppRatingsBloc>(
+      () => _i896.AppRatingsBloc(
+        gh<_i849.TrackRatingConditionsUseCase>(),
+        gh<_i65.IInAppReviewService>(),
       ),
     );
     gh.lazySingleton<_i240.GetSharesUseCase>(
