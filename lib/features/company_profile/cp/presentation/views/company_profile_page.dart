@@ -1,5 +1,6 @@
 import 'package:bizzie/di/injection.dart';
 import 'package:bizzie/features/onboarding/domain/models/company.dart';
+import 'package:bizzie/features/company_profile/shared/domain/models/company_profile.dart'; // Added
 import 'package:bizzie/features/company_profile/business/presentation/bloc/company_business_bloc.dart';
 import 'package:bizzie/features/company_profile/business/presentation/bloc/company_business_event.dart';
 import 'package:bizzie/features/company_profile/dividends/presentation/bloc/company_dividends/company_dividends_bloc.dart';
@@ -106,16 +107,6 @@ class CompanyProfilePage extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) =>
-              getIt<FinancialStatementsBloc>()
-                ..add(FinancialStatementsEvent.loadIncomeStatements(ticker)),
-        ),
-        BlocProvider(
-          create: (context) =>
-              getIt<CompanyRoeBloc>()
-                ..add(CompanyRoeEvent.loadRequested(ticker)),
-        ),
-        BlocProvider(
-          create: (context) =>
               getIt<CompanyPeRatioBloc>()
                 ..add(CompanyPeRatioEvent.loadRequested(ticker)),
         ),
@@ -126,13 +117,19 @@ class CompanyProfilePage extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) =>
-              getIt<HistoricalPriceEodBloc>()
-                ..add(HistoricalPriceEodEvent.loadRequested(ticker)),
+              getIt<CompanyRoeBloc>()
+                ..add(CompanyRoeEvent.loadRequested(ticker)),
         ),
         BlocProvider(
           create: (context) =>
-              getIt<UpcomingEarningsBloc>()
-                ..add(UpcomingEarningsEvent.loadRequested(ticker)),
+              getIt<HistoricalPriceEodBloc>()
+                ..add(HistoricalPriceEodEvent.loadRequested(ticker)),
+        ),
+        BlocProvider(create: (context) => getIt<UpcomingEarningsBloc>()),
+        BlocProvider(
+          create: (context) =>
+              getIt<FinancialStatementsBloc>()
+                ..add(FinancialStatementsEvent.loadIncomeStatements(ticker)),
         ),
         BlocProvider(create: (context) => getIt<AppRatingsBloc>()),
       ],
@@ -165,10 +162,6 @@ class _CompanyProfileViewState extends State<_CompanyProfileView>
     super.initState();
     _tabController = TabController(length: _tabs.length, vsync: this);
     _tabController.addListener(_handleTabSelection);
-
-    context.read<AppRatingsBloc>().add(
-      const AppRatingsEvent.interactionDetected(),
-    );
   }
 
   void _handleTabSelection() {
@@ -176,8 +169,31 @@ class _CompanyProfileViewState extends State<_CompanyProfileView>
 
     final currentTab = _tabs[_tabController.index];
 
-    context.read<AppRatingsBloc>().add(
-      const AppRatingsEvent.interactionDetected(),
+    final state = context.read<CompanySecurityBloc>().state;
+    state.maybeMap(
+      loaded: (s) => context.read<AppRatingsBloc>().add(
+        AppRatingsEvent.interactionDetected(
+          company: CompanyProfile(
+            symbol: s.securityDetails.ticker,
+            companyName: s.securityDetails.name,
+            sector: s.securityDetails.sector,
+            industry: s.securityDetails.industry,
+          ),
+          currentTab: currentTab.name,
+        ),
+      ),
+      unsupported: (s) => context.read<AppRatingsBloc>().add(
+        AppRatingsEvent.interactionDetected(
+          company: CompanyProfile(
+            symbol: s.securityDetails.ticker,
+            companyName: s.securityDetails.name,
+            sector: s.securityDetails.sector,
+            industry: s.securityDetails.industry,
+          ),
+          currentTab: currentTab.name,
+        ),
+      ),
+      orElse: () {},
     );
 
     switch (currentTab) {
@@ -258,68 +274,101 @@ class _CompanyProfileViewState extends State<_CompanyProfileView>
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return BlocBuilder<CompanySecurityBloc, CompanySecurityState>(
-      builder: (context, state) {
-        final isUnsupported = state.maybeMap(
-          unsupported: (_) => true,
-          orElse: () => false,
-        );
-
-        final isEtf = state.maybeMap(
-          unsupported: (s) => s.securityDetails.isEtf,
-          orElse: () => false,
-        );
-
-        return Scaffold(
-          appBar: AppBar(
-            leading: BackButton(color: theme.colorScheme.onSurface),
-            centerTitle: false,
-            title: Text(widget.ticker),
-            actionsPadding: AppConstants.appBarActionsPadding,
-            actions: isUnsupported
-                ? null
-                : [
-                    CompanyWatchlistButton(
-                      ticker: widget.ticker,
-                      companyName: state.maybeMap(
-                        loaded: (s) => s.securityDetails.name,
-                        unsupported: (s) => s.securityDetails.name,
-                        orElse: () =>
-                            widget.initialCompany?.name ?? widget.ticker,
-                      ),
-                    ),
-                  ],
-            bottom: isUnsupported
-                ? null
-                : TabBar(
-                    controller: _tabController,
-                    isScrollable: true,
-                    tabAlignment: TabAlignment.start,
-                    padding: AppConstants.appBarBottomTabsPadding,
-                    tabs: _tabs.map((tab) => Tab(text: tab.label)).toList(),
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<CompanySecurityBloc, CompanySecurityState>(
+          listener: (context, state) {
+            state.maybeMap(
+              loaded: (s) => context.read<AppRatingsBloc>().add(
+                AppRatingsEvent.interactionDetected(
+                  company: CompanyProfile(
+                    symbol: s.securityDetails.ticker,
+                    companyName: s.securityDetails.name,
+                    sector: s.securityDetails.sector,
+                    industry: s.securityDetails.industry,
                   ),
-          ),
-          body: isUnsupported
-              ? ComingSoonPlaceholder(
-                  type: isEtf ? ComingSoonType.etf : ComingSoonType.fund,
-                )
-              : NotificationListener<ScrollNotification>(
-                  onNotification: (notification) {
-                    if (notification is ScrollStartNotification &&
-                        notification.dragDetails != null &&
-                        notification.metrics.axis == Axis.horizontal) {
-                      HapticFeedback.lightImpact();
-                    }
-                    return false;
-                  },
-                  child: CompanyProfileBody(
-                    ticker: widget.ticker,
-                    tabController: _tabController,
-                    tabs: _tabs,
-                  ),
+                  currentTab: _tabs[_tabController.index].name,
                 ),
-        );
-      },
+              ),
+              unsupported: (s) => context.read<AppRatingsBloc>().add(
+                AppRatingsEvent.interactionDetected(
+                  company: CompanyProfile(
+                    symbol: s.securityDetails.ticker,
+                    companyName: s.securityDetails.name,
+                    sector: s.securityDetails.sector,
+                    industry: s.securityDetails.industry,
+                  ),
+                  currentTab: _tabs[_tabController.index].name,
+                ),
+              ),
+              orElse: () {},
+            );
+          },
+        ),
+      ],
+      child: BlocBuilder<CompanySecurityBloc, CompanySecurityState>(
+        builder: (context, state) {
+          final isUnsupported = state.maybeMap(
+            unsupported: (_) => true,
+            orElse: () => false,
+          );
+
+          final isEtf = state.maybeMap(
+            unsupported: (s) => s.securityDetails.isEtf,
+            orElse: () => false,
+          );
+
+          return Scaffold(
+            appBar: AppBar(
+              leading: BackButton(color: theme.colorScheme.onSurface),
+              centerTitle: false,
+              title: Text(widget.ticker),
+              actionsPadding: AppConstants.appBarActionsPadding,
+              actions: isUnsupported
+                  ? null
+                  : [
+                      CompanyWatchlistButton(
+                        ticker: widget.ticker,
+                        companyName: state.maybeMap(
+                          loaded: (s) => s.securityDetails.name,
+                          unsupported: (s) => s.securityDetails.name,
+                          orElse: () =>
+                              widget.initialCompany?.name ?? widget.ticker,
+                        ),
+                      ),
+                    ],
+              bottom: isUnsupported
+                  ? null
+                  : TabBar(
+                      controller: _tabController,
+                      isScrollable: true,
+                      tabAlignment: TabAlignment.start,
+                      padding: AppConstants.appBarBottomTabsPadding,
+                      tabs: _tabs.map((tab) => Tab(text: tab.label)).toList(),
+                    ),
+            ),
+            body: isUnsupported
+                ? ComingSoonPlaceholder(
+                    type: isEtf ? ComingSoonType.etf : ComingSoonType.fund,
+                  )
+                : NotificationListener<ScrollNotification>(
+                    onNotification: (notification) {
+                      if (notification is ScrollStartNotification &&
+                          notification.dragDetails != null &&
+                          notification.metrics.axis == Axis.horizontal) {
+                        HapticFeedback.lightImpact();
+                      }
+                      return false;
+                    },
+                    child: CompanyProfileBody(
+                      ticker: widget.ticker,
+                      tabController: _tabController,
+                      tabs: _tabs,
+                    ),
+                  ),
+          );
+        },
+      ),
     );
   }
 }

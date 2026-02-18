@@ -18,22 +18,25 @@ class TrackRatingConditionsUseCase
 
   TrackRatingConditionsUseCase(this._repository, this._configService);
 
+  Future<int> getInteractionCount() => _repository.getInteractionCount();
+  Future<int> getPromptAttempts() => _repository.getPromptAttempts();
+
   @override
   Future<Either<Failure, bool>> call(NoParams params) async {
     try {
+      final attempts = await _repository.getPromptAttempts();
+      if (attempts >= kMaxAttempts) {
+        _logger.info(
+          'Short-circuit: Max attempts reached ($attempts/$kMaxAttempts). No further tracking.',
+        );
+        return const Right(false);
+      }
+
       await _repository.incrementInteractionCount();
       final currentInteractions = await _repository.getInteractionCount();
       _logger.info(
         'Interaction incremented. Current interactions: $currentInteractions',
       );
-
-      final attempts = await _repository.getPromptAttempts();
-      if (attempts >= kMaxAttempts) {
-        _logger.info(
-          'Skipping evaluation: Max attempts reached ($attempts/$kMaxAttempts).',
-        );
-        return const Right(false);
-      }
 
       final shouldPrompt = await _evaluatePromptConditions(
         currentInteractions,

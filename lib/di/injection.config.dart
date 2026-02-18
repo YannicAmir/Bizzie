@@ -56,6 +56,8 @@ import '../features/app_ratings/domain/interfaces/i_app_ratings_repository.dart'
     as _i507;
 import '../features/app_ratings/domain/usecases/track_rating_conditions_usecase.dart'
     as _i849;
+import '../features/app_ratings/presentation/analytics/app_ratings_tracker.dart'
+    as _i837;
 import '../features/app_ratings/presentation/bloc/app_ratings_bloc.dart'
     as _i896;
 import '../features/app_status/data/datasources/local_app_status_data_source.dart'
@@ -725,6 +727,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i983.AppStatusBloc>(
       () => _i983.AppStatusBloc(gh<_i308.IAppStatusRepository>()),
     );
+    gh.factory<_i837.AppRatingsTracker>(
+      () => _i837.AppRatingsTracker(gh<_i529.IAnalyticsService>()),
+    );
     gh.lazySingleton<_i951.OnboardingTracker>(
       () => _i951.OnboardingTracker(gh<_i529.IAnalyticsService>()),
     );
@@ -1026,12 +1031,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i106.GetFreeCashFlowStatsUseCase>(
       () => _i106.GetFreeCashFlowStatsUseCase(
         gh<_i581.IFreeCashFlowRepository>(),
-      ),
-    );
-    gh.factory<_i896.AppRatingsBloc>(
-      () => _i896.AppRatingsBloc(
-        gh<_i849.TrackRatingConditionsUseCase>(),
-        gh<_i65.IInAppReviewService>(),
       ),
     );
     gh.lazySingleton<_i240.GetSharesUseCase>(
@@ -1367,6 +1366,16 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i327.SubscribeToTopic>(),
         gh<_i999.UnsubscribeFromTopic>(),
         gh<_i961.ClearCachedToken>(),
+      ),
+    );
+    gh.factory<_i896.AppRatingsBloc>(
+      () => _i896.AppRatingsBloc(
+        gh<_i849.TrackRatingConditionsUseCase>(),
+        gh<_i65.IInAppReviewService>(),
+        gh<_i837.AppRatingsTracker>(),
+        gh<_i318.GetCurrentUser>(),
+        gh<_i561.GetUserUseCase>(),
+        gh<_i937.IConfigService>(),
       ),
     );
     gh.lazySingleton<_i596.ToggleNotificationsUseCase>(

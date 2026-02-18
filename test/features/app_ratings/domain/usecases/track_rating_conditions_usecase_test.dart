@@ -48,13 +48,7 @@ void main() {
 
     test('call_whenMaxAttemptsReached_returnsRightFalse', () async {
       // arrange
-      when(
-        () => mockRepository.incrementInteractionCount(),
-      ).thenAnswer((_) async => {});
       when(() => mockRepository.getPromptAttempts()).thenAnswer((_) async => 1);
-      when(
-        () => mockRepository.getInteractionCount(),
-      ).thenAnswer((_) async => 0);
 
       // act
       final result = await useCase(NoParams());
@@ -62,7 +56,8 @@ void main() {
       // assert
       expect(result, const Right(false));
       verify(() => mockRepository.getPromptAttempts()).called(1);
-      verify(() => mockRepository.getInteractionCount()).called(1);
+      verifyNever(() => mockRepository.incrementInteractionCount());
+      verifyNever(() => mockRepository.getInteractionCount());
     });
 
     test('call_whenInteractionThresholdNotMet_returnsRightFalse', () async {
@@ -71,10 +66,10 @@ void main() {
       when(
         () => mockConfigService.reviewPromptEventCount,
       ).thenReturn(threshold);
+      when(() => mockRepository.getPromptAttempts()).thenAnswer((_) async => 0);
       when(
         () => mockRepository.incrementInteractionCount(),
       ).thenAnswer((_) async => {});
-      when(() => mockRepository.getPromptAttempts()).thenAnswer((_) async => 0);
       when(
         () => mockRepository.getInteractionCount(),
       ).thenAnswer((_) async => threshold - 1);
@@ -84,6 +79,7 @@ void main() {
 
       // assert
       expect(result, const Right(false));
+      verify(() => mockRepository.getPromptAttempts()).called(1);
       verify(() => mockRepository.getInteractionCount()).called(1);
     });
 
@@ -96,11 +92,11 @@ void main() {
           () => mockConfigService.reviewPromptEventCount,
         ).thenReturn(threshold);
         when(
-          () => mockRepository.incrementInteractionCount(),
-        ).thenAnswer((_) async => {});
-        when(
           () => mockRepository.getPromptAttempts(),
         ).thenAnswer((_) async => 0);
+        when(
+          () => mockRepository.incrementInteractionCount(),
+        ).thenAnswer((_) async => {});
         when(
           () => mockRepository.getInteractionCount(),
         ).thenAnswer((_) async => threshold);
@@ -113,6 +109,7 @@ void main() {
 
         // assert
         expect(result, const Right(true));
+        verify(() => mockRepository.getPromptAttempts()).called(1);
         verify(() => mockRepository.incrementPromptAttempts()).called(1);
       },
     );
@@ -120,7 +117,7 @@ void main() {
     test('call_repositoryError_returnsLeftFailure', () async {
       // arrange
       when(
-        () => mockRepository.incrementInteractionCount(),
+        () => mockRepository.getPromptAttempts(),
       ).thenThrow(Exception('Storage error'));
 
       // act

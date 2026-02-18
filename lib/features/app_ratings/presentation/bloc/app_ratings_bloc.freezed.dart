@@ -14,30 +14,71 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$AppRatingsEvent {
 
-
+ CompanyProfile get company; String get currentTab;
+/// Create a copy of AppRatingsEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$AppRatingsEventCopyWith<AppRatingsEvent> get copyWith => _$AppRatingsEventCopyWithImpl<AppRatingsEvent>(this as AppRatingsEvent, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AppRatingsEvent);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AppRatingsEvent&&(identical(other.company, company) || other.company == company)&&(identical(other.currentTab, currentTab) || other.currentTab == currentTab));
 }
 
 
 @override
-int get hashCode => runtimeType.hashCode;
+int get hashCode => Object.hash(runtimeType,company,currentTab);
 
 @override
 String toString() {
-  return 'AppRatingsEvent()';
+  return 'AppRatingsEvent(company: $company, currentTab: $currentTab)';
 }
 
 
 }
 
 /// @nodoc
-class $AppRatingsEventCopyWith<$Res>  {
-$AppRatingsEventCopyWith(AppRatingsEvent _, $Res Function(AppRatingsEvent) __);
+abstract mixin class $AppRatingsEventCopyWith<$Res>  {
+  factory $AppRatingsEventCopyWith(AppRatingsEvent value, $Res Function(AppRatingsEvent) _then) = _$AppRatingsEventCopyWithImpl;
+@useResult
+$Res call({
+ CompanyProfile company, String currentTab
+});
+
+
+$CompanyProfileCopyWith<$Res> get company;
+
+}
+/// @nodoc
+class _$AppRatingsEventCopyWithImpl<$Res>
+    implements $AppRatingsEventCopyWith<$Res> {
+  _$AppRatingsEventCopyWithImpl(this._self, this._then);
+
+  final AppRatingsEvent _self;
+  final $Res Function(AppRatingsEvent) _then;
+
+/// Create a copy of AppRatingsEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? company = null,Object? currentTab = null,}) {
+  return _then(_self.copyWith(
+company: null == company ? _self.company : company // ignore: cast_nullable_to_non_nullable
+as CompanyProfile,currentTab: null == currentTab ? _self.currentTab : currentTab // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+/// Create a copy of AppRatingsEvent
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$CompanyProfileCopyWith<$Res> get company {
+  
+  return $CompanyProfileCopyWith<$Res>(_self.company, (value) {
+    return _then(_self.copyWith(company: value));
+  });
+}
 }
 
 
@@ -119,10 +160,10 @@ return interactionDetected(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  interactionDetected,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( CompanyProfile company,  String currentTab)?  interactionDetected,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _InteractionDetected() when interactionDetected != null:
-return interactionDetected();case _:
+return interactionDetected(_that.company,_that.currentTab);case _:
   return orElse();
 
 }
@@ -140,10 +181,10 @@ return interactionDetected();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  interactionDetected,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( CompanyProfile company,  String currentTab)  interactionDetected,}) {final _that = this;
 switch (_that) {
 case _InteractionDetected():
-return interactionDetected();case _:
+return interactionDetected(_that.company,_that.currentTab);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -160,10 +201,10 @@ return interactionDetected();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  interactionDetected,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( CompanyProfile company,  String currentTab)?  interactionDetected,}) {final _that = this;
 switch (_that) {
 case _InteractionDetected() when interactionDetected != null:
-return interactionDetected();case _:
+return interactionDetected(_that.company,_that.currentTab);case _:
   return null;
 
 }
@@ -175,33 +216,78 @@ return interactionDetected();case _:
 
 
 class _InteractionDetected implements AppRatingsEvent {
-  const _InteractionDetected();
+  const _InteractionDetected({required this.company, required this.currentTab});
   
 
+@override final  CompanyProfile company;
+@override final  String currentTab;
 
-
+/// Create a copy of AppRatingsEvent
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$InteractionDetectedCopyWith<_InteractionDetected> get copyWith => __$InteractionDetectedCopyWithImpl<_InteractionDetected>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _InteractionDetected);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _InteractionDetected&&(identical(other.company, company) || other.company == company)&&(identical(other.currentTab, currentTab) || other.currentTab == currentTab));
 }
 
 
 @override
-int get hashCode => runtimeType.hashCode;
+int get hashCode => Object.hash(runtimeType,company,currentTab);
 
 @override
 String toString() {
-  return 'AppRatingsEvent.interactionDetected()';
+  return 'AppRatingsEvent.interactionDetected(company: $company, currentTab: $currentTab)';
 }
 
 
 }
 
+/// @nodoc
+abstract mixin class _$InteractionDetectedCopyWith<$Res> implements $AppRatingsEventCopyWith<$Res> {
+  factory _$InteractionDetectedCopyWith(_InteractionDetected value, $Res Function(_InteractionDetected) _then) = __$InteractionDetectedCopyWithImpl;
+@override @useResult
+$Res call({
+ CompanyProfile company, String currentTab
+});
 
 
+@override $CompanyProfileCopyWith<$Res> get company;
+
+}
+/// @nodoc
+class __$InteractionDetectedCopyWithImpl<$Res>
+    implements _$InteractionDetectedCopyWith<$Res> {
+  __$InteractionDetectedCopyWithImpl(this._self, this._then);
+
+  final _InteractionDetected _self;
+  final $Res Function(_InteractionDetected) _then;
+
+/// Create a copy of AppRatingsEvent
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? company = null,Object? currentTab = null,}) {
+  return _then(_InteractionDetected(
+company: null == company ? _self.company : company // ignore: cast_nullable_to_non_nullable
+as CompanyProfile,currentTab: null == currentTab ? _self.currentTab : currentTab // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+/// Create a copy of AppRatingsEvent
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$CompanyProfileCopyWith<$Res> get company {
+  
+  return $CompanyProfileCopyWith<$Res>(_self.company, (value) {
+    return _then(_self.copyWith(company: value));
+  });
+}
+}
 
 /// @nodoc
 mixin _$AppRatingsState {
