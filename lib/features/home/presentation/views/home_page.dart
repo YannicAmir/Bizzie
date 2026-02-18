@@ -3,6 +3,7 @@ import 'package:bizzie/core/enums/paywall_source.dart';
 import 'package:bizzie/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:bizzie/features/home/presentation/widgets/home_watchlist_widget.dart';
 import 'package:bizzie/features/auth/presentation/bloc/auth_state.dart';
+import 'package:bizzie/features/home/presentation/bloc/home_bloc.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:bizzie/shared/widgets/inputs/bizzie_search_bar.dart';
 import 'package:bizzie/shared/widgets/modals/bizzie_snackbar.dart';
@@ -26,6 +27,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    context.read<HomeBloc>().add(const HomeEvent.started());
     if (widget.extra == 'open_paywall_onboarding') {
       _pendingPaywall = true;
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -55,6 +57,7 @@ class _HomePageState extends State<HomePage> {
         title: BizzieSearchBar(
           readOnly: true,
           onTap: () {
+            context.read<HomeBloc>().add(const HomeEvent.searchTapped());
             context.push(AppRoutes.search, extra: 'home');
           },
         ),

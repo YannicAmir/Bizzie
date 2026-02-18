@@ -12,6 +12,7 @@ import 'package:bizzie/features/auth/presentation/views/email_sent_page.dart';
 import 'package:bizzie/features/auth/presentation/views/forgot_password_page.dart';
 import 'package:bizzie/features/auth/presentation/views/login_page.dart';
 import 'package:bizzie/features/home/presentation/views/home_page.dart';
+import 'package:bizzie/features/home/presentation/bloc/home_bloc.dart';
 import 'package:bizzie/features/notifications/presentation/views/notification_request_page.dart';
 import 'package:bizzie/features/onboarding/presentation/views/ask_name_page.dart';
 import 'package:bizzie/features/onboarding/presentation/views/landing_page.dart';
@@ -95,7 +96,10 @@ GoRouter createRouter(
             routes: [
               GoRoute(
                 path: AppRoutes.home,
-                builder: (context, state) => const HomePage(),
+                builder: (context, state) => BlocProvider<HomeBloc>(
+                  create: (context) => getIt<HomeBloc>(),
+                  child: const HomePage(),
+                ),
                 routes: [
                   _buildCompanyRoute(AppRoutes.companyProfileHome),
                   _buildPaywallRoute(

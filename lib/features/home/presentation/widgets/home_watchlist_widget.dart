@@ -1,4 +1,5 @@
 import 'package:bizzie/app/routes/app_routes.dart';
+import 'package:bizzie/features/home/presentation/bloc/home_bloc.dart';
 import 'package:bizzie/features/watchlist/presentation/bloc/watchlist_bloc.dart';
 import 'package:bizzie/features/watchlist/presentation/bloc/watchlist_state.dart';
 import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
@@ -37,12 +38,7 @@ class HomeWatchlistWidget extends StatelessWidget {
               success: (s) => const SizedBox.shrink(),
               loaded: (s) {
                 if (s.companies.isEmpty) {
-                  return BizzieEmptyState(
-                    mascotAsset: mascot,
-                    title: 'No watchlist',
-                    message: 'You have no companies in your watchlist',
-                    isFullPage: true,
-                  );
+                  return _EmptyState(mascotAssetPath: mascot);
                 }
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -66,6 +62,9 @@ class HomeWatchlistWidget extends StatelessWidget {
                               ? WatchlistEventBadge(status: event)
                               : null,
                           onTap: () {
+                            context.read<HomeBloc>().add(
+                              HomeEvent.watchlistTapped(ticker: company.ticker),
+                            );
                             context.pushNamed(
                               AppRoutes.companyProfileHome,
                               pathParameters: {'ticker': company.ticker},
@@ -104,6 +103,36 @@ class _LoadingState extends StatelessWidget {
           mascotAssetPath: mascotAssetPath,
         ),
       ],
+    );
+  }
+}
+
+class _EmptyState extends StatefulWidget {
+  final String mascotAssetPath;
+  const _EmptyState({required this.mascotAssetPath});
+
+  @override
+  State<_EmptyState> createState() => _EmptyStateState();
+}
+
+class _EmptyStateState extends State<_EmptyState> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        context.read<HomeBloc>().add(const HomeEvent.emptyStateViewed());
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BizzieEmptyState(
+      mascotAsset: widget.mascotAssetPath,
+      title: 'No watchlist',
+      message: 'You have no companies in your watchlist',
+      isFullPage: true,
     );
   }
 }

@@ -16,6 +16,7 @@ import 'package:bizzie/features/watchlist/presentation/bloc/watchlist_event.dart
 import 'package:bizzie/features/watchlist/domain/enums/watchlist_badge_type.dart';
 import 'package:bizzie/features/watchlist/domain/models/watchlist_event_status.dart';
 import 'package:bizzie/features/watchlist/presentation/bloc/watchlist_state.dart';
+import 'package:bizzie/features/watchlist/presentation/analytics/watchlist_analytics.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
@@ -39,6 +40,8 @@ class MockSyncWatchlistUseCase extends Mock implements SyncWatchlistUseCase {}
 
 class MockAuthRepository extends Mock implements IAuthRepository {}
 
+class MockWatchlistAnalytics extends Mock implements WatchlistAnalytics {}
+
 void main() {
   late WatchlistBloc bloc;
   late MockGetWatchlistUseCase mockGetWatchlistUseCase;
@@ -48,6 +51,7 @@ void main() {
   late MockRemoveFromWatchlistUseCase mockRemoveFromWatchlistUseCase;
   late MockSyncWatchlistUseCase mockSyncWatchlistUseCase;
   late MockAuthRepository mockAuthRepository;
+  late MockWatchlistAnalytics mockWatchlistAnalytics;
 
   setUpAll(() {
     registerFallbackValue(
@@ -70,11 +74,15 @@ void main() {
     mockRemoveFromWatchlistUseCase = MockRemoveFromWatchlistUseCase();
     mockSyncWatchlistUseCase = MockSyncWatchlistUseCase();
     mockAuthRepository = MockAuthRepository();
+    mockWatchlistAnalytics = MockWatchlistAnalytics();
 
-    // Default stubbing for GetWatchlistEventsUseCase to return empty map
     when(
       () => mockGetWatchlistEventsUseCase(any()),
     ).thenAnswer((_) async => const Right({}));
+
+    when(
+      () => mockWatchlistAnalytics.setWatchlistItemCount(any()),
+    ).thenAnswer((_) async {});
 
     bloc = WatchlistBloc(
       mockGetWatchlistUseCase,
@@ -84,6 +92,7 @@ void main() {
       mockRemoveFromWatchlistUseCase,
       mockSyncWatchlistUseCase,
       mockAuthRepository,
+      mockWatchlistAnalytics,
     );
   });
 
@@ -155,7 +164,7 @@ void main() {
       act: (bloc) => bloc.add(
         const WatchlistEvent.addRequested(ticker: 'AAPL', name: 'Apple'),
       ),
-      expect: () => [], // No state emitted on success, relies on stream
+      expect: () => [],
       verify: (_) {
         verify(() => mockAddToWatchlistUseCase(any())).called(1);
       },

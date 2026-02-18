@@ -9,6 +9,7 @@ import 'package:bizzie/features/watchlist/domain/usecases/get_watchlist_events_u
 import 'package:bizzie/features/watchlist/domain/usecases/remove_from_watchlist_usecase.dart';
 import 'package:bizzie/features/watchlist/domain/usecases/sync_watchlist_usecase.dart';
 import 'package:bizzie/features/watchlist/domain/models/watchlist_event_status.dart';
+import 'package:bizzie/features/watchlist/presentation/analytics/watchlist_analytics.dart';
 import 'package:bloc/bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:dartz/dartz.dart';
@@ -31,6 +32,7 @@ class WatchlistBloc extends Bloc<WatchlistEvent, WatchlistState> {
   final RemoveFromWatchlistUseCase _removeFromWatchlistUseCase;
   final SyncWatchlistUseCase _syncWatchlistUseCase;
   final IAuthRepository _authRepository;
+  final WatchlistAnalytics _watchlistAnalytics;
 
   WatchlistBloc(
     this._getWatchlistUseCase,
@@ -40,6 +42,7 @@ class WatchlistBloc extends Bloc<WatchlistEvent, WatchlistState> {
     this._removeFromWatchlistUseCase,
     this._syncWatchlistUseCase,
     this._authRepository,
+    this._watchlistAnalytics,
   ) : super(const WatchlistState.initial()) {
     on<SyncRequested>(_onSyncRequested);
     on<AddRequested>(_onAddRequested);
@@ -77,10 +80,12 @@ class WatchlistBloc extends Bloc<WatchlistEvent, WatchlistState> {
     >(
       _getEnrichedWatchlistUseCase(uid),
       onData: (result) {
-        return result.fold(
-          (failure) => WatchlistState.failure(failure),
-          (data) => WatchlistState.loaded(data.$1, events: data.$2),
-        );
+        return result.fold((failure) => WatchlistState.failure(failure), (
+          data,
+        ) {
+          _watchlistAnalytics.setWatchlistItemCount(data.$1.length);
+          return WatchlistState.loaded(data.$1, events: data.$2);
+        });
       },
       onError: (error, stack) {
         _logger.severe('Watchlist stream error', error, stack);

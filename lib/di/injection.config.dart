@@ -257,6 +257,8 @@ import '../features/feedback/domain/interfaces/i_feedback_repository.dart'
 import '../features/feedback/domain/usecases/submit_feedback_usecase.dart'
     as _i82;
 import '../features/feedback/presentation/bloc/feedback_bloc.dart' as _i673;
+import '../features/home/presentation/analytics/home_analytics.dart' as _i32;
+import '../features/home/presentation/bloc/home_bloc.dart' as _i824;
 import '../features/market/data/datasources/market_local_datasource.dart'
     as _i1009;
 import '../features/market/data/datasources/market_remote_datasource.dart'
@@ -455,6 +457,8 @@ import '../features/watchlist/domain/usecases/remove_from_watchlist_usecase.dart
     as _i320;
 import '../features/watchlist/domain/usecases/sync_watchlist_usecase.dart'
     as _i1003;
+import '../features/watchlist/presentation/analytics/watchlist_analytics.dart'
+    as _i830;
 import '../features/watchlist/presentation/bloc/watchlist_bloc.dart' as _i63;
 import '../services/analytics_service.dart' as _i222;
 import '../services/config_service.dart' as _i216;
@@ -724,11 +728,17 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i951.OnboardingTracker>(
       () => _i951.OnboardingTracker(gh<_i529.IAnalyticsService>()),
     );
+    gh.lazySingleton<_i32.HomeAnalytics>(
+      () => _i32.HomeAnalytics(gh<_i529.IAnalyticsService>()),
+    );
     gh.lazySingleton<_i178.OnboardingAnalytics>(
       () => _i178.OnboardingAnalytics(gh<_i529.IAnalyticsService>()),
     );
     gh.lazySingleton<_i780.PaywallAnalytics>(
       () => _i780.PaywallAnalytics(gh<_i529.IAnalyticsService>()),
+    );
+    gh.lazySingleton<_i830.WatchlistAnalytics>(
+      () => _i830.WatchlistAnalytics(gh<_i529.IAnalyticsService>()),
     );
     gh.lazySingleton<_i423.RatiosRemoteDataSource>(
       () => _i423.RatiosRemoteDataSourceImpl(
@@ -894,6 +904,7 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i1016.IOnboardingRemoteDataSource>(),
       ),
     );
+    gh.factory<_i824.HomeBloc>(() => _i824.HomeBloc(gh<_i32.HomeAnalytics>()));
     gh.factory<_i205.ReauthenticateUseCase>(
       () => _i205.ReauthenticateUseCase(gh<_i685.IAuthRepository>()),
     );
@@ -1201,6 +1212,18 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i937.IConfigService>(),
       ),
     );
+    gh.factory<_i63.WatchlistBloc>(
+      () => _i63.WatchlistBloc(
+        gh<_i759.GetWatchlistUseCase>(),
+        gh<_i856.GetEnrichedWatchlistUseCase>(),
+        gh<_i212.GetWatchlistEventsUseCase>(),
+        gh<_i258.AddToWatchlistUseCase>(),
+        gh<_i320.RemoveFromWatchlistUseCase>(),
+        gh<_i1003.SyncWatchlistUseCase>(),
+        gh<_i685.IAuthRepository>(),
+        gh<_i830.WatchlistAnalytics>(),
+      ),
+    );
     await gh.lazySingletonAsync<_i430.INotificationService>(() {
       final i = _i941.NotificationService(
         gh<_i622.INotificationRepository>(),
@@ -1234,17 +1257,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i687.Stream<bool>>(
       () => subscriptionModule.isSubscribedStream(gh<_i615.IUserRepository>()),
       instanceName: 'isSubscribedStream',
-    );
-    gh.factory<_i63.WatchlistBloc>(
-      () => _i63.WatchlistBloc(
-        gh<_i759.GetWatchlistUseCase>(),
-        gh<_i856.GetEnrichedWatchlistUseCase>(),
-        gh<_i212.GetWatchlistEventsUseCase>(),
-        gh<_i258.AddToWatchlistUseCase>(),
-        gh<_i320.RemoveFromWatchlistUseCase>(),
-        gh<_i1003.SyncWatchlistUseCase>(),
-        gh<_i685.IAuthRepository>(),
-      ),
     );
     gh.lazySingleton<_i561.GetUserUseCase>(
       () => _i561.GetUserUseCase(gh<_i615.IUserRepository>()),
