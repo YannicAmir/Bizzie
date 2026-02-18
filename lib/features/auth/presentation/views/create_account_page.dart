@@ -14,11 +14,24 @@ import '../widgets/create_account_form.dart';
 import '../widgets/mascot_info_card.dart';
 import '../widgets/social_login_buttons.dart';
 import 'package:bizzie/features/onboarding/presentation/bloc/onboarding_bloc.dart';
-
+import 'package:bizzie/core/analytics/onboarding_tracker.dart';
 import 'package:bizzie/features/onboarding/presentation/widgets/onboarding_header.dart';
 
-class CreateAccountPage extends StatelessWidget {
+class CreateAccountPage extends StatefulWidget {
   const CreateAccountPage({super.key});
+
+  @override
+  State<CreateAccountPage> createState() => _CreateAccountPageState();
+}
+
+class _CreateAccountPageState extends State<CreateAccountPage> {
+  @override
+  void initState() {
+    super.initState();
+    context.read<OnboardingBloc>().add(
+      const OnboardingEvent.stepViewed(OnboardingStep.createAccount),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {

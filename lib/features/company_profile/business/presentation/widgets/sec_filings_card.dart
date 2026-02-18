@@ -13,6 +13,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:bizzie/app/themes/app_assets.dart';
 import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
 import 'package:bizzie/shared/utils/paywall_helper.dart';
+import 'package:bizzie/core/enums/paywall_source.dart';
 
 class SecFilingsCard extends StatefulWidget {
   final BusinessProfile profile;
@@ -218,7 +219,10 @@ class _FilingsList extends StatelessWidget {
                   if (isSubscribed) {
                     onShowAll(filings);
                   } else {
-                    PaywallHelper.showPaywallSequence(context);
+                    PaywallHelper.showPaywallSequence(
+                      context,
+                      source: PaywallSource.companyProfile,
+                    );
                   }
                 },
                 child: Row(

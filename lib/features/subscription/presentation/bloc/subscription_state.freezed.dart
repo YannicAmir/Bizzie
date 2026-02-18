@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$SubscriptionState {
 
- SubscriptionStatus get status;
+ SubscriptionStatus get status; PaywallSource? get paywallSource;
 /// Create a copy of SubscriptionState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $SubscriptionStateCopyWith<SubscriptionState> get copyWith => _$SubscriptionStat
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SubscriptionState&&(identical(other.status, status) || other.status == status));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SubscriptionState&&(identical(other.status, status) || other.status == status)&&(identical(other.paywallSource, paywallSource) || other.paywallSource == paywallSource));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,status);
+int get hashCode => Object.hash(runtimeType,status,paywallSource);
 
 @override
 String toString() {
-  return 'SubscriptionState(status: $status)';
+  return 'SubscriptionState(status: $status, paywallSource: $paywallSource)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $SubscriptionStateCopyWith<$Res>  {
   factory $SubscriptionStateCopyWith(SubscriptionState value, $Res Function(SubscriptionState) _then) = _$SubscriptionStateCopyWithImpl;
 @useResult
 $Res call({
- SubscriptionStatus status
+ SubscriptionStatus status, PaywallSource? paywallSource
 });
 
 
@@ -62,10 +62,11 @@ class _$SubscriptionStateCopyWithImpl<$Res>
 
 /// Create a copy of SubscriptionState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? status = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? status = null,Object? paywallSource = freezed,}) {
   return _then(_self.copyWith(
 status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
-as SubscriptionStatus,
+as SubscriptionStatus,paywallSource: freezed == paywallSource ? _self.paywallSource : paywallSource // ignore: cast_nullable_to_non_nullable
+as PaywallSource?,
   ));
 }
 /// Create a copy of SubscriptionState
@@ -168,13 +169,13 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( SubscriptionStatus status)?  initial,TResult Function( SubscriptionStatus status)?  loading,TResult Function( SubscriptionStatus status,  SubscriptionOffering offerings,  SubscriptionPackage? annualPackage,  SubscriptionPackage? monthlyPackage,  SubscriptionPackage? discountAnnualPackage,  bool isLocalSuccessOverride,  bool isPurchasing,  bool isAnnualSelection)?  loaded,TResult Function( SubscriptionStatus status,  Failure failure)?  failure,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( SubscriptionStatus status,  PaywallSource? paywallSource)?  initial,TResult Function( SubscriptionStatus status,  PaywallSource? paywallSource)?  loading,TResult Function( SubscriptionStatus status,  SubscriptionOffering offerings,  SubscriptionPackage? annualPackage,  SubscriptionPackage? monthlyPackage,  SubscriptionPackage? discountAnnualPackage,  bool isLocalSuccessOverride,  bool isPurchasing,  bool isAnnualSelection,  PaywallSource? paywallSource)?  loaded,TResult Function( SubscriptionStatus status,  Failure failure,  PaywallSource? paywallSource)?  failure,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case SubscriptionStateInitial() when initial != null:
-return initial(_that.status);case SubscriptionStateLoading() when loading != null:
-return loading(_that.status);case SubscriptionStateLoaded() when loaded != null:
-return loaded(_that.status,_that.offerings,_that.annualPackage,_that.monthlyPackage,_that.discountAnnualPackage,_that.isLocalSuccessOverride,_that.isPurchasing,_that.isAnnualSelection);case SubscriptionStateFailure() when failure != null:
-return failure(_that.status,_that.failure);case _:
+return initial(_that.status,_that.paywallSource);case SubscriptionStateLoading() when loading != null:
+return loading(_that.status,_that.paywallSource);case SubscriptionStateLoaded() when loaded != null:
+return loaded(_that.status,_that.offerings,_that.annualPackage,_that.monthlyPackage,_that.discountAnnualPackage,_that.isLocalSuccessOverride,_that.isPurchasing,_that.isAnnualSelection,_that.paywallSource);case SubscriptionStateFailure() when failure != null:
+return failure(_that.status,_that.failure,_that.paywallSource);case _:
   return orElse();
 
 }
@@ -192,13 +193,13 @@ return failure(_that.status,_that.failure);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( SubscriptionStatus status)  initial,required TResult Function( SubscriptionStatus status)  loading,required TResult Function( SubscriptionStatus status,  SubscriptionOffering offerings,  SubscriptionPackage? annualPackage,  SubscriptionPackage? monthlyPackage,  SubscriptionPackage? discountAnnualPackage,  bool isLocalSuccessOverride,  bool isPurchasing,  bool isAnnualSelection)  loaded,required TResult Function( SubscriptionStatus status,  Failure failure)  failure,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( SubscriptionStatus status,  PaywallSource? paywallSource)  initial,required TResult Function( SubscriptionStatus status,  PaywallSource? paywallSource)  loading,required TResult Function( SubscriptionStatus status,  SubscriptionOffering offerings,  SubscriptionPackage? annualPackage,  SubscriptionPackage? monthlyPackage,  SubscriptionPackage? discountAnnualPackage,  bool isLocalSuccessOverride,  bool isPurchasing,  bool isAnnualSelection,  PaywallSource? paywallSource)  loaded,required TResult Function( SubscriptionStatus status,  Failure failure,  PaywallSource? paywallSource)  failure,}) {final _that = this;
 switch (_that) {
 case SubscriptionStateInitial():
-return initial(_that.status);case SubscriptionStateLoading():
-return loading(_that.status);case SubscriptionStateLoaded():
-return loaded(_that.status,_that.offerings,_that.annualPackage,_that.monthlyPackage,_that.discountAnnualPackage,_that.isLocalSuccessOverride,_that.isPurchasing,_that.isAnnualSelection);case SubscriptionStateFailure():
-return failure(_that.status,_that.failure);case _:
+return initial(_that.status,_that.paywallSource);case SubscriptionStateLoading():
+return loading(_that.status,_that.paywallSource);case SubscriptionStateLoaded():
+return loaded(_that.status,_that.offerings,_that.annualPackage,_that.monthlyPackage,_that.discountAnnualPackage,_that.isLocalSuccessOverride,_that.isPurchasing,_that.isAnnualSelection,_that.paywallSource);case SubscriptionStateFailure():
+return failure(_that.status,_that.failure,_that.paywallSource);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -215,13 +216,13 @@ return failure(_that.status,_that.failure);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( SubscriptionStatus status)?  initial,TResult? Function( SubscriptionStatus status)?  loading,TResult? Function( SubscriptionStatus status,  SubscriptionOffering offerings,  SubscriptionPackage? annualPackage,  SubscriptionPackage? monthlyPackage,  SubscriptionPackage? discountAnnualPackage,  bool isLocalSuccessOverride,  bool isPurchasing,  bool isAnnualSelection)?  loaded,TResult? Function( SubscriptionStatus status,  Failure failure)?  failure,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( SubscriptionStatus status,  PaywallSource? paywallSource)?  initial,TResult? Function( SubscriptionStatus status,  PaywallSource? paywallSource)?  loading,TResult? Function( SubscriptionStatus status,  SubscriptionOffering offerings,  SubscriptionPackage? annualPackage,  SubscriptionPackage? monthlyPackage,  SubscriptionPackage? discountAnnualPackage,  bool isLocalSuccessOverride,  bool isPurchasing,  bool isAnnualSelection,  PaywallSource? paywallSource)?  loaded,TResult? Function( SubscriptionStatus status,  Failure failure,  PaywallSource? paywallSource)?  failure,}) {final _that = this;
 switch (_that) {
 case SubscriptionStateInitial() when initial != null:
-return initial(_that.status);case SubscriptionStateLoading() when loading != null:
-return loading(_that.status);case SubscriptionStateLoaded() when loaded != null:
-return loaded(_that.status,_that.offerings,_that.annualPackage,_that.monthlyPackage,_that.discountAnnualPackage,_that.isLocalSuccessOverride,_that.isPurchasing,_that.isAnnualSelection);case SubscriptionStateFailure() when failure != null:
-return failure(_that.status,_that.failure);case _:
+return initial(_that.status,_that.paywallSource);case SubscriptionStateLoading() when loading != null:
+return loading(_that.status,_that.paywallSource);case SubscriptionStateLoaded() when loaded != null:
+return loaded(_that.status,_that.offerings,_that.annualPackage,_that.monthlyPackage,_that.discountAnnualPackage,_that.isLocalSuccessOverride,_that.isPurchasing,_that.isAnnualSelection,_that.paywallSource);case SubscriptionStateFailure() when failure != null:
+return failure(_that.status,_that.failure,_that.paywallSource);case _:
   return null;
 
 }
@@ -233,10 +234,11 @@ return failure(_that.status,_that.failure);case _:
 
 
 class SubscriptionStateInitial extends SubscriptionState {
-  const SubscriptionStateInitial({required this.status}): super._();
+  const SubscriptionStateInitial({required this.status, this.paywallSource}): super._();
   
 
 @override final  SubscriptionStatus status;
+@override final  PaywallSource? paywallSource;
 
 /// Create a copy of SubscriptionState
 /// with the given fields replaced by the non-null parameter values.
@@ -248,16 +250,16 @@ $SubscriptionStateInitialCopyWith<SubscriptionStateInitial> get copyWith => _$Su
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SubscriptionStateInitial&&(identical(other.status, status) || other.status == status));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SubscriptionStateInitial&&(identical(other.status, status) || other.status == status)&&(identical(other.paywallSource, paywallSource) || other.paywallSource == paywallSource));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,status);
+int get hashCode => Object.hash(runtimeType,status,paywallSource);
 
 @override
 String toString() {
-  return 'SubscriptionState.initial(status: $status)';
+  return 'SubscriptionState.initial(status: $status, paywallSource: $paywallSource)';
 }
 
 
@@ -268,7 +270,7 @@ abstract mixin class $SubscriptionStateInitialCopyWith<$Res> implements $Subscri
   factory $SubscriptionStateInitialCopyWith(SubscriptionStateInitial value, $Res Function(SubscriptionStateInitial) _then) = _$SubscriptionStateInitialCopyWithImpl;
 @override @useResult
 $Res call({
- SubscriptionStatus status
+ SubscriptionStatus status, PaywallSource? paywallSource
 });
 
 
@@ -285,10 +287,11 @@ class _$SubscriptionStateInitialCopyWithImpl<$Res>
 
 /// Create a copy of SubscriptionState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? status = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? status = null,Object? paywallSource = freezed,}) {
   return _then(SubscriptionStateInitial(
 status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
-as SubscriptionStatus,
+as SubscriptionStatus,paywallSource: freezed == paywallSource ? _self.paywallSource : paywallSource // ignore: cast_nullable_to_non_nullable
+as PaywallSource?,
   ));
 }
 
@@ -308,10 +311,11 @@ $SubscriptionStatusCopyWith<$Res> get status {
 
 
 class SubscriptionStateLoading extends SubscriptionState {
-  const SubscriptionStateLoading({required this.status}): super._();
+  const SubscriptionStateLoading({required this.status, this.paywallSource}): super._();
   
 
 @override final  SubscriptionStatus status;
+@override final  PaywallSource? paywallSource;
 
 /// Create a copy of SubscriptionState
 /// with the given fields replaced by the non-null parameter values.
@@ -323,16 +327,16 @@ $SubscriptionStateLoadingCopyWith<SubscriptionStateLoading> get copyWith => _$Su
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SubscriptionStateLoading&&(identical(other.status, status) || other.status == status));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SubscriptionStateLoading&&(identical(other.status, status) || other.status == status)&&(identical(other.paywallSource, paywallSource) || other.paywallSource == paywallSource));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,status);
+int get hashCode => Object.hash(runtimeType,status,paywallSource);
 
 @override
 String toString() {
-  return 'SubscriptionState.loading(status: $status)';
+  return 'SubscriptionState.loading(status: $status, paywallSource: $paywallSource)';
 }
 
 
@@ -343,7 +347,7 @@ abstract mixin class $SubscriptionStateLoadingCopyWith<$Res> implements $Subscri
   factory $SubscriptionStateLoadingCopyWith(SubscriptionStateLoading value, $Res Function(SubscriptionStateLoading) _then) = _$SubscriptionStateLoadingCopyWithImpl;
 @override @useResult
 $Res call({
- SubscriptionStatus status
+ SubscriptionStatus status, PaywallSource? paywallSource
 });
 
 
@@ -360,10 +364,11 @@ class _$SubscriptionStateLoadingCopyWithImpl<$Res>
 
 /// Create a copy of SubscriptionState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? status = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? status = null,Object? paywallSource = freezed,}) {
   return _then(SubscriptionStateLoading(
 status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
-as SubscriptionStatus,
+as SubscriptionStatus,paywallSource: freezed == paywallSource ? _self.paywallSource : paywallSource // ignore: cast_nullable_to_non_nullable
+as PaywallSource?,
   ));
 }
 
@@ -383,7 +388,7 @@ $SubscriptionStatusCopyWith<$Res> get status {
 
 
 class SubscriptionStateLoaded extends SubscriptionState {
-  const SubscriptionStateLoaded({required this.status, required this.offerings, this.annualPackage, this.monthlyPackage, this.discountAnnualPackage, this.isLocalSuccessOverride = false, this.isPurchasing = false, this.isAnnualSelection = true}): super._();
+  const SubscriptionStateLoaded({required this.status, required this.offerings, this.annualPackage, this.monthlyPackage, this.discountAnnualPackage, this.isLocalSuccessOverride = false, this.isPurchasing = false, this.isAnnualSelection = true, this.paywallSource}): super._();
   
 
 @override final  SubscriptionStatus status;
@@ -394,6 +399,7 @@ class SubscriptionStateLoaded extends SubscriptionState {
 @JsonKey() final  bool isLocalSuccessOverride;
 @JsonKey() final  bool isPurchasing;
 @JsonKey() final  bool isAnnualSelection;
+@override final  PaywallSource? paywallSource;
 
 /// Create a copy of SubscriptionState
 /// with the given fields replaced by the non-null parameter values.
@@ -405,16 +411,16 @@ $SubscriptionStateLoadedCopyWith<SubscriptionStateLoaded> get copyWith => _$Subs
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SubscriptionStateLoaded&&(identical(other.status, status) || other.status == status)&&(identical(other.offerings, offerings) || other.offerings == offerings)&&(identical(other.annualPackage, annualPackage) || other.annualPackage == annualPackage)&&(identical(other.monthlyPackage, monthlyPackage) || other.monthlyPackage == monthlyPackage)&&(identical(other.discountAnnualPackage, discountAnnualPackage) || other.discountAnnualPackage == discountAnnualPackage)&&(identical(other.isLocalSuccessOverride, isLocalSuccessOverride) || other.isLocalSuccessOverride == isLocalSuccessOverride)&&(identical(other.isPurchasing, isPurchasing) || other.isPurchasing == isPurchasing)&&(identical(other.isAnnualSelection, isAnnualSelection) || other.isAnnualSelection == isAnnualSelection));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SubscriptionStateLoaded&&(identical(other.status, status) || other.status == status)&&(identical(other.offerings, offerings) || other.offerings == offerings)&&(identical(other.annualPackage, annualPackage) || other.annualPackage == annualPackage)&&(identical(other.monthlyPackage, monthlyPackage) || other.monthlyPackage == monthlyPackage)&&(identical(other.discountAnnualPackage, discountAnnualPackage) || other.discountAnnualPackage == discountAnnualPackage)&&(identical(other.isLocalSuccessOverride, isLocalSuccessOverride) || other.isLocalSuccessOverride == isLocalSuccessOverride)&&(identical(other.isPurchasing, isPurchasing) || other.isPurchasing == isPurchasing)&&(identical(other.isAnnualSelection, isAnnualSelection) || other.isAnnualSelection == isAnnualSelection)&&(identical(other.paywallSource, paywallSource) || other.paywallSource == paywallSource));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,status,offerings,annualPackage,monthlyPackage,discountAnnualPackage,isLocalSuccessOverride,isPurchasing,isAnnualSelection);
+int get hashCode => Object.hash(runtimeType,status,offerings,annualPackage,monthlyPackage,discountAnnualPackage,isLocalSuccessOverride,isPurchasing,isAnnualSelection,paywallSource);
 
 @override
 String toString() {
-  return 'SubscriptionState.loaded(status: $status, offerings: $offerings, annualPackage: $annualPackage, monthlyPackage: $monthlyPackage, discountAnnualPackage: $discountAnnualPackage, isLocalSuccessOverride: $isLocalSuccessOverride, isPurchasing: $isPurchasing, isAnnualSelection: $isAnnualSelection)';
+  return 'SubscriptionState.loaded(status: $status, offerings: $offerings, annualPackage: $annualPackage, monthlyPackage: $monthlyPackage, discountAnnualPackage: $discountAnnualPackage, isLocalSuccessOverride: $isLocalSuccessOverride, isPurchasing: $isPurchasing, isAnnualSelection: $isAnnualSelection, paywallSource: $paywallSource)';
 }
 
 
@@ -425,7 +431,7 @@ abstract mixin class $SubscriptionStateLoadedCopyWith<$Res> implements $Subscrip
   factory $SubscriptionStateLoadedCopyWith(SubscriptionStateLoaded value, $Res Function(SubscriptionStateLoaded) _then) = _$SubscriptionStateLoadedCopyWithImpl;
 @override @useResult
 $Res call({
- SubscriptionStatus status, SubscriptionOffering offerings, SubscriptionPackage? annualPackage, SubscriptionPackage? monthlyPackage, SubscriptionPackage? discountAnnualPackage, bool isLocalSuccessOverride, bool isPurchasing, bool isAnnualSelection
+ SubscriptionStatus status, SubscriptionOffering offerings, SubscriptionPackage? annualPackage, SubscriptionPackage? monthlyPackage, SubscriptionPackage? discountAnnualPackage, bool isLocalSuccessOverride, bool isPurchasing, bool isAnnualSelection, PaywallSource? paywallSource
 });
 
 
@@ -442,7 +448,7 @@ class _$SubscriptionStateLoadedCopyWithImpl<$Res>
 
 /// Create a copy of SubscriptionState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? status = null,Object? offerings = null,Object? annualPackage = freezed,Object? monthlyPackage = freezed,Object? discountAnnualPackage = freezed,Object? isLocalSuccessOverride = null,Object? isPurchasing = null,Object? isAnnualSelection = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? status = null,Object? offerings = null,Object? annualPackage = freezed,Object? monthlyPackage = freezed,Object? discountAnnualPackage = freezed,Object? isLocalSuccessOverride = null,Object? isPurchasing = null,Object? isAnnualSelection = null,Object? paywallSource = freezed,}) {
   return _then(SubscriptionStateLoaded(
 status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as SubscriptionStatus,offerings: null == offerings ? _self.offerings : offerings // ignore: cast_nullable_to_non_nullable
@@ -452,7 +458,8 @@ as SubscriptionPackage?,discountAnnualPackage: freezed == discountAnnualPackage 
 as SubscriptionPackage?,isLocalSuccessOverride: null == isLocalSuccessOverride ? _self.isLocalSuccessOverride : isLocalSuccessOverride // ignore: cast_nullable_to_non_nullable
 as bool,isPurchasing: null == isPurchasing ? _self.isPurchasing : isPurchasing // ignore: cast_nullable_to_non_nullable
 as bool,isAnnualSelection: null == isAnnualSelection ? _self.isAnnualSelection : isAnnualSelection // ignore: cast_nullable_to_non_nullable
-as bool,
+as bool,paywallSource: freezed == paywallSource ? _self.paywallSource : paywallSource // ignore: cast_nullable_to_non_nullable
+as PaywallSource?,
   ));
 }
 
@@ -517,11 +524,12 @@ $SubscriptionPackageCopyWith<$Res>? get discountAnnualPackage {
 
 
 class SubscriptionStateFailure extends SubscriptionState {
-  const SubscriptionStateFailure({required this.status, required this.failure}): super._();
+  const SubscriptionStateFailure({required this.status, required this.failure, this.paywallSource}): super._();
   
 
 @override final  SubscriptionStatus status;
  final  Failure failure;
+@override final  PaywallSource? paywallSource;
 
 /// Create a copy of SubscriptionState
 /// with the given fields replaced by the non-null parameter values.
@@ -533,16 +541,16 @@ $SubscriptionStateFailureCopyWith<SubscriptionStateFailure> get copyWith => _$Su
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SubscriptionStateFailure&&(identical(other.status, status) || other.status == status)&&(identical(other.failure, failure) || other.failure == failure));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SubscriptionStateFailure&&(identical(other.status, status) || other.status == status)&&(identical(other.failure, failure) || other.failure == failure)&&(identical(other.paywallSource, paywallSource) || other.paywallSource == paywallSource));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,status,failure);
+int get hashCode => Object.hash(runtimeType,status,failure,paywallSource);
 
 @override
 String toString() {
-  return 'SubscriptionState.failure(status: $status, failure: $failure)';
+  return 'SubscriptionState.failure(status: $status, failure: $failure, paywallSource: $paywallSource)';
 }
 
 
@@ -553,7 +561,7 @@ abstract mixin class $SubscriptionStateFailureCopyWith<$Res> implements $Subscri
   factory $SubscriptionStateFailureCopyWith(SubscriptionStateFailure value, $Res Function(SubscriptionStateFailure) _then) = _$SubscriptionStateFailureCopyWithImpl;
 @override @useResult
 $Res call({
- SubscriptionStatus status, Failure failure
+ SubscriptionStatus status, Failure failure, PaywallSource? paywallSource
 });
 
 
@@ -570,11 +578,12 @@ class _$SubscriptionStateFailureCopyWithImpl<$Res>
 
 /// Create a copy of SubscriptionState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? status = null,Object? failure = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? status = null,Object? failure = null,Object? paywallSource = freezed,}) {
   return _then(SubscriptionStateFailure(
 status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as SubscriptionStatus,failure: null == failure ? _self.failure : failure // ignore: cast_nullable_to_non_nullable
-as Failure,
+as Failure,paywallSource: freezed == paywallSource ? _self.paywallSource : paywallSource // ignore: cast_nullable_to_non_nullable
+as PaywallSource?,
   ));
 }
 

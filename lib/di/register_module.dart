@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
@@ -35,16 +36,15 @@ abstract class RegisterModule {
   FirebaseStorage get storage => FirebaseStorage.instance;
 
   @lazySingleton
+  FirebaseAnalytics get firebaseAnalytics => FirebaseAnalytics.instance;
+
+  @lazySingleton
+  FirebaseAnalyticsObserver get firebaseAnalyticsObserver =>
+      FirebaseAnalyticsObserver(analytics: FirebaseAnalytics.instance);
+
+  @lazySingleton
   DeviceInfoPlugin get deviceInfo => DeviceInfoPlugin();
 
   @preResolve
   Future<SharedPreferences> get prefs => SharedPreferences.getInstance();
-
-  // We need a way to get the API key.
-  // For now, assuming it's available via an environment variable or a constant.
-  // Since we don't have the Envied setup visible in this context (it was mentioned in rules),
-  // I will check if there is an 'AppSecrets' or similar.
-  // If not found, I'll put a placeholder or throw.
-  // BUT: The user rules mention "Secrets Management: envied".
-  // Check lib/app/env/env.dart or similar?
 }

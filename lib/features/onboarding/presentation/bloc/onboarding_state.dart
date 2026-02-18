@@ -6,6 +6,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:bizzie/app/themes/app_assets.dart';
 import 'package:bizzie/features/onboarding/presentation/utils/onboarding_assets_helper.dart';
 import 'package:bizzie/features/onboarding/presentation/utils/brand_display_helper.dart';
+import 'package:bizzie/core/analytics/onboarding_tracker.dart';
 
 import 'package:bizzie/shared/models/sector_view_model.dart';
 
@@ -39,12 +40,16 @@ abstract class OnboardingState with _$OnboardingState {
     @Default(0) int currentHighlightIndex,
     @Default(false) bool shouldNavigateToCreateAccount,
     @Default(false) bool shouldNavigateToBuildingProfile,
+    required DateTime stepEntryTime,
+    OnboardingStep? lastStep,
   }) = _OnboardingState;
 
   const OnboardingState._();
 
-  factory OnboardingState.initial() =>
-      const OnboardingState(onboardingData: OnboardingData());
+  factory OnboardingState.initial() => OnboardingState(
+    onboardingData: const OnboardingData(),
+    stepEntryTime: DateTime.now(),
+  );
 
   String get analysisTitle {
     if (analysisStep >= 3) return 'All done!';

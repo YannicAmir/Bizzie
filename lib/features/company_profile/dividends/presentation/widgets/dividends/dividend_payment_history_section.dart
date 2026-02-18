@@ -1,4 +1,5 @@
 import 'package:bizzie/app/themes/app_text_styles.dart';
+import 'package:bizzie/core/enums/paywall_source.dart';
 import 'package:bizzie/features/company_profile/dividends/domain/extensions/dividend_event_list_extensions.dart';
 import 'package:bizzie/features/company_profile/dividends/domain/models/dividend_event.dart';
 import 'package:bizzie/features/company_profile/dividends/presentation/utils/dividend_payment_history_utils.dart';
@@ -29,6 +30,7 @@ class DividendPaymentHistorySection extends StatelessWidget {
 
     return BizzieDataTable(
       title: 'Table',
+      source: PaywallSource.companyProfile,
       onViewMore: hasMore
           ? () => _showAllPaymentHistory(context, sortedHistory)
           : null,

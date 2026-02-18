@@ -1,32 +1,0 @@
-00:00 +0: loading /Users/yannicamir/developer/Bizzie/test/features/settings/presentation/bloc/settings_bloc_test.dart                                                                                  00:00 +0: Notification Toggling toggledNotifications_systemPermissionMissing_revertsStateAndEmitsFailure                                                                                               00:00 +0 -1: Notification Toggling toggledNotifications_systemPermissionMissing_revertsStateAndEmitsFailure [E]                                                                                        
-  Expected: [
-              _Failure:SettingsState.failure(failure: Failure.permission(message: Permission denied)),
-              _Loaded:SettingsState.loaded(data: SettingsDisplayData(user: UserModel(uid: 123, name: Test User, favoriteSector: Technology, watchlist: [], investingExperience: InvestingExperience.beginner, createdAt: 2023-01-01 00:00:00.000, isSubscribed: false, notificationsEnabled: true, fcmTokens: {}), subscriptionStatus: SubscriptionStatus(isSubscribed: false, activeEntitlements: {}, activeProductIds: {}, expirationDate: null, latestPurchaseDate: null, managementURL: null, activePlanId: null, periodType: SubscriptionPeriodType.unknown), isAppNotificationsEnabled: false, isSystemNotificationsEnabled: false, appVersion: 1.0.0, favoriteSector: Information Technology, privacyPolicyUrl: https://privacy.com, termsOfServiceUrl: https://terms.com))
-            ]
-    Actual: [
-              _Failure:SettingsState.failure(failure: Failure.permission(message: Permission denied)),
-              _Loaded:SettingsState.loaded(data: SettingsDisplayData(user: UserModel(uid: 123, name: Test User, favoriteSector: Technology, watchlist: [], investingExperience: InvestingExperience.beginner, createdAt: 2023-01-01 00:00:00.000, isSubscribed: false, notificationsEnabled: true, fcmTokens: {}), subscriptionStatus: SubscriptionStatus(isSubscribed: false, activeEntitlements: {}, activeProductIds: {}, expirationDate: null, latestPurchaseDate: null, managementURL: null, activePlanId: null, periodType: SubscriptionPeriodType.unknown), isAppNotificationsEnabled: false, isSystemNotificationsEnabled: false, appVersion: 1.0.0, favoriteSector: Technology, privacyPolicyUrl: https://privacy.com, termsOfServiceUrl: https://terms.com))
-            ]
-     Which: at location [1] is _Loaded:<SettingsState.loaded(data: SettingsDisplayData(user: UserModel(uid: 123, name: Test User, favoriteSector: Technology, watchlist: [], investingExperience: InvestingExperience.beginner, createdAt: 2023-01-01 00:00:00.000, isSubscribed: false, notificationsEnabled: true, fcmTokens: {}), subscriptionStatus: SubscriptionStatus(isSubscribed: false, activeEntitlements: {}, activeProductIds: {}, expirationDate: null, latestPurchaseDate: null, managementURL: null, activePlanId: null, periodType: SubscriptionPeriodType.unknown), isAppNotificationsEnabled: false, isSystemNotificationsEnabled: false, appVersion: 1.0.0, favoriteSector: Technology, privacyPolicyUrl: https://privacy.com, termsOfServiceUrl: https://terms.com))> instead of _Loaded:<SettingsState.loaded(data: SettingsDisplayData(user: UserModel(uid: 123, name: Test User, favoriteSector: Technology, watchlist: [], investingExperience: InvestingExperience.beginner, createdAt: 2023-01-01 00:00:00.000, isSubscribed: false, notificationsEnabled: true, fcmTokens: {}), subscriptionStatus: SubscriptionStatus(isSubscribed: false, activeEntitlements: {}, activeProductIds: {}, expirationDate: null, latestPurchaseDate: null, managementURL: null, activePlanId: null, periodType: SubscriptionPeriodType.unknown), isAppNotificationsEnabled: false, isSystemNotificationsEnabled: false, appVersion: 1.0.0, favoriteSector: Information Technology, privacyPolicyUrl: https://privacy.com, termsOfServiceUrl: https://terms.com))>
-  
-  ==== diff ========================================
-  
-  [90m[SettingsState.failure(failure: Failure.permission(message: Permission denied)), SettingsState.loaded(data: SettingsDisplayData(user: UserModel(uid: 123, name: Test User, favoriteSector: Technology, watchlist: [], investingExperience: InvestingExperience.beginner, createdAt: 2023-01-01 00:00:00.000, isSubscribed: false, notificationsEnabled: true, fcmTokens: {}), subscriptionStatus: SubscriptionStatus(isSubscribed: false, activeEntitlements: {}, activeProductIds: {}, expirationDate: null, latestPurchaseDate: null, managementURL: null, activePlanId: null, periodType: SubscriptionPeriodType.unknown), isAppNotificationsEnabled: false, isSystemNotificationsEnabled: false, appVersion: 1.0.0, favoriteSector: [0m[31m[-Information -][0m[90mTechnology, privacyPolicyUrl: https://privacy.com, termsOfServiceUrl: https://terms.com))][0m
-  
-  ==== end diff ====================================
-  
-  package:bloc_test/src/bloc_test.dart 224:11  testBloc.<fn>
-  ===== asynchronous gap ===========================
-  dart:async                                   _Completer.completeError
-  package:bloc_test/src/bloc_test.dart 255:43  _runZonedGuarded.<fn>
-  ===== asynchronous gap ===========================
-  dart:async                                   _CustomZone.registerBinaryCallback
-  package:bloc_test/src/bloc_test.dart 252:5   _runZonedGuarded.<fn>
-  dart:async                                   runZonedGuarded
-  package:bloc_test/src/bloc_test.dart 251:3   _runZonedGuarded
-  package:bloc_test/src/bloc_test.dart 198:11  testBloc
-  package:bloc_test/src/bloc_test.dart 156:13  blocTest.<fn>
-  
-
-To run this test again: /Users/yannicamir/src/flutter/bin/cache/dart-sdk/bin/dart test /Users/yannicamir/developer/Bizzie/test/features/settings/presentation/bloc/settings_bloc_test.dart -p vm --plain-name 'Notification Toggling toggledNotifications_systemPermissionMissing_revertsStateAndEmitsFailure'
-00:00 +0 -1: Some tests failed.                                                                                                                                                                        

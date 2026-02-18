@@ -3,6 +3,7 @@ import 'package:bizzie/app/routes/app_router_redirect.dart';
 import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
 import 'package:bizzie/features/search/presentation/views/search_page.dart';
 import 'package:bizzie/features/search/presentation/bloc/search_bloc.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:bizzie/features/onboarding/domain/models/company.dart';
 
 import 'package:bizzie/features/auth/presentation/views/create_account_page.dart';
@@ -44,6 +45,7 @@ import 'package:async/async.dart';
 
 import 'package:bizzie/features/subscription/presentation/views/discounted_subscription_page.dart';
 import 'package:bizzie/features/subscription/presentation/views/subscription_page.dart';
+import 'package:bizzie/core/enums/paywall_source.dart';
 import 'package:bizzie/features/settings/presentation/views/settings_view.dart';
 import 'package:bizzie/features/security/presentation/views/security_lockout_screen.dart';
 
@@ -59,6 +61,7 @@ GoRouter createRouter(
   return GoRouter(
     navigatorKey: rootNavigatorKey,
     initialLocation: initialLocation ?? AppRoutes.splash,
+    observers: [getIt<FirebaseAnalyticsObserver>()],
     refreshListenable: GoRouterRefreshStream(
       StreamGroup.merge([authBloc.stream, userBloc.stream]),
     ),
@@ -321,11 +324,20 @@ GoRoute _buildPaywallRoute({
     name: name,
     parentNavigatorKey: parentNavigatorKey,
     pageBuilder: (context, state) {
-      final animateParam = state.uri.queryParameters['animate'];
+      final queryParams = state.uri.queryParameters;
+      final animateParam = queryParams['animate'];
       final animate = animateParam != 'false';
-      final isOnboarding = animateParam == 'onboarding';
+      final sourceStr = queryParams['source'];
+      final source = PaywallSource.values.firstWhere(
+        (e) => e.name == sourceStr,
+        orElse: () => PaywallSource.unknown,
+      );
 
-      final pageChild = child;
+      final pageChild = child is SubscriptionPage
+          ? SubscriptionPage(source: source)
+          : child is DiscountedSubscriptionPage
+          ? DiscountedSubscriptionPage(source: source)
+          : child;
 
       if (!animate) {
         return NoTransitionPage(
@@ -340,7 +352,8 @@ GoRoute _buildPaywallRoute({
         fullscreenDialog: true,
         child: pageChild,
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          if (isOnboarding && animation.status == AnimationStatus.forward) {
+          if (source == PaywallSource.onboarding &&
+              animation.status == AnimationStatus.forward) {
             return child;
           }
           const begin = Offset(0.0, 1.0);

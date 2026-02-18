@@ -1,4 +1,5 @@
 import 'package:bizzie/app/routes/app_routes.dart';
+import 'package:bizzie/core/enums/paywall_source.dart';
 import 'package:bizzie/features/subscription/presentation/widgets/subscription_gift_modal.dart';
 import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
 import 'package:flutter/material.dart';
@@ -8,10 +9,13 @@ import 'package:go_router/go_router.dart';
 class PaywallHelper {
   PaywallHelper._();
 
-  static Future<void> showPaywallSequence(BuildContext context) async {
+  static Future<void> showPaywallSequence(
+    BuildContext context, {
+    required PaywallSource source,
+  }) async {
     final theme = Theme.of(context);
     // 1. Show regular paywall
-    await context.push(AppRoutes.paywall);
+    await context.push('${AppRoutes.paywall}?source=${source.name}');
 
     if (context.mounted) {
       // 2. Check if user is now subscribed
@@ -27,7 +31,7 @@ class PaywallHelper {
         showModalBottomSheet(
           context: context,
           backgroundColor: theme.colorScheme.scrim,
-          builder: (context) => const SubscriptionGiftModal(),
+          builder: (context) => SubscriptionGiftModal(source: source),
         );
       }
     }

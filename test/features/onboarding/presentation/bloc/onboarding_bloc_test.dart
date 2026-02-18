@@ -16,10 +16,12 @@ import 'package:bizzie/features/onboarding/domain/models/company.dart';
 import 'package:bizzie/features/onboarding/presentation/models/feature_highlight_item.dart';
 import 'package:bizzie/features/onboarding/presentation/bloc/onboarding_bloc.dart';
 import 'package:bizzie/shared/models/sector_view_model.dart';
+import 'package:bizzie/features/onboarding/presentation/analytics/onboarding_analytics.dart';
 import 'package:bizzie/core/interfaces/i_sector_service.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
+import 'package:bizzie/core/analytics/onboarding_tracker.dart';
 import 'package:bizzie/core/usecase/usecase.dart';
 
 class MockAuthRepository extends Mock implements IAuthRepository {}
@@ -34,7 +36,13 @@ class MockGetSp500HistoryUseCase extends Mock
 
 class MockSectorService extends Mock implements ISectorService {}
 
+class MockOnboardingAnalytics extends Mock implements OnboardingAnalytics {}
+
+class MockOnboardingTracker extends Mock implements OnboardingTracker {}
+
 class FakeNoParams extends Fake implements NoParams {}
+
+final testTime = DateTime(2026, 1, 1);
 
 void main() {
   late OnboardingBloc bloc;
@@ -44,6 +52,8 @@ void main() {
   late MockGetSectorsUseCase mockGetSectorsUseCase;
   late MockGetSp500HistoryUseCase mockGetSp500HistoryUseCase;
   late MockSectorService mockSectorService;
+  late MockOnboardingAnalytics mockOnboardingAnalytics;
+  late MockOnboardingTracker mockOnboardingTracker;
 
   setUpAll(() {
     registerFallbackValue(const OnboardingData());
@@ -51,6 +61,9 @@ void main() {
       const CompleteOnboardingParams(data: OnboardingData(), uid: ''),
     );
     registerFallbackValue(FakeNoParams());
+    registerFallbackValue(OnboardingStep.landing);
+    registerFallbackValue(Sector.energy);
+    registerFallbackValue(InvestingExperience.beginner);
   });
 
   setUp(() {
@@ -60,6 +73,63 @@ void main() {
     mockGetSectorsUseCase = MockGetSectorsUseCase();
     mockGetSp500HistoryUseCase = MockGetSp500HistoryUseCase();
     mockSectorService = MockSectorService();
+    mockOnboardingAnalytics = MockOnboardingAnalytics();
+    mockOnboardingTracker = MockOnboardingTracker();
+
+    when(
+      () => mockOnboardingAnalytics.logProfileReadyContinue(),
+    ).thenAnswer((_) async {});
+    when(
+      () => mockOnboardingAnalytics.logSectorSelected(any(that: isA<Sector>())),
+    ).thenAnswer((_) async {});
+    when(
+      () => mockOnboardingAnalytics.logExperienceSelected(
+        any(that: isA<InvestingExperience>()),
+      ),
+    ).thenAnswer((_) async {});
+    when(
+      () => mockOnboardingTracker.logStepViewed(step: any(named: 'step')),
+    ).thenAnswer((_) async {});
+    when(
+      () => mockOnboardingAnalytics.logBrandsSelected(
+        brandNames: any(named: 'brandNames', that: isA<List<String>>()),
+        count: any(named: 'count', that: isA<int>()),
+      ),
+    ).thenAnswer((_) async {});
+    when(
+      () => mockOnboardingAnalytics.logNotificationsToggled(
+        any(that: isA<bool>()),
+      ),
+    ).thenAnswer((_) async {});
+    when(
+      () => mockOnboardingAnalytics.logHighlightsSkipped(any(that: isA<int>())),
+    ).thenAnswer((_) async {});
+    when(
+      () => mockOnboardingAnalytics.logComplete(
+        sector: any(named: 'sector', that: isA<Sector>()),
+        experience: any(named: 'experience', that: isA<InvestingExperience>()),
+        brandCount: any(named: 'brandCount', that: isA<int>()),
+      ),
+    ).thenAnswer((_) async {});
+    when(
+      () => mockOnboardingAnalytics.logError(
+        message: any(named: 'message', that: isA<String>()),
+        stepName: any(named: 'stepName', that: isA<String>()),
+      ),
+    ).thenAnswer((_) async {});
+    when(
+      () => mockOnboardingTracker.logStepDuration(
+        step: any(named: 'step', that: isA<OnboardingStep>()),
+        seconds: any(named: 'seconds', that: isA<int>()),
+      ),
+    ).thenAnswer((_) async {});
+    when(() => mockOnboardingAnalytics.logSignUp()).thenAnswer((_) async {});
+    when(
+      () => mockOnboardingAnalytics.setUserProperties(
+        experience: any(named: 'experience', that: isA<InvestingExperience>()),
+        sector: any(named: 'sector', that: isA<Sector>()),
+      ),
+    ).thenAnswer((_) async {});
 
     bloc = OnboardingBloc(
       mockAuthRepository,
@@ -67,6 +137,8 @@ void main() {
       mockGetSectorsUseCase,
       mockGetSp500HistoryUseCase,
       mockSectorService,
+      mockOnboardingAnalytics,
+      mockOnboardingTracker,
     );
   });
 
@@ -77,10 +149,7 @@ void main() {
   group('OnboardingBloc', () {
     test('initialState_isCorrect', () {
       // assert
-      expect(
-        bloc.state,
-        const OnboardingState(onboardingData: OnboardingData()),
-      );
+      expect(bloc.state.onboardingData, const OnboardingData());
     });
 
     blocTest<OnboardingBloc, OnboardingState>(
@@ -146,15 +215,14 @@ void main() {
       act: (bloc) => bloc.add(const OnboardingEvent.loadSp500History()),
       // assert
       expect: () => [
-        const OnboardingState(
-          onboardingData: OnboardingData(),
-          isLoadingHistory: true,
+        isA<OnboardingState>().having(
+          (s) => s.isLoadingHistory,
+          'isLoadingHistory',
+          true,
         ),
-        const OnboardingState(
-          onboardingData: OnboardingData(),
-          isLoadingHistory: false,
-          sp500History: [],
-        ),
+        isA<OnboardingState>()
+            .having((s) => s.isLoadingHistory, 'isLoadingHistory', false)
+            .having((s) => s.sp500History, 'sp500History', []),
       ],
     );
 
@@ -166,11 +234,18 @@ void main() {
       act: (bloc) => bloc.add(const OnboardingEvent.nameSubmitted('New Name')),
       // assert
       expect: () => [
-        const OnboardingState(
-          onboardingData: OnboardingData(firstName: 'New Name'),
-          currentStep: 2,
-        ),
+        isA<OnboardingState>()
+            .having((s) => s.onboardingData.firstName, 'firstName', 'New Name')
+            .having((s) => s.currentStep, 'currentStep', 2),
       ],
+      verify: (_) {
+        verify(
+          () => mockOnboardingTracker.logStepDuration(
+            step: OnboardingStep.askName,
+            seconds: any(named: 'seconds'),
+          ),
+        ).called(1);
+      },
     );
 
     blocTest<OnboardingBloc, OnboardingState>(
@@ -179,6 +254,7 @@ void main() {
       build: () => bloc,
       seed: () => OnboardingState(
         onboardingData: const OnboardingData(),
+        stepEntryTime: testTime,
         availableSectors: [
           SectorViewModel(
             sector: Sector.financials,
@@ -240,8 +316,10 @@ void main() {
       act: (bloc) => bloc.add(const OnboardingEvent.notificationsToggled(true)),
       // assert
       expect: () => [
-        const OnboardingState(
-          onboardingData: OnboardingData(notificationsEnabled: true),
+        isA<OnboardingState>().having(
+          (s) => s.onboardingData.notificationsEnabled,
+          'notificationsEnabled',
+          true,
         ),
       ],
     );
@@ -250,15 +328,44 @@ void main() {
       'highlightPageChanged_validIndex_updatesIndex',
       // arrange
       build: () => bloc,
+      seed: () => OnboardingState(
+        onboardingData: const OnboardingData(),
+        stepEntryTime: testTime,
+        featureHighlights: const [
+          FeatureHighlightItem(
+            title: 'T1',
+            description: 'D1',
+            type: FeatureHighlightType.historicalData,
+          ),
+          FeatureHighlightItem(
+            title: 'T2',
+            description: 'D2',
+            type: FeatureHighlightType.dailyPicks,
+          ),
+          FeatureHighlightItem(
+            title: 'T3',
+            description: 'D3',
+            type: FeatureHighlightType.brandSearch,
+          ),
+        ],
+      ),
       // act
       act: (bloc) => bloc.add(const OnboardingEvent.highlightPageChanged(2)),
       // assert
       expect: () => [
-        const OnboardingState(
-          onboardingData: OnboardingData(),
-          currentHighlightIndex: 2,
+        isA<OnboardingState>().having(
+          (s) => s.currentHighlightIndex,
+          'currentHighlightIndex',
+          2,
         ),
       ],
+      verify: (_) {
+        verify(
+          () => mockOnboardingTracker.logStepViewed(
+            step: OnboardingStep.highlight3,
+          ),
+        ).called(1);
+      },
     );
 
     const tBrand = Brand(
@@ -277,17 +384,21 @@ void main() {
       act: (bloc) => bloc.add(const OnboardingEvent.toggleBrand(tBrand)),
       // assert
       expect: () => [
-        const OnboardingState(
-          onboardingData: OnboardingData(),
-          selectedBrands: [tBrand],
-        ),
+        isA<OnboardingState>()
+            .having(
+              (s) => s.onboardingData,
+              'onboardingData',
+              const OnboardingData(),
+            )
+            .having((s) => s.selectedBrands, 'selectedBrands', [tBrand]),
       ],
     );
 
     blocTest<OnboardingBloc, OnboardingState>(
       'toggleBrand_brandSelected_removesBrand',
-      seed: () => const OnboardingState(
-        onboardingData: OnboardingData(),
+      seed: () => OnboardingState(
+        onboardingData: const OnboardingData(),
+        stepEntryTime: testTime,
         selectedBrands: [tBrand],
       ),
       // arrange
@@ -296,10 +407,13 @@ void main() {
       act: (bloc) => bloc.add(const OnboardingEvent.toggleBrand(tBrand)),
       // assert
       expect: () => [
-        const OnboardingState(
-          onboardingData: OnboardingData(),
-          selectedBrands: [],
-        ),
+        isA<OnboardingState>()
+            .having(
+              (s) => s.onboardingData,
+              'onboardingData',
+              const OnboardingData(),
+            )
+            .having((s) => s.selectedBrands, 'selectedBrands', []),
       ],
     );
 
@@ -317,13 +431,15 @@ void main() {
       act: (bloc) => bloc.add(const OnboardingEvent.loadSp500History()),
       // assert
       expect: () => [
-        const OnboardingState(
-          onboardingData: OnboardingData(),
-          isLoadingHistory: true,
+        isA<OnboardingState>().having(
+          (s) => s.isLoadingHistory,
+          'isLoadingHistory',
+          true,
         ),
-        const OnboardingState(
-          onboardingData: OnboardingData(),
-          isLoadingHistory: false,
+        isA<OnboardingState>().having(
+          (s) => s.isLoadingHistory,
+          'isLoadingHistory',
+          false,
         ),
       ],
     );
@@ -339,17 +455,28 @@ void main() {
       act: (bloc) => bloc.add(const OnboardingEvent.completeOnboarding()),
       // assert
       expect: () => [
-        const OnboardingState(
-          onboardingData: OnboardingData(),
-          isSubmitting: true,
+        isA<OnboardingState>().having(
+          (s) => s.isSubmitting,
+          'isSubmitting',
+          true,
         ),
-        const OnboardingState(
-          onboardingData: OnboardingData(),
-          isSubmitting: false,
-          status: OnboardingStatus.failure,
-          failureMessage: 'User is not authenticated',
-        ),
+        isA<OnboardingState>()
+            .having((s) => s.isSubmitting, 'isSubmitting', false)
+            .having((s) => s.status, 'status failure', OnboardingStatus.failure)
+            .having(
+              (s) => s.failureMessage,
+              'failureMessage',
+              'User is not authenticated',
+            ),
       ],
+      verify: (_) {
+        verify(
+          () => mockOnboardingAnalytics.logError(
+            message: 'User is not authenticated',
+            stepName: 'complete_onboarding',
+          ),
+        ).called(1);
+      },
     );
 
     blocTest<OnboardingBloc, OnboardingState>(
@@ -372,17 +499,24 @@ void main() {
       act: (bloc) => bloc.add(const OnboardingEvent.completeOnboarding()),
       // assert
       expect: () => [
-        const OnboardingState(
-          onboardingData: OnboardingData(),
-          isSubmitting: true,
+        isA<OnboardingState>().having(
+          (s) => s.isSubmitting,
+          'isSubmitting',
+          true,
         ),
-        const OnboardingState(
-          onboardingData: OnboardingData(),
-          isSubmitting: false,
-          status: OnboardingStatus.failure,
-          failureMessage: 'UseCase Error',
-        ),
+        isA<OnboardingState>()
+            .having((s) => s.isSubmitting, 'isSubmitting', false)
+            .having((s) => s.status, 'status failure', OnboardingStatus.failure)
+            .having((s) => s.failureMessage, 'failureMessage', 'UseCase Error'),
       ],
+      verify: (_) {
+        verify(
+          () => mockOnboardingAnalytics.logError(
+            message: 'UseCase Error',
+            stepName: 'complete_onboarding',
+          ),
+        ).called(1);
+      },
     );
 
     blocTest<OnboardingBloc, OnboardingState>(
@@ -401,29 +535,62 @@ void main() {
         ).thenAnswer((_) async => const Right(null));
         return bloc;
       },
+      seed: () => OnboardingState(
+        onboardingData: const OnboardingData(
+          investingExperience: InvestingExperience.beginner,
+          selectedSector: Sector.informationTechnology,
+        ),
+        stepEntryTime: testTime,
+      ),
       // act
       act: (bloc) => bloc.add(const OnboardingEvent.completeOnboarding()),
       // assert
       expect: () => [
-        const OnboardingState(
-          onboardingData: OnboardingData(),
-          isSubmitting: true,
+        isA<OnboardingState>().having(
+          (s) => s.isSubmitting,
+          'isSubmitting',
+          true,
         ),
-        const OnboardingState(
-          onboardingData: OnboardingData(),
-          isSubmitting: false,
-          status: OnboardingStatus.success,
-        ),
+        isA<OnboardingState>()
+            .having((s) => s.isSubmitting, 'isSubmitting', false)
+            .having(
+              (s) => s.status,
+              'status success',
+              OnboardingStatus.success,
+            ),
       ],
+      verify: (_) {
+        verify(
+          () => mockOnboardingAnalytics.setUserProperties(
+            experience: any(
+              named: 'experience',
+              that: isA<InvestingExperience>(),
+            ),
+            sector: any(named: 'sector', that: isA<Sector>()),
+          ),
+        ).called(1);
+        verify(() => mockOnboardingAnalytics.logSignUp()).called(1);
+        verify(
+          () => mockOnboardingAnalytics.logComplete(
+            sector: any(named: 'sector', that: isA<Sector>()),
+            experience: any(
+              named: 'experience',
+              that: isA<InvestingExperience>(),
+            ),
+            brandCount: any(named: 'brandCount', that: isA<int>()),
+          ),
+        ).called(1);
+      },
     );
 
     blocTest<OnboardingBloc, OnboardingState>(
       'startAnalysis_progressesThroughSteps',
       // arrange
       build: () => bloc,
-      seed: () => const OnboardingState(
-        onboardingData: OnboardingData(),
-        selectedBrands: [
+      seed: () => OnboardingState(
+        onboardingData: const OnboardingData(),
+        stepEntryTime: testTime,
+        selectedBrands: const [
           Brand(
             name: 'Apple',
             company: 'Apple',
@@ -459,11 +626,12 @@ void main() {
       build: () => bloc,
       seed: () => OnboardingState(
         onboardingData: const OnboardingData().copyWith(
-          detectedCompanies: [
-            const Company(ticker: 'AAPL', name: 'Apple'),
-            const Company(ticker: 'MSFT', name: 'Microsoft'),
+          detectedCompanies: const [
+            Company(ticker: 'AAPL', name: 'Apple'),
+            Company(ticker: 'MSFT', name: 'Microsoft'),
           ],
         ),
+        stepEntryTime: testTime,
       ),
       // act
       act: (bloc) => bloc.add(const OnboardingEvent.startWatchlistAddition()),
@@ -490,9 +658,10 @@ void main() {
         when(() => mockAuthRepository.currentUser).thenReturn(null);
         return bloc;
       },
-      seed: () => const OnboardingState(
-        onboardingData: OnboardingData(),
-        featureHighlights: [
+      seed: () => OnboardingState(
+        onboardingData: const OnboardingData(),
+        stepEntryTime: testTime,
+        featureHighlights: const [
           FeatureHighlightItem(
             title: 'T1',
             description: 'D1',
@@ -548,6 +717,13 @@ void main() {
         ).thenAnswer((_) async => const Right(null));
         return bloc;
       },
+      seed: () => OnboardingState(
+        onboardingData: const OnboardingData(
+          investingExperience: InvestingExperience.beginner,
+          selectedSector: Sector.informationTechnology,
+        ),
+        stepEntryTime: testTime,
+      ),
       // act
       act: (bloc) => bloc.add(const OnboardingEvent.highlightSkipPressed()),
       // assert
@@ -573,6 +749,68 @@ void main() {
             .having((s) => s.status, 'status success', OnboardingStatus.success)
             .having((s) => s.isSubmitting, 'not submitting', false),
       ],
+    );
+    blocTest<OnboardingBloc, OnboardingState>(
+      'stepViewed_logsAnalyticsAndUpdatesDurationState',
+      build: () => bloc,
+      seed: () => OnboardingState(
+        onboardingData: const OnboardingData(),
+        stepEntryTime: testTime.subtract(const Duration(seconds: 10)),
+        lastStep: OnboardingStep.landing,
+      ),
+      act: (bloc) => bloc.add(
+        const OnboardingEvent.stepViewed(OnboardingStep.sectorSelection),
+      ),
+      verify: (_) {
+        verify(
+          () => mockOnboardingTracker.logStepDuration(
+            step: OnboardingStep.landing,
+            seconds: any(named: 'seconds'),
+          ),
+        ).called(1);
+        verify(
+          () => mockOnboardingTracker.logStepViewed(
+            step: OnboardingStep.sectorSelection,
+          ),
+        ).called(1);
+      },
+    );
+
+    blocTest<OnboardingBloc, OnboardingState>(
+      'profileReadyContinuePressed_logsAnalyticsAndDuration',
+      build: () => bloc,
+      seed: () => OnboardingState(
+        onboardingData: const OnboardingData(),
+        stepEntryTime: testTime.subtract(const Duration(seconds: 5)),
+        lastStep: OnboardingStep.profileReady,
+      ),
+      act: (bloc) =>
+          bloc.add(const OnboardingEvent.profileReadyContinuePressed()),
+      verify: (_) {
+        verify(
+          () => mockOnboardingTracker.logStepDuration(
+            step: OnboardingStep.profileReady,
+            seconds: any(named: 'seconds'),
+          ),
+        ).called(1);
+        verify(
+          () => mockOnboardingAnalytics.logProfileReadyContinue(),
+        ).called(1);
+      },
+    );
+
+    blocTest<OnboardingBloc, OnboardingState>(
+      'landingPageViewed_dispatchesStepViewed',
+      build: () => bloc,
+      act: (bloc) => bloc.add(const OnboardingEvent.landingPageViewed()),
+      wait: const Duration(milliseconds: 100),
+      verify: (_) {
+        // Dispatches stepViewed(landing) which we expect to log
+        verify(
+          () =>
+              mockOnboardingTracker.logStepViewed(step: OnboardingStep.landing),
+        ).called(1);
+      },
     );
   });
 }

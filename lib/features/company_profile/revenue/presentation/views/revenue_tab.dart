@@ -1,4 +1,5 @@
 import 'package:bizzie/app/themes/app_assets.dart';
+import 'package:bizzie/core/enums/paywall_source.dart';
 import 'package:bizzie/features/company_profile/revenue/presentation/bloc/company_revenue_bloc.dart';
 import 'package:bizzie/features/company_profile/revenue/presentation/bloc/company_revenue_event.dart';
 import 'package:bizzie/features/company_profile/revenue/presentation/bloc/company_revenue_state.dart';
@@ -108,6 +109,7 @@ class _RevenueTabState extends State<RevenueTab>
                     ),
                     visibleCount: loadedState.historyLimit,
                     thresholdCount: loadedState.historyLimit,
+                    source: PaywallSource.companyProfile,
                   ),
                   AppConstants.mainSectionSpacing,
                   FinancialHighlightsSection(
@@ -138,6 +140,7 @@ class _RevenueTabState extends State<RevenueTab>
                       isAnnual,
                     ),
                     limit: loadedState.historyLimit,
+                    source: PaywallSource.companyProfile,
                   ),
                 ],
               ),

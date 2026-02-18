@@ -85,7 +85,7 @@ class _BizzieAppViewState extends State<BizzieAppView>
   void _setupNotifications() {
     final notificationService = getIt<INotificationService>();
     _notificationSubscription = notificationService.routeStream.listen((route) {
-      if (route.path == AppRoutes.discountedPaywall) {
+      if (route.path.startsWith(AppRoutes.discountedPaywall)) {
         _router.push(route.path, extra: route.extra);
       } else {
         _router.go(route.path, extra: route.extra);

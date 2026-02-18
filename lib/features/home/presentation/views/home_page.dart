@@ -1,4 +1,5 @@
 import 'package:bizzie/app/routes/app_routes.dart';
+import 'package:bizzie/core/enums/paywall_source.dart';
 import 'package:bizzie/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:bizzie/features/home/presentation/widgets/home_watchlist_widget.dart';
 import 'package:bizzie/features/auth/presentation/bloc/auth_state.dart';
@@ -28,7 +29,9 @@ class _HomePageState extends State<HomePage> {
     if (widget.extra == 'open_paywall_onboarding') {
       _pendingPaywall = true;
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        context.push('${AppRoutes.paywall}?animate=onboarding');
+        context.push(
+          '${AppRoutes.paywall}?animate=onboarding&source=${PaywallSource.onboarding.name}',
+        );
 
         if (mounted) {
           setState(() {
@@ -41,10 +44,10 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     if (_pendingPaywall) {
-      return Scaffold(
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      );
+      return Scaffold(backgroundColor: theme.scaffoldBackgroundColor);
     }
 
     return Scaffold(
@@ -56,32 +59,29 @@ class _HomePageState extends State<HomePage> {
           },
         ),
       ),
-      body: BlocListener<AuthBloc, AuthState>(
+      body: BlocConsumer<AuthBloc, AuthState>(
         listener: (context, state) {
           state.maybeWhen(
-            authenticated: (_) {},
             failure: (failure) => BizzieSnackBar.show(
               context,
               message: failure.message,
               type: BizzieSnackBarType.error,
             ),
-            orElse: () => null,
+            orElse: () {},
           );
         },
-        child: BlocBuilder<AuthBloc, AuthState>(
-          builder: (context, state) {
-            return state.maybeWhen(
-              authenticated: (user) => SingleChildScrollView(
-                child: Padding(
-                  padding: AppConstants.pagePadding,
-                  child: const HomeWatchlistWidget(),
-                ),
+        builder: (context, state) {
+          return state.maybeWhen(
+            authenticated: (user) => SingleChildScrollView(
+              child: Padding(
+                padding: AppConstants.pagePadding,
+                child: const HomeWatchlistWidget(),
               ),
-              orElse: () =>
-                  const BizzieLoader(message: 'Loading your profile...'),
-            );
-          },
-        ),
+            ),
+            orElse: () =>
+                const BizzieLoader(message: 'Loading your profile...'),
+          );
+        },
       ),
     );
   }

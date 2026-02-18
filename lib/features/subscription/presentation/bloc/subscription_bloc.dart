@@ -11,11 +11,16 @@ import 'package:bizzie/features/subscription/domain/usecases/purchase_subscripti
 import 'package:bizzie/features/subscription/domain/usecases/restore_purchases_use_case.dart';
 import 'package:bizzie/features/subscription/domain/usecases/get_offerings_use_case.dart';
 import 'package:bizzie/features/subscription/domain/usecases/sync_subscription_use_case.dart';
+import 'package:bizzie/features/subscription/domain/extensions/subscription_offering_extensions.dart';
 import 'package:injectable/injectable.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
 
-import 'package:bizzie/features/subscription/domain/extensions/subscription_offering_extensions.dart';
+import 'package:bizzie/core/enums/paywall_source.dart';
 import 'package:bizzie/features/subscription/domain/models/subscription_status.dart';
+import 'package:bizzie/features/subscription/domain/models/analytics_purchase_params.dart';
+import 'package:bizzie/features/subscription/presentation/analytics/paywall_analytics.dart';
+import 'package:bizzie/features/subscription/domain/enums/subscription_period_type.dart';
+import 'package:bizzie/core/analytics/onboarding_tracker.dart';
 import 'subscription_event.dart';
 import 'subscription_state.dart';
 
@@ -32,6 +37,8 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
   final AuthBloc _authBloc;
   final SyncSubscriptionUseCase _syncSubscription;
   final Stream<bool> _isSubscribedStream;
+  final PaywallAnalytics _analytics;
+  final OnboardingTracker _onboardingTracker;
 
   StreamSubscription? _statusSubscription;
   StreamSubscription? _authSubscription;
@@ -47,6 +54,8 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
     this._authBloc,
     this._syncSubscription,
     @Named('isSubscribedStream') this._isSubscribedStream,
+    this._analytics,
+    this._onboardingTracker,
   ) : super(SubscriptionState.initialState()) {
     on<SubscriptionEventInitialized>(_onInitialized);
     on<SubscriptionStatusUpdated>(_onStatusUpdated);
@@ -60,6 +69,7 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
     on<SubscriptionAppResumed>(_onAppResumed);
     on<SubscriptionExpirationReached>(_onExpirationReached);
     on<SubscriptionResetPurchaseState>(_onResetPurchaseState);
+    on<SubscriptionViewed>(_onViewed);
   }
 
   Future<void> _onResetPurchaseState(
@@ -89,7 +99,6 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
       },
     );
 
-    // Start the background sync safeguard ONLY after a successful purchase.
     if (wasSuccessful) {
       _startBackgroundSyncSafeguard();
     }
@@ -104,6 +113,19 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
     await _refreshSubscriptionStatus(NoParams());
 
     add(const SubscriptionEvent.offeringsRequested());
+  }
+
+  Future<void> _onViewed(
+    SubscriptionViewed event,
+    Emitter<SubscriptionState> emit,
+  ) async {
+    _logger.info('Paywall viewed from source: ${event.source}');
+    emit(state.copyWith(paywallSource: event.source));
+    await _analytics.logViewed(source: event.source);
+
+    if (event.source == PaywallSource.onboarding) {
+      await _onboardingTracker.logStepViewed(step: OnboardingStep.paywall);
+    }
   }
 
   Future<void> _onRefreshRequested(
@@ -284,6 +306,24 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
       },
       (status) {
         _logger.info('Purchase successful for ${event.package.identifier}');
+
+        final source = state.paywallSource ?? PaywallSource.app;
+        final isTrial = status.periodType == SubscriptionPeriodType.trial;
+        final productId = status.activeProductIds.firstOrNull ?? 'unknown';
+
+        final params = AnalyticsPurchaseParams(
+          productId: productId,
+          packageType: event.package.packageType,
+          periodType: status.periodType,
+          source: source,
+        );
+
+        if (isTrial) {
+          _analytics.logTrialStarted(params);
+        } else {
+          _analytics.logPurchaseSuccess(params);
+        }
+
         state.maybeMap(
           loaded: (s) => emit(
             s.copyWith(

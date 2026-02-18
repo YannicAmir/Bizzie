@@ -207,8 +207,8 @@ return $default(_that.identifier,_that.serverDescription,_that.availablePackages
 /// @nodoc
 
 
-class _SubscriptionOffering implements SubscriptionOffering {
-  const _SubscriptionOffering({required this.identifier, required this.serverDescription, required final  List<SubscriptionPackage> availablePackages}): _availablePackages = availablePackages;
+class _SubscriptionOffering extends SubscriptionOffering {
+  const _SubscriptionOffering({required this.identifier, required this.serverDescription, required final  List<SubscriptionPackage> availablePackages}): _availablePackages = availablePackages,super._();
   
 
 @override final  String identifier;

@@ -12,12 +12,28 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:bizzie/app/routes/app_routes.dart';
+import 'package:bizzie/core/analytics/onboarding_tracker.dart';
 import 'package:bizzie/features/onboarding/presentation/widgets/onboarding_header.dart';
 import 'package:bizzie/features/onboarding/presentation/widgets/onboarding_footer.dart';
 import 'package:bizzie/shared/widgets/buttons/bizzie_primary_button.dart';
 
-class SelectYourFavoriteBrandsPage extends StatelessWidget {
+class SelectYourFavoriteBrandsPage extends StatefulWidget {
   const SelectYourFavoriteBrandsPage({super.key});
+
+  @override
+  State<SelectYourFavoriteBrandsPage> createState() =>
+      _SelectYourFavoriteBrandsPageState();
+}
+
+class _SelectYourFavoriteBrandsPageState
+    extends State<SelectYourFavoriteBrandsPage> {
+  @override
+  void initState() {
+    super.initState();
+    context.read<OnboardingBloc>().add(
+      const OnboardingEvent.stepViewed(OnboardingStep.brandsSelection),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {

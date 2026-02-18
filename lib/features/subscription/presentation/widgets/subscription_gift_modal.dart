@@ -1,11 +1,14 @@
 import 'package:bizzie/app/routes/app_routes.dart';
+import 'package:bizzie/core/enums/paywall_source.dart';
 import 'package:bizzie/shared/widgets/buttons/bizzie_primary_button.dart';
 import 'package:bizzie/shared/widgets/modals/app_bottom_modal.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class SubscriptionGiftModal extends StatelessWidget {
-  const SubscriptionGiftModal({super.key});
+  final PaywallSource source;
+
+  const SubscriptionGiftModal({super.key, this.source = PaywallSource.unknown});
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +18,10 @@ class SubscriptionGiftModal extends StatelessWidget {
         if (didPop) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             if (context.mounted) {
-              context.pushNamed(AppRoutes.discountedPaywall);
+              context.pushNamed(
+                AppRoutes.discountedPaywall,
+                queryParameters: {'source': source.name},
+              );
             }
           });
         }

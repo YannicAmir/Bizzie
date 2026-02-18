@@ -2,7 +2,7 @@ import 'package:bizzie/app/themes/app_colors.dart';
 
 import 'package:bizzie/app/themes/app_text_styles.dart';
 import 'package:bizzie/features/onboarding/presentation/bloc/onboarding_bloc.dart';
-
+import 'package:bizzie/core/analytics/onboarding_tracker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -22,6 +22,14 @@ class FeatureHighlightsPage extends StatefulWidget {
 
 class _FeatureHighlightsPageState extends State<FeatureHighlightsPage> {
   final PageController _pageController = PageController();
+
+  @override
+  void initState() {
+    super.initState();
+    context.read<OnboardingBloc>().add(
+      const OnboardingEvent.stepViewed(OnboardingStep.featureHighlights),
+    );
+  }
 
   @override
   void dispose() {
@@ -57,7 +65,6 @@ class _FeatureHighlightsPageState extends State<FeatureHighlightsPage> {
         final currentIndex = state.currentHighlightIndex;
 
         return Scaffold(
-          backgroundColor: AppColors.white,
           body: SafeArea(
             child: Column(
               children: [

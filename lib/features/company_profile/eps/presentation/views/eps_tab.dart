@@ -1,4 +1,5 @@
 import 'package:bizzie/app/themes/app_assets.dart';
+import 'package:bizzie/core/enums/paywall_source.dart';
 import '../bloc/company_eps_bloc.dart';
 import '../bloc/company_eps_event.dart';
 import '../bloc/company_eps_state.dart';
@@ -107,6 +108,7 @@ class _EpsTabState extends State<EpsTab> with AutomaticKeepAliveClientMixin {
                     ),
                     visibleCount: loadedState.historyLimit,
                     thresholdCount: loadedState.historyLimit,
+                    source: PaywallSource.companyProfile,
                   ),
                   AppConstants.mainSectionSpacing,
                   FinancialHighlightsSection(
@@ -135,6 +137,7 @@ class _EpsTabState extends State<EpsTab> with AutomaticKeepAliveClientMixin {
                       isAnnual,
                     ),
                     limit: loadedState.historyLimit,
+                    source: PaywallSource.companyProfile,
                   ),
                 ],
               ),

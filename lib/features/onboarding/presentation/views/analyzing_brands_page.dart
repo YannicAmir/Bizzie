@@ -1,6 +1,7 @@
 import 'package:bizzie/app/themes/app_assets.dart';
 
 import 'package:bizzie/features/onboarding/presentation/bloc/onboarding_bloc.dart';
+import 'package:bizzie/core/analytics/onboarding_tracker.dart';
 import 'package:bizzie/app/routes/app_routes.dart';
 import 'package:bizzie/features/onboarding/presentation/widgets/onboarding_footer.dart';
 import 'package:bizzie/features/onboarding/presentation/widgets/onboarding_status_card.dart';
@@ -21,6 +22,9 @@ class _AnalyzingBrandsPageState extends State<AnalyzingBrandsPage> {
   void initState() {
     super.initState();
     context.read<OnboardingBloc>().add(const OnboardingEvent.startAnalysis());
+    context.read<OnboardingBloc>().add(
+      const OnboardingEvent.stepViewed(OnboardingStep.analyzingSelectedBrands),
+    );
   }
 
   @override

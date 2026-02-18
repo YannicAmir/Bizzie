@@ -1,4 +1,5 @@
 import 'package:bizzie/app/themes/app_colors.dart';
+import 'package:bizzie/core/enums/paywall_source.dart';
 import 'package:bizzie/features/company_profile/dividends/domain/extensions/dividend_event_extensions.dart';
 import 'package:bizzie/features/company_profile/dividends/domain/models/dividend_info.dart';
 import 'package:bizzie/features/company_profile/dividends/presentation/bloc/company_dividends/company_dividends_bloc.dart';
@@ -115,6 +116,7 @@ class _DividendsLoadedState extends StatelessWidget {
             numberFormat: numberFormat,
             visibleCount: historyLimit,
             thresholdCount: historyLimit,
+            source: PaywallSource.companyProfile,
           ),
           AppConstants.mainSectionSpacing,
           DividendPaymentHistorySection(

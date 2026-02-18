@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:bizzie/app/routes/app_routes.dart';
+import 'package:bizzie/core/enums/paywall_source.dart';
 import 'package:bizzie/features/notifications/domain/models/notification_route.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:device_info_plus/device_info_plus.dart';
@@ -194,7 +195,9 @@ class NotificationService implements INotificationService {
     if (type == 'sec_filing' || type == 'earnings_notification') {
       return const NotificationRoute(AppRoutes.reports);
     } else if (type == 'subscription_drip') {
-      return const NotificationRoute(AppRoutes.discountedPaywall);
+      return NotificationRoute(
+        '${AppRoutes.discountedPaywall}?source=${PaywallSource.notification.name}',
+      );
     }
     return null;
   }
@@ -212,7 +215,9 @@ class NotificationService implements INotificationService {
       _routeController.add(const NotificationRoute(AppRoutes.reports));
     } else if (payload.contains('subscription_drip')) {
       _routeController.add(
-        const NotificationRoute(AppRoutes.discountedPaywall),
+        NotificationRoute(
+          '${AppRoutes.discountedPaywall}?source=${PaywallSource.notification.name}',
+        ),
       );
     }
   }

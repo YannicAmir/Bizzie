@@ -1,4 +1,5 @@
 import 'package:bizzie/app/themes/app_assets.dart';
+import 'package:bizzie/core/enums/paywall_source.dart';
 import '../bloc/company_free_cash_flow_bloc.dart';
 import '../bloc/company_free_cash_flow_event.dart';
 import '../bloc/company_free_cash_flow_state.dart';
@@ -111,6 +112,7 @@ class _FreeCashFlowTabState extends State<FreeCashFlowTab>
                     ),
                     visibleCount: loadedState.historyLimit,
                     thresholdCount: loadedState.historyLimit,
+                    source: PaywallSource.companyProfile,
                   ),
                   AppConstants.mainSectionSpacing,
                   FinancialHighlightsSection(
@@ -141,6 +143,7 @@ class _FreeCashFlowTabState extends State<FreeCashFlowTab>
                       isAnnual,
                     ),
                     limit: loadedState.historyLimit,
+                    source: PaywallSource.companyProfile,
                   ),
                 ],
               ),

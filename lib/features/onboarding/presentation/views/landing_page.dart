@@ -9,9 +9,25 @@ import '../../data/datasources/dummy_price_data.dart';
 import '../widgets/onboarding_footer.dart';
 
 import 'package:bizzie/shared/widgets/buttons/bizzie_primary_button.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:bizzie/features/onboarding/presentation/bloc/onboarding_bloc.dart';
+import 'package:bizzie/core/analytics/onboarding_tracker.dart';
 
-class LandingPage extends StatelessWidget {
+class LandingPage extends StatefulWidget {
   const LandingPage({super.key});
+
+  @override
+  State<LandingPage> createState() => _LandingPageState();
+}
+
+class _LandingPageState extends State<LandingPage> {
+  @override
+  void initState() {
+    super.initState();
+    context.read<OnboardingBloc>().add(
+      const OnboardingEvent.stepViewed(OnboardingStep.landing),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -79,7 +95,7 @@ class _BackgroundChart extends StatelessWidget {
               colors: [
                 theme.scaffoldBackgroundColor,
                 theme.scaffoldBackgroundColor,
-                Colors.transparent,
+                theme.colorScheme.scrim,
               ],
               stops: [0.0, 0.5, 1.0],
             ).createShader(bounds);
@@ -153,7 +169,7 @@ class _LoginRow extends StatelessWidget {
           child: Text(
             'Login',
             style: theme.textTheme.bodyMedium?.copyWith(
-              color: AppColors.primary,
+              color: theme.colorScheme.primary,
               fontWeight: FontWeight.w600,
             ),
           ),

@@ -1,4 +1,5 @@
 import 'package:bizzie/app/routes/app_routes.dart';
+import 'package:bizzie/core/enums/paywall_source.dart';
 import 'package:bizzie/app/themes/app_text_styles.dart';
 import 'package:bizzie/di/injection.dart';
 import 'package:bizzie/features/settings/presentation/bloc/settings_bloc.dart';
@@ -178,7 +179,12 @@ class _SettingsViewContentState extends State<_SettingsViewContent>
                           if (isSubscribed) {
                             context.pushNamed(AppRoutes.subscriptionDetails);
                           } else {
-                            context.pushNamed(AppRoutes.discountedPaywall);
+                            context.pushNamed(
+                              AppRoutes.discountedPaywall,
+                              queryParameters: {
+                                'source': PaywallSource.settings.name,
+                              },
+                            );
                           }
                         },
                       ),

@@ -251,7 +251,10 @@ void main() {
         final result = await service.getInitialRoute();
 
         // assert
-        expect(result?.path, AppRoutes.discountedPaywall);
+        expect(
+          result?.path,
+          '${AppRoutes.discountedPaywall}?source=notification',
+        );
       },
     );
 

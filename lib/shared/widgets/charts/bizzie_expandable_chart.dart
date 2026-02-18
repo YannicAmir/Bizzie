@@ -1,4 +1,5 @@
 import 'package:bizzie/app/themes/app_assets.dart';
+import 'package:bizzie/core/enums/paywall_source.dart';
 import 'package:bizzie/app/themes/app_colors.dart';
 import 'package:bizzie/app/themes/app_text_styles.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
@@ -18,6 +19,7 @@ class BizzieExpandableChart extends StatefulWidget {
   final NumberFormat? numberFormat;
   final Color positiveColor;
   final Color negativeColor;
+  final PaywallSource source;
 
   const BizzieExpandableChart({
     super.key,
@@ -28,6 +30,7 @@ class BizzieExpandableChart extends StatefulWidget {
     this.numberFormat,
     this.positiveColor = AppColors.primary,
     this.negativeColor = AppColors.error,
+    required this.source,
   });
 
   @override
@@ -90,7 +93,10 @@ class _BizzieExpandableChartState extends State<BizzieExpandableChart> {
                         _isExpanded = !_isExpanded;
                       });
                     } else {
-                      PaywallHelper.showPaywallSequence(context);
+                      PaywallHelper.showPaywallSequence(
+                        context,
+                        source: widget.source,
+                      );
                     }
                   },
                   child: Row(

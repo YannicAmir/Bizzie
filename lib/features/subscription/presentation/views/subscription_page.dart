@@ -1,4 +1,5 @@
 import 'package:bizzie/features/subscription/presentation/bloc/subscription_bloc.dart';
+import 'package:bizzie/core/enums/paywall_source.dart';
 import 'package:bizzie/features/subscription/presentation/bloc/subscription_event.dart';
 import 'package:bizzie/features/subscription/presentation/bloc/subscription_state.dart';
 import 'package:bizzie/features/subscription/presentation/extensions/subscription_state_extensions.dart';
@@ -16,8 +17,13 @@ import 'package:go_router/go_router.dart';
 
 class SubscriptionPage extends StatefulWidget {
   final bool isUpgradeFlow;
+  final PaywallSource source;
 
-  const SubscriptionPage({super.key, this.isUpgradeFlow = false});
+  const SubscriptionPage({
+    super.key,
+    this.isUpgradeFlow = false,
+    this.source = PaywallSource.unknown,
+  });
 
   @override
   State<SubscriptionPage> createState() => _SubscriptionPageState();
@@ -39,6 +45,10 @@ class _SubscriptionPageState extends State<SubscriptionPage>
 
     context.read<SubscriptionBloc>().add(
       const SubscriptionEvent.resetPurchaseState(),
+    );
+
+    context.read<SubscriptionBloc>().add(
+      SubscriptionEvent.viewed(source: widget.source),
     );
   }
 
@@ -152,8 +162,10 @@ class _SubscriptionPageState extends State<SubscriptionPage>
         if (mounted) {
           if (widget.isUpgradeFlow) {
             context.pop(true);
-          } else {
+          } else if (widget.source == PaywallSource.onboarding) {
             context.go(AppRoutes.home);
+          } else {
+            context.pop();
           }
         }
       },

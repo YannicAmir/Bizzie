@@ -1,4 +1,5 @@
 import 'package:bizzie/app/themes/app_assets.dart';
+import 'package:bizzie/core/enums/paywall_source.dart';
 import 'package:bizzie/features/company_profile/shares/presentation/bloc/company_shares_bloc.dart';
 import 'package:bizzie/features/company_profile/shares/presentation/bloc/company_shares_event.dart';
 import 'package:bizzie/features/company_profile/shares/presentation/bloc/company_shares_state.dart';
@@ -129,6 +130,7 @@ class _SharesTabState extends State<SharesTab>
                     numberFormat: numberFormat,
                     visibleCount: loadedState.historyLimit,
                     thresholdCount: loadedState.historyLimit,
+                    source: PaywallSource.companyProfile,
                   ),
                   AppConstants.mainSectionSpacing,
                   FinancialDataTable(
@@ -153,6 +155,7 @@ class _SharesTabState extends State<SharesTab>
                       isAnnual,
                     ),
                     limit: loadedState.historyLimit,
+                    source: PaywallSource.companyProfile,
                   ),
                 ],
               ),

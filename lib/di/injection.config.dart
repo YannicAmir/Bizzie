@@ -15,6 +15,7 @@ import 'package:cloud_firestore/cloud_firestore.dart' as _i974;
 import 'package:cloud_functions/cloud_functions.dart' as _i809;
 import 'package:device_info_plus/device_info_plus.dart' as _i833;
 import 'package:dio/dio.dart' as _i361;
+import 'package:firebase_analytics/firebase_analytics.dart' as _i398;
 import 'package:firebase_auth/firebase_auth.dart' as _i59;
 import 'package:firebase_messaging/firebase_messaging.dart' as _i892;
 import 'package:firebase_remote_config/firebase_remote_config.dart' as _i627;
@@ -26,7 +27,9 @@ import 'package:google_sign_in/google_sign_in.dart' as _i116;
 import 'package:injectable/injectable.dart' as _i526;
 import 'package:shared_preferences/shared_preferences.dart' as _i460;
 
+import '../core/analytics/onboarding_tracker.dart' as _i951;
 import '../core/domain/models/sector.dart' as _i162;
+import '../core/interfaces/i_analytics_service.dart' as _i529;
 import '../core/interfaces/i_config_service.dart' as _i937;
 import '../core/interfaces/i_connectivity_service.dart' as _i28;
 import '../core/interfaces/i_firebase_functions_service.dart' as _i347;
@@ -294,6 +297,8 @@ import '../features/onboarding/domain/usecases/get_sectors_usecase.dart'
     as _i920;
 import '../features/onboarding/domain/usecases/get_sp500_history_usecase.dart'
     as _i952;
+import '../features/onboarding/presentation/analytics/onboarding_analytics.dart'
+    as _i178;
 import '../features/onboarding/presentation/bloc/onboarding_bloc.dart' as _i593;
 import '../features/onboarding/select_brands/data/datasources/select_brands_remote_datasource.dart'
     as _i6;
@@ -401,6 +406,8 @@ import '../features/subscription/domain/usecases/sync_subscription_use_case.dart
     as _i25;
 import '../features/subscription/domain/usecases/watch_subscription_status_use_case.dart'
     as _i630;
+import '../features/subscription/presentation/analytics/paywall_analytics.dart'
+    as _i780;
 import '../features/subscription/presentation/bloc/subscription_bloc.dart'
     as _i1066;
 import '../features/user/data/datasources/user_local_datasource.dart' as _i147;
@@ -449,6 +456,7 @@ import '../features/watchlist/domain/usecases/remove_from_watchlist_usecase.dart
 import '../features/watchlist/domain/usecases/sync_watchlist_usecase.dart'
     as _i1003;
 import '../features/watchlist/presentation/bloc/watchlist_bloc.dart' as _i63;
+import '../services/analytics_service.dart' as _i222;
 import '../services/config_service.dart' as _i216;
 import '../services/firebase_functions_service.dart' as _i382;
 import '../services/firestore_service.dart' as _i52;
@@ -496,6 +504,12 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i59.FirebaseAuth>(() => registerModule.firebaseAuth);
     gh.lazySingleton<_i116.GoogleSignIn>(() => registerModule.googleSignIn);
     gh.lazySingleton<_i457.FirebaseStorage>(() => registerModule.storage);
+    gh.lazySingleton<_i398.FirebaseAnalytics>(
+      () => registerModule.firebaseAnalytics,
+    );
+    gh.lazySingleton<_i398.FirebaseAnalyticsObserver>(
+      () => registerModule.firebaseAnalyticsObserver,
+    );
     gh.lazySingleton<_i833.DeviceInfoPlugin>(() => registerModule.deviceInfo);
     gh.lazySingleton<_i936.LaunchUrlUseCase>(() => _i936.LaunchUrlUseCase());
     gh.lazySingleton<_i807.WatchlistEventEvaluator>(
@@ -633,6 +647,9 @@ extension GetItInjectableX on _i174.GetIt {
       () =>
           _i584.DividendsFirestoreDataSourceImpl(gh<_i974.FirebaseFirestore>()),
     );
+    gh.lazySingleton<_i529.IAnalyticsService>(
+      () => _i222.AnalyticsService(gh<_i398.FirebaseAnalytics>()),
+    );
     await gh.singletonAsync<_i937.IConfigService>(
       () => _i216.ConfigService.init(gh<_i915.AppEnv>()),
       preResolve: true,
@@ -703,6 +720,15 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i983.AppStatusBloc>(
       () => _i983.AppStatusBloc(gh<_i308.IAppStatusRepository>()),
+    );
+    gh.lazySingleton<_i951.OnboardingTracker>(
+      () => _i951.OnboardingTracker(gh<_i529.IAnalyticsService>()),
+    );
+    gh.lazySingleton<_i178.OnboardingAnalytics>(
+      () => _i178.OnboardingAnalytics(gh<_i529.IAnalyticsService>()),
+    );
+    gh.lazySingleton<_i780.PaywallAnalytics>(
+      () => _i780.PaywallAnalytics(gh<_i529.IAnalyticsService>()),
     );
     gh.lazySingleton<_i423.RatiosRemoteDataSource>(
       () => _i423.RatiosRemoteDataSourceImpl(
@@ -1279,6 +1305,21 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i422.GetDailyBrandsUseCase>(
       () => _i422.GetDailyBrandsUseCase(gh<_i990.ISelectBrandsRepository>()),
     );
+    gh.lazySingleton<_i1066.SubscriptionBloc>(
+      () => _i1066.SubscriptionBloc(
+        gh<_i630.WatchSubscriptionStatusUseCase>(),
+        gh<_i423.RefreshSubscriptionStatusUseCase>(),
+        gh<_i15.SyncIdentityUseCase>(),
+        gh<_i803.PurchaseSubscriptionUseCase>(),
+        gh<_i566.RestorePurchasesUseCase>(),
+        gh<_i343.GetOfferingsUseCase>(),
+        gh<_i59.AuthBloc>(),
+        gh<_i25.SyncSubscriptionUseCase>(),
+        gh<_i687.Stream<bool>>(instanceName: 'isSubscribedStream'),
+        gh<_i780.PaywallAnalytics>(),
+        gh<_i951.OnboardingTracker>(),
+      ),
+    );
     gh.lazySingleton<_i190.GetSecurityDetailsUseCase>(
       () => _i190.GetSecurityDetailsUseCase(gh<_i158.ISecurityRepository>()),
     );
@@ -1323,19 +1364,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i685.IAuthRepository>(),
         gh<_i561.GetUserUseCase>(),
         gh<_i693.GetRecommendedBrandsUseCase>(),
-      ),
-    );
-    gh.lazySingleton<_i1066.SubscriptionBloc>(
-      () => _i1066.SubscriptionBloc(
-        gh<_i630.WatchSubscriptionStatusUseCase>(),
-        gh<_i423.RefreshSubscriptionStatusUseCase>(),
-        gh<_i15.SyncIdentityUseCase>(),
-        gh<_i803.PurchaseSubscriptionUseCase>(),
-        gh<_i566.RestorePurchasesUseCase>(),
-        gh<_i343.GetOfferingsUseCase>(),
-        gh<_i59.AuthBloc>(),
-        gh<_i25.SyncSubscriptionUseCase>(),
-        gh<_i687.Stream<bool>>(instanceName: 'isSubscribedStream'),
       ),
     );
     gh.factory<_i348.SearchBloc>(
@@ -1392,6 +1420,17 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i714.GetSubscriptionStatusUseCase>(),
       ),
     );
+    gh.factory<_i593.OnboardingBloc>(
+      () => _i593.OnboardingBloc(
+        gh<_i685.IAuthRepository>(),
+        gh<_i874.CompleteOnboardingUseCase>(),
+        gh<_i920.GetSectorsUseCase>(),
+        gh<_i952.GetSp500HistoryUseCase>(),
+        gh<_i1050.ISectorService>(),
+        gh<_i178.OnboardingAnalytics>(),
+        gh<_i951.OnboardingTracker>(),
+      ),
+    );
     gh.factory<_i875.EditProfileBloc>(
       () => _i875.EditProfileBloc(
         gh<_i318.GetCurrentUser>(),
@@ -1412,15 +1451,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i561.GetUserUseCase>(),
         gh<_i836.WatchUserUseCase>(),
         gh<_i615.IUserRepository>(),
-      ),
-    );
-    gh.factory<_i593.OnboardingBloc>(
-      () => _i593.OnboardingBloc(
-        gh<_i685.IAuthRepository>(),
-        gh<_i874.CompleteOnboardingUseCase>(),
-        gh<_i920.GetSectorsUseCase>(),
-        gh<_i952.GetSp500HistoryUseCase>(),
-        gh<_i1050.ISectorService>(),
       ),
     );
     gh.factory<_i673.FeedbackBloc>(

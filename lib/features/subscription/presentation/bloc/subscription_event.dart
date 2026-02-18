@@ -2,6 +2,8 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:bizzie/features/subscription/domain/models/subscription_status.dart';
 import 'package:bizzie/features/subscription/domain/models/subscription_package.dart';
 
+import 'package:bizzie/core/enums/paywall_source.dart';
+
 part 'subscription_event.freezed.dart';
 
 @freezed
@@ -29,4 +31,6 @@ abstract class SubscriptionEvent with _$SubscriptionEvent {
       SubscriptionExpirationReached;
   const factory SubscriptionEvent.resetPurchaseState() =
       SubscriptionResetPurchaseState;
+  const factory SubscriptionEvent.viewed({required PaywallSource source}) =
+      SubscriptionViewed;
 }

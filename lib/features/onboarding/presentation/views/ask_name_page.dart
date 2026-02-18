@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:bizzie/core/analytics/onboarding_tracker.dart';
 import '../../../../app/routes/app_routes.dart';
 import '../../../../app/themes/app_assets.dart';
 
@@ -24,6 +25,9 @@ class _AskNamePageState extends State<AskNamePage> {
   void initState() {
     super.initState();
     _nameController.addListener(_onNameChanged);
+    context.read<OnboardingBloc>().add(
+      const OnboardingEvent.stepViewed(OnboardingStep.askName),
+    );
   }
 
   void _onNameChanged() {

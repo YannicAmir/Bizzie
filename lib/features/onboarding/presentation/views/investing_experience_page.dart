@@ -3,6 +3,7 @@ import 'package:bizzie/app/themes/app_colors.dart';
 
 import 'package:bizzie/features/user/domain/enums/investing_experience.dart';
 import 'package:bizzie/features/onboarding/presentation/bloc/onboarding_bloc.dart';
+import 'package:bizzie/core/analytics/onboarding_tracker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -11,8 +12,22 @@ import 'package:bizzie/app/routes/app_routes.dart';
 import 'package:bizzie/features/onboarding/presentation/widgets/onboarding_footer.dart';
 import 'package:bizzie/features/onboarding/presentation/widgets/onboarding_header.dart';
 
-class InvestingExperiencePage extends StatelessWidget {
+class InvestingExperiencePage extends StatefulWidget {
   const InvestingExperiencePage({super.key});
+
+  @override
+  State<InvestingExperiencePage> createState() =>
+      _InvestingExperiencePageState();
+}
+
+class _InvestingExperiencePageState extends State<InvestingExperiencePage> {
+  @override
+  void initState() {
+    super.initState();
+    context.read<OnboardingBloc>().add(
+      const OnboardingEvent.stepViewed(OnboardingStep.investingExperience),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {

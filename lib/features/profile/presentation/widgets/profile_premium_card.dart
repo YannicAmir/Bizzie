@@ -1,10 +1,10 @@
 import 'package:bizzie/app/l10n/bizzie_localizations.dart';
 import 'package:bizzie/features/profile/presentation/l10n/profile_localizations.dart';
-import 'package:bizzie/app/routes/app_routes.dart';
 import 'package:bizzie/app/themes/app_assets.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
+import 'package:bizzie/core/enums/paywall_source.dart';
+import 'package:bizzie/shared/utils/paywall_helper.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class ProfilePremiumCard extends StatelessWidget {
@@ -96,7 +96,10 @@ class _SeeMoreButton extends StatelessWidget {
       height: 54,
       child: ElevatedButton(
         onPressed: () {
-          context.push(AppRoutes.paywall);
+          PaywallHelper.showPaywallSequence(
+            context,
+            source: PaywallSource.profile,
+          );
         },
         style: ElevatedButton.styleFrom(
           backgroundColor: theme.colorScheme.surface,

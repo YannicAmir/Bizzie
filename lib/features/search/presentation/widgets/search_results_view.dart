@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:bizzie/app/themes/app_assets.dart';
 import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
 import 'package:bizzie/shared/utils/paywall_helper.dart';
+import 'package:bizzie/core/enums/paywall_source.dart';
 import 'package:bizzie/features/search/domain/models/stock_symbol.dart';
 import 'package:bizzie/features/search/presentation/bloc/search_bloc.dart';
 import 'package:bizzie/shared/widgets/company_list_tile.dart';
@@ -110,7 +111,10 @@ class _ProductSearchFooter extends StatelessWidget {
                       SearchEvent.aiSearchRequested(query),
                     );
                   } else {
-                    PaywallHelper.showPaywallSequence(context);
+                    PaywallHelper.showPaywallSequence(
+                      context,
+                      source: PaywallSource.search,
+                    );
                   }
                 },
               ),

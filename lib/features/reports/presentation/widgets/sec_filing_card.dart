@@ -3,6 +3,7 @@ import 'package:bizzie/app/themes/app_colors.dart';
 import 'package:bizzie/shared/utils/paywall_helper.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
+import 'package:bizzie/core/enums/paywall_source.dart';
 
 import 'package:bizzie/features/reports/domain/models/sec_filing.dart';
 import 'package:bizzie/shared/widgets/app_badge.dart';
@@ -282,7 +283,10 @@ class _SummarizeButton extends StatelessWidget {
           label: 'Summarize',
           onTap: () {
             if (!isSubscribed) {
-              PaywallHelper.showPaywallSequence(context);
+              PaywallHelper.showPaywallSequence(
+                context,
+                source: PaywallSource.reports,
+              );
               return;
             }
 

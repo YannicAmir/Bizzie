@@ -33,4 +33,14 @@ class OnboardingEvent with _$OnboardingEvent {
   const factory OnboardingEvent.highlightContinuePressed() =
       _HighlightContinuePressed;
   const factory OnboardingEvent.highlightSkipPressed() = _HighlightSkipPressed;
+
+  // Landing
+  const factory OnboardingEvent.landingPageViewed() = _LandingPageViewed;
+
+  // Profile Ready
+  const factory OnboardingEvent.profileReadyPageViewed() =
+      _ProfileReadyPageViewed;
+  const factory OnboardingEvent.profileReadyContinuePressed() =
+      _ProfileReadyContinuePressed;
+  const factory OnboardingEvent.stepViewed(OnboardingStep step) = _StepViewed;
 }

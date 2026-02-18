@@ -1,4 +1,5 @@
 import 'package:bizzie/app/themes/app_assets.dart';
+import 'package:bizzie/core/enums/paywall_source.dart';
 import '../bloc/company_net_income_bloc.dart';
 import '../bloc/company_net_income_event.dart';
 import '../bloc/company_net_income_state.dart';
@@ -108,6 +109,7 @@ class _NetIncomeTabState extends State<NetIncomeTab>
                     ),
                     visibleCount: loadedState.historyLimit,
                     thresholdCount: loadedState.historyLimit,
+                    source: PaywallSource.companyProfile,
                   ),
                   AppConstants.mainSectionSpacing,
                   FinancialHighlightsSection(
@@ -140,6 +142,7 @@ class _NetIncomeTabState extends State<NetIncomeTab>
                       isAnnual,
                     ),
                     limit: loadedState.historyLimit,
+                    source: PaywallSource.companyProfile,
                   ),
                 ],
               ),

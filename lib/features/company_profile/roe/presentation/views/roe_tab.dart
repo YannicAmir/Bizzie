@@ -1,4 +1,5 @@
 import 'package:bizzie/app/themes/app_assets.dart';
+import 'package:bizzie/core/enums/paywall_source.dart';
 import 'package:bizzie/features/company_profile/shared/domain/models/chart_data_point.dart';
 import 'package:bizzie/features/company_profile/shared/domain/models/financial_data_point.dart';
 import '../bloc/company_roe_bloc.dart';
@@ -131,6 +132,7 @@ class _RoeLoadedContent extends StatelessWidget {
             numberFormat: chartFormatter,
             visibleCount: historyLimit,
             thresholdCount: historyLimit,
+            source: PaywallSource.companyProfile,
           ),
           AppConstants.mainSectionSpacing,
           FinancialDataTable(
@@ -141,6 +143,7 @@ class _RoeLoadedContent extends StatelessWidget {
             dateFormat: FinancialDateFormat.fullDate,
             onViewMore: () => _showAllHistory(context, dataPoints),
             limit: historyLimit,
+            source: PaywallSource.companyProfile,
           ),
         ],
       ),

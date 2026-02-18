@@ -4,6 +4,8 @@ import 'package:bizzie/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:bizzie/features/auth/presentation/bloc/auth_state.dart';
 import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
 import 'package:bizzie/features/onboarding/presentation/bloc/onboarding_bloc.dart';
+import 'package:bizzie/core/analytics/onboarding_tracker.dart';
+import 'package:bizzie/core/enums/paywall_source.dart';
 import 'package:bizzie/features/onboarding/presentation/utils/onboarding_assets_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -28,6 +30,9 @@ class _ProfileReadyPageState extends State<ProfileReadyPage> {
       authenticated: (u) => context.read<UserBloc>().add(
         UserEvent.loadUser(uid: u.user.id, silent: true),
       ),
+    );
+    context.read<OnboardingBloc>().add(
+      const OnboardingEvent.stepViewed(OnboardingStep.profileReady),
     );
   }
 
@@ -140,9 +145,15 @@ class _ContinueButton extends StatelessWidget {
       height: 56,
       child: BizziePrimaryButton(
         onPressed: () {
+          context.read<OnboardingBloc>().add(
+            const OnboardingEvent.profileReadyContinuePressed(),
+          );
           context.goNamed(
             'home_subscribe',
-            queryParameters: {'animate': 'onboarding'},
+            queryParameters: {
+              'animate': 'onboarding',
+              'source': PaywallSource.onboarding.name,
+            },
           );
         },
         title: 'Continue',

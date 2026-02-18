@@ -1,6 +1,7 @@
 import 'package:bizzie/features/subscription/presentation/bloc/subscription_bloc.dart';
 import 'package:bizzie/features/subscription/presentation/bloc/subscription_event.dart';
 import 'package:bizzie/features/subscription/presentation/bloc/subscription_state.dart';
+import 'package:bizzie/core/enums/paywall_source.dart';
 import 'package:bizzie/features/subscription/presentation/extensions/subscription_state_extensions.dart';
 import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
 import 'package:bizzie/features/user/presentation/extensions/user_state_extensions.dart';
@@ -22,8 +23,28 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class DiscountedSubscriptionPage extends StatelessWidget {
-  const DiscountedSubscriptionPage({super.key});
+class DiscountedSubscriptionPage extends StatefulWidget {
+  final PaywallSource source;
+
+  const DiscountedSubscriptionPage({
+    super.key,
+    this.source = PaywallSource.unknown,
+  });
+
+  @override
+  State<DiscountedSubscriptionPage> createState() =>
+      _DiscountedSubscriptionPageState();
+}
+
+class _DiscountedSubscriptionPageState
+    extends State<DiscountedSubscriptionPage> {
+  @override
+  void initState() {
+    super.initState();
+    context.read<SubscriptionBloc>().add(
+      SubscriptionEvent.viewed(source: widget.source),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {

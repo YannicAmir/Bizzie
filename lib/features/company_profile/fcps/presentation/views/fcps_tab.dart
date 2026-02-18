@@ -1,4 +1,5 @@
 import 'package:bizzie/app/themes/app_assets.dart';
+import 'package:bizzie/core/enums/paywall_source.dart';
 import '../bloc/company_fcps_bloc.dart';
 import '../bloc/company_fcps_event.dart';
 import '../bloc/company_fcps_state.dart';
@@ -108,6 +109,7 @@ class _FcpsTabState extends State<FcpsTab> with AutomaticKeepAliveClientMixin {
                     ),
                     visibleCount: historyLimit,
                     thresholdCount: historyLimit,
+                    source: PaywallSource.companyProfile,
                   ),
                   AppConstants.mainSectionSpacing,
                   FinancialHighlightsSection(
@@ -129,6 +131,7 @@ class _FcpsTabState extends State<FcpsTab> with AutomaticKeepAliveClientMixin {
                         ? FinancialDateFormat.monthYear
                         : FinancialDateFormat.quarterShort,
                     limit: historyLimit,
+                    source: PaywallSource.companyProfile,
                     onViewMore: () => _showAllHistory(
                       context,
                       isAnnual ? stats.annualFcps : stats.quarterlyFcps,

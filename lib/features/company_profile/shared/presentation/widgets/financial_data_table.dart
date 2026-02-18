@@ -1,4 +1,5 @@
 import 'package:bizzie/app/themes/app_text_styles.dart';
+import 'package:bizzie/core/enums/paywall_source.dart';
 import 'package:bizzie/features/company_profile/shared/domain/models/financial_data_point.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/utils/financial_data_table_extensions.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/enums/financial_table_enums.dart';
@@ -20,6 +21,7 @@ class FinancialDataTable extends StatelessWidget {
   final FinancialDateFormat dateFormat;
   final String? periodHeaderLabel;
   final Widget? footer;
+  final PaywallSource source;
 
   const FinancialDataTable({
     super.key,
@@ -35,6 +37,7 @@ class FinancialDataTable extends StatelessWidget {
     this.dateFormat = FinancialDateFormat.period,
     this.periodHeaderLabel,
     this.footer,
+    required this.source,
   });
 
   @override
@@ -60,6 +63,7 @@ class FinancialDataTable extends StatelessWidget {
           : null,
       viewMoreLabel: 'View All',
       footer: footer,
+      source: source,
       children: [
         for (final (index, item) in displayData.indexed)
           FinancialTableRow(
