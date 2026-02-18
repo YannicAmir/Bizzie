@@ -107,5 +107,27 @@ void main() {
         ),
       ).called(1);
     });
+
+    test('updateJourneyStatus_validStatus_setsUserProperty', () async {
+      // arrange
+      const tStatus = AppRatingJourneyStatus.completed;
+      when(
+        () => mockAnalyticsService.setUserProperty(
+          name: any(named: 'name'),
+          value: any(named: 'value'),
+        ),
+      ).thenAnswer((_) async {});
+
+      // act
+      await tracker.updateJourneyStatus(tStatus);
+
+      // assert
+      verify(
+        () => mockAnalyticsService.setUserProperty(
+          name: 'app_rating_status',
+          value: 'completed',
+        ),
+      ).called(1);
+    });
   });
 }

@@ -8,9 +8,11 @@ import 'package:injectable/injectable.dart';
 
 final _logger = BizzieLogger('TrackRatingConditionsUseCase');
 
+enum RatingConditionsResult { prompt, noPrompt, maxAttemptsReached }
+
 @injectable
 class TrackRatingConditionsUseCase
-    implements UseCase<Either<Failure, bool>, NoParams> {
+    implements UseCase<Either<Failure, RatingConditionsResult>, NoParams> {
   final IAppRatingsRepository _repository;
   final IConfigService _configService;
 
@@ -22,14 +24,14 @@ class TrackRatingConditionsUseCase
   Future<int> getPromptAttempts() => _repository.getPromptAttempts();
 
   @override
-  Future<Either<Failure, bool>> call(NoParams params) async {
+  Future<Either<Failure, RatingConditionsResult>> call(NoParams params) async {
     try {
       final attempts = await _repository.getPromptAttempts();
       if (attempts >= kMaxAttempts) {
         _logger.info(
           'Short-circuit: Max attempts reached ($attempts/$kMaxAttempts). No further tracking.',
         );
-        return const Right(false);
+        return const Right(RatingConditionsResult.maxAttemptsReached);
       }
 
       await _repository.incrementInteractionCount();
@@ -48,13 +50,13 @@ class TrackRatingConditionsUseCase
           'Prompt conditions met (interactions: $currentInteractions). Incrementing attempts.',
         );
         await _repository.incrementPromptAttempts();
-        return const Right(true);
+        return const Right(RatingConditionsResult.prompt);
       }
 
       _logger.info(
         'No prompt conditions met (interactions: $currentInteractions).',
       );
-      return const Right(false);
+      return const Right(RatingConditionsResult.noPrompt);
     } catch (e, s) {
       _logger.severe('Unexpected failure during rating tracking', e, s);
       return Left(Failure.server(e.toString()));

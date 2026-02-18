@@ -2,6 +2,8 @@ import 'package:bizzie/core/analytics/models/app_rating_prompt_context.dart';
 import 'package:bizzie/core/interfaces/i_analytics_service.dart';
 import 'package:injectable/injectable.dart';
 
+enum AppRatingJourneyStatus { inProgress, completed, maxAttemptsReached }
+
 @injectable
 class AppRatingsTracker {
   final IAnalyticsService _analytics;
@@ -9,6 +11,16 @@ class AppRatingsTracker {
   AppRatingsTracker(this._analytics);
 
   static const _kScreenName = 'company_profile';
+
+  Future<void> updateJourneyStatus(AppRatingJourneyStatus status) async {
+    final value = switch (status) {
+      AppRatingJourneyStatus.inProgress => 'in_progress',
+      AppRatingJourneyStatus.completed => 'completed',
+      AppRatingJourneyStatus.maxAttemptsReached => 'max_attempts_reached',
+    };
+
+    await _analytics.setUserProperty(name: 'app_rating_status', value: value);
+  }
 
   Future<void> logInteraction({
     required String ticker,

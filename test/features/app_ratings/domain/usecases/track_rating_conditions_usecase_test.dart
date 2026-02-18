@@ -46,21 +46,26 @@ void main() {
       },
     );
 
-    test('call_whenMaxAttemptsReached_returnsRightFalse', () async {
-      // arrange
-      when(() => mockRepository.getPromptAttempts()).thenAnswer((_) async => 1);
+    test(
+      'call_whenMaxAttemptsReached_returnsRightMaxAttemptsReached',
+      () async {
+        // arrange
+        when(
+          () => mockRepository.getPromptAttempts(),
+        ).thenAnswer((_) async => 1);
 
-      // act
-      final result = await useCase(NoParams());
+        // act
+        final result = await useCase(NoParams());
 
-      // assert
-      expect(result, const Right(false));
-      verify(() => mockRepository.getPromptAttempts()).called(1);
-      verifyNever(() => mockRepository.incrementInteractionCount());
-      verifyNever(() => mockRepository.getInteractionCount());
-    });
+        // assert
+        expect(result, const Right(RatingConditionsResult.maxAttemptsReached));
+        verify(() => mockRepository.getPromptAttempts()).called(1);
+        verifyNever(() => mockRepository.incrementInteractionCount());
+        verifyNever(() => mockRepository.getInteractionCount());
+      },
+    );
 
-    test('call_whenInteractionThresholdNotMet_returnsRightFalse', () async {
+    test('call_whenInteractionThresholdNotMet_returnsRightNoPrompt', () async {
       // arrange
       const threshold = 5;
       when(
@@ -78,13 +83,13 @@ void main() {
       final result = await useCase(NoParams());
 
       // assert
-      expect(result, const Right(false));
+      expect(result, const Right(RatingConditionsResult.noPrompt));
       verify(() => mockRepository.getPromptAttempts()).called(1);
       verify(() => mockRepository.getInteractionCount()).called(1);
     });
 
     test(
-      'call_whenConditionsMet_incrementsAttemptsAndReturnsRightTrue',
+      'call_whenConditionsMet_incrementsAttemptsAndReturnsRightPrompt',
       () async {
         // arrange
         const threshold = 5;
@@ -108,7 +113,7 @@ void main() {
         final result = await useCase(NoParams());
 
         // assert
-        expect(result, const Right(true));
+        expect(result, const Right(RatingConditionsResult.prompt));
         verify(() => mockRepository.getPromptAttempts()).called(1);
         verify(() => mockRepository.incrementPromptAttempts()).called(1);
       },
@@ -124,7 +129,7 @@ void main() {
       final result = await useCase(NoParams());
 
       // assert
-      expect(result, isA<Left<Failure, bool>>());
+      expect(result, isA<Left<Failure, RatingConditionsResult>>());
       result.fold(
         (failure) => expect(failure.message, contains('Storage error')),
         (_) => fail('Should have returned Left'),

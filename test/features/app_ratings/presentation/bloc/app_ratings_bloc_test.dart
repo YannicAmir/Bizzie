@@ -51,6 +51,7 @@ void main() {
         thresholdCount: 0,
       ),
     );
+    registerFallbackValue(AppRatingJourneyStatus.inProgress);
   });
 
   late MockTrackRatingConditionsUseCase mockUseCase;
@@ -118,6 +119,7 @@ void main() {
     when(
       () => mockTracker.logPromptShown(context: any(named: 'context')),
     ).thenAnswer((_) async {});
+    when(() => mockTracker.updateJourneyStatus(any())).thenAnswer((_) async {});
   });
 
   tearDown(() {
@@ -134,23 +136,24 @@ void main() {
       build: () {
         when(
           () => mockUseCase(any()),
-        ).thenAnswer((_) async => const Right(true));
+        ).thenAnswer((_) async => const Right(RatingConditionsResult.prompt));
         return bloc;
       },
-      act: (bloc) {
-        bloc.add(
-          AppRatingsEvent.interactionDetected(
-            company: tCompany,
-            currentTab: 'financials',
-          ),
-        );
-      },
+      act: (bloc) => bloc.add(
+        AppRatingsEvent.interactionDetected(
+          company: tCompany,
+          currentTab: 'financials',
+        ),
+      ),
       expect: () => [
         const AppRatingsState.requestReview(),
         const AppRatingsState.idle(),
       ],
       verify: (_) {
-        verify(() => mockUseCase(any())).called(1);
+        verify(
+          () =>
+              mockTracker.updateJourneyStatus(AppRatingJourneyStatus.completed),
+        ).called(1);
         verify(
           () => mockTracker.logInteraction(ticker: 'AAPL', count: 5),
         ).called(1);
@@ -162,21 +165,54 @@ void main() {
     );
 
     blocTest<AppRatingsBloc, AppRatingsState>(
+      'interactionDetected_firstInteraction_updatesStatusToInProgress',
+      build: () {
+        when(
+          () => mockUseCase(any()),
+        ).thenAnswer((_) async => const Right(RatingConditionsResult.noPrompt));
+        when(
+          () => mockUseCase.getInteractionCount(),
+        ).thenAnswer((_) async => 1);
+        when(() => mockUseCase.getPromptAttempts()).thenAnswer((_) async => 0);
+        return bloc;
+      },
+      act: (bloc) => bloc.add(
+        AppRatingsEvent.interactionDetected(
+          company: tCompany,
+          currentTab: 'financials',
+        ),
+      ),
+      expect: () => [const AppRatingsState.idle()],
+      verify: (_) {
+        verify(
+          () => mockTracker.updateJourneyStatus(
+            AppRatingJourneyStatus.inProgress,
+          ),
+        ).called(1);
+        verify(
+          () => mockTracker.logInteraction(ticker: 'AAPL', count: 1),
+        ).called(1);
+      },
+    );
+
+    blocTest<AppRatingsBloc, AppRatingsState>(
       'interactionDetected_shouldNotRequestReview_emitsIdleAndLogsInteractionOnly',
       build: () {
         when(
           () => mockUseCase(any()),
-        ).thenAnswer((_) async => const Right(false));
+        ).thenAnswer((_) async => const Right(RatingConditionsResult.noPrompt));
+        when(
+          () => mockUseCase.getInteractionCount(),
+        ).thenAnswer((_) async => 5);
+        when(() => mockUseCase.getPromptAttempts()).thenAnswer((_) async => 0);
         return bloc;
       },
-      act: (bloc) {
-        bloc.add(
-          AppRatingsEvent.interactionDetected(
-            company: tCompany,
-            currentTab: 'financials',
-          ),
-        );
-      },
+      act: (bloc) => bloc.add(
+        AppRatingsEvent.interactionDetected(
+          company: tCompany,
+          currentTab: 'financials',
+        ),
+      ),
       expect: () => [const AppRatingsState.idle()],
       verify: (_) {
         verify(() => mockUseCase(any())).called(1);
@@ -186,32 +222,37 @@ void main() {
         verifyNever(
           () => mockTracker.logPromptShown(context: any(named: 'context')),
         );
+        verifyNever(
+          () =>
+              mockTracker.updateJourneyStatus(AppRatingJourneyStatus.completed),
+        );
         verifyNever(() => mockReviewService.requestReview());
       },
     );
+
     blocTest<AppRatingsBloc, AppRatingsState>(
-      'interactionDetected_whenMaxAttemptsReached_shouldDetachAndSkipAnalytics',
+      'interactionDetected_whenMaxAttemptsReached_shouldUpdateStatusToMaxAttemptsAndDetach',
       build: () {
-        when(
-          () => mockUseCase(any()),
-        ).thenAnswer((_) async => const Right(false));
-        when(() => mockUseCase.getPromptAttempts()).thenAnswer((_) async => 1);
+        when(() => mockUseCase(any())).thenAnswer(
+          (_) async => const Right(RatingConditionsResult.maxAttemptsReached),
+        );
         return bloc;
       },
-      act: (bloc) {
-        bloc.add(
-          AppRatingsEvent.interactionDetected(
-            company: tCompany,
-            currentTab: 'financials',
-          ),
-        );
-      },
+      act: (bloc) => bloc.add(
+        AppRatingsEvent.interactionDetected(
+          company: tCompany,
+          currentTab: 'financials',
+        ),
+      ),
       expect: () => [const AppRatingsState.idle()],
       verify: (_) {
         verify(() => mockUseCase(any())).called(1);
-        verify(() => mockUseCase.getPromptAttempts()).called(1);
+        verify(
+          () => mockTracker.updateJourneyStatus(
+            AppRatingJourneyStatus.maxAttemptsReached,
+          ),
+        ).called(1);
         verifyNever(() => mockGetCurrentUser());
-        verifyNever(() => mockGetUserUseCase(any()));
         verifyNever(
           () => mockTracker.logInteraction(
             ticker: any(named: 'ticker'),
@@ -220,5 +261,38 @@ void main() {
         );
       },
     );
+    group('Interaction Detachment', () {
+      blocTest<AppRatingsBloc, AppRatingsState>(
+        'interactionDetected_afterMaxAttempts_skipsAllAnalyticsExceptStatusUpdate',
+        build: () {
+          when(() => mockUseCase(any())).thenAnswer(
+            (_) async => const Right(RatingConditionsResult.maxAttemptsReached),
+          );
+          return bloc;
+        },
+        act: (bloc) => bloc.add(
+          AppRatingsEvent.interactionDetected(
+            company: tCompany,
+            currentTab: 'financials',
+          ),
+        ),
+        expect: () => [const AppRatingsState.idle()],
+        verify: (_) {
+          verify(
+            () => mockTracker.updateJourneyStatus(
+              AppRatingJourneyStatus.maxAttemptsReached,
+            ),
+          ).called(1);
+          verifyNever(() => mockGetCurrentUser());
+          verifyNever(() => mockGetUserUseCase(any()));
+          verifyNever(
+            () => mockTracker.logInteraction(
+              ticker: any(named: 'ticker'),
+              count: any(named: 'count'),
+            ),
+          );
+        },
+      );
+    });
   });
 }

@@ -1,4 +1,5 @@
 import 'package:bizzie/core/analytics/models/app_rating_prompt_context.dart';
+import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/core/interfaces/i_config_service.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:bizzie/core/usecase/usecase.dart';
@@ -45,71 +46,106 @@ class AppRatingsBloc extends Bloc<AppRatingsEvent, AppRatingsState> {
     final result = await _trackRatingConditionsUseCase(NoParams());
 
     await result.fold(
-      (failure) async {
-        _logger.severe(
-          'Failure tracking rating conditions: ${failure.message}',
-        );
-        emit(const AppRatingsState.idle());
-      },
-      (shouldRequestReview) async {
-        _logger.info(
-          'Rating conditions evaluation result: shouldRequestReview=$shouldRequestReview',
-        );
+      (failure) => _onFailure(failure, emit),
+      (conditions) => _onConditionsEvaluated(conditions, event, emit),
+    );
+  }
 
-        if (!shouldRequestReview) {
-          final promptAttempts = await _trackRatingConditionsUseCase
-              .getPromptAttempts();
-          if (promptAttempts >= TrackRatingConditionsUseCase.kMaxAttempts) {
-            _logger.info('Analytics detached: Max attempts already reached.');
-            emit(const AppRatingsState.idle());
-            return;
-          }
-        }
+  Future<void> _onFailure(
+    Failure failure,
+    Emitter<AppRatingsState> emit,
+  ) async {
+    _logger.severe('Failure tracking rating conditions: ${failure.message}');
+    emit(const AppRatingsState.idle());
+  }
 
-        final authUser = _getCurrentUser();
-        if (authUser != null) {
-          final userResult = await _getUserUseCase(authUser.id);
-          final user = userResult.getOrElse(
-            () => throw Exception('User not found'),
-          );
+  Future<void> _onConditionsEvaluated(
+    RatingConditionsResult conditions,
+    _InteractionDetected event,
+    Emitter<AppRatingsState> emit,
+  ) async {
+    _logger.info('Rating conditions evaluation result: $conditions');
 
-          final interactionCount = await _trackRatingConditionsUseCase
-              .getInteractionCount();
-          final promptAttempts = await _trackRatingConditionsUseCase
-              .getPromptAttempts();
+    if (conditions == RatingConditionsResult.maxAttemptsReached) {
+      return _handleMaxAttemptsReached(emit);
+    }
 
-          final context = AppRatingPromptContext(
-            ticker: event.company.symbol,
-            companyName: event.company.companyName ?? '',
-            sector: event.company.sector ?? '',
-            industry: event.company.industry ?? '',
-            experienceLevel: user.investingExperience.name,
-            favoriteSector: user.favoriteSector,
-            isPremium: user.isSubscribed,
-            watchlistCount: user.watchlist.length,
-            notificationsEnabled: user.notificationsEnabled,
-            interactionCount: interactionCount,
-            promptAttempts: promptAttempts,
-            currentTab: event.currentTab,
-            thresholdCount: _configService.reviewPromptEventCount,
-          );
+    final context = await _gatherPromptContext(event);
+    if (context == null) {
+      emit(const AppRatingsState.idle());
+      return;
+    }
 
-          await _tracker.logInteraction(
-            ticker: event.company.symbol,
-            count: context.interactionCount,
-          );
+    await _trackInteraction(context, event.company);
 
-          if (shouldRequestReview) {
-            _logger.info(
-              'Rating conditions met. Requesting review via service.',
-            );
-            await _tracker.logPromptShown(context: context);
-            await _reviewService.requestReview();
-            emit(const AppRatingsState.requestReview());
-          }
-        }
-        emit(const AppRatingsState.idle());
-      },
+    if (conditions == RatingConditionsResult.prompt) {
+      await _presentReviewPrompt(context, emit);
+    }
+
+    emit(const AppRatingsState.idle());
+  }
+
+  Future<void> _handleMaxAttemptsReached(Emitter<AppRatingsState> emit) async {
+    _logger.info('Analytics detached: Max attempts already reached.');
+    await _tracker.updateJourneyStatus(
+      AppRatingJourneyStatus.maxAttemptsReached,
+    );
+    emit(const AppRatingsState.idle());
+  }
+
+  Future<void> _trackInteraction(
+    AppRatingPromptContext context,
+    CompanyProfile company,
+  ) async {
+    if (context.interactionCount == 1 && context.promptAttempts == 0) {
+      await _tracker.updateJourneyStatus(AppRatingJourneyStatus.inProgress);
+    }
+
+    await _tracker.logInteraction(
+      ticker: company.symbol,
+      count: context.interactionCount,
+    );
+  }
+
+  Future<void> _presentReviewPrompt(
+    AppRatingPromptContext context,
+    Emitter<AppRatingsState> emit,
+  ) async {
+    _logger.info('Rating conditions met. Requesting review via service.');
+    await _tracker.logPromptShown(context: context);
+    await _tracker.updateJourneyStatus(AppRatingJourneyStatus.completed);
+    await _reviewService.requestReview();
+    emit(const AppRatingsState.requestReview());
+  }
+
+  Future<AppRatingPromptContext?> _gatherPromptContext(
+    _InteractionDetected event,
+  ) async {
+    final authUser = _getCurrentUser();
+    if (authUser == null) return null;
+
+    final userResult = await _getUserUseCase(authUser.id);
+    final user = userResult.getOrElse(() => throw Exception('User not found'));
+
+    final interactionCount = await _trackRatingConditionsUseCase
+        .getInteractionCount();
+    final promptAttempts = await _trackRatingConditionsUseCase
+        .getPromptAttempts();
+
+    return AppRatingPromptContext(
+      ticker: event.company.symbol,
+      companyName: event.company.companyName ?? '',
+      sector: event.company.sector ?? '',
+      industry: event.company.industry ?? '',
+      experienceLevel: user.investingExperience.name,
+      favoriteSector: user.favoriteSector,
+      isPremium: user.isSubscribed,
+      watchlistCount: user.watchlist.length,
+      notificationsEnabled: user.notificationsEnabled,
+      interactionCount: interactionCount,
+      promptAttempts: promptAttempts,
+      currentTab: event.currentTab,
+      thresholdCount: _configService.reviewPromptEventCount,
     );
   }
 }
