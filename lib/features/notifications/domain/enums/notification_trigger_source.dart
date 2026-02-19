@@ -1,0 +1,1 @@
+enum NotificationTriggerSource { remote, local }

@@ -292,6 +292,8 @@ import '../features/notifications/domain/usecases/subscribe_to_topic.dart'
     as _i327;
 import '../features/notifications/domain/usecases/unsubscribe_from_topic.dart'
     as _i999;
+import '../features/notifications/presentation/analytics/notification_tracker.dart'
+    as _i1014;
 import '../features/notifications/presentation/bloc/notification_bloc.dart'
     as _i687;
 import '../features/onboarding/data/datasources/onboarding_remote_datasource.dart'
@@ -740,6 +742,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i591.FeedbackTracker>(
       () => _i591.FeedbackTracker(gh<_i529.IAnalyticsService>()),
+    );
+    gh.factory<_i1014.NotificationTracker>(
+      () => _i1014.NotificationTracker(gh<_i529.IAnalyticsService>()),
     );
     gh.lazySingleton<_i951.OnboardingTracker>(
       () => _i951.OnboardingTracker(gh<_i529.IAnalyticsService>()),
@@ -1232,35 +1237,11 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i830.WatchlistAnalytics>(),
       ),
     );
-    await gh.lazySingletonAsync<_i430.INotificationService>(() {
-      final i = _i941.NotificationService(
-        gh<_i622.INotificationRepository>(),
-        gh<_i982.LocalNotificationDataSource>(),
-        gh<_i833.DeviceInfoPlugin>(),
-        gh<_i892.FirebaseMessaging>(),
-        gh<_i583.ILocalStorageService>(),
-        gh<_i615.IUserRepository>(),
-      );
-      return i.initialize().then((_) => i);
-    }, preResolve: true);
-    gh.lazySingleton<_i594.GetSettingsDisplayDataUseCase>(
-      () => _i594.GetSettingsDisplayDataUseCase(
-        gh<_i685.IAuthRepository>(),
-        gh<_i615.IUserRepository>(),
-        gh<_i659.ISubscriptionRepository>(),
-        gh<_i248.IAppInfoService>(),
-        gh<_i430.INotificationService>(),
-        gh<_i937.IConfigService>(),
-      ),
-    );
     gh.factory<_i683.CompanyEpsBloc>(
       () => _i683.CompanyEpsBloc(
         gh<_i107.GetEpsStatsUseCase>(),
         gh<_i937.IConfigService>(),
       ),
-    );
-    gh.lazySingleton<_i961.ClearCachedToken>(
-      () => _i961.ClearCachedToken(gh<_i430.INotificationService>()),
     );
     gh.lazySingleton<_i687.Stream<bool>>(
       () => subscriptionModule.isSubscribedStream(gh<_i615.IUserRepository>()),
@@ -1376,16 +1357,18 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i937.IConfigService>(),
       ),
     );
-    gh.factory<_i687.NotificationBloc>(
-      () => _i687.NotificationBloc(
-        gh<_i332.RequestNotificationPermission>(),
-        gh<_i69.GetFcmToken>(),
-        gh<_i954.ListenToMessages>(),
-        gh<_i327.SubscribeToTopic>(),
-        gh<_i999.UnsubscribeFromTopic>(),
-        gh<_i961.ClearCachedToken>(),
-      ),
-    );
+    await gh.lazySingletonAsync<_i430.INotificationService>(() {
+      final i = _i941.NotificationService(
+        gh<_i622.INotificationRepository>(),
+        gh<_i982.LocalNotificationDataSource>(),
+        gh<_i833.DeviceInfoPlugin>(),
+        gh<_i892.FirebaseMessaging>(),
+        gh<_i583.ILocalStorageService>(),
+        gh<_i615.IUserRepository>(),
+        gh<_i1014.NotificationTracker>(),
+      );
+      return i.initialize().then((_) => i);
+    }, preResolve: true);
     gh.factory<_i896.AppRatingsBloc>(
       () => _i896.AppRatingsBloc(
         gh<_i849.TrackRatingConditionsUseCase>(),
@@ -1458,6 +1441,16 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i410.CompanySecurityBloc>(
       () => _i410.CompanySecurityBloc(gh<_i190.GetSecurityDetailsUseCase>()),
     );
+    gh.lazySingleton<_i594.GetSettingsDisplayDataUseCase>(
+      () => _i594.GetSettingsDisplayDataUseCase(
+        gh<_i685.IAuthRepository>(),
+        gh<_i615.IUserRepository>(),
+        gh<_i659.ISubscriptionRepository>(),
+        gh<_i248.IAppInfoService>(),
+        gh<_i430.INotificationService>(),
+        gh<_i937.IConfigService>(),
+      ),
+    );
     gh.factory<_i419.SettingsBloc>(
       () => _i419.SettingsBloc(
         gh<_i594.GetSettingsDisplayDataUseCase>(),
@@ -1469,6 +1462,9 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i579.OpenAppSettingsUseCase>(),
         gh<_i714.GetSubscriptionStatusUseCase>(),
       ),
+    );
+    gh.lazySingleton<_i961.ClearCachedToken>(
+      () => _i961.ClearCachedToken(gh<_i430.INotificationService>()),
     );
     gh.factory<_i593.OnboardingBloc>(
       () => _i593.OnboardingBloc(
@@ -1501,6 +1497,17 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i561.GetUserUseCase>(),
         gh<_i836.WatchUserUseCase>(),
         gh<_i615.IUserRepository>(),
+      ),
+    );
+    gh.factory<_i687.NotificationBloc>(
+      () => _i687.NotificationBloc(
+        gh<_i332.RequestNotificationPermission>(),
+        gh<_i69.GetFcmToken>(),
+        gh<_i954.ListenToMessages>(),
+        gh<_i327.SubscribeToTopic>(),
+        gh<_i999.UnsubscribeFromTopic>(),
+        gh<_i961.ClearCachedToken>(),
+        gh<_i1014.NotificationTracker>(),
       ),
     );
     gh.factory<_i709.SelectBrandsBloc>(

@@ -3,6 +3,8 @@ import 'dart:io';
 
 import 'package:bizzie/app/routes/app_routes.dart';
 import 'package:bizzie/core/enums/paywall_source.dart';
+import 'package:bizzie/features/notifications/domain/enums/notification_app_state.dart';
+import 'package:bizzie/features/notifications/domain/enums/notification_trigger_source.dart';
 import 'package:bizzie/features/notifications/domain/models/notification_route.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:device_info_plus/device_info_plus.dart';
@@ -11,6 +13,7 @@ import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:bizzie/features/notifications/data/datasources/local_notification_datasource.dart';
 import 'package:bizzie/features/notifications/domain/interfaces/i_notification_repository.dart';
 import 'package:bizzie/core/interfaces/i_local_storage_service.dart';
+import 'package:bizzie/features/notifications/presentation/analytics/notification_tracker.dart';
 import 'package:bizzie/features/user/domain/interfaces/user_repository.dart';
 import 'package:injectable/injectable.dart';
 
@@ -24,6 +27,7 @@ class NotificationService implements INotificationService {
   final FirebaseMessaging _firebaseMessaging;
   final ILocalStorageService _localStorageService;
   final IUserRepository _userRepository;
+  final NotificationTracker _tracker;
 
   final _routeController = StreamController<NotificationRoute>.broadcast();
 
@@ -34,6 +38,7 @@ class NotificationService implements INotificationService {
     this._firebaseMessaging,
     this._localStorageService,
     this._userRepository,
+    this._tracker,
   );
 
   @PostConstruct(preResolve: true)
@@ -174,7 +179,7 @@ class NotificationService implements INotificationService {
 
     FirebaseMessaging.onMessageOpenedApp.listen((message) {
       _logger.info('App opened from background state by notification');
-      _handleMessage(message);
+      _handleMessage(message, appState: NotificationAppState.background);
     });
   }
 
@@ -183,7 +188,18 @@ class NotificationService implements INotificationService {
     final initialMessage = await _firebaseMessaging.getInitialMessage();
     if (initialMessage != null) {
       _logger.info('App opened from terminated state by notification');
-      return _parseMessage(initialMessage);
+      final route = _parseMessage(initialMessage);
+
+      unawaited(
+        _tracker.logNotificationOpened(
+          notificationType: initialMessage.data['type'] as String?,
+          triggerSource: NotificationTriggerSource.remote,
+          appState: NotificationAppState.terminated,
+          route: route?.path,
+        ),
+      );
+
+      return route;
     }
     return null;
   }
@@ -202,23 +218,54 @@ class NotificationService implements INotificationService {
     return null;
   }
 
-  void _handleMessage(RemoteMessage message) {
+  void _handleMessage(
+    RemoteMessage message, {
+    NotificationAppState appState = NotificationAppState.background,
+  }) {
     final route = _parseMessage(message);
+
+    unawaited(
+      _tracker.logNotificationOpened(
+        notificationType: message.data['type'] as String?,
+        triggerSource: NotificationTriggerSource.remote,
+        appState: appState,
+        route: route?.path,
+      ),
+    );
+
     if (route != null) {
       _routeController.add(route);
     }
   }
 
   void _handlePayload(String payload) {
-    if (payload.contains('sec_filing') ||
-        payload.contains('earnings_notification')) {
-      _routeController.add(const NotificationRoute(AppRoutes.reports));
+    NotificationRoute? route;
+    String? type;
+
+    if (payload.contains('sec_filing')) {
+      type = 'sec_filing';
+      route = const NotificationRoute(AppRoutes.reports);
+    } else if (payload.contains('earnings_notification')) {
+      type = 'earnings_notification';
+      route = const NotificationRoute(AppRoutes.reports);
     } else if (payload.contains('subscription_drip')) {
-      _routeController.add(
-        NotificationRoute(
-          '${AppRoutes.discountedPaywall}?source=${PaywallSource.notification.name}',
-        ),
+      type = 'subscription_drip';
+      route = NotificationRoute(
+        '${AppRoutes.discountedPaywall}?source=${PaywallSource.notification.name}',
       );
+    }
+
+    unawaited(
+      _tracker.logNotificationOpened(
+        notificationType: type,
+        triggerSource: NotificationTriggerSource.local,
+        appState: NotificationAppState.foreground,
+        route: route?.path,
+      ),
+    );
+
+    if (route != null) {
+      _routeController.add(route);
     }
   }
 

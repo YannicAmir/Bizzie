@@ -8,6 +8,7 @@ import 'package:bizzie/features/notifications/domain/usecases/listen_to_messages
 import 'package:bizzie/features/notifications/domain/usecases/request_notification_permission.dart';
 import 'package:bizzie/features/notifications/domain/usecases/subscribe_to_topic.dart';
 import 'package:bizzie/features/notifications/domain/usecases/unsubscribe_from_topic.dart';
+import 'package:bizzie/features/notifications/presentation/analytics/notification_tracker.dart';
 import 'package:bizzie/features/notifications/presentation/bloc/notification_bloc.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -26,6 +27,8 @@ class MockUnsubscribeFromTopic extends Mock implements UnsubscribeFromTopic {}
 
 class MockClearCachedToken extends Mock implements ClearCachedToken {}
 
+class MockNotificationTracker extends Mock implements NotificationTracker {}
+
 void main() {
   late NotificationBloc bloc;
   late MockRequestNotificationPermission mockRequestPermission;
@@ -34,6 +37,7 @@ void main() {
   late MockSubscribeToTopic mockSubscribeToTopic;
   late MockUnsubscribeFromTopic mockUnsubscribeFromTopic;
   late MockClearCachedToken mockClearCachedToken;
+  late MockNotificationTracker mockTracker;
 
   setUpAll(() {
     registerFallbackValue(NotificationEvent.setupRequested());
@@ -47,6 +51,24 @@ void main() {
     mockSubscribeToTopic = MockSubscribeToTopic();
     mockUnsubscribeFromTopic = MockUnsubscribeFromTopic();
     mockClearCachedToken = MockClearCachedToken();
+    mockTracker = MockNotificationTracker();
+
+    when(
+      () => mockTracker.logPermissionResult(granted: any(named: 'granted')),
+    ).thenAnswer((_) async => {});
+    when(
+      () => mockTracker.setUserNotificationsEnabled(any()),
+    ).thenAnswer((_) async => {});
+    when(
+      () => mockTracker.logTopicSubscribed(topic: any(named: 'topic')),
+    ).thenAnswer((_) async => {});
+    when(
+      () => mockTracker.logTopicUnsubscribed(topic: any(named: 'topic')),
+    ).thenAnswer((_) async => {});
+    when(
+      () => mockTracker.logMessageReceived(type: any(named: 'type')),
+    ).thenAnswer((_) async => {});
+
     bloc = NotificationBloc(
       mockRequestPermission,
       mockGetFcmToken,
@@ -54,6 +76,7 @@ void main() {
       mockSubscribeToTopic,
       mockUnsubscribeFromTopic,
       mockClearCachedToken,
+      mockTracker,
     );
   });
 

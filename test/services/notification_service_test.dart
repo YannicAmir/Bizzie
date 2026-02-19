@@ -4,8 +4,11 @@ import 'package:bizzie/app/routes/app_routes.dart';
 import 'package:bizzie/core/interfaces/i_local_storage_service.dart';
 import 'package:bizzie/features/notifications/data/datasources/local_notification_datasource.dart';
 import 'package:bizzie/features/notifications/domain/interfaces/i_notification_repository.dart';
+import 'package:bizzie/features/notifications/domain/enums/notification_app_state.dart';
+import 'package:bizzie/features/notifications/domain/enums/notification_trigger_source.dart';
 import 'package:bizzie/features/notifications/domain/models/notification_message.dart';
 import 'package:bizzie/features/notifications/domain/models/notification_route.dart';
+import 'package:bizzie/features/notifications/presentation/analytics/notification_tracker.dart';
 import 'package:bizzie/features/user/domain/interfaces/user_repository.dart';
 import 'package:bizzie/services/notification_service.dart';
 import 'package:dartz/dartz.dart';
@@ -32,6 +35,8 @@ class MockNotificationSettings extends Mock implements NotificationSettings {}
 
 class MockRemoteMessage extends Mock implements RemoteMessage {}
 
+class MockNotificationTracker extends Mock implements NotificationTracker {}
+
 void main() {
   late NotificationService service;
   late MockINotificationRepository mockRepository;
@@ -40,12 +45,15 @@ void main() {
   late MockFirebaseMessaging mockFirebaseMessaging;
   late MockILocalStorageService mockLocalStorage;
   late MockIUserRepository mockUserRepository;
+  late MockNotificationTracker mockTracker;
 
   const tToken = 'token_123';
   const tDeviceId = 'device_456';
 
   setUpAll(() {
     registerFallbackValue(const NotificationRoute(''));
+    registerFallbackValue(NotificationTriggerSource.remote);
+    registerFallbackValue(NotificationAppState.background);
   });
 
   setUp(() {
@@ -55,6 +63,16 @@ void main() {
     mockFirebaseMessaging = MockFirebaseMessaging();
     mockLocalStorage = MockILocalStorageService();
     mockUserRepository = MockIUserRepository();
+    mockTracker = MockNotificationTracker();
+
+    when(
+      () => mockTracker.logNotificationOpened(
+        notificationType: any(named: 'notificationType'),
+        triggerSource: any(named: 'triggerSource'),
+        appState: any(named: 'appState'),
+        route: any(named: 'route'),
+      ),
+    ).thenAnswer((_) async => {});
 
     when(
       () => mockRepository.onMessage,
@@ -93,6 +111,7 @@ void main() {
       mockFirebaseMessaging,
       mockLocalStorage,
       mockUserRepository,
+      mockTracker,
     );
   });
 
@@ -238,7 +257,7 @@ void main() {
 
   group('Routing', () {
     test(
-      'notificationService_getInitialRoute_parsedMessage_returnsRoute',
+      'notificationService_getInitialRoute_parsedMessage_returnsRouteAndLogsAnalytics',
       () async {
         // arrange
         final message = MockRemoteMessage();
@@ -255,11 +274,19 @@ void main() {
           result?.path,
           '${AppRoutes.discountedPaywall}?source=notification',
         );
+        verify(
+          () => mockTracker.logNotificationOpened(
+            notificationType: 'subscription_drip',
+            triggerSource: NotificationTriggerSource.remote,
+            appState: NotificationAppState.terminated,
+            route: result?.path,
+          ),
+        ).called(1);
       },
     );
 
     test(
-      'notificationService_onNotificationTap_emitsRouteFromPayload',
+      'notificationService_onNotificationTap_emitsRouteFromPayloadAndLogsAnalytics',
       () async {
         // arrange
         void Function(String?)? tapHandler;
@@ -276,12 +303,22 @@ void main() {
         await service.initialize();
 
         // act & assert
-        expectLater(
+        final expectEmit = expectLater(
           service.routeStream,
           emits(const NotificationRoute(AppRoutes.reports)),
         );
 
         tapHandler?.call('earnings_notification');
+        await expectEmit;
+
+        verify(
+          () => mockTracker.logNotificationOpened(
+            notificationType: 'earnings_notification',
+            triggerSource: NotificationTriggerSource.local,
+            appState: NotificationAppState.foreground,
+            route: AppRoutes.reports,
+          ),
+        ).called(1);
       },
     );
   });
