@@ -4,7 +4,9 @@ part 'feedback_event.freezed.dart';
 
 @freezed
 abstract class FeedbackEvent with _$FeedbackEvent {
-  const factory FeedbackEvent.submit(String message) = Submit;
-  const factory FeedbackEvent.messageChanged(String message) = MessageChanged;
-  const factory FeedbackEvent.cooldownEnded() = CooldownEnded;
+  const factory FeedbackEvent.viewed({String? intentSource}) = FeedbackViewed;
+  const factory FeedbackEvent.submit(String message) = FeedbackSubmit;
+  const factory FeedbackEvent.messageChanged(String message) =
+      FeedbackMessageChanged;
+  const factory FeedbackEvent.cooldownEnded() = FeedbackCooldownEnded;
 }

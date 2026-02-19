@@ -261,6 +261,8 @@ import '../features/feedback/domain/interfaces/i_feedback_repository.dart'
     as _i826;
 import '../features/feedback/domain/usecases/submit_feedback_usecase.dart'
     as _i82;
+import '../features/feedback/presentation/analytics/feedback_tracker.dart'
+    as _i591;
 import '../features/feedback/presentation/bloc/feedback_bloc.dart' as _i673;
 import '../features/home/presentation/analytics/home_analytics.dart' as _i32;
 import '../features/home/presentation/bloc/home_bloc.dart' as _i824;
@@ -735,6 +737,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i700.AuthTracker>(
       () => _i700.AuthTracker(gh<_i529.IAnalyticsService>()),
+    );
+    gh.factory<_i591.FeedbackTracker>(
+      () => _i591.FeedbackTracker(gh<_i529.IAnalyticsService>()),
     );
     gh.lazySingleton<_i951.OnboardingTracker>(
       () => _i951.OnboardingTracker(gh<_i529.IAnalyticsService>()),
@@ -1444,6 +1449,12 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i615.IUserRepository>(),
       ),
     );
+    gh.factory<_i673.FeedbackBloc>(
+      () => _i673.FeedbackBloc(
+        gh<_i82.SubmitFeedbackUseCase>(),
+        gh<_i591.FeedbackTracker>(),
+      ),
+    );
     gh.factory<_i410.CompanySecurityBloc>(
       () => _i410.CompanySecurityBloc(gh<_i190.GetSecurityDetailsUseCase>()),
     );
@@ -1491,9 +1502,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i836.WatchUserUseCase>(),
         gh<_i615.IUserRepository>(),
       ),
-    );
-    gh.factory<_i673.FeedbackBloc>(
-      () => _i673.FeedbackBloc(gh<_i82.SubmitFeedbackUseCase>()),
     );
     gh.factory<_i709.SelectBrandsBloc>(
       () => _i709.SelectBrandsBloc(

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:bizzie/features/feedback/domain/usecases/submit_feedback_usecase.dart';
+import 'package:bizzie/features/feedback/presentation/analytics/feedback_tracker.dart';
 import 'package:bizzie/features/feedback/presentation/bloc/feedback_event.dart';
 import 'package:bizzie/features/feedback/presentation/bloc/feedback_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -11,23 +12,46 @@ final _logger = BizzieLogger('FeedbackBloc');
 @injectable
 class FeedbackBloc extends Bloc<FeedbackEvent, FeedbackState> {
   final SubmitFeedbackUseCase _submitFeedbackUseCase;
+  final FeedbackTracker _tracker;
 
   Timer? _cooldownTimer;
+  bool _hasTyped = false;
+  int _messageLength = 0;
 
-  FeedbackBloc(this._submitFeedbackUseCase)
+  FeedbackBloc(this._submitFeedbackUseCase, this._tracker)
     : super(const FeedbackState.initial()) {
-    on<Submit>(_onSubmit);
-    on<MessageChanged>(_onMessageChanged);
-    on<CooldownEnded>(_onCooldownEnded);
+    on<FeedbackViewed>(_onViewed);
+    on<FeedbackSubmit>(_onSubmit);
+    on<FeedbackMessageChanged>(_onMessageChanged);
+    on<FeedbackCooldownEnded>(_onCooldownEnded);
   }
 
   @override
-  Future<void> close() {
+  Future<void> close() async {
+    if (state is! Success && (state is! Loading || _hasTyped)) {
+      await _tracker.logFeedbackAbandoned(
+        hasTyped: _hasTyped,
+        messageLength: _messageLength,
+      );
+    }
     _cooldownTimer?.cancel();
     return super.close();
   }
 
-  void _onMessageChanged(MessageChanged event, Emitter<FeedbackState> emit) {
+  Future<void> _onViewed(
+    FeedbackViewed event,
+    Emitter<FeedbackState> emit,
+  ) async {
+    await _tracker.logFeedbackViewed(intentSource: event.intentSource);
+  }
+
+  void _onMessageChanged(
+    FeedbackMessageChanged event,
+    Emitter<FeedbackState> emit,
+  ) {
+    _hasTyped = event.message.trim().isNotEmpty;
+    _messageLength = event.message.length;
+
     state.maybeMap(
       failure: (s) =>
           emit(FeedbackState.initial(isCoolingDown: s.isCoolingDown)),
@@ -35,7 +59,10 @@ class FeedbackBloc extends Bloc<FeedbackEvent, FeedbackState> {
     );
   }
 
-  void _onCooldownEnded(CooldownEnded event, Emitter<FeedbackState> emit) {
+  void _onCooldownEnded(
+    FeedbackCooldownEnded event,
+    Emitter<FeedbackState> emit,
+  ) {
     _logger.info('Cooldown ended for feedback submission');
     emit(
       state.map(
@@ -47,19 +74,37 @@ class FeedbackBloc extends Bloc<FeedbackEvent, FeedbackState> {
     );
   }
 
-  Future<void> _onSubmit(Submit event, Emitter<FeedbackState> emit) async {
+  Future<void> _onSubmit(
+    FeedbackSubmit event,
+    Emitter<FeedbackState> emit,
+  ) async {
+    if (state.isCoolingDown) {
+      await _tracker.logFeedbackCooldownHit();
+      return;
+    }
+
     _logger.info('Submitting feedback...');
     emit(FeedbackState.loading(isCoolingDown: state.isCoolingDown));
 
     final result = await _submitFeedbackUseCase(event.message);
 
-    result.fold(
-      (failure) {
+    await result.fold(
+      (failure) async {
         _logger.severe('Feedback submission failed: ${failure.message}');
+        await _tracker.logFeedbackFailed(error: failure.message);
         emit(FeedbackState.failure(failure, isCoolingDown: true));
       },
-      (_) {
+      (_) async {
         _logger.info('Feedback submitted successfully');
+        await _tracker.logFeedbackSubmitted(
+          messageLength: event.message.length,
+        );
+
+        // In a real app, we'd fetch the current count from a UserProfile service.
+        // For this Platinum demo, we simulate incrementing a session-based count.
+        // Rule: Always log intent to increment user properties.
+        await _tracker.setTotalFeedbackCount(1);
+
         emit(const FeedbackState.success(isCoolingDown: true));
         _startCooldownTimer();
       },

@@ -55,12 +55,13 @@ extension FeedbackEventPatterns on FeedbackEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( Submit value)?  submit,TResult Function( MessageChanged value)?  messageChanged,TResult Function( CooldownEnded value)?  cooldownEnded,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( FeedbackViewed value)?  viewed,TResult Function( FeedbackSubmit value)?  submit,TResult Function( FeedbackMessageChanged value)?  messageChanged,TResult Function( FeedbackCooldownEnded value)?  cooldownEnded,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
-case Submit() when submit != null:
-return submit(_that);case MessageChanged() when messageChanged != null:
-return messageChanged(_that);case CooldownEnded() when cooldownEnded != null:
+case FeedbackViewed() when viewed != null:
+return viewed(_that);case FeedbackSubmit() when submit != null:
+return submit(_that);case FeedbackMessageChanged() when messageChanged != null:
+return messageChanged(_that);case FeedbackCooldownEnded() when cooldownEnded != null:
 return cooldownEnded(_that);case _:
   return orElse();
 
@@ -79,12 +80,13 @@ return cooldownEnded(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( Submit value)  submit,required TResult Function( MessageChanged value)  messageChanged,required TResult Function( CooldownEnded value)  cooldownEnded,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( FeedbackViewed value)  viewed,required TResult Function( FeedbackSubmit value)  submit,required TResult Function( FeedbackMessageChanged value)  messageChanged,required TResult Function( FeedbackCooldownEnded value)  cooldownEnded,}){
 final _that = this;
 switch (_that) {
-case Submit():
-return submit(_that);case MessageChanged():
-return messageChanged(_that);case CooldownEnded():
+case FeedbackViewed():
+return viewed(_that);case FeedbackSubmit():
+return submit(_that);case FeedbackMessageChanged():
+return messageChanged(_that);case FeedbackCooldownEnded():
 return cooldownEnded(_that);case _:
   throw StateError('Unexpected subclass');
 
@@ -102,12 +104,13 @@ return cooldownEnded(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( Submit value)?  submit,TResult? Function( MessageChanged value)?  messageChanged,TResult? Function( CooldownEnded value)?  cooldownEnded,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( FeedbackViewed value)?  viewed,TResult? Function( FeedbackSubmit value)?  submit,TResult? Function( FeedbackMessageChanged value)?  messageChanged,TResult? Function( FeedbackCooldownEnded value)?  cooldownEnded,}){
 final _that = this;
 switch (_that) {
-case Submit() when submit != null:
-return submit(_that);case MessageChanged() when messageChanged != null:
-return messageChanged(_that);case CooldownEnded() when cooldownEnded != null:
+case FeedbackViewed() when viewed != null:
+return viewed(_that);case FeedbackSubmit() when submit != null:
+return submit(_that);case FeedbackMessageChanged() when messageChanged != null:
+return messageChanged(_that);case FeedbackCooldownEnded() when cooldownEnded != null:
 return cooldownEnded(_that);case _:
   return null;
 
@@ -125,11 +128,12 @@ return cooldownEnded(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String message)?  submit,TResult Function( String message)?  messageChanged,TResult Function()?  cooldownEnded,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String? intentSource)?  viewed,TResult Function( String message)?  submit,TResult Function( String message)?  messageChanged,TResult Function()?  cooldownEnded,required TResult orElse(),}) {final _that = this;
 switch (_that) {
-case Submit() when submit != null:
-return submit(_that.message);case MessageChanged() when messageChanged != null:
-return messageChanged(_that.message);case CooldownEnded() when cooldownEnded != null:
+case FeedbackViewed() when viewed != null:
+return viewed(_that.intentSource);case FeedbackSubmit() when submit != null:
+return submit(_that.message);case FeedbackMessageChanged() when messageChanged != null:
+return messageChanged(_that.message);case FeedbackCooldownEnded() when cooldownEnded != null:
 return cooldownEnded();case _:
   return orElse();
 
@@ -148,11 +152,12 @@ return cooldownEnded();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String message)  submit,required TResult Function( String message)  messageChanged,required TResult Function()  cooldownEnded,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String? intentSource)  viewed,required TResult Function( String message)  submit,required TResult Function( String message)  messageChanged,required TResult Function()  cooldownEnded,}) {final _that = this;
 switch (_that) {
-case Submit():
-return submit(_that.message);case MessageChanged():
-return messageChanged(_that.message);case CooldownEnded():
+case FeedbackViewed():
+return viewed(_that.intentSource);case FeedbackSubmit():
+return submit(_that.message);case FeedbackMessageChanged():
+return messageChanged(_that.message);case FeedbackCooldownEnded():
 return cooldownEnded();case _:
   throw StateError('Unexpected subclass');
 
@@ -170,11 +175,12 @@ return cooldownEnded();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String message)?  submit,TResult? Function( String message)?  messageChanged,TResult? Function()?  cooldownEnded,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String? intentSource)?  viewed,TResult? Function( String message)?  submit,TResult? Function( String message)?  messageChanged,TResult? Function()?  cooldownEnded,}) {final _that = this;
 switch (_that) {
-case Submit() when submit != null:
-return submit(_that.message);case MessageChanged() when messageChanged != null:
-return messageChanged(_that.message);case CooldownEnded() when cooldownEnded != null:
+case FeedbackViewed() when viewed != null:
+return viewed(_that.intentSource);case FeedbackSubmit() when submit != null:
+return submit(_that.message);case FeedbackMessageChanged() when messageChanged != null:
+return messageChanged(_that.message);case FeedbackCooldownEnded() when cooldownEnded != null:
 return cooldownEnded();case _:
   return null;
 
@@ -186,8 +192,74 @@ return cooldownEnded();case _:
 /// @nodoc
 
 
-class Submit implements FeedbackEvent {
-  const Submit(this.message);
+class FeedbackViewed implements FeedbackEvent {
+  const FeedbackViewed({this.intentSource});
+  
+
+ final  String? intentSource;
+
+/// Create a copy of FeedbackEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$FeedbackViewedCopyWith<FeedbackViewed> get copyWith => _$FeedbackViewedCopyWithImpl<FeedbackViewed>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is FeedbackViewed&&(identical(other.intentSource, intentSource) || other.intentSource == intentSource));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,intentSource);
+
+@override
+String toString() {
+  return 'FeedbackEvent.viewed(intentSource: $intentSource)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $FeedbackViewedCopyWith<$Res> implements $FeedbackEventCopyWith<$Res> {
+  factory $FeedbackViewedCopyWith(FeedbackViewed value, $Res Function(FeedbackViewed) _then) = _$FeedbackViewedCopyWithImpl;
+@useResult
+$Res call({
+ String? intentSource
+});
+
+
+
+
+}
+/// @nodoc
+class _$FeedbackViewedCopyWithImpl<$Res>
+    implements $FeedbackViewedCopyWith<$Res> {
+  _$FeedbackViewedCopyWithImpl(this._self, this._then);
+
+  final FeedbackViewed _self;
+  final $Res Function(FeedbackViewed) _then;
+
+/// Create a copy of FeedbackEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? intentSource = freezed,}) {
+  return _then(FeedbackViewed(
+intentSource: freezed == intentSource ? _self.intentSource : intentSource // ignore: cast_nullable_to_non_nullable
+as String?,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class FeedbackSubmit implements FeedbackEvent {
+  const FeedbackSubmit(this.message);
   
 
  final  String message;
@@ -196,13 +268,13 @@ class Submit implements FeedbackEvent {
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-$SubmitCopyWith<Submit> get copyWith => _$SubmitCopyWithImpl<Submit>(this, _$identity);
+$FeedbackSubmitCopyWith<FeedbackSubmit> get copyWith => _$FeedbackSubmitCopyWithImpl<FeedbackSubmit>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Submit&&(identical(other.message, message) || other.message == message));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is FeedbackSubmit&&(identical(other.message, message) || other.message == message));
 }
 
 
@@ -218,8 +290,8 @@ String toString() {
 }
 
 /// @nodoc
-abstract mixin class $SubmitCopyWith<$Res> implements $FeedbackEventCopyWith<$Res> {
-  factory $SubmitCopyWith(Submit value, $Res Function(Submit) _then) = _$SubmitCopyWithImpl;
+abstract mixin class $FeedbackSubmitCopyWith<$Res> implements $FeedbackEventCopyWith<$Res> {
+  factory $FeedbackSubmitCopyWith(FeedbackSubmit value, $Res Function(FeedbackSubmit) _then) = _$FeedbackSubmitCopyWithImpl;
 @useResult
 $Res call({
  String message
@@ -230,17 +302,17 @@ $Res call({
 
 }
 /// @nodoc
-class _$SubmitCopyWithImpl<$Res>
-    implements $SubmitCopyWith<$Res> {
-  _$SubmitCopyWithImpl(this._self, this._then);
+class _$FeedbackSubmitCopyWithImpl<$Res>
+    implements $FeedbackSubmitCopyWith<$Res> {
+  _$FeedbackSubmitCopyWithImpl(this._self, this._then);
 
-  final Submit _self;
-  final $Res Function(Submit) _then;
+  final FeedbackSubmit _self;
+  final $Res Function(FeedbackSubmit) _then;
 
 /// Create a copy of FeedbackEvent
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? message = null,}) {
-  return _then(Submit(
+  return _then(FeedbackSubmit(
 null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
 as String,
   ));
@@ -252,8 +324,8 @@ as String,
 /// @nodoc
 
 
-class MessageChanged implements FeedbackEvent {
-  const MessageChanged(this.message);
+class FeedbackMessageChanged implements FeedbackEvent {
+  const FeedbackMessageChanged(this.message);
   
 
  final  String message;
@@ -262,13 +334,13 @@ class MessageChanged implements FeedbackEvent {
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-$MessageChangedCopyWith<MessageChanged> get copyWith => _$MessageChangedCopyWithImpl<MessageChanged>(this, _$identity);
+$FeedbackMessageChangedCopyWith<FeedbackMessageChanged> get copyWith => _$FeedbackMessageChangedCopyWithImpl<FeedbackMessageChanged>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MessageChanged&&(identical(other.message, message) || other.message == message));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is FeedbackMessageChanged&&(identical(other.message, message) || other.message == message));
 }
 
 
@@ -284,8 +356,8 @@ String toString() {
 }
 
 /// @nodoc
-abstract mixin class $MessageChangedCopyWith<$Res> implements $FeedbackEventCopyWith<$Res> {
-  factory $MessageChangedCopyWith(MessageChanged value, $Res Function(MessageChanged) _then) = _$MessageChangedCopyWithImpl;
+abstract mixin class $FeedbackMessageChangedCopyWith<$Res> implements $FeedbackEventCopyWith<$Res> {
+  factory $FeedbackMessageChangedCopyWith(FeedbackMessageChanged value, $Res Function(FeedbackMessageChanged) _then) = _$FeedbackMessageChangedCopyWithImpl;
 @useResult
 $Res call({
  String message
@@ -296,17 +368,17 @@ $Res call({
 
 }
 /// @nodoc
-class _$MessageChangedCopyWithImpl<$Res>
-    implements $MessageChangedCopyWith<$Res> {
-  _$MessageChangedCopyWithImpl(this._self, this._then);
+class _$FeedbackMessageChangedCopyWithImpl<$Res>
+    implements $FeedbackMessageChangedCopyWith<$Res> {
+  _$FeedbackMessageChangedCopyWithImpl(this._self, this._then);
 
-  final MessageChanged _self;
-  final $Res Function(MessageChanged) _then;
+  final FeedbackMessageChanged _self;
+  final $Res Function(FeedbackMessageChanged) _then;
 
 /// Create a copy of FeedbackEvent
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? message = null,}) {
-  return _then(MessageChanged(
+  return _then(FeedbackMessageChanged(
 null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
 as String,
   ));
@@ -318,8 +390,8 @@ as String,
 /// @nodoc
 
 
-class CooldownEnded implements FeedbackEvent {
-  const CooldownEnded();
+class FeedbackCooldownEnded implements FeedbackEvent {
+  const FeedbackCooldownEnded();
   
 
 
@@ -329,7 +401,7 @@ class CooldownEnded implements FeedbackEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CooldownEnded);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is FeedbackCooldownEnded);
 }
 
 
