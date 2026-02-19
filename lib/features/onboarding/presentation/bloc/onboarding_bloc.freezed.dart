@@ -55,7 +55,7 @@ extension OnboardingEventPatterns on OnboardingEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Started value)?  started,TResult Function( _NameSubmitted value)?  nameSubmitted,TResult Function( _SectorSelected value)?  sectorSelected,TResult Function( _LoadSp500History value)?  loadSp500History,TResult Function( _ToggleBrand value)?  toggleBrand,TResult Function( _ExperienceSelected value)?  experienceSelected,TResult Function( _NotificationsToggled value)?  notificationsToggled,TResult Function( _CompleteOnboarding value)?  completeOnboarding,TResult Function( _StartAnalysis value)?  startAnalysis,TResult Function( _UpdateAnalysisStep value)?  updateAnalysisStep,TResult Function( _StartWatchlistAddition value)?  startWatchlistAddition,TResult Function( _UpdateWatchlistStep value)?  updateWatchlistStep,TResult Function( _HighlightPageChanged value)?  highlightPageChanged,TResult Function( _HighlightContinuePressed value)?  highlightContinuePressed,TResult Function( _HighlightSkipPressed value)?  highlightSkipPressed,TResult Function( _LandingPageViewed value)?  landingPageViewed,TResult Function( _ProfileReadyPageViewed value)?  profileReadyPageViewed,TResult Function( _ProfileReadyContinuePressed value)?  profileReadyContinuePressed,TResult Function( _StepViewed value)?  stepViewed,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Started value)?  started,TResult Function( _NameSubmitted value)?  nameSubmitted,TResult Function( _SectorSelected value)?  sectorSelected,TResult Function( _LoadSp500History value)?  loadSp500History,TResult Function( _ToggleBrand value)?  toggleBrand,TResult Function( _ExperienceSelected value)?  experienceSelected,TResult Function( _NotificationsToggled value)?  notificationsToggled,TResult Function( _CompleteOnboarding value)?  completeOnboarding,TResult Function( _StartAnalysis value)?  startAnalysis,TResult Function( _UpdateAnalysisStep value)?  updateAnalysisStep,TResult Function( _StartWatchlistAddition value)?  startWatchlistAddition,TResult Function( _UpdateWatchlistStep value)?  updateWatchlistStep,TResult Function( _HighlightPageChanged value)?  highlightPageChanged,TResult Function( _HighlightContinuePressed value)?  highlightContinuePressed,TResult Function( _HighlightSkipPressed value)?  highlightSkipPressed,TResult Function( _LandingPageViewed value)?  landingPageViewed,TResult Function( _LoginRequested value)?  loginRequested,TResult Function( _ProfileReadyPageViewed value)?  profileReadyPageViewed,TResult Function( _ProfileReadyContinuePressed value)?  profileReadyContinuePressed,TResult Function( _StepViewed value)?  stepViewed,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _Started() when started != null:
@@ -74,7 +74,8 @@ return updateWatchlistStep(_that);case _HighlightPageChanged() when highlightPag
 return highlightPageChanged(_that);case _HighlightContinuePressed() when highlightContinuePressed != null:
 return highlightContinuePressed(_that);case _HighlightSkipPressed() when highlightSkipPressed != null:
 return highlightSkipPressed(_that);case _LandingPageViewed() when landingPageViewed != null:
-return landingPageViewed(_that);case _ProfileReadyPageViewed() when profileReadyPageViewed != null:
+return landingPageViewed(_that);case _LoginRequested() when loginRequested != null:
+return loginRequested(_that);case _ProfileReadyPageViewed() when profileReadyPageViewed != null:
 return profileReadyPageViewed(_that);case _ProfileReadyContinuePressed() when profileReadyContinuePressed != null:
 return profileReadyContinuePressed(_that);case _StepViewed() when stepViewed != null:
 return stepViewed(_that);case _:
@@ -95,7 +96,7 @@ return stepViewed(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Started value)  started,required TResult Function( _NameSubmitted value)  nameSubmitted,required TResult Function( _SectorSelected value)  sectorSelected,required TResult Function( _LoadSp500History value)  loadSp500History,required TResult Function( _ToggleBrand value)  toggleBrand,required TResult Function( _ExperienceSelected value)  experienceSelected,required TResult Function( _NotificationsToggled value)  notificationsToggled,required TResult Function( _CompleteOnboarding value)  completeOnboarding,required TResult Function( _StartAnalysis value)  startAnalysis,required TResult Function( _UpdateAnalysisStep value)  updateAnalysisStep,required TResult Function( _StartWatchlistAddition value)  startWatchlistAddition,required TResult Function( _UpdateWatchlistStep value)  updateWatchlistStep,required TResult Function( _HighlightPageChanged value)  highlightPageChanged,required TResult Function( _HighlightContinuePressed value)  highlightContinuePressed,required TResult Function( _HighlightSkipPressed value)  highlightSkipPressed,required TResult Function( _LandingPageViewed value)  landingPageViewed,required TResult Function( _ProfileReadyPageViewed value)  profileReadyPageViewed,required TResult Function( _ProfileReadyContinuePressed value)  profileReadyContinuePressed,required TResult Function( _StepViewed value)  stepViewed,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Started value)  started,required TResult Function( _NameSubmitted value)  nameSubmitted,required TResult Function( _SectorSelected value)  sectorSelected,required TResult Function( _LoadSp500History value)  loadSp500History,required TResult Function( _ToggleBrand value)  toggleBrand,required TResult Function( _ExperienceSelected value)  experienceSelected,required TResult Function( _NotificationsToggled value)  notificationsToggled,required TResult Function( _CompleteOnboarding value)  completeOnboarding,required TResult Function( _StartAnalysis value)  startAnalysis,required TResult Function( _UpdateAnalysisStep value)  updateAnalysisStep,required TResult Function( _StartWatchlistAddition value)  startWatchlistAddition,required TResult Function( _UpdateWatchlistStep value)  updateWatchlistStep,required TResult Function( _HighlightPageChanged value)  highlightPageChanged,required TResult Function( _HighlightContinuePressed value)  highlightContinuePressed,required TResult Function( _HighlightSkipPressed value)  highlightSkipPressed,required TResult Function( _LandingPageViewed value)  landingPageViewed,required TResult Function( _LoginRequested value)  loginRequested,required TResult Function( _ProfileReadyPageViewed value)  profileReadyPageViewed,required TResult Function( _ProfileReadyContinuePressed value)  profileReadyContinuePressed,required TResult Function( _StepViewed value)  stepViewed,}){
 final _that = this;
 switch (_that) {
 case _Started():
@@ -114,7 +115,8 @@ return updateWatchlistStep(_that);case _HighlightPageChanged():
 return highlightPageChanged(_that);case _HighlightContinuePressed():
 return highlightContinuePressed(_that);case _HighlightSkipPressed():
 return highlightSkipPressed(_that);case _LandingPageViewed():
-return landingPageViewed(_that);case _ProfileReadyPageViewed():
+return landingPageViewed(_that);case _LoginRequested():
+return loginRequested(_that);case _ProfileReadyPageViewed():
 return profileReadyPageViewed(_that);case _ProfileReadyContinuePressed():
 return profileReadyContinuePressed(_that);case _StepViewed():
 return stepViewed(_that);case _:
@@ -134,7 +136,7 @@ return stepViewed(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Started value)?  started,TResult? Function( _NameSubmitted value)?  nameSubmitted,TResult? Function( _SectorSelected value)?  sectorSelected,TResult? Function( _LoadSp500History value)?  loadSp500History,TResult? Function( _ToggleBrand value)?  toggleBrand,TResult? Function( _ExperienceSelected value)?  experienceSelected,TResult? Function( _NotificationsToggled value)?  notificationsToggled,TResult? Function( _CompleteOnboarding value)?  completeOnboarding,TResult? Function( _StartAnalysis value)?  startAnalysis,TResult? Function( _UpdateAnalysisStep value)?  updateAnalysisStep,TResult? Function( _StartWatchlistAddition value)?  startWatchlistAddition,TResult? Function( _UpdateWatchlistStep value)?  updateWatchlistStep,TResult? Function( _HighlightPageChanged value)?  highlightPageChanged,TResult? Function( _HighlightContinuePressed value)?  highlightContinuePressed,TResult? Function( _HighlightSkipPressed value)?  highlightSkipPressed,TResult? Function( _LandingPageViewed value)?  landingPageViewed,TResult? Function( _ProfileReadyPageViewed value)?  profileReadyPageViewed,TResult? Function( _ProfileReadyContinuePressed value)?  profileReadyContinuePressed,TResult? Function( _StepViewed value)?  stepViewed,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Started value)?  started,TResult? Function( _NameSubmitted value)?  nameSubmitted,TResult? Function( _SectorSelected value)?  sectorSelected,TResult? Function( _LoadSp500History value)?  loadSp500History,TResult? Function( _ToggleBrand value)?  toggleBrand,TResult? Function( _ExperienceSelected value)?  experienceSelected,TResult? Function( _NotificationsToggled value)?  notificationsToggled,TResult? Function( _CompleteOnboarding value)?  completeOnboarding,TResult? Function( _StartAnalysis value)?  startAnalysis,TResult? Function( _UpdateAnalysisStep value)?  updateAnalysisStep,TResult? Function( _StartWatchlistAddition value)?  startWatchlistAddition,TResult? Function( _UpdateWatchlistStep value)?  updateWatchlistStep,TResult? Function( _HighlightPageChanged value)?  highlightPageChanged,TResult? Function( _HighlightContinuePressed value)?  highlightContinuePressed,TResult? Function( _HighlightSkipPressed value)?  highlightSkipPressed,TResult? Function( _LandingPageViewed value)?  landingPageViewed,TResult? Function( _LoginRequested value)?  loginRequested,TResult? Function( _ProfileReadyPageViewed value)?  profileReadyPageViewed,TResult? Function( _ProfileReadyContinuePressed value)?  profileReadyContinuePressed,TResult? Function( _StepViewed value)?  stepViewed,}){
 final _that = this;
 switch (_that) {
 case _Started() when started != null:
@@ -153,7 +155,8 @@ return updateWatchlistStep(_that);case _HighlightPageChanged() when highlightPag
 return highlightPageChanged(_that);case _HighlightContinuePressed() when highlightContinuePressed != null:
 return highlightContinuePressed(_that);case _HighlightSkipPressed() when highlightSkipPressed != null:
 return highlightSkipPressed(_that);case _LandingPageViewed() when landingPageViewed != null:
-return landingPageViewed(_that);case _ProfileReadyPageViewed() when profileReadyPageViewed != null:
+return landingPageViewed(_that);case _LoginRequested() when loginRequested != null:
+return loginRequested(_that);case _ProfileReadyPageViewed() when profileReadyPageViewed != null:
 return profileReadyPageViewed(_that);case _ProfileReadyContinuePressed() when profileReadyContinuePressed != null:
 return profileReadyContinuePressed(_that);case _StepViewed() when stepViewed != null:
 return stepViewed(_that);case _:
@@ -173,7 +176,7 @@ return stepViewed(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  started,TResult Function( String name)?  nameSubmitted,TResult Function( Sector sector)?  sectorSelected,TResult Function()?  loadSp500History,TResult Function( Brand brand)?  toggleBrand,TResult Function( InvestingExperience experience)?  experienceSelected,TResult Function( bool enabled)?  notificationsToggled,TResult Function()?  completeOnboarding,TResult Function()?  startAnalysis,TResult Function( int step)?  updateAnalysisStep,TResult Function()?  startWatchlistAddition,TResult Function( int step)?  updateWatchlistStep,TResult Function( int index)?  highlightPageChanged,TResult Function()?  highlightContinuePressed,TResult Function()?  highlightSkipPressed,TResult Function()?  landingPageViewed,TResult Function()?  profileReadyPageViewed,TResult Function()?  profileReadyContinuePressed,TResult Function( OnboardingStep step)?  stepViewed,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  started,TResult Function( String name)?  nameSubmitted,TResult Function( Sector sector)?  sectorSelected,TResult Function()?  loadSp500History,TResult Function( Brand brand)?  toggleBrand,TResult Function( InvestingExperience experience)?  experienceSelected,TResult Function( bool enabled)?  notificationsToggled,TResult Function()?  completeOnboarding,TResult Function()?  startAnalysis,TResult Function( int step)?  updateAnalysisStep,TResult Function()?  startWatchlistAddition,TResult Function( int step)?  updateWatchlistStep,TResult Function( int index)?  highlightPageChanged,TResult Function()?  highlightContinuePressed,TResult Function()?  highlightSkipPressed,TResult Function()?  landingPageViewed,TResult Function()?  loginRequested,TResult Function()?  profileReadyPageViewed,TResult Function()?  profileReadyContinuePressed,TResult Function( OnboardingStep step)?  stepViewed,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Started() when started != null:
 return started();case _NameSubmitted() when nameSubmitted != null:
@@ -191,7 +194,8 @@ return updateWatchlistStep(_that.step);case _HighlightPageChanged() when highlig
 return highlightPageChanged(_that.index);case _HighlightContinuePressed() when highlightContinuePressed != null:
 return highlightContinuePressed();case _HighlightSkipPressed() when highlightSkipPressed != null:
 return highlightSkipPressed();case _LandingPageViewed() when landingPageViewed != null:
-return landingPageViewed();case _ProfileReadyPageViewed() when profileReadyPageViewed != null:
+return landingPageViewed();case _LoginRequested() when loginRequested != null:
+return loginRequested();case _ProfileReadyPageViewed() when profileReadyPageViewed != null:
 return profileReadyPageViewed();case _ProfileReadyContinuePressed() when profileReadyContinuePressed != null:
 return profileReadyContinuePressed();case _StepViewed() when stepViewed != null:
 return stepViewed(_that.step);case _:
@@ -212,7 +216,7 @@ return stepViewed(_that.step);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  started,required TResult Function( String name)  nameSubmitted,required TResult Function( Sector sector)  sectorSelected,required TResult Function()  loadSp500History,required TResult Function( Brand brand)  toggleBrand,required TResult Function( InvestingExperience experience)  experienceSelected,required TResult Function( bool enabled)  notificationsToggled,required TResult Function()  completeOnboarding,required TResult Function()  startAnalysis,required TResult Function( int step)  updateAnalysisStep,required TResult Function()  startWatchlistAddition,required TResult Function( int step)  updateWatchlistStep,required TResult Function( int index)  highlightPageChanged,required TResult Function()  highlightContinuePressed,required TResult Function()  highlightSkipPressed,required TResult Function()  landingPageViewed,required TResult Function()  profileReadyPageViewed,required TResult Function()  profileReadyContinuePressed,required TResult Function( OnboardingStep step)  stepViewed,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  started,required TResult Function( String name)  nameSubmitted,required TResult Function( Sector sector)  sectorSelected,required TResult Function()  loadSp500History,required TResult Function( Brand brand)  toggleBrand,required TResult Function( InvestingExperience experience)  experienceSelected,required TResult Function( bool enabled)  notificationsToggled,required TResult Function()  completeOnboarding,required TResult Function()  startAnalysis,required TResult Function( int step)  updateAnalysisStep,required TResult Function()  startWatchlistAddition,required TResult Function( int step)  updateWatchlistStep,required TResult Function( int index)  highlightPageChanged,required TResult Function()  highlightContinuePressed,required TResult Function()  highlightSkipPressed,required TResult Function()  landingPageViewed,required TResult Function()  loginRequested,required TResult Function()  profileReadyPageViewed,required TResult Function()  profileReadyContinuePressed,required TResult Function( OnboardingStep step)  stepViewed,}) {final _that = this;
 switch (_that) {
 case _Started():
 return started();case _NameSubmitted():
@@ -230,7 +234,8 @@ return updateWatchlistStep(_that.step);case _HighlightPageChanged():
 return highlightPageChanged(_that.index);case _HighlightContinuePressed():
 return highlightContinuePressed();case _HighlightSkipPressed():
 return highlightSkipPressed();case _LandingPageViewed():
-return landingPageViewed();case _ProfileReadyPageViewed():
+return landingPageViewed();case _LoginRequested():
+return loginRequested();case _ProfileReadyPageViewed():
 return profileReadyPageViewed();case _ProfileReadyContinuePressed():
 return profileReadyContinuePressed();case _StepViewed():
 return stepViewed(_that.step);case _:
@@ -250,7 +255,7 @@ return stepViewed(_that.step);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  started,TResult? Function( String name)?  nameSubmitted,TResult? Function( Sector sector)?  sectorSelected,TResult? Function()?  loadSp500History,TResult? Function( Brand brand)?  toggleBrand,TResult? Function( InvestingExperience experience)?  experienceSelected,TResult? Function( bool enabled)?  notificationsToggled,TResult? Function()?  completeOnboarding,TResult? Function()?  startAnalysis,TResult? Function( int step)?  updateAnalysisStep,TResult? Function()?  startWatchlistAddition,TResult? Function( int step)?  updateWatchlistStep,TResult? Function( int index)?  highlightPageChanged,TResult? Function()?  highlightContinuePressed,TResult? Function()?  highlightSkipPressed,TResult? Function()?  landingPageViewed,TResult? Function()?  profileReadyPageViewed,TResult? Function()?  profileReadyContinuePressed,TResult? Function( OnboardingStep step)?  stepViewed,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  started,TResult? Function( String name)?  nameSubmitted,TResult? Function( Sector sector)?  sectorSelected,TResult? Function()?  loadSp500History,TResult? Function( Brand brand)?  toggleBrand,TResult? Function( InvestingExperience experience)?  experienceSelected,TResult? Function( bool enabled)?  notificationsToggled,TResult? Function()?  completeOnboarding,TResult? Function()?  startAnalysis,TResult? Function( int step)?  updateAnalysisStep,TResult? Function()?  startWatchlistAddition,TResult? Function( int step)?  updateWatchlistStep,TResult? Function( int index)?  highlightPageChanged,TResult? Function()?  highlightContinuePressed,TResult? Function()?  highlightSkipPressed,TResult? Function()?  landingPageViewed,TResult? Function()?  loginRequested,TResult? Function()?  profileReadyPageViewed,TResult? Function()?  profileReadyContinuePressed,TResult? Function( OnboardingStep step)?  stepViewed,}) {final _that = this;
 switch (_that) {
 case _Started() when started != null:
 return started();case _NameSubmitted() when nameSubmitted != null:
@@ -268,7 +273,8 @@ return updateWatchlistStep(_that.step);case _HighlightPageChanged() when highlig
 return highlightPageChanged(_that.index);case _HighlightContinuePressed() when highlightContinuePressed != null:
 return highlightContinuePressed();case _HighlightSkipPressed() when highlightSkipPressed != null:
 return highlightSkipPressed();case _LandingPageViewed() when landingPageViewed != null:
-return landingPageViewed();case _ProfileReadyPageViewed() when profileReadyPageViewed != null:
+return landingPageViewed();case _LoginRequested() when loginRequested != null:
+return loginRequested();case _ProfileReadyPageViewed() when profileReadyPageViewed != null:
 return profileReadyPageViewed();case _ProfileReadyContinuePressed() when profileReadyContinuePressed != null:
 return profileReadyContinuePressed();case _StepViewed() when stepViewed != null:
 return stepViewed(_that.step);case _:
@@ -1064,6 +1070,38 @@ int get hashCode => runtimeType.hashCode;
 @override
 String toString() {
   return 'OnboardingEvent.landingPageViewed()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class _LoginRequested implements OnboardingEvent {
+  const _LoginRequested();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _LoginRequested);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'OnboardingEvent.loginRequested()';
 }
 
 

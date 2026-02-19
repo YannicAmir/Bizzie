@@ -164,6 +164,9 @@ class _LoginRow extends StatelessWidget {
         ),
         TextButton(
           onPressed: () {
+            context.read<OnboardingBloc>().add(
+              const OnboardingEvent.loginRequested(),
+            );
             context.push(AppRoutes.login);
           },
           child: Text(

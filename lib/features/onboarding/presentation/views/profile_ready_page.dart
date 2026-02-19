@@ -1,8 +1,5 @@
 import 'package:bizzie/app/themes/app_colors.dart';
 
-import 'package:bizzie/features/auth/presentation/bloc/auth_bloc.dart';
-import 'package:bizzie/features/auth/presentation/bloc/auth_state.dart';
-import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
 import 'package:bizzie/features/onboarding/presentation/bloc/onboarding_bloc.dart';
 import 'package:bizzie/core/analytics/onboarding_tracker.dart';
 import 'package:bizzie/core/enums/paywall_source.dart';
@@ -25,12 +22,6 @@ class _ProfileReadyPageState extends State<ProfileReadyPage> {
   @override
   void initState() {
     super.initState();
-    final authState = context.read<AuthBloc>().state;
-    authState.mapOrNull(
-      authenticated: (u) => context.read<UserBloc>().add(
-        UserEvent.loadUser(uid: u.user.id, silent: true),
-      ),
-    );
     context.read<OnboardingBloc>().add(
       const OnboardingEvent.stepViewed(OnboardingStep.profileReady),
     );

@@ -36,6 +36,7 @@ class OnboardingEvent with _$OnboardingEvent {
 
   // Landing
   const factory OnboardingEvent.landingPageViewed() = _LandingPageViewed;
+  const factory OnboardingEvent.loginRequested() = _LoginRequested;
 
   // Profile Ready
   const factory OnboardingEvent.profileReadyPageViewed() =

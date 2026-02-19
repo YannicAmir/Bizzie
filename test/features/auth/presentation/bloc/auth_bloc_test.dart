@@ -10,6 +10,9 @@ import 'package:bizzie/features/auth/domain/usecases/get_current_user.dart';
 import 'package:bizzie/features/auth/domain/usecases/sign_in_with_google.dart';
 import 'package:bizzie/features/auth/domain/usecases/sign_out.dart';
 import 'package:bizzie/features/auth/domain/usecases/sign_up_with_email.dart';
+import 'package:bizzie/features/auth/presentation/analytics/auth_tracker.dart';
+import 'package:bizzie/features/auth/domain/enums/auth_method.dart';
+import 'package:bizzie/features/auth/domain/enums/auth_source.dart';
 import 'package:bizzie/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:bizzie/features/auth/presentation/bloc/auth_event.dart';
 import 'package:bizzie/features/auth/presentation/bloc/auth_state.dart';
@@ -18,6 +21,8 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+
+class MockAuthTracker extends Mock implements AuthTracker {}
 
 class MockGetAuthStream extends Mock implements GetAuthStream {}
 
@@ -48,6 +53,12 @@ void main() {
   late MockSignOut mockSignOut;
   late MockResetPassword mockResetPassword;
   late MockDeleteAccount mockDeleteAccount;
+  late MockAuthTracker mockAuthTracker;
+
+  setUpAll(() {
+    registerFallbackValue(AuthMethod.email);
+    registerFallbackValue(AuthSource.landing);
+  });
 
   setUp(() {
     mockGetAuthStream = MockGetAuthStream();
@@ -59,6 +70,54 @@ void main() {
     mockSignOut = MockSignOut();
     mockResetPassword = MockResetPassword();
     mockDeleteAccount = MockDeleteAccount();
+    mockAuthTracker = MockAuthTracker();
+
+    when(
+      () => mockAuthTracker.logLoginStarted(
+        method: any(named: 'method'),
+        source: any(named: 'source'),
+      ),
+    ).thenAnswer((_) async {});
+    when(
+      () => mockAuthTracker.logLoginSuccess(
+        method: any(named: 'method'),
+        source: any(named: 'source'),
+      ),
+    ).thenAnswer((_) async {});
+    when(
+      () => mockAuthTracker.logLoginFailure(
+        method: any(named: 'method'),
+        source: any(named: 'source'),
+        error: any(named: 'error'),
+      ),
+    ).thenAnswer((_) async {});
+    when(
+      () => mockAuthTracker.logSignUpStarted(
+        method: any(named: 'method'),
+        source: any(named: 'source'),
+      ),
+    ).thenAnswer((_) async {});
+    when(
+      () => mockAuthTracker.logSignUpSuccess(
+        method: any(named: 'method'),
+        source: any(named: 'source'),
+      ),
+    ).thenAnswer((_) async {});
+    when(
+      () => mockAuthTracker.logSignUpFailure(
+        method: any(named: 'method'),
+        source: any(named: 'source'),
+        error: any(named: 'error'),
+      ),
+    ).thenAnswer((_) async {});
+    when(
+      () => mockAuthTracker.logPasswordResetRequested(
+        source: any(named: 'source'),
+      ),
+    ).thenAnswer((_) async {});
+    when(() => mockAuthTracker.logLogout()).thenAnswer((_) async {});
+    when(() => mockAuthTracker.logAccountDeleted()).thenAnswer((_) async {});
+    when(() => mockAuthTracker.setUserId(any())).thenAnswer((_) async {});
 
     when(() => mockGetAuthStream(any())).thenAnswer((_) => Stream.value(null));
     when(() => mockGetCurrentUser(any())).thenReturn(null);
@@ -73,6 +132,7 @@ void main() {
       signOut: mockSignOut,
       resetPassword: mockResetPassword,
       deleteAccount: mockDeleteAccount,
+      tracker: mockAuthTracker,
     );
   });
 
@@ -103,8 +163,13 @@ void main() {
         return authBloc;
       },
       // act
-      act: (bloc) =>
-          bloc.add(const AuthEmailSignInRequested(tEmail, tPassword)),
+      act: (bloc) => bloc.add(
+        const AuthEmailSignInRequested(
+          tEmail,
+          tPassword,
+          source: AuthSource.landing,
+        ),
+      ),
       // assert
       expect: () => [
         const AuthState.loading(method: 'email_signin'),
@@ -144,7 +209,8 @@ void main() {
         return authBloc;
       },
       // act
-      act: (bloc) => bloc.add(const AuthGoogleSignInRequested()),
+      act: (bloc) =>
+          bloc.add(const AuthGoogleSignInRequested(source: AuthSource.landing)),
       // assert
       expect: () => [const AuthState.loading(method: 'google')],
       verify: (_) {
@@ -164,7 +230,8 @@ void main() {
         return authBloc;
       },
       // act
-      act: (bloc) => bloc.add(const AuthAppleSignInRequested()),
+      act: (bloc) =>
+          bloc.add(const AuthAppleSignInRequested(source: AuthSource.landing)),
       // assert
       expect: () => [const AuthState.loading(method: 'apple')],
       verify: (_) {
@@ -186,7 +253,9 @@ void main() {
         return authBloc;
       },
       // act
-      act: (bloc) => bloc.add(const AuthResetPasswordRequested(tEmail)),
+      act: (bloc) => bloc.add(
+        const AuthResetPasswordRequested(tEmail, source: AuthSource.landing),
+      ),
       // assert
       expect: () => [],
       verify: (_) {
@@ -204,7 +273,9 @@ void main() {
         return authBloc;
       },
       // act
-      act: (bloc) => bloc.add(const AuthResetPasswordRequested(tEmail)),
+      act: (bloc) => bloc.add(
+        const AuthResetPasswordRequested(tEmail, source: AuthSource.landing),
+      ),
       // assert
       expect: () => [const AuthState.failure(tFailure)],
     );
@@ -226,6 +297,7 @@ void main() {
       expect: () => [const AuthState.loading()],
       verify: (_) {
         verify(() => mockDeleteAccount(any())).called(1);
+        verify(() => mockAuthTracker.logAccountDeleted()).called(1);
       },
     );
 

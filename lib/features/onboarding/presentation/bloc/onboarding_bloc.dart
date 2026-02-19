@@ -66,13 +66,14 @@ class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
     on<_ProfileReadyPageViewed>(_onProfileReadyPageViewed);
     on<_ProfileReadyContinuePressed>(_onProfileReadyContinuePressed);
     on<_LandingPageViewed>(_onLandingPageViewed);
+    on<_LoginRequested>(_onLoginRequested);
     on<_StepViewed>(_onStepViewed);
   }
 
-  void _logDuration(OnboardingStep previousStep) {
+  Future<void> _logDuration(OnboardingStep step) async {
     final now = DateTime.now();
     final durationSeconds = now.difference(state.stepEntryTime).inSeconds;
-    _tracker.logStepDuration(step: previousStep, seconds: durationSeconds);
+    await _tracker.logStepDuration(step: step, seconds: durationSeconds);
   }
 
   void _onLandingPageViewed(
@@ -82,6 +83,14 @@ class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
     add(const OnboardingEvent.stepViewed(OnboardingStep.landing));
   }
 
+  Future<void> _onLoginRequested(
+    _LoginRequested event,
+    Emitter<OnboardingState> emit,
+  ) async {
+    await _logDuration(OnboardingStep.landing);
+    await _tracker.logExitToLogin();
+  }
+
   void _onProfileReadyPageViewed(
     _ProfileReadyPageViewed event,
     Emitter<OnboardingState> emit,
@@ -89,20 +98,20 @@ class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
     add(const OnboardingEvent.stepViewed(OnboardingStep.profileReady));
   }
 
-  void _onProfileReadyContinuePressed(
+  Future<void> _onProfileReadyContinuePressed(
     _ProfileReadyContinuePressed event,
     Emitter<OnboardingState> emit,
-  ) {
+  ) async {
     if (state.lastStep != null) {
-      _logDuration(state.lastStep!);
+      await _logDuration(state.lastStep!);
     }
-    _analytics.logProfileReadyContinue();
+    await _analytics.logProfileReadyContinue();
   }
 
-  void _onNotificationsToggled(
+  Future<void> _onNotificationsToggled(
     _NotificationsToggled event,
     Emitter<OnboardingState> emit,
-  ) {
+  ) async {
     emit(
       state.copyWith(
         onboardingData: state.onboardingData.copyWith(
@@ -110,17 +119,20 @@ class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
         ),
       ),
     );
-    _analytics.logNotificationsToggled(event.enabled);
+    await _analytics.logNotificationsToggled(event.enabled);
   }
 
-  void _onStepViewed(_StepViewed event, Emitter<OnboardingState> emit) {
+  Future<void> _onStepViewed(
+    _StepViewed event,
+    Emitter<OnboardingState> emit,
+  ) async {
     final step = event.step;
 
     if (state.lastStep != null) {
-      _logDuration(state.lastStep!);
+      await _logDuration(state.lastStep!);
     }
 
-    _tracker.logStepViewed(step: step);
+    await _tracker.logStepViewed(step: step);
 
     emit(state.copyWith(stepEntryTime: DateTime.now(), lastStep: step));
   }
@@ -170,7 +182,7 @@ class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
     if (isClosed) return;
     add(const OnboardingEvent.updateAnalysisStep(3));
 
-    _analytics.logBrandsSelected(
+    await _analytics.logBrandsSelected(
       brandNames: state.selectedBrands.map((b) => b.name).toList(),
       count: state.selectedBrands.length,
     );
@@ -233,10 +245,9 @@ class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
 
   Future<void> _onStarted(_Started event, Emitter<OnboardingState> emit) async {
     _logger.info('Onboarding started');
-    _logDuration(OnboardingStep.landing);
-    add(const OnboardingEvent.loadSp500History());
-
     emit(state.copyWith(isLoadingSectors: true, stepEntryTime: DateTime.now()));
+    await _logDuration(OnboardingStep.landing);
+
     final result = await _getSectorsUseCase(NoParams());
     result.fold(
       (failure) {
@@ -265,10 +276,15 @@ class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
         );
       },
     );
+
+    add(const OnboardingEvent.loadSp500History());
   }
 
-  void _onNameSubmitted(_NameSubmitted event, Emitter<OnboardingState> emit) {
-    _logDuration(OnboardingStep.askName);
+  Future<void> _onNameSubmitted(
+    _NameSubmitted event,
+    Emitter<OnboardingState> emit,
+  ) async {
+    await _logDuration(OnboardingStep.askName);
     emit(
       state.copyWith(
         onboardingData: state.onboardingData.copyWith(firstName: event.name),
@@ -278,8 +294,11 @@ class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
     );
   }
 
-  void _onSectorSelected(_SectorSelected event, Emitter<OnboardingState> emit) {
-    _logDuration(OnboardingStep.sectorSelection);
+  Future<void> _onSectorSelected(
+    _SectorSelected event,
+    Emitter<OnboardingState> emit,
+  ) async {
+    await _logDuration(OnboardingStep.sectorSelection);
     emit(
       state.copyWith(
         onboardingData: state.onboardingData.copyWith(
@@ -288,14 +307,14 @@ class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
         stepEntryTime: DateTime.now(),
       ),
     );
-    _analytics.logSectorSelected(event.sector);
+    await _analytics.logSectorSelected(event.sector);
   }
 
-  void _onExperienceSelected(
+  Future<void> _onExperienceSelected(
     _ExperienceSelected event,
     Emitter<OnboardingState> emit,
-  ) {
-    _logDuration(OnboardingStep.investingExperience);
+  ) async {
+    await _logDuration(OnboardingStep.investingExperience);
     final newData = state.onboardingData.copyWith(
       investingExperience: event.experience,
     );
@@ -308,7 +327,7 @@ class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
       ),
     );
 
-    _analytics.logExperienceSelected(event.experience);
+    await _analytics.logExperienceSelected(event.experience);
   }
 
   Future<void> _onCompleteOnboarding(
@@ -367,14 +386,14 @@ class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
     emit(state.copyWith(status: OnboardingStatus.success, isSubmitting: false));
   }
 
-  void _onHighlightPageChanged(
+  Future<void> _onHighlightPageChanged(
     _HighlightPageChanged event,
     Emitter<OnboardingState> emit,
-  ) {
+  ) async {
     final previousHighlightStep = _getHighlightStep(
       state.currentHighlightIndex,
     );
-    _logDuration(previousHighlightStep);
+    await _logDuration(previousHighlightStep);
 
     final nextHighlightStep = _getHighlightStep(event.index);
     emit(
@@ -384,7 +403,7 @@ class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
         lastStep: nextHighlightStep,
       ),
     );
-    _tracker.logStepViewed(step: nextHighlightStep);
+    await _tracker.logStepViewed(step: nextHighlightStep);
   }
 
   OnboardingStep _getHighlightStep(int index) {
@@ -422,10 +441,10 @@ class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
     }
   }
 
-  void _onHighlightSkipPressed(
+  Future<void> _onHighlightSkipPressed(
     _HighlightSkipPressed event,
     Emitter<OnboardingState> emit,
-  ) {
+  ) async {
     if (_authRepository.currentUser != null) {
       add(const OnboardingEvent.completeOnboarding());
       emit(state.copyWith(shouldNavigateToBuildingProfile: true));
@@ -435,7 +454,7 @@ class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
       emit(state.copyWith(shouldNavigateToCreateAccount: false));
     }
 
-    _analytics.logHighlightsSkipped(state.currentHighlightIndex);
+    await _analytics.logHighlightsSkipped(state.currentHighlightIndex);
   }
 
   List<FeatureHighlightItem> _calculateFeatureHighlights(OnboardingData data) {

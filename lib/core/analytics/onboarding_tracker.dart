@@ -45,4 +45,11 @@ class OnboardingTracker {
       parameters: {'step_name': step.name, 'duration_seconds': seconds},
     );
   }
+
+  Future<void> logExitToLogin() async {
+    await _analytics.logEvent(
+      name: 'onboarding_exit_to_login',
+      parameters: {'step_name': OnboardingStep.landing.name},
+    );
+  }
 }

@@ -11,6 +11,7 @@ import 'package:bizzie/features/onboarding/presentation/widgets/onboarding_shell
 import 'package:bizzie/features/auth/presentation/views/email_sent_page.dart';
 import 'package:bizzie/features/auth/presentation/views/forgot_password_page.dart';
 import 'package:bizzie/features/auth/presentation/views/login_page.dart';
+import 'package:bizzie/features/auth/domain/enums/auth_source.dart';
 import 'package:bizzie/features/home/presentation/views/home_page.dart';
 import 'package:bizzie/features/home/presentation/bloc/home_bloc.dart';
 import 'package:bizzie/features/notifications/presentation/views/notification_request_page.dart';
@@ -84,7 +85,10 @@ GoRouter createRouter(
           body: SizedBox.shrink(),
         ),
       ),
-      _buildNoTransitionRoute(AppRoutes.login, const LoginPage()),
+      _buildNoTransitionRoute(
+        AppRoutes.login,
+        const LoginPage(source: AuthSource.landing),
+      ),
 
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) {
@@ -159,7 +163,8 @@ GoRouter createRouter(
 
       GoRoute(
         path: AppRoutes.forgotPassword,
-        builder: (context, state) => const ForgotPasswordPage(),
+        builder: (context, state) =>
+            const ForgotPasswordPage(source: AuthSource.landing),
       ),
       GoRoute(
         path: AppRoutes.emailSent,
@@ -245,7 +250,7 @@ GoRouter createRouter(
               ),
               _buildNoTransitionRoute(
                 AppRoutes.createAccount,
-                const CreateAccountPage(),
+                const CreateAccountPage(source: AuthSource.onboarding),
               ),
               _buildNoTransitionRoute(
                 AppRoutes.onboardingNotifications,

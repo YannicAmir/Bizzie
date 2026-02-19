@@ -85,6 +85,7 @@ import '../features/auth/domain/usecases/sign_in_with_email.dart' as _i33;
 import '../features/auth/domain/usecases/sign_in_with_google.dart' as _i345;
 import '../features/auth/domain/usecases/sign_out.dart' as _i472;
 import '../features/auth/domain/usecases/sign_up_with_email.dart' as _i588;
+import '../features/auth/presentation/analytics/auth_tracker.dart' as _i700;
 import '../features/auth/presentation/bloc/auth_bloc.dart' as _i59;
 import '../features/company_profile/business/data/datasources/business_firestore_data_source.dart'
     as _i379;
@@ -732,6 +733,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i4.AppStatusTracker>(
       () => _i4.AppStatusTracker(gh<_i529.IAnalyticsService>()),
     );
+    gh.factory<_i700.AuthTracker>(
+      () => _i700.AuthTracker(gh<_i529.IAnalyticsService>()),
+    );
     gh.lazySingleton<_i951.OnboardingTracker>(
       () => _i951.OnboardingTracker(gh<_i529.IAnalyticsService>()),
     );
@@ -1188,19 +1192,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i754.GetDividendInfoUseCase>(
       () => _i754.GetDividendInfoUseCase(gh<_i468.IDividendRepository>()),
     );
-    gh.lazySingleton<_i59.AuthBloc>(
-      () => _i59.AuthBloc(
-        getAuthStream: gh<_i427.GetAuthStream>(),
-        getCurrentUser: gh<_i318.GetCurrentUser>(),
-        signInWithGoogle: gh<_i345.SignInWithGoogle>(),
-        signInWithApple: gh<_i538.SignInWithApple>(),
-        signInWithEmail: gh<_i33.SignInWithEmail>(),
-        signUpWithEmail: gh<_i588.SignUpWithEmail>(),
-        signOut: gh<_i472.SignOut>(),
-        resetPassword: gh<_i73.ResetPassword>(),
-        deleteAccount: gh<_i739.DeleteAccount>(),
-      ),
-    );
     gh.lazySingleton<_i872.IBusinessRepository>(
       () => _i606.BusinessRepositoryImpl(
         gh<_i376.ICompanyRepository>(),
@@ -1315,6 +1306,20 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i614.CompanyNetIncomeBloc(
         gh<_i775.GetNetIncomeStatsUseCase>(),
         gh<_i937.IConfigService>(),
+      ),
+    );
+    gh.lazySingleton<_i59.AuthBloc>(
+      () => _i59.AuthBloc(
+        getAuthStream: gh<_i427.GetAuthStream>(),
+        getCurrentUser: gh<_i318.GetCurrentUser>(),
+        signInWithGoogle: gh<_i345.SignInWithGoogle>(),
+        signInWithApple: gh<_i538.SignInWithApple>(),
+        signInWithEmail: gh<_i33.SignInWithEmail>(),
+        signUpWithEmail: gh<_i588.SignUpWithEmail>(),
+        signOut: gh<_i472.SignOut>(),
+        resetPassword: gh<_i73.ResetPassword>(),
+        deleteAccount: gh<_i739.DeleteAccount>(),
+        tracker: gh<_i700.AuthTracker>(),
       ),
     );
     gh.factory<_i501.CompanyNewsBloc>(
