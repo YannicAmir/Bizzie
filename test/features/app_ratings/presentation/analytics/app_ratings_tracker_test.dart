@@ -110,7 +110,7 @@ void main() {
 
     test('updateJourneyStatus_validStatus_setsUserProperty', () async {
       // arrange
-      const tStatus = AppRatingJourneyStatus.completed;
+      const tStatus = AppRatingStatus.completed;
       when(
         () => mockAnalyticsService.setUserProperty(
           name: any(named: 'name'),
@@ -119,7 +119,7 @@ void main() {
       ).thenAnswer((_) async {});
 
       // act
-      await tracker.updateJourneyStatus(tStatus);
+      await tracker.updateStatus(tStatus);
 
       // assert
       verify(

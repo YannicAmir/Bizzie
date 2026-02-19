@@ -4,6 +4,7 @@ import 'package:bizzie/core/usecase/usecase.dart';
 import 'package:bizzie/features/profile/domain/usecases/get_profile_display_data_usecase.dart';
 import 'package:bizzie/features/profile/presentation/bloc/profile_event.dart';
 import 'package:bizzie/features/profile/presentation/bloc/profile_state.dart';
+import 'package:bizzie/features/profile/presentation/analytics/profile_tracker.dart';
 import 'package:bizzie/features/user/domain/interfaces/user_repository.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -15,10 +16,14 @@ final _logger = BizzieLogger('ProfileBloc');
 class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   final GetProfileDisplayDataUseCase _getProfileDisplayDataUseCase;
   final IUserRepository _userRepository;
+  final ProfileTracker _tracker;
   StreamSubscription? _userSubscription;
 
-  ProfileBloc(this._getProfileDisplayDataUseCase, this._userRepository)
-    : super(const ProfileState.initial()) {
+  ProfileBloc(
+    this._getProfileDisplayDataUseCase,
+    this._userRepository,
+    this._tracker,
+  ) : super(const ProfileState.initial()) {
     _userSubscription = _userRepository.userStream.listen(
       (_) {
         add(const ProfileEvent.started());
@@ -46,10 +51,17 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     result.fold(
       (failure) {
         _logger.severe('Failed to fetch profile data', failure);
+        unawaited(
+          _tracker.logProfileLoadFailure(
+            type: failure.runtimeType.toString(),
+            message: failure.toString(),
+          ),
+        );
         emit(ProfileState.failure(failure));
       },
       (data) {
         _logger.info('Profile data fetched successfully');
+        unawaited(_tracker.logProfileLoaded(data));
         emit(ProfileState.loaded(data));
       },
     );

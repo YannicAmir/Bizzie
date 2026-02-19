@@ -9,41 +9,56 @@ class PaywallAnalytics {
 
   PaywallAnalytics(this._analytics);
 
-  Future<void> logViewed({required PaywallSource source}) async {
+  static const _kScreenName = 'paywall';
+
+  Future<void> _logEvent(String name, Map<String, Object> params) async {
     await _analytics.logEvent(
-      name: 'paywall_viewed',
-      parameters: {'source': source.name},
+      name: name,
+      parameters: {
+        ...params,
+        'screen_name': _kScreenName,
+        'timestamp': DateTime.now().toIso8601String(),
+      },
     );
+  }
+
+  Future<void> logViewed({required PaywallSource source}) async {
+    await _logEvent('paywall_viewed', {'source': source.name});
   }
 
   Future<void> logPurchaseSuccess(AnalyticsPurchaseParams params) async {
-    await _analytics.logEvent(
-      name: 'paywall_purchase_success',
-      parameters: {
-        'product_id': params.productId,
-        'subscription_type': params.packageType.name,
-        'period_type': params.periodType.name,
-        'source': params.source.name,
-      },
-    );
+    if (params.source == PaywallSource.onboarding) {
+      await _analytics.setUserProperty(
+        name: 'converted_during_onboarding',
+        value: 'true',
+      );
+    }
+
+    await _logEvent('paywall_purchase_success', {
+      'product_id': params.productId,
+      'subscription_type': params.packageType.name,
+      'period_type': params.periodType.name,
+      'source': params.source.name,
+    });
   }
 
   Future<void> logTrialStarted(AnalyticsPurchaseParams params) async {
-    await _analytics.logEvent(
-      name: 'paywall_trial_started',
-      parameters: {
-        'product_id': params.productId,
-        'subscription_type': params.packageType.name,
-        'period_type': params.periodType.name,
-        'source': params.source.name,
-      },
-    );
+    if (params.source == PaywallSource.onboarding) {
+      await _analytics.setUserProperty(
+        name: 'converted_during_onboarding',
+        value: 'true',
+      );
+    }
+
+    await _logEvent('paywall_trial_started', {
+      'product_id': params.productId,
+      'subscription_type': params.packageType.name,
+      'period_type': params.periodType.name,
+      'source': params.source.name,
+    });
   }
 
   Future<void> logDismissed({required PaywallSource source}) async {
-    await _analytics.logEvent(
-      name: 'paywall_dismissed',
-      parameters: {'source': source.name},
-    );
+    await _logEvent('paywall_dismissed', {'source': source.name});
   }
 }

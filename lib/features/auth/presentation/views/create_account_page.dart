@@ -15,7 +15,7 @@ import '../widgets/create_account_form.dart';
 import '../widgets/mascot_info_card.dart';
 import '../widgets/social_login_buttons.dart';
 import 'package:bizzie/features/onboarding/presentation/bloc/onboarding_bloc.dart';
-import 'package:bizzie/core/analytics/onboarding_tracker.dart';
+import 'package:bizzie/features/onboarding/domain/models/onboarding_step.dart';
 import 'package:bizzie/features/onboarding/presentation/widgets/onboarding_header.dart';
 
 class CreateAccountPage extends StatefulWidget {

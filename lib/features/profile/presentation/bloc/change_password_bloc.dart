@@ -1,4 +1,6 @@
+import 'dart:async';
 import 'package:bizzie/features/profile/domain/usecases/change_password_usecase.dart';
+import 'package:bizzie/features/profile/presentation/analytics/profile_tracker.dart';
 import 'package:bizzie/features/profile/presentation/bloc/change_password_event.dart';
 import 'package:bizzie/features/profile/presentation/bloc/change_password_state.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
@@ -12,8 +14,9 @@ final _logger = BizzieLogger('ChangePasswordBloc');
 class ChangePasswordBloc
     extends Bloc<ChangePasswordEvent, ChangePasswordState> {
   final ChangePasswordUseCase _changePasswordUseCase;
+  final ProfileTracker _tracker;
 
-  ChangePasswordBloc(this._changePasswordUseCase)
+  ChangePasswordBloc(this._changePasswordUseCase, this._tracker)
     : super(const ChangePasswordState.initial()) {
     on<ChangePasswordEvent>((event, emit) async {
       await event.map(
@@ -91,10 +94,17 @@ class ChangePasswordBloc
         result.fold(
           (failure) {
             _logger.severe('Change password failed: $failure');
+            unawaited(
+              _tracker.logPasswordChangeFailure(
+                type: failure.runtimeType.toString(),
+                message: failure.toString(),
+              ),
+            );
             emit(currentState.copyWith(isSubmitting: false, failure: failure));
           },
           (_) {
             _logger.info('Change password success');
+            unawaited(_tracker.logPasswordChangeSuccess());
             emit(const ChangePasswordState.success());
           },
         );

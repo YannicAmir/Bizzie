@@ -6,7 +6,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:bizzie/app/themes/app_assets.dart';
 import 'package:bizzie/features/onboarding/presentation/utils/onboarding_assets_helper.dart';
 import 'package:bizzie/features/onboarding/presentation/utils/brand_display_helper.dart';
-import 'package:bizzie/core/analytics/onboarding_tracker.dart';
+import 'package:bizzie/features/onboarding/domain/models/onboarding_step.dart';
 
 import 'package:bizzie/shared/models/sector_view_model.dart';
 

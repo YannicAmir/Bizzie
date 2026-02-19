@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../app/routes/app_routes.dart';
 import '../../../../app/themes/app_assets.dart';
-import 'package:bizzie/core/analytics/onboarding_tracker.dart';
+import 'package:bizzie/features/onboarding/domain/models/onboarding_step.dart';
 
 import '../bloc/onboarding_bloc.dart';
 import '../widgets/onboarding_footer.dart';

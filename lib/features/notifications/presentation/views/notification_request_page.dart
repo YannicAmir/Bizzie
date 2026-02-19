@@ -7,7 +7,7 @@ import 'package:bizzie/app/themes/app_assets.dart';
 import 'package:bizzie/features/notifications/presentation/bloc/notification_bloc.dart';
 import 'package:bizzie/features/onboarding/presentation/bloc/onboarding_bloc.dart';
 import 'package:bizzie/features/onboarding/presentation/widgets/onboarding_footer.dart';
-import 'package:bizzie/core/analytics/onboarding_tracker.dart';
+import 'package:bizzie/features/onboarding/domain/models/onboarding_step.dart';
 import 'package:bizzie/app/routes/app_routes.dart';
 import 'package:bizzie/shared/widgets/buttons/bizzie_primary_button.dart';
 import 'package:bizzie/shared/widgets/buttons/bizzie_secondary_button.dart';

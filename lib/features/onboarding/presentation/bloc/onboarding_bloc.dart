@@ -13,7 +13,8 @@ import 'package:bizzie/features/onboarding/domain/usecases/get_sp500_history_use
 import 'package:bizzie/features/onboarding/presentation/bloc/onboarding_state.dart';
 import 'package:bizzie/features/onboarding/presentation/models/feature_highlight_item.dart';
 import 'package:bizzie/features/onboarding/presentation/analytics/onboarding_analytics.dart';
-import 'package:bizzie/core/analytics/onboarding_tracker.dart';
+import 'package:bizzie/features/onboarding/domain/models/onboarding_step.dart';
+import 'package:bizzie/features/onboarding/presentation/analytics/onboarding_tracker.dart';
 import 'package:bizzie/core/interfaces/i_sector_service.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:bizzie/shared/models/sector_view_model.dart';
@@ -127,6 +128,12 @@ class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
     Emitter<OnboardingState> emit,
   ) async {
     final step = event.step;
+
+    // Guard: Prevent duplicate duration logging if the same step is viewed multiple times sequentially
+    if (step == state.lastStep) {
+      _logger.info('Skipping duration log for duplicate step: $step');
+      return;
+    }
 
     if (state.lastStep != null) {
       await _logDuration(state.lastStep!);
@@ -246,7 +253,6 @@ class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
   Future<void> _onStarted(_Started event, Emitter<OnboardingState> emit) async {
     _logger.info('Onboarding started');
     emit(state.copyWith(isLoadingSectors: true, stepEntryTime: DateTime.now()));
-    await _logDuration(OnboardingStep.landing);
 
     final result = await _getSectorsUseCase(NoParams());
     result.fold(
@@ -284,7 +290,6 @@ class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
     _NameSubmitted event,
     Emitter<OnboardingState> emit,
   ) async {
-    await _logDuration(OnboardingStep.askName);
     emit(
       state.copyWith(
         onboardingData: state.onboardingData.copyWith(firstName: event.name),
@@ -298,7 +303,6 @@ class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
     _SectorSelected event,
     Emitter<OnboardingState> emit,
   ) async {
-    await _logDuration(OnboardingStep.sectorSelection);
     emit(
       state.copyWith(
         onboardingData: state.onboardingData.copyWith(
@@ -314,7 +318,6 @@ class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
     _ExperienceSelected event,
     Emitter<OnboardingState> emit,
   ) async {
-    await _logDuration(OnboardingStep.investingExperience);
     final newData = state.onboardingData.copyWith(
       investingExperience: event.experience,
     );
@@ -390,11 +393,6 @@ class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
     _HighlightPageChanged event,
     Emitter<OnboardingState> emit,
   ) async {
-    final previousHighlightStep = _getHighlightStep(
-      state.currentHighlightIndex,
-    );
-    await _logDuration(previousHighlightStep);
-
     final nextHighlightStep = _getHighlightStep(event.index);
     emit(
       state.copyWith(

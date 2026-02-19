@@ -1,3 +1,4 @@
+import 'package:bizzie/core/analytics/analytics_context.dart';
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/core/usecase/usecase.dart';
 import 'package:bizzie/features/auth/domain/enums/auth_provider.dart';
@@ -15,6 +16,7 @@ import 'package:bizzie/features/user/domain/enums/investing_experience.dart';
 import 'package:bizzie/features/user/domain/models/user_model.dart'
     as domain_model;
 import 'package:bizzie/features/user/domain/usecases/get_user_usecase.dart';
+import 'package:bizzie/features/profile/presentation/analytics/profile_tracker.dart';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -30,6 +32,10 @@ class MockDeleteAccountUseCase extends Mock implements DeleteAccountUseCase {}
 
 class MockReauthenticateUseCase extends Mock implements ReauthenticateUseCase {}
 
+class MockAnalyticsContext extends Mock implements AnalyticsContext {}
+
+class MockProfileTracker extends Mock implements ProfileTracker {}
+
 void main() {
   late EditProfileBloc bloc;
   late MockGetCurrentUser mockGetCurrentUser;
@@ -37,6 +43,7 @@ void main() {
   late MockUpdateProfileUseCase mockUpdateProfileUseCase;
   late MockDeleteAccountUseCase mockDeleteAccountUseCase;
   late MockReauthenticateUseCase mockReauthenticateUseCase;
+  late MockProfileTracker mockTracker;
 
   setUpAll(() {
     registerFallbackValue(
@@ -52,6 +59,36 @@ void main() {
     mockUpdateProfileUseCase = MockUpdateProfileUseCase();
     mockDeleteAccountUseCase = MockDeleteAccountUseCase();
     mockReauthenticateUseCase = MockReauthenticateUseCase();
+    mockTracker = MockProfileTracker();
+
+    when(() => mockTracker.logEditProfileStarted()).thenAnswer((_) async {});
+    when(
+      () => mockTracker.logProfileUpdateSuccess(
+        updatedFields: any(named: 'updatedFields'),
+      ),
+    ).thenAnswer((_) async {});
+    when(
+      () => mockTracker.logProfileUpdateFailure(
+        type: any(named: 'type'),
+        message: any(named: 'message'),
+      ),
+    ).thenAnswer((_) async {});
+    when(
+      () => mockTracker.logReauthStarted(reason: any(named: 'reason')),
+    ).thenAnswer((_) async {});
+    when(
+      () => mockTracker.logReauthResult(
+        provider: any(named: 'provider'),
+        success: any(named: 'success'),
+        attempts: any(named: 'attempts'),
+      ),
+    ).thenAnswer((_) async {});
+    when(
+      () => mockTracker.logDeleteAccountInitiated(),
+    ).thenAnswer((_) async {});
+    when(
+      () => mockTracker.logAccountDeletionSuccess(),
+    ).thenAnswer((_) async {});
 
     when(() => mockGetUserUseCase.cachedSector).thenReturn('Technology');
 
@@ -61,6 +98,7 @@ void main() {
       mockUpdateProfileUseCase,
       mockDeleteAccountUseCase,
       mockReauthenticateUseCase,
+      mockTracker,
     );
   });
 
@@ -117,6 +155,9 @@ void main() {
           providers: ['password'],
         ),
       ],
+      verify: (_) {
+        verify(() => mockTracker.logEditProfileStarted()).called(1);
+      },
     );
 
     blocTest<EditProfileBloc, EditProfileState>(
@@ -205,6 +246,13 @@ void main() {
         ),
         const EditProfileState.success(favoriteSector: 'Technology'),
       ],
+      verify: (_) {
+        verify(
+          () => mockTracker.logProfileUpdateSuccess(
+            updatedFields: any(named: 'updatedFields'),
+          ),
+        ).called(1);
+      },
     );
 
     blocTest<EditProfileBloc, EditProfileState>(
@@ -245,6 +293,14 @@ void main() {
           saveFailure: Failure.server('Save failed'),
         ),
       ],
+      verify: (_) {
+        verify(
+          () => mockTracker.logProfileUpdateFailure(
+            type: any(named: 'type'),
+            message: any(named: 'message'),
+          ),
+        ).called(1);
+      },
     );
 
     blocTest<EditProfileBloc, EditProfileState>(

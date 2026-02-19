@@ -27,7 +27,7 @@ import 'package:google_sign_in/google_sign_in.dart' as _i116;
 import 'package:injectable/injectable.dart' as _i526;
 import 'package:shared_preferences/shared_preferences.dart' as _i460;
 
-import '../core/analytics/onboarding_tracker.dart' as _i951;
+import '../core/analytics/analytics_context.dart' as _i450;
 import '../core/domain/models/sector.dart' as _i162;
 import '../core/interfaces/i_analytics_service.dart' as _i529;
 import '../core/interfaces/i_config_service.dart' as _i937;
@@ -310,6 +310,8 @@ import '../features/onboarding/domain/usecases/get_sp500_history_usecase.dart'
     as _i952;
 import '../features/onboarding/presentation/analytics/onboarding_analytics.dart'
     as _i178;
+import '../features/onboarding/presentation/analytics/onboarding_tracker.dart'
+    as _i610;
 import '../features/onboarding/presentation/bloc/onboarding_bloc.dart' as _i593;
 import '../features/onboarding/select_brands/data/datasources/select_brands_remote_datasource.dart'
     as _i6;
@@ -328,6 +330,8 @@ import '../features/profile/domain/usecases/get_profile_display_data_usecase.dar
     as _i687;
 import '../features/profile/domain/usecases/update_profile_usecase.dart'
     as _i586;
+import '../features/profile/presentation/analytics/profile_tracker.dart'
+    as _i963;
 import '../features/profile/presentation/bloc/change_password_bloc.dart'
     as _i980;
 import '../features/profile/presentation/bloc/edit_profile_bloc.dart' as _i875;
@@ -504,6 +508,7 @@ extension GetItInjectableX on _i174.GetIt {
       () => networkModule.firebaseFunctions,
     );
     gh.singleton<_i52.FirestoreService>(() => _i52.FirestoreService.init());
+    gh.lazySingleton<_i450.AnalyticsContext>(() => _i450.AnalyticsContext());
     gh.lazySingleton<_i163.FlutterLocalNotificationsPlugin>(
       () => registerModule.flutterLocalNotificationsPlugin,
     );
@@ -672,6 +677,18 @@ extension GetItInjectableX on _i174.GetIt {
           networkModule.fmpDio(gh<_i937.IConfigService>(), gh<_i915.AppEnv>()),
       instanceName: 'FmpDio',
     );
+    gh.factory<_i963.ProfileTracker>(
+      () => _i963.ProfileTracker(
+        gh<_i529.IAnalyticsService>(),
+        gh<_i450.AnalyticsContext>(),
+      ),
+    );
+    gh.lazySingleton<_i610.OnboardingTracker>(
+      () => _i610.OnboardingTracker(
+        gh<_i529.IAnalyticsService>(),
+        gh<_i450.AnalyticsContext>(),
+      ),
+    );
     gh.lazySingleton<_i379.BusinessFirestoreDataSource>(
       () =>
           _i379.BusinessFirestoreDataSourceImpl(gh<_i974.FirebaseFirestore>()),
@@ -745,9 +762,6 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i1014.NotificationTracker>(
       () => _i1014.NotificationTracker(gh<_i529.IAnalyticsService>()),
-    );
-    gh.lazySingleton<_i951.OnboardingTracker>(
-      () => _i951.OnboardingTracker(gh<_i529.IAnalyticsService>()),
     );
     gh.lazySingleton<_i32.HomeAnalytics>(
       () => _i32.HomeAnalytics(gh<_i529.IAnalyticsService>()),
@@ -1175,9 +1189,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i1050.ISectorService>(),
       ),
     );
-    gh.factory<_i980.ChangePasswordBloc>(
-      () => _i980.ChangePasswordBloc(gh<_i797.ChangePasswordUseCase>()),
-    );
     gh.lazySingleton<_i158.ISecurityRepository>(
       () => _i503.SecurityRepositoryImpl(
         gh<_i376.ICompanyRepository>(),
@@ -1209,6 +1220,12 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i379.BusinessFirestoreDataSource>(),
         gh<_i348.FinancialStatementsRemoteDataSource>(),
         gh<_i806.FinancialStatementsFirestoreDataSource>(),
+      ),
+    );
+    gh.factory<_i980.ChangePasswordBloc>(
+      () => _i980.ChangePasswordBloc(
+        gh<_i797.ChangePasswordUseCase>(),
+        gh<_i963.ProfileTracker>(),
       ),
     );
     gh.lazySingleton<_i925.GetHistoricalEodPricesUseCase>(
@@ -1308,17 +1325,15 @@ extension GetItInjectableX on _i174.GetIt {
         tracker: gh<_i700.AuthTracker>(),
       ),
     );
+    gh.factory<_i570.ProfileBloc>(
+      () => _i570.ProfileBloc(
+        gh<_i687.GetProfileDisplayDataUseCase>(),
+        gh<_i615.IUserRepository>(),
+        gh<_i963.ProfileTracker>(),
+      ),
+    );
     gh.factory<_i501.CompanyNewsBloc>(
       () => _i501.CompanyNewsBloc(gh<_i654.GetCompanyNewsUseCase>()),
-    );
-    gh.lazySingleton<_i242.UpdateProfileUseCase>(
-      () => _i242.UpdateProfileUseCase(gh<_i615.IUserRepository>()),
-    );
-    gh.lazySingleton<_i836.WatchUserUseCase>(
-      () => _i836.WatchUserUseCase(gh<_i615.IUserRepository>()),
-    );
-    gh.factory<_i422.GetDailyBrandsUseCase>(
-      () => _i422.GetDailyBrandsUseCase(gh<_i990.ISelectBrandsRepository>()),
     );
     gh.lazySingleton<_i1066.SubscriptionBloc>(
       () => _i1066.SubscriptionBloc(
@@ -1332,8 +1347,17 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i25.SyncSubscriptionUseCase>(),
         gh<_i687.Stream<bool>>(instanceName: 'isSubscribedStream'),
         gh<_i780.PaywallAnalytics>(),
-        gh<_i951.OnboardingTracker>(),
+        gh<_i610.OnboardingTracker>(),
       ),
+    );
+    gh.lazySingleton<_i242.UpdateProfileUseCase>(
+      () => _i242.UpdateProfileUseCase(gh<_i615.IUserRepository>()),
+    );
+    gh.lazySingleton<_i836.WatchUserUseCase>(
+      () => _i836.WatchUserUseCase(gh<_i615.IUserRepository>()),
+    );
+    gh.factory<_i422.GetDailyBrandsUseCase>(
+      () => _i422.GetDailyBrandsUseCase(gh<_i990.ISelectBrandsRepository>()),
     );
     gh.lazySingleton<_i190.GetSecurityDetailsUseCase>(
       () => _i190.GetSecurityDetailsUseCase(gh<_i158.ISecurityRepository>()),
@@ -1379,6 +1403,16 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i937.IConfigService>(),
       ),
     );
+    gh.factory<_i875.EditProfileBloc>(
+      () => _i875.EditProfileBloc(
+        gh<_i318.GetCurrentUser>(),
+        gh<_i561.GetUserUseCase>(),
+        gh<_i586.UpdateProfileUseCase>(),
+        gh<_i5.DeleteAccountUseCase>(),
+        gh<_i205.ReauthenticateUseCase>(),
+        gh<_i963.ProfileTracker>(),
+      ),
+    );
     gh.lazySingleton<_i596.ToggleNotificationsUseCase>(
       () => _i596.ToggleNotificationsUseCase(
         gh<_i685.IAuthRepository>(),
@@ -1409,12 +1443,6 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i73.UpcomingEarningsBloc>(
       () => _i73.UpcomingEarningsBloc(gh<_i1055.GetUpcomingEarningsUseCase>()),
-    );
-    gh.factory<_i570.ProfileBloc>(
-      () => _i570.ProfileBloc(
-        gh<_i687.GetProfileDisplayDataUseCase>(),
-        gh<_i615.IUserRepository>(),
-      ),
     );
     gh.lazySingleton<_i582.GetBusinessProfileUseCase>(
       () => _i582.GetBusinessProfileUseCase(gh<_i872.IBusinessRepository>()),
@@ -1466,26 +1494,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i961.ClearCachedToken>(
       () => _i961.ClearCachedToken(gh<_i430.INotificationService>()),
     );
-    gh.factory<_i593.OnboardingBloc>(
-      () => _i593.OnboardingBloc(
-        gh<_i685.IAuthRepository>(),
-        gh<_i874.CompleteOnboardingUseCase>(),
-        gh<_i920.GetSectorsUseCase>(),
-        gh<_i952.GetSp500HistoryUseCase>(),
-        gh<_i1050.ISectorService>(),
-        gh<_i178.OnboardingAnalytics>(),
-        gh<_i951.OnboardingTracker>(),
-      ),
-    );
-    gh.factory<_i875.EditProfileBloc>(
-      () => _i875.EditProfileBloc(
-        gh<_i318.GetCurrentUser>(),
-        gh<_i561.GetUserUseCase>(),
-        gh<_i586.UpdateProfileUseCase>(),
-        gh<_i5.DeleteAccountUseCase>(),
-        gh<_i205.ReauthenticateUseCase>(),
-      ),
-    );
     gh.factory<_i505.CompanyBusinessBloc>(
       () => _i505.CompanyBusinessBloc(
         gh<_i582.GetBusinessProfileUseCase>(),
@@ -1508,6 +1516,17 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i999.UnsubscribeFromTopic>(),
         gh<_i961.ClearCachedToken>(),
         gh<_i1014.NotificationTracker>(),
+      ),
+    );
+    gh.factory<_i593.OnboardingBloc>(
+      () => _i593.OnboardingBloc(
+        gh<_i685.IAuthRepository>(),
+        gh<_i874.CompleteOnboardingUseCase>(),
+        gh<_i920.GetSectorsUseCase>(),
+        gh<_i952.GetSp500HistoryUseCase>(),
+        gh<_i1050.ISectorService>(),
+        gh<_i178.OnboardingAnalytics>(),
+        gh<_i610.OnboardingTracker>(),
       ),
     );
     gh.factory<_i709.SelectBrandsBloc>(

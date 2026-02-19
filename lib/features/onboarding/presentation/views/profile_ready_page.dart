@@ -1,7 +1,7 @@
 import 'package:bizzie/app/themes/app_colors.dart';
 
 import 'package:bizzie/features/onboarding/presentation/bloc/onboarding_bloc.dart';
-import 'package:bizzie/core/analytics/onboarding_tracker.dart';
+import 'package:bizzie/features/onboarding/domain/models/onboarding_step.dart';
 import 'package:bizzie/core/enums/paywall_source.dart';
 import 'package:bizzie/features/onboarding/presentation/utils/onboarding_assets_helper.dart';
 import 'package:flutter/material.dart';

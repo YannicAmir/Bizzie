@@ -11,7 +11,7 @@ import '../widgets/onboarding_footer.dart';
 import 'package:bizzie/shared/widgets/buttons/bizzie_primary_button.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bizzie/features/onboarding/presentation/bloc/onboarding_bloc.dart';
-import 'package:bizzie/core/analytics/onboarding_tracker.dart';
+import 'package:bizzie/features/onboarding/domain/models/onboarding_step.dart';
 
 class LandingPage extends StatefulWidget {
   const LandingPage({super.key});

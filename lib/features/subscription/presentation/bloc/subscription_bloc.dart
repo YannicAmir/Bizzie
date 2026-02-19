@@ -20,7 +20,8 @@ import 'package:bizzie/features/subscription/domain/models/subscription_status.d
 import 'package:bizzie/features/subscription/domain/models/analytics_purchase_params.dart';
 import 'package:bizzie/features/subscription/presentation/analytics/paywall_analytics.dart';
 import 'package:bizzie/features/subscription/domain/enums/subscription_period_type.dart';
-import 'package:bizzie/core/analytics/onboarding_tracker.dart';
+import 'package:bizzie/features/onboarding/domain/models/onboarding_step.dart';
+import 'package:bizzie/features/onboarding/presentation/analytics/onboarding_tracker.dart';
 import 'subscription_event.dart';
 import 'subscription_state.dart';
 
@@ -322,6 +323,10 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
           _analytics.logTrialStarted(params);
         } else {
           _analytics.logPurchaseSuccess(params);
+        }
+
+        if (source == PaywallSource.onboarding) {
+          _onboardingTracker.logConversion();
         }
 
         state.maybeMap(

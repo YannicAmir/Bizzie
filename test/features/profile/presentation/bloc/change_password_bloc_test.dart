@@ -2,6 +2,7 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/features/profile/domain/usecases/change_password_usecase.dart';
 import 'package:bizzie/features/profile/presentation/bloc/change_password_bloc.dart';
+import 'package:bizzie/features/profile/presentation/analytics/profile_tracker.dart';
 import 'package:bizzie/features/profile/presentation/bloc/change_password_event.dart';
 import 'package:bizzie/features/profile/presentation/bloc/change_password_state.dart';
 import 'package:dartz/dartz.dart';
@@ -10,8 +11,11 @@ import 'package:mocktail/mocktail.dart';
 
 class MockChangePasswordUseCase extends Mock implements ChangePasswordUseCase {}
 
+class MockProfileTracker extends Mock implements ProfileTracker {}
+
 void main() {
   late MockChangePasswordUseCase mockUseCase;
+  late MockProfileTracker mockTracker;
   late ChangePasswordBloc bloc;
 
   setUpAll(() {
@@ -26,7 +30,17 @@ void main() {
 
   setUp(() {
     mockUseCase = MockChangePasswordUseCase();
-    bloc = ChangePasswordBloc(mockUseCase);
+    mockTracker = MockProfileTracker();
+
+    when(() => mockTracker.logPasswordChangeSuccess()).thenAnswer((_) async {});
+    when(
+      () => mockTracker.logPasswordChangeFailure(
+        type: any(named: 'type'),
+        message: any(named: 'message'),
+      ),
+    ).thenAnswer((_) async {});
+
+    bloc = ChangePasswordBloc(mockUseCase, mockTracker);
   });
 
   tearDown(() {
@@ -91,8 +105,7 @@ void main() {
         const ChangePasswordState.success(),
       ],
       verify: (_) {
-        // assert
-        verify(() => mockUseCase(any())).called(1);
+        verify(() => mockTracker.logPasswordChangeSuccess()).called(1);
       },
     );
 
@@ -127,8 +140,12 @@ void main() {
         ),
       ],
       verify: (_) {
-        // assert
-        verify(() => mockUseCase(any())).called(1);
+        verify(
+          () => mockTracker.logPasswordChangeFailure(
+            type: any(named: 'type'),
+            message: any(named: 'message'),
+          ),
+        ).called(1);
       },
     );
   });

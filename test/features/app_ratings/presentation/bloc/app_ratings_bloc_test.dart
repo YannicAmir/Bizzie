@@ -51,7 +51,7 @@ void main() {
         thresholdCount: 0,
       ),
     );
-    registerFallbackValue(AppRatingJourneyStatus.inProgress);
+    registerFallbackValue(AppRatingStatus.inProgress);
   });
 
   late MockTrackRatingConditionsUseCase mockUseCase;
@@ -119,7 +119,7 @@ void main() {
     when(
       () => mockTracker.logPromptShown(context: any(named: 'context')),
     ).thenAnswer((_) async {});
-    when(() => mockTracker.updateJourneyStatus(any())).thenAnswer((_) async {});
+    when(() => mockTracker.updateStatus(any())).thenAnswer((_) async {});
   });
 
   tearDown(() {
@@ -151,8 +151,7 @@ void main() {
       ],
       verify: (_) {
         verify(
-          () =>
-              mockTracker.updateJourneyStatus(AppRatingJourneyStatus.completed),
+          () => mockTracker.updateStatus(AppRatingStatus.completed),
         ).called(1);
         verify(
           () => mockTracker.logInteraction(ticker: 'AAPL', count: 5),
@@ -185,9 +184,7 @@ void main() {
       expect: () => [const AppRatingsState.idle()],
       verify: (_) {
         verify(
-          () => mockTracker.updateJourneyStatus(
-            AppRatingJourneyStatus.inProgress,
-          ),
+          () => mockTracker.updateStatus(AppRatingStatus.inProgress),
         ).called(1);
         verify(
           () => mockTracker.logInteraction(ticker: 'AAPL', count: 1),
@@ -222,10 +219,7 @@ void main() {
         verifyNever(
           () => mockTracker.logPromptShown(context: any(named: 'context')),
         );
-        verifyNever(
-          () =>
-              mockTracker.updateJourneyStatus(AppRatingJourneyStatus.completed),
-        );
+        verifyNever(() => mockTracker.updateStatus(AppRatingStatus.completed));
         verifyNever(() => mockReviewService.requestReview());
       },
     );
@@ -248,9 +242,7 @@ void main() {
       verify: (_) {
         verify(() => mockUseCase(any())).called(1);
         verify(
-          () => mockTracker.updateJourneyStatus(
-            AppRatingJourneyStatus.maxAttemptsReached,
-          ),
+          () => mockTracker.updateStatus(AppRatingStatus.maxAttemptsReached),
         ).called(1);
         verifyNever(() => mockGetCurrentUser());
         verifyNever(
@@ -279,9 +271,7 @@ void main() {
         expect: () => [const AppRatingsState.idle()],
         verify: (_) {
           verify(
-            () => mockTracker.updateJourneyStatus(
-              AppRatingJourneyStatus.maxAttemptsReached,
-            ),
+            () => mockTracker.updateStatus(AppRatingStatus.maxAttemptsReached),
           ).called(1);
           verifyNever(() => mockGetCurrentUser());
           verifyNever(() => mockGetUserUseCase(any()));

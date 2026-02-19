@@ -87,9 +87,7 @@ class AppRatingsBloc extends Bloc<AppRatingsEvent, AppRatingsState> {
 
   Future<void> _handleMaxAttemptsReached(Emitter<AppRatingsState> emit) async {
     _logger.info('Analytics detached: Max attempts already reached.');
-    await _tracker.updateJourneyStatus(
-      AppRatingJourneyStatus.maxAttemptsReached,
-    );
+    await _tracker.updateStatus(AppRatingStatus.maxAttemptsReached);
     emit(const AppRatingsState.idle());
   }
 
@@ -98,7 +96,7 @@ class AppRatingsBloc extends Bloc<AppRatingsEvent, AppRatingsState> {
     CompanyProfile company,
   ) async {
     if (context.interactionCount == 1 && context.promptAttempts == 0) {
-      await _tracker.updateJourneyStatus(AppRatingJourneyStatus.inProgress);
+      await _tracker.updateStatus(AppRatingStatus.inProgress);
     }
 
     await _tracker.logInteraction(
@@ -113,7 +111,7 @@ class AppRatingsBloc extends Bloc<AppRatingsEvent, AppRatingsState> {
   ) async {
     _logger.info('Rating conditions met. Requesting review via service.');
     await _tracker.logPromptShown(context: context);
-    await _tracker.updateJourneyStatus(AppRatingJourneyStatus.completed);
+    await _tracker.updateStatus(AppRatingStatus.completed);
     await _reviewService.requestReview();
     emit(const AppRatingsState.requestReview());
   }

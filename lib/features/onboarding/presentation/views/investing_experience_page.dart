@@ -3,7 +3,7 @@ import 'package:bizzie/app/themes/app_colors.dart';
 
 import 'package:bizzie/features/user/domain/enums/investing_experience.dart';
 import 'package:bizzie/features/onboarding/presentation/bloc/onboarding_bloc.dart';
-import 'package:bizzie/core/analytics/onboarding_tracker.dart';
+import 'package:bizzie/features/onboarding/domain/models/onboarding_step.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';

@@ -29,7 +29,8 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:fake_async/fake_async.dart';
-import 'package:bizzie/core/analytics/onboarding_tracker.dart';
+import 'package:bizzie/features/onboarding/domain/models/onboarding_step.dart';
+import 'package:bizzie/features/onboarding/presentation/analytics/onboarding_tracker.dart';
 
 class MockWatchSubscriptionStatusUseCase extends Mock
     implements WatchSubscriptionStatusUseCase {}
@@ -144,12 +145,14 @@ void main() {
     mockOnboardingTracker = MockOnboardingTracker();
     isSubscribedController = StreamController<bool>.broadcast();
 
-    // Default mocks
     when(
       () => mockAnalytics.logViewed(source: any(named: 'source')),
     ).thenAnswer((_) async => {});
     when(
       () => mockOnboardingTracker.logStepViewed(step: any(named: 'step')),
+    ).thenAnswer((_) async => {});
+    when(
+      () => mockOnboardingTracker.logConversion(),
     ).thenAnswer((_) async => {});
     when(
       () => mockAnalytics.logPurchaseSuccess(any()),
@@ -583,6 +586,7 @@ void main() {
               ),
             ),
           ).called(1);
+          verify(() => mockOnboardingTracker.logConversion()).called(1);
         },
       );
     });

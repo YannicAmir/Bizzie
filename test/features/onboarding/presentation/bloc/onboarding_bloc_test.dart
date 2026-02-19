@@ -21,7 +21,8 @@ import 'package:bizzie/core/interfaces/i_sector_service.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
-import 'package:bizzie/core/analytics/onboarding_tracker.dart';
+import 'package:bizzie/features/onboarding/domain/models/onboarding_step.dart';
+import 'package:bizzie/features/onboarding/presentation/analytics/onboarding_tracker.dart';
 import 'package:bizzie/core/usecase/usecase.dart';
 
 class MockAuthRepository extends Mock implements IAuthRepository {}
@@ -238,14 +239,6 @@ void main() {
             .having((s) => s.onboardingData.firstName, 'firstName', 'New Name')
             .having((s) => s.currentStep, 'currentStep', 2),
       ],
-      verify: (_) {
-        verify(
-          () => mockOnboardingTracker.logStepDuration(
-            step: OnboardingStep.askName,
-            seconds: any(named: 'seconds'),
-          ),
-        ).called(1);
-      },
     );
 
     blocTest<OnboardingBloc, OnboardingState>(
@@ -810,6 +803,30 @@ void main() {
           () =>
               mockOnboardingTracker.logStepViewed(step: OnboardingStep.landing),
         ).called(1);
+      },
+    );
+
+    blocTest<OnboardingBloc, OnboardingState>(
+      'stepViewed_duplicateStep_logsNothingAndDoesNotEmit',
+      build: () => bloc,
+      seed: () => OnboardingState(
+        onboardingData: const OnboardingData(),
+        stepEntryTime: testTime,
+        lastStep: OnboardingStep.landing,
+      ),
+      act: (bloc) =>
+          bloc.add(const OnboardingEvent.stepViewed(OnboardingStep.landing)),
+      expect: () => [],
+      verify: (_) {
+        verifyNever(
+          () => mockOnboardingTracker.logStepDuration(
+            step: any(named: 'step'),
+            seconds: any(named: 'seconds'),
+          ),
+        );
+        verifyNever(
+          () => mockOnboardingTracker.logStepViewed(step: any(named: 'step')),
+        );
       },
     );
   });
