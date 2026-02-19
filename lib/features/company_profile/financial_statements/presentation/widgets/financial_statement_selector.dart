@@ -106,7 +106,7 @@ class FinancialStatementSelector<T> extends StatelessWidget {
                         if (isLocked) {
                           PaywallHelper.showPaywallSequence(
                             context,
-                            source: PaywallSource.companyProfile,
+                            source: PaywallSource.company_profile,
                           );
                         } else {
                           onItemSelected(item);

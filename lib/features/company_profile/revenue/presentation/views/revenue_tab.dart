@@ -109,7 +109,7 @@ class _RevenueTabState extends State<RevenueTab>
                     ),
                     visibleCount: loadedState.historyLimit,
                     thresholdCount: loadedState.historyLimit,
-                    source: PaywallSource.companyProfile,
+                    source: PaywallSource.company_profile,
                   ),
                   AppConstants.mainSectionSpacing,
                   FinancialHighlightsSection(
@@ -140,7 +140,7 @@ class _RevenueTabState extends State<RevenueTab>
                       isAnnual,
                     ),
                     limit: loadedState.historyLimit,
-                    source: PaywallSource.companyProfile,
+                    source: PaywallSource.company_profile,
                   ),
                 ],
               ),

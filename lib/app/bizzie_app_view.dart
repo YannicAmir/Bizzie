@@ -18,9 +18,11 @@ import 'package:bizzie/features/reports/presentation/bloc/reports_bloc.dart';
 import 'package:bizzie/features/reports/presentation/bloc/reports_event.dart';
 import 'package:bizzie/features/subscription/presentation/bloc/subscription_bloc.dart';
 import 'package:bizzie/features/subscription/presentation/bloc/subscription_event.dart';
+import 'package:bizzie/features/subscription/presentation/bloc/subscription_state.dart';
 import 'package:bizzie/features/app_status/presentation/bloc/app_status_bloc.dart';
 import 'package:bizzie/services/security_service.dart';
 import 'package:bizzie/features/security/presentation/views/security_lockout_screen.dart';
+import 'package:bizzie/core/enums/paywall_source.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -96,51 +98,78 @@ class _BizzieAppViewState extends State<BizzieAppView>
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<AuthBloc, AuthState>(
-      listener: (context, state) {
-        state.whenOrNull(
-          authenticated: (user) {
-            final currentPath = _router.routeInformationProvider.value.uri.path;
-            final isFromCreateAccount = currentPath == AppRoutes.createAccount;
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<AuthBloc, AuthState>(
+          listener: (context, state) {
+            state.whenOrNull(
+              authenticated: (user) {
+                final currentPath =
+                    _router.routeInformationProvider.value.uri.path;
+                final isFromCreateAccount =
+                    currentPath == AppRoutes.createAccount;
 
-            context.read<UserBloc>().add(
-              UserEvent.loadUser(uid: user.id, silent: isFromCreateAccount),
+                context.read<UserBloc>().add(
+                  UserEvent.loadUser(uid: user.id, silent: isFromCreateAccount),
+                );
+                context.read<WatchlistBloc>().add(
+                  WatchlistEvent.loadRequested(uid: user.id),
+                );
+                context.read<NotificationBloc>().add(
+                  const NotificationEvent.setupRequested(),
+                );
+                context.read<SubscriptionBloc>().add(
+                  const SubscriptionEvent.initialized(),
+                );
+                context.read<ReportsBloc>().add(
+                  ReportsEvent.started(uid: user.id),
+                );
+              },
+              unauthenticated: () {
+                context.read<UserBloc>().add(const UserEvent.clear());
+                context.read<WatchlistBloc>().add(const WatchlistEvent.reset());
+                context.read<NotificationBloc>().add(
+                  const NotificationEvent.reset(),
+                );
+                context.read<SubscriptionBloc>().add(
+                  const SubscriptionEvent.userIdentityChanged(null),
+                );
+                context.read<ReportsBloc>().add(const ReportsEvent.reset());
+              },
             );
-            context.read<WatchlistBloc>().add(
-              WatchlistEvent.loadRequested(uid: user.id),
+
+            final isAuthDetermined = state.maybeMap(
+              authenticated: (_) => true,
+              unauthenticated: (_) => true,
+              failure: (_) => true,
+              orElse: () => false,
             );
-            context.read<NotificationBloc>().add(
-              const NotificationEvent.setupRequested(),
-            );
-            context.read<SubscriptionBloc>().add(
-              const SubscriptionEvent.initialized(),
-            );
-            context.read<ReportsBloc>().add(ReportsEvent.started(uid: user.id));
+
+            if (isAuthDetermined) {
+              FlutterNativeSplash.remove();
+            }
           },
-          unauthenticated: () {
-            context.read<UserBloc>().add(const UserEvent.clear());
-            context.read<WatchlistBloc>().add(const WatchlistEvent.reset());
-            context.read<NotificationBloc>().add(
-              const NotificationEvent.reset(),
+        ),
+        BlocListener<SubscriptionBloc, SubscriptionState>(
+          listenWhen: (previous, current) => current.maybeMap(
+            loaded: (s) => s.shouldNavigateToDiscountedPaywall,
+            orElse: () => false,
+          ),
+          listener: (context, state) {
+            state.mapOrNull(
+              loaded: (s) {
+                if (s.shouldNavigateToDiscountedPaywall) {
+                  final source = s.paywallSource ?? PaywallSource.unknown;
+                  _router.pushNamed(
+                    AppRoutes.discountedPaywall,
+                    queryParameters: {'source': source.name},
+                  );
+                }
+              },
             );
-            context.read<SubscriptionBloc>().add(
-              const SubscriptionEvent.userIdentityChanged(null),
-            );
-            context.read<ReportsBloc>().add(const ReportsEvent.reset());
           },
-        );
-
-        final isAuthDetermined = state.maybeMap(
-          authenticated: (_) => true,
-          unauthenticated: (_) => true,
-          failure: (_) => true,
-          orElse: () => false,
-        );
-
-        if (isAuthDetermined) {
-          FlutterNativeSplash.remove();
-        }
-      },
+        ),
+      ],
       child: MaterialApp.router(
         theme: AppTheme.lightTheme,
         localizationsDelegates: const [BizzieLocalizationsDelegate()],

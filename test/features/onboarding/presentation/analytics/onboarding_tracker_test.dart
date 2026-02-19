@@ -204,7 +204,7 @@ void main() {
 
         verify(
           () => mockAnalyticsService.setUserProperty(
-            name: 'converted_during_onboarding',
+            name: 'onboarding_converted',
             value: 'true',
           ),
         ).called(1);

@@ -4,7 +4,8 @@ enum PaywallSource {
   safeguard,
   app,
   search,
-  companyProfile,
+  // ignore: constant_identifier_names
+  company_profile,
   reports,
   profile,
   notification,

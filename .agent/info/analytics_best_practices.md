@@ -75,4 +75,5 @@ class MyBloc extends Bloc {
 - [ ] Event names follow `snake_case`.
 - [ ] No direct `IAnalyticsService` or `getIt<IAnalyticsService>()` calls in UI/Bloc code.
 - [ ] Unit tests mock the Feature Tracker, not the core service.
+- [ ] User property names do not exceed **24 characters**.
 - [ ] Logic for calculating parameters (if complex) is encapsulated in the tracker.

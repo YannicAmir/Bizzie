@@ -109,7 +109,7 @@ class _NetIncomeTabState extends State<NetIncomeTab>
                     ),
                     visibleCount: loadedState.historyLimit,
                     thresholdCount: loadedState.historyLimit,
-                    source: PaywallSource.companyProfile,
+                    source: PaywallSource.company_profile,
                   ),
                   AppConstants.mainSectionSpacing,
                   FinancialHighlightsSection(
@@ -142,7 +142,7 @@ class _NetIncomeTabState extends State<NetIncomeTab>
                       isAnnual,
                     ),
                     limit: loadedState.historyLimit,
-                    source: PaywallSource.companyProfile,
+                    source: PaywallSource.company_profile,
                   ),
                 ],
               ),

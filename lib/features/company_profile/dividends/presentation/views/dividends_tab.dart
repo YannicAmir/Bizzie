@@ -1,4 +1,3 @@
-import 'package:bizzie/app/themes/app_colors.dart';
 import 'package:bizzie/core/enums/paywall_source.dart';
 import 'package:bizzie/features/company_profile/dividends/domain/extensions/dividend_event_extensions.dart';
 import 'package:bizzie/features/company_profile/dividends/domain/models/dividend_info.dart';
@@ -89,6 +88,8 @@ class _DividendsLoadedState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     if (dividendInfo.history.isEmpty) {
       return _DividendsEmptyState(ticker: ticker);
     }
@@ -112,11 +113,11 @@ class _DividendsLoadedState extends StatelessWidget {
           AppConstants.mainSectionSpacing,
           BizzieExpandableChart(
             data: dividendInfo.history.toChartData(),
-            positiveColor: AppColors.primary,
+            positiveColor: theme.colorScheme.primary,
             numberFormat: numberFormat,
             visibleCount: historyLimit,
             thresholdCount: historyLimit,
-            source: PaywallSource.companyProfile,
+            source: PaywallSource.company_profile,
           ),
           AppConstants.mainSectionSpacing,
           DividendPaymentHistorySection(

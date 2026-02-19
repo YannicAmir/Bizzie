@@ -137,7 +137,7 @@ class _PfcfRatioLoadedContent extends StatelessWidget {
             numberFormat: NumberFormat('#,##0.00', 'en_US'),
             visibleCount: historyLimit,
             thresholdCount: historyLimit,
-            source: PaywallSource.companyProfile,
+            source: PaywallSource.company_profile,
           ),
           AppConstants.mainSectionSpacing,
           FinancialDataTable(
@@ -148,7 +148,7 @@ class _PfcfRatioLoadedContent extends StatelessWidget {
             dateFormat: FinancialDateFormat.fullDate,
             onViewMore: () => _showAllHistory(context, dataPoints),
             limit: historyLimit,
-            source: PaywallSource.companyProfile,
+            source: PaywallSource.company_profile,
             footer: FinancialTableFooter(
               columns: [
                 FinancialTableFooterColumnData(

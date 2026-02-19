@@ -108,7 +108,7 @@ class _EpsTabState extends State<EpsTab> with AutomaticKeepAliveClientMixin {
                     ),
                     visibleCount: loadedState.historyLimit,
                     thresholdCount: loadedState.historyLimit,
-                    source: PaywallSource.companyProfile,
+                    source: PaywallSource.company_profile,
                   ),
                   AppConstants.mainSectionSpacing,
                   FinancialHighlightsSection(
@@ -137,7 +137,7 @@ class _EpsTabState extends State<EpsTab> with AutomaticKeepAliveClientMixin {
                       isAnnual,
                     ),
                     limit: loadedState.historyLimit,
-                    source: PaywallSource.companyProfile,
+                    source: PaywallSource.company_profile,
                   ),
                 ],
               ),

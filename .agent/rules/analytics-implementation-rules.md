@@ -21,6 +21,7 @@ description: Apply when implementing Firebase Analytics for a file or feature.
     *   `timestamp`: ISO8601 string.
     *   `screen_name`: The current screen name.
 *   **Standard Events**: Use Firebase standard events (e.g., `login`, `search`) whenever they map naturally to the user's objective.
+*   **User Property Limits**: User property names MUST NOT exceed **24 characters**. This is a hard limit in Firebase Analytics; exceeding it will cause a crash (ArgumentError).
 *   **Zero PII**: NEVER log Personally Identifiable Information (email, names, phone numbers).
 
 ## Suggestion Logic

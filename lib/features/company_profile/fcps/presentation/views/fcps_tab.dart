@@ -109,7 +109,7 @@ class _FcpsTabState extends State<FcpsTab> with AutomaticKeepAliveClientMixin {
                     ),
                     visibleCount: historyLimit,
                     thresholdCount: historyLimit,
-                    source: PaywallSource.companyProfile,
+                    source: PaywallSource.company_profile,
                   ),
                   AppConstants.mainSectionSpacing,
                   FinancialHighlightsSection(
@@ -131,7 +131,7 @@ class _FcpsTabState extends State<FcpsTab> with AutomaticKeepAliveClientMixin {
                         ? FinancialDateFormat.monthYear
                         : FinancialDateFormat.quarterShort,
                     limit: historyLimit,
-                    source: PaywallSource.companyProfile,
+                    source: PaywallSource.company_profile,
                     onViewMore: () => _showAllHistory(
                       context,
                       isAnnual ? stats.annualFcps : stats.quarterlyFcps,

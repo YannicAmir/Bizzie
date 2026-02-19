@@ -144,7 +144,7 @@ class FinancialStatementsTable extends StatelessWidget {
                     } else {
                       PaywallHelper.showPaywallSequence(
                         context,
-                        source: PaywallSource.companyProfile,
+                        source: PaywallSource.company_profile,
                       );
                     }
                   },

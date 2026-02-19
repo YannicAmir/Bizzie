@@ -130,7 +130,7 @@ class _SharesTabState extends State<SharesTab>
                     numberFormat: numberFormat,
                     visibleCount: loadedState.historyLimit,
                     thresholdCount: loadedState.historyLimit,
-                    source: PaywallSource.companyProfile,
+                    source: PaywallSource.company_profile,
                   ),
                   AppConstants.mainSectionSpacing,
                   FinancialDataTable(
@@ -155,7 +155,7 @@ class _SharesTabState extends State<SharesTab>
                       isAnnual,
                     ),
                     limit: loadedState.historyLimit,
-                    source: PaywallSource.companyProfile,
+                    source: PaywallSource.company_profile,
                   ),
                 ],
               ),

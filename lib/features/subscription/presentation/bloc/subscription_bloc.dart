@@ -20,6 +20,7 @@ import 'package:bizzie/features/subscription/domain/models/subscription_status.d
 import 'package:bizzie/features/subscription/domain/models/analytics_purchase_params.dart';
 import 'package:bizzie/features/subscription/presentation/analytics/paywall_analytics.dart';
 import 'package:bizzie/features/subscription/domain/enums/subscription_period_type.dart';
+import 'package:bizzie/features/subscription/domain/enums/subscription_package_type.dart';
 import 'package:bizzie/features/onboarding/domain/models/onboarding_step.dart';
 import 'package:bizzie/features/onboarding/presentation/analytics/onboarding_tracker.dart';
 import 'subscription_event.dart';
@@ -71,6 +72,8 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
     on<SubscriptionExpirationReached>(_onExpirationReached);
     on<SubscriptionResetPurchaseState>(_onResetPurchaseState);
     on<SubscriptionViewed>(_onViewed);
+    on<SubscriptionGiftModalViewed>(_onGiftModalViewed);
+    on<SubscriptionGiftClaimed>(_onGiftClaimed);
   }
 
   Future<void> _onResetPurchaseState(
@@ -122,11 +125,32 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
   ) async {
     _logger.info('Paywall viewed from source: ${event.source}');
     emit(state.copyWith(paywallSource: event.source));
-    await _analytics.logViewed(source: event.source);
+    await _analytics.logTriggered(source: event.source);
 
     if (event.source == PaywallSource.onboarding) {
       await _onboardingTracker.logStepViewed(step: OnboardingStep.paywall);
     }
+  }
+
+  Future<void> _onGiftModalViewed(
+    SubscriptionGiftModalViewed event,
+    Emitter<SubscriptionState> emit,
+  ) async {
+    _logger.info('Gift modal viewed from source: ${event.source}');
+    await _analytics.logGiftModalViewed(source: event.source);
+  }
+
+  Future<void> _onGiftClaimed(
+    SubscriptionGiftClaimed event,
+    Emitter<SubscriptionState> emit,
+  ) async {
+    _logger.info('Gift claimed from source: ${event.source}');
+    state.mapOrNull(
+      loaded: (s) {
+        emit(s.copyWith(shouldNavigateToDiscountedPaywall: true));
+        emit(s.copyWith(shouldNavigateToDiscountedPaywall: false));
+      },
+    );
   }
 
   Future<void> _onRefreshRequested(
@@ -312,11 +336,18 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
         final isTrial = status.periodType == SubscriptionPeriodType.trial;
         final productId = status.activeProductIds.firstOrNull ?? 'unknown';
 
+        final isDiscount =
+            event.package.identifier.contains('discount') ||
+            event.package.packageType == SubscriptionPackageType.custom;
+
         final params = AnalyticsPurchaseParams(
           productId: productId,
           packageType: event.package.packageType,
           periodType: status.periodType,
           source: source,
+          isDiscount: isDiscount,
+          value: event.package.price,
+          currency: event.package.currencyCode,
         );
 
         if (isTrial) {

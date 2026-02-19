@@ -33,4 +33,9 @@ abstract class SubscriptionEvent with _$SubscriptionEvent {
       SubscriptionResetPurchaseState;
   const factory SubscriptionEvent.viewed({required PaywallSource source}) =
       SubscriptionViewed;
+  const factory SubscriptionEvent.giftModalViewed({
+    required PaywallSource source,
+  }) = SubscriptionGiftModalViewed;
+  const factory SubscriptionEvent.giftClaimed({required PaywallSource source}) =
+      SubscriptionGiftClaimed;
 }

@@ -142,11 +142,14 @@ void main() {
     mockSyncSubscription = MockSyncSubscriptionUseCase();
     mockAuthBloc = MockAuthBloc();
     mockAnalytics = MockPaywallAnalytics();
+    when(
+      () => mockAnalytics.logGiftModalViewed(source: any(named: 'source')),
+    ).thenAnswer((_) async => {});
     mockOnboardingTracker = MockOnboardingTracker();
     isSubscribedController = StreamController<bool>.broadcast();
 
     when(
-      () => mockAnalytics.logViewed(source: any(named: 'source')),
+      () => mockAnalytics.logTriggered(source: any(named: 'source')),
     ).thenAnswer((_) async => {});
     when(
       () => mockOnboardingTracker.logStepViewed(step: any(named: 'step')),
@@ -344,7 +347,7 @@ void main() {
         ],
         verify: (_) {
           verify(
-            () => mockAnalytics.logViewed(source: PaywallSource.onboarding),
+            () => mockAnalytics.logTriggered(source: PaywallSource.onboarding),
           ).called(1);
         },
       );
@@ -915,5 +918,53 @@ void main() {
         });
       });
     });
+  });
+
+  group('giftModal', () {
+    const tSource = PaywallSource.settings;
+
+    blocTest<SubscriptionBloc, SubscriptionState>(
+      'giftModalViewed_logsAnalytics',
+      // arrange
+      build: () => createBloc(),
+      // act
+      act: (bloc) =>
+          bloc.add(const SubscriptionEvent.giftModalViewed(source: tSource)),
+      // assert
+      verify: (_) {
+        verify(
+          () => mockAnalytics.logGiftModalViewed(source: tSource),
+        ).called(1);
+      },
+    );
+
+    blocTest<SubscriptionBloc, SubscriptionState>(
+      'giftClaimed_emitsNavigationFlagThenResets',
+      // arrange
+      build: () => createBloc(),
+      seed: () => SubscriptionState.loaded(
+        status: tStatus,
+        offerings: tOffering,
+        annualPackage: tAnnualPackage,
+        monthlyPackage: tMonthlyPackage,
+        discountAnnualPackage: tDiscountPackage,
+      ),
+      // act
+      act: (bloc) =>
+          bloc.add(const SubscriptionEvent.giftClaimed(source: tSource)),
+      // assert
+      expect: () => [
+        isA<SubscriptionStateLoaded>().having(
+          (s) => s.shouldNavigateToDiscountedPaywall,
+          'shouldNavigate',
+          true,
+        ),
+        isA<SubscriptionStateLoaded>().having(
+          (s) => s.shouldNavigateToDiscountedPaywall,
+          'shouldNavigate',
+          false,
+        ),
+      ],
+    );
   });
 }

@@ -40,7 +40,7 @@ class _SubscriptionDetailsPageState extends State<SubscriptionDetailsPage> {
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
-      builder: (context) => const SubscriptionGiftModal(),
+      builder: (context) => SubscriptionGiftModal(),
     );
   }
 

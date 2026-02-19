@@ -53,7 +53,7 @@ class OnboardingTracker {
   Future<void> logConversion() async {
     await _logEvent('onboarding_conversion', {});
     await _analytics.setUserProperty(
-      name: 'converted_during_onboarding',
+      name: 'onboarding_converted',
       value: 'true',
     );
   }

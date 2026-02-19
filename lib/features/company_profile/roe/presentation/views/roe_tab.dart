@@ -132,7 +132,7 @@ class _RoeLoadedContent extends StatelessWidget {
             numberFormat: chartFormatter,
             visibleCount: historyLimit,
             thresholdCount: historyLimit,
-            source: PaywallSource.companyProfile,
+            source: PaywallSource.company_profile,
           ),
           AppConstants.mainSectionSpacing,
           FinancialDataTable(
@@ -143,7 +143,7 @@ class _RoeLoadedContent extends StatelessWidget {
             dateFormat: FinancialDateFormat.fullDate,
             onViewMore: () => _showAllHistory(context, dataPoints),
             limit: historyLimit,
-            source: PaywallSource.companyProfile,
+            source: PaywallSource.company_profile,
           ),
         ],
       ),

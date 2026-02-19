@@ -112,7 +112,7 @@ class _FreeCashFlowTabState extends State<FreeCashFlowTab>
                     ),
                     visibleCount: loadedState.historyLimit,
                     thresholdCount: loadedState.historyLimit,
-                    source: PaywallSource.companyProfile,
+                    source: PaywallSource.company_profile,
                   ),
                   AppConstants.mainSectionSpacing,
                   FinancialHighlightsSection(
@@ -143,7 +143,7 @@ class _FreeCashFlowTabState extends State<FreeCashFlowTab>
                       isAnnual,
                     ),
                     limit: loadedState.historyLimit,
-                    source: PaywallSource.companyProfile,
+                    source: PaywallSource.company_profile,
                   ),
                 ],
               ),

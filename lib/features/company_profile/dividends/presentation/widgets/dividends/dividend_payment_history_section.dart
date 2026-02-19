@@ -30,7 +30,7 @@ class DividendPaymentHistorySection extends StatelessWidget {
 
     return BizzieDataTable(
       title: 'Table',
-      source: PaywallSource.companyProfile,
+      source: PaywallSource.company_profile,
       onViewMore: hasMore
           ? () => _showAllPaymentHistory(context, sortedHistory)
           : null,
