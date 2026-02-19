@@ -10,6 +10,7 @@ import 'package:bizzie/features/notifications/domain/usecases/request_notificati
 import 'package:bizzie/features/notifications/domain/usecases/subscribe_to_topic.dart';
 import 'package:bizzie/features/notifications/domain/usecases/unsubscribe_from_topic.dart';
 import 'package:bizzie/features/notifications/domain/usecases/clear_cached_token.dart';
+import 'package:bizzie/features/notifications/domain/enums/notification_error_type.dart';
 import 'package:bizzie/features/notifications/presentation/analytics/notification_tracker.dart';
 import 'package:bizzie/core/usecase/usecase.dart';
 
@@ -74,6 +75,10 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
       (failure) async {
         await _tracker.logPermissionResult(granted: false);
         await _tracker.setUserNotificationsEnabled(false);
+        await _tracker.logError(
+          type: NotificationErrorType.permissionException,
+          message: failure.message,
+        );
         emit(NotificationState.failure(failure.message));
       },
       (_) async {
@@ -83,8 +88,12 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
 
         final tokenResult = await _getFcmToken();
 
-        tokenResult.fold(
-          (failure) {
+        await tokenResult.fold(
+          (failure) async {
+            await _tracker.logError(
+              type: NotificationErrorType.tokenSyncFailure,
+              message: failure.message,
+            );
             emit(NotificationState.failure(failure.message));
           },
           (token) {
@@ -107,9 +116,15 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
   ) async {
     final result = await _subscribeToTopic(event.topic);
     await result.fold(
-      (failure) async => emit(
-        NotificationState.failure("Failed to subscribe: ${failure.message}"),
-      ),
+      (failure) async {
+        await _tracker.logError(
+          type: NotificationErrorType.subscriptionFailure,
+          message: failure.message,
+        );
+        emit(
+          NotificationState.failure("Failed to subscribe: ${failure.message}"),
+        );
+      },
       (_) async {
         await _tracker.logTopicSubscribed(topic: event.topic);
       },
@@ -122,9 +137,17 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
   ) async {
     final result = await _unsubscribeFromTopic(event.topic);
     await result.fold(
-      (failure) async => emit(
-        NotificationState.failure("Failed to unsubscribe: ${failure.message}"),
-      ),
+      (failure) async {
+        await _tracker.logError(
+          type: NotificationErrorType.unsubscriptionFailure,
+          message: failure.message,
+        );
+        emit(
+          NotificationState.failure(
+            "Failed to unsubscribe: ${failure.message}",
+          ),
+        );
+      },
       (_) async {
         await _tracker.logTopicUnsubscribed(topic: event.topic);
       },

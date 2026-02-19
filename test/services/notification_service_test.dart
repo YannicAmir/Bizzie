@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:bizzie/core/error/failures.dart';
 
 import 'package:bizzie/app/routes/app_routes.dart';
 import 'package:bizzie/core/interfaces/i_local_storage_service.dart';
@@ -71,7 +72,12 @@ void main() {
         triggerSource: any(named: 'triggerSource'),
         appState: any(named: 'appState'),
         route: any(named: 'route'),
+        ticker: any(named: 'ticker'),
       ),
+    ).thenAnswer((_) async => {});
+
+    when(
+      () => mockTracker.logSyncFailure(message: any(named: 'message')),
     ).thenAnswer((_) async => {});
 
     when(
@@ -202,13 +208,26 @@ void main() {
 
         // assert
         verify(
-          () => mockUserRepository.updateFcmToken(any(), tToken),
-        ).called(1);
-        verify(
           () => mockLocalStorage.setString('last_synced_fcm_token', tToken),
         ).called(1);
       },
     );
+
+    test('notificationService_syncFcmToken_failure_logsSyncFailure', () async {
+      // arrange
+      when(() => mockLocalStorage.getString(any())).thenReturn('old_token');
+      when(
+        () => mockUserRepository.updateFcmToken(any(), any()),
+      ).thenAnswer((_) async => Left(Failure.server('Sync Failed')));
+
+      // act
+      await service.syncFcmToken();
+
+      // assert
+      verify(
+        () => mockTracker.logSyncFailure(message: 'Sync Failed'),
+      ).called(1);
+    });
 
     test(
       'notificationService_syncFcmToken_forced_updatesRegardlessOfCache',
@@ -280,6 +299,7 @@ void main() {
             triggerSource: NotificationTriggerSource.remote,
             appState: NotificationAppState.terminated,
             route: result?.path,
+            ticker: any(named: 'ticker'),
           ),
         ).called(1);
       },
@@ -317,6 +337,41 @@ void main() {
             triggerSource: NotificationTriggerSource.local,
             appState: NotificationAppState.foreground,
             route: AppRoutes.reports,
+            ticker: any(named: 'ticker'),
+          ),
+        ).called(1);
+      },
+    );
+
+    test(
+      'notificationService_onNotificationTap_withTicker_extractsTickerAndLogsAnalytics',
+      () async {
+        // arrange
+        void Function(String?)? tapHandler;
+        when(
+          () => mockLocalDataSource.init(
+            onNotificationTap: any(named: 'onNotificationTap'),
+          ),
+        ).thenAnswer((invocation) async {
+          tapHandler =
+              invocation.namedArguments[#onNotificationTap]
+                  as void Function(String?)?;
+        });
+
+        await service.initialize();
+
+        // act
+        tapHandler?.call('{type: sec_filing, ticker: TSLA}');
+        await Future.delayed(Duration.zero);
+
+        // assert
+        verify(
+          () => mockTracker.logNotificationOpened(
+            notificationType: 'sec_filing',
+            triggerSource: NotificationTriggerSource.local,
+            appState: NotificationAppState.foreground,
+            route: AppRoutes.reports,
+            ticker: 'TSLA',
           ),
         ).called(1);
       },

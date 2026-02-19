@@ -8,6 +8,7 @@ import 'package:bizzie/features/notifications/domain/usecases/listen_to_messages
 import 'package:bizzie/features/notifications/domain/usecases/request_notification_permission.dart';
 import 'package:bizzie/features/notifications/domain/usecases/subscribe_to_topic.dart';
 import 'package:bizzie/features/notifications/domain/usecases/unsubscribe_from_topic.dart';
+import 'package:bizzie/features/notifications/domain/enums/notification_error_type.dart';
 import 'package:bizzie/features/notifications/presentation/analytics/notification_tracker.dart';
 import 'package:bizzie/features/notifications/presentation/bloc/notification_bloc.dart';
 import 'package:dartz/dartz.dart';
@@ -42,6 +43,7 @@ void main() {
   setUpAll(() {
     registerFallbackValue(NotificationEvent.setupRequested());
     registerFallbackValue(NoParams());
+    registerFallbackValue(NotificationErrorType.unknown);
   });
 
   setUp(() {
@@ -67,6 +69,12 @@ void main() {
     ).thenAnswer((_) async => {});
     when(
       () => mockTracker.logMessageReceived(type: any(named: 'type')),
+    ).thenAnswer((_) async => {});
+    when(
+      () => mockTracker.logError(
+        type: any(named: 'type'),
+        message: any(named: 'message'),
+      ),
     ).thenAnswer((_) async => {});
 
     bloc = NotificationBloc(
@@ -138,6 +146,14 @@ void main() {
           const NotificationState.loading(),
           const NotificationState.failure('Permission Error'),
         ],
+        verify: (_) {
+          verify(
+            () => mockTracker.logError(
+              type: NotificationErrorType.permissionException,
+              message: 'Permission Error',
+            ),
+          ).called(1);
+        },
       );
 
       blocTest<NotificationBloc, NotificationState>(
@@ -158,6 +174,14 @@ void main() {
           const NotificationState.loading(),
           const NotificationState.failure('Token Error'),
         ],
+        verify: (_) {
+          verify(
+            () => mockTracker.logError(
+              type: NotificationErrorType.tokenSyncFailure,
+              message: 'Token Error',
+            ),
+          ).called(1);
+        },
       );
     });
 
@@ -193,16 +217,19 @@ void main() {
         act: (bloc) => bloc.add(
           const NotificationEvent.subscribeToTopicRequested('topic'),
         ),
-        verify: (_) {
-          // assert
-          verify(() => mockSubscribeToTopic('topic')).called(1);
-        },
         expect: () => [
-          // assert
           const NotificationState.failure(
             'Failed to subscribe: Subscribe Error',
           ),
         ],
+        verify: (_) {
+          verify(
+            () => mockTracker.logError(
+              type: NotificationErrorType.subscriptionFailure,
+              message: 'Subscribe Error',
+            ),
+          ).called(1);
+        },
       );
     });
 
@@ -238,16 +265,19 @@ void main() {
         act: (bloc) => bloc.add(
           const NotificationEvent.unsubscribeFromTopicRequested('topic'),
         ),
-        verify: (_) {
-          // assert
-          verify(() => mockUnsubscribeFromTopic('topic')).called(1);
-        },
         expect: () => [
-          // assert
           const NotificationState.failure(
             'Failed to unsubscribe: Unsubscribe Error',
           ),
         ],
+        verify: (_) {
+          verify(
+            () => mockTracker.logError(
+              type: NotificationErrorType.unsubscriptionFailure,
+              message: 'Unsubscribe Error',
+            ),
+          ).called(1);
+        },
       );
     });
 

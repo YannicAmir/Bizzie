@@ -1,6 +1,8 @@
 import 'package:bizzie/core/interfaces/i_analytics_service.dart';
 import 'package:bizzie/features/notifications/domain/enums/notification_app_state.dart';
+import 'package:bizzie/features/notifications/domain/enums/notification_error_type.dart';
 import 'package:bizzie/features/notifications/domain/enums/notification_trigger_source.dart';
+import 'package:bizzie/features/notifications/presentation/extensions/notification_error_type_extension.dart';
 import 'package:injectable/injectable.dart';
 
 @injectable
@@ -9,41 +11,40 @@ class NotificationTracker {
 
   NotificationTracker(this._analytics);
 
-  static const _kScreenName = 'notifications_request';
+  static const _kScreenName = 'notifications';
+
+  /// Internal helper to ensure all notification events follow the Gold Standard.
+  Future<void> _logEvent(String name, Map<String, dynamic> params) async {
+    await _analytics.logEvent(
+      name: name,
+      parameters: {
+        ...params,
+        'screen_name': _kScreenName,
+        'timestamp': DateTime.now().toIso8601String(),
+      },
+    );
+  }
 
   /// Logs the result of the OS notification permission request.
   Future<void> logPermissionResult({required bool granted}) async {
-    await _analytics.logEvent(
-      name: 'notification_permission_result',
-      parameters: {'granted': granted, 'screen_name': _kScreenName},
-    );
+    await _logEvent('notification_permission_result', {'granted': granted});
   }
 
   /// Logs a successfull topic subscription.
   Future<void> logTopicSubscribed({required String topic}) async {
-    await _analytics.logEvent(
-      name: 'notification_topic_subscribed',
-      parameters: {'topic': topic, 'screen_name': _kScreenName},
-    );
+    await _logEvent('notification_topic_subscribed', {'topic': topic});
   }
 
   /// Logs a successfull topic unsubscription.
   Future<void> logTopicUnsubscribed({required String topic}) async {
-    await _analytics.logEvent(
-      name: 'notification_topic_unsubscribed',
-      parameters: {'topic': topic, 'screen_name': _kScreenName},
-    );
+    await _logEvent('notification_topic_unsubscribed', {'topic': topic});
   }
 
   /// Logs when a message is received in the app.
   Future<void> logMessageReceived({required String? type}) async {
-    await _analytics.logEvent(
-      name: 'notification_received',
-      parameters: {
-        if (type != null) 'notification_type': type,
-        'screen_name': _kScreenName,
-      },
-    );
+    await _logEvent('notification_received', {
+      if (type != null) 'notification_type': type,
+    });
   }
 
   /// Logs when a notification is tapped by the user.
@@ -52,17 +53,34 @@ class NotificationTracker {
     required NotificationTriggerSource triggerSource,
     required NotificationAppState appState,
     required String? route,
+    String? ticker,
   }) async {
-    await _analytics.logEvent(
-      name: 'notification_opened',
-      parameters: {
-        if (notificationType != null) 'notification_type': notificationType,
-        'trigger_source': triggerSource.name,
-        'app_state': appState.name,
-        if (route != null) 'route': route,
-        'screen_name': _kScreenName,
-      },
-    );
+    await _logEvent('notification_opened', {
+      if (notificationType != null) 'notification_type': notificationType,
+      'trigger_source': triggerSource.name,
+      'app_state': appState.name,
+      if (route != null) 'route': route,
+      if (ticker != null) 'ticker': ticker,
+    });
+  }
+
+  /// Logs when a synchronization failure occurs (e.g. FCM token update).
+  Future<void> logSyncFailure({required String message}) async {
+    await _logEvent('notification_sync_failure', {
+      'error_type': NotificationErrorType.tokenSyncFailure.analyticsValue,
+      'error_message': message,
+    });
+  }
+
+  /// Logs a generic error within the notification feature.
+  Future<void> logError({
+    required NotificationErrorType type,
+    required String message,
+  }) async {
+    await _logEvent('notification_error', {
+      'error_type': type.analyticsValue,
+      'error_message': message,
+    });
   }
 
   /// Updates the user property for global notification status.

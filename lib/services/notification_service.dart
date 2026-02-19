@@ -118,7 +118,10 @@ class NotificationService implements INotificationService {
       final result = await _userRepository.updateFcmToken(deviceId, token);
 
       result.fold(
-        (failure) => _logger.severe('Failed to update FCM token', failure),
+        (failure) {
+          _logger.severe('Failed to update FCM token', failure);
+          unawaited(_tracker.logSyncFailure(message: failure.message));
+        },
         (_) {
           _logger.info('FCM token updated successfully. Updating cache.');
           _localStorageService.setString('last_synced_fcm_token', token);
@@ -196,6 +199,7 @@ class NotificationService implements INotificationService {
           triggerSource: NotificationTriggerSource.remote,
           appState: NotificationAppState.terminated,
           route: route?.path,
+          ticker: initialMessage.data['ticker'] as String?,
         ),
       );
 
@@ -230,6 +234,7 @@ class NotificationService implements INotificationService {
         triggerSource: NotificationTriggerSource.remote,
         appState: appState,
         route: route?.path,
+        ticker: message.data['ticker'] as String?,
       ),
     );
 
@@ -255,12 +260,27 @@ class NotificationService implements INotificationService {
       );
     }
 
+    String? ticker;
+    if (payload.contains('ticker:')) {
+      final startIndex = payload.indexOf('ticker: ') + 8;
+      final endIndex = payload.indexOf(',', startIndex);
+      if (endIndex != -1) {
+        ticker = payload.substring(startIndex, endIndex);
+      } else {
+        final closingBraceIndex = payload.indexOf('}', startIndex);
+        if (closingBraceIndex != -1) {
+          ticker = payload.substring(startIndex, closingBraceIndex);
+        }
+      }
+    }
+
     unawaited(
       _tracker.logNotificationOpened(
         notificationType: type,
         triggerSource: NotificationTriggerSource.local,
         appState: NotificationAppState.foreground,
         route: route?.path,
+        ticker: ticker,
       ),
     );
 
