@@ -15,6 +15,9 @@ import 'package:intl/intl.dart';
 import 'package:bizzie/features/reports/domain/models/financial_report.dart';
 import 'package:bizzie/features/reports/presentation/widgets/report_summary_modal.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:go_router/go_router.dart';
+import 'package:bizzie/app/routes/app_routes.dart';
+import 'package:bizzie/features/onboarding/domain/models/company.dart';
 
 class SecFilingCard extends StatelessWidget {
   final SecFiling filing;
@@ -152,7 +155,22 @@ class _Header extends StatelessWidget {
           const SizedBox(height: 8),
           Row(
             children: [
-              Text(filing.symbol, style: theme.textTheme.headlineMedium),
+              GestureDetector(
+                onTap: () {
+                  context.goNamed(
+                    AppRoutes.companyProfileReports,
+                    pathParameters: {'ticker': filing.symbol},
+                    extra: Company(
+                      ticker: filing.symbol,
+                      name: filing.companyName,
+                    ),
+                  );
+                },
+                child: Text(
+                  filing.symbol,
+                  style: theme.textTheme.headlineMedium,
+                ),
+              ),
               const SizedBox(width: 8),
               AppBadge(
                 text: filing.formType,
