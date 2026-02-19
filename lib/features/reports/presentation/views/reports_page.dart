@@ -10,12 +10,21 @@ import 'package:bizzie/shared/widgets/error/bizzie_error.dart';
 import 'package:bizzie/shared/widgets/inputs/bizzie_search_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:bizzie/features/user/presentation/extensions/user_state_extensions.dart';
+import 'package:bizzie/features/reports/domain/enums/reports_analytics_enums.dart';
+import 'package:bizzie/features/reports/presentation/extensions/reports_state_extensions.dart';
+import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
 
 class ReportsPage extends StatefulWidget {
-  const ReportsPage({super.key});
+  final ReportsEntrySource entrySource;
+  final ReportsNotificationType? notificationType;
+
+  const ReportsPage({
+    super.key,
+    this.entrySource = ReportsEntrySource.nav,
+    this.notificationType,
+  });
 
   @override
   State<ReportsPage> createState() => _ReportsPageState();
@@ -25,8 +34,31 @@ class _ReportsPageState extends State<ReportsPage> {
   @override
   void initState() {
     super.initState();
+    _triggerViewed();
+  }
+
+  @override
+  void didUpdateWidget(covariant ReportsPage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.entrySource != widget.entrySource ||
+        oldWidget.notificationType != widget.notificationType) {
+      _triggerViewed();
+    }
+  }
+
+  void _triggerViewed() {
     final bloc = context.read<ReportsBloc>();
-    bloc.state.mapOrNull(loaded: (_) => bloc.add(const ReportsEvent.viewed()));
+    bloc.state.mapOrNull(
+      loaded: (s) {
+        bloc.add(
+          ReportsEvent.viewed(
+            unreadCount: s.unreadCount,
+            entrySource: widget.entrySource,
+            notificationType: widget.notificationType,
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -36,16 +68,14 @@ class _ReportsPageState extends State<ReportsPage> {
         title: BizzieSearchBar(
           readOnly: true,
           onTap: () {
+            context.read<ReportsBloc>().add(const ReportsEvent.searchClicked());
             context.push(AppRoutes.search, extra: 'reports');
           },
         ),
       ),
       body: BlocListener<ReportsBloc, ReportsState>(
         listener: (context, state) {
-          state.mapOrNull(
-            loaded: (_) =>
-                context.read<ReportsBloc>().add(const ReportsEvent.viewed()),
-          );
+          state.mapOrNull(loaded: (_) => _triggerViewed());
         },
         child: BlocBuilder<ReportsBloc, ReportsState>(
           builder: (context, state) {
@@ -136,6 +166,9 @@ class _ReportsEmptyState extends StatelessWidget {
               child: BizziePrimaryButton(
                 title: 'Search for stocks',
                 onPressed: () {
+                  context.read<ReportsBloc>().add(
+                    const ReportsEvent.emptyCtaClicked(),
+                  );
                   context.push(AppRoutes.search, extra: 'reports');
                 },
               ),

@@ -1,9 +1,12 @@
 import 'package:bizzie/app/themes/app_assets.dart';
-import 'package:bizzie/app/themes/app_colors.dart';
 import 'package:bizzie/shared/utils/paywall_helper.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:bizzie/features/reports/presentation/bloc/reports_bloc.dart';
+import 'package:bizzie/features/reports/presentation/bloc/reports_event.dart';
 import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
 import 'package:bizzie/core/enums/paywall_source.dart';
+import 'package:bizzie/di/injection.dart';
+import 'package:bizzie/core/interfaces/i_config_service.dart';
 
 import 'package:bizzie/features/reports/domain/models/sec_filing.dart';
 import 'package:bizzie/shared/widgets/app_badge.dart';
@@ -95,6 +98,12 @@ class SecFilingCard extends StatelessWidget {
                   ),
                   label: 'View Full Report',
                   onTap: () {
+                    context.read<ReportsBloc>().add(
+                      ReportsEvent.linkOpened(
+                        ticker: filing.symbol,
+                        filingType: filing.formType,
+                      ),
+                    );
                     if (filing.link.isNotEmpty) {
                       launchUrl(Uri.parse(filing.link));
                     }
@@ -157,6 +166,11 @@ class _Header extends StatelessWidget {
             children: [
               GestureDetector(
                 onTap: () {
+                  context.read<ReportsBloc>().add(
+                    ReportsEvent.filingCardCompanyClicked(
+                      ticker: filing.symbol,
+                    ),
+                  );
                   context.goNamed(
                     AppRoutes.companyProfileReports,
                     pathParameters: {'ticker': filing.symbol},
@@ -298,15 +312,29 @@ class _SummarizeButton extends StatelessWidget {
                   ),
                 )
               : null,
-          label: 'Summarize',
+          label: getIt<IConfigService>().aiSummaryButtonLabel,
           onTap: () {
             if (!isSubscribed) {
+              context.read<ReportsBloc>().add(
+                ReportsEvent.summarizeLockedClicked(
+                  ticker: filing.symbol,
+                  filingType: filing.formType,
+                ),
+              );
               PaywallHelper.showPaywallSequence(
                 context,
                 source: PaywallSource.reports,
               );
               return;
             }
+
+            context.read<ReportsBloc>().add(
+              ReportsEvent.summaryRequested(
+                ticker: filing.symbol,
+                filingType: filing.formType,
+                isReady: financialReport != null,
+              ),
+            );
 
             if (financialReport != null) {
               showModalBottomSheet(
@@ -352,9 +380,7 @@ class _AnalysisInProgressModal extends StatelessWidget {
           const SizedBox(height: 8),
           Text(
             'Our AI is currently analyzing this report. Please check back shortly.',
-            style: theme.textTheme.bodyMedium?.copyWith(
-              color: AppColors.slate500,
-            ),
+            style: theme.textTheme.bodyMedium,
           ),
           const SizedBox(height: 24),
           SizedBox(

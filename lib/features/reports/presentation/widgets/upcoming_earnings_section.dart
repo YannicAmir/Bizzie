@@ -5,6 +5,9 @@ import 'package:bizzie/shared/widgets/states/bizzie_empty_state.dart';
 import 'package:bizzie/features/reports/presentation/widgets/upcoming_earnings_modal.dart';
 import 'package:bizzie/features/reports/presentation/widgets/upcoming_earnings_tile.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:bizzie/features/reports/presentation/bloc/reports_bloc.dart';
+import 'package:bizzie/features/reports/presentation/bloc/reports_event.dart';
 
 class UpcomingEarningsSection extends StatelessWidget {
   final List<UpcomingEarnings> earnings;
@@ -52,7 +55,12 @@ class UpcomingEarningsSection extends StatelessWidget {
               }),
               if (showViewMore)
                 InkWell(
-                  onTap: () => _showAllEarningsModal(context),
+                  onTap: () {
+                    context.read<ReportsBloc>().add(
+                      const ReportsEvent.upcomingExpanded(),
+                    );
+                    _showAllEarningsModal(context);
+                  },
                   splashColor: theme.colorScheme.scrim,
                   highlightColor: theme.colorScheme.scrim,
                   child: Container(

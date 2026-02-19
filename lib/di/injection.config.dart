@@ -348,6 +348,8 @@ import '../features/reports/domain/usecases/get_user_activity_use_case.dart'
     as _i1014;
 import '../features/reports/domain/usecases/mark_reports_viewed_use_case.dart'
     as _i261;
+import '../features/reports/presentation/analytics/reports_tracker.dart'
+    as _i471;
 import '../features/reports/presentation/bloc/reports_bloc.dart' as _i1023;
 import '../features/search/data/datasources/ai_product_search_service.dart'
     as _i977;
@@ -768,6 +770,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i178.OnboardingAnalytics>(
       () => _i178.OnboardingAnalytics(gh<_i529.IAnalyticsService>()),
+    );
+    gh.lazySingleton<_i471.ReportsTracker>(
+      () => _i471.ReportsTracker(gh<_i529.IAnalyticsService>()),
     );
     gh.lazySingleton<_i780.PaywallAnalytics>(
       () => _i780.PaywallAnalytics(gh<_i529.IAnalyticsService>()),
@@ -1311,6 +1316,18 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i937.IConfigService>(),
       ),
     );
+    gh.factory<_i1023.ReportsBloc>(
+      () => _i1023.ReportsBloc(
+        gh<_i273.GetDashboardReportsUseCase>(),
+        gh<_i1039.IWatchlistRepository>(),
+        gh<_i685.IAuthRepository>(),
+        gh<_i1014.GetUserActivityUseCase>(),
+        gh<_i261.MarkReportsViewedUseCase>(),
+        gh<_i615.IUserRepository>(),
+        gh<_i583.ILocalStorageService>(),
+        gh<_i471.ReportsTracker>(),
+      ),
+    );
     gh.lazySingleton<_i59.AuthBloc>(
       () => _i59.AuthBloc(
         getAuthStream: gh<_i427.GetAuthStream>(),
@@ -1364,16 +1381,6 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i1055.GetUpcomingEarningsUseCase>(
       () => _i1055.GetUpcomingEarningsUseCase(gh<_i158.ISecurityRepository>()),
-    );
-    gh.factory<_i1023.ReportsBloc>(
-      () => _i1023.ReportsBloc(
-        gh<_i273.GetDashboardReportsUseCase>(),
-        gh<_i1039.IWatchlistRepository>(),
-        gh<_i685.IAuthRepository>(),
-        gh<_i1014.GetUserActivityUseCase>(),
-        gh<_i261.MarkReportsViewedUseCase>(),
-        gh<_i615.IUserRepository>(),
-      ),
     );
     gh.factory<_i723.CompanyDividendsBloc>(
       () => _i723.CompanyDividendsBloc(

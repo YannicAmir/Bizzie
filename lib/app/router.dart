@@ -1,8 +1,11 @@
 import 'package:bizzie/app/routes/app_routes.dart';
 import 'package:bizzie/app/routes/app_router_redirect.dart';
 import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
+import 'package:bizzie/features/reports/domain/enums/reports_analytics_enums.dart';
+import 'package:bizzie/features/reports/presentation/views/reports_page.dart';
 import 'package:bizzie/features/search/presentation/views/search_page.dart';
 import 'package:bizzie/features/search/presentation/bloc/search_bloc.dart';
+import 'package:collection/collection.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:bizzie/features/onboarding/domain/models/company.dart';
 
@@ -29,7 +32,6 @@ import 'package:bizzie/features/onboarding/presentation/views/investing_experien
 import 'package:bizzie/features/onboarding/presentation/views/sector_selection_page.dart';
 import 'package:bizzie/features/onboarding/presentation/views/welcome_name_page.dart';
 import 'package:bizzie/features/company_profile/cp/presentation/views/company_profile_page.dart';
-import 'package:bizzie/features/reports/presentation/views/reports_page.dart';
 import 'package:bizzie/features/profile/presentation/views/profile_page.dart';
 import 'package:bizzie/features/profile/presentation/views/change_password_view.dart';
 import 'package:bizzie/features/profile/presentation/views/edit_profile_view.dart';
@@ -122,7 +124,25 @@ GoRouter createRouter(
             routes: [
               GoRoute(
                 path: AppRoutes.reports,
-                builder: (context, state) => const ReportsPage(),
+                builder: (context, state) {
+                  final entrySourceStr =
+                      state.uri.queryParameters['entrySource'];
+                  final notificationTypeStr =
+                      state.uri.queryParameters['notificationType'];
+
+                  final entrySource = ReportsEntrySource.values.firstWhere(
+                    (e) => e.name == entrySourceStr,
+                    orElse: () => ReportsEntrySource.nav,
+                  );
+
+                  final notificationType = ReportsNotificationType.values
+                      .firstWhereOrNull((e) => e.name == notificationTypeStr);
+
+                  return ReportsPage(
+                    entrySource: entrySource,
+                    notificationType: notificationType,
+                  );
+                },
                 routes: [_buildCompanyRoute(AppRoutes.companyProfileReports)],
               ),
             ],

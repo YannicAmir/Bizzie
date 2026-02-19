@@ -213,7 +213,9 @@ class NotificationService implements INotificationService {
     _logger.info('Parsing notification type: $type');
 
     if (type == 'sec_filing' || type == 'earnings_notification') {
-      return const NotificationRoute(AppRoutes.reports);
+      return NotificationRoute(
+        '${AppRoutes.reports}?entrySource=notification&notificationType=$type',
+      );
     } else if (type == 'subscription_drip') {
       return NotificationRoute(
         '${AppRoutes.discountedPaywall}?source=${PaywallSource.notification.name}',
