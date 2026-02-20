@@ -20,7 +20,9 @@ import 'package:bizzie/features/subscription/presentation/bloc/subscription_bloc
 import 'package:bizzie/features/subscription/presentation/bloc/subscription_event.dart';
 import 'package:bizzie/features/subscription/presentation/bloc/subscription_state.dart';
 import 'package:bizzie/features/app_status/presentation/bloc/app_status_bloc.dart';
-import 'package:bizzie/services/security_service.dart';
+import 'package:bizzie/features/security/presentation/bloc/security_bloc.dart';
+import 'package:bizzie/features/security/presentation/bloc/security_event.dart';
+import 'package:bizzie/features/security/presentation/bloc/security_state.dart';
 import 'package:bizzie/features/security/presentation/views/security_lockout_screen.dart';
 import 'package:bizzie/core/enums/paywall_source.dart';
 
@@ -80,6 +82,7 @@ class _BizzieAppViewState extends State<BizzieAppView>
     context.read<AuthBloc>().add(const AuthEvent.statusRequested());
     context.read<SubscriptionBloc>().add(const SubscriptionEvent.initialized());
     context.read<AppStatusBloc>().add(const AppStatusEvent.started());
+    context.read<SecurityBloc>().add(const SecurityEvent.started());
 
     _setupNotifications();
   }
@@ -177,14 +180,15 @@ class _BizzieAppViewState extends State<BizzieAppView>
         routerConfig: _router,
         debugShowCheckedModeBanner: widget.environment == Environment.dev,
         builder: (context, child) {
-          return ValueListenableBuilder<bool>(
-            valueListenable: getIt<SecurityService>().isThreatDetected,
-            builder: (context, isThreat, _) {
-              if (isThreat) {
-                FlutterNativeSplash.remove();
-                return const SecurityLockoutScreen();
-              }
-              return GlobalOverlayWrapper(child: child!);
+          return BlocBuilder<SecurityBloc, SecurityState>(
+            builder: (context, state) {
+              return state.maybeMap(
+                lockout: (_) {
+                  FlutterNativeSplash.remove();
+                  return const SecurityLockoutScreen();
+                },
+                orElse: () => GlobalOverlayWrapper(child: child!),
+              );
             },
           );
         },

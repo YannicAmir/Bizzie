@@ -380,6 +380,9 @@ import '../features/search/domain/usecases/get_search_dashboard_data_usecase.dar
 import '../features/search/domain/usecases/search_stocks_usecase.dart' as _i130;
 import '../features/search/presentation/analytics/search_tracker.dart' as _i687;
 import '../features/search/presentation/bloc/search_bloc.dart' as _i348;
+import '../features/security/presentation/analytics/security_tracker.dart'
+    as _i227;
+import '../features/security/presentation/bloc/security_bloc.dart' as _i458;
 import '../features/settings/domain/usecases/get_settings_display_data_usecase.dart'
     as _i594;
 import '../features/settings/domain/usecases/get_subscription_status_usecase.dart'
@@ -765,6 +768,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i1014.NotificationTracker>(
       () => _i1014.NotificationTracker(gh<_i529.IAnalyticsService>()),
+    );
+    gh.factory<_i227.SecurityTracker>(
+      () => _i227.SecurityTracker(gh<_i529.IAnalyticsService>()),
     );
     gh.lazySingleton<_i32.HomeAnalytics>(
       () => _i32.HomeAnalytics(gh<_i529.IAnalyticsService>()),
@@ -1355,6 +1361,12 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i501.CompanyNewsBloc>(
       () => _i501.CompanyNewsBloc(gh<_i654.GetCompanyNewsUseCase>()),
+    );
+    gh.factory<_i458.SecurityBloc>(
+      () => _i458.SecurityBloc(
+        gh<_i337.SecurityService>(),
+        gh<_i227.SecurityTracker>(),
+      ),
     );
     gh.lazySingleton<_i1066.SubscriptionBloc>(
       () => _i1066.SubscriptionBloc(

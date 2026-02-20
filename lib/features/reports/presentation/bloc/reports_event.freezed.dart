@@ -55,7 +55,7 @@ extension ReportsEventPatterns on ReportsEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( Started value)?  started,TResult Function( Refresh value)?  refresh,TResult Function( WatchlistUpdated value)?  watchlistUpdated,TResult Function( ReportsUpdated value)?  reportsUpdated,TResult Function( Viewed value)?  viewed,TResult Function( SearchClicked value)?  searchClicked,TResult Function( LinkOpened value)?  linkOpened,TResult Function( SummaryRequested value)?  summaryRequested,TResult Function( SummarizeLockedClicked value)?  summarizeLockedClicked,TResult Function( UpcomingExpanded value)?  upcomingExpanded,TResult Function( UpcomingCompanyClicked value)?  upcomingCompanyClicked,TResult Function( FilingCardCompanyClicked value)?  filingCardCompanyClicked,TResult Function( EmptyCtaClicked value)?  emptyCtaClicked,TResult Function( ActivityUpdated value)?  activityUpdated,TResult Function( Reset value)?  reset,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( Started value)?  started,TResult Function( Refresh value)?  refresh,TResult Function( WatchlistUpdated value)?  watchlistUpdated,TResult Function( ReportsUpdated value)?  reportsUpdated,TResult Function( Viewed value)?  viewed,TResult Function( LinkOpened value)?  linkOpened,TResult Function( SummaryRequested value)?  summaryRequested,TResult Function( SummarizeLockedClicked value)?  summarizeLockedClicked,TResult Function( UpcomingExpanded value)?  upcomingExpanded,TResult Function( UpcomingCompanyClicked value)?  upcomingCompanyClicked,TResult Function( FilingCardCompanyClicked value)?  filingCardCompanyClicked,TResult Function( EmptyCtaClicked value)?  emptyCtaClicked,TResult Function( ActivityUpdated value)?  activityUpdated,TResult Function( Reset value)?  reset,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case Started() when started != null:
@@ -63,8 +63,7 @@ return started(_that);case Refresh() when refresh != null:
 return refresh(_that);case WatchlistUpdated() when watchlistUpdated != null:
 return watchlistUpdated(_that);case ReportsUpdated() when reportsUpdated != null:
 return reportsUpdated(_that);case Viewed() when viewed != null:
-return viewed(_that);case SearchClicked() when searchClicked != null:
-return searchClicked(_that);case LinkOpened() when linkOpened != null:
+return viewed(_that);case LinkOpened() when linkOpened != null:
 return linkOpened(_that);case SummaryRequested() when summaryRequested != null:
 return summaryRequested(_that);case SummarizeLockedClicked() when summarizeLockedClicked != null:
 return summarizeLockedClicked(_that);case UpcomingExpanded() when upcomingExpanded != null:
@@ -91,7 +90,7 @@ return reset(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( Started value)  started,required TResult Function( Refresh value)  refresh,required TResult Function( WatchlistUpdated value)  watchlistUpdated,required TResult Function( ReportsUpdated value)  reportsUpdated,required TResult Function( Viewed value)  viewed,required TResult Function( SearchClicked value)  searchClicked,required TResult Function( LinkOpened value)  linkOpened,required TResult Function( SummaryRequested value)  summaryRequested,required TResult Function( SummarizeLockedClicked value)  summarizeLockedClicked,required TResult Function( UpcomingExpanded value)  upcomingExpanded,required TResult Function( UpcomingCompanyClicked value)  upcomingCompanyClicked,required TResult Function( FilingCardCompanyClicked value)  filingCardCompanyClicked,required TResult Function( EmptyCtaClicked value)  emptyCtaClicked,required TResult Function( ActivityUpdated value)  activityUpdated,required TResult Function( Reset value)  reset,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( Started value)  started,required TResult Function( Refresh value)  refresh,required TResult Function( WatchlistUpdated value)  watchlistUpdated,required TResult Function( ReportsUpdated value)  reportsUpdated,required TResult Function( Viewed value)  viewed,required TResult Function( LinkOpened value)  linkOpened,required TResult Function( SummaryRequested value)  summaryRequested,required TResult Function( SummarizeLockedClicked value)  summarizeLockedClicked,required TResult Function( UpcomingExpanded value)  upcomingExpanded,required TResult Function( UpcomingCompanyClicked value)  upcomingCompanyClicked,required TResult Function( FilingCardCompanyClicked value)  filingCardCompanyClicked,required TResult Function( EmptyCtaClicked value)  emptyCtaClicked,required TResult Function( ActivityUpdated value)  activityUpdated,required TResult Function( Reset value)  reset,}){
 final _that = this;
 switch (_that) {
 case Started():
@@ -99,8 +98,7 @@ return started(_that);case Refresh():
 return refresh(_that);case WatchlistUpdated():
 return watchlistUpdated(_that);case ReportsUpdated():
 return reportsUpdated(_that);case Viewed():
-return viewed(_that);case SearchClicked():
-return searchClicked(_that);case LinkOpened():
+return viewed(_that);case LinkOpened():
 return linkOpened(_that);case SummaryRequested():
 return summaryRequested(_that);case SummarizeLockedClicked():
 return summarizeLockedClicked(_that);case UpcomingExpanded():
@@ -126,7 +124,7 @@ return reset(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( Started value)?  started,TResult? Function( Refresh value)?  refresh,TResult? Function( WatchlistUpdated value)?  watchlistUpdated,TResult? Function( ReportsUpdated value)?  reportsUpdated,TResult? Function( Viewed value)?  viewed,TResult? Function( SearchClicked value)?  searchClicked,TResult? Function( LinkOpened value)?  linkOpened,TResult? Function( SummaryRequested value)?  summaryRequested,TResult? Function( SummarizeLockedClicked value)?  summarizeLockedClicked,TResult? Function( UpcomingExpanded value)?  upcomingExpanded,TResult? Function( UpcomingCompanyClicked value)?  upcomingCompanyClicked,TResult? Function( FilingCardCompanyClicked value)?  filingCardCompanyClicked,TResult? Function( EmptyCtaClicked value)?  emptyCtaClicked,TResult? Function( ActivityUpdated value)?  activityUpdated,TResult? Function( Reset value)?  reset,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( Started value)?  started,TResult? Function( Refresh value)?  refresh,TResult? Function( WatchlistUpdated value)?  watchlistUpdated,TResult? Function( ReportsUpdated value)?  reportsUpdated,TResult? Function( Viewed value)?  viewed,TResult? Function( LinkOpened value)?  linkOpened,TResult? Function( SummaryRequested value)?  summaryRequested,TResult? Function( SummarizeLockedClicked value)?  summarizeLockedClicked,TResult? Function( UpcomingExpanded value)?  upcomingExpanded,TResult? Function( UpcomingCompanyClicked value)?  upcomingCompanyClicked,TResult? Function( FilingCardCompanyClicked value)?  filingCardCompanyClicked,TResult? Function( EmptyCtaClicked value)?  emptyCtaClicked,TResult? Function( ActivityUpdated value)?  activityUpdated,TResult? Function( Reset value)?  reset,}){
 final _that = this;
 switch (_that) {
 case Started() when started != null:
@@ -134,8 +132,7 @@ return started(_that);case Refresh() when refresh != null:
 return refresh(_that);case WatchlistUpdated() when watchlistUpdated != null:
 return watchlistUpdated(_that);case ReportsUpdated() when reportsUpdated != null:
 return reportsUpdated(_that);case Viewed() when viewed != null:
-return viewed(_that);case SearchClicked() when searchClicked != null:
-return searchClicked(_that);case LinkOpened() when linkOpened != null:
+return viewed(_that);case LinkOpened() when linkOpened != null:
 return linkOpened(_that);case SummaryRequested() when summaryRequested != null:
 return summaryRequested(_that);case SummarizeLockedClicked() when summarizeLockedClicked != null:
 return summarizeLockedClicked(_that);case UpcomingExpanded() when upcomingExpanded != null:
@@ -161,15 +158,14 @@ return reset(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String? uid)?  started,TResult Function()?  refresh,TResult Function( List<String> tickers)?  watchlistUpdated,TResult Function( Either<Failure, ReportsFeed> result)?  reportsUpdated,TResult Function( int unreadCount,  ReportsEntrySource entrySource,  ReportsNotificationType? notificationType)?  viewed,TResult Function()?  searchClicked,TResult Function( String ticker,  String filingType)?  linkOpened,TResult Function( String ticker,  String filingType,  bool isReady)?  summaryRequested,TResult Function( String ticker,  String filingType)?  summarizeLockedClicked,TResult Function()?  upcomingExpanded,TResult Function( String ticker)?  upcomingCompanyClicked,TResult Function( String ticker)?  filingCardCompanyClicked,TResult Function()?  emptyCtaClicked,TResult Function( DateTime? lastViewedReports)?  activityUpdated,TResult Function()?  reset,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String? uid)?  started,TResult Function()?  refresh,TResult Function( List<String> tickers)?  watchlistUpdated,TResult Function( Either<Failure, ReportsFeed> result)?  reportsUpdated,TResult Function( int unreadCount,  ReportsEntrySource entrySource,  ReportsNotificationType? notificationType)?  viewed,TResult Function( String ticker,  String filingType)?  linkOpened,TResult Function( String ticker,  String filingType,  bool isReady)?  summaryRequested,TResult Function( String ticker,  String filingType)?  summarizeLockedClicked,TResult Function()?  upcomingExpanded,TResult Function( String ticker)?  upcomingCompanyClicked,TResult Function( String ticker)?  filingCardCompanyClicked,TResult Function()?  emptyCtaClicked,TResult Function( DateTime? lastViewedReports)?  activityUpdated,TResult Function()?  reset,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case Started() when started != null:
 return started(_that.uid);case Refresh() when refresh != null:
 return refresh();case WatchlistUpdated() when watchlistUpdated != null:
 return watchlistUpdated(_that.tickers);case ReportsUpdated() when reportsUpdated != null:
 return reportsUpdated(_that.result);case Viewed() when viewed != null:
-return viewed(_that.unreadCount,_that.entrySource,_that.notificationType);case SearchClicked() when searchClicked != null:
-return searchClicked();case LinkOpened() when linkOpened != null:
+return viewed(_that.unreadCount,_that.entrySource,_that.notificationType);case LinkOpened() when linkOpened != null:
 return linkOpened(_that.ticker,_that.filingType);case SummaryRequested() when summaryRequested != null:
 return summaryRequested(_that.ticker,_that.filingType,_that.isReady);case SummarizeLockedClicked() when summarizeLockedClicked != null:
 return summarizeLockedClicked(_that.ticker,_that.filingType);case UpcomingExpanded() when upcomingExpanded != null:
@@ -196,15 +192,14 @@ return reset();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String? uid)  started,required TResult Function()  refresh,required TResult Function( List<String> tickers)  watchlistUpdated,required TResult Function( Either<Failure, ReportsFeed> result)  reportsUpdated,required TResult Function( int unreadCount,  ReportsEntrySource entrySource,  ReportsNotificationType? notificationType)  viewed,required TResult Function()  searchClicked,required TResult Function( String ticker,  String filingType)  linkOpened,required TResult Function( String ticker,  String filingType,  bool isReady)  summaryRequested,required TResult Function( String ticker,  String filingType)  summarizeLockedClicked,required TResult Function()  upcomingExpanded,required TResult Function( String ticker)  upcomingCompanyClicked,required TResult Function( String ticker)  filingCardCompanyClicked,required TResult Function()  emptyCtaClicked,required TResult Function( DateTime? lastViewedReports)  activityUpdated,required TResult Function()  reset,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String? uid)  started,required TResult Function()  refresh,required TResult Function( List<String> tickers)  watchlistUpdated,required TResult Function( Either<Failure, ReportsFeed> result)  reportsUpdated,required TResult Function( int unreadCount,  ReportsEntrySource entrySource,  ReportsNotificationType? notificationType)  viewed,required TResult Function( String ticker,  String filingType)  linkOpened,required TResult Function( String ticker,  String filingType,  bool isReady)  summaryRequested,required TResult Function( String ticker,  String filingType)  summarizeLockedClicked,required TResult Function()  upcomingExpanded,required TResult Function( String ticker)  upcomingCompanyClicked,required TResult Function( String ticker)  filingCardCompanyClicked,required TResult Function()  emptyCtaClicked,required TResult Function( DateTime? lastViewedReports)  activityUpdated,required TResult Function()  reset,}) {final _that = this;
 switch (_that) {
 case Started():
 return started(_that.uid);case Refresh():
 return refresh();case WatchlistUpdated():
 return watchlistUpdated(_that.tickers);case ReportsUpdated():
 return reportsUpdated(_that.result);case Viewed():
-return viewed(_that.unreadCount,_that.entrySource,_that.notificationType);case SearchClicked():
-return searchClicked();case LinkOpened():
+return viewed(_that.unreadCount,_that.entrySource,_that.notificationType);case LinkOpened():
 return linkOpened(_that.ticker,_that.filingType);case SummaryRequested():
 return summaryRequested(_that.ticker,_that.filingType,_that.isReady);case SummarizeLockedClicked():
 return summarizeLockedClicked(_that.ticker,_that.filingType);case UpcomingExpanded():
@@ -230,15 +225,14 @@ return reset();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String? uid)?  started,TResult? Function()?  refresh,TResult? Function( List<String> tickers)?  watchlistUpdated,TResult? Function( Either<Failure, ReportsFeed> result)?  reportsUpdated,TResult? Function( int unreadCount,  ReportsEntrySource entrySource,  ReportsNotificationType? notificationType)?  viewed,TResult? Function()?  searchClicked,TResult? Function( String ticker,  String filingType)?  linkOpened,TResult? Function( String ticker,  String filingType,  bool isReady)?  summaryRequested,TResult? Function( String ticker,  String filingType)?  summarizeLockedClicked,TResult? Function()?  upcomingExpanded,TResult? Function( String ticker)?  upcomingCompanyClicked,TResult? Function( String ticker)?  filingCardCompanyClicked,TResult? Function()?  emptyCtaClicked,TResult? Function( DateTime? lastViewedReports)?  activityUpdated,TResult? Function()?  reset,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String? uid)?  started,TResult? Function()?  refresh,TResult? Function( List<String> tickers)?  watchlistUpdated,TResult? Function( Either<Failure, ReportsFeed> result)?  reportsUpdated,TResult? Function( int unreadCount,  ReportsEntrySource entrySource,  ReportsNotificationType? notificationType)?  viewed,TResult? Function( String ticker,  String filingType)?  linkOpened,TResult? Function( String ticker,  String filingType,  bool isReady)?  summaryRequested,TResult? Function( String ticker,  String filingType)?  summarizeLockedClicked,TResult? Function()?  upcomingExpanded,TResult? Function( String ticker)?  upcomingCompanyClicked,TResult? Function( String ticker)?  filingCardCompanyClicked,TResult? Function()?  emptyCtaClicked,TResult? Function( DateTime? lastViewedReports)?  activityUpdated,TResult? Function()?  reset,}) {final _that = this;
 switch (_that) {
 case Started() when started != null:
 return started(_that.uid);case Refresh() when refresh != null:
 return refresh();case WatchlistUpdated() when watchlistUpdated != null:
 return watchlistUpdated(_that.tickers);case ReportsUpdated() when reportsUpdated != null:
 return reportsUpdated(_that.result);case Viewed() when viewed != null:
-return viewed(_that.unreadCount,_that.entrySource,_that.notificationType);case SearchClicked() when searchClicked != null:
-return searchClicked();case LinkOpened() when linkOpened != null:
+return viewed(_that.unreadCount,_that.entrySource,_that.notificationType);case LinkOpened() when linkOpened != null:
 return linkOpened(_that.ticker,_that.filingType);case SummaryRequested() when summaryRequested != null:
 return summaryRequested(_that.ticker,_that.filingType,_that.isReady);case SummarizeLockedClicked() when summarizeLockedClicked != null:
 return summarizeLockedClicked(_that.ticker,_that.filingType);case UpcomingExpanded() when upcomingExpanded != null:
@@ -560,38 +554,6 @@ as ReportsNotificationType?,
 
 
 }
-
-/// @nodoc
-
-
-class SearchClicked implements ReportsEvent {
-  const SearchClicked();
-  
-
-
-
-
-
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchClicked);
-}
-
-
-@override
-int get hashCode => runtimeType.hashCode;
-
-@override
-String toString() {
-  return 'ReportsEvent.searchClicked()';
-}
-
-
-}
-
-
-
 
 /// @nodoc
 

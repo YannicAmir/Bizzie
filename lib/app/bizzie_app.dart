@@ -6,6 +6,7 @@ import 'package:bizzie/features/watchlist/presentation/bloc/watchlist_bloc.dart'
 import 'package:bizzie/features/subscription/presentation/bloc/subscription_bloc.dart';
 import 'package:bizzie/features/reports/presentation/bloc/reports_bloc.dart';
 import 'package:bizzie/features/app_status/presentation/bloc/app_status_bloc.dart';
+import 'package:bizzie/features/security/presentation/bloc/security_bloc.dart';
 import 'package:bizzie/di/injection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -38,6 +39,7 @@ class BizzieApp extends StatelessWidget {
         ),
         BlocProvider<ReportsBloc>(create: (_) => getIt<ReportsBloc>()),
         BlocProvider<AppStatusBloc>(create: (_) => getIt<AppStatusBloc>()),
+        BlocProvider<SecurityBloc>(create: (_) => getIt<SecurityBloc>()),
       ],
       child: BizzieAppView(
         environment: environment,
