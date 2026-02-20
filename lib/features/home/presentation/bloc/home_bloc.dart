@@ -11,10 +11,10 @@ part 'home_bloc.freezed.dart';
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
   final HomeAnalytics _analytics;
   DateTime? _loadStartTime;
+  bool _hasLoggedWatchlistSuccess = false;
 
   HomeBloc(this._analytics) : super(const HomeState.initial()) {
     on<_Started>(_onStarted);
-    on<_SearchTapped>(_onSearchTapped);
     on<_WatchlistTapped>(_onWatchlistTapped);
     on<_EmptyStateViewed>(_onEmptyStateViewed);
     on<_WatchlistLoadFailed>(_onWatchlistLoadFailed);
@@ -23,15 +23,16 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
   void _onStarted(_Started event, Emitter<HomeState> emit) {
     _loadStartTime = DateTime.now();
+    _hasLoggedWatchlistSuccess = false;
     _analytics.logHomeViewed();
   }
 
-  void _onSearchTapped(_SearchTapped event, Emitter<HomeState> emit) {
-    // Redundant event. SearchPage logs page_viewed with source context.
-  }
-
   void _onWatchlistTapped(_WatchlistTapped event, Emitter<HomeState> emit) {
-    _analytics.logHomeWatchlistTapped(ticker: event.ticker);
+    _analytics.logHomeWatchlistTapped(
+      ticker: event.ticker,
+      eventText: event.eventText,
+      isUpcoming: event.isUpcoming,
+    );
   }
 
   void _onEmptyStateViewed(_EmptyStateViewed event, Emitter<HomeState> emit) {
@@ -51,9 +52,12 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         ? now.difference(_loadStartTime!).inMilliseconds
         : 0;
 
-    _analytics.logHomeWatchlistLoaded(
-      itemCount: event.itemCount,
-      durationMs: durationMs,
-    );
+    if (!_hasLoggedWatchlistSuccess) {
+      _analytics.logHomeWatchlistLoaded(
+        itemCount: event.itemCount,
+        durationMs: durationMs,
+      );
+      _hasLoggedWatchlistSuccess = true;
+    }
   }
 }

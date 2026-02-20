@@ -10,14 +10,19 @@ import 'package:bizzie/core/interfaces/i_sector_service.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
+import 'package:bizzie/features/settings/presentation/analytics/settings_tracker.dart';
+
 class MockUpdateFavoriteSectorUseCase extends Mock
     implements UpdateFavoriteSectorUseCase {}
 
 class MockSectorService extends Mock implements ISectorService {}
 
+class MockSettingsTracker extends Mock implements SettingsTracker {}
+
 void main() {
   late MockUpdateFavoriteSectorUseCase mockUpdateFavoriteSectorUseCase;
   late MockSectorService mockSectorService;
+  late MockSettingsTracker mockTracker;
 
   setUpAll(() {
     registerFallbackValue(Sector.energy);
@@ -26,6 +31,22 @@ void main() {
   setUp(() {
     mockUpdateFavoriteSectorUseCase = MockUpdateFavoriteSectorUseCase();
     mockSectorService = MockSectorService();
+    mockTracker = MockSettingsTracker();
+
+    // Default tracker stubs
+    when(() => mockTracker.logSectorChangeViewed()).thenAnswer((_) async {});
+    when(
+      () => mockTracker.logSectorSelected(sector: any(named: 'sector')),
+    ).thenAnswer((_) async {});
+    when(
+      () => mockTracker.logSectorUpdateSuccess(sector: any(named: 'sector')),
+    ).thenAnswer((_) async {});
+    when(
+      () => mockTracker.logSectorUpdateFailure(
+        sector: any(named: 'sector'),
+        error: any(named: 'error'),
+      ),
+    ).thenAnswer((_) async {});
 
     // arrange
     when(
@@ -39,7 +60,7 @@ void main() {
   group('SelectSectorBloc', () {
     group('initialization', () {
       test(
-        'selectSectorBloc_initialState_emitsCorrectInitialFieldsAndOrdering',
+        'selectSectorBloc_initialState_emitsCorrectInitialFieldsAndLogsView',
         () {
           // arrange
           const initialSector = Sector.healthCare;
@@ -49,40 +70,42 @@ void main() {
             initialSector,
             mockUpdateFavoriteSectorUseCase,
             mockSectorService,
+            mockTracker,
           );
 
           // assert
           expect(bloc.state.initialSector.sector, initialSector);
           expect(bloc.state.availableSectors.first.sector, initialSector);
+          verify(() => mockTracker.logSectorChangeViewed()).called(1);
         },
       );
 
-      test(
-        'selectSectorBloc_initialStateWithNull_defaultsToInformationTechnologyFirst',
-        () {
-          // act
-          final bloc = SelectSectorBloc(
-            null,
-            mockUpdateFavoriteSectorUseCase,
-            mockSectorService,
-          );
+      test('selectSectorBloc_initialStateWithNull_defaultsToITAndLogsView', () {
+        // act
+        final bloc = SelectSectorBloc(
+          null,
+          mockUpdateFavoriteSectorUseCase,
+          mockSectorService,
+          mockTracker,
+        );
 
-          // assert
-          expect(bloc.state.initialSector.sector, Sector.informationTechnology);
-          expect(
-            bloc.state.availableSectors.first.sector,
-            Sector.informationTechnology,
-          );
-        },
-      );
+        // assert
+        expect(bloc.state.initialSector.sector, Sector.informationTechnology);
+        expect(
+          bloc.state.availableSectors.first.sector,
+          Sector.informationTechnology,
+        );
+        verify(() => mockTracker.logSectorChangeViewed()).called(1);
+      });
     });
 
     blocTest<SelectSectorBloc, SelectSectorState>(
-      'selectSector_newSectorSelected_emitsStateWithUpdatedSelection',
+      'selectSector_newSectorSelected_emitsStateWithUpdatedSelectionAndLogs',
       build: () => SelectSectorBloc(
         Sector.healthCare,
         mockUpdateFavoriteSectorUseCase,
         mockSectorService,
+        mockTracker,
       ),
       act: (bloc) =>
           bloc.add(const SelectSectorEvent.selectSector(Sector.energy)),
@@ -94,11 +117,16 @@ void main() {
           Sector.energy,
         ),
       ],
+      verify: (_) {
+        verify(
+          () => mockTracker.logSectorSelected(sector: Sector.energy.name),
+        ).called(1);
+      },
     );
 
     group('saveChanges', () {
       blocTest<SelectSectorBloc, SelectSectorState>(
-        'saveChanges_effectiveChange_emitsLoadingThenSuccess',
+        'saveChanges_effectiveChange_emitsLoadingThenSuccessAndLogs',
         // arrange
         setUp: () {
           when(
@@ -109,6 +137,7 @@ void main() {
           Sector.healthCare,
           mockUpdateFavoriteSectorUseCase,
           mockSectorService,
+          mockTracker,
         ),
         act: (bloc) {
           bloc.add(const SelectSectorEvent.selectSector(Sector.energy));
@@ -136,6 +165,10 @@ void main() {
           verify(
             () => mockUpdateFavoriteSectorUseCase(Sector.energy),
           ).called(1);
+          verify(
+            () =>
+                mockTracker.logSectorUpdateSuccess(sector: Sector.energy.name),
+          ).called(1);
         },
       );
 
@@ -145,6 +178,7 @@ void main() {
           Sector.healthCare,
           mockUpdateFavoriteSectorUseCase,
           mockSectorService,
+          mockTracker,
         ),
         act: (bloc) => bloc.add(const SelectSectorEvent.saveChanges()),
         // assert
@@ -155,7 +189,7 @@ void main() {
       );
 
       blocTest<SelectSectorBloc, SelectSectorState>(
-        'saveChanges_onFailure_emitsLoadingThenFailure',
+        'saveChanges_onFailure_emitsLoadingThenFailureAndLogs',
         // arrange
         setUp: () {
           when(
@@ -166,6 +200,7 @@ void main() {
           Sector.healthCare,
           mockUpdateFavoriteSectorUseCase,
           mockSectorService,
+          mockTracker,
         ),
         act: (bloc) {
           bloc.add(const SelectSectorEvent.selectSector(Sector.energy));
@@ -189,6 +224,14 @@ void main() {
             true,
           ),
         ],
+        verify: (_) {
+          verify(
+            () => mockTracker.logSectorUpdateFailure(
+              sector: Sector.energy.name,
+              error: 'Error',
+            ),
+          ).called(1);
+        },
       );
     });
     group('Sector Ordering Alphabetical', () {
@@ -203,6 +246,7 @@ void main() {
             initialSector,
             mockUpdateFavoriteSectorUseCase,
             mockSectorService,
+            mockTracker,
           );
 
           // assert

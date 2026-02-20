@@ -1,4 +1,3 @@
-import 'package:bizzie/features/app_status/domain/enums/app_status_type.dart';
 import 'package:bizzie/features/app_status/domain/interfaces/i_app_status_repository.dart';
 import 'package:bizzie/features/app_status/domain/models/app_status.dart';
 import 'package:bizzie/features/app_status/presentation/analytics/app_status_tracker.dart';
@@ -42,7 +41,6 @@ class AppStatusBloc extends Bloc<AppStatusEvent, AppStatusState> {
     Emitter<AppStatusState> emit,
   ) async {
     _logger.info('Manual status refresh requested');
-    _tracker.logStatusRefresh();
 
     state.whenOrNull(
       checked: (status, isRefreshing) {
@@ -62,23 +60,6 @@ class AppStatusBloc extends Bloc<AppStatusEvent, AppStatusState> {
   }
 
   void _trackStatus(AppStatus status, {required bool isManualRefresh}) {
-    final statusType = status.map(
-      normal: (_) => AppStatusType.normal,
-      forceUpgrade: (_) => AppStatusType.forceUpgrade,
-      noInternet: (_) => AppStatusType.noInternet,
-      maintenance: (_) => AppStatusType.maintenance,
-    );
-
-    _tracker.updateStatusProperty(statusType);
-
-    status.when(
-      normal: () => _tracker.logStatusNormal(isManualRefresh: isManualRefresh),
-      forceUpgrade: (minVersion, _) => _tracker.logStatusBlocked(
-        type: 'force_upgrade',
-        minVersion: minVersion,
-      ),
-      noInternet: () => _tracker.logStatusBlocked(type: 'no_internet'),
-      maintenance: () => _tracker.logStatusBlocked(type: 'maintenance'),
-    );
+    _tracker.trackStatus(status);
   }
 }

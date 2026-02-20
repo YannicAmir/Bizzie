@@ -12,4 +12,8 @@ class SettingsEvent with _$SettingsEvent {
   const factory SettingsEvent.openUrl(String url) = OpenUrl;
   const factory SettingsEvent.resetPassword() = ResetPassword;
   const factory SettingsEvent.openedSettings() = OpenedSettings;
+  const factory SettingsEvent.editProfileClicked() = EditProfileClicked;
+  const factory SettingsEvent.feedbackClicked() = FeedbackClicked;
+  const factory SettingsEvent.membershipClicked(bool isSubscribed) =
+      MembershipClicked;
 }

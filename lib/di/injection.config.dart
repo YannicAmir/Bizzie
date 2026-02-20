@@ -399,6 +399,8 @@ import '../features/settings/domain/usecases/update_favorite_sector_usecase.dart
     as _i925;
 import '../features/settings/domain/usecases/update_profile_usecase.dart'
     as _i242;
+import '../features/settings/presentation/analytics/settings_tracker.dart'
+    as _i310;
 import '../features/settings/presentation/bloc/select_sector_bloc.dart'
     as _i502;
 import '../features/settings/presentation/bloc/settings_bloc.dart' as _i419;
@@ -771,6 +773,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i227.SecurityTracker>(
       () => _i227.SecurityTracker(gh<_i529.IAnalyticsService>()),
+    );
+    gh.factory<_i310.SettingsTracker>(
+      () => _i310.SettingsTracker(gh<_i529.IAnalyticsService>()),
     );
     gh.lazySingleton<_i32.HomeAnalytics>(
       () => _i32.HomeAnalytics(gh<_i529.IAnalyticsService>()),
@@ -1313,13 +1318,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i937.IConfigService>(),
       ),
     );
-    gh.factoryParam<_i502.SelectSectorBloc, _i162.Sector?, dynamic>(
-      (initialSector, _) => _i502.SelectSectorBloc(
-        initialSector,
-        gh<_i925.UpdateFavoriteSectorUseCase>(),
-        gh<_i1050.ISectorService>(),
-      ),
-    );
     gh.factory<_i614.CompanyNetIncomeBloc>(
       () => _i614.CompanyNetIncomeBloc(
         gh<_i775.GetNetIncomeStatsUseCase>(),
@@ -1443,6 +1441,14 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i430.INotificationService>(),
       ),
     );
+    gh.factoryParam<_i502.SelectSectorBloc, _i162.Sector?, dynamic>(
+      (initialSector, _) => _i502.SelectSectorBloc(
+        initialSector,
+        gh<_i925.UpdateFavoriteSectorUseCase>(),
+        gh<_i1050.ISectorService>(),
+        gh<_i310.SettingsTracker>(),
+      ),
+    );
     gh.factory<_i555.GetSearchDashboardDataUseCase>(
       () => _i555.GetSearchDashboardDataUseCase(
         gh<_i685.IAuthRepository>(),
@@ -1494,6 +1500,9 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i937.IConfigService>(),
       ),
     );
+    gh.lazySingleton<_i961.ClearCachedToken>(
+      () => _i961.ClearCachedToken(gh<_i430.INotificationService>()),
+    );
     gh.factory<_i419.SettingsBloc>(
       () => _i419.SettingsBloc(
         gh<_i594.GetSettingsDisplayDataUseCase>(),
@@ -1504,10 +1513,8 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i685.IAuthRepository>(),
         gh<_i579.OpenAppSettingsUseCase>(),
         gh<_i714.GetSubscriptionStatusUseCase>(),
+        gh<_i310.SettingsTracker>(),
       ),
-    );
-    gh.lazySingleton<_i961.ClearCachedToken>(
-      () => _i961.ClearCachedToken(gh<_i430.INotificationService>()),
     );
     gh.factory<_i505.CompanyBusinessBloc>(
       () => _i505.CompanyBusinessBloc(

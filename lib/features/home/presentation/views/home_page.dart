@@ -58,7 +58,6 @@ class _HomePageState extends State<HomePage> {
         title: BizzieSearchBar(
           readOnly: true,
           onTap: () {
-            context.read<HomeBloc>().add(const HomeEvent.searchTapped());
             context.push(AppRoutes.search, extra: SearchSource.home);
           },
         ),

@@ -55,12 +55,11 @@ extension HomeEventPatterns on HomeEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Started value)?  started,TResult Function( _SearchTapped value)?  searchTapped,TResult Function( _WatchlistTapped value)?  watchlistTapped,TResult Function( _EmptyStateViewed value)?  emptyStateViewed,TResult Function( _WatchlistLoadFailed value)?  watchlistLoadFailed,TResult Function( _WatchlistLoaded value)?  watchlistLoaded,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Started value)?  started,TResult Function( _WatchlistTapped value)?  watchlistTapped,TResult Function( _EmptyStateViewed value)?  emptyStateViewed,TResult Function( _WatchlistLoadFailed value)?  watchlistLoadFailed,TResult Function( _WatchlistLoaded value)?  watchlistLoaded,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _Started() when started != null:
-return started(_that);case _SearchTapped() when searchTapped != null:
-return searchTapped(_that);case _WatchlistTapped() when watchlistTapped != null:
+return started(_that);case _WatchlistTapped() when watchlistTapped != null:
 return watchlistTapped(_that);case _EmptyStateViewed() when emptyStateViewed != null:
 return emptyStateViewed(_that);case _WatchlistLoadFailed() when watchlistLoadFailed != null:
 return watchlistLoadFailed(_that);case _WatchlistLoaded() when watchlistLoaded != null:
@@ -82,12 +81,11 @@ return watchlistLoaded(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Started value)  started,required TResult Function( _SearchTapped value)  searchTapped,required TResult Function( _WatchlistTapped value)  watchlistTapped,required TResult Function( _EmptyStateViewed value)  emptyStateViewed,required TResult Function( _WatchlistLoadFailed value)  watchlistLoadFailed,required TResult Function( _WatchlistLoaded value)  watchlistLoaded,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Started value)  started,required TResult Function( _WatchlistTapped value)  watchlistTapped,required TResult Function( _EmptyStateViewed value)  emptyStateViewed,required TResult Function( _WatchlistLoadFailed value)  watchlistLoadFailed,required TResult Function( _WatchlistLoaded value)  watchlistLoaded,}){
 final _that = this;
 switch (_that) {
 case _Started():
-return started(_that);case _SearchTapped():
-return searchTapped(_that);case _WatchlistTapped():
+return started(_that);case _WatchlistTapped():
 return watchlistTapped(_that);case _EmptyStateViewed():
 return emptyStateViewed(_that);case _WatchlistLoadFailed():
 return watchlistLoadFailed(_that);case _WatchlistLoaded():
@@ -108,12 +106,11 @@ return watchlistLoaded(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Started value)?  started,TResult? Function( _SearchTapped value)?  searchTapped,TResult? Function( _WatchlistTapped value)?  watchlistTapped,TResult? Function( _EmptyStateViewed value)?  emptyStateViewed,TResult? Function( _WatchlistLoadFailed value)?  watchlistLoadFailed,TResult? Function( _WatchlistLoaded value)?  watchlistLoaded,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Started value)?  started,TResult? Function( _WatchlistTapped value)?  watchlistTapped,TResult? Function( _EmptyStateViewed value)?  emptyStateViewed,TResult? Function( _WatchlistLoadFailed value)?  watchlistLoadFailed,TResult? Function( _WatchlistLoaded value)?  watchlistLoaded,}){
 final _that = this;
 switch (_that) {
 case _Started() when started != null:
-return started(_that);case _SearchTapped() when searchTapped != null:
-return searchTapped(_that);case _WatchlistTapped() when watchlistTapped != null:
+return started(_that);case _WatchlistTapped() when watchlistTapped != null:
 return watchlistTapped(_that);case _EmptyStateViewed() when emptyStateViewed != null:
 return emptyStateViewed(_that);case _WatchlistLoadFailed() when watchlistLoadFailed != null:
 return watchlistLoadFailed(_that);case _WatchlistLoaded() when watchlistLoaded != null:
@@ -134,12 +131,11 @@ return watchlistLoaded(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  started,TResult Function()?  searchTapped,TResult Function( String ticker)?  watchlistTapped,TResult Function()?  emptyStateViewed,TResult Function( String error)?  watchlistLoadFailed,TResult Function( int itemCount)?  watchlistLoaded,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  started,TResult Function( String ticker,  String? eventText,  bool? isUpcoming)?  watchlistTapped,TResult Function()?  emptyStateViewed,TResult Function( String error)?  watchlistLoadFailed,TResult Function( int itemCount)?  watchlistLoaded,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Started() when started != null:
-return started();case _SearchTapped() when searchTapped != null:
-return searchTapped();case _WatchlistTapped() when watchlistTapped != null:
-return watchlistTapped(_that.ticker);case _EmptyStateViewed() when emptyStateViewed != null:
+return started();case _WatchlistTapped() when watchlistTapped != null:
+return watchlistTapped(_that.ticker,_that.eventText,_that.isUpcoming);case _EmptyStateViewed() when emptyStateViewed != null:
 return emptyStateViewed();case _WatchlistLoadFailed() when watchlistLoadFailed != null:
 return watchlistLoadFailed(_that.error);case _WatchlistLoaded() when watchlistLoaded != null:
 return watchlistLoaded(_that.itemCount);case _:
@@ -160,12 +156,11 @@ return watchlistLoaded(_that.itemCount);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  started,required TResult Function()  searchTapped,required TResult Function( String ticker)  watchlistTapped,required TResult Function()  emptyStateViewed,required TResult Function( String error)  watchlistLoadFailed,required TResult Function( int itemCount)  watchlistLoaded,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  started,required TResult Function( String ticker,  String? eventText,  bool? isUpcoming)  watchlistTapped,required TResult Function()  emptyStateViewed,required TResult Function( String error)  watchlistLoadFailed,required TResult Function( int itemCount)  watchlistLoaded,}) {final _that = this;
 switch (_that) {
 case _Started():
-return started();case _SearchTapped():
-return searchTapped();case _WatchlistTapped():
-return watchlistTapped(_that.ticker);case _EmptyStateViewed():
+return started();case _WatchlistTapped():
+return watchlistTapped(_that.ticker,_that.eventText,_that.isUpcoming);case _EmptyStateViewed():
 return emptyStateViewed();case _WatchlistLoadFailed():
 return watchlistLoadFailed(_that.error);case _WatchlistLoaded():
 return watchlistLoaded(_that.itemCount);case _:
@@ -185,12 +180,11 @@ return watchlistLoaded(_that.itemCount);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  started,TResult? Function()?  searchTapped,TResult? Function( String ticker)?  watchlistTapped,TResult? Function()?  emptyStateViewed,TResult? Function( String error)?  watchlistLoadFailed,TResult? Function( int itemCount)?  watchlistLoaded,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  started,TResult? Function( String ticker,  String? eventText,  bool? isUpcoming)?  watchlistTapped,TResult? Function()?  emptyStateViewed,TResult? Function( String error)?  watchlistLoadFailed,TResult? Function( int itemCount)?  watchlistLoaded,}) {final _that = this;
 switch (_that) {
 case _Started() when started != null:
-return started();case _SearchTapped() when searchTapped != null:
-return searchTapped();case _WatchlistTapped() when watchlistTapped != null:
-return watchlistTapped(_that.ticker);case _EmptyStateViewed() when emptyStateViewed != null:
+return started();case _WatchlistTapped() when watchlistTapped != null:
+return watchlistTapped(_that.ticker,_that.eventText,_that.isUpcoming);case _EmptyStateViewed() when emptyStateViewed != null:
 return emptyStateViewed();case _WatchlistLoadFailed() when watchlistLoadFailed != null:
 return watchlistLoadFailed(_that.error);case _WatchlistLoaded() when watchlistLoaded != null:
 return watchlistLoaded(_that.itemCount);case _:
@@ -236,43 +230,13 @@ String toString() {
 /// @nodoc
 
 
-class _SearchTapped implements HomeEvent {
-  const _SearchTapped();
-  
-
-
-
-
-
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SearchTapped);
-}
-
-
-@override
-int get hashCode => runtimeType.hashCode;
-
-@override
-String toString() {
-  return 'HomeEvent.searchTapped()';
-}
-
-
-}
-
-
-
-
-/// @nodoc
-
-
 class _WatchlistTapped implements HomeEvent {
-  const _WatchlistTapped({required this.ticker});
+  const _WatchlistTapped({required this.ticker, this.eventText, this.isUpcoming});
   
 
  final  String ticker;
+ final  String? eventText;
+ final  bool? isUpcoming;
 
 /// Create a copy of HomeEvent
 /// with the given fields replaced by the non-null parameter values.
@@ -284,16 +248,16 @@ _$WatchlistTappedCopyWith<_WatchlistTapped> get copyWith => __$WatchlistTappedCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _WatchlistTapped&&(identical(other.ticker, ticker) || other.ticker == ticker));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _WatchlistTapped&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.eventText, eventText) || other.eventText == eventText)&&(identical(other.isUpcoming, isUpcoming) || other.isUpcoming == isUpcoming));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,ticker);
+int get hashCode => Object.hash(runtimeType,ticker,eventText,isUpcoming);
 
 @override
 String toString() {
-  return 'HomeEvent.watchlistTapped(ticker: $ticker)';
+  return 'HomeEvent.watchlistTapped(ticker: $ticker, eventText: $eventText, isUpcoming: $isUpcoming)';
 }
 
 
@@ -304,7 +268,7 @@ abstract mixin class _$WatchlistTappedCopyWith<$Res> implements $HomeEventCopyWi
   factory _$WatchlistTappedCopyWith(_WatchlistTapped value, $Res Function(_WatchlistTapped) _then) = __$WatchlistTappedCopyWithImpl;
 @useResult
 $Res call({
- String ticker
+ String ticker, String? eventText, bool? isUpcoming
 });
 
 
@@ -321,10 +285,12 @@ class __$WatchlistTappedCopyWithImpl<$Res>
 
 /// Create a copy of HomeEvent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? ticker = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? ticker = null,Object? eventText = freezed,Object? isUpcoming = freezed,}) {
   return _then(_WatchlistTapped(
 ticker: null == ticker ? _self.ticker : ticker // ignore: cast_nullable_to_non_nullable
-as String,
+as String,eventText: freezed == eventText ? _self.eventText : eventText // ignore: cast_nullable_to_non_nullable
+as String?,isUpcoming: freezed == isUpcoming ? _self.isUpcoming : isUpcoming // ignore: cast_nullable_to_non_nullable
+as bool?,
   ));
 }
 

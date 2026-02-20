@@ -12,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:bizzie/shared/widgets/badges/watchlist_event_badge.dart';
+import 'package:bizzie/features/watchlist/domain/extensions/watchlist_event_status_extensions.dart';
 
 class HomeWatchlistWidget extends StatelessWidget {
   const HomeWatchlistWidget({super.key});
@@ -76,7 +77,11 @@ class HomeWatchlistWidget extends StatelessWidget {
                               : null,
                           onTap: () {
                             context.read<HomeBloc>().add(
-                              HomeEvent.watchlistTapped(ticker: company.ticker),
+                              HomeEvent.watchlistTapped(
+                                ticker: company.ticker,
+                                eventText: event?.analyticsEventText,
+                                isUpcoming: event?.isUpcoming,
+                              ),
                             );
                             context.pushNamed(
                               AppRoutes.companyProfileHome,

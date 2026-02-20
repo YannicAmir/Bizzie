@@ -14,6 +14,7 @@ class MockAppStatusTracker extends Mock implements AppStatusTracker {}
 void main() {
   setUpAll(() {
     registerFallbackValue(AppStatusType.normal);
+    registerFallbackValue(const AppStatus.normal());
   });
 
   late AppStatusBloc bloc;
@@ -24,21 +25,7 @@ void main() {
     mockRepository = MockAppStatusRepository();
     mockTracker = MockAppStatusTracker();
 
-    when(
-      () => mockTracker.updateStatusProperty(any()),
-    ).thenAnswer((_) async {});
-    when(
-      () => mockTracker.logStatusNormal(
-        isManualRefresh: any(named: 'isManualRefresh'),
-      ),
-    ).thenAnswer((_) async {});
-    when(
-      () => mockTracker.logStatusBlocked(
-        type: any(named: 'type'),
-        minVersion: any(named: 'minVersion'),
-      ),
-    ).thenAnswer((_) async {});
-    when(() => mockTracker.logStatusRefresh()).thenAnswer((_) async {});
+    when(() => mockTracker.trackStatus(any())).thenAnswer((_) async {});
 
     bloc = AppStatusBloc(mockRepository, mockTracker);
   });
@@ -74,10 +61,7 @@ void main() {
         // assert
         verify(() => mockRepository.watchStatus()).called(1);
         verify(
-          () => mockTracker.updateStatusProperty(AppStatusType.normal),
-        ).called(1);
-        verify(
-          () => mockTracker.logStatusNormal(isManualRefresh: false),
+          () => mockTracker.trackStatus(const AppStatus.normal()),
         ).called(1);
       },
     );
@@ -107,13 +91,7 @@ void main() {
       verify: (_) {
         // assert
         verify(() => mockRepository.checkStatus()).called(1);
-        verify(() => mockTracker.logStatusRefresh()).called(1);
-        verify(
-          () => mockTracker.updateStatusProperty(AppStatusType.normal),
-        ).called(1);
-        verify(
-          () => mockTracker.logStatusNormal(isManualRefresh: true),
-        ).called(1);
+        verify(() => mockTracker.trackStatus(AppStatus.normal())).called(1);
       },
     );
 

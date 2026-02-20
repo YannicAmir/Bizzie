@@ -73,57 +73,6 @@ void main() {
       },
     );
 
-    test('logStatusNormal_automated_callsAnalyticsWithCorrectParams', () async {
-      // arrange
-      const isManualRefresh = false;
-
-      // act
-      await tracker.logStatusNormal(isManualRefresh: isManualRefresh);
-
-      // assert
-      verify(
-        () => mockAnalyticsService.logEvent(
-          name: 'app_status_normal',
-          parameters: {
-            'screen_name': 'app_status',
-            'is_manual_refresh': isManualRefresh,
-          },
-        ),
-      ).called(1);
-    });
-
-    test('logStatusNormal_manual_callsAnalyticsWithCorrectParams', () async {
-      // arrange
-      const isManualRefresh = true;
-
-      // act
-      await tracker.logStatusNormal(isManualRefresh: isManualRefresh);
-
-      // assert
-      verify(
-        () => mockAnalyticsService.logEvent(
-          name: 'app_status_normal',
-          parameters: {
-            'screen_name': 'app_status',
-            'is_manual_refresh': isManualRefresh,
-          },
-        ),
-      ).called(1);
-    });
-
-    test('logStatusRefresh_called_callsAnalyticsWithCorrectParams', () async {
-      // arrange & act
-      await tracker.logStatusRefresh();
-
-      // assert
-      verify(
-        () => mockAnalyticsService.logEvent(
-          name: 'app_status_refresh',
-          parameters: {'screen_name': 'app_status'},
-        ),
-      ).called(1);
-    });
-
     test(
       'updateStatusProperty_normal_callsSetUserPropertyWithSnakeCase',
       () async {

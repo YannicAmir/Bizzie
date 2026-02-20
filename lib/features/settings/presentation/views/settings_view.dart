@@ -136,6 +136,9 @@ class _SettingsViewContentState extends State<_SettingsViewContent>
                       SettingsTile(
                         title: 'Edit Profile',
                         onTap: () {
+                          context.read<SettingsBloc>().add(
+                            const SettingsEvent.editProfileClicked(),
+                          );
                           context.pushNamed(AppRoutes.editProfile);
                         },
                       ),
@@ -154,7 +157,13 @@ class _SettingsViewContentState extends State<_SettingsViewContent>
                               builder: (_) => ChangeSectorModal(
                                 currentSector: currentSector,
                               ),
-                            );
+                            ).then((_) {
+                              if (context.mounted) {
+                                context.read<SettingsBloc>().add(
+                                  const SettingsEvent.started(),
+                                );
+                              }
+                            });
                           }
                         },
                       ),
@@ -175,6 +184,10 @@ class _SettingsViewContentState extends State<_SettingsViewContent>
                                 loaded: (s) => s.user.isSubscribed,
                                 orElse: () => false,
                               );
+
+                          context.read<SettingsBloc>().add(
+                            SettingsEvent.membershipClicked(isSubscribed),
+                          );
 
                           if (isSubscribed) {
                             context.pushNamed(AppRoutes.subscriptionDetails);
@@ -214,6 +227,9 @@ class _SettingsViewContentState extends State<_SettingsViewContent>
                       SettingsTile(
                         title: 'Send Feedback',
                         onTap: () {
+                          context.read<SettingsBloc>().add(
+                            const SettingsEvent.feedbackClicked(),
+                          );
                           FeedbackModal.show(context);
                         },
                       ),

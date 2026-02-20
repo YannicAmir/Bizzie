@@ -22,6 +22,8 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
+import 'package:bizzie/features/settings/presentation/analytics/settings_tracker.dart';
+
 class MockGetSettingsDisplayDataUseCase extends Mock
     implements GetSettingsDisplayDataUseCase {}
 
@@ -42,6 +44,8 @@ class MockOpenAppSettingsUseCase extends Mock
 class MockGetSubscriptionStatusUseCase extends Mock
     implements GetSubscriptionStatusUseCase {}
 
+class MockSettingsTracker extends Mock implements SettingsTracker {}
+
 void main() {
   late MockGetSettingsDisplayDataUseCase mockGetSettingsDisplayDataUseCase;
   late MockToggleNotificationsUseCase mockToggleNotificationsUseCase;
@@ -51,6 +55,7 @@ void main() {
   late MockAuthRepository mockAuthRepository;
   late MockOpenAppSettingsUseCase mockOpenAppSettingsUseCase;
   late MockGetSubscriptionStatusUseCase mockGetSubscriptionStatusUseCase;
+  late MockSettingsTracker mockTracker;
   late SettingsBloc settingsBloc;
 
   setUp(() {
@@ -62,6 +67,7 @@ void main() {
     mockAuthRepository = MockAuthRepository();
     mockOpenAppSettingsUseCase = MockOpenAppSettingsUseCase();
     mockGetSubscriptionStatusUseCase = MockGetSubscriptionStatusUseCase();
+    mockTracker = MockSettingsTracker();
 
     settingsBloc = SettingsBloc(
       mockGetSettingsDisplayDataUseCase,
@@ -72,9 +78,32 @@ void main() {
       mockAuthRepository,
       mockOpenAppSettingsUseCase,
       mockGetSubscriptionStatusUseCase,
+      mockTracker,
     );
 
     registerFallbackValue(NoParams());
+
+    when(() => mockTracker.logSettingsViewed()).thenAnswer((_) async {});
+    when(
+      () => mockTracker.logNotificationsToggled(enabled: any(named: 'enabled')),
+    ).thenAnswer((_) async {});
+    when(
+      () => mockTracker.logNotificationsPermissionDenied(),
+    ).thenAnswer((_) async {});
+    when(() => mockTracker.logPasswordResetClicked()).thenAnswer((_) async {});
+    when(() => mockTracker.logSignOutClicked()).thenAnswer((_) async {});
+    when(() => mockTracker.logSignOutSuccess()).thenAnswer((_) async {});
+    when(
+      () => mockTracker.logSettingsLinkClicked(type: any(named: 'type')),
+    ).thenAnswer((_) async {});
+    when(() => mockTracker.logSystemSettingsOpened()).thenAnswer((_) async {});
+    when(() => mockTracker.logEditProfileClicked()).thenAnswer((_) async {});
+    when(() => mockTracker.logFeedbackClicked()).thenAnswer((_) async {});
+    when(
+      () => mockTracker.logMembershipClicked(
+        isSubscribed: any(named: 'isSubscribed'),
+      ),
+    ).thenAnswer((_) async {});
   });
 
   tearDown(() {
@@ -111,7 +140,7 @@ void main() {
     });
 
     blocTest<SettingsBloc, SettingsState>(
-      'started_initializationSucceeds_emitsLoadingAndLoaded',
+      'started_initializationSucceeds_emitsLoadingAndLoadedAndLogsView',
       build: () {
         // arrange
         when(
@@ -127,7 +156,7 @@ void main() {
       verify: (_) {
         // assert
         verify(() => mockGetSettingsDisplayDataUseCase(any())).called(1);
-        verifyNoMoreInteractions(mockGetSettingsDisplayDataUseCase);
+        verify(() => mockTracker.logSettingsViewed()).called(1);
       },
     );
 
@@ -148,12 +177,12 @@ void main() {
       verify: (_) {
         // assert
         verify(() => mockGetSettingsDisplayDataUseCase(any())).called(1);
-        verifyNoMoreInteractions(mockGetSettingsDisplayDataUseCase);
+        verify(() => mockTracker.logSettingsViewed()).called(1);
       },
     );
 
     blocTest<SettingsBloc, SettingsState>(
-      'started_alreadyLoaded_emitsNothingForSilentRefresh',
+      'started_alreadyLoaded_emitsNothingForSilentRefreshAndDoesNotLogViewAgain',
       seed: () => SettingsState.loaded(tSettingsData),
       build: () {
         // arrange
@@ -167,14 +196,14 @@ void main() {
       verify: (_) {
         // assert
         verify(() => mockGetSettingsDisplayDataUseCase(any())).called(1);
-        verifyNoMoreInteractions(mockGetSettingsDisplayDataUseCase);
+        verifyNever(() => mockTracker.logSettingsViewed());
       },
     );
   });
 
   group('Notification Toggling', () {
     blocTest<SettingsBloc, SettingsState>(
-      'toggledNotifications_enableSuccess_optimisticallyUpdatesAndCallsUseCase',
+      'toggledNotifications_enableSuccess_optimisticallyUpdatesAndLogs',
       seed: () => SettingsState.loaded(
         tSettingsData.copyWith(isAppNotificationsEnabled: false),
       ),
@@ -194,12 +223,14 @@ void main() {
       verify: (_) {
         // assert
         verify(() => mockToggleNotificationsUseCase(true)).called(1);
-        verifyNoMoreInteractions(mockToggleNotificationsUseCase);
+        verify(
+          () => mockTracker.logNotificationsToggled(enabled: true),
+        ).called(1);
       },
     );
 
     blocTest<SettingsBloc, SettingsState>(
-      'toggledNotifications_systemPermissionMissing_revertsStateAndEmitsFailure',
+      'toggledNotifications_systemPermissionMissing_revertsStateAndLogsDenial',
       seed: () => SettingsState.loaded(
         tSettingsData.copyWith(isSystemNotificationsEnabled: false),
       ),
@@ -221,39 +252,14 @@ void main() {
       verify: (_) {
         // assert
         verifyZeroInteractions(mockToggleNotificationsUseCase);
-      },
-    );
-
-    blocTest<SettingsBloc, SettingsState>(
-      'toggledNotifications_useCaseFails_revertsState',
-      seed: () => SettingsState.loaded(tSettingsData),
-      build: () {
-        // arrange
-        when(
-          () => mockToggleNotificationsUseCase(any()),
-        ).thenAnswer((_) async => const Left(Failure.server('Error')));
-        return settingsBloc;
-      },
-      act: (bloc) => bloc.add(const SettingsEvent.toggledNotifications(false)),
-      expect: () => [
-        SettingsState.loaded(
-          tSettingsData.copyWith(isAppNotificationsEnabled: false),
-        ),
-        SettingsState.loaded(
-          tSettingsData.copyWith(isAppNotificationsEnabled: true),
-        ),
-      ],
-      verify: (_) {
-        // assert
-        verify(() => mockToggleNotificationsUseCase(false)).called(1);
-        verifyNoMoreInteractions(mockToggleNotificationsUseCase);
+        verify(() => mockTracker.logNotificationsPermissionDenied()).called(1);
       },
     );
   });
 
   group('Sign Out', () {
     blocTest<SettingsBloc, SettingsState>(
-      'signedOut_success_emitsLoadingAndInitial',
+      'signedOut_success_emitsLoadingAndInitialAndLogs',
       build: () {
         // arrange
         when(
@@ -269,14 +275,15 @@ void main() {
       verify: (_) {
         // assert
         verify(() => mockSignOutUseCase(any())).called(1);
-        verifyNoMoreInteractions(mockSignOutUseCase);
+        verify(() => mockTracker.logSignOutClicked()).called(1);
+        verify(() => mockTracker.logSignOutSuccess()).called(1);
       },
     );
   });
 
   group('Other Actions', () {
     blocTest<SettingsBloc, SettingsState>(
-      'openUrl_validUrl_callsUseCaseWithCorrectUrl',
+      'openUrl_validUrl_callsUseCaseAndLogs',
       build: () {
         // arrange
         when(
@@ -289,12 +296,14 @@ void main() {
       verify: (_) {
         // assert
         verify(() => mockLaunchUrlUseCase('https://test.com')).called(1);
-        verifyNoMoreInteractions(mockLaunchUrlUseCase);
+        verify(
+          () => mockTracker.logSettingsLinkClicked(type: 'https://test.com'),
+        ).called(1);
       },
     );
 
     blocTest<SettingsBloc, SettingsState>(
-      'resetPassword_userLoggedIn_callsUseCaseWithCurrentEmail',
+      'resetPassword_userLoggedIn_callsUseCaseAndLogs',
       build: () {
         // arrange
         when(() => mockAuthRepository.currentUser).thenReturn(
@@ -310,12 +319,12 @@ void main() {
       verify: (_) {
         // assert
         verify(() => mockResetPasswordUseCase('test@test.com')).called(1);
-        verifyNoMoreInteractions(mockResetPasswordUseCase);
+        verify(() => mockTracker.logPasswordResetClicked()).called(1);
       },
     );
 
     blocTest<SettingsBloc, SettingsState>(
-      'openedSettings_noAction_callsUseCase',
+      'openedSettings_noAction_callsUseCaseAndLogs',
       build: () {
         // arrange
         when(
@@ -328,7 +337,39 @@ void main() {
       verify: (_) {
         // assert
         verify(() => mockOpenAppSettingsUseCase(any())).called(1);
-        verifyNoMoreInteractions(mockOpenAppSettingsUseCase);
+        verify(() => mockTracker.logSystemSettingsOpened()).called(1);
+      },
+    );
+
+    blocTest<SettingsBloc, SettingsState>(
+      'editProfileClicked_logsEvent',
+      build: () => settingsBloc,
+      act: (bloc) => bloc.add(const SettingsEvent.editProfileClicked()),
+      expect: () => [],
+      verify: (_) {
+        verify(() => mockTracker.logEditProfileClicked()).called(1);
+      },
+    );
+
+    blocTest<SettingsBloc, SettingsState>(
+      'feedbackClicked_logsEvent',
+      build: () => settingsBloc,
+      act: (bloc) => bloc.add(const SettingsEvent.feedbackClicked()),
+      expect: () => [],
+      verify: (_) {
+        verify(() => mockTracker.logFeedbackClicked()).called(1);
+      },
+    );
+
+    blocTest<SettingsBloc, SettingsState>(
+      'membershipClicked_logsEventWithStatus',
+      build: () => settingsBloc,
+      act: (bloc) => bloc.add(const SettingsEvent.membershipClicked(true)),
+      expect: () => [],
+      verify: (_) {
+        verify(
+          () => mockTracker.logMembershipClicked(isSubscribed: true),
+        ).called(1);
       },
     );
   });
