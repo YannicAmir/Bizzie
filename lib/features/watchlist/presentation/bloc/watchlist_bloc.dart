@@ -169,9 +169,24 @@ class WatchlistBloc extends Bloc<WatchlistEvent, WatchlistState> {
       AddToWatchlistParams(company: company, uid: uid),
     );
 
-    result.fold((failure) => emit(WatchlistState.failure(failure)), (_) {
-      _logger.info("Added ${event.ticker}, waiting for stream update");
-    });
+    result.fold(
+      (failure) {
+        _watchlistAnalytics.logOperationFailed(
+          operation: 'add',
+          errorMessage: failure.message,
+        );
+        emit(WatchlistState.failure(failure));
+      },
+      (_) {
+        _logger.info("Added ${event.ticker}, waiting for stream update");
+        _watchlistAnalytics.logItemAdded(
+          ticker: event.ticker,
+          companyName: event.name ?? event.ticker,
+          tabName: event.tabName ?? 'unknown',
+          durationOnPageSeconds: event.durationOnPageSeconds ?? 0,
+        );
+      },
+    );
   }
 
   Future<void> _onRemoveRequested(
@@ -188,8 +203,22 @@ class WatchlistBloc extends Bloc<WatchlistEvent, WatchlistState> {
       RemoveFromWatchlistParams(ticker: event.ticker, uid: uid),
     );
 
-    result.fold((failure) => emit(WatchlistState.failure(failure)), (_) {
-      _logger.info("Removed ${event.ticker}, waiting for stream update");
-    });
+    result.fold(
+      (failure) {
+        _watchlistAnalytics.logOperationFailed(
+          operation: 'remove',
+          errorMessage: failure.message,
+        );
+        emit(WatchlistState.failure(failure));
+      },
+      (_) {
+        _logger.info("Removed ${event.ticker}, waiting for stream update");
+        _watchlistAnalytics.logItemRemoved(
+          ticker: event.ticker,
+          tabName: event.tabName ?? 'unknown',
+          durationOnPageSeconds: event.durationOnPageSeconds ?? 0,
+        );
+      },
+    );
   }
 }

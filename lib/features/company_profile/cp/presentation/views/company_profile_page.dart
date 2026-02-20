@@ -158,12 +158,14 @@ class _CompanyProfileView extends StatefulWidget {
 class _CompanyProfileViewState extends State<_CompanyProfileView>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  late final DateTime _entranceTime;
 
   final List<CompanyProfileTab> _tabs = CompanyProfileTab.values;
 
   @override
   void initState() {
     super.initState();
+    _entranceTime = DateTime.now();
     _tabController = TabController(length: _tabs.length, vsync: this);
     _tabController.addListener(_handleTabSelection);
   }
@@ -339,6 +341,8 @@ class _CompanyProfileViewState extends State<_CompanyProfileView>
                           orElse: () =>
                               widget.initialCompany?.name ?? widget.ticker,
                         ),
+                        tabName: _tabs[_tabController.index].name,
+                        entranceTime: _entranceTime,
                       ),
                     ],
               bottom: isUnsupported
