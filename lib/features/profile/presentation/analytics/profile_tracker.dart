@@ -23,13 +23,34 @@ class ProfileTracker {
     );
   }
 
+  /// Logs when the profile screen is viewed.
+  Future<void> logProfileViewed() async {
+    await _logEvent('profile_viewed', {});
+  }
+
   /// Logs when the profile data is successfully loaded.
   /// Also sets the user property for favorite sector.
   Future<void> logProfileLoaded(ProfileDisplayData data) async {
+    await logProfileLoadSuccess();
     await _analytics.setUserProperty(
       name: 'favorite_sector',
       value: data.sectorName,
     );
+  }
+
+  /// Logs a successful profile data fetch.
+  Future<void> logProfileLoadSuccess() async {
+    await _logEvent('profile_load_success', {});
+  }
+
+  /// Logs when the settings icon is clicked.
+  Future<void> logSettingsClicked() async {
+    await _logEvent('profile_settings_clicked', {});
+  }
+
+  /// Logs when the premium upgrade card is clicked.
+  Future<void> logPremiumCardClicked() async {
+    await _logEvent('profile_premium_card_clicked', {});
   }
 
   /// Logs a technical failure fetching profile data.

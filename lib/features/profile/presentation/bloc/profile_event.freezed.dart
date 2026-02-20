@@ -55,11 +55,14 @@ extension ProfileEventPatterns on ProfileEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( Started value)?  started,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( Started value)?  started,TResult Function( SettingsClicked value)?  settingsClicked,TResult Function( PremiumCardClicked value)?  premiumCardClicked,TResult Function( NavigationProcessed value)?  navigationProcessed,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case Started() when started != null:
-return started(_that);case _:
+return started(_that);case SettingsClicked() when settingsClicked != null:
+return settingsClicked(_that);case PremiumCardClicked() when premiumCardClicked != null:
+return premiumCardClicked(_that);case NavigationProcessed() when navigationProcessed != null:
+return navigationProcessed(_that);case _:
   return orElse();
 
 }
@@ -77,11 +80,14 @@ return started(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( Started value)  started,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( Started value)  started,required TResult Function( SettingsClicked value)  settingsClicked,required TResult Function( PremiumCardClicked value)  premiumCardClicked,required TResult Function( NavigationProcessed value)  navigationProcessed,}){
 final _that = this;
 switch (_that) {
 case Started():
-return started(_that);case _:
+return started(_that);case SettingsClicked():
+return settingsClicked(_that);case PremiumCardClicked():
+return premiumCardClicked(_that);case NavigationProcessed():
+return navigationProcessed(_that);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -98,11 +104,14 @@ return started(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( Started value)?  started,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( Started value)?  started,TResult? Function( SettingsClicked value)?  settingsClicked,TResult? Function( PremiumCardClicked value)?  premiumCardClicked,TResult? Function( NavigationProcessed value)?  navigationProcessed,}){
 final _that = this;
 switch (_that) {
 case Started() when started != null:
-return started(_that);case _:
+return started(_that);case SettingsClicked() when settingsClicked != null:
+return settingsClicked(_that);case PremiumCardClicked() when premiumCardClicked != null:
+return premiumCardClicked(_that);case NavigationProcessed() when navigationProcessed != null:
+return navigationProcessed(_that);case _:
   return null;
 
 }
@@ -119,10 +128,13 @@ return started(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  started,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  started,TResult Function()?  settingsClicked,TResult Function()?  premiumCardClicked,TResult Function()?  navigationProcessed,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case Started() when started != null:
-return started();case _:
+return started();case SettingsClicked() when settingsClicked != null:
+return settingsClicked();case PremiumCardClicked() when premiumCardClicked != null:
+return premiumCardClicked();case NavigationProcessed() when navigationProcessed != null:
+return navigationProcessed();case _:
   return orElse();
 
 }
@@ -140,10 +152,13 @@ return started();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  started,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  started,required TResult Function()  settingsClicked,required TResult Function()  premiumCardClicked,required TResult Function()  navigationProcessed,}) {final _that = this;
 switch (_that) {
 case Started():
-return started();case _:
+return started();case SettingsClicked():
+return settingsClicked();case PremiumCardClicked():
+return premiumCardClicked();case NavigationProcessed():
+return navigationProcessed();case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -160,10 +175,13 @@ return started();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  started,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  started,TResult? Function()?  settingsClicked,TResult? Function()?  premiumCardClicked,TResult? Function()?  navigationProcessed,}) {final _that = this;
 switch (_that) {
 case Started() when started != null:
-return started();case _:
+return started();case SettingsClicked() when settingsClicked != null:
+return settingsClicked();case PremiumCardClicked() when premiumCardClicked != null:
+return premiumCardClicked();case NavigationProcessed() when navigationProcessed != null:
+return navigationProcessed();case _:
   return null;
 
 }
@@ -195,6 +213,102 @@ int get hashCode => runtimeType.hashCode;
 @override
 String toString() {
   return 'ProfileEvent.started()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class SettingsClicked implements ProfileEvent {
+  const SettingsClicked();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SettingsClicked);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'ProfileEvent.settingsClicked()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class PremiumCardClicked implements ProfileEvent {
+  const PremiumCardClicked();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PremiumCardClicked);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'ProfileEvent.premiumCardClicked()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class NavigationProcessed implements ProfileEvent {
+  const NavigationProcessed();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is NavigationProcessed);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'ProfileEvent.navigationProcessed()';
 }
 
 

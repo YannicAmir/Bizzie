@@ -34,6 +34,9 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     );
 
     on<Started>(_onStarted, transformer: restartable());
+    on<SettingsClicked>(_onSettingsClicked);
+    on<PremiumCardClicked>(_onPremiumCardClicked);
+    on<NavigationProcessed>(_onNavigationProcessed);
   }
 
   @override
@@ -44,6 +47,17 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
 
   Future<void> _onStarted(Started event, Emitter<ProfileState> emit) async {
     _logger.info('Fetching profile display data...');
+
+    final shouldLogView = state.maybeMap(
+      initial: (_) => true,
+      loading: (_) => true,
+      orElse: () => false,
+    );
+
+    if (shouldLogView) {
+      unawaited(_tracker.logProfileViewed());
+    }
+
     emit(const ProfileState.loading());
 
     final result = await _getProfileDisplayDataUseCase(NoParams());
@@ -63,6 +77,48 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
         _logger.info('Profile data fetched successfully');
         unawaited(_tracker.logProfileLoaded(data));
         emit(ProfileState.loaded(data));
+      },
+    );
+  }
+
+  Future<void> _onSettingsClicked(
+    SettingsClicked event,
+    Emitter<ProfileState> emit,
+  ) async {
+    state.mapOrNull(
+      loaded: (currentState) {
+        _logger.info('Settings clicked');
+        unawaited(_tracker.logSettingsClicked());
+        emit(currentState.copyWith(shouldNavigateToSettings: true));
+      },
+    );
+  }
+
+  Future<void> _onPremiumCardClicked(
+    PremiumCardClicked event,
+    Emitter<ProfileState> emit,
+  ) async {
+    state.mapOrNull(
+      loaded: (currentState) {
+        _logger.info('Premium card clicked');
+        unawaited(_tracker.logPremiumCardClicked());
+        emit(currentState.copyWith(shouldShowPaywall: true));
+      },
+    );
+  }
+
+  void _onNavigationProcessed(
+    NavigationProcessed event,
+    Emitter<ProfileState> emit,
+  ) {
+    state.mapOrNull(
+      loaded: (currentState) {
+        emit(
+          currentState.copyWith(
+            shouldNavigateToSettings: false,
+            shouldShowPaywall: false,
+          ),
+        );
       },
     );
   }

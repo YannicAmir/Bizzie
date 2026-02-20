@@ -47,12 +47,15 @@ void main() {
     mockGetProfileDisplayDataUseCase = MockGetProfileDisplayDataUseCase();
     mockUserRepository = MockUserRepository();
 
-    // Mock successful user stream initialization
     when(
       () => mockUserRepository.userStream,
     ).thenAnswer((_) => const Stream.empty());
 
     when(() => mockTracker.logProfileLoaded(any())).thenAnswer((_) async {});
+    when(() => mockTracker.logProfileViewed()).thenAnswer((_) async {});
+    when(() => mockTracker.logProfileLoadSuccess()).thenAnswer((_) async {});
+    when(() => mockTracker.logSettingsClicked()).thenAnswer((_) async {});
+    when(() => mockTracker.logPremiumCardClicked()).thenAnswer((_) async {});
     when(
       () => mockTracker.logProfileLoadFailure(
         type: any(named: 'type'),
@@ -83,7 +86,7 @@ void main() {
     );
 
     blocTest<ProfileBloc, ProfileState>(
-      'givenUseCaseSucceeds_whenStartedAdded_thenEmitLoadingThenLoadedAndLogSuccess',
+      'givenUseCaseSucceeds_whenStartedAdded_thenEmitLoadingThenLoadedAndLogViewAndSuccess',
       build: () {
         when(
           () => mockGetProfileDisplayDataUseCase(any()),
@@ -96,6 +99,28 @@ void main() {
         ProfileState.loaded(tProfileData),
       ],
       verify: (_) {
+        verify(() => mockTracker.logProfileViewed()).called(1);
+        verify(() => mockTracker.logProfileLoaded(tProfileData)).called(1);
+      },
+    );
+
+    blocTest<ProfileBloc, ProfileState>(
+      'givenAlreadyLoaded_whenStartedAdded_thenRefreshesButDoesNotLogViewAgain',
+      build: () {
+        when(
+          () => mockGetProfileDisplayDataUseCase(any()),
+        ).thenAnswer((_) async => Right(tProfileData));
+        return buildBloc();
+      },
+      seed: () => ProfileState.loaded(tProfileData),
+      act: (bloc) => bloc.add(const ProfileEvent.started()),
+      expect: () => [
+        const ProfileState.loading(),
+        ProfileState.loaded(tProfileData),
+      ],
+      verify: (_) {
+        // Should NOT log view again if already loaded/loading
+        verifyNever(() => mockTracker.logProfileViewed());
         verify(() => mockTracker.logProfileLoaded(tProfileData)).called(1);
       },
     );
@@ -114,6 +139,7 @@ void main() {
         const ProfileState.failure(ServerFailure('Failed fetching data')),
       ],
       verify: (_) {
+        verify(() => mockTracker.logProfileViewed()).called(1);
         verify(
           () => mockTracker.logProfileLoadFailure(
             type: any(named: 'type'),
@@ -121,6 +147,65 @@ void main() {
           ),
         ).called(1);
       },
+    );
+
+    blocTest<ProfileBloc, ProfileState>(
+      'whenSettingsClicked_thenEmitLoadedWithSettingsMarkerAndLogAnalytics',
+      build: () {
+        when(
+          () => mockGetProfileDisplayDataUseCase(any()),
+        ).thenAnswer((_) async => Right(tProfileData));
+        return buildBloc();
+      },
+      seed: () => ProfileState.loaded(tProfileData),
+      act: (bloc) => bloc.add(const ProfileEvent.settingsClicked()),
+      expect: () => [
+        ProfileState.loaded(tProfileData, shouldNavigateToSettings: true),
+      ],
+      verify: (_) {
+        verify(() => mockTracker.logSettingsClicked()).called(1);
+      },
+    );
+
+    blocTest<ProfileBloc, ProfileState>(
+      'whenPremiumCardClicked_thenEmitLoadedWithPaywallMarkerAndLogAnalytics',
+      build: () {
+        when(
+          () => mockGetProfileDisplayDataUseCase(any()),
+        ).thenAnswer((_) async => Right(tProfileData));
+        return buildBloc();
+      },
+      seed: () => ProfileState.loaded(tProfileData),
+      act: (bloc) => bloc.add(const ProfileEvent.premiumCardClicked()),
+      expect: () => [
+        ProfileState.loaded(tProfileData, shouldShowPaywall: true),
+      ],
+      verify: (_) {
+        verify(() => mockTracker.logPremiumCardClicked()).called(1);
+      },
+    );
+
+    blocTest<ProfileBloc, ProfileState>(
+      'whenNavigationProcessed_thenResetMarkers',
+      build: () {
+        when(
+          () => mockGetProfileDisplayDataUseCase(any()),
+        ).thenAnswer((_) async => Right(tProfileData));
+        return buildBloc();
+      },
+      seed: () => ProfileState.loaded(
+        tProfileData,
+        shouldNavigateToSettings: true,
+        shouldShowPaywall: true,
+      ),
+      act: (bloc) => bloc.add(const ProfileEvent.navigationProcessed()),
+      expect: () => [
+        ProfileState.loaded(
+          tProfileData,
+          shouldNavigateToSettings: false,
+          shouldShowPaywall: false,
+        ),
+      ],
     );
   });
 }
