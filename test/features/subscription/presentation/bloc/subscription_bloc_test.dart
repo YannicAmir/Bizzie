@@ -175,6 +175,9 @@ void main() {
       () => mockAnalytics.logTrialStarted(any()),
     ).thenAnswer((_) async => {});
     when(
+      () => mockAnalytics.logRestoreRequested(source: any(named: 'source')),
+    ).thenAnswer((_) async => {});
+    when(
       () => mockAuthBloc.state,
     ).thenReturn(const AuthState.unauthenticated());
     whenListen(
@@ -637,6 +640,12 @@ void main() {
             true,
           ),
         ],
+        verify: (_) {
+          verify(
+            () =>
+                mockAnalytics.logRestoreRequested(source: any(named: 'source')),
+          ).called(1);
+        },
       );
 
       blocTest<SubscriptionBloc, SubscriptionState>(
@@ -659,6 +668,12 @@ void main() {
             'restore error',
           ),
         ],
+        verify: (_) {
+          verify(
+            () =>
+                mockAnalytics.logRestoreRequested(source: any(named: 'source')),
+          ).called(1);
+        },
       );
     });
 

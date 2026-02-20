@@ -394,6 +394,9 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
     Emitter<SubscriptionState> emit,
   ) async {
     _logger.info('Restore purchases requested');
+    _analytics.logRestoreRequested(
+      source: state.paywallSource ?? PaywallSource.app,
+    );
     emit(SubscriptionState.loading(status: state.status));
 
     final result = await _restorePurchases(NoParams());
