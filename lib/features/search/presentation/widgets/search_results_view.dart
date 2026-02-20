@@ -13,16 +13,18 @@ import 'package:bizzie/app/routes/app_routes.dart';
 import 'package:bizzie/features/onboarding/domain/models/company.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:bizzie/features/search/domain/enums/search_analytics_enums.dart';
+
 class SearchResultsView extends StatelessWidget {
   final List<StockSymbol> results;
   final String query;
-  final String? sourceTab;
+  final SearchSource? source;
 
   const SearchResultsView({
     super.key,
     required this.results,
     required this.query,
-    this.sourceTab,
+    this.source,
   });
 
   @override
@@ -41,9 +43,14 @@ class SearchResultsView extends StatelessWidget {
                 name: stock.name,
                 showLeading: false,
                 onTap: () {
-                  final String routeName = switch (sourceTab) {
-                    'reports' => AppRoutes.companyProfileReports,
-                    'profile' => AppRoutes.companyProfileProfile,
+                  context.read<SearchBloc>().add(
+                    SearchEvent.resultClicked(
+                      ticker: stock.symbol,
+                      isAiResult: false,
+                    ),
+                  );
+                  final String routeName = switch (source) {
+                    SearchSource.reports => AppRoutes.companyProfileReports,
                     _ => AppRoutes.companyProfileHome,
                   };
 

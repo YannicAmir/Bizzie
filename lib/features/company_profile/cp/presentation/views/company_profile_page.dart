@@ -125,7 +125,11 @@ class CompanyProfilePage extends StatelessWidget {
               getIt<HistoricalPriceEodBloc>()
                 ..add(HistoricalPriceEodEvent.loadRequested(ticker)),
         ),
-        BlocProvider(create: (context) => getIt<UpcomingEarningsBloc>()),
+        BlocProvider(
+          create: (context) =>
+              getIt<UpcomingEarningsBloc>()
+                ..add(UpcomingEarningsEvent.loadRequested(ticker)),
+        ),
         BlocProvider(
           create: (context) =>
               getIt<FinancialStatementsBloc>()

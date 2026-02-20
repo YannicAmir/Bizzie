@@ -2,6 +2,7 @@ import 'package:bizzie/features/subscription/presentation/bloc/subscription_bloc
 import 'package:bizzie/features/subscription/presentation/bloc/subscription_event.dart';
 import 'package:bizzie/features/subscription/presentation/bloc/subscription_state.dart';
 import 'package:bizzie/core/enums/paywall_source.dart';
+import 'package:bizzie/features/subscription/domain/enums/paywall_type.dart';
 import 'package:bizzie/features/subscription/presentation/extensions/subscription_state_extensions.dart';
 import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
 import 'package:bizzie/features/user/presentation/extensions/user_state_extensions.dart';
@@ -42,7 +43,10 @@ class _DiscountedSubscriptionPageState
   void initState() {
     super.initState();
     context.read<SubscriptionBloc>().add(
-      SubscriptionEvent.viewed(source: widget.source),
+      SubscriptionEvent.viewed(
+        source: widget.source,
+        paywallType: PaywallType.discount,
+      ),
     );
   }
 

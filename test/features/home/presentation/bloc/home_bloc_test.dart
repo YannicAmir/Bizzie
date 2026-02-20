@@ -40,18 +40,12 @@ void main() {
     );
 
     blocTest<HomeBloc, HomeState>(
-      'searchTapped_callsLogHomeSearchTapped',
-      build: () {
-        // arrange
-        when(
-          () => mockAnalytics.logHomeSearchTapped(),
-        ).thenAnswer((_) async {});
-        return bloc;
-      },
+      'searchTapped_emitsNothing',
+      build: () => bloc,
       act: (bloc) => bloc.add(const HomeEvent.searchTapped()),
-      // assert
+      expect: () => [],
       verify: (_) {
-        verify(() => mockAnalytics.logHomeSearchTapped()).called(1);
+        verifyNever(() => mockAnalytics.logHomeViewed());
       },
     );
 

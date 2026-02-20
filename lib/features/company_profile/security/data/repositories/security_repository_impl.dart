@@ -9,6 +9,8 @@ import 'package:bizzie/features/company_profile/shared/domain/interfaces/i_compa
 import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
 
+const _kUpcomingEarningsWindowDays = 7;
+
 @LazySingleton(as: ISecurityRepository)
 class SecurityRepositoryImpl implements ISecurityRepository {
   final ICompanyRepository _companyRepository;
@@ -79,12 +81,14 @@ class SecurityRepositoryImpl implements ISecurityRepository {
 
       final now = DateTime.now();
       final oneDayAgo = now.subtract(const Duration(days: 1));
-      final sevenDaysFromNow = now.add(const Duration(days: 7));
+      final windowEnd = now.add(
+        const Duration(days: _kUpcomingEarningsWindowDays),
+      );
 
       final upcoming = earnings.where((e) {
         final date = e.toDateTime();
         if (date == null) return false;
-        return date.isAfter(oneDayAgo) && date.isBefore(sevenDaysFromNow);
+        return date.isAfter(oneDayAgo) && date.isBefore(windowEnd);
       }).toList();
 
       if (upcoming.isEmpty) return right(null);

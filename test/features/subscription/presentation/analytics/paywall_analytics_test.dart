@@ -3,6 +3,7 @@ import 'package:bizzie/core/interfaces/i_analytics_service.dart';
 import 'package:bizzie/features/subscription/domain/enums/subscription_package_type.dart';
 import 'package:bizzie/features/subscription/domain/enums/subscription_period_type.dart';
 import 'package:bizzie/features/subscription/domain/models/analytics_purchase_params.dart';
+import 'package:bizzie/features/subscription/domain/enums/paywall_type.dart';
 import 'package:bizzie/features/subscription/presentation/analytics/paywall_analytics.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
@@ -35,14 +36,36 @@ void main() {
   group('PaywallAnalytics', () {
     const tSource = PaywallSource.onboarding;
 
-    test('logTriggered_standardCall_logsEventWithSource', () async {
+    test('logTriggered_standardCall_logsEventWithSourceAndType', () async {
       // arrange & act
-      await analytics.logTriggered(source: tSource);
+      await analytics.logTriggered(
+        source: tSource,
+        paywallType: PaywallType.regular,
+      );
 
       // assert
       verify(
         () => mockAnalyticsService.logEvent(
           name: 'paywall_triggered',
+          parameters: any(
+            named: 'parameters',
+            that: allOf(
+              containsPair('source', tSource.name),
+              containsPair('paywall_type', PaywallType.regular.name),
+            ),
+          ),
+        ),
+      ).called(1);
+    });
+
+    test('logGiftViewed_standardCall_logsEventWithSource', () async {
+      // arrange & act
+      await analytics.logGiftViewed(source: tSource);
+
+      // assert
+      verify(
+        () => mockAnalyticsService.logEvent(
+          name: 'paywall_gift_viewed',
           parameters: any(
             named: 'parameters',
             that: containsPair('source', tSource.name),
@@ -51,14 +74,30 @@ void main() {
       ).called(1);
     });
 
-    test('logGiftModalViewed_standardCall_logsEventWithSource', () async {
+    test('logGiftClaimed_standardCall_logsEventWithSource', () async {
       // arrange & act
-      await analytics.logGiftModalViewed(source: tSource);
+      await analytics.logGiftClaimed(source: tSource);
 
       // assert
       verify(
         () => mockAnalyticsService.logEvent(
-          name: 'paywall_gift_modal_viewed',
+          name: 'paywall_gift_claimed',
+          parameters: any(
+            named: 'parameters',
+            that: containsPair('source', tSource.name),
+          ),
+        ),
+      ).called(1);
+    });
+
+    test('logGiftDismissed_standardCall_logsEventWithSource', () async {
+      // arrange & act
+      await analytics.logGiftDismissed(source: tSource);
+
+      // assert
+      verify(
+        () => mockAnalyticsService.logEvent(
+          name: 'paywall_gift_dismissed',
           parameters: any(
             named: 'parameters',
             that: containsPair('source', tSource.name),

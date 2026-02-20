@@ -20,7 +20,7 @@ class _SubscriptionGiftModalState extends State<SubscriptionGiftModal> {
   void initState() {
     super.initState();
     context.read<SubscriptionBloc>().add(
-      SubscriptionEvent.giftModalViewed(source: widget.source),
+      SubscriptionEvent.giftViewed(source: widget.source),
     );
   }
 
@@ -45,7 +45,7 @@ class _SubscriptionGiftModalState extends State<SubscriptionGiftModal> {
                   context.read<SubscriptionBloc>().add(
                     SubscriptionEvent.giftClaimed(source: widget.source),
                   );
-                  Navigator.of(context).pop();
+                  Navigator.of(context).pop(true);
                 },
               ),
               const SizedBox(height: 16),

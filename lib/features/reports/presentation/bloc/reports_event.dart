@@ -21,7 +21,6 @@ class ReportsEvent with _$ReportsEvent {
     required ReportsEntrySource entrySource,
     ReportsNotificationType? notificationType,
   }) = Viewed;
-  const factory ReportsEvent.searchClicked() = SearchClicked;
   const factory ReportsEvent.linkOpened({
     required String ticker,
     required String filingType,

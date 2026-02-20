@@ -39,30 +39,6 @@ void main() {
     });
 
     test(
-      'logHomeSearchTapped_successful_callsLogEventWithCorrectParams',
-      () async {
-        // arrange
-        when(
-          () => mockAnalyticsService.logEvent(
-            name: any(named: 'name'),
-            parameters: any(named: 'parameters'),
-          ),
-        ).thenAnswer((_) async {});
-
-        // act
-        await homeAnalytics.logHomeSearchTapped();
-
-        // assert
-        verify(
-          () => mockAnalyticsService.logEvent(
-            name: 'home_search_tapped',
-            parameters: {'screen_name': screenName},
-          ),
-        ).called(1);
-      },
-    );
-
-    test(
       'logHomeWatchlistTapped_successful_callsLogEventWithCorrectParams',
       () async {
         // arrange

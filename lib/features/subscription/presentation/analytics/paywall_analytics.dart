@@ -1,5 +1,6 @@
 import 'package:bizzie/core/enums/paywall_source.dart';
 import 'package:bizzie/core/interfaces/i_analytics_service.dart';
+import 'package:bizzie/features/subscription/domain/enums/paywall_type.dart';
 import 'package:bizzie/features/subscription/domain/enums/subscription_period_type.dart';
 import 'package:bizzie/features/subscription/domain/models/analytics_purchase_params.dart';
 import 'package:injectable/injectable.dart';
@@ -12,6 +13,7 @@ class PaywallAnalytics {
 
   static const _kScreenName = 'paywall';
 
+  /// Internal helper to log events with standard paywall metadata.
   Future<void> _logEvent(String name, Map<String, Object> params) async {
     await _analytics.logEvent(
       name: name,
@@ -23,14 +25,33 @@ class PaywallAnalytics {
     );
   }
 
-  Future<void> logTriggered({required PaywallSource source}) async {
-    await _logEvent('paywall_triggered', {'source': source.name});
+  /// Logs when a paywall is triggered and displayed to the user.
+  Future<void> logTriggered({
+    required PaywallSource source,
+    required PaywallType paywallType,
+  }) async {
+    await _logEvent('paywall_triggered', {
+      'source': source.name,
+      'paywall_type': paywallType.name,
+    });
   }
 
-  Future<void> logGiftModalViewed({required PaywallSource source}) async {
-    await _logEvent('paywall_gift_modal_viewed', {'source': source.name});
+  /// Logs when the subscription gift modal is viewed.
+  Future<void> logGiftViewed({required PaywallSource source}) async {
+    await _logEvent('paywall_gift_viewed', {'source': source.name});
   }
 
+  /// Logs when the user claims the gift from the modal.
+  Future<void> logGiftClaimed({required PaywallSource source}) async {
+    await _logEvent('paywall_gift_claimed', {'source': source.name});
+  }
+
+  /// Logs when the user dismisses the gift modal without claiming.
+  Future<void> logGiftDismissed({required PaywallSource source}) async {
+    await _logEvent('paywall_gift_dismissed', {'source': source.name});
+  }
+
+  /// Logs a successful subscription conversion with financial and architectural metadata.
   Future<void> logConversion({
     required PaywallSource source,
     bool isDiscountFlow = false,
@@ -64,6 +85,7 @@ class PaywallAnalytics {
     );
   }
 
+  /// Logs a successful non-trial purchase completion.
   Future<void> logPurchaseSuccess(AnalyticsPurchaseParams params) async {
     if (params.source == PaywallSource.onboarding) {
       await _analytics.setUserProperty(
@@ -88,6 +110,7 @@ class PaywallAnalytics {
     });
   }
 
+  /// Logs the start of a subscription trial period.
   Future<void> logTrialStarted(AnalyticsPurchaseParams params) async {
     if (params.source == PaywallSource.onboarding) {
       await _analytics.setUserProperty(
@@ -112,6 +135,7 @@ class PaywallAnalytics {
     });
   }
 
+  /// Logs when the paywall is dismissed by the user.
   Future<void> logDismissed({required PaywallSource source}) async {
     await _logEvent('paywall_dismissed', {'source': source.name});
   }

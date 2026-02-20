@@ -57,7 +57,6 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
     on<ReportsUpdated>(_onReportsUpdated);
     on<Refresh>(_onRefresh);
     on<Viewed>(_onViewed);
-    on<SearchClicked>(_onSearchClicked);
     on<LinkOpened>(_onLinkOpened);
     on<SummaryRequested>(_onSummaryRequested);
     on<SummarizeLockedClicked>(_onSummarizeLockedClicked);
@@ -67,10 +66,6 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
     on<EmptyCtaClicked>(_onEmptyCtaClicked);
     on<ActivityUpdated>(_onActivityUpdated);
     on<Reset>(_onReset);
-  }
-
-  void _onSearchClicked(SearchClicked event, Emitter<ReportsState> emit) {
-    _tracker.logSearchClicked();
   }
 
   void _onLinkOpened(LinkOpened event, Emitter<ReportsState> emit) {

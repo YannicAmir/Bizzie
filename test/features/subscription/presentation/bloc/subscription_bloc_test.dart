@@ -25,6 +25,7 @@ import 'package:bizzie/features/subscription/presentation/analytics/paywall_anal
 import 'package:bizzie/features/subscription/domain/enums/subscription_package_type.dart';
 import 'package:bizzie/features/subscription/domain/models/analytics_purchase_params.dart';
 import 'package:bizzie/features/subscription/domain/enums/subscription_period_type.dart';
+import 'package:bizzie/features/subscription/domain/enums/paywall_type.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
@@ -122,6 +123,7 @@ void main() {
     registerFallbackValue(SubscriptionStatus.initial());
     registerFallbackValue(const Failure.server(''));
     registerFallbackValue(PaywallSource.unknown);
+    registerFallbackValue(PaywallType.regular);
     registerFallbackValue(
       const AnalyticsPurchaseParams(
         productId: '',
@@ -143,13 +145,22 @@ void main() {
     mockAuthBloc = MockAuthBloc();
     mockAnalytics = MockPaywallAnalytics();
     when(
-      () => mockAnalytics.logGiftModalViewed(source: any(named: 'source')),
+      () => mockAnalytics.logGiftViewed(source: any(named: 'source')),
     ).thenAnswer((_) async => {});
     mockOnboardingTracker = MockOnboardingTracker();
     isSubscribedController = StreamController<bool>.broadcast();
 
     when(
-      () => mockAnalytics.logTriggered(source: any(named: 'source')),
+      () => mockAnalytics.logTriggered(
+        source: any(named: 'source'),
+        paywallType: any<PaywallType>(named: 'paywallType'),
+      ),
+    ).thenAnswer((_) async => {});
+    when(
+      () => mockAnalytics.logGiftClaimed(source: any(named: 'source')),
+    ).thenAnswer((_) async => {});
+    when(
+      () => mockAnalytics.logGiftDismissed(source: any(named: 'source')),
     ).thenAnswer((_) async => {});
     when(
       () => mockOnboardingTracker.logStepViewed(step: any(named: 'step')),
@@ -335,7 +346,10 @@ void main() {
         build: () => createBloc(),
         // act
         act: (bloc) => bloc.add(
-          const SubscriptionEvent.viewed(source: PaywallSource.onboarding),
+          const SubscriptionEvent.viewed(
+            source: PaywallSource.onboarding,
+            paywallType: PaywallType.regular,
+          ),
         ),
         // assert
         expect: () => [
@@ -347,7 +361,10 @@ void main() {
         ],
         verify: (_) {
           verify(
-            () => mockAnalytics.logTriggered(source: PaywallSource.onboarding),
+            () => mockAnalytics.logTriggered(
+              source: PaywallSource.onboarding,
+              paywallType: PaywallType.regular,
+            ),
           ).called(1);
         },
       );
@@ -920,26 +937,24 @@ void main() {
     });
   });
 
-  group('giftModal', () {
+  group('gift', () {
     const tSource = PaywallSource.settings;
 
     blocTest<SubscriptionBloc, SubscriptionState>(
-      'giftModalViewed_logsAnalytics',
+      'giftViewed_logsAnalytics',
       // arrange
       build: () => createBloc(),
       // act
       act: (bloc) =>
-          bloc.add(const SubscriptionEvent.giftModalViewed(source: tSource)),
+          bloc.add(const SubscriptionEvent.giftViewed(source: tSource)),
       // assert
       verify: (_) {
-        verify(
-          () => mockAnalytics.logGiftModalViewed(source: tSource),
-        ).called(1);
+        verify(() => mockAnalytics.logGiftViewed(source: tSource)).called(1);
       },
     );
 
     blocTest<SubscriptionBloc, SubscriptionState>(
-      'giftClaimed_emitsNavigationFlagThenResets',
+      'giftClaimed_emitsNavigationFlagThenResetsAndLogsAnalytics',
       // arrange
       build: () => createBloc(),
       seed: () => SubscriptionState.loaded(
@@ -965,6 +980,22 @@ void main() {
           false,
         ),
       ],
+      verify: (_) {
+        verify(() => mockAnalytics.logGiftClaimed(source: tSource)).called(1);
+      },
+    );
+
+    blocTest<SubscriptionBloc, SubscriptionState>(
+      'giftDismissed_logsAnalytics',
+      // arrange
+      build: () => createBloc(),
+      // act
+      act: (bloc) =>
+          bloc.add(const SubscriptionEvent.giftDismissed(source: tSource)),
+      // assert
+      verify: (_) {
+        verify(() => mockAnalytics.logGiftDismissed(source: tSource)).called(1);
+      },
     );
   });
 }

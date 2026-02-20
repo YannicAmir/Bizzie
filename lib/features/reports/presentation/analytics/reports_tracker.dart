@@ -30,11 +30,6 @@ class ReportsTracker {
     });
   }
 
-  /// Logs when the user taps the global search bar from the reports tab.
-  Future<void> logSearchClicked() async {
-    await _logEvent('reports_search_clicked', {});
-  }
-
   /// Logs when the user clicks 'View Full Report' to open an external SEC link.
   Future<void> logLinkOpened({
     required String ticker,

@@ -16,13 +16,6 @@ class HomeAnalytics {
     );
   }
 
-  Future<void> logHomeSearchTapped() async {
-    await _analytics.logEvent(
-      name: 'home_search_tapped',
-      parameters: {'screen_name': _screenName},
-    );
-  }
-
   Future<void> logHomeWatchlistTapped({required String ticker}) async {
     await _analytics.logEvent(
       name: 'home_watchlist_tapped',

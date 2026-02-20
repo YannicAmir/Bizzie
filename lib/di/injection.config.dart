@@ -378,6 +378,7 @@ import '../features/search/domain/usecases/get_recommended_brands_usecase.dart'
 import '../features/search/domain/usecases/get_search_dashboard_data_usecase.dart'
     as _i555;
 import '../features/search/domain/usecases/search_stocks_usecase.dart' as _i130;
+import '../features/search/presentation/analytics/search_tracker.dart' as _i687;
 import '../features/search/presentation/bloc/search_bloc.dart' as _i348;
 import '../features/settings/domain/usecases/get_settings_display_data_usecase.dart'
     as _i594;
@@ -773,6 +774,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i471.ReportsTracker>(
       () => _i471.ReportsTracker(gh<_i529.IAnalyticsService>()),
+    );
+    gh.lazySingleton<_i687.SearchTracker>(
+      () => _i687.SearchTracker(gh<_i529.IAnalyticsService>()),
     );
     gh.lazySingleton<_i780.PaywallAnalytics>(
       () => _i780.PaywallAnalytics(gh<_i529.IAnalyticsService>()),
@@ -1434,14 +1438,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i693.GetRecommendedBrandsUseCase>(),
       ),
     );
-    gh.factory<_i348.SearchBloc>(
-      () => _i348.SearchBloc(
-        gh<_i130.SearchStocksUseCase>(),
-        gh<_i555.GetSearchDashboardDataUseCase>(),
-        gh<_i691.FindStockForProductUseCase>(),
-        gh<_i615.IUserRepository>(),
-      ),
-    );
     gh.factory<_i874.CompleteOnboardingUseCase>(
       () => _i874.CompleteOnboardingUseCase(
         gh<_i329.IOnboardingRepository>(),
@@ -1523,6 +1519,15 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i999.UnsubscribeFromTopic>(),
         gh<_i961.ClearCachedToken>(),
         gh<_i1014.NotificationTracker>(),
+      ),
+    );
+    gh.factory<_i348.SearchBloc>(
+      () => _i348.SearchBloc(
+        gh<_i130.SearchStocksUseCase>(),
+        gh<_i555.GetSearchDashboardDataUseCase>(),
+        gh<_i691.FindStockForProductUseCase>(),
+        gh<_i687.SearchTracker>(),
+        gh<_i583.ILocalStorageService>(),
       ),
     );
     gh.factory<_i593.OnboardingBloc>(

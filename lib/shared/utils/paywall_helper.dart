@@ -1,5 +1,7 @@
 import 'package:bizzie/app/routes/app_routes.dart';
 import 'package:bizzie/core/enums/paywall_source.dart';
+import 'package:bizzie/features/subscription/presentation/bloc/subscription_bloc.dart';
+import 'package:bizzie/features/subscription/presentation/bloc/subscription_event.dart';
 import 'package:bizzie/features/subscription/presentation/widgets/subscription_gift_modal.dart';
 import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
 import 'package:flutter/material.dart';
@@ -28,11 +30,17 @@ class PaywallHelper {
       if (!isSubscribed) {
         // 3. Show gift modal if not subscribed
         // The gift modal itself handles the redirection to discounted-paywall on dismissal
-        showModalBottomSheet(
+        final result = await showModalBottomSheet<bool>(
           context: context,
           backgroundColor: theme.colorScheme.scrim,
           builder: (context) => SubscriptionGiftModal(source: source),
         );
+
+        if (context.mounted && result != true) {
+          context.read<SubscriptionBloc>().add(
+            SubscriptionEvent.giftDismissed(source: source),
+          );
+        }
       }
     }
   }

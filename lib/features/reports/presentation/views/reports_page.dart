@@ -15,6 +15,7 @@ import 'package:bizzie/features/user/presentation/extensions/user_state_extensio
 import 'package:bizzie/features/reports/domain/enums/reports_analytics_enums.dart';
 import 'package:bizzie/features/reports/presentation/extensions/reports_state_extensions.dart';
 import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
+import 'package:bizzie/features/search/domain/enums/search_analytics_enums.dart';
 
 class ReportsPage extends StatefulWidget {
   final ReportsEntrySource entrySource;
@@ -68,8 +69,7 @@ class _ReportsPageState extends State<ReportsPage> {
         title: BizzieSearchBar(
           readOnly: true,
           onTap: () {
-            context.read<ReportsBloc>().add(const ReportsEvent.searchClicked());
-            context.push(AppRoutes.search, extra: 'reports');
+            context.push(AppRoutes.search, extra: SearchSource.reports);
           },
         ),
       ),
@@ -169,7 +169,7 @@ class _ReportsEmptyState extends StatelessWidget {
                   context.read<ReportsBloc>().add(
                     const ReportsEvent.emptyCtaClicked(),
                   );
-                  context.push(AppRoutes.search, extra: 'reports');
+                  context.push(AppRoutes.search, extra: SearchSource.reports);
                 },
               ),
             ),

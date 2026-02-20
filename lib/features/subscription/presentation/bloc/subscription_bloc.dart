@@ -72,8 +72,9 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
     on<SubscriptionExpirationReached>(_onExpirationReached);
     on<SubscriptionResetPurchaseState>(_onResetPurchaseState);
     on<SubscriptionViewed>(_onViewed);
-    on<SubscriptionGiftModalViewed>(_onGiftModalViewed);
+    on<SubscriptionGiftViewed>(_onGiftViewed);
     on<SubscriptionGiftClaimed>(_onGiftClaimed);
+    on<SubscriptionGiftDismissed>(_onGiftDismissed);
   }
 
   Future<void> _onResetPurchaseState(
@@ -123,21 +124,26 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
     SubscriptionViewed event,
     Emitter<SubscriptionState> emit,
   ) async {
-    _logger.info('Paywall viewed from source: ${event.source}');
+    _logger.info(
+      'Paywall viewed from source: ${event.source} (Type: ${event.paywallType})',
+    );
     emit(state.copyWith(paywallSource: event.source));
-    await _analytics.logTriggered(source: event.source);
+    await _analytics.logTriggered(
+      source: event.source,
+      paywallType: event.paywallType,
+    );
 
     if (event.source == PaywallSource.onboarding) {
       await _onboardingTracker.logStepViewed(step: OnboardingStep.paywall);
     }
   }
 
-  Future<void> _onGiftModalViewed(
-    SubscriptionGiftModalViewed event,
+  Future<void> _onGiftViewed(
+    SubscriptionGiftViewed event,
     Emitter<SubscriptionState> emit,
   ) async {
     _logger.info('Gift modal viewed from source: ${event.source}');
-    await _analytics.logGiftModalViewed(source: event.source);
+    await _analytics.logGiftViewed(source: event.source);
   }
 
   Future<void> _onGiftClaimed(
@@ -145,12 +151,21 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
     Emitter<SubscriptionState> emit,
   ) async {
     _logger.info('Gift claimed from source: ${event.source}');
+    await _analytics.logGiftClaimed(source: event.source);
     state.mapOrNull(
       loaded: (s) {
         emit(s.copyWith(shouldNavigateToDiscountedPaywall: true));
         emit(s.copyWith(shouldNavigateToDiscountedPaywall: false));
       },
     );
+  }
+
+  Future<void> _onGiftDismissed(
+    SubscriptionGiftDismissed event,
+    Emitter<SubscriptionState> emit,
+  ) async {
+    _logger.info('Gift dismissed from source: ${event.source}');
+    await _analytics.logGiftDismissed(source: event.source);
   }
 
   Future<void> _onRefreshRequested(

@@ -57,21 +57,6 @@ void main() {
       ).called(1);
     });
 
-    test('logSearchClicked_success_logsEvent', () async {
-      // arrange
-
-      // act
-      await tracker.logSearchClicked();
-
-      // assert
-      verify(
-        () => mockAnalytics.logEvent(
-          name: 'reports_search_clicked',
-          parameters: {'screen_name': screenName},
-        ),
-      ).called(1);
-    });
-
     test('logLinkOpened_success_logsEventWithCorrectParams', () async {
       // arrange
       const ticker = 'AAPL';

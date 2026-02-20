@@ -55,14 +55,18 @@ extension SearchEventPatterns on SearchEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Started value)?  started,TResult Function( _QueryChanged value)?  queryChanged,TResult Function( _Cleared value)?  cleared,TResult Function( _AiSearchRequested value)?  aiSearchRequested,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Started value)?  started,TResult Function( _QueryChanged value)?  queryChanged,TResult Function( _Cleared value)?  cleared,TResult Function( _SearchCleared value)?  searchCleared,TResult Function( _ResultClicked value)?  resultClicked,TResult Function( _RecommendedClicked value)?  recommendedClicked,TResult Function( _AiSearchRequested value)?  aiSearchRequested,TResult Function( _SearchCancelled value)?  searchCancelled,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _Started() when started != null:
 return started(_that);case _QueryChanged() when queryChanged != null:
 return queryChanged(_that);case _Cleared() when cleared != null:
-return cleared(_that);case _AiSearchRequested() when aiSearchRequested != null:
-return aiSearchRequested(_that);case _:
+return cleared(_that);case _SearchCleared() when searchCleared != null:
+return searchCleared(_that);case _ResultClicked() when resultClicked != null:
+return resultClicked(_that);case _RecommendedClicked() when recommendedClicked != null:
+return recommendedClicked(_that);case _AiSearchRequested() when aiSearchRequested != null:
+return aiSearchRequested(_that);case _SearchCancelled() when searchCancelled != null:
+return searchCancelled(_that);case _:
   return orElse();
 
 }
@@ -80,14 +84,18 @@ return aiSearchRequested(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Started value)  started,required TResult Function( _QueryChanged value)  queryChanged,required TResult Function( _Cleared value)  cleared,required TResult Function( _AiSearchRequested value)  aiSearchRequested,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Started value)  started,required TResult Function( _QueryChanged value)  queryChanged,required TResult Function( _Cleared value)  cleared,required TResult Function( _SearchCleared value)  searchCleared,required TResult Function( _ResultClicked value)  resultClicked,required TResult Function( _RecommendedClicked value)  recommendedClicked,required TResult Function( _AiSearchRequested value)  aiSearchRequested,required TResult Function( _SearchCancelled value)  searchCancelled,}){
 final _that = this;
 switch (_that) {
 case _Started():
 return started(_that);case _QueryChanged():
 return queryChanged(_that);case _Cleared():
-return cleared(_that);case _AiSearchRequested():
-return aiSearchRequested(_that);case _:
+return cleared(_that);case _SearchCleared():
+return searchCleared(_that);case _ResultClicked():
+return resultClicked(_that);case _RecommendedClicked():
+return recommendedClicked(_that);case _AiSearchRequested():
+return aiSearchRequested(_that);case _SearchCancelled():
+return searchCancelled(_that);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -104,14 +112,18 @@ return aiSearchRequested(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Started value)?  started,TResult? Function( _QueryChanged value)?  queryChanged,TResult? Function( _Cleared value)?  cleared,TResult? Function( _AiSearchRequested value)?  aiSearchRequested,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Started value)?  started,TResult? Function( _QueryChanged value)?  queryChanged,TResult? Function( _Cleared value)?  cleared,TResult? Function( _SearchCleared value)?  searchCleared,TResult? Function( _ResultClicked value)?  resultClicked,TResult? Function( _RecommendedClicked value)?  recommendedClicked,TResult? Function( _AiSearchRequested value)?  aiSearchRequested,TResult? Function( _SearchCancelled value)?  searchCancelled,}){
 final _that = this;
 switch (_that) {
 case _Started() when started != null:
 return started(_that);case _QueryChanged() when queryChanged != null:
 return queryChanged(_that);case _Cleared() when cleared != null:
-return cleared(_that);case _AiSearchRequested() when aiSearchRequested != null:
-return aiSearchRequested(_that);case _:
+return cleared(_that);case _SearchCleared() when searchCleared != null:
+return searchCleared(_that);case _ResultClicked() when resultClicked != null:
+return resultClicked(_that);case _RecommendedClicked() when recommendedClicked != null:
+return recommendedClicked(_that);case _AiSearchRequested() when aiSearchRequested != null:
+return aiSearchRequested(_that);case _SearchCancelled() when searchCancelled != null:
+return searchCancelled(_that);case _:
   return null;
 
 }
@@ -128,13 +140,17 @@ return aiSearchRequested(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  started,TResult Function( String query)?  queryChanged,TResult Function()?  cleared,TResult Function( String query)?  aiSearchRequested,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( SearchSource source)?  started,TResult Function( String query)?  queryChanged,TResult Function()?  cleared,TResult Function()?  searchCleared,TResult Function( String ticker,  bool isAiResult)?  resultClicked,TResult Function( String ticker)?  recommendedClicked,TResult Function( String query)?  aiSearchRequested,TResult Function()?  searchCancelled,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Started() when started != null:
-return started();case _QueryChanged() when queryChanged != null:
+return started(_that.source);case _QueryChanged() when queryChanged != null:
 return queryChanged(_that.query);case _Cleared() when cleared != null:
-return cleared();case _AiSearchRequested() when aiSearchRequested != null:
-return aiSearchRequested(_that.query);case _:
+return cleared();case _SearchCleared() when searchCleared != null:
+return searchCleared();case _ResultClicked() when resultClicked != null:
+return resultClicked(_that.ticker,_that.isAiResult);case _RecommendedClicked() when recommendedClicked != null:
+return recommendedClicked(_that.ticker);case _AiSearchRequested() when aiSearchRequested != null:
+return aiSearchRequested(_that.query);case _SearchCancelled() when searchCancelled != null:
+return searchCancelled();case _:
   return orElse();
 
 }
@@ -152,13 +168,17 @@ return aiSearchRequested(_that.query);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  started,required TResult Function( String query)  queryChanged,required TResult Function()  cleared,required TResult Function( String query)  aiSearchRequested,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( SearchSource source)  started,required TResult Function( String query)  queryChanged,required TResult Function()  cleared,required TResult Function()  searchCleared,required TResult Function( String ticker,  bool isAiResult)  resultClicked,required TResult Function( String ticker)  recommendedClicked,required TResult Function( String query)  aiSearchRequested,required TResult Function()  searchCancelled,}) {final _that = this;
 switch (_that) {
 case _Started():
-return started();case _QueryChanged():
+return started(_that.source);case _QueryChanged():
 return queryChanged(_that.query);case _Cleared():
-return cleared();case _AiSearchRequested():
-return aiSearchRequested(_that.query);case _:
+return cleared();case _SearchCleared():
+return searchCleared();case _ResultClicked():
+return resultClicked(_that.ticker,_that.isAiResult);case _RecommendedClicked():
+return recommendedClicked(_that.ticker);case _AiSearchRequested():
+return aiSearchRequested(_that.query);case _SearchCancelled():
+return searchCancelled();case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -175,13 +195,17 @@ return aiSearchRequested(_that.query);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  started,TResult? Function( String query)?  queryChanged,TResult? Function()?  cleared,TResult? Function( String query)?  aiSearchRequested,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( SearchSource source)?  started,TResult? Function( String query)?  queryChanged,TResult? Function()?  cleared,TResult? Function()?  searchCleared,TResult? Function( String ticker,  bool isAiResult)?  resultClicked,TResult? Function( String ticker)?  recommendedClicked,TResult? Function( String query)?  aiSearchRequested,TResult? Function()?  searchCancelled,}) {final _that = this;
 switch (_that) {
 case _Started() when started != null:
-return started();case _QueryChanged() when queryChanged != null:
+return started(_that.source);case _QueryChanged() when queryChanged != null:
 return queryChanged(_that.query);case _Cleared() when cleared != null:
-return cleared();case _AiSearchRequested() when aiSearchRequested != null:
-return aiSearchRequested(_that.query);case _:
+return cleared();case _SearchCleared() when searchCleared != null:
+return searchCleared();case _ResultClicked() when resultClicked != null:
+return resultClicked(_that.ticker,_that.isAiResult);case _RecommendedClicked() when recommendedClicked != null:
+return recommendedClicked(_that.ticker);case _AiSearchRequested() when aiSearchRequested != null:
+return aiSearchRequested(_that.query);case _SearchCancelled() when searchCancelled != null:
+return searchCancelled();case _:
   return null;
 
 }
@@ -193,33 +217,67 @@ return aiSearchRequested(_that.query);case _:
 
 
 class _Started implements SearchEvent {
-  const _Started();
+  const _Started({required this.source});
   
 
+ final  SearchSource source;
 
-
+/// Create a copy of SearchEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$StartedCopyWith<_Started> get copyWith => __$StartedCopyWithImpl<_Started>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Started);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Started&&(identical(other.source, source) || other.source == source));
 }
 
 
 @override
-int get hashCode => runtimeType.hashCode;
+int get hashCode => Object.hash(runtimeType,source);
 
 @override
 String toString() {
-  return 'SearchEvent.started()';
+  return 'SearchEvent.started(source: $source)';
 }
 
 
 }
 
+/// @nodoc
+abstract mixin class _$StartedCopyWith<$Res> implements $SearchEventCopyWith<$Res> {
+  factory _$StartedCopyWith(_Started value, $Res Function(_Started) _then) = __$StartedCopyWithImpl;
+@useResult
+$Res call({
+ SearchSource source
+});
 
 
+
+
+}
+/// @nodoc
+class __$StartedCopyWithImpl<$Res>
+    implements _$StartedCopyWith<$Res> {
+  __$StartedCopyWithImpl(this._self, this._then);
+
+  final _Started _self;
+  final $Res Function(_Started) _then;
+
+/// Create a copy of SearchEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? source = null,}) {
+  return _then(_Started(
+source: null == source ? _self.source : source // ignore: cast_nullable_to_non_nullable
+as SearchSource,
+  ));
+}
+
+
+}
 
 /// @nodoc
 
@@ -322,6 +380,172 @@ String toString() {
 /// @nodoc
 
 
+class _SearchCleared implements SearchEvent {
+  const _SearchCleared();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SearchCleared);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'SearchEvent.searchCleared()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class _ResultClicked implements SearchEvent {
+  const _ResultClicked({required this.ticker, required this.isAiResult});
+  
+
+ final  String ticker;
+ final  bool isAiResult;
+
+/// Create a copy of SearchEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$ResultClickedCopyWith<_ResultClicked> get copyWith => __$ResultClickedCopyWithImpl<_ResultClicked>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ResultClicked&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.isAiResult, isAiResult) || other.isAiResult == isAiResult));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,ticker,isAiResult);
+
+@override
+String toString() {
+  return 'SearchEvent.resultClicked(ticker: $ticker, isAiResult: $isAiResult)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$ResultClickedCopyWith<$Res> implements $SearchEventCopyWith<$Res> {
+  factory _$ResultClickedCopyWith(_ResultClicked value, $Res Function(_ResultClicked) _then) = __$ResultClickedCopyWithImpl;
+@useResult
+$Res call({
+ String ticker, bool isAiResult
+});
+
+
+
+
+}
+/// @nodoc
+class __$ResultClickedCopyWithImpl<$Res>
+    implements _$ResultClickedCopyWith<$Res> {
+  __$ResultClickedCopyWithImpl(this._self, this._then);
+
+  final _ResultClicked _self;
+  final $Res Function(_ResultClicked) _then;
+
+/// Create a copy of SearchEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? ticker = null,Object? isAiResult = null,}) {
+  return _then(_ResultClicked(
+ticker: null == ticker ? _self.ticker : ticker // ignore: cast_nullable_to_non_nullable
+as String,isAiResult: null == isAiResult ? _self.isAiResult : isAiResult // ignore: cast_nullable_to_non_nullable
+as bool,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class _RecommendedClicked implements SearchEvent {
+  const _RecommendedClicked({required this.ticker});
+  
+
+ final  String ticker;
+
+/// Create a copy of SearchEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$RecommendedClickedCopyWith<_RecommendedClicked> get copyWith => __$RecommendedClickedCopyWithImpl<_RecommendedClicked>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _RecommendedClicked&&(identical(other.ticker, ticker) || other.ticker == ticker));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,ticker);
+
+@override
+String toString() {
+  return 'SearchEvent.recommendedClicked(ticker: $ticker)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$RecommendedClickedCopyWith<$Res> implements $SearchEventCopyWith<$Res> {
+  factory _$RecommendedClickedCopyWith(_RecommendedClicked value, $Res Function(_RecommendedClicked) _then) = __$RecommendedClickedCopyWithImpl;
+@useResult
+$Res call({
+ String ticker
+});
+
+
+
+
+}
+/// @nodoc
+class __$RecommendedClickedCopyWithImpl<$Res>
+    implements _$RecommendedClickedCopyWith<$Res> {
+  __$RecommendedClickedCopyWithImpl(this._self, this._then);
+
+  final _RecommendedClicked _self;
+  final $Res Function(_RecommendedClicked) _then;
+
+/// Create a copy of SearchEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? ticker = null,}) {
+  return _then(_RecommendedClicked(
+ticker: null == ticker ? _self.ticker : ticker // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
 class _AiSearchRequested implements SearchEvent {
   const _AiSearchRequested(this.query);
   
@@ -384,6 +608,38 @@ as String,
 
 
 }
+
+/// @nodoc
+
+
+class _SearchCancelled implements SearchEvent {
+  const _SearchCancelled();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SearchCancelled);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'SearchEvent.searchCancelled()';
+}
+
+
+}
+
+
+
 
 /// @nodoc
 mixin _$SearchState {

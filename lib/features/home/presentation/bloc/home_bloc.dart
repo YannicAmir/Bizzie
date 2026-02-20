@@ -27,7 +27,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   }
 
   void _onSearchTapped(_SearchTapped event, Emitter<HomeState> emit) {
-    _analytics.logHomeSearchTapped();
+    // Redundant event. SearchPage logs page_viewed with source context.
   }
 
   void _onWatchlistTapped(_WatchlistTapped event, Emitter<HomeState> emit) {

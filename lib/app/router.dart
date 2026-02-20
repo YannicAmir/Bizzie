@@ -5,6 +5,7 @@ import 'package:bizzie/features/reports/domain/enums/reports_analytics_enums.dar
 import 'package:bizzie/features/reports/presentation/views/reports_page.dart';
 import 'package:bizzie/features/search/presentation/views/search_page.dart';
 import 'package:bizzie/features/search/presentation/bloc/search_bloc.dart';
+import 'package:bizzie/features/search/domain/enums/search_analytics_enums.dart';
 import 'package:collection/collection.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:bizzie/features/onboarding/domain/models/company.dart';
@@ -164,13 +165,15 @@ GoRouter createRouter(
       GoRoute(
         path: AppRoutes.search,
         pageBuilder: (context, state) {
-          final sourceTab = state.extra as String?;
+          final source = state.extra is SearchSource
+              ? state.extra as SearchSource
+              : SearchSource.home;
           return CustomTransitionPage(
             key: state.pageKey,
             child: BlocProvider<SearchBloc>(
               create: (_) =>
-                  getIt<SearchBloc>()..add(const SearchEvent.started()),
-              child: SearchPage(sourceTab: sourceTab),
+                  getIt<SearchBloc>()..add(SearchEvent.started(source: source)),
+              child: SearchPage(source: source),
             ),
             transitionsBuilder:
                 (context, animation, secondaryAnimation, child) {

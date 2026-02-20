@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:bizzie/shared/widgets/loading/bizzie_loader.dart';
+import 'package:bizzie/features/search/domain/enums/search_analytics_enums.dart';
 
 class HomePage extends StatefulWidget {
   final Object? extra;
@@ -58,7 +59,7 @@ class _HomePageState extends State<HomePage> {
           readOnly: true,
           onTap: () {
             context.read<HomeBloc>().add(const HomeEvent.searchTapped());
-            context.push(AppRoutes.search, extra: 'home');
+            context.push(AppRoutes.search, extra: SearchSource.home);
           },
         ),
       ),
