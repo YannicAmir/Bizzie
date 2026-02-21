@@ -1,5 +1,6 @@
 import 'package:bizzie/features/home/presentation/analytics/home_analytics.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 
@@ -10,20 +11,15 @@ part 'home_bloc.freezed.dart';
 @injectable
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
   final HomeAnalytics _analytics;
-  DateTime? _loadStartTime;
-  bool _hasLoggedWatchlistSuccess = false;
 
   HomeBloc(this._analytics) : super(const HomeState.initial()) {
-    on<_Started>(_onStarted);
-    on<_WatchlistTapped>(_onWatchlistTapped);
-    on<_EmptyStateViewed>(_onEmptyStateViewed);
-    on<_WatchlistLoadFailed>(_onWatchlistLoadFailed);
-    on<_WatchlistLoaded>(_onWatchlistLoaded);
+    on<_Started>(_onStarted, transformer: droppable());
+    on<_WatchlistTapped>(_onWatchlistTapped, transformer: droppable());
+    on<_EmptyStateViewed>(_onEmptyStateViewed, transformer: droppable());
+    on<_WatchlistLoadFailed>(_onWatchlistLoadFailed, transformer: droppable());
   }
 
   void _onStarted(_Started event, Emitter<HomeState> emit) {
-    _loadStartTime = DateTime.now();
-    _hasLoggedWatchlistSuccess = false;
     _analytics.logHomeViewed();
   }
 
@@ -44,20 +40,5 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     Emitter<HomeState> emit,
   ) {
     _analytics.logHomeWatchlistError(message: event.error);
-  }
-
-  void _onWatchlistLoaded(_WatchlistLoaded event, Emitter<HomeState> emit) {
-    final now = DateTime.now();
-    final durationMs = _loadStartTime != null
-        ? now.difference(_loadStartTime!).inMilliseconds
-        : 0;
-
-    if (!_hasLoggedWatchlistSuccess) {
-      _analytics.logHomeWatchlistLoaded(
-        itemCount: event.itemCount,
-        durationMs: durationMs,
-      );
-      _hasLoggedWatchlistSuccess = true;
-    }
   }
 }
