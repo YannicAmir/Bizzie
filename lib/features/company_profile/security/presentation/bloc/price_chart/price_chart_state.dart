@@ -9,10 +9,16 @@ abstract class PriceChartState with _$PriceChartState {
   const PriceChartState._();
 
   const factory PriceChartState({
-    @Default(ChartTimeFrame.d5) ChartTimeFrame selectedTimeFrame,
-    @Default([]) List<HistoricalPriceEod> fullHistory,
-    @Default([]) List<HistoricalPriceEod> viewData,
+    required List<HistoricalPriceEod> fullHistory,
+    required List<HistoricalPriceEod> viewData,
+    required ChartTimeFrame selectedTimeFrame,
+    @Default(0) int chartChangeCount,
   }) = _PriceChartState;
 
-  factory PriceChartState.initial() => const PriceChartState();
+  factory PriceChartState.initial() => const PriceChartState(
+    fullHistory: [],
+    viewData: [],
+    selectedTimeFrame: ChartTimeFrame.d5,
+    chartChangeCount: 0,
+  );
 }

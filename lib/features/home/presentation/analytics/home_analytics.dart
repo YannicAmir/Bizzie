@@ -12,7 +12,6 @@ class HomeAnalytics {
   static const _kEventWatchlistTapped = 'home_watchlist_tapped';
   static const _kEventEmptyStateViewed = 'home_empty_state_viewed';
   static const _kEventWatchlistError = 'home_watchlist_load_error';
-  static const _kEventWatchlistSuccess = 'home_watchlist_load_success';
 
   // Parameter Keys
   static const _kParamScreenName = 'screen_name';
@@ -20,8 +19,6 @@ class HomeAnalytics {
   static const _kParamEventText = 'event_text';
   static const _kParamIsUpcoming = 'is_upcoming';
   static const _kParamErrorMessage = 'error_message';
-  static const _kParamItemCount = 'item_count';
-  static const _kParamDurationMs = 'duration_ms';
 
   // Fixed Values
   static const String _screenName = 'home';
@@ -81,24 +78,6 @@ class HomeAnalytics {
       );
     } catch (e, stack) {
       _logger.severe('Failed to log home_watchlist_load_error', e, stack);
-    }
-  }
-
-  Future<void> logHomeWatchlistLoaded({
-    required int itemCount,
-    required int durationMs,
-  }) async {
-    try {
-      await _analytics.logEvent(
-        name: _kEventWatchlistSuccess,
-        parameters: {
-          _kParamScreenName: _screenName,
-          _kParamItemCount: itemCount,
-          _kParamDurationMs: durationMs,
-        },
-      );
-    } catch (e, stack) {
-      _logger.severe('Failed to log home_watchlist_load_success', e, stack);
     }
   }
 }

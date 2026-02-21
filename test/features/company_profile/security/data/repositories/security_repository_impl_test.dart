@@ -1,3 +1,4 @@
+import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:bizzie/features/company_profile/business/data/datasources/business_firestore_data_source.dart';
 import 'package:bizzie/features/company_profile/business/data/datasources/business_remote_data_source.dart';
 import 'package:bizzie/features/company_profile/shared/data/datasources/ratios_remote_data_source.dart';
@@ -114,8 +115,11 @@ void main() {
 
       // assert
       expect(result.isRight(), true);
-      result.fold((l) => fail('Should return right'), (r) {
+      result.fold((l) => fail('Should return right'), (tuple) {
+        final r = tuple.$1;
+        final origin = tuple.$2;
         expect(r, isA<SecurityDetails>());
+        expect(origin, CompanyProfileDataOrigin.api);
         expect(r.ticker, tTicker);
         expect(r.peRatioTTM, 22.5);
         expect(r.priceToFreeCashFlowTTM, 18.0);
@@ -125,27 +129,6 @@ void main() {
 
     test('getSecurityDetails_failure_returnsServerFailure', () async {
       // arrange
-      // Wait, repository now handles Left from repo, assume it propagates failure
-      // or if repo throws.
-      // Current impl of SecurityRepositoryImpl calls _companyRepository.getProfile
-      // and expects Right, or if generic Failure?
-      // Actually SecurityRepositoryImpl does:
-      // final profileResult = await _companyRepository.getProfile(ticker);
-      // profileResult.fold((l) => throw Exception("..."), (r) => profile = r);
-      // So we can mock Left return.
-
-      // But to be simpler and match previous test style which expected exception from datasource catch block?
-      // No, let's verify behaviour.
-      // If ICompanyRepository returns Left, SecurityRepositoryImpl throws Exception (based on my previous view of code or assumption).
-      // Let's assume mocking Left is correct way to trigger failure branch if I updated it to handle it.
-      // Wait, I updated it to fold and throw exception on Left.
-
-      // But wait, the previous test was:
-      // when(() => datasource.call()).thenThrow(Exception('Error'));
-      // because the repository impl wrapped try-catch.
-      // The new impl also wraps try-catch?
-      // Yes, usually.
-
       when(
         () => mockCompanyRepository.getProfile(tTicker),
       ).thenThrow(Exception('Error'));
@@ -193,8 +176,11 @@ void main() {
 
       // assert
       expect(result.isRight(), true);
-      result.fold((l) => fail('Should return right'), (r) {
+      result.fold((l) => fail('Should return right'), (tuple) {
+        final r = tuple.$1;
+        final origin = tuple.$2;
         expect(r, isA<DateTime>());
+        expect(origin, CompanyProfileDataOrigin.api);
         final expectedDate = DateTime.parse(tEarningsReports[0].date);
         expect(r?.year, expectedDate.year);
         expect(r?.month, expectedDate.month);
@@ -221,8 +207,11 @@ void main() {
 
       // assert
       expect(result.isRight(), true);
-      result.fold((l) => fail('Should return right'), (r) {
+      result.fold((l) => fail('Should return right'), (tuple) {
+        final r = tuple.$1;
+        final origin = tuple.$2;
         expect(r, null);
+        expect(origin, CompanyProfileDataOrigin.cache); // Cached data
       });
     });
 

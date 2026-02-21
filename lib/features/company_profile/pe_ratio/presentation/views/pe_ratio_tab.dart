@@ -13,7 +13,6 @@ import 'package:bizzie/features/company_profile/shared/presentation/widgets/fina
 import 'package:bizzie/features/company_profile/shared/presentation/widgets/financial_table_footer.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/widgets/metric_summary_card.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
-import 'package:bizzie/shared/widgets/app_badge.dart';
 import 'package:bizzie/shared/widgets/charts/bizzie_bar_chart.dart';
 import 'package:bizzie/shared/widgets/charts/bizzie_expandable_chart.dart';
 import 'package:bizzie/shared/widgets/modals/app_history_modal.dart';
@@ -21,11 +20,25 @@ import 'package:bizzie/shared/widgets/states/bizzie_empty_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import '../extensions/pe_ratio_presentation_helper.dart';
 
-class PeRatioTab extends StatelessWidget {
+class PeRatioTab extends StatefulWidget {
   final String ticker;
 
   const PeRatioTab({super.key, required this.ticker});
+
+  @override
+  State<PeRatioTab> createState() => _PeRatioTabState();
+}
+
+class _PeRatioTabState extends State<PeRatioTab> {
+  @override
+  void initState() {
+    super.initState();
+    context.read<CompanyPeRatioBloc>().add(
+      CompanyPeRatioEvent.stalenessCheckRequested(widget.ticker),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +52,10 @@ class PeRatioTab extends StatelessWidget {
           failure: (e) => CompanyProfileErrorState(
             message: 'Error loading P/E ratio',
             onRetry: () => context.read<CompanyPeRatioBloc>().add(
-              CompanyPeRatioEvent.loadRequested(ticker, forceRefresh: true),
+              CompanyPeRatioEvent.loadRequested(
+                widget.ticker,
+                forceRefresh: true,
+              ),
             ),
           ),
           loaded:
@@ -62,7 +78,7 @@ class PeRatioTab extends StatelessWidget {
                 isPositive: isPositive,
                 referenceLabel: referenceLabel,
                 historyLimit: historyLimit,
-                ticker: ticker,
+                ticker: widget.ticker,
                 lastUpdated: lastUpdated,
               ),
         );
@@ -108,8 +124,15 @@ class _PeRatioLoadedContent extends StatelessWidget {
       );
     }
 
-    final asOfPrefix = dataPoints.getAsOfPrefix(lastUpdated);
-    final dynamicAvg = dataPoints.getDynamicAverageColumn('P/E Ratio');
+    final summary = PeRatioPresentationHelper.formatSummary(
+      dataPoints: dataPoints,
+      currentValue: currentValue,
+      growthPercentage: growthPercentage,
+      absoluteDelta: absoluteDelta,
+      isPositive: isPositive,
+      referenceLabel: referenceLabel,
+      lastUpdated: lastUpdated,
+    );
 
     return SingleChildScrollView(
       padding: AppConstants.pagePadding,
@@ -118,16 +141,10 @@ class _PeRatioLoadedContent extends StatelessWidget {
         children: [
           MetricSummaryCard(
             title: 'P/E Ratio',
-            value: currentValue.formattedRatioValue,
-            badgeText: growthPercentage.formattedRatioBadge,
-            badgeStyle: AppBadgeStyle.neutral,
-            subtitle: MetricSummarySubtitleHelper.getSubtitle(
-              asOfPrefix: asOfPrefix,
-              isPositive: isPositive,
-              formattedDelta: absoluteDelta.formattedRatioValue,
-              isChangeZero: absoluteDelta == 0,
-              referenceLabel: referenceLabel,
-            ),
+            value: summary.valueStr,
+            badgeText: summary.badgeText,
+            badgeStyle: summary.badgeStyle,
+            subtitle: summary.subtitle,
           ),
           AppConstants.mainSectionSpacing,
           BizzieExpandableChart(
@@ -156,10 +173,10 @@ class _PeRatioLoadedContent extends StatelessWidget {
                   label: 'Avg. P/E Ratio',
                   value: dataPoints.averageValue.formattedRatioValue,
                 ),
-                if (dynamicAvg != null)
+                if (summary.dynamicAvg != null)
                   FinancialTableFooterColumnData(
-                    label: dynamicAvg.label,
-                    value: dynamicAvg.value,
+                    label: summary.dynamicAvg!.label,
+                    value: summary.dynamicAvg!.value,
                   ),
               ],
             ),

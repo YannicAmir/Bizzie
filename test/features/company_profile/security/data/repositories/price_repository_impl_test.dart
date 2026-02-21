@@ -1,3 +1,4 @@
+import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/features/company_profile/security/data/datasources/security_firestore_data_source.dart';
 import 'package:bizzie/features/company_profile/security/data/datasources/security_remote_data_source.dart';
@@ -48,8 +49,11 @@ void main() {
 
       // assert
       expect(result.isRight(), true);
-      result.fold((l) => fail('Should return right'), (r) {
+      result.fold((l) => fail('Should return right'), (tuple) {
+        final r = tuple.$1;
+        final origin = tuple.$2;
         expect(r, isA<PriceHistory>());
+        expect(origin, CompanyProfileDataOrigin.cache);
         expect(r.symbol, tTicker);
         expect(r.history.length, 1);
         expect(r.history.first.close, 150.0);
@@ -77,8 +81,11 @@ void main() {
 
         // assert
         expect(result.isRight(), true);
-        result.fold((l) => fail('Should return right'), (r) {
+        result.fold((l) => fail('Should return right'), (tuple) {
+          final r = tuple.$1;
+          final origin = tuple.$2;
           expect(r, isA<PriceHistory>());
+          expect(origin, CompanyProfileDataOrigin.api);
           expect(r.history.length, 1);
         });
         verify(() => mockLocalDataSource.getCachedPrices(tTicker)).called(1);
@@ -132,8 +139,11 @@ void main() {
 
       // assert
       expect(result.isRight(), true);
-      result.fold((l) => fail('Should return right'), (r) {
+      result.fold((l) => fail('Should return right'), (tuple) {
+        final r = tuple.$1;
+        final origin = tuple.$2;
         expect(r, isA<List<HistoricalPriceEod>>());
+        expect(origin, CompanyProfileDataOrigin.cache);
         expect(r.length, 1);
         expect(r.first.price, 155.0);
       });
@@ -162,8 +172,11 @@ void main() {
 
         // assert
         expect(result.isRight(), true);
-        result.fold((l) => fail('Should return right'), (r) {
+        result.fold((l) => fail('Should return right'), (tuple) {
+          final r = tuple.$1;
+          final origin = tuple.$2;
           expect(r, isA<List<HistoricalPriceEod>>());
+          expect(origin, CompanyProfileDataOrigin.api);
           expect(r.first.price, 155.0);
         });
         verify(

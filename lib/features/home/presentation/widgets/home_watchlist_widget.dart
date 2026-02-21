@@ -45,12 +45,6 @@ class HomeWatchlistWidget extends StatelessWidget {
               },
               success: (s) => const SizedBox.shrink(),
               loaded: (s) {
-                WidgetsBinding.instance.addPostFrameCallback((_) {
-                  context.read<HomeBloc>().add(
-                    HomeEvent.watchlistLoaded(itemCount: s.companies.length),
-                  );
-                });
-
                 if (s.companies.isEmpty) {
                   return _EmptyState(mascotAssetPath: mascot);
                 }

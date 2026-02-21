@@ -1,3 +1,4 @@
+import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/features/company_profile/security/domain/interfaces/i_security_repository.dart';
 import 'package:bizzie/features/company_profile/security/domain/usecases/get_upcoming_earnings_usecase.dart';
@@ -22,15 +23,16 @@ void main() {
   group('GetUpcomingEarningsUseCase', () {
     test('call_success_returnsEarningsDate', () async {
       // arrange
+      final tResult = (tDate, CompanyProfileDataOrigin.api);
       when(
         () => mockRepository.getUpcomingEarningsDate(tTicker),
-      ).thenAnswer((_) async => Right(tDate));
+      ).thenAnswer((_) async => Right(tResult));
 
       // act
       final result = await useCase(tTicker);
 
       // assert
-      expect(result, Right(tDate));
+      expect(result, Right(tResult));
       verify(() => mockRepository.getUpcomingEarningsDate(tTicker)).called(1);
       verifyNoMoreInteractions(mockRepository);
     });

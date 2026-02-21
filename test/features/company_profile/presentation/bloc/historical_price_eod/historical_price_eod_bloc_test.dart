@@ -1,3 +1,4 @@
+import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/features/company_profile/security/domain/models/historical_price_eod.dart';
 import 'package:bizzie/features/company_profile/security/domain/usecases/get_historical_eod_prices_use_case.dart';
@@ -41,9 +42,9 @@ void main() {
       'loadRequested_success_emitsLoadingAndLoaded',
       build: () {
         // arrange
-        when(
-          () => mockGetPrices(tTicker),
-        ).thenAnswer((_) async => const Right(tPrices));
+        when(() => mockGetPrices(tTicker)).thenAnswer(
+          (_) async => const Right((tPrices, CompanyProfileDataOrigin.api)),
+        );
         return bloc;
       },
       act: (bloc) {
@@ -54,11 +55,18 @@ void main() {
         // assert
         return [
           const HistoricalPriceEodState.loading(),
-          isA<HistoricalPriceEodState>().having(
-            (s) => s.maybeMap(loaded: (l) => l.prices, orElse: () => null),
-            'prices',
-            tPrices,
-          ),
+          isA<HistoricalPriceEodState>()
+              .having(
+                (s) => s.maybeMap(loaded: (l) => l.prices, orElse: () => null),
+                'prices',
+                tPrices,
+              )
+              .having(
+                (s) =>
+                    s.maybeMap(loaded: (l) => l.dataSource, orElse: () => null),
+                'dataSource',
+                CompanyProfileDataOrigin.api,
+              ),
         ];
       },
       verify: (_) {
@@ -96,7 +104,10 @@ void main() {
         // arrange
         return bloc;
       },
-      seed: () => const HistoricalPriceEodState.loaded(tPrices),
+      seed: () => const HistoricalPriceEodState.loaded(
+        tPrices,
+        dataSource: CompanyProfileDataOrigin.api,
+      ),
       act: (bloc) {
         // act
         bloc.add(const HistoricalPriceEodEvent.loadRequested(tTicker));
@@ -115,12 +126,15 @@ void main() {
       'loadRequested_alreadyLoadedWithForceRefresh_emitsLoadingAndLoaded',
       build: () {
         // arrange
-        when(
-          () => mockGetPrices(tTicker),
-        ).thenAnswer((_) async => const Right(tPrices));
+        when(() => mockGetPrices(tTicker)).thenAnswer(
+          (_) async => const Right((tPrices, CompanyProfileDataOrigin.api)),
+        );
         return bloc;
       },
-      seed: () => const HistoricalPriceEodState.loaded(tPrices),
+      seed: () => const HistoricalPriceEodState.loaded(
+        tPrices,
+        dataSource: CompanyProfileDataOrigin.api,
+      ),
       act: (bloc) {
         // act
         bloc.add(
@@ -134,11 +148,18 @@ void main() {
         // assert
         return [
           const HistoricalPriceEodState.loading(),
-          isA<HistoricalPriceEodState>().having(
-            (s) => s.maybeMap(loaded: (l) => l.prices, orElse: () => null),
-            'prices',
-            tPrices,
-          ),
+          isA<HistoricalPriceEodState>()
+              .having(
+                (s) => s.maybeMap(loaded: (l) => l.prices, orElse: () => null),
+                'prices',
+                tPrices,
+              )
+              .having(
+                (s) =>
+                    s.maybeMap(loaded: (l) => l.dataSource, orElse: () => null),
+                'dataSource',
+                CompanyProfileDataOrigin.api,
+              ),
         ];
       },
       verify: (_) {
@@ -153,9 +174,9 @@ void main() {
       'stalenessCheckRequested_initialState_triggersLoadRequested',
       build: () {
         // arrange
-        when(
-          () => mockGetPrices(tTicker),
-        ).thenAnswer((_) async => const Right(tPrices));
+        when(() => mockGetPrices(tTicker)).thenAnswer(
+          (_) async => const Right((tPrices, CompanyProfileDataOrigin.api)),
+        );
         return bloc;
       },
       act: (bloc) {
@@ -168,11 +189,18 @@ void main() {
         // assert
         return [
           const HistoricalPriceEodState.loading(),
-          isA<HistoricalPriceEodState>().having(
-            (s) => s.maybeMap(loaded: (l) => l.prices, orElse: () => null),
-            'prices',
-            tPrices,
-          ),
+          isA<HistoricalPriceEodState>()
+              .having(
+                (s) => s.maybeMap(loaded: (l) => l.prices, orElse: () => null),
+                'prices',
+                tPrices,
+              )
+              .having(
+                (s) =>
+                    s.maybeMap(loaded: (l) => l.dataSource, orElse: () => null),
+                'dataSource',
+                CompanyProfileDataOrigin.api,
+              ),
         ];
       },
     );
@@ -181,13 +209,14 @@ void main() {
       'stalenessCheckRequested_stale_triggersLoadRequested',
       build: () {
         // arrange
-        when(
-          () => mockGetPrices(tTicker),
-        ).thenAnswer((_) async => const Right(tPrices));
+        when(() => mockGetPrices(tTicker)).thenAnswer(
+          (_) async => const Right((tPrices, CompanyProfileDataOrigin.api)),
+        );
         return bloc;
       },
       seed: () => HistoricalPriceEodState.loaded(
         tPrices,
+        dataSource: CompanyProfileDataOrigin.api,
         lastUpdated: DateTime.now().subtract(const Duration(days: 10)),
       ),
       act: (bloc) {
@@ -200,11 +229,18 @@ void main() {
         // assert
         return [
           const HistoricalPriceEodState.loading(),
-          isA<HistoricalPriceEodState>().having(
-            (s) => s.maybeMap(loaded: (l) => l.prices, orElse: () => null),
-            'prices',
-            tPrices,
-          ),
+          isA<HistoricalPriceEodState>()
+              .having(
+                (s) => s.maybeMap(loaded: (l) => l.prices, orElse: () => null),
+                'prices',
+                tPrices,
+              )
+              .having(
+                (s) =>
+                    s.maybeMap(loaded: (l) => l.dataSource, orElse: () => null),
+                'dataSource',
+                CompanyProfileDataOrigin.api,
+              ),
         ];
       },
     );
@@ -213,12 +249,13 @@ void main() {
       'stalenessCheckRequested_failureState_triggersRetry',
       build: () {
         // arrange
-        when(
-          () => mockGetPrices(tTicker),
-        ).thenAnswer((_) async => const Right(tPrices));
+        when(() => mockGetPrices(tTicker)).thenAnswer(
+          (_) async => const Right((tPrices, CompanyProfileDataOrigin.api)),
+        );
         return bloc;
       },
-      seed: () => const HistoricalPriceEodState.failure(Failure.server('error')),
+      seed: () =>
+          const HistoricalPriceEodState.failure(Failure.server('error')),
       act: (bloc) {
         // act
         bloc.add(
@@ -229,11 +266,18 @@ void main() {
         // assert
         return [
           const HistoricalPriceEodState.loading(),
-          isA<HistoricalPriceEodState>().having(
-            (s) => s.maybeMap(loaded: (l) => l.prices, orElse: () => null),
-            'prices',
-            tPrices,
-          ),
+          isA<HistoricalPriceEodState>()
+              .having(
+                (s) => s.maybeMap(loaded: (l) => l.prices, orElse: () => null),
+                'prices',
+                tPrices,
+              )
+              .having(
+                (s) =>
+                    s.maybeMap(loaded: (l) => l.dataSource, orElse: () => null),
+                'dataSource',
+                CompanyProfileDataOrigin.api,
+              ),
         ];
       },
     );

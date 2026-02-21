@@ -103,6 +103,7 @@ GoRouter createRouter(
             routes: [
               GoRoute(
                 path: AppRoutes.home,
+                name: AppRoutes.homeName,
                 builder: (context, state) => BlocProvider<HomeBloc>(
                   create: (context) => getIt<HomeBloc>(),
                   child: const HomePage(),
@@ -110,8 +111,8 @@ GoRouter createRouter(
                 routes: [
                   _buildCompanyRoute(AppRoutes.companyProfileHome),
                   _buildPaywallRoute(
-                    path: 'subscribe',
-                    name: 'home_subscribe',
+                    path: AppRoutes.subscribePath,
+                    name: AppRoutes.homeSubscribe,
                     parentNavigatorKey: rootNavigatorKey,
                     child: const SubscriptionPage(),
                   ),
@@ -422,7 +423,7 @@ GoRoute _buildNoTransitionRoute(String path, Widget child) {
 
 GoRoute _buildCompanyRoute(String routeName) {
   return GoRoute(
-    path: 'company/:ticker',
+    path: AppRoutes.companyProfilePath,
     name: routeName,
     builder: (context, state) {
       final ticker = state.pathParameters['ticker']!;

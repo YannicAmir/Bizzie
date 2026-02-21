@@ -14,4 +14,19 @@ enum CompanyProfileTab {
 
   final String label;
   const CompanyProfileTab(this.label);
+
+  String get analyticsName => switch (this) {
+    security => 'security',
+    business => 'business',
+    news => 'news',
+    dividends => 'dividends',
+    revenue => 'revenue',
+    netIncome => 'net_income',
+    eps => 'eps',
+    freeCash => 'free_cash',
+    fcps => 'fcps',
+    shares => 'share',
+    financialStatements => 'financial_statements',
+    more => 'more',
+  };
 }

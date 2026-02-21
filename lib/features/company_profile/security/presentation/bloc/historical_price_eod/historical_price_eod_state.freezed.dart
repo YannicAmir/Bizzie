@@ -128,12 +128,12 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( List<HistoricalPriceEod> prices,  DateTime? lastUpdated)?  loaded,TResult Function( Failure failure)?  failure,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( List<HistoricalPriceEod> prices,  CompanyProfileDataOrigin dataSource,  DateTime? lastUpdated)?  loaded,TResult Function( Failure failure)?  failure,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial();case _Loading() when loading != null:
 return loading();case _Loaded() when loaded != null:
-return loaded(_that.prices,_that.lastUpdated);case _Failure() when failure != null:
+return loaded(_that.prices,_that.dataSource,_that.lastUpdated);case _Failure() when failure != null:
 return failure(_that.failure);case _:
   return orElse();
 
@@ -152,12 +152,12 @@ return failure(_that.failure);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( List<HistoricalPriceEod> prices,  DateTime? lastUpdated)  loaded,required TResult Function( Failure failure)  failure,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( List<HistoricalPriceEod> prices,  CompanyProfileDataOrigin dataSource,  DateTime? lastUpdated)  loaded,required TResult Function( Failure failure)  failure,}) {final _that = this;
 switch (_that) {
 case _Initial():
 return initial();case _Loading():
 return loading();case _Loaded():
-return loaded(_that.prices,_that.lastUpdated);case _Failure():
+return loaded(_that.prices,_that.dataSource,_that.lastUpdated);case _Failure():
 return failure(_that.failure);case _:
   throw StateError('Unexpected subclass');
 
@@ -175,12 +175,12 @@ return failure(_that.failure);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( List<HistoricalPriceEod> prices,  DateTime? lastUpdated)?  loaded,TResult? Function( Failure failure)?  failure,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( List<HistoricalPriceEod> prices,  CompanyProfileDataOrigin dataSource,  DateTime? lastUpdated)?  loaded,TResult? Function( Failure failure)?  failure,}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial();case _Loading() when loading != null:
 return loading();case _Loaded() when loaded != null:
-return loaded(_that.prices,_that.lastUpdated);case _Failure() when failure != null:
+return loaded(_that.prices,_that.dataSource,_that.lastUpdated);case _Failure() when failure != null:
 return failure(_that.failure);case _:
   return null;
 
@@ -257,7 +257,7 @@ String toString() {
 
 
 class _Loaded implements HistoricalPriceEodState {
-  const _Loaded(final  List<HistoricalPriceEod> prices, {this.lastUpdated}): _prices = prices;
+  const _Loaded(final  List<HistoricalPriceEod> prices, {required this.dataSource, this.lastUpdated}): _prices = prices;
   
 
  final  List<HistoricalPriceEod> _prices;
@@ -267,6 +267,7 @@ class _Loaded implements HistoricalPriceEodState {
   return EqualUnmodifiableListView(_prices);
 }
 
+ final  CompanyProfileDataOrigin dataSource;
  final  DateTime? lastUpdated;
 
 /// Create a copy of HistoricalPriceEodState
@@ -279,16 +280,16 @@ _$LoadedCopyWith<_Loaded> get copyWith => __$LoadedCopyWithImpl<_Loaded>(this, _
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Loaded&&const DeepCollectionEquality().equals(other._prices, _prices)&&(identical(other.lastUpdated, lastUpdated) || other.lastUpdated == lastUpdated));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Loaded&&const DeepCollectionEquality().equals(other._prices, _prices)&&(identical(other.dataSource, dataSource) || other.dataSource == dataSource)&&(identical(other.lastUpdated, lastUpdated) || other.lastUpdated == lastUpdated));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_prices),lastUpdated);
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_prices),dataSource,lastUpdated);
 
 @override
 String toString() {
-  return 'HistoricalPriceEodState.loaded(prices: $prices, lastUpdated: $lastUpdated)';
+  return 'HistoricalPriceEodState.loaded(prices: $prices, dataSource: $dataSource, lastUpdated: $lastUpdated)';
 }
 
 
@@ -299,7 +300,7 @@ abstract mixin class _$LoadedCopyWith<$Res> implements $HistoricalPriceEodStateC
   factory _$LoadedCopyWith(_Loaded value, $Res Function(_Loaded) _then) = __$LoadedCopyWithImpl;
 @useResult
 $Res call({
- List<HistoricalPriceEod> prices, DateTime? lastUpdated
+ List<HistoricalPriceEod> prices, CompanyProfileDataOrigin dataSource, DateTime? lastUpdated
 });
 
 
@@ -316,10 +317,11 @@ class __$LoadedCopyWithImpl<$Res>
 
 /// Create a copy of HistoricalPriceEodState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? prices = null,Object? lastUpdated = freezed,}) {
+@pragma('vm:prefer-inline') $Res call({Object? prices = null,Object? dataSource = null,Object? lastUpdated = freezed,}) {
   return _then(_Loaded(
 null == prices ? _self._prices : prices // ignore: cast_nullable_to_non_nullable
-as List<HistoricalPriceEod>,lastUpdated: freezed == lastUpdated ? _self.lastUpdated : lastUpdated // ignore: cast_nullable_to_non_nullable
+as List<HistoricalPriceEod>,dataSource: null == dataSource ? _self.dataSource : dataSource // ignore: cast_nullable_to_non_nullable
+as CompanyProfileDataOrigin,lastUpdated: freezed == lastUpdated ? _self.lastUpdated : lastUpdated // ignore: cast_nullable_to_non_nullable
 as DateTime?,
   ));
 }

@@ -8,6 +8,7 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:bizzie/shared/utils/analytics_utils.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:injectable/injectable.dart';
 
@@ -40,7 +41,10 @@ abstract class RegisterModule {
 
   @lazySingleton
   FirebaseAnalyticsObserver get firebaseAnalyticsObserver =>
-      FirebaseAnalyticsObserver(analytics: FirebaseAnalytics.instance);
+      FirebaseAnalyticsObserver(
+        analytics: firebaseAnalytics,
+        nameExtractor: AnalyticsUtils.extractPageName,
+      );
 
   @lazySingleton
   DeviceInfoPlugin get deviceInfo => DeviceInfoPlugin();

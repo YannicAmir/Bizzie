@@ -53,7 +53,10 @@ class UpcomingEarningsBloc
         _logger.severe('Failed to load Upcoming Earnings', failure);
         emit(UpcomingEarningsState.failure(failure));
       },
-      (date) {
+      (tuple) {
+        final date = tuple.$1;
+        final origin = tuple.$2;
+
         if (date == null) {
           _logger.info('No upcoming earnings found for ${event.ticker}');
           emit(const UpcomingEarningsState.empty());
@@ -61,7 +64,13 @@ class UpcomingEarningsBloc
           _logger.info(
             'Successfully loaded Upcoming Earnings for ${event.ticker}: $date',
           );
-          emit(UpcomingEarningsState.loaded(date, lastUpdated: DateTime.now()));
+          emit(
+            UpcomingEarningsState.loaded(
+              date,
+              dataSource: origin,
+              lastUpdated: DateTime.now(),
+            ),
+          );
         }
       },
     );

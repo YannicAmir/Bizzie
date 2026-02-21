@@ -2,6 +2,8 @@ class AppRoutes {
   AppRoutes._();
 
   static const String home = '/';
+  static const String homeName = 'home_screen';
+  static const String homeSubscribe = 'home_subscribe';
   static const String login = '/login';
   static const String createAccount = '/create-account';
   static const String forgotPassword = '/forgot-password';
@@ -21,6 +23,8 @@ class AppRoutes {
   static const String editProfilePath = 'edit-profile';
   static const String changePasswordPath = 'change-password';
   static const String subscriptionDetailsPath = 'subscription-details';
+  static const String subscribePath = 'subscribe';
+  static const String companyProfilePath = 'company/:ticker';
   static const String subscriptionDetails = 'subscription_details';
 
   // Security

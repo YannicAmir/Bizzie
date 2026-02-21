@@ -11,6 +11,4 @@ class HomeEvent with _$HomeEvent {
   const factory HomeEvent.emptyStateViewed() = _EmptyStateViewed;
   const factory HomeEvent.watchlistLoadFailed({required String error}) =
       _WatchlistLoadFailed;
-  const factory HomeEvent.watchlistLoaded({required int itemCount}) =
-      _WatchlistLoaded;
 }

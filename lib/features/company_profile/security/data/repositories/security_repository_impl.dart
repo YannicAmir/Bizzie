@@ -1,3 +1,4 @@
+import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/features/company_profile/security/data/datasources/security_firestore_data_source.dart';
 import 'package:bizzie/features/company_profile/security/data/datasources/security_remote_data_source.dart';
@@ -26,9 +27,8 @@ class SecurityRepositoryImpl implements ISecurityRepository {
   );
 
   @override
-  Future<Either<Failure, SecurityDetails>> getSecurityDetails(
-    String ticker,
-  ) async {
+  Future<Either<Failure, (SecurityDetails, CompanyProfileDataOrigin)>>
+  getSecurityDetails(String ticker) async {
     try {
       final profileResult = await _companyRepository.getProfile(ticker);
       final quoteResult = await _companyRepository.getQuote(ticker);
@@ -53,30 +53,32 @@ class SecurityRepositoryImpl implements ISecurityRepository {
         pfcfTTM = ratio?.priceToFreeCashFlowRatioTTM;
       } catch (_) {}
 
-      return right(
+      return right((
         SecurityDetails.fromProfileAndQuote(
           profile: profile,
           quote: quote,
           peRatioTTM: peRatioTTM,
           pfcfTTM: pfcfTTM,
         ),
-      );
+        CompanyProfileDataOrigin.api,
+      ));
     } catch (e) {
       return left(Failure.server(e.toString()));
     }
   }
 
   @override
-  Future<Either<Failure, DateTime?>> getUpcomingEarningsDate(
-    String ticker,
-  ) async {
+  Future<Either<Failure, (DateTime?, CompanyProfileDataOrigin)>>
+  getUpcomingEarningsDate(String ticker) async {
     try {
       List<EarningsReportDto>? earnings = await _securityLocalDataSource
           .getCachedEarningsReports(ticker);
+      CompanyProfileDataOrigin origin = CompanyProfileDataOrigin.cache;
 
       if (earnings == null) {
         earnings = await _securityRemoteDataSource.getEarningsReports(ticker);
         await _securityLocalDataSource.cacheEarningsReports(ticker, earnings);
+        origin = CompanyProfileDataOrigin.api;
       }
 
       final now = DateTime.now();
@@ -91,7 +93,7 @@ class SecurityRepositoryImpl implements ISecurityRepository {
         return date.isAfter(oneDayAgo) && date.isBefore(windowEnd);
       }).toList();
 
-      if (upcoming.isEmpty) return right(null);
+      if (upcoming.isEmpty) return right((null, origin));
 
       upcoming.sort((a, b) {
         final dateA = a.toDateTime();
@@ -100,7 +102,7 @@ class SecurityRepositoryImpl implements ISecurityRepository {
         return dateA.compareTo(dateB);
       });
 
-      return right(upcoming.first.toDateTime());
+      return right((upcoming.first.toDateTime(), origin));
     } catch (e) {
       return left(Failure.server(e.toString()));
     }

@@ -1,3 +1,4 @@
+import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
 import 'package:bizzie/core/error/failures.dart';
@@ -16,38 +17,47 @@ class PriceRepositoryImpl implements IPriceRepository {
   PriceRepositoryImpl(this._remoteDataSource, this._localDataSource);
 
   @override
-  Future<Either<Failure, PriceHistory>> getPriceHistory(String ticker) async {
+  Future<Either<Failure, (PriceHistory, CompanyProfileDataOrigin)>>
+  getPriceHistory(String ticker) async {
     try {
+      CompanyProfileDataOrigin origin = CompanyProfileDataOrigin.cache;
       var local = await _localDataSource.getCachedPrices(ticker);
       if (local == null) {
         local = await _remoteDataSource.getHistoricalPrice(ticker);
         await _localDataSource.cachePrices(ticker, local);
+        origin = CompanyProfileDataOrigin.api;
       }
-      return right(
+      return right((
         PriceHistory(
           symbol: ticker,
           history: local.map((e) => e.toDomain()).toList(),
         ),
-      );
+        origin,
+      ));
     } catch (e) {
       return left(Failure.server(e.toString()));
     }
   }
 
   @override
-  Future<Either<Failure, List<HistoricalPriceEod>>> getHistoricalEodPrices(
-    String ticker,
-  ) async {
+  Future<Either<Failure, (List<HistoricalPriceEod>, CompanyProfileDataOrigin)>>
+  getHistoricalEodPrices(String ticker) async {
     try {
       final local = await _localDataSource.getCachedHistoricalEodPrices(ticker);
       if (local != null) {
-        return right(local.map((e) => e.toDomain()).toList());
+        return right((
+          local.map((e) => e.toDomain()).toList(),
+          CompanyProfileDataOrigin.cache,
+        ));
       }
 
       final dtos = await _remoteDataSource.getHistoricalEodPrices(ticker);
       await _localDataSource.cacheHistoricalEodPrices(ticker, dtos);
 
-      return right(dtos.map((e) => e.toDomain()).toList());
+      return right((
+        dtos.map((e) => e.toDomain()).toList(),
+        CompanyProfileDataOrigin.api,
+      ));
     } catch (e) {
       return left(Failure.server(e.toString()));
     }

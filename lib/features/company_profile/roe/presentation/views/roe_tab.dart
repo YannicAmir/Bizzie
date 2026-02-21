@@ -18,10 +18,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../extensions/roe_presentation_helper.dart';
 
-class RoeTab extends StatelessWidget {
+class RoeTab extends StatefulWidget {
   final String ticker;
 
   const RoeTab({super.key, required this.ticker});
+
+  @override
+  State<RoeTab> createState() => _RoeTabState();
+}
+
+class _RoeTabState extends State<RoeTab> {
+  @override
+  void initState() {
+    super.initState();
+    context.read<CompanyRoeBloc>().add(
+      CompanyRoeEvent.stalenessCheckRequested(widget.ticker),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +48,7 @@ class RoeTab extends StatelessWidget {
           failure: (e) => CompanyProfileErrorState(
             message: 'Error loading ROE',
             onRetry: () => context.read<CompanyRoeBloc>().add(
-              CompanyRoeEvent.loadRequested(ticker, forceRefresh: true),
+              CompanyRoeEvent.loadRequested(widget.ticker, forceRefresh: true),
             ),
           ),
           loaded:
@@ -58,7 +71,7 @@ class RoeTab extends StatelessWidget {
                 isPositive: isPositive,
                 referenceLabel: referenceLabel,
                 historyLimit: historyLimit,
-                ticker: ticker,
+                ticker: widget.ticker,
               ),
         );
       },

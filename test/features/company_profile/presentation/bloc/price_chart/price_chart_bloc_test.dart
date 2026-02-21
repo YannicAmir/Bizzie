@@ -53,8 +53,11 @@ void main() {
     blocTest<PriceChartBloc, PriceChartState>(
       'historyUpdated_sameData_skipsEmission',
       build: () => bloc,
-      seed: () =>
-          PriceChartState(fullHistory: tHistory, viewData: tHistory.sublist(5)),
+      seed: () => PriceChartState(
+        fullHistory: tHistory,
+        viewData: tHistory.sublist(5),
+        selectedTimeFrame: ChartTimeFrame.m1,
+      ),
       act: (bloc) => bloc.add(PriceChartEvent.historyUpdated(tHistory)),
       expect: () => [],
     );
@@ -64,8 +67,11 @@ void main() {
     blocTest<PriceChartBloc, PriceChartState>(
       'timeFrameChanged_reFiltersViewData',
       build: () => bloc,
-      seed: () =>
-          PriceChartState(fullHistory: tHistory, viewData: tHistory.sublist(5)),
+      seed: () => PriceChartState(
+        fullHistory: tHistory,
+        viewData: tHistory.sublist(5),
+        selectedTimeFrame: ChartTimeFrame.d5,
+      ),
       act: (bloc) =>
           bloc.add(const PriceChartEvent.timeFrameChanged(ChartTimeFrame.m1)),
       expect: () => [
@@ -86,7 +92,11 @@ void main() {
     blocTest<PriceChartBloc, PriceChartState>(
       'timeFrameChanged_sameFrame_skipsEmission',
       build: () => bloc,
-      seed: () => const PriceChartState(selectedTimeFrame: ChartTimeFrame.m1),
+      seed: () => const PriceChartState(
+        fullHistory: [],
+        viewData: [],
+        selectedTimeFrame: ChartTimeFrame.m1,
+      ),
       act: (bloc) =>
           bloc.add(const PriceChartEvent.timeFrameChanged(ChartTimeFrame.m1)),
       expect: () => [],
@@ -97,7 +107,11 @@ void main() {
     blocTest<PriceChartBloc, PriceChartState>(
       'handlesEmptyHistory_emitsEmptyViewData',
       build: () => bloc,
-      seed: () => PriceChartState(fullHistory: tHistory, viewData: tHistory),
+      seed: () => PriceChartState(
+        fullHistory: tHistory,
+        viewData: tHistory,
+        selectedTimeFrame: ChartTimeFrame.m1,
+      ),
       act: (bloc) => bloc.add(const PriceChartEvent.historyUpdated([])),
       expect: () => [
         isA<PriceChartState>()

@@ -1,3 +1,4 @@
+import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -20,6 +21,10 @@ import 'package:bizzie/features/company_profile/security/presentation/bloc/compa
 import 'package:bizzie/features/company_profile/security/presentation/bloc/historical_price_eod/historical_price_eod_state_extensions.dart';
 import 'package:bizzie/features/company_profile/security/presentation/bloc/price_chart/price_chart_bloc.dart';
 import 'package:bizzie/features/company_profile/security/presentation/bloc/price_chart/price_chart_event.dart';
+import 'package:bizzie/features/company_profile/security/presentation/bloc/price_chart/price_chart_state.dart';
+import 'package:bizzie/features/company_profile/security/presentation/bloc/upcoming_earnings/upcoming_earnings_bloc.dart';
+import 'package:bizzie/features/company_profile/security/presentation/bloc/upcoming_earnings/upcoming_earnings_state.dart';
+import 'package:bizzie/features/company_profile/security/presentation/utils/upcoming_earnings_presentation_extensions.dart';
 import 'package:bizzie/di/injection.dart';
 
 class SecurityTab extends StatefulWidget {
@@ -32,9 +37,34 @@ class SecurityTab extends StatefulWidget {
 }
 
 class _SecurityTabState extends State<SecurityTab>
-    with AutomaticKeepAliveClientMixin {
+    with AutomaticKeepAliveClientMixin, WidgetsBindingObserver {
+  late final CompanySecurityBloc _securityBloc;
   @override
   bool get wantKeepAlive => true;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    _securityBloc = context.read<CompanySecurityBloc>();
+    _securityBloc.add(const CompanySecurityEvent.tabShown());
+  }
+
+  @override
+  void dispose() {
+    _securityBloc.add(const CompanySecurityEvent.tabHidden());
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused) {
+      _securityBloc.add(const CompanySecurityEvent.appBackgrounded());
+    } else if (state == AppLifecycleState.resumed) {
+      _securityBloc.add(const CompanySecurityEvent.appForegrounded());
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -71,9 +101,58 @@ class _SecurityTabState extends State<SecurityTab>
                   loaded: (s) => s.prices,
                   orElse: () => <HistoricalPriceEod>[],
                 );
-                return _SecurityContent(
-                  securityDetails: securityDetails,
-                  prices: prices,
+                final dataSource = priceState.maybeMap(
+                  loaded: (s) => s.dataSource,
+                  orElse: () => CompanyProfileDataOrigin.api,
+                );
+
+                return MultiBlocListener(
+                  listeners: [
+                    // Bridge performance metadata from HistoricalPriceEodBloc
+                    BlocListener<
+                      HistoricalPriceEodBloc,
+                      HistoricalPriceEodState
+                    >(
+                      listener: (context, eodState) {
+                        eodState.mapOrNull(
+                          loaded: (s) {
+                            context.read<CompanySecurityBloc>().add(
+                              CompanySecurityEvent.priceAnalyticsUpdated(
+                                isSuccess: true,
+                              ),
+                            );
+                          },
+                        );
+                      },
+                    ),
+                    // Bridge earnings metadata
+                    BlocListener<UpcomingEarningsBloc, UpcomingEarningsState>(
+                      listener: (context, earningsState) {
+                        earningsState.mapOrNull(
+                          loaded: (s) {
+                            context.read<CompanySecurityBloc>().add(
+                              CompanySecurityEvent.earningsAnalyticsUpdated(
+                                hasUpcoming: true,
+                                daysAway: s.earningsDate.daysAwayLabel,
+                              ),
+                            );
+                          },
+                          empty: (_) {
+                            context.read<CompanySecurityBloc>().add(
+                              CompanySecurityEvent.earningsAnalyticsUpdated(
+                                hasUpcoming: false,
+                              ),
+                            );
+                          },
+                        );
+                      },
+                    ),
+                  ],
+                  child: _SecurityContent(
+                    securityDetails: securityDetails,
+                    prices: prices,
+                    dataSource: dataSource,
+                  ),
                 );
               },
               orElse: () =>
@@ -89,8 +168,13 @@ class _SecurityTabState extends State<SecurityTab>
 class _SecurityContent extends StatelessWidget {
   final SecurityDetails securityDetails;
   final List<HistoricalPriceEod> prices;
+  final CompanyProfileDataOrigin dataSource;
 
-  const _SecurityContent({required this.securityDetails, required this.prices});
+  const _SecurityContent({
+    required this.securityDetails,
+    required this.prices,
+    required this.dataSource,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -101,6 +185,7 @@ class _SecurityContent extends StatelessWidget {
           SecurityOverviewCard(
             securityDetails: securityDetails,
             prices: prices,
+            dataSource: dataSource,
           ),
           const UpcomingEarningsWidget(),
           AppConstants.mainSectionSpacing,
@@ -111,7 +196,18 @@ class _SecurityContent extends StatelessWidget {
             create: (context) =>
                 getIt<PriceChartBloc>()
                   ..add(PriceChartEvent.historyUpdated(prices)),
-            child: const PriceChartWidget(),
+            child: BlocListener<PriceChartBloc, PriceChartState>(
+              listener: (context, chartState) {
+                // Bridge chart interactions
+                context.read<CompanySecurityBloc>().add(
+                  CompanySecurityEvent.priceAnalyticsUpdated(
+                    chartChangeCount: chartState.chartChangeCount,
+                    finalTimeframe: chartState.selectedTimeFrame.name,
+                  ),
+                );
+              },
+              child: const PriceChartWidget(),
+            ),
           ),
         ],
       ),

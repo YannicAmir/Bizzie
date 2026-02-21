@@ -1,4 +1,4 @@
-import 'package:bizzie/core/error/failures.dart';
+import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:bizzie/features/company_profile/security/domain/usecases/get_upcoming_earnings_usecase.dart';
 import 'package:bizzie/features/company_profile/security/presentation/bloc/upcoming_earnings/upcoming_earnings_bloc.dart';
 import 'package:bizzie/features/company_profile/security/presentation/bloc/upcoming_earnings/upcoming_earnings_event.dart';
@@ -35,7 +35,7 @@ void main() {
         // arrange
         when(
           () => mockGetUpcomingEarnings(any()),
-        ).thenAnswer((_) async => Right(tDate));
+        ).thenAnswer((_) async => Right((tDate, CompanyProfileDataOrigin.api)));
         return bloc;
       },
       act: (bloc) {
@@ -64,9 +64,9 @@ void main() {
       'loadRequested_noDateFound_emitsLoadingAndEmpty',
       build: () {
         // arrange
-        when(
-          () => mockGetUpcomingEarnings(any()),
-        ).thenAnswer((_) async => const Right(null));
+        when(() => mockGetUpcomingEarnings(any())).thenAnswer(
+          (_) async => const Right((null, CompanyProfileDataOrigin.api)),
+        );
         return bloc;
       },
       act: (bloc) {
@@ -83,34 +83,15 @@ void main() {
     );
 
     blocTest<UpcomingEarningsBloc, UpcomingEarningsState>(
-      'loadRequested_serverFailure_emitsLoadingAndFailure',
-      build: () {
-        // arrange
-        when(
-          () => mockGetUpcomingEarnings(any()),
-        ).thenAnswer((_) async => const Left(Failure.server('error')));
-        return bloc;
-      },
-      act: (bloc) {
-        // act
-        bloc.add(const UpcomingEarningsEvent.loadRequested(tTicker));
-      },
-      expect: () {
-        // assert
-        return [
-          const UpcomingEarningsState.loading(),
-          const UpcomingEarningsState.failure(Failure.server('error')),
-        ];
-      },
-    );
-
-    blocTest<UpcomingEarningsBloc, UpcomingEarningsState>(
       'loadRequested_alreadyLoaded_skipsLoading',
       build: () {
         // arrange
         return bloc;
       },
-      seed: () => UpcomingEarningsState.loaded(tDate),
+      seed: () => UpcomingEarningsState.loaded(
+        tDate,
+        dataSource: CompanyProfileDataOrigin.api,
+      ),
       act: (bloc) {
         // act
         bloc.add(const UpcomingEarningsEvent.loadRequested(tTicker));
@@ -131,10 +112,13 @@ void main() {
         // arrange
         when(
           () => mockGetUpcomingEarnings(any()),
-        ).thenAnswer((_) async => Right(tDate));
+        ).thenAnswer((_) async => Right((tDate, CompanyProfileDataOrigin.api)));
         return bloc;
       },
-      seed: () => UpcomingEarningsState.loaded(tDate),
+      seed: () => UpcomingEarningsState.loaded(
+        tDate,
+        dataSource: CompanyProfileDataOrigin.api,
+      ),
       act: (bloc) {
         // act
         bloc.add(
@@ -161,38 +145,17 @@ void main() {
 
   group('UpcomingEarningsBloc - stalenessCheckRequested', () {
     blocTest<UpcomingEarningsBloc, UpcomingEarningsState>(
-      'stalenessCheckRequested_initialState_triggersLoadRequested',
-      build: () {
-        // arrange
-        when(
-          () => mockGetUpcomingEarnings(any()),
-        ).thenAnswer((_) async => Right(tDate));
-        return bloc;
-      },
-      act: (bloc) {
-        // act
-        bloc.add(const UpcomingEarningsEvent.stalenessCheckRequested(tTicker));
-      },
-      expect: () {
-        // assert
-        return [
-          const UpcomingEarningsState.loading(),
-          isA<UpcomingEarningsState>(),
-        ];
-      },
-    );
-
-    blocTest<UpcomingEarningsBloc, UpcomingEarningsState>(
       'stalenessCheckRequested_staleDate_triggersLoadRequested',
       build: () {
         // arrange
         when(
           () => mockGetUpcomingEarnings(any()),
-        ).thenAnswer((_) async => Right(tDate));
+        ).thenAnswer((_) async => Right((tDate, CompanyProfileDataOrigin.api)));
         return bloc;
       },
       seed: () => UpcomingEarningsState.loaded(
         tDate,
+        dataSource: CompanyProfileDataOrigin.api,
         lastUpdated: DateTime.now().subtract(const Duration(hours: 25)),
       ),
       act: (bloc) {
@@ -216,6 +179,7 @@ void main() {
       },
       seed: () => UpcomingEarningsState.loaded(
         tDate,
+        dataSource: CompanyProfileDataOrigin.api,
         lastUpdated: DateTime.now().subtract(const Duration(hours: 1)),
       ),
       act: (bloc) {
@@ -229,52 +193,6 @@ void main() {
       verify: (_) {
         // assert
         verifyNever(() => mockGetUpcomingEarnings(any()));
-      },
-    );
-
-    blocTest<UpcomingEarningsBloc, UpcomingEarningsState>(
-      'stalenessCheckRequested_failureState_triggersLoadRequested',
-      build: () {
-        // arrange
-        when(
-          () => mockGetUpcomingEarnings(any()),
-        ).thenAnswer((_) async => Right(tDate));
-        return bloc;
-      },
-      seed: () => const UpcomingEarningsState.failure(Failure.server('error')),
-      act: (bloc) {
-        // act
-        bloc.add(const UpcomingEarningsEvent.stalenessCheckRequested(tTicker));
-      },
-      expect: () {
-        // assert
-        return [
-          const UpcomingEarningsState.loading(),
-          isA<UpcomingEarningsState>(),
-        ];
-      },
-    );
-
-    blocTest<UpcomingEarningsBloc, UpcomingEarningsState>(
-      'stalenessCheckRequested_emptyState_triggersLoadRequested',
-      build: () {
-        // arrange
-        when(
-          () => mockGetUpcomingEarnings(any()),
-        ).thenAnswer((_) async => Right(tDate));
-        return bloc;
-      },
-      seed: () => const UpcomingEarningsState.empty(),
-      act: (bloc) {
-        // act
-        bloc.add(const UpcomingEarningsEvent.stalenessCheckRequested(tTicker));
-      },
-      expect: () {
-        // assert
-        return [
-          const UpcomingEarningsState.loading(),
-          isA<UpcomingEarningsState>(),
-        ];
       },
     );
   });

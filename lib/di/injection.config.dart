@@ -99,6 +99,10 @@ import '../features/company_profile/business/domain/usecases/get_business_profil
     as _i582;
 import '../features/company_profile/business/presentation/bloc/company_business_bloc.dart'
     as _i505;
+import '../features/company_profile/cp/presentation/analytics/company_profile_analytics.dart'
+    as _i228;
+import '../features/company_profile/cp/presentation/bloc/company_profile_bloc.dart'
+    as _i176;
 import '../features/company_profile/dividends/data/datasources/dividends_firestore_data_source.dart'
     as _i584;
 import '../features/company_profile/dividends/data/datasources/dividends_remote_data_source.dart'
@@ -225,6 +229,8 @@ import '../features/company_profile/security/domain/usecases/get_security_detail
     as _i190;
 import '../features/company_profile/security/domain/usecases/get_upcoming_earnings_usecase.dart'
     as _i1055;
+import '../features/company_profile/security/presentation/analytics/security_tab_analytics.dart'
+    as _i258;
 import '../features/company_profile/security/presentation/bloc/company_security_bloc.dart'
     as _i410;
 import '../features/company_profile/security/presentation/bloc/historical_price_eod/historical_price_eod_bloc.dart'
@@ -777,6 +783,12 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i310.SettingsTracker>(
       () => _i310.SettingsTracker(gh<_i529.IAnalyticsService>()),
     );
+    gh.lazySingleton<_i228.CompanyProfileAnalytics>(
+      () => _i228.CompanyProfileAnalytics(gh<_i529.IAnalyticsService>()),
+    );
+    gh.lazySingleton<_i258.SecurityTabAnalytics>(
+      () => _i258.SecurityTabAnalytics(gh<_i529.IAnalyticsService>()),
+    );
     gh.lazySingleton<_i32.HomeAnalytics>(
       () => _i32.HomeAnalytics(gh<_i529.IAnalyticsService>()),
     );
@@ -948,6 +960,12 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i983.AppStatusBloc(
         gh<_i308.IAppStatusRepository>(),
         gh<_i4.AppStatusTracker>(),
+      ),
+    );
+    gh.factory<_i176.CompanyProfileBloc>(
+      () => _i176.CompanyProfileBloc(
+        gh<_i228.CompanyProfileAnalytics>(),
+        gh<_i961.ILifecycleService>(),
       ),
     );
     gh.lazySingleton<_i805.GetFcpsStatsUseCase>(
@@ -1487,9 +1505,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i591.FeedbackTracker>(),
       ),
     );
-    gh.factory<_i410.CompanySecurityBloc>(
-      () => _i410.CompanySecurityBloc(gh<_i190.GetSecurityDetailsUseCase>()),
-    );
     gh.lazySingleton<_i594.GetSettingsDisplayDataUseCase>(
       () => _i594.GetSettingsDisplayDataUseCase(
         gh<_i685.IAuthRepository>(),
@@ -1520,6 +1535,12 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i505.CompanyBusinessBloc(
         gh<_i582.GetBusinessProfileUseCase>(),
         gh<_i937.IConfigService>(),
+      ),
+    );
+    gh.factory<_i410.CompanySecurityBloc>(
+      () => _i410.CompanySecurityBloc(
+        gh<_i190.GetSecurityDetailsUseCase>(),
+        gh<_i258.SecurityTabAnalytics>(),
       ),
     );
     gh.lazySingleton<_i200.UserBloc>(

@@ -47,17 +47,26 @@ class HistoricalPriceEodBloc
     );
     emit(const HistoricalPriceEodState.loading());
 
+    final stopwatch = Stopwatch()..start();
     final result = await _getPrices(event.ticker);
+    stopwatch.stop();
 
     result.fold(
       (failure) {
         _logger.severe('Failed to load EOD prices', failure);
         emit(HistoricalPriceEodState.failure(failure));
       },
-      (prices) {
+      (tuple) {
+        final prices = tuple.$1;
+        final origin = tuple.$2;
+
         _logger.info('Successfully loaded EOD prices: ${prices.length} points');
         emit(
-          HistoricalPriceEodState.loaded(prices, lastUpdated: DateTime.now()),
+          HistoricalPriceEodState.loaded(
+            prices,
+            dataSource: origin,
+            lastUpdated: DateTime.now(),
+          ),
         );
       },
     );

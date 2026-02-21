@@ -1,3 +1,4 @@
+import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/features/company_profile/security/domain/interfaces/i_security_repository.dart';
 import 'package:bizzie/features/company_profile/security/domain/models/security_details.dart';
@@ -45,15 +46,16 @@ void main() {
   group('GetSecurityDetailsUseCase', () {
     test('call_success_returnsSecurityDetails', () async {
       // arrange
+      final tResult = (tSecurityDetails, CompanyProfileDataOrigin.api);
       when(
         () => mockRepository.getSecurityDetails(tTicker),
-      ).thenAnswer((_) async => Right(tSecurityDetails));
+      ).thenAnswer((_) async => Right(tResult));
 
       // act
       final result = await useCase(tTicker);
 
       // assert
-      expect(result, Right(tSecurityDetails));
+      expect(result, Right(tResult));
       verify(() => mockRepository.getSecurityDetails(tTicker)).called(1);
       verifyNoMoreInteractions(mockRepository);
     });

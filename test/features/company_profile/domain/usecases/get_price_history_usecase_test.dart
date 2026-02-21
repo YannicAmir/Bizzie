@@ -1,3 +1,4 @@
+import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/features/company_profile/security/domain/interfaces/i_price_repository.dart';
 import 'package:bizzie/features/company_profile/security/domain/models/price_history.dart';
@@ -23,15 +24,16 @@ void main() {
   group('GetPriceHistoryUseCase', () {
     test('call_success_returnsPriceHistory', () async {
       // arrange
+      final tResult = (tPriceHistory, CompanyProfileDataOrigin.api);
       when(
         () => mockRepository.getPriceHistory(tTicker),
-      ).thenAnswer((_) async => Right(tPriceHistory));
+      ).thenAnswer((_) async => Right(tResult));
 
       // act
       final result = await useCase(tTicker);
 
       // assert
-      expect(result, Right(tPriceHistory));
+      expect(result, Right(tResult));
       verify(() => mockRepository.getPriceHistory(tTicker)).called(1);
       verifyNoMoreInteractions(mockRepository);
     });

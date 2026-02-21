@@ -35,7 +35,11 @@ class PriceChartBloc extends Bloc<PriceChartEvent, PriceChartState> {
     final filtered = _calculateViewData(state.fullHistory, event.timeFrame);
 
     emit(
-      state.copyWith(selectedTimeFrame: event.timeFrame, viewData: filtered),
+      state.copyWith(
+        selectedTimeFrame: event.timeFrame,
+        viewData: filtered,
+        chartChangeCount: state.chartChangeCount + 1,
+      ),
     );
   }
 

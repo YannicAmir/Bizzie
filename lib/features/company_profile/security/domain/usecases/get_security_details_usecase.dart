@@ -1,3 +1,4 @@
+import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
 import 'package:bizzie/core/error/failures.dart';
@@ -7,13 +8,19 @@ import 'package:bizzie/features/company_profile/security/domain/models/security_
 
 @lazySingleton
 class GetSecurityDetailsUseCase
-    implements UseCase<Either<Failure, SecurityDetails>, String> {
+    implements
+        UseCase<
+          Either<Failure, (SecurityDetails, CompanyProfileDataOrigin)>,
+          String
+        > {
   final ISecurityRepository _repository;
 
   GetSecurityDetailsUseCase(this._repository);
 
   @override
-  Future<Either<Failure, SecurityDetails>> call(String ticker) {
+  Future<Either<Failure, (SecurityDetails, CompanyProfileDataOrigin)>> call(
+    String ticker,
+  ) {
     return _repository.getSecurityDetails(ticker);
   }
 }

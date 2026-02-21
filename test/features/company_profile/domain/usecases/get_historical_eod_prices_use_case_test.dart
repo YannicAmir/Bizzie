@@ -1,3 +1,4 @@
+import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/features/company_profile/security/domain/interfaces/i_price_repository.dart';
 import 'package:bizzie/features/company_profile/security/domain/models/historical_price_eod.dart';
@@ -23,15 +24,16 @@ void main() {
   group('GetHistoricalEodPricesUseCase', () {
     test('call_success_returnsHistoricalPriceEodList', () async {
       // arrange
+      final tResult = (tEodPrices, CompanyProfileDataOrigin.api);
       when(
         () => mockRepository.getHistoricalEodPrices(tTicker),
-      ).thenAnswer((_) async => Right(tEodPrices));
+      ).thenAnswer((_) async => Right(tResult));
 
       // act
       final result = await useCase(tTicker);
 
       // assert
-      expect(result, Right(tEodPrices));
+      expect(result, Right(tResult));
       verify(() => mockRepository.getHistoricalEodPrices(tTicker)).called(1);
       verifyNoMoreInteractions(mockRepository);
     });

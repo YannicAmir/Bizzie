@@ -1,3 +1,4 @@
+import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:bizzie/features/company_profile/security/domain/models/historical_price_eod.dart';
 import 'package:bizzie/features/company_profile/security/presentation/bloc/historical_price_eod/historical_price_eod_state.dart';
 import 'package:bizzie/features/company_profile/security/presentation/bloc/historical_price_eod/historical_price_eod_state_extensions.dart';
@@ -10,17 +11,22 @@ import 'package:flutter/material.dart';
 class SecurityOverviewCard extends StatelessWidget {
   final SecurityDetails securityDetails;
   final List<HistoricalPriceEod> prices;
+  final CompanyProfileDataOrigin dataSource;
 
   const SecurityOverviewCard({
     super.key,
     required this.securityDetails,
     required this.prices,
+    required this.dataSource,
   });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final priceState = HistoricalPriceEodState.loaded(prices);
+    final priceState = HistoricalPriceEodState.loaded(
+      prices,
+      dataSource: dataSource,
+    );
 
     return Container(
       padding: const EdgeInsets.all(AppConstants.mainSectionContainerPadding),
