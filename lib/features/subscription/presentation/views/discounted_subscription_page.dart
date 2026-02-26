@@ -26,10 +26,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class DiscountedSubscriptionPage extends StatefulWidget {
   final PaywallSource source;
+  final String? tabName;
+  final String? featureName;
 
   const DiscountedSubscriptionPage({
     super.key,
     this.source = PaywallSource.unknown,
+    this.tabName,
+    this.featureName,
   });
 
   @override
@@ -46,6 +50,8 @@ class _DiscountedSubscriptionPageState
       SubscriptionEvent.viewed(
         source: widget.source,
         paywallType: PaywallType.discount,
+        tabName: widget.tabName,
+        featureName: widget.featureName,
       ),
     );
   }

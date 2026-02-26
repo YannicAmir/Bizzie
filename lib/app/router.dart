@@ -365,11 +365,21 @@ GoRoute _buildPaywallRoute({
         (e) => e.name == sourceStr,
         orElse: () => PaywallSource.unknown,
       );
+      final tabName = queryParams['tabName'];
+      final featureName = queryParams['featureName'];
 
       final pageChild = child is SubscriptionPage
-          ? SubscriptionPage(source: source)
+          ? SubscriptionPage(
+              source: source,
+              tabName: tabName,
+              featureName: featureName,
+            )
           : child is DiscountedSubscriptionPage
-          ? DiscountedSubscriptionPage(source: source)
+          ? DiscountedSubscriptionPage(
+              source: source,
+              tabName: tabName,
+              featureName: featureName,
+            )
           : child;
 
       if (!animate) {

@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:injectable/injectable.dart';
 import 'package:intl/intl.dart';
+import 'package:bizzie/core/enums/data_origin.dart';
 
 import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:bizzie/features/company_profile/shared/domain/models/chart_data_point.dart';
@@ -21,17 +22,10 @@ class CompanyRoeBloc extends Bloc<CompanyRoeEvent, CompanyRoeState> {
 
   CompanyRoeBloc(this._getRoeStats, this._configService)
     : super(const CompanyRoeState.initial()) {
-    on<CompanyRoeEvent>(_onEvent, transformer: droppable());
-  }
-
-  Future<void> _onEvent(
-    CompanyRoeEvent event,
-    Emitter<CompanyRoeState> emit,
-  ) async {
-    _logger.info('Handling event: $event');
-    await event.map(
-      loadRequested: (e) async => _onLoadRequested(e, emit),
-      stalenessCheckRequested: (e) async => _onStalenessCheckRequested(e),
+    on<LoadRequested>(_onLoadRequested, transformer: droppable());
+    on<StalenessCheckRequested>(
+      _onStalenessCheckRequested,
+      transformer: sequential(),
     );
   }
 
@@ -39,15 +33,29 @@ class CompanyRoeBloc extends Bloc<CompanyRoeEvent, CompanyRoeState> {
     LoadRequested event,
     Emitter<CompanyRoeState> emit,
   ) async {
-    if (_shouldSkipLoad(event.forceRefresh)) {
-      _logger.info('Skip loading ROE: already loaded and no force refresh');
+    final isAlreadyLoaded = state.maybeMap(
+      loaded: (s) => true,
+      orElse: () => false,
+    );
+
+    final isRightTicker = state.maybeMap(
+      loaded: (s) => s.ticker == event.ticker,
+      orElse: () => false,
+    );
+
+    if (isAlreadyLoaded && isRightTicker && !event.forceRefresh) {
+      _logger.info(
+        'Company ROE already loaded for ${event.ticker} and is the correct ticker. Skipping load (Silent Refresh).',
+      );
       return;
     }
 
     _logger.info(
       'Loading ROE stats for ${event.ticker} (force=${event.forceRefresh})',
     );
-    emit(const CompanyRoeState.loading());
+    if (!isAlreadyLoaded || !isRightTicker || event.forceRefresh) {
+      emit(const CompanyRoeState.loading());
+    }
 
     final result = await _getRoeStats(event.ticker);
 
@@ -56,29 +64,27 @@ class CompanyRoeBloc extends Bloc<CompanyRoeEvent, CompanyRoeState> {
         _logger.severe('Failed to load ROE stats', failure);
         emit(CompanyRoeState.failure(failure));
       },
-      (keyMetrics) {
+      (tuple) {
+        final (keyMetrics, origin) = tuple;
         _logger.info(
-          'Successfully loaded ROE stats: ${keyMetrics.length} points',
+          'Successfully loaded ROE stats (origin: $origin): ${keyMetrics.length} points',
         );
-        _emitLoadedState(keyMetrics, emit);
+        _emitLoadedState(event.ticker, keyMetrics, origin, emit);
       },
     );
   }
 
-  bool _shouldSkipLoad(bool forceRefresh) {
-    return !forceRefresh &&
-        state.maybeMap(loaded: (_) => true, orElse: () => false);
-  }
-
   void _emitLoadedState(
+    String ticker,
     List<dynamic> keyMetrics,
+    CompanyProfileDataOrigin origin,
     Emitter<CompanyRoeState> emit,
   ) {
     final sortedPoints = _extractSortedDataPoints(keyMetrics);
 
     if (sortedPoints.isEmpty) {
       _logger.info('ROE metrics empty after extraction');
-      emit(_emptyLoadedState());
+      emit(_emptyLoadedState(ticker, origin));
       return;
     }
 
@@ -93,6 +99,7 @@ class CompanyRoeBloc extends Bloc<CompanyRoeEvent, CompanyRoeState> {
     );
     emit(
       CompanyRoeState.loaded(
+        ticker: ticker,
         dataPoints: sortedPoints,
         chartData: chartData,
         currentValue: currentPoint.value,
@@ -101,6 +108,7 @@ class CompanyRoeBloc extends Bloc<CompanyRoeEvent, CompanyRoeState> {
         isPositive: growth.delta >= 0,
         referenceLabel: referenceLabel,
         historyLimit: _configService.freePlanHistoryCount,
+        dataOrigin: origin,
         lastUpdated: DateTime.now(),
       ),
     );
@@ -169,8 +177,12 @@ class CompanyRoeBloc extends Bloc<CompanyRoeEvent, CompanyRoeState> {
     }).toList();
   }
 
-  CompanyRoeState _emptyLoadedState() {
+  CompanyRoeState _emptyLoadedState(
+    String ticker,
+    CompanyProfileDataOrigin origin,
+  ) {
     return CompanyRoeState.loaded(
+      ticker: ticker,
       dataPoints: [],
       chartData: [],
       currentValue: 0,
@@ -179,11 +191,15 @@ class CompanyRoeBloc extends Bloc<CompanyRoeEvent, CompanyRoeState> {
       isPositive: false,
       referenceLabel: '',
       historyLimit: _configService.freePlanHistoryCount,
+      dataOrigin: origin,
       lastUpdated: DateTime.now(),
     );
   }
 
-  Future<void> _onStalenessCheckRequested(StalenessCheckRequested event) async {
+  Future<void> _onStalenessCheckRequested(
+    StalenessCheckRequested event,
+    Emitter<CompanyRoeState> emit,
+  ) async {
     _logger.info('Staleness check requested for ${event.ticker}');
     state.mapOrNull(
       loaded: (loadedState) {

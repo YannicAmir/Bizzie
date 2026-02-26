@@ -1,3 +1,4 @@
+import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/features/company_profile/roe/domain/models/roe.dart';
 import 'package:bizzie/features/company_profile/roe/domain/usecases/get_roe_usecase.dart';
@@ -52,9 +53,9 @@ void main() {
       'loadRequested_success_emitsLoadingAndLoaded',
       build: () {
         // arrange
-        when(
-          () => mockGetRoe(tTicker),
-        ).thenAnswer((_) async => const Right(tRoeMetrics));
+        when(() => mockGetRoe(tTicker)).thenAnswer(
+          (_) async => const Right((tRoeMetrics, CompanyProfileDataOrigin.api)),
+        );
         return bloc;
       },
       act: (bloc) {
@@ -81,6 +82,12 @@ void main() {
                 ),
                 'growthPercentage',
                 ((0.45 - 0.35) / 0.35) * 100,
+              )
+              .having(
+                (s) =>
+                    s.maybeMap(loaded: (l) => l.dataOrigin, orElse: () => null),
+                'dataOrigin',
+                CompanyProfileDataOrigin.api,
               ),
         ];
       },
@@ -120,6 +127,7 @@ void main() {
         return bloc;
       },
       seed: () => const CompanyRoeState.loaded(
+        ticker: tTicker,
         dataPoints: [],
         chartData: [],
         currentValue: 0.45,
@@ -128,6 +136,7 @@ void main() {
         isPositive: true,
         referenceLabel: '2018',
         historyLimit: 7,
+        dataOrigin: CompanyProfileDataOrigin.api,
       ),
       act: (bloc) {
         // act
@@ -147,12 +156,13 @@ void main() {
       'loadRequested_alreadyLoadedWithForceRefresh_emitsLoadingAndLoaded',
       build: () {
         // arrange
-        when(
-          () => mockGetRoe(tTicker),
-        ).thenAnswer((_) async => const Right(tRoeMetrics));
+        when(() => mockGetRoe(tTicker)).thenAnswer(
+          (_) async => const Right((tRoeMetrics, CompanyProfileDataOrigin.api)),
+        );
         return bloc;
       },
       seed: () => const CompanyRoeState.loaded(
+        ticker: tTicker,
         dataPoints: [],
         chartData: [],
         currentValue: 0.45,
@@ -161,6 +171,7 @@ void main() {
         isPositive: true,
         referenceLabel: '2018',
         historyLimit: 7,
+        dataOrigin: CompanyProfileDataOrigin.api,
       ),
       act: (bloc) {
         // act
@@ -192,9 +203,9 @@ void main() {
       'stalenessCheckRequested_initialState_triggersLoadRequested',
       build: () {
         // arrange
-        when(
-          () => mockGetRoe(tTicker),
-        ).thenAnswer((_) async => const Right(tRoeMetrics));
+        when(() => mockGetRoe(tTicker)).thenAnswer(
+          (_) async => const Right((tRoeMetrics, CompanyProfileDataOrigin.api)),
+        );
         return bloc;
       },
       act: (bloc) {
@@ -222,6 +233,7 @@ void main() {
         return bloc;
       },
       seed: () => CompanyRoeState.loaded(
+        ticker: tTicker,
         dataPoints: const [],
         chartData: const [],
         currentValue: 0.45,
@@ -230,6 +242,7 @@ void main() {
         isPositive: true,
         referenceLabel: '2018',
         historyLimit: 7,
+        dataOrigin: CompanyProfileDataOrigin.api,
         lastUpdated: DateTime.now(),
       ),
       act: (bloc) {
@@ -250,12 +263,13 @@ void main() {
       'stalenessCheckRequested_stale_triggersLoadRequested',
       build: () {
         // arrange
-        when(
-          () => mockGetRoe(tTicker),
-        ).thenAnswer((_) async => const Right(tRoeMetrics));
+        when(() => mockGetRoe(tTicker)).thenAnswer(
+          (_) async => const Right((tRoeMetrics, CompanyProfileDataOrigin.api)),
+        );
         return bloc;
       },
       seed: () => CompanyRoeState.loaded(
+        ticker: tTicker,
         dataPoints: const [],
         chartData: const [],
         currentValue: 0.45,
@@ -264,6 +278,7 @@ void main() {
         isPositive: true,
         referenceLabel: '2018',
         historyLimit: 7,
+        dataOrigin: CompanyProfileDataOrigin.api,
         lastUpdated: DateTime.now().subtract(const Duration(hours: 25)),
       ),
       act: (bloc) {
@@ -282,6 +297,37 @@ void main() {
           ),
         ];
       },
+    );
+
+    blocTest<CompanyRoeBloc, CompanyRoeState>(
+      'loadRequested_differentTicker_reloadsData',
+      build: () {
+        when(() => mockGetRoe('MSFT')).thenAnswer(
+          (_) async => const Right((tRoeMetrics, CompanyProfileDataOrigin.api)),
+        );
+        return bloc;
+      },
+      seed: () => const CompanyRoeState.loaded(
+        ticker: 'AAPL',
+        dataPoints: [],
+        chartData: [],
+        currentValue: 0.45,
+        growthPercentage: 5.0,
+        absoluteDelta: 0.1,
+        isPositive: true,
+        referenceLabel: '2018',
+        historyLimit: 7,
+        dataOrigin: CompanyProfileDataOrigin.api,
+      ),
+      act: (bloc) => bloc.add(const CompanyRoeEvent.loadRequested('MSFT')),
+      expect: () => [
+        const CompanyRoeState.loading(),
+        isA<CompanyRoeState>().having(
+          (s) => s.maybeMap(loaded: (l) => l.ticker, orElse: () => null),
+          'ticker',
+          'MSFT',
+        ),
+      ],
     );
   });
 }

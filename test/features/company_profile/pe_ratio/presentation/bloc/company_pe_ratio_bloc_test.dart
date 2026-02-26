@@ -1,4 +1,5 @@
 import 'package:bizzie/core/error/failures.dart';
+import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:bizzie/features/company_profile/pe_ratio/domain/models/pe_ratio.dart';
 import 'package:bizzie/features/company_profile/pe_ratio/domain/usecases/get_pe_ratio_usecase.dart';
 import 'package:bizzie/features/company_profile/pe_ratio/presentation/bloc/company_pe_ratio_bloc.dart';
@@ -44,7 +45,7 @@ void main() {
   ];
 
   test('initialState_isCorrect', () {
-    // assert
+    // Assert
     expect(bloc.state, const CompanyPeRatioState.initial());
   });
 
@@ -52,18 +53,18 @@ void main() {
     blocTest<CompanyPeRatioBloc, CompanyPeRatioState>(
       'loadRequested_success_emitsLoadingAndLoaded',
       build: () {
-        // arrange
-        when(
-          () => mockGetPeRatio(tTicker),
-        ).thenAnswer((_) async => const Right(tRatios));
+        // Arrange
+        when(() => mockGetPeRatio(tTicker)).thenAnswer(
+          (_) async => const Right((tRatios, CompanyProfileDataOrigin.api)),
+        );
         return bloc;
       },
       act: (bloc) {
-        // act
+        // Act
         bloc.add(const CompanyPeRatioEvent.loadRequested(tTicker));
       },
       expect: () {
-        // assert
+        // Assert
         return [
           const CompanyPeRatioState.loading(),
           isA<CompanyPeRatioState>()
@@ -82,11 +83,17 @@ void main() {
                 ),
                 'growthPercentage',
                 ((28.0 - 18.0) / 18.0) * 100,
+              )
+              .having(
+                (s) =>
+                    s.maybeMap(loaded: (l) => l.dataOrigin, orElse: () => null),
+                'dataOrigin',
+                CompanyProfileDataOrigin.api,
               ),
         ];
       },
       verify: (_) {
-        // assert
+        // Assert
         verify(() => mockGetPeRatio(tTicker)).called(1);
       },
     );
@@ -94,7 +101,7 @@ void main() {
     blocTest<CompanyPeRatioBloc, CompanyPeRatioState>(
       'loadRequested_failure_emitsLoadingAndFailure',
       build: () {
-        // arrange
+        // Arrange
         const failure = Failure.server('Server error');
         when(
           () => mockGetPeRatio(tTicker),
@@ -102,11 +109,11 @@ void main() {
         return bloc;
       },
       act: (bloc) {
-        // act
+        // Act
         bloc.add(const CompanyPeRatioEvent.loadRequested(tTicker));
       },
       expect: () {
-        // assert
+        // Assert
         return [
           const CompanyPeRatioState.loading(),
           const CompanyPeRatioState.failure(Failure.server('Server error')),
@@ -117,10 +124,11 @@ void main() {
     blocTest<CompanyPeRatioBloc, CompanyPeRatioState>(
       'loadRequested_alreadyLoaded_skipsLoading',
       build: () {
-        // arrange
+        // Arrange
         return bloc;
       },
       seed: () => const CompanyPeRatioState.loaded(
+        ticker: tTicker,
         dataPoints: [],
         chartData: [],
         currentValue: 28.0,
@@ -129,17 +137,18 @@ void main() {
         isPositive: true,
         referenceLabel: '2018',
         historyLimit: 7,
+        dataOrigin: CompanyProfileDataOrigin.api,
       ),
       act: (bloc) {
-        // act
+        // Act
         bloc.add(const CompanyPeRatioEvent.loadRequested(tTicker));
       },
       expect: () {
-        // assert
+        // Assert
         return [];
       },
       verify: (_) {
-        // assert
+        // Assert
         verifyNever(() => mockGetPeRatio(any()));
       },
     );
@@ -147,13 +156,14 @@ void main() {
     blocTest<CompanyPeRatioBloc, CompanyPeRatioState>(
       'loadRequested_alreadyLoadedWithForceRefresh_emitsLoadingAndLoaded',
       build: () {
-        // arrange
-        when(
-          () => mockGetPeRatio(tTicker),
-        ).thenAnswer((_) async => const Right(tRatios));
+        // Arrange
+        when(() => mockGetPeRatio(tTicker)).thenAnswer(
+          (_) async => const Right((tRatios, CompanyProfileDataOrigin.api)),
+        );
         return bloc;
       },
       seed: () => const CompanyPeRatioState.loaded(
+        ticker: tTicker,
         dataPoints: [],
         chartData: [],
         currentValue: 28.0,
@@ -162,15 +172,16 @@ void main() {
         isPositive: true,
         referenceLabel: '2018',
         historyLimit: 7,
+        dataOrigin: CompanyProfileDataOrigin.api,
       ),
       act: (bloc) {
-        // act
+        // Act
         bloc.add(
           const CompanyPeRatioEvent.loadRequested(tTicker, forceRefresh: true),
         );
       },
       expect: () {
-        // assert
+        // Assert
         return [
           const CompanyPeRatioState.loading(),
           isA<CompanyPeRatioState>().having(
@@ -182,7 +193,7 @@ void main() {
         ];
       },
       verify: (_) {
-        // assert
+        // Assert
         verify(() => mockGetPeRatio(tTicker)).called(1);
       },
     );
@@ -192,18 +203,18 @@ void main() {
     blocTest<CompanyPeRatioBloc, CompanyPeRatioState>(
       'stalenessCheckRequested_initialState_triggersLoadRequested',
       build: () {
-        // arrange
-        when(
-          () => mockGetPeRatio(tTicker),
-        ).thenAnswer((_) async => const Right(tRatios));
+        // Arrange
+        when(() => mockGetPeRatio(tTicker)).thenAnswer(
+          (_) async => const Right((tRatios, CompanyProfileDataOrigin.api)),
+        );
         return bloc;
       },
       act: (bloc) {
-        // act
+        // Act
         bloc.add(const CompanyPeRatioEvent.stalenessCheckRequested(tTicker));
       },
       expect: () {
-        // assert
+        // Assert
         return [
           const CompanyPeRatioState.loading(),
           isA<CompanyPeRatioState>().having(
@@ -219,10 +230,11 @@ void main() {
     blocTest<CompanyPeRatioBloc, CompanyPeRatioState>(
       'stalenessCheckRequested_fresh_doesNotTriggerLoad',
       build: () {
-        // arrange
+        // Arrange
         return bloc;
       },
       seed: () => CompanyPeRatioState.loaded(
+        ticker: tTicker,
         dataPoints: const [],
         chartData: const [],
         currentValue: 28.0,
@@ -231,18 +243,19 @@ void main() {
         isPositive: true,
         referenceLabel: '2018',
         historyLimit: 7,
+        dataOrigin: CompanyProfileDataOrigin.api,
         lastUpdated: DateTime.now(),
       ),
       act: (bloc) {
-        // act
+        // Act
         bloc.add(const CompanyPeRatioEvent.stalenessCheckRequested(tTicker));
       },
       expect: () {
-        // assert
+        // Assert
         return [];
       },
       verify: (_) {
-        // assert
+        // Assert
         verifyNever(() => mockGetPeRatio(any()));
       },
     );
@@ -250,13 +263,14 @@ void main() {
     blocTest<CompanyPeRatioBloc, CompanyPeRatioState>(
       'stalenessCheckRequested_stale_triggersLoadRequested',
       build: () {
-        // arrange
-        when(
-          () => mockGetPeRatio(tTicker),
-        ).thenAnswer((_) async => const Right(tRatios));
+        // Arrange
+        when(() => mockGetPeRatio(tTicker)).thenAnswer(
+          (_) async => const Right((tRatios, CompanyProfileDataOrigin.api)),
+        );
         return bloc;
       },
       seed: () => CompanyPeRatioState.loaded(
+        ticker: tTicker,
         dataPoints: const [],
         chartData: const [],
         currentValue: 28.0,
@@ -265,14 +279,15 @@ void main() {
         isPositive: true,
         referenceLabel: '2018',
         historyLimit: 7,
+        dataOrigin: CompanyProfileDataOrigin.api,
         lastUpdated: DateTime.now().subtract(const Duration(hours: 25)),
       ),
       act: (bloc) {
-        // act
+        // Act
         bloc.add(const CompanyPeRatioEvent.stalenessCheckRequested(tTicker));
       },
       expect: () {
-        // assert
+        // Assert
         return [
           const CompanyPeRatioState.loading(),
           isA<CompanyPeRatioState>().having(
@@ -283,6 +298,38 @@ void main() {
           ),
         ];
       },
+    );
+
+    blocTest<CompanyPeRatioBloc, CompanyPeRatioState>(
+      'loadRequested_differentTicker_reloadsData',
+      build: () {
+        // Arrange
+        when(() => mockGetPeRatio('MSFT')).thenAnswer(
+          (_) async => const Right((tRatios, CompanyProfileDataOrigin.api)),
+        );
+        return bloc;
+      },
+      seed: () => const CompanyPeRatioState.loaded(
+        ticker: 'AAPL',
+        dataPoints: [],
+        chartData: [],
+        currentValue: 28.0,
+        growthPercentage: 5.0,
+        absoluteDelta: 1.0,
+        isPositive: true,
+        referenceLabel: '2018',
+        historyLimit: 7,
+        dataOrigin: CompanyProfileDataOrigin.api,
+      ),
+      act: (bloc) => bloc.add(const CompanyPeRatioEvent.loadRequested('MSFT')),
+      expect: () => [
+        const CompanyPeRatioState.loading(),
+        isA<CompanyPeRatioState>().having(
+          (s) => s.maybeMap(loaded: (l) => l.ticker, orElse: () => null),
+          'ticker',
+          'MSFT',
+        ),
+      ],
     );
   });
 }

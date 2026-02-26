@@ -1,4 +1,5 @@
 import 'package:bizzie/core/error/failures.dart';
+import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:bizzie/features/company_profile/news/domain/models/company_news.dart';
 import 'package:bizzie/features/company_profile/news/domain/models/news_article.dart';
 import 'package:bizzie/features/company_profile/news/domain/usecases/get_company_news_usecase.dart';
@@ -42,26 +43,29 @@ void main() {
       'loadRequested_success_emitsLoadingAndLoaded',
       build: () {
         // arrange
-        when(
-          () => mockGetCompanyNews(tTicker),
-        ).thenAnswer((_) async => const Right(tCompanyNews));
+        when(() => mockGetCompanyNews(tTicker)).thenAnswer(
+          (_) async =>
+              const Right((tCompanyNews, CompanyProfileDataOrigin.api)),
+        );
         return bloc;
       },
       act: (bloc) {
         // act
         bloc.add(const CompanyNewsEvent.loadRequested(tTicker));
       },
-      expect: () {
-        // assert
-        return [
-          const CompanyNewsState.loading(),
-          isA<CompanyNewsState>().having(
-            (s) => s.maybeMap(loaded: (l) => l.news, orElse: () => null),
-            'news',
-            tNewsArticles,
+      expect: () => [
+        const CompanyNewsState.loading(),
+        isA<CompanyNewsState>().having(
+          (s) => s.maybeMap(
+            loaded: (l) =>
+                l.ticker == tTicker &&
+                l.dataOrigin == CompanyProfileDataOrigin.api,
+            orElse: () => false,
           ),
-        ];
-      },
+          'loaded with correct ticker and origin',
+          true,
+        ),
+      ],
       verify: (_) {
         // assert
         verify(() => mockGetCompanyNews(tTicker)).called(1);
@@ -82,13 +86,10 @@ void main() {
         // act
         bloc.add(const CompanyNewsEvent.loadRequested(tTicker));
       },
-      expect: () {
-        // assert
-        return [
-          const CompanyNewsState.loading(),
-          const CompanyNewsState.failure(Failure.server('Server error')),
-        ];
-      },
+      expect: () => [
+        const CompanyNewsState.loading(),
+        const CompanyNewsState.failure(Failure.server('Server error')),
+      ],
     );
 
     blocTest<CompanyNewsBloc, CompanyNewsState>(
@@ -97,15 +98,16 @@ void main() {
         // arrange
         return bloc;
       },
-      seed: () => const CompanyNewsState.loaded(tNewsArticles),
+      seed: () => CompanyNewsState.loaded(
+        articles: tNewsArticles,
+        ticker: tTicker,
+        dataOrigin: CompanyProfileDataOrigin.api,
+      ),
       act: (bloc) {
         // act
         bloc.add(const CompanyNewsEvent.loadRequested(tTicker));
       },
-      expect: () {
-        // assert
-        return [];
-      },
+      expect: () => [],
       verify: (_) {
         // assert
         verifyNever(() => mockGetCompanyNews(any()));
@@ -113,115 +115,158 @@ void main() {
     );
 
     blocTest<CompanyNewsBloc, CompanyNewsState>(
-      'loadRequested_alreadyLoadedWithForceRefresh_emitsLoadingAndLoaded',
+      'loadRequested_differentTicker_reloadsData',
       build: () {
         // arrange
-        when(
-          () => mockGetCompanyNews(tTicker),
-        ).thenAnswer((_) async => const Right(tCompanyNews));
+        when(() => mockGetCompanyNews('MSFT')).thenAnswer(
+          (_) async => const Right((
+            CompanyNews(
+              symbol: 'MSFT',
+              articles: [
+                NewsArticle(
+                  title: 'Microsoft News',
+                  publishedDate: '2023-01-01',
+                  site: 'TechCrunch',
+                  url: 'https://microsoft.com',
+                ),
+              ],
+            ),
+            CompanyProfileDataOrigin.api,
+          )),
+        );
         return bloc;
       },
-      seed: () => const CompanyNewsState.loaded(tNewsArticles),
+      seed: () => CompanyNewsState.loaded(
+        articles: tNewsArticles,
+        ticker: 'AAPL',
+        dataOrigin: CompanyProfileDataOrigin.api,
+      ),
+      act: (bloc) {
+        // act
+        bloc.add(const CompanyNewsEvent.loadRequested('MSFT'));
+      },
+      expect: () => [
+        const CompanyNewsState.loading(),
+        isA<CompanyNewsState>().having(
+          (s) => s.maybeMap(loaded: (l) => l.ticker, orElse: () => null),
+          'ticker',
+          'MSFT',
+        ),
+      ],
+    );
+
+    blocTest<CompanyNewsBloc, CompanyNewsState>(
+      'loadRequested_alreadyLoadedWithForceRefresh_emitsLoadedOnly',
+      build: () {
+        // arrange
+        when(() => mockGetCompanyNews(tTicker)).thenAnswer(
+          (_) async =>
+              const Right((tCompanyNews, CompanyProfileDataOrigin.api)),
+        );
+        return bloc;
+      },
+      seed: () => CompanyNewsState.loaded(
+        articles: tNewsArticles,
+        ticker: tTicker,
+        dataOrigin: CompanyProfileDataOrigin.api,
+      ),
       act: (bloc) {
         // act
         bloc.add(
           const CompanyNewsEvent.loadRequested(tTicker, forceRefresh: true),
         );
       },
-      expect: () {
-        // assert
-        return [
-          const CompanyNewsState.loading(),
-          isA<CompanyNewsState>().having(
-            (s) => s.maybeMap(loaded: (l) => l.news, orElse: () => null),
-            'news',
-            tNewsArticles,
-          ),
-        ];
-      },
+      expect: () => [
+        const CompanyNewsState.loading(),
+        isA<CompanyNewsState>().having(
+          (s) => s.maybeMap(loaded: (l) => l.ticker, orElse: () => null),
+          'ticker',
+          tTicker,
+        ),
+      ],
       verify: (_) {
         // assert
         verify(() => mockGetCompanyNews(tTicker)).called(1);
       },
     );
-    group('CompanyNewsBloc - stalenessCheckRequested', () {
-      blocTest<CompanyNewsBloc, CompanyNewsState>(
-        'stalenessCheckRequested_initialState_triggersLoadRequested',
-        build: () {
-          // arrange
-          when(
-            () => mockGetCompanyNews(tTicker),
-          ).thenAnswer((_) async => const Right(tCompanyNews));
-          return bloc;
-        },
-        act: (bloc) {
-          // act
-          bloc.add(const CompanyNewsEvent.stalenessCheckRequested(tTicker));
-        },
-        expect: () {
-          // assert
-          return [
-            const CompanyNewsState.loading(),
-            isA<CompanyNewsState>().having(
-              (s) => s.maybeMap(loaded: (l) => l.news, orElse: () => null),
-              'news',
-              tNewsArticles,
-            ),
-          ];
-        },
-      );
+  });
 
-      blocTest<CompanyNewsBloc, CompanyNewsState>(
-        'stalenessCheckRequested_fresh_doesNotTriggerLoad',
-        build: () {
-          // arrange
-          return bloc;
-        },
-        seed: () =>
-            CompanyNewsState.loaded(tNewsArticles, lastUpdated: DateTime.now()),
-        act: (bloc) {
-          // act
-          bloc.add(const CompanyNewsEvent.stalenessCheckRequested(tTicker));
-        },
-        expect: () {
-          // assert
-          return [];
-        },
-        verify: (_) {
-          // assert
-          verifyNever(() => mockGetCompanyNews(any()));
-        },
-      );
-
-      blocTest<CompanyNewsBloc, CompanyNewsState>(
-        'stalenessCheckRequested_stale_triggersLoadRequested',
-        build: () {
-          // arrange
-          when(
-            () => mockGetCompanyNews(tTicker),
-          ).thenAnswer((_) async => const Right(tCompanyNews));
-          return bloc;
-        },
-        seed: () => CompanyNewsState.loaded(
-          tNewsArticles,
-          lastUpdated: DateTime.now().subtract(const Duration(minutes: 6)),
+  group('CompanyNewsBloc - stalenessCheckRequested', () {
+    blocTest<CompanyNewsBloc, CompanyNewsState>(
+      'stalenessCheckRequested_initialState_triggersLoadRequested',
+      build: () {
+        // arrange
+        when(() => mockGetCompanyNews(tTicker)).thenAnswer(
+          (_) async =>
+              const Right((tCompanyNews, CompanyProfileDataOrigin.api)),
+        );
+        return bloc;
+      },
+      act: (bloc) {
+        // act
+        bloc.add(const CompanyNewsEvent.stalenessCheckRequested(tTicker));
+      },
+      expect: () => [
+        const CompanyNewsState.loading(),
+        isA<CompanyNewsState>().having(
+          (s) => s.maybeMap(loaded: (l) => l.ticker, orElse: () => null),
+          'ticker',
+          tTicker,
         ),
-        act: (bloc) {
-          // act
-          bloc.add(const CompanyNewsEvent.stalenessCheckRequested(tTicker));
-        },
-        expect: () {
-          // assert
-          return [
-            const CompanyNewsState.loading(),
-            isA<CompanyNewsState>().having(
-              (s) => s.maybeMap(loaded: (l) => l.news, orElse: () => null),
-              'news',
-              tNewsArticles,
-            ),
-          ];
-        },
-      );
-    });
+      ],
+    );
+
+    blocTest<CompanyNewsBloc, CompanyNewsState>(
+      'stalenessCheckRequested_fresh_doesNotTriggerLoad',
+      build: () {
+        // arrange
+        return bloc;
+      },
+      seed: () => CompanyNewsState.loaded(
+        articles: tNewsArticles,
+        ticker: tTicker,
+        dataOrigin: CompanyProfileDataOrigin.api,
+        lastUpdated: DateTime.now(),
+      ),
+      act: (bloc) {
+        // act
+        bloc.add(const CompanyNewsEvent.stalenessCheckRequested(tTicker));
+      },
+      expect: () => [],
+      verify: (_) {
+        // assert
+        verifyNever(() => mockGetCompanyNews(any()));
+      },
+    );
+
+    blocTest<CompanyNewsBloc, CompanyNewsState>(
+      'stalenessCheckRequested_stale_triggersLoadRequested',
+      build: () {
+        // arrange
+        when(() => mockGetCompanyNews(tTicker)).thenAnswer(
+          (_) async =>
+              const Right((tCompanyNews, CompanyProfileDataOrigin.api)),
+        );
+        return bloc;
+      },
+      seed: () => CompanyNewsState.loaded(
+        articles: tNewsArticles,
+        ticker: tTicker,
+        dataOrigin: CompanyProfileDataOrigin.api,
+        lastUpdated: DateTime.now().subtract(const Duration(minutes: 6)),
+      ),
+      act: (bloc) {
+        // act
+        bloc.add(const CompanyNewsEvent.stalenessCheckRequested(tTicker));
+      },
+      expect: () => [
+        const CompanyNewsState.loading(),
+        isA<CompanyNewsState>().having(
+          (s) => s.maybeMap(loaded: (l) => l.ticker, orElse: () => null),
+          'ticker',
+          tTicker,
+        ),
+      ],
+    );
   });
 }

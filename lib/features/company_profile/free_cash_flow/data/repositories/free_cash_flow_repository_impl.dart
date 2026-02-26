@@ -1,3 +1,4 @@
+import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
 import 'package:bizzie/core/error/failures.dart';
@@ -22,86 +23,115 @@ class FreeCashFlowRepositoryImpl implements IFreeCashFlowRepository {
   FreeCashFlowRepositoryImpl(this._remoteDataSource, this._localDataSource);
 
   @override
-  Future<Either<Failure, FreeCashFlowStats>> getFreeCashFlowStats(
-    String ticker,
-  ) async {
+  Future<Either<Failure, (FreeCashFlowStats, CompanyProfileDataOrigin)>>
+  getFreeCashFlowStats(String ticker) async {
     try {
-      final annual = await _fetchCashFlowStatements(ticker, _Consts.annual);
-      final quart = await _fetchCashFlowStatements(ticker, _Consts.quarter);
-
-      final conversion = await _getCurrencyMultiplier(
-        annual.firstOrNull?.reportedCurrency ??
-            quart.firstOrNull?.reportedCurrency,
+      final annualRes = await _localDataSource.syncCashFlowStatements(
         ticker,
+        period: _Consts.annual,
+        remoteFetcher: () => _remoteDataSource.getCashFlowStatements(
+          ticker,
+          period: _Consts.annual,
+        ),
+      );
+      final quartRes = await _localDataSource.syncCashFlowStatements(
+        ticker,
+        period: _Consts.quarter,
+        remoteFetcher: () => _remoteDataSource.getCashFlowStatements(
+          ticker,
+          period: _Consts.quarter,
+        ),
       );
 
-      return right(
-        FreeCashFlowStats(
-          reportedCurrency: conversion.targetCurrency,
-          annualFcf: _mapCashFlowDataPoints(
-            annual,
-            (d) => d.freeCashFlow * conversion.multiplier,
-          ),
-          quarterlyFcf: _mapCashFlowDataPoints(
-            quart,
-            (d) => d.freeCashFlow * conversion.multiplier,
-          ),
+      return annualRes.map(
+        success: (annualS) => quartRes.map(
+          success: (quartS) async {
+            final annual = annualS.data;
+            final quart = quartS.data;
+
+            final conversionRes = await _getCurrencyMultiplier(
+              annual.firstOrNull?.reportedCurrency ??
+                  quart.firstOrNull?.reportedCurrency,
+              ticker,
+            );
+
+            return conversionRes.fold((f) => left(f), (convData) {
+              final conversion = convData.$1;
+              final convOrigin = convData.$2;
+
+              final result = FreeCashFlowStats(
+                reportedCurrency: conversion.targetCurrency,
+                annualFcf: _mapCashFlowDataPoints(
+                  annual,
+                  (d) => d.freeCashFlow * conversion.multiplier,
+                ),
+                quarterlyFcf: _mapCashFlowDataPoints(
+                  quart,
+                  (d) => d.freeCashFlow * conversion.multiplier,
+                ),
+              );
+
+              final origins = [annualS.origin, quartS.origin, convOrigin];
+              final finalOrigin = origins.contains(CompanyProfileDataOrigin.api)
+                  ? CompanyProfileDataOrigin.api
+                  : origins.contains(CompanyProfileDataOrigin.db)
+                  ? CompanyProfileDataOrigin.db
+                  : CompanyProfileDataOrigin.cache;
+
+              return right((result, finalOrigin));
+            });
+          },
+          failure: (f) => left(f.failure),
+          notFound: (_) => left(Failure.server('Quarterly data not found')),
         ),
+        failure: (f) => left(f.failure),
+        notFound: (_) => left(Failure.server('Annual data not found')),
       );
     } catch (e) {
       return left(Failure.server(e.toString()));
     }
   }
 
-  Future<List<CashFlowStatementDto>> _fetchCashFlowStatements(
-    String ticker,
-    String period,
-  ) async {
-    final local = await _localDataSource.getCachedCashFlowStatements(
-      ticker,
-      period: period,
-    );
-    if (local != null) return local;
-
-    final remote = await _remoteDataSource.getCashFlowStatements(
-      ticker,
-      period: period,
-    );
-    await _localDataSource.cacheCashFlowStatements(
-      ticker,
-      remote,
-      period: period,
-    );
-    return remote;
-  }
-
-  Future<({double multiplier, String targetCurrency})> _getCurrencyMultiplier(
-    String? reportedCurrency,
-    String ticker,
-  ) async {
+  Future<
+    Either<
+      Failure,
+      (({double multiplier, String targetCurrency}), CompanyProfileDataOrigin)
+    >
+  >
+  _getCurrencyMultiplier(String? reportedCurrency, String ticker) async {
     if (reportedCurrency == null || reportedCurrency == _Consts.usd) {
-      return (multiplier: 1.0, targetCurrency: _Consts.usd);
+      return right((
+        (multiplier: 1.0, targetCurrency: _Consts.usd),
+        CompanyProfileDataOrigin.cache,
+      ));
     }
 
     try {
       final pair = '${reportedCurrency}USD';
 
-      final cachedRate = await _localDataSource.getCachedExchangeRate(pair);
-      if (cachedRate != null) {
-        return (multiplier: cachedRate, targetCurrency: _Consts.usd);
-      }
+      final res = await _localDataSource.syncExchangeRate(
+        pair,
+        remoteFetcher: () =>
+            _remoteDataSource.getExchangeRate(pair).then((v) => v ?? 1.0),
+      );
 
-      final rate = await _remoteDataSource.getExchangeRate(pair);
-
-      if (rate != null) {
-        await _localDataSource.cacheExchangeRate(pair, rate);
-        return (multiplier: rate, targetCurrency: _Consts.usd);
-      }
+      return res.map(
+        success: (s) => right((
+          (multiplier: s.data, targetCurrency: _Consts.usd),
+          s.origin,
+        )),
+        failure: (f) => left(f.failure),
+        notFound: (_) => right((
+          (multiplier: 1.0, targetCurrency: reportedCurrency),
+          CompanyProfileDataOrigin.cache,
+        )),
+      );
     } catch (e) {
-      // Fallback
+      return right((
+        (multiplier: 1.0, targetCurrency: reportedCurrency),
+        CompanyProfileDataOrigin.cache,
+      ));
     }
-
-    return (multiplier: 1.0, targetCurrency: reportedCurrency);
   }
 
   List<FinancialDataPoint> _mapCashFlowDataPoints(

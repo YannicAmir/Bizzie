@@ -47,8 +47,13 @@ class CompanySecurityBloc
     LoadRequested event,
     Emitter<CompanySecurityState> emit,
   ) async {
-    if (!event.forceRefresh &&
-        state.maybeMap(loaded: (_) => true, orElse: () => false)) {
+    final isAlreadyLoaded = state.maybeMap(
+      loaded: (s) => s.analyticsState.ticker == event.ticker,
+      unsupported: (s) => s.analyticsState.ticker == event.ticker,
+      orElse: () => false,
+    );
+
+    if (!event.forceRefresh && isAlreadyLoaded) {
       _logger.info(
         'Skip loading Security: already loaded and no force refresh',
       );
@@ -58,7 +63,10 @@ class CompanySecurityBloc
     _logger.info(
       'Loading Security details for ${event.ticker} (force=${event.forceRefresh})',
     );
-    emit(const CompanySecurityState.loading());
+
+    if (!isAlreadyLoaded) {
+      emit(const CompanySecurityState.loading());
+    }
 
     _loadStopwatch.reset();
     _loadStopwatch.start();

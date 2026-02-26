@@ -1,3 +1,4 @@
+import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
 import 'package:bizzie/core/error/failures.dart';
@@ -6,13 +7,17 @@ import 'package:bizzie/features/company_profile/eps/domain/interfaces/i_eps_repo
 import '../models/eps_stats.dart';
 
 @lazySingleton
-class GetEpsStatsUseCase implements UseCase<Either<Failure, EpsStats>, String> {
+class GetEpsStatsUseCase
+    implements
+        UseCase<Either<Failure, (EpsStats, CompanyProfileDataOrigin)>, String> {
   final IEpsRepository _repository;
 
   GetEpsStatsUseCase(this._repository);
 
   @override
-  Future<Either<Failure, EpsStats>> call(String ticker) {
+  Future<Either<Failure, (EpsStats, CompanyProfileDataOrigin)>> call(
+    String ticker,
+  ) {
     return _repository.getEpsStats(ticker);
   }
 }

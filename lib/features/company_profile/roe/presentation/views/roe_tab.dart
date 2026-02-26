@@ -53,6 +53,7 @@ class _RoeTabState extends State<RoeTab> {
           ),
           loaded:
               (
+                ticker,
                 dataPoints,
                 chartData,
                 currentValue,
@@ -61,6 +62,7 @@ class _RoeTabState extends State<RoeTab> {
                 isPositive,
                 referenceLabel,
                 historyLimit,
+                dataOrigin,
                 lastUpdated,
               ) => _RoeLoadedContent(
                 dataPoints: dataPoints,
@@ -71,7 +73,8 @@ class _RoeTabState extends State<RoeTab> {
                 isPositive: isPositive,
                 referenceLabel: referenceLabel,
                 historyLimit: historyLimit,
-                ticker: widget.ticker,
+                ticker: ticker,
+                lastUpdated: lastUpdated,
               ),
         );
       },
@@ -89,6 +92,7 @@ class _RoeLoadedContent extends StatelessWidget {
   final String referenceLabel;
   final int historyLimit;
   final String ticker;
+  final DateTime? lastUpdated;
 
   const _RoeLoadedContent({
     required this.dataPoints,
@@ -100,6 +104,7 @@ class _RoeLoadedContent extends StatelessWidget {
     required this.referenceLabel,
     required this.historyLimit,
     required this.ticker,
+    this.lastUpdated,
   });
 
   @override
@@ -120,6 +125,7 @@ class _RoeLoadedContent extends StatelessWidget {
       absoluteDelta: absoluteDelta,
       isPositive: isPositive,
       referenceLabel: referenceLabel,
+      lastUpdated: lastUpdated,
     );
 
     final chartFormatter = RoePresentationHelper.chartFormatter;

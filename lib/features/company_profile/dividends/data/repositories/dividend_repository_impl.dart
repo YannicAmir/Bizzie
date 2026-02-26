@@ -1,7 +1,7 @@
+import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/features/company_profile/dividends/data/datasources/dividends_firestore_data_source.dart';
 import 'package:bizzie/features/company_profile/dividends/data/datasources/dividends_remote_data_source.dart';
-import 'package:bizzie/features/company_profile/dividends/data/dtos/dividend_dto.dart';
 import 'package:bizzie/features/company_profile/dividends/domain/interfaces/i_dividend_repository.dart';
 import 'package:bizzie/features/company_profile/dividends/domain/models/dividend_info.dart';
 import 'package:dartz/dartz.dart';
@@ -15,28 +15,27 @@ class DividendRepositoryImpl implements IDividendRepository {
   DividendRepositoryImpl(this._remoteDataSource, this._localDataSource);
 
   @override
-  Future<Either<Failure, DividendInfo>> getDividendInfo(String ticker) async {
+  Future<Either<Failure, (DividendInfo, CompanyProfileDataOrigin)>>
+  getDividendInfo(String ticker) async {
     try {
-      List<DividendDto>? cached = await _localDataSource.getCachedDividends(
+      final res = await _localDataSource.syncDividends(
         ticker,
+        remoteFetcher: () => _remoteDataSource.getDividends(ticker),
       );
-      if (cached != null) {
-        return right(
+
+      return res.map(
+        success: (s) => right((
           DividendInfo(
             symbol: ticker,
-            history: cached.map((e) => e.toDomain()).toList(),
+            history: s.data.map((e) => e.toDomain()).toList(),
           ),
-        );
-      }
-
-      final remote = await _remoteDataSource.getDividends(ticker);
-      await _localDataSource.cacheDividends(ticker, remote);
-
-      return right(
-        DividendInfo(
-          symbol: ticker,
-          history: remote.map((e) => e.toDomain()).toList(),
-        ),
+          s.origin,
+        )),
+        failure: (f) => left(f.failure),
+        notFound: (_) => right((
+          DividendInfo(symbol: ticker, history: const []),
+          CompanyProfileDataOrigin.cache,
+        )),
       );
     } catch (e) {
       return left(Failure.server(e.toString()));

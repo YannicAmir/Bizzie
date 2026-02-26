@@ -21,17 +21,10 @@ class CompanySharesBloc extends Bloc<CompanySharesEvent, CompanySharesState> {
 
   CompanySharesBloc(this._getShares, this._configService)
     : super(const CompanySharesState.initial()) {
-    on<CompanySharesEvent>(_onEvent, transformer: droppable());
-  }
-
-  Future<void> _onEvent(
-    CompanySharesEvent event,
-    Emitter<CompanySharesState> emit,
-  ) async {
-    _logger.info('Handling event: $event');
-    await event.map(
-      loadRequested: (e) async => _onLoadRequested(e, emit),
-      stalenessCheckRequested: (e) async => _onStalenessCheckRequested(e),
+    on<LoadRequested>(_onLoadRequested, transformer: droppable());
+    on<StalenessCheckRequested>(
+      _onStalenessCheckRequested,
+      transformer: sequential(),
     );
   }
 
@@ -39,16 +32,29 @@ class CompanySharesBloc extends Bloc<CompanySharesEvent, CompanySharesState> {
     LoadRequested event,
     Emitter<CompanySharesState> emit,
   ) async {
-    if (!event.forceRefresh &&
-        state.maybeMap(loaded: (_) => true, orElse: () => false)) {
-      _logger.info('Skip loading Shares: already loaded and no force refresh');
+    final isAlreadyLoaded = state.maybeMap(
+      loaded: (s) => true,
+      orElse: () => false,
+    );
+
+    final isRightTicker = state.maybeMap(
+      loaded: (s) => s.ticker == event.ticker,
+      orElse: () => false,
+    );
+
+    if (isAlreadyLoaded && isRightTicker && !event.forceRefresh) {
+      _logger.info(
+        'Company Shares already loaded for ${event.ticker} and is the correct ticker. Skipping load (Silent Refresh).',
+      );
       return;
     }
 
     _logger.info(
       'Loading Shares stats for ${event.ticker} (force=${event.forceRefresh})',
     );
-    emit(const CompanySharesState.loading());
+    if (!isAlreadyLoaded || !isRightTicker || event.forceRefresh) {
+      emit(const CompanySharesState.loading());
+    }
 
     final result = await _getShares(event.ticker);
 
@@ -57,10 +63,12 @@ class CompanySharesBloc extends Bloc<CompanySharesEvent, CompanySharesState> {
         _logger.severe('Failed to load Shares stats', failure);
         emit(CompanySharesState.failure(failure));
       },
-      (data) {
-        _logger.info('Successfully loaded Shares stats');
+      (tuple) {
+        final (data, origin) = tuple;
+        _logger.info('Successfully loaded Shares stats (origin: $origin)');
         emit(
           CompanySharesState.loaded(
+            ticker: event.ticker,
             shareStats: data,
             annualChartData: _toChartData(
               data.annualWeightedAverageShares,
@@ -78,15 +86,19 @@ class CompanySharesBloc extends Bloc<CompanySharesEvent, CompanySharesState> {
               data.quarterlyWeightedAverageShares,
               isAnnual: false,
             ),
-            lastUpdated: DateTime.now(),
             historyLimit: _configService.freePlanHistoryCount,
+            dataOrigin: origin,
+            lastUpdated: DateTime.now(),
           ),
         );
       },
     );
   }
 
-  Future<void> _onStalenessCheckRequested(StalenessCheckRequested event) async {
+  Future<void> _onStalenessCheckRequested(
+    StalenessCheckRequested event,
+    Emitter<CompanySharesState> emit,
+  ) async {
     _logger.info('Staleness check requested for ${event.ticker}');
     state.mapOrNull(
       loaded: (loadedState) {

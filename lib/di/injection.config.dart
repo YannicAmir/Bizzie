@@ -39,6 +39,7 @@ import '../core/interfaces/i_local_storage_service.dart' as _i583;
 import '../core/interfaces/i_notification_service.dart' as _i430;
 import '../core/interfaces/i_permission_service.dart' as _i202;
 import '../core/interfaces/i_sector_service.dart' as _i1050;
+import '../core/interfaces/i_time_provider.dart' as _i999;
 import '../core/network/connectivity_service.dart' as _i332;
 import '../core/network/network_info.dart' as _i6;
 import '../core/network/network_module.dart' as _i419;
@@ -46,6 +47,7 @@ import '../core/services/app_info_service.dart' as _i248;
 import '../core/services/local_storage_service.dart' as _i1003;
 import '../env/app_env.dart' as _i915;
 import '../env/env_impl.dart' as _i343;
+import '../core/services/time_provider_impl.dart' as _i998;
 import '../features/app_ratings/data/datasources/app_ratings_local_datasource.dart'
     as _i488;
 import '../features/app_ratings/data/interfaces/i_app_ratings_local_datasource.dart'
@@ -97,6 +99,8 @@ import '../features/company_profile/business/domain/interfaces/i_business_reposi
     as _i872;
 import '../features/company_profile/business/domain/usecases/get_business_profile_usecase.dart'
     as _i582;
+import '../features/company_profile/business/presentation/analytics/business_tab_analytics.dart'
+    as _i292;
 import '../features/company_profile/business/presentation/bloc/company_business_bloc.dart'
     as _i505;
 import '../features/company_profile/cp/presentation/analytics/company_profile_analytics.dart'
@@ -599,6 +603,7 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i60.IStockRemoteDataSource>(
       () => _i60.StockRemoteDataSource(gh<_i457.FirebaseStorage>()),
     );
+    gh.singleton<_i999.ITimeProvider>(() => _i998.TimeProviderImpl());
     gh.singleton<_i915.AppEnv>(() => _i343.DevEnvImpl(), registerFor: {_dev});
     gh.lazySingleton<_i532.IReportsRemoteDataSource>(
       () => _i532.ReportsRemoteDataSource(gh<_i52.FirestoreService>()),
@@ -622,13 +627,19 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i1003.LocalStorageService(gh<_i460.SharedPreferences>()),
     );
     gh.lazySingleton<_i634.NewsFirestoreDataSource>(
-      () => _i634.NewsFirestoreDataSourceImpl(gh<_i974.FirebaseFirestore>()),
+      () => _i634.NewsFirestoreDataSourceImpl(
+        gh<_i974.FirebaseFirestore>(),
+        gh<_i999.ITimeProvider>(),
+      ),
     );
     gh.lazySingleton<_i291.IFeedbackRemoteDataSource>(
       () => _i291.FeedbackRemoteDataSource(gh<_i974.FirebaseFirestore>()),
     );
     gh.lazySingleton<_i958.RatiosFirestoreDataSource>(
-      () => _i958.RatiosFirestoreDataSourceImpl(gh<_i974.FirebaseFirestore>()),
+      () => _i958.RatiosFirestoreDataSourceImpl(
+        gh<_i974.FirebaseFirestore>(),
+        gh<_i999.ITimeProvider>(),
+      ),
     );
     gh.factory<_i792.IRecommendedBrandsRemoteDataSource>(
       () => _i792.RecommendedBrandsRemoteDataSource(
@@ -654,16 +665,22 @@ extension GetItInjectableX on _i174.GetIt {
       ),
     );
     gh.lazySingleton<_i595.SecurityFirestoreDataSource>(
-      () =>
-          _i595.SecurityFirestoreDataSourceImpl(gh<_i974.FirebaseFirestore>()),
+      () => _i595.SecurityFirestoreDataSourceImpl(
+        gh<_i974.FirebaseFirestore>(),
+        gh<_i999.ITimeProvider>(),
+      ),
     );
     gh.lazySingleton<_i806.FinancialStatementsFirestoreDataSource>(
       () => _i806.FinancialStatementsFirestoreDataSourceImpl(
         gh<_i974.FirebaseFirestore>(),
+        gh<_i999.ITimeProvider>(),
       ),
     );
     gh.lazySingleton<_i741.CompanyFirestoreDataSource>(
-      () => _i741.CompanyFirestoreDataSourceImpl(gh<_i974.FirebaseFirestore>()),
+      () => _i741.CompanyFirestoreDataSourceImpl(
+        gh<_i974.FirebaseFirestore>(),
+        gh<_i999.ITimeProvider>(),
+      ),
     );
     gh.lazySingleton<_i456.IStockRepository>(
       () => _i392.StockRepository(
@@ -676,8 +693,10 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.singleton<_i915.AppEnv>(() => _i343.ProdEnvImpl(), registerFor: {_prod});
     gh.lazySingleton<_i584.DividendsFirestoreDataSource>(
-      () =>
-          _i584.DividendsFirestoreDataSourceImpl(gh<_i974.FirebaseFirestore>()),
+      () => _i584.DividendsFirestoreDataSourceImpl(
+        gh<_i974.FirebaseFirestore>(),
+        gh<_i999.ITimeProvider>(),
+      ),
     );
     gh.lazySingleton<_i529.IAnalyticsService>(
       () => _i222.AnalyticsService(gh<_i398.FirebaseAnalytics>()),
@@ -704,8 +723,10 @@ extension GetItInjectableX on _i174.GetIt {
       ),
     );
     gh.lazySingleton<_i379.BusinessFirestoreDataSource>(
-      () =>
-          _i379.BusinessFirestoreDataSourceImpl(gh<_i974.FirebaseFirestore>()),
+      () => _i379.BusinessFirestoreDataSourceImpl(
+        gh<_i974.FirebaseFirestore>(),
+        gh<_i999.ITimeProvider>(),
+      ),
     );
     gh.factory<_i308.IAppStatusRepository>(
       () => _i1043.AppStatusRepositoryImpl(
@@ -782,6 +803,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i310.SettingsTracker>(
       () => _i310.SettingsTracker(gh<_i529.IAnalyticsService>()),
+    );
+    gh.lazySingleton<_i292.BusinessTabAnalytics>(
+      () => _i292.BusinessTabAnalytics(gh<_i529.IAnalyticsService>()),
     );
     gh.lazySingleton<_i228.CompanyProfileAnalytics>(
       () => _i228.CompanyProfileAnalytics(gh<_i529.IAnalyticsService>()),
@@ -1505,6 +1529,13 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i591.FeedbackTracker>(),
       ),
     );
+    gh.factory<_i505.CompanyBusinessBloc>(
+      () => _i505.CompanyBusinessBloc(
+        gh<_i582.GetBusinessProfileUseCase>(),
+        gh<_i937.IConfigService>(),
+        gh<_i292.BusinessTabAnalytics>(),
+      ),
+    );
     gh.lazySingleton<_i594.GetSettingsDisplayDataUseCase>(
       () => _i594.GetSettingsDisplayDataUseCase(
         gh<_i685.IAuthRepository>(),
@@ -1529,12 +1560,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i579.OpenAppSettingsUseCase>(),
         gh<_i714.GetSubscriptionStatusUseCase>(),
         gh<_i310.SettingsTracker>(),
-      ),
-    );
-    gh.factory<_i505.CompanyBusinessBloc>(
-      () => _i505.CompanyBusinessBloc(
-        gh<_i582.GetBusinessProfileUseCase>(),
-        gh<_i937.IConfigService>(),
       ),
     );
     gh.factory<_i410.CompanySecurityBloc>(

@@ -128,12 +128,12 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( List<NewsArticle> news,  DateTime? lastUpdated)?  loaded,TResult Function( Failure failure)?  failure,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( List<NewsArticle> articles,  String ticker,  CompanyProfileDataOrigin dataOrigin,  DateTime? lastUpdated)?  loaded,TResult Function( Failure failure)?  failure,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial();case _Loading() when loading != null:
 return loading();case _Loaded() when loaded != null:
-return loaded(_that.news,_that.lastUpdated);case _Failure() when failure != null:
+return loaded(_that.articles,_that.ticker,_that.dataOrigin,_that.lastUpdated);case _Failure() when failure != null:
 return failure(_that.failure);case _:
   return orElse();
 
@@ -152,12 +152,12 @@ return failure(_that.failure);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( List<NewsArticle> news,  DateTime? lastUpdated)  loaded,required TResult Function( Failure failure)  failure,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( List<NewsArticle> articles,  String ticker,  CompanyProfileDataOrigin dataOrigin,  DateTime? lastUpdated)  loaded,required TResult Function( Failure failure)  failure,}) {final _that = this;
 switch (_that) {
 case _Initial():
 return initial();case _Loading():
 return loading();case _Loaded():
-return loaded(_that.news,_that.lastUpdated);case _Failure():
+return loaded(_that.articles,_that.ticker,_that.dataOrigin,_that.lastUpdated);case _Failure():
 return failure(_that.failure);case _:
   throw StateError('Unexpected subclass');
 
@@ -175,12 +175,12 @@ return failure(_that.failure);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( List<NewsArticle> news,  DateTime? lastUpdated)?  loaded,TResult? Function( Failure failure)?  failure,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( List<NewsArticle> articles,  String ticker,  CompanyProfileDataOrigin dataOrigin,  DateTime? lastUpdated)?  loaded,TResult? Function( Failure failure)?  failure,}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial();case _Loading() when loading != null:
 return loading();case _Loaded() when loaded != null:
-return loaded(_that.news,_that.lastUpdated);case _Failure() when failure != null:
+return loaded(_that.articles,_that.ticker,_that.dataOrigin,_that.lastUpdated);case _Failure() when failure != null:
 return failure(_that.failure);case _:
   return null;
 
@@ -257,16 +257,18 @@ String toString() {
 
 
 class _Loaded implements CompanyNewsState {
-  const _Loaded(final  List<NewsArticle> news, {this.lastUpdated}): _news = news;
+  const _Loaded({required final  List<NewsArticle> articles, required this.ticker, required this.dataOrigin, this.lastUpdated}): _articles = articles;
   
 
- final  List<NewsArticle> _news;
- List<NewsArticle> get news {
-  if (_news is EqualUnmodifiableListView) return _news;
+ final  List<NewsArticle> _articles;
+ List<NewsArticle> get articles {
+  if (_articles is EqualUnmodifiableListView) return _articles;
   // ignore: implicit_dynamic_type
-  return EqualUnmodifiableListView(_news);
+  return EqualUnmodifiableListView(_articles);
 }
 
+ final  String ticker;
+ final  CompanyProfileDataOrigin dataOrigin;
  final  DateTime? lastUpdated;
 
 /// Create a copy of CompanyNewsState
@@ -279,16 +281,16 @@ _$LoadedCopyWith<_Loaded> get copyWith => __$LoadedCopyWithImpl<_Loaded>(this, _
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Loaded&&const DeepCollectionEquality().equals(other._news, _news)&&(identical(other.lastUpdated, lastUpdated) || other.lastUpdated == lastUpdated));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Loaded&&const DeepCollectionEquality().equals(other._articles, _articles)&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.dataOrigin, dataOrigin) || other.dataOrigin == dataOrigin)&&(identical(other.lastUpdated, lastUpdated) || other.lastUpdated == lastUpdated));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_news),lastUpdated);
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_articles),ticker,dataOrigin,lastUpdated);
 
 @override
 String toString() {
-  return 'CompanyNewsState.loaded(news: $news, lastUpdated: $lastUpdated)';
+  return 'CompanyNewsState.loaded(articles: $articles, ticker: $ticker, dataOrigin: $dataOrigin, lastUpdated: $lastUpdated)';
 }
 
 
@@ -299,7 +301,7 @@ abstract mixin class _$LoadedCopyWith<$Res> implements $CompanyNewsStateCopyWith
   factory _$LoadedCopyWith(_Loaded value, $Res Function(_Loaded) _then) = __$LoadedCopyWithImpl;
 @useResult
 $Res call({
- List<NewsArticle> news, DateTime? lastUpdated
+ List<NewsArticle> articles, String ticker, CompanyProfileDataOrigin dataOrigin, DateTime? lastUpdated
 });
 
 
@@ -316,10 +318,12 @@ class __$LoadedCopyWithImpl<$Res>
 
 /// Create a copy of CompanyNewsState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? news = null,Object? lastUpdated = freezed,}) {
+@pragma('vm:prefer-inline') $Res call({Object? articles = null,Object? ticker = null,Object? dataOrigin = null,Object? lastUpdated = freezed,}) {
   return _then(_Loaded(
-null == news ? _self._news : news // ignore: cast_nullable_to_non_nullable
-as List<NewsArticle>,lastUpdated: freezed == lastUpdated ? _self.lastUpdated : lastUpdated // ignore: cast_nullable_to_non_nullable
+articles: null == articles ? _self._articles : articles // ignore: cast_nullable_to_non_nullable
+as List<NewsArticle>,ticker: null == ticker ? _self.ticker : ticker // ignore: cast_nullable_to_non_nullable
+as String,dataOrigin: null == dataOrigin ? _self.dataOrigin : dataOrigin // ignore: cast_nullable_to_non_nullable
+as CompanyProfileDataOrigin,lastUpdated: freezed == lastUpdated ? _self.lastUpdated : lastUpdated // ignore: cast_nullable_to_non_nullable
 as DateTime?,
   ));
 }

@@ -1,3 +1,4 @@
+import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/features/company_profile/shared/domain/models/financial_data_point.dart';
 import 'package:bizzie/features/company_profile/revenue/domain/models/revenue_stats.dart';
@@ -30,6 +31,7 @@ void main() {
 
   const tTicker = 'AAPL';
   const tRevenueStats = RevenueStats(
+    symbol: tTicker,
     reportedCurrency: 'USD',
     annualRevenue: [
       FinancialDataPoint(date: '2023-09-30', period: 'FY', value: 383285.0),
@@ -41,7 +43,6 @@ void main() {
   );
 
   test('initialState_isCorrect', () {
-    // assert
     expect(bloc.state, const CompanyRevenueState.initial());
   });
 
@@ -49,30 +50,33 @@ void main() {
     blocTest<CompanyRevenueBloc, CompanyRevenueState>(
       'loadRequested_success_emitsLoadingAndLoaded',
       build: () {
-        // arrange
-        when(
-          () => mockGetRevenueStats(tTicker),
-        ).thenAnswer((_) async => const Right(tRevenueStats));
+        // Arrange
+        when(() => mockGetRevenueStats(tTicker)).thenAnswer(
+          (_) async =>
+              const Right((tRevenueStats, CompanyProfileDataOrigin.api)),
+        );
         return bloc;
       },
-      act: (bloc) {
-        // act
-        bloc.add(const CompanyRevenueEvent.loadRequested(tTicker));
-      },
-      expect: () {
-        // assert
-        return [
-          const CompanyRevenueState.loading(),
-          isA<CompanyRevenueState>().having(
-            (s) =>
-                s.maybeMap(loaded: (l) => l.revenueStats, orElse: () => null),
-            'revenueStats',
-            tRevenueStats,
-          ),
-        ];
-      },
+      // Act
+      act: (bloc) => bloc.add(const CompanyRevenueEvent.loadRequested(tTicker)),
+      // Assert
+      expect: () => [
+        const CompanyRevenueState.loading(),
+        isA<CompanyRevenueState>()
+            .having(
+              (s) => s.maybeMap(loaded: (l) => l.ticker, orElse: () => null),
+              'ticker',
+              tTicker,
+            )
+            .having(
+              (s) =>
+                  s.maybeMap(loaded: (l) => l.dataOrigin, orElse: () => null),
+              'dataOrigin',
+              CompanyProfileDataOrigin.api,
+            ),
+      ],
+      // Assert
       verify: (_) {
-        // assert
         verify(() => mockGetRevenueStats(tTicker)).called(1);
       },
     );
@@ -80,89 +84,112 @@ void main() {
     blocTest<CompanyRevenueBloc, CompanyRevenueState>(
       'loadRequested_failure_emitsLoadingAndFailure',
       build: () {
-        // arrange
+        // Arrange
         const failure = Failure.server('Server error');
         when(
           () => mockGetRevenueStats(tTicker),
         ).thenAnswer((_) async => const Left(failure));
         return bloc;
       },
-      act: (bloc) {
-        // act
-        bloc.add(const CompanyRevenueEvent.loadRequested(tTicker));
-      },
-      expect: () {
-        // assert
-        return [
-          const CompanyRevenueState.loading(),
-          const CompanyRevenueState.failure(Failure.server('Server error')),
-        ];
-      },
+      // Act
+      act: (bloc) => bloc.add(const CompanyRevenueEvent.loadRequested(tTicker)),
+      // Assert
+      expect: () => [
+        const CompanyRevenueState.loading(),
+        const CompanyRevenueState.failure(Failure.server('Server error')),
+      ],
     );
 
     blocTest<CompanyRevenueBloc, CompanyRevenueState>(
       'loadRequested_alreadyLoaded_skipsLoading',
-      build: () {
-        // arrange
-        return bloc;
-      },
+      // Arrange
+      build: () => bloc,
       seed: () => const CompanyRevenueState.loaded(
+        ticker: tTicker,
         revenueStats: tRevenueStats,
         annualChartData: [],
         quarterlyChartData: [],
         historyLimit: 7,
+        dataOrigin: CompanyProfileDataOrigin.api,
       ),
-      act: (bloc) {
-        // act
-        bloc.add(const CompanyRevenueEvent.loadRequested(tTicker));
-      },
-      expect: () {
-        // assert
-        return [];
-      },
+      // Act
+      act: (bloc) => bloc.add(const CompanyRevenueEvent.loadRequested(tTicker)),
+      // Assert
+      expect: () => [],
       verify: (_) {
-        // assert
         verifyNever(() => mockGetRevenueStats(any()));
       },
     );
 
     blocTest<CompanyRevenueBloc, CompanyRevenueState>(
-      'loadRequested_alreadyLoadedWithForceRefresh_emitsLoadingAndLoaded',
+      'loadRequested_differentTicker_reloadsData',
       build: () {
-        // arrange
-        when(
-          () => mockGetRevenueStats(tTicker),
-        ).thenAnswer((_) async => const Right(tRevenueStats));
+        // Arrange
+        when(() => mockGetRevenueStats('MSFT')).thenAnswer(
+          (_) async =>
+              const Right((tRevenueStats, CompanyProfileDataOrigin.api)),
+        );
         return bloc;
       },
       seed: () => const CompanyRevenueState.loaded(
+        ticker: 'AAPL',
         revenueStats: tRevenueStats,
         annualChartData: [],
         quarterlyChartData: [],
         historyLimit: 7,
+        dataOrigin: CompanyProfileDataOrigin.api,
       ),
-      act: (bloc) {
-        // act
-        bloc.add(
-          const CompanyRevenueEvent.loadRequested(tTicker, forceRefresh: true),
+      // Act
+      act: (bloc) => bloc.add(const CompanyRevenueEvent.loadRequested('MSFT')),
+      // Assert
+      expect: () => [
+        const CompanyRevenueState.loading(),
+        isA<CompanyRevenueState>().having(
+          (s) => s.maybeMap(loaded: (l) => l.ticker, orElse: () => null),
+          'ticker',
+          'MSFT',
+        ),
+      ],
+    );
+
+    blocTest<CompanyRevenueBloc, CompanyRevenueState>(
+      'loadRequested_alreadyLoadedWithForceRefresh_emitsLoadedOnly',
+      build: () {
+        // Arrange
+        when(() => mockGetRevenueStats(tTicker)).thenAnswer(
+          (_) async =>
+              const Right((tRevenueStats, CompanyProfileDataOrigin.api)),
         );
+        return bloc;
       },
-      expect: () {
-        // assert
-        return [
-          const CompanyRevenueState.loading(),
-          isA<CompanyRevenueState>().having(
-            (s) =>
-                s.maybeMap(loaded: (l) => l.revenueStats, orElse: () => null),
-            'revenueStats',
-            tRevenueStats,
-          ),
-        ];
-      },
-      verify: (_) {
-        // assert
-        verify(() => mockGetRevenueStats(tTicker)).called(1);
-      },
+      seed: () => const CompanyRevenueState.loaded(
+        ticker: tTicker,
+        revenueStats: tRevenueStats,
+        annualChartData: [],
+        quarterlyChartData: [],
+        historyLimit: 7,
+        dataOrigin: CompanyProfileDataOrigin.api,
+      ),
+      // Act
+      act: (bloc) => bloc.add(
+        const CompanyRevenueEvent.loadRequested(tTicker, forceRefresh: true),
+      ),
+      // Assert
+      expect: () => [
+        const CompanyRevenueState.loading(),
+        isA<CompanyRevenueState>()
+            .having(
+              (s) => s.maybeMap(loaded: (l) => l.ticker, orElse: () => null),
+              'ticker',
+              tTicker,
+            )
+            .having(
+              (s) =>
+                  s.maybeMap(loaded: (l) => l.dataOrigin, orElse: () => null),
+              'dataOrigin',
+              CompanyProfileDataOrigin.api,
+            ),
+      ],
     );
   });
 
@@ -170,53 +197,53 @@ void main() {
     blocTest<CompanyRevenueBloc, CompanyRevenueState>(
       'stalenessCheckRequested_initialState_triggersLoadRequested',
       build: () {
-        // arrange
-        when(
-          () => mockGetRevenueStats(tTicker),
-        ).thenAnswer((_) async => const Right(tRevenueStats));
+        // Arrange
+        when(() => mockGetRevenueStats(tTicker)).thenAnswer(
+          (_) async =>
+              const Right((tRevenueStats, CompanyProfileDataOrigin.api)),
+        );
         return bloc;
       },
-      act: (bloc) {
-        // act
-        bloc.add(const CompanyRevenueEvent.stalenessCheckRequested(tTicker));
-      },
-      expect: () {
-        // assert
-        return [
-          const CompanyRevenueState.loading(),
-          isA<CompanyRevenueState>().having(
-            (s) =>
-                s.maybeMap(loaded: (l) => l.revenueStats, orElse: () => null),
-            'revenueStats',
-            tRevenueStats,
-          ),
-        ];
-      },
+      // Act
+      act: (bloc) =>
+          bloc.add(const CompanyRevenueEvent.stalenessCheckRequested(tTicker)),
+      // Assert
+      expect: () => [
+        const CompanyRevenueState.loading(),
+        isA<CompanyRevenueState>()
+            .having(
+              (s) => s.maybeMap(loaded: (l) => l.ticker, orElse: () => null),
+              'ticker',
+              tTicker,
+            )
+            .having(
+              (s) =>
+                  s.maybeMap(loaded: (l) => l.dataOrigin, orElse: () => null),
+              'dataOrigin',
+              CompanyProfileDataOrigin.api,
+            ),
+      ],
     );
 
     blocTest<CompanyRevenueBloc, CompanyRevenueState>(
       'stalenessCheckRequested_fresh_doesNotTriggerLoad',
-      build: () {
-        // arrange
-        return bloc;
-      },
+      // Arrange
+      build: () => bloc,
       seed: () => CompanyRevenueState.loaded(
+        ticker: tTicker,
         revenueStats: tRevenueStats,
         annualChartData: const [],
         quarterlyChartData: const [],
         historyLimit: 7,
+        dataOrigin: CompanyProfileDataOrigin.api,
         lastUpdated: DateTime.now(),
       ),
-      act: (bloc) {
-        // act
-        bloc.add(const CompanyRevenueEvent.stalenessCheckRequested(tTicker));
-      },
-      expect: () {
-        // assert
-        return [];
-      },
+      // Act
+      act: (bloc) =>
+          bloc.add(const CompanyRevenueEvent.stalenessCheckRequested(tTicker)),
+      // Assert
+      expect: () => [],
       verify: (_) {
-        // assert
         verifyNever(() => mockGetRevenueStats(any()));
       },
     );
@@ -224,35 +251,41 @@ void main() {
     blocTest<CompanyRevenueBloc, CompanyRevenueState>(
       'stalenessCheckRequested_stale_triggersLoadRequested',
       build: () {
-        // arrange
-        when(
-          () => mockGetRevenueStats(tTicker),
-        ).thenAnswer((_) async => const Right(tRevenueStats));
+        // Arrange
+        when(() => mockGetRevenueStats(tTicker)).thenAnswer(
+          (_) async =>
+              const Right((tRevenueStats, CompanyProfileDataOrigin.api)),
+        );
         return bloc;
       },
       seed: () => CompanyRevenueState.loaded(
+        ticker: tTicker,
         revenueStats: tRevenueStats,
         annualChartData: const [],
         quarterlyChartData: const [],
         historyLimit: 7,
+        dataOrigin: CompanyProfileDataOrigin.api,
         lastUpdated: DateTime.now().subtract(const Duration(hours: 25)),
       ),
-      act: (bloc) {
-        // act
-        bloc.add(const CompanyRevenueEvent.stalenessCheckRequested(tTicker));
-      },
-      expect: () {
-        // assert
-        return [
-          const CompanyRevenueState.loading(),
-          isA<CompanyRevenueState>().having(
-            (s) =>
-                s.maybeMap(loaded: (l) => l.revenueStats, orElse: () => null),
-            'revenueStats',
-            tRevenueStats,
-          ),
-        ];
-      },
+      // Act
+      act: (bloc) =>
+          bloc.add(const CompanyRevenueEvent.stalenessCheckRequested(tTicker)),
+      // Assert
+      expect: () => [
+        const CompanyRevenueState.loading(),
+        isA<CompanyRevenueState>()
+            .having(
+              (s) => s.maybeMap(loaded: (l) => l.ticker, orElse: () => null),
+              'ticker',
+              tTicker,
+            )
+            .having(
+              (s) =>
+                  s.maybeMap(loaded: (l) => l.dataOrigin, orElse: () => null),
+              'dataOrigin',
+              CompanyProfileDataOrigin.api,
+            ),
+      ],
     );
   });
 }

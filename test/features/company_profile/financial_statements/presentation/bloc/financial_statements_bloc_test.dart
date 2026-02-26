@@ -1,4 +1,5 @@
 import 'package:bizzie/core/error/failures.dart';
+import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:bizzie/features/company_profile/financial_statements/domain/models/balance_sheet.dart';
 import 'package:bizzie/features/company_profile/financial_statements/domain/models/cash_flow_statement.dart';
 import 'package:bizzie/features/company_profile/financial_statements/domain/models/get_financial_statement_params.dart';
@@ -51,15 +52,20 @@ void main() {
 
     registerFallbackValue(const GetFinancialStatementParams(ticker: ''));
 
-    when(
-      () => mockGetIncomeStatements(any()),
-    ).thenAnswer((_) async => Right(List.from([])));
-    when(
-      () => mockGetBalanceSheets(any()),
-    ).thenAnswer((_) async => Right(List.from([])));
-    when(
-      () => mockGetCashFlowStatements(any()),
-    ).thenAnswer((_) async => Right(List.from([])));
+    when(() => mockGetIncomeStatements(any())).thenAnswer(
+      (_) async =>
+          Right((List<IncomeStatement>.from([]), CompanyProfileDataOrigin.api)),
+    );
+    when(() => mockGetBalanceSheets(any())).thenAnswer(
+      (_) async =>
+          Right((List<BalanceSheet>.from([]), CompanyProfileDataOrigin.api)),
+    );
+    when(() => mockGetCashFlowStatements(any())).thenAnswer(
+      (_) async => Right((
+        List<CashFlowStatement>.from([]),
+        CompanyProfileDataOrigin.api,
+      )),
+    );
   });
 
   const tTicker = 'AAPL';
@@ -113,9 +119,10 @@ void main() {
   );
 
   test('initialState_isCorrect', () {
+    // Assert
     expect(
       bloc.state,
-      FinancialStatementsState.initial(freePlanHistoryCount: 5),
+      FinancialStatementsState.initial(ticker: '', freePlanHistoryCount: 5),
     );
   });
 
@@ -123,6 +130,7 @@ void main() {
     blocTest<FinancialStatementsBloc, FinancialStatementsState>(
       'loadIncomeStatements_success_emitsLoadingAndLoaded',
       build: () {
+        // Arrange
         when(
           () => mockGetIncomeStatements(
             const GetFinancialStatementParams(
@@ -130,7 +138,12 @@ void main() {
               period: 'annual',
             ),
           ),
-        ).thenAnswer((_) async => Right(List.from([tIncome])));
+        ).thenAnswer(
+          (_) async => Right((
+            List<IncomeStatement>.from([tIncome]),
+            CompanyProfileDataOrigin.api,
+          )),
+        );
         when(
           () => mockGetIncomeStatements(
             const GetFinancialStatementParams(
@@ -138,12 +151,18 @@ void main() {
               period: 'quarter',
             ),
           ),
-        ).thenAnswer((_) async => Right(List.from([tIncome])));
+        ).thenAnswer(
+          (_) async => Right((
+            List<IncomeStatement>.from([tIncome]),
+            CompanyProfileDataOrigin.api,
+          )),
+        );
         return bloc;
       },
-      act: (bloc) => bloc.add(
-        const FinancialStatementsEvent.loadIncomeStatements(tTicker),
-      ),
+      act: (bloc) {
+        // Act
+        bloc.add(const FinancialStatementsEvent.loadIncomeStatements(tTicker));
+      },
       expect: () => [
         isA<FinancialStatementsState>().having(
           (s) => s.isLoadingIncome,
@@ -154,21 +173,28 @@ void main() {
             .having((s) => s.isLoadingIncome, 'isLoadingIncome', false)
             .having((s) => s.annualIncomeStatements, 'annualIncomeStatements', [
               tIncome,
-            ]),
+            ])
+            .having(
+              (s) => s.incomeOrigin,
+              'incomeOrigin',
+              CompanyProfileDataOrigin.api,
+            ),
       ],
     );
 
     blocTest<FinancialStatementsBloc, FinancialStatementsState>(
       'loadIncomeStatements_failure_emitsLoadingAndFailure',
       build: () {
+        // Arrange
         when(
           () => mockGetIncomeStatements(any()),
         ).thenAnswer((_) async => const Left(Failure.server('error')));
         return bloc;
       },
-      act: (bloc) => bloc.add(
-        const FinancialStatementsEvent.loadIncomeStatements(tTicker),
-      ),
+      act: (bloc) {
+        // Act
+        bloc.add(const FinancialStatementsEvent.loadIncomeStatements(tTicker));
+      },
       expect: () => [
         isA<FinancialStatementsState>().having(
           (s) => s.isLoadingIncome,
@@ -190,6 +216,7 @@ void main() {
     blocTest<FinancialStatementsBloc, FinancialStatementsState>(
       'loadBalanceSheets_success_emitsLoadingAndLoaded',
       build: () {
+        // Arrange
         when(
           () => mockGetBalanceSheets(
             const GetFinancialStatementParams(
@@ -197,7 +224,12 @@ void main() {
               period: 'annual',
             ),
           ),
-        ).thenAnswer((_) async => Right(List.from([tBalance])));
+        ).thenAnswer(
+          (_) async => Right((
+            List<BalanceSheet>.from([tBalance]),
+            CompanyProfileDataOrigin.api,
+          )),
+        );
         when(
           () => mockGetBalanceSheets(
             const GetFinancialStatementParams(
@@ -205,11 +237,18 @@ void main() {
               period: 'quarter',
             ),
           ),
-        ).thenAnswer((_) async => Right(List.from([tBalance])));
+        ).thenAnswer(
+          (_) async => Right((
+            List<BalanceSheet>.from([tBalance]),
+            CompanyProfileDataOrigin.api,
+          )),
+        );
         return bloc;
       },
-      act: (bloc) =>
-          bloc.add(const FinancialStatementsEvent.loadBalanceSheets(tTicker)),
+      act: (bloc) {
+        // Act
+        bloc.add(const FinancialStatementsEvent.loadBalanceSheets(tTicker));
+      },
       expect: () => [
         isA<FinancialStatementsState>().having(
           (s) => s.isLoadingBalance,
@@ -220,7 +259,12 @@ void main() {
             .having((s) => s.isLoadingBalance, 'isLoadingBalance', false)
             .having((s) => s.annualBalanceSheets, 'annualBalanceSheets', [
               tBalance,
-            ]),
+            ])
+            .having(
+              (s) => s.balanceOrigin,
+              'balanceOrigin',
+              CompanyProfileDataOrigin.api,
+            ),
       ],
     );
   });
@@ -229,6 +273,7 @@ void main() {
     blocTest<FinancialStatementsBloc, FinancialStatementsState>(
       'loadCashFlows_success_emitsLoadingAndLoaded',
       build: () {
+        // Arrange
         when(
           () => mockGetCashFlowStatements(
             const GetFinancialStatementParams(
@@ -236,7 +281,12 @@ void main() {
               period: 'annual',
             ),
           ),
-        ).thenAnswer((_) async => Right(List.from([tCashFlow])));
+        ).thenAnswer(
+          (_) async => Right((
+            List<CashFlowStatement>.from([tCashFlow]),
+            CompanyProfileDataOrigin.api,
+          )),
+        );
         when(
           () => mockGetCashFlowStatements(
             const GetFinancialStatementParams(
@@ -244,11 +294,18 @@ void main() {
               period: 'quarter',
             ),
           ),
-        ).thenAnswer((_) async => Right(List.from([tCashFlow])));
+        ).thenAnswer(
+          (_) async => Right((
+            List<CashFlowStatement>.from([tCashFlow]),
+            CompanyProfileDataOrigin.api,
+          )),
+        );
         return bloc;
       },
-      act: (bloc) =>
-          bloc.add(const FinancialStatementsEvent.loadCashFlows(tTicker)),
+      act: (bloc) {
+        // Act
+        bloc.add(const FinancialStatementsEvent.loadCashFlows(tTicker));
+      },
       expect: () => [
         isA<FinancialStatementsState>().having(
           (s) => s.isLoadingCashFlow,
@@ -261,6 +318,11 @@ void main() {
               (s) => s.annualCashFlowStatements,
               'annualCashFlowStatements',
               [tCashFlow],
+            )
+            .having(
+              (s) => s.cashFlowOrigin,
+              'cashFlowOrigin',
+              CompanyProfileDataOrigin.api,
             ),
       ],
     );
@@ -270,17 +332,24 @@ void main() {
     blocTest<FinancialStatementsBloc, FinancialStatementsState>(
       'viewTypeChanged_emitsNewTypeAndTriggersStalenessCheck',
       build: () {
-        when(
-          () => mockGetBalanceSheets(any()),
-        ).thenAnswer((_) async => Right(List.from([tBalance])));
+        // Arrange
+        when(() => mockGetBalanceSheets(any())).thenAnswer(
+          (_) async => Right((
+            List<BalanceSheet>.from([tBalance]),
+            CompanyProfileDataOrigin.api,
+          )),
+        );
         return bloc;
       },
-      act: (bloc) => bloc.add(
-        const FinancialStatementsEvent.viewTypeChanged(
-          tTicker,
-          FinancialStatementType.balance,
-        ),
-      ),
+      act: (bloc) {
+        // Act
+        bloc.add(
+          const FinancialStatementsEvent.viewTypeChanged(
+            tTicker,
+            FinancialStatementType.balance,
+          ),
+        );
+      },
       expect: () => [
         isA<FinancialStatementsState>().having(
           (s) => s.selectedType,
@@ -303,13 +372,19 @@ void main() {
 
     blocTest<FinancialStatementsBloc, FinancialStatementsState>(
       'incomeDateSelected_updatesAnnualSelection',
-      build: () => bloc,
-      act: (bloc) => bloc.add(
-        const FinancialStatementsEvent.incomeDateSelected(
-          '2022-09-24',
-          isAnnual: true,
-        ),
-      ),
+      build: () {
+        // Arrange
+        return bloc;
+      },
+      act: (bloc) {
+        // Act
+        bloc.add(
+          const FinancialStatementsEvent.incomeDateSelected(
+            '2022-09-24',
+            isAnnual: true,
+          ),
+        );
+      },
       expect: () => [
         isA<FinancialStatementsState>().having(
           (s) => s.selectedAnnualIncomeDate,
@@ -324,17 +399,24 @@ void main() {
     blocTest<FinancialStatementsBloc, FinancialStatementsState>(
       'stalenessCheckRequested_empty_triggersLoad',
       build: () {
-        when(
-          () => mockGetIncomeStatements(any()),
-        ).thenAnswer((_) async => Right(List.from([tIncome])));
+        // Arrange
+        when(() => mockGetIncomeStatements(any())).thenAnswer(
+          (_) async => Right((
+            List<IncomeStatement>.from([tIncome]),
+            CompanyProfileDataOrigin.api,
+          )),
+        );
         return bloc;
       },
-      act: (bloc) => bloc.add(
-        const FinancialStatementsEvent.stalenessCheckRequested(
-          tTicker,
-          type: FinancialStatementType.income,
-        ),
-      ),
+      act: (bloc) {
+        // Act
+        bloc.add(
+          const FinancialStatementsEvent.stalenessCheckRequested(
+            tTicker,
+            type: FinancialStatementType.income,
+          ),
+        );
+      },
       expect: () => [
         isA<FinancialStatementsState>().having(
           (s) => s.isLoadingIncome,
@@ -352,42 +434,63 @@ void main() {
 
     blocTest<FinancialStatementsBloc, FinancialStatementsState>(
       'stalenessCheckRequested_fresh_doesNothing',
-      build: () => bloc,
+      build: () {
+        // Arrange
+        return bloc;
+      },
       seed: () =>
-          FinancialStatementsState.initial(freePlanHistoryCount: 5).copyWith(
+          FinancialStatementsState.initial(
+            ticker: '',
+            freePlanHistoryCount: 5,
+          ).copyWith(
             annualIncomeStatements: [tIncome],
+            incomeOrigin: CompanyProfileDataOrigin.api,
             lastUpdatedIncome: DateTime.now(),
           ),
-      act: (bloc) => bloc.add(
-        const FinancialStatementsEvent.stalenessCheckRequested(
-          tTicker,
-          type: FinancialStatementType.income,
-        ),
-      ),
+      act: (bloc) {
+        // Act
+        bloc.add(
+          const FinancialStatementsEvent.stalenessCheckRequested(
+            tTicker,
+            type: FinancialStatementType.income,
+          ),
+        );
+      },
       expect: () => [],
     );
 
     blocTest<FinancialStatementsBloc, FinancialStatementsState>(
       'stalenessCheckRequested_stale_triggersLoad',
       build: () {
-        when(
-          () => mockGetIncomeStatements(any()),
-        ).thenAnswer((_) async => Right(List.from([tIncome])));
+        // Arrange
+        when(() => mockGetIncomeStatements(any())).thenAnswer(
+          (_) async => Right((
+            List<IncomeStatement>.from([tIncome]),
+            CompanyProfileDataOrigin.api,
+          )),
+        );
         return bloc;
       },
       seed: () =>
-          FinancialStatementsState.initial(freePlanHistoryCount: 5).copyWith(
+          FinancialStatementsState.initial(
+            ticker: '',
+            freePlanHistoryCount: 5,
+          ).copyWith(
             annualIncomeStatements: [tIncome],
+            incomeOrigin: CompanyProfileDataOrigin.api,
             lastUpdatedIncome: DateTime.now().subtract(
               const Duration(hours: 25),
             ),
           ),
-      act: (bloc) => bloc.add(
-        const FinancialStatementsEvent.stalenessCheckRequested(
-          tTicker,
-          type: FinancialStatementType.income,
-        ),
-      ),
+      act: (bloc) {
+        // Act
+        bloc.add(
+          const FinancialStatementsEvent.stalenessCheckRequested(
+            tTicker,
+            type: FinancialStatementType.income,
+          ),
+        );
+      },
       expect: () => [
         isA<FinancialStatementsState>().having(
           (s) => s.isLoadingIncome,
@@ -397,6 +500,100 @@ void main() {
         isA<FinancialStatementsState>().having(
           (s) => s.isLoadingIncome,
           'isLoadingIncome',
+          false,
+        ),
+      ],
+      wait: const Duration(milliseconds: 500),
+    );
+
+    blocTest<FinancialStatementsBloc, FinancialStatementsState>(
+      'stalenessCheckRequested_staleBalance_triggersLoad',
+      build: () {
+        // Arrange
+        when(() => mockGetBalanceSheets(any())).thenAnswer(
+          (_) async => Right((
+            List<BalanceSheet>.from([tBalance]),
+            CompanyProfileDataOrigin.api,
+          )),
+        );
+        return bloc;
+      },
+      seed: () =>
+          FinancialStatementsState.initial(
+            ticker: '',
+            freePlanHistoryCount: 5,
+          ).copyWith(
+            annualBalanceSheets: [tBalance],
+            balanceOrigin: CompanyProfileDataOrigin.api,
+            lastUpdatedBalance: DateTime.now().subtract(
+              const Duration(hours: 25),
+            ),
+          ),
+      act: (bloc) {
+        // Act
+        bloc.add(
+          const FinancialStatementsEvent.stalenessCheckRequested(
+            tTicker,
+            type: FinancialStatementType.balance,
+          ),
+        );
+      },
+      expect: () => [
+        isA<FinancialStatementsState>().having(
+          (s) => s.isLoadingBalance,
+          'isLoadingBalance',
+          true,
+        ),
+        isA<FinancialStatementsState>().having(
+          (s) => s.isLoadingBalance,
+          'isLoadingBalance',
+          false,
+        ),
+      ],
+      wait: const Duration(milliseconds: 500),
+    );
+
+    blocTest<FinancialStatementsBloc, FinancialStatementsState>(
+      'stalenessCheckRequested_staleCashFlow_triggersLoad',
+      build: () {
+        // Arrange
+        when(() => mockGetCashFlowStatements(any())).thenAnswer(
+          (_) async => Right((
+            List<CashFlowStatement>.from([tCashFlow]),
+            CompanyProfileDataOrigin.api,
+          )),
+        );
+        return bloc;
+      },
+      seed: () =>
+          FinancialStatementsState.initial(
+            ticker: '',
+            freePlanHistoryCount: 5,
+          ).copyWith(
+            annualCashFlowStatements: [tCashFlow],
+            cashFlowOrigin: CompanyProfileDataOrigin.api,
+            lastUpdatedCashFlow: DateTime.now().subtract(
+              const Duration(hours: 25),
+            ),
+          ),
+      act: (bloc) {
+        // Act
+        bloc.add(
+          const FinancialStatementsEvent.stalenessCheckRequested(
+            tTicker,
+            type: FinancialStatementType.cashFlow,
+          ),
+        );
+      },
+      expect: () => [
+        isA<FinancialStatementsState>().having(
+          (s) => s.isLoadingCashFlow,
+          'isLoadingCashFlow',
+          true,
+        ),
+        isA<FinancialStatementsState>().having(
+          (s) => s.isLoadingCashFlow,
+          'isLoadingCashFlow',
           false,
         ),
       ],

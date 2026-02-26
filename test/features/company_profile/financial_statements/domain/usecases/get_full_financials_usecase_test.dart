@@ -2,6 +2,7 @@ import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/features/company_profile/financial_statements/domain/interfaces/i_financial_statements_repository.dart';
 import 'package:bizzie/features/company_profile/financial_statements/domain/models/full_financials.dart';
 import 'package:bizzie/features/company_profile/financial_statements/domain/usecases/get_full_financials_usecase.dart';
+import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
@@ -31,15 +32,15 @@ void main() {
   group('GetFullFinancialsUseCase', () {
     test('call_success_returnsFullFinancials', () async {
       // arrange
-      when(
-        () => mockRepository.getFullFinancials(tTicker),
-      ).thenAnswer((_) async => Right(tFullFinancials));
+      when(() => mockRepository.getFullFinancials(tTicker)).thenAnswer(
+        (_) async => Right((tFullFinancials, CompanyProfileDataOrigin.cache)),
+      );
 
       // act
       final result = await useCase(tTicker);
 
       // assert
-      expect(result, Right(tFullFinancials));
+      expect(result, Right((tFullFinancials, CompanyProfileDataOrigin.cache)));
       verify(() => mockRepository.getFullFinancials(tTicker)).called(1);
       verifyNoMoreInteractions(mockRepository);
     });

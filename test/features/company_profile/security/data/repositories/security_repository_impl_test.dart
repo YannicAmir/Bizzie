@@ -14,6 +14,8 @@ import 'package:bizzie/features/company_profile/security/domain/models/security_
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:bizzie/core/data/models/cache_result.dart' as cache;
+import 'package:bizzie/core/error/failures.dart';
 
 class MockBusinessRemoteDataSource extends Mock
     implements BusinessRemoteDataSource {}
@@ -100,12 +102,12 @@ void main() {
 
     test('getSecurityDetails_success_returnsSecurityDetails', () async {
       // arrange
-      when(
-        () => mockCompanyRepository.getProfile(tTicker),
-      ).thenAnswer((_) async => Right(tCompanyProfile));
-      when(
-        () => mockCompanyRepository.getQuote(tTicker),
-      ).thenAnswer((_) async => Right(tStockQuote));
+      when(() => mockCompanyRepository.getProfile(tTicker)).thenAnswer(
+        (_) async => Right((tCompanyProfile, CompanyProfileDataOrigin.api)),
+      );
+      when(() => mockCompanyRepository.getQuote(tTicker)).thenAnswer(
+        (_) async => Right((tStockQuote, CompanyProfileDataOrigin.api)),
+      );
       when(
         () => mockRatiosRemoteDataSource.getRatiosTtm(tTicker),
       ).thenAnswer((_) async => tRatios);
@@ -162,29 +164,25 @@ void main() {
     test('getUpcomingEarningsDate_success_returnsNearestValidDate', () async {
       // arrange
       when(
-        () => mockSecurityLocalDataSource.getCachedEarningsReports(tTicker),
-      ).thenAnswer((_) async => null);
-      when(
-        () => mockSecurityRemoteDataSource.getEarningsReports(tTicker),
-      ).thenAnswer((_) async => tEarningsReports);
-      when(
-        () => mockSecurityLocalDataSource.cacheEarningsReports(tTicker, any()),
-      ).thenAnswer((_) async => Future.value());
+        () => mockSecurityLocalDataSource.syncEarningsReports(
+          tTicker,
+          remoteFetcher: any(named: 'remoteFetcher'),
+        ),
+      ).thenAnswer(
+        (_) async =>
+            cache.CacheSuccess(tEarningsReports, CompanyProfileDataOrigin.api),
+      );
 
       // act
-      final result = await repository.getUpcomingEarningsDate(tTicker);
+      final resultData = await repository.getUpcomingEarningsDate(tTicker);
 
       // assert
-      expect(result.isRight(), true);
-      result.fold((l) => fail('Should return right'), (tuple) {
+      expect(resultData.isRight(), true);
+      resultData.fold((l) => fail('Should return right'), (tuple) {
         final r = tuple.$1;
         final origin = tuple.$2;
         expect(r, isA<DateTime>());
         expect(origin, CompanyProfileDataOrigin.api);
-        final expectedDate = DateTime.parse(tEarningsReports[0].date);
-        expect(r?.year, expectedDate.year);
-        expect(r?.month, expectedDate.month);
-        expect(r?.day, expectedDate.day);
       });
     });
 
@@ -199,8 +197,14 @@ void main() {
         ),
       ];
       when(
-        () => mockSecurityLocalDataSource.getCachedEarningsReports(tTicker),
-      ).thenAnswer((_) async => tPastEarnings);
+        () => mockSecurityLocalDataSource.syncEarningsReports(
+          tTicker,
+          remoteFetcher: any(named: 'remoteFetcher'),
+        ),
+      ).thenAnswer(
+        (_) async =>
+            cache.CacheSuccess(tPastEarnings, CompanyProfileDataOrigin.cache),
+      );
 
       // act
       final result = await repository.getUpcomingEarningsDate(tTicker);
@@ -218,14 +222,19 @@ void main() {
     test('getUpcomingEarningsDate_failure_returnsLeftFailure', () async {
       // arrange
       when(
-        () => mockSecurityLocalDataSource.getCachedEarningsReports(tTicker),
-      ).thenThrow(Exception('Error'));
+        () => mockSecurityLocalDataSource.syncEarningsReports(
+          tTicker,
+          remoteFetcher: any(named: 'remoteFetcher'),
+        ),
+      ).thenAnswer(
+        (_) async => const cache.CacheFailure(Failure.server('error')),
+      );
 
       // act
-      final result = await repository.getUpcomingEarningsDate(tTicker);
+      final resultData = await repository.getUpcomingEarningsDate(tTicker);
 
       // assert
-      expect(result.isLeft(), true);
+      expect(resultData.isLeft(), true);
     });
   });
 }

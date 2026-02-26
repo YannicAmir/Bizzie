@@ -268,14 +268,21 @@ class _CompanyProfileViewState extends State<_CompanyProfileView>
               unsupported: (_) => true,
               orElse: () => false,
             );
+
             return !wasResolved && isResolved;
           },
           listener: (context, state) {
             state.maybeMap(
-              loaded: (s) =>
-                  _onSecurityResolution(s.securityDetails, isSupported: true),
-              unsupported: (s) =>
-                  _onSecurityResolution(s.securityDetails, isSupported: false),
+              loaded: (s) {
+                if (s.securityDetails.ticker == widget.ticker) {
+                  _onSecurityResolution(s.securityDetails, isSupported: true);
+                }
+              },
+              unsupported: (s) {
+                if (s.securityDetails.ticker == widget.ticker) {
+                  _onSecurityResolution(s.securityDetails, isSupported: false);
+                }
+              },
               orElse: () {},
             );
           },

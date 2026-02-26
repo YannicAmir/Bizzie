@@ -128,12 +128,12 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( List<FinancialDataPoint> dataPoints,  List<ChartDataPoint> chartData,  double currentValue,  double growthPercentage,  double absoluteDelta,  bool isPositive,  String referenceLabel,  int historyLimit,  DateTime? lastUpdated)?  loaded,TResult Function( Failure failure)?  failure,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( String ticker,  List<FinancialDataPoint> dataPoints,  List<ChartDataPoint> chartData,  double currentValue,  double growthPercentage,  double absoluteDelta,  bool isPositive,  String referenceLabel,  int historyLimit,  CompanyProfileDataOrigin dataOrigin,  DateTime? lastUpdated)?  loaded,TResult Function( Failure failure)?  failure,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial();case _Loading() when loading != null:
 return loading();case _Loaded() when loaded != null:
-return loaded(_that.dataPoints,_that.chartData,_that.currentValue,_that.growthPercentage,_that.absoluteDelta,_that.isPositive,_that.referenceLabel,_that.historyLimit,_that.lastUpdated);case _Failure() when failure != null:
+return loaded(_that.ticker,_that.dataPoints,_that.chartData,_that.currentValue,_that.growthPercentage,_that.absoluteDelta,_that.isPositive,_that.referenceLabel,_that.historyLimit,_that.dataOrigin,_that.lastUpdated);case _Failure() when failure != null:
 return failure(_that.failure);case _:
   return orElse();
 
@@ -152,12 +152,12 @@ return failure(_that.failure);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( List<FinancialDataPoint> dataPoints,  List<ChartDataPoint> chartData,  double currentValue,  double growthPercentage,  double absoluteDelta,  bool isPositive,  String referenceLabel,  int historyLimit,  DateTime? lastUpdated)  loaded,required TResult Function( Failure failure)  failure,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( String ticker,  List<FinancialDataPoint> dataPoints,  List<ChartDataPoint> chartData,  double currentValue,  double growthPercentage,  double absoluteDelta,  bool isPositive,  String referenceLabel,  int historyLimit,  CompanyProfileDataOrigin dataOrigin,  DateTime? lastUpdated)  loaded,required TResult Function( Failure failure)  failure,}) {final _that = this;
 switch (_that) {
 case _Initial():
 return initial();case _Loading():
 return loading();case _Loaded():
-return loaded(_that.dataPoints,_that.chartData,_that.currentValue,_that.growthPercentage,_that.absoluteDelta,_that.isPositive,_that.referenceLabel,_that.historyLimit,_that.lastUpdated);case _Failure():
+return loaded(_that.ticker,_that.dataPoints,_that.chartData,_that.currentValue,_that.growthPercentage,_that.absoluteDelta,_that.isPositive,_that.referenceLabel,_that.historyLimit,_that.dataOrigin,_that.lastUpdated);case _Failure():
 return failure(_that.failure);case _:
   throw StateError('Unexpected subclass');
 
@@ -175,12 +175,12 @@ return failure(_that.failure);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( List<FinancialDataPoint> dataPoints,  List<ChartDataPoint> chartData,  double currentValue,  double growthPercentage,  double absoluteDelta,  bool isPositive,  String referenceLabel,  int historyLimit,  DateTime? lastUpdated)?  loaded,TResult? Function( Failure failure)?  failure,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( String ticker,  List<FinancialDataPoint> dataPoints,  List<ChartDataPoint> chartData,  double currentValue,  double growthPercentage,  double absoluteDelta,  bool isPositive,  String referenceLabel,  int historyLimit,  CompanyProfileDataOrigin dataOrigin,  DateTime? lastUpdated)?  loaded,TResult? Function( Failure failure)?  failure,}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial();case _Loading() when loading != null:
 return loading();case _Loaded() when loaded != null:
-return loaded(_that.dataPoints,_that.chartData,_that.currentValue,_that.growthPercentage,_that.absoluteDelta,_that.isPositive,_that.referenceLabel,_that.historyLimit,_that.lastUpdated);case _Failure() when failure != null:
+return loaded(_that.ticker,_that.dataPoints,_that.chartData,_that.currentValue,_that.growthPercentage,_that.absoluteDelta,_that.isPositive,_that.referenceLabel,_that.historyLimit,_that.dataOrigin,_that.lastUpdated);case _Failure() when failure != null:
 return failure(_that.failure);case _:
   return null;
 
@@ -257,9 +257,10 @@ String toString() {
 
 
 class _Loaded implements CompanyRoeState {
-  const _Loaded({required final  List<FinancialDataPoint> dataPoints, required final  List<ChartDataPoint> chartData, required this.currentValue, required this.growthPercentage, required this.absoluteDelta, required this.isPositive, required this.referenceLabel, required this.historyLimit, this.lastUpdated}): _dataPoints = dataPoints,_chartData = chartData;
+  const _Loaded({required this.ticker, required final  List<FinancialDataPoint> dataPoints, required final  List<ChartDataPoint> chartData, required this.currentValue, required this.growthPercentage, required this.absoluteDelta, required this.isPositive, required this.referenceLabel, required this.historyLimit, required this.dataOrigin, this.lastUpdated}): _dataPoints = dataPoints,_chartData = chartData;
   
 
+ final  String ticker;
  final  List<FinancialDataPoint> _dataPoints;
  List<FinancialDataPoint> get dataPoints {
   if (_dataPoints is EqualUnmodifiableListView) return _dataPoints;
@@ -280,6 +281,7 @@ class _Loaded implements CompanyRoeState {
  final  bool isPositive;
  final  String referenceLabel;
  final  int historyLimit;
+ final  CompanyProfileDataOrigin dataOrigin;
  final  DateTime? lastUpdated;
 
 /// Create a copy of CompanyRoeState
@@ -292,16 +294,16 @@ _$LoadedCopyWith<_Loaded> get copyWith => __$LoadedCopyWithImpl<_Loaded>(this, _
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Loaded&&const DeepCollectionEquality().equals(other._dataPoints, _dataPoints)&&const DeepCollectionEquality().equals(other._chartData, _chartData)&&(identical(other.currentValue, currentValue) || other.currentValue == currentValue)&&(identical(other.growthPercentage, growthPercentage) || other.growthPercentage == growthPercentage)&&(identical(other.absoluteDelta, absoluteDelta) || other.absoluteDelta == absoluteDelta)&&(identical(other.isPositive, isPositive) || other.isPositive == isPositive)&&(identical(other.referenceLabel, referenceLabel) || other.referenceLabel == referenceLabel)&&(identical(other.historyLimit, historyLimit) || other.historyLimit == historyLimit)&&(identical(other.lastUpdated, lastUpdated) || other.lastUpdated == lastUpdated));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Loaded&&(identical(other.ticker, ticker) || other.ticker == ticker)&&const DeepCollectionEquality().equals(other._dataPoints, _dataPoints)&&const DeepCollectionEquality().equals(other._chartData, _chartData)&&(identical(other.currentValue, currentValue) || other.currentValue == currentValue)&&(identical(other.growthPercentage, growthPercentage) || other.growthPercentage == growthPercentage)&&(identical(other.absoluteDelta, absoluteDelta) || other.absoluteDelta == absoluteDelta)&&(identical(other.isPositive, isPositive) || other.isPositive == isPositive)&&(identical(other.referenceLabel, referenceLabel) || other.referenceLabel == referenceLabel)&&(identical(other.historyLimit, historyLimit) || other.historyLimit == historyLimit)&&(identical(other.dataOrigin, dataOrigin) || other.dataOrigin == dataOrigin)&&(identical(other.lastUpdated, lastUpdated) || other.lastUpdated == lastUpdated));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_dataPoints),const DeepCollectionEquality().hash(_chartData),currentValue,growthPercentage,absoluteDelta,isPositive,referenceLabel,historyLimit,lastUpdated);
+int get hashCode => Object.hash(runtimeType,ticker,const DeepCollectionEquality().hash(_dataPoints),const DeepCollectionEquality().hash(_chartData),currentValue,growthPercentage,absoluteDelta,isPositive,referenceLabel,historyLimit,dataOrigin,lastUpdated);
 
 @override
 String toString() {
-  return 'CompanyRoeState.loaded(dataPoints: $dataPoints, chartData: $chartData, currentValue: $currentValue, growthPercentage: $growthPercentage, absoluteDelta: $absoluteDelta, isPositive: $isPositive, referenceLabel: $referenceLabel, historyLimit: $historyLimit, lastUpdated: $lastUpdated)';
+  return 'CompanyRoeState.loaded(ticker: $ticker, dataPoints: $dataPoints, chartData: $chartData, currentValue: $currentValue, growthPercentage: $growthPercentage, absoluteDelta: $absoluteDelta, isPositive: $isPositive, referenceLabel: $referenceLabel, historyLimit: $historyLimit, dataOrigin: $dataOrigin, lastUpdated: $lastUpdated)';
 }
 
 
@@ -312,7 +314,7 @@ abstract mixin class _$LoadedCopyWith<$Res> implements $CompanyRoeStateCopyWith<
   factory _$LoadedCopyWith(_Loaded value, $Res Function(_Loaded) _then) = __$LoadedCopyWithImpl;
 @useResult
 $Res call({
- List<FinancialDataPoint> dataPoints, List<ChartDataPoint> chartData, double currentValue, double growthPercentage, double absoluteDelta, bool isPositive, String referenceLabel, int historyLimit, DateTime? lastUpdated
+ String ticker, List<FinancialDataPoint> dataPoints, List<ChartDataPoint> chartData, double currentValue, double growthPercentage, double absoluteDelta, bool isPositive, String referenceLabel, int historyLimit, CompanyProfileDataOrigin dataOrigin, DateTime? lastUpdated
 });
 
 
@@ -329,9 +331,10 @@ class __$LoadedCopyWithImpl<$Res>
 
 /// Create a copy of CompanyRoeState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? dataPoints = null,Object? chartData = null,Object? currentValue = null,Object? growthPercentage = null,Object? absoluteDelta = null,Object? isPositive = null,Object? referenceLabel = null,Object? historyLimit = null,Object? lastUpdated = freezed,}) {
+@pragma('vm:prefer-inline') $Res call({Object? ticker = null,Object? dataPoints = null,Object? chartData = null,Object? currentValue = null,Object? growthPercentage = null,Object? absoluteDelta = null,Object? isPositive = null,Object? referenceLabel = null,Object? historyLimit = null,Object? dataOrigin = null,Object? lastUpdated = freezed,}) {
   return _then(_Loaded(
-dataPoints: null == dataPoints ? _self._dataPoints : dataPoints // ignore: cast_nullable_to_non_nullable
+ticker: null == ticker ? _self.ticker : ticker // ignore: cast_nullable_to_non_nullable
+as String,dataPoints: null == dataPoints ? _self._dataPoints : dataPoints // ignore: cast_nullable_to_non_nullable
 as List<FinancialDataPoint>,chartData: null == chartData ? _self._chartData : chartData // ignore: cast_nullable_to_non_nullable
 as List<ChartDataPoint>,currentValue: null == currentValue ? _self.currentValue : currentValue // ignore: cast_nullable_to_non_nullable
 as double,growthPercentage: null == growthPercentage ? _self.growthPercentage : growthPercentage // ignore: cast_nullable_to_non_nullable
@@ -339,7 +342,8 @@ as double,absoluteDelta: null == absoluteDelta ? _self.absoluteDelta : absoluteD
 as double,isPositive: null == isPositive ? _self.isPositive : isPositive // ignore: cast_nullable_to_non_nullable
 as bool,referenceLabel: null == referenceLabel ? _self.referenceLabel : referenceLabel // ignore: cast_nullable_to_non_nullable
 as String,historyLimit: null == historyLimit ? _self.historyLimit : historyLimit // ignore: cast_nullable_to_non_nullable
-as int,lastUpdated: freezed == lastUpdated ? _self.lastUpdated : lastUpdated // ignore: cast_nullable_to_non_nullable
+as int,dataOrigin: null == dataOrigin ? _self.dataOrigin : dataOrigin // ignore: cast_nullable_to_non_nullable
+as CompanyProfileDataOrigin,lastUpdated: freezed == lastUpdated ? _self.lastUpdated : lastUpdated // ignore: cast_nullable_to_non_nullable
 as DateTime?,
   ));
 }

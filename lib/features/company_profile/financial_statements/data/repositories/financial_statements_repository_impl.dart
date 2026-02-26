@@ -1,11 +1,10 @@
+import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/features/company_profile/financial_statements/data/datasources/financial_statements_firestore_data_source.dart';
 import 'package:bizzie/features/company_profile/financial_statements/data/datasources/financial_statements_remote_data_source.dart';
-import 'package:bizzie/features/company_profile/financial_statements/data/dtos/balance_sheet_dto.dart';
 import 'package:bizzie/features/company_profile/financial_statements/data/dtos/cash_flow_statement_dto.dart';
-import 'package:bizzie/features/company_profile/financial_statements/data/dtos/income_statement_dto.dart';
 import 'package:bizzie/features/company_profile/financial_statements/data/dtos/legacy_income_statement_dto.dart';
 import '../../domain/interfaces/i_financial_statements_repository.dart';
 import '../../domain/models/balance_sheet.dart';
@@ -31,258 +30,332 @@ class FinancialStatementsRepositoryImpl
   );
 
   @override
-  Future<Either<Failure, List<BalanceSheet>>> getBalanceSheets(
-    String ticker, {
-    String period = 'annual',
-  }) async {
-    try {
-      // 1. Fetch Data (Local or Remote)
-      List<BalanceSheetDto> dtos;
-      final local = await _localDataSource.getCachedBalanceSheets(
-        ticker,
-        period: period,
-      );
-      if (local != null) {
-        dtos = local;
-      } else {
-        dtos = await _remoteDataSource.getBalanceSheets(ticker, period: period);
-        await _localDataSource.cacheBalanceSheets(ticker, dtos, period: period);
-      }
+  Future<Either<Failure, (List<BalanceSheet>, CompanyProfileDataOrigin)>>
+  getBalanceSheets(String ticker, {String period = 'annual'}) async {
+    final res = await _localDataSource.syncBalanceSheets(
+      ticker,
+      period: period,
+      remoteFetcher: () =>
+          _remoteDataSource.getBalanceSheets(ticker, period: period),
+    );
 
-      // 2. Determine Currency Multiplier
-      final conversion = await _getCurrencyMultiplier(
-        dtos.firstOrNull?.reportedCurrency,
-        ticker,
-      );
+    return res.map(
+      success: (s) async {
+        final dtos = s.data;
+        final origin = s.origin;
 
-      // 3. Map with Conversion
-      return right(
-        dtos
-            .map(
-              (d) => d.toDomain(
-                multiplier: conversion.multiplier,
-                targetCurrency: conversion.targetCurrency,
-              ),
-            )
-            .toList(),
-      );
-    } catch (e) {
-      return left(Failure.server(e.toString()));
-    }
+        final conversionRes = await _getCurrencyMultiplier(
+          dtos.firstOrNull?.reportedCurrency,
+          ticker,
+        );
+
+        return conversionRes.fold((f) => left(f), (convData) {
+          final conversion = convData.$1;
+          final convOrigin = convData.$2;
+
+          final results = dtos
+              .map(
+                (d) => d.toDomain(
+                  multiplier: conversion.multiplier,
+                  targetCurrency: conversion.targetCurrency,
+                ),
+              )
+              .toList();
+
+          final origins = [origin, convOrigin];
+          final finalOrigin = origins.contains(CompanyProfileDataOrigin.api)
+              ? CompanyProfileDataOrigin.api
+              : origins.contains(CompanyProfileDataOrigin.db)
+              ? CompanyProfileDataOrigin.db
+              : CompanyProfileDataOrigin.cache;
+
+          return right((results, finalOrigin));
+        });
+      },
+      failure: (f) => left(f.failure),
+      notFound: (_) => left(const Failure.server('Balance sheets not found')),
+    );
   }
 
   @override
-  Future<Either<Failure, List<IncomeStatement>>> getIncomeStatements(
-    String ticker, {
-    String period = 'annual',
-  }) async {
-    try {
-      final dtos = await _fetchStableIncomeStatements(ticker, period);
-      final conversion = await _getCurrencyMultiplier(
-        dtos.firstOrNull?.reportedCurrency,
-        ticker,
-      );
-      return right(
-        dtos
-            .map(
-              (d) => d.toDomain(
-                multiplier: conversion.multiplier,
-                targetCurrency: conversion.targetCurrency,
-              ),
-            )
-            .toList(),
-      );
-    } catch (e) {
-      return left(Failure.server(e.toString()));
-    }
+  Future<Either<Failure, (List<IncomeStatement>, CompanyProfileDataOrigin)>>
+  getIncomeStatements(String ticker, {String period = 'annual'}) async {
+    final res = await _localDataSource.syncIncomeStatements(
+      ticker,
+      period: period,
+      remoteFetcher: () =>
+          _remoteDataSource.getIncomeStatements(ticker, period: period),
+    );
+
+    return res.map(
+      success: (s) async {
+        final dtos = s.data;
+        final origin = s.origin;
+
+        final conversionRes = await _getCurrencyMultiplier(
+          dtos.firstOrNull?.reportedCurrency,
+          ticker,
+        );
+
+        return conversionRes.fold((f) => left(f), (convData) {
+          final conversion = convData.$1;
+          final convOrigin = convData.$2;
+
+          final results = dtos
+              .map(
+                (d) => d.toDomain(
+                  multiplier: conversion.multiplier,
+                  targetCurrency: conversion.targetCurrency,
+                ),
+              )
+              .toList();
+
+          final origins = [origin, convOrigin];
+          final finalOrigin = origins.contains(CompanyProfileDataOrigin.api)
+              ? CompanyProfileDataOrigin.api
+              : origins.contains(CompanyProfileDataOrigin.db)
+              ? CompanyProfileDataOrigin.db
+              : CompanyProfileDataOrigin.cache;
+
+          return right((results, finalOrigin));
+        });
+      },
+      failure: (f) => left(f.failure),
+      notFound: (_) =>
+          left(const Failure.server('Income statements not found')),
+    );
   }
 
   @override
-  Future<Either<Failure, List<CashFlowStatement>>> getCashFlowStatements(
-    String ticker, {
-    String period = 'annual',
-  }) async {
-    try {
-      final dtos = await _fetchCashFlowStatements(ticker, period);
-      final conversion = await _getCurrencyMultiplier(
-        dtos.firstOrNull?.reportedCurrency,
-        ticker,
-      );
-      return right(
-        dtos
-            .map(
-              (d) => d.toDomain(
-                multiplier: conversion.multiplier,
-                targetCurrency: conversion.targetCurrency,
-              ),
-            )
-            .toList(),
-      );
-    } catch (e) {
-      return left(Failure.server(e.toString()));
-    }
+  Future<Either<Failure, (List<CashFlowStatement>, CompanyProfileDataOrigin)>>
+  getCashFlowStatements(String ticker, {String period = 'annual'}) async {
+    final res = await _localDataSource.syncCashFlowStatements(
+      ticker,
+      period: period,
+      remoteFetcher: () =>
+          _remoteDataSource.getCashFlowStatements(ticker, period: period),
+    );
+
+    return res.map(
+      success: (s) async {
+        final dtos = s.data;
+        final origin = s.origin;
+
+        final conversionRes = await _getCurrencyMultiplier(
+          dtos.firstOrNull?.reportedCurrency,
+          ticker,
+        );
+
+        return conversionRes.fold((f) => left(f), (convData) {
+          final conversion = convData.$1;
+          final convOrigin = convData.$2;
+
+          final results = dtos
+              .map(
+                (d) => d.toDomain(
+                  multiplier: conversion.multiplier,
+                  targetCurrency: conversion.targetCurrency,
+                ),
+              )
+              .toList();
+
+          final origins = [origin, convOrigin];
+          final finalOrigin = origins.contains(CompanyProfileDataOrigin.api)
+              ? CompanyProfileDataOrigin.api
+              : origins.contains(CompanyProfileDataOrigin.db)
+              ? CompanyProfileDataOrigin.db
+              : CompanyProfileDataOrigin.cache;
+
+          return right((results, finalOrigin));
+        });
+      },
+      failure: (f) => left(f.failure),
+      notFound: (_) =>
+          left(const Failure.server('Cash flow statements not found')),
+    );
   }
 
   @override
-  Future<Either<Failure, FullFinancials>> getFullFinancials(
-    String ticker,
-  ) async {
+  Future<Either<Failure, (FullFinancials, CompanyProfileDataOrigin)>>
+  getFullFinancials(String ticker) async {
     try {
-      final incA = await _fetchLegacyIncomeStatements(ticker, _Consts.annual);
-      final incQ = await _fetchLegacyIncomeStatements(ticker, _Consts.quarter);
-      final balA = (await getBalanceSheets(
+      final incAData = await _fetchLegacyIncomeStatements(
         ticker,
-        period: _Consts.annual,
-      )).getOrElse(() => []);
-      final balQ = (await getBalanceSheets(
+        _Consts.annual,
+      );
+      final incQData = await _fetchLegacyIncomeStatements(
         ticker,
-        period: _Consts.quarter,
-      )).getOrElse(() => []);
-      final cashA = await _fetchCashFlowStatements(ticker, _Consts.annual);
-      final cashQ = await _fetchCashFlowStatements(ticker, _Consts.quarter);
+        _Consts.quarter,
+      );
 
-      final conversion = await _getCurrencyMultiplier(
+      final balAData = await getBalanceSheets(ticker, period: _Consts.annual);
+      final balQData = await getBalanceSheets(ticker, period: _Consts.quarter);
+
+      final cashAData = await _fetchCashFlowStatements(ticker, _Consts.annual);
+      final cashQData = await _fetchCashFlowStatements(ticker, _Consts.quarter);
+
+      final incA = incAData.$1;
+      final incQ = incQData.$1;
+      final balA = balAData
+          .getOrElse(() => ([], CompanyProfileDataOrigin.cache))
+          .$1;
+      final balQ = balQData
+          .getOrElse(() => ([], CompanyProfileDataOrigin.cache))
+          .$1;
+      final cashA = cashAData.$1;
+      final cashQ = cashQData.$1;
+
+      final conversionRes = await _getCurrencyMultiplier(
         incA.firstOrNull?.reportedCurrency,
         ticker,
       );
-      final multiplier = conversion.multiplier;
-      final targetCurrency = conversion.targetCurrency;
 
-      return right(
-        FullFinancials(
-          annualIncomeStatements: incA
-              .map(
-                (d) => d.toDomain(
-                  multiplier: multiplier,
-                  targetCurrency: targetCurrency,
-                ),
-              )
-              .toList(),
-          quarterlyIncomeStatements: incQ
-              .map(
-                (d) => d.toDomain(
-                  multiplier: multiplier,
-                  targetCurrency: targetCurrency,
-                ),
-              )
-              .toList(),
-          annualBalanceSheets: balA,
-          quarterlyBalanceSheets: balQ,
-          annualCashFlows: cashA
-              .map(
-                (d) => d.toDomain(
-                  multiplier: multiplier,
-                  targetCurrency: targetCurrency,
-                ),
-              )
-              .toList(),
-          quarterlyCashFlows: cashQ
-              .map(
-                (d) => d.toDomain(
-                  multiplier: multiplier,
-                  targetCurrency: targetCurrency,
-                ),
-              )
-              .toList(),
-        ),
-      );
+      return conversionRes.fold((f) => left(f), (convData) {
+        final conversion = convData.$1;
+        final convOrigin = convData.$2;
+        final multiplier = conversion.multiplier;
+        final targetCurrency = conversion.targetCurrency;
+
+        final origins = [
+          incAData.$2,
+          incQData.$2,
+          balAData.getOrElse(() => ([], CompanyProfileDataOrigin.cache)).$2,
+          balQData.getOrElse(() => ([], CompanyProfileDataOrigin.cache)).$2,
+          cashAData.$2,
+          cashQData.$2,
+          convOrigin,
+        ];
+
+        final finalOrigin = origins.contains(CompanyProfileDataOrigin.api)
+            ? CompanyProfileDataOrigin.api
+            : origins.contains(CompanyProfileDataOrigin.db)
+            ? CompanyProfileDataOrigin.db
+            : CompanyProfileDataOrigin.cache;
+
+        return right((
+          FullFinancials(
+            annualIncomeStatements: incA
+                .map(
+                  (d) => d.toDomain(
+                    multiplier: multiplier,
+                    targetCurrency: targetCurrency,
+                  ),
+                )
+                .toList(),
+            quarterlyIncomeStatements: incQ
+                .map(
+                  (d) => d.toDomain(
+                    multiplier: multiplier,
+                    targetCurrency: targetCurrency,
+                  ),
+                )
+                .toList(),
+            annualBalanceSheets: balA,
+            quarterlyBalanceSheets: balQ,
+            annualCashFlows: cashA
+                .map(
+                  (d) => d.toDomain(
+                    multiplier: multiplier,
+                    targetCurrency: targetCurrency,
+                  ),
+                )
+                .toList(),
+            quarterlyCashFlows: cashQ
+                .map(
+                  (d) => d.toDomain(
+                    multiplier: multiplier,
+                    targetCurrency: targetCurrency,
+                  ),
+                )
+                .toList(),
+          ),
+          finalOrigin,
+        ));
+      });
     } catch (e) {
       return left(Failure.server(e.toString()));
     }
   }
 
-  Future<List<IncomeStatementDto>> _fetchStableIncomeStatements(
-    String ticker,
-    String period,
-  ) async {
-    final local = await _localDataSource.getCachedIncomeStatements(
+  Future<(List<CashFlowStatementDto>, CompanyProfileDataOrigin)>
+  _fetchCashFlowStatements(String ticker, String period) async {
+    final res = await _localDataSource.syncCashFlowStatements(
       ticker,
       period: period,
+      remoteFetcher: () =>
+          _remoteDataSource.getCashFlowStatements(ticker, period: period),
     );
-    if (local != null) return local;
 
-    final remote = await _remoteDataSource.getIncomeStatements(
-      ticker,
-      period: period,
+    return res.map(
+      success: (s) => (s.data, s.origin),
+      failure: (_) =>
+          (const <CashFlowStatementDto>[], CompanyProfileDataOrigin.cache),
+      notFound: (_) =>
+          (const <CashFlowStatementDto>[], CompanyProfileDataOrigin.cache),
     );
-    await _localDataSource.cacheIncomeStatements(
-      ticker,
-      remote,
-      period: period,
-    );
-    return remote;
   }
 
-  Future<List<CashFlowStatementDto>> _fetchCashFlowStatements(
-    String ticker,
-    String period,
-  ) async {
-    final local = await _localDataSource.getCachedCashFlowStatements(
+  Future<(List<LegacyIncomeStatementDto>, CompanyProfileDataOrigin)>
+  _fetchLegacyIncomeStatements(String ticker, String period) async {
+    final res = await _localDataSource.syncLegacyIncomeStatements(
       ticker,
       period: period,
+      remoteFetcher: () =>
+          _remoteDataSource.getLegacyIncomeStatements(ticker, period: period),
     );
-    if (local != null) return local;
 
-    final remote = await _remoteDataSource.getCashFlowStatements(
-      ticker,
-      period: period,
+    return res.map(
+      success: (s) => (s.data, s.origin),
+      failure: (_) =>
+          (const <LegacyIncomeStatementDto>[], CompanyProfileDataOrigin.cache),
+      notFound: (_) =>
+          (const <LegacyIncomeStatementDto>[], CompanyProfileDataOrigin.cache),
     );
-    await _localDataSource.cacheCashFlowStatements(
-      ticker,
-      remote,
-      period: period,
-    );
-    return remote;
   }
 
-  Future<List<LegacyIncomeStatementDto>> _fetchLegacyIncomeStatements(
-    String ticker,
-    String period,
-  ) async {
-    final local = await _localDataSource.getCachedLegacyIncomeStatements(
-      ticker,
-      period: period,
-    );
-    if (local != null) return local;
-
-    final remote = await _remoteDataSource.getLegacyIncomeStatements(
-      ticker,
-      period: period,
-    );
-    await _localDataSource.cacheLegacyIncomeStatements(
-      ticker,
-      remote,
-      period: period,
-    );
-    return remote;
-  }
-
-  Future<({double multiplier, String targetCurrency})> _getCurrencyMultiplier(
-    String? reportedCurrency,
-    String ticker,
-  ) async {
+  Future<
+    Either<
+      Failure,
+      (({double multiplier, String targetCurrency}), CompanyProfileDataOrigin)
+    >
+  >
+  _getCurrencyMultiplier(String? reportedCurrency, String ticker) async {
     if (reportedCurrency == null || reportedCurrency == _Consts.usd) {
-      return (multiplier: 1.0, targetCurrency: _Consts.usd);
+      return right((
+        (multiplier: 1.0, targetCurrency: _Consts.usd),
+        CompanyProfileDataOrigin.cache,
+      ));
     }
 
     try {
       final pair = '${reportedCurrency}USD';
+      final res = await _localDataSource.syncExchangeRate(
+        pair,
+        remoteFetcher: () async {
+          final rate = await _remoteDataSource.getExchangeRate(pair);
+          if (rate == null) {
+            throw Exception('Exchange rate not found for $pair');
+          }
+          return rate;
+        },
+      );
 
-      final cachedRate = await _localDataSource.getCachedExchangeRate(pair);
-      if (cachedRate != null) {
-        return (multiplier: cachedRate, targetCurrency: _Consts.usd);
-      }
-
-      final rate = await _remoteDataSource.getExchangeRate(pair);
-
-      if (rate != null) {
-        await _localDataSource.cacheExchangeRate(pair, rate);
-        return (multiplier: rate, targetCurrency: _Consts.usd);
-      }
+      return res.map(
+        success: (s) => right((
+          (multiplier: s.data, targetCurrency: _Consts.usd),
+          s.origin,
+        )),
+        failure: (f) => left(f.failure),
+        notFound: (_) => right((
+          (multiplier: 1.0, targetCurrency: reportedCurrency),
+          CompanyProfileDataOrigin.cache,
+        )),
+      );
     } catch (e) {
-      // Fallback to reported currency if conversion fails
+      return right((
+        (multiplier: 1.0, targetCurrency: reportedCurrency),
+        CompanyProfileDataOrigin.cache,
+      ));
     }
-
-    return (multiplier: 1.0, targetCurrency: reportedCurrency);
   }
 }

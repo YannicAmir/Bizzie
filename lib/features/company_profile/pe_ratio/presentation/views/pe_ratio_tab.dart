@@ -60,6 +60,7 @@ class _PeRatioTabState extends State<PeRatioTab> {
           ),
           loaded:
               (
+                ticker,
                 dataPoints,
                 chartData,
                 currentValue,
@@ -68,6 +69,7 @@ class _PeRatioTabState extends State<PeRatioTab> {
                 isPositive,
                 referenceLabel,
                 historyLimit,
+                dataOrigin,
                 lastUpdated,
               ) => _PeRatioLoadedContent(
                 dataPoints: dataPoints,
@@ -78,7 +80,7 @@ class _PeRatioTabState extends State<PeRatioTab> {
                 isPositive: isPositive,
                 referenceLabel: referenceLabel,
                 historyLimit: historyLimit,
-                ticker: widget.ticker,
+                ticker: ticker,
                 lastUpdated: lastUpdated,
               ),
         );

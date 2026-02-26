@@ -2,6 +2,7 @@ import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/features/company_profile/pfcf_ratio/domain/interfaces/i_pfcf_ratio_repository.dart';
 import 'package:bizzie/features/company_profile/pfcf_ratio/domain/models/pfcf_ratio.dart';
 import 'package:bizzie/features/company_profile/pfcf_ratio/domain/usecases/get_pfcf_ratio_usecase.dart';
+import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
@@ -23,15 +24,15 @@ void main() {
   group('GetPfcfRatioUseCase', () {
     test('call_success_returnsRatiosList', () async {
       // arrange
-      when(
-        () => mockRepository.getPfcfRatios(tTicker),
-      ).thenAnswer((_) async => Right(tRatiosList));
+      when(() => mockRepository.getPfcfRatios(tTicker)).thenAnswer(
+        (_) async => Right((tRatiosList, CompanyProfileDataOrigin.cache)),
+      );
 
       // act
       final result = await useCase(tTicker);
 
       // assert
-      expect(result, Right(tRatiosList));
+      expect(result, Right((tRatiosList, CompanyProfileDataOrigin.cache)));
       verify(() => mockRepository.getPfcfRatios(tTicker)).called(1);
       verifyNoMoreInteractions(mockRepository);
     });

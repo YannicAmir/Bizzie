@@ -1,224 +1,158 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:injectable/injectable.dart';
+import 'package:bizzie/core/data/datasources/base_firestore_cache_client.dart';
 import 'package:bizzie/core/data/models/firestore_cache_entry.dart';
+import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:bizzie/features/company_profile/security/data/dtos/historical_price_dto.dart';
 import 'package:bizzie/features/company_profile/security/data/dtos/earnings_report_dto.dart';
 import 'package:bizzie/features/company_profile/security/data/dtos/historical_price_eod_dto.dart';
 
+import 'package:bizzie/core/data/models/cache_result.dart' as result;
+import 'package:bizzie/core/interfaces/i_time_provider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 abstract class SecurityFirestoreDataSource {
-  Future<void> cachePrices(String ticker, List<HistoricalPriceDto> prices);
-  Future<List<HistoricalPriceDto>?> getCachedPrices(String ticker);
-
-  Future<void> cacheHistoricalEodPrices(
-    String ticker,
-    List<HistoricalPriceEodDto> prices,
-  );
-  Future<List<HistoricalPriceEodDto>?> getCachedHistoricalEodPrices(
+  Future<result.CacheResult<List<HistoricalPriceDto>>> syncPrices(
+    String ticker, {
+    required Future<List<HistoricalPriceDto>> Function() remoteFetcher,
+    bool forceRefresh,
+  });
+  Future<(List<HistoricalPriceDto>, CompanyProfileDataOrigin)?> getCachedPrices(
     String ticker,
   );
 
-  Future<void> cacheEarningsReports(
-    String ticker,
-    List<EarningsReportDto> reports,
-  );
-  Future<List<EarningsReportDto>?> getCachedEarningsReports(String ticker);
+  Future<result.CacheResult<List<HistoricalPriceEodDto>>>
+  syncHistoricalEodPrices(
+    String ticker, {
+    required Future<List<HistoricalPriceEodDto>> Function() remoteFetcher,
+    bool forceRefresh,
+  });
+  Future<(List<HistoricalPriceEodDto>, CompanyProfileDataOrigin)?>
+  getCachedHistoricalEodPrices(String ticker);
+
+  Future<result.CacheResult<List<EarningsReportDto>>> syncEarningsReports(
+    String ticker, {
+    required Future<List<EarningsReportDto>> Function() remoteFetcher,
+    bool forceRefresh,
+  });
+  Future<(List<EarningsReportDto>, CompanyProfileDataOrigin)?>
+  getCachedEarningsReports(String ticker);
 }
 
 @LazySingleton(as: SecurityFirestoreDataSource)
-class SecurityFirestoreDataSourceImpl implements SecurityFirestoreDataSource {
-  final FirebaseFirestore _firestore;
+class SecurityFirestoreDataSourceImpl extends BaseFirestoreCacheClient
+    implements SecurityFirestoreDataSource {
+  SecurityFirestoreDataSourceImpl(
+    FirebaseFirestore firestore,
+    ITimeProvider timeProvider,
+  ) : super(firestore, timeProvider, 'SecurityFirestoreDataSource');
 
-  SecurityFirestoreDataSourceImpl(this._firestore);
-
-  bool _isSmartCacheValid({
-    required DateTime? lastUpdated,
-    int weekendThresholdHour = 22,
-    bool strictMarketAware = false,
-    Duration fallbackTtl = const Duration(hours: 24),
-  }) {
-    if (lastUpdated == null) return false;
-    final now = DateTime.now();
-
-    if (now.weekday == DateTime.saturday || now.weekday == DateTime.sunday) {
-      final daysSinceFriday = now.weekday - DateTime.friday;
-      final lastFriday = now.subtract(Duration(days: daysSinceFriday));
-
-      final anchor = DateTime(
-        lastFriday.year,
-        lastFriday.month,
-        lastFriday.day,
-        weekendThresholdHour,
-        0,
-      );
-
-      return lastUpdated.isAfter(anchor);
-    }
-
-    if (strictMarketAware) {
-      final marketOpen = DateTime(now.year, now.month, now.day, 9, 30);
-      if (now.isAfter(marketOpen)) {
-        return lastUpdated.isAfter(marketOpen);
-      }
-    }
-
-    final diff = now.difference(lastUpdated);
-    return diff < fallbackTtl;
-  }
-
-  CollectionReference<FirestoreCacheEntry<T>> _getCollectionRef<T>(
-    String ticker,
-    String collectionPath,
-    T Function(Object?) fromJson,
-    Object? Function(T) toJson,
-  ) {
-    return _firestore
-        .collection('companies')
-        .doc(ticker)
-        .collection(collectionPath)
-        .withConverter<FirestoreCacheEntry<T>>(
-          fromFirestore: (snapshot, _) =>
-              FirestoreCacheEntry.fromJson(snapshot.data()!, fromJson),
-          toFirestore: (entry, _) => entry.toJson(toJson),
-        );
-  }
-
-  DocumentReference<FirestoreCacheEntry<T>> _getDocRef<T>(
-    String ticker,
-    String collection,
-    String docId,
-    T Function(Object?) fromJson,
-    Object? Function(T) toJson,
-  ) {
-    return _getCollectionRef(ticker, collection, fromJson, toJson).doc(docId);
-  }
-
-  Future<T?> _fetchWithCacheFirst<T>(
-    DocumentReference<FirestoreCacheEntry<T>> docRef, {
-    int weekendThresholdHour = 22,
-    bool strictMarketAware = false,
-    Duration fallbackTtl = const Duration(hours: 24),
+  @override
+  Future<result.CacheResult<List<HistoricalPriceDto>>> syncPrices(
+    String ticker, {
+    required Future<List<HistoricalPriceDto>> Function() remoteFetcher,
+    bool forceRefresh = false,
   }) async {
-    bool validator(DateTime? ts) => _isSmartCacheValid(
-      lastUpdated: ts,
-      weekendThresholdHour: weekendThresholdHour,
-      strictMarketAware: strictMarketAware,
-      fallbackTtl: fallbackTtl,
+    return syncOrFetch<List<HistoricalPriceDto>>(
+      docRef: _pricesRef(ticker),
+      remoteFetcher: remoteFetcher,
+      forceRefresh: forceRefresh,
     );
+  }
 
-    try {
-      final doc = await docRef.get(const GetOptions(source: Source.cache));
-      if (doc.exists) {
-        final entry = doc.data();
-        if (entry != null && validator(entry.lastUpdated)) {
-          return entry.data;
-        }
-      }
-    } catch (_) {}
-
-    try {
-      final doc = await docRef.get(const GetOptions(source: Source.server));
-      if (doc.exists) {
-        final entry = doc.data();
-        if (entry != null && validator(entry.lastUpdated)) {
-          return entry.data;
-        }
-      }
-    } catch (_) {}
-
+  @override
+  Future<(List<HistoricalPriceDto>, CompanyProfileDataOrigin)?> getCachedPrices(
+    String ticker,
+  ) async {
+    final res = await fetchWithCacheFirst(_pricesRef(ticker));
+    if (res is result.CacheSuccess<List<HistoricalPriceDto>>) {
+      return (res.data, res.origin);
+    }
     return null;
   }
 
   @override
-  Future<void> cachePrices(
-    String ticker,
-    List<HistoricalPriceDto> prices,
-  ) async {
-    await _getDocRef<List<HistoricalPriceDto>>(
-      ticker,
-      'market',
-      'prices_history',
-      (json) =>
-          (json as List).map((e) => HistoricalPriceDto.fromJson(e)).toList(),
-      (data) => data.map((e) => e.toJson()).toList(),
-    ).set(FirestoreCacheEntry(data: prices, lastUpdated: DateTime.now()));
-  }
-
-  @override
-  Future<List<HistoricalPriceDto>?> getCachedPrices(String ticker) async {
-    return _fetchWithCacheFirst(
-      _getDocRef<List<HistoricalPriceDto>>(
-        ticker,
-        'market',
-        'prices_history',
-        (json) =>
-            (json as List).map((e) => HistoricalPriceDto.fromJson(e)).toList(),
-        (data) => data.map((e) => e.toJson()).toList(),
-      ),
-    );
-  }
-
-  @override
-  Future<void> cacheHistoricalEodPrices(
-    String ticker,
-    List<HistoricalPriceEodDto> prices,
-  ) async {
-    await _getDocRef<List<HistoricalPriceEodDto>>(
-      ticker,
-      'market',
-      'prices_eod',
-      (json) =>
-          (json as List).map((e) => HistoricalPriceEodDto.fromJson(e)).toList(),
-      (data) => data.map((e) => e.toJson()).toList(),
-    ).set(FirestoreCacheEntry(data: prices, lastUpdated: DateTime.now()));
-  }
-
-  @override
-  Future<List<HistoricalPriceEodDto>?> getCachedHistoricalEodPrices(
-    String ticker,
-  ) async {
-    return _fetchWithCacheFirst(
-      _getDocRef<List<HistoricalPriceEodDto>>(
-        ticker,
-        'market',
-        'prices_eod',
-        (json) => (json as List)
-            .map((e) => HistoricalPriceEodDto.fromJson(e))
-            .toList(),
-        (data) => data.map((e) => e.toJson()).toList(),
-      ),
+  Future<result.CacheResult<List<HistoricalPriceEodDto>>>
+  syncHistoricalEodPrices(
+    String ticker, {
+    required Future<List<HistoricalPriceEodDto>> Function() remoteFetcher,
+    bool forceRefresh = false,
+  }) async {
+    return syncOrFetch<List<HistoricalPriceEodDto>>(
+      docRef: _eodPricesRef(ticker),
+      remoteFetcher: remoteFetcher,
+      forceRefresh: forceRefresh,
       weekendThresholdHour: 17,
       strictMarketAware: true,
+      fallbackTtl: const Duration(hours: 24),
     );
   }
 
   @override
-  Future<void> cacheEarningsReports(
-    String ticker,
-    List<EarningsReportDto> reports,
-  ) async {
-    await _getDocRef<List<EarningsReportDto>>(
-      ticker,
-      'financials',
-      'earnings_reports',
-      (json) =>
-          (json as List).map((e) => EarningsReportDto.fromJson(e)).toList(),
-      (data) => data.map((e) => e.toJson()).toList(),
-    ).set(FirestoreCacheEntry(data: reports, lastUpdated: DateTime.now()));
+  Future<(List<HistoricalPriceEodDto>, CompanyProfileDataOrigin)?>
+  getCachedHistoricalEodPrices(String ticker) async {
+    final res = await fetchWithCacheFirst(
+      _eodPricesRef(ticker),
+      weekendThresholdHour: 17,
+      strictMarketAware: true,
+      fallbackTtl: const Duration(hours: 24),
+    );
+    if (res is result.CacheSuccess<List<HistoricalPriceEodDto>>) {
+      return (res.data, res.origin);
+    }
+    return null;
   }
 
   @override
-  Future<List<EarningsReportDto>?> getCachedEarningsReports(
-    String ticker,
-  ) async {
-    return _fetchWithCacheFirst(
-      _getDocRef<List<EarningsReportDto>>(
-        ticker,
-        'financials',
-        'earnings_reports',
-        (json) =>
-            (json as List).map((e) => EarningsReportDto.fromJson(e)).toList(),
-        (data) => data.map((e) => e.toJson()).toList(),
-      ),
+  Future<result.CacheResult<List<EarningsReportDto>>> syncEarningsReports(
+    String ticker, {
+    required Future<List<EarningsReportDto>> Function() remoteFetcher,
+    bool forceRefresh = false,
+  }) async {
+    return syncOrFetch<List<EarningsReportDto>>(
+      docRef: _earningsRef(ticker),
+      remoteFetcher: remoteFetcher,
+      forceRefresh: forceRefresh,
     );
   }
+
+  @override
+  Future<(List<EarningsReportDto>, CompanyProfileDataOrigin)?>
+  getCachedEarningsReports(String ticker) async {
+    final res = await fetchWithCacheFirst(_earningsRef(ticker));
+    if (res is result.CacheSuccess<List<EarningsReportDto>>) {
+      return (res.data, res.origin);
+    }
+    return null;
+  }
+
+  DocumentReference<FirestoreCacheEntry<List<HistoricalPriceDto>>> _pricesRef(
+    String ticker,
+  ) => getDocRef<List<HistoricalPriceDto>>(
+    ticker,
+    'market',
+    'prices_history',
+    (json) =>
+        (json as List).map((e) => HistoricalPriceDto.fromJson(e)).toList(),
+    (data) => data.map((e) => e.toJson()).toList(),
+  );
+
+  DocumentReference<FirestoreCacheEntry<List<HistoricalPriceEodDto>>>
+  _eodPricesRef(String ticker) => getDocRef<List<HistoricalPriceEodDto>>(
+    ticker,
+    'market',
+    'prices_eod',
+    (json) =>
+        (json as List).map((e) => HistoricalPriceEodDto.fromJson(e)).toList(),
+    (data) => data.map((e) => e.toJson()).toList(),
+  );
+
+  DocumentReference<FirestoreCacheEntry<List<EarningsReportDto>>> _earningsRef(
+    String ticker,
+  ) => getDocRef<List<EarningsReportDto>>(
+    ticker,
+    'financials',
+    'earnings_reports',
+    (json) => (json as List).map((e) => EarningsReportDto.fromJson(e)).toList(),
+    (data) => data.map((e) => e.toJson()).toList(),
+  );
 }

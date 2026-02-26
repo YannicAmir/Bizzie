@@ -2,6 +2,7 @@ import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/features/company_profile/eps/domain/interfaces/i_eps_repository.dart';
 import 'package:bizzie/features/company_profile/eps/domain/models/eps_stats.dart';
 import 'package:bizzie/features/company_profile/eps/domain/usecases/get_eps_stats_usecase.dart';
+import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
@@ -26,31 +27,31 @@ void main() {
 
   group('GetEpsStatsUseCase', () {
     test('call_success_returnsEpsStats', () async {
-      // arrange
-      when(
-        () => mockRepository.getEpsStats(tTicker),
-      ).thenAnswer((_) async => const Right(tEpsStats));
+      // Arrange
+      when(() => mockRepository.getEpsStats(tTicker)).thenAnswer(
+        (_) async => const Right((tEpsStats, CompanyProfileDataOrigin.cache)),
+      );
 
-      // act
+      // Act
       final result = await useCase(tTicker);
 
-      // assert
-      expect(result, const Right(tEpsStats));
+      // Assert
+      expect(result, const Right((tEpsStats, CompanyProfileDataOrigin.cache)));
       verify(() => mockRepository.getEpsStats(tTicker)).called(1);
       verifyNoMoreInteractions(mockRepository);
     });
 
     test('call_failure_returnsServerFailure', () async {
-      // arrange
+      // Arrange
       const tFailure = Failure.server('Server error');
       when(
         () => mockRepository.getEpsStats(tTicker),
       ).thenAnswer((_) async => const Left(tFailure));
 
-      // act
+      // Act
       final result = await useCase(tTicker);
 
-      // assert
+      // Assert
       expect(result, const Left(tFailure));
       verify(() => mockRepository.getEpsStats(tTicker)).called(1);
       verifyNoMoreInteractions(mockRepository);

@@ -49,8 +49,8 @@ class _NewsTabState extends State<NewsTab> with AutomaticKeepAliveClientMixin {
               ),
             ),
             loaded: (data) {
-              final carouselNews = data.news.take(3).toList();
-              final listNews = data.news.skip(3).toList();
+              final carouselNews = data.articles.take(3).toList();
+              final listNews = data.articles.skip(3).toList();
 
               return _NewsLoadedState(
                 carouselNews: carouselNews,

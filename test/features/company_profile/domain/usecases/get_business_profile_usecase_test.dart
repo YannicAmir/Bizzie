@@ -2,6 +2,7 @@ import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/features/company_profile/business/domain/interfaces/i_business_repository.dart';
 import 'package:bizzie/features/company_profile/business/domain/models/business_profile.dart';
 import 'package:bizzie/features/company_profile/business/domain/usecases/get_business_profile_usecase.dart';
+import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
@@ -39,31 +40,31 @@ void main() {
 
   group('GetBusinessProfileUseCase', () {
     test('call_success_returnsBusinessProfile', () async {
-      // arrange
-      when(
-        () => mockRepository.getBusinessProfile(tTicker),
-      ).thenAnswer((_) async => Right(tBusinessProfile));
+      // Arrange
+      when(() => mockRepository.getBusinessProfile(tTicker)).thenAnswer(
+        (_) async => Right((tBusinessProfile, CompanyProfileDataOrigin.api)),
+      );
 
-      // act
+      // Act
       final result = await useCase(tTicker);
 
-      // assert
-      expect(result, Right(tBusinessProfile));
+      // Assert
+      expect(result, Right((tBusinessProfile, CompanyProfileDataOrigin.api)));
       verify(() => mockRepository.getBusinessProfile(tTicker)).called(1);
       verifyNoMoreInteractions(mockRepository);
     });
 
     test('call_failure_returnsServerFailure', () async {
-      // arrange
+      // Arrange
       const tFailure = Failure.server('Server error');
       when(
         () => mockRepository.getBusinessProfile(tTicker),
       ).thenAnswer((_) async => const Left(tFailure));
 
-      // act
+      // Act
       final result = await useCase(tTicker);
 
-      // assert
+      // Assert
       expect(result, const Left(tFailure));
       verify(() => mockRepository.getBusinessProfile(tTicker)).called(1);
       verifyNoMoreInteractions(mockRepository);

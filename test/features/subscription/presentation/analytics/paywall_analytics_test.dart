@@ -58,6 +58,35 @@ void main() {
       ).called(1);
     });
 
+    test(
+      'logTriggered_withContext_logsEventWithTabAndFeatureTruncated',
+      () async {
+        // arrange & act
+        await analytics.logTriggered(
+          source: tSource,
+          paywallType: PaywallType.regular,
+          tabName: 'business_tab',
+          featureName: 'some_extremely_long_feature_name_that_should_truncate',
+        );
+
+        // assert
+        verify(
+          () => mockAnalyticsService.logEvent(
+            name: 'paywall_triggered',
+            parameters: any(
+              named: 'parameters',
+              that: allOf(
+                containsPair('source', tSource.name),
+                containsPair('paywall_type', PaywallType.regular.name),
+                containsPair('tab_name', 'business_tab'),
+                containsPair('feature_name', 'some_extremely_long_feat'),
+              ),
+            ),
+          ),
+        ).called(1);
+      },
+    );
+
     test('logGiftViewed_standardCall_logsEventWithSource', () async {
       // arrange & act
       await analytics.logGiftViewed(source: tSource);

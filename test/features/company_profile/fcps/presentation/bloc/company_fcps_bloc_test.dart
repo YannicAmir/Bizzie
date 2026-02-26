@@ -1,3 +1,4 @@
+import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/features/company_profile/shared/domain/models/financial_data_point.dart';
 import 'package:bizzie/features/company_profile/fcps/domain/models/fcps_stats.dart';
@@ -40,7 +41,6 @@ void main() {
   );
 
   test('initialState_isCorrect', () {
-    // assert
     expect(bloc.state, const CompanyFcpsState.initial());
   });
 
@@ -48,29 +48,32 @@ void main() {
     blocTest<CompanyFcpsBloc, CompanyFcpsState>(
       'loadRequested_success_emitsLoadingAndLoaded',
       build: () {
-        // arrange
-        when(
-          () => mockGetFcpsStats(tTicker),
-        ).thenAnswer((_) async => const Right(tFcpsStats));
+        // Arrange
+        when(() => mockGetFcpsStats(tTicker)).thenAnswer(
+          (_) async => const Right((tFcpsStats, CompanyProfileDataOrigin.api)),
+        );
         return bloc;
       },
-      act: (bloc) {
-        // act
-        bloc.add(const CompanyFcpsEvent.loadRequested(tTicker));
-      },
-      expect: () {
-        // assert
-        return [
-          const CompanyFcpsState.loading(),
-          isA<CompanyFcpsState>().having(
-            (s) => s.maybeMap(loaded: (l) => l.fcpsStats, orElse: () => null),
-            'fcpsStats',
-            tFcpsStats,
-          ),
-        ];
-      },
+      // Act
+      act: (bloc) => bloc.add(const CompanyFcpsEvent.loadRequested(tTicker)),
+      // Assert
+      expect: () => [
+        const CompanyFcpsState.loading(),
+        isA<CompanyFcpsState>()
+            .having(
+              (s) => s.maybeMap(loaded: (l) => l.ticker, orElse: () => null),
+              'ticker',
+              tTicker,
+            )
+            .having(
+              (s) =>
+                  s.maybeMap(loaded: (l) => l.dataOrigin, orElse: () => null),
+              'dataOrigin',
+              CompanyProfileDataOrigin.api,
+            ),
+      ],
+      // Assert
       verify: (_) {
-        // assert
         verify(() => mockGetFcpsStats(tTicker)).called(1);
       },
     );
@@ -78,88 +81,110 @@ void main() {
     blocTest<CompanyFcpsBloc, CompanyFcpsState>(
       'loadRequested_failure_emitsLoadingAndFailure',
       build: () {
-        // arrange
+        // Arrange
         const failure = Failure.server('Server error');
         when(
           () => mockGetFcpsStats(tTicker),
         ).thenAnswer((_) async => const Left(failure));
         return bloc;
       },
-      act: (bloc) {
-        // act
-        bloc.add(const CompanyFcpsEvent.loadRequested(tTicker));
-      },
-      expect: () {
-        // assert
-        return [
-          const CompanyFcpsState.loading(),
-          const CompanyFcpsState.failure(Failure.server('Server error')),
-        ];
-      },
+      // Act
+      act: (bloc) => bloc.add(const CompanyFcpsEvent.loadRequested(tTicker)),
+      // Assert
+      expect: () => [
+        const CompanyFcpsState.loading(),
+        const CompanyFcpsState.failure(Failure.server('Server error')),
+      ],
     );
 
     blocTest<CompanyFcpsBloc, CompanyFcpsState>(
       'loadRequested_alreadyLoaded_skipsLoading',
-      build: () {
-        // arrange
-        return bloc;
-      },
+      // Arrange
+      build: () => bloc,
       seed: () => const CompanyFcpsState.loaded(
+        ticker: tTicker,
         fcpsStats: tFcpsStats,
         annualChartData: [],
         quarterlyChartData: [],
         historyLimit: 7,
+        dataOrigin: CompanyProfileDataOrigin.api,
       ),
-      act: (bloc) {
-        // act
-        bloc.add(const CompanyFcpsEvent.loadRequested(tTicker));
-      },
-      expect: () {
-        // assert
-        return [];
-      },
+      // Act
+      act: (bloc) => bloc.add(const CompanyFcpsEvent.loadRequested(tTicker)),
+      // Assert
+      expect: () => [],
       verify: (_) {
-        // assert
         verifyNever(() => mockGetFcpsStats(any()));
       },
     );
 
     blocTest<CompanyFcpsBloc, CompanyFcpsState>(
-      'loadRequested_alreadyLoadedWithForceRefresh_emitsLoadingAndLoaded',
+      'loadRequested_differentTicker_reloadsData',
       build: () {
-        // arrange
-        when(
-          () => mockGetFcpsStats(tTicker),
-        ).thenAnswer((_) async => const Right(tFcpsStats));
+        // Arrange
+        when(() => mockGetFcpsStats('MSFT')).thenAnswer(
+          (_) async => const Right((tFcpsStats, CompanyProfileDataOrigin.api)),
+        );
         return bloc;
       },
       seed: () => const CompanyFcpsState.loaded(
+        ticker: 'AAPL',
         fcpsStats: tFcpsStats,
         annualChartData: [],
         quarterlyChartData: [],
         historyLimit: 7,
+        dataOrigin: CompanyProfileDataOrigin.api,
       ),
-      act: (bloc) {
-        // act
-        bloc.add(
-          const CompanyFcpsEvent.loadRequested(tTicker, forceRefresh: true),
+      // Act
+      act: (bloc) => bloc.add(const CompanyFcpsEvent.loadRequested('MSFT')),
+      // Assert
+      expect: () => [
+        const CompanyFcpsState.loading(),
+        isA<CompanyFcpsState>().having(
+          (s) => s.maybeMap(loaded: (l) => l.ticker, orElse: () => null),
+          'ticker',
+          'MSFT',
+        ),
+      ],
+    );
+
+    blocTest<CompanyFcpsBloc, CompanyFcpsState>(
+      'loadRequested_alreadyLoadedWithForceRefresh_emitsLoadedOnly',
+      build: () {
+        // Arrange
+        when(() => mockGetFcpsStats(tTicker)).thenAnswer(
+          (_) async => const Right((tFcpsStats, CompanyProfileDataOrigin.api)),
         );
+        return bloc;
       },
-      expect: () {
-        // assert
-        return [
-          const CompanyFcpsState.loading(),
-          isA<CompanyFcpsState>().having(
-            (s) => s.maybeMap(loaded: (l) => l.fcpsStats, orElse: () => null),
-            'fcpsStats',
-            tFcpsStats,
-          ),
-        ];
-      },
-      verify: (_) {
-        // assert
-        verify(() => mockGetFcpsStats(tTicker)).called(1);
-      },
+      seed: () => const CompanyFcpsState.loaded(
+        ticker: tTicker,
+        fcpsStats: tFcpsStats,
+        annualChartData: [],
+        quarterlyChartData: [],
+        historyLimit: 7,
+        dataOrigin: CompanyProfileDataOrigin.api,
+      ),
+      // Act
+      act: (bloc) => bloc.add(
+        const CompanyFcpsEvent.loadRequested(tTicker, forceRefresh: true),
+      ),
+      // Assert
+      expect: () => [
+        const CompanyFcpsState.loading(),
+        isA<CompanyFcpsState>()
+            .having(
+              (s) => s.maybeMap(loaded: (l) => l.ticker, orElse: () => null),
+              'ticker',
+              tTicker,
+            )
+            .having(
+              (s) =>
+                  s.maybeMap(loaded: (l) => l.dataOrigin, orElse: () => null),
+              'dataOrigin',
+              CompanyProfileDataOrigin.api,
+            ),
+      ],
     );
   });
 
@@ -167,52 +192,52 @@ void main() {
     blocTest<CompanyFcpsBloc, CompanyFcpsState>(
       'stalenessCheckRequested_initialState_triggersLoadRequested',
       build: () {
-        // arrange
-        when(
-          () => mockGetFcpsStats(tTicker),
-        ).thenAnswer((_) async => const Right(tFcpsStats));
+        // Arrange
+        when(() => mockGetFcpsStats(tTicker)).thenAnswer(
+          (_) async => const Right((tFcpsStats, CompanyProfileDataOrigin.api)),
+        );
         return bloc;
       },
-      act: (bloc) {
-        // act
-        bloc.add(const CompanyFcpsEvent.stalenessCheckRequested(tTicker));
-      },
-      expect: () {
-        // assert
-        return [
-          const CompanyFcpsState.loading(),
-          isA<CompanyFcpsState>().having(
-            (s) => s.maybeMap(loaded: (l) => l.fcpsStats, orElse: () => null),
-            'fcpsStats',
-            tFcpsStats,
-          ),
-        ];
-      },
+      // Act
+      act: (bloc) =>
+          bloc.add(const CompanyFcpsEvent.stalenessCheckRequested(tTicker)),
+      // Assert
+      expect: () => [
+        const CompanyFcpsState.loading(),
+        isA<CompanyFcpsState>()
+            .having(
+              (s) => s.maybeMap(loaded: (l) => l.ticker, orElse: () => null),
+              'ticker',
+              tTicker,
+            )
+            .having(
+              (s) =>
+                  s.maybeMap(loaded: (l) => l.dataOrigin, orElse: () => null),
+              'dataOrigin',
+              CompanyProfileDataOrigin.api,
+            ),
+      ],
     );
 
     blocTest<CompanyFcpsBloc, CompanyFcpsState>(
       'stalenessCheckRequested_fresh_doesNotTriggerLoad',
-      build: () {
-        // arrange
-        return bloc;
-      },
+      // Arrange
+      build: () => bloc,
       seed: () => CompanyFcpsState.loaded(
+        ticker: tTicker,
         fcpsStats: tFcpsStats,
         annualChartData: const [],
         quarterlyChartData: const [],
         historyLimit: 7,
+        dataOrigin: CompanyProfileDataOrigin.api,
         lastUpdated: DateTime.now(),
       ),
-      act: (bloc) {
-        // act
-        bloc.add(const CompanyFcpsEvent.stalenessCheckRequested(tTicker));
-      },
-      expect: () {
-        // assert
-        return [];
-      },
+      // Act
+      act: (bloc) =>
+          bloc.add(const CompanyFcpsEvent.stalenessCheckRequested(tTicker)),
+      // Assert
+      expect: () => [],
       verify: (_) {
-        // assert
         verifyNever(() => mockGetFcpsStats(any()));
       },
     );
@@ -220,34 +245,40 @@ void main() {
     blocTest<CompanyFcpsBloc, CompanyFcpsState>(
       'stalenessCheckRequested_stale_triggersLoadRequested',
       build: () {
-        // arrange
-        when(
-          () => mockGetFcpsStats(tTicker),
-        ).thenAnswer((_) async => const Right(tFcpsStats));
+        // Arrange
+        when(() => mockGetFcpsStats(tTicker)).thenAnswer(
+          (_) async => const Right((tFcpsStats, CompanyProfileDataOrigin.api)),
+        );
         return bloc;
       },
       seed: () => CompanyFcpsState.loaded(
+        ticker: tTicker,
         fcpsStats: tFcpsStats,
         annualChartData: const [],
         quarterlyChartData: const [],
         historyLimit: 7,
+        dataOrigin: CompanyProfileDataOrigin.api,
         lastUpdated: DateTime.now().subtract(const Duration(hours: 25)),
       ),
-      act: (bloc) {
-        // act
-        bloc.add(const CompanyFcpsEvent.stalenessCheckRequested(tTicker));
-      },
-      expect: () {
-        // assert
-        return [
-          const CompanyFcpsState.loading(),
-          isA<CompanyFcpsState>().having(
-            (s) => s.maybeMap(loaded: (l) => l.fcpsStats, orElse: () => null),
-            'fcpsStats',
-            tFcpsStats,
-          ),
-        ];
-      },
+      // Act
+      act: (bloc) =>
+          bloc.add(const CompanyFcpsEvent.stalenessCheckRequested(tTicker)),
+      // Assert
+      expect: () => [
+        const CompanyFcpsState.loading(),
+        isA<CompanyFcpsState>()
+            .having(
+              (s) => s.maybeMap(loaded: (l) => l.ticker, orElse: () => null),
+              'ticker',
+              tTicker,
+            )
+            .having(
+              (s) =>
+                  s.maybeMap(loaded: (l) => l.dataOrigin, orElse: () => null),
+              'dataOrigin',
+              CompanyProfileDataOrigin.api,
+            ),
+      ],
     );
   });
 }

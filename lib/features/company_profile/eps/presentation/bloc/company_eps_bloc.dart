@@ -19,17 +19,10 @@ class CompanyEpsBloc extends Bloc<CompanyEpsEvent, CompanyEpsState> {
 
   CompanyEpsBloc(this._getEpsStatsUseCase, this._configService)
     : super(const CompanyEpsState.initial()) {
-    on<CompanyEpsEvent>(_onEvent, transformer: droppable());
-  }
-
-  Future<void> _onEvent(
-    CompanyEpsEvent event,
-    Emitter<CompanyEpsState> emit,
-  ) async {
-    _logger.info('Handling event: $event');
-    await event.map(
-      loadRequested: (e) async => _onLoadRequested(e, emit),
-      stalenessCheckRequested: (e) async => _onStalenessCheckRequested(e),
+    on<LoadRequested>(_onLoadRequested, transformer: droppable());
+    on<StalenessCheckRequested>(
+      _onStalenessCheckRequested,
+      transformer: sequential(),
     );
   }
 
@@ -37,16 +30,29 @@ class CompanyEpsBloc extends Bloc<CompanyEpsEvent, CompanyEpsState> {
     LoadRequested event,
     Emitter<CompanyEpsState> emit,
   ) async {
-    if (!event.forceRefresh &&
-        state.maybeMap(loaded: (_) => true, orElse: () => false)) {
-      _logger.info('Skip loading EPS: already loaded and no force refresh');
+    final isAlreadyLoaded = state.maybeMap(
+      loaded: (s) => true,
+      orElse: () => false,
+    );
+
+    final isRightTicker = state.maybeMap(
+      loaded: (s) => s.ticker == event.ticker,
+      orElse: () => false,
+    );
+
+    if (isAlreadyLoaded && isRightTicker && !event.forceRefresh) {
+      _logger.info(
+        'Company EPS already loaded for ${event.ticker} and is the correct ticker. Skipping load (Silent Refresh).',
+      );
       return;
     }
 
     _logger.info(
       'Loading EPS stats for ${event.ticker} (force=${event.forceRefresh})',
     );
-    emit(const CompanyEpsState.loading());
+    if (!isAlreadyLoaded || !isRightTicker || event.forceRefresh) {
+      emit(const CompanyEpsState.loading());
+    }
 
     final result = await _getEpsStatsUseCase(event.ticker);
 
@@ -55,10 +61,12 @@ class CompanyEpsBloc extends Bloc<CompanyEpsEvent, CompanyEpsState> {
         _logger.severe('Failed to load EPS stats', failure);
         emit(CompanyEpsState.failure(failure));
       },
-      (stats) {
-        _logger.info('Successfully loaded EPS stats');
+      (tuple) {
+        final (stats, origin) = tuple;
+        _logger.info('Successfully loaded EPS stats (origin: $origin)');
         emit(
           CompanyEpsState.loaded(
+            ticker: event.ticker,
             epsStats: stats,
             annualChartData: _toChartData(stats.annualEps, isAnnual: true),
             quarterlyChartData: _toChartData(
@@ -66,6 +74,7 @@ class CompanyEpsBloc extends Bloc<CompanyEpsEvent, CompanyEpsState> {
               isAnnual: false,
             ),
             historyLimit: _configService.freePlanHistoryCount,
+            dataOrigin: origin,
             lastUpdated: DateTime.now(),
           ),
         );
@@ -73,7 +82,10 @@ class CompanyEpsBloc extends Bloc<CompanyEpsEvent, CompanyEpsState> {
     );
   }
 
-  Future<void> _onStalenessCheckRequested(StalenessCheckRequested event) async {
+  Future<void> _onStalenessCheckRequested(
+    StalenessCheckRequested event,
+    Emitter<CompanyEpsState> emit,
+  ) async {
     _logger.info('Staleness check requested for ${event.ticker}');
     state.mapOrNull(
       loaded: (loadedState) {

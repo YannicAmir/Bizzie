@@ -1,4 +1,5 @@
 import 'package:bizzie/core/error/failures.dart';
+import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:bizzie/features/company_profile/dividends/domain/models/dividend_event.dart';
 import 'package:bizzie/features/company_profile/dividends/domain/models/dividend_info.dart';
 import 'package:bizzie/features/company_profile/dividends/domain/usecases/get_dividend_info_usecase.dart';
@@ -9,7 +10,6 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-
 import 'package:bizzie/core/interfaces/i_config_service.dart';
 
 class MockGetDividendInfoUseCase extends Mock
@@ -33,12 +33,16 @@ void main() {
   final tDividendInfo = DividendInfo(
     symbol: tTicker,
     history: [
-      DividendEvent(date: '2023-01-01', dividend: 0.25, adjDividend: 0.25),
+      const DividendEvent(
+        date: '2023-01-01',
+        dividend: 0.25,
+        adjDividend: 0.25,
+      ),
     ],
   );
 
   test('initialState_isCorrect', () {
-    // assert
+    // Assert
     expect(bloc.state, const CompanyDividendsState.initial());
   });
 
@@ -46,30 +50,31 @@ void main() {
     blocTest<CompanyDividendsBloc, CompanyDividendsState>(
       'loadRequested_success_emitsLoadingAndLoaded',
       build: () {
-        // arrange
-        when(
-          () => mockGetDividendInfo(tTicker),
-        ).thenAnswer((_) async => Right(tDividendInfo));
+        // Arrange
+        when(() => mockGetDividendInfo(tTicker)).thenAnswer(
+          (_) async => Right((tDividendInfo, CompanyProfileDataOrigin.api)),
+        );
         return bloc;
       },
       act: (bloc) {
-        // act
+        // Act
         bloc.add(const CompanyDividendsEvent.loadRequested(tTicker));
       },
-      expect: () {
-        // assert
-        return [
-          const CompanyDividendsState.loading(),
-          isA<CompanyDividendsState>().having(
-            (s) =>
-                s.maybeMap(loaded: (l) => l.dividendInfo, orElse: () => null),
-            'dividendInfo',
-            tDividendInfo,
+      expect: () => [
+        const CompanyDividendsState.loading(),
+        isA<CompanyDividendsState>().having(
+          (s) => s.maybeMap(
+            loaded: (l) =>
+                l.ticker == tTicker &&
+                l.dataOrigin == CompanyProfileDataOrigin.api,
+            orElse: () => false,
           ),
-        ];
-      },
+          'loaded with correct ticker and origin',
+          true,
+        ),
+      ],
       verify: (_) {
-        // assert
+        // Assert
         verify(() => mockGetDividendInfo(tTicker)).called(1);
       },
     );
@@ -77,7 +82,7 @@ void main() {
     blocTest<CompanyDividendsBloc, CompanyDividendsState>(
       'loadRequested_failure_emitsLoadingAndError',
       build: () {
-        // arrange
+        // Arrange
         const failure = Failure.server('Server error');
         when(
           () => mockGetDividendInfo(tTicker),
@@ -85,51 +90,84 @@ void main() {
         return bloc;
       },
       act: (bloc) {
-        // act
+        // Act
         bloc.add(const CompanyDividendsEvent.loadRequested(tTicker));
       },
-      expect: () {
-        // assert
-        return [
-          const CompanyDividendsState.loading(),
-          const CompanyDividendsState.error(Failure.server('Server error')),
-        ];
-      },
+      expect: () => [
+        const CompanyDividendsState.loading(),
+        const CompanyDividendsState.error(Failure.server('Server error')),
+      ],
     );
 
     blocTest<CompanyDividendsBloc, CompanyDividendsState>(
       'loadRequested_alreadyLoaded_skipsLoading',
       build: () {
-        // arrange
+        // Arrange
         return bloc;
       },
-      seed: () => CompanyDividendsState.loaded(tDividendInfo, historyLimit: 8),
+      seed: () => CompanyDividendsState.loaded(
+        ticker: tTicker,
+        dividendInfo: tDividendInfo,
+        historyLimit: 8,
+        dataOrigin: CompanyProfileDataOrigin.api,
+      ),
       act: (bloc) {
-        // act
+        // Act
         bloc.add(const CompanyDividendsEvent.loadRequested(tTicker));
       },
-      expect: () {
-        // assert
-        return [];
-      },
+      expect: () => [],
       verify: (_) {
-        // assert
+        // Assert
         verifyNever(() => mockGetDividendInfo(any()));
       },
     );
 
     blocTest<CompanyDividendsBloc, CompanyDividendsState>(
-      'loadRequested_alreadyLoadedWithForceRefresh_emitsLoadingAndLoaded',
+      'loadRequested_differentTicker_reloadsData',
       build: () {
-        // arrange
-        when(
-          () => mockGetDividendInfo(tTicker),
-        ).thenAnswer((_) async => Right(tDividendInfo));
+        // Arrange
+        when(() => mockGetDividendInfo('MSFT')).thenAnswer(
+          (_) async => Right((tDividendInfo, CompanyProfileDataOrigin.api)),
+        );
         return bloc;
       },
-      seed: () => CompanyDividendsState.loaded(tDividendInfo, historyLimit: 8),
+      seed: () => CompanyDividendsState.loaded(
+        ticker: 'AAPL',
+        dividendInfo: tDividendInfo,
+        historyLimit: 8,
+        dataOrigin: CompanyProfileDataOrigin.api,
+      ),
       act: (bloc) {
-        // act
+        // Act
+        bloc.add(const CompanyDividendsEvent.loadRequested('MSFT'));
+      },
+      expect: () => [
+        const CompanyDividendsState.loading(),
+        isA<CompanyDividendsState>().having(
+          (s) => s.maybeMap(loaded: (l) => l.ticker, orElse: () => null),
+          'ticker',
+          'MSFT',
+        ),
+      ],
+    );
+
+    blocTest<CompanyDividendsBloc, CompanyDividendsState>(
+      'loadRequested_alreadyLoadedWithForceRefresh_emitsLoadedOnly',
+      build: () {
+        // Arrange
+        when(() => mockGetDividendInfo(tTicker)).thenAnswer(
+          (_) async => Right((tDividendInfo, CompanyProfileDataOrigin.api)),
+        );
+        return bloc;
+      },
+      seed: () => CompanyDividendsState.loaded(
+        ticker: tTicker,
+        dividendInfo: tDividendInfo,
+        historyLimit: 8,
+        dataOrigin: CompanyProfileDataOrigin.api,
+      ),
+      act: (bloc) {
+        // Act
         bloc.add(
           const CompanyDividendsEvent.loadRequested(
             tTicker,
@@ -137,108 +175,103 @@ void main() {
           ),
         );
       },
-      expect: () {
-        // assert
-        return [
-          const CompanyDividendsState.loading(),
-          isA<CompanyDividendsState>().having(
-            (s) =>
-                s.maybeMap(loaded: (l) => l.dividendInfo, orElse: () => null),
-            'dividendInfo',
-            tDividendInfo,
-          ),
-        ];
-      },
+      expect: () => [
+        const CompanyDividendsState.loading(),
+        isA<CompanyDividendsState>().having(
+          (s) => s.maybeMap(loaded: (l) => l.ticker, orElse: () => null),
+          'ticker',
+          tTicker,
+        ),
+      ],
       verify: (_) {
-        // assert
+        // Assert
         verify(() => mockGetDividendInfo(tTicker)).called(1);
       },
     );
-  });
 
-  group('CompanyDividendsBloc - stalenessCheckRequested', () {
-    blocTest<CompanyDividendsBloc, CompanyDividendsState>(
-      'stalenessCheckRequested_initialState_triggersLoadRequested',
-      build: () {
-        // arrange
-        when(
-          () => mockGetDividendInfo(tTicker),
-        ).thenAnswer((_) async => Right(tDividendInfo));
-        return bloc;
-      },
-      act: (bloc) {
-        // act
-        bloc.add(const CompanyDividendsEvent.stalenessCheckRequested(tTicker));
-      },
-      expect: () {
-        // assert
-        return [
+    group('CompanyDividendsBloc - stalenessCheckRequested', () {
+      blocTest<CompanyDividendsBloc, CompanyDividendsState>(
+        'stalenessCheckRequested_initialState_triggersLoadRequested',
+        build: () {
+          // Arrange
+          when(() => mockGetDividendInfo(tTicker)).thenAnswer(
+            (_) async => Right((tDividendInfo, CompanyProfileDataOrigin.api)),
+          );
+          return bloc;
+        },
+        act: (bloc) {
+          // Act
+          bloc.add(
+            const CompanyDividendsEvent.stalenessCheckRequested(tTicker),
+          );
+        },
+        expect: () => [
           const CompanyDividendsState.loading(),
           isA<CompanyDividendsState>().having(
-            (s) =>
-                s.maybeMap(loaded: (l) => l.dividendInfo, orElse: () => null),
-            'dividendInfo',
-            tDividendInfo,
+            (s) => s.maybeMap(loaded: (l) => l.ticker, orElse: () => null),
+            'ticker',
+            tTicker,
           ),
-        ];
-      },
-    );
+        ],
+      );
 
-    blocTest<CompanyDividendsBloc, CompanyDividendsState>(
-      'stalenessCheckRequested_fresh_doesNotTriggerLoad',
-      build: () {
-        // arrange
-        return bloc;
-      },
-      seed: () => CompanyDividendsState.loaded(
-        tDividendInfo,
-        historyLimit: 8,
-        lastUpdated: DateTime.now(),
-      ),
-      act: (bloc) {
-        // act
-        bloc.add(const CompanyDividendsEvent.stalenessCheckRequested(tTicker));
-      },
-      expect: () {
-        // assert
-        return [];
-      },
-      verify: (_) {
-        // assert
-        verifyNever(() => mockGetDividendInfo(any()));
-      },
-    );
+      blocTest<CompanyDividendsBloc, CompanyDividendsState>(
+        'stalenessCheckRequested_fresh_doesNotTriggerLoad',
+        build: () {
+          // Arrange
+          return bloc;
+        },
+        seed: () => CompanyDividendsState.loaded(
+          ticker: tTicker,
+          dividendInfo: tDividendInfo,
+          historyLimit: 8,
+          dataOrigin: CompanyProfileDataOrigin.api,
+          lastUpdated: DateTime.now(),
+        ),
+        act: (bloc) {
+          // Act
+          bloc.add(
+            const CompanyDividendsEvent.stalenessCheckRequested(tTicker),
+          );
+        },
+        expect: () => [],
+        verify: (_) {
+          // Assert
+          verifyNever(() => mockGetDividendInfo(any()));
+        },
+      );
 
-    blocTest<CompanyDividendsBloc, CompanyDividendsState>(
-      'stalenessCheckRequested_stale_triggersLoadRequested',
-      build: () {
-        // arrange
-        when(
-          () => mockGetDividendInfo(tTicker),
-        ).thenAnswer((_) async => Right(tDividendInfo));
-        return bloc;
-      },
-      seed: () => CompanyDividendsState.loaded(
-        tDividendInfo,
-        historyLimit: 8,
-        lastUpdated: DateTime.now().subtract(const Duration(hours: 25)),
-      ),
-      act: (bloc) {
-        // act
-        bloc.add(const CompanyDividendsEvent.stalenessCheckRequested(tTicker));
-      },
-      expect: () {
-        // assert
-        return [
+      blocTest<CompanyDividendsBloc, CompanyDividendsState>(
+        'stalenessCheckRequested_stale_triggersLoadRequested',
+        build: () {
+          // Arrange
+          when(() => mockGetDividendInfo(tTicker)).thenAnswer(
+            (_) async => Right((tDividendInfo, CompanyProfileDataOrigin.api)),
+          );
+          return bloc;
+        },
+        seed: () => CompanyDividendsState.loaded(
+          ticker: tTicker,
+          dividendInfo: tDividendInfo,
+          historyLimit: 8,
+          dataOrigin: CompanyProfileDataOrigin.api,
+          lastUpdated: DateTime.now().subtract(const Duration(hours: 25)),
+        ),
+        act: (bloc) {
+          // Act
+          bloc.add(
+            const CompanyDividendsEvent.stalenessCheckRequested(tTicker),
+          );
+        },
+        expect: () => [
           const CompanyDividendsState.loading(),
           isA<CompanyDividendsState>().having(
-            (s) =>
-                s.maybeMap(loaded: (l) => l.dividendInfo, orElse: () => null),
-            'dividendInfo',
-            tDividendInfo,
+            (s) => s.maybeMap(loaded: (l) => l.ticker, orElse: () => null),
+            'ticker',
+            tTicker,
           ),
-        ];
-      },
-    );
+        ],
+      );
+    });
   });
 }

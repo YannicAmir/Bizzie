@@ -14,22 +14,32 @@ class PaywallHelper {
   static Future<void> showPaywallSequence(
     BuildContext context, {
     required PaywallSource source,
+    String? tabName,
+    String? featureName,
   }) async {
     final theme = Theme.of(context);
     // 1. Show regular paywall
-    await context.push('${AppRoutes.paywall}?source=${source.name}');
+    String route = '${AppRoutes.paywall}?source=${source.name}';
+    if (tabName != null) route += '&tabName=$tabName';
+    if (featureName != null) route += '&featureName=$featureName';
+
+    await context.push(route);
 
     if (context.mounted) {
       // 2. Check if user is now subscribed
       final userState = context.read<UserBloc>().state;
-      final isSubscribed = userState.maybeMap(
+      final subscriptionState = context.read<SubscriptionBloc>().state;
+
+      final isSubscribedViaUser = userState.maybeMap(
         loaded: (s) => s.user.isSubscribed,
         orElse: () => false,
       );
+      final isSubscribedViaSubscription = subscriptionState.status.isSubscribed;
+
+      final isSubscribed = isSubscribedViaUser || isSubscribedViaSubscription;
 
       if (!isSubscribed) {
         // 3. Show gift modal if not subscribed
-        // The gift modal itself handles the redirection to discounted-paywall on dismissal
         final result = await showModalBottomSheet<bool>(
           context: context,
           backgroundColor: theme.colorScheme.scrim,

@@ -19,11 +19,15 @@ import 'package:go_router/go_router.dart';
 class SubscriptionPage extends StatefulWidget {
   final bool isUpgradeFlow;
   final PaywallSource source;
+  final String? tabName;
+  final String? featureName;
 
   const SubscriptionPage({
     super.key,
     this.isUpgradeFlow = false,
     this.source = PaywallSource.unknown,
+    this.tabName,
+    this.featureName,
   });
 
   @override
@@ -52,6 +56,8 @@ class _SubscriptionPageState extends State<SubscriptionPage>
       SubscriptionEvent.viewed(
         source: widget.source,
         paywallType: PaywallType.regular,
+        tabName: widget.tabName,
+        featureName: widget.featureName,
       ),
     );
   }

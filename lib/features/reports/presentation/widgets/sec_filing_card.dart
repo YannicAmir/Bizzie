@@ -295,14 +295,14 @@ class _SummarizeButton extends StatelessWidget {
         );
 
         return _ActionButton(
-          icon: Image.asset(
-            AppAssets.sparkleIcon,
-            width: 16,
-            height: 16,
-            color: theme.colorScheme.primary,
-          ),
-          prefixIcon: !isSubscribed
-              ? SvgPicture.asset(
+          icon: isSubscribed
+              ? Image.asset(
+                  AppAssets.sparkleIcon,
+                  width: 16,
+                  height: 16,
+                  color: theme.colorScheme.primary,
+                )
+              : SvgPicture.asset(
                   AppAssets.authLockIcon,
                   width: 15,
                   height: 15,
@@ -310,8 +310,7 @@ class _SummarizeButton extends StatelessWidget {
                     theme.colorScheme.primary,
                     BlendMode.srcIn,
                   ),
-                )
-              : null,
+                ),
           label: getIt<IConfigService>().aiSummaryButtonLabel,
           onTap: () {
             if (!isSubscribed) {
@@ -405,13 +404,11 @@ class _AnalysisInProgressModal extends StatelessWidget {
 
 class _ActionButton extends StatelessWidget {
   final Widget icon;
-  final Widget? prefixIcon;
   final String label;
   final VoidCallback onTap;
 
   const _ActionButton({
     required this.icon,
-    this.prefixIcon,
     required this.label,
     required this.onTap,
   });
@@ -423,7 +420,6 @@ class _ActionButton extends StatelessWidget {
       onTap: onTap,
       child: Row(
         children: [
-          if (prefixIcon != null) ...[prefixIcon!, const SizedBox(width: 4)],
           icon,
           const SizedBox(width: 8),
           Text(

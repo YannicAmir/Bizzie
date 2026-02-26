@@ -21,17 +21,10 @@ class CompanyFreeCashFlowBloc
 
   CompanyFreeCashFlowBloc(this._getFreeCashFlowStats, this._configService)
     : super(const CompanyFreeCashFlowState.initial()) {
-    on<CompanyFreeCashFlowEvent>(_onEvent, transformer: droppable());
-  }
-
-  Future<void> _onEvent(
-    CompanyFreeCashFlowEvent event,
-    Emitter<CompanyFreeCashFlowState> emit,
-  ) async {
-    _logger.info('Handling event: $event');
-    await event.map(
-      loadRequested: (e) async => _onLoadRequested(e, emit),
-      stalenessCheckRequested: (e) async => _onStalenessCheckRequested(e),
+    on<LoadRequested>(_onLoadRequested, transformer: droppable());
+    on<StalenessCheckRequested>(
+      _onStalenessCheckRequested,
+      transformer: sequential(),
     );
   }
 
@@ -39,10 +32,19 @@ class CompanyFreeCashFlowBloc
     LoadRequested event,
     Emitter<CompanyFreeCashFlowState> emit,
   ) async {
-    if (!event.forceRefresh &&
-        state.maybeMap(loaded: (_) => true, orElse: () => false)) {
+    final isAlreadyLoaded = state.maybeMap(
+      loaded: (s) => true,
+      orElse: () => false,
+    );
+
+    final isRightTicker = state.maybeMap(
+      loaded: (s) => s.ticker == event.ticker,
+      orElse: () => false,
+    );
+
+    if (isAlreadyLoaded && isRightTicker && !event.forceRefresh) {
       _logger.info(
-        'Skip loading Free Cash Flow: already loaded and no force refresh',
+        'Company Free Cash Flow already loaded for ${event.ticker} and is the correct ticker. Skipping load (Silent Refresh).',
       );
       return;
     }
@@ -50,7 +52,9 @@ class CompanyFreeCashFlowBloc
     _logger.info(
       'Loading Free Cash Flow stats for ${event.ticker} (force=${event.forceRefresh})',
     );
-    emit(const CompanyFreeCashFlowState.loading());
+    if (!isAlreadyLoaded || !isRightTicker || event.forceRefresh) {
+      emit(const CompanyFreeCashFlowState.loading());
+    }
 
     final result = await _getFreeCashFlowStats(event.ticker);
 
@@ -59,10 +63,14 @@ class CompanyFreeCashFlowBloc
         _logger.severe('Failed to load Free Cash Flow stats', failure);
         emit(CompanyFreeCashFlowState.failure(failure));
       },
-      (data) {
-        _logger.info('Successfully loaded Free Cash Flow stats');
+      (tuple) {
+        final (data, origin) = tuple;
+        _logger.info(
+          'Successfully loaded Free Cash Flow stats (origin: $origin)',
+        );
         emit(
           CompanyFreeCashFlowState.loaded(
+            ticker: event.ticker,
             fcfStats: data,
             annualChartData: _toChartData(data.annualFcf, isAnnual: true),
             quarterlyChartData: _toChartData(
@@ -70,6 +78,7 @@ class CompanyFreeCashFlowBloc
               isAnnual: false,
             ),
             historyLimit: _configService.freePlanHistoryCount,
+            dataOrigin: origin,
             lastUpdated: DateTime.now(),
           ),
         );
@@ -77,7 +86,10 @@ class CompanyFreeCashFlowBloc
     );
   }
 
-  Future<void> _onStalenessCheckRequested(StalenessCheckRequested event) async {
+  Future<void> _onStalenessCheckRequested(
+    StalenessCheckRequested event,
+    Emitter<CompanyFreeCashFlowState> emit,
+  ) async {
     _logger.info('Staleness check requested for ${event.ticker}');
     state.mapOrNull(
       loaded: (loadedState) {

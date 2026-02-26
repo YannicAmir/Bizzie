@@ -1,3 +1,4 @@
+import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
 import 'package:bizzie/core/error/failures.dart';
@@ -18,21 +19,23 @@ class RoeRepositoryImpl implements IRoeRepository {
   RoeRepositoryImpl(this._remoteDataSource, this._localDataSource);
 
   @override
-  Future<Either<Failure, List<Roe>>> getRoeMetrics(
+  Future<Either<Failure, (List<Roe>, CompanyProfileDataOrigin)>> getRoeMetrics(
     String ticker, {
     String period = 'annual',
   }) async {
     try {
-      final local = await _localDataSource.getCachedKeyMetrics(
+      final res = await _localDataSource.syncKeyMetrics(
         ticker,
         isTtm: period == _Consts.ttm,
+        remoteFetcher: () => _remoteDataSource.getKeyMetrics(ticker),
       );
-      if (local != null) return right(local.map((d) => d.toRoe()).toList());
 
-      final remote = await _remoteDataSource.getKeyMetrics(ticker);
-
-      await _localDataSource.cacheKeyMetrics(ticker, remote, isTtm: false);
-      return right(remote.map((d) => d.toRoe()).toList());
+      return res.map(
+        success: (s) =>
+            right((s.data.map((d) => d.toRoe()).toList(), s.origin)),
+        failure: (f) => left(f.failure),
+        notFound: (_) => right((const <Roe>[], CompanyProfileDataOrigin.cache)),
+      );
     } catch (e) {
       return left(Failure.server(e.toString()));
     }

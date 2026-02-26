@@ -1,3 +1,4 @@
+import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/features/company_profile/eps/domain/models/eps_stats.dart';
 import 'package:bizzie/features/company_profile/shared/domain/models/financial_data_point.dart';
@@ -40,7 +41,6 @@ void main() {
   );
 
   test('initialState_isCorrect', () {
-    // assert
     expect(bloc.state, const CompanyEpsState.initial());
   });
 
@@ -48,29 +48,31 @@ void main() {
     blocTest<CompanyEpsBloc, CompanyEpsState>(
       'loadRequested_success_emitsLoadingAndLoaded',
       build: () {
-        // arrange
-        when(
-          () => mockGetEpsStatsUseCase(tTicker),
-        ).thenAnswer((_) async => const Right(tEpsStats));
+        // Arrange
+        when(() => mockGetEpsStatsUseCase(tTicker)).thenAnswer(
+          (_) async => const Right((tEpsStats, CompanyProfileDataOrigin.api)),
+        );
         return bloc;
       },
-      act: (bloc) {
-        // act
-        bloc.add(const CompanyEpsEvent.loadRequested(tTicker));
-      },
-      expect: () {
-        // assert
-        return [
-          const CompanyEpsState.loading(),
-          isA<CompanyEpsState>().having(
-            (s) => s.maybeMap(loaded: (l) => l.epsStats, orElse: () => null),
-            'epsStats',
-            tEpsStats,
-          ),
-        ];
-      },
+      // Act
+      act: (bloc) => bloc.add(const CompanyEpsEvent.loadRequested(tTicker)),
+      // Assert
+      expect: () => [
+        const CompanyEpsState.loading(),
+        isA<CompanyEpsState>()
+            .having(
+              (s) => s.maybeMap(loaded: (l) => l.ticker, orElse: () => null),
+              'ticker',
+              tTicker,
+            )
+            .having(
+              (s) =>
+                  s.maybeMap(loaded: (l) => l.dataOrigin, orElse: () => null),
+              'dataOrigin',
+              CompanyProfileDataOrigin.api,
+            ),
+      ],
       verify: (_) {
-        // assert
         verify(() => mockGetEpsStatsUseCase(tTicker)).called(1);
       },
     );
@@ -78,176 +80,196 @@ void main() {
     blocTest<CompanyEpsBloc, CompanyEpsState>(
       'loadRequested_failure_emitsLoadingAndFailure',
       build: () {
-        // arrange
+        // Arrange
         const failure = Failure.server('Server error');
         when(
           () => mockGetEpsStatsUseCase(tTicker),
         ).thenAnswer((_) async => const Left(failure));
         return bloc;
       },
-      act: (bloc) {
-        // act
-        bloc.add(const CompanyEpsEvent.loadRequested(tTicker));
-      },
-      expect: () {
-        // assert
-        return [
-          const CompanyEpsState.loading(),
-          const CompanyEpsState.failure(Failure.server('Server error')),
-        ];
-      },
+      // Act
+      act: (bloc) => bloc.add(const CompanyEpsEvent.loadRequested(tTicker)),
+      // Assert
+      expect: () => [
+        const CompanyEpsState.loading(),
+        const CompanyEpsState.failure(Failure.server('Server error')),
+      ],
     );
 
     blocTest<CompanyEpsBloc, CompanyEpsState>(
       'loadRequested_alreadyLoaded_skipsLoading',
-      build: () {
-        // arrange
-        return bloc;
-      },
+      // Arrange
+      build: () => bloc,
       seed: () => const CompanyEpsState.loaded(
+        ticker: tTicker,
         epsStats: tEpsStats,
         annualChartData: [],
         quarterlyChartData: [],
         historyLimit: 7,
+        dataOrigin: CompanyProfileDataOrigin.api,
       ),
-      act: (bloc) {
-        // act
-        bloc.add(const CompanyEpsEvent.loadRequested(tTicker));
-      },
-      expect: () {
-        // assert
-        return [];
-      },
+      // Act
+      act: (bloc) => bloc.add(const CompanyEpsEvent.loadRequested(tTicker)),
+      // Assert
+      expect: () => [],
       verify: (_) {
-        // assert
         verifyNever(() => mockGetEpsStatsUseCase(any()));
       },
     );
 
     blocTest<CompanyEpsBloc, CompanyEpsState>(
-      'loadRequested_alreadyLoadedWithForceRefresh_emitsLoadingAndLoaded',
+      'loadRequested_differentTicker_reloadsData',
       build: () {
-        // arrange
-        when(
-          () => mockGetEpsStatsUseCase(tTicker),
-        ).thenAnswer((_) async => const Right(tEpsStats));
-        return bloc;
-      },
-      seed: () => const CompanyEpsState.loaded(
-        epsStats: tEpsStats,
-        annualChartData: [],
-        quarterlyChartData: [],
-        historyLimit: 7,
-      ),
-      act: (bloc) {
-        // act
-        bloc.add(
-          const CompanyEpsEvent.loadRequested(tTicker, forceRefresh: true),
+        // Arrange
+        when(() => mockGetEpsStatsUseCase('MSFT')).thenAnswer(
+          (_) async => const Right((tEpsStats, CompanyProfileDataOrigin.api)),
         );
-      },
-      expect: () {
-        // assert
-        return [
-          const CompanyEpsState.loading(),
-          isA<CompanyEpsState>().having(
-            (s) => s.maybeMap(loaded: (l) => l.epsStats, orElse: () => null),
-            'epsStats',
-            tEpsStats,
-          ),
-        ];
-      },
-      verify: (_) {
-        // assert
-        verify(() => mockGetEpsStatsUseCase(tTicker)).called(1);
-      },
-    );
-  });
-
-  group('CompanyEpsBloc - stalenessCheckRequested', () {
-    blocTest<CompanyEpsBloc, CompanyEpsState>(
-      'stalenessCheckRequested_initialState_triggersLoadRequested',
-      build: () {
-        // arrange
-        when(
-          () => mockGetEpsStatsUseCase(tTicker),
-        ).thenAnswer((_) async => const Right(tEpsStats));
         return bloc;
       },
-      act: (bloc) {
-        // act
-        bloc.add(const CompanyEpsEvent.stalenessCheckRequested(tTicker));
-      },
-      expect: () {
-        // assert
-        return [
-          const CompanyEpsState.loading(),
-          isA<CompanyEpsState>().having(
-            (s) => s.maybeMap(loaded: (l) => l.epsStats, orElse: () => null),
-            'epsStats',
-            tEpsStats,
-          ),
-        ];
-      },
-    );
-
-    blocTest<CompanyEpsBloc, CompanyEpsState>(
-      'stalenessCheckRequested_fresh_doesNotTriggerLoad',
-      build: () {
-        // arrange
-        return bloc;
-      },
-      seed: () => CompanyEpsState.loaded(
+      seed: () => const CompanyEpsState.loaded(
+        ticker: 'AAPL',
         epsStats: tEpsStats,
-        annualChartData: const [],
-        quarterlyChartData: const [],
+        annualChartData: [],
+        quarterlyChartData: [],
         historyLimit: 7,
-        lastUpdated: DateTime.now(),
+        dataOrigin: CompanyProfileDataOrigin.api,
       ),
-      act: (bloc) {
-        // act
-        bloc.add(const CompanyEpsEvent.stalenessCheckRequested(tTicker));
-      },
-      expect: () {
-        // assert
-        return [];
-      },
-      verify: (_) {
-        // assert
-        verifyNever(() => mockGetEpsStatsUseCase(any()));
-      },
+      // Act
+      act: (bloc) => bloc.add(const CompanyEpsEvent.loadRequested('MSFT')),
+      // Assert
+      expect: () => [
+        const CompanyEpsState.loading(),
+        isA<CompanyEpsState>().having(
+          (s) => s.maybeMap(loaded: (l) => l.ticker, orElse: () => null),
+          'ticker',
+          'MSFT',
+        ),
+      ],
     );
 
     blocTest<CompanyEpsBloc, CompanyEpsState>(
-      'stalenessCheckRequested_stale_triggersLoadRequested',
+      'loadRequested_alreadyLoadedWithForceRefresh_emitsLoadedOnly',
       build: () {
-        // arrange
-        when(
-          () => mockGetEpsStatsUseCase(tTicker),
-        ).thenAnswer((_) async => const Right(tEpsStats));
+        // Arrange
+        when(() => mockGetEpsStatsUseCase(tTicker)).thenAnswer(
+          (_) async => const Right((tEpsStats, CompanyProfileDataOrigin.api)),
+        );
         return bloc;
       },
-      seed: () => CompanyEpsState.loaded(
+      seed: () => const CompanyEpsState.loaded(
+        ticker: tTicker,
         epsStats: tEpsStats,
-        annualChartData: const [],
-        quarterlyChartData: const [],
+        annualChartData: [],
+        quarterlyChartData: [],
         historyLimit: 7,
-        lastUpdated: DateTime.now().subtract(const Duration(hours: 25)),
+        dataOrigin: CompanyProfileDataOrigin.api,
       ),
-      act: (bloc) {
-        // act
-        bloc.add(const CompanyEpsEvent.stalenessCheckRequested(tTicker));
-      },
-      expect: () {
-        // assert
-        return [
-          const CompanyEpsState.loading(),
-          isA<CompanyEpsState>().having(
-            (s) => s.maybeMap(loaded: (l) => l.epsStats, orElse: () => null),
-            'epsStats',
-            tEpsStats,
-          ),
-        ];
-      },
+      // Act
+      act: (bloc) => bloc.add(
+        const CompanyEpsEvent.loadRequested(tTicker, forceRefresh: true),
+      ),
+      // Assert
+      expect: () => [
+        const CompanyEpsState.loading(),
+        isA<CompanyEpsState>().having(
+          (s) => s.maybeMap(loaded: (l) => l.ticker, orElse: () => null),
+          'ticker',
+          tTicker,
+        ),
+      ],
     );
+    group('CompanyEpsBloc - stalenessCheckRequested', () {
+      blocTest<CompanyEpsBloc, CompanyEpsState>(
+        'stalenessCheckRequested_initialState_triggersLoadRequested',
+        build: () {
+          // Arrange
+          when(() => mockGetEpsStatsUseCase(tTicker)).thenAnswer(
+            (_) async => const Right((tEpsStats, CompanyProfileDataOrigin.api)),
+          );
+          return bloc;
+        },
+        // Act
+        act: (bloc) =>
+            bloc.add(const CompanyEpsEvent.stalenessCheckRequested(tTicker)),
+        // Assert
+        expect: () => [
+          const CompanyEpsState.loading(),
+          isA<CompanyEpsState>()
+              .having(
+                (s) => s.maybeMap(loaded: (l) => l.ticker, orElse: () => null),
+                'ticker',
+                tTicker,
+              )
+              .having(
+                (s) =>
+                    s.maybeMap(loaded: (l) => l.dataOrigin, orElse: () => null),
+                'dataOrigin',
+                CompanyProfileDataOrigin.api,
+              ),
+        ],
+      );
+
+      blocTest<CompanyEpsBloc, CompanyEpsState>(
+        'stalenessCheckRequested_fresh_doesNotTriggerLoad',
+        // Arrange
+        build: () => bloc,
+        seed: () => CompanyEpsState.loaded(
+          ticker: tTicker,
+          epsStats: tEpsStats,
+          annualChartData: const [],
+          quarterlyChartData: const [],
+          historyLimit: 7,
+          dataOrigin: CompanyProfileDataOrigin.api,
+          lastUpdated: DateTime.now(),
+        ),
+        // Act
+        act: (bloc) =>
+            bloc.add(const CompanyEpsEvent.stalenessCheckRequested(tTicker)),
+        // Assert
+        expect: () => [],
+        verify: (_) {
+          verifyNever(() => mockGetEpsStatsUseCase(any()));
+        },
+      );
+
+      blocTest<CompanyEpsBloc, CompanyEpsState>(
+        'stalenessCheckRequested_stale_triggersLoadRequested',
+        build: () {
+          // Arrange
+          when(() => mockGetEpsStatsUseCase(tTicker)).thenAnswer(
+            (_) async => const Right((tEpsStats, CompanyProfileDataOrigin.api)),
+          );
+          return bloc;
+        },
+        seed: () => CompanyEpsState.loaded(
+          ticker: tTicker,
+          epsStats: tEpsStats,
+          annualChartData: const [],
+          quarterlyChartData: const [],
+          historyLimit: 7,
+          dataOrigin: CompanyProfileDataOrigin.api,
+          lastUpdated: DateTime.now().subtract(const Duration(hours: 25)),
+        ),
+        // Act
+        act: (bloc) =>
+            bloc.add(const CompanyEpsEvent.stalenessCheckRequested(tTicker)),
+        // Assert
+        expect: () => [
+          const CompanyEpsState.loading(),
+          isA<CompanyEpsState>()
+              .having(
+                (s) => s.maybeMap(loaded: (l) => l.ticker, orElse: () => null),
+                'ticker',
+                tTicker,
+              )
+              .having(
+                (s) =>
+                    s.maybeMap(loaded: (l) => l.dataOrigin, orElse: () => null),
+                'dataOrigin',
+                CompanyProfileDataOrigin.api,
+              ),
+        ],
+      );
+    });
   });
 }

@@ -20,20 +20,25 @@ class PriceRepositoryImpl implements IPriceRepository {
   Future<Either<Failure, (PriceHistory, CompanyProfileDataOrigin)>>
   getPriceHistory(String ticker) async {
     try {
-      CompanyProfileDataOrigin origin = CompanyProfileDataOrigin.cache;
-      var local = await _localDataSource.getCachedPrices(ticker);
-      if (local == null) {
-        local = await _remoteDataSource.getHistoricalPrice(ticker);
-        await _localDataSource.cachePrices(ticker, local);
-        origin = CompanyProfileDataOrigin.api;
-      }
-      return right((
-        PriceHistory(
-          symbol: ticker,
-          history: local.map((e) => e.toDomain()).toList(),
-        ),
-        origin,
-      ));
+      final res = await _localDataSource.syncPrices(
+        ticker,
+        remoteFetcher: () => _remoteDataSource.getHistoricalPrice(ticker),
+      );
+
+      return res.map(
+        success: (s) => right((
+          PriceHistory(
+            symbol: ticker,
+            history: s.data.map((e) => e.toDomain()).toList(),
+          ),
+          s.origin,
+        )),
+        failure: (f) => left(f.failure),
+        notFound: (_) => right((
+          PriceHistory(symbol: ticker, history: const []),
+          CompanyProfileDataOrigin.cache,
+        )),
+      );
     } catch (e) {
       return left(Failure.server(e.toString()));
     }
@@ -43,21 +48,20 @@ class PriceRepositoryImpl implements IPriceRepository {
   Future<Either<Failure, (List<HistoricalPriceEod>, CompanyProfileDataOrigin)>>
   getHistoricalEodPrices(String ticker) async {
     try {
-      final local = await _localDataSource.getCachedHistoricalEodPrices(ticker);
-      if (local != null) {
-        return right((
-          local.map((e) => e.toDomain()).toList(),
+      final res = await _localDataSource.syncHistoricalEodPrices(
+        ticker,
+        remoteFetcher: () => _remoteDataSource.getHistoricalEodPrices(ticker),
+      );
+
+      return res.map(
+        success: (s) =>
+            right((s.data.map((e) => e.toDomain()).toList(), s.origin)),
+        failure: (f) => left(f.failure),
+        notFound: (_) => right((
+          const <HistoricalPriceEod>[],
           CompanyProfileDataOrigin.cache,
-        ));
-      }
-
-      final dtos = await _remoteDataSource.getHistoricalEodPrices(ticker);
-      await _localDataSource.cacheHistoricalEodPrices(ticker, dtos);
-
-      return right((
-        dtos.map((e) => e.toDomain()).toList(),
-        CompanyProfileDataOrigin.api,
-      ));
+        )),
+      );
     } catch (e) {
       return left(Failure.server(e.toString()));
     }

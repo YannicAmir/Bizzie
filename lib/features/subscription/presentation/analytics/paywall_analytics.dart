@@ -4,6 +4,7 @@ import 'package:bizzie/features/subscription/domain/enums/paywall_type.dart';
 import 'package:bizzie/features/subscription/domain/enums/subscription_period_type.dart';
 import 'package:bizzie/features/subscription/domain/models/analytics_purchase_params.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
+import 'package:bizzie/shared/utils/analytics_utils.dart';
 import 'package:injectable/injectable.dart';
 
 final _logger = BizzieLogger('PaywallAnalytics');
@@ -40,6 +41,8 @@ class PaywallAnalytics {
   static const _kParamPeriodType = 'period_type';
   static const _kParamProductId = 'product_id';
   static const _kParamSubscriptionType = 'subscription_type';
+  static const _kParamTabName = 'tab_name';
+  static const _kParamFeatureName = 'feature_name';
 
   // User Properties
   static const _kPropLastPaywallSource = 'last_paywall_source';
@@ -67,11 +70,22 @@ class PaywallAnalytics {
   Future<void> logTriggered({
     required PaywallSource source,
     required PaywallType paywallType,
+    String? tabName,
+    String? featureName,
   }) async {
-    await _logEvent(_kEventTriggered, {
+    final Map<String, Object> params = {
       _kParamSource: source.name,
       _kParamPaywallType: paywallType.name,
-    });
+    };
+
+    if (tabName != null && tabName.isNotEmpty) {
+      params[_kParamTabName] = AnalyticsUtils.truncate(tabName);
+    }
+    if (featureName != null && featureName.isNotEmpty) {
+      params[_kParamFeatureName] = AnalyticsUtils.truncate(featureName);
+    }
+
+    await _logEvent(_kEventTriggered, params);
   }
 
   /// Logs when the subscription gift modal is viewed.

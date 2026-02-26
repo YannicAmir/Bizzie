@@ -66,6 +66,7 @@ dependencies:
   freerasp: ^7.3.0
   firebase_analytics: ^12.1.2
   nanoid: ^1.0.0
+  timezone: ^0.10.1
 
 dev_dependencies:
   flutter_test:

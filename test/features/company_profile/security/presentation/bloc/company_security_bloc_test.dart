@@ -135,7 +135,10 @@ void main() {
 
     blocTest<CompanySecurityBloc, CompanySecurityState>(
       'loadRequested_alreadyLoaded_skipsLoading',
-      build: () => bloc,
+      build: () {
+        // arrange
+        return bloc;
+      },
       seed: () => CompanySecurityState.loaded(
         tSecurityDetails,
         analyticsState: tAnalyticsState,
@@ -174,7 +177,6 @@ void main() {
       expect: () {
         // assert
         return [
-          const CompanySecurityState.loading(),
           isA<CompanySecurityState>()
               .having(
                 (s) => s.maybeMap(
@@ -338,7 +340,6 @@ void main() {
       expect: () {
         // assert
         return [
-          const CompanySecurityState.loading(),
           isA<CompanySecurityState>()
               .having(
                 (s) => s.maybeMap(
@@ -365,27 +366,7 @@ void main() {
     blocTest<CompanySecurityBloc, CompanySecurityState>(
       'tabHidden_callsLogSummaryWithFinalTrue',
       build: () {
-        when(
-          () =>
-              mockTracker.logViewSummary(any(), isFinal: any(named: 'isFinal')),
-        ).thenAnswer((_) async {});
-        return bloc;
-      },
-      seed: () => CompanySecurityState.loaded(
-        tSecurityDetails,
-        analyticsState: tAnalyticsState,
-      ),
-      act: (bloc) => bloc.add(const CompanySecurityEvent.tabHidden()),
-      verify: (_) {
-        verify(
-          () => mockTracker.logViewSummary(any(), isFinal: true),
-        ).called(1);
-      },
-    );
-
-    blocTest<CompanySecurityBloc, CompanySecurityState>(
-      'appBackgrounded_callsLogSummaryWithFinalFalse',
-      build: () {
+        // arrange
         when(
           () =>
               mockTracker.logViewSummary(any(), isFinal: any(named: 'isFinal')),
@@ -397,10 +378,38 @@ void main() {
         analyticsState: tAnalyticsState,
       ),
       act: (bloc) {
+        // act
+        bloc.add(const CompanySecurityEvent.tabHidden());
+      },
+      verify: (_) {
+        // assert
+        verify(
+          () => mockTracker.logViewSummary(any(), isFinal: true),
+        ).called(1);
+      },
+    );
+
+    blocTest<CompanySecurityBloc, CompanySecurityState>(
+      'appBackgrounded_callsLogSummaryWithFinalFalse',
+      build: () {
+        // arrange
+        when(
+          () =>
+              mockTracker.logViewSummary(any(), isFinal: any(named: 'isFinal')),
+        ).thenAnswer((_) async {});
+        return bloc;
+      },
+      seed: () => CompanySecurityState.loaded(
+        tSecurityDetails,
+        analyticsState: tAnalyticsState,
+      ),
+      act: (bloc) {
+        // act
         bloc.add(const CompanySecurityEvent.tabShown());
         bloc.add(const CompanySecurityEvent.appBackgrounded());
       },
       verify: (_) {
+        // assert
         verify(
           () => mockTracker.logViewSummary(any(), isFinal: false),
         ).called(1);

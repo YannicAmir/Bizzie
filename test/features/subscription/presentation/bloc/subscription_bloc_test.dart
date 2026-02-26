@@ -154,6 +154,8 @@ void main() {
       () => mockAnalytics.logTriggered(
         source: any(named: 'source'),
         paywallType: any<PaywallType>(named: 'paywallType'),
+        tabName: any(named: 'tabName'),
+        featureName: any(named: 'featureName'),
       ),
     ).thenAnswer((_) async => {});
     when(
@@ -352,6 +354,8 @@ void main() {
           const SubscriptionEvent.viewed(
             source: PaywallSource.onboarding,
             paywallType: PaywallType.regular,
+            tabName: 'business_tab',
+            featureName: '10_k_filings',
           ),
         ),
         // assert
@@ -367,6 +371,8 @@ void main() {
             () => mockAnalytics.logTriggered(
               source: PaywallSource.onboarding,
               paywallType: PaywallType.regular,
+              tabName: 'business_tab',
+              featureName: '10_k_filings',
             ),
           ).called(1);
         },

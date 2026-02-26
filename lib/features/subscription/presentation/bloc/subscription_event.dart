@@ -35,6 +35,8 @@ abstract class SubscriptionEvent with _$SubscriptionEvent {
   const factory SubscriptionEvent.viewed({
     required PaywallSource source,
     required PaywallType paywallType,
+    String? tabName,
+    String? featureName,
   }) = SubscriptionViewed;
   const factory SubscriptionEvent.giftViewed({required PaywallSource source}) =
       SubscriptionGiftViewed;

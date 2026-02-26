@@ -125,10 +125,10 @@ void main() {
     test(
       'notificationService_initialize_setsUpHandlersAndSyncsToken',
       () async {
-        // act
+        // ACT
         await service.initialize();
 
-        // assert
+        // ASSERT
         verify(
           () => mockLocalDataSource.init(
             onNotificationTap: any(named: 'onNotificationTap'),
@@ -148,7 +148,7 @@ void main() {
     test(
       'notificationService_initialize_triggersLocalNotificationOnForegroundMessage',
       () async {
-        // arrange
+        // ARRANGE
         final controller = StreamController<NotificationMessage>();
         when(
           () => mockRepository.onMessage,
@@ -164,7 +164,7 @@ void main() {
 
         await service.initialize();
 
-        // act
+        // ACT
         controller.add(
           const NotificationMessage(
             title: 'T',
@@ -175,7 +175,7 @@ void main() {
         );
         await Future.delayed(Duration.zero);
 
-        // assert
+        // ASSERT
         verify(
           () => mockLocalDataSource.showNotification(
             id: any(named: 'id'),
@@ -194,7 +194,7 @@ void main() {
     test(
       'notificationService_syncFcmToken_differentToken_updatesBackendAndCache',
       () async {
-        // arrange
+        // ARRANGE
         when(() => mockLocalStorage.getString(any())).thenReturn('old_token');
         when(
           () => mockUserRepository.updateFcmToken(any(), any()),
@@ -203,10 +203,10 @@ void main() {
           () => mockLocalStorage.setString(any(), any()),
         ).thenAnswer((_) async {});
 
-        // act
+        // ACT
         await service.syncFcmToken();
 
-        // assert
+        // ASSERT
         verify(
           () => mockLocalStorage.setString('last_synced_fcm_token', tToken),
         ).called(1);
@@ -214,16 +214,16 @@ void main() {
     );
 
     test('notificationService_syncFcmToken_failure_logsSyncFailure', () async {
-      // arrange
+      // ARRANGE
       when(() => mockLocalStorage.getString(any())).thenReturn('old_token');
       when(
         () => mockUserRepository.updateFcmToken(any(), any()),
       ).thenAnswer((_) async => Left(Failure.server('Sync Failed')));
 
-      // act
+      // ACT
       await service.syncFcmToken();
 
-      // assert
+      // ASSERT
       verify(
         () => mockTracker.logSyncFailure(message: 'Sync Failed'),
       ).called(1);
@@ -232,7 +232,7 @@ void main() {
     test(
       'notificationService_syncFcmToken_forced_updatesRegardlessOfCache',
       () async {
-        // arrange
+        // ARRANGE
         when(() => mockLocalStorage.getString(any())).thenReturn(tToken);
         when(
           () => mockUserRepository.updateFcmToken(any(), any()),
@@ -241,10 +241,10 @@ void main() {
           () => mockLocalStorage.setString(any(), any()),
         ).thenAnswer((_) async {});
 
-        // act
+        // ACT
         await service.syncFcmToken(force: true);
 
-        // assert
+        // ASSERT
         verify(
           () => mockUserRepository.updateFcmToken(any(), tToken),
         ).called(1);
@@ -256,7 +256,7 @@ void main() {
     test(
       'notificationService_isSystemAuthorized_authorized_returnsTrue',
       () async {
-        // arrange
+        // ARRANGE
         final settings = MockNotificationSettings();
         when(
           () => settings.authorizationStatus,
@@ -265,10 +265,10 @@ void main() {
           () => mockFirebaseMessaging.getNotificationSettings(),
         ).thenAnswer((_) async => settings);
 
-        // act
+        // ACT
         final result = await service.isSystemAuthorized();
 
-        // assert
+        // ASSERT
         expect(result, isTrue);
       },
     );
@@ -278,17 +278,17 @@ void main() {
     test(
       'notificationService_getInitialRoute_parsedMessage_returnsRouteAndLogsAnalytics',
       () async {
-        // arrange
+        // ARRANGE
         final message = MockRemoteMessage();
         when(() => message.data).thenReturn({'type': 'subscription_drip'});
         when(
           () => mockFirebaseMessaging.getInitialMessage(),
         ).thenAnswer((_) async => message);
 
-        // act
+        // ACT
         final result = await service.getInitialRoute();
 
-        // assert
+        // ASSERT
         expect(
           result?.path,
           '${AppRoutes.discountedPaywall}?source=notification',
@@ -308,7 +308,7 @@ void main() {
     test(
       'notificationService_onNotificationTap_emitsRouteFromPayloadAndLogsAnalytics',
       () async {
-        // arrange
+        // ARRANGE
         void Function(String?)? tapHandler;
         when(
           () => mockLocalDataSource.init(
@@ -322,7 +322,7 @@ void main() {
 
         await service.initialize();
 
-        // act & assert
+        // ACT & assert
         final expectEmit = expectLater(
           service.routeStream,
           emits(const NotificationRoute(AppRoutes.reports)),
@@ -346,7 +346,7 @@ void main() {
     test(
       'notificationService_onNotificationTap_withTicker_extractsTickerAndLogsAnalytics',
       () async {
-        // arrange
+        // ARRANGE
         void Function(String?)? tapHandler;
         when(
           () => mockLocalDataSource.init(
@@ -360,11 +360,11 @@ void main() {
 
         await service.initialize();
 
-        // act
+        // ACT
         tapHandler?.call('{type: sec_filing, ticker: TSLA}');
         await Future.delayed(Duration.zero);
 
-        // assert
+        // ASSERT
         verify(
           () => mockTracker.logNotificationOpened(
             notificationType: 'sec_filing',

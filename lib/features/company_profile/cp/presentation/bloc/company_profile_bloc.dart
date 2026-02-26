@@ -52,6 +52,14 @@ class CompanyProfileBloc
   }
 
   void _onOpened(_Opened event, Emitter<CompanyProfileState> emit) {
+    final currentTicker = state.mapOrNull(active: (s) => s.ticker);
+    if (currentTicker == event.ticker) {
+      _logger.info(
+        'Session already active for ${event.ticker}. Skipping _onOpened.',
+      );
+      return;
+    }
+
     _sessionStopwatch.reset();
     _sessionStopwatch.start();
 
@@ -63,6 +71,7 @@ class CompanyProfileBloc
         industry: event.industry,
         sector: event.sector,
         viewedTabs: {event.initialTabName},
+        activeTabName: event.initialTabName,
         accumulatedSeconds: 0,
         lastActiveStartTime: DateTime.now(),
         initiallyWatchlisted: event.isWatchlisted,
@@ -80,7 +89,7 @@ class CompanyProfileBloc
     state.mapOrNull(
       active: (s) {
         final newTabs = Set<String>.from(s.viewedTabs)..add(event.tabName);
-        emit(s.copyWith(viewedTabs: newTabs));
+        emit(s.copyWith(viewedTabs: newTabs, activeTabName: event.tabName));
       },
     );
   }

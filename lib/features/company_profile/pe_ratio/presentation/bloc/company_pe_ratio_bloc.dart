@@ -4,6 +4,7 @@ import 'package:injectable/injectable.dart';
 import 'package:intl/intl.dart';
 
 import 'package:bizzie/core/interfaces/i_config_service.dart';
+import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:bizzie/features/company_profile/shared/domain/models/chart_data_point.dart';
 import 'package:bizzie/features/company_profile/shared/domain/models/financial_data_point.dart';
@@ -22,17 +23,10 @@ class CompanyPeRatioBloc
 
   CompanyPeRatioBloc(this._getPeRatio, this._configService)
     : super(const CompanyPeRatioState.initial()) {
-    on<CompanyPeRatioEvent>(_onEvent, transformer: droppable());
-  }
-
-  Future<void> _onEvent(
-    CompanyPeRatioEvent event,
-    Emitter<CompanyPeRatioState> emit,
-  ) async {
-    _logger.info('Handling event: $event');
-    await event.map(
-      loadRequested: (e) async => _onLoadRequested(e, emit),
-      stalenessCheckRequested: (e) async => _onStalenessCheckRequested(e),
+    on<LoadRequested>(_onLoadRequested, transformer: droppable());
+    on<StalenessCheckRequested>(
+      _onStalenessCheckRequested,
+      transformer: sequential(),
     );
   }
 
@@ -40,9 +34,19 @@ class CompanyPeRatioBloc
     LoadRequested event,
     Emitter<CompanyPeRatioState> emit,
   ) async {
-    if (_shouldSkipLoad(event.forceRefresh)) {
+    final isAlreadyLoaded = state.maybeMap(
+      loaded: (s) => true,
+      orElse: () => false,
+    );
+
+    final isRightTicker = state.maybeMap(
+      loaded: (s) => s.ticker == event.ticker,
+      orElse: () => false,
+    );
+
+    if (isAlreadyLoaded && isRightTicker && !event.forceRefresh) {
       _logger.info(
-        'Skip loading PE Ratio: already loaded and no force refresh',
+        'Company PE Ratio already loaded for ${event.ticker} and is the correct ticker. Skipping load (Silent Refresh).',
       );
       return;
     }
@@ -50,7 +54,9 @@ class CompanyPeRatioBloc
     _logger.info(
       'Loading PE Ratio stats for ${event.ticker} (force=${event.forceRefresh})',
     );
-    emit(const CompanyPeRatioState.loading());
+    if (!isAlreadyLoaded || !isRightTicker || event.forceRefresh) {
+      emit(const CompanyPeRatioState.loading());
+    }
 
     final result = await _getPeRatio(event.ticker);
 
@@ -59,29 +65,28 @@ class CompanyPeRatioBloc
         _logger.severe('Failed to load PE Ratio stats', failure);
         emit(CompanyPeRatioState.failure(failure));
       },
-      (ratios) {
+      (tuple) {
+        final ratios = tuple.$1;
+        final origin = tuple.$2;
         _logger.info(
-          'Successfully loaded PE Ratio stats: ${ratios.length} points',
+          'Successfully loaded PE Ratio stats: ${ratios.length} points, origin=$origin',
         );
-        _emitLoadedState(ratios, emit);
+        _emitLoadedState(event.ticker, ratios, origin, emit);
       },
     );
   }
 
-  bool _shouldSkipLoad(bool forceRefresh) {
-    return !forceRefresh &&
-        state.maybeMap(loaded: (_) => true, orElse: () => false);
-  }
-
   void _emitLoadedState(
+    String ticker,
     List<dynamic> ratios,
+    CompanyProfileDataOrigin origin,
     Emitter<CompanyPeRatioState> emit,
   ) {
     final sortedPoints = _extractSortedDataPoints(ratios);
 
     if (sortedPoints.isEmpty) {
       _logger.info('PE Ratio data points empty after extraction');
-      emit(_emptyLoadedState());
+      emit(_emptyLoadedState(ticker, origin));
       return;
     }
 
@@ -96,6 +101,7 @@ class CompanyPeRatioBloc
     );
     emit(
       CompanyPeRatioState.loaded(
+        ticker: ticker,
         dataPoints: sortedPoints,
         chartData: chartData,
         currentValue: currentPoint.value,
@@ -104,6 +110,7 @@ class CompanyPeRatioBloc
         isPositive: growth.delta >= 0,
         referenceLabel: referenceLabel,
         historyLimit: _configService.freePlanHistoryCount,
+        dataOrigin: origin,
         lastUpdated: DateTime.now(),
       ),
     );
@@ -172,8 +179,12 @@ class CompanyPeRatioBloc
     }).toList();
   }
 
-  CompanyPeRatioState _emptyLoadedState() {
+  CompanyPeRatioState _emptyLoadedState(
+    String ticker,
+    CompanyProfileDataOrigin origin,
+  ) {
     return CompanyPeRatioState.loaded(
+      ticker: ticker,
       dataPoints: [],
       chartData: [],
       currentValue: 0,
@@ -182,11 +193,15 @@ class CompanyPeRatioBloc
       isPositive: false,
       referenceLabel: '',
       historyLimit: _configService.freePlanHistoryCount,
+      dataOrigin: origin,
       lastUpdated: DateTime.now(),
     );
   }
 
-  Future<void> _onStalenessCheckRequested(StalenessCheckRequested event) async {
+  Future<void> _onStalenessCheckRequested(
+    StalenessCheckRequested event,
+    Emitter<CompanyPeRatioState> emit,
+  ) async {
     _logger.info('Staleness check requested for ${event.ticker}');
     state.mapOrNull(
       loaded: (loadedState) {

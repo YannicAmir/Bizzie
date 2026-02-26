@@ -2,6 +2,7 @@ import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/features/company_profile/dividends/domain/interfaces/i_dividend_repository.dart';
 import 'package:bizzie/features/company_profile/dividends/domain/models/dividend_info.dart';
 import 'package:bizzie/features/company_profile/dividends/domain/usecases/get_dividend_info_usecase.dart';
+import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
@@ -22,31 +23,31 @@ void main() {
 
   group('GetDividendInfoUseCase', () {
     test('call_success_returnsDividendInfo', () async {
-      // arrange
-      when(
-        () => mockRepository.getDividendInfo(tTicker),
-      ).thenAnswer((_) async => Right(tDividendInfo));
+      // Arrange
+      when(() => mockRepository.getDividendInfo(tTicker)).thenAnswer(
+        (_) async => Right((tDividendInfo, CompanyProfileDataOrigin.cache)),
+      );
 
-      // act
+      // Act
       final result = await useCase(tTicker);
 
-      // assert
-      expect(result, Right(tDividendInfo));
+      // Assert
+      expect(result, Right((tDividendInfo, CompanyProfileDataOrigin.cache)));
       verify(() => mockRepository.getDividendInfo(tTicker)).called(1);
       verifyNoMoreInteractions(mockRepository);
     });
 
     test('call_failure_returnsServerFailure', () async {
-      // arrange
+      // Arrange
       const tFailure = Failure.server('Server error');
       when(
         () => mockRepository.getDividendInfo(tTicker),
       ).thenAnswer((_) async => const Left(tFailure));
 
-      // act
+      // Act
       final result = await useCase(tTicker);
 
-      // assert
+      // Assert
       expect(result, const Left(tFailure));
       verify(() => mockRepository.getDividendInfo(tTicker)).called(1);
       verifyNoMoreInteractions(mockRepository);

@@ -2,6 +2,7 @@ import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/features/company_profile/revenue/domain/interfaces/i_revenue_repository.dart';
 import 'package:bizzie/features/company_profile/revenue/domain/models/revenue_stats.dart';
 import 'package:bizzie/features/company_profile/revenue/domain/usecases/get_revenue_stats_usecase.dart';
+import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
@@ -19,6 +20,7 @@ void main() {
 
   const tTicker = 'AAPL';
   const tRevenueStats = RevenueStats(
+    symbol: tTicker,
     reportedCurrency: 'USD',
     annualRevenue: [],
     quarterlyRevenue: [],
@@ -27,15 +29,19 @@ void main() {
   group('GetRevenueStatsUseCase', () {
     test('call_success_returnsRevenueStats', () async {
       // arrange
-      when(
-        () => mockRepository.getRevenueStats(tTicker),
-      ).thenAnswer((_) async => const Right(tRevenueStats));
+      when(() => mockRepository.getRevenueStats(tTicker)).thenAnswer(
+        (_) async =>
+            const Right((tRevenueStats, CompanyProfileDataOrigin.cache)),
+      );
 
       // act
       final result = await useCase(tTicker);
 
       // assert
-      expect(result, const Right(tRevenueStats));
+      expect(
+        result,
+        const Right((tRevenueStats, CompanyProfileDataOrigin.cache)),
+      );
       verify(() => mockRepository.getRevenueStats(tTicker)).called(1);
       verifyNoMoreInteractions(mockRepository);
     });

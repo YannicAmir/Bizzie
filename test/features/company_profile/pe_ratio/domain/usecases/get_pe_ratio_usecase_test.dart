@@ -2,6 +2,7 @@ import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/features/company_profile/pe_ratio/domain/interfaces/i_pe_ratio_repository.dart';
 import 'package:bizzie/features/company_profile/pe_ratio/domain/models/pe_ratio.dart';
 import 'package:bizzie/features/company_profile/pe_ratio/domain/usecases/get_pe_ratio_usecase.dart';
+import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
@@ -23,15 +24,15 @@ void main() {
   group('GetPeRatioUseCase', () {
     test('call_success_returnsRatiosList', () async {
       // arrange
-      when(
-        () => mockRepository.getPeRatios(tTicker),
-      ).thenAnswer((_) async => Right(tRatiosList));
+      when(() => mockRepository.getPeRatios(tTicker)).thenAnswer(
+        (_) async => Right((tRatiosList, CompanyProfileDataOrigin.cache)),
+      );
 
       // act
       final result = await useCase(tTicker);
 
       // assert
-      expect(result, Right(tRatiosList));
+      expect(result, Right((tRatiosList, CompanyProfileDataOrigin.cache)));
       verify(() => mockRepository.getPeRatios(tTicker)).called(1);
       verifyNoMoreInteractions(mockRepository);
     });

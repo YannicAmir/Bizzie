@@ -10,9 +10,11 @@ import 'package:bizzie/features/company_profile/business/data/dtos/governance_dt
 import 'package:bizzie/features/company_profile/financial_statements/data/dtos/legacy_income_statement_dto.dart';
 import 'package:bizzie/features/company_profile/shared/domain/interfaces/i_company_repository.dart';
 import 'package:bizzie/features/company_profile/shared/domain/models/company_profile.dart';
+import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:bizzie/core/data/models/cache_result.dart' as cache;
 
 class MockBusinessRemoteDataSource extends Mock
     implements BusinessRemoteDataSource {}
@@ -79,24 +81,6 @@ void main() {
     final tExecutives = [
       const ExecutiveDto(name: 'Tim Cook', title: 'CEO', pay: 1000000.0),
     ];
-    final tFilings = [
-      const FmpSecFilingDto(
-        symbol: tTicker,
-        filingDate: '2023-01-01',
-        acceptedDate: '2023-01-01',
-        formType: '10-K',
-        link: 'https://sec.gov/10k',
-        finalLink: 'https://sec.gov/10k',
-      ),
-      const FmpSecFilingDto(
-        symbol: tTicker,
-        filingDate: '2023-01-02',
-        acceptedDate: '2023-01-02',
-        formType: 'DEF 14A',
-        link: 'https://sec.gov/def14a',
-        finalLink: 'https://sec.gov/def14a',
-      ),
-    ];
     final tLegacyIncome = [
       const LegacyIncomeStatementDto(
         date: '2023-09-30',
@@ -113,62 +97,87 @@ void main() {
     ];
 
     test('getBusinessProfile_success_returnsBusinessProfile', () async {
-      // arrange
-      when(
-        () => mockCompanyRepository.getProfile(tTicker),
-      ).thenAnswer((_) async => Right(tCompanyProfile));
+      final tFilings = [
+        const FmpSecFilingDto(
+          symbol: tTicker,
+          filingDate: '2023-01-01',
+          acceptedDate: '2023-01-01',
+          formType: '10-K',
+          link: 'https://sec.gov/10k',
+          finalLink: 'https://sec.gov/10k',
+        ),
+        const FmpSecFilingDto(
+          symbol: tTicker,
+          filingDate: '2023-01-02',
+          acceptedDate: '2023-01-02',
+          formType: 'DEF 14A',
+          link: 'https://sec.gov/def14a',
+          finalLink: 'https://sec.gov/def14a',
+        ),
+      ];
+      // Arrange
+      when(() => mockCompanyRepository.getProfile(tTicker)).thenAnswer(
+        (_) async => Right((tCompanyProfile, CompanyProfileDataOrigin.api)),
+      );
 
       when(
-        () => mockLocalDataSource.getCachedProxyUrl(tTicker),
-      ).thenAnswer((_) async => null);
-      when(
-        () => mockLocalDataSource.getCachedGovernance(tTicker),
-      ).thenAnswer((_) async => null);
-      when(
-        () => mockLocalDataSource.getCachedExecutives(tTicker),
-      ).thenAnswer((_) async => null);
+        () => mockLocalDataSource.syncGovernance(
+          tTicker,
+          remoteFetcher: any(named: 'remoteFetcher'),
+        ),
+      ).thenAnswer(
+        (_) async => cache.CacheSuccess((
+          const GovernanceDto(symbol: tTicker, nameAndPosition: 'CEO'),
+          tExecutives,
+        ), CompanyProfileDataOrigin.api),
+      );
+
       when(
         () => mockFinancialRemoteDataSource.getSecFilings(tTicker),
       ).thenAnswer((_) async => tFilings);
-      when(() => mockRemoteDataSource.getGovernance(tTicker)).thenAnswer(
-        (_) async => [
-          const GovernanceDto(symbol: tTicker, nameAndPosition: 'CEO'),
-        ],
-      );
+
       when(
-        () => mockRemoteDataSource.getExecutives(tTicker),
-      ).thenAnswer((_) async => tExecutives);
-      when(
-        () => mockLocalDataSource.cacheGovernance(tTicker, any(), any()),
-      ).thenAnswer((_) async => Future.value());
+        () => mockLocalDataSource.getCachedProxyUrl(tTicker),
+      ).thenAnswer((_) async => (null, CompanyProfileDataOrigin.cache));
 
       when(
         () => mockLocalDataSource.cacheProxyUrl(tTicker, any()),
       ).thenAnswer((_) async => Future.value());
 
       when(
-        () => mockFinancialLocalDataSource.getCachedLegacyIncomeStatements(
+        () => mockFinancialLocalDataSource.syncLegacyIncomeStatements(
           tTicker,
-          period: 'annual',
+          period: any(named: 'period'),
+          remoteFetcher: any(named: 'remoteFetcher'),
         ),
-      ).thenAnswer((_) async => tLegacyIncome);
-      when(
-        () => mockFinancialLocalDataSource.getCachedLegacyIncomeStatements(
-          tTicker,
-          period: 'quarter',
-        ),
-      ).thenAnswer((_) async => <LegacyIncomeStatementDto>[]);
+      ).thenAnswer((invocation) async {
+        final period = invocation.namedArguments[#period] as String;
+        if (period == 'annual') {
+          return cache.CacheSuccess(
+            tLegacyIncome,
+            CompanyProfileDataOrigin.cache,
+          );
+        } else {
+          return const cache.CacheSuccess(
+            <LegacyIncomeStatementDto>[],
+            CompanyProfileDataOrigin.cache,
+          );
+        }
+      });
 
-      // act
+      // Act
       final result = await repository.getBusinessProfile(tTicker);
 
-      // assert
+      // Assert
       expect(result.isRight(), true);
       result.fold((l) => fail('Should return right'), (r) {
-        expect(r, isA<BusinessProfile>());
-        expect(r.ceo, 'Tim Cook');
-        expect(r.def14aUrl, 'https://sec.gov/def14a');
-        expect(r.annualFilings.length, 1);
+        final profile = r.$1;
+        final origin = r.$2;
+        expect(profile, isA<BusinessProfile>());
+        expect(profile.ceo, 'Tim Cook');
+        expect(profile.def14aUrl, 'https://sec.gov/def14a');
+        expect(profile.annualFilings.length, 1);
+        expect(origin, CompanyProfileDataOrigin.api);
       });
     });
   });

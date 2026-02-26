@@ -10,6 +10,8 @@ import 'package:bizzie/features/company_profile/business/presentation/utils/busi
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:bizzie/features/company_profile/business/presentation/bloc/company_business_bloc.dart';
+import 'package:bizzie/features/company_profile/business/presentation/bloc/company_business_event.dart';
 import 'package:bizzie/app/themes/app_assets.dart';
 import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
 import 'package:bizzie/shared/utils/paywall_helper.dart';
@@ -216,12 +218,21 @@ class _FilingsList extends StatelessWidget {
 
               return GestureDetector(
                 onTap: () {
+                  context.read<CompanyBusinessBloc>().add(
+                    CompanyBusinessEvent.analyticsInteractionOccurred(
+                      viewAll10KsTapped: isAnnual ? true : null,
+                      viewAll10QsTapped: !isAnnual ? true : null,
+                    ),
+                  );
+
                   if (isSubscribed) {
                     onShowAll(filings);
                   } else {
                     PaywallHelper.showPaywallSequence(
                       context,
                       source: PaywallSource.company_profile,
+                      tabName: 'business_tab',
+                      featureName: isAnnual ? '10_k_filings' : '10_q_filings',
                     );
                   }
                 },
@@ -278,7 +289,15 @@ class _FilingItem extends StatelessWidget {
     }
 
     return GestureDetector(
-      onTap: () => UrlLauncherUtils.launch(filing.link),
+      onTap: () {
+        context.read<CompanyBusinessBloc>().add(
+          CompanyBusinessEvent.analyticsInteractionOccurred(
+            viewed10Ks: isAnnual ? true : null,
+            viewed10Qs: !isAnnual ? true : null,
+          ),
+        );
+        UrlLauncherUtils.launch(filing.link);
+      },
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 8.0),
         child: Row(

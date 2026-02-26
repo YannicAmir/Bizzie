@@ -60,14 +60,14 @@ void main() {
 
   group('CompanyProfileBloc', () {
     test('initialState_noEvents_isInitial', () {
-      // assert
+      // Assert
       expect(bloc.state, const CompanyProfileState.initial());
     });
 
     blocTest<CompanyProfileBloc, CompanyProfileState>(
       'opened_validEvent_emitsActiveState',
       build: () => bloc,
-      // act
+      // Act
       act: (bloc) => bloc.add(
         const CompanyProfileEvent.opened(
           ticker: 'AAPL',
@@ -81,7 +81,7 @@ void main() {
           isFund: false,
         ),
       ),
-      // expect
+      // Assert
       expect: () => [
         isA<CompanyProfileState>()
             .having(
@@ -95,7 +95,48 @@ void main() {
               'AAPL',
             ),
       ],
-      // assert
+      verify: (_) {
+        verifyNever(() => mockAnalytics.logSessionSummary(any()));
+      },
+    );
+
+    blocTest<CompanyProfileBloc, CompanyProfileState>(
+      'opened_duplicateTicker_isIdempotent',
+      build: () => bloc,
+      seed: () => CompanyProfileState.active(
+        sessionId: 'old-session-id',
+        ticker: 'AAPL',
+        companyName: 'Apple Inc.',
+        industry: 'Tech',
+        sector: 'Technology',
+        initiallyWatchlisted: false,
+        currentWatchlisted: false,
+        isCompany: true,
+        isEtf: false,
+        isFund: false,
+        viewedTabs: const {'security'},
+        activeTabName: 'security',
+        accumulatedSeconds: 0,
+        lastActiveStartTime: DateTime.now(),
+        lifecycleState: BizzieLifecycleState.foreground,
+        moreTabIndex: 0,
+      ),
+      // Act
+      act: (bloc) => bloc.add(
+        const CompanyProfileEvent.opened(
+          ticker: 'AAPL',
+          companyName: 'Apple Inc.',
+          industry: 'Tech',
+          sector: 'Technology',
+          initialTabName: 'security',
+          isWatchlisted: false,
+          isCompany: true,
+          isEtf: false,
+          isFund: false,
+        ),
+      ),
+      // Assert
+      expect: () => [],
       verify: (_) {
         verifyNever(() => mockAnalytics.logSessionSummary(any()));
       },
@@ -103,7 +144,7 @@ void main() {
 
     blocTest<CompanyProfileBloc, CompanyProfileState>(
       'tabViewed_validTab_updatesViewedTabs',
-      // arrange
+      // Arrange
       seed: () => CompanyProfileState.active(
         sessionId: '123',
         ticker: 'AAPL',
@@ -116,16 +157,17 @@ void main() {
         isEtf: false,
         isFund: false,
         viewedTabs: const {},
+        activeTabName: 'Overview',
         accumulatedSeconds: 0,
         lastActiveStartTime: DateTime.now(),
         lifecycleState: BizzieLifecycleState.foreground,
         moreTabIndex: 0,
       ),
       build: () => bloc,
-      // act
+      // Act
       act: (bloc) =>
           bloc.add(const CompanyProfileEvent.tabViewed(tabName: 'News')),
-      // expect
+      // Assert
       expect: () => [
         isA<CompanyProfileState>().having(
           (s) => s.maybeMap(active: (a) => a.viewedTabs, orElse: () => {}),
@@ -137,7 +179,7 @@ void main() {
 
     blocTest<CompanyProfileBloc, CompanyProfileState>(
       'lifecycleChanged_background_triggersSnapshot',
-      // arrange
+      // Arrange
       seed: () => CompanyProfileState.active(
         sessionId: '123',
         ticker: 'AAPL',
@@ -150,6 +192,7 @@ void main() {
         isEtf: false,
         isFund: false,
         viewedTabs: const {'Overview'},
+        activeTabName: 'Overview',
         accumulatedSeconds: 10,
         lastActiveStartTime: DateTime.now().subtract(
           const Duration(seconds: 5),
@@ -158,13 +201,13 @@ void main() {
         moreTabIndex: 0,
       ),
       build: () => bloc,
-      // act
+      // Act
       act: (bloc) => bloc.add(
         const CompanyProfileEvent.lifecycleChanged(
           state: BizzieLifecycleState.background,
         ),
       ),
-      // assert
+      // Assert
       verify: (_) {
         verify(
           () => mockAnalytics.logSessionSummary(
@@ -180,7 +223,7 @@ void main() {
 
     blocTest<CompanyProfileBloc, CompanyProfileState>(
       'lifecycleChanged_foreground_updatesStartTime',
-      // arrange
+      // Arrange
       seed: () => CompanyProfileState.active(
         sessionId: '123',
         ticker: 'AAPL',
@@ -193,19 +236,20 @@ void main() {
         isEtf: false,
         isFund: false,
         viewedTabs: const {'Overview'},
+        activeTabName: 'Overview',
         accumulatedSeconds: 10,
         lastActiveStartTime: DateTime.now().subtract(const Duration(hours: 1)),
         lifecycleState: BizzieLifecycleState.background,
         moreTabIndex: 0,
       ),
       build: () => bloc,
-      // act
+      // Act
       act: (bloc) => bloc.add(
         const CompanyProfileEvent.lifecycleChanged(
           state: BizzieLifecycleState.foreground,
         ),
       ),
-      // expect
+      // Assert
       expect: () => [
         isA<CompanyProfileState>().having(
           (s) => s.maybeMap(
@@ -223,7 +267,7 @@ void main() {
 
     blocTest<CompanyProfileBloc, CompanyProfileState>(
       'watchlistStatusChanged_validEvent_updatesState',
-      // arrange
+      // Arrange
       seed: () => CompanyProfileState.active(
         sessionId: '123',
         ticker: 'AAPL',
@@ -236,17 +280,18 @@ void main() {
         isEtf: false,
         isFund: false,
         viewedTabs: const {'Overview'},
+        activeTabName: 'Overview',
         accumulatedSeconds: 0,
         lastActiveStartTime: DateTime.now(),
         lifecycleState: BizzieLifecycleState.foreground,
         moreTabIndex: 0,
       ),
       build: () => bloc,
-      // act
+      // Act
       act: (bloc) => bloc.add(
         const CompanyProfileEvent.watchlistStatusChanged(isWatchlisted: true),
       ),
-      // expect
+      // Assert
       expect: () => [
         isA<CompanyProfileState>().having(
           (s) => s.maybeMap(
@@ -261,7 +306,7 @@ void main() {
 
     blocTest<CompanyProfileBloc, CompanyProfileState>(
       'closed_validSession_emitsInitialAndLogsFinalSnapshot',
-      // arrange
+      // Arrange
       seed: () => CompanyProfileState.active(
         sessionId: '123',
         ticker: 'AAPL',
@@ -274,6 +319,7 @@ void main() {
         isEtf: false,
         isFund: false,
         viewedTabs: const {'Overview', 'News'},
+        activeTabName: 'Overview',
         accumulatedSeconds: 20,
         lastActiveStartTime: DateTime.now().subtract(
           const Duration(seconds: 10),
@@ -282,11 +328,10 @@ void main() {
         moreTabIndex: 0,
       ),
       build: () => bloc,
-      // act
+      // Act
       act: (bloc) => bloc.add(const CompanyProfileEvent.closed()),
-      // expect
+      // Assert
       expect: () => [const CompanyProfileState.initial()],
-      // assert
       verify: (_) {
         verify(
           () => mockAnalytics.logSessionSummary(

@@ -128,12 +128,12 @@ return error(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( DividendInfo dividendInfo,  int historyLimit,  DateTime? lastUpdated)?  loaded,TResult Function( Failure failure)?  error,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( DividendInfo dividendInfo,  String ticker,  int historyLimit,  CompanyProfileDataOrigin dataOrigin,  DateTime? lastUpdated)?  loaded,TResult Function( Failure failure)?  error,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial();case _Loading() when loading != null:
 return loading();case _Loaded() when loaded != null:
-return loaded(_that.dividendInfo,_that.historyLimit,_that.lastUpdated);case _Error() when error != null:
+return loaded(_that.dividendInfo,_that.ticker,_that.historyLimit,_that.dataOrigin,_that.lastUpdated);case _Error() when error != null:
 return error(_that.failure);case _:
   return orElse();
 
@@ -152,12 +152,12 @@ return error(_that.failure);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( DividendInfo dividendInfo,  int historyLimit,  DateTime? lastUpdated)  loaded,required TResult Function( Failure failure)  error,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( DividendInfo dividendInfo,  String ticker,  int historyLimit,  CompanyProfileDataOrigin dataOrigin,  DateTime? lastUpdated)  loaded,required TResult Function( Failure failure)  error,}) {final _that = this;
 switch (_that) {
 case _Initial():
 return initial();case _Loading():
 return loading();case _Loaded():
-return loaded(_that.dividendInfo,_that.historyLimit,_that.lastUpdated);case _Error():
+return loaded(_that.dividendInfo,_that.ticker,_that.historyLimit,_that.dataOrigin,_that.lastUpdated);case _Error():
 return error(_that.failure);case _:
   throw StateError('Unexpected subclass');
 
@@ -175,12 +175,12 @@ return error(_that.failure);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( DividendInfo dividendInfo,  int historyLimit,  DateTime? lastUpdated)?  loaded,TResult? Function( Failure failure)?  error,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( DividendInfo dividendInfo,  String ticker,  int historyLimit,  CompanyProfileDataOrigin dataOrigin,  DateTime? lastUpdated)?  loaded,TResult? Function( Failure failure)?  error,}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial();case _Loading() when loading != null:
 return loading();case _Loaded() when loaded != null:
-return loaded(_that.dividendInfo,_that.historyLimit,_that.lastUpdated);case _Error() when error != null:
+return loaded(_that.dividendInfo,_that.ticker,_that.historyLimit,_that.dataOrigin,_that.lastUpdated);case _Error() when error != null:
 return error(_that.failure);case _:
   return null;
 
@@ -257,11 +257,13 @@ String toString() {
 
 
 class _Loaded implements CompanyDividendsState {
-  const _Loaded(this.dividendInfo, {required this.historyLimit, this.lastUpdated});
+  const _Loaded({required this.dividendInfo, required this.ticker, required this.historyLimit, required this.dataOrigin, this.lastUpdated});
   
 
  final  DividendInfo dividendInfo;
+ final  String ticker;
  final  int historyLimit;
+ final  CompanyProfileDataOrigin dataOrigin;
  final  DateTime? lastUpdated;
 
 /// Create a copy of CompanyDividendsState
@@ -274,16 +276,16 @@ _$LoadedCopyWith<_Loaded> get copyWith => __$LoadedCopyWithImpl<_Loaded>(this, _
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Loaded&&(identical(other.dividendInfo, dividendInfo) || other.dividendInfo == dividendInfo)&&(identical(other.historyLimit, historyLimit) || other.historyLimit == historyLimit)&&(identical(other.lastUpdated, lastUpdated) || other.lastUpdated == lastUpdated));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Loaded&&(identical(other.dividendInfo, dividendInfo) || other.dividendInfo == dividendInfo)&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.historyLimit, historyLimit) || other.historyLimit == historyLimit)&&(identical(other.dataOrigin, dataOrigin) || other.dataOrigin == dataOrigin)&&(identical(other.lastUpdated, lastUpdated) || other.lastUpdated == lastUpdated));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,dividendInfo,historyLimit,lastUpdated);
+int get hashCode => Object.hash(runtimeType,dividendInfo,ticker,historyLimit,dataOrigin,lastUpdated);
 
 @override
 String toString() {
-  return 'CompanyDividendsState.loaded(dividendInfo: $dividendInfo, historyLimit: $historyLimit, lastUpdated: $lastUpdated)';
+  return 'CompanyDividendsState.loaded(dividendInfo: $dividendInfo, ticker: $ticker, historyLimit: $historyLimit, dataOrigin: $dataOrigin, lastUpdated: $lastUpdated)';
 }
 
 
@@ -294,7 +296,7 @@ abstract mixin class _$LoadedCopyWith<$Res> implements $CompanyDividendsStateCop
   factory _$LoadedCopyWith(_Loaded value, $Res Function(_Loaded) _then) = __$LoadedCopyWithImpl;
 @useResult
 $Res call({
- DividendInfo dividendInfo, int historyLimit, DateTime? lastUpdated
+ DividendInfo dividendInfo, String ticker, int historyLimit, CompanyProfileDataOrigin dataOrigin, DateTime? lastUpdated
 });
 
 
@@ -311,11 +313,13 @@ class __$LoadedCopyWithImpl<$Res>
 
 /// Create a copy of CompanyDividendsState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? dividendInfo = null,Object? historyLimit = null,Object? lastUpdated = freezed,}) {
+@pragma('vm:prefer-inline') $Res call({Object? dividendInfo = null,Object? ticker = null,Object? historyLimit = null,Object? dataOrigin = null,Object? lastUpdated = freezed,}) {
   return _then(_Loaded(
-null == dividendInfo ? _self.dividendInfo : dividendInfo // ignore: cast_nullable_to_non_nullable
-as DividendInfo,historyLimit: null == historyLimit ? _self.historyLimit : historyLimit // ignore: cast_nullable_to_non_nullable
-as int,lastUpdated: freezed == lastUpdated ? _self.lastUpdated : lastUpdated // ignore: cast_nullable_to_non_nullable
+dividendInfo: null == dividendInfo ? _self.dividendInfo : dividendInfo // ignore: cast_nullable_to_non_nullable
+as DividendInfo,ticker: null == ticker ? _self.ticker : ticker // ignore: cast_nullable_to_non_nullable
+as String,historyLimit: null == historyLimit ? _self.historyLimit : historyLimit // ignore: cast_nullable_to_non_nullable
+as int,dataOrigin: null == dataOrigin ? _self.dataOrigin : dataOrigin // ignore: cast_nullable_to_non_nullable
+as CompanyProfileDataOrigin,lastUpdated: freezed == lastUpdated ? _self.lastUpdated : lastUpdated // ignore: cast_nullable_to_non_nullable
 as DateTime?,
   ));
 }

@@ -14,6 +14,7 @@ class CompanyProfileState with _$CompanyProfileState {
     required String? industry,
     required String? sector,
     required Set<String> viewedTabs,
+    required String activeTabName,
     required int accumulatedSeconds,
     required DateTime lastActiveStartTime,
     required bool initiallyWatchlisted,

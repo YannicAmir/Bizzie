@@ -1,7 +1,10 @@
 import 'package:bizzie/app/themes/app_colors.dart';
 import 'package:bizzie/app/themes/app_text_styles.dart';
+import 'package:bizzie/features/company_profile/business/presentation/bloc/company_business_bloc.dart';
+import 'package:bizzie/features/company_profile/business/presentation/bloc/company_business_event.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CompanyDescriptionCard extends StatefulWidget {
   final String description;
@@ -17,6 +20,13 @@ class _CompanyDescriptionCardState extends State<CompanyDescriptionCard> {
   final ScrollController _scrollController = ScrollController();
 
   void _toggleExpand() {
+    if (!_isExpanded) {
+      context.read<CompanyBusinessBloc>().add(
+        const CompanyBusinessEvent.analyticsInteractionOccurred(
+          didExpandDescription: true,
+        ),
+      );
+    }
     setState(() {
       _isExpanded = !_isExpanded;
     });

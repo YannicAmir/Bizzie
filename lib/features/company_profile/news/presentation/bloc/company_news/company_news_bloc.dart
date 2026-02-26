@@ -14,17 +14,10 @@ class CompanyNewsBloc extends Bloc<CompanyNewsEvent, CompanyNewsState> {
 
   CompanyNewsBloc(this._getCompanyNews)
     : super(const CompanyNewsState.initial()) {
-    on<CompanyNewsEvent>(_onEvent, transformer: droppable());
-  }
-
-  Future<void> _onEvent(
-    CompanyNewsEvent event,
-    Emitter<CompanyNewsState> emit,
-  ) async {
-    _logger.info('Handling event: $event');
-    await event.map(
-      loadRequested: (e) async => _onLoadRequested(e, emit),
-      stalenessCheckRequested: (e) async => _onStalenessCheckRequested(e),
+    on<LoadRequested>(_onLoadRequested, transformer: droppable());
+    on<StalenessCheckRequested>(
+      _onStalenessCheckRequested,
+      transformer: sequential(),
     );
   }
 
@@ -32,16 +25,29 @@ class CompanyNewsBloc extends Bloc<CompanyNewsEvent, CompanyNewsState> {
     LoadRequested event,
     Emitter<CompanyNewsState> emit,
   ) async {
-    if (!event.forceRefresh &&
-        state.maybeMap(loaded: (_) => true, orElse: () => false)) {
-      _logger.info('Skip loading news: already loaded and no force refresh');
+    final isAlreadyLoaded = state.maybeMap(
+      loaded: (s) => true,
+      orElse: () => false,
+    );
+
+    final isRightTicker = state.maybeMap(
+      loaded: (s) => s.ticker == event.ticker,
+      orElse: () => false,
+    );
+
+    if (isAlreadyLoaded && isRightTicker && !event.forceRefresh) {
+      _logger.info(
+        'Company news already loaded for ${event.ticker} and is the correct ticker. Skipping load (Silent Refresh).',
+      );
       return;
     }
 
     _logger.info(
       'Loading company news for ${event.ticker} (force=${event.forceRefresh})',
     );
-    emit(const CompanyNewsState.loading());
+    if (!isAlreadyLoaded || !isRightTicker || event.forceRefresh) {
+      emit(const CompanyNewsState.loading());
+    }
 
     final result = await _getCompanyNews(event.ticker);
 
@@ -50,18 +56,28 @@ class CompanyNewsBloc extends Bloc<CompanyNewsEvent, CompanyNewsState> {
         _logger.severe('Failed to load company news', failure);
         emit(CompanyNewsState.failure(failure));
       },
-      (news) {
+      (tuple) {
+        final news = tuple.$1;
+        final origin = tuple.$2;
         _logger.info(
-          'Successfully loaded company news: ${news.articles.length} articles',
+          'Successfully loaded company news: ${news.articles.length} articles, origin=$origin',
         );
         emit(
-          CompanyNewsState.loaded(news.articles, lastUpdated: DateTime.now()),
+          CompanyNewsState.loaded(
+            articles: news.articles,
+            ticker: event.ticker,
+            dataOrigin: origin,
+            lastUpdated: DateTime.now(),
+          ),
         );
       },
     );
   }
 
-  Future<void> _onStalenessCheckRequested(StalenessCheckRequested event) async {
+  Future<void> _onStalenessCheckRequested(
+    StalenessCheckRequested event,
+    Emitter<CompanyNewsState> emit,
+  ) async {
     _logger.info('Staleness check requested for ${event.ticker}');
     state.mapOrNull(
       loaded: (loadedState) {

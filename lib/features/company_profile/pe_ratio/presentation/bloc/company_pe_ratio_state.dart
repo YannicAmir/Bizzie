@@ -1,4 +1,5 @@
 import 'package:bizzie/core/error/failures.dart';
+import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:bizzie/features/company_profile/shared/domain/models/chart_data_point.dart';
 import 'package:bizzie/features/company_profile/shared/domain/models/financial_data_point.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -10,6 +11,7 @@ class CompanyPeRatioState with _$CompanyPeRatioState {
   const factory CompanyPeRatioState.initial() = _Initial;
   const factory CompanyPeRatioState.loading() = _Loading;
   const factory CompanyPeRatioState.loaded({
+    required String ticker,
     required List<FinancialDataPoint> dataPoints,
     required List<ChartDataPoint> chartData,
     required double currentValue,
@@ -18,6 +20,7 @@ class CompanyPeRatioState with _$CompanyPeRatioState {
     required bool isPositive,
     required String referenceLabel,
     required int historyLimit,
+    required CompanyProfileDataOrigin dataOrigin,
     DateTime? lastUpdated,
   }) = _Loaded;
   const factory CompanyPeRatioState.failure(Failure failure) = _Failure;

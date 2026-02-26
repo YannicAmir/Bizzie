@@ -1,4 +1,5 @@
 import 'package:bizzie/core/logging/bizzie_logger.dart';
+import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:bizzie/features/company_profile/financial_statements/presentation/enums/financial_statement_type.dart';
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/features/company_profile/financial_statements/presentation/bloc/financial_statements_event.dart';
@@ -31,27 +32,21 @@ class FinancialStatementsBloc
     IConfigService configService,
   ) : super(
         FinancialStatementsState.initial(
+          ticker: '',
           freePlanHistoryCount: configService.freePlanHistoryCount,
         ),
       ) {
-    on<FinancialStatementsEvent>(_onEvent, transformer: droppable());
-  }
-
-  Future<void> _onEvent(
-    FinancialStatementsEvent event,
-    Emitter<FinancialStatementsState> emit,
-  ) async {
-    _logger.info('Handling event: $event');
-    await event.map(
-      loadIncomeStatements: (e) async => _onLoadIncomeStatements(e, emit),
-      loadBalanceSheets: (e) async => _onLoadBalanceSheets(e, emit),
-      loadCashFlows: (e) async => _onLoadCashFlows(e, emit),
-      stalenessCheckRequested: (e) async => _onStalenessCheckRequested(e, emit),
-      viewTypeChanged: (e) async => _onViewTypeChanged(e, emit),
-      incomeDateSelected: (e) async => _onIncomeDateSelected(e, emit),
-      balanceDateSelected: (e) async => _onBalanceDateSelected(e, emit),
-      cashFlowDateSelected: (e) async => _onCashFlowDateSelected(e, emit),
+    on<LoadIncomeStatements>(_onLoadIncomeStatements, transformer: droppable());
+    on<LoadBalanceSheets>(_onLoadBalanceSheets, transformer: droppable());
+    on<LoadCashFlows>(_onLoadCashFlows, transformer: droppable());
+    on<StalenessCheckRequested>(
+      _onStalenessCheckRequested,
+      transformer: sequential(),
     );
+    on<ViewTypeChanged>(_onViewTypeChanged);
+    on<IncomeDateSelected>(_onIncomeDateSelected);
+    on<BalanceDateSelected>(_onBalanceDateSelected);
+    on<CashFlowDateSelected>(_onCashFlowDateSelected);
   }
 
   Future<void> _onLoadIncomeStatements(
@@ -80,14 +75,19 @@ class FinancialStatementsBloc
       ),
     ]);
 
-    final annualEither = results[0];
-    final quarterlyEither = results[1];
+    final annualResult = results[0];
+    final quarterlyResult = results[1];
 
     List<IncomeStatement> annualData = [];
     List<IncomeStatement> quarterlyData = [];
+    CompanyProfileDataOrigin? annualOrigin;
+    CompanyProfileDataOrigin? quarterlyOrigin;
     Failure? error;
 
-    annualEither.fold((f) => error = f, (data) => annualData = data);
+    annualResult.fold((f) => error = f, (tuple) {
+      annualData = tuple.$1;
+      annualOrigin = tuple.$2;
+    });
 
     if (error != null) {
       _logger.severe('Failed to load annual income statements', error);
@@ -95,7 +95,10 @@ class FinancialStatementsBloc
       return;
     }
 
-    quarterlyEither.fold((f) => error = f, (data) => quarterlyData = data);
+    quarterlyResult.fold((f) => error = f, (tuple) {
+      quarterlyData = tuple.$1;
+      quarterlyOrigin = tuple.$2;
+    });
 
     if (error != null) {
       _logger.severe('Failed to load quarterly income statements', error);
@@ -113,7 +116,7 @@ class FinancialStatementsBloc
               : 'USD');
 
     _logger.info(
-      'Successfully loaded income statements: annual=${annualData.length}, quarterly=${quarterlyData.length}, currency=$currency',
+      'Successfully loaded income statements: annual=${annualData.length}, quarterly=${quarterlyData.length}, origin=$annualOrigin, currency=$currency',
     );
     emit(
       state.copyWith(
@@ -122,6 +125,8 @@ class FinancialStatementsBloc
         quarterlyIncomeStatements: quarterlyData,
         reportedCurrency: currency,
         lastUpdatedIncome: DateTime.now(),
+        incomeOrigin:
+            annualOrigin ?? quarterlyOrigin ?? CompanyProfileDataOrigin.api,
         selectedAnnualIncomeDate:
             state.selectedAnnualIncomeDate ??
             (annualData.isNotEmpty ? annualData.first.date : null),
@@ -153,21 +158,29 @@ class FinancialStatementsBloc
       ),
     ]);
 
-    final annualEither = results[0];
-    final quarterlyEither = results[1];
+    final annualResult = results[0];
+    final quarterlyResult = results[1];
 
     List<BalanceSheet> annualData = [];
     List<BalanceSheet> quarterlyData = [];
+    CompanyProfileDataOrigin? annualOrigin;
+    CompanyProfileDataOrigin? quarterlyOrigin;
     Failure? error;
 
-    annualEither.fold((f) => error = f, (data) => annualData = data);
+    annualResult.fold((f) => error = f, (tuple) {
+      annualData = tuple.$1;
+      annualOrigin = tuple.$2;
+    });
     if (error != null) {
       _logger.severe('Failed to load annual balance sheets', error);
       emit(state.copyWith(isLoadingBalance: false, balanceError: error));
       return;
     }
 
-    quarterlyEither.fold((f) => error = f, (data) => quarterlyData = data);
+    quarterlyResult.fold((f) => error = f, (tuple) {
+      quarterlyData = tuple.$1;
+      quarterlyOrigin = tuple.$2;
+    });
     if (error != null) {
       _logger.severe('Failed to load quarterly balance sheets', error);
       emit(state.copyWith(isLoadingBalance: false, balanceError: error));
@@ -177,13 +190,15 @@ class FinancialStatementsBloc
     annualData.sort((a, b) => b.date.compareTo(a.date));
     quarterlyData.sort((a, b) => b.date.compareTo(a.date));
 
-    _logger.info('Successfully loaded balance sheets');
+    _logger.info('Successfully loaded balance sheets, origin=$annualOrigin');
     emit(
       state.copyWith(
         isLoadingBalance: false,
         annualBalanceSheets: annualData,
         quarterlyBalanceSheets: quarterlyData,
         lastUpdatedBalance: DateTime.now(),
+        balanceOrigin:
+            annualOrigin ?? quarterlyOrigin ?? CompanyProfileDataOrigin.api,
         selectedAnnualBalanceDate:
             state.selectedAnnualBalanceDate ??
             (annualData.isNotEmpty ? annualData.first.date : null),
@@ -216,21 +231,29 @@ class FinancialStatementsBloc
       ),
     ]);
 
-    final annualEither = results[0];
-    final quarterlyEither = results[1];
+    final annualResult = results[0];
+    final quarterlyResult = results[1];
 
     List<CashFlowStatement> annualData = [];
     List<CashFlowStatement> quarterlyData = [];
+    CompanyProfileDataOrigin? annualOrigin;
+    CompanyProfileDataOrigin? quarterlyOrigin;
     Failure? error;
 
-    annualEither.fold((f) => error = f, (data) => annualData = data);
+    annualResult.fold((f) => error = f, (tuple) {
+      annualData = tuple.$1;
+      annualOrigin = tuple.$2;
+    });
     if (error != null) {
       _logger.severe('Failed to load annual cash flows', error);
       emit(state.copyWith(isLoadingCashFlow: false, cashFlowError: error));
       return;
     }
 
-    quarterlyEither.fold((f) => error = f, (data) => quarterlyData = data);
+    quarterlyResult.fold((f) => error = f, (tuple) {
+      quarterlyData = tuple.$1;
+      quarterlyOrigin = tuple.$2;
+    });
     if (error != null) {
       _logger.severe('Failed to load quarterly cash flows', error);
       emit(state.copyWith(isLoadingCashFlow: false, cashFlowError: error));
@@ -240,13 +263,15 @@ class FinancialStatementsBloc
     annualData.sort((a, b) => b.date.compareTo(a.date));
     quarterlyData.sort((a, b) => b.date.compareTo(a.date));
 
-    _logger.info('Successfully loaded cash flows');
+    _logger.info('Successfully loaded cash flows, origin=$annualOrigin');
     emit(
       state.copyWith(
         isLoadingCashFlow: false,
         annualCashFlowStatements: annualData,
         quarterlyCashFlowStatements: quarterlyData,
         lastUpdatedCashFlow: DateTime.now(),
+        cashFlowOrigin:
+            annualOrigin ?? quarterlyOrigin ?? CompanyProfileDataOrigin.api,
         selectedAnnualCashFlowDate:
             state.selectedAnnualCashFlowDate ??
             (annualData.isNotEmpty ? annualData.first.date : null),

@@ -1,3 +1,4 @@
+import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/features/company_profile/shared/domain/models/financial_data_point.dart';
 import 'package:bizzie/features/company_profile/net_income/domain/models/net_income_stats.dart';
@@ -41,7 +42,6 @@ void main() {
   );
 
   test('initialState_isCorrect', () {
-    // assert
     expect(bloc.state, const CompanyNetIncomeState.initial());
   });
 
@@ -49,30 +49,34 @@ void main() {
     blocTest<CompanyNetIncomeBloc, CompanyNetIncomeState>(
       'loadRequested_success_emitsLoadingAndLoaded',
       build: () {
-        // arrange
-        when(
-          () => mockGetNetIncomeStats(tTicker),
-        ).thenAnswer((_) async => const Right(tNetIncomeStats));
+        // Arrange
+        when(() => mockGetNetIncomeStats(tTicker)).thenAnswer(
+          (_) async =>
+              const Right((tNetIncomeStats, CompanyProfileDataOrigin.api)),
+        );
         return bloc;
       },
-      act: (bloc) {
-        // act
-        bloc.add(const CompanyNetIncomeEvent.loadRequested(tTicker));
-      },
-      expect: () {
-        // assert
-        return [
-          const CompanyNetIncomeState.loading(),
-          isA<CompanyNetIncomeState>().having(
-            (s) =>
-                s.maybeMap(loaded: (l) => l.netIncomeStats, orElse: () => null),
-            'netIncomeStats',
-            tNetIncomeStats,
-          ),
-        ];
-      },
+      // Act
+      act: (bloc) =>
+          bloc.add(const CompanyNetIncomeEvent.loadRequested(tTicker)),
+      // Assert
+      expect: () => [
+        const CompanyNetIncomeState.loading(),
+        isA<CompanyNetIncomeState>()
+            .having(
+              (s) => s.maybeMap(loaded: (l) => l.ticker, orElse: () => null),
+              'ticker',
+              tTicker,
+            )
+            .having(
+              (s) =>
+                  s.maybeMap(loaded: (l) => l.dataOrigin, orElse: () => null),
+              'dataOrigin',
+              CompanyProfileDataOrigin.api,
+            ),
+      ],
+      // Assert
       verify: (_) {
-        // assert
         verify(() => mockGetNetIncomeStats(tTicker)).called(1);
       },
     );
@@ -80,92 +84,108 @@ void main() {
     blocTest<CompanyNetIncomeBloc, CompanyNetIncomeState>(
       'loadRequested_failure_emitsLoadingAndFailure',
       build: () {
-        // arrange
+        // Arrange
         const failure = Failure.server('Server error');
         when(
           () => mockGetNetIncomeStats(tTicker),
         ).thenAnswer((_) async => const Left(failure));
         return bloc;
       },
-      act: (bloc) {
-        // act
-        bloc.add(const CompanyNetIncomeEvent.loadRequested(tTicker));
-      },
-      expect: () {
-        // assert
-        return [
-          const CompanyNetIncomeState.loading(),
-          const CompanyNetIncomeState.failure(Failure.server('Server error')),
-        ];
-      },
+      // Act
+      act: (bloc) =>
+          bloc.add(const CompanyNetIncomeEvent.loadRequested(tTicker)),
+      // Assert
+      expect: () => [
+        const CompanyNetIncomeState.loading(),
+        const CompanyNetIncomeState.failure(Failure.server('Server error')),
+      ],
     );
 
     blocTest<CompanyNetIncomeBloc, CompanyNetIncomeState>(
       'loadRequested_alreadyLoaded_skipsLoading',
-      build: () {
-        // arrange
-        return bloc;
-      },
+      // Arrange
+      build: () => bloc,
       seed: () => const CompanyNetIncomeState.loaded(
+        ticker: tTicker,
         netIncomeStats: tNetIncomeStats,
         annualChartData: [],
         quarterlyChartData: [],
         historyLimit: 7,
+        dataOrigin: CompanyProfileDataOrigin.api,
       ),
-      act: (bloc) {
-        // act
-        bloc.add(const CompanyNetIncomeEvent.loadRequested(tTicker));
-      },
-      expect: () {
-        // assert
-        return [];
-      },
+      // Act
+      act: (bloc) =>
+          bloc.add(const CompanyNetIncomeEvent.loadRequested(tTicker)),
+      // Assert
+      expect: () => [],
       verify: (_) {
-        // assert
         verifyNever(() => mockGetNetIncomeStats(any()));
       },
     );
 
     blocTest<CompanyNetIncomeBloc, CompanyNetIncomeState>(
-      'loadRequested_alreadyLoadedWithForceRefresh_emitsLoadingAndLoaded',
+      'loadRequested_differentTicker_reloadsData',
       build: () {
-        // arrange
-        when(
-          () => mockGetNetIncomeStats(tTicker),
-        ).thenAnswer((_) async => const Right(tNetIncomeStats));
+        // Arrange
+        when(() => mockGetNetIncomeStats('MSFT')).thenAnswer(
+          (_) async =>
+              const Right((tNetIncomeStats, CompanyProfileDataOrigin.api)),
+        );
         return bloc;
       },
       seed: () => const CompanyNetIncomeState.loaded(
+        ticker: 'AAPL',
         netIncomeStats: tNetIncomeStats,
         annualChartData: [],
         quarterlyChartData: [],
         historyLimit: 7,
+        dataOrigin: CompanyProfileDataOrigin.api,
       ),
-      act: (bloc) {
-        // act
-        bloc.add(
-          const CompanyNetIncomeEvent.loadRequested(
-            tTicker,
-            forceRefresh: true,
-          ),
+      // Act
+      act: (bloc) =>
+          bloc.add(const CompanyNetIncomeEvent.loadRequested('MSFT')),
+      // Assert
+      expect: () => [
+        const CompanyNetIncomeState.loading(),
+        isA<CompanyNetIncomeState>().having(
+          (s) => s.maybeMap(loaded: (l) => l.ticker, orElse: () => null),
+          'ticker',
+          'MSFT',
+        ),
+      ],
+    );
+
+    blocTest<CompanyNetIncomeBloc, CompanyNetIncomeState>(
+      'loadRequested_alreadyLoadedWithForceRefresh_emitsLoadingAndLoaded',
+      build: () {
+        // Arrange
+        when(() => mockGetNetIncomeStats(tTicker)).thenAnswer(
+          (_) async =>
+              const Right((tNetIncomeStats, CompanyProfileDataOrigin.api)),
         );
+        return bloc;
       },
-      expect: () {
-        // assert
-        return [
-          const CompanyNetIncomeState.loading(),
-          isA<CompanyNetIncomeState>().having(
-            (s) =>
-                s.maybeMap(loaded: (l) => l.netIncomeStats, orElse: () => null),
-            'netIncomeStats',
-            tNetIncomeStats,
-          ),
-        ];
-      },
-      verify: (_) {
-        // assert
-        verify(() => mockGetNetIncomeStats(tTicker)).called(1);
-      },
+      seed: () => const CompanyNetIncomeState.loaded(
+        ticker: tTicker,
+        netIncomeStats: tNetIncomeStats,
+        annualChartData: [],
+        quarterlyChartData: [],
+        historyLimit: 7,
+        dataOrigin: CompanyProfileDataOrigin.api,
+      ),
+      // Act
+      act: (bloc) => bloc.add(
+        const CompanyNetIncomeEvent.loadRequested(tTicker, forceRefresh: true),
+      ),
+      // Assert
+      expect: () => [
+        const CompanyNetIncomeState.loading(),
+        isA<CompanyNetIncomeState>().having(
+          (s) => s.maybeMap(loaded: (l) => l.ticker, orElse: () => null),
+          'ticker',
+          tTicker,
+        ),
+      ],
     );
   });
 
@@ -173,53 +193,55 @@ void main() {
     blocTest<CompanyNetIncomeBloc, CompanyNetIncomeState>(
       'stalenessCheckRequested_initialState_triggersLoadRequested',
       build: () {
-        // arrange
-        when(
-          () => mockGetNetIncomeStats(tTicker),
-        ).thenAnswer((_) async => const Right(tNetIncomeStats));
+        // Arrange
+        when(() => mockGetNetIncomeStats(tTicker)).thenAnswer(
+          (_) async =>
+              const Right((tNetIncomeStats, CompanyProfileDataOrigin.api)),
+        );
         return bloc;
       },
-      act: (bloc) {
-        // act
-        bloc.add(const CompanyNetIncomeEvent.stalenessCheckRequested(tTicker));
-      },
-      expect: () {
-        // assert
-        return [
-          const CompanyNetIncomeState.loading(),
-          isA<CompanyNetIncomeState>().having(
-            (s) =>
-                s.maybeMap(loaded: (l) => l.netIncomeStats, orElse: () => null),
-            'netIncomeStats',
-            tNetIncomeStats,
-          ),
-        ];
-      },
+      // Act
+      act: (bloc) => bloc.add(
+        const CompanyNetIncomeEvent.stalenessCheckRequested(tTicker),
+      ),
+      // Assert
+      expect: () => [
+        const CompanyNetIncomeState.loading(),
+        isA<CompanyNetIncomeState>()
+            .having(
+              (s) => s.maybeMap(loaded: (l) => l.ticker, orElse: () => null),
+              'ticker',
+              tTicker,
+            )
+            .having(
+              (s) =>
+                  s.maybeMap(loaded: (l) => l.dataOrigin, orElse: () => null),
+              'dataOrigin',
+              CompanyProfileDataOrigin.api,
+            ),
+      ],
     );
 
     blocTest<CompanyNetIncomeBloc, CompanyNetIncomeState>(
       'stalenessCheckRequested_fresh_doesNotTriggerLoad',
-      build: () {
-        // arrange
-        return bloc;
-      },
+      // Arrange
+      build: () => bloc,
       seed: () => CompanyNetIncomeState.loaded(
+        ticker: tTicker,
         netIncomeStats: tNetIncomeStats,
         annualChartData: const [],
         quarterlyChartData: const [],
         historyLimit: 7,
+        dataOrigin: CompanyProfileDataOrigin.api,
         lastUpdated: DateTime.now(),
       ),
-      act: (bloc) {
-        // act
-        bloc.add(const CompanyNetIncomeEvent.stalenessCheckRequested(tTicker));
-      },
-      expect: () {
-        // assert
-        return [];
-      },
+      // Act
+      act: (bloc) => bloc.add(
+        const CompanyNetIncomeEvent.stalenessCheckRequested(tTicker),
+      ),
+      // Assert
+      expect: () => [],
       verify: (_) {
-        // assert
         verifyNever(() => mockGetNetIncomeStats(any()));
       },
     );
@@ -227,35 +249,42 @@ void main() {
     blocTest<CompanyNetIncomeBloc, CompanyNetIncomeState>(
       'stalenessCheckRequested_stale_triggersLoadRequested',
       build: () {
-        // arrange
-        when(
-          () => mockGetNetIncomeStats(tTicker),
-        ).thenAnswer((_) async => const Right(tNetIncomeStats));
+        // Arrange
+        when(() => mockGetNetIncomeStats(tTicker)).thenAnswer(
+          (_) async =>
+              const Right((tNetIncomeStats, CompanyProfileDataOrigin.api)),
+        );
         return bloc;
       },
       seed: () => CompanyNetIncomeState.loaded(
+        ticker: tTicker,
         netIncomeStats: tNetIncomeStats,
         annualChartData: const [],
         quarterlyChartData: const [],
         historyLimit: 7,
+        dataOrigin: CompanyProfileDataOrigin.api,
         lastUpdated: DateTime.now().subtract(const Duration(hours: 25)),
       ),
-      act: (bloc) {
-        // act
-        bloc.add(const CompanyNetIncomeEvent.stalenessCheckRequested(tTicker));
-      },
-      expect: () {
-        // assert
-        return [
-          const CompanyNetIncomeState.loading(),
-          isA<CompanyNetIncomeState>().having(
-            (s) =>
-                s.maybeMap(loaded: (l) => l.netIncomeStats, orElse: () => null),
-            'netIncomeStats',
-            tNetIncomeStats,
-          ),
-        ];
-      },
+      // Act
+      act: (bloc) => bloc.add(
+        const CompanyNetIncomeEvent.stalenessCheckRequested(tTicker),
+      ),
+      // Assert
+      expect: () => [
+        const CompanyNetIncomeState.loading(),
+        isA<CompanyNetIncomeState>()
+            .having(
+              (s) => s.maybeMap(loaded: (l) => l.ticker, orElse: () => null),
+              'ticker',
+              tTicker,
+            )
+            .having(
+              (s) =>
+                  s.maybeMap(loaded: (l) => l.dataOrigin, orElse: () => null),
+              'dataOrigin',
+              CompanyProfileDataOrigin.api,
+            ),
+      ],
     );
   });
 }

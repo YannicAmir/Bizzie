@@ -33,35 +33,48 @@ class SecurityRepositoryImpl implements ISecurityRepository {
       final profileResult = await _companyRepository.getProfile(ticker);
       final quoteResult = await _companyRepository.getQuote(ticker);
 
-      if (profileResult.isLeft()) {
-        return left(Failure.server('Failed to fetch profile'));
-      }
-      if (quoteResult.isLeft()) {
-        return left(Failure.server('Failed to fetch quote'));
-      }
+      return profileResult.fold((failure) => left(failure), (
+        profileData,
+      ) async {
+        return quoteResult.fold((failure) => left(failure), (quoteData) async {
+          final profile = profileData.$1;
+          final quote = quoteData.$1;
 
-      final profile = profileResult.getOrElse(() => throw Exception());
-      final quote = quoteResult.getOrElse(() => throw Exception());
+          double? peRatioTTM;
+          double? pfcfTTM;
+          CompanyProfileDataOrigin ratiosOrigin =
+              CompanyProfileDataOrigin.cache;
 
-      double? peRatioTTM;
-      double? pfcfTTM;
+          try {
+            final ttmRatios = await _ratiosRemoteDataSource.getRatiosTtm(
+              ticker,
+            );
+            final ratio = ttmRatios.firstOrNull;
+            peRatioTTM = ratio?.priceToEarningsRatioTTM;
+            pfcfTTM = ratio?.priceToFreeCashFlowRatioTTM;
+            if (ttmRatios.isNotEmpty) {
+              ratiosOrigin = CompanyProfileDataOrigin.api;
+            }
+          } catch (_) {}
 
-      try {
-        final ttmRatios = await _ratiosRemoteDataSource.getRatiosTtm(ticker);
-        final ratio = ttmRatios.firstOrNull;
-        peRatioTTM = ratio?.priceToEarningsRatioTTM;
-        pfcfTTM = ratio?.priceToFreeCashFlowRatioTTM;
-      } catch (_) {}
+          final origins = [profileData.$2, quoteData.$2, ratiosOrigin];
+          final finalOrigin = origins.contains(CompanyProfileDataOrigin.api)
+              ? CompanyProfileDataOrigin.api
+              : origins.contains(CompanyProfileDataOrigin.db)
+              ? CompanyProfileDataOrigin.db
+              : CompanyProfileDataOrigin.cache;
 
-      return right((
-        SecurityDetails.fromProfileAndQuote(
-          profile: profile,
-          quote: quote,
-          peRatioTTM: peRatioTTM,
-          pfcfTTM: pfcfTTM,
-        ),
-        CompanyProfileDataOrigin.api,
-      ));
+          return right((
+            SecurityDetails.fromProfileAndQuote(
+              profile: profile,
+              quote: quote,
+              peRatioTTM: peRatioTTM,
+              pfcfTTM: pfcfTTM,
+            ),
+            finalOrigin,
+          ));
+        });
+      });
     } catch (e) {
       return left(Failure.server(e.toString()));
     }
@@ -71,40 +84,44 @@ class SecurityRepositoryImpl implements ISecurityRepository {
   Future<Either<Failure, (DateTime?, CompanyProfileDataOrigin)>>
   getUpcomingEarningsDate(String ticker) async {
     try {
-      List<EarningsReportDto>? earnings = await _securityLocalDataSource
-          .getCachedEarningsReports(ticker);
-      CompanyProfileDataOrigin origin = CompanyProfileDataOrigin.cache;
-
-      if (earnings == null) {
-        earnings = await _securityRemoteDataSource.getEarningsReports(ticker);
-        await _securityLocalDataSource.cacheEarningsReports(ticker, earnings);
-        origin = CompanyProfileDataOrigin.api;
-      }
-
-      final now = DateTime.now();
-      final oneDayAgo = now.subtract(const Duration(days: 1));
-      final windowEnd = now.add(
-        const Duration(days: _kUpcomingEarningsWindowDays),
+      final res = await _securityLocalDataSource.syncEarningsReports(
+        ticker,
+        remoteFetcher: () =>
+            _securityRemoteDataSource.getEarningsReports(ticker),
       );
 
-      final upcoming = earnings.where((e) {
-        final date = e.toDateTime();
-        if (date == null) return false;
-        return date.isAfter(oneDayAgo) && date.isBefore(windowEnd);
-      }).toList();
-
-      if (upcoming.isEmpty) return right((null, origin));
-
-      upcoming.sort((a, b) {
-        final dateA = a.toDateTime();
-        final dateB = b.toDateTime();
-        if (dateA == null || dateB == null) return 0;
-        return dateA.compareTo(dateB);
-      });
-
-      return right((upcoming.first.toDateTime(), origin));
+      return res.map(
+        success: (s) => right((_processEarnings(s.data), s.origin)),
+        failure: (f) => left(f.failure),
+        notFound: (_) => right((null, CompanyProfileDataOrigin.cache)),
+      );
     } catch (e) {
       return left(Failure.server(e.toString()));
     }
+  }
+
+  DateTime? _processEarnings(List<EarningsReportDto> earnings) {
+    final now = DateTime.now();
+    final oneDayAgo = now.subtract(const Duration(days: 1));
+    final windowEnd = now.add(
+      const Duration(days: _kUpcomingEarningsWindowDays),
+    );
+
+    final upcoming = earnings.where((e) {
+      final date = e.toDateTime();
+      if (date == null) return false;
+      return date.isAfter(oneDayAgo) && date.isBefore(windowEnd);
+    }).toList();
+
+    if (upcoming.isEmpty) return null;
+
+    upcoming.sort((a, b) {
+      final dateA = a.toDateTime();
+      final dateB = b.toDateTime();
+      if (dateA == null || dateB == null) return 0;
+      return dateA.compareTo(dateB);
+    });
+
+    return upcoming.first.toDateTime();
   }
 }

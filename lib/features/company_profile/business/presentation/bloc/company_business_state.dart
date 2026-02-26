@@ -1,5 +1,6 @@
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/features/company_profile/business/domain/models/business_profile.dart';
+import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'company_business_state.freezed.dart';
@@ -11,6 +12,7 @@ class CompanyBusinessState with _$CompanyBusinessState {
   const factory CompanyBusinessState.loaded(
     BusinessProfile businessProfile, {
     required int historyLimit,
+    required CompanyProfileDataOrigin dataOrigin,
     DateTime? lastUpdated,
   }) = _Loaded;
   const factory CompanyBusinessState.failure(Failure failure) = _Failure;

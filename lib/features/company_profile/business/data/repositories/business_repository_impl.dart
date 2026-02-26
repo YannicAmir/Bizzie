@@ -9,6 +9,7 @@ import 'package:bizzie/features/company_profile/financial_statements/data/dtos/f
 import 'package:bizzie/features/company_profile/financial_statements/data/dtos/legacy_income_statement_dto.dart';
 import 'package:bizzie/features/company_profile/business/domain/interfaces/i_business_repository.dart';
 import 'package:bizzie/features/company_profile/business/domain/models/business_profile.dart';
+import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:bizzie/features/company_profile/business/domain/models/company_executive.dart';
 import 'package:bizzie/features/company_profile/business/domain/models/sec_filing.dart';
 import 'package:bizzie/features/company_profile/shared/domain/interfaces/i_company_repository.dart';
@@ -40,97 +41,127 @@ class BusinessRepositoryImpl implements IBusinessRepository {
   );
 
   @override
-  Future<Either<Failure, BusinessProfile>> getBusinessProfile(
-    String ticker,
-  ) async {
+  Future<Either<Failure, (BusinessProfile, CompanyProfileDataOrigin)>>
+  getBusinessProfile(String ticker) async {
     try {
       final results = await Future.wait([
-        _getCompanyProfile(ticker),
+        _companyRepository.getProfile(ticker),
         _getExecutivesAndCache(ticker),
         _financialRemoteDataSource.getSecFilings(ticker),
         _fetchLegacyIncomeStatements(ticker, _Consts.annual),
         _fetchLegacyIncomeStatements(ticker, _Consts.quarter),
+        _localDataSource.getCachedProxyUrl(ticker),
       ]);
 
-      final profile = results[0] as CompanyProfile;
-      final executives = results[1] as List<CompanyExecutive>;
+      final profileResult =
+          results[0]
+              as Either<Failure, (CompanyProfile, CompanyProfileDataOrigin)>;
+      final execResult =
+          results[1] as (List<CompanyExecutive>, CompanyProfileDataOrigin);
       final secSearchFilings = results[2] as List<FmpSecFilingDto>;
-      final annualIncome = results[3] as List<LegacyIncomeStatementDto>;
-      final quarterlyIncome = results[4] as List<LegacyIncomeStatementDto>;
+      final annualResult =
+          results[3]
+              as (List<LegacyIncomeStatementDto>, CompanyProfileDataOrigin);
+      final quarterlyResult =
+          results[4]
+              as (List<LegacyIncomeStatementDto>, CompanyProfileDataOrigin);
+      final cachedProxyUrlTuple =
+          results[5] as (String?, CompanyProfileDataOrigin)?;
+      final cachedProxyUrl = cachedProxyUrlTuple?.$1;
 
-      final isForeign = secSearchFilings.any(
-        (f) => f.formType == _Consts.form20F || f.formType == _Consts.form6K,
-      );
+      return profileResult.fold((failure) => left(failure), (profileData) {
+        final profile = profileData.$1;
+        final profileOrigin = profileData.$2;
+        final executives = execResult.$1;
+        final execOrigin = execResult.$2;
+        final annualIncome = annualResult.$1;
+        final annualOrigin = annualResult.$2;
+        final quarterlyIncome = quarterlyResult.$1;
+        final quarterlyOrigin = quarterlyResult.$2;
 
-      final def14aUrlData = await _getProxyOrAnnualUrl(
-        ticker,
-        secSearchFilings,
-      );
-      final annualFilings = _mapIncomeStatementsToFilings(annualIncome);
-      final quarterlyFilings = _mapIncomeStatementsToFilings(quarterlyIncome);
+        final isForeign = secSearchFilings.any(
+          (f) => f.formType == _Consts.form20F || f.formType == _Consts.form6K,
+        );
 
-      return right(
-        BusinessProfile(
-          symbol: profile.symbol,
-          companyName: profile.companyName ?? ticker,
-          sector: profile.sector ?? 'N/A',
-          industry: profile.industry ?? 'N/A',
-          description: profile.description ?? '',
-          ceo: profile.ceo ?? 'N/A',
-          website: profile.website ?? '',
-          address: profile.address ?? '',
-          city: profile.city ?? '',
-          state: profile.state ?? '',
-          zip: profile.zip ?? '',
-          phone: profile.phone ?? '',
-          fullTimeEmployees: profile.fullTimeEmployees ?? 'N/A',
-          executives: executives,
-          def14aUrl: def14aUrlData.url,
-          isForeignCompany: isForeign,
-          proxyFilingFormType:
-              def14aUrlData.formType ?? (isForeign ? '20-F' : 'DEF 14A'),
-          annualFilings: annualFilings,
-          quarterlyFilings: quarterlyFilings,
-        ),
-      );
+        final def14aUrlData = _getProxyOrAnnualUrlSync(
+          ticker,
+          secSearchFilings,
+          cachedProxyUrl,
+        );
+
+        final annualFilings = _mapIncomeStatementsToFilings(annualIncome);
+        final quarterlyFilings = _mapIncomeStatementsToFilings(quarterlyIncome);
+
+        final origins = [
+          profileOrigin,
+          execOrigin,
+          annualOrigin,
+          quarterlyOrigin,
+        ];
+
+        final finalOrigin = origins.contains(CompanyProfileDataOrigin.api)
+            ? CompanyProfileDataOrigin.api
+            : origins.contains(CompanyProfileDataOrigin.db)
+            ? CompanyProfileDataOrigin.db
+            : CompanyProfileDataOrigin.cache;
+
+        return right((
+          BusinessProfile(
+            symbol: profile.symbol,
+            companyName: profile.companyName ?? ticker,
+            sector: profile.sector ?? 'N/A',
+            industry: profile.industry ?? 'N/A',
+            description: profile.description ?? '',
+            ceo: profile.ceo ?? 'N/A',
+            website: profile.website ?? '',
+            address: profile.address ?? '',
+            city: profile.city ?? '',
+            state: profile.state ?? '',
+            zip: profile.zip ?? '',
+            phone: profile.phone ?? '',
+            fullTimeEmployees: profile.fullTimeEmployees ?? 'N/A',
+            executives: executives,
+            def14aUrl: def14aUrlData.url,
+            isForeignCompany: isForeign,
+            proxyFilingFormType:
+                def14aUrlData.formType ?? (isForeign ? '20-F' : 'DEF 14A'),
+            annualFilings: annualFilings,
+            quarterlyFilings: quarterlyFilings,
+          ),
+          finalOrigin,
+        ));
+      });
     } catch (e) {
       return left(Failure.server(e.toString()));
     }
   }
 
-  Future<CompanyProfile> _getCompanyProfile(String ticker) async {
-    final result = await _companyRepository.getProfile(ticker);
-    return result.fold(
-      (failure) => throw Exception(failure.message),
-      (profile) => profile,
+  Future<(List<CompanyExecutive>, CompanyProfileDataOrigin)>
+  _getExecutivesAndCache(String ticker) async {
+    final res = await _localDataSource.syncGovernance(
+      ticker,
+      remoteFetcher: () async {
+        final govList = await _remoteDataSource.getGovernance(ticker);
+        final execList = await _remoteDataSource.getExecutives(ticker);
+        if (govList.isEmpty) throw Exception('Governance info not found');
+        return (govList.first, execList);
+      },
+    );
+
+    return res.map(
+      success: (s) => (s.data.$2.map((e) => e.toDomain()).toList(), s.origin),
+      failure: (_) =>
+          (const <CompanyExecutive>[], CompanyProfileDataOrigin.cache),
+      notFound: (_) =>
+          (const <CompanyExecutive>[], CompanyProfileDataOrigin.cache),
     );
   }
 
-  Future<List<CompanyExecutive>> _getExecutivesAndCache(String ticker) async {
-    var localGov = await _localDataSource.getCachedGovernance(ticker);
-    var localExec = await _localDataSource.getCachedExecutives(ticker);
-
-    if (localGov == null || localExec == null) {
-      try {
-        final govList = await _remoteDataSource.getGovernance(ticker);
-        final execList = await _remoteDataSource.getExecutives(ticker);
-        if (govList.isNotEmpty) {
-          localGov = govList.first;
-          localExec = execList;
-          await _localDataSource.cacheGovernance(ticker, localGov, localExec);
-        }
-      } catch (_) {}
-    }
-
-    return localExec?.map((e) => e.toDomain()).toList() ?? [];
-  }
-
-  Future<({String? url, String? formType})> _getProxyOrAnnualUrl(
+  ({String? url, String? formType}) _getProxyOrAnnualUrlSync(
     String ticker,
     List<FmpSecFilingDto> filings,
-  ) async {
-    String? cachedUrl = await _localDataSource.getCachedProxyUrl(ticker);
-
+    String? cachedUrl,
+  ) {
     if (cachedUrl != null) {
       final found = filings
           .where((f) => (f.finalLink ?? f.link) == cachedUrl)
@@ -146,7 +177,7 @@ class BusinessRepositoryImpl implements IBusinessRepository {
     if (target != null) {
       final url = target.finalLink ?? target.link;
       if (url != null) {
-        await _localDataSource.cacheProxyUrl(ticker, url);
+        _localDataSource.cacheProxyUrl(ticker, url);
         return (url: url, formType: target.formType);
       }
     }
@@ -167,23 +198,23 @@ class BusinessRepositoryImpl implements IBusinessRepository {
         .toList();
   }
 
-  Future<List<LegacyIncomeStatementDto>> _fetchLegacyIncomeStatements(
-    String ticker,
-    String period,
-  ) async {
-    final local = await _financialLocalDataSource
-        .getCachedLegacyIncomeStatements(ticker, period: period);
-    if (local != null) return local;
+  Future<(List<LegacyIncomeStatementDto>, CompanyProfileDataOrigin)>
+  _fetchLegacyIncomeStatements(String ticker, String period) async {
+    final res = await _financialLocalDataSource.syncLegacyIncomeStatements(
+      ticker,
+      period: period,
+      remoteFetcher: () => _financialRemoteDataSource.getLegacyIncomeStatements(
+        ticker,
+        period: period,
+      ),
+    );
 
-    final remote = await _financialRemoteDataSource.getLegacyIncomeStatements(
-      ticker,
-      period: period,
+    return res.map(
+      success: (s) => (s.data, s.origin),
+      failure: (_) =>
+          (const <LegacyIncomeStatementDto>[], CompanyProfileDataOrigin.cache),
+      notFound: (_) =>
+          (const <LegacyIncomeStatementDto>[], CompanyProfileDataOrigin.cache),
     );
-    await _financialLocalDataSource.cacheLegacyIncomeStatements(
-      ticker,
-      remote,
-      period: period,
-    );
-    return remote;
   }
 }

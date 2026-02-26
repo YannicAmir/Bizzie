@@ -3,8 +3,11 @@ import 'package:bizzie/app/themes/app_colors.dart';
 import 'package:bizzie/app/themes/app_text_styles.dart';
 import 'package:bizzie/features/company_profile/business/domain/models/business_profile.dart';
 import 'package:bizzie/features/company_profile/business/presentation/utils/business_profile_extensions.dart';
+import 'package:bizzie/features/company_profile/business/presentation/bloc/company_business_bloc.dart';
+import 'package:bizzie/features/company_profile/business/presentation/bloc/company_business_event.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -43,10 +46,17 @@ class CompanyInfoCard extends StatelessWidget {
           _InfoRow(
             iconPath: AppAssets.companyProfileWebsiteIcon,
             text: profile.website.isNotEmpty ? profile.website : 'N/A',
-            textColor: AppColors.primary,
+            textColor: theme.colorScheme.primary,
             isBold: true,
             onTap: profile.website.isNotEmpty
-                ? () => _launchUrl(profile.website)
+                ? () {
+                    context.read<CompanyBusinessBloc>().add(
+                      const CompanyBusinessEvent.analyticsInteractionOccurred(
+                        tappedWebsite: true,
+                      ),
+                    );
+                    _launchUrl(profile.website);
+                  }
                 : null,
           ),
           const SizedBox(height: 16),
@@ -59,10 +69,17 @@ class CompanyInfoCard extends StatelessWidget {
           _InfoRow(
             iconPath: AppAssets.companyProfileDocIcon,
             text: profile.getProxyFilingTitle(),
-            textColor: AppColors.primary,
+            textColor: theme.colorScheme.primary,
             isBold: true,
             onTap: profile.def14aUrl != null
-                ? () => _launchUrl(profile.def14aUrl!)
+                ? () {
+                    context.read<CompanyBusinessBloc>().add(
+                      const CompanyBusinessEvent.analyticsInteractionOccurred(
+                        tappedProxy: true,
+                      ),
+                    );
+                    _launchUrl(profile.def14aUrl!);
+                  }
                 : null,
           ),
         ],

@@ -20,17 +20,10 @@ class CompanyNetIncomeBloc
 
   CompanyNetIncomeBloc(this._getNetIncomeStatsUseCase, this._configService)
     : super(const CompanyNetIncomeState.initial()) {
-    on<CompanyNetIncomeEvent>(_onEvent, transformer: droppable());
-  }
-
-  Future<void> _onEvent(
-    CompanyNetIncomeEvent event,
-    Emitter<CompanyNetIncomeState> emit,
-  ) async {
-    _logger.info('Handling event: $event');
-    await event.map(
-      loadRequested: (e) async => _onLoadRequested(e, emit),
-      stalenessCheckRequested: (e) async => _onStalenessCheckRequested(e),
+    on<LoadRequested>(_onLoadRequested, transformer: droppable());
+    on<StalenessCheckRequested>(
+      _onStalenessCheckRequested,
+      transformer: sequential(),
     );
   }
 
@@ -38,10 +31,19 @@ class CompanyNetIncomeBloc
     LoadRequested event,
     Emitter<CompanyNetIncomeState> emit,
   ) async {
-    if (!event.forceRefresh &&
-        state.maybeMap(loaded: (_) => true, orElse: () => false)) {
+    final isAlreadyLoaded = state.maybeMap(
+      loaded: (s) => true,
+      orElse: () => false,
+    );
+
+    final isRightTicker = state.maybeMap(
+      loaded: (s) => s.ticker == event.ticker,
+      orElse: () => false,
+    );
+
+    if (isAlreadyLoaded && isRightTicker && !event.forceRefresh) {
       _logger.info(
-        'Skip loading Net Income: already loaded and no force refresh',
+        'Company Net Income already loaded for ${event.ticker} and is the correct ticker. Skipping load (Silent Refresh).',
       );
       return;
     }
@@ -49,7 +51,9 @@ class CompanyNetIncomeBloc
     _logger.info(
       'Loading Net Income stats for ${event.ticker} (force=${event.forceRefresh})',
     );
-    emit(const CompanyNetIncomeState.loading());
+    if (!isAlreadyLoaded || !isRightTicker || event.forceRefresh) {
+      emit(const CompanyNetIncomeState.loading());
+    }
 
     final result = await _getNetIncomeStatsUseCase(event.ticker);
 
@@ -58,10 +62,12 @@ class CompanyNetIncomeBloc
         _logger.severe('Failed to load Net Income stats', failure);
         emit(CompanyNetIncomeState.failure(failure));
       },
-      (stats) {
-        _logger.info('Successfully loaded Net Income stats');
+      (tuple) {
+        final (stats, origin) = tuple;
+        _logger.info('Successfully loaded Net Income stats (origin: $origin)');
         emit(
           CompanyNetIncomeState.loaded(
+            ticker: event.ticker,
             netIncomeStats: stats,
             annualChartData: _toChartData(
               stats.annualNetIncome,
@@ -72,6 +78,7 @@ class CompanyNetIncomeBloc
               isAnnual: false,
             ),
             historyLimit: _configService.freePlanHistoryCount,
+            dataOrigin: origin,
             lastUpdated: DateTime.now(),
           ),
         );
@@ -79,7 +86,10 @@ class CompanyNetIncomeBloc
     );
   }
 
-  Future<void> _onStalenessCheckRequested(StalenessCheckRequested event) async {
+  Future<void> _onStalenessCheckRequested(
+    StalenessCheckRequested event,
+    Emitter<CompanyNetIncomeState> emit,
+  ) async {
     _logger.info('Staleness check requested for ${event.ticker}');
     state.mapOrNull(
       loaded: (loadedState) {

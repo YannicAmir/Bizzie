@@ -18,17 +18,10 @@ class CompanyDividendsBloc
 
   CompanyDividendsBloc(this._getDividendInfo, this._configService)
     : super(const CompanyDividendsState.initial()) {
-    on<CompanyDividendsEvent>(_onEvent, transformer: droppable());
-  }
-
-  Future<void> _onEvent(
-    CompanyDividendsEvent event,
-    Emitter<CompanyDividendsState> emit,
-  ) async {
-    _logger.info('Handling event: $event');
-    await event.map(
-      loadRequested: (e) async => _onLoadRequested(e, emit),
-      stalenessCheckRequested: (e) async => _onStalenessCheckRequested(e),
+    on<LoadRequested>(_onLoadRequested, transformer: droppable());
+    on<StalenessCheckRequested>(
+      _onStalenessCheckRequested,
+      transformer: sequential(),
     );
   }
 
@@ -36,10 +29,19 @@ class CompanyDividendsBloc
     LoadRequested event,
     Emitter<CompanyDividendsState> emit,
   ) async {
-    if (!event.forceRefresh &&
-        state.maybeMap(loaded: (_) => true, orElse: () => false)) {
+    final isAlreadyLoaded = state.maybeMap(
+      loaded: (s) => true,
+      orElse: () => false,
+    );
+
+    final isRightTicker = state.maybeMap(
+      loaded: (s) => s.ticker == event.ticker,
+      orElse: () => false,
+    );
+
+    if (isAlreadyLoaded && isRightTicker && !event.forceRefresh) {
       _logger.info(
-        'Skip loading dividends: already loaded and no force refresh',
+        'Company Dividends already loaded for ${event.ticker} and is the correct ticker. Skipping load (Silent Refresh).',
       );
       return;
     }
@@ -47,7 +49,9 @@ class CompanyDividendsBloc
     _logger.info(
       'Loading dividends for ${event.ticker} (force=${event.forceRefresh})',
     );
-    emit(const CompanyDividendsState.loading());
+    if (!isAlreadyLoaded || !isRightTicker || event.forceRefresh) {
+      emit(const CompanyDividendsState.loading());
+    }
 
     final result = await _getDividendInfo(event.ticker);
 
@@ -56,12 +60,16 @@ class CompanyDividendsBloc
         _logger.severe('Failed to load dividends', failure);
         emit(CompanyDividendsState.error(failure));
       },
-      (info) {
-        _logger.info('Successfully loaded dividends');
+      (tuple) {
+        final info = tuple.$1;
+        final origin = tuple.$2;
+        _logger.info('Successfully loaded dividends, origin=$origin');
         emit(
           CompanyDividendsState.loaded(
-            info,
+            ticker: event.ticker,
+            dividendInfo: info,
             historyLimit: _configService.freePlanHistoryCount,
+            dataOrigin: origin,
             lastUpdated: DateTime.now(),
           ),
         );
@@ -69,7 +77,10 @@ class CompanyDividendsBloc
     );
   }
 
-  Future<void> _onStalenessCheckRequested(StalenessCheckRequested event) async {
+  Future<void> _onStalenessCheckRequested(
+    StalenessCheckRequested event,
+    Emitter<CompanyDividendsState> emit,
+  ) async {
     _logger.info('Staleness check requested for ${event.ticker}');
     state.mapOrNull(
       loaded: (loadedState) {

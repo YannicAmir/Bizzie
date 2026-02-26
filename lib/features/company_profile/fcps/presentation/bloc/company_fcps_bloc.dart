@@ -20,17 +20,10 @@ class CompanyFcpsBloc extends Bloc<CompanyFcpsEvent, CompanyFcpsState> {
 
   CompanyFcpsBloc(this._getFcpsStats, this._configService)
     : super(const CompanyFcpsState.initial()) {
-    on<CompanyFcpsEvent>(_onEvent, transformer: droppable());
-  }
-
-  Future<void> _onEvent(
-    CompanyFcpsEvent event,
-    Emitter<CompanyFcpsState> emit,
-  ) async {
-    _logger.info('Handling event: $event');
-    await event.map(
-      loadRequested: (e) async => _onLoadRequested(e, emit),
-      stalenessCheckRequested: (e) async => _onStalenessCheckRequested(e),
+    on<LoadRequested>(_onLoadRequested, transformer: droppable());
+    on<StalenessCheckRequested>(
+      _onStalenessCheckRequested,
+      transformer: sequential(),
     );
   }
 
@@ -38,16 +31,29 @@ class CompanyFcpsBloc extends Bloc<CompanyFcpsEvent, CompanyFcpsState> {
     LoadRequested event,
     Emitter<CompanyFcpsState> emit,
   ) async {
-    if (!event.forceRefresh &&
-        state.maybeMap(loaded: (_) => true, orElse: () => false)) {
-      _logger.info('Skip loading FCPS: already loaded and no force refresh');
+    final isAlreadyLoaded = state.maybeMap(
+      loaded: (s) => true,
+      orElse: () => false,
+    );
+
+    final isRightTicker = state.maybeMap(
+      loaded: (s) => s.ticker == event.ticker,
+      orElse: () => false,
+    );
+
+    if (isAlreadyLoaded && isRightTicker && !event.forceRefresh) {
+      _logger.info(
+        'Company FCPS already loaded for ${event.ticker} and is the correct ticker. Skipping load (Silent Refresh).',
+      );
       return;
     }
 
     _logger.info(
       'Loading FCPS stats for ${event.ticker} (force=${event.forceRefresh})',
     );
-    emit(const CompanyFcpsState.loading());
+    if (!isAlreadyLoaded || !isRightTicker || event.forceRefresh) {
+      emit(const CompanyFcpsState.loading());
+    }
 
     final result = await _getFcpsStats(event.ticker);
 
@@ -56,10 +62,12 @@ class CompanyFcpsBloc extends Bloc<CompanyFcpsEvent, CompanyFcpsState> {
         _logger.severe('Failed to load FCPS stats', failure);
         emit(CompanyFcpsState.failure(failure));
       },
-      (data) {
-        _logger.info('Successfully loaded FCPS stats');
+      (tuple) {
+        final (data, origin) = tuple;
+        _logger.info('Successfully loaded FCPS stats (origin: $origin)');
         emit(
           CompanyFcpsState.loaded(
+            ticker: event.ticker,
             fcpsStats: data,
             annualChartData: _toChartData(data.annualFcps, isAnnual: true),
             quarterlyChartData: _toChartData(
@@ -67,6 +75,7 @@ class CompanyFcpsBloc extends Bloc<CompanyFcpsEvent, CompanyFcpsState> {
               isAnnual: false,
             ),
             historyLimit: _configService.freePlanHistoryCount,
+            dataOrigin: origin,
             lastUpdated: DateTime.now(),
           ),
         );
@@ -74,7 +83,10 @@ class CompanyFcpsBloc extends Bloc<CompanyFcpsEvent, CompanyFcpsState> {
     );
   }
 
-  Future<void> _onStalenessCheckRequested(StalenessCheckRequested event) async {
+  Future<void> _onStalenessCheckRequested(
+    StalenessCheckRequested event,
+    Emitter<CompanyFcpsState> emit,
+  ) async {
     _logger.info('Staleness check requested for ${event.ticker}');
     state.mapOrNull(
       loaded: (loadedState) {

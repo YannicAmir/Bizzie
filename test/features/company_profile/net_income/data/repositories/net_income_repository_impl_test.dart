@@ -1,10 +1,12 @@
 import 'package:bizzie/features/company_profile/financial_statements/data/datasources/financial_statements_firestore_data_source.dart';
+import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:bizzie/features/company_profile/financial_statements/data/datasources/financial_statements_remote_data_source.dart';
 import 'package:bizzie/features/company_profile/financial_statements/data/dtos/income_statement_dto.dart';
 import 'package:bizzie/features/company_profile/net_income/data/repositories/net_income_repository_impl.dart';
 import 'package:bizzie/features/company_profile/net_income/domain/models/net_income_stats.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:bizzie/core/data/models/cache_result.dart' as cache;
 
 class MockFinancialRemoteDataSource extends Mock
     implements FinancialStatementsRemoteDataSource {}
@@ -45,21 +47,30 @@ void main() {
     test(
       'getNetIncomeStats_cacheInformationResult_returnsRightWithData',
       () async {
-        // arrange
+        // Arrange
         when(
-          () => mockLocalDataSource.getCachedIncomeStatements(
+          () => mockLocalDataSource.syncIncomeStatements(
             tTicker,
             period: any(named: 'period'),
+            remoteFetcher: any(named: 'remoteFetcher'),
           ),
-        ).thenAnswer((_) async => tIncomeStatements);
+        ).thenAnswer(
+          (_) async => cache.CacheSuccess(
+            tIncomeStatements,
+            CompanyProfileDataOrigin.cache,
+          ),
+        );
 
-        // act
+        // Act
         final result = await repository.getNetIncomeStats(tTicker);
 
-        // assert
+        // Assert
         expect(result.isRight(), true);
-        result.fold((l) => fail('Should return right'), (r) {
+        result.fold((l) => fail('Should return right'), (tuple) {
+          final r = tuple.$1;
+          final origin = tuple.$2;
           expect(r, isA<NetIncomeStats>());
+          expect(origin, CompanyProfileDataOrigin.cache);
           expect(r.annualNetIncome.length, 1);
           expect(r.annualNetIncome.first.value, 100.0);
         });
@@ -67,7 +78,7 @@ void main() {
     );
 
     test('getNetIncomeStats_serverExample_returnLeftFailure', () async {
-      // arrange
+      // Arrange
       when(
         () => mockLocalDataSource.getCachedIncomeStatements(
           tTicker,
@@ -81,10 +92,10 @@ void main() {
         ),
       ).thenThrow(Exception('Server Error'));
 
-      // act
+      // Act
       final result = await repository.getNetIncomeStats(tTicker);
 
-      // assert
+      // Assert
       expect(result.isLeft(), true);
     });
   });

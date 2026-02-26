@@ -20,17 +20,10 @@ class CompanyRevenueBloc
 
   CompanyRevenueBloc(this._getRevenueStatsUseCase, this._configService)
     : super(const CompanyRevenueState.initial()) {
-    on<CompanyRevenueEvent>(_onEvent, transformer: droppable());
-  }
-
-  Future<void> _onEvent(
-    CompanyRevenueEvent event,
-    Emitter<CompanyRevenueState> emit,
-  ) async {
-    _logger.info('Handling event: $event');
-    await event.map(
-      loadRequested: (e) async => _onLoadRequested(e, emit),
-      stalenessCheckRequested: (e) async => _onStalenessCheckRequested(e),
+    on<LoadRequested>(_onLoadRequested, transformer: droppable());
+    on<StalenessCheckRequested>(
+      _onStalenessCheckRequested,
+      transformer: sequential(),
     );
   }
 
@@ -38,16 +31,29 @@ class CompanyRevenueBloc
     LoadRequested event,
     Emitter<CompanyRevenueState> emit,
   ) async {
-    if (!event.forceRefresh &&
-        state.maybeMap(loaded: (_) => true, orElse: () => false)) {
-      _logger.info('Skip loading Revenue: already loaded and no force refresh');
+    final isAlreadyLoaded = state.maybeMap(
+      loaded: (s) => true,
+      orElse: () => false,
+    );
+
+    final isRightTicker = state.maybeMap(
+      loaded: (s) => s.ticker == event.ticker,
+      orElse: () => false,
+    );
+
+    if (isAlreadyLoaded && isRightTicker && !event.forceRefresh) {
+      _logger.info(
+        'Company Revenue already loaded for ${event.ticker} and is the correct ticker. Skipping load (Silent Refresh).',
+      );
       return;
     }
 
     _logger.info(
       'Loading Revenue stats for ${event.ticker} (force=${event.forceRefresh})',
     );
-    emit(const CompanyRevenueState.loading());
+    if (!isAlreadyLoaded || !isRightTicker || event.forceRefresh) {
+      emit(const CompanyRevenueState.loading());
+    }
 
     final result = await _getRevenueStatsUseCase(event.ticker);
 
@@ -56,10 +62,12 @@ class CompanyRevenueBloc
         _logger.severe('Failed to load Revenue stats', failure);
         emit(CompanyRevenueState.failure(failure));
       },
-      (stats) {
-        _logger.info('Successfully loaded Revenue stats');
+      (tuple) {
+        final (stats, origin) = tuple;
+        _logger.info('Successfully loaded Revenue stats (origin: $origin)');
         emit(
           CompanyRevenueState.loaded(
+            ticker: event.ticker,
             revenueStats: stats,
             annualChartData: _toChartData(stats.annualRevenue, isAnnual: true),
             quarterlyChartData: _toChartData(
@@ -67,6 +75,7 @@ class CompanyRevenueBloc
               isAnnual: false,
             ),
             historyLimit: _configService.freePlanHistoryCount,
+            dataOrigin: origin,
             lastUpdated: DateTime.now(),
           ),
         );
@@ -74,7 +83,10 @@ class CompanyRevenueBloc
     );
   }
 
-  Future<void> _onStalenessCheckRequested(StalenessCheckRequested event) async {
+  Future<void> _onStalenessCheckRequested(
+    StalenessCheckRequested event,
+    Emitter<CompanyRevenueState> emit,
+  ) async {
     _logger.info('Staleness check requested for ${event.ticker}');
     state.mapOrNull(
       loaded: (loadedState) {

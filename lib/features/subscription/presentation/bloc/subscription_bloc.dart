@@ -131,6 +131,8 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
     await _analytics.logTriggered(
       source: event.source,
       paywallType: event.paywallType,
+      tabName: event.tabName,
+      featureName: event.featureName,
     );
 
     if (event.source == PaywallSource.onboarding) {

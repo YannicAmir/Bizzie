@@ -60,6 +60,7 @@ class _PfcfRatioTabState extends State<PfcfRatioTab> {
           ),
           loaded:
               (
+                ticker,
                 dataPoints,
                 chartData,
                 currentValue,
@@ -68,6 +69,7 @@ class _PfcfRatioTabState extends State<PfcfRatioTab> {
                 isPositive,
                 referenceLabel,
                 historyLimit,
+                dataOrigin,
                 lastUpdated,
               ) => _PfcfRatioLoadedContent(
                 dataPoints: dataPoints,
@@ -78,7 +80,7 @@ class _PfcfRatioTabState extends State<PfcfRatioTab> {
                 isPositive: isPositive,
                 referenceLabel: referenceLabel,
                 historyLimit: historyLimit,
-                ticker: widget.ticker,
+                ticker: ticker,
                 lastUpdated: lastUpdated,
               ),
         );

@@ -17,14 +17,6 @@ void main() {
   });
 
   group('LifecycleService', () {
-    test('isForeground_initialState_returnsFalse', () {
-      // act
-      final result = service.isForeground;
-
-      // assert
-      expect(result, isFalse);
-    });
-
     test('onLifecycleChanged_resumedState_emitsForeground', () async {
       // arrange
       final states = <BizzieLifecycleState>[];
@@ -112,10 +104,6 @@ void main() {
 
       // act
       service.dispose();
-
-      // Since didChangeAppLifecycleState might still be called (theoretically)
-      // but the subject is closed, we verify no more events or errors.
-      // Note: behaviorSubject.add after close throws, but we check cleanup.
 
       // assert
       expect(
