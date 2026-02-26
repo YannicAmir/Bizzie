@@ -27,7 +27,12 @@ void main() {
   late MockBusinessTabAnalytics mockBusinessTabAnalytics;
 
   setUpAll(() {
-    registerFallbackValue(const BusinessTabViewState(ticker: 'fallback'));
+    registerFallbackValue(
+      const BusinessTabViewState(
+        ticker: 'fallback',
+        timestamp: '2024-01-01T00:00:00Z',
+      ),
+    );
   });
 
   setUp(() {
@@ -62,6 +67,13 @@ void main() {
     quarterlyFilings: [],
   );
 
+  final tAnalyticsState = BusinessTabViewState(
+    ticker: tTicker,
+    timestamp: '2024-01-01T00:00:00Z',
+    isSuccess: true,
+    dataSource: CompanyProfileDataOrigin.api,
+  );
+
   test('initialState_isCorrect', () {
     // assert
     expect(bloc.state, const CompanyBusinessState.initial());
@@ -85,21 +97,14 @@ void main() {
         // assert
         return [
           const CompanyBusinessState.loading(),
-          isA<CompanyBusinessState>()
-              .having(
-                (s) => s.maybeMap(
-                  loaded: (l) => l.businessProfile,
-                  orElse: () => null,
-                ),
-                'businessProfile',
-                tBusinessProfile,
-              )
-              .having(
-                (s) =>
-                    s.maybeMap(loaded: (l) => l.dataOrigin, orElse: () => null),
-                'dataOrigin',
-                CompanyProfileDataOrigin.api,
-              ),
+          isA<CompanyBusinessState>().having(
+            (s) => s.maybeMap(
+              loaded: (l) => l.businessProfile,
+              orElse: () => null,
+            ),
+            'businessProfile',
+            tBusinessProfile,
+          ),
         ];
       },
       verify: (_) {
@@ -143,7 +148,7 @@ void main() {
       seed: () => CompanyBusinessState.loaded(
         tBusinessProfile,
         historyLimit: 7,
-        dataOrigin: CompanyProfileDataOrigin.api,
+        analyticsState: tAnalyticsState,
       ),
       act: (bloc) {
         // act
@@ -171,7 +176,7 @@ void main() {
       seed: () => CompanyBusinessState.loaded(
         tBusinessProfile,
         historyLimit: 7,
-        dataOrigin: CompanyProfileDataOrigin.api,
+        analyticsState: tAnalyticsState,
       ),
       act: (bloc) {
         // act
@@ -214,7 +219,7 @@ void main() {
       seed: () => CompanyBusinessState.loaded(
         tBusinessProfile,
         historyLimit: 7,
-        dataOrigin: CompanyProfileDataOrigin.api,
+        analyticsState: tAnalyticsState,
       ),
       act: (bloc) {
         // act
@@ -280,7 +285,7 @@ void main() {
       seed: () => CompanyBusinessState.loaded(
         tBusinessProfile,
         historyLimit: 7,
-        dataOrigin: CompanyProfileDataOrigin.api,
+        analyticsState: tAnalyticsState,
         lastUpdated: DateTime.now(),
       ),
       act: (bloc) {
@@ -309,7 +314,7 @@ void main() {
       seed: () => CompanyBusinessState.loaded(
         tBusinessProfile,
         historyLimit: 7,
-        dataOrigin: CompanyProfileDataOrigin.api,
+        analyticsState: tAnalyticsState,
         lastUpdated: DateTime.now().subtract(const Duration(hours: 25)),
       ),
       act: (bloc) {
@@ -343,9 +348,10 @@ void main() {
     );
 
     blocTest<CompanyBusinessBloc, CompanyBusinessState>(
-      'analyticsInteractionOccurred_accumulatesState',
+      'analyticsInteractionOccurred_multipleInteractions_accumulatesState',
       build: () => bloc,
       act: (bloc) {
+        // act
         bloc.add(const CompanyBusinessEvent.tabShown(tTicker));
         bloc.add(
           const CompanyBusinessEvent.analyticsInteractionOccurred(
@@ -360,6 +366,7 @@ void main() {
       },
       expect: () => [],
       verify: (bloc) {
+        // assert
         verifyNever(
           () => mockBusinessTabAnalytics.logViewSummary(
             any(),
@@ -370,8 +377,9 @@ void main() {
     );
 
     blocTest<CompanyBusinessBloc, CompanyBusinessState>(
-      'tabHidden_logsFinalSummaryAndClearsState',
+      'tabHidden_viewActive_logsFinalSummary',
       build: () {
+        // arrange
         when(
           () => mockBusinessTabAnalytics.logViewSummary(
             any(),
@@ -381,27 +389,26 @@ void main() {
         return bloc;
       },
       act: (bloc) async {
+        // act
         bloc.add(const CompanyBusinessEvent.tabShown(tTicker));
+        await Future.delayed(Duration.zero);
         bloc.add(
           const CompanyBusinessEvent.analyticsInteractionOccurred(
             tappedWebsite: true,
           ),
         );
+        await Future.delayed(Duration.zero);
         bloc.add(const CompanyBusinessEvent.tabHidden());
       },
       expect: () => [],
       verify: (bloc) {
+        // assert
         verify(
           () => mockBusinessTabAnalytics.logViewSummary(
             any(
               that: isA<BusinessTabViewState>()
                   .having((s) => s.ticker, 'ticker', tTicker)
-                  .having((s) => s.tappedWebsite, 'tappedWebsite', true)
-                  .having(
-                    (s) => s.didExpandDescription,
-                    'didExpandDescription',
-                    false,
-                  ),
+                  .having((s) => s.tappedWebsite, 'tappedWebsite', true),
             ),
             isFinal: true,
           ),

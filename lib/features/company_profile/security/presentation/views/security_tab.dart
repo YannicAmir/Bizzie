@@ -51,7 +51,8 @@ class _SecurityTabState extends State<SecurityTab>
 
     return TabVisibilityObserver(
       tabName: CompanyProfileTab.security.analyticsName,
-      onTabShown: () => securityBloc.add(const CompanySecurityEvent.tabShown()),
+      onTabShown: () =>
+          securityBloc.add(CompanySecurityEvent.tabShown(widget.ticker)),
       onTabHidden: () =>
           securityBloc.add(const CompanySecurityEvent.tabHidden()),
       onAppBackgrounded: () =>

@@ -21,14 +21,19 @@ void main() {
   late MockGetSecurityDetailsUseCase mockGetSecurityDetails;
   late MockSecurityTabAnalytics mockTracker;
 
+  setUpAll(() {
+    registerFallbackValue(
+      const SecurityTabViewState(
+        ticker: 'AAPL',
+        securityType: 'company',
+        timestamp: '2024-01-01T00:00:00Z',
+      ),
+    );
+  });
+
   setUp(() {
     mockGetSecurityDetails = MockGetSecurityDetailsUseCase();
     mockTracker = MockSecurityTabAnalytics();
-
-    // Register fallback for logViewSummary
-    registerFallbackValue(
-      const SecurityTabViewState(ticker: 'AAPL', securityType: 'company'),
-    );
 
     bloc = CompanySecurityBloc(mockGetSecurityDetails, mockTracker);
   });
@@ -48,6 +53,7 @@ void main() {
   final tAnalyticsState = SecurityTabViewState(
     ticker: tTicker,
     securityType: 'company',
+    timestamp: '2024-01-01T00:00:00Z',
     isSuccess: true,
     dataSource: CompanyProfileDataOrigin.api,
     loadTimeMs: 0,
@@ -364,7 +370,7 @@ void main() {
 
   group('CompanySecurityBloc - Lifecycle Orchestration', () {
     blocTest<CompanySecurityBloc, CompanySecurityState>(
-      'tabHidden_callsLogSummaryWithFinalTrue',
+      'tabHidden_viewActive_logsFinalSummary',
       build: () {
         // arrange
         when(
@@ -377,8 +383,10 @@ void main() {
         tSecurityDetails,
         analyticsState: tAnalyticsState,
       ),
-      act: (bloc) {
+      act: (bloc) async {
         // act
+        bloc.add(const CompanySecurityEvent.tabShown(tTicker));
+        await Future.delayed(Duration.zero);
         bloc.add(const CompanySecurityEvent.tabHidden());
       },
       verify: (_) {
@@ -390,7 +398,7 @@ void main() {
     );
 
     blocTest<CompanySecurityBloc, CompanySecurityState>(
-      'appBackgrounded_callsLogSummaryWithFinalFalse',
+      'appBackgrounded_viewActive_logsNonFinalSummary',
       build: () {
         // arrange
         when(
@@ -403,9 +411,10 @@ void main() {
         tSecurityDetails,
         analyticsState: tAnalyticsState,
       ),
-      act: (bloc) {
+      act: (bloc) async {
         // act
-        bloc.add(const CompanySecurityEvent.tabShown());
+        bloc.add(const CompanySecurityEvent.tabShown(tTicker));
+        await Future.delayed(Duration.zero);
         bloc.add(const CompanySecurityEvent.appBackgrounded());
       },
       verify: (_) {

@@ -1,6 +1,7 @@
 import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:bizzie/core/interfaces/i_analytics_service.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
+import 'package:bizzie/features/company_profile/shared/presentation/analytics/base_analytics.dart';
 import 'package:bizzie/shared/utils/analytics_utils.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
@@ -10,7 +11,8 @@ part 'business_tab_analytics.freezed.dart';
 final _logger = BizzieLogger('BusinessTabAnalytics');
 
 @lazySingleton
-class BusinessTabAnalytics {
+class BusinessTabAnalytics
+    implements CompanyProfileTabTracker<BusinessTabViewState> {
   final IAnalyticsService _analytics;
 
   BusinessTabAnalytics(this._analytics);
@@ -33,13 +35,14 @@ class BusinessTabAnalytics {
   static const _kParamViewAll10QsTapped = 'view_all_10qs_tapped';
   static const _kParamIsFinal = 'is_final';
 
+  @override
   Future<void> logViewSummary(
     BusinessTabViewState state, {
     required bool isFinal,
   }) async {
     final params = {
-      _kParamScreenName: 'business_tab',
-      _kParamTimestamp: DateTime.now().toIso8601String(),
+      _kParamScreenName: state.screenName,
+      _kParamTimestamp: state.timestamp,
       _kParamTicker: AnalyticsUtils.truncate(state.ticker),
       _kParamLoadTimeMs: state.loadTimeMs ?? 0,
       _kParamIsSuccess: state.isSuccess,
@@ -70,9 +73,12 @@ class BusinessTabAnalytics {
 }
 
 @freezed
-abstract class BusinessTabViewState with _$BusinessTabViewState {
+abstract class BusinessTabViewState
+    with _$BusinessTabViewState
+    implements CompanyProfileTabAnalyticsState {
   const factory BusinessTabViewState({
     required String ticker,
+    required String timestamp, // Mandatory parameter
     int? loadTimeMs,
     @Default(false) bool isSuccess,
     CompanyProfileDataOrigin? dataSource,
@@ -85,4 +91,13 @@ abstract class BusinessTabViewState with _$BusinessTabViewState {
     @Default(false) bool viewAll10KsTapped,
     @Default(false) bool viewAll10QsTapped,
   }) = _BusinessTabViewState;
+
+  const BusinessTabViewState._();
+
+  @override
+  String get screenName => 'business_tab';
+
+  @override
+  CompanyProfileTabAnalyticsState copyWithDuration(int durationSec) =>
+      copyWith(viewDurationSec: durationSec);
 }

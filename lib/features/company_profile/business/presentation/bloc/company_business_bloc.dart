@@ -2,9 +2,10 @@ import 'dart:async';
 
 import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:bizzie/features/company_profile/business/domain/usecases/get_business_profile_usecase.dart';
+import 'package:bizzie/features/company_profile/business/presentation/analytics/business_tab_analytics.dart';
 import 'package:bizzie/features/company_profile/business/presentation/bloc/company_business_event.dart';
 import 'package:bizzie/features/company_profile/business/presentation/bloc/company_business_state.dart';
-import 'package:bizzie/features/company_profile/business/presentation/analytics/business_tab_analytics.dart';
+import 'package:bizzie/features/company_profile/shared/presentation/bloc/company_profile_analytics_mixin.dart';
 import 'package:bizzie/core/interfaces/i_config_service.dart';
 import 'package:bloc/bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
@@ -14,32 +15,43 @@ final _logger = BizzieLogger('CompanyBusinessBloc');
 
 @injectable
 class CompanyBusinessBloc
-    extends Bloc<CompanyBusinessEvent, CompanyBusinessState> {
+    extends Bloc<CompanyBusinessEvent, CompanyBusinessState>
+    with
+        CompanyProfileAnalyticsMixin<
+          CompanyBusinessEvent,
+          CompanyBusinessState,
+          BusinessTabViewState
+        > {
   final GetBusinessProfileUseCase _getBusinessProfileUseCase;
   final IConfigService _configService;
   final BusinessTabAnalytics _analytics;
 
-  BusinessTabViewState? _analyticsSessionState;
-  Stopwatch? _viewStopwatch;
-  Stopwatch? _loadStopwatch;
+  final Stopwatch _loadStopwatch = Stopwatch();
+
+  @override
+  BusinessTabAnalytics get analyticsTracker => _analytics;
 
   CompanyBusinessBloc(
     this._getBusinessProfileUseCase,
     this._configService,
     this._analytics,
   ) : super(const CompanyBusinessState.initial()) {
-    on<LoadRequested>(_onLoadRequested, transformer: droppable());
-    on<StalenessCheckRequested>(
-      _onStalenessCheckRequested,
-      transformer: droppable(),
-    );
-    on<TabShown>(_onTabShown, transformer: sequential());
-    on<TabHidden>(_onTabHidden, transformer: sequential());
-    on<AppBackgrounded>(_onAppBackgrounded, transformer: sequential());
-    on<AppForegrounded>(_onAppForegrounded, transformer: sequential());
-    on<AnalyticsInteractionOccurred>(
-      _onAnalyticsInteractionOccurred,
-      transformer: sequential(),
+    on<CompanyBusinessEvent>(_onEvent, transformer: sequential());
+  }
+
+  Future<void> _onEvent(
+    CompanyBusinessEvent event,
+    Emitter<CompanyBusinessState> emit,
+  ) async {
+    await event.map(
+      loadRequested: (e) async => _onLoadRequested(e, emit),
+      stalenessCheckRequested: (e) async => _onStalenessCheckRequested(e, emit),
+      tabShown: (e) async => _onTabShown(e, emit),
+      tabHidden: (_) async => onTabHidden(),
+      appBackgrounded: (_) async => onAppBackgrounded(),
+      appForegrounded: (_) async => onAppForegrounded(),
+      analyticsInteractionOccurred: (e) async =>
+          _onAnalyticsInteractionOccurred(e, emit),
     );
   }
 
@@ -66,18 +78,15 @@ class CompanyBusinessBloc
     if (!isAlreadyLoaded) {
       emit(const CompanyBusinessState.loading());
     }
-    _loadStopwatch = Stopwatch()..start();
+
+    _loadStopwatch.reset();
+    _loadStopwatch.start();
 
     final result = await _getBusinessProfileUseCase(event.ticker);
-
-    _loadStopwatch?.stop();
+    _loadStopwatch.stop();
 
     result.fold(
       (failure) {
-        _analyticsSessionState = _analyticsSessionState?.copyWith(
-          isSuccess: false,
-          loadTimeMs: _loadStopwatch?.elapsedMilliseconds,
-        );
         _logger.severe('Failed to load company business profile', failure);
         emit(CompanyBusinessState.failure(failure));
       },
@@ -85,17 +94,23 @@ class CompanyBusinessBloc
         final profile = tuple.$1;
         final origin = tuple.$2;
 
-        _analyticsSessionState = _analyticsSessionState?.copyWith(
+        _logger.info('Successfully loaded company business profile');
+
+        final analytics = BusinessTabViewState(
+          ticker: event.ticker,
+          timestamp: DateTime.now().toIso8601String(),
+          loadTimeMs: _loadStopwatch.elapsedMilliseconds,
           isSuccess: true,
-          loadTimeMs: _loadStopwatch?.elapsedMilliseconds,
           dataSource: origin,
         );
-        _logger.info('Successfully loaded company business profile');
+
+        updateAnalyticsState((_) => analytics);
+
         emit(
           CompanyBusinessState.loaded(
             profile,
+            analyticsState: analytics,
             historyLimit: _configService.freePlanHistoryCount,
-            dataOrigin: origin,
             lastUpdated: DateTime.now(),
           ),
         );
@@ -107,64 +122,42 @@ class CompanyBusinessBloc
     TabShown event,
     Emitter<CompanyBusinessState> emit,
   ) async {
-    _viewStopwatch = Stopwatch()..start();
-    _analyticsSessionState = BusinessTabViewState(ticker: event.ticker);
+    final initialState = state.maybeMap(
+      loaded: (s) => s.analyticsState,
+      orElse: () => BusinessTabViewState(
+        ticker: event.ticker,
+        timestamp: DateTime.now().toIso8601String(),
+      ),
+    );
+
+    onTabShown(event.ticker, initialState);
   }
 
   Future<void> _onAnalyticsInteractionOccurred(
     AnalyticsInteractionOccurred event,
     Emitter<CompanyBusinessState> emit,
   ) async {
-    if (_analyticsSessionState == null) return;
-
-    _analyticsSessionState = _analyticsSessionState!.copyWith(
-      tappedWebsite:
-          event.tappedWebsite ?? _analyticsSessionState!.tappedWebsite,
-      tappedProxy: event.tappedProxy ?? _analyticsSessionState!.tappedProxy,
-      didExpandDescription:
-          event.didExpandDescription ??
-          _analyticsSessionState!.didExpandDescription,
-      viewed10Ks: event.viewed10Ks ?? _analyticsSessionState!.viewed10Ks,
-      viewed10Qs: event.viewed10Qs ?? _analyticsSessionState!.viewed10Qs,
-      viewAll10KsTapped:
-          event.viewAll10KsTapped ?? _analyticsSessionState!.viewAll10KsTapped,
-      viewAll10QsTapped:
-          event.viewAll10QsTapped ?? _analyticsSessionState!.viewAll10QsTapped,
+    updateAnalyticsState(
+      (current) => current.copyWith(
+        tappedWebsite: event.tappedWebsite ?? current.tappedWebsite,
+        tappedProxy: event.tappedProxy ?? current.tappedProxy,
+        didExpandDescription:
+            event.didExpandDescription ?? current.didExpandDescription,
+        viewed10Ks: event.viewed10Ks ?? current.viewed10Ks,
+        viewed10Qs: event.viewed10Qs ?? current.viewed10Qs,
+        viewAll10KsTapped: event.viewAll10KsTapped ?? current.viewAll10KsTapped,
+        viewAll10QsTapped: event.viewAll10QsTapped ?? current.viewAll10QsTapped,
+      ),
     );
-  }
 
-  Future<void> _onTabHidden(
-    TabHidden event,
-    Emitter<CompanyBusinessState> emit,
-  ) async {
-    _viewStopwatch?.stop();
-    if (_analyticsSessionState != null) {
-      final finalState = _analyticsSessionState!.copyWith(
-        viewDurationSec: _viewStopwatch?.elapsed.inSeconds ?? 0,
+    final currentAnalytics = analyticsSession;
+    if (currentAnalytics != null) {
+      state.mapOrNull(
+        loaded: (s) {
+          emit(s.copyWith(analyticsState: currentAnalytics));
+        },
       );
-      await _analytics.logViewSummary(finalState, isFinal: true);
-      _analyticsSessionState = null;
     }
-    _viewStopwatch = null;
-  }
-
-  Future<void> _onAppBackgrounded(
-    AppBackgrounded event,
-    Emitter<CompanyBusinessState> emit,
-  ) async {
-    if (_analyticsSessionState != null) {
-      final snapshotState = _analyticsSessionState!.copyWith(
-        viewDurationSec: _viewStopwatch?.elapsed.inSeconds ?? 0,
-      );
-      await _analytics.logViewSummary(snapshotState, isFinal: false);
-    }
-  }
-
-  Future<void> _onAppForegrounded(
-    AppForegrounded event,
-    Emitter<CompanyBusinessState> emit,
-  ) async {
-    _viewStopwatch?.start();
   }
 
   Future<void> _onStalenessCheckRequested(

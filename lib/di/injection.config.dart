@@ -39,15 +39,15 @@ import '../core/interfaces/i_local_storage_service.dart' as _i583;
 import '../core/interfaces/i_notification_service.dart' as _i430;
 import '../core/interfaces/i_permission_service.dart' as _i202;
 import '../core/interfaces/i_sector_service.dart' as _i1050;
-import '../core/interfaces/i_time_provider.dart' as _i999;
+import '../core/interfaces/i_time_provider.dart' as _i879;
 import '../core/network/connectivity_service.dart' as _i332;
 import '../core/network/network_info.dart' as _i6;
 import '../core/network/network_module.dart' as _i419;
 import '../core/services/app_info_service.dart' as _i248;
 import '../core/services/local_storage_service.dart' as _i1003;
+import '../core/services/time_provider_impl.dart' as _i157;
 import '../env/app_env.dart' as _i915;
 import '../env/env_impl.dart' as _i343;
-import '../core/services/time_provider_impl.dart' as _i998;
 import '../features/app_ratings/data/datasources/app_ratings_local_datasource.dart'
     as _i488;
 import '../features/app_ratings/data/interfaces/i_app_ratings_local_datasource.dart'
@@ -560,6 +560,7 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i1007.LifecycleService(),
       dispose: (i) => i.dispose(),
     );
+    gh.singleton<_i879.ITimeProvider>(() => _i157.TimeProviderImpl());
     gh.factory<_i191.IStockLocalDataSource>(
       () => _i191.StockLocalDataSource(gh<_i460.SharedPreferences>()),
     );
@@ -603,7 +604,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i60.IStockRemoteDataSource>(
       () => _i60.StockRemoteDataSource(gh<_i457.FirebaseStorage>()),
     );
-    gh.singleton<_i999.ITimeProvider>(() => _i998.TimeProviderImpl());
     gh.singleton<_i915.AppEnv>(() => _i343.DevEnvImpl(), registerFor: {_dev});
     gh.lazySingleton<_i532.IReportsRemoteDataSource>(
       () => _i532.ReportsRemoteDataSource(gh<_i52.FirestoreService>()),
@@ -626,20 +626,8 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i583.ILocalStorageService>(
       () => _i1003.LocalStorageService(gh<_i460.SharedPreferences>()),
     );
-    gh.lazySingleton<_i634.NewsFirestoreDataSource>(
-      () => _i634.NewsFirestoreDataSourceImpl(
-        gh<_i974.FirebaseFirestore>(),
-        gh<_i999.ITimeProvider>(),
-      ),
-    );
     gh.lazySingleton<_i291.IFeedbackRemoteDataSource>(
       () => _i291.FeedbackRemoteDataSource(gh<_i974.FirebaseFirestore>()),
-    );
-    gh.lazySingleton<_i958.RatiosFirestoreDataSource>(
-      () => _i958.RatiosFirestoreDataSourceImpl(
-        gh<_i974.FirebaseFirestore>(),
-        gh<_i999.ITimeProvider>(),
-      ),
     );
     gh.factory<_i792.IRecommendedBrandsRemoteDataSource>(
       () => _i792.RecommendedBrandsRemoteDataSource(
@@ -653,33 +641,27 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i807.WatchlistEventEvaluator>(),
       ),
     );
+    gh.lazySingleton<_i958.RatiosFirestoreDataSource>(
+      () => _i958.RatiosFirestoreDataSourceImpl(
+        gh<_i974.FirebaseFirestore>(),
+        gh<_i879.ITimeProvider>(),
+      ),
+    );
     gh.lazySingleton<_i877.RemoteAuthDataSource>(
       () => _i877.RemoteAuthDataSourceImpl(
         gh<_i59.FirebaseAuth>(),
         gh<_i116.GoogleSignIn>(),
       ),
     );
+    gh.lazySingleton<_i634.NewsFirestoreDataSource>(
+      () => _i634.NewsFirestoreDataSourceImpl(
+        gh<_i974.FirebaseFirestore>(),
+        gh<_i879.ITimeProvider>(),
+      ),
+    );
     gh.lazySingleton<_i507.IAppRatingsRepository>(
       () => _i437.AppRatingsRepositoryImpl(
         gh<_i705.IAppRatingsLocalDataSource>(),
-      ),
-    );
-    gh.lazySingleton<_i595.SecurityFirestoreDataSource>(
-      () => _i595.SecurityFirestoreDataSourceImpl(
-        gh<_i974.FirebaseFirestore>(),
-        gh<_i999.ITimeProvider>(),
-      ),
-    );
-    gh.lazySingleton<_i806.FinancialStatementsFirestoreDataSource>(
-      () => _i806.FinancialStatementsFirestoreDataSourceImpl(
-        gh<_i974.FirebaseFirestore>(),
-        gh<_i999.ITimeProvider>(),
-      ),
-    );
-    gh.lazySingleton<_i741.CompanyFirestoreDataSource>(
-      () => _i741.CompanyFirestoreDataSourceImpl(
-        gh<_i974.FirebaseFirestore>(),
-        gh<_i999.ITimeProvider>(),
       ),
     );
     gh.lazySingleton<_i456.IStockRepository>(
@@ -688,22 +670,28 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i191.IStockLocalDataSource>(),
       ),
     );
+    gh.lazySingleton<_i379.BusinessFirestoreDataSource>(
+      () => _i379.BusinessFirestoreDataSourceImpl(
+        gh<_i974.FirebaseFirestore>(),
+        gh<_i879.ITimeProvider>(),
+      ),
+    );
     gh.lazySingleton<_i347.IFirebaseFunctionsService>(
       () => _i382.FirebaseFunctionsService(gh<_i809.FirebaseFunctions>()),
     );
     gh.singleton<_i915.AppEnv>(() => _i343.ProdEnvImpl(), registerFor: {_prod});
-    gh.lazySingleton<_i584.DividendsFirestoreDataSource>(
-      () => _i584.DividendsFirestoreDataSourceImpl(
-        gh<_i974.FirebaseFirestore>(),
-        gh<_i999.ITimeProvider>(),
-      ),
-    );
     gh.lazySingleton<_i529.IAnalyticsService>(
       () => _i222.AnalyticsService(gh<_i398.FirebaseAnalytics>()),
     );
     await gh.singletonAsync<_i937.IConfigService>(
       () => _i216.ConfigService.init(gh<_i915.AppEnv>()),
       preResolve: true,
+    );
+    gh.lazySingleton<_i584.DividendsFirestoreDataSource>(
+      () => _i584.DividendsFirestoreDataSourceImpl(
+        gh<_i974.FirebaseFirestore>(),
+        gh<_i879.ITimeProvider>(),
+      ),
     );
     gh.singleton<_i361.Dio>(
       () =>
@@ -722,10 +710,22 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i450.AnalyticsContext>(),
       ),
     );
-    gh.lazySingleton<_i379.BusinessFirestoreDataSource>(
-      () => _i379.BusinessFirestoreDataSourceImpl(
+    gh.lazySingleton<_i806.FinancialStatementsFirestoreDataSource>(
+      () => _i806.FinancialStatementsFirestoreDataSourceImpl(
         gh<_i974.FirebaseFirestore>(),
-        gh<_i999.ITimeProvider>(),
+        gh<_i879.ITimeProvider>(),
+      ),
+    );
+    gh.lazySingleton<_i741.CompanyFirestoreDataSource>(
+      () => _i741.CompanyFirestoreDataSourceImpl(
+        gh<_i974.FirebaseFirestore>(),
+        gh<_i879.ITimeProvider>(),
+      ),
+    );
+    gh.lazySingleton<_i595.SecurityFirestoreDataSource>(
+      () => _i595.SecurityFirestoreDataSourceImpl(
+        gh<_i974.FirebaseFirestore>(),
+        gh<_i879.ITimeProvider>(),
       ),
     );
     gh.factory<_i308.IAppStatusRepository>(

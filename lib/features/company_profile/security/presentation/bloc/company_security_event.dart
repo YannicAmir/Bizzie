@@ -12,7 +12,7 @@ sealed class CompanySecurityEvent with _$CompanySecurityEvent {
   const factory CompanySecurityEvent.stalenessCheckRequested(String ticker) =
       StalenessCheckRequested;
 
-  const factory CompanySecurityEvent.tabShown() = TabShown;
+  const factory CompanySecurityEvent.tabShown(String ticker) = TabShown;
   const factory CompanySecurityEvent.tabHidden() = TabHidden;
   const factory CompanySecurityEvent.appBackgrounded() = AppBackgrounded;
   const factory CompanySecurityEvent.appForegrounded() = AppForegrounded;

@@ -156,9 +156,7 @@ class _ReportsEmptyState extends StatelessWidget {
             Text(
               'There are no recent or upcoming notifications',
               textAlign: TextAlign.center,
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: theme.colorScheme.onSurfaceVariant,
-              ),
+              style: theme.textTheme.bodyLarge?.copyWith(),
             ),
             const Spacer(),
             SizedBox(

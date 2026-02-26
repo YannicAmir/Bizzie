@@ -1,6 +1,9 @@
 import 'package:bizzie/core/interfaces/i_analytics_service.dart';
+import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:injectable/injectable.dart';
+
+final _logger = BizzieLogger('AnalyticsService');
 
 @LazySingleton(as: IAnalyticsService)
 class AnalyticsService implements IAnalyticsService {
@@ -13,6 +16,7 @@ class AnalyticsService implements IAnalyticsService {
     required String name,
     Map<String, Object>? parameters,
   }) async {
+    _logger.info('Logging event: $name');
     final Map<String, Object> allParams = {
       'timestamp': DateTime.now().toIso8601String(),
     };
@@ -26,7 +30,13 @@ class AnalyticsService implements IAnalyticsService {
       allParams.addAll(sanitizedParams);
     }
 
-    await _analytics.logEvent(name: name, parameters: allParams);
+    _logger.info('Params: $allParams');
+    try {
+      await _analytics.logEvent(name: name, parameters: allParams);
+      _logger.info('Successfully called Firebase logEvent');
+    } catch (e, stack) {
+      _logger.severe('Error logging event: $e', e, stack);
+    }
   }
 
   @override

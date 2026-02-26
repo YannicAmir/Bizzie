@@ -5,6 +5,7 @@ import 'package:bizzie/features/company_profile/security/domain/usecases/get_sec
 import 'package:bizzie/features/company_profile/security/presentation/analytics/security_tab_analytics.dart';
 import 'package:bizzie/features/company_profile/security/presentation/bloc/company_security_event.dart';
 import 'package:bizzie/features/company_profile/security/presentation/bloc/company_security_state.dart';
+import 'package:bizzie/features/company_profile/shared/presentation/bloc/company_profile_analytics_mixin.dart';
 import 'package:bloc/bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
@@ -13,12 +14,20 @@ final _logger = BizzieLogger('CompanySecurityBloc');
 
 @injectable
 class CompanySecurityBloc
-    extends Bloc<CompanySecurityEvent, CompanySecurityState> {
+    extends Bloc<CompanySecurityEvent, CompanySecurityState>
+    with
+        CompanyProfileAnalyticsMixin<
+          CompanySecurityEvent,
+          CompanySecurityState,
+          SecurityTabViewState
+        > {
   final GetSecurityDetailsUseCase _getSecurityDetailsUseCase;
   final SecurityTabAnalytics _tracker;
 
-  final _sessionStopwatch = Stopwatch();
   final _loadStopwatch = Stopwatch();
+
+  @override
+  SecurityTabAnalytics get analyticsTracker => _tracker;
 
   CompanySecurityBloc(this._getSecurityDetailsUseCase, this._tracker)
     : super(const CompanySecurityState.initial()) {
@@ -32,11 +41,11 @@ class CompanySecurityBloc
     _logger.info('Handling event: $event');
     await event.map(
       loadRequested: (e) async => _onLoadRequested(e, emit),
-      stalenessCheckRequested: (e) async => _onStalenessCheckRequested(e),
-      tabShown: (_) async => _onTabShown(),
-      tabHidden: (_) async => _onTabHidden(),
-      appBackgrounded: (_) async => _onAppBackgrounded(),
-      appForegrounded: (_) async => _onAppForegrounded(),
+      tabShown: (e) async => _onTabShown(e, emit),
+      stalenessCheckRequested: (e) async => _onStalenessCheckRequested(e, emit),
+      tabHidden: (_) async => onTabHidden(),
+      appBackgrounded: (_) async => onAppBackgrounded(),
+      appForegrounded: (_) async => onAppForegrounded(),
       priceAnalyticsUpdated: (e) async => _onPriceAnalyticsUpdated(e, emit),
       earningsAnalyticsUpdated: (e) async =>
           _onEarningsAnalyticsUpdated(e, emit),
@@ -89,6 +98,7 @@ class CompanySecurityBloc
 
         final analytics = SecurityTabViewState(
           ticker: event.ticker,
+          timestamp: DateTime.now().toIso8601String(),
           securityType: details.isEtf
               ? 'etf'
               : details.isFund
@@ -98,6 +108,8 @@ class CompanySecurityBloc
           isSuccess: true,
           dataSource: origin,
         );
+
+        updateAnalyticsState((current) => analytics);
 
         if (details.isEtf || details.isFund) {
           _logger.info(
@@ -122,53 +134,51 @@ class CompanySecurityBloc
     );
   }
 
-  Future<void> _onTabShown() async {
+  Future<void> _onTabShown(
+    TabShown event,
+    Emitter<CompanySecurityState> emit,
+  ) async {
     _logger.info('Security Tab Shown - Starting session tracker');
-    _sessionStopwatch.start();
-  }
 
-  Future<void> _onTabHidden() async {
-    _logger.info('Security Tab Hidden - Logging final summary');
-    await _logSummary(isFinal: true);
-    _sessionStopwatch.stop();
-    _sessionStopwatch.reset();
-  }
+    final initialState = state.maybeMap(
+      loaded: (s) => s.analyticsState,
+      unsupported: (s) => s.analyticsState,
+      orElse: () => SecurityTabViewState(
+        ticker: event.ticker,
+        securityType: 'pending',
+        timestamp: DateTime.now().toIso8601String(),
+      ),
+    );
 
-  Future<void> _onAppBackgrounded() async {
-    if (_sessionStopwatch.isRunning) {
-      _logger.info('App Backgrounded - Logging interim summary');
-      await _logSummary(isFinal: false);
-      _sessionStopwatch.stop();
-    }
-  }
-
-  Future<void> _onAppForegrounded() async {
-    _logger.info('App Foregrounded - Resuming session tracker');
-    _sessionStopwatch.start();
+    onTabShown(event.ticker, initialState);
   }
 
   Future<void> _onPriceAnalyticsUpdated(
     PriceAnalyticsUpdated event,
     Emitter<CompanySecurityState> emit,
   ) async {
-    state.mapOrNull(
-      loaded: (s) {
-        emit(
-          s.copyWith(
-            analyticsState: s.analyticsState.copyWith(
-              priceLoadMs: event.loadTimeMs ?? s.analyticsState.priceLoadMs,
-              isPriceSuccess:
-                  event.isSuccess ?? s.analyticsState.isPriceSuccess,
-              finalPriceTimeframe:
-                  event.finalTimeframe ?? s.analyticsState.finalPriceTimeframe,
-              priceChartChangeCount:
-                  event.chartChangeCount ??
-                  s.analyticsState.priceChartChangeCount,
-            ),
-          ),
-        );
-      },
+    updateAnalyticsState(
+      (current) => current.copyWith(
+        priceLoadMs: event.loadTimeMs ?? current.priceLoadMs,
+        isPriceSuccess: event.isSuccess ?? current.isPriceSuccess,
+        finalPriceTimeframe:
+            event.finalTimeframe ?? current.finalPriceTimeframe,
+        priceChartChangeCount:
+            event.chartChangeCount ?? current.priceChartChangeCount,
+      ),
     );
+
+    final currentAnalytics = analyticsSession;
+    if (currentAnalytics != null) {
+      state.mapOrNull(
+        loaded: (s) {
+          emit(s.copyWith(analyticsState: currentAnalytics));
+        },
+        unsupported: (s) {
+          emit(s.copyWith(analyticsState: currentAnalytics));
+        },
+      );
+    }
   }
 
   Future<void> _onEarningsAnalyticsUpdated(
@@ -177,36 +187,26 @@ class CompanySecurityBloc
   ) async {
     state.mapOrNull(
       loaded: (s) {
-        emit(
-          s.copyWith(
-            analyticsState: s.analyticsState.copyWith(
-              hasUpcomingEarnings:
-                  event.hasUpcoming ?? s.analyticsState.hasUpcomingEarnings,
-              earningsDaysAway:
-                  event.daysAway ?? s.analyticsState.earningsDaysAway,
-            ),
+        updateAnalyticsState(
+          (current) => current.copyWith(
+            hasUpcomingEarnings:
+                event.hasUpcoming ?? current.hasUpcomingEarnings,
+            earningsDaysAway: event.daysAway ?? current.earningsDaysAway,
           ),
         );
+
+        final currentAnalytics = analyticsSession;
+        if (currentAnalytics != null) {
+          emit(s.copyWith(analyticsState: currentAnalytics));
+        }
       },
     );
   }
 
-  Future<void> _logSummary({required bool isFinal}) async {
-    final analytics = state.maybeMap(
-      loaded: (s) => s.analyticsState,
-      unsupported: (s) => s.analyticsState,
-      orElse: () => null,
-    );
-
-    if (analytics != null) {
-      final updated = analytics.copyWith(
-        viewDurationSec: _sessionStopwatch.elapsed.inSeconds,
-      );
-      await _tracker.logViewSummary(updated, isFinal: isFinal);
-    }
-  }
-
-  Future<void> _onStalenessCheckRequested(StalenessCheckRequested event) async {
+  Future<void> _onStalenessCheckRequested(
+    StalenessCheckRequested event,
+    Emitter<CompanySecurityState> emit,
+  ) async {
     _logger.info('Staleness check requested for ${event.ticker}');
     state.mapOrNull(
       loaded: (loadedState) {

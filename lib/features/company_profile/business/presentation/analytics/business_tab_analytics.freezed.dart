@@ -14,7 +14,8 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$BusinessTabViewState {
 
- String get ticker; int? get loadTimeMs; bool get isSuccess; CompanyProfileDataOrigin? get dataSource; int get viewDurationSec; bool get tappedWebsite; bool get tappedProxy; bool get didExpandDescription; bool get viewed10Ks; bool get viewed10Qs; bool get viewAll10KsTapped; bool get viewAll10QsTapped;
+ String get ticker; String get timestamp;// Mandatory parameter
+ int? get loadTimeMs; bool get isSuccess; CompanyProfileDataOrigin? get dataSource; int get viewDurationSec; bool get tappedWebsite; bool get tappedProxy; bool get didExpandDescription; bool get viewed10Ks; bool get viewed10Qs; bool get viewAll10KsTapped; bool get viewAll10QsTapped;
 /// Create a copy of BusinessTabViewState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +26,16 @@ $BusinessTabViewStateCopyWith<BusinessTabViewState> get copyWith => _$BusinessTa
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is BusinessTabViewState&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.loadTimeMs, loadTimeMs) || other.loadTimeMs == loadTimeMs)&&(identical(other.isSuccess, isSuccess) || other.isSuccess == isSuccess)&&(identical(other.dataSource, dataSource) || other.dataSource == dataSource)&&(identical(other.viewDurationSec, viewDurationSec) || other.viewDurationSec == viewDurationSec)&&(identical(other.tappedWebsite, tappedWebsite) || other.tappedWebsite == tappedWebsite)&&(identical(other.tappedProxy, tappedProxy) || other.tappedProxy == tappedProxy)&&(identical(other.didExpandDescription, didExpandDescription) || other.didExpandDescription == didExpandDescription)&&(identical(other.viewed10Ks, viewed10Ks) || other.viewed10Ks == viewed10Ks)&&(identical(other.viewed10Qs, viewed10Qs) || other.viewed10Qs == viewed10Qs)&&(identical(other.viewAll10KsTapped, viewAll10KsTapped) || other.viewAll10KsTapped == viewAll10KsTapped)&&(identical(other.viewAll10QsTapped, viewAll10QsTapped) || other.viewAll10QsTapped == viewAll10QsTapped));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is BusinessTabViewState&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.timestamp, timestamp) || other.timestamp == timestamp)&&(identical(other.loadTimeMs, loadTimeMs) || other.loadTimeMs == loadTimeMs)&&(identical(other.isSuccess, isSuccess) || other.isSuccess == isSuccess)&&(identical(other.dataSource, dataSource) || other.dataSource == dataSource)&&(identical(other.viewDurationSec, viewDurationSec) || other.viewDurationSec == viewDurationSec)&&(identical(other.tappedWebsite, tappedWebsite) || other.tappedWebsite == tappedWebsite)&&(identical(other.tappedProxy, tappedProxy) || other.tappedProxy == tappedProxy)&&(identical(other.didExpandDescription, didExpandDescription) || other.didExpandDescription == didExpandDescription)&&(identical(other.viewed10Ks, viewed10Ks) || other.viewed10Ks == viewed10Ks)&&(identical(other.viewed10Qs, viewed10Qs) || other.viewed10Qs == viewed10Qs)&&(identical(other.viewAll10KsTapped, viewAll10KsTapped) || other.viewAll10KsTapped == viewAll10KsTapped)&&(identical(other.viewAll10QsTapped, viewAll10QsTapped) || other.viewAll10QsTapped == viewAll10QsTapped));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,ticker,loadTimeMs,isSuccess,dataSource,viewDurationSec,tappedWebsite,tappedProxy,didExpandDescription,viewed10Ks,viewed10Qs,viewAll10KsTapped,viewAll10QsTapped);
+int get hashCode => Object.hash(runtimeType,ticker,timestamp,loadTimeMs,isSuccess,dataSource,viewDurationSec,tappedWebsite,tappedProxy,didExpandDescription,viewed10Ks,viewed10Qs,viewAll10KsTapped,viewAll10QsTapped);
 
 @override
 String toString() {
-  return 'BusinessTabViewState(ticker: $ticker, loadTimeMs: $loadTimeMs, isSuccess: $isSuccess, dataSource: $dataSource, viewDurationSec: $viewDurationSec, tappedWebsite: $tappedWebsite, tappedProxy: $tappedProxy, didExpandDescription: $didExpandDescription, viewed10Ks: $viewed10Ks, viewed10Qs: $viewed10Qs, viewAll10KsTapped: $viewAll10KsTapped, viewAll10QsTapped: $viewAll10QsTapped)';
+  return 'BusinessTabViewState(ticker: $ticker, timestamp: $timestamp, loadTimeMs: $loadTimeMs, isSuccess: $isSuccess, dataSource: $dataSource, viewDurationSec: $viewDurationSec, tappedWebsite: $tappedWebsite, tappedProxy: $tappedProxy, didExpandDescription: $didExpandDescription, viewed10Ks: $viewed10Ks, viewed10Qs: $viewed10Qs, viewAll10KsTapped: $viewAll10KsTapped, viewAll10QsTapped: $viewAll10QsTapped)';
 }
 
 
@@ -45,7 +46,7 @@ abstract mixin class $BusinessTabViewStateCopyWith<$Res>  {
   factory $BusinessTabViewStateCopyWith(BusinessTabViewState value, $Res Function(BusinessTabViewState) _then) = _$BusinessTabViewStateCopyWithImpl;
 @useResult
 $Res call({
- String ticker, int? loadTimeMs, bool isSuccess, CompanyProfileDataOrigin? dataSource, int viewDurationSec, bool tappedWebsite, bool tappedProxy, bool didExpandDescription, bool viewed10Ks, bool viewed10Qs, bool viewAll10KsTapped, bool viewAll10QsTapped
+ String ticker, String timestamp, int? loadTimeMs, bool isSuccess, CompanyProfileDataOrigin? dataSource, int viewDurationSec, bool tappedWebsite, bool tappedProxy, bool didExpandDescription, bool viewed10Ks, bool viewed10Qs, bool viewAll10KsTapped, bool viewAll10QsTapped
 });
 
 
@@ -62,9 +63,10 @@ class _$BusinessTabViewStateCopyWithImpl<$Res>
 
 /// Create a copy of BusinessTabViewState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? ticker = null,Object? loadTimeMs = freezed,Object? isSuccess = null,Object? dataSource = freezed,Object? viewDurationSec = null,Object? tappedWebsite = null,Object? tappedProxy = null,Object? didExpandDescription = null,Object? viewed10Ks = null,Object? viewed10Qs = null,Object? viewAll10KsTapped = null,Object? viewAll10QsTapped = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? ticker = null,Object? timestamp = null,Object? loadTimeMs = freezed,Object? isSuccess = null,Object? dataSource = freezed,Object? viewDurationSec = null,Object? tappedWebsite = null,Object? tappedProxy = null,Object? didExpandDescription = null,Object? viewed10Ks = null,Object? viewed10Qs = null,Object? viewAll10KsTapped = null,Object? viewAll10QsTapped = null,}) {
   return _then(_self.copyWith(
 ticker: null == ticker ? _self.ticker : ticker // ignore: cast_nullable_to_non_nullable
+as String,timestamp: null == timestamp ? _self.timestamp : timestamp // ignore: cast_nullable_to_non_nullable
 as String,loadTimeMs: freezed == loadTimeMs ? _self.loadTimeMs : loadTimeMs // ignore: cast_nullable_to_non_nullable
 as int?,isSuccess: null == isSuccess ? _self.isSuccess : isSuccess // ignore: cast_nullable_to_non_nullable
 as bool,dataSource: freezed == dataSource ? _self.dataSource : dataSource // ignore: cast_nullable_to_non_nullable
@@ -161,10 +163,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String ticker,  int? loadTimeMs,  bool isSuccess,  CompanyProfileDataOrigin? dataSource,  int viewDurationSec,  bool tappedWebsite,  bool tappedProxy,  bool didExpandDescription,  bool viewed10Ks,  bool viewed10Qs,  bool viewAll10KsTapped,  bool viewAll10QsTapped)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String ticker,  String timestamp,  int? loadTimeMs,  bool isSuccess,  CompanyProfileDataOrigin? dataSource,  int viewDurationSec,  bool tappedWebsite,  bool tappedProxy,  bool didExpandDescription,  bool viewed10Ks,  bool viewed10Qs,  bool viewAll10KsTapped,  bool viewAll10QsTapped)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _BusinessTabViewState() when $default != null:
-return $default(_that.ticker,_that.loadTimeMs,_that.isSuccess,_that.dataSource,_that.viewDurationSec,_that.tappedWebsite,_that.tappedProxy,_that.didExpandDescription,_that.viewed10Ks,_that.viewed10Qs,_that.viewAll10KsTapped,_that.viewAll10QsTapped);case _:
+return $default(_that.ticker,_that.timestamp,_that.loadTimeMs,_that.isSuccess,_that.dataSource,_that.viewDurationSec,_that.tappedWebsite,_that.tappedProxy,_that.didExpandDescription,_that.viewed10Ks,_that.viewed10Qs,_that.viewAll10KsTapped,_that.viewAll10QsTapped);case _:
   return orElse();
 
 }
@@ -182,10 +184,10 @@ return $default(_that.ticker,_that.loadTimeMs,_that.isSuccess,_that.dataSource,_
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String ticker,  int? loadTimeMs,  bool isSuccess,  CompanyProfileDataOrigin? dataSource,  int viewDurationSec,  bool tappedWebsite,  bool tappedProxy,  bool didExpandDescription,  bool viewed10Ks,  bool viewed10Qs,  bool viewAll10KsTapped,  bool viewAll10QsTapped)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String ticker,  String timestamp,  int? loadTimeMs,  bool isSuccess,  CompanyProfileDataOrigin? dataSource,  int viewDurationSec,  bool tappedWebsite,  bool tappedProxy,  bool didExpandDescription,  bool viewed10Ks,  bool viewed10Qs,  bool viewAll10KsTapped,  bool viewAll10QsTapped)  $default,) {final _that = this;
 switch (_that) {
 case _BusinessTabViewState():
-return $default(_that.ticker,_that.loadTimeMs,_that.isSuccess,_that.dataSource,_that.viewDurationSec,_that.tappedWebsite,_that.tappedProxy,_that.didExpandDescription,_that.viewed10Ks,_that.viewed10Qs,_that.viewAll10KsTapped,_that.viewAll10QsTapped);case _:
+return $default(_that.ticker,_that.timestamp,_that.loadTimeMs,_that.isSuccess,_that.dataSource,_that.viewDurationSec,_that.tappedWebsite,_that.tappedProxy,_that.didExpandDescription,_that.viewed10Ks,_that.viewed10Qs,_that.viewAll10KsTapped,_that.viewAll10QsTapped);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -202,10 +204,10 @@ return $default(_that.ticker,_that.loadTimeMs,_that.isSuccess,_that.dataSource,_
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String ticker,  int? loadTimeMs,  bool isSuccess,  CompanyProfileDataOrigin? dataSource,  int viewDurationSec,  bool tappedWebsite,  bool tappedProxy,  bool didExpandDescription,  bool viewed10Ks,  bool viewed10Qs,  bool viewAll10KsTapped,  bool viewAll10QsTapped)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String ticker,  String timestamp,  int? loadTimeMs,  bool isSuccess,  CompanyProfileDataOrigin? dataSource,  int viewDurationSec,  bool tappedWebsite,  bool tappedProxy,  bool didExpandDescription,  bool viewed10Ks,  bool viewed10Qs,  bool viewAll10KsTapped,  bool viewAll10QsTapped)?  $default,) {final _that = this;
 switch (_that) {
 case _BusinessTabViewState() when $default != null:
-return $default(_that.ticker,_that.loadTimeMs,_that.isSuccess,_that.dataSource,_that.viewDurationSec,_that.tappedWebsite,_that.tappedProxy,_that.didExpandDescription,_that.viewed10Ks,_that.viewed10Qs,_that.viewAll10KsTapped,_that.viewAll10QsTapped);case _:
+return $default(_that.ticker,_that.timestamp,_that.loadTimeMs,_that.isSuccess,_that.dataSource,_that.viewDurationSec,_that.tappedWebsite,_that.tappedProxy,_that.didExpandDescription,_that.viewed10Ks,_that.viewed10Qs,_that.viewAll10KsTapped,_that.viewAll10QsTapped);case _:
   return null;
 
 }
@@ -216,11 +218,13 @@ return $default(_that.ticker,_that.loadTimeMs,_that.isSuccess,_that.dataSource,_
 /// @nodoc
 
 
-class _BusinessTabViewState implements BusinessTabViewState {
-  const _BusinessTabViewState({required this.ticker, this.loadTimeMs, this.isSuccess = false, this.dataSource, this.viewDurationSec = 0, this.tappedWebsite = false, this.tappedProxy = false, this.didExpandDescription = false, this.viewed10Ks = false, this.viewed10Qs = false, this.viewAll10KsTapped = false, this.viewAll10QsTapped = false});
+class _BusinessTabViewState extends BusinessTabViewState {
+  const _BusinessTabViewState({required this.ticker, required this.timestamp, this.loadTimeMs, this.isSuccess = false, this.dataSource, this.viewDurationSec = 0, this.tappedWebsite = false, this.tappedProxy = false, this.didExpandDescription = false, this.viewed10Ks = false, this.viewed10Qs = false, this.viewAll10KsTapped = false, this.viewAll10QsTapped = false}): super._();
   
 
 @override final  String ticker;
+@override final  String timestamp;
+// Mandatory parameter
 @override final  int? loadTimeMs;
 @override@JsonKey() final  bool isSuccess;
 @override final  CompanyProfileDataOrigin? dataSource;
@@ -243,16 +247,16 @@ _$BusinessTabViewStateCopyWith<_BusinessTabViewState> get copyWith => __$Busines
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _BusinessTabViewState&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.loadTimeMs, loadTimeMs) || other.loadTimeMs == loadTimeMs)&&(identical(other.isSuccess, isSuccess) || other.isSuccess == isSuccess)&&(identical(other.dataSource, dataSource) || other.dataSource == dataSource)&&(identical(other.viewDurationSec, viewDurationSec) || other.viewDurationSec == viewDurationSec)&&(identical(other.tappedWebsite, tappedWebsite) || other.tappedWebsite == tappedWebsite)&&(identical(other.tappedProxy, tappedProxy) || other.tappedProxy == tappedProxy)&&(identical(other.didExpandDescription, didExpandDescription) || other.didExpandDescription == didExpandDescription)&&(identical(other.viewed10Ks, viewed10Ks) || other.viewed10Ks == viewed10Ks)&&(identical(other.viewed10Qs, viewed10Qs) || other.viewed10Qs == viewed10Qs)&&(identical(other.viewAll10KsTapped, viewAll10KsTapped) || other.viewAll10KsTapped == viewAll10KsTapped)&&(identical(other.viewAll10QsTapped, viewAll10QsTapped) || other.viewAll10QsTapped == viewAll10QsTapped));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _BusinessTabViewState&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.timestamp, timestamp) || other.timestamp == timestamp)&&(identical(other.loadTimeMs, loadTimeMs) || other.loadTimeMs == loadTimeMs)&&(identical(other.isSuccess, isSuccess) || other.isSuccess == isSuccess)&&(identical(other.dataSource, dataSource) || other.dataSource == dataSource)&&(identical(other.viewDurationSec, viewDurationSec) || other.viewDurationSec == viewDurationSec)&&(identical(other.tappedWebsite, tappedWebsite) || other.tappedWebsite == tappedWebsite)&&(identical(other.tappedProxy, tappedProxy) || other.tappedProxy == tappedProxy)&&(identical(other.didExpandDescription, didExpandDescription) || other.didExpandDescription == didExpandDescription)&&(identical(other.viewed10Ks, viewed10Ks) || other.viewed10Ks == viewed10Ks)&&(identical(other.viewed10Qs, viewed10Qs) || other.viewed10Qs == viewed10Qs)&&(identical(other.viewAll10KsTapped, viewAll10KsTapped) || other.viewAll10KsTapped == viewAll10KsTapped)&&(identical(other.viewAll10QsTapped, viewAll10QsTapped) || other.viewAll10QsTapped == viewAll10QsTapped));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,ticker,loadTimeMs,isSuccess,dataSource,viewDurationSec,tappedWebsite,tappedProxy,didExpandDescription,viewed10Ks,viewed10Qs,viewAll10KsTapped,viewAll10QsTapped);
+int get hashCode => Object.hash(runtimeType,ticker,timestamp,loadTimeMs,isSuccess,dataSource,viewDurationSec,tappedWebsite,tappedProxy,didExpandDescription,viewed10Ks,viewed10Qs,viewAll10KsTapped,viewAll10QsTapped);
 
 @override
 String toString() {
-  return 'BusinessTabViewState(ticker: $ticker, loadTimeMs: $loadTimeMs, isSuccess: $isSuccess, dataSource: $dataSource, viewDurationSec: $viewDurationSec, tappedWebsite: $tappedWebsite, tappedProxy: $tappedProxy, didExpandDescription: $didExpandDescription, viewed10Ks: $viewed10Ks, viewed10Qs: $viewed10Qs, viewAll10KsTapped: $viewAll10KsTapped, viewAll10QsTapped: $viewAll10QsTapped)';
+  return 'BusinessTabViewState(ticker: $ticker, timestamp: $timestamp, loadTimeMs: $loadTimeMs, isSuccess: $isSuccess, dataSource: $dataSource, viewDurationSec: $viewDurationSec, tappedWebsite: $tappedWebsite, tappedProxy: $tappedProxy, didExpandDescription: $didExpandDescription, viewed10Ks: $viewed10Ks, viewed10Qs: $viewed10Qs, viewAll10KsTapped: $viewAll10KsTapped, viewAll10QsTapped: $viewAll10QsTapped)';
 }
 
 
@@ -263,7 +267,7 @@ abstract mixin class _$BusinessTabViewStateCopyWith<$Res> implements $BusinessTa
   factory _$BusinessTabViewStateCopyWith(_BusinessTabViewState value, $Res Function(_BusinessTabViewState) _then) = __$BusinessTabViewStateCopyWithImpl;
 @override @useResult
 $Res call({
- String ticker, int? loadTimeMs, bool isSuccess, CompanyProfileDataOrigin? dataSource, int viewDurationSec, bool tappedWebsite, bool tappedProxy, bool didExpandDescription, bool viewed10Ks, bool viewed10Qs, bool viewAll10KsTapped, bool viewAll10QsTapped
+ String ticker, String timestamp, int? loadTimeMs, bool isSuccess, CompanyProfileDataOrigin? dataSource, int viewDurationSec, bool tappedWebsite, bool tappedProxy, bool didExpandDescription, bool viewed10Ks, bool viewed10Qs, bool viewAll10KsTapped, bool viewAll10QsTapped
 });
 
 
@@ -280,9 +284,10 @@ class __$BusinessTabViewStateCopyWithImpl<$Res>
 
 /// Create a copy of BusinessTabViewState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? ticker = null,Object? loadTimeMs = freezed,Object? isSuccess = null,Object? dataSource = freezed,Object? viewDurationSec = null,Object? tappedWebsite = null,Object? tappedProxy = null,Object? didExpandDescription = null,Object? viewed10Ks = null,Object? viewed10Qs = null,Object? viewAll10KsTapped = null,Object? viewAll10QsTapped = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? ticker = null,Object? timestamp = null,Object? loadTimeMs = freezed,Object? isSuccess = null,Object? dataSource = freezed,Object? viewDurationSec = null,Object? tappedWebsite = null,Object? tappedProxy = null,Object? didExpandDescription = null,Object? viewed10Ks = null,Object? viewed10Qs = null,Object? viewAll10KsTapped = null,Object? viewAll10QsTapped = null,}) {
   return _then(_BusinessTabViewState(
 ticker: null == ticker ? _self.ticker : ticker // ignore: cast_nullable_to_non_nullable
+as String,timestamp: null == timestamp ? _self.timestamp : timestamp // ignore: cast_nullable_to_non_nullable
 as String,loadTimeMs: freezed == loadTimeMs ? _self.loadTimeMs : loadTimeMs // ignore: cast_nullable_to_non_nullable
 as int?,isSuccess: null == isSuccess ? _self.isSuccess : isSuccess // ignore: cast_nullable_to_non_nullable
 as bool,dataSource: freezed == dataSource ? _self.dataSource : dataSource // ignore: cast_nullable_to_non_nullable

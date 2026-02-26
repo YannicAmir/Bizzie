@@ -137,12 +137,12 @@ return earningsAnalyticsUpdated(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String ticker,  bool forceRefresh)?  loadRequested,TResult Function( String ticker)?  stalenessCheckRequested,TResult Function()?  tabShown,TResult Function()?  tabHidden,TResult Function()?  appBackgrounded,TResult Function()?  appForegrounded,TResult Function( int? loadTimeMs,  bool? isSuccess,  String? finalTimeframe,  int? chartChangeCount)?  priceAnalyticsUpdated,TResult Function( bool? hasUpcoming,  String? daysAway)?  earningsAnalyticsUpdated,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String ticker,  bool forceRefresh)?  loadRequested,TResult Function( String ticker)?  stalenessCheckRequested,TResult Function( String ticker)?  tabShown,TResult Function()?  tabHidden,TResult Function()?  appBackgrounded,TResult Function()?  appForegrounded,TResult Function( int? loadTimeMs,  bool? isSuccess,  String? finalTimeframe,  int? chartChangeCount)?  priceAnalyticsUpdated,TResult Function( bool? hasUpcoming,  String? daysAway)?  earningsAnalyticsUpdated,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case LoadRequested() when loadRequested != null:
 return loadRequested(_that.ticker,_that.forceRefresh);case StalenessCheckRequested() when stalenessCheckRequested != null:
 return stalenessCheckRequested(_that.ticker);case TabShown() when tabShown != null:
-return tabShown();case TabHidden() when tabHidden != null:
+return tabShown(_that.ticker);case TabHidden() when tabHidden != null:
 return tabHidden();case AppBackgrounded() when appBackgrounded != null:
 return appBackgrounded();case AppForegrounded() when appForegrounded != null:
 return appForegrounded();case PriceAnalyticsUpdated() when priceAnalyticsUpdated != null:
@@ -165,12 +165,12 @@ return earningsAnalyticsUpdated(_that.hasUpcoming,_that.daysAway);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String ticker,  bool forceRefresh)  loadRequested,required TResult Function( String ticker)  stalenessCheckRequested,required TResult Function()  tabShown,required TResult Function()  tabHidden,required TResult Function()  appBackgrounded,required TResult Function()  appForegrounded,required TResult Function( int? loadTimeMs,  bool? isSuccess,  String? finalTimeframe,  int? chartChangeCount)  priceAnalyticsUpdated,required TResult Function( bool? hasUpcoming,  String? daysAway)  earningsAnalyticsUpdated,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String ticker,  bool forceRefresh)  loadRequested,required TResult Function( String ticker)  stalenessCheckRequested,required TResult Function( String ticker)  tabShown,required TResult Function()  tabHidden,required TResult Function()  appBackgrounded,required TResult Function()  appForegrounded,required TResult Function( int? loadTimeMs,  bool? isSuccess,  String? finalTimeframe,  int? chartChangeCount)  priceAnalyticsUpdated,required TResult Function( bool? hasUpcoming,  String? daysAway)  earningsAnalyticsUpdated,}) {final _that = this;
 switch (_that) {
 case LoadRequested():
 return loadRequested(_that.ticker,_that.forceRefresh);case StalenessCheckRequested():
 return stalenessCheckRequested(_that.ticker);case TabShown():
-return tabShown();case TabHidden():
+return tabShown(_that.ticker);case TabHidden():
 return tabHidden();case AppBackgrounded():
 return appBackgrounded();case AppForegrounded():
 return appForegrounded();case PriceAnalyticsUpdated():
@@ -189,12 +189,12 @@ return earningsAnalyticsUpdated(_that.hasUpcoming,_that.daysAway);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String ticker,  bool forceRefresh)?  loadRequested,TResult? Function( String ticker)?  stalenessCheckRequested,TResult? Function()?  tabShown,TResult? Function()?  tabHidden,TResult? Function()?  appBackgrounded,TResult? Function()?  appForegrounded,TResult? Function( int? loadTimeMs,  bool? isSuccess,  String? finalTimeframe,  int? chartChangeCount)?  priceAnalyticsUpdated,TResult? Function( bool? hasUpcoming,  String? daysAway)?  earningsAnalyticsUpdated,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String ticker,  bool forceRefresh)?  loadRequested,TResult? Function( String ticker)?  stalenessCheckRequested,TResult? Function( String ticker)?  tabShown,TResult? Function()?  tabHidden,TResult? Function()?  appBackgrounded,TResult? Function()?  appForegrounded,TResult? Function( int? loadTimeMs,  bool? isSuccess,  String? finalTimeframe,  int? chartChangeCount)?  priceAnalyticsUpdated,TResult? Function( bool? hasUpcoming,  String? daysAway)?  earningsAnalyticsUpdated,}) {final _that = this;
 switch (_that) {
 case LoadRequested() when loadRequested != null:
 return loadRequested(_that.ticker,_that.forceRefresh);case StalenessCheckRequested() when stalenessCheckRequested != null:
 return stalenessCheckRequested(_that.ticker);case TabShown() when tabShown != null:
-return tabShown();case TabHidden() when tabHidden != null:
+return tabShown(_that.ticker);case TabHidden() when tabHidden != null:
 return tabHidden();case AppBackgrounded() when appBackgrounded != null:
 return appBackgrounded();case AppForegrounded() when appForegrounded != null:
 return appForegrounded();case PriceAnalyticsUpdated() when priceAnalyticsUpdated != null:
@@ -345,33 +345,67 @@ as String,
 
 
 class TabShown implements CompanySecurityEvent {
-  const TabShown();
+  const TabShown(this.ticker);
   
 
+ final  String ticker;
 
-
+/// Create a copy of CompanySecurityEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$TabShownCopyWith<TabShown> get copyWith => _$TabShownCopyWithImpl<TabShown>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TabShown);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TabShown&&(identical(other.ticker, ticker) || other.ticker == ticker));
 }
 
 
 @override
-int get hashCode => runtimeType.hashCode;
+int get hashCode => Object.hash(runtimeType,ticker);
 
 @override
 String toString() {
-  return 'CompanySecurityEvent.tabShown()';
+  return 'CompanySecurityEvent.tabShown(ticker: $ticker)';
 }
 
 
 }
 
+/// @nodoc
+abstract mixin class $TabShownCopyWith<$Res> implements $CompanySecurityEventCopyWith<$Res> {
+  factory $TabShownCopyWith(TabShown value, $Res Function(TabShown) _then) = _$TabShownCopyWithImpl;
+@useResult
+$Res call({
+ String ticker
+});
 
 
+
+
+}
+/// @nodoc
+class _$TabShownCopyWithImpl<$Res>
+    implements $TabShownCopyWith<$Res> {
+  _$TabShownCopyWithImpl(this._self, this._then);
+
+  final TabShown _self;
+  final $Res Function(TabShown) _then;
+
+/// Create a copy of CompanySecurityEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? ticker = null,}) {
+  return _then(TabShown(
+null == ticker ? _self.ticker : ticker // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
 
 /// @nodoc
 
