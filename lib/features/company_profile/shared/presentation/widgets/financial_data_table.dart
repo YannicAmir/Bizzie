@@ -14,6 +14,7 @@ class FinancialDataTable extends StatelessWidget {
   final String metricLabel;
   final String currency;
   final VoidCallback? onViewMore;
+  final VoidCallback? onAnalyticsTap;
   final int? limit;
   final bool isInverseGrowth;
   final bool isPercentage;
@@ -30,6 +31,7 @@ class FinancialDataTable extends StatelessWidget {
     required this.metricLabel,
     required this.currency,
     this.onViewMore,
+    this.onAnalyticsTap,
     required this.limit,
     this.isInverseGrowth = false,
     this.isPercentage = false,
@@ -61,6 +63,7 @@ class FinancialDataTable extends StatelessWidget {
       onViewMore: (limit != null && sortedData.length > limit!)
           ? onViewMore
           : null,
+      onAnalyticsTap: onAnalyticsTap,
       viewMoreLabel: 'View All',
       footer: footer,
       source: source,

@@ -130,4 +130,16 @@ class BizzieDateFormatter {
       return DateFormat('MMM d').format(date);
     }
   }
+
+  static bool isStale(DateTime lastUpdated, {int refreshIntervalMinutes = 60}) {
+    return DateTime.now().difference(lastUpdated).inMinutes >=
+        refreshIntervalMinutes;
+  }
+
+  static String formatQuarterYearShort(String dateStr) {
+    final date = DateTime.tryParse(dateStr);
+    if (date == null) return dateStr;
+    final quarter = ((date.month - 1) ~/ 3) + 1;
+    return "Q$quarter '${DateFormat('yy').format(date)}";
+  }
 }

@@ -15,6 +15,7 @@ class BizzieDataTable extends StatelessWidget {
   final List<Widget> children;
   final Widget? footer;
   final VoidCallback? onViewMore;
+  final VoidCallback? onAnalyticsTap;
   final String? viewMoreLabel;
   final PaywallSource source;
 
@@ -25,6 +26,7 @@ class BizzieDataTable extends StatelessWidget {
     required this.children,
     this.footer,
     this.onViewMore,
+    this.onAnalyticsTap,
     this.viewMoreLabel,
     required this.source,
   });
@@ -80,6 +82,7 @@ class BizzieDataTable extends StatelessWidget {
 
                 return GestureDetector(
                   onTap: () {
+                    onAnalyticsTap?.call();
                     if (isSubscribed) {
                       onViewMore?.call();
                     } else {

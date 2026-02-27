@@ -205,6 +205,8 @@ import '../features/company_profile/revenue/domain/interfaces/i_revenue_reposito
     as _i203;
 import '../features/company_profile/revenue/domain/usecases/get_revenue_stats_usecase.dart'
     as _i584;
+import '../features/company_profile/revenue/presentation/analytics/revenue_tab_analytics.dart'
+    as _i151;
 import '../features/company_profile/revenue/presentation/bloc/company_revenue_bloc.dart'
     as _i806;
 import '../features/company_profile/roe/data/repositories/roe_repository_impl.dart'
@@ -815,6 +817,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i1021.NewsTabAnalytics>(
       () => _i1021.NewsTabAnalytics(gh<_i529.IAnalyticsService>()),
     );
+    gh.lazySingleton<_i151.RevenueTabAnalytics>(
+      () => _i151.RevenueTabAnalytics(gh<_i529.IAnalyticsService>()),
+    );
     gh.lazySingleton<_i258.SecurityTabAnalytics>(
       () => _i258.SecurityTabAnalytics(gh<_i529.IAnalyticsService>()),
     );
@@ -1206,12 +1211,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i865.IFinancialStatementsRepository>(),
       ),
     );
-    gh.factory<_i806.CompanyRevenueBloc>(
-      () => _i806.CompanyRevenueBloc(
-        gh<_i584.GetRevenueStatsUseCase>(),
-        gh<_i937.IConfigService>(),
-      ),
-    );
     gh.factory<_i130.SearchStocksUseCase>(
       () => _i130.SearchStocksUseCase(gh<_i269.StockSearchService>()),
     );
@@ -1325,6 +1324,13 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i683.CompanyEpsBloc(
         gh<_i107.GetEpsStatsUseCase>(),
         gh<_i937.IConfigService>(),
+      ),
+    );
+    gh.factory<_i806.CompanyRevenueBloc>(
+      () => _i806.CompanyRevenueBloc(
+        gh<_i584.GetRevenueStatsUseCase>(),
+        gh<_i937.IConfigService>(),
+        gh<_i151.RevenueTabAnalytics>(),
       ),
     );
     gh.lazySingleton<_i687.Stream<bool>>(
