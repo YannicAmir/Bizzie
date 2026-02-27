@@ -12,6 +12,7 @@ import 'package:bizzie/features/company_profile/dividends/presentation/widgets/d
 import 'package:bizzie/features/company_profile/shared/presentation/widgets/company_profile_error_state.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/widgets/company_profile_loading_state.dart';
 import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
+import 'package:bizzie/features/company_profile/shared/presentation/widgets/tab_visibility_observer.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:bizzie/shared/widgets/charts/bizzie_expandable_chart.dart';
 import 'package:bizzie/shared/widgets/states/bizzie_empty_state.dart';
@@ -100,31 +101,52 @@ class _DividendsLoadedState extends StatelessWidget {
       name: 'USD',
     );
 
-    return SingleChildScrollView(
-      padding: AppConstants.pagePadding,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          DividendOverviewSection(
-            latestEvent: latest,
-            history: dividendInfo.history,
-            currentPrice: currentPrice,
-          ),
-          AppConstants.mainSectionSpacing,
-          BizzieExpandableChart(
-            data: dividendInfo.history.toChartData(),
-            positiveColor: theme.colorScheme.primary,
-            numberFormat: numberFormat,
-            visibleCount: historyLimit,
-            thresholdCount: historyLimit,
-            source: PaywallSource.company_profile,
-          ),
-          AppConstants.mainSectionSpacing,
-          DividendPaymentHistorySection(
-            history: dividendInfo.history,
-            historyLimit: historyLimit,
-          ),
-        ],
+    return TabVisibilityObserver(
+      tabName: 'dividends',
+      onTabShown: () => context.read<CompanyDividendsBloc>().add(
+        CompanyDividendsEvent.tabShown(ticker),
+      ),
+      onTabHidden: () => context.read<CompanyDividendsBloc>().add(
+        const CompanyDividendsEvent.tabHidden(),
+      ),
+      onAppBackgrounded: () => context.read<CompanyDividendsBloc>().add(
+        const CompanyDividendsEvent.appBackgrounded(),
+      ),
+      onAppForegrounded: () => context.read<CompanyDividendsBloc>().add(
+        const CompanyDividendsEvent.appForegrounded(),
+      ),
+      child: SingleChildScrollView(
+        padding: AppConstants.pagePadding,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            DividendOverviewSection(
+              latestEvent: latest,
+              history: dividendInfo.history,
+              currentPrice: currentPrice,
+            ),
+            AppConstants.mainSectionSpacing,
+            BizzieExpandableChart(
+              data: dividendInfo.history.toChartData(),
+              positiveColor: theme.colorScheme.primary,
+              numberFormat: numberFormat,
+              visibleCount: historyLimit,
+              thresholdCount: historyLimit,
+              source: PaywallSource.company_profile,
+              onAnalyticsTap: () => context.read<CompanyDividendsBloc>().add(
+                const CompanyDividendsEvent.viewAllTapped(isChart: true),
+              ),
+            ),
+            AppConstants.mainSectionSpacing,
+            DividendPaymentHistorySection(
+              history: dividendInfo.history,
+              historyLimit: historyLimit,
+              onAnalyticsTap: () => context.read<CompanyDividendsBloc>().add(
+                const CompanyDividendsEvent.viewAllTapped(isChart: false),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

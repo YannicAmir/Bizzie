@@ -11,11 +11,13 @@ import 'package:flutter/material.dart';
 class DividendPaymentHistorySection extends StatelessWidget {
   final List<DividendEvent> history;
   final int historyLimit;
+  final VoidCallback? onAnalyticsTap;
 
   const DividendPaymentHistorySection({
     super.key,
     required this.history,
     required this.historyLimit,
+    this.onAnalyticsTap,
   });
 
   @override
@@ -31,6 +33,7 @@ class DividendPaymentHistorySection extends StatelessWidget {
     return BizzieDataTable(
       title: 'Table',
       source: PaywallSource.company_profile,
+      onAnalyticsTap: onAnalyticsTap,
       onViewMore: hasMore
           ? () => _showAllPaymentHistory(context, sortedHistory)
           : null,

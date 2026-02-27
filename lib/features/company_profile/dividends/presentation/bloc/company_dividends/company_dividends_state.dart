@@ -1,3 +1,4 @@
+import 'package:bizzie/features/company_profile/dividends/presentation/analytics/dividend_tab_view_state.dart';
 import 'package:bizzie/features/company_profile/dividends/domain/models/dividend_info.dart';
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/core/enums/data_origin.dart';
@@ -15,6 +16,7 @@ class CompanyDividendsState with _$CompanyDividendsState {
     required int historyLimit,
     required CompanyProfileDataOrigin dataOrigin,
     DateTime? lastUpdated,
+    DividendTabViewState? analyticsState,
   }) = _Loaded;
   const factory CompanyDividendsState.error(Failure failure) = _Error;
 }

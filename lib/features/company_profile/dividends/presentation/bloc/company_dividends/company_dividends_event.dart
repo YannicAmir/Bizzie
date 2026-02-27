@@ -11,4 +11,12 @@ sealed class CompanyDividendsEvent with _$CompanyDividendsEvent {
 
   const factory CompanyDividendsEvent.stalenessCheckRequested(String ticker) =
       StalenessCheckRequested;
+
+  const factory CompanyDividendsEvent.tabShown(String ticker) = TabShown;
+  const factory CompanyDividendsEvent.tabHidden() = TabHidden;
+  const factory CompanyDividendsEvent.appBackgrounded() = AppBackgrounded;
+  const factory CompanyDividendsEvent.appForegrounded() = AppForegrounded;
+
+  const factory CompanyDividendsEvent.viewAllTapped({required bool isChart}) =
+      ViewAllTapped;
 }

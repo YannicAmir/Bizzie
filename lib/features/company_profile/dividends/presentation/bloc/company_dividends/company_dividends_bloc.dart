@@ -1,3 +1,7 @@
+import 'package:bizzie/features/company_profile/shared/presentation/analytics/base_analytics.dart';
+import 'package:bizzie/features/company_profile/shared/presentation/bloc/company_profile_analytics_mixin.dart';
+import 'package:bizzie/features/company_profile/dividends/presentation/analytics/dividend_tab_analytics.dart';
+import 'package:bizzie/features/company_profile/dividends/presentation/analytics/dividend_tab_view_state.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:bizzie/features/company_profile/dividends/domain/usecases/get_dividend_info_usecase.dart';
 import 'package:bizzie/features/company_profile/dividends/presentation/bloc/company_dividends/company_dividends_event.dart';
@@ -12,16 +16,73 @@ final _logger = BizzieLogger('CompanyDividendsBloc');
 
 @injectable
 class CompanyDividendsBloc
-    extends Bloc<CompanyDividendsEvent, CompanyDividendsState> {
+    extends Bloc<CompanyDividendsEvent, CompanyDividendsState>
+    with
+        CompanyProfileAnalyticsMixin<
+          CompanyDividendsEvent,
+          CompanyDividendsState,
+          DividendTabViewState
+        > {
   final GetDividendInfoUseCase _getDividendInfo;
   final IConfigService _configService;
+  final DividendTabAnalytics _analytics;
 
-  CompanyDividendsBloc(this._getDividendInfo, this._configService)
-    : super(const CompanyDividendsState.initial()) {
+  CompanyDividendsBloc(
+    this._getDividendInfo,
+    this._configService,
+    this._analytics,
+  ) : super(const CompanyDividendsState.initial()) {
     on<LoadRequested>(_onLoadRequested, transformer: droppable());
     on<StalenessCheckRequested>(
       _onStalenessCheckRequested,
       transformer: sequential(),
+    );
+    on<TabShown>(_onTabShown);
+    on<TabHidden>((_, __) => onTabHidden());
+    on<AppBackgrounded>((_, __) => onAppBackgrounded());
+    on<AppForegrounded>((_, __) => onAppForegrounded());
+    on<ViewAllTapped>(_onViewAllTapped);
+  }
+
+  @override
+  CompanyProfileTabTracker<DividendTabViewState> get analyticsTracker =>
+      _analytics;
+
+  void _onTabShown(TabShown event, Emitter<CompanyDividendsState> emit) {
+    final existingState = state.maybeMap(
+      loaded: (s) => s.analyticsState,
+      orElse: () => null,
+    );
+
+    onTabShown(
+      event.ticker,
+      DividendTabViewState(
+        ticker: event.ticker,
+        timestamp: DateTime.now().toIso8601String(),
+        loadTimeMs: existingState?.loadTimeMs,
+        isSuccess: existingState?.isSuccess ?? false,
+        dataSource: existingState?.dataSource,
+      ),
+    );
+    _emitAnalyticsUpdate(emit);
+  }
+
+  void _onViewAllTapped(
+    ViewAllTapped event,
+    Emitter<CompanyDividendsState> emit,
+  ) {
+    updateAnalyticsState(
+      (s) => event.isChart
+          ? s.copyWith(tappedChartViewAll: true)
+          : s.copyWith(tappedTableViewAll: true),
+    );
+    _emitAnalyticsUpdate(emit);
+  }
+
+  void _emitAnalyticsUpdate(Emitter<CompanyDividendsState> emit) {
+    state.maybeMap(
+      loaded: (s) => emit(s.copyWith(analyticsState: analyticsSession)),
+      orElse: () {},
     );
   }
 
@@ -53,17 +114,52 @@ class CompanyDividendsBloc
       emit(const CompanyDividendsState.loading());
     }
 
+    final stopwatch = Stopwatch()..start();
     final result = await _getDividendInfo(event.ticker);
+    stopwatch.stop();
 
     result.fold(
       (failure) {
         _logger.severe('Failed to load dividends', failure);
+
+        final metrics =
+            (analyticsSession ??
+                    DividendTabViewState(
+                      ticker: event.ticker,
+                      timestamp: DateTime.now().toIso8601String(),
+                    ))
+                .copyWith(
+                  isSuccess: false,
+                  loadTimeMs: stopwatch.elapsedMilliseconds,
+                );
+
+        if (analyticsSession != null) {
+          updateAnalyticsState((s) => metrics);
+        }
+
         emit(CompanyDividendsState.error(failure));
       },
       (tuple) {
         final info = tuple.$1;
         final origin = tuple.$2;
         _logger.info('Successfully loaded dividends, origin=$origin');
+
+        final metrics =
+            (analyticsSession ??
+                    DividendTabViewState(
+                      ticker: event.ticker,
+                      timestamp: DateTime.now().toIso8601String(),
+                    ))
+                .copyWith(
+                  isSuccess: true,
+                  dataSource: origin,
+                  loadTimeMs: stopwatch.elapsedMilliseconds,
+                );
+
+        if (analyticsSession != null) {
+          updateAnalyticsState((s) => metrics);
+        }
+
         emit(
           CompanyDividendsState.loaded(
             ticker: event.ticker,
@@ -71,6 +167,7 @@ class CompanyDividendsBloc
             historyLimit: _configService.freePlanHistoryCount,
             dataOrigin: origin,
             lastUpdated: DateTime.now(),
+            analyticsState: metrics,
           ),
         );
       },

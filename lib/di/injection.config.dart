@@ -117,6 +117,8 @@ import '../features/company_profile/dividends/domain/interfaces/i_dividend_repos
     as _i468;
 import '../features/company_profile/dividends/domain/usecases/get_dividend_info_usecase.dart'
     as _i754;
+import '../features/company_profile/dividends/presentation/analytics/dividend_tab_analytics.dart'
+    as _i252;
 import '../features/company_profile/dividends/presentation/bloc/company_dividends/company_dividends_bloc.dart'
     as _i723;
 import '../features/company_profile/eps/data/repositories/eps_repository_impl.dart'
@@ -814,6 +816,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i228.CompanyProfileAnalytics>(
       () => _i228.CompanyProfileAnalytics(gh<_i529.IAnalyticsService>()),
     );
+    gh.lazySingleton<_i252.DividendTabAnalytics>(
+      () => _i252.DividendTabAnalytics(gh<_i529.IAnalyticsService>()),
+    );
     gh.lazySingleton<_i1021.NewsTabAnalytics>(
       () => _i1021.NewsTabAnalytics(gh<_i529.IAnalyticsService>()),
     );
@@ -1456,6 +1461,7 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i723.CompanyDividendsBloc(
         gh<_i754.GetDividendInfoUseCase>(),
         gh<_i937.IConfigService>(),
+        gh<_i252.DividendTabAnalytics>(),
       ),
     );
     await gh.lazySingletonAsync<_i430.INotificationService>(() {
