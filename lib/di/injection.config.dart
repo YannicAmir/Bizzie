@@ -179,6 +179,8 @@ import '../features/company_profile/news/domain/interfaces/i_news_repository.dar
     as _i15;
 import '../features/company_profile/news/domain/usecases/get_company_news_usecase.dart'
     as _i654;
+import '../features/company_profile/news/presentation/analytics/news_tab_analytics.dart'
+    as _i1021;
 import '../features/company_profile/news/presentation/bloc/company_news/company_news_bloc.dart'
     as _i501;
 import '../features/company_profile/pe_ratio/data/repositories/pe_ratio_repository_impl.dart'
@@ -810,6 +812,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i228.CompanyProfileAnalytics>(
       () => _i228.CompanyProfileAnalytics(gh<_i529.IAnalyticsService>()),
     );
+    gh.lazySingleton<_i1021.NewsTabAnalytics>(
+      () => _i1021.NewsTabAnalytics(gh<_i529.IAnalyticsService>()),
+    );
     gh.lazySingleton<_i258.SecurityTabAnalytics>(
       () => _i258.SecurityTabAnalytics(gh<_i529.IAnalyticsService>()),
     );
@@ -1378,6 +1383,12 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i471.ReportsTracker>(),
       ),
     );
+    gh.factory<_i501.CompanyNewsBloc>(
+      () => _i501.CompanyNewsBloc(
+        gh<_i654.GetCompanyNewsUseCase>(),
+        gh<_i1021.NewsTabAnalytics>(),
+      ),
+    );
     gh.lazySingleton<_i59.AuthBloc>(
       () => _i59.AuthBloc(
         getAuthStream: gh<_i427.GetAuthStream>(),
@@ -1398,9 +1409,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i615.IUserRepository>(),
         gh<_i963.ProfileTracker>(),
       ),
-    );
-    gh.factory<_i501.CompanyNewsBloc>(
-      () => _i501.CompanyNewsBloc(gh<_i654.GetCompanyNewsUseCase>()),
     );
     gh.factory<_i458.SecurityBloc>(
       () => _i458.SecurityBloc(

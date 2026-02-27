@@ -6,6 +6,7 @@ import 'package:bizzie/features/company_profile/news/domain/usecases/get_company
 import 'package:bizzie/features/company_profile/news/presentation/bloc/company_news/company_news_bloc.dart';
 import 'package:bizzie/features/company_profile/news/presentation/bloc/company_news/company_news_event.dart';
 import 'package:bizzie/features/company_profile/news/presentation/bloc/company_news/company_news_state.dart';
+import 'package:bizzie/features/company_profile/news/presentation/analytics/news_tab_analytics.dart';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -13,13 +14,17 @@ import 'package:mocktail/mocktail.dart';
 
 class MockGetCompanyNewsUseCase extends Mock implements GetCompanyNewsUseCase {}
 
+class MockNewsTabAnalytics extends Mock implements NewsTabAnalytics {}
+
 void main() {
   late CompanyNewsBloc bloc;
   late MockGetCompanyNewsUseCase mockGetCompanyNews;
+  late MockNewsTabAnalytics mockAnalytics;
 
   setUp(() {
     mockGetCompanyNews = MockGetCompanyNewsUseCase();
-    bloc = CompanyNewsBloc(mockGetCompanyNews);
+    mockAnalytics = MockNewsTabAnalytics();
+    bloc = CompanyNewsBloc(mockGetCompanyNews, mockAnalytics);
   });
 
   const tTicker = 'AAPL';

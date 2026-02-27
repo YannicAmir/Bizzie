@@ -1,6 +1,7 @@
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:bizzie/features/company_profile/news/domain/models/news_article.dart';
+import 'package:bizzie/features/company_profile/news/presentation/analytics/news_tab_view_state.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'company_news_state.freezed.dart';
@@ -13,6 +14,7 @@ class CompanyNewsState with _$CompanyNewsState {
     required List<NewsArticle> articles,
     required String ticker,
     required CompanyProfileDataOrigin dataOrigin,
+    NewsTabViewState? analyticsState,
     DateTime? lastUpdated,
   }) = _Loaded;
   const factory CompanyNewsState.failure(Failure failure) = _Failure;

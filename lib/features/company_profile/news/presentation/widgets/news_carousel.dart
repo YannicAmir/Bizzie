@@ -1,10 +1,13 @@
 import 'package:bizzie/app/themes/app_text_styles.dart';
 import 'package:bizzie/features/company_profile/news/domain/models/news_article.dart';
+import 'package:bizzie/features/company_profile/news/presentation/bloc/company_news/company_news_bloc.dart';
+import 'package:bizzie/features/company_profile/news/presentation/bloc/company_news/company_news_event.dart';
 import 'package:bizzie/features/company_profile/news/presentation/widgets/news_card.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
-import 'package:flutter/material.dart';
-import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:bizzie/shared/utils/url_launcher_utils.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class NewsCarousel extends StatefulWidget {
   final List<NewsArticle> news;
@@ -55,7 +58,15 @@ class _NewsCarouselState extends State<NewsCarousel> {
                       ),
                 child: NewsCard(
                   article: article,
-                  onTap: () => UrlLauncherUtils.launch(article.url),
+                  onTap: () {
+                    context.read<CompanyNewsBloc>().add(
+                      CompanyNewsEvent.articleTapped(
+                        article: article,
+                        isFeatured: true,
+                      ),
+                    );
+                    UrlLauncherUtils.launch(article.url);
+                  },
                 ),
               );
             },

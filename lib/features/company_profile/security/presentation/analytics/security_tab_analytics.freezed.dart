@@ -14,8 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$SecurityTabViewState {
 
- String get ticker; String get securityType; String get timestamp;// Mandatory parameter
- int? get loadTimeMs; int? get priceLoadMs; bool get isSuccess; bool get isPriceSuccess; CompanyProfileDataOrigin? get dataSource; int get viewDurationSec; bool get hasUpcomingEarnings; String? get earningsDaysAway; int get priceChartChangeCount; String get finalPriceTimeframe;
+ String get ticker; String get securityType; String get timestamp; int? get loadTimeMs; int? get priceLoadMs; bool get isSuccess; bool get isPriceSuccess; CompanyProfileDataOrigin? get dataSource; int get viewDurationSec; bool get hasUpcomingEarnings; String? get earningsDaysAway; int get priceChartChangeCount; String get finalPriceTimeframe;
 /// Create a copy of SecurityTabViewState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -225,7 +224,6 @@ class _SecurityTabViewState extends SecurityTabViewState {
 @override final  String ticker;
 @override final  String securityType;
 @override final  String timestamp;
-// Mandatory parameter
 @override final  int? loadTimeMs;
 @override final  int? priceLoadMs;
 @override@JsonKey() final  bool isSuccess;
