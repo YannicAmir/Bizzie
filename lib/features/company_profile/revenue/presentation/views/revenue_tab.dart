@@ -156,17 +156,6 @@ class _RevenueTabState extends State<RevenueTab>
                           ),
                         );
                       },
-                      onViewAllTapped: () {
-                        _showAllHistory(
-                          context,
-                          isAnnual
-                              ? stats.annualRevenue
-                              : stats.quarterlyRevenue,
-                          isAnnual ? 'Yearly Revenue' : 'Quarterly Revenue',
-                          stats.reportedCurrency,
-                          isAnnual,
-                        );
-                      },
                     ),
                     AppConstants.mainSectionSpacing,
                     FinancialHighlightsSection(

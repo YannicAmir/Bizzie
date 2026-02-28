@@ -32,6 +32,7 @@ import 'package:mocktail/mocktail.dart';
 import 'package:fake_async/fake_async.dart';
 import 'package:bizzie/features/onboarding/domain/models/onboarding_step.dart';
 import 'package:bizzie/features/onboarding/presentation/analytics/onboarding_tracker.dart';
+import 'package:bizzie/features/subscription/presentation/analytics/subscription_tracker.dart';
 
 class MockWatchSubscriptionStatusUseCase extends Mock
     implements WatchSubscriptionStatusUseCase {}
@@ -58,6 +59,8 @@ class MockPaywallAnalytics extends Mock implements PaywallAnalytics {}
 
 class MockOnboardingTracker extends Mock implements OnboardingTracker {}
 
+class MockSubscriptionTracker extends Mock implements SubscriptionTracker {}
+
 void main() {
   late MockWatchSubscriptionStatusUseCase mockWatchStatus;
   late MockRefreshSubscriptionStatusUseCase mockRefreshStatus;
@@ -69,6 +72,7 @@ void main() {
   late MockAuthBloc mockAuthBloc;
   late MockPaywallAnalytics mockAnalytics;
   late MockOnboardingTracker mockOnboardingTracker;
+  late MockSubscriptionTracker mockSubscriptionTracker;
   late StreamController<bool> isSubscribedController;
 
   final tAnnualPackage = SubscriptionPackage(
@@ -148,6 +152,7 @@ void main() {
       () => mockAnalytics.logGiftViewed(source: any(named: 'source')),
     ).thenAnswer((_) async => {});
     mockOnboardingTracker = MockOnboardingTracker();
+    mockSubscriptionTracker = MockSubscriptionTracker();
     isSubscribedController = StreamController<bool>.broadcast();
 
     when(
@@ -169,6 +174,9 @@ void main() {
     ).thenAnswer((_) async => {});
     when(
       () => mockOnboardingTracker.logConversion(),
+    ).thenAnswer((_) async => {});
+    when(
+      () => mockSubscriptionTracker.syncSubscriptionProperties(any()),
     ).thenAnswer((_) async => {});
     when(
       () => mockAnalytics.logPurchaseSuccess(any()),
@@ -218,6 +226,7 @@ void main() {
       isSubscribedController.stream,
       mockAnalytics,
       mockOnboardingTracker,
+      mockSubscriptionTracker,
     );
   }
 
@@ -420,6 +429,7 @@ void main() {
           isSubscribedController.stream,
           mockAnalytics,
           mockOnboardingTracker,
+          mockSubscriptionTracker,
         ),
         seed: () {
           final now = DateTime.now().toUtc();
@@ -880,6 +890,7 @@ void main() {
             firestoreStream.stream,
             mockAnalytics,
             mockOnboardingTracker,
+            mockSubscriptionTracker,
           );
 
           when(
@@ -926,6 +937,7 @@ void main() {
             firestoreStream.stream,
             mockAnalytics,
             mockOnboardingTracker,
+            mockSubscriptionTracker,
           );
 
           when(

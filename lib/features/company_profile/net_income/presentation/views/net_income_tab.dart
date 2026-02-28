@@ -153,15 +153,6 @@ class _NetIncomeTabState extends State<NetIncomeTab>
                           ),
                         );
                       },
-                      onViewAllTapped: () => _showAllHistory(
-                        context,
-                        isAnnual
-                            ? stats.annualNetIncome
-                            : stats.quarterlyNetIncome,
-                        isAnnual ? 'Yearly Net Income' : 'Quarterly Net Income',
-                        stats.reportedCurrency,
-                        isAnnual,
-                      ),
                     ),
                     AppConstants.mainSectionSpacing,
                     FinancialHighlightsSection(

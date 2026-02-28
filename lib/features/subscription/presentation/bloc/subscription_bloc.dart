@@ -23,6 +23,7 @@ import 'package:bizzie/features/subscription/domain/enums/subscription_period_ty
 import 'package:bizzie/features/subscription/domain/enums/subscription_package_type.dart';
 import 'package:bizzie/features/onboarding/domain/models/onboarding_step.dart';
 import 'package:bizzie/features/onboarding/presentation/analytics/onboarding_tracker.dart';
+import 'package:bizzie/features/subscription/presentation/analytics/subscription_tracker.dart';
 import 'subscription_event.dart';
 import 'subscription_state.dart';
 
@@ -41,6 +42,7 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
   final Stream<bool> _isSubscribedStream;
   final PaywallAnalytics _analytics;
   final OnboardingTracker _onboardingTracker;
+  final SubscriptionTracker _subscriptionTracker;
 
   StreamSubscription? _statusSubscription;
   StreamSubscription? _authSubscription;
@@ -58,6 +60,7 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
     @Named('isSubscribedStream') this._isSubscribedStream,
     this._analytics,
     this._onboardingTracker,
+    this._subscriptionTracker,
   ) : super(SubscriptionState.initialState()) {
     on<SubscriptionEventInitialized>(_onInitialized);
     on<SubscriptionStatusUpdated>(_onStatusUpdated);
@@ -267,6 +270,7 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
       add(const SubscriptionEvent.offeringsRequested());
     }
 
+    _subscriptionTracker.syncSubscriptionProperties(newStatus);
     _scheduleExpirationTimer(newStatus);
 
     state.map(

@@ -449,6 +449,8 @@ import '../features/subscription/domain/usecases/watch_subscription_status_use_c
     as _i630;
 import '../features/subscription/presentation/analytics/paywall_analytics.dart'
     as _i780;
+import '../features/subscription/presentation/analytics/subscription_tracker.dart'
+    as _i94;
 import '../features/subscription/presentation/bloc/subscription_bloc.dart'
     as _i1066;
 import '../features/user/data/datasources/user_local_datasource.dart' as _i147;
@@ -847,6 +849,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i780.PaywallAnalytics>(
       () => _i780.PaywallAnalytics(gh<_i529.IAnalyticsService>()),
+    );
+    gh.lazySingleton<_i94.SubscriptionTracker>(
+      () => _i94.SubscriptionTracker(gh<_i529.IAnalyticsService>()),
     );
     gh.lazySingleton<_i830.WatchlistAnalytics>(
       () => _i830.WatchlistAnalytics(gh<_i529.IAnalyticsService>()),
@@ -1433,21 +1438,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i227.SecurityTracker>(),
       ),
     );
-    gh.lazySingleton<_i1066.SubscriptionBloc>(
-      () => _i1066.SubscriptionBloc(
-        gh<_i630.WatchSubscriptionStatusUseCase>(),
-        gh<_i423.RefreshSubscriptionStatusUseCase>(),
-        gh<_i15.SyncIdentityUseCase>(),
-        gh<_i803.PurchaseSubscriptionUseCase>(),
-        gh<_i566.RestorePurchasesUseCase>(),
-        gh<_i343.GetOfferingsUseCase>(),
-        gh<_i59.AuthBloc>(),
-        gh<_i25.SyncSubscriptionUseCase>(),
-        gh<_i687.Stream<bool>>(instanceName: 'isSubscribedStream'),
-        gh<_i780.PaywallAnalytics>(),
-        gh<_i610.OnboardingTracker>(),
-      ),
-    );
     gh.lazySingleton<_i242.UpdateProfileUseCase>(
       () => _i242.UpdateProfileUseCase(gh<_i615.IUserRepository>()),
     );
@@ -1462,6 +1452,22 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i1055.GetUpcomingEarningsUseCase>(
       () => _i1055.GetUpcomingEarningsUseCase(gh<_i158.ISecurityRepository>()),
+    );
+    gh.lazySingleton<_i1066.SubscriptionBloc>(
+      () => _i1066.SubscriptionBloc(
+        gh<_i630.WatchSubscriptionStatusUseCase>(),
+        gh<_i423.RefreshSubscriptionStatusUseCase>(),
+        gh<_i15.SyncIdentityUseCase>(),
+        gh<_i803.PurchaseSubscriptionUseCase>(),
+        gh<_i566.RestorePurchasesUseCase>(),
+        gh<_i343.GetOfferingsUseCase>(),
+        gh<_i59.AuthBloc>(),
+        gh<_i25.SyncSubscriptionUseCase>(),
+        gh<_i687.Stream<bool>>(instanceName: 'isSubscribedStream'),
+        gh<_i780.PaywallAnalytics>(),
+        gh<_i610.OnboardingTracker>(),
+        gh<_i94.SubscriptionTracker>(),
+      ),
     );
     gh.factory<_i723.CompanyDividendsBloc>(
       () => _i723.CompanyDividendsBloc(
