@@ -10,6 +10,7 @@ import 'package:bizzie/features/company_profile/shared/presentation/widgets/comp
 import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:bizzie/shared/widgets/loading/mascot_refresh_indicator.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/widgets/tab_visibility_observer.dart';
+import 'package:bizzie/features/company_profile/shared/presentation/enums/company_profile_tab.dart';
 import 'package:bizzie/shared/utils/url_launcher_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -31,7 +32,7 @@ class _NewsTabState extends State<NewsTab> with AutomaticKeepAliveClientMixin {
   Widget build(BuildContext context) {
     super.build(context);
     return TabVisibilityObserver(
-      tabName: 'news',
+      tabName: CompanyProfileTab.news.analyticsName,
       onTabShown: () => context.read<CompanyNewsBloc>().add(
         CompanyNewsEvent.tabShown(widget.ticker),
       ),

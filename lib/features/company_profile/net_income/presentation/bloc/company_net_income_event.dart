@@ -11,4 +11,17 @@ abstract class CompanyNetIncomeEvent with _$CompanyNetIncomeEvent {
 
   const factory CompanyNetIncomeEvent.stalenessCheckRequested(String ticker) =
       StalenessCheckRequested;
+
+  const factory CompanyNetIncomeEvent.tabShown(String ticker) = TabShown;
+  const factory CompanyNetIncomeEvent.tabHidden() = TabHidden;
+  const factory CompanyNetIncomeEvent.appBackgrounded() = AppBackgrounded;
+  const factory CompanyNetIncomeEvent.appForegrounded() = AppForegrounded;
+
+  const factory CompanyNetIncomeEvent.periodViewed({required bool isAnnual}) =
+      PeriodViewed;
+
+  const factory CompanyNetIncomeEvent.viewAllTapped({
+    required bool isAnnual,
+    required bool isChart,
+  }) = ViewAllTapped;
 }

@@ -13,6 +13,7 @@ import 'package:bizzie/features/company_profile/shared/presentation/widgets/comp
 import 'package:bizzie/features/company_profile/shared/presentation/widgets/company_profile_loading_state.dart';
 import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/widgets/tab_visibility_observer.dart';
+import 'package:bizzie/features/company_profile/shared/presentation/enums/company_profile_tab.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:bizzie/shared/widgets/charts/bizzie_expandable_chart.dart';
 import 'package:bizzie/shared/widgets/states/bizzie_empty_state.dart';
@@ -102,7 +103,7 @@ class _DividendsLoadedState extends StatelessWidget {
     );
 
     return TabVisibilityObserver(
-      tabName: 'dividends',
+      tabName: CompanyProfileTab.dividends.analyticsName,
       onTabShown: () => context.read<CompanyDividendsBloc>().add(
         CompanyDividendsEvent.tabShown(ticker),
       ),

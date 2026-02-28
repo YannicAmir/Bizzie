@@ -40,8 +40,8 @@ class CompanyRevenueBloc extends Bloc<CompanyRevenueEvent, CompanyRevenueState>
       transformer: sequential(),
     );
     on<TabShown>(_onTabShown);
-    on<TabHidden>((_, __) => onTabHidden());
-    on<AppBackgrounded>((_, __) => onAppBackgrounded());
+    on<TabHidden>((_, __) async => await onTabHidden());
+    on<AppBackgrounded>((_, __) async => await onAppBackgrounded());
     on<AppForegrounded>((_, __) => onAppForegrounded());
     on<PeriodViewed>(_onPeriodViewed);
     on<ViewAllTapped>(_onViewAllTapped);

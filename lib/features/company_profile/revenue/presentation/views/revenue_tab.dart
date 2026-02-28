@@ -42,7 +42,7 @@ class _RevenueTabState extends State<RevenueTab>
     super.build(context);
 
     return TabVisibilityObserver(
-      tabName: CompanyProfileTab.revenue.name,
+      tabName: CompanyProfileTab.revenue.analyticsName,
       onTabShown: () => context.read<CompanyRevenueBloc>().add(
         CompanyRevenueEvent.tabShown(widget.ticker),
       ),

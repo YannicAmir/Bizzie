@@ -169,6 +169,8 @@ import '../features/company_profile/net_income/domain/interfaces/i_net_income_re
     as _i814;
 import '../features/company_profile/net_income/domain/usecases/get_net_income_stats_usecase.dart'
     as _i775;
+import '../features/company_profile/net_income/presentation/analytics/net_income_tab_analytics.dart'
+    as _i631;
 import '../features/company_profile/net_income/presentation/bloc/company_net_income_bloc.dart'
     as _i614;
 import '../features/company_profile/news/data/datasources/news_firestore_data_source.dart'
@@ -819,6 +821,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i252.DividendTabAnalytics>(
       () => _i252.DividendTabAnalytics(gh<_i529.IAnalyticsService>()),
     );
+    gh.lazySingleton<_i631.NetIncomeTabAnalytics>(
+      () => _i631.NetIncomeTabAnalytics(gh<_i529.IAnalyticsService>()),
+    );
     gh.lazySingleton<_i1021.NewsTabAnalytics>(
       () => _i1021.NewsTabAnalytics(gh<_i529.IAnalyticsService>()),
     );
@@ -1325,6 +1330,13 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i830.WatchlistAnalytics>(),
       ),
     );
+    gh.factory<_i614.CompanyNetIncomeBloc>(
+      () => _i614.CompanyNetIncomeBloc(
+        gh<_i775.GetNetIncomeStatsUseCase>(),
+        gh<_i937.IConfigService>(),
+        gh<_i631.NetIncomeTabAnalytics>(),
+      ),
+    );
     gh.factory<_i683.CompanyEpsBloc>(
       () => _i683.CompanyEpsBloc(
         gh<_i107.GetEpsStatsUseCase>(),
@@ -1373,12 +1385,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i807.CompanySharesBloc>(
       () => _i807.CompanySharesBloc(
         gh<_i240.GetSharesUseCase>(),
-        gh<_i937.IConfigService>(),
-      ),
-    );
-    gh.factory<_i614.CompanyNetIncomeBloc>(
-      () => _i614.CompanyNetIncomeBloc(
-        gh<_i775.GetNetIncomeStatsUseCase>(),
         gh<_i937.IConfigService>(),
       ),
     );
