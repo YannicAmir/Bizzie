@@ -163,6 +163,8 @@ import '../features/company_profile/free_cash_flow/domain/interfaces/i_free_cash
     as _i581;
 import '../features/company_profile/free_cash_flow/domain/usecases/get_free_cash_flow_stats_usecase.dart'
     as _i106;
+import '../features/company_profile/free_cash_flow/presentation/analytics/free_cash_flow_tab_analytics.dart'
+    as _i167;
 import '../features/company_profile/free_cash_flow/presentation/bloc/company_free_cash_flow_bloc.dart'
     as _i991;
 import '../features/company_profile/net_income/data/repositories/net_income_repository_impl.dart'
@@ -828,6 +830,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i667.EpsTabAnalytics>(
       () => _i667.EpsTabAnalytics(gh<_i529.IAnalyticsService>()),
     );
+    gh.lazySingleton<_i167.FreeCashFlowTabAnalytics>(
+      () => _i167.FreeCashFlowTabAnalytics(gh<_i529.IAnalyticsService>()),
+    );
     gh.lazySingleton<_i631.NetIncomeTabAnalytics>(
       () => _i631.NetIncomeTabAnalytics(gh<_i529.IAnalyticsService>()),
     );
@@ -1164,12 +1169,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i240.GetSharesUseCase>(
       () => _i240.GetSharesUseCase(gh<_i786.ISharesRepository>()),
     );
-    gh.factory<_i991.CompanyFreeCashFlowBloc>(
-      () => _i991.CompanyFreeCashFlowBloc(
-        gh<_i106.GetFreeCashFlowStatsUseCase>(),
-        gh<_i937.IConfigService>(),
-      ),
-    );
     await gh.singletonAsync<_i337.SecurityService>(
       () => _i337.SecurityService.create(
         gh<_i915.AppEnv>(),
@@ -1319,6 +1318,13 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i980.ChangePasswordBloc(
         gh<_i797.ChangePasswordUseCase>(),
         gh<_i963.ProfileTracker>(),
+      ),
+    );
+    gh.factory<_i991.CompanyFreeCashFlowBloc>(
+      () => _i991.CompanyFreeCashFlowBloc(
+        gh<_i106.GetFreeCashFlowStatsUseCase>(),
+        gh<_i937.IConfigService>(),
+        gh<_i167.FreeCashFlowTabAnalytics>(),
       ),
     );
     gh.lazySingleton<_i925.GetHistoricalEodPricesUseCase>(
