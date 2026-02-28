@@ -4,9 +4,7 @@ import 'package:injectable/injectable.dart';
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/features/company_profile/financial_statements/data/datasources/financial_statements_firestore_data_source.dart';
 import 'package:bizzie/features/company_profile/financial_statements/data/datasources/financial_statements_remote_data_source.dart';
-import 'package:bizzie/features/company_profile/financial_statements/data/dtos/legacy_income_statement_dto.dart';
 import 'package:bizzie/features/company_profile/shared/domain/interfaces/i_company_repository.dart';
-import 'package:bizzie/features/company_profile/shared/domain/models/financial_data_point.dart';
 import '../../domain/interfaces/i_shares_repository.dart';
 import '../../domain/models/share_stats.dart';
 
@@ -59,26 +57,16 @@ class SharesRepositoryImpl implements ISharesRepository {
             final annual = annualS.data;
             final quart = quartS.data;
 
-            List<FinancialDataPoint> mapIncomeDataPoints(
-              List<LegacyIncomeStatementDto> data,
-              num Function(LegacyIncomeStatementDto) extractor,
-            ) {
-              return data
-                  .where((d) => d.date.isNotEmpty)
-                  .map((d) => d.toFinancialDataPoint(extractor(d).toDouble()))
-                  .toList();
-            }
-
             final result = ShareStats(
               currentSharesOutstanding: current,
-              annualWeightedAverageShares: mapIncomeDataPoints(
-                annual,
-                (d) => d.weightedAverageShsOutDil ?? 0,
-              ),
-              quarterlyWeightedAverageShares: mapIncomeDataPoints(
-                quart,
-                (d) => d.weightedAverageShsOutDil ?? 0,
-              ),
+              annualWeightedAverageShares: annual
+                  .where((d) => d.date?.isNotEmpty == true)
+                  .map((d) => d.toWeightedAverageSharesDataPoint())
+                  .toList(),
+              quarterlyWeightedAverageShares: quart
+                  .where((d) => d.date?.isNotEmpty == true)
+                  .map((d) => d.toWeightedAverageSharesDataPoint())
+                  .toList(),
             );
 
             final origins = [quoteOrigin, annualS.origin, quartS.origin];

@@ -2,8 +2,6 @@ import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/features/company_profile/financial_statements/data/datasources/financial_statements_firestore_data_source.dart';
 import 'package:bizzie/features/company_profile/financial_statements/data/datasources/financial_statements_remote_data_source.dart';
-import 'package:bizzie/features/company_profile/financial_statements/data/dtos/income_statement_dto.dart';
-import 'package:bizzie/features/company_profile/shared/domain/models/financial_data_point.dart';
 import 'package:bizzie/features/company_profile/eps/domain/interfaces/i_eps_repository.dart';
 import 'package:bizzie/features/company_profile/eps/domain/models/eps_stats.dart';
 import 'package:dartz/dartz.dart';
@@ -63,14 +61,20 @@ class EpsRepositoryImpl implements IEpsRepository {
 
               final result = EpsStats(
                 reportedCurrency: conversion.targetCurrency,
-                annualEps: _mapStableIncomeDataPoints(
-                  annual,
-                  (d) => (d.epsDiluted ?? 0.0) * conversion.multiplier,
-                ),
-                quarterlyEps: _mapStableIncomeDataPoints(
-                  quart,
-                  (d) => (d.epsDiluted ?? 0.0) * conversion.multiplier,
-                ),
+                annualEps: annual
+                    .where((d) => d.date?.isNotEmpty == true)
+                    .map(
+                      (d) =>
+                          d.toEpsDataPoint(multiplier: conversion.multiplier),
+                    )
+                    .toList(),
+                quarterlyEps: quart
+                    .where((d) => d.date?.isNotEmpty == true)
+                    .map(
+                      (d) =>
+                          d.toEpsDataPoint(multiplier: conversion.multiplier),
+                    )
+                    .toList(),
               );
 
               final origins = [annualS.origin, quartS.origin, convOrigin];
@@ -134,15 +138,5 @@ class EpsRepositoryImpl implements IEpsRepository {
         CompanyProfileDataOrigin.cache,
       ));
     }
-  }
-
-  List<FinancialDataPoint> _mapStableIncomeDataPoints(
-    List<IncomeStatementDto> data,
-    num Function(IncomeStatementDto) extractor,
-  ) {
-    return data
-        .where((d) => d.date.isNotEmpty)
-        .map((d) => d.toFinancialDataPoint(extractor(d).toDouble()))
-        .toList();
   }
 }

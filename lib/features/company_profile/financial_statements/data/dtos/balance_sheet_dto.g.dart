@@ -8,9 +8,9 @@ part of 'balance_sheet_dto.dart';
 
 _BalanceSheetDto _$BalanceSheetDtoFromJson(Map<String, dynamic> json) =>
     _BalanceSheetDto(
-      date: json['date'] as String,
-      symbol: json['symbol'] as String,
-      reportedCurrency: json['reportedCurrency'] as String,
+      date: json['date'] as String?,
+      symbol: json['symbol'] as String?,
+      reportedCurrency: json['reportedCurrency'] as String?,
       cik: json['cik'] as String?,
       fillingDate: json['fillingDate'] as String?,
       acceptedDate: json['acceptedDate'] as String?,

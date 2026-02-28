@@ -8,14 +8,14 @@ part of 'income_statement_dto.dart';
 
 _IncomeStatementDto _$IncomeStatementDtoFromJson(Map<String, dynamic> json) =>
     _IncomeStatementDto(
-      date: json['date'] as String,
-      symbol: json['symbol'] as String,
-      reportedCurrency: json['reportedCurrency'] as String,
-      cik: json['cik'] as String,
-      filingDate: json['filingDate'] as String,
-      acceptedDate: json['acceptedDate'] as String,
-      fiscalYear: json['fiscalYear'] as String,
-      period: json['period'] as String,
+      date: json['date'] as String?,
+      symbol: json['symbol'] as String?,
+      reportedCurrency: json['reportedCurrency'] as String?,
+      cik: json['cik'] as String?,
+      filingDate: json['filingDate'] as String?,
+      acceptedDate: json['acceptedDate'] as String?,
+      fiscalYear: json['fiscalYear'] as String?,
+      period: json['period'] as String?,
       revenue: (json['revenue'] as num?)?.toDouble(),
       costOfRevenue: (json['costOfRevenue'] as num?)?.toDouble(),
       grossProfit: (json['grossProfit'] as num?)?.toDouble(),

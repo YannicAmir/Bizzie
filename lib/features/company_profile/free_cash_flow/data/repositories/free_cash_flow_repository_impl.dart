@@ -4,8 +4,6 @@ import 'package:injectable/injectable.dart';
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/features/company_profile/financial_statements/data/datasources/financial_statements_firestore_data_source.dart';
 import 'package:bizzie/features/company_profile/financial_statements/data/datasources/financial_statements_remote_data_source.dart';
-import 'package:bizzie/features/company_profile/financial_statements/data/dtos/cash_flow_statement_dto.dart';
-import 'package:bizzie/features/company_profile/shared/domain/models/financial_data_point.dart';
 import '../../domain/interfaces/i_free_cash_flow_repository.dart';
 import '../../domain/models/free_cash_flow_stats.dart';
 
@@ -61,14 +59,22 @@ class FreeCashFlowRepositoryImpl implements IFreeCashFlowRepository {
 
               final result = FreeCashFlowStats(
                 reportedCurrency: conversion.targetCurrency,
-                annualFcf: _mapCashFlowDataPoints(
-                  annual,
-                  (d) => d.freeCashFlow * conversion.multiplier,
-                ),
-                quarterlyFcf: _mapCashFlowDataPoints(
-                  quart,
-                  (d) => d.freeCashFlow * conversion.multiplier,
-                ),
+                annualFcf: annual
+                    .where((d) => d.date?.isNotEmpty == true)
+                    .map(
+                      (d) => d.toFreeCashFlowDataPoint(
+                        multiplier: conversion.multiplier,
+                      ),
+                    )
+                    .toList(),
+                quarterlyFcf: quart
+                    .where((d) => d.date?.isNotEmpty == true)
+                    .map(
+                      (d) => d.toFreeCashFlowDataPoint(
+                        multiplier: conversion.multiplier,
+                      ),
+                    )
+                    .toList(),
               );
 
               final origins = [annualS.origin, quartS.origin, convOrigin];
@@ -132,15 +138,5 @@ class FreeCashFlowRepositoryImpl implements IFreeCashFlowRepository {
         CompanyProfileDataOrigin.cache,
       ));
     }
-  }
-
-  List<FinancialDataPoint> _mapCashFlowDataPoints(
-    List<CashFlowStatementDto> data,
-    num Function(CashFlowStatementDto) extractor,
-  ) {
-    return data
-        .where((d) => d.date.isNotEmpty)
-        .map((d) => d.toFinancialDataPoint(extractor(d).toDouble()))
-        .toList();
   }
 }

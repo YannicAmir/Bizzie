@@ -64,7 +64,7 @@ void main() {
             'tapped_qtrchart_view_all': true,
             'tapped_yrchart_view_all': false,
             'tapped_qtrtable_view_all': false,
-            'tapped_yrtableView_all': true,
+            'tapped_yrtable_view_all': true,
             'is_final': true,
           },
         ),

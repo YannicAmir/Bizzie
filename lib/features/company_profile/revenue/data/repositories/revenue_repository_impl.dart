@@ -2,8 +2,6 @@ import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/features/company_profile/financial_statements/data/datasources/financial_statements_firestore_data_source.dart';
 import 'package:bizzie/features/company_profile/financial_statements/data/datasources/financial_statements_remote_data_source.dart';
-import 'package:bizzie/features/company_profile/financial_statements/data/dtos/income_statement_dto.dart';
-import 'package:bizzie/features/company_profile/shared/domain/models/financial_data_point.dart';
 import 'package:bizzie/features/company_profile/revenue/domain/interfaces/i_revenue_repository.dart';
 import 'package:bizzie/features/company_profile/revenue/domain/models/revenue_stats.dart';
 import 'package:dartz/dartz.dart';
@@ -62,14 +60,22 @@ class RevenueRepositoryImpl implements IRevenueRepository {
               final result = RevenueStats(
                 symbol: ticker,
                 reportedCurrency: conversion.targetCurrency,
-                annualRevenue: _mapStableIncomeDataPoints(
-                  annual,
-                  (d) => (d.revenue ?? 0.0) * conversion.multiplier,
-                ),
-                quarterlyRevenue: _mapStableIncomeDataPoints(
-                  quart,
-                  (d) => (d.revenue ?? 0.0) * conversion.multiplier,
-                ),
+                annualRevenue: annual
+                    .where((d) => d.date?.isNotEmpty == true)
+                    .map(
+                      (d) => d.toRevenueDataPoint(
+                        multiplier: conversion.multiplier,
+                      ),
+                    )
+                    .toList(),
+                quarterlyRevenue: quart
+                    .where((d) => d.date?.isNotEmpty == true)
+                    .map(
+                      (d) => d.toRevenueDataPoint(
+                        multiplier: conversion.multiplier,
+                      ),
+                    )
+                    .toList(),
               );
 
               final origins = [annualS.origin, quartS.origin, convOrigin];
@@ -133,15 +139,5 @@ class RevenueRepositoryImpl implements IRevenueRepository {
         CompanyProfileDataOrigin.cache,
       ));
     }
-  }
-
-  List<FinancialDataPoint> _mapStableIncomeDataPoints(
-    List<IncomeStatementDto> data,
-    num Function(IncomeStatementDto) extractor,
-  ) {
-    return data
-        .where((d) => d.date.isNotEmpty)
-        .map((d) => d.toFinancialDataPoint(extractor(d).toDouble()))
-        .toList();
   }
 }

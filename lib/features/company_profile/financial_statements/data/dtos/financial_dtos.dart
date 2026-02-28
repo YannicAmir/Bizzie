@@ -7,9 +7,9 @@ part 'financial_dtos.g.dart';
 @freezed
 abstract class FinancialStatementDto with _$FinancialStatementDto {
   const factory FinancialStatementDto({
-    required String date,
-    required String symbol,
-    required String period,
+    String? date,
+    String? symbol,
+    String? period,
 
     // Income
     double? revenue,

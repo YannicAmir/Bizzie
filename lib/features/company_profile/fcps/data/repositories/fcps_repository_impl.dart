@@ -1,12 +1,10 @@
 import 'package:bizzie/core/enums/data_origin.dart';
+import 'package:collection/collection.dart';
 import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/features/company_profile/financial_statements/data/datasources/financial_statements_firestore_data_source.dart';
 import 'package:bizzie/features/company_profile/financial_statements/data/datasources/financial_statements_remote_data_source.dart';
-import 'package:bizzie/features/company_profile/financial_statements/data/dtos/cash_flow_statement_dto.dart';
-import 'package:bizzie/features/company_profile/financial_statements/data/dtos/income_statement_dto.dart';
-import 'package:bizzie/features/company_profile/shared/domain/models/financial_data_point.dart';
 import '../../domain/interfaces/i_fcps_repository.dart';
 import '../../domain/models/fcps_stats.dart';
 
@@ -81,32 +79,35 @@ class FcpsRepositoryImpl implements IFcpsRepository {
                   final conversion = convData.$1;
                   final convOrigin = convData.$2;
 
-                  List<FinancialDataPoint> calculateFcps(
-                    List<CashFlowStatementDto> cashFlows,
-                    List<IncomeStatementDto> incomeStatements,
-                  ) {
-                    final result = <FinancialDataPoint>[];
-                    final incomeMap = {
-                      for (var i in incomeStatements) i.date: i,
-                    };
-
-                    for (var cf in cashFlows) {
-                      var income = incomeMap[cf.date];
-                      if (income != null &&
-                          (income.weightedAverageShsOutDil ?? 0) > 0) {
-                        final fcps =
-                            (cf.freeCashFlow /
-                                (income.weightedAverageShsOutDil ?? 1)) *
-                            conversion.multiplier;
-                        result.add(cf.toFinancialDataPoint(fcps));
-                      }
-                    }
-                    return result;
-                  }
-
                   final result = FcpsStats(
-                    annualFcps: calculateFcps(annualCF, annualInc),
-                    quarterlyFcps: calculateFcps(quartCF, quartInc),
+                    annualFcps: annualCF
+                        .where((cf) => cf.date?.isNotEmpty == true)
+                        .map((cf) {
+                          final income = annualInc.firstWhereOrNull(
+                            (i) => i.date == cf.date,
+                          );
+                          final shares = (income?.weightedAverageShsOutDil ?? 0)
+                              .toDouble();
+                          return cf.toFcpsDataPoint(
+                            shares,
+                            multiplier: conversion.multiplier,
+                          );
+                        })
+                        .toList(),
+                    quarterlyFcps: quartCF
+                        .where((cf) => cf.date?.isNotEmpty == true)
+                        .map((cf) {
+                          final income = quartInc.firstWhereOrNull(
+                            (i) => i.date == cf.date,
+                          );
+                          final shares = (income?.weightedAverageShsOutDil ?? 0)
+                              .toDouble();
+                          return cf.toFcpsDataPoint(
+                            shares,
+                            multiplier: conversion.multiplier,
+                          );
+                        })
+                        .toList(),
                     reportedCurrency: conversion.targetCurrency,
                   );
 
