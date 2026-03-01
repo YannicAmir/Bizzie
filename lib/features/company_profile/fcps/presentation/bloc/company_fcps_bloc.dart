@@ -1,6 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
-
 import 'package:injectable/injectable.dart';
 import 'package:bizzie/core/interfaces/i_config_service.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
@@ -10,20 +9,103 @@ import 'package:bizzie/shared/utils/bizzie_date_formatter.dart';
 import '../../domain/usecases/get_fcps_stats_usecase.dart';
 import 'company_fcps_event.dart';
 import 'company_fcps_state.dart';
+import 'package:bizzie/features/company_profile/fcps/presentation/analytics/fcps_tab_analytics.dart';
+import 'package:bizzie/features/company_profile/fcps/presentation/analytics/fcps_tab_view_state.dart';
+import 'package:bizzie/features/company_profile/shared/presentation/bloc/company_profile_analytics_mixin.dart';
+import 'package:bizzie/features/company_profile/shared/presentation/analytics/base_analytics.dart';
 
 final _logger = BizzieLogger('CompanyFcpsBloc');
 
 @injectable
-class CompanyFcpsBloc extends Bloc<CompanyFcpsEvent, CompanyFcpsState> {
+class CompanyFcpsBloc extends Bloc<CompanyFcpsEvent, CompanyFcpsState>
+    with
+        CompanyProfileAnalyticsMixin<
+          CompanyFcpsEvent,
+          CompanyFcpsState,
+          FcpsTabViewState
+        > {
   final GetFcpsStatsUseCase _getFcpsStats;
   final IConfigService _configService;
+  final FcpsTabAnalytics _fcpsTabAnalytics;
 
-  CompanyFcpsBloc(this._getFcpsStats, this._configService)
-    : super(const CompanyFcpsState.initial()) {
+  CompanyFcpsBloc(
+    this._getFcpsStats,
+    this._configService,
+    this._fcpsTabAnalytics,
+  ) : super(const CompanyFcpsState.initial()) {
     on<LoadRequested>(_onLoadRequested, transformer: droppable());
     on<StalenessCheckRequested>(
       _onStalenessCheckRequested,
       transformer: sequential(),
+    );
+    _setupAnalyticsHandlers();
+  }
+
+  @override
+  CompanyProfileTabTracker<FcpsTabViewState> get analyticsTracker =>
+      _fcpsTabAnalytics;
+
+  Future<void> _onTabShown(
+    TabShown event,
+    Emitter<CompanyFcpsState> emit,
+  ) async {
+    final existingState = state.maybeMap(
+      loaded: (s) => s.analyticsState,
+      orElse: () => null,
+    );
+
+    onTabShown(
+      event.ticker,
+      FcpsTabViewState(
+        ticker: event.ticker,
+        timestamp: DateTime.now().toIso8601String(),
+        loadTimeMs: existingState?.loadTimeMs,
+        isSuccess: existingState?.isSuccess ?? false,
+        dataSource: existingState?.dataSource,
+      ),
+    );
+    _emitAnalyticsUpdate(emit);
+  }
+
+  Future<void> _onPeriodViewed(
+    PeriodViewed event,
+    Emitter<CompanyFcpsState> emit,
+  ) async {
+    updateAnalyticsState(
+      (s) => event.isAnnual
+          ? s.copyWith(viewedYearlyFcpsTab: true)
+          : s.copyWith(viewedQtrlyFcpsTab: true),
+    );
+    _emitAnalyticsUpdate(emit);
+  }
+
+  Future<void> _onViewAllTapped(
+    ViewAllTapped event,
+    Emitter<CompanyFcpsState> emit,
+  ) async {
+    updateAnalyticsState(
+      (s) => s.copyWith(
+        tappedQtrchartViewAll: event.isChart && !event.isAnnual
+            ? true
+            : s.tappedQtrchartViewAll,
+        tappedYrchartViewAll: event.isChart && event.isAnnual
+            ? true
+            : s.tappedYrchartViewAll,
+        tappedQtrtableViewAll: !event.isChart && !event.isAnnual
+            ? true
+            : s.tappedQtrtableViewAll,
+        tappedYrtableViewAll: !event.isChart && event.isAnnual
+            ? true
+            : s.tappedYrtableViewAll,
+      ),
+    );
+    _emitAnalyticsUpdate(emit);
+  }
+
+  void _emitAnalyticsUpdate(Emitter<CompanyFcpsState> emit) {
+    state.maybeMap(
+      loaded: (s) => emit(s.copyWith(analyticsState: analyticsSession)),
+      orElse: () {},
     );
   }
 
@@ -55,16 +137,49 @@ class CompanyFcpsBloc extends Bloc<CompanyFcpsEvent, CompanyFcpsState> {
       emit(const CompanyFcpsState.loading());
     }
 
+    final stopwatch = Stopwatch()..start();
     final result = await _getFcpsStats(event.ticker);
+    stopwatch.stop();
 
     result.fold(
       (failure) {
         _logger.severe('Failed to load FCPS stats', failure);
+        final metrics =
+            (analyticsSession ??
+                    FcpsTabViewState(
+                      ticker: event.ticker,
+                      timestamp: DateTime.now().toIso8601String(),
+                    ))
+                .copyWith(
+                  isSuccess: false,
+                  loadTimeMs: stopwatch.elapsedMilliseconds,
+                );
+
+        if (analyticsSession != null) {
+          updateAnalyticsState((s) => metrics);
+        }
         emit(CompanyFcpsState.failure(failure));
       },
       (tuple) {
         final (data, origin) = tuple;
         _logger.info('Successfully loaded FCPS stats (origin: $origin)');
+
+        final metrics =
+            (analyticsSession ??
+                    FcpsTabViewState(
+                      ticker: event.ticker,
+                      timestamp: DateTime.now().toIso8601String(),
+                    ))
+                .copyWith(
+                  isSuccess: true,
+                  dataSource: origin,
+                  loadTimeMs: stopwatch.elapsedMilliseconds,
+                );
+
+        if (analyticsSession != null) {
+          updateAnalyticsState((s) => metrics);
+        }
+
         emit(
           CompanyFcpsState.loaded(
             ticker: event.ticker,
@@ -77,6 +192,7 @@ class CompanyFcpsBloc extends Bloc<CompanyFcpsEvent, CompanyFcpsState> {
             historyLimit: _configService.freePlanHistoryCount,
             dataOrigin: origin,
             lastUpdated: DateTime.now(),
+            analyticsState: metrics,
           ),
         );
       },
@@ -130,5 +246,14 @@ class CompanyFcpsBloc extends Bloc<CompanyFcpsEvent, CompanyFcpsState> {
       );
       return ChartDataPoint(label: label, value: p.value);
     }).toList();
+  }
+
+  void _setupAnalyticsHandlers() {
+    on<TabShown>(_onTabShown);
+    on<TabHidden>((_, __) async => await onTabHidden());
+    on<AppBackgrounded>((_, __) async => await onAppBackgrounded());
+    on<AppForegrounded>((_, __) => onAppForegrounded());
+    on<PeriodViewed>(_onPeriodViewed);
+    on<ViewAllTapped>(_onViewAllTapped);
   }
 }

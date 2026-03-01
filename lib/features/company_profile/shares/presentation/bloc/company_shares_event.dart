@@ -11,4 +11,20 @@ abstract class CompanySharesEvent with _$CompanySharesEvent {
 
   const factory CompanySharesEvent.stalenessCheckRequested(String ticker) =
       StalenessCheckRequested;
+
+  const factory CompanySharesEvent.tabShown(String ticker) = TabShown;
+
+  const factory CompanySharesEvent.tabHidden() = TabHidden;
+
+  const factory CompanySharesEvent.appBackgrounded() = AppBackgrounded;
+
+  const factory CompanySharesEvent.appForegrounded() = AppForegrounded;
+
+  const factory CompanySharesEvent.periodViewed({required bool isAnnual}) =
+      PeriodViewed;
+
+  const factory CompanySharesEvent.viewAllTapped({
+    required bool isAnnual,
+    required bool isChart,
+  }) = ViewAllTapped;
 }

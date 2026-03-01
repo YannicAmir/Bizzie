@@ -12,8 +12,11 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:bizzie/core/interfaces/i_config_service.dart';
+import 'package:bizzie/features/company_profile/shares/presentation/analytics/shares_tab_analytics.dart';
 
 class MockGetSharesUseCase extends Mock implements GetSharesUseCase {}
+
+class MockSharesTabAnalytics extends Mock implements SharesTabAnalytics {}
 
 class MockConfigService extends Mock implements IConfigService {}
 
@@ -21,12 +24,15 @@ void main() {
   late CompanySharesBloc bloc;
   late MockGetSharesUseCase mockGetShares;
   late MockConfigService mockConfigService;
+  late MockSharesTabAnalytics mockAnalytics;
 
   setUp(() {
     mockGetShares = MockGetSharesUseCase();
     mockConfigService = MockConfigService();
+    mockAnalytics = MockSharesTabAnalytics();
+
     when(() => mockConfigService.freePlanHistoryCount).thenReturn(7);
-    bloc = CompanySharesBloc(mockGetShares, mockConfigService);
+    bloc = CompanySharesBloc(mockGetShares, mockConfigService, mockAnalytics);
   });
 
   const tTicker = 'AAPL';

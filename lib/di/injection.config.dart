@@ -137,6 +137,8 @@ import '../features/company_profile/fcps/domain/interfaces/i_fcps_repository.dar
     as _i368;
 import '../features/company_profile/fcps/domain/usecases/get_fcps_stats_usecase.dart'
     as _i805;
+import '../features/company_profile/fcps/presentation/analytics/fcps_tab_analytics.dart'
+    as _i648;
 import '../features/company_profile/fcps/presentation/bloc/company_fcps_bloc.dart'
     as _i178;
 import '../features/company_profile/financial_statements/data/datasources/financial_statements_firestore_data_source.dart'
@@ -273,6 +275,8 @@ import '../features/company_profile/shares/domain/interfaces/i_shares_repository
     as _i786;
 import '../features/company_profile/shares/domain/usecases/get_shares_usecase.dart'
     as _i240;
+import '../features/company_profile/shares/presentation/analytics/shares_tab_analytics.dart'
+    as _i454;
 import '../features/company_profile/shares/presentation/bloc/company_shares_bloc.dart'
     as _i807;
 import '../features/feedback/data/datasources/feedback_remote_data_source.dart'
@@ -830,6 +834,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i667.EpsTabAnalytics>(
       () => _i667.EpsTabAnalytics(gh<_i529.IAnalyticsService>()),
     );
+    gh.lazySingleton<_i648.FcpsTabAnalytics>(
+      () => _i648.FcpsTabAnalytics(gh<_i529.IAnalyticsService>()),
+    );
     gh.lazySingleton<_i167.FreeCashFlowTabAnalytics>(
       () => _i167.FreeCashFlowTabAnalytics(gh<_i529.IAnalyticsService>()),
     );
@@ -844,6 +851,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i258.SecurityTabAnalytics>(
       () => _i258.SecurityTabAnalytics(gh<_i529.IAnalyticsService>()),
+    );
+    gh.lazySingleton<_i454.SharesTabAnalytics>(
+      () => _i454.SharesTabAnalytics(gh<_i529.IAnalyticsService>()),
     );
     gh.lazySingleton<_i32.HomeAnalytics>(
       () => _i32.HomeAnalytics(gh<_i529.IAnalyticsService>()),
@@ -1063,12 +1073,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i1033.CompanyRoeBloc>(
       () => _i1033.CompanyRoeBloc(
         gh<_i231.GetRoeUseCase>(),
-        gh<_i937.IConfigService>(),
-      ),
-    );
-    gh.factory<_i178.CompanyFcpsBloc>(
-      () => _i178.CompanyFcpsBloc(
-        gh<_i805.GetFcpsStatsUseCase>(),
         gh<_i937.IConfigService>(),
       ),
     );
@@ -1296,6 +1300,13 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i667.EpsTabAnalytics>(),
       ),
     );
+    gh.factory<_i178.CompanyFcpsBloc>(
+      () => _i178.CompanyFcpsBloc(
+        gh<_i805.GetFcpsStatsUseCase>(),
+        gh<_i937.IConfigService>(),
+        gh<_i648.FcpsTabAnalytics>(),
+      ),
+    );
     gh.factory<_i62.CompanyPfcfRatioBloc>(
       () => _i62.CompanyPfcfRatioBloc(
         gh<_i912.GetPfcfRatioUseCase>(),
@@ -1374,6 +1385,13 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i561.GetUserUseCase>(
       () => _i561.GetUserUseCase(gh<_i615.IUserRepository>()),
     );
+    gh.factory<_i807.CompanySharesBloc>(
+      () => _i807.CompanySharesBloc(
+        gh<_i240.GetSharesUseCase>(),
+        gh<_i937.IConfigService>(),
+        gh<_i454.SharesTabAnalytics>(),
+      ),
+    );
     gh.factory<_i586.UpdateProfileUseCase>(
       () => _i586.UpdateProfileUseCase(
         gh<_i615.IUserRepository>(),
@@ -1397,12 +1415,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i615.IUserRepository>(),
         gh<_i607.IMarketRepository>(),
         gh<_i1050.ISectorService>(),
-      ),
-    );
-    gh.factory<_i807.CompanySharesBloc>(
-      () => _i807.CompanySharesBloc(
-        gh<_i240.GetSharesUseCase>(),
-        gh<_i937.IConfigService>(),
       ),
     );
     gh.factory<_i1023.ReportsBloc>(

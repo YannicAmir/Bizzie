@@ -3,6 +3,7 @@ import 'package:bizzie/features/company_profile/shared/domain/models/chart_data_
 import 'package:bizzie/features/company_profile/shares/domain/models/shares_summary_data.dart';
 import 'package:bizzie/features/company_profile/shares/domain/models/share_stats.dart';
 import 'package:bizzie/core/enums/data_origin.dart';
+import 'package:bizzie/features/company_profile/shares/presentation/analytics/shares_tab_view_state.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'company_shares_state.freezed.dart';
@@ -21,6 +22,7 @@ class CompanySharesState with _$CompanySharesState {
     required int historyLimit,
     required CompanyProfileDataOrigin dataOrigin,
     DateTime? lastUpdated,
+    SharesTabViewState? analyticsState,
   }) = _Loaded;
   const factory CompanySharesState.failure(Failure failure) = _Failure;
 }

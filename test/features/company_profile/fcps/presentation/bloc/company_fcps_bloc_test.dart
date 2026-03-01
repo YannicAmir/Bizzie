@@ -11,21 +11,32 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:bizzie/core/interfaces/i_config_service.dart';
+import 'package:bizzie/features/company_profile/fcps/presentation/analytics/fcps_tab_analytics.dart';
+import 'package:bizzie/features/company_profile/fcps/presentation/analytics/fcps_tab_view_state.dart';
 
 class MockGetFcpsStatsUseCase extends Mock implements GetFcpsStatsUseCase {}
 
 class MockConfigService extends Mock implements IConfigService {}
 
+class MockFcpsTabAnalytics extends Mock implements FcpsTabAnalytics {}
+
 void main() {
+  setUpAll(() {
+    registerFallbackValue(const FcpsTabViewState(ticker: '', timestamp: ''));
+  });
+
   late CompanyFcpsBloc bloc;
   late MockGetFcpsStatsUseCase mockGetFcpsStats;
   late MockConfigService mockConfigService;
+  late MockFcpsTabAnalytics mockAnalytics;
 
   setUp(() {
     mockGetFcpsStats = MockGetFcpsStatsUseCase();
     mockConfigService = MockConfigService();
+    mockAnalytics = MockFcpsTabAnalytics();
+
     when(() => mockConfigService.freePlanHistoryCount).thenReturn(7);
-    bloc = CompanyFcpsBloc(mockGetFcpsStats, mockConfigService);
+    bloc = CompanyFcpsBloc(mockGetFcpsStats, mockConfigService, mockAnalytics);
   });
 
   const tTicker = 'AAPL';
@@ -279,6 +290,165 @@ void main() {
               CompanyProfileDataOrigin.api,
             ),
       ],
+    );
+  });
+
+  group('CompanyFcpsBloc - Interaction Events', () {
+    blocTest<CompanyFcpsBloc, CompanyFcpsState>(
+      'periodViewed_isAnnualTrue_updatesviewedYearlyFcpsTabFlag',
+      build: () => bloc,
+      // Arrange
+      seed: () => const CompanyFcpsState.loaded(
+        ticker: tTicker,
+        fcpsStats: tFcpsStats,
+        annualChartData: [],
+        quarterlyChartData: [],
+        historyLimit: 7,
+        dataOrigin: CompanyProfileDataOrigin.api,
+      ),
+      // Act
+      act: (bloc) {
+        bloc.add(const CompanyFcpsEvent.tabShown(tTicker));
+        bloc.add(const CompanyFcpsEvent.periodViewed(isAnnual: true));
+      },
+      // Assert
+      expect: () => [
+        isA<CompanyFcpsState>().having(
+          (s) => s.maybeMap(
+            loaded: (l) => l.analyticsState?.ticker,
+            orElse: () => null,
+          ),
+          'ticker',
+          tTicker,
+        ),
+        isA<CompanyFcpsState>().having(
+          (s) => s.maybeMap(
+            loaded: (l) => l.analyticsState?.viewedYearlyFcpsTab,
+            orElse: () => false,
+          ),
+          'viewedYearlyFcpsTab',
+          true,
+        ),
+      ],
+    );
+
+    blocTest<CompanyFcpsBloc, CompanyFcpsState>(
+      'viewAllTapped_chartAndTable_updatesCorrectInteractionFlags',
+      build: () => bloc,
+      // Arrange
+      seed: () => const CompanyFcpsState.loaded(
+        ticker: tTicker,
+        fcpsStats: tFcpsStats,
+        annualChartData: [],
+        quarterlyChartData: [],
+        historyLimit: 7,
+        dataOrigin: CompanyProfileDataOrigin.api,
+      ),
+      // Act
+      act: (bloc) {
+        bloc.add(const CompanyFcpsEvent.tabShown(tTicker));
+        bloc.add(
+          const CompanyFcpsEvent.viewAllTapped(isAnnual: true, isChart: true),
+        );
+        bloc.add(
+          const CompanyFcpsEvent.viewAllTapped(isAnnual: false, isChart: false),
+        );
+      },
+      // Assert
+      expect: () => [
+        isA<CompanyFcpsState>().having(
+          (s) => s.maybeMap(
+            loaded: (l) => l.analyticsState?.ticker,
+            orElse: () => null,
+          ),
+          'ticker',
+          tTicker,
+        ),
+        isA<CompanyFcpsState>().having(
+          (s) => s.maybeMap(
+            loaded: (l) => l.analyticsState?.tappedYrchartViewAll,
+            orElse: () => false,
+          ),
+          'tappedYrchartViewAll',
+          true,
+        ),
+        isA<CompanyFcpsState>().having(
+          (s) => s.maybeMap(
+            loaded: (l) => l.analyticsState?.tappedQtrtableViewAll,
+            orElse: () => false,
+          ),
+          'tappedQtrtableViewAll',
+          true,
+        ),
+      ],
+    );
+  });
+
+  group('CompanyFcpsBloc - Lifecycle Events', () {
+    blocTest<CompanyFcpsBloc, CompanyFcpsState>(
+      'tabHidden_sessionActive_logsFinalSummary',
+      build: () {
+        // Arrange
+        when(
+          () => mockAnalytics.logViewSummary(
+            any(),
+            isFinal: any(named: 'isFinal'),
+          ),
+        ).thenAnswer((_) async {});
+        return bloc;
+      },
+      seed: () => const CompanyFcpsState.loaded(
+        ticker: tTicker,
+        fcpsStats: tFcpsStats,
+        annualChartData: [],
+        quarterlyChartData: [],
+        historyLimit: 7,
+        dataOrigin: CompanyProfileDataOrigin.api,
+      ),
+      // Act
+      act: (bloc) async {
+        bloc.add(const CompanyFcpsEvent.tabShown(tTicker));
+        bloc.add(const CompanyFcpsEvent.tabHidden());
+      },
+      // Assert
+      verify: (_) {
+        verify(
+          () => mockAnalytics.logViewSummary(any(), isFinal: true),
+        ).called(1);
+      },
+    );
+
+    blocTest<CompanyFcpsBloc, CompanyFcpsState>(
+      'appBackgrounded_sessionActive_logsNonFinalSummary',
+      build: () {
+        // Arrange
+        when(
+          () => mockAnalytics.logViewSummary(
+            any(),
+            isFinal: any(named: 'isFinal'),
+          ),
+        ).thenAnswer((_) async {});
+        return bloc;
+      },
+      seed: () => const CompanyFcpsState.loaded(
+        ticker: tTicker,
+        fcpsStats: tFcpsStats,
+        annualChartData: [],
+        quarterlyChartData: [],
+        historyLimit: 7,
+        dataOrigin: CompanyProfileDataOrigin.api,
+      ),
+      // Act
+      act: (bloc) async {
+        bloc.add(const CompanyFcpsEvent.tabShown(tTicker));
+        bloc.add(const CompanyFcpsEvent.appBackgrounded());
+      },
+      // Assert
+      verify: (_) {
+        verify(
+          () => mockAnalytics.logViewSummary(any(), isFinal: false),
+        ).called(1);
+      },
     );
   });
 }
