@@ -10,24 +10,37 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:bizzie/core/interfaces/i_config_service.dart';
+import 'package:bizzie/features/company_profile/roe/presentation/analytics/roe_tab_analytics.dart';
+import 'package:bizzie/features/company_profile/roe/presentation/analytics/roe_tab_view_state.dart';
 
 class MockGetRoeUseCase extends Mock implements GetRoeUseCase {}
 
 class MockConfigService extends Mock implements IConfigService {}
 
+class MockRoeTabAnalytics extends Mock implements RoeTabAnalytics {}
+
 void main() {
   late CompanyRoeBloc bloc;
   late MockGetRoeUseCase mockGetRoe;
   late MockConfigService mockConfigService;
+  late MockRoeTabAnalytics mockAnalytics;
+
+  setUpAll(() {
+    registerFallbackValue(
+      const RoeTabViewState(ticker: 'AAPL', timestamp: '2024-01-01'),
+    );
+  });
 
   setUp(() {
     mockGetRoe = MockGetRoeUseCase();
     mockConfigService = MockConfigService();
+    mockAnalytics = MockRoeTabAnalytics();
     when(() => mockConfigService.freePlanHistoryCount).thenReturn(7);
-    bloc = CompanyRoeBloc(mockGetRoe, mockConfigService);
+    bloc = CompanyRoeBloc(mockGetRoe, mockConfigService, mockAnalytics);
   });
 
   const tTicker = 'AAPL';
+  const tTimestamp = '2024-01-01T00:00:00Z';
   const tRoeMetrics = [
     Roe(
       symbol: tTicker,
@@ -328,6 +341,114 @@ void main() {
           'MSFT',
         ),
       ],
+    );
+  });
+
+  group('CompanyRoeBloc - Analytics', () {
+    blocTest<CompanyRoeBloc, CompanyRoeState>(
+      'tabShown_initializesAnalyticsState',
+      build: () => bloc,
+      seed: () => CompanyRoeState.loaded(
+        ticker: tTicker,
+        dataPoints: const [],
+        chartData: const [],
+        currentValue: 0.45,
+        growthPercentage: 5.0,
+        absoluteDelta: 0.1,
+        isPositive: true,
+        referenceLabel: '2018',
+        historyLimit: 7,
+        dataOrigin: CompanyProfileDataOrigin.api,
+      ),
+      act: (bloc) => bloc.add(const CompanyRoeEvent.tabShown(tTicker)),
+      expect: () => [
+        isA<CompanyRoeState>().having(
+          (s) =>
+              s.maybeMap(loaded: (l) => l.analyticsState, orElse: () => null),
+          'analyticsState',
+          isNotNull,
+        ),
+      ],
+    );
+
+    blocTest<CompanyRoeBloc, CompanyRoeState>(
+      'viewAllTapped_updatesInteractionFlags',
+      build: () => bloc,
+      seed: () => CompanyRoeState.loaded(
+        ticker: tTicker,
+        dataPoints: const [],
+        chartData: const [],
+        currentValue: 0.45,
+        growthPercentage: 5.0,
+        absoluteDelta: 0.1,
+        isPositive: true,
+        referenceLabel: '2018',
+        historyLimit: 7,
+        dataOrigin: CompanyProfileDataOrigin.api,
+        analyticsState: const RoeTabViewState(
+          ticker: tTicker,
+          timestamp: tTimestamp,
+        ),
+      ),
+      act: (bloc) => bloc
+        ..add(const CompanyRoeEvent.tabShown(tTicker))
+        ..add(const CompanyRoeEvent.viewAllTapped(isChart: true)),
+      expect: () => [
+        isA<CompanyRoeState>(), // from tabShown
+        isA<CompanyRoeState>().having(
+          (s) => s.maybeMap(
+            loaded: (l) => l.analyticsState?.tappedChartViewAll,
+            orElse: () => null,
+          ),
+          'tappedChartViewAll',
+          true,
+        ),
+      ],
+    );
+
+    blocTest<CompanyRoeBloc, CompanyRoeState>(
+      'tabHidden_logsAnalyticsAndResetsState',
+      build: () {
+        when(
+          () => mockAnalytics.logViewSummary(
+            any(),
+            isFinal: any(named: 'isFinal'),
+          ),
+        ).thenAnswer((_) async {});
+        return bloc;
+      },
+      seed: () => CompanyRoeState.loaded(
+        ticker: tTicker,
+        dataPoints: const [],
+        chartData: const [],
+        currentValue: 0.45,
+        growthPercentage: 5.0,
+        absoluteDelta: 0.1,
+        isPositive: true,
+        referenceLabel: '2018',
+        historyLimit: 7,
+        dataOrigin: CompanyProfileDataOrigin.api,
+        analyticsState: const RoeTabViewState(
+          ticker: tTicker,
+          timestamp: tTimestamp,
+        ),
+      ),
+      act: (bloc) => bloc
+        ..add(const CompanyRoeEvent.tabShown(tTicker))
+        ..add(const CompanyRoeEvent.tabHidden()),
+      expect: () => [
+        isA<CompanyRoeState>(),
+        isA<CompanyRoeState>().having(
+          (s) => s.maybeMap(loaded: (l) => l.analyticsState, orElse: () => 1),
+          'analyticsState',
+          isNull,
+        ),
+      ],
+      verify: (_) {
+        verify(
+          () => mockAnalytics.logViewSummary(any(), isFinal: true),
+        ).called(1);
+      },
     );
   });
 }

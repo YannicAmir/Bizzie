@@ -12,6 +12,8 @@ import 'package:bizzie/features/company_profile/shared/presentation/widgets/comp
 import 'package:bizzie/features/company_profile/shared/presentation/widgets/financial_data_table.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/widgets/financial_table_footer.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/widgets/metric_summary_card.dart';
+import 'package:bizzie/features/company_profile/shared/presentation/widgets/tab_visibility_observer.dart';
+import 'package:bizzie/features/company_profile/shared/presentation/enums/company_profile_tab.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:bizzie/shared/widgets/charts/bizzie_bar_chart.dart';
 import 'package:bizzie/shared/widgets/charts/bizzie_expandable_chart.dart';
@@ -70,7 +72,10 @@ class _PeRatioTabState extends State<PeRatioTab> {
                 referenceLabel,
                 historyLimit,
                 dataOrigin,
+                loadTimeMs,
+                isSuccess,
                 lastUpdated,
+                analyticsState,
               ) => _PeRatioLoadedContent(
                 dataPoints: dataPoints,
                 chartData: chartData,
@@ -136,54 +141,77 @@ class _PeRatioLoadedContent extends StatelessWidget {
       lastUpdated: lastUpdated,
     );
 
-    return SingleChildScrollView(
-      padding: AppConstants.pagePadding,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          MetricSummaryCard(
-            title: 'P/E Ratio',
-            value: summary.valueStr,
-            badgeText: summary.badgeText,
-            badgeStyle: summary.badgeStyle,
-            subtitle: summary.subtitle,
-          ),
-          AppConstants.mainSectionSpacing,
-          BizzieExpandableChart(
-            key: ValueKey('pe_chart_${chartData.length}'),
-            data: chartData
-                .map((p) => BizzieChartData(p.label, p.value))
-                .toList(),
-            numberFormat: NumberFormat('#,##0.00', 'en_US'),
-            visibleCount: historyLimit,
-            thresholdCount: historyLimit,
-            source: PaywallSource.company_profile,
-          ),
-          AppConstants.mainSectionSpacing,
-          FinancialDataTable(
-            data: dataPoints,
-            metricLabel: 'P/E',
-            currency: '',
-            isNeutralColor: true,
-            dateFormat: FinancialDateFormat.fullDate,
-            onViewMore: () => _showAllHistory(context, dataPoints),
-            limit: historyLimit,
-            source: PaywallSource.company_profile,
-            footer: FinancialTableFooter(
-              columns: [
-                FinancialTableFooterColumnData(
-                  label: 'Avg. P/E Ratio',
-                  value: dataPoints.averageValue.formattedRatioValue,
-                ),
-                if (summary.dynamicAvg != null)
-                  FinancialTableFooterColumnData(
-                    label: summary.dynamicAvg!.label,
-                    value: summary.dynamicAvg!.value,
-                  ),
-              ],
+    return TabVisibilityObserver(
+      tabName: CompanyProfileTab.peRatio.analyticsName,
+      onTabShown: () => context.read<CompanyPeRatioBloc>().add(
+        CompanyPeRatioEvent.tabShown(ticker),
+      ),
+      onTabHidden: () => context.read<CompanyPeRatioBloc>().add(
+        const CompanyPeRatioEvent.tabHidden(),
+      ),
+      onAppBackgrounded: () => context.read<CompanyPeRatioBloc>().add(
+        const CompanyPeRatioEvent.appBackgrounded(),
+      ),
+      onAppForegrounded: () => context.read<CompanyPeRatioBloc>().add(
+        const CompanyPeRatioEvent.appForegrounded(),
+      ),
+      child: SingleChildScrollView(
+        padding: AppConstants.pagePadding,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            MetricSummaryCard(
+              title: 'P/E Ratio',
+              value: summary.valueStr,
+              badgeText: summary.badgeText,
+              badgeStyle: summary.badgeStyle,
+              subtitle: summary.subtitle,
             ),
-          ),
-        ],
+            AppConstants.mainSectionSpacing,
+            BizzieExpandableChart(
+              key: ValueKey('pe_chart_${chartData.length}'),
+              data: chartData
+                  .map((p) => BizzieChartData(p.label, p.value))
+                  .toList(),
+              numberFormat: NumberFormat('#,##0.00', 'en_US'),
+              visibleCount: historyLimit,
+              thresholdCount: historyLimit,
+              source: PaywallSource.company_profile,
+              onAnalyticsTap: () => context.read<CompanyPeRatioBloc>().add(
+                const CompanyPeRatioEvent.viewAllTapped(isChart: true),
+              ),
+            ),
+            AppConstants.mainSectionSpacing,
+            FinancialDataTable(
+              data: dataPoints,
+              metricLabel: 'P/E',
+              currency: '',
+              isNeutralColor: true,
+              dateFormat: FinancialDateFormat.fullDate,
+              onAnalyticsTap: () => context.read<CompanyPeRatioBloc>().add(
+                const CompanyPeRatioEvent.viewAllTapped(isChart: false),
+              ),
+              onViewMore: () {
+                _showAllHistory(context, dataPoints);
+              },
+              limit: historyLimit,
+              source: PaywallSource.company_profile,
+              footer: FinancialTableFooter(
+                columns: [
+                  FinancialTableFooterColumnData(
+                    label: 'Avg. P/E Ratio',
+                    value: dataPoints.averageValue.formattedRatioValue,
+                  ),
+                  if (summary.dynamicAvg != null)
+                    FinancialTableFooterColumnData(
+                      label: summary.dynamicAvg!.label,
+                      value: summary.dynamicAvg!.value,
+                    ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

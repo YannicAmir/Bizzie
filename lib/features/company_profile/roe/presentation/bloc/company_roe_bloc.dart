@@ -9,6 +9,10 @@ import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:bizzie/features/company_profile/shared/domain/models/chart_data_point.dart';
 import 'package:bizzie/features/company_profile/shared/domain/models/financial_data_point.dart';
 import 'package:bizzie/features/company_profile/roe/domain/usecases/get_roe_usecase.dart';
+import 'package:bizzie/features/company_profile/roe/presentation/analytics/roe_tab_analytics.dart';
+import 'package:bizzie/features/company_profile/roe/presentation/analytics/roe_tab_view_state.dart';
+import 'package:bizzie/features/company_profile/shared/presentation/analytics/base_analytics.dart';
+import 'package:bizzie/features/company_profile/shared/presentation/bloc/company_profile_analytics_mixin.dart';
 
 import 'company_roe_event.dart';
 import 'company_roe_state.dart';
@@ -16,16 +20,98 @@ import 'company_roe_state.dart';
 final _logger = BizzieLogger('CompanyRoeBloc');
 
 @injectable
-class CompanyRoeBloc extends Bloc<CompanyRoeEvent, CompanyRoeState> {
+class CompanyRoeBloc extends Bloc<CompanyRoeEvent, CompanyRoeState>
+    with
+        CompanyProfileAnalyticsMixin<
+          CompanyRoeEvent,
+          CompanyRoeState,
+          RoeTabViewState
+        > {
   final GetRoeUseCase _getRoeStats;
   final IConfigService _configService;
+  final RoeTabAnalytics _analytics;
 
-  CompanyRoeBloc(this._getRoeStats, this._configService)
+  CompanyRoeBloc(this._getRoeStats, this._configService, this._analytics)
     : super(const CompanyRoeState.initial()) {
-    on<LoadRequested>(_onLoadRequested, transformer: droppable());
+    on<LoadRequested>(_onLoadRequested);
     on<StalenessCheckRequested>(
       _onStalenessCheckRequested,
       transformer: sequential(),
+    );
+    on<TabShown>(_onTabShown);
+    on<TabHidden>(_onTabHidden);
+    on<AppBackgrounded>(_onAppBackgrounded);
+    on<AppForegrounded>(_onAppForegrounded);
+    on<ViewAllTapped>(_onViewAllTapped);
+  }
+
+  bool _lastLoadSuccess = false;
+  int? _lastLoadTimeMs;
+  CompanyProfileDataOrigin? _lastDataSource;
+
+  @override
+  CompanyProfileTabTracker<RoeTabViewState> get analyticsTracker => _analytics;
+
+  void _onTabShown(TabShown event, Emitter<CompanyRoeState> emit) {
+    onTabShown(
+      event.ticker,
+      RoeTabViewState(
+        ticker: event.ticker,
+        timestamp: DateTime.now().toIso8601String(),
+        loadTimeMs: _lastLoadTimeMs,
+        isSuccess: _lastLoadSuccess,
+        dataSource: _lastDataSource,
+      ),
+    );
+    state.maybeMap(
+      loaded: (s) => emit(s.copyWith(analyticsState: analyticsSession)),
+      orElse: () {},
+    );
+  }
+
+  Future<void> _onTabHidden(
+    TabHidden event,
+    Emitter<CompanyRoeState> emit,
+  ) async {
+    await onTabHidden();
+    state.maybeMap(
+      loaded: (s) => emit(s.copyWith(analyticsState: analyticsSession)),
+      orElse: () {},
+    );
+  }
+
+  Future<void> _onAppBackgrounded(
+    AppBackgrounded event,
+    Emitter<CompanyRoeState> emit,
+  ) async {
+    await onAppBackgrounded();
+    state.maybeMap(
+      loaded: (s) => emit(s.copyWith(analyticsState: analyticsSession)),
+      orElse: () {},
+    );
+  }
+
+  void _onAppForegrounded(
+    AppForegrounded event,
+    Emitter<CompanyRoeState> emit,
+  ) {
+    onAppForegrounded();
+    state.maybeMap(
+      loaded: (s) => emit(s.copyWith(analyticsState: analyticsSession)),
+      orElse: () {},
+    );
+  }
+
+  void _onViewAllTapped(ViewAllTapped event, Emitter<CompanyRoeState> emit) {
+    updateAnalyticsState((s) {
+      return event.isChart
+          ? s.copyWith(tappedChartViewAll: true)
+          : s.copyWith(tappedTableViewAll: true);
+    });
+
+    state.maybeMap(
+      loaded: (s) => emit(s.copyWith(analyticsState: analyticsSession)),
+      orElse: () {},
     );
   }
 
@@ -57,11 +143,21 @@ class CompanyRoeBloc extends Bloc<CompanyRoeEvent, CompanyRoeState> {
       emit(const CompanyRoeState.loading());
     }
 
+    final stopwatch = Stopwatch()..start();
     final result = await _getRoeStats(event.ticker);
+    stopwatch.stop();
 
     result.fold(
       (failure) {
         _logger.severe('Failed to load ROE stats', failure);
+        final loadTime = stopwatch.elapsedMilliseconds;
+        _lastLoadSuccess = false;
+        _lastLoadTimeMs = loadTime;
+        _lastDataSource = null;
+
+        updateAnalyticsState(
+          (s) => s.copyWith(isSuccess: false, loadTimeMs: loadTime),
+        );
         emit(CompanyRoeState.failure(failure));
       },
       (tuple) {
@@ -69,7 +165,26 @@ class CompanyRoeBloc extends Bloc<CompanyRoeEvent, CompanyRoeState> {
         _logger.info(
           'Successfully loaded ROE stats (origin: $origin): ${keyMetrics.length} points',
         );
-        _emitLoadedState(event.ticker, keyMetrics, origin, emit);
+        final loadTime = stopwatch.elapsedMilliseconds;
+        _lastLoadSuccess = true;
+        _lastLoadTimeMs = loadTime;
+        _lastDataSource = origin;
+
+        updateAnalyticsState(
+          (s) => s.copyWith(
+            isSuccess: true,
+            dataSource: origin,
+            loadTimeMs: loadTime,
+          ),
+        );
+        _emitLoadedState(
+          event.ticker,
+          keyMetrics,
+          origin,
+          loadTime,
+          true,
+          emit,
+        );
       },
     );
   }
@@ -78,13 +193,22 @@ class CompanyRoeBloc extends Bloc<CompanyRoeEvent, CompanyRoeState> {
     String ticker,
     List<dynamic> keyMetrics,
     CompanyProfileDataOrigin origin,
+    int? loadTimeMs,
+    bool isSuccess,
     Emitter<CompanyRoeState> emit,
   ) {
     final sortedPoints = _extractSortedDataPoints(keyMetrics);
 
     if (sortedPoints.isEmpty) {
       _logger.info('ROE metrics empty after extraction');
-      emit(_emptyLoadedState(ticker, origin));
+      emit(
+        _emptyLoadedState(
+          ticker,
+          origin,
+          loadTimeMs: loadTimeMs,
+          isSuccess: isSuccess,
+        ),
+      );
       return;
     }
 
@@ -109,7 +233,10 @@ class CompanyRoeBloc extends Bloc<CompanyRoeEvent, CompanyRoeState> {
         referenceLabel: referenceLabel,
         historyLimit: _configService.freePlanHistoryCount,
         dataOrigin: origin,
+        loadTimeMs: loadTimeMs,
+        isSuccess: isSuccess,
         lastUpdated: DateTime.now(),
+        analyticsState: analyticsSession,
       ),
     );
   }
@@ -179,8 +306,10 @@ class CompanyRoeBloc extends Bloc<CompanyRoeEvent, CompanyRoeState> {
 
   CompanyRoeState _emptyLoadedState(
     String ticker,
-    CompanyProfileDataOrigin origin,
-  ) {
+    CompanyProfileDataOrigin origin, {
+    int? loadTimeMs,
+    bool isSuccess = false,
+  }) {
     return CompanyRoeState.loaded(
       ticker: ticker,
       dataPoints: [],
@@ -192,7 +321,10 @@ class CompanyRoeBloc extends Bloc<CompanyRoeEvent, CompanyRoeState> {
       referenceLabel: '',
       historyLimit: _configService.freePlanHistoryCount,
       dataOrigin: origin,
+      loadTimeMs: loadTimeMs,
+      isSuccess: isSuccess,
       lastUpdated: DateTime.now(),
+      analyticsState: analyticsSession,
     );
   }
 

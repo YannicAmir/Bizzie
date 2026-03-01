@@ -121,7 +121,20 @@ class _CompanyProfileViewState extends State<_CompanyProfileView>
   late final CompanyProfileBloc _profileBloc;
   int _previousTabIndex = 0;
 
-  final List<CompanyProfileTab> _tabs = CompanyProfileTab.values;
+  final List<CompanyProfileTab> _tabs = [
+    CompanyProfileTab.security,
+    CompanyProfileTab.business,
+    CompanyProfileTab.news,
+    CompanyProfileTab.dividends,
+    CompanyProfileTab.revenue,
+    CompanyProfileTab.netIncome,
+    CompanyProfileTab.eps,
+    CompanyProfileTab.freeCash,
+    CompanyProfileTab.fcps,
+    CompanyProfileTab.shares,
+    CompanyProfileTab.financialStatements,
+    CompanyProfileTab.more,
+  ];
 
   @override
   void initState() {
@@ -228,6 +241,10 @@ class _CompanyProfileViewState extends State<_CompanyProfileView>
             type: FinancialStatementType.income,
           ),
         );
+        break;
+      case CompanyProfileTab.roe:
+      case CompanyProfileTab.peRatio:
+      case CompanyProfileTab.pfcfRatio:
         break;
     }
   }

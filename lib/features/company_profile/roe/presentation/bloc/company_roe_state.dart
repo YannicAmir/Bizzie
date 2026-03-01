@@ -4,6 +4,8 @@ import 'package:bizzie/features/company_profile/shared/domain/models/financial_d
 import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
+import 'package:bizzie/features/company_profile/roe/presentation/analytics/roe_tab_view_state.dart';
+
 part 'company_roe_state.freezed.dart';
 
 @freezed
@@ -21,7 +23,10 @@ class CompanyRoeState with _$CompanyRoeState {
     required String referenceLabel,
     required int historyLimit,
     required CompanyProfileDataOrigin dataOrigin,
+    int? loadTimeMs,
+    @Default(false) bool isSuccess,
     DateTime? lastUpdated,
+    RoeTabViewState? analyticsState,
   }) = _Loaded;
   const factory CompanyRoeState.failure(Failure failure) = _Failure;
 }

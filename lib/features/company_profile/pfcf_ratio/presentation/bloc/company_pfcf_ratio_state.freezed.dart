@@ -128,12 +128,12 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( String ticker,  List<FinancialDataPoint> dataPoints,  List<ChartDataPoint> chartData,  double currentValue,  double growthPercentage,  double absoluteDelta,  bool isPositive,  String referenceLabel,  int historyLimit,  CompanyProfileDataOrigin dataOrigin,  DateTime? lastUpdated)?  loaded,TResult Function( Failure failure)?  failure,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( String ticker,  List<FinancialDataPoint> dataPoints,  List<ChartDataPoint> chartData,  double currentValue,  double growthPercentage,  double absoluteDelta,  bool isPositive,  String referenceLabel,  int historyLimit,  CompanyProfileDataOrigin dataOrigin,  int? loadTimeMs,  bool isSuccess,  DateTime? lastUpdated,  PfcfRatioTabViewState? analyticsState)?  loaded,TResult Function( Failure failure)?  failure,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial();case _Loading() when loading != null:
 return loading();case _Loaded() when loaded != null:
-return loaded(_that.ticker,_that.dataPoints,_that.chartData,_that.currentValue,_that.growthPercentage,_that.absoluteDelta,_that.isPositive,_that.referenceLabel,_that.historyLimit,_that.dataOrigin,_that.lastUpdated);case _Failure() when failure != null:
+return loaded(_that.ticker,_that.dataPoints,_that.chartData,_that.currentValue,_that.growthPercentage,_that.absoluteDelta,_that.isPositive,_that.referenceLabel,_that.historyLimit,_that.dataOrigin,_that.loadTimeMs,_that.isSuccess,_that.lastUpdated,_that.analyticsState);case _Failure() when failure != null:
 return failure(_that.failure);case _:
   return orElse();
 
@@ -152,12 +152,12 @@ return failure(_that.failure);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( String ticker,  List<FinancialDataPoint> dataPoints,  List<ChartDataPoint> chartData,  double currentValue,  double growthPercentage,  double absoluteDelta,  bool isPositive,  String referenceLabel,  int historyLimit,  CompanyProfileDataOrigin dataOrigin,  DateTime? lastUpdated)  loaded,required TResult Function( Failure failure)  failure,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( String ticker,  List<FinancialDataPoint> dataPoints,  List<ChartDataPoint> chartData,  double currentValue,  double growthPercentage,  double absoluteDelta,  bool isPositive,  String referenceLabel,  int historyLimit,  CompanyProfileDataOrigin dataOrigin,  int? loadTimeMs,  bool isSuccess,  DateTime? lastUpdated,  PfcfRatioTabViewState? analyticsState)  loaded,required TResult Function( Failure failure)  failure,}) {final _that = this;
 switch (_that) {
 case _Initial():
 return initial();case _Loading():
 return loading();case _Loaded():
-return loaded(_that.ticker,_that.dataPoints,_that.chartData,_that.currentValue,_that.growthPercentage,_that.absoluteDelta,_that.isPositive,_that.referenceLabel,_that.historyLimit,_that.dataOrigin,_that.lastUpdated);case _Failure():
+return loaded(_that.ticker,_that.dataPoints,_that.chartData,_that.currentValue,_that.growthPercentage,_that.absoluteDelta,_that.isPositive,_that.referenceLabel,_that.historyLimit,_that.dataOrigin,_that.loadTimeMs,_that.isSuccess,_that.lastUpdated,_that.analyticsState);case _Failure():
 return failure(_that.failure);case _:
   throw StateError('Unexpected subclass');
 
@@ -175,12 +175,12 @@ return failure(_that.failure);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( String ticker,  List<FinancialDataPoint> dataPoints,  List<ChartDataPoint> chartData,  double currentValue,  double growthPercentage,  double absoluteDelta,  bool isPositive,  String referenceLabel,  int historyLimit,  CompanyProfileDataOrigin dataOrigin,  DateTime? lastUpdated)?  loaded,TResult? Function( Failure failure)?  failure,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( String ticker,  List<FinancialDataPoint> dataPoints,  List<ChartDataPoint> chartData,  double currentValue,  double growthPercentage,  double absoluteDelta,  bool isPositive,  String referenceLabel,  int historyLimit,  CompanyProfileDataOrigin dataOrigin,  int? loadTimeMs,  bool isSuccess,  DateTime? lastUpdated,  PfcfRatioTabViewState? analyticsState)?  loaded,TResult? Function( Failure failure)?  failure,}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial();case _Loading() when loading != null:
 return loading();case _Loaded() when loaded != null:
-return loaded(_that.ticker,_that.dataPoints,_that.chartData,_that.currentValue,_that.growthPercentage,_that.absoluteDelta,_that.isPositive,_that.referenceLabel,_that.historyLimit,_that.dataOrigin,_that.lastUpdated);case _Failure() when failure != null:
+return loaded(_that.ticker,_that.dataPoints,_that.chartData,_that.currentValue,_that.growthPercentage,_that.absoluteDelta,_that.isPositive,_that.referenceLabel,_that.historyLimit,_that.dataOrigin,_that.loadTimeMs,_that.isSuccess,_that.lastUpdated,_that.analyticsState);case _Failure() when failure != null:
 return failure(_that.failure);case _:
   return null;
 
@@ -257,7 +257,7 @@ String toString() {
 
 
 class _Loaded implements CompanyPfcfRatioState {
-  const _Loaded({required this.ticker, required final  List<FinancialDataPoint> dataPoints, required final  List<ChartDataPoint> chartData, required this.currentValue, required this.growthPercentage, required this.absoluteDelta, required this.isPositive, required this.referenceLabel, required this.historyLimit, required this.dataOrigin, this.lastUpdated}): _dataPoints = dataPoints,_chartData = chartData;
+  const _Loaded({required this.ticker, required final  List<FinancialDataPoint> dataPoints, required final  List<ChartDataPoint> chartData, required this.currentValue, required this.growthPercentage, required this.absoluteDelta, required this.isPositive, required this.referenceLabel, required this.historyLimit, required this.dataOrigin, this.loadTimeMs, this.isSuccess = false, this.lastUpdated, this.analyticsState}): _dataPoints = dataPoints,_chartData = chartData;
   
 
  final  String ticker;
@@ -282,7 +282,10 @@ class _Loaded implements CompanyPfcfRatioState {
  final  String referenceLabel;
  final  int historyLimit;
  final  CompanyProfileDataOrigin dataOrigin;
+ final  int? loadTimeMs;
+@JsonKey() final  bool isSuccess;
  final  DateTime? lastUpdated;
+ final  PfcfRatioTabViewState? analyticsState;
 
 /// Create a copy of CompanyPfcfRatioState
 /// with the given fields replaced by the non-null parameter values.
@@ -294,16 +297,16 @@ _$LoadedCopyWith<_Loaded> get copyWith => __$LoadedCopyWithImpl<_Loaded>(this, _
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Loaded&&(identical(other.ticker, ticker) || other.ticker == ticker)&&const DeepCollectionEquality().equals(other._dataPoints, _dataPoints)&&const DeepCollectionEquality().equals(other._chartData, _chartData)&&(identical(other.currentValue, currentValue) || other.currentValue == currentValue)&&(identical(other.growthPercentage, growthPercentage) || other.growthPercentage == growthPercentage)&&(identical(other.absoluteDelta, absoluteDelta) || other.absoluteDelta == absoluteDelta)&&(identical(other.isPositive, isPositive) || other.isPositive == isPositive)&&(identical(other.referenceLabel, referenceLabel) || other.referenceLabel == referenceLabel)&&(identical(other.historyLimit, historyLimit) || other.historyLimit == historyLimit)&&(identical(other.dataOrigin, dataOrigin) || other.dataOrigin == dataOrigin)&&(identical(other.lastUpdated, lastUpdated) || other.lastUpdated == lastUpdated));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Loaded&&(identical(other.ticker, ticker) || other.ticker == ticker)&&const DeepCollectionEquality().equals(other._dataPoints, _dataPoints)&&const DeepCollectionEquality().equals(other._chartData, _chartData)&&(identical(other.currentValue, currentValue) || other.currentValue == currentValue)&&(identical(other.growthPercentage, growthPercentage) || other.growthPercentage == growthPercentage)&&(identical(other.absoluteDelta, absoluteDelta) || other.absoluteDelta == absoluteDelta)&&(identical(other.isPositive, isPositive) || other.isPositive == isPositive)&&(identical(other.referenceLabel, referenceLabel) || other.referenceLabel == referenceLabel)&&(identical(other.historyLimit, historyLimit) || other.historyLimit == historyLimit)&&(identical(other.dataOrigin, dataOrigin) || other.dataOrigin == dataOrigin)&&(identical(other.loadTimeMs, loadTimeMs) || other.loadTimeMs == loadTimeMs)&&(identical(other.isSuccess, isSuccess) || other.isSuccess == isSuccess)&&(identical(other.lastUpdated, lastUpdated) || other.lastUpdated == lastUpdated)&&(identical(other.analyticsState, analyticsState) || other.analyticsState == analyticsState));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,ticker,const DeepCollectionEquality().hash(_dataPoints),const DeepCollectionEquality().hash(_chartData),currentValue,growthPercentage,absoluteDelta,isPositive,referenceLabel,historyLimit,dataOrigin,lastUpdated);
+int get hashCode => Object.hash(runtimeType,ticker,const DeepCollectionEquality().hash(_dataPoints),const DeepCollectionEquality().hash(_chartData),currentValue,growthPercentage,absoluteDelta,isPositive,referenceLabel,historyLimit,dataOrigin,loadTimeMs,isSuccess,lastUpdated,analyticsState);
 
 @override
 String toString() {
-  return 'CompanyPfcfRatioState.loaded(ticker: $ticker, dataPoints: $dataPoints, chartData: $chartData, currentValue: $currentValue, growthPercentage: $growthPercentage, absoluteDelta: $absoluteDelta, isPositive: $isPositive, referenceLabel: $referenceLabel, historyLimit: $historyLimit, dataOrigin: $dataOrigin, lastUpdated: $lastUpdated)';
+  return 'CompanyPfcfRatioState.loaded(ticker: $ticker, dataPoints: $dataPoints, chartData: $chartData, currentValue: $currentValue, growthPercentage: $growthPercentage, absoluteDelta: $absoluteDelta, isPositive: $isPositive, referenceLabel: $referenceLabel, historyLimit: $historyLimit, dataOrigin: $dataOrigin, loadTimeMs: $loadTimeMs, isSuccess: $isSuccess, lastUpdated: $lastUpdated, analyticsState: $analyticsState)';
 }
 
 
@@ -314,11 +317,11 @@ abstract mixin class _$LoadedCopyWith<$Res> implements $CompanyPfcfRatioStateCop
   factory _$LoadedCopyWith(_Loaded value, $Res Function(_Loaded) _then) = __$LoadedCopyWithImpl;
 @useResult
 $Res call({
- String ticker, List<FinancialDataPoint> dataPoints, List<ChartDataPoint> chartData, double currentValue, double growthPercentage, double absoluteDelta, bool isPositive, String referenceLabel, int historyLimit, CompanyProfileDataOrigin dataOrigin, DateTime? lastUpdated
+ String ticker, List<FinancialDataPoint> dataPoints, List<ChartDataPoint> chartData, double currentValue, double growthPercentage, double absoluteDelta, bool isPositive, String referenceLabel, int historyLimit, CompanyProfileDataOrigin dataOrigin, int? loadTimeMs, bool isSuccess, DateTime? lastUpdated, PfcfRatioTabViewState? analyticsState
 });
 
 
-
+$PfcfRatioTabViewStateCopyWith<$Res>? get analyticsState;
 
 }
 /// @nodoc
@@ -331,7 +334,7 @@ class __$LoadedCopyWithImpl<$Res>
 
 /// Create a copy of CompanyPfcfRatioState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? ticker = null,Object? dataPoints = null,Object? chartData = null,Object? currentValue = null,Object? growthPercentage = null,Object? absoluteDelta = null,Object? isPositive = null,Object? referenceLabel = null,Object? historyLimit = null,Object? dataOrigin = null,Object? lastUpdated = freezed,}) {
+@pragma('vm:prefer-inline') $Res call({Object? ticker = null,Object? dataPoints = null,Object? chartData = null,Object? currentValue = null,Object? growthPercentage = null,Object? absoluteDelta = null,Object? isPositive = null,Object? referenceLabel = null,Object? historyLimit = null,Object? dataOrigin = null,Object? loadTimeMs = freezed,Object? isSuccess = null,Object? lastUpdated = freezed,Object? analyticsState = freezed,}) {
   return _then(_Loaded(
 ticker: null == ticker ? _self.ticker : ticker // ignore: cast_nullable_to_non_nullable
 as String,dataPoints: null == dataPoints ? _self._dataPoints : dataPoints // ignore: cast_nullable_to_non_nullable
@@ -343,12 +346,27 @@ as double,isPositive: null == isPositive ? _self.isPositive : isPositive // igno
 as bool,referenceLabel: null == referenceLabel ? _self.referenceLabel : referenceLabel // ignore: cast_nullable_to_non_nullable
 as String,historyLimit: null == historyLimit ? _self.historyLimit : historyLimit // ignore: cast_nullable_to_non_nullable
 as int,dataOrigin: null == dataOrigin ? _self.dataOrigin : dataOrigin // ignore: cast_nullable_to_non_nullable
-as CompanyProfileDataOrigin,lastUpdated: freezed == lastUpdated ? _self.lastUpdated : lastUpdated // ignore: cast_nullable_to_non_nullable
-as DateTime?,
+as CompanyProfileDataOrigin,loadTimeMs: freezed == loadTimeMs ? _self.loadTimeMs : loadTimeMs // ignore: cast_nullable_to_non_nullable
+as int?,isSuccess: null == isSuccess ? _self.isSuccess : isSuccess // ignore: cast_nullable_to_non_nullable
+as bool,lastUpdated: freezed == lastUpdated ? _self.lastUpdated : lastUpdated // ignore: cast_nullable_to_non_nullable
+as DateTime?,analyticsState: freezed == analyticsState ? _self.analyticsState : analyticsState // ignore: cast_nullable_to_non_nullable
+as PfcfRatioTabViewState?,
   ));
 }
 
+/// Create a copy of CompanyPfcfRatioState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$PfcfRatioTabViewStateCopyWith<$Res>? get analyticsState {
+    if (_self.analyticsState == null) {
+    return null;
+  }
 
+  return $PfcfRatioTabViewStateCopyWith<$Res>(_self.analyticsState!, (value) {
+    return _then(_self.copyWith(analyticsState: value));
+  });
+}
 }
 
 /// @nodoc

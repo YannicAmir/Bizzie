@@ -10,6 +10,10 @@ import 'package:bizzie/features/company_profile/shared/domain/models/chart_data_
 import 'package:bizzie/features/company_profile/shared/domain/models/financial_data_point.dart';
 import 'package:bizzie/features/company_profile/pfcf_ratio/domain/usecases/get_pfcf_ratio_usecase.dart';
 
+import 'package:bizzie/features/company_profile/pfcf_ratio/presentation/analytics/pfcf_ratio_tab_analytics.dart';
+import 'package:bizzie/features/company_profile/pfcf_ratio/presentation/analytics/pfcf_ratio_tab_view_state.dart';
+import 'package:bizzie/features/company_profile/shared/presentation/analytics/base_analytics.dart';
+import 'package:bizzie/features/company_profile/shared/presentation/bloc/company_profile_analytics_mixin.dart';
 import 'company_pfcf_ratio_event.dart';
 import 'company_pfcf_ratio_state.dart';
 
@@ -17,16 +21,108 @@ final _logger = BizzieLogger('CompanyPfcfRatioBloc');
 
 @injectable
 class CompanyPfcfRatioBloc
-    extends Bloc<CompanyPfcfRatioEvent, CompanyPfcfRatioState> {
+    extends Bloc<CompanyPfcfRatioEvent, CompanyPfcfRatioState>
+    with
+        CompanyProfileAnalyticsMixin<
+          CompanyPfcfRatioEvent,
+          CompanyPfcfRatioState,
+          PfcfRatioTabViewState
+        > {
   final GetPfcfRatioUseCase _getPfcfRatio;
   final IConfigService _configService;
+  final PfcfRatioTabAnalytics _analytics;
 
-  CompanyPfcfRatioBloc(this._getPfcfRatio, this._configService)
+  CompanyPfcfRatioBloc(this._getPfcfRatio, this._configService, this._analytics)
     : super(const CompanyPfcfRatioState.initial()) {
     on<LoadRequested>(_onLoadRequested, transformer: droppable());
     on<StalenessCheckRequested>(
       _onStalenessCheckRequested,
       transformer: sequential(),
+    );
+    on<TabShown>(_onTabShown);
+    on<TabHidden>(_onTabHidden);
+    on<AppBackgrounded>(_onAppBackgrounded);
+    on<AppForegrounded>(_onAppForegrounded);
+    on<ViewAllTapped>(_onViewAllTapped);
+  }
+
+  @override
+  CompanyProfileTabTracker<PfcfRatioTabViewState> get analyticsTracker =>
+      _analytics;
+
+  void _onTabShown(TabShown event, Emitter<CompanyPfcfRatioState> emit) {
+    state.maybeMap(
+      loaded: (s) {
+        onTabShown(
+          event.ticker,
+          PfcfRatioTabViewState(
+            ticker: event.ticker,
+            timestamp: DateTime.now().toIso8601String(),
+            isSuccess: s.isSuccess,
+            loadTimeMs: s.loadTimeMs,
+            dataSource: s.dataOrigin,
+          ),
+        );
+        emit(s.copyWith(analyticsState: analyticsSession));
+      },
+      orElse: () {
+        onTabShown(
+          event.ticker,
+          PfcfRatioTabViewState(
+            ticker: event.ticker,
+            timestamp: DateTime.now().toIso8601String(),
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> _onTabHidden(
+    TabHidden event,
+    Emitter<CompanyPfcfRatioState> emit,
+  ) async {
+    await onTabHidden();
+    state.maybeMap(
+      loaded: (s) => emit(s.copyWith(analyticsState: analyticsSession)),
+      orElse: () {},
+    );
+  }
+
+  Future<void> _onAppBackgrounded(
+    AppBackgrounded event,
+    Emitter<CompanyPfcfRatioState> emit,
+  ) async {
+    await onAppBackgrounded();
+    state.maybeMap(
+      loaded: (s) => emit(s.copyWith(analyticsState: analyticsSession)),
+      orElse: () {},
+    );
+  }
+
+  void _onAppForegrounded(
+    AppForegrounded event,
+    Emitter<CompanyPfcfRatioState> emit,
+  ) {
+    onAppForegrounded();
+    state.maybeMap(
+      loaded: (s) => emit(s.copyWith(analyticsState: analyticsSession)),
+      orElse: () {},
+    );
+  }
+
+  void _onViewAllTapped(
+    ViewAllTapped event,
+    Emitter<CompanyPfcfRatioState> emit,
+  ) {
+    updateAnalyticsState((s) {
+      return event.isChart
+          ? s.copyWith(tappedChartViewAll: true)
+          : s.copyWith(tappedTableViewAll: true);
+    });
+
+    state.maybeMap(
+      loaded: (s) => emit(s.copyWith(analyticsState: analyticsSession)),
+      orElse: () {},
     );
   }
 
@@ -58,11 +154,17 @@ class CompanyPfcfRatioBloc
       emit(const CompanyPfcfRatioState.loading());
     }
 
+    final stopwatch = Stopwatch()..start();
     final result = await _getPfcfRatio(event.ticker);
+    stopwatch.stop();
 
     result.fold(
       (failure) {
         _logger.severe('Failed to load PFCF Ratio stats', failure);
+        final loadTime = stopwatch.elapsedMilliseconds;
+        updateAnalyticsState(
+          (s) => s.copyWith(isSuccess: false, loadTimeMs: loadTime),
+        );
         emit(CompanyPfcfRatioState.failure(failure));
       },
       (tuple) {
@@ -71,7 +173,16 @@ class CompanyPfcfRatioBloc
         _logger.info(
           'Successfully loaded PFCF Ratio stats: ${ratios.length} points, origin=$origin',
         );
-        _emitLoadedState(event.ticker, ratios, origin, emit);
+
+        final loadTime = stopwatch.elapsedMilliseconds;
+        updateAnalyticsState(
+          (s) => s.copyWith(
+            isSuccess: true,
+            dataSource: origin,
+            loadTimeMs: loadTime,
+          ),
+        );
+        _emitLoadedState(event.ticker, ratios, origin, loadTime, true, emit);
       },
     );
   }
@@ -80,13 +191,15 @@ class CompanyPfcfRatioBloc
     String ticker,
     List<dynamic> ratios,
     CompanyProfileDataOrigin origin,
+    int? loadTimeMs,
+    bool isSuccess,
     Emitter<CompanyPfcfRatioState> emit,
   ) {
     final sortedPoints = _extractSortedDataPoints(ratios);
 
     if (sortedPoints.isEmpty) {
       _logger.info('PFCF Ratio data points empty after extraction');
-      emit(_emptyLoadedState(ticker, origin));
+      emit(_emptyLoadedState(ticker, origin, loadTimeMs, isSuccess));
       return;
     }
 
@@ -111,7 +224,10 @@ class CompanyPfcfRatioBloc
         referenceLabel: referenceLabel,
         historyLimit: _configService.freePlanHistoryCount,
         dataOrigin: origin,
+        loadTimeMs: loadTimeMs,
+        isSuccess: isSuccess,
         lastUpdated: DateTime.now(),
+        analyticsState: analyticsSession,
       ),
     );
   }
@@ -191,6 +307,8 @@ class CompanyPfcfRatioBloc
   CompanyPfcfRatioState _emptyLoadedState(
     String ticker,
     CompanyProfileDataOrigin origin,
+    int? loadTimeMs,
+    bool isSuccess,
   ) {
     return CompanyPfcfRatioState.loaded(
       ticker: ticker,
@@ -203,7 +321,10 @@ class CompanyPfcfRatioBloc
       referenceLabel: '',
       historyLimit: _configService.freePlanHistoryCount,
       dataOrigin: origin,
+      loadTimeMs: loadTimeMs,
+      isSuccess: isSuccess,
       lastUpdated: DateTime.now(),
+      analyticsState: analyticsSession,
     );
   }
 

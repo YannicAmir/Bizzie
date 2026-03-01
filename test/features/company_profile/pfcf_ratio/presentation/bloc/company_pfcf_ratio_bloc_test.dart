@@ -10,21 +10,37 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:bizzie/core/interfaces/i_config_service.dart';
+import 'package:bizzie/features/company_profile/pfcf_ratio/presentation/analytics/pfcf_ratio_tab_analytics.dart';
+import 'package:bizzie/features/company_profile/pfcf_ratio/presentation/analytics/pfcf_ratio_tab_view_state.dart';
 
 class MockGetPfcfRatioUseCase extends Mock implements GetPfcfRatioUseCase {}
 
 class MockConfigService extends Mock implements IConfigService {}
 
+class MockPfcfRatioTabAnalytics extends Mock implements PfcfRatioTabAnalytics {}
+
+class PfcfRatioTabViewStateFake extends Fake implements PfcfRatioTabViewState {}
+
 void main() {
+  setUpAll(() {
+    registerFallbackValue(PfcfRatioTabViewStateFake());
+  });
+
   late CompanyPfcfRatioBloc bloc;
   late MockGetPfcfRatioUseCase mockGetPfcfRatio;
   late MockConfigService mockConfigService;
+  late MockPfcfRatioTabAnalytics mockAnalytics;
 
   setUp(() {
     mockGetPfcfRatio = MockGetPfcfRatioUseCase();
     mockConfigService = MockConfigService();
+    mockAnalytics = MockPfcfRatioTabAnalytics();
     when(() => mockConfigService.freePlanHistoryCount).thenReturn(7);
-    bloc = CompanyPfcfRatioBloc(mockGetPfcfRatio, mockConfigService);
+    bloc = CompanyPfcfRatioBloc(
+      mockGetPfcfRatio,
+      mockConfigService,
+      mockAnalytics,
+    );
   });
 
   const tTicker = 'AAPL';
@@ -187,6 +203,81 @@ void main() {
       verify: (_) {
         // assert
         verifyNever(() => mockGetPfcfRatio(any()));
+      },
+    );
+
+    blocTest<CompanyPfcfRatioBloc, CompanyPfcfRatioState>(
+      'loadRequested_instrumentation_tracksTimingAndSuccess',
+      build: () {
+        when(() => mockGetPfcfRatio(tTicker)).thenAnswer(
+          (_) async => const Right((tRatios, CompanyProfileDataOrigin.api)),
+        );
+        return bloc;
+      },
+      act: (bloc) =>
+          bloc.add(const CompanyPfcfRatioEvent.loadRequested(tTicker)),
+      expect: () => [
+        const CompanyPfcfRatioState.loading(),
+        isA<CompanyPfcfRatioState>().having(
+          (s) => s.maybeMap(
+            loaded: (l) => l.loadTimeMs! >= 0 && l.isSuccess,
+            orElse: () => false,
+          ),
+          'metrics correctly instrumented',
+          true,
+        ),
+      ],
+    );
+  });
+
+  group('CompanyPfcfRatioBloc - Analytics Orchestration', () {
+    blocTest<CompanyPfcfRatioBloc, CompanyPfcfRatioState>(
+      'tabShown_startsAnalyticsSession',
+      build: () => bloc,
+      act: (bloc) => bloc.add(const CompanyPfcfRatioEvent.tabShown(tTicker)),
+      verify: (_) {
+        expect(bloc.analyticsSession, isNotNull);
+        expect(bloc.analyticsSession!.ticker, tTicker);
+      },
+    );
+
+    blocTest<CompanyPfcfRatioBloc, CompanyPfcfRatioState>(
+      'tabHidden_finalizesAnalyticsSession',
+      build: () {
+        when(
+          () => mockAnalytics.logViewSummary(
+            any(),
+            isFinal: any(named: 'isFinal'),
+          ),
+        ).thenAnswer((_) async {});
+        return bloc;
+      },
+      act: (bloc) async {
+        bloc.add(const CompanyPfcfRatioEvent.tabShown(tTicker));
+        bloc.add(const CompanyPfcfRatioEvent.tabHidden());
+      },
+      verify: (_) {
+        verify(
+          () => mockAnalytics.logViewSummary(
+            any(that: isA<PfcfRatioTabViewState>()),
+            isFinal: true,
+          ),
+        ).called(1);
+        expect(bloc.analyticsSession, isNull);
+      },
+    );
+
+    blocTest<CompanyPfcfRatioBloc, CompanyPfcfRatioState>(
+      'viewAllTapped_updatesAnalyticsInteractionFlags',
+      build: () => bloc,
+      act: (bloc) {
+        bloc.add(const CompanyPfcfRatioEvent.tabShown(tTicker));
+        bloc.add(const CompanyPfcfRatioEvent.viewAllTapped(isChart: true));
+        bloc.add(const CompanyPfcfRatioEvent.viewAllTapped(isChart: false));
+      },
+      verify: (_) {
+        expect(bloc.analyticsSession!.tappedChartViewAll, true);
+        expect(bloc.analyticsSession!.tappedTableViewAll, true);
       },
     );
   });

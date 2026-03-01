@@ -199,6 +199,8 @@ import '../features/company_profile/pe_ratio/domain/interfaces/i_pe_ratio_reposi
     as _i943;
 import '../features/company_profile/pe_ratio/domain/usecases/get_pe_ratio_usecase.dart'
     as _i657;
+import '../features/company_profile/pe_ratio/presentation/analytics/pe_ratio_tab_analytics.dart'
+    as _i1027;
 import '../features/company_profile/pe_ratio/presentation/bloc/company_pe_ratio_bloc.dart'
     as _i423;
 import '../features/company_profile/pfcf_ratio/data/repositories/pfcf_ratio_repository_impl.dart'
@@ -207,6 +209,8 @@ import '../features/company_profile/pfcf_ratio/domain/interfaces/i_pfcf_ratio_re
     as _i1019;
 import '../features/company_profile/pfcf_ratio/domain/usecases/get_pfcf_ratio_usecase.dart'
     as _i912;
+import '../features/company_profile/pfcf_ratio/presentation/analytics/pfcf_ratio_tab_analytics.dart'
+    as _i559;
 import '../features/company_profile/pfcf_ratio/presentation/bloc/company_pfcf_ratio_bloc.dart'
     as _i62;
 import '../features/company_profile/revenue/data/repositories/revenue_repository_impl.dart'
@@ -225,6 +229,8 @@ import '../features/company_profile/roe/domain/interfaces/i_roe_repository.dart'
     as _i1025;
 import '../features/company_profile/roe/domain/usecases/get_roe_usecase.dart'
     as _i231;
+import '../features/company_profile/roe/presentation/analytics/roe_tab_analytics.dart'
+    as _i765;
 import '../features/company_profile/roe/presentation/bloc/company_roe_bloc.dart'
     as _i1033;
 import '../features/company_profile/security/data/datasources/security_firestore_data_source.dart'
@@ -846,8 +852,17 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i1021.NewsTabAnalytics>(
       () => _i1021.NewsTabAnalytics(gh<_i529.IAnalyticsService>()),
     );
+    gh.lazySingleton<_i1027.PeRatioTabAnalytics>(
+      () => _i1027.PeRatioTabAnalytics(gh<_i529.IAnalyticsService>()),
+    );
+    gh.lazySingleton<_i559.PfcfRatioTabAnalytics>(
+      () => _i559.PfcfRatioTabAnalytics(gh<_i529.IAnalyticsService>()),
+    );
     gh.lazySingleton<_i151.RevenueTabAnalytics>(
       () => _i151.RevenueTabAnalytics(gh<_i529.IAnalyticsService>()),
+    );
+    gh.lazySingleton<_i765.RoeTabAnalytics>(
+      () => _i765.RoeTabAnalytics(gh<_i529.IAnalyticsService>()),
     );
     gh.lazySingleton<_i258.SecurityTabAnalytics>(
       () => _i258.SecurityTabAnalytics(gh<_i529.IAnalyticsService>()),
@@ -1037,6 +1052,13 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i961.ILifecycleService>(),
       ),
     );
+    gh.factory<_i62.CompanyPfcfRatioBloc>(
+      () => _i62.CompanyPfcfRatioBloc(
+        gh<_i912.GetPfcfRatioUseCase>(),
+        gh<_i937.IConfigService>(),
+        gh<_i559.PfcfRatioTabAnalytics>(),
+      ),
+    );
     gh.lazySingleton<_i805.GetFcpsStatsUseCase>(
       () => _i805.GetFcpsStatsUseCase(gh<_i368.IFcpsRepository>()),
     );
@@ -1069,12 +1091,6 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i244.ResetPasswordUseCase>(
       () => _i244.ResetPasswordUseCase(gh<_i685.IAuthRepository>()),
-    );
-    gh.factory<_i1033.CompanyRoeBloc>(
-      () => _i1033.CompanyRoeBloc(
-        gh<_i231.GetRoeUseCase>(),
-        gh<_i937.IConfigService>(),
-      ),
     );
     gh.lazySingleton<_i876.IPriceRepository>(
       () => _i952.PriceRepositoryImpl(
@@ -1109,6 +1125,13 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i376.ICompanyRepository>(),
         gh<_i348.FinancialStatementsRemoteDataSource>(),
         gh<_i806.FinancialStatementsFirestoreDataSource>(),
+      ),
+    );
+    gh.factory<_i1033.CompanyRoeBloc>(
+      () => _i1033.CompanyRoeBloc(
+        gh<_i231.GetRoeUseCase>(),
+        gh<_i937.IConfigService>(),
+        gh<_i765.RoeTabAnalytics>(),
       ),
     );
     gh.lazySingleton<_i943.IPeRatioRepository>(
@@ -1237,12 +1260,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i130.SearchStocksUseCase>(
       () => _i130.SearchStocksUseCase(gh<_i269.StockSearchService>()),
     );
-    gh.factory<_i423.CompanyPeRatioBloc>(
-      () => _i423.CompanyPeRatioBloc(
-        gh<_i657.GetPeRatioUseCase>(),
-        gh<_i937.IConfigService>(),
-      ),
-    );
     gh.factory<_i920.GetSectorsUseCase>(
       () => _i920.GetSectorsUseCase(gh<_i329.IOnboardingRepository>()),
     );
@@ -1305,12 +1322,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i805.GetFcpsStatsUseCase>(),
         gh<_i937.IConfigService>(),
         gh<_i648.FcpsTabAnalytics>(),
-      ),
-    );
-    gh.factory<_i62.CompanyPfcfRatioBloc>(
-      () => _i62.CompanyPfcfRatioBloc(
-        gh<_i912.GetPfcfRatioUseCase>(),
-        gh<_i937.IConfigService>(),
       ),
     );
     gh.factory<_i754.GetDividendInfoUseCase>(
@@ -1460,6 +1471,13 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i458.SecurityBloc(
         gh<_i337.SecurityService>(),
         gh<_i227.SecurityTracker>(),
+      ),
+    );
+    gh.factory<_i423.CompanyPeRatioBloc>(
+      () => _i423.CompanyPeRatioBloc(
+        gh<_i657.GetPeRatioUseCase>(),
+        gh<_i937.IConfigService>(),
+        gh<_i1027.PeRatioTabAnalytics>(),
       ),
     );
     gh.lazySingleton<_i242.UpdateProfileUseCase>(

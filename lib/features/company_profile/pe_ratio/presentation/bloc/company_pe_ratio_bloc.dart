@@ -9,6 +9,10 @@ import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:bizzie/features/company_profile/shared/domain/models/chart_data_point.dart';
 import 'package:bizzie/features/company_profile/shared/domain/models/financial_data_point.dart';
 import 'package:bizzie/features/company_profile/pe_ratio/domain/usecases/get_pe_ratio_usecase.dart';
+import 'package:bizzie/features/company_profile/pe_ratio/presentation/analytics/pe_ratio_tab_analytics.dart';
+import 'package:bizzie/features/company_profile/pe_ratio/presentation/analytics/pe_ratio_tab_view_state.dart';
+import 'package:bizzie/features/company_profile/shared/presentation/analytics/base_analytics.dart';
+import 'package:bizzie/features/company_profile/shared/presentation/bloc/company_profile_analytics_mixin.dart';
 
 import 'company_pe_ratio_event.dart';
 import 'company_pe_ratio_state.dart';
@@ -16,17 +20,108 @@ import 'company_pe_ratio_state.dart';
 final _logger = BizzieLogger('CompanyPeRatioBloc');
 
 @injectable
-class CompanyPeRatioBloc
-    extends Bloc<CompanyPeRatioEvent, CompanyPeRatioState> {
+class CompanyPeRatioBloc extends Bloc<CompanyPeRatioEvent, CompanyPeRatioState>
+    with
+        CompanyProfileAnalyticsMixin<
+          CompanyPeRatioEvent,
+          CompanyPeRatioState,
+          PeRatioTabViewState
+        > {
   final GetPeRatioUseCase _getPeRatio;
   final IConfigService _configService;
+  final PeRatioTabAnalytics _analytics;
 
-  CompanyPeRatioBloc(this._getPeRatio, this._configService)
+  CompanyPeRatioBloc(this._getPeRatio, this._configService, this._analytics)
     : super(const CompanyPeRatioState.initial()) {
-    on<LoadRequested>(_onLoadRequested, transformer: droppable());
+    on<LoadRequested>(_onLoadRequested);
     on<StalenessCheckRequested>(
       _onStalenessCheckRequested,
       transformer: sequential(),
+    );
+    on<TabShown>(_onTabShown);
+    on<TabHidden>(_onTabHidden);
+    on<AppBackgrounded>(_onAppBackgrounded);
+    on<AppForegrounded>(_onAppForegrounded);
+    on<ViewAllTapped>(_onViewAllTapped);
+  }
+
+  @override
+  CompanyProfileTabTracker<PeRatioTabViewState> get analyticsTracker =>
+      _analytics;
+
+  void _onTabShown(TabShown event, Emitter<CompanyPeRatioState> emit) {
+    state.maybeMap(
+      loaded: (s) {
+        onTabShown(
+          event.ticker,
+          PeRatioTabViewState(
+            ticker: event.ticker,
+            timestamp: DateTime.now().toIso8601String(),
+            isSuccess: s.isSuccess,
+            loadTimeMs: s.loadTimeMs,
+            dataSource: s.dataOrigin,
+          ),
+        );
+        emit(s.copyWith(analyticsState: analyticsSession));
+      },
+      orElse: () {
+        onTabShown(
+          event.ticker,
+          PeRatioTabViewState(
+            ticker: event.ticker,
+            timestamp: DateTime.now().toIso8601String(),
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> _onTabHidden(
+    TabHidden event,
+    Emitter<CompanyPeRatioState> emit,
+  ) async {
+    await onTabHidden();
+    state.maybeMap(
+      loaded: (s) => emit(s.copyWith(analyticsState: analyticsSession)),
+      orElse: () {},
+    );
+  }
+
+  Future<void> _onAppBackgrounded(
+    AppBackgrounded event,
+    Emitter<CompanyPeRatioState> emit,
+  ) async {
+    await onAppBackgrounded();
+    state.maybeMap(
+      loaded: (s) => emit(s.copyWith(analyticsState: analyticsSession)),
+      orElse: () {},
+    );
+  }
+
+  void _onAppForegrounded(
+    AppForegrounded event,
+    Emitter<CompanyPeRatioState> emit,
+  ) {
+    onAppForegrounded();
+    state.maybeMap(
+      loaded: (s) => emit(s.copyWith(analyticsState: analyticsSession)),
+      orElse: () {},
+    );
+  }
+
+  void _onViewAllTapped(
+    ViewAllTapped event,
+    Emitter<CompanyPeRatioState> emit,
+  ) {
+    updateAnalyticsState((s) {
+      return event.isChart
+          ? s.copyWith(tappedChartViewAll: true)
+          : s.copyWith(tappedTableViewAll: true);
+    });
+
+    state.maybeMap(
+      loaded: (s) => emit(s.copyWith(analyticsState: analyticsSession)),
+      orElse: () {},
     );
   }
 
@@ -58,11 +153,17 @@ class CompanyPeRatioBloc
       emit(const CompanyPeRatioState.loading());
     }
 
+    final stopwatch = Stopwatch()..start();
     final result = await _getPeRatio(event.ticker);
+    stopwatch.stop();
 
     result.fold(
       (failure) {
         _logger.severe('Failed to load PE Ratio stats', failure);
+        final loadTime = stopwatch.elapsedMilliseconds;
+        updateAnalyticsState(
+          (s) => s.copyWith(isSuccess: false, loadTimeMs: loadTime),
+        );
         emit(CompanyPeRatioState.failure(failure));
       },
       (tuple) {
@@ -71,7 +172,16 @@ class CompanyPeRatioBloc
         _logger.info(
           'Successfully loaded PE Ratio stats: ${ratios.length} points, origin=$origin',
         );
-        _emitLoadedState(event.ticker, ratios, origin, emit);
+
+        final loadTime = stopwatch.elapsedMilliseconds;
+        updateAnalyticsState(
+          (s) => s.copyWith(
+            isSuccess: true,
+            dataSource: origin,
+            loadTimeMs: loadTime,
+          ),
+        );
+        _emitLoadedState(event.ticker, ratios, origin, loadTime, true, emit);
       },
     );
   }
@@ -80,21 +190,34 @@ class CompanyPeRatioBloc
     String ticker,
     List<dynamic> ratios,
     CompanyProfileDataOrigin origin,
+    int? loadTimeMs,
+    bool isSuccess,
     Emitter<CompanyPeRatioState> emit,
   ) {
     final sortedPoints = _extractSortedDataPoints(ratios);
 
     if (sortedPoints.isEmpty) {
       _logger.info('PE Ratio data points empty after extraction');
-      emit(_emptyLoadedState(ticker, origin));
+      _emptyLoadedState(
+        ticker,
+        sortedPoints,
+        origin,
+        loadTimeMs,
+        isSuccess,
+        emit,
+      );
       return;
     }
 
     final currentPoint = sortedPoints.last;
-    final referencePoint = _findReferencePoint(sortedPoints, currentPoint);
-    final growth = _calculateGrowth(currentPoint.value, referencePoint.value);
-    final referenceLabel = _formatReferenceLabel(referencePoint);
+    final referenceDataPoint = _findReferencePoint(sortedPoints, currentPoint);
+    final growth = _calculateGrowth(
+      currentPoint.value,
+      referenceDataPoint.value,
+    );
+    final referenceLabel = _formatReferenceLabel(referenceDataPoint);
     final chartData = _buildChartData(sortedPoints);
+    final historyLimit = _configService.freePlanHistoryCount;
 
     _logger.info(
       'Emitting loaded state: current=${currentPoint.value}, growth=${growth.percentage}%',
@@ -109,9 +232,12 @@ class CompanyPeRatioBloc
         absoluteDelta: growth.delta.abs(),
         isPositive: growth.delta >= 0,
         referenceLabel: referenceLabel,
-        historyLimit: _configService.freePlanHistoryCount,
+        historyLimit: historyLimit,
         dataOrigin: origin,
+        loadTimeMs: loadTimeMs,
+        isSuccess: isSuccess,
         lastUpdated: DateTime.now(),
+        analyticsState: analyticsSession,
       ),
     );
   }
@@ -179,23 +305,34 @@ class CompanyPeRatioBloc
     }).toList();
   }
 
-  CompanyPeRatioState _emptyLoadedState(
+  void _emptyLoadedState(
     String ticker,
+    List<FinancialDataPoint> ratios,
     CompanyProfileDataOrigin origin,
+    int? loadTimeMs,
+    bool isSuccess,
+    Emitter<CompanyPeRatioState> emit,
   ) {
-    return CompanyPeRatioState.loaded(
-      ticker: ticker,
-      dataPoints: [],
-      chartData: [],
-      currentValue: 0,
-      growthPercentage: 0,
-      absoluteDelta: 0,
-      isPositive: false,
-      referenceLabel: '',
-      historyLimit: _configService.freePlanHistoryCount,
-      dataOrigin: origin,
-      lastUpdated: DateTime.now(),
-    );
+    if (ratios.isEmpty) {
+      emit(
+        CompanyPeRatioState.loaded(
+          ticker: ticker,
+          dataPoints: [],
+          chartData: [],
+          currentValue: 0,
+          growthPercentage: 0,
+          absoluteDelta: 0,
+          isPositive: false,
+          referenceLabel: '',
+          historyLimit: 0,
+          dataOrigin: origin,
+          loadTimeMs: loadTimeMs,
+          isSuccess: isSuccess,
+          analyticsState: analyticsSession,
+        ),
+      );
+      return;
+    }
   }
 
   Future<void> _onStalenessCheckRequested(

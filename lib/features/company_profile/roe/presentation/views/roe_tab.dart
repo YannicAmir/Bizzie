@@ -5,10 +5,12 @@ import 'package:bizzie/features/company_profile/shared/domain/models/financial_d
 import '../bloc/company_roe_bloc.dart';
 import '../bloc/company_roe_event.dart';
 import '../bloc/company_roe_state.dart';
+import 'package:bizzie/features/company_profile/shared/presentation/enums/company_profile_tab.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/widgets/company_profile_error_state.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/widgets/company_profile_loading_state.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/widgets/financial_data_table.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/widgets/metric_summary_card.dart';
+import 'package:bizzie/features/company_profile/shared/presentation/widgets/tab_visibility_observer.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:bizzie/shared/widgets/charts/bizzie_bar_chart.dart';
 import 'package:bizzie/shared/widgets/charts/bizzie_expandable_chart.dart';
@@ -38,46 +40,66 @@ class _RoeTabState extends State<RoeTab> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<CompanyRoeBloc, CompanyRoeState>(
-      builder: (context, state) {
-        return state.when(
-          initial: () =>
-              const CompanyProfileLoadingState(message: 'Loading ROE'),
-          loading: () =>
-              const CompanyProfileLoadingState(message: 'Loading ROE'),
-          failure: (e) => CompanyProfileErrorState(
-            message: 'Error loading ROE',
-            onRetry: () => context.read<CompanyRoeBloc>().add(
-              CompanyRoeEvent.loadRequested(widget.ticker, forceRefresh: true),
-            ),
-          ),
-          loaded:
-              (
-                ticker,
-                dataPoints,
-                chartData,
-                currentValue,
-                growthPercentage,
-                absoluteDelta,
-                isPositive,
-                referenceLabel,
-                historyLimit,
-                dataOrigin,
-                lastUpdated,
-              ) => _RoeLoadedContent(
-                dataPoints: dataPoints,
-                chartData: chartData,
-                currentValue: currentValue,
-                growthPercentage: growthPercentage,
-                absoluteDelta: absoluteDelta,
-                isPositive: isPositive,
-                referenceLabel: referenceLabel,
-                historyLimit: historyLimit,
-                ticker: ticker,
-                lastUpdated: lastUpdated,
+    return TabVisibilityObserver(
+      tabName: CompanyProfileTab.roe.analyticsName,
+      onTabShown: () => context.read<CompanyRoeBloc>().add(
+        CompanyRoeEvent.tabShown(widget.ticker),
+      ),
+      onTabHidden: () =>
+          context.read<CompanyRoeBloc>().add(const CompanyRoeEvent.tabHidden()),
+      onAppBackgrounded: () => context.read<CompanyRoeBloc>().add(
+        const CompanyRoeEvent.appBackgrounded(),
+      ),
+      onAppForegrounded: () => context.read<CompanyRoeBloc>().add(
+        const CompanyRoeEvent.appForegrounded(),
+      ),
+      child: BlocBuilder<CompanyRoeBloc, CompanyRoeState>(
+        builder: (context, state) {
+          return state.when(
+            initial: () =>
+                const CompanyProfileLoadingState(message: 'Loading ROE'),
+            loading: () =>
+                const CompanyProfileLoadingState(message: 'Loading ROE'),
+            failure: (e) => CompanyProfileErrorState(
+              message: 'Error loading ROE',
+              onRetry: () => context.read<CompanyRoeBloc>().add(
+                CompanyRoeEvent.loadRequested(
+                  widget.ticker,
+                  forceRefresh: true,
+                ),
               ),
-        );
-      },
+            ),
+            loaded:
+                (
+                  ticker,
+                  dataPoints,
+                  chartData,
+                  currentValue,
+                  growthPercentage,
+                  absoluteDelta,
+                  isPositive,
+                  referenceLabel,
+                  historyLimit,
+                  dataOrigin,
+                  loadTimeMs,
+                  isSuccess,
+                  lastUpdated,
+                  analyticsState,
+                ) => _RoeLoadedContent(
+                  dataPoints: dataPoints,
+                  chartData: chartData,
+                  currentValue: currentValue,
+                  growthPercentage: growthPercentage,
+                  absoluteDelta: absoluteDelta,
+                  isPositive: isPositive,
+                  referenceLabel: referenceLabel,
+                  historyLimit: historyLimit,
+                  ticker: ticker,
+                  lastUpdated: lastUpdated,
+                ),
+          );
+        },
+      ),
     );
   }
 }
@@ -152,6 +174,9 @@ class _RoeLoadedContent extends StatelessWidget {
             visibleCount: historyLimit,
             thresholdCount: historyLimit,
             source: PaywallSource.company_profile,
+            onAnalyticsTap: () => context.read<CompanyRoeBloc>().add(
+              const CompanyRoeEvent.viewAllTapped(isChart: true),
+            ),
           ),
           AppConstants.mainSectionSpacing,
           FinancialDataTable(
@@ -160,9 +185,17 @@ class _RoeLoadedContent extends StatelessWidget {
             currency: '',
             isPercentage: true,
             dateFormat: FinancialDateFormat.fullDate,
-            onViewMore: () => _showAllHistory(context, dataPoints),
+            onViewMore: () {
+              context.read<CompanyRoeBloc>().add(
+                const CompanyRoeEvent.viewAllTapped(isChart: false),
+              );
+              _showAllHistory(context, dataPoints);
+            },
             limit: historyLimit,
             source: PaywallSource.company_profile,
+            onAnalyticsTap: () => context.read<CompanyRoeBloc>().add(
+              const CompanyRoeEvent.viewAllTapped(isChart: false),
+            ),
           ),
         ],
       ),

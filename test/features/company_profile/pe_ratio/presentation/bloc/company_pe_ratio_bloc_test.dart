@@ -5,6 +5,8 @@ import 'package:bizzie/features/company_profile/pe_ratio/domain/usecases/get_pe_
 import 'package:bizzie/features/company_profile/pe_ratio/presentation/bloc/company_pe_ratio_bloc.dart';
 import 'package:bizzie/features/company_profile/pe_ratio/presentation/bloc/company_pe_ratio_event.dart';
 import 'package:bizzie/features/company_profile/pe_ratio/presentation/bloc/company_pe_ratio_state.dart';
+import 'package:bizzie/features/company_profile/pe_ratio/presentation/analytics/pe_ratio_tab_analytics.dart';
+import 'package:bizzie/features/company_profile/pe_ratio/presentation/analytics/pe_ratio_tab_view_state.dart';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -16,16 +18,31 @@ class MockGetPeRatioUseCase extends Mock implements GetPeRatioUseCase {}
 
 class MockConfigService extends Mock implements IConfigService {}
 
+class MockPeRatioTabAnalytics extends Mock implements PeRatioTabAnalytics {}
+
 void main() {
   late CompanyPeRatioBloc bloc;
   late MockGetPeRatioUseCase mockGetPeRatio;
   late MockConfigService mockConfigService;
+  late MockPeRatioTabAnalytics mockAnalytics;
 
   setUp(() {
     mockGetPeRatio = MockGetPeRatioUseCase();
     mockConfigService = MockConfigService();
+    mockAnalytics = MockPeRatioTabAnalytics();
+
     when(() => mockConfigService.freePlanHistoryCount).thenReturn(7);
-    bloc = CompanyPeRatioBloc(mockGetPeRatio, mockConfigService);
+    when(
+      () => mockAnalytics.logViewSummary(any(), isFinal: any(named: 'isFinal')),
+    ).thenAnswer((_) async {});
+
+    bloc = CompanyPeRatioBloc(mockGetPeRatio, mockConfigService, mockAnalytics);
+  });
+
+  setUpAll(() {
+    registerFallbackValue(
+      const PeRatioTabViewState(ticker: 'AAPL', timestamp: ''),
+    );
   });
 
   const tTicker = 'AAPL';
@@ -330,6 +347,157 @@ void main() {
           'MSFT',
         ),
       ],
+    );
+  });
+
+  group('CompanyPeRatioBloc - Analytics Orchestration', () {
+    blocTest<CompanyPeRatioBloc, CompanyPeRatioState>(
+      'tabShown_afterSuccessfulLoad_initializesSessionWithPersistedMetrics',
+      build: () {
+        when(() => mockGetPeRatio(tTicker)).thenAnswer(
+          (_) async => const Right((tRatios, CompanyProfileDataOrigin.api)),
+        );
+        return bloc;
+      },
+      act: (bloc) async {
+        bloc.add(const CompanyPeRatioEvent.loadRequested(tTicker));
+        await Future.delayed(const Duration(milliseconds: 200));
+        bloc.add(const CompanyPeRatioEvent.tabShown(tTicker));
+      },
+      expect: () => [
+        const CompanyPeRatioState.loading(),
+        isA<CompanyPeRatioState>(),
+        isA<CompanyPeRatioState>(),
+      ],
+      verify: (bloc) {
+        bloc.state.maybeMap(
+          loaded: (l) {
+            expect(l.ticker, tTicker);
+            expect(l.isSuccess, true);
+            expect(l.analyticsState, isNotNull);
+          },
+          orElse: () => fail('Should be in loaded state'),
+        );
+        verifyNever(
+          () => mockAnalytics.logViewSummary(
+            any(),
+            isFinal: any(named: 'isFinal'),
+          ),
+        );
+      },
+    );
+
+    blocTest<CompanyPeRatioBloc, CompanyPeRatioState>(
+      'tabShown_callsOnTabShownAndUpdatesAnalyticsState',
+      build: () => bloc,
+      seed: () => const CompanyPeRatioState.loaded(
+        ticker: tTicker,
+        dataPoints: [],
+        chartData: [],
+        currentValue: 28.0,
+        growthPercentage: 5.0,
+        absoluteDelta: 1.0,
+        isPositive: true,
+        referenceLabel: '2018',
+        historyLimit: 7,
+        dataOrigin: CompanyProfileDataOrigin.api,
+      ),
+      act: (bloc) => bloc.add(const CompanyPeRatioEvent.tabShown(tTicker)),
+      expect: () => [
+        isA<CompanyPeRatioState>().having(
+          (s) =>
+              s.maybeMap(loaded: (l) => l.analyticsState, orElse: () => null),
+          'analyticsState',
+          isNotNull,
+        ),
+      ],
+      verify: (_) {
+        verifyNever(
+          () => mockAnalytics.logViewSummary(
+            any(),
+            isFinal: any(named: 'isFinal'),
+          ),
+        );
+      },
+    );
+
+    blocTest<CompanyPeRatioBloc, CompanyPeRatioState>(
+      'viewAllTapped_updatesInteractionFlags',
+      build: () => bloc,
+      seed: () => const CompanyPeRatioState.loaded(
+        ticker: tTicker,
+        dataPoints: [],
+        chartData: [],
+        currentValue: 28.0,
+        growthPercentage: 5.0,
+        absoluteDelta: 1.0,
+        isPositive: true,
+        referenceLabel: '2018',
+        historyLimit: 7,
+        dataOrigin: CompanyProfileDataOrigin.api,
+      ),
+      act: (bloc) async {
+        bloc.add(const CompanyPeRatioEvent.tabShown(tTicker));
+        await Future.delayed(Duration.zero);
+        bloc.add(const CompanyPeRatioEvent.viewAllTapped(isChart: true));
+      },
+      expect: () => [
+        isA<CompanyPeRatioState>().having(
+          (s) =>
+              s.maybeMap(loaded: (l) => l.analyticsState, orElse: () => null),
+          'analyticsState',
+          isNotNull,
+        ),
+        isA<CompanyPeRatioState>().having(
+          (s) => s.maybeMap(
+            loaded: (l) => l.analyticsState?.tappedChartViewAll,
+            orElse: () => null,
+          ),
+          'tappedChartViewAll',
+          true,
+        ),
+      ],
+    );
+
+    blocTest<CompanyPeRatioBloc, CompanyPeRatioState>(
+      'tabHidden_logsTabSessionAndResetsAnalytics',
+      build: () => bloc,
+      seed: () => const CompanyPeRatioState.loaded(
+        ticker: tTicker,
+        dataPoints: [],
+        chartData: [],
+        currentValue: 28.0,
+        growthPercentage: 5.0,
+        absoluteDelta: 1.0,
+        isPositive: true,
+        referenceLabel: '2018',
+        historyLimit: 7,
+        dataOrigin: CompanyProfileDataOrigin.api,
+      ),
+      act: (bloc) async {
+        bloc.add(const CompanyPeRatioEvent.tabShown(tTicker));
+        await Future.delayed(Duration.zero);
+        bloc.add(const CompanyPeRatioEvent.tabHidden());
+      },
+      expect: () => [
+        isA<CompanyPeRatioState>().having(
+          (s) =>
+              s.maybeMap(loaded: (l) => l.analyticsState, orElse: () => null),
+          'analyticsState',
+          isNotNull,
+        ),
+        isA<CompanyPeRatioState>().having(
+          (s) =>
+              s.maybeMap(loaded: (l) => l.analyticsState, orElse: () => null),
+          'analyticsState',
+          isNull,
+        ),
+      ],
+      verify: (_) {
+        verify(
+          () => mockAnalytics.logViewSummary(any(), isFinal: true),
+        ).called(1);
+      },
     );
   });
 }

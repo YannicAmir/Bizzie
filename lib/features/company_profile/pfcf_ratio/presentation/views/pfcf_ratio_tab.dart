@@ -1,25 +1,27 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:bizzie/app/themes/app_assets.dart';
 import 'package:bizzie/core/enums/paywall_source.dart';
 import 'package:bizzie/features/company_profile/shared/domain/extensions/financial_data_point_list_extensions.dart';
 import 'package:bizzie/features/company_profile/shared/domain/models/chart_data_point.dart';
 import 'package:bizzie/features/company_profile/shared/domain/models/financial_data_point.dart';
-import '../bloc/company_pfcf_ratio_bloc.dart';
-import '../bloc/company_pfcf_ratio_event.dart';
-import '../bloc/company_pfcf_ratio_state.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/utils/metric_summary_presentation_extensions.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/widgets/company_profile_error_state.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/widgets/company_profile_loading_state.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/widgets/financial_data_table.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/widgets/financial_table_footer.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/widgets/metric_summary_card.dart';
+import 'package:bizzie/features/company_profile/shared/presentation/widgets/tab_visibility_observer.dart';
+import 'package:bizzie/features/company_profile/shared/presentation/enums/company_profile_tab.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:bizzie/shared/widgets/charts/bizzie_bar_chart.dart';
 import 'package:bizzie/shared/widgets/charts/bizzie_expandable_chart.dart';
 import 'package:bizzie/shared/widgets/modals/app_history_modal.dart';
 import 'package:bizzie/shared/widgets/states/bizzie_empty_state.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
+import '../bloc/company_pfcf_ratio_bloc.dart';
+import '../bloc/company_pfcf_ratio_event.dart';
+import '../bloc/company_pfcf_ratio_state.dart';
 import '../extensions/pfcf_ratio_presentation_helper.dart';
 
 class PfcfRatioTab extends StatefulWidget {
@@ -70,7 +72,10 @@ class _PfcfRatioTabState extends State<PfcfRatioTab> {
                 referenceLabel,
                 historyLimit,
                 dataOrigin,
+                loadTimeMs,
+                isSuccess,
                 lastUpdated,
+                analyticsState,
               ) => _PfcfRatioLoadedContent(
                 dataPoints: dataPoints,
                 chartData: chartData,
@@ -135,54 +140,75 @@ class _PfcfRatioLoadedContent extends StatelessWidget {
       lastUpdated: lastUpdated,
     );
 
-    return SingleChildScrollView(
-      padding: AppConstants.pagePadding,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          MetricSummaryCard(
-            title: 'P/FCF Ratio',
-            value: summary.valueStr,
-            badgeText: summary.badgeText,
-            badgeStyle: summary.badgeStyle,
-            subtitle: summary.subtitle,
-          ),
-          AppConstants.mainSectionSpacing,
-          BizzieExpandableChart(
-            key: ValueKey('pfcf_chart_${chartData.length}'),
-            data: chartData
-                .map((p) => BizzieChartData(p.label, p.value))
-                .toList(),
-            numberFormat: NumberFormat('#,##0.00', 'en_US'),
-            visibleCount: historyLimit,
-            thresholdCount: historyLimit,
-            source: PaywallSource.company_profile,
-          ),
-          AppConstants.mainSectionSpacing,
-          FinancialDataTable(
-            data: dataPoints,
-            metricLabel: 'P/FCF',
-            currency: '',
-            isNeutralColor: true,
-            dateFormat: FinancialDateFormat.fullDate,
-            onViewMore: () => _showAllHistory(context, dataPoints),
-            limit: historyLimit,
-            source: PaywallSource.company_profile,
-            footer: FinancialTableFooter(
-              columns: [
-                FinancialTableFooterColumnData(
-                  label: 'Avg. P/FCF Ratio',
-                  value: dataPoints.averageValue.formattedRatioValue,
-                ),
-                if (summary.dynamicAvg != null)
-                  FinancialTableFooterColumnData(
-                    label: summary.dynamicAvg!.label,
-                    value: summary.dynamicAvg!.value,
-                  ),
-              ],
+    return TabVisibilityObserver(
+      tabName: CompanyProfileTab.pfcfRatio.analyticsName,
+      onTabShown: () => context.read<CompanyPfcfRatioBloc>().add(
+        CompanyPfcfRatioEvent.tabShown(ticker),
+      ),
+      onTabHidden: () => context.read<CompanyPfcfRatioBloc>().add(
+        const CompanyPfcfRatioEvent.tabHidden(),
+      ),
+      onAppBackgrounded: () => context.read<CompanyPfcfRatioBloc>().add(
+        const CompanyPfcfRatioEvent.appBackgrounded(),
+      ),
+      onAppForegrounded: () => context.read<CompanyPfcfRatioBloc>().add(
+        const CompanyPfcfRatioEvent.appForegrounded(),
+      ),
+      child: SingleChildScrollView(
+        padding: AppConstants.pagePadding,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            MetricSummaryCard(
+              title: 'P/FCF Ratio',
+              value: summary.valueStr,
+              badgeText: summary.badgeText,
+              badgeStyle: summary.badgeStyle,
+              subtitle: summary.subtitle,
             ),
-          ),
-        ],
+            AppConstants.mainSectionSpacing,
+            BizzieExpandableChart(
+              key: ValueKey('pfcf_chart_${chartData.length}'),
+              data: chartData
+                  .map((p) => BizzieChartData(p.label, p.value))
+                  .toList(),
+              numberFormat: NumberFormat('#,##0.00', 'en_US'),
+              visibleCount: historyLimit,
+              thresholdCount: historyLimit,
+              source: PaywallSource.company_profile,
+              onAnalyticsTap: () => context.read<CompanyPfcfRatioBloc>().add(
+                const CompanyPfcfRatioEvent.viewAllTapped(isChart: true),
+              ),
+            ),
+            AppConstants.mainSectionSpacing,
+            FinancialDataTable(
+              data: dataPoints,
+              metricLabel: 'P/FCF',
+              currency: '',
+              isNeutralColor: true,
+              dateFormat: FinancialDateFormat.fullDate,
+              onAnalyticsTap: () => context.read<CompanyPfcfRatioBloc>().add(
+                const CompanyPfcfRatioEvent.viewAllTapped(isChart: false),
+              ),
+              onViewMore: () => _showAllHistory(context, dataPoints),
+              limit: historyLimit,
+              source: PaywallSource.company_profile,
+              footer: FinancialTableFooter(
+                columns: [
+                  FinancialTableFooterColumnData(
+                    label: 'Avg. P/FCF Ratio',
+                    value: dataPoints.averageValue.formattedRatioValue,
+                  ),
+                  if (summary.dynamicAvg != null)
+                    FinancialTableFooterColumnData(
+                      label: summary.dynamicAvg!.label,
+                      value: summary.dynamicAvg!.value,
+                    ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
