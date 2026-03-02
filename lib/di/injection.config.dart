@@ -157,6 +157,12 @@ import '../features/company_profile/financial_statements/domain/usecases/get_ful
     as _i606;
 import '../features/company_profile/financial_statements/domain/usecases/get_income_statements_usecase.dart'
     as _i204;
+import '../features/company_profile/financial_statements/presentation/analytics/bal_stmt_tab_analytics.dart'
+    as _i498;
+import '../features/company_profile/financial_statements/presentation/analytics/cash_stmt_tab_analytics.dart'
+    as _i746;
+import '../features/company_profile/financial_statements/presentation/analytics/inc_stmt_tab_analytics.dart'
+    as _i906;
 import '../features/company_profile/financial_statements/presentation/bloc/financial_statements_bloc.dart'
     as _i191;
 import '../features/company_profile/free_cash_flow/data/repositories/free_cash_flow_repository_impl.dart'
@@ -843,6 +849,15 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i648.FcpsTabAnalytics>(
       () => _i648.FcpsTabAnalytics(gh<_i529.IAnalyticsService>()),
     );
+    gh.lazySingleton<_i498.BalStmtTabAnalytics>(
+      () => _i498.BalStmtTabAnalytics(gh<_i529.IAnalyticsService>()),
+    );
+    gh.lazySingleton<_i746.CashStmtTabAnalytics>(
+      () => _i746.CashStmtTabAnalytics(gh<_i529.IAnalyticsService>()),
+    );
+    gh.lazySingleton<_i906.IncStmtTabAnalytics>(
+      () => _i906.IncStmtTabAnalytics(gh<_i529.IAnalyticsService>()),
+    );
     gh.lazySingleton<_i167.FreeCashFlowTabAnalytics>(
       () => _i167.FreeCashFlowTabAnalytics(gh<_i529.IAnalyticsService>()),
     );
@@ -1272,6 +1287,17 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i659.ISubscriptionRepository>(),
       ),
     );
+    gh.factory<_i191.FinancialStatementsBloc>(
+      () => _i191.FinancialStatementsBloc(
+        gh<_i204.GetIncomeStatementsUseCase>(),
+        gh<_i1054.GetBalanceSheetsUseCase>(),
+        gh<_i64.GetCashFlowStatementsUseCase>(),
+        gh<_i906.IncStmtTabAnalytics>(),
+        gh<_i498.BalStmtTabAnalytics>(),
+        gh<_i746.CashStmtTabAnalytics>(),
+        gh<_i937.IConfigService>(),
+      ),
+    );
     gh.lazySingleton<_i714.GetSubscriptionStatusUseCase>(
       () => _i714.GetSubscriptionStatusUseCase(
         gh<_i659.ISubscriptionRepository>(),
@@ -1354,14 +1380,6 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i605.GetPriceHistoryUseCase>(
       () => _i605.GetPriceHistoryUseCase(gh<_i876.IPriceRepository>()),
-    );
-    gh.factory<_i191.FinancialStatementsBloc>(
-      () => _i191.FinancialStatementsBloc(
-        gh<_i204.GetIncomeStatementsUseCase>(),
-        gh<_i1054.GetBalanceSheetsUseCase>(),
-        gh<_i64.GetCashFlowStatementsUseCase>(),
-        gh<_i937.IConfigService>(),
-      ),
     );
     gh.factory<_i63.WatchlistBloc>(
       () => _i63.WatchlistBloc(

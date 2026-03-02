@@ -139,9 +139,9 @@ class FinancialStatementsTable extends StatelessWidget {
 
                 return GestureDetector(
                   onTap: () {
-                    if (isSubscribed) {
-                      onViewAll?.call();
-                    } else {
+                    onViewAll?.call();
+
+                    if (!isSubscribed) {
                       PaywallHelper.showPaywallSequence(
                         context,
                         source: PaywallSource.company_profile,

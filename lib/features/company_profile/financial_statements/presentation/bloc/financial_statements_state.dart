@@ -4,6 +4,9 @@ import 'package:bizzie/features/company_profile/financial_statements/presentatio
 import 'package:bizzie/features/company_profile/financial_statements/domain/models/balance_sheet.dart';
 import 'package:bizzie/features/company_profile/financial_statements/domain/models/cash_flow_statement.dart';
 import 'package:bizzie/features/company_profile/financial_statements/domain/models/income_statement.dart';
+import 'package:bizzie/features/company_profile/financial_statements/presentation/analytics/bal_stmt_tab_view_state.dart';
+import 'package:bizzie/features/company_profile/financial_statements/presentation/analytics/cash_stmt_tab_view_state.dart';
+import 'package:bizzie/features/company_profile/financial_statements/presentation/analytics/inc_stmt_tab_view_state.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'financial_statements_state.freezed.dart';
@@ -17,6 +20,16 @@ abstract class FinancialStatementsState with _$FinancialStatementsState {
     Failure? incomeError,
     Failure? balanceError,
     Failure? cashFlowError,
+    int? incomeLoadTimeMs,
+    int? balanceLoadTimeMs,
+    int? cashFlowLoadTimeMs,
+    @Default(false) bool isIncomeSuccess,
+    @Default(false) bool isBalanceSuccess,
+    @Default(false) bool isCashFlowSuccess,
+    IncStmtTabViewState? incAnalytics,
+    BalStmtTabViewState? balAnalytics,
+    CashStmtTabViewState? cashAnalytics,
+    @Default(0) int totalViewDurationSec,
     DateTime? lastUpdatedIncome,
     DateTime? lastUpdatedBalance,
     DateTime? lastUpdatedCashFlow,
