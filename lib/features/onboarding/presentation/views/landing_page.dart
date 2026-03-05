@@ -49,7 +49,7 @@ class _LandingPageState extends State<LandingPage> {
             _BackgroundChart(data: reversedData),
             Column(
               children: [
-                const SizedBox(height: 240),
+                SizedBox(height: MediaQuery.of(context).size.height * 0.24),
                 const _MascotImage(),
                 const Spacer(flex: 1),
                 OnboardingFooter(
