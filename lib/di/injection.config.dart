@@ -348,9 +348,9 @@ import '../features/onboarding/domain/usecases/get_sp500_history_usecase.dart'
     as _i952;
 import '../features/onboarding/presentation/analytics/onboarding_analytics.dart'
     as _i178;
-import '../features/onboarding/presentation/analytics/onboarding_tracker.dart'
-    as _i610;
 import '../features/onboarding/presentation/bloc/onboarding_bloc.dart' as _i593;
+import '../features/onboarding/presentation/utils/onboarding_navigation_orchestrator.dart'
+    as _i698;
 import '../features/onboarding/select_brands/data/datasources/select_brands_remote_datasource.dart'
     as _i6;
 import '../features/onboarding/select_brands/data/repositories/select_brands_repository_impl.dart'
@@ -734,12 +734,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i450.AnalyticsContext>(),
       ),
     );
-    gh.lazySingleton<_i610.OnboardingTracker>(
-      () => _i610.OnboardingTracker(
-        gh<_i529.IAnalyticsService>(),
-        gh<_i450.AnalyticsContext>(),
-      ),
-    );
     gh.lazySingleton<_i806.FinancialStatementsFirestoreDataSource>(
       () => _i806.FinancialStatementsFirestoreDataSourceImpl(
         gh<_i974.FirebaseFirestore>(),
@@ -805,6 +799,9 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i230.RecommendedBrandsRepository(
         gh<_i792.IRecommendedBrandsRemoteDataSource>(),
       ),
+    );
+    gh.lazySingleton<_i178.OnboardingAnalytics>(
+      () => _i178.OnboardingAnalytics(gh<_i529.IAnalyticsService>()),
     );
     gh.lazySingleton<_i1039.IWatchlistRepository>(
       () => _i259.WatchlistRepositoryImpl(
@@ -887,9 +884,6 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i32.HomeAnalytics>(
       () => _i32.HomeAnalytics(gh<_i529.IAnalyticsService>()),
-    );
-    gh.lazySingleton<_i178.OnboardingAnalytics>(
-      () => _i178.OnboardingAnalytics(gh<_i529.IAnalyticsService>()),
     );
     gh.lazySingleton<_i471.ReportsTracker>(
       () => _i471.ReportsTracker(gh<_i529.IAnalyticsService>()),
@@ -1591,22 +1585,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i925.GetHistoricalEodPricesUseCase>(),
       ),
     );
-    gh.lazySingleton<_i1066.SubscriptionBloc>(
-      () => _i1066.SubscriptionBloc(
-        gh<_i630.WatchSubscriptionStatusUseCase>(),
-        gh<_i423.RefreshSubscriptionStatusUseCase>(),
-        gh<_i15.SyncIdentityUseCase>(),
-        gh<_i803.PurchaseSubscriptionUseCase>(),
-        gh<_i566.RestorePurchasesUseCase>(),
-        gh<_i343.GetOfferingsUseCase>(),
-        gh<_i59.AuthBloc>(),
-        gh<_i25.SyncSubscriptionUseCase>(),
-        gh<_i687.Stream<bool>>(instanceName: 'isSubscribedStream'),
-        gh<_i780.PaywallAnalytics>(),
-        gh<_i610.OnboardingTracker>(),
-        gh<_i94.SubscriptionTracker>(),
-      ),
-    );
     gh.lazySingleton<_i82.SubmitFeedbackUseCase>(
       () => _i82.SubmitFeedbackUseCase(
         gh<_i826.IFeedbackRepository>(),
@@ -1678,6 +1656,16 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i1014.NotificationTracker>(),
       ),
     );
+    gh.lazySingleton<_i593.OnboardingBloc>(
+      () => _i593.OnboardingBloc(
+        gh<_i685.IAuthRepository>(),
+        gh<_i874.CompleteOnboardingUseCase>(),
+        gh<_i920.GetSectorsUseCase>(),
+        gh<_i952.GetSp500HistoryUseCase>(),
+        gh<_i1050.ISectorService>(),
+        gh<_i178.OnboardingAnalytics>(),
+      ),
+    );
     gh.factory<_i348.SearchBloc>(
       () => _i348.SearchBloc(
         gh<_i130.SearchStocksUseCase>(),
@@ -1687,21 +1675,29 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i583.ILocalStorageService>(),
       ),
     );
-    gh.factory<_i593.OnboardingBloc>(
-      () => _i593.OnboardingBloc(
-        gh<_i685.IAuthRepository>(),
-        gh<_i874.CompleteOnboardingUseCase>(),
-        gh<_i920.GetSectorsUseCase>(),
-        gh<_i952.GetSp500HistoryUseCase>(),
-        gh<_i1050.ISectorService>(),
-        gh<_i178.OnboardingAnalytics>(),
-        gh<_i610.OnboardingTracker>(),
-      ),
-    );
     gh.factory<_i709.SelectBrandsBloc>(
       () => _i709.SelectBrandsBloc(
         gh<_i593.OnboardingBloc>(),
         gh<_i422.GetDailyBrandsUseCase>(),
+      ),
+    );
+    gh.lazySingleton<_i698.OnboardingNavigationOrchestrator>(
+      () => _i698.OnboardingNavigationOrchestrator(gh<_i593.OnboardingBloc>()),
+    );
+    gh.lazySingleton<_i1066.SubscriptionBloc>(
+      () => _i1066.SubscriptionBloc(
+        gh<_i630.WatchSubscriptionStatusUseCase>(),
+        gh<_i423.RefreshSubscriptionStatusUseCase>(),
+        gh<_i15.SyncIdentityUseCase>(),
+        gh<_i803.PurchaseSubscriptionUseCase>(),
+        gh<_i566.RestorePurchasesUseCase>(),
+        gh<_i343.GetOfferingsUseCase>(),
+        gh<_i59.AuthBloc>(),
+        gh<_i25.SyncSubscriptionUseCase>(),
+        gh<_i687.Stream<bool>>(instanceName: 'isSubscribedStream'),
+        gh<_i780.PaywallAnalytics>(),
+        gh<_i593.OnboardingBloc>(),
+        gh<_i94.SubscriptionTracker>(),
       ),
     );
     return this;

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:bizzie/app/l10n/bizzie_localizations.dart';
+import 'package:bizzie/features/onboarding/presentation/bloc/onboarding_bloc.dart';
 
 import 'package:bizzie/app/global_overlay_wrapper.dart';
 import 'package:bizzie/core/interfaces/i_notification_service.dart';
@@ -18,13 +19,11 @@ import 'package:bizzie/features/reports/presentation/bloc/reports_bloc.dart';
 import 'package:bizzie/features/reports/presentation/bloc/reports_event.dart';
 import 'package:bizzie/features/subscription/presentation/bloc/subscription_bloc.dart';
 import 'package:bizzie/features/subscription/presentation/bloc/subscription_event.dart';
-import 'package:bizzie/features/subscription/presentation/bloc/subscription_state.dart';
 import 'package:bizzie/features/app_status/presentation/bloc/app_status_bloc.dart';
 import 'package:bizzie/features/security/presentation/bloc/security_bloc.dart';
 import 'package:bizzie/features/security/presentation/bloc/security_event.dart';
 import 'package:bizzie/features/security/presentation/bloc/security_state.dart';
 import 'package:bizzie/features/security/presentation/views/security_lockout_screen.dart';
-import 'package:bizzie/core/enums/paywall_source.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -138,6 +137,7 @@ class _BizzieAppViewState extends State<BizzieAppView>
                   const SubscriptionEvent.userIdentityChanged(null),
                 );
                 context.read<ReportsBloc>().add(const ReportsEvent.reset());
+                getIt<OnboardingBloc>().add(const OnboardingEvent.reset());
               },
             );
 
@@ -151,25 +151,6 @@ class _BizzieAppViewState extends State<BizzieAppView>
             if (isAuthDetermined) {
               FlutterNativeSplash.remove();
             }
-          },
-        ),
-        BlocListener<SubscriptionBloc, SubscriptionState>(
-          listenWhen: (previous, current) => current.maybeMap(
-            loaded: (s) => s.shouldNavigateToDiscountedPaywall,
-            orElse: () => false,
-          ),
-          listener: (context, state) {
-            state.mapOrNull(
-              loaded: (s) {
-                if (s.shouldNavigateToDiscountedPaywall) {
-                  final source = s.paywallSource ?? PaywallSource.unknown;
-                  _router.pushNamed(
-                    AppRoutes.discountedPaywall,
-                    queryParameters: {'source': source.name},
-                  );
-                }
-              },
-            );
           },
         ),
       ],

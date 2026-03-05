@@ -16,13 +16,14 @@ import 'package:injectable/injectable.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
 
 import 'package:bizzie/core/enums/paywall_source.dart';
+import 'package:bizzie/features/subscription/domain/enums/paywall_type.dart';
 import 'package:bizzie/features/subscription/domain/models/subscription_status.dart';
 import 'package:bizzie/features/subscription/domain/models/analytics_purchase_params.dart';
 import 'package:bizzie/features/subscription/presentation/analytics/paywall_analytics.dart';
 import 'package:bizzie/features/subscription/domain/enums/subscription_period_type.dart';
 import 'package:bizzie/features/subscription/domain/enums/subscription_package_type.dart';
 import 'package:bizzie/features/onboarding/domain/models/onboarding_step.dart';
-import 'package:bizzie/features/onboarding/presentation/analytics/onboarding_tracker.dart';
+import 'package:bizzie/features/onboarding/presentation/bloc/onboarding_bloc.dart';
 import 'package:bizzie/features/subscription/presentation/analytics/subscription_tracker.dart';
 import 'subscription_event.dart';
 import 'subscription_state.dart';
@@ -41,7 +42,7 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
   final SyncSubscriptionUseCase _syncSubscription;
   final Stream<bool> _isSubscribedStream;
   final PaywallAnalytics _analytics;
-  final OnboardingTracker _onboardingTracker;
+  final OnboardingBloc _onboardingBloc;
   final SubscriptionTracker _subscriptionTracker;
 
   StreamSubscription? _statusSubscription;
@@ -59,7 +60,7 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
     this._syncSubscription,
     @Named('isSubscribedStream') this._isSubscribedStream,
     this._analytics,
-    this._onboardingTracker,
+    this._onboardingBloc,
     this._subscriptionTracker,
   ) : super(SubscriptionState.initialState()) {
     on<SubscriptionEventInitialized>(_onInitialized);
@@ -131,7 +132,7 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
       'Paywall viewed from source: ${event.source} (Type: ${event.paywallType})',
     );
     emit(state.copyWith(paywallSource: event.source));
-    await _analytics.logTriggered(
+    _analytics.logTriggered(
       source: event.source,
       paywallType: event.paywallType,
       tabName: event.tabName,
@@ -139,7 +140,17 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
     );
 
     if (event.source == PaywallSource.onboarding) {
-      await _onboardingTracker.logStepViewed(step: OnboardingStep.paywall);
+      final step = event.paywallType == PaywallType.discount
+          ? OnboardingStep.discountPaywall
+          : OnboardingStep.paywall;
+
+      _onboardingBloc.add(
+        const OnboardingEvent.subscriptionStatusChanged(
+          didSubscribe: false,
+          subscriptionType: 'none',
+        ),
+      );
+      _onboardingBloc.add(OnboardingEvent.stepViewed(step));
     }
   }
 
@@ -148,7 +159,12 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
     Emitter<SubscriptionState> emit,
   ) async {
     _logger.info('Gift modal viewed from source: ${event.source}');
-    await _analytics.logGiftViewed(source: event.source);
+    _analytics.logGiftViewed(source: event.source);
+    if (event.source == PaywallSource.onboarding) {
+      _onboardingBloc.add(
+        const OnboardingEvent.stepViewed(OnboardingStep.giftModal),
+      );
+    }
   }
 
   Future<void> _onGiftClaimed(
@@ -156,13 +172,8 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
     Emitter<SubscriptionState> emit,
   ) async {
     _logger.info('Gift claimed from source: ${event.source}');
-    await _analytics.logGiftClaimed(source: event.source);
-    state.mapOrNull(
-      loaded: (s) {
-        emit(s.copyWith(shouldNavigateToDiscountedPaywall: true));
-        emit(s.copyWith(shouldNavigateToDiscountedPaywall: false));
-      },
-    );
+    _analytics.logGiftClaimed(source: event.source);
+    // Routing to discounted paywall is now handled entirely by PaywallHelper
   }
 
   Future<void> _onGiftDismissed(
@@ -170,7 +181,7 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
     Emitter<SubscriptionState> emit,
   ) async {
     _logger.info('Gift dismissed from source: ${event.source}');
-    await _analytics.logGiftDismissed(source: event.source);
+    _analytics.logGiftDismissed(source: event.source);
   }
 
   Future<void> _onRefreshRequested(
@@ -378,7 +389,12 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
         }
 
         if (source == PaywallSource.onboarding) {
-          _onboardingTracker.logConversion();
+          _onboardingBloc.add(
+            OnboardingEvent.subscriptionStatusChanged(
+              didSubscribe: true,
+              subscriptionType: event.package.packageType.name,
+            ),
+          );
         }
 
         state.maybeMap(

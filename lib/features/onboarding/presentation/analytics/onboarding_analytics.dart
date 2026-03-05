@@ -1,99 +1,95 @@
-import 'package:bizzie/core/domain/models/sector.dart';
+import 'package:bizzie/core/enums/day_of_week.dart';
 import 'package:bizzie/core/interfaces/i_analytics_service.dart';
-import 'package:bizzie/features/user/domain/enums/investing_experience.dart';
+import 'package:bizzie/features/onboarding/presentation/analytics/onboarding_session_summary.dart';
 import 'package:injectable/injectable.dart';
 
 @lazySingleton
 class OnboardingAnalytics {
-  final IAnalyticsService _analytics;
+  final IAnalyticsService _analyticsService;
 
-  OnboardingAnalytics(this._analytics);
+  OnboardingAnalytics(this._analyticsService);
 
-  Future<void> logSectorSelected(Sector sector) async {
-    await _analytics.logEvent(
-      name: 'onboarding_sector_selected',
-      parameters: {'sector_name': sector.name},
-    );
-  }
-
-  Future<void> logExperienceSelected(InvestingExperience experience) async {
-    await _analytics.logEvent(
-      name: 'onboarding_experience_selected',
-      parameters: {'experience_level': experience.name},
-    );
-  }
-
-  Future<void> logBrandsSelected({
-    required List<String> brandNames,
-    required int count,
-  }) async {
-    await _analytics.logEvent(
-      name: 'onboarding_brands_selected',
-      parameters: {
-        'brand_names': brandNames.take(10).join(','),
-        'count': count,
-      },
-    );
-  }
-
-  Future<void> logNotificationsToggled(bool enabled) async {
-    await _analytics.logEvent(
-      name: 'onboarding_notifications_enabled',
-      parameters: {'enabled': enabled},
-    );
-  }
-
-  Future<void> logHighlightsSkipped(int index) async {
-    await _analytics.logEvent(
-      name: 'onboarding_highlights_skipped',
-      parameters: {'index': index},
-    );
-  }
-
-  Future<void> logProfileReadyContinue() async {
-    await _analytics.logEvent(name: 'onboarding_profile_ready_continue');
-  }
-
-  Future<void> logComplete({
-    required Sector sector,
-    required InvestingExperience experience,
-    required int brandCount,
-  }) async {
-    await _analytics.logEvent(
-      name: 'onboarding_complete',
-      parameters: {
-        'sector': sector.name,
-        'experience': experience.name,
-        'brand_count': brandCount,
-      },
-    );
-  }
-
-  Future<void> logError({
-    required String message,
+  void logStep({
     required String stepName,
-  }) async {
-    await _analytics.logEvent(
-      name: 'onboarding_error',
-      parameters: {'error_message': message, 'step_name': stepName},
+    int? durationSec,
+    String? errorMessage,
+    Map<String, Object>? extraParams,
+  }) {
+    final normalizedStepName = _getNormalizedStepName(stepName);
+
+    final params = <String, Object>{'step_name': normalizedStepName};
+
+    if (durationSec != null) {
+      params['duration_sec'] = durationSec;
+    }
+
+    if (errorMessage != null) {
+      params['error_message'] = errorMessage;
+    }
+
+    if (extraParams != null) {
+      params.addAll(extraParams);
+    }
+
+    _logEvent('onboarding_step_logged', params);
+  }
+
+  void logSignUp({required String method}) {
+    _logEvent('onboarding_sign_up', {'method': method});
+  }
+
+  void logSessionSummary(OnboardingSessionSummary summary) {
+    _logEvent(
+      'onboarding_session_summary',
+      Map<String, Object>.from(summary.toJson()),
     );
   }
 
-  Future<void> logSignUp() async {
-    await _analytics.logEvent(name: 'sign_up');
+  void setUserProperties({String? sector, String? experience}) {
+    if (sector != null) {
+      _analyticsService.setUserProperty(name: 'favorite_sector', value: sector);
+    }
+    if (experience != null) {
+      _analyticsService.setUserProperty(
+        name: 'investing_experience',
+        value: experience,
+      );
+    }
   }
 
-  Future<void> setUserProperties({
-    required InvestingExperience experience,
-    required Sector sector,
-  }) async {
-    await _analytics.setUserProperty(
+  void resetUserProperties() {
+    _analyticsService.setUserProperty(name: 'favorite_sector', value: null);
+    _analyticsService.setUserProperty(
       name: 'investing_experience',
-      value: experience.name,
+      value: null,
     );
-    await _analytics.setUserProperty(
-      name: 'favorite_sector',
-      value: sector.name,
+  }
+
+  void _logEvent(String name, Map<String, Object> params) {
+    final enrichedParams = Map<String, Object>.from(params);
+    enrichedParams['day_of_week'] = DayOfWeek.fromDateTime(DateTime.now()).name;
+    enrichedParams['timestamp'] = DateTime.now().toIso8601String();
+    _analyticsService.logEvent(name: name, parameters: enrichedParams);
+  }
+
+  static final _camelCaseRegex = RegExp(r'[A-Z]');
+
+  static const _overrides = <String, String>{
+    'highlight1': 'feature_highlights',
+    'highlight2': 'feature_highlights',
+    'highlight3': 'feature_highlights',
+    'featureHighlights': 'feature_highlights',
+    'analyzingSelectedBrands': 'analyzing_brands',
+  };
+
+  String _getNormalizedStepName(String stepName) {
+    if (_overrides.containsKey(stepName)) {
+      return _overrides[stepName]!;
+    }
+
+    return stepName.replaceAllMapped(
+      _camelCaseRegex,
+      (match) => '_${match.group(0)!.toLowerCase()}',
     );
   }
 }

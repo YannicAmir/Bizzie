@@ -1,13 +1,9 @@
-import 'package:bizzie/app/themes/app_colors.dart';
-
 import 'package:bizzie/features/onboarding/presentation/bloc/onboarding_bloc.dart';
 import 'package:bizzie/features/onboarding/domain/models/onboarding_step.dart';
-import 'package:bizzie/core/enums/paywall_source.dart';
-import 'package:bizzie/features/onboarding/presentation/utils/onboarding_assets_helper.dart';
+import 'package:bizzie/features/onboarding/presentation/utils/onboarding_navigation_orchestrator.dart';
+import 'package:bizzie/di/injection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
-import 'package:bizzie/app/themes/app_assets.dart';
 import '../widgets/onboarding_header.dart';
 import 'package:bizzie/shared/widgets/buttons/bizzie_primary_button.dart';
 
@@ -29,44 +25,53 @@ class _ProfileReadyPageState extends State<ProfileReadyPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<OnboardingBloc, OnboardingState>(
-      builder: (context, state) {
-        final theme = Theme.of(context);
-        final selectedSector = state.onboardingData.selectedSector;
-        final firstName = state.onboardingData.firstName;
+    final theme = Theme.of(context);
 
-        String mascotAsset = AppAssets.defaultMascot;
-        if (selectedSector != null) {
-          mascotAsset = OnboardingAssetsHelper.getMascotForSector(
-            selectedSector,
-          );
-        }
-
-        return Scaffold(
-          backgroundColor: theme.scaffoldBackgroundColor,
-          body: SafeArea(
-            child: Column(
-              children: [
-                const OnboardingHeader(),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Spacer(flex: 2),
-                        _ProfileMascot(mascotAsset: mascotAsset),
-                        const Spacer(flex: 1),
-                        _ProfileReadyHeader(firstName: firstName),
-                        const Spacer(flex: 3),
-                        const _ContinueButton(),
-                        const SizedBox(height: 32),
-                      ],
-                    ),
-                  ),
+    return Scaffold(
+      backgroundColor: theme.scaffoldBackgroundColor,
+      body: const SafeArea(
+        child: Column(
+          children: [
+            OnboardingHeader(),
+            Expanded(
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 24.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Spacer(flex: 2),
+                    _ProfileMascot(),
+                    Spacer(flex: 1),
+                    _ProfileReadyHeader(),
+                    Spacer(flex: 3),
+                    _ContinueButton(),
+                    SizedBox(height: 32),
+                  ],
                 ),
-              ],
+              ),
             ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ProfileMascot extends StatelessWidget {
+  const _ProfileMascot();
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocSelector<OnboardingBloc, OnboardingState, String>(
+      selector: (state) => state.mascotAsset,
+      builder: (context, mascotAsset) {
+        return AnimatedSwitcher(
+          duration: const Duration(milliseconds: 500),
+          child: Image.asset(
+            mascotAsset,
+            key: ValueKey(mascotAsset),
+            height: 272,
+            fit: BoxFit.contain,
           ),
         );
       },
@@ -74,54 +79,40 @@ class _ProfileReadyPageState extends State<ProfileReadyPage> {
   }
 }
 
-class _ProfileMascot extends StatelessWidget {
-  final String mascotAsset;
-
-  const _ProfileMascot({required this.mascotAsset});
-
-  @override
-  Widget build(BuildContext context) {
-    return AnimatedSwitcher(
-      duration: const Duration(milliseconds: 500),
-      child: Image.asset(mascotAsset, height: 272, fit: BoxFit.contain),
-    );
-  }
-}
-
 class _ProfileReadyHeader extends StatelessWidget {
-  final String firstName;
-
-  const _ProfileReadyHeader({required this.firstName});
+  const _ProfileReadyHeader();
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        RichText(
-          text: TextSpan(
-            style: theme.textTheme.displayLarge,
-            children: [
-              const TextSpan(text: 'Your profile is ready, '),
-              TextSpan(
-                text: firstName,
-                style: TextStyle(color: theme.colorScheme.primary),
+
+    return BlocSelector<OnboardingBloc, OnboardingState, String>(
+      selector: (state) => state.greetingName,
+      builder: (context, greetingName) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            RichText(
+              text: TextSpan(
+                style: theme.textTheme.displayLarge,
+                children: [
+                  const TextSpan(text: 'Your profile is ready, '),
+                  TextSpan(
+                    text: greetingName,
+                    style: TextStyle(color: theme.colorScheme.primary),
+                  ),
+                  const TextSpan(text: '!'),
+                ],
               ),
-              const TextSpan(text: '!'),
-            ],
-          ),
-        ),
-        const SizedBox(height: 16),
-        Text(
-          'We have personalized Bizzie just for you. Let\'s get started!',
-          style: theme.textTheme.bodyLarge?.copyWith(
-            fontSize: 17,
-            color: AppColors.textSecondary,
-            height: 1.5,
-          ),
-        ),
-      ],
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'We have personalized Bizzie just for you. Let\'s get started!',
+              style: theme.textTheme.bodyLarge,
+            ),
+          ],
+        );
+      },
     );
   }
 }
@@ -135,18 +126,8 @@ class _ContinueButton extends StatelessWidget {
       width: double.infinity,
       height: 56,
       child: BizziePrimaryButton(
-        onPressed: () {
-          context.read<OnboardingBloc>().add(
-            const OnboardingEvent.profileReadyContinuePressed(),
-          );
-          context.goNamed(
-            'home_subscribe',
-            queryParameters: {
-              'animate': 'onboarding',
-              'source': PaywallSource.onboarding.name,
-            },
-          );
-        },
+        onPressed: () => getIt<OnboardingNavigationOrchestrator>()
+            .startTerminalFlow(context),
         title: 'Continue',
       ),
     );

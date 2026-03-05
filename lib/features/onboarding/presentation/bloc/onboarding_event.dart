@@ -44,4 +44,11 @@ class OnboardingEvent with _$OnboardingEvent {
   const factory OnboardingEvent.profileReadyContinuePressed() =
       _ProfileReadyContinuePressed;
   const factory OnboardingEvent.stepViewed(OnboardingStep step) = _StepViewed;
+  const factory OnboardingEvent.subscriptionStatusChanged({
+    required bool didSubscribe,
+    required String subscriptionType,
+  }) = SubscriptionStatusChanged;
+  const factory OnboardingEvent.onboardingFlowFinished() =
+      _OnboardingFlowFinished;
+  const factory OnboardingEvent.reset() = _Reset;
 }

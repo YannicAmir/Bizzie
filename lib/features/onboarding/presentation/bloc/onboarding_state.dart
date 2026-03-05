@@ -40,15 +40,20 @@ abstract class OnboardingState with _$OnboardingState {
     @Default(0) int currentHighlightIndex,
     @Default(false) bool shouldNavigateToCreateAccount,
     @Default(false) bool shouldNavigateToBuildingProfile,
-    required DateTime stepEntryTime,
+    required DateTime sessionEntryTime,
+    required String sessionId,
     OnboardingStep? lastStep,
+    @Default(false) bool highlightsSkipped,
+    @Default(false) bool didSubscribe,
+    @Default('none') String subscriptionType,
   }) = _OnboardingState;
 
   const OnboardingState._();
 
   factory OnboardingState.initial() => OnboardingState(
     onboardingData: const OnboardingData(),
-    stepEntryTime: DateTime.now(),
+    sessionEntryTime: DateTime.now(),
+    sessionId: '', // Will be set in _Started
   );
 
   String get analysisTitle {

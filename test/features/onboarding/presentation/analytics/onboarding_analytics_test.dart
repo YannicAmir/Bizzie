@@ -1,19 +1,18 @@
-import 'package:bizzie/core/domain/models/sector.dart';
 import 'package:bizzie/core/interfaces/i_analytics_service.dart';
+import 'package:bizzie/features/onboarding/domain/models/onboarding_step.dart';
 import 'package:bizzie/features/onboarding/presentation/analytics/onboarding_analytics.dart';
-import 'package:bizzie/features/user/domain/enums/investing_experience.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
 class MockAnalyticsService extends Mock implements IAnalyticsService {}
 
 void main() {
-  late OnboardingAnalytics analytics;
+  late OnboardingAnalytics onboardingAnalytics;
   late MockAnalyticsService mockAnalyticsService;
 
   setUp(() {
     mockAnalyticsService = MockAnalyticsService();
-    analytics = OnboardingAnalytics(mockAnalyticsService);
+    onboardingAnalytics = OnboardingAnalytics(mockAnalyticsService);
 
     when(
       () => mockAnalyticsService.logEvent(
@@ -30,80 +29,78 @@ void main() {
     ).thenAnswer((_) async {});
   });
 
-  group('OnboardingAnalytics (Gold Standard Refinement)', () {
-    test('logSectorSelected_withEnum_logsCorrectEvent', () async {
-      await analytics.logSectorSelected(Sector.energy);
-
-      verify(
-        () => mockAnalyticsService.logEvent(
-          name: 'onboarding_sector_selected',
-          parameters: {'sector_name': 'energy'},
-        ),
-      ).called(1);
-    });
-
-    test('logExperienceSelected_withEnum_logsCorrectEvent', () async {
-      await analytics.logExperienceSelected(InvestingExperience.beginner);
-
-      verify(
-        () => mockAnalyticsService.logEvent(
-          name: 'onboarding_experience_selected',
-          parameters: {'experience_level': 'beginner'},
-        ),
-      ).called(1);
-    });
-
-    test('logBrandsSelected_sanitizesAndLimitsBrands', () async {
-      final manyBrands = List.generate(15, (i) => 'Brand $i');
-
-      await analytics.logBrandsSelected(brandNames: manyBrands, count: 15);
-
-      verify(
-        () => mockAnalyticsService.logEvent(
-          name: 'onboarding_brands_selected',
-          parameters: {
-            'brand_names': manyBrands.take(10).join(','),
-            'count': 15,
-          },
-        ),
-      ).called(1);
-    });
-
-    test('logComplete_withEnums_logsCorrectEvent', () async {
-      await analytics.logComplete(
-        sector: Sector.healthCare,
-        experience: InvestingExperience.intermediate,
-        brandCount: 5,
+  group('OnboardingAnalytics Normalization', () {
+    test('logStep_normalizesAnalyzingBrands', () {
+      onboardingAnalytics.logStep(
+        stepName: OnboardingStep.analyzingSelectedBrands.name,
       );
 
       verify(
         () => mockAnalyticsService.logEvent(
-          name: 'onboarding_complete',
-          parameters: {
-            'sector': 'healthCare',
-            'experience': 'intermediate',
-            'brand_count': 5,
-          },
+          name: 'onboarding_step_logged',
+          parameters: any(
+            named: 'parameters',
+            that: containsPair('step_name', 'analyzing_brands'),
+          ),
         ),
       ).called(1);
     });
 
-    test('setUserProperties_withEnums_setsProperties', () async {
-      await analytics.setUserProperties(
-        experience: InvestingExperience.expert,
-        sector: Sector.financials,
-      );
+    test('logStep_normalizesHighlightsToFeatureHighlights', () {
+      onboardingAnalytics.logStep(stepName: OnboardingStep.highlight1.name);
+      onboardingAnalytics.logStep(stepName: OnboardingStep.highlight2.name);
+      onboardingAnalytics.logStep(stepName: OnboardingStep.highlight3.name);
 
       verify(
-        () => mockAnalyticsService.setUserProperty(
-          name: 'investing_experience',
-          value: 'expert',
+        () => mockAnalyticsService.logEvent(
+          name: 'onboarding_step_logged',
+          parameters: any(
+            named: 'parameters',
+            that: containsPair('step_name', 'feature_highlights'),
+          ),
         ),
-      ).called(1);
+      ).called(3);
+    });
+
+    test('logStep_normalizesCamelCaseStepsToSnakeCase', () {
+      final testCases = {
+        OnboardingStep.sectorSelection.name: 'sector_selection',
+        OnboardingStep.brandsSelection.name: 'brands_selection',
+        OnboardingStep.meetYourBizzie.name: 'meet_your_bizzie',
+        OnboardingStep.gladYouJoined.name: 'glad_you_joined',
+        OnboardingStep.profileReady.name: 'profile_ready',
+        OnboardingStep.investingExperience.name: 'investing_experience',
+      };
+
+      for (final entry in testCases.entries) {
+        onboardingAnalytics.logStep(stepName: entry.key);
+
+        verify(
+          () => mockAnalyticsService.logEvent(
+            name: 'onboarding_step_logged',
+            parameters: any(
+              named: 'parameters',
+              that: containsPair('step_name', entry.value),
+            ),
+          ),
+        ).called(1);
+      }
+    });
+
+    test('logStep_includesMandatoryParameters', () {
+      onboardingAnalytics.logStep(stepName: 'test_step');
+
       verify(
-        () => mockAnalyticsService.setUserProperty(
-          name: 'favorite_sector',
-          value: 'financials',
+        () => mockAnalyticsService.logEvent(
+          name: 'onboarding_step_logged',
+          parameters: any(
+            named: 'parameters',
+            that: allOf([
+              contains('day_of_week'),
+              contains('timestamp'),
+              containsPair('step_name', 'test_step'),
+            ]),
+          ),
         ),
       ).called(1);
     });

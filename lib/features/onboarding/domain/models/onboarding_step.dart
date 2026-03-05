@@ -18,4 +18,6 @@ enum OnboardingStep {
   buildingProfile,
   profileReady,
   paywall,
+  giftModal,
+  discountPaywall,
 }

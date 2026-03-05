@@ -25,9 +25,8 @@ class _AskNamePageState extends State<AskNamePage> {
   void initState() {
     super.initState();
     _nameController.addListener(_onNameChanged);
-    context.read<OnboardingBloc>().add(
-      const OnboardingEvent.stepViewed(OnboardingStep.askName),
-    );
+    final bloc = context.read<OnboardingBloc>();
+    bloc.add(const OnboardingEvent.stepViewed(OnboardingStep.askName));
   }
 
   void _onNameChanged() {

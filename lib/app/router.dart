@@ -208,11 +208,8 @@ GoRouter createRouter(
 
       ShellRoute(
         builder: (context, state, child) {
-          return BlocProvider<OnboardingBloc>(
-            create: (_) =>
-                getIt<OnboardingBloc>()..add(const OnboardingEvent.started()),
-            child: child,
-          );
+          final bloc = getIt<OnboardingBloc>();
+          return BlocProvider<OnboardingBloc>.value(value: bloc, child: child);
         },
         routes: [
           GoRoute(
@@ -287,11 +284,13 @@ GoRouter createRouter(
       _buildPaywallRoute(
         path: AppRoutes.paywall,
         name: AppRoutes.paywall,
+        parentNavigatorKey: rootNavigatorKey,
         child: const SubscriptionPage(),
       ),
       _buildPaywallRoute(
         path: AppRoutes.discountedPaywall,
         name: AppRoutes.discountedPaywall,
+        parentNavigatorKey: rootNavigatorKey,
         child: const DiscountedSubscriptionPage(),
       ),
       GoRoute(
@@ -367,18 +366,23 @@ GoRoute _buildPaywallRoute({
       );
       final tabName = queryParams['tabName'];
       final featureName = queryParams['featureName'];
+      final onEnter = state.extra is VoidCallback
+          ? state.extra as VoidCallback
+          : null;
 
       final pageChild = child is SubscriptionPage
           ? SubscriptionPage(
               source: source,
               tabName: tabName,
               featureName: featureName,
+              onEnter: onEnter,
             )
           : child is DiscountedSubscriptionPage
           ? DiscountedSubscriptionPage(
               source: source,
               tabName: tabName,
               featureName: featureName,
+              onEnter: onEnter,
             )
           : child;
 
@@ -395,10 +399,6 @@ GoRoute _buildPaywallRoute({
         fullscreenDialog: true,
         child: pageChild,
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          if (source == PaywallSource.onboarding &&
-              animation.status == AnimationStatus.forward) {
-            return child;
-          }
           const begin = Offset(0.0, 1.0);
           const end = Offset.zero;
           const curve = Curves.easeInOut;

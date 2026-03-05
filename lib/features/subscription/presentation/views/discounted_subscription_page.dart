@@ -28,12 +28,14 @@ class DiscountedSubscriptionPage extends StatefulWidget {
   final PaywallSource source;
   final String? tabName;
   final String? featureName;
+  final VoidCallback? onEnter;
 
   const DiscountedSubscriptionPage({
     super.key,
     this.source = PaywallSource.unknown,
     this.tabName,
     this.featureName,
+    this.onEnter,
   });
 
   @override
@@ -54,6 +56,12 @@ class _DiscountedSubscriptionPageState
         featureName: widget.featureName,
       ),
     );
+
+    if (widget.onEnter != null) {
+      Future.delayed(const Duration(milliseconds: 300), () {
+        if (mounted) widget.onEnter!();
+      });
+    }
   }
 
   @override
@@ -84,7 +92,11 @@ class _DiscountedSubscriptionPageState
                 context,
                 userName: userName ?? 'Friend',
                 onDismiss: () {
-                  context.go(AppRoutes.home);
+                  if (context.canPop()) {
+                    context.pop();
+                  } else {
+                    context.go(AppRoutes.home);
+                  }
                 },
               );
             }

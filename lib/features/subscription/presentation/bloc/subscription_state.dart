@@ -35,7 +35,6 @@ abstract class SubscriptionState with _$SubscriptionState {
     @Default(false) bool isLocalSuccessOverride,
     @Default(false) bool isPurchasing,
     @Default(true) bool isAnnualSelection,
-    @Default(false) bool shouldNavigateToDiscountedPaywall,
     PaywallSource? paywallSource,
   }) = SubscriptionStateLoaded;
 

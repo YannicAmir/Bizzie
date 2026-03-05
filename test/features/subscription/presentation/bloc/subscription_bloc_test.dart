@@ -31,7 +31,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:fake_async/fake_async.dart';
 import 'package:bizzie/features/onboarding/domain/models/onboarding_step.dart';
-import 'package:bizzie/features/onboarding/presentation/analytics/onboarding_tracker.dart';
+import 'package:bizzie/features/onboarding/presentation/analytics/onboarding_analytics.dart';
+import 'package:bizzie/features/onboarding/presentation/bloc/onboarding_bloc.dart';
 import 'package:bizzie/features/subscription/presentation/analytics/subscription_tracker.dart';
 
 class MockWatchSubscriptionStatusUseCase extends Mock
@@ -57,9 +58,12 @@ class MockAuthBloc extends MockBloc<AuthEvent, AuthState> implements AuthBloc {}
 
 class MockPaywallAnalytics extends Mock implements PaywallAnalytics {}
 
-class MockOnboardingTracker extends Mock implements OnboardingTracker {}
+class MockOnboardingAnalytics extends Mock implements OnboardingAnalytics {}
 
 class MockSubscriptionTracker extends Mock implements SubscriptionTracker {}
+
+class MockOnboardingBloc extends MockBloc<OnboardingEvent, OnboardingState>
+    implements OnboardingBloc {}
 
 void main() {
   late MockWatchSubscriptionStatusUseCase mockWatchStatus;
@@ -71,7 +75,7 @@ void main() {
   late MockSyncSubscriptionUseCase mockSyncSubscription;
   late MockAuthBloc mockAuthBloc;
   late MockPaywallAnalytics mockAnalytics;
-  late MockOnboardingTracker mockOnboardingTracker;
+  late MockOnboardingBloc mockOnboardingBloc;
   late MockSubscriptionTracker mockSubscriptionTracker;
   late StreamController<bool> isSubscribedController;
 
@@ -138,6 +142,13 @@ void main() {
     );
   });
 
+  setUpAll(() {
+    registerFallbackValue(PaywallSource.settings);
+    registerFallbackValue(PaywallType.regular);
+    registerFallbackValue(OnboardingStep.paywall);
+    registerFallbackValue(const OnboardingEvent.started());
+  });
+
   setUp(() {
     mockWatchStatus = MockWatchSubscriptionStatusUseCase();
     mockRefreshStatus = MockRefreshSubscriptionStatusUseCase();
@@ -149,31 +160,31 @@ void main() {
     mockAuthBloc = MockAuthBloc();
     mockAnalytics = MockPaywallAnalytics();
     when(
-      () => mockAnalytics.logGiftViewed(source: any(named: 'source')),
+      () => mockAnalytics.logGiftViewed(
+        source: any<PaywallSource>(named: 'source'),
+      ),
     ).thenAnswer((_) async => {});
-    mockOnboardingTracker = MockOnboardingTracker();
+    mockOnboardingBloc = MockOnboardingBloc();
     mockSubscriptionTracker = MockSubscriptionTracker();
     isSubscribedController = StreamController<bool>.broadcast();
 
     when(
       () => mockAnalytics.logTriggered(
-        source: any(named: 'source'),
+        source: any<PaywallSource>(named: 'source'),
         paywallType: any<PaywallType>(named: 'paywallType'),
         tabName: any(named: 'tabName'),
         featureName: any(named: 'featureName'),
       ),
     ).thenAnswer((_) async => {});
     when(
-      () => mockAnalytics.logGiftClaimed(source: any(named: 'source')),
+      () => mockAnalytics.logGiftClaimed(
+        source: any<PaywallSource>(named: 'source'),
+      ),
     ).thenAnswer((_) async => {});
     when(
-      () => mockAnalytics.logGiftDismissed(source: any(named: 'source')),
-    ).thenAnswer((_) async => {});
-    when(
-      () => mockOnboardingTracker.logStepViewed(step: any(named: 'step')),
-    ).thenAnswer((_) async => {});
-    when(
-      () => mockOnboardingTracker.logConversion(),
+      () => mockAnalytics.logGiftDismissed(
+        source: any<PaywallSource>(named: 'source'),
+      ),
     ).thenAnswer((_) async => {});
     when(
       () => mockSubscriptionTracker.syncSubscriptionProperties(any()),
@@ -185,7 +196,9 @@ void main() {
       () => mockAnalytics.logTrialStarted(any()),
     ).thenAnswer((_) async => {});
     when(
-      () => mockAnalytics.logRestoreRequested(source: any(named: 'source')),
+      () => mockAnalytics.logRestoreRequested(
+        source: any<PaywallSource>(named: 'source'),
+      ),
     ).thenAnswer((_) async => {});
     when(
       () => mockAuthBloc.state,
@@ -225,7 +238,7 @@ void main() {
       mockSyncSubscription,
       isSubscribedController.stream,
       mockAnalytics,
-      mockOnboardingTracker,
+      mockOnboardingBloc,
       mockSubscriptionTracker,
     );
   }
@@ -384,6 +397,11 @@ void main() {
               featureName: '10_k_filings',
             ),
           ).called(1);
+          verify(
+            () => mockOnboardingBloc.add(
+              const OnboardingEvent.stepViewed(OnboardingStep.paywall),
+            ),
+          ).called(1);
         },
       );
     });
@@ -417,20 +435,23 @@ void main() {
             () => mockGetOfferings(any()),
           ).thenAnswer((_) async => Right(tOffering));
         },
-        build: () => SubscriptionBloc(
-          mockWatchStatus,
-          mockRefreshStatus,
-          mockSyncIdentity,
-          mockPurchase,
-          mockRestore,
-          mockGetOfferings,
-          mockAuthBloc,
-          mockSyncSubscription,
-          isSubscribedController.stream,
-          mockAnalytics,
-          mockOnboardingTracker,
-          mockSubscriptionTracker,
-        ),
+        build: () {
+          final bloc = SubscriptionBloc(
+            mockWatchStatus,
+            mockRefreshStatus,
+            mockSyncIdentity,
+            mockPurchase,
+            mockRestore,
+            mockGetOfferings,
+            mockAuthBloc,
+            mockSyncSubscription,
+            isSubscribedController.stream,
+            mockAnalytics,
+            mockOnboardingBloc,
+            mockSubscriptionTracker,
+          );
+          return bloc;
+        },
         seed: () {
           final now = DateTime.now().toUtc();
           return SubscriptionState.initial(
@@ -614,18 +635,21 @@ void main() {
             bloc.add(SubscriptionEvent.purchaseRequested(tAnnualPackage)),
         // assert
         verify: (_) {
+          // verify(
+          //   () => mockOnboardingAnalytics.logStep(stepName: 'paywall'),
+          // ).called(1);
           verify(
-            () => mockAnalytics.logPurchaseSuccess(
+            () => mockOnboardingBloc.add(
               any(
-                that: isA<AnalyticsPurchaseParams>().having(
-                  (p) => p.source,
-                  'source',
-                  PaywallSource.onboarding,
+                that: predicate<OnboardingEvent>(
+                  (e) => e.maybeMap(
+                    subscriptionStatusChanged: (s) => s.didSubscribe == true,
+                    orElse: () => false,
+                  ),
                 ),
               ),
             ),
           ).called(1);
-          verify(() => mockOnboardingTracker.logConversion()).called(1);
         },
       );
     });
@@ -889,7 +913,7 @@ void main() {
             mockSyncSubscription,
             firestoreStream.stream,
             mockAnalytics,
-            mockOnboardingTracker,
+            mockOnboardingBloc,
             mockSubscriptionTracker,
           );
 
@@ -936,7 +960,7 @@ void main() {
             mockSyncSubscription,
             firestoreStream.stream,
             mockAnalytics,
-            mockOnboardingTracker,
+            mockOnboardingBloc,
             mockSubscriptionTracker,
           );
 
@@ -987,7 +1011,28 @@ void main() {
     );
 
     blocTest<SubscriptionBloc, SubscriptionState>(
-      'giftClaimed_emitsNavigationFlagThenResetsAndLogsAnalytics',
+      'giftViewed_onboarding_logsAnalyticsAndNotifiesOnboardingBloc',
+      // arrange
+      build: () => createBloc(),
+      // act
+      act: (bloc) => bloc.add(
+        const SubscriptionEvent.giftViewed(source: PaywallSource.onboarding),
+      ),
+      // assert
+      verify: (_) {
+        verify(
+          () => mockAnalytics.logGiftViewed(source: PaywallSource.onboarding),
+        ).called(1);
+        verify(
+          () => mockOnboardingBloc.add(
+            const OnboardingEvent.stepViewed(OnboardingStep.giftModal),
+          ),
+        ).called(1);
+      },
+    );
+
+    blocTest<SubscriptionBloc, SubscriptionState>(
+      'giftClaimed_logsAnalytics',
       // arrange
       build: () => createBloc(),
       seed: () => SubscriptionState.loaded(
@@ -1001,18 +1046,6 @@ void main() {
       act: (bloc) =>
           bloc.add(const SubscriptionEvent.giftClaimed(source: tSource)),
       // assert
-      expect: () => [
-        isA<SubscriptionStateLoaded>().having(
-          (s) => s.shouldNavigateToDiscountedPaywall,
-          'shouldNavigate',
-          true,
-        ),
-        isA<SubscriptionStateLoaded>().having(
-          (s) => s.shouldNavigateToDiscountedPaywall,
-          'shouldNavigate',
-          false,
-        ),
-      ],
       verify: (_) {
         verify(() => mockAnalytics.logGiftClaimed(source: tSource)).called(1);
       },

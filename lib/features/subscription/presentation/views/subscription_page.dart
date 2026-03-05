@@ -21,6 +21,7 @@ class SubscriptionPage extends StatefulWidget {
   final PaywallSource source;
   final String? tabName;
   final String? featureName;
+  final VoidCallback? onEnter;
 
   const SubscriptionPage({
     super.key,
@@ -28,6 +29,7 @@ class SubscriptionPage extends StatefulWidget {
     this.source = PaywallSource.unknown,
     this.tabName,
     this.featureName,
+    this.onEnter,
   });
 
   @override
@@ -60,6 +62,12 @@ class _SubscriptionPageState extends State<SubscriptionPage>
         featureName: widget.featureName,
       ),
     );
+
+    if (widget.onEnter != null) {
+      Future.delayed(const Duration(milliseconds: 300), () {
+        if (mounted) widget.onEnter!();
+      });
+    }
   }
 
   @override
@@ -172,10 +180,10 @@ class _SubscriptionPageState extends State<SubscriptionPage>
         if (mounted) {
           if (widget.isUpgradeFlow) {
             context.pop(true);
-          } else if (widget.source == PaywallSource.onboarding) {
-            context.go(AppRoutes.home);
-          } else {
+          } else if (context.canPop()) {
             context.pop();
+          } else {
+            context.go(AppRoutes.home);
           }
         }
       },
