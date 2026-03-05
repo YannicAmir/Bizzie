@@ -1,4 +1,5 @@
 import 'package:bizzie/app/themes/app_text_styles.dart';
+import 'package:bizzie/core/enums/paywall_source.dart';
 import 'package:bizzie/features/company_profile/dividends/domain/extensions/dividend_event_list_extensions.dart';
 import 'package:bizzie/features/company_profile/dividends/domain/models/dividend_event.dart';
 import 'package:bizzie/features/company_profile/dividends/presentation/utils/dividend_payment_history_utils.dart';
@@ -10,11 +11,13 @@ import 'package:flutter/material.dart';
 class DividendPaymentHistorySection extends StatelessWidget {
   final List<DividendEvent> history;
   final int historyLimit;
+  final VoidCallback? onAnalyticsTap;
 
   const DividendPaymentHistorySection({
     super.key,
     required this.history,
     required this.historyLimit,
+    this.onAnalyticsTap,
   });
 
   @override
@@ -29,6 +32,8 @@ class DividendPaymentHistorySection extends StatelessWidget {
 
     return BizzieDataTable(
       title: 'Table',
+      source: PaywallSource.company_profile,
+      onAnalyticsTap: onAnalyticsTap,
       onViewMore: hasMore
           ? () => _showAllPaymentHistory(context, sortedHistory)
           : null,

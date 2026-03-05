@@ -1,3 +1,4 @@
+import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
 import 'package:bizzie/core/error/failures.dart';
@@ -6,13 +7,19 @@ import 'package:bizzie/features/company_profile/security/domain/interfaces/i_sec
 
 @lazySingleton
 class GetUpcomingEarningsUseCase
-    implements UseCase<Either<Failure, DateTime?>, String> {
+    implements
+        UseCase<
+          Either<Failure, (DateTime?, CompanyProfileDataOrigin)>,
+          String
+        > {
   final ISecurityRepository _repository;
 
   GetUpcomingEarningsUseCase(this._repository);
 
   @override
-  Future<Either<Failure, DateTime?>> call(String params) async {
+  Future<Either<Failure, (DateTime?, CompanyProfileDataOrigin)>> call(
+    String params,
+  ) async {
     return _repository.getUpcomingEarningsDate(params);
   }
 }

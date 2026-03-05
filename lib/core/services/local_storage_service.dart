@@ -22,4 +22,14 @@ class LocalStorageService implements ILocalStorageService {
   Future<void> remove(String key) async {
     await _prefs.remove(key);
   }
+
+  @override
+  Future<void> setInt(String key, int value) async {
+    await _prefs.setInt(key, value);
+  }
+
+  @override
+  int? getInt(String key) {
+    return _prefs.getInt(key);
+  }
 }

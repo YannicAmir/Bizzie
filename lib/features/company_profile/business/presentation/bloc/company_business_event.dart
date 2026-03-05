@@ -11,4 +11,19 @@ sealed class CompanyBusinessEvent with _$CompanyBusinessEvent {
 
   const factory CompanyBusinessEvent.stalenessCheckRequested(String ticker) =
       StalenessCheckRequested;
+
+  const factory CompanyBusinessEvent.tabShown(String ticker) = TabShown;
+  const factory CompanyBusinessEvent.tabHidden() = TabHidden;
+  const factory CompanyBusinessEvent.appBackgrounded() = AppBackgrounded;
+  const factory CompanyBusinessEvent.appForegrounded() = AppForegrounded;
+
+  const factory CompanyBusinessEvent.analyticsInteractionOccurred({
+    bool? tappedWebsite,
+    bool? tappedProxy,
+    bool? didExpandDescription,
+    bool? viewed10Ks,
+    bool? viewed10Qs,
+    bool? viewAll10KsTapped,
+    bool? viewAll10QsTapped,
+  }) = AnalyticsInteractionOccurred;
 }

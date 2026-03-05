@@ -1,4 +1,5 @@
 import 'package:bizzie/app/routes/app_routes.dart';
+import 'package:bizzie/core/enums/paywall_source.dart';
 import 'package:bizzie/app/themes/app_text_styles.dart';
 import 'package:bizzie/di/injection.dart';
 import 'package:bizzie/features/settings/presentation/bloc/settings_bloc.dart';
@@ -135,6 +136,9 @@ class _SettingsViewContentState extends State<_SettingsViewContent>
                       SettingsTile(
                         title: 'Edit Profile',
                         onTap: () {
+                          context.read<SettingsBloc>().add(
+                            const SettingsEvent.editProfileClicked(),
+                          );
                           context.pushNamed(AppRoutes.editProfile);
                         },
                       ),
@@ -153,7 +157,13 @@ class _SettingsViewContentState extends State<_SettingsViewContent>
                               builder: (_) => ChangeSectorModal(
                                 currentSector: currentSector,
                               ),
-                            );
+                            ).then((_) {
+                              if (context.mounted) {
+                                context.read<SettingsBloc>().add(
+                                  const SettingsEvent.started(),
+                                );
+                              }
+                            });
                           }
                         },
                       ),
@@ -175,10 +185,19 @@ class _SettingsViewContentState extends State<_SettingsViewContent>
                                 orElse: () => false,
                               );
 
+                          context.read<SettingsBloc>().add(
+                            SettingsEvent.membershipClicked(isSubscribed),
+                          );
+
                           if (isSubscribed) {
                             context.pushNamed(AppRoutes.subscriptionDetails);
                           } else {
-                            context.pushNamed(AppRoutes.discountedPaywall);
+                            context.pushNamed(
+                              AppRoutes.discountedPaywall,
+                              queryParameters: {
+                                'source': PaywallSource.settings.name,
+                              },
+                            );
                           }
                         },
                       ),
@@ -208,6 +227,9 @@ class _SettingsViewContentState extends State<_SettingsViewContent>
                       SettingsTile(
                         title: 'Send Feedback',
                         onTap: () {
+                          context.read<SettingsBloc>().add(
+                            const SettingsEvent.feedbackClicked(),
+                          );
                           FeedbackModal.show(context);
                         },
                       ),

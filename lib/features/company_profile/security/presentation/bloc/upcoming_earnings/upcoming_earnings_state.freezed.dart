@@ -131,12 +131,12 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( DateTime earningsDate,  DateTime? lastUpdated)?  loaded,TResult Function()?  empty,TResult Function( Failure failure)?  failure,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( DateTime earningsDate,  CompanyProfileDataOrigin dataSource,  DateTime? lastUpdated)?  loaded,TResult Function()?  empty,TResult Function( Failure failure)?  failure,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial();case _Loading() when loading != null:
 return loading();case _Loaded() when loaded != null:
-return loaded(_that.earningsDate,_that.lastUpdated);case _Empty() when empty != null:
+return loaded(_that.earningsDate,_that.dataSource,_that.lastUpdated);case _Empty() when empty != null:
 return empty();case _Failure() when failure != null:
 return failure(_that.failure);case _:
   return orElse();
@@ -156,12 +156,12 @@ return failure(_that.failure);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( DateTime earningsDate,  DateTime? lastUpdated)  loaded,required TResult Function()  empty,required TResult Function( Failure failure)  failure,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( DateTime earningsDate,  CompanyProfileDataOrigin dataSource,  DateTime? lastUpdated)  loaded,required TResult Function()  empty,required TResult Function( Failure failure)  failure,}) {final _that = this;
 switch (_that) {
 case _Initial():
 return initial();case _Loading():
 return loading();case _Loaded():
-return loaded(_that.earningsDate,_that.lastUpdated);case _Empty():
+return loaded(_that.earningsDate,_that.dataSource,_that.lastUpdated);case _Empty():
 return empty();case _Failure():
 return failure(_that.failure);case _:
   throw StateError('Unexpected subclass');
@@ -180,12 +180,12 @@ return failure(_that.failure);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( DateTime earningsDate,  DateTime? lastUpdated)?  loaded,TResult? Function()?  empty,TResult? Function( Failure failure)?  failure,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( DateTime earningsDate,  CompanyProfileDataOrigin dataSource,  DateTime? lastUpdated)?  loaded,TResult? Function()?  empty,TResult? Function( Failure failure)?  failure,}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial();case _Loading() when loading != null:
 return loading();case _Loaded() when loaded != null:
-return loaded(_that.earningsDate,_that.lastUpdated);case _Empty() when empty != null:
+return loaded(_that.earningsDate,_that.dataSource,_that.lastUpdated);case _Empty() when empty != null:
 return empty();case _Failure() when failure != null:
 return failure(_that.failure);case _:
   return null;
@@ -263,10 +263,11 @@ String toString() {
 
 
 class _Loaded implements UpcomingEarningsState {
-  const _Loaded(this.earningsDate, {this.lastUpdated});
+  const _Loaded(this.earningsDate, {required this.dataSource, this.lastUpdated});
   
 
  final  DateTime earningsDate;
+ final  CompanyProfileDataOrigin dataSource;
  final  DateTime? lastUpdated;
 
 /// Create a copy of UpcomingEarningsState
@@ -279,16 +280,16 @@ _$LoadedCopyWith<_Loaded> get copyWith => __$LoadedCopyWithImpl<_Loaded>(this, _
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Loaded&&(identical(other.earningsDate, earningsDate) || other.earningsDate == earningsDate)&&(identical(other.lastUpdated, lastUpdated) || other.lastUpdated == lastUpdated));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Loaded&&(identical(other.earningsDate, earningsDate) || other.earningsDate == earningsDate)&&(identical(other.dataSource, dataSource) || other.dataSource == dataSource)&&(identical(other.lastUpdated, lastUpdated) || other.lastUpdated == lastUpdated));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,earningsDate,lastUpdated);
+int get hashCode => Object.hash(runtimeType,earningsDate,dataSource,lastUpdated);
 
 @override
 String toString() {
-  return 'UpcomingEarningsState.loaded(earningsDate: $earningsDate, lastUpdated: $lastUpdated)';
+  return 'UpcomingEarningsState.loaded(earningsDate: $earningsDate, dataSource: $dataSource, lastUpdated: $lastUpdated)';
 }
 
 
@@ -299,7 +300,7 @@ abstract mixin class _$LoadedCopyWith<$Res> implements $UpcomingEarningsStateCop
   factory _$LoadedCopyWith(_Loaded value, $Res Function(_Loaded) _then) = __$LoadedCopyWithImpl;
 @useResult
 $Res call({
- DateTime earningsDate, DateTime? lastUpdated
+ DateTime earningsDate, CompanyProfileDataOrigin dataSource, DateTime? lastUpdated
 });
 
 
@@ -316,10 +317,11 @@ class __$LoadedCopyWithImpl<$Res>
 
 /// Create a copy of UpcomingEarningsState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? earningsDate = null,Object? lastUpdated = freezed,}) {
+@pragma('vm:prefer-inline') $Res call({Object? earningsDate = null,Object? dataSource = null,Object? lastUpdated = freezed,}) {
   return _then(_Loaded(
 null == earningsDate ? _self.earningsDate : earningsDate // ignore: cast_nullable_to_non_nullable
-as DateTime,lastUpdated: freezed == lastUpdated ? _self.lastUpdated : lastUpdated // ignore: cast_nullable_to_non_nullable
+as DateTime,dataSource: null == dataSource ? _self.dataSource : dataSource // ignore: cast_nullable_to_non_nullable
+as CompanyProfileDataOrigin,lastUpdated: freezed == lastUpdated ? _self.lastUpdated : lastUpdated // ignore: cast_nullable_to_non_nullable
 as DateTime?,
   ));
 }

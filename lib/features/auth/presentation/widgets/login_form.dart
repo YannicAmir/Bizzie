@@ -11,11 +11,13 @@ import '../bloc/auth_event.dart';
 import '../bloc/auth_state.dart';
 import 'package:bizzie/shared/utils/validators.dart';
 import 'package:flutter/services.dart';
+import 'package:bizzie/features/auth/domain/enums/auth_source.dart';
 
 class LoginForm extends StatefulWidget {
   final GlobalKey<FormState>? formKey;
+  final AuthSource source;
 
-  const LoginForm({super.key, this.formKey});
+  const LoginForm({super.key, this.formKey, required this.source});
 
   @override
   State<LoginForm> createState() => _LoginFormState();
@@ -46,6 +48,7 @@ class _LoginFormState extends State<LoginForm> {
         AuthEvent.emailSignInRequested(
           _emailController.text,
           _passwordController.text,
+          source: widget.source,
         ),
       );
     }

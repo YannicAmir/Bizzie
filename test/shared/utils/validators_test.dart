@@ -5,188 +5,188 @@ void main() {
   group('Validators', () {
     group('validateNotEmpty', () {
       test('validateNotEmpty_nullValue_returnsError', () {
-        // arrange
+        // ARRANGE
         const String? input = null;
         const error = 'Field is required';
 
-        // act
+        // ACT
         final result = Validators.validateNotEmpty(input, error);
 
-        // assert
+        // ASSERT
         expect(result, error);
       });
 
       test('validateNotEmpty_emptyString_returnsError', () {
-        // arrange
+        // ARRANGE
         const input = '';
         const error = 'Field is required';
 
-        // act
+        // ACT
         final result = Validators.validateNotEmpty(input, error);
 
-        // assert
+        // ASSERT
         expect(result, error);
       });
 
       test('validateNotEmpty_whitespaceOnly_returnsError', () {
-        // arrange
+        // ARRANGE
         const input = '   ';
         const error = 'Field is required';
 
-        // act
+        // ACT
         final result = Validators.validateNotEmpty(input, error);
 
-        // assert
+        // ASSERT
         expect(result, error);
       });
 
       test('validateNotEmpty_validValue_returnsNull', () {
-        // arrange
+        // ARRANGE
         const input = 'Something';
         const error = 'Field is required';
 
-        // act
+        // ACT
         final result = Validators.validateNotEmpty(input, error);
 
-        // assert
+        // ASSERT
         expect(result, isNull);
       });
     });
 
     group('validateName', () {
       test('validateName_nullValue_returnsError', () {
-        // arrange
+        // ARRANGE
         const String? input = null;
 
-        // act
+        // ACT
         final result = Validators.validateName(input);
 
-        // assert
+        // ASSERT
         expect(result, 'Name cannot be empty');
       });
 
       test('validateName_emptyString_returnsError', () {
-        // arrange
+        // ARRANGE
         const input = '';
 
-        // act
+        // ACT
         final result = Validators.validateName(input);
 
-        // assert
+        // ASSERT
         expect(result, 'Name cannot be empty');
       });
 
       test('validateName_whitespaceOnly_returnsError', () {
-        // arrange
+        // ARRANGE
         const input = '   ';
 
-        // act
+        // ACT
         final result = Validators.validateName(input);
 
-        // assert
+        // ASSERT
         expect(result, 'Name cannot be empty');
       });
 
       test('validateName_validName_returnsNull', () {
-        // arrange
+        // ARRANGE
         const input = 'John';
 
-        // act
+        // ACT
         final result = Validators.validateName(input);
 
-        // assert
+        // ASSERT
         expect(result, isNull);
       });
     });
 
     group('validateEmail', () {
       test('validateEmail_nullValue_returnsError', () {
-        // arrange
+        // ARRANGE
         const String? input = null;
 
-        // act
+        // ACT
         final result = Validators.validateEmail(input);
 
-        // assert
+        // ASSERT
         expect(result, 'Please enter your email');
       });
 
       test('validateEmail_emptyString_returnsError', () {
-        // arrange
+        // ARRANGE
         const input = '';
 
-        // act
+        // ACT
         final result = Validators.validateEmail(input);
 
-        // assert
+        // ASSERT
         expect(result, 'Please enter your email');
       });
 
       test('validateEmail_invalidFormat_returnsError', () {
-        // arrange
+        // ARRANGE
         const input = 'invalid';
 
-        // act
+        // ACT
         final result = Validators.validateEmail(input);
 
-        // assert
+        // ASSERT
         expect(result, 'Please enter a valid email');
       });
 
       test('validateEmail_validEmail_returnsNull', () {
-        // arrange
+        // ARRANGE
         const input = 'test@example.com';
 
-        // act
+        // ACT
         final result = Validators.validateEmail(input);
 
-        // assert
+        // ASSERT
         expect(result, isNull);
       });
     });
 
     group('validatePassword', () {
       test('validatePassword_nullValue_returnsError', () {
-        // arrange
+        // ARRANGE
         const String? input = null;
 
-        // act
+        // ACT
         final result = Validators.validatePassword(input);
 
-        // assert
+        // ASSERT
         expect(result, 'Please enter a password');
       });
 
       test('validatePassword_tooShortDefault_returnsError', () {
-        // arrange
+        // ARRANGE
         const input = '1234567';
 
-        // act
+        // ACT
         final result = Validators.validatePassword(input);
 
-        // assert
+        // ASSERT
         expect(result, 'Password must be at least 8 characters');
       });
 
       test('validatePassword_exactMinLength_returnsNull', () {
-        // arrange
+        // ARRANGE
         const input = '12345678';
 
-        // act
+        // ACT
         final result = Validators.validatePassword(input);
 
-        // assert
+        // ASSERT
         expect(result, isNull);
       });
 
       test('validatePassword_aboveMinLength_returnsNull', () {
-        // arrange
+        // ARRANGE
         const input = 'password123';
 
-        // act
+        // ACT
         final result = Validators.validatePassword(input);
 
-        // assert
+        // ASSERT
         expect(result, isNull);
       });
     });

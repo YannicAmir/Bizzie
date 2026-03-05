@@ -9,9 +9,11 @@ import 'package:bizzie/features/company_profile/shared/presentation/widgets/comp
 import 'package:bizzie/features/company_profile/shared/presentation/widgets/company_profile_loading_state.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:bizzie/shared/widgets/loading/mascot_refresh_indicator.dart';
+import 'package:bizzie/features/company_profile/shared/presentation/widgets/tab_visibility_observer.dart';
+import 'package:bizzie/features/company_profile/shared/presentation/enums/company_profile_tab.dart';
+import 'package:bizzie/shared/utils/url_launcher_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:bizzie/shared/utils/url_launcher_utils.dart';
 
 class NewsTab extends StatefulWidget {
   final String ticker;
@@ -29,36 +31,54 @@ class _NewsTabState extends State<NewsTab> with AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return MascotRefreshIndicator(
-      onRefresh: () async {
-        context.read<CompanyNewsBloc>().add(
-          CompanyNewsEvent.loadRequested(widget.ticker, forceRefresh: true),
-        );
-      },
-      child: BlocBuilder<CompanyNewsBloc, CompanyNewsState>(
-        builder: (context, state) {
-          return state.map(
-            initial: (_) =>
-                const CompanyProfileLoadingState(message: 'Loading News'),
-            loading: (_) =>
-                const CompanyProfileLoadingState(message: 'Loading News'),
-            failure: (e) => CompanyProfileErrorState(
-              message: 'Error loading news',
-              onRetry: () => context.read<CompanyNewsBloc>().add(
-                CompanyNewsEvent.loadRequested(widget.ticker),
-              ),
-            ),
-            loaded: (data) {
-              final carouselNews = data.news.take(3).toList();
-              final listNews = data.news.skip(3).toList();
-
-              return _NewsLoadedState(
-                carouselNews: carouselNews,
-                listNews: listNews,
-              );
-            },
+    return TabVisibilityObserver(
+      tabName: CompanyProfileTab.news.analyticsName,
+      onTabShown: () => context.read<CompanyNewsBloc>().add(
+        CompanyNewsEvent.tabShown(widget.ticker),
+      ),
+      onTabHidden: () => context.read<CompanyNewsBloc>().add(
+        const CompanyNewsEvent.tabHidden(),
+      ),
+      onAppBackgrounded: () => context.read<CompanyNewsBloc>().add(
+        const CompanyNewsEvent.appBackgrounded(),
+      ),
+      onAppForegrounded: () => context.read<CompanyNewsBloc>().add(
+        const CompanyNewsEvent.appForegrounded(),
+      ),
+      child: MascotRefreshIndicator(
+        onRefresh: () async {
+          context.read<CompanyNewsBloc>().add(
+            CompanyNewsEvent.loadRequested(widget.ticker, forceRefresh: true),
           );
         },
+        child: BlocBuilder<CompanyNewsBloc, CompanyNewsState>(
+          builder: (context, state) {
+            return state.map(
+              initial: (_) =>
+                  const CompanyProfileLoadingState(message: 'Loading News'),
+              loading: (_) =>
+                  const CompanyProfileLoadingState(message: 'Loading News'),
+              failure: (e) => CompanyProfileErrorState(
+                message: 'Error loading news',
+                onRetry: () => context.read<CompanyNewsBloc>().add(
+                  CompanyNewsEvent.loadRequested(
+                    widget.ticker,
+                    forceRefresh: true,
+                  ),
+                ),
+              ),
+              loaded: (data) {
+                final carouselNews = data.articles.take(3).toList();
+                final listNews = data.articles.skip(3).toList();
+
+                return _NewsLoadedState(
+                  carouselNews: carouselNews,
+                  listNews: listNews,
+                );
+              },
+            );
+          },
+        ),
       ),
     );
   }
@@ -94,7 +114,15 @@ class _NewsLoadedState extends StatelessWidget {
                 final article = listNews[index];
                 return NewsListTile(
                   article: article,
-                  onTap: () => UrlLauncherUtils.launch(article.url),
+                  onTap: () {
+                    context.read<CompanyNewsBloc>().add(
+                      CompanyNewsEvent.articleTapped(
+                        article: article,
+                        isFeatured: false,
+                      ),
+                    );
+                    UrlLauncherUtils.launch(article.url);
+                  },
                 );
               },
             ),

@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$FinancialStatementDto {
 
- String get date; String get symbol; String get period;// Income
+ String? get date; String? get symbol; String? get period;// Income
  double? get revenue; double? get netIncome; double? get eps; double? get ebitda; double? get operatingIncome; double? get grossProfit;// Balance Sheet
  double? get totalAssets; double? get totalLiabilities; double? get totalEquity; double? get totalStockholdersEquity; double? get cashAndShortTermInvestments; double? get totalDebt;// Cash Flow
  double? get operatingCashFlow; double? get netCashProvidedByOperatingActivities; double? get investingCashFlow; double? get netCashProvidedByInvestingActivities; double? get financingCashFlow; double? get netCashProvidedByFinancingActivities; double? get capitalExpenditure; double? get freeCashFlow; double? get dividendsPaid; double? get netDividendsPaid; double? get weightedAverageShsOut; String? get link; String? get finalLink;
@@ -51,7 +51,7 @@ abstract mixin class $FinancialStatementDtoCopyWith<$Res>  {
   factory $FinancialStatementDtoCopyWith(FinancialStatementDto value, $Res Function(FinancialStatementDto) _then) = _$FinancialStatementDtoCopyWithImpl;
 @useResult
 $Res call({
- String date, String symbol, String period, double? revenue, double? netIncome, double? eps, double? ebitda, double? operatingIncome, double? grossProfit, double? totalAssets, double? totalLiabilities, double? totalEquity, double? totalStockholdersEquity, double? cashAndShortTermInvestments, double? totalDebt, double? operatingCashFlow, double? netCashProvidedByOperatingActivities, double? investingCashFlow, double? netCashProvidedByInvestingActivities, double? financingCashFlow, double? netCashProvidedByFinancingActivities, double? capitalExpenditure, double? freeCashFlow, double? dividendsPaid, double? netDividendsPaid, double? weightedAverageShsOut, String? link, String? finalLink
+ String? date, String? symbol, String? period, double? revenue, double? netIncome, double? eps, double? ebitda, double? operatingIncome, double? grossProfit, double? totalAssets, double? totalLiabilities, double? totalEquity, double? totalStockholdersEquity, double? cashAndShortTermInvestments, double? totalDebt, double? operatingCashFlow, double? netCashProvidedByOperatingActivities, double? investingCashFlow, double? netCashProvidedByInvestingActivities, double? financingCashFlow, double? netCashProvidedByFinancingActivities, double? capitalExpenditure, double? freeCashFlow, double? dividendsPaid, double? netDividendsPaid, double? weightedAverageShsOut, String? link, String? finalLink
 });
 
 
@@ -68,12 +68,12 @@ class _$FinancialStatementDtoCopyWithImpl<$Res>
 
 /// Create a copy of FinancialStatementDto
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? date = null,Object? symbol = null,Object? period = null,Object? revenue = freezed,Object? netIncome = freezed,Object? eps = freezed,Object? ebitda = freezed,Object? operatingIncome = freezed,Object? grossProfit = freezed,Object? totalAssets = freezed,Object? totalLiabilities = freezed,Object? totalEquity = freezed,Object? totalStockholdersEquity = freezed,Object? cashAndShortTermInvestments = freezed,Object? totalDebt = freezed,Object? operatingCashFlow = freezed,Object? netCashProvidedByOperatingActivities = freezed,Object? investingCashFlow = freezed,Object? netCashProvidedByInvestingActivities = freezed,Object? financingCashFlow = freezed,Object? netCashProvidedByFinancingActivities = freezed,Object? capitalExpenditure = freezed,Object? freeCashFlow = freezed,Object? dividendsPaid = freezed,Object? netDividendsPaid = freezed,Object? weightedAverageShsOut = freezed,Object? link = freezed,Object? finalLink = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? date = freezed,Object? symbol = freezed,Object? period = freezed,Object? revenue = freezed,Object? netIncome = freezed,Object? eps = freezed,Object? ebitda = freezed,Object? operatingIncome = freezed,Object? grossProfit = freezed,Object? totalAssets = freezed,Object? totalLiabilities = freezed,Object? totalEquity = freezed,Object? totalStockholdersEquity = freezed,Object? cashAndShortTermInvestments = freezed,Object? totalDebt = freezed,Object? operatingCashFlow = freezed,Object? netCashProvidedByOperatingActivities = freezed,Object? investingCashFlow = freezed,Object? netCashProvidedByInvestingActivities = freezed,Object? financingCashFlow = freezed,Object? netCashProvidedByFinancingActivities = freezed,Object? capitalExpenditure = freezed,Object? freeCashFlow = freezed,Object? dividendsPaid = freezed,Object? netDividendsPaid = freezed,Object? weightedAverageShsOut = freezed,Object? link = freezed,Object? finalLink = freezed,}) {
   return _then(_self.copyWith(
-date: null == date ? _self.date : date // ignore: cast_nullable_to_non_nullable
-as String,symbol: null == symbol ? _self.symbol : symbol // ignore: cast_nullable_to_non_nullable
-as String,period: null == period ? _self.period : period // ignore: cast_nullable_to_non_nullable
-as String,revenue: freezed == revenue ? _self.revenue : revenue // ignore: cast_nullable_to_non_nullable
+date: freezed == date ? _self.date : date // ignore: cast_nullable_to_non_nullable
+as String?,symbol: freezed == symbol ? _self.symbol : symbol // ignore: cast_nullable_to_non_nullable
+as String?,period: freezed == period ? _self.period : period // ignore: cast_nullable_to_non_nullable
+as String?,revenue: freezed == revenue ? _self.revenue : revenue // ignore: cast_nullable_to_non_nullable
 as double?,netIncome: freezed == netIncome ? _self.netIncome : netIncome // ignore: cast_nullable_to_non_nullable
 as double?,eps: freezed == eps ? _self.eps : eps // ignore: cast_nullable_to_non_nullable
 as double?,ebitda: freezed == ebitda ? _self.ebitda : ebitda // ignore: cast_nullable_to_non_nullable
@@ -183,7 +183,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String date,  String symbol,  String period,  double? revenue,  double? netIncome,  double? eps,  double? ebitda,  double? operatingIncome,  double? grossProfit,  double? totalAssets,  double? totalLiabilities,  double? totalEquity,  double? totalStockholdersEquity,  double? cashAndShortTermInvestments,  double? totalDebt,  double? operatingCashFlow,  double? netCashProvidedByOperatingActivities,  double? investingCashFlow,  double? netCashProvidedByInvestingActivities,  double? financingCashFlow,  double? netCashProvidedByFinancingActivities,  double? capitalExpenditure,  double? freeCashFlow,  double? dividendsPaid,  double? netDividendsPaid,  double? weightedAverageShsOut,  String? link,  String? finalLink)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? date,  String? symbol,  String? period,  double? revenue,  double? netIncome,  double? eps,  double? ebitda,  double? operatingIncome,  double? grossProfit,  double? totalAssets,  double? totalLiabilities,  double? totalEquity,  double? totalStockholdersEquity,  double? cashAndShortTermInvestments,  double? totalDebt,  double? operatingCashFlow,  double? netCashProvidedByOperatingActivities,  double? investingCashFlow,  double? netCashProvidedByInvestingActivities,  double? financingCashFlow,  double? netCashProvidedByFinancingActivities,  double? capitalExpenditure,  double? freeCashFlow,  double? dividendsPaid,  double? netDividendsPaid,  double? weightedAverageShsOut,  String? link,  String? finalLink)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _FinancialStatementDto() when $default != null:
 return $default(_that.date,_that.symbol,_that.period,_that.revenue,_that.netIncome,_that.eps,_that.ebitda,_that.operatingIncome,_that.grossProfit,_that.totalAssets,_that.totalLiabilities,_that.totalEquity,_that.totalStockholdersEquity,_that.cashAndShortTermInvestments,_that.totalDebt,_that.operatingCashFlow,_that.netCashProvidedByOperatingActivities,_that.investingCashFlow,_that.netCashProvidedByInvestingActivities,_that.financingCashFlow,_that.netCashProvidedByFinancingActivities,_that.capitalExpenditure,_that.freeCashFlow,_that.dividendsPaid,_that.netDividendsPaid,_that.weightedAverageShsOut,_that.link,_that.finalLink);case _:
@@ -204,7 +204,7 @@ return $default(_that.date,_that.symbol,_that.period,_that.revenue,_that.netInco
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String date,  String symbol,  String period,  double? revenue,  double? netIncome,  double? eps,  double? ebitda,  double? operatingIncome,  double? grossProfit,  double? totalAssets,  double? totalLiabilities,  double? totalEquity,  double? totalStockholdersEquity,  double? cashAndShortTermInvestments,  double? totalDebt,  double? operatingCashFlow,  double? netCashProvidedByOperatingActivities,  double? investingCashFlow,  double? netCashProvidedByInvestingActivities,  double? financingCashFlow,  double? netCashProvidedByFinancingActivities,  double? capitalExpenditure,  double? freeCashFlow,  double? dividendsPaid,  double? netDividendsPaid,  double? weightedAverageShsOut,  String? link,  String? finalLink)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? date,  String? symbol,  String? period,  double? revenue,  double? netIncome,  double? eps,  double? ebitda,  double? operatingIncome,  double? grossProfit,  double? totalAssets,  double? totalLiabilities,  double? totalEquity,  double? totalStockholdersEquity,  double? cashAndShortTermInvestments,  double? totalDebt,  double? operatingCashFlow,  double? netCashProvidedByOperatingActivities,  double? investingCashFlow,  double? netCashProvidedByInvestingActivities,  double? financingCashFlow,  double? netCashProvidedByFinancingActivities,  double? capitalExpenditure,  double? freeCashFlow,  double? dividendsPaid,  double? netDividendsPaid,  double? weightedAverageShsOut,  String? link,  String? finalLink)  $default,) {final _that = this;
 switch (_that) {
 case _FinancialStatementDto():
 return $default(_that.date,_that.symbol,_that.period,_that.revenue,_that.netIncome,_that.eps,_that.ebitda,_that.operatingIncome,_that.grossProfit,_that.totalAssets,_that.totalLiabilities,_that.totalEquity,_that.totalStockholdersEquity,_that.cashAndShortTermInvestments,_that.totalDebt,_that.operatingCashFlow,_that.netCashProvidedByOperatingActivities,_that.investingCashFlow,_that.netCashProvidedByInvestingActivities,_that.financingCashFlow,_that.netCashProvidedByFinancingActivities,_that.capitalExpenditure,_that.freeCashFlow,_that.dividendsPaid,_that.netDividendsPaid,_that.weightedAverageShsOut,_that.link,_that.finalLink);case _:
@@ -224,7 +224,7 @@ return $default(_that.date,_that.symbol,_that.period,_that.revenue,_that.netInco
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String date,  String symbol,  String period,  double? revenue,  double? netIncome,  double? eps,  double? ebitda,  double? operatingIncome,  double? grossProfit,  double? totalAssets,  double? totalLiabilities,  double? totalEquity,  double? totalStockholdersEquity,  double? cashAndShortTermInvestments,  double? totalDebt,  double? operatingCashFlow,  double? netCashProvidedByOperatingActivities,  double? investingCashFlow,  double? netCashProvidedByInvestingActivities,  double? financingCashFlow,  double? netCashProvidedByFinancingActivities,  double? capitalExpenditure,  double? freeCashFlow,  double? dividendsPaid,  double? netDividendsPaid,  double? weightedAverageShsOut,  String? link,  String? finalLink)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? date,  String? symbol,  String? period,  double? revenue,  double? netIncome,  double? eps,  double? ebitda,  double? operatingIncome,  double? grossProfit,  double? totalAssets,  double? totalLiabilities,  double? totalEquity,  double? totalStockholdersEquity,  double? cashAndShortTermInvestments,  double? totalDebt,  double? operatingCashFlow,  double? netCashProvidedByOperatingActivities,  double? investingCashFlow,  double? netCashProvidedByInvestingActivities,  double? financingCashFlow,  double? netCashProvidedByFinancingActivities,  double? capitalExpenditure,  double? freeCashFlow,  double? dividendsPaid,  double? netDividendsPaid,  double? weightedAverageShsOut,  String? link,  String? finalLink)?  $default,) {final _that = this;
 switch (_that) {
 case _FinancialStatementDto() when $default != null:
 return $default(_that.date,_that.symbol,_that.period,_that.revenue,_that.netIncome,_that.eps,_that.ebitda,_that.operatingIncome,_that.grossProfit,_that.totalAssets,_that.totalLiabilities,_that.totalEquity,_that.totalStockholdersEquity,_that.cashAndShortTermInvestments,_that.totalDebt,_that.operatingCashFlow,_that.netCashProvidedByOperatingActivities,_that.investingCashFlow,_that.netCashProvidedByInvestingActivities,_that.financingCashFlow,_that.netCashProvidedByFinancingActivities,_that.capitalExpenditure,_that.freeCashFlow,_that.dividendsPaid,_that.netDividendsPaid,_that.weightedAverageShsOut,_that.link,_that.finalLink);case _:
@@ -239,12 +239,12 @@ return $default(_that.date,_that.symbol,_that.period,_that.revenue,_that.netInco
 @JsonSerializable()
 
 class _FinancialStatementDto implements FinancialStatementDto {
-  const _FinancialStatementDto({required this.date, required this.symbol, required this.period, this.revenue, this.netIncome, this.eps, this.ebitda, this.operatingIncome, this.grossProfit, this.totalAssets, this.totalLiabilities, this.totalEquity, this.totalStockholdersEquity, this.cashAndShortTermInvestments, this.totalDebt, this.operatingCashFlow, this.netCashProvidedByOperatingActivities, this.investingCashFlow, this.netCashProvidedByInvestingActivities, this.financingCashFlow, this.netCashProvidedByFinancingActivities, this.capitalExpenditure, this.freeCashFlow, this.dividendsPaid, this.netDividendsPaid, this.weightedAverageShsOut, this.link, this.finalLink});
+  const _FinancialStatementDto({this.date, this.symbol, this.period, this.revenue, this.netIncome, this.eps, this.ebitda, this.operatingIncome, this.grossProfit, this.totalAssets, this.totalLiabilities, this.totalEquity, this.totalStockholdersEquity, this.cashAndShortTermInvestments, this.totalDebt, this.operatingCashFlow, this.netCashProvidedByOperatingActivities, this.investingCashFlow, this.netCashProvidedByInvestingActivities, this.financingCashFlow, this.netCashProvidedByFinancingActivities, this.capitalExpenditure, this.freeCashFlow, this.dividendsPaid, this.netDividendsPaid, this.weightedAverageShsOut, this.link, this.finalLink});
   factory _FinancialStatementDto.fromJson(Map<String, dynamic> json) => _$FinancialStatementDtoFromJson(json);
 
-@override final  String date;
-@override final  String symbol;
-@override final  String period;
+@override final  String? date;
+@override final  String? symbol;
+@override final  String? period;
 // Income
 @override final  double? revenue;
 @override final  double? netIncome;
@@ -307,7 +307,7 @@ abstract mixin class _$FinancialStatementDtoCopyWith<$Res> implements $Financial
   factory _$FinancialStatementDtoCopyWith(_FinancialStatementDto value, $Res Function(_FinancialStatementDto) _then) = __$FinancialStatementDtoCopyWithImpl;
 @override @useResult
 $Res call({
- String date, String symbol, String period, double? revenue, double? netIncome, double? eps, double? ebitda, double? operatingIncome, double? grossProfit, double? totalAssets, double? totalLiabilities, double? totalEquity, double? totalStockholdersEquity, double? cashAndShortTermInvestments, double? totalDebt, double? operatingCashFlow, double? netCashProvidedByOperatingActivities, double? investingCashFlow, double? netCashProvidedByInvestingActivities, double? financingCashFlow, double? netCashProvidedByFinancingActivities, double? capitalExpenditure, double? freeCashFlow, double? dividendsPaid, double? netDividendsPaid, double? weightedAverageShsOut, String? link, String? finalLink
+ String? date, String? symbol, String? period, double? revenue, double? netIncome, double? eps, double? ebitda, double? operatingIncome, double? grossProfit, double? totalAssets, double? totalLiabilities, double? totalEquity, double? totalStockholdersEquity, double? cashAndShortTermInvestments, double? totalDebt, double? operatingCashFlow, double? netCashProvidedByOperatingActivities, double? investingCashFlow, double? netCashProvidedByInvestingActivities, double? financingCashFlow, double? netCashProvidedByFinancingActivities, double? capitalExpenditure, double? freeCashFlow, double? dividendsPaid, double? netDividendsPaid, double? weightedAverageShsOut, String? link, String? finalLink
 });
 
 
@@ -324,12 +324,12 @@ class __$FinancialStatementDtoCopyWithImpl<$Res>
 
 /// Create a copy of FinancialStatementDto
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? date = null,Object? symbol = null,Object? period = null,Object? revenue = freezed,Object? netIncome = freezed,Object? eps = freezed,Object? ebitda = freezed,Object? operatingIncome = freezed,Object? grossProfit = freezed,Object? totalAssets = freezed,Object? totalLiabilities = freezed,Object? totalEquity = freezed,Object? totalStockholdersEquity = freezed,Object? cashAndShortTermInvestments = freezed,Object? totalDebt = freezed,Object? operatingCashFlow = freezed,Object? netCashProvidedByOperatingActivities = freezed,Object? investingCashFlow = freezed,Object? netCashProvidedByInvestingActivities = freezed,Object? financingCashFlow = freezed,Object? netCashProvidedByFinancingActivities = freezed,Object? capitalExpenditure = freezed,Object? freeCashFlow = freezed,Object? dividendsPaid = freezed,Object? netDividendsPaid = freezed,Object? weightedAverageShsOut = freezed,Object? link = freezed,Object? finalLink = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? date = freezed,Object? symbol = freezed,Object? period = freezed,Object? revenue = freezed,Object? netIncome = freezed,Object? eps = freezed,Object? ebitda = freezed,Object? operatingIncome = freezed,Object? grossProfit = freezed,Object? totalAssets = freezed,Object? totalLiabilities = freezed,Object? totalEquity = freezed,Object? totalStockholdersEquity = freezed,Object? cashAndShortTermInvestments = freezed,Object? totalDebt = freezed,Object? operatingCashFlow = freezed,Object? netCashProvidedByOperatingActivities = freezed,Object? investingCashFlow = freezed,Object? netCashProvidedByInvestingActivities = freezed,Object? financingCashFlow = freezed,Object? netCashProvidedByFinancingActivities = freezed,Object? capitalExpenditure = freezed,Object? freeCashFlow = freezed,Object? dividendsPaid = freezed,Object? netDividendsPaid = freezed,Object? weightedAverageShsOut = freezed,Object? link = freezed,Object? finalLink = freezed,}) {
   return _then(_FinancialStatementDto(
-date: null == date ? _self.date : date // ignore: cast_nullable_to_non_nullable
-as String,symbol: null == symbol ? _self.symbol : symbol // ignore: cast_nullable_to_non_nullable
-as String,period: null == period ? _self.period : period // ignore: cast_nullable_to_non_nullable
-as String,revenue: freezed == revenue ? _self.revenue : revenue // ignore: cast_nullable_to_non_nullable
+date: freezed == date ? _self.date : date // ignore: cast_nullable_to_non_nullable
+as String?,symbol: freezed == symbol ? _self.symbol : symbol // ignore: cast_nullable_to_non_nullable
+as String?,period: freezed == period ? _self.period : period // ignore: cast_nullable_to_non_nullable
+as String?,revenue: freezed == revenue ? _self.revenue : revenue // ignore: cast_nullable_to_non_nullable
 as double?,netIncome: freezed == netIncome ? _self.netIncome : netIncome // ignore: cast_nullable_to_non_nullable
 as double?,eps: freezed == eps ? _self.eps : eps // ignore: cast_nullable_to_non_nullable
 as double?,ebitda: freezed == ebitda ? _self.ebitda : ebitda // ignore: cast_nullable_to_non_nullable

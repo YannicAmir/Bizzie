@@ -1,220 +1,134 @@
+import 'package:bizzie/core/data/models/cache_result.dart' as result;
+import 'package:bizzie/core/data/models/firestore_cache_entry.dart';
+import 'package:bizzie/core/interfaces/i_time_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:injectable/injectable.dart';
-import 'package:bizzie/core/data/models/firestore_cache_entry.dart';
+import 'package:bizzie/core/data/datasources/base_firestore_cache_client.dart';
+import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:bizzie/features/company_profile/business/data/dtos/governance_dtos.dart';
 
 abstract class BusinessFirestoreDataSource {
-  Future<void> cacheGovernance(
-    String ticker,
-    GovernanceDto governance,
-    List<ExecutiveDto> executives,
-  );
-  Future<GovernanceDto?> getCachedGovernance(String ticker);
-  Future<List<ExecutiveDto>?> getCachedExecutives(String ticker);
+  Future<result.CacheResult<(GovernanceDto, List<ExecutiveDto>)>>
+  syncGovernance(
+    String ticker, {
+    required Future<(GovernanceDto, List<ExecutiveDto>)> Function()
+    remoteFetcher,
+    bool forceRefresh,
+  });
 
-  Future<void> cacheExchangeRate(String pair, double rate);
-  Future<double?> getCachedExchangeRate(String pair);
+  Future<result.CacheResult<double>> syncExchangeRate(
+    String pair, {
+    required Future<double> Function() remoteFetcher,
+    bool forceRefresh,
+  });
+
+  Future<(GovernanceDto, CompanyProfileDataOrigin)?> getCachedGovernance(
+    String ticker,
+  );
+  Future<(List<ExecutiveDto>, CompanyProfileDataOrigin)?> getCachedExecutives(
+    String ticker,
+  );
+  Future<(double, CompanyProfileDataOrigin)?> getCachedExchangeRate(
+    String pair,
+  );
 
   Future<void> cacheProxyUrl(String ticker, String? url);
-  Future<String?> getCachedProxyUrl(String ticker);
+  Future<(String?, CompanyProfileDataOrigin)?> getCachedProxyUrl(String ticker);
 }
 
 @LazySingleton(as: BusinessFirestoreDataSource)
-class BusinessFirestoreDataSourceImpl implements BusinessFirestoreDataSource {
-  final FirebaseFirestore _firestore;
+class BusinessFirestoreDataSourceImpl extends BaseFirestoreCacheClient
+    implements BusinessFirestoreDataSource {
+  BusinessFirestoreDataSourceImpl(
+    FirebaseFirestore firestore,
+    ITimeProvider timeProvider,
+  ) : super(firestore, timeProvider, 'BusinessFirestoreDataSource');
 
-  BusinessFirestoreDataSourceImpl(this._firestore);
-
-  bool _isSmartCacheValid({
-    required DateTime? lastUpdated,
-    int weekendThresholdHour = 22,
-    bool strictMarketAware = false,
-    Duration fallbackTtl = const Duration(hours: 24),
-  }) {
-    if (lastUpdated == null) return false;
-    final now = DateTime.now();
-
-    if (now.weekday == DateTime.saturday || now.weekday == DateTime.sunday) {
-      final daysSinceFriday = now.weekday - DateTime.friday;
-      final lastFriday = now.subtract(Duration(days: daysSinceFriday));
-
-      final anchor = DateTime(
-        lastFriday.year,
-        lastFriday.month,
-        lastFriday.day,
-        weekendThresholdHour,
-        0,
-      );
-
-      return lastUpdated.isAfter(anchor);
-    }
-
-    if (strictMarketAware) {
-      final marketOpen = DateTime(now.year, now.month, now.day, 9, 30);
-      if (now.isAfter(marketOpen)) {
-        return lastUpdated.isAfter(marketOpen);
-      }
-    }
-
-    final diff = now.difference(lastUpdated);
-    return diff < fallbackTtl;
-  }
-
-  CollectionReference<FirestoreCacheEntry<T>> _getCollectionRef<T>(
-    String ticker,
-    String collectionPath,
-    T Function(Object?) fromJson,
-    Object? Function(T) toJson,
-  ) {
-    return _firestore
-        .collection('companies')
-        .doc(ticker)
-        .collection(collectionPath)
-        .withConverter<FirestoreCacheEntry<T>>(
-          fromFirestore: (snapshot, _) =>
-              FirestoreCacheEntry.fromJson(snapshot.data()!, fromJson),
-          toFirestore: (entry, _) => entry.toJson(toJson),
-        );
-  }
-
-  DocumentReference<FirestoreCacheEntry<T>> _getDocRef<T>(
-    String ticker,
-    String collection,
-    String docId,
-    T Function(Object?) fromJson,
-    Object? Function(T) toJson,
-  ) {
-    return _getCollectionRef(ticker, collection, fromJson, toJson).doc(docId);
-  }
-
-  Future<T?> _fetchWithCacheFirst<T>(
-    DocumentReference<FirestoreCacheEntry<T>> docRef, {
-    int weekendThresholdHour = 22,
-    bool strictMarketAware = false,
-    Duration fallbackTtl = const Duration(hours: 24),
+  @override
+  Future<result.CacheResult<(GovernanceDto, List<ExecutiveDto>)>>
+  syncGovernance(
+    String ticker, {
+    required Future<(GovernanceDto, List<ExecutiveDto>)> Function()
+    remoteFetcher,
+    bool forceRefresh = false,
   }) async {
-    bool validator(DateTime? ts) => _isSmartCacheValid(
-      lastUpdated: ts,
-      weekendThresholdHour: weekendThresholdHour,
-      strictMarketAware: strictMarketAware,
-      fallbackTtl: fallbackTtl,
+    return syncOrFetch<(GovernanceDto, List<ExecutiveDto>)>(
+      docRef: _governanceRef(ticker),
+      remoteFetcher: remoteFetcher,
+      forceRefresh: forceRefresh,
     );
-
-    try {
-      final doc = await docRef.get(const GetOptions(source: Source.cache));
-      if (doc.exists) {
-        final entry = doc.data();
-        if (entry != null && validator(entry.lastUpdated)) {
-          return entry.data;
-        }
-      }
-    } catch (_) {}
-
-    try {
-      final doc = await docRef.get(const GetOptions(source: Source.server));
-      if (doc.exists) {
-        final entry = doc.data();
-        if (entry != null && validator(entry.lastUpdated)) {
-          return entry.data;
-        }
-      }
-    } catch (_) {}
-
-    return null;
   }
 
   @override
-  Future<void> cacheGovernance(
-    String ticker,
-    GovernanceDto governance,
-    List<ExecutiveDto> executives,
-  ) async {
-    final data = {
-      'governance': governance.toJson(),
-      'executives': executives.map((e) => e.toJson()).toList(),
-    };
-
-    await _getDocRef<Map<String, dynamic>>(
-      ticker,
-      'info',
-      'governance',
-      (json) => json as Map<String, dynamic>,
-      (data) => data,
-    ).set(FirestoreCacheEntry(data: data, lastUpdated: DateTime.now()));
-  }
-
-  @override
-  Future<GovernanceDto?> getCachedGovernance(String ticker) async {
-    final data = await _fetchWithCacheFirst<Map<String, dynamic>>(
-      _getDocRef<Map<String, dynamic>>(
-        ticker,
-        'info',
-        'governance',
-        (json) => json as Map<String, dynamic>,
-        (data) => data,
-      ),
-    );
-    if (data == null) return null;
-    return GovernanceDto.fromJson(data['governance']);
-  }
-
-  @override
-  Future<List<ExecutiveDto>?> getCachedExecutives(String ticker) async {
-    final data = await _fetchWithCacheFirst<Map<String, dynamic>>(
-      _getDocRef<Map<String, dynamic>>(
-        ticker,
-        'info',
-        'governance',
-        (json) => json as Map<String, dynamic>,
-        (data) => data,
-      ),
-    );
-    if (data == null) return null;
-    return (data['executives'] as List)
-        .map((e) => ExecutiveDto.fromJson(e))
-        .toList();
-  }
-
-  @override
-  Future<void> cacheExchangeRate(String pair, double rate) async {
-    await _getDocRef<double>(
-      pair,
-      'market',
-      'price',
-      (json) => (json as num).toDouble(),
-      (data) => data,
-    ).set(FirestoreCacheEntry(data: rate, lastUpdated: DateTime.now()));
-  }
-
-  @override
-  Future<double?> getCachedExchangeRate(String pair) async {
-    return _fetchWithCacheFirst(
-      _getDocRef<double>(
-        pair,
-        'market',
-        'price',
-        (json) => (json as num).toDouble(),
-        (data) => data,
-      ),
+  Future<result.CacheResult<double>> syncExchangeRate(
+    String pair, {
+    required Future<double> Function() remoteFetcher,
+    bool forceRefresh = false,
+  }) async {
+    return syncOrFetch<double>(
+      docRef: _exchangeRateRef(pair),
+      remoteFetcher: remoteFetcher,
+      forceRefresh: forceRefresh,
       fallbackTtl: const Duration(hours: 24),
     );
   }
 
   @override
-  Future<void> cacheProxyUrl(String ticker, String? url) async {
-    await _getDocRef<Map<String, dynamic>>(
-      ticker,
-      'info',
-      'proxy',
-      (json) => json as Map<String, dynamic>,
-      (data) => data,
-    ).set(FirestoreCacheEntry(data: {'url': url}, lastUpdated: DateTime.now()));
+  Future<(GovernanceDto, CompanyProfileDataOrigin)?> getCachedGovernance(
+    String ticker,
+  ) async {
+    final res = await fetchWithCacheFirst(_governanceRef(ticker));
+    if (res is result.CacheSuccess<(GovernanceDto, List<ExecutiveDto>)>) {
+      return (res.data.$1, res.origin);
+    }
+    return null;
   }
 
   @override
-  Future<String?> getCachedProxyUrl(String ticker) async {
-    final data = await _fetchWithCacheFirst<Map<String, dynamic>>(
-      _getDocRef<Map<String, dynamic>>(
+  Future<(List<ExecutiveDto>, CompanyProfileDataOrigin)?> getCachedExecutives(
+    String ticker,
+  ) async {
+    final res = await fetchWithCacheFirst(_governanceRef(ticker));
+    if (res is result.CacheSuccess<(GovernanceDto, List<ExecutiveDto>)>) {
+      return (res.data.$2, res.origin);
+    }
+    return null;
+  }
+
+  @override
+  Future<(double, CompanyProfileDataOrigin)?> getCachedExchangeRate(
+    String pair,
+  ) async {
+    final res = await fetchWithCacheFirst(
+      _exchangeRateRef(pair),
+      fallbackTtl: const Duration(hours: 24),
+    );
+    if (res is result.CacheSuccess<double>) {
+      return (res.data, res.origin);
+    }
+    return null;
+  }
+
+  @override
+  Future<void> cacheProxyUrl(String ticker, String? url) async {
+    await saveToCache(
+      getDocRef<Map<String, dynamic>>(
+        ticker,
+        'info',
+        'proxy',
+        (json) => json as Map<String, dynamic>,
+        (data) => data,
+      ),
+      {'url': url},
+    );
+  }
+
+  @override
+  Future<(String?, CompanyProfileDataOrigin)?> getCachedProxyUrl(
+    String ticker,
+  ) async {
+    final res = await fetchWithCacheFirst<Map<String, dynamic>>(
+      getDocRef<Map<String, dynamic>>(
         ticker,
         'info',
         'proxy',
@@ -222,7 +136,39 @@ class BusinessFirestoreDataSourceImpl implements BusinessFirestoreDataSource {
         (data) => data,
       ),
     );
-    if (data == null) return null;
-    return data['url'] as String?;
+    if (res is result.CacheSuccess<Map<String, dynamic>>) {
+      return (res.data['url'] as String?, res.origin);
+    }
+    return null;
   }
+
+  DocumentReference<FirestoreCacheEntry<(GovernanceDto, List<ExecutiveDto>)>>
+  _governanceRef(String ticker) =>
+      getDocRef<(GovernanceDto, List<ExecutiveDto>)>(
+        ticker,
+        'info',
+        'governance',
+        (json) {
+          final map = json as Map<String, dynamic>;
+          final gov = GovernanceDto.fromJson(map['governance']);
+          final execs = (map['executives'] as List)
+              .map((e) => ExecutiveDto.fromJson(e))
+              .toList();
+          return (gov, execs);
+        },
+        (data) => {
+          'governance': data.$1.toJson(),
+          'executives': data.$2.map((e) => e.toJson()).toList(),
+        },
+      );
+
+  DocumentReference<FirestoreCacheEntry<double>> _exchangeRateRef(
+    String pair,
+  ) => getDocRef<double>(
+    pair,
+    'market',
+    'price',
+    (json) => (json as num).toDouble(),
+    (data) => data,
+  );
 }

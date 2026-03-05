@@ -1,9 +1,11 @@
+import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/features/company_profile/security/domain/models/security_details.dart';
 import 'package:bizzie/features/company_profile/security/domain/usecases/get_security_details_usecase.dart';
 import 'package:bizzie/features/company_profile/security/presentation/bloc/company_security_bloc.dart';
 import 'package:bizzie/features/company_profile/security/presentation/bloc/company_security_event.dart';
 import 'package:bizzie/features/company_profile/security/presentation/bloc/company_security_state.dart';
+import 'package:bizzie/features/company_profile/security/presentation/analytics/security_tab_analytics.dart';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -12,13 +14,28 @@ import 'package:mocktail/mocktail.dart';
 class MockGetSecurityDetailsUseCase extends Mock
     implements GetSecurityDetailsUseCase {}
 
+class MockSecurityTabAnalytics extends Mock implements SecurityTabAnalytics {}
+
 void main() {
   late CompanySecurityBloc bloc;
   late MockGetSecurityDetailsUseCase mockGetSecurityDetails;
+  late MockSecurityTabAnalytics mockTracker;
+
+  setUpAll(() {
+    registerFallbackValue(
+      const SecurityTabViewState(
+        ticker: 'AAPL',
+        securityType: 'company',
+        timestamp: '2024-01-01T00:00:00Z',
+      ),
+    );
+  });
 
   setUp(() {
     mockGetSecurityDetails = MockGetSecurityDetailsUseCase();
-    bloc = CompanySecurityBloc(mockGetSecurityDetails);
+    mockTracker = MockSecurityTabAnalytics();
+
+    bloc = CompanySecurityBloc(mockGetSecurityDetails, mockTracker);
   });
 
   const tTicker = 'AAPL';
@@ -33,6 +50,14 @@ void main() {
     isFund: false,
     isActivelyTrading: true,
   );
+  final tAnalyticsState = SecurityTabViewState(
+    ticker: tTicker,
+    securityType: 'company',
+    timestamp: '2024-01-01T00:00:00Z',
+    isSuccess: true,
+    dataSource: CompanyProfileDataOrigin.api,
+    loadTimeMs: 0,
+  );
 
   test('initialState_isCorrect', () {
     // assert
@@ -44,9 +69,10 @@ void main() {
       'loadRequested_success_emitsLoadingAndLoaded',
       build: () {
         // arrange
-        when(
-          () => mockGetSecurityDetails(tTicker),
-        ).thenAnswer((_) async => const Right(tSecurityDetails));
+        when(() => mockGetSecurityDetails(tTicker)).thenAnswer(
+          (_) async =>
+              const Right((tSecurityDetails, CompanyProfileDataOrigin.api)),
+        );
         return bloc;
       },
       act: (bloc) {
@@ -57,14 +83,31 @@ void main() {
         // assert
         return [
           const CompanySecurityState.loading(),
-          isA<CompanySecurityState>().having(
-            (s) => s.maybeMap(
-              loaded: (l) => l.securityDetails,
-              orElse: () => null,
-            ),
-            'securityDetails',
-            tSecurityDetails,
-          ),
+          isA<CompanySecurityState>()
+              .having(
+                (s) => s.maybeMap(
+                  loaded: (l) => l.securityDetails,
+                  orElse: () => null,
+                ),
+                'securityDetails',
+                tSecurityDetails,
+              )
+              .having(
+                (s) => s.maybeMap(
+                  loaded: (l) => l.analyticsState.ticker,
+                  orElse: () => '',
+                ),
+                'analyticsState.ticker',
+                tTicker,
+              )
+              .having(
+                (s) => s.maybeMap(
+                  loaded: (l) => l.analyticsState.isSuccess,
+                  orElse: () => false,
+                ),
+                'analyticsState.isSuccess',
+                true,
+              ),
         ];
       },
       verify: (_) {
@@ -102,15 +145,15 @@ void main() {
         // arrange
         return bloc;
       },
-      seed: () => const CompanySecurityState.loaded(tSecurityDetails),
+      seed: () => CompanySecurityState.loaded(
+        tSecurityDetails,
+        analyticsState: tAnalyticsState,
+      ),
       act: (bloc) {
         // act
         bloc.add(const CompanySecurityEvent.loadRequested(tTicker));
       },
-      expect: () {
-        // assert
-        return [];
-      },
+      expect: () => [],
       verify: (_) {
         // assert
         verifyNever(() => mockGetSecurityDetails(any()));
@@ -121,12 +164,16 @@ void main() {
       'loadRequested_alreadyLoadedWithForceRefresh_emitsLoadingAndLoaded',
       build: () {
         // arrange
-        when(
-          () => mockGetSecurityDetails(tTicker),
-        ).thenAnswer((_) async => const Right(tSecurityDetails));
+        when(() => mockGetSecurityDetails(tTicker)).thenAnswer(
+          (_) async =>
+              const Right((tSecurityDetails, CompanyProfileDataOrigin.api)),
+        );
         return bloc;
       },
-      seed: () => const CompanySecurityState.loaded(tSecurityDetails),
+      seed: () => CompanySecurityState.loaded(
+        tSecurityDetails,
+        analyticsState: tAnalyticsState,
+      ),
       act: (bloc) {
         // act
         bloc.add(
@@ -136,15 +183,23 @@ void main() {
       expect: () {
         // assert
         return [
-          const CompanySecurityState.loading(),
-          isA<CompanySecurityState>().having(
-            (s) => s.maybeMap(
-              loaded: (l) => l.securityDetails,
-              orElse: () => null,
-            ),
-            'securityDetails',
-            tSecurityDetails,
-          ),
+          isA<CompanySecurityState>()
+              .having(
+                (s) => s.maybeMap(
+                  loaded: (l) => l.securityDetails,
+                  orElse: () => null,
+                ),
+                'securityDetails',
+                tSecurityDetails,
+              )
+              .having(
+                (s) => s.maybeMap(
+                  loaded: (l) => l.analyticsState.ticker,
+                  orElse: () => '',
+                ),
+                'analyticsState.ticker',
+                tTicker,
+              ),
         ];
       },
       verify: (_) {
@@ -168,9 +223,10 @@ void main() {
           isFund: false,
           isActivelyTrading: true,
         );
-        when(
-          () => mockGetSecurityDetails(tTicker),
-        ).thenAnswer((_) async => const Right(unsupportedDetails));
+        when(() => mockGetSecurityDetails(tTicker)).thenAnswer(
+          (_) async =>
+              const Right((unsupportedDetails, CompanyProfileDataOrigin.api)),
+        );
         return bloc;
       },
       act: (bloc) {
@@ -181,14 +237,23 @@ void main() {
         // assert
         return [
           const CompanySecurityState.loading(),
-          isA<CompanySecurityState>().having(
-            (s) => s.maybeMap(
-              unsupported: (u) => u.securityDetails.isEtf,
-              orElse: () => false,
-            ),
-            'isEtf',
-            true,
-          ),
+          isA<CompanySecurityState>()
+              .having(
+                (s) => s.maybeMap(
+                  unsupported: (u) => u.securityDetails.isEtf,
+                  orElse: () => false,
+                ),
+                'isEtf',
+                true,
+              )
+              .having(
+                (s) => s.maybeMap(
+                  unsupported: (u) => u.analyticsState.securityType,
+                  orElse: () => '',
+                ),
+                'analyticsState.securityType',
+                'etf',
+              ),
         ];
       },
     );
@@ -199,9 +264,10 @@ void main() {
       'stalenessCheckRequested_initialState_triggersLoadRequested',
       build: () {
         // arrange
-        when(
-          () => mockGetSecurityDetails(tTicker),
-        ).thenAnswer((_) async => const Right(tSecurityDetails));
+        when(() => mockGetSecurityDetails(tTicker)).thenAnswer(
+          (_) async =>
+              const Right((tSecurityDetails, CompanyProfileDataOrigin.api)),
+        );
         return bloc;
       },
       act: (bloc) {
@@ -212,14 +278,23 @@ void main() {
         // assert
         return [
           const CompanySecurityState.loading(),
-          isA<CompanySecurityState>().having(
-            (s) => s.maybeMap(
-              loaded: (l) => l.securityDetails,
-              orElse: () => null,
-            ),
-            'securityDetails',
-            tSecurityDetails,
-          ),
+          isA<CompanySecurityState>()
+              .having(
+                (s) => s.maybeMap(
+                  loaded: (l) => l.securityDetails,
+                  orElse: () => null,
+                ),
+                'securityDetails',
+                tSecurityDetails,
+              )
+              .having(
+                (s) => s.maybeMap(
+                  loaded: (l) => l.analyticsState.ticker,
+                  orElse: () => '',
+                ),
+                'analyticsState.ticker',
+                tTicker,
+              ),
         ];
       },
     );
@@ -232,6 +307,7 @@ void main() {
       },
       seed: () => CompanySecurityState.loaded(
         tSecurityDetails,
+        analyticsState: tAnalyticsState,
         lastUpdated: DateTime.now(),
       ),
       act: (bloc) {
@@ -252,13 +328,15 @@ void main() {
       'stalenessCheckRequested_stale_triggersLoadRequested',
       build: () {
         // arrange
-        when(
-          () => mockGetSecurityDetails(tTicker),
-        ).thenAnswer((_) async => const Right(tSecurityDetails));
+        when(() => mockGetSecurityDetails(tTicker)).thenAnswer(
+          (_) async =>
+              const Right((tSecurityDetails, CompanyProfileDataOrigin.api)),
+        );
         return bloc;
       },
       seed: () => CompanySecurityState.loaded(
         tSecurityDetails,
+        analyticsState: tAnalyticsState,
         lastUpdated: DateTime.now().subtract(const Duration(hours: 25)),
       ),
       act: (bloc) {
@@ -268,16 +346,82 @@ void main() {
       expect: () {
         // assert
         return [
-          const CompanySecurityState.loading(),
-          isA<CompanySecurityState>().having(
-            (s) => s.maybeMap(
-              loaded: (l) => l.securityDetails,
-              orElse: () => null,
-            ),
-            'securityDetails',
-            tSecurityDetails,
-          ),
+          isA<CompanySecurityState>()
+              .having(
+                (s) => s.maybeMap(
+                  loaded: (l) => l.securityDetails,
+                  orElse: () => null,
+                ),
+                'securityDetails',
+                tSecurityDetails,
+              )
+              .having(
+                (s) => s.maybeMap(
+                  loaded: (l) => l.analyticsState.ticker,
+                  orElse: () => '',
+                ),
+                'analyticsState.ticker',
+                tTicker,
+              ),
         ];
+      },
+    );
+  });
+
+  group('CompanySecurityBloc - Lifecycle Orchestration', () {
+    blocTest<CompanySecurityBloc, CompanySecurityState>(
+      'tabHidden_viewActive_logsFinalSummary',
+      build: () {
+        // arrange
+        when(
+          () =>
+              mockTracker.logViewSummary(any(), isFinal: any(named: 'isFinal')),
+        ).thenAnswer((_) async {});
+        return bloc;
+      },
+      seed: () => CompanySecurityState.loaded(
+        tSecurityDetails,
+        analyticsState: tAnalyticsState,
+      ),
+      act: (bloc) async {
+        // act
+        bloc.add(const CompanySecurityEvent.tabShown(tTicker));
+        await Future.delayed(Duration.zero);
+        bloc.add(const CompanySecurityEvent.tabHidden());
+      },
+      verify: (_) {
+        // assert
+        verify(
+          () => mockTracker.logViewSummary(any(), isFinal: true),
+        ).called(1);
+      },
+    );
+
+    blocTest<CompanySecurityBloc, CompanySecurityState>(
+      'appBackgrounded_viewActive_logsNonFinalSummary',
+      build: () {
+        // arrange
+        when(
+          () =>
+              mockTracker.logViewSummary(any(), isFinal: any(named: 'isFinal')),
+        ).thenAnswer((_) async {});
+        return bloc;
+      },
+      seed: () => CompanySecurityState.loaded(
+        tSecurityDetails,
+        analyticsState: tAnalyticsState,
+      ),
+      act: (bloc) async {
+        // act
+        bloc.add(const CompanySecurityEvent.tabShown(tTicker));
+        await Future.delayed(Duration.zero);
+        bloc.add(const CompanySecurityEvent.appBackgrounded());
+      },
+      verify: (_) {
+        // assert
+        verify(
+          () => mockTracker.logViewSummary(any(), isFinal: false),
+        ).called(1);
       },
     );
   });

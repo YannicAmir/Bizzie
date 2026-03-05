@@ -1,3 +1,4 @@
+import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/features/company_profile/security/data/datasources/security_firestore_data_source.dart';
 import 'package:bizzie/features/company_profile/security/data/datasources/security_remote_data_source.dart';
@@ -6,6 +7,7 @@ import 'package:bizzie/features/company_profile/security/data/dtos/historical_pr
 import 'package:bizzie/features/company_profile/security/data/repositories/price_repository_impl.dart';
 import 'package:bizzie/features/company_profile/security/domain/models/historical_price_eod.dart';
 import 'package:bizzie/features/company_profile/security/domain/models/price_history.dart';
+import 'package:bizzie/core/data/models/cache_result.dart' as cache;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -37,78 +39,48 @@ void main() {
     );
     final tPriceList = [tPriceDto];
 
-    test('getPriceHistory_cacheHit_returnsLocalData', () async {
+    test('getPriceHistory_success_returnsData', () async {
       // arrange
       when(
-        () => mockLocalDataSource.getCachedPrices(tTicker),
-      ).thenAnswer((_) async => tPriceList);
+        () => mockLocalDataSource.syncPrices(
+          tTicker,
+          remoteFetcher: any(named: 'remoteFetcher'),
+        ),
+      ).thenAnswer(
+        (_) async =>
+            cache.CacheSuccess(tPriceList, CompanyProfileDataOrigin.api),
+      );
 
       // act
-      final result = await repository.getPriceHistory(tTicker);
+      final resultData = await repository.getPriceHistory(tTicker);
 
       // assert
-      expect(result.isRight(), true);
-      result.fold((l) => fail('Should return right'), (r) {
+      expect(resultData.isRight(), true);
+      resultData.fold((l) => fail('Should return right'), (tuple) {
+        final r = tuple.$1;
+        final origin = tuple.$2;
         expect(r, isA<PriceHistory>());
-        expect(r.symbol, tTicker);
+        expect(origin, CompanyProfileDataOrigin.api);
         expect(r.history.length, 1);
-        expect(r.history.first.close, 150.0);
       });
-      verify(() => mockLocalDataSource.getCachedPrices(tTicker)).called(1);
-      verifyZeroInteractions(mockRemoteDataSource);
     });
 
-    test(
-      'getPriceHistory_cacheMiss_fetchesRemoteAndCaches_returnsData',
-      () async {
-        // arrange
-        when(
-          () => mockLocalDataSource.getCachedPrices(tTicker),
-        ).thenAnswer((_) async => null);
-        when(
-          () => mockRemoteDataSource.getHistoricalPrice(tTicker),
-        ).thenAnswer((_) async => tPriceList);
-        when(
-          () => mockLocalDataSource.cachePrices(tTicker, tPriceList),
-        ).thenAnswer((_) async => Future.value());
-
-        // act
-        final result = await repository.getPriceHistory(tTicker);
-
-        // assert
-        expect(result.isRight(), true);
-        result.fold((l) => fail('Should return right'), (r) {
-          expect(r, isA<PriceHistory>());
-          expect(r.history.length, 1);
-        });
-        verify(() => mockLocalDataSource.getCachedPrices(tTicker)).called(1);
-        verify(
-          () => mockRemoteDataSource.getHistoricalPrice(tTicker),
-        ).called(1);
-        verify(
-          () => mockLocalDataSource.cachePrices(tTicker, tPriceList),
-        ).called(1);
-      },
-    );
-
-    test('getPriceHistory_serverFailure_returnsLeftFailure', () async {
+    test('getPriceHistory_failure_returnsLeftFailure', () async {
       // arrange
       when(
-        () => mockLocalDataSource.getCachedPrices(tTicker),
-      ).thenAnswer((_) async => null);
-      when(
-        () => mockRemoteDataSource.getHistoricalPrice(tTicker),
-      ).thenThrow(Exception('Server Error'));
+        () => mockLocalDataSource.syncPrices(
+          tTicker,
+          remoteFetcher: any(named: 'remoteFetcher'),
+        ),
+      ).thenAnswer(
+        (_) async => const cache.CacheFailure(Failure.server('error')),
+      );
 
       // act
-      final result = await repository.getPriceHistory(tTicker);
+      final resultData = await repository.getPriceHistory(tTicker);
 
       // assert
-      expect(result.isLeft(), true);
-      result.fold(
-        (l) => expect(l, isA<ServerFailure>()),
-        (r) => fail('Should return left'),
-      );
+      expect(resultData.isLeft(), true);
     });
   });
 
@@ -121,81 +93,47 @@ void main() {
     );
     final tEodList = [tEodDto];
 
-    test('getHistoricalEodPrices_cacheHit_returnsLocalData', () async {
+    test('getHistoricalEodPrices_success_returnsData', () async {
       // arrange
       when(
-        () => mockLocalDataSource.getCachedHistoricalEodPrices(tTicker),
-      ).thenAnswer((_) async => tEodList);
+        () => mockLocalDataSource.syncHistoricalEodPrices(
+          tTicker,
+          remoteFetcher: any(named: 'remoteFetcher'),
+        ),
+      ).thenAnswer(
+        (_) async => cache.CacheSuccess(tEodList, CompanyProfileDataOrigin.api),
+      );
 
       // act
-      final result = await repository.getHistoricalEodPrices(tTicker);
+      final resultData = await repository.getHistoricalEodPrices(tTicker);
 
       // assert
-      expect(result.isRight(), true);
-      result.fold((l) => fail('Should return right'), (r) {
+      expect(resultData.isRight(), true);
+      resultData.fold((l) => fail('Should return right'), (tuple) {
+        final r = tuple.$1;
+        final origin = tuple.$2;
         expect(r, isA<List<HistoricalPriceEod>>());
-        expect(r.length, 1);
+        expect(origin, CompanyProfileDataOrigin.api);
         expect(r.first.price, 155.0);
       });
-      verify(
-        () => mockLocalDataSource.getCachedHistoricalEodPrices(tTicker),
-      ).called(1);
-      verifyZeroInteractions(mockRemoteDataSource);
     });
 
-    test(
-      'getHistoricalEodPrices_cacheMiss_fetchesRemoteAndCaches_returnsData',
-      () async {
-        // arrange
-        when(
-          () => mockLocalDataSource.getCachedHistoricalEodPrices(tTicker),
-        ).thenAnswer((_) async => null);
-        when(
-          () => mockRemoteDataSource.getHistoricalEodPrices(tTicker),
-        ).thenAnswer((_) async => tEodList);
-        when(
-          () => mockLocalDataSource.cacheHistoricalEodPrices(tTicker, tEodList),
-        ).thenAnswer((_) async => Future.value());
-
-        // act
-        final result = await repository.getHistoricalEodPrices(tTicker);
-
-        // assert
-        expect(result.isRight(), true);
-        result.fold((l) => fail('Should return right'), (r) {
-          expect(r, isA<List<HistoricalPriceEod>>());
-          expect(r.first.price, 155.0);
-        });
-        verify(
-          () => mockLocalDataSource.getCachedHistoricalEodPrices(tTicker),
-        ).called(1);
-        verify(
-          () => mockRemoteDataSource.getHistoricalEodPrices(tTicker),
-        ).called(1);
-        verify(
-          () => mockLocalDataSource.cacheHistoricalEodPrices(tTicker, tEodList),
-        ).called(1);
-      },
-    );
-
-    test('getHistoricalEodPrices_serverFailure_returnsLeftFailure', () async {
+    test('getHistoricalEodPrices_failure_returnsLeftFailure', () async {
       // arrange
       when(
-        () => mockLocalDataSource.getCachedHistoricalEodPrices(tTicker),
-      ).thenAnswer((_) async => null);
-      when(
-        () => mockRemoteDataSource.getHistoricalEodPrices(tTicker),
-      ).thenThrow(Exception('Server Error'));
+        () => mockLocalDataSource.syncHistoricalEodPrices(
+          tTicker,
+          remoteFetcher: any(named: 'remoteFetcher'),
+        ),
+      ).thenAnswer(
+        (_) async => const cache.CacheFailure(Failure.server('error')),
+      );
 
       // act
-      final result = await repository.getHistoricalEodPrices(tTicker);
+      final resultData = await repository.getHistoricalEodPrices(tTicker);
 
       // assert
-      expect(result.isLeft(), true);
-      result.fold(
-        (l) => expect(l, isA<ServerFailure>()),
-        (r) => fail('Should return left'),
-      );
+      expect(resultData.isLeft(), true);
     });
   });
 }

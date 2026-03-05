@@ -1,4 +1,5 @@
 import 'package:bizzie/app/routes/app_routes.dart';
+import 'package:bizzie/features/home/presentation/bloc/home_bloc.dart';
 import 'package:bizzie/features/watchlist/presentation/bloc/watchlist_bloc.dart';
 import 'package:bizzie/features/watchlist/presentation/bloc/watchlist_state.dart';
 import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
@@ -11,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:bizzie/shared/widgets/badges/watchlist_event_badge.dart';
+import 'package:bizzie/features/watchlist/domain/extensions/watchlist_event_status_extensions.dart';
 
 class HomeWatchlistWidget extends StatelessWidget {
   const HomeWatchlistWidget({super.key});
@@ -28,21 +30,23 @@ class HomeWatchlistWidget extends StatelessWidget {
             return state.map(
               initial: (_) => _LoadingState(mascotAssetPath: mascot),
               loading: (_) => _LoadingState(mascotAssetPath: mascot),
-              failure: (f) => Center(
-                child: BizzieError(
-                  message: 'Error loading watchlist',
-                  mascotAssetPath: mascot,
-                ),
-              ),
+              failure: (f) {
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  context.read<HomeBloc>().add(
+                    HomeEvent.watchlistLoadFailed(error: f.failure.message),
+                  );
+                });
+                return Center(
+                  child: BizzieError(
+                    message: 'Error loading watchlist',
+                    mascotAssetPath: mascot,
+                  ),
+                );
+              },
               success: (s) => const SizedBox.shrink(),
               loaded: (s) {
                 if (s.companies.isEmpty) {
-                  return BizzieEmptyState(
-                    mascotAsset: mascot,
-                    title: 'No watchlist',
-                    message: 'You have no companies in your watchlist',
-                    isFullPage: true,
-                  );
+                  return _EmptyState(mascotAssetPath: mascot);
                 }
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -66,6 +70,13 @@ class HomeWatchlistWidget extends StatelessWidget {
                               ? WatchlistEventBadge(status: event)
                               : null,
                           onTap: () {
+                            context.read<HomeBloc>().add(
+                              HomeEvent.watchlistTapped(
+                                ticker: company.ticker,
+                                eventText: event?.analyticsEventText,
+                                isUpcoming: event?.isUpcoming,
+                              ),
+                            );
                             context.pushNamed(
                               AppRoutes.companyProfileHome,
                               pathParameters: {'ticker': company.ticker},
@@ -104,6 +115,36 @@ class _LoadingState extends StatelessWidget {
           mascotAssetPath: mascotAssetPath,
         ),
       ],
+    );
+  }
+}
+
+class _EmptyState extends StatefulWidget {
+  final String mascotAssetPath;
+  const _EmptyState({required this.mascotAssetPath});
+
+  @override
+  State<_EmptyState> createState() => _EmptyStateState();
+}
+
+class _EmptyStateState extends State<_EmptyState> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        context.read<HomeBloc>().add(const HomeEvent.emptyStateViewed());
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BizzieEmptyState(
+      mascotAsset: widget.mascotAssetPath,
+      title: 'No watchlist',
+      message: 'You have no companies in your watchlist',
+      isFullPage: true,
     );
   }
 }

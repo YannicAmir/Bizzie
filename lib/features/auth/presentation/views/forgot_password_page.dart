@@ -14,8 +14,12 @@ import '../bloc/auth_state.dart';
 import 'package:bizzie/shared/utils/validators.dart';
 import 'package:flutter/services.dart';
 
+import 'package:bizzie/features/auth/domain/enums/auth_source.dart';
+
 class ForgotPasswordPage extends StatefulWidget {
-  const ForgotPasswordPage({super.key});
+  final AuthSource source;
+
+  const ForgotPasswordPage({super.key, this.source = AuthSource.landing});
 
   @override
   State<ForgotPasswordPage> createState() => _ForgotPasswordPageState();
@@ -34,7 +38,10 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   void _onSendResetLinkPressed() {
     if (_formKey.currentState!.validate()) {
       context.read<AuthBloc>().add(
-        AuthEvent.resetPasswordRequested(_emailController.text),
+        AuthEvent.resetPasswordRequested(
+          _emailController.text,
+          source: widget.source,
+        ),
       );
       context.push(AppRoutes.emailSent);
     }
@@ -59,7 +66,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
       child: Scaffold(
         backgroundColor: theme.scaffoldBackgroundColor,
         appBar: AppBar(
-          backgroundColor: Colors.transparent,
+          backgroundColor: theme.colorScheme.scrim,
           elevation: 0,
           leading: Padding(
             padding: const EdgeInsets.only(left: 8.0, top: 8.0),

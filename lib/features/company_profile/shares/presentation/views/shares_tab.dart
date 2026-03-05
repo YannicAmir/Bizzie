@@ -1,4 +1,5 @@
 import 'package:bizzie/app/themes/app_assets.dart';
+import 'package:bizzie/core/enums/paywall_source.dart';
 import 'package:bizzie/features/company_profile/shares/presentation/bloc/company_shares_bloc.dart';
 import 'package:bizzie/features/company_profile/shares/presentation/bloc/company_shares_event.dart';
 import 'package:bizzie/features/company_profile/shares/presentation/bloc/company_shares_state.dart';
@@ -13,6 +14,8 @@ import 'package:bizzie/shared/widgets/states/bizzie_empty_state.dart';
 import 'package:bizzie/shared/widgets/inputs/bizzie_switch.dart';
 import 'package:bizzie/shared/widgets/modals/app_history_modal.dart';
 import 'package:bizzie/features/company_profile/shared/domain/models/financial_data_point.dart';
+import 'package:bizzie/features/company_profile/shared/presentation/enums/company_profile_tab.dart';
+import 'package:bizzie/features/company_profile/shared/presentation/widgets/tab_visibility_observer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -43,30 +46,86 @@ class _SharesTabState extends State<SharesTab>
     );
     numberFormat.maximumFractionDigits = 2;
 
-    return BlocBuilder<CompanySharesBloc, CompanySharesState>(
-      builder: (context, state) {
-        return state.map(
-          initial: (_) =>
-              const CompanyProfileLoadingState(message: 'Loading shares'),
-          loading: (_) =>
-              const CompanyProfileLoadingState(message: 'Loading shares'),
-          failure: (e) => CompanyProfileErrorState(
-            message: 'Error loading shares',
-            onRetry: () => context.read<CompanySharesBloc>().add(
-              CompanySharesEvent.loadRequested(widget.ticker),
+    return TabVisibilityObserver(
+      tabName: CompanyProfileTab.shares.analyticsName,
+      onTabShown: () => context.read<CompanySharesBloc>().add(
+        CompanySharesEvent.tabShown(widget.ticker),
+      ),
+      onTabHidden: () => context.read<CompanySharesBloc>().add(
+        const CompanySharesEvent.tabHidden(),
+      ),
+      onAppBackgrounded: () => context.read<CompanySharesBloc>().add(
+        const CompanySharesEvent.appBackgrounded(),
+      ),
+      onAppForegrounded: () => context.read<CompanySharesBloc>().add(
+        const CompanySharesEvent.appForegrounded(),
+      ),
+      child: BlocBuilder<CompanySharesBloc, CompanySharesState>(
+        builder: (context, state) {
+          return state.map(
+            initial: (_) =>
+                const CompanyProfileLoadingState(message: 'Loading shares'),
+            loading: (_) =>
+                const CompanyProfileLoadingState(message: 'Loading shares'),
+            failure: (e) => CompanyProfileErrorState(
+              message: 'Error loading shares',
+              onRetry: () => context.read<CompanySharesBloc>().add(
+                CompanySharesEvent.loadRequested(widget.ticker),
+              ),
             ),
-          ),
-          loaded: (loadedState) {
-            final stats = loadedState.shareStats;
-            final isAnnual = _selectedIndex == 0;
-            final chartData = isAnnual
-                ? loadedState.annualChartData
-                : loadedState.quarterlyChartData;
-            final summary = isAnnual
-                ? loadedState.annualSummary
-                : loadedState.quarterlySummary;
+            loaded: (loadedState) {
+              final stats = loadedState.shareStats;
+              final isAnnual = _selectedIndex == 0;
+              final chartData = isAnnual
+                  ? loadedState.annualChartData
+                  : loadedState.quarterlyChartData;
+              final summary = isAnnual
+                  ? loadedState.annualSummary
+                  : loadedState.quarterlySummary;
 
-            if (chartData.isEmpty) {
+              if (chartData.isEmpty) {
+                return SingleChildScrollView(
+                  padding: AppConstants.pagePadding,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      BizzieSwitch(
+                        options: const ['Yearly', 'Quarterly'],
+                        selectedIndex: _selectedIndex,
+                        onChanged: (index) {
+                          setState(() {
+                            _selectedIndex = index;
+                          });
+                          context.read<CompanySharesBloc>().add(
+                            CompanySharesEvent.periodViewed(
+                              isAnnual: index == 0,
+                            ),
+                          );
+                        },
+                      ),
+                      AppConstants.emptyStateTopSpacing,
+                      const BizzieEmptyState(
+                        mascotAsset: AppAssets.defaultMascot,
+                        message: 'No Share data available for this period.',
+                      ),
+                    ],
+                  ),
+                );
+              }
+
+              final summaryFormatted = SharesPresentationHelper.formatSummary(
+                summary,
+                numberFormat,
+              );
+
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                if (mounted) {
+                  context.read<CompanySharesBloc>().add(
+                    CompanySharesEvent.periodViewed(isAnnual: isAnnual),
+                  );
+                }
+              });
+
               return SingleChildScrollView(
                 padding: AppConstants.pagePadding,
                 child: Column(
@@ -79,87 +138,82 @@ class _SharesTabState extends State<SharesTab>
                         setState(() {
                           _selectedIndex = index;
                         });
+                        context.read<CompanySharesBloc>().add(
+                          CompanySharesEvent.periodViewed(isAnnual: index == 0),
+                        );
                       },
                     ),
-                    AppConstants.emptyStateTopSpacing,
-                    const BizzieEmptyState(
-                      mascotAsset: AppAssets.defaultMascot,
-                      message: 'No Share data available for this period.',
+                    AppConstants.mainSectionSpacing,
+                    MetricSummaryCard(
+                      title: 'Outstanding Shares',
+                      value: summaryFormatted.valueStr,
+                      badgeText: summaryFormatted.badgeText,
+                      badgeStyle: summaryFormatted.badgeStyle,
+                      subtitle: summaryFormatted.subtitle,
+                    ),
+                    AppConstants.mainSectionSpacing,
+                    BizzieExpandableChart(
+                      key: ValueKey(
+                        'shares_chart_${isAnnual}_${chartData.length}',
+                      ),
+                      data: chartData
+                          .map((p) => BizzieChartData(p.label, p.value))
+                          .toList(),
+                      numberFormat: numberFormat,
+                      visibleCount: loadedState.historyLimit,
+                      thresholdCount: loadedState.historyLimit,
+                      source: PaywallSource.company_profile,
+                      onAnalyticsTap: () {
+                        context.read<CompanySharesBloc>().add(
+                          CompanySharesEvent.viewAllTapped(
+                            isAnnual: isAnnual,
+                            isChart: true,
+                          ),
+                        );
+                      },
+                    ),
+                    AppConstants.mainSectionSpacing,
+                    FinancialDataTable(
+                      data: isAnnual
+                          ? stats.annualWeightedAverageShares
+                          : stats.quarterlyWeightedAverageShares,
+                      metricLabel: 'Shares',
+                      currency: '',
+                      isInverseGrowth: true,
+                      periodHeaderLabel: isAnnual
+                          ? 'Year Ended'
+                          : 'Quarter Ended',
+                      dateFormat: isAnnual
+                          ? FinancialDateFormat.monthYear
+                          : FinancialDateFormat.quarterShort,
+                      onAnalyticsTap: () {
+                        context.read<CompanySharesBloc>().add(
+                          CompanySharesEvent.viewAllTapped(
+                            isAnnual: isAnnual,
+                            isChart: false,
+                          ),
+                        );
+                      },
+                      onViewMore: () => _showAllHistory(
+                        context,
+                        isAnnual
+                            ? stats.annualWeightedAverageShares
+                            : stats.quarterlyWeightedAverageShares,
+                        isAnnual
+                            ? 'Yearly Shares Data'
+                            : 'Quarterly Shares Data',
+                        isAnnual,
+                      ),
+                      limit: loadedState.historyLimit,
+                      source: PaywallSource.company_profile,
                     ),
                   ],
                 ),
               );
-            }
-
-            final summaryFormatted = SharesPresentationHelper.formatSummary(
-              summary,
-              numberFormat,
-            );
-
-            return SingleChildScrollView(
-              padding: AppConstants.pagePadding,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  BizzieSwitch(
-                    options: const ['Yearly', 'Quarterly'],
-                    selectedIndex: _selectedIndex,
-                    onChanged: (index) {
-                      setState(() {
-                        _selectedIndex = index;
-                      });
-                    },
-                  ),
-                  AppConstants.mainSectionSpacing,
-                  MetricSummaryCard(
-                    title: 'Outstanding Shares',
-                    value: summaryFormatted.valueStr,
-                    badgeText: summaryFormatted.badgeText,
-                    badgeStyle: summaryFormatted.badgeStyle,
-                    subtitle: summaryFormatted.subtitle,
-                  ),
-                  AppConstants.mainSectionSpacing,
-                  BizzieExpandableChart(
-                    key: ValueKey(
-                      'shares_chart_${isAnnual}_${chartData.length}',
-                    ),
-                    data: chartData
-                        .map((p) => BizzieChartData(p.label, p.value))
-                        .toList(),
-                    numberFormat: numberFormat,
-                    visibleCount: loadedState.historyLimit,
-                    thresholdCount: loadedState.historyLimit,
-                  ),
-                  AppConstants.mainSectionSpacing,
-                  FinancialDataTable(
-                    data: isAnnual
-                        ? stats.annualWeightedAverageShares
-                        : stats.quarterlyWeightedAverageShares,
-                    metricLabel: 'Shares',
-                    currency: '',
-                    isInverseGrowth: true,
-                    periodHeaderLabel: isAnnual
-                        ? 'Year Ended'
-                        : 'Quarter Ended',
-                    dateFormat: isAnnual
-                        ? FinancialDateFormat.monthYear
-                        : FinancialDateFormat.quarterShort,
-                    onViewMore: () => _showAllHistory(
-                      context,
-                      isAnnual
-                          ? stats.annualWeightedAverageShares
-                          : stats.quarterlyWeightedAverageShares,
-                      isAnnual ? 'Yearly Shares Data' : 'Quarterly Shares Data',
-                      isAnnual,
-                    ),
-                    limit: loadedState.historyLimit,
-                  ),
-                ],
-              ),
-            );
-          },
-        );
-      },
+            },
+          );
+        },
+      ),
     );
   }
 

@@ -1,11 +1,15 @@
 import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
 import 'package:bizzie/core/error/failures.dart';
+import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:bizzie/features/company_profile/shared/data/datasources/company_firestore_data_source.dart';
 import 'package:bizzie/features/company_profile/shared/data/datasources/company_remote_data_source.dart';
 import 'package:bizzie/features/company_profile/shared/domain/interfaces/i_company_repository.dart';
 import 'package:bizzie/features/company_profile/shared/domain/models/company_profile.dart';
 import 'package:bizzie/features/company_profile/shared/domain/models/stock_quote.dart';
+import 'package:bizzie/core/data/models/cache_result.dart' as result;
+import 'package:bizzie/features/company_profile/shared/data/dtos/company_profile_dto.dart';
+import 'package:bizzie/features/company_profile/shared/data/dtos/quote_dto.dart';
 
 @LazySingleton(as: ICompanyRepository)
 class CompanyRepositoryImpl implements ICompanyRepository {
@@ -15,38 +19,37 @@ class CompanyRepositoryImpl implements ICompanyRepository {
   CompanyRepositoryImpl(this._remoteDataSource, this._localDataSource);
 
   @override
-  Future<Either<Failure, CompanyProfile>> getProfile(String ticker) async {
-    try {
-      final local = await _localDataSource.getCachedProfile(ticker);
-      if (local != null) return right(local.toDomain());
+  Future<Either<Failure, (CompanyProfile, CompanyProfileDataOrigin)>>
+  getProfile(String ticker) async {
+    final res = await _localDataSource.syncProfile(
+      ticker,
+      remoteFetcher: () => _remoteDataSource.getProfile(ticker),
+    );
 
-      final remote = await _remoteDataSource.getProfile(ticker);
-      if (remote.isEmpty) {
-        return left(const Failure.server('Profile not found'));
-      }
-      final profile = remote.first;
-      await _localDataSource.cacheProfile(ticker, profile);
-      return right(profile.toDomain());
-    } catch (e) {
-      return left(Failure.server(e.toString()));
+    if (res is result.CacheSuccess<ProfileDto>) {
+      return right((res.data.toDomain(), res.origin));
+    } else if (res is result.CacheFailure<ProfileDto>) {
+      return left(res.failure);
+    } else {
+      return left(const Failure.server('Profile not found'));
     }
   }
 
   @override
-  Future<Either<Failure, StockQuote>> getQuote(String ticker) async {
-    try {
-      final local = await _localDataSource.getCachedQuote(ticker);
-      if (local != null) return right(local.toDomain());
+  Future<Either<Failure, (StockQuote, CompanyProfileDataOrigin)>> getQuote(
+    String ticker,
+  ) async {
+    final res = await _localDataSource.syncQuote(
+      ticker,
+      remoteFetcher: () => _remoteDataSource.getQuote(ticker),
+    );
 
-      final remote = await _remoteDataSource.getQuote(ticker);
-      if (remote.isEmpty) {
-        return left(const Failure.server('Quote not found'));
-      }
-      final quote = remote.first;
-      await _localDataSource.cacheQuote(ticker, quote);
-      return right(quote.toDomain());
-    } catch (e) {
-      return left(Failure.server(e.toString()));
+    if (res is result.CacheSuccess<QuoteDto>) {
+      return right((res.data.toDomain(), res.origin));
+    } else if (res is result.CacheFailure<QuoteDto>) {
+      return left(res.failure);
+    } else {
+      return left(const Failure.server('Quote not found'));
     }
   }
 }

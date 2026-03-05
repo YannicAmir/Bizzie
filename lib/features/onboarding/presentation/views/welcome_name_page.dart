@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../app/routes/app_routes.dart';
 import '../../../../app/themes/app_assets.dart';
-import '../../../../app/themes/app_colors.dart';
+import 'package:bizzie/features/onboarding/domain/models/onboarding_step.dart';
 
 import '../bloc/onboarding_bloc.dart';
 import '../widgets/onboarding_footer.dart';
@@ -11,8 +11,21 @@ import '../widgets/onboarding_header.dart';
 
 import 'package:bizzie/shared/widgets/buttons/bizzie_primary_button.dart';
 
-class WelcomeNamePage extends StatelessWidget {
+class WelcomeNamePage extends StatefulWidget {
   const WelcomeNamePage({super.key});
+
+  @override
+  State<WelcomeNamePage> createState() => _WelcomeNamePageState();
+}
+
+class _WelcomeNamePageState extends State<WelcomeNamePage> {
+  @override
+  void initState() {
+    super.initState();
+    context.read<OnboardingBloc>().add(
+      const OnboardingEvent.stepViewed(OnboardingStep.gladYouJoined),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -103,7 +116,7 @@ class _WelcomeTextContent extends StatelessWidget {
           Text(
             "Let's take on the Stock Market together",
             style: theme.textTheme.bodyLarge?.copyWith(
-              color: AppColors.textSecondary,
+              color: theme.colorScheme.onSurfaceVariant,
             ),
           ),
         ],

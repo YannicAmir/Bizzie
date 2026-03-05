@@ -1,6 +1,8 @@
 import 'package:bizzie/features/subscription/presentation/bloc/subscription_bloc.dart';
+import 'package:bizzie/core/enums/paywall_source.dart';
 import 'package:bizzie/features/subscription/presentation/bloc/subscription_event.dart';
 import 'package:bizzie/features/subscription/presentation/bloc/subscription_state.dart';
+import 'package:bizzie/features/subscription/domain/enums/paywall_type.dart';
 import 'package:bizzie/features/subscription/presentation/extensions/subscription_state_extensions.dart';
 import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
 import 'package:bizzie/features/user/presentation/extensions/user_state_extensions.dart';
@@ -16,8 +18,19 @@ import 'package:go_router/go_router.dart';
 
 class SubscriptionPage extends StatefulWidget {
   final bool isUpgradeFlow;
+  final PaywallSource source;
+  final String? tabName;
+  final String? featureName;
+  final VoidCallback? onEnter;
 
-  const SubscriptionPage({super.key, this.isUpgradeFlow = false});
+  const SubscriptionPage({
+    super.key,
+    this.isUpgradeFlow = false,
+    this.source = PaywallSource.unknown,
+    this.tabName,
+    this.featureName,
+    this.onEnter,
+  });
 
   @override
   State<SubscriptionPage> createState() => _SubscriptionPageState();
@@ -40,6 +53,21 @@ class _SubscriptionPageState extends State<SubscriptionPage>
     context.read<SubscriptionBloc>().add(
       const SubscriptionEvent.resetPurchaseState(),
     );
+
+    context.read<SubscriptionBloc>().add(
+      SubscriptionEvent.viewed(
+        source: widget.source,
+        paywallType: PaywallType.regular,
+        tabName: widget.tabName,
+        featureName: widget.featureName,
+      ),
+    );
+
+    if (widget.onEnter != null) {
+      Future.delayed(const Duration(milliseconds: 300), () {
+        if (mounted) widget.onEnter!();
+      });
+    }
   }
 
   @override
@@ -152,6 +180,8 @@ class _SubscriptionPageState extends State<SubscriptionPage>
         if (mounted) {
           if (widget.isUpgradeFlow) {
             context.pop(true);
+          } else if (context.canPop()) {
+            context.pop();
           } else {
             context.go(AppRoutes.home);
           }

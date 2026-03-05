@@ -40,4 +40,13 @@ abstract class FinancialStatementsEvent with _$FinancialStatementsEvent {
     String date, {
     required bool isAnnual,
   }) = CashFlowDateSelected;
+
+  const factory FinancialStatementsEvent.tabShown(String ticker) = TabShown;
+  const factory FinancialStatementsEvent.tabHidden() = TabHidden;
+  const factory FinancialStatementsEvent.appBackgrounded() = AppBackgrounded;
+  const factory FinancialStatementsEvent.appForegrounded() = AppForegrounded;
+  const factory FinancialStatementsEvent.viewAllTapped({
+    required bool isAnnual,
+  }) = ViewAllTapped;
+  const factory FinancialStatementsEvent.chartSwiped(int index) = ChartSwiped;
 }

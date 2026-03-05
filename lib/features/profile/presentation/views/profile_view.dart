@@ -11,8 +11,13 @@ import 'package:bizzie/features/profile/presentation/widgets/profile_info_sectio
 import 'package:bizzie/features/profile/presentation/widgets/profile_premium_card.dart';
 import 'package:bizzie/features/profile/presentation/widgets/sector_highlight_card.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
+import 'package:bizzie/app/routes/app_routes.dart';
+import 'package:bizzie/core/enums/paywall_source.dart';
+import 'package:bizzie/features/profile/presentation/bloc/profile_event.dart';
+import 'package:bizzie/shared/utils/paywall_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ProfileView extends StatelessWidget {
@@ -22,17 +27,40 @@ class ProfileView extends StatelessWidget {
   Widget build(BuildContext context) {
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.light,
-      child: Scaffold(
-        body: BlocBuilder<ProfileBloc, ProfileState>(
-          builder: (context, state) {
-            return state.map(
-              initial: (_) => const _ProfileLoadingView(),
-              loading: (_) => const _ProfileLoadingView(),
-              failure: (f) =>
-                  Center(child: Text('Error: ${f.failure.toString()}')),
-              loaded: (state) => _ProfileLoadedView(data: state.data),
-            );
-          },
+      child: BlocListener<ProfileBloc, ProfileState>(
+        listenWhen: (previous, current) => current.maybeMap(
+          loaded: (s) => s.shouldNavigateToSettings || s.shouldShowPaywall,
+          orElse: () => false,
+        ),
+        listener: (context, state) {
+          state.mapOrNull(
+            loaded: (s) {
+              if (s.shouldNavigateToSettings) {
+                context.push(AppRoutes.settings);
+              } else if (s.shouldShowPaywall) {
+                PaywallHelper.showPaywallSequence(
+                  context,
+                  source: PaywallSource.profile,
+                );
+              }
+              context.read<ProfileBloc>().add(
+                const ProfileEvent.navigationProcessed(),
+              );
+            },
+          );
+        },
+        child: Scaffold(
+          body: BlocBuilder<ProfileBloc, ProfileState>(
+            builder: (context, state) {
+              return state.map(
+                initial: (_) => const _ProfileLoadingView(),
+                loading: (_) => const _ProfileLoadingView(),
+                failure: (f) =>
+                    Center(child: Text('Error: ${f.failure.toString()}')),
+                loaded: (state) => _ProfileLoadedView(data: state.data),
+              );
+            },
+          ),
         ),
       ),
     );

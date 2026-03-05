@@ -11,11 +11,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class CompanyWatchlistButton extends StatelessWidget {
   final String ticker;
   final String? companyName;
+  final String tabName;
+  final DateTime entranceTime;
 
   const CompanyWatchlistButton({
     super.key,
     required this.ticker,
     this.companyName,
+    required this.tabName,
+    required this.entranceTime,
   });
 
   @override
@@ -37,14 +41,29 @@ class CompanyWatchlistButton extends StatelessWidget {
         return GestureDetector(
           onTap: () {
             final bloc = context.read<WatchlistBloc>();
+            final durationOnPageSeconds = DateTime.now()
+                .difference(entranceTime)
+                .inSeconds;
+
             if (isInWatchlist) {
               HapticFeedback.lightImpact();
-              bloc.add(WatchlistEvent.removeRequested(ticker));
+              bloc.add(
+                WatchlistEvent.removeRequested(
+                  ticker: ticker,
+                  tabName: tabName,
+                  durationOnPageSeconds: durationOnPageSeconds,
+                ),
+              );
             } else {
               HapticFeedback.heavyImpact();
               HapticFeedback.vibrate();
               bloc.add(
-                WatchlistEvent.addRequested(ticker: ticker, name: companyName),
+                WatchlistEvent.addRequested(
+                  ticker: ticker,
+                  name: companyName,
+                  tabName: tabName,
+                  durationOnPageSeconds: durationOnPageSeconds,
+                ),
               );
             }
           },

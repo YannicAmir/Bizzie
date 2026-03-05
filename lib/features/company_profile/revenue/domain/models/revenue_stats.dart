@@ -6,6 +6,7 @@ part 'revenue_stats.freezed.dart';
 @freezed
 abstract class RevenueStats with _$RevenueStats {
   const factory RevenueStats({
+    required String symbol,
     required String reportedCurrency,
     required List<FinancialDataPoint> annualRevenue,
     required List<FinancialDataPoint> quarterlyRevenue,

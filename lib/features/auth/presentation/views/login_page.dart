@@ -7,12 +7,15 @@ import 'package:go_router/go_router.dart';
 
 import '../bloc/auth_bloc.dart';
 import '../bloc/auth_state.dart';
+import 'package:bizzie/features/auth/domain/enums/auth_source.dart';
 import '../widgets/auth_footer.dart';
 import '../widgets/login_form.dart';
 import '../widgets/social_login_buttons.dart';
 
 class LoginPage extends StatelessWidget {
-  const LoginPage({super.key});
+  final AuthSource source;
+
+  const LoginPage({super.key, this.source = AuthSource.landing});
 
   @override
   Widget build(BuildContext context) {
@@ -55,11 +58,12 @@ class LoginPage extends StatelessWidget {
                 const SizedBox(height: 32),
                 const _LoginHeader(),
                 const SizedBox(height: 24),
-                const LoginForm(),
+                const SizedBox(height: 24),
+                LoginForm(source: source),
                 const SizedBox(height: 24),
                 const AuthDivider(),
                 const SizedBox(height: 24),
-                const SocialLoginButtons(),
+                SocialLoginButtons(source: source),
                 const SizedBox(height: 48),
                 const AuthFooter(),
                 const SizedBox(height: 20),

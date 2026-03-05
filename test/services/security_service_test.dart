@@ -69,7 +69,7 @@ void main() {
         await securityService.handleThreat(SecurityConstants.unofficialStore);
 
         // Assert
-        expect(securityService.isThreatDetected.value, isFalse);
+        expect(securityService.isThreatDetected, isFalse);
       });
 
       test('handleThreat_regularThreat_logsWarningButDoesNotLockout', () async {
@@ -77,7 +77,7 @@ void main() {
         await securityService.handleThreat(SecurityConstants.debugging);
 
         // Assert
-        expect(securityService.isThreatDetected.value, isFalse);
+        expect(securityService.isThreatDetected, isFalse);
       });
     });
 
@@ -91,7 +91,7 @@ void main() {
         await securityService.handleThreat(SecurityConstants.unofficialStore);
 
         // Assert
-        expect(securityService.isThreatDetected.value, isTrue);
+        expect(securityService.isThreatDetected, isTrue);
         verify(() => mockAuthRepository.signOut()).called(1);
       });
 
@@ -100,7 +100,7 @@ void main() {
         await securityService.handleThreat(SecurityConstants.simulator);
 
         // Assert
-        expect(securityService.isThreatDetected.value, isTrue);
+        expect(securityService.isThreatDetected, isTrue);
         verify(() => mockAuthRepository.signOut()).called(1);
       });
     });

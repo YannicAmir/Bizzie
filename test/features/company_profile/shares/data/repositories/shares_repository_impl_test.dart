@@ -1,4 +1,5 @@
 import 'package:bizzie/features/company_profile/financial_statements/data/datasources/financial_statements_firestore_data_source.dart';
+import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:bizzie/features/company_profile/financial_statements/data/datasources/financial_statements_remote_data_source.dart';
 import 'package:bizzie/features/company_profile/business/data/dtos/governance_dtos.dart';
 import 'package:bizzie/features/company_profile/financial_statements/data/dtos/legacy_income_statement_dto.dart';
@@ -9,6 +10,7 @@ import 'package:bizzie/features/company_profile/shares/domain/models/share_stats
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:bizzie/core/data/models/cache_result.dart' as cache;
 
 class MockFinancialRemoteDataSource extends Mock
     implements FinancialStatementsRemoteDataSource {}
@@ -69,31 +71,42 @@ void main() {
     ];
 
     test('getShareStats_success_returnsShareStats', () async {
-      // arrange
-      when(
-        () => mockCompanyRepository.getQuote(tTicker),
-      ).thenAnswer((_) async => Right(tStockQuote));
+      // Arrange
+      when(() => mockCompanyRepository.getQuote(tTicker)).thenAnswer(
+        (_) async => Right((tStockQuote, CompanyProfileDataOrigin.api)),
+      );
 
       when(
-        () => mockFinancialLocalDataSource.getCachedLegacyIncomeStatements(
+        () => mockFinancialLocalDataSource.syncLegacyIncomeStatements(
           tTicker,
-          period: 'annual',
+          period: any(named: 'period'),
+          remoteFetcher: any(named: 'remoteFetcher'),
         ),
-      ).thenAnswer((_) async => tLegacyIncome);
-      when(
-        () => mockFinancialLocalDataSource.getCachedLegacyIncomeStatements(
-          tTicker,
-          period: 'quarter',
-        ),
-      ).thenAnswer((_) async => <LegacyIncomeStatementDto>[]);
+      ).thenAnswer((invocation) async {
+        final period = invocation.namedArguments[#period] as String;
+        if (period == 'annual') {
+          return cache.CacheSuccess(
+            tLegacyIncome,
+            CompanyProfileDataOrigin.cache,
+          );
+        } else {
+          return const cache.CacheSuccess(
+            <LegacyIncomeStatementDto>[],
+            CompanyProfileDataOrigin.cache,
+          );
+        }
+      });
 
-      // act
+      // Act
       final result = await repository.getShareStats(tTicker);
 
-      // assert
+      // Assert
       expect(result.isRight(), true);
-      result.fold((l) => fail('Should return right'), (r) {
+      result.fold((l) => fail('Should return right'), (tuple) {
+        final r = tuple.$1;
+        final origin = tuple.$2;
         expect(r, isA<ShareStats>());
+        expect(origin, CompanyProfileDataOrigin.api); // Result of merging
         expect(r.currentSharesOutstanding, 16000000000.0);
         expect(r.annualWeightedAverageShares.length, 1);
       });

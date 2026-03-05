@@ -1,8 +1,10 @@
+import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/features/company_profile/shared/data/datasources/ratios_firestore_data_source.dart';
 import 'package:bizzie/features/company_profile/shared/data/datasources/ratios_remote_data_source.dart';
+import 'package:bizzie/features/company_profile/shared/data/dtos/ratios_dto.dart';
 import '../../domain/interfaces/i_pe_ratio_repository.dart';
 import '../../domain/models/pe_ratio.dart';
 
@@ -18,21 +20,40 @@ class PeRatioRepositoryImpl implements IPeRatioRepository {
   PeRatioRepositoryImpl(this._remoteDataSource, this._localDataSource);
 
   @override
-  Future<Either<Failure, List<PeRatio>>> getPeRatios(
-    String ticker, {
-    String period = 'annual',
-  }) async {
+  Future<Either<Failure, (List<PeRatio>, CompanyProfileDataOrigin)>>
+  getPeRatios(String ticker, {String period = 'annual'}) async {
     try {
-      final local = await _localDataSource.getCachedRatios(
+      final isTtm = period == _Consts.ttm;
+      final res = await _localDataSource.syncRatios(
         ticker,
-        isTtm: period == _Consts.ttm,
+        isTtm: isTtm,
+        remoteFetcher: () async {
+          if (isTtm) {
+            final ttmList = await _remoteDataSource.getRatiosTtm(ticker);
+            return ttmList
+                .map(
+                  (e) => RatiosDto(
+                    symbol: e.symbol,
+                    priceToEarningsRatio: e.priceToEarningsRatioTTM,
+                    priceToFreeCashFlowRatio: e.priceToFreeCashFlowRatioTTM,
+                    period: 'ttm',
+                    date: DateTime.now().toIso8601String(),
+                  ),
+                )
+                .toList();
+          } else {
+            return _remoteDataSource.getRatios(ticker);
+          }
+        },
       );
-      if (local != null) return right(local.map((d) => d.toPeRatio()).toList());
 
-      final remote = await _remoteDataSource.getRatios(ticker);
-
-      await _localDataSource.cacheRatios(ticker, remote, isTtm: false);
-      return right(remote.map((d) => d.toPeRatio()).toList());
+      return res.map(
+        success: (s) =>
+            right((s.data.map((d) => d.toPeRatio()).toList(), s.origin)),
+        failure: (f) => left(f.failure),
+        notFound: (_) =>
+            right((const <PeRatio>[], CompanyProfileDataOrigin.cache)),
+      );
     } catch (e) {
       return left(Failure.server(e.toString()));
     }

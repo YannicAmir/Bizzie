@@ -128,12 +128,12 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( ProfileDisplayData data)?  loaded,TResult Function( Failure failure)?  failure,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( ProfileDisplayData data,  bool shouldNavigateToSettings,  bool shouldShowPaywall)?  loaded,TResult Function( Failure failure)?  failure,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial();case _Loading() when loading != null:
 return loading();case _Loaded() when loaded != null:
-return loaded(_that.data);case _Failure() when failure != null:
+return loaded(_that.data,_that.shouldNavigateToSettings,_that.shouldShowPaywall);case _Failure() when failure != null:
 return failure(_that.failure);case _:
   return orElse();
 
@@ -152,12 +152,12 @@ return failure(_that.failure);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( ProfileDisplayData data)  loaded,required TResult Function( Failure failure)  failure,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( ProfileDisplayData data,  bool shouldNavigateToSettings,  bool shouldShowPaywall)  loaded,required TResult Function( Failure failure)  failure,}) {final _that = this;
 switch (_that) {
 case _Initial():
 return initial();case _Loading():
 return loading();case _Loaded():
-return loaded(_that.data);case _Failure():
+return loaded(_that.data,_that.shouldNavigateToSettings,_that.shouldShowPaywall);case _Failure():
 return failure(_that.failure);case _:
   throw StateError('Unexpected subclass');
 
@@ -175,12 +175,12 @@ return failure(_that.failure);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( ProfileDisplayData data)?  loaded,TResult? Function( Failure failure)?  failure,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( ProfileDisplayData data,  bool shouldNavigateToSettings,  bool shouldShowPaywall)?  loaded,TResult? Function( Failure failure)?  failure,}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial();case _Loading() when loading != null:
 return loading();case _Loaded() when loaded != null:
-return loaded(_that.data);case _Failure() when failure != null:
+return loaded(_that.data,_that.shouldNavigateToSettings,_that.shouldShowPaywall);case _Failure() when failure != null:
 return failure(_that.failure);case _:
   return null;
 
@@ -257,10 +257,12 @@ String toString() {
 
 
 class _Loaded implements ProfileState {
-  const _Loaded(this.data);
+  const _Loaded(this.data, {this.shouldNavigateToSettings = false, this.shouldShowPaywall = false});
   
 
  final  ProfileDisplayData data;
+@JsonKey() final  bool shouldNavigateToSettings;
+@JsonKey() final  bool shouldShowPaywall;
 
 /// Create a copy of ProfileState
 /// with the given fields replaced by the non-null parameter values.
@@ -272,16 +274,16 @@ _$LoadedCopyWith<_Loaded> get copyWith => __$LoadedCopyWithImpl<_Loaded>(this, _
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Loaded&&(identical(other.data, data) || other.data == data));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Loaded&&(identical(other.data, data) || other.data == data)&&(identical(other.shouldNavigateToSettings, shouldNavigateToSettings) || other.shouldNavigateToSettings == shouldNavigateToSettings)&&(identical(other.shouldShowPaywall, shouldShowPaywall) || other.shouldShowPaywall == shouldShowPaywall));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,data);
+int get hashCode => Object.hash(runtimeType,data,shouldNavigateToSettings,shouldShowPaywall);
 
 @override
 String toString() {
-  return 'ProfileState.loaded(data: $data)';
+  return 'ProfileState.loaded(data: $data, shouldNavigateToSettings: $shouldNavigateToSettings, shouldShowPaywall: $shouldShowPaywall)';
 }
 
 
@@ -292,7 +294,7 @@ abstract mixin class _$LoadedCopyWith<$Res> implements $ProfileStateCopyWith<$Re
   factory _$LoadedCopyWith(_Loaded value, $Res Function(_Loaded) _then) = __$LoadedCopyWithImpl;
 @useResult
 $Res call({
- ProfileDisplayData data
+ ProfileDisplayData data, bool shouldNavigateToSettings, bool shouldShowPaywall
 });
 
 
@@ -309,10 +311,12 @@ class __$LoadedCopyWithImpl<$Res>
 
 /// Create a copy of ProfileState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? data = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? data = null,Object? shouldNavigateToSettings = null,Object? shouldShowPaywall = null,}) {
   return _then(_Loaded(
 null == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
-as ProfileDisplayData,
+as ProfileDisplayData,shouldNavigateToSettings: null == shouldNavigateToSettings ? _self.shouldNavigateToSettings : shouldNavigateToSettings // ignore: cast_nullable_to_non_nullable
+as bool,shouldShowPaywall: null == shouldShowPaywall ? _self.shouldShowPaywall : shouldShowPaywall // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 

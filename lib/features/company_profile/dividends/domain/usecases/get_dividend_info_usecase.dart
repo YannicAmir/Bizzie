@@ -2,18 +2,25 @@ import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/core/usecase/usecase.dart';
+import 'package:bizzie/core/enums/data_origin.dart';
 import '../interfaces/i_dividend_repository.dart';
 import '../models/dividend_info.dart';
 
 @injectable
 class GetDividendInfoUseCase
-    implements UseCase<Either<Failure, DividendInfo>, String> {
+    implements
+        UseCase<
+          Either<Failure, (DividendInfo, CompanyProfileDataOrigin)>,
+          String
+        > {
   final IDividendRepository _repository;
 
   GetDividendInfoUseCase(this._repository);
 
   @override
-  Future<Either<Failure, DividendInfo>> call(String ticker) {
+  Future<Either<Failure, (DividendInfo, CompanyProfileDataOrigin)>> call(
+    String ticker,
+  ) {
     return _repository.getDividendInfo(ticker);
   }
 }

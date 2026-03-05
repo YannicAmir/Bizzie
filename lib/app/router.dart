@@ -1,8 +1,13 @@
 import 'package:bizzie/app/routes/app_routes.dart';
 import 'package:bizzie/app/routes/app_router_redirect.dart';
 import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
+import 'package:bizzie/features/reports/domain/enums/reports_analytics_enums.dart';
+import 'package:bizzie/features/reports/presentation/views/reports_page.dart';
 import 'package:bizzie/features/search/presentation/views/search_page.dart';
 import 'package:bizzie/features/search/presentation/bloc/search_bloc.dart';
+import 'package:bizzie/features/search/domain/enums/search_analytics_enums.dart';
+import 'package:collection/collection.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:bizzie/features/onboarding/domain/models/company.dart';
 
 import 'package:bizzie/features/auth/presentation/views/create_account_page.dart';
@@ -10,7 +15,9 @@ import 'package:bizzie/features/onboarding/presentation/widgets/onboarding_shell
 import 'package:bizzie/features/auth/presentation/views/email_sent_page.dart';
 import 'package:bizzie/features/auth/presentation/views/forgot_password_page.dart';
 import 'package:bizzie/features/auth/presentation/views/login_page.dart';
+import 'package:bizzie/features/auth/domain/enums/auth_source.dart';
 import 'package:bizzie/features/home/presentation/views/home_page.dart';
+import 'package:bizzie/features/home/presentation/bloc/home_bloc.dart';
 import 'package:bizzie/features/notifications/presentation/views/notification_request_page.dart';
 import 'package:bizzie/features/onboarding/presentation/views/ask_name_page.dart';
 import 'package:bizzie/features/onboarding/presentation/views/landing_page.dart';
@@ -26,7 +33,6 @@ import 'package:bizzie/features/onboarding/presentation/views/investing_experien
 import 'package:bizzie/features/onboarding/presentation/views/sector_selection_page.dart';
 import 'package:bizzie/features/onboarding/presentation/views/welcome_name_page.dart';
 import 'package:bizzie/features/company_profile/cp/presentation/views/company_profile_page.dart';
-import 'package:bizzie/features/reports/presentation/views/reports_page.dart';
 import 'package:bizzie/features/profile/presentation/views/profile_page.dart';
 import 'package:bizzie/features/profile/presentation/views/change_password_view.dart';
 import 'package:bizzie/features/profile/presentation/views/edit_profile_view.dart';
@@ -44,6 +50,7 @@ import 'package:async/async.dart';
 
 import 'package:bizzie/features/subscription/presentation/views/discounted_subscription_page.dart';
 import 'package:bizzie/features/subscription/presentation/views/subscription_page.dart';
+import 'package:bizzie/core/enums/paywall_source.dart';
 import 'package:bizzie/features/settings/presentation/views/settings_view.dart';
 import 'package:bizzie/features/security/presentation/views/security_lockout_screen.dart';
 
@@ -59,6 +66,7 @@ GoRouter createRouter(
   return GoRouter(
     navigatorKey: rootNavigatorKey,
     initialLocation: initialLocation ?? AppRoutes.splash,
+    observers: [getIt<FirebaseAnalyticsObserver>()],
     refreshListenable: GoRouterRefreshStream(
       StreamGroup.merge([authBloc.stream, userBloc.stream]),
     ),
@@ -80,7 +88,10 @@ GoRouter createRouter(
           body: SizedBox.shrink(),
         ),
       ),
-      _buildNoTransitionRoute(AppRoutes.login, const LoginPage()),
+      _buildNoTransitionRoute(
+        AppRoutes.login,
+        const LoginPage(source: AuthSource.landing),
+      ),
 
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) {
@@ -92,12 +103,16 @@ GoRouter createRouter(
             routes: [
               GoRoute(
                 path: AppRoutes.home,
-                builder: (context, state) => const HomePage(),
+                name: AppRoutes.homeName,
+                builder: (context, state) => BlocProvider<HomeBloc>(
+                  create: (context) => getIt<HomeBloc>(),
+                  child: const HomePage(),
+                ),
                 routes: [
                   _buildCompanyRoute(AppRoutes.companyProfileHome),
                   _buildPaywallRoute(
-                    path: 'subscribe',
-                    name: 'home_subscribe',
+                    path: AppRoutes.subscribePath,
+                    name: AppRoutes.homeSubscribe,
                     parentNavigatorKey: rootNavigatorKey,
                     child: const SubscriptionPage(),
                   ),
@@ -111,7 +126,25 @@ GoRouter createRouter(
             routes: [
               GoRoute(
                 path: AppRoutes.reports,
-                builder: (context, state) => const ReportsPage(),
+                builder: (context, state) {
+                  final entrySourceStr =
+                      state.uri.queryParameters['entrySource'];
+                  final notificationTypeStr =
+                      state.uri.queryParameters['notificationType'];
+
+                  final entrySource = ReportsEntrySource.values.firstWhere(
+                    (e) => e.name == entrySourceStr,
+                    orElse: () => ReportsEntrySource.nav,
+                  );
+
+                  final notificationType = ReportsNotificationType.values
+                      .firstWhereOrNull((e) => e.name == notificationTypeStr);
+
+                  return ReportsPage(
+                    entrySource: entrySource,
+                    notificationType: notificationType,
+                  );
+                },
                 routes: [_buildCompanyRoute(AppRoutes.companyProfileReports)],
               ),
             ],
@@ -133,13 +166,15 @@ GoRouter createRouter(
       GoRoute(
         path: AppRoutes.search,
         pageBuilder: (context, state) {
-          final sourceTab = state.extra as String?;
+          final source = state.extra is SearchSource
+              ? state.extra as SearchSource
+              : SearchSource.home;
           return CustomTransitionPage(
             key: state.pageKey,
             child: BlocProvider<SearchBloc>(
               create: (_) =>
-                  getIt<SearchBloc>()..add(const SearchEvent.started()),
-              child: SearchPage(sourceTab: sourceTab),
+                  getIt<SearchBloc>()..add(SearchEvent.started(source: source)),
+              child: SearchPage(source: source),
             ),
             transitionsBuilder:
                 (context, animation, secondaryAnimation, child) {
@@ -152,7 +187,8 @@ GoRouter createRouter(
 
       GoRoute(
         path: AppRoutes.forgotPassword,
-        builder: (context, state) => const ForgotPasswordPage(),
+        builder: (context, state) =>
+            const ForgotPasswordPage(source: AuthSource.landing),
       ),
       GoRoute(
         path: AppRoutes.emailSent,
@@ -172,11 +208,8 @@ GoRouter createRouter(
 
       ShellRoute(
         builder: (context, state, child) {
-          return BlocProvider<OnboardingBloc>(
-            create: (_) =>
-                getIt<OnboardingBloc>()..add(const OnboardingEvent.started()),
-            child: child,
-          );
+          final bloc = getIt<OnboardingBloc>();
+          return BlocProvider<OnboardingBloc>.value(value: bloc, child: child);
         },
         routes: [
           GoRoute(
@@ -238,7 +271,7 @@ GoRouter createRouter(
               ),
               _buildNoTransitionRoute(
                 AppRoutes.createAccount,
-                const CreateAccountPage(),
+                const CreateAccountPage(source: AuthSource.onboarding),
               ),
               _buildNoTransitionRoute(
                 AppRoutes.onboardingNotifications,
@@ -251,11 +284,13 @@ GoRouter createRouter(
       _buildPaywallRoute(
         path: AppRoutes.paywall,
         name: AppRoutes.paywall,
+        parentNavigatorKey: rootNavigatorKey,
         child: const SubscriptionPage(),
       ),
       _buildPaywallRoute(
         path: AppRoutes.discountedPaywall,
         name: AppRoutes.discountedPaywall,
+        parentNavigatorKey: rootNavigatorKey,
         child: const DiscountedSubscriptionPage(),
       ),
       GoRoute(
@@ -321,11 +356,35 @@ GoRoute _buildPaywallRoute({
     name: name,
     parentNavigatorKey: parentNavigatorKey,
     pageBuilder: (context, state) {
-      final animateParam = state.uri.queryParameters['animate'];
+      final queryParams = state.uri.queryParameters;
+      final animateParam = queryParams['animate'];
       final animate = animateParam != 'false';
-      final isOnboarding = animateParam == 'onboarding';
+      final sourceStr = queryParams['source'];
+      final source = PaywallSource.values.firstWhere(
+        (e) => e.name == sourceStr,
+        orElse: () => PaywallSource.unknown,
+      );
+      final tabName = queryParams['tabName'];
+      final featureName = queryParams['featureName'];
+      final onEnter = state.extra is VoidCallback
+          ? state.extra as VoidCallback
+          : null;
 
-      final pageChild = child;
+      final pageChild = child is SubscriptionPage
+          ? SubscriptionPage(
+              source: source,
+              tabName: tabName,
+              featureName: featureName,
+              onEnter: onEnter,
+            )
+          : child is DiscountedSubscriptionPage
+          ? DiscountedSubscriptionPage(
+              source: source,
+              tabName: tabName,
+              featureName: featureName,
+              onEnter: onEnter,
+            )
+          : child;
 
       if (!animate) {
         return NoTransitionPage(
@@ -340,9 +399,6 @@ GoRoute _buildPaywallRoute({
         fullscreenDialog: true,
         child: pageChild,
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          if (isOnboarding && animation.status == AnimationStatus.forward) {
-            return child;
-          }
           const begin = Offset(0.0, 1.0);
           const end = Offset.zero;
           const curve = Curves.easeInOut;
@@ -377,7 +433,7 @@ GoRoute _buildNoTransitionRoute(String path, Widget child) {
 
 GoRoute _buildCompanyRoute(String routeName) {
   return GoRoute(
-    path: 'company/:ticker',
+    path: AppRoutes.companyProfilePath,
     name: routeName,
     builder: (context, state) {
       final ticker = state.pathParameters['ticker']!;

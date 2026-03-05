@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:device_info_plus/device_info_plus.dart';
@@ -19,7 +20,16 @@ class SecurityService {
   final IConfigService _configService;
   final IAuthRepository _authRepository;
 
-  final ValueNotifier<bool> isThreatDetected = ValueNotifier(false);
+  final _threatController =
+      StreamController<({String type, bool isCritical})>.broadcast();
+  Stream<({String type, bool isCritical})> get threatStream =>
+      _threatController.stream;
+
+  bool _isThreatDetected = false;
+  bool get isThreatDetected => _isThreatDetected;
+
+  ({String type, bool isCritical})? _lastThreat;
+  ({String type, bool isCritical})? get lastThreat => _lastThreat;
 
   SecurityService(this._env, this._configService, this._authRepository);
 
@@ -41,7 +51,7 @@ class SecurityService {
     }
 
     final config = TalsecConfig(
-      androidConfig: null, // Android skipped for now
+      androidConfig: null,
       iosConfig: IOSConfig(
         bundleIds: [_env.bundleId],
         teamId: _env.appleTeamId,
@@ -92,7 +102,9 @@ class SecurityService {
     if (FlavorConfig.isProd) {
       _logger.severe(message);
       await _gracefulShutdown();
-      isThreatDetected.value = true;
+      _isThreatDetected = true;
+      _lastThreat = (type: threatType, isCritical: isCritical);
+      _threatController.add((type: threatType, isCritical: isCritical));
     } else {
       if (threatType == SecurityConstants.unofficialStore) {
         _logger.warning('$message (Whitelisted for Non-Prod)');

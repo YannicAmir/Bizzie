@@ -14,14 +14,19 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 class FeedbackModal extends StatefulWidget {
-  const FeedbackModal({super.key});
+  final String? intentSource;
 
-  static void show(BuildContext context) {
+  const FeedbackModal({this.intentSource, super.key});
+
+  static void show(BuildContext context, {String? intentSource}) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (context) => const FeedbackModal(),
+      builder: (context) => BlocProvider(
+        create: (context) => getIt<FeedbackBloc>(),
+        child: FeedbackModal(intentSource: intentSource),
+      ),
     );
   }
 
@@ -34,6 +39,18 @@ class _FeedbackModalState extends State<FeedbackModal> {
   final _formKey = GlobalKey<FormState>();
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        context.read<FeedbackBloc>().add(
+          FeedbackEvent.viewed(intentSource: widget.intentSource),
+        );
+      }
+    });
+  }
+
+  @override
   void dispose() {
     _messageController.dispose();
     super.dispose();
@@ -41,96 +58,91 @@ class _FeedbackModalState extends State<FeedbackModal> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => getIt<FeedbackBloc>(),
-      child: BlocConsumer<FeedbackBloc, FeedbackState>(
-        listener: (context, state) {
-          state.whenOrNull(
-            success: (isCoolingDown) {
-              context.pop();
+    return BlocConsumer<FeedbackBloc, FeedbackState>(
+      listener: (context, state) {
+        state.whenOrNull(
+          success: (isCoolingDown) {
+            context.pop();
 
-              HapticFeedback.lightImpact();
+            HapticFeedback.lightImpact();
 
-              BizzieSnackBar.show(
-                context,
-                message: 'Thank you for your feedback!',
-                type: BizzieSnackBarType.success,
-              );
-            },
-            failure: (failure, isCoolingDown) {
-              BizzieSnackBar.show(
-                context,
-                message: failure.message,
-                type: BizzieSnackBarType.error,
-              );
-            },
-          );
-        },
-        builder: (context, state) {
-          final isLoading = state.maybeMap(
-            loading: (_) => true,
-            orElse: () => false,
-          );
+            BizzieSnackBar.show(
+              context,
+              message: 'Thank you for your feedback!',
+              type: BizzieSnackBarType.success,
+            );
+          },
+          failure: (failure, isCoolingDown) {
+            BizzieSnackBar.show(
+              context,
+              message: failure.message,
+              type: BizzieSnackBarType.error,
+            );
+          },
+        );
+      },
+      builder: (context, state) {
+        final isLoading = state.maybeMap(
+          loading: (_) => true,
+          orElse: () => false,
+        );
 
-          final isCoolingDown = state.isCoolingDown;
-          final isButtonEnabled = !isLoading && !isCoolingDown;
+        final isCoolingDown = state.isCoolingDown;
+        final isButtonEnabled = !isLoading && !isCoolingDown;
 
-          return AppBottomModal(
-            title: 'Send Feedback',
-            subtitle: const Text(
-              'We would love to hear your thoughts, suggestions, or issues.',
-            ),
-            useDraggable: false,
-            builder: (context, scrollController) => SingleChildScrollView(
-              controller: scrollController,
-              padding: AppConstants.pagePadding.copyWith(top: 0),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    const SizedBox(height: 16),
-                    BizzieTextField(
-                      controller: _messageController,
-                      hintText: 'Tell us what you think...',
-                      maxLines: 5,
-                      maxLength: 1000,
-                      autofocus: true,
-                      textCapitalization: TextCapitalization.sentences,
-                      validator: (value) => Validators.validateNotEmpty(
-                        value,
-                        'Please enter your feedback',
-                      ),
-                      onChanged: (value) {
-                        context.read<FeedbackBloc>().add(
-                          FeedbackEvent.messageChanged(value),
-                        );
-                      },
+        return AppBottomModal(
+          title: 'Send Feedback',
+          subtitle: const Text(
+            'We would love to hear your thoughts, suggestions, or issues.',
+          ),
+          useDraggable: false,
+          builder: (context, scrollController) => SingleChildScrollView(
+            controller: scrollController,
+            padding: AppConstants.pagePadding.copyWith(top: 0),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  const SizedBox(height: 16),
+                  BizzieTextField(
+                    controller: _messageController,
+                    hintText: 'Tell us what you think...',
+                    maxLines: 5,
+                    maxLength: 1000,
+                    autofocus: true,
+                    textCapitalization: TextCapitalization.sentences,
+                    validator: (value) => Validators.validateNotEmpty(
+                      value,
+                      'Please enter your feedback',
                     ),
-                    const SizedBox(height: 24),
-                    BizziePrimaryButton(
-                      title: isCoolingDown
-                          ? 'Please wait...'
-                          : 'Submit Feedback',
-                      isLoading: isLoading,
-                      onPressed: isButtonEnabled
-                          ? () {
-                              if (_formKey.currentState!.validate()) {
-                                context.read<FeedbackBloc>().add(
-                                  FeedbackEvent.submit(_messageController.text),
-                                );
-                              }
+                    onChanged: (value) {
+                      context.read<FeedbackBloc>().add(
+                        FeedbackEvent.messageChanged(value),
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 24),
+                  BizziePrimaryButton(
+                    title: isCoolingDown ? 'Please wait...' : 'Submit Feedback',
+                    isLoading: isLoading,
+                    onPressed: isButtonEnabled
+                        ? () {
+                            if (_formKey.currentState!.validate()) {
+                              context.read<FeedbackBloc>().add(
+                                FeedbackEvent.submit(_messageController.text),
+                              );
                             }
-                          : null,
-                    ),
-                    const SizedBox(height: 8),
-                  ],
-                ),
+                          }
+                        : null,
+                  ),
+                  const SizedBox(height: 8),
+                ],
               ),
             ),
-          );
-        },
-      ),
+          ),
+        );
+      },
     );
   }
 }

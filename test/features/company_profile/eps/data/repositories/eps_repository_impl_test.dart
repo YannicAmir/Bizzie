@@ -1,4 +1,7 @@
 import 'package:bizzie/features/company_profile/financial_statements/data/datasources/financial_statements_firestore_data_source.dart';
+import 'package:bizzie/core/enums/data_origin.dart';
+import 'package:bizzie/core/data/models/cache_result.dart' as cache;
+import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/features/company_profile/financial_statements/data/datasources/financial_statements_remote_data_source.dart';
 import 'package:bizzie/features/company_profile/financial_statements/data/dtos/income_statement_dto.dart';
 import 'package:bizzie/features/company_profile/eps/data/repositories/eps_repository_impl.dart';
@@ -40,45 +43,51 @@ void main() {
     final List<IncomeStatementDto> tIncomeStatements = [tIncomeStatementDto];
 
     test('getEpsStats_cacheInformationResult_returnsRightWithData', () async {
-      // arrange
+      // Arrange
       when(
-        () => mockLocalDataSource.getCachedIncomeStatements(
+        () => mockLocalDataSource.syncIncomeStatements(
           tTicker,
           period: any(named: 'period'),
+          remoteFetcher: any(named: 'remoteFetcher'),
         ),
-      ).thenAnswer((_) async => tIncomeStatements);
+      ).thenAnswer(
+        (_) async => cache.CacheSuccess(
+          tIncomeStatements,
+          CompanyProfileDataOrigin.cache,
+        ),
+      );
 
-      // act
+      // Act
       final result = await repository.getEpsStats(tTicker);
 
-      // assert
+      // Assert
       expect(result.isRight(), true);
-      result.fold((l) => fail('Should return right'), (r) {
+      result.fold((l) => fail('Should return right'), (tuple) {
+        final r = tuple.$1;
+        final origin = tuple.$2;
         expect(r, isA<EpsStats>());
+        expect(origin, CompanyProfileDataOrigin.cache);
         expect(r.annualEps.length, 1);
         expect(r.annualEps.first.value, 10.0);
       });
     });
 
     test('getEpsStats_serverExample_returnLeftFailure', () async {
-      // arrange
+      // Arrange
       when(
-        () => mockLocalDataSource.getCachedIncomeStatements(
+        () => mockLocalDataSource.syncIncomeStatements(
           tTicker,
           period: any(named: 'period'),
+          remoteFetcher: any(named: 'remoteFetcher'),
         ),
-      ).thenAnswer((_) async => null);
-      when(
-        () => mockRemoteDataSource.getIncomeStatements(
-          tTicker,
-          period: any(named: 'period'),
-        ),
-      ).thenThrow(Exception('Server Error'));
+      ).thenAnswer(
+        (_) async => const cache.CacheFailure(Failure.server('Server Error')),
+      );
 
-      // act
+      // Act
       final result = await repository.getEpsStats(tTicker);
 
-      // assert
+      // Assert
       expect(result.isLeft(), true);
     });
   });

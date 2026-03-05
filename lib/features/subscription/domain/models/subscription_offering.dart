@@ -5,6 +5,8 @@ part 'subscription_offering.freezed.dart';
 
 @freezed
 abstract class SubscriptionOffering with _$SubscriptionOffering {
+  const SubscriptionOffering._();
+
   const factory SubscriptionOffering({
     required String identifier,
     required String serverDescription,

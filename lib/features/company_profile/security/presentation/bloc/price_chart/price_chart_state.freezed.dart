@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$PriceChartState {
 
- ChartTimeFrame get selectedTimeFrame; List<HistoricalPriceEod> get fullHistory; List<HistoricalPriceEod> get viewData;
+ List<HistoricalPriceEod> get fullHistory; List<HistoricalPriceEod> get viewData; ChartTimeFrame get selectedTimeFrame; int get chartChangeCount;
 /// Create a copy of PriceChartState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $PriceChartStateCopyWith<PriceChartState> get copyWith => _$PriceChartStateCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PriceChartState&&(identical(other.selectedTimeFrame, selectedTimeFrame) || other.selectedTimeFrame == selectedTimeFrame)&&const DeepCollectionEquality().equals(other.fullHistory, fullHistory)&&const DeepCollectionEquality().equals(other.viewData, viewData));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PriceChartState&&const DeepCollectionEquality().equals(other.fullHistory, fullHistory)&&const DeepCollectionEquality().equals(other.viewData, viewData)&&(identical(other.selectedTimeFrame, selectedTimeFrame) || other.selectedTimeFrame == selectedTimeFrame)&&(identical(other.chartChangeCount, chartChangeCount) || other.chartChangeCount == chartChangeCount));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,selectedTimeFrame,const DeepCollectionEquality().hash(fullHistory),const DeepCollectionEquality().hash(viewData));
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(fullHistory),const DeepCollectionEquality().hash(viewData),selectedTimeFrame,chartChangeCount);
 
 @override
 String toString() {
-  return 'PriceChartState(selectedTimeFrame: $selectedTimeFrame, fullHistory: $fullHistory, viewData: $viewData)';
+  return 'PriceChartState(fullHistory: $fullHistory, viewData: $viewData, selectedTimeFrame: $selectedTimeFrame, chartChangeCount: $chartChangeCount)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $PriceChartStateCopyWith<$Res>  {
   factory $PriceChartStateCopyWith(PriceChartState value, $Res Function(PriceChartState) _then) = _$PriceChartStateCopyWithImpl;
 @useResult
 $Res call({
- ChartTimeFrame selectedTimeFrame, List<HistoricalPriceEod> fullHistory, List<HistoricalPriceEod> viewData
+ List<HistoricalPriceEod> fullHistory, List<HistoricalPriceEod> viewData, ChartTimeFrame selectedTimeFrame, int chartChangeCount
 });
 
 
@@ -62,12 +62,13 @@ class _$PriceChartStateCopyWithImpl<$Res>
 
 /// Create a copy of PriceChartState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? selectedTimeFrame = null,Object? fullHistory = null,Object? viewData = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? fullHistory = null,Object? viewData = null,Object? selectedTimeFrame = null,Object? chartChangeCount = null,}) {
   return _then(_self.copyWith(
-selectedTimeFrame: null == selectedTimeFrame ? _self.selectedTimeFrame : selectedTimeFrame // ignore: cast_nullable_to_non_nullable
-as ChartTimeFrame,fullHistory: null == fullHistory ? _self.fullHistory : fullHistory // ignore: cast_nullable_to_non_nullable
+fullHistory: null == fullHistory ? _self.fullHistory : fullHistory // ignore: cast_nullable_to_non_nullable
 as List<HistoricalPriceEod>,viewData: null == viewData ? _self.viewData : viewData // ignore: cast_nullable_to_non_nullable
-as List<HistoricalPriceEod>,
+as List<HistoricalPriceEod>,selectedTimeFrame: null == selectedTimeFrame ? _self.selectedTimeFrame : selectedTimeFrame // ignore: cast_nullable_to_non_nullable
+as ChartTimeFrame,chartChangeCount: null == chartChangeCount ? _self.chartChangeCount : chartChangeCount // ignore: cast_nullable_to_non_nullable
+as int,
   ));
 }
 
@@ -152,10 +153,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( ChartTimeFrame selectedTimeFrame,  List<HistoricalPriceEod> fullHistory,  List<HistoricalPriceEod> viewData)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<HistoricalPriceEod> fullHistory,  List<HistoricalPriceEod> viewData,  ChartTimeFrame selectedTimeFrame,  int chartChangeCount)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _PriceChartState() when $default != null:
-return $default(_that.selectedTimeFrame,_that.fullHistory,_that.viewData);case _:
+return $default(_that.fullHistory,_that.viewData,_that.selectedTimeFrame,_that.chartChangeCount);case _:
   return orElse();
 
 }
@@ -173,10 +174,10 @@ return $default(_that.selectedTimeFrame,_that.fullHistory,_that.viewData);case _
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( ChartTimeFrame selectedTimeFrame,  List<HistoricalPriceEod> fullHistory,  List<HistoricalPriceEod> viewData)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<HistoricalPriceEod> fullHistory,  List<HistoricalPriceEod> viewData,  ChartTimeFrame selectedTimeFrame,  int chartChangeCount)  $default,) {final _that = this;
 switch (_that) {
 case _PriceChartState():
-return $default(_that.selectedTimeFrame,_that.fullHistory,_that.viewData);case _:
+return $default(_that.fullHistory,_that.viewData,_that.selectedTimeFrame,_that.chartChangeCount);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -193,10 +194,10 @@ return $default(_that.selectedTimeFrame,_that.fullHistory,_that.viewData);case _
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( ChartTimeFrame selectedTimeFrame,  List<HistoricalPriceEod> fullHistory,  List<HistoricalPriceEod> viewData)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<HistoricalPriceEod> fullHistory,  List<HistoricalPriceEod> viewData,  ChartTimeFrame selectedTimeFrame,  int chartChangeCount)?  $default,) {final _that = this;
 switch (_that) {
 case _PriceChartState() when $default != null:
-return $default(_that.selectedTimeFrame,_that.fullHistory,_that.viewData);case _:
+return $default(_that.fullHistory,_that.viewData,_that.selectedTimeFrame,_that.chartChangeCount);case _:
   return null;
 
 }
@@ -208,24 +209,25 @@ return $default(_that.selectedTimeFrame,_that.fullHistory,_that.viewData);case _
 
 
 class _PriceChartState extends PriceChartState {
-  const _PriceChartState({this.selectedTimeFrame = ChartTimeFrame.d5, final  List<HistoricalPriceEod> fullHistory = const [], final  List<HistoricalPriceEod> viewData = const []}): _fullHistory = fullHistory,_viewData = viewData,super._();
+  const _PriceChartState({required final  List<HistoricalPriceEod> fullHistory, required final  List<HistoricalPriceEod> viewData, required this.selectedTimeFrame, this.chartChangeCount = 0}): _fullHistory = fullHistory,_viewData = viewData,super._();
   
 
-@override@JsonKey() final  ChartTimeFrame selectedTimeFrame;
  final  List<HistoricalPriceEod> _fullHistory;
-@override@JsonKey() List<HistoricalPriceEod> get fullHistory {
+@override List<HistoricalPriceEod> get fullHistory {
   if (_fullHistory is EqualUnmodifiableListView) return _fullHistory;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableListView(_fullHistory);
 }
 
  final  List<HistoricalPriceEod> _viewData;
-@override@JsonKey() List<HistoricalPriceEod> get viewData {
+@override List<HistoricalPriceEod> get viewData {
   if (_viewData is EqualUnmodifiableListView) return _viewData;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableListView(_viewData);
 }
 
+@override final  ChartTimeFrame selectedTimeFrame;
+@override@JsonKey() final  int chartChangeCount;
 
 /// Create a copy of PriceChartState
 /// with the given fields replaced by the non-null parameter values.
@@ -237,16 +239,16 @@ _$PriceChartStateCopyWith<_PriceChartState> get copyWith => __$PriceChartStateCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PriceChartState&&(identical(other.selectedTimeFrame, selectedTimeFrame) || other.selectedTimeFrame == selectedTimeFrame)&&const DeepCollectionEquality().equals(other._fullHistory, _fullHistory)&&const DeepCollectionEquality().equals(other._viewData, _viewData));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PriceChartState&&const DeepCollectionEquality().equals(other._fullHistory, _fullHistory)&&const DeepCollectionEquality().equals(other._viewData, _viewData)&&(identical(other.selectedTimeFrame, selectedTimeFrame) || other.selectedTimeFrame == selectedTimeFrame)&&(identical(other.chartChangeCount, chartChangeCount) || other.chartChangeCount == chartChangeCount));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,selectedTimeFrame,const DeepCollectionEquality().hash(_fullHistory),const DeepCollectionEquality().hash(_viewData));
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_fullHistory),const DeepCollectionEquality().hash(_viewData),selectedTimeFrame,chartChangeCount);
 
 @override
 String toString() {
-  return 'PriceChartState(selectedTimeFrame: $selectedTimeFrame, fullHistory: $fullHistory, viewData: $viewData)';
+  return 'PriceChartState(fullHistory: $fullHistory, viewData: $viewData, selectedTimeFrame: $selectedTimeFrame, chartChangeCount: $chartChangeCount)';
 }
 
 
@@ -257,7 +259,7 @@ abstract mixin class _$PriceChartStateCopyWith<$Res> implements $PriceChartState
   factory _$PriceChartStateCopyWith(_PriceChartState value, $Res Function(_PriceChartState) _then) = __$PriceChartStateCopyWithImpl;
 @override @useResult
 $Res call({
- ChartTimeFrame selectedTimeFrame, List<HistoricalPriceEod> fullHistory, List<HistoricalPriceEod> viewData
+ List<HistoricalPriceEod> fullHistory, List<HistoricalPriceEod> viewData, ChartTimeFrame selectedTimeFrame, int chartChangeCount
 });
 
 
@@ -274,12 +276,13 @@ class __$PriceChartStateCopyWithImpl<$Res>
 
 /// Create a copy of PriceChartState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? selectedTimeFrame = null,Object? fullHistory = null,Object? viewData = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? fullHistory = null,Object? viewData = null,Object? selectedTimeFrame = null,Object? chartChangeCount = null,}) {
   return _then(_PriceChartState(
-selectedTimeFrame: null == selectedTimeFrame ? _self.selectedTimeFrame : selectedTimeFrame // ignore: cast_nullable_to_non_nullable
-as ChartTimeFrame,fullHistory: null == fullHistory ? _self._fullHistory : fullHistory // ignore: cast_nullable_to_non_nullable
+fullHistory: null == fullHistory ? _self._fullHistory : fullHistory // ignore: cast_nullable_to_non_nullable
 as List<HistoricalPriceEod>,viewData: null == viewData ? _self._viewData : viewData // ignore: cast_nullable_to_non_nullable
-as List<HistoricalPriceEod>,
+as List<HistoricalPriceEod>,selectedTimeFrame: null == selectedTimeFrame ? _self.selectedTimeFrame : selectedTimeFrame // ignore: cast_nullable_to_non_nullable
+as ChartTimeFrame,chartChangeCount: null == chartChangeCount ? _self.chartChangeCount : chartChangeCount // ignore: cast_nullable_to_non_nullable
+as int,
   ));
 }
 

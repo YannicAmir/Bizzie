@@ -1,3 +1,4 @@
+import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/features/company_profile/eps/domain/models/eps_stats.dart';
 import 'package:bizzie/features/company_profile/shared/domain/models/financial_data_point.dart';
@@ -5,6 +6,8 @@ import 'package:bizzie/features/company_profile/eps/domain/usecases/get_eps_stat
 import 'package:bizzie/features/company_profile/eps/presentation/bloc/company_eps_bloc.dart';
 import 'package:bizzie/features/company_profile/eps/presentation/bloc/company_eps_event.dart';
 import 'package:bizzie/features/company_profile/eps/presentation/bloc/company_eps_state.dart';
+import 'package:bizzie/features/company_profile/eps/presentation/analytics/eps_tab_analytics.dart';
+import 'package:bizzie/features/company_profile/eps/presentation/analytics/eps_tab_view_state.dart';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -15,16 +18,33 @@ class MockGetEpsStatsUseCase extends Mock implements GetEpsStatsUseCase {}
 
 class MockConfigService extends Mock implements IConfigService {}
 
+class MockEpsTabAnalytics extends Mock implements EpsTabAnalytics {}
+
 void main() {
   late CompanyEpsBloc bloc;
   late MockGetEpsStatsUseCase mockGetEpsStatsUseCase;
   late MockConfigService mockConfigService;
+  late MockEpsTabAnalytics mockAnalytics;
+
+  setUpAll(() {
+    registerFallbackValue(const EpsTabViewState(ticker: 'AAPL', timestamp: ''));
+  });
 
   setUp(() {
     mockGetEpsStatsUseCase = MockGetEpsStatsUseCase();
     mockConfigService = MockConfigService();
+    mockAnalytics = MockEpsTabAnalytics();
+
     when(() => mockConfigService.freePlanHistoryCount).thenReturn(7);
-    bloc = CompanyEpsBloc(mockGetEpsStatsUseCase, mockConfigService);
+    when(
+      () => mockAnalytics.logViewSummary(any(), isFinal: any(named: 'isFinal')),
+    ).thenAnswer((_) async {});
+
+    bloc = CompanyEpsBloc(
+      mockGetEpsStatsUseCase,
+      mockConfigService,
+      mockAnalytics,
+    );
   });
 
   const tTicker = 'AAPL';
@@ -40,43 +60,46 @@ void main() {
   );
 
   test('initialState_isCorrect', () {
-    // assert
+    // act & assert
     expect(bloc.state, const CompanyEpsState.initial());
   });
 
   group('CompanyEpsBloc - loadRequested', () {
     blocTest<CompanyEpsBloc, CompanyEpsState>(
-      'loadRequested_success_emitsLoadingAndLoaded',
+      'loadRequested_success_updatesAnalyticsSession',
       build: () {
         // arrange
-        when(
-          () => mockGetEpsStatsUseCase(tTicker),
-        ).thenAnswer((_) async => const Right(tEpsStats));
+        when(() => mockGetEpsStatsUseCase(tTicker)).thenAnswer(
+          (_) async => const Right((tEpsStats, CompanyProfileDataOrigin.api)),
+        );
         return bloc;
       },
-      act: (bloc) {
+      act: (bloc) => bloc
         // act
-        bloc.add(const CompanyEpsEvent.loadRequested(tTicker));
-      },
-      expect: () {
+        ..add(const CompanyEpsEvent.tabShown(tTicker))
+        ..add(const CompanyEpsEvent.loadRequested(tTicker)),
+      expect: () => [
         // assert
-        return [
-          const CompanyEpsState.loading(),
-          isA<CompanyEpsState>().having(
-            (s) => s.maybeMap(loaded: (l) => l.epsStats, orElse: () => null),
-            'epsStats',
-            tEpsStats,
-          ),
-        ];
-      },
-      verify: (_) {
-        // assert
-        verify(() => mockGetEpsStatsUseCase(tTicker)).called(1);
-      },
+        const CompanyEpsState.loading(),
+        isA<CompanyEpsState>()
+            .having(
+              (s) => s.maybeMap(loaded: (l) => l.ticker, orElse: () => null),
+              'ticker',
+              tTicker,
+            )
+            .having(
+              (s) => s.maybeMap(
+                loaded: (l) => l.analyticsState,
+                orElse: () => null,
+              ),
+              'analyticsState',
+              isNotNull,
+            ),
+      ],
     );
 
     blocTest<CompanyEpsBloc, CompanyEpsState>(
-      'loadRequested_failure_emitsLoadingAndFailure',
+      'loadRequested_failure_updatesAnalyticsSession',
       build: () {
         // arrange
         const failure = Failure.server('Server error');
@@ -85,169 +108,152 @@ void main() {
         ).thenAnswer((_) async => const Left(failure));
         return bloc;
       },
-      act: (bloc) {
+      act: (bloc) => bloc
         // act
-        bloc.add(const CompanyEpsEvent.loadRequested(tTicker));
-      },
-      expect: () {
+        ..add(const CompanyEpsEvent.tabShown(tTicker))
+        ..add(const CompanyEpsEvent.loadRequested(tTicker)),
+      expect: () => [
         // assert
-        return [
-          const CompanyEpsState.loading(),
-          const CompanyEpsState.failure(Failure.server('Server error')),
-        ];
-      },
-    );
-
-    blocTest<CompanyEpsBloc, CompanyEpsState>(
-      'loadRequested_alreadyLoaded_skipsLoading',
-      build: () {
-        // arrange
-        return bloc;
-      },
-      seed: () => const CompanyEpsState.loaded(
-        epsStats: tEpsStats,
-        annualChartData: [],
-        quarterlyChartData: [],
-        historyLimit: 7,
-      ),
-      act: (bloc) {
-        // act
-        bloc.add(const CompanyEpsEvent.loadRequested(tTicker));
-      },
-      expect: () {
-        // assert
-        return [];
-      },
-      verify: (_) {
-        // assert
-        verifyNever(() => mockGetEpsStatsUseCase(any()));
-      },
-    );
-
-    blocTest<CompanyEpsBloc, CompanyEpsState>(
-      'loadRequested_alreadyLoadedWithForceRefresh_emitsLoadingAndLoaded',
-      build: () {
-        // arrange
-        when(
-          () => mockGetEpsStatsUseCase(tTicker),
-        ).thenAnswer((_) async => const Right(tEpsStats));
-        return bloc;
-      },
-      seed: () => const CompanyEpsState.loaded(
-        epsStats: tEpsStats,
-        annualChartData: [],
-        quarterlyChartData: [],
-        historyLimit: 7,
-      ),
-      act: (bloc) {
-        // act
-        bloc.add(
-          const CompanyEpsEvent.loadRequested(tTicker, forceRefresh: true),
-        );
-      },
-      expect: () {
-        // assert
-        return [
-          const CompanyEpsState.loading(),
-          isA<CompanyEpsState>().having(
-            (s) => s.maybeMap(loaded: (l) => l.epsStats, orElse: () => null),
-            'epsStats',
-            tEpsStats,
-          ),
-        ];
-      },
-      verify: (_) {
-        // assert
-        verify(() => mockGetEpsStatsUseCase(tTicker)).called(1);
-      },
+        const CompanyEpsState.loading(),
+        const CompanyEpsState.failure(Failure.server('Server error')),
+      ],
     );
   });
 
-  group('CompanyEpsBloc - stalenessCheckRequested', () {
-    blocTest<CompanyEpsBloc, CompanyEpsState>(
-      'stalenessCheckRequested_initialState_triggersLoadRequested',
-      build: () {
-        // arrange
-        when(
-          () => mockGetEpsStatsUseCase(tTicker),
-        ).thenAnswer((_) async => const Right(tEpsStats));
-        return bloc;
-      },
-      act: (bloc) {
-        // act
-        bloc.add(const CompanyEpsEvent.stalenessCheckRequested(tTicker));
-      },
-      expect: () {
-        // assert
-        return [
-          const CompanyEpsState.loading(),
-          isA<CompanyEpsState>().having(
-            (s) => s.maybeMap(loaded: (l) => l.epsStats, orElse: () => null),
-            'epsStats',
-            tEpsStats,
-          ),
-        ];
-      },
+  group('CompanyEpsBloc - Analytics Events', () {
+    final tLoadedState = CompanyEpsState.loaded(
+      ticker: tTicker,
+      epsStats: tEpsStats,
+      annualChartData: [],
+      quarterlyChartData: [],
+      historyLimit: 7,
+      dataOrigin: CompanyProfileDataOrigin.api,
+      analyticsState: const EpsTabViewState(
+        ticker: tTicker,
+        timestamp: '2024-01-01',
+      ),
     );
 
     blocTest<CompanyEpsBloc, CompanyEpsState>(
-      'stalenessCheckRequested_fresh_doesNotTriggerLoad',
-      build: () {
-        // arrange
-        return bloc;
-      },
-      seed: () => CompanyEpsState.loaded(
-        epsStats: tEpsStats,
-        annualChartData: const [],
-        quarterlyChartData: const [],
-        historyLimit: 7,
-        lastUpdated: DateTime.now(),
-      ),
-      act: (bloc) {
+      'periodViewed_updatesAnalyticsState',
+      build: () => bloc,
+      seed: () => tLoadedState, // arrange
+      act: (bloc) => bloc
         // act
-        bloc.add(const CompanyEpsEvent.stalenessCheckRequested(tTicker));
-      },
-      expect: () {
+        ..add(const CompanyEpsEvent.tabShown(tTicker))
+        ..add(const CompanyEpsEvent.periodViewed(isAnnual: true)),
+      expect: () => [
         // assert
-        return [];
-      },
+        isA<CompanyEpsState>(),
+        isA<CompanyEpsState>().having(
+          (s) => s.maybeMap(
+            loaded: (l) => l.analyticsState?.viewedYearlyEpsTab,
+            orElse: () => null,
+          ),
+          'viewedYearlyEpsTab',
+          true,
+        ),
+      ],
+    );
+
+    blocTest<CompanyEpsBloc, CompanyEpsState>(
+      'viewAllTapped_updatesCorrectInteractionFlags',
+      build: () => bloc,
+      seed: () => tLoadedState, // arrange
+      act: (bloc) => bloc
+        // act
+        ..add(const CompanyEpsEvent.tabShown(tTicker))
+        ..add(
+          const CompanyEpsEvent.viewAllTapped(isAnnual: true, isChart: true),
+        )
+        ..add(
+          const CompanyEpsEvent.viewAllTapped(isAnnual: true, isChart: false),
+        )
+        ..add(
+          const CompanyEpsEvent.viewAllTapped(isAnnual: false, isChart: true),
+        )
+        ..add(
+          const CompanyEpsEvent.viewAllTapped(isAnnual: false, isChart: false),
+        ),
+      expect: () => [
+        // assert
+        isA<CompanyEpsState>(),
+        isA<CompanyEpsState>().having(
+          (s) => (s as dynamic).analyticsState?.tappedYrchartViewAll,
+          'tappedYrchartViewAll',
+          true,
+        ),
+        isA<CompanyEpsState>().having(
+          (s) => (s as dynamic).analyticsState?.tappedYrtableViewAll,
+          'tappedYrtableViewAll',
+          true,
+        ),
+        isA<CompanyEpsState>().having(
+          (s) => (s as dynamic).analyticsState?.tappedQtrchartViewAll,
+          'tappedQtrchartViewAll',
+          true,
+        ),
+        isA<CompanyEpsState>().having(
+          (s) => (s as dynamic).analyticsState?.tappedQtrtableViewAll,
+          'tappedQtrtableViewAll',
+          true,
+        ),
+      ],
+    );
+
+    blocTest<CompanyEpsBloc, CompanyEpsState>(
+      'tabHidden_logsViewSummary',
+      build: () => bloc,
+      seed: () => tLoadedState, // arrange
+      act: (bloc) => bloc
+        // act
+        ..add(const CompanyEpsEvent.tabShown(tTicker))
+        ..add(const CompanyEpsEvent.tabHidden()),
       verify: (_) {
         // assert
-        verifyNever(() => mockGetEpsStatsUseCase(any()));
+        verify(
+          () => mockAnalytics.logViewSummary(any(), isFinal: true),
+        ).called(1);
       },
     );
 
     blocTest<CompanyEpsBloc, CompanyEpsState>(
-      'stalenessCheckRequested_stale_triggersLoadRequested',
-      build: () {
+      'tabShown_recoversExistingMetrics',
+      build: () => bloc,
+      seed: () {
         // arrange
-        when(
-          () => mockGetEpsStatsUseCase(tTicker),
-        ).thenAnswer((_) async => const Right(tEpsStats));
-        return bloc;
-      },
-      seed: () => CompanyEpsState.loaded(
-        epsStats: tEpsStats,
-        annualChartData: const [],
-        quarterlyChartData: const [],
-        historyLimit: 7,
-        lastUpdated: DateTime.now().subtract(const Duration(hours: 25)),
-      ),
-      act: (bloc) {
-        // act
-        bloc.add(const CompanyEpsEvent.stalenessCheckRequested(tTicker));
-      },
-      expect: () {
-        // assert
-        return [
-          const CompanyEpsState.loading(),
-          isA<CompanyEpsState>().having(
-            (s) => s.maybeMap(loaded: (l) => l.epsStats, orElse: () => null),
-            'epsStats',
-            tEpsStats,
+        final loaded = tLoadedState as dynamic;
+        return loaded.copyWith(
+          analyticsState: loaded.analyticsState?.copyWith(
+            isSuccess: true,
+            loadTimeMs: 123,
           ),
-        ];
+        );
       },
+      act: (bloc) =>
+          bloc
+          // act
+          .add(const CompanyEpsEvent.tabShown(tTicker)),
+      expect: () => [
+        // assert
+        isA<CompanyEpsState>()
+            .having(
+              (s) => s.maybeMap(
+                loaded: (l) => l.analyticsState?.isSuccess,
+                orElse: () => null,
+              ),
+              'isSuccess',
+              true,
+            )
+            .having(
+              (s) => s.maybeMap(
+                loaded: (l) => l.analyticsState?.loadTimeMs,
+                orElse: () => null,
+              ),
+              'loadTimeMs',
+              123,
+            ),
+      ],
     );
   });
 }

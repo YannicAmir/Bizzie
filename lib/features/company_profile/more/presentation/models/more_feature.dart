@@ -5,22 +5,30 @@ import 'package:flutter/widgets.dart';
 
 class MoreFeature {
   final String label;
+  final String analyticsName;
   final Widget Function(String ticker) builder;
 
-  const MoreFeature({required this.label, required this.builder});
+  const MoreFeature({
+    required this.label,
+    required this.analyticsName,
+    required this.builder,
+  });
 }
 
 final List<MoreFeature> defaultMoreFeatures = [
   MoreFeature(
     label: 'ROE',
+    analyticsName: 'roe',
     builder: (ticker) => RoeTab(ticker: ticker),
   ),
   MoreFeature(
     label: 'P/E Ratio',
+    analyticsName: 'pe',
     builder: (ticker) => PeRatioTab(ticker: ticker),
   ),
   MoreFeature(
     label: 'P/FCF Ratio',
+    analyticsName: 'pfcf',
     builder: (ticker) => PfcfRatioTab(ticker: ticker),
   ),
 ];

@@ -11,4 +11,11 @@ abstract class CompanyPfcfRatioEvent with _$CompanyPfcfRatioEvent {
 
   const factory CompanyPfcfRatioEvent.stalenessCheckRequested(String ticker) =
       StalenessCheckRequested;
+
+  const factory CompanyPfcfRatioEvent.tabShown(String ticker) = TabShown;
+  const factory CompanyPfcfRatioEvent.tabHidden() = TabHidden;
+  const factory CompanyPfcfRatioEvent.appBackgrounded() = AppBackgrounded;
+  const factory CompanyPfcfRatioEvent.appForegrounded() = AppForegrounded;
+  const factory CompanyPfcfRatioEvent.viewAllTapped({required bool isChart}) =
+      ViewAllTapped;
 }

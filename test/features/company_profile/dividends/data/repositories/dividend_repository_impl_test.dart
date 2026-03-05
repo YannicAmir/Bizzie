@@ -1,10 +1,13 @@
 import 'package:bizzie/features/company_profile/dividends/data/datasources/dividends_firestore_data_source.dart';
+import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:bizzie/features/company_profile/dividends/data/datasources/dividends_remote_data_source.dart';
 import 'package:bizzie/features/company_profile/dividends/data/dtos/dividend_dto.dart';
 import 'package:bizzie/features/company_profile/dividends/data/repositories/dividend_repository_impl.dart';
 import 'package:bizzie/features/company_profile/dividends/domain/models/dividend_info.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:bizzie/core/data/models/cache_result.dart' as result;
+import 'package:bizzie/core/error/failures.dart';
 
 class MockDividendsRemoteDataSource extends Mock
     implements DividendsRemoteDataSource {}
@@ -39,70 +42,49 @@ void main() {
     );
     final List<DividendDto> tDividendsList = [tDividendDto];
 
-    test(
-      'getDividendInfo_cacheInformationResult_returnsRightWithData',
-      () async {
-        // arrange
-        when(
-          () => mockLocalDataSource.getCachedDividends(tTicker),
-        ).thenAnswer((_) async => tDividendsList);
-
-        // act
-        final result = await repository.getDividendInfo(tTicker);
-
-        // assert
-        expect(result.isRight(), true);
-        result.fold((l) => fail('Should return right'), (r) {
-          expect(r, isA<DividendInfo>());
-          expect(r.history.length, 1);
-          expect(r.history.first.dividend, 0.23);
-        });
-        verify(() => mockLocalDataSource.getCachedDividends(tTicker)).called(1);
-        verifyZeroInteractions(mockRemoteDataSource);
-      },
-    );
-
-    test(
-      'getDividendInfo_cacheMiss_fetchesFromRemoteAndCaches_returnsRightWithData',
-      () async {
-        // arrange
-        when(
-          () => mockLocalDataSource.getCachedDividends(tTicker),
-        ).thenAnswer((_) async => null);
-        when(
-          () => mockRemoteDataSource.getDividends(tTicker),
-        ).thenAnswer((_) async => tDividendsList);
-        when(
-          () => mockLocalDataSource.cacheDividends(tTicker, tDividendsList),
-        ).thenAnswer((_) async => Future.value());
-
-        // act
-        final result = await repository.getDividendInfo(tTicker);
-
-        // assert
-        expect(result.isRight(), true);
-        verify(() => mockLocalDataSource.getCachedDividends(tTicker)).called(1);
-        verify(() => mockRemoteDataSource.getDividends(tTicker)).called(1);
-        verify(
-          () => mockLocalDataSource.cacheDividends(tTicker, tDividendsList),
-        ).called(1);
-      },
-    );
-
-    test('getDividendInfo_serverExample_returnLeftFailure', () async {
-      // arrange
+    test('getDividendInfo_success_returnsRightWithData', () async {
+      // Arrange
       when(
-        () => mockLocalDataSource.getCachedDividends(tTicker),
-      ).thenAnswer((_) async => null);
+        () => mockLocalDataSource.syncDividends(
+          tTicker,
+          remoteFetcher: any(named: 'remoteFetcher'),
+        ),
+      ).thenAnswer(
+        (_) async =>
+            result.CacheSuccess(tDividendsList, CompanyProfileDataOrigin.api),
+      );
+
+      // Act
+      final resultData = await repository.getDividendInfo(tTicker);
+
+      // Assert
+      expect(resultData.isRight(), true);
+      resultData.fold((l) => fail('Should return right'), (tuple) {
+        final r = tuple.$1;
+        final origin = tuple.$2;
+        expect(r, isA<DividendInfo>());
+        expect(origin, CompanyProfileDataOrigin.api);
+        expect(r.history.length, 1);
+        expect(r.history.first.dividend, 0.23);
+      });
+    });
+
+    test('getDividendInfo_failure_returnLeftFailure', () async {
+      // Arrange
       when(
-        () => mockRemoteDataSource.getDividends(tTicker),
-      ).thenThrow(Exception('Server Error'));
+        () => mockLocalDataSource.syncDividends(
+          tTicker,
+          remoteFetcher: any(named: 'remoteFetcher'),
+        ),
+      ).thenAnswer(
+        (_) async => const result.CacheFailure(Failure.server('error')),
+      );
 
-      // act
-      final result = await repository.getDividendInfo(tTicker);
+      // Act
+      final resultData = await repository.getDividendInfo(tTicker);
 
-      // assert
-      expect(result.isLeft(), true);
+      // Assert
+      expect(resultData.isLeft(), true);
     });
   });
 }

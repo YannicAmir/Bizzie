@@ -3,6 +3,7 @@ import 'package:bizzie/features/company_profile/shared/domain/models/financial_d
 import 'package:bizzie/features/company_profile/shares/domain/interfaces/i_shares_repository.dart';
 import 'package:bizzie/features/company_profile/shares/domain/models/share_stats.dart';
 import 'package:bizzie/features/company_profile/shares/domain/usecases/get_shares_usecase.dart';
+import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
@@ -31,15 +32,15 @@ void main() {
 
   test('should get share stats from the repository', () async {
     // arrange
-    when(
-      () => mockRepository.getShareStats(any()),
-    ).thenAnswer((_) async => const Right(tShareStats));
+    when(() => mockRepository.getShareStats(any())).thenAnswer(
+      (_) async => const Right((tShareStats, CompanyProfileDataOrigin.cache)),
+    );
 
     // act
     final result = await usecase(tTicker);
 
     // assert
-    expect(result, const Right(tShareStats));
+    expect(result, const Right((tShareStats, CompanyProfileDataOrigin.cache)));
     verify(() => mockRepository.getShareStats(tTicker));
     verifyNoMoreInteractions(mockRepository);
   });

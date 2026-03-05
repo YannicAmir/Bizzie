@@ -12,6 +12,9 @@ import 'package:bizzie/features/user/domain/models/user_activity.dart';
 import 'package:bizzie/features/watchlist/domain/interfaces/watchlist_repository.dart';
 import 'package:bizzie/features/user/domain/interfaces/user_repository.dart';
 import 'package:bizzie/features/user/domain/models/user_model.dart';
+import 'package:bizzie/features/reports/domain/enums/reports_analytics_enums.dart';
+import 'package:bizzie/features/reports/presentation/analytics/reports_tracker.dart';
+import 'package:bizzie/core/interfaces/i_local_storage_service.dart';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -30,11 +33,18 @@ class MockGetUserActivityUseCase extends Mock
 class MockMarkReportsViewedUseCase extends Mock
     implements MarkReportsViewedUseCase {}
 
+class MockReportsTracker extends Mock implements ReportsTracker {}
+
 class MockIUserRepository extends Mock implements IUserRepository {}
 
-class MockAuthUserModel extends Mock implements auth.UserModel {}
+class MockILocalStorageService extends Mock implements ILocalStorageService {}
 
 void main() {
+  setUpAll(() {
+    registerFallbackValue(ReportsEntrySource.nav);
+    registerFallbackValue(ReportsNotificationType.earningsNotification);
+  });
+
   late ReportsBloc bloc;
   late MockGetDashboardReportsUseCase mockGetReportsUseCase;
   late MockIWatchlistRepository mockWatchlistRepository;
@@ -42,7 +52,9 @@ void main() {
   late MockGetUserActivityUseCase mockGetUserActivityUseCase;
   late MockMarkReportsViewedUseCase mockMarkReportsViewedUseCase;
   late MockIUserRepository mockUserRepository;
-  late MockAuthUserModel mockUser;
+  late auth.UserModel tUser;
+  late MockReportsTracker mockTracker;
+  late MockILocalStorageService mockLocalStorageService;
 
   setUp(() {
     mockGetReportsUseCase = MockGetDashboardReportsUseCase();
@@ -51,13 +63,42 @@ void main() {
     mockGetUserActivityUseCase = MockGetUserActivityUseCase();
     mockMarkReportsViewedUseCase = MockMarkReportsViewedUseCase();
     mockUserRepository = MockIUserRepository();
-    mockUser = MockAuthUserModel();
+    mockTracker = MockReportsTracker();
+    mockLocalStorageService = MockILocalStorageService();
 
-    when(() => mockAuthRepository.currentUser).thenReturn(mockUser);
-    when(() => mockUser.id).thenReturn('test_uid');
+    tUser = const auth.UserModel(id: 'test_uid', email: 'test@example.com');
+
+    when(() => mockAuthRepository.currentUser).thenReturn(tUser);
     when(
       () => mockUserRepository.userStream,
     ).thenAnswer((_) => const Stream<UserModel>.empty());
+
+    when(
+      () => mockTracker.logFetchFailed(error: any(named: 'error')),
+    ).thenAnswer((_) async {});
+    when(
+      () => mockTracker.logFeedViewed(
+        unreadCount: any(named: 'unreadCount'),
+        entrySource: any(named: 'entrySource'),
+        notificationType: any(named: 'notificationType'),
+      ),
+    ).thenAnswer((_) async {});
+    when(
+      () =>
+          mockTracker.logFilingCardCompanyClicked(ticker: any(named: 'ticker')),
+    ).thenAnswer((_) async {});
+    when(
+      () => mockTracker.logUpcomingCompanyClicked(ticker: any(named: 'ticker')),
+    ).thenAnswer((_) async {});
+    when(() => mockTracker.setLastFilingTicker(any())).thenAnswer((_) async {});
+    when(
+      () => mockTracker.setReportsTotalViewed(any()),
+    ).thenAnswer((_) async {});
+
+    when(() => mockLocalStorageService.getInt(any())).thenReturn(null);
+    when(
+      () => mockLocalStorageService.setInt(any(), any()),
+    ).thenAnswer((_) async {});
 
     bloc = ReportsBloc(
       mockGetReportsUseCase,
@@ -66,6 +107,8 @@ void main() {
       mockGetUserActivityUseCase,
       mockMarkReportsViewedUseCase,
       mockUserRepository,
+      mockLocalStorageService,
+      mockTracker,
     );
   });
 
@@ -137,6 +180,61 @@ void main() {
         const ReportsEvent.reportsUpdated(Left(Failure.server("Error"))),
       ),
       expect: () => [const ReportsState.failure(Failure.server("Error"))],
+      verify: (_) {
+        verify(() => mockTracker.logFetchFailed(error: 'Error')).called(1);
+      },
+    );
+  });
+
+  group('ReportsBloc - Analytics', () {
+    blocTest<ReportsBloc, ReportsState>(
+      'filingCardCompanyClicked_logsAnalytics',
+      build: () => bloc,
+      act: (bloc) =>
+          bloc.add(const ReportsEvent.filingCardCompanyClicked(ticker: 'AAPL')),
+      verify: (_) {
+        verify(
+          () => mockTracker.logFilingCardCompanyClicked(ticker: 'AAPL'),
+        ).called(1);
+        verify(() => mockTracker.setLastFilingTicker('AAPL')).called(1);
+      },
+    );
+
+    blocTest<ReportsBloc, ReportsState>(
+      'upcomingCompanyClicked_logsAnalytics',
+      build: () => bloc,
+      act: (bloc) =>
+          bloc.add(const ReportsEvent.upcomingCompanyClicked(ticker: 'TSLA')),
+      verify: (_) {
+        verify(
+          () => mockTracker.logUpcomingCompanyClicked(ticker: 'TSLA'),
+        ).called(1);
+        verify(() => mockTracker.setLastFilingTicker('TSLA')).called(1);
+      },
+    );
+
+    blocTest<ReportsBloc, ReportsState>(
+      'viewed_logsAnalyticsAndSetsUserProperty',
+      build: () {
+        when(() => mockLocalStorageService.getInt(any())).thenReturn(5);
+        return bloc;
+      },
+      act: (bloc) => bloc.add(
+        const ReportsEvent.viewed(
+          unreadCount: 2,
+          entrySource: ReportsEntrySource.nav,
+        ),
+      ),
+      verify: (_) {
+        verify(
+          () => mockTracker.logFeedViewed(
+            unreadCount: 2,
+            entrySource: ReportsEntrySource.nav,
+          ),
+        ).called(1);
+        verify(() => mockLocalStorageService.setInt(any(), 6)).called(1);
+        verify(() => mockTracker.setReportsTotalViewed(6)).called(1);
+      },
     );
   });
 }

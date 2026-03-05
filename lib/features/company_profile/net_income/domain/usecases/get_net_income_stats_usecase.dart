@@ -1,3 +1,4 @@
+import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
 import 'package:bizzie/core/error/failures.dart';
@@ -7,13 +8,19 @@ import '../models/net_income_stats.dart';
 
 @lazySingleton
 class GetNetIncomeStatsUseCase
-    implements UseCase<Either<Failure, NetIncomeStats>, String> {
+    implements
+        UseCase<
+          Either<Failure, (NetIncomeStats, CompanyProfileDataOrigin)>,
+          String
+        > {
   final INetIncomeRepository _repository;
 
   GetNetIncomeStatsUseCase(this._repository);
 
   @override
-  Future<Either<Failure, NetIncomeStats>> call(String ticker) {
+  Future<Either<Failure, (NetIncomeStats, CompanyProfileDataOrigin)>> call(
+    String ticker,
+  ) {
     return _repository.getNetIncomeStats(ticker);
   }
 }

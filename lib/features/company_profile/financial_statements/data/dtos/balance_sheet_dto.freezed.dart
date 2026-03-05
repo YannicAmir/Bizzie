@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$BalanceSheetDto {
 
- String get date; String get symbol; String get reportedCurrency; String? get cik; String? get fillingDate; String? get acceptedDate; String? get calendarYear; String? get period; double? get totalAssets; double? get totalLiabilities; double? get totalEquity; double? get totalCurrentAssets; double? get totalNonCurrentAssets; double? get totalCurrentLiabilities; double? get totalNonCurrentLiabilities; double? get longTermDebt; double? get shortTermDebt; double? get cashAndShortTermInvestments; double? get netDebt; double? get totalDebt;
+ String? get date; String? get symbol; String? get reportedCurrency; String? get cik; String? get fillingDate; String? get acceptedDate; String? get calendarYear; String? get period; double? get totalAssets; double? get totalLiabilities; double? get totalEquity; double? get totalCurrentAssets; double? get totalNonCurrentAssets; double? get totalCurrentLiabilities; double? get totalNonCurrentLiabilities; double? get longTermDebt; double? get shortTermDebt; double? get cashAndShortTermInvestments; double? get netDebt; double? get totalDebt;
 /// Create a copy of BalanceSheetDto
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -48,7 +48,7 @@ abstract mixin class $BalanceSheetDtoCopyWith<$Res>  {
   factory $BalanceSheetDtoCopyWith(BalanceSheetDto value, $Res Function(BalanceSheetDto) _then) = _$BalanceSheetDtoCopyWithImpl;
 @useResult
 $Res call({
- String date, String symbol, String reportedCurrency, String? cik, String? fillingDate, String? acceptedDate, String? calendarYear, String? period, double? totalAssets, double? totalLiabilities, double? totalEquity, double? totalCurrentAssets, double? totalNonCurrentAssets, double? totalCurrentLiabilities, double? totalNonCurrentLiabilities, double? longTermDebt, double? shortTermDebt, double? cashAndShortTermInvestments, double? netDebt, double? totalDebt
+ String? date, String? symbol, String? reportedCurrency, String? cik, String? fillingDate, String? acceptedDate, String? calendarYear, String? period, double? totalAssets, double? totalLiabilities, double? totalEquity, double? totalCurrentAssets, double? totalNonCurrentAssets, double? totalCurrentLiabilities, double? totalNonCurrentLiabilities, double? longTermDebt, double? shortTermDebt, double? cashAndShortTermInvestments, double? netDebt, double? totalDebt
 });
 
 
@@ -65,12 +65,12 @@ class _$BalanceSheetDtoCopyWithImpl<$Res>
 
 /// Create a copy of BalanceSheetDto
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? date = null,Object? symbol = null,Object? reportedCurrency = null,Object? cik = freezed,Object? fillingDate = freezed,Object? acceptedDate = freezed,Object? calendarYear = freezed,Object? period = freezed,Object? totalAssets = freezed,Object? totalLiabilities = freezed,Object? totalEquity = freezed,Object? totalCurrentAssets = freezed,Object? totalNonCurrentAssets = freezed,Object? totalCurrentLiabilities = freezed,Object? totalNonCurrentLiabilities = freezed,Object? longTermDebt = freezed,Object? shortTermDebt = freezed,Object? cashAndShortTermInvestments = freezed,Object? netDebt = freezed,Object? totalDebt = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? date = freezed,Object? symbol = freezed,Object? reportedCurrency = freezed,Object? cik = freezed,Object? fillingDate = freezed,Object? acceptedDate = freezed,Object? calendarYear = freezed,Object? period = freezed,Object? totalAssets = freezed,Object? totalLiabilities = freezed,Object? totalEquity = freezed,Object? totalCurrentAssets = freezed,Object? totalNonCurrentAssets = freezed,Object? totalCurrentLiabilities = freezed,Object? totalNonCurrentLiabilities = freezed,Object? longTermDebt = freezed,Object? shortTermDebt = freezed,Object? cashAndShortTermInvestments = freezed,Object? netDebt = freezed,Object? totalDebt = freezed,}) {
   return _then(_self.copyWith(
-date: null == date ? _self.date : date // ignore: cast_nullable_to_non_nullable
-as String,symbol: null == symbol ? _self.symbol : symbol // ignore: cast_nullable_to_non_nullable
-as String,reportedCurrency: null == reportedCurrency ? _self.reportedCurrency : reportedCurrency // ignore: cast_nullable_to_non_nullable
-as String,cik: freezed == cik ? _self.cik : cik // ignore: cast_nullable_to_non_nullable
+date: freezed == date ? _self.date : date // ignore: cast_nullable_to_non_nullable
+as String?,symbol: freezed == symbol ? _self.symbol : symbol // ignore: cast_nullable_to_non_nullable
+as String?,reportedCurrency: freezed == reportedCurrency ? _self.reportedCurrency : reportedCurrency // ignore: cast_nullable_to_non_nullable
+as String?,cik: freezed == cik ? _self.cik : cik // ignore: cast_nullable_to_non_nullable
 as String?,fillingDate: freezed == fillingDate ? _self.fillingDate : fillingDate // ignore: cast_nullable_to_non_nullable
 as String?,acceptedDate: freezed == acceptedDate ? _self.acceptedDate : acceptedDate // ignore: cast_nullable_to_non_nullable
 as String?,calendarYear: freezed == calendarYear ? _self.calendarYear : calendarYear // ignore: cast_nullable_to_non_nullable
@@ -172,7 +172,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String date,  String symbol,  String reportedCurrency,  String? cik,  String? fillingDate,  String? acceptedDate,  String? calendarYear,  String? period,  double? totalAssets,  double? totalLiabilities,  double? totalEquity,  double? totalCurrentAssets,  double? totalNonCurrentAssets,  double? totalCurrentLiabilities,  double? totalNonCurrentLiabilities,  double? longTermDebt,  double? shortTermDebt,  double? cashAndShortTermInvestments,  double? netDebt,  double? totalDebt)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? date,  String? symbol,  String? reportedCurrency,  String? cik,  String? fillingDate,  String? acceptedDate,  String? calendarYear,  String? period,  double? totalAssets,  double? totalLiabilities,  double? totalEquity,  double? totalCurrentAssets,  double? totalNonCurrentAssets,  double? totalCurrentLiabilities,  double? totalNonCurrentLiabilities,  double? longTermDebt,  double? shortTermDebt,  double? cashAndShortTermInvestments,  double? netDebt,  double? totalDebt)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _BalanceSheetDto() when $default != null:
 return $default(_that.date,_that.symbol,_that.reportedCurrency,_that.cik,_that.fillingDate,_that.acceptedDate,_that.calendarYear,_that.period,_that.totalAssets,_that.totalLiabilities,_that.totalEquity,_that.totalCurrentAssets,_that.totalNonCurrentAssets,_that.totalCurrentLiabilities,_that.totalNonCurrentLiabilities,_that.longTermDebt,_that.shortTermDebt,_that.cashAndShortTermInvestments,_that.netDebt,_that.totalDebt);case _:
@@ -193,7 +193,7 @@ return $default(_that.date,_that.symbol,_that.reportedCurrency,_that.cik,_that.f
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String date,  String symbol,  String reportedCurrency,  String? cik,  String? fillingDate,  String? acceptedDate,  String? calendarYear,  String? period,  double? totalAssets,  double? totalLiabilities,  double? totalEquity,  double? totalCurrentAssets,  double? totalNonCurrentAssets,  double? totalCurrentLiabilities,  double? totalNonCurrentLiabilities,  double? longTermDebt,  double? shortTermDebt,  double? cashAndShortTermInvestments,  double? netDebt,  double? totalDebt)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? date,  String? symbol,  String? reportedCurrency,  String? cik,  String? fillingDate,  String? acceptedDate,  String? calendarYear,  String? period,  double? totalAssets,  double? totalLiabilities,  double? totalEquity,  double? totalCurrentAssets,  double? totalNonCurrentAssets,  double? totalCurrentLiabilities,  double? totalNonCurrentLiabilities,  double? longTermDebt,  double? shortTermDebt,  double? cashAndShortTermInvestments,  double? netDebt,  double? totalDebt)  $default,) {final _that = this;
 switch (_that) {
 case _BalanceSheetDto():
 return $default(_that.date,_that.symbol,_that.reportedCurrency,_that.cik,_that.fillingDate,_that.acceptedDate,_that.calendarYear,_that.period,_that.totalAssets,_that.totalLiabilities,_that.totalEquity,_that.totalCurrentAssets,_that.totalNonCurrentAssets,_that.totalCurrentLiabilities,_that.totalNonCurrentLiabilities,_that.longTermDebt,_that.shortTermDebt,_that.cashAndShortTermInvestments,_that.netDebt,_that.totalDebt);case _:
@@ -213,7 +213,7 @@ return $default(_that.date,_that.symbol,_that.reportedCurrency,_that.cik,_that.f
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String date,  String symbol,  String reportedCurrency,  String? cik,  String? fillingDate,  String? acceptedDate,  String? calendarYear,  String? period,  double? totalAssets,  double? totalLiabilities,  double? totalEquity,  double? totalCurrentAssets,  double? totalNonCurrentAssets,  double? totalCurrentLiabilities,  double? totalNonCurrentLiabilities,  double? longTermDebt,  double? shortTermDebt,  double? cashAndShortTermInvestments,  double? netDebt,  double? totalDebt)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? date,  String? symbol,  String? reportedCurrency,  String? cik,  String? fillingDate,  String? acceptedDate,  String? calendarYear,  String? period,  double? totalAssets,  double? totalLiabilities,  double? totalEquity,  double? totalCurrentAssets,  double? totalNonCurrentAssets,  double? totalCurrentLiabilities,  double? totalNonCurrentLiabilities,  double? longTermDebt,  double? shortTermDebt,  double? cashAndShortTermInvestments,  double? netDebt,  double? totalDebt)?  $default,) {final _that = this;
 switch (_that) {
 case _BalanceSheetDto() when $default != null:
 return $default(_that.date,_that.symbol,_that.reportedCurrency,_that.cik,_that.fillingDate,_that.acceptedDate,_that.calendarYear,_that.period,_that.totalAssets,_that.totalLiabilities,_that.totalEquity,_that.totalCurrentAssets,_that.totalNonCurrentAssets,_that.totalCurrentLiabilities,_that.totalNonCurrentLiabilities,_that.longTermDebt,_that.shortTermDebt,_that.cashAndShortTermInvestments,_that.netDebt,_that.totalDebt);case _:
@@ -228,12 +228,12 @@ return $default(_that.date,_that.symbol,_that.reportedCurrency,_that.cik,_that.f
 @JsonSerializable()
 
 class _BalanceSheetDto extends BalanceSheetDto {
-  const _BalanceSheetDto({required this.date, required this.symbol, required this.reportedCurrency, required this.cik, required this.fillingDate, required this.acceptedDate, required this.calendarYear, required this.period, required this.totalAssets, required this.totalLiabilities, required this.totalEquity, required this.totalCurrentAssets, required this.totalNonCurrentAssets, required this.totalCurrentLiabilities, required this.totalNonCurrentLiabilities, required this.longTermDebt, required this.shortTermDebt, required this.cashAndShortTermInvestments, required this.netDebt, required this.totalDebt}): super._();
+  const _BalanceSheetDto({this.date, this.symbol, this.reportedCurrency, this.cik, this.fillingDate, this.acceptedDate, this.calendarYear, this.period, this.totalAssets, this.totalLiabilities, this.totalEquity, this.totalCurrentAssets, this.totalNonCurrentAssets, this.totalCurrentLiabilities, this.totalNonCurrentLiabilities, this.longTermDebt, this.shortTermDebt, this.cashAndShortTermInvestments, this.netDebt, this.totalDebt}): super._();
   factory _BalanceSheetDto.fromJson(Map<String, dynamic> json) => _$BalanceSheetDtoFromJson(json);
 
-@override final  String date;
-@override final  String symbol;
-@override final  String reportedCurrency;
+@override final  String? date;
+@override final  String? symbol;
+@override final  String? reportedCurrency;
 @override final  String? cik;
 @override final  String? fillingDate;
 @override final  String? acceptedDate;
@@ -285,7 +285,7 @@ abstract mixin class _$BalanceSheetDtoCopyWith<$Res> implements $BalanceSheetDto
   factory _$BalanceSheetDtoCopyWith(_BalanceSheetDto value, $Res Function(_BalanceSheetDto) _then) = __$BalanceSheetDtoCopyWithImpl;
 @override @useResult
 $Res call({
- String date, String symbol, String reportedCurrency, String? cik, String? fillingDate, String? acceptedDate, String? calendarYear, String? period, double? totalAssets, double? totalLiabilities, double? totalEquity, double? totalCurrentAssets, double? totalNonCurrentAssets, double? totalCurrentLiabilities, double? totalNonCurrentLiabilities, double? longTermDebt, double? shortTermDebt, double? cashAndShortTermInvestments, double? netDebt, double? totalDebt
+ String? date, String? symbol, String? reportedCurrency, String? cik, String? fillingDate, String? acceptedDate, String? calendarYear, String? period, double? totalAssets, double? totalLiabilities, double? totalEquity, double? totalCurrentAssets, double? totalNonCurrentAssets, double? totalCurrentLiabilities, double? totalNonCurrentLiabilities, double? longTermDebt, double? shortTermDebt, double? cashAndShortTermInvestments, double? netDebt, double? totalDebt
 });
 
 
@@ -302,12 +302,12 @@ class __$BalanceSheetDtoCopyWithImpl<$Res>
 
 /// Create a copy of BalanceSheetDto
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? date = null,Object? symbol = null,Object? reportedCurrency = null,Object? cik = freezed,Object? fillingDate = freezed,Object? acceptedDate = freezed,Object? calendarYear = freezed,Object? period = freezed,Object? totalAssets = freezed,Object? totalLiabilities = freezed,Object? totalEquity = freezed,Object? totalCurrentAssets = freezed,Object? totalNonCurrentAssets = freezed,Object? totalCurrentLiabilities = freezed,Object? totalNonCurrentLiabilities = freezed,Object? longTermDebt = freezed,Object? shortTermDebt = freezed,Object? cashAndShortTermInvestments = freezed,Object? netDebt = freezed,Object? totalDebt = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? date = freezed,Object? symbol = freezed,Object? reportedCurrency = freezed,Object? cik = freezed,Object? fillingDate = freezed,Object? acceptedDate = freezed,Object? calendarYear = freezed,Object? period = freezed,Object? totalAssets = freezed,Object? totalLiabilities = freezed,Object? totalEquity = freezed,Object? totalCurrentAssets = freezed,Object? totalNonCurrentAssets = freezed,Object? totalCurrentLiabilities = freezed,Object? totalNonCurrentLiabilities = freezed,Object? longTermDebt = freezed,Object? shortTermDebt = freezed,Object? cashAndShortTermInvestments = freezed,Object? netDebt = freezed,Object? totalDebt = freezed,}) {
   return _then(_BalanceSheetDto(
-date: null == date ? _self.date : date // ignore: cast_nullable_to_non_nullable
-as String,symbol: null == symbol ? _self.symbol : symbol // ignore: cast_nullable_to_non_nullable
-as String,reportedCurrency: null == reportedCurrency ? _self.reportedCurrency : reportedCurrency // ignore: cast_nullable_to_non_nullable
-as String,cik: freezed == cik ? _self.cik : cik // ignore: cast_nullable_to_non_nullable
+date: freezed == date ? _self.date : date // ignore: cast_nullable_to_non_nullable
+as String?,symbol: freezed == symbol ? _self.symbol : symbol // ignore: cast_nullable_to_non_nullable
+as String?,reportedCurrency: freezed == reportedCurrency ? _self.reportedCurrency : reportedCurrency // ignore: cast_nullable_to_non_nullable
+as String?,cik: freezed == cik ? _self.cik : cik // ignore: cast_nullable_to_non_nullable
 as String?,fillingDate: freezed == fillingDate ? _self.fillingDate : fillingDate // ignore: cast_nullable_to_non_nullable
 as String?,acceptedDate: freezed == acceptedDate ? _self.acceptedDate : acceptedDate // ignore: cast_nullable_to_non_nullable
 as String?,calendarYear: freezed == calendarYear ? _self.calendarYear : calendarYear // ignore: cast_nullable_to_non_nullable

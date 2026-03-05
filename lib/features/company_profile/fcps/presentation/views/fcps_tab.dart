@@ -1,4 +1,5 @@
 import 'package:bizzie/app/themes/app_assets.dart';
+import 'package:bizzie/core/enums/paywall_source.dart';
 import '../bloc/company_fcps_bloc.dart';
 import '../bloc/company_fcps_event.dart';
 import '../bloc/company_fcps_state.dart';
@@ -12,6 +13,8 @@ import 'package:bizzie/shared/widgets/charts/bizzie_expandable_chart.dart';
 import 'package:bizzie/shared/widgets/states/bizzie_empty_state.dart';
 import 'package:bizzie/shared/widgets/inputs/bizzie_switch.dart';
 import 'package:bizzie/shared/widgets/modals/app_history_modal.dart';
+import 'package:bizzie/features/company_profile/shared/presentation/enums/company_profile_tab.dart';
+import 'package:bizzie/features/company_profile/shared/presentation/widgets/tab_visibility_observer.dart';
 import 'package:bizzie/features/company_profile/shared/domain/models/financial_data_point.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -36,28 +39,77 @@ class _FcpsTabState extends State<FcpsTab> with AutomaticKeepAliveClientMixin {
   Widget build(BuildContext context) {
     super.build(context);
 
-    return BlocBuilder<CompanyFcpsBloc, CompanyFcpsState>(
-      builder: (context, state) {
-        return state.map(
-          initial: (_) =>
-              const CompanyProfileLoadingState(message: 'Loading FCPS'),
-          loading: (_) =>
-              const CompanyProfileLoadingState(message: 'Loading FCPS'),
-          failure: (e) => CompanyProfileErrorState(
-            message: 'Error loading FCPS',
-            onRetry: () => context.read<CompanyFcpsBloc>().add(
-              CompanyFcpsEvent.loadRequested(widget.ticker),
+    return TabVisibilityObserver(
+      tabName: CompanyProfileTab.fcps.analyticsName,
+      onTabShown: () => context.read<CompanyFcpsBloc>().add(
+        CompanyFcpsEvent.tabShown(widget.ticker),
+      ),
+      onTabHidden: () => context.read<CompanyFcpsBloc>().add(
+        const CompanyFcpsEvent.tabHidden(),
+      ),
+      onAppBackgrounded: () => context.read<CompanyFcpsBloc>().add(
+        const CompanyFcpsEvent.appBackgrounded(),
+      ),
+      onAppForegrounded: () => context.read<CompanyFcpsBloc>().add(
+        const CompanyFcpsEvent.appForegrounded(),
+      ),
+      child: BlocBuilder<CompanyFcpsBloc, CompanyFcpsState>(
+        builder: (context, state) {
+          return state.map(
+            initial: (_) =>
+                const CompanyProfileLoadingState(message: 'Loading FCPS'),
+            loading: (_) =>
+                const CompanyProfileLoadingState(message: 'Loading FCPS'),
+            failure: (e) => CompanyProfileErrorState(
+              message: 'Error loading FCPS',
+              onRetry: () => context.read<CompanyFcpsBloc>().add(
+                CompanyFcpsEvent.loadRequested(widget.ticker),
+              ),
             ),
-          ),
-          loaded: (loadedState) {
-            final stats = loadedState.fcpsStats;
-            final historyLimit = loadedState.historyLimit;
-            final isAnnual = _selectedIndex == 0;
-            final chartData = isAnnual
-                ? loadedState.annualChartData
-                : loadedState.quarterlyChartData;
+            loaded: (loadedState) {
+              final stats = loadedState.fcpsStats;
+              final historyLimit = loadedState.historyLimit;
+              final isAnnual = _selectedIndex == 0;
+              final chartData = isAnnual
+                  ? loadedState.annualChartData
+                  : loadedState.quarterlyChartData;
 
-            if (chartData.isEmpty) {
+              if (chartData.isEmpty) {
+                return SingleChildScrollView(
+                  padding: AppConstants.pagePadding,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      BizzieSwitch(
+                        options: const ['Yearly', 'Quarterly'],
+                        selectedIndex: _selectedIndex,
+                        onChanged: (index) {
+                          setState(() {
+                            _selectedIndex = index;
+                          });
+                          context.read<CompanyFcpsBloc>().add(
+                            CompanyFcpsEvent.periodViewed(isAnnual: index == 0),
+                          );
+                        },
+                      ),
+                      AppConstants.emptyStateTopSpacing,
+                      const BizzieEmptyState(
+                        mascotAsset: AppAssets.defaultMascot,
+                        message: 'No FCPS data available for this period.',
+                      ),
+                    ],
+                  ),
+                );
+              }
+
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                if (mounted) {
+                  context.read<CompanyFcpsBloc>().add(
+                    CompanyFcpsEvent.periodViewed(isAnnual: isAnnual),
+                  );
+                }
+              });
+
               return SingleChildScrollView(
                 padding: AppConstants.pagePadding,
                 child: Column(
@@ -70,79 +122,73 @@ class _FcpsTabState extends State<FcpsTab> with AutomaticKeepAliveClientMixin {
                         setState(() {
                           _selectedIndex = index;
                         });
+                        context.read<CompanyFcpsBloc>().add(
+                          CompanyFcpsEvent.periodViewed(isAnnual: index == 0),
+                        );
                       },
                     ),
-                    AppConstants.emptyStateTopSpacing,
-                    const BizzieEmptyState(
-                      mascotAsset: AppAssets.defaultMascot,
-                      message: 'No FCPS data available for this period.',
+                    AppConstants.mainSectionSpacing,
+                    BizzieExpandableChart(
+                      key: ValueKey('fcps_chart_$isAnnual'),
+                      data: chartData
+                          .map((p) => BizzieChartData(p.label, p.value))
+                          .toList(),
+                      numberFormat: NumberFormat.compactSimpleCurrency(
+                        locale: Localizations.localeOf(context).toString(),
+                        name: stats.reportedCurrency,
+                      ),
+                      visibleCount: historyLimit,
+                      thresholdCount: historyLimit,
+                      source: PaywallSource.company_profile,
+                      onAnalyticsTap: () => context.read<CompanyFcpsBloc>().add(
+                        CompanyFcpsEvent.viewAllTapped(
+                          isAnnual: isAnnual,
+                          isChart: true,
+                        ),
+                      ),
+                    ),
+                    AppConstants.mainSectionSpacing,
+                    FinancialHighlightsSection(
+                      annualData: stats.annualFcps,
+                      quarterlyData: stats.quarterlyFcps,
+                      ttmTitle: 'FCPS TTM',
+                      currency: stats.reportedCurrency,
+                      isAnnual: isAnnual,
+                    ),
+                    AppConstants.mainSectionSpacing,
+                    FinancialDataTable(
+                      data: isAnnual ? stats.annualFcps : stats.quarterlyFcps,
+                      metricLabel: 'FCPS',
+                      currency: stats.reportedCurrency,
+                      periodHeaderLabel: isAnnual
+                          ? 'Year Ended'
+                          : 'Quarter Ended',
+                      dateFormat: isAnnual
+                          ? FinancialDateFormat.monthYear
+                          : FinancialDateFormat.quarterShort,
+                      limit: historyLimit,
+                      source: PaywallSource.company_profile,
+                      onAnalyticsTap: () => context.read<CompanyFcpsBloc>().add(
+                        CompanyFcpsEvent.viewAllTapped(
+                          isAnnual: isAnnual,
+                          isChart: false,
+                        ),
+                      ),
+                      onViewMore: () => _showAllHistory(
+                        context,
+                        isAnnual ? stats.annualFcps : stats.quarterlyFcps,
+                        isAnnual ? 'Yearly FCPS' : 'Quarterly FCPS',
+                        stats.reportedCurrency,
+                        isAnnual,
+                      ),
                     ),
                   ],
                 ),
               );
-            }
-
-            return SingleChildScrollView(
-              padding: AppConstants.pagePadding,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  BizzieSwitch(
-                    options: const ['Yearly', 'Quarterly'],
-                    selectedIndex: _selectedIndex,
-                    onChanged: (index) {
-                      setState(() {
-                        _selectedIndex = index;
-                      });
-                    },
-                  ),
-                  AppConstants.mainSectionSpacing,
-                  BizzieExpandableChart(
-                    key: ValueKey('fcps_chart_$isAnnual'),
-                    data: chartData
-                        .map((p) => BizzieChartData(p.label, p.value))
-                        .toList(),
-                    numberFormat: NumberFormat.compactSimpleCurrency(
-                      locale: Localizations.localeOf(context).toString(),
-                      name: stats.reportedCurrency,
-                    ),
-                    visibleCount: historyLimit,
-                    thresholdCount: historyLimit,
-                  ),
-                  AppConstants.mainSectionSpacing,
-                  FinancialHighlightsSection(
-                    annualData: stats.annualFcps,
-                    quarterlyData: stats.quarterlyFcps,
-                    ttmTitle: 'FCPS TTM',
-                    currency: stats.reportedCurrency,
-                    isAnnual: isAnnual,
-                  ),
-                  AppConstants.mainSectionSpacing,
-                  FinancialDataTable(
-                    data: isAnnual ? stats.annualFcps : stats.quarterlyFcps,
-                    metricLabel: 'FCPS',
-                    currency: stats.reportedCurrency,
-                    periodHeaderLabel: isAnnual
-                        ? 'Year Ended'
-                        : 'Quarter Ended',
-                    dateFormat: isAnnual
-                        ? FinancialDateFormat.monthYear
-                        : FinancialDateFormat.quarterShort,
-                    limit: historyLimit,
-                    onViewMore: () => _showAllHistory(
-                      context,
-                      isAnnual ? stats.annualFcps : stats.quarterlyFcps,
-                      isAnnual ? 'Yearly FCPS' : 'Quarterly FCPS',
-                      stats.reportedCurrency,
-                      isAnnual,
-                    ),
-                  ),
-                ],
-              ),
-            );
-          },
-        );
-      },
+            },
+          );
+        },
+      ),
     );
   }
 

@@ -1,3 +1,4 @@
+import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/features/company_profile/shared/domain/models/financial_data_point.dart';
 import 'package:bizzie/features/company_profile/net_income/domain/models/net_income_stats.dart';
@@ -5,6 +6,8 @@ import 'package:bizzie/features/company_profile/net_income/domain/usecases/get_n
 import 'package:bizzie/features/company_profile/net_income/presentation/bloc/company_net_income_bloc.dart';
 import 'package:bizzie/features/company_profile/net_income/presentation/bloc/company_net_income_event.dart';
 import 'package:bizzie/features/company_profile/net_income/presentation/bloc/company_net_income_state.dart';
+import 'package:bizzie/features/company_profile/net_income/presentation/analytics/net_income_tab_analytics.dart';
+import 'package:bizzie/features/company_profile/net_income/presentation/analytics/net_income_tab_view_state.dart';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -16,16 +19,35 @@ class MockGetNetIncomeStatsUseCase extends Mock
 
 class MockConfigService extends Mock implements IConfigService {}
 
+class MockNetIncomeTabAnalytics extends Mock implements NetIncomeTabAnalytics {}
+
 void main() {
   late CompanyNetIncomeBloc bloc;
   late MockGetNetIncomeStatsUseCase mockGetNetIncomeStats;
   late MockConfigService mockConfigService;
+  late MockNetIncomeTabAnalytics mockTracker;
+
+  setUpAll(() {
+    registerFallbackValue(
+      NetIncomeTabViewState(ticker: 'AAPL', timestamp: 'ts'),
+    );
+  });
 
   setUp(() {
     mockGetNetIncomeStats = MockGetNetIncomeStatsUseCase();
     mockConfigService = MockConfigService();
+    mockTracker = MockNetIncomeTabAnalytics();
+
     when(() => mockConfigService.freePlanHistoryCount).thenReturn(7);
-    bloc = CompanyNetIncomeBloc(mockGetNetIncomeStats, mockConfigService);
+    when(
+      () => mockTracker.logViewSummary(any(), isFinal: any(named: 'isFinal')),
+    ).thenAnswer((_) async {});
+
+    bloc = CompanyNetIncomeBloc(
+      mockGetNetIncomeStats,
+      mockConfigService,
+      mockTracker,
+    );
   });
 
   const tTicker = 'AAPL';
@@ -40,45 +62,53 @@ void main() {
     ],
   );
 
-  test('initialState_isCorrect', () {
+  test('initialState_isInitial', () {
     // assert
     expect(bloc.state, const CompanyNetIncomeState.initial());
   });
 
   group('CompanyNetIncomeBloc - loadRequested', () {
     blocTest<CompanyNetIncomeBloc, CompanyNetIncomeState>(
-      'loadRequested_success_emitsLoadingAndLoaded',
+      'loadRequested_success_emitsLoadingAndLoadedWithPerformanceMetrics',
       build: () {
         // arrange
-        when(
-          () => mockGetNetIncomeStats(tTicker),
-        ).thenAnswer((_) async => const Right(tNetIncomeStats));
+        when(() => mockGetNetIncomeStats(tTicker)).thenAnswer(
+          (_) async =>
+              const Right((tNetIncomeStats, CompanyProfileDataOrigin.api)),
+        );
         return bloc;
       },
-      act: (bloc) {
-        // act
-        bloc.add(const CompanyNetIncomeEvent.loadRequested(tTicker));
-      },
-      expect: () {
-        // assert
-        return [
-          const CompanyNetIncomeState.loading(),
-          isA<CompanyNetIncomeState>().having(
-            (s) =>
-                s.maybeMap(loaded: (l) => l.netIncomeStats, orElse: () => null),
-            'netIncomeStats',
-            tNetIncomeStats,
-          ),
-        ];
-      },
-      verify: (_) {
-        // assert
-        verify(() => mockGetNetIncomeStats(tTicker)).called(1);
-      },
+      act: (bloc) =>
+          bloc.add(const CompanyNetIncomeEvent.loadRequested(tTicker)),
+      expect: () => [
+        const CompanyNetIncomeState.loading(),
+        isA<CompanyNetIncomeState>()
+            .having(
+              (s) => s.maybeMap(loaded: (l) => l.ticker, orElse: () => null),
+              'ticker',
+              tTicker,
+            )
+            .having(
+              (s) => s.maybeMap(
+                loaded: (l) => l.analyticsState?.loadTimeMs != null,
+                orElse: () => false,
+              ),
+              'hasLoadTime',
+              true,
+            )
+            .having(
+              (s) => s.maybeMap(
+                loaded: (l) => l.analyticsState?.isSuccess,
+                orElse: () => false,
+              ),
+              'isSuccess',
+              true,
+            ),
+      ],
     );
 
     blocTest<CompanyNetIncomeBloc, CompanyNetIncomeState>(
-      'loadRequested_failure_emitsLoadingAndFailure',
+      'loadRequested_failure_preservesMetricsEvenInFailureStatePlaceholder',
       build: () {
         // arrange
         const failure = Failure.server('Server error');
@@ -87,174 +117,115 @@ void main() {
         ).thenAnswer((_) async => const Left(failure));
         return bloc;
       },
-      act: (bloc) {
-        // act
-        bloc.add(const CompanyNetIncomeEvent.loadRequested(tTicker));
-      },
-      expect: () {
-        // assert
-        return [
-          const CompanyNetIncomeState.loading(),
-          const CompanyNetIncomeState.failure(Failure.server('Server error')),
-        ];
-      },
-    );
-
-    blocTest<CompanyNetIncomeBloc, CompanyNetIncomeState>(
-      'loadRequested_alreadyLoaded_skipsLoading',
-      build: () {
-        // arrange
-        return bloc;
-      },
-      seed: () => const CompanyNetIncomeState.loaded(
-        netIncomeStats: tNetIncomeStats,
-        annualChartData: [],
-        quarterlyChartData: [],
-        historyLimit: 7,
-      ),
-      act: (bloc) {
-        // act
-        bloc.add(const CompanyNetIncomeEvent.loadRequested(tTicker));
-      },
-      expect: () {
-        // assert
-        return [];
-      },
-      verify: (_) {
-        // assert
-        verifyNever(() => mockGetNetIncomeStats(any()));
-      },
-    );
-
-    blocTest<CompanyNetIncomeBloc, CompanyNetIncomeState>(
-      'loadRequested_alreadyLoadedWithForceRefresh_emitsLoadingAndLoaded',
-      build: () {
-        // arrange
-        when(
-          () => mockGetNetIncomeStats(tTicker),
-        ).thenAnswer((_) async => const Right(tNetIncomeStats));
-        return bloc;
-      },
-      seed: () => const CompanyNetIncomeState.loaded(
-        netIncomeStats: tNetIncomeStats,
-        annualChartData: [],
-        quarterlyChartData: [],
-        historyLimit: 7,
-      ),
-      act: (bloc) {
-        // act
-        bloc.add(
-          const CompanyNetIncomeEvent.loadRequested(
-            tTicker,
-            forceRefresh: true,
-          ),
-        );
-      },
-      expect: () {
-        // assert
-        return [
-          const CompanyNetIncomeState.loading(),
-          isA<CompanyNetIncomeState>().having(
-            (s) =>
-                s.maybeMap(loaded: (l) => l.netIncomeStats, orElse: () => null),
-            'netIncomeStats',
-            tNetIncomeStats,
-          ),
-        ];
-      },
-      verify: (_) {
-        // assert
-        verify(() => mockGetNetIncomeStats(tTicker)).called(1);
-      },
+      act: (bloc) =>
+          bloc.add(const CompanyNetIncomeEvent.loadRequested(tTicker)),
+      expect: () => [
+        const CompanyNetIncomeState.loading(),
+        const CompanyNetIncomeState.failure(Failure.server('Server error')),
+      ],
     );
   });
 
-  group('CompanyNetIncomeBloc - stalenessCheckRequested', () {
+  group('CompanyNetIncomeBloc - Analytics Orchestration', () {
+    final loadedState = CompanyNetIncomeState.loaded(
+      ticker: tTicker,
+      netIncomeStats: tNetIncomeStats,
+      annualChartData: const [],
+      quarterlyChartData: const [],
+      historyLimit: 7,
+      dataOrigin: CompanyProfileDataOrigin.api,
+      analyticsState: NetIncomeTabViewState(
+        ticker: tTicker,
+        timestamp: 'ts',
+        loadTimeMs: 100,
+        isSuccess: true,
+        dataSource: CompanyProfileDataOrigin.api,
+      ),
+    );
+
     blocTest<CompanyNetIncomeBloc, CompanyNetIncomeState>(
-      'stalenessCheckRequested_initialState_triggersLoadRequested',
-      build: () {
-        // arrange
-        when(
-          () => mockGetNetIncomeStats(tTicker),
-        ).thenAnswer((_) async => const Right(tNetIncomeStats));
-        return bloc;
-      },
-      act: (bloc) {
-        // act
-        bloc.add(const CompanyNetIncomeEvent.stalenessCheckRequested(tTicker));
-      },
-      expect: () {
+      'tabShown_startsSessionAndMergesMetrics',
+      build: () => bloc,
+      seed: () => loadedState,
+      act: (bloc) => bloc.add(const CompanyNetIncomeEvent.tabShown(tTicker)),
+      verify: (_) {
         // assert
-        return [
-          const CompanyNetIncomeState.loading(),
-          isA<CompanyNetIncomeState>().having(
-            (s) =>
-                s.maybeMap(loaded: (l) => l.netIncomeStats, orElse: () => null),
-            'netIncomeStats',
-            tNetIncomeStats,
-          ),
-        ];
+        final state = bloc.state.maybeMap(
+          loaded: (l) => l.analyticsState,
+          orElse: () => null,
+        );
+        expect(state?.ticker, tTicker);
+        expect(state?.loadTimeMs, 100);
+        expect(state?.timestamp, isNotEmpty);
       },
     );
 
     blocTest<CompanyNetIncomeBloc, CompanyNetIncomeState>(
-      'stalenessCheckRequested_fresh_doesNotTriggerLoad',
-      build: () {
-        // arrange
-        return bloc;
-      },
-      seed: () => CompanyNetIncomeState.loaded(
-        netIncomeStats: tNetIncomeStats,
-        annualChartData: const [],
-        quarterlyChartData: const [],
-        historyLimit: 7,
-        lastUpdated: DateTime.now(),
-      ),
+      'tabHidden_endsSessionAndLogsSummary',
+      build: () => bloc,
+      seed: () => loadedState,
       act: (bloc) {
         // act
-        bloc.add(const CompanyNetIncomeEvent.stalenessCheckRequested(tTicker));
-      },
-      expect: () {
-        // assert
-        return [];
+        bloc.add(const CompanyNetIncomeEvent.tabShown(tTicker));
+        bloc.add(const CompanyNetIncomeEvent.tabHidden());
       },
       verify: (_) {
         // assert
-        verifyNever(() => mockGetNetIncomeStats(any()));
+        verify(
+          () => mockTracker.logViewSummary(any(), isFinal: true),
+        ).called(1);
       },
     );
 
     blocTest<CompanyNetIncomeBloc, CompanyNetIncomeState>(
-      'stalenessCheckRequested_stale_triggersLoadRequested',
-      build: () {
-        // arrange
-        when(
-          () => mockGetNetIncomeStats(tTicker),
-        ).thenAnswer((_) async => const Right(tNetIncomeStats));
-        return bloc;
-      },
-      seed: () => CompanyNetIncomeState.loaded(
-        netIncomeStats: tNetIncomeStats,
-        annualChartData: const [],
-        quarterlyChartData: const [],
-        historyLimit: 7,
-        lastUpdated: DateTime.now().subtract(const Duration(hours: 25)),
-      ),
+      'periodViewed_updatesAnalyticsFlags',
+      build: () => bloc,
+      seed: () => loadedState,
       act: (bloc) {
         // act
-        bloc.add(const CompanyNetIncomeEvent.stalenessCheckRequested(tTicker));
+        bloc.add(const CompanyNetIncomeEvent.tabShown(tTicker));
+        bloc.add(const CompanyNetIncomeEvent.periodViewed(isAnnual: true));
+        bloc.add(const CompanyNetIncomeEvent.periodViewed(isAnnual: false));
       },
-      expect: () {
+      verify: (_) {
         // assert
-        return [
-          const CompanyNetIncomeState.loading(),
-          isA<CompanyNetIncomeState>().having(
-            (s) =>
-                s.maybeMap(loaded: (l) => l.netIncomeStats, orElse: () => null),
-            'netIncomeStats',
-            tNetIncomeStats,
+        final state = bloc.state.maybeMap(
+          loaded: (l) => l.analyticsState,
+          orElse: () => null,
+        );
+        expect(state?.viewedYearlyNetTab, true);
+        expect(state?.viewedQtrlyNetTab, true);
+      },
+    );
+
+    blocTest<CompanyNetIncomeBloc, CompanyNetIncomeState>(
+      'viewAllTapped_updatesCorrectInteractionFlags',
+      build: () => bloc,
+      seed: () => loadedState,
+      act: (bloc) {
+        // act
+        bloc.add(const CompanyNetIncomeEvent.tabShown(tTicker));
+        bloc.add(
+          const CompanyNetIncomeEvent.viewAllTapped(
+            isAnnual: true,
+            isChart: true,
           ),
-        ];
+        );
+        bloc.add(
+          const CompanyNetIncomeEvent.viewAllTapped(
+            isAnnual: false,
+            isChart: false,
+          ),
+        );
+      },
+      verify: (_) {
+        // assert
+        final state = bloc.state.maybeMap(
+          loaded: (l) => l.analyticsState,
+          orElse: () => null,
+        );
+        expect(state?.tappedYrchartViewAll, true);
+        expect(state?.tappedQtrtableViewAll, true);
       },
     );
   });

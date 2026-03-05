@@ -8,8 +8,14 @@ class WatchlistEvent with _$WatchlistEvent {
   const factory WatchlistEvent.addRequested({
     required String ticker,
     String? name,
+    String? tabName,
+    int? durationOnPageSeconds,
   }) = AddRequested;
-  const factory WatchlistEvent.removeRequested(String ticker) = RemoveRequested;
+  const factory WatchlistEvent.removeRequested({
+    required String ticker,
+    String? tabName,
+    int? durationOnPageSeconds,
+  }) = RemoveRequested;
   const factory WatchlistEvent.loadRequested({String? uid}) = LoadRequested;
   const factory WatchlistEvent.loadWatchlistEvents(List<String> tickers) =
       LoadWatchlistEvents;

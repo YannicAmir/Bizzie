@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$IncomeStatementDto {
 
- String get date; String get symbol; String get reportedCurrency; String get cik; String get filingDate; String get acceptedDate; String get fiscalYear; String get period; double? get revenue; double? get costOfRevenue; double? get grossProfit; double? get researchAndDevelopmentExpenses; double? get generalAndAdministrativeExpenses; double? get sellingAndMarketingExpenses; double? get sellingGeneralAndAdministrativeExpenses; double? get otherExpenses; double? get operatingExpenses; double? get costAndExpenses; double? get interestIncome; double? get interestExpense; double? get depreciationAndAmortization; double? get ebitda; double? get ebit; double? get operatingIncome; double? get totalOtherIncomeExpensesNet; double? get incomeBeforeTax; double? get incomeTaxExpense; double? get netIncome; double? get eps; double? get epsDiluted; double? get weightedAverageShsOut; double? get weightedAverageShsOutDil;
+ String? get date; String? get symbol; String? get reportedCurrency; String? get cik; String? get filingDate; String? get acceptedDate; String? get fiscalYear; String? get period; double? get revenue; double? get costOfRevenue; double? get grossProfit; double? get researchAndDevelopmentExpenses; double? get generalAndAdministrativeExpenses; double? get sellingAndMarketingExpenses; double? get sellingGeneralAndAdministrativeExpenses; double? get otherExpenses; double? get operatingExpenses; double? get costAndExpenses; double? get interestIncome; double? get interestExpense; double? get depreciationAndAmortization; double? get ebitda; double? get ebit; double? get operatingIncome; double? get totalOtherIncomeExpensesNet; double? get incomeBeforeTax; double? get incomeTaxExpense; double? get netIncome; double? get eps; double? get epsDiluted; double? get weightedAverageShsOut; double? get weightedAverageShsOutDil;
 /// Create a copy of IncomeStatementDto
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -48,7 +48,7 @@ abstract mixin class $IncomeStatementDtoCopyWith<$Res>  {
   factory $IncomeStatementDtoCopyWith(IncomeStatementDto value, $Res Function(IncomeStatementDto) _then) = _$IncomeStatementDtoCopyWithImpl;
 @useResult
 $Res call({
- String date, String symbol, String reportedCurrency, String cik, String filingDate, String acceptedDate, String fiscalYear, String period, double? revenue, double? costOfRevenue, double? grossProfit, double? researchAndDevelopmentExpenses, double? generalAndAdministrativeExpenses, double? sellingAndMarketingExpenses, double? sellingGeneralAndAdministrativeExpenses, double? otherExpenses, double? operatingExpenses, double? costAndExpenses, double? interestIncome, double? interestExpense, double? depreciationAndAmortization, double? ebitda, double? ebit, double? operatingIncome, double? totalOtherIncomeExpensesNet, double? incomeBeforeTax, double? incomeTaxExpense, double? netIncome, double? eps, double? epsDiluted, double? weightedAverageShsOut, double? weightedAverageShsOutDil
+ String? date, String? symbol, String? reportedCurrency, String? cik, String? filingDate, String? acceptedDate, String? fiscalYear, String? period, double? revenue, double? costOfRevenue, double? grossProfit, double? researchAndDevelopmentExpenses, double? generalAndAdministrativeExpenses, double? sellingAndMarketingExpenses, double? sellingGeneralAndAdministrativeExpenses, double? otherExpenses, double? operatingExpenses, double? costAndExpenses, double? interestIncome, double? interestExpense, double? depreciationAndAmortization, double? ebitda, double? ebit, double? operatingIncome, double? totalOtherIncomeExpensesNet, double? incomeBeforeTax, double? incomeTaxExpense, double? netIncome, double? eps, double? epsDiluted, double? weightedAverageShsOut, double? weightedAverageShsOutDil
 });
 
 
@@ -65,17 +65,17 @@ class _$IncomeStatementDtoCopyWithImpl<$Res>
 
 /// Create a copy of IncomeStatementDto
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? date = null,Object? symbol = null,Object? reportedCurrency = null,Object? cik = null,Object? filingDate = null,Object? acceptedDate = null,Object? fiscalYear = null,Object? period = null,Object? revenue = freezed,Object? costOfRevenue = freezed,Object? grossProfit = freezed,Object? researchAndDevelopmentExpenses = freezed,Object? generalAndAdministrativeExpenses = freezed,Object? sellingAndMarketingExpenses = freezed,Object? sellingGeneralAndAdministrativeExpenses = freezed,Object? otherExpenses = freezed,Object? operatingExpenses = freezed,Object? costAndExpenses = freezed,Object? interestIncome = freezed,Object? interestExpense = freezed,Object? depreciationAndAmortization = freezed,Object? ebitda = freezed,Object? ebit = freezed,Object? operatingIncome = freezed,Object? totalOtherIncomeExpensesNet = freezed,Object? incomeBeforeTax = freezed,Object? incomeTaxExpense = freezed,Object? netIncome = freezed,Object? eps = freezed,Object? epsDiluted = freezed,Object? weightedAverageShsOut = freezed,Object? weightedAverageShsOutDil = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? date = freezed,Object? symbol = freezed,Object? reportedCurrency = freezed,Object? cik = freezed,Object? filingDate = freezed,Object? acceptedDate = freezed,Object? fiscalYear = freezed,Object? period = freezed,Object? revenue = freezed,Object? costOfRevenue = freezed,Object? grossProfit = freezed,Object? researchAndDevelopmentExpenses = freezed,Object? generalAndAdministrativeExpenses = freezed,Object? sellingAndMarketingExpenses = freezed,Object? sellingGeneralAndAdministrativeExpenses = freezed,Object? otherExpenses = freezed,Object? operatingExpenses = freezed,Object? costAndExpenses = freezed,Object? interestIncome = freezed,Object? interestExpense = freezed,Object? depreciationAndAmortization = freezed,Object? ebitda = freezed,Object? ebit = freezed,Object? operatingIncome = freezed,Object? totalOtherIncomeExpensesNet = freezed,Object? incomeBeforeTax = freezed,Object? incomeTaxExpense = freezed,Object? netIncome = freezed,Object? eps = freezed,Object? epsDiluted = freezed,Object? weightedAverageShsOut = freezed,Object? weightedAverageShsOutDil = freezed,}) {
   return _then(_self.copyWith(
-date: null == date ? _self.date : date // ignore: cast_nullable_to_non_nullable
-as String,symbol: null == symbol ? _self.symbol : symbol // ignore: cast_nullable_to_non_nullable
-as String,reportedCurrency: null == reportedCurrency ? _self.reportedCurrency : reportedCurrency // ignore: cast_nullable_to_non_nullable
-as String,cik: null == cik ? _self.cik : cik // ignore: cast_nullable_to_non_nullable
-as String,filingDate: null == filingDate ? _self.filingDate : filingDate // ignore: cast_nullable_to_non_nullable
-as String,acceptedDate: null == acceptedDate ? _self.acceptedDate : acceptedDate // ignore: cast_nullable_to_non_nullable
-as String,fiscalYear: null == fiscalYear ? _self.fiscalYear : fiscalYear // ignore: cast_nullable_to_non_nullable
-as String,period: null == period ? _self.period : period // ignore: cast_nullable_to_non_nullable
-as String,revenue: freezed == revenue ? _self.revenue : revenue // ignore: cast_nullable_to_non_nullable
+date: freezed == date ? _self.date : date // ignore: cast_nullable_to_non_nullable
+as String?,symbol: freezed == symbol ? _self.symbol : symbol // ignore: cast_nullable_to_non_nullable
+as String?,reportedCurrency: freezed == reportedCurrency ? _self.reportedCurrency : reportedCurrency // ignore: cast_nullable_to_non_nullable
+as String?,cik: freezed == cik ? _self.cik : cik // ignore: cast_nullable_to_non_nullable
+as String?,filingDate: freezed == filingDate ? _self.filingDate : filingDate // ignore: cast_nullable_to_non_nullable
+as String?,acceptedDate: freezed == acceptedDate ? _self.acceptedDate : acceptedDate // ignore: cast_nullable_to_non_nullable
+as String?,fiscalYear: freezed == fiscalYear ? _self.fiscalYear : fiscalYear // ignore: cast_nullable_to_non_nullable
+as String?,period: freezed == period ? _self.period : period // ignore: cast_nullable_to_non_nullable
+as String?,revenue: freezed == revenue ? _self.revenue : revenue // ignore: cast_nullable_to_non_nullable
 as double?,costOfRevenue: freezed == costOfRevenue ? _self.costOfRevenue : costOfRevenue // ignore: cast_nullable_to_non_nullable
 as double?,grossProfit: freezed == grossProfit ? _self.grossProfit : grossProfit // ignore: cast_nullable_to_non_nullable
 as double?,researchAndDevelopmentExpenses: freezed == researchAndDevelopmentExpenses ? _self.researchAndDevelopmentExpenses : researchAndDevelopmentExpenses // ignore: cast_nullable_to_non_nullable
@@ -184,7 +184,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String date,  String symbol,  String reportedCurrency,  String cik,  String filingDate,  String acceptedDate,  String fiscalYear,  String period,  double? revenue,  double? costOfRevenue,  double? grossProfit,  double? researchAndDevelopmentExpenses,  double? generalAndAdministrativeExpenses,  double? sellingAndMarketingExpenses,  double? sellingGeneralAndAdministrativeExpenses,  double? otherExpenses,  double? operatingExpenses,  double? costAndExpenses,  double? interestIncome,  double? interestExpense,  double? depreciationAndAmortization,  double? ebitda,  double? ebit,  double? operatingIncome,  double? totalOtherIncomeExpensesNet,  double? incomeBeforeTax,  double? incomeTaxExpense,  double? netIncome,  double? eps,  double? epsDiluted,  double? weightedAverageShsOut,  double? weightedAverageShsOutDil)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? date,  String? symbol,  String? reportedCurrency,  String? cik,  String? filingDate,  String? acceptedDate,  String? fiscalYear,  String? period,  double? revenue,  double? costOfRevenue,  double? grossProfit,  double? researchAndDevelopmentExpenses,  double? generalAndAdministrativeExpenses,  double? sellingAndMarketingExpenses,  double? sellingGeneralAndAdministrativeExpenses,  double? otherExpenses,  double? operatingExpenses,  double? costAndExpenses,  double? interestIncome,  double? interestExpense,  double? depreciationAndAmortization,  double? ebitda,  double? ebit,  double? operatingIncome,  double? totalOtherIncomeExpensesNet,  double? incomeBeforeTax,  double? incomeTaxExpense,  double? netIncome,  double? eps,  double? epsDiluted,  double? weightedAverageShsOut,  double? weightedAverageShsOutDil)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _IncomeStatementDto() when $default != null:
 return $default(_that.date,_that.symbol,_that.reportedCurrency,_that.cik,_that.filingDate,_that.acceptedDate,_that.fiscalYear,_that.period,_that.revenue,_that.costOfRevenue,_that.grossProfit,_that.researchAndDevelopmentExpenses,_that.generalAndAdministrativeExpenses,_that.sellingAndMarketingExpenses,_that.sellingGeneralAndAdministrativeExpenses,_that.otherExpenses,_that.operatingExpenses,_that.costAndExpenses,_that.interestIncome,_that.interestExpense,_that.depreciationAndAmortization,_that.ebitda,_that.ebit,_that.operatingIncome,_that.totalOtherIncomeExpensesNet,_that.incomeBeforeTax,_that.incomeTaxExpense,_that.netIncome,_that.eps,_that.epsDiluted,_that.weightedAverageShsOut,_that.weightedAverageShsOutDil);case _:
@@ -205,7 +205,7 @@ return $default(_that.date,_that.symbol,_that.reportedCurrency,_that.cik,_that.f
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String date,  String symbol,  String reportedCurrency,  String cik,  String filingDate,  String acceptedDate,  String fiscalYear,  String period,  double? revenue,  double? costOfRevenue,  double? grossProfit,  double? researchAndDevelopmentExpenses,  double? generalAndAdministrativeExpenses,  double? sellingAndMarketingExpenses,  double? sellingGeneralAndAdministrativeExpenses,  double? otherExpenses,  double? operatingExpenses,  double? costAndExpenses,  double? interestIncome,  double? interestExpense,  double? depreciationAndAmortization,  double? ebitda,  double? ebit,  double? operatingIncome,  double? totalOtherIncomeExpensesNet,  double? incomeBeforeTax,  double? incomeTaxExpense,  double? netIncome,  double? eps,  double? epsDiluted,  double? weightedAverageShsOut,  double? weightedAverageShsOutDil)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? date,  String? symbol,  String? reportedCurrency,  String? cik,  String? filingDate,  String? acceptedDate,  String? fiscalYear,  String? period,  double? revenue,  double? costOfRevenue,  double? grossProfit,  double? researchAndDevelopmentExpenses,  double? generalAndAdministrativeExpenses,  double? sellingAndMarketingExpenses,  double? sellingGeneralAndAdministrativeExpenses,  double? otherExpenses,  double? operatingExpenses,  double? costAndExpenses,  double? interestIncome,  double? interestExpense,  double? depreciationAndAmortization,  double? ebitda,  double? ebit,  double? operatingIncome,  double? totalOtherIncomeExpensesNet,  double? incomeBeforeTax,  double? incomeTaxExpense,  double? netIncome,  double? eps,  double? epsDiluted,  double? weightedAverageShsOut,  double? weightedAverageShsOutDil)  $default,) {final _that = this;
 switch (_that) {
 case _IncomeStatementDto():
 return $default(_that.date,_that.symbol,_that.reportedCurrency,_that.cik,_that.filingDate,_that.acceptedDate,_that.fiscalYear,_that.period,_that.revenue,_that.costOfRevenue,_that.grossProfit,_that.researchAndDevelopmentExpenses,_that.generalAndAdministrativeExpenses,_that.sellingAndMarketingExpenses,_that.sellingGeneralAndAdministrativeExpenses,_that.otherExpenses,_that.operatingExpenses,_that.costAndExpenses,_that.interestIncome,_that.interestExpense,_that.depreciationAndAmortization,_that.ebitda,_that.ebit,_that.operatingIncome,_that.totalOtherIncomeExpensesNet,_that.incomeBeforeTax,_that.incomeTaxExpense,_that.netIncome,_that.eps,_that.epsDiluted,_that.weightedAverageShsOut,_that.weightedAverageShsOutDil);case _:
@@ -225,7 +225,7 @@ return $default(_that.date,_that.symbol,_that.reportedCurrency,_that.cik,_that.f
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String date,  String symbol,  String reportedCurrency,  String cik,  String filingDate,  String acceptedDate,  String fiscalYear,  String period,  double? revenue,  double? costOfRevenue,  double? grossProfit,  double? researchAndDevelopmentExpenses,  double? generalAndAdministrativeExpenses,  double? sellingAndMarketingExpenses,  double? sellingGeneralAndAdministrativeExpenses,  double? otherExpenses,  double? operatingExpenses,  double? costAndExpenses,  double? interestIncome,  double? interestExpense,  double? depreciationAndAmortization,  double? ebitda,  double? ebit,  double? operatingIncome,  double? totalOtherIncomeExpensesNet,  double? incomeBeforeTax,  double? incomeTaxExpense,  double? netIncome,  double? eps,  double? epsDiluted,  double? weightedAverageShsOut,  double? weightedAverageShsOutDil)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? date,  String? symbol,  String? reportedCurrency,  String? cik,  String? filingDate,  String? acceptedDate,  String? fiscalYear,  String? period,  double? revenue,  double? costOfRevenue,  double? grossProfit,  double? researchAndDevelopmentExpenses,  double? generalAndAdministrativeExpenses,  double? sellingAndMarketingExpenses,  double? sellingGeneralAndAdministrativeExpenses,  double? otherExpenses,  double? operatingExpenses,  double? costAndExpenses,  double? interestIncome,  double? interestExpense,  double? depreciationAndAmortization,  double? ebitda,  double? ebit,  double? operatingIncome,  double? totalOtherIncomeExpensesNet,  double? incomeBeforeTax,  double? incomeTaxExpense,  double? netIncome,  double? eps,  double? epsDiluted,  double? weightedAverageShsOut,  double? weightedAverageShsOutDil)?  $default,) {final _that = this;
 switch (_that) {
 case _IncomeStatementDto() when $default != null:
 return $default(_that.date,_that.symbol,_that.reportedCurrency,_that.cik,_that.filingDate,_that.acceptedDate,_that.fiscalYear,_that.period,_that.revenue,_that.costOfRevenue,_that.grossProfit,_that.researchAndDevelopmentExpenses,_that.generalAndAdministrativeExpenses,_that.sellingAndMarketingExpenses,_that.sellingGeneralAndAdministrativeExpenses,_that.otherExpenses,_that.operatingExpenses,_that.costAndExpenses,_that.interestIncome,_that.interestExpense,_that.depreciationAndAmortization,_that.ebitda,_that.ebit,_that.operatingIncome,_that.totalOtherIncomeExpensesNet,_that.incomeBeforeTax,_that.incomeTaxExpense,_that.netIncome,_that.eps,_that.epsDiluted,_that.weightedAverageShsOut,_that.weightedAverageShsOutDil);case _:
@@ -240,17 +240,17 @@ return $default(_that.date,_that.symbol,_that.reportedCurrency,_that.cik,_that.f
 @JsonSerializable()
 
 class _IncomeStatementDto extends IncomeStatementDto {
-  const _IncomeStatementDto({required this.date, required this.symbol, required this.reportedCurrency, required this.cik, required this.filingDate, required this.acceptedDate, required this.fiscalYear, required this.period, this.revenue, this.costOfRevenue, this.grossProfit, this.researchAndDevelopmentExpenses, this.generalAndAdministrativeExpenses, this.sellingAndMarketingExpenses, this.sellingGeneralAndAdministrativeExpenses, this.otherExpenses, this.operatingExpenses, this.costAndExpenses, this.interestIncome, this.interestExpense, this.depreciationAndAmortization, this.ebitda, this.ebit, this.operatingIncome, this.totalOtherIncomeExpensesNet, this.incomeBeforeTax, this.incomeTaxExpense, this.netIncome, this.eps, this.epsDiluted, this.weightedAverageShsOut, this.weightedAverageShsOutDil}): super._();
+  const _IncomeStatementDto({this.date, this.symbol, this.reportedCurrency, this.cik, this.filingDate, this.acceptedDate, this.fiscalYear, this.period, this.revenue, this.costOfRevenue, this.grossProfit, this.researchAndDevelopmentExpenses, this.generalAndAdministrativeExpenses, this.sellingAndMarketingExpenses, this.sellingGeneralAndAdministrativeExpenses, this.otherExpenses, this.operatingExpenses, this.costAndExpenses, this.interestIncome, this.interestExpense, this.depreciationAndAmortization, this.ebitda, this.ebit, this.operatingIncome, this.totalOtherIncomeExpensesNet, this.incomeBeforeTax, this.incomeTaxExpense, this.netIncome, this.eps, this.epsDiluted, this.weightedAverageShsOut, this.weightedAverageShsOutDil}): super._();
   factory _IncomeStatementDto.fromJson(Map<String, dynamic> json) => _$IncomeStatementDtoFromJson(json);
 
-@override final  String date;
-@override final  String symbol;
-@override final  String reportedCurrency;
-@override final  String cik;
-@override final  String filingDate;
-@override final  String acceptedDate;
-@override final  String fiscalYear;
-@override final  String period;
+@override final  String? date;
+@override final  String? symbol;
+@override final  String? reportedCurrency;
+@override final  String? cik;
+@override final  String? filingDate;
+@override final  String? acceptedDate;
+@override final  String? fiscalYear;
+@override final  String? period;
 @override final  double? revenue;
 @override final  double? costOfRevenue;
 @override final  double? grossProfit;
@@ -309,7 +309,7 @@ abstract mixin class _$IncomeStatementDtoCopyWith<$Res> implements $IncomeStatem
   factory _$IncomeStatementDtoCopyWith(_IncomeStatementDto value, $Res Function(_IncomeStatementDto) _then) = __$IncomeStatementDtoCopyWithImpl;
 @override @useResult
 $Res call({
- String date, String symbol, String reportedCurrency, String cik, String filingDate, String acceptedDate, String fiscalYear, String period, double? revenue, double? costOfRevenue, double? grossProfit, double? researchAndDevelopmentExpenses, double? generalAndAdministrativeExpenses, double? sellingAndMarketingExpenses, double? sellingGeneralAndAdministrativeExpenses, double? otherExpenses, double? operatingExpenses, double? costAndExpenses, double? interestIncome, double? interestExpense, double? depreciationAndAmortization, double? ebitda, double? ebit, double? operatingIncome, double? totalOtherIncomeExpensesNet, double? incomeBeforeTax, double? incomeTaxExpense, double? netIncome, double? eps, double? epsDiluted, double? weightedAverageShsOut, double? weightedAverageShsOutDil
+ String? date, String? symbol, String? reportedCurrency, String? cik, String? filingDate, String? acceptedDate, String? fiscalYear, String? period, double? revenue, double? costOfRevenue, double? grossProfit, double? researchAndDevelopmentExpenses, double? generalAndAdministrativeExpenses, double? sellingAndMarketingExpenses, double? sellingGeneralAndAdministrativeExpenses, double? otherExpenses, double? operatingExpenses, double? costAndExpenses, double? interestIncome, double? interestExpense, double? depreciationAndAmortization, double? ebitda, double? ebit, double? operatingIncome, double? totalOtherIncomeExpensesNet, double? incomeBeforeTax, double? incomeTaxExpense, double? netIncome, double? eps, double? epsDiluted, double? weightedAverageShsOut, double? weightedAverageShsOutDil
 });
 
 
@@ -326,17 +326,17 @@ class __$IncomeStatementDtoCopyWithImpl<$Res>
 
 /// Create a copy of IncomeStatementDto
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? date = null,Object? symbol = null,Object? reportedCurrency = null,Object? cik = null,Object? filingDate = null,Object? acceptedDate = null,Object? fiscalYear = null,Object? period = null,Object? revenue = freezed,Object? costOfRevenue = freezed,Object? grossProfit = freezed,Object? researchAndDevelopmentExpenses = freezed,Object? generalAndAdministrativeExpenses = freezed,Object? sellingAndMarketingExpenses = freezed,Object? sellingGeneralAndAdministrativeExpenses = freezed,Object? otherExpenses = freezed,Object? operatingExpenses = freezed,Object? costAndExpenses = freezed,Object? interestIncome = freezed,Object? interestExpense = freezed,Object? depreciationAndAmortization = freezed,Object? ebitda = freezed,Object? ebit = freezed,Object? operatingIncome = freezed,Object? totalOtherIncomeExpensesNet = freezed,Object? incomeBeforeTax = freezed,Object? incomeTaxExpense = freezed,Object? netIncome = freezed,Object? eps = freezed,Object? epsDiluted = freezed,Object? weightedAverageShsOut = freezed,Object? weightedAverageShsOutDil = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? date = freezed,Object? symbol = freezed,Object? reportedCurrency = freezed,Object? cik = freezed,Object? filingDate = freezed,Object? acceptedDate = freezed,Object? fiscalYear = freezed,Object? period = freezed,Object? revenue = freezed,Object? costOfRevenue = freezed,Object? grossProfit = freezed,Object? researchAndDevelopmentExpenses = freezed,Object? generalAndAdministrativeExpenses = freezed,Object? sellingAndMarketingExpenses = freezed,Object? sellingGeneralAndAdministrativeExpenses = freezed,Object? otherExpenses = freezed,Object? operatingExpenses = freezed,Object? costAndExpenses = freezed,Object? interestIncome = freezed,Object? interestExpense = freezed,Object? depreciationAndAmortization = freezed,Object? ebitda = freezed,Object? ebit = freezed,Object? operatingIncome = freezed,Object? totalOtherIncomeExpensesNet = freezed,Object? incomeBeforeTax = freezed,Object? incomeTaxExpense = freezed,Object? netIncome = freezed,Object? eps = freezed,Object? epsDiluted = freezed,Object? weightedAverageShsOut = freezed,Object? weightedAverageShsOutDil = freezed,}) {
   return _then(_IncomeStatementDto(
-date: null == date ? _self.date : date // ignore: cast_nullable_to_non_nullable
-as String,symbol: null == symbol ? _self.symbol : symbol // ignore: cast_nullable_to_non_nullable
-as String,reportedCurrency: null == reportedCurrency ? _self.reportedCurrency : reportedCurrency // ignore: cast_nullable_to_non_nullable
-as String,cik: null == cik ? _self.cik : cik // ignore: cast_nullable_to_non_nullable
-as String,filingDate: null == filingDate ? _self.filingDate : filingDate // ignore: cast_nullable_to_non_nullable
-as String,acceptedDate: null == acceptedDate ? _self.acceptedDate : acceptedDate // ignore: cast_nullable_to_non_nullable
-as String,fiscalYear: null == fiscalYear ? _self.fiscalYear : fiscalYear // ignore: cast_nullable_to_non_nullable
-as String,period: null == period ? _self.period : period // ignore: cast_nullable_to_non_nullable
-as String,revenue: freezed == revenue ? _self.revenue : revenue // ignore: cast_nullable_to_non_nullable
+date: freezed == date ? _self.date : date // ignore: cast_nullable_to_non_nullable
+as String?,symbol: freezed == symbol ? _self.symbol : symbol // ignore: cast_nullable_to_non_nullable
+as String?,reportedCurrency: freezed == reportedCurrency ? _self.reportedCurrency : reportedCurrency // ignore: cast_nullable_to_non_nullable
+as String?,cik: freezed == cik ? _self.cik : cik // ignore: cast_nullable_to_non_nullable
+as String?,filingDate: freezed == filingDate ? _self.filingDate : filingDate // ignore: cast_nullable_to_non_nullable
+as String?,acceptedDate: freezed == acceptedDate ? _self.acceptedDate : acceptedDate // ignore: cast_nullable_to_non_nullable
+as String?,fiscalYear: freezed == fiscalYear ? _self.fiscalYear : fiscalYear // ignore: cast_nullable_to_non_nullable
+as String?,period: freezed == period ? _self.period : period // ignore: cast_nullable_to_non_nullable
+as String?,revenue: freezed == revenue ? _self.revenue : revenue // ignore: cast_nullable_to_non_nullable
 as double?,costOfRevenue: freezed == costOfRevenue ? _self.costOfRevenue : costOfRevenue // ignore: cast_nullable_to_non_nullable
 as double?,grossProfit: freezed == grossProfit ? _self.grossProfit : grossProfit // ignore: cast_nullable_to_non_nullable
 as double?,researchAndDevelopmentExpenses: freezed == researchAndDevelopmentExpenses ? _self.researchAndDevelopmentExpenses : researchAndDevelopmentExpenses // ignore: cast_nullable_to_non_nullable

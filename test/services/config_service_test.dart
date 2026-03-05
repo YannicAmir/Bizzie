@@ -18,215 +18,215 @@ void main() {
 
   group('ConfigService', () {
     test('getString_validKey_returnsValue', () {
-      // arrange
+      // ARRANGE
       when(
         () => mockRemoteConfig.getString('test_key'),
       ).thenReturn('test_value');
 
-      // act
+      // ACT
       final result = configService.getString('test_key');
 
-      // assert
+      // ASSERT
       expect(result, 'test_value');
       verify(() => mockRemoteConfig.getString('test_key')).called(1);
     });
 
     test('getBool_validKey_returnsValue', () {
-      // arrange
+      // ARRANGE
       when(() => mockRemoteConfig.getBool('test_bool')).thenReturn(true);
 
-      // act
+      // ACT
       final result = configService.getBool('test_bool');
 
-      // assert
+      // ASSERT
       expect(result, true);
       verify(() => mockRemoteConfig.getBool('test_bool')).called(1);
     });
 
     test('getInt_validKey_returnsValue', () {
-      // arrange
+      // ARRANGE
       when(() => mockRemoteConfig.getInt('test_int')).thenReturn(42);
 
-      // act
+      // ACT
       final result = configService.getInt('test_int');
 
-      // assert
+      // ASSERT
       expect(result, 42);
       verify(() => mockRemoteConfig.getInt('test_int')).called(1);
     });
 
     test('getDouble_validKey_returnsValue', () {
-      // arrange
+      // ARRANGE
       when(() => mockRemoteConfig.getDouble('test_double')).thenReturn(3.14);
 
-      // act
+      // ACT
       final result = configService.getDouble('test_double');
 
-      // assert
+      // ASSERT
       expect(result, 3.14);
       verify(() => mockRemoteConfig.getDouble('test_double')).called(1);
     });
 
     test('geminiModelName_remoteConfigValue_returnsValue', () {
-      // arrange
+      // ARRANGE
       when(
         () => mockRemoteConfig.getString(RemoteConfigKeys.geminiModelName),
       ).thenReturn('gemini-pro');
 
-      // act
+      // ACT
       final result = configService.geminiModelName;
 
-      // assert
+      // ASSERT
       expect(result, 'gemini-pro');
     });
 
     test('privacyPolicyUrl_remoteConfigValue_returnsValue', () {
-      // arrange
+      // ARRANGE
       when(
         () => mockRemoteConfig.getString(RemoteConfigKeys.privacyPolicyUrl),
       ).thenReturn('https://bizzie.app/privacy');
 
-      // act
+      // ACT
       final result = configService.privacyPolicyUrl;
 
-      // assert
+      // ASSERT
       expect(result, 'https://bizzie.app/privacy');
     });
 
     test('termsOfServiceUrl_remoteConfigValue_returnsValue', () {
-      // arrange
+      // ARRANGE
       when(
         () => mockRemoteConfig.getString(RemoteConfigKeys.termsOfServiceUrl),
       ).thenReturn('https://bizzie.app/terms');
 
-      // act
+      // ACT
       final result = configService.termsOfServiceUrl;
 
-      // assert
+      // ASSERT
       expect(result, 'https://bizzie.app/terms');
     });
 
     test('maintenanceMode_remoteConfigValue_returnsCorrectBool', () {
-      // arrange
+      // ARRANGE
       when(
         () => mockRemoteConfig.getBool(RemoteConfigKeys.maintenanceMode),
       ).thenReturn(true);
 
-      // act
+      // ACT
       final result = configService.maintenanceMode;
 
-      // assert
+      // ASSERT
       expect(result, true);
     });
 
     test('onConfigUpdated_stream_emitsWhenRemoteConfigUpdates', () {
-      // arrange
+      // ARRANGE
       final mockUpdate = MockRemoteConfigUpdate();
       final stream = Stream<RemoteConfigUpdate>.fromIterable([mockUpdate]);
       when(() => mockRemoteConfig.onConfigUpdated).thenAnswer((_) => stream);
 
-      // act
+      // ACT
       final result = configService.onConfigUpdated;
 
-      // assert
+      // ASSERT
       expect(result, emitsInOrder([mockUpdate]));
     });
 
     test('stockMarketSectors_validJson_returnsList', () {
-      // arrange
+      // ARRANGE
       final sectors = ['Tech', 'Bio', 'Energy'];
       when(
         () => mockRemoteConfig.getString(RemoteConfigKeys.stockMarketSectors),
       ).thenReturn('["Tech", "Bio", "Energy"]');
 
-      // act
+      // ACT
       final result = configService.stockMarketSectors;
 
-      // assert
+      // ASSERT
       expect(result, sectors);
     });
 
     test('stockMarketSectors_invalidJson_returnsDefaults', () {
-      // arrange
+      // ARRANGE
       when(
         () => mockRemoteConfig.getString(RemoteConfigKeys.stockMarketSectors),
       ).thenReturn('invalid-json');
 
-      // act
+      // ACT
       final result = configService.stockMarketSectors;
 
-      // assert
+      // ASSERT
       expect(result, isNotEmpty);
       expect(result, contains('Energy'));
     });
 
     test('sectorDescriptions_validJson_returnsMap', () {
-      // arrange
+      // ARRANGE
       const json = '{"Energy": "Energy desc", "Tech": "Tech desc"}';
       when(
         () => mockRemoteConfig.getString(RemoteConfigKeys.sectorDescriptions),
       ).thenReturn(json);
 
-      // act
+      // ACT
       final result = configService.sectorDescriptions;
 
-      // assert
+      // ASSERT
       expect(result['Energy'], 'Energy desc');
       expect(result['Tech'], 'Tech desc');
     });
 
     test('sectorDescriptions_invalidJson_returnsDefaults', () {
-      // arrange
+      // ARRANGE
       when(
         () => mockRemoteConfig.getString(RemoteConfigKeys.sectorDescriptions),
       ).thenReturn('invalid-json');
 
-      // act
+      // ACT
       final result = configService.sectorDescriptions;
 
-      // assert
+      // ASSERT
       expect(result, isNotEmpty);
       expect(result.containsKey('Energy'), isTrue);
     });
 
     test('fmpConfig_validJson_returnsConfig', () {
-      // arrange
+      // ARRANGE
       when(
         () => mockRemoteConfig.getString(RemoteConfigKeys.fmpConfig),
       ).thenReturn(
         '{"baseUrl": "https://test.com", "v3Url": "https://test.com/v3", "v4Url": "https://test.com/v4"}',
       );
 
-      // act
+      // ACT
       final result = configService.fmpConfig;
 
-      // assert
+      // ASSERT
       expect(result.baseUrl, 'https://test.com');
       expect(result.v3Url, 'https://test.com/v3');
     });
 
     test('fmpConfig_invalidJson_returnsDefaults', () {
-      // arrange
+      // ARRANGE
       when(
         () => mockRemoteConfig.getString(RemoteConfigKeys.fmpConfig),
       ).thenReturn('invalid-json');
 
-      // act
+      // ACT
       final result = configService.fmpConfig;
 
-      // assert
+      // ASSERT
       expect(result.baseUrl, contains('financialmodelingprep'));
     });
 
     test('lastFetchTime_returnsRemoteConfigValue', () {
-      // arrange
+      // ARRANGE
       final time = DateTime(2025, 1, 1);
       when(() => mockRemoteConfig.lastFetchTime).thenReturn(time);
 
-      // act
+      // ACT
       final result = configService.lastFetchTime;
 
-      // assert
+      // ASSERT
       expect(result, time);
       verify(() => mockRemoteConfig.lastFetchTime).called(1);
     });

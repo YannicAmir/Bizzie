@@ -1,6 +1,10 @@
+import 'package:bizzie/core/data/models/cache_result.dart' as result;
+import 'package:bizzie/core/interfaces/i_time_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:injectable/injectable.dart';
+import 'package:bizzie/core/data/datasources/base_firestore_cache_client.dart';
 import 'package:bizzie/core/data/models/firestore_cache_entry.dart';
+import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:bizzie/features/company_profile/financial_statements/data/dtos/financial_dtos.dart';
 import 'package:bizzie/features/company_profile/financial_statements/data/dtos/legacy_income_statement_dto.dart';
 import 'package:bizzie/features/company_profile/financial_statements/data/dtos/cash_flow_statement_dto.dart';
@@ -8,192 +12,235 @@ import 'package:bizzie/features/company_profile/financial_statements/data/dtos/i
 import 'package:bizzie/features/company_profile/financial_statements/data/dtos/balance_sheet_dto.dart';
 
 abstract class FinancialStatementsFirestoreDataSource {
-  Future<void> cacheFinancials(
-    String ticker,
-    List<FinancialStatementDto> data, {
-    required String type,
-    required String period,
-  });
-  Future<List<FinancialStatementDto>?> getCachedFinancials(
+  Future<result.CacheResult<List<FinancialStatementDto>>> syncFinancials(
     String ticker, {
     required String type,
     required String period,
+    required Future<List<FinancialStatementDto>> Function() remoteFetcher,
+    bool forceRefresh,
   });
 
-  Future<void> cacheIncomeStatements(
-    String ticker,
-    List<IncomeStatementDto> data, {
-    required String period,
-  });
-  Future<List<IncomeStatementDto>?> getCachedIncomeStatements(
+  Future<result.CacheResult<List<IncomeStatementDto>>> syncIncomeStatements(
     String ticker, {
     required String period,
+    required Future<List<IncomeStatementDto>> Function() remoteFetcher,
+    bool forceRefresh,
   });
 
-  Future<void> cacheLegacyIncomeStatements(
-    String ticker,
-    List<LegacyIncomeStatementDto> data, {
-    required String period,
-  });
-  Future<List<LegacyIncomeStatementDto>?> getCachedLegacyIncomeStatements(
+  Future<result.CacheResult<List<LegacyIncomeStatementDto>>>
+  syncLegacyIncomeStatements(
     String ticker, {
     required String period,
+    required Future<List<LegacyIncomeStatementDto>> Function() remoteFetcher,
+    bool forceRefresh,
   });
 
-  Future<void> cacheCashFlowStatements(
-    String ticker,
-    List<CashFlowStatementDto> data, {
-    required String period,
-  });
-  Future<List<CashFlowStatementDto>?> getCachedCashFlowStatements(
+  Future<result.CacheResult<List<CashFlowStatementDto>>> syncCashFlowStatements(
     String ticker, {
     required String period,
+    required Future<List<CashFlowStatementDto>> Function() remoteFetcher,
+    bool forceRefresh,
   });
 
-  Future<void> cacheBalanceSheets(
-    String ticker,
-    List<BalanceSheetDto> data, {
-    required String period,
-  });
-  Future<List<BalanceSheetDto>?> getCachedBalanceSheets(
+  Future<result.CacheResult<List<BalanceSheetDto>>> syncBalanceSheets(
     String ticker, {
     required String period,
+    required Future<List<BalanceSheetDto>> Function() remoteFetcher,
+    bool forceRefresh,
   });
 
-  Future<void> cacheExchangeRate(String pair, double rate);
-  Future<double?> getCachedExchangeRate(String pair);
+  Future<result.CacheResult<double>> syncExchangeRate(
+    String pair, {
+    required Future<double> Function() remoteFetcher,
+    bool forceRefresh,
+  });
+
+  Future<(List<FinancialStatementDto>, CompanyProfileDataOrigin)?>
+  getCachedFinancials(
+    String ticker, {
+    required String type,
+    required String period,
+  });
+  Future<(List<IncomeStatementDto>, CompanyProfileDataOrigin)?>
+  getCachedIncomeStatements(String ticker, {required String period});
+  Future<(List<LegacyIncomeStatementDto>, CompanyProfileDataOrigin)?>
+  getCachedLegacyIncomeStatements(String ticker, {required String period});
+  Future<(List<CashFlowStatementDto>, CompanyProfileDataOrigin)?>
+  getCachedCashFlowStatements(String ticker, {required String period});
+  Future<(List<BalanceSheetDto>, CompanyProfileDataOrigin)?>
+  getCachedBalanceSheets(String ticker, {required String period});
+  Future<(double, CompanyProfileDataOrigin)?> getCachedExchangeRate(
+    String pair,
+  );
 }
 
 @LazySingleton(as: FinancialStatementsFirestoreDataSource)
 class FinancialStatementsFirestoreDataSourceImpl
+    extends BaseFirestoreCacheClient
     implements FinancialStatementsFirestoreDataSource {
-  final FirebaseFirestore _firestore;
-
-  FinancialStatementsFirestoreDataSourceImpl(this._firestore);
-
-  bool _isSmartCacheValid({
-    required DateTime? lastUpdated,
-    int weekendThresholdHour = 22,
-    bool strictMarketAware = false,
-    Duration fallbackTtl = const Duration(hours: 24),
-  }) {
-    if (lastUpdated == null) return false;
-    final now = DateTime.now();
-
-    if (now.weekday == DateTime.saturday || now.weekday == DateTime.sunday) {
-      final daysSinceFriday = now.weekday - DateTime.friday;
-      final lastFriday = now.subtract(Duration(days: daysSinceFriday));
-
-      final anchor = DateTime(
-        lastFriday.year,
-        lastFriday.month,
-        lastFriday.day,
-        weekendThresholdHour,
-        0,
-      );
-
-      return lastUpdated.isAfter(anchor);
-    }
-
-    if (strictMarketAware) {
-      final marketOpen = DateTime(now.year, now.month, now.day, 9, 30);
-      if (now.isAfter(marketOpen)) {
-        return lastUpdated.isAfter(marketOpen);
-      }
-    }
-
-    final diff = now.difference(lastUpdated);
-    return diff < fallbackTtl;
-  }
-
-  CollectionReference<FirestoreCacheEntry<T>> _getCollectionRef<T>(
-    String ticker,
-    String collectionPath,
-    T Function(Object?) fromJson,
-    Object? Function(T) toJson,
-  ) {
-    return _firestore
-        .collection('companies')
-        .doc(ticker)
-        .collection(collectionPath)
-        .withConverter<FirestoreCacheEntry<T>>(
-          fromFirestore: (snapshot, _) =>
-              FirestoreCacheEntry.fromJson(snapshot.data()!, fromJson),
-          toFirestore: (entry, _) => entry.toJson(toJson),
-        );
-  }
-
-  DocumentReference<FirestoreCacheEntry<T>> _getDocRef<T>(
-    String ticker,
-    String collection,
-    String docId,
-    T Function(Object?) fromJson,
-    Object? Function(T) toJson,
-  ) {
-    return _getCollectionRef(ticker, collection, fromJson, toJson).doc(docId);
-  }
-
-  Future<T?> _fetchWithCacheFirst<T>(
-    DocumentReference<FirestoreCacheEntry<T>> docRef, {
-    int weekendThresholdHour = 22,
-    bool strictMarketAware = false,
-    Duration fallbackTtl = const Duration(hours: 24),
-  }) async {
-    bool validator(DateTime? ts) => _isSmartCacheValid(
-      lastUpdated: ts,
-      weekendThresholdHour: weekendThresholdHour,
-      strictMarketAware: strictMarketAware,
-      fallbackTtl: fallbackTtl,
-    );
-
-    try {
-      final doc = await docRef.get(const GetOptions(source: Source.cache));
-      if (doc.exists) {
-        final entry = doc.data();
-        if (entry != null && validator(entry.lastUpdated)) {
-          return entry.data;
-        }
-      }
-    } catch (_) {}
-
-    try {
-      final doc = await docRef.get(const GetOptions(source: Source.server));
-      if (doc.exists) {
-        final entry = doc.data();
-        if (entry != null && validator(entry.lastUpdated)) {
-          return entry.data;
-        }
-      }
-    } catch (_) {}
-
-    return null;
-  }
+  FinancialStatementsFirestoreDataSourceImpl(
+    FirebaseFirestore firestore,
+    ITimeProvider timeProvider,
+  ) : super(firestore, timeProvider, 'FinancialStatementsFirestoreDataSource');
 
   @override
-  Future<void> cacheFinancials(
-    String ticker,
-    List<FinancialStatementDto> data, {
+  Future<result.CacheResult<List<FinancialStatementDto>>> syncFinancials(
+    String ticker, {
     required String type,
     required String period,
+    required Future<List<FinancialStatementDto>> Function() remoteFetcher,
+    bool forceRefresh = false,
   }) async {
-    await _getDocRef<List<FinancialStatementDto>>(
-      ticker,
-      'financials',
-      '${type}_$period',
-      (json) =>
-          (json as List).map((e) => FinancialStatementDto.fromJson(e)).toList(),
-      (data) => data.map((e) => e.toJson()).toList(),
-    ).set(FirestoreCacheEntry(data: data, lastUpdated: DateTime.now()));
+    return syncOrFetch<List<FinancialStatementDto>>(
+      docRef: _financialsRef(ticker, type, period),
+      remoteFetcher: remoteFetcher,
+      forceRefresh: forceRefresh,
+    );
   }
 
   @override
-  Future<List<FinancialStatementDto>?> getCachedFinancials(
+  Future<result.CacheResult<List<IncomeStatementDto>>> syncIncomeStatements(
+    String ticker, {
+    required String period,
+    required Future<List<IncomeStatementDto>> Function() remoteFetcher,
+    bool forceRefresh = false,
+  }) async {
+    return syncOrFetch<List<IncomeStatementDto>>(
+      docRef: _incomeStableRef(ticker, period),
+      remoteFetcher: remoteFetcher,
+      forceRefresh: forceRefresh,
+    );
+  }
+
+  @override
+  Future<result.CacheResult<List<LegacyIncomeStatementDto>>>
+  syncLegacyIncomeStatements(
+    String ticker, {
+    required String period,
+    required Future<List<LegacyIncomeStatementDto>> Function() remoteFetcher,
+    bool forceRefresh = false,
+  }) async {
+    return syncOrFetch<List<LegacyIncomeStatementDto>>(
+      docRef: _incomeLegacyRef(ticker, period),
+      remoteFetcher: remoteFetcher,
+      forceRefresh: forceRefresh,
+    );
+  }
+
+  @override
+  Future<result.CacheResult<List<BalanceSheetDto>>> syncBalanceSheets(
+    String ticker, {
+    required String period,
+    required Future<List<BalanceSheetDto>> Function() remoteFetcher,
+    bool forceRefresh = false,
+  }) async {
+    return syncOrFetch<List<BalanceSheetDto>>(
+      docRef: _balanceSheetRef(ticker, period),
+      remoteFetcher: remoteFetcher,
+      forceRefresh: forceRefresh,
+    );
+  }
+
+  @override
+  Future<result.CacheResult<List<CashFlowStatementDto>>> syncCashFlowStatements(
+    String ticker, {
+    required String period,
+    required Future<List<CashFlowStatementDto>> Function() remoteFetcher,
+    bool forceRefresh = false,
+  }) async {
+    return syncOrFetch<List<CashFlowStatementDto>>(
+      docRef: _cashFlowRef(ticker, period),
+      remoteFetcher: remoteFetcher,
+      forceRefresh: forceRefresh,
+    );
+  }
+
+  @override
+  Future<result.CacheResult<double>> syncExchangeRate(
+    String pair, {
+    required Future<double> Function() remoteFetcher,
+    bool forceRefresh = false,
+  }) async {
+    return syncOrFetch<double>(
+      docRef: _exchangeRateRef(pair),
+      remoteFetcher: remoteFetcher,
+      forceRefresh: forceRefresh,
+      fallbackTtl: const Duration(hours: 24),
+    );
+  }
+
+  @override
+  Future<(List<FinancialStatementDto>, CompanyProfileDataOrigin)?>
+  getCachedFinancials(
     String ticker, {
     required String type,
     required String period,
   }) async {
-    return _fetchWithCacheFirst(
-      _getDocRef<List<FinancialStatementDto>>(
+    final res = await fetchWithCacheFirst(_financialsRef(ticker, type, period));
+    if (res is result.CacheSuccess<List<FinancialStatementDto>>) {
+      return (res.data, res.origin);
+    }
+    return null;
+  }
+
+  @override
+  Future<(List<IncomeStatementDto>, CompanyProfileDataOrigin)?>
+  getCachedIncomeStatements(String ticker, {required String period}) async {
+    final res = await fetchWithCacheFirst(_incomeStableRef(ticker, period));
+    if (res is result.CacheSuccess<List<IncomeStatementDto>>) {
+      return (res.data, res.origin);
+    }
+    return null;
+  }
+
+  @override
+  Future<(List<LegacyIncomeStatementDto>, CompanyProfileDataOrigin)?>
+  getCachedLegacyIncomeStatements(
+    String ticker, {
+    required String period,
+  }) async {
+    final res = await fetchWithCacheFirst(_incomeLegacyRef(ticker, period));
+    if (res is result.CacheSuccess<List<LegacyIncomeStatementDto>>) {
+      return (res.data, res.origin);
+    }
+    return null;
+  }
+
+  @override
+  Future<(List<BalanceSheetDto>, CompanyProfileDataOrigin)?>
+  getCachedBalanceSheets(String ticker, {required String period}) async {
+    final res = await fetchWithCacheFirst(_balanceSheetRef(ticker, period));
+    if (res is result.CacheSuccess<List<BalanceSheetDto>>) {
+      return (res.data, res.origin);
+    }
+    return null;
+  }
+
+  @override
+  Future<(List<CashFlowStatementDto>, CompanyProfileDataOrigin)?>
+  getCachedCashFlowStatements(String ticker, {required String period}) async {
+    final res = await fetchWithCacheFirst(_cashFlowRef(ticker, period));
+    if (res is result.CacheSuccess<List<CashFlowStatementDto>>) {
+      return (res.data, res.origin);
+    }
+    return null;
+  }
+
+  @override
+  Future<(double, CompanyProfileDataOrigin)?> getCachedExchangeRate(
+    String pair,
+  ) async {
+    final res = await fetchWithCacheFirst(
+      _exchangeRateRef(pair),
+      fallbackTtl: const Duration(hours: 24),
+    );
+    if (res is result.CacheSuccess<double>) return (res.data, res.origin);
+    return null;
+  }
+
+  DocumentReference<FirestoreCacheEntry<List<FinancialStatementDto>>>
+  _financialsRef(String ticker, String type, String period) =>
+      getDocRef<List<FinancialStatementDto>>(
         ticker,
         'financials',
         '${type}_$period',
@@ -201,67 +248,22 @@ class FinancialStatementsFirestoreDataSourceImpl
             .map((e) => FinancialStatementDto.fromJson(e))
             .toList(),
         (data) => data.map((e) => e.toJson()).toList(),
-      ),
-    );
-  }
+      );
 
-  @override
-  Future<void> cacheIncomeStatements(
-    String ticker,
-    List<IncomeStatementDto> data, {
-    required String period,
-  }) async {
-    await _getDocRef<List<IncomeStatementDto>>(
-      ticker,
-      'financials',
-      'income_stable_$period',
-      (json) =>
-          (json as List).map((e) => IncomeStatementDto.fromJson(e)).toList(),
-      (data) => data.map((e) => e.toJson()).toList(),
-    ).set(FirestoreCacheEntry(data: data, lastUpdated: DateTime.now()));
-  }
-
-  @override
-  Future<List<IncomeStatementDto>?> getCachedIncomeStatements(
-    String ticker, {
-    required String period,
-  }) async {
-    return _fetchWithCacheFirst(
-      _getDocRef<List<IncomeStatementDto>>(
+  DocumentReference<FirestoreCacheEntry<List<IncomeStatementDto>>>
+  _incomeStableRef(String ticker, String period) =>
+      getDocRef<List<IncomeStatementDto>>(
         ticker,
         'financials',
         'income_stable_$period',
         (json) =>
             (json as List).map((e) => IncomeStatementDto.fromJson(e)).toList(),
         (data) => data.map((e) => e.toJson()).toList(),
-      ),
-    );
-  }
+      );
 
-  @override
-  Future<void> cacheLegacyIncomeStatements(
-    String ticker,
-    List<LegacyIncomeStatementDto> data, {
-    required String period,
-  }) async {
-    await _getDocRef<List<LegacyIncomeStatementDto>>(
-      ticker,
-      'financials',
-      'income_legacy_$period',
-      (json) => (json as List)
-          .map((e) => LegacyIncomeStatementDto.fromJson(e))
-          .toList(),
-      (data) => data.map((e) => e.toJson()).toList(),
-    ).set(FirestoreCacheEntry(data: data, lastUpdated: DateTime.now()));
-  }
-
-  @override
-  Future<List<LegacyIncomeStatementDto>?> getCachedLegacyIncomeStatements(
-    String ticker, {
-    required String period,
-  }) async {
-    return _fetchWithCacheFirst(
-      _getDocRef<List<LegacyIncomeStatementDto>>(
+  DocumentReference<FirestoreCacheEntry<List<LegacyIncomeStatementDto>>>
+  _incomeLegacyRef(String ticker, String period) =>
+      getDocRef<List<LegacyIncomeStatementDto>>(
         ticker,
         'financials',
         'income_legacy_$period',
@@ -269,65 +271,22 @@ class FinancialStatementsFirestoreDataSourceImpl
             .map((e) => LegacyIncomeStatementDto.fromJson(e))
             .toList(),
         (data) => data.map((e) => e.toJson()).toList(),
-      ),
-    );
-  }
+      );
 
-  @override
-  Future<void> cacheBalanceSheets(
-    String ticker,
-    List<BalanceSheetDto> data, {
-    required String period,
-  }) async {
-    await _getDocRef<List<BalanceSheetDto>>(
-      ticker,
-      'financials',
-      'balance_sheet_$period',
-      (json) => (json as List).map((e) => BalanceSheetDto.fromJson(e)).toList(),
-      (data) => data.map((e) => e.toJson()).toList(),
-    ).set(FirestoreCacheEntry(data: data, lastUpdated: DateTime.now()));
-  }
-
-  @override
-  Future<List<BalanceSheetDto>?> getCachedBalanceSheets(
-    String ticker, {
-    required String period,
-  }) async {
-    return _fetchWithCacheFirst(
-      _getDocRef<List<BalanceSheetDto>>(
+  DocumentReference<FirestoreCacheEntry<List<BalanceSheetDto>>>
+  _balanceSheetRef(String ticker, String period) =>
+      getDocRef<List<BalanceSheetDto>>(
         ticker,
         'financials',
         'balance_sheet_$period',
         (json) =>
             (json as List).map((e) => BalanceSheetDto.fromJson(e)).toList(),
         (data) => data.map((e) => e.toJson()).toList(),
-      ),
-    );
-  }
+      );
 
-  @override
-  Future<void> cacheCashFlowStatements(
-    String ticker,
-    List<CashFlowStatementDto> data, {
-    required String period,
-  }) async {
-    await _getDocRef<List<CashFlowStatementDto>>(
-      ticker,
-      'financials',
-      'cash_flow_$period',
-      (json) =>
-          (json as List).map((e) => CashFlowStatementDto.fromJson(e)).toList(),
-      (data) => data.map((e) => e.toJson()).toList(),
-    ).set(FirestoreCacheEntry(data: data, lastUpdated: DateTime.now()));
-  }
-
-  @override
-  Future<List<CashFlowStatementDto>?> getCachedCashFlowStatements(
-    String ticker, {
-    required String period,
-  }) async {
-    return _fetchWithCacheFirst(
-      _getDocRef<List<CashFlowStatementDto>>(
+  DocumentReference<FirestoreCacheEntry<List<CashFlowStatementDto>>>
+  _cashFlowRef(String ticker, String period) =>
+      getDocRef<List<CashFlowStatementDto>>(
         ticker,
         'financials',
         'cash_flow_$period',
@@ -335,32 +294,15 @@ class FinancialStatementsFirestoreDataSourceImpl
             .map((e) => CashFlowStatementDto.fromJson(e))
             .toList(),
         (data) => data.map((e) => e.toJson()).toList(),
-      ),
-    );
-  }
+      );
 
-  @override
-  Future<void> cacheExchangeRate(String pair, double rate) async {
-    await _getDocRef<double>(
-      pair,
-      'market',
-      'price',
-      (json) => (json as num).toDouble(),
-      (data) => data,
-    ).set(FirestoreCacheEntry(data: rate, lastUpdated: DateTime.now()));
-  }
-
-  @override
-  Future<double?> getCachedExchangeRate(String pair) async {
-    return _fetchWithCacheFirst(
-      _getDocRef<double>(
-        pair,
-        'market',
-        'price',
-        (json) => (json as num).toDouble(),
-        (data) => data,
-      ),
-      fallbackTtl: const Duration(hours: 24),
-    );
-  }
+  DocumentReference<FirestoreCacheEntry<double>> _exchangeRateRef(
+    String pair,
+  ) => getDocRef<double>(
+    pair,
+    'market',
+    'price',
+    (json) => (json as num).toDouble(),
+    (data) => data,
+  );
 }

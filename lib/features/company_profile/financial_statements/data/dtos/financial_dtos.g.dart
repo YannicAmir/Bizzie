@@ -9,9 +9,9 @@ part of 'financial_dtos.dart';
 _FinancialStatementDto _$FinancialStatementDtoFromJson(
   Map<String, dynamic> json,
 ) => _FinancialStatementDto(
-  date: json['date'] as String,
-  symbol: json['symbol'] as String,
-  period: json['period'] as String,
+  date: json['date'] as String?,
+  symbol: json['symbol'] as String?,
+  period: json['period'] as String?,
   revenue: (json['revenue'] as num?)?.toDouble(),
   netIncome: (json['netIncome'] as num?)?.toDouble(),
   eps: (json['eps'] as num?)?.toDouble(),

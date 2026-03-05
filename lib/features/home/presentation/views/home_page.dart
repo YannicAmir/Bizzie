@@ -1,7 +1,9 @@
 import 'package:bizzie/app/routes/app_routes.dart';
+import 'package:bizzie/core/enums/paywall_source.dart';
 import 'package:bizzie/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:bizzie/features/home/presentation/widgets/home_watchlist_widget.dart';
 import 'package:bizzie/features/auth/presentation/bloc/auth_state.dart';
+import 'package:bizzie/features/home/presentation/bloc/home_bloc.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:bizzie/shared/widgets/inputs/bizzie_search_bar.dart';
 import 'package:bizzie/shared/widgets/modals/bizzie_snackbar.dart';
@@ -9,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:bizzie/shared/widgets/loading/bizzie_loader.dart';
+import 'package:bizzie/features/search/domain/enums/search_analytics_enums.dart';
 
 class HomePage extends StatefulWidget {
   final Object? extra;
@@ -25,10 +28,13 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    context.read<HomeBloc>().add(const HomeEvent.started());
     if (widget.extra == 'open_paywall_onboarding') {
       _pendingPaywall = true;
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        context.push('${AppRoutes.paywall}?animate=onboarding');
+        context.push(
+          '${AppRoutes.paywall}?animate=onboarding&source=${PaywallSource.onboarding.name}',
+        );
 
         if (mounted) {
           setState(() {
@@ -41,10 +47,10 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     if (_pendingPaywall) {
-      return Scaffold(
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      );
+      return Scaffold(backgroundColor: theme.scaffoldBackgroundColor);
     }
 
     return Scaffold(
@@ -52,36 +58,33 @@ class _HomePageState extends State<HomePage> {
         title: BizzieSearchBar(
           readOnly: true,
           onTap: () {
-            context.push(AppRoutes.search, extra: 'home');
+            context.push(AppRoutes.search, extra: SearchSource.home);
           },
         ),
       ),
-      body: BlocListener<AuthBloc, AuthState>(
+      body: BlocConsumer<AuthBloc, AuthState>(
         listener: (context, state) {
           state.maybeWhen(
-            authenticated: (_) {},
             failure: (failure) => BizzieSnackBar.show(
               context,
               message: failure.message,
               type: BizzieSnackBarType.error,
             ),
-            orElse: () => null,
+            orElse: () {},
           );
         },
-        child: BlocBuilder<AuthBloc, AuthState>(
-          builder: (context, state) {
-            return state.maybeWhen(
-              authenticated: (user) => SingleChildScrollView(
-                child: Padding(
-                  padding: AppConstants.pagePadding,
-                  child: const HomeWatchlistWidget(),
-                ),
+        builder: (context, state) {
+          return state.maybeWhen(
+            authenticated: (user) => SingleChildScrollView(
+              child: Padding(
+                padding: AppConstants.pagePadding,
+                child: const HomeWatchlistWidget(),
               ),
-              orElse: () =>
-                  const BizzieLoader(message: 'Loading your profile...'),
-            );
-          },
-        ),
+            ),
+            orElse: () =>
+                const BizzieLoader(message: 'Loading your profile...'),
+          );
+        },
       ),
     );
   }

@@ -47,11 +47,16 @@ class MetricSummarySubtitleHelper {
     required String formattedDelta,
     required bool isChangeZero,
     required String referenceLabel,
+    DateTime? lastUpdated,
   }) {
+    final asOfStr = lastUpdated != null
+        ? 'As of ${BizzieDateFormatter.formatMonthYearFull(lastUpdated.toIso8601String())} | '
+        : asOfPrefix;
+
     if (isChangeZero) {
-      return '${asOfPrefix}No change since $referenceLabel';
+      return '${asOfStr}No change since $referenceLabel';
     }
     final action = isPositive ? 'Increased' : 'Decreased';
-    return '$asOfPrefix$action by $formattedDelta since $referenceLabel';
+    return '$asOfStr$action by $formattedDelta since $referenceLabel';
   }
 }

@@ -55,7 +55,7 @@ extension SubscriptionEventPatterns on SubscriptionEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( SubscriptionEventInitialized value)?  initialized,TResult Function( SubscriptionStatusUpdated value)?  statusUpdated,TResult Function( SubscriptionPurchaseRequested value)?  purchaseRequested,TResult Function( SubscriptionRestoreRequested value)?  restoreRequested,TResult Function( SubscriptionPurchaseUICompleted value)?  purchaseUICompleted,TResult Function( SubscriptionUserIdentityChanged value)?  userIdentityChanged,TResult Function( SubscriptionOfferingsRequested value)?  offeringsRequested,TResult Function( SubscriptionRefreshRequested value)?  refreshRequested,TResult Function( SubscriptionPlanToggled value)?  planToggled,TResult Function( SubscriptionAppResumed value)?  appResumed,TResult Function( SubscriptionExpirationReached value)?  expirationReached,TResult Function( SubscriptionResetPurchaseState value)?  resetPurchaseState,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( SubscriptionEventInitialized value)?  initialized,TResult Function( SubscriptionStatusUpdated value)?  statusUpdated,TResult Function( SubscriptionPurchaseRequested value)?  purchaseRequested,TResult Function( SubscriptionRestoreRequested value)?  restoreRequested,TResult Function( SubscriptionPurchaseUICompleted value)?  purchaseUICompleted,TResult Function( SubscriptionUserIdentityChanged value)?  userIdentityChanged,TResult Function( SubscriptionOfferingsRequested value)?  offeringsRequested,TResult Function( SubscriptionRefreshRequested value)?  refreshRequested,TResult Function( SubscriptionPlanToggled value)?  planToggled,TResult Function( SubscriptionAppResumed value)?  appResumed,TResult Function( SubscriptionExpirationReached value)?  expirationReached,TResult Function( SubscriptionResetPurchaseState value)?  resetPurchaseState,TResult Function( SubscriptionViewed value)?  viewed,TResult Function( SubscriptionGiftViewed value)?  giftViewed,TResult Function( SubscriptionGiftClaimed value)?  giftClaimed,TResult Function( SubscriptionGiftDismissed value)?  giftDismissed,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case SubscriptionEventInitialized() when initialized != null:
@@ -70,7 +70,11 @@ return refreshRequested(_that);case SubscriptionPlanToggled() when planToggled !
 return planToggled(_that);case SubscriptionAppResumed() when appResumed != null:
 return appResumed(_that);case SubscriptionExpirationReached() when expirationReached != null:
 return expirationReached(_that);case SubscriptionResetPurchaseState() when resetPurchaseState != null:
-return resetPurchaseState(_that);case _:
+return resetPurchaseState(_that);case SubscriptionViewed() when viewed != null:
+return viewed(_that);case SubscriptionGiftViewed() when giftViewed != null:
+return giftViewed(_that);case SubscriptionGiftClaimed() when giftClaimed != null:
+return giftClaimed(_that);case SubscriptionGiftDismissed() when giftDismissed != null:
+return giftDismissed(_that);case _:
   return orElse();
 
 }
@@ -88,7 +92,7 @@ return resetPurchaseState(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( SubscriptionEventInitialized value)  initialized,required TResult Function( SubscriptionStatusUpdated value)  statusUpdated,required TResult Function( SubscriptionPurchaseRequested value)  purchaseRequested,required TResult Function( SubscriptionRestoreRequested value)  restoreRequested,required TResult Function( SubscriptionPurchaseUICompleted value)  purchaseUICompleted,required TResult Function( SubscriptionUserIdentityChanged value)  userIdentityChanged,required TResult Function( SubscriptionOfferingsRequested value)  offeringsRequested,required TResult Function( SubscriptionRefreshRequested value)  refreshRequested,required TResult Function( SubscriptionPlanToggled value)  planToggled,required TResult Function( SubscriptionAppResumed value)  appResumed,required TResult Function( SubscriptionExpirationReached value)  expirationReached,required TResult Function( SubscriptionResetPurchaseState value)  resetPurchaseState,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( SubscriptionEventInitialized value)  initialized,required TResult Function( SubscriptionStatusUpdated value)  statusUpdated,required TResult Function( SubscriptionPurchaseRequested value)  purchaseRequested,required TResult Function( SubscriptionRestoreRequested value)  restoreRequested,required TResult Function( SubscriptionPurchaseUICompleted value)  purchaseUICompleted,required TResult Function( SubscriptionUserIdentityChanged value)  userIdentityChanged,required TResult Function( SubscriptionOfferingsRequested value)  offeringsRequested,required TResult Function( SubscriptionRefreshRequested value)  refreshRequested,required TResult Function( SubscriptionPlanToggled value)  planToggled,required TResult Function( SubscriptionAppResumed value)  appResumed,required TResult Function( SubscriptionExpirationReached value)  expirationReached,required TResult Function( SubscriptionResetPurchaseState value)  resetPurchaseState,required TResult Function( SubscriptionViewed value)  viewed,required TResult Function( SubscriptionGiftViewed value)  giftViewed,required TResult Function( SubscriptionGiftClaimed value)  giftClaimed,required TResult Function( SubscriptionGiftDismissed value)  giftDismissed,}){
 final _that = this;
 switch (_that) {
 case SubscriptionEventInitialized():
@@ -103,7 +107,11 @@ return refreshRequested(_that);case SubscriptionPlanToggled():
 return planToggled(_that);case SubscriptionAppResumed():
 return appResumed(_that);case SubscriptionExpirationReached():
 return expirationReached(_that);case SubscriptionResetPurchaseState():
-return resetPurchaseState(_that);case _:
+return resetPurchaseState(_that);case SubscriptionViewed():
+return viewed(_that);case SubscriptionGiftViewed():
+return giftViewed(_that);case SubscriptionGiftClaimed():
+return giftClaimed(_that);case SubscriptionGiftDismissed():
+return giftDismissed(_that);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -120,7 +128,7 @@ return resetPurchaseState(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( SubscriptionEventInitialized value)?  initialized,TResult? Function( SubscriptionStatusUpdated value)?  statusUpdated,TResult? Function( SubscriptionPurchaseRequested value)?  purchaseRequested,TResult? Function( SubscriptionRestoreRequested value)?  restoreRequested,TResult? Function( SubscriptionPurchaseUICompleted value)?  purchaseUICompleted,TResult? Function( SubscriptionUserIdentityChanged value)?  userIdentityChanged,TResult? Function( SubscriptionOfferingsRequested value)?  offeringsRequested,TResult? Function( SubscriptionRefreshRequested value)?  refreshRequested,TResult? Function( SubscriptionPlanToggled value)?  planToggled,TResult? Function( SubscriptionAppResumed value)?  appResumed,TResult? Function( SubscriptionExpirationReached value)?  expirationReached,TResult? Function( SubscriptionResetPurchaseState value)?  resetPurchaseState,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( SubscriptionEventInitialized value)?  initialized,TResult? Function( SubscriptionStatusUpdated value)?  statusUpdated,TResult? Function( SubscriptionPurchaseRequested value)?  purchaseRequested,TResult? Function( SubscriptionRestoreRequested value)?  restoreRequested,TResult? Function( SubscriptionPurchaseUICompleted value)?  purchaseUICompleted,TResult? Function( SubscriptionUserIdentityChanged value)?  userIdentityChanged,TResult? Function( SubscriptionOfferingsRequested value)?  offeringsRequested,TResult? Function( SubscriptionRefreshRequested value)?  refreshRequested,TResult? Function( SubscriptionPlanToggled value)?  planToggled,TResult? Function( SubscriptionAppResumed value)?  appResumed,TResult? Function( SubscriptionExpirationReached value)?  expirationReached,TResult? Function( SubscriptionResetPurchaseState value)?  resetPurchaseState,TResult? Function( SubscriptionViewed value)?  viewed,TResult? Function( SubscriptionGiftViewed value)?  giftViewed,TResult? Function( SubscriptionGiftClaimed value)?  giftClaimed,TResult? Function( SubscriptionGiftDismissed value)?  giftDismissed,}){
 final _that = this;
 switch (_that) {
 case SubscriptionEventInitialized() when initialized != null:
@@ -135,7 +143,11 @@ return refreshRequested(_that);case SubscriptionPlanToggled() when planToggled !
 return planToggled(_that);case SubscriptionAppResumed() when appResumed != null:
 return appResumed(_that);case SubscriptionExpirationReached() when expirationReached != null:
 return expirationReached(_that);case SubscriptionResetPurchaseState() when resetPurchaseState != null:
-return resetPurchaseState(_that);case _:
+return resetPurchaseState(_that);case SubscriptionViewed() when viewed != null:
+return viewed(_that);case SubscriptionGiftViewed() when giftViewed != null:
+return giftViewed(_that);case SubscriptionGiftClaimed() when giftClaimed != null:
+return giftClaimed(_that);case SubscriptionGiftDismissed() when giftDismissed != null:
+return giftDismissed(_that);case _:
   return null;
 
 }
@@ -152,7 +164,7 @@ return resetPurchaseState(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initialized,TResult Function( SubscriptionStatus status)?  statusUpdated,TResult Function( SubscriptionPackage package)?  purchaseRequested,TResult Function()?  restoreRequested,TResult Function()?  purchaseUICompleted,TResult Function( String? uid)?  userIdentityChanged,TResult Function()?  offeringsRequested,TResult Function()?  refreshRequested,TResult Function( bool isAnnual)?  planToggled,TResult Function()?  appResumed,TResult Function()?  expirationReached,TResult Function()?  resetPurchaseState,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initialized,TResult Function( SubscriptionStatus status)?  statusUpdated,TResult Function( SubscriptionPackage package)?  purchaseRequested,TResult Function()?  restoreRequested,TResult Function()?  purchaseUICompleted,TResult Function( String? uid)?  userIdentityChanged,TResult Function()?  offeringsRequested,TResult Function()?  refreshRequested,TResult Function( bool isAnnual)?  planToggled,TResult Function()?  appResumed,TResult Function()?  expirationReached,TResult Function()?  resetPurchaseState,TResult Function( PaywallSource source,  PaywallType paywallType,  String? tabName,  String? featureName)?  viewed,TResult Function( PaywallSource source)?  giftViewed,TResult Function( PaywallSource source)?  giftClaimed,TResult Function( PaywallSource source)?  giftDismissed,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case SubscriptionEventInitialized() when initialized != null:
 return initialized();case SubscriptionStatusUpdated() when statusUpdated != null:
@@ -166,7 +178,11 @@ return refreshRequested();case SubscriptionPlanToggled() when planToggled != nul
 return planToggled(_that.isAnnual);case SubscriptionAppResumed() when appResumed != null:
 return appResumed();case SubscriptionExpirationReached() when expirationReached != null:
 return expirationReached();case SubscriptionResetPurchaseState() when resetPurchaseState != null:
-return resetPurchaseState();case _:
+return resetPurchaseState();case SubscriptionViewed() when viewed != null:
+return viewed(_that.source,_that.paywallType,_that.tabName,_that.featureName);case SubscriptionGiftViewed() when giftViewed != null:
+return giftViewed(_that.source);case SubscriptionGiftClaimed() when giftClaimed != null:
+return giftClaimed(_that.source);case SubscriptionGiftDismissed() when giftDismissed != null:
+return giftDismissed(_that.source);case _:
   return orElse();
 
 }
@@ -184,7 +200,7 @@ return resetPurchaseState();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initialized,required TResult Function( SubscriptionStatus status)  statusUpdated,required TResult Function( SubscriptionPackage package)  purchaseRequested,required TResult Function()  restoreRequested,required TResult Function()  purchaseUICompleted,required TResult Function( String? uid)  userIdentityChanged,required TResult Function()  offeringsRequested,required TResult Function()  refreshRequested,required TResult Function( bool isAnnual)  planToggled,required TResult Function()  appResumed,required TResult Function()  expirationReached,required TResult Function()  resetPurchaseState,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initialized,required TResult Function( SubscriptionStatus status)  statusUpdated,required TResult Function( SubscriptionPackage package)  purchaseRequested,required TResult Function()  restoreRequested,required TResult Function()  purchaseUICompleted,required TResult Function( String? uid)  userIdentityChanged,required TResult Function()  offeringsRequested,required TResult Function()  refreshRequested,required TResult Function( bool isAnnual)  planToggled,required TResult Function()  appResumed,required TResult Function()  expirationReached,required TResult Function()  resetPurchaseState,required TResult Function( PaywallSource source,  PaywallType paywallType,  String? tabName,  String? featureName)  viewed,required TResult Function( PaywallSource source)  giftViewed,required TResult Function( PaywallSource source)  giftClaimed,required TResult Function( PaywallSource source)  giftDismissed,}) {final _that = this;
 switch (_that) {
 case SubscriptionEventInitialized():
 return initialized();case SubscriptionStatusUpdated():
@@ -198,7 +214,11 @@ return refreshRequested();case SubscriptionPlanToggled():
 return planToggled(_that.isAnnual);case SubscriptionAppResumed():
 return appResumed();case SubscriptionExpirationReached():
 return expirationReached();case SubscriptionResetPurchaseState():
-return resetPurchaseState();case _:
+return resetPurchaseState();case SubscriptionViewed():
+return viewed(_that.source,_that.paywallType,_that.tabName,_that.featureName);case SubscriptionGiftViewed():
+return giftViewed(_that.source);case SubscriptionGiftClaimed():
+return giftClaimed(_that.source);case SubscriptionGiftDismissed():
+return giftDismissed(_that.source);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -215,7 +235,7 @@ return resetPurchaseState();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initialized,TResult? Function( SubscriptionStatus status)?  statusUpdated,TResult? Function( SubscriptionPackage package)?  purchaseRequested,TResult? Function()?  restoreRequested,TResult? Function()?  purchaseUICompleted,TResult? Function( String? uid)?  userIdentityChanged,TResult? Function()?  offeringsRequested,TResult? Function()?  refreshRequested,TResult? Function( bool isAnnual)?  planToggled,TResult? Function()?  appResumed,TResult? Function()?  expirationReached,TResult? Function()?  resetPurchaseState,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initialized,TResult? Function( SubscriptionStatus status)?  statusUpdated,TResult? Function( SubscriptionPackage package)?  purchaseRequested,TResult? Function()?  restoreRequested,TResult? Function()?  purchaseUICompleted,TResult? Function( String? uid)?  userIdentityChanged,TResult? Function()?  offeringsRequested,TResult? Function()?  refreshRequested,TResult? Function( bool isAnnual)?  planToggled,TResult? Function()?  appResumed,TResult? Function()?  expirationReached,TResult? Function()?  resetPurchaseState,TResult? Function( PaywallSource source,  PaywallType paywallType,  String? tabName,  String? featureName)?  viewed,TResult? Function( PaywallSource source)?  giftViewed,TResult? Function( PaywallSource source)?  giftClaimed,TResult? Function( PaywallSource source)?  giftDismissed,}) {final _that = this;
 switch (_that) {
 case SubscriptionEventInitialized() when initialized != null:
 return initialized();case SubscriptionStatusUpdated() when statusUpdated != null:
@@ -229,7 +249,11 @@ return refreshRequested();case SubscriptionPlanToggled() when planToggled != nul
 return planToggled(_that.isAnnual);case SubscriptionAppResumed() when appResumed != null:
 return appResumed();case SubscriptionExpirationReached() when expirationReached != null:
 return expirationReached();case SubscriptionResetPurchaseState() when resetPurchaseState != null:
-return resetPurchaseState();case _:
+return resetPurchaseState();case SubscriptionViewed() when viewed != null:
+return viewed(_that.source,_that.paywallType,_that.tabName,_that.featureName);case SubscriptionGiftViewed() when giftViewed != null:
+return giftViewed(_that.source);case SubscriptionGiftClaimed() when giftClaimed != null:
+return giftClaimed(_that.source);case SubscriptionGiftDismissed() when giftDismissed != null:
+return giftDismissed(_that.source);case _:
   return null;
 
 }
@@ -774,5 +798,275 @@ String toString() {
 
 
 
+
+/// @nodoc
+
+
+class SubscriptionViewed implements SubscriptionEvent {
+  const SubscriptionViewed({required this.source, required this.paywallType, this.tabName, this.featureName});
+  
+
+ final  PaywallSource source;
+ final  PaywallType paywallType;
+ final  String? tabName;
+ final  String? featureName;
+
+/// Create a copy of SubscriptionEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$SubscriptionViewedCopyWith<SubscriptionViewed> get copyWith => _$SubscriptionViewedCopyWithImpl<SubscriptionViewed>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SubscriptionViewed&&(identical(other.source, source) || other.source == source)&&(identical(other.paywallType, paywallType) || other.paywallType == paywallType)&&(identical(other.tabName, tabName) || other.tabName == tabName)&&(identical(other.featureName, featureName) || other.featureName == featureName));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,source,paywallType,tabName,featureName);
+
+@override
+String toString() {
+  return 'SubscriptionEvent.viewed(source: $source, paywallType: $paywallType, tabName: $tabName, featureName: $featureName)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $SubscriptionViewedCopyWith<$Res> implements $SubscriptionEventCopyWith<$Res> {
+  factory $SubscriptionViewedCopyWith(SubscriptionViewed value, $Res Function(SubscriptionViewed) _then) = _$SubscriptionViewedCopyWithImpl;
+@useResult
+$Res call({
+ PaywallSource source, PaywallType paywallType, String? tabName, String? featureName
+});
+
+
+
+
+}
+/// @nodoc
+class _$SubscriptionViewedCopyWithImpl<$Res>
+    implements $SubscriptionViewedCopyWith<$Res> {
+  _$SubscriptionViewedCopyWithImpl(this._self, this._then);
+
+  final SubscriptionViewed _self;
+  final $Res Function(SubscriptionViewed) _then;
+
+/// Create a copy of SubscriptionEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? source = null,Object? paywallType = null,Object? tabName = freezed,Object? featureName = freezed,}) {
+  return _then(SubscriptionViewed(
+source: null == source ? _self.source : source // ignore: cast_nullable_to_non_nullable
+as PaywallSource,paywallType: null == paywallType ? _self.paywallType : paywallType // ignore: cast_nullable_to_non_nullable
+as PaywallType,tabName: freezed == tabName ? _self.tabName : tabName // ignore: cast_nullable_to_non_nullable
+as String?,featureName: freezed == featureName ? _self.featureName : featureName // ignore: cast_nullable_to_non_nullable
+as String?,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class SubscriptionGiftViewed implements SubscriptionEvent {
+  const SubscriptionGiftViewed({required this.source});
+  
+
+ final  PaywallSource source;
+
+/// Create a copy of SubscriptionEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$SubscriptionGiftViewedCopyWith<SubscriptionGiftViewed> get copyWith => _$SubscriptionGiftViewedCopyWithImpl<SubscriptionGiftViewed>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SubscriptionGiftViewed&&(identical(other.source, source) || other.source == source));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,source);
+
+@override
+String toString() {
+  return 'SubscriptionEvent.giftViewed(source: $source)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $SubscriptionGiftViewedCopyWith<$Res> implements $SubscriptionEventCopyWith<$Res> {
+  factory $SubscriptionGiftViewedCopyWith(SubscriptionGiftViewed value, $Res Function(SubscriptionGiftViewed) _then) = _$SubscriptionGiftViewedCopyWithImpl;
+@useResult
+$Res call({
+ PaywallSource source
+});
+
+
+
+
+}
+/// @nodoc
+class _$SubscriptionGiftViewedCopyWithImpl<$Res>
+    implements $SubscriptionGiftViewedCopyWith<$Res> {
+  _$SubscriptionGiftViewedCopyWithImpl(this._self, this._then);
+
+  final SubscriptionGiftViewed _self;
+  final $Res Function(SubscriptionGiftViewed) _then;
+
+/// Create a copy of SubscriptionEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? source = null,}) {
+  return _then(SubscriptionGiftViewed(
+source: null == source ? _self.source : source // ignore: cast_nullable_to_non_nullable
+as PaywallSource,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class SubscriptionGiftClaimed implements SubscriptionEvent {
+  const SubscriptionGiftClaimed({required this.source});
+  
+
+ final  PaywallSource source;
+
+/// Create a copy of SubscriptionEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$SubscriptionGiftClaimedCopyWith<SubscriptionGiftClaimed> get copyWith => _$SubscriptionGiftClaimedCopyWithImpl<SubscriptionGiftClaimed>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SubscriptionGiftClaimed&&(identical(other.source, source) || other.source == source));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,source);
+
+@override
+String toString() {
+  return 'SubscriptionEvent.giftClaimed(source: $source)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $SubscriptionGiftClaimedCopyWith<$Res> implements $SubscriptionEventCopyWith<$Res> {
+  factory $SubscriptionGiftClaimedCopyWith(SubscriptionGiftClaimed value, $Res Function(SubscriptionGiftClaimed) _then) = _$SubscriptionGiftClaimedCopyWithImpl;
+@useResult
+$Res call({
+ PaywallSource source
+});
+
+
+
+
+}
+/// @nodoc
+class _$SubscriptionGiftClaimedCopyWithImpl<$Res>
+    implements $SubscriptionGiftClaimedCopyWith<$Res> {
+  _$SubscriptionGiftClaimedCopyWithImpl(this._self, this._then);
+
+  final SubscriptionGiftClaimed _self;
+  final $Res Function(SubscriptionGiftClaimed) _then;
+
+/// Create a copy of SubscriptionEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? source = null,}) {
+  return _then(SubscriptionGiftClaimed(
+source: null == source ? _self.source : source // ignore: cast_nullable_to_non_nullable
+as PaywallSource,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class SubscriptionGiftDismissed implements SubscriptionEvent {
+  const SubscriptionGiftDismissed({required this.source});
+  
+
+ final  PaywallSource source;
+
+/// Create a copy of SubscriptionEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$SubscriptionGiftDismissedCopyWith<SubscriptionGiftDismissed> get copyWith => _$SubscriptionGiftDismissedCopyWithImpl<SubscriptionGiftDismissed>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SubscriptionGiftDismissed&&(identical(other.source, source) || other.source == source));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,source);
+
+@override
+String toString() {
+  return 'SubscriptionEvent.giftDismissed(source: $source)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $SubscriptionGiftDismissedCopyWith<$Res> implements $SubscriptionEventCopyWith<$Res> {
+  factory $SubscriptionGiftDismissedCopyWith(SubscriptionGiftDismissed value, $Res Function(SubscriptionGiftDismissed) _then) = _$SubscriptionGiftDismissedCopyWithImpl;
+@useResult
+$Res call({
+ PaywallSource source
+});
+
+
+
+
+}
+/// @nodoc
+class _$SubscriptionGiftDismissedCopyWithImpl<$Res>
+    implements $SubscriptionGiftDismissedCopyWith<$Res> {
+  _$SubscriptionGiftDismissedCopyWithImpl(this._self, this._then);
+
+  final SubscriptionGiftDismissed _self;
+  final $Res Function(SubscriptionGiftDismissed) _then;
+
+/// Create a copy of SubscriptionEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? source = null,}) {
+  return _then(SubscriptionGiftDismissed(
+source: null == source ? _self.source : source // ignore: cast_nullable_to_non_nullable
+as PaywallSource,
+  ));
+}
+
+
+}
 
 // dart format on

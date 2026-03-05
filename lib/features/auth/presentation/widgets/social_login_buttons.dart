@@ -7,8 +7,12 @@ import '../bloc/auth_bloc.dart';
 import '../bloc/auth_event.dart';
 import '../bloc/auth_state.dart';
 
+import 'package:bizzie/features/auth/domain/enums/auth_source.dart';
+
 class SocialLoginButtons extends StatefulWidget {
-  const SocialLoginButtons({super.key});
+  final AuthSource source;
+
+  const SocialLoginButtons({super.key, required this.source});
 
   @override
   State<SocialLoginButtons> createState() => _SocialLoginButtonsState();
@@ -58,7 +62,7 @@ class _SocialLoginButtonsState extends State<SocialLoginButtons> {
                 ? null
                 : () {
                     context.read<AuthBloc>().add(
-                      const AuthEvent.appleSignInRequested(),
+                      AuthEvent.appleSignInRequested(source: widget.source),
                     );
                   },
           ),
@@ -74,7 +78,7 @@ class _SocialLoginButtonsState extends State<SocialLoginButtons> {
                 ? null
                 : () {
                     context.read<AuthBloc>().add(
-                      const AuthEvent.googleSignInRequested(),
+                      AuthEvent.googleSignInRequested(source: widget.source),
                     );
                   },
           ),

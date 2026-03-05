@@ -128,12 +128,12 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( ShareStats shareStats,  List<ChartDataPoint> annualChartData,  List<ChartDataPoint> quarterlyChartData,  SharesSummaryData annualSummary,  SharesSummaryData quarterlySummary,  int historyLimit,  DateTime? lastUpdated)?  loaded,TResult Function( Failure failure)?  failure,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( String ticker,  ShareStats shareStats,  List<ChartDataPoint> annualChartData,  List<ChartDataPoint> quarterlyChartData,  SharesSummaryData annualSummary,  SharesSummaryData quarterlySummary,  int historyLimit,  CompanyProfileDataOrigin dataOrigin,  DateTime? lastUpdated,  SharesTabViewState? analyticsState)?  loaded,TResult Function( Failure failure)?  failure,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial();case _Loading() when loading != null:
 return loading();case _Loaded() when loaded != null:
-return loaded(_that.shareStats,_that.annualChartData,_that.quarterlyChartData,_that.annualSummary,_that.quarterlySummary,_that.historyLimit,_that.lastUpdated);case _Failure() when failure != null:
+return loaded(_that.ticker,_that.shareStats,_that.annualChartData,_that.quarterlyChartData,_that.annualSummary,_that.quarterlySummary,_that.historyLimit,_that.dataOrigin,_that.lastUpdated,_that.analyticsState);case _Failure() when failure != null:
 return failure(_that.failure);case _:
   return orElse();
 
@@ -152,12 +152,12 @@ return failure(_that.failure);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( ShareStats shareStats,  List<ChartDataPoint> annualChartData,  List<ChartDataPoint> quarterlyChartData,  SharesSummaryData annualSummary,  SharesSummaryData quarterlySummary,  int historyLimit,  DateTime? lastUpdated)  loaded,required TResult Function( Failure failure)  failure,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( String ticker,  ShareStats shareStats,  List<ChartDataPoint> annualChartData,  List<ChartDataPoint> quarterlyChartData,  SharesSummaryData annualSummary,  SharesSummaryData quarterlySummary,  int historyLimit,  CompanyProfileDataOrigin dataOrigin,  DateTime? lastUpdated,  SharesTabViewState? analyticsState)  loaded,required TResult Function( Failure failure)  failure,}) {final _that = this;
 switch (_that) {
 case _Initial():
 return initial();case _Loading():
 return loading();case _Loaded():
-return loaded(_that.shareStats,_that.annualChartData,_that.quarterlyChartData,_that.annualSummary,_that.quarterlySummary,_that.historyLimit,_that.lastUpdated);case _Failure():
+return loaded(_that.ticker,_that.shareStats,_that.annualChartData,_that.quarterlyChartData,_that.annualSummary,_that.quarterlySummary,_that.historyLimit,_that.dataOrigin,_that.lastUpdated,_that.analyticsState);case _Failure():
 return failure(_that.failure);case _:
   throw StateError('Unexpected subclass');
 
@@ -175,12 +175,12 @@ return failure(_that.failure);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( ShareStats shareStats,  List<ChartDataPoint> annualChartData,  List<ChartDataPoint> quarterlyChartData,  SharesSummaryData annualSummary,  SharesSummaryData quarterlySummary,  int historyLimit,  DateTime? lastUpdated)?  loaded,TResult? Function( Failure failure)?  failure,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( String ticker,  ShareStats shareStats,  List<ChartDataPoint> annualChartData,  List<ChartDataPoint> quarterlyChartData,  SharesSummaryData annualSummary,  SharesSummaryData quarterlySummary,  int historyLimit,  CompanyProfileDataOrigin dataOrigin,  DateTime? lastUpdated,  SharesTabViewState? analyticsState)?  loaded,TResult? Function( Failure failure)?  failure,}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial();case _Loading() when loading != null:
 return loading();case _Loaded() when loaded != null:
-return loaded(_that.shareStats,_that.annualChartData,_that.quarterlyChartData,_that.annualSummary,_that.quarterlySummary,_that.historyLimit,_that.lastUpdated);case _Failure() when failure != null:
+return loaded(_that.ticker,_that.shareStats,_that.annualChartData,_that.quarterlyChartData,_that.annualSummary,_that.quarterlySummary,_that.historyLimit,_that.dataOrigin,_that.lastUpdated,_that.analyticsState);case _Failure() when failure != null:
 return failure(_that.failure);case _:
   return null;
 
@@ -257,9 +257,10 @@ String toString() {
 
 
 class _Loaded implements CompanySharesState {
-  const _Loaded({required this.shareStats, required final  List<ChartDataPoint> annualChartData, required final  List<ChartDataPoint> quarterlyChartData, required this.annualSummary, required this.quarterlySummary, required this.historyLimit, this.lastUpdated}): _annualChartData = annualChartData,_quarterlyChartData = quarterlyChartData;
+  const _Loaded({required this.ticker, required this.shareStats, required final  List<ChartDataPoint> annualChartData, required final  List<ChartDataPoint> quarterlyChartData, required this.annualSummary, required this.quarterlySummary, required this.historyLimit, required this.dataOrigin, this.lastUpdated, this.analyticsState}): _annualChartData = annualChartData,_quarterlyChartData = quarterlyChartData;
   
 
+ final  String ticker;
  final  ShareStats shareStats;
  final  List<ChartDataPoint> _annualChartData;
  List<ChartDataPoint> get annualChartData {
@@ -278,7 +279,9 @@ class _Loaded implements CompanySharesState {
  final  SharesSummaryData annualSummary;
  final  SharesSummaryData quarterlySummary;
  final  int historyLimit;
+ final  CompanyProfileDataOrigin dataOrigin;
  final  DateTime? lastUpdated;
+ final  SharesTabViewState? analyticsState;
 
 /// Create a copy of CompanySharesState
 /// with the given fields replaced by the non-null parameter values.
@@ -290,16 +293,16 @@ _$LoadedCopyWith<_Loaded> get copyWith => __$LoadedCopyWithImpl<_Loaded>(this, _
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Loaded&&(identical(other.shareStats, shareStats) || other.shareStats == shareStats)&&const DeepCollectionEquality().equals(other._annualChartData, _annualChartData)&&const DeepCollectionEquality().equals(other._quarterlyChartData, _quarterlyChartData)&&(identical(other.annualSummary, annualSummary) || other.annualSummary == annualSummary)&&(identical(other.quarterlySummary, quarterlySummary) || other.quarterlySummary == quarterlySummary)&&(identical(other.historyLimit, historyLimit) || other.historyLimit == historyLimit)&&(identical(other.lastUpdated, lastUpdated) || other.lastUpdated == lastUpdated));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Loaded&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.shareStats, shareStats) || other.shareStats == shareStats)&&const DeepCollectionEquality().equals(other._annualChartData, _annualChartData)&&const DeepCollectionEquality().equals(other._quarterlyChartData, _quarterlyChartData)&&(identical(other.annualSummary, annualSummary) || other.annualSummary == annualSummary)&&(identical(other.quarterlySummary, quarterlySummary) || other.quarterlySummary == quarterlySummary)&&(identical(other.historyLimit, historyLimit) || other.historyLimit == historyLimit)&&(identical(other.dataOrigin, dataOrigin) || other.dataOrigin == dataOrigin)&&(identical(other.lastUpdated, lastUpdated) || other.lastUpdated == lastUpdated)&&(identical(other.analyticsState, analyticsState) || other.analyticsState == analyticsState));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,shareStats,const DeepCollectionEquality().hash(_annualChartData),const DeepCollectionEquality().hash(_quarterlyChartData),annualSummary,quarterlySummary,historyLimit,lastUpdated);
+int get hashCode => Object.hash(runtimeType,ticker,shareStats,const DeepCollectionEquality().hash(_annualChartData),const DeepCollectionEquality().hash(_quarterlyChartData),annualSummary,quarterlySummary,historyLimit,dataOrigin,lastUpdated,analyticsState);
 
 @override
 String toString() {
-  return 'CompanySharesState.loaded(shareStats: $shareStats, annualChartData: $annualChartData, quarterlyChartData: $quarterlyChartData, annualSummary: $annualSummary, quarterlySummary: $quarterlySummary, historyLimit: $historyLimit, lastUpdated: $lastUpdated)';
+  return 'CompanySharesState.loaded(ticker: $ticker, shareStats: $shareStats, annualChartData: $annualChartData, quarterlyChartData: $quarterlyChartData, annualSummary: $annualSummary, quarterlySummary: $quarterlySummary, historyLimit: $historyLimit, dataOrigin: $dataOrigin, lastUpdated: $lastUpdated, analyticsState: $analyticsState)';
 }
 
 
@@ -310,11 +313,11 @@ abstract mixin class _$LoadedCopyWith<$Res> implements $CompanySharesStateCopyWi
   factory _$LoadedCopyWith(_Loaded value, $Res Function(_Loaded) _then) = __$LoadedCopyWithImpl;
 @useResult
 $Res call({
- ShareStats shareStats, List<ChartDataPoint> annualChartData, List<ChartDataPoint> quarterlyChartData, SharesSummaryData annualSummary, SharesSummaryData quarterlySummary, int historyLimit, DateTime? lastUpdated
+ String ticker, ShareStats shareStats, List<ChartDataPoint> annualChartData, List<ChartDataPoint> quarterlyChartData, SharesSummaryData annualSummary, SharesSummaryData quarterlySummary, int historyLimit, CompanyProfileDataOrigin dataOrigin, DateTime? lastUpdated, SharesTabViewState? analyticsState
 });
 
 
-$ShareStatsCopyWith<$Res> get shareStats;$SharesSummaryDataCopyWith<$Res> get annualSummary;$SharesSummaryDataCopyWith<$Res> get quarterlySummary;
+$ShareStatsCopyWith<$Res> get shareStats;$SharesSummaryDataCopyWith<$Res> get annualSummary;$SharesSummaryDataCopyWith<$Res> get quarterlySummary;$SharesTabViewStateCopyWith<$Res>? get analyticsState;
 
 }
 /// @nodoc
@@ -327,16 +330,19 @@ class __$LoadedCopyWithImpl<$Res>
 
 /// Create a copy of CompanySharesState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? shareStats = null,Object? annualChartData = null,Object? quarterlyChartData = null,Object? annualSummary = null,Object? quarterlySummary = null,Object? historyLimit = null,Object? lastUpdated = freezed,}) {
+@pragma('vm:prefer-inline') $Res call({Object? ticker = null,Object? shareStats = null,Object? annualChartData = null,Object? quarterlyChartData = null,Object? annualSummary = null,Object? quarterlySummary = null,Object? historyLimit = null,Object? dataOrigin = null,Object? lastUpdated = freezed,Object? analyticsState = freezed,}) {
   return _then(_Loaded(
-shareStats: null == shareStats ? _self.shareStats : shareStats // ignore: cast_nullable_to_non_nullable
+ticker: null == ticker ? _self.ticker : ticker // ignore: cast_nullable_to_non_nullable
+as String,shareStats: null == shareStats ? _self.shareStats : shareStats // ignore: cast_nullable_to_non_nullable
 as ShareStats,annualChartData: null == annualChartData ? _self._annualChartData : annualChartData // ignore: cast_nullable_to_non_nullable
 as List<ChartDataPoint>,quarterlyChartData: null == quarterlyChartData ? _self._quarterlyChartData : quarterlyChartData // ignore: cast_nullable_to_non_nullable
 as List<ChartDataPoint>,annualSummary: null == annualSummary ? _self.annualSummary : annualSummary // ignore: cast_nullable_to_non_nullable
 as SharesSummaryData,quarterlySummary: null == quarterlySummary ? _self.quarterlySummary : quarterlySummary // ignore: cast_nullable_to_non_nullable
 as SharesSummaryData,historyLimit: null == historyLimit ? _self.historyLimit : historyLimit // ignore: cast_nullable_to_non_nullable
-as int,lastUpdated: freezed == lastUpdated ? _self.lastUpdated : lastUpdated // ignore: cast_nullable_to_non_nullable
-as DateTime?,
+as int,dataOrigin: null == dataOrigin ? _self.dataOrigin : dataOrigin // ignore: cast_nullable_to_non_nullable
+as CompanyProfileDataOrigin,lastUpdated: freezed == lastUpdated ? _self.lastUpdated : lastUpdated // ignore: cast_nullable_to_non_nullable
+as DateTime?,analyticsState: freezed == analyticsState ? _self.analyticsState : analyticsState // ignore: cast_nullable_to_non_nullable
+as SharesTabViewState?,
   ));
 }
 
@@ -366,6 +372,18 @@ $SharesSummaryDataCopyWith<$Res> get quarterlySummary {
   
   return $SharesSummaryDataCopyWith<$Res>(_self.quarterlySummary, (value) {
     return _then(_self.copyWith(quarterlySummary: value));
+  });
+}/// Create a copy of CompanySharesState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$SharesTabViewStateCopyWith<$Res>? get analyticsState {
+    if (_self.analyticsState == null) {
+    return null;
+  }
+
+  return $SharesTabViewStateCopyWith<$Res>(_self.analyticsState!, (value) {
+    return _then(_self.copyWith(analyticsState: value));
   });
 }
 }

@@ -9,14 +9,14 @@ part 'legacy_income_statement_dto.g.dart';
 @freezed
 abstract class LegacyIncomeStatementDto with _$LegacyIncomeStatementDto {
   const factory LegacyIncomeStatementDto({
-    required String date,
-    required String symbol,
-    required String reportedCurrency,
-    required String cik,
-    required String fillingDate,
-    required String acceptedDate,
-    required String calendarYear,
-    required String period,
+    String? date,
+    String? symbol,
+    String? reportedCurrency,
+    String? cik,
+    String? fillingDate,
+    String? acceptedDate,
+    String? calendarYear,
+    String? period,
     double? revenue,
     double? costOfRevenue,
     double? grossProfit,
@@ -45,8 +45,8 @@ abstract class LegacyIncomeStatementDto with _$LegacyIncomeStatementDto {
     double? epsdiluted,
     double? weightedAverageShsOut,
     double? weightedAverageShsOutDil,
-    required String? link,
-    required String? finalLink,
+    String? link,
+    String? finalLink,
   }) = _LegacyIncomeStatementDto;
 
   const LegacyIncomeStatementDto._();
@@ -56,23 +56,31 @@ abstract class LegacyIncomeStatementDto with _$LegacyIncomeStatementDto {
 
   SecFiling toSecFiling() {
     return SecFiling(
-      date: date,
-      year: (date.length >= 4) ? date.substring(0, 4) : '',
-      period: period,
+      date: date ?? '',
+      year: (date != null && date!.length >= 4) ? date!.substring(0, 4) : '',
+      period: period ?? '',
       link: finalLink ?? link ?? '',
     );
   }
 
   FinancialDataPoint toFinancialDataPoint(double value) {
-    return FinancialDataPoint(date: date, period: period, value: value);
+    return FinancialDataPoint(
+      date: date ?? '',
+      period: period ?? '',
+      value: value,
+    );
+  }
+
+  FinancialDataPoint toWeightedAverageSharesDataPoint() {
+    return toFinancialDataPoint((weightedAverageShsOutDil ?? 0).toDouble());
   }
 
   IncomeStatement toDomain({double multiplier = 1.0, String? targetCurrency}) {
     return IncomeStatement(
-      date: date,
-      symbol: symbol,
-      reportedCurrency: targetCurrency ?? reportedCurrency,
-      period: period,
+      date: date ?? '',
+      symbol: symbol ?? '',
+      reportedCurrency: targetCurrency ?? reportedCurrency ?? '',
+      period: period ?? '',
       revenue: (revenue ?? 0.0) * multiplier,
       grossProfit: (grossProfit ?? 0.0) * multiplier,
       operatingIncome: (operatingIncome ?? 0.0) * multiplier,

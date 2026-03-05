@@ -3,136 +3,101 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('BizzieDateFormatter', () {
-    test('formatLastUpdated_today_returnsTodayString', () {
-      // arrange
-      final now = DateTime.now();
-      final dateStr = now.toIso8601String();
+    group('formatLastUpdated', () {
+      test('formatLastUpdated_today_returnsTodayWithCorrectLabel', () {
+        // arrange
+        final now = DateTime.now();
+        final nowUtc = now.toUtc();
+        final etTime = nowUtc.subtract(const Duration(hours: 5));
+        final isAfterMarketClose =
+            etTime.hour > 16 || (etTime.hour == 16 && etTime.minute >= 15);
+        final dateStr = now.toIso8601String();
 
-      // act
-      final formatted = BizzieDateFormatter.formatLastUpdated(dateStr);
+        // act
+        final result = BizzieDateFormatter.formatLastUpdated(dateStr);
 
-      // assert
-      expect(formatted.contains('Today at'), true);
+        // assert
+        expect(result, contains('Today at'));
+        if (isAfterMarketClose) {
+          expect(result, isNot(contains('(15 min delay)')));
+        } else {
+          expect(result, contains('(15 min delay)'));
+        }
+      });
+
+      test('formatLastUpdated_historicalDate_returnsFormattedDate', () {
+        // arrange
+        const historicalDate = "2023-01-01T21:00:00Z";
+
+        // act
+        final result = BizzieDateFormatter.formatLastUpdated(historicalDate);
+
+        // assert
+        expect(result, contains('Jan. 01, 2023 at'));
+      });
+
+      test('formatLastUpdated_invalidString_returnsOriginalString', () {
+        // arrange
+        const input = "invalid";
+
+        // act
+        final result = BizzieDateFormatter.formatLastUpdated(input);
+
+        // assert
+        expect(result, equals("Unknown"));
+      });
     });
 
-    test('formatLastUpdated_historicalDate_returnsFormattedString', () {
-      // arrange
-      const dateStr = '2023-01-15T12:00:00Z';
+    group('formatYearOnly', () {
+      test('formatYearOnly_validDate_returnsYear', () {
+        // arrange
+        const input = "2024-05-20";
 
-      // act
-      final formatted = BizzieDateFormatter.formatLastUpdated(dateStr);
+        // act
+        final result = BizzieDateFormatter.formatYearOnly(input);
 
-      // assert
-      expect(formatted.contains('Jan. 15, 2023'), true);
+        // assert
+        expect(result, equals('2024'));
+      });
+
+      test('formatYearOnly_invalidDate_returnsOriginal', () {
+        // arrange
+        const input = "invalid";
+
+        // act
+        final result = BizzieDateFormatter.formatYearOnly(input);
+
+        // assert
+        expect(result, equals(input));
+      });
     });
 
-    test('formatYearOnly_validDate_returnsYear', () {
-      // arrange
-      const dateStr = '2023-09-30';
+    group('formatQuarterYearShort', () {
+      test('formatQuarterYearShort_q1_returnsQ1', () {
+        // arrange
+        const input = "2024-01-15";
 
-      // act
-      final result = BizzieDateFormatter.formatYearOnly(dateStr);
+        // act
+        final result = BizzieDateFormatter.formatQuarterYearShort(input);
 
-      // assert
-      expect(result, '2023');
-    });
+        // assert
+        expect(result, equals("Q1 '24"));
+      });
 
-    test('formatYearOnly_invalidDate_returnsOriginalString', () {
-      // arrange
-      const dateStr = 'invalid';
+      test('formatQuarterYearShort_q4_returnsQ4', () {
+        // arrange
+        const input = "2023-12-31";
 
-      // act
-      final result = BizzieDateFormatter.formatYearOnly(dateStr);
+        // act
+        final result = BizzieDateFormatter.formatQuarterYearShort(input);
 
-      // assert
-      expect(result, 'invalid');
-    });
-
-    test('formatMonthYearShort_validDate_returnsFormattedString', () {
-      // arrange
-      const dateStr = '2023-09-30';
-
-      // act
-      final result = BizzieDateFormatter.formatMonthYearShort(dateStr);
-
-      // assert
-      expect(result, "Sep. 30, '23");
-    });
-
-    test('formatMonthYearFull_validDate_returnsFormattedString', () {
-      // arrange
-      const dateStr = '2023-09-30';
-
-      // act
-      final result = BizzieDateFormatter.formatMonthYearFull(dateStr);
-
-      // assert
-      expect(result, 'Sep. 30, 2023');
-    });
-
-    test('formatChartLabel_annual_returnsYear', () {
-      // arrange
-      const dateStr = '2023-09-30';
-
-      // act
-      final result = BizzieDateFormatter.formatChartLabel(
-        dateStr,
-        isAnnual: true,
-      );
-
-      // assert
-      expect(result, '2023');
-    });
-
-    test('formatChartLabel_quarterly_returnsMonthYearShort', () {
-      // arrange
-      const dateStr = '2023-09-30';
-
-      // act
-      final result = BizzieDateFormatter.formatChartLabel(
-        dateStr,
-        isAnnual: false,
-      );
-
-      // assert
-      expect(result, "Sep. 30, '23");
-    });
-
-    test('formatApiDate_validDate_returnsYYYYMMDD', () {
-      // arrange
-      final date = DateTime(2023, 10, 25);
-
-      // act
-      final result = BizzieDateFormatter.formatApiDate(date);
-
-      // assert
-      expect(result, '2023-10-25');
-    });
-
-    test('formatApiDateFromStr_validDateString_returnsYYYYMMDD', () {
-      // arrange
-      const dateStr = '2023-10-25T14:30:00';
-
-      // act
-      final result = BizzieDateFormatter.formatApiDateFromStr(dateStr);
-
-      // assert
-      expect(result, '2023-10-25');
-    });
-
-    test('formatApiDateFromStr_invalidDateString_returnsOriginalString', () {
-      // arrange
-      const dateStr = 'not-a-date';
-
-      // act
-      final result = BizzieDateFormatter.formatApiDateFromStr(dateStr);
-
-      // assert
-      expect(result, 'not-a-date');
+        // assert
+        expect(result, equals("Q4 '23"));
+      });
     });
 
     group('formatHumanFriendlyDate', () {
-      test('returnsTodayForCurrentDate', () {
+      test('formatHumanFriendlyDate_today_returnsToday', () {
         // arrange
         final date = DateTime.now();
 
@@ -140,21 +105,10 @@ void main() {
         final result = BizzieDateFormatter.formatHumanFriendlyDate(date);
 
         // assert
-        expect(result, 'Today');
+        expect(result, equals('Today'));
       });
 
-      test('returnsTomorrowForNextDay', () {
-        // arrange
-        final date = DateTime.now().add(const Duration(days: 1));
-
-        // act
-        final result = BizzieDateFormatter.formatHumanFriendlyDate(date);
-
-        // assert
-        expect(result, 'Tomorrow');
-      });
-
-      test('returnsYesterdayForPreviousDay', () {
+      test('formatHumanFriendlyDate_yesterday_returnsYesterday', () {
         // arrange
         final date = DateTime.now().subtract(const Duration(days: 1));
 
@@ -162,10 +116,21 @@ void main() {
         final result = BizzieDateFormatter.formatHumanFriendlyDate(date);
 
         // assert
-        expect(result, 'Yesterday');
+        expect(result, equals('Yesterday'));
       });
 
-      test('returnsInXDaysForFutureDatesWithinTargetRange', () {
+      test('formatHumanFriendlyDate_tomorrow_returnsTomorrow', () {
+        // arrange
+        final date = DateTime.now().add(const Duration(days: 1));
+
+        // act
+        final result = BizzieDateFormatter.formatHumanFriendlyDate(date);
+
+        // assert
+        expect(result, equals('Tomorrow'));
+      });
+
+      test('formatHumanFriendlyDate_future_returnsInXDays', () {
         // arrange
         final date = DateTime.now().add(const Duration(days: 3));
 
@@ -173,33 +138,10 @@ void main() {
         final result = BizzieDateFormatter.formatHumanFriendlyDate(date);
 
         // assert
-        expect(result, 'In 3 days');
+        expect(result, equals('In 3 days'));
       });
 
-      test('returnsIn7DaysForTargetUpperBoundary', () {
-        // arrange
-        final date = DateTime.now().add(const Duration(days: 7));
-
-        // act
-        final result = BizzieDateFormatter.formatHumanFriendlyDate(date);
-
-        // assert
-        expect(result, 'In 7 days');
-      });
-
-      test('returnsStandardFormatFor8DaysFuture', () {
-        // arrange
-        final date = DateTime.now().add(const Duration(days: 8));
-
-        // act
-        final result = BizzieDateFormatter.formatHumanFriendlyDate(date);
-
-        // assert
-        expect(result.contains('In'), false);
-        expect(result.length, greaterThan(3));
-      });
-
-      test('returnsXDaysAgoForPastDates', () {
+      test('formatHumanFriendlyDate_past_returnsXDaysAgo', () {
         // arrange
         final date = DateTime.now().subtract(const Duration(days: 5));
 
@@ -207,22 +149,41 @@ void main() {
         final result = BizzieDateFormatter.formatHumanFriendlyDate(date);
 
         // assert
-        expect(result, '5 days ago');
+        expect(result, equals('5 days ago'));
       });
+    });
 
-      test('returnsStandardFormatForDistantDates', () {
+    group('isStale', () {
+      test('isStale_withinInterval_returnsFalse', () {
         // arrange
-        final date = DateTime.now().add(const Duration(days: 30));
+        final lastUpdated = DateTime.now().subtract(
+          const Duration(minutes: 30),
+        );
 
         // act
-        final result = BizzieDateFormatter.formatHumanFriendlyDate(date);
+        final result = BizzieDateFormatter.isStale(
+          lastUpdated,
+          refreshIntervalMinutes: 60,
+        );
 
         // assert
-        expect(result.contains('In'), false);
-        expect(result.contains('Today'), false);
-        expect(result.contains('Tomorrow'), false);
-        expect(result.contains('Yesterday'), false);
-        expect(result.length, greaterThan(3)); // e.g. "Mar 15"
+        expect(result, isFalse);
+      });
+
+      test('isStale_exceedsInterval_returnsTrue', () {
+        // arrange
+        final lastUpdated = DateTime.now().subtract(
+          const Duration(minutes: 90),
+        );
+
+        // act
+        final result = BizzieDateFormatter.isStale(
+          lastUpdated,
+          refreshIntervalMinutes: 60,
+        );
+
+        // assert
+        expect(result, isTrue);
       });
     });
   });

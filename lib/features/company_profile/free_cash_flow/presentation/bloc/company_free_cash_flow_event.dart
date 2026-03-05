@@ -12,4 +12,17 @@ abstract class CompanyFreeCashFlowEvent with _$CompanyFreeCashFlowEvent {
   const factory CompanyFreeCashFlowEvent.stalenessCheckRequested(
     String ticker,
   ) = StalenessCheckRequested;
+
+  const factory CompanyFreeCashFlowEvent.tabShown(String ticker) = TabShown;
+  const factory CompanyFreeCashFlowEvent.tabHidden() = TabHidden;
+  const factory CompanyFreeCashFlowEvent.appBackgrounded() = AppBackgrounded;
+  const factory CompanyFreeCashFlowEvent.appForegrounded() = AppForegrounded;
+
+  const factory CompanyFreeCashFlowEvent.periodViewed({
+    required bool isAnnual,
+  }) = PeriodViewed;
+  const factory CompanyFreeCashFlowEvent.viewAllTapped({
+    required bool isAnnual,
+    required bool isChart,
+  }) = ViewAllTapped;
 }

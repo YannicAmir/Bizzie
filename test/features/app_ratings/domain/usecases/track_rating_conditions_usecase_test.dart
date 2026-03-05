@@ -1,4 +1,5 @@
 import 'package:bizzie/core/error/failures.dart';
+import 'package:bizzie/core/interfaces/i_config_service.dart';
 import 'package:bizzie/core/usecase/usecase.dart';
 import 'package:bizzie/features/app_ratings/domain/interfaces/i_app_ratings_repository.dart';
 import 'package:bizzie/features/app_ratings/domain/usecases/track_rating_conditions_usecase.dart';
@@ -8,13 +9,18 @@ import 'package:mocktail/mocktail.dart';
 
 class MockAppRatingsRepository extends Mock implements IAppRatingsRepository {}
 
+class MockConfigService extends Mock implements IConfigService {}
+
 void main() {
   late MockAppRatingsRepository mockRepository;
+  late MockConfigService mockConfigService;
   late TrackRatingConditionsUseCase useCase;
 
   setUp(() {
     mockRepository = MockAppRatingsRepository();
-    useCase = TrackRatingConditionsUseCase(mockRepository);
+    mockConfigService = MockConfigService();
+    useCase = TrackRatingConditionsUseCase(mockRepository, mockConfigService);
+    when(() => mockConfigService.reviewPromptEventCount).thenReturn(3);
   });
 
   group('TrackRatingConditionsUseCase', () {
@@ -40,53 +46,65 @@ void main() {
       },
     );
 
-    test('call_whenMaxAttemptsReached_returnsRightFalse', () async {
+    test(
+      'call_whenMaxAttemptsReached_returnsRightMaxAttemptsReached',
+      () async {
+        // arrange
+        when(
+          () => mockRepository.getPromptAttempts(),
+        ).thenAnswer((_) async => 1);
+
+        // act
+        final result = await useCase(NoParams());
+
+        // assert
+        expect(result, const Right(RatingConditionsResult.maxAttemptsReached));
+        verify(() => mockRepository.getPromptAttempts()).called(1);
+        verifyNever(() => mockRepository.incrementInteractionCount());
+        verifyNever(() => mockRepository.getInteractionCount());
+      },
+    );
+
+    test('call_whenInteractionThresholdNotMet_returnsRightNoPrompt', () async {
       // arrange
+      const threshold = 5;
       when(
-        () => mockRepository.incrementInteractionCount(),
-      ).thenAnswer((_) async => {});
-      when(() => mockRepository.getPromptAttempts()).thenAnswer((_) async => 1);
-
-      // act
-      final result = await useCase(NoParams());
-
-      // assert
-      expect(result, const Right(false));
-      verify(() => mockRepository.getPromptAttempts()).called(1);
-      verifyNever(() => mockRepository.getInteractionCount());
-    });
-
-    test('call_whenInteractionThresholdNotMet_returnsRightFalse', () async {
-      // arrange
-      when(
-        () => mockRepository.incrementInteractionCount(),
-      ).thenAnswer((_) async => {});
+        () => mockConfigService.reviewPromptEventCount,
+      ).thenReturn(threshold);
       when(() => mockRepository.getPromptAttempts()).thenAnswer((_) async => 0);
       when(
+        () => mockRepository.incrementInteractionCount(),
+      ).thenAnswer((_) async => {});
+      when(
         () => mockRepository.getInteractionCount(),
-      ).thenAnswer((_) async => 6);
+      ).thenAnswer((_) async => threshold - 1);
 
       // act
       final result = await useCase(NoParams());
 
       // assert
-      expect(result, const Right(false));
+      expect(result, const Right(RatingConditionsResult.noPrompt));
+      verify(() => mockRepository.getPromptAttempts()).called(1);
       verify(() => mockRepository.getInteractionCount()).called(1);
     });
 
     test(
-      'call_whenConditionsMet_incrementsAttemptsAndReturnsRightTrue',
+      'call_whenConditionsMet_incrementsAttemptsAndReturnsRightPrompt',
       () async {
         // arrange
+        const threshold = 5;
         when(
-          () => mockRepository.incrementInteractionCount(),
-        ).thenAnswer((_) async => {});
+          () => mockConfigService.reviewPromptEventCount,
+        ).thenReturn(threshold);
         when(
           () => mockRepository.getPromptAttempts(),
         ).thenAnswer((_) async => 0);
         when(
+          () => mockRepository.incrementInteractionCount(),
+        ).thenAnswer((_) async => {});
+        when(
           () => mockRepository.getInteractionCount(),
-        ).thenAnswer((_) async => 7);
+        ).thenAnswer((_) async => threshold);
         when(
           () => mockRepository.incrementPromptAttempts(),
         ).thenAnswer((_) async => {});
@@ -95,7 +113,8 @@ void main() {
         final result = await useCase(NoParams());
 
         // assert
-        expect(result, const Right(true));
+        expect(result, const Right(RatingConditionsResult.prompt));
+        verify(() => mockRepository.getPromptAttempts()).called(1);
         verify(() => mockRepository.incrementPromptAttempts()).called(1);
       },
     );
@@ -103,14 +122,14 @@ void main() {
     test('call_repositoryError_returnsLeftFailure', () async {
       // arrange
       when(
-        () => mockRepository.incrementInteractionCount(),
+        () => mockRepository.getPromptAttempts(),
       ).thenThrow(Exception('Storage error'));
 
       // act
       final result = await useCase(NoParams());
 
       // assert
-      expect(result, isA<Left<Failure, bool>>());
+      expect(result, isA<Left<Failure, RatingConditionsResult>>());
       result.fold(
         (failure) => expect(failure.message, contains('Storage error')),
         (_) => fail('Should have returned Left'),

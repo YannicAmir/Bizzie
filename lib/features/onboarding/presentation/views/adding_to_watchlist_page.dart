@@ -2,6 +2,7 @@ import 'package:bizzie/app/themes/app_assets.dart';
 import 'package:bizzie/app/themes/app_colors.dart';
 
 import 'package:bizzie/features/onboarding/presentation/bloc/onboarding_bloc.dart';
+import 'package:bizzie/features/onboarding/domain/models/onboarding_step.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -25,6 +26,9 @@ class _AddingToWatchlistPageState extends State<AddingToWatchlistPage> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<OnboardingBloc>().add(
         const OnboardingEvent.startWatchlistAddition(),
+      );
+      context.read<OnboardingBloc>().add(
+        const OnboardingEvent.stepViewed(OnboardingStep.addingToWatchlist),
       );
     });
   }

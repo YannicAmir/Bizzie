@@ -1,4 +1,5 @@
 import 'package:bizzie/app/themes/app_assets.dart';
+import 'package:bizzie/core/enums/paywall_source.dart';
 import 'package:bizzie/app/themes/app_colors.dart';
 import 'package:bizzie/app/themes/app_text_styles.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
@@ -18,6 +19,7 @@ class BizzieExpandableChart extends StatefulWidget {
   final NumberFormat? numberFormat;
   final Color positiveColor;
   final Color negativeColor;
+  final PaywallSource source;
 
   const BizzieExpandableChart({
     super.key,
@@ -28,7 +30,13 @@ class BizzieExpandableChart extends StatefulWidget {
     this.numberFormat,
     this.positiveColor = AppColors.primary,
     this.negativeColor = AppColors.error,
+    required this.source,
+    this.onViewAllTapped,
+    this.onAnalyticsTap,
   });
+
+  final VoidCallback? onViewAllTapped;
+  final VoidCallback? onAnalyticsTap;
 
   @override
   State<BizzieExpandableChart> createState() => _BizzieExpandableChartState();
@@ -85,12 +93,21 @@ class _BizzieExpandableChartState extends State<BizzieExpandableChart> {
                 AppConstants.secondarySectionSpacing,
                 GestureDetector(
                   onTap: () {
+                    if (!_isExpanded) {
+                      widget.onAnalyticsTap?.call();
+                    }
                     if (isSubscribed) {
                       setState(() {
                         _isExpanded = !_isExpanded;
                       });
+                      if (_isExpanded && widget.onViewAllTapped != null) {
+                        widget.onViewAllTapped!();
+                      }
                     } else {
-                      PaywallHelper.showPaywallSequence(context);
+                      PaywallHelper.showPaywallSequence(
+                        context,
+                        source: widget.source,
+                      );
                     }
                   },
                   child: Row(

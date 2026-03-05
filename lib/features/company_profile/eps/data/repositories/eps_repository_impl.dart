@@ -1,8 +1,7 @@
+import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/features/company_profile/financial_statements/data/datasources/financial_statements_firestore_data_source.dart';
 import 'package:bizzie/features/company_profile/financial_statements/data/datasources/financial_statements_remote_data_source.dart';
-import 'package:bizzie/features/company_profile/financial_statements/data/dtos/income_statement_dto.dart';
-import 'package:bizzie/features/company_profile/shared/domain/models/financial_data_point.dart';
 import 'package:bizzie/features/company_profile/eps/domain/interfaces/i_eps_repository.dart';
 import 'package:bizzie/features/company_profile/eps/domain/models/eps_stats.dart';
 import 'package:dartz/dartz.dart';
@@ -22,93 +21,122 @@ class EpsRepositoryImpl implements IEpsRepository {
   EpsRepositoryImpl(this._remoteDataSource, this._localDataSource);
 
   @override
-  Future<Either<Failure, EpsStats>> getEpsStats(String ticker) async {
+  Future<Either<Failure, (EpsStats, CompanyProfileDataOrigin)>> getEpsStats(
+    String ticker,
+  ) async {
     try {
-      final annual = await _fetchStableIncomeStatements(ticker, _Consts.annual);
-      final quart = await _fetchStableIncomeStatements(ticker, _Consts.quarter);
-
-      final conversion = await _getCurrencyMultiplier(
-        annual.firstOrNull?.reportedCurrency ??
-            quart.firstOrNull?.reportedCurrency,
+      final annualRes = await _localDataSource.syncIncomeStatements(
         ticker,
+        period: _Consts.annual,
+        remoteFetcher: () => _remoteDataSource.getIncomeStatements(
+          ticker,
+          period: _Consts.annual,
+        ),
       );
 
-      return right(
-        EpsStats(
-          reportedCurrency: conversion.targetCurrency,
-          annualEps: _mapStableIncomeDataPoints(
-            annual,
-            (d) => (d.epsDiluted ?? 0.0) * conversion.multiplier,
-          ),
-          quarterlyEps: _mapStableIncomeDataPoints(
-            quart,
-            (d) => (d.epsDiluted ?? 0.0) * conversion.multiplier,
-          ),
+      final quartRes = await _localDataSource.syncIncomeStatements(
+        ticker,
+        period: _Consts.quarter,
+        remoteFetcher: () => _remoteDataSource.getIncomeStatements(
+          ticker,
+          period: _Consts.quarter,
         ),
+      );
+
+      return annualRes.map(
+        success: (annualS) => quartRes.map(
+          success: (quartS) async {
+            final annual = annualS.data;
+            final quart = quartS.data;
+
+            final conversionRes = await _getCurrencyMultiplier(
+              annual.firstOrNull?.reportedCurrency ??
+                  quart.firstOrNull?.reportedCurrency,
+              ticker,
+            );
+
+            return conversionRes.fold((f) => left(f), (convData) {
+              final conversion = convData.$1;
+              final convOrigin = convData.$2;
+
+              final result = EpsStats(
+                reportedCurrency: conversion.targetCurrency,
+                annualEps: annual
+                    .where((d) => d.date?.isNotEmpty == true)
+                    .map(
+                      (d) =>
+                          d.toEpsDataPoint(multiplier: conversion.multiplier),
+                    )
+                    .toList(),
+                quarterlyEps: quart
+                    .where((d) => d.date?.isNotEmpty == true)
+                    .map(
+                      (d) =>
+                          d.toEpsDataPoint(multiplier: conversion.multiplier),
+                    )
+                    .toList(),
+              );
+
+              final origins = [annualS.origin, quartS.origin, convOrigin];
+              final finalOrigin = origins.contains(CompanyProfileDataOrigin.api)
+                  ? CompanyProfileDataOrigin.api
+                  : origins.contains(CompanyProfileDataOrigin.db)
+                  ? CompanyProfileDataOrigin.db
+                  : CompanyProfileDataOrigin.cache;
+
+              return right((result, finalOrigin));
+            });
+          },
+          failure: (f) => left(f.failure),
+          notFound: (_) => left(Failure.server('Quarterly data not found')),
+        ),
+        failure: (f) => left(f.failure),
+        notFound: (_) => left(Failure.server('Annual data not found')),
       );
     } catch (e) {
       return left(Failure.server(e.toString()));
     }
   }
 
-  Future<List<IncomeStatementDto>> _fetchStableIncomeStatements(
-    String ticker,
-    String period,
-  ) async {
-    final local = await _localDataSource.getCachedIncomeStatements(
-      ticker,
-      period: period,
-    );
-    if (local != null) return local;
-
-    final remote = await _remoteDataSource.getIncomeStatements(
-      ticker,
-      period: period,
-    );
-    await _localDataSource.cacheIncomeStatements(
-      ticker,
-      remote,
-      period: period,
-    );
-    return remote;
-  }
-
-  Future<({double multiplier, String targetCurrency})> _getCurrencyMultiplier(
-    String? reportedCurrency,
-    String ticker,
-  ) async {
+  Future<
+    Either<
+      Failure,
+      (({double multiplier, String targetCurrency}), CompanyProfileDataOrigin)
+    >
+  >
+  _getCurrencyMultiplier(String? reportedCurrency, String ticker) async {
     if (reportedCurrency == null || reportedCurrency == _Consts.usd) {
-      return (multiplier: 1.0, targetCurrency: _Consts.usd);
+      return right((
+        (multiplier: 1.0, targetCurrency: _Consts.usd),
+        CompanyProfileDataOrigin.cache,
+      ));
     }
 
     try {
       final pair = '${reportedCurrency}USD';
 
-      final cachedRate = await _localDataSource.getCachedExchangeRate(pair);
-      if (cachedRate != null) {
-        return (multiplier: cachedRate, targetCurrency: _Consts.usd);
-      }
+      final res = await _localDataSource.syncExchangeRate(
+        pair,
+        remoteFetcher: () =>
+            _remoteDataSource.getExchangeRate(pair).then((v) => v ?? 1.0),
+      );
 
-      final rate = await _remoteDataSource.getExchangeRate(pair);
-
-      if (rate != null) {
-        await _localDataSource.cacheExchangeRate(pair, rate);
-        return (multiplier: rate, targetCurrency: _Consts.usd);
-      }
+      return res.map(
+        success: (s) => right((
+          (multiplier: s.data, targetCurrency: _Consts.usd),
+          s.origin,
+        )),
+        failure: (f) => left(f.failure),
+        notFound: (_) => right((
+          (multiplier: 1.0, targetCurrency: reportedCurrency),
+          CompanyProfileDataOrigin.cache,
+        )),
+      );
     } catch (e) {
-      // Fallback to reported currency if conversion fails
+      return right((
+        (multiplier: 1.0, targetCurrency: reportedCurrency),
+        CompanyProfileDataOrigin.cache,
+      ));
     }
-
-    return (multiplier: 1.0, targetCurrency: reportedCurrency);
-  }
-
-  List<FinancialDataPoint> _mapStableIncomeDataPoints(
-    List<IncomeStatementDto> data,
-    num Function(IncomeStatementDto) extractor,
-  ) {
-    return data
-        .where((d) => d.date.isNotEmpty)
-        .map((d) => d.toFinancialDataPoint(extractor(d).toDouble()))
-        .toList();
   }
 }

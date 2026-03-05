@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/core/usecase/usecase.dart';
 import 'package:bizzie/features/auth/domain/interfaces/i_auth_repository.dart';
@@ -14,6 +15,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
 
+import 'package:bizzie/features/settings/presentation/analytics/settings_tracker.dart';
+
 final _logger = BizzieLogger('SettingsBloc');
 
 @injectable
@@ -26,6 +29,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
   final IAuthRepository _authRepository;
   final OpenAppSettingsUseCase _openAppSettingsUseCase;
   final GetSubscriptionStatusUseCase _getSubscriptionStatusUseCase;
+  final SettingsTracker _tracker;
 
   SettingsBloc(
     this._getSettingsDisplayDataUseCase,
@@ -36,6 +40,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     this._authRepository,
     this._openAppSettingsUseCase,
     this._getSubscriptionStatusUseCase,
+    this._tracker,
   ) : super(const SettingsState.initial()) {
     on<SettingsEvent>((event, emit) async {
       await event.map(
@@ -46,11 +51,24 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
         refreshSubscription: (e) => _onRefreshSubscription(e, emit),
         resetPassword: (e) => _onResetPassword(e, emit),
         openedSettings: (e) => _onOpenedSettings(e, emit),
+        editProfileClicked: (e) => _onEditProfileClicked(e, emit),
+        feedbackClicked: (e) => _onFeedbackClicked(e, emit),
+        membershipClicked: (e) => _onMembershipClicked(e, emit),
       );
     });
   }
 
-  Future<void> _onStarted(dynamic event, Emitter<SettingsState> emit) async {
+  Future<void> _onStarted(Started event, Emitter<SettingsState> emit) async {
+    final shouldLogView = state.maybeMap(
+      initial: (_) => true,
+      loading: (_) => true,
+      orElse: () => false,
+    );
+
+    if (shouldLogView) {
+      unawaited(_tracker.logSettingsViewed());
+    }
+
     final isSilent = state.maybeMap(loaded: (_) => true, orElse: () => false);
     if (!isSilent) {
       _logger.info('Initializing SettingsBloc');
@@ -73,9 +91,12 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
   }
 
   Future<void> _onResetPassword(
-    dynamic event,
+    ResetPassword event,
     Emitter<SettingsState> emit,
   ) async {
+    _logger.info('User requested password reset');
+    unawaited(_tracker.logPasswordResetClicked());
+
     final user = _authRepository.currentUser;
     if (user != null) {
       await _resetPasswordUseCase(user.email);
@@ -83,10 +104,11 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
   }
 
   Future<void> _onToggledNotifications(
-    dynamic event,
+    ToggledNotifications event,
     Emitter<SettingsState> emit,
   ) async {
-    final enable = event.enable as bool;
+    final enable = event.enable;
+    _logger.info('Toggling notifications to: $enable');
 
     await state.maybeMap(
       loaded: (loadedState) async {
@@ -96,6 +118,8 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
           _logger.info(
             'User enabled notifications but system permission is missing',
           );
+          unawaited(_tracker.logNotificationsPermissionDenied());
+
           emit(SettingsState.failure(const Failure.permission()));
           emit(
             loadedState.copyWith(
@@ -105,7 +129,8 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
           return;
         }
 
-        _logger.info('Toggling notifications to: $enable');
+        unawaited(_tracker.logNotificationsToggled(enabled: enable));
+
         emit(
           loadedState.copyWith(
             data: data.copyWith(isAppNotificationsEnabled: enable),
@@ -128,14 +153,21 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
   }
 
   Future<void> _onOpenedSettings(
-    dynamic event,
+    OpenedSettings event,
     Emitter<SettingsState> emit,
   ) async {
+    _logger.info('Opening app settings from permission modal');
+    unawaited(_tracker.logSystemSettingsOpened());
     await _openAppSettingsUseCase(NoParams());
   }
 
-  Future<void> _onSignedOut(dynamic event, Emitter<SettingsState> emit) async {
+  Future<void> _onSignedOut(
+    SignedOut event,
+    Emitter<SettingsState> emit,
+  ) async {
     _logger.info('User signing out');
+    unawaited(_tracker.logSignOutClicked());
+
     emit(const SettingsState.loading());
     final result = await _signOutUseCase(NoParams());
     result.fold(
@@ -145,13 +177,14 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
       },
       (r) {
         _logger.info('User signed out successfully');
+        unawaited(_tracker.logSignOutSuccess());
         emit(const SettingsState.initial());
       },
     );
   }
 
   Future<void> _onRefreshSubscription(
-    dynamic event,
+    RefreshSubscription event,
     Emitter<SettingsState> emit,
   ) async {
     _logger.info('Refreshing subscription status');
@@ -175,8 +208,34 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     );
   }
 
-  Future<void> _onOpenUrl(dynamic event, Emitter<SettingsState> emit) async {
-    final url = event.url as String;
+  Future<void> _onOpenUrl(OpenUrl event, Emitter<SettingsState> emit) async {
+    final url = event.url;
+    _logger.info('Opening URL: $url');
+    unawaited(_tracker.logSettingsLinkClicked(type: url));
     await _launchUrlUseCase(url);
+  }
+
+  Future<void> _onEditProfileClicked(
+    EditProfileClicked event,
+    Emitter<SettingsState> emit,
+  ) async {
+    _logger.info('User clicked Edit Profile');
+    unawaited(_tracker.logEditProfileClicked());
+  }
+
+  Future<void> _onFeedbackClicked(
+    FeedbackClicked event,
+    Emitter<SettingsState> emit,
+  ) async {
+    _logger.info('User clicked Send Feedback');
+    unawaited(_tracker.logFeedbackClicked());
+  }
+
+  Future<void> _onMembershipClicked(
+    MembershipClicked event,
+    Emitter<SettingsState> emit,
+  ) async {
+    _logger.info('User clicked Membership. Subscribed: ${event.isSubscribed}');
+    unawaited(_tracker.logMembershipClicked(isSubscribed: event.isSubscribed));
   }
 }

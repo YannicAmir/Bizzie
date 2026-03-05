@@ -8,14 +8,14 @@ part 'income_statement_dto.g.dart';
 @freezed
 abstract class IncomeStatementDto with _$IncomeStatementDto {
   const factory IncomeStatementDto({
-    required String date,
-    required String symbol,
-    required String reportedCurrency,
-    required String cik,
-    required String filingDate,
-    required String acceptedDate,
-    required String fiscalYear,
-    required String period,
+    String? date,
+    String? symbol,
+    String? reportedCurrency,
+    String? cik,
+    String? filingDate,
+    String? acceptedDate,
+    String? fiscalYear,
+    String? period,
     double? revenue,
     double? costOfRevenue,
     double? grossProfit,
@@ -48,15 +48,31 @@ abstract class IncomeStatementDto with _$IncomeStatementDto {
       _$IncomeStatementDtoFromJson(json);
 
   FinancialDataPoint toFinancialDataPoint(double value) {
-    return FinancialDataPoint(date: date, period: period, value: value);
+    return FinancialDataPoint(
+      date: date ?? '',
+      period: period ?? '',
+      value: value,
+    );
+  }
+
+  FinancialDataPoint toRevenueDataPoint({double multiplier = 1.0}) {
+    return toFinancialDataPoint((revenue ?? 0.0) * multiplier);
+  }
+
+  FinancialDataPoint toNetIncomeDataPoint({double multiplier = 1.0}) {
+    return toFinancialDataPoint((netIncome ?? 0.0) * multiplier);
+  }
+
+  FinancialDataPoint toEpsDataPoint({double multiplier = 1.0}) {
+    return toFinancialDataPoint((epsDiluted ?? 0.0) * multiplier);
   }
 
   IncomeStatement toDomain({double multiplier = 1.0, String? targetCurrency}) {
     return IncomeStatement(
-      date: date,
-      symbol: symbol,
-      reportedCurrency: targetCurrency ?? reportedCurrency,
-      period: period,
+      date: date ?? '',
+      symbol: symbol ?? '',
+      reportedCurrency: targetCurrency ?? reportedCurrency ?? '',
+      period: period ?? '',
       revenue: (revenue ?? 0.0) * multiplier,
       grossProfit: (grossProfit ?? 0.0) * multiplier,
       operatingIncome: (operatingIncome ?? 0.0) * multiplier,

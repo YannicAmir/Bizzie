@@ -64,6 +64,9 @@ dependencies:
   internet_connection_checker_plus: ^2.9.1+2
   in_app_review: ^2.0.11
   freerasp: ^7.3.0
+  firebase_analytics: ^12.1.2
+  nanoid: ^1.0.0
+  timezone: ^0.10.1
 
 dev_dependencies:
   flutter_test:

@@ -8,7 +8,10 @@ import 'package:bizzie/features/company_profile/free_cash_flow/presentation/view
 import 'package:bizzie/features/company_profile/more/presentation/views/more_tab.dart';
 import 'package:bizzie/features/company_profile/net_income/presentation/views/net_income_tab.dart';
 import 'package:bizzie/features/company_profile/news/presentation/views/news_tab.dart';
+import 'package:bizzie/features/company_profile/pe_ratio/presentation/views/pe_ratio_tab.dart';
+import 'package:bizzie/features/company_profile/pfcf_ratio/presentation/views/pfcf_ratio_tab.dart';
 import 'package:bizzie/features/company_profile/revenue/presentation/views/revenue_tab.dart';
+import 'package:bizzie/features/company_profile/roe/presentation/views/roe_tab.dart';
 import 'package:bizzie/features/company_profile/security/presentation/views/security_tab.dart';
 import 'package:bizzie/features/company_profile/shares/presentation/views/shares_tab.dart';
 import 'package:flutter/material.dart';
@@ -55,6 +58,12 @@ class CompanyProfileBody extends StatelessWidget {
             return SharesTab(ticker: ticker);
           case CompanyProfileTab.financialStatements:
             return FinancialStatementsTab(ticker: ticker);
+          case CompanyProfileTab.roe:
+            return RoeTab(ticker: ticker);
+          case CompanyProfileTab.peRatio:
+            return PeRatioTab(ticker: ticker);
+          case CompanyProfileTab.pfcfRatio:
+            return PfcfRatioTab(ticker: ticker);
           case CompanyProfileTab.more:
             return MoreTab(ticker: ticker);
         }

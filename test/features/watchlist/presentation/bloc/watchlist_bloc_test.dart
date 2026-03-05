@@ -16,6 +16,7 @@ import 'package:bizzie/features/watchlist/presentation/bloc/watchlist_event.dart
 import 'package:bizzie/features/watchlist/domain/enums/watchlist_badge_type.dart';
 import 'package:bizzie/features/watchlist/domain/models/watchlist_event_status.dart';
 import 'package:bizzie/features/watchlist/presentation/bloc/watchlist_state.dart';
+import 'package:bizzie/features/watchlist/presentation/analytics/watchlist_analytics.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
@@ -39,6 +40,8 @@ class MockSyncWatchlistUseCase extends Mock implements SyncWatchlistUseCase {}
 
 class MockAuthRepository extends Mock implements IAuthRepository {}
 
+class MockWatchlistAnalytics extends Mock implements WatchlistAnalytics {}
+
 void main() {
   late WatchlistBloc bloc;
   late MockGetWatchlistUseCase mockGetWatchlistUseCase;
@@ -48,6 +51,7 @@ void main() {
   late MockRemoveFromWatchlistUseCase mockRemoveFromWatchlistUseCase;
   late MockSyncWatchlistUseCase mockSyncWatchlistUseCase;
   late MockAuthRepository mockAuthRepository;
+  late MockWatchlistAnalytics mockWatchlistAnalytics;
 
   setUpAll(() {
     registerFallbackValue(
@@ -70,11 +74,39 @@ void main() {
     mockRemoveFromWatchlistUseCase = MockRemoveFromWatchlistUseCase();
     mockSyncWatchlistUseCase = MockSyncWatchlistUseCase();
     mockAuthRepository = MockAuthRepository();
+    mockWatchlistAnalytics = MockWatchlistAnalytics();
 
-    // Default stubbing for GetWatchlistEventsUseCase to return empty map
     when(
       () => mockGetWatchlistEventsUseCase(any()),
     ).thenAnswer((_) async => const Right({}));
+
+    when(
+      () => mockWatchlistAnalytics.setWatchlistItemCount(any()),
+    ).thenAnswer((_) async {});
+
+    when(
+      () => mockWatchlistAnalytics.logItemAdded(
+        ticker: any(named: 'ticker'),
+        companyName: any(named: 'companyName'),
+        tabName: any(named: 'tabName'),
+        durationOnPageSeconds: any(named: 'durationOnPageSeconds'),
+      ),
+    ).thenAnswer((_) async {});
+
+    when(
+      () => mockWatchlistAnalytics.logItemRemoved(
+        ticker: any(named: 'ticker'),
+        tabName: any(named: 'tabName'),
+        durationOnPageSeconds: any(named: 'durationOnPageSeconds'),
+      ),
+    ).thenAnswer((_) async {});
+
+    when(
+      () => mockWatchlistAnalytics.logOperationFailed(
+        operation: any(named: 'operation'),
+        errorMessage: any(named: 'errorMessage'),
+      ),
+    ).thenAnswer((_) async {});
 
     bloc = WatchlistBloc(
       mockGetWatchlistUseCase,
@@ -84,6 +116,7 @@ void main() {
       mockRemoveFromWatchlistUseCase,
       mockSyncWatchlistUseCase,
       mockAuthRepository,
+      mockWatchlistAnalytics,
     );
   });
 
@@ -153,11 +186,24 @@ void main() {
         return bloc;
       },
       act: (bloc) => bloc.add(
-        const WatchlistEvent.addRequested(ticker: 'AAPL', name: 'Apple'),
+        const WatchlistEvent.addRequested(
+          ticker: 'AAPL',
+          name: 'Apple',
+          tabName: 'summary',
+          durationOnPageSeconds: 10,
+        ),
       ),
-      expect: () => [], // No state emitted on success, relies on stream
+      expect: () => [],
       verify: (_) {
         verify(() => mockAddToWatchlistUseCase(any())).called(1);
+        verify(
+          () => mockWatchlistAnalytics.logItemAdded(
+            ticker: 'AAPL',
+            companyName: 'Apple',
+            tabName: 'summary',
+            durationOnPageSeconds: 10,
+          ),
+        ).called(1);
       },
     );
 
@@ -171,9 +217,22 @@ void main() {
         return bloc;
       },
       act: (bloc) => bloc.add(
-        const WatchlistEvent.addRequested(ticker: 'AAPL', name: 'Apple'),
+        const WatchlistEvent.addRequested(
+          ticker: 'AAPL',
+          name: 'Apple',
+          tabName: 'summary',
+          durationOnPageSeconds: 10,
+        ),
       ),
       expect: () => [const WatchlistState.failure(Failure.server('Add Error'))],
+      verify: (_) {
+        verify(
+          () => mockWatchlistAnalytics.logOperationFailed(
+            operation: 'add',
+            errorMessage: 'Add Error',
+          ),
+        ).called(1);
+      },
     );
 
     blocTest<WatchlistBloc, WatchlistState>(
@@ -185,10 +244,23 @@ void main() {
         ).thenAnswer((_) async => const Right(null));
         return bloc;
       },
-      act: (bloc) => bloc.add(const WatchlistEvent.removeRequested("AAPL")),
+      act: (bloc) => bloc.add(
+        const WatchlistEvent.removeRequested(
+          ticker: "AAPL",
+          tabName: 'summary',
+          durationOnPageSeconds: 10,
+        ),
+      ),
       expect: () => [], // No state emitted on success
       verify: (_) {
         verify(() => mockRemoveFromWatchlistUseCase(any())).called(1);
+        verify(
+          () => mockWatchlistAnalytics.logItemRemoved(
+            ticker: "AAPL",
+            tabName: 'summary',
+            durationOnPageSeconds: 10,
+          ),
+        ).called(1);
       },
     );
 
@@ -201,24 +273,24 @@ void main() {
         ).thenAnswer((_) async => const Left(Failure.server('Remove Error')));
         return bloc;
       },
-      act: (bloc) => bloc.add(const WatchlistEvent.removeRequested("AAPL")),
+      act: (bloc) => bloc.add(
+        const WatchlistEvent.removeRequested(
+          ticker: "AAPL",
+          tabName: 'summary',
+          durationOnPageSeconds: 10,
+        ),
+      ),
       expect: () => [
         const WatchlistState.failure(Failure.server('Remove Error')),
       ],
-    );
-    blocTest<WatchlistBloc, WatchlistState>(
-      'removeRequested_failure_emitsFailureState',
-      build: () {
-        when(() => mockAuthRepository.currentUser).thenReturn(tUser);
-        when(
-          () => mockRemoveFromWatchlistUseCase(any()),
-        ).thenAnswer((_) async => const Left(Failure.server('Remove Error')));
-        return bloc;
+      verify: (_) {
+        verify(
+          () => mockWatchlistAnalytics.logOperationFailed(
+            operation: 'remove',
+            errorMessage: 'Remove Error',
+          ),
+        ).called(1);
       },
-      act: (bloc) => bloc.add(const WatchlistEvent.removeRequested("AAPL")),
-      expect: () => [
-        const WatchlistState.failure(Failure.server('Remove Error')),
-      ],
     );
 
     group('LoadWatchlistEvents', () {

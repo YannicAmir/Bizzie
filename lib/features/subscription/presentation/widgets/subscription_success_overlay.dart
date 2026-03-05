@@ -86,6 +86,7 @@ class _SubscriptionSuccessOverlayState extends State<SubscriptionSuccessOverlay>
 
   void _dismiss() {
     if (mounted) {
+      Navigator.of(context).pop();
       widget.onDismiss();
     }
   }

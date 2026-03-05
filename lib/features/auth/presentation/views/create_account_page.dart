@@ -1,3 +1,4 @@
+import 'package:bizzie/features/auth/domain/enums/auth_source.dart';
 import 'package:bizzie/app/routes/app_routes.dart';
 import 'package:bizzie/app/themes/app_colors.dart';
 import 'package:bizzie/app/themes/app_text_styles.dart';
@@ -14,11 +15,26 @@ import '../widgets/create_account_form.dart';
 import '../widgets/mascot_info_card.dart';
 import '../widgets/social_login_buttons.dart';
 import 'package:bizzie/features/onboarding/presentation/bloc/onboarding_bloc.dart';
-
+import 'package:bizzie/features/onboarding/domain/models/onboarding_step.dart';
 import 'package:bizzie/features/onboarding/presentation/widgets/onboarding_header.dart';
 
-class CreateAccountPage extends StatelessWidget {
-  const CreateAccountPage({super.key});
+class CreateAccountPage extends StatefulWidget {
+  final AuthSource source;
+
+  const CreateAccountPage({super.key, this.source = AuthSource.onboarding});
+
+  @override
+  State<CreateAccountPage> createState() => _CreateAccountPageState();
+}
+
+class _CreateAccountPageState extends State<CreateAccountPage> {
+  @override
+  void initState() {
+    super.initState();
+    context.read<OnboardingBloc>().add(
+      const OnboardingEvent.stepViewed(OnboardingStep.createAccount),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -70,11 +86,11 @@ class CreateAccountPage extends StatelessWidget {
                       children: [
                         const _CreateAccountHeader(),
                         const SizedBox(height: 32),
-                        const CreateAccountForm(),
+                        CreateAccountForm(source: widget.source),
                         const SizedBox(height: 24),
                         const AuthDivider(),
                         const SizedBox(height: 24),
-                        const SocialLoginButtons(),
+                        SocialLoginButtons(source: widget.source),
                         const SizedBox(height: 48),
                         const AuthFooter(),
                         const SizedBox(height: 24),

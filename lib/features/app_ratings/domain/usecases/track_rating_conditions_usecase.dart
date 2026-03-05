@@ -2,65 +2,77 @@ import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:bizzie/core/usecase/usecase.dart';
 import 'package:bizzie/features/app_ratings/domain/interfaces/i_app_ratings_repository.dart';
+import 'package:bizzie/core/interfaces/i_config_service.dart';
 import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
 
 final _logger = BizzieLogger('TrackRatingConditionsUseCase');
 
+enum RatingConditionsResult { prompt, noPrompt, maxAttemptsReached }
+
 @injectable
 class TrackRatingConditionsUseCase
-    implements UseCase<Either<Failure, bool>, NoParams> {
+    implements UseCase<Either<Failure, RatingConditionsResult>, NoParams> {
   final IAppRatingsRepository _repository;
+  final IConfigService _configService;
 
-  static const int kFirstThreshold = 7;
   static const int kMaxAttempts = 1;
 
-  TrackRatingConditionsUseCase(this._repository);
+  TrackRatingConditionsUseCase(this._repository, this._configService);
+
+  Future<int> getInteractionCount() => _repository.getInteractionCount();
+  Future<int> getPromptAttempts() => _repository.getPromptAttempts();
 
   @override
-  Future<Either<Failure, bool>> call(NoParams params) async {
+  Future<Either<Failure, RatingConditionsResult>> call(NoParams params) async {
     try {
-      await _repository.incrementInteractionCount();
-
-      if (await _hasReachedMaxAttempts()) {
-        _logger.info('Skipping evaluation: Max attempts reached.');
-        return const Right(false);
+      final attempts = await _repository.getPromptAttempts();
+      if (attempts >= kMaxAttempts) {
+        _logger.info(
+          'Short-circuit: Max attempts reached ($attempts/$kMaxAttempts). No further tracking.',
+        );
+        return const Right(RatingConditionsResult.maxAttemptsReached);
       }
 
-      final shouldPrompt = await _evaluatePromptConditions();
+      await _repository.incrementInteractionCount();
+      final currentInteractions = await _repository.getInteractionCount();
+      _logger.info(
+        'Interaction incremented. Current interactions: $currentInteractions',
+      );
+
+      final shouldPrompt = await _evaluatePromptConditions(
+        currentInteractions,
+        attempts,
+      );
 
       if (shouldPrompt) {
-        _logger.info('Prompt conditions met. Incrementing attempts.');
+        _logger.info(
+          'Prompt conditions met (interactions: $currentInteractions). Incrementing attempts.',
+        );
         await _repository.incrementPromptAttempts();
-        return const Right(true);
+        return const Right(RatingConditionsResult.prompt);
       }
 
-      _logger.info('No prompt conditions met.');
-      return const Right(false);
+      _logger.info(
+        'No prompt conditions met (interactions: $currentInteractions).',
+      );
+      return const Right(RatingConditionsResult.noPrompt);
     } catch (e, s) {
       _logger.severe('Unexpected failure during rating tracking', e, s);
       return Left(Failure.server(e.toString()));
     }
   }
 
-  Future<bool> _hasReachedMaxAttempts() async {
-    final attempts = await _repository.getPromptAttempts();
-    if (attempts >= kMaxAttempts) {
-      _logger.info('Max rating attempts reached ($kMaxAttempts).');
-      return true;
-    }
-    return false;
-  }
+  Future<bool> _evaluatePromptConditions(int interactions, int attempts) async {
+    final threshold = _configService.reviewPromptEventCount;
 
-  Future<bool> _evaluatePromptConditions() async {
-    final interactions = await _repository.getInteractionCount();
-    final attempts = await _repository.getPromptAttempts();
+    _logger.info(
+      'interactions=$interactions, attempts=$attempts, threshold=$threshold',
+    );
 
-    _logger.info('interactions=$interactions, attempts=$attempts');
-
-    if (interactions >= kFirstThreshold && attempts == 0) {
+    if (interactions >= threshold && attempts == 0) {
       _logger.info(
-        'First threshold met ($interactions >= $kFirstThreshold). Ready to prompt.',
+        'First threshold met ($interactions >= $threshold). Ready to prompt.',
       );
       return true;
     }

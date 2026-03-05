@@ -14,12 +14,14 @@ import 'package:bizzie/features/search/presentation/widgets/ai_no_match_view.dar
 import 'package:bizzie/shared/widgets/loading/bizzie_loader.dart';
 import 'package:bizzie/features/user/presentation/extensions/user_state_extensions.dart';
 
+import 'package:bizzie/features/search/domain/enums/search_analytics_enums.dart';
+
 import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
 
 class SearchPage extends StatefulWidget {
-  final String? sourceTab;
+  final SearchSource? source;
 
-  const SearchPage({super.key, this.sourceTab});
+  const SearchPage({super.key, this.source});
 
   @override
   State<SearchPage> createState() => _SearchPageState();
@@ -50,19 +52,25 @@ class _SearchPageState extends State<SearchPage> {
 
   void _onClearTapped() {
     _searchController.clear();
-    context.read<SearchBloc>().add(const SearchEvent.cleared());
+    context.read<SearchBloc>().add(const SearchEvent.searchCleared());
   }
 
   void _onCancelTapped() {
     FocusScope.of(context).unfocus();
+    context.read<SearchBloc>().add(const SearchEvent.searchCancelled());
 
     if (context.canPop()) {
       context.pop();
     }
   }
 
+  void _resetSearch() {
+    _searchController.clear();
+    context.read<SearchBloc>().add(const SearchEvent.cleared());
+  }
+
   void _onRetryTapped() {
-    _onClearTapped();
+    _resetSearch();
     _focusNode.requestFocus();
   }
 
@@ -89,7 +97,7 @@ class _SearchPageState extends State<SearchPage> {
             initial: (state) => SearchInitialView(
               favoriteSector: state.favoriteSector,
               recommendedBrands: state.recommendedBrands,
-              sourceTab: widget.sourceTab,
+              source: widget.source,
             ),
             loading: (state) => BizzieLoader(
               message: 'Fetching stocks',
@@ -98,7 +106,7 @@ class _SearchPageState extends State<SearchPage> {
             loaded: (data) => SearchResultsView(
               results: data.results,
               query: data.query,
-              sourceTab: widget.sourceTab,
+              source: widget.source,
             ),
             localEmpty: (state) => AiSearchPromptView(
               query: state.query,
@@ -115,7 +123,7 @@ class _SearchPageState extends State<SearchPage> {
             aiSuccess: (state) => AiMatchSuccessView(
               productName: state.productQuery,
               stock: state.stock,
-              sourceTab: widget.sourceTab,
+              source: widget.source,
             ),
             aiEmpty: (state) => AiNoMatchView(
               productName: state.productQuery,

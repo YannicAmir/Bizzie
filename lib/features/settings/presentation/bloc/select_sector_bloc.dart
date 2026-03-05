@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:bizzie/core/domain/models/sector.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:bizzie/features/settings/domain/usecases/update_favorite_sector_usecase.dart';
@@ -9,21 +10,28 @@ import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
+import 'package:bizzie/features/settings/presentation/analytics/settings_tracker.dart';
+
 final _logger = BizzieLogger('SelectSectorBloc');
 
 @injectable
 class SelectSectorBloc extends Bloc<SelectSectorEvent, SelectSectorState> {
   final UpdateFavoriteSectorUseCase _updateFavoriteSectorUseCase;
   final ISectorService _sectorService;
+  final SettingsTracker _tracker;
 
   SelectSectorBloc(
     @factoryParam Sector? initialSector,
     this._updateFavoriteSectorUseCase,
     this._sectorService,
+    this._tracker,
   ) : super(_buildInitialState(initialSector, _sectorService)) {
     _logger.info(
       'Initializing SelectSectorBloc with initialSector: ${initialSector?.name}',
     );
+
+    unawaited(_tracker.logSectorChangeViewed());
+
     on<SelectSector>(_onSelectSector, transformer: restartable());
     on<SaveChanges>(_onSaveChanges, transformer: droppable());
   }
@@ -68,6 +76,8 @@ class SelectSectorBloc extends Bloc<SelectSectorEvent, SelectSectorState> {
 
   void _onSelectSector(SelectSector event, Emitter<SelectSectorState> emit) {
     _logger.info('User selected sector: ${event.sector.name}');
+    unawaited(_tracker.logSectorSelected(sector: event.sector.name));
+
     emit(
       state.copyWith(
         selectedSector: _resolveViewModel(event.sector, _sectorService),
@@ -107,6 +117,13 @@ class SelectSectorBloc extends Bloc<SelectSectorEvent, SelectSectorState> {
           'Failed to update favorite sector to ${state.selectedSector.sector.name}',
           failure,
         );
+        unawaited(
+          _tracker.logSectorUpdateFailure(
+            sector: state.selectedSector.sector.name,
+            error: failure.message,
+          ),
+        );
+
         emit(
           SelectSectorState.failure(
             initialSector: state.initialSector,
@@ -120,6 +137,12 @@ class SelectSectorBloc extends Bloc<SelectSectorEvent, SelectSectorState> {
         _logger.info(
           'Successfully updated favorite sector to ${state.selectedSector.sector.name}',
         );
+        unawaited(
+          _tracker.logSectorUpdateSuccess(
+            sector: state.selectedSector.sector.name,
+          ),
+        );
+
         emit(
           SelectSectorState.success(
             initialSector: state.initialSector,

@@ -140,17 +140,17 @@ return statusChanged(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  statusRequested,TResult Function()?  logoutRequested,TResult Function()?  googleSignInRequested,TResult Function()?  appleSignInRequested,TResult Function( String email)?  resetPasswordRequested,TResult Function()?  deleteAccountRequested,TResult Function( String email,  String password)?  emailSignInRequested,TResult Function( String email,  String password)?  emailSignUpRequested,TResult Function( UserModel? user)?  statusChanged,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  statusRequested,TResult Function()?  logoutRequested,TResult Function( AuthSource source)?  googleSignInRequested,TResult Function( AuthSource source)?  appleSignInRequested,TResult Function( String email,  AuthSource source)?  resetPasswordRequested,TResult Function()?  deleteAccountRequested,TResult Function( String email,  String password,  AuthSource source)?  emailSignInRequested,TResult Function( String email,  String password,  AuthSource source)?  emailSignUpRequested,TResult Function( UserModel? user)?  statusChanged,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case AuthStatusRequested() when statusRequested != null:
 return statusRequested();case AuthLogoutRequested() when logoutRequested != null:
 return logoutRequested();case AuthGoogleSignInRequested() when googleSignInRequested != null:
-return googleSignInRequested();case AuthAppleSignInRequested() when appleSignInRequested != null:
-return appleSignInRequested();case AuthResetPasswordRequested() when resetPasswordRequested != null:
-return resetPasswordRequested(_that.email);case AuthDeleteAccountRequested() when deleteAccountRequested != null:
+return googleSignInRequested(_that.source);case AuthAppleSignInRequested() when appleSignInRequested != null:
+return appleSignInRequested(_that.source);case AuthResetPasswordRequested() when resetPasswordRequested != null:
+return resetPasswordRequested(_that.email,_that.source);case AuthDeleteAccountRequested() when deleteAccountRequested != null:
 return deleteAccountRequested();case AuthEmailSignInRequested() when emailSignInRequested != null:
-return emailSignInRequested(_that.email,_that.password);case AuthEmailSignUpRequested() when emailSignUpRequested != null:
-return emailSignUpRequested(_that.email,_that.password);case AuthStatusChanged() when statusChanged != null:
+return emailSignInRequested(_that.email,_that.password,_that.source);case AuthEmailSignUpRequested() when emailSignUpRequested != null:
+return emailSignUpRequested(_that.email,_that.password,_that.source);case AuthStatusChanged() when statusChanged != null:
 return statusChanged(_that.user);case _:
   return orElse();
 
@@ -169,17 +169,17 @@ return statusChanged(_that.user);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  statusRequested,required TResult Function()  logoutRequested,required TResult Function()  googleSignInRequested,required TResult Function()  appleSignInRequested,required TResult Function( String email)  resetPasswordRequested,required TResult Function()  deleteAccountRequested,required TResult Function( String email,  String password)  emailSignInRequested,required TResult Function( String email,  String password)  emailSignUpRequested,required TResult Function( UserModel? user)  statusChanged,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  statusRequested,required TResult Function()  logoutRequested,required TResult Function( AuthSource source)  googleSignInRequested,required TResult Function( AuthSource source)  appleSignInRequested,required TResult Function( String email,  AuthSource source)  resetPasswordRequested,required TResult Function()  deleteAccountRequested,required TResult Function( String email,  String password,  AuthSource source)  emailSignInRequested,required TResult Function( String email,  String password,  AuthSource source)  emailSignUpRequested,required TResult Function( UserModel? user)  statusChanged,}) {final _that = this;
 switch (_that) {
 case AuthStatusRequested():
 return statusRequested();case AuthLogoutRequested():
 return logoutRequested();case AuthGoogleSignInRequested():
-return googleSignInRequested();case AuthAppleSignInRequested():
-return appleSignInRequested();case AuthResetPasswordRequested():
-return resetPasswordRequested(_that.email);case AuthDeleteAccountRequested():
+return googleSignInRequested(_that.source);case AuthAppleSignInRequested():
+return appleSignInRequested(_that.source);case AuthResetPasswordRequested():
+return resetPasswordRequested(_that.email,_that.source);case AuthDeleteAccountRequested():
 return deleteAccountRequested();case AuthEmailSignInRequested():
-return emailSignInRequested(_that.email,_that.password);case AuthEmailSignUpRequested():
-return emailSignUpRequested(_that.email,_that.password);case AuthStatusChanged():
+return emailSignInRequested(_that.email,_that.password,_that.source);case AuthEmailSignUpRequested():
+return emailSignUpRequested(_that.email,_that.password,_that.source);case AuthStatusChanged():
 return statusChanged(_that.user);}
 }
 /// A variant of `when` that fallback to returning `null`
@@ -194,17 +194,17 @@ return statusChanged(_that.user);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  statusRequested,TResult? Function()?  logoutRequested,TResult? Function()?  googleSignInRequested,TResult? Function()?  appleSignInRequested,TResult? Function( String email)?  resetPasswordRequested,TResult? Function()?  deleteAccountRequested,TResult? Function( String email,  String password)?  emailSignInRequested,TResult? Function( String email,  String password)?  emailSignUpRequested,TResult? Function( UserModel? user)?  statusChanged,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  statusRequested,TResult? Function()?  logoutRequested,TResult? Function( AuthSource source)?  googleSignInRequested,TResult? Function( AuthSource source)?  appleSignInRequested,TResult? Function( String email,  AuthSource source)?  resetPasswordRequested,TResult? Function()?  deleteAccountRequested,TResult? Function( String email,  String password,  AuthSource source)?  emailSignInRequested,TResult? Function( String email,  String password,  AuthSource source)?  emailSignUpRequested,TResult? Function( UserModel? user)?  statusChanged,}) {final _that = this;
 switch (_that) {
 case AuthStatusRequested() when statusRequested != null:
 return statusRequested();case AuthLogoutRequested() when logoutRequested != null:
 return logoutRequested();case AuthGoogleSignInRequested() when googleSignInRequested != null:
-return googleSignInRequested();case AuthAppleSignInRequested() when appleSignInRequested != null:
-return appleSignInRequested();case AuthResetPasswordRequested() when resetPasswordRequested != null:
-return resetPasswordRequested(_that.email);case AuthDeleteAccountRequested() when deleteAccountRequested != null:
+return googleSignInRequested(_that.source);case AuthAppleSignInRequested() when appleSignInRequested != null:
+return appleSignInRequested(_that.source);case AuthResetPasswordRequested() when resetPasswordRequested != null:
+return resetPasswordRequested(_that.email,_that.source);case AuthDeleteAccountRequested() when deleteAccountRequested != null:
 return deleteAccountRequested();case AuthEmailSignInRequested() when emailSignInRequested != null:
-return emailSignInRequested(_that.email,_that.password);case AuthEmailSignUpRequested() when emailSignUpRequested != null:
-return emailSignUpRequested(_that.email,_that.password);case AuthStatusChanged() when statusChanged != null:
+return emailSignInRequested(_that.email,_that.password,_that.source);case AuthEmailSignUpRequested() when emailSignUpRequested != null:
+return emailSignUpRequested(_that.email,_that.password,_that.source);case AuthStatusChanged() when statusChanged != null:
 return statusChanged(_that.user);case _:
   return null;
 
@@ -281,74 +281,143 @@ String toString() {
 
 
 class AuthGoogleSignInRequested implements AuthEvent {
-  const AuthGoogleSignInRequested();
+  const AuthGoogleSignInRequested({required this.source});
   
 
+ final  AuthSource source;
 
-
+/// Create a copy of AuthEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$AuthGoogleSignInRequestedCopyWith<AuthGoogleSignInRequested> get copyWith => _$AuthGoogleSignInRequestedCopyWithImpl<AuthGoogleSignInRequested>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AuthGoogleSignInRequested);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AuthGoogleSignInRequested&&(identical(other.source, source) || other.source == source));
 }
 
 
 @override
-int get hashCode => runtimeType.hashCode;
+int get hashCode => Object.hash(runtimeType,source);
 
 @override
 String toString() {
-  return 'AuthEvent.googleSignInRequested()';
+  return 'AuthEvent.googleSignInRequested(source: $source)';
 }
 
 
 }
 
+/// @nodoc
+abstract mixin class $AuthGoogleSignInRequestedCopyWith<$Res> implements $AuthEventCopyWith<$Res> {
+  factory $AuthGoogleSignInRequestedCopyWith(AuthGoogleSignInRequested value, $Res Function(AuthGoogleSignInRequested) _then) = _$AuthGoogleSignInRequestedCopyWithImpl;
+@useResult
+$Res call({
+ AuthSource source
+});
 
 
+
+
+}
+/// @nodoc
+class _$AuthGoogleSignInRequestedCopyWithImpl<$Res>
+    implements $AuthGoogleSignInRequestedCopyWith<$Res> {
+  _$AuthGoogleSignInRequestedCopyWithImpl(this._self, this._then);
+
+  final AuthGoogleSignInRequested _self;
+  final $Res Function(AuthGoogleSignInRequested) _then;
+
+/// Create a copy of AuthEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? source = null,}) {
+  return _then(AuthGoogleSignInRequested(
+source: null == source ? _self.source : source // ignore: cast_nullable_to_non_nullable
+as AuthSource,
+  ));
+}
+
+
+}
 
 /// @nodoc
 
 
 class AuthAppleSignInRequested implements AuthEvent {
-  const AuthAppleSignInRequested();
+  const AuthAppleSignInRequested({required this.source});
   
 
+ final  AuthSource source;
 
-
+/// Create a copy of AuthEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$AuthAppleSignInRequestedCopyWith<AuthAppleSignInRequested> get copyWith => _$AuthAppleSignInRequestedCopyWithImpl<AuthAppleSignInRequested>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AuthAppleSignInRequested);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AuthAppleSignInRequested&&(identical(other.source, source) || other.source == source));
 }
 
 
 @override
-int get hashCode => runtimeType.hashCode;
+int get hashCode => Object.hash(runtimeType,source);
 
 @override
 String toString() {
-  return 'AuthEvent.appleSignInRequested()';
+  return 'AuthEvent.appleSignInRequested(source: $source)';
 }
 
 
 }
 
+/// @nodoc
+abstract mixin class $AuthAppleSignInRequestedCopyWith<$Res> implements $AuthEventCopyWith<$Res> {
+  factory $AuthAppleSignInRequestedCopyWith(AuthAppleSignInRequested value, $Res Function(AuthAppleSignInRequested) _then) = _$AuthAppleSignInRequestedCopyWithImpl;
+@useResult
+$Res call({
+ AuthSource source
+});
 
 
+
+
+}
+/// @nodoc
+class _$AuthAppleSignInRequestedCopyWithImpl<$Res>
+    implements $AuthAppleSignInRequestedCopyWith<$Res> {
+  _$AuthAppleSignInRequestedCopyWithImpl(this._self, this._then);
+
+  final AuthAppleSignInRequested _self;
+  final $Res Function(AuthAppleSignInRequested) _then;
+
+/// Create a copy of AuthEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? source = null,}) {
+  return _then(AuthAppleSignInRequested(
+source: null == source ? _self.source : source // ignore: cast_nullable_to_non_nullable
+as AuthSource,
+  ));
+}
+
+
+}
 
 /// @nodoc
 
 
 class AuthResetPasswordRequested implements AuthEvent {
-  const AuthResetPasswordRequested(this.email);
+  const AuthResetPasswordRequested(this.email, {required this.source});
   
 
  final  String email;
+ final  AuthSource source;
 
 /// Create a copy of AuthEvent
 /// with the given fields replaced by the non-null parameter values.
@@ -360,16 +429,16 @@ $AuthResetPasswordRequestedCopyWith<AuthResetPasswordRequested> get copyWith => 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AuthResetPasswordRequested&&(identical(other.email, email) || other.email == email));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AuthResetPasswordRequested&&(identical(other.email, email) || other.email == email)&&(identical(other.source, source) || other.source == source));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,email);
+int get hashCode => Object.hash(runtimeType,email,source);
 
 @override
 String toString() {
-  return 'AuthEvent.resetPasswordRequested(email: $email)';
+  return 'AuthEvent.resetPasswordRequested(email: $email, source: $source)';
 }
 
 
@@ -380,7 +449,7 @@ abstract mixin class $AuthResetPasswordRequestedCopyWith<$Res> implements $AuthE
   factory $AuthResetPasswordRequestedCopyWith(AuthResetPasswordRequested value, $Res Function(AuthResetPasswordRequested) _then) = _$AuthResetPasswordRequestedCopyWithImpl;
 @useResult
 $Res call({
- String email
+ String email, AuthSource source
 });
 
 
@@ -397,10 +466,11 @@ class _$AuthResetPasswordRequestedCopyWithImpl<$Res>
 
 /// Create a copy of AuthEvent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? email = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? email = null,Object? source = null,}) {
   return _then(AuthResetPasswordRequested(
 null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
-as String,
+as String,source: null == source ? _self.source : source // ignore: cast_nullable_to_non_nullable
+as AuthSource,
   ));
 }
 
@@ -443,11 +513,12 @@ String toString() {
 
 
 class AuthEmailSignInRequested implements AuthEvent {
-  const AuthEmailSignInRequested(this.email, this.password);
+  const AuthEmailSignInRequested(this.email, this.password, {required this.source});
   
 
  final  String email;
  final  String password;
+ final  AuthSource source;
 
 /// Create a copy of AuthEvent
 /// with the given fields replaced by the non-null parameter values.
@@ -459,16 +530,16 @@ $AuthEmailSignInRequestedCopyWith<AuthEmailSignInRequested> get copyWith => _$Au
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AuthEmailSignInRequested&&(identical(other.email, email) || other.email == email)&&(identical(other.password, password) || other.password == password));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AuthEmailSignInRequested&&(identical(other.email, email) || other.email == email)&&(identical(other.password, password) || other.password == password)&&(identical(other.source, source) || other.source == source));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,email,password);
+int get hashCode => Object.hash(runtimeType,email,password,source);
 
 @override
 String toString() {
-  return 'AuthEvent.emailSignInRequested(email: $email, password: $password)';
+  return 'AuthEvent.emailSignInRequested(email: $email, password: $password, source: $source)';
 }
 
 
@@ -479,7 +550,7 @@ abstract mixin class $AuthEmailSignInRequestedCopyWith<$Res> implements $AuthEve
   factory $AuthEmailSignInRequestedCopyWith(AuthEmailSignInRequested value, $Res Function(AuthEmailSignInRequested) _then) = _$AuthEmailSignInRequestedCopyWithImpl;
 @useResult
 $Res call({
- String email, String password
+ String email, String password, AuthSource source
 });
 
 
@@ -496,11 +567,12 @@ class _$AuthEmailSignInRequestedCopyWithImpl<$Res>
 
 /// Create a copy of AuthEvent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? email = null,Object? password = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? email = null,Object? password = null,Object? source = null,}) {
   return _then(AuthEmailSignInRequested(
 null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
 as String,null == password ? _self.password : password // ignore: cast_nullable_to_non_nullable
-as String,
+as String,source: null == source ? _self.source : source // ignore: cast_nullable_to_non_nullable
+as AuthSource,
   ));
 }
 
@@ -511,11 +583,12 @@ as String,
 
 
 class AuthEmailSignUpRequested implements AuthEvent {
-  const AuthEmailSignUpRequested(this.email, this.password);
+  const AuthEmailSignUpRequested(this.email, this.password, {required this.source});
   
 
  final  String email;
  final  String password;
+ final  AuthSource source;
 
 /// Create a copy of AuthEvent
 /// with the given fields replaced by the non-null parameter values.
@@ -527,16 +600,16 @@ $AuthEmailSignUpRequestedCopyWith<AuthEmailSignUpRequested> get copyWith => _$Au
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AuthEmailSignUpRequested&&(identical(other.email, email) || other.email == email)&&(identical(other.password, password) || other.password == password));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AuthEmailSignUpRequested&&(identical(other.email, email) || other.email == email)&&(identical(other.password, password) || other.password == password)&&(identical(other.source, source) || other.source == source));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,email,password);
+int get hashCode => Object.hash(runtimeType,email,password,source);
 
 @override
 String toString() {
-  return 'AuthEvent.emailSignUpRequested(email: $email, password: $password)';
+  return 'AuthEvent.emailSignUpRequested(email: $email, password: $password, source: $source)';
 }
 
 
@@ -547,7 +620,7 @@ abstract mixin class $AuthEmailSignUpRequestedCopyWith<$Res> implements $AuthEve
   factory $AuthEmailSignUpRequestedCopyWith(AuthEmailSignUpRequested value, $Res Function(AuthEmailSignUpRequested) _then) = _$AuthEmailSignUpRequestedCopyWithImpl;
 @useResult
 $Res call({
- String email, String password
+ String email, String password, AuthSource source
 });
 
 
@@ -564,11 +637,12 @@ class _$AuthEmailSignUpRequestedCopyWithImpl<$Res>
 
 /// Create a copy of AuthEvent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? email = null,Object? password = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? email = null,Object? password = null,Object? source = null,}) {
   return _then(AuthEmailSignUpRequested(
 null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
 as String,null == password ? _self.password : password // ignore: cast_nullable_to_non_nullable
-as String,
+as String,source: null == source ? _self.source : source // ignore: cast_nullable_to_non_nullable
+as AuthSource,
   ));
 }
 

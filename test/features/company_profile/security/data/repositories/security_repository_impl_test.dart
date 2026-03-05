@@ -1,3 +1,4 @@
+import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:bizzie/features/company_profile/business/data/datasources/business_firestore_data_source.dart';
 import 'package:bizzie/features/company_profile/business/data/datasources/business_remote_data_source.dart';
 import 'package:bizzie/features/company_profile/shared/data/datasources/ratios_remote_data_source.dart';
@@ -13,6 +14,8 @@ import 'package:bizzie/features/company_profile/security/domain/models/security_
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:bizzie/core/data/models/cache_result.dart' as cache;
+import 'package:bizzie/core/error/failures.dart';
 
 class MockBusinessRemoteDataSource extends Mock
     implements BusinessRemoteDataSource {}
@@ -99,12 +102,12 @@ void main() {
 
     test('getSecurityDetails_success_returnsSecurityDetails', () async {
       // arrange
-      when(
-        () => mockCompanyRepository.getProfile(tTicker),
-      ).thenAnswer((_) async => Right(tCompanyProfile));
-      when(
-        () => mockCompanyRepository.getQuote(tTicker),
-      ).thenAnswer((_) async => Right(tStockQuote));
+      when(() => mockCompanyRepository.getProfile(tTicker)).thenAnswer(
+        (_) async => Right((tCompanyProfile, CompanyProfileDataOrigin.api)),
+      );
+      when(() => mockCompanyRepository.getQuote(tTicker)).thenAnswer(
+        (_) async => Right((tStockQuote, CompanyProfileDataOrigin.api)),
+      );
       when(
         () => mockRatiosRemoteDataSource.getRatiosTtm(tTicker),
       ).thenAnswer((_) async => tRatios);
@@ -114,8 +117,11 @@ void main() {
 
       // assert
       expect(result.isRight(), true);
-      result.fold((l) => fail('Should return right'), (r) {
+      result.fold((l) => fail('Should return right'), (tuple) {
+        final r = tuple.$1;
+        final origin = tuple.$2;
         expect(r, isA<SecurityDetails>());
+        expect(origin, CompanyProfileDataOrigin.api);
         expect(r.ticker, tTicker);
         expect(r.peRatioTTM, 22.5);
         expect(r.priceToFreeCashFlowTTM, 18.0);
@@ -125,27 +131,6 @@ void main() {
 
     test('getSecurityDetails_failure_returnsServerFailure', () async {
       // arrange
-      // Wait, repository now handles Left from repo, assume it propagates failure
-      // or if repo throws.
-      // Current impl of SecurityRepositoryImpl calls _companyRepository.getProfile
-      // and expects Right, or if generic Failure?
-      // Actually SecurityRepositoryImpl does:
-      // final profileResult = await _companyRepository.getProfile(ticker);
-      // profileResult.fold((l) => throw Exception("..."), (r) => profile = r);
-      // So we can mock Left return.
-
-      // But to be simpler and match previous test style which expected exception from datasource catch block?
-      // No, let's verify behaviour.
-      // If ICompanyRepository returns Left, SecurityRepositoryImpl throws Exception (based on my previous view of code or assumption).
-      // Let's assume mocking Left is correct way to trigger failure branch if I updated it to handle it.
-      // Wait, I updated it to fold and throw exception on Left.
-
-      // But wait, the previous test was:
-      // when(() => datasource.call()).thenThrow(Exception('Error'));
-      // because the repository impl wrapped try-catch.
-      // The new impl also wraps try-catch?
-      // Yes, usually.
-
       when(
         () => mockCompanyRepository.getProfile(tTicker),
       ).thenThrow(Exception('Error'));
@@ -179,26 +164,25 @@ void main() {
     test('getUpcomingEarningsDate_success_returnsNearestValidDate', () async {
       // arrange
       when(
-        () => mockSecurityLocalDataSource.getCachedEarningsReports(tTicker),
-      ).thenAnswer((_) async => null);
-      when(
-        () => mockSecurityRemoteDataSource.getEarningsReports(tTicker),
-      ).thenAnswer((_) async => tEarningsReports);
-      when(
-        () => mockSecurityLocalDataSource.cacheEarningsReports(tTicker, any()),
-      ).thenAnswer((_) async => Future.value());
+        () => mockSecurityLocalDataSource.syncEarningsReports(
+          tTicker,
+          remoteFetcher: any(named: 'remoteFetcher'),
+        ),
+      ).thenAnswer(
+        (_) async =>
+            cache.CacheSuccess(tEarningsReports, CompanyProfileDataOrigin.api),
+      );
 
       // act
-      final result = await repository.getUpcomingEarningsDate(tTicker);
+      final resultData = await repository.getUpcomingEarningsDate(tTicker);
 
       // assert
-      expect(result.isRight(), true);
-      result.fold((l) => fail('Should return right'), (r) {
+      expect(resultData.isRight(), true);
+      resultData.fold((l) => fail('Should return right'), (tuple) {
+        final r = tuple.$1;
+        final origin = tuple.$2;
         expect(r, isA<DateTime>());
-        final expectedDate = DateTime.parse(tEarningsReports[0].date);
-        expect(r?.year, expectedDate.year);
-        expect(r?.month, expectedDate.month);
-        expect(r?.day, expectedDate.day);
+        expect(origin, CompanyProfileDataOrigin.api);
       });
     });
 
@@ -213,30 +197,44 @@ void main() {
         ),
       ];
       when(
-        () => mockSecurityLocalDataSource.getCachedEarningsReports(tTicker),
-      ).thenAnswer((_) async => tPastEarnings);
+        () => mockSecurityLocalDataSource.syncEarningsReports(
+          tTicker,
+          remoteFetcher: any(named: 'remoteFetcher'),
+        ),
+      ).thenAnswer(
+        (_) async =>
+            cache.CacheSuccess(tPastEarnings, CompanyProfileDataOrigin.cache),
+      );
 
       // act
       final result = await repository.getUpcomingEarningsDate(tTicker);
 
       // assert
       expect(result.isRight(), true);
-      result.fold((l) => fail('Should return right'), (r) {
+      result.fold((l) => fail('Should return right'), (tuple) {
+        final r = tuple.$1;
+        final origin = tuple.$2;
         expect(r, null);
+        expect(origin, CompanyProfileDataOrigin.cache); // Cached data
       });
     });
 
     test('getUpcomingEarningsDate_failure_returnsLeftFailure', () async {
       // arrange
       when(
-        () => mockSecurityLocalDataSource.getCachedEarningsReports(tTicker),
-      ).thenThrow(Exception('Error'));
+        () => mockSecurityLocalDataSource.syncEarningsReports(
+          tTicker,
+          remoteFetcher: any(named: 'remoteFetcher'),
+        ),
+      ).thenAnswer(
+        (_) async => const cache.CacheFailure(Failure.server('error')),
+      );
 
       // act
-      final result = await repository.getUpcomingEarningsDate(tTicker);
+      final resultData = await repository.getUpcomingEarningsDate(tTicker);
 
       // assert
-      expect(result.isLeft(), true);
+      expect(resultData.isLeft(), true);
     });
   });
 }

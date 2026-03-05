@@ -2,6 +2,7 @@ import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/features/company_profile/free_cash_flow/domain/interfaces/i_free_cash_flow_repository.dart';
 import 'package:bizzie/features/company_profile/free_cash_flow/domain/models/free_cash_flow_stats.dart';
 import 'package:bizzie/features/company_profile/free_cash_flow/domain/usecases/get_free_cash_flow_stats_usecase.dart';
+import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
@@ -28,15 +29,15 @@ void main() {
   group('GetFreeCashFlowStatsUseCase', () {
     test('call_success_returnsFreeCashFlowStats', () async {
       // arrange
-      when(
-        () => mockRepository.getFreeCashFlowStats(tTicker),
-      ).thenAnswer((_) async => const Right(tFcfStats));
+      when(() => mockRepository.getFreeCashFlowStats(tTicker)).thenAnswer(
+        (_) async => const Right((tFcfStats, CompanyProfileDataOrigin.cache)),
+      );
 
       // act
       final result = await useCase(tTicker);
 
       // assert
-      expect(result, const Right(tFcfStats));
+      expect(result, const Right((tFcfStats, CompanyProfileDataOrigin.cache)));
       verify(() => mockRepository.getFreeCashFlowStats(tTicker)).called(1);
       verifyNoMoreInteractions(mockRepository);
     });

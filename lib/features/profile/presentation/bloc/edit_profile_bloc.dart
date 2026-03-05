@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:bizzie/features/auth/domain/usecases/get_current_user.dart';
 import 'package:bizzie/core/usecase/usecase.dart';
 import 'package:bizzie/features/profile/domain/usecases/delete_account_usecase.dart';
@@ -13,6 +14,7 @@ import 'package:bizzie/features/auth/domain/usecases/reauthenticate_usecase.dart
 import 'package:bizzie/features/auth/domain/enums/auth_provider.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:bizzie/features/profile/domain/enums/reauth_action.dart';
+import 'package:bizzie/features/profile/presentation/analytics/profile_tracker.dart';
 
 final _logger = BizzieLogger('EditProfileBloc');
 
@@ -25,6 +27,7 @@ class EditProfileBloc extends Bloc<EditProfileEvent, EditProfileState> {
   final UpdateProfileUseCase _updateProfileUseCase;
   final DeleteAccountUseCase _deleteAccountUseCase;
   final ReauthenticateUseCase _reauthenticateUseCase;
+  final ProfileTracker _tracker;
 
   EditProfileBloc(
     this._getCurrentUser,
@@ -32,6 +35,7 @@ class EditProfileBloc extends Bloc<EditProfileEvent, EditProfileState> {
     this._updateProfileUseCase,
     this._deleteAccountUseCase,
     this._reauthenticateUseCase,
+    this._tracker,
   ) : super(
         EditProfileState.initial(favoriteSector: _getUserUseCase.cachedSector),
       ) {
@@ -52,6 +56,7 @@ class EditProfileBloc extends Bloc<EditProfileEvent, EditProfileState> {
 
   Future<void> _onStarted(Started event, Emitter<EditProfileState> emit) async {
     _logger.info('EditProfile started');
+    unawaited(_tracker.logEditProfileStarted());
     final cachedSector = _getUserUseCase.cachedSector;
     emit(EditProfileState.loading(favoriteSector: cachedSector));
 
@@ -138,6 +143,7 @@ class EditProfileBloc extends Bloc<EditProfileEvent, EditProfileState> {
             failure.maybeMap(
               reauthentication: (_) {
                 _logger.info('Sensitive update requires re-authentication');
+                unawaited(_tracker.logReauthStarted(reason: 'save'));
                 emit(
                   currentState.copyWith(
                     isSubmitting: false,
@@ -149,6 +155,12 @@ class EditProfileBloc extends Bloc<EditProfileEvent, EditProfileState> {
               },
               orElse: () {
                 _logger.severe('Profile update failed: $failure');
+                unawaited(
+                  _tracker.logProfileUpdateFailure(
+                    type: failure.runtimeType.toString(),
+                    message: failure.toString(),
+                  ),
+                );
                 emit(
                   currentState.copyWith(
                     isSubmitting: false,
@@ -160,6 +172,16 @@ class EditProfileBloc extends Bloc<EditProfileEvent, EditProfileState> {
           },
           (_) {
             _logger.info('Profile updated successfully');
+            final List<String> updatedFields = [];
+            if (currentState.firstName != currentState.originalFirstName) {
+              updatedFields.add('firstName');
+            }
+            if (currentState.email != currentState.originalEmail) {
+              updatedFields.add('email');
+            }
+            unawaited(
+              _tracker.logProfileUpdateSuccess(updatedFields: updatedFields),
+            );
             emit(
               EditProfileState.success(
                 favoriteSector: currentState.favoriteSector,
@@ -185,6 +207,7 @@ class EditProfileBloc extends Bloc<EditProfileEvent, EditProfileState> {
             pendingReauthAction: ReauthAction.deleteAccount,
           ),
         );
+        unawaited(_tracker.logReauthStarted(reason: 'delete_account'));
       },
     );
   }
@@ -198,6 +221,7 @@ class EditProfileBloc extends Bloc<EditProfileEvent, EditProfileState> {
         if (currentState.isDeleting) return;
 
         _logger.info('Account deletion initiated');
+        unawaited(_tracker.logDeleteAccountInitiated());
         emit(
           currentState.copyWith(
             isDeleting: true,
@@ -210,12 +234,19 @@ class EditProfileBloc extends Bloc<EditProfileEvent, EditProfileState> {
         result.fold(
           (failure) {
             _logger.severe('Account deletion failed: $failure');
+            unawaited(
+              _tracker.logProfileUpdateFailure(
+                type: 'delete_account_failure',
+                message: failure.toString(),
+              ),
+            );
             emit(
               currentState.copyWith(isDeleting: false, saveFailure: failure),
             );
           },
           (_) {
             _logger.info('Account deleted successfully');
+            unawaited(_tracker.logAccountDeletionSuccess());
             emit(
               EditProfileState.deleted(
                 favoriteSector: currentState.favoriteSector,
@@ -314,34 +345,55 @@ class EditProfileBloc extends Bloc<EditProfileEvent, EditProfileState> {
           ReauthenticateParams(provider: provider, password: password),
         );
 
-        await result.fold((failure) async {
-          _logger.severe('${provider.name} re-authentication failed: $failure');
-
-          final newAttempts = currentState.reauthAttempts + 1;
-          emit(
-            currentState.copyWith(
-              isReauthSubmitting: false,
-              reauthFailure: failure,
-              reauthAttempts: newAttempts,
-            ),
-          );
-
-          if (newAttempts >= maxReauthAttempts) {
-            _logger.warning(
-              'Max re-auth attempts reached ($maxReauthAttempts)',
+        await result.fold(
+          (failure) async {
+            _logger.severe(
+              '${provider.name} re-authentication failed: $failure',
             );
 
+            final newAttempts = currentState.reauthAttempts + 1;
             emit(
               currentState.copyWith(
                 isReauthSubmitting: false,
-                reauthFailure: null,
+                reauthFailure: failure,
                 reauthAttempts: newAttempts,
-                isShowReauthModal: false,
-                pendingReauthAction: null,
               ),
             );
-          }
-        }, (_) async => await _onReauthSuccess(emit));
+            unawaited(
+              _tracker.logReauthResult(
+                provider: provider.name,
+                success: false,
+                attempts: newAttempts,
+              ),
+            );
+
+            if (newAttempts >= maxReauthAttempts) {
+              _logger.warning(
+                'Max re-auth attempts reached ($maxReauthAttempts)',
+              );
+
+              emit(
+                currentState.copyWith(
+                  isReauthSubmitting: false,
+                  reauthFailure: null,
+                  reauthAttempts: newAttempts,
+                  isShowReauthModal: false,
+                  pendingReauthAction: null,
+                ),
+              );
+            }
+          },
+          (_) async {
+            unawaited(
+              _tracker.logReauthResult(
+                provider: provider.name,
+                success: true,
+                attempts: currentState.reauthAttempts + 1,
+              ),
+            );
+            await _onReauthSuccess(emit);
+          },
+        );
       },
     );
   }

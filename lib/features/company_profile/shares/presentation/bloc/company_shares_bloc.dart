@@ -9,29 +9,88 @@ import 'package:bizzie/features/company_profile/shared/domain/models/financial_d
 import 'package:bizzie/features/company_profile/shares/domain/models/shares_summary_data.dart';
 import 'package:bizzie/features/company_profile/shares/domain/usecases/get_shares_usecase.dart';
 import 'package:bizzie/shared/utils/bizzie_date_formatter.dart';
+import 'package:bizzie/features/company_profile/shares/presentation/analytics/shares_tab_analytics.dart';
+import 'package:bizzie/features/company_profile/shares/presentation/analytics/shares_tab_view_state.dart';
+import 'package:bizzie/features/company_profile/shared/presentation/analytics/base_analytics.dart';
+import 'package:bizzie/features/company_profile/shared/presentation/bloc/company_profile_analytics_mixin.dart';
 import 'company_shares_event.dart';
 import 'company_shares_state.dart';
 
 final _logger = BizzieLogger('CompanySharesBloc');
 
 @injectable
-class CompanySharesBloc extends Bloc<CompanySharesEvent, CompanySharesState> {
+class CompanySharesBloc extends Bloc<CompanySharesEvent, CompanySharesState>
+    with
+        CompanyProfileAnalyticsMixin<
+          CompanySharesEvent,
+          CompanySharesState,
+          SharesTabViewState
+        > {
   final GetSharesUseCase _getShares;
   final IConfigService _configService;
+  final SharesTabAnalytics _analytics;
 
-  CompanySharesBloc(this._getShares, this._configService)
+  CompanySharesBloc(this._getShares, this._configService, this._analytics)
     : super(const CompanySharesState.initial()) {
-    on<CompanySharesEvent>(_onEvent, transformer: droppable());
+    on<LoadRequested>(_onLoadRequested, transformer: droppable());
+    on<StalenessCheckRequested>(
+      _onStalenessCheckRequested,
+      transformer: sequential(),
+    );
+    on<TabShown>(_onTabShown);
+    on<TabHidden>((_, __) async => await onTabHidden());
+    on<AppBackgrounded>((_, __) async => await onAppBackgrounded());
+    on<AppForegrounded>((_, __) => onAppForegrounded());
+    on<PeriodViewed>(_onPeriodViewed);
+    on<ViewAllTapped>(_onViewAllTapped);
   }
 
-  Future<void> _onEvent(
-    CompanySharesEvent event,
-    Emitter<CompanySharesState> emit,
-  ) async {
-    _logger.info('Handling event: $event');
-    await event.map(
-      loadRequested: (e) async => _onLoadRequested(e, emit),
-      stalenessCheckRequested: (e) async => _onStalenessCheckRequested(e),
+  @override
+  CompanyProfileTabTracker<SharesTabViewState> get analyticsTracker =>
+      _analytics;
+
+  void _onTabShown(TabShown event, Emitter<CompanySharesState> emit) {
+    onTabShown(
+      event.ticker,
+      SharesTabViewState(
+        ticker: event.ticker,
+        timestamp: DateTime.now().toIso8601String(),
+      ),
+    );
+    state.maybeMap(
+      loaded: (s) => emit(s.copyWith(analyticsState: analyticsSession)),
+      orElse: () {},
+    );
+  }
+
+  void _onPeriodViewed(PeriodViewed event, Emitter<CompanySharesState> emit) {
+    updateAnalyticsState(
+      (s) => event.isAnnual
+          ? s.copyWith(viewedYearlySharesTab: true)
+          : s.copyWith(viewedQtrlySharesTab: true),
+    );
+    state.maybeMap(
+      loaded: (s) => emit(s.copyWith(analyticsState: analyticsSession)),
+      orElse: () {},
+    );
+  }
+
+  void _onViewAllTapped(ViewAllTapped event, Emitter<CompanySharesState> emit) {
+    updateAnalyticsState((s) {
+      if (event.isAnnual) {
+        return event.isChart
+            ? s.copyWith(tappedYrchartViewAll: true)
+            : s.copyWith(tappedYrtableViewAll: true);
+      } else {
+        return event.isChart
+            ? s.copyWith(tappedQtrchartViewAll: true)
+            : s.copyWith(tappedQtrtableViewAll: true);
+      }
+    });
+
+    state.maybeMap(
+      loaded: (s) => emit(s.copyWith(analyticsState: analyticsSession)),
+      orElse: () {},
     );
   }
 
@@ -39,28 +98,48 @@ class CompanySharesBloc extends Bloc<CompanySharesEvent, CompanySharesState> {
     LoadRequested event,
     Emitter<CompanySharesState> emit,
   ) async {
-    if (!event.forceRefresh &&
-        state.maybeMap(loaded: (_) => true, orElse: () => false)) {
-      _logger.info('Skip loading Shares: already loaded and no force refresh');
+    final isAlreadyLoaded = state.maybeMap(
+      loaded: (s) => true,
+      orElse: () => false,
+    );
+
+    final isRightTicker = state.maybeMap(
+      loaded: (s) => s.ticker == event.ticker,
+      orElse: () => false,
+    );
+
+    if (isAlreadyLoaded && isRightTicker && !event.forceRefresh) {
+      _logger.info(
+        'Company Shares already loaded for ${event.ticker} and is the correct ticker. Skipping load (Silent Refresh).',
+      );
       return;
     }
 
-    _logger.info(
-      'Loading Shares stats for ${event.ticker} (force=${event.forceRefresh})',
-    );
-    emit(const CompanySharesState.loading());
+    if (!isAlreadyLoaded || !isRightTicker || event.forceRefresh) {
+      emit(const CompanySharesState.loading());
+    }
 
+    final stopwatch = Stopwatch()..start();
     final result = await _getShares(event.ticker);
+    stopwatch.stop();
 
     result.fold(
       (failure) {
         _logger.severe('Failed to load Shares stats', failure);
+        updateAnalyticsState(
+          (s) => s.copyWith(
+            isSuccess: false,
+            loadTimeMs: stopwatch.elapsedMilliseconds,
+          ),
+        );
         emit(CompanySharesState.failure(failure));
       },
-      (data) {
-        _logger.info('Successfully loaded Shares stats');
+      (tuple) {
+        final (data, origin) = tuple;
+        _logger.info('Successfully loaded Shares stats (origin: $origin)');
         emit(
           CompanySharesState.loaded(
+            ticker: event.ticker,
             shareStats: data,
             annualChartData: _toChartData(
               data.annualWeightedAverageShares,
@@ -78,15 +157,27 @@ class CompanySharesBloc extends Bloc<CompanySharesEvent, CompanySharesState> {
               data.quarterlyWeightedAverageShares,
               isAnnual: false,
             ),
-            lastUpdated: DateTime.now(),
             historyLimit: _configService.freePlanHistoryCount,
+            dataOrigin: origin,
+            lastUpdated: DateTime.now(),
+          ),
+        );
+
+        updateAnalyticsState(
+          (s) => s.copyWith(
+            isSuccess: true,
+            dataSource: origin,
+            loadTimeMs: stopwatch.elapsedMilliseconds,
           ),
         );
       },
     );
   }
 
-  Future<void> _onStalenessCheckRequested(StalenessCheckRequested event) async {
+  Future<void> _onStalenessCheckRequested(
+    StalenessCheckRequested event,
+    Emitter<CompanySharesState> emit,
+  ) async {
     _logger.info('Staleness check requested for ${event.ticker}');
     state.mapOrNull(
       loaded: (loadedState) {

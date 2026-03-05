@@ -11,4 +11,21 @@ sealed class CompanySecurityEvent with _$CompanySecurityEvent {
 
   const factory CompanySecurityEvent.stalenessCheckRequested(String ticker) =
       StalenessCheckRequested;
+
+  const factory CompanySecurityEvent.tabShown(String ticker) = TabShown;
+  const factory CompanySecurityEvent.tabHidden() = TabHidden;
+  const factory CompanySecurityEvent.appBackgrounded() = AppBackgrounded;
+  const factory CompanySecurityEvent.appForegrounded() = AppForegrounded;
+
+  const factory CompanySecurityEvent.priceAnalyticsUpdated({
+    int? loadTimeMs,
+    bool? isSuccess,
+    String? finalTimeframe,
+    int? chartChangeCount,
+  }) = PriceAnalyticsUpdated;
+
+  const factory CompanySecurityEvent.earningsAnalyticsUpdated({
+    bool? hasUpcoming,
+    String? daysAway,
+  }) = EarningsAnalyticsUpdated;
 }

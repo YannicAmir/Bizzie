@@ -128,12 +128,12 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( FreeCashFlowStats fcfStats,  List<ChartDataPoint> annualChartData,  List<ChartDataPoint> quarterlyChartData,  int historyLimit,  DateTime? lastUpdated)?  loaded,TResult Function( Failure failure)?  failure,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( String ticker,  FreeCashFlowStats fcfStats,  List<ChartDataPoint> annualChartData,  List<ChartDataPoint> quarterlyChartData,  int historyLimit,  CompanyProfileDataOrigin dataOrigin,  DateTime? lastUpdated,  FreeCashFlowTabViewState? analyticsState)?  loaded,TResult Function( Failure failure)?  failure,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial();case _Loading() when loading != null:
 return loading();case _Loaded() when loaded != null:
-return loaded(_that.fcfStats,_that.annualChartData,_that.quarterlyChartData,_that.historyLimit,_that.lastUpdated);case _Failure() when failure != null:
+return loaded(_that.ticker,_that.fcfStats,_that.annualChartData,_that.quarterlyChartData,_that.historyLimit,_that.dataOrigin,_that.lastUpdated,_that.analyticsState);case _Failure() when failure != null:
 return failure(_that.failure);case _:
   return orElse();
 
@@ -152,12 +152,12 @@ return failure(_that.failure);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( FreeCashFlowStats fcfStats,  List<ChartDataPoint> annualChartData,  List<ChartDataPoint> quarterlyChartData,  int historyLimit,  DateTime? lastUpdated)  loaded,required TResult Function( Failure failure)  failure,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( String ticker,  FreeCashFlowStats fcfStats,  List<ChartDataPoint> annualChartData,  List<ChartDataPoint> quarterlyChartData,  int historyLimit,  CompanyProfileDataOrigin dataOrigin,  DateTime? lastUpdated,  FreeCashFlowTabViewState? analyticsState)  loaded,required TResult Function( Failure failure)  failure,}) {final _that = this;
 switch (_that) {
 case _Initial():
 return initial();case _Loading():
 return loading();case _Loaded():
-return loaded(_that.fcfStats,_that.annualChartData,_that.quarterlyChartData,_that.historyLimit,_that.lastUpdated);case _Failure():
+return loaded(_that.ticker,_that.fcfStats,_that.annualChartData,_that.quarterlyChartData,_that.historyLimit,_that.dataOrigin,_that.lastUpdated,_that.analyticsState);case _Failure():
 return failure(_that.failure);case _:
   throw StateError('Unexpected subclass');
 
@@ -175,12 +175,12 @@ return failure(_that.failure);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( FreeCashFlowStats fcfStats,  List<ChartDataPoint> annualChartData,  List<ChartDataPoint> quarterlyChartData,  int historyLimit,  DateTime? lastUpdated)?  loaded,TResult? Function( Failure failure)?  failure,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( String ticker,  FreeCashFlowStats fcfStats,  List<ChartDataPoint> annualChartData,  List<ChartDataPoint> quarterlyChartData,  int historyLimit,  CompanyProfileDataOrigin dataOrigin,  DateTime? lastUpdated,  FreeCashFlowTabViewState? analyticsState)?  loaded,TResult? Function( Failure failure)?  failure,}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial();case _Loading() when loading != null:
 return loading();case _Loaded() when loaded != null:
-return loaded(_that.fcfStats,_that.annualChartData,_that.quarterlyChartData,_that.historyLimit,_that.lastUpdated);case _Failure() when failure != null:
+return loaded(_that.ticker,_that.fcfStats,_that.annualChartData,_that.quarterlyChartData,_that.historyLimit,_that.dataOrigin,_that.lastUpdated,_that.analyticsState);case _Failure() when failure != null:
 return failure(_that.failure);case _:
   return null;
 
@@ -257,9 +257,10 @@ String toString() {
 
 
 class _Loaded implements CompanyFreeCashFlowState {
-  const _Loaded({required this.fcfStats, required final  List<ChartDataPoint> annualChartData, required final  List<ChartDataPoint> quarterlyChartData, required this.historyLimit, this.lastUpdated}): _annualChartData = annualChartData,_quarterlyChartData = quarterlyChartData;
+  const _Loaded({required this.ticker, required this.fcfStats, required final  List<ChartDataPoint> annualChartData, required final  List<ChartDataPoint> quarterlyChartData, required this.historyLimit, required this.dataOrigin, this.lastUpdated, this.analyticsState}): _annualChartData = annualChartData,_quarterlyChartData = quarterlyChartData;
   
 
+ final  String ticker;
  final  FreeCashFlowStats fcfStats;
  final  List<ChartDataPoint> _annualChartData;
  List<ChartDataPoint> get annualChartData {
@@ -276,7 +277,9 @@ class _Loaded implements CompanyFreeCashFlowState {
 }
 
  final  int historyLimit;
+ final  CompanyProfileDataOrigin dataOrigin;
  final  DateTime? lastUpdated;
+ final  FreeCashFlowTabViewState? analyticsState;
 
 /// Create a copy of CompanyFreeCashFlowState
 /// with the given fields replaced by the non-null parameter values.
@@ -288,16 +291,16 @@ _$LoadedCopyWith<_Loaded> get copyWith => __$LoadedCopyWithImpl<_Loaded>(this, _
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Loaded&&(identical(other.fcfStats, fcfStats) || other.fcfStats == fcfStats)&&const DeepCollectionEquality().equals(other._annualChartData, _annualChartData)&&const DeepCollectionEquality().equals(other._quarterlyChartData, _quarterlyChartData)&&(identical(other.historyLimit, historyLimit) || other.historyLimit == historyLimit)&&(identical(other.lastUpdated, lastUpdated) || other.lastUpdated == lastUpdated));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Loaded&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.fcfStats, fcfStats) || other.fcfStats == fcfStats)&&const DeepCollectionEquality().equals(other._annualChartData, _annualChartData)&&const DeepCollectionEquality().equals(other._quarterlyChartData, _quarterlyChartData)&&(identical(other.historyLimit, historyLimit) || other.historyLimit == historyLimit)&&(identical(other.dataOrigin, dataOrigin) || other.dataOrigin == dataOrigin)&&(identical(other.lastUpdated, lastUpdated) || other.lastUpdated == lastUpdated)&&(identical(other.analyticsState, analyticsState) || other.analyticsState == analyticsState));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,fcfStats,const DeepCollectionEquality().hash(_annualChartData),const DeepCollectionEquality().hash(_quarterlyChartData),historyLimit,lastUpdated);
+int get hashCode => Object.hash(runtimeType,ticker,fcfStats,const DeepCollectionEquality().hash(_annualChartData),const DeepCollectionEquality().hash(_quarterlyChartData),historyLimit,dataOrigin,lastUpdated,analyticsState);
 
 @override
 String toString() {
-  return 'CompanyFreeCashFlowState.loaded(fcfStats: $fcfStats, annualChartData: $annualChartData, quarterlyChartData: $quarterlyChartData, historyLimit: $historyLimit, lastUpdated: $lastUpdated)';
+  return 'CompanyFreeCashFlowState.loaded(ticker: $ticker, fcfStats: $fcfStats, annualChartData: $annualChartData, quarterlyChartData: $quarterlyChartData, historyLimit: $historyLimit, dataOrigin: $dataOrigin, lastUpdated: $lastUpdated, analyticsState: $analyticsState)';
 }
 
 
@@ -308,11 +311,11 @@ abstract mixin class _$LoadedCopyWith<$Res> implements $CompanyFreeCashFlowState
   factory _$LoadedCopyWith(_Loaded value, $Res Function(_Loaded) _then) = __$LoadedCopyWithImpl;
 @useResult
 $Res call({
- FreeCashFlowStats fcfStats, List<ChartDataPoint> annualChartData, List<ChartDataPoint> quarterlyChartData, int historyLimit, DateTime? lastUpdated
+ String ticker, FreeCashFlowStats fcfStats, List<ChartDataPoint> annualChartData, List<ChartDataPoint> quarterlyChartData, int historyLimit, CompanyProfileDataOrigin dataOrigin, DateTime? lastUpdated, FreeCashFlowTabViewState? analyticsState
 });
 
 
-$FreeCashFlowStatsCopyWith<$Res> get fcfStats;
+$FreeCashFlowStatsCopyWith<$Res> get fcfStats;$FreeCashFlowTabViewStateCopyWith<$Res>? get analyticsState;
 
 }
 /// @nodoc
@@ -325,14 +328,17 @@ class __$LoadedCopyWithImpl<$Res>
 
 /// Create a copy of CompanyFreeCashFlowState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? fcfStats = null,Object? annualChartData = null,Object? quarterlyChartData = null,Object? historyLimit = null,Object? lastUpdated = freezed,}) {
+@pragma('vm:prefer-inline') $Res call({Object? ticker = null,Object? fcfStats = null,Object? annualChartData = null,Object? quarterlyChartData = null,Object? historyLimit = null,Object? dataOrigin = null,Object? lastUpdated = freezed,Object? analyticsState = freezed,}) {
   return _then(_Loaded(
-fcfStats: null == fcfStats ? _self.fcfStats : fcfStats // ignore: cast_nullable_to_non_nullable
+ticker: null == ticker ? _self.ticker : ticker // ignore: cast_nullable_to_non_nullable
+as String,fcfStats: null == fcfStats ? _self.fcfStats : fcfStats // ignore: cast_nullable_to_non_nullable
 as FreeCashFlowStats,annualChartData: null == annualChartData ? _self._annualChartData : annualChartData // ignore: cast_nullable_to_non_nullable
 as List<ChartDataPoint>,quarterlyChartData: null == quarterlyChartData ? _self._quarterlyChartData : quarterlyChartData // ignore: cast_nullable_to_non_nullable
 as List<ChartDataPoint>,historyLimit: null == historyLimit ? _self.historyLimit : historyLimit // ignore: cast_nullable_to_non_nullable
-as int,lastUpdated: freezed == lastUpdated ? _self.lastUpdated : lastUpdated // ignore: cast_nullable_to_non_nullable
-as DateTime?,
+as int,dataOrigin: null == dataOrigin ? _self.dataOrigin : dataOrigin // ignore: cast_nullable_to_non_nullable
+as CompanyProfileDataOrigin,lastUpdated: freezed == lastUpdated ? _self.lastUpdated : lastUpdated // ignore: cast_nullable_to_non_nullable
+as DateTime?,analyticsState: freezed == analyticsState ? _self.analyticsState : analyticsState // ignore: cast_nullable_to_non_nullable
+as FreeCashFlowTabViewState?,
   ));
 }
 
@@ -344,6 +350,18 @@ $FreeCashFlowStatsCopyWith<$Res> get fcfStats {
   
   return $FreeCashFlowStatsCopyWith<$Res>(_self.fcfStats, (value) {
     return _then(_self.copyWith(fcfStats: value));
+  });
+}/// Create a copy of CompanyFreeCashFlowState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$FreeCashFlowTabViewStateCopyWith<$Res>? get analyticsState {
+    if (_self.analyticsState == null) {
+    return null;
+  }
+
+  return $FreeCashFlowTabViewStateCopyWith<$Res>(_self.analyticsState!, (value) {
+    return _then(_self.copyWith(analyticsState: value));
   });
 }
 }

@@ -1,4 +1,6 @@
 import 'package:bizzie/app/themes/app_assets.dart';
+import 'package:bizzie/features/company_profile/cp/presentation/bloc/company_profile_bloc.dart';
+import 'package:bizzie/features/company_profile/cp/presentation/bloc/company_profile_state.dart';
 import 'package:bizzie/features/company_profile/more/presentation/models/more_feature.dart';
 import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
@@ -20,10 +22,28 @@ class MoreTab extends StatefulWidget {
 }
 
 class _MoreTabState extends State<MoreTab> with AutomaticKeepAliveClientMixin {
-  int _selectedIndex = 0;
+  late CompanyProfileBloc _profileBloc;
 
   List<MoreFeature> get _features =>
       widget.features.isEmpty ? defaultMoreFeatures : widget.features;
+
+  @override
+  void initState() {
+    super.initState();
+    _profileBloc = context.read<CompanyProfileBloc>();
+    if (_features.isNotEmpty) {
+      final state = _profileBloc.state;
+      state.maybeMap(
+        active: (s) =>
+            _reportSubTabView(_features[s.moreTabIndex].analyticsName),
+        orElse: () {},
+      );
+    }
+  }
+
+  void _reportSubTabView(String subTabName) {
+    _profileBloc.add(CompanyProfileEvent.tabViewed(tabName: subTabName));
+  }
 
   @override
   bool get wantKeepAlive => true;
@@ -36,21 +56,27 @@ class _MoreTabState extends State<MoreTab> with AutomaticKeepAliveClientMixin {
       return _MoreTabEmptyState(ticker: widget.ticker);
     }
 
-    return Column(
-      children: [
-        Padding(
-          padding: AppConstants.moreTabDropdownButtonPadding,
-          child: AppDropdownButton(
-            label: _features[_selectedIndex].label,
-            onTap: () => _showSelectorModal(context),
-          ),
-        ),
-        Expanded(child: _features[_selectedIndex].builder(widget.ticker)),
-      ],
+    return BlocSelector<CompanyProfileBloc, CompanyProfileState, int>(
+      selector: (state) =>
+          state.maybeMap(active: (s) => s.moreTabIndex, orElse: () => 0),
+      builder: (context, selectedIndex) {
+        return Column(
+          children: [
+            Padding(
+              padding: AppConstants.moreTabDropdownButtonPadding,
+              child: AppDropdownButton(
+                label: _features[selectedIndex].label,
+                onTap: () => _showSelectorModal(context, selectedIndex),
+              ),
+            ),
+            Expanded(child: _features[selectedIndex].builder(widget.ticker)),
+          ],
+        );
+      },
     );
   }
 
-  void _showSelectorModal(BuildContext context) {
+  void _showSelectorModal(BuildContext context, int currentSelection) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -63,15 +89,16 @@ class _MoreTabState extends State<MoreTab> with AutomaticKeepAliveClientMixin {
               itemCount: _features.length,
               itemBuilder: (context, index) {
                 final item = _features[index];
-                final isSelected = index == _selectedIndex;
+                final isSelected = index == currentSelection;
 
                 return AppModalListItem(
                   label: item.label,
                   isSelected: isSelected,
                   onTap: () {
-                    setState(() {
-                      _selectedIndex = index;
-                    });
+                    _profileBloc.add(
+                      CompanyProfileEvent.moreTabIndexChanged(index: index),
+                    );
+                    _reportSubTabView(item.analyticsName);
                     Navigator.pop(context);
                   },
                 );

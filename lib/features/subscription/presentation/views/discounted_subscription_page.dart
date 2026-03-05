@@ -1,6 +1,8 @@
 import 'package:bizzie/features/subscription/presentation/bloc/subscription_bloc.dart';
 import 'package:bizzie/features/subscription/presentation/bloc/subscription_event.dart';
 import 'package:bizzie/features/subscription/presentation/bloc/subscription_state.dart';
+import 'package:bizzie/core/enums/paywall_source.dart';
+import 'package:bizzie/features/subscription/domain/enums/paywall_type.dart';
 import 'package:bizzie/features/subscription/presentation/extensions/subscription_state_extensions.dart';
 import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
 import 'package:bizzie/features/user/presentation/extensions/user_state_extensions.dart';
@@ -22,8 +24,45 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class DiscountedSubscriptionPage extends StatelessWidget {
-  const DiscountedSubscriptionPage({super.key});
+class DiscountedSubscriptionPage extends StatefulWidget {
+  final PaywallSource source;
+  final String? tabName;
+  final String? featureName;
+  final VoidCallback? onEnter;
+
+  const DiscountedSubscriptionPage({
+    super.key,
+    this.source = PaywallSource.unknown,
+    this.tabName,
+    this.featureName,
+    this.onEnter,
+  });
+
+  @override
+  State<DiscountedSubscriptionPage> createState() =>
+      _DiscountedSubscriptionPageState();
+}
+
+class _DiscountedSubscriptionPageState
+    extends State<DiscountedSubscriptionPage> {
+  @override
+  void initState() {
+    super.initState();
+    context.read<SubscriptionBloc>().add(
+      SubscriptionEvent.viewed(
+        source: widget.source,
+        paywallType: PaywallType.discount,
+        tabName: widget.tabName,
+        featureName: widget.featureName,
+      ),
+    );
+
+    if (widget.onEnter != null) {
+      Future.delayed(const Duration(milliseconds: 300), () {
+        if (mounted) widget.onEnter!();
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +92,11 @@ class DiscountedSubscriptionPage extends StatelessWidget {
                 context,
                 userName: userName ?? 'Friend',
                 onDismiss: () {
-                  context.go(AppRoutes.home);
+                  if (context.canPop()) {
+                    context.pop();
+                  } else {
+                    context.go(AppRoutes.home);
+                  }
                 },
               );
             }

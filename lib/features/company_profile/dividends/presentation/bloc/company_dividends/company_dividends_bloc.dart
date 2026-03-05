@@ -1,3 +1,7 @@
+import 'package:bizzie/features/company_profile/shared/presentation/analytics/base_analytics.dart';
+import 'package:bizzie/features/company_profile/shared/presentation/bloc/company_profile_analytics_mixin.dart';
+import 'package:bizzie/features/company_profile/dividends/presentation/analytics/dividend_tab_analytics.dart';
+import 'package:bizzie/features/company_profile/dividends/presentation/analytics/dividend_tab_view_state.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:bizzie/features/company_profile/dividends/domain/usecases/get_dividend_info_usecase.dart';
 import 'package:bizzie/features/company_profile/dividends/presentation/bloc/company_dividends/company_dividends_event.dart';
@@ -12,23 +16,73 @@ final _logger = BizzieLogger('CompanyDividendsBloc');
 
 @injectable
 class CompanyDividendsBloc
-    extends Bloc<CompanyDividendsEvent, CompanyDividendsState> {
+    extends Bloc<CompanyDividendsEvent, CompanyDividendsState>
+    with
+        CompanyProfileAnalyticsMixin<
+          CompanyDividendsEvent,
+          CompanyDividendsState,
+          DividendTabViewState
+        > {
   final GetDividendInfoUseCase _getDividendInfo;
   final IConfigService _configService;
+  final DividendTabAnalytics _analytics;
 
-  CompanyDividendsBloc(this._getDividendInfo, this._configService)
-    : super(const CompanyDividendsState.initial()) {
-    on<CompanyDividendsEvent>(_onEvent, transformer: droppable());
+  CompanyDividendsBloc(
+    this._getDividendInfo,
+    this._configService,
+    this._analytics,
+  ) : super(const CompanyDividendsState.initial()) {
+    on<LoadRequested>(_onLoadRequested, transformer: droppable());
+    on<StalenessCheckRequested>(
+      _onStalenessCheckRequested,
+      transformer: sequential(),
+    );
+    on<TabShown>(_onTabShown);
+    on<TabHidden>((_, __) async => await onTabHidden());
+    on<AppBackgrounded>((_, __) async => await onAppBackgrounded());
+    on<AppForegrounded>((_, __) => onAppForegrounded());
+    on<ViewAllTapped>(_onViewAllTapped);
   }
 
-  Future<void> _onEvent(
-    CompanyDividendsEvent event,
+  @override
+  CompanyProfileTabTracker<DividendTabViewState> get analyticsTracker =>
+      _analytics;
+
+  void _onTabShown(TabShown event, Emitter<CompanyDividendsState> emit) {
+    final existingState = state.maybeMap(
+      loaded: (s) => s.analyticsState,
+      orElse: () => null,
+    );
+
+    onTabShown(
+      event.ticker,
+      DividendTabViewState(
+        ticker: event.ticker,
+        timestamp: DateTime.now().toIso8601String(),
+        loadTimeMs: existingState?.loadTimeMs,
+        isSuccess: existingState?.isSuccess ?? false,
+        dataSource: existingState?.dataSource,
+      ),
+    );
+    _emitAnalyticsUpdate(emit);
+  }
+
+  void _onViewAllTapped(
+    ViewAllTapped event,
     Emitter<CompanyDividendsState> emit,
-  ) async {
-    _logger.info('Handling event: $event');
-    await event.map(
-      loadRequested: (e) async => _onLoadRequested(e, emit),
-      stalenessCheckRequested: (e) async => _onStalenessCheckRequested(e),
+  ) {
+    updateAnalyticsState(
+      (s) => event.isChart
+          ? s.copyWith(tappedChartViewAll: true)
+          : s.copyWith(tappedTableViewAll: true),
+    );
+    _emitAnalyticsUpdate(emit);
+  }
+
+  void _emitAnalyticsUpdate(Emitter<CompanyDividendsState> emit) {
+    state.maybeMap(
+      loaded: (s) => emit(s.copyWith(analyticsState: analyticsSession)),
+      orElse: () {},
     );
   }
 
@@ -36,10 +90,19 @@ class CompanyDividendsBloc
     LoadRequested event,
     Emitter<CompanyDividendsState> emit,
   ) async {
-    if (!event.forceRefresh &&
-        state.maybeMap(loaded: (_) => true, orElse: () => false)) {
+    final isAlreadyLoaded = state.maybeMap(
+      loaded: (s) => true,
+      orElse: () => false,
+    );
+
+    final isRightTicker = state.maybeMap(
+      loaded: (s) => s.ticker == event.ticker,
+      orElse: () => false,
+    );
+
+    if (isAlreadyLoaded && isRightTicker && !event.forceRefresh) {
       _logger.info(
-        'Skip loading dividends: already loaded and no force refresh',
+        'Company Dividends already loaded for ${event.ticker} and is the correct ticker. Skipping load (Silent Refresh).',
       );
       return;
     }
@@ -47,29 +110,74 @@ class CompanyDividendsBloc
     _logger.info(
       'Loading dividends for ${event.ticker} (force=${event.forceRefresh})',
     );
-    emit(const CompanyDividendsState.loading());
+    if (!isAlreadyLoaded || !isRightTicker || event.forceRefresh) {
+      emit(const CompanyDividendsState.loading());
+    }
 
+    final stopwatch = Stopwatch()..start();
     final result = await _getDividendInfo(event.ticker);
+    stopwatch.stop();
 
     result.fold(
       (failure) {
         _logger.severe('Failed to load dividends', failure);
+
+        final metrics =
+            (analyticsSession ??
+                    DividendTabViewState(
+                      ticker: event.ticker,
+                      timestamp: DateTime.now().toIso8601String(),
+                    ))
+                .copyWith(
+                  isSuccess: false,
+                  loadTimeMs: stopwatch.elapsedMilliseconds,
+                );
+
+        if (analyticsSession != null) {
+          updateAnalyticsState((s) => metrics);
+        }
+
         emit(CompanyDividendsState.error(failure));
       },
-      (info) {
-        _logger.info('Successfully loaded dividends');
+      (tuple) {
+        final info = tuple.$1;
+        final origin = tuple.$2;
+        _logger.info('Successfully loaded dividends, origin=$origin');
+
+        final metrics =
+            (analyticsSession ??
+                    DividendTabViewState(
+                      ticker: event.ticker,
+                      timestamp: DateTime.now().toIso8601String(),
+                    ))
+                .copyWith(
+                  isSuccess: true,
+                  dataSource: origin,
+                  loadTimeMs: stopwatch.elapsedMilliseconds,
+                );
+
+        if (analyticsSession != null) {
+          updateAnalyticsState((s) => metrics);
+        }
+
         emit(
           CompanyDividendsState.loaded(
-            info,
+            ticker: event.ticker,
+            dividendInfo: info,
             historyLimit: _configService.freePlanHistoryCount,
+            dataOrigin: origin,
             lastUpdated: DateTime.now(),
+            analyticsState: metrics,
           ),
         );
       },
     );
   }
 
-  Future<void> _onStalenessCheckRequested(StalenessCheckRequested event) async {
+  Future<void> _onStalenessCheckRequested(
+    StalenessCheckRequested event,
+    Emitter<CompanyDividendsState> emit,
+  ) async {
     _logger.info('Staleness check requested for ${event.ticker}');
     state.mapOrNull(
       loaded: (loadedState) {

@@ -1,4 +1,5 @@
 import 'package:bizzie/core/error/failures.dart';
+import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:bizzie/features/company_profile/news/data/datasources/news_firestore_data_source.dart';
 import 'package:bizzie/features/company_profile/news/data/datasources/news_remote_data_source.dart';
 import 'package:bizzie/features/company_profile/news/data/dtos/news_dto.dart';
@@ -7,6 +8,7 @@ import 'package:bizzie/features/company_profile/news/domain/models/company_news.
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:bizzie/core/data/models/cache_result.dart' as cache;
 
 class MockNewsRemoteDataSource extends Mock implements NewsRemoteDataSource {}
 
@@ -36,76 +38,48 @@ void main() {
   final tNewsList = [tNewsDto];
 
   group('NewsRepositoryImpl', () {
-    test('getCompanyNews_cacheHit_returnsLocalData', () async {
+    test('getCompanyNews_success_returnsData', () async {
       // arrange
       when(
-        () => mockLocalDataSource.getCachedStockNews(tTicker),
-      ).thenAnswer((_) async => tNewsList);
+        () => mockLocalDataSource.syncStockNews(
+          tTicker,
+          remoteFetcher: any(named: 'remoteFetcher'),
+        ),
+      ).thenAnswer(
+        (_) async =>
+            cache.CacheSuccess(tNewsList, CompanyProfileDataOrigin.api),
+      );
 
       // act
-      final result = await repository.getCompanyNews(tTicker);
+      final resultData = await repository.getCompanyNews(tTicker);
 
       // assert
-      expect(result.isRight(), true);
-      result.fold((l) => fail('Should return right'), (r) {
+      expect(resultData.isRight(), true);
+      resultData.fold((l) => fail('Should return right'), (tuple) {
+        final r = tuple.$1;
+        final origin = tuple.$2;
         expect(r, isA<CompanyNews>());
-        expect(r.symbol, tTicker);
-        expect(r.articles.length, 1);
+        expect(origin, CompanyProfileDataOrigin.api);
         expect(r.articles.first.title, 'Apple News');
       });
-      verify(() => mockLocalDataSource.getCachedStockNews(tTicker)).called(1);
-      verifyZeroInteractions(mockRemoteDataSource);
     });
 
-    test(
-      'getCompanyNews_cacheMiss_fetchesRemoteAndCaches_returnsData',
-      () async {
-        // arrange
-        when(
-          () => mockLocalDataSource.getCachedStockNews(tTicker),
-        ).thenAnswer((_) async => null);
-        when(
-          () => mockRemoteDataSource.getStockNews(tTicker),
-        ).thenAnswer((_) async => tNewsList);
-        when(
-          () => mockLocalDataSource.cacheStockNews(tTicker, tNewsList),
-        ).thenAnswer((_) async => Future.value());
-
-        // act
-        final result = await repository.getCompanyNews(tTicker);
-
-        // assert
-        expect(result.isRight(), true);
-        result.fold((l) => fail('Should return right'), (r) {
-          expect(r, isA<CompanyNews>());
-          expect(r.articles.first.title, 'Apple News');
-        });
-        verify(() => mockLocalDataSource.getCachedStockNews(tTicker)).called(1);
-        verify(() => mockRemoteDataSource.getStockNews(tTicker)).called(1);
-        verify(
-          () => mockLocalDataSource.cacheStockNews(tTicker, tNewsList),
-        ).called(1);
-      },
-    );
-
-    test('getCompanyNews_serverFailure_returnsLeftFailure', () async {
+    test('getCompanyNews_failure_returnsLeftFailure', () async {
       // arrange
       when(
-        () => mockLocalDataSource.getCachedStockNews(tTicker),
-      ).thenAnswer((_) async => null);
-      when(
-        () => mockRemoteDataSource.getStockNews(tTicker),
-      ).thenThrow(Exception('Server Error'));
+        () => mockLocalDataSource.syncStockNews(
+          tTicker,
+          remoteFetcher: any(named: 'remoteFetcher'),
+        ),
+      ).thenAnswer(
+        (_) async => const cache.CacheFailure(Failure.server('error')),
+      );
 
       // act
-      final result = await repository.getCompanyNews(tTicker);
+      final resultData = await repository.getCompanyNews(tTicker);
 
       // assert
-      expect(result.isLeft(), true);
-      result.fold(
-        (l) => expect(l, isA<ServerFailure>()),
-        (r) => fail('Should return left'),
-      );
+      expect(resultData.isLeft(), true);
     });
   });
 }

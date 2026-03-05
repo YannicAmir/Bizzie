@@ -15,6 +15,7 @@ class RoePresentationHelper {
     required double absoluteDelta,
     required bool isPositive,
     required String referenceLabel,
+    DateTime? lastUpdated,
   }) {
     final valueStr = '${(currentValue * 100).toStringAsFixed(2)}%';
     final badgeText =
@@ -27,6 +28,7 @@ class RoePresentationHelper {
       formattedDelta: '${(absoluteDelta * 100).toStringAsFixed(2)}%',
       isChangeZero: absoluteDelta == 0,
       referenceLabel: referenceLabel,
+      lastUpdated: lastUpdated,
     );
 
     return (

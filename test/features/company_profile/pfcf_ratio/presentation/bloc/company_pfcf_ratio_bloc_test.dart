@@ -1,4 +1,5 @@
 import 'package:bizzie/core/error/failures.dart';
+import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:bizzie/features/company_profile/pfcf_ratio/domain/models/pfcf_ratio.dart';
 import 'package:bizzie/features/company_profile/pfcf_ratio/domain/usecases/get_pfcf_ratio_usecase.dart';
 import 'package:bizzie/features/company_profile/pfcf_ratio/presentation/bloc/company_pfcf_ratio_bloc.dart';
@@ -9,21 +10,37 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:bizzie/core/interfaces/i_config_service.dart';
+import 'package:bizzie/features/company_profile/pfcf_ratio/presentation/analytics/pfcf_ratio_tab_analytics.dart';
+import 'package:bizzie/features/company_profile/pfcf_ratio/presentation/analytics/pfcf_ratio_tab_view_state.dart';
 
 class MockGetPfcfRatioUseCase extends Mock implements GetPfcfRatioUseCase {}
 
 class MockConfigService extends Mock implements IConfigService {}
 
+class MockPfcfRatioTabAnalytics extends Mock implements PfcfRatioTabAnalytics {}
+
+class PfcfRatioTabViewStateFake extends Fake implements PfcfRatioTabViewState {}
+
 void main() {
+  setUpAll(() {
+    registerFallbackValue(PfcfRatioTabViewStateFake());
+  });
+
   late CompanyPfcfRatioBloc bloc;
   late MockGetPfcfRatioUseCase mockGetPfcfRatio;
   late MockConfigService mockConfigService;
+  late MockPfcfRatioTabAnalytics mockAnalytics;
 
   setUp(() {
     mockGetPfcfRatio = MockGetPfcfRatioUseCase();
     mockConfigService = MockConfigService();
+    mockAnalytics = MockPfcfRatioTabAnalytics();
     when(() => mockConfigService.freePlanHistoryCount).thenReturn(7);
-    bloc = CompanyPfcfRatioBloc(mockGetPfcfRatio, mockConfigService);
+    bloc = CompanyPfcfRatioBloc(
+      mockGetPfcfRatio,
+      mockConfigService,
+      mockAnalytics,
+    );
   });
 
   const tTicker = 'AAPL';
@@ -52,9 +69,9 @@ void main() {
       'loadRequested_success_emitsLoadingAndLoaded',
       build: () {
         // arrange
-        when(
-          () => mockGetPfcfRatio(tTicker),
-        ).thenAnswer((_) async => const Right(tRatios));
+        when(() => mockGetPfcfRatio(tTicker)).thenAnswer(
+          (_) async => const Right((tRatios, CompanyProfileDataOrigin.api)),
+        );
         return bloc;
       },
       act: (bloc) {
@@ -81,6 +98,12 @@ void main() {
                 ),
                 'growthPercentage',
                 ((25.0 - 15.0) / 15.0) * 100,
+              )
+              .having(
+                (s) =>
+                    s.maybeMap(loaded: (l) => l.dataOrigin, orElse: () => null),
+                'dataOrigin',
+                CompanyProfileDataOrigin.api,
               ),
         ];
       },
@@ -103,9 +126,9 @@ void main() {
             priceToFreeCashFlowRatio: 0.0,
           ),
         ];
-        when(
-          () => mockGetPfcfRatio(tTicker),
-        ).thenAnswer((_) async => Right(ratiosWithZero));
+        when(() => mockGetPfcfRatio(tTicker)).thenAnswer(
+          (_) async => Right((ratiosWithZero, CompanyProfileDataOrigin.api)),
+        );
         return bloc;
       },
       act: (bloc) {
@@ -158,6 +181,7 @@ void main() {
         return bloc;
       },
       seed: () => const CompanyPfcfRatioState.loaded(
+        ticker: tTicker,
         dataPoints: [],
         chartData: [],
         currentValue: 25.0,
@@ -166,6 +190,7 @@ void main() {
         isPositive: true,
         referenceLabel: '2018',
         historyLimit: 7,
+        dataOrigin: CompanyProfileDataOrigin.api,
       ),
       act: (bloc) {
         // act
@@ -180,6 +205,81 @@ void main() {
         verifyNever(() => mockGetPfcfRatio(any()));
       },
     );
+
+    blocTest<CompanyPfcfRatioBloc, CompanyPfcfRatioState>(
+      'loadRequested_instrumentation_tracksTimingAndSuccess',
+      build: () {
+        when(() => mockGetPfcfRatio(tTicker)).thenAnswer(
+          (_) async => const Right((tRatios, CompanyProfileDataOrigin.api)),
+        );
+        return bloc;
+      },
+      act: (bloc) =>
+          bloc.add(const CompanyPfcfRatioEvent.loadRequested(tTicker)),
+      expect: () => [
+        const CompanyPfcfRatioState.loading(),
+        isA<CompanyPfcfRatioState>().having(
+          (s) => s.maybeMap(
+            loaded: (l) => l.loadTimeMs! >= 0 && l.isSuccess,
+            orElse: () => false,
+          ),
+          'metrics correctly instrumented',
+          true,
+        ),
+      ],
+    );
+  });
+
+  group('CompanyPfcfRatioBloc - Analytics Orchestration', () {
+    blocTest<CompanyPfcfRatioBloc, CompanyPfcfRatioState>(
+      'tabShown_startsAnalyticsSession',
+      build: () => bloc,
+      act: (bloc) => bloc.add(const CompanyPfcfRatioEvent.tabShown(tTicker)),
+      verify: (_) {
+        expect(bloc.analyticsSession, isNotNull);
+        expect(bloc.analyticsSession!.ticker, tTicker);
+      },
+    );
+
+    blocTest<CompanyPfcfRatioBloc, CompanyPfcfRatioState>(
+      'tabHidden_finalizesAnalyticsSession',
+      build: () {
+        when(
+          () => mockAnalytics.logViewSummary(
+            any(),
+            isFinal: any(named: 'isFinal'),
+          ),
+        ).thenAnswer((_) async {});
+        return bloc;
+      },
+      act: (bloc) async {
+        bloc.add(const CompanyPfcfRatioEvent.tabShown(tTicker));
+        bloc.add(const CompanyPfcfRatioEvent.tabHidden());
+      },
+      verify: (_) {
+        verify(
+          () => mockAnalytics.logViewSummary(
+            any(that: isA<PfcfRatioTabViewState>()),
+            isFinal: true,
+          ),
+        ).called(1);
+        expect(bloc.analyticsSession, isNull);
+      },
+    );
+
+    blocTest<CompanyPfcfRatioBloc, CompanyPfcfRatioState>(
+      'viewAllTapped_updatesAnalyticsInteractionFlags',
+      build: () => bloc,
+      act: (bloc) {
+        bloc.add(const CompanyPfcfRatioEvent.tabShown(tTicker));
+        bloc.add(const CompanyPfcfRatioEvent.viewAllTapped(isChart: true));
+        bloc.add(const CompanyPfcfRatioEvent.viewAllTapped(isChart: false));
+      },
+      verify: (_) {
+        expect(bloc.analyticsSession!.tappedChartViewAll, true);
+        expect(bloc.analyticsSession!.tappedTableViewAll, true);
+      },
+    );
   });
 
   group('CompanyPfcfRatioBloc - stalenessCheckRequested', () {
@@ -187,9 +287,9 @@ void main() {
       'stalenessCheckRequested_initialState_triggersLoadRequested',
       build: () {
         // arrange
-        when(
-          () => mockGetPfcfRatio(tTicker),
-        ).thenAnswer((_) async => const Right(tRatios));
+        when(() => mockGetPfcfRatio(tTicker)).thenAnswer(
+          (_) async => const Right((tRatios, CompanyProfileDataOrigin.api)),
+        );
         return bloc;
       },
       act: (bloc) {
@@ -217,6 +317,7 @@ void main() {
         return bloc;
       },
       seed: () => CompanyPfcfRatioState.loaded(
+        ticker: tTicker,
         dataPoints: const [],
         chartData: const [],
         currentValue: 25.0,
@@ -225,6 +326,7 @@ void main() {
         isPositive: true,
         referenceLabel: '2018',
         historyLimit: 7,
+        dataOrigin: CompanyProfileDataOrigin.api,
         lastUpdated: DateTime.now(),
       ),
       act: (bloc) {
@@ -245,12 +347,13 @@ void main() {
       'stalenessCheckRequested_stale_triggersLoadRequested',
       build: () {
         // arrange
-        when(
-          () => mockGetPfcfRatio(tTicker),
-        ).thenAnswer((_) async => const Right(tRatios));
+        when(() => mockGetPfcfRatio(tTicker)).thenAnswer(
+          (_) async => const Right((tRatios, CompanyProfileDataOrigin.api)),
+        );
         return bloc;
       },
       seed: () => CompanyPfcfRatioState.loaded(
+        ticker: tTicker,
         dataPoints: const [],
         chartData: const [],
         currentValue: 25.0,
@@ -259,6 +362,7 @@ void main() {
         isPositive: true,
         referenceLabel: '2018',
         historyLimit: 7,
+        dataOrigin: CompanyProfileDataOrigin.api,
         lastUpdated: DateTime.now().subtract(const Duration(hours: 25)),
       ),
       act: (bloc) {
@@ -277,6 +381,38 @@ void main() {
           ),
         ];
       },
+    );
+
+    blocTest<CompanyPfcfRatioBloc, CompanyPfcfRatioState>(
+      'loadRequested_differentTicker_reloadsData',
+      build: () {
+        when(() => mockGetPfcfRatio('MSFT')).thenAnswer(
+          (_) async => const Right((tRatios, CompanyProfileDataOrigin.api)),
+        );
+        return bloc;
+      },
+      seed: () => const CompanyPfcfRatioState.loaded(
+        ticker: 'AAPL',
+        dataPoints: [],
+        chartData: [],
+        currentValue: 25.0,
+        growthPercentage: 5.0,
+        absoluteDelta: 1.0,
+        isPositive: true,
+        referenceLabel: '2018',
+        historyLimit: 7,
+        dataOrigin: CompanyProfileDataOrigin.api,
+      ),
+      act: (bloc) =>
+          bloc.add(const CompanyPfcfRatioEvent.loadRequested('MSFT')),
+      expect: () => [
+        const CompanyPfcfRatioState.loading(),
+        isA<CompanyPfcfRatioState>().having(
+          (s) => s.maybeMap(loaded: (l) => l.ticker, orElse: () => null),
+          'ticker',
+          'MSFT',
+        ),
+      ],
     );
   });
 }

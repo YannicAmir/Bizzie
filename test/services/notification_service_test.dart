@@ -1,11 +1,15 @@
 import 'dart:async';
+import 'package:bizzie/core/error/failures.dart';
 
 import 'package:bizzie/app/routes/app_routes.dart';
 import 'package:bizzie/core/interfaces/i_local_storage_service.dart';
 import 'package:bizzie/features/notifications/data/datasources/local_notification_datasource.dart';
 import 'package:bizzie/features/notifications/domain/interfaces/i_notification_repository.dart';
+import 'package:bizzie/features/notifications/domain/enums/notification_app_state.dart';
+import 'package:bizzie/features/notifications/domain/enums/notification_trigger_source.dart';
 import 'package:bizzie/features/notifications/domain/models/notification_message.dart';
 import 'package:bizzie/features/notifications/domain/models/notification_route.dart';
+import 'package:bizzie/features/notifications/presentation/analytics/notification_tracker.dart';
 import 'package:bizzie/features/user/domain/interfaces/user_repository.dart';
 import 'package:bizzie/services/notification_service.dart';
 import 'package:dartz/dartz.dart';
@@ -32,6 +36,8 @@ class MockNotificationSettings extends Mock implements NotificationSettings {}
 
 class MockRemoteMessage extends Mock implements RemoteMessage {}
 
+class MockNotificationTracker extends Mock implements NotificationTracker {}
+
 void main() {
   late NotificationService service;
   late MockINotificationRepository mockRepository;
@@ -40,12 +46,15 @@ void main() {
   late MockFirebaseMessaging mockFirebaseMessaging;
   late MockILocalStorageService mockLocalStorage;
   late MockIUserRepository mockUserRepository;
+  late MockNotificationTracker mockTracker;
 
   const tToken = 'token_123';
   const tDeviceId = 'device_456';
 
   setUpAll(() {
     registerFallbackValue(const NotificationRoute(''));
+    registerFallbackValue(NotificationTriggerSource.remote);
+    registerFallbackValue(NotificationAppState.background);
   });
 
   setUp(() {
@@ -55,6 +64,21 @@ void main() {
     mockFirebaseMessaging = MockFirebaseMessaging();
     mockLocalStorage = MockILocalStorageService();
     mockUserRepository = MockIUserRepository();
+    mockTracker = MockNotificationTracker();
+
+    when(
+      () => mockTracker.logNotificationOpened(
+        notificationType: any(named: 'notificationType'),
+        triggerSource: any(named: 'triggerSource'),
+        appState: any(named: 'appState'),
+        route: any(named: 'route'),
+        ticker: any(named: 'ticker'),
+      ),
+    ).thenAnswer((_) async => {});
+
+    when(
+      () => mockTracker.logSyncFailure(message: any(named: 'message')),
+    ).thenAnswer((_) async => {});
 
     when(
       () => mockRepository.onMessage,
@@ -93,6 +117,7 @@ void main() {
       mockFirebaseMessaging,
       mockLocalStorage,
       mockUserRepository,
+      mockTracker,
     );
   });
 
@@ -100,10 +125,10 @@ void main() {
     test(
       'notificationService_initialize_setsUpHandlersAndSyncsToken',
       () async {
-        // act
+        // ACT
         await service.initialize();
 
-        // assert
+        // ASSERT
         verify(
           () => mockLocalDataSource.init(
             onNotificationTap: any(named: 'onNotificationTap'),
@@ -123,7 +148,7 @@ void main() {
     test(
       'notificationService_initialize_triggersLocalNotificationOnForegroundMessage',
       () async {
-        // arrange
+        // ARRANGE
         final controller = StreamController<NotificationMessage>();
         when(
           () => mockRepository.onMessage,
@@ -139,7 +164,7 @@ void main() {
 
         await service.initialize();
 
-        // act
+        // ACT
         controller.add(
           const NotificationMessage(
             title: 'T',
@@ -150,7 +175,7 @@ void main() {
         );
         await Future.delayed(Duration.zero);
 
-        // assert
+        // ASSERT
         verify(
           () => mockLocalDataSource.showNotification(
             id: any(named: 'id'),
@@ -169,7 +194,7 @@ void main() {
     test(
       'notificationService_syncFcmToken_differentToken_updatesBackendAndCache',
       () async {
-        // arrange
+        // ARRANGE
         when(() => mockLocalStorage.getString(any())).thenReturn('old_token');
         when(
           () => mockUserRepository.updateFcmToken(any(), any()),
@@ -178,23 +203,36 @@ void main() {
           () => mockLocalStorage.setString(any(), any()),
         ).thenAnswer((_) async {});
 
-        // act
+        // ACT
         await service.syncFcmToken();
 
-        // assert
-        verify(
-          () => mockUserRepository.updateFcmToken(any(), tToken),
-        ).called(1);
+        // ASSERT
         verify(
           () => mockLocalStorage.setString('last_synced_fcm_token', tToken),
         ).called(1);
       },
     );
 
+    test('notificationService_syncFcmToken_failure_logsSyncFailure', () async {
+      // ARRANGE
+      when(() => mockLocalStorage.getString(any())).thenReturn('old_token');
+      when(
+        () => mockUserRepository.updateFcmToken(any(), any()),
+      ).thenAnswer((_) async => Left(Failure.server('Sync Failed')));
+
+      // ACT
+      await service.syncFcmToken();
+
+      // ASSERT
+      verify(
+        () => mockTracker.logSyncFailure(message: 'Sync Failed'),
+      ).called(1);
+    });
+
     test(
       'notificationService_syncFcmToken_forced_updatesRegardlessOfCache',
       () async {
-        // arrange
+        // ARRANGE
         when(() => mockLocalStorage.getString(any())).thenReturn(tToken);
         when(
           () => mockUserRepository.updateFcmToken(any(), any()),
@@ -203,10 +241,10 @@ void main() {
           () => mockLocalStorage.setString(any(), any()),
         ).thenAnswer((_) async {});
 
-        // act
+        // ACT
         await service.syncFcmToken(force: true);
 
-        // assert
+        // ASSERT
         verify(
           () => mockUserRepository.updateFcmToken(any(), tToken),
         ).called(1);
@@ -218,7 +256,7 @@ void main() {
     test(
       'notificationService_isSystemAuthorized_authorized_returnsTrue',
       () async {
-        // arrange
+        // ARRANGE
         final settings = MockNotificationSettings();
         when(
           () => settings.authorizationStatus,
@@ -227,10 +265,10 @@ void main() {
           () => mockFirebaseMessaging.getNotificationSettings(),
         ).thenAnswer((_) async => settings);
 
-        // act
+        // ACT
         final result = await service.isSystemAuthorized();
 
-        // assert
+        // ASSERT
         expect(result, isTrue);
       },
     );
@@ -238,27 +276,39 @@ void main() {
 
   group('Routing', () {
     test(
-      'notificationService_getInitialRoute_parsedMessage_returnsRoute',
+      'notificationService_getInitialRoute_parsedMessage_returnsRouteAndLogsAnalytics',
       () async {
-        // arrange
+        // ARRANGE
         final message = MockRemoteMessage();
         when(() => message.data).thenReturn({'type': 'subscription_drip'});
         when(
           () => mockFirebaseMessaging.getInitialMessage(),
         ).thenAnswer((_) async => message);
 
-        // act
+        // ACT
         final result = await service.getInitialRoute();
 
-        // assert
-        expect(result?.path, AppRoutes.discountedPaywall);
+        // ASSERT
+        expect(
+          result?.path,
+          '${AppRoutes.discountedPaywall}?source=notification',
+        );
+        verify(
+          () => mockTracker.logNotificationOpened(
+            notificationType: 'subscription_drip',
+            triggerSource: NotificationTriggerSource.remote,
+            appState: NotificationAppState.terminated,
+            route: result?.path,
+            ticker: any(named: 'ticker'),
+          ),
+        ).called(1);
       },
     );
 
     test(
-      'notificationService_onNotificationTap_emitsRouteFromPayload',
+      'notificationService_onNotificationTap_emitsRouteFromPayloadAndLogsAnalytics',
       () async {
-        // arrange
+        // ARRANGE
         void Function(String?)? tapHandler;
         when(
           () => mockLocalDataSource.init(
@@ -272,13 +322,58 @@ void main() {
 
         await service.initialize();
 
-        // act & assert
-        expectLater(
+        // ACT & assert
+        final expectEmit = expectLater(
           service.routeStream,
           emits(const NotificationRoute(AppRoutes.reports)),
         );
 
         tapHandler?.call('earnings_notification');
+        await expectEmit;
+
+        verify(
+          () => mockTracker.logNotificationOpened(
+            notificationType: 'earnings_notification',
+            triggerSource: NotificationTriggerSource.local,
+            appState: NotificationAppState.foreground,
+            route: AppRoutes.reports,
+            ticker: any(named: 'ticker'),
+          ),
+        ).called(1);
+      },
+    );
+
+    test(
+      'notificationService_onNotificationTap_withTicker_extractsTickerAndLogsAnalytics',
+      () async {
+        // ARRANGE
+        void Function(String?)? tapHandler;
+        when(
+          () => mockLocalDataSource.init(
+            onNotificationTap: any(named: 'onNotificationTap'),
+          ),
+        ).thenAnswer((invocation) async {
+          tapHandler =
+              invocation.namedArguments[#onNotificationTap]
+                  as void Function(String?)?;
+        });
+
+        await service.initialize();
+
+        // ACT
+        tapHandler?.call('{type: sec_filing, ticker: TSLA}');
+        await Future.delayed(Duration.zero);
+
+        // ASSERT
+        verify(
+          () => mockTracker.logNotificationOpened(
+            notificationType: 'sec_filing',
+            triggerSource: NotificationTriggerSource.local,
+            appState: NotificationAppState.foreground,
+            route: AppRoutes.reports,
+            ticker: 'TSLA',
+          ),
+        ).called(1);
       },
     );
   });

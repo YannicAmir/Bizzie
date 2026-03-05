@@ -2,6 +2,7 @@ import 'package:bizzie/app/themes/app_assets.dart';
 import 'package:bizzie/app/themes/app_theme.dart';
 import 'package:bizzie/features/onboarding/domain/models/company.dart';
 import 'package:bizzie/features/onboarding/presentation/bloc/onboarding_bloc.dart';
+import 'package:bizzie/features/onboarding/domain/models/onboarding_step.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -13,8 +14,22 @@ import 'package:bizzie/features/onboarding/presentation/widgets/onboarding_foote
 import '../widgets/onboarding_header.dart';
 import 'package:bizzie/shared/widgets/buttons/bizzie_primary_button.dart';
 
-class BizzieFoundCompaniesPage extends StatelessWidget {
+class BizzieFoundCompaniesPage extends StatefulWidget {
   const BizzieFoundCompaniesPage({super.key});
+
+  @override
+  State<BizzieFoundCompaniesPage> createState() =>
+      _BizzieFoundCompaniesPageState();
+}
+
+class _BizzieFoundCompaniesPageState extends State<BizzieFoundCompaniesPage> {
+  @override
+  void initState() {
+    super.initState();
+    context.read<OnboardingBloc>().add(
+      const OnboardingEvent.stepViewed(OnboardingStep.companiesFound),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {

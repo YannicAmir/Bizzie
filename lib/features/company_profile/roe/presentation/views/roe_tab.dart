@@ -1,13 +1,16 @@
 import 'package:bizzie/app/themes/app_assets.dart';
+import 'package:bizzie/core/enums/paywall_source.dart';
 import 'package:bizzie/features/company_profile/shared/domain/models/chart_data_point.dart';
 import 'package:bizzie/features/company_profile/shared/domain/models/financial_data_point.dart';
 import '../bloc/company_roe_bloc.dart';
 import '../bloc/company_roe_event.dart';
 import '../bloc/company_roe_state.dart';
+import 'package:bizzie/features/company_profile/shared/presentation/enums/company_profile_tab.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/widgets/company_profile_error_state.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/widgets/company_profile_loading_state.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/widgets/financial_data_table.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/widgets/metric_summary_card.dart';
+import 'package:bizzie/features/company_profile/shared/presentation/widgets/tab_visibility_observer.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:bizzie/shared/widgets/charts/bizzie_bar_chart.dart';
 import 'package:bizzie/shared/widgets/charts/bizzie_expandable_chart.dart';
@@ -17,50 +20,86 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../extensions/roe_presentation_helper.dart';
 
-class RoeTab extends StatelessWidget {
+class RoeTab extends StatefulWidget {
   final String ticker;
 
   const RoeTab({super.key, required this.ticker});
 
   @override
+  State<RoeTab> createState() => _RoeTabState();
+}
+
+class _RoeTabState extends State<RoeTab> {
+  @override
+  void initState() {
+    super.initState();
+    context.read<CompanyRoeBloc>().add(
+      CompanyRoeEvent.stalenessCheckRequested(widget.ticker),
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return BlocBuilder<CompanyRoeBloc, CompanyRoeState>(
-      builder: (context, state) {
-        return state.when(
-          initial: () =>
-              const CompanyProfileLoadingState(message: 'Loading ROE'),
-          loading: () =>
-              const CompanyProfileLoadingState(message: 'Loading ROE'),
-          failure: (e) => CompanyProfileErrorState(
-            message: 'Error loading ROE',
-            onRetry: () => context.read<CompanyRoeBloc>().add(
-              CompanyRoeEvent.loadRequested(ticker, forceRefresh: true),
-            ),
-          ),
-          loaded:
-              (
-                dataPoints,
-                chartData,
-                currentValue,
-                growthPercentage,
-                absoluteDelta,
-                isPositive,
-                referenceLabel,
-                historyLimit,
-                lastUpdated,
-              ) => _RoeLoadedContent(
-                dataPoints: dataPoints,
-                chartData: chartData,
-                currentValue: currentValue,
-                growthPercentage: growthPercentage,
-                absoluteDelta: absoluteDelta,
-                isPositive: isPositive,
-                referenceLabel: referenceLabel,
-                historyLimit: historyLimit,
-                ticker: ticker,
+    return TabVisibilityObserver(
+      tabName: CompanyProfileTab.roe.analyticsName,
+      onTabShown: () => context.read<CompanyRoeBloc>().add(
+        CompanyRoeEvent.tabShown(widget.ticker),
+      ),
+      onTabHidden: () =>
+          context.read<CompanyRoeBloc>().add(const CompanyRoeEvent.tabHidden()),
+      onAppBackgrounded: () => context.read<CompanyRoeBloc>().add(
+        const CompanyRoeEvent.appBackgrounded(),
+      ),
+      onAppForegrounded: () => context.read<CompanyRoeBloc>().add(
+        const CompanyRoeEvent.appForegrounded(),
+      ),
+      child: BlocBuilder<CompanyRoeBloc, CompanyRoeState>(
+        builder: (context, state) {
+          return state.when(
+            initial: () =>
+                const CompanyProfileLoadingState(message: 'Loading ROE'),
+            loading: () =>
+                const CompanyProfileLoadingState(message: 'Loading ROE'),
+            failure: (e) => CompanyProfileErrorState(
+              message: 'Error loading ROE',
+              onRetry: () => context.read<CompanyRoeBloc>().add(
+                CompanyRoeEvent.loadRequested(
+                  widget.ticker,
+                  forceRefresh: true,
+                ),
               ),
-        );
-      },
+            ),
+            loaded:
+                (
+                  ticker,
+                  dataPoints,
+                  chartData,
+                  currentValue,
+                  growthPercentage,
+                  absoluteDelta,
+                  isPositive,
+                  referenceLabel,
+                  historyLimit,
+                  dataOrigin,
+                  loadTimeMs,
+                  isSuccess,
+                  lastUpdated,
+                  analyticsState,
+                ) => _RoeLoadedContent(
+                  dataPoints: dataPoints,
+                  chartData: chartData,
+                  currentValue: currentValue,
+                  growthPercentage: growthPercentage,
+                  absoluteDelta: absoluteDelta,
+                  isPositive: isPositive,
+                  referenceLabel: referenceLabel,
+                  historyLimit: historyLimit,
+                  ticker: ticker,
+                  lastUpdated: lastUpdated,
+                ),
+          );
+        },
+      ),
     );
   }
 }
@@ -75,6 +114,7 @@ class _RoeLoadedContent extends StatelessWidget {
   final String referenceLabel;
   final int historyLimit;
   final String ticker;
+  final DateTime? lastUpdated;
 
   const _RoeLoadedContent({
     required this.dataPoints,
@@ -86,6 +126,7 @@ class _RoeLoadedContent extends StatelessWidget {
     required this.referenceLabel,
     required this.historyLimit,
     required this.ticker,
+    this.lastUpdated,
   });
 
   @override
@@ -106,6 +147,7 @@ class _RoeLoadedContent extends StatelessWidget {
       absoluteDelta: absoluteDelta,
       isPositive: isPositive,
       referenceLabel: referenceLabel,
+      lastUpdated: lastUpdated,
     );
 
     final chartFormatter = RoePresentationHelper.chartFormatter;
@@ -131,6 +173,10 @@ class _RoeLoadedContent extends StatelessWidget {
             numberFormat: chartFormatter,
             visibleCount: historyLimit,
             thresholdCount: historyLimit,
+            source: PaywallSource.company_profile,
+            onAnalyticsTap: () => context.read<CompanyRoeBloc>().add(
+              const CompanyRoeEvent.viewAllTapped(isChart: true),
+            ),
           ),
           AppConstants.mainSectionSpacing,
           FinancialDataTable(
@@ -139,8 +185,17 @@ class _RoeLoadedContent extends StatelessWidget {
             currency: '',
             isPercentage: true,
             dateFormat: FinancialDateFormat.fullDate,
-            onViewMore: () => _showAllHistory(context, dataPoints),
+            onViewMore: () {
+              context.read<CompanyRoeBloc>().add(
+                const CompanyRoeEvent.viewAllTapped(isChart: false),
+              );
+              _showAllHistory(context, dataPoints);
+            },
             limit: historyLimit,
+            source: PaywallSource.company_profile,
+            onAnalyticsTap: () => context.read<CompanyRoeBloc>().add(
+              const CompanyRoeEvent.viewAllTapped(isChart: false),
+            ),
           ),
         ],
       ),

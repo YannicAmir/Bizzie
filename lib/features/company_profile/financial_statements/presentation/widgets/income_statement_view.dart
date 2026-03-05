@@ -58,6 +58,7 @@ class IncomeStatementView extends StatelessWidget {
                 historyBuilder: (item) =>
                     state.incomeHistoryRowData(item, locale),
                 historyLimit: state.freePlanHistoryCount,
+                isAnnual: true,
               ),
               AppConstants.mainSectionSpacing,
             ],
@@ -81,6 +82,7 @@ class IncomeStatementView extends StatelessWidget {
                 historyBuilder: (item) =>
                     state.incomeHistoryRowData(item, locale),
                 historyLimit: state.freePlanHistoryCount,
+                isAnnual: false,
               ),
             ],
           ],
@@ -100,6 +102,7 @@ class _IncomeStatementSection extends StatelessWidget {
   final List<FinancialStatementTableRow> rows;
   final FinancialHistoryRowData Function(IncomeStatement) historyBuilder;
   final int historyLimit;
+  final bool isAnnual;
 
   const _IncomeStatementSection({
     required this.title,
@@ -111,6 +114,7 @@ class _IncomeStatementSection extends StatelessWidget {
     required this.rows,
     required this.historyBuilder,
     required this.historyLimit,
+    required this.isAnnual,
   });
 
   @override
@@ -134,7 +138,21 @@ class _IncomeStatementSection extends StatelessWidget {
         AppConstants.mainSectionSpacing,
         FinancialStatementsTable(
           rows: rows,
-          onViewAll: () => _showFullHistory(context, data),
+          onViewAll: () {
+            context.read<FinancialStatementsBloc>().add(
+              FinancialStatementsEvent.viewAllTapped(isAnnual: isAnnual),
+            );
+
+            final userState = context.read<UserBloc>().state;
+            final isSubscribed = userState.maybeMap(
+              loaded: (s) => s.user.isSubscribed,
+              orElse: () => false,
+            );
+
+            if (isSubscribed) {
+              _showFullHistory(context, data);
+            }
+          },
         ),
       ],
     );

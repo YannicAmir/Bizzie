@@ -33,4 +33,22 @@ class OnboardingEvent with _$OnboardingEvent {
   const factory OnboardingEvent.highlightContinuePressed() =
       _HighlightContinuePressed;
   const factory OnboardingEvent.highlightSkipPressed() = _HighlightSkipPressed;
+
+  // Landing
+  const factory OnboardingEvent.landingPageViewed() = _LandingPageViewed;
+  const factory OnboardingEvent.loginRequested() = _LoginRequested;
+
+  // Profile Ready
+  const factory OnboardingEvent.profileReadyPageViewed() =
+      _ProfileReadyPageViewed;
+  const factory OnboardingEvent.profileReadyContinuePressed() =
+      _ProfileReadyContinuePressed;
+  const factory OnboardingEvent.stepViewed(OnboardingStep step) = _StepViewed;
+  const factory OnboardingEvent.subscriptionStatusChanged({
+    required bool didSubscribe,
+    required String subscriptionType,
+  }) = SubscriptionStatusChanged;
+  const factory OnboardingEvent.onboardingFlowFinished() =
+      _OnboardingFlowFinished;
+  const factory OnboardingEvent.reset() = _Reset;
 }

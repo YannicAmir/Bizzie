@@ -4,5 +4,8 @@ part of 'app_status_bloc.dart';
 class AppStatusEvent with _$AppStatusEvent {
   const factory AppStatusEvent.started() = _Started;
   const factory AppStatusEvent.refreshed() = _Refreshed;
-  const factory AppStatusEvent.statusChanged(AppStatus status) = _StatusChanged;
+  const factory AppStatusEvent.statusChanged(
+    AppStatus status, {
+    @Default(false) bool isManualRefresh,
+  }) = _StatusChanged;
 }

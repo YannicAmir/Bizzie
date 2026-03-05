@@ -29,8 +29,27 @@ class BalanceSheetView extends StatefulWidget {
 class _BalanceSheetViewState extends State<BalanceSheetView> {
   final PageController _pageController = PageController();
 
+  int _currentPage = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _pageController.addListener(_onPageChanged);
+  }
+
+  void _onPageChanged() {
+    final page = _pageController.page?.round() ?? 0;
+    if (page != _currentPage) {
+      _currentPage = page;
+      context.read<FinancialStatementsBloc>().add(
+        FinancialStatementsEvent.chartSwiped(page),
+      );
+    }
+  }
+
   @override
   void dispose() {
+    _pageController.removeListener(_onPageChanged);
     _pageController.dispose();
     super.dispose();
   }
@@ -71,6 +90,7 @@ class _BalanceSheetViewState extends State<BalanceSheetView> {
                 historyBuilder: (item) =>
                     state.balanceHistoryRowData(item, locale),
                 historyLimit: state.freePlanHistoryCount,
+                isAnnual: false,
               ),
             ],
           ],
@@ -89,6 +109,7 @@ class _BalanceSheetSection extends StatelessWidget {
   final List<FinancialStatementTableRow> rows;
   final FinancialHistoryRowData Function(BalanceSheet) historyBuilder;
   final int historyLimit;
+  final bool isAnnual;
 
   const _BalanceSheetSection({
     required this.title,
@@ -99,6 +120,7 @@ class _BalanceSheetSection extends StatelessWidget {
     required this.rows,
     required this.historyBuilder,
     required this.historyLimit,
+    required this.isAnnual,
   });
 
   @override
@@ -126,7 +148,21 @@ class _BalanceSheetSection extends StatelessWidget {
         ],
         FinancialStatementsTable(
           rows: rows,
-          onViewAll: () => _showBalanceSheetHistory(context, data),
+          onViewAll: () {
+            context.read<FinancialStatementsBloc>().add(
+              FinancialStatementsEvent.viewAllTapped(isAnnual: isAnnual),
+            );
+
+            final userState = context.read<UserBloc>().state;
+            final isSubscribed = userState.maybeMap(
+              loaded: (s) => s.user.isSubscribed,
+              orElse: () => false,
+            );
+
+            if (isSubscribed) {
+              _showBalanceSheetHistory(context, data);
+            }
+          },
           showPercentage: false,
           amountAlignment: Alignment.center,
           amountTextAlign: TextAlign.center,

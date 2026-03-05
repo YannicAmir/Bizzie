@@ -13,6 +13,8 @@ import 'package:bizzie/shared/widgets/loading/bizzie_loader.dart';
 import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
 import 'package:bizzie/features/user/presentation/extensions/user_state_extensions.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/widgets/company_profile_error_state.dart';
+import 'package:bizzie/features/company_profile/shared/presentation/enums/company_profile_tab.dart';
+import 'package:bizzie/features/company_profile/shared/presentation/widgets/tab_visibility_observer.dart';
 
 class FinancialStatementsTab extends StatefulWidget {
   final String ticker;
@@ -33,41 +35,56 @@ class _FinancialStatementsTabState extends State<FinancialStatementsTab>
     super.build(context);
     final mascot = context.select((UserBloc bloc) => bloc.state.mascotAsset);
 
-    return SingleChildScrollView(
-      padding: AppConstants.pagePadding,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          BlocBuilder<FinancialStatementsBloc, FinancialStatementsState>(
-            builder: (context, state) {
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  BizzieSwitch(
-                    options: FinancialStatementType.values
-                        .map((e) => e.label)
-                        .toList(),
-                    selectedIndex: state.selectedType.index,
-                    onChanged: (index) {
-                      context.read<FinancialStatementsBloc>().add(
-                        FinancialStatementsEvent.viewTypeChanged(
-                          widget.ticker,
-                          FinancialStatementType.values[index],
-                        ),
-                      );
-                    },
-                  ),
-                  AppConstants.mainSectionSpacing,
-                  _ActiveStatementSwitcher(
-                    state: state,
-                    ticker: widget.ticker,
-                    mascotAsset: mascot,
-                  ),
-                ],
-              );
-            },
-          ),
-        ],
+    return TabVisibilityObserver(
+      tabName: CompanyProfileTab.financialStatements.analyticsName,
+      onTabShown: () => context.read<FinancialStatementsBloc>().add(
+        FinancialStatementsEvent.tabShown(widget.ticker),
+      ),
+      onTabHidden: () => context.read<FinancialStatementsBloc>().add(
+        const FinancialStatementsEvent.tabHidden(),
+      ),
+      onAppBackgrounded: () => context.read<FinancialStatementsBloc>().add(
+        const FinancialStatementsEvent.appBackgrounded(),
+      ),
+      onAppForegrounded: () => context.read<FinancialStatementsBloc>().add(
+        const FinancialStatementsEvent.appForegrounded(),
+      ),
+      child: SingleChildScrollView(
+        padding: AppConstants.pagePadding,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            BlocBuilder<FinancialStatementsBloc, FinancialStatementsState>(
+              builder: (context, state) {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    BizzieSwitch(
+                      options: FinancialStatementType.values
+                          .map((e) => e.label)
+                          .toList(),
+                      selectedIndex: state.selectedType.index,
+                      onChanged: (index) {
+                        context.read<FinancialStatementsBloc>().add(
+                          FinancialStatementsEvent.viewTypeChanged(
+                            widget.ticker,
+                            FinancialStatementType.values[index],
+                          ),
+                        );
+                      },
+                    ),
+                    AppConstants.mainSectionSpacing,
+                    _ActiveStatementSwitcher(
+                      state: state,
+                      ticker: widget.ticker,
+                      mascotAsset: mascot,
+                    ),
+                  ],
+                );
+              },
+            ),
+          ],
+        ),
       ),
     );
   }

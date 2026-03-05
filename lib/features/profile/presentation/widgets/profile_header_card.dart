@@ -2,12 +2,12 @@ import 'package:bizzie/app/l10n/bizzie_localizations.dart';
 import 'package:bizzie/app/themes/app_assets.dart';
 import 'package:bizzie/features/profile/presentation/l10n/profile_localizations.dart';
 import 'package:bizzie/app/themes/app_text_styles.dart';
+import 'package:bizzie/features/profile/presentation/bloc/profile_bloc.dart';
+import 'package:bizzie/features/profile/presentation/bloc/profile_event.dart';
 import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:go_router/go_router.dart';
-import 'package:bizzie/app/routes/app_routes.dart';
 
 class ProfileHeaderCard extends StatelessWidget {
   const ProfileHeaderCard({super.key});
@@ -88,7 +88,8 @@ class _SettingsButton extends StatelessWidget {
     final theme = Theme.of(context);
 
     return GestureDetector(
-      onTap: () => context.push(AppRoutes.settings),
+      onTap: () =>
+          context.read<ProfileBloc>().add(const ProfileEvent.settingsClicked()),
       child: Container(
         padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(

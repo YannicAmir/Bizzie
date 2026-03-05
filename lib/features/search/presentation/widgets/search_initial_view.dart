@@ -1,20 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:bizzie/features/search/presentation/bloc/search_bloc.dart';
 import 'package:bizzie/core/utils/string_extensions.dart';
 import 'package:bizzie/features/onboarding/domain/models/company.dart';
 import 'package:bizzie/shared/widgets/company_list_tile.dart';
 import 'package:bizzie/app/routes/app_routes.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:bizzie/features/search/domain/enums/search_analytics_enums.dart';
+
 class SearchInitialView extends StatelessWidget {
   final String? favoriteSector;
   final List<Company> recommendedBrands;
-  final String? sourceTab;
+  final SearchSource? source;
 
   const SearchInitialView({
     super.key,
     this.favoriteSector,
     required this.recommendedBrands,
-    this.sourceTab,
+    this.source,
   });
 
   @override
@@ -57,9 +61,11 @@ class SearchInitialView extends StatelessWidget {
                   symbol: brand.ticker,
                   name: brand.name,
                   onTap: () {
-                    final String routeName = switch (sourceTab) {
-                      'reports' => AppRoutes.companyProfileReports,
-                      'profile' => AppRoutes.companyProfileProfile,
+                    context.read<SearchBloc>().add(
+                      SearchEvent.recommendedClicked(ticker: brand.ticker),
+                    );
+                    final String routeName = switch (source) {
+                      SearchSource.reports => AppRoutes.companyProfileReports,
                       _ => AppRoutes.companyProfileHome,
                     };
 
