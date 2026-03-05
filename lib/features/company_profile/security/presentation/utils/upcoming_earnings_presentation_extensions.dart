@@ -1,11 +1,17 @@
 import 'package:intl/intl.dart';
 
 extension UpcomingEarningsDateX on DateTime {
-  String get daysAwayLabel {
-    final now = DateTime.now();
-    final today = DateTime(now.year, now.month, now.day);
-    final earningsDay = DateTime(year, month, day);
-    final difference = earningsDay.difference(today).inDays;
+  int calendarDaysAway([DateTime? now]) {
+    final reference = now ?? DateTime.now();
+    final start = DateTime.utc(reference.year, reference.month, reference.day);
+    final end = DateTime.utc(year, month, day);
+    return end.difference(start).inDays;
+  }
+
+  String get daysAwayLabel => getDaysAwayLabel();
+
+  String getDaysAwayLabel([DateTime? now]) {
+    final difference = calendarDaysAway(now);
 
     if (difference == 0) return 'Today';
     if (difference == 1) return 'Tomorrow';

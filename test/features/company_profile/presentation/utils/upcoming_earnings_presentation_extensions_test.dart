@@ -2,50 +2,42 @@ import 'package:bizzie/features/company_profile/security/presentation/utils/upco
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
+  final kNow = DateTime(2026, 3, 4); // Wednesday, March 4th
+
   group('UpcomingEarningsDateX', () {
+    group('calendarDaysAway', () {
+      test('returns 0 for same day', () {
+        final date = DateTime(2026, 3, 4);
+        expect(date.calendarDaysAway(kNow), 0);
+      });
+
+      test('returns 5 for 5 days away', () {
+        final date = DateTime(2026, 3, 9);
+        expect(date.calendarDaysAway(kNow), 5);
+      });
+
+      test('handles DST transition correctly (Mar 8th 2026)', () {
+        final today = DateTime(2026, 3, 4);
+        final earningsDay = DateTime(2026, 3, 9);
+
+        expect(earningsDay.calendarDaysAway(today), 5);
+      });
+    });
+
     group('daysAwayLabel', () {
       test('daysAwayLabel_today_returnsToday', () {
-        // arrange
-        final now = DateTime.now();
-        final today = DateTime(now.year, now.month, now.day);
-
-        // act
-        final result = today.daysAwayLabel;
-
-        // assert
-        expect(result, 'Today');
+        final today = DateTime(2026, 3, 4);
+        expect(today.getDaysAwayLabel(kNow), 'Today');
       });
 
       test('daysAwayLabel_tomorrow_returnsTomorrow', () {
-        // arrange
-        final now = DateTime.now();
-        final tomorrow = DateTime(
-          now.year,
-          now.month,
-          now.day,
-        ).add(const Duration(days: 1));
-
-        // act
-        final result = tomorrow.daysAwayLabel;
-
-        // assert
-        expect(result, 'Tomorrow');
+        final tomorrow = DateTime(2026, 3, 5);
+        expect(tomorrow.getDaysAwayLabel(kNow), 'Tomorrow');
       });
 
       test('daysAwayLabel_multipleDays_returnsXDaysAway', () {
-        // arrange
-        final now = DateTime.now();
-        final fiveDaysAway = DateTime(
-          now.year,
-          now.month,
-          now.day,
-        ).add(const Duration(days: 5));
-
-        // act
-        final result = fiveDaysAway.daysAwayLabel;
-
-        // assert
-        expect(result, '5 days away');
+        final fiveDaysAway = DateTime(2026, 3, 9);
+        expect(fiveDaysAway.getDaysAwayLabel(kNow), '5 days away');
       });
     });
 
