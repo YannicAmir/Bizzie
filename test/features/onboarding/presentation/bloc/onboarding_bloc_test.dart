@@ -331,7 +331,7 @@ void main() {
           FeatureHighlightItem(
             title: 'T2',
             description: 'D2',
-            type: FeatureHighlightType.dailyPicks,
+            type: FeatureHighlightType.visualFinancials,
           ),
           FeatureHighlightItem(
             title: 'T3',
@@ -664,7 +664,7 @@ void main() {
           FeatureHighlightItem(
             title: 'T2',
             description: 'D2',
-            type: FeatureHighlightType.dailyPicks,
+            type: FeatureHighlightType.visualFinancials,
           ),
         ],
         currentHighlightIndex: 0,

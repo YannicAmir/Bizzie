@@ -23,7 +23,10 @@ class FeatureHighlightCard extends StatelessWidget {
           colors: [AppColors.mascotBackground, AppColors.mascotCardGradientEnd],
         ),
       ),
-      child: Padding(padding: const EdgeInsets.all(24.0), child: child),
+      child: SingleChildScrollView(
+        physics: const ClampingScrollPhysics(),
+        child: Padding(padding: const EdgeInsets.all(24.0), child: child),
+      ),
     );
   }
 }

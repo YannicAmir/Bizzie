@@ -11,6 +11,7 @@ import 'package:bizzie/features/auth/domain/usecases/sign_in_with_google.dart';
 import 'package:bizzie/features/auth/domain/usecases/sign_out.dart';
 import 'package:bizzie/features/auth/domain/usecases/sign_up_with_email.dart';
 import 'package:bizzie/features/auth/presentation/analytics/auth_tracker.dart';
+import 'package:bizzie/features/settings/domain/usecases/launch_url_usecase.dart';
 import 'package:bizzie/features/auth/domain/enums/auth_method.dart';
 import 'package:bizzie/features/auth/domain/enums/auth_source.dart';
 import 'package:bizzie/features/auth/presentation/bloc/auth_bloc.dart';
@@ -42,6 +43,8 @@ class MockResetPassword extends Mock implements ResetPassword {}
 
 class MockDeleteAccount extends Mock implements DeleteAccount {}
 
+class MockLaunchUrlUseCase extends Mock implements LaunchUrlUseCase {}
+
 void main() {
   late AuthBloc authBloc;
   late MockGetAuthStream mockGetAuthStream;
@@ -53,6 +56,7 @@ void main() {
   late MockSignOut mockSignOut;
   late MockResetPassword mockResetPassword;
   late MockDeleteAccount mockDeleteAccount;
+  late MockLaunchUrlUseCase mockLaunchUrlUseCase;
   late MockAuthTracker mockAuthTracker;
 
   setUpAll(() {
@@ -70,6 +74,7 @@ void main() {
     mockSignOut = MockSignOut();
     mockResetPassword = MockResetPassword();
     mockDeleteAccount = MockDeleteAccount();
+    mockLaunchUrlUseCase = MockLaunchUrlUseCase();
     mockAuthTracker = MockAuthTracker();
 
     when(
@@ -118,6 +123,12 @@ void main() {
     when(() => mockAuthTracker.logLogout()).thenAnswer((_) async {});
     when(() => mockAuthTracker.logAccountDeleted()).thenAnswer((_) async {});
     when(() => mockAuthTracker.setUserId(any())).thenAnswer((_) async {});
+    when(
+      () => mockAuthTracker.logAuthLinkClicked(type: any(named: 'type')),
+    ).thenAnswer((_) async {});
+    when(
+      () => mockLaunchUrlUseCase(any()),
+    ).thenAnswer((_) async => const Right(null));
 
     when(() => mockGetAuthStream(any())).thenAnswer((_) => Stream.value(null));
     when(() => mockGetCurrentUser(any())).thenReturn(null);
@@ -132,6 +143,7 @@ void main() {
       signOut: mockSignOut,
       resetPassword: mockResetPassword,
       deleteAccount: mockDeleteAccount,
+      launchUrlUseCase: mockLaunchUrlUseCase,
       tracker: mockAuthTracker,
     );
   });
@@ -317,6 +329,20 @@ void main() {
         const AuthState.loading(),
         const AuthState.failure(tFailure),
       ],
+    );
+  });
+
+  group('AuthLegalLinkOpened', () {
+    const tUrl = 'https://example.com';
+
+    blocTest<AuthBloc, AuthState>(
+      'authLegalLinkOpened_callsTrackerAndLaunchUseCase',
+      build: () => authBloc,
+      act: (bloc) => bloc.add(const AuthLegalLinkOpened(tUrl)),
+      verify: (_) {
+        verify(() => mockAuthTracker.logAuthLinkClicked(type: tUrl)).called(1);
+        verify(() => mockLaunchUrlUseCase(tUrl)).called(1);
+      },
     );
   });
 }

@@ -1405,6 +1405,21 @@ extension GetItInjectableX on _i174.GetIt {
       () => subscriptionModule.isSubscribedStream(gh<_i615.IUserRepository>()),
       instanceName: 'isSubscribedStream',
     );
+    gh.lazySingleton<_i59.AuthBloc>(
+      () => _i59.AuthBloc(
+        getAuthStream: gh<_i427.GetAuthStream>(),
+        getCurrentUser: gh<_i318.GetCurrentUser>(),
+        signInWithGoogle: gh<_i345.SignInWithGoogle>(),
+        signInWithApple: gh<_i538.SignInWithApple>(),
+        signInWithEmail: gh<_i33.SignInWithEmail>(),
+        signUpWithEmail: gh<_i588.SignUpWithEmail>(),
+        signOut: gh<_i472.SignOut>(),
+        resetPassword: gh<_i73.ResetPassword>(),
+        deleteAccount: gh<_i739.DeleteAccount>(),
+        launchUrlUseCase: gh<_i936.LaunchUrlUseCase>(),
+        tracker: gh<_i700.AuthTracker>(),
+      ),
+    );
     gh.lazySingleton<_i561.GetUserUseCase>(
       () => _i561.GetUserUseCase(gh<_i615.IUserRepository>()),
     );
@@ -1456,20 +1471,6 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i501.CompanyNewsBloc(
         gh<_i654.GetCompanyNewsUseCase>(),
         gh<_i1021.NewsTabAnalytics>(),
-      ),
-    );
-    gh.lazySingleton<_i59.AuthBloc>(
-      () => _i59.AuthBloc(
-        getAuthStream: gh<_i427.GetAuthStream>(),
-        getCurrentUser: gh<_i318.GetCurrentUser>(),
-        signInWithGoogle: gh<_i345.SignInWithGoogle>(),
-        signInWithApple: gh<_i538.SignInWithApple>(),
-        signInWithEmail: gh<_i33.SignInWithEmail>(),
-        signUpWithEmail: gh<_i588.SignUpWithEmail>(),
-        signOut: gh<_i472.SignOut>(),
-        resetPassword: gh<_i73.ResetPassword>(),
-        deleteAccount: gh<_i739.DeleteAccount>(),
-        tracker: gh<_i700.AuthTracker>(),
       ),
     );
     gh.factory<_i570.ProfileBloc>(

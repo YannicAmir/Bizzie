@@ -37,11 +37,6 @@ class FeatureHighlightFactory {
         return BrandSearchCard(displayBrand: displayBrand);
       case FeatureHighlightType.easyToUnderstand:
         return const EasyToUnderstandCard();
-      case FeatureHighlightType.dailyPicks:
-        return DailyPicksCard(
-          selectedSector: state.onboardingData.selectedSector,
-          selectedBrands: state.dailyPicksDisplayBrands,
-        );
       case FeatureHighlightType.summaryIllustration:
         return SummaryIllustration(currentYear: DateTime.now().year.toString());
     }

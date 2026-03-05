@@ -28,4 +28,5 @@ sealed class AuthEvent with _$AuthEvent {
     required AuthSource source,
   }) = AuthEmailSignUpRequested;
   const factory AuthEvent.statusChanged(UserModel? user) = AuthStatusChanged;
+  const factory AuthEvent.legalLinkOpened(String url) = AuthLegalLinkOpened;
 }

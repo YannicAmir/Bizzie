@@ -45,20 +45,36 @@ class _InvestingExperiencePageState extends State<InvestingExperiencePage> {
                   title: 'Describe your investing experience',
                 ),
                 Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const SizedBox(height: 48),
-                        const _InvestingExperienceMascot(),
-                        const Spacer(),
-                        _ExperienceOptionsList(
-                          selectedExperience: selectedExperience,
+                  child: LayoutBuilder(
+                    builder: (context, constraints) {
+                      return SingleChildScrollView(
+                        physics: const ClampingScrollPhysics(),
+                        child: ConstrainedBox(
+                          constraints: BoxConstraints(
+                            minHeight: constraints.maxHeight,
+                          ),
+                          child: IntrinsicHeight(
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 24.0,
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const SizedBox(height: 40),
+                                  const _InvestingExperienceMascot(),
+                                  const Spacer(),
+                                  _ExperienceOptionsList(
+                                    selectedExperience: selectedExperience,
+                                  ),
+                                  const SizedBox(height: 24),
+                                ],
+                              ),
+                            ),
+                          ),
                         ),
-                        const SizedBox(height: 24),
-                      ],
-                    ),
+                      );
+                    },
                   ),
                 ),
 
@@ -77,10 +93,13 @@ class _InvestingExperienceMascot extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
+    final responsiveHeight = screenHeight * 0.225;
+
     return Center(
       child: Image.asset(
         AppAssets.onboardingBizzieMascotInvestingExperience,
-        height: 230,
+        height: responsiveHeight,
         fit: BoxFit.contain,
       ),
     );

@@ -55,7 +55,7 @@ extension AuthEventPatterns on AuthEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( AuthStatusRequested value)?  statusRequested,TResult Function( AuthLogoutRequested value)?  logoutRequested,TResult Function( AuthGoogleSignInRequested value)?  googleSignInRequested,TResult Function( AuthAppleSignInRequested value)?  appleSignInRequested,TResult Function( AuthResetPasswordRequested value)?  resetPasswordRequested,TResult Function( AuthDeleteAccountRequested value)?  deleteAccountRequested,TResult Function( AuthEmailSignInRequested value)?  emailSignInRequested,TResult Function( AuthEmailSignUpRequested value)?  emailSignUpRequested,TResult Function( AuthStatusChanged value)?  statusChanged,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( AuthStatusRequested value)?  statusRequested,TResult Function( AuthLogoutRequested value)?  logoutRequested,TResult Function( AuthGoogleSignInRequested value)?  googleSignInRequested,TResult Function( AuthAppleSignInRequested value)?  appleSignInRequested,TResult Function( AuthResetPasswordRequested value)?  resetPasswordRequested,TResult Function( AuthDeleteAccountRequested value)?  deleteAccountRequested,TResult Function( AuthEmailSignInRequested value)?  emailSignInRequested,TResult Function( AuthEmailSignUpRequested value)?  emailSignUpRequested,TResult Function( AuthStatusChanged value)?  statusChanged,TResult Function( AuthLegalLinkOpened value)?  legalLinkOpened,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case AuthStatusRequested() when statusRequested != null:
@@ -67,7 +67,8 @@ return resetPasswordRequested(_that);case AuthDeleteAccountRequested() when dele
 return deleteAccountRequested(_that);case AuthEmailSignInRequested() when emailSignInRequested != null:
 return emailSignInRequested(_that);case AuthEmailSignUpRequested() when emailSignUpRequested != null:
 return emailSignUpRequested(_that);case AuthStatusChanged() when statusChanged != null:
-return statusChanged(_that);case _:
+return statusChanged(_that);case AuthLegalLinkOpened() when legalLinkOpened != null:
+return legalLinkOpened(_that);case _:
   return orElse();
 
 }
@@ -85,7 +86,7 @@ return statusChanged(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( AuthStatusRequested value)  statusRequested,required TResult Function( AuthLogoutRequested value)  logoutRequested,required TResult Function( AuthGoogleSignInRequested value)  googleSignInRequested,required TResult Function( AuthAppleSignInRequested value)  appleSignInRequested,required TResult Function( AuthResetPasswordRequested value)  resetPasswordRequested,required TResult Function( AuthDeleteAccountRequested value)  deleteAccountRequested,required TResult Function( AuthEmailSignInRequested value)  emailSignInRequested,required TResult Function( AuthEmailSignUpRequested value)  emailSignUpRequested,required TResult Function( AuthStatusChanged value)  statusChanged,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( AuthStatusRequested value)  statusRequested,required TResult Function( AuthLogoutRequested value)  logoutRequested,required TResult Function( AuthGoogleSignInRequested value)  googleSignInRequested,required TResult Function( AuthAppleSignInRequested value)  appleSignInRequested,required TResult Function( AuthResetPasswordRequested value)  resetPasswordRequested,required TResult Function( AuthDeleteAccountRequested value)  deleteAccountRequested,required TResult Function( AuthEmailSignInRequested value)  emailSignInRequested,required TResult Function( AuthEmailSignUpRequested value)  emailSignUpRequested,required TResult Function( AuthStatusChanged value)  statusChanged,required TResult Function( AuthLegalLinkOpened value)  legalLinkOpened,}){
 final _that = this;
 switch (_that) {
 case AuthStatusRequested():
@@ -97,7 +98,8 @@ return resetPasswordRequested(_that);case AuthDeleteAccountRequested():
 return deleteAccountRequested(_that);case AuthEmailSignInRequested():
 return emailSignInRequested(_that);case AuthEmailSignUpRequested():
 return emailSignUpRequested(_that);case AuthStatusChanged():
-return statusChanged(_that);}
+return statusChanged(_that);case AuthLegalLinkOpened():
+return legalLinkOpened(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -111,7 +113,7 @@ return statusChanged(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( AuthStatusRequested value)?  statusRequested,TResult? Function( AuthLogoutRequested value)?  logoutRequested,TResult? Function( AuthGoogleSignInRequested value)?  googleSignInRequested,TResult? Function( AuthAppleSignInRequested value)?  appleSignInRequested,TResult? Function( AuthResetPasswordRequested value)?  resetPasswordRequested,TResult? Function( AuthDeleteAccountRequested value)?  deleteAccountRequested,TResult? Function( AuthEmailSignInRequested value)?  emailSignInRequested,TResult? Function( AuthEmailSignUpRequested value)?  emailSignUpRequested,TResult? Function( AuthStatusChanged value)?  statusChanged,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( AuthStatusRequested value)?  statusRequested,TResult? Function( AuthLogoutRequested value)?  logoutRequested,TResult? Function( AuthGoogleSignInRequested value)?  googleSignInRequested,TResult? Function( AuthAppleSignInRequested value)?  appleSignInRequested,TResult? Function( AuthResetPasswordRequested value)?  resetPasswordRequested,TResult? Function( AuthDeleteAccountRequested value)?  deleteAccountRequested,TResult? Function( AuthEmailSignInRequested value)?  emailSignInRequested,TResult? Function( AuthEmailSignUpRequested value)?  emailSignUpRequested,TResult? Function( AuthStatusChanged value)?  statusChanged,TResult? Function( AuthLegalLinkOpened value)?  legalLinkOpened,}){
 final _that = this;
 switch (_that) {
 case AuthStatusRequested() when statusRequested != null:
@@ -123,7 +125,8 @@ return resetPasswordRequested(_that);case AuthDeleteAccountRequested() when dele
 return deleteAccountRequested(_that);case AuthEmailSignInRequested() when emailSignInRequested != null:
 return emailSignInRequested(_that);case AuthEmailSignUpRequested() when emailSignUpRequested != null:
 return emailSignUpRequested(_that);case AuthStatusChanged() when statusChanged != null:
-return statusChanged(_that);case _:
+return statusChanged(_that);case AuthLegalLinkOpened() when legalLinkOpened != null:
+return legalLinkOpened(_that);case _:
   return null;
 
 }
@@ -140,7 +143,7 @@ return statusChanged(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  statusRequested,TResult Function()?  logoutRequested,TResult Function( AuthSource source)?  googleSignInRequested,TResult Function( AuthSource source)?  appleSignInRequested,TResult Function( String email,  AuthSource source)?  resetPasswordRequested,TResult Function()?  deleteAccountRequested,TResult Function( String email,  String password,  AuthSource source)?  emailSignInRequested,TResult Function( String email,  String password,  AuthSource source)?  emailSignUpRequested,TResult Function( UserModel? user)?  statusChanged,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  statusRequested,TResult Function()?  logoutRequested,TResult Function( AuthSource source)?  googleSignInRequested,TResult Function( AuthSource source)?  appleSignInRequested,TResult Function( String email,  AuthSource source)?  resetPasswordRequested,TResult Function()?  deleteAccountRequested,TResult Function( String email,  String password,  AuthSource source)?  emailSignInRequested,TResult Function( String email,  String password,  AuthSource source)?  emailSignUpRequested,TResult Function( UserModel? user)?  statusChanged,TResult Function( String url)?  legalLinkOpened,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case AuthStatusRequested() when statusRequested != null:
 return statusRequested();case AuthLogoutRequested() when logoutRequested != null:
@@ -151,7 +154,8 @@ return resetPasswordRequested(_that.email,_that.source);case AuthDeleteAccountRe
 return deleteAccountRequested();case AuthEmailSignInRequested() when emailSignInRequested != null:
 return emailSignInRequested(_that.email,_that.password,_that.source);case AuthEmailSignUpRequested() when emailSignUpRequested != null:
 return emailSignUpRequested(_that.email,_that.password,_that.source);case AuthStatusChanged() when statusChanged != null:
-return statusChanged(_that.user);case _:
+return statusChanged(_that.user);case AuthLegalLinkOpened() when legalLinkOpened != null:
+return legalLinkOpened(_that.url);case _:
   return orElse();
 
 }
@@ -169,7 +173,7 @@ return statusChanged(_that.user);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  statusRequested,required TResult Function()  logoutRequested,required TResult Function( AuthSource source)  googleSignInRequested,required TResult Function( AuthSource source)  appleSignInRequested,required TResult Function( String email,  AuthSource source)  resetPasswordRequested,required TResult Function()  deleteAccountRequested,required TResult Function( String email,  String password,  AuthSource source)  emailSignInRequested,required TResult Function( String email,  String password,  AuthSource source)  emailSignUpRequested,required TResult Function( UserModel? user)  statusChanged,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  statusRequested,required TResult Function()  logoutRequested,required TResult Function( AuthSource source)  googleSignInRequested,required TResult Function( AuthSource source)  appleSignInRequested,required TResult Function( String email,  AuthSource source)  resetPasswordRequested,required TResult Function()  deleteAccountRequested,required TResult Function( String email,  String password,  AuthSource source)  emailSignInRequested,required TResult Function( String email,  String password,  AuthSource source)  emailSignUpRequested,required TResult Function( UserModel? user)  statusChanged,required TResult Function( String url)  legalLinkOpened,}) {final _that = this;
 switch (_that) {
 case AuthStatusRequested():
 return statusRequested();case AuthLogoutRequested():
@@ -180,7 +184,8 @@ return resetPasswordRequested(_that.email,_that.source);case AuthDeleteAccountRe
 return deleteAccountRequested();case AuthEmailSignInRequested():
 return emailSignInRequested(_that.email,_that.password,_that.source);case AuthEmailSignUpRequested():
 return emailSignUpRequested(_that.email,_that.password,_that.source);case AuthStatusChanged():
-return statusChanged(_that.user);}
+return statusChanged(_that.user);case AuthLegalLinkOpened():
+return legalLinkOpened(_that.url);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -194,7 +199,7 @@ return statusChanged(_that.user);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  statusRequested,TResult? Function()?  logoutRequested,TResult? Function( AuthSource source)?  googleSignInRequested,TResult? Function( AuthSource source)?  appleSignInRequested,TResult? Function( String email,  AuthSource source)?  resetPasswordRequested,TResult? Function()?  deleteAccountRequested,TResult? Function( String email,  String password,  AuthSource source)?  emailSignInRequested,TResult? Function( String email,  String password,  AuthSource source)?  emailSignUpRequested,TResult? Function( UserModel? user)?  statusChanged,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  statusRequested,TResult? Function()?  logoutRequested,TResult? Function( AuthSource source)?  googleSignInRequested,TResult? Function( AuthSource source)?  appleSignInRequested,TResult? Function( String email,  AuthSource source)?  resetPasswordRequested,TResult? Function()?  deleteAccountRequested,TResult? Function( String email,  String password,  AuthSource source)?  emailSignInRequested,TResult? Function( String email,  String password,  AuthSource source)?  emailSignUpRequested,TResult? Function( UserModel? user)?  statusChanged,TResult? Function( String url)?  legalLinkOpened,}) {final _that = this;
 switch (_that) {
 case AuthStatusRequested() when statusRequested != null:
 return statusRequested();case AuthLogoutRequested() when logoutRequested != null:
@@ -205,7 +210,8 @@ return resetPasswordRequested(_that.email,_that.source);case AuthDeleteAccountRe
 return deleteAccountRequested();case AuthEmailSignInRequested() when emailSignInRequested != null:
 return emailSignInRequested(_that.email,_that.password,_that.source);case AuthEmailSignUpRequested() when emailSignUpRequested != null:
 return emailSignUpRequested(_that.email,_that.password,_that.source);case AuthStatusChanged() when statusChanged != null:
-return statusChanged(_that.user);case _:
+return statusChanged(_that.user);case AuthLegalLinkOpened() when legalLinkOpened != null:
+return legalLinkOpened(_that.url);case _:
   return null;
 
 }
@@ -725,6 +731,72 @@ $UserModelCopyWith<$Res>? get user {
     return _then(_self.copyWith(user: value));
   });
 }
+}
+
+/// @nodoc
+
+
+class AuthLegalLinkOpened implements AuthEvent {
+  const AuthLegalLinkOpened(this.url);
+  
+
+ final  String url;
+
+/// Create a copy of AuthEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$AuthLegalLinkOpenedCopyWith<AuthLegalLinkOpened> get copyWith => _$AuthLegalLinkOpenedCopyWithImpl<AuthLegalLinkOpened>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AuthLegalLinkOpened&&(identical(other.url, url) || other.url == url));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,url);
+
+@override
+String toString() {
+  return 'AuthEvent.legalLinkOpened(url: $url)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $AuthLegalLinkOpenedCopyWith<$Res> implements $AuthEventCopyWith<$Res> {
+  factory $AuthLegalLinkOpenedCopyWith(AuthLegalLinkOpened value, $Res Function(AuthLegalLinkOpened) _then) = _$AuthLegalLinkOpenedCopyWithImpl;
+@useResult
+$Res call({
+ String url
+});
+
+
+
+
+}
+/// @nodoc
+class _$AuthLegalLinkOpenedCopyWithImpl<$Res>
+    implements $AuthLegalLinkOpenedCopyWith<$Res> {
+  _$AuthLegalLinkOpenedCopyWithImpl(this._self, this._then);
+
+  final AuthLegalLinkOpened _self;
+  final $Res Function(AuthLegalLinkOpened) _then;
+
+/// Create a copy of AuthEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? url = null,}) {
+  return _then(AuthLegalLinkOpened(
+null == url ? _self.url : url // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
 }
 
 // dart format on
