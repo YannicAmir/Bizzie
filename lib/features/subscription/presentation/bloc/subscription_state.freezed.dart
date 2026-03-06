@@ -169,12 +169,12 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( SubscriptionStatus status,  PaywallSource? paywallSource)?  initial,TResult Function( SubscriptionStatus status,  PaywallSource? paywallSource)?  loading,TResult Function( SubscriptionStatus status,  SubscriptionOffering offerings,  SubscriptionPackage? annualPackage,  SubscriptionPackage? monthlyPackage,  SubscriptionPackage? discountAnnualPackage,  bool isLocalSuccessOverride,  bool isPurchasing,  bool isAnnualSelection,  PaywallSource? paywallSource)?  loaded,TResult Function( SubscriptionStatus status,  Failure failure,  PaywallSource? paywallSource)?  failure,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( SubscriptionStatus status,  PaywallSource? paywallSource)?  initial,TResult Function( SubscriptionStatus status,  PaywallSource? paywallSource)?  loading,TResult Function( SubscriptionStatus status,  SubscriptionOffering offerings,  SubscriptionPackage? annualPackage,  SubscriptionPackage? monthlyPackage,  SubscriptionPackage? discountAnnualPackage,  List<String> features,  bool isLocalSuccessOverride,  bool isPurchasing,  bool isAnnualSelection,  PaywallSource? paywallSource)?  loaded,TResult Function( SubscriptionStatus status,  Failure failure,  PaywallSource? paywallSource)?  failure,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case SubscriptionStateInitial() when initial != null:
 return initial(_that.status,_that.paywallSource);case SubscriptionStateLoading() when loading != null:
 return loading(_that.status,_that.paywallSource);case SubscriptionStateLoaded() when loaded != null:
-return loaded(_that.status,_that.offerings,_that.annualPackage,_that.monthlyPackage,_that.discountAnnualPackage,_that.isLocalSuccessOverride,_that.isPurchasing,_that.isAnnualSelection,_that.paywallSource);case SubscriptionStateFailure() when failure != null:
+return loaded(_that.status,_that.offerings,_that.annualPackage,_that.monthlyPackage,_that.discountAnnualPackage,_that.features,_that.isLocalSuccessOverride,_that.isPurchasing,_that.isAnnualSelection,_that.paywallSource);case SubscriptionStateFailure() when failure != null:
 return failure(_that.status,_that.failure,_that.paywallSource);case _:
   return orElse();
 
@@ -193,12 +193,12 @@ return failure(_that.status,_that.failure,_that.paywallSource);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( SubscriptionStatus status,  PaywallSource? paywallSource)  initial,required TResult Function( SubscriptionStatus status,  PaywallSource? paywallSource)  loading,required TResult Function( SubscriptionStatus status,  SubscriptionOffering offerings,  SubscriptionPackage? annualPackage,  SubscriptionPackage? monthlyPackage,  SubscriptionPackage? discountAnnualPackage,  bool isLocalSuccessOverride,  bool isPurchasing,  bool isAnnualSelection,  PaywallSource? paywallSource)  loaded,required TResult Function( SubscriptionStatus status,  Failure failure,  PaywallSource? paywallSource)  failure,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( SubscriptionStatus status,  PaywallSource? paywallSource)  initial,required TResult Function( SubscriptionStatus status,  PaywallSource? paywallSource)  loading,required TResult Function( SubscriptionStatus status,  SubscriptionOffering offerings,  SubscriptionPackage? annualPackage,  SubscriptionPackage? monthlyPackage,  SubscriptionPackage? discountAnnualPackage,  List<String> features,  bool isLocalSuccessOverride,  bool isPurchasing,  bool isAnnualSelection,  PaywallSource? paywallSource)  loaded,required TResult Function( SubscriptionStatus status,  Failure failure,  PaywallSource? paywallSource)  failure,}) {final _that = this;
 switch (_that) {
 case SubscriptionStateInitial():
 return initial(_that.status,_that.paywallSource);case SubscriptionStateLoading():
 return loading(_that.status,_that.paywallSource);case SubscriptionStateLoaded():
-return loaded(_that.status,_that.offerings,_that.annualPackage,_that.monthlyPackage,_that.discountAnnualPackage,_that.isLocalSuccessOverride,_that.isPurchasing,_that.isAnnualSelection,_that.paywallSource);case SubscriptionStateFailure():
+return loaded(_that.status,_that.offerings,_that.annualPackage,_that.monthlyPackage,_that.discountAnnualPackage,_that.features,_that.isLocalSuccessOverride,_that.isPurchasing,_that.isAnnualSelection,_that.paywallSource);case SubscriptionStateFailure():
 return failure(_that.status,_that.failure,_that.paywallSource);case _:
   throw StateError('Unexpected subclass');
 
@@ -216,12 +216,12 @@ return failure(_that.status,_that.failure,_that.paywallSource);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( SubscriptionStatus status,  PaywallSource? paywallSource)?  initial,TResult? Function( SubscriptionStatus status,  PaywallSource? paywallSource)?  loading,TResult? Function( SubscriptionStatus status,  SubscriptionOffering offerings,  SubscriptionPackage? annualPackage,  SubscriptionPackage? monthlyPackage,  SubscriptionPackage? discountAnnualPackage,  bool isLocalSuccessOverride,  bool isPurchasing,  bool isAnnualSelection,  PaywallSource? paywallSource)?  loaded,TResult? Function( SubscriptionStatus status,  Failure failure,  PaywallSource? paywallSource)?  failure,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( SubscriptionStatus status,  PaywallSource? paywallSource)?  initial,TResult? Function( SubscriptionStatus status,  PaywallSource? paywallSource)?  loading,TResult? Function( SubscriptionStatus status,  SubscriptionOffering offerings,  SubscriptionPackage? annualPackage,  SubscriptionPackage? monthlyPackage,  SubscriptionPackage? discountAnnualPackage,  List<String> features,  bool isLocalSuccessOverride,  bool isPurchasing,  bool isAnnualSelection,  PaywallSource? paywallSource)?  loaded,TResult? Function( SubscriptionStatus status,  Failure failure,  PaywallSource? paywallSource)?  failure,}) {final _that = this;
 switch (_that) {
 case SubscriptionStateInitial() when initial != null:
 return initial(_that.status,_that.paywallSource);case SubscriptionStateLoading() when loading != null:
 return loading(_that.status,_that.paywallSource);case SubscriptionStateLoaded() when loaded != null:
-return loaded(_that.status,_that.offerings,_that.annualPackage,_that.monthlyPackage,_that.discountAnnualPackage,_that.isLocalSuccessOverride,_that.isPurchasing,_that.isAnnualSelection,_that.paywallSource);case SubscriptionStateFailure() when failure != null:
+return loaded(_that.status,_that.offerings,_that.annualPackage,_that.monthlyPackage,_that.discountAnnualPackage,_that.features,_that.isLocalSuccessOverride,_that.isPurchasing,_that.isAnnualSelection,_that.paywallSource);case SubscriptionStateFailure() when failure != null:
 return failure(_that.status,_that.failure,_that.paywallSource);case _:
   return null;
 
@@ -388,7 +388,7 @@ $SubscriptionStatusCopyWith<$Res> get status {
 
 
 class SubscriptionStateLoaded extends SubscriptionState {
-  const SubscriptionStateLoaded({required this.status, required this.offerings, this.annualPackage, this.monthlyPackage, this.discountAnnualPackage, this.isLocalSuccessOverride = false, this.isPurchasing = false, this.isAnnualSelection = true, this.paywallSource}): super._();
+  const SubscriptionStateLoaded({required this.status, required this.offerings, this.annualPackage, this.monthlyPackage, this.discountAnnualPackage, final  List<String> features = const [], this.isLocalSuccessOverride = false, this.isPurchasing = false, this.isAnnualSelection = true, this.paywallSource}): _features = features,super._();
   
 
 @override final  SubscriptionStatus status;
@@ -396,6 +396,13 @@ class SubscriptionStateLoaded extends SubscriptionState {
  final  SubscriptionPackage? annualPackage;
  final  SubscriptionPackage? monthlyPackage;
  final  SubscriptionPackage? discountAnnualPackage;
+ final  List<String> _features;
+@JsonKey() List<String> get features {
+  if (_features is EqualUnmodifiableListView) return _features;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_features);
+}
+
 @JsonKey() final  bool isLocalSuccessOverride;
 @JsonKey() final  bool isPurchasing;
 @JsonKey() final  bool isAnnualSelection;
@@ -411,16 +418,16 @@ $SubscriptionStateLoadedCopyWith<SubscriptionStateLoaded> get copyWith => _$Subs
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SubscriptionStateLoaded&&(identical(other.status, status) || other.status == status)&&(identical(other.offerings, offerings) || other.offerings == offerings)&&(identical(other.annualPackage, annualPackage) || other.annualPackage == annualPackage)&&(identical(other.monthlyPackage, monthlyPackage) || other.monthlyPackage == monthlyPackage)&&(identical(other.discountAnnualPackage, discountAnnualPackage) || other.discountAnnualPackage == discountAnnualPackage)&&(identical(other.isLocalSuccessOverride, isLocalSuccessOverride) || other.isLocalSuccessOverride == isLocalSuccessOverride)&&(identical(other.isPurchasing, isPurchasing) || other.isPurchasing == isPurchasing)&&(identical(other.isAnnualSelection, isAnnualSelection) || other.isAnnualSelection == isAnnualSelection)&&(identical(other.paywallSource, paywallSource) || other.paywallSource == paywallSource));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SubscriptionStateLoaded&&(identical(other.status, status) || other.status == status)&&(identical(other.offerings, offerings) || other.offerings == offerings)&&(identical(other.annualPackage, annualPackage) || other.annualPackage == annualPackage)&&(identical(other.monthlyPackage, monthlyPackage) || other.monthlyPackage == monthlyPackage)&&(identical(other.discountAnnualPackage, discountAnnualPackage) || other.discountAnnualPackage == discountAnnualPackage)&&const DeepCollectionEquality().equals(other._features, _features)&&(identical(other.isLocalSuccessOverride, isLocalSuccessOverride) || other.isLocalSuccessOverride == isLocalSuccessOverride)&&(identical(other.isPurchasing, isPurchasing) || other.isPurchasing == isPurchasing)&&(identical(other.isAnnualSelection, isAnnualSelection) || other.isAnnualSelection == isAnnualSelection)&&(identical(other.paywallSource, paywallSource) || other.paywallSource == paywallSource));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,status,offerings,annualPackage,monthlyPackage,discountAnnualPackage,isLocalSuccessOverride,isPurchasing,isAnnualSelection,paywallSource);
+int get hashCode => Object.hash(runtimeType,status,offerings,annualPackage,monthlyPackage,discountAnnualPackage,const DeepCollectionEquality().hash(_features),isLocalSuccessOverride,isPurchasing,isAnnualSelection,paywallSource);
 
 @override
 String toString() {
-  return 'SubscriptionState.loaded(status: $status, offerings: $offerings, annualPackage: $annualPackage, monthlyPackage: $monthlyPackage, discountAnnualPackage: $discountAnnualPackage, isLocalSuccessOverride: $isLocalSuccessOverride, isPurchasing: $isPurchasing, isAnnualSelection: $isAnnualSelection, paywallSource: $paywallSource)';
+  return 'SubscriptionState.loaded(status: $status, offerings: $offerings, annualPackage: $annualPackage, monthlyPackage: $monthlyPackage, discountAnnualPackage: $discountAnnualPackage, features: $features, isLocalSuccessOverride: $isLocalSuccessOverride, isPurchasing: $isPurchasing, isAnnualSelection: $isAnnualSelection, paywallSource: $paywallSource)';
 }
 
 
@@ -431,7 +438,7 @@ abstract mixin class $SubscriptionStateLoadedCopyWith<$Res> implements $Subscrip
   factory $SubscriptionStateLoadedCopyWith(SubscriptionStateLoaded value, $Res Function(SubscriptionStateLoaded) _then) = _$SubscriptionStateLoadedCopyWithImpl;
 @override @useResult
 $Res call({
- SubscriptionStatus status, SubscriptionOffering offerings, SubscriptionPackage? annualPackage, SubscriptionPackage? monthlyPackage, SubscriptionPackage? discountAnnualPackage, bool isLocalSuccessOverride, bool isPurchasing, bool isAnnualSelection, PaywallSource? paywallSource
+ SubscriptionStatus status, SubscriptionOffering offerings, SubscriptionPackage? annualPackage, SubscriptionPackage? monthlyPackage, SubscriptionPackage? discountAnnualPackage, List<String> features, bool isLocalSuccessOverride, bool isPurchasing, bool isAnnualSelection, PaywallSource? paywallSource
 });
 
 
@@ -448,14 +455,15 @@ class _$SubscriptionStateLoadedCopyWithImpl<$Res>
 
 /// Create a copy of SubscriptionState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? status = null,Object? offerings = null,Object? annualPackage = freezed,Object? monthlyPackage = freezed,Object? discountAnnualPackage = freezed,Object? isLocalSuccessOverride = null,Object? isPurchasing = null,Object? isAnnualSelection = null,Object? paywallSource = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? status = null,Object? offerings = null,Object? annualPackage = freezed,Object? monthlyPackage = freezed,Object? discountAnnualPackage = freezed,Object? features = null,Object? isLocalSuccessOverride = null,Object? isPurchasing = null,Object? isAnnualSelection = null,Object? paywallSource = freezed,}) {
   return _then(SubscriptionStateLoaded(
 status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as SubscriptionStatus,offerings: null == offerings ? _self.offerings : offerings // ignore: cast_nullable_to_non_nullable
 as SubscriptionOffering,annualPackage: freezed == annualPackage ? _self.annualPackage : annualPackage // ignore: cast_nullable_to_non_nullable
 as SubscriptionPackage?,monthlyPackage: freezed == monthlyPackage ? _self.monthlyPackage : monthlyPackage // ignore: cast_nullable_to_non_nullable
 as SubscriptionPackage?,discountAnnualPackage: freezed == discountAnnualPackage ? _self.discountAnnualPackage : discountAnnualPackage // ignore: cast_nullable_to_non_nullable
-as SubscriptionPackage?,isLocalSuccessOverride: null == isLocalSuccessOverride ? _self.isLocalSuccessOverride : isLocalSuccessOverride // ignore: cast_nullable_to_non_nullable
+as SubscriptionPackage?,features: null == features ? _self._features : features // ignore: cast_nullable_to_non_nullable
+as List<String>,isLocalSuccessOverride: null == isLocalSuccessOverride ? _self.isLocalSuccessOverride : isLocalSuccessOverride // ignore: cast_nullable_to_non_nullable
 as bool,isPurchasing: null == isPurchasing ? _self.isPurchasing : isPurchasing // ignore: cast_nullable_to_non_nullable
 as bool,isAnnualSelection: null == isAnnualSelection ? _self.isAnnualSelection : isAnnualSelection // ignore: cast_nullable_to_non_nullable
 as bool,paywallSource: freezed == paywallSource ? _self.paywallSource : paywallSource // ignore: cast_nullable_to_non_nullable

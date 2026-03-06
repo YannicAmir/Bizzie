@@ -10,4 +10,8 @@ abstract class NotificationState with _$NotificationState {
   const factory NotificationState.messageReceivedState(
     NotificationMessage message,
   ) = NotificationMessageReceivedState;
+  const factory NotificationState.navigationRequested(
+    NotificationIntent intent,
+    int timestamp,
+  ) = NotificationNavigationRequested;
 }

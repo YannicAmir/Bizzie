@@ -55,14 +55,15 @@ extension NotificationEventPatterns on NotificationEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( NotificationSetupRequested value)?  setupRequested,TResult Function( NotificationSubscribeToTopicRequested value)?  subscribeToTopicRequested,TResult Function( NotificationUnsubscribeFromTopicRequested value)?  unsubscribeFromTopicRequested,TResult Function( NotificationMessageReceived value)?  messageReceived,TResult Function( NotificationReset value)?  reset,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( NotificationSetupRequested value)?  setupRequested,TResult Function( NotificationSubscribeToTopicRequested value)?  subscribeToTopicRequested,TResult Function( NotificationUnsubscribeFromTopicRequested value)?  unsubscribeFromTopicRequested,TResult Function( NotificationMessageReceived value)?  messageReceived,TResult Function( NotificationInteractionReceived value)?  interactionReceived,TResult Function( NotificationReset value)?  reset,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case NotificationSetupRequested() when setupRequested != null:
 return setupRequested(_that);case NotificationSubscribeToTopicRequested() when subscribeToTopicRequested != null:
 return subscribeToTopicRequested(_that);case NotificationUnsubscribeFromTopicRequested() when unsubscribeFromTopicRequested != null:
 return unsubscribeFromTopicRequested(_that);case NotificationMessageReceived() when messageReceived != null:
-return messageReceived(_that);case NotificationReset() when reset != null:
+return messageReceived(_that);case NotificationInteractionReceived() when interactionReceived != null:
+return interactionReceived(_that);case NotificationReset() when reset != null:
 return reset(_that);case _:
   return orElse();
 
@@ -81,14 +82,15 @@ return reset(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( NotificationSetupRequested value)  setupRequested,required TResult Function( NotificationSubscribeToTopicRequested value)  subscribeToTopicRequested,required TResult Function( NotificationUnsubscribeFromTopicRequested value)  unsubscribeFromTopicRequested,required TResult Function( NotificationMessageReceived value)  messageReceived,required TResult Function( NotificationReset value)  reset,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( NotificationSetupRequested value)  setupRequested,required TResult Function( NotificationSubscribeToTopicRequested value)  subscribeToTopicRequested,required TResult Function( NotificationUnsubscribeFromTopicRequested value)  unsubscribeFromTopicRequested,required TResult Function( NotificationMessageReceived value)  messageReceived,required TResult Function( NotificationInteractionReceived value)  interactionReceived,required TResult Function( NotificationReset value)  reset,}){
 final _that = this;
 switch (_that) {
 case NotificationSetupRequested():
 return setupRequested(_that);case NotificationSubscribeToTopicRequested():
 return subscribeToTopicRequested(_that);case NotificationUnsubscribeFromTopicRequested():
 return unsubscribeFromTopicRequested(_that);case NotificationMessageReceived():
-return messageReceived(_that);case NotificationReset():
+return messageReceived(_that);case NotificationInteractionReceived():
+return interactionReceived(_that);case NotificationReset():
 return reset(_that);case _:
   throw StateError('Unexpected subclass');
 
@@ -106,14 +108,15 @@ return reset(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( NotificationSetupRequested value)?  setupRequested,TResult? Function( NotificationSubscribeToTopicRequested value)?  subscribeToTopicRequested,TResult? Function( NotificationUnsubscribeFromTopicRequested value)?  unsubscribeFromTopicRequested,TResult? Function( NotificationMessageReceived value)?  messageReceived,TResult? Function( NotificationReset value)?  reset,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( NotificationSetupRequested value)?  setupRequested,TResult? Function( NotificationSubscribeToTopicRequested value)?  subscribeToTopicRequested,TResult? Function( NotificationUnsubscribeFromTopicRequested value)?  unsubscribeFromTopicRequested,TResult? Function( NotificationMessageReceived value)?  messageReceived,TResult? Function( NotificationInteractionReceived value)?  interactionReceived,TResult? Function( NotificationReset value)?  reset,}){
 final _that = this;
 switch (_that) {
 case NotificationSetupRequested() when setupRequested != null:
 return setupRequested(_that);case NotificationSubscribeToTopicRequested() when subscribeToTopicRequested != null:
 return subscribeToTopicRequested(_that);case NotificationUnsubscribeFromTopicRequested() when unsubscribeFromTopicRequested != null:
 return unsubscribeFromTopicRequested(_that);case NotificationMessageReceived() when messageReceived != null:
-return messageReceived(_that);case NotificationReset() when reset != null:
+return messageReceived(_that);case NotificationInteractionReceived() when interactionReceived != null:
+return interactionReceived(_that);case NotificationReset() when reset != null:
 return reset(_that);case _:
   return null;
 
@@ -131,13 +134,14 @@ return reset(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  setupRequested,TResult Function( String topic)?  subscribeToTopicRequested,TResult Function( String topic)?  unsubscribeFromTopicRequested,TResult Function( NotificationMessage message)?  messageReceived,TResult Function()?  reset,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  setupRequested,TResult Function( String topic)?  subscribeToTopicRequested,TResult Function( String topic)?  unsubscribeFromTopicRequested,TResult Function( NotificationMessage message)?  messageReceived,TResult Function( Map<String, dynamic> payload)?  interactionReceived,TResult Function()?  reset,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case NotificationSetupRequested() when setupRequested != null:
 return setupRequested();case NotificationSubscribeToTopicRequested() when subscribeToTopicRequested != null:
 return subscribeToTopicRequested(_that.topic);case NotificationUnsubscribeFromTopicRequested() when unsubscribeFromTopicRequested != null:
 return unsubscribeFromTopicRequested(_that.topic);case NotificationMessageReceived() when messageReceived != null:
-return messageReceived(_that.message);case NotificationReset() when reset != null:
+return messageReceived(_that.message);case NotificationInteractionReceived() when interactionReceived != null:
+return interactionReceived(_that.payload);case NotificationReset() when reset != null:
 return reset();case _:
   return orElse();
 
@@ -156,13 +160,14 @@ return reset();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  setupRequested,required TResult Function( String topic)  subscribeToTopicRequested,required TResult Function( String topic)  unsubscribeFromTopicRequested,required TResult Function( NotificationMessage message)  messageReceived,required TResult Function()  reset,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  setupRequested,required TResult Function( String topic)  subscribeToTopicRequested,required TResult Function( String topic)  unsubscribeFromTopicRequested,required TResult Function( NotificationMessage message)  messageReceived,required TResult Function( Map<String, dynamic> payload)  interactionReceived,required TResult Function()  reset,}) {final _that = this;
 switch (_that) {
 case NotificationSetupRequested():
 return setupRequested();case NotificationSubscribeToTopicRequested():
 return subscribeToTopicRequested(_that.topic);case NotificationUnsubscribeFromTopicRequested():
 return unsubscribeFromTopicRequested(_that.topic);case NotificationMessageReceived():
-return messageReceived(_that.message);case NotificationReset():
+return messageReceived(_that.message);case NotificationInteractionReceived():
+return interactionReceived(_that.payload);case NotificationReset():
 return reset();case _:
   throw StateError('Unexpected subclass');
 
@@ -180,13 +185,14 @@ return reset();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  setupRequested,TResult? Function( String topic)?  subscribeToTopicRequested,TResult? Function( String topic)?  unsubscribeFromTopicRequested,TResult? Function( NotificationMessage message)?  messageReceived,TResult? Function()?  reset,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  setupRequested,TResult? Function( String topic)?  subscribeToTopicRequested,TResult? Function( String topic)?  unsubscribeFromTopicRequested,TResult? Function( NotificationMessage message)?  messageReceived,TResult? Function( Map<String, dynamic> payload)?  interactionReceived,TResult? Function()?  reset,}) {final _that = this;
 switch (_that) {
 case NotificationSetupRequested() when setupRequested != null:
 return setupRequested();case NotificationSubscribeToTopicRequested() when subscribeToTopicRequested != null:
 return subscribeToTopicRequested(_that.topic);case NotificationUnsubscribeFromTopicRequested() when unsubscribeFromTopicRequested != null:
 return unsubscribeFromTopicRequested(_that.topic);case NotificationMessageReceived() when messageReceived != null:
-return messageReceived(_that.message);case NotificationReset() when reset != null:
+return messageReceived(_that.message);case NotificationInteractionReceived() when interactionReceived != null:
+return interactionReceived(_that.payload);case NotificationReset() when reset != null:
 return reset();case _:
   return null;
 
@@ -437,6 +443,78 @@ $NotificationMessageCopyWith<$Res> get message {
 /// @nodoc
 
 
+class NotificationInteractionReceived implements NotificationEvent {
+  const NotificationInteractionReceived(final  Map<String, dynamic> payload): _payload = payload;
+  
+
+ final  Map<String, dynamic> _payload;
+ Map<String, dynamic> get payload {
+  if (_payload is EqualUnmodifiableMapView) return _payload;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableMapView(_payload);
+}
+
+
+/// Create a copy of NotificationEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$NotificationInteractionReceivedCopyWith<NotificationInteractionReceived> get copyWith => _$NotificationInteractionReceivedCopyWithImpl<NotificationInteractionReceived>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is NotificationInteractionReceived&&const DeepCollectionEquality().equals(other._payload, _payload));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_payload));
+
+@override
+String toString() {
+  return 'NotificationEvent.interactionReceived(payload: $payload)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $NotificationInteractionReceivedCopyWith<$Res> implements $NotificationEventCopyWith<$Res> {
+  factory $NotificationInteractionReceivedCopyWith(NotificationInteractionReceived value, $Res Function(NotificationInteractionReceived) _then) = _$NotificationInteractionReceivedCopyWithImpl;
+@useResult
+$Res call({
+ Map<String, dynamic> payload
+});
+
+
+
+
+}
+/// @nodoc
+class _$NotificationInteractionReceivedCopyWithImpl<$Res>
+    implements $NotificationInteractionReceivedCopyWith<$Res> {
+  _$NotificationInteractionReceivedCopyWithImpl(this._self, this._then);
+
+  final NotificationInteractionReceived _self;
+  final $Res Function(NotificationInteractionReceived) _then;
+
+/// Create a copy of NotificationEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? payload = null,}) {
+  return _then(NotificationInteractionReceived(
+null == payload ? _self._payload : payload // ignore: cast_nullable_to_non_nullable
+as Map<String, dynamic>,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
 class NotificationReset implements NotificationEvent {
   const NotificationReset();
   
@@ -510,7 +588,7 @@ extension NotificationStatePatterns on NotificationState {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( NotificationInitial value)?  initial,TResult Function( NotificationLoading value)?  loading,TResult Function( NotificationSuccess value)?  success,TResult Function( NotificationFailure value)?  failure,TResult Function( NotificationMessageReceivedState value)?  messageReceivedState,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( NotificationInitial value)?  initial,TResult Function( NotificationLoading value)?  loading,TResult Function( NotificationSuccess value)?  success,TResult Function( NotificationFailure value)?  failure,TResult Function( NotificationMessageReceivedState value)?  messageReceivedState,TResult Function( NotificationNavigationRequested value)?  navigationRequested,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case NotificationInitial() when initial != null:
@@ -518,7 +596,8 @@ return initial(_that);case NotificationLoading() when loading != null:
 return loading(_that);case NotificationSuccess() when success != null:
 return success(_that);case NotificationFailure() when failure != null:
 return failure(_that);case NotificationMessageReceivedState() when messageReceivedState != null:
-return messageReceivedState(_that);case _:
+return messageReceivedState(_that);case NotificationNavigationRequested() when navigationRequested != null:
+return navigationRequested(_that);case _:
   return orElse();
 
 }
@@ -536,7 +615,7 @@ return messageReceivedState(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( NotificationInitial value)  initial,required TResult Function( NotificationLoading value)  loading,required TResult Function( NotificationSuccess value)  success,required TResult Function( NotificationFailure value)  failure,required TResult Function( NotificationMessageReceivedState value)  messageReceivedState,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( NotificationInitial value)  initial,required TResult Function( NotificationLoading value)  loading,required TResult Function( NotificationSuccess value)  success,required TResult Function( NotificationFailure value)  failure,required TResult Function( NotificationMessageReceivedState value)  messageReceivedState,required TResult Function( NotificationNavigationRequested value)  navigationRequested,}){
 final _that = this;
 switch (_that) {
 case NotificationInitial():
@@ -544,7 +623,8 @@ return initial(_that);case NotificationLoading():
 return loading(_that);case NotificationSuccess():
 return success(_that);case NotificationFailure():
 return failure(_that);case NotificationMessageReceivedState():
-return messageReceivedState(_that);case _:
+return messageReceivedState(_that);case NotificationNavigationRequested():
+return navigationRequested(_that);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -561,7 +641,7 @@ return messageReceivedState(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( NotificationInitial value)?  initial,TResult? Function( NotificationLoading value)?  loading,TResult? Function( NotificationSuccess value)?  success,TResult? Function( NotificationFailure value)?  failure,TResult? Function( NotificationMessageReceivedState value)?  messageReceivedState,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( NotificationInitial value)?  initial,TResult? Function( NotificationLoading value)?  loading,TResult? Function( NotificationSuccess value)?  success,TResult? Function( NotificationFailure value)?  failure,TResult? Function( NotificationMessageReceivedState value)?  messageReceivedState,TResult? Function( NotificationNavigationRequested value)?  navigationRequested,}){
 final _that = this;
 switch (_that) {
 case NotificationInitial() when initial != null:
@@ -569,7 +649,8 @@ return initial(_that);case NotificationLoading() when loading != null:
 return loading(_that);case NotificationSuccess() when success != null:
 return success(_that);case NotificationFailure() when failure != null:
 return failure(_that);case NotificationMessageReceivedState() when messageReceivedState != null:
-return messageReceivedState(_that);case _:
+return messageReceivedState(_that);case NotificationNavigationRequested() when navigationRequested != null:
+return navigationRequested(_that);case _:
   return null;
 
 }
@@ -586,14 +667,15 @@ return messageReceivedState(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( String? fcmToken)?  success,TResult Function( String message)?  failure,TResult Function( NotificationMessage message)?  messageReceivedState,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( String? fcmToken)?  success,TResult Function( String message)?  failure,TResult Function( NotificationMessage message)?  messageReceivedState,TResult Function( NotificationIntent intent,  int timestamp)?  navigationRequested,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case NotificationInitial() when initial != null:
 return initial();case NotificationLoading() when loading != null:
 return loading();case NotificationSuccess() when success != null:
 return success(_that.fcmToken);case NotificationFailure() when failure != null:
 return failure(_that.message);case NotificationMessageReceivedState() when messageReceivedState != null:
-return messageReceivedState(_that.message);case _:
+return messageReceivedState(_that.message);case NotificationNavigationRequested() when navigationRequested != null:
+return navigationRequested(_that.intent,_that.timestamp);case _:
   return orElse();
 
 }
@@ -611,14 +693,15 @@ return messageReceivedState(_that.message);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( String? fcmToken)  success,required TResult Function( String message)  failure,required TResult Function( NotificationMessage message)  messageReceivedState,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( String? fcmToken)  success,required TResult Function( String message)  failure,required TResult Function( NotificationMessage message)  messageReceivedState,required TResult Function( NotificationIntent intent,  int timestamp)  navigationRequested,}) {final _that = this;
 switch (_that) {
 case NotificationInitial():
 return initial();case NotificationLoading():
 return loading();case NotificationSuccess():
 return success(_that.fcmToken);case NotificationFailure():
 return failure(_that.message);case NotificationMessageReceivedState():
-return messageReceivedState(_that.message);case _:
+return messageReceivedState(_that.message);case NotificationNavigationRequested():
+return navigationRequested(_that.intent,_that.timestamp);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -635,14 +718,15 @@ return messageReceivedState(_that.message);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( String? fcmToken)?  success,TResult? Function( String message)?  failure,TResult? Function( NotificationMessage message)?  messageReceivedState,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( String? fcmToken)?  success,TResult? Function( String message)?  failure,TResult? Function( NotificationMessage message)?  messageReceivedState,TResult? Function( NotificationIntent intent,  int timestamp)?  navigationRequested,}) {final _that = this;
 switch (_that) {
 case NotificationInitial() when initial != null:
 return initial();case NotificationLoading() when loading != null:
 return loading();case NotificationSuccess() when success != null:
 return success(_that.fcmToken);case NotificationFailure() when failure != null:
 return failure(_that.message);case NotificationMessageReceivedState() when messageReceivedState != null:
-return messageReceivedState(_that.message);case _:
+return messageReceivedState(_that.message);case NotificationNavigationRequested() when navigationRequested != null:
+return navigationRequested(_that.intent,_that.timestamp);case _:
   return null;
 
 }
@@ -917,6 +1001,83 @@ $NotificationMessageCopyWith<$Res> get message {
   
   return $NotificationMessageCopyWith<$Res>(_self.message, (value) {
     return _then(_self.copyWith(message: value));
+  });
+}
+}
+
+/// @nodoc
+
+
+class NotificationNavigationRequested implements NotificationState {
+  const NotificationNavigationRequested(this.intent, this.timestamp);
+  
+
+ final  NotificationIntent intent;
+ final  int timestamp;
+
+/// Create a copy of NotificationState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$NotificationNavigationRequestedCopyWith<NotificationNavigationRequested> get copyWith => _$NotificationNavigationRequestedCopyWithImpl<NotificationNavigationRequested>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is NotificationNavigationRequested&&(identical(other.intent, intent) || other.intent == intent)&&(identical(other.timestamp, timestamp) || other.timestamp == timestamp));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,intent,timestamp);
+
+@override
+String toString() {
+  return 'NotificationState.navigationRequested(intent: $intent, timestamp: $timestamp)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $NotificationNavigationRequestedCopyWith<$Res> implements $NotificationStateCopyWith<$Res> {
+  factory $NotificationNavigationRequestedCopyWith(NotificationNavigationRequested value, $Res Function(NotificationNavigationRequested) _then) = _$NotificationNavigationRequestedCopyWithImpl;
+@useResult
+$Res call({
+ NotificationIntent intent, int timestamp
+});
+
+
+$NotificationIntentCopyWith<$Res> get intent;
+
+}
+/// @nodoc
+class _$NotificationNavigationRequestedCopyWithImpl<$Res>
+    implements $NotificationNavigationRequestedCopyWith<$Res> {
+  _$NotificationNavigationRequestedCopyWithImpl(this._self, this._then);
+
+  final NotificationNavigationRequested _self;
+  final $Res Function(NotificationNavigationRequested) _then;
+
+/// Create a copy of NotificationState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? intent = null,Object? timestamp = null,}) {
+  return _then(NotificationNavigationRequested(
+null == intent ? _self.intent : intent // ignore: cast_nullable_to_non_nullable
+as NotificationIntent,null == timestamp ? _self.timestamp : timestamp // ignore: cast_nullable_to_non_nullable
+as int,
+  ));
+}
+
+/// Create a copy of NotificationState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$NotificationIntentCopyWith<$Res> get intent {
+  
+  return $NotificationIntentCopyWith<$Res>(_self.intent, (value) {
+    return _then(_self.copyWith(intent: value));
   });
 }
 }

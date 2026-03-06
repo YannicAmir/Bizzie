@@ -55,7 +55,7 @@ class _SubscriptionDetailsPageState extends State<SubscriptionDetailsPage> {
     }
   }
 
-  void _handleCancel() {
+  void _handleLaunchSubscriptionSettings() {
     final state = context.read<SubscriptionBloc>().state;
     final url = state.status.managementURL;
 
@@ -106,7 +106,7 @@ class _SubscriptionDetailsPageState extends State<SubscriptionDetailsPage> {
                         _ActionButtons(
                           status: status,
                           onUpgrade: _handleUpgrade,
-                          onManage: _handleCancel,
+                          onManage: _handleLaunchSubscriptionSettings,
                         ),
                       ],
                     ),

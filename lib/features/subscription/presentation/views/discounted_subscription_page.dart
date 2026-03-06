@@ -9,6 +9,7 @@ import 'package:bizzie/features/user/presentation/extensions/user_state_extensio
 import 'package:bizzie/features/subscription/presentation/widgets/subscription_mascot.dart';
 import 'package:bizzie/features/subscription/presentation/widgets/subscription_close_button.dart';
 import 'package:bizzie/features/subscription/presentation/widgets/subscription_feature_highlights.dart';
+import 'package:bizzie/features/subscription/presentation/widgets/subscription_legal_footer.dart';
 import 'package:bizzie/features/subscription/presentation/widgets/subscription_header.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:bizzie/shared/widgets/error/bizzie_error.dart';
@@ -22,6 +23,7 @@ import 'package:bizzie/app/routes/app_routes.dart';
 import 'package:bizzie/shared/widgets/modals/bizzie_snackbar.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class DiscountedSubscriptionPage extends StatefulWidget {
@@ -66,42 +68,43 @@ class _DiscountedSubscriptionPageState
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: BlocListener<SubscriptionBloc, SubscriptionState>(
-          listener: (context, state) {
-            if (state.failure != null) {
-              BizzieSnackBar.show(
-                context,
-                message: state.failure!.message,
-                type: BizzieSnackBarType.error,
-              );
-            }
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle.dark,
+      child: Scaffold(
+        body: SafeArea(
+          child: BlocConsumer<SubscriptionBloc, SubscriptionState>(
+            listener: (context, state) {
+              if (state.failure != null) {
+                BizzieSnackBar.show(
+                  context,
+                  message: state.failure!.message,
+                  type: BizzieSnackBarType.error,
+                );
+              }
 
-            if (state.maybeMap(
-              loaded: (s) => s.isLocalSuccessOverride,
-              orElse: () => false,
-            )) {
-              final userState = context.read<UserBloc>().state;
-              final userName = userState.maybeMap(
-                loaded: (s) => s.user.name,
-                orElse: () => null,
-              );
+              if (state.maybeMap(
+                loaded: (s) => s.isLocalSuccessOverride,
+                orElse: () => false,
+              )) {
+                final userState = context.read<UserBloc>().state;
+                final userName = userState.maybeMap(
+                  loaded: (s) => s.user.name,
+                  orElse: () => null,
+                );
 
-              SubscriptionSuccessOverlay.show(
-                context,
-                userName: userName ?? 'Friend',
-                onDismiss: () {
-                  if (context.canPop()) {
-                    context.pop();
-                  } else {
-                    context.go(AppRoutes.home);
-                  }
-                },
-              );
-            }
-          },
-          child: BlocBuilder<SubscriptionBloc, SubscriptionState>(
+                SubscriptionSuccessOverlay.show(
+                  context,
+                  userName: userName ?? 'Friend',
+                  onDismiss: () {
+                    if (context.canPop()) {
+                      context.pop();
+                    } else {
+                      context.go(AppRoutes.home);
+                    }
+                  },
+                );
+              }
+            },
             buildWhen: (previous, current) {
               return !current.status.isSubscribed;
             },
@@ -149,8 +152,6 @@ class _DiscountedSubscriptionLoadedContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     return Stack(
       children: [
         Positioned.fill(
@@ -171,12 +172,21 @@ class _DiscountedSubscriptionLoadedContent extends StatelessWidget {
                   savingsPercentageText: state.discountPercentageText,
                 ),
                 const SizedBox(height: 24),
-                const SubscriptionFeatureHighlights(),
+                SubscriptionFeatureHighlights(features: state.features),
                 const SizedBox(height: 24),
                 SavingsSummaryCard(
                   package: state.discountAnnualPackage,
                   totalSavingsText: state.totalDiscountSavingsText,
                 ),
+                const SizedBox(height: 32),
+                SubscriptionLegalFooter(
+                  onRestore: () {
+                    context.read<SubscriptionBloc>().add(
+                      const SubscriptionEvent.restoreRequested(),
+                    );
+                  },
+                ),
+                const SizedBox(height: 24),
               ],
             ),
           ),
@@ -199,13 +209,11 @@ class _DiscountedSubscriptionLoadedContent extends StatelessWidget {
                     );
                   }
                 : () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: const Text(
+                    BizzieSnackBar.show(
+                      context,
+                      message:
                           'Offer is currently unavailable. Please try again later.',
-                        ),
-                        backgroundColor: theme.colorScheme.error,
-                      ),
+                      type: BizzieSnackBarType.error,
                     );
                   },
           ),

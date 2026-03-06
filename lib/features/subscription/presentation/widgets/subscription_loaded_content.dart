@@ -6,10 +6,10 @@ import 'package:bizzie/features/subscription/presentation/extensions/subscriptio
 import 'package:bizzie/features/subscription/presentation/widgets/subscription_bottom_actions.dart';
 import 'package:bizzie/features/subscription/presentation/widgets/subscription_close_button.dart';
 import 'package:bizzie/features/subscription/presentation/widgets/subscription_feature_highlights.dart';
+import 'package:bizzie/features/subscription/presentation/widgets/subscription_legal_footer.dart';
 import 'package:bizzie/features/subscription/presentation/widgets/subscription_header.dart';
 import 'package:bizzie/features/subscription/presentation/widgets/subscription_mascot.dart';
 import 'package:bizzie/features/subscription/presentation/widgets/subscription_plan_button.dart';
-import 'package:bizzie/features/subscription/presentation/widgets/subscription_restore_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -37,13 +37,7 @@ class SubscriptionLoadedContent extends StatelessWidget {
             padding: AppConstants.pagePadding.copyWith(bottom: 120),
             child: Column(
               children: [
-                const Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    SubscriptionRestoreButton(),
-                    SubscriptionCloseButton(),
-                  ],
-                ),
+                const Row(children: [Spacer(), SubscriptionCloseButton()]),
                 const SizedBox(height: 8),
                 SubscriptionMascot(asset: mascotAsset),
                 const SizedBox(height: 16),
@@ -68,7 +62,16 @@ class SubscriptionLoadedContent extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 24),
-                const SubscriptionFeatureHighlights(),
+                SubscriptionFeatureHighlights(features: state.features),
+                const SizedBox(height: 32),
+                SubscriptionLegalFooter(
+                  onRestore: () {
+                    context.read<SubscriptionBloc>().add(
+                      const SubscriptionEvent.restoreRequested(),
+                    );
+                  },
+                ),
+                const SizedBox(height: 8),
               ],
             ),
           ),

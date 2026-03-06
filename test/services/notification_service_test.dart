@@ -1,14 +1,12 @@
 import 'dart:async';
 import 'package:bizzie/core/error/failures.dart';
 
-import 'package:bizzie/app/routes/app_routes.dart';
 import 'package:bizzie/core/interfaces/i_local_storage_service.dart';
 import 'package:bizzie/features/notifications/data/datasources/local_notification_datasource.dart';
 import 'package:bizzie/features/notifications/domain/interfaces/i_notification_repository.dart';
 import 'package:bizzie/features/notifications/domain/enums/notification_app_state.dart';
 import 'package:bizzie/features/notifications/domain/enums/notification_trigger_source.dart';
 import 'package:bizzie/features/notifications/domain/models/notification_message.dart';
-import 'package:bizzie/features/notifications/domain/models/notification_route.dart';
 import 'package:bizzie/features/notifications/presentation/analytics/notification_tracker.dart';
 import 'package:bizzie/features/user/domain/interfaces/user_repository.dart';
 import 'package:bizzie/services/notification_service.dart';
@@ -52,7 +50,6 @@ void main() {
   const tDeviceId = 'device_456';
 
   setUpAll(() {
-    registerFallbackValue(const NotificationRoute(''));
     registerFallbackValue(NotificationTriggerSource.remote);
     registerFallbackValue(NotificationAppState.background);
   });
@@ -181,7 +178,7 @@ void main() {
             id: any(named: 'id'),
             title: 'T',
             body: 'B',
-            payload: '{key: val}',
+            payload: '{"key":"val"}',
           ),
         ).called(1);
 
@@ -276,7 +273,7 @@ void main() {
 
   group('Routing', () {
     test(
-      'notificationService_getInitialRoute_parsedMessage_returnsRouteAndLogsAnalytics',
+      'notificationService_getInitialPayload_parsedMessage_returnsPayloadAndLogsAnalytics',
       () async {
         // ARRANGE
         final message = MockRemoteMessage();
@@ -286,19 +283,16 @@ void main() {
         ).thenAnswer((_) async => message);
 
         // ACT
-        final result = await service.getInitialRoute();
+        final result = await service.getInitialPayload();
 
         // ASSERT
-        expect(
-          result?.path,
-          '${AppRoutes.discountedPaywall}?source=notification',
-        );
+        expect(result?['type'], 'subscription_drip');
         verify(
           () => mockTracker.logNotificationOpened(
             notificationType: 'subscription_drip',
             triggerSource: NotificationTriggerSource.remote,
             appState: NotificationAppState.terminated,
-            route: result?.path,
+            route: null,
             ticker: any(named: 'ticker'),
           ),
         ).called(1);
@@ -306,7 +300,7 @@ void main() {
     );
 
     test(
-      'notificationService_onNotificationTap_emitsRouteFromPayloadAndLogsAnalytics',
+      'notificationService_onNotificationTap_emitsPayloadAndLogsAnalytics',
       () async {
         // ARRANGE
         void Function(String?)? tapHandler;
@@ -324,11 +318,11 @@ void main() {
 
         // ACT & assert
         final expectEmit = expectLater(
-          service.routeStream,
-          emits(const NotificationRoute(AppRoutes.reports)),
+          service.payloadStream,
+          emits({'type': 'earnings_notification'}),
         );
 
-        tapHandler?.call('earnings_notification');
+        tapHandler?.call('{"type":"earnings_notification"}');
         await expectEmit;
 
         verify(
@@ -336,8 +330,8 @@ void main() {
             notificationType: 'earnings_notification',
             triggerSource: NotificationTriggerSource.local,
             appState: NotificationAppState.foreground,
-            route: AppRoutes.reports,
-            ticker: any(named: 'ticker'),
+            route: null,
+            ticker: null,
           ),
         ).called(1);
       },
@@ -370,7 +364,7 @@ void main() {
             notificationType: 'sec_filing',
             triggerSource: NotificationTriggerSource.local,
             appState: NotificationAppState.foreground,
-            route: AppRoutes.reports,
+            route: null,
             ticker: 'TSLA',
           ),
         ).called(1);

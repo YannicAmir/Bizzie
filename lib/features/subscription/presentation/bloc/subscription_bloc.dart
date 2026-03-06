@@ -12,6 +12,7 @@ import 'package:bizzie/features/subscription/domain/usecases/restore_purchases_u
 import 'package:bizzie/features/subscription/domain/usecases/get_offerings_use_case.dart';
 import 'package:bizzie/features/subscription/domain/usecases/sync_subscription_use_case.dart';
 import 'package:bizzie/features/subscription/domain/extensions/subscription_offering_extensions.dart';
+import 'package:bizzie/core/interfaces/i_config_service.dart';
 import 'package:injectable/injectable.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
 
@@ -44,6 +45,7 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
   final PaywallAnalytics _analytics;
   final OnboardingBloc _onboardingBloc;
   final SubscriptionTracker _subscriptionTracker;
+  final IConfigService _configService;
 
   StreamSubscription? _statusSubscription;
   StreamSubscription? _authSubscription;
@@ -62,6 +64,7 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
     this._analytics,
     this._onboardingBloc,
     this._subscriptionTracker,
+    this._configService,
   ) : super(SubscriptionState.initialState()) {
     on<SubscriptionEventInitialized>(_onInitialized);
     on<SubscriptionStatusUpdated>(_onStatusUpdated);
@@ -479,6 +482,7 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
             annualPackage: offering.annualPackage,
             monthlyPackage: offering.monthlyPackage,
             discountAnnualPackage: offering.discountAnnualPackage,
+            features: _configService.subscriptionFeatureHighlights,
           ),
         );
       },
