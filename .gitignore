@@ -50,7 +50,7 @@ app.*.map.json
 !.env.example
 
 # Envied generated files
-# lib/env/env.g.dart # Uncomment if you don't want to commit generated secrets
+lib/env/*.g.dart
 
 
 # Firebase Config
