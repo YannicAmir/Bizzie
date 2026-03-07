@@ -60,6 +60,33 @@ jobs:
       - name: Install Dependencies
         run: flutter pub get
 
+      # NEW: Create the .env files from GitHub Secrets
+      - name: Create .env files
+        run: |
+          touch .env.dev .env.qa .env.prod
+          
+          # DEV
+          echo "FMP_API_KEY=${{ secrets.DEV_FMP_API_KEY }}" >> .env.dev
+          echo "REVENUECAT_PUBLIC_API_KEY_IOS=${{ secrets.DEV_REVENUECAT_PUBLIC_API_KEY_IOS }}" >> .env.dev
+          echo "APPLE_TEAM_ID=${{ secrets.APPLE_TEAM_ID }}" >> .env.dev
+          echo "BUNDLE_ID=${{ secrets.DEV_BUNDLE_ID }}" >> .env.dev
+
+          # QA
+          echo "FMP_API_KEY=${{ secrets.QA_FMP_API_KEY }}" >> .env.qa
+          echo "REVENUECAT_PUBLIC_API_KEY_IOS=${{ secrets.QA_REVENUECAT_PUBLIC_API_KEY_IOS }}" >> .env.qa
+          echo "APPLE_TEAM_ID=${{ secrets.APPLE_TEAM_ID }}" >> .env.qa
+          echo "BUNDLE_ID=${{ secrets.QA_BUNDLE_ID }}" >> .env.qa
+
+          # PROD
+          echo "FMP_API_KEY=${{ secrets.PROD_FMP_API_KEY }}" >> .env.prod
+          echo "REVENUECAT_PUBLIC_API_KEY_IOS=${{ secrets.PROD_REVENUECAT_PUBLIC_API_KEY_IOS }}" >> .env.prod
+          echo "APPLE_TEAM_ID=${{ secrets.APPLE_TEAM_ID }}" >> .env.prod
+          echo "BUNDLE_ID=${{ secrets.PROD_BUNDLE_ID }}" >> .env.prod
+
+      # NEW: Generate the envied .g.dart files
+      - name: Run Build Runner
+        run: dart run build_runner build --delete-conflicting-outputs
+
       # -----------------------------------------------------------------------
       # 1. Map Inputs to Secret Env Vars
       # -----------------------------------------------------------------------
