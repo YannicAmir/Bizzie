@@ -661,8 +661,8 @@ class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
           FeatureHighlightItem(
             title: 'Beginners will love',
             description:
-                'Get a daily list of stocks to explore--personalized just for you',
-            type: FeatureHighlightType.dailyPicks,
+                'Visualize Apple and other company financials at a glance',
+            type: FeatureHighlightType.visualFinancials,
           ),
         ];
         break;

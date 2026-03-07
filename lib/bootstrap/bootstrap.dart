@@ -48,8 +48,12 @@ Future<void> bootstrap(
   await getIt<ISubscriptionRepository>().initialize();
   getIt<StockSearchService>().initialize();
 
-  final initialRoute = await getIt<INotificationService>().getInitialRoute();
+  final initialPayload = await getIt<INotificationService>()
+      .getInitialPayload();
   runApp(
-    BizzieApp(environment: environment, initialNotificationRoute: initialRoute),
+    BizzieApp(
+      environment: environment,
+      initialNotificationPayload: initialPayload,
+    ),
   );
 }

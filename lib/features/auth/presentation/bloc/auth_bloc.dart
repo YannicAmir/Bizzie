@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:bizzie/core/usecase/usecase.dart';
+import 'package:bizzie/features/settings/domain/usecases/launch_url_usecase.dart';
 import 'package:bizzie/features/auth/domain/models/user_model.dart';
 import 'package:bizzie/features/auth/domain/usecases/delete_account.dart';
 import 'package:bizzie/features/auth/domain/usecases/get_auth_stream.dart';
@@ -30,6 +31,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final SignOut _signOut;
   final ResetPassword _resetPassword;
   final DeleteAccount _deleteAccount;
+  final LaunchUrlUseCase _launchUrlUseCase;
   StreamSubscription<UserModel?>? _authSubscription;
 
   AuthBloc({
@@ -42,6 +44,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     required SignOut signOut,
     required ResetPassword resetPassword,
     required DeleteAccount deleteAccount,
+    required LaunchUrlUseCase launchUrlUseCase,
     required AuthTracker tracker,
   }) : _getAuthStream = getAuthStream,
        _tracker = tracker,
@@ -52,6 +55,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
        _signOut = signOut,
        _resetPassword = resetPassword,
        _deleteAccount = deleteAccount,
+       _launchUrlUseCase = launchUrlUseCase,
        super(_getInitialState(getCurrentUser)) {
     on<AuthStatusRequested>(_onAuthStatusRequested);
     on<AuthLogoutRequested>(_onLogoutRequested);
@@ -62,6 +66,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<AuthStatusChanged>(_onAuthStatusChanged);
     on<AuthResetPasswordRequested>(_onResetPasswordRequested);
     on<AuthDeleteAccountRequested>(_onDeleteAccountRequested);
+    on<AuthLegalLinkOpened>(_onLegalLinkOpened);
 
     state.whenOrNull(authenticated: (user) => _tracker.setUserId(user.id));
   }
@@ -241,6 +246,14 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       (failure) async => emit(AuthState.failure(failure)),
       (_) async => await _tracker.logAccountDeleted(),
     );
+  }
+
+  Future<void> _onLegalLinkOpened(
+    AuthLegalLinkOpened event,
+    Emitter<AuthState> emit,
+  ) async {
+    unawaited(_tracker.logAuthLinkClicked(type: event.url));
+    await _launchUrlUseCase(event.url);
   }
 
   @override

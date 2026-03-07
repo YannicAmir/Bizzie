@@ -11,6 +11,8 @@ import 'package:bizzie/features/notifications/domain/usecases/unsubscribe_from_t
 import 'package:bizzie/features/notifications/domain/enums/notification_error_type.dart';
 import 'package:bizzie/features/notifications/presentation/analytics/notification_tracker.dart';
 import 'package:bizzie/features/notifications/presentation/bloc/notification_bloc.dart';
+import 'package:bizzie/features/notifications/domain/usecases/parse_notification_payload.dart';
+import 'package:bizzie/core/interfaces/i_notification_service.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
@@ -30,6 +32,11 @@ class MockClearCachedToken extends Mock implements ClearCachedToken {}
 
 class MockNotificationTracker extends Mock implements NotificationTracker {}
 
+class MockParseNotificationPayload extends Mock
+    implements ParseNotificationPayload {}
+
+class MockINotificationService extends Mock implements INotificationService {}
+
 void main() {
   late NotificationBloc bloc;
   late MockRequestNotificationPermission mockRequestPermission;
@@ -39,6 +46,8 @@ void main() {
   late MockUnsubscribeFromTopic mockUnsubscribeFromTopic;
   late MockClearCachedToken mockClearCachedToken;
   late MockNotificationTracker mockTracker;
+  late MockParseNotificationPayload mockParseNotificationPayload;
+  late MockINotificationService mockNotificationService;
 
   setUpAll(() {
     registerFallbackValue(NotificationEvent.setupRequested());
@@ -54,6 +63,16 @@ void main() {
     mockUnsubscribeFromTopic = MockUnsubscribeFromTopic();
     mockClearCachedToken = MockClearCachedToken();
     mockTracker = MockNotificationTracker();
+    mockParseNotificationPayload = MockParseNotificationPayload();
+    mockNotificationService = MockINotificationService();
+
+    when(
+      () => mockNotificationService.payloadStream,
+    ).thenAnswer((_) => const Stream.empty());
+
+    when(
+      () => mockNotificationService.setupInteractions(),
+    ).thenAnswer((_) async {});
 
     when(
       () => mockTracker.logPermissionResult(granted: any(named: 'granted')),
@@ -85,6 +104,8 @@ void main() {
       mockUnsubscribeFromTopic,
       mockClearCachedToken,
       mockTracker,
+      mockParseNotificationPayload,
+      mockNotificationService,
     );
   });
 
@@ -217,11 +238,7 @@ void main() {
         act: (bloc) => bloc.add(
           const NotificationEvent.subscribeToTopicRequested('topic'),
         ),
-        expect: () => [
-          const NotificationState.failure(
-            'Failed to subscribe: Subscribe Error',
-          ),
-        ],
+        expect: () => [const NotificationState.failure('Subscribe Error')],
         verify: (_) {
           verify(
             () => mockTracker.logError(
@@ -265,11 +282,7 @@ void main() {
         act: (bloc) => bloc.add(
           const NotificationEvent.unsubscribeFromTopicRequested('topic'),
         ),
-        expect: () => [
-          const NotificationState.failure(
-            'Failed to unsubscribe: Unsubscribe Error',
-          ),
-        ],
+        expect: () => [const NotificationState.failure('Unsubscribe Error')],
         verify: (_) {
           verify(
             () => mockTracker.logError(

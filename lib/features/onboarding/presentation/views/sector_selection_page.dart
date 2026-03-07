@@ -41,11 +41,14 @@ class _SectorSelectionPageState extends State<SectorSelectionPage> {
         final theme = Theme.of(context);
         final selectedSector = state.onboardingData.selectedSector;
         final sectors = state.availableSectors;
+        final screenHeight = MediaQuery.of(context).size.height;
+        final responsiveHeight = screenHeight * 0.225;
 
         return Scaffold(
           backgroundColor: theme.scaffoldBackgroundColor,
           body: SafeArea(
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 OnboardingHeader(
                   title: "Select the sector that interests you most",
@@ -56,7 +59,7 @@ class _SectorSelectionPageState extends State<SectorSelectionPage> {
                 AppConstants.onboardSectionSpacing,
                 Center(
                   child: SizedBox(
-                    height: 250,
+                    height: responsiveHeight,
                     child: AnimatedSwitcher(
                       duration: const Duration(milliseconds: 300),
                       transitionBuilder:
@@ -163,7 +166,7 @@ class _SectorMascot extends StatelessWidget {
       Sector.consumerStaples,
     ];
     if (sectorsWithPadding.contains(sector)) {
-      child = Padding(padding: const EdgeInsets.all(7.0), child: child);
+      child = child;
     }
     return KeyedSubtree(key: ValueKey(sector!.name), child: child);
   }

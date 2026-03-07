@@ -324,6 +324,8 @@ import '../features/notifications/domain/usecases/clear_cached_token.dart'
 import '../features/notifications/domain/usecases/get_fcm_token.dart' as _i69;
 import '../features/notifications/domain/usecases/listen_to_messages.dart'
     as _i954;
+import '../features/notifications/domain/usecases/parse_notification_payload.dart'
+    as _i926;
 import '../features/notifications/domain/usecases/request_notification_permission.dart'
     as _i332;
 import '../features/notifications/domain/usecases/subscribe_to_topic.dart'
@@ -552,6 +554,9 @@ extension GetItInjectableX on _i174.GetIt {
       preResolve: true,
     );
     gh.factory<_i682.PriceChartBloc>(() => _i682.PriceChartBloc());
+    gh.factory<_i926.ParseNotificationPayload>(
+      () => _i926.ParseNotificationPayload(),
+    );
     gh.singleton<_i809.FirebaseFunctions>(
       () => networkModule.firebaseFunctions,
     );
@@ -1405,6 +1410,21 @@ extension GetItInjectableX on _i174.GetIt {
       () => subscriptionModule.isSubscribedStream(gh<_i615.IUserRepository>()),
       instanceName: 'isSubscribedStream',
     );
+    gh.lazySingleton<_i59.AuthBloc>(
+      () => _i59.AuthBloc(
+        getAuthStream: gh<_i427.GetAuthStream>(),
+        getCurrentUser: gh<_i318.GetCurrentUser>(),
+        signInWithGoogle: gh<_i345.SignInWithGoogle>(),
+        signInWithApple: gh<_i538.SignInWithApple>(),
+        signInWithEmail: gh<_i33.SignInWithEmail>(),
+        signUpWithEmail: gh<_i588.SignUpWithEmail>(),
+        signOut: gh<_i472.SignOut>(),
+        resetPassword: gh<_i73.ResetPassword>(),
+        deleteAccount: gh<_i739.DeleteAccount>(),
+        launchUrlUseCase: gh<_i936.LaunchUrlUseCase>(),
+        tracker: gh<_i700.AuthTracker>(),
+      ),
+    );
     gh.lazySingleton<_i561.GetUserUseCase>(
       () => _i561.GetUserUseCase(gh<_i615.IUserRepository>()),
     );
@@ -1456,20 +1476,6 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i501.CompanyNewsBloc(
         gh<_i654.GetCompanyNewsUseCase>(),
         gh<_i1021.NewsTabAnalytics>(),
-      ),
-    );
-    gh.lazySingleton<_i59.AuthBloc>(
-      () => _i59.AuthBloc(
-        getAuthStream: gh<_i427.GetAuthStream>(),
-        getCurrentUser: gh<_i318.GetCurrentUser>(),
-        signInWithGoogle: gh<_i345.SignInWithGoogle>(),
-        signInWithApple: gh<_i538.SignInWithApple>(),
-        signInWithEmail: gh<_i33.SignInWithEmail>(),
-        signUpWithEmail: gh<_i588.SignUpWithEmail>(),
-        signOut: gh<_i472.SignOut>(),
-        resetPassword: gh<_i73.ResetPassword>(),
-        deleteAccount: gh<_i739.DeleteAccount>(),
-        tracker: gh<_i700.AuthTracker>(),
       ),
     );
     gh.factory<_i570.ProfileBloc>(
@@ -1654,6 +1660,8 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i999.UnsubscribeFromTopic>(),
         gh<_i961.ClearCachedToken>(),
         gh<_i1014.NotificationTracker>(),
+        gh<_i926.ParseNotificationPayload>(),
+        gh<_i430.INotificationService>(),
       ),
     );
     gh.lazySingleton<_i593.OnboardingBloc>(
@@ -1675,15 +1683,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i583.ILocalStorageService>(),
       ),
     );
-    gh.factory<_i709.SelectBrandsBloc>(
-      () => _i709.SelectBrandsBloc(
-        gh<_i593.OnboardingBloc>(),
-        gh<_i422.GetDailyBrandsUseCase>(),
-      ),
-    );
-    gh.lazySingleton<_i698.OnboardingNavigationOrchestrator>(
-      () => _i698.OnboardingNavigationOrchestrator(gh<_i593.OnboardingBloc>()),
-    );
     gh.lazySingleton<_i1066.SubscriptionBloc>(
       () => _i1066.SubscriptionBloc(
         gh<_i630.WatchSubscriptionStatusUseCase>(),
@@ -1698,7 +1697,17 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i780.PaywallAnalytics>(),
         gh<_i593.OnboardingBloc>(),
         gh<_i94.SubscriptionTracker>(),
+        gh<_i937.IConfigService>(),
       ),
+    );
+    gh.factory<_i709.SelectBrandsBloc>(
+      () => _i709.SelectBrandsBloc(
+        gh<_i593.OnboardingBloc>(),
+        gh<_i422.GetDailyBrandsUseCase>(),
+      ),
+    );
+    gh.lazySingleton<_i698.OnboardingNavigationOrchestrator>(
+      () => _i698.OnboardingNavigationOrchestrator(gh<_i593.OnboardingBloc>()),
     );
     return this;
   }

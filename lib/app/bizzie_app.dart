@@ -7,21 +7,22 @@ import 'package:bizzie/features/subscription/presentation/bloc/subscription_bloc
 import 'package:bizzie/features/reports/presentation/bloc/reports_bloc.dart';
 import 'package:bizzie/features/app_status/presentation/bloc/app_status_bloc.dart';
 import 'package:bizzie/features/security/presentation/bloc/security_bloc.dart';
+import 'package:bizzie/features/onboarding/presentation/bloc/onboarding_bloc.dart';
+import 'package:bizzie/features/profile/presentation/bloc/profile_bloc.dart';
 import 'package:bizzie/di/injection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:bizzie/core/enums/environment.dart';
-import 'package:bizzie/features/notifications/domain/models/notification_route.dart';
 
 class BizzieApp extends StatelessWidget {
   final Environment environment;
-  final NotificationRoute? initialNotificationRoute;
+  final Map<String, dynamic>? initialNotificationPayload;
 
   const BizzieApp({
     super.key,
     required this.environment,
-    this.initialNotificationRoute,
+    this.initialNotificationPayload,
   });
 
   @override
@@ -40,10 +41,12 @@ class BizzieApp extends StatelessWidget {
         BlocProvider<ReportsBloc>(create: (_) => getIt<ReportsBloc>()),
         BlocProvider<AppStatusBloc>(create: (_) => getIt<AppStatusBloc>()),
         BlocProvider<SecurityBloc>(create: (_) => getIt<SecurityBloc>()),
+        BlocProvider<OnboardingBloc>(create: (_) => getIt<OnboardingBloc>()),
+        BlocProvider<ProfileBloc>(create: (_) => getIt<ProfileBloc>()),
       ],
       child: BizzieAppView(
         environment: environment,
-        initialNotificationRoute: initialNotificationRoute,
+        initialNotificationPayload: initialNotificationPayload,
       ),
     );
   }

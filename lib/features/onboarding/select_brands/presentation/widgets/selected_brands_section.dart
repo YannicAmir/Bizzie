@@ -22,38 +22,41 @@ class SelectedBrandsSection extends StatelessWidget {
 
     return SectionVisibilityAnimator(
       isVisible: brands.isNotEmpty,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text('Your brands', style: AppTextStyles.bodyMediumBold),
-          AppConstants.onboardSecondarySectionSpacing,
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            alignment: WrapAlignment.start,
-            children: brands.map((vm) {
-              final child = BrandChip(
-                key: ValueKey(vm.brand.name),
-                brand: vm.brand,
-                backgroundColor: backgroundColor,
-                foregroundColor: foregroundColor,
-                iconData: Icons.close,
-                onTap: () => context.read<SelectBrandsBloc>().add(
-                  SelectBrandsEvent.toggleBrand(vm.brand),
-                ),
-              );
-
-              if (vm.shouldAnimate) {
-                return BizzieEntranceScale(
-                  key: ValueKey(vm.brand.name),
-                  child: child,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 24.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Your brands', style: AppTextStyles.bodyMediumBold),
+            AppConstants.onboardSecondarySectionSpacing,
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              alignment: WrapAlignment.start,
+              children: brands.map((vm) {
+                final child = BrandChip(
+                  key: ValueKey('selected_${vm.brand.name}_${vm.brand.ticker}'),
+                  brand: vm.brand,
+                  backgroundColor: backgroundColor,
+                  foregroundColor: foregroundColor,
+                  iconData: Icons.close,
+                  onTap: () => context.read<SelectBrandsBloc>().add(
+                    SelectBrandsEvent.toggleBrand(vm.brand),
+                  ),
                 );
-              }
-              return child;
-            }).toList(),
-          ),
-          AppConstants.onboardSectionSpacing,
-        ],
+
+                if (vm.shouldAnimate) {
+                  return BizzieEntranceScale(
+                    key: ValueKey(vm.brand.name),
+                    child: child,
+                  );
+                }
+                return child;
+              }).toList(),
+            ),
+            AppConstants.onboardSectionSpacing,
+          ],
+        ),
       ),
     );
   }

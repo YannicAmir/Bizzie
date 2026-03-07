@@ -1,18 +1,13 @@
 import 'package:flutter/material.dart';
 
 class SubscriptionFeatureHighlights extends StatelessWidget {
-  const SubscriptionFeatureHighlights({super.key});
+  final List<String> features;
+
+  const SubscriptionFeatureHighlights({super.key, required this.features});
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-
-    final features = [
-      'Unlimited AI analysis of financial reports',
-      'Unlimited product search to find stocks',
-      'Unlimited summaries of SEC filings',
-      'See what Bizzie is analyzing each day',
-    ];
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,

@@ -205,6 +205,17 @@ GoRouter createRouter(
         builder: (context, state) =>
             const Scaffold(body: Center(child: Text('Privacy Policy Screen'))),
       ),
+      GoRoute(
+        path: AppRoutes.companyProfile,
+        parentNavigatorKey: rootNavigatorKey,
+        builder: (context, state) {
+          final ticker = state.pathParameters['ticker']!;
+          return CompanyProfilePage(
+            key: ValueKey('company_$ticker'),
+            ticker: ticker,
+          );
+        },
+      ),
 
       ShellRoute(
         builder: (context, state, child) {
@@ -442,11 +453,19 @@ GoRoute _buildCompanyRoute(String routeName) {
       final extra = state.extra;
       if (extra is Company) {
         initialCompany = extra;
-      } else if (extra is Map<String, dynamic>) {
-        initialCompany = Company.fromJson(extra);
+      } else if (extra is Map<String, dynamic> &&
+          extra.containsKey('ticker') &&
+          extra.containsKey('name')) {
+        try {
+          initialCompany = Company.fromJson(extra);
+        } catch (_) {}
       }
 
-      return CompanyProfilePage(ticker: ticker, initialCompany: initialCompany);
+      return CompanyProfilePage(
+        key: ValueKey('${routeName}_$ticker'),
+        ticker: ticker,
+        initialCompany: initialCompany,
+      );
     },
   );
 }

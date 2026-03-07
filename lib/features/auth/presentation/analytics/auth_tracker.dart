@@ -146,6 +146,18 @@ class AuthTracker {
     );
   }
 
+  /// Logs when a legal link is clicked.
+  Future<void> logAuthLinkClicked({required String type}) async {
+    await _analytics.logEvent(
+      name: 'auth_link_clicked',
+      parameters: {
+        'type': type,
+        'screen_name': _kScreenName,
+        'timestamp': DateTime.now().toIso8601String(),
+      },
+    );
+  }
+
   String _mapSource(AuthSource source) {
     return switch (source) {
       AuthSource.landing => 'landing',

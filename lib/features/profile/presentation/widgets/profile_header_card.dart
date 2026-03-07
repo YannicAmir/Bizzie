@@ -1,13 +1,4 @@
-import 'package:bizzie/app/l10n/bizzie_localizations.dart';
-import 'package:bizzie/app/themes/app_assets.dart';
-import 'package:bizzie/features/profile/presentation/l10n/profile_localizations.dart';
-import 'package:bizzie/app/themes/app_text_styles.dart';
-import 'package:bizzie/features/profile/presentation/bloc/profile_bloc.dart';
-import 'package:bizzie/features/profile/presentation/bloc/profile_event.dart';
-import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/svg.dart';
 
 class ProfileHeaderCard extends StatelessWidget {
   const ProfileHeaderCard({super.key});
@@ -18,86 +9,7 @@ class ProfileHeaderCard extends StatelessWidget {
 
     return ClipPath(
       clipper: _ProfileHeaderClipper(),
-      child: Container(
-        height: 250,
-        color: theme.colorScheme.primary,
-        child: Stack(
-          children: [
-            Positioned(
-              top: 60,
-              left: 16,
-              child: BlocBuilder<UserBloc, UserState>(
-                builder: (context, state) {
-                  final isSubscribed = state.maybeMap(
-                    loaded: (s) => s.user.isSubscribed,
-                    orElse: () => false,
-                  );
-
-                  if (isSubscribed) {
-                    return const _PremiumBadge();
-                  }
-                  return const SizedBox.shrink();
-                },
-              ),
-            ),
-            const Positioned(top: 60, right: 16, child: _SettingsButton()),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _PremiumBadge extends StatelessWidget {
-  const _PremiumBadge();
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final l10n = BizzieLocalizations.of(context);
-
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      decoration: BoxDecoration(
-        color: theme.colorScheme.onPrimary.withValues(alpha: 0.2),
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          SvgPicture.asset(AppAssets.bizziePlusIcon, width: 24, height: 24),
-          const SizedBox(width: 8),
-          Text(
-            l10n.bizziePlus,
-            style: AppTextStyles.bodyMedium.copyWith(
-              color: theme.colorScheme.surface,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _SettingsButton extends StatelessWidget {
-  const _SettingsButton();
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return GestureDetector(
-      onTap: () =>
-          context.read<ProfileBloc>().add(const ProfileEvent.settingsClicked()),
-      child: Container(
-        padding: const EdgeInsets.all(8),
-        decoration: BoxDecoration(
-          color: theme.colorScheme.onPrimary.withValues(alpha: 0.2),
-          shape: BoxShape.circle,
-        ),
-        child: Icon(Icons.settings, color: theme.colorScheme.surface),
-      ),
+      child: Container(height: 250, color: theme.colorScheme.primary),
     );
   }
 }

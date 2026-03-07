@@ -21,6 +21,8 @@ class RemoteConfigKeys {
   static const String freePlanHistoryCount = 'free_plan_history_count';
   static const String reviewPromptEventCount = 'review_prompt_event_count';
   static const String aiSummaryButtonLabel = 'ai_summary_button_label';
+  static const String subscriptionFeatureHighlights =
+      'subscription_feature_highlights';
 }
 
 final _logger = BizzieLogger('ConfigService');
@@ -49,6 +51,12 @@ class ConfigService implements IConfigService {
     "v4Url": "https://financialmodelingprep.com/api/v4",
     "v3Url": "https://financialmodelingprep.com/api/v3",
   };
+
+  static const _defaultSubscriptionFeatureHighlights = [
+    'Unlimited AI analysis of financial reports',
+    'Unlimited product search to find stocks',
+    'Unlimited summaries of SEC filings',
+  ];
 
   static const _defaultSectorDescriptions = {
     "Energy":
@@ -102,6 +110,9 @@ class ConfigService implements IConfigService {
       RemoteConfigKeys.freePlanHistoryCount: 5,
       RemoteConfigKeys.reviewPromptEventCount: 3,
       RemoteConfigKeys.aiSummaryButtonLabel: 'Summarize',
+      RemoteConfigKeys.subscriptionFeatureHighlights: jsonEncode(
+        _defaultSubscriptionFeatureHighlights,
+      ),
     });
 
     try {
@@ -175,6 +186,19 @@ class ConfigService implements IConfigService {
     } catch (e) {
       _logger.severe('Error parsing stockMarketSectors', e);
       return _defaultSectors;
+    }
+  }
+
+  @override
+  List<String> get subscriptionFeatureHighlights {
+    final jsonString = _remoteConfig.getString(
+      RemoteConfigKeys.subscriptionFeatureHighlights,
+    );
+    try {
+      return List<String>.from(jsonDecode(jsonString));
+    } catch (e) {
+      _logger.severe('Error parsing subscriptionFeatureHighlights', e);
+      return _defaultSubscriptionFeatureHighlights;
     }
   }
 

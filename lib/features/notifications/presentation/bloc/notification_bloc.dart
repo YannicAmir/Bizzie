@@ -13,6 +13,10 @@ import 'package:bizzie/features/notifications/domain/usecases/clear_cached_token
 import 'package:bizzie/features/notifications/domain/enums/notification_error_type.dart';
 import 'package:bizzie/features/notifications/presentation/analytics/notification_tracker.dart';
 import 'package:bizzie/core/usecase/usecase.dart';
+import 'package:bizzie/features/notifications/domain/models/notification_intent.dart';
+import 'package:bizzie/features/notifications/domain/usecases/parse_notification_payload.dart';
+import 'package:bizzie/core/interfaces/i_notification_service.dart';
+import 'package:bloc_concurrency/bloc_concurrency.dart';
 
 part 'notification_event.dart';
 part 'notification_state.dart';
@@ -29,8 +33,11 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
   final UnsubscribeFromTopic _unsubscribeFromTopic;
   final ClearCachedToken _clearCachedToken;
   final NotificationTracker _tracker;
+  final ParseNotificationPayload _parseNotificationPayload;
+  final INotificationService _notificationService;
 
   StreamSubscription<NotificationMessage>? _messageSubscription;
+  StreamSubscription<Map<String, dynamic>>? _payloadSubscription;
 
   NotificationBloc(
     this._requestPermission,
@@ -40,6 +47,8 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
     this._unsubscribeFromTopic,
     this._clearCachedToken,
     this._tracker,
+    this._parseNotificationPayload,
+    this._notificationService,
   ) : super(const NotificationState.initial()) {
     on<NotificationSetupRequested>(_onSetupRequested);
     on<NotificationSubscribeToTopicRequested>(_onSubscribeToTopicRequested);
@@ -47,6 +56,10 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
       _onUnsubscribeFromTopicRequested,
     );
     on<NotificationMessageReceived>(_onMessageReceived);
+    on<NotificationInteractionReceived>(
+      _onInteractionReceived,
+      transformer: droppable(),
+    );
     on<NotificationReset>(_onReset);
   }
 
@@ -57,6 +70,8 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
     _logger.info('Resetting NotificationBloc - canceling subscription');
     _messageSubscription?.cancel();
     _messageSubscription = null;
+    _payloadSubscription?.cancel();
+    _payloadSubscription = null;
     await _clearCachedToken(NoParams());
     await _tracker.setUserNotificationsEnabled(false);
     emit(const NotificationState.initial());
@@ -103,6 +118,14 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
               add(NotificationEvent.messageReceived(message));
             });
 
+            _payloadSubscription ??= _notificationService.payloadStream.listen((
+              payload,
+            ) {
+              add(NotificationEvent.interactionReceived(payload));
+            });
+
+            _notificationService.setupInteractions();
+
             emit(NotificationState.success(token));
           },
         );
@@ -121,9 +144,7 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
           type: NotificationErrorType.subscriptionFailure,
           message: failure.message,
         );
-        emit(
-          NotificationState.failure("Failed to subscribe: ${failure.message}"),
-        );
+        emit(NotificationState.failure(failure.message));
       },
       (_) async {
         await _tracker.logTopicSubscribed(topic: event.topic);
@@ -142,11 +163,7 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
           type: NotificationErrorType.unsubscriptionFailure,
           message: failure.message,
         );
-        emit(
-          NotificationState.failure(
-            "Failed to unsubscribe: ${failure.message}",
-          ),
-        );
+        emit(NotificationState.failure(failure.message));
       },
       (_) async {
         await _tracker.logTopicUnsubscribed(topic: event.topic);
@@ -160,15 +177,37 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
   ) {
     _logger.info('MessageReceived event: ${event.message.title}');
 
-    final type = event.message.data?['type'] as String?;
+    final type = event.message.data?['type']?.toString();
     _tracker.logMessageReceived(type: type);
 
     emit(NotificationState.messageReceivedState(event.message));
   }
 
+  Future<void> _onInteractionReceived(
+    NotificationInteractionReceived event,
+    Emitter<NotificationState> emit,
+  ) async {
+    _logger.info('Parsing interaction payload in BLoC');
+    final intent = _parseNotificationPayload(event.payload);
+
+    if (intent != null) {
+      _logger.info('Emitting navigationRequested for intent: $intent');
+      emit(
+        NotificationState.navigationRequested(
+          intent,
+          DateTime.now().millisecondsSinceEpoch,
+        ),
+      );
+      await Future.delayed(const Duration(milliseconds: 500));
+    } else {
+      _logger.warning('Payload parsing resulted in null intent');
+    }
+  }
+
   @override
   Future<void> close() {
     _messageSubscription?.cancel();
+    _payloadSubscription?.cancel();
     return super.close();
   }
 }

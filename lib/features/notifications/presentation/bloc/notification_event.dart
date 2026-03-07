@@ -9,5 +9,8 @@ abstract class NotificationEvent with _$NotificationEvent {
       NotificationUnsubscribeFromTopicRequested;
   const factory NotificationEvent.messageReceived(NotificationMessage message) =
       NotificationMessageReceived;
+  const factory NotificationEvent.interactionReceived(
+    Map<String, dynamic> payload,
+  ) = NotificationInteractionReceived;
   const factory NotificationEvent.reset() = NotificationReset;
 }

@@ -91,7 +91,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                         const AuthDivider(),
                         const SizedBox(height: 24),
                         SocialLoginButtons(source: widget.source),
-                        const SizedBox(height: 48),
+                        const SizedBox(height: 32),
                         const AuthFooter(),
                         const SizedBox(height: 24),
                       ],

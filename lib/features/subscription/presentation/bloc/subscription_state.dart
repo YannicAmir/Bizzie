@@ -32,6 +32,7 @@ abstract class SubscriptionState with _$SubscriptionState {
     SubscriptionPackage? annualPackage,
     SubscriptionPackage? monthlyPackage,
     SubscriptionPackage? discountAnnualPackage,
+    @Default([]) List<String> features,
     @Default(false) bool isLocalSuccessOverride,
     @Default(false) bool isPurchasing,
     @Default(true) bool isAnnualSelection,

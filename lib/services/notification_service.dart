@@ -1,11 +1,8 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
-
-import 'package:bizzie/app/routes/app_routes.dart';
-import 'package:bizzie/core/enums/paywall_source.dart';
 import 'package:bizzie/features/notifications/domain/enums/notification_app_state.dart';
 import 'package:bizzie/features/notifications/domain/enums/notification_trigger_source.dart';
-import 'package:bizzie/features/notifications/domain/models/notification_route.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:bizzie/core/interfaces/i_notification_service.dart';
@@ -29,7 +26,8 @@ class NotificationService implements INotificationService {
   final IUserRepository _userRepository;
   final NotificationTracker _tracker;
 
-  final _routeController = StreamController<NotificationRoute>.broadcast();
+  bool _isInteractionsSetup = false;
+  final _payloadController = StreamController<Map<String, dynamic>>.broadcast();
 
   NotificationService(
     this._notificationRepository,
@@ -79,7 +77,7 @@ class NotificationService implements INotificationService {
           id: DateTime.now().millisecondsSinceEpoch ~/ 1000,
           title: message.title,
           body: message.body,
-          payload: message.data.toString(),
+          payload: jsonEncode(message.data),
         );
       } else {
         _logger.warning(
@@ -174,10 +172,16 @@ class NotificationService implements INotificationService {
   }
 
   @override
-  Stream<NotificationRoute> get routeStream => _routeController.stream;
+  Stream<Map<String, dynamic>> get payloadStream => _payloadController.stream;
 
   @override
   Future<void> setupInteractions() async {
+    if (_isInteractionsSetup) {
+      _logger.info('Notification interactions already set up. Skipping.');
+      return;
+    }
+
+    _isInteractionsSetup = true;
     _logger.info('Setting up notification interactions');
 
     FirebaseMessaging.onMessageOpenedApp.listen((message) {
@@ -187,39 +191,22 @@ class NotificationService implements INotificationService {
   }
 
   @override
-  Future<NotificationRoute?> getInitialRoute() async {
+  Future<Map<String, dynamic>?> getInitialPayload() async {
     final initialMessage = await _firebaseMessaging.getInitialMessage();
     if (initialMessage != null) {
       _logger.info('App opened from terminated state by notification');
-      final route = _parseMessage(initialMessage);
 
       unawaited(
         _tracker.logNotificationOpened(
           notificationType: initialMessage.data['type'] as String?,
           triggerSource: NotificationTriggerSource.remote,
           appState: NotificationAppState.terminated,
-          route: route?.path,
+          route: null,
           ticker: initialMessage.data['ticker'] as String?,
         ),
       );
 
-      return route;
-    }
-    return null;
-  }
-
-  NotificationRoute? _parseMessage(RemoteMessage message) {
-    final type = message.data['type'];
-    _logger.info('Parsing notification type: $type');
-
-    if (type == 'sec_filing' || type == 'earnings_notification') {
-      return NotificationRoute(
-        '${AppRoutes.reports}?entrySource=notification&notificationType=$type',
-      );
-    } else if (type == 'subscription_drip') {
-      return NotificationRoute(
-        '${AppRoutes.discountedPaywall}?source=${PaywallSource.notification.name}',
-      );
+      return initialMessage.data;
     }
     return null;
   }
@@ -228,52 +215,44 @@ class NotificationService implements INotificationService {
     RemoteMessage message, {
     NotificationAppState appState = NotificationAppState.background,
   }) {
-    final route = _parseMessage(message);
-
     unawaited(
       _tracker.logNotificationOpened(
         notificationType: message.data['type'] as String?,
         triggerSource: NotificationTriggerSource.remote,
         appState: appState,
-        route: route?.path,
+        route: null,
         ticker: message.data['ticker'] as String?,
       ),
     );
 
-    if (route != null) {
-      _routeController.add(route);
-    }
+    _payloadController.add(message.data);
   }
 
   void _handlePayload(String payload) {
-    NotificationRoute? route;
+    _logger.info('Handling notification payload: $payload');
     String? type;
-
-    if (payload.contains('sec_filing')) {
-      type = 'sec_filing';
-      route = const NotificationRoute(AppRoutes.reports);
-    } else if (payload.contains('earnings_notification')) {
-      type = 'earnings_notification';
-      route = const NotificationRoute(AppRoutes.reports);
-    } else if (payload.contains('subscription_drip')) {
-      type = 'subscription_drip';
-      route = NotificationRoute(
-        '${AppRoutes.discountedPaywall}?source=${PaywallSource.notification.name}',
-      );
-    }
-
     String? ticker;
-    if (payload.contains('ticker:')) {
-      final startIndex = payload.indexOf('ticker: ') + 8;
-      final endIndex = payload.indexOf(',', startIndex);
-      if (endIndex != -1) {
-        ticker = payload.substring(startIndex, endIndex);
-      } else {
-        final closingBraceIndex = payload.indexOf('}', startIndex);
-        if (closingBraceIndex != -1) {
-          ticker = payload.substring(startIndex, closingBraceIndex);
+    Map<String, dynamic> data = {};
+
+    try {
+      if (payload.startsWith('{') && payload.endsWith('}')) {
+        try {
+          data = Map<String, dynamic>.from(jsonDecode(payload) as Map);
+          _logger.info('Successfully decoded payload as JSON');
+        } catch (e) {
+          _logger.warning(
+            'Failed to decode payload as JSON, attempting legacy parse: $e',
+          );
+          data = _parseLegacyPayload(payload);
         }
+      } else {
+        data = _parseLegacyPayload(payload);
       }
+
+      type = data['type'] as String?;
+      ticker = data['ticker'] as String?;
+    } catch (e) {
+      _logger.severe('Critical error in _handlePayload: $e');
     }
 
     unawaited(
@@ -281,14 +260,37 @@ class NotificationService implements INotificationService {
         notificationType: type,
         triggerSource: NotificationTriggerSource.local,
         appState: NotificationAppState.foreground,
-        route: route?.path,
+        route: null,
         ticker: ticker,
       ),
     );
 
-    if (route != null) {
-      _routeController.add(route);
+    if (data.isNotEmpty) {
+      _logger.info('Adding payload to stream: $data');
+      _payloadController.add(data);
+    } else {
+      _logger.warning('No payload generated');
     }
+  }
+
+  Map<String, dynamic> _parseLegacyPayload(String payload) {
+    final Map<String, dynamic> data = {};
+    _logger.info('Parsing legacy payload: $payload');
+
+    final clean = payload.replaceAll(RegExp(r'^\{|\}$'), '');
+    final parts = clean.split(',');
+
+    for (final part in parts) {
+      final kv = part.split(':');
+      if (kv.length >= 2) {
+        final key = kv[0].trim();
+        final value = kv.sublist(1).join(':').trim();
+        data[key] = value;
+      }
+    }
+
+    _logger.info('Legacy parse result: $data');
+    return data;
   }
 
   @override

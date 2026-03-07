@@ -42,11 +42,17 @@ class _AskNamePageState extends State<AskNamePage> {
     super.dispose();
   }
 
-  void _submitName() {
+  Future<void> _submitName() async {
     if (_isButtonEnabled) {
       final name = _nameController.text.trim();
-      context.read<OnboardingBloc>().add(OnboardingEvent.nameSubmitted(name));
 
+      FocusManager.instance.primaryFocus?.unfocus();
+
+      await Future.delayed(const Duration(milliseconds: 300));
+
+      if (!mounted) return;
+
+      context.read<OnboardingBloc>().add(OnboardingEvent.nameSubmitted(name));
       context.push(AppRoutes.onboardingWelcome);
     }
   }
@@ -54,14 +60,17 @@ class _AskNamePageState extends State<AskNamePage> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
+      resizeToAvoidBottomInset: true,
       body: SafeArea(
         child: Column(
           children: [
             OnboardingHeader(title: "Hi, I'm Bizzie! What's your name?"),
             Expanded(
-              child: Padding(
+              child: SingleChildScrollView(
+                physics: const ClampingScrollPhysics(),
                 padding: const EdgeInsets.symmetric(horizontal: 24.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -72,18 +81,26 @@ class _AskNamePageState extends State<AskNamePage> {
                       onSubmitted: _submitName,
                     ),
                     const SizedBox(height: 24),
-                    const _AskNameMascot(),
+                    const RepaintBoundary(child: _AskNameMascot()),
                   ],
                 ),
               ),
             ),
-            OnboardingFooter(
-              primaryButton: BizziePrimaryButton(
-                onPressed: _isButtonEnabled ? _submitName : null,
-                title: 'Continue',
-              ),
-            ),
           ],
+        ),
+      ),
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(
+          color: theme.scaffoldBackgroundColor,
+          border: Border(top: BorderSide(color: theme.colorScheme.scrim)),
+        ),
+        child: SafeArea(
+          child: OnboardingFooter(
+            primaryButton: BizziePrimaryButton(
+              onPressed: _isButtonEnabled ? _submitName : null,
+              title: 'Continue',
+            ),
+          ),
         ),
       ),
     );
@@ -101,10 +118,14 @@ class _NameInputField extends StatelessWidget {
     var theme = Theme.of(context);
     return TextField(
       controller: controller,
+      autofocus: false,
+      textInputAction: TextInputAction.next,
+      textCapitalization: TextCapitalization.words,
+      keyboardType: TextInputType.name,
       style: theme.textTheme.bodyLarge,
-      decoration: InputDecoration(
+      decoration: const InputDecoration(
         hintText: 'Enter your first name',
-        contentPadding: const EdgeInsets.all(16),
+        contentPadding: EdgeInsets.all(16),
       ),
       onSubmitted: (_) => onSubmitted(),
     );
@@ -116,10 +137,13 @@ class _AskNameMascot extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
+    final responsiveHeight = screenHeight * 0.15;
+
     return Center(
       child: Image.asset(
         AppAssets.onboardingBizzieMascotAskName,
-        height: 225,
+        height: responsiveHeight,
         fit: BoxFit.contain,
       ),
     );

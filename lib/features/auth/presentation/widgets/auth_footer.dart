@@ -1,7 +1,11 @@
-import 'package:bizzie/app/routes/app_routes.dart';
+import 'package:bizzie/core/interfaces/i_config_service.dart';
+import 'package:bizzie/di/injection.dart';
+import 'package:bizzie/features/auth/presentation/bloc/auth_event.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../bloc/auth_bloc.dart';
 
 class AuthFooter extends StatelessWidget {
   const AuthFooter({super.key});
@@ -9,6 +13,7 @@ class AuthFooter extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final configService = getIt<IConfigService>();
     final linkStyle = theme.textTheme.bodySmall?.copyWith(
       fontWeight: FontWeight.bold,
       color: theme.colorScheme.primary,
@@ -29,14 +34,22 @@ class AuthFooter extends StatelessWidget {
               text: 'Terms of Service',
               style: linkStyle,
               recognizer: TapGestureRecognizer()
-                ..onTap = () => context.push(AppRoutes.terms),
+                ..onTap = () {
+                  context.read<AuthBloc>().add(
+                    AuthEvent.legalLinkOpened(configService.termsOfServiceUrl),
+                  );
+                },
             ),
             const TextSpan(text: ' and '),
             TextSpan(
               text: 'Privacy Policy',
               style: linkStyle,
               recognizer: TapGestureRecognizer()
-                ..onTap = () => context.push(AppRoutes.privacy),
+                ..onTap = () {
+                  context.read<AuthBloc>().add(
+                    AuthEvent.legalLinkOpened(configService.privacyPolicyUrl),
+                  );
+                },
             ),
           ],
         ),

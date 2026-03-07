@@ -165,11 +165,10 @@ class SelectBrandsBloc extends Bloc<SelectBrandsEvent, SelectBrandsState> {
     return masterBrands.where((b) => !selectedNames.contains(b.name)).map((
       brand,
     ) {
-      final shouldAnimate = !_initialStaticItems.contains(brand.name);
       return SelectBrandsViewModel(
         brand: brand,
         isSelected: false,
-        shouldAnimate: shouldAnimate,
+        shouldAnimate: false,
       );
     }).toList();
   }

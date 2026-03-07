@@ -34,6 +34,7 @@ import 'package:bizzie/features/onboarding/domain/models/onboarding_step.dart';
 import 'package:bizzie/features/onboarding/presentation/analytics/onboarding_analytics.dart';
 import 'package:bizzie/features/onboarding/presentation/bloc/onboarding_bloc.dart';
 import 'package:bizzie/features/subscription/presentation/analytics/subscription_tracker.dart';
+import 'package:bizzie/core/interfaces/i_config_service.dart';
 
 class MockWatchSubscriptionStatusUseCase extends Mock
     implements WatchSubscriptionStatusUseCase {}
@@ -65,6 +66,8 @@ class MockSubscriptionTracker extends Mock implements SubscriptionTracker {}
 class MockOnboardingBloc extends MockBloc<OnboardingEvent, OnboardingState>
     implements OnboardingBloc {}
 
+class MockIConfigService extends Mock implements IConfigService {}
+
 void main() {
   late MockWatchSubscriptionStatusUseCase mockWatchStatus;
   late MockRefreshSubscriptionStatusUseCase mockRefreshStatus;
@@ -77,6 +80,7 @@ void main() {
   late MockPaywallAnalytics mockAnalytics;
   late MockOnboardingBloc mockOnboardingBloc;
   late MockSubscriptionTracker mockSubscriptionTracker;
+  late MockIConfigService mockConfigService;
   late StreamController<bool> isSubscribedController;
 
   final tAnnualPackage = SubscriptionPackage(
@@ -166,6 +170,12 @@ void main() {
     ).thenAnswer((_) async => {});
     mockOnboardingBloc = MockOnboardingBloc();
     mockSubscriptionTracker = MockSubscriptionTracker();
+    mockConfigService = MockIConfigService();
+
+    when(
+      () => mockConfigService.subscriptionFeatureHighlights,
+    ).thenReturn(['Feature 1', 'Feature 2']);
+
     isSubscribedController = StreamController<bool>.broadcast();
 
     when(
@@ -240,6 +250,7 @@ void main() {
       mockAnalytics,
       mockOnboardingBloc,
       mockSubscriptionTracker,
+      mockConfigService,
     );
   }
 
@@ -449,6 +460,7 @@ void main() {
             mockAnalytics,
             mockOnboardingBloc,
             mockSubscriptionTracker,
+            mockConfigService,
           );
           return bloc;
         },
@@ -496,6 +508,7 @@ void main() {
         seed: () => SubscriptionState.loaded(
           status: tStatus,
           offerings: tOffering,
+          features: const ['Feature 1', 'Feature 2'],
           isPurchasing: true,
           annualPackage: tAnnualPackage,
           monthlyPackage: tMonthlyPackage,
@@ -524,6 +537,7 @@ void main() {
         seed: () => SubscriptionState.loaded(
           status: tStatus,
           offerings: tOffering,
+          features: const ['Feature 1', 'Feature 2'],
           annualPackage: tAnnualPackage,
           monthlyPackage: tMonthlyPackage,
           discountAnnualPackage: tDiscountPackage,
@@ -557,6 +571,7 @@ void main() {
         seed: () => SubscriptionState.loaded(
           status: tStatus,
           offerings: tOffering,
+          features: const ['Feature 1', 'Feature 2'],
           annualPackage: tAnnualPackage,
           monthlyPackage: tMonthlyPackage,
           discountAnnualPackage: tDiscountPackage,
@@ -591,6 +606,7 @@ void main() {
         seed: () => SubscriptionState.loaded(
           status: tStatus,
           offerings: tOffering,
+          features: const ['Feature 1', 'Feature 2'],
           annualPackage: tAnnualPackage,
           monthlyPackage: tMonthlyPackage,
           discountAnnualPackage: tDiscountPackage,
@@ -625,6 +641,7 @@ void main() {
         seed: () => SubscriptionState.loaded(
           status: tStatus,
           offerings: tOffering,
+          features: const ['Feature 1', 'Feature 2'],
           annualPackage: tAnnualPackage,
           monthlyPackage: tMonthlyPackage,
           discountAnnualPackage: tDiscountPackage,
@@ -796,6 +813,7 @@ void main() {
         seed: () => SubscriptionState.loaded(
           status: tStatus,
           offerings: tOffering,
+          features: const ['Feature 1', 'Feature 2'],
           annualPackage: tAnnualPackage,
           monthlyPackage: tMonthlyPackage,
           discountAnnualPackage: tDiscountPackage,
@@ -822,6 +840,7 @@ void main() {
         seed: () => SubscriptionState.loaded(
           status: tSubscribedStatus,
           offerings: tOffering,
+          features: const ['Feature 1', 'Feature 2'],
           isPurchasing: true,
           isLocalSuccessOverride: true,
           annualPackage: tAnnualPackage,
@@ -850,6 +869,7 @@ void main() {
         seed: () => SubscriptionState.loaded(
           status: tSubscribedStatus,
           offerings: tOffering,
+          features: const ['Feature 1', 'Feature 2'],
           isPurchasing: true,
           isLocalSuccessOverride: true,
           annualPackage: tAnnualPackage,
@@ -915,6 +935,7 @@ void main() {
             mockAnalytics,
             mockOnboardingBloc,
             mockSubscriptionTracker,
+            mockConfigService,
           );
 
           when(
@@ -962,6 +983,7 @@ void main() {
             mockAnalytics,
             mockOnboardingBloc,
             mockSubscriptionTracker,
+            mockConfigService,
           );
 
           when(
@@ -1038,6 +1060,7 @@ void main() {
       seed: () => SubscriptionState.loaded(
         status: tStatus,
         offerings: tOffering,
+        features: const ['Feature 1', 'Feature 2'],
         annualPackage: tAnnualPackage,
         monthlyPackage: tMonthlyPackage,
         discountAnnualPackage: tDiscountPackage,

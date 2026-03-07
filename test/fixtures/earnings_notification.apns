@@ -1,5 +1,5 @@
 {
-    "Simulator Target Bundle": "com.bizzie.app",
+    "Simulator Target Bundle": "io.getbizzie.bizzieapp.dev",
     "aps": {
         "alert": {
             "title": "Earnings Reminder: TSLA",

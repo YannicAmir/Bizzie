@@ -78,7 +78,7 @@ class _BrandsListContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      padding: const EdgeInsets.symmetric(horizontal: 24.0),
+      clipBehavior: Clip.hardEdge,
       child: BlocBuilder<SelectBrandsBloc, SelectBrandsState>(
         builder: (context, state) {
           return state.map(

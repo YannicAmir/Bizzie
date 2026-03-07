@@ -4,9 +4,9 @@ flutter_native_splash:
   branding: assets/images/branding/splash_branding.png
   branding_bottom_padding: 20
   
-  color_dark: "#0e172c"
-  image_dark: assets/images/branding/splash_logo.png
-  branding_dark: assets/images/branding/splash_branding.png
+  # color_dark: "#0e172c"
+  # image_dark: assets/images/branding/splash_logo.png
+  # branding_dark: assets/images/branding/splash_branding.png
 
   android_12:
     color: "#ffffff"
@@ -21,7 +21,6 @@ flutter_native_splash:
     # often allows just the top level ones to propagate if not specified, 
     # or specific keys inside. 
     # However, to be safe and adhering to common patterns:
-    color_dark: "#0e172c"
-    image_dark: assets/images/branding/splash_logo.png
-    branding_dark: assets/images/branding/splash_branding.png
-
+    # color_dark: "#0e172c"
+    # image_dark: assets/images/branding/splash_logo.png
+    # branding_dark: assets/images/branding/splash_branding.png

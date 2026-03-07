@@ -25,6 +25,7 @@ class SectorHighlightCard extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        const SizedBox(height: 8),
         Text(sectorName, style: theme.textTheme.displaySmall),
         if (sectorPe != null || sectorAverageChange != null) ...[
           const SizedBox(height: 16),

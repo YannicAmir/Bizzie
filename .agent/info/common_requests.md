@@ -7,6 +7,8 @@ no code changes yet, just explain -- is this strictly adhering to gold standard 
 
 proceed with strict adherance to production grade gold standard best practice
 
+create fresh implementation plan with the proposed changes
+
 # Logging Agent
 add gold standard production grade logging to the following:
 

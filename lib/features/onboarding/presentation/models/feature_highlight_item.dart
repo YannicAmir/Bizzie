@@ -5,7 +5,6 @@ enum FeatureHighlightType {
   visualFinancials,
   brandSearch,
   easyToUnderstand,
-  dailyPicks,
 }
 
 class FeatureHighlightItem {
