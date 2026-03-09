@@ -718,20 +718,11 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i529.IAnalyticsService>(
       () => _i222.AnalyticsService(gh<_i398.FirebaseAnalytics>()),
     );
-    await gh.singletonAsync<_i937.IConfigService>(
-      () => _i216.ConfigService.init(gh<_i915.AppEnv>()),
-      preResolve: true,
-    );
     gh.lazySingleton<_i584.DividendsFirestoreDataSource>(
       () => _i584.DividendsFirestoreDataSourceImpl(
         gh<_i974.FirebaseFirestore>(),
         gh<_i879.ITimeProvider>(),
       ),
-    );
-    gh.singleton<_i361.Dio>(
-      () =>
-          networkModule.fmpDio(gh<_i937.IConfigService>(), gh<_i915.AppEnv>()),
-      instanceName: 'FmpDio',
     );
     gh.factory<_i963.ProfileTracker>(
       () => _i963.ProfileTracker(
@@ -757,48 +748,9 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i879.ITimeProvider>(),
       ),
     );
-    gh.factory<_i308.IAppStatusRepository>(
-      () => _i1043.AppStatusRepositoryImpl(
-        gh<_i937.IConfigService>(),
-        gh<_i384.ILocalAppStatusDataSource>(),
-        gh<_i28.IConnectivityService>(),
-        gh<_i248.IAppInfoService>(),
-        gh<_i961.ILifecycleService>(),
-      ),
-    );
-    gh.factory<_i1016.IOnboardingRemoteDataSource>(
-      () => _i1016.OnboardingRemoteDataSource(
-        gh<_i52.FirestoreService>(),
-        gh<_i937.IConfigService>(),
-      ),
-    );
-    gh.lazySingleton<_i454.MarketRemoteDataSource>(
-      () => _i454.MarketRemoteDataSourceImpl(
-        gh<_i361.Dio>(instanceName: 'FmpDio'),
-        gh<_i937.IConfigService>(),
-      ),
-    );
-    gh.lazySingleton<_i348.FinancialStatementsRemoteDataSource>(
-      () => _i348.FinancialStatementsRemoteDataSourceImpl(
-        gh<_i361.Dio>(instanceName: 'FmpDio'),
-        gh<_i937.IConfigService>(),
-      ),
-    );
     gh.lazySingleton<_i592.ISubscriptionRemoteDataSource>(
       () => _i1061.SubscriptionRemoteDataSource(gh<_i915.AppEnv>()),
       registerFor: {_prod, _qa, _dev},
-    );
-    gh.lazySingleton<_i607.IMarketRepository>(
-      () => _i27.MarketRepositoryImpl(
-        gh<_i454.MarketRemoteDataSource>(),
-        gh<_i1009.MarketLocalDataSource>(),
-      ),
-    );
-    gh.lazySingleton<_i473.DividendsRemoteDataSource>(
-      () => _i473.DividendsRemoteDataSourceImpl(
-        gh<_i361.Dio>(instanceName: 'FmpDio'),
-        gh<_i937.IConfigService>(),
-      ),
     );
     gh.lazySingleton<_i1012.IRecommendedBrandsRepository>(
       () => _i230.RecommendedBrandsRepository(
@@ -905,66 +857,15 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i830.WatchlistAnalytics>(
       () => _i830.WatchlistAnalytics(gh<_i529.IAnalyticsService>()),
     );
-    gh.lazySingleton<_i423.RatiosRemoteDataSource>(
-      () => _i423.RatiosRemoteDataSourceImpl(
-        gh<_i361.Dio>(instanceName: 'FmpDio'),
-        gh<_i937.IConfigService>(),
-      ),
-    );
-    gh.lazySingleton<_i706.BusinessRemoteDataSource>(
-      () => _i706.BusinessRemoteDataSourceImpl(
-        gh<_i361.Dio>(instanceName: 'FmpDio'),
-        gh<_i937.IConfigService>(),
-      ),
-    );
-    gh.lazySingleton<_i1019.IPfcfRatioRepository>(
-      () => _i398.PfcfRatioRepositoryImpl(
-        gh<_i423.RatiosRemoteDataSource>(),
-        gh<_i958.RatiosFirestoreDataSource>(),
-      ),
-    );
-    gh.lazySingleton<_i286.CompanyRemoteDataSource>(
-      () => _i286.CompanyRemoteDataSourceImpl(
-        gh<_i361.Dio>(instanceName: 'FmpDio'),
-        gh<_i937.IConfigService>(),
-      ),
-    );
     gh.lazySingleton<_i826.IFeedbackRepository>(
       () => _i326.FeedbackRepositoryImpl(gh<_i291.IFeedbackRemoteDataSource>()),
     );
     gh.lazySingleton<_i622.INotificationRepository>(
       () => _i648.NotificationRepositoryImpl(gh<_i640.FcmRemoteDataSource>()),
     );
-    gh.lazySingleton<_i1025.IRoeRepository>(
-      () => _i218.RoeRepositoryImpl(
-        gh<_i423.RatiosRemoteDataSource>(),
-        gh<_i958.RatiosFirestoreDataSource>(),
-      ),
-    );
-    gh.lazySingleton<_i1043.NewsRemoteDataSource>(
-      () => _i1043.NewsRemoteDataSourceImpl(
-        gh<_i361.Dio>(instanceName: 'FmpDio'),
-        gh<_i937.IConfigService>(),
-      ),
-    );
-    gh.lazySingleton<_i481.SecurityRemoteDataSource>(
-      () => _i481.SecurityRemoteDataSourceImpl(
-        gh<_i361.Dio>(instanceName: 'FmpDio'),
-        gh<_i937.IConfigService>(),
-      ),
-    );
-    gh.lazySingleton<_i231.GetRoeUseCase>(
-      () => _i231.GetRoeUseCase(gh<_i1025.IRoeRepository>()),
-    );
     gh.lazySingleton<_i212.GetWatchlistEventsUseCase>(
       () => _i212.GetWatchlistEventsUseCase(
         gh<_i877.IWatchlistEventsRepository>(),
-      ),
-    );
-    gh.lazySingleton<_i814.INetIncomeRepository>(
-      () => _i13.NetIncomeRepositoryImpl(
-        gh<_i348.FinancialStatementsRemoteDataSource>(),
-        gh<_i806.FinancialStatementsFirestoreDataSource>(),
       ),
     );
     gh.lazySingleton<_i659.ISubscriptionRepository>(
@@ -973,34 +874,10 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i347.IFirebaseFunctionsService>(),
       ),
     );
-    gh.lazySingleton<_i581.IFreeCashFlowRepository>(
-      () => _i269.FreeCashFlowRepositoryImpl(
-        gh<_i348.FinancialStatementsRemoteDataSource>(),
-        gh<_i806.FinancialStatementsFirestoreDataSource>(),
-      ),
-    );
-    gh.lazySingleton<_i695.IEpsRepository>(
-      () => _i390.EpsRepositoryImpl(
-        gh<_i348.FinancialStatementsRemoteDataSource>(),
-        gh<_i806.FinancialStatementsFirestoreDataSource>(),
-      ),
-    );
     gh.lazySingleton<_i882.IReportsRepository>(
       () => _i1028.ReportsRepositoryImpl(
         gh<_i532.IReportsRemoteDataSource>(),
         gh<_i456.IStockRepository>(),
-      ),
-    );
-    gh.singleton<_i977.AiProductSearchService>(
-      () => _i977.AiProductSearchService(
-        gh<_i937.IConfigService>(),
-        gh<_i501.IVertexAIProvider>(),
-      ),
-    );
-    gh.lazySingleton<_i865.IFinancialStatementsRepository>(
-      () => _i741.FinancialStatementsRepositoryImpl(
-        gh<_i348.FinancialStatementsRemoteDataSource>(),
-        gh<_i806.FinancialStatementsFirestoreDataSource>(),
       ),
     );
     gh.lazySingleton<_i685.IAuthRepository>(
@@ -1009,14 +886,12 @@ extension GetItInjectableX on _i174.GetIt {
         sharedPreferences: gh<_i460.SharedPreferences>(),
       ),
     );
-    gh.lazySingleton<_i912.GetPfcfRatioUseCase>(
-      () => _i912.GetPfcfRatioUseCase(gh<_i1019.IPfcfRatioRepository>()),
-    );
-    gh.lazySingleton<_i468.IDividendRepository>(
-      () => _i418.DividendRepositoryImpl(
-        gh<_i473.DividendsRemoteDataSource>(),
-        gh<_i584.DividendsFirestoreDataSource>(),
+    await gh.singletonAsync<_i937.IConfigService>(
+      () => _i216.ConfigService.init(
+        gh<_i915.AppEnv>(),
+        gh<_i627.FirebaseRemoteConfig>(),
       ),
+      preResolve: true,
     );
     gh.factory<_i258.AddToWatchlistUseCase>(
       () => _i258.AddToWatchlistUseCase(gh<_i1039.IWatchlistRepository>()),
@@ -1033,32 +908,14 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i269.StockSearchService>(
       () => _i269.StockSearchService(gh<_i456.IStockRepository>()),
     );
-    gh.lazySingleton<_i203.IRevenueRepository>(
-      () => _i517.RevenueRepositoryImpl(
-        gh<_i348.FinancialStatementsRemoteDataSource>(),
-        gh<_i806.FinancialStatementsFirestoreDataSource>(),
-      ),
-    );
     gh.factory<_i849.TrackRatingConditionsUseCase>(
       () => _i849.TrackRatingConditionsUseCase(
         gh<_i507.IAppRatingsRepository>(),
         gh<_i937.IConfigService>(),
       ),
     );
-    gh.lazySingleton<_i368.IFcpsRepository>(
-      () => _i724.FcpsRepositoryImpl(
-        gh<_i348.FinancialStatementsRemoteDataSource>(),
-        gh<_i806.FinancialStatementsFirestoreDataSource>(),
-      ),
-    );
     gh.singleton<_i1050.ISectorService>(
       () => _i155.SectorService(gh<_i937.IConfigService>()),
-    );
-    gh.factory<_i983.AppStatusBloc>(
-      () => _i983.AppStatusBloc(
-        gh<_i308.IAppStatusRepository>(),
-        gh<_i4.AppStatusTracker>(),
-      ),
     );
     gh.factory<_i176.CompanyProfileBloc>(
       () => _i176.CompanyProfileBloc(
@@ -1066,28 +923,27 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i961.ILifecycleService>(),
       ),
     );
-    gh.factory<_i62.CompanyPfcfRatioBloc>(
-      () => _i62.CompanyPfcfRatioBloc(
-        gh<_i912.GetPfcfRatioUseCase>(),
+    gh.singleton<_i361.Dio>(
+      () =>
+          networkModule.fmpDio(gh<_i937.IConfigService>(), gh<_i915.AppEnv>()),
+      instanceName: 'FmpDio',
+    );
+    gh.factory<_i308.IAppStatusRepository>(
+      () => _i1043.AppStatusRepositoryImpl(
         gh<_i937.IConfigService>(),
-        gh<_i559.PfcfRatioTabAnalytics>(),
-      ),
-    );
-    gh.lazySingleton<_i805.GetFcpsStatsUseCase>(
-      () => _i805.GetFcpsStatsUseCase(gh<_i368.IFcpsRepository>()),
-    );
-    gh.lazySingleton<_i376.ICompanyRepository>(
-      () => _i568.CompanyRepositoryImpl(
-        gh<_i286.CompanyRemoteDataSource>(),
-        gh<_i741.CompanyFirestoreDataSource>(),
-      ),
-    );
-    gh.lazySingleton<_i329.IOnboardingRepository>(
-      () => _i379.OnboardingRepositoryImpl(
-        gh<_i1016.IOnboardingRemoteDataSource>(),
+        gh<_i384.ILocalAppStatusDataSource>(),
+        gh<_i28.IConnectivityService>(),
+        gh<_i248.IAppInfoService>(),
+        gh<_i961.ILifecycleService>(),
       ),
     );
     gh.factory<_i824.HomeBloc>(() => _i824.HomeBloc(gh<_i32.HomeAnalytics>()));
+    gh.factory<_i1016.IOnboardingRemoteDataSource>(
+      () => _i1016.OnboardingRemoteDataSource(
+        gh<_i52.FirestoreService>(),
+        gh<_i937.IConfigService>(),
+      ),
+    );
     gh.factory<_i205.ReauthenticateUseCase>(
       () => _i205.ReauthenticateUseCase(gh<_i685.IAuthRepository>()),
     );
@@ -1106,15 +962,33 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i244.ResetPasswordUseCase>(
       () => _i244.ResetPasswordUseCase(gh<_i685.IAuthRepository>()),
     );
-    gh.lazySingleton<_i876.IPriceRepository>(
-      () => _i952.PriceRepositoryImpl(
-        gh<_i481.SecurityRemoteDataSource>(),
-        gh<_i595.SecurityFirestoreDataSource>(),
+    gh.lazySingleton<_i454.MarketRemoteDataSource>(
+      () => _i454.MarketRemoteDataSourceImpl(
+        gh<_i361.Dio>(instanceName: 'FmpDio'),
+        gh<_i937.IConfigService>(),
+      ),
+    );
+    gh.lazySingleton<_i348.FinancialStatementsRemoteDataSource>(
+      () => _i348.FinancialStatementsRemoteDataSourceImpl(
+        gh<_i361.Dio>(instanceName: 'FmpDio'),
+        gh<_i937.IConfigService>(),
+      ),
+    );
+    gh.lazySingleton<_i607.IMarketRepository>(
+      () => _i27.MarketRepositoryImpl(
+        gh<_i454.MarketRemoteDataSource>(),
+        gh<_i1009.MarketLocalDataSource>(),
       ),
     );
     gh.lazySingleton<_i693.GetRecommendedBrandsUseCase>(
       () => _i693.GetRecommendedBrandsUseCase(
         gh<_i1012.IRecommendedBrandsRepository>(),
+      ),
+    );
+    gh.lazySingleton<_i473.DividendsRemoteDataSource>(
+      () => _i473.DividendsRemoteDataSourceImpl(
+        gh<_i361.Dio>(instanceName: 'FmpDio'),
+        gh<_i937.IConfigService>(),
       ),
     );
     gh.factory<_i69.GetFcmToken>(
@@ -1133,26 +1007,6 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i999.UnsubscribeFromTopic>(
       () => _i999.UnsubscribeFromTopic(gh<_i622.INotificationRepository>()),
-    );
-    gh.lazySingleton<_i786.ISharesRepository>(
-      () => _i272.SharesRepositoryImpl(
-        gh<_i376.ICompanyRepository>(),
-        gh<_i348.FinancialStatementsRemoteDataSource>(),
-        gh<_i806.FinancialStatementsFirestoreDataSource>(),
-      ),
-    );
-    gh.factory<_i1033.CompanyRoeBloc>(
-      () => _i1033.CompanyRoeBloc(
-        gh<_i231.GetRoeUseCase>(),
-        gh<_i937.IConfigService>(),
-        gh<_i765.RoeTabAnalytics>(),
-      ),
-    );
-    gh.lazySingleton<_i943.IPeRatioRepository>(
-      () => _i260.PeRatioRepositoryImpl(
-        gh<_i423.RatiosRemoteDataSource>(),
-        gh<_i958.RatiosFirestoreDataSource>(),
-      ),
     );
     gh.lazySingleton<_i343.GetOfferingsUseCase>(
       () => _i343.GetOfferingsUseCase(gh<_i659.ISubscriptionRepository>()),
@@ -1186,29 +1040,47 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i659.ISubscriptionRepository>(),
       ),
     );
-    gh.lazySingleton<_i608.IAiProductSearchRepository>(
-      () =>
-          _i1008.AiProductSearchRepository(gh<_i977.AiProductSearchService>()),
-    );
-    gh.lazySingleton<_i15.INewsRepository>(
-      () => _i368.NewsRepositoryImpl(
-        gh<_i1043.NewsRemoteDataSource>(),
-        gh<_i634.NewsFirestoreDataSource>(),
+    gh.lazySingleton<_i423.RatiosRemoteDataSource>(
+      () => _i423.RatiosRemoteDataSourceImpl(
+        gh<_i361.Dio>(instanceName: 'FmpDio'),
+        gh<_i937.IConfigService>(),
       ),
     );
-    gh.lazySingleton<_i775.GetNetIncomeStatsUseCase>(
-      () => _i775.GetNetIncomeStatsUseCase(gh<_i814.INetIncomeRepository>()),
-    );
-    gh.lazySingleton<_i584.GetRevenueStatsUseCase>(
-      () => _i584.GetRevenueStatsUseCase(gh<_i203.IRevenueRepository>()),
-    );
-    gh.lazySingleton<_i106.GetFreeCashFlowStatsUseCase>(
-      () => _i106.GetFreeCashFlowStatsUseCase(
-        gh<_i581.IFreeCashFlowRepository>(),
+    gh.lazySingleton<_i706.BusinessRemoteDataSource>(
+      () => _i706.BusinessRemoteDataSourceImpl(
+        gh<_i361.Dio>(instanceName: 'FmpDio'),
+        gh<_i937.IConfigService>(),
       ),
     );
-    gh.lazySingleton<_i240.GetSharesUseCase>(
-      () => _i240.GetSharesUseCase(gh<_i786.ISharesRepository>()),
+    gh.lazySingleton<_i1019.IPfcfRatioRepository>(
+      () => _i398.PfcfRatioRepositoryImpl(
+        gh<_i423.RatiosRemoteDataSource>(),
+        gh<_i958.RatiosFirestoreDataSource>(),
+      ),
+    );
+    gh.lazySingleton<_i286.CompanyRemoteDataSource>(
+      () => _i286.CompanyRemoteDataSourceImpl(
+        gh<_i361.Dio>(instanceName: 'FmpDio'),
+        gh<_i937.IConfigService>(),
+      ),
+    );
+    gh.lazySingleton<_i1025.IRoeRepository>(
+      () => _i218.RoeRepositoryImpl(
+        gh<_i423.RatiosRemoteDataSource>(),
+        gh<_i958.RatiosFirestoreDataSource>(),
+      ),
+    );
+    gh.lazySingleton<_i1043.NewsRemoteDataSource>(
+      () => _i1043.NewsRemoteDataSourceImpl(
+        gh<_i361.Dio>(instanceName: 'FmpDio'),
+        gh<_i937.IConfigService>(),
+      ),
+    );
+    gh.lazySingleton<_i481.SecurityRemoteDataSource>(
+      () => _i481.SecurityRemoteDataSourceImpl(
+        gh<_i361.Dio>(instanceName: 'FmpDio'),
+        gh<_i937.IConfigService>(),
+      ),
     );
     await gh.singletonAsync<_i337.SecurityService>(
       () => _i337.SecurityService.create(
@@ -1224,11 +1096,8 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i212.GetWatchlistEventsUseCase>(),
       ),
     );
-    gh.lazySingleton<_i657.GetPeRatioUseCase>(
-      () => _i657.GetPeRatioUseCase(gh<_i943.IPeRatioRepository>()),
-    );
-    gh.lazySingleton<_i654.GetCompanyNewsUseCase>(
-      () => _i654.GetCompanyNewsUseCase(gh<_i15.INewsRepository>()),
+    gh.lazySingleton<_i231.GetRoeUseCase>(
+      () => _i231.GetRoeUseCase(gh<_i1025.IRoeRepository>()),
     );
     gh.lazySingleton<_i739.DeleteAccount>(
       () => _i739.DeleteAccount(gh<_i685.IAuthRepository>()),
@@ -1251,50 +1120,13 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i588.SignUpWithEmail>(
       () => _i588.SignUpWithEmail(gh<_i685.IAuthRepository>()),
     );
-    gh.lazySingleton<_i1054.GetBalanceSheetsUseCase>(
-      () => _i1054.GetBalanceSheetsUseCase(
-        gh<_i865.IFinancialStatementsRepository>(),
-      ),
-    );
-    gh.lazySingleton<_i64.GetCashFlowStatementsUseCase>(
-      () => _i64.GetCashFlowStatementsUseCase(
-        gh<_i865.IFinancialStatementsRepository>(),
-      ),
-    );
-    gh.lazySingleton<_i606.GetFullFinancialsUseCase>(
-      () => _i606.GetFullFinancialsUseCase(
-        gh<_i865.IFinancialStatementsRepository>(),
-      ),
-    );
-    gh.lazySingleton<_i204.GetIncomeStatementsUseCase>(
-      () => _i204.GetIncomeStatementsUseCase(
-        gh<_i865.IFinancialStatementsRepository>(),
-      ),
-    );
     gh.factory<_i130.SearchStocksUseCase>(
       () => _i130.SearchStocksUseCase(gh<_i269.StockSearchService>()),
-    );
-    gh.factory<_i920.GetSectorsUseCase>(
-      () => _i920.GetSectorsUseCase(gh<_i329.IOnboardingRepository>()),
-    );
-    gh.factory<_i952.GetSp500HistoryUseCase>(
-      () => _i952.GetSp500HistoryUseCase(gh<_i329.IOnboardingRepository>()),
     );
     gh.lazySingleton<_i83.SignOutUseCase>(
       () => _i83.SignOutUseCase(
         gh<_i685.IAuthRepository>(),
         gh<_i659.ISubscriptionRepository>(),
-      ),
-    );
-    gh.factory<_i191.FinancialStatementsBloc>(
-      () => _i191.FinancialStatementsBloc(
-        gh<_i204.GetIncomeStatementsUseCase>(),
-        gh<_i1054.GetBalanceSheetsUseCase>(),
-        gh<_i64.GetCashFlowStatementsUseCase>(),
-        gh<_i906.IncStmtTabAnalytics>(),
-        gh<_i498.BalStmtTabAnalytics>(),
-        gh<_i746.CashStmtTabAnalytics>(),
-        gh<_i937.IConfigService>(),
       ),
     );
     gh.lazySingleton<_i714.GetSubscriptionStatusUseCase>(
@@ -1311,21 +1143,16 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i261.MarkReportsViewedUseCase>(
       () => _i261.MarkReportsViewedUseCase(gh<_i882.IReportsRepository>()),
     );
-    gh.lazySingleton<_i107.GetEpsStatsUseCase>(
-      () => _i107.GetEpsStatsUseCase(gh<_i695.IEpsRepository>()),
+    gh.lazySingleton<_i814.INetIncomeRepository>(
+      () => _i13.NetIncomeRepositoryImpl(
+        gh<_i348.FinancialStatementsRemoteDataSource>(),
+        gh<_i806.FinancialStatementsFirestoreDataSource>(),
+      ),
     );
     gh.lazySingleton<_i990.ISelectBrandsRepository>(
       () => _i432.SelectBrandsRepositoryImpl(
         gh<_i6.ISelectBrandsRemoteDataSource>(),
         gh<_i1050.ISectorService>(),
-      ),
-    );
-    gh.lazySingleton<_i158.ISecurityRepository>(
-      () => _i503.SecurityRepositoryImpl(
-        gh<_i376.ICompanyRepository>(),
-        gh<_i481.SecurityRemoteDataSource>(),
-        gh<_i595.SecurityFirestoreDataSource>(),
-        gh<_i423.RatiosRemoteDataSource>(),
       ),
     );
     gh.lazySingleton<_i615.IUserRepository>(
@@ -1335,30 +1162,55 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i685.IAuthRepository>(),
       ),
     );
-    gh.factory<_i683.CompanyEpsBloc>(
-      () => _i683.CompanyEpsBloc(
-        gh<_i107.GetEpsStatsUseCase>(),
-        gh<_i937.IConfigService>(),
-        gh<_i667.EpsTabAnalytics>(),
-      ),
-    );
-    gh.factory<_i178.CompanyFcpsBloc>(
-      () => _i178.CompanyFcpsBloc(
-        gh<_i805.GetFcpsStatsUseCase>(),
-        gh<_i937.IConfigService>(),
-        gh<_i648.FcpsTabAnalytics>(),
-      ),
-    );
-    gh.factory<_i754.GetDividendInfoUseCase>(
-      () => _i754.GetDividendInfoUseCase(gh<_i468.IDividendRepository>()),
-    );
-    gh.lazySingleton<_i872.IBusinessRepository>(
-      () => _i606.BusinessRepositoryImpl(
-        gh<_i376.ICompanyRepository>(),
-        gh<_i706.BusinessRemoteDataSource>(),
-        gh<_i379.BusinessFirestoreDataSource>(),
+    gh.lazySingleton<_i581.IFreeCashFlowRepository>(
+      () => _i269.FreeCashFlowRepositoryImpl(
         gh<_i348.FinancialStatementsRemoteDataSource>(),
         gh<_i806.FinancialStatementsFirestoreDataSource>(),
+      ),
+    );
+    gh.lazySingleton<_i695.IEpsRepository>(
+      () => _i390.EpsRepositoryImpl(
+        gh<_i348.FinancialStatementsRemoteDataSource>(),
+        gh<_i806.FinancialStatementsFirestoreDataSource>(),
+      ),
+    );
+    gh.singleton<_i977.AiProductSearchService>(
+      () => _i977.AiProductSearchService(
+        gh<_i937.IConfigService>(),
+        gh<_i501.IVertexAIProvider>(),
+      ),
+    );
+    gh.lazySingleton<_i865.IFinancialStatementsRepository>(
+      () => _i741.FinancialStatementsRepositoryImpl(
+        gh<_i348.FinancialStatementsRemoteDataSource>(),
+        gh<_i806.FinancialStatementsFirestoreDataSource>(),
+      ),
+    );
+    gh.lazySingleton<_i912.GetPfcfRatioUseCase>(
+      () => _i912.GetPfcfRatioUseCase(gh<_i1019.IPfcfRatioRepository>()),
+    );
+    gh.lazySingleton<_i468.IDividendRepository>(
+      () => _i418.DividendRepositoryImpl(
+        gh<_i473.DividendsRemoteDataSource>(),
+        gh<_i584.DividendsFirestoreDataSource>(),
+      ),
+    );
+    gh.lazySingleton<_i203.IRevenueRepository>(
+      () => _i517.RevenueRepositoryImpl(
+        gh<_i348.FinancialStatementsRemoteDataSource>(),
+        gh<_i806.FinancialStatementsFirestoreDataSource>(),
+      ),
+    );
+    gh.lazySingleton<_i368.IFcpsRepository>(
+      () => _i724.FcpsRepositoryImpl(
+        gh<_i348.FinancialStatementsRemoteDataSource>(),
+        gh<_i806.FinancialStatementsFirestoreDataSource>(),
+      ),
+    );
+    gh.factory<_i983.AppStatusBloc>(
+      () => _i983.AppStatusBloc(
+        gh<_i308.IAppStatusRepository>(),
+        gh<_i4.AppStatusTracker>(),
       ),
     );
     gh.factory<_i980.ChangePasswordBloc>(
@@ -1367,18 +1219,26 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i963.ProfileTracker>(),
       ),
     );
-    gh.factory<_i991.CompanyFreeCashFlowBloc>(
-      () => _i991.CompanyFreeCashFlowBloc(
-        gh<_i106.GetFreeCashFlowStatsUseCase>(),
+    gh.factory<_i62.CompanyPfcfRatioBloc>(
+      () => _i62.CompanyPfcfRatioBloc(
+        gh<_i912.GetPfcfRatioUseCase>(),
         gh<_i937.IConfigService>(),
-        gh<_i167.FreeCashFlowTabAnalytics>(),
+        gh<_i559.PfcfRatioTabAnalytics>(),
       ),
     );
-    gh.lazySingleton<_i925.GetHistoricalEodPricesUseCase>(
-      () => _i925.GetHistoricalEodPricesUseCase(gh<_i876.IPriceRepository>()),
+    gh.lazySingleton<_i805.GetFcpsStatsUseCase>(
+      () => _i805.GetFcpsStatsUseCase(gh<_i368.IFcpsRepository>()),
     );
-    gh.lazySingleton<_i605.GetPriceHistoryUseCase>(
-      () => _i605.GetPriceHistoryUseCase(gh<_i876.IPriceRepository>()),
+    gh.lazySingleton<_i376.ICompanyRepository>(
+      () => _i568.CompanyRepositoryImpl(
+        gh<_i286.CompanyRemoteDataSource>(),
+        gh<_i741.CompanyFirestoreDataSource>(),
+      ),
+    );
+    gh.lazySingleton<_i329.IOnboardingRepository>(
+      () => _i379.OnboardingRepositoryImpl(
+        gh<_i1016.IOnboardingRemoteDataSource>(),
+      ),
     );
     gh.factory<_i63.WatchlistBloc>(
       () => _i63.WatchlistBloc(
@@ -1392,18 +1252,10 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i830.WatchlistAnalytics>(),
       ),
     );
-    gh.factory<_i614.CompanyNetIncomeBloc>(
-      () => _i614.CompanyNetIncomeBloc(
-        gh<_i775.GetNetIncomeStatsUseCase>(),
-        gh<_i937.IConfigService>(),
-        gh<_i631.NetIncomeTabAnalytics>(),
-      ),
-    );
-    gh.factory<_i806.CompanyRevenueBloc>(
-      () => _i806.CompanyRevenueBloc(
-        gh<_i584.GetRevenueStatsUseCase>(),
-        gh<_i937.IConfigService>(),
-        gh<_i151.RevenueTabAnalytics>(),
+    gh.lazySingleton<_i876.IPriceRepository>(
+      () => _i952.PriceRepositoryImpl(
+        gh<_i481.SecurityRemoteDataSource>(),
+        gh<_i595.SecurityFirestoreDataSource>(),
       ),
     );
     gh.lazySingleton<_i687.Stream<bool>>(
@@ -1428,11 +1280,11 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i561.GetUserUseCase>(
       () => _i561.GetUserUseCase(gh<_i615.IUserRepository>()),
     );
-    gh.factory<_i807.CompanySharesBloc>(
-      () => _i807.CompanySharesBloc(
-        gh<_i240.GetSharesUseCase>(),
-        gh<_i937.IConfigService>(),
-        gh<_i454.SharesTabAnalytics>(),
+    gh.lazySingleton<_i786.ISharesRepository>(
+      () => _i272.SharesRepositoryImpl(
+        gh<_i376.ICompanyRepository>(),
+        gh<_i348.FinancialStatementsRemoteDataSource>(),
+        gh<_i806.FinancialStatementsFirestoreDataSource>(),
       ),
     );
     gh.factory<_i586.UpdateProfileUseCase>(
@@ -1447,10 +1299,22 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i685.IAuthRepository>(),
       ),
     );
-    gh.factory<_i691.FindStockForProductUseCase>(
-      () => _i691.FindStockForProductUseCase(
-        gh<_i608.IAiProductSearchRepository>(),
+    gh.factory<_i1033.CompanyRoeBloc>(
+      () => _i1033.CompanyRoeBloc(
+        gh<_i231.GetRoeUseCase>(),
+        gh<_i937.IConfigService>(),
+        gh<_i765.RoeTabAnalytics>(),
       ),
+    );
+    gh.lazySingleton<_i943.IPeRatioRepository>(
+      () => _i260.PeRatioRepositoryImpl(
+        gh<_i423.RatiosRemoteDataSource>(),
+        gh<_i958.RatiosFirestoreDataSource>(),
+      ),
+    );
+    gh.lazySingleton<_i608.IAiProductSearchRepository>(
+      () =>
+          _i1008.AiProductSearchRepository(gh<_i977.AiProductSearchService>()),
     );
     gh.lazySingleton<_i687.GetProfileDisplayDataUseCase>(
       () => _i687.GetProfileDisplayDataUseCase(
@@ -1459,6 +1323,15 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i607.IMarketRepository>(),
         gh<_i1050.ISectorService>(),
       ),
+    );
+    gh.lazySingleton<_i15.INewsRepository>(
+      () => _i368.NewsRepositoryImpl(
+        gh<_i1043.NewsRemoteDataSource>(),
+        gh<_i634.NewsFirestoreDataSource>(),
+      ),
+    );
+    gh.lazySingleton<_i775.GetNetIncomeStatsUseCase>(
+      () => _i775.GetNetIncomeStatsUseCase(gh<_i814.INetIncomeRepository>()),
     );
     gh.factory<_i1023.ReportsBloc>(
       () => _i1023.ReportsBloc(
@@ -1472,10 +1345,12 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i471.ReportsTracker>(),
       ),
     );
-    gh.factory<_i501.CompanyNewsBloc>(
-      () => _i501.CompanyNewsBloc(
-        gh<_i654.GetCompanyNewsUseCase>(),
-        gh<_i1021.NewsTabAnalytics>(),
+    gh.lazySingleton<_i584.GetRevenueStatsUseCase>(
+      () => _i584.GetRevenueStatsUseCase(gh<_i203.IRevenueRepository>()),
+    );
+    gh.lazySingleton<_i106.GetFreeCashFlowStatsUseCase>(
+      () => _i106.GetFreeCashFlowStatsUseCase(
+        gh<_i581.IFreeCashFlowRepository>(),
       ),
     );
     gh.factory<_i570.ProfileBloc>(
@@ -1491,13 +1366,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i227.SecurityTracker>(),
       ),
     );
-    gh.factory<_i423.CompanyPeRatioBloc>(
-      () => _i423.CompanyPeRatioBloc(
-        gh<_i657.GetPeRatioUseCase>(),
-        gh<_i937.IConfigService>(),
-        gh<_i1027.PeRatioTabAnalytics>(),
-      ),
-    );
     gh.lazySingleton<_i242.UpdateProfileUseCase>(
       () => _i242.UpdateProfileUseCase(gh<_i615.IUserRepository>()),
     );
@@ -1507,18 +1375,40 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i422.GetDailyBrandsUseCase>(
       () => _i422.GetDailyBrandsUseCase(gh<_i990.ISelectBrandsRepository>()),
     );
-    gh.lazySingleton<_i190.GetSecurityDetailsUseCase>(
-      () => _i190.GetSecurityDetailsUseCase(gh<_i158.ISecurityRepository>()),
+    gh.lazySingleton<_i240.GetSharesUseCase>(
+      () => _i240.GetSharesUseCase(gh<_i786.ISharesRepository>()),
     );
-    gh.lazySingleton<_i1055.GetUpcomingEarningsUseCase>(
-      () => _i1055.GetUpcomingEarningsUseCase(gh<_i158.ISecurityRepository>()),
+    gh.lazySingleton<_i657.GetPeRatioUseCase>(
+      () => _i657.GetPeRatioUseCase(gh<_i943.IPeRatioRepository>()),
     );
-    gh.factory<_i723.CompanyDividendsBloc>(
-      () => _i723.CompanyDividendsBloc(
-        gh<_i754.GetDividendInfoUseCase>(),
-        gh<_i937.IConfigService>(),
-        gh<_i252.DividendTabAnalytics>(),
+    gh.lazySingleton<_i654.GetCompanyNewsUseCase>(
+      () => _i654.GetCompanyNewsUseCase(gh<_i15.INewsRepository>()),
+    );
+    gh.lazySingleton<_i1054.GetBalanceSheetsUseCase>(
+      () => _i1054.GetBalanceSheetsUseCase(
+        gh<_i865.IFinancialStatementsRepository>(),
       ),
+    );
+    gh.lazySingleton<_i64.GetCashFlowStatementsUseCase>(
+      () => _i64.GetCashFlowStatementsUseCase(
+        gh<_i865.IFinancialStatementsRepository>(),
+      ),
+    );
+    gh.lazySingleton<_i606.GetFullFinancialsUseCase>(
+      () => _i606.GetFullFinancialsUseCase(
+        gh<_i865.IFinancialStatementsRepository>(),
+      ),
+    );
+    gh.lazySingleton<_i204.GetIncomeStatementsUseCase>(
+      () => _i204.GetIncomeStatementsUseCase(
+        gh<_i865.IFinancialStatementsRepository>(),
+      ),
+    );
+    gh.factory<_i920.GetSectorsUseCase>(
+      () => _i920.GetSectorsUseCase(gh<_i329.IOnboardingRepository>()),
+    );
+    gh.factory<_i952.GetSp500HistoryUseCase>(
+      () => _i952.GetSp500HistoryUseCase(gh<_i329.IOnboardingRepository>()),
     );
     await gh.lazySingletonAsync<_i430.INotificationService>(() {
       final i = _i941.NotificationService(
@@ -1532,6 +1422,17 @@ extension GetItInjectableX on _i174.GetIt {
       );
       return i.initialize().then((_) => i);
     }, preResolve: true);
+    gh.factory<_i191.FinancialStatementsBloc>(
+      () => _i191.FinancialStatementsBloc(
+        gh<_i204.GetIncomeStatementsUseCase>(),
+        gh<_i1054.GetBalanceSheetsUseCase>(),
+        gh<_i64.GetCashFlowStatementsUseCase>(),
+        gh<_i906.IncStmtTabAnalytics>(),
+        gh<_i498.BalStmtTabAnalytics>(),
+        gh<_i746.CashStmtTabAnalytics>(),
+        gh<_i937.IConfigService>(),
+      ),
+    );
     gh.factory<_i896.AppRatingsBloc>(
       () => _i896.AppRatingsBloc(
         gh<_i849.TrackRatingConditionsUseCase>(),
@@ -1552,6 +1453,9 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i963.ProfileTracker>(),
       ),
     );
+    gh.lazySingleton<_i107.GetEpsStatsUseCase>(
+      () => _i107.GetEpsStatsUseCase(gh<_i695.IEpsRepository>()),
+    );
     gh.lazySingleton<_i596.ToggleNotificationsUseCase>(
       () => _i596.ToggleNotificationsUseCase(
         gh<_i685.IAuthRepository>(),
@@ -1567,6 +1471,14 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i310.SettingsTracker>(),
       ),
     );
+    gh.lazySingleton<_i158.ISecurityRepository>(
+      () => _i503.SecurityRepositoryImpl(
+        gh<_i376.ICompanyRepository>(),
+        gh<_i481.SecurityRemoteDataSource>(),
+        gh<_i595.SecurityFirestoreDataSource>(),
+        gh<_i423.RatiosRemoteDataSource>(),
+      ),
+    );
     gh.factory<_i555.GetSearchDashboardDataUseCase>(
       () => _i555.GetSearchDashboardDataUseCase(
         gh<_i685.IAuthRepository>(),
@@ -1574,22 +1486,50 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i693.GetRecommendedBrandsUseCase>(),
       ),
     );
+    gh.factory<_i683.CompanyEpsBloc>(
+      () => _i683.CompanyEpsBloc(
+        gh<_i107.GetEpsStatsUseCase>(),
+        gh<_i937.IConfigService>(),
+        gh<_i667.EpsTabAnalytics>(),
+      ),
+    );
+    gh.factory<_i178.CompanyFcpsBloc>(
+      () => _i178.CompanyFcpsBloc(
+        gh<_i805.GetFcpsStatsUseCase>(),
+        gh<_i937.IConfigService>(),
+        gh<_i648.FcpsTabAnalytics>(),
+      ),
+    );
+    gh.factory<_i754.GetDividendInfoUseCase>(
+      () => _i754.GetDividendInfoUseCase(gh<_i468.IDividendRepository>()),
+    );
     gh.factory<_i874.CompleteOnboardingUseCase>(
       () => _i874.CompleteOnboardingUseCase(
         gh<_i329.IOnboardingRepository>(),
         gh<_i430.INotificationService>(),
       ),
     );
-    gh.factory<_i73.UpcomingEarningsBloc>(
-      () => _i73.UpcomingEarningsBloc(gh<_i1055.GetUpcomingEarningsUseCase>()),
-    );
-    gh.lazySingleton<_i582.GetBusinessProfileUseCase>(
-      () => _i582.GetBusinessProfileUseCase(gh<_i872.IBusinessRepository>()),
-    );
-    gh.factory<_i342.HistoricalPriceEodBloc>(
-      () => _i342.HistoricalPriceEodBloc(
-        gh<_i925.GetHistoricalEodPricesUseCase>(),
+    gh.lazySingleton<_i872.IBusinessRepository>(
+      () => _i606.BusinessRepositoryImpl(
+        gh<_i376.ICompanyRepository>(),
+        gh<_i706.BusinessRemoteDataSource>(),
+        gh<_i379.BusinessFirestoreDataSource>(),
+        gh<_i348.FinancialStatementsRemoteDataSource>(),
+        gh<_i806.FinancialStatementsFirestoreDataSource>(),
       ),
+    );
+    gh.factory<_i991.CompanyFreeCashFlowBloc>(
+      () => _i991.CompanyFreeCashFlowBloc(
+        gh<_i106.GetFreeCashFlowStatsUseCase>(),
+        gh<_i937.IConfigService>(),
+        gh<_i167.FreeCashFlowTabAnalytics>(),
+      ),
+    );
+    gh.lazySingleton<_i925.GetHistoricalEodPricesUseCase>(
+      () => _i925.GetHistoricalEodPricesUseCase(gh<_i876.IPriceRepository>()),
+    );
+    gh.lazySingleton<_i605.GetPriceHistoryUseCase>(
+      () => _i605.GetPriceHistoryUseCase(gh<_i876.IPriceRepository>()),
     );
     gh.lazySingleton<_i82.SubmitFeedbackUseCase>(
       () => _i82.SubmitFeedbackUseCase(
@@ -1605,11 +1545,11 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i591.FeedbackTracker>(),
       ),
     );
-    gh.factory<_i505.CompanyBusinessBloc>(
-      () => _i505.CompanyBusinessBloc(
-        gh<_i582.GetBusinessProfileUseCase>(),
+    gh.factory<_i614.CompanyNetIncomeBloc>(
+      () => _i614.CompanyNetIncomeBloc(
+        gh<_i775.GetNetIncomeStatsUseCase>(),
         gh<_i937.IConfigService>(),
-        gh<_i292.BusinessTabAnalytics>(),
+        gh<_i631.NetIncomeTabAnalytics>(),
       ),
     );
     gh.lazySingleton<_i594.GetSettingsDisplayDataUseCase>(
@@ -1625,6 +1565,25 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i961.ClearCachedToken>(
       () => _i961.ClearCachedToken(gh<_i430.INotificationService>()),
     );
+    gh.factory<_i806.CompanyRevenueBloc>(
+      () => _i806.CompanyRevenueBloc(
+        gh<_i584.GetRevenueStatsUseCase>(),
+        gh<_i937.IConfigService>(),
+        gh<_i151.RevenueTabAnalytics>(),
+      ),
+    );
+    gh.factory<_i807.CompanySharesBloc>(
+      () => _i807.CompanySharesBloc(
+        gh<_i240.GetSharesUseCase>(),
+        gh<_i937.IConfigService>(),
+        gh<_i454.SharesTabAnalytics>(),
+      ),
+    );
+    gh.factory<_i691.FindStockForProductUseCase>(
+      () => _i691.FindStockForProductUseCase(
+        gh<_i608.IAiProductSearchRepository>(),
+      ),
+    );
     gh.factory<_i419.SettingsBloc>(
       () => _i419.SettingsBloc(
         gh<_i594.GetSettingsDisplayDataUseCase>(),
@@ -1636,12 +1595,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i579.OpenAppSettingsUseCase>(),
         gh<_i714.GetSubscriptionStatusUseCase>(),
         gh<_i310.SettingsTracker>(),
-      ),
-    );
-    gh.factory<_i410.CompanySecurityBloc>(
-      () => _i410.CompanySecurityBloc(
-        gh<_i190.GetSecurityDetailsUseCase>(),
-        gh<_i258.SecurityTabAnalytics>(),
       ),
     );
     gh.lazySingleton<_i200.UserBloc>(
@@ -1662,6 +1615,32 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i1014.NotificationTracker>(),
         gh<_i926.ParseNotificationPayload>(),
         gh<_i430.INotificationService>(),
+      ),
+    );
+    gh.factory<_i501.CompanyNewsBloc>(
+      () => _i501.CompanyNewsBloc(
+        gh<_i654.GetCompanyNewsUseCase>(),
+        gh<_i1021.NewsTabAnalytics>(),
+      ),
+    );
+    gh.factory<_i423.CompanyPeRatioBloc>(
+      () => _i423.CompanyPeRatioBloc(
+        gh<_i657.GetPeRatioUseCase>(),
+        gh<_i937.IConfigService>(),
+        gh<_i1027.PeRatioTabAnalytics>(),
+      ),
+    );
+    gh.lazySingleton<_i190.GetSecurityDetailsUseCase>(
+      () => _i190.GetSecurityDetailsUseCase(gh<_i158.ISecurityRepository>()),
+    );
+    gh.lazySingleton<_i1055.GetUpcomingEarningsUseCase>(
+      () => _i1055.GetUpcomingEarningsUseCase(gh<_i158.ISecurityRepository>()),
+    );
+    gh.factory<_i723.CompanyDividendsBloc>(
+      () => _i723.CompanyDividendsBloc(
+        gh<_i754.GetDividendInfoUseCase>(),
+        gh<_i937.IConfigService>(),
+        gh<_i252.DividendTabAnalytics>(),
       ),
     );
     gh.lazySingleton<_i593.OnboardingBloc>(
@@ -1700,10 +1679,34 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i937.IConfigService>(),
       ),
     );
+    gh.factory<_i73.UpcomingEarningsBloc>(
+      () => _i73.UpcomingEarningsBloc(gh<_i1055.GetUpcomingEarningsUseCase>()),
+    );
+    gh.lazySingleton<_i582.GetBusinessProfileUseCase>(
+      () => _i582.GetBusinessProfileUseCase(gh<_i872.IBusinessRepository>()),
+    );
+    gh.factory<_i342.HistoricalPriceEodBloc>(
+      () => _i342.HistoricalPriceEodBloc(
+        gh<_i925.GetHistoricalEodPricesUseCase>(),
+      ),
+    );
     gh.factory<_i709.SelectBrandsBloc>(
       () => _i709.SelectBrandsBloc(
         gh<_i593.OnboardingBloc>(),
         gh<_i422.GetDailyBrandsUseCase>(),
+      ),
+    );
+    gh.factory<_i505.CompanyBusinessBloc>(
+      () => _i505.CompanyBusinessBloc(
+        gh<_i582.GetBusinessProfileUseCase>(),
+        gh<_i937.IConfigService>(),
+        gh<_i292.BusinessTabAnalytics>(),
+      ),
+    );
+    gh.factory<_i410.CompanySecurityBloc>(
+      () => _i410.CompanySecurityBloc(
+        gh<_i190.GetSecurityDetailsUseCase>(),
+        gh<_i258.SecurityTabAnalytics>(),
       ),
     );
     gh.lazySingleton<_i698.OnboardingNavigationOrchestrator>(

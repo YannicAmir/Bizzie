@@ -12,6 +12,8 @@ abstract class IConfigService {
   String get appStoreLink;
   String get playStoreLink;
   bool get maintenanceMode;
+  bool get bypassTalsec;
+  bool get forceImmediateFetch;
   int get freePlanHistoryCount;
   int get reviewPromptEventCount;
   String get aiSummaryButtonLabel;

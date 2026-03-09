@@ -17,6 +17,8 @@ class RemoteConfigKeys {
   static const String appStoreLink = 'app_store_link';
   static const String playStoreLink = 'play_store_link';
   static const String maintenanceMode = 'maintenance_mode';
+  static const String bypassTalsec = 'bypass_talsec';
+  static const String forceImmediateFetch = 'force_immediate_fetch';
   static const String contactEmail = 'contact_email';
   static const String freePlanHistoryCount = 'free_plan_history_count';
   static const String reviewPromptEventCount = 'review_prompt_event_count';
@@ -86,10 +88,17 @@ class ConfigService implements IConfigService {
   ConfigService(this._remoteConfig);
 
   Future<void> initialize(AppEnv env) async {
+    final forceImmediate = _remoteConfig.getBool(
+      RemoteConfigKeys.forceImmediateFetch,
+    );
+    final fetchInterval = forceImmediate
+        ? Duration.zero
+        : env.minimumFetchInterval;
+
     await _remoteConfig.setConfigSettings(
       RemoteConfigSettings(
         fetchTimeout: const Duration(minutes: 1),
-        minimumFetchInterval: env.minimumFetchInterval,
+        minimumFetchInterval: fetchInterval,
       ),
     );
 
@@ -106,6 +115,8 @@ class ConfigService implements IConfigService {
       RemoteConfigKeys.appStoreLink: 'https://bizzie.app',
       RemoteConfigKeys.playStoreLink: 'https://bizzie.app',
       RemoteConfigKeys.maintenanceMode: false,
+      RemoteConfigKeys.bypassTalsec: false,
+      RemoteConfigKeys.forceImmediateFetch: false,
       RemoteConfigKeys.contactEmail: 'yannic@getbizzie.io',
       RemoteConfigKeys.freePlanHistoryCount: 5,
       RemoteConfigKeys.reviewPromptEventCount: 3,
@@ -123,8 +134,11 @@ class ConfigService implements IConfigService {
   }
 
   @factoryMethod
-  static Future<ConfigService> init(AppEnv env) async {
-    final service = ConfigService(FirebaseRemoteConfig.instance);
+  static Future<ConfigService> init(
+    AppEnv env,
+    FirebaseRemoteConfig remoteConfig,
+  ) async {
+    final service = ConfigService(remoteConfig);
     await service.initialize(env);
     return service;
   }
@@ -160,6 +174,13 @@ class ConfigService implements IConfigService {
   @override
   bool get maintenanceMode =>
       _remoteConfig.getBool(RemoteConfigKeys.maintenanceMode);
+
+  @override
+  bool get bypassTalsec => _remoteConfig.getBool(RemoteConfigKeys.bypassTalsec);
+
+  @override
+  bool get forceImmediateFetch =>
+      _remoteConfig.getBool(RemoteConfigKeys.forceImmediateFetch);
 
   @override
   int get freePlanHistoryCount =>
