@@ -50,6 +50,13 @@ class SecurityService {
       return;
     }
 
+    if (_configService.bypassTalsec) {
+      _logger.warning(
+        'Skipping SecurityService init (bypass enabled via Remote Config)',
+      );
+      return;
+    }
+
     final config = TalsecConfig(
       androidConfig: null,
       iosConfig: IOSConfig(
