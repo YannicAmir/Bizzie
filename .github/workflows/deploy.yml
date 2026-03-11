@@ -83,9 +83,8 @@ jobs:
           echo "APPLE_TEAM_ID=${{ secrets.APPLE_TEAM_ID }}" >> .env.prod
           echo "BUNDLE_ID=${{ secrets.PROD_BUNDLE_ID }}" >> .env.prod
 
-      # NEW: Generate the envied .g.dart files
-      - name: Run Build Runner
-        run: dart run build_runner build --delete-conflicting-outputs
+      - name: Run Build Runner (Envied only)
+        run: dart run build_runner build --delete-conflicting-outputs --build-filter="lib/env/*.dart"
 
       # -----------------------------------------------------------------------
       # 1. Map Inputs to Secret Env Vars
