@@ -84,7 +84,7 @@ jobs:
           echo "BUNDLE_ID=${{ secrets.PROD_BUNDLE_ID }}" >> .env.prod
 
       - name: Run Build Runner (Envied only)
-        run: dart run build_runner build --delete-conflicting-outputs --build-filter="lib/env/*.dart"
+        run: dart run build_runner build --build-filter="lib/env/*.dart"
 
       # -----------------------------------------------------------------------
       # 1. Map Inputs to Secret Env Vars
