@@ -84,7 +84,20 @@ jobs:
           echo "BUNDLE_ID=${{ secrets.PROD_BUNDLE_ID }}" >> .env.prod
 
       - name: Run Build Runner (Envied only)
-        run: dart run build_runner build --build-filter="lib/env/*.dart"
+        run: |
+          cat > build.yaml << 'EOF'
+          global_options:
+            freezed|freezed:
+              enabled: false
+            json_serializable|json_serializable:
+              enabled: false
+            injectable_generator|injectable_builder:
+              enabled: false
+            injectable_generator|injectable_config_builder:
+              enabled: false
+          EOF
+          dart run build_runner build --delete-conflicting-outputs
+          rm build.yaml
 
       # -----------------------------------------------------------------------
       # 1. Map Inputs to Secret Env Vars
