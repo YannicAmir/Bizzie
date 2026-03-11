@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 import 'package:bizzie/env/app_env.dart';
 import 'package:bizzie/core/interfaces/i_config_service.dart';
+import 'package:bizzie/core/network/fmp_api_interceptor.dart';
 
 @module
 abstract class NetworkModule {
@@ -13,16 +14,7 @@ abstract class NetworkModule {
   @singleton
   Dio fmpDio(IConfigService configService, AppEnv env) {
     final dio = Dio(BaseOptions(baseUrl: configService.fmpConfig.baseUrl));
-
-    dio.interceptors.add(
-      InterceptorsWrapper(
-        onRequest: (options, handler) {
-          options.queryParameters['apikey'] = env.fmpApiKey;
-          return handler.next(options);
-        },
-      ),
-    );
-
+    dio.interceptors.add(FmpApiInterceptor(env));
     return dio;
   }
 }
