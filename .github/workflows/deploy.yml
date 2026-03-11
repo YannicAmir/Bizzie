@@ -57,8 +57,13 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
+      - name: Log Flutter Version
+        run: flutter --version
+
       - name: Install Dependencies
-        run: flutter pub get
+        run: |
+          flutter clean
+          flutter pub get
 
       # NEW: Create the .env files from GitHub Secrets
       - name: Create .env files
