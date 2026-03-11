@@ -85,17 +85,19 @@ jobs:
 
       - name: Run Build Runner (Envied only)
         run: |
-          cat > build.yaml << 'EOF'
-          global_options:
-            freezed|freezed:
-              enabled: false
-            json_serializable|json_serializable:
-              enabled: false
-            injectable_generator|injectable_builder:
-              enabled: false
-            injectable_generator|injectable_config_builder:
-              enabled: false
-          EOF
+          cat > build.yaml << 'BUILDYAML'
+          targets:
+            $default:
+              builders:
+                freezed|freezed:
+                  enabled: false
+                json_serializable|json_serializable:
+                  enabled: false
+                injectable_generator|injectable_builder:
+                  enabled: false
+                injectable_generator|injectable_config_builder:
+                  enabled: false
+          BUILDYAML
           dart run build_runner build --delete-conflicting-outputs
           rm build.yaml
 
