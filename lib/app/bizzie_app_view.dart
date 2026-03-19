@@ -48,6 +48,7 @@ class BizzieAppView extends StatefulWidget {
 class _BizzieAppViewState extends State<BizzieAppView>
     with WidgetsBindingObserver {
   late final GoRouter _router;
+  bool _notifiedAppReady = false;
 
   @override
   void dispose() {
@@ -114,6 +115,7 @@ class _BizzieAppViewState extends State<BizzieAppView>
                 );
               },
               unauthenticated: () {
+                _notifiedAppReady = false;
                 context.read<UserBloc>().add(const UserEvent.clear());
                 context.read<WatchlistBloc>().add(const WatchlistEvent.reset());
                 context.read<NotificationBloc>().add(
@@ -129,23 +131,19 @@ class _BizzieAppViewState extends State<BizzieAppView>
               },
             );
 
-            final isAuthDetermined = state.maybeMap(
-              authenticated: (_) => true,
-              unauthenticated: (_) => true,
-              failure: (_) => true,
-              orElse: () => false,
-            );
-
-            if (isAuthDetermined) {
-              FlutterNativeSplash.remove();
-            }
+            _checkAndNotifyAppReady(context, authState: state);
+          },
+        ),
+        BlocListener<UserBloc, UserState>(
+          listener: (context, state) {
+            _checkAndNotifyAppReady(context, userState: state);
           },
         ),
         BlocListener<NotificationBloc, NotificationState>(
           listener: (context, state) {
-            state.maybeMap(
-              navigationRequested: (navState) {
-                navState.intent.when(
+            state.status.maybeMap(
+              navigationRequested: (navStatus) {
+                navStatus.intent.when(
                   companyProfile: (ticker) {
                     final targetPath = AppRoutes.companyProfile.replaceFirst(
                       ':ticker',
@@ -202,5 +200,38 @@ class _BizzieAppViewState extends State<BizzieAppView>
         },
       ),
     );
+  }
+
+  void _checkAndNotifyAppReady(
+    BuildContext context, {
+    AuthState? authState,
+    UserState? userState,
+  }) {
+    final currentAuthState = authState ?? context.read<AuthBloc>().state;
+    final currentUserState = userState ?? context.read<UserBloc>().state;
+
+    final isAuthDetermined = currentAuthState.maybeMap(
+      authenticated: (_) => true,
+      unauthenticated: (_) => true,
+      failure: (_) => true,
+      orElse: () => false,
+    );
+
+    if (isAuthDetermined) {
+      FlutterNativeSplash.remove();
+
+      final isUserLoading = currentUserState.maybeWhen(
+        initial: () => true,
+        loading: (_) => true,
+        orElse: () => false,
+      );
+
+      if (!isUserLoading && !_notifiedAppReady) {
+        _notifiedAppReady = true;
+        context.read<NotificationBloc>().add(
+          const NotificationEvent.appReadyForNavigation(),
+        );
+      }
+    }
   }
 }

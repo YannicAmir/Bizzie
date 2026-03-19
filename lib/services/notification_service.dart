@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'package:rxdart/rxdart.dart';
 import 'package:bizzie/features/notifications/domain/enums/notification_app_state.dart';
 import 'package:bizzie/features/notifications/domain/enums/notification_trigger_source.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -27,7 +28,7 @@ class NotificationService implements INotificationService {
   final NotificationTracker _tracker;
 
   bool _isInteractionsSetup = false;
-  final _payloadController = StreamController<Map<String, dynamic>>.broadcast();
+  final _payloadController = BehaviorSubject<Map<String, dynamic>>();
 
   NotificationService(
     this._notificationRepository,
@@ -59,6 +60,8 @@ class NotificationService implements INotificationService {
       badge: true,
       sound: true,
     );
+
+    await setupInteractions();
 
     await syncFcmToken();
 

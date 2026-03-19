@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 import 'package:bizzie/features/notifications/domain/models/notification_message.dart';
 import 'package:bizzie/features/notifications/domain/usecases/get_fcm_token.dart';
@@ -18,9 +17,13 @@ import 'package:bizzie/features/notifications/domain/usecases/parse_notification
 import 'package:bizzie/core/interfaces/i_notification_service.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 
-part 'notification_event.dart';
-part 'notification_state.dart';
-part 'notification_bloc.freezed.dart';
+import 'notification_event.dart';
+import 'notification_state.dart';
+import 'notification_status.dart';
+
+export 'notification_event.dart';
+export 'notification_state.dart';
+export 'notification_status.dart';
 
 final _logger = BizzieLogger('NotificationBloc');
 
@@ -49,7 +52,12 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
     this._tracker,
     this._parseNotificationPayload,
     this._notificationService,
-  ) : super(const NotificationState.initial()) {
+  ) : super(
+          const NotificationState(
+            status: NotificationStatus.initial(),
+            isAppReady: false,
+          ),
+        ) {
     on<NotificationSetupRequested>(_onSetupRequested);
     on<NotificationSubscribeToTopicRequested>(_onSubscribeToTopicRequested);
     on<NotificationUnsubscribeFromTopicRequested>(
@@ -58,49 +66,47 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
     on<NotificationMessageReceived>(_onMessageReceived);
     on<NotificationInteractionReceived>(
       _onInteractionReceived,
-      transformer: droppable(),
+      transformer: restartable(),
     );
     on<NotificationReset>(_onReset);
+    on<NotificationAppReadyForNavigation>(_onAppReadyForNavigation);
   }
 
   Future<void> _onReset(
     NotificationReset event,
     Emitter<NotificationState> emit,
   ) async {
-    _logger.info('Resetting NotificationBloc - canceling subscription');
-    _messageSubscription?.cancel();
+    await _messageSubscription?.cancel();
     _messageSubscription = null;
-    _payloadSubscription?.cancel();
+    await _payloadSubscription?.cancel();
     _payloadSubscription = null;
     await _clearCachedToken(NoParams());
     await _tracker.setUserNotificationsEnabled(false);
-    emit(const NotificationState.initial());
+    emit(
+      const NotificationState(
+        status: NotificationStatus.initial(),
+        isAppReady: false,
+      ),
+    );
   }
 
   Future<void> _onSetupRequested(
     NotificationSetupRequested event,
     Emitter<NotificationState> emit,
   ) async {
-    emit(const NotificationState.loading());
+    emit(state.copyWith(status: const NotificationStatus.loading()));
 
-    _logger.info('SetupRequested event received. calling requestPermission...');
     final permissionResult = await _requestPermission();
 
     await permissionResult.fold(
       (failure) async {
-        await _tracker.logPermissionResult(granted: false);
-        await _tracker.setUserNotificationsEnabled(false);
         await _tracker.logError(
           type: NotificationErrorType.permissionException,
           message: failure.message,
         );
-        emit(NotificationState.failure(failure.message));
+        emit(state.copyWith(status: NotificationStatus.failure(failure.message)));
       },
       (_) async {
-        _logger.info('Permission request completed.');
-        await _tracker.logPermissionResult(granted: true);
-        await _tracker.setUserNotificationsEnabled(true);
-
         final tokenResult = await _getFcmToken();
 
         await tokenResult.fold(
@@ -109,24 +115,25 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
               type: NotificationErrorType.tokenSyncFailure,
               message: failure.message,
             );
-            emit(NotificationState.failure(failure.message));
+            emit(
+              state.copyWith(status: NotificationStatus.failure(failure.message)),
+            );
           },
-          (token) {
-            _logger.info('FCM Token: $token');
+          (fcmToken) async {
+            await _tracker.setUserNotificationsEnabled(true);
+            emit(state.copyWith(status: NotificationStatus.success(fcmToken)));
 
-            _messageSubscription = _listenToMessages().listen((message) {
-              add(NotificationEvent.messageReceived(message));
-            });
+            await _notificationService.setupInteractions();
 
-            _payloadSubscription ??= _notificationService.payloadStream.listen((
-              payload,
-            ) {
-              add(NotificationEvent.interactionReceived(payload));
-            });
+            await _messageSubscription?.cancel();
+            _messageSubscription = _listenToMessages().listen(
+              (message) => add(NotificationEvent.messageReceived(message)),
+            );
 
-            _notificationService.setupInteractions();
-
-            emit(NotificationState.success(token));
+            await _payloadSubscription?.cancel();
+            _payloadSubscription = _notificationService.payloadStream.listen(
+              (payload) => add(NotificationEvent.interactionReceived(payload)),
+            );
           },
         );
       },
@@ -144,11 +151,9 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
           type: NotificationErrorType.subscriptionFailure,
           message: failure.message,
         );
-        emit(NotificationState.failure(failure.message));
+        emit(state.copyWith(status: NotificationStatus.failure(failure.message)));
       },
-      (_) async {
-        await _tracker.logTopicSubscribed(topic: event.topic);
-      },
+      (_) async => null,
     );
   }
 
@@ -163,11 +168,9 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
           type: NotificationErrorType.unsubscriptionFailure,
           message: failure.message,
         );
-        emit(NotificationState.failure(failure.message));
+        emit(state.copyWith(status: NotificationStatus.failure(failure.message)));
       },
-      (_) async {
-        await _tracker.logTopicUnsubscribed(topic: event.topic);
-      },
+      (_) async => null,
     );
   }
 
@@ -175,39 +178,74 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
     NotificationMessageReceived event,
     Emitter<NotificationState> emit,
   ) {
-    _logger.info('MessageReceived event: ${event.message.title}');
-
-    final type = event.message.data?['type']?.toString();
-    _tracker.logMessageReceived(type: type);
-
-    emit(NotificationState.messageReceivedState(event.message));
+    emit(state.copyWith(status: NotificationStatus.messageReceived(event.message)));
   }
 
   Future<void> _onInteractionReceived(
     NotificationInteractionReceived event,
     Emitter<NotificationState> emit,
   ) async {
-    _logger.info('Parsing interaction payload in BLoC');
     final intent = _parseNotificationPayload(event.payload);
+    if (intent == null) {
+      _logger.warning('Failed to parse intent from payload: ${event.payload}');
+      return;
+    }
 
-    if (intent != null) {
-      _logger.info('Emitting navigationRequested for intent: $intent');
+    if (state.isAppReady) {
+      _logger.info('App is ready, emitting navigation request for $intent');
       emit(
-        NotificationState.navigationRequested(
-          intent,
-          DateTime.now().millisecondsSinceEpoch,
+        state.copyWith(
+          status: NotificationStatus.navigationRequested(
+            intent,
+            DateTime.now().millisecondsSinceEpoch,
+          ),
         ),
       );
-      await Future.delayed(const Duration(milliseconds: 500));
+      // Reset status to success to avoid re-triggering on next state update
+      emit(state.copyWith(status: const NotificationStatus.initial()));
     } else {
-      _logger.warning('Payload parsing resulted in null intent');
+      _logger.info('App not ready, buffering intent: $intent');
+      emit(state.copyWith(pendingIntent: intent));
+    }
+  }
+
+  void _onAppReadyForNavigation(
+    NotificationAppReadyForNavigation event,
+    Emitter<NotificationState> emit,
+  ) {
+    _logger.info('App ready for navigation signal received');
+
+    final pendingIntent = state.pendingIntent;
+    if (pendingIntent != null) {
+      _logger.info('Processing buffered intent: $pendingIntent');
+
+      emit(
+        state.copyWith(
+          isAppReady: true,
+          pendingIntent: null,
+        ),
+      );
+
+      emit(
+        state.copyWith(
+          status: NotificationStatus.navigationRequested(
+            pendingIntent,
+            DateTime.now().millisecondsSinceEpoch,
+          ),
+        ),
+      );
+      // Reset status to initial to avoid re-triggering
+      emit(state.copyWith(status: const NotificationStatus.initial()));
+    } else {
+      _logger.info('No buffered intent, setting isAppReady: true');
+      emit(state.copyWith(isAppReady: true));
     }
   }
 
   @override
-  Future<void> close() {
-    _messageSubscription?.cancel();
-    _payloadSubscription?.cancel();
+  Future<void> close() async {
+    await _messageSubscription?.cancel();
+    await _payloadSubscription?.cancel();
     return super.close();
   }
 }

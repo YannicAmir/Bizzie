@@ -35,7 +35,7 @@ class _NotificationRequestPageState extends State<NotificationRequestPage> {
       builder: (context, state) {
         return BlocListener<NotificationBloc, NotificationState>(
           listener: (context, state) {
-            state.maybeWhen(
+            state.status.maybeMap(
               success: (_) => context.go(AppRoutes.onboardingExperience),
               orElse: () {},
             );

@@ -13,6 +13,8 @@ import 'package:bizzie/features/notifications/presentation/analytics/notificatio
 import 'package:bizzie/features/notifications/presentation/bloc/notification_bloc.dart';
 import 'package:bizzie/features/notifications/domain/usecases/parse_notification_payload.dart';
 import 'package:bizzie/core/interfaces/i_notification_service.dart';
+import 'package:bizzie/features/notifications/domain/models/notification_intent.dart';
+import 'package:bizzie/core/enums/paywall_source.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
@@ -119,7 +121,13 @@ void main() {
 
   group('NotificationBloc', () {
     test('notificationBloc_initialState_isInitial', () {
-      expect(bloc.state, const NotificationState.initial());
+      expect(
+        bloc.state,
+        const NotificationState(
+          status: NotificationStatus.initial(),
+          isAppReady: false,
+        ),
+      );
     });
 
     group('setupRequested', () {
@@ -141,9 +149,18 @@ void main() {
         act: (bloc) => bloc.add(const NotificationEvent.setupRequested()),
         expect: () => [
           // assert
-          const NotificationState.loading(),
-          const NotificationState.success(tToken),
-          NotificationState.messageReceivedState(tMessage),
+          const NotificationState(
+            status: NotificationStatus.loading(),
+            isAppReady: false,
+          ),
+          const NotificationState(
+            status: NotificationStatus.success(tToken),
+            isAppReady: false,
+          ),
+          NotificationState(
+            status: NotificationStatus.messageReceived(tMessage),
+            isAppReady: false,
+          ),
         ],
         verify: (_) {
           verify(() => mockRequestPermission()).called(1);
@@ -164,8 +181,14 @@ void main() {
         act: (bloc) => bloc.add(const NotificationEvent.setupRequested()),
         expect: () => [
           // assert
-          const NotificationState.loading(),
-          const NotificationState.failure('Permission Error'),
+          const NotificationState(
+            status: NotificationStatus.loading(),
+            isAppReady: false,
+          ),
+          const NotificationState(
+            status: NotificationStatus.failure('Permission Error'),
+            isAppReady: false,
+          ),
         ],
         verify: (_) {
           verify(
@@ -192,8 +215,14 @@ void main() {
         act: (bloc) => bloc.add(const NotificationEvent.setupRequested()),
         expect: () => [
           // assert
-          const NotificationState.loading(),
-          const NotificationState.failure('Token Error'),
+          const NotificationState(
+            status: NotificationStatus.loading(),
+            isAppReady: false,
+          ),
+          const NotificationState(
+            status: NotificationStatus.failure('Token Error'),
+            isAppReady: false,
+          ),
         ],
         verify: (_) {
           verify(
@@ -238,7 +267,12 @@ void main() {
         act: (bloc) => bloc.add(
           const NotificationEvent.subscribeToTopicRequested('topic'),
         ),
-        expect: () => [const NotificationState.failure('Subscribe Error')],
+        expect: () => [
+          const NotificationState(
+            status: NotificationStatus.failure('Subscribe Error'),
+            isAppReady: false,
+          ),
+        ],
         verify: (_) {
           verify(
             () => mockTracker.logError(
@@ -282,7 +316,12 @@ void main() {
         act: (bloc) => bloc.add(
           const NotificationEvent.unsubscribeFromTopicRequested('topic'),
         ),
-        expect: () => [const NotificationState.failure('Unsubscribe Error')],
+        expect: () => [
+          const NotificationState(
+            status: NotificationStatus.failure('Unsubscribe Error'),
+            isAppReady: false,
+          ),
+        ],
         verify: (_) {
           verify(
             () => mockTracker.logError(
@@ -307,7 +346,10 @@ void main() {
         act: (bloc) => bloc.add(const NotificationEvent.reset()),
         expect: () => [
           // assert
-          const NotificationState.initial(),
+          const NotificationState(
+            status: NotificationStatus.initial(),
+            isAppReady: false,
+          ),
         ],
         verify: (_) {
           // assert
@@ -323,7 +365,118 @@ void main() {
         act: (bloc) => bloc.add(NotificationEvent.messageReceived(tMessage)),
         expect: () => [
           // assert
-          NotificationState.messageReceivedState(tMessage),
+          NotificationState(
+            status: NotificationStatus.messageReceived(tMessage),
+            isAppReady: false,
+          ),
+        ],
+      );
+    });
+
+    group('interactionReceived', () {
+      final tPayload = {'type': 'subscription_drip'};
+      const tIntent = NotificationIntent.paywall(PaywallSource.notification);
+
+      blocTest<NotificationBloc, NotificationState>(
+        'notificationBloc_interactionReceived_notReady_buffersIntent',
+        build: () {
+          when(
+            () => mockParseNotificationPayload(tPayload),
+          ).thenReturn(tIntent);
+          return bloc;
+        },
+        act: (bloc) =>
+            bloc.add(NotificationEvent.interactionReceived(tPayload)),
+        expect: () => [
+          const NotificationState(
+            status: NotificationStatus.initial(),
+            isAppReady: false,
+            pendingIntent: tIntent,
+          ),
+        ],
+      );
+
+      blocTest<NotificationBloc, NotificationState>(
+        'notificationBloc_interactionReceived_ready_emitsNavigationRequested',
+        build: () {
+          when(
+            () => mockParseNotificationPayload(tPayload),
+          ).thenReturn(tIntent);
+          return bloc;
+        },
+        seed: () => const NotificationState(
+          status: NotificationStatus.initial(),
+          isAppReady: true,
+        ),
+        act: (bloc) =>
+            bloc.add(NotificationEvent.interactionReceived(tPayload)),
+        expect: () => [
+          isA<NotificationState>()
+              .having(
+                (s) => s.status,
+                'status',
+                isA<NotificationStatusNavigationRequested>().having(
+                  (s) => (s as NotificationStatusNavigationRequested).intent,
+                  'intent',
+                  tIntent,
+                ),
+              )
+              .having((s) => s.isAppReady, 'isAppReady', true),
+          const NotificationState(
+            status: NotificationStatus.initial(),
+            isAppReady: true,
+          ),
+        ],
+      );
+    });
+
+    group('appReadyForNavigation', () {
+      const tIntent = NotificationIntent.paywall(PaywallSource.notification);
+
+      blocTest<NotificationBloc, NotificationState>(
+        'notificationBloc_appReadyForNavigation_withPendingIntent_processesIt',
+        build: () => bloc,
+        seed: () => const NotificationState(
+          status: NotificationStatus.initial(),
+          isAppReady: false,
+          pendingIntent: tIntent,
+        ),
+        act: (bloc) =>
+            bloc.add(const NotificationEvent.appReadyForNavigation()),
+        expect: () => [
+          const NotificationState(
+            status: NotificationStatus.initial(),
+            isAppReady: true,
+            pendingIntent: null,
+          ),
+          isA<NotificationState>()
+              .having(
+                (s) => s.status,
+                'status',
+                isA<NotificationStatusNavigationRequested>().having(
+                  (s) => (s as NotificationStatusNavigationRequested).intent,
+                  'intent',
+                  tIntent,
+                ),
+              )
+              .having((s) => s.isAppReady, 'isAppReady', true),
+          const NotificationState(
+            status: NotificationStatus.initial(),
+            isAppReady: true,
+          ),
+        ],
+      );
+
+      blocTest<NotificationBloc, NotificationState>(
+        'notificationBloc_appReadyForNavigation_withoutPendingIntent_justSetsReady',
+        build: () => bloc,
+        act: (bloc) =>
+            bloc.add(const NotificationEvent.appReadyForNavigation()),
+        expect: () => [
+          const NotificationState(
+            status: NotificationStatus.initial(),
+            isAppReady: true,
+          ),
         ],
       );
     });
