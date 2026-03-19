@@ -4,21 +4,26 @@ import 'package:bizzie/features/company_profile/financial_statements/data/dataso
 import 'package:bizzie/features/company_profile/financial_statements/data/datasources/financial_statements_remote_data_source.dart';
 import 'package:bizzie/features/company_profile/revenue/domain/interfaces/i_revenue_repository.dart';
 import 'package:bizzie/features/company_profile/revenue/domain/models/revenue_stats.dart';
+import 'package:bizzie/features/company_profile/shared/domain/interfaces/i_exchange_rate_repository.dart';
 import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
 
 abstract class _Consts {
   static const String annual = 'annual';
   static const String quarter = 'quarter';
-  static const String usd = 'USD';
 }
 
 @LazySingleton(as: IRevenueRepository)
 class RevenueRepositoryImpl implements IRevenueRepository {
   final FinancialStatementsRemoteDataSource _remoteDataSource;
   final FinancialStatementsFirestoreDataSource _localDataSource;
+  final IExchangeRateRepository _exchangeRateRepository;
 
-  RevenueRepositoryImpl(this._remoteDataSource, this._localDataSource);
+  RevenueRepositoryImpl(
+    this._remoteDataSource,
+    this._localDataSource,
+    this._exchangeRateRepository,
+  );
 
   @override
   Future<Either<Failure, (RevenueStats, CompanyProfileDataOrigin)>>
@@ -47,10 +52,11 @@ class RevenueRepositoryImpl implements IRevenueRepository {
             final annual = annualS.data;
             final quart = quartS.data;
 
-            final conversionRes = await _getCurrencyMultiplier(
-              annual.firstOrNull?.reportedCurrency ??
+            final conversionRes = await _exchangeRateRepository.getMultiplier(
+              reportedCurrency:
+                  annual.firstOrNull?.reportedCurrency ??
                   quart.firstOrNull?.reportedCurrency,
-              ticker,
+              ticker: ticker,
             );
 
             return conversionRes.fold((f) => left(f), (convData) {
@@ -96,48 +102,6 @@ class RevenueRepositoryImpl implements IRevenueRepository {
       );
     } catch (e) {
       return left(Failure.server(e.toString()));
-    }
-  }
-
-  Future<
-    Either<
-      Failure,
-      (({double multiplier, String targetCurrency}), CompanyProfileDataOrigin)
-    >
-  >
-  _getCurrencyMultiplier(String? reportedCurrency, String ticker) async {
-    if (reportedCurrency == null || reportedCurrency == _Consts.usd) {
-      return right((
-        (multiplier: 1.0, targetCurrency: _Consts.usd),
-        CompanyProfileDataOrigin.cache,
-      ));
-    }
-
-    try {
-      final pair = '${reportedCurrency}USD';
-
-      final res = await _localDataSource.syncExchangeRate(
-        pair,
-        remoteFetcher: () =>
-            _remoteDataSource.getExchangeRate(pair).then((v) => v ?? 1.0),
-      );
-
-      return res.map(
-        success: (s) => right((
-          (multiplier: s.data, targetCurrency: _Consts.usd),
-          s.origin,
-        )),
-        failure: (f) => left(f.failure),
-        notFound: (_) => right((
-          (multiplier: 1.0, targetCurrency: reportedCurrency),
-          CompanyProfileDataOrigin.cache,
-        )),
-      );
-    } catch (e) {
-      return right((
-        (multiplier: 1.0, targetCurrency: reportedCurrency),
-        CompanyProfileDataOrigin.cache,
-      ));
     }
   }
 }

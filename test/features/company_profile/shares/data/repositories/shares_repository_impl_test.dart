@@ -1,10 +1,9 @@
 import 'package:bizzie/features/company_profile/financial_statements/data/datasources/financial_statements_firestore_data_source.dart';
 import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:bizzie/features/company_profile/financial_statements/data/datasources/financial_statements_remote_data_source.dart';
-import 'package:bizzie/features/company_profile/business/data/dtos/governance_dtos.dart';
 import 'package:bizzie/features/company_profile/financial_statements/data/dtos/legacy_income_statement_dto.dart';
 import 'package:bizzie/features/company_profile/shared/domain/interfaces/i_company_repository.dart';
-import 'package:bizzie/features/company_profile/shared/domain/models/stock_quote.dart';
+import 'package:bizzie/features/company_profile/shared/domain/models/company_profile.dart';
 import 'package:bizzie/features/company_profile/shares/data/repositories/shares_repository_impl.dart';
 import 'package:bizzie/features/company_profile/shares/domain/models/share_stats.dart';
 import 'package:dartz/dartz.dart';
@@ -35,23 +34,35 @@ void main() {
       mockFinancialRemoteDataSource,
       mockFinancialLocalDataSource,
     );
-
-    registerFallbackValue(const GovernanceDto(symbol: '', nameAndPosition: ''));
-    registerFallbackValue(const <ExecutiveDto>[]);
   });
 
   const tTicker = 'AAPL';
 
   group('SharesRepositoryImpl - ShareStats', () {
-    final tStockQuote = StockQuote(
+    final tCompanyProfile = CompanyProfile(
       symbol: tTicker,
-      name: 'Apple Inc.',
+      companyName: 'Apple Inc.',
       price: 155.0,
-      change: 5.0,
-      changesPercentage: 3.2,
-      marketCap: 2500000000.0,
-      pe: 25.0,
-      sharesOutstanding: 16000000000.0,
+      marketCap: 2480000000000.0,
+      beta: 1.2,
+      industry: 'Consumer Electronics',
+      sector: 'Technology',
+      description: 'Tech giant',
+      image: 'https://example.com/image.png',
+      exchangeShortName: 'NASDAQ',
+      country: 'US',
+      ipoDate: '1980-12-12',
+      website: 'https://apple.com',
+      currency: 'USD',
+      isEtf: false,
+      isFund: false,
+      isActivelyTrading: true,
+      address: '',
+      city: '',
+      state: '',
+      zip: '',
+      fullTimeEmployees: '',
+      ceo: '',
     );
 
     final tLegacyIncome = [
@@ -72,8 +83,8 @@ void main() {
 
     test('getShareStats_success_returnsShareStats', () async {
       // Arrange
-      when(() => mockCompanyRepository.getQuote(tTicker)).thenAnswer(
-        (_) async => Right((tStockQuote, CompanyProfileDataOrigin.api)),
+      when(() => mockCompanyRepository.getProfile(tTicker)).thenAnswer(
+        (_) async => Right((tCompanyProfile, CompanyProfileDataOrigin.api)),
       );
 
       when(
@@ -107,7 +118,7 @@ void main() {
         final origin = tuple.$2;
         expect(r, isA<ShareStats>());
         expect(origin, CompanyProfileDataOrigin.api); // Result of merging
-        expect(r.currentSharesOutstanding, 16000000000.0);
+        expect(r.currentSharesOutstanding, 2480000000000.0 / 155.0);
         expect(r.annualWeightedAverageShares.length, 1);
       });
     });

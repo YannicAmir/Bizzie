@@ -1,4 +1,5 @@
 import 'package:bizzie/features/company_profile/financial_statements/data/datasources/financial_statements_firestore_data_source.dart';
+import 'package:dartz/dartz.dart';
 import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:bizzie/core/data/models/cache_result.dart' as cache;
 import 'package:bizzie/core/error/failures.dart';
@@ -6,6 +7,7 @@ import 'package:bizzie/features/company_profile/financial_statements/data/dataso
 import 'package:bizzie/features/company_profile/financial_statements/data/dtos/income_statement_dto.dart';
 import 'package:bizzie/features/company_profile/eps/data/repositories/eps_repository_impl.dart';
 import 'package:bizzie/features/company_profile/eps/domain/models/eps_stats.dart';
+import 'package:bizzie/features/company_profile/shared/domain/interfaces/i_exchange_rate_repository.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -15,15 +17,25 @@ class MockFinancialRemoteDataSource extends Mock
 class MockFinancialLocalDataSource extends Mock
     implements FinancialStatementsFirestoreDataSource {}
 
+class MockExchangeRateRepository extends Mock
+    implements IExchangeRateRepository {}
+
 void main() {
   late EpsRepositoryImpl repository;
   late MockFinancialRemoteDataSource mockRemoteDataSource;
   late MockFinancialLocalDataSource mockLocalDataSource;
 
+  late MockExchangeRateRepository mockExchangeRateRepository;
+
   setUp(() {
     mockRemoteDataSource = MockFinancialRemoteDataSource();
     mockLocalDataSource = MockFinancialLocalDataSource();
-    repository = EpsRepositoryImpl(mockRemoteDataSource, mockLocalDataSource);
+    mockExchangeRateRepository = MockExchangeRateRepository();
+    repository = EpsRepositoryImpl(
+      mockRemoteDataSource,
+      mockLocalDataSource,
+      mockExchangeRateRepository,
+    );
   });
 
   const tTicker = 'AAPL';
@@ -55,6 +67,17 @@ void main() {
           tIncomeStatements,
           CompanyProfileDataOrigin.cache,
         ),
+      );
+      when(
+        () => mockExchangeRateRepository.getMultiplier(
+          reportedCurrency: any(named: 'reportedCurrency'),
+          ticker: any(named: 'ticker'),
+        ),
+      ).thenAnswer(
+        (_) async => right((
+          (multiplier: 1.0, targetCurrency: 'USD'),
+          CompanyProfileDataOrigin.cache,
+        )),
       );
 
       // Act

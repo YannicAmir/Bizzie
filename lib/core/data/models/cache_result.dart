@@ -4,6 +4,10 @@ import 'package:bizzie/core/error/failures.dart';
 sealed class CacheResult<T> {
   const CacheResult();
 
+  bool get isSuccess => this is CacheSuccess<T>;
+  bool get isFailure => this is CacheFailure<T>;
+  bool get isNotFound => this is CacheNotFound<T>;
+
   R map<R>({
     required R Function(CacheSuccess<T>) success,
     required R Function(CacheFailure<T>) failure,

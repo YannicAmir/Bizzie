@@ -17,4 +17,17 @@ abstract class NetworkModule {
     dio.interceptors.add(FmpApiInterceptor(env));
     return dio;
   }
+
+  @Named('FrankfurterDio')
+  @singleton
+  Dio frankfurterDio(IConfigService configService) {
+    return Dio(
+      BaseOptions(
+        baseUrl: configService.frankfurterBaseUrl,
+        connectTimeout: const Duration(seconds: 5),
+        receiveTimeout: const Duration(seconds: 5),
+        headers: {'User-Agent': 'Bizzie (https://getbizzie.io)'},
+      ),
+    );
+  }
 }

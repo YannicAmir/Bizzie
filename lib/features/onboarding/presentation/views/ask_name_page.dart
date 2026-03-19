@@ -61,48 +61,44 @@ class _AskNamePageState extends State<AskNamePage> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Scaffold(
-      backgroundColor: theme.scaffoldBackgroundColor,
-      resizeToAvoidBottomInset: true,
-      body: SafeArea(
-        child: Column(
-          children: [
-            OnboardingHeader(title: "Hi, I'm Bizzie! What's your name?"),
-            Expanded(
-              child: SingleChildScrollView(
-                physics: const ClampingScrollPhysics(),
-                padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(height: 24),
-                    _NameInputField(
-                      controller: _nameController,
-                      onSubmitted: _submitName,
-                    ),
-                    const SizedBox(height: 24),
-                    const RepaintBoundary(child: _AskNameMascot()),
-                  ],
+    return Column(
+      children: [
+        OnboardingHeader(title: "Hi, I'm Bizzie! What's your name?"),
+        Expanded(
+          child: SingleChildScrollView(
+            physics: const ClampingScrollPhysics(),
+            padding: const EdgeInsets.symmetric(horizontal: 24.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(height: 24),
+                _NameInputField(
+                  controller: _nameController,
+                  onSubmitted: _submitName,
                 ),
-              ),
-            ),
-          ],
-        ),
-      ),
-      bottomNavigationBar: Container(
-        decoration: BoxDecoration(
-          color: theme.scaffoldBackgroundColor,
-          border: Border(top: BorderSide(color: theme.colorScheme.scrim)),
-        ),
-        child: SafeArea(
-          child: OnboardingFooter(
-            primaryButton: BizziePrimaryButton(
-              onPressed: _isButtonEnabled ? _submitName : null,
-              title: 'Continue',
+                const SizedBox(height: 24),
+                const RepaintBoundary(child: _AskNameMascot()),
+                const SizedBox(height: 140),
+              ],
             ),
           ),
         ),
-      ),
+        Container(
+          decoration: BoxDecoration(
+            color: theme.scaffoldBackgroundColor,
+            border: Border(top: BorderSide(color: theme.colorScheme.scrim)),
+          ),
+          child: SafeArea(
+            top: false,
+            child: OnboardingFooter(
+              primaryButton: BizziePrimaryButton(
+                onPressed: _isButtonEnabled ? _submitName : null,
+                title: 'Continue',
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

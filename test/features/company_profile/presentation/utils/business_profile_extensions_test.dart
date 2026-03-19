@@ -4,7 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('BusinessProfilePresentationX', () {
-    const profile = BusinessProfile(
+    final profile = BusinessProfile(
       symbol: 'AAPL',
       companyName: 'Apple Inc.',
       sector: 'Technology',
@@ -18,13 +18,12 @@ void main() {
       zip: '95014',
       phone: '408-996-1010',
       fullTimeEmployees: '161,000',
-      executives: [],
     );
 
     group('getSecFilingsModalTitle', () {
       test('getSecFilingsModalTitle_domesticAnnual_returns10KLabel', () {
         // arrange
-        const domesticProfile = profile;
+        final domesticProfile = profile;
 
         // act
         final result = domesticProfile.getSecFilingsModalTitle(true);
@@ -35,7 +34,7 @@ void main() {
 
       test('getSecFilingsModalTitle_domesticQuarterly_returns10QLabel', () {
         // arrange
-        const domesticProfile = profile;
+        final domesticProfile = profile;
 
         // act
         final result = domesticProfile.getSecFilingsModalTitle(false);
@@ -73,7 +72,7 @@ void main() {
     group('getProxyFilingTitle', () {
       test('getProxyFilingTitle_domestic_returnsProxyFilingLabel', () {
         // arrange
-        const domesticProfile = profile;
+        final domesticProfile = profile;
 
         // act
         final result = domesticProfile.getProxyFilingTitle();

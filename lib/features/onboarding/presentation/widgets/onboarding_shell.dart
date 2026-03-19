@@ -30,21 +30,26 @@ class OnboardingShell extends StatelessWidget {
     final String location = GoRouterState.of(context).uri.path;
     final double progress = _getProgressValue(location);
 
-    return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      body: SafeArea(
-        child: Column(
-          children: [
-            TweenAnimationBuilder<double>(
-              tween: Tween<double>(begin: 0, end: progress),
-              duration: const Duration(milliseconds: 300),
-              curve: Curves.easeInOut,
-              builder: (context, value, _) {
-                return LinearProgressIndicator(value: value);
-              },
-            ),
-            Expanded(child: child),
-          ],
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).unfocus(),
+      behavior: HitTestBehavior.opaque,
+      child: Scaffold(
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        resizeToAvoidBottomInset: false,
+        body: SafeArea(
+          child: Column(
+            children: [
+              TweenAnimationBuilder<double>(
+                tween: Tween<double>(begin: 0, end: progress),
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.easeInOut,
+                builder: (context, value, _) {
+                  return LinearProgressIndicator(value: value);
+                },
+              ),
+              Expanded(child: child),
+            ],
+          ),
         ),
       ),
     );

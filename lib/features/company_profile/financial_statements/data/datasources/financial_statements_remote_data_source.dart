@@ -30,7 +30,6 @@ abstract class FinancialStatementsRemoteDataSource {
     String period = 'annual',
   });
   Future<List<FmpSecFilingDto>> getSecFilings(String ticker, {String? type});
-  Future<double?> getExchangeRate(String pair);
 }
 
 @LazySingleton(as: FinancialStatementsRemoteDataSource)
@@ -162,18 +161,5 @@ class FinancialStatementsRemoteDataSourceImpl
     return (response.data as List)
         .map((e) => FmpSecFilingDto.fromJson(e))
         .toList();
-  }
-
-  @override
-  Future<double?> getExchangeRate(String pair) async {
-    final response = await _dio.get(
-      '$_baseUrl/quote',
-      queryParameters: {'symbol': pair},
-    );
-    final list = response.data as List;
-    if (list.isNotEmpty) {
-      return list.first['price'] as double?;
-    }
-    return null;
   }
 }

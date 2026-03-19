@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$BusinessProfile {
 
- String get symbol; String get companyName; String get sector; String get industry; String get description; String get ceo; String get website; String get address; String get city; String get state; String get zip; String get phone; String get fullTimeEmployees; List<CompanyExecutive> get executives; String? get def14aUrl; bool get isForeignCompany; String get proxyFilingFormType; List<SecFiling> get annualFilings; List<SecFiling> get quarterlyFilings;
+ String get symbol; String get companyName; String get sector; String get industry; String get description; String get ceo; String get website; String get address; String get city; String get state; String get zip; String get phone; String get fullTimeEmployees; String? get def14aUrl; bool get isForeignCompany; String get proxyFilingFormType; List<SecFiling> get annualFilings; List<SecFiling> get quarterlyFilings;
 /// Create a copy of BusinessProfile
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $BusinessProfileCopyWith<BusinessProfile> get copyWith => _$BusinessProfileCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is BusinessProfile&&(identical(other.symbol, symbol) || other.symbol == symbol)&&(identical(other.companyName, companyName) || other.companyName == companyName)&&(identical(other.sector, sector) || other.sector == sector)&&(identical(other.industry, industry) || other.industry == industry)&&(identical(other.description, description) || other.description == description)&&(identical(other.ceo, ceo) || other.ceo == ceo)&&(identical(other.website, website) || other.website == website)&&(identical(other.address, address) || other.address == address)&&(identical(other.city, city) || other.city == city)&&(identical(other.state, state) || other.state == state)&&(identical(other.zip, zip) || other.zip == zip)&&(identical(other.phone, phone) || other.phone == phone)&&(identical(other.fullTimeEmployees, fullTimeEmployees) || other.fullTimeEmployees == fullTimeEmployees)&&const DeepCollectionEquality().equals(other.executives, executives)&&(identical(other.def14aUrl, def14aUrl) || other.def14aUrl == def14aUrl)&&(identical(other.isForeignCompany, isForeignCompany) || other.isForeignCompany == isForeignCompany)&&(identical(other.proxyFilingFormType, proxyFilingFormType) || other.proxyFilingFormType == proxyFilingFormType)&&const DeepCollectionEquality().equals(other.annualFilings, annualFilings)&&const DeepCollectionEquality().equals(other.quarterlyFilings, quarterlyFilings));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is BusinessProfile&&(identical(other.symbol, symbol) || other.symbol == symbol)&&(identical(other.companyName, companyName) || other.companyName == companyName)&&(identical(other.sector, sector) || other.sector == sector)&&(identical(other.industry, industry) || other.industry == industry)&&(identical(other.description, description) || other.description == description)&&(identical(other.ceo, ceo) || other.ceo == ceo)&&(identical(other.website, website) || other.website == website)&&(identical(other.address, address) || other.address == address)&&(identical(other.city, city) || other.city == city)&&(identical(other.state, state) || other.state == state)&&(identical(other.zip, zip) || other.zip == zip)&&(identical(other.phone, phone) || other.phone == phone)&&(identical(other.fullTimeEmployees, fullTimeEmployees) || other.fullTimeEmployees == fullTimeEmployees)&&(identical(other.def14aUrl, def14aUrl) || other.def14aUrl == def14aUrl)&&(identical(other.isForeignCompany, isForeignCompany) || other.isForeignCompany == isForeignCompany)&&(identical(other.proxyFilingFormType, proxyFilingFormType) || other.proxyFilingFormType == proxyFilingFormType)&&const DeepCollectionEquality().equals(other.annualFilings, annualFilings)&&const DeepCollectionEquality().equals(other.quarterlyFilings, quarterlyFilings));
 }
 
 
 @override
-int get hashCode => Object.hashAll([runtimeType,symbol,companyName,sector,industry,description,ceo,website,address,city,state,zip,phone,fullTimeEmployees,const DeepCollectionEquality().hash(executives),def14aUrl,isForeignCompany,proxyFilingFormType,const DeepCollectionEquality().hash(annualFilings),const DeepCollectionEquality().hash(quarterlyFilings)]);
+int get hashCode => Object.hash(runtimeType,symbol,companyName,sector,industry,description,ceo,website,address,city,state,zip,phone,fullTimeEmployees,def14aUrl,isForeignCompany,proxyFilingFormType,const DeepCollectionEquality().hash(annualFilings),const DeepCollectionEquality().hash(quarterlyFilings));
 
 @override
 String toString() {
-  return 'BusinessProfile(symbol: $symbol, companyName: $companyName, sector: $sector, industry: $industry, description: $description, ceo: $ceo, website: $website, address: $address, city: $city, state: $state, zip: $zip, phone: $phone, fullTimeEmployees: $fullTimeEmployees, executives: $executives, def14aUrl: $def14aUrl, isForeignCompany: $isForeignCompany, proxyFilingFormType: $proxyFilingFormType, annualFilings: $annualFilings, quarterlyFilings: $quarterlyFilings)';
+  return 'BusinessProfile(symbol: $symbol, companyName: $companyName, sector: $sector, industry: $industry, description: $description, ceo: $ceo, website: $website, address: $address, city: $city, state: $state, zip: $zip, phone: $phone, fullTimeEmployees: $fullTimeEmployees, def14aUrl: $def14aUrl, isForeignCompany: $isForeignCompany, proxyFilingFormType: $proxyFilingFormType, annualFilings: $annualFilings, quarterlyFilings: $quarterlyFilings)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $BusinessProfileCopyWith<$Res>  {
   factory $BusinessProfileCopyWith(BusinessProfile value, $Res Function(BusinessProfile) _then) = _$BusinessProfileCopyWithImpl;
 @useResult
 $Res call({
- String symbol, String companyName, String sector, String industry, String description, String ceo, String website, String address, String city, String state, String zip, String phone, String fullTimeEmployees, List<CompanyExecutive> executives, String? def14aUrl, bool isForeignCompany, String proxyFilingFormType, List<SecFiling> annualFilings, List<SecFiling> quarterlyFilings
+ String symbol, String companyName, String sector, String industry, String description, String ceo, String website, String address, String city, String state, String zip, String phone, String fullTimeEmployees, String? def14aUrl, bool isForeignCompany, String proxyFilingFormType, List<SecFiling> annualFilings, List<SecFiling> quarterlyFilings
 });
 
 
@@ -62,7 +62,7 @@ class _$BusinessProfileCopyWithImpl<$Res>
 
 /// Create a copy of BusinessProfile
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? symbol = null,Object? companyName = null,Object? sector = null,Object? industry = null,Object? description = null,Object? ceo = null,Object? website = null,Object? address = null,Object? city = null,Object? state = null,Object? zip = null,Object? phone = null,Object? fullTimeEmployees = null,Object? executives = null,Object? def14aUrl = freezed,Object? isForeignCompany = null,Object? proxyFilingFormType = null,Object? annualFilings = null,Object? quarterlyFilings = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? symbol = null,Object? companyName = null,Object? sector = null,Object? industry = null,Object? description = null,Object? ceo = null,Object? website = null,Object? address = null,Object? city = null,Object? state = null,Object? zip = null,Object? phone = null,Object? fullTimeEmployees = null,Object? def14aUrl = freezed,Object? isForeignCompany = null,Object? proxyFilingFormType = null,Object? annualFilings = null,Object? quarterlyFilings = null,}) {
   return _then(_self.copyWith(
 symbol: null == symbol ? _self.symbol : symbol // ignore: cast_nullable_to_non_nullable
 as String,companyName: null == companyName ? _self.companyName : companyName // ignore: cast_nullable_to_non_nullable
@@ -77,8 +77,7 @@ as String,state: null == state ? _self.state : state // ignore: cast_nullable_to
 as String,zip: null == zip ? _self.zip : zip // ignore: cast_nullable_to_non_nullable
 as String,phone: null == phone ? _self.phone : phone // ignore: cast_nullable_to_non_nullable
 as String,fullTimeEmployees: null == fullTimeEmployees ? _self.fullTimeEmployees : fullTimeEmployees // ignore: cast_nullable_to_non_nullable
-as String,executives: null == executives ? _self.executives : executives // ignore: cast_nullable_to_non_nullable
-as List<CompanyExecutive>,def14aUrl: freezed == def14aUrl ? _self.def14aUrl : def14aUrl // ignore: cast_nullable_to_non_nullable
+as String,def14aUrl: freezed == def14aUrl ? _self.def14aUrl : def14aUrl // ignore: cast_nullable_to_non_nullable
 as String?,isForeignCompany: null == isForeignCompany ? _self.isForeignCompany : isForeignCompany // ignore: cast_nullable_to_non_nullable
 as bool,proxyFilingFormType: null == proxyFilingFormType ? _self.proxyFilingFormType : proxyFilingFormType // ignore: cast_nullable_to_non_nullable
 as String,annualFilings: null == annualFilings ? _self.annualFilings : annualFilings // ignore: cast_nullable_to_non_nullable
@@ -168,10 +167,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String symbol,  String companyName,  String sector,  String industry,  String description,  String ceo,  String website,  String address,  String city,  String state,  String zip,  String phone,  String fullTimeEmployees,  List<CompanyExecutive> executives,  String? def14aUrl,  bool isForeignCompany,  String proxyFilingFormType,  List<SecFiling> annualFilings,  List<SecFiling> quarterlyFilings)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String symbol,  String companyName,  String sector,  String industry,  String description,  String ceo,  String website,  String address,  String city,  String state,  String zip,  String phone,  String fullTimeEmployees,  String? def14aUrl,  bool isForeignCompany,  String proxyFilingFormType,  List<SecFiling> annualFilings,  List<SecFiling> quarterlyFilings)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _BusinessProfile() when $default != null:
-return $default(_that.symbol,_that.companyName,_that.sector,_that.industry,_that.description,_that.ceo,_that.website,_that.address,_that.city,_that.state,_that.zip,_that.phone,_that.fullTimeEmployees,_that.executives,_that.def14aUrl,_that.isForeignCompany,_that.proxyFilingFormType,_that.annualFilings,_that.quarterlyFilings);case _:
+return $default(_that.symbol,_that.companyName,_that.sector,_that.industry,_that.description,_that.ceo,_that.website,_that.address,_that.city,_that.state,_that.zip,_that.phone,_that.fullTimeEmployees,_that.def14aUrl,_that.isForeignCompany,_that.proxyFilingFormType,_that.annualFilings,_that.quarterlyFilings);case _:
   return orElse();
 
 }
@@ -189,10 +188,10 @@ return $default(_that.symbol,_that.companyName,_that.sector,_that.industry,_that
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String symbol,  String companyName,  String sector,  String industry,  String description,  String ceo,  String website,  String address,  String city,  String state,  String zip,  String phone,  String fullTimeEmployees,  List<CompanyExecutive> executives,  String? def14aUrl,  bool isForeignCompany,  String proxyFilingFormType,  List<SecFiling> annualFilings,  List<SecFiling> quarterlyFilings)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String symbol,  String companyName,  String sector,  String industry,  String description,  String ceo,  String website,  String address,  String city,  String state,  String zip,  String phone,  String fullTimeEmployees,  String? def14aUrl,  bool isForeignCompany,  String proxyFilingFormType,  List<SecFiling> annualFilings,  List<SecFiling> quarterlyFilings)  $default,) {final _that = this;
 switch (_that) {
 case _BusinessProfile():
-return $default(_that.symbol,_that.companyName,_that.sector,_that.industry,_that.description,_that.ceo,_that.website,_that.address,_that.city,_that.state,_that.zip,_that.phone,_that.fullTimeEmployees,_that.executives,_that.def14aUrl,_that.isForeignCompany,_that.proxyFilingFormType,_that.annualFilings,_that.quarterlyFilings);case _:
+return $default(_that.symbol,_that.companyName,_that.sector,_that.industry,_that.description,_that.ceo,_that.website,_that.address,_that.city,_that.state,_that.zip,_that.phone,_that.fullTimeEmployees,_that.def14aUrl,_that.isForeignCompany,_that.proxyFilingFormType,_that.annualFilings,_that.quarterlyFilings);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -209,10 +208,10 @@ return $default(_that.symbol,_that.companyName,_that.sector,_that.industry,_that
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String symbol,  String companyName,  String sector,  String industry,  String description,  String ceo,  String website,  String address,  String city,  String state,  String zip,  String phone,  String fullTimeEmployees,  List<CompanyExecutive> executives,  String? def14aUrl,  bool isForeignCompany,  String proxyFilingFormType,  List<SecFiling> annualFilings,  List<SecFiling> quarterlyFilings)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String symbol,  String companyName,  String sector,  String industry,  String description,  String ceo,  String website,  String address,  String city,  String state,  String zip,  String phone,  String fullTimeEmployees,  String? def14aUrl,  bool isForeignCompany,  String proxyFilingFormType,  List<SecFiling> annualFilings,  List<SecFiling> quarterlyFilings)?  $default,) {final _that = this;
 switch (_that) {
 case _BusinessProfile() when $default != null:
-return $default(_that.symbol,_that.companyName,_that.sector,_that.industry,_that.description,_that.ceo,_that.website,_that.address,_that.city,_that.state,_that.zip,_that.phone,_that.fullTimeEmployees,_that.executives,_that.def14aUrl,_that.isForeignCompany,_that.proxyFilingFormType,_that.annualFilings,_that.quarterlyFilings);case _:
+return $default(_that.symbol,_that.companyName,_that.sector,_that.industry,_that.description,_that.ceo,_that.website,_that.address,_that.city,_that.state,_that.zip,_that.phone,_that.fullTimeEmployees,_that.def14aUrl,_that.isForeignCompany,_that.proxyFilingFormType,_that.annualFilings,_that.quarterlyFilings);case _:
   return null;
 
 }
@@ -224,7 +223,7 @@ return $default(_that.symbol,_that.companyName,_that.sector,_that.industry,_that
 
 
 class _BusinessProfile implements BusinessProfile {
-  const _BusinessProfile({required this.symbol, required this.companyName, required this.sector, required this.industry, required this.description, required this.ceo, required this.website, required this.address, required this.city, required this.state, required this.zip, required this.phone, required this.fullTimeEmployees, required final  List<CompanyExecutive> executives, this.def14aUrl, this.isForeignCompany = false, this.proxyFilingFormType = 'DEF 14A', final  List<SecFiling> annualFilings = const [], final  List<SecFiling> quarterlyFilings = const []}): _executives = executives,_annualFilings = annualFilings,_quarterlyFilings = quarterlyFilings;
+  const _BusinessProfile({required this.symbol, required this.companyName, required this.sector, required this.industry, required this.description, required this.ceo, required this.website, required this.address, required this.city, required this.state, required this.zip, required this.phone, required this.fullTimeEmployees, this.def14aUrl, this.isForeignCompany = false, this.proxyFilingFormType = 'DEF 14A', final  List<SecFiling> annualFilings = const [], final  List<SecFiling> quarterlyFilings = const []}): _annualFilings = annualFilings,_quarterlyFilings = quarterlyFilings;
   
 
 @override final  String symbol;
@@ -240,13 +239,6 @@ class _BusinessProfile implements BusinessProfile {
 @override final  String zip;
 @override final  String phone;
 @override final  String fullTimeEmployees;
- final  List<CompanyExecutive> _executives;
-@override List<CompanyExecutive> get executives {
-  if (_executives is EqualUnmodifiableListView) return _executives;
-  // ignore: implicit_dynamic_type
-  return EqualUnmodifiableListView(_executives);
-}
-
 @override final  String? def14aUrl;
 @override@JsonKey() final  bool isForeignCompany;
 @override@JsonKey() final  String proxyFilingFormType;
@@ -275,16 +267,16 @@ _$BusinessProfileCopyWith<_BusinessProfile> get copyWith => __$BusinessProfileCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _BusinessProfile&&(identical(other.symbol, symbol) || other.symbol == symbol)&&(identical(other.companyName, companyName) || other.companyName == companyName)&&(identical(other.sector, sector) || other.sector == sector)&&(identical(other.industry, industry) || other.industry == industry)&&(identical(other.description, description) || other.description == description)&&(identical(other.ceo, ceo) || other.ceo == ceo)&&(identical(other.website, website) || other.website == website)&&(identical(other.address, address) || other.address == address)&&(identical(other.city, city) || other.city == city)&&(identical(other.state, state) || other.state == state)&&(identical(other.zip, zip) || other.zip == zip)&&(identical(other.phone, phone) || other.phone == phone)&&(identical(other.fullTimeEmployees, fullTimeEmployees) || other.fullTimeEmployees == fullTimeEmployees)&&const DeepCollectionEquality().equals(other._executives, _executives)&&(identical(other.def14aUrl, def14aUrl) || other.def14aUrl == def14aUrl)&&(identical(other.isForeignCompany, isForeignCompany) || other.isForeignCompany == isForeignCompany)&&(identical(other.proxyFilingFormType, proxyFilingFormType) || other.proxyFilingFormType == proxyFilingFormType)&&const DeepCollectionEquality().equals(other._annualFilings, _annualFilings)&&const DeepCollectionEquality().equals(other._quarterlyFilings, _quarterlyFilings));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _BusinessProfile&&(identical(other.symbol, symbol) || other.symbol == symbol)&&(identical(other.companyName, companyName) || other.companyName == companyName)&&(identical(other.sector, sector) || other.sector == sector)&&(identical(other.industry, industry) || other.industry == industry)&&(identical(other.description, description) || other.description == description)&&(identical(other.ceo, ceo) || other.ceo == ceo)&&(identical(other.website, website) || other.website == website)&&(identical(other.address, address) || other.address == address)&&(identical(other.city, city) || other.city == city)&&(identical(other.state, state) || other.state == state)&&(identical(other.zip, zip) || other.zip == zip)&&(identical(other.phone, phone) || other.phone == phone)&&(identical(other.fullTimeEmployees, fullTimeEmployees) || other.fullTimeEmployees == fullTimeEmployees)&&(identical(other.def14aUrl, def14aUrl) || other.def14aUrl == def14aUrl)&&(identical(other.isForeignCompany, isForeignCompany) || other.isForeignCompany == isForeignCompany)&&(identical(other.proxyFilingFormType, proxyFilingFormType) || other.proxyFilingFormType == proxyFilingFormType)&&const DeepCollectionEquality().equals(other._annualFilings, _annualFilings)&&const DeepCollectionEquality().equals(other._quarterlyFilings, _quarterlyFilings));
 }
 
 
 @override
-int get hashCode => Object.hashAll([runtimeType,symbol,companyName,sector,industry,description,ceo,website,address,city,state,zip,phone,fullTimeEmployees,const DeepCollectionEquality().hash(_executives),def14aUrl,isForeignCompany,proxyFilingFormType,const DeepCollectionEquality().hash(_annualFilings),const DeepCollectionEquality().hash(_quarterlyFilings)]);
+int get hashCode => Object.hash(runtimeType,symbol,companyName,sector,industry,description,ceo,website,address,city,state,zip,phone,fullTimeEmployees,def14aUrl,isForeignCompany,proxyFilingFormType,const DeepCollectionEquality().hash(_annualFilings),const DeepCollectionEquality().hash(_quarterlyFilings));
 
 @override
 String toString() {
-  return 'BusinessProfile(symbol: $symbol, companyName: $companyName, sector: $sector, industry: $industry, description: $description, ceo: $ceo, website: $website, address: $address, city: $city, state: $state, zip: $zip, phone: $phone, fullTimeEmployees: $fullTimeEmployees, executives: $executives, def14aUrl: $def14aUrl, isForeignCompany: $isForeignCompany, proxyFilingFormType: $proxyFilingFormType, annualFilings: $annualFilings, quarterlyFilings: $quarterlyFilings)';
+  return 'BusinessProfile(symbol: $symbol, companyName: $companyName, sector: $sector, industry: $industry, description: $description, ceo: $ceo, website: $website, address: $address, city: $city, state: $state, zip: $zip, phone: $phone, fullTimeEmployees: $fullTimeEmployees, def14aUrl: $def14aUrl, isForeignCompany: $isForeignCompany, proxyFilingFormType: $proxyFilingFormType, annualFilings: $annualFilings, quarterlyFilings: $quarterlyFilings)';
 }
 
 
@@ -295,7 +287,7 @@ abstract mixin class _$BusinessProfileCopyWith<$Res> implements $BusinessProfile
   factory _$BusinessProfileCopyWith(_BusinessProfile value, $Res Function(_BusinessProfile) _then) = __$BusinessProfileCopyWithImpl;
 @override @useResult
 $Res call({
- String symbol, String companyName, String sector, String industry, String description, String ceo, String website, String address, String city, String state, String zip, String phone, String fullTimeEmployees, List<CompanyExecutive> executives, String? def14aUrl, bool isForeignCompany, String proxyFilingFormType, List<SecFiling> annualFilings, List<SecFiling> quarterlyFilings
+ String symbol, String companyName, String sector, String industry, String description, String ceo, String website, String address, String city, String state, String zip, String phone, String fullTimeEmployees, String? def14aUrl, bool isForeignCompany, String proxyFilingFormType, List<SecFiling> annualFilings, List<SecFiling> quarterlyFilings
 });
 
 
@@ -312,7 +304,7 @@ class __$BusinessProfileCopyWithImpl<$Res>
 
 /// Create a copy of BusinessProfile
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? symbol = null,Object? companyName = null,Object? sector = null,Object? industry = null,Object? description = null,Object? ceo = null,Object? website = null,Object? address = null,Object? city = null,Object? state = null,Object? zip = null,Object? phone = null,Object? fullTimeEmployees = null,Object? executives = null,Object? def14aUrl = freezed,Object? isForeignCompany = null,Object? proxyFilingFormType = null,Object? annualFilings = null,Object? quarterlyFilings = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? symbol = null,Object? companyName = null,Object? sector = null,Object? industry = null,Object? description = null,Object? ceo = null,Object? website = null,Object? address = null,Object? city = null,Object? state = null,Object? zip = null,Object? phone = null,Object? fullTimeEmployees = null,Object? def14aUrl = freezed,Object? isForeignCompany = null,Object? proxyFilingFormType = null,Object? annualFilings = null,Object? quarterlyFilings = null,}) {
   return _then(_BusinessProfile(
 symbol: null == symbol ? _self.symbol : symbol // ignore: cast_nullable_to_non_nullable
 as String,companyName: null == companyName ? _self.companyName : companyName // ignore: cast_nullable_to_non_nullable
@@ -327,8 +319,7 @@ as String,state: null == state ? _self.state : state // ignore: cast_nullable_to
 as String,zip: null == zip ? _self.zip : zip // ignore: cast_nullable_to_non_nullable
 as String,phone: null == phone ? _self.phone : phone // ignore: cast_nullable_to_non_nullable
 as String,fullTimeEmployees: null == fullTimeEmployees ? _self.fullTimeEmployees : fullTimeEmployees // ignore: cast_nullable_to_non_nullable
-as String,executives: null == executives ? _self._executives : executives // ignore: cast_nullable_to_non_nullable
-as List<CompanyExecutive>,def14aUrl: freezed == def14aUrl ? _self.def14aUrl : def14aUrl // ignore: cast_nullable_to_non_nullable
+as String,def14aUrl: freezed == def14aUrl ? _self.def14aUrl : def14aUrl // ignore: cast_nullable_to_non_nullable
 as String?,isForeignCompany: null == isForeignCompany ? _self.isForeignCompany : isForeignCompany // ignore: cast_nullable_to_non_nullable
 as bool,proxyFilingFormType: null == proxyFilingFormType ? _self.proxyFilingFormType : proxyFilingFormType // ignore: cast_nullable_to_non_nullable
 as String,annualFilings: null == annualFilings ? _self._annualFilings : annualFilings // ignore: cast_nullable_to_non_nullable
