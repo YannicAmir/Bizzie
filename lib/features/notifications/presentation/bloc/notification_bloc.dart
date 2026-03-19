@@ -12,7 +12,6 @@ import 'package:bizzie/features/notifications/domain/usecases/clear_cached_token
 import 'package:bizzie/features/notifications/domain/enums/notification_error_type.dart';
 import 'package:bizzie/features/notifications/presentation/analytics/notification_tracker.dart';
 import 'package:bizzie/core/usecase/usecase.dart';
-import 'package:bizzie/features/notifications/domain/models/notification_intent.dart';
 import 'package:bizzie/features/notifications/domain/usecases/parse_notification_payload.dart';
 import 'package:bizzie/core/interfaces/i_notification_service.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';

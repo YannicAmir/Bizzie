@@ -416,7 +416,7 @@ void main() {
                 (s) => s.status,
                 'status',
                 isA<NotificationStatusNavigationRequested>().having(
-                  (s) => (s as NotificationStatusNavigationRequested).intent,
+                  (s) => (s).intent,
                   'intent',
                   tIntent,
                 ),
@@ -454,7 +454,7 @@ void main() {
                 (s) => s.status,
                 'status',
                 isA<NotificationStatusNavigationRequested>().having(
-                  (s) => (s as NotificationStatusNavigationRequested).intent,
+                  (s) => (s).intent,
                   'intent',
                   tIntent,
                 ),
