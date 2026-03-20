@@ -105,50 +105,53 @@ class _ActiveStatementSwitcher extends StatelessWidget {
   Widget build(BuildContext context) {
     return switch (state.selectedType) {
       FinancialStatementType.income => _FinancialStatementLoader(
-        isLoading: state.isLoadingIncome,
-        failureDetail: state.incomeError?.errorMessage,
-        loadingMessage: 'Loading Income Statement',
-        mascotAsset: mascotAsset,
-        errorLabel: 'Error loading income statement',
-        onRetry: () {
-          context.read<FinancialStatementsBloc>().add(
-            FinancialStatementsEvent.loadIncomeStatements(
-              ticker,
-              forceRefresh: true,
-            ),
-          );
-        },
-        child: const IncomeStatementView(),
-      ),
+          isLoading: state.isLoadingIncome,
+          failureDetail: state.incomeError?.errorMessage,
+          loadingMessage: 'Loading Income Statement',
+          mascotAsset: mascotAsset,
+          errorLabel: 'Error loading income statement',
+          onRetry: () {
+            context.read<FinancialStatementsBloc>().add(
+                  FinancialStatementsEvent.loadIncomeStatements(
+                    ticker,
+                    forceRefresh: true,
+                  ),
+                );
+          },
+          child: const IncomeStatementView(),
+        ),
       FinancialStatementType.balance => _FinancialStatementLoader(
-        isLoading: state.isLoadingBalance,
-        failureDetail: state.balanceError?.errorMessage,
-        loadingMessage: 'Loading Balance Sheet',
-        mascotAsset: mascotAsset,
-        errorLabel: 'Error loading balance sheet',
-        onRetry: () {
-          context.read<FinancialStatementsBloc>().add(
-            FinancialStatementsEvent.loadBalanceSheets(
-              ticker,
-              forceRefresh: true,
-            ),
-          );
-        },
-        child: const BalanceSheetView(),
-      ),
+          isLoading: state.isLoadingBalance,
+          failureDetail: state.balanceError?.errorMessage,
+          loadingMessage: 'Loading Balance Sheet',
+          mascotAsset: mascotAsset,
+          errorLabel: 'Error loading balance sheet',
+          onRetry: () {
+            context.read<FinancialStatementsBloc>().add(
+                  FinancialStatementsEvent.loadBalanceSheets(
+                    ticker,
+                    forceRefresh: true,
+                  ),
+                );
+          },
+          child: const BalanceSheetView(),
+        ),
       FinancialStatementType.cashFlow => _FinancialStatementLoader(
-        isLoading: state.isLoadingCashFlow,
-        failureDetail: state.cashFlowError?.errorMessage,
-        loadingMessage: 'Loading Cash Flow Statement',
-        mascotAsset: mascotAsset,
-        errorLabel: 'Error loading cash flow statement',
-        onRetry: () {
-          context.read<FinancialStatementsBloc>().add(
-            FinancialStatementsEvent.loadCashFlows(ticker, forceRefresh: true),
-          );
-        },
-        child: const CashFlowStatementView(),
-      ),
+          isLoading: state.isLoadingCashFlow,
+          failureDetail: state.cashFlowError?.errorMessage,
+          loadingMessage: 'Loading Cash Flow Statement',
+          mascotAsset: mascotAsset,
+          errorLabel: 'Error loading cash flow statement',
+          onRetry: () {
+            context.read<FinancialStatementsBloc>().add(
+                  FinancialStatementsEvent.loadCashFlows(
+                    ticker,
+                    forceRefresh: true,
+                  ),
+                );
+          },
+          child: const CashFlowStatementView(),
+        ),
     };
   }
 }
