@@ -57,13 +57,8 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
-      - name: Log Flutter Version
-        run: flutter --version
-
       - name: Install Dependencies
-        run: |
-          flutter clean
-          flutter pub get
+        run: flutter pub get
 
       # NEW: Create the .env files from GitHub Secrets
       - name: Create .env files
@@ -88,8 +83,9 @@ jobs:
           echo "APPLE_TEAM_ID=${{ secrets.APPLE_TEAM_ID }}" >> .env.prod
           echo "BUNDLE_ID=${{ secrets.PROD_BUNDLE_ID }}" >> .env.prod
 
-      - name: Run Build Runner (Envied only)
-        run: dart run build_runner build --build-filter="lib/env/**.dart"
+      # NEW: Generate ALL required code (Freezed, JsonSerializable, Envied, Injectable)
+      - name: Generate All Code (Freezed, Envied, etc.)
+        run: dart run build_runner build --delete-conflicting-outputs
 
       # -----------------------------------------------------------------------
       # 1. Map Inputs to Secret Env Vars
@@ -330,7 +326,7 @@ jobs:
           FIREBASE_APP_ID: ${{ inputs.flavor == 'prod' && '1:937588855548:ios:df00961c39fa6d0b273d79' || inputs.flavor == 'qa' && '1:362847044804:ios:f1fb001df36c95bca73591' || '1:5470748320:ios:a230b0d1d71b90f27493c5' }}
           NOTE: "Automatic build from GitHub Actions for ${{ inputs.flavor }}"
           GROUPS: "testers"
-          GOOGLE_APPLICATION_CREDENTIALS: ${{ env.FIREBASE_SERVICE_ACCOUNT_PATH }}
+          GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/firebase_service_account.json
         run: |
           firebase appdistribution:distribute build/ios/ipa/*.ipa \
             --app "$FIREBASE_APP_ID" \
