@@ -33,7 +33,7 @@ class StockSearchService {
 
     result.fold(
       (failure) {
-        _logger.severe('Failed to load stock list: ${failure.message}');
+        _logger.severe('Failed to load stock list: ${failure.errorMessage}');
       },
       (stocks) {
         _logger.info('Stock list loaded successfully: ${stocks.length} items');

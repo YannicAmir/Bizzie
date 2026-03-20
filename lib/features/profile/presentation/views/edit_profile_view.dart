@@ -164,7 +164,7 @@ class _EditProfileViewContentState extends State<_EditProfileViewContent> {
               failure: (s) {
                 BizzieSnackBar.show(
                   context,
-                  message: s.failure.message,
+                  message: s.failure.errorMessage,
                   type: BizzieSnackBarType.error,
                 );
               },
@@ -216,7 +216,7 @@ class _EditProfileViewContentState extends State<_EditProfileViewContent> {
                   ),
                 ),
                 failure: (s) => BizzieError(
-                  message: s.failure.message,
+                  message: s.failure.errorMessage,
                   mascotAssetPath: AppAssets.getMascotForSector(
                     s.favoriteSector ?? '',
                   ),

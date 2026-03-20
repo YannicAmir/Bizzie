@@ -136,7 +136,7 @@ void main() {
       expect(result.isLeft(), isTrue);
       result.fold(
         (failure) => expect(
-          failure.message,
+          failure.errorMessage,
           'Failed to load brands. Please try again later.',
         ),
         (_) => fail('Should be Left'),

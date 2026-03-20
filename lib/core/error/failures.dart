@@ -25,8 +25,7 @@ sealed class Failure with _$Failure {
     @Default('Reauthentication failed') String message,
   ]) = ReauthenticationFailure;
 
-  @override
-  String get message => map(
+  String get errorMessage => map(
         server: (f) => f.message,
         cache: (f) => f.message,
         payment: (f) => f.message,

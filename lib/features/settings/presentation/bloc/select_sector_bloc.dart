@@ -120,7 +120,7 @@ class SelectSectorBloc extends Bloc<SelectSectorEvent, SelectSectorState> {
         unawaited(
           _tracker.logSectorUpdateFailure(
             sector: state.selectedSector.sector.name,
-            error: failure.message,
+            error: failure.errorMessage,
           ),
         );
 

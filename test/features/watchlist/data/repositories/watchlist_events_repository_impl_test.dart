@@ -183,7 +183,7 @@ void main() {
       // assert
       expect(result, isA<Left>());
       result.fold(
-        (failure) => expect(failure.message, contains('DB Error')),
+        (failure) => expect(failure.errorMessage, contains('DB Error')),
         (_) => fail('Should have failed'),
       );
     });

@@ -158,7 +158,7 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
       onData: (result) {
         result.fold(
           (failure) => _logger.warning(
-            'Failed to receive user activity: ${failure.message}',
+            'Failed to receive user activity: ${failure.errorMessage}',
           ),
           (activity) {
             _logger.info(
@@ -178,7 +178,7 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
       onData: (result) {
         result.fold(
           (failure) =>
-              _logger.warning('Failed to fetch watchlist: ${failure.message}'),
+              _logger.warning('Failed to fetch watchlist: ${failure.errorMessage}'),
           (companies) {
             final tickers = companies.map((c) => c.ticker).toList();
             add(ReportsEvent.watchlistUpdated(tickers));
@@ -215,7 +215,7 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
   ) async {
     event.result.fold(
       (failure) {
-        _tracker.logFetchFailed(error: failure.message);
+        _tracker.logFetchFailed(error: failure.errorMessage);
         emit(ReportsState.failure(failure));
       },
       (feed) {

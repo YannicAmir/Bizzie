@@ -26,7 +26,7 @@ class LoginPage extends StatelessWidget {
           failure: (failure) {
             BizzieSnackBar.show(
               context,
-              message: failure.message,
+              message: failure.errorMessage,
               type: BizzieSnackBarType.error,
             );
           },

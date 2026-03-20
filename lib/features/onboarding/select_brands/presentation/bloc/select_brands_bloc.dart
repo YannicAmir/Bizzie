@@ -70,8 +70,8 @@ class SelectBrandsBloc extends Bloc<SelectBrandsEvent, SelectBrandsState> {
 
     result.fold(
       (failure) {
-        _logger.severe('Failed to fetch daily brands: ${failure.message}');
-        emit(SelectBrandsState.error(failure.message));
+        _logger.severe('Failed to fetch daily brands: ${failure.errorMessage}');
+        emit(SelectBrandsState.error(failure.errorMessage));
       },
       (listing) {
         _logger.info(

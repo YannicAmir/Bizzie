@@ -27,7 +27,7 @@ class ChangeSectorModal extends StatelessWidget {
             failure: (f) {
               BizzieSnackBar.show(
                 context,
-                message: f.failure.message,
+                message: f.failure.errorMessage,
                 type: BizzieSnackBarType.error,
               );
             },

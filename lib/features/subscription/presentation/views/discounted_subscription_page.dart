@@ -127,7 +127,7 @@ class _DiscountedSubscriptionPageState
                   mascotAsset: mascotAsset,
                 ),
                 failure: (s) => BizzieError(
-                  message: s.failure.message,
+                  message: s.failure.errorMessage,
                   onRetry: () => context.read<SubscriptionBloc>().add(
                     const SubscriptionEvent.offeringsRequested(),
                   ),

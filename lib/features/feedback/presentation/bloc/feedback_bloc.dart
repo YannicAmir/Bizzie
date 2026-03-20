@@ -90,8 +90,8 @@ class FeedbackBloc extends Bloc<FeedbackEvent, FeedbackState> {
 
     await result.fold(
       (failure) async {
-        _logger.severe('Feedback submission failed: ${failure.message}');
-        await _tracker.logFeedbackFailed(error: failure.message);
+        _logger.severe('Feedback submission failed: ${failure.errorMessage}');
+        await _tracker.logFeedbackFailed(error: failure.errorMessage);
         emit(FeedbackState.failure(failure, isCoolingDown: true));
       },
       (_) async {

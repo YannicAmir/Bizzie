@@ -101,9 +101,9 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
       (failure) async {
         await _tracker.logError(
           type: NotificationErrorType.permissionException,
-          message: failure.message,
+          message: failure.errorMessage,
         );
-        emit(state.copyWith(status: NotificationStatus.failure(failure.message)));
+        emit(state.copyWith(status: NotificationStatus.failure(failure.errorMessage)));
       },
       (_) async {
         final tokenResult = await _getFcmToken();
@@ -112,10 +112,10 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
           (failure) async {
             await _tracker.logError(
               type: NotificationErrorType.tokenSyncFailure,
-              message: failure.message,
+              message: failure.errorMessage,
             );
             emit(
-              state.copyWith(status: NotificationStatus.failure(failure.message)),
+              state.copyWith(status: NotificationStatus.failure(failure.errorMessage)),
             );
           },
           (fcmToken) async {
@@ -148,9 +148,9 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
       (failure) async {
         await _tracker.logError(
           type: NotificationErrorType.subscriptionFailure,
-          message: failure.message,
+          message: failure.errorMessage,
         );
-        emit(state.copyWith(status: NotificationStatus.failure(failure.message)));
+        emit(state.copyWith(status: NotificationStatus.failure(failure.errorMessage)));
       },
       (_) async => null,
     );
@@ -165,9 +165,9 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
       (failure) async {
         await _tracker.logError(
           type: NotificationErrorType.unsubscriptionFailure,
-          message: failure.message,
+          message: failure.errorMessage,
         );
-        emit(state.copyWith(status: NotificationStatus.failure(failure.message)));
+        emit(state.copyWith(status: NotificationStatus.failure(failure.errorMessage)));
       },
       (_) async => null,
     );

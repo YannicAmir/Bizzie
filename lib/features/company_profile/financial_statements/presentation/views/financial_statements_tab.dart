@@ -106,7 +106,7 @@ class _ActiveStatementSwitcher extends StatelessWidget {
     return switch (state.selectedType) {
       FinancialStatementType.income => _FinancialStatementLoader(
         isLoading: state.isLoadingIncome,
-        error: state.incomeError?.message,
+        error: state.incomeError?.errorMessage,
         loadingMessage: 'Loading Income Statement',
         mascotAsset: mascotAsset,
         errorMessage: 'Error loading income statement',
@@ -122,7 +122,7 @@ class _ActiveStatementSwitcher extends StatelessWidget {
       ),
       FinancialStatementType.balance => _FinancialStatementLoader(
         isLoading: state.isLoadingBalance,
-        error: state.balanceError?.message,
+        error: state.balanceError?.errorMessage,
         loadingMessage: 'Loading Balance Sheet',
         mascotAsset: mascotAsset,
         errorMessage: 'Error loading balance sheet',
@@ -138,7 +138,7 @@ class _ActiveStatementSwitcher extends StatelessWidget {
       ),
       FinancialStatementType.cashFlow => _FinancialStatementLoader(
         isLoading: state.isLoadingCashFlow,
-        error: state.cashFlowError?.message,
+        error: state.cashFlowError?.errorMessage,
         loadingMessage: 'Loading Cash Flow Statement',
         mascotAsset: mascotAsset,
         errorMessage: 'Error loading cash flow statement',

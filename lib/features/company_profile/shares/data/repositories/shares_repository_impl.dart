@@ -34,7 +34,7 @@ class SharesRepositoryImpl implements ISharesRepository {
     try {
       final profileResult = await _companyRepository.getProfile(ticker);
       final (current, quoteOrigin) = profileResult.fold(
-        (failure) => throw Exception(failure.message),
+        (failure) => throw Exception(failure.errorMessage),
         (tuple) {
           final profile = tuple.$1;
           final price = profile.price ?? 0.0;

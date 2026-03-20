@@ -143,7 +143,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
             query: normalized,
             outcome: SearchOutcome.error,
           );
-          emit(SearchState.failure('AI Search failed: ${failure.message}'));
+          emit(SearchState.failure('AI Search failed: ${failure.errorMessage}'));
         },
         (stock) {
           if (stock != null) {
