@@ -106,10 +106,10 @@ class _ActiveStatementSwitcher extends StatelessWidget {
     return switch (state.selectedType) {
       FinancialStatementType.income => _FinancialStatementLoader(
         isLoading: state.isLoadingIncome,
-        error: state.incomeError?.errorMessage,
+        failureDetail: state.incomeError?.errorMessage,
         loadingMessage: 'Loading Income Statement',
         mascotAsset: mascotAsset,
-        errorMessage: 'Error loading income statement',
+        errorLabel: 'Error loading income statement',
         onRetry: () {
           context.read<FinancialStatementsBloc>().add(
             FinancialStatementsEvent.loadIncomeStatements(
@@ -122,10 +122,10 @@ class _ActiveStatementSwitcher extends StatelessWidget {
       ),
       FinancialStatementType.balance => _FinancialStatementLoader(
         isLoading: state.isLoadingBalance,
-        error: state.balanceError?.errorMessage,
+        failureDetail: state.balanceError?.errorMessage,
         loadingMessage: 'Loading Balance Sheet',
         mascotAsset: mascotAsset,
-        errorMessage: 'Error loading balance sheet',
+        errorLabel: 'Error loading balance sheet',
         onRetry: () {
           context.read<FinancialStatementsBloc>().add(
             FinancialStatementsEvent.loadBalanceSheets(
@@ -138,10 +138,10 @@ class _ActiveStatementSwitcher extends StatelessWidget {
       ),
       FinancialStatementType.cashFlow => _FinancialStatementLoader(
         isLoading: state.isLoadingCashFlow,
-        error: state.cashFlowError?.errorMessage,
+        failureDetail: state.cashFlowError?.errorMessage,
         loadingMessage: 'Loading Cash Flow Statement',
         mascotAsset: mascotAsset,
-        errorMessage: 'Error loading cash flow statement',
+        errorLabel: 'Error loading cash flow statement',
         onRetry: () {
           context.read<FinancialStatementsBloc>().add(
             FinancialStatementsEvent.loadCashFlows(ticker, forceRefresh: true),
@@ -155,19 +155,19 @@ class _ActiveStatementSwitcher extends StatelessWidget {
 
 class _FinancialStatementLoader extends StatelessWidget {
   final bool isLoading;
-  final String? error;
+  final String? failureDetail;
   final String loadingMessage;
   final String mascotAsset;
-  final String errorMessage;
+  final String errorLabel;
   final VoidCallback onRetry;
   final Widget child;
 
   const _FinancialStatementLoader({
     required this.isLoading,
-    required this.error,
+    required this.failureDetail,
     required this.loadingMessage,
     required this.mascotAsset,
-    required this.errorMessage,
+    required this.errorLabel,
     required this.onRetry,
     required this.child,
   });
@@ -183,8 +183,8 @@ class _FinancialStatementLoader extends StatelessWidget {
         ),
       );
     }
-    if (error != null) {
-      return CompanyProfileErrorState(message: errorMessage, onRetry: onRetry);
+    if (failureDetail != null) {
+      return CompanyProfileErrorState(message: errorLabel, onRetry: onRetry);
     }
     return child;
   }

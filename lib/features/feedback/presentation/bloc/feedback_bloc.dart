@@ -100,9 +100,7 @@ class FeedbackBloc extends Bloc<FeedbackEvent, FeedbackState> {
           messageLength: event.message.length,
         );
 
-        // In a real app, we'd fetch the current count from a UserProfile service.
-        // For this Platinum demo, we simulate incrementing a session-based count.
-        // Rule: Always log intent to increment user properties.
+        //TODO: Implement actual user profile integration
         await _tracker.setTotalFeedbackCount(1);
 
         emit(const FeedbackState.success(isCoolingDown: true));
