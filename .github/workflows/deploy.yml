@@ -332,3 +332,28 @@ jobs:
             --app "$FIREBASE_APP_ID" \
             --groups "$GROUPS" \
             --release-notes "$NOTE"
+
+      # -----------------------------------------------------------------------
+      # 5. Upload to App Store Connect (Prod Only)
+      # -----------------------------------------------------------------------
+      - name: Upload to App Store Connect
+        if: ${{ inputs.flavor == 'prod' }}
+        env:
+          APPLE_ID: ${{ secrets.APP_STORE_EMAIL }}
+          APP_SPECIFIC_PASSWORD: ${{ secrets.APP_STORE_APP_SPECIFIC_PASSWORD }}
+        run: |
+          echo "Preparing App Store Connect upload..."
+          
+          # Find the generated IPA file
+          IPA_PATH=$(find build/ios/ipa -name "*.ipa" | head -n 1)
+          
+          if [ -z "$IPA_PATH" ]; then
+            echo "::error::IPA file not found. Cannot upload to App Store Connect."
+            exit 1
+          fi
+          
+          echo "Found IPA at: $IPA_PATH"
+          echo "Uploading to App Store Connect..."
+          
+          # Using xcrun altool to upload the build to TestFlight
+          xcrun altool --upload-app -f "$IPA_PATH" -t ios -u "$APPLE_ID" -p "$APP_SPECIFIC_PASSWORD"
