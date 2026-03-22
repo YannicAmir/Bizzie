@@ -60,7 +60,7 @@ class CompleteOnboardingUseCase
 
     return result.fold(
       (failure) {
-        _logger.severe('Failed to save user profile: ${failure.message}');
+        _logger.severe('Failed to save user profile: ${failure.errorMessage}');
         return Left(failure);
       },
       (_) {

@@ -25,6 +25,7 @@ class RemoteConfigKeys {
   static const String aiSummaryButtonLabel = 'ai_summary_button_label';
   static const String subscriptionFeatureHighlights =
       'subscription_feature_highlights';
+  static const String frankfurterConfig = 'frankfurter_config';
 }
 
 final _logger = BizzieLogger('ConfigService');
@@ -59,6 +60,7 @@ class ConfigService implements IConfigService {
     'Unlimited product search to find stocks',
     'Unlimited summaries of SEC filings',
   ];
+  static const _defaultFrankfurterBaseUrl = "https://api.frankfurter.dev/v1";
 
   static const _defaultSectorDescriptions = {
     "Energy":
@@ -124,6 +126,7 @@ class ConfigService implements IConfigService {
       RemoteConfigKeys.subscriptionFeatureHighlights: jsonEncode(
         _defaultSubscriptionFeatureHighlights,
       ),
+      RemoteConfigKeys.frankfurterConfig: _defaultFrankfurterBaseUrl,
     });
 
     try {
@@ -262,6 +265,10 @@ class ConfigService implements IConfigService {
 
   @override
   Future<bool> activate() => _remoteConfig.activate();
+
+  @override
+  String get frankfurterBaseUrl =>
+      _remoteConfig.getString(RemoteConfigKeys.frankfurterConfig);
 
   @override
   Stream<void> get onConfigUpdated => _remoteConfig.onConfigUpdated;

@@ -75,7 +75,7 @@ class _FeedbackModalState extends State<FeedbackModal> {
           failure: (failure, isCoolingDown) {
             BizzieSnackBar.show(
               context,
-              message: failure.message,
+              message: failure.errorMessage,
               type: BizzieSnackBarType.error,
             );
           },

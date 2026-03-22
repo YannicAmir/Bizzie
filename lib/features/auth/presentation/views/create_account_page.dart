@@ -48,7 +48,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
           failure: (failure) {
             BizzieSnackBar.show(
               context,
-              message: failure.message,
+              message: failure.errorMessage,
               type: BizzieSnackBarType.error,
             );
           },

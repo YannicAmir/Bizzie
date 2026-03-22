@@ -6,19 +6,24 @@ import 'package:bizzie/features/company_profile/net_income/domain/interfaces/i_n
 import 'package:bizzie/features/company_profile/net_income/domain/models/net_income_stats.dart';
 import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
+import 'package:bizzie/features/company_profile/shared/domain/interfaces/i_exchange_rate_repository.dart';
 
 abstract class _Consts {
   static const String annual = 'annual';
   static const String quarter = 'quarter';
-  static const String usd = 'USD';
 }
 
 @LazySingleton(as: INetIncomeRepository)
 class NetIncomeRepositoryImpl implements INetIncomeRepository {
   final FinancialStatementsRemoteDataSource _remoteDataSource;
   final FinancialStatementsFirestoreDataSource _localDataSource;
+  final IExchangeRateRepository _exchangeRateRepository;
 
-  NetIncomeRepositoryImpl(this._remoteDataSource, this._localDataSource);
+  NetIncomeRepositoryImpl(
+    this._remoteDataSource,
+    this._localDataSource,
+    this._exchangeRateRepository,
+  );
 
   @override
   Future<Either<Failure, (NetIncomeStats, CompanyProfileDataOrigin)>>
@@ -47,10 +52,11 @@ class NetIncomeRepositoryImpl implements INetIncomeRepository {
             final annual = annualS.data;
             final quart = quartS.data;
 
-            final conversionRes = await _getCurrencyMultiplier(
-              annual.firstOrNull?.reportedCurrency ??
+            final conversionRes = await _exchangeRateRepository.getMultiplier(
+              reportedCurrency:
+                  annual.firstOrNull?.reportedCurrency ??
                   quart.firstOrNull?.reportedCurrency,
-              ticker,
+              ticker: ticker,
             );
 
             return conversionRes.fold((f) => left(f), (convData) {
@@ -95,48 +101,6 @@ class NetIncomeRepositoryImpl implements INetIncomeRepository {
       );
     } catch (e) {
       return left(Failure.server(e.toString()));
-    }
-  }
-
-  Future<
-    Either<
-      Failure,
-      (({double multiplier, String targetCurrency}), CompanyProfileDataOrigin)
-    >
-  >
-  _getCurrencyMultiplier(String? reportedCurrency, String ticker) async {
-    if (reportedCurrency == null || reportedCurrency == _Consts.usd) {
-      return right((
-        (multiplier: 1.0, targetCurrency: _Consts.usd),
-        CompanyProfileDataOrigin.cache,
-      ));
-    }
-
-    try {
-      final pair = '${reportedCurrency}USD';
-
-      final res = await _localDataSource.syncExchangeRate(
-        pair,
-        remoteFetcher: () =>
-            _remoteDataSource.getExchangeRate(pair).then((v) => v ?? 1.0),
-      );
-
-      return res.map(
-        success: (s) => right((
-          (multiplier: s.data, targetCurrency: _Consts.usd),
-          s.origin,
-        )),
-        failure: (f) => left(f.failure),
-        notFound: (_) => right((
-          (multiplier: 1.0, targetCurrency: reportedCurrency),
-          CompanyProfileDataOrigin.cache,
-        )),
-      );
-    } catch (e) {
-      return right((
-        (multiplier: 1.0, targetCurrency: reportedCurrency),
-        CompanyProfileDataOrigin.cache,
-      ));
     }
   }
 }

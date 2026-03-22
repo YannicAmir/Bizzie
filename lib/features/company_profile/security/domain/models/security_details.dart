@@ -1,5 +1,4 @@
 import 'package:bizzie/features/company_profile/shared/domain/models/company_profile.dart';
-import 'package:bizzie/features/company_profile/shared/domain/models/stock_quote.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:bizzie/features/company_profile/shared/domain/enums/market_cap_category.dart';
 import 'package:bizzie/features/company_profile/shared/domain/enums/ratio_category.dart';
@@ -34,9 +33,8 @@ abstract class SecurityDetails with _$SecurityDetails {
     String? website,
   }) = _SecurityDetails;
 
-  factory SecurityDetails.fromProfileAndQuote({
+  factory SecurityDetails.fromProfile({
     required CompanyProfile profile,
-    required StockQuote quote,
     double? peRatioTTM,
     double? pfcfTTM,
   }) {
@@ -50,11 +48,11 @@ abstract class SecurityDetails with _$SecurityDetails {
       isEtf: profile.isEtf ?? false,
       isFund: profile.isFund ?? false,
       isActivelyTrading: profile.isActivelyTrading ?? true,
-      price: quote.price ?? 0.0,
-      changesPercentage: quote.changesPercentage ?? 0.0,
-      change: quote.change ?? 0.0,
-      marketCap: quote.marketCap ?? 0.0,
-      peRatioTTM: peRatioTTM ?? quote.pe,
+      price: profile.price ?? 0.0,
+      changesPercentage: profile.changesPercentage ?? 0.0,
+      change: profile.change ?? 0.0,
+      marketCap: profile.marketCap ?? 0.0,
+      peRatioTTM: peRatioTTM,
       priceToFreeCashFlowTTM: pfcfTTM,
       beta: profile.beta,
       image: profile.image ?? '',

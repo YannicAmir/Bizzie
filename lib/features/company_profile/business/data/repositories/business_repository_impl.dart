@@ -2,7 +2,6 @@ import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/features/company_profile/business/data/datasources/business_firestore_data_source.dart';
-import 'package:bizzie/features/company_profile/business/data/datasources/business_remote_data_source.dart';
 import 'package:bizzie/features/company_profile/financial_statements/data/datasources/financial_statements_firestore_data_source.dart';
 import 'package:bizzie/features/company_profile/financial_statements/data/datasources/financial_statements_remote_data_source.dart';
 import 'package:bizzie/features/company_profile/financial_statements/data/dtos/fmp_sec_filing_dto.dart';
@@ -10,7 +9,6 @@ import 'package:bizzie/features/company_profile/financial_statements/data/dtos/l
 import 'package:bizzie/features/company_profile/business/domain/interfaces/i_business_repository.dart';
 import 'package:bizzie/features/company_profile/business/domain/models/business_profile.dart';
 import 'package:bizzie/core/enums/data_origin.dart';
-import 'package:bizzie/features/company_profile/business/domain/models/company_executive.dart';
 import 'package:bizzie/features/company_profile/business/domain/models/sec_filing.dart';
 import 'package:bizzie/features/company_profile/shared/domain/interfaces/i_company_repository.dart';
 import 'package:bizzie/features/company_profile/shared/domain/models/company_profile.dart';
@@ -27,14 +25,12 @@ abstract class _Consts {
 @LazySingleton(as: IBusinessRepository)
 class BusinessRepositoryImpl implements IBusinessRepository {
   final ICompanyRepository _companyRepository;
-  final BusinessRemoteDataSource _remoteDataSource;
   final BusinessFirestoreDataSource _localDataSource;
   final FinancialStatementsRemoteDataSource _financialRemoteDataSource;
   final FinancialStatementsFirestoreDataSource _financialLocalDataSource;
 
   BusinessRepositoryImpl(
     this._companyRepository,
-    this._remoteDataSource,
     this._localDataSource,
     this._financialRemoteDataSource,
     this._financialLocalDataSource,
@@ -46,7 +42,6 @@ class BusinessRepositoryImpl implements IBusinessRepository {
     try {
       final results = await Future.wait([
         _companyRepository.getProfile(ticker),
-        _getExecutivesAndCache(ticker),
         _financialRemoteDataSource.getSecFilings(ticker),
         _fetchLegacyIncomeStatements(ticker, _Consts.annual),
         _fetchLegacyIncomeStatements(ticker, _Consts.quarter),
@@ -56,24 +51,20 @@ class BusinessRepositoryImpl implements IBusinessRepository {
       final profileResult =
           results[0]
               as Either<Failure, (CompanyProfile, CompanyProfileDataOrigin)>;
-      final execResult =
-          results[1] as (List<CompanyExecutive>, CompanyProfileDataOrigin);
-      final secSearchFilings = results[2] as List<FmpSecFilingDto>;
+      final secSearchFilings = results[1] as List<FmpSecFilingDto>;
       final annualResult =
-          results[3]
+          results[2]
               as (List<LegacyIncomeStatementDto>, CompanyProfileDataOrigin);
       final quarterlyResult =
-          results[4]
+          results[3]
               as (List<LegacyIncomeStatementDto>, CompanyProfileDataOrigin);
       final cachedProxyUrlTuple =
-          results[5] as (String?, CompanyProfileDataOrigin)?;
+          results[4] as (String?, CompanyProfileDataOrigin)?;
       final cachedProxyUrl = cachedProxyUrlTuple?.$1;
 
       return profileResult.fold((failure) => left(failure), (profileData) {
         final profile = profileData.$1;
         final profileOrigin = profileData.$2;
-        final executives = execResult.$1;
-        final execOrigin = execResult.$2;
         final annualIncome = annualResult.$1;
         final annualOrigin = annualResult.$2;
         final quarterlyIncome = quarterlyResult.$1;
@@ -92,12 +83,7 @@ class BusinessRepositoryImpl implements IBusinessRepository {
         final annualFilings = _mapIncomeStatementsToFilings(annualIncome);
         final quarterlyFilings = _mapIncomeStatementsToFilings(quarterlyIncome);
 
-        final origins = [
-          profileOrigin,
-          execOrigin,
-          annualOrigin,
-          quarterlyOrigin,
-        ];
+        final origins = [profileOrigin, annualOrigin, quarterlyOrigin];
 
         final finalOrigin = origins.contains(CompanyProfileDataOrigin.api)
             ? CompanyProfileDataOrigin.api
@@ -120,7 +106,6 @@ class BusinessRepositoryImpl implements IBusinessRepository {
             zip: profile.zip ?? '',
             phone: profile.phone ?? '',
             fullTimeEmployees: profile.fullTimeEmployees ?? 'N/A',
-            executives: executives,
             def14aUrl: def14aUrlData.url,
             isForeignCompany: isForeign,
             proxyFilingFormType:
@@ -134,27 +119,6 @@ class BusinessRepositoryImpl implements IBusinessRepository {
     } catch (e) {
       return left(Failure.server(e.toString()));
     }
-  }
-
-  Future<(List<CompanyExecutive>, CompanyProfileDataOrigin)>
-  _getExecutivesAndCache(String ticker) async {
-    final res = await _localDataSource.syncGovernance(
-      ticker,
-      remoteFetcher: () async {
-        final govList = await _remoteDataSource.getGovernance(ticker);
-        final execList = await _remoteDataSource.getExecutives(ticker);
-        if (govList.isEmpty) throw Exception('Governance info not found');
-        return (govList.first, execList);
-      },
-    );
-
-    return res.map(
-      success: (s) => (s.data.$2.map((e) => e.toDomain()).toList(), s.origin),
-      failure: (_) =>
-          (const <CompanyExecutive>[], CompanyProfileDataOrigin.cache),
-      notFound: (_) =>
-          (const <CompanyExecutive>[], CompanyProfileDataOrigin.cache),
-    );
   }
 
   ({String? url, String? formType}) _getProxyOrAnnualUrlSync(

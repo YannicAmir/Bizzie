@@ -67,7 +67,7 @@ class _HomePageState extends State<HomePage> {
           state.maybeWhen(
             failure: (failure) => BizzieSnackBar.show(
               context,
-              message: failure.message,
+              message: failure.errorMessage,
               type: BizzieSnackBarType.error,
             ),
             orElse: () {},

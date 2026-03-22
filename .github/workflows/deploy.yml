@@ -83,8 +83,8 @@ jobs:
           echo "APPLE_TEAM_ID=${{ secrets.APPLE_TEAM_ID }}" >> .env.prod
           echo "BUNDLE_ID=${{ secrets.PROD_BUNDLE_ID }}" >> .env.prod
 
-      # NEW: Generate the envied .g.dart files
-      - name: Run Build Runner
+      # NEW: Generate ALL required code (Freezed, JsonSerializable, Envied, Injectable)
+      - name: Generate All Code (Freezed, Envied, etc.)
         run: dart run build_runner build --delete-conflicting-outputs
 
       # -----------------------------------------------------------------------
@@ -326,9 +326,34 @@ jobs:
           FIREBASE_APP_ID: ${{ inputs.flavor == 'prod' && '1:937588855548:ios:df00961c39fa6d0b273d79' || inputs.flavor == 'qa' && '1:362847044804:ios:f1fb001df36c95bca73591' || '1:5470748320:ios:a230b0d1d71b90f27493c5' }}
           NOTE: "Automatic build from GitHub Actions for ${{ inputs.flavor }}"
           GROUPS: "testers"
-          GOOGLE_APPLICATION_CREDENTIALS: ${{ env.FIREBASE_SERVICE_ACCOUNT_PATH }}
+          GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/firebase_service_account.json
         run: |
           firebase appdistribution:distribute build/ios/ipa/*.ipa \
             --app "$FIREBASE_APP_ID" \
             --groups "$GROUPS" \
             --release-notes "$NOTE"
+
+      # -----------------------------------------------------------------------
+      # 5. Upload to App Store Connect (Prod Only)
+      # -----------------------------------------------------------------------
+      - name: Upload to App Store Connect
+        if: ${{ inputs.flavor == 'prod' }}
+        env:
+          APPLE_ID: ${{ secrets.APP_STORE_EMAIL }}
+          APP_SPECIFIC_PASSWORD: ${{ secrets.APP_STORE_APP_SPECIFIC_PASSWORD }}
+        run: |
+          echo "Preparing App Store Connect upload..."
+          
+          # Find the generated IPA file
+          IPA_PATH=$(find build/ios/ipa -name "*.ipa" | head -n 1)
+          
+          if [ -z "$IPA_PATH" ]; then
+            echo "::error::IPA file not found. Cannot upload to App Store Connect."
+            exit 1
+          fi
+          
+          echo "Found IPA at: $IPA_PATH"
+          echo "Uploading to App Store Connect..."
+          
+          # Using xcrun altool to upload the build to TestFlight
+          xcrun altool --upload-app -f "$IPA_PATH" -t ios -u "$APPLE_ID" -p "$APP_SPECIFIC_PASSWORD"

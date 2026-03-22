@@ -129,7 +129,7 @@ class WatchlistBloc extends Bloc<WatchlistEvent, WatchlistState> {
       await result.fold(
         (failure) async {
           _logger.warning(
-            'Sync skipped: Watchlist fetch failed: ${failure.message}',
+            'Sync skipped: Watchlist fetch failed: ${failure.errorMessage}',
           );
         },
         (companies) async {
@@ -140,7 +140,7 @@ class WatchlistBloc extends Bloc<WatchlistEvent, WatchlistState> {
 
           syncResult.fold(
             (failure) =>
-                _logger.warning('Background sync failed: ${failure.message}'),
+                _logger.warning('Background sync failed: ${failure.errorMessage}'),
             (_) => _logger.info('Background sync successful'),
           );
         },
@@ -173,7 +173,7 @@ class WatchlistBloc extends Bloc<WatchlistEvent, WatchlistState> {
       (failure) {
         _watchlistAnalytics.logOperationFailed(
           operation: 'add',
-          errorMessage: failure.message,
+          errorMessage: failure.errorMessage,
         );
         emit(WatchlistState.failure(failure));
       },
@@ -207,7 +207,7 @@ class WatchlistBloc extends Bloc<WatchlistEvent, WatchlistState> {
       (failure) {
         _watchlistAnalytics.logOperationFailed(
           operation: 'remove',
-          errorMessage: failure.message,
+          errorMessage: failure.errorMessage,
         );
         emit(WatchlistState.failure(failure));
       },

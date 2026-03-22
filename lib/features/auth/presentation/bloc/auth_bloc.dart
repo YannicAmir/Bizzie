@@ -107,7 +107,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         await _tracker.logLoginFailure(
           method: AuthMethod.google,
           source: event.source,
-          error: failure.message,
+          error: failure.errorMessage,
         );
         emit(AuthState.failure(failure));
       },
@@ -136,7 +136,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         await _tracker.logLoginFailure(
           method: AuthMethod.apple,
           source: event.source,
-          error: failure.message,
+          error: failure.errorMessage,
         );
         emit(AuthState.failure(failure));
       },
@@ -167,7 +167,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         await _tracker.logLoginFailure(
           method: AuthMethod.email,
           source: event.source,
-          error: failure.message,
+          error: failure.errorMessage,
         );
         emit(AuthState.failure(failure));
       },
@@ -198,7 +198,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         await _tracker.logSignUpFailure(
           method: AuthMethod.email,
           source: event.source,
-          error: failure.message,
+          error: failure.errorMessage,
         );
         emit(AuthState.failure(failure));
       },

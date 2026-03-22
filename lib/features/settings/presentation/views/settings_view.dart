@@ -114,7 +114,7 @@ class _SettingsViewContentState extends State<_SettingsViewContent>
                 orElse: () {
                   BizzieSnackBar.show(
                     context,
-                    message: fState.failure.message,
+                    message: fState.failure.errorMessage,
                     type: BizzieSnackBarType.error,
                   );
                 },

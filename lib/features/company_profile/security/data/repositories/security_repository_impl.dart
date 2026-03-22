@@ -31,50 +31,45 @@ class SecurityRepositoryImpl implements ISecurityRepository {
   getSecurityDetails(String ticker) async {
     try {
       final profileResult = await _companyRepository.getProfile(ticker);
-      final quoteResult = await _companyRepository.getQuote(ticker);
 
-      return profileResult.fold((failure) => left(failure), (
-        profileData,
-      ) async {
-        return quoteResult.fold((failure) => left(failure), (quoteData) async {
-          final profile = profileData.$1;
-          final quote = quoteData.$1;
+      if (profileResult.isLeft()) {
+        return left(profileResult.fold((f) => f, (r) => throw Exception()));
+      }
 
-          double? peRatioTTM;
-          double? pfcfTTM;
-          CompanyProfileDataOrigin ratiosOrigin =
-              CompanyProfileDataOrigin.cache;
+      final (profile, profileOrigin) = profileResult.fold(
+        (f) => throw Exception(),
+        (r) => r,
+      );
 
-          try {
-            final ttmRatios = await _ratiosRemoteDataSource.getRatiosTtm(
-              ticker,
-            );
-            final ratio = ttmRatios.firstOrNull;
-            peRatioTTM = ratio?.priceToEarningsRatioTTM;
-            pfcfTTM = ratio?.priceToFreeCashFlowRatioTTM;
-            if (ttmRatios.isNotEmpty) {
-              ratiosOrigin = CompanyProfileDataOrigin.api;
-            }
-          } catch (_) {}
+      double? peRatioTTM;
+      double? pfcfTTM;
+      CompanyProfileDataOrigin ratiosOrigin = CompanyProfileDataOrigin.cache;
 
-          final origins = [profileData.$2, quoteData.$2, ratiosOrigin];
-          final finalOrigin = origins.contains(CompanyProfileDataOrigin.api)
-              ? CompanyProfileDataOrigin.api
-              : origins.contains(CompanyProfileDataOrigin.db)
-              ? CompanyProfileDataOrigin.db
-              : CompanyProfileDataOrigin.cache;
+      try {
+        final ttmRatios = await _ratiosRemoteDataSource.getRatiosTtm(ticker);
+        final ratio = ttmRatios.firstOrNull;
+        peRatioTTM = ratio?.priceToEarningsRatioTTM;
+        pfcfTTM = ratio?.priceToFreeCashFlowRatioTTM;
+        if (ttmRatios.isNotEmpty) {
+          ratiosOrigin = CompanyProfileDataOrigin.api;
+        }
+      } catch (_) {}
 
-          return right((
-            SecurityDetails.fromProfileAndQuote(
-              profile: profile,
-              quote: quote,
-              peRatioTTM: peRatioTTM,
-              pfcfTTM: pfcfTTM,
-            ),
-            finalOrigin,
-          ));
-        });
-      });
+      final origins = [profileOrigin, ratiosOrigin];
+      final finalOrigin = origins.contains(CompanyProfileDataOrigin.api)
+          ? CompanyProfileDataOrigin.api
+          : origins.contains(CompanyProfileDataOrigin.db)
+          ? CompanyProfileDataOrigin.db
+          : CompanyProfileDataOrigin.cache;
+
+      return right((
+        SecurityDetails.fromProfile(
+          profile: profile,
+          peRatioTTM: peRatioTTM,
+          pfcfTTM: pfcfTTM,
+        ),
+        finalOrigin,
+      ));
     } catch (e) {
       return left(Failure.server(e.toString()));
     }
@@ -113,7 +108,9 @@ class SecurityRepositoryImpl implements ISecurityRepository {
       return date.isAfter(oneDayAgo) && date.isBefore(windowEnd);
     }).toList();
 
-    if (upcoming.isEmpty) return null;
+    if (upcoming.isEmpty) {
+      return null;
+    }
 
     upcoming.sort((a, b) {
       final dateA = a.toDateTime();

@@ -239,7 +239,7 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
       (failure) {
         _logger.severe(
           'Failed to sync identity with subscription service',
-          failure.message,
+          failure.errorMessage,
         );
       },
       (_) {
@@ -357,7 +357,7 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
             );
           },
           orElse: () {
-            _logger.severe('Purchase failed', failure.message);
+            _logger.severe('Purchase failed', failure.errorMessage);
             emit(
               SubscriptionState.failure(status: state.status, failure: failure),
             );
@@ -428,7 +428,7 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
 
     result.fold(
       (failure) {
-        _logger.severe('Restore purchases failed', failure.message);
+        _logger.severe('Restore purchases failed', failure.errorMessage);
         emit(SubscriptionState.failure(status: state.status, failure: failure));
       },
       (status) {
@@ -469,7 +469,7 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
 
     result.fold(
       (failure) {
-        _logger.severe('Failed to fetch offerings', failure.message);
+        _logger.severe('Failed to fetch offerings', failure.errorMessage);
         emit(SubscriptionState.failure(status: state.status, failure: failure));
       },
       (offering) {
@@ -525,7 +525,7 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
         result.fold(
           (failure) => _logger.severe(
             'Background sync failed (graceful degradation): '
-            '${failure.message}',
+            '${failure.errorMessage}',
           ),
           (_) => _logger.info('Background sync completed successfully.'),
         );

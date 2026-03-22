@@ -1,6 +1,4 @@
 import 'package:bizzie/core/enums/data_origin.dart';
-import 'package:bizzie/features/company_profile/business/data/datasources/business_firestore_data_source.dart';
-import 'package:bizzie/features/company_profile/business/data/datasources/business_remote_data_source.dart';
 import 'package:bizzie/features/company_profile/shared/data/datasources/ratios_remote_data_source.dart';
 import 'package:bizzie/features/company_profile/security/data/datasources/security_firestore_data_source.dart';
 import 'package:bizzie/features/company_profile/security/data/datasources/security_remote_data_source.dart';
@@ -8,7 +6,6 @@ import 'package:bizzie/features/company_profile/security/data/dtos/earnings_repo
 import 'package:bizzie/features/company_profile/shared/data/dtos/ratios_ttm_dto.dart';
 import 'package:bizzie/features/company_profile/shared/domain/interfaces/i_company_repository.dart';
 import 'package:bizzie/features/company_profile/shared/domain/models/company_profile.dart';
-import 'package:bizzie/features/company_profile/shared/domain/models/stock_quote.dart';
 import 'package:bizzie/features/company_profile/security/data/repositories/security_repository_impl.dart';
 import 'package:bizzie/features/company_profile/security/domain/models/security_details.dart';
 import 'package:dartz/dartz.dart';
@@ -16,12 +13,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:bizzie/core/data/models/cache_result.dart' as cache;
 import 'package:bizzie/core/error/failures.dart';
-
-class MockBusinessRemoteDataSource extends Mock
-    implements BusinessRemoteDataSource {}
-
-class MockBusinessLocalDataSource extends Mock
-    implements BusinessFirestoreDataSource {}
 
 class MockSecurityRemoteDataSource extends Mock
     implements SecurityRemoteDataSource {}
@@ -82,17 +73,6 @@ void main() {
       fullTimeEmployees: '',
       ceo: '',
     );
-    final tStockQuote = StockQuote(
-      symbol: tTicker,
-      name: 'Apple Inc.',
-      price: 155.0,
-      change: 5.0,
-      changesPercentage: 3.2,
-      marketCap: 2500000000.0,
-      pe: 25.0,
-      sharesOutstanding: 16000000000.0,
-      eps: 0,
-    );
     final tRatios = [
       const RatiosTtmDto(
         priceToEarningsRatioTTM: 22.5,
@@ -104,9 +84,6 @@ void main() {
       // arrange
       when(() => mockCompanyRepository.getProfile(tTicker)).thenAnswer(
         (_) async => Right((tCompanyProfile, CompanyProfileDataOrigin.api)),
-      );
-      when(() => mockCompanyRepository.getQuote(tTicker)).thenAnswer(
-        (_) async => Right((tStockQuote, CompanyProfileDataOrigin.api)),
       );
       when(
         () => mockRatiosRemoteDataSource.getRatiosTtm(tTicker),

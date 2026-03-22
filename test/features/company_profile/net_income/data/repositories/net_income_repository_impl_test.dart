@@ -1,4 +1,5 @@
 import 'package:bizzie/features/company_profile/financial_statements/data/datasources/financial_statements_firestore_data_source.dart';
+import 'package:dartz/dartz.dart';
 import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:bizzie/features/company_profile/financial_statements/data/datasources/financial_statements_remote_data_source.dart';
 import 'package:bizzie/features/company_profile/financial_statements/data/dtos/income_statement_dto.dart';
@@ -7,6 +8,7 @@ import 'package:bizzie/features/company_profile/net_income/domain/models/net_inc
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:bizzie/core/data/models/cache_result.dart' as cache;
+import 'package:bizzie/features/company_profile/shared/domain/interfaces/i_exchange_rate_repository.dart';
 
 class MockFinancialRemoteDataSource extends Mock
     implements FinancialStatementsRemoteDataSource {}
@@ -14,17 +16,24 @@ class MockFinancialRemoteDataSource extends Mock
 class MockFinancialLocalDataSource extends Mock
     implements FinancialStatementsFirestoreDataSource {}
 
+class MockExchangeRateRepository extends Mock
+    implements IExchangeRateRepository {}
+
 void main() {
   late NetIncomeRepositoryImpl repository;
   late MockFinancialRemoteDataSource mockRemoteDataSource;
   late MockFinancialLocalDataSource mockLocalDataSource;
 
+  late MockExchangeRateRepository mockExchangeRateRepository;
+
   setUp(() {
     mockRemoteDataSource = MockFinancialRemoteDataSource();
     mockLocalDataSource = MockFinancialLocalDataSource();
+    mockExchangeRateRepository = MockExchangeRateRepository();
     repository = NetIncomeRepositoryImpl(
       mockRemoteDataSource,
       mockLocalDataSource,
+      mockExchangeRateRepository,
     );
   });
 
@@ -59,6 +68,18 @@ void main() {
             tIncomeStatements,
             CompanyProfileDataOrigin.cache,
           ),
+        );
+
+        when(
+          () => mockExchangeRateRepository.getMultiplier(
+            reportedCurrency: any(named: 'reportedCurrency'),
+            ticker: any(named: 'ticker'),
+          ),
+        ).thenAnswer(
+          (_) async => right((
+            (multiplier: 1.0, targetCurrency: 'USD'),
+            CompanyProfileDataOrigin.cache,
+          )),
         );
 
         // Act

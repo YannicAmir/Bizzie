@@ -1,4 +1,3 @@
-import 'package:bizzie/features/company_profile/business/domain/models/company_executive.dart';
 import 'package:bizzie/features/company_profile/business/domain/models/sec_filing.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
@@ -20,7 +19,6 @@ abstract class BusinessProfile with _$BusinessProfile {
     required String zip,
     required String phone,
     required String fullTimeEmployees,
-    required List<CompanyExecutive> executives,
     String? def14aUrl,
     @Default(false) bool isForeignCompany,
     @Default('DEF 14A') String proxyFilingFormType,

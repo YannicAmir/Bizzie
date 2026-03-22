@@ -311,7 +311,7 @@ class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
     final result = await _getSp500HistoryUseCase(NoParams());
     result.fold(
       (failure) {
-        _logger.warning('Failed to load S&P 500 history: ${failure.message}');
+        _logger.warning('Failed to load S&P 500 history: ${failure.errorMessage}');
         emit(state.copyWith(isLoadingHistory: false));
       },
       (history) {
@@ -342,7 +342,7 @@ class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
     result.fold(
       (failure) {
         _logger.warning(
-          'Failed to fetch available sectors: ${failure.message}',
+          'Failed to fetch available sectors: ${failure.errorMessage}',
         );
         emit(state.copyWith(isLoadingSectors: false));
       },
@@ -427,7 +427,7 @@ class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
     );
 
     await result.fold(
-      (failure) => _handleCompletionError(failure.message, emit),
+      (failure) => _handleCompletionError(failure.errorMessage, emit),
       (_) => _handleCompletionSuccess(emit),
     );
   }

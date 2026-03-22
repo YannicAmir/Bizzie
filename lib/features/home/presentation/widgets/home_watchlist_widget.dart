@@ -33,7 +33,7 @@ class HomeWatchlistWidget extends StatelessWidget {
               failure: (f) {
                 WidgetsBinding.instance.addPostFrameCallback((_) {
                   context.read<HomeBloc>().add(
-                    HomeEvent.watchlistLoadFailed(error: f.failure.message),
+                    HomeEvent.watchlistLoadFailed(error: f.failure.errorMessage),
                   );
                 });
                 return Center(

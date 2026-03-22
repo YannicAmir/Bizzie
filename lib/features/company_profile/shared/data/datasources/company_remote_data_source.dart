@@ -2,11 +2,9 @@ import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 import 'package:bizzie/core/interfaces/i_config_service.dart';
 import 'package:bizzie/features/company_profile/shared/data/dtos/company_profile_dto.dart';
-import 'package:bizzie/features/company_profile/shared/data/dtos/quote_dto.dart';
 
 abstract class CompanyRemoteDataSource {
   Future<List<ProfileDto>> getProfile(String ticker);
-  Future<List<QuoteDto>> getQuote(String ticker);
 }
 
 @LazySingleton(as: CompanyRemoteDataSource)
@@ -30,14 +28,5 @@ class CompanyRemoteDataSourceImpl implements CompanyRemoteDataSource {
       queryParameters: {'symbol': _sanitize(ticker)},
     );
     return (response.data as List).map((e) => ProfileDto.fromJson(e)).toList();
-  }
-
-  @override
-  Future<List<QuoteDto>> getQuote(String ticker) async {
-    final response = await _dio.get(
-      '$_baseUrl/quote',
-      queryParameters: {'symbol': _sanitize(ticker)},
-    );
-    return (response.data as List).map((e) => QuoteDto.fromJson(e)).toList();
   }
 }

@@ -2,11 +2,9 @@ import 'package:bizzie/features/company_profile/business/data/repositories/busin
 import 'package:bizzie/features/company_profile/business/domain/models/business_profile.dart';
 
 import 'package:bizzie/features/company_profile/business/data/datasources/business_firestore_data_source.dart';
-import 'package:bizzie/features/company_profile/business/data/datasources/business_remote_data_source.dart';
 import 'package:bizzie/features/company_profile/financial_statements/data/datasources/financial_statements_firestore_data_source.dart';
 import 'package:bizzie/features/company_profile/financial_statements/data/datasources/financial_statements_remote_data_source.dart';
 import 'package:bizzie/features/company_profile/financial_statements/data/dtos/fmp_sec_filing_dto.dart';
-import 'package:bizzie/features/company_profile/business/data/dtos/governance_dtos.dart';
 import 'package:bizzie/features/company_profile/financial_statements/data/dtos/legacy_income_statement_dto.dart';
 import 'package:bizzie/features/company_profile/shared/domain/interfaces/i_company_repository.dart';
 import 'package:bizzie/features/company_profile/shared/domain/models/company_profile.dart';
@@ -15,9 +13,6 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:bizzie/core/data/models/cache_result.dart' as cache;
-
-class MockBusinessRemoteDataSource extends Mock
-    implements BusinessRemoteDataSource {}
 
 class MockBusinessLocalDataSource extends Mock
     implements BusinessFirestoreDataSource {}
@@ -32,28 +27,22 @@ class MockCompanyRepository extends Mock implements ICompanyRepository {}
 
 void main() {
   late BusinessRepositoryImpl repository;
-  late MockBusinessRemoteDataSource mockRemoteDataSource;
   late MockBusinessLocalDataSource mockLocalDataSource;
   late MockFinancialRemoteDataSource mockFinancialRemoteDataSource;
   late MockFinancialLocalDataSource mockFinancialLocalDataSource;
   late MockCompanyRepository mockCompanyRepository;
 
   setUp(() {
-    mockRemoteDataSource = MockBusinessRemoteDataSource();
     mockLocalDataSource = MockBusinessLocalDataSource();
     mockFinancialRemoteDataSource = MockFinancialRemoteDataSource();
     mockFinancialLocalDataSource = MockFinancialLocalDataSource();
     mockCompanyRepository = MockCompanyRepository();
     repository = BusinessRepositoryImpl(
       mockCompanyRepository,
-      mockRemoteDataSource,
       mockLocalDataSource,
       mockFinancialRemoteDataSource,
       mockFinancialLocalDataSource,
     );
-
-    registerFallbackValue(const GovernanceDto(symbol: '', nameAndPosition: ''));
-    registerFallbackValue(const <ExecutiveDto>[]);
   });
 
   const tTicker = 'AAPL';
@@ -78,9 +67,6 @@ void main() {
   );
 
   group('BusinessRepositoryImpl - BusinessProfile', () {
-    final tExecutives = [
-      const ExecutiveDto(name: 'Tim Cook', title: 'CEO', pay: 1000000.0),
-    ];
     final tLegacyIncome = [
       const LegacyIncomeStatementDto(
         date: '2023-09-30',
@@ -118,18 +104,6 @@ void main() {
       // Arrange
       when(() => mockCompanyRepository.getProfile(tTicker)).thenAnswer(
         (_) async => Right((tCompanyProfile, CompanyProfileDataOrigin.api)),
-      );
-
-      when(
-        () => mockLocalDataSource.syncGovernance(
-          tTicker,
-          remoteFetcher: any(named: 'remoteFetcher'),
-        ),
-      ).thenAnswer(
-        (_) async => cache.CacheSuccess((
-          const GovernanceDto(symbol: tTicker, nameAndPosition: 'CEO'),
-          tExecutives,
-        ), CompanyProfileDataOrigin.api),
       );
 
       when(

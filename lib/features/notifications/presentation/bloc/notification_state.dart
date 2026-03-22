@@ -1,17 +1,14 @@
-part of 'notification_bloc.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:bizzie/features/notifications/domain/models/notification_intent.dart';
+import 'package:bizzie/features/notifications/presentation/bloc/notification_status.dart';
+
+part 'notification_state.freezed.dart';
 
 @freezed
-abstract class NotificationState with _$NotificationState {
-  const factory NotificationState.initial() = NotificationInitial;
-  const factory NotificationState.loading() = NotificationLoading;
-  const factory NotificationState.success(String? fcmToken) =
-      NotificationSuccess;
-  const factory NotificationState.failure(String message) = NotificationFailure;
-  const factory NotificationState.messageReceivedState(
-    NotificationMessage message,
-  ) = NotificationMessageReceivedState;
-  const factory NotificationState.navigationRequested(
-    NotificationIntent intent,
-    int timestamp,
-  ) = NotificationNavigationRequested;
+sealed class NotificationState with _$NotificationState {
+  const factory NotificationState({
+    required NotificationStatus status,
+    required bool isAppReady,
+    NotificationIntent? pendingIntent,
+  }) = _NotificationState;
 }

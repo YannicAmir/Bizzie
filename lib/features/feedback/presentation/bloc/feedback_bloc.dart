@@ -90,8 +90,8 @@ class FeedbackBloc extends Bloc<FeedbackEvent, FeedbackState> {
 
     await result.fold(
       (failure) async {
-        _logger.severe('Feedback submission failed: ${failure.message}');
-        await _tracker.logFeedbackFailed(error: failure.message);
+        _logger.severe('Feedback submission failed: ${failure.errorMessage}');
+        await _tracker.logFeedbackFailed(error: failure.errorMessage);
         emit(FeedbackState.failure(failure, isCoolingDown: true));
       },
       (_) async {
@@ -100,9 +100,7 @@ class FeedbackBloc extends Bloc<FeedbackEvent, FeedbackState> {
           messageLength: event.message.length,
         );
 
-        // In a real app, we'd fetch the current count from a UserProfile service.
-        // For this Platinum demo, we simulate incrementing a session-based count.
-        // Rule: Always log intent to increment user properties.
+        //TODO: Implement actual user profile integration
         await _tracker.setTotalFeedbackCount(1);
 
         emit(const FeedbackState.success(isCoolingDown: true));

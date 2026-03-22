@@ -55,7 +55,7 @@ class AppRatingsBloc extends Bloc<AppRatingsEvent, AppRatingsState> {
     Failure failure,
     Emitter<AppRatingsState> emit,
   ) async {
-    _logger.severe('Failure tracking rating conditions: ${failure.message}');
+    _logger.severe('Failure tracking rating conditions: ${failure.errorMessage}');
     emit(const AppRatingsState.idle());
   }
 

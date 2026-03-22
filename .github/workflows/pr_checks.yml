@@ -71,8 +71,8 @@ jobs:
           echo "APPLE_TEAM_ID=${{ secrets.APPLE_TEAM_ID }}" >> .env.prod
           echo "BUNDLE_ID=${{ secrets.PROD_BUNDLE_ID }}" >> .env.prod
 
-      # NEW: Generate the envied .g.dart files
-      - name: Run Build Runner
+      # NEW: Generate ALL required code (Freezed, JsonSerializable, Envied, Injectable)
+      - name: Generate All Code (Freezed, Envied, etc.)
         run: dart run build_runner build --delete-conflicting-outputs
 
       - name: Analyze Code

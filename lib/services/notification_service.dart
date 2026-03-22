@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'package:rxdart/rxdart.dart';
 import 'package:bizzie/features/notifications/domain/enums/notification_app_state.dart';
 import 'package:bizzie/features/notifications/domain/enums/notification_trigger_source.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -27,7 +28,7 @@ class NotificationService implements INotificationService {
   final NotificationTracker _tracker;
 
   bool _isInteractionsSetup = false;
-  final _payloadController = StreamController<Map<String, dynamic>>.broadcast();
+  final _payloadController = BehaviorSubject<Map<String, dynamic>>();
 
   NotificationService(
     this._notificationRepository,
@@ -60,6 +61,8 @@ class NotificationService implements INotificationService {
       sound: true,
     );
 
+    await setupInteractions();
+
     await syncFcmToken();
 
     _firebaseMessaging.onTokenRefresh.listen((token) {
@@ -91,7 +94,7 @@ class NotificationService implements INotificationService {
   Future<String?> getFcmToken() async {
     final result = await _notificationRepository.getFcmToken();
     return result.fold((failure) {
-      _logger.severe('Failed to fetch FCM token: ${failure.message}');
+      _logger.severe('Failed to fetch FCM token: ${failure.errorMessage}');
       return null;
     }, (token) => token);
   }
@@ -118,7 +121,7 @@ class NotificationService implements INotificationService {
       result.fold(
         (failure) {
           _logger.severe('Failed to update FCM token', failure);
-          unawaited(_tracker.logSyncFailure(message: failure.message));
+          unawaited(_tracker.logSyncFailure(message: failure.errorMessage));
         },
         (_) {
           _logger.info('FCM token updated successfully. Updating cache.');
@@ -141,8 +144,8 @@ class NotificationService implements INotificationService {
     _logger.info('Subscribing to topic: $topic');
     final result = await _notificationRepository.subscribeToTopic(topic);
     result.fold((failure) {
-      _logger.severe('Failed to subscribe to topic $topic: ${failure.message}');
-      throw Exception(failure.message);
+      _logger.severe('Failed to subscribe to topic $topic: ${failure.errorMessage}');
+      throw Exception(failure.errorMessage);
     }, (_) => _logger.info('Successfully subscribed to topic: $topic'));
   }
 
@@ -152,9 +155,9 @@ class NotificationService implements INotificationService {
     final result = await _notificationRepository.unsubscribeFromTopic(topic);
     result.fold((failure) {
       _logger.severe(
-        'Failed to unsubscribe from topic $topic: ${failure.message}',
+        'Failed to unsubscribe from topic $topic: ${failure.errorMessage}',
       );
-      throw Exception(failure.message);
+      throw Exception(failure.errorMessage);
     }, (_) => _logger.info('Successfully unsubscribed from topic: $topic'));
   }
 

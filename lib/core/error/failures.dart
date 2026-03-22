@@ -25,16 +25,14 @@ sealed class Failure with _$Failure {
     @Default('Reauthentication failed') String message,
   ]) = ReauthenticationFailure;
 
-  /// Common getter for the error message across all variants.
-  @override
-  String get message => when(
-    server: (m) => m,
-    cache: (m) => m,
-    payment: (m) => m,
-    cancel: (m) => m,
-    userNotFound: (m) => m,
-    permission: (m) => m,
-    passwordMismatch: (m) => m,
-    reauthentication: (m) => m,
-  );
+  String get errorMessage => map(
+        server: (f) => f.message,
+        cache: (f) => f.message,
+        payment: (f) => f.message,
+        cancel: (f) => f.message,
+        userNotFound: (f) => f.message,
+        permission: (f) => f.message,
+        passwordMismatch: (f) => f.message,
+        reauthentication: (f) => f.message,
+      );
 }

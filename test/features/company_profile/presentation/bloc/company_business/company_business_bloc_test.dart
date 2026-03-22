@@ -62,7 +62,6 @@ void main() {
     zip: '95014',
     phone: '1-408-996-1010',
     fullTimeEmployees: '100000',
-    executives: [],
     annualFilings: [],
     quarterlyFilings: [],
   );

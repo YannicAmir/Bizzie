@@ -6,6 +6,7 @@ abstract class IConfigService {
   List<String> get stockMarketSectors;
   Map<String, String> get sectorDescriptions;
   FmpConfig get fmpConfig;
+  String get frankfurterBaseUrl;
   String get privacyPolicyUrl;
   String get termsOfServiceUrl;
   String get minAppVersion;
