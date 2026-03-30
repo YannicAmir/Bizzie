@@ -170,14 +170,14 @@ void main() {
 
     test('userRepository_watchUser_mappingError_throwsException', () async {
       // arrange
-      final userStream = Stream.value(tUserDto);
-      // Corrupt DTO to trigger toDomain() error if possible, or just mock error
       when(
         () => mockRemoteDataSource.watchUser(tUid),
-      ).thenAnswer((_) => userStream);
-      when(
-        () => mockRemoteDataSource.watchWatchlist(tUid),
-      ).thenAnswer((_) => Stream.error(Exception('Stream Error')));
+      ).thenAnswer((_) => Stream.value(tUserDto).asBroadcastStream());
+      when(() => mockRemoteDataSource.watchWatchlist(tUid)).thenAnswer(
+        (_) => Stream<List<WatchlistItemDto>>.error(
+          Exception('Stream Error'),
+        ).asBroadcastStream(),
+      );
 
       // act
       final streamResult = repository.watchUser(tUid);
@@ -389,12 +389,8 @@ void main() {
       // assert
       authController.add(null);
 
-      bool emitted = false;
-      final sub = stream.listen((_) => emitted = true);
+      await expectLater(stream, emits(null));
 
-      await Future.delayed(const Duration(milliseconds: 50));
-      expect(emitted, false);
-      sub.cancel();
       authController.close();
     });
   });
