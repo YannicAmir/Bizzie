@@ -13,11 +13,11 @@ class OnboardingAnalytics {
     required String stepName,
     int? durationSec,
     String? errorMessage,
-    Map<String, Object>? extraParams,
+    Map<String, Object?>? extraParams,
   }) {
     final normalizedStepName = _getNormalizedStepName(stepName);
 
-    final params = <String, Object>{'step_name': normalizedStepName};
+    final params = <String, Object?>{'step_name': normalizedStepName};
 
     if (durationSec != null) {
       params['duration_sec'] = durationSec;
@@ -41,7 +41,7 @@ class OnboardingAnalytics {
   void logSessionSummary(OnboardingSessionSummary summary) {
     _logEvent(
       'onboarding_session_summary',
-      Map<String, Object>.from(summary.toJson()),
+      Map<String, Object?>.from(summary.toJson()),
     );
   }
 
@@ -65,8 +65,8 @@ class OnboardingAnalytics {
     );
   }
 
-  void _logEvent(String name, Map<String, Object> params) {
-    final enrichedParams = Map<String, Object>.from(params);
+  void _logEvent(String name, Map<String, Object?> params) {
+    final enrichedParams = Map<String, Object?>.from(params);
     enrichedParams['day_of_week'] = DayOfWeek.fromDateTime(DateTime.now()).name;
     enrichedParams['timestamp'] = DateTime.now().toIso8601String();
     _analyticsService.logEvent(name: name, parameters: enrichedParams);

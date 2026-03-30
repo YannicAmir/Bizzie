@@ -8,7 +8,7 @@ class WatchUserUseCase {
 
   WatchUserUseCase(this._userRepository);
 
-  Stream<UserModel> call(String uid) {
+  Stream<UserModel?> call(String uid) {
     return _userRepository.watchUser(uid);
   }
 }

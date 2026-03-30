@@ -65,7 +65,6 @@ class FirestoreService {
           'Firestore permission denied for $path - likely during logout session clearing',
           e,
         );
-        return;
       }
       throw e;
     });
@@ -90,7 +89,6 @@ class FirestoreService {
               'Firestore permission denied for $path - likely during logout session clearing',
               e,
             );
-            return;
           }
           throw e;
         });

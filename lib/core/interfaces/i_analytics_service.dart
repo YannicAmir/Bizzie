@@ -2,7 +2,7 @@ abstract class IAnalyticsService {
   /// Logs a custom event.
   Future<void> logEvent({
     required String name,
-    Map<String, Object>? parameters,
+    Map<String, Object?>? parameters,
   });
 
   /// Sets a user property.

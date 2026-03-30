@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/features/user/data/dtos/user_dto.dart';
 import 'package:bizzie/features/user/domain/models/user_model.dart';
@@ -27,12 +28,12 @@ class UserRepositoryImpl implements IUserRepository {
   );
 
   @override
-  Stream<UserModel> get userStream => _authRepository.authStateChanges
+  Stream<UserModel?> get userStream => _authRepository.authStateChanges
       .map((user) => user?.id)
       .distinct()
       .switchMap((uid) {
         if (uid == null) {
-          return const Stream<UserModel>.empty();
+          return Stream<UserModel?>.value(null);
         }
         return watchUser(uid);
       })
@@ -44,35 +45,87 @@ class UserRepositoryImpl implements IUserRepository {
   }
 
   @override
-  Stream<UserModel> watchUser(String uid) {
-    _logger.info('Starting reactive watch for user $uid');
+  Stream<UserModel?> watchUser(String uid) {
+    _logger.info('Starting resilient reactive watch for user $uid');
 
-    return Rx.combineLatest2<UserDto, List<WatchlistItemDto>, UserModel>(
-      _remoteDataSource.watchUser(uid).whereType<UserDto>(),
+    Stream<UserModel?> buildStream() => Rx.combineLatest2<UserDto?,
+        List<WatchlistItemDto>,
+        UserModel?>(
+      _remoteDataSource.watchUser(uid),
       _remoteDataSource.watchWatchlist(uid),
-      (userDto, List<WatchlistItemDto> watchlistDtos) {
-        try {
-          final watchlist = watchlistDtos.map((dto) => dto.toDomain()).toList();
-          final user = userDto.toDomain().copyWith(watchlist: watchlist);
+      (userDto, List<WatchlistItemDto> watchlistDtos) =>
+          _mapUser(userDto, watchlistDtos, uid),
+    );
 
-          if (user.favoriteSector.isNotEmpty &&
-              _localDataSource.getCachedFavoriteSector() == null) {
-            _logger.info(
-              'Seeding local cache from stream: ${user.favoriteSector}',
-            );
-            _localDataSource.cacheFavoriteSector(user.favoriteSector);
-          }
-
-          return user;
-        } catch (e, stack) {
-          _logger.severe('Failed to map UserDto to Domain', e, stack);
-          rethrow;
+    bool firstEventReceived = false;
+    return RetryWhenStream<UserModel?>(
+      buildStream,
+      (error, stackTrace) {
+        if (error is FirebaseException && error.code == 'permission-denied') {
+          _logger.info(
+            'Terminal permission-denied error for uid: $uid. Skipping retry.',
+          );
+          return Stream.error(error);
         }
+
+        _logger.warning(
+          'User stream encountered recoverable error, retrying in 5s...',
+          error,
+        );
+        return Stream.periodic(const Duration(seconds: 5)).take(3);
       },
-    ).handleError((Object e, StackTrace s) {
-      _logger.severe('User stream error for $uid', e, s);
-      throw e;
-    });
+    )
+        .doOnData((_) => firstEventReceived = true)
+        .timeout(
+          const Duration(seconds: 20),
+          onTimeout: (sink) {
+            if (!firstEventReceived) {
+              sink.addError(
+                TimeoutException(
+                  'Initial connection timeout',
+                  const Duration(seconds: 20),
+                ),
+              );
+            }
+          },
+        )
+        .handleError((Object e, StackTrace s) {
+          _logger.severe(
+            'User stream persistent error or timeout for $uid',
+            e,
+            s,
+          );
+          throw e;
+        });
+  }
+
+  UserModel? _mapUser(
+    UserDto? userDto,
+    List<WatchlistItemDto> watchlistDtos,
+    String uid,
+  ) {
+    try {
+      if (userDto == null) {
+        _logger.info('No Firestore document found for user $uid');
+        return null;
+      }
+
+      final watchlist = watchlistDtos.map((dto) => dto.toDomain()).toList();
+      final user = userDto.toDomain().copyWith(watchlist: watchlist);
+
+      if (user.favoriteSector.isNotEmpty &&
+          _localDataSource.getCachedFavoriteSector() == null) {
+        _logger.info(
+          'Seeding local cache from stream: ${user.favoriteSector}',
+        );
+        _localDataSource.cacheFavoriteSector(user.favoriteSector);
+      }
+
+      return user;
+    } catch (e, stack) {
+      _logger.severe('Failed to map UserDto to Domain', e, stack);
+      rethrow;
+    }
   }
 
   @override

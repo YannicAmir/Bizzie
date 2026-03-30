@@ -261,7 +261,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     _authSubscription?.cancel();
     return super.close();
   }
-
+ 
   static AuthState _getInitialState(GetCurrentUser getCurrentUser) {
     final user = getCurrentUser(NoParams());
     return user != null

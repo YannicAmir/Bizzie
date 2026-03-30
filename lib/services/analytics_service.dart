@@ -14,20 +14,21 @@ class AnalyticsService implements IAnalyticsService {
   @override
   Future<void> logEvent({
     required String name,
-    Map<String, Object>? parameters,
+    Map<String, Object?>? parameters,
   }) async {
-    _logger.info('Logging event: $name');
     final Map<String, Object> allParams = {
       'timestamp': DateTime.now().toIso8601String(),
     };
     if (parameters != null) {
-      final sanitizedParams = parameters.map((key, value) {
-        if (value is bool) {
-          return MapEntry(key, value.toString());
+      parameters.forEach((key, value) {
+        if (value != null) {
+          if (value is bool) {
+            allParams[key] = value.toString();
+          } else {
+            allParams[key] = value;
+          }
         }
-        return MapEntry(key, value);
       });
-      allParams.addAll(sanitizedParams);
     }
 
     _logger.info('Params: $allParams');

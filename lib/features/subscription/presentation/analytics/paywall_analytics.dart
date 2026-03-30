@@ -51,7 +51,7 @@ class PaywallAnalytics {
   static const _kPropOnboardingConverted = 'onboarding_converted';
 
   /// Internal helper to log events with standard paywall metadata.
-  Future<void> _logEvent(String name, Map<String, Object> params) async {
+  Future<void> _logEvent(String name, Map<String, Object?> params) async {
     try {
       await _analytics.logEvent(
         name: name,
@@ -73,7 +73,7 @@ class PaywallAnalytics {
     String? tabName,
     String? featureName,
   }) async {
-    final Map<String, Object> params = {
+    final Map<String, Object?> params = {
       _kParamSource: source.name,
       _kParamPaywallType: paywallType.name,
     };

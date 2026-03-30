@@ -13,7 +13,7 @@ abstract class SubscriptionModule {
   @lazySingleton
   Stream<bool> isSubscribedStream(IUserRepository userRepository) =>
       userRepository.userStream
-          .map((user) => user.isSubscribed)
+          .map((user) => user?.isSubscribed ?? false)
           .distinct()
           .asBroadcastStream();
 }
