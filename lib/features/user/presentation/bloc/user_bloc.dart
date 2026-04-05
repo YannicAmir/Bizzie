@@ -24,8 +24,15 @@ class UserBloc extends Bloc<UserEvent, UserState> {
 
   UserBloc(this._getUserUseCase, this._watchUserUseCase, this._userRepository)
     : super(const UserState.initial()) {
-    on<UserLoadRequested>(_onLoadUser, transformer: restartable());
-    on<UserClearRequested>(_onClear);
+    on<UserEvent>(
+      (event, emit) async {
+        await event.map(
+          loadUser: (e) => _onLoadUser(e, emit),
+          clear: (e) async => _onClear(e, emit),
+        );
+      },
+      transformer: restartable(),
+    );
   }
 
   /// Starts a persistent Firestore stream for the given [event.uid].
@@ -44,9 +51,13 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     }
     _logger.info('Starting persistent stream for uid: ${event.uid}');
 
-    await emit.forEach<UserModel>(
+    await emit.forEach<UserModel?>(
       _watchUserUseCase(event.uid),
       onData: (user) {
+        if (user == null) {
+          _logger.info('User document not found, emitting needsProfile for uid: ${event.uid}');
+          return const UserState.needsProfile();
+        }
         _logger.info('User stream emitted update for uid: ${user.uid}');
         return UserState.loaded(user);
       },
