@@ -99,6 +99,14 @@ import '../features/bizzie_chat/data/repositories/bizzie_chat_repository_impl.da
     as _i495;
 import '../features/bizzie_chat/domain/interfaces/i_bizzie_chat_repository.dart'
     as _i710;
+import '../features/bizzie_chat/domain/usecases/get_messages_stream_usecase.dart'
+    as _i563;
+import '../features/bizzie_chat/domain/usecases/get_sessions_stream_usecase.dart'
+    as _i906;
+import '../features/bizzie_chat/domain/usecases/send_message_stream_usecase.dart'
+    as _i714;
+import '../features/bizzie_chat/domain/usecases/send_message_usecase.dart'
+    as _i1061;
 import '../features/company_profile/business/data/datasources/business_firestore_data_source.dart'
     as _i379;
 import '../features/company_profile/business/data/repositories/business_repository_impl.dart'
@@ -1567,6 +1575,18 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i937.IConfigService>(),
         gh<_i167.FreeCashFlowTabAnalytics>(),
       ),
+    );
+    gh.factory<_i714.SendMessageStreamUseCase>(
+      () => _i714.SendMessageStreamUseCase(gh<_i710.IBizzieChatRepository>()),
+    );
+    gh.factory<_i1061.SendMessageUseCase>(
+      () => _i1061.SendMessageUseCase(gh<_i710.IBizzieChatRepository>()),
+    );
+    gh.lazySingleton<_i563.GetMessagesStreamUseCase>(
+      () => _i563.GetMessagesStreamUseCase(gh<_i710.IBizzieChatRepository>()),
+    );
+    gh.lazySingleton<_i906.GetSessionsStreamUseCase>(
+      () => _i906.GetSessionsStreamUseCase(gh<_i710.IBizzieChatRepository>()),
     );
     gh.lazySingleton<_i925.GetHistoricalEodPricesUseCase>(
       () => _i925.GetHistoricalEodPricesUseCase(gh<_i876.IPriceRepository>()),
