@@ -97,9 +97,70 @@ Never call `GetIt.I.registerSingleton()` or `registerFactory()` manually for app
 Available methods (never use `FirebaseFirestore.instance` directly):
 - `setDocument<T>(path, value, toJson)` — create or overwrite a document
 - `getDocumentStream<T>(path, fromJson, toJson)` — single doc real-time stream
-- `getCollectionStream<T>(path, fromJson, toJson)` — collection real-time stream
+- `getCollectionStream<T>(path, fromJson, toJson, queryBuilder?)` — collection real-time stream; pass `queryBuilder` for ordering or filtering
 - `getCollectionStreamChunked<T>(path, whereInField, values, fromJson, toJson, chunkSize)` — chunked `whereIn`
 - `deleteDocument(path)` — delete a document
+
+Subcollection paths are plain strings, e.g. `'users/$uid/conversations/$sessionId/messages'`.
+
+---
+
+## 7a. Raw HTTP POST to Firebase Cloud Functions (non-callable)
+
+Some Firebase Cloud Functions are deployed as raw HTTP endpoints (`onRequest`) rather than callable functions (`onCall`). Use this pattern when the function requires streaming (SSE) or when `httpsCallable` is insufficient.
+
+**When to use:** The feature's backend function is an `onRequest` function, OR the response must be streamed token-by-token (SSE).
+
+**Transport:** `@Named('BizzieDio')` Dio instance — already registered in `NetworkModule`. It injects a Firebase ID token Bearer header on every request via `BizzieAuthInterceptor` and has a 95 s receive timeout to cover the 90 s backend SSE timeout.
+
+**Non-streaming POST:**
+```dart
+final response = await _dio.post<Map<String, dynamic>>(
+  '/functionName',
+  data: requestDto.toJson(),
+);
+return ResponseDto.fromJson(response.data!);
+```
+
+**Streaming POST (SSE):**
+```dart
+final response = await _dio.post<ResponseBody>(
+  '/functionName',
+  data: requestDto.toJson(),
+  options: Options(responseType: ResponseType.stream),
+);
+final buffer = StringBuffer();
+await for (final chunk in response.data!.stream.map((b) => utf8.decode(b))) {
+  buffer.write(chunk);
+  final text = buffer.toString();
+  final lines = text.split('\n');
+  buffer..clear()..write(lines.last);
+  for (final line in lines.sublist(0, lines.length - 1)) {
+    if (!line.startsWith('data: ')) continue;
+    final raw = line.substring(6).trim();
+    if (raw.isEmpty) continue;
+    yield SseEventDto.fromRawLine(raw); // parse JSON, yield DTO
+  }
+}
+```
+
+**SSE DTO pattern:** Use a `sealed class` (not `@freezed`) with a `factory fromRawLine(String)` that `jsonDecode`s and switches on `json['type']`. Each subtype implements `toDomain()`.
+
+**Error mapping in repository:** Catch `DioException` and map HTTP status codes to `Failure` variants:
+- 401 → `Failure.permission(...)`
+- 403 → `Failure.permission(...)`
+- 404 → `Failure.userNotFound()`
+- 429 → `Failure.rateLimit(retryAfterSeconds: data['retryAfterSeconds'])` — parse from response body
+- 503 → `Failure.server(...)`
+
+**Base URL:** The function base URL is sourced from **Firebase Remote Config via `IConfigService`** — not from `AppEnv`/envied. Add a `static const String xyzBaseUrl = 'xyz_base_url'` entry to `RemoteConfigKeys`, a default empty string in `ConfigService.initialize()` `setDefaults`, and a `String get xyzBaseUrl` getter to both `IConfigService` and `ConfigService`. Wire in `NetworkModule` as `configService.xyzBaseUrl`. Never add function base URLs to `.env.*` files or `AppEnv`.
+
+**Reference implementation:** `bizzie_chat` feature —
+- Interceptor: `lib/core/network/bizzie_auth_interceptor.dart`
+- Dio registration: `lib/core/network/network_module.dart` (`@Named('BizzieDio')`)
+- SSE DTO: `lib/features/bizzie_chat/data/dtos/bizzie_chat_sse_event_dto.dart`
+- Datasource: `lib/features/bizzie_chat/data/datasources/bizzie_chat_remote_datasource.dart`
+- Repository: `lib/features/bizzie_chat/data/repositories/bizzie_chat_repository_impl.dart`
 
 ---
 
@@ -117,11 +178,16 @@ Run `dart run build_runner build --delete-conflicting-outputs` after:
 ## Checklist
 - [ ] DTO: `@freezed` + `@JsonSerializable`, `fromJson`, `fromDomain()`, `toDomain()`
 - [ ] DTO `part` directives present (`.freezed.dart` and `.g.dart`)
+- [ ] SSE event DTO: `sealed class` (not `@freezed`), `factory fromRawLine(String)`, `toDomain()` on each subtype
 - [ ] Datasource interface in `data/interfaces/` with `I` prefix
 - [ ] Remote datasource annotated `@Injectable(as: IXxxRemoteDataSource)`
-- [ ] Remote datasource uses `FirestoreService` — no `FirebaseFirestore.instance`
+- [ ] Remote datasource uses `FirestoreService` for Firestore — no `FirebaseFirestore.instance`
+- [ ] Raw HTTP datasources use `@Named('BizzieDio')` — not `httpsCallable`
+- [ ] Raw HTTP base URL sourced from `IConfigService` (Remote Config) — never from `AppEnv`/envied
+- [ ] DioException in repository mapped via `FunctionAppErrorMapper.map(e, s, context)` — no per-feature status-code switch
 - [ ] Repository annotated `@LazySingleton(as: IXxxRepository)`
-- [ ] Repository wraps all exceptions in `Left(Failure.server(...))`
+- [ ] Repository wraps all exceptions in `Left(Failure.server(...))` or mapped failure
+- [ ] Repository maps 429 DioException to `Failure.rateLimit(retryAfterSeconds: ...)`
 - [ ] Repository maps DTOs to domain models before returning
 - [ ] `BizzieLogger` declared in all datasources and repositories
 - [ ] No `GetIt.I()` calls inside method bodies — constructor injection only

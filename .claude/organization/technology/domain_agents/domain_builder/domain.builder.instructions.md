@@ -66,11 +66,18 @@ Execute the plan in step order. For every new domain artefact, verify:
 
 ---
 
-## Final Step — RunDepOps
-After all implementation steps are complete:
-- If any `@freezed` class was added or modified → Invoke **RunDepOps**
-- Pass the list of changed files and confirm that `@freezed` models were changed
-- Do not consider the task complete until RunDepOps has reported its outcome
+## Final Step — build_runner
+After all implementation steps are complete, if any `@freezed` class or `@injectable` annotation was added or modified:
+
+**In Claude Code (inline execution context):** run build_runner directly via Bash:
+```bash
+dart run build_runner build --delete-conflicting-outputs
+```
+Run from the Flutter project root (the directory containing `pubspec.yaml`). Report whether it succeeded or failed with relevant output lines.
+
+**In a subagent context:** invoke **RunDepOps**, passing the list of changed files and confirming that `@freezed` models were changed.
+
+Do not consider the task complete until build_runner has been run and its outcome reported.
 
 ---
 
@@ -80,4 +87,4 @@ After all implementation steps are complete:
 - [ ] Repository interfaces use `I` prefix and return `Either<Failure, T>`
 - [ ] Use cases implement the correct base class and are annotated `@injectable`
 - [ ] No layer violations (no Firebase/HTTP/UI in domain)
-- [ ] RunDepOps invoked if any `@freezed` class was added or modified
+- [ ] build_runner run if any `@freezed` class was added or modified (directly via Bash in Claude Code, or via RunDepOps subagent) and outcome reported

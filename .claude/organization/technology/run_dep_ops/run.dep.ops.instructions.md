@@ -8,6 +8,8 @@ description: Rules and procedures for the RunDepOps agent when running post-impl
 ## Purpose
 RunDepOps runs the `build_runner` code generation command after any Flutter code change that requires it. It is the final step in DataBuilder, DataUpdater, DataCorrector, DomainBuilder, DomainUpdater, DomainCorrector, StateBuilder, StateUpdater, and StateCorrector workflows.
 
+> **Execution context note:** When these builder/updater/corrector agents execute inline in Claude Code (i.e. they are the active agent, not a spawned subagent), they run `build_runner` directly via the Bash tool rather than delegating to RunDepOps. RunDepOps is the authoritative reference for *when* build_runner is required and *what* to report — the command and decision criteria are identical regardless of how it is invoked.
+
 ---
 
 ## Decision — When to Run build_runner

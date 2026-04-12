@@ -16,6 +16,10 @@ tools: [execute, agent]
 - .claude/organization/technology/qa_agents/data_enforcer/data.enforcer.agent.md
 - Invoke DataEnforcer after RunDepOps reports. Pass the list of files changed and attempt=1 (or the next_attempt provided by the Reporter in a QA retry loop). Do not wait for user confirmation.
 
+# DataHandoffAgent:
+- .claude/organization/technology/data_agents/build_handoff/build.handoff.agent.md
+- Invoke DataHandoffAgent as the final step after DataEnforcer reports a passing outcome. Pass the list of changed files, build_runner outcome, any new RemoteConfigKeys entries, and the feature name. Do not wait for user confirmation.
+
 # Instructions Reference:
 - .claude/organization/technology/data_agents/data_builder/data.builder.instructions.md
 - .claude/organization/technology/shared_instructions/data.guidance.instructions.md

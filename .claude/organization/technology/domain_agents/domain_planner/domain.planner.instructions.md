@@ -29,6 +29,28 @@ Before planning, confirm the following are available. If missing, ask before pro
 
 ---
 
+## Backend Context Lookup (New Features Only)
+
+When the request involves implementing domain layer code for a **new feature** — where the feature's domain directory or key artefacts (models, interfaces, use cases) do not yet exist in the codebase — look up the corresponding backend feature in `YannicAmir/bizzie_function_app` via the GitHub MCP server before producing the plan. The backend is the authoritative source for data shapes, field names, and business logic constraints.
+
+### Steps
+
+1. **Determine if this is a new feature** — check whether `lib/features/<feature>/domain/` exists and contains the relevant code. If it does, skip this section and proceed to the Discovery Process below.
+
+2. **Identify the backend feature name** — derive the feature name from the request context (e.g. "notifications", "connections", "profile"). If the name in `bizzie_function_app` is unclear or cannot be confidently inferred, ask the user before proceeding:
+   > *"To reference the backend implementation, what is the name of this feature in bizzie_function_app?"*
+
+3. **Search the repo** — use the GitHub MCP `search_code` tool with query `repo:YannicAmir/bizzie_function_app <feature_name>` to identify relevant files (functions, handlers, type definitions, models).
+
+4. **Read key files** — use `get_file_contents` to read the handler and type/model files for the feature. Focus on:
+   - Data shapes and field names (these inform domain model fields)
+   - Business rules and validations the backend enforces (these inform use case logic)
+   - Collection paths or resource identifiers (these inform repository interface method signatures)
+
+5. **Apply findings** — reference the backend data shapes and field names directly when defining domain models, params classes, and repository interface method signatures. Note backend-derived decisions in the plan's Overview.
+
+---
+
 ## Discovery Process
 
 ### For new use cases
@@ -95,6 +117,7 @@ State explicitly: yes (if any `@freezed` model is added/modified) or no.
 ---
 
 ## Checklist
+- [ ] If new feature: backend feature looked up in `YannicAmir/bizzie_function_app` via GitHub MCP before planning; if feature name was unclear, user was asked first
 - [ ] Target context confirmed and relevant files read before planning
 - [ ] Layer decision explicit — each artefact placed in the correct domain sub-layer
 - [ ] Plan contains: Overview, Layer Decision, New/Modified Files, sequenced Implementation Steps

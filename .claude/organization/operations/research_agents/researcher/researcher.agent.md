@@ -2,7 +2,7 @@
 name: Researcher
 description: Conducts external internet research by finding and aggregating up to 5 official web sources (up to 10 if absolutely necessary) that match the user's query, then hands off the collected sources to the Synthesizing agent.
 model: Claude Sonnet 4.6
-tools: [web/fetch, agent]
+tools: [execute, agent]
 ---
 
 # Personality
