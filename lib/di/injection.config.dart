@@ -91,6 +91,14 @@ import '../features/auth/domain/usecases/sign_out.dart' as _i472;
 import '../features/auth/domain/usecases/sign_up_with_email.dart' as _i588;
 import '../features/auth/presentation/analytics/auth_tracker.dart' as _i700;
 import '../features/auth/presentation/bloc/auth_bloc.dart' as _i59;
+import '../features/bizzie_chat/data/datasources/bizzie_chat_remote_datasource.dart'
+    as _i48;
+import '../features/bizzie_chat/data/interfaces/i_bizzie_chat_remote_datasource.dart'
+    as _i364;
+import '../features/bizzie_chat/data/repositories/bizzie_chat_repository_impl.dart'
+    as _i495;
+import '../features/bizzie_chat/domain/interfaces/i_bizzie_chat_repository.dart'
+    as _i710;
 import '../features/company_profile/business/data/datasources/business_firestore_data_source.dart'
     as _i379;
 import '../features/company_profile/business/data/repositories/business_repository_impl.dart'
@@ -1051,6 +1059,10 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i659.ISubscriptionRepository>(),
       ),
     );
+    gh.singleton<_i361.Dio>(
+      () => networkModule.bizzieDio(gh<_i937.IConfigService>()),
+      instanceName: 'BizzieDio',
+    );
     gh.lazySingleton<_i423.RatiosRemoteDataSource>(
       () => _i423.RatiosRemoteDataSourceImpl(
         gh<_i361.Dio>(instanceName: 'FmpDio'),
@@ -1156,6 +1168,12 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i432.SelectBrandsRepositoryImpl(
         gh<_i6.ISelectBrandsRemoteDataSource>(),
         gh<_i1050.ISectorService>(),
+      ),
+    );
+    gh.factory<_i364.IBizzieChatRemoteDataSource>(
+      () => _i48.BizzieChatRemoteDataSource(
+        gh<_i361.Dio>(instanceName: 'BizzieDio'),
+        gh<_i52.FirestoreService>(),
       ),
     );
     gh.lazySingleton<_i615.IUserRepository>(
@@ -1393,6 +1411,11 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i836.WatchUserUseCase>(
       () => _i836.WatchUserUseCase(gh<_i615.IUserRepository>()),
+    );
+    gh.lazySingleton<_i710.IBizzieChatRepository>(
+      () => _i495.BizzieChatRepositoryImpl(
+        gh<_i364.IBizzieChatRemoteDataSource>(),
+      ),
     );
     gh.factory<_i422.GetDailyBrandsUseCase>(
       () => _i422.GetDailyBrandsUseCase(gh<_i990.ISelectBrandsRepository>()),

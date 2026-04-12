@@ -24,6 +24,10 @@ sealed class Failure with _$Failure {
   const factory Failure.reauthentication([
     @Default('Reauthentication failed') String message,
   ]) = ReauthenticationFailure;
+  const factory Failure.rateLimit({
+    required int retryAfterSeconds,
+    @Default('Daily chat limit reached') String message,
+  }) = RateLimitFailure;
 
   String get errorMessage => map(
         server: (f) => f.message,
@@ -34,5 +38,6 @@ sealed class Failure with _$Failure {
         permission: (f) => f.message,
         passwordMismatch: (f) => f.message,
         reauthentication: (f) => f.message,
+        rateLimit: (f) => f.message,
       );
 }

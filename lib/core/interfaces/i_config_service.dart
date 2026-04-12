@@ -7,6 +7,7 @@ abstract class IConfigService {
   Map<String, String> get sectorDescriptions;
   FmpConfig get fmpConfig;
   String get frankfurterBaseUrl;
+  String get bizzieChatBaseUrl;
   String get privacyPolicyUrl;
   String get termsOfServiceUrl;
   String get minAppVersion;
