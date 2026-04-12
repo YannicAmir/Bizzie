@@ -1,14 +1,12 @@
 ---
 name: analytics planner instructions
-description: Rules and procedures for the AnalyticsPlanner agent when producing implementation plans for Flutter analytics work and delegating to the appropriate implementing agent.
+description: Rules and procedures for the AnalyticsPlanner agent when producing a structured implementation plan for adding or updating analytics in Flutter features that use the XxxTracker/XxxAnalytics pattern.
 ---
 
 # Analytics Planner Instructions
 
 ## Purpose
-The AnalyticsPlanner receives an analytics request from the Analytics Manager and produces a structured, actionable implementation plan before any code is written. Once the plan is complete, it delegates automatically to AnalyticsBuilder (feature has no analytics yet) or AnalyticsUpdater (feature already has analytics to be changed).
-
-The AnalyticsPlanner never writes or modifies code directly.
+The AnalyticsPlanner produces a structured, sequenced implementation plan for adding or updating analytics in a Flutter feature. Once the plan is complete, it delegates automatically to **AnalyticsBuilder** (new code) or **AnalyticsUpdater** (modifying existing code). It never writes code directly.
 
 ---
 
@@ -16,78 +14,84 @@ The AnalyticsPlanner never writes or modifies code directly.
 
 Before planning, confirm the following are available. If missing, ask before proceeding:
 
-1. **Request description** -- what analytics needs to be implemented or changed
-2. **Target context** -- a `@feature` directory reference or feature name
+1. **Target feature directory** — `lib/features/<feature>/`
+2. **Request description** — what interactions need to be tracked
+3. **BLoC context** — which BLoC handles the events, what user actions trigger them
 
 ---
 
-## Planning Process
+## Discovery Process
 
-### Step 1: Understand the Request
-- Identify whether this is a **new build** (feature has no analytics code) or an **update** (existing analytics to be extended or changed)
-- A single request may involve both -- split the plan accordingly
+### For new analytics
+Read the feature's `presentation/bloc/` to understand:
+- Which events are dispatched for user interactions
+- Which BLoC event handlers contain the logic to call analytics
 
-### Step 2: Audit the Current State
-- Read the target feature directory to understand what, if any, analytics code already exists
-- Check for: existing `helpers/<feature>_event.dart`, `ScreenViewMixin` usage, feature event helper class, cubit constructor analytics injection
+Check if `presentation/analytics/` exists:
+- If not: a new tracker class must be created
+- If yes: read the existing tracker to understand current coverage
 
-### Step 3: Produce the Implementation Plan
+Read an existing tracker in the project (e.g. `lib/features/reports/presentation/analytics/reports_tracker.dart`) to understand the pattern.
 
-#### Overview
-One paragraph summarising the scope of work: which screens get `ScreenViewMixin`, which events are being tracked, what constants are needed.
-
-#### Page Constants
-List all `const` strings to be defined in `helpers/<feature>_event.dart`:
-- `kXxxPageName`, `kXxxPageType`, `kXxxContentGroup`
-- Action-level detail strings (e.g., `kXxxButtonTap = 'xxx : button tap'`)
-
-#### Affected Files
-List every file to be created or modified with a one-line description.
-
-#### Implementation Steps
-Numbered, sequenced steps. Each step must specify:
-- The file to create or modify
-- The exact change: which pattern to apply (ScreenViewMixin, feature event helper, cubit injection, etc.)
-- The event name constant from `AnalyticsEvents` being used
-- The page constant fields being populated
-
-#### Constraints & Notes
-- Flag any event that requires a non-standard target restriction and specify the `AnalyticsTarget`
-- Flag anything that cannot be implemented purely in the feature layer (e.g., a new user property that must go in `UserCubit`)
+### For updates to existing analytics
+Read the existing tracker class in full before proposing any changes.
 
 ---
 
-## Delegation Rules
+## Plan Format
 
-After the plan is produced, delegate immediately without waiting for user confirmation:
+Every implementation plan must contain:
 
-### Delegate to AnalyticsBuilder when:
-- The feature has no existing `helpers/<feature>_event.dart`, no `ScreenViewMixin`, and no feature event helper
-- Pass: the full implementation plan + target feature directory
+### Overview
+A one-paragraph summary: what events/properties are being tracked, in which feature, and via which BLoC events.
 
-### Delegate to AnalyticsUpdater when:
-- The feature already has analytics code to be extended or changed
-- Pass: the full implementation plan + target feature directory
+### New Files (builds only)
+List any new files to be created with their paths:
+- `lib/features/<feature>/presentation/analytics/<feature>_tracker.dart`
 
-### When both apply:
-- Split into new-build and update sections; delegate new-build section to AnalyticsBuilder first, then update section to AnalyticsUpdater
+### Modified Files
+List all existing files to be modified:
+- The tracker class (if extending)
+- The BLoC class (to add tracker injection + method calls)
+
+### Events to Track
+For each event:
+- **Event name** — `static const String _kEventXxx = 'xxx_happened'`
+- **Trigger** — which BLoC event handler calls it
+- **Parameters** — named parameters with types
+- **Method signature** — `Future<void> logXxxHappened({required String ticker})`
+
+### User Properties to Set
+For each user property:
+- **Property name** — e.g. `watchlist_item_count`
+- **Trigger** — when it is set
+- **Value source** — what value is passed
+
+### Implementation Steps
+Numbered, sequenced steps specifying:
+- The target file
+- The exact change (e.g. "add `static const String _kEventXxxAdded = 'xxx_added'`", "inject `XxxTracker` into `XxxBloc` constructor", "call `_tracker.logXxxAdded(ticker: event.ticker)` in `_onXxxAdded` handler")
 
 ---
 
-## Scope Restrictions
-- Plans must only include changes within the feature layer (helpers, pages, cubits)
-- User property changes must be noted in Constraints & Notes as requiring manual implementation in `UserCubit` -- do not include as plan steps
-- Do not write or modify any code files directly
+## Delegation Decision
+
+After producing the plan:
+- **New tracker class** (file does not yet exist) → **AnalyticsBuilder**
+- **Adding methods to existing tracker / wiring into existing BLoC** → **AnalyticsUpdater**
+
+Delegate immediately after the plan is complete. Do not wait for user confirmation.
 
 ---
 
 ## Checklist
-- [ ] Required inputs confirmed before planning begins
-- [ ] Feature audited -- existing analytics code (if any) identified
-- [ ] Request correctly classified as new build, update, or both
-- [ ] All page constants (`pageName`, `pageType`, `contentGroup`) and action detail strings defined in the plan
-- [ ] All event names reference `AnalyticsEvents` constants -- no hardcoded strings in the plan
-- [ ] Implementation plan produced with: Overview, Page Constants, Affected Files, Implementation Steps, Constraints & Notes
-- [ ] Non-feature-layer changes (e.g. new user properties) noted in Constraints & Notes and excluded from steps
-- [ ] Delegated to AnalyticsBuilder for new-build sections (without waiting for user confirmation)
-- [ ] Delegated to AnalyticsUpdater for update sections (without waiting for user confirmation)
+- [ ] Target feature directory and BLoC read before planning
+- [ ] Plan contains: Overview, New/Modified Files, Events to Track, Implementation Steps
+- [ ] Tracker class placement: `presentation/analytics/<feature>_tracker.dart`
+- [ ] Tracker annotated `@lazySingleton` in the plan
+- [ ] All event names planned as `static const String` private constants
+- [ ] All parameter names planned as `static const String` private constants
+- [ ] `IAnalyticsService` injection planned via constructor
+- [ ] Tracker injection into BLoC planned via positional constructor parameter
+- [ ] No Firebase Analytics SDK planned to be called directly
+- [ ] Delegated to AnalyticsBuilder or AnalyticsUpdater immediately

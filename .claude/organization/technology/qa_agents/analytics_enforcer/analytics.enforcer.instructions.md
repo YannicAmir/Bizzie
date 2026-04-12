@@ -10,26 +10,28 @@ Verify all changed files against every checklist item in `analytics.guidance.ins
 
 ## Key Violation Categories
 
-### Page constant violations
-- Screen view event fired without a typed page constant (hardcoded string used instead)
-- Page constant not placed in the correct constants file
+### Tracker class violations
+- Tracker class not annotated `@lazySingleton`
+- Tracker class missing `IAnalyticsService` constructor injection
+- Tracker class missing `BizzieLogger` instance (`_logger = BizzieLogger('XxxTracker')`)
+- `_logEvent()` helper missing try/catch block wrapping the `_analytics.logEvent()` call
+- `_logEvent()` not logging the error via `_logger.severe(...)` in the catch block
+- Tracker placed outside `lib/features/<feature>/presentation/analytics/`
 
-### Event helper violations
-- Analytics event fired directly in a widget or cubit without going through the feature event helper class
-- Event helper method not following the project's naming convention
-- Missing analytics SDK call inside an event helper method
+### Event name and parameter constant violations
+- Analytics event name or parameter name hardcoded as a string literal at a call site instead of using a `static const String` constant
+- Event name or parameter constant not declared as `static const String` private field in the tracker
+- Event name constant not named using the `_kEventXxx` convention
+- Parameter name constant not named using the `_kParamXxx` convention
 
-### ScreenViewMixin violations
-- Page widget not mixing in ScreenViewMixin
-- `pageName` getter not overridden with the correct page constant
+### Call site violations
+- Firebase Analytics SDK called directly (`FirebaseAnalytics.instance.logEvent(...)`) instead of through `IAnalyticsService`
+- `setUserProperty()` called directly via the SDK instead of through a tracker method
+- Analytics call placed in a widget instead of in the BLoC event handler
 
-### Cubit injection violations
-- Analytics event helper injected/called outside of the cubit
-- Analytics called without null-safety guard when the SDK may not be initialised
-
-### User property violations
-- User property set in the wrong lifecycle point
-- User property set directly via the SDK instead of through the designated helper
+### BLoC injection violations
+- Tracker not injected as a positional constructor parameter in the BLoC
+- Tracker method not called inside a BLoC event handler (called in a widget instead)
 
 ## Enforcement Loop
 Follow the retry loop rules in `qa.enforcement.pattern.instructions.md`.

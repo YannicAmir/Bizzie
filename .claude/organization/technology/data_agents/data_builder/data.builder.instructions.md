@@ -1,12 +1,12 @@
 ---
 name: data builder instructions
-description: Rules and procedures for the DataBuilder agent when implementing new Flutter data layer code from a plan produced by DataPlanner.
+description: Rules and procedures for the DataBuilder agent when implementing new Flutter data layer code (DTOs, datasources, repository implementations) from a plan produced by DataPlanner.
 ---
 
 # Data Builder Instructions
 
 ## Purpose
-The DataBuilder creates new Flutter data layer code from scratch based on a structured plan from **DataPlanner**. It follows the plan step by step, ensuring every piece of data layer code conforms to the project conventions. **RunDepOps is always invoked as the final step.**
+The DataBuilder creates new Flutter data layer code from scratch based on a structured plan from **DataPlanner**. It follows the plan step by step, ensuring every piece of data layer code conforms to project conventions. **RunDepOps is always invoked as the final step.**
 
 ---
 
@@ -14,8 +14,8 @@ The DataBuilder creates new Flutter data layer code from scratch based on a stru
 
 The following must be provided by DataPlanner. If missing, stop and request them:
 
-1. **Implementation plan** -- the structured plan (Overview, New Files, Implementation Steps, build_runner decision)
-2. **Target context** -- the domain area or package
+1. **Implementation plan** — the structured plan (Overview, New Files, Implementation Steps, injectable annotations, build_runner decision)
+2. **Target context** — the feature directory or domain area
 
 ---
 
@@ -23,64 +23,63 @@ The following must be provided by DataPlanner. If missing, stop and request them
 
 Execute the plan in step order. For each new piece of data layer code, verify:
 
-### URL constants
-- [ ] URL string added to `AppApiConfig` interface
-- [ ] URL value added to `AppConfig` implementation
-- [ ] Not hardcoded directly in the Api class method
+### DTOs (`data/dtos/`)
+- [ ] `@freezed abstract class XxxDto with _$XxxDto`
+- [ ] `part 'xxx_dto.freezed.dart'` and `part 'xxx_dto.g.dart'` directives present
+- [ ] `const XxxDto._()` private constructor included (for custom methods)
+- [ ] `factory XxxDto.fromJson(Map<String, dynamic> json)` present
+- [ ] `factory XxxDto.fromDomain(XxxDomainModel model)` present for write operations
+- [ ] `XxxDomainModel toDomain()` method present for read operations
+- [ ] `@TimestampConverter()` used for any `DateTime` Firestore fields
+- [ ] No domain model fields exposed directly — always mapped
 
-### Api class methods
-- [ ] Method calls `_client.makeRequest()` -- not `http.Client` directly
-- [ ] URL built via `_client.fromBaseUrl(_client.config.<urlConstant>)`
-- [ ] `fromJson` uses `.fromMapOrThrow` (single object), `.fromListOrThrow` (array), or `(_) {}` (void)
-- [ ] Returns `ApiResult<T>` -- zero business logic inside the method
-- [ ] `AppApiClient` injected via constructor -- not GetIt
+### Datasource interfaces (`data/interfaces/`)
+- [ ] Named `IXxxRemoteDataSource` or `IXxxLocalDataSource`
+- [ ] Abstract class — no implementation
+- [ ] Method signatures match what the repository implementation will call
 
-### New domain Api class
-- [ ] Created under `packages/<api_package>/lib/src/apis/`
-- [ ] Constructor accepts `AppApiClient` only
-- [ ] Registered as GetIt singleton in `bootstrap.dart` after `AppApiClient`
-- [ ] Exported from the package barrel file
+### Datasource implementations (`data/datasources/`)
+- [ ] Annotated `@Injectable(as: IXxxRemoteDataSource)` or `@Injectable(as: IXxxLocalDataSource)`
+- [ ] Remote: uses `FirestoreService` — not `FirebaseFirestore.instance` directly
+- [ ] Remote: `final _logger = BizzieLogger('XxxRemoteDataSource')` at file level
+- [ ] Remote: `handleError` on all streams — distinguishes `permission-denied` (warning) from others (severe)
+- [ ] Remote: all write operations wrapped in try/catch with `_logger.severe` + rethrow
+- [ ] Local: uses `ILocalStorageService` or `SharedPreferences` — private key constants
 
-### json_serializable model
-- [ ] `fromJson(Map<String, dynamic>)` constructor present
-- [ ] `@JsonSerializable()` annotation applied
-- [ ] File added to the correct models directory
-- [ ] `part '<filename>.g.dart'` directive included
-
-### AppLocalDataStore property
-- [ ] Uses Realm for structured/persistent data; SharedPreferences for simple key-value
-- [ ] Typed getter and setter (no raw key strings outside the store class)
-- [ ] Realm writes go through `writeToRealm`
-
-### bootstrap.dart registration
-- [ ] Singleton registered at the correct position in the dependency order (see `data.guidance.instructions.md` section 8)
-- [ ] No singleton registered from features, cubits, or anywhere other than bootstrap
+### Repository implementations (`data/repositories/`)
+- [ ] Annotated `@LazySingleton(as: IXxxRepository)`
+- [ ] `final _logger = BizzieLogger('XxxRepositoryImpl')` instance field
+- [ ] Implements all methods from `IXxxRepository` domain interface
+- [ ] All methods catch exceptions and return `Left(Failure.server(e.toString()))`
+- [ ] Maps DTOs to domain models before returning — never returns DTOs
+- [ ] Stream methods use `StreamTransformer` to wrap in `Either`
 
 ---
 
 ## Forbidden Patterns
-- No `http.Client` calls outside `ApiClient.makeRequest()`
-- No hardcoded endpoint URLs in Api class methods
-- No business logic inside Api class methods
-- No `ApiResult` propagated out of a repository
-- No manual JSON parsing in repositories (use `.fromMapOrThrow` / `.fromListOrThrow`)
-- No raw Realm or SharedPreferences access outside `AppLocalDataStore`
-- No GetIt usage inside Api package classes (package has no app dependency)
+- No `FirebaseFirestore.instance` calls outside `FirestoreService`
+- No domain model fields referencing DTOs or Firestore types
+- No `ApiResult` or `AppApiClient` — this project uses Firebase/Firestore, not REST
+- No manual `GetIt` registration — use `injectable` annotations only
+- No business logic inside datasource methods — pure I/O only
+- No `print()` or `debugPrint()` — always use `BizzieLogger`
 
 ---
 
 ## Final Step — RunDepOps
 After all implementation steps are complete:
-- Invoke **RunDepOps**, passing the list of changed files and whether any `json_serializable` or `freezed` models were added or modified
+- Invoke **RunDepOps**, passing the list of changed files and whether any `@freezed` or `json_serializable` DTOs/models were added or modified
 - Do not consider the task complete until RunDepOps has reported its outcome
 
 ---
 
 ## Checklist
 - [ ] Plan steps executed in order
-- [ ] URL constants added to `AppApiConfig` + `AppConfig` -- not hardcoded
-- [ ] Api methods return `ApiResult<T>` only -- no logic inside
-- [ ] `fromJson` helpers used -- no manual parsing
-- [ ] New singletons registered in bootstrap at the correct position
+- [ ] DTOs use `@freezed` + `json_serializable` with `fromDomain()`/`toDomain()`
+- [ ] Datasource implementations annotated `@Injectable(as: IXxx)`
+- [ ] Repository implementations annotated `@LazySingleton(as: IXxx)`
+- [ ] All Firestore access via `FirestoreService`
+- [ ] Repository catches all exceptions and returns `Left(Failure.server(...))`
+- [ ] `BizzieLogger` used throughout — no `print()`
 - [ ] No forbidden patterns introduced
 - [ ] RunDepOps invoked as final step and outcome reported

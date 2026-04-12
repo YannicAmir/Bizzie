@@ -4,4 +4,4 @@ description: Trigger when the user asks to implement, update, correct, or audit 
 ---
 
 # Agent Name: AccessibilityManager
-Call .github/organization/technology/presentation_agents/accessibility/accessibility_manager/accessibility.manager.agent.md
+Call .claude/organization/technology/presentation_agents/accessibility/accessibility_manager/accessibility.manager.agent.md

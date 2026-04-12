@@ -4,4 +4,4 @@ description: Trigger when the user asks to build, update, correct, or make any c
 ---
 
 # Agent Name: UiManager
-Call .github/organization/technology/presentation_agents/ui/ui_mananger/ui.manager.agent.md
+Call .claude/organization/technology/presentation_agents/ui/ui_mananger/ui.manager.agent.md

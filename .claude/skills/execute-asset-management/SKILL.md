@@ -4,4 +4,4 @@ description: Trigger when the user wants to add a new image, icon, or SVG to the
 ---
 
 # Agent Name: AssetManager
-Call .github/organization/technology/presentation_agents/assets/asset_manager/asset.manager.agent.md
+Call .claude/organization/technology/presentation_agents/assets/asset_manager/asset.manager.agent.md

@@ -14,22 +14,22 @@ The DataManager is the entry point for all Flutter data layer work. It classifie
 
 ### Route to DataCorrector (directly, bypassing DataPlanner)
 Targeted fix requests where the violation or problem is already known:
-- Fixing a hardcoded URL in an Api class (should come from `AppConfig`)
-- Removing business logic from an Api class method
-- Fixing `ApiResult` propagated out of a repository to a cubit
-- Correcting manual JSON parsing in a repository (should use `.fromMapOrThrow`)
-- Fixing raw SharedPreferences / Realm access from a feature (should go through `AppLocalDataStore` typed property)
-- Fixing a singleton registered outside `bootstrap.dart`
-- Fixing a domain Api class that uses GetIt instead of constructor injection
+- Direct `FirebaseFirestore.instance` usage in a datasource (should use `FirestoreService`)
+- Missing `@Injectable(as: IXxx)` on a datasource
+- Missing `@LazySingleton(as: IXxx)` on a repository implementation
+- Repository methods not wrapping exceptions in `Left(Failure.server(...))`
+- Repository methods returning DTOs instead of domain models
+- Missing `toDomain()`/`fromDomain()` conversions in a DTO
+- Missing `BizzieLogger` (using `print`/`debugPrint` instead)
+- Missing `handleError` on a Firestore stream
 
 ### Route to DataPlanner
 Any request that requires planning, discovery, or sequenced implementation steps:
-- Adding a new API endpoint to an existing Api class
-- Creating a new domain Api class for a new feature area
-- Adding a typed property to `AppLocalDataStore`
-- Adding a new `json_serializable` model
-- Wiring a new singleton into `bootstrap.dart`
-- Updating error handling or `ApiResult` mapping in a repository
+- Adding a new Firestore datasource for a feature
+- Creating a new DTO for a feature area
+- Creating a new repository implementation
+- Adding a new datasource interface
+- Adding a new method to an existing datasource or repository
 - Structural changes to existing data layer code (update)
 
 ---
@@ -38,11 +38,11 @@ Any request that requires planning, discovery, or sequenced implementation steps
 
 Before delegating, ensure the following are available. If missing, ask before proceeding:
 
-1. **Target context** -- at minimum one of:
-   - A domain area or feature name
-   - A specific Api class, repository, or bootstrap section
-2. **For corrections** -- the specific violation or bug to fix
-3. **For builds** -- what the new endpoint/model/property must do
+1. **Target context** — at minimum one of:
+   - A feature directory (`lib/features/<feature>/data/`)
+   - A specific datasource, DTO, or repository class
+2. **For corrections** — the specific violation or bug to fix
+3. **For builds** — what the new datasource/DTO/repository must do and which Firestore collections are involved
 
 ---
 
@@ -57,7 +57,7 @@ Before delegating, ensure the following are available. If missing, ask before pr
 
 ## Checklist
 - [ ] Request classified as correction or build/update
-- [ ] Target context confirmed (Api class, repository, local store, bootstrap, or domain name)
+- [ ] Target context confirmed (datasource, repository, DTO, or domain feature name)
 - [ ] Correction requests: specific violation identified and passed to DataCorrector
 - [ ] Build/update requests: full request + target context passed to DataPlanner
 - [ ] Delegated without waiting for user confirmation

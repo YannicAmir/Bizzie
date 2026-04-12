@@ -31,7 +31,7 @@ The UiCorrector is a **UI-only** agent. The following rules are absolute and app
 - Do **not** modify any business logic, state management, or data handling
 - Do **not** refactor or rename variables, classes, methods, or functions
 - Do **not** change any callback, event handler, or navigation behavior
-- Do **not** alter dependency injection, providers, bloc/cubit logic, or service calls
+- Do **not** alter dependency injection, providers, BLoC logic, or service calls
 - Do **not** add, remove, or restructure any non-UI code
 - Do **not** modify tests, models, repositories, or any file outside the presentation layer
 
@@ -41,7 +41,7 @@ The UiCorrector is a **UI-only** agent. The following rules are absolute and app
 
 ### Figma Link
 - Analyze the link and extract layout, spacing, typography, and color information
-- Map Figma values to existing Flutter theme tokens — do not introduce hardcoded values if a theme token already covers it
+- Map Figma values to existing constants (`AppColors`, `AppTextStyles`, `AppConstants`) — do not hardcode values already covered by these classes
 
 ### Figma Copied Content / Mock
 - Parse component names, hierarchy, and property values from the copied content

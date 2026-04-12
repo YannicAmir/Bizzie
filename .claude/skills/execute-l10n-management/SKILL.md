@@ -4,4 +4,4 @@ description: Trigger when the user asks to build, update, correct, or make any c
 ---
 
 # Agent Name: L10nManager
-Call .github/organization/technology/presentation_agents/localization/l10n_manager/l10n.manager.agent.md
+Call .claude/organization/technology/presentation_agents/localization/l10n_manager/l10n.manager.agent.md

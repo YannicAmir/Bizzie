@@ -39,7 +39,7 @@ The UiBuilder is a **UI-only** agent. The following rules are absolute and apply
 
 ### Forbidden Actions
 - Do **not** implement any business logic, state management, or data handling
-- Do **not** create or modify providers, blocs, cubits, repositories, or services
+- Do **not** create or modify providers, BLoCs, repositories, or services
 - Do **not** implement navigation logic or routing
 - Do **not** modify any existing file outside the scope of the implementation plan
 - Do **not** rename, refactor, or restructure any existing code
@@ -51,13 +51,13 @@ The UiBuilder is a **UI-only** agent. The following rules are absolute and apply
 
 ### Figma Link
 - Analyse the link to extract the full layout, component hierarchy, typography, colors, spacing, and states (default, hover, disabled, error, etc.)
-- Map all extracted values to existing Flutter theme tokens — do not hardcode values that are already covered by the theme
-- Where a Figma value has no matching theme token, use the raw value and add an inline comment: `// TODO: consider adding to theme`
+- Map all extracted values to existing project constants — use `AppColors.xxx` for colors, `AppTextStyles.xxx` for typography, `AppConstants.xxx` for spacing — do not hardcode values already covered by these classes
+- Where a Figma value has no matching constant, use the raw value and add an inline comment: `// TODO: consider adding to AppColors/AppTextStyles/AppConstants`
 
 ### Figma Copied Content
 - Parse component names, hierarchy, auto-layout settings, and property values from the copied content
 - Use these as the source of truth for the widget structure and visual properties
-- Apply the same token-mapping rule as above
+- Apply the same mapping rule as above
 
 ---
 
@@ -67,7 +67,7 @@ The UiBuilder is a **UI-only** agent. The following rules are absolute and apply
 - Follow the existing folder structure and file naming conventions of the feature directory
 - One widget per file for any non-trivial widget
 - Prefer `const` constructors wherever possible
-- Use the project's existing theme accessors (e.g., `Theme.of(context)`, `context.textTheme`, `context.colorScheme`) — do not introduce new theme access patterns
+- Use the project's theme classes directly: `AppTextStyles.xxx` for text styles, `AppColors.xxx` for colors, `AppConstants.xxx` for spacing — do not hardcode values or introduce new theme access patterns
 - All new widgets must be `StatelessWidget` unless the design explicitly requires local UI state (e.g., a toggle, an accordion) — in that case use `StatefulWidget` with minimal, UI-only state
 
 ---
@@ -97,7 +97,7 @@ The UiBuilder is a **UI-only** agent. The following rules are absolute and apply
 - [ ] All Figma values mapped to existing theme tokens; unmapped values use raw value with `// TODO: consider adding to theme` comment
 - [ ] All new files placed inside the target feature directory following existing naming conventions
 - [ ] Widget tree matches the design reference for every created screen/component
-- [ ] Theme accessors used consistently — no new theme access patterns introduced
+- [ ] `AppColors`, `AppTextStyles`, `AppConstants` used consistently — no hardcoded values or new access patterns introduced
 - [ ] Placeholder callbacks added with `// TODO: implement` comment — no logic implemented
 - [ ] No existing files modified outside the scope of the implementation plan
 - [ ] No business logic, state management, navigation, or non-UI code written

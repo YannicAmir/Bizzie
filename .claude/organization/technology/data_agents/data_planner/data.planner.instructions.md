@@ -1,6 +1,6 @@
 ---
 name: data planner instructions
-description: Rules and procedures for the DataPlanner agent when producing a structured implementation or update plan for Flutter data layer work.
+description: Rules and procedures for the DataPlanner agent when producing a structured implementation or update plan for Flutter data layer work (datasources, DTOs, repository implementations).
 ---
 
 # Data Planner Instructions
@@ -14,30 +14,38 @@ The DataPlanner produces a structured, sequenced implementation plan for Flutter
 
 Before planning, confirm the following are available. If missing, ask before proceeding:
 
-1. **Target context** -- domain area, Api class name, or feature module
-2. **Request description** -- what needs to be built or changed
-3. **Endpoint details** (for new endpoints) -- HTTP method, URL config key, request body shape, response model shape
-4. **Model details** (if new `json_serializable` model needed) -- fields and types
+1. **Target context** — feature directory (`lib/features/<feature>/data/`), domain area, or specific datasource/repository
+2. **Request description** — what needs to be built or changed
+3. **Firestore collection details** (for new datasources) — collection path, document structure, query type
+4. **Domain interface** — the `IXxxRepository` interface the repository must implement (or note that it needs to be created in domain layer first)
 
 ---
 
 ## Discovery Process
 
-### For new endpoints
-Read the relevant existing Api class to understand:
-- Existing method naming conventions and patterns
-- Whether a response model already exists or needs to be created
-- The `AppApiConfig` interface to confirm where the URL constant should be added
+### For new remote datasources
+Read the existing feature's `data/datasources/` to understand:
+- Existing `FirestoreService` method usage patterns
+- Whether an interface already exists in `data/interfaces/`
 
-### For new Api classes
-Read `bootstrap.dart` to understand:
-- The current registration order
-- Where the new class should be inserted (after `AppApiClient`, before repositories)
+Read `lib/core/data/datasources/firestore_service.dart` to understand:
+- Available `FirestoreService` methods (setDocument, deleteDocument, getCollectionStream, getDocumentStream, getCollectionStreamChunked)
 
-### For new local storage properties
-Read `AppLocalDataStore` to understand:
-- Which storage backend (Realm vs SharedPreferences) is appropriate for the new data
-- Existing property naming conventions
+### For new local datasources
+Read the existing feature's `data/interfaces/` to understand:
+- Pattern for local datasource interfaces
+- Whether `ILocalStorageService` or direct `SharedPreferences` is used
+
+### For new DTOs
+Read existing DTOs in `data/dtos/` to understand:
+- `@freezed` + `json_serializable` conventions
+- `fromDomain()` / `toDomain()` conversion patterns
+- `@TimestampConverter()` usage for Firestore timestamps
+
+### For new repository implementations
+Read the domain interface (`domain/interfaces/IXxxRepository`) to understand:
+- All methods that must be implemented
+- Expected return types (`Either<Failure, T>` or `Stream<Either<Failure, T>>`)
 
 ### For updates to existing code
 Read all files in scope before proposing changes.
@@ -59,20 +67,38 @@ List all existing files to be modified with the specific changes required in eac
 
 ### Implementation Steps
 Numbered, sequenced steps. Each step specifies:
-- The target file
-- The exact change (e.g. "add `backendFeatureUrl` to `AppApiConfig` and `AppConfig`", "add `getFeature(String id)` to `FeatureApi` returning `ApiResult<FeatureModel>`", "register `FeatureApi` singleton in bootstrap after `AppApiClient`")
-- Any dependency on preceding steps
+- The target file path
+- The exact change (e.g. "create `XxxDto` with `@freezed`, fields: `id`, `name`, `createdAt` with `@TimestampConverter()`", "create `XxxRemoteDataSource` annotated `@Injectable(as: IXxxRemoteDataSource)` with method `getXxxStream(String uid)` using `_firestoreService.getCollectionStream`")
+- Any dependency on preceding steps (DTOs must exist before datasources, interfaces before implementations)
+
+### Injectable Annotations
+For every new class, specify the correct annotation:
+- `@Injectable(as: IXxx)` — datasource implementations
+- `@LazySingleton(as: IXxx)` — repository implementations
+- `@lazySingleton` — other singletons with no interface
 
 ### build_runner Required
-Explicitly state whether `build_runner` must be run after implementation (yes if any `json_serializable` or `freezed` model was added or modified).
+Explicitly state: yes (if any `@freezed` DTO or domain model is added/modified) or no.
+
+---
+
+## Sequencing Rules
+
+Always plan in this order:
+1. DTO (if new)
+2. Datasource interface in `data/interfaces/` (if new)
+3. Datasource implementation(s) in `data/datasources/`
+4. Repository implementation in `data/repositories/`
+
+The domain interface (`IXxxRepository`) must already exist or be planned as a domain layer task separately.
 
 ---
 
 ## Delegation Decision
 
 After producing the plan:
-- **New data layer code** (file, class, method, or property does not yet exist) → **DataBuilder**
-- **Modifying existing code** → **DataUpdater**
+- **New data layer code** (file, class, or method does not yet exist) → **DataBuilder**
+- **Modifying existing data layer code** → **DataUpdater**
 
 Delegate immediately after the plan is complete. Do not wait for user confirmation.
 
@@ -80,10 +106,10 @@ Delegate immediately after the plan is complete. Do not wait for user confirmati
 
 ## Checklist
 - [ ] Target context confirmed and relevant files read before planning
-- [ ] Plan contains: Overview, New/Modified Files, sequenced Implementation Steps, build_runner decision
-- [ ] URL constants planned in `AppApiConfig` + `AppConfig` -- not hardcoded in Api class
-- [ ] Api class methods return `ApiResult<T>` only -- no logic planned inside them
-- [ ] `fromJson` uses `.fromMapOrThrow` / `.fromListOrThrow` -- no manual JSON parsing planned
-- [ ] If new singleton: bootstrap registration position planned in correct dependency order
-- [ ] If new local store property: correct storage backend (Realm vs SharedPreferences) decided
+- [ ] Plan contains: Overview, New/Modified Files, sequenced Implementation Steps, injectable annotations, build_runner decision
+- [ ] Firestore access planned via `FirestoreService` — not `FirebaseFirestore.instance` directly
+- [ ] DTO planned with `@freezed`, `fromJson`, `fromDomain()`, `toDomain()`
+- [ ] Repository implementation planned to return `Either<Failure, T>` for all fallible operations
+- [ ] Correct injectable annotations planned for each class
+- [ ] Steps in correct sequence (DTO → interface → datasource → repository)
 - [ ] Delegated to DataBuilder or DataUpdater immediately after plan completion

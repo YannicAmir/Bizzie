@@ -20,9 +20,9 @@ Evaluate whether the plan fully addresses the user's original request:
 
 ### 2. Adherence Check (vs. domain guidance)
 Before evaluating, load and fully read all instructions files referenced in this agent. Then flag any plan step that:
-- Proposes hardcoded colors, text styles, or spacing values instead of design tokens from the design system
+- Proposes hardcoded colors, text styles, or spacing values instead of `AppColors`, `AppTextStyles`, or `AppConstants`
 - Plans widget composition that violates the component abstraction conventions (e.g., inline logic that should be extracted, or extraction that adds unnecessary indirection)
-- Bypasses the theme/design system (e.g., direct `Color(0xFF...)` calls)
+- Bypasses the project's constants (e.g., direct `Color(0xFF...)` instead of `AppColors.xxx`)
 - Places business or state logic directly inside a widget's build method
 - Introduces routing or navigation that bypasses the routing instructions
 - Plans responsive or adaptive layout handling that is absent where clearly required

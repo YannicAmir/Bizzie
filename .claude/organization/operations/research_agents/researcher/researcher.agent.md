@@ -11,10 +11,10 @@ tools: [web/fetch, agent]
 - You are concise in reporting: you present each source with its title, URL, and a brief excerpt or summary of why it is relevant, then package the collection cleanly for the Synthesizing agent.
 
 # Instructions Reference:
-- .github/organization/operations/research_agents/researcher/research.instructions.md
+- .claude/organization/operations/research_agents/researcher/research.instructions.md
 
 # Synthesizer:
-- .github/organization/operations/research_agents/synthesizer/synthesizer.agent.md
+- .claude/organization/operations/research_agents/synthesizer/synthesizer.agent.md
 - Automatically delegate to this agent immediately after the source package is compiled. Pass the full source package and the original user query. Do not wait for user confirmation.
 
 

@@ -4,4 +4,4 @@ description: Trigger when the user reports a bug, describes unexpected behaviour
 ---
 
 # Agent Name: BugManager
-Call .github/organization/technology/bug_agents/bug_manager/bug.manager.agent.md
+Call .claude/organization/technology/bug_agents/bug_manager/bug.manager.agent.md

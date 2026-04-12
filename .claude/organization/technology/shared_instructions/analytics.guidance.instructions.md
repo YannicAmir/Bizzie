@@ -1,242 +1,218 @@
 ---
 name: analytics guidance
-description: Project-specific analytics coding guidelines for Flutter. Covers AnalyticsRepository usage, BaseEvent, ScreenViewMixin, feature event helpers, cubit injection, and user properties. Referenced by analytics agents performing Flutter tasks.
+description: Project-specific analytics coding guidelines for Flutter. Covers the feature-scoped XxxTracker/XxxAnalytics pattern, IAnalyticsService, event/parameter constants, BLoC injection, and user properties. Referenced by all analytics agents performing Flutter tasks.
 ---
 
 # Analytics Guidance
 
-> All analytics flows through `AnalyticsRepository`. Never call Firebase, Airship, or AppDynamics SDKs directly from features or cubits.
+> Every feature has its own analytics class in `presentation/analytics/`. Analytics always flows through `IAnalyticsService` — never call Firebase Analytics SDK directly from a BLoC or widget.
 
 ---
 
 ## 1. Architecture
 
-Analytics is fanned out to multiple targets through a single entry point registered with GetIt.
+Each feature owns a dedicated analytics tracker class in `presentation/analytics/`:
 
 ```
-feature widget / cubit
-        │
-        ▼
-AnalyticsRepository          ← single entry point for all analytics
-        │
-        ├──► Firebase Analytics
-        ├──► Airship
-        └──► AppDynamics (breadcrumbs)
+BLoC / Widget
+     │
+     ▼
+XxxTracker (or XxxAnalytics)     ← @lazySingleton, injected into BLoC
+     │
+     ▼
+IAnalyticsService                ← core interface (firebase_analytics wrapper)
 ```
+
+The class is named after the feature it tracks:
+- `ReportsTracker` — tracks the reports feed
+- `WatchlistAnalytics` — tracks watchlist interactions
+- `SettingsTracker` — tracks settings interactions
 
 ---
 
-## 2. BaseEvent — The Event Model
-
-All events are built using `BaseEvent` — a mutable data class with named fields for every standard analytics dimension.
-
-| Field | Purpose |
-|---|---|
-| `pageName` | Screen/page identifier (e.g. `'store-finder'`) |
-| `pageType` | Page type (e.g. `'Store'`) |
-| `contentGroup` | Logical content group (e.g. `'StoreFinder'`) |
-| `eventDetails` | Specific action detail (e.g. `'store locator : search'`) |
-| `eventName` | Overrides the default event name when set |
-| `searchTerm`, `itemId`, `price`, etc. | Domain-specific dimensions |
-
-Build events by **populating fields** — never subclass `BaseEvent`:
+## 2. Tracker Class Structure
 
 ```dart
-final eventData = BaseEvent(
-  eventDetails: 'store locator : search',
-  pageName: kStoresPageName,
-  pageType: kStoresPageType,
-  contentGroup: kStoresContentGroup,
-);
-```
+// lib/features/<feature>/presentation/analytics/<feature>_tracker.dart
 
-`BaseEvent` supports `copy()` to merge additional data onto a base event.
+import 'package:bizzie/core/interfaces/i_analytics_service.dart';
+import 'package:injectable/injectable.dart';
 
----
+@lazySingleton
+class XxxTracker {
+  final IAnalyticsService _analytics;
 
-## 3. Screen View Tracking — ScreenViewMixin
+  XxxTracker(this._analytics);
 
-Every routable page that needs a `screen_view` event must be a `StatefulWidget` and mix in `ScreenViewMixin`. The mixin fires automatically on `initState` and re-fires on back navigation.
+  // Screen name constant
+  static const String _screenName = 'xxx_screen';
 
-**Contract:** implement `updateScreenViewEvent(BaseEvent event)` — never call `logScreenView()` manually.
+  // Event name constants (private, snake_case)
+  static const String _kEventXxxHappened = 'xxx_happened';
+  static const String _kEventXxxFailed = 'xxx_failed';
 
-```dart
-class _MyPageState extends State<MyPage> with ScreenViewMixin {
-  @override
-  void updateScreenViewEvent(BaseEvent event) {
-    event
-      ..pageName = kMyFeaturePageName
-      ..pageType = kMyFeaturePageType
-      ..contentGroup = kMyFeatureContentGroup;
-  }
-}
-```
+  // Parameter name constants (private, snake_case)
+  static const String _kParamTicker = 'ticker';
+  static const String _kParamErrorMessage = 'error_message';
 
-To fire an additional event beyond `screen_view` on arrival (e.g. a filter applied), use `logAdditionalEvent`. The mixin merges the page's base data with `additionalData` automatically:
-
-```dart
-logAdditionalEvent(
-  AnalyticsEvents.filterPlp,
-  additionalData: BaseEvent(filterType: 'colour', filterValue: 'red'),
-);
-```
-
----
-
-## 4. Page-Level Analytics Constants
-
-Each feature defines its own page-level analytics constants as top-level `const` strings in `lib/features/<feature>/helpers/<feature>_event.dart`. Use these constants consistently across the feature's pages, widgets, and cubit.
-
-```dart
-// lib/features/my_feature/helpers/my_feature_event.dart
-
-const kMyFeaturePageName = 'my-feature';
-const kMyFeaturePageType = 'MyFeature';
-const kMyFeatureContentGroup = 'MyFeatureGroup';
-
-// Action-level detail strings
-const kMyFeatureButtonTap = 'my-feature : button tap';
-const kMyFeatureSearch = 'my-feature : search';
-```
-
-Never hardcode these strings at the call site — always reference the constants.
-
----
-
-## 5. UI Interaction Events — Feature Event Helper
-
-For UI interactions (button taps, toggles, etc.), create a feature-scoped static helper class in the same `helpers/` file. This avoids repeating `pageName`/`pageType`/`contentGroup` on every call:
-
-```dart
-class MyFeatureEvent {
-  static void logUIEvent(String eventDetails, {BaseEvent? additionalData}) {
-    final eventData = BaseEvent(
-      eventDetails: eventDetails,
-      pageName: kMyFeaturePageName,
-      pageType: kMyFeaturePageType,
-      contentGroup: kMyFeatureContentGroup,
-    )..copy(additionalData);
-
-    GetIt.I<AnalyticsRepository>().logEvent(
-      AnalyticsEvents.uiInteraction,
-      parameters: eventData,
+  // Private _logEvent helper — merges screen_name automatically
+  Future<void> _logEvent(String name, [Map<String, Object>? parameters]) async {
+    await _analytics.logEvent(
+      name: name,
+      parameters: {
+        ...?parameters,
+        'screen_name': _screenName,
+      },
     );
   }
-}
-```
 
-Usage at the call site — in a widget's `onTap` or in a cubit method:
+  // Public methods — one per tracked event
+  Future<void> logXxxHappened({required String ticker}) async {
+    await _logEvent(_kEventXxxHappened, {_kParamTicker: ticker});
+  }
 
-```dart
-MyFeatureEvent.logUIEvent(kMyFeatureButtonTap);
-MyFeatureEvent.logUIEvent(kMyFeatureSearch, additionalData: BaseEvent(searchTerm: query));
-```
-
----
-
-## 6. Logging Events from Cubits
-
-Cubits receive `AnalyticsRepository` as an injected constructor dependency using the same GetIt fallback pattern used across the project:
-
-```dart
-class MyFeatureCubit extends Cubit<MyFeatureState> {
-  MyFeatureCubit({AnalyticsRepository? analyticsRepository})
-      : _analyticsRepository = analyticsRepository ?? GetIt.I(),
-        super(const MyFeatureInitial());
-
-  final AnalyticsRepository _analyticsRepository;
-
-  Future<void> submit() async {
-    final result = await _repository.submit();
-    _analyticsRepository.logEvent(
-      AnalyticsEvents.account,
-      parameters: BaseEvent(
-        eventDetails: result ? 'submit : success' : 'submit : failed',
-        pageName: kMyFeaturePageName,
-        pageType: kMyFeaturePageType,
-        contentGroup: kMyFeatureContentGroup,
-      ),
-    );
+  Future<void> logXxxFailed({required String errorMessage}) async {
+    await _logEvent(_kEventXxxFailed, {_kParamErrorMessage: errorMessage});
   }
 }
 ```
 
 ---
 
-## 7. User Properties
+## 3. Event Naming Conventions
 
-User property updates are centralised in the **global `UserCubit` only** via its `onChange` override — they fire automatically on every user state change. Never set user properties from feature cubits or widgets.
-
-```dart
-// Only in the global UserCubit
-@override
-void onChange(Change<UserState> change) {
-  super.onChange(change);
-  updateAnalyticsUserProperties(change.nextState);
-}
-
-void updateAnalyticsUserProperties(UserState state) {
-  _analyticsRepository
-    ..setUserProperty(AnalyticsUserProperties.userId, _userRepository.uid)
-    ..setUserProperty(AnalyticsUserProperties.loginStatus,
-        state is LoggedInUserState ? 'login' : 'logout');
-}
-```
-
-User property keys must come from `AnalyticsUserProperties` constants — never hardcode strings.
+- Event names: `snake_case`, descriptive, specific — e.g. `watchlist_item_added`, `filing_link_opened`, `reports_feed_viewed`
+- Parameter names: `snake_case` — e.g. `ticker`, `filing_type`, `unread_count`, `entry_source`
+- Screen name: `snake_case` — e.g. `reports_feed`, `company_profile`, `settings`
+- All names are `static const String` private constants — never hardcode at the call site
 
 ---
 
-## 8. Event Names and Targets
+## 4. Injecting the Tracker into BLoC
 
-All event name strings come from `AnalyticsEvents` constants — never hardcode them at call sites:
-
-```dart
-// CORRECT
-AnalyticsEvents.uiInteraction
-AnalyticsEvents.search
-AnalyticsEvents.screenView
-
-// WRONG
-'ui_interaction'
-'screen_view'
-```
-
-By default, `logEvent` fans out to all three targets. Restrict targets only when there is a deliberate reason:
+The tracker is an `@injectable` constructor dependency of the BLoC. Injectable resolves it automatically:
 
 ```dart
-_analyticsRepository.logEvent(
-  AnalyticsEvents.search,
-  parameters: eventData,
-  targets: [AnalyticsTarget.firebase],
-);
+@injectable
+class XxxBloc extends Bloc<XxxEvent, XxxState> {
+  final XxxTracker _tracker;
+  // ... other deps
+
+  XxxBloc(this._tracker, /* other deps */) : super(const XxxState.initial()) {
+    on<XxxEventHappened>(_onXxxHappened);
+  }
+
+  Future<void> _onXxxHappened(
+    XxxEventHappened event,
+    Emitter<XxxState> emit,
+  ) async {
+    _tracker.logXxxHappened(ticker: event.ticker);
+    // ...
+  }
+}
 ```
+
+The tracker is **never** injected directly into widgets — only into BLoCs. Widgets dispatch events to the BLoC, which delegates analytics calls to the tracker.
 
 ---
 
-## 9. Rules
+## 5. User Properties
+
+User properties are set via `setUserProperty()` on the tracker class — not from global BLoCs or widgets:
+
+```dart
+Future<void> setWatchlistItemCount(int count) async {
+  await _analytics.setUserProperty(
+    name: 'watchlist_item_count',
+    value: count.toString(),
+  );
+}
+```
+
+Call `setUserProperty` from within the relevant tracker method or from the BLoC event handler via the tracker.
+
+---
+
+## 6. Screen View Tracking
+
+Screen views are tracked as regular events in the BLoC (typically on a `Started` or `Viewed` event):
+
+```dart
+Future<void> logFeedViewed({
+  required int unreadCount,
+  required String entrySource,
+}) async {
+  await _logEvent('reports_feed_viewed', {
+    'unread_count': unreadCount,
+    'entry_source': entrySource,
+  });
+}
+```
+
+There is no `ScreenViewMixin` — screen view tracking is always an explicit method on the tracker, called by the BLoC.
+
+---
+
+## 7. Timestamp and Metadata
+
+Include `timestamp` as an ISO 8601 string in events that require time attribution:
+
+```dart
+Future<void> _logEvent(String name, [Map<String, dynamic>? parameters]) async {
+  try {
+    await _analytics.logEvent(
+      name: name,
+      parameters: {
+        ...?parameters,
+        _kParamScreenName: _kScreenName,
+        _kParamTimestamp: DateTime.now().toIso8601String(),
+      },
+    );
+  } catch (e, stack) {
+    _logger.severe('Failed to log event: $name', e, stack);
+  }
+}
+```
+
+Wrap `_logEvent` in try/catch and log failures with `BizzieLogger` — analytics failures must never crash the app.
+
+---
+
+## 8. Rules
 
 | Rule | Detail |
 |---|---|
-| Platform SDKs | NEVER called directly from features or cubits — always via `AnalyticsRepository` |
-| Event names | MUST come from `AnalyticsEvents` constants |
-| User property keys | MUST come from `AnalyticsUserProperties` constants |
-| Page constants | MUST be top-level `const` strings in `features/*/helpers/<feature>_event.dart` |
-| User properties | MUST only be set from the global `UserCubit` |
-| Screen view | MUST use `ScreenViewMixin` — never log manually |
-| UI interactions | MUST use a feature-scoped event helper class |
-| Cubit analytics | Injected via constructor with GetIt fallback (`?? GetIt.I()`) |
+| IAnalyticsService | NEVER called directly from a BLoC, widget, or use case — always through a tracker class |
+| Tracker class | One per feature, `@lazySingleton`, located in `presentation/analytics/` |
+| Event names | `static const String` private constants — never hardcoded at the call site |
+| Parameter names | `static const String` private constants — never hardcoded at the call site |
+| Screen view tracking | An explicit method on the tracker, called by the BLoC — no mixin |
+| User properties | Set via `_analytics.setUserProperty()` inside tracker methods |
+| Error handling | Always wrap `_analytics.logEvent()` in try/catch; log with `BizzieLogger` |
+| Widget analytics | Widgets dispatch events to the BLoC — they never call the tracker directly |
+
+---
+
+## 9. File Placement
+
+```
+lib/features/<feature>/
+└── presentation/
+    └── analytics/
+        └── <feature>_tracker.dart   # or <feature>_analytics.dart
+```
 
 ---
 
 ## Checklist
-- [ ] No platform SDK (Firebase, Airship, AppDynamics) called directly — only `AnalyticsRepository`
-- [ ] All event names reference `AnalyticsEvents` constants
-- [ ] All user property keys reference `AnalyticsUserProperties` constants
-- [ ] Page analytics constants defined as top-level `const` strings in `helpers/<feature>_event.dart`
-- [ ] No analytic strings hardcoded at call sites
-- [ ] Routable pages requiring screen view use `ScreenViewMixin` with `updateScreenViewEvent` implemented
-- [ ] `logScreenView()` never called manually
-- [ ] UI interaction events routed through a feature-scoped event helper class
-- [ ] Cubit receives `AnalyticsRepository` via constructor with `?? GetIt.I()` fallback
-- [ ] User properties set only in the global `UserCubit.onChange`
+- [ ] Tracker class created in `presentation/analytics/<feature>_tracker.dart`
+- [ ] Class annotated `@lazySingleton`
+- [ ] Receives `IAnalyticsService` via constructor injection
+- [ ] All event names defined as `static const String` private constants
+- [ ] All parameter names defined as `static const String` private constants
+- [ ] Private `_logEvent()` helper merges `screen_name` automatically
+- [ ] `_logEvent()` wrapped in try/catch, failures logged with BizzieLogger
+- [ ] One public method per tracked event with named parameters
+- [ ] Tracker injected into BLoC via constructor (injectable resolves it)
+- [ ] Widgets never call tracker directly — always via BLoC events
+- [ ] `setUserProperty()` called inside tracker methods (not from widgets or global state)

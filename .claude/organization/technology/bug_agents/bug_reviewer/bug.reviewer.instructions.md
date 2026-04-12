@@ -27,11 +27,11 @@ Work through the following steps in order. Do not skip to delegation until step 
 Use the bug description to identify where to start looking:
 - Specific screen or widget → start in `lib/features/<feature>/pages/` or `widgets/`
 - Crash with a stack trace → follow the stack to the first app-owned frame
-- Wrong data displayed → start in the cubit state or repository layer
+- Wrong data displayed → start in the BLoC state or repository layer
 - Navigation issue → start in the router
 
 ### Step 2 — Locate the defective code
-Read the relevant files. Follow the call chain as needed -- from widget → cubit → repository → API or storage. Look for:
+Read the relevant files. Follow the call chain as needed -- from widget → BLoC → repository → API or storage. Look for:
 - Logic errors (wrong conditions, off-by-one, unhandled null)
 - State management errors (wrong state emitted, missing state transition, stale state)
 - Data mapping errors (wrong field mapped, type mismatch, missing null check)

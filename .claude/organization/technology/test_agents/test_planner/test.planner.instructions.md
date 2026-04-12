@@ -1,6 +1,6 @@
 ---
 name: test planner instructions
-description: Rules and procedures for the TestPlanner agent when producing a structured test plan for Flutter test work.
+description: Rules and procedures for the TestPlanner agent when producing a structured test plan for Flutter BLoC, repository, and use case test work.
 ---
 
 # Test Planner Instructions
@@ -14,19 +14,21 @@ The TestPlanner produces a structured test plan for Flutter test work. Once the 
 
 Before planning, confirm the following are available. If missing, ask before proceeding:
 
-1. **Implementation files** -- the repository, cubit, widget, or helper files to be tested
-2. **Target context** -- the feature directory or module name
+1. **Implementation files** — the BLoC, repository, use case, or datasource files to be tested
+2. **Target context** — the feature directory or module name
 
 ---
 
 ## Discovery Process
 
 Read the implementation files to understand:
-- Public methods and their signatures (for repositories, helpers, cubits)
-- State types emitted (for cubits)
-- Widget rendering conditions (for widgets -- what does each state render?)
-- Error paths -- what return types or state changes represent failure?
+- Public methods and their signatures (for repositories, use cases, datasources)
+- Events and the state variants emitted for each (for BLoCs)
+- Error paths — `Either<Failure, T>` left cases, stream errors, and failure state variants
+- BLoC constructor dependencies (which use cases / trackers are injected — all must be mocked)
 - Check whether a corresponding test file already exists under `test/`
+
+The test file path must mirror the implementation file path: `lib/features/...` → `test/features/...`.
 
 ---
 
@@ -35,16 +37,22 @@ Read the implementation files to understand:
 Every test plan must contain:
 
 ### Overview
-A one-paragraph summary: what is being tested, what type of test (unit / cubit / widget), and what the key scenarios are.
+A one-paragraph summary: what is being tested, what type of test (unit / BLoC), and what the key scenarios are.
 
 ### Test File Path
-The exact path for the new or updated test file, mirroring the `lib/` path under `test/`.
+The exact path for the new or updated test file, mirroring the `lib/` structure under `test/`.
 
 ### Mocks Required
-List of mock classes to declare (class name + interface it mocks).
+List of mock classes to declare. Mock classes are **public** and named `MockXxx`:
+```
+MockXxx extends Mock implements IXxx
+```
+
+### Fallback Values Required
+List of any objects that need `registerFallbackValue` in `setUpAll` (required by mocktail for any object used with `any()` in stubs).
 
 ### Fake Data
-List of fake model constants needed and their approximate values.
+List of fake data constants needed, using the **`t` prefix** convention (e.g., `tCompany`, `tWatchlistItem`, `tFailure`).
 
 ### Test Scenarios
 A table listing every test case:
@@ -52,11 +60,13 @@ A table listing every test case:
 | Test name | Type | Success/Failure | What it verifies |
 |-----------|------|-----------------|-----------------|
 
+Test names must follow `[MethodOrEvent]_[Scenario]_[ExpectedBehavior]` convention.
+
 **Rules for test scenarios:**
-- Every public method / widget state must have at least one success case and one failure/error/empty case
-- Cubit tests use `blocTest` with explicit `expect` state sequences
-- Widget tests use `whenListen` + `pumpFakeApp` + `find` assertions
-- Repository tests use `test()` with `when(...)` stubs on Api mocks
+- Every public method / BLoC event must have at least one success case and one failure/error case
+- BLoC tests use `blocTest<XxxBloc, XxxState>` with `act: (bloc) => bloc.add(XxxEvent.xxx())`
+- Repository / use case tests use `test()` with `// arrange / act / assert` comments
+- Every BLoC test file must include `setUpAll` + `registerFallbackValue` and `tearDown(() => bloc.close())`
 
 ---
 
@@ -72,8 +82,12 @@ Delegate immediately. Do not wait for user confirmation.
 
 ## Checklist
 - [ ] Implementation files read before planning
-- [ ] Existing test file checked -- delegation target correct (Builder vs Updater)
-- [ ] Plan contains: Overview, Test File Path, Mocks Required, Fake Data, Test Scenarios table
-- [ ] Every public method / widget state has both a success and a failure scenario planned
+- [ ] Existing test file checked — delegation target correct (Builder vs Updater)
+- [ ] Plan contains: Overview, Test File Path, Mocks Required, Fallback Values, Fake Data, Test Scenarios table
+- [ ] Mock class names are public `MockXxx` (not `_MockXxx`)
+- [ ] Fake data constants use `t` prefix
+- [ ] Test names follow `[MethodOrEvent]_[Scenario]_[ExpectedBehavior]`
+- [ ] Every BLoC event / public method has both a success and failure scenario planned
+- [ ] BLoC test plan includes `setUpAll` + `registerFallbackValue` and `tearDown(() => bloc.close())`
 - [ ] All planned tests use only the approved packages from `test.guidance.instructions.md`
 - [ ] Delegated to TestBuilder or TestUpdater immediately after plan completion

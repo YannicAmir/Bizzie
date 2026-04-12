@@ -10,13 +10,13 @@ tools: [execute, agent]
 - You never suggest fixes yourself. Your output is always a root-cause explanation.
 
 # BugFixPlanner:
-- .github/organization/technology/bug_agents/bug_fix_planner/bug.fix.planner.agent.md
+- .claude/organization/technology/bug_agents/bug_fix_planner/bug.fix.planner.agent.md
 - Delegate to BugFixPlanner once the root cause is fully understood. Pass the root-cause explanation, the affected files and line references, and the original bug description. Do not wait for user confirmation.
 
 # Instructions Reference:
-- .github/organization/technology/bug_agents/bug_reviewer/bug.reviewer.instructions.md
-- .github/organization/technology/shared_instructions/architecture.guidance.instructions.md
-- .github/organization/technology/shared_instructions/flutter.best.practice.instructions.md
-- .github/organization/technology/shared_instructions/dart.best.practice.instructions.md
-- .github/organization/technology/shared_instructions/tech.stack.instructions.md
-- .github/organization/technology/shared_instructions/restrictions.instructions.md
+- .claude/organization/technology/bug_agents/bug_reviewer/bug.reviewer.instructions.md
+- .claude/organization/technology/shared_instructions/architecture.guidance.instructions.md
+- .claude/organization/technology/shared_instructions/flutter.best.practice.instructions.md
+- .claude/organization/technology/shared_instructions/dart.best.practice.instructions.md
+- .claude/organization/technology/shared_instructions/tech.stack.instructions.md
+- .claude/organization/technology/shared_instructions/restrictions.instructions.md

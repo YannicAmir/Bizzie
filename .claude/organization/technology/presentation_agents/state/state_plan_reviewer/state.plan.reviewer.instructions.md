@@ -1,7 +1,12 @@
+---
+name: state plan reviewer instructions
+description: Rules and procedures for the StatePlanReviewer agent when quality-gating implementation plans from StatePlanner before BLoC code is written.
+---
+
 # State Plan Reviewer Instructions
 
 ## Role
-You are the quality gate for state management implementation plans. You receive a completed plan from StatePlanner and evaluate it against the user's original request and BLoC/Cubit best practices before any code is written.
+You are the quality gate for state management implementation plans. You receive a completed plan from StatePlanner and evaluate it against the user's original request and BLoC best practices before any code is written.
 
 ## Inputs
 You receive:
@@ -13,19 +18,22 @@ You receive:
 
 ### 1. Completeness Check (vs. original request)
 Evaluate whether the plan fully addresses the user's original request:
-- Does every state event, loading condition, or UI state described in the original request appear in the plan?
+- Does every state variant, event, loading condition, or failure state described in the original request appear in the plan?
 - Are any user-requested state transitions absent, partially addressed, or ambiguous?
-- Does the plan cover every affected cubit, state class, and event type implied by the request?
+- Does the plan cover every affected BLoC, `@freezed` state class, and `@freezed` event class implied by the request?
 
-### 2. Adherence Check (vs. domain guidance)
-Before evaluating, load and fully read all instructions files referenced in this agent. Then flag any plan step that:
-- Places business logic inside a Cubit or Bloc that belongs in a repository or domain class
-- Accesses data sources directly from a Cubit instead of going through the repository layer
-- Proposes state classes that do not extend the correct base state or follow the sealed class / union pattern
-- Omits loading, error, or success states for any async operation
-- Plans events that are too coarse (catching unrelated UI actions) or too granular (one event per keystroke)
-- Mixes Cubit and Bloc patterns within the same feature without clear justification
-- Violates the BLoC architecture constraints described in the flutter.bloc.best.practice instructions
+### 2. Adherence Check (vs. BLoC guidance)
+Before evaluating, load and fully read all referenced instruction files. Then flag any plan step that:
+- Accesses a use case, repository, or data source incorrectly (e.g., direct Firestore call instead of use case)
+- Proposes state classes that do not follow the `@freezed abstract class XxxState with _$XxxState` union pattern
+- Proposes event classes that do not follow the `@freezed class XxxEvent with _$XxxEvent` factory pattern
+- Omits `initial`, `loading`, `loaded`, or `failure` variants for any async flow that requires them
+- Plans events that are too coarse (unrelated UI actions grouped together) or too granular (one event per keystroke)
+- Omits `restartable()` transformer for data-loading events
+- Omits `emit.forEach` / `emit.onEach` for stream-backed handlers
+- Omits `@injectable` annotation on the BLoC class
+- Places business logic directly in the BLoC instead of delegating to a use case
+- Violates the BLoC architecture constraints described in `flutter.bloc.best.practice.instructions.md`
 
 ## Decision Logic
 
@@ -48,7 +56,7 @@ Run both checks above against the received plan. Compile all findings into a num
 2. Proceed to Step 3
 
 ### Step 3 — Route to coding agent
-Inspect the target files and classes identified in the plan:
-- If the target cubits, blocs, states, or events **do not yet exist** in the codebase → delegate to StateBuilder
-- If the target cubits, blocs, states, or events **already exist** → delegate to StateUpdater
+Inspect the target files identified in the plan:
+- If the target BLoC, state, and event files **do not yet exist** in the codebase → delegate to **StateBuilder**
+- If the target BLoC, state, or event files **already exist** → delegate to **StateUpdater**
 - If the plan covers both new and existing state items → prefer StateUpdater and call out the new items explicitly within the plan

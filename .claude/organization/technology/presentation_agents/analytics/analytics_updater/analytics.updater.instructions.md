@@ -1,14 +1,12 @@
 ---
 name: analytics updater instructions
-description: Rules and procedures for the AnalyticsUpdater agent when updating existing Flutter analytics implementations to match changed requirements.
+description: Rules and procedures for the AnalyticsUpdater agent when extending or updating existing Flutter analytics tracker classes and BLoC wiring.
 ---
 
 # Analytics Updater Instructions
 
 ## Purpose
-The AnalyticsUpdater updates and extends existing analytics code on Flutter features that already have some analytics implemented. It is called by the **Analytics Planner** agent with a structured implementation plan and target feature directory.
-
-This is distinct from the AnalyticsBuilder (which creates analytics from scratch) -- the AnalyticsUpdater modifies and extends what already exists.
+The AnalyticsUpdater extends or modifies existing analytics code on Flutter features that already have a tracker class. It is called by the **AnalyticsPlanner** agent with a structured implementation plan and target feature directory.
 
 ---
 
@@ -16,52 +14,48 @@ This is distinct from the AnalyticsBuilder (which creates analytics from scratch
 
 The following are **mandatory** before any work begins. If missing, stop and request them:
 
-1. **Implementation plan** -- the structured plan produced by AnalyticsPlanner
-2. **Target context** -- the `@feature` directory or feature name
+1. **Implementation plan** — the structured plan produced by AnalyticsPlanner
+2. **Target context** — the feature directory
 
 ---
 
 ## Strict Scope of Changes
 
 ### Permitted Changes
-- Add new page constants or action detail strings to the existing `helpers/<feature>_event.dart`
-- Update existing page constant values where the plan specifies a change
-- Add new methods or extend `logUIEvent` calls in the existing feature event helper class
-- Add `ScreenViewMixin` to pages that are missing it, per the plan
-- Update `updateScreenViewEvent` implementations to populate changed or additional event fields
-- Add or update `logAdditionalEvent` calls on page arrival
-- Add new `logEvent` calls to cubit methods as specified
-- Update existing cubit `logEvent` calls to use corrected constants or changed event schemas
-- Add `AnalyticsRepository` injection to cubits that are missing it
+- Add new `static const String` event name or parameter name constants to an existing tracker
+- Add new public methods to an existing tracker
+- Update existing tracker methods as specified in the plan
+- Add tracker injection to a BLoC that is missing it
+- Add `_tracker.logXxx(...)` calls to BLoC event handlers as specified in the plan
+- Add or update `setUserProperty` calls in tracker methods as specified
 
 ### Forbidden Changes
 - Do **not** modify any UI layout, styling, or widget hierarchy
 - Do **not** modify state management logic, business logic, or data handling
-- Do **not** add or modify user properties -- these belong in `UserCubit` only
-- Do **not** call platform SDKs (Firebase, Airship, AppDynamics) directly
-- Do **not** hardcode event name strings -- always use `AnalyticsEvents` constants
-- Do **not** hardcode page dimension strings -- always use constants
+- Do **not** call Firebase Analytics SDK directly — always through `IAnalyticsService`
+- Do **not** hardcode event name strings at call sites — always use constants
+- Do **not** add tracker calls in widgets — only in the BLoC
 
 ---
 
 ## Execution Process
 
-1. **Confirm inputs** -- verify the implementation plan and target context are present
-2. **Identify affected files** -- locate all files referenced in the plan within the feature directory
-3. **Diff old vs new** -- understand exactly what must change per the plan before making any edits
-4. **Apply updates in plan order** -- follow the plan's sequenced steps
-5. **Verify analytics conventions** -- confirm all event names use `AnalyticsEvents`, all page dimensions use constants, no SDK is called directly
+1. **Confirm inputs** — verify the implementation plan and target feature are present
+2. **Read the existing tracker class in full** — understand current coverage
+3. **Read the BLoC in full** — understand existing constructor and event handlers
+4. **Apply updates in plan order** — follow sequenced steps
+5. **Verify** — event names are constants, try/catch present in `_logEvent`, no SDK called directly
 
 ---
 
 ## Checklist
 - [ ] Implementation plan and target context confirmed before starting
-- [ ] All page constant additions and updates applied to the helpers file as specified
-- [ ] All new action detail string constants added
-- [ ] Feature event helper class updated with new methods or calls as specified
-- [ ] `ScreenViewMixin` and `updateScreenViewEvent` updated on all pages specified in the plan
-- [ ] Cubit `logEvent` calls added or updated as specified
-- [ ] All event names reference `AnalyticsEvents` constants
-- [ ] All page dimensions reference constants -- no hardcoded strings at call sites
-- [ ] No platform SDK called directly
+- [ ] Existing tracker class read in full before changes
+- [ ] New constants added as `static const String` private fields
+- [ ] New public methods follow the existing pattern in the tracker
+- [ ] `_logEvent()` try/catch and BizzieLogger present in all paths
+- [ ] Tracker injection added to BLoC constructor as positional parameter (if missing)
+- [ ] `_tracker.logXxx(...)` calls added in BLoC event handlers as specified
+- [ ] No Firebase SDK called directly
+- [ ] No hardcoded event name strings at call sites
 - [ ] No UI layout, state logic, or business logic modified

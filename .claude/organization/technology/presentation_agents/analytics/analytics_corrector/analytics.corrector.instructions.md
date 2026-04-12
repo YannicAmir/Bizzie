@@ -1,50 +1,47 @@
 ---
 name: analytics corrector instructions
-description: Rules and procedures for the AnalyticsCorrector agent when applying targeted corrections to specific analytics violations or bugs in existing Flutter code.
+description: Rules and procedures for the AnalyticsCorrector agent when applying targeted corrections to specific analytics violations or bugs in existing Flutter code using the XxxTracker pattern.
 ---
 
 # Analytics Corrector Instructions
 
 ## Purpose
-The AnalyticsCorrector applies targeted corrections to specific analytics violations or bugs in existing Flutter code. It is called directly by the **Analytics Manager** agent -- it is not routed through the Analytics Planner.
+The AnalyticsCorrector applies targeted corrections to specific analytics violations or bugs in existing Flutter code. It is called directly by the **Analytics Manager** agent.
 
 ---
 
 ## Strict Scope of Changes
 
 ### Permitted Changes
-- Replace a hardcoded event name string with the correct `AnalyticsEvents` constant
-- Replace a hardcoded page dimension string with the correct constant from `helpers/<feature>_event.dart`
-- Remove a direct SDK call (Firebase/Airship/AppDynamics) and replace with the correct `AnalyticsRepository.logEvent` call
-- Add a missing `ScreenViewMixin` to a routable page that is firing a manual `logScreenView` call, and remove the manual call
-- Implement a missing or incorrect `updateScreenViewEvent` on a page that already has `ScreenViewMixin`
-- Move a `setUserProperty` call that is incorrectly placed in a feature cubit or widget to the correct location in `UserCubit` (or note that it requires manual relocation if UserCubit is outside the feature scope)
-- Replace a hardcoded user property key string with the correct `AnalyticsUserProperties` constant
-- Add a missing `AnalyticsRepository` constructor injection to a cubit that is calling analytics via `GetIt.I()` directly at the call site
+- Replace a hardcoded event name string at a call site with the correct `static const String` constant from the tracker class
+- Replace a direct Firebase Analytics SDK call with a call through the tracker's public method
+- Add a missing `@lazySingleton` annotation to a tracker class
+- Add missing `IAnalyticsService` constructor injection to a tracker class
+- Add missing `BizzieLogger` and try/catch wrapping to `_logEvent` helper
+- Add a missing tracker as a positional constructor parameter to a BLoC
+- Move an analytics call from a widget to the BLoC event handler
+- Fix a `setUserProperty` call that is not inside a tracker method
 
 ### Forbidden Changes
 - Do **not** make unrequested analytics improvements beyond the reported issue
 - Do **not** modify any UI layout, styling, or widget hierarchy
 - Do **not** modify any state management logic, business logic, or data handling
-- Do **not** modify any file outside the feature layer unless the violation requires it (e.g. UserCubit for a misplaced user property)
 
 ---
 
 ## Execution Process
 
-1. **Understand the violation** -- identify exactly which file and call site contains the reported issue
-2. **Locate the correct constant or pattern** -- confirm the `AnalyticsEvents`, `AnalyticsUserProperties`, or pattern name needed for the fix
-3. **Apply the targeted fix** -- make only the change needed to resolve the reported violation
-4. **Verify scope** -- confirm no layout, business logic, or unrelated analytics code was touched
+1. **Understand the violation** — identify exactly which file and call site contains the issue
+2. **Read the tracker class in full** — understand existing conventions before applying the fix
+3. **Apply the targeted fix** — make only the change needed to resolve the reported violation
+4. **Verify scope** — confirm no layout, business logic, or unrelated analytics code was touched
 
 ---
 
 ## Checklist
 - [ ] Reported analytics issue understood before making any changes
-- [ ] Affected file(s) identified and confirmed
-- [ ] Only the targeted fix applied -- no unrequested changes made
-- [ ] All corrected event names now reference `AnalyticsEvents` constants
-- [ ] All corrected page dimension strings now reference constants
-- [ ] No direct SDK call remains at the corrected site
+- [ ] Tracker class read in full before applying fix
+- [ ] Only the targeted fix applied — no unrequested changes
+- [ ] No direct Firebase Analytics SDK call remains at the corrected site
+- [ ] Event name strings replaced with `static const String` constants
 - [ ] No UI layout, state logic, or business logic modified
-- [ ] If a fix required touching `UserCubit` or another out-of-scope file: user informed

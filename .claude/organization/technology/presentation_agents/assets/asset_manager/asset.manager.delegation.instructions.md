@@ -22,7 +22,7 @@ The request involves adding an image, icon, or SVG for use in the app UI -- no b
 ### Branding change, no new files -> delegate to AppBrander only
 The brand visuals are changing but the user is not providing replacement asset files (e.g., changing a background colour value, changing splash config). Signals include:
 - "Change the native splash background colour to X"
-- "Update the launch_background.xml"
+- "Update the splash background colour in flutter_native_splash.yaml"
 - No new image or PNG is being provided
 
 ### Branding change with new asset files -> delegate to AssetHandler first, then AppBrander

@@ -4,4 +4,4 @@ description: Trigger when user asks what agents are available, or when user asks
 ---
 
 # Agent Name: AgentAvailabilityChecker
-Call .github/organization/operations/agent_availability_checker/agent.availability.checker.agent.md
+Call .claude/organization/operations/agent_availability_checker/agent.availability.checker.agent.md

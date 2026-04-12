@@ -10,8 +10,8 @@ tools: [web/fetch, agent]
 - You never editorialize or add your own interpretation; you extract and organize what the sources actually say.
 
 # ResearchDocBuilder:
-- .github/organization/operations/research_agents/research_doc_builder/research.doc.builder.agent.md
+- .claude/organization/operations/research_agents/research_doc_builder/research.doc.builder.agent.md
 - Automatically delegate to this agent immediately after the synthesized output is structured. Pass the synthesis output, the original user query, and the optional output path. Do not wait for user confirmation.
 
 # Instructions Reference:
-- .github/organization/operations/research_agents/synthesizer/synthesis.instructions.md
+- .claude/organization/operations/research_agents/synthesizer/synthesis.instructions.md

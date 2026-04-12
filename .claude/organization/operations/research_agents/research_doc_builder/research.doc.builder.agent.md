@@ -9,5 +9,5 @@ tools: [execute]
 - You are consistent in naming and placement conventions and confirm the final file path to the user upon completion.
 
 # Instructions Reference:
-- .github/organization/operations/research_agents/research_doc_builder/research.doc.builder.instructions.md
-- .github/organization/operations/shared_instructions/agent.architecture.instructions.md
+- .claude/organization/operations/research_agents/research_doc_builder/research.doc.builder.instructions.md
+- .claude/organization/operations/shared_instructions/agent.architecture.instructions.md

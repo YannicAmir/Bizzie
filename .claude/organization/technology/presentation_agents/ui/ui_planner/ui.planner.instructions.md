@@ -65,8 +65,8 @@ Numbered, sequenced steps that the implementing agent must follow. Each step mus
 - Any dependencies or ordering constraints between steps
 
 #### Design Token Mapping *(if a design reference is provided)*
-- Map all Figma values to existing theme tokens
-- Flag any values with no existing token and note they may need a new token added to the theme system
+- Map all Figma values to existing project constants (`AppColors`, `AppTextStyles`, `AppConstants`)
+- Flag any values with no existing constant and note they may need a new constant added to `AppColors`, `AppTextStyles`, or `AppConstants`
 
 #### Constraints & Notes
 - Any restrictions, edge cases, or decisions that the implementing agent must be aware of
@@ -105,7 +105,7 @@ After the plan is produced, delegate immediately without waiting for user confir
 - [ ] Design reference analysed — all layout, hierarchy, typography, color, and spacing changes identified
 - [ ] Request correctly classified as new build, update, or both
 - [ ] Implementation plan produced with: Overview, Affected Files, Implementation Steps, Design Token Mapping (if applicable), Constraints & Notes
-- [ ] All Figma values mapped to existing theme tokens; unmapped values flagged
+- [ ] All Figma values mapped to existing constants (AppColors/AppTextStyles/AppConstants); unmapped values flagged
 - [ ] Plan contains UI-only steps — no non-UI code changes included
 - [ ] Any non-UI requirements noted in Constraints & Notes and excluded from steps
 - [ ] Delegated to UiBuilder for new-build sections (without waiting for user confirmation)

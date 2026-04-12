@@ -41,14 +41,14 @@ The UiUpdater is a **UI-only** agent. The following rules are absolute and apply
 - Swap or update icons, images, and asset references
 - Adjust responsiveness and widget sizing (Expanded, Flexible, SizedBox, etc.)
 - Update or restructure widget hierarchy to match the new design
-- Apply or update theme tokens and styling constants from the existing theme system
+- Apply or update styling constants from `AppColors`, `AppTextStyles`, and `AppConstants`
 - Extract new sub-widgets when the update introduces enough complexity to warrant it, following existing architecture conventions
 
 ### Forbidden Changes
 - Do **not** modify any business logic, state management, or data handling
 - Do **not** refactor or rename variables, classes, methods, or functions
 - Do **not** change any callback, event handler, or navigation behavior
-- Do **not** alter dependency injection, providers, bloc/cubit logic, or service calls
+- Do **not** alter dependency injection, providers, BLoC logic, or service calls
 - Do **not** add, remove, or restructure any non-UI code
 - Do **not** modify tests, models, repositories, or any file outside the presentation layer
 
@@ -59,8 +59,8 @@ The UiUpdater is a **UI-only** agent. The following rules are absolute and apply
 ### Figma Link
 - Analyze the link and extract the full layout, spacing, typography, color, and component hierarchy
 - Identify what has changed relative to the current implementation
-- Map all Figma values to existing Flutter theme tokens — do not introduce hardcoded values if a theme token already covers it
-- Where a Figma value has no matching token, use the raw value and add an inline comment noting it may need a token added to the theme
+- Map all Figma values to existing project constants (`AppColors`, `AppTextStyles`, `AppConstants`) — do not hardcode values already covered by these classes
+- Where a Figma value has no matching constant, use the raw value and add an inline comment: `// TODO: consider adding to AppColors/AppTextStyles/AppConstants`
 
 ### Figma Copied Content
 - Parse component names, hierarchy, property values, and auto-layout settings from the copied content
@@ -94,7 +94,7 @@ The UiUpdater is a **UI-only** agent. The following rules are absolute and apply
 - [ ] Design analysed and all changes relative to current implementation identified
 - [ ] Affected files confirmed to be in the presentation layer only
 - [ ] All layout, hierarchy, typography, color, spacing, and decoration changes from the new mock applied
-- [ ] Theme tokens used where available; hardcoded values commented where no token exists
+- [ ] AppColors/AppTextStyles/AppConstants used where available; hardcoded values commented where no constant exists
 - [ ] No business logic, state management, or data handling modified
 - [ ] No variables, classes, methods, or functions renamed or refactored
 - [ ] No callbacks, event handlers, or navigation behavior changed
