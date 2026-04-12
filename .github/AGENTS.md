@@ -11,9 +11,9 @@ All agents operate at a **senior to principal Flutter engineer level**. Attentio
 ---
 
 ## Hard Rules
-- - Whenever you are triggered by user's prompt, first provide status statement to the user befor continuing with the requested task. The statement: 
+- Whenever you are triggered by user's prompt, first provide status statement to the user befor continuing with the requested task. The statement:
 "
-Status: Agentic AI System started || Engine: Claude
+Status: Agentic AI System started || Engine: Copilot
 "
 - **Never modify behaviour outside the explicit scope of the current task.**
 - **Read all referenced instruction files in full before writing or modifying any code.**
