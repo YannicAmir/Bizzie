@@ -1,11 +1,11 @@
 ---
 name: asset handling guidance
-description: Project-specific asset coding guidelines for Flutter. Covers the assets/ folder structure, AppIconPaths constants class, AppIcon widget usage, pubspec.yaml registration, and naming conventions. Referenced by asset and branding agents.
+description: Project-specific asset coding guidelines for Flutter. Covers the assets/images/ folder structure, AppAssets constants class, Image.asset/SvgPicture.asset usage, pubspec.yaml registration, and naming conventions. Referenced by asset and branding agents.
 ---
 
 # Asset Handling Guidance
 
-> Asset paths are NEVER hardcoded in widgets. All paths come from `AppIconPaths` constants. All icon rendering uses the `AppIcon` widget.
+> Asset paths are NEVER hardcoded in widgets. All paths come from `AppAssets` static constants. There is no `AppIcon` widget — use `Image.asset` or `SvgPicture.asset` directly with `AppAssets` constants.
 
 ---
 
@@ -13,169 +13,107 @@ description: Project-specific asset coding guidelines for Flutter. Covers the as
 
 ```
 assets/
-├── icons/                      ← UI icons (SVG + PNG), grouped by section
-│   ├── nav/                    ← bottom navigation tab icons
-│   ├── general/                ← app-wide shared icons
-│   ├── more/                   ← settings / more section icons
-│   ├── shop/                   ← shop/PLP icons
-│   ├── stores/                 ← store locator icons
-│   ├── treasure/               ← loyalty programme icons
-│   ├── feedback/               ← feedback icons
-│   ├── bag/                    ← shopping bag icons
-│   ├── delete_account/         ← account deletion icons
-│   ├── country/                ← country flag icons
-│   ├── launcher/               ← app icon source files (not referenced in code)
-│   └── splash/                 ← splash screen assets
-│
-├── images/                     ← larger illustration/bitmap images
-└── fonts/                      ← custom font files (.otf)
+├── images/
+│   ├── auth/           ← auth feature assets (icons + images)
+│   ├── branding/       ← app icon, splash logo, splash branding
+│   ├── company_profile/← company profile feature assets
+│   ├── home/           ← bottom nav icons (selected/unselected SVGs)
+│   ├── onboarding/     ← onboarding mascots and illustrations
+│   ├── search/         ← search feature assets
+│   └── shared/         ← app-wide shared icons and mascots
+└── fonts/              ← custom font files (.otf / .ttf)
 ```
 
-All asset folders are explicitly declared in `pubspec.yaml` under `flutter.assets`.
+All asset folders are declared in `pubspec.yaml` under `flutter.assets`.
 
 ---
 
-## 2. AppIconPaths — The Path Constants Class
+## 2. AppAssets — The Path Constants Class
 
-All asset paths (icons and images) are declared as `static String get` properties in a single `AppIconPaths` class in `lib/theme/<app>_icon_paths.dart`. Path prefixes are private constants; individual path getters compose from them.
+Location: `lib/app/themes/app_assets.dart`
+
+All asset paths are `static const String` properties, grouped by feature with section comments. The class has a private constructor — never instantiate it.
 
 ```dart
-class AppIconPaths {
-  // Private path prefixes — one per folder
-  static const _navIconsPath = 'assets/icons/nav/';
-  static const _generalIconsPath = 'assets/icons/general/';
-  static const _generalImagesPath = 'assets/images/';
+class AppAssets {
+  AppAssets._();
 
-  // Icons
-  static String get close => '${_generalIconsPath}close.png';
-  static String get search => '${_generalIconsPath}search.png';
-  static String get filter => '${_generalIconsPath}filter.svg';
+  // Auth Feature
+  static const String authAppleIcon = 'assets/images/auth/apple_icon.png';
+  static const String authEmailIcon = 'assets/images/auth/email_icon.svg';
 
-  // Images
-  static String get welcomeImage => '${_generalImagesPath}welcome.png';
+  // Branding
+  static const String splashLogo = 'assets/images/branding/splash_logo.png';
+  static const String appIcon    = 'assets/images/branding/app_icon.png';
+
+  // Shared
+  static const String backArrowIcon = 'assets/images/shared/back_arrow_icon.png';
 }
 ```
 
-### Naming Conventions
-- Use `lowerCamelCase` for getter names
-- Group paths with a section comment header matching the folder name
-- Active/inactive pairs for nav icons: `shopActive` / `shopInactive`
-- Locale/region variants use a suffix: `bigDealsWelcome` / `bigDealsWelcomeDe`
+**Naming conventions:**
+- `lowerCamelCase` — always
+- Prefix with the feature name: `authAppleIcon`, `homeSelectedIcon`, `companyProfileWebsiteIcon`
+- Selected/unselected nav icon pairs: `homeSelectedIcon` / `homeUnselectedIcon`
+- SVG and PNG paths are both `static const String` — no distinction in the constant type
 
 ---
 
-## 3. AppIcon Widget — Rendering Icons
+## 3. Rendering Assets in Widgets
 
-`AppIcon` is the single widget for rendering all icon assets (SVG and PNG). It detects the file type by extension and delegates to `SvgPicture.asset` or `Image.asset` internally.
+Detect file type by extension and choose the correct widget:
 
 ```dart
-// CORRECT
-AppIcon(
-  path: AppIconPaths.filter,
-  color: AppColors.primary,
-  height: 24,
-  width: 24,
-)
+// PNG / bitmap
+Image.asset(AppAssets.splashLogo)
+Image.asset(AppAssets.authAppleIcon, width: 24, height: 24)
 
-// WRONG — never call these directly for icon assets
-SvgPicture.asset('assets/icons/general/filter.svg')
-Image.asset('assets/icons/general/close.png')
+// SVG
+SvgPicture.asset(AppAssets.authEmailIcon, width: 24, height: 24)
+SvgPicture.asset(AppAssets.homeSelectedIcon, colorFilter: ColorFilter.mode(color, BlendMode.srcIn))
 ```
 
-### AppIcon Parameters
-
-| Parameter | Default | Purpose |
-|---|---|---|
-| `path` | required | Asset path from `AppIconPaths` |
-| `color` | `IconTheme` color | Tint — applied via `ColorFilter` for SVG, `color` for PNG |
-| `height` / `width` | 24 | Size |
-| `useRawColor` | `false` | Set `true` to render original colours without tinting |
-
-### Color Tinting
-- By default all icons inherit the ambient `IconTheme` color
-- Set `useRawColor: true` for multi-colour icons (flag icons, branded illustrations) that must not be tinted
-
+**Never** hardcode the path string directly in the widget:
 ```dart
-// Multi-colour flag — preserve original colours
-AppIcon(
-  path: AppIconPaths.ukFlag,
-  useRawColor: true,
-  height: 20,
-  width: 28,
-)
+// WRONG
+Image.asset('assets/images/shared/back_arrow_icon.png')
+SvgPicture.asset('assets/images/home/home_selected_icon.svg')
 ```
 
 ---
 
-## 4. Large Images — When to Use Image.asset Directly
-
-`Image.asset` is used directly (not via `AppIcon`) only for large bitmap illustrations where tinting is undesirable. The path must still come from `AppIconPaths`:
-
-```dart
-// CORRECT — large illustration, path from constants
-Image.asset(
-  AppIconPaths.welcomeImage,
-  height: 200,
-  fit: BoxFit.contain,
-)
-
-// WRONG — hardcoded path
-Image.asset('assets/images/welcome.png')
-```
-
----
-
-## 5. Locale / Region-Specific Images
-
-Resolve the path at the call site based on locale or region — do not create separate widgets per variant:
-
-```dart
-// Via locale code
-Image.asset(
-  l10n.locale.languageCode == 'de'
-      ? AppIconPaths.bigDealsWelcomeDe
-      : AppIconPaths.bigDealsWelcome,
-)
-
-// Via cubit state
-final region = context.select((AppCubit c) => c.state.region);
-Image.asset(region.isUk ? AppIconPaths.someUkImage : AppIconPaths.someDEImage)
-```
-
----
-
-## 6. Registering New Assets
+## 4. Registering New Assets
 
 When adding a new asset file:
 
-1. **Place the file** in the correct folder under `assets/` — create a new subfolder only if the section is genuinely new
-2. **Register in `pubspec.yaml`** only if it is a new subfolder (existing folders with a trailing `/` pick up all files automatically):
+1. **Place the file** in the correct `assets/images/<feature>/` folder — create a new subfolder only if the feature is genuinely new
+2. **Register in `pubspec.yaml`** if it is a new subfolder (existing declared folders pick up all files automatically):
    ```yaml
    flutter:
      assets:
-       - assets/icons/my_new_section/
+       - assets/images/my_new_feature/
    ```
-3. **Add a path getter** to `AppIconPaths` in the correct section with the appropriate private prefix constant
+3. **Add a constant** to `AppAssets` in the correct feature section
 
 ---
 
-## 7. Rules
+## 5. Rules
 
 | Rule | Detail |
 |---|---|
-| Asset paths | NEVER hardcoded in widgets — ALWAYS via `AppIconPaths` constants |
-| Icon rendering | ALWAYS via `AppIcon` widget — NEVER `SvgPicture.asset` / `Image.asset` for icons |
-| Icon color | Pass `color` param or inherit from `IconTheme`; `useRawColor: true` for multi-colour assets |
-| Large illustrations | `Image.asset()` acceptable; path MUST still come from `AppIconPaths` |
-| New assets | File → correct `assets/` subfolder; new folder → register in `pubspec.yaml`; path → add to `AppIconPaths` |
+| Asset paths | NEVER hardcoded in widgets — ALWAYS via `AppAssets` constants |
+| PNG rendering | `Image.asset(AppAssets.xxx)` |
+| SVG rendering | `SvgPicture.asset(AppAssets.xxx)` |
+| No AppIcon widget | No such widget exists in this project |
+| New assets | File → `assets/images/<feature>/`; new folder → register in `pubspec.yaml`; constant → `AppAssets` |
+| Constant type | `static const String` — not `static String get` |
 
 ---
 
 ## Checklist
-- [ ] New asset file placed in correct `assets/` subfolder
+- [ ] New asset file placed in correct `assets/images/<feature>/` subfolder
 - [ ] If new subfolder: registered in `pubspec.yaml` under `flutter.assets`
-- [ ] Path getter added to `AppIconPaths` in the correct section using the correct private prefix
-- [ ] Getter name uses `lowerCamelCase` and follows naming conventions (active/inactive, region suffix)
+- [ ] `static const String` constant added to `AppAssets` in the correct section
+- [ ] Constant name uses `lowerCamelCase` with feature prefix
 - [ ] No asset path string hardcoded in any widget file
-- [ ] Icons rendered via `AppIcon` widget — not `SvgPicture.asset` or `Image.asset` directly
-- [ ] `useRawColor: true` set for multi-colour / branded assets that must not be tinted
+- [ ] PNG assets use `Image.asset(AppAssets.xxx)`, SVG assets use `SvgPicture.asset(AppAssets.xxx)`

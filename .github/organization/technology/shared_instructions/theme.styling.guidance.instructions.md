@@ -1,113 +1,118 @@
 ---
 name: theme and styling guidance
-description: Flutter theme and styling rules for all technology agents. Governs colors, typography, spacing, component theming, and theme access patterns for Flutter mobile apps.
+description: Flutter theme and styling rules for all technology agents. Governs colors (AppColors), typography (AppTextStyles with GoogleFonts.inter), spacing (AppConstants), component theming, and theme access patterns for this Flutter mobile app.
 ---
 
 # Theme & Styling Guidance
 
-## 1. Colors
+---
 
-- All colors must be declared in the centralized `AppColors` constants class. Never write raw hex values (`Color(0xff...)`) or `Color.fromRGBO(...)` inline inside a widget.
-- Alpha-derived variants (overlays, dividers, tints) must be computed and named in `AppColors` using `.withValues(alpha: ...)` — not inline at the call site.
-- Prefer `Theme.of(context).colorScheme` semantic roles (`primary`, `surface`, `onSurface`, `error`, etc.) over direct `AppColors` references wherever a role maps clearly. Use named constants only for colors with no matching semantic role.
-- Never use `Colors.white`, `Colors.black`, or any other `Colors.*` constant inline — reference `AppColors` instead. `Colors.transparent` is the only exception.
+## 1. Colors — AppColors
+
+Location: `lib/app/themes/app_colors.dart`
+
+- All colors must be declared as `static const` properties in `AppColors`. Never write raw hex values (`Color(0xff...)`) or `Color.fromRGBO(...)` inline in a widget.
+- Never use `Colors.white`, `Colors.black`, or any `Colors.*` inline — reference `AppColors` instead. `Colors.transparent` is the only exception.
+- Before adding a new color, check `AppColors` first — do not add near-duplicate constants.
 
 ```dart
-// Bad
+// Wrong
 color: const Color(0xff404040)
 color: Colors.white
 
-// Good
+// Correct
 color: AppColors.textPrimary
-color: Theme.of(context).colorScheme.surface
+color: AppColors.backgroundPrimary
 ```
 
 ---
 
-## 2. Typography
+## 2. Typography — AppTextStyles
 
-- The font family must be stored as a single named constant and set once in `ThemeData.fontFamily`. Never hardcode the font family string in a widget.
-- Define all text styles in `ThemeData.textTheme` mapped to M3 semantic roles: `displayLarge/Medium/Small`, `headlineLarge/Medium/Small`, `titleLarge/Medium/Small`, `bodyLarge/Medium/Small`, `labelLarge/Medium/Small`.
-- In widgets, access styles via `Theme.of(context).textTheme.<role>` and use `.copyWith(...)` to override only what differs. Never construct `TextStyle(...)` from scratch inline in new code.
-- Font sizes must not be magic numbers — they must trace back to a `textTheme` entry or a named constant.
-- Line height (`height`) when set must use the ratio form (e.g. `height: 22 / 14`), not an absolute value. M3 guidance: ~1.2× for display/headline/title, ~1.5× for body/label.
-- Never set `fontFamilyFallback` per-widget — set it once globally in `ThemeData`.
+Location: `lib/app/themes/app_text_styles.dart`
+
+All text styles are `static final TextStyle` properties built with `GoogleFonts.inter(...)`. Access them directly — do not construct `TextStyle(...)` from scratch inline.
+
+Available style names (non-exhaustive):
+- **Headings**: `AppTextStyles.h1`, `.h2`, `.h3`, `.sectionHeader`
+- **Body**: `AppTextStyles.bodyLarge`, `.bodyLargeBold`, `.bodyMedium`, `.bodyMediumBold`, `.bodySmall`, `.bodySmallBold`
+- **Secondary variants**: `AppTextStyles.bodyLargeSecondary`, `.bodyMediumSecondary`, `.bodySmallSecondary`
+- **Interactive**: `AppTextStyles.button`, `.smallLink`, `.smallLinkBold`, `.forgotPassword`
+- **Utility**: `AppTextStyles.caption`, `.subtitle`, `.inputHint`, `.loaderMessage`
 
 ```dart
-// Bad
-style: const TextStyle(fontSize: 14, color: Color(0xff404040))
+// Wrong
+style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w600)
 
-// Good
-style: Theme.of(context).textTheme.bodyMedium
-// Good — override only what differs
-style: Theme.of(context).textTheme.bodyMedium!.copyWith(fontWeight: FontWeight.bold)
+// Correct
+style: AppTextStyles.bodyLargeBold
+
+// Correct — override only what differs
+style: AppTextStyles.bodyMedium.copyWith(color: AppColors.primary)
 ```
+
+Font sizes and weights are defined in `AppTextStyles` — never magic numbers in widgets.
 
 ---
 
-## 3. Spacing & Layout
+## 3. Spacing & Layout — AppConstants
 
-- Common spacing values (horizontal screen padding, bottom padding, app bar height, etc.) must be named constants — not repeated magic numbers.
-- Any spacing value used in more than two places must be extracted as a named constant in the theme constants file.
-- Do not use `MediaQuery.of(context).textScaleFactor` to clamp or override font sizes — accessibility text scaling must function naturally.
+Location: `lib/shared/constants/app_constants.dart`
+
+Common spacing values are named constants in `AppConstants`. Never repeat magic numbers inline.
+
+Key constants:
+- `AppConstants.pagePadding` — `EdgeInsets.fromLTRB(16, 16, 16, 24)` — standard page padding
+- `AppConstants.mainButtonHeight` — `54.0`
+- `AppConstants.smallButtonHeight` — `40.0`
+- `AppConstants.mainSectionSpacing` — `SizedBox(height: 24)`
+- `AppConstants.secondarySectionSpacing` — `SizedBox(height: 16)`
+- `AppConstants.subSectionSpacing` — `SizedBox(height: 8)`
+- `AppConstants.mainSectionBorderRadius` — `16.0`
+
+Any spacing value used in more than two places must be extracted as a named constant in `AppConstants`.
 
 ---
 
 ## 4. Component Theming
 
-- Component-level styles (`BottomNavigationBarThemeData`, `DialogThemeData`, `BottomSheetThemeData`, `IconThemeData`, `DividerThemeData`, etc.) are set once in `ThemeData` and consumed globally via `Theme.of(context)`. Do not re-declare them locally unless intentionally scoping an override to a specific subtree.
-- When overriding for a subtree, wrap in a `Theme` widget using `.copyWith()` — do not propagate style overrides by setting properties on every individual child widget.
+Component-level styles (`BottomNavigationBarThemeData`, `DialogThemeData`, `BottomSheetThemeData`, etc.) are set once in `AppTheme.lightTheme` and consumed via `Theme.of(context)`. Do not re-declare them locally.
+
+When overriding for a subtree, wrap in a `Theme` widget using `.copyWith()`:
 
 ```dart
-// Bad — re-declaring component style locally
-BottomNavigationBar(
-  selectedItemColor: const Color(0xffE71324), // should come from ThemeData
-)
+// Wrong — re-declaring locally
+BottomNavigationBar(selectedItemColor: const Color(0xffXXXXXX))
 
-// Good — subtree override
-Theme(
-  data: Theme.of(context).copyWith(...),
-  child: ...,
-)
+// Correct — subtree override
+Theme(data: Theme.of(context).copyWith(...), child: ...)
 ```
 
 ---
 
-## 5. Theme Access Pattern — Quick Reference
+## 5. ThemeExtensions
 
+The app uses custom `ThemeExtension` classes (`MascotThemeExtension`, `BadgeThemeExtension`) registered in `AppTheme.lightTheme`. Access via:
 ```dart
-// Correct
-color: Theme.of(context).colorScheme.primary
-style: Theme.of(context).textTheme.bodyMedium
-
-// Correct — partial override
-style: Theme.of(context).textTheme.bodyMedium!.copyWith(fontWeight: FontWeight.bold)
-
-// Wrong — inline hex
-color: const Color(0xff404040)
-
-// Wrong — inline TextStyle with magic numbers
-style: const TextStyle(fontSize: 14, color: Color(0xff404040))
+Theme.of(context).extension<MascotThemeExtension>()
 ```
 
 ---
 
 ## 6. Constraints
 
-- Only a light theme is supported unless dark mode has been explicitly scoped into the project. Do not introduce `darkTheme` as a side-effect of feature work.
-- Changes to shared theme files (color constants, spacing constants, `ThemeData`) must be intentional and isolated — never a side-effect of feature work.
-- Do not introduce a new color constant that is a near-duplicate of an existing one — check `AppColors` first.
+- Only a light theme is supported. Do not introduce `darkTheme` as a side-effect of feature work.
+- Changes to `AppColors`, `AppTextStyles`, or `AppConstants` must be intentional and isolated — never a side-effect of feature work.
 
 ---
 
 ## 7. Checklist
 
-- [ ] No raw hex values or `Color.fromRGBO` inline in widgets.
-- [ ] No `Colors.white`, `Colors.black`, or other `Colors.*` inline (except `Colors.transparent`).
-- [ ] All text styles accessed via `Theme.of(context).textTheme.<role>`.
-- [ ] No `TextStyle(...)` constructed from scratch inline.
-- [ ] No magic number font sizes or spacing values.
-- [ ] Line height uses ratio form (`height: 22 / 14`), not absolute.
-- [ ] No component themes re-declared locally when `ThemeData` already covers them.
-- [ ] No `darkTheme` introduced as a side-effect.
-- [ ] No near-duplicate color constants added without checking `AppColors` first.
+- [ ] No raw hex values or `Color.fromRGBO` inline in widgets
+- [ ] No `Colors.white`, `Colors.black`, or other `Colors.*` inline (except `Colors.transparent`)
+- [ ] All text styles via `AppTextStyles.xxx` — no `TextStyle(...)` constructed from scratch inline
+- [ ] No magic number font sizes or spacing values
+- [ ] Spacing uses `AppConstants` named constants
+- [ ] No component themes re-declared locally when `AppTheme.lightTheme` already covers them
+- [ ] No `darkTheme` introduced as a side-effect
+- [ ] No near-duplicate color constants added without checking `AppColors` first

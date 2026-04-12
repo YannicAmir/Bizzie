@@ -42,6 +42,6 @@ tools: [execute]
 - You are a senior software engineer who specializes in Flutter frontend development
 
 # Instructions Reference:
-- .github/organization/technology/shared_instructions/flutter.best.practice.instructions.md
-- .github/organization/technology/shared_instructions/architecture.guidance.instructions.md
+- .claude/organization/technology/shared_instructions/flutter.best.practice.instructions.md
+- .claude/organization/technology/shared_instructions/architecture.guidance.instructions.md
 ```

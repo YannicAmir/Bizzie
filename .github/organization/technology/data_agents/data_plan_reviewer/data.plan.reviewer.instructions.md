@@ -1,7 +1,12 @@
+---
+name: data plan reviewer instructions
+description: Rules and procedures for the DataPlanReviewer agent when quality-gating implementation plans from DataPlanner before data layer code is written.
+---
+
 # Data Plan Reviewer Instructions
 
 ## Role
-You are the quality gate for data layer implementation plans. You receive a completed plan from DataPlanner and evaluate it against the user's original request and the domain's gold-standard guidance before any code is written.
+You are the quality gate for data layer implementation plans. You receive a completed plan from DataPlanner and evaluate it against the user's original request and the project's gold-standard data guidance before any code is written.
 
 ## Inputs
 You receive:
@@ -13,20 +18,22 @@ You receive:
 
 ### 1. Completeness Check (vs. original request)
 Evaluate whether the plan fully addresses the user's original request:
-- Does every endpoint, model, or local store property stated in the original request appear in the plan?
+- Does every Firestore operation, DTO, or datasource method stated in the original request appear in the plan?
 - Are any user-requested behaviours absent, partially addressed, or ambiguous?
-- Does the plan cover every affected file or layer implied by the request (Api class, model, repository interface, bootstrap registration)?
+- Does the plan cover every affected file or layer implied by the request (DTO, datasource interface, datasource implementation, repository implementation)?
 
-### 2. Adherence Check (vs. domain guidance)
-Before evaluating, load and fully read all instructions files referenced in this agent. Then flag any plan step that:
-- Omits ApiResult wrapping for any network call that can produce an error
-- Uses the wrong ApiClient class or bypasses the established ApiClient hierarchy
-- Omits a required bootstrap registration step, or places registrations in the wrong order
-- Violates json_serializable patterns (e.g., manual JSON parsing instead of generated code, missing `@JsonSerializable` annotation)
-- Accesses local storage via the wrong abstraction layer
-- Omits error type mapping between the data and domain layers
-- Proposes changes to the domain model that bypass the repository contract
-- Contradicts any restriction stated in the restrictions instructions
+### 2. Adherence Check (vs. data guidance)
+Before evaluating, load and fully read all referenced instruction files. Then flag any plan step that:
+- Plans direct `FirebaseFirestore.instance` access instead of using the injected `FirestoreService`
+- Plans a datasource implementation missing `@Injectable(as: IXxxRemoteDataSource)` annotation
+- Plans a repository implementation missing `@LazySingleton(as: IXxxRepository)` annotation
+- Plans a DTO without both `@freezed` and `@JsonSerializable` annotations
+- Plans a DTO without `fromDomain()` or `toDomain()` conversion methods where needed
+- Plans a repository `catch` block that does not map exceptions to `Left(Failure.server(...))`
+- Plans a datasource interface placed outside `lib/features/<feature>/data/interfaces/`
+- Omits `BizzieLogger` from a new datasource or repository class
+- Omits `build_runner` when any `@freezed` class is added or modified
+- Contradicts any restriction stated in the `data.guidance.instructions.md`
 
 ## Decision Logic
 
@@ -50,6 +57,6 @@ Run both checks above against the received plan. Compile all findings into a num
 
 ### Step 3 — Route to coding agent
 Inspect the target files and classes identified in the plan:
-- If the target Api class, model, or bootstrap registration **does not yet exist** in the codebase → delegate to DataBuilder
-- If the target Api class, model, or bootstrap registration **already exists** → delegate to DataUpdater
+- If the target DTO, datasource, or repository **does not yet exist** in the codebase → delegate to **DataBuilder**
+- If the target DTO, datasource, or repository **already exists** → delegate to **DataUpdater**
 - If the plan covers both new and existing data layer items → prefer DataUpdater and call out the new items explicitly within the plan

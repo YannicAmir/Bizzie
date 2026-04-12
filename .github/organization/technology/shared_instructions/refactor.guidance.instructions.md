@@ -29,7 +29,7 @@ When auditing code for refactor candidates, evaluate against each instruction se
 
 ### Flutter violations
 - `StatefulWidget` where no mutable state exists
-- Widget `build()` methods doing work that belongs in a cubit or repository
+- Widget `build()` methods doing work that belongs in a BLoC or repository
 - Missing `const` constructors on widgets and their subtrees
 - Widgets that should be extracted (build methods exceeding ~50 lines, deeply nested subtrees)
 - Inline styles or values that should reference theme tokens
@@ -43,7 +43,7 @@ When auditing code for refactor candidates, evaluate against each instruction se
 
 ### Architecture violations
 - Business logic or data transformation inside widget `build()` methods
-- Direct access to a repository from a widget (should go through a cubit)
+- Direct access to a repository from a widget (should go through a BLoC)
 - Feature code importing from another feature's internal files
 - Code placed in the wrong layer (e.g., UI logic in a repository, API calls in a widget)
 
@@ -90,7 +90,7 @@ List of files to be modified.
 Numbered, sequenced steps. Each step must specify:
 - The file
 - The violation being addressed
-- The specific change (e.g., "extract `_buildHeader()` method", "convert `StatefulWidget` to `StatelessWidget`", "replace magic number `24` with `AppSpacing.md`")
+- The specific change (e.g., "extract `_buildHeader()` method", "convert `StatefulWidget` to `StatelessWidget`", "replace magic number `24` with `AppConstants.subSectionSpacing`")
 - Confirmation that behaviour is preserved
 
 ### Risks & Notes

@@ -94,7 +94,7 @@ Define a clear, role-specific persona that reflects the agent's expertise:
 List the absolute paths to all instruction files the agent must follow:
 - Always include relevant **shared instructions** from the agent's department.
 - Include any **group-level** or **agent-specific** instructions.
-- Paths are relative to the repo root (e.g., `.github/organization/technology/shared_instructions/...`).
+- Paths are relative to the repo root (e.g., `.claude/organization/technology/shared_instructions/...`).
 
 ---
 
@@ -111,7 +111,7 @@ Delegation routing belongs **only** in the agent file's `# <SubAgentName>:` bloc
 
 ## 7. Post-Build Registry Update
 
-After building the agent, append a new entry to the **Agent Registry** in `.github/organization/operations/agent_availability_checker/agents.guidance.instructions.md` with the agent's name, path, and description.
+After building the agent, append a new entry to the **Agent Registry** in `.claude/organization/operations/agent_availability_checker/agents.guidance.instructions.md` with the agent's name, path, and description.
 
 ---
 

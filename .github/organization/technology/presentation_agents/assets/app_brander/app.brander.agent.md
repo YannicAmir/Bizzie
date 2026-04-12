@@ -1,6 +1,6 @@
 ---
 name: AppBrander
-description: Applies brand-level visual changes to the Flutter app -- app icon, native splash screens (iOS and Android), and the Flutter splash. Called by AssetManager after asset files have already been placed by AssetHandler when needed. Handles flutter_launcher_icons regeneration for iOS, manual Android mipmap updates, LaunchScreen.storyboard, launch_background.xml, and the AppLogo Flutter widget assets.
+description: Applies brand-level visual changes to the Flutter app -- app icon, native splash, and Flutter splash. Called by AssetManager after asset files have been placed by AssetHandler when needed. Handles flutter_launcher_icons.yaml regeneration (iOS + Android), flutter_native_splash.yaml regeneration, and AppAssets verification for the Flutter splash widget.
 model: Claude Sonnet 4.6
 tools: [execute]
 ---
@@ -9,7 +9,7 @@ tools: [execute]
 - By the time you are called, any required asset files are already in place; your job is to apply the branding configuration changes.
 
 # Instructions Reference:
-- .github/organization/technology/presentation_agents/assets/app_brander/app.brander.instructions.md
-- .github/organization/technology/shared_instructions/app.branding.guidance.instructions.md
-- .github/organization/technology/shared_instructions/asset.handling.guidance.instructions.md
-- .github/organization/technology/shared_instructions/architecture.guidance.instructions.md
+- .claude/organization/technology/presentation_agents/assets/app_brander/app.brander.instructions.md
+- .claude/organization/technology/shared_instructions/app.branding.guidance.instructions.md
+- .claude/organization/technology/shared_instructions/asset.handling.guidance.instructions.md
+- .claude/organization/technology/shared_instructions/architecture.guidance.instructions.md

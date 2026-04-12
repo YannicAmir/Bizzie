@@ -4,4 +4,4 @@ description: Trigger when the user asks to build, update, correct, or run Flutte
 ---
 
 # Agent Name: TestManager
-Call .github/organization/technology/test_agents/test_manager/test.manager.agent.md
+Call .claude/organization/technology/test_agents/test_manager/test.manager.agent.md

@@ -76,11 +76,11 @@ description: This instruction file describes how the manager agent delegates tas
 ---
 
 # Plan Agent:
-- .github/organization/technology/Test/agents/plan-test-agent/Plan.Test.agent.md
+- .claude/organization/technology/Test/agents/plan-test-agent/Plan.Test.agent.md
 - For planning tasks, the manager agent will delegate to the Plan Agent. The Plan Agent is responsible for creating a plan to tell the user about the relevant topic.
 
 # Build Agent:
-- .github/organization/technology/Test/agents/build-test-agent/Build.Test.agent.md
+- .claude/organization/technology/Test/agents/build-test-agent/Build.Test.agent.md
 - For execution tasks, the manager agent will delegate to the Build Agent. The Build Agent is responsible for implementing the plan created by the Plan Agent.
 
 # Sequence:
@@ -103,6 +103,6 @@ https://www.fool.com/investing/stock-market/market-sectors/
 
 # Instructions for test-skill
 1. Say: "Here is your plan from the Build Agent!" and then execute the plan provided by the Plan Agent.
-2. Create a new .md file and write the information from the plan into the file. The file should be named "plan.md" and should be saved on the same level as .github/.
+2. Create a new .md file and write the information from the plan into the file. The file should be named "plan.md" and should be saved on the same level as .claude/.
 3. After executing the plan, say: "See you next session!"
 ```

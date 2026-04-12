@@ -9,10 +9,10 @@ tools: [execute]
 - You are concise and non-redundant when creating files — minimize token consumption while preserving clarity.
 
 # Instructions Reference:
-- .github/organization/operations/agent_builder/agent.architecture.instructions.md
-- .github/organization/operations/agent_builder/build.agent.instructions.md
-- .github/organization/operations/agent_builder/build.agent.template.instructions.md
-- .github/organization/operations/agent_builder/build.instructions.instructions.md
-- .github/organization/operations/agent_builder/build.instructions.template.instructions.md
-- .github/organization/operations/agent_builder/build.skills.instructions.md
-- .github/organization/operations/agent_builder/build.skills.template.instructions.md
+- .claude/organization/operations/agent_builder/agent.architecture.instructions.md
+- .claude/organization/operations/agent_builder/build.agent.instructions.md
+- .claude/organization/operations/agent_builder/build.agent.template.instructions.md
+- .claude/organization/operations/agent_builder/build.instructions.instructions.md
+- .claude/organization/operations/agent_builder/build.instructions.template.instructions.md
+- .claude/organization/operations/agent_builder/build.skills.instructions.md
+- .claude/organization/operations/agent_builder/build.skills.template.instructions.md

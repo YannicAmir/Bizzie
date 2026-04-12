@@ -1,3 +1,8 @@
+---
+name: analytics plan reviewer instructions
+description: Rules and procedures for the AnalyticsPlanReviewer agent when quality-gating implementation plans from AnalyticsPlanner before analytics code is written.
+---
+
 # Analytics Plan Reviewer Instructions
 
 ## Role
@@ -15,17 +20,19 @@ You receive:
 Evaluate whether the plan fully addresses the user's original request:
 - Does every screen view, user interaction, or funnel event described in the original request appear in the plan?
 - Are any requested tracking points absent, partially addressed, or vague?
-- Does the plan cover all affected files (page constants, event helper class, cubit integration, ScreenViewMixin)?
+- Does the plan cover all affected files (tracker class, BLoC event handlers)?
 
-### 2. Adherence Check (vs. domain guidance)
-Before evaluating, load and fully read all instructions files referenced in this agent. Then flag any plan step that:
-- Omits ScreenViewMixin for any screen that requires screen view tracking
-- Plans events without a corresponding event helper class where the pattern requires one
-- Omits page constants or uses inline string literals for page names
-- Places tracking calls at the wrong lifecycle stage (e.g., tracking in `initState` instead of the correct BLoC listener callback)
-- Plans event parameter fields that don't match the required schema definition
-- Wires analytics directly in the widget instead of through the cubit/bloc state listener
-- Contradicts patterns defined in the analytics.guidance instructions
+### 2. Adherence Check (vs. analytics guidance)
+Before evaluating, load and fully read all referenced instruction files. Then flag any plan step that:
+- Plans direct Firebase Analytics SDK calls instead of routing through `IAnalyticsService`
+- Plans analytics calls in a widget instead of in the BLoC event handler
+- Omits `@lazySingleton` annotation on the tracker class
+- Omits `IAnalyticsService` constructor injection in the tracker class
+- Plans event name or parameter strings as inline literals instead of `static const String` private constants
+- Omits `_logEvent()` try/catch helper in the tracker
+- Plans tracker calls outside of BLoC event handlers
+- Omits `BizzieLogger` instance in the tracker class
+- Contradicts patterns defined in the `analytics.guidance.instructions.md`
 
 ## Decision Logic
 
@@ -49,6 +56,6 @@ Run both checks above against the received plan. Compile all findings into a num
 
 ### Step 3 — Route to coding agent
 Inspect the target feature directory identified in the plan:
-- If the feature has **no existing analytics code** (no helpers event file, no ScreenViewMixin, no page constant) → delegate to AnalyticsBuilder
-- If the feature **already has analytics code** present → delegate to AnalyticsUpdater
+- If the feature has **no existing analytics code** (no `XxxTracker` or `XxxAnalytics` class in `presentation/analytics/`) → delegate to **AnalyticsBuilder**
+- If the feature **already has a tracker class** → delegate to **AnalyticsUpdater**
 - If the plan covers both features with and without existing analytics → prefer AnalyticsUpdater and call out the new items explicitly within the plan

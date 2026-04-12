@@ -29,7 +29,7 @@ Before delegating, ensure the following are available. If missing, ask before pr
 1. **Target context** -- at least one of:
    - A `@feature` directory reference
    - A specific file or set of files
-   - A feature or module name (e.g., "the checkout feature", "the store finder cubit")
+   - A feature or module name (e.g., "the checkout feature", "the store finder BLoC")
 2. **Violation scope** (optional but useful) -- which standards are being violated, if the user knows (flutter best practices, dart best practices, architecture, software dev best practices)
 
 ---

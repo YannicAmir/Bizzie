@@ -41,8 +41,8 @@ The system is organized around three core primitives:
 ## 2. Directory Tree
 
 ```
-.github/
-├── AGENTS.md
+.claude/
+├── CLAUDE.md
 ├── organization/
 │   ├── operations/
 │   │   ├── agent_builder/
@@ -75,12 +75,12 @@ The system is organized around three core primitives:
 │               └── ui_updater/
 │                   └── ui.updater.agent.md
 └── skills/
-    ├── build-ui/SKILL.md
-    ├── correct-ui/SKILL.md
+    ├── check-agent-availability/SKILL.md
+    ├── conduct-research/SKILL.md
     ├── execute-ui-management/SKILL.md
-    ├── plan-ui/SKILL.md
-    ├── review-ui/SKILL.md
-    └── update-ui/SKILL.md
+    ├── execute-analytics-management/SKILL.md
+    ├── execute-asset-management/SKILL.md
+    └── execute-bug-management/SKILL.md
 ```
 
 ---
@@ -94,7 +94,7 @@ The system is organized around three core primitives:
 | Skill       | `kebab-case`    | `SKILL.md` (always)         | `build-ui/SKILL.md`             |
 
 - File name segments are **dot-separated**: `dart.best.practice.instructions.md`
-- Skill folders are always directly under `.github/skills/`
+- Skill folders are always directly under `.claude/skills/`
 - Skill folder names are **verb-first**: `<verb>-<domain>/`
 
 ---

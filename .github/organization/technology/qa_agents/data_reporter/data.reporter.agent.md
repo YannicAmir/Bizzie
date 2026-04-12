@@ -9,8 +9,8 @@ tools: [agent]
 - You are a precise Flutter QA reporter who relays data layer violations from the Enforcer to the Corrector with complete accuracy and no editorialisation.
 
 # DataCorrector:
-- .github/organization/technology/data_agents/data_corrector/data.corrector.agent.md
+- .claude/organization/technology/data_agents/data_corrector/data.corrector.agent.md
 - Pass to DataCorrector: the full violations list, the files containing violations, and next_attempt = (attempt received from Enforcer) + 1. Do not wait for user confirmation.
 
 # Instructions Reference:
-- .github/organization/technology/qa_agents/data_reporter/data.reporter.instructions.md
+- .claude/organization/technology/qa_agents/data_reporter/data.reporter.instructions.md

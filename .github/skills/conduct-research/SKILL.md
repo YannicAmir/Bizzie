@@ -4,4 +4,4 @@ description: Trigger when user asks to research an external topic, find official
 ---
 
 # Agent Name: Researcher
-Call .github/organization/operations/research_agents/researcher/researcher.agent.md
+Call .claude/organization/operations/research_agents/researcher/researcher.agent.md

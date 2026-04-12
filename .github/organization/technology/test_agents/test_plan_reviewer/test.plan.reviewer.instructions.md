@@ -1,3 +1,8 @@
+---
+name: test plan reviewer instructions
+description: Rules and procedures for the TestPlanReviewer agent when quality-gating implementation plans from TestPlanner before test code is written.
+---
+
 # Test Plan Reviewer Instructions
 
 ## Role
@@ -13,20 +18,26 @@ You receive:
 
 ### 1. Completeness Check (vs. original request)
 Evaluate whether the plan fully addresses the user's original request:
-- Does every class, method, or behaviour described in the original request appear as a planned test case?
-- Are any user-identified scenarios absent, partially addressed, or missing edge cases?
-- Does the plan cover all layers implied by the request (unit, widget, integration as appropriate)?
+- Does every BLoC event, use case, or repository method described in the original request appear as a planned test case?
+- Are any user-identified scenarios absent, partially addressed, or missing failure/edge cases?
+- Does the plan cover all layers implied by the request (BLoC tests, repository unit tests, use case tests as appropriate)?
 
-### 2. Adherence Check (vs. domain guidance)
-Before evaluating, load and fully read all instructions files referenced in this agent. Then flag any plan step that:
-- Uses test names that do not follow the `[MethodUnderTest]_[Scenario]_[ExpectedBehavior]` convention
-- Plans tests that only cover the happy path, omitting error paths, boundary values, or edge cases
-- Omits mock or stub setup for any repository, service, or dependency that the subject under test depends on
-- Plans tests that make assertions about implementation details rather than observable behaviour
+### 2. Adherence Check (vs. test guidance)
+Before evaluating, load and fully read all referenced instruction files. Then flag any plan step that:
+- Uses test names that do not follow the `[MethodOrEvent]_[Scenario]_[ExpectedBehavior]` convention
+- Plans mock classes as private `_MockXxx` instead of public `MockXxx`
+- Plans fake data without the `t` prefix
+- Omits `setUpAll` + `registerFallbackValue` for BLoC tests
+- Omits `tearDown(() => bloc.close())` for BLoC tests
+- Plans `blocTest` that uses direct method calls instead of `act: (bloc) => bloc.add(XxxEvent.xxx(...))`
+- Plans tests that only cover the happy path, omitting failure states or error paths
+- Omits mock or stub setup for any use case, repository, or tracker that the subject under test depends on
+- Plans tests that make assertions about implementation details rather than observable behaviour (emitted states, method calls)
 - Groups unrelated test cases together without logical `group()` separation
-- Proposes tests for code that should not be tested at this level (e.g., testing framework code, generated code)
-- Includes implementation logic or business rules inside the test body itself
-- Contradicts patterns defined in the test.guidance instructions
+- Proposes tests for generated code or framework code
+- Includes business logic inside the test body itself
+- Plans use of `mockito` instead of `mocktail`
+- Contradicts patterns defined in `test.guidance.instructions.md`
 
 ## Decision Logic
 
@@ -50,6 +61,6 @@ Run both checks above against the received plan. Compile all findings into a num
 
 ### Step 3 — Route to coding agent
 Inspect the test files identified in the plan:
-- If the target test files **do not yet exist** in the codebase → delegate to TestBuilder. Pass the full test plan and the implementation files to test.
-- If the target test files **already exist** and need updating → delegate to TestUpdater. Pass the full test plan, the implementation files, and the existing test files.
+- If the target test files **do not yet exist** in the codebase → delegate to **TestBuilder**. Pass the full test plan and the implementation files to test.
+- If the target test files **already exist** and need updating → delegate to **TestUpdater**. Pass the full test plan, the implementation files, and the existing test files.
 - If the plan covers both new and existing test files → prefer TestUpdater and call out the new test files explicitly within the plan

@@ -10,13 +10,13 @@ tools: [execute, agent]
 - You never write code directly. Your output is always a structured plan.
 
 # TestPlanReviewer:
-- .github/organization/technology/test_agents/test_plan_reviewer/test.plan.reviewer.agent.md
+- .claude/organization/technology/test_agents/test_plan_reviewer/test.plan.reviewer.agent.md
 - Delegate to TestPlanReviewer immediately after the plan is complete. Pass the full test plan, the implementation files, the original user request, and attempt = 1. Do not wait for user confirmation.
 
 # Instructions Reference:
-- .github/organization/technology/test_agents/test_planner/test.planner.instructions.md
-- .github/organization/technology/shared_instructions/test.guidance.instructions.md
-- .github/organization/technology/shared_instructions/architecture.guidance.instructions.md
-- .github/organization/technology/shared_instructions/tech.stack.instructions.md
-- .github/organization/technology/shared_instructions/software.dev.best.practice.instructions.md
+- .claude/organization/technology/test_agents/test_planner/test.planner.instructions.md
+- .claude/organization/technology/shared_instructions/test.guidance.instructions.md
+- .claude/organization/technology/shared_instructions/architecture.guidance.instructions.md
+- .claude/organization/technology/shared_instructions/tech.stack.instructions.md
+- .claude/organization/technology/shared_instructions/software.dev.best.practice.instructions.md
 

@@ -4,4 +4,4 @@ description: Trigger when the user asks to refactor Flutter or Dart code to bett
 ---
 
 # Agent Name: RefactorManager
-Call .github/organization/technology/presentation_agents/refactoring/refactor_manager/refactor.manager.agent.md
+Call .claude/organization/technology/presentation_agents/refactoring/refactor_manager/refactor.manager.agent.md

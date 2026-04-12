@@ -1,207 +1,141 @@
 ---
 name: flutter bloc best practice
-description: Project-specific BLoC/Cubit coding guidelines. Covers the two state patterns, constructor pattern, SafeCubitEmissions, providing cubits, consuming state, and shared helper widgets. Referenced by all state management agents.
+description: Project-specific BLoC coding guidelines. Covers BLoC with freezed events/states, injectable constructor pattern, event handlers, concurrency transformers, stream subscriptions, providing blocs, and consuming state in widgets. Referenced by all state management agents.
 ---
 
 # Flutter BLoC Best Practice
 
-> The app uses **Cubit only** (no raw Bloc/events).
+> This app uses **BLoC with Events** (not Cubit). All state and event classes use `@freezed`. All BLoCs are registered via `@injectable`.
 
 ---
 
-## 1. Two State Patterns
+## 1. State — @freezed Union
 
-Choose based on the nature of the state.
+File: `<feature>_state.dart`
 
-### Pattern A -- Sealed Class Hierarchy
-Use when state has fundamentally different shapes requiring different data. Exhaustive `switch` in the UI enforces completeness at compile time.
-
-```dart
-// <feature>_state.dart
-part of '<feature>_cubit.dart';
-
-sealed class FeatureState extends Equatable {
-  const FeatureState();
-  @override
-  List<Object?> get props => [];
-}
-
-class FeatureInitial extends FeatureState { const FeatureInitial(); }
-class FeatureLoading extends FeatureState { const FeatureLoading(); }
-
-class FeatureLoaded extends FeatureState {
-  const FeatureLoaded({required this.items});
-  final List<Item> items;
-  @override
-  List<Object?> get props => [items];
-}
-
-class FeatureError extends FeatureState {
-  const FeatureError({required this.message});
-  final String message;
-  @override
-  List<Object?> get props => [message];
-}
-```
-
-### Pattern B -- Single Immutable Class with copyWith
-Use when state is a collection of properties that evolve incrementally.
-
-```dart
-// <feature>_state.dart
-part of '<feature>_cubit.dart';
-
-@immutable
-class FeatureState extends Equatable {
-  const FeatureState({this.busy = false, this.items = const [], this.query = ''});
-
-  final bool busy;
-  final List<Item> items;
-  final String query;
-
-  FeatureState copyWith({bool? busy, List<Item>? items, String? query}) =>
-      FeatureState(
-        busy: busy ?? this.busy,
-        items: items ?? this.items,
-        query: query ?? this.query,
-      );
-
-  @override
-  List<Object?> get props => [busy, items, query];
-}
-```
+Rules:
+- `@freezed abstract class XxxState with _$XxxState`
+- `part '<feature>_state.freezed.dart'` directive required
+- `const factory XxxState.initial() = _Initial` — always present
+- `const factory XxxState.loading() = _Loading` — for async flows
+- `const factory XxxState.loaded(List<XxxItem> items) = XxxLoaded` — descriptive name for the data-bearing state
+- `const factory XxxState.failure(Failure failure) = _Failure` — for all error states
+- Use `@Default(value)` for optional fields with defaults
 
 ---
 
-## 2. Cubit Constructor Pattern
+## 2. Event — @freezed Union
 
-All dependencies are **optional named parameters with a `GetIt.I()` fallback** -- this lets widget tests inject mocks without configuring GetIt.
+File: `<feature>_event.dart`
 
-```dart
-class FeatureCubit extends Cubit<FeatureState> with SafeCubitEmissions<FeatureState> {
-  FeatureCubit({
-    FeatureRepository? featureRepository,
-    AnalyticsRepository? analyticsRepository,
-  })  : _featureRepository = featureRepository ?? GetIt.I(),
-        _analyticsRepository = analyticsRepository ?? GetIt.I(),
-        super(const FeatureInitial());
-
-  final FeatureRepository _featureRepository;
-  final AnalyticsRepository _analyticsRepository;
-}
-```
-
-- All deps stored as `final` private fields.
-- **Never** call `GetIt.I()` inside methods -- resolve at construction only.
-- State file must be `part of` its cubit file.
+Rules:
+- `@freezed class XxxEvent with _$XxxEvent` (not `abstract class`)
+- `part '<feature>_event.freezed.dart'` directive required
+- Concrete event class names in action noun or past tense: `Started`, `AddRequested`, `Reset`
+- Required fields use `required`; optional fields are nullable
 
 ---
 
-## 3. SafeCubitEmissions
+## 3. BLoC Constructor Pattern
 
-Mix in `SafeCubitEmissions` on **any cubit that performs async operations** to guard against emitting after `close()`.
+Rules:
+- `@injectable class XxxBloc extends Bloc<XxxEvent, XxxState>` — never `@lazySingleton`
+- All dependencies are **positional** constructor parameters — no named/optional params
+- `final _logger = BizzieLogger('XxxBloc')` at **file level** (not in the class)
+- Register all event handlers in the constructor with `on<EventType>(handler)`
+- Initial state is always `super(const XxxState.initial())`
 
-```dart
-class FeatureCubit extends Cubit<FeatureState> with SafeCubitEmissions<FeatureState> {
-  Future<void> load() async {
-    emit(const FeatureLoading());
-    final result = await _repository.fetch();
-    emit(FeatureLoaded(items: result)); // safe -- won't throw if widget is gone
-  }
-}
-```
-
----
-
-## 4. Side Effects via onChange
-
-Use `onChange` for reactions that must fire on every state change (e.g. analytics, messaging identity sync). Do **not** use it for navigation or UI -- those belong in the widget layer via `BlocListener`.
-
-```dart
-@override
-void onChange(Change<FeatureState> change) {
-  super.onChange(change);
-  _analyticsRepository.updateUserProperties(change.nextState);
-}
-```
+Concurrency transformers (from `bloc_concurrency`):
+- `transformer: restartable()` — data-loading events (cancels in-flight work)
+- `transformer: droppable()` — single-fire events (ignores while processing)
+- `transformer: sequential()` — ordered queue
+- Default (no transformer) — concurrent
 
 ---
 
-## 5. Providing Cubits
+## 4. Event Handlers
 
-- **Global cubits** (user session, app config, feature flags) -- provided once at app root via `MultiBlocProvider` in `<app>_app.dart`.
-- **Feature cubits** -- provided at the page level. The page creates its own cubit.
+Handler signature: `Future<void> _onXxx(XxxEvent event, Emitter<XxxState> emit) async`
 
-```dart
-// FeaturePage.build()
-return BlocProvider(
-  create: (_) => FeatureCubit(),
-  child: const _FeatureView(),
-);
-```
-
-Never pass a cubit instance down through widget constructors -- use `context.read<T>()` anywhere in the subtree.
+Rules:
+- Fold `Either<Failure, T>` results: `result.fold((failure) => emit(XxxState.failure(failure)), (data) => emit(XxxState.loaded(data)))`
+- Emit `XxxState.loading()` before async calls where a loading indicator is needed
+- For Firestore streams use `emit.forEach<Either<Failure, T>>(stream, onData: ...)` — never `await for`
+- Log analytics via the injected tracker inside the handler — never in the widget
 
 ---
 
-## 6. Consuming State in Widgets
+## 5. Stream Subscriptions
 
-Use the **narrowest API** that fits to minimise unnecessary rebuilds.
+For `emit.forEach` / `emit.onEach` (preferred — used for streams driven by a BLoC event):
+```
+await emit.forEach(_useCase(uid), onData: (result) => result.fold(...), onError: ...)
+```
+
+For cross-feature subscriptions started in the constructor (e.g. auth state changes):
+- Declare `StreamSubscription? _subscription` as a field
+- Start the subscription in the constructor body
+- Override `close()` to cancel: `_subscription?.cancel(); return super.close();`
+
+For multiple simultaneous streams, use `await Future.wait([emit.onEach(...), emit.onEach(...)])`.
+
+---
+
+## 6. Reset Pattern
+
+Every BLoC must handle a `Reset` event that emits `const XxxState.initial()`. Called on logout.
+
+---
+
+## 7. Providing BLoCs
+
+Feature BLoCs are provided at the page level:
+```
+BlocProvider(create: (context) => getIt<XxxBloc>()..add(const XxxEvent.started()), child: ...)
+```
+Global BLoCs (auth, app config) are in `MultiBlocProvider` at app root. Never pass a BLoC through widget constructors — use `context.read<XxxBloc>()`.
+
+---
+
+## 8. Consuming State in Widgets
 
 | API | Use when |
 |---|---|
-| `context.read<T>()` | Calling a method or reading state once in a callback -- no rebuild |
-| `context.watch<T>()` | Full rebuild on every state change -- use sparingly |
-| `context.select<T, R>()` | Rebuild only when a specific field changes -- **preferred** |
-| `BlocBuilder<T, S>` | Rebuild with `buildWhen` to filter irrelevant changes |
-| `BlocListener<T, S>` | Side effects only (navigation, sheets) -- no rebuild |
-| `BlocConsumer<T, S>` | Both rebuild and side effect in the same widget |
-| `MultiBlocListener` | Multiple listeners with a single shared child |
+| `context.read<XxxBloc>()` | Dispatching events in callbacks — no rebuild |
+| `BlocBuilder<XxxBloc, XxxState>` | Rebuild on state change; use `buildWhen` to filter |
+| `BlocListener<XxxBloc, XxxState>` | Side effects only (navigation, snackbars) |
+| `BlocConsumer<XxxBloc, XxxState>` | Rebuild + side effect in same widget |
+| `context.select<XxxBloc, T>()` | Rebuild only when a derived value changes |
 
-```dart
-// Most efficient -- rebuilds only when the selected field changes
-final region = context.select((AppCubit c) => c.state.region);
+Use freezed's `state.map(...)` / `state.maybeMap(...)` / `state.mapOrNull(...)` for pattern matching in `builder` callbacks.
 
-// BlocBuilder with buildWhen
-BlocBuilder<FeatureCubit, FeatureState>(
-  buildWhen: (prev, cur) => prev.items != cur.items,
-  builder: (context, state) => ...,
-)
+---
 
-// Navigation side effect
-BlocListener<FeatureCubit, FeatureState>(
-  listenWhen: (prev, cur) => cur is FeatureLoaded && prev is! FeatureLoaded,
-  listener: (context, state) => context.go(Routes.someRoute),
-  child: ...,
-)
+## 9. Rules Summary
 
-// Calling a method -- no rebuild needed
-onPressed: () => context.read<FeatureCubit>().submit(),
+```
+BLoC        -- NO BuildContext, NO navigation, NO flutter/widgets imports
+Events      -- @freezed class, part directive, factory constructors
+States      -- @freezed abstract class, part directive, factory constructors
+Deps        -- positional constructor params; DI resolves via @injectable
+Concurrency -- restartable() for data-loading; droppable() for single-fire
+Streams     -- emit.forEach / emit.onEach; cancel StreamSubscriptions in close()
+Analytics   -- via injected XxxTracker inside event handlers only
+build_runner -- run after any @freezed addition or change
 ```
 
 ---
 
-## 7. Shared Bloc Helper Widgets
-
-Use the app's `bloc_helpers` widgets rather than reimplementing common patterns.
-
-| Widget | Purpose |
-|---|---|
-| `BlocErrorListener<TBloc, TState, TError>` | Listens for an error flag and shows an error sheet. State must implement `BlocErrorState<TError>` |
-| `BlocFormListener<TBloc, TState, TError>` | Success callback + error sheet display for form submission flows |
-| `BlocFormField<TBloc, TState>` | Text field wired to a cubit -- handles value display and change callbacks |
-
----
-
-## 8. Rules
-
-```
-Cubit          -- NO BuildContext, NO navigation, NO UI imports
-State file     -- MUST be `part of` its cubit file
-State          -- MUST extend Equatable with complete props
-Dependencies   -- MUST be optional constructor params with GetIt fallback
-Async methods  -- MUST use SafeCubitEmissions mixin
-Navigation     -- MUST be in widget layer via BlocListener
-Cross-cubit    -- MUST be in widget layer via context.read<OtherCubit>()
-GetIt access   -- constructor only, never inside methods
-```
+## Checklist
+- [ ] State: `@freezed abstract class` with `const factory` variants and `part` directive
+- [ ] Event: `@freezed class` with `const factory` variants and `part` directive
+- [ ] BLoC: `@injectable`, positional constructor params, `on<>` registrations
+- [ ] `_logger = BizzieLogger('XxxBloc')` defined at **file level**
+- [ ] `Either<Failure, T>` results folded in event handlers
+- [ ] `restartable()` used for data-loading event handlers
+- [ ] `emit.forEach` / `emit.onEach` used for stream-backed handlers (not `await for`)
+- [ ] `StreamSubscription` cancelled in `close()` where applicable
+- [ ] `Reset` event emits `const XxxState.initial()`
+- [ ] `BlocProvider` wired at page level with `getIt<XxxBloc>()..add(...)`
+- [ ] No Flutter UI imports in BLoC files
+- [ ] `build_runner` run after any `@freezed` addition or change
