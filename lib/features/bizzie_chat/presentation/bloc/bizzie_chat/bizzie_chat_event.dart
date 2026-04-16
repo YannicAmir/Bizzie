@@ -1,4 +1,5 @@
 import 'package:bizzie/core/error/failures.dart';
+import 'package:bizzie/features/bizzie_chat/domain/enums/rating_type.dart';
 import 'package:bizzie/features/bizzie_chat/domain/models/chat_message.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
@@ -33,4 +34,12 @@ class BizzieChatEvent with _$BizzieChatEvent {
   }) = _SseDone;
 
   const factory BizzieChatEvent.sseFailed(String message) = _SseFailed;
+
+  const factory BizzieChatEvent.messageRated({
+    required RatingType rating,
+    required String question,
+    required String aiResponse,
+    required String companyName,
+    required String companyTicker,
+  }) = _MessageRated;
 }

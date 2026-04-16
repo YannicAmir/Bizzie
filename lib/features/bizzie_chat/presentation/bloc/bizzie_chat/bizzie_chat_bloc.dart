@@ -3,12 +3,15 @@ import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:bizzie/core/utils/id_utils.dart';
 import 'package:bizzie/features/bizzie_chat/domain/enums/chat_message_role.dart';
+import 'package:bizzie/features/bizzie_chat/domain/enums/rating_type.dart';
 import 'package:bizzie/features/bizzie_chat/domain/models/chat_message.dart';
 import 'package:bizzie/features/bizzie_chat/domain/models/chat_sse_event.dart';
 import 'package:bizzie/features/bizzie_chat/domain/models/get_messages_params.dart';
 import 'package:bizzie/features/bizzie_chat/domain/models/send_message_params.dart';
+import 'package:bizzie/features/bizzie_chat/domain/models/chat_rating.dart';
 import 'package:bizzie/features/bizzie_chat/domain/usecases/get_messages_stream_usecase.dart';
 import 'package:bizzie/features/bizzie_chat/domain/usecases/send_message_stream_usecase.dart';
+import 'package:bizzie/features/bizzie_chat/domain/usecases/submit_chat_rating_usecase.dart';
 import 'package:bizzie/features/bizzie_chat/presentation/bloc/bizzie_chat/bizzie_chat_event.dart';
 import 'package:bizzie/features/bizzie_chat/presentation/bloc/bizzie_chat/bizzie_chat_state.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
@@ -21,11 +24,16 @@ final _logger = BizzieLogger('BizzieChatBloc');
 class BizzieChatBloc extends Bloc<BizzieChatEvent, BizzieChatState> {
   final GetMessagesStreamUseCase _getMessagesStream;
   final SendMessageStreamUseCase _sendMessageStream;
+  final SubmitChatRatingUseCase _submitChatRatingUseCase;
 
   StreamSubscription? _messagesSubscription;
   StreamSubscription? _sseSubscription;
 
-  BizzieChatBloc(this._getMessagesStream, this._sendMessageStream)
+  BizzieChatBloc(
+    this._getMessagesStream,
+    this._sendMessageStream,
+    this._submitChatRatingUseCase,
+  )
       : super(const BizzieChatState.initial()) {
     on<BizzieChatEvent>(
       (event, emit) async {
@@ -48,6 +56,14 @@ class BizzieChatBloc extends Bloc<BizzieChatEvent, BizzieChatState> {
           sseDone: (e) =>
               _onSseDone(followUps: e.followUps, source: e.source, emit: emit),
           sseFailed: (e) async => _onSseFailed(message: e.message, emit: emit),
+          messageRated: (e) => _onMessageRated(
+            rating: e.rating,
+            question: e.question,
+            aiResponse: e.aiResponse,
+            companyName: e.companyName,
+            companyTicker: e.companyTicker,
+            emit: emit,
+          ),
         );
       },
       transformer: sequential(),
@@ -251,6 +267,40 @@ class BizzieChatBloc extends Bloc<BizzieChatEvent, BizzieChatState> {
       streamingContent: null,
       sseError: message,
     ));
+  }
+
+  Future<void> _onMessageRated({
+    required RatingType rating,
+    required String question,
+    required String aiResponse,
+    required String companyName,
+    required String companyTicker,
+    required Emitter<BizzieChatState> emit,
+  }) async {
+    final activeState = state.mapOrNull(active: (s) => s);
+    if (activeState == null) {
+      _logger.warning('messageRated ignored: not in active state');
+      return;
+    }
+
+    emit(activeState.copyWith(rating: rating));
+
+    final result = await _submitChatRatingUseCase(
+      ChatRating(
+        rating: rating,
+        question: question,
+        aiResponse: aiResponse,
+        time: DateTime.now(),
+        companyName: companyName,
+        companyTicker: companyTicker,
+      ),
+    );
+
+    result.fold(
+      (failure) =>
+          _logger.warning('submitRating failed: ${failure.errorMessage}'),
+      (_) => _logger.info('Rating submitted successfully'),
+    );
   }
 
   void _onReset(Emitter<BizzieChatState> emit) {

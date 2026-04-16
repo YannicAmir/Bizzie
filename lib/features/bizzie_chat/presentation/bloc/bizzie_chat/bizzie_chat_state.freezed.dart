@@ -128,12 +128,12 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function( String sessionId,  String uid,  String ticker,  String companyName)?  loading,TResult Function( String sessionId,  String uid,  String ticker,  String companyName,  List<ChatMessage> messages,  List<String> followUps,  bool isStreaming,  String? streamingContent,  String? sseError)?  active,TResult Function( Failure failure)?  failure,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function( String sessionId,  String uid,  String ticker,  String companyName)?  loading,TResult Function( String sessionId,  String uid,  String ticker,  String companyName,  List<ChatMessage> messages,  List<String> followUps,  bool isStreaming,  String? streamingContent,  String? sseError,  RatingType? rating)?  active,TResult Function( Failure failure)?  failure,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial();case _Loading() when loading != null:
 return loading(_that.sessionId,_that.uid,_that.ticker,_that.companyName);case _Active() when active != null:
-return active(_that.sessionId,_that.uid,_that.ticker,_that.companyName,_that.messages,_that.followUps,_that.isStreaming,_that.streamingContent,_that.sseError);case _Failure() when failure != null:
+return active(_that.sessionId,_that.uid,_that.ticker,_that.companyName,_that.messages,_that.followUps,_that.isStreaming,_that.streamingContent,_that.sseError,_that.rating);case _Failure() when failure != null:
 return failure(_that.failure);case _:
   return orElse();
 
@@ -152,12 +152,12 @@ return failure(_that.failure);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function( String sessionId,  String uid,  String ticker,  String companyName)  loading,required TResult Function( String sessionId,  String uid,  String ticker,  String companyName,  List<ChatMessage> messages,  List<String> followUps,  bool isStreaming,  String? streamingContent,  String? sseError)  active,required TResult Function( Failure failure)  failure,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function( String sessionId,  String uid,  String ticker,  String companyName)  loading,required TResult Function( String sessionId,  String uid,  String ticker,  String companyName,  List<ChatMessage> messages,  List<String> followUps,  bool isStreaming,  String? streamingContent,  String? sseError,  RatingType? rating)  active,required TResult Function( Failure failure)  failure,}) {final _that = this;
 switch (_that) {
 case _Initial():
 return initial();case _Loading():
 return loading(_that.sessionId,_that.uid,_that.ticker,_that.companyName);case _Active():
-return active(_that.sessionId,_that.uid,_that.ticker,_that.companyName,_that.messages,_that.followUps,_that.isStreaming,_that.streamingContent,_that.sseError);case _Failure():
+return active(_that.sessionId,_that.uid,_that.ticker,_that.companyName,_that.messages,_that.followUps,_that.isStreaming,_that.streamingContent,_that.sseError,_that.rating);case _Failure():
 return failure(_that.failure);case _:
   throw StateError('Unexpected subclass');
 
@@ -175,12 +175,12 @@ return failure(_that.failure);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function( String sessionId,  String uid,  String ticker,  String companyName)?  loading,TResult? Function( String sessionId,  String uid,  String ticker,  String companyName,  List<ChatMessage> messages,  List<String> followUps,  bool isStreaming,  String? streamingContent,  String? sseError)?  active,TResult? Function( Failure failure)?  failure,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function( String sessionId,  String uid,  String ticker,  String companyName)?  loading,TResult? Function( String sessionId,  String uid,  String ticker,  String companyName,  List<ChatMessage> messages,  List<String> followUps,  bool isStreaming,  String? streamingContent,  String? sseError,  RatingType? rating)?  active,TResult? Function( Failure failure)?  failure,}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial();case _Loading() when loading != null:
 return loading(_that.sessionId,_that.uid,_that.ticker,_that.companyName);case _Active() when active != null:
-return active(_that.sessionId,_that.uid,_that.ticker,_that.companyName,_that.messages,_that.followUps,_that.isStreaming,_that.streamingContent,_that.sseError);case _Failure() when failure != null:
+return active(_that.sessionId,_that.uid,_that.ticker,_that.companyName,_that.messages,_that.followUps,_that.isStreaming,_that.streamingContent,_that.sseError,_that.rating);case _Failure() when failure != null:
 return failure(_that.failure);case _:
   return null;
 
@@ -297,7 +297,7 @@ as String,
 
 
 class _Active implements BizzieChatState {
-  const _Active({required this.sessionId, required this.uid, required this.ticker, required this.companyName, required final  List<ChatMessage> messages, final  List<String> followUps = const <String>[], this.isStreaming = false, this.streamingContent, this.sseError}): _messages = messages,_followUps = followUps;
+  const _Active({required this.sessionId, required this.uid, required this.ticker, required this.companyName, required final  List<ChatMessage> messages, final  List<String> followUps = const <String>[], this.isStreaming = false, this.streamingContent, this.sseError, this.rating}): _messages = messages,_followUps = followUps;
   
 
  final  String sessionId;
@@ -320,8 +320,8 @@ class _Active implements BizzieChatState {
 
 @JsonKey() final  bool isStreaming;
  final  String? streamingContent;
-/// Set when the most recent SSE send failed. Cleared on next send.
  final  String? sseError;
+ final  RatingType? rating;
 
 /// Create a copy of BizzieChatState
 /// with the given fields replaced by the non-null parameter values.
@@ -333,16 +333,16 @@ _$ActiveCopyWith<_Active> get copyWith => __$ActiveCopyWithImpl<_Active>(this, _
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Active&&(identical(other.sessionId, sessionId) || other.sessionId == sessionId)&&(identical(other.uid, uid) || other.uid == uid)&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.companyName, companyName) || other.companyName == companyName)&&const DeepCollectionEquality().equals(other._messages, _messages)&&const DeepCollectionEquality().equals(other._followUps, _followUps)&&(identical(other.isStreaming, isStreaming) || other.isStreaming == isStreaming)&&(identical(other.streamingContent, streamingContent) || other.streamingContent == streamingContent)&&(identical(other.sseError, sseError) || other.sseError == sseError));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Active&&(identical(other.sessionId, sessionId) || other.sessionId == sessionId)&&(identical(other.uid, uid) || other.uid == uid)&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.companyName, companyName) || other.companyName == companyName)&&const DeepCollectionEquality().equals(other._messages, _messages)&&const DeepCollectionEquality().equals(other._followUps, _followUps)&&(identical(other.isStreaming, isStreaming) || other.isStreaming == isStreaming)&&(identical(other.streamingContent, streamingContent) || other.streamingContent == streamingContent)&&(identical(other.sseError, sseError) || other.sseError == sseError)&&(identical(other.rating, rating) || other.rating == rating));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,sessionId,uid,ticker,companyName,const DeepCollectionEquality().hash(_messages),const DeepCollectionEquality().hash(_followUps),isStreaming,streamingContent,sseError);
+int get hashCode => Object.hash(runtimeType,sessionId,uid,ticker,companyName,const DeepCollectionEquality().hash(_messages),const DeepCollectionEquality().hash(_followUps),isStreaming,streamingContent,sseError,rating);
 
 @override
 String toString() {
-  return 'BizzieChatState.active(sessionId: $sessionId, uid: $uid, ticker: $ticker, companyName: $companyName, messages: $messages, followUps: $followUps, isStreaming: $isStreaming, streamingContent: $streamingContent, sseError: $sseError)';
+  return 'BizzieChatState.active(sessionId: $sessionId, uid: $uid, ticker: $ticker, companyName: $companyName, messages: $messages, followUps: $followUps, isStreaming: $isStreaming, streamingContent: $streamingContent, sseError: $sseError, rating: $rating)';
 }
 
 
@@ -353,7 +353,7 @@ abstract mixin class _$ActiveCopyWith<$Res> implements $BizzieChatStateCopyWith<
   factory _$ActiveCopyWith(_Active value, $Res Function(_Active) _then) = __$ActiveCopyWithImpl;
 @useResult
 $Res call({
- String sessionId, String uid, String ticker, String companyName, List<ChatMessage> messages, List<String> followUps, bool isStreaming, String? streamingContent, String? sseError
+ String sessionId, String uid, String ticker, String companyName, List<ChatMessage> messages, List<String> followUps, bool isStreaming, String? streamingContent, String? sseError, RatingType? rating
 });
 
 
@@ -370,7 +370,7 @@ class __$ActiveCopyWithImpl<$Res>
 
 /// Create a copy of BizzieChatState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? sessionId = null,Object? uid = null,Object? ticker = null,Object? companyName = null,Object? messages = null,Object? followUps = null,Object? isStreaming = null,Object? streamingContent = freezed,Object? sseError = freezed,}) {
+@pragma('vm:prefer-inline') $Res call({Object? sessionId = null,Object? uid = null,Object? ticker = null,Object? companyName = null,Object? messages = null,Object? followUps = null,Object? isStreaming = null,Object? streamingContent = freezed,Object? sseError = freezed,Object? rating = freezed,}) {
   return _then(_Active(
 sessionId: null == sessionId ? _self.sessionId : sessionId // ignore: cast_nullable_to_non_nullable
 as String,uid: null == uid ? _self.uid : uid // ignore: cast_nullable_to_non_nullable
@@ -381,7 +381,8 @@ as List<ChatMessage>,followUps: null == followUps ? _self._followUps : followUps
 as List<String>,isStreaming: null == isStreaming ? _self.isStreaming : isStreaming // ignore: cast_nullable_to_non_nullable
 as bool,streamingContent: freezed == streamingContent ? _self.streamingContent : streamingContent // ignore: cast_nullable_to_non_nullable
 as String?,sseError: freezed == sseError ? _self.sseError : sseError // ignore: cast_nullable_to_non_nullable
-as String?,
+as String?,rating: freezed == rating ? _self.rating : rating // ignore: cast_nullable_to_non_nullable
+as RatingType?,
   ));
 }
 

@@ -1,4 +1,5 @@
 import 'package:bizzie/features/bizzie_chat/domain/enums/chat_message_role.dart';
+import 'package:bizzie/features/bizzie_chat/domain/enums/rating_type.dart';
 import 'package:bizzie/features/bizzie_chat/domain/models/chat_message.dart';
 import 'package:bizzie/features/bizzie_chat/presentation/widgets/bizzie_thinking_indicator.dart';
 import 'package:bizzie/features/bizzie_chat/presentation/widgets/chat_empty_state.dart';
@@ -17,6 +18,10 @@ class ChatMessageList extends StatelessWidget {
   final ScrollController scrollController;
   final String mascotAsset;
   final GlobalKey lastUserMessageKey;
+  final RatingType? currentRating;
+  final String aiResponse;
+  final VoidCallback? onLike;
+  final VoidCallback? onDislike;
 
   const ChatMessageList({
     super.key,
@@ -29,6 +34,10 @@ class ChatMessageList extends StatelessWidget {
     required this.scrollController,
     required this.mascotAsset,
     required this.lastUserMessageKey,
+    required this.aiResponse,
+    this.currentRating,
+    this.onLike,
+    this.onDislike,
   });
 
   @override
@@ -72,6 +81,10 @@ class ChatMessageList extends StatelessWidget {
                 return ChatResponseFooter(
                   followUps: followUps,
                   onFollowUpTapped: onFollowUpTapped,
+                  currentRating: currentRating,
+                  aiResponse: aiResponse,
+                  onLike: onLike,
+                  onDislike: onDislike,
                 );
               }
               return const SizedBox.shrink();

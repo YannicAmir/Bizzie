@@ -1,23 +1,40 @@
 import 'package:bizzie/app/themes/app_assets.dart';
-import 'package:bizzie/app/themes/app_colors.dart';
 import 'package:bizzie/app/themes/app_text_styles.dart';
+import 'package:bizzie/features/bizzie_chat/domain/enums/rating_type.dart';
 import 'package:bizzie/features/bizzie_chat/presentation/widgets/chat_follow_up_chips.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class ChatResponseFooter extends StatelessWidget {
   final List<String> followUps;
   final ValueChanged<String> onFollowUpTapped;
+  final RatingType? currentRating;
+  final String aiResponse;
+  final VoidCallback? onLike;
+  final VoidCallback? onDislike;
 
   const ChatResponseFooter({
     super.key,
     required this.followUps,
     required this.onFollowUpTapped,
+    required this.aiResponse,
+    this.currentRating,
+    this.onLike,
+    this.onDislike,
   });
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final likeColor = currentRating == RatingType.positive
+        ? colorScheme.primary
+        : colorScheme.onSurfaceVariant;
+    final dislikeColor = currentRating == RatingType.negative
+        ? colorScheme.primary
+        : colorScheme.onSurfaceVariant;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -33,42 +50,43 @@ class ChatResponseFooter extends StatelessWidget {
           child: Row(
             children: [
               IconButton(
-                onPressed: () {},
+                onPressed: onLike,
                 icon: SvgPicture.asset(
                   AppAssets.likeIcon,
                   width: AppConstants.chatActionIconSize,
                   height: AppConstants.chatActionIconSize,
-                  colorFilter: const ColorFilter.mode(
-                    AppColors.slate500,
-                    BlendMode.srcIn,
-                  ),
+                  colorFilter: ColorFilter.mode(likeColor, BlendMode.srcIn),
                 ),
                 visualDensity: VisualDensity.compact,
               ),
               IconButton(
-                onPressed: () {},
+                onPressed: onDislike,
                 icon: SvgPicture.asset(
                   AppAssets.dislikeIcon,
                   width: AppConstants.chatActionIconSize,
                   height: AppConstants.chatActionIconSize,
-                  colorFilter: const ColorFilter.mode(
-                    AppColors.slate500,
-                    BlendMode.srcIn,
-                  ),
+                  colorFilter: ColorFilter.mode(dislikeColor, BlendMode.srcIn),
                 ),
                 visualDensity: VisualDensity.compact,
               ),
               IconButton(
-                onPressed: () {},
+                onPressed: () async {
+                  await Clipboard.setData(ClipboardData(text: aiResponse));
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Copied to clipboard')),
+                    );
+                  }
+                },
                 icon: const Icon(Icons.content_copy_outlined),
                 iconSize: AppConstants.chatActionIconSize,
                 visualDensity: VisualDensity.compact,
-                color: AppColors.slate500,
+                color: colorScheme.onSurfaceVariant,
               ),
             ],
           ),
         ),
-        SizedBox(height: 16),
+        AppConstants.secondarySectionSpacing,
         Padding(
           padding: const EdgeInsets.only(
             bottom: AppConstants.chatFooterDisclaimerPaddingBottom,

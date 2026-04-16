@@ -93,12 +93,20 @@ import '../features/auth/presentation/analytics/auth_tracker.dart' as _i700;
 import '../features/auth/presentation/bloc/auth_bloc.dart' as _i59;
 import '../features/bizzie_chat/data/datasources/bizzie_chat_remote_datasource.dart'
     as _i48;
+import '../features/bizzie_chat/data/datasources/chat_rating_remote_datasource.dart'
+    as _i750;
 import '../features/bizzie_chat/data/interfaces/i_bizzie_chat_remote_datasource.dart'
     as _i364;
+import '../features/bizzie_chat/data/interfaces/i_chat_rating_remote_datasource.dart'
+    as _i758;
 import '../features/bizzie_chat/data/repositories/bizzie_chat_repository_impl.dart'
     as _i495;
+import '../features/bizzie_chat/data/repositories/chat_rating_repository_impl.dart'
+    as _i746;
 import '../features/bizzie_chat/domain/interfaces/i_bizzie_chat_repository.dart'
     as _i710;
+import '../features/bizzie_chat/domain/interfaces/i_chat_rating_repository.dart'
+    as _i466;
 import '../features/bizzie_chat/domain/usecases/get_messages_stream_usecase.dart'
     as _i563;
 import '../features/bizzie_chat/domain/usecases/get_sessions_stream_usecase.dart'
@@ -107,6 +115,8 @@ import '../features/bizzie_chat/domain/usecases/send_message_stream_usecase.dart
     as _i714;
 import '../features/bizzie_chat/domain/usecases/send_message_usecase.dart'
     as _i1061;
+import '../features/bizzie_chat/domain/usecases/submit_chat_rating_usecase.dart'
+    as _i995;
 import '../features/bizzie_chat/presentation/bloc/bizzie_chat/bizzie_chat_bloc.dart'
     as _i993;
 import '../features/bizzie_chat/presentation/bloc/bizzie_chat_sessions/bizzie_chat_sessions_bloc.dart'
@@ -677,6 +687,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i65.IInAppReviewService>(
       () => _i286.InAppReviewService(),
     );
+    gh.factory<_i758.IChatRatingRemoteDataSource>(
+      () => _i750.ChatRatingRemoteDataSource(gh<_i52.FirestoreService>()),
+    );
     gh.lazySingleton<_i781.IDeviceLocaleService>(
       () => _i894.DeviceLocaleServiceImpl(),
     );
@@ -723,6 +736,11 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i634.NewsFirestoreDataSourceImpl(
         gh<_i974.FirebaseFirestore>(),
         gh<_i879.ITimeProvider>(),
+      ),
+    );
+    gh.lazySingleton<_i466.IChatRatingRepository>(
+      () => _i746.ChatRatingRepositoryImpl(
+        gh<_i758.IChatRatingRemoteDataSource>(),
       ),
     );
     gh.lazySingleton<_i507.IAppRatingsRepository>(
@@ -778,6 +796,9 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i974.FirebaseFirestore>(),
         gh<_i879.ITimeProvider>(),
       ),
+    );
+    gh.lazySingleton<_i995.SubmitChatRatingUseCase>(
+      () => _i995.SubmitChatRatingUseCase(gh<_i466.IChatRatingRepository>()),
     );
     gh.lazySingleton<_i592.ISubscriptionRemoteDataSource>(
       () => _i1061.SubscriptionRemoteDataSource(gh<_i915.AppEnv>()),
@@ -1626,12 +1647,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i631.NetIncomeTabAnalytics>(),
       ),
     );
-    gh.factory<_i993.BizzieChatBloc>(
-      () => _i993.BizzieChatBloc(
-        gh<_i563.GetMessagesStreamUseCase>(),
-        gh<_i714.SendMessageStreamUseCase>(),
-      ),
-    );
     gh.lazySingleton<_i594.GetSettingsDisplayDataUseCase>(
       () => _i594.GetSettingsDisplayDataUseCase(
         gh<_i685.IAuthRepository>(),
@@ -1672,6 +1687,13 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i744.BizzieChatSessionsBloc>(
       () => _i744.BizzieChatSessionsBloc(gh<_i906.GetSessionsStreamUseCase>()),
+    );
+    gh.factory<_i993.BizzieChatBloc>(
+      () => _i993.BizzieChatBloc(
+        gh<_i563.GetMessagesStreamUseCase>(),
+        gh<_i714.SendMessageStreamUseCase>(),
+        gh<_i995.SubmitChatRatingUseCase>(),
+      ),
     );
     gh.lazySingleton<_i200.UserBloc>(
       () => _i200.UserBloc(

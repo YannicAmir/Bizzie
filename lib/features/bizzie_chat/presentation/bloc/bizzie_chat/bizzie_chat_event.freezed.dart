@@ -55,7 +55,7 @@ extension BizzieChatEventPatterns on BizzieChatEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _SessionStarted value)?  sessionStarted,TResult Function( _MessageSent value)?  messageSent,TResult Function( _Reset value)?  reset,TResult Function( _MessagesLoaded value)?  messagesLoaded,TResult Function( _MessagesLoadFailed value)?  messagesLoadFailed,TResult Function( _SseTokenReceived value)?  sseTokenReceived,TResult Function( _SseDone value)?  sseDone,TResult Function( _SseFailed value)?  sseFailed,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _SessionStarted value)?  sessionStarted,TResult Function( _MessageSent value)?  messageSent,TResult Function( _Reset value)?  reset,TResult Function( _MessagesLoaded value)?  messagesLoaded,TResult Function( _MessagesLoadFailed value)?  messagesLoadFailed,TResult Function( _SseTokenReceived value)?  sseTokenReceived,TResult Function( _SseDone value)?  sseDone,TResult Function( _SseFailed value)?  sseFailed,TResult Function( _MessageRated value)?  messageRated,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _SessionStarted() when sessionStarted != null:
@@ -66,7 +66,8 @@ return messagesLoaded(_that);case _MessagesLoadFailed() when messagesLoadFailed 
 return messagesLoadFailed(_that);case _SseTokenReceived() when sseTokenReceived != null:
 return sseTokenReceived(_that);case _SseDone() when sseDone != null:
 return sseDone(_that);case _SseFailed() when sseFailed != null:
-return sseFailed(_that);case _:
+return sseFailed(_that);case _MessageRated() when messageRated != null:
+return messageRated(_that);case _:
   return orElse();
 
 }
@@ -84,7 +85,7 @@ return sseFailed(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _SessionStarted value)  sessionStarted,required TResult Function( _MessageSent value)  messageSent,required TResult Function( _Reset value)  reset,required TResult Function( _MessagesLoaded value)  messagesLoaded,required TResult Function( _MessagesLoadFailed value)  messagesLoadFailed,required TResult Function( _SseTokenReceived value)  sseTokenReceived,required TResult Function( _SseDone value)  sseDone,required TResult Function( _SseFailed value)  sseFailed,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _SessionStarted value)  sessionStarted,required TResult Function( _MessageSent value)  messageSent,required TResult Function( _Reset value)  reset,required TResult Function( _MessagesLoaded value)  messagesLoaded,required TResult Function( _MessagesLoadFailed value)  messagesLoadFailed,required TResult Function( _SseTokenReceived value)  sseTokenReceived,required TResult Function( _SseDone value)  sseDone,required TResult Function( _SseFailed value)  sseFailed,required TResult Function( _MessageRated value)  messageRated,}){
 final _that = this;
 switch (_that) {
 case _SessionStarted():
@@ -95,7 +96,8 @@ return messagesLoaded(_that);case _MessagesLoadFailed():
 return messagesLoadFailed(_that);case _SseTokenReceived():
 return sseTokenReceived(_that);case _SseDone():
 return sseDone(_that);case _SseFailed():
-return sseFailed(_that);case _:
+return sseFailed(_that);case _MessageRated():
+return messageRated(_that);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -112,7 +114,7 @@ return sseFailed(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _SessionStarted value)?  sessionStarted,TResult? Function( _MessageSent value)?  messageSent,TResult? Function( _Reset value)?  reset,TResult? Function( _MessagesLoaded value)?  messagesLoaded,TResult? Function( _MessagesLoadFailed value)?  messagesLoadFailed,TResult? Function( _SseTokenReceived value)?  sseTokenReceived,TResult? Function( _SseDone value)?  sseDone,TResult? Function( _SseFailed value)?  sseFailed,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _SessionStarted value)?  sessionStarted,TResult? Function( _MessageSent value)?  messageSent,TResult? Function( _Reset value)?  reset,TResult? Function( _MessagesLoaded value)?  messagesLoaded,TResult? Function( _MessagesLoadFailed value)?  messagesLoadFailed,TResult? Function( _SseTokenReceived value)?  sseTokenReceived,TResult? Function( _SseDone value)?  sseDone,TResult? Function( _SseFailed value)?  sseFailed,TResult? Function( _MessageRated value)?  messageRated,}){
 final _that = this;
 switch (_that) {
 case _SessionStarted() when sessionStarted != null:
@@ -123,7 +125,8 @@ return messagesLoaded(_that);case _MessagesLoadFailed() when messagesLoadFailed 
 return messagesLoadFailed(_that);case _SseTokenReceived() when sseTokenReceived != null:
 return sseTokenReceived(_that);case _SseDone() when sseDone != null:
 return sseDone(_that);case _SseFailed() when sseFailed != null:
-return sseFailed(_that);case _:
+return sseFailed(_that);case _MessageRated() when messageRated != null:
+return messageRated(_that);case _:
   return null;
 
 }
@@ -140,7 +143,7 @@ return sseFailed(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String uid,  String ticker,  String companyName,  String? sessionId)?  sessionStarted,TResult Function( String query)?  messageSent,TResult Function()?  reset,TResult Function( List<ChatMessage> messages)?  messagesLoaded,TResult Function( Failure failure)?  messagesLoadFailed,TResult Function( String token)?  sseTokenReceived,TResult Function( List<String> followUps,  String? source)?  sseDone,TResult Function( String message)?  sseFailed,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String uid,  String ticker,  String companyName,  String? sessionId)?  sessionStarted,TResult Function( String query)?  messageSent,TResult Function()?  reset,TResult Function( List<ChatMessage> messages)?  messagesLoaded,TResult Function( Failure failure)?  messagesLoadFailed,TResult Function( String token)?  sseTokenReceived,TResult Function( List<String> followUps,  String? source)?  sseDone,TResult Function( String message)?  sseFailed,TResult Function( RatingType rating,  String question,  String aiResponse,  String companyName,  String companyTicker)?  messageRated,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _SessionStarted() when sessionStarted != null:
 return sessionStarted(_that.uid,_that.ticker,_that.companyName,_that.sessionId);case _MessageSent() when messageSent != null:
@@ -150,7 +153,8 @@ return messagesLoaded(_that.messages);case _MessagesLoadFailed() when messagesLo
 return messagesLoadFailed(_that.failure);case _SseTokenReceived() when sseTokenReceived != null:
 return sseTokenReceived(_that.token);case _SseDone() when sseDone != null:
 return sseDone(_that.followUps,_that.source);case _SseFailed() when sseFailed != null:
-return sseFailed(_that.message);case _:
+return sseFailed(_that.message);case _MessageRated() when messageRated != null:
+return messageRated(_that.rating,_that.question,_that.aiResponse,_that.companyName,_that.companyTicker);case _:
   return orElse();
 
 }
@@ -168,7 +172,7 @@ return sseFailed(_that.message);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String uid,  String ticker,  String companyName,  String? sessionId)  sessionStarted,required TResult Function( String query)  messageSent,required TResult Function()  reset,required TResult Function( List<ChatMessage> messages)  messagesLoaded,required TResult Function( Failure failure)  messagesLoadFailed,required TResult Function( String token)  sseTokenReceived,required TResult Function( List<String> followUps,  String? source)  sseDone,required TResult Function( String message)  sseFailed,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String uid,  String ticker,  String companyName,  String? sessionId)  sessionStarted,required TResult Function( String query)  messageSent,required TResult Function()  reset,required TResult Function( List<ChatMessage> messages)  messagesLoaded,required TResult Function( Failure failure)  messagesLoadFailed,required TResult Function( String token)  sseTokenReceived,required TResult Function( List<String> followUps,  String? source)  sseDone,required TResult Function( String message)  sseFailed,required TResult Function( RatingType rating,  String question,  String aiResponse,  String companyName,  String companyTicker)  messageRated,}) {final _that = this;
 switch (_that) {
 case _SessionStarted():
 return sessionStarted(_that.uid,_that.ticker,_that.companyName,_that.sessionId);case _MessageSent():
@@ -178,7 +182,8 @@ return messagesLoaded(_that.messages);case _MessagesLoadFailed():
 return messagesLoadFailed(_that.failure);case _SseTokenReceived():
 return sseTokenReceived(_that.token);case _SseDone():
 return sseDone(_that.followUps,_that.source);case _SseFailed():
-return sseFailed(_that.message);case _:
+return sseFailed(_that.message);case _MessageRated():
+return messageRated(_that.rating,_that.question,_that.aiResponse,_that.companyName,_that.companyTicker);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -195,7 +200,7 @@ return sseFailed(_that.message);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String uid,  String ticker,  String companyName,  String? sessionId)?  sessionStarted,TResult? Function( String query)?  messageSent,TResult? Function()?  reset,TResult? Function( List<ChatMessage> messages)?  messagesLoaded,TResult? Function( Failure failure)?  messagesLoadFailed,TResult? Function( String token)?  sseTokenReceived,TResult? Function( List<String> followUps,  String? source)?  sseDone,TResult? Function( String message)?  sseFailed,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String uid,  String ticker,  String companyName,  String? sessionId)?  sessionStarted,TResult? Function( String query)?  messageSent,TResult? Function()?  reset,TResult? Function( List<ChatMessage> messages)?  messagesLoaded,TResult? Function( Failure failure)?  messagesLoadFailed,TResult? Function( String token)?  sseTokenReceived,TResult? Function( List<String> followUps,  String? source)?  sseDone,TResult? Function( String message)?  sseFailed,TResult? Function( RatingType rating,  String question,  String aiResponse,  String companyName,  String companyTicker)?  messageRated,}) {final _that = this;
 switch (_that) {
 case _SessionStarted() when sessionStarted != null:
 return sessionStarted(_that.uid,_that.ticker,_that.companyName,_that.sessionId);case _MessageSent() when messageSent != null:
@@ -205,7 +210,8 @@ return messagesLoaded(_that.messages);case _MessagesLoadFailed() when messagesLo
 return messagesLoadFailed(_that.failure);case _SseTokenReceived() when sseTokenReceived != null:
 return sseTokenReceived(_that.token);case _SseDone() when sseDone != null:
 return sseDone(_that.followUps,_that.source);case _SseFailed() when sseFailed != null:
-return sseFailed(_that.message);case _:
+return sseFailed(_that.message);case _MessageRated() when messageRated != null:
+return messageRated(_that.rating,_that.question,_that.aiResponse,_that.companyName,_that.companyTicker);case _:
   return null;
 
 }
@@ -729,6 +735,80 @@ class __$SseFailedCopyWithImpl<$Res>
 @pragma('vm:prefer-inline') $Res call({Object? message = null,}) {
   return _then(_SseFailed(
 null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class _MessageRated implements BizzieChatEvent {
+  const _MessageRated({required this.rating, required this.question, required this.aiResponse, required this.companyName, required this.companyTicker});
+  
+
+ final  RatingType rating;
+ final  String question;
+ final  String aiResponse;
+ final  String companyName;
+ final  String companyTicker;
+
+/// Create a copy of BizzieChatEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$MessageRatedCopyWith<_MessageRated> get copyWith => __$MessageRatedCopyWithImpl<_MessageRated>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _MessageRated&&(identical(other.rating, rating) || other.rating == rating)&&(identical(other.question, question) || other.question == question)&&(identical(other.aiResponse, aiResponse) || other.aiResponse == aiResponse)&&(identical(other.companyName, companyName) || other.companyName == companyName)&&(identical(other.companyTicker, companyTicker) || other.companyTicker == companyTicker));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,rating,question,aiResponse,companyName,companyTicker);
+
+@override
+String toString() {
+  return 'BizzieChatEvent.messageRated(rating: $rating, question: $question, aiResponse: $aiResponse, companyName: $companyName, companyTicker: $companyTicker)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$MessageRatedCopyWith<$Res> implements $BizzieChatEventCopyWith<$Res> {
+  factory _$MessageRatedCopyWith(_MessageRated value, $Res Function(_MessageRated) _then) = __$MessageRatedCopyWithImpl;
+@useResult
+$Res call({
+ RatingType rating, String question, String aiResponse, String companyName, String companyTicker
+});
+
+
+
+
+}
+/// @nodoc
+class __$MessageRatedCopyWithImpl<$Res>
+    implements _$MessageRatedCopyWith<$Res> {
+  __$MessageRatedCopyWithImpl(this._self, this._then);
+
+  final _MessageRated _self;
+  final $Res Function(_MessageRated) _then;
+
+/// Create a copy of BizzieChatEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? rating = null,Object? question = null,Object? aiResponse = null,Object? companyName = null,Object? companyTicker = null,}) {
+  return _then(_MessageRated(
+rating: null == rating ? _self.rating : rating // ignore: cast_nullable_to_non_nullable
+as RatingType,question: null == question ? _self.question : question // ignore: cast_nullable_to_non_nullable
+as String,aiResponse: null == aiResponse ? _self.aiResponse : aiResponse // ignore: cast_nullable_to_non_nullable
+as String,companyName: null == companyName ? _self.companyName : companyName // ignore: cast_nullable_to_non_nullable
+as String,companyTicker: null == companyTicker ? _self.companyTicker : companyTicker // ignore: cast_nullable_to_non_nullable
 as String,
   ));
 }

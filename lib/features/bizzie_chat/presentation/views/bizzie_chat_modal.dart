@@ -1,6 +1,7 @@
 import 'package:bizzie/app/themes/app_assets.dart';
 import 'package:bizzie/di/injection.dart';
 import 'package:bizzie/features/bizzie_chat/domain/enums/chat_message_role.dart';
+import 'package:bizzie/features/bizzie_chat/domain/enums/rating_type.dart';
 import 'package:bizzie/features/bizzie_chat/domain/models/chat_message.dart';
 import 'package:bizzie/features/bizzie_chat/presentation/bloc/bizzie_chat/bizzie_chat_bloc.dart';
 import 'package:bizzie/features/bizzie_chat/presentation/bloc/bizzie_chat/bizzie_chat_event.dart';
@@ -229,6 +230,30 @@ class _BizzieChatModalState extends State<BizzieChatModal> {
           active: (s) => s.streamingContent,
         );
 
+        final currentRating = chatState.mapOrNull(active: (s) => s.rating);
+        final lastUserContent = messages.fold<String>(
+          '',
+          (acc, m) =>
+              m.role == ChatMessageRole.user ? m.content : acc,
+        );
+        final lastAssistantContent = messages.fold<String>(
+          '',
+          (acc, m) =>
+              m.role == ChatMessageRole.assistant ? m.content : acc,
+        );
+
+        void onRatingTapped(RatingType rating) {
+          context.read<BizzieChatBloc>().add(
+            BizzieChatEvent.messageRated(
+              rating: rating,
+              question: lastUserContent,
+              aiResponse: lastAssistantContent,
+              companyName: widget.companyName,
+              companyTicker: widget.ticker,
+            ),
+          );
+        }
+
         final hasAssistantResponse = messages.any(
           (m) => m.role == ChatMessageRole.assistant,
         );
@@ -267,6 +292,10 @@ class _BizzieChatModalState extends State<BizzieChatModal> {
                         scrollController: _scrollController,
                         mascotAsset: mascotAsset,
                         lastUserMessageKey: _lastUserMessageKey,
+                        currentRating: currentRating,
+                        aiResponse: lastAssistantContent,
+                        onLike: () => onRatingTapped(RatingType.positive),
+                        onDislike: () => onRatingTapped(RatingType.negative),
                       ),
                       if (!_isAtBottom &&
                           messages.isNotEmpty &&

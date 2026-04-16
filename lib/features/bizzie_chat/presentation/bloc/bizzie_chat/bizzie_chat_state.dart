@@ -1,4 +1,5 @@
 import 'package:bizzie/core/error/failures.dart';
+import 'package:bizzie/features/bizzie_chat/domain/enums/rating_type.dart';
 import 'package:bizzie/features/bizzie_chat/domain/models/chat_message.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
@@ -25,6 +26,7 @@ abstract class BizzieChatState with _$BizzieChatState {
     @Default(false) bool isStreaming,
     String? streamingContent,
     String? sseError,
+    RatingType? rating,
   }) = _Active;
 
   const factory BizzieChatState.failure(Failure failure) = _Failure;
