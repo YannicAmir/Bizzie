@@ -10,10 +10,12 @@ import 'package:bizzie/features/bizzie_chat/data/dtos/chat_message_dto.dart';
 import 'package:bizzie/features/bizzie_chat/data/dtos/chat_session_dto.dart';
 import 'package:bizzie/features/bizzie_chat/data/interfaces/i_bizzie_chat_remote_datasource.dart';
 import 'package:bizzie/features/bizzie_chat/data/repositories/bizzie_chat_repository_impl.dart';
+import 'package:bizzie/features/bizzie_chat/domain/enums/chat_message_role.dart';
 import 'package:bizzie/features/bizzie_chat/domain/models/chat_message.dart';
 import 'package:bizzie/features/bizzie_chat/domain/models/chat_response.dart';
 import 'package:bizzie/features/bizzie_chat/domain/models/chat_session.dart';
 import 'package:bizzie/features/bizzie_chat/domain/models/chat_sse_event.dart';
+import 'package:bizzie/features/bizzie_chat/domain/models/get_sessions_params.dart';
 
 class MockIBizzieChatRemoteDataSource extends Mock
     implements IBizzieChatRemoteDataSource {}
@@ -62,6 +64,7 @@ void main() {
         sessionId: '',
       ),
     );
+    registerFallbackValue(const GetSessionsParams(uid: '', ticker: ''));
   });
 
   setUp(() {
@@ -101,7 +104,7 @@ void main() {
     );
     tMessage = ChatMessage(
       id: 'm1',
-      role: 'user',
+      role: ChatMessageRole.user,
       content: tQuery,
       createdAt: tCreatedAt,
     );
@@ -379,11 +382,11 @@ void main() {
         'getSessionsStream_datasourceEmitsSessions_emitsRightListOfSessions',
         () async {
           // arrange
-          when(() => mockRemoteDataSource.getSessionsStream(any()))
+          when(() => mockRemoteDataSource.getSessionsStream(any(), any()))
               .thenAnswer((_) => Stream.value([tSessionDto]));
 
           // act
-          final result = sut.getSessionsStream(tUid);
+          final result = sut.getSessionsStream(GetSessionsParams(uid: tUid, ticker: tTicker));
           final event = await result.first;
 
           // assert
@@ -392,7 +395,51 @@ void main() {
             (l) => fail('Expected Right but got Left: $l'),
             (sessions) => expect(sessions, equals([tSession])),
           );
-          verify(() => mockRemoteDataSource.getSessionsStream(tUid)).called(1);
+          verify(() => mockRemoteDataSource.getSessionsStream(tUid, tTicker)).called(1);
+        },
+      );
+
+      test(
+        'getSessionsStream_datasourceEmitsMultipleSessions_emitsSortedByUpdatedAtDescending',
+        () async {
+          // arrange
+          final tOlderSession = ChatSessionDto(
+            id: 's_older',
+            title: 'Older Session',
+            ticker: tTicker,
+            companyName: tCompanyName,
+            createdAt: tCreatedAt,
+            updatedAt: DateTime(2024, 1, 1),
+            messageCount: 1,
+          );
+          final tNewerSession = ChatSessionDto(
+            id: 's_newer',
+            title: 'Newer Session',
+            ticker: tTicker,
+            companyName: tCompanyName,
+            createdAt: tCreatedAt,
+            updatedAt: DateTime(2024, 1, 3),
+            messageCount: 2,
+          );
+          when(() => mockRemoteDataSource.getSessionsStream(any(), any()))
+              .thenAnswer((_) => Stream.value([tOlderSession, tNewerSession]));
+
+          // act
+          final result = sut.getSessionsStream(
+            GetSessionsParams(uid: tUid, ticker: tTicker),
+          );
+          final event = await result.first;
+
+          // assert
+          expect(event.isRight(), isTrue);
+          event.fold(
+            (l) => fail('Expected Right but got Left: $l'),
+            (sessions) {
+              expect(sessions.length, 2);
+              expect(sessions[0].id, equals('s_newer'));
+              expect(sessions[1].id, equals('s_older'));
+            },
+          );
         },
       );
 
@@ -400,11 +447,11 @@ void main() {
         'getSessionsStream_datasourceEmitsError_emitsLeftServerFailure',
         () async {
           // arrange
-          when(() => mockRemoteDataSource.getSessionsStream(any()))
+          when(() => mockRemoteDataSource.getSessionsStream(any(), any()))
               .thenAnswer((_) => Stream.error(Exception('Firestore error')));
 
           // act
-          final result = sut.getSessionsStream(tUid);
+          final result = sut.getSessionsStream(GetSessionsParams(uid: tUid, ticker: tTicker));
           final event = await result.first;
 
           // assert

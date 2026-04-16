@@ -13,8 +13,8 @@ abstract class IBizzieChatRemoteDataSource {
   /// [BizzieChatErrorEventDto] rather than thrown.
   Stream<BizzieChatSseEventDto> sendMessageStream(BizzieChatRequestDto request);
 
-  /// Real-time Firestore stream of sessions for [uid], ordered newest first.
-  Stream<List<ChatSessionDto>> getSessionsStream(String uid);
+  /// Real-time Firestore stream of sessions for [uid] scoped to [ticker], ordered newest first.
+  Stream<List<ChatSessionDto>> getSessionsStream(String uid, String ticker);
 
   /// Real-time Firestore stream of messages for a session, ordered oldest first.
   Stream<List<ChatMessageDto>> getMessagesStream(String uid, String sessionId);

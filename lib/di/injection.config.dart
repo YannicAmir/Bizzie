@@ -107,6 +107,10 @@ import '../features/bizzie_chat/domain/usecases/send_message_stream_usecase.dart
     as _i714;
 import '../features/bizzie_chat/domain/usecases/send_message_usecase.dart'
     as _i1061;
+import '../features/bizzie_chat/presentation/bloc/bizzie_chat/bizzie_chat_bloc.dart'
+    as _i993;
+import '../features/bizzie_chat/presentation/bloc/bizzie_chat_sessions/bizzie_chat_sessions_bloc.dart'
+    as _i744;
 import '../features/company_profile/business/data/datasources/business_firestore_data_source.dart'
     as _i379;
 import '../features/company_profile/business/data/repositories/business_repository_impl.dart'
@@ -1622,6 +1626,12 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i631.NetIncomeTabAnalytics>(),
       ),
     );
+    gh.factory<_i993.BizzieChatBloc>(
+      () => _i993.BizzieChatBloc(
+        gh<_i563.GetMessagesStreamUseCase>(),
+        gh<_i714.SendMessageStreamUseCase>(),
+      ),
+    );
     gh.lazySingleton<_i594.GetSettingsDisplayDataUseCase>(
       () => _i594.GetSettingsDisplayDataUseCase(
         gh<_i685.IAuthRepository>(),
@@ -1659,6 +1669,9 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i714.GetSubscriptionStatusUseCase>(),
         gh<_i310.SettingsTracker>(),
       ),
+    );
+    gh.factory<_i744.BizzieChatSessionsBloc>(
+      () => _i744.BizzieChatSessionsBloc(gh<_i906.GetSessionsStreamUseCase>()),
     );
     gh.lazySingleton<_i200.UserBloc>(
       () => _i200.UserBloc(

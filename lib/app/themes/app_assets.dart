@@ -120,6 +120,8 @@ class AppAssets {
       'assets/images/shared/bizzie_plus_icon.svg';
   static const String bizzieAwayNote =
       'assets/images/shared/bizzie_away_note.png';
+  static const String likeIcon = 'assets/images/shared/like_icon.svg';
+  static const String dislikeIcon = 'assets/images/shared/dislike_icon.svg';
 
   static String getMascotForSector(String sector) {
     final normalized = sector.trim().replaceAll('_', ' ').toLowerCase();

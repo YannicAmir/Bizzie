@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$ChatMessage {
 
- String get id; String get role; String get content; DateTime get createdAt; List<String>? get followUps; String? get source; String? get routePath;
+ String get id; ChatMessageRole get role; String get content; DateTime get createdAt; List<String>? get followUps; String? get source; String? get routePath;
 /// Create a copy of ChatMessage
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -45,7 +45,7 @@ abstract mixin class $ChatMessageCopyWith<$Res>  {
   factory $ChatMessageCopyWith(ChatMessage value, $Res Function(ChatMessage) _then) = _$ChatMessageCopyWithImpl;
 @useResult
 $Res call({
- String id, String role, String content, DateTime createdAt, List<String>? followUps, String? source, String? routePath
+ String id, ChatMessageRole role, String content, DateTime createdAt, List<String>? followUps, String? source, String? routePath
 });
 
 
@@ -66,7 +66,7 @@ class _$ChatMessageCopyWithImpl<$Res>
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,role: null == role ? _self.role : role // ignore: cast_nullable_to_non_nullable
-as String,content: null == content ? _self.content : content // ignore: cast_nullable_to_non_nullable
+as ChatMessageRole,content: null == content ? _self.content : content // ignore: cast_nullable_to_non_nullable
 as String,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as DateTime,followUps: freezed == followUps ? _self.followUps : followUps // ignore: cast_nullable_to_non_nullable
 as List<String>?,source: freezed == source ? _self.source : source // ignore: cast_nullable_to_non_nullable
@@ -156,7 +156,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String role,  String content,  DateTime createdAt,  List<String>? followUps,  String? source,  String? routePath)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  ChatMessageRole role,  String content,  DateTime createdAt,  List<String>? followUps,  String? source,  String? routePath)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ChatMessage() when $default != null:
 return $default(_that.id,_that.role,_that.content,_that.createdAt,_that.followUps,_that.source,_that.routePath);case _:
@@ -177,7 +177,7 @@ return $default(_that.id,_that.role,_that.content,_that.createdAt,_that.followUp
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String role,  String content,  DateTime createdAt,  List<String>? followUps,  String? source,  String? routePath)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  ChatMessageRole role,  String content,  DateTime createdAt,  List<String>? followUps,  String? source,  String? routePath)  $default,) {final _that = this;
 switch (_that) {
 case _ChatMessage():
 return $default(_that.id,_that.role,_that.content,_that.createdAt,_that.followUps,_that.source,_that.routePath);case _:
@@ -197,7 +197,7 @@ return $default(_that.id,_that.role,_that.content,_that.createdAt,_that.followUp
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String role,  String content,  DateTime createdAt,  List<String>? followUps,  String? source,  String? routePath)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  ChatMessageRole role,  String content,  DateTime createdAt,  List<String>? followUps,  String? source,  String? routePath)?  $default,) {final _that = this;
 switch (_that) {
 case _ChatMessage() when $default != null:
 return $default(_that.id,_that.role,_that.content,_that.createdAt,_that.followUps,_that.source,_that.routePath);case _:
@@ -216,7 +216,7 @@ class _ChatMessage implements ChatMessage {
   
 
 @override final  String id;
-@override final  String role;
+@override final  ChatMessageRole role;
 @override final  String content;
 @override final  DateTime createdAt;
  final  List<String>? _followUps;
@@ -261,7 +261,7 @@ abstract mixin class _$ChatMessageCopyWith<$Res> implements $ChatMessageCopyWith
   factory _$ChatMessageCopyWith(_ChatMessage value, $Res Function(_ChatMessage) _then) = __$ChatMessageCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String role, String content, DateTime createdAt, List<String>? followUps, String? source, String? routePath
+ String id, ChatMessageRole role, String content, DateTime createdAt, List<String>? followUps, String? source, String? routePath
 });
 
 
@@ -282,7 +282,7 @@ class __$ChatMessageCopyWithImpl<$Res>
   return _then(_ChatMessage(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,role: null == role ? _self.role : role // ignore: cast_nullable_to_non_nullable
-as String,content: null == content ? _self.content : content // ignore: cast_nullable_to_non_nullable
+as ChatMessageRole,content: null == content ? _self.content : content // ignore: cast_nullable_to_non_nullable
 as String,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as DateTime,followUps: freezed == followUps ? _self._followUps : followUps // ignore: cast_nullable_to_non_nullable
 as List<String>?,source: freezed == source ? _self.source : source // ignore: cast_nullable_to_non_nullable

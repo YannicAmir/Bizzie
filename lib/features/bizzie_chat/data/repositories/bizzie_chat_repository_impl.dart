@@ -12,6 +12,7 @@ import 'package:bizzie/features/bizzie_chat/domain/models/chat_message.dart';
 import 'package:bizzie/features/bizzie_chat/domain/models/chat_response.dart';
 import 'package:bizzie/features/bizzie_chat/domain/models/chat_session.dart';
 import 'package:bizzie/features/bizzie_chat/domain/models/chat_sse_event.dart';
+import 'package:bizzie/features/bizzie_chat/domain/models/get_sessions_params.dart';
 
 final _logger = BizzieLogger('BizzieChatRepositoryImpl');
 
@@ -87,14 +88,23 @@ class BizzieChatRepositoryImpl implements IBizzieChatRepository {
   }
 
   @override
-  Stream<Either<Failure, List<ChatSession>>> getSessionsStream(String uid) {
+  Stream<Either<Failure, List<ChatSession>>> getSessionsStream(
+    GetSessionsParams params,
+  ) {
     return _remoteDataSource
-        .getSessionsStream(uid)
+        .getSessionsStream(params.uid, params.ticker)
         .map<Either<Failure, List<ChatSession>>>(
-          (dtos) => Right(dtos.map((d) => d.toDomain()).toList()),
+          (dtos) => Right(
+            (dtos.map((d) => d.toDomain()).toList())
+              ..sort((a, b) => b.updatedAt.compareTo(a.updatedAt)),
+          ),
         )
         .onErrorReturnWith((e, s) {
-          _logger.severe('getSessionsStream error for uid=$uid', e, s);
+          _logger.severe(
+            'getSessionsStream error for uid=${params.uid} ticker=${params.ticker}',
+            e,
+            s,
+          );
           return Left(Failure.server(e.toString()));
         });
   }

@@ -13,6 +13,7 @@ class MockFirestoreService extends Mock implements FirestoreService {}
 
 const tUid = 'user_123';
 const tSessionId = 'session_456';
+const tTicker = 'AAPL';
 
 const tRequest = BizzieChatRequestDto(
   idempotencyKey: 'idem_789',
@@ -146,7 +147,7 @@ void main() {
           ).thenAnswer((_) => Stream.value([tSessionDto]));
 
           // act
-          final result = sut.getSessionsStream(tUid);
+          final result = sut.getSessionsStream(tUid, tTicker);
           final sessions = await result.first;
 
           // assert
@@ -168,7 +169,7 @@ void main() {
           ).thenAnswer((_) => Stream.value([]));
 
           // act
-          sut.getSessionsStream(tUid);
+          sut.getSessionsStream(tUid, tTicker);
 
           // assert
           verify(

@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/features/bizzie_chat/domain/interfaces/i_bizzie_chat_repository.dart';
+import 'package:bizzie/features/bizzie_chat/domain/enums/chat_message_role.dart';
 import 'package:bizzie/features/bizzie_chat/domain/models/chat_message.dart';
 import 'package:bizzie/features/bizzie_chat/domain/models/get_messages_params.dart';
 import 'package:bizzie/features/bizzie_chat/domain/usecases/get_messages_stream_usecase.dart';
@@ -27,7 +28,7 @@ void main() {
 
     tMessage = ChatMessage(
       id: 'm1',
-      role: 'user',
+      role: ChatMessageRole.user,
       content: 'What is AAPL?',
       createdAt: tCreatedAt,
     );

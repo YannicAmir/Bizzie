@@ -1,3 +1,8 @@
+import 'package:bizzie/app/themes/app_assets.dart';
+import 'package:bizzie/features/bizzie_chat/presentation/bloc/bizzie_chat_sessions/bizzie_chat_sessions_bloc.dart';
+import 'package:bizzie/features/bizzie_chat/presentation/bloc/bizzie_chat_sessions/bizzie_chat_sessions_event.dart';
+import 'package:bizzie/features/bizzie_chat/presentation/views/bizzie_chat_modal.dart';
+import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
 import 'package:bizzie/features/company_profile/security/domain/models/security_details.dart';
 import 'package:bizzie/di/injection.dart';
 import 'package:bizzie/features/onboarding/domain/models/company.dart';
@@ -95,6 +100,17 @@ class CompanyProfilePage extends StatelessWidget {
         ),
         BlocProvider(create: (context) => getIt<AppRatingsBloc>()),
         BlocProvider(create: (context) => getIt<CompanyProfileBloc>()),
+        BlocProvider(
+          create: (context) {
+            final uid = context
+                    .read<UserBloc>()
+                    .state
+                    .mapOrNull(loaded: (s) => s.user.uid) ??
+                '';
+            return getIt<BizzieChatSessionsBloc>()
+              ..add(BizzieChatSessionsEvent.started(uid: uid, ticker: ticker));
+          },
+        ),
       ],
       child: _CompanyProfileView(
         ticker: ticker,
@@ -123,6 +139,7 @@ class _CompanyProfileViewState extends State<_CompanyProfileView>
 
   final List<CompanyProfileTab> _tabs = [
     CompanyProfileTab.security,
+    CompanyProfileTab.chat,
     CompanyProfileTab.business,
     CompanyProfileTab.news,
     CompanyProfileTab.dividends,
@@ -218,6 +235,8 @@ class _CompanyProfileViewState extends State<_CompanyProfileView>
         context.read<CompanySharesBloc>().add(
           CompanySharesEvent.stalenessCheckRequested(widget.ticker),
         );
+        break;
+      case CompanyProfileTab.chat:
         break;
       case CompanyProfileTab.more:
         break;
@@ -325,6 +344,15 @@ class _CompanyProfileViewState extends State<_CompanyProfileView>
               tabs: _tabs,
               entranceTime: _entranceTime,
             ),
+            floatingActionButton: isUnsupported
+                ? null
+                : _BizzieChatFab(
+                    ticker: widget.ticker,
+                    companyName: state.maybeMap(
+                      loaded: (s) => s.securityDetails.name,
+                      orElse: () => widget.ticker,
+                    ),
+                  ),
             body: isUnsupported
                 ? ComingSoonPlaceholder(
                     type: isEtf ? ComingSoonType.etf : ComingSoonType.fund,
@@ -442,4 +470,28 @@ class _CompanyProfileAppBar extends StatelessWidget
   @override
   Size get preferredSize =>
       Size.fromHeight(kToolbarHeight + (isUnsupported ? 0 : 48.0));
+}
+
+class _BizzieChatFab extends StatelessWidget {
+  final String ticker;
+  final String companyName;
+
+  const _BizzieChatFab({required this.ticker, required this.companyName});
+
+  @override
+  Widget build(BuildContext context) {
+    return FloatingActionButton(
+      onPressed: () => BizzieChatModal.show(
+        context,
+        ticker: ticker,
+        companyName: companyName,
+      ),
+      elevation: 2,
+      highlightElevation: 4,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(10),
+        child: Image.asset(AppAssets.appIcon, fit: BoxFit.contain),
+      ),
+    );
+  }
 }

@@ -1,5 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:bizzie/core/utils/timestamp_converter.dart';
+import 'package:bizzie/features/bizzie_chat/domain/enums/chat_message_role.dart';
 import 'package:bizzie/features/bizzie_chat/domain/models/chat_message.dart';
 
 part 'chat_message_dto.freezed.dart';
@@ -24,7 +25,7 @@ abstract class ChatMessageDto with _$ChatMessageDto {
 
   ChatMessage toDomain() => ChatMessage(
         id: id,
-        role: role,
+        role: ChatMessageRole.fromString(role),
         content: content,
         createdAt: createdAt,
         followUps: followUps,

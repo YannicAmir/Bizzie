@@ -95,16 +95,20 @@ class BizzieChatRemoteDataSource implements IBizzieChatRemoteDataSource {
   }
 
   @override
-  Stream<List<ChatSessionDto>> getSessionsStream(String uid) {
+  Stream<List<ChatSessionDto>> getSessionsStream(String uid, String ticker) {
     return _firestoreService
         .getCollectionStream<ChatSessionDto>(
           path: 'users/$uid/$_kConversations',
           fromJson: ChatSessionDto.fromJson,
           toJson: (dto) => dto.toJson(),
-          queryBuilder: (q) => q.orderBy('updatedAt', descending: true),
+          queryBuilder: (q) => q.where('ticker', isEqualTo: ticker),
         )
         .handleError((e, s) {
-          _logger.severe('getSessionsStream error for uid=$uid', e, s);
+          _logger.severe(
+            'getSessionsStream error for uid=$uid ticker=$ticker',
+            e,
+            s,
+          );
           throw e;
         });
   }

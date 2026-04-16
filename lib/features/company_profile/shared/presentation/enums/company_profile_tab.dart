@@ -1,5 +1,6 @@
 enum CompanyProfileTab {
   security('Security'),
+  chat('Chat'),
   business('Business'),
   news('News'),
   dividends('Dividends'),
@@ -20,6 +21,7 @@ enum CompanyProfileTab {
 
   String get analyticsName => switch (this) {
     security => 'security',
+    chat => 'chat',
     business => 'business',
     news => 'news',
     dividends => 'dividends',
