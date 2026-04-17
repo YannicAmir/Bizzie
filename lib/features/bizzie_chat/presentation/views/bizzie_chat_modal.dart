@@ -72,6 +72,7 @@ class _BizzieChatModalState extends State<BizzieChatModal>
   late final TextEditingController _textController;
   late final ScrollController _scrollController;
   final GlobalKey _lastUserMessageKey = GlobalKey();
+  
   bool _isAtBottom = true;
   bool _hasJumpedToBottomOnLoad = false;
   double _keyboardHeight = 0;
