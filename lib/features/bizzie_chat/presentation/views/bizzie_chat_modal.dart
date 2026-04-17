@@ -72,7 +72,7 @@ class _BizzieChatModalState extends State<BizzieChatModal>
   late final TextEditingController _textController;
   late final ScrollController _scrollController;
   final GlobalKey _lastUserMessageKey = GlobalKey();
-  
+
   bool _isAtBottom = true;
   bool _hasJumpedToBottomOnLoad = false;
   double _keyboardHeight = 0;
@@ -136,32 +136,24 @@ class _BizzieChatModalState extends State<BizzieChatModal>
 
   void _scrollToUserMessage() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final ctx = _lastUserMessageKey.currentContext;
-      if (ctx != null) {
-        Scrollable.ensureVisible(
-          ctx,
-          alignment: 0.0,
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.easeOut,
-        );
-        return;
-      }
-      if (_scrollController.hasClients) {
-        final pos = _scrollController.position;
-        _scrollController.jumpTo(
-          (pos.maxScrollExtent - pos.viewportDimension).clamp(
-            0.0,
-            pos.maxScrollExtent,
-          ),
-        );
-      }
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        final retryCtx = _lastUserMessageKey.currentContext;
-        if (retryCtx != null) {
+        if (!mounted) return;
+        final ctx = _lastUserMessageKey.currentContext;
+        if (ctx != null) {
           Scrollable.ensureVisible(
-            retryCtx,
+            ctx,
             alignment: 0.0,
-            duration: const Duration(milliseconds: 200),
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeOut,
+          );
+        } else if (_scrollController.hasClients) {
+          final pos = _scrollController.position;
+          _scrollController.animateTo(
+            (pos.maxScrollExtent - pos.viewportDimension).clamp(
+              0.0,
+              pos.maxScrollExtent,
+            ),
+            duration: const Duration(milliseconds: 300),
             curve: Curves.easeOut,
           );
         }
@@ -289,7 +281,8 @@ class _BizzieChatModalState extends State<BizzieChatModal>
         final showSpacer = isStreaming || (userCount > assistantCount);
 
         return SizedBox(
-          height: screenHeight *
+          height:
+              screenHeight *
                   (_keyboardHeight > 0
                       ? AppConstants.chatModalHeightFactor
                       : AppConstants.chatModalHeightFactorKeyboard) -

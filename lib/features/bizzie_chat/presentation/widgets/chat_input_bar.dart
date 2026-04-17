@@ -33,38 +33,29 @@ class ChatInputBar extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           Expanded(
-            child: Container(
-              decoration: BoxDecoration(
-                color: AppColors.inputBackground,
-                borderRadius: BorderRadius.circular(
-                  AppConstants.chatInputBorderRadius,
+            child: TextField(
+              controller: controller,
+              enabled: isEnabled,
+              maxLines: 4,
+              minLines: 1,
+              maxLength: 500,
+              style: AppTextStyles.bodyMedium,
+              textCapitalization: TextCapitalization.sentences,
+              textInputAction: TextInputAction.send,
+              onSubmitted: (_) {
+                if (isEnabled) onSend();
+              },
+              decoration: InputDecoration(
+                hintText: companyName.isNotEmpty
+                    ? 'Ask Bizzie about $companyName...'
+                    : 'Ask Bizzie...',
+                hintStyle: AppTextStyles.bodyMediumSecondary,
+                border: InputBorder.none,
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: AppConstants.chatInputPaddingH,
+                  vertical: AppConstants.chatInputPaddingV,
                 ),
-                border: Border.all(color: colorScheme.outline),
-              ),
-              child: TextField(
-                controller: controller,
-                enabled: isEnabled,
-                maxLines: 4,
-                minLines: 1,
-                maxLength: 500,
-                style: AppTextStyles.bodyMedium,
-                textCapitalization: TextCapitalization.sentences,
-                textInputAction: TextInputAction.send,
-                onSubmitted: (_) {
-                  if (isEnabled) onSend();
-                },
-                decoration: InputDecoration(
-                  hintText: companyName.isNotEmpty
-                      ? 'Ask Bizzie about $companyName...'
-                      : 'Ask Bizzie...',
-                  hintStyle: AppTextStyles.bodyMediumSecondary,
-                  border: InputBorder.none,
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: AppConstants.chatInputPaddingH,
-                    vertical: AppConstants.chatInputPaddingV,
-                  ),
-                  counterText: '',
-                ),
+                counterText: '',
               ),
             ),
           ),
