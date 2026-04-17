@@ -72,7 +72,7 @@ class AppConstants {
   static const SizedBox onboardSecondarySectionSpacing = SizedBox(height: 16);
 
   // Bizzie Chat
-  static const double chatModalHeightFactor = 0.775;
+  static const double chatModalHeightFactor = 0.85;
   static const double chatModalTopRadius = 20.0;
   static const double chatScrollAtBottomThreshold = 80.0;
   static const double chatFabSize = 36.0;

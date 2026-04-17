@@ -1,8 +1,11 @@
 import 'package:bizzie/app/themes/app_assets.dart';
+import 'package:bizzie/core/enums/paywall_source.dart';
 import 'package:bizzie/features/bizzie_chat/presentation/bloc/bizzie_chat_sessions/bizzie_chat_sessions_bloc.dart';
 import 'package:bizzie/features/bizzie_chat/presentation/bloc/bizzie_chat_sessions/bizzie_chat_sessions_event.dart';
 import 'package:bizzie/features/bizzie_chat/presentation/views/bizzie_chat_modal.dart';
 import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
+import 'package:bizzie/shared/utils/paywall_helper.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:bizzie/features/company_profile/security/domain/models/security_details.dart';
 import 'package:bizzie/di/injection.dart';
 import 'package:bizzie/features/onboarding/domain/models/company.dart';
@@ -162,13 +165,51 @@ class _CompanyProfileViewState extends State<_CompanyProfileView>
     _tabController.addListener(_handleTabSelection);
   }
 
+  void _handleTabTap(int index) {
+    if (_tabs[index] != CompanyProfileTab.chat) return;
+    final isSubscribed = context.read<UserBloc>().state.maybeMap(
+      loaded: (s) => s.user.isSubscribed,
+      orElse: () => false,
+    );
+    if (!isSubscribed) {
+      _tabController.animateTo(_previousTabIndex, duration: Duration.zero);
+      PaywallHelper.showPaywallSequence(
+        context,
+        source: PaywallSource.company_profile,
+        tabName: 'chat',
+        featureName: 'bizzie_chat',
+      );
+    }
+  }
+
   void _handleTabSelection() {
     if (_tabController.indexIsChanging || !mounted) return;
     if (_tabController.index == _previousTabIndex) return;
 
-    _previousTabIndex = _tabController.index;
+    final newTabIndex = _tabController.index;
+    final currentTab = _tabs[newTabIndex];
 
-    final currentTab = _tabs[_tabController.index];
+    if (currentTab == CompanyProfileTab.chat) {
+      final isSubscribed = context.read<UserBloc>().state.maybeMap(
+        loaded: (s) => s.user.isSubscribed,
+        orElse: () => false,
+      );
+      if (!isSubscribed) {
+        final tabToRestore = _previousTabIndex;
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) _tabController.animateTo(tabToRestore, duration: Duration.zero);
+        });
+        PaywallHelper.showPaywallSequence(
+          context,
+          source: PaywallSource.company_profile,
+          tabName: 'chat',
+          featureName: 'bizzie_chat',
+        );
+        return;
+      }
+    }
+
+    _previousTabIndex = newTabIndex;
     if (currentTab != CompanyProfileTab.more) {
       _profileBloc.add(
         CompanyProfileEvent.tabViewed(tabName: currentTab.analyticsName),
@@ -343,6 +384,7 @@ class _CompanyProfileViewState extends State<_CompanyProfileView>
               tabController: _tabController,
               tabs: _tabs,
               entranceTime: _entranceTime,
+              onTabTap: _handleTabTap,
             ),
             floatingActionButton: isUnsupported
                 ? null
@@ -419,6 +461,7 @@ class _CompanyProfileAppBar extends StatelessWidget
   final TabController tabController;
   final List<CompanyProfileTab> tabs;
   final DateTime entranceTime;
+  final void Function(int index) onTabTap;
 
   const _CompanyProfileAppBar({
     required this.ticker,
@@ -426,6 +469,7 @@ class _CompanyProfileAppBar extends StatelessWidget
     required this.tabController,
     required this.tabs,
     required this.entranceTime,
+    required this.onTabTap,
   });
 
   @override
@@ -455,12 +499,51 @@ class _CompanyProfileAppBar extends StatelessWidget
                 ],
           bottom: isUnsupported
               ? null
-              : TabBar(
-                  controller: tabController,
-                  isScrollable: true,
-                  tabAlignment: TabAlignment.start,
-                  padding: AppConstants.appBarBottomTabsPadding,
-                  tabs: tabs.map((tab) => Tab(text: tab.label)).toList(),
+              : PreferredSize(
+                  preferredSize: const Size.fromHeight(48.0),
+                  child: BlocSelector<UserBloc, UserState, bool>(
+                    selector: (state) => state.maybeMap(
+                      loaded: (s) => s.user.isSubscribed,
+                      orElse: () => false,
+                    ),
+                    builder: (context, isSubscribed) => TabBar(
+                      controller: tabController,
+                      isScrollable: true,
+                      tabAlignment: TabAlignment.start,
+                      padding: AppConstants.appBarBottomTabsPadding,
+                      onTap: onTabTap,
+                      tabs: tabs.map((tab) {
+                        if (tab == CompanyProfileTab.chat && !isSubscribed) {
+                          return Tab(
+                            child: Builder(
+                              builder: (context) {
+                                final labelColor =
+                                    DefaultTextStyle.of(context).style.color ??
+                                    Theme.of(context).colorScheme.onSurface;
+                                return Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Text(tab.label),
+                                    const SizedBox(width: 4),
+                                    SvgPicture.asset(
+                                      AppAssets.authLockIcon,
+                                      width: 12,
+                                      height: 12,
+                                      colorFilter: ColorFilter.mode(
+                                        labelColor,
+                                        BlendMode.srcIn,
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              },
+                            ),
+                          );
+                        }
+                        return Tab(text: tab.label);
+                      }).toList(),
+                    ),
+                  ),
                 ),
         );
       },
@@ -480,18 +563,37 @@ class _BizzieChatFab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FloatingActionButton(
-      onPressed: () => BizzieChatModal.show(
-        context,
-        ticker: ticker,
-        companyName: companyName,
+    return BlocSelector<UserBloc, UserState, bool>(
+      selector: (state) => state.maybeMap(
+        loaded: (s) => s.user.isSubscribed,
+        orElse: () => false,
       ),
-      elevation: 2,
-      highlightElevation: 4,
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(10),
-        child: Image.asset(AppAssets.appIcon, fit: BoxFit.contain),
-      ),
+      builder: (context, isSubscribed) {
+        return FloatingActionButton(
+          onPressed: () {
+            if (isSubscribed) {
+              BizzieChatModal.show(
+                context,
+                ticker: ticker,
+                companyName: companyName,
+              );
+            } else {
+              PaywallHelper.showPaywallSequence(
+                context,
+                source: PaywallSource.company_profile,
+                tabName: 'chat',
+                featureName: 'bizzie_chat',
+              );
+            }
+          },
+          elevation: 2,
+          highlightElevation: 4,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child: Image.asset(AppAssets.appIcon, fit: BoxFit.contain),
+          ),
+        );
+      },
     );
   }
 }

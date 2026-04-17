@@ -41,7 +41,8 @@ class BizzieChatModal extends StatefulWidget {
         '';
     showModalBottomSheet(
       context: context,
-      isScrollControlled: true,
+      isScrollControlled: false,
+      scrollControlDisabledMaxHeightRatio: AppConstants.chatModalHeightFactor,
       builder: (_) => BlocProvider(
         create: (_) => getIt<BizzieChatBloc>()
           ..add(
