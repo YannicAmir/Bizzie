@@ -12,5 +12,7 @@ abstract class ChatRating with _$ChatRating {
     required DateTime time,
     required String companyName,
     required String companyTicker,
+    required String userId,
+    required String assistantMessageId,
   }) = _ChatRating;
 }

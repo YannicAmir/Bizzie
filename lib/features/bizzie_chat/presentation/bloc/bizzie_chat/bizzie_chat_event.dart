@@ -41,5 +41,6 @@ class BizzieChatEvent with _$BizzieChatEvent {
     required String aiResponse,
     required String companyName,
     required String companyTicker,
+    required String assistantMessageId,
   }) = _MessageRated;
 }

@@ -233,13 +233,15 @@ class _BizzieChatModalState extends State<BizzieChatModal> {
         final currentRating = chatState.mapOrNull(active: (s) => s.rating);
         final lastUserContent = messages.fold<String>(
           '',
-          (acc, m) =>
-              m.role == ChatMessageRole.user ? m.content : acc,
+          (acc, m) => m.role == ChatMessageRole.user ? m.content : acc,
         );
         final lastAssistantContent = messages.fold<String>(
           '',
-          (acc, m) =>
-              m.role == ChatMessageRole.assistant ? m.content : acc,
+          (acc, m) => m.role == ChatMessageRole.assistant ? m.content : acc,
+        );
+        final lastAssistantId = messages.fold<String>(
+          '',
+          (acc, m) => m.role == ChatMessageRole.assistant ? m.id : acc,
         );
 
         void onRatingTapped(RatingType rating) {
@@ -250,6 +252,7 @@ class _BizzieChatModalState extends State<BizzieChatModal> {
               aiResponse: lastAssistantContent,
               companyName: widget.companyName,
               companyTicker: widget.ticker,
+              assistantMessageId: lastAssistantId,
             ),
           );
         }
@@ -297,20 +300,36 @@ class _BizzieChatModalState extends State<BizzieChatModal> {
                         onLike: () => onRatingTapped(RatingType.positive),
                         onDislike: () => onRatingTapped(RatingType.negative),
                       ),
-                      if (!_isAtBottom &&
-                          messages.isNotEmpty &&
-                          !isStreaming &&
-                          hasAssistantResponse)
-                        Positioned(
-                          bottom: AppConstants.chatFabBottomOffset,
-                          left: 0,
-                          right: 0,
-                          child: Center(
-                            child: ChatScrollToBottomButton(
-                              onTap: _animateToBottom,
+                      Positioned(
+                        bottom: AppConstants.chatFabBottomOffset,
+                        left: 0,
+                        right: 0,
+                        child: Center(
+                          child: AnimatedSwitcher(
+                            duration: const Duration(milliseconds: 200),
+                            transitionBuilder: (child, animation) =>
+                                ScaleTransition(
+                              scale: CurvedAnimation(
+                                parent: animation,
+                                curve: Curves.easeOutBack,
+                                reverseCurve: Curves.easeIn,
+                              ),
+                              child: child,
                             ),
+                            child: (!_isAtBottom &&
+                                    messages.isNotEmpty &&
+                                    !isStreaming &&
+                                    hasAssistantResponse)
+                                ? ChatScrollToBottomButton(
+                                    key: const ValueKey('scroll_btn'),
+                                    onTap: _animateToBottom,
+                                  )
+                                : const SizedBox.shrink(
+                                    key: ValueKey('empty'),
+                                  ),
                           ),
                         ),
+                      ),
                     ],
                   ),
                 ),

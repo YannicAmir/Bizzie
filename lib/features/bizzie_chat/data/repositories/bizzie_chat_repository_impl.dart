@@ -2,6 +2,7 @@ import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:bizzie/core/error/ai_error_mapper.dart';
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/core/error/function_app_error_mapper.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
@@ -80,7 +81,7 @@ class BizzieChatRepositoryImpl implements IBizzieChatRepository {
         yield Right(event);
       }
     } on DioException catch (e, s) {
-      yield Left(FunctionAppErrorMapper.map(e, s, 'sendMessageStream'));
+      yield Left(AiErrorMapper.map(e, s, 'sendMessageStream'));
     } catch (e, s) {
       _logger.severe('sendMessageStream unexpected error', e, s);
       yield Left(Failure.server(e.toString()));

@@ -350,7 +350,15 @@ void main() {
               companyName: tCompanyName,
               sessionId: tSessionId,
             ),
-            emits(Left(Failure.rateLimit(retryAfterSeconds: 60))),
+            emits(
+              Left(
+                const Failure.rateLimit(
+                  retryAfterSeconds: 0,
+                  message:
+                      'You have reached your message limit for today. Come back to Bizzie AI tomorrow.',
+                ),
+              ),
+            ),
           );
         },
       );

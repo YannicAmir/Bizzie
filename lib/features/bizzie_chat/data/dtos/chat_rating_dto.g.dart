@@ -14,6 +14,8 @@ _ChatRatingDto _$ChatRatingDtoFromJson(Map<String, dynamic> json) =>
       time: const TimestampConverter().fromJson(json['time']),
       companyName: json['company_name'] as String,
       companyTicker: json['company_ticker'] as String,
+      userId: json['user_id'] as String,
+      assistantMessageId: json['assistant_message_id'] as String,
     );
 
 Map<String, dynamic> _$ChatRatingDtoToJson(_ChatRatingDto instance) =>
@@ -24,4 +26,6 @@ Map<String, dynamic> _$ChatRatingDtoToJson(_ChatRatingDto instance) =>
       'time': const TimestampConverter().toJson(instance.time),
       'company_name': instance.companyName,
       'company_ticker': instance.companyTicker,
+      'user_id': instance.userId,
+      'assistant_message_id': instance.assistantMessageId,
     };

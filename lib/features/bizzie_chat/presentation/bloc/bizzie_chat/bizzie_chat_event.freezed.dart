@@ -143,7 +143,7 @@ return messageRated(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String uid,  String ticker,  String companyName,  String? sessionId)?  sessionStarted,TResult Function( String query)?  messageSent,TResult Function()?  reset,TResult Function( List<ChatMessage> messages)?  messagesLoaded,TResult Function( Failure failure)?  messagesLoadFailed,TResult Function( String token)?  sseTokenReceived,TResult Function( List<String> followUps,  String? source)?  sseDone,TResult Function( String message)?  sseFailed,TResult Function( RatingType rating,  String question,  String aiResponse,  String companyName,  String companyTicker)?  messageRated,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String uid,  String ticker,  String companyName,  String? sessionId)?  sessionStarted,TResult Function( String query)?  messageSent,TResult Function()?  reset,TResult Function( List<ChatMessage> messages)?  messagesLoaded,TResult Function( Failure failure)?  messagesLoadFailed,TResult Function( String token)?  sseTokenReceived,TResult Function( List<String> followUps,  String? source)?  sseDone,TResult Function( String message)?  sseFailed,TResult Function( RatingType rating,  String question,  String aiResponse,  String companyName,  String companyTicker,  String assistantMessageId)?  messageRated,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _SessionStarted() when sessionStarted != null:
 return sessionStarted(_that.uid,_that.ticker,_that.companyName,_that.sessionId);case _MessageSent() when messageSent != null:
@@ -154,7 +154,7 @@ return messagesLoadFailed(_that.failure);case _SseTokenReceived() when sseTokenR
 return sseTokenReceived(_that.token);case _SseDone() when sseDone != null:
 return sseDone(_that.followUps,_that.source);case _SseFailed() when sseFailed != null:
 return sseFailed(_that.message);case _MessageRated() when messageRated != null:
-return messageRated(_that.rating,_that.question,_that.aiResponse,_that.companyName,_that.companyTicker);case _:
+return messageRated(_that.rating,_that.question,_that.aiResponse,_that.companyName,_that.companyTicker,_that.assistantMessageId);case _:
   return orElse();
 
 }
@@ -172,7 +172,7 @@ return messageRated(_that.rating,_that.question,_that.aiResponse,_that.companyNa
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String uid,  String ticker,  String companyName,  String? sessionId)  sessionStarted,required TResult Function( String query)  messageSent,required TResult Function()  reset,required TResult Function( List<ChatMessage> messages)  messagesLoaded,required TResult Function( Failure failure)  messagesLoadFailed,required TResult Function( String token)  sseTokenReceived,required TResult Function( List<String> followUps,  String? source)  sseDone,required TResult Function( String message)  sseFailed,required TResult Function( RatingType rating,  String question,  String aiResponse,  String companyName,  String companyTicker)  messageRated,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String uid,  String ticker,  String companyName,  String? sessionId)  sessionStarted,required TResult Function( String query)  messageSent,required TResult Function()  reset,required TResult Function( List<ChatMessage> messages)  messagesLoaded,required TResult Function( Failure failure)  messagesLoadFailed,required TResult Function( String token)  sseTokenReceived,required TResult Function( List<String> followUps,  String? source)  sseDone,required TResult Function( String message)  sseFailed,required TResult Function( RatingType rating,  String question,  String aiResponse,  String companyName,  String companyTicker,  String assistantMessageId)  messageRated,}) {final _that = this;
 switch (_that) {
 case _SessionStarted():
 return sessionStarted(_that.uid,_that.ticker,_that.companyName,_that.sessionId);case _MessageSent():
@@ -183,7 +183,7 @@ return messagesLoadFailed(_that.failure);case _SseTokenReceived():
 return sseTokenReceived(_that.token);case _SseDone():
 return sseDone(_that.followUps,_that.source);case _SseFailed():
 return sseFailed(_that.message);case _MessageRated():
-return messageRated(_that.rating,_that.question,_that.aiResponse,_that.companyName,_that.companyTicker);case _:
+return messageRated(_that.rating,_that.question,_that.aiResponse,_that.companyName,_that.companyTicker,_that.assistantMessageId);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -200,7 +200,7 @@ return messageRated(_that.rating,_that.question,_that.aiResponse,_that.companyNa
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String uid,  String ticker,  String companyName,  String? sessionId)?  sessionStarted,TResult? Function( String query)?  messageSent,TResult? Function()?  reset,TResult? Function( List<ChatMessage> messages)?  messagesLoaded,TResult? Function( Failure failure)?  messagesLoadFailed,TResult? Function( String token)?  sseTokenReceived,TResult? Function( List<String> followUps,  String? source)?  sseDone,TResult? Function( String message)?  sseFailed,TResult? Function( RatingType rating,  String question,  String aiResponse,  String companyName,  String companyTicker)?  messageRated,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String uid,  String ticker,  String companyName,  String? sessionId)?  sessionStarted,TResult? Function( String query)?  messageSent,TResult? Function()?  reset,TResult? Function( List<ChatMessage> messages)?  messagesLoaded,TResult? Function( Failure failure)?  messagesLoadFailed,TResult? Function( String token)?  sseTokenReceived,TResult? Function( List<String> followUps,  String? source)?  sseDone,TResult? Function( String message)?  sseFailed,TResult? Function( RatingType rating,  String question,  String aiResponse,  String companyName,  String companyTicker,  String assistantMessageId)?  messageRated,}) {final _that = this;
 switch (_that) {
 case _SessionStarted() when sessionStarted != null:
 return sessionStarted(_that.uid,_that.ticker,_that.companyName,_that.sessionId);case _MessageSent() when messageSent != null:
@@ -211,7 +211,7 @@ return messagesLoadFailed(_that.failure);case _SseTokenReceived() when sseTokenR
 return sseTokenReceived(_that.token);case _SseDone() when sseDone != null:
 return sseDone(_that.followUps,_that.source);case _SseFailed() when sseFailed != null:
 return sseFailed(_that.message);case _MessageRated() when messageRated != null:
-return messageRated(_that.rating,_that.question,_that.aiResponse,_that.companyName,_that.companyTicker);case _:
+return messageRated(_that.rating,_that.question,_that.aiResponse,_that.companyName,_that.companyTicker,_that.assistantMessageId);case _:
   return null;
 
 }
@@ -746,7 +746,7 @@ as String,
 
 
 class _MessageRated implements BizzieChatEvent {
-  const _MessageRated({required this.rating, required this.question, required this.aiResponse, required this.companyName, required this.companyTicker});
+  const _MessageRated({required this.rating, required this.question, required this.aiResponse, required this.companyName, required this.companyTicker, required this.assistantMessageId});
   
 
  final  RatingType rating;
@@ -754,6 +754,7 @@ class _MessageRated implements BizzieChatEvent {
  final  String aiResponse;
  final  String companyName;
  final  String companyTicker;
+ final  String assistantMessageId;
 
 /// Create a copy of BizzieChatEvent
 /// with the given fields replaced by the non-null parameter values.
@@ -765,16 +766,16 @@ _$MessageRatedCopyWith<_MessageRated> get copyWith => __$MessageRatedCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _MessageRated&&(identical(other.rating, rating) || other.rating == rating)&&(identical(other.question, question) || other.question == question)&&(identical(other.aiResponse, aiResponse) || other.aiResponse == aiResponse)&&(identical(other.companyName, companyName) || other.companyName == companyName)&&(identical(other.companyTicker, companyTicker) || other.companyTicker == companyTicker));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _MessageRated&&(identical(other.rating, rating) || other.rating == rating)&&(identical(other.question, question) || other.question == question)&&(identical(other.aiResponse, aiResponse) || other.aiResponse == aiResponse)&&(identical(other.companyName, companyName) || other.companyName == companyName)&&(identical(other.companyTicker, companyTicker) || other.companyTicker == companyTicker)&&(identical(other.assistantMessageId, assistantMessageId) || other.assistantMessageId == assistantMessageId));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,rating,question,aiResponse,companyName,companyTicker);
+int get hashCode => Object.hash(runtimeType,rating,question,aiResponse,companyName,companyTicker,assistantMessageId);
 
 @override
 String toString() {
-  return 'BizzieChatEvent.messageRated(rating: $rating, question: $question, aiResponse: $aiResponse, companyName: $companyName, companyTicker: $companyTicker)';
+  return 'BizzieChatEvent.messageRated(rating: $rating, question: $question, aiResponse: $aiResponse, companyName: $companyName, companyTicker: $companyTicker, assistantMessageId: $assistantMessageId)';
 }
 
 
@@ -785,7 +786,7 @@ abstract mixin class _$MessageRatedCopyWith<$Res> implements $BizzieChatEventCop
   factory _$MessageRatedCopyWith(_MessageRated value, $Res Function(_MessageRated) _then) = __$MessageRatedCopyWithImpl;
 @useResult
 $Res call({
- RatingType rating, String question, String aiResponse, String companyName, String companyTicker
+ RatingType rating, String question, String aiResponse, String companyName, String companyTicker, String assistantMessageId
 });
 
 
@@ -802,13 +803,14 @@ class __$MessageRatedCopyWithImpl<$Res>
 
 /// Create a copy of BizzieChatEvent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? rating = null,Object? question = null,Object? aiResponse = null,Object? companyName = null,Object? companyTicker = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? rating = null,Object? question = null,Object? aiResponse = null,Object? companyName = null,Object? companyTicker = null,Object? assistantMessageId = null,}) {
   return _then(_MessageRated(
 rating: null == rating ? _self.rating : rating // ignore: cast_nullable_to_non_nullable
 as RatingType,question: null == question ? _self.question : question // ignore: cast_nullable_to_non_nullable
 as String,aiResponse: null == aiResponse ? _self.aiResponse : aiResponse // ignore: cast_nullable_to_non_nullable
 as String,companyName: null == companyName ? _self.companyName : companyName // ignore: cast_nullable_to_non_nullable
 as String,companyTicker: null == companyTicker ? _self.companyTicker : companyTicker // ignore: cast_nullable_to_non_nullable
+as String,assistantMessageId: null == assistantMessageId ? _self.assistantMessageId : assistantMessageId // ignore: cast_nullable_to_non_nullable
 as String,
   ));
 }

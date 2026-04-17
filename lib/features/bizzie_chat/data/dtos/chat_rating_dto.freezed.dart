@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$ChatRatingDto {
 
- String get rating; String get question;@JsonKey(name: 'ai_response') String get aiResponse;@TimestampConverter() DateTime get time;@JsonKey(name: 'company_name') String get companyName;@JsonKey(name: 'company_ticker') String get companyTicker;
+ String get rating; String get question;@JsonKey(name: 'ai_response') String get aiResponse;@TimestampConverter() DateTime get time;@JsonKey(name: 'company_name') String get companyName;@JsonKey(name: 'company_ticker') String get companyTicker;@JsonKey(name: 'user_id') String get userId;@JsonKey(name: 'assistant_message_id') String get assistantMessageId;
 /// Create a copy of ChatRatingDto
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $ChatRatingDtoCopyWith<ChatRatingDto> get copyWith => _$ChatRatingDtoCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ChatRatingDto&&(identical(other.rating, rating) || other.rating == rating)&&(identical(other.question, question) || other.question == question)&&(identical(other.aiResponse, aiResponse) || other.aiResponse == aiResponse)&&(identical(other.time, time) || other.time == time)&&(identical(other.companyName, companyName) || other.companyName == companyName)&&(identical(other.companyTicker, companyTicker) || other.companyTicker == companyTicker));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ChatRatingDto&&(identical(other.rating, rating) || other.rating == rating)&&(identical(other.question, question) || other.question == question)&&(identical(other.aiResponse, aiResponse) || other.aiResponse == aiResponse)&&(identical(other.time, time) || other.time == time)&&(identical(other.companyName, companyName) || other.companyName == companyName)&&(identical(other.companyTicker, companyTicker) || other.companyTicker == companyTicker)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.assistantMessageId, assistantMessageId) || other.assistantMessageId == assistantMessageId));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,rating,question,aiResponse,time,companyName,companyTicker);
+int get hashCode => Object.hash(runtimeType,rating,question,aiResponse,time,companyName,companyTicker,userId,assistantMessageId);
 
 @override
 String toString() {
-  return 'ChatRatingDto(rating: $rating, question: $question, aiResponse: $aiResponse, time: $time, companyName: $companyName, companyTicker: $companyTicker)';
+  return 'ChatRatingDto(rating: $rating, question: $question, aiResponse: $aiResponse, time: $time, companyName: $companyName, companyTicker: $companyTicker, userId: $userId, assistantMessageId: $assistantMessageId)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $ChatRatingDtoCopyWith<$Res>  {
   factory $ChatRatingDtoCopyWith(ChatRatingDto value, $Res Function(ChatRatingDto) _then) = _$ChatRatingDtoCopyWithImpl;
 @useResult
 $Res call({
- String rating, String question,@JsonKey(name: 'ai_response') String aiResponse,@TimestampConverter() DateTime time,@JsonKey(name: 'company_name') String companyName,@JsonKey(name: 'company_ticker') String companyTicker
+ String rating, String question,@JsonKey(name: 'ai_response') String aiResponse,@TimestampConverter() DateTime time,@JsonKey(name: 'company_name') String companyName,@JsonKey(name: 'company_ticker') String companyTicker,@JsonKey(name: 'user_id') String userId,@JsonKey(name: 'assistant_message_id') String assistantMessageId
 });
 
 
@@ -65,7 +65,7 @@ class _$ChatRatingDtoCopyWithImpl<$Res>
 
 /// Create a copy of ChatRatingDto
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? rating = null,Object? question = null,Object? aiResponse = null,Object? time = null,Object? companyName = null,Object? companyTicker = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? rating = null,Object? question = null,Object? aiResponse = null,Object? time = null,Object? companyName = null,Object? companyTicker = null,Object? userId = null,Object? assistantMessageId = null,}) {
   return _then(_self.copyWith(
 rating: null == rating ? _self.rating : rating // ignore: cast_nullable_to_non_nullable
 as String,question: null == question ? _self.question : question // ignore: cast_nullable_to_non_nullable
@@ -73,6 +73,8 @@ as String,aiResponse: null == aiResponse ? _self.aiResponse : aiResponse // igno
 as String,time: null == time ? _self.time : time // ignore: cast_nullable_to_non_nullable
 as DateTime,companyName: null == companyName ? _self.companyName : companyName // ignore: cast_nullable_to_non_nullable
 as String,companyTicker: null == companyTicker ? _self.companyTicker : companyTicker // ignore: cast_nullable_to_non_nullable
+as String,userId: null == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
+as String,assistantMessageId: null == assistantMessageId ? _self.assistantMessageId : assistantMessageId // ignore: cast_nullable_to_non_nullable
 as String,
   ));
 }
@@ -158,10 +160,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String rating,  String question, @JsonKey(name: 'ai_response')  String aiResponse, @TimestampConverter()  DateTime time, @JsonKey(name: 'company_name')  String companyName, @JsonKey(name: 'company_ticker')  String companyTicker)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String rating,  String question, @JsonKey(name: 'ai_response')  String aiResponse, @TimestampConverter()  DateTime time, @JsonKey(name: 'company_name')  String companyName, @JsonKey(name: 'company_ticker')  String companyTicker, @JsonKey(name: 'user_id')  String userId, @JsonKey(name: 'assistant_message_id')  String assistantMessageId)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ChatRatingDto() when $default != null:
-return $default(_that.rating,_that.question,_that.aiResponse,_that.time,_that.companyName,_that.companyTicker);case _:
+return $default(_that.rating,_that.question,_that.aiResponse,_that.time,_that.companyName,_that.companyTicker,_that.userId,_that.assistantMessageId);case _:
   return orElse();
 
 }
@@ -179,10 +181,10 @@ return $default(_that.rating,_that.question,_that.aiResponse,_that.time,_that.co
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String rating,  String question, @JsonKey(name: 'ai_response')  String aiResponse, @TimestampConverter()  DateTime time, @JsonKey(name: 'company_name')  String companyName, @JsonKey(name: 'company_ticker')  String companyTicker)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String rating,  String question, @JsonKey(name: 'ai_response')  String aiResponse, @TimestampConverter()  DateTime time, @JsonKey(name: 'company_name')  String companyName, @JsonKey(name: 'company_ticker')  String companyTicker, @JsonKey(name: 'user_id')  String userId, @JsonKey(name: 'assistant_message_id')  String assistantMessageId)  $default,) {final _that = this;
 switch (_that) {
 case _ChatRatingDto():
-return $default(_that.rating,_that.question,_that.aiResponse,_that.time,_that.companyName,_that.companyTicker);case _:
+return $default(_that.rating,_that.question,_that.aiResponse,_that.time,_that.companyName,_that.companyTicker,_that.userId,_that.assistantMessageId);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -199,10 +201,10 @@ return $default(_that.rating,_that.question,_that.aiResponse,_that.time,_that.co
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String rating,  String question, @JsonKey(name: 'ai_response')  String aiResponse, @TimestampConverter()  DateTime time, @JsonKey(name: 'company_name')  String companyName, @JsonKey(name: 'company_ticker')  String companyTicker)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String rating,  String question, @JsonKey(name: 'ai_response')  String aiResponse, @TimestampConverter()  DateTime time, @JsonKey(name: 'company_name')  String companyName, @JsonKey(name: 'company_ticker')  String companyTicker, @JsonKey(name: 'user_id')  String userId, @JsonKey(name: 'assistant_message_id')  String assistantMessageId)?  $default,) {final _that = this;
 switch (_that) {
 case _ChatRatingDto() when $default != null:
-return $default(_that.rating,_that.question,_that.aiResponse,_that.time,_that.companyName,_that.companyTicker);case _:
+return $default(_that.rating,_that.question,_that.aiResponse,_that.time,_that.companyName,_that.companyTicker,_that.userId,_that.assistantMessageId);case _:
   return null;
 
 }
@@ -214,7 +216,7 @@ return $default(_that.rating,_that.question,_that.aiResponse,_that.time,_that.co
 @JsonSerializable()
 
 class _ChatRatingDto extends ChatRatingDto {
-  const _ChatRatingDto({required this.rating, required this.question, @JsonKey(name: 'ai_response') required this.aiResponse, @TimestampConverter() required this.time, @JsonKey(name: 'company_name') required this.companyName, @JsonKey(name: 'company_ticker') required this.companyTicker}): super._();
+  const _ChatRatingDto({required this.rating, required this.question, @JsonKey(name: 'ai_response') required this.aiResponse, @TimestampConverter() required this.time, @JsonKey(name: 'company_name') required this.companyName, @JsonKey(name: 'company_ticker') required this.companyTicker, @JsonKey(name: 'user_id') required this.userId, @JsonKey(name: 'assistant_message_id') required this.assistantMessageId}): super._();
   factory _ChatRatingDto.fromJson(Map<String, dynamic> json) => _$ChatRatingDtoFromJson(json);
 
 @override final  String rating;
@@ -223,6 +225,8 @@ class _ChatRatingDto extends ChatRatingDto {
 @override@TimestampConverter() final  DateTime time;
 @override@JsonKey(name: 'company_name') final  String companyName;
 @override@JsonKey(name: 'company_ticker') final  String companyTicker;
+@override@JsonKey(name: 'user_id') final  String userId;
+@override@JsonKey(name: 'assistant_message_id') final  String assistantMessageId;
 
 /// Create a copy of ChatRatingDto
 /// with the given fields replaced by the non-null parameter values.
@@ -237,16 +241,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ChatRatingDto&&(identical(other.rating, rating) || other.rating == rating)&&(identical(other.question, question) || other.question == question)&&(identical(other.aiResponse, aiResponse) || other.aiResponse == aiResponse)&&(identical(other.time, time) || other.time == time)&&(identical(other.companyName, companyName) || other.companyName == companyName)&&(identical(other.companyTicker, companyTicker) || other.companyTicker == companyTicker));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ChatRatingDto&&(identical(other.rating, rating) || other.rating == rating)&&(identical(other.question, question) || other.question == question)&&(identical(other.aiResponse, aiResponse) || other.aiResponse == aiResponse)&&(identical(other.time, time) || other.time == time)&&(identical(other.companyName, companyName) || other.companyName == companyName)&&(identical(other.companyTicker, companyTicker) || other.companyTicker == companyTicker)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.assistantMessageId, assistantMessageId) || other.assistantMessageId == assistantMessageId));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,rating,question,aiResponse,time,companyName,companyTicker);
+int get hashCode => Object.hash(runtimeType,rating,question,aiResponse,time,companyName,companyTicker,userId,assistantMessageId);
 
 @override
 String toString() {
-  return 'ChatRatingDto(rating: $rating, question: $question, aiResponse: $aiResponse, time: $time, companyName: $companyName, companyTicker: $companyTicker)';
+  return 'ChatRatingDto(rating: $rating, question: $question, aiResponse: $aiResponse, time: $time, companyName: $companyName, companyTicker: $companyTicker, userId: $userId, assistantMessageId: $assistantMessageId)';
 }
 
 
@@ -257,7 +261,7 @@ abstract mixin class _$ChatRatingDtoCopyWith<$Res> implements $ChatRatingDtoCopy
   factory _$ChatRatingDtoCopyWith(_ChatRatingDto value, $Res Function(_ChatRatingDto) _then) = __$ChatRatingDtoCopyWithImpl;
 @override @useResult
 $Res call({
- String rating, String question,@JsonKey(name: 'ai_response') String aiResponse,@TimestampConverter() DateTime time,@JsonKey(name: 'company_name') String companyName,@JsonKey(name: 'company_ticker') String companyTicker
+ String rating, String question,@JsonKey(name: 'ai_response') String aiResponse,@TimestampConverter() DateTime time,@JsonKey(name: 'company_name') String companyName,@JsonKey(name: 'company_ticker') String companyTicker,@JsonKey(name: 'user_id') String userId,@JsonKey(name: 'assistant_message_id') String assistantMessageId
 });
 
 
@@ -274,7 +278,7 @@ class __$ChatRatingDtoCopyWithImpl<$Res>
 
 /// Create a copy of ChatRatingDto
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? rating = null,Object? question = null,Object? aiResponse = null,Object? time = null,Object? companyName = null,Object? companyTicker = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? rating = null,Object? question = null,Object? aiResponse = null,Object? time = null,Object? companyName = null,Object? companyTicker = null,Object? userId = null,Object? assistantMessageId = null,}) {
   return _then(_ChatRatingDto(
 rating: null == rating ? _self.rating : rating // ignore: cast_nullable_to_non_nullable
 as String,question: null == question ? _self.question : question // ignore: cast_nullable_to_non_nullable
@@ -282,6 +286,8 @@ as String,aiResponse: null == aiResponse ? _self.aiResponse : aiResponse // igno
 as String,time: null == time ? _self.time : time // ignore: cast_nullable_to_non_nullable
 as DateTime,companyName: null == companyName ? _self.companyName : companyName // ignore: cast_nullable_to_non_nullable
 as String,companyTicker: null == companyTicker ? _self.companyTicker : companyTicker // ignore: cast_nullable_to_non_nullable
+as String,userId: null == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
+as String,assistantMessageId: null == assistantMessageId ? _self.assistantMessageId : assistantMessageId // ignore: cast_nullable_to_non_nullable
 as String,
   ));
 }

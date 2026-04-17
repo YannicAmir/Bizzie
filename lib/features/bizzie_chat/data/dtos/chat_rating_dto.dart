@@ -18,6 +18,8 @@ abstract class ChatRatingDto with _$ChatRatingDto {
     @TimestampConverter() required DateTime time,
     @JsonKey(name: 'company_name') required String companyName,
     @JsonKey(name: 'company_ticker') required String companyTicker,
+    @JsonKey(name: 'user_id') required String userId,
+    @JsonKey(name: 'assistant_message_id') required String assistantMessageId,
   }) = _ChatRatingDto;
 
   factory ChatRatingDto.fromJson(Map<String, dynamic> json) =>
@@ -30,6 +32,8 @@ abstract class ChatRatingDto with _$ChatRatingDto {
         time: model.time,
         companyName: model.companyName,
         companyTicker: model.companyTicker,
+        userId: model.userId,
+        assistantMessageId: model.assistantMessageId,
       );
 
   ChatRating toDomain() => ChatRating(
@@ -39,5 +43,7 @@ abstract class ChatRatingDto with _$ChatRatingDto {
         time: time,
         companyName: companyName,
         companyTicker: companyTicker,
+        userId: userId,
+        assistantMessageId: assistantMessageId,
       );
 }

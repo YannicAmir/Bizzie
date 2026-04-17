@@ -16,7 +16,6 @@ import 'package:bizzie/shared/widgets/states/bizzie_empty_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-
 class BizzieChatTab extends StatefulWidget {
   final String ticker;
 
@@ -168,24 +167,26 @@ class _ConversationStarterHint extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: AppConstants.chatTabHintOuterPaddingH),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppConstants.chatTabHintOuterPaddingH,
+      ),
       child: Column(
         children: [
           AppConstants.secondarySectionSpacing,
           _HintChip(
-            label: 'What is this company\'s revenue trend?',
+            label: 'How does $companyName earn revenue?',
             ticker: ticker,
             companyName: companyName,
           ),
           AppConstants.subSectionSpacing,
           _HintChip(
-            label: 'How has EPS grown over 5 years?',
+            label: 'Who are $companyName\'s competitors?',
             ticker: ticker,
             companyName: companyName,
           ),
           AppConstants.subSectionSpacing,
           _HintChip(
-            label: 'Is this company profitable?',
+            label: 'How did $companyName perform last quarter?',
             ticker: ticker,
             companyName: companyName,
           ),
@@ -226,13 +227,17 @@ class _HintChip extends StatelessWidget {
           color: Theme.of(context).colorScheme.secondaryContainer,
           borderRadius: BorderRadius.circular(AppConstants.chatHintChipRadius),
           border: Border.all(
-            color: Theme.of(context).extension<MascotThemeExtension>()!.borderColor,
+            color: Theme.of(
+              context,
+            ).extension<MascotThemeExtension>()!.borderColor,
           ),
         ),
         child: Text(
           label,
           style: AppTextStyles.bodyMedium.copyWith(
-            color: Theme.of(context).extension<MascotThemeExtension>()!.subtitleColor,
+            color: Theme.of(
+              context,
+            ).extension<MascotThemeExtension>()!.subtitleColor,
           ),
           textAlign: TextAlign.center,
         ),

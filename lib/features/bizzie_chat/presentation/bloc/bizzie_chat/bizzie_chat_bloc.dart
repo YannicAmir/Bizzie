@@ -62,6 +62,7 @@ class BizzieChatBloc extends Bloc<BizzieChatEvent, BizzieChatState> {
             aiResponse: e.aiResponse,
             companyName: e.companyName,
             companyTicker: e.companyTicker,
+            assistantMessageId: e.assistantMessageId,
             emit: emit,
           ),
         );
@@ -234,7 +235,8 @@ class BizzieChatBloc extends Bloc<BizzieChatEvent, BizzieChatState> {
       _logger.warning('sseDone fired with no streaming content — backend returned empty response');
       emit(activeState.copyWith(
         isStreaming: false,
-        sseError: 'Something went wrong generating a response. Please try again.',
+        streamingContent: 'Something went wrong generating a response. Please try again.',
+        sseError: null,
       ));
       return;
     }
@@ -264,8 +266,8 @@ class BizzieChatBloc extends Bloc<BizzieChatEvent, BizzieChatState> {
     if (activeState == null) return;
     emit(activeState.copyWith(
       isStreaming: false,
-      streamingContent: null,
-      sseError: message,
+      streamingContent: message,
+      sseError: null,
     ));
   }
 
@@ -275,6 +277,7 @@ class BizzieChatBloc extends Bloc<BizzieChatEvent, BizzieChatState> {
     required String aiResponse,
     required String companyName,
     required String companyTicker,
+    required String assistantMessageId,
     required Emitter<BizzieChatState> emit,
   }) async {
     final activeState = state.mapOrNull(active: (s) => s);
@@ -293,6 +296,8 @@ class BizzieChatBloc extends Bloc<BizzieChatEvent, BizzieChatState> {
         time: DateTime.now(),
         companyName: companyName,
         companyTicker: companyTicker,
+        userId: activeState.uid,
+        assistantMessageId: assistantMessageId,
       ),
     );
 

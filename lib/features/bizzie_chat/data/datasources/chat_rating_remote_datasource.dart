@@ -1,6 +1,5 @@
 import 'package:injectable/injectable.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
-import 'package:bizzie/core/utils/id_utils.dart';
 import 'package:bizzie/features/bizzie_chat/data/dtos/chat_rating_dto.dart';
 import 'package:bizzie/features/bizzie_chat/data/interfaces/i_chat_rating_remote_datasource.dart';
 import 'package:bizzie/services/firestore_service.dart';
@@ -20,7 +19,7 @@ class ChatRatingRemoteDataSource implements IChatRatingRemoteDataSource {
     try {
       _logger.info('submitRating: ${dto.rating}');
       await _firestoreService.setDocument(
-        path: '$_kChatRatings/${IdUtils.generateSessionId()}',
+        path: '$_kChatRatings/${dto.assistantMessageId}',
         value: dto,
         toJson: (dto) => dto.toJson(),
         merge: false,
