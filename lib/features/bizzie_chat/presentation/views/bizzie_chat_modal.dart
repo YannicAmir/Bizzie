@@ -97,7 +97,8 @@ class _BizzieChatModalState extends State<BizzieChatModal> {
     if (!_scrollController.hasClients) return;
     final pos = _scrollController.position;
     final atBottom =
-        pos.pixels >= pos.maxScrollExtent - AppConstants.chatScrollAtBottomThreshold;
+        pos.pixels >=
+        pos.maxScrollExtent - AppConstants.chatScrollAtBottomThreshold;
     if (atBottom != _isAtBottom) {
       setState(() => _isAtBottom = atBottom);
     }
@@ -176,6 +177,7 @@ class _BizzieChatModalState extends State<BizzieChatModal> {
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.sizeOf(context).height;
+    final keyboardHeight = MediaQuery.viewInsetsOf(context).bottom;
     final mascotAsset =
         context.read<UserBloc>().state.mapOrNull(
           loaded: (u) => AppAssets.getMascotForSector(u.user.favoriteSector),
@@ -187,7 +189,8 @@ class _BizzieChatModalState extends State<BizzieChatModal> {
         if (widget.sessionId != null && !_hasJumpedToBottomOnLoad) {
           final prevWasActive = prev.mapOrNull(active: (_) => true) ?? false;
           final currMessages =
-              curr.mapOrNull(active: (s) => s.messages) ?? const <ChatMessage>[];
+              curr.mapOrNull(active: (s) => s.messages) ??
+              const <ChatMessage>[];
           if (!prevWasActive && currMessages.isNotEmpty) return true;
         }
 
@@ -222,7 +225,8 @@ class _BizzieChatModalState extends State<BizzieChatModal> {
       },
       builder: (context, chatState) {
         final messages =
-            chatState.mapOrNull(active: (s) => s.messages) ?? const <ChatMessage>[];
+            chatState.mapOrNull(active: (s) => s.messages) ??
+            const <ChatMessage>[];
         final followUps =
             chatState.mapOrNull(active: (s) => s.followUps) ?? const <String>[];
         final isStreaming =
@@ -262,14 +266,18 @@ class _BizzieChatModalState extends State<BizzieChatModal> {
           (m) => m.role == ChatMessageRole.assistant,
         );
 
-        final userCount =
-            messages.where((m) => m.role == ChatMessageRole.user).length;
-        final assistantCount =
-            messages.where((m) => m.role == ChatMessageRole.assistant).length;
+        final userCount = messages
+            .where((m) => m.role == ChatMessageRole.user)
+            .length;
+        final assistantCount = messages
+            .where((m) => m.role == ChatMessageRole.assistant)
+            .length;
         final showSpacer = isStreaming || (userCount > assistantCount);
 
         return SizedBox(
-          height: screenHeight * AppConstants.chatModalHeightFactor,
+          height:
+              screenHeight * AppConstants.chatModalHeightFactor -
+              keyboardHeight,
           child: Container(
             decoration: BoxDecoration(
               color: Theme.of(context).colorScheme.surface,
@@ -310,14 +318,15 @@ class _BizzieChatModalState extends State<BizzieChatModal> {
                             duration: const Duration(milliseconds: 200),
                             transitionBuilder: (child, animation) =>
                                 ScaleTransition(
-                              scale: CurvedAnimation(
-                                parent: animation,
-                                curve: Curves.easeOutBack,
-                                reverseCurve: Curves.easeIn,
-                              ),
-                              child: child,
-                            ),
-                            child: (!_isAtBottom &&
+                                  scale: CurvedAnimation(
+                                    parent: animation,
+                                    curve: Curves.easeOutBack,
+                                    reverseCurve: Curves.easeIn,
+                                  ),
+                                  child: child,
+                                ),
+                            child:
+                                (!_isAtBottom &&
                                     messages.isNotEmpty &&
                                     !isStreaming &&
                                     hasAssistantResponse)
@@ -325,9 +334,7 @@ class _BizzieChatModalState extends State<BizzieChatModal> {
                                     key: const ValueKey('scroll_btn'),
                                     onTap: _animateToBottom,
                                   )
-                                : const SizedBox.shrink(
-                                    key: ValueKey('empty'),
-                                  ),
+                                : const SizedBox.shrink(key: ValueKey('empty')),
                           ),
                         ),
                       ),
@@ -355,8 +362,6 @@ class _BottomSafeArea extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bottomInset = MediaQuery.viewInsetsOf(context).bottom;
-    final bottomPadding = MediaQuery.paddingOf(context).bottom;
-    return SizedBox(height: bottomInset > 0 ? bottomInset : bottomPadding);
+    return SizedBox(height: MediaQuery.paddingOf(context).bottom);
   }
 }
