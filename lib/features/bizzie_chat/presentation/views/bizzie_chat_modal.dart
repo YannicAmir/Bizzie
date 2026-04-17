@@ -67,16 +67,19 @@ class BizzieChatModal extends StatefulWidget {
   State<BizzieChatModal> createState() => _BizzieChatModalState();
 }
 
-class _BizzieChatModalState extends State<BizzieChatModal> {
+class _BizzieChatModalState extends State<BizzieChatModal>
+    with WidgetsBindingObserver {
   late final TextEditingController _textController;
   late final ScrollController _scrollController;
   final GlobalKey _lastUserMessageKey = GlobalKey();
   bool _isAtBottom = true;
   bool _hasJumpedToBottomOnLoad = false;
+  double _keyboardHeight = 0;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _textController = TextEditingController();
     _scrollController = ScrollController()..addListener(_onScroll);
 
@@ -87,7 +90,18 @@ class _BizzieChatModalState extends State<BizzieChatModal> {
   }
 
   @override
+  void didChangeMetrics() {
+    final view = WidgetsBinding.instance.platformDispatcher.implicitView;
+    if (view == null || !mounted) return;
+    final newHeight = view.viewInsets.bottom / view.devicePixelRatio;
+    if (newHeight != _keyboardHeight) {
+      setState(() => _keyboardHeight = newHeight);
+    }
+  }
+
+  @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _textController.dispose();
     _scrollController.dispose();
     super.dispose();
@@ -177,7 +191,6 @@ class _BizzieChatModalState extends State<BizzieChatModal> {
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.sizeOf(context).height;
-    final keyboardHeight = MediaQuery.viewInsetsOf(context).bottom;
     final mascotAsset =
         context.read<UserBloc>().state.mapOrNull(
           loaded: (u) => AppAssets.getMascotForSector(u.user.favoriteSector),
@@ -275,9 +288,11 @@ class _BizzieChatModalState extends State<BizzieChatModal> {
         final showSpacer = isStreaming || (userCount > assistantCount);
 
         return SizedBox(
-          height:
-              screenHeight * AppConstants.chatModalHeightFactor -
-              keyboardHeight,
+          height: screenHeight *
+                  (_keyboardHeight > 0
+                      ? AppConstants.chatModalHeightFactor
+                      : AppConstants.chatModalHeightFactorKeyboard) -
+              _keyboardHeight,
           child: Container(
             decoration: BoxDecoration(
               color: Theme.of(context).colorScheme.surface,
