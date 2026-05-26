@@ -1,8 +1,10 @@
-import 'package:nanoid/nanoid.dart';
+import 'package:uuid/uuid.dart';
+
+const _uuid = Uuid();
 
 class IdUtils {
   IdUtils._();
 
-  /// Generates a short, URL-friendly unique session ID (default 8 characters).
-  static String generateSessionId([int length = 8]) => nanoid(length);
+  /// Generates a UUID v4 (randomly generated, cryptographically strong).
+  static String generateSessionId() => _uuid.v4();
 }

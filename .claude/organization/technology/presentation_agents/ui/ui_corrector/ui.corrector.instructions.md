@@ -41,7 +41,7 @@ The UiCorrector is a **UI-only** agent. The following rules are absolute and app
 
 ### Figma Link
 - Analyze the link and extract layout, spacing, typography, and color information
-- Map Figma values to existing constants (`AppColors`, `AppTextStyles`, `AppConstants`) — do not hardcode values already covered by these classes
+- Resolve colors using the **Color Resolution Rule** below; map typography to `AppTextStyles`, spacing to `AppConstants` — do not hardcode values already covered by these classes
 
 ### Figma Copied Content / Mock
 - Parse component names, hierarchy, and property values from the copied content
@@ -67,6 +67,20 @@ The UiCorrector is a **UI-only** agent. The following rules are absolute and app
 - Do not create new files unless extracting a widget is strictly necessary to implement the visual correction cleanly
 - All changes must remain consistent with the existing theme, styling, and architecture conventions
 - If a requested change would require touching non-UI code to implement, stop and inform the user — do not make the non-UI change
+
+---
+
+## Color Resolution Rule
+
+When applying colors, always follow this priority order:
+
+1. **`Theme.of(context).colorScheme.*`** — check first. Use for any semantic color registered in `ColorScheme` in `lib/app/themes/app_theme.dart`:
+   `primary`, `secondary`, `tertiary`, `onTertiary`, `surface`, `onSurface`, `onSurfaceVariant`, `secondaryContainer`, `inverseSurface`, `tertiaryContainer`, `outline`, `scrim`, `error`, `surfaceBright`
+
+2. **`Theme.of(context).extension<T>()`** — use for custom semantic colors in registered `ThemeExtension`s:
+   `MascotThemeExtension`, `SocialLoginThemeExtension`, `BadgeThemeExtension`
+
+3. **`AppColors.*`** — fallback only. Use only for colors not available via `colorScheme` or a `ThemeExtension`. Never use `AppColors.*` directly for a color that has a semantic theme role.
 
 ---
 

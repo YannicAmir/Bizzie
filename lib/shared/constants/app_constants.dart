@@ -70,4 +70,55 @@ class AppConstants {
   // Onboarding
   static const SizedBox onboardSectionSpacing = SizedBox(height: 32);
   static const SizedBox onboardSecondarySectionSpacing = SizedBox(height: 16);
+
+  // Bizzie Chat
+  static const double chatModalHeightFactor = 0.875;
+  static const double chatModalHeightFactorKeyboard = 0.78;
+  static const double chatModalTopRadius = 20.0;
+  static const double chatScrollAtBottomThreshold = 80.0;
+  static const double chatFabSize = 36.0;
+  static const double chatFabShadowBlur = 8.0;
+  static const double chatFabIconSize = 22.0;
+  static const double chatFabBottomOffset = 8.0;
+  static const double chatActionIconSize = 18.0;
+  static const double chatEmptyStatePadding = 32.0;
+  static const double chatEmptyStateIconContainerSize = 64.0;
+  static const double chatEmptyStateIconSize = 32.0;
+  static const double chatMascotThinkingSize = 28.0;
+  static const double chatThinkingRowSpacing = 10.0;
+  static const EdgeInsets chatListPadding = EdgeInsets.symmetric(
+    horizontal: 16.0,
+    vertical: 8.0,
+  );
+  static const double chatFooterFeedbackPaddingV = 4.0;
+  static const double chatFooterDisclaimerPaddingBottom = 16.0;
+  static const double chatFollowUpHeaderPaddingH = 8.0;
+  static const double chatFollowUpHeaderPaddingV = 16.0;
+  static const double chatFollowUpChevronSize = 20.0;
+  static const double chatFollowUpItemPaddingV = 8.0;
+  static const double chatBubbleMascotSize = 40.0;
+  static const double chatBubbleMascotSpacing = 16.0;
+  static const double chatBubbleVerticalPadding = 6.0;
+  static const double chatUserBubbleVerticalPadding = 32.0;
+  static const double chatBubblePaddingH = 14.0;
+  static const double chatBubblePaddingV = 10.0;
+  static const double chatBubbleRadiusLarge = 16.0;
+  static const double chatBubbleRadiusSmall = 4.0;
+  static const double chatMarkdownLineHeight = 1.7;
+  static const double chatMarkdownBlockSpacing = 6.0;
+  static const double chatMarkdownListIndent = 16.0;
+  static const double chatMarkdownCodeRadius = 8.0;
+  static const double chatMarkdownBlockquotePaddingH = 12.0;
+  static const double chatMarkdownBlockquotePaddingV = 4.0;
+  static const double chatMarkdownBlockquoteBorderWidth = 3.0;
+  static const double chatInputPaddingH = 16.0;
+  static const double chatInputPaddingV = 12.0;
+  static const double chatInputBorderRadius = 24.0;
+  static const double chatSendButtonSize = 44.0;
+  static const double chatSendIconSize = 20.0;
+  static const double chatSendButtonSpacing = 8.0;
+  static const double chatTabHintOuterPaddingH = 32.0;
+  static const double chatHintChipPaddingH = 16.0;
+  static const double chatHintChipPaddingV = 16.0;
+  static const double chatHintChipRadius = 10.0;
 }

@@ -59,8 +59,8 @@ The UiUpdater is a **UI-only** agent. The following rules are absolute and apply
 ### Figma Link
 - Analyze the link and extract the full layout, spacing, typography, color, and component hierarchy
 - Identify what has changed relative to the current implementation
-- Map all Figma values to existing project constants (`AppColors`, `AppTextStyles`, `AppConstants`) — do not hardcode values already covered by these classes
-- Where a Figma value has no matching constant, use the raw value and add an inline comment: `// TODO: consider adding to AppColors/AppTextStyles/AppConstants`
+- Resolve colors using the **Color Resolution Rule** below; map typography to `AppTextStyles`, spacing to `AppConstants` — do not hardcode values already covered by these classes
+- Where a Figma value has no matching constant, use the raw value and add an inline comment: `// TODO: consider adding to AppTextStyles/AppConstants or colorScheme`
 
 ### Figma Copied Content
 - Parse component names, hierarchy, property values, and auto-layout settings from the copied content
@@ -88,13 +88,27 @@ The UiUpdater is a **UI-only** agent. The following rules are absolute and apply
 
 ---
 
+## Color Resolution Rule
+
+When applying colors, always follow this priority order:
+
+1. **`Theme.of(context).colorScheme.*`** — check first. Use for any semantic color registered in `ColorScheme` in `lib/app/themes/app_theme.dart`:
+   `primary`, `secondary`, `tertiary`, `onTertiary`, `surface`, `onSurface`, `onSurfaceVariant`, `secondaryContainer`, `inverseSurface`, `tertiaryContainer`, `outline`, `scrim`, `error`, `surfaceBright`
+
+2. **`Theme.of(context).extension<T>()`** — use for custom semantic colors in registered `ThemeExtension`s:
+   `MascotThemeExtension`, `SocialLoginThemeExtension`, `BadgeThemeExtension`
+
+3. **`AppColors.*`** — fallback only. Use only for colors not available via `colorScheme` or a `ThemeExtension`. Never use `AppColors.*` directly for a color that has a semantic theme role.
+
+---
+
 ## Checklist
 - [ ] Figma link or copied Figma content provided before starting
 - [ ] Target feature directory or page description provided before starting
 - [ ] Design analysed and all changes relative to current implementation identified
 - [ ] Affected files confirmed to be in the presentation layer only
 - [ ] All layout, hierarchy, typography, color, spacing, and decoration changes from the new mock applied
-- [ ] AppColors/AppTextStyles/AppConstants used where available; hardcoded values commented where no constant exists
+- [ ] Color Resolution Rule followed: `colorScheme.*` first, `extension<T>().*` second, `AppColors.*` only as fallback; `AppTextStyles` and `AppConstants` used where available; hardcoded values commented where no constant exists
 - [ ] No business logic, state management, or data handling modified
 - [ ] No variables, classes, methods, or functions renamed or refactored
 - [ ] No callbacks, event handlers, or navigation behavior changed

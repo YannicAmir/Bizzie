@@ -115,7 +115,20 @@ After building the agent, append a new entry to the **Agent Registry** in `.clau
 
 ---
 
-## 8. Checklist
+## 8. Create the Corresponding Skill
+
+Every new agent **must** have a corresponding skill created alongside it. Follow `build.skills.instructions.md` to create the skill file. Rules:
+
+- Skill name: `kebab-case`, verb-first (e.g., `enforce-code-hygiene`, `execute-ui-management`).
+- Skill folder: `.claude/skills/<skill-name>/SKILL.md`.
+- Frontmatter `description`: a clear trigger condition aligned with this agent's purpose.
+- The executing agent in the skill body must be the agent just built.
+
+Do not skip this step. An agent without a skill cannot be invoked by the user.
+
+---
+
+## 9. Checklist
 
 - [ ] Agent folder created (`snake_case`)
 - [ ] Agent file created (`<name>.<role>.agent.md`)
@@ -126,3 +139,5 @@ After building the agent, append a new entry to the **Agent Registry** in `.clau
 - [ ] Personality defined with domain-specific expertise
 - [ ] Instructions Reference lists all relevant instruction files
 - [ ] No delegation details (sub-agent path, trigger condition, auto-delegate rules) duplicated between the agent file and any instruction file
+- [ ] Agent Registry updated in `agents.guidance.instructions.md`
+- [ ] Corresponding skill created at `.claude/skills/<skill-name>/SKILL.md`

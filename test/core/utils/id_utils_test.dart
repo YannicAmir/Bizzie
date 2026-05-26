@@ -3,24 +3,26 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('IdUtils', () {
-    test('generateSessionId_noArguments_returnsEightCharacterString', () {
+    test('generateSessionId_noArguments_returns36CharacterString', () {
       // act
       final id = IdUtils.generateSessionId();
 
       // assert
-      expect(id.length, 8);
       expect(id, isA<String>());
+      expect(id.length, 36);
     });
 
-    test('generateSessionId_customLength_returnsStringOfSpecifiedLength', () {
+    test('generateSessionId_validFormat_matchesUuidV4Pattern', () {
       // arrange
-      const customLength = 12;
+      final uuidV4Regex = RegExp(
+        r'^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$',
+      );
 
       // act
-      final id = IdUtils.generateSessionId(customLength);
+      final id = IdUtils.generateSessionId();
 
       // assert
-      expect(id.length, customLength);
+      expect(uuidV4Regex.hasMatch(id), isTrue);
     });
 
     test('generateSessionId_multipleCalls_returnsUniqueStrings', () {
@@ -35,17 +37,6 @@ void main() {
 
       // assert
       expect(ids.length, count);
-    });
-
-    test('generateSessionId_validCharacters_containsOnlyUrlFriendlyChars', () {
-      // arrange
-      final urlFriendlyRegex = RegExp(r'^[a-zA-Z0-9_-]+$');
-
-      // act
-      final id = IdUtils.generateSessionId(100);
-
-      // assert
-      expect(urlFriendlyRegex.hasMatch(id), isTrue);
     });
   });
 }

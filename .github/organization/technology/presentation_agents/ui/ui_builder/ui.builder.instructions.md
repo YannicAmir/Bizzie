@@ -51,7 +51,7 @@ The UiBuilder is a **UI-only** agent. The following rules are absolute and apply
 
 ### Figma Link
 - Analyse the link to extract the full layout, component hierarchy, typography, colors, spacing, and states (default, hover, disabled, error, etc.)
-- Map all extracted values to existing project constants — use `AppColors.xxx` for colors, `AppTextStyles.xxx` for typography, `AppConstants.xxx` for spacing — do not hardcode values already covered by these classes
+- Map all extracted values to existing project constants — resolve colors using the **Color Resolution Rule** below, use `AppTextStyles.xxx` for typography, `AppConstants.xxx` for spacing — do not hardcode values already covered by these classes
 - Where a Figma value has no matching constant, use the raw value and add an inline comment: `// TODO: consider adding to AppColors/AppTextStyles/AppConstants`
 
 ### Figma Copied Content
@@ -67,7 +67,8 @@ The UiBuilder is a **UI-only** agent. The following rules are absolute and apply
 - Follow the existing folder structure and file naming conventions of the feature directory
 - One widget per file for any non-trivial widget
 - Prefer `const` constructors wherever possible
-- Use the project's theme classes directly: `AppTextStyles.xxx` for text styles, `AppColors.xxx` for colors, `AppConstants.xxx` for spacing — do not hardcode values or introduce new theme access patterns
+- Use `AppTextStyles.xxx` for text styles, `AppConstants.xxx` for spacing — do not hardcode values
+- For colors, follow the **Color Resolution Rule** (see section below) — never default to `AppColors.*` for a color that has a semantic role in the theme
 - All new widgets must be `StatelessWidget` unless the design explicitly requires local UI state (e.g., a toggle, an accordion) — in that case use `StatefulWidget` with minimal, UI-only state
 
 ---
@@ -91,13 +92,28 @@ The UiBuilder is a **UI-only** agent. The following rules are absolute and apply
 
 ---
 
+## Color Resolution Rule
+
+When applying colors, always follow this priority order:
+
+1. **`Theme.of(context).colorScheme.*`** — check first. Use for any semantic color registered in `ColorScheme` in `lib/app/themes/app_theme.dart`:
+   `primary`, `secondary`, `tertiary`, `onTertiary`, `surface`, `onSurface`, `onSurfaceVariant`, `secondaryContainer`, `inverseSurface`, `tertiaryContainer`, `outline`, `scrim`, `error`, `surfaceBright`
+
+2. **`Theme.of(context).extension<T>()`** — use for custom semantic colors in registered `ThemeExtension`s:
+   `MascotThemeExtension`, `SocialLoginThemeExtension`, `BadgeThemeExtension`
+
+3. **`AppColors.*`** — fallback only. Use only for colors not available via `colorScheme` or a `ThemeExtension`. Never use `AppColors.*` directly for a color that has a semantic theme role.
+
+---
+
 ## Checklist
 - [ ] Implementation plan, design reference, and target feature directory all confirmed before starting
 - [ ] Design reference fully analysed — layout, hierarchy, typography, colors, spacing, and all states identified
 - [ ] All Figma values mapped to existing theme tokens; unmapped values use raw value with `// TODO: consider adding to theme` comment
 - [ ] All new files placed inside the target feature directory following existing naming conventions
 - [ ] Widget tree matches the design reference for every created screen/component
-- [ ] `AppColors`, `AppTextStyles`, `AppConstants` used consistently — no hardcoded values or new access patterns introduced
+- [ ] Color Resolution Rule followed: `colorScheme.*` first, `extension<T>().*` second, `AppColors.*` only as fallback — no hardcoded color values
+- [ ] `AppTextStyles`, `AppConstants` used consistently — no hardcoded text style or spacing values
 - [ ] Placeholder callbacks added with `// TODO: implement` comment — no logic implemented
 - [ ] No existing files modified outside the scope of the implementation plan
 - [ ] No business logic, state management, navigation, or non-UI code written

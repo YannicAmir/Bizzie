@@ -341,3 +341,11 @@ After AgentBuilder successfully builds a new agent, update the **Agent Registry*
 ## ThemesAndStylingReporter
 - **Path:** `.claude/organization/technology/qa_agents/themes_and_styling_reporter/themes.and.styling.reporter.agent.md`
 - **Description:** QA reporter for theming and styling. Receives violation findings from ThemesAndStylingEnforcer and passes them verbatim to UICorrector with next_attempt = attempt + 1.
+
+## CodeHygieneEnforcer
+- **Path:** `.claude/organization/technology/qa_agents/code_hygiene_enforcer/code.hygiene.enforcer.agent.md`
+- **Description:** QA enforcer for general code hygiene. Measures changed files against architecture.guidance, dart.best.practice, flutter.best.practice, flutter.bloc.best.practice, routing, software.dev.best.practice, tech.stack, and theme.styling.guidance instruction sets. Drives up to 3 correction loops via CodeHygieneReporter before stopping and reporting to the user.
+
+## CodeHygieneReporter
+- **Path:** `.claude/organization/technology/qa_agents/code_hygiene_reporter/code.hygiene.reporter.agent.md`
+- **Description:** QA reporter for general code hygiene. Receives violation findings from CodeHygieneEnforcer, formats them as a structured refactoring plan, and passes them to RefactorBuilder with next_attempt and an instruction to call CodeHygieneEnforcer again after corrections are applied.

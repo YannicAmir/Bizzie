@@ -44,6 +44,13 @@ Before planning, confirm the following are available. If any are missing, ask th
 - Identify the existing widget structure, naming conventions, theme usage, and file organisation
 - Note any patterns that must be respected in the implementation
 
+### Step 2a: Audit Reusable Widgets
+- Search the codebase for existing shared/common widgets — check `lib/core/widgets/`, `lib/shared/`, and any `widgets/` directories across feature folders
+- For every UI element in the request (buttons, cards, inputs, list items, dialogs, loaders, etc.), determine whether a matching widget already exists before planning to create a new one
+- If a reusable widget exists that satisfies the requirement (even partially), **plan to use or extend it** — never plan a new widget that duplicates an existing one
+- Document all reusable widgets identified and map them to the relevant implementation steps
+- Only plan new widget creation when no suitable existing widget exists
+
 ### Step 3: Analyse the Design Reference (if provided)
 - Extract layout, hierarchy, typography, colors, spacing, and component structure from the Figma reference
 - For updates: identify exactly what has changed relative to the current implementation
@@ -65,8 +72,9 @@ Numbered, sequenced steps that the implementing agent must follow. Each step mus
 - Any dependencies or ordering constraints between steps
 
 #### Design Token Mapping *(if a design reference is provided)*
-- Map all Figma values to existing project constants (`AppColors`, `AppTextStyles`, `AppConstants`)
-- Flag any values with no existing constant and note they may need a new constant added to `AppColors`, `AppTextStyles`, or `AppConstants`
+- Resolve colors using the **Color Resolution Rule** (see section below): `colorScheme.*` first, `extension<T>().*` second, `AppColors.*` as fallback only
+- Map typography to `AppTextStyles`, spacing to `AppConstants`
+- Flag any values with no existing constant and note they may need a new constant added to `AppTextStyles` or `AppConstants`, or a new `colorScheme` role used
 
 #### Constraints & Notes
 - Any restrictions, edge cases, or decisions that the implementing agent must be aware of
@@ -99,13 +107,28 @@ After the plan is produced, delegate immediately without waiting for user confir
 
 ---
 
+## Color Resolution Rule
+
+When applying colors, always follow this priority order:
+
+1. **`Theme.of(context).colorScheme.*`** — check first. Use for any semantic color registered in `ColorScheme` in `lib/app/themes/app_theme.dart`:
+   `primary`, `secondary`, `tertiary`, `onTertiary`, `surface`, `onSurface`, `onSurfaceVariant`, `secondaryContainer`, `inverseSurface`, `tertiaryContainer`, `outline`, `scrim`, `error`, `surfaceBright`
+
+2. **`Theme.of(context).extension<T>()`** — use for custom semantic colors in registered `ThemeExtension`s:
+   `MascotThemeExtension`, `SocialLoginThemeExtension`, `BadgeThemeExtension`
+
+3. **`AppColors.*`** — fallback only. Use only for colors not available via `colorScheme` or a `ThemeExtension`. Never use `AppColors.*` directly for a color that has a semantic theme role.
+
+---
+
 ## Checklist
 - [ ] All required inputs confirmed before planning begins (request description, target context, design reference if applicable)
 - [ ] Codebase analysed — existing widget structure, conventions, and theme usage understood
+- [ ] Reusable widget audit completed — `lib/core/widgets/`, `lib/shared/`, and feature `widgets/` directories checked; all existing widgets that can be reused or extended are identified and mapped to implementation steps; no new widget planned where an existing one suffices
 - [ ] Design reference analysed — all layout, hierarchy, typography, color, and spacing changes identified
 - [ ] Request correctly classified as new build, update, or both
 - [ ] Implementation plan produced with: Overview, Affected Files, Implementation Steps, Design Token Mapping (if applicable), Constraints & Notes
-- [ ] All Figma values mapped to existing constants (AppColors/AppTextStyles/AppConstants); unmapped values flagged
+- [ ] Color Resolution Rule followed: `colorScheme.*` first, `extension<T>().*` second, `AppColors.*` only as fallback; `AppTextStyles` and `AppConstants` used where available; unmapped values flagged
 - [ ] Plan contains UI-only steps — no non-UI code changes included
 - [ ] Any non-UI requirements noted in Constraints & Notes and excluded from steps
 - [ ] Delegated to UiBuilder for new-build sections (without waiting for user confirmation)

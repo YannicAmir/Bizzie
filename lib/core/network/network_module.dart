@@ -4,6 +4,7 @@ import 'package:injectable/injectable.dart';
 import 'package:bizzie/env/app_env.dart';
 import 'package:bizzie/core/interfaces/i_config_service.dart';
 import 'package:bizzie/core/network/fmp_api_interceptor.dart';
+import 'package:bizzie/core/network/bizzie_auth_interceptor.dart';
 
 @module
 abstract class NetworkModule {
@@ -29,5 +30,19 @@ abstract class NetworkModule {
         headers: {'User-Agent': 'Bizzie (https://getbizzie.io)'},
       ),
     );
+  }
+
+  @Named('BizzieDio')
+  @singleton
+  Dio bizzieDio(IConfigService configService) {
+    final dio = Dio(
+      BaseOptions(
+        baseUrl: configService.bizzieChatBaseUrl,
+        connectTimeout: const Duration(seconds: 10),
+        receiveTimeout: const Duration(seconds: 95),
+      ),
+    );
+    dio.interceptors.add(BizzieAuthInterceptor());
+    return dio;
   }
 }
