@@ -28,7 +28,7 @@ class UpcomingEarningsWidget extends StatelessWidget {
               opacity: animation,
               child: SizeTransition(
                 sizeFactor: animation,
-                axisAlignment: -1.0,
+                alignment: const Alignment(-1.0, -1.0),
                 child: child,
               ),
             );
