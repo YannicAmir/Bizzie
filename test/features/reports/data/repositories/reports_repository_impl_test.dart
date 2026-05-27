@@ -1,6 +1,6 @@
 import 'package:bizzie/core/error/exceptions.dart';
 import 'package:bizzie/core/error/failures.dart';
-import 'package:bizzie/features/reports/data/datasources/reports_remote_datasource.dart';
+import 'package:bizzie/features/reports/data/interfaces/i_reports_remote_datasource.dart';
 import 'package:bizzie/features/reports/data/repositories/reports_repository_impl.dart';
 import 'package:bizzie/features/reports/domain/models/reports_feed.dart';
 import 'package:bizzie/features/user/data/dtos/user_activity_dto.dart';
@@ -58,6 +58,9 @@ void main() {
         () => mockRemoteDataSource.getUpcomingEarningsStream(any()),
       ).thenAnswer((_) => Stream.value([]));
       when(
+        () => mockRemoteDataSource.getWeeklyReportsStream(any()),
+      ).thenAnswer((_) => Stream.value([]));
+      when(
         () => mockStockRepository.getAllStocks(),
       ).thenAnswer((_) async => const Right([]));
 
@@ -86,6 +89,9 @@ void main() {
         ).thenAnswer((_) => Stream.value([]));
         when(
           () => mockRemoteDataSource.getUpcomingEarningsStream(any()),
+        ).thenAnswer((_) => Stream.value([]));
+        when(
+          () => mockRemoteDataSource.getWeeklyReportsStream(any()),
         ).thenAnswer((_) => Stream.value([]));
 
         // act

@@ -1,25 +1,31 @@
 import 'package:bizzie/features/reports/presentation/bloc/reports_state.dart';
 
 extension ReportsStateExtension on ReportsState {
-  int get unreadCount {
+  int unreadCount(Set<String> seenWeeklyReportIds) {
     return maybeMap(
       loaded: (s) {
         final now = DateTime.now();
         final today = DateTime(now.year, now.month, now.day);
 
-        return s.feed.filings.where((f) {
-          if (f.createdAt == null) return false;
-          final filingDate = f.createdAt!;
+        bool isFilingUnread(DateTime? createdAt) {
+          if (createdAt == null) return false;
           final isToday =
-              filingDate.year == today.year &&
-              filingDate.month == today.month &&
-              filingDate.day == today.day;
-
+              createdAt.year == today.year &&
+              createdAt.month == today.month &&
+              createdAt.day == today.day;
           if (!isToday) return false;
-
           if (s.lastViewedReports == null) return true;
-          return filingDate.isAfter(s.lastViewedReports!);
-        }).length;
+          return createdAt.isAfter(s.lastViewedReports!);
+        }
+
+        final filingCount =
+            s.feed.filings.where((f) => isFilingUnread(f.createdAt)).length;
+
+        final weeklyCount = s.todaysWeeklyReports
+            .where((r) => !seenWeeklyReportIds.contains(r.seenKey))
+            .length;
+
+        return filingCount + weeklyCount;
       },
       orElse: () => 0,
     );

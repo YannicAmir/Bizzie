@@ -1,4 +1,5 @@
 import 'package:bizzie/features/reports/domain/models/reports_feed.dart';
+import 'package:bizzie/features/reports/domain/models/weekly_report.dart';
 import 'package:bizzie/features/reports/presentation/models/filing_view_model.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:bizzie/core/error/failures.dart';
@@ -13,6 +14,7 @@ class ReportsState with _$ReportsState {
     ReportsFeed feed, {
     DateTime? lastViewedReports,
     @Default([]) List<FilingViewModel> todaysFilings,
+    @Default([]) List<WeeklyReport> todaysWeeklyReports,
   }) = Loaded;
   const factory ReportsState.failure(Failure failure) = ReportsFailure;
 }

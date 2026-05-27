@@ -59,7 +59,7 @@ class _SectionVisibilityAnimatorState extends State<SectionVisibilityAnimator>
   Widget build(BuildContext context) {
     return SizeTransition(
       sizeFactor: _animation,
-      axisAlignment: -1.0,
+      alignment: const Alignment(-1.0, -1.0),
       child: widget.child,
     );
   }

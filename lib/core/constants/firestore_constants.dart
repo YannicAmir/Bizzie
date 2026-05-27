@@ -8,6 +8,11 @@ class FirestoreConstants {
 
   // Documents
   static const String userState = 'user_state';
+  static const String reportsActivity = 'reports';
+
+  // Weekly recap
+  static const String weeklyRecap = 'weekly_recap';
+  static const String weeks = 'weeks';
 
   // Fields
   static const String ticker = 'ticker';

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/features/auth/domain/interfaces/i_auth_repository.dart';
@@ -38,6 +39,11 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
 
   DateTime? _lastViewedReports;
 
+  Set<String> _seenWeeklyReportIds = {};
+  Set<String> get seenWeeklyReportIds => _seenWeeklyReportIds;
+
+  static const _seenWeeklyStorageKey = 'seen_weekly_report_ids';
+
   ReportsBloc(
     this._getReportsUseCase,
     this._watchlistRepository,
@@ -48,6 +54,7 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
     this._localStorageService,
     this._tracker,
   ) : super(const ReportsState.initial()) {
+    _seenWeeklyReportIds = _loadSeenWeeklyIds();
     _userSubscription = _userRepository.userStream.listen((_) {
       add(const ReportsEvent.started());
     });
@@ -134,7 +141,27 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
   void _onReset(Reset event, Emitter<ReportsState> emit) {
     _logger.info('Resetting ReportsBloc');
     _lastViewedReports = null;
+    _seenWeeklyReportIds = {};
+    _localStorageService.remove(_seenWeeklyStorageKey);
     emit(const ReportsState.initial());
+  }
+
+  Set<String> _loadSeenWeeklyIds() {
+    final stored = _localStorageService.getString(_seenWeeklyStorageKey);
+    if (stored == null) return {};
+    try {
+      return (jsonDecode(stored) as List).cast<String>().toSet();
+    } catch (e) {
+      _logger.warning('Failed to decode stored seen weekly IDs, resetting', e);
+      return {};
+    }
+  }
+
+  Future<void> _saveSeenWeeklyIds() async {
+    await _localStorageService.setString(
+      _seenWeeklyStorageKey,
+      jsonEncode(_seenWeeklyReportIds.toList()),
+    );
   }
 
   String? get _uid => _authRepository.currentUser?.id;
@@ -150,11 +177,18 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
     _logger.info('Starting ReportsBloc for UID: $uid');
     emit(const ReportsState.loading());
 
-    final activityStream = _getUserActivityUseCase(uid);
-    final watchlistStream = _watchlistRepository.getWatchlistStream(uid);
+    await Future.wait([
+      _subscribeToActivityStream(uid, emit),
+      _subscribeToWatchlistStream(uid, emit),
+    ]);
+  }
 
-    final activityFuture = emit.onEach(
-      activityStream,
+  Future<void> _subscribeToActivityStream(
+    String uid,
+    Emitter<ReportsState> emit,
+  ) {
+    return emit.onEach(
+      _getUserActivityUseCase(uid),
       onData: (result) {
         result.fold(
           (failure) => _logger.warning(
@@ -172,13 +206,19 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
         _logger.severe('Failed to listen to user activity stream', e, s);
       },
     );
+  }
 
-    final watchlistFuture = emit.onEach(
-      watchlistStream,
+  Future<void> _subscribeToWatchlistStream(
+    String uid,
+    Emitter<ReportsState> emit,
+  ) {
+    return emit.onEach(
+      _watchlistRepository.getWatchlistStream(uid),
       onData: (result) {
         result.fold(
-          (failure) =>
-              _logger.warning('Failed to fetch watchlist: ${failure.errorMessage}'),
+          (failure) => _logger.warning(
+            'Failed to fetch watchlist: ${failure.errorMessage}',
+          ),
           (companies) {
             final tickers = companies.map((c) => c.ticker).toList();
             add(ReportsEvent.watchlistUpdated(tickers));
@@ -189,8 +229,6 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
         _logger.severe('Failed to listen to watchlist stream', e, s);
       },
     );
-
-    await Future.wait([activityFuture, watchlistFuture]);
   }
 
   Future<void> _onWatchlistUpdated(
@@ -209,10 +247,7 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
     );
   }
 
-  Future<void> _onReportsUpdated(
-    ReportsUpdated event,
-    Emitter<ReportsState> emit,
-  ) async {
+  void _onReportsUpdated(ReportsUpdated event, Emitter<ReportsState> emit) {
     event.result.fold(
       (failure) {
         _tracker.logFetchFailed(error: failure.errorMessage);
@@ -244,25 +279,31 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
             })
             .toList();
 
+        final todaysWeeklyReports = feed.weeklyReports.where((r) {
+          final reportDate = DateTime.tryParse(r.id ?? '');
+          return reportDate != null &&
+              reportDate.year == now.year &&
+              reportDate.month == now.month &&
+              reportDate.day == now.day;
+        }).toList();
+
         emit(
           ReportsState.loaded(
             feed,
             lastViewedReports: currentLastViewed,
             todaysFilings: todaysFilings,
+            todaysWeeklyReports: todaysWeeklyReports,
           ),
         );
       },
     );
   }
 
-  Future<void> _onRefresh(Refresh event, Emitter<ReportsState> emit) async {
+  void _onRefresh(Refresh event, Emitter<ReportsState> emit) {
     add(const ReportsEvent.started());
   }
 
-  Future<void> _onActivityUpdated(
-    ActivityUpdated event,
-    Emitter<ReportsState> emit,
-  ) async {
+  void _onActivityUpdated(ActivityUpdated event, Emitter<ReportsState> emit) {
     _lastViewedReports = event.lastViewedReports;
     _logger.info("ActivityUpdated: New LastViewed=$_lastViewedReports");
 
@@ -292,40 +333,64 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
     final currentState = state;
     if (currentState is! Loaded) return;
 
+    final hasNewWeekly = await _markWeeklyReportsSeen(currentState);
+    await _markFilingsViewed(uid, currentState, hasNewWeekly, emit);
+  }
+
+  Future<bool> _markWeeklyReportsSeen(Loaded currentState) async {
+    final newlySeen = currentState.todaysWeeklyReports
+        .map((r) => r.seenKey)
+        .toSet();
+    final hasNewWeekly = !newlySeen.every(_seenWeeklyReportIds.contains);
+    if (hasNewWeekly) {
+      _seenWeeklyReportIds = {..._seenWeeklyReportIds, ...newlySeen};
+      await _saveSeenWeeklyIds();
+    }
+    return hasNewWeekly;
+  }
+
+  Future<void> _markFilingsViewed(
+    String uid,
+    Loaded currentState,
+    bool hasNewWeekly,
+    Emitter<ReportsState> emit,
+  ) async {
     final newestTime = _calculateNewestFilingDate(currentState.feed);
-    if (newestTime == null) return;
-
     final lastViewed = currentState.lastViewedReports;
+    final hasNewFilings =
+        newestTime != null &&
+        (lastViewed == null || newestTime.isAfter(lastViewed));
 
-    if (lastViewed == null || newestTime.isAfter(lastViewed)) {
+    if (hasNewFilings || hasNewWeekly) {
       final now = DateTime.now();
-
       _lastViewedReports = now;
       emit(currentState.copyWith(lastViewedReports: now));
 
-      try {
-        await _markReportsViewedUseCase(
+      if (hasNewFilings) {
+        final result = await _markReportsViewedUseCase(
           MarkReportsViewedParams(uid: uid, timestamp: now),
         );
-      } catch (e) {
-        _logger.severe("Failed to mark reports viewed: $e");
+        result.fold(
+          (failure) => _logger.severe(
+            'Failed to mark reports viewed: ${failure.errorMessage}',
+          ),
+          (_) {},
+        );
       }
     }
   }
 
   DateTime? _calculateNewestFilingDate(ReportsFeed feed) {
-    if (feed.filings.isEmpty) return null;
+    final dates = <DateTime>[];
 
-    final validFilings = feed.filings
-        .where((f) => f.createdAt != null)
-        .toList();
+    for (final f in feed.filings) {
+      if (f.createdAt != null) dates.add(f.createdAt!);
+    }
+    for (final r in feed.weeklyReports) {
+      if (r.createdAt != null) dates.add(r.createdAt!);
+    }
 
-    if (validFilings.isEmpty) return null;
-
-    final newestFiling = validFilings.reduce((a, b) {
-      return a.createdAt!.isAfter(b.createdAt!) ? a : b;
-    });
-
-    return newestFiling.createdAt;
+    if (dates.isEmpty) return null;
+    return dates.reduce((a, b) => a.isAfter(b) ? a : b);
   }
 }

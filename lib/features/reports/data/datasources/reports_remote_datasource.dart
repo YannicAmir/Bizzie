@@ -5,24 +5,14 @@ import 'package:bizzie/services/firestore_service.dart';
 import 'package:bizzie/features/reports/data/dtos/financial_report_dto.dart';
 import 'package:bizzie/features/reports/data/dtos/sec_filing_dto.dart';
 import 'package:bizzie/features/reports/data/dtos/upcoming_earnings_dto.dart';
+import 'package:bizzie/features/reports/data/dtos/weekly_report_dto.dart';
+import 'package:bizzie/features/reports/data/interfaces/i_reports_remote_datasource.dart';
 import 'package:bizzie/features/user/data/dtos/user_activity_dto.dart';
 import 'package:injectable/injectable.dart';
 
 final _logger = BizzieLogger('ReportsRemoteDataSource');
 
-abstract class IReportsRemoteDataSource {
-  Stream<List<FinancialReportDto>> getFinancialReportsStream(
-    List<String> tickers,
-  );
-  Stream<List<SecFilingDto>> getSecFilingsStream(List<String> tickers);
-  Stream<List<UpcomingEarningsDto>> getUpcomingEarningsStream(
-    List<String> tickers,
-  );
-  Stream<UserActivityDto> getUserActivityStream(String uid);
-  Future<void> updateUserActivity(String uid, UserActivityDto activity);
-}
-
-@LazySingleton(as: IReportsRemoteDataSource)
+@Injectable(as: IReportsRemoteDataSource)
 class ReportsRemoteDataSource implements IReportsRemoteDataSource {
   final FirestoreService _firestoreService;
 
@@ -101,12 +91,40 @@ class ReportsRemoteDataSource implements IReportsRemoteDataSource {
   }
 
   @override
+  Stream<List<WeeklyReportDto>> getWeeklyReportsStream(List<String> tickers) {
+    _logger.info('Requesting WeeklyReports stream for tickers: $tickers');
+    return _firestoreService
+        .getMergedSubcollectionStreams<WeeklyReportDto>(
+          rootCollection: FirestoreConstants.weeklyRecap,
+          documentIds: tickers,
+          subcollectionId: FirestoreConstants.weeks,
+          fromJson: WeeklyReportDto.fromJson,
+          injectDocumentIdAs: FirestoreConstants.ticker,
+        )
+        .map((reports) {
+          _logger.info(
+            'WeeklyReports stream emitted ${reports.length} report(s)',
+          );
+          return reports;
+        })
+        .handleError((e, s) {
+          if (e is FirebaseException && e.code == 'permission-denied') {
+            _logger.warning(
+              'WeeklyReports stream permission denied (expected on logout)',
+            );
+          } else {
+            _logger.severe('Error in WeeklyReports stream', e, s);
+          }
+        });
+  }
+
+  @override
   Stream<UserActivityDto> getUserActivityStream(String uid) {
     _logger.info('Requesting UserActivity stream for UID: $uid');
 
     return _firestoreService
         .getDocumentStream<UserActivityDto>(
-          path: 'users/$uid/${FirestoreConstants.activities}/reports',
+          path: '${FirestoreConstants.users}/$uid/${FirestoreConstants.activities}/${FirestoreConstants.reportsActivity}',
           fromJson: UserActivityDto.fromJson,
           toJson: (dto) => dto.toJson(),
         )
@@ -127,7 +145,7 @@ class ReportsRemoteDataSource implements IReportsRemoteDataSource {
     _logger.info('Updating UserActivity for UID: $uid');
     try {
       await _firestoreService.setDocument<UserActivityDto>(
-        path: 'users/$uid/${FirestoreConstants.activities}/reports',
+        path: '${FirestoreConstants.users}/$uid/${FirestoreConstants.activities}/${FirestoreConstants.reportsActivity}',
         value: activity,
         toJson: (dto) => dto.toJson(),
       );

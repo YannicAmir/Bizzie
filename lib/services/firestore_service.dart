@@ -178,6 +178,74 @@ class FirestoreService {
     await _firestore.doc(path).delete();
   }
 
+  Stream<List<T>> getCollectionGroupStreamChunked<T>({
+    required String collectionId,
+    required String whereInField,
+    required List<dynamic> values,
+    required T Function(Map<String, dynamic> json) fromJson,
+    int chunkSize = 30,
+  }) {
+    if (values.isEmpty) return Stream.value([]);
+
+    final chunks = <List<dynamic>>[];
+    for (var i = 0; i < values.length; i += chunkSize) {
+      chunks.add(
+        values.sublist(
+          i,
+          i + chunkSize > values.length ? values.length : i + chunkSize,
+        ),
+      );
+    }
+
+    final streams = chunks.map((chunk) {
+      return _firestore
+          .collectionGroup(collectionId)
+          .where(whereInField, whereIn: chunk)
+          .snapshots()
+          .map((s) => s.docs.map((d) {
+                final data = Map<String, dynamic>.from(d.data());
+                data['id'] = d.id;
+                return fromJson(data);
+              }).toList());
+    }).toList();
+
+    return Rx.combineLatest<List<T>, List<T>>(
+      streams,
+      (valuesList) => valuesList.expand((x) => x).toList(),
+    );
+  }
+
+  Stream<List<T>> getMergedSubcollectionStreams<T>({
+    required String rootCollection,
+    required List<String> documentIds,
+    required String subcollectionId,
+    required T Function(Map<String, dynamic> json) fromJson,
+    String? injectDocumentIdAs,
+  }) {
+    if (documentIds.isEmpty) return Stream.value([]);
+
+    final streams = documentIds.map((docId) {
+      return _firestore
+          .collection(rootCollection)
+          .doc(docId)
+          .collection(subcollectionId)
+          .snapshots()
+          .map((s) => s.docs.map((d) {
+                final data = Map<String, dynamic>.from(d.data());
+                data['id'] = d.id;
+                if (injectDocumentIdAs != null) {
+                  data.putIfAbsent(injectDocumentIdAs, () => docId);
+                }
+                return fromJson(data);
+              }).toList());
+    }).toList();
+
+    return Rx.combineLatest<List<T>, List<T>>(
+      streams,
+      (valuesList) => valuesList.expand((x) => x).toList(),
+    );
+  }
+
   Stream<List<T>> getCollectionStreamChunked<T>({
     required String path,
     required String whereInField,
