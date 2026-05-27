@@ -247,10 +247,7 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
     );
   }
 
-  void _onReportsUpdated(
-    ReportsUpdated event,
-    Emitter<ReportsState> emit,
-  ) {
+  void _onReportsUpdated(ReportsUpdated event, Emitter<ReportsState> emit) {
     event.result.fold(
       (failure) {
         _tracker.logFetchFailed(error: failure.errorMessage);
@@ -306,10 +303,7 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
     add(const ReportsEvent.started());
   }
 
-  void _onActivityUpdated(
-    ActivityUpdated event,
-    Emitter<ReportsState> emit,
-  ) {
+  void _onActivityUpdated(ActivityUpdated event, Emitter<ReportsState> emit) {
     _lastViewedReports = event.lastViewedReports;
     _logger.info("ActivityUpdated: New LastViewed=$_lastViewedReports");
 
@@ -339,7 +333,6 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
     final currentState = state;
     if (currentState is! Loaded) return;
 
-    // Mark weekly reports as seen immediately so the badge clears on tab entry.
     final hasNewWeekly = await _markWeeklyReportsSeen(currentState);
     await _markFilingsViewed(uid, currentState, hasNewWeekly, emit);
   }
@@ -368,8 +361,6 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
         newestTime != null &&
         (lastViewed == null || newestTime.isAfter(lastViewed));
 
-    // Emit a state change whenever anything is newly seen — this triggers
-    // the nav wrapper BlocBuilder to rebuild and clear the badge.
     if (hasNewFilings || hasNewWeekly) {
       final now = DateTime.now();
       _lastViewedReports = now;
