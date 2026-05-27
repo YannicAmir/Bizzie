@@ -8,6 +8,7 @@ import 'package:bizzie/features/reports/presentation/widgets/upcoming_earnings_s
 import 'package:bizzie/shared/widgets/buttons/bizzie_primary_button.dart';
 import 'package:bizzie/shared/widgets/error/bizzie_error.dart';
 import 'package:bizzie/shared/widgets/inputs/bizzie_search_bar.dart';
+import 'package:bizzie/shared/widgets/loading/bizzie_loader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -53,7 +54,9 @@ class _ReportsPageState extends State<ReportsPage> {
       loaded: (s) {
         bloc.add(
           ReportsEvent.viewed(
-            unreadCount: s.unreadCount,
+            unreadCount: s.unreadCount(
+              context.read<ReportsBloc>().seenWeeklyReportIds,
+            ),
             entrySource: widget.entrySource,
             notificationType: widget.notificationType,
           ),
@@ -80,7 +83,14 @@ class _ReportsPageState extends State<ReportsPage> {
         child: BlocBuilder<ReportsBloc, ReportsState>(
           builder: (context, state) {
             return state.maybeWhen(
-              loading: () => const Center(child: CircularProgressIndicator()),
+              loading: () => BizzieLoader(
+                message: 'Loading reports...',
+                mascotAssetPath: context.read<UserBloc>().state.maybeMap(
+                  loaded: (s) =>
+                      AppAssets.getMascotForSector(s.user.favoriteSector),
+                  orElse: () => AppAssets.defaultMascot,
+                ),
+              ),
               failure: (failure) => BlocBuilder<UserBloc, UserState>(
                 builder: (context, userState) {
                   final mascot = userState.maybeMap(
@@ -96,37 +106,48 @@ class _ReportsPageState extends State<ReportsPage> {
                   );
                 },
               ),
-              loaded: (feed, lastViewedReports, todaysFilings) {
-                final bool isUpcomingEmpty = feed.upcomingEarnings.isEmpty;
-                final bool isRecentEmpty = todaysFilings.isEmpty;
-                final mascotAsset = context.watch<UserBloc>().state.mascotAsset;
+              loaded:
+                  (
+                    feed,
+                    lastViewedReports,
+                    todaysFilings,
+                    todaysWeeklyReports,
+                  ) {
+                    final bool isUpcomingEmpty = feed.upcomingEarnings.isEmpty;
+                    final bool isRecentEmpty =
+                        todaysFilings.isEmpty && todaysWeeklyReports.isEmpty;
+                    final mascotAsset = context
+                        .watch<UserBloc>()
+                        .state
+                        .mascotAsset;
 
-                if (isUpcomingEmpty && isRecentEmpty) {
-                  return _ReportsEmptyState(mascotAsset: mascotAsset);
-                }
+                    if (isUpcomingEmpty && isRecentEmpty) {
+                      return _ReportsEmptyState(mascotAsset: mascotAsset);
+                    }
 
-                return SingleChildScrollView(
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      UpcomingEarningsSection(
-                        earnings: feed.upcomingEarnings,
-                        mascotAsset: mascotAsset,
+                    return SingleChildScrollView(
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          UpcomingEarningsSection(
+                            earnings: feed.upcomingEarnings,
+                            mascotAsset: mascotAsset,
+                          ),
+                          const SizedBox(height: 24),
+
+                          RecentFilingsSection(
+                            filings: todaysFilings,
+                            weeklyReports: todaysWeeklyReports,
+                            lastViewed: lastViewedReports,
+                            mascotAsset: mascotAsset,
+                          ),
+
+                          const SizedBox(height: 24),
+                        ],
                       ),
-                      const SizedBox(height: 24),
-
-                      RecentFilingsSection(
-                        filings: todaysFilings,
-                        lastViewed: lastViewedReports,
-                        mascotAsset: mascotAsset,
-                      ),
-
-                      const SizedBox(height: 24),
-                    ],
-                  ),
-                );
-              },
+                    );
+                  },
               orElse: () => const SizedBox.shrink(),
             );
           },
@@ -154,7 +175,7 @@ class _ReportsEmptyState extends StatelessWidget {
             Image.asset(mascotAsset, height: 160),
             const SizedBox(height: 24),
             Text(
-              'There are no recent or upcoming notifications',
+              'There are no recent or upcoming notifications for the companies on your watchlist',
               textAlign: TextAlign.center,
               style: theme.textTheme.bodyLarge?.copyWith(),
             ),

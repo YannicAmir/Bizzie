@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$ReportsFeed {
 
- List<FinancialReport> get currentReports; List<FinancialReport> get pastReports; List<SecFiling> get filings; List<UpcomingEarnings> get upcomingEarnings;
+ List<FinancialReport> get currentReports; List<FinancialReport> get pastReports; List<SecFiling> get filings; List<UpcomingEarnings> get upcomingEarnings; List<WeeklyReport> get weeklyReports;
 /// Create a copy of ReportsFeed
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $ReportsFeedCopyWith<ReportsFeed> get copyWith => _$ReportsFeedCopyWithImpl<Repo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ReportsFeed&&const DeepCollectionEquality().equals(other.currentReports, currentReports)&&const DeepCollectionEquality().equals(other.pastReports, pastReports)&&const DeepCollectionEquality().equals(other.filings, filings)&&const DeepCollectionEquality().equals(other.upcomingEarnings, upcomingEarnings));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ReportsFeed&&const DeepCollectionEquality().equals(other.currentReports, currentReports)&&const DeepCollectionEquality().equals(other.pastReports, pastReports)&&const DeepCollectionEquality().equals(other.filings, filings)&&const DeepCollectionEquality().equals(other.upcomingEarnings, upcomingEarnings)&&const DeepCollectionEquality().equals(other.weeklyReports, weeklyReports));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(currentReports),const DeepCollectionEquality().hash(pastReports),const DeepCollectionEquality().hash(filings),const DeepCollectionEquality().hash(upcomingEarnings));
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(currentReports),const DeepCollectionEquality().hash(pastReports),const DeepCollectionEquality().hash(filings),const DeepCollectionEquality().hash(upcomingEarnings),const DeepCollectionEquality().hash(weeklyReports));
 
 @override
 String toString() {
-  return 'ReportsFeed(currentReports: $currentReports, pastReports: $pastReports, filings: $filings, upcomingEarnings: $upcomingEarnings)';
+  return 'ReportsFeed(currentReports: $currentReports, pastReports: $pastReports, filings: $filings, upcomingEarnings: $upcomingEarnings, weeklyReports: $weeklyReports)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $ReportsFeedCopyWith<$Res>  {
   factory $ReportsFeedCopyWith(ReportsFeed value, $Res Function(ReportsFeed) _then) = _$ReportsFeedCopyWithImpl;
 @useResult
 $Res call({
- List<FinancialReport> currentReports, List<FinancialReport> pastReports, List<SecFiling> filings, List<UpcomingEarnings> upcomingEarnings
+ List<FinancialReport> currentReports, List<FinancialReport> pastReports, List<SecFiling> filings, List<UpcomingEarnings> upcomingEarnings, List<WeeklyReport> weeklyReports
 });
 
 
@@ -62,13 +62,14 @@ class _$ReportsFeedCopyWithImpl<$Res>
 
 /// Create a copy of ReportsFeed
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? currentReports = null,Object? pastReports = null,Object? filings = null,Object? upcomingEarnings = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? currentReports = null,Object? pastReports = null,Object? filings = null,Object? upcomingEarnings = null,Object? weeklyReports = null,}) {
   return _then(_self.copyWith(
 currentReports: null == currentReports ? _self.currentReports : currentReports // ignore: cast_nullable_to_non_nullable
 as List<FinancialReport>,pastReports: null == pastReports ? _self.pastReports : pastReports // ignore: cast_nullable_to_non_nullable
 as List<FinancialReport>,filings: null == filings ? _self.filings : filings // ignore: cast_nullable_to_non_nullable
 as List<SecFiling>,upcomingEarnings: null == upcomingEarnings ? _self.upcomingEarnings : upcomingEarnings // ignore: cast_nullable_to_non_nullable
-as List<UpcomingEarnings>,
+as List<UpcomingEarnings>,weeklyReports: null == weeklyReports ? _self.weeklyReports : weeklyReports // ignore: cast_nullable_to_non_nullable
+as List<WeeklyReport>,
   ));
 }
 
@@ -153,10 +154,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<FinancialReport> currentReports,  List<FinancialReport> pastReports,  List<SecFiling> filings,  List<UpcomingEarnings> upcomingEarnings)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<FinancialReport> currentReports,  List<FinancialReport> pastReports,  List<SecFiling> filings,  List<UpcomingEarnings> upcomingEarnings,  List<WeeklyReport> weeklyReports)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ReportsFeed() when $default != null:
-return $default(_that.currentReports,_that.pastReports,_that.filings,_that.upcomingEarnings);case _:
+return $default(_that.currentReports,_that.pastReports,_that.filings,_that.upcomingEarnings,_that.weeklyReports);case _:
   return orElse();
 
 }
@@ -174,10 +175,10 @@ return $default(_that.currentReports,_that.pastReports,_that.filings,_that.upcom
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<FinancialReport> currentReports,  List<FinancialReport> pastReports,  List<SecFiling> filings,  List<UpcomingEarnings> upcomingEarnings)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<FinancialReport> currentReports,  List<FinancialReport> pastReports,  List<SecFiling> filings,  List<UpcomingEarnings> upcomingEarnings,  List<WeeklyReport> weeklyReports)  $default,) {final _that = this;
 switch (_that) {
 case _ReportsFeed():
-return $default(_that.currentReports,_that.pastReports,_that.filings,_that.upcomingEarnings);case _:
+return $default(_that.currentReports,_that.pastReports,_that.filings,_that.upcomingEarnings,_that.weeklyReports);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -194,10 +195,10 @@ return $default(_that.currentReports,_that.pastReports,_that.filings,_that.upcom
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<FinancialReport> currentReports,  List<FinancialReport> pastReports,  List<SecFiling> filings,  List<UpcomingEarnings> upcomingEarnings)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<FinancialReport> currentReports,  List<FinancialReport> pastReports,  List<SecFiling> filings,  List<UpcomingEarnings> upcomingEarnings,  List<WeeklyReport> weeklyReports)?  $default,) {final _that = this;
 switch (_that) {
 case _ReportsFeed() when $default != null:
-return $default(_that.currentReports,_that.pastReports,_that.filings,_that.upcomingEarnings);case _:
+return $default(_that.currentReports,_that.pastReports,_that.filings,_that.upcomingEarnings,_that.weeklyReports);case _:
   return null;
 
 }
@@ -209,7 +210,7 @@ return $default(_that.currentReports,_that.pastReports,_that.filings,_that.upcom
 
 
 class _ReportsFeed implements ReportsFeed {
-  const _ReportsFeed({final  List<FinancialReport> currentReports = const [], final  List<FinancialReport> pastReports = const [], final  List<SecFiling> filings = const [], final  List<UpcomingEarnings> upcomingEarnings = const []}): _currentReports = currentReports,_pastReports = pastReports,_filings = filings,_upcomingEarnings = upcomingEarnings;
+  const _ReportsFeed({final  List<FinancialReport> currentReports = const [], final  List<FinancialReport> pastReports = const [], final  List<SecFiling> filings = const [], final  List<UpcomingEarnings> upcomingEarnings = const [], final  List<WeeklyReport> weeklyReports = const []}): _currentReports = currentReports,_pastReports = pastReports,_filings = filings,_upcomingEarnings = upcomingEarnings,_weeklyReports = weeklyReports;
   
 
  final  List<FinancialReport> _currentReports;
@@ -240,6 +241,13 @@ class _ReportsFeed implements ReportsFeed {
   return EqualUnmodifiableListView(_upcomingEarnings);
 }
 
+ final  List<WeeklyReport> _weeklyReports;
+@override@JsonKey() List<WeeklyReport> get weeklyReports {
+  if (_weeklyReports is EqualUnmodifiableListView) return _weeklyReports;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_weeklyReports);
+}
+
 
 /// Create a copy of ReportsFeed
 /// with the given fields replaced by the non-null parameter values.
@@ -251,16 +259,16 @@ _$ReportsFeedCopyWith<_ReportsFeed> get copyWith => __$ReportsFeedCopyWithImpl<_
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ReportsFeed&&const DeepCollectionEquality().equals(other._currentReports, _currentReports)&&const DeepCollectionEquality().equals(other._pastReports, _pastReports)&&const DeepCollectionEquality().equals(other._filings, _filings)&&const DeepCollectionEquality().equals(other._upcomingEarnings, _upcomingEarnings));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ReportsFeed&&const DeepCollectionEquality().equals(other._currentReports, _currentReports)&&const DeepCollectionEquality().equals(other._pastReports, _pastReports)&&const DeepCollectionEquality().equals(other._filings, _filings)&&const DeepCollectionEquality().equals(other._upcomingEarnings, _upcomingEarnings)&&const DeepCollectionEquality().equals(other._weeklyReports, _weeklyReports));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_currentReports),const DeepCollectionEquality().hash(_pastReports),const DeepCollectionEquality().hash(_filings),const DeepCollectionEquality().hash(_upcomingEarnings));
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_currentReports),const DeepCollectionEquality().hash(_pastReports),const DeepCollectionEquality().hash(_filings),const DeepCollectionEquality().hash(_upcomingEarnings),const DeepCollectionEquality().hash(_weeklyReports));
 
 @override
 String toString() {
-  return 'ReportsFeed(currentReports: $currentReports, pastReports: $pastReports, filings: $filings, upcomingEarnings: $upcomingEarnings)';
+  return 'ReportsFeed(currentReports: $currentReports, pastReports: $pastReports, filings: $filings, upcomingEarnings: $upcomingEarnings, weeklyReports: $weeklyReports)';
 }
 
 
@@ -271,7 +279,7 @@ abstract mixin class _$ReportsFeedCopyWith<$Res> implements $ReportsFeedCopyWith
   factory _$ReportsFeedCopyWith(_ReportsFeed value, $Res Function(_ReportsFeed) _then) = __$ReportsFeedCopyWithImpl;
 @override @useResult
 $Res call({
- List<FinancialReport> currentReports, List<FinancialReport> pastReports, List<SecFiling> filings, List<UpcomingEarnings> upcomingEarnings
+ List<FinancialReport> currentReports, List<FinancialReport> pastReports, List<SecFiling> filings, List<UpcomingEarnings> upcomingEarnings, List<WeeklyReport> weeklyReports
 });
 
 
@@ -288,13 +296,14 @@ class __$ReportsFeedCopyWithImpl<$Res>
 
 /// Create a copy of ReportsFeed
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? currentReports = null,Object? pastReports = null,Object? filings = null,Object? upcomingEarnings = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? currentReports = null,Object? pastReports = null,Object? filings = null,Object? upcomingEarnings = null,Object? weeklyReports = null,}) {
   return _then(_ReportsFeed(
 currentReports: null == currentReports ? _self._currentReports : currentReports // ignore: cast_nullable_to_non_nullable
 as List<FinancialReport>,pastReports: null == pastReports ? _self._pastReports : pastReports // ignore: cast_nullable_to_non_nullable
 as List<FinancialReport>,filings: null == filings ? _self._filings : filings // ignore: cast_nullable_to_non_nullable
 as List<SecFiling>,upcomingEarnings: null == upcomingEarnings ? _self._upcomingEarnings : upcomingEarnings // ignore: cast_nullable_to_non_nullable
-as List<UpcomingEarnings>,
+as List<UpcomingEarnings>,weeklyReports: null == weeklyReports ? _self._weeklyReports : weeklyReports // ignore: cast_nullable_to_non_nullable
+as List<WeeklyReport>,
   ));
 }
 

@@ -128,12 +128,12 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( ReportsFeed feed,  DateTime? lastViewedReports,  List<FilingViewModel> todaysFilings)?  loaded,TResult Function( Failure failure)?  failure,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( ReportsFeed feed,  DateTime? lastViewedReports,  List<FilingViewModel> todaysFilings,  List<WeeklyReport> todaysWeeklyReports)?  loaded,TResult Function( Failure failure)?  failure,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case Initial() when initial != null:
 return initial();case Loading() when loading != null:
 return loading();case Loaded() when loaded != null:
-return loaded(_that.feed,_that.lastViewedReports,_that.todaysFilings);case ReportsFailure() when failure != null:
+return loaded(_that.feed,_that.lastViewedReports,_that.todaysFilings,_that.todaysWeeklyReports);case ReportsFailure() when failure != null:
 return failure(_that.failure);case _:
   return orElse();
 
@@ -152,12 +152,12 @@ return failure(_that.failure);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( ReportsFeed feed,  DateTime? lastViewedReports,  List<FilingViewModel> todaysFilings)  loaded,required TResult Function( Failure failure)  failure,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( ReportsFeed feed,  DateTime? lastViewedReports,  List<FilingViewModel> todaysFilings,  List<WeeklyReport> todaysWeeklyReports)  loaded,required TResult Function( Failure failure)  failure,}) {final _that = this;
 switch (_that) {
 case Initial():
 return initial();case Loading():
 return loading();case Loaded():
-return loaded(_that.feed,_that.lastViewedReports,_that.todaysFilings);case ReportsFailure():
+return loaded(_that.feed,_that.lastViewedReports,_that.todaysFilings,_that.todaysWeeklyReports);case ReportsFailure():
 return failure(_that.failure);case _:
   throw StateError('Unexpected subclass');
 
@@ -175,12 +175,12 @@ return failure(_that.failure);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( ReportsFeed feed,  DateTime? lastViewedReports,  List<FilingViewModel> todaysFilings)?  loaded,TResult? Function( Failure failure)?  failure,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( ReportsFeed feed,  DateTime? lastViewedReports,  List<FilingViewModel> todaysFilings,  List<WeeklyReport> todaysWeeklyReports)?  loaded,TResult? Function( Failure failure)?  failure,}) {final _that = this;
 switch (_that) {
 case Initial() when initial != null:
 return initial();case Loading() when loading != null:
 return loading();case Loaded() when loaded != null:
-return loaded(_that.feed,_that.lastViewedReports,_that.todaysFilings);case ReportsFailure() when failure != null:
+return loaded(_that.feed,_that.lastViewedReports,_that.todaysFilings,_that.todaysWeeklyReports);case ReportsFailure() when failure != null:
 return failure(_that.failure);case _:
   return null;
 
@@ -257,7 +257,7 @@ String toString() {
 
 
 class Loaded implements ReportsState {
-  const Loaded(this.feed, {this.lastViewedReports, final  List<FilingViewModel> todaysFilings = const []}): _todaysFilings = todaysFilings;
+  const Loaded(this.feed, {this.lastViewedReports, final  List<FilingViewModel> todaysFilings = const [], final  List<WeeklyReport> todaysWeeklyReports = const []}): _todaysFilings = todaysFilings,_todaysWeeklyReports = todaysWeeklyReports;
   
 
  final  ReportsFeed feed;
@@ -267,6 +267,13 @@ class Loaded implements ReportsState {
   if (_todaysFilings is EqualUnmodifiableListView) return _todaysFilings;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableListView(_todaysFilings);
+}
+
+ final  List<WeeklyReport> _todaysWeeklyReports;
+@JsonKey() List<WeeklyReport> get todaysWeeklyReports {
+  if (_todaysWeeklyReports is EqualUnmodifiableListView) return _todaysWeeklyReports;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_todaysWeeklyReports);
 }
 
 
@@ -280,16 +287,16 @@ $LoadedCopyWith<Loaded> get copyWith => _$LoadedCopyWithImpl<Loaded>(this, _$ide
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Loaded&&(identical(other.feed, feed) || other.feed == feed)&&(identical(other.lastViewedReports, lastViewedReports) || other.lastViewedReports == lastViewedReports)&&const DeepCollectionEquality().equals(other._todaysFilings, _todaysFilings));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Loaded&&(identical(other.feed, feed) || other.feed == feed)&&(identical(other.lastViewedReports, lastViewedReports) || other.lastViewedReports == lastViewedReports)&&const DeepCollectionEquality().equals(other._todaysFilings, _todaysFilings)&&const DeepCollectionEquality().equals(other._todaysWeeklyReports, _todaysWeeklyReports));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,feed,lastViewedReports,const DeepCollectionEquality().hash(_todaysFilings));
+int get hashCode => Object.hash(runtimeType,feed,lastViewedReports,const DeepCollectionEquality().hash(_todaysFilings),const DeepCollectionEquality().hash(_todaysWeeklyReports));
 
 @override
 String toString() {
-  return 'ReportsState.loaded(feed: $feed, lastViewedReports: $lastViewedReports, todaysFilings: $todaysFilings)';
+  return 'ReportsState.loaded(feed: $feed, lastViewedReports: $lastViewedReports, todaysFilings: $todaysFilings, todaysWeeklyReports: $todaysWeeklyReports)';
 }
 
 
@@ -300,7 +307,7 @@ abstract mixin class $LoadedCopyWith<$Res> implements $ReportsStateCopyWith<$Res
   factory $LoadedCopyWith(Loaded value, $Res Function(Loaded) _then) = _$LoadedCopyWithImpl;
 @useResult
 $Res call({
- ReportsFeed feed, DateTime? lastViewedReports, List<FilingViewModel> todaysFilings
+ ReportsFeed feed, DateTime? lastViewedReports, List<FilingViewModel> todaysFilings, List<WeeklyReport> todaysWeeklyReports
 });
 
 
@@ -317,12 +324,13 @@ class _$LoadedCopyWithImpl<$Res>
 
 /// Create a copy of ReportsState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? feed = null,Object? lastViewedReports = freezed,Object? todaysFilings = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? feed = null,Object? lastViewedReports = freezed,Object? todaysFilings = null,Object? todaysWeeklyReports = null,}) {
   return _then(Loaded(
 null == feed ? _self.feed : feed // ignore: cast_nullable_to_non_nullable
 as ReportsFeed,lastViewedReports: freezed == lastViewedReports ? _self.lastViewedReports : lastViewedReports // ignore: cast_nullable_to_non_nullable
 as DateTime?,todaysFilings: null == todaysFilings ? _self._todaysFilings : todaysFilings // ignore: cast_nullable_to_non_nullable
-as List<FilingViewModel>,
+as List<FilingViewModel>,todaysWeeklyReports: null == todaysWeeklyReports ? _self._todaysWeeklyReports : todaysWeeklyReports // ignore: cast_nullable_to_non_nullable
+as List<WeeklyReport>,
   ));
 }
 

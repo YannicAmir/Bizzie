@@ -9,7 +9,7 @@ import 'package:bizzie/di/injection.dart';
 import 'package:bizzie/core/interfaces/i_config_service.dart';
 
 import 'package:bizzie/features/reports/domain/models/sec_filing.dart';
-import 'package:bizzie/shared/widgets/app_badge.dart';
+import 'package:bizzie/features/reports/presentation/widgets/filing_card_header.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -63,7 +63,30 @@ class SecFilingCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _Header(filing: filing, lastViewed: lastViewed),
+          FilingCardHeader(
+            ticker: filing.symbol,
+            companyName: filing.companyName,
+            formType: filing.formType,
+            filingDate: filing.filingDate,
+            createdAt: filing.createdAt,
+            lastViewed: lastViewed,
+            topic: filing.topic,
+            onCompanyTapped: () {
+              context.read<ReportsBloc>().add(
+                ReportsEvent.filingCardCompanyClicked(
+                  ticker: filing.symbol,
+                ),
+              );
+              context.goNamed(
+                AppRoutes.companyProfileReports,
+                pathParameters: {'ticker': filing.symbol},
+                extra: Company(
+                  ticker: filing.symbol,
+                  name: filing.companyName,
+                ),
+              );
+            },
+          ),
           if (showFinancials) ...[
             _FinancialsRow(
               filing: filing,
@@ -110,106 +133,6 @@ class SecFilingCard extends StatelessWidget {
                   },
                 ),
               ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _Header extends StatelessWidget {
-  final SecFiling filing;
-  final DateTime? lastViewed;
-
-  const _Header({required this.filing, this.lastViewed});
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              if (lastViewed != null &&
-                  filing.createdAt != null &&
-                  filing.createdAt!.isAfter(lastViewed!))
-                Padding(
-                  padding: const EdgeInsets.only(right: 8),
-                  child: Row(
-                    children: [
-                      Container(
-                        width: 8,
-                        height: 8,
-                        decoration: BoxDecoration(
-                          color: theme.colorScheme.primary,
-                          shape: BoxShape.circle,
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      Text(
-                        'UNREAD',
-                        style: theme.textTheme.labelSmall?.copyWith(
-                          color: theme.colorScheme.primary,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-            ],
-          ),
-          const SizedBox(height: 8),
-          Row(
-            children: [
-              GestureDetector(
-                onTap: () {
-                  context.read<ReportsBloc>().add(
-                    ReportsEvent.filingCardCompanyClicked(
-                      ticker: filing.symbol,
-                    ),
-                  );
-                  context.goNamed(
-                    AppRoutes.companyProfileReports,
-                    pathParameters: {'ticker': filing.symbol},
-                    extra: Company(
-                      ticker: filing.symbol,
-                      name: filing.companyName,
-                    ),
-                  );
-                },
-                child: Text(
-                  filing.symbol,
-                  style: theme.textTheme.headlineMedium,
-                ),
-              ),
-              const SizedBox(width: 8),
-              AppBadge(
-                text: filing.formType,
-                style: AppBadgeStyle.neutral,
-                isLarge: true,
-              ),
-              if (filing.topic != null) ...[
-                const SizedBox(width: 8),
-                Text(filing.topic ?? '', style: theme.textTheme.bodyMedium),
-              ],
-              const Spacer(),
-              if (filing.filingDate != null)
-                Text(
-                  DateFormat('MMM d, yyyy').format(filing.filingDate!),
-                  style: theme.textTheme.bodyMedium,
-                )
-              else
-                Text('Date Unknown', style: theme.textTheme.bodyMedium),
-            ],
-          ),
-          const SizedBox(height: 4),
-          Text(
-            filing.companyName,
-            style: theme.textTheme.bodyMedium?.copyWith(
-              color: theme.colorScheme.onSurfaceVariant,
             ),
           ),
         ],

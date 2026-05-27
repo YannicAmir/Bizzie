@@ -38,7 +38,8 @@ class UpcomingEarningsSection extends StatelessWidget {
         if (earnings.isEmpty)
           BizzieEmptyState(
             mascotAsset: mascotAsset,
-            message: 'There are no upcoming notifications',
+            message:
+                'There are no upcoming notifications for the companies on your watchlist',
           )
         else
           Column(

@@ -1,50 +1,79 @@
 rules_version = '2';
-
 service cloud.firestore {
   match /databases/{database}/documents {
-  
+
     // --- Public Data ---
     match /daily_brands/{document=**} {
       allow read: if true;
-      allow write: if false; 
+      allow write: if false;
     }
-    
+
     // --- User Private Data ---
     match /users/{userId} {
-      // Allow user to read/write their own top-level doc
       allow read, write: if request.auth != null && request.auth.uid == userId;
 
-      // Watchlist Subcollection
       match /watchlist/{ticker} {
         allow read, write: if request.auth != null && request.auth.uid == userId;
       }
-      
-      // [NEW] User Activity Subcollection (for Unread Reports logic)
+
       match /activities/{document=**} {
         allow read, write: if request.auth != null && request.auth.uid == userId;
       }
+
+      // --- Bizzie Chat ---
+      match /conversations/{conversationId} {
+        allow read: if request.auth != null && request.auth.uid == userId;
+        allow write: if false; // Written by backend via Admin SDK only
+
+        match /messages/{messageId} {
+          allow read: if request.auth != null && request.auth.uid == userId;
+          allow write: if false; // Written by backend via Admin SDK only
+        }
+      }
     }
-    
+
+    // --- Feedback ---
+    match /feedback/{document=**} {
+      allow create: if request.auth != null && request.resource.data.userId == request.auth.uid;
+      allow read, update, delete: if false;
+    }
+
+    // --- Bizzie Chat Ratings ---
+    match /bizzie_chat_ratings/{messageId} {
+      allow create: if request.auth != null
+                    && request.resource.data.user_id == request.auth.uid;
+      allow update: if request.auth != null
+                    && resource.data.user_id == request.auth.uid;
+      allow read, delete: if false;
+    }
+
+    // --- Cached Company Data (Client-Side Cache) ---
+    match /companies/{ticker}/{document=**} {
+      allow read, write: if request.auth != null;
+    }
+
     // --- Shared Financial Data (Authenticated Read-Only) ---
-    
-    // 1. Upcoming Earnings
     match /upcoming_earnings/{document=**} {
       allow read: if request.auth != null;
       allow write: if false;
     }
-    
-    // 2. Financial Reports
+
     match /financial_reports/{document=**} {
       allow read: if request.auth != null;
       allow write: if false;
     }
-    
-    // 3. SEC Filings
+
     match /sec_filings/{document=**} {
       allow read: if request.auth != null;
       allow write: if false;
     }
-    
+
+    // --- Weekly Recap Reports ---
+    match /weekly_recap/{ticker}/weeks/{weekEndDate} {
+      allow read: if request.auth != null;
+      allow write: if false;
+    }
+
     // --- Default Deny ---
     match /{document=**} {
       allow read, write: if false;

@@ -416,6 +416,8 @@ import '../features/profile/presentation/bloc/edit_profile_bloc.dart' as _i875;
 import '../features/profile/presentation/bloc/profile_bloc.dart' as _i570;
 import '../features/reports/data/datasources/reports_remote_datasource.dart'
     as _i532;
+import '../features/reports/data/interfaces/i_reports_remote_datasource.dart'
+    as _i832;
 import '../features/reports/data/repositories/reports_repository_impl.dart'
     as _i1028;
 import '../features/reports/domain/interfaces/i_reports_repository.dart'
@@ -633,6 +635,9 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i1007.LifecycleService(),
       dispose: (i) => i.dispose(),
     );
+    gh.factory<_i832.IReportsRemoteDataSource>(
+      () => _i532.ReportsRemoteDataSource(gh<_i52.FirestoreService>()),
+    );
     gh.singleton<_i879.ITimeProvider>(() => _i157.TimeProviderImpl());
     gh.factory<_i191.IStockLocalDataSource>(
       () => _i191.StockLocalDataSource(gh<_i460.SharedPreferences>()),
@@ -678,9 +683,6 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i60.StockRemoteDataSource(gh<_i457.FirebaseStorage>()),
     );
     gh.singleton<_i915.AppEnv>(() => _i343.DevEnvImpl(), registerFor: {_dev});
-    gh.lazySingleton<_i532.IReportsRemoteDataSource>(
-      () => _i532.ReportsRemoteDataSource(gh<_i52.FirestoreService>()),
-    );
     gh.lazySingleton<_i1009.MarketLocalDataSource>(
       () => _i1009.MarketLocalDataSourceImpl(gh<_i460.SharedPreferences>()),
     );
@@ -915,21 +917,30 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i622.INotificationRepository>(
       () => _i648.NotificationRepositoryImpl(gh<_i640.FcmRemoteDataSource>()),
     );
+    gh.lazySingleton<_i882.IReportsRepository>(
+      () => _i1028.ReportsRepositoryImpl(
+        gh<_i832.IReportsRemoteDataSource>(),
+        gh<_i456.IStockRepository>(),
+      ),
+    );
     gh.lazySingleton<_i212.GetWatchlistEventsUseCase>(
       () => _i212.GetWatchlistEventsUseCase(
         gh<_i877.IWatchlistEventsRepository>(),
       ),
     );
+    gh.lazySingleton<_i273.GetDashboardReportsUseCase>(
+      () => _i273.GetDashboardReportsUseCase(gh<_i882.IReportsRepository>()),
+    );
+    gh.factory<_i1014.GetUserActivityUseCase>(
+      () => _i1014.GetUserActivityUseCase(gh<_i882.IReportsRepository>()),
+    );
+    gh.factory<_i261.MarkReportsViewedUseCase>(
+      () => _i261.MarkReportsViewedUseCase(gh<_i882.IReportsRepository>()),
+    );
     gh.lazySingleton<_i659.ISubscriptionRepository>(
       () => _i221.SubscriptionRepositoryImpl(
         gh<_i592.ISubscriptionRemoteDataSource>(),
         gh<_i347.IFirebaseFunctionsService>(),
-      ),
-    );
-    gh.lazySingleton<_i882.IReportsRepository>(
-      () => _i1028.ReportsRepositoryImpl(
-        gh<_i532.IReportsRemoteDataSource>(),
-        gh<_i456.IStockRepository>(),
       ),
     );
     gh.lazySingleton<_i685.IAuthRepository>(
@@ -1187,15 +1198,6 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i714.GetSubscriptionStatusUseCase(
         gh<_i659.ISubscriptionRepository>(),
       ),
-    );
-    gh.lazySingleton<_i273.GetDashboardReportsUseCase>(
-      () => _i273.GetDashboardReportsUseCase(gh<_i882.IReportsRepository>()),
-    );
-    gh.factory<_i1014.GetUserActivityUseCase>(
-      () => _i1014.GetUserActivityUseCase(gh<_i882.IReportsRepository>()),
-    );
-    gh.factory<_i261.MarkReportsViewedUseCase>(
-      () => _i261.MarkReportsViewedUseCase(gh<_i882.IReportsRepository>()),
     );
     gh.lazySingleton<_i990.ISelectBrandsRepository>(
       () => _i432.SelectBrandsRepositoryImpl(

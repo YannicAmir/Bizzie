@@ -38,6 +38,13 @@ class ParseNotificationPayload
       return const NotificationIntent.paywall(PaywallSource.notification);
     }
 
+    if (type == 'weekly_summary') {
+      return const NotificationIntent.reports(
+        source: ReportsEntrySource.notification,
+        notificationType: ReportsNotificationType.weeklyReport,
+      );
+    }
+
     return null;
   }
 }
