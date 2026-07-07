@@ -8,6 +8,7 @@ abstract class IConfigService {
   FmpConfig get fmpConfig;
   String get frankfurterBaseUrl;
   String get bizzieChatBaseUrl;
+  bool get bizzieChatEnabled;
   String get privacyPolicyUrl;
   String get termsOfServiceUrl;
   String get minAppVersion;

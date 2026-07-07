@@ -7,6 +7,7 @@ import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
 import 'package:bizzie/shared/utils/paywall_helper.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:bizzie/features/company_profile/security/domain/models/security_details.dart';
+import 'package:bizzie/core/interfaces/i_config_service.dart';
 import 'package:bizzie/di/injection.dart';
 import 'package:bizzie/features/onboarding/domain/models/company.dart';
 import 'package:bizzie/features/company_profile/shared/domain/models/company_profile.dart'; // Added
@@ -386,15 +387,17 @@ class _CompanyProfileViewState extends State<_CompanyProfileView>
               entranceTime: _entranceTime,
               onTabTap: _handleTabTap,
             ),
-            floatingActionButton: isUnsupported
-                ? null
-                : _BizzieChatFab(
-                    ticker: widget.ticker,
-                    companyName: state.maybeMap(
-                      loaded: (s) => s.securityDetails.name,
-                      orElse: () => widget.ticker,
-                    ),
-                  ),
+            floatingActionButton:
+                (isUnsupported ||
+                        !getIt<IConfigService>().bizzieChatEnabled)
+                    ? null
+                    : _BizzieChatFab(
+                        ticker: widget.ticker,
+                        companyName: state.maybeMap(
+                          loaded: (s) => s.securityDetails.name,
+                          orElse: () => widget.ticker,
+                        ),
+                      ),
             body: isUnsupported
                 ? ComingSoonPlaceholder(
                     type: isEtf ? ComingSoonType.etf : ComingSoonType.fund,

@@ -27,6 +27,7 @@ class RemoteConfigKeys {
       'subscription_feature_highlights';
   static const String frankfurterConfig = 'frankfurter_config';
   static const String bizzieChatBaseUrl = 'bizzie_chat_base_url';
+  static const String bizzieChatEnabled = 'bizzie_chat_enabled';
 }
 
 final _logger = BizzieLogger('ConfigService');
@@ -129,6 +130,7 @@ class ConfigService implements IConfigService {
       ),
       RemoteConfigKeys.frankfurterConfig: _defaultFrankfurterBaseUrl,
       RemoteConfigKeys.bizzieChatBaseUrl: '',
+      RemoteConfigKeys.bizzieChatEnabled: true,
     });
 
     try {
@@ -275,6 +277,10 @@ class ConfigService implements IConfigService {
   @override
   String get bizzieChatBaseUrl =>
       _remoteConfig.getString(RemoteConfigKeys.bizzieChatBaseUrl);
+
+  @override
+  bool get bizzieChatEnabled =>
+      _remoteConfig.getBool(RemoteConfigKeys.bizzieChatEnabled);
 
   @override
   Stream<void> get onConfigUpdated => _remoteConfig.onConfigUpdated;

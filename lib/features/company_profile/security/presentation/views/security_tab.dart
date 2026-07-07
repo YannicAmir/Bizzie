@@ -29,6 +29,9 @@ import 'package:bizzie/features/company_profile/security/presentation/bloc/upcom
 import 'package:bizzie/features/company_profile/security/presentation/utils/upcoming_earnings_presentation_extensions.dart';
 import 'package:bizzie/di/injection.dart';
 
+const _loadingSecurityLabel = 'Loading Security';
+const _errorLoadingSecurityLabel = 'Error loading security';
+
 class SecurityTab extends StatefulWidget {
   final String ticker;
 
@@ -48,6 +51,7 @@ class _SecurityTabState extends State<SecurityTab>
     super.build(context);
 
     final securityBloc = context.read<CompanySecurityBloc>();
+    final eodBloc = context.read<HistoricalPriceEodBloc>();
 
     return TabVisibilityObserver(
       tabName: CompanyProfileTab.security.analyticsName,
@@ -57,21 +61,28 @@ class _SecurityTabState extends State<SecurityTab>
           securityBloc.add(const CompanySecurityEvent.tabHidden()),
       onAppBackgrounded: () =>
           securityBloc.add(const CompanySecurityEvent.appBackgrounded()),
-      onAppForegrounded: () =>
-          securityBloc.add(const CompanySecurityEvent.appForegrounded()),
+      onAppForegrounded: () {
+        securityBloc.add(const CompanySecurityEvent.appForegrounded());
+        securityBloc.add(
+          CompanySecurityEvent.stalenessCheckRequested(widget.ticker),
+        );
+        eodBloc.add(
+          HistoricalPriceEodEvent.stalenessCheckRequested(widget.ticker),
+        );
+      },
       child: BlocBuilder<CompanySecurityBloc, CompanySecurityState>(
         builder: (context, securityState) {
           return BlocBuilder<HistoricalPriceEodBloc, HistoricalPriceEodState>(
             builder: (context, priceState) {
               if (securityState.isLoading || priceState.isLoading) {
                 return const CompanyProfileLoadingState(
-                  message: 'Loading Security',
+                  message: _loadingSecurityLabel,
                 );
               }
 
               return securityState.maybeMap(
                 failure: (f) => CompanyProfileErrorState(
-                  message: 'Error loading security',
+                  message: _errorLoadingSecurityLabel,
                   onRetry: () {
                     context.read<CompanySecurityBloc>().add(
                       CompanySecurityEvent.loadRequested(
@@ -95,60 +106,78 @@ class _SecurityTabState extends State<SecurityTab>
                     orElse: () => CompanyProfileDataOrigin.api,
                   );
 
-                  return MultiBlocListener(
-                    listeners: [
-                      BlocListener<
-                        HistoricalPriceEodBloc,
-                        HistoricalPriceEodState
-                      >(
-                        listener: (context, eodState) {
-                          eodState.mapOrNull(
-                            loaded: (s) {
-                              context.read<CompanySecurityBloc>().add(
-                                CompanySecurityEvent.priceAnalyticsUpdated(
-                                  isSuccess: true,
-                                ),
-                              );
-                            },
-                          );
-                        },
-                      ),
-                      BlocListener<UpcomingEarningsBloc, UpcomingEarningsState>(
-                        listener: (context, earningsState) {
-                          earningsState.mapOrNull(
-                            loaded: (s) {
-                              context.read<CompanySecurityBloc>().add(
-                                CompanySecurityEvent.earningsAnalyticsUpdated(
-                                  hasUpcoming: true,
-                                  daysAway: s.earningsDate.daysAwayLabel,
-                                ),
-                              );
-                            },
-                            empty: (_) {
-                              context.read<CompanySecurityBloc>().add(
-                                CompanySecurityEvent.earningsAnalyticsUpdated(
-                                  hasUpcoming: false,
-                                ),
-                              );
-                            },
-                          );
-                        },
-                      ),
-                    ],
-                    child: _SecurityContent(
-                      securityDetails: securityDetails,
-                      prices: prices,
-                      dataSource: dataSource,
-                    ),
+                  return _SecurityLoadedView(
+                    securityDetails: securityDetails,
+                    prices: prices,
+                    dataSource: dataSource,
                   );
                 },
                 orElse: () => const CompanyProfileLoadingState(
-                  message: 'Loading Security',
+                  message: _loadingSecurityLabel,
                 ),
               );
             },
           );
         },
+      ),
+    );
+  }
+}
+
+class _SecurityLoadedView extends StatelessWidget {
+  final SecurityDetails securityDetails;
+  final List<HistoricalPriceEod> prices;
+  final CompanyProfileDataOrigin dataSource;
+
+  const _SecurityLoadedView({
+    required this.securityDetails,
+    required this.prices,
+    required this.dataSource,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<HistoricalPriceEodBloc, HistoricalPriceEodState>(
+          listener: (context, eodState) {
+            eodState.mapOrNull(
+              loaded: (s) {
+                context.read<CompanySecurityBloc>().add(
+                  CompanySecurityEvent.priceAnalyticsUpdated(
+                    isSuccess: true,
+                  ),
+                );
+              },
+            );
+          },
+        ),
+        BlocListener<UpcomingEarningsBloc, UpcomingEarningsState>(
+          listener: (context, earningsState) {
+            earningsState.mapOrNull(
+              loaded: (s) {
+                context.read<CompanySecurityBloc>().add(
+                  CompanySecurityEvent.earningsAnalyticsUpdated(
+                    hasUpcoming: true,
+                    daysAway: s.earningsDate.daysAwayLabel,
+                  ),
+                );
+              },
+              empty: (_) {
+                context.read<CompanySecurityBloc>().add(
+                  CompanySecurityEvent.earningsAnalyticsUpdated(
+                    hasUpcoming: false,
+                  ),
+                );
+              },
+            );
+          },
+        ),
+      ],
+      child: _SecurityContent(
+        securityDetails: securityDetails,
+        prices: prices,
+        dataSource: dataSource,
       ),
     );
   }

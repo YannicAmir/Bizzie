@@ -28,4 +28,6 @@ sealed class CompanySecurityEvent with _$CompanySecurityEvent {
     bool? hasUpcoming,
     String? daysAway,
   }) = EarningsAnalyticsUpdated;
+
+  const factory CompanySecurityEvent.reset() = SecurityReset;
 }
