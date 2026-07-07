@@ -1,16 +1,24 @@
 import 'dart:async';
 
+import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
+import 'package:bizzie/features/company_profile/security/domain/models/security_details.dart';
 import 'package:bizzie/features/company_profile/security/domain/usecases/get_security_details_usecase.dart';
 import 'package:bizzie/features/company_profile/security/presentation/analytics/security_tab_analytics.dart';
 import 'package:bizzie/features/company_profile/security/presentation/bloc/company_security_event.dart';
 import 'package:bizzie/features/company_profile/security/presentation/bloc/company_security_state.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/bloc/company_profile_analytics_mixin.dart';
+import 'package:bizzie/shared/utils/market_hours_helper.dart';
 import 'package:bloc/bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 
 final _logger = BizzieLogger('CompanySecurityBloc');
+
+const _securityTypeEtf = 'etf';
+const _securityTypeFund = 'fund';
+const _securityTypeCompany = 'company';
+const _securityTypePending = 'pending';
 
 @injectable
 class CompanySecurityBloc
@@ -31,25 +39,15 @@ class CompanySecurityBloc
 
   CompanySecurityBloc(this._getSecurityDetailsUseCase, this._tracker)
     : super(const CompanySecurityState.initial()) {
-    on<CompanySecurityEvent>(_onEvent, transformer: sequential());
-  }
-
-  Future<void> _onEvent(
-    CompanySecurityEvent event,
-    Emitter<CompanySecurityState> emit,
-  ) async {
-    _logger.info('Handling event: $event');
-    await event.map(
-      loadRequested: (e) async => _onLoadRequested(e, emit),
-      tabShown: (e) async => _onTabShown(e, emit),
-      stalenessCheckRequested: (e) async => _onStalenessCheckRequested(e, emit),
-      tabHidden: (_) async => onTabHidden(),
-      appBackgrounded: (_) async => onAppBackgrounded(),
-      appForegrounded: (_) async => onAppForegrounded(),
-      priceAnalyticsUpdated: (e) async => _onPriceAnalyticsUpdated(e, emit),
-      earningsAnalyticsUpdated: (e) async =>
-          _onEarningsAnalyticsUpdated(e, emit),
-    );
+    on<LoadRequested>(_onLoadRequested, transformer: restartable());
+    on<TabShown>(_onTabShown);
+    on<StalenessCheckRequested>(_onStalenessCheckRequested);
+    on<TabHidden>(_onTabHidden);
+    on<AppBackgrounded>(_onAppBackgrounded);
+    on<AppForegrounded>(_onAppForegrounded);
+    on<PriceAnalyticsUpdated>(_onPriceAnalyticsUpdated);
+    on<EarningsAnalyticsUpdated>(_onEarningsAnalyticsUpdated);
+    on<SecurityReset>(_onReset);
   }
 
   Future<void> _onLoadRequested(
@@ -88,56 +86,62 @@ class CompanySecurityBloc
         _logger.severe('Failed to load Security details', failure);
         emit(CompanySecurityState.failure(failure));
       },
-      (tuple) {
-        final details = tuple.$1;
-        final origin = tuple.$2;
-
-        _logger.info(
-          'Successfully loaded Security details for ${event.ticker}',
-        );
-
-        final analytics = SecurityTabViewState(
-          ticker: event.ticker,
-          timestamp: DateTime.now().toIso8601String(),
-          securityType: details.isEtf
-              ? 'etf'
-              : details.isFund
-              ? 'fund'
-              : 'company',
-          loadTimeMs: _loadStopwatch.elapsedMilliseconds,
-          isSuccess: true,
-          dataSource: origin,
-        );
-
-        updateAnalyticsState((current) => analytics);
-
-        if (details.isEtf || details.isFund) {
-          _logger.info(
-            'Security is unsupported (ETF or Fund). Emitting unsupported state.',
-          );
-          emit(
-            CompanySecurityState.unsupported(
-              details,
-              analyticsState: analytics,
-            ),
-          );
-        } else {
-          emit(
-            CompanySecurityState.loaded(
-              details,
-              analyticsState: analytics,
-              lastUpdated: DateTime.now(),
-            ),
-          );
-        }
-      },
+      (tuple) => _emitLoadedState(event, emit, tuple),
     );
   }
 
-  Future<void> _onTabShown(
+  void _emitLoadedState(
+    LoadRequested event,
+    Emitter<CompanySecurityState> emit,
+    (SecurityDetails, CompanyProfileDataOrigin) tuple,
+  ) {
+    final details = tuple.$1;
+    final origin = tuple.$2;
+
+    _logger.info(
+      'Successfully loaded Security details for ${event.ticker}',
+    );
+
+    final analytics = SecurityTabViewState(
+      ticker: event.ticker,
+      timestamp: DateTime.now().toIso8601String(),
+      securityType: details.isEtf
+          ? _securityTypeEtf
+          : details.isFund
+          ? _securityTypeFund
+          : _securityTypeCompany,
+      loadTimeMs: _loadStopwatch.elapsedMilliseconds,
+      isSuccess: true,
+      dataSource: origin,
+    );
+
+    updateAnalyticsState((current) => analytics);
+
+    if (details.isEtf || details.isFund) {
+      _logger.info(
+        'Security is unsupported (ETF or Fund). Emitting unsupported state.',
+      );
+      emit(
+        CompanySecurityState.unsupported(
+          details,
+          analyticsState: analytics,
+        ),
+      );
+    } else {
+      emit(
+        CompanySecurityState.loaded(
+          details,
+          analyticsState: analytics,
+          lastUpdated: DateTime.now(),
+        ),
+      );
+    }
+  }
+
+  void _onTabShown(
     TabShown event,
     Emitter<CompanySecurityState> emit,
-  ) async {
+  ) {
     _logger.info('Security Tab Shown - Starting session tracker');
 
     final initialState = state.maybeMap(
@@ -145,7 +149,7 @@ class CompanySecurityBloc
       unsupported: (s) => s.analyticsState,
       orElse: () => SecurityTabViewState(
         ticker: event.ticker,
-        securityType: 'pending',
+        securityType: _securityTypePending,
         timestamp: DateTime.now().toIso8601String(),
       ),
     );
@@ -153,10 +157,10 @@ class CompanySecurityBloc
     onTabShown(event.ticker, initialState);
   }
 
-  Future<void> _onPriceAnalyticsUpdated(
+  void _onPriceAnalyticsUpdated(
     PriceAnalyticsUpdated event,
     Emitter<CompanySecurityState> emit,
-  ) async {
+  ) {
     updateAnalyticsState(
       (current) => current.copyWith(
         priceLoadMs: event.loadTimeMs ?? current.priceLoadMs,
@@ -181,10 +185,10 @@ class CompanySecurityBloc
     }
   }
 
-  Future<void> _onEarningsAnalyticsUpdated(
+  void _onEarningsAnalyticsUpdated(
     EarningsAnalyticsUpdated event,
     Emitter<CompanySecurityState> emit,
-  ) async {
+  ) {
     state.mapOrNull(
       loaded: (s) {
         updateAnalyticsState(
@@ -203,19 +207,35 @@ class CompanySecurityBloc
     );
   }
 
-  Future<void> _onStalenessCheckRequested(
+  void _onTabHidden(TabHidden event, Emitter<CompanySecurityState> emit) =>
+      onTabHidden();
+
+  void _onAppBackgrounded(
+    AppBackgrounded event,
+    Emitter<CompanySecurityState> emit,
+  ) => onAppBackgrounded();
+
+  void _onAppForegrounded(
+    AppForegrounded event,
+    Emitter<CompanySecurityState> emit,
+  ) => onAppForegrounded();
+
+  void _onReset(SecurityReset event, Emitter<CompanySecurityState> emit) =>
+      emit(const CompanySecurityState.initial());
+
+  void _onStalenessCheckRequested(
     StalenessCheckRequested event,
     Emitter<CompanySecurityState> emit,
-  ) async {
+  ) {
     _logger.info('Staleness check requested for ${event.ticker}');
     state.mapOrNull(
       loaded: (loadedState) {
         final lastUpdated = loadedState.lastUpdated;
         if (lastUpdated != null) {
-          final difference = DateTime.now().difference(lastUpdated);
-          if (difference.inHours >= 24) {
+          final isStale = MarketHoursHelper.isDataStale(lastUpdated);
+          if (isStale) {
             _logger.info(
-              'Security stale (TTL expired: ${difference.inHours}h). Triggering load.',
+              'Security stale (MarketHoursHelper check). Triggering load.',
             );
             add(
               CompanySecurityEvent.loadRequested(

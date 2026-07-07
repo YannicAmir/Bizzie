@@ -55,7 +55,7 @@ extension CompanySecurityEventPatterns on CompanySecurityEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( LoadRequested value)?  loadRequested,TResult Function( StalenessCheckRequested value)?  stalenessCheckRequested,TResult Function( TabShown value)?  tabShown,TResult Function( TabHidden value)?  tabHidden,TResult Function( AppBackgrounded value)?  appBackgrounded,TResult Function( AppForegrounded value)?  appForegrounded,TResult Function( PriceAnalyticsUpdated value)?  priceAnalyticsUpdated,TResult Function( EarningsAnalyticsUpdated value)?  earningsAnalyticsUpdated,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( LoadRequested value)?  loadRequested,TResult Function( StalenessCheckRequested value)?  stalenessCheckRequested,TResult Function( TabShown value)?  tabShown,TResult Function( TabHidden value)?  tabHidden,TResult Function( AppBackgrounded value)?  appBackgrounded,TResult Function( AppForegrounded value)?  appForegrounded,TResult Function( PriceAnalyticsUpdated value)?  priceAnalyticsUpdated,TResult Function( EarningsAnalyticsUpdated value)?  earningsAnalyticsUpdated,TResult Function( SecurityReset value)?  reset,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case LoadRequested() when loadRequested != null:
@@ -66,7 +66,8 @@ return tabHidden(_that);case AppBackgrounded() when appBackgrounded != null:
 return appBackgrounded(_that);case AppForegrounded() when appForegrounded != null:
 return appForegrounded(_that);case PriceAnalyticsUpdated() when priceAnalyticsUpdated != null:
 return priceAnalyticsUpdated(_that);case EarningsAnalyticsUpdated() when earningsAnalyticsUpdated != null:
-return earningsAnalyticsUpdated(_that);case _:
+return earningsAnalyticsUpdated(_that);case SecurityReset() when reset != null:
+return reset(_that);case _:
   return orElse();
 
 }
@@ -84,7 +85,7 @@ return earningsAnalyticsUpdated(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( LoadRequested value)  loadRequested,required TResult Function( StalenessCheckRequested value)  stalenessCheckRequested,required TResult Function( TabShown value)  tabShown,required TResult Function( TabHidden value)  tabHidden,required TResult Function( AppBackgrounded value)  appBackgrounded,required TResult Function( AppForegrounded value)  appForegrounded,required TResult Function( PriceAnalyticsUpdated value)  priceAnalyticsUpdated,required TResult Function( EarningsAnalyticsUpdated value)  earningsAnalyticsUpdated,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( LoadRequested value)  loadRequested,required TResult Function( StalenessCheckRequested value)  stalenessCheckRequested,required TResult Function( TabShown value)  tabShown,required TResult Function( TabHidden value)  tabHidden,required TResult Function( AppBackgrounded value)  appBackgrounded,required TResult Function( AppForegrounded value)  appForegrounded,required TResult Function( PriceAnalyticsUpdated value)  priceAnalyticsUpdated,required TResult Function( EarningsAnalyticsUpdated value)  earningsAnalyticsUpdated,required TResult Function( SecurityReset value)  reset,}){
 final _that = this;
 switch (_that) {
 case LoadRequested():
@@ -95,7 +96,8 @@ return tabHidden(_that);case AppBackgrounded():
 return appBackgrounded(_that);case AppForegrounded():
 return appForegrounded(_that);case PriceAnalyticsUpdated():
 return priceAnalyticsUpdated(_that);case EarningsAnalyticsUpdated():
-return earningsAnalyticsUpdated(_that);}
+return earningsAnalyticsUpdated(_that);case SecurityReset():
+return reset(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -109,7 +111,7 @@ return earningsAnalyticsUpdated(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( LoadRequested value)?  loadRequested,TResult? Function( StalenessCheckRequested value)?  stalenessCheckRequested,TResult? Function( TabShown value)?  tabShown,TResult? Function( TabHidden value)?  tabHidden,TResult? Function( AppBackgrounded value)?  appBackgrounded,TResult? Function( AppForegrounded value)?  appForegrounded,TResult? Function( PriceAnalyticsUpdated value)?  priceAnalyticsUpdated,TResult? Function( EarningsAnalyticsUpdated value)?  earningsAnalyticsUpdated,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( LoadRequested value)?  loadRequested,TResult? Function( StalenessCheckRequested value)?  stalenessCheckRequested,TResult? Function( TabShown value)?  tabShown,TResult? Function( TabHidden value)?  tabHidden,TResult? Function( AppBackgrounded value)?  appBackgrounded,TResult? Function( AppForegrounded value)?  appForegrounded,TResult? Function( PriceAnalyticsUpdated value)?  priceAnalyticsUpdated,TResult? Function( EarningsAnalyticsUpdated value)?  earningsAnalyticsUpdated,TResult? Function( SecurityReset value)?  reset,}){
 final _that = this;
 switch (_that) {
 case LoadRequested() when loadRequested != null:
@@ -120,7 +122,8 @@ return tabHidden(_that);case AppBackgrounded() when appBackgrounded != null:
 return appBackgrounded(_that);case AppForegrounded() when appForegrounded != null:
 return appForegrounded(_that);case PriceAnalyticsUpdated() when priceAnalyticsUpdated != null:
 return priceAnalyticsUpdated(_that);case EarningsAnalyticsUpdated() when earningsAnalyticsUpdated != null:
-return earningsAnalyticsUpdated(_that);case _:
+return earningsAnalyticsUpdated(_that);case SecurityReset() when reset != null:
+return reset(_that);case _:
   return null;
 
 }
@@ -137,7 +140,7 @@ return earningsAnalyticsUpdated(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String ticker,  bool forceRefresh)?  loadRequested,TResult Function( String ticker)?  stalenessCheckRequested,TResult Function( String ticker)?  tabShown,TResult Function()?  tabHidden,TResult Function()?  appBackgrounded,TResult Function()?  appForegrounded,TResult Function( int? loadTimeMs,  bool? isSuccess,  String? finalTimeframe,  int? chartChangeCount)?  priceAnalyticsUpdated,TResult Function( bool? hasUpcoming,  String? daysAway)?  earningsAnalyticsUpdated,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String ticker,  bool forceRefresh)?  loadRequested,TResult Function( String ticker)?  stalenessCheckRequested,TResult Function( String ticker)?  tabShown,TResult Function()?  tabHidden,TResult Function()?  appBackgrounded,TResult Function()?  appForegrounded,TResult Function( int? loadTimeMs,  bool? isSuccess,  String? finalTimeframe,  int? chartChangeCount)?  priceAnalyticsUpdated,TResult Function( bool? hasUpcoming,  String? daysAway)?  earningsAnalyticsUpdated,TResult Function()?  reset,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case LoadRequested() when loadRequested != null:
 return loadRequested(_that.ticker,_that.forceRefresh);case StalenessCheckRequested() when stalenessCheckRequested != null:
@@ -147,7 +150,8 @@ return tabHidden();case AppBackgrounded() when appBackgrounded != null:
 return appBackgrounded();case AppForegrounded() when appForegrounded != null:
 return appForegrounded();case PriceAnalyticsUpdated() when priceAnalyticsUpdated != null:
 return priceAnalyticsUpdated(_that.loadTimeMs,_that.isSuccess,_that.finalTimeframe,_that.chartChangeCount);case EarningsAnalyticsUpdated() when earningsAnalyticsUpdated != null:
-return earningsAnalyticsUpdated(_that.hasUpcoming,_that.daysAway);case _:
+return earningsAnalyticsUpdated(_that.hasUpcoming,_that.daysAway);case SecurityReset() when reset != null:
+return reset();case _:
   return orElse();
 
 }
@@ -165,7 +169,7 @@ return earningsAnalyticsUpdated(_that.hasUpcoming,_that.daysAway);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String ticker,  bool forceRefresh)  loadRequested,required TResult Function( String ticker)  stalenessCheckRequested,required TResult Function( String ticker)  tabShown,required TResult Function()  tabHidden,required TResult Function()  appBackgrounded,required TResult Function()  appForegrounded,required TResult Function( int? loadTimeMs,  bool? isSuccess,  String? finalTimeframe,  int? chartChangeCount)  priceAnalyticsUpdated,required TResult Function( bool? hasUpcoming,  String? daysAway)  earningsAnalyticsUpdated,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String ticker,  bool forceRefresh)  loadRequested,required TResult Function( String ticker)  stalenessCheckRequested,required TResult Function( String ticker)  tabShown,required TResult Function()  tabHidden,required TResult Function()  appBackgrounded,required TResult Function()  appForegrounded,required TResult Function( int? loadTimeMs,  bool? isSuccess,  String? finalTimeframe,  int? chartChangeCount)  priceAnalyticsUpdated,required TResult Function( bool? hasUpcoming,  String? daysAway)  earningsAnalyticsUpdated,required TResult Function()  reset,}) {final _that = this;
 switch (_that) {
 case LoadRequested():
 return loadRequested(_that.ticker,_that.forceRefresh);case StalenessCheckRequested():
@@ -175,7 +179,8 @@ return tabHidden();case AppBackgrounded():
 return appBackgrounded();case AppForegrounded():
 return appForegrounded();case PriceAnalyticsUpdated():
 return priceAnalyticsUpdated(_that.loadTimeMs,_that.isSuccess,_that.finalTimeframe,_that.chartChangeCount);case EarningsAnalyticsUpdated():
-return earningsAnalyticsUpdated(_that.hasUpcoming,_that.daysAway);}
+return earningsAnalyticsUpdated(_that.hasUpcoming,_that.daysAway);case SecurityReset():
+return reset();}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -189,7 +194,7 @@ return earningsAnalyticsUpdated(_that.hasUpcoming,_that.daysAway);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String ticker,  bool forceRefresh)?  loadRequested,TResult? Function( String ticker)?  stalenessCheckRequested,TResult? Function( String ticker)?  tabShown,TResult? Function()?  tabHidden,TResult? Function()?  appBackgrounded,TResult? Function()?  appForegrounded,TResult? Function( int? loadTimeMs,  bool? isSuccess,  String? finalTimeframe,  int? chartChangeCount)?  priceAnalyticsUpdated,TResult? Function( bool? hasUpcoming,  String? daysAway)?  earningsAnalyticsUpdated,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String ticker,  bool forceRefresh)?  loadRequested,TResult? Function( String ticker)?  stalenessCheckRequested,TResult? Function( String ticker)?  tabShown,TResult? Function()?  tabHidden,TResult? Function()?  appBackgrounded,TResult? Function()?  appForegrounded,TResult? Function( int? loadTimeMs,  bool? isSuccess,  String? finalTimeframe,  int? chartChangeCount)?  priceAnalyticsUpdated,TResult? Function( bool? hasUpcoming,  String? daysAway)?  earningsAnalyticsUpdated,TResult? Function()?  reset,}) {final _that = this;
 switch (_that) {
 case LoadRequested() when loadRequested != null:
 return loadRequested(_that.ticker,_that.forceRefresh);case StalenessCheckRequested() when stalenessCheckRequested != null:
@@ -199,7 +204,8 @@ return tabHidden();case AppBackgrounded() when appBackgrounded != null:
 return appBackgrounded();case AppForegrounded() when appForegrounded != null:
 return appForegrounded();case PriceAnalyticsUpdated() when priceAnalyticsUpdated != null:
 return priceAnalyticsUpdated(_that.loadTimeMs,_that.isSuccess,_that.finalTimeframe,_that.chartChangeCount);case EarningsAnalyticsUpdated() when earningsAnalyticsUpdated != null:
-return earningsAnalyticsUpdated(_that.hasUpcoming,_that.daysAway);case _:
+return earningsAnalyticsUpdated(_that.hasUpcoming,_that.daysAway);case SecurityReset() when reset != null:
+return reset();case _:
   return null;
 
 }
@@ -642,5 +648,37 @@ as String?,
 
 
 }
+
+/// @nodoc
+
+
+class SecurityReset implements CompanySecurityEvent {
+  const SecurityReset();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SecurityReset);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'CompanySecurityEvent.reset()';
+}
+
+
+}
+
+
+
 
 // dart format on
