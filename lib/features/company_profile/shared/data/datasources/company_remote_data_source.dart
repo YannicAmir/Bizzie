@@ -1,14 +1,14 @@
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 import 'package:bizzie/core/interfaces/i_config_service.dart';
+import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:bizzie/features/company_profile/shared/data/dtos/company_profile_dto.dart';
+import 'package:bizzie/features/company_profile/shared/data/interfaces/i_company_remote_datasource.dart';
 
-abstract class CompanyRemoteDataSource {
-  Future<List<ProfileDto>> getProfile(String ticker);
-}
+final _logger = BizzieLogger('CompanyRemoteDataSource');
 
-@LazySingleton(as: CompanyRemoteDataSource)
-class CompanyRemoteDataSourceImpl implements CompanyRemoteDataSource {
+@Injectable(as: ICompanyRemoteDataSource)
+class CompanyRemoteDataSourceImpl implements ICompanyRemoteDataSource {
   final Dio _dio;
   final IConfigService _configService;
 
@@ -23,10 +23,17 @@ class CompanyRemoteDataSourceImpl implements CompanyRemoteDataSource {
 
   @override
   Future<List<ProfileDto>> getProfile(String ticker) async {
-    final response = await _dio.get(
-      '$_baseUrl/profile',
-      queryParameters: {'symbol': _sanitize(ticker)},
-    );
-    return (response.data as List).map((e) => ProfileDto.fromJson(e)).toList();
+    try {
+      final response = await _dio.get(
+        '$_baseUrl/profile',
+        queryParameters: {'symbol': _sanitize(ticker)},
+      );
+      return (response.data as List)
+          .map((e) => ProfileDto.fromJson(e))
+          .toList();
+    } on Exception catch (e) {
+      _logger.severe('Failed to fetch company profile for $ticker', e);
+      rethrow;
+    }
   }
 }

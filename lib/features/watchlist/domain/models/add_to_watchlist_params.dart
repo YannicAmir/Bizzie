@@ -1,4 +1,4 @@
-import 'package:bizzie/features/onboarding/domain/models/company.dart';
+import 'package:bizzie/core/domain/models/company.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'add_to_watchlist_params.freezed.dart';

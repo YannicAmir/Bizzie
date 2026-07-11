@@ -6,7 +6,7 @@ part 'company_security_event.freezed.dart';
 sealed class CompanySecurityEvent with _$CompanySecurityEvent {
   const factory CompanySecurityEvent.loadRequested(
     String ticker, {
-    @Default(false) bool forceRefresh,
+    bool? forceRefresh,
   }) = LoadRequested;
 
   const factory CompanySecurityEvent.stalenessCheckRequested(String ticker) =

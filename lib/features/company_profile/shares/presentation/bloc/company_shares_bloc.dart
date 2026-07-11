@@ -1,18 +1,23 @@
-import 'package:bizzie/core/interfaces/i_config_service.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:bloc_concurrency/bloc_concurrency.dart';
+import 'dart:async';
 
-import 'package:injectable/injectable.dart';
+import 'package:bizzie/core/interfaces/i_config_service.dart';
+import 'package:bizzie/core/usecase/usecase.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:bizzie/features/company_profile/shared/domain/models/chart_data_point.dart';
 import 'package:bizzie/features/company_profile/shared/domain/models/financial_data_point.dart';
-import 'package:bizzie/features/company_profile/shares/domain/models/shares_summary_data.dart';
-import 'package:bizzie/features/company_profile/shares/domain/usecases/get_shares_usecase.dart';
-import 'package:bizzie/shared/utils/bizzie_date_formatter.dart';
-import 'package:bizzie/features/company_profile/shares/presentation/analytics/shares_tab_analytics.dart';
-import 'package:bizzie/features/company_profile/shares/presentation/analytics/shares_tab_view_state.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/analytics/base_analytics.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/bloc/company_profile_analytics_mixin.dart';
+import 'package:bizzie/features/company_profile/shared/domain/enums/company_profile_tab.dart';
+import 'package:bizzie/features/company_profile/shared/domain/models/tab_activation.dart';
+import 'package:bizzie/features/company_profile/shared/domain/usecases/watch_active_tab_usecase.dart';
+import 'package:bizzie/features/company_profile/shares/domain/models/shares_summary_data.dart';
+import 'package:bizzie/features/company_profile/shares/domain/usecases/get_shares_usecase.dart';
+import 'package:bizzie/features/company_profile/shares/presentation/analytics/shares_tab_analytics.dart';
+import 'package:bizzie/features/company_profile/shares/presentation/analytics/shares_tab_view_state.dart';
+import 'package:bizzie/shared/utils/bizzie_date_formatter.dart';
+import 'package:bloc_concurrency/bloc_concurrency.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:injectable/injectable.dart';
 import 'company_shares_event.dart';
 import 'company_shares_state.dart';
 
@@ -29,10 +34,17 @@ class CompanySharesBloc extends Bloc<CompanySharesEvent, CompanySharesState>
   final GetSharesUseCase _getShares;
   final IConfigService _configService;
   final SharesTabAnalytics _analytics;
+  final WatchActiveTabUseCase _watchActiveTabUseCase;
 
-  CompanySharesBloc(this._getShares, this._configService, this._analytics)
-    : super(const CompanySharesState.initial()) {
-    on<LoadRequested>(_onLoadRequested, transformer: droppable());
+  StreamSubscription<TabActivation>? _tabSubscription;
+
+  CompanySharesBloc(
+    this._getShares,
+    this._configService,
+    this._analytics,
+    this._watchActiveTabUseCase,
+  ) : super(const CompanySharesState.initial()) {
+    on<LoadRequested>(_onLoadRequested, transformer: restartable());
     on<StalenessCheckRequested>(
       _onStalenessCheckRequested,
       transformer: sequential(),
@@ -43,6 +55,25 @@ class CompanySharesBloc extends Bloc<CompanySharesEvent, CompanySharesState>
     on<AppForegrounded>((_, __) => onAppForegrounded());
     on<PeriodViewed>(_onPeriodViewed);
     on<ViewAllTapped>(_onViewAllTapped);
+    on<Reset>(_onReset);
+    _tabSubscription = _watchActiveTabUseCase(NoParams())
+        .where((activation) => activation.tab == CompanyProfileTab.shares)
+        .listen((activation) {
+            final shouldHandle = state.maybeMap(
+              loading: (_) => false,
+              loaded: (s) => s.ticker == activation.ticker,
+              orElse: () => true,
+            );
+            if (shouldHandle) {
+                          add(CompanySharesEvent.stalenessCheckRequested(activation.ticker));
+            }
+        });
+  }
+
+  @override
+  Future<void> close() async {
+    await _tabSubscription?.cancel();
+    return super.close();
   }
 
   @override
@@ -56,11 +87,7 @@ class CompanySharesBloc extends Bloc<CompanySharesEvent, CompanySharesState>
         ticker: event.ticker,
         timestamp: DateTime.now().toIso8601String(),
       ),
-    );
-    state.maybeMap(
-      loaded: (s) => emit(s.copyWith(analyticsState: analyticsSession)),
-      orElse: () {},
-    );
+    );    add(CompanySharesEvent.stalenessCheckRequested(event.ticker));
   }
 
   void _onPeriodViewed(PeriodViewed event, Emitter<CompanySharesState> emit) {
@@ -68,12 +95,7 @@ class CompanySharesBloc extends Bloc<CompanySharesEvent, CompanySharesState>
       (s) => event.isAnnual
           ? s.copyWith(viewedYearlySharesTab: true)
           : s.copyWith(viewedQtrlySharesTab: true),
-    );
-    state.maybeMap(
-      loaded: (s) => emit(s.copyWith(analyticsState: analyticsSession)),
-      orElse: () {},
-    );
-  }
+    );  }
 
   void _onViewAllTapped(ViewAllTapped event, Emitter<CompanySharesState> emit) {
     updateAnalyticsState((s) {
@@ -87,11 +109,6 @@ class CompanySharesBloc extends Bloc<CompanySharesEvent, CompanySharesState>
             : s.copyWith(tappedQtrtableViewAll: true);
       }
     });
-
-    state.maybeMap(
-      loaded: (s) => emit(s.copyWith(analyticsState: analyticsSession)),
-      orElse: () {},
-    );
   }
 
   Future<void> _onLoadRequested(
@@ -174,6 +191,14 @@ class CompanySharesBloc extends Bloc<CompanySharesEvent, CompanySharesState>
     );
   }
 
+  Future<void> _onReset(
+    Reset event,
+    Emitter<CompanySharesState> emit,
+  ) async {
+    _logger.info('Resetting Shares state.');
+    emit(const CompanySharesState.initial());
+  }
+
   Future<void> _onStalenessCheckRequested(
     StalenessCheckRequested event,
     Emitter<CompanySharesState> emit,
@@ -211,6 +236,9 @@ class CompanySharesBloc extends Bloc<CompanySharesEvent, CompanySharesState>
       initial: (_) {
         _logger.info('Shares in initial state. Triggering load.');
         add(CompanySharesEvent.loadRequested(event.ticker, forceRefresh: true));
+      },
+      loading: (_) {
+        _logger.info('Shares already loading, skipping staleness check.');
       },
     );
   }

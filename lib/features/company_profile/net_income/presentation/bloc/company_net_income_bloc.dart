@@ -1,18 +1,24 @@
-import 'package:bizzie/features/company_profile/shared/presentation/analytics/base_analytics.dart';
-import 'package:bizzie/features/company_profile/shared/presentation/bloc/company_profile_analytics_mixin.dart';
+import 'dart:async';
+
+import 'package:bizzie/core/interfaces/i_config_service.dart';
+import 'package:bizzie/core/usecase/usecase.dart';
+import 'package:bizzie/core/logging/bizzie_logger.dart';
+import 'package:bizzie/features/company_profile/net_income/domain/usecases/get_net_income_stats_usecase.dart';
 import 'package:bizzie/features/company_profile/net_income/presentation/analytics/net_income_tab_analytics.dart';
 import 'package:bizzie/features/company_profile/net_income/presentation/analytics/net_income_tab_view_state.dart';
-import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:bizzie/features/company_profile/shared/domain/models/chart_data_point.dart';
 import 'package:bizzie/features/company_profile/shared/domain/models/financial_data_point.dart';
-import 'package:bizzie/features/company_profile/net_income/domain/usecases/get_net_income_stats_usecase.dart';
+import 'package:bizzie/features/company_profile/shared/presentation/analytics/base_analytics.dart';
+import 'package:bizzie/features/company_profile/shared/presentation/bloc/company_profile_analytics_mixin.dart';
+import 'package:bizzie/features/company_profile/shared/domain/enums/company_profile_tab.dart';
+import 'package:bizzie/features/company_profile/shared/domain/models/tab_activation.dart';
+import 'package:bizzie/features/company_profile/shared/domain/usecases/watch_active_tab_usecase.dart';
+import 'package:bizzie/shared/utils/bizzie_date_formatter.dart';
+import 'package:bloc_concurrency/bloc_concurrency.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:injectable/injectable.dart';
 import 'company_net_income_event.dart';
 import 'company_net_income_state.dart';
-import 'package:bizzie/shared/utils/bizzie_date_formatter.dart';
-import 'package:bizzie/core/interfaces/i_config_service.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:bloc_concurrency/bloc_concurrency.dart';
-import 'package:injectable/injectable.dart';
 
 final _logger = BizzieLogger('CompanyNetIncomeBloc');
 
@@ -28,13 +34,17 @@ class CompanyNetIncomeBloc
   final GetNetIncomeStatsUseCase _getNetIncomeStatsUseCase;
   final IConfigService _configService;
   final NetIncomeTabAnalytics _analytics;
+  final WatchActiveTabUseCase _watchActiveTabUseCase;
+
+  StreamSubscription<TabActivation>? _tabSubscription;
 
   CompanyNetIncomeBloc(
     this._getNetIncomeStatsUseCase,
     this._configService,
     this._analytics,
+    this._watchActiveTabUseCase,
   ) : super(const CompanyNetIncomeState.initial()) {
-    on<LoadRequested>(_onLoadRequested, transformer: droppable());
+    on<LoadRequested>(_onLoadRequested, transformer: restartable());
     on<StalenessCheckRequested>(
       _onStalenessCheckRequested,
       transformer: sequential(),
@@ -45,11 +55,33 @@ class CompanyNetIncomeBloc
     on<AppForegrounded>((_, __) => onAppForegrounded());
     on<PeriodViewed>(_onPeriodViewed);
     on<ViewAllTapped>(_onViewAllTapped);
+    on<NetIncomeReset>(_onReset);
+    _tabSubscription = _watchActiveTabUseCase(NoParams())
+        .where((activation) => activation.tab == CompanyProfileTab.netIncome)
+        .listen((activation) {
+            final shouldHandle = state.maybeMap(
+              loading: (_) => false,
+              loaded: (s) => s.ticker == activation.ticker,
+              orElse: () => true,
+            );
+            if (shouldHandle) {
+                          add(CompanyNetIncomeEvent.stalenessCheckRequested(activation.ticker));
+            }
+        });
+  }
+
+  @override
+  Future<void> close() async {
+    await _tabSubscription?.cancel();
+    return super.close();
   }
 
   @override
   CompanyProfileTabTracker<NetIncomeTabViewState> get analyticsTracker =>
       _analytics;
+
+  void _onReset(NetIncomeReset event, Emitter<CompanyNetIncomeState> emit) =>
+      emit(const CompanyNetIncomeState.initial());
 
   void _onTabShown(TabShown event, Emitter<CompanyNetIncomeState> emit) {
     final existingState = state.maybeMap(
@@ -66,8 +98,7 @@ class CompanyNetIncomeBloc
         isSuccess: existingState?.isSuccess ?? false,
         dataSource: existingState?.dataSource,
       ),
-    );
-    _emitAnalyticsUpdate(emit);
+    );    add(CompanyNetIncomeEvent.stalenessCheckRequested(event.ticker));
   }
 
   void _onPeriodViewed(
@@ -78,9 +109,7 @@ class CompanyNetIncomeBloc
       (s) => event.isAnnual
           ? s.copyWith(viewedYearlyNetTab: true)
           : s.copyWith(viewedQtrlyNetTab: true),
-    );
-    _emitAnalyticsUpdate(emit);
-  }
+    );  }
 
   void _onViewAllTapped(
     ViewAllTapped event,
@@ -101,16 +130,7 @@ class CompanyNetIncomeBloc
             ? true
             : s.tappedYrtableViewAll,
       ),
-    );
-    _emitAnalyticsUpdate(emit);
-  }
-
-  void _emitAnalyticsUpdate(Emitter<CompanyNetIncomeState> emit) {
-    state.maybeMap(
-      loaded: (s) => emit(s.copyWith(analyticsState: analyticsSession)),
-      orElse: () {},
-    );
-  }
+    );  }
 
   Future<void> _onLoadRequested(
     LoadRequested event,
@@ -251,6 +271,9 @@ class CompanyNetIncomeBloc
         add(
           CompanyNetIncomeEvent.loadRequested(event.ticker, forceRefresh: true),
         );
+      },
+      loading: (_) {
+        _logger.info('Net Income already loading, skipping staleness check.');
       },
     );
   }

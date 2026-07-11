@@ -1,16 +1,21 @@
-import 'package:bizzie/features/company_profile/shared/presentation/analytics/base_analytics.dart';
-import 'package:bizzie/features/company_profile/shared/presentation/bloc/company_profile_analytics_mixin.dart';
-import 'package:bizzie/features/company_profile/dividends/presentation/analytics/dividend_tab_analytics.dart';
-import 'package:bizzie/features/company_profile/dividends/presentation/analytics/dividend_tab_view_state.dart';
-import 'package:bizzie/core/logging/bizzie_logger.dart';
-import 'package:bizzie/features/company_profile/dividends/domain/usecases/get_dividend_info_usecase.dart';
-import 'package:bizzie/features/company_profile/dividends/presentation/bloc/company_dividends/company_dividends_event.dart';
-import 'package:bizzie/features/company_profile/dividends/presentation/bloc/company_dividends/company_dividends_state.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:bloc_concurrency/bloc_concurrency.dart';
-import 'package:injectable/injectable.dart';
+import 'dart:async';
 
 import 'package:bizzie/core/interfaces/i_config_service.dart';
+import 'package:bizzie/core/usecase/usecase.dart';
+import 'package:bizzie/core/logging/bizzie_logger.dart';
+import 'package:bizzie/features/company_profile/dividends/domain/usecases/get_dividend_info_usecase.dart';
+import 'package:bizzie/features/company_profile/dividends/presentation/analytics/dividend_tab_analytics.dart';
+import 'package:bizzie/features/company_profile/dividends/presentation/analytics/dividend_tab_view_state.dart';
+import 'package:bizzie/features/company_profile/dividends/presentation/bloc/company_dividends/company_dividends_event.dart';
+import 'package:bizzie/features/company_profile/dividends/presentation/bloc/company_dividends/company_dividends_state.dart';
+import 'package:bizzie/features/company_profile/shared/presentation/analytics/base_analytics.dart';
+import 'package:bizzie/features/company_profile/shared/presentation/bloc/company_profile_analytics_mixin.dart';
+import 'package:bizzie/features/company_profile/shared/domain/enums/company_profile_tab.dart';
+import 'package:bizzie/features/company_profile/shared/domain/models/tab_activation.dart';
+import 'package:bizzie/features/company_profile/shared/domain/usecases/watch_active_tab_usecase.dart';
+import 'package:bloc_concurrency/bloc_concurrency.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:injectable/injectable.dart';
 
 final _logger = BizzieLogger('CompanyDividendsBloc');
 
@@ -26,13 +31,17 @@ class CompanyDividendsBloc
   final GetDividendInfoUseCase _getDividendInfo;
   final IConfigService _configService;
   final DividendTabAnalytics _analytics;
+  final WatchActiveTabUseCase _watchActiveTabUseCase;
+
+  StreamSubscription<TabActivation>? _tabSubscription;
 
   CompanyDividendsBloc(
     this._getDividendInfo,
     this._configService,
     this._analytics,
+    this._watchActiveTabUseCase,
   ) : super(const CompanyDividendsState.initial()) {
-    on<LoadRequested>(_onLoadRequested, transformer: droppable());
+    on<LoadRequested>(_onLoadRequested, transformer: restartable());
     on<StalenessCheckRequested>(
       _onStalenessCheckRequested,
       transformer: sequential(),
@@ -42,6 +51,27 @@ class CompanyDividendsBloc
     on<AppBackgrounded>((_, __) async => await onAppBackgrounded());
     on<AppForegrounded>((_, __) => onAppForegrounded());
     on<ViewAllTapped>(_onViewAllTapped);
+    on<Reset>((_, emit) => emit(const CompanyDividendsState.initial()));
+    _tabSubscription = _watchActiveTabUseCase(NoParams())
+        .where((activation) => activation.tab == CompanyProfileTab.dividends)
+        .listen((activation) {
+          final shouldHandle = state.maybeMap(
+            loading: (_) => false,
+            loaded: (s) => s.ticker == activation.ticker,
+            orElse: () => true,
+          );
+          if (shouldHandle) {
+            add(
+              CompanyDividendsEvent.stalenessCheckRequested(activation.ticker),
+            );
+          }
+        });
+  }
+
+  @override
+  Future<void> close() async {
+    await _tabSubscription?.cancel();
+    return super.close();
   }
 
   @override
@@ -64,7 +94,7 @@ class CompanyDividendsBloc
         dataSource: existingState?.dataSource,
       ),
     );
-    _emitAnalyticsUpdate(emit);
+    add(CompanyDividendsEvent.stalenessCheckRequested(event.ticker));
   }
 
   void _onViewAllTapped(
@@ -75,14 +105,6 @@ class CompanyDividendsBloc
       (s) => event.isChart
           ? s.copyWith(tappedChartViewAll: true)
           : s.copyWith(tappedTableViewAll: true),
-    );
-    _emitAnalyticsUpdate(emit);
-  }
-
-  void _emitAnalyticsUpdate(Emitter<CompanyDividendsState> emit) {
-    state.maybeMap(
-      loaded: (s) => emit(s.copyWith(analyticsState: analyticsSession)),
-      orElse: () {},
     );
   }
 
@@ -137,7 +159,7 @@ class CompanyDividendsBloc
           updateAnalyticsState((s) => metrics);
         }
 
-        emit(CompanyDividendsState.error(failure));
+        emit(CompanyDividendsState.failure(failure));
       },
       (tuple) {
         final info = tuple.$1;
@@ -207,8 +229,8 @@ class CompanyDividendsBloc
           );
         }
       },
-      error: (_) {
-        _logger.info('Dividends in error state. Triggering retry.');
+      failure: (_) {
+        _logger.info('Dividends in failure state. Triggering retry.');
         add(
           CompanyDividendsEvent.loadRequested(event.ticker, forceRefresh: true),
         );
@@ -218,6 +240,9 @@ class CompanyDividendsBloc
         add(
           CompanyDividendsEvent.loadRequested(event.ticker, forceRefresh: true),
         );
+      },
+      loading: (_) {
+        _logger.info('Dividends already loading, skipping staleness check.');
       },
     );
   }

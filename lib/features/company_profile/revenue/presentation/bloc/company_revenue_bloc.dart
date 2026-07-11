@@ -1,15 +1,21 @@
+import 'dart:async';
+
+import 'package:bizzie/core/interfaces/i_config_service.dart';
+import 'package:bizzie/core/usecase/usecase.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
-import 'package:bizzie/features/company_profile/shared/domain/models/chart_data_point.dart';
-import 'package:bizzie/features/company_profile/shared/domain/models/financial_data_point.dart';
 import 'package:bizzie/features/company_profile/revenue/domain/usecases/get_revenue_stats_usecase.dart';
-import 'package:bizzie/features/company_profile/revenue/presentation/bloc/company_revenue_event.dart';
-import 'package:bizzie/features/company_profile/revenue/presentation/bloc/company_revenue_state.dart';
 import 'package:bizzie/features/company_profile/revenue/presentation/analytics/revenue_tab_analytics.dart';
 import 'package:bizzie/features/company_profile/revenue/presentation/analytics/revenue_tab_view_state.dart';
+import 'package:bizzie/features/company_profile/revenue/presentation/bloc/company_revenue_event.dart';
+import 'package:bizzie/features/company_profile/revenue/presentation/bloc/company_revenue_state.dart';
+import 'package:bizzie/features/company_profile/shared/domain/models/chart_data_point.dart';
+import 'package:bizzie/features/company_profile/shared/domain/models/financial_data_point.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/analytics/base_analytics.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/bloc/company_profile_analytics_mixin.dart';
+import 'package:bizzie/features/company_profile/shared/domain/enums/company_profile_tab.dart';
+import 'package:bizzie/features/company_profile/shared/domain/models/tab_activation.dart';
+import 'package:bizzie/features/company_profile/shared/domain/usecases/watch_active_tab_usecase.dart';
 import 'package:bizzie/shared/utils/bizzie_date_formatter.dart';
-import 'package:bizzie/core/interfaces/i_config_service.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
@@ -27,14 +33,18 @@ class CompanyRevenueBloc extends Bloc<CompanyRevenueEvent, CompanyRevenueState>
   final GetRevenueStatsUseCase _getRevenueStatsUseCase;
   final IConfigService _configService;
   final RevenueTabAnalytics _analytics;
+  final WatchActiveTabUseCase _watchActiveTabUseCase;
+
+  StreamSubscription<TabActivation>? _tabSubscription;
 
   CompanyRevenueBloc(
     this._getRevenueStatsUseCase,
     this._configService,
     this._analytics,
+    this._watchActiveTabUseCase,
   ) : super(const CompanyRevenueState.initial()) {
     on<CompanyRevenueEvent>(_onEvent);
-    on<LoadRequested>(_onLoadRequested, transformer: droppable());
+    on<LoadRequested>(_onLoadRequested, transformer: restartable());
     on<StalenessCheckRequested>(
       _onStalenessCheckRequested,
       transformer: sequential(),
@@ -45,6 +55,25 @@ class CompanyRevenueBloc extends Bloc<CompanyRevenueEvent, CompanyRevenueState>
     on<AppForegrounded>((_, __) => onAppForegrounded());
     on<PeriodViewed>(_onPeriodViewed);
     on<ViewAllTapped>(_onViewAllTapped);
+    on<Reset>((_, emit) => emit(const CompanyRevenueState.initial()));
+    _tabSubscription = _watchActiveTabUseCase(NoParams())
+        .where((activation) => activation.tab == CompanyProfileTab.revenue)
+        .listen((activation) {
+            final shouldHandle = state.maybeMap(
+              loading: (_) => false,
+              loaded: (s) => s.ticker == activation.ticker,
+              orElse: () => true,
+            );
+            if (shouldHandle) {
+                          add(CompanyRevenueEvent.stalenessCheckRequested(activation.ticker));
+            }
+        });
+  }
+
+  @override
+  Future<void> close() async {
+    await _tabSubscription?.cancel();
+    return super.close();
   }
 
   @override
@@ -56,17 +85,21 @@ class CompanyRevenueBloc extends Bloc<CompanyRevenueEvent, CompanyRevenueState>
   }
 
   void _onTabShown(TabShown event, Emitter<CompanyRevenueState> emit) {
+    final existingState = state.maybeMap(
+      loaded: (s) => s.analyticsState,
+      orElse: () => null,
+    );
+
     onTabShown(
       event.ticker,
       RevenueTabViewState(
         ticker: event.ticker,
         timestamp: DateTime.now().toIso8601String(),
+        loadTimeMs: existingState?.loadTimeMs,
+        isSuccess: existingState?.isSuccess ?? false,
+        dataSource: existingState?.dataSource,
       ),
-    );
-    state.maybeMap(
-      loaded: (s) => emit(s.copyWith(analyticsState: analyticsSession)),
-      orElse: () {},
-    );
+    );    add(CompanyRevenueEvent.stalenessCheckRequested(event.ticker));
   }
 
   void _onPeriodViewed(PeriodViewed event, Emitter<CompanyRevenueState> emit) {
@@ -74,12 +107,7 @@ class CompanyRevenueBloc extends Bloc<CompanyRevenueEvent, CompanyRevenueState>
       (s) => event.isAnnual
           ? s.copyWith(viewedYearlyRevTab: true)
           : s.copyWith(viewedQtrlyRevTab: true),
-    );
-    state.maybeMap(
-      loaded: (s) => emit(s.copyWith(analyticsState: analyticsSession)),
-      orElse: () {},
-    );
-  }
+    );  }
 
   void _onViewAllTapped(
     ViewAllTapped event,
@@ -96,11 +124,6 @@ class CompanyRevenueBloc extends Bloc<CompanyRevenueEvent, CompanyRevenueState>
             : s.copyWith(tappedQtrtableViewAll: true);
       }
     });
-
-    state.maybeMap(
-      loaded: (s) => emit(s.copyWith(analyticsState: analyticsSession)),
-      orElse: () {},
-    );
   }
 
   Future<void> _onLoadRequested(
@@ -138,38 +161,57 @@ class CompanyRevenueBloc extends Bloc<CompanyRevenueEvent, CompanyRevenueState>
     result.fold(
       (failure) {
         _logger.severe('Failed to load Revenue stats', failure);
-        updateAnalyticsState(
-          (s) => s.copyWith(
-            isSuccess: false,
-            loadTimeMs: stopwatch.elapsedMilliseconds,
-          ),
-        );
+
+        final metrics =
+            (analyticsSession ??
+                    RevenueTabViewState(
+                      ticker: event.ticker,
+                      timestamp: DateTime.now().toIso8601String(),
+                    ))
+                .copyWith(
+                  isSuccess: false,
+                  loadTimeMs: stopwatch.elapsedMilliseconds,
+                );
+
+        if (analyticsSession != null) {
+          updateAnalyticsState((s) => metrics);
+        }
+
         emit(CompanyRevenueState.failure(failure));
       },
       (tuple) {
         final (stats, origin) = tuple;
         _logger.info('Successfully loaded Revenue stats (origin: $origin)');
 
-        final newState = CompanyRevenueState.loaded(
-          ticker: event.ticker,
-          revenueStats: stats,
-          annualChartData: _toChartData(stats.annualRevenue, isAnnual: true),
-          quarterlyChartData: _toChartData(
-            stats.quarterlyRevenue,
-            isAnnual: false,
-          ),
-          historyLimit: _configService.freePlanHistoryCount,
-          dataOrigin: origin,
-          lastUpdated: DateTime.now(),
-        );
+        final metrics =
+            (analyticsSession ??
+                    RevenueTabViewState(
+                      ticker: event.ticker,
+                      timestamp: DateTime.now().toIso8601String(),
+                    ))
+                .copyWith(
+                  isSuccess: true,
+                  dataSource: origin,
+                  loadTimeMs: stopwatch.elapsedMilliseconds,
+                );
 
-        emit(newState);
+        if (analyticsSession != null) {
+          updateAnalyticsState((s) => metrics);
+        }
 
-        updateAnalyticsState(
-          (s) => s.copyWith(
-            isSuccess: true,
-            dataSource: origin,
-            loadTimeMs: stopwatch.elapsedMilliseconds,
+        emit(
+          CompanyRevenueState.loaded(
+            ticker: event.ticker,
+            revenueStats: stats,
+            annualChartData: _toChartData(stats.annualRevenue, isAnnual: true),
+            quarterlyChartData: _toChartData(
+              stats.quarterlyRevenue,
+              isAnnual: false,
+            ),
+            historyLimit: _configService.freePlanHistoryCount,
+            dataOrigin: origin,
+            lastUpdated: DateTime.now(),
+            analyticsState: metrics,
           ),
         );
       },
@@ -194,6 +236,8 @@ class CompanyRevenueBloc extends Bloc<CompanyRevenueEvent, CompanyRevenueState>
               forceRefresh: false,
             ),
           );
+        } else {
+          _logger.info('Revenue still fresh (Last updated: ${s.lastUpdated})');
         }
       },
       failure: (_) {
@@ -207,6 +251,9 @@ class CompanyRevenueBloc extends Bloc<CompanyRevenueEvent, CompanyRevenueState>
         add(
           CompanyRevenueEvent.loadRequested(event.ticker, forceRefresh: true),
         );
+      },
+      loading: (_) {
+        _logger.info('Revenue already loading, skipping staleness check.');
       },
     );
   }

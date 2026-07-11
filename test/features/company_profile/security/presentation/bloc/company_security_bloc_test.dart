@@ -9,6 +9,8 @@ import 'package:bizzie/features/company_profile/security/presentation/analytics/
 import 'package:bloc_test/bloc_test.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:bizzie/core/usecase/usecase.dart';
+import 'package:bizzie/features/company_profile/shared/domain/usecases/watch_active_tab_usecase.dart';
 import 'package:mocktail/mocktail.dart';
 
 class MockGetSecurityDetailsUseCase extends Mock
@@ -16,12 +18,16 @@ class MockGetSecurityDetailsUseCase extends Mock
 
 class MockSecurityTabAnalytics extends Mock implements SecurityTabAnalytics {}
 
+class MockWatchActiveTabUseCase extends Mock implements WatchActiveTabUseCase {}
+
 void main() {
   late CompanySecurityBloc bloc;
   late MockGetSecurityDetailsUseCase mockGetSecurityDetails;
   late MockSecurityTabAnalytics mockTracker;
+  late MockWatchActiveTabUseCase mockWatchActiveTabUseCase;
 
   setUpAll(() {
+    registerFallbackValue(NoParams());
     registerFallbackValue(
       const SecurityTabViewState(
         ticker: 'AAPL',
@@ -34,8 +40,15 @@ void main() {
   setUp(() {
     mockGetSecurityDetails = MockGetSecurityDetailsUseCase();
     mockTracker = MockSecurityTabAnalytics();
+    mockWatchActiveTabUseCase = MockWatchActiveTabUseCase();
 
-    bloc = CompanySecurityBloc(mockGetSecurityDetails, mockTracker);
+    when(() => mockWatchActiveTabUseCase(any()))
+        .thenAnswer((_) => const Stream.empty());
+    bloc = CompanySecurityBloc(
+      mockGetSecurityDetails,
+      mockTracker,
+      mockWatchActiveTabUseCase,
+    );
   });
 
   const tTicker = 'AAPL';

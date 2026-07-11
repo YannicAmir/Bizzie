@@ -1,30 +1,27 @@
+import 'package:bizzie/core/constants/firestore_constants.dart';
 import 'package:bizzie/core/data/models/cache_result.dart' as result;
 import 'package:bizzie/core/interfaces/i_time_provider.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:injectable/injectable.dart';
 import 'package:bizzie/core/data/datasources/base_firestore_cache_client.dart';
 import 'package:bizzie/core/enums/data_origin.dart';
+import 'package:bizzie/features/company_profile/business/data/interfaces/i_business_firestore_datasource.dart';
+import 'package:bizzie/services/firestore_service.dart';
 
-abstract class BusinessFirestoreDataSource {
-  Future<void> cacheProxyUrl(String ticker, String? url);
-  Future<(String?, CompanyProfileDataOrigin)?> getCachedProxyUrl(String ticker);
-}
-
-@LazySingleton(as: BusinessFirestoreDataSource)
+@Injectable(as: IBusinessFirestoreDataSource)
 class BusinessFirestoreDataSourceImpl extends BaseFirestoreCacheClient
-    implements BusinessFirestoreDataSource {
+    implements IBusinessFirestoreDataSource {
   BusinessFirestoreDataSourceImpl(
-    FirebaseFirestore firestore,
+    FirestoreService firestoreService,
     ITimeProvider timeProvider,
-  ) : super(firestore, timeProvider, 'BusinessFirestoreDataSource');
+  ) : super(firestoreService, timeProvider, 'BusinessFirestoreDataSource');
 
   @override
   Future<void> cacheProxyUrl(String ticker, String? url) async {
     await saveToCache(
       getDocRef<Map<String, dynamic>>(
         ticker,
-        'info',
-        'proxy',
+        FirestoreConstants.info,
+        FirestoreConstants.proxy,
         (json) => json as Map<String, dynamic>,
         (data) => data,
       ),
@@ -39,8 +36,8 @@ class BusinessFirestoreDataSourceImpl extends BaseFirestoreCacheClient
     final res = await fetchWithCacheFirst<Map<String, dynamic>>(
       getDocRef<Map<String, dynamic>>(
         ticker,
-        'info',
-        'proxy',
+        FirestoreConstants.info,
+        FirestoreConstants.proxy,
         (json) => json as Map<String, dynamic>,
         (data) => data,
       ),

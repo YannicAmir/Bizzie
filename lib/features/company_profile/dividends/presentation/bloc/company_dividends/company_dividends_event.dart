@@ -19,4 +19,6 @@ sealed class CompanyDividendsEvent with _$CompanyDividendsEvent {
 
   const factory CompanyDividendsEvent.viewAllTapped({required bool isChart}) =
       ViewAllTapped;
+
+  const factory CompanyDividendsEvent.reset() = Reset;
 }

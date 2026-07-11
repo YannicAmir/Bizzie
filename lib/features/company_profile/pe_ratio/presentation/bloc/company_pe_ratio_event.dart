@@ -3,7 +3,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'company_pe_ratio_event.freezed.dart';
 
 @freezed
-abstract class CompanyPeRatioEvent with _$CompanyPeRatioEvent {
+class CompanyPeRatioEvent with _$CompanyPeRatioEvent {
   const factory CompanyPeRatioEvent.loadRequested(
     String ticker, {
     @Default(false) bool forceRefresh,
@@ -18,4 +18,5 @@ abstract class CompanyPeRatioEvent with _$CompanyPeRatioEvent {
   const factory CompanyPeRatioEvent.appForegrounded() = AppForegrounded;
   const factory CompanyPeRatioEvent.viewAllTapped({required bool isChart}) =
       ViewAllTapped;
+  const factory CompanyPeRatioEvent.reset() = PeRatioReset;
 }

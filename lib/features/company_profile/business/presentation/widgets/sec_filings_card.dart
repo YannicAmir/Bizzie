@@ -14,7 +14,7 @@ import 'package:bizzie/features/company_profile/business/presentation/bloc/compa
 import 'package:bizzie/features/company_profile/business/presentation/bloc/company_business_event.dart';
 import 'package:bizzie/app/themes/app_assets.dart';
 import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
-import 'package:bizzie/shared/utils/paywall_helper.dart';
+import 'package:bizzie/features/subscription/presentation/utils/paywall_helper.dart';
 import 'package:bizzie/core/enums/paywall_source.dart';
 
 class SecFilingsCard extends StatefulWidget {
@@ -144,7 +144,7 @@ class _FilingTabButton extends StatelessWidget {
               ? theme.colorScheme.primary
               : theme.colorScheme.tertiaryContainer,
           borderRadius: BorderRadius.circular(
-            AppConstants.componyProfileButtonBorderRadius,
+            AppConstants.companyProfileButtonBorderRadius,
           ),
         ),
         alignment: Alignment.center,

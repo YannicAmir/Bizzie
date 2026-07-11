@@ -1,4 +1,4 @@
-import 'package:bizzie/features/company_profile/financial_statements/data/datasources/financial_statements_firestore_data_source.dart';
+import 'package:bizzie/features/company_profile/financial_statements/data/interfaces/i_financial_statements_firestore_datasource.dart';
 import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:bizzie/features/company_profile/financial_statements/data/datasources/financial_statements_remote_data_source.dart';
 import 'package:bizzie/features/company_profile/financial_statements/data/dtos/legacy_income_statement_dto.dart';
@@ -15,7 +15,7 @@ class MockFinancialRemoteDataSource extends Mock
     implements FinancialStatementsRemoteDataSource {}
 
 class MockFinancialLocalDataSource extends Mock
-    implements FinancialStatementsFirestoreDataSource {}
+    implements IFinancialStatementsFirestoreDataSource {}
 
 class MockCompanyRepository extends Mock implements ICompanyRepository {}
 

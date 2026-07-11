@@ -2,8 +2,8 @@ import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/core/enums/data_origin.dart';
-import 'package:bizzie/features/company_profile/shared/data/datasources/company_firestore_data_source.dart';
-import 'package:bizzie/features/company_profile/shared/data/datasources/company_remote_data_source.dart';
+import 'package:bizzie/features/company_profile/shared/data/interfaces/i_company_remote_datasource.dart';
+import 'package:bizzie/features/company_profile/shared/data/interfaces/i_company_firestore_datasource.dart';
 import 'package:bizzie/features/company_profile/shared/domain/interfaces/i_company_repository.dart';
 import 'package:bizzie/features/company_profile/shared/domain/models/company_profile.dart';
 import 'package:bizzie/core/data/models/cache_result.dart' as result;
@@ -11,8 +11,8 @@ import 'package:bizzie/features/company_profile/shared/data/dtos/company_profile
 
 @LazySingleton(as: ICompanyRepository)
 class CompanyRepositoryImpl implements ICompanyRepository {
-  final CompanyRemoteDataSource _remoteDataSource;
-  final CompanyFirestoreDataSource _localDataSource;
+  final ICompanyRemoteDataSource _remoteDataSource;
+  final ICompanyFirestoreDataSource _localDataSource;
 
   CompanyRepositoryImpl(this._remoteDataSource, this._localDataSource);
 

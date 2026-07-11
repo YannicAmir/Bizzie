@@ -5,15 +5,22 @@ import 'package:bizzie/core/logging/bizzie_logger.dart';
 
 final _logger = BizzieLogger('FirestoreService');
 
-@singleton
+@lazySingleton
 class FirestoreService {
   final FirebaseFirestore _firestore;
 
   FirestoreService(this._firestore);
 
-  @factoryMethod
-  static FirestoreService init() {
-    return FirestoreService(FirebaseFirestore.instance);
+  void _logAndRethrowStreamError(Object e, StackTrace s, String context) {
+    if (e is FirebaseException && e.code == 'permission-denied') {
+      _logger.warning(
+        'Firestore permission denied for $context - likely during logout session clearing',
+        e,
+      );
+    } else {
+      _logger.severe('Firestore stream error for $context', e, s);
+    }
+    throw e;
   }
 
   CollectionReference<T> _getCollectionRef<T>(
@@ -46,6 +53,20 @@ class FirestoreService {
             data['id'] = snapshot.id;
             return fromJson(data);
           },
+          toFirestore: (value, _) => toJson(value),
+        );
+  }
+
+  CollectionReference<T> getConvertedCollectionRef<T>({
+    required String path,
+    required T Function(Map<String, dynamic> json) fromJson,
+    required Map<String, dynamic> Function(T value) toJson,
+  }) {
+    return _firestore
+        .collection(path)
+        .withConverter<T>(
+          fromFirestore: (snapshot, _) =>
+              fromJson(Map<String, dynamic>.from(snapshot.data() ?? {})),
           toFirestore: (value, _) => toJson(value),
         );
   }
@@ -212,6 +233,9 @@ class FirestoreService {
     return Rx.combineLatest<List<T>, List<T>>(
       streams,
       (valuesList) => valuesList.expand((x) => x).toList(),
+    ).handleError(
+      (Object e, StackTrace s) =>
+          _logAndRethrowStreamError(e, s, 'collectionGroup $collectionId'),
     );
   }
 
@@ -243,6 +267,12 @@ class FirestoreService {
     return Rx.combineLatest<List<T>, List<T>>(
       streams,
       (valuesList) => valuesList.expand((x) => x).toList(),
+    ).handleError(
+      (Object e, StackTrace s) => _logAndRethrowStreamError(
+        e,
+        s,
+        '$rootCollection/*/$subcollectionId',
+      ),
     );
   }
 
@@ -282,6 +312,8 @@ class FirestoreService {
     return Rx.combineLatest<List<T>, List<T>>(
       streams,
       (valuesList) => valuesList.expand((x) => x).toList(),
+    ).handleError(
+      (Object e, StackTrace s) => _logAndRethrowStreamError(e, s, path),
     );
   }
 

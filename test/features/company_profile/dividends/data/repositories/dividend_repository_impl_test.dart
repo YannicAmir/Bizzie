@@ -1,4 +1,4 @@
-import 'package:bizzie/features/company_profile/dividends/data/datasources/dividends_firestore_data_source.dart';
+import 'package:bizzie/features/company_profile/dividends/data/interfaces/i_dividends_firestore_datasource.dart';
 import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:bizzie/features/company_profile/dividends/data/datasources/dividends_remote_data_source.dart';
 import 'package:bizzie/features/company_profile/dividends/data/dtos/dividend_dto.dart';
@@ -13,7 +13,7 @@ class MockDividendsRemoteDataSource extends Mock
     implements DividendsRemoteDataSource {}
 
 class MockDividendsLocalDataSource extends Mock
-    implements DividendsFirestoreDataSource {}
+    implements IDividendsFirestoreDataSource {}
 
 void main() {
   late DividendRepositoryImpl repository;

@@ -1,44 +1,23 @@
 import 'package:injectable/injectable.dart';
+import 'package:bizzie/core/constants/firestore_constants.dart';
 import 'package:bizzie/core/data/datasources/base_firestore_cache_client.dart';
 import 'package:bizzie/core/data/models/firestore_cache_entry.dart';
 import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:bizzie/features/company_profile/shared/data/dtos/ratios_dto.dart';
 import 'package:bizzie/features/company_profile/roe/data/dtos/key_metrics_dto.dart';
+import 'package:bizzie/features/company_profile/shared/data/interfaces/i_ratios_firestore_datasource.dart';
 import 'package:bizzie/core/data/models/cache_result.dart' as result;
 import 'package:bizzie/core/interfaces/i_time_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:bizzie/services/firestore_service.dart';
 
-abstract class RatiosFirestoreDataSource {
-  Future<result.CacheResult<List<RatiosDto>>> syncRatios(
-    String ticker, {
-    required bool isTtm,
-    required Future<List<RatiosDto>> Function() remoteFetcher,
-    bool forceRefresh,
-  });
-  Future<(List<RatiosDto>, CompanyProfileDataOrigin)?> getCachedRatios(
-    String ticker, {
-    required bool isTtm,
-  });
-
-  Future<result.CacheResult<List<KeyMetricsDto>>> syncKeyMetrics(
-    String ticker, {
-    required bool isTtm,
-    required Future<List<KeyMetricsDto>> Function() remoteFetcher,
-    bool forceRefresh,
-  });
-  Future<(List<KeyMetricsDto>, CompanyProfileDataOrigin)?> getCachedKeyMetrics(
-    String ticker, {
-    required bool isTtm,
-  });
-}
-
-@LazySingleton(as: RatiosFirestoreDataSource)
+@Injectable(as: IRatiosFirestoreDataSource)
 class RatiosFirestoreDataSourceImpl extends BaseFirestoreCacheClient
-    implements RatiosFirestoreDataSource {
+    implements IRatiosFirestoreDataSource {
   RatiosFirestoreDataSourceImpl(
-    FirebaseFirestore firestore,
+    FirestoreService firestoreService,
     ITimeProvider timeProvider,
-  ) : super(firestore, timeProvider, 'RatiosFirestoreDataSource');
+  ) : super(firestoreService, timeProvider, 'RatiosFirestoreDataSource');
 
   @override
   Future<result.CacheResult<List<RatiosDto>>> syncRatios(
@@ -96,10 +75,12 @@ class RatiosFirestoreDataSourceImpl extends BaseFirestoreCacheClient
     String ticker,
     bool isTtm,
   ) {
-    final docId = isTtm ? 'ratios_ttm' : 'ratios_annual';
+    final docId = isTtm
+        ? FirestoreConstants.ratiosTtm
+        : FirestoreConstants.ratiosAnnual;
     return getDocRef<List<RatiosDto>>(
       ticker,
-      'financials',
+      FirestoreConstants.financials,
       docId,
       (json) => (json as List).map((e) => RatiosDto.fromJson(e)).toList(),
       (data) => data.map((e) => e.toJson()).toList(),
@@ -110,10 +91,12 @@ class RatiosFirestoreDataSourceImpl extends BaseFirestoreCacheClient
     String ticker,
     bool isTtm,
   ) {
-    final docId = isTtm ? 'key_metrics_ttm' : 'key_metrics_annual';
+    final docId = isTtm
+        ? FirestoreConstants.keyMetricsTtm
+        : FirestoreConstants.keyMetricsAnnual;
     return getDocRef<List<KeyMetricsDto>>(
       ticker,
-      'financials',
+      FirestoreConstants.financials,
       docId,
       (json) => (json as List).map((e) => KeyMetricsDto.fromJson(e)).toList(),
       (data) => data.map((e) => e.toJson()).toList(),

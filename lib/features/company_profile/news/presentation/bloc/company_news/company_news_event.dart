@@ -25,4 +25,6 @@ abstract class CompanyNewsEvent with _$CompanyNewsEvent {
     required NewsArticle article,
     required bool isFeatured,
   }) = ArticleTapped;
+
+  const factory CompanyNewsEvent.reset() = Reset;
 }

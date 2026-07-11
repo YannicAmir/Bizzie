@@ -13,7 +13,8 @@ import 'package:bizzie/shared/widgets/loading/bizzie_loader.dart';
 import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
 import 'package:bizzie/features/user/presentation/extensions/user_state_extensions.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/widgets/company_profile_error_state.dart';
-import 'package:bizzie/features/company_profile/shared/presentation/enums/company_profile_tab.dart';
+import 'package:bizzie/features/company_profile/shared/domain/enums/company_profile_tab.dart';
+import 'package:bizzie/features/company_profile/shared/presentation/extensions/company_profile_tab_x.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/widgets/tab_visibility_observer.dart';
 
 class FinancialStatementsTab extends StatefulWidget {
@@ -27,6 +28,14 @@ class FinancialStatementsTab extends StatefulWidget {
 
 class _FinancialStatementsTabState extends State<FinancialStatementsTab>
     with AutomaticKeepAliveClientMixin {
+  @override
+  void initState() {
+    super.initState();
+    context.read<FinancialStatementsBloc>().add(
+      FinancialStatementsEvent.stalenessCheckRequested(widget.ticker),
+    );
+  }
+
   @override
   bool get wantKeepAlive => true;
 

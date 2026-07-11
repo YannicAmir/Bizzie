@@ -8,7 +8,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'company_pe_ratio_state.freezed.dart';
 
 @freezed
-class CompanyPeRatioState with _$CompanyPeRatioState {
+abstract class CompanyPeRatioState with _$CompanyPeRatioState {
   const factory CompanyPeRatioState.initial() = _Initial;
   const factory CompanyPeRatioState.loading() = _Loading;
   const factory CompanyPeRatioState.loaded({

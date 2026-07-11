@@ -1,5 +1,5 @@
 import 'package:bizzie/app/themes/app_assets.dart';
-import 'package:bizzie/shared/utils/paywall_helper.dart';
+import 'package:bizzie/features/subscription/presentation/utils/paywall_helper.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bizzie/features/reports/presentation/bloc/reports_bloc.dart';
 import 'package:bizzie/features/reports/presentation/bloc/reports_event.dart';
@@ -20,7 +20,7 @@ import 'package:bizzie/features/reports/presentation/widgets/report_summary_moda
 import 'package:url_launcher/url_launcher.dart';
 import 'package:go_router/go_router.dart';
 import 'package:bizzie/app/routes/app_routes.dart';
-import 'package:bizzie/features/onboarding/domain/models/company.dart';
+import 'package:bizzie/core/domain/models/company.dart';
 
 class SecFilingCard extends StatelessWidget {
   final SecFiling filing;

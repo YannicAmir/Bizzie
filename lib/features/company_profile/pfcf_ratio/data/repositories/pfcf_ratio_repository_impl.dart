@@ -2,7 +2,7 @@ import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
 import 'package:bizzie/core/error/failures.dart';
-import 'package:bizzie/features/company_profile/shared/data/datasources/ratios_firestore_data_source.dart';
+import 'package:bizzie/features/company_profile/shared/data/interfaces/i_ratios_firestore_datasource.dart';
 import 'package:bizzie/features/company_profile/shared/data/datasources/ratios_remote_data_source.dart';
 import 'package:bizzie/features/company_profile/shared/data/dtos/ratios_dto.dart';
 import '../../domain/interfaces/i_pfcf_ratio_repository.dart';
@@ -15,7 +15,7 @@ abstract class _Consts {
 @LazySingleton(as: IPfcfRatioRepository)
 class PfcfRatioRepositoryImpl implements IPfcfRatioRepository {
   final RatiosRemoteDataSource _remoteDataSource;
-  final RatiosFirestoreDataSource _localDataSource;
+  final IRatiosFirestoreDataSource _localDataSource;
 
   PfcfRatioRepositoryImpl(this._remoteDataSource, this._localDataSource);
 

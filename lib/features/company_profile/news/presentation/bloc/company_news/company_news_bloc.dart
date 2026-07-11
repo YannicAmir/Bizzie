@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:bizzie/core/usecase/usecase.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:bizzie/features/company_profile/news/domain/usecases/get_company_news_usecase.dart';
 import 'package:bizzie/features/company_profile/news/presentation/bloc/company_news/company_news_event.dart';
@@ -5,6 +8,9 @@ import 'package:bizzie/features/company_profile/news/presentation/bloc/company_n
 import 'package:bizzie/features/company_profile/news/presentation/analytics/news_tab_analytics.dart';
 import 'package:bizzie/features/company_profile/news/presentation/analytics/news_tab_view_state.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/bloc/company_profile_analytics_mixin.dart';
+import 'package:bizzie/features/company_profile/shared/domain/enums/company_profile_tab.dart';
+import 'package:bizzie/features/company_profile/shared/domain/models/tab_activation.dart';
+import 'package:bizzie/features/company_profile/shared/domain/usecases/watch_active_tab_usecase.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:injectable/injectable.dart';
@@ -21,30 +27,44 @@ class CompanyNewsBloc extends Bloc<CompanyNewsEvent, CompanyNewsState>
         > {
   final GetCompanyNewsUseCase _getCompanyNews;
   final NewsTabAnalytics _analytics;
+  final WatchActiveTabUseCase _watchActiveTabUseCase;
 
   final Stopwatch _loadStopwatch = Stopwatch();
+  StreamSubscription<TabActivation>? _tabSubscription;
 
   @override
   NewsTabAnalytics get analyticsTracker => _analytics;
 
-  CompanyNewsBloc(this._getCompanyNews, this._analytics)
+  CompanyNewsBloc(this._getCompanyNews, this._analytics, this._watchActiveTabUseCase)
     : super(const CompanyNewsState.initial()) {
-    on<CompanyNewsEvent>(_onEvent, transformer: sequential());
+    on<LoadRequested>(_onLoadRequested, transformer: restartable());
+    on<StalenessCheckRequested>(
+      _onStalenessCheckRequested,
+      transformer: sequential(),
+    );
+    on<TabShown>(_onTabShown);
+    on<TabHidden>((_, __) async => await onTabHidden());
+    on<AppBackgrounded>((_, __) async => await onAppBackgrounded());
+    on<AppForegrounded>((_, __) => onAppForegrounded());
+    on<ArticleTapped>(_onArticleTapped);
+    on<Reset>((_, emit) => emit(const CompanyNewsState.initial()));
+    _tabSubscription = _watchActiveTabUseCase(NoParams())
+        .where((activation) => activation.tab == CompanyProfileTab.news)
+        .listen((activation) {
+            final shouldHandle = state.maybeMap(
+              loaded: (s) => s.ticker == activation.ticker,
+              orElse: () => true,
+            );
+            if (shouldHandle) {
+              add(CompanyNewsEvent.stalenessCheckRequested(activation.ticker));
+            }
+        });
   }
 
-  Future<void> _onEvent(
-    CompanyNewsEvent event,
-    Emitter<CompanyNewsState> emit,
-  ) async {
-    await event.map(
-      loadRequested: (e) async => _onLoadRequested(e, emit),
-      stalenessCheckRequested: (e) async => _onStalenessCheckRequested(e, emit),
-      tabShown: (e) async => _onTabShown(e, emit),
-      tabHidden: (_) async => onTabHidden(),
-      appBackgrounded: (_) async => onAppBackgrounded(),
-      appForegrounded: (_) async => onAppForegrounded(),
-      articleTapped: (e) async => _onArticleTapped(e, emit),
-    );
+  @override
+  Future<void> close() async {
+    await _tabSubscription?.cancel();
+    return super.close();
   }
 
   Future<void> _onLoadRequested(
@@ -138,6 +158,7 @@ class CompanyNewsBloc extends Bloc<CompanyNewsEvent, CompanyNewsState>
     );
 
     onTabShown(event.ticker, initialState!);
+    add(CompanyNewsEvent.stalenessCheckRequested(event.ticker));
   }
 
   Future<void> _onArticleTapped(

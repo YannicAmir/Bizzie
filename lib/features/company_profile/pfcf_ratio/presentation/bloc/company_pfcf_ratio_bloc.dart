@@ -8,6 +8,8 @@ import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:bizzie/features/company_profile/shared/domain/models/chart_data_point.dart';
 import 'package:bizzie/features/company_profile/shared/domain/models/financial_data_point.dart';
+import 'package:bizzie/features/company_profile/shared/domain/services/tab_content_freshness_service.dart';
+import 'package:bizzie/features/company_profile/pfcf_ratio/domain/models/pfcf_ratio_stats.dart';
 import 'package:bizzie/features/company_profile/pfcf_ratio/domain/usecases/get_pfcf_ratio_usecase.dart';
 
 import 'package:bizzie/features/company_profile/pfcf_ratio/presentation/analytics/pfcf_ratio_tab_analytics.dart';
@@ -31,10 +33,15 @@ class CompanyPfcfRatioBloc
   final GetPfcfRatioUseCase _getPfcfRatio;
   final IConfigService _configService;
   final PfcfRatioTabAnalytics _analytics;
+  final TabContentFreshnessService _freshnessService;
 
-  CompanyPfcfRatioBloc(this._getPfcfRatio, this._configService, this._analytics)
-    : super(const CompanyPfcfRatioState.initial()) {
-    on<LoadRequested>(_onLoadRequested, transformer: droppable());
+  CompanyPfcfRatioBloc(
+    this._getPfcfRatio,
+    this._configService,
+    this._analytics,
+    this._freshnessService,
+  ) : super(const CompanyPfcfRatioState.initial()) {
+    on<LoadRequested>(_onLoadRequested, transformer: restartable());
     on<StalenessCheckRequested>(
       _onStalenessCheckRequested,
       transformer: sequential(),
@@ -44,6 +51,7 @@ class CompanyPfcfRatioBloc
     on<AppBackgrounded>(_onAppBackgrounded);
     on<AppForegrounded>(_onAppForegrounded);
     on<ViewAllTapped>(_onViewAllTapped);
+    on<Reset>((_, emit) => emit(const CompanyPfcfRatioState.initial()));
   }
 
   @override
@@ -62,9 +70,7 @@ class CompanyPfcfRatioBloc
             loadTimeMs: s.loadTimeMs,
             dataSource: s.dataOrigin,
           ),
-        );
-        emit(s.copyWith(analyticsState: analyticsSession));
-      },
+        );      },
       orElse: () {
         onTabShown(
           event.ticker,
@@ -81,34 +87,19 @@ class CompanyPfcfRatioBloc
     TabHidden event,
     Emitter<CompanyPfcfRatioState> emit,
   ) async {
-    await onTabHidden();
-    state.maybeMap(
-      loaded: (s) => emit(s.copyWith(analyticsState: analyticsSession)),
-      orElse: () {},
-    );
-  }
+    await onTabHidden();  }
 
   Future<void> _onAppBackgrounded(
     AppBackgrounded event,
     Emitter<CompanyPfcfRatioState> emit,
   ) async {
-    await onAppBackgrounded();
-    state.maybeMap(
-      loaded: (s) => emit(s.copyWith(analyticsState: analyticsSession)),
-      orElse: () {},
-    );
-  }
+    await onAppBackgrounded();  }
 
   void _onAppForegrounded(
     AppForegrounded event,
     Emitter<CompanyPfcfRatioState> emit,
   ) {
-    onAppForegrounded();
-    state.maybeMap(
-      loaded: (s) => emit(s.copyWith(analyticsState: analyticsSession)),
-      orElse: () {},
-    );
-  }
+    onAppForegrounded();  }
 
   void _onViewAllTapped(
     ViewAllTapped event,
@@ -119,11 +110,6 @@ class CompanyPfcfRatioBloc
           ? s.copyWith(tappedChartViewAll: true)
           : s.copyWith(tappedTableViewAll: true);
     });
-
-    state.maybeMap(
-      loaded: (s) => emit(s.copyWith(analyticsState: analyticsSession)),
-      orElse: () {},
-    );
   }
 
   Future<void> _onLoadRequested(
@@ -142,7 +128,7 @@ class CompanyPfcfRatioBloc
 
     if (isAlreadyLoaded && isRightTicker && !event.forceRefresh) {
       _logger.info(
-        'Company PFCF Ratio already loaded for ${event.ticker} and is the correct ticker. Skipping load (Silent Refresh).',
+        'Company PFCF Ratio already loaded for ${event.ticker} and is the correct ticker. Skipping reload.',
       );
       return;
     }
@@ -150,9 +136,7 @@ class CompanyPfcfRatioBloc
     _logger.info(
       'Loading PFCF Ratio stats for ${event.ticker} (force=${event.forceRefresh})',
     );
-    if (!isAlreadyLoaded || !isRightTicker || event.forceRefresh) {
-      emit(const CompanyPfcfRatioState.loading());
-    }
+    emit(const CompanyPfcfRatioState.loading());
 
     final stopwatch = Stopwatch()..start();
     final result = await _getPfcfRatio(event.ticker);
@@ -168,10 +152,10 @@ class CompanyPfcfRatioBloc
         emit(CompanyPfcfRatioState.failure(failure));
       },
       (tuple) {
-        final ratios = tuple.$1;
+        final stats = tuple.$1;
         final origin = tuple.$2;
         _logger.info(
-          'Successfully loaded PFCF Ratio stats: ${ratios.length} points, origin=$origin',
+          'Successfully loaded PFCF Ratio stats: ${stats.dataPoints.length} points, origin=$origin',
         );
 
         final loadTime = stopwatch.elapsedMilliseconds;
@@ -182,45 +166,40 @@ class CompanyPfcfRatioBloc
             loadTimeMs: loadTime,
           ),
         );
-        _emitLoadedState(event.ticker, ratios, origin, loadTime, true, emit);
+        _emitLoadedState(event.ticker, stats, origin, loadTime, true, emit);
       },
     );
   }
 
   void _emitLoadedState(
     String ticker,
-    List<dynamic> ratios,
+    PfcfRatioStats stats,
     CompanyProfileDataOrigin origin,
     int? loadTimeMs,
     bool isSuccess,
     Emitter<CompanyPfcfRatioState> emit,
   ) {
-    final sortedPoints = _extractSortedDataPoints(ratios);
-
-    if (sortedPoints.isEmpty) {
+    if (stats.dataPoints.isEmpty) {
       _logger.info('PFCF Ratio data points empty after extraction');
       emit(_emptyLoadedState(ticker, origin, loadTimeMs, isSuccess));
       return;
     }
 
-    final currentPoint = sortedPoints.last;
-    final referencePoint = _findReferencePoint(sortedPoints, currentPoint);
-    final growth = _calculateGrowth(currentPoint.value, referencePoint.value);
-    final referenceLabel = _formatReferenceLabel(referencePoint);
-    final chartData = _buildChartData(sortedPoints);
+    final referenceLabel = _formatReferenceLabel(stats.referenceDate);
+    final chartData = _buildChartData(stats.dataPoints);
 
     _logger.info(
-      'Emitting loaded state: current=${currentPoint.value}, growth=${growth.percentage}%',
+      'Emitting loaded state: current=${stats.currentValue}, growth=${stats.growthPercentage}%',
     );
     emit(
       CompanyPfcfRatioState.loaded(
         ticker: ticker,
-        dataPoints: sortedPoints,
+        dataPoints: stats.dataPoints,
         chartData: chartData,
-        currentValue: currentPoint.value,
-        growthPercentage: growth.percentage,
-        absoluteDelta: growth.delta.abs(),
-        isPositive: growth.delta >= 0,
+        currentValue: stats.currentValue,
+        growthPercentage: stats.growthPercentage,
+        absoluteDelta: stats.absoluteDelta,
+        isPositive: stats.isPositive,
         referenceLabel: referenceLabel,
         historyLimit: _configService.freePlanHistoryCount,
         dataOrigin: origin,
@@ -232,68 +211,9 @@ class CompanyPfcfRatioBloc
     );
   }
 
-  List<FinancialDataPoint> _extractSortedDataPoints(List<dynamic> ratios) {
-    final allPoints = ratios
-        .map(
-          (r) => FinancialDataPoint(
-            date: r.date,
-            period: r.period,
-            value: r.priceToFreeCashFlowRatio,
-          ),
-        )
-        .toList();
-
-    final validPoints = allPoints.where((p) => p.value != 0).toList();
-
-    if (validPoints.length != allPoints.length) {
-      _logger.info(
-        'Filtered ${allPoints.length - validPoints.length} zero-value P/FCF points',
-      );
-    }
-
-    return validPoints..sort((a, b) => a.date.compareTo(b.date));
-  }
-
-  FinancialDataPoint _findReferencePoint(
-    List<FinancialDataPoint> sortedPoints,
-    FinancialDataPoint currentPoint,
-  ) {
-    var referencePoint = sortedPoints.first;
-    final currentDate = DateTime.tryParse(currentPoint.date);
-
-    if (currentDate != null && sortedPoints.length > 1) {
-      final cutoffDate = DateTime(
-        currentDate.year - 5,
-        currentDate.month,
-        currentDate.day,
-      );
-      for (final p in sortedPoints) {
-        final d = DateTime.tryParse(p.date);
-        if (d != null && (d.isAfter(cutoffDate) || d == cutoffDate)) {
-          referencePoint = p;
-          break;
-        }
-      }
-    }
-    return referencePoint;
-  }
-
-  ({double delta, double percentage}) _calculateGrowth(
-    double currentValue,
-    double referenceValue,
-  ) {
-    final delta = currentValue - referenceValue;
-    final percentage = referenceValue.abs() < 0.001
-        ? 0.0
-        : (delta / referenceValue.abs()) * 100;
-    return (delta: delta, percentage: percentage);
-  }
-
-  String _formatReferenceLabel(FinancialDataPoint referencePoint) {
-    final refDate = DateTime.tryParse(referencePoint.date);
-    return refDate != null
-        ? DateFormat('yyyy').format(refDate)
-        : referencePoint.date;
+  String _formatReferenceLabel(String referenceDate) {
+    final refDate = DateTime.tryParse(referenceDate);
+    return refDate != null ? DateFormat('yyyy').format(refDate) : referenceDate;
   }
 
   List<ChartDataPoint> _buildChartData(List<FinancialDataPoint> sortedPoints) {
@@ -335,29 +255,19 @@ class CompanyPfcfRatioBloc
     _logger.info('Staleness check requested for ${event.ticker}');
     state.mapOrNull(
       loaded: (loadedState) {
-        final lastUpdated = loadedState.lastUpdated;
-        if (lastUpdated != null) {
-          final difference = DateTime.now().difference(lastUpdated);
-          if (difference.inHours >= 24) {
-            _logger.info(
-              'PFCF Ratio stale (TTL expired: ${difference.inHours}h). Triggering load.',
-            );
-            add(
-              CompanyPfcfRatioEvent.loadRequested(
-                event.ticker,
-                forceRefresh: true,
-              ),
-            );
-          } else {
-            _logger.info('PFCF Ratio still fresh (Last updated: $lastUpdated)');
-          }
-        } else {
-          _logger.info('PFCF Ratio lastUpdated is null. Triggering load.');
+        if (_freshnessService.isStale(loadedState.lastUpdated)) {
+          _logger.info(
+            'PFCF Ratio stale (last updated: ${loadedState.lastUpdated}). Triggering load.',
+          );
           add(
             CompanyPfcfRatioEvent.loadRequested(
               event.ticker,
               forceRefresh: true,
             ),
+          );
+        } else {
+          _logger.info(
+            'PFCF Ratio still fresh (Last updated: ${loadedState.lastUpdated})',
           );
         }
       },
@@ -369,6 +279,12 @@ class CompanyPfcfRatioBloc
       },
       initial: (_) {
         _logger.info('PFCF Ratio in initial state. Triggering load.');
+        add(
+          CompanyPfcfRatioEvent.loadRequested(event.ticker, forceRefresh: true),
+        );
+      },
+      loading: (_) {
+        _logger.info('PFCF Ratio in loading state. Restarting load.');
         add(
           CompanyPfcfRatioEvent.loadRequested(event.ticker, forceRefresh: true),
         );

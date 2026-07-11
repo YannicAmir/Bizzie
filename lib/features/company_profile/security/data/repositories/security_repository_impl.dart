@@ -1,6 +1,6 @@
 import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:bizzie/core/error/failures.dart';
-import 'package:bizzie/features/company_profile/security/data/datasources/security_firestore_data_source.dart';
+import 'package:bizzie/features/company_profile/security/data/interfaces/i_security_firestore_datasource.dart';
 import 'package:bizzie/features/company_profile/security/data/datasources/security_remote_data_source.dart';
 import 'package:bizzie/features/company_profile/shared/data/datasources/ratios_remote_data_source.dart';
 import 'package:bizzie/features/company_profile/security/data/dtos/earnings_report_dto.dart';
@@ -16,7 +16,7 @@ const _kUpcomingEarningsWindowDays = 7;
 class SecurityRepositoryImpl implements ISecurityRepository {
   final ICompanyRepository _companyRepository;
   final SecurityRemoteDataSource _securityRemoteDataSource;
-  final SecurityFirestoreDataSource _securityLocalDataSource;
+  final ISecurityFirestoreDataSource _securityLocalDataSource;
   final RatiosRemoteDataSource _ratiosRemoteDataSource;
 
   SecurityRepositoryImpl(

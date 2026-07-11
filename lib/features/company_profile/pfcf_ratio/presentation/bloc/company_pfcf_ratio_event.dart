@@ -18,4 +18,5 @@ abstract class CompanyPfcfRatioEvent with _$CompanyPfcfRatioEvent {
   const factory CompanyPfcfRatioEvent.appForegrounded() = AppForegrounded;
   const factory CompanyPfcfRatioEvent.viewAllTapped({required bool isChart}) =
       ViewAllTapped;
+  const factory CompanyPfcfRatioEvent.reset() = Reset;
 }

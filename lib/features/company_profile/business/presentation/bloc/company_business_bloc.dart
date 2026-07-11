@@ -1,12 +1,17 @@
 import 'dart:async';
 
+import 'package:bizzie/core/interfaces/i_config_service.dart';
+import 'package:bizzie/core/usecase/usecase.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:bizzie/features/company_profile/business/domain/usecases/get_business_profile_usecase.dart';
 import 'package:bizzie/features/company_profile/business/presentation/analytics/business_tab_analytics.dart';
 import 'package:bizzie/features/company_profile/business/presentation/bloc/company_business_event.dart';
 import 'package:bizzie/features/company_profile/business/presentation/bloc/company_business_state.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/bloc/company_profile_analytics_mixin.dart';
-import 'package:bizzie/core/interfaces/i_config_service.dart';
+import 'package:bizzie/features/company_profile/shared/domain/enums/company_profile_tab.dart';
+import 'package:bizzie/features/company_profile/shared/domain/models/tab_activation.dart';
+import 'package:bizzie/features/company_profile/shared/domain/services/tab_content_freshness_service.dart';
+import 'package:bizzie/features/company_profile/shared/domain/usecases/watch_active_tab_usecase.dart';
 import 'package:bloc/bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:injectable/injectable.dart';
@@ -25,8 +30,11 @@ class CompanyBusinessBloc
   final GetBusinessProfileUseCase _getBusinessProfileUseCase;
   final IConfigService _configService;
   final BusinessTabAnalytics _analytics;
+  final WatchActiveTabUseCase _watchActiveTabUseCase;
+  final TabContentFreshnessService _freshnessService;
 
   final Stopwatch _loadStopwatch = Stopwatch();
+  StreamSubscription<TabActivation>? _tabSubscription;
 
   @override
   BusinessTabAnalytics get analyticsTracker => _analytics;
@@ -35,25 +43,51 @@ class CompanyBusinessBloc
     this._getBusinessProfileUseCase,
     this._configService,
     this._analytics,
+    this._watchActiveTabUseCase,
+    this._freshnessService,
   ) : super(const CompanyBusinessState.initial()) {
-    on<CompanyBusinessEvent>(_onEvent, transformer: sequential());
+    on<LoadRequested>(_onLoadRequested, transformer: restartable());
+    on<StalenessCheckRequested>(_onStalenessCheckRequested);
+    on<TabShown>(_onTabShown);
+    on<TabHidden>(_onTabHidden);
+    on<AppBackgrounded>(_onAppBackgrounded);
+    on<AppForegrounded>(_onAppForegrounded);
+    on<AnalyticsInteractionOccurred>(_onAnalyticsInteractionOccurred);
+    on<BusinessReset>(_onReset);
+    _tabSubscription = _watchActiveTabUseCase(NoParams())
+        .where((activation) => activation.tab == CompanyProfileTab.business)
+        .listen((activation) {
+            final shouldHandle = state.maybeMap(
+              loaded: (s) => s.businessProfile.symbol == activation.ticker,
+              orElse: () => true,
+            );
+            if (shouldHandle) {
+              add(CompanyBusinessEvent.stalenessCheckRequested(activation.ticker));
+            }
+        });
   }
 
-  Future<void> _onEvent(
-    CompanyBusinessEvent event,
-    Emitter<CompanyBusinessState> emit,
-  ) async {
-    await event.map(
-      loadRequested: (e) async => _onLoadRequested(e, emit),
-      stalenessCheckRequested: (e) async => _onStalenessCheckRequested(e, emit),
-      tabShown: (e) async => _onTabShown(e, emit),
-      tabHidden: (_) async => onTabHidden(),
-      appBackgrounded: (_) async => onAppBackgrounded(),
-      appForegrounded: (_) async => onAppForegrounded(),
-      analyticsInteractionOccurred: (e) async =>
-          _onAnalyticsInteractionOccurred(e, emit),
-    );
+  @override
+  Future<void> close() async {
+    await _tabSubscription?.cancel();
+    return super.close();
   }
+
+  void _onTabHidden(TabHidden event, Emitter<CompanyBusinessState> emit) =>
+      onTabHidden();
+
+  void _onAppBackgrounded(
+    AppBackgrounded event,
+    Emitter<CompanyBusinessState> emit,
+  ) => onAppBackgrounded();
+
+  void _onAppForegrounded(
+    AppForegrounded event,
+    Emitter<CompanyBusinessState> emit,
+  ) => onAppForegrounded();
+
+  void _onReset(BusinessReset event, Emitter<CompanyBusinessState> emit) =>
+      emit(const CompanyBusinessState.initial());
 
   Future<void> _onLoadRequested(
     LoadRequested event,
@@ -131,6 +165,7 @@ class CompanyBusinessBloc
     );
 
     onTabShown(event.ticker, initialState);
+    add(CompanyBusinessEvent.stalenessCheckRequested(event.ticker));
   }
 
   Future<void> _onAnalyticsInteractionOccurred(
@@ -167,33 +202,19 @@ class CompanyBusinessBloc
     _logger.info('Staleness check requested for ${event.ticker}');
     state.mapOrNull(
       loaded: (loadedState) {
-        final lastUpdated = loadedState.lastUpdated;
-        if (lastUpdated != null) {
-          final difference = DateTime.now().difference(lastUpdated);
-          if (difference.inHours >= 24) {
-            _logger.info(
-              'Company business stale (TTL expired: ${difference.inHours}h). Triggering load.',
-            );
-            add(
-              CompanyBusinessEvent.loadRequested(
-                event.ticker,
-                forceRefresh: true,
-              ),
-            );
-          } else {
-            _logger.info(
-              'Company business still fresh (Last updated: $lastUpdated)',
-            );
-          }
-        } else {
+        if (_freshnessService.isStale(loadedState.lastUpdated)) {
           _logger.info(
-            'Company business lastUpdated is null. Triggering load.',
+            'Company business stale (last updated: ${loadedState.lastUpdated}). Triggering load.',
           );
           add(
             CompanyBusinessEvent.loadRequested(
               event.ticker,
               forceRefresh: true,
             ),
+          );
+        } else {
+          _logger.info(
+            'Company business still fresh (Last updated: ${loadedState.lastUpdated})',
           );
         }
       },

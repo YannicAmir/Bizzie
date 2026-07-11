@@ -14,61 +14,30 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$UpcomingEarningsEvent {
 
- String get ticker;
-/// Create a copy of UpcomingEarningsEvent
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-$UpcomingEarningsEventCopyWith<UpcomingEarningsEvent> get copyWith => _$UpcomingEarningsEventCopyWithImpl<UpcomingEarningsEvent>(this as UpcomingEarningsEvent, _$identity);
+
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is UpcomingEarningsEvent&&(identical(other.ticker, ticker) || other.ticker == ticker));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is UpcomingEarningsEvent);
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,ticker);
+int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'UpcomingEarningsEvent(ticker: $ticker)';
+  return 'UpcomingEarningsEvent()';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class $UpcomingEarningsEventCopyWith<$Res>  {
-  factory $UpcomingEarningsEventCopyWith(UpcomingEarningsEvent value, $Res Function(UpcomingEarningsEvent) _then) = _$UpcomingEarningsEventCopyWithImpl;
-@useResult
-$Res call({
- String ticker
-});
-
-
-
-
-}
-/// @nodoc
-class _$UpcomingEarningsEventCopyWithImpl<$Res>
-    implements $UpcomingEarningsEventCopyWith<$Res> {
-  _$UpcomingEarningsEventCopyWithImpl(this._self, this._then);
-
-  final UpcomingEarningsEvent _self;
-  final $Res Function(UpcomingEarningsEvent) _then;
-
-/// Create a copy of UpcomingEarningsEvent
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? ticker = null,}) {
-  return _then(_self.copyWith(
-ticker: null == ticker ? _self.ticker : ticker // ignore: cast_nullable_to_non_nullable
-as String,
-  ));
-}
-
+class $UpcomingEarningsEventCopyWith<$Res>  {
+$UpcomingEarningsEventCopyWith(UpcomingEarningsEvent _, $Res Function(UpcomingEarningsEvent) __);
 }
 
 
@@ -86,12 +55,13 @@ extension UpcomingEarningsEventPatterns on UpcomingEarningsEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( LoadRequested value)?  loadRequested,TResult Function( StalenessCheckRequested value)?  stalenessCheckRequested,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( LoadRequested value)?  loadRequested,TResult Function( StalenessCheckRequested value)?  stalenessCheckRequested,TResult Function( Reset value)?  reset,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case LoadRequested() when loadRequested != null:
 return loadRequested(_that);case StalenessCheckRequested() when stalenessCheckRequested != null:
-return stalenessCheckRequested(_that);case _:
+return stalenessCheckRequested(_that);case Reset() when reset != null:
+return reset(_that);case _:
   return orElse();
 
 }
@@ -109,12 +79,13 @@ return stalenessCheckRequested(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( LoadRequested value)  loadRequested,required TResult Function( StalenessCheckRequested value)  stalenessCheckRequested,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( LoadRequested value)  loadRequested,required TResult Function( StalenessCheckRequested value)  stalenessCheckRequested,required TResult Function( Reset value)  reset,}){
 final _that = this;
 switch (_that) {
 case LoadRequested():
 return loadRequested(_that);case StalenessCheckRequested():
-return stalenessCheckRequested(_that);}
+return stalenessCheckRequested(_that);case Reset():
+return reset(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -128,12 +99,13 @@ return stalenessCheckRequested(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( LoadRequested value)?  loadRequested,TResult? Function( StalenessCheckRequested value)?  stalenessCheckRequested,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( LoadRequested value)?  loadRequested,TResult? Function( StalenessCheckRequested value)?  stalenessCheckRequested,TResult? Function( Reset value)?  reset,}){
 final _that = this;
 switch (_that) {
 case LoadRequested() when loadRequested != null:
 return loadRequested(_that);case StalenessCheckRequested() when stalenessCheckRequested != null:
-return stalenessCheckRequested(_that);case _:
+return stalenessCheckRequested(_that);case Reset() when reset != null:
+return reset(_that);case _:
   return null;
 
 }
@@ -150,11 +122,12 @@ return stalenessCheckRequested(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String ticker,  bool forceRefresh)?  loadRequested,TResult Function( String ticker)?  stalenessCheckRequested,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String ticker,  bool forceRefresh)?  loadRequested,TResult Function( String ticker)?  stalenessCheckRequested,TResult Function()?  reset,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case LoadRequested() when loadRequested != null:
 return loadRequested(_that.ticker,_that.forceRefresh);case StalenessCheckRequested() when stalenessCheckRequested != null:
-return stalenessCheckRequested(_that.ticker);case _:
+return stalenessCheckRequested(_that.ticker);case Reset() when reset != null:
+return reset();case _:
   return orElse();
 
 }
@@ -172,11 +145,12 @@ return stalenessCheckRequested(_that.ticker);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String ticker,  bool forceRefresh)  loadRequested,required TResult Function( String ticker)  stalenessCheckRequested,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String ticker,  bool forceRefresh)  loadRequested,required TResult Function( String ticker)  stalenessCheckRequested,required TResult Function()  reset,}) {final _that = this;
 switch (_that) {
 case LoadRequested():
 return loadRequested(_that.ticker,_that.forceRefresh);case StalenessCheckRequested():
-return stalenessCheckRequested(_that.ticker);}
+return stalenessCheckRequested(_that.ticker);case Reset():
+return reset();}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -190,11 +164,12 @@ return stalenessCheckRequested(_that.ticker);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String ticker,  bool forceRefresh)?  loadRequested,TResult? Function( String ticker)?  stalenessCheckRequested,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String ticker,  bool forceRefresh)?  loadRequested,TResult? Function( String ticker)?  stalenessCheckRequested,TResult? Function()?  reset,}) {final _that = this;
 switch (_that) {
 case LoadRequested() when loadRequested != null:
 return loadRequested(_that.ticker,_that.forceRefresh);case StalenessCheckRequested() when stalenessCheckRequested != null:
-return stalenessCheckRequested(_that.ticker);case _:
+return stalenessCheckRequested(_that.ticker);case Reset() when reset != null:
+return reset();case _:
   return null;
 
 }
@@ -209,12 +184,12 @@ class LoadRequested implements UpcomingEarningsEvent {
   const LoadRequested(this.ticker, {this.forceRefresh = false});
   
 
-@override final  String ticker;
+ final  String ticker;
 @JsonKey() final  bool forceRefresh;
 
 /// Create a copy of UpcomingEarningsEvent
 /// with the given fields replaced by the non-null parameter values.
-@override @JsonKey(includeFromJson: false, includeToJson: false)
+@JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
 $LoadRequestedCopyWith<LoadRequested> get copyWith => _$LoadRequestedCopyWithImpl<LoadRequested>(this, _$identity);
 
@@ -240,7 +215,7 @@ String toString() {
 /// @nodoc
 abstract mixin class $LoadRequestedCopyWith<$Res> implements $UpcomingEarningsEventCopyWith<$Res> {
   factory $LoadRequestedCopyWith(LoadRequested value, $Res Function(LoadRequested) _then) = _$LoadRequestedCopyWithImpl;
-@override @useResult
+@useResult
 $Res call({
  String ticker, bool forceRefresh
 });
@@ -259,7 +234,7 @@ class _$LoadRequestedCopyWithImpl<$Res>
 
 /// Create a copy of UpcomingEarningsEvent
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? ticker = null,Object? forceRefresh = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? ticker = null,Object? forceRefresh = null,}) {
   return _then(LoadRequested(
 null == ticker ? _self.ticker : ticker // ignore: cast_nullable_to_non_nullable
 as String,forceRefresh: null == forceRefresh ? _self.forceRefresh : forceRefresh // ignore: cast_nullable_to_non_nullable
@@ -277,11 +252,11 @@ class StalenessCheckRequested implements UpcomingEarningsEvent {
   const StalenessCheckRequested(this.ticker);
   
 
-@override final  String ticker;
+ final  String ticker;
 
 /// Create a copy of UpcomingEarningsEvent
 /// with the given fields replaced by the non-null parameter values.
-@override @JsonKey(includeFromJson: false, includeToJson: false)
+@JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
 $StalenessCheckRequestedCopyWith<StalenessCheckRequested> get copyWith => _$StalenessCheckRequestedCopyWithImpl<StalenessCheckRequested>(this, _$identity);
 
@@ -307,7 +282,7 @@ String toString() {
 /// @nodoc
 abstract mixin class $StalenessCheckRequestedCopyWith<$Res> implements $UpcomingEarningsEventCopyWith<$Res> {
   factory $StalenessCheckRequestedCopyWith(StalenessCheckRequested value, $Res Function(StalenessCheckRequested) _then) = _$StalenessCheckRequestedCopyWithImpl;
-@override @useResult
+@useResult
 $Res call({
  String ticker
 });
@@ -326,7 +301,7 @@ class _$StalenessCheckRequestedCopyWithImpl<$Res>
 
 /// Create a copy of UpcomingEarningsEvent
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? ticker = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? ticker = null,}) {
   return _then(StalenessCheckRequested(
 null == ticker ? _self.ticker : ticker // ignore: cast_nullable_to_non_nullable
 as String,
@@ -335,5 +310,37 @@ as String,
 
 
 }
+
+/// @nodoc
+
+
+class Reset implements UpcomingEarningsEvent {
+  const Reset();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Reset);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'UpcomingEarningsEvent.reset()';
+}
+
+
+}
+
+
+
 
 // dart format on

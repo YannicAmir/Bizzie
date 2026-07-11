@@ -3,7 +3,7 @@ import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/core/interfaces/i_device_locale_service.dart';
 import 'package:bizzie/core/interfaces/i_time_provider.dart';
-import 'package:bizzie/features/company_profile/financial_statements/data/datasources/financial_statements_firestore_data_source.dart';
+import 'package:bizzie/features/company_profile/financial_statements/data/interfaces/i_financial_statements_firestore_datasource.dart';
 import 'package:bizzie/features/company_profile/financial_statements/data/datasources/i_exchange_rate_remote_data_source.dart';
 import 'package:bizzie/features/company_profile/financial_statements/data/dtos/frankfurter_response_dto.dart';
 import 'package:bizzie/features/company_profile/shared/data/repositories/exchange_rate_repository_impl.dart';
@@ -18,7 +18,7 @@ class MockExchangeRateRemoteDataSource extends Mock
     implements IExchangeRateRemoteDataSource {}
 
 class MockFinancialFirestoreDataSource extends Mock
-    implements FinancialStatementsFirestoreDataSource {}
+    implements IFinancialStatementsFirestoreDataSource {}
 
 void main() {
   late ExchangeRateRepositoryImpl repository;

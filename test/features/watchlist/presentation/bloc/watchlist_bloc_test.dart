@@ -2,7 +2,7 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/features/auth/domain/interfaces/i_auth_repository.dart';
 import 'package:bizzie/features/auth/domain/models/user_model.dart';
-import 'package:bizzie/features/onboarding/domain/models/company.dart';
+import 'package:bizzie/core/domain/models/company.dart';
 import 'package:bizzie/features/watchlist/domain/models/add_to_watchlist_params.dart';
 import 'package:bizzie/features/watchlist/domain/models/remove_from_watchlist_params.dart';
 import 'package:bizzie/features/watchlist/domain/models/sync_watchlist_params.dart';

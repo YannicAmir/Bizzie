@@ -13,7 +13,8 @@ import 'package:bizzie/shared/widgets/charts/bizzie_expandable_chart.dart';
 import 'package:bizzie/shared/widgets/states/bizzie_empty_state.dart';
 import 'package:bizzie/shared/widgets/inputs/bizzie_switch.dart';
 import 'package:bizzie/shared/widgets/modals/app_history_modal.dart';
-import 'package:bizzie/features/company_profile/shared/presentation/enums/company_profile_tab.dart';
+import 'package:bizzie/features/company_profile/shared/domain/enums/company_profile_tab.dart';
+import 'package:bizzie/features/company_profile/shared/presentation/extensions/company_profile_tab_x.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/widgets/tab_visibility_observer.dart';
 import 'package:bizzie/features/company_profile/shared/domain/models/financial_data_point.dart';
 import 'package:flutter/material.dart';
@@ -31,6 +32,14 @@ class FcpsTab extends StatefulWidget {
 
 class _FcpsTabState extends State<FcpsTab> with AutomaticKeepAliveClientMixin {
   int _selectedIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    context.read<CompanyFcpsBloc>().add(
+      CompanyFcpsEvent.stalenessCheckRequested(widget.ticker),
+    );
+  }
 
   @override
   bool get wantKeepAlive => true;

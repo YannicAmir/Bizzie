@@ -1,7 +1,8 @@
 import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:bizzie/core/error/failures.dart';
-import 'package:bizzie/features/company_profile/roe/domain/models/roe.dart';
+import 'package:bizzie/features/company_profile/roe/domain/models/roe_stats.dart';
 import 'package:bizzie/features/company_profile/roe/domain/usecases/get_roe_usecase.dart';
+import 'package:bizzie/features/company_profile/shared/domain/models/financial_data_point.dart';
 import 'package:bizzie/features/company_profile/roe/presentation/bloc/company_roe_bloc.dart';
 import 'package:bizzie/features/company_profile/roe/presentation/bloc/company_roe_event.dart';
 import 'package:bizzie/features/company_profile/roe/presentation/bloc/company_roe_state.dart';
@@ -39,22 +40,21 @@ void main() {
     bloc = CompanyRoeBloc(mockGetRoe, mockConfigService, mockAnalytics);
   });
 
+  tearDown(() => bloc.close());
+
   const tTicker = 'AAPL';
   const tTimestamp = '2024-01-01T00:00:00Z';
-  const tRoeMetrics = [
-    Roe(
-      symbol: tTicker,
-      date: '2018-10-01',
-      period: 'FY',
-      returnOnEquity: 0.35,
-    ),
-    Roe(
-      symbol: tTicker,
-      date: '2023-09-30',
-      period: 'FY',
-      returnOnEquity: 0.45,
-    ),
-  ];
+  const tRoeStats = RoeStats(
+    dataPoints: [
+      FinancialDataPoint(date: '2018-10-01', period: 'FY', value: 0.35),
+      FinancialDataPoint(date: '2023-09-30', period: 'FY', value: 0.45),
+    ],
+    currentValue: 0.45,
+    growthPercentage: ((0.45 - 0.35) / 0.35) * 100,
+    absoluteDelta: 0.45 - 0.35,
+    isPositive: true,
+    referenceDate: '2018-10-01',
+  );
 
   test('initialState_isCorrect', () {
     // assert
@@ -67,7 +67,7 @@ void main() {
       build: () {
         // arrange
         when(() => mockGetRoe(tTicker)).thenAnswer(
-          (_) async => const Right((tRoeMetrics, CompanyProfileDataOrigin.api)),
+          (_) async => const Right((tRoeStats, CompanyProfileDataOrigin.api)),
         );
         return bloc;
       },
@@ -170,7 +170,7 @@ void main() {
       build: () {
         // arrange
         when(() => mockGetRoe(tTicker)).thenAnswer(
-          (_) async => const Right((tRoeMetrics, CompanyProfileDataOrigin.api)),
+          (_) async => const Right((tRoeStats, CompanyProfileDataOrigin.api)),
         );
         return bloc;
       },
@@ -217,7 +217,7 @@ void main() {
       build: () {
         // arrange
         when(() => mockGetRoe(tTicker)).thenAnswer(
-          (_) async => const Right((tRoeMetrics, CompanyProfileDataOrigin.api)),
+          (_) async => const Right((tRoeStats, CompanyProfileDataOrigin.api)),
         );
         return bloc;
       },
@@ -277,7 +277,7 @@ void main() {
       build: () {
         // arrange
         when(() => mockGetRoe(tTicker)).thenAnswer(
-          (_) async => const Right((tRoeMetrics, CompanyProfileDataOrigin.api)),
+          (_) async => const Right((tRoeStats, CompanyProfileDataOrigin.api)),
         );
         return bloc;
       },
@@ -316,7 +316,7 @@ void main() {
       'loadRequested_differentTicker_reloadsData',
       build: () {
         when(() => mockGetRoe('MSFT')).thenAnswer(
-          (_) async => const Right((tRoeMetrics, CompanyProfileDataOrigin.api)),
+          (_) async => const Right((tRoeStats, CompanyProfileDataOrigin.api)),
         );
         return bloc;
       },
@@ -344,6 +344,33 @@ void main() {
     );
   });
 
+  group('CompanyRoeBloc - reset', () {
+    blocTest<CompanyRoeBloc, CompanyRoeState>(
+      'reset_loadedState_emitsInitial',
+      build: () => bloc,
+      seed: () => const CompanyRoeState.loaded(
+        ticker: tTicker,
+        dataPoints: [],
+        chartData: [],
+        currentValue: 0.45,
+        growthPercentage: 5.0,
+        absoluteDelta: 0.1,
+        isPositive: true,
+        referenceLabel: '2018',
+        historyLimit: 7,
+        dataOrigin: CompanyProfileDataOrigin.api,
+      ),
+      act: (bloc) {
+        // act
+        bloc.add(const CompanyRoeEvent.reset());
+      },
+      expect: () {
+        // assert
+        return [const CompanyRoeState.initial()];
+      },
+    );
+  });
+
   group('CompanyRoeBloc - Analytics', () {
     blocTest<CompanyRoeBloc, CompanyRoeState>(
       'tabShown_initializesAnalyticsState',
@@ -361,14 +388,10 @@ void main() {
         dataOrigin: CompanyProfileDataOrigin.api,
       ),
       act: (bloc) => bloc.add(const CompanyRoeEvent.tabShown(tTicker)),
-      expect: () => [
-        isA<CompanyRoeState>().having(
-          (s) =>
-              s.maybeMap(loaded: (l) => l.analyticsState, orElse: () => null),
-          'analyticsState',
-          isNotNull,
-        ),
-      ],
+      expect: () => const <CompanyRoeState>[],
+      verify: (bloc) {
+        expect(bloc.analyticsSession, isNotNull);
+      },
     );
 
     blocTest<CompanyRoeBloc, CompanyRoeState>(
@@ -393,17 +416,10 @@ void main() {
       act: (bloc) => bloc
         ..add(const CompanyRoeEvent.tabShown(tTicker))
         ..add(const CompanyRoeEvent.viewAllTapped(isChart: true)),
-      expect: () => [
-        isA<CompanyRoeState>(), // from tabShown
-        isA<CompanyRoeState>().having(
-          (s) => s.maybeMap(
-            loaded: (l) => l.analyticsState?.tappedChartViewAll,
-            orElse: () => null,
-          ),
-          'tappedChartViewAll',
-          true,
-        ),
-      ],
+      expect: () => const <CompanyRoeState>[],
+      verify: (bloc) {
+        expect(bloc.analyticsSession?.tappedChartViewAll, isTrue);
+      },
     );
 
     blocTest<CompanyRoeBloc, CompanyRoeState>(
@@ -436,15 +452,9 @@ void main() {
       act: (bloc) => bloc
         ..add(const CompanyRoeEvent.tabShown(tTicker))
         ..add(const CompanyRoeEvent.tabHidden()),
-      expect: () => [
-        isA<CompanyRoeState>(),
-        isA<CompanyRoeState>().having(
-          (s) => s.maybeMap(loaded: (l) => l.analyticsState, orElse: () => 1),
-          'analyticsState',
-          isNull,
-        ),
-      ],
-      verify: (_) {
+      expect: () => const <CompanyRoeState>[],
+      verify: (bloc) {
+        expect(bloc.analyticsSession, isNull);
         verify(
           () => mockAnalytics.logViewSummary(any(), isFinal: true),
         ).called(1);

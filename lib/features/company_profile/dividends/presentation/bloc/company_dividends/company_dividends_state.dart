@@ -7,7 +7,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'company_dividends_state.freezed.dart';
 
 @freezed
-class CompanyDividendsState with _$CompanyDividendsState {
+abstract class CompanyDividendsState with _$CompanyDividendsState {
   const factory CompanyDividendsState.initial() = _Initial;
   const factory CompanyDividendsState.loading() = _Loading;
   const factory CompanyDividendsState.loaded({
@@ -18,5 +18,5 @@ class CompanyDividendsState with _$CompanyDividendsState {
     DateTime? lastUpdated,
     DividendTabViewState? analyticsState,
   }) = _Loaded;
-  const factory CompanyDividendsState.error(Failure failure) = _Error;
+  const factory CompanyDividendsState.failure(Failure failure) = _Failure;
 }

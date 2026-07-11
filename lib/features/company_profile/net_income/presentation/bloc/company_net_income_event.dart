@@ -3,7 +3,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'company_net_income_event.freezed.dart';
 
 @freezed
-abstract class CompanyNetIncomeEvent with _$CompanyNetIncomeEvent {
+class CompanyNetIncomeEvent with _$CompanyNetIncomeEvent {
   const factory CompanyNetIncomeEvent.loadRequested(
     String ticker, {
     @Default(false) bool forceRefresh,
@@ -24,4 +24,6 @@ abstract class CompanyNetIncomeEvent with _$CompanyNetIncomeEvent {
     required bool isAnnual,
     required bool isChart,
   }) = ViewAllTapped;
+
+  const factory CompanyNetIncomeEvent.reset() = NetIncomeReset;
 }

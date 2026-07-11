@@ -6,18 +6,34 @@ import 'package:bizzie/features/company_profile/security/presentation/bloc/upcom
 import 'package:bloc_test/bloc_test.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:bizzie/core/usecase/usecase.dart';
+import 'package:bizzie/features/company_profile/shared/domain/usecases/watch_active_tab_usecase.dart';
 import 'package:mocktail/mocktail.dart';
 
 class MockGetUpcomingEarningsUseCase extends Mock
     implements GetUpcomingEarningsUseCase {}
 
+class MockWatchActiveTabUseCase extends Mock implements WatchActiveTabUseCase {}
+
 void main() {
+  setUpAll(() {
+    registerFallbackValue(NoParams());
+  });
+
   late UpcomingEarningsBloc bloc;
   late MockGetUpcomingEarningsUseCase mockGetUpcomingEarnings;
+  late MockWatchActiveTabUseCase mockWatchActiveTabUseCase;
 
   setUp(() {
     mockGetUpcomingEarnings = MockGetUpcomingEarningsUseCase();
-    bloc = UpcomingEarningsBloc(mockGetUpcomingEarnings);
+    mockWatchActiveTabUseCase = MockWatchActiveTabUseCase();
+
+    when(() => mockWatchActiveTabUseCase(any()))
+        .thenAnswer((_) => const Stream.empty());
+    bloc = UpcomingEarningsBloc(
+      mockGetUpcomingEarnings,
+      mockWatchActiveTabUseCase,
+    );
   });
 
   const tTicker = 'AAPL';

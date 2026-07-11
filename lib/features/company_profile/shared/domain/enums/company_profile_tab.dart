@@ -1,0 +1,18 @@
+enum CompanyProfileTab {
+  security,
+  chat,
+  business,
+  news,
+  dividends,
+  revenue,
+  netIncome,
+  eps,
+  freeCash,
+  fcps,
+  shares,
+  financialStatements,
+  roe,
+  peRatio,
+  pfcfRatio,
+  more,
+}

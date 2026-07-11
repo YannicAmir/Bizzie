@@ -8,6 +8,8 @@ import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:bizzie/features/company_profile/shared/domain/models/chart_data_point.dart';
 import 'package:bizzie/features/company_profile/shared/domain/models/financial_data_point.dart';
+import 'package:bizzie/features/company_profile/pe_ratio/domain/models/pe_ratio.dart';
+import 'package:bizzie/features/company_profile/pe_ratio/domain/services/pe_ratio_metrics_service.dart';
 import 'package:bizzie/features/company_profile/pe_ratio/domain/usecases/get_pe_ratio_usecase.dart';
 import 'package:bizzie/features/company_profile/pe_ratio/presentation/analytics/pe_ratio_tab_analytics.dart';
 import 'package:bizzie/features/company_profile/pe_ratio/presentation/analytics/pe_ratio_tab_view_state.dart';
@@ -30,10 +32,15 @@ class CompanyPeRatioBloc extends Bloc<CompanyPeRatioEvent, CompanyPeRatioState>
   final GetPeRatioUseCase _getPeRatio;
   final IConfigService _configService;
   final PeRatioTabAnalytics _analytics;
+  final PeRatioMetricsService _metricsService;
 
-  CompanyPeRatioBloc(this._getPeRatio, this._configService, this._analytics)
-    : super(const CompanyPeRatioState.initial()) {
-    on<LoadRequested>(_onLoadRequested);
+  CompanyPeRatioBloc(
+    this._getPeRatio,
+    this._configService,
+    this._analytics,
+    this._metricsService,
+  ) : super(const CompanyPeRatioState.initial()) {
+    on<LoadRequested>(_onLoadRequested, transformer: restartable());
     on<StalenessCheckRequested>(
       _onStalenessCheckRequested,
       transformer: sequential(),
@@ -43,7 +50,11 @@ class CompanyPeRatioBloc extends Bloc<CompanyPeRatioEvent, CompanyPeRatioState>
     on<AppBackgrounded>(_onAppBackgrounded);
     on<AppForegrounded>(_onAppForegrounded);
     on<ViewAllTapped>(_onViewAllTapped);
+    on<PeRatioReset>(_onReset);
   }
+
+  void _onReset(PeRatioReset event, Emitter<CompanyPeRatioState> emit) =>
+      emit(const CompanyPeRatioState.initial());
 
   @override
   CompanyProfileTabTracker<PeRatioTabViewState> get analyticsTracker =>
@@ -61,9 +72,7 @@ class CompanyPeRatioBloc extends Bloc<CompanyPeRatioEvent, CompanyPeRatioState>
             loadTimeMs: s.loadTimeMs,
             dataSource: s.dataOrigin,
           ),
-        );
-        emit(s.copyWith(analyticsState: analyticsSession));
-      },
+        );      },
       orElse: () {
         onTabShown(
           event.ticker,
@@ -80,34 +89,19 @@ class CompanyPeRatioBloc extends Bloc<CompanyPeRatioEvent, CompanyPeRatioState>
     TabHidden event,
     Emitter<CompanyPeRatioState> emit,
   ) async {
-    await onTabHidden();
-    state.maybeMap(
-      loaded: (s) => emit(s.copyWith(analyticsState: analyticsSession)),
-      orElse: () {},
-    );
-  }
+    await onTabHidden();  }
 
   Future<void> _onAppBackgrounded(
     AppBackgrounded event,
     Emitter<CompanyPeRatioState> emit,
   ) async {
-    await onAppBackgrounded();
-    state.maybeMap(
-      loaded: (s) => emit(s.copyWith(analyticsState: analyticsSession)),
-      orElse: () {},
-    );
-  }
+    await onAppBackgrounded();  }
 
   void _onAppForegrounded(
     AppForegrounded event,
     Emitter<CompanyPeRatioState> emit,
   ) {
-    onAppForegrounded();
-    state.maybeMap(
-      loaded: (s) => emit(s.copyWith(analyticsState: analyticsSession)),
-      orElse: () {},
-    );
-  }
+    onAppForegrounded();  }
 
   void _onViewAllTapped(
     ViewAllTapped event,
@@ -118,11 +112,6 @@ class CompanyPeRatioBloc extends Bloc<CompanyPeRatioEvent, CompanyPeRatioState>
           ? s.copyWith(tappedChartViewAll: true)
           : s.copyWith(tappedTableViewAll: true);
     });
-
-    state.maybeMap(
-      loaded: (s) => emit(s.copyWith(analyticsState: analyticsSession)),
-      orElse: () {},
-    );
   }
 
   Future<void> _onLoadRequested(
@@ -188,13 +177,13 @@ class CompanyPeRatioBloc extends Bloc<CompanyPeRatioEvent, CompanyPeRatioState>
 
   void _emitLoadedState(
     String ticker,
-    List<dynamic> ratios,
+    List<PeRatio> ratios,
     CompanyProfileDataOrigin origin,
     int? loadTimeMs,
     bool isSuccess,
     Emitter<CompanyPeRatioState> emit,
   ) {
-    final sortedPoints = _extractSortedDataPoints(ratios);
+    final sortedPoints = _metricsService.extractSortedDataPoints(ratios);
 
     if (sortedPoints.isEmpty) {
       _logger.info('PE Ratio data points empty after extraction');
@@ -210,8 +199,11 @@ class CompanyPeRatioBloc extends Bloc<CompanyPeRatioEvent, CompanyPeRatioState>
     }
 
     final currentPoint = sortedPoints.last;
-    final referenceDataPoint = _findReferencePoint(sortedPoints, currentPoint);
-    final growth = _calculateGrowth(
+    final referenceDataPoint = _metricsService.findReferencePoint(
+      sortedPoints,
+      currentPoint,
+    );
+    final growth = _metricsService.calculateGrowth(
       currentPoint.value,
       referenceDataPoint.value,
     );
@@ -240,54 +232,6 @@ class CompanyPeRatioBloc extends Bloc<CompanyPeRatioEvent, CompanyPeRatioState>
         analyticsState: analyticsSession,
       ),
     );
-  }
-
-  List<FinancialDataPoint> _extractSortedDataPoints(List<dynamic> ratios) {
-    final dataPoints = ratios
-        .map(
-          (r) => FinancialDataPoint(
-            date: r.date,
-            period: r.period,
-            value: r.priceToEarningsRatio,
-          ),
-        )
-        .toList();
-    return dataPoints..sort((a, b) => a.date.compareTo(b.date));
-  }
-
-  FinancialDataPoint _findReferencePoint(
-    List<FinancialDataPoint> sortedPoints,
-    FinancialDataPoint currentPoint,
-  ) {
-    var referencePoint = sortedPoints.first;
-    final currentDate = DateTime.tryParse(currentPoint.date);
-
-    if (currentDate != null && sortedPoints.length > 1) {
-      final cutoffDate = DateTime(
-        currentDate.year - 5,
-        currentDate.month,
-        currentDate.day,
-      );
-      for (final p in sortedPoints) {
-        final d = DateTime.tryParse(p.date);
-        if (d != null && (d.isAfter(cutoffDate) || d == cutoffDate)) {
-          referencePoint = p;
-          break;
-        }
-      }
-    }
-    return referencePoint;
-  }
-
-  ({double delta, double percentage}) _calculateGrowth(
-    double currentValue,
-    double referenceValue,
-  ) {
-    final delta = currentValue - referenceValue;
-    final percentage = referenceValue.abs() < 0.001
-        ? 0.0
-        : (delta / referenceValue.abs()) * 100;
-    return (delta: delta, percentage: percentage);
   }
 
   String _formatReferenceLabel(FinancialDataPoint referencePoint) {

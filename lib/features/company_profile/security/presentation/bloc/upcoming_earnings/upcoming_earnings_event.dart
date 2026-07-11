@@ -11,4 +11,6 @@ sealed class UpcomingEarningsEvent with _$UpcomingEarningsEvent {
 
   const factory UpcomingEarningsEvent.stalenessCheckRequested(String ticker) =
       StalenessCheckRequested;
+
+  const factory UpcomingEarningsEvent.reset() = Reset;
 }

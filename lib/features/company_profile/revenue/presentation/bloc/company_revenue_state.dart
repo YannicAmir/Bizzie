@@ -8,7 +8,7 @@ import 'package:bizzie/features/company_profile/revenue/presentation/analytics/r
 part 'company_revenue_state.freezed.dart';
 
 @freezed
-class CompanyRevenueState with _$CompanyRevenueState {
+abstract class CompanyRevenueState with _$CompanyRevenueState {
   const factory CompanyRevenueState.initial() = _Initial;
   const factory CompanyRevenueState.loading() = _Loading;
   const factory CompanyRevenueState.loaded({

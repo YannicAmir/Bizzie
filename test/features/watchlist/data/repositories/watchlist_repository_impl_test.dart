@@ -1,5 +1,5 @@
 import 'package:bizzie/core/error/failures.dart';
-import 'package:bizzie/features/onboarding/domain/models/company.dart';
+import 'package:bizzie/core/domain/models/company.dart';
 import 'package:bizzie/features/watchlist/data/interfaces/i_watchlist_local_datasource.dart';
 import 'package:bizzie/features/watchlist/data/interfaces/i_watchlist_remote_datasource.dart';
 import 'package:bizzie/features/watchlist/data/dtos/watchlist_item_dto.dart';

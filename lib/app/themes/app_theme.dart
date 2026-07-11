@@ -53,6 +53,10 @@ class AppTheme {
         thickness: 0.67,
         space: 1,
       ),
+      floatingActionButtonTheme: const FloatingActionButtonThemeData(
+        elevation: 2,
+        highlightElevation: 4,
+      ),
       tabBarTheme: TabBarThemeData(
         labelColor: AppColors.primary,
         unselectedLabelColor: AppColors.textSecondary,

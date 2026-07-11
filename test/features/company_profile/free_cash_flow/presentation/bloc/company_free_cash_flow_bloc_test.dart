@@ -9,10 +9,13 @@ import 'package:bizzie/features/company_profile/free_cash_flow/presentation/bloc
 import 'package:bloc_test/bloc_test.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mocktail/mocktail.dart';
 import 'package:bizzie/core/interfaces/i_config_service.dart';
+import 'package:bizzie/core/usecase/usecase.dart';
+import 'package:bizzie/features/company_profile/shared/domain/services/tab_content_freshness_service.dart';
+import 'package:bizzie/features/company_profile/shared/domain/usecases/watch_active_tab_usecase.dart';
 import 'package:bizzie/features/company_profile/free_cash_flow/presentation/analytics/free_cash_flow_tab_analytics.dart';
 import 'package:bizzie/features/company_profile/free_cash_flow/presentation/analytics/free_cash_flow_tab_view_state.dart';
+import 'package:mocktail/mocktail.dart';
 
 class MockGetFreeCashFlowStatsUseCase extends Mock
     implements GetFreeCashFlowStatsUseCase {}
@@ -22,8 +25,14 @@ class MockConfigService extends Mock implements IConfigService {}
 class MockFreeCashFlowTabAnalytics extends Mock
     implements FreeCashFlowTabAnalytics {}
 
+class MockWatchActiveTabUseCase extends Mock implements WatchActiveTabUseCase {}
+
+class MockTabContentFreshnessService extends Mock
+    implements TabContentFreshnessService {}
+
 void main() {
   setUpAll(() {
+    registerFallbackValue(NoParams());
     registerFallbackValue(
       const FreeCashFlowTabViewState(ticker: '', timestamp: ''),
     );
@@ -33,16 +42,25 @@ void main() {
   late MockGetFreeCashFlowStatsUseCase mockGetFreeCashFlowStats;
   late MockConfigService mockConfigService;
   late MockFreeCashFlowTabAnalytics mockAnalytics;
+  late MockWatchActiveTabUseCase mockWatchActiveTabUseCase;
+  late MockTabContentFreshnessService mockFreshnessService;
 
   setUp(() {
     mockGetFreeCashFlowStats = MockGetFreeCashFlowStatsUseCase();
     mockConfigService = MockConfigService();
     mockAnalytics = MockFreeCashFlowTabAnalytics();
+    mockWatchActiveTabUseCase = MockWatchActiveTabUseCase();
+    mockFreshnessService = MockTabContentFreshnessService();
     when(() => mockConfigService.freePlanHistoryCount).thenReturn(7);
+    when(() => mockWatchActiveTabUseCase(any()))
+        .thenAnswer((_) => const Stream.empty());
+    when(() => mockFreshnessService.isStale(any())).thenReturn(false);
     bloc = CompanyFreeCashFlowBloc(
       mockGetFreeCashFlowStats,
       mockConfigService,
       mockAnalytics,
+      mockWatchActiveTabUseCase,
+      mockFreshnessService,
     );
   });
 
@@ -260,6 +278,7 @@ void main() {
       'stalenessCheckRequested_stale_triggersLoadRequested',
       build: () {
         // Arrange
+        when(() => mockFreshnessService.isStale(any())).thenReturn(true);
         when(() => mockGetFreeCashFlowStats(tTicker)).thenAnswer(
           (_) async => const Right((tFcfStats, CompanyProfileDataOrigin.api)),
         );
@@ -290,9 +309,9 @@ void main() {
     );
   });
 
-  group('CompanyFreeCashFlowBloc - Interaction Events', () {
+  group('CompanyFreeCashFlowBloc - reset', () {
     blocTest<CompanyFreeCashFlowBloc, CompanyFreeCashFlowState>(
-      'periodViewed_isAnnualTrue_updatesviewedYearlyFcfTabFlag',
+      'reset_loadedState_emitsInitial',
       build: () => bloc,
       // Arrange
       seed: () => const CompanyFreeCashFlowState.loaded(
@@ -304,42 +323,51 @@ void main() {
         dataOrigin: CompanyProfileDataOrigin.api,
       ),
       // Act
+      act: (bloc) => bloc.add(const CompanyFreeCashFlowEvent.reset()),
+      // Assert
+      expect: () => [const CompanyFreeCashFlowState.initial()],
+    );
+  });
+
+  group('CompanyFreeCashFlowBloc - Interaction Events', () {
+    blocTest<CompanyFreeCashFlowBloc, CompanyFreeCashFlowState>(
+      'periodViewed_isAnnualTrue_updatesviewedYearlyFcfTabFlag',
+      build: () => bloc,
+      // Arrange
+      seed: () => CompanyFreeCashFlowState.loaded(
+        ticker: tTicker,
+        fcfStats: tFcfStats,
+        annualChartData: const [],
+        quarterlyChartData: const [],
+        historyLimit: 7,
+        dataOrigin: CompanyProfileDataOrigin.api,
+        lastUpdated: DateTime.now(),
+      ),
+      // Act
       act: (bloc) {
         bloc.add(const CompanyFreeCashFlowEvent.tabShown(tTicker));
         bloc.add(const CompanyFreeCashFlowEvent.periodViewed(isAnnual: true));
       },
       // Assert
-      expect: () => [
-        isA<CompanyFreeCashFlowState>().having(
-          (s) => s.maybeMap(
-            loaded: (l) => l.analyticsState?.ticker,
-            orElse: () => null,
-          ),
-          'ticker',
-          tTicker,
-        ),
-        isA<CompanyFreeCashFlowState>().having(
-          (s) => s.maybeMap(
-            loaded: (l) => l.analyticsState?.viewedYearlyFcfTab,
-            orElse: () => false,
-          ),
-          'viewedYearlyFcfTab',
-          true,
-        ),
-      ],
+      expect: () => const <CompanyFreeCashFlowState>[],
+      verify: (bloc) {
+        expect(bloc.analyticsSession?.ticker, tTicker);
+        expect(bloc.analyticsSession?.viewedYearlyFcfTab, isTrue);
+      },
     );
 
     blocTest<CompanyFreeCashFlowBloc, CompanyFreeCashFlowState>(
       'viewAllTapped_chartAndTable_updatesCorrectInteractionFlags',
       build: () => bloc,
       // Arrange
-      seed: () => const CompanyFreeCashFlowState.loaded(
+      seed: () => CompanyFreeCashFlowState.loaded(
         ticker: tTicker,
         fcfStats: tFcfStats,
-        annualChartData: [],
-        quarterlyChartData: [],
+        annualChartData: const [],
+        quarterlyChartData: const [],
         historyLimit: 7,
         dataOrigin: CompanyProfileDataOrigin.api,
+        lastUpdated: DateTime.now(),
       ),
       // Act
       act: (bloc) {
@@ -358,32 +386,12 @@ void main() {
         );
       },
       // Assert
-      expect: () => [
-        isA<CompanyFreeCashFlowState>().having(
-          (s) => s.maybeMap(
-            loaded: (l) => l.analyticsState?.ticker,
-            orElse: () => null,
-          ),
-          'ticker',
-          tTicker,
-        ),
-        isA<CompanyFreeCashFlowState>().having(
-          (s) => s.maybeMap(
-            loaded: (l) => l.analyticsState?.tappedYrchartViewAll,
-            orElse: () => false,
-          ),
-          'tappedYrchartViewAll',
-          true,
-        ),
-        isA<CompanyFreeCashFlowState>().having(
-          (s) => s.maybeMap(
-            loaded: (l) => l.analyticsState?.tappedQtrtableViewAll,
-            orElse: () => false,
-          ),
-          'tappedQtrtableViewAll',
-          true,
-        ),
-      ],
+      expect: () => const <CompanyFreeCashFlowState>[],
+      verify: (bloc) {
+        expect(bloc.analyticsSession?.ticker, tTicker);
+        expect(bloc.analyticsSession?.tappedYrchartViewAll, isTrue);
+        expect(bloc.analyticsSession?.tappedQtrtableViewAll, isTrue);
+      },
     );
   });
 
@@ -400,13 +408,14 @@ void main() {
         ).thenAnswer((_) async {});
         return bloc;
       },
-      seed: () => const CompanyFreeCashFlowState.loaded(
+      seed: () => CompanyFreeCashFlowState.loaded(
         ticker: tTicker,
         fcfStats: tFcfStats,
-        annualChartData: [],
-        quarterlyChartData: [],
+        annualChartData: const [],
+        quarterlyChartData: const [],
         historyLimit: 7,
         dataOrigin: CompanyProfileDataOrigin.api,
+        lastUpdated: DateTime.now(),
       ),
       // Act
       act: (bloc) async {
@@ -433,13 +442,14 @@ void main() {
         ).thenAnswer((_) async {});
         return bloc;
       },
-      seed: () => const CompanyFreeCashFlowState.loaded(
+      seed: () => CompanyFreeCashFlowState.loaded(
         ticker: tTicker,
         fcfStats: tFcfStats,
-        annualChartData: [],
-        quarterlyChartData: [],
+        annualChartData: const [],
+        quarterlyChartData: const [],
         historyLimit: 7,
         dataOrigin: CompanyProfileDataOrigin.api,
+        lastUpdated: DateTime.now(),
       ),
       // Act
       act: (bloc) async {

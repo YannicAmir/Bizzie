@@ -43,4 +43,14 @@ post_install do |installer|
     end
   end
   system("find Pods -name '*-frameworks.sh' -exec sed -i '' 's/readlink -f/readlink/g' {} \\;")
+
+  # freerasp 8.0.0 bundles TalsecRuntime compiled with Swift 6.1.2 which uses
+  # -enable-experimental-feature DebugDescriptionMacro. Swift 6.2 (Xcode 26)
+  # can't process this flag in the non-ignorable module flags section, causing
+  # SecurityThreat enum cases (e.g. timeSpoofing) to appear missing at compile time.
+  Dir.glob("#{__dir__}/.symlinks/plugins/freerasp/ios/TalsecRuntime.xcframework/**/*.swiftinterface").each do |file|
+    content = File.read(file)
+    patched = content.gsub(' -enable-experimental-feature DebugDescriptionMacro', '')
+    File.write(file, patched) if patched != content
+  end
 end

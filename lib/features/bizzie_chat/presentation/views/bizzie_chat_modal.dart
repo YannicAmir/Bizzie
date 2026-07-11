@@ -1,4 +1,3 @@
-import 'package:bizzie/app/themes/app_assets.dart';
 import 'package:bizzie/di/injection.dart';
 import 'package:bizzie/features/bizzie_chat/domain/enums/chat_message_role.dart';
 import 'package:bizzie/features/bizzie_chat/domain/enums/rating_type.dart';
@@ -10,6 +9,7 @@ import 'package:bizzie/features/bizzie_chat/presentation/widgets/chat_input_bar.
 import 'package:bizzie/features/bizzie_chat/presentation/widgets/chat_message_list.dart';
 import 'package:bizzie/features/bizzie_chat/presentation/widgets/chat_scroll_to_bottom_button.dart';
 import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
+import 'package:bizzie/features/user/presentation/extensions/user_state_extensions.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:bizzie/shared/widgets/modals/bottom_modal_header.dart';
 import 'package:flutter/material.dart';
@@ -36,9 +36,9 @@ class BizzieChatModal extends StatefulWidget {
     String? sessionId,
     String? initialQuery,
   }) {
-    final uid =
-        context.read<UserBloc>().state.mapOrNull(loaded: (s) => s.user.uid) ??
-        '';
+    final uid = context.read<UserBloc>().state.uidOrNull;
+    if (uid == null) return;
+
     showModalBottomSheet(
       context: context,
       isScrollControlled: false,
@@ -184,11 +184,7 @@ class _BizzieChatModalState extends State<BizzieChatModal>
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.sizeOf(context).height;
-    final mascotAsset =
-        context.read<UserBloc>().state.mapOrNull(
-          loaded: (u) => AppAssets.getMascotForSector(u.user.favoriteSector),
-        ) ??
-        AppAssets.defaultMascot;
+    final mascotAsset = context.read<UserBloc>().state.mascotAsset;
 
     return BlocConsumer<BizzieChatBloc, BizzieChatState>(
       listenWhen: (prev, curr) {

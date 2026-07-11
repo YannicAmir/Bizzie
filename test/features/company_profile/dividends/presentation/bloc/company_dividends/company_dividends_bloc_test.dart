@@ -11,8 +11,10 @@ import 'package:bizzie/features/company_profile/dividends/presentation/bloc/comp
 import 'package:bloc_test/bloc_test.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mocktail/mocktail.dart';
 import 'package:bizzie/core/interfaces/i_config_service.dart';
+import 'package:bizzie/core/usecase/usecase.dart';
+import 'package:bizzie/features/company_profile/shared/domain/usecases/watch_active_tab_usecase.dart';
+import 'package:mocktail/mocktail.dart';
 
 class MockGetDividendInfoUseCase extends Mock
     implements GetDividendInfoUseCase {}
@@ -21,34 +23,14 @@ class MockConfigService extends Mock implements IConfigService {}
 
 class MockDividendTabAnalytics extends Mock implements DividendTabAnalytics {}
 
+class MockWatchActiveTabUseCase extends Mock implements WatchActiveTabUseCase {}
+
 void main() {
   late CompanyDividendsBloc bloc;
   late MockGetDividendInfoUseCase mockGetDividendInfo;
   late MockConfigService mockConfigService;
   late MockDividendTabAnalytics mockAnalytics;
-
-  setUpAll(() {
-    registerFallbackValue(
-      const DividendTabViewState(ticker: 'AAPL', timestamp: ''),
-    );
-  });
-
-  setUp(() {
-    mockGetDividendInfo = MockGetDividendInfoUseCase();
-    mockConfigService = MockConfigService();
-    mockAnalytics = MockDividendTabAnalytics();
-
-    when(() => mockConfigService.freePlanHistoryCount).thenReturn(8);
-    when(
-      () => mockAnalytics.logViewSummary(any(), isFinal: any(named: 'isFinal')),
-    ).thenAnswer((_) async {});
-
-    bloc = CompanyDividendsBloc(
-      mockGetDividendInfo,
-      mockConfigService,
-      mockAnalytics,
-    );
-  });
+  late MockWatchActiveTabUseCase mockWatchActiveTabUseCase;
 
   const tTicker = 'AAPL';
   final tDividendInfo = DividendInfo(
@@ -61,6 +43,37 @@ void main() {
       ),
     ],
   );
+
+  setUpAll(() {
+    registerFallbackValue(NoParams());
+    registerFallbackValue(
+      const DividendTabViewState(ticker: 'AAPL', timestamp: ''),
+    );
+  });
+
+  setUp(() {
+    mockGetDividendInfo = MockGetDividendInfoUseCase();
+    mockConfigService = MockConfigService();
+    mockAnalytics = MockDividendTabAnalytics();
+    mockWatchActiveTabUseCase = MockWatchActiveTabUseCase();
+
+    when(() => mockConfigService.freePlanHistoryCount).thenReturn(8);
+    when(
+      () => mockAnalytics.logViewSummary(any(), isFinal: any(named: 'isFinal')),
+    ).thenAnswer((_) async {});
+    when(() => mockWatchActiveTabUseCase(any()))
+        .thenAnswer((_) => const Stream.empty());
+    when(() => mockGetDividendInfo(any())).thenAnswer(
+      (_) async => Right((tDividendInfo, CompanyProfileDataOrigin.cache)),
+    );
+
+    bloc = CompanyDividendsBloc(
+      mockGetDividendInfo,
+      mockConfigService,
+      mockAnalytics,
+      mockWatchActiveTabUseCase,
+    );
+  });
 
   test('initialState_isCorrect', () {
     // Assert
@@ -101,7 +114,7 @@ void main() {
     );
 
     blocTest<CompanyDividendsBloc, CompanyDividendsState>(
-      'loadRequested_failure_emitsLoadingAndError',
+      'loadRequested_failure_emitsLoadingAndFailure',
       build: () {
         // Arrange
         const failure = Failure.server('Server error');
@@ -116,7 +129,7 @@ void main() {
       },
       expect: () => [
         const CompanyDividendsState.loading(),
-        const CompanyDividendsState.error(Failure.server('Server error')),
+        const CompanyDividendsState.failure(Failure.server('Server error')),
       ],
     );
 
@@ -302,6 +315,7 @@ void main() {
       dividendInfo: tDividendInfo,
       historyLimit: 8,
       dataOrigin: CompanyProfileDataOrigin.api,
+      lastUpdated: DateTime.now(),
       analyticsState: const DividendTabViewState(
         ticker: tTicker,
         timestamp: '2024-01-01',
@@ -324,17 +338,10 @@ void main() {
       act: (bloc) => bloc
         ..add(const CompanyDividendsEvent.tabShown(tTicker))
         ..add(const CompanyDividendsEvent.viewAllTapped(isChart: true)),
-      expect: () => [
-        isA<CompanyDividendsState>(), // State from tabShown
-        isA<CompanyDividendsState>().having(
-          (s) => s.maybeMap(
-            loaded: (l) => l.analyticsState?.tappedChartViewAll,
-            orElse: () => null,
-          ),
-          'tappedChartViewAll',
-          true,
-        ),
-      ],
+      expect: () => const <CompanyDividendsState>[],
+      verify: (bloc) {
+        expect(bloc.analyticsSession?.tappedChartViewAll, isTrue);
+      },
     );
 
     blocTest<CompanyDividendsBloc, CompanyDividendsState>(
@@ -344,17 +351,10 @@ void main() {
       act: (bloc) => bloc
         ..add(const CompanyDividendsEvent.tabShown(tTicker))
         ..add(const CompanyDividendsEvent.viewAllTapped(isChart: false)),
-      expect: () => [
-        isA<CompanyDividendsState>(), // State from tabShown
-        isA<CompanyDividendsState>().having(
-          (s) => s.maybeMap(
-            loaded: (l) => l.analyticsState?.tappedTableViewAll,
-            orElse: () => null,
-          ),
-          'tappedTableViewAll',
-          true,
-        ),
-      ],
+      expect: () => const <CompanyDividendsState>[],
+      verify: (bloc) {
+        expect(bloc.analyticsSession?.tappedTableViewAll, isTrue);
+      },
     );
     blocTest<CompanyDividendsBloc, CompanyDividendsState>(
       'tabShown_afterLoad_preservesMetrics',
@@ -364,6 +364,7 @@ void main() {
         dividendInfo: tDividendInfo,
         historyLimit: 8,
         dataOrigin: CompanyProfileDataOrigin.api,
+        lastUpdated: DateTime.now(),
         analyticsState: DividendTabViewState(
           ticker: tTicker,
           timestamp: '2024-01-01',
@@ -373,25 +374,11 @@ void main() {
         ),
       ),
       act: (bloc) => bloc.add(const CompanyDividendsEvent.tabShown(tTicker)),
-      expect: () => [
-        isA<CompanyDividendsState>()
-            .having(
-              (s) => s.maybeMap(
-                loaded: (l) => l.analyticsState?.loadTimeMs,
-                orElse: () => null,
-              ),
-              'loadTimeMs',
-              123,
-            )
-            .having(
-              (s) => s.maybeMap(
-                loaded: (l) => l.analyticsState?.dataSource,
-                orElse: () => null,
-              ),
-              'dataSource',
-              CompanyProfileDataOrigin.api,
-            ),
-      ],
+      expect: () => const <CompanyDividendsState>[],
+      verify: (bloc) {
+        expect(bloc.analyticsSession?.loadTimeMs, 123);
+        expect(bloc.analyticsSession?.dataSource, CompanyProfileDataOrigin.api);
+      },
     );
   });
 }

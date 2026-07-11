@@ -29,7 +29,7 @@ Rules:
 File: `<feature>_event.dart`
 
 Rules:
-- `@freezed class XxxEvent with _$XxxEvent` (not `abstract class`)
+- `@freezed sealed class XxxEvent with _$XxxEvent` (freezed 3.x requires `sealed` for event unions; not `abstract class`)
 - `part '<feature>_event.freezed.dart'` directive required
 - Concrete event class names in action noun or past tense: `Started`, `AddRequested`, `Reset`
 - Required fields use `required`; optional fields are nullable
@@ -128,7 +128,7 @@ build_runner -- run after any @freezed addition or change
 
 ## Checklist
 - [ ] State: `@freezed abstract class` with `const factory` variants and `part` directive
-- [ ] Event: `@freezed class` with `const factory` variants and `part` directive
+- [ ] Event: `@freezed sealed class` with `const factory` variants and `part` directive
 - [ ] BLoC: `@injectable`, positional constructor params, `on<>` registrations
 - [ ] `_logger = BizzieLogger('XxxBloc')` defined at **file level**
 - [ ] `Either<Failure, T>` results folded in event handlers

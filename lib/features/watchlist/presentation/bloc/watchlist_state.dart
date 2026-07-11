@@ -1,4 +1,4 @@
-import 'package:bizzie/features/onboarding/domain/models/company.dart';
+import 'package:bizzie/core/domain/models/company.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:bizzie/features/watchlist/domain/models/watchlist_event_status.dart';
 import 'package:bizzie/core/error/failures.dart';

@@ -10,9 +10,11 @@ import 'package:bizzie/features/company_profile/shares/presentation/bloc/company
 import 'package:bloc_test/bloc_test.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mocktail/mocktail.dart';
 import 'package:bizzie/core/interfaces/i_config_service.dart';
+import 'package:bizzie/core/usecase/usecase.dart';
+import 'package:bizzie/features/company_profile/shared/domain/usecases/watch_active_tab_usecase.dart';
 import 'package:bizzie/features/company_profile/shares/presentation/analytics/shares_tab_analytics.dart';
+import 'package:mocktail/mocktail.dart';
 
 class MockGetSharesUseCase extends Mock implements GetSharesUseCase {}
 
@@ -20,19 +22,34 @@ class MockSharesTabAnalytics extends Mock implements SharesTabAnalytics {}
 
 class MockConfigService extends Mock implements IConfigService {}
 
+class MockWatchActiveTabUseCase extends Mock implements WatchActiveTabUseCase {}
+
 void main() {
+  setUpAll(() {
+    registerFallbackValue(NoParams());
+  });
+
   late CompanySharesBloc bloc;
   late MockGetSharesUseCase mockGetShares;
   late MockConfigService mockConfigService;
   late MockSharesTabAnalytics mockAnalytics;
+  late MockWatchActiveTabUseCase mockWatchActiveTabUseCase;
 
   setUp(() {
     mockGetShares = MockGetSharesUseCase();
     mockConfigService = MockConfigService();
     mockAnalytics = MockSharesTabAnalytics();
+    mockWatchActiveTabUseCase = MockWatchActiveTabUseCase();
 
     when(() => mockConfigService.freePlanHistoryCount).thenReturn(7);
-    bloc = CompanySharesBloc(mockGetShares, mockConfigService, mockAnalytics);
+    when(() => mockWatchActiveTabUseCase(any()))
+        .thenAnswer((_) => const Stream.empty());
+    bloc = CompanySharesBloc(
+      mockGetShares,
+      mockConfigService,
+      mockAnalytics,
+      mockWatchActiveTabUseCase,
+    );
   });
 
   const tTicker = 'AAPL';

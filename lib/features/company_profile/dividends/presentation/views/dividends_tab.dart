@@ -13,7 +13,8 @@ import 'package:bizzie/features/company_profile/shared/presentation/widgets/comp
 import 'package:bizzie/features/company_profile/shared/presentation/widgets/company_profile_loading_state.dart';
 import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/widgets/tab_visibility_observer.dart';
-import 'package:bizzie/features/company_profile/shared/presentation/enums/company_profile_tab.dart';
+import 'package:bizzie/features/company_profile/shared/domain/enums/company_profile_tab.dart';
+import 'package:bizzie/features/company_profile/shared/presentation/extensions/company_profile_tab_x.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:bizzie/shared/widgets/charts/bizzie_expandable_chart.dart';
 import 'package:bizzie/shared/widgets/states/bizzie_empty_state.dart';
@@ -32,6 +33,14 @@ class DividendsTab extends StatefulWidget {
 
 class _DividendsTabState extends State<DividendsTab>
     with AutomaticKeepAliveClientMixin {
+  @override
+  void initState() {
+    super.initState();
+    context.read<CompanyDividendsBloc>().add(
+      CompanyDividendsEvent.stalenessCheckRequested(widget.ticker),
+    );
+  }
+
   @override
   bool get wantKeepAlive => true;
 
@@ -55,7 +64,7 @@ class _DividendsTabState extends State<DividendsTab>
               loading: (_) => const CompanyProfileLoadingState(
                 message: 'Loading Dividends',
               ),
-              error: (e) => CompanyProfileErrorState(
+              failure: (_) => CompanyProfileErrorState(
                 message: 'Error loading dividends',
                 onRetry: () => context.read<CompanyDividendsBloc>().add(
                   CompanyDividendsEvent.loadRequested(widget.ticker),

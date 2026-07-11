@@ -8,6 +8,7 @@ import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:bizzie/features/company_profile/shared/domain/models/chart_data_point.dart';
 import 'package:bizzie/features/company_profile/shared/domain/models/financial_data_point.dart';
+import 'package:bizzie/features/company_profile/roe/domain/models/roe_stats.dart';
 import 'package:bizzie/features/company_profile/roe/domain/usecases/get_roe_usecase.dart';
 import 'package:bizzie/features/company_profile/roe/presentation/analytics/roe_tab_analytics.dart';
 import 'package:bizzie/features/company_profile/roe/presentation/analytics/roe_tab_view_state.dart';
@@ -33,7 +34,7 @@ class CompanyRoeBloc extends Bloc<CompanyRoeEvent, CompanyRoeState>
 
   CompanyRoeBloc(this._getRoeStats, this._configService, this._analytics)
     : super(const CompanyRoeState.initial()) {
-    on<LoadRequested>(_onLoadRequested);
+    on<LoadRequested>(_onLoadRequested, transformer: restartable());
     on<StalenessCheckRequested>(
       _onStalenessCheckRequested,
       transformer: sequential(),
@@ -43,7 +44,11 @@ class CompanyRoeBloc extends Bloc<CompanyRoeEvent, CompanyRoeState>
     on<AppBackgrounded>(_onAppBackgrounded);
     on<AppForegrounded>(_onAppForegrounded);
     on<ViewAllTapped>(_onViewAllTapped);
+    on<RoeReset>(_onReset);
   }
+
+  void _onReset(RoeReset event, Emitter<CompanyRoeState> emit) =>
+      emit(const CompanyRoeState.initial());
 
   bool _lastLoadSuccess = false;
   int? _lastLoadTimeMs;
@@ -62,45 +67,25 @@ class CompanyRoeBloc extends Bloc<CompanyRoeEvent, CompanyRoeState>
         isSuccess: _lastLoadSuccess,
         dataSource: _lastDataSource,
       ),
-    );
-    state.maybeMap(
-      loaded: (s) => emit(s.copyWith(analyticsState: analyticsSession)),
-      orElse: () {},
-    );
-  }
+    );  }
 
   Future<void> _onTabHidden(
     TabHidden event,
     Emitter<CompanyRoeState> emit,
   ) async {
-    await onTabHidden();
-    state.maybeMap(
-      loaded: (s) => emit(s.copyWith(analyticsState: analyticsSession)),
-      orElse: () {},
-    );
-  }
+    await onTabHidden();  }
 
   Future<void> _onAppBackgrounded(
     AppBackgrounded event,
     Emitter<CompanyRoeState> emit,
   ) async {
-    await onAppBackgrounded();
-    state.maybeMap(
-      loaded: (s) => emit(s.copyWith(analyticsState: analyticsSession)),
-      orElse: () {},
-    );
-  }
+    await onAppBackgrounded();  }
 
   void _onAppForegrounded(
     AppForegrounded event,
     Emitter<CompanyRoeState> emit,
   ) {
-    onAppForegrounded();
-    state.maybeMap(
-      loaded: (s) => emit(s.copyWith(analyticsState: analyticsSession)),
-      orElse: () {},
-    );
-  }
+    onAppForegrounded();  }
 
   void _onViewAllTapped(ViewAllTapped event, Emitter<CompanyRoeState> emit) {
     updateAnalyticsState((s) {
@@ -108,11 +93,6 @@ class CompanyRoeBloc extends Bloc<CompanyRoeEvent, CompanyRoeState>
           ? s.copyWith(tappedChartViewAll: true)
           : s.copyWith(tappedTableViewAll: true);
     });
-
-    state.maybeMap(
-      loaded: (s) => emit(s.copyWith(analyticsState: analyticsSession)),
-      orElse: () {},
-    );
   }
 
   Future<void> _onLoadRequested(
@@ -161,9 +141,9 @@ class CompanyRoeBloc extends Bloc<CompanyRoeEvent, CompanyRoeState>
         emit(CompanyRoeState.failure(failure));
       },
       (tuple) {
-        final (keyMetrics, origin) = tuple;
+        final (stats, origin) = tuple;
         _logger.info(
-          'Successfully loaded ROE stats (origin: $origin): ${keyMetrics.length} points',
+          'Successfully loaded ROE stats (origin: $origin): ${stats.dataPoints.length} points',
         );
         final loadTime = stopwatch.elapsedMilliseconds;
         _lastLoadSuccess = true;
@@ -177,29 +157,20 @@ class CompanyRoeBloc extends Bloc<CompanyRoeEvent, CompanyRoeState>
             loadTimeMs: loadTime,
           ),
         );
-        _emitLoadedState(
-          event.ticker,
-          keyMetrics,
-          origin,
-          loadTime,
-          true,
-          emit,
-        );
+        _emitLoadedState(event.ticker, stats, origin, loadTime, true, emit);
       },
     );
   }
 
   void _emitLoadedState(
     String ticker,
-    List<dynamic> keyMetrics,
+    RoeStats stats,
     CompanyProfileDataOrigin origin,
     int? loadTimeMs,
     bool isSuccess,
     Emitter<CompanyRoeState> emit,
   ) {
-    final sortedPoints = _extractSortedDataPoints(keyMetrics);
-
-    if (sortedPoints.isEmpty) {
+    if (stats.dataPoints.isEmpty) {
       _logger.info('ROE metrics empty after extraction');
       emit(
         _emptyLoadedState(
@@ -212,24 +183,21 @@ class CompanyRoeBloc extends Bloc<CompanyRoeEvent, CompanyRoeState>
       return;
     }
 
-    final currentPoint = sortedPoints.last;
-    final referencePoint = _findReferencePoint(sortedPoints, currentPoint);
-    final growth = _calculateGrowth(currentPoint.value, referencePoint.value);
-    final referenceLabel = _formatReferenceLabel(referencePoint);
-    final chartData = _buildChartData(sortedPoints);
+    final referenceLabel = _formatReferenceLabel(stats.referenceDate);
+    final chartData = _buildChartData(stats.dataPoints);
 
     _logger.info(
-      'Emitting loaded state: current=${currentPoint.value}, growth=${growth.percentage}%',
+      'Emitting loaded state: current=${stats.currentValue}, growth=${stats.growthPercentage}%',
     );
     emit(
       CompanyRoeState.loaded(
         ticker: ticker,
-        dataPoints: sortedPoints,
+        dataPoints: stats.dataPoints,
         chartData: chartData,
-        currentValue: currentPoint.value,
-        growthPercentage: growth.percentage,
-        absoluteDelta: growth.delta.abs(),
-        isPositive: growth.delta >= 0,
+        currentValue: stats.currentValue,
+        growthPercentage: stats.growthPercentage,
+        absoluteDelta: stats.absoluteDelta,
+        isPositive: stats.isPositive,
         referenceLabel: referenceLabel,
         historyLimit: _configService.freePlanHistoryCount,
         dataOrigin: origin,
@@ -241,59 +209,9 @@ class CompanyRoeBloc extends Bloc<CompanyRoeEvent, CompanyRoeState>
     );
   }
 
-  List<FinancialDataPoint> _extractSortedDataPoints(List<dynamic> keyMetrics) {
-    final dataPoints = keyMetrics
-        .map(
-          (m) => FinancialDataPoint(
-            date: m.date,
-            period: m.period,
-            value: m.returnOnEquity,
-          ),
-        )
-        .toList();
-    return dataPoints..sort((a, b) => a.date.compareTo(b.date));
-  }
-
-  FinancialDataPoint _findReferencePoint(
-    List<FinancialDataPoint> sortedPoints,
-    FinancialDataPoint currentPoint,
-  ) {
-    var referencePoint = sortedPoints.first;
-    final currentDate = DateTime.tryParse(currentPoint.date);
-
-    if (currentDate != null && sortedPoints.length > 1) {
-      final cutoffDate = DateTime(
-        currentDate.year - 5,
-        currentDate.month,
-        currentDate.day,
-      );
-      for (final p in sortedPoints) {
-        final d = DateTime.tryParse(p.date);
-        if (d != null && (d.isAfter(cutoffDate) || d == cutoffDate)) {
-          referencePoint = p;
-          break;
-        }
-      }
-    }
-    return referencePoint;
-  }
-
-  ({double delta, double percentage}) _calculateGrowth(
-    double currentValue,
-    double referenceValue,
-  ) {
-    final delta = currentValue - referenceValue;
-    final percentage = referenceValue.abs() < 0.001
-        ? 0.0
-        : (delta / referenceValue.abs()) * 100;
-    return (delta: delta, percentage: percentage);
-  }
-
-  String _formatReferenceLabel(FinancialDataPoint referencePoint) {
-    final refDate = DateTime.tryParse(referencePoint.date);
-    return refDate != null
-        ? DateFormat('yyyy').format(refDate)
-        : referencePoint.date;
+  String _formatReferenceLabel(String referenceDate) {
+    final refDate = DateTime.tryParse(referenceDate);
+    return refDate != null ? DateFormat('yyyy').format(refDate) : referenceDate;
   }
 
   List<ChartDataPoint> _buildChartData(List<FinancialDataPoint> sortedPoints) {

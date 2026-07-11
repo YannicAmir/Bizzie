@@ -1,6 +1,6 @@
 import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:bizzie/features/company_profile/shared/data/datasources/ratios_remote_data_source.dart';
-import 'package:bizzie/features/company_profile/security/data/datasources/security_firestore_data_source.dart';
+import 'package:bizzie/features/company_profile/security/data/interfaces/i_security_firestore_datasource.dart';
 import 'package:bizzie/features/company_profile/security/data/datasources/security_remote_data_source.dart';
 import 'package:bizzie/features/company_profile/security/data/dtos/earnings_report_dto.dart';
 import 'package:bizzie/features/company_profile/shared/data/dtos/ratios_ttm_dto.dart';
@@ -18,7 +18,7 @@ class MockSecurityRemoteDataSource extends Mock
     implements SecurityRemoteDataSource {}
 
 class MockSecurityLocalDataSource extends Mock
-    implements SecurityFirestoreDataSource {}
+    implements ISecurityFirestoreDataSource {}
 
 class MockRatiosRemoteDataSource extends Mock
     implements RatiosRemoteDataSource {}

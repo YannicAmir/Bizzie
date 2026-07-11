@@ -3,6 +3,7 @@ import 'package:bizzie/core/interfaces/i_lifecycle_service.dart';
 import 'package:bizzie/features/company_profile/cp/presentation/analytics/company_profile_analytics.dart';
 import 'package:bizzie/features/company_profile/cp/presentation/analytics/company_profile_session_summary.dart';
 import 'package:bizzie/features/company_profile/cp/presentation/bloc/company_profile_bloc.dart';
+import 'package:bizzie/features/company_profile/cp/presentation/bloc/company_profile_event.dart';
 import 'package:bizzie/features/company_profile/cp/presentation/bloc/company_profile_state.dart';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -119,7 +120,6 @@ void main() {
         accumulatedSeconds: 0,
         lastActiveStartTime: DateTime.now(),
         lifecycleState: BizzieLifecycleState.foreground,
-        moreTabIndex: 0,
       ),
       // Act
       act: (bloc) => bloc.add(
@@ -161,7 +161,6 @@ void main() {
         accumulatedSeconds: 0,
         lastActiveStartTime: DateTime.now(),
         lifecycleState: BizzieLifecycleState.foreground,
-        moreTabIndex: 0,
       ),
       build: () => bloc,
       // Act
@@ -198,7 +197,6 @@ void main() {
           const Duration(seconds: 5),
         ),
         lifecycleState: BizzieLifecycleState.foreground,
-        moreTabIndex: 0,
       ),
       build: () => bloc,
       // Act
@@ -240,7 +238,6 @@ void main() {
         accumulatedSeconds: 10,
         lastActiveStartTime: DateTime.now().subtract(const Duration(hours: 1)),
         lifecycleState: BizzieLifecycleState.background,
-        moreTabIndex: 0,
       ),
       build: () => bloc,
       // Act
@@ -284,7 +281,6 @@ void main() {
         accumulatedSeconds: 0,
         lastActiveStartTime: DateTime.now(),
         lifecycleState: BizzieLifecycleState.foreground,
-        moreTabIndex: 0,
       ),
       build: () => bloc,
       // Act
@@ -302,6 +298,123 @@ void main() {
           true,
         ),
       ],
+    );
+
+    blocTest<CompanyProfileBloc, CompanyProfileState>(
+      'editTabsOpened_activeSession_logsEditTabsOpened',
+      // Arrange
+      seed: () => CompanyProfileState.active(
+        sessionId: '123',
+        ticker: 'AAPL',
+        companyName: 'Apple Inc.',
+        industry: 'Tech',
+        sector: 'Technology',
+        initiallyWatchlisted: false,
+        currentWatchlisted: false,
+        isCompany: true,
+        isEtf: false,
+        isFund: false,
+        viewedTabs: const {'Overview'},
+        activeTabName: 'Overview',
+        accumulatedSeconds: 0,
+        lastActiveStartTime: DateTime.now(),
+        lifecycleState: BizzieLifecycleState.foreground,
+      ),
+      build: () => bloc,
+      setUp: () {
+        when(
+          () => mockAnalytics.logEditTabsOpened(
+            ticker: any(named: 'ticker'),
+            isSubscribed: any(named: 'isSubscribed'),
+          ),
+        ).thenAnswer((_) async {});
+      },
+      // Act
+      act: (bloc) => bloc.add(
+        const CompanyProfileEvent.editTabsOpened(isSubscribed: true),
+      ),
+      // Assert
+      expect: () => [],
+      verify: (_) {
+        verify(
+          () => mockAnalytics.logEditTabsOpened(
+            ticker: 'AAPL',
+            isSubscribed: true,
+          ),
+        ).called(1);
+      },
+    );
+
+    blocTest<CompanyProfileBloc, CompanyProfileState>(
+      'editTabsOpened_noActiveSession_doesNotLog',
+      build: () => bloc,
+      // Act
+      act: (bloc) => bloc.add(
+        const CompanyProfileEvent.editTabsOpened(isSubscribed: false),
+      ),
+      // Assert
+      expect: () => [],
+      verify: (_) {
+        verifyNever(
+          () => mockAnalytics.logEditTabsOpened(
+            ticker: any(named: 'ticker'),
+            isSubscribed: any(named: 'isSubscribed'),
+          ),
+        );
+      },
+    );
+
+    blocTest<CompanyProfileBloc, CompanyProfileState>(
+      'tabOrderSaved_activeSession_logsEditTabsSavedWithExactOrder',
+      // Arrange
+      seed: () => CompanyProfileState.active(
+        sessionId: '123',
+        ticker: 'AAPL',
+        companyName: 'Apple Inc.',
+        industry: 'Tech',
+        sector: 'Technology',
+        initiallyWatchlisted: false,
+        currentWatchlisted: false,
+        isCompany: true,
+        isEtf: false,
+        isFund: false,
+        viewedTabs: const {'Overview'},
+        activeTabName: 'Overview',
+        accumulatedSeconds: 0,
+        lastActiveStartTime: DateTime.now(),
+        lifecycleState: BizzieLifecycleState.foreground,
+      ),
+      build: () => bloc,
+      setUp: () {
+        when(
+          () => mockAnalytics.logEditTabsSaved(
+            ticker: any(named: 'ticker'),
+            isSubscribed: any(named: 'isSubscribed'),
+            mainTabs: any(named: 'mainTabs'),
+            moreTabs: any(named: 'moreTabs'),
+          ),
+        ).thenAnswer((_) async {});
+      },
+      // Act
+      act: (bloc) => bloc.add(
+        const CompanyProfileEvent.tabOrderSaved(
+          isSubscribed: true,
+          mainTabs: ['chat', 'fcps', 'revenue'],
+          moreTabs: ['news', 'free_cash'],
+        ),
+      ),
+      // Assert
+      expect: () => [],
+      verify: (_) {
+        verify(
+          () => mockAnalytics.logEditTabsSaved(
+            ticker: 'AAPL',
+            isSubscribed: true,
+            mainTabs: const ['chat', 'fcps', 'revenue'],
+            moreTabs: const ['news', 'free_cash'],
+          ),
+        ).called(1);
+      },
     );
 
     blocTest<CompanyProfileBloc, CompanyProfileState>(
@@ -325,7 +438,6 @@ void main() {
           const Duration(seconds: 10),
         ),
         lifecycleState: BizzieLifecycleState.foreground,
-        moreTabIndex: 0,
       ),
       build: () => bloc,
       // Act

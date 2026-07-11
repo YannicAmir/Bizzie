@@ -17,7 +17,8 @@ import 'package:bizzie/features/company_profile/shared/presentation/widgets/comp
 import 'package:bizzie/features/company_profile/security/presentation/widgets/security_overview_card.dart';
 import 'package:bizzie/features/company_profile/security/presentation/widgets/upcoming_earnings_widget.dart';
 import 'package:bizzie/features/company_profile/security/presentation/widgets/key_metrics_section.dart';
-import 'package:bizzie/features/company_profile/shared/presentation/enums/company_profile_tab.dart';
+import 'package:bizzie/features/company_profile/shared/domain/enums/company_profile_tab.dart';
+import 'package:bizzie/features/company_profile/shared/presentation/extensions/company_profile_tab_x.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/widgets/tab_visibility_observer.dart';
 import 'package:bizzie/features/company_profile/security/presentation/bloc/company_security_state_extensions.dart';
 import 'package:bizzie/features/company_profile/security/presentation/bloc/historical_price_eod/historical_price_eod_state_extensions.dart';

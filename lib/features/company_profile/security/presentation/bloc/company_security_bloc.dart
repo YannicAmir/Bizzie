@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:bizzie/core/enums/data_origin.dart';
+import 'package:bizzie/core/usecase/usecase.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:bizzie/features/company_profile/security/domain/models/security_details.dart';
 import 'package:bizzie/features/company_profile/security/domain/usecases/get_security_details_usecase.dart';
@@ -8,10 +9,13 @@ import 'package:bizzie/features/company_profile/security/presentation/analytics/
 import 'package:bizzie/features/company_profile/security/presentation/bloc/company_security_event.dart';
 import 'package:bizzie/features/company_profile/security/presentation/bloc/company_security_state.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/bloc/company_profile_analytics_mixin.dart';
+import 'package:bizzie/features/company_profile/shared/domain/enums/company_profile_tab.dart';
+import 'package:bizzie/features/company_profile/shared/domain/models/tab_activation.dart';
+import 'package:bizzie/features/company_profile/shared/domain/usecases/watch_active_tab_usecase.dart';
 import 'package:bizzie/shared/utils/market_hours_helper.dart';
 import 'package:bloc/bloc.dart';
-import 'package:injectable/injectable.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
+import 'package:injectable/injectable.dart';
 
 final _logger = BizzieLogger('CompanySecurityBloc');
 
@@ -31,14 +35,19 @@ class CompanySecurityBloc
         > {
   final GetSecurityDetailsUseCase _getSecurityDetailsUseCase;
   final SecurityTabAnalytics _tracker;
+  final WatchActiveTabUseCase _watchActiveTabUseCase;
 
   final _loadStopwatch = Stopwatch();
+  StreamSubscription<TabActivation>? _tabSubscription;
 
   @override
   SecurityTabAnalytics get analyticsTracker => _tracker;
 
-  CompanySecurityBloc(this._getSecurityDetailsUseCase, this._tracker)
-    : super(const CompanySecurityState.initial()) {
+  CompanySecurityBloc(
+    this._getSecurityDetailsUseCase,
+    this._tracker,
+    this._watchActiveTabUseCase,
+  ) : super(const CompanySecurityState.initial()) {
     on<LoadRequested>(_onLoadRequested, transformer: restartable());
     on<TabShown>(_onTabShown);
     on<StalenessCheckRequested>(_onStalenessCheckRequested);
@@ -48,19 +57,38 @@ class CompanySecurityBloc
     on<PriceAnalyticsUpdated>(_onPriceAnalyticsUpdated);
     on<EarningsAnalyticsUpdated>(_onEarningsAnalyticsUpdated);
     on<SecurityReset>(_onReset);
+    _tabSubscription = _watchActiveTabUseCase(NoParams())
+        .where((activation) => activation.tab == CompanyProfileTab.security)
+        .listen((activation) {
+            final shouldHandle = state.maybeMap(
+              loaded: (s) => s.analyticsState.ticker == activation.ticker,
+              unsupported: (s) => s.analyticsState.ticker == activation.ticker,
+              orElse: () => true,
+            );
+            if (shouldHandle) {
+              add(CompanySecurityEvent.stalenessCheckRequested(activation.ticker));
+            }
+        });
+  }
+
+  @override
+  Future<void> close() async {
+    await _tabSubscription?.cancel();
+    return super.close();
   }
 
   Future<void> _onLoadRequested(
     LoadRequested event,
     Emitter<CompanySecurityState> emit,
   ) async {
+    final forceRefresh = event.forceRefresh ?? false;
     final isAlreadyLoaded = state.maybeMap(
       loaded: (s) => s.analyticsState.ticker == event.ticker,
       unsupported: (s) => s.analyticsState.ticker == event.ticker,
       orElse: () => false,
     );
 
-    if (!event.forceRefresh && isAlreadyLoaded) {
+    if (!forceRefresh && isAlreadyLoaded) {
       _logger.info(
         'Skip loading Security: already loaded and no force refresh',
       );
@@ -68,7 +96,7 @@ class CompanySecurityBloc
     }
 
     _logger.info(
-      'Loading Security details for ${event.ticker} (force=${event.forceRefresh})',
+      'Loading Security details for ${event.ticker} (force=$forceRefresh)',
     );
 
     if (!isAlreadyLoaded) {
@@ -207,10 +235,12 @@ class CompanySecurityBloc
     );
   }
 
-  void _onTabHidden(TabHidden event, Emitter<CompanySecurityState> emit) =>
-      onTabHidden();
+  Future<void> _onTabHidden(
+    TabHidden event,
+    Emitter<CompanySecurityState> emit,
+  ) => onTabHidden();
 
-  void _onAppBackgrounded(
+  Future<void> _onAppBackgrounded(
     AppBackgrounded event,
     Emitter<CompanySecurityState> emit,
   ) => onAppBackgrounded();

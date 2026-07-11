@@ -1,6 +1,6 @@
 import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:bizzie/core/error/failures.dart';
-import 'package:bizzie/features/company_profile/security/data/datasources/security_firestore_data_source.dart';
+import 'package:bizzie/features/company_profile/security/data/interfaces/i_security_firestore_datasource.dart';
 import 'package:bizzie/features/company_profile/security/data/datasources/security_remote_data_source.dart';
 import 'package:bizzie/features/company_profile/security/data/dtos/historical_price_eod_dto.dart';
 import 'package:bizzie/features/company_profile/security/data/dtos/historical_price_dto.dart';
@@ -15,7 +15,7 @@ class MockSecurityRemoteDataSource extends Mock
     implements SecurityRemoteDataSource {}
 
 class MockSecurityLocalDataSource extends Mock
-    implements SecurityFirestoreDataSource {}
+    implements ISecurityFirestoreDataSource {}
 
 void main() {
   late PriceRepositoryImpl repository;

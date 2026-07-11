@@ -23,6 +23,5 @@ class CompanyProfileState with _$CompanyProfileState {
     required bool isEtf,
     required bool isFund,
     required BizzieLifecycleState lifecycleState,
-    required int moreTabIndex,
   }) = Active;
 }

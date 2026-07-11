@@ -8,7 +8,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'company_fcps_state.freezed.dart';
 
 @freezed
-class CompanyFcpsState with _$CompanyFcpsState {
+abstract class CompanyFcpsState with _$CompanyFcpsState {
   const factory CompanyFcpsState.initial() = _Initial;
   const factory CompanyFcpsState.loading() = _Loading;
   const factory CompanyFcpsState.loaded({

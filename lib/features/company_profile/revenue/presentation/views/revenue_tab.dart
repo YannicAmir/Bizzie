@@ -14,7 +14,8 @@ import 'package:bizzie/shared/widgets/states/bizzie_empty_state.dart';
 import 'package:bizzie/shared/widgets/inputs/bizzie_switch.dart';
 import 'package:bizzie/shared/widgets/modals/app_history_modal.dart';
 import 'package:bizzie/features/company_profile/shared/domain/models/financial_data_point.dart';
-import 'package:bizzie/features/company_profile/shared/presentation/enums/company_profile_tab.dart';
+import 'package:bizzie/features/company_profile/shared/domain/enums/company_profile_tab.dart';
+import 'package:bizzie/features/company_profile/shared/presentation/extensions/company_profile_tab_x.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/widgets/tab_visibility_observer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -33,6 +34,14 @@ class RevenueTab extends StatefulWidget {
 class _RevenueTabState extends State<RevenueTab>
     with AutomaticKeepAliveClientMixin {
   int _selectedIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    context.read<CompanyRevenueBloc>().add(
+      CompanyRevenueEvent.stalenessCheckRequested(widget.ticker),
+    );
+  }
 
   @override
   bool get wantKeepAlive => true;

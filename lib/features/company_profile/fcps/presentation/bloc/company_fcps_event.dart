@@ -22,4 +22,5 @@ abstract class CompanyFcpsEvent with _$CompanyFcpsEvent {
     required bool isAnnual,
     required bool isChart,
   }) = ViewAllTapped;
+  const factory CompanyFcpsEvent.reset() = Reset;
 }

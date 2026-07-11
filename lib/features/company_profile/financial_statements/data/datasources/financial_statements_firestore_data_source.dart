@@ -1,3 +1,4 @@
+import 'package:bizzie/core/constants/firestore_constants.dart';
 import 'package:bizzie/core/data/models/cache_result.dart' as result;
 import 'package:bizzie/core/interfaces/i_time_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -10,78 +11,21 @@ import 'package:bizzie/features/company_profile/financial_statements/data/dtos/l
 import 'package:bizzie/features/company_profile/financial_statements/data/dtos/cash_flow_statement_dto.dart';
 import 'package:bizzie/features/company_profile/financial_statements/data/dtos/income_statement_dto.dart';
 import 'package:bizzie/features/company_profile/financial_statements/data/dtos/balance_sheet_dto.dart';
+import 'package:bizzie/features/company_profile/financial_statements/data/interfaces/i_financial_statements_firestore_datasource.dart';
+import 'package:bizzie/services/firestore_service.dart';
 
-abstract class FinancialStatementsFirestoreDataSource {
-  Future<result.CacheResult<List<FinancialStatementDto>>> syncFinancials(
-    String ticker, {
-    required String type,
-    required String period,
-    required Future<List<FinancialStatementDto>> Function() remoteFetcher,
-    bool forceRefresh,
-  });
-
-  Future<result.CacheResult<List<IncomeStatementDto>>> syncIncomeStatements(
-    String ticker, {
-    required String period,
-    required Future<List<IncomeStatementDto>> Function() remoteFetcher,
-    bool forceRefresh,
-  });
-
-  Future<result.CacheResult<List<LegacyIncomeStatementDto>>>
-  syncLegacyIncomeStatements(
-    String ticker, {
-    required String period,
-    required Future<List<LegacyIncomeStatementDto>> Function() remoteFetcher,
-    bool forceRefresh,
-  });
-
-  Future<result.CacheResult<List<CashFlowStatementDto>>> syncCashFlowStatements(
-    String ticker, {
-    required String period,
-    required Future<List<CashFlowStatementDto>> Function() remoteFetcher,
-    bool forceRefresh,
-  });
-
-  Future<result.CacheResult<List<BalanceSheetDto>>> syncBalanceSheets(
-    String ticker, {
-    required String period,
-    required Future<List<BalanceSheetDto>> Function() remoteFetcher,
-    bool forceRefresh,
-  });
-
-  Future<result.CacheResult<double>> syncExchangeRate(
-    String pair, {
-    required Future<double> Function() remoteFetcher,
-    bool forceRefresh,
-  });
-
-  Future<(List<FinancialStatementDto>, CompanyProfileDataOrigin)?>
-  getCachedFinancials(
-    String ticker, {
-    required String type,
-    required String period,
-  });
-  Future<(List<IncomeStatementDto>, CompanyProfileDataOrigin)?>
-  getCachedIncomeStatements(String ticker, {required String period});
-  Future<(List<LegacyIncomeStatementDto>, CompanyProfileDataOrigin)?>
-  getCachedLegacyIncomeStatements(String ticker, {required String period});
-  Future<(List<CashFlowStatementDto>, CompanyProfileDataOrigin)?>
-  getCachedCashFlowStatements(String ticker, {required String period});
-  Future<(List<BalanceSheetDto>, CompanyProfileDataOrigin)?>
-  getCachedBalanceSheets(String ticker, {required String period});
-  Future<(double, CompanyProfileDataOrigin)?> getCachedExchangeRate(
-    String pair,
-  );
-}
-
-@LazySingleton(as: FinancialStatementsFirestoreDataSource)
+@Injectable(as: IFinancialStatementsFirestoreDataSource)
 class FinancialStatementsFirestoreDataSourceImpl
     extends BaseFirestoreCacheClient
-    implements FinancialStatementsFirestoreDataSource {
+    implements IFinancialStatementsFirestoreDataSource {
   FinancialStatementsFirestoreDataSourceImpl(
-    FirebaseFirestore firestore,
+    FirestoreService firestoreService,
     ITimeProvider timeProvider,
-  ) : super(firestore, timeProvider, 'FinancialStatementsFirestoreDataSource');
+  ) : super(
+        firestoreService,
+        timeProvider,
+        'FinancialStatementsFirestoreDataSource',
+      );
 
   @override
   Future<result.CacheResult<List<FinancialStatementDto>>> syncFinancials(
@@ -242,7 +186,7 @@ class FinancialStatementsFirestoreDataSourceImpl
   _financialsRef(String ticker, String type, String period) =>
       getDocRef<List<FinancialStatementDto>>(
         ticker,
-        'financials',
+        FirestoreConstants.financials,
         '${type}_$period',
         (json) => (json as List)
             .map((e) => FinancialStatementDto.fromJson(e))
@@ -254,8 +198,8 @@ class FinancialStatementsFirestoreDataSourceImpl
   _incomeStableRef(String ticker, String period) =>
       getDocRef<List<IncomeStatementDto>>(
         ticker,
-        'financials',
-        'income_stable_$period',
+        FirestoreConstants.financials,
+        '${FirestoreConstants.incomeStablePrefix}_$period',
         (json) =>
             (json as List).map((e) => IncomeStatementDto.fromJson(e)).toList(),
         (data) => data.map((e) => e.toJson()).toList(),
@@ -265,8 +209,8 @@ class FinancialStatementsFirestoreDataSourceImpl
   _incomeLegacyRef(String ticker, String period) =>
       getDocRef<List<LegacyIncomeStatementDto>>(
         ticker,
-        'financials',
-        'income_legacy_$period',
+        FirestoreConstants.financials,
+        '${FirestoreConstants.incomeLegacyPrefix}_$period',
         (json) => (json as List)
             .map((e) => LegacyIncomeStatementDto.fromJson(e))
             .toList(),
@@ -277,8 +221,8 @@ class FinancialStatementsFirestoreDataSourceImpl
   _balanceSheetRef(String ticker, String period) =>
       getDocRef<List<BalanceSheetDto>>(
         ticker,
-        'financials',
-        'balance_sheet_$period',
+        FirestoreConstants.financials,
+        '${FirestoreConstants.balanceSheetPrefix}_$period',
         (json) =>
             (json as List).map((e) => BalanceSheetDto.fromJson(e)).toList(),
         (data) => data.map((e) => e.toJson()).toList(),
@@ -288,8 +232,8 @@ class FinancialStatementsFirestoreDataSourceImpl
   _cashFlowRef(String ticker, String period) =>
       getDocRef<List<CashFlowStatementDto>>(
         ticker,
-        'financials',
-        'cash_flow_$period',
+        FirestoreConstants.financials,
+        '${FirestoreConstants.cashFlowPrefix}_$period',
         (json) => (json as List)
             .map((e) => CashFlowStatementDto.fromJson(e))
             .toList(),
@@ -300,8 +244,8 @@ class FinancialStatementsFirestoreDataSourceImpl
     String pair,
   ) => getDocRef<double>(
     pair,
-    'market',
-    'price',
+    FirestoreConstants.market,
+    FirestoreConstants.price,
     (json) => (json as num).toDouble(),
     (data) => data,
   );

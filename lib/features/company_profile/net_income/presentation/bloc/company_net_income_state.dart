@@ -8,7 +8,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'company_net_income_state.freezed.dart';
 
 @freezed
-class CompanyNetIncomeState with _$CompanyNetIncomeState {
+abstract class CompanyNetIncomeState with _$CompanyNetIncomeState {
   const factory CompanyNetIncomeState.initial() = _Initial;
   const factory CompanyNetIncomeState.loading() = _Loading;
   const factory CompanyNetIncomeState.loaded({

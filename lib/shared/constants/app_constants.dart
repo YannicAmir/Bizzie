@@ -6,6 +6,7 @@ class AppConstants {
 
   static const double defaultBorderWidth = 0.665;
   static const double tabHeight = 40.0;
+  static const double tabBarHeight = 48.0;
   static const double mainSectionContainerPadding = 12.0;
   static const double mainButtonHeight = 54.0;
   static const double smallButtonHeight = 40.0;
@@ -56,7 +57,15 @@ class AppConstants {
   static const double mainSectionBorderRadius = 16.0;
 
   static const double chartBarBorderRadius = 8.0;
-  static const double componyProfileButtonBorderRadius = 10.0;
+  static const double companyProfileButtonBorderRadius = 10.0;
+  static const EdgeInsets companyProfileButtonPadding = EdgeInsets.symmetric(
+    horizontal: 12,
+  );
+  static const double companyProfileButtonIconSize = 20.0;
+  static const double companyProfileButtonIconSpacing = 4.0;
+  static const double bizzieChatFabImageSize = 56.0;
+  static const double lockedChatTabIconSize = 12.0;
+  static const double lockedChatTabIconSpacing = 4.0;
   static const double tooltipBorderRadius = 4.0;
   static const double tooltipPadding = 8.0;
   static const double chartLineWidth = 2.0;
@@ -121,4 +130,36 @@ class AppConstants {
   static const double chatHintChipPaddingH = 16.0;
   static const double chatHintChipPaddingV = 16.0;
   static const double chatHintChipRadius = 10.0;
+
+  // Edit Tabs Modal
+  static const double editTabsModalHeightFactor = 0.85;
+  static const EdgeInsets editTabsSaveButtonPadding = EdgeInsets.fromLTRB(
+    16,
+    8,
+    16,
+    16,
+  );
+  static const EdgeInsets editTabsItemPadding = EdgeInsets.symmetric(
+    horizontal: 20,
+    vertical: 16,
+  );
+  static const EdgeInsets editTabsDividerPadding = EdgeInsets.symmetric(
+    horizontal: 16,
+    vertical: 12,
+  );
+  static const EdgeInsets editTabsDividerLabelPadding = EdgeInsets.symmetric(
+    horizontal: 12,
+  );
+  static const double editTabsLockIconSize = 16.0;
+  static const double editTabsDividerLabelOpacity = 0.5;
+  static const double editTabsDragHandleOpacity = 0.4;
+
+  // More Tab
+  static const double moreTabLockIconSize = 16.0;
+  static const EdgeInsets moreTabModalEditButtonPadding = EdgeInsets.fromLTRB(
+    16,
+    8,
+    16,
+    16,
+  );
 }

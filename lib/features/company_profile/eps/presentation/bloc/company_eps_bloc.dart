@@ -1,18 +1,24 @@
-import 'package:bizzie/core/logging/bizzie_logger.dart';
-import 'package:bizzie/features/company_profile/shared/domain/models/chart_data_point.dart';
-import 'package:bizzie/features/company_profile/shared/domain/models/financial_data_point.dart';
-import 'package:bizzie/features/company_profile/eps/domain/usecases/get_eps_stats_usecase.dart';
-import 'company_eps_event.dart';
-import 'company_eps_state.dart';
-import 'package:bizzie/shared/utils/bizzie_date_formatter.dart';
+import 'dart:async';
+
 import 'package:bizzie/core/interfaces/i_config_service.dart';
-import 'package:bloc_concurrency/bloc_concurrency.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:bizzie/core/usecase/usecase.dart';
+import 'package:bizzie/core/logging/bizzie_logger.dart';
+import 'package:bizzie/features/company_profile/eps/domain/usecases/get_eps_stats_usecase.dart';
 import 'package:bizzie/features/company_profile/eps/presentation/analytics/eps_tab_analytics.dart';
 import 'package:bizzie/features/company_profile/eps/presentation/analytics/eps_tab_view_state.dart';
-import 'package:bizzie/features/company_profile/shared/presentation/bloc/company_profile_analytics_mixin.dart';
+import 'package:bizzie/features/company_profile/shared/domain/models/chart_data_point.dart';
+import 'package:bizzie/features/company_profile/shared/domain/models/financial_data_point.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/analytics/base_analytics.dart';
+import 'package:bizzie/features/company_profile/shared/presentation/bloc/company_profile_analytics_mixin.dart';
+import 'package:bizzie/features/company_profile/shared/domain/enums/company_profile_tab.dart';
+import 'package:bizzie/features/company_profile/shared/domain/models/tab_activation.dart';
+import 'package:bizzie/features/company_profile/shared/domain/usecases/watch_active_tab_usecase.dart';
+import 'package:bizzie/shared/utils/bizzie_date_formatter.dart';
+import 'package:bloc_concurrency/bloc_concurrency.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
+import 'company_eps_event.dart';
+import 'company_eps_state.dart';
 
 final _logger = BizzieLogger('CompanyEpsBloc');
 
@@ -27,18 +33,41 @@ class CompanyEpsBloc extends Bloc<CompanyEpsEvent, CompanyEpsState>
   final GetEpsStatsUseCase _getEpsStatsUseCase;
   final IConfigService _configService;
   final EpsTabAnalytics _epsTabAnalytics;
+  final WatchActiveTabUseCase _watchActiveTabUseCase;
+
+  StreamSubscription<TabActivation>? _tabSubscription;
 
   CompanyEpsBloc(
     this._getEpsStatsUseCase,
     this._configService,
     this._epsTabAnalytics,
+    this._watchActiveTabUseCase,
   ) : super(const CompanyEpsState.initial()) {
-    on<LoadRequested>(_onLoadRequested, transformer: droppable());
+    on<LoadRequested>(_onLoadRequested, transformer: restartable());
     on<StalenessCheckRequested>(
       _onStalenessCheckRequested,
       transformer: sequential(),
     );
+    on<Reset>((_, emit) => emit(const CompanyEpsState.initial()));
     _setupAnalyticsHandlers();
+    _tabSubscription = _watchActiveTabUseCase(NoParams())
+        .where((activation) => activation.tab == CompanyProfileTab.eps)
+        .listen((activation) {
+            final shouldHandle = state.maybeMap(
+              loading: (_) => false,
+              loaded: (s) => s.ticker == activation.ticker,
+              orElse: () => true,
+            );
+            if (shouldHandle) {
+                          add(CompanyEpsEvent.stalenessCheckRequested(activation.ticker));
+            }
+        });
+  }
+
+  @override
+  Future<void> close() async {
+    await _tabSubscription?.cancel();
+    return super.close();
   }
 
   @override
@@ -63,8 +92,7 @@ class CompanyEpsBloc extends Bloc<CompanyEpsEvent, CompanyEpsState>
         isSuccess: existingState?.isSuccess ?? false,
         dataSource: existingState?.dataSource,
       ),
-    );
-    _emitAnalyticsUpdate(emit);
+    );    add(CompanyEpsEvent.stalenessCheckRequested(event.ticker));
   }
 
   Future<void> _onPeriodViewed(
@@ -75,12 +103,7 @@ class CompanyEpsBloc extends Bloc<CompanyEpsEvent, CompanyEpsState>
       (s) => event.isAnnual
           ? s.copyWith(viewedYearlyEpsTab: true)
           : s.copyWith(viewedQtrlyEpsTab: true),
-    );
-    state.maybeMap(
-      loaded: (s) => emit(s.copyWith(analyticsState: analyticsSession)),
-      orElse: () {},
-    );
-  }
+    );  }
 
   Future<void> _onViewAllTapped(
     ViewAllTapped event,
@@ -101,16 +124,7 @@ class CompanyEpsBloc extends Bloc<CompanyEpsEvent, CompanyEpsState>
             ? true
             : s.tappedYrtableViewAll,
       ),
-    );
-    _emitAnalyticsUpdate(emit);
-  }
-
-  void _emitAnalyticsUpdate(Emitter<CompanyEpsState> emit) {
-    state.maybeMap(
-      loaded: (s) => emit(s.copyWith(analyticsState: analyticsSession)),
-      orElse: () {},
-    );
-  }
+    );  }
 
   Future<void> _onLoadRequested(
     LoadRequested event,
@@ -234,6 +248,9 @@ class CompanyEpsBloc extends Bloc<CompanyEpsEvent, CompanyEpsState>
       initial: (_) {
         _logger.info('EPS in initial state. Triggering load.');
         add(CompanyEpsEvent.loadRequested(event.ticker, forceRefresh: true));
+      },
+      loading: (_) {
+        _logger.info('EPS already loading, skipping staleness check.');
       },
     );
   }

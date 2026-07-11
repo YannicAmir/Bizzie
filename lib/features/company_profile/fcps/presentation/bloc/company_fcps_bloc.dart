@@ -1,18 +1,25 @@
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:bloc_concurrency/bloc_concurrency.dart';
-import 'package:injectable/injectable.dart';
+import 'dart:async';
+
 import 'package:bizzie/core/interfaces/i_config_service.dart';
+import 'package:bizzie/core/usecase/usecase.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
+import 'package:bizzie/features/company_profile/fcps/presentation/analytics/fcps_tab_analytics.dart';
+import 'package:bizzie/features/company_profile/fcps/presentation/analytics/fcps_tab_view_state.dart';
 import 'package:bizzie/features/company_profile/shared/domain/models/chart_data_point.dart';
 import 'package:bizzie/features/company_profile/shared/domain/models/financial_data_point.dart';
+import 'package:bizzie/features/company_profile/shared/presentation/analytics/base_analytics.dart';
+import 'package:bizzie/features/company_profile/shared/presentation/bloc/company_profile_analytics_mixin.dart';
+import 'package:bizzie/features/company_profile/shared/domain/enums/company_profile_tab.dart';
+import 'package:bizzie/features/company_profile/shared/domain/models/tab_activation.dart';
+import 'package:bizzie/features/company_profile/shared/domain/services/tab_content_freshness_service.dart';
+import 'package:bizzie/features/company_profile/shared/domain/usecases/watch_active_tab_usecase.dart';
 import 'package:bizzie/shared/utils/bizzie_date_formatter.dart';
+import 'package:bloc_concurrency/bloc_concurrency.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:injectable/injectable.dart';
 import '../../domain/usecases/get_fcps_stats_usecase.dart';
 import 'company_fcps_event.dart';
 import 'company_fcps_state.dart';
-import 'package:bizzie/features/company_profile/fcps/presentation/analytics/fcps_tab_analytics.dart';
-import 'package:bizzie/features/company_profile/fcps/presentation/analytics/fcps_tab_view_state.dart';
-import 'package:bizzie/features/company_profile/shared/presentation/bloc/company_profile_analytics_mixin.dart';
-import 'package:bizzie/features/company_profile/shared/presentation/analytics/base_analytics.dart';
 
 final _logger = BizzieLogger('CompanyFcpsBloc');
 
@@ -27,18 +34,43 @@ class CompanyFcpsBloc extends Bloc<CompanyFcpsEvent, CompanyFcpsState>
   final GetFcpsStatsUseCase _getFcpsStats;
   final IConfigService _configService;
   final FcpsTabAnalytics _fcpsTabAnalytics;
+  final WatchActiveTabUseCase _watchActiveTabUseCase;
+  final TabContentFreshnessService _freshnessService;
+
+  StreamSubscription<TabActivation>? _tabSubscription;
 
   CompanyFcpsBloc(
     this._getFcpsStats,
     this._configService,
     this._fcpsTabAnalytics,
+    this._watchActiveTabUseCase,
+    this._freshnessService,
   ) : super(const CompanyFcpsState.initial()) {
-    on<LoadRequested>(_onLoadRequested, transformer: droppable());
+    on<LoadRequested>(_onLoadRequested, transformer: restartable());
     on<StalenessCheckRequested>(
       _onStalenessCheckRequested,
       transformer: sequential(),
     );
+    on<Reset>((_, emit) => emit(const CompanyFcpsState.initial()));
     _setupAnalyticsHandlers();
+    _tabSubscription = _watchActiveTabUseCase(NoParams())
+        .where((activation) => activation.tab == CompanyProfileTab.fcps)
+        .listen((activation) {
+          final shouldHandle = state.maybeMap(
+            loading: (_) => false,
+            loaded: (s) => s.ticker == activation.ticker,
+            orElse: () => true,
+          );
+          if (shouldHandle) {
+            add(CompanyFcpsEvent.stalenessCheckRequested(activation.ticker));
+          }
+        });
+  }
+
+  @override
+  Future<void> close() async {
+    await _tabSubscription?.cancel();
+    return super.close();
   }
 
   @override
@@ -64,7 +96,7 @@ class CompanyFcpsBloc extends Bloc<CompanyFcpsEvent, CompanyFcpsState>
         dataSource: existingState?.dataSource,
       ),
     );
-    _emitAnalyticsUpdate(emit);
+    add(CompanyFcpsEvent.stalenessCheckRequested(event.ticker));
   }
 
   Future<void> _onPeriodViewed(
@@ -76,7 +108,6 @@ class CompanyFcpsBloc extends Bloc<CompanyFcpsEvent, CompanyFcpsState>
           ? s.copyWith(viewedYearlyFcpsTab: true)
           : s.copyWith(viewedQtrlyFcpsTab: true),
     );
-    _emitAnalyticsUpdate(emit);
   }
 
   Future<void> _onViewAllTapped(
@@ -98,14 +129,6 @@ class CompanyFcpsBloc extends Bloc<CompanyFcpsEvent, CompanyFcpsState>
             ? true
             : s.tappedYrtableViewAll,
       ),
-    );
-    _emitAnalyticsUpdate(emit);
-  }
-
-  void _emitAnalyticsUpdate(Emitter<CompanyFcpsState> emit) {
-    state.maybeMap(
-      loaded: (s) => emit(s.copyWith(analyticsState: analyticsSession)),
-      orElse: () {},
     );
   }
 
@@ -206,22 +229,15 @@ class CompanyFcpsBloc extends Bloc<CompanyFcpsEvent, CompanyFcpsState>
     _logger.info('Staleness check requested for ${event.ticker}');
     state.mapOrNull(
       loaded: (loadedState) {
-        final lastUpdated = loadedState.lastUpdated;
-        if (lastUpdated != null) {
-          final difference = DateTime.now().difference(lastUpdated);
-          if (difference.inHours >= 24) {
-            _logger.info(
-              'FCPS stale (TTL expired: ${difference.inHours}h). Triggering load.',
-            );
-            add(
-              CompanyFcpsEvent.loadRequested(event.ticker, forceRefresh: true),
-            );
-          } else {
-            _logger.info('FCPS still fresh (Last updated: $lastUpdated)');
-          }
-        } else {
-          _logger.info('FCPS lastUpdated is null. Triggering load.');
+        if (_freshnessService.isStale(loadedState.lastUpdated)) {
+          _logger.info(
+            'FCPS stale (last updated: ${loadedState.lastUpdated}). Triggering load.',
+          );
           add(CompanyFcpsEvent.loadRequested(event.ticker, forceRefresh: true));
+        } else {
+          _logger.info(
+            'FCPS still fresh (Last updated: ${loadedState.lastUpdated})',
+          );
         }
       },
       failure: (_) {
@@ -231,6 +247,9 @@ class CompanyFcpsBloc extends Bloc<CompanyFcpsEvent, CompanyFcpsState>
       initial: (_) {
         _logger.info('FCPS in initial state. Triggering load.');
         add(CompanyFcpsEvent.loadRequested(event.ticker, forceRefresh: true));
+      },
+      loading: (_) {
+        _logger.info('FCPS already loading, skipping staleness check.');
       },
     );
   }

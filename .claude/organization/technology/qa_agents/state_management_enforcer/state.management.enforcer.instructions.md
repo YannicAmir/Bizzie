@@ -18,7 +18,7 @@ Verify all changed files against every checklist item in `flutter.bloc.best.prac
 - State class using Equatable or `props` instead of `@freezed`
 
 ### Event class violations
-- Event class not declared as `@freezed class XxxEvent with _$XxxEvent`
+- Event class not declared as `@freezed sealed class XxxEvent with _$XxxEvent`
 - Event class not using `const factory XxxEvent.xxx(...)` factory constructors
 - `part '<feature>_event.freezed.dart'` directive missing from event file
 - Event class using Equatable or `props` instead of `@freezed`

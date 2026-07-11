@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:bizzie/core/constants/firestore_constants.dart';
 import 'package:bizzie/core/data/models/cache_result.dart' as result;
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/core/interfaces/i_time_provider.dart';
@@ -6,14 +7,15 @@ import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:bizzie/core/data/models/firestore_cache_entry.dart';
 import 'package:bizzie/core/enums/data_origin.dart';
+import 'package:bizzie/services/firestore_service.dart';
 
 abstract class BaseFirestoreCacheClient {
-  final FirebaseFirestore _firestore;
+  final FirestoreService _firestoreService;
   final ITimeProvider _timeProvider;
   final BizzieLogger _logger;
 
   BaseFirestoreCacheClient(
-    this._firestore,
+    this._firestoreService,
     this._timeProvider,
     String loggerName,
   ) : _logger = BizzieLogger(loggerName);
@@ -62,33 +64,39 @@ abstract class BaseFirestoreCacheClient {
     final daysSinceFriday = nowEt.weekday - DateTime.friday;
     final lastFriday = nowEt.subtract(Duration(days: daysSinceFriday));
 
-    final fridayAnchor = DateTime(
-      lastFriday.year,
-      lastFriday.month,
-      lastFriday.day,
-      thresholdHour,
-    );
+    final fridayAnchorUtc = lastFriday
+        .toUtc()
+        .subtract(
+          Duration(
+            hours: lastFriday.hour,
+            minutes: lastFriday.minute,
+            seconds: lastFriday.second,
+          ),
+        )
+        .add(Duration(hours: thresholdHour));
 
-    return lastUpdated.isAfter(fridayAnchor);
+    return lastUpdated.toUtc().isAfter(fridayAnchorUtc);
   }
 
   bool _isAfterMarketOpen(DateTime dateTime) {
-    final marketOpen = DateTime(
-      dateTime.year,
-      dateTime.month,
-      dateTime.day,
-      9,
-      30,
-    );
-    return dateTime.isAfter(marketOpen);
+    return dateTime.hour > 9 || (dateTime.hour == 9 && dateTime.minute >= 30);
   }
 
   bool _isValidMarketAwareCache({
     required DateTime lastUpdated,
     required DateTime nowEt,
   }) {
-    final marketOpen = DateTime(nowEt.year, nowEt.month, nowEt.day, 9, 30);
-    return lastUpdated.isAfter(marketOpen);
+    final marketOpenUtc = nowEt
+        .toUtc()
+        .subtract(
+          Duration(
+            hours: nowEt.hour,
+            minutes: nowEt.minute,
+            seconds: nowEt.second,
+          ),
+        )
+        .add(const Duration(hours: 9, minutes: 30));
+    return lastUpdated.toUtc().isAfter(marketOpenUtc);
   }
 
   bool _isValidTtlCache({
@@ -106,15 +114,11 @@ abstract class BaseFirestoreCacheClient {
     T Function(Object?) fromJson,
     Object? Function(T) toJson,
   ) {
-    return _firestore
-        .collection('companies')
-        .doc(ticker)
-        .collection(collectionPath)
-        .withConverter<FirestoreCacheEntry<T>>(
-          fromFirestore: (snapshot, _) =>
-              FirestoreCacheEntry.fromJson(snapshot.data()!, fromJson),
-          toFirestore: (entry, _) => entry.toJson(toJson),
-        );
+    return _firestoreService.getConvertedCollectionRef<FirestoreCacheEntry<T>>(
+      path: '${FirestoreConstants.companies}/$ticker/$collectionPath',
+      fromJson: (json) => FirestoreCacheEntry.fromJson(json, fromJson),
+      toJson: (entry) => entry.toJson(toJson),
+    );
   }
 
   DocumentReference<FirestoreCacheEntry<T>> getDocRef<T>(
@@ -264,7 +268,9 @@ abstract class BaseFirestoreCacheClient {
         _logger.warning('Returning stale cache after remote failure');
         return result.CacheSuccess(entry.data, CompanyProfileDataOrigin.cache);
       }
-    } catch (_) {}
+    } catch (e) {
+      _logger.warning('Stale cache fallback fetch failed', e);
+    }
 
     return result.CacheFailure(Failure.server(originalError.toString()));
   }

@@ -1,8 +1,8 @@
 import 'package:bizzie/features/company_profile/business/data/repositories/business_repository_impl.dart';
 import 'package:bizzie/features/company_profile/business/domain/models/business_profile.dart';
 
-import 'package:bizzie/features/company_profile/business/data/datasources/business_firestore_data_source.dart';
-import 'package:bizzie/features/company_profile/financial_statements/data/datasources/financial_statements_firestore_data_source.dart';
+import 'package:bizzie/features/company_profile/business/data/interfaces/i_business_firestore_datasource.dart';
+import 'package:bizzie/features/company_profile/financial_statements/data/interfaces/i_financial_statements_firestore_datasource.dart';
 import 'package:bizzie/features/company_profile/financial_statements/data/datasources/financial_statements_remote_data_source.dart';
 import 'package:bizzie/features/company_profile/financial_statements/data/dtos/fmp_sec_filing_dto.dart';
 import 'package:bizzie/features/company_profile/financial_statements/data/dtos/legacy_income_statement_dto.dart';
@@ -15,13 +15,13 @@ import 'package:mocktail/mocktail.dart';
 import 'package:bizzie/core/data/models/cache_result.dart' as cache;
 
 class MockBusinessLocalDataSource extends Mock
-    implements BusinessFirestoreDataSource {}
+    implements IBusinessFirestoreDataSource {}
 
 class MockFinancialRemoteDataSource extends Mock
     implements FinancialStatementsRemoteDataSource {}
 
 class MockFinancialLocalDataSource extends Mock
-    implements FinancialStatementsFirestoreDataSource {}
+    implements IFinancialStatementsFirestoreDataSource {}
 
 class MockCompanyRepository extends Mock implements ICompanyRepository {}
 

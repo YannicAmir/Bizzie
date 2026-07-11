@@ -1,7 +1,9 @@
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/core/enums/data_origin.dart';
-import 'package:bizzie/features/company_profile/pfcf_ratio/domain/models/pfcf_ratio.dart';
+import 'package:bizzie/features/company_profile/pfcf_ratio/domain/models/pfcf_ratio_stats.dart';
 import 'package:bizzie/features/company_profile/pfcf_ratio/domain/usecases/get_pfcf_ratio_usecase.dart';
+import 'package:bizzie/features/company_profile/shared/domain/models/financial_data_point.dart';
+import 'package:bizzie/features/company_profile/shared/domain/services/tab_content_freshness_service.dart';
 import 'package:bizzie/features/company_profile/pfcf_ratio/presentation/bloc/company_pfcf_ratio_bloc.dart';
 import 'package:bizzie/features/company_profile/pfcf_ratio/presentation/bloc/company_pfcf_ratio_event.dart';
 import 'package:bizzie/features/company_profile/pfcf_ratio/presentation/bloc/company_pfcf_ratio_state.dart';
@@ -19,45 +21,49 @@ class MockConfigService extends Mock implements IConfigService {}
 
 class MockPfcfRatioTabAnalytics extends Mock implements PfcfRatioTabAnalytics {}
 
+class MockTabContentFreshnessService extends Mock
+    implements TabContentFreshnessService {}
+
 class PfcfRatioTabViewStateFake extends Fake implements PfcfRatioTabViewState {}
 
 void main() {
   setUpAll(() {
     registerFallbackValue(PfcfRatioTabViewStateFake());
+    registerFallbackValue(DateTime(2020));
   });
 
   late CompanyPfcfRatioBloc bloc;
   late MockGetPfcfRatioUseCase mockGetPfcfRatio;
   late MockConfigService mockConfigService;
   late MockPfcfRatioTabAnalytics mockAnalytics;
+  late MockTabContentFreshnessService mockFreshnessService;
 
   setUp(() {
     mockGetPfcfRatio = MockGetPfcfRatioUseCase();
     mockConfigService = MockConfigService();
     mockAnalytics = MockPfcfRatioTabAnalytics();
+    mockFreshnessService = MockTabContentFreshnessService();
     when(() => mockConfigService.freePlanHistoryCount).thenReturn(7);
     bloc = CompanyPfcfRatioBloc(
       mockGetPfcfRatio,
       mockConfigService,
       mockAnalytics,
+      mockFreshnessService,
     );
   });
 
   const tTicker = 'AAPL';
-  const tRatios = [
-    PfcfRatio(
-      symbol: tTicker,
-      date: '2018-10-01',
-      period: 'FY',
-      priceToFreeCashFlowRatio: 15.0,
-    ),
-    PfcfRatio(
-      symbol: tTicker,
-      date: '2023-09-30',
-      period: 'FY',
-      priceToFreeCashFlowRatio: 25.0,
-    ),
-  ];
+  const tStats = PfcfRatioStats(
+    dataPoints: [
+      FinancialDataPoint(date: '2018-10-01', period: 'FY', value: 15.0),
+      FinancialDataPoint(date: '2023-09-30', period: 'FY', value: 25.0),
+    ],
+    currentValue: 25.0,
+    growthPercentage: ((25.0 - 15.0) / 15.0) * 100,
+    absoluteDelta: 10.0,
+    isPositive: true,
+    referenceDate: '2018-10-01',
+  );
 
   test('initialState_isCorrect', () {
     // assert
@@ -70,7 +76,7 @@ void main() {
       build: () {
         // arrange
         when(() => mockGetPfcfRatio(tTicker)).thenAnswer(
-          (_) async => const Right((tRatios, CompanyProfileDataOrigin.api)),
+          (_) async => const Right((tStats, CompanyProfileDataOrigin.api)),
         );
         return bloc;
       },
@@ -110,44 +116,6 @@ void main() {
       verify: (_) {
         // assert
         verify(() => mockGetPfcfRatio(tTicker)).called(1);
-      },
-    );
-
-    blocTest<CompanyPfcfRatioBloc, CompanyPfcfRatioState>(
-      'loadRequested_filtersZeroValues_emitsLoadedWithValidPoints',
-      build: () {
-        // arrange
-        final ratiosWithZero = [
-          ...tRatios,
-          const PfcfRatio(
-            symbol: tTicker,
-            date: '2024-01-01',
-            period: 'FY',
-            priceToFreeCashFlowRatio: 0.0,
-          ),
-        ];
-        when(() => mockGetPfcfRatio(tTicker)).thenAnswer(
-          (_) async => Right((ratiosWithZero, CompanyProfileDataOrigin.api)),
-        );
-        return bloc;
-      },
-      act: (bloc) {
-        // act
-        bloc.add(const CompanyPfcfRatioEvent.loadRequested(tTicker));
-      },
-      expect: () {
-        // assert
-        return [
-          const CompanyPfcfRatioState.loading(),
-          isA<CompanyPfcfRatioState>().having(
-            (s) => s.maybeMap(
-              loaded: (l) => l.dataPoints.length,
-              orElse: () => null,
-            ),
-            'dataPoints length',
-            2,
-          ),
-        ];
       },
     );
 
@@ -210,7 +178,7 @@ void main() {
       'loadRequested_instrumentation_tracksTimingAndSuccess',
       build: () {
         when(() => mockGetPfcfRatio(tTicker)).thenAnswer(
-          (_) async => const Right((tRatios, CompanyProfileDataOrigin.api)),
+          (_) async => const Right((tStats, CompanyProfileDataOrigin.api)),
         );
         return bloc;
       },
@@ -288,7 +256,7 @@ void main() {
       build: () {
         // arrange
         when(() => mockGetPfcfRatio(tTicker)).thenAnswer(
-          (_) async => const Right((tRatios, CompanyProfileDataOrigin.api)),
+          (_) async => const Right((tStats, CompanyProfileDataOrigin.api)),
         );
         return bloc;
       },
@@ -314,6 +282,7 @@ void main() {
       'stalenessCheckRequested_fresh_doesNotTriggerLoad',
       build: () {
         // arrange
+        when(() => mockFreshnessService.isStale(any())).thenReturn(false);
         return bloc;
       },
       seed: () => CompanyPfcfRatioState.loaded(
@@ -347,8 +316,9 @@ void main() {
       'stalenessCheckRequested_stale_triggersLoadRequested',
       build: () {
         // arrange
+        when(() => mockFreshnessService.isStale(any())).thenReturn(true);
         when(() => mockGetPfcfRatio(tTicker)).thenAnswer(
-          (_) async => const Right((tRatios, CompanyProfileDataOrigin.api)),
+          (_) async => const Right((tStats, CompanyProfileDataOrigin.api)),
         );
         return bloc;
       },
@@ -387,7 +357,7 @@ void main() {
       'loadRequested_differentTicker_reloadsData',
       build: () {
         when(() => mockGetPfcfRatio('MSFT')).thenAnswer(
-          (_) async => const Right((tRatios, CompanyProfileDataOrigin.api)),
+          (_) async => const Right((tStats, CompanyProfileDataOrigin.api)),
         );
         return bloc;
       },

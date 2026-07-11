@@ -1,19 +1,25 @@
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:bloc_concurrency/bloc_concurrency.dart';
+import 'dart:async';
 
-import 'package:injectable/injectable.dart';
+import 'package:bizzie/core/interfaces/i_config_service.dart';
+import 'package:bizzie/core/usecase/usecase.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
+import 'package:bizzie/features/company_profile/free_cash_flow/presentation/analytics/free_cash_flow_tab_analytics.dart';
+import 'package:bizzie/features/company_profile/free_cash_flow/presentation/analytics/free_cash_flow_tab_view_state.dart';
 import 'package:bizzie/features/company_profile/shared/domain/models/chart_data_point.dart';
 import 'package:bizzie/features/company_profile/shared/domain/models/financial_data_point.dart';
+import 'package:bizzie/features/company_profile/shared/presentation/analytics/base_analytics.dart';
+import 'package:bizzie/features/company_profile/shared/presentation/bloc/company_profile_analytics_mixin.dart';
+import 'package:bizzie/features/company_profile/shared/domain/enums/company_profile_tab.dart';
+import 'package:bizzie/features/company_profile/shared/domain/models/tab_activation.dart';
+import 'package:bizzie/features/company_profile/shared/domain/services/tab_content_freshness_service.dart';
+import 'package:bizzie/features/company_profile/shared/domain/usecases/watch_active_tab_usecase.dart';
 import 'package:bizzie/shared/utils/bizzie_date_formatter.dart';
+import 'package:bloc_concurrency/bloc_concurrency.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:injectable/injectable.dart';
 import '../../domain/usecases/get_free_cash_flow_stats_usecase.dart';
 import 'company_free_cash_flow_event.dart';
 import 'company_free_cash_flow_state.dart';
-import 'package:bizzie/core/interfaces/i_config_service.dart';
-import 'package:bizzie/features/company_profile/free_cash_flow/presentation/analytics/free_cash_flow_tab_analytics.dart';
-import 'package:bizzie/features/company_profile/free_cash_flow/presentation/analytics/free_cash_flow_tab_view_state.dart';
-import 'package:bizzie/features/company_profile/shared/presentation/bloc/company_profile_analytics_mixin.dart';
-import 'package:bizzie/features/company_profile/shared/presentation/analytics/base_analytics.dart';
 
 final _logger = BizzieLogger('CompanyFreeCashFlowBloc');
 
@@ -29,18 +35,43 @@ class CompanyFreeCashFlowBloc
   final GetFreeCashFlowStatsUseCase _getFreeCashFlowStats;
   final IConfigService _configService;
   final FreeCashFlowTabAnalytics _freeCashFlowTabAnalytics;
+  final WatchActiveTabUseCase _watchActiveTabUseCase;
+  final TabContentFreshnessService _freshnessService;
+
+  StreamSubscription<TabActivation>? _tabSubscription;
 
   CompanyFreeCashFlowBloc(
     this._getFreeCashFlowStats,
     this._configService,
     this._freeCashFlowTabAnalytics,
+    this._watchActiveTabUseCase,
+    this._freshnessService,
   ) : super(const CompanyFreeCashFlowState.initial()) {
-    on<LoadRequested>(_onLoadRequested, transformer: droppable());
+    on<LoadRequested>(_onLoadRequested, transformer: restartable());
     on<StalenessCheckRequested>(
       _onStalenessCheckRequested,
       transformer: sequential(),
     );
+    on<Reset>(_onReset);
     _setupAnalyticsHandlers();
+    _tabSubscription = _watchActiveTabUseCase(NoParams())
+        .where((activation) => activation.tab == CompanyProfileTab.freeCash)
+        .listen((activation) {
+            final shouldHandle = state.maybeMap(
+              loading: (_) => false,
+              loaded: (s) => s.ticker == activation.ticker,
+              orElse: () => true,
+            );
+            if (shouldHandle) {
+              add(CompanyFreeCashFlowEvent.stalenessCheckRequested(activation.ticker));
+            }
+        });
+  }
+
+  @override
+  Future<void> close() async {
+    await _tabSubscription?.cancel();
+    return super.close();
   }
 
   @override
@@ -65,8 +96,7 @@ class CompanyFreeCashFlowBloc
         isSuccess: existingState?.isSuccess ?? false,
         dataSource: existingState?.dataSource,
       ),
-    );
-    _emitAnalyticsUpdate(emit);
+    );    add(CompanyFreeCashFlowEvent.stalenessCheckRequested(event.ticker));
   }
 
   Future<void> _onPeriodViewed(
@@ -77,9 +107,7 @@ class CompanyFreeCashFlowBloc
       (s) => event.isAnnual
           ? s.copyWith(viewedYearlyFcfTab: true)
           : s.copyWith(viewedQtrlyFcfTab: true),
-    );
-    _emitAnalyticsUpdate(emit);
-  }
+    );  }
 
   Future<void> _onViewAllTapped(
     ViewAllTapped event,
@@ -100,16 +128,7 @@ class CompanyFreeCashFlowBloc
             ? true
             : s.tappedYrtableViewAll,
       ),
-    );
-    _emitAnalyticsUpdate(emit);
-  }
-
-  void _emitAnalyticsUpdate(Emitter<CompanyFreeCashFlowState> emit) {
-    state.maybeMap(
-      loaded: (s) => emit(s.copyWith(analyticsState: analyticsSession)),
-      orElse: () {},
-    );
-  }
+    );  }
 
   Future<void> _onLoadRequested(
     LoadRequested event,
@@ -203,6 +222,14 @@ class CompanyFreeCashFlowBloc
     );
   }
 
+  Future<void> _onReset(
+    Reset event,
+    Emitter<CompanyFreeCashFlowState> emit,
+  ) async {
+    _logger.info('Resetting Free Cash Flow state.');
+    emit(const CompanyFreeCashFlowState.initial());
+  }
+
   Future<void> _onStalenessCheckRequested(
     StalenessCheckRequested event,
     Emitter<CompanyFreeCashFlowState> emit,
@@ -210,31 +237,19 @@ class CompanyFreeCashFlowBloc
     _logger.info('Staleness check requested for ${event.ticker}');
     state.mapOrNull(
       loaded: (loadedState) {
-        final lastUpdated = loadedState.lastUpdated;
-        if (lastUpdated != null) {
-          final difference = DateTime.now().difference(lastUpdated);
-          if (difference.inHours >= 24) {
-            _logger.info(
-              'Free Cash Flow stale (TTL expired: ${difference.inHours}h). Triggering load.',
-            );
-            add(
-              CompanyFreeCashFlowEvent.loadRequested(
-                event.ticker,
-                forceRefresh: true,
-              ),
-            );
-          } else {
-            _logger.info(
-              'Free Cash Flow still fresh (Last updated: $lastUpdated)',
-            );
-          }
-        } else {
-          _logger.info('Free Cash Flow lastUpdated is null. Triggering load.');
+        if (_freshnessService.isStale(loadedState.lastUpdated)) {
+          _logger.info(
+            'Free Cash Flow stale (Last updated: ${loadedState.lastUpdated}). Triggering load.',
+          );
           add(
             CompanyFreeCashFlowEvent.loadRequested(
               event.ticker,
               forceRefresh: true,
             ),
+          );
+        } else {
+          _logger.info(
+            'Free Cash Flow still fresh (Last updated: ${loadedState.lastUpdated})',
           );
         }
       },
@@ -255,6 +270,9 @@ class CompanyFreeCashFlowBloc
             forceRefresh: true,
           ),
         );
+      },
+      loading: (_) {
+        _logger.info('Free Cash Flow already loading, skipping staleness check.');
       },
     );
   }

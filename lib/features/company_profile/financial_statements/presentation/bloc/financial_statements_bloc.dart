@@ -1,9 +1,15 @@
-import 'package:bizzie/core/logging/bizzie_logger.dart';
+import 'dart:async';
+
 import 'package:bizzie/core/enums/data_origin.dart';
-import 'package:bizzie/features/company_profile/financial_statements/presentation/enums/financial_statement_type.dart';
 import 'package:bizzie/core/error/failures.dart';
+import 'package:bizzie/core/usecase/usecase.dart';
+import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:bizzie/features/company_profile/financial_statements/presentation/bloc/financial_statements_event.dart';
 import 'package:bizzie/features/company_profile/financial_statements/presentation/bloc/financial_statements_state.dart';
+import 'package:bizzie/features/company_profile/financial_statements/presentation/enums/financial_statement_type.dart';
+import 'package:bizzie/features/company_profile/shared/domain/enums/company_profile_tab.dart';
+import 'package:bizzie/features/company_profile/shared/domain/models/tab_activation.dart';
+import 'package:bizzie/features/company_profile/shared/domain/usecases/watch_active_tab_usecase.dart';
 import 'package:bizzie/features/company_profile/financial_statements/domain/models/balance_sheet.dart';
 import 'package:bizzie/features/company_profile/financial_statements/domain/models/cash_flow_statement.dart';
 import 'package:bizzie/features/company_profile/financial_statements/domain/models/get_financial_statement_params.dart';
@@ -32,6 +38,7 @@ class FinancialStatementsBloc
   final GetIncomeStatementsUseCase _getIncomeStatements;
   final GetBalanceSheetsUseCase _getBalanceSheets;
   final GetCashFlowStatementsUseCase _getCashFlowStatements;
+  final WatchActiveTabUseCase _watchActiveTabUseCase;
 
   @override
   final IncStmtTabAnalytics incTracker;
@@ -39,6 +46,9 @@ class FinancialStatementsBloc
   final BalStmtTabAnalytics balTracker;
   @override
   final CashStmtTabAnalytics cashTracker;
+
+  String? _ticker;
+  StreamSubscription<TabActivation>? _tabSubscription;
 
   FinancialStatementsBloc(
     this._getIncomeStatements,
@@ -48,15 +58,16 @@ class FinancialStatementsBloc
     this.balTracker,
     this.cashTracker,
     IConfigService configService,
+    this._watchActiveTabUseCase,
   ) : super(
         FinancialStatementsState.initial(
           ticker: '',
           freePlanHistoryCount: configService.freePlanHistoryCount,
         ),
       ) {
-    on<LoadIncomeStatements>(_onLoadIncomeStatements, transformer: droppable());
-    on<LoadBalanceSheets>(_onLoadBalanceSheets, transformer: droppable());
-    on<LoadCashFlows>(_onLoadCashFlows, transformer: droppable());
+    on<LoadIncomeStatements>(_onLoadIncomeStatements, transformer: restartable());
+    on<LoadBalanceSheets>(_onLoadBalanceSheets, transformer: restartable());
+    on<LoadCashFlows>(_onLoadCashFlows, transformer: restartable());
     on<StalenessCheckRequested>(
       _onStalenessCheckRequested,
       transformer: sequential(),
@@ -72,12 +83,29 @@ class FinancialStatementsBloc
     on<AppForegrounded>(_onAppForegrounded);
     on<ViewAllTapped>(_onViewAllTapped);
     on<ChartSwiped>(_onChartSwiped);
+    _tabSubscription = _watchActiveTabUseCase(NoParams())
+        .where((activation) => activation.tab == CompanyProfileTab.financialStatements)
+        .listen((activation) {
+          if (_ticker == null || _ticker == activation.ticker) {
+            add(FinancialStatementsEvent.stalenessCheckRequested(
+              activation.ticker,
+              type: FinancialStatementType.income,
+            ));
+          }
+        });
+  }
+
+  @override
+  Future<void> close() async {
+    await _tabSubscription?.cancel();
+    return super.close();
   }
 
   Future<void> _onLoadIncomeStatements(
     LoadIncomeStatements e,
     Emitter<FinancialStatementsState> emit,
   ) async {
+    _ticker = e.ticker;
     if (!e.forceRefresh &&
         (state.isLoadingIncome || state.annualIncomeStatements.isNotEmpty)) {
       _logger.info(
@@ -146,11 +174,13 @@ class FinancialStatementsBloc
     _logger.info(
       'Successfully loaded income statements: annual=${annualData.length}, quarterly=${quarterlyData.length}, origin=$annualOrigin, currency=$currency',
     );
-    final incAnalytics = state.incAnalytics?.copyWith(
-      loadTimeMs: loadTime,
-      isSuccess: true,
-      dataSource:
-          annualOrigin ?? quarterlyOrigin ?? CompanyProfileDataOrigin.api,
+    updateIncAnalytics(
+      (inc) => inc.copyWith(
+        loadTimeMs: loadTime,
+        isSuccess: true,
+        dataSource:
+            annualOrigin ?? quarterlyOrigin ?? CompanyProfileDataOrigin.api,
+      ),
     );
 
     emit(
@@ -164,7 +194,6 @@ class FinancialStatementsBloc
         lastUpdatedIncome: DateTime.now(),
         incomeOrigin:
             annualOrigin ?? quarterlyOrigin ?? CompanyProfileDataOrigin.api,
-        incAnalytics: incAnalytics,
         selectedAnnualIncomeDate:
             state.selectedAnnualIncomeDate ??
             (annualData.isNotEmpty ? annualData.first.date : null),
@@ -232,11 +261,13 @@ class FinancialStatementsBloc
     quarterlyData.sort((a, b) => b.date.compareTo(a.date));
 
     _logger.info('Successfully loaded balance sheets, origin=$annualOrigin');
-    final balAnalytics = state.balAnalytics?.copyWith(
-      loadTimeMs: loadTime,
-      isSuccess: true,
-      dataSource:
-          annualOrigin ?? quarterlyOrigin ?? CompanyProfileDataOrigin.api,
+    updateBalAnalytics(
+      (bal) => bal.copyWith(
+        loadTimeMs: loadTime,
+        isSuccess: true,
+        dataSource:
+            annualOrigin ?? quarterlyOrigin ?? CompanyProfileDataOrigin.api,
+      ),
     );
 
     emit(
@@ -249,7 +280,6 @@ class FinancialStatementsBloc
         lastUpdatedBalance: DateTime.now(),
         balanceOrigin:
             annualOrigin ?? quarterlyOrigin ?? CompanyProfileDataOrigin.api,
-        balAnalytics: balAnalytics,
         selectedAnnualBalanceDate:
             state.selectedAnnualBalanceDate ??
             (annualData.isNotEmpty ? annualData.first.date : null),
@@ -318,11 +348,13 @@ class FinancialStatementsBloc
     quarterlyData.sort((a, b) => b.date.compareTo(a.date));
 
     _logger.info('Successfully loaded cash flows, origin=$annualOrigin');
-    final cashAnalytics = state.cashAnalytics?.copyWith(
-      loadTimeMs: loadTime,
-      isSuccess: true,
-      dataSource:
-          annualOrigin ?? quarterlyOrigin ?? CompanyProfileDataOrigin.api,
+    updateCashAnalytics(
+      (cash) => cash.copyWith(
+        loadTimeMs: loadTime,
+        isSuccess: true,
+        dataSource:
+            annualOrigin ?? quarterlyOrigin ?? CompanyProfileDataOrigin.api,
+      ),
     );
 
     emit(
@@ -335,7 +367,6 @@ class FinancialStatementsBloc
         lastUpdatedCashFlow: DateTime.now(),
         cashFlowOrigin:
             annualOrigin ?? quarterlyOrigin ?? CompanyProfileDataOrigin.api,
-        cashAnalytics: cashAnalytics,
         selectedAnnualCashFlowDate:
             state.selectedAnnualCashFlowDate ??
             (annualData.isNotEmpty ? annualData.first.date : null),
@@ -365,12 +396,18 @@ class FinancialStatementsBloc
               forceRefresh: true,
             ),
           );
-        } else if (state.annualIncomeStatements.isEmpty &&
-            !state.isLoadingIncome) {
+        } else if (state.annualIncomeStatements.isEmpty) {
           _logger.info('Income statements empty. Triggering load.');
-          add(FinancialStatementsEvent.loadIncomeStatements(e.ticker));
+          add(
+            FinancialStatementsEvent.loadIncomeStatements(
+              e.ticker,
+              forceRefresh: true,
+            ),
+          );
         } else {
-          _logger.info('Income statements still fresh.');
+          _logger.info(
+            'Income statements still fresh (Last updated: ${state.lastUpdatedIncome})',
+          );
         }
         break;
       case FinancialStatementType.balance:
@@ -384,12 +421,18 @@ class FinancialStatementsBloc
               forceRefresh: true,
             ),
           );
-        } else if (state.annualBalanceSheets.isEmpty &&
-            !state.isLoadingBalance) {
+        } else if (state.annualBalanceSheets.isEmpty) {
           _logger.info('Balance sheets empty. Triggering load.');
-          add(FinancialStatementsEvent.loadBalanceSheets(e.ticker));
+          add(
+            FinancialStatementsEvent.loadBalanceSheets(
+              e.ticker,
+              forceRefresh: true,
+            ),
+          );
         } else {
-          _logger.info('Balance sheets still fresh.');
+          _logger.info(
+            'Balance sheets still fresh (Last updated: ${state.lastUpdatedBalance})',
+          );
         }
         break;
       case FinancialStatementType.cashFlow:
@@ -403,12 +446,18 @@ class FinancialStatementsBloc
               forceRefresh: true,
             ),
           );
-        } else if (state.annualCashFlowStatements.isEmpty &&
-            !state.isLoadingCashFlow) {
+        } else if (state.annualCashFlowStatements.isEmpty) {
           _logger.info('Cash flows empty. Triggering load.');
-          add(FinancialStatementsEvent.loadCashFlows(e.ticker));
+          add(
+            FinancialStatementsEvent.loadCashFlows(
+              e.ticker,
+              forceRefresh: true,
+            ),
+          );
         } else {
-          _logger.info('Cash flows still fresh.');
+          _logger.info(
+            'Cash flows still fresh (Last updated: ${state.lastUpdatedCashFlow})',
+          );
         }
         break;
     }
@@ -425,29 +474,17 @@ class FinancialStatementsBloc
 
     emit(state.copyWith(selectedType: e.type));
 
-    if (e.type == FinancialStatementType.income && state.incAnalytics != null) {
-      emit(
-        state.copyWith(
-          incAnalytics: state.incAnalytics!.copyWith(viewedIncomeTab: true),
+    if (e.type == FinancialStatementType.income) {
+      updateIncAnalytics((inc) => inc.copyWith(viewedIncomeTab: true));
+    } else if (e.type == FinancialStatementType.balance) {
+      updateBalAnalytics(
+        (bal) => bal.copyWith(
+          viewedBalanceTab: true,
+          viewedNetWorthChart: true,
         ),
       );
-    } else if (e.type == FinancialStatementType.balance &&
-        state.balAnalytics != null) {
-      emit(
-        state.copyWith(
-          balAnalytics: state.balAnalytics!.copyWith(
-            viewedBalanceTab: true,
-            viewedNetWorthChart: true,
-          ),
-        ),
-      );
-    } else if (e.type == FinancialStatementType.cashFlow &&
-        state.cashAnalytics != null) {
-      emit(
-        state.copyWith(
-          cashAnalytics: state.cashAnalytics!.copyWith(viewedCashFlowTab: true),
-        ),
-      );
+    } else if (e.type == FinancialStatementType.cashFlow) {
+      updateCashAnalytics((cash) => cash.copyWith(viewedCashFlowTab: true));
     }
 
     add(
@@ -460,20 +497,12 @@ class FinancialStatementsBloc
     Emitter<FinancialStatementsState> emit,
   ) async {
     _logger.info('Income date selected: ${e.date}, annual=${e.isAnnual}');
-    if (state.incAnalytics != null) {
-      emit(
-        state.copyWith(
-          incAnalytics: state.incAnalytics!.copyWith(
-            switchedIncomeYear: e.isAnnual
-                ? true
-                : state.incAnalytics!.switchedIncomeYear,
-            switchedIncomeQtr: !e.isAnnual
-                ? true
-                : state.incAnalytics!.switchedIncomeQtr,
-          ),
-        ),
-      );
-    }
+    updateIncAnalytics(
+      (inc) => inc.copyWith(
+        switchedIncomeYear: e.isAnnual ? true : inc.switchedIncomeYear,
+        switchedIncomeQtr: !e.isAnnual ? true : inc.switchedIncomeQtr,
+      ),
+    );
 
     if (e.isAnnual) {
       emit(state.copyWith(selectedAnnualIncomeDate: e.date));
@@ -487,15 +516,7 @@ class FinancialStatementsBloc
     Emitter<FinancialStatementsState> emit,
   ) async {
     _logger.info('Balance date selected: ${e.date}, annual=${e.isAnnual}');
-    if (state.balAnalytics != null) {
-      emit(
-        state.copyWith(
-          balAnalytics: state.balAnalytics!.copyWith(
-            switchedBalancePeriod: true,
-          ),
-        ),
-      );
-    }
+    updateBalAnalytics((bal) => bal.copyWith(switchedBalancePeriod: true));
 
     if (e.isAnnual) {
       emit(state.copyWith(selectedAnnualBalanceDate: e.date));
@@ -509,20 +530,12 @@ class FinancialStatementsBloc
     Emitter<FinancialStatementsState> emit,
   ) async {
     _logger.info('Cash flow date selected: ${e.date}, annual=${e.isAnnual}');
-    if (state.cashAnalytics != null) {
-      emit(
-        state.copyWith(
-          cashAnalytics: state.cashAnalytics!.copyWith(
-            switchedCashflYear: e.isAnnual
-                ? true
-                : state.cashAnalytics!.switchedCashflYear,
-            switchedCashflQtr: !e.isAnnual
-                ? true
-                : state.cashAnalytics!.switchedCashflQtr,
-          ),
-        ),
-      );
-    }
+    updateCashAnalytics(
+      (cash) => cash.copyWith(
+        switchedCashflYear: e.isAnnual ? true : cash.switchedCashflYear,
+        switchedCashflQtr: !e.isAnnual ? true : cash.switchedCashflQtr,
+      ),
+    );
 
     if (e.isAnnual) {
       emit(state.copyWith(selectedAnnualCashFlowDate: e.date));
@@ -535,62 +548,51 @@ class FinancialStatementsBloc
     TabShown e,
     Emitter<FinancialStatementsState> emit,
   ) async {
-    handleTabShown(e.ticker);
-
     final timestamp = DateTime.now().toIso8601String();
-    var newState = state.copyWith(
-      incAnalytics:
-          state.incAnalytics ??
-          IncStmtTabViewState(
-            ticker: e.ticker,
-            timestamp: timestamp,
-            loadTimeMs: state.incomeLoadTimeMs,
-            isSuccess: state.isIncomeSuccess,
-            dataSource: state.incomeOrigin,
-          ),
-      balAnalytics:
-          state.balAnalytics ??
-          BalStmtTabViewState(
-            ticker: e.ticker,
-            timestamp: timestamp,
-            loadTimeMs: state.balanceLoadTimeMs,
-            isSuccess: state.isBalanceSuccess,
-            dataSource: state.balanceOrigin,
-          ),
-      cashAnalytics:
-          state.cashAnalytics ??
-          CashStmtTabViewState(
-            ticker: e.ticker,
-            timestamp: timestamp,
-            loadTimeMs: state.cashFlowLoadTimeMs,
-            isSuccess: state.isCashFlowSuccess,
-            dataSource: state.cashFlowOrigin,
-          ),
+    handleTabShown(
+      e.ticker,
+      initialInc: IncStmtTabViewState(
+        ticker: e.ticker,
+        timestamp: timestamp,
+        loadTimeMs: state.incomeLoadTimeMs,
+        isSuccess: state.isIncomeSuccess,
+        dataSource: state.incomeOrigin,
+      ),
+      initialBal: BalStmtTabViewState(
+        ticker: e.ticker,
+        timestamp: timestamp,
+        loadTimeMs: state.balanceLoadTimeMs,
+        isSuccess: state.isBalanceSuccess,
+        dataSource: state.balanceOrigin,
+      ),
+      initialCash: CashStmtTabViewState(
+        ticker: e.ticker,
+        timestamp: timestamp,
+        loadTimeMs: state.cashFlowLoadTimeMs,
+        isSuccess: state.isCashFlowSuccess,
+        dataSource: state.cashFlowOrigin,
+      ),
     );
 
-    if (newState.selectedType == FinancialStatementType.income &&
-        newState.incAnalytics != null) {
-      newState = newState.copyWith(
-        incAnalytics: newState.incAnalytics!.copyWith(viewedIncomeTab: true),
-      );
-    } else if (newState.selectedType == FinancialStatementType.balance &&
-        newState.balAnalytics != null) {
-      newState = newState.copyWith(
-        balAnalytics: newState.balAnalytics!.copyWith(
+    if (state.selectedType == FinancialStatementType.income) {
+      updateIncAnalytics((inc) => inc.copyWith(viewedIncomeTab: true));
+    } else if (state.selectedType == FinancialStatementType.balance) {
+      updateBalAnalytics(
+        (bal) => bal.copyWith(
           viewedBalanceTab: true,
           viewedNetWorthChart: true,
         ),
       );
-    } else if (newState.selectedType == FinancialStatementType.cashFlow &&
-        newState.cashAnalytics != null) {
-      newState = newState.copyWith(
-        cashAnalytics: newState.cashAnalytics!.copyWith(
-          viewedCashFlowTab: true,
-        ),
-      );
+    } else if (state.selectedType == FinancialStatementType.cashFlow) {
+      updateCashAnalytics((cash) => cash.copyWith(viewedCashFlowTab: true));
     }
 
-    emit(newState);
+    if (state.lastUpdatedIncome != null || state.annualIncomeStatements.isNotEmpty) {
+      add(FinancialStatementsEvent.stalenessCheckRequested(
+        e.ticker,
+        type: FinancialStatementType.income,
+      ));
+    }
   }
 
   Future<void> _onTabHidden(
@@ -620,66 +622,38 @@ class FinancialStatementsBloc
   ) {
     switch (state.selectedType) {
       case FinancialStatementType.income:
-        if (state.incAnalytics != null) {
-          emit(
-            state.copyWith(
-              incAnalytics: state.incAnalytics!.copyWith(
-                tappedAllIncomeYrly: e.isAnnual
-                    ? true
-                    : state.incAnalytics!.tappedAllIncomeYrly,
-                tappedAllIncomeQtrly: !e.isAnnual
-                    ? true
-                    : state.incAnalytics!.tappedAllIncomeQtrly,
-              ),
-            ),
-          );
-        }
+        updateIncAnalytics(
+          (inc) => inc.copyWith(
+            tappedAllIncomeYrly: e.isAnnual ? true : inc.tappedAllIncomeYrly,
+            tappedAllIncomeQtrly: !e.isAnnual
+                ? true
+                : inc.tappedAllIncomeQtrly,
+          ),
+        );
         break;
       case FinancialStatementType.balance:
-        if (state.balAnalytics != null) {
-          emit(
-            state.copyWith(
-              balAnalytics: state.balAnalytics!.copyWith(
-                tappedAllBalSheet: true,
-              ),
-            ),
-          );
-        }
+        updateBalAnalytics((bal) => bal.copyWith(tappedAllBalSheet: true));
         break;
       case FinancialStatementType.cashFlow:
-        if (state.cashAnalytics != null) {
-          emit(
-            state.copyWith(
-              cashAnalytics: state.cashAnalytics!.copyWith(
-                tappedAllCashflYrly: e.isAnnual
-                    ? true
-                    : state.cashAnalytics!.tappedAllCashflYrly,
-                tappedAllCashflQtrly: !e.isAnnual
-                    ? true
-                    : state.cashAnalytics!.tappedAllCashflQtrly,
-              ),
-            ),
-          );
-        }
+        updateCashAnalytics(
+          (cash) => cash.copyWith(
+            tappedAllCashflYrly: e.isAnnual ? true : cash.tappedAllCashflYrly,
+            tappedAllCashflQtrly: !e.isAnnual
+                ? true
+                : cash.tappedAllCashflQtrly,
+          ),
+        );
         break;
     }
   }
 
   void _onChartSwiped(ChartSwiped e, Emitter<FinancialStatementsState> emit) {
-    if (state.selectedType == FinancialStatementType.balance &&
-        state.balAnalytics != null) {
-      final balAnalytics = state.balAnalytics!;
-      emit(
-        state.copyWith(
-          balAnalytics: balAnalytics.copyWith(
-            viewedNetWorthChart: e.index == 0
-                ? true
-                : balAnalytics.viewedNetWorthChart,
-            viewedCurrChart: e.index == 1 ? true : balAnalytics.viewedCurrChart,
-            viewedDebteqChart: e.index == 2
-                ? true
-                : balAnalytics.viewedDebteqChart,
-          ),
+    if (state.selectedType == FinancialStatementType.balance) {
+      updateBalAnalytics(
+        (bal) => bal.copyWith(
+          viewedNetWorthChart: e.index == 0 ? true : bal.viewedNetWorthChart,
+          viewedCurrChart: e.index == 1 ? true : bal.viewedCurrChart,
+          viewedDebteqChart: e.index == 2 ? true : bal.viewedDebteqChart,
         ),
       );
     }

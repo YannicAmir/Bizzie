@@ -1,7 +1,7 @@
 import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/core/data/models/cache_result.dart' as result;
-import 'package:bizzie/features/company_profile/financial_statements/data/datasources/financial_statements_firestore_data_source.dart';
+import 'package:bizzie/features/company_profile/financial_statements/data/interfaces/i_financial_statements_firestore_datasource.dart';
 import 'package:bizzie/features/company_profile/financial_statements/data/datasources/financial_statements_remote_data_source.dart';
 import 'package:bizzie/features/company_profile/eps/domain/interfaces/i_eps_repository.dart';
 import 'package:bizzie/features/company_profile/eps/domain/models/eps_stats.dart';
@@ -18,7 +18,7 @@ abstract class _Consts {
 @LazySingleton(as: IEpsRepository)
 class EpsRepositoryImpl implements IEpsRepository {
   final FinancialStatementsRemoteDataSource _remoteDataSource;
-  final FinancialStatementsFirestoreDataSource _localDataSource;
+  final IFinancialStatementsFirestoreDataSource _localDataSource;
   final IExchangeRateRepository _exchangeRateRepository;
 
   EpsRepositoryImpl(

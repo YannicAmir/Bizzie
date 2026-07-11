@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:bizzie/features/company_profile/financial_statements/domain/models/balance_sheet.dart';
@@ -15,7 +17,13 @@ import 'package:bizzie/features/company_profile/financial_statements/presentatio
 import 'package:bizzie/features/company_profile/financial_statements/presentation/analytics/bal_stmt_tab_analytics.dart';
 import 'package:bizzie/features/company_profile/financial_statements/presentation/analytics/cash_stmt_tab_analytics.dart';
 import 'package:bizzie/features/company_profile/financial_statements/presentation/analytics/inc_stmt_tab_view_state.dart';
+import 'package:bizzie/features/company_profile/financial_statements/presentation/analytics/bal_stmt_tab_view_state.dart';
+import 'package:bizzie/features/company_profile/financial_statements/presentation/analytics/cash_stmt_tab_view_state.dart';
 import 'package:bizzie/core/interfaces/i_config_service.dart';
+import 'package:bizzie/core/usecase/usecase.dart';
+import 'package:bizzie/features/company_profile/shared/domain/enums/company_profile_tab.dart';
+import 'package:bizzie/features/company_profile/shared/domain/models/tab_activation.dart';
+import 'package:bizzie/features/company_profile/shared/domain/usecases/watch_active_tab_usecase.dart';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -38,7 +46,18 @@ class MockCashStmtTabAnalytics extends Mock implements CashStmtTabAnalytics {}
 
 class MockConfigService extends Mock implements IConfigService {}
 
+class MockWatchActiveTabUseCase extends Mock implements WatchActiveTabUseCase {}
+
 void main() {
+  setUpAll(() {
+    registerFallbackValue(NoParams());
+    registerFallbackValue(const IncStmtTabViewState(ticker: '', timestamp: ''));
+    registerFallbackValue(const BalStmtTabViewState(ticker: '', timestamp: ''));
+    registerFallbackValue(
+      const CashStmtTabViewState(ticker: '', timestamp: ''),
+    );
+  });
+
   late FinancialStatementsBloc bloc;
   late MockGetIncomeStatementsUseCase mockGetIncomeStatements;
   late MockGetBalanceSheetsUseCase mockGetBalanceSheets;
@@ -47,6 +66,8 @@ void main() {
   late MockBalStmtTabAnalytics mockBalTracker;
   late MockCashStmtTabAnalytics mockCashTracker;
   late MockConfigService mockConfigService;
+  late MockWatchActiveTabUseCase mockWatchActiveTabUseCase;
+  late StreamController<TabActivation> tabActivationController;
 
   setUp(() {
     mockGetIncomeStatements = MockGetIncomeStatementsUseCase();
@@ -56,8 +77,32 @@ void main() {
     mockBalTracker = MockBalStmtTabAnalytics();
     mockCashTracker = MockCashStmtTabAnalytics();
     mockConfigService = MockConfigService();
+    mockWatchActiveTabUseCase = MockWatchActiveTabUseCase();
+
+    tabActivationController = StreamController<TabActivation>.broadcast();
 
     when(() => mockConfigService.freePlanHistoryCount).thenReturn(5);
+    when(
+      () => mockWatchActiveTabUseCase(any()),
+    ).thenAnswer((_) => tabActivationController.stream);
+    when(
+      () => mockIncTracker.logViewSummary(
+        any(),
+        isFinal: any(named: 'isFinal'),
+      ),
+    ).thenAnswer((_) async {});
+    when(
+      () => mockBalTracker.logViewSummary(
+        any(),
+        isFinal: any(named: 'isFinal'),
+      ),
+    ).thenAnswer((_) async {});
+    when(
+      () => mockCashTracker.logViewSummary(
+        any(),
+        isFinal: any(named: 'isFinal'),
+      ),
+    ).thenAnswer((_) async {});
 
     bloc = FinancialStatementsBloc(
       mockGetIncomeStatements,
@@ -67,6 +112,7 @@ void main() {
       mockBalTracker,
       mockCashTracker,
       mockConfigService,
+      mockWatchActiveTabUseCase,
     );
 
     registerFallbackValue(const GetFinancialStatementParams(ticker: ''));
@@ -85,6 +131,11 @@ void main() {
         CompanyProfileDataOrigin.api,
       )),
     );
+  });
+
+  tearDown(() async {
+    await bloc.close();
+    await tabActivationController.close();
   });
 
   const tTicker = 'AAPL';
@@ -135,6 +186,16 @@ void main() {
     dividendsPaid: -15025000000.0,
     cashAtBeginningOfPeriod: 24977000000.0,
     cashAtEndOfPeriod: 29965000000.0,
+  );
+
+  const tFinancialStatementsActivation = TabActivation(
+    tab: CompanyProfileTab.financialStatements,
+    ticker: tTicker,
+  );
+
+  const tOtherTabActivation = TabActivation(
+    tab: CompanyProfileTab.security,
+    ticker: tTicker,
   );
 
   test('initialState_isCorrect', () {
@@ -229,6 +290,71 @@ void main() {
             ),
       ],
     );
+
+    blocTest<FinancialStatementsBloc, FinancialStatementsState>(
+      'loadIncomeStatements_dataAlreadyLoadedWithoutForceRefresh_emitsNothing',
+      build: () {
+        // arrange
+        return bloc;
+      },
+      seed: () =>
+          FinancialStatementsState.initial(
+            ticker: '',
+            freePlanHistoryCount: 5,
+          ).copyWith(annualIncomeStatements: [tIncome]),
+      act: (bloc) {
+        // act
+        bloc.add(const FinancialStatementsEvent.loadIncomeStatements(tTicker));
+      },
+      // assert
+      expect: () => const <FinancialStatementsState>[],
+      verify: (_) {
+        verifyNever(() => mockGetIncomeStatements(any()));
+      },
+    );
+
+    blocTest<FinancialStatementsBloc, FinancialStatementsState>(
+      'loadIncomeStatements_forceRefreshWithExistingData_reloads',
+      build: () {
+        // arrange
+        when(() => mockGetIncomeStatements(any())).thenAnswer(
+          (_) async => Right((
+            List<IncomeStatement>.from([tIncome]),
+            CompanyProfileDataOrigin.api,
+          )),
+        );
+        return bloc;
+      },
+      seed: () =>
+          FinancialStatementsState.initial(
+            ticker: '',
+            freePlanHistoryCount: 5,
+          ).copyWith(annualIncomeStatements: [tIncome]),
+      act: (bloc) {
+        // act
+        bloc.add(
+          const FinancialStatementsEvent.loadIncomeStatements(
+            tTicker,
+            forceRefresh: true,
+          ),
+        );
+      },
+      // assert
+      expect: () => [
+        isA<FinancialStatementsState>().having(
+          (s) => s.isLoadingIncome,
+          'isLoadingIncome',
+          true,
+        ),
+        isA<FinancialStatementsState>()
+            .having((s) => s.isLoadingIncome, 'isLoadingIncome', false)
+            .having(
+              (s) => s.annualIncomeStatements,
+              'annualIncomeStatements',
+              [tIncome],
+            ),
+      ],
+    );
   });
 
   group('FinancialStatementsBloc - loadBalanceSheets', () {
@@ -283,6 +409,36 @@ void main() {
               (s) => s.balanceOrigin,
               'balanceOrigin',
               CompanyProfileDataOrigin.api,
+            ),
+      ],
+    );
+
+    blocTest<FinancialStatementsBloc, FinancialStatementsState>(
+      'loadBalanceSheets_failure_emitsLoadingAndFailure',
+      build: () {
+        // arrange
+        when(
+          () => mockGetBalanceSheets(any()),
+        ).thenAnswer((_) async => const Left(Failure.server('error')));
+        return bloc;
+      },
+      act: (bloc) {
+        // act
+        bloc.add(const FinancialStatementsEvent.loadBalanceSheets(tTicker));
+      },
+      // assert
+      expect: () => [
+        isA<FinancialStatementsState>().having(
+          (s) => s.isLoadingBalance,
+          'isLoadingBalance',
+          true,
+        ),
+        isA<FinancialStatementsState>()
+            .having((s) => s.isLoadingBalance, 'isLoadingBalance', false)
+            .having(
+              (s) => s.balanceError,
+              'balanceError',
+              const Failure.server('error'),
             ),
       ],
     );
@@ -342,6 +498,36 @@ void main() {
               (s) => s.cashFlowOrigin,
               'cashFlowOrigin',
               CompanyProfileDataOrigin.api,
+            ),
+      ],
+    );
+
+    blocTest<FinancialStatementsBloc, FinancialStatementsState>(
+      'loadCashFlows_failure_emitsLoadingAndFailure',
+      build: () {
+        // arrange
+        when(
+          () => mockGetCashFlowStatements(any()),
+        ).thenAnswer((_) async => const Left(Failure.server('error')));
+        return bloc;
+      },
+      act: (bloc) {
+        // act
+        bloc.add(const FinancialStatementsEvent.loadCashFlows(tTicker));
+      },
+      // assert
+      expect: () => [
+        isA<FinancialStatementsState>().having(
+          (s) => s.isLoadingCashFlow,
+          'isLoadingCashFlow',
+          true,
+        ),
+        isA<FinancialStatementsState>()
+            .having((s) => s.isLoadingCashFlow, 'isLoadingCashFlow', false)
+            .having(
+              (s) => s.cashFlowError,
+              'cashFlowError',
+              const Failure.server('error'),
             ),
       ],
     );
@@ -409,6 +595,150 @@ void main() {
           (s) => s.selectedAnnualIncomeDate,
           'selectedAnnualIncomeDate',
           '2022-09-24',
+        ),
+      ],
+    );
+
+    blocTest<FinancialStatementsBloc, FinancialStatementsState>(
+      'viewTypeChanged_sameTypeSelected_emitsNothing',
+      build: () {
+        // arrange
+        return bloc;
+      },
+      act: (bloc) {
+        // act
+        bloc.add(
+          const FinancialStatementsEvent.viewTypeChanged(
+            tTicker,
+            FinancialStatementType.income,
+          ),
+        );
+      },
+      // assert
+      expect: () => const <FinancialStatementsState>[],
+    );
+
+    blocTest<FinancialStatementsBloc, FinancialStatementsState>(
+      'incomeDateSelected_quarterly_updatesQuarterlySelection',
+      build: () {
+        // arrange
+        return bloc;
+      },
+      act: (bloc) {
+        // act
+        bloc.add(
+          const FinancialStatementsEvent.incomeDateSelected(
+            '2023-06-30',
+            isAnnual: false,
+          ),
+        );
+      },
+      // assert
+      expect: () => [
+        isA<FinancialStatementsState>().having(
+          (s) => s.selectedQuarterlyIncomeDate,
+          'selectedQuarterlyIncomeDate',
+          '2023-06-30',
+        ),
+      ],
+    );
+
+    blocTest<FinancialStatementsBloc, FinancialStatementsState>(
+      'balanceDateSelected_annual_updatesAnnualSelection',
+      build: () {
+        // arrange
+        return bloc;
+      },
+      act: (bloc) {
+        // act
+        bloc.add(
+          const FinancialStatementsEvent.balanceDateSelected(
+            '2022-09-24',
+            isAnnual: true,
+          ),
+        );
+      },
+      // assert
+      expect: () => [
+        isA<FinancialStatementsState>().having(
+          (s) => s.selectedAnnualBalanceDate,
+          'selectedAnnualBalanceDate',
+          '2022-09-24',
+        ),
+      ],
+    );
+
+    blocTest<FinancialStatementsBloc, FinancialStatementsState>(
+      'balanceDateSelected_quarterly_updatesQuarterlySelection',
+      build: () {
+        // arrange
+        return bloc;
+      },
+      act: (bloc) {
+        // act
+        bloc.add(
+          const FinancialStatementsEvent.balanceDateSelected(
+            '2023-06-30',
+            isAnnual: false,
+          ),
+        );
+      },
+      // assert
+      expect: () => [
+        isA<FinancialStatementsState>().having(
+          (s) => s.selectedQuarterlyBalanceDate,
+          'selectedQuarterlyBalanceDate',
+          '2023-06-30',
+        ),
+      ],
+    );
+
+    blocTest<FinancialStatementsBloc, FinancialStatementsState>(
+      'cashFlowDateSelected_annual_updatesAnnualSelection',
+      build: () {
+        // arrange
+        return bloc;
+      },
+      act: (bloc) {
+        // act
+        bloc.add(
+          const FinancialStatementsEvent.cashFlowDateSelected(
+            '2022-09-24',
+            isAnnual: true,
+          ),
+        );
+      },
+      // assert
+      expect: () => [
+        isA<FinancialStatementsState>().having(
+          (s) => s.selectedAnnualCashFlowDate,
+          'selectedAnnualCashFlowDate',
+          '2022-09-24',
+        ),
+      ],
+    );
+
+    blocTest<FinancialStatementsBloc, FinancialStatementsState>(
+      'cashFlowDateSelected_quarterly_updatesQuarterlySelection',
+      build: () {
+        // arrange
+        return bloc;
+      },
+      act: (bloc) {
+        // act
+        bloc.add(
+          const FinancialStatementsEvent.cashFlowDateSelected(
+            '2023-06-30',
+            isAnnual: false,
+          ),
+        );
+      },
+      // assert
+      expect: () => [
+        isA<FinancialStatementsState>().having(
+          (s) => s.selectedQuarterlyCashFlowDate,
+          'selectedQuarterlyCashFlowDate',
+          '2023-06-30',
         ),
       ],
     );
@@ -638,29 +968,22 @@ void main() {
       },
       expect: () => [
         isA<FinancialStatementsState>().having(
-          (s) => s.incAnalytics?.ticker,
-          'ticker',
-          tTicker,
-        ),
-        isA<FinancialStatementsState>().having(
           (s) => s.isLoadingIncome,
           'isLoadingIncome',
           true,
         ),
-        isA<FinancialStatementsState>()
-            .having((s) => s.isLoadingIncome, 'isLoadingIncome', false)
-            .having((s) => s.incAnalytics?.isSuccess, 'isSuccess', true)
-            .having(
-              (s) => s.incAnalytics?.dataSource,
-              'dataSource',
-              CompanyProfileDataOrigin.api,
-            )
-            .having(
-              (s) => (s.incAnalytics?.loadTimeMs ?? 0) >= 0,
-              'loadTimeMs',
-              true,
-            ),
+        isA<FinancialStatementsState>().having(
+          (s) => s.isLoadingIncome,
+          'isLoadingIncome',
+          false,
+        ),
       ],
+      verify: (bloc) {
+        expect(bloc.incAnalytics?.ticker, tTicker);
+        expect(bloc.incAnalytics?.isSuccess, isTrue);
+        expect(bloc.incAnalytics?.dataSource, CompanyProfileDataOrigin.api);
+        expect((bloc.incAnalytics?.loadTimeMs ?? -1) >= 0, isTrue);
+      },
       wait: const Duration(milliseconds: 500),
     );
 
@@ -677,10 +1000,10 @@ void main() {
             incomeOrigin: CompanyProfileDataOrigin.db,
           ),
       act: (bloc) => bloc.add(const FinancialStatementsEvent.tabShown(tTicker)),
-      expect: () => [
-        isA<FinancialStatementsState>().having(
-          (s) => s.incAnalytics,
-          'incAnalytics',
+      expect: () => const <FinancialStatementsState>[],
+      verify: (bloc) {
+        expect(
+          bloc.incAnalytics,
           isA<IncStmtTabViewState>()
               .having((a) => a.loadTimeMs, 'loadTimeMs', 123)
               .having((a) => a.isSuccess, 'isSuccess', true)
@@ -689,8 +1012,8 @@ void main() {
                 'dataSource',
                 CompanyProfileDataOrigin.db,
               ),
-        ),
-      ],
+        );
+      },
     );
 
     blocTest<FinancialStatementsBloc, FinancialStatementsState>(
@@ -702,21 +1025,17 @@ void main() {
             freePlanHistoryCount: 5,
           ).copyWith(
             selectedType: FinancialStatementType.income,
-            incAnalytics: IncStmtTabViewState(
-              ticker: tTicker,
-              timestamp: DateTime.now().toIso8601String(),
-              loadTimeMs: 456,
-              isSuccess: true,
-              dataSource: CompanyProfileDataOrigin.api,
-            ),
+            incomeLoadTimeMs: 456,
+            isIncomeSuccess: true,
+            incomeOrigin: CompanyProfileDataOrigin.api,
           ),
-      act: (bloc) => bloc.add(
-        const FinancialStatementsEvent.viewAllTapped(isAnnual: true),
-      ),
-      expect: () => [
-        isA<FinancialStatementsState>().having(
-          (s) => s.incAnalytics,
-          'incAnalytics',
+      act: (bloc) => bloc
+        ..add(const FinancialStatementsEvent.tabShown(tTicker))
+        ..add(const FinancialStatementsEvent.viewAllTapped(isAnnual: true)),
+      expect: () => const <FinancialStatementsState>[],
+      verify: (bloc) {
+        expect(
+          bloc.incAnalytics,
           isA<IncStmtTabViewState>()
               .having((a) => a.loadTimeMs, 'loadTimeMs', 456)
               .having((a) => a.isSuccess, 'isSuccess', true)
@@ -725,8 +1044,154 @@ void main() {
                 'tappedAllIncomeYrly',
                 true,
               ),
+        );
+      },
+    );
+  });
+
+  group('FinancialStatementsBloc - Lifecycle Analytics', () {
+    blocTest<FinancialStatementsBloc, FinancialStatementsState>(
+      'tabHidden_afterTabShown_logsFinalViewSummary',
+      build: () {
+        // arrange
+        return bloc;
+      },
+      act: (bloc) {
+        // act
+        bloc
+          ..add(const FinancialStatementsEvent.tabShown(tTicker))
+          ..add(const FinancialStatementsEvent.tabHidden());
+      },
+      // assert
+      expect: () => const <FinancialStatementsState>[],
+      verify: (_) {
+        verify(
+          () => mockIncTracker.logViewSummary(any(), isFinal: true),
+        ).called(1);
+      },
+    );
+
+    blocTest<FinancialStatementsBloc, FinancialStatementsState>(
+      'appBackgrounded_afterTabShown_logsNonFinalViewSummary',
+      build: () {
+        // arrange
+        return bloc;
+      },
+      act: (bloc) {
+        // act
+        bloc
+          ..add(const FinancialStatementsEvent.tabShown(tTicker))
+          ..add(const FinancialStatementsEvent.appBackgrounded());
+      },
+      // assert
+      expect: () => const <FinancialStatementsState>[],
+      verify: (_) {
+        verify(
+          () => mockIncTracker.logViewSummary(any(), isFinal: false),
+        ).called(1);
+      },
+    );
+
+    blocTest<FinancialStatementsBloc, FinancialStatementsState>(
+      'appForegrounded_afterAppBackgrounded_resumesWithoutLoggingAgain',
+      build: () {
+        // arrange
+        return bloc;
+      },
+      act: (bloc) {
+        // act
+        bloc
+          ..add(const FinancialStatementsEvent.tabShown(tTicker))
+          ..add(const FinancialStatementsEvent.appBackgrounded())
+          ..add(const FinancialStatementsEvent.appForegrounded());
+      },
+      // assert
+      expect: () => const <FinancialStatementsState>[],
+      verify: (_) {
+        verify(
+          () => mockIncTracker.logViewSummary(
+            any(),
+            isFinal: any(named: 'isFinal'),
+          ),
+        ).called(1);
+      },
+    );
+
+    blocTest<FinancialStatementsBloc, FinancialStatementsState>(
+      'chartSwiped_onBalanceTab_marksCurrencyChartViewed',
+      build: () {
+        // arrange
+        return bloc;
+      },
+      seed: () =>
+          FinancialStatementsState.initial(
+            ticker: tTicker,
+            freePlanHistoryCount: 5,
+          ).copyWith(selectedType: FinancialStatementType.balance),
+      act: (bloc) {
+        // act
+        bloc
+          ..add(const FinancialStatementsEvent.tabShown(tTicker))
+          ..add(const FinancialStatementsEvent.chartSwiped(1));
+      },
+      // assert
+      expect: () => const <FinancialStatementsState>[],
+      verify: (bloc) {
+        expect(bloc.balAnalytics?.viewedCurrChart, isTrue);
+        expect(bloc.balAnalytics?.viewedBalanceTab, isTrue);
+      },
+    );
+  });
+
+  group('FinancialStatementsBloc - Active Tab Subscription', () {
+    blocTest<FinancialStatementsBloc, FinancialStatementsState>(
+      'activeTabStream_financialStatementsActivated_triggersStalenessLoad',
+      build: () {
+        // arrange
+        when(() => mockGetIncomeStatements(any())).thenAnswer(
+          (_) async => Right((
+            List<IncomeStatement>.from([tIncome]),
+            CompanyProfileDataOrigin.api,
+          )),
+        );
+        return bloc;
+      },
+      act: (bloc) {
+        // act
+        tabActivationController.add(tFinancialStatementsActivation);
+      },
+      // assert
+      expect: () => [
+        isA<FinancialStatementsState>().having(
+          (s) => s.isLoadingIncome,
+          'isLoadingIncome',
+          true,
+        ),
+        isA<FinancialStatementsState>().having(
+          (s) => s.isLoadingIncome,
+          'isLoadingIncome',
+          false,
         ),
       ],
+      wait: const Duration(milliseconds: 500),
+    );
+
+    blocTest<FinancialStatementsBloc, FinancialStatementsState>(
+      'activeTabStream_otherTabActivated_emitsNothing',
+      build: () {
+        // arrange
+        return bloc;
+      },
+      act: (bloc) {
+        // act
+        tabActivationController.add(tOtherTabActivation);
+      },
+      // assert
+      expect: () => const <FinancialStatementsState>[],
+      verify: (_) {
+        verifyNever(() => mockGetIncomeStatements(any()));
+      },
+      wait: const Duration(milliseconds: 500),
     );
   });
 }

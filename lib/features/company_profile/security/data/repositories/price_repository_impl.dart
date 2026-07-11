@@ -2,7 +2,7 @@ import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
 import 'package:bizzie/core/error/failures.dart';
-import 'package:bizzie/features/company_profile/security/data/datasources/security_firestore_data_source.dart';
+import 'package:bizzie/features/company_profile/security/data/interfaces/i_security_firestore_datasource.dart';
 import 'package:bizzie/features/company_profile/security/data/datasources/security_remote_data_source.dart';
 import 'package:bizzie/features/company_profile/security/domain/interfaces/i_price_repository.dart';
 import 'package:bizzie/features/company_profile/security/domain/models/historical_price_eod.dart';
@@ -12,7 +12,7 @@ import 'package:bizzie/features/company_profile/security/domain/models/price_his
 @LazySingleton(as: IPriceRepository)
 class PriceRepositoryImpl implements IPriceRepository {
   final SecurityRemoteDataSource _remoteDataSource;
-  final SecurityFirestoreDataSource _localDataSource;
+  final ISecurityFirestoreDataSource _localDataSource;
 
   PriceRepositoryImpl(this._remoteDataSource, this._localDataSource);
 

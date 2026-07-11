@@ -1,30 +1,22 @@
 import 'package:injectable/injectable.dart';
+import 'package:bizzie/core/constants/firestore_constants.dart';
 import 'package:bizzie/core/data/datasources/base_firestore_cache_client.dart';
 import 'package:bizzie/core/data/models/firestore_cache_entry.dart';
 import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:bizzie/features/company_profile/dividends/data/dtos/dividend_dto.dart';
+import 'package:bizzie/features/company_profile/dividends/data/interfaces/i_dividends_firestore_datasource.dart';
 import 'package:bizzie/core/data/models/cache_result.dart' as result;
 import 'package:bizzie/core/interfaces/i_time_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:bizzie/services/firestore_service.dart';
 
-abstract class DividendsFirestoreDataSource {
-  Future<result.CacheResult<List<DividendDto>>> syncDividends(
-    String ticker, {
-    required Future<List<DividendDto>> Function() remoteFetcher,
-    bool forceRefresh,
-  });
-  Future<(List<DividendDto>, CompanyProfileDataOrigin)?> getCachedDividends(
-    String ticker,
-  );
-}
-
-@LazySingleton(as: DividendsFirestoreDataSource)
+@Injectable(as: IDividendsFirestoreDataSource)
 class DividendsFirestoreDataSourceImpl extends BaseFirestoreCacheClient
-    implements DividendsFirestoreDataSource {
+    implements IDividendsFirestoreDataSource {
   DividendsFirestoreDataSourceImpl(
-    FirebaseFirestore firestore,
+    FirestoreService firestoreService,
     ITimeProvider timeProvider,
-  ) : super(firestore, timeProvider, 'DividendsFirestoreDataSource');
+  ) : super(firestoreService, timeProvider, 'DividendsFirestoreDataSource');
 
   @override
   Future<result.CacheResult<List<DividendDto>>> syncDividends(
@@ -54,8 +46,8 @@ class DividendsFirestoreDataSourceImpl extends BaseFirestoreCacheClient
     String ticker,
   ) => getDocRef<List<DividendDto>>(
     ticker,
-    'market',
-    'dividends',
+    FirestoreConstants.market,
+    FirestoreConstants.dividends,
     (json) => (json as List).map((e) => DividendDto.fromJson(e)).toList(),
     (data) => data.map((e) => e.toJson()).toList(),
   );

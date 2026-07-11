@@ -8,7 +8,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'company_free_cash_flow_state.freezed.dart';
 
 @freezed
-class CompanyFreeCashFlowState with _$CompanyFreeCashFlowState {
+abstract class CompanyFreeCashFlowState with _$CompanyFreeCashFlowState {
   const factory CompanyFreeCashFlowState.initial() = _Initial;
   const factory CompanyFreeCashFlowState.loading() = _Loading;
   const factory CompanyFreeCashFlowState.loaded({
