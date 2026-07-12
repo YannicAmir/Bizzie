@@ -1,7 +1,11 @@
 import 'dart:async';
 
+import 'package:bizzie/core/enums/data_origin.dart';
+import 'package:bizzie/core/interfaces/i_time_provider.dart';
 import 'package:bizzie/core/usecase/usecase.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
+import 'package:bizzie/features/auth/domain/usecases/get_auth_stream.dart';
+import 'package:bizzie/features/auth/presentation/bloc/auth_session_reset_mixin.dart';
 import 'package:bizzie/features/company_profile/security/domain/usecases/get_upcoming_earnings_usecase.dart';
 import 'package:bizzie/features/company_profile/security/presentation/bloc/upcoming_earnings/upcoming_earnings_event.dart';
 import 'package:bizzie/features/company_profile/security/presentation/bloc/upcoming_earnings/upcoming_earnings_state.dart';
@@ -16,9 +20,11 @@ final _logger = BizzieLogger('UpcomingEarningsBloc');
 
 @injectable
 class UpcomingEarningsBloc
-    extends Bloc<UpcomingEarningsEvent, UpcomingEarningsState> {
+    extends Bloc<UpcomingEarningsEvent, UpcomingEarningsState>
+    with AuthSessionResetMixin<UpcomingEarningsEvent, UpcomingEarningsState> {
   final GetUpcomingEarningsUseCase _getUpcomingEarningsUseCase;
   final WatchActiveTabUseCase _watchActiveTabUseCase;
+  final ITimeProvider _timeProvider;
 
   String? _ticker;
   StreamSubscription<TabActivation>? _tabSubscription;
@@ -26,6 +32,8 @@ class UpcomingEarningsBloc
   UpcomingEarningsBloc(
     this._getUpcomingEarningsUseCase,
     this._watchActiveTabUseCase,
+    this._timeProvider,
+    GetAuthStream getAuthStream,
   ) : super(const UpcomingEarningsState.initial()) {
     on<LoadRequested>(_onLoadRequested, transformer: restartable());
     on<StalenessCheckRequested>(
@@ -33,11 +41,14 @@ class UpcomingEarningsBloc
       transformer: droppable(),
     );
     on<Reset>(_onReset);
+    resetOnSessionEnd(getAuthStream, const UpcomingEarningsEvent.reset());
     _tabSubscription = _watchActiveTabUseCase(NoParams())
         .where((activation) => activation.tab == CompanyProfileTab.security)
         .listen((activation) {
           if (_ticker != null && _ticker == activation.ticker) {
-            add(UpcomingEarningsEvent.stalenessCheckRequested(activation.ticker));
+            add(
+              UpcomingEarningsEvent.stalenessCheckRequested(activation.ticker),
+            );
           }
         });
   }
@@ -73,27 +84,31 @@ class UpcomingEarningsBloc
         _logger.severe('Failed to load Upcoming Earnings', failure);
         emit(UpcomingEarningsState.failure(failure));
       },
-      (tuple) {
-        final date = tuple.$1;
-        final origin = tuple.$2;
-
-        if (date == null) {
-          _logger.info('No upcoming earnings found for ${event.ticker}');
-          emit(const UpcomingEarningsState.empty());
-        } else {
-          _logger.info(
-            'Successfully loaded Upcoming Earnings for ${event.ticker}: $date',
-          );
-          emit(
-            UpcomingEarningsState.loaded(
-              date,
-              dataSource: origin,
-              lastUpdated: DateTime.now(),
-            ),
-          );
-        }
-      },
+      (tuple) => _emitLoadedOrEmpty(event.ticker, tuple, emit),
     );
+  }
+
+  void _emitLoadedOrEmpty(
+    String ticker,
+    (DateTime?, CompanyProfileDataOrigin) tuple,
+    Emitter<UpcomingEarningsState> emit,
+  ) {
+    final date = tuple.$1;
+    final origin = tuple.$2;
+
+    if (date == null) {
+      _logger.info('No upcoming earnings found for $ticker');
+      emit(const UpcomingEarningsState.empty());
+    } else {
+      _logger.info('Successfully loaded Upcoming Earnings for $ticker: $date');
+      emit(
+        UpcomingEarningsState.loaded(
+          date,
+          dataSource: origin,
+          lastUpdated: _timeProvider.nowLocal,
+        ),
+      );
+    }
   }
 
   Future<void> _onStalenessCheckRequested(
@@ -102,58 +117,49 @@ class UpcomingEarningsBloc
   ) async {
     _logger.info('Staleness check requested for ${event.ticker}');
     state.mapOrNull(
-      loaded: (loadedState) {
-        final lastUpdated = loadedState.lastUpdated;
-        if (lastUpdated != null) {
-          final difference = DateTime.now().difference(lastUpdated);
-          if (difference.inHours >= 24) {
-            _logger.info(
-              'Upcoming Earnings stale (TTL expired: ${difference.inHours}h). Triggering load.',
-            );
-            add(
-              UpcomingEarningsEvent.loadRequested(
-                event.ticker,
-                forceRefresh: true,
-              ),
-            );
-          } else {
-            _logger.info(
-              'Upcoming Earnings still fresh (Last updated: $lastUpdated)',
-            );
-          }
-        } else {
-          _logger.info(
-            'Upcoming Earnings lastUpdated is null. Triggering load.',
-          );
-          add(
-            UpcomingEarningsEvent.loadRequested(
-              event.ticker,
-              forceRefresh: true,
-            ),
-          );
-        }
-      },
-      failure: (_) {
-        _logger.info('Upcoming Earnings in failure state. Triggering retry.');
-        add(
-          UpcomingEarningsEvent.loadRequested(event.ticker, forceRefresh: true),
-        );
-      },
-      initial: (_) {
-        _logger.info('Upcoming Earnings in initial state. Triggering load.');
-        add(
-          UpcomingEarningsEvent.loadRequested(event.ticker, forceRefresh: true),
-        );
-      },
-      empty: (_) {
-        _logger.info(
-          'Upcoming Earnings in empty state. Triggering retry/load.',
-        );
-        add(
-          UpcomingEarningsEvent.loadRequested(event.ticker, forceRefresh: true),
-        );
-      },
+      loaded: (loadedState) =>
+          _evaluateLoadedStaleness(event.ticker, loadedState.lastUpdated),
+      failure: (_) => _triggerForceRefresh(
+        event.ticker,
+        'Upcoming Earnings in failure state. Triggering retry.',
+      ),
+      initial: (_) => _triggerForceRefresh(
+        event.ticker,
+        'Upcoming Earnings in initial state. Triggering load.',
+      ),
+      empty: (_) => _triggerForceRefresh(
+        event.ticker,
+        'Upcoming Earnings in empty state. Triggering retry/load.',
+      ),
     );
+  }
+
+  void _evaluateLoadedStaleness(String ticker, DateTime? lastUpdated) {
+    if (lastUpdated == null) {
+      _triggerForceRefresh(
+        ticker,
+        'Upcoming Earnings lastUpdated is null. Triggering load.',
+      );
+      return;
+    }
+
+    final difference = _timeProvider.nowLocal.difference(lastUpdated);
+    if (difference.inHours >= 24) {
+      _triggerForceRefresh(
+        ticker,
+        'Upcoming Earnings stale (TTL expired: ${difference.inHours}h). '
+        'Triggering load.',
+      );
+    } else {
+      _logger.info(
+        'Upcoming Earnings still fresh (Last updated: $lastUpdated)',
+      );
+    }
+  }
+
+  void _triggerForceRefresh(String ticker, String logMessage) {
+    _logger.info(logMessage);
+    add(UpcomingEarningsEvent.loadRequested(ticker, forceRefresh: true));
   }
 
   Future<void> _onReset(

@@ -93,10 +93,7 @@ return watchlistStatusChanged(_that);case LifecycleChanged():
 return lifecycleChanged(_that);case EditTabsOpened():
 return editTabsOpened(_that);case TabOrderSaved():
 return tabOrderSaved(_that);case Closed():
-return closed(_that);case _:
-  throw StateError('Unexpected subclass');
-
-}
+return closed(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -173,10 +170,7 @@ return watchlistStatusChanged(_that.isWatchlisted);case LifecycleChanged():
 return lifecycleChanged(_that.state);case EditTabsOpened():
 return editTabsOpened(_that.isSubscribed);case TabOrderSaved():
 return tabOrderSaved(_that.isSubscribed,_that.mainTabs,_that.moreTabs);case Closed():
-return closed();case _:
-  throw StateError('Unexpected subclass');
-
-}
+return closed();}
 }
 /// A variant of `when` that fallback to returning `null`
 ///

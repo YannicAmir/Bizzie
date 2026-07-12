@@ -18,6 +18,7 @@ import 'package:bizzie/features/company_profile/financial_statements/domain/usec
 import 'package:bizzie/features/company_profile/financial_statements/domain/usecases/get_cash_flow_statements_usecase.dart';
 import 'package:bizzie/features/company_profile/financial_statements/domain/usecases/get_income_statements_usecase.dart';
 import 'package:bizzie/core/interfaces/i_config_service.dart';
+import 'package:bizzie/core/interfaces/i_time_provider.dart';
 import 'package:bizzie/features/company_profile/financial_statements/presentation/analytics/bal_stmt_tab_analytics.dart';
 import 'package:bizzie/features/company_profile/financial_statements/presentation/analytics/cash_stmt_tab_analytics.dart';
 import 'package:bizzie/features/company_profile/financial_statements/presentation/analytics/inc_stmt_tab_analytics.dart';
@@ -39,6 +40,7 @@ class FinancialStatementsBloc
   final GetBalanceSheetsUseCase _getBalanceSheets;
   final GetCashFlowStatementsUseCase _getCashFlowStatements;
   final WatchActiveTabUseCase _watchActiveTabUseCase;
+  final ITimeProvider _timeProvider;
 
   @override
   final IncStmtTabAnalytics incTracker;
@@ -59,6 +61,7 @@ class FinancialStatementsBloc
     this.cashTracker,
     IConfigService configService,
     this._watchActiveTabUseCase,
+    this._timeProvider,
   ) : super(
         FinancialStatementsState.initial(
           ticker: '',
@@ -191,7 +194,7 @@ class FinancialStatementsBloc
         annualIncomeStatements: annualData,
         quarterlyIncomeStatements: quarterlyData,
         reportedCurrency: currency,
-        lastUpdatedIncome: DateTime.now(),
+        lastUpdatedIncome: _timeProvider.nowLocal,
         incomeOrigin:
             annualOrigin ?? quarterlyOrigin ?? CompanyProfileDataOrigin.api,
         selectedAnnualIncomeDate:
@@ -277,7 +280,7 @@ class FinancialStatementsBloc
         isBalanceSuccess: true,
         annualBalanceSheets: annualData,
         quarterlyBalanceSheets: quarterlyData,
-        lastUpdatedBalance: DateTime.now(),
+        lastUpdatedBalance: _timeProvider.nowLocal,
         balanceOrigin:
             annualOrigin ?? quarterlyOrigin ?? CompanyProfileDataOrigin.api,
         selectedAnnualBalanceDate:
@@ -364,7 +367,7 @@ class FinancialStatementsBloc
         isCashFlowSuccess: true,
         annualCashFlowStatements: annualData,
         quarterlyCashFlowStatements: quarterlyData,
-        lastUpdatedCashFlow: DateTime.now(),
+        lastUpdatedCashFlow: _timeProvider.nowLocal,
         cashFlowOrigin:
             annualOrigin ?? quarterlyOrigin ?? CompanyProfileDataOrigin.api,
         selectedAnnualCashFlowDate:
@@ -385,7 +388,7 @@ class FinancialStatementsBloc
     switch (e.type) {
       case FinancialStatementType.income:
         if (state.lastUpdatedIncome != null &&
-            DateTime.now().difference(state.lastUpdatedIncome!) >
+            _timeProvider.nowLocal.difference(state.lastUpdatedIncome!) >
                 const Duration(hours: 24)) {
           _logger.info(
             'Income statements stale (TTL expired). Triggering load.',
@@ -412,7 +415,7 @@ class FinancialStatementsBloc
         break;
       case FinancialStatementType.balance:
         if (state.lastUpdatedBalance != null &&
-            DateTime.now().difference(state.lastUpdatedBalance!) >
+            _timeProvider.nowLocal.difference(state.lastUpdatedBalance!) >
                 const Duration(hours: 24)) {
           _logger.info('Balance sheets stale (TTL expired). Triggering load.');
           add(
@@ -437,7 +440,7 @@ class FinancialStatementsBloc
         break;
       case FinancialStatementType.cashFlow:
         if (state.lastUpdatedCashFlow != null &&
-            DateTime.now().difference(state.lastUpdatedCashFlow!) >
+            _timeProvider.nowLocal.difference(state.lastUpdatedCashFlow!) >
                 const Duration(hours: 24)) {
           _logger.info('Cash flows stale (TTL expired). Triggering load.');
           add(
@@ -548,7 +551,7 @@ class FinancialStatementsBloc
     TabShown e,
     Emitter<FinancialStatementsState> emit,
   ) async {
-    final timestamp = DateTime.now().toIso8601String();
+    final timestamp = _timeProvider.nowLocal.toIso8601String();
     handleTabShown(
       e.ticker,
       initialInc: IncStmtTabViewState(

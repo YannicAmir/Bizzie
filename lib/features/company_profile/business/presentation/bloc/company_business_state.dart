@@ -6,7 +6,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'company_business_state.freezed.dart';
 
 @freezed
-class CompanyBusinessState with _$CompanyBusinessState {
+abstract class CompanyBusinessState with _$CompanyBusinessState {
   const factory CompanyBusinessState.initial() = _Initial;
   const factory CompanyBusinessState.loading() = _Loading;
   const factory CompanyBusinessState.loaded(

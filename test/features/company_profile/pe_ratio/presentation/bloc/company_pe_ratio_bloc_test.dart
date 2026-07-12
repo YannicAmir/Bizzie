@@ -11,7 +11,9 @@ import 'package:bizzie/features/company_profile/pe_ratio/presentation/analytics/
 import 'package:bloc_test/bloc_test.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:bizzie/core/interfaces/i_time_provider.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:bizzie/features/auth/domain/usecases/get_auth_stream.dart';
 
 import 'package:bizzie/core/interfaces/i_config_service.dart';
 
@@ -20,6 +22,22 @@ class MockGetPeRatioUseCase extends Mock implements GetPeRatioUseCase {}
 class MockConfigService extends Mock implements IConfigService {}
 
 class MockPeRatioTabAnalytics extends Mock implements PeRatioTabAnalytics {}
+
+class MockGetAuthStream extends Mock implements GetAuthStream {}
+
+MockGetAuthStream stubbedGetAuthStream() {
+  final mock = MockGetAuthStream();
+  when(() => mock()).thenAnswer((_) => const Stream.empty());
+  return mock;
+}
+
+class MockTimeProvider extends Mock implements ITimeProvider {}
+
+MockTimeProvider stubbedTimeProvider() {
+  final mock = MockTimeProvider();
+  when(() => mock.nowLocal).thenAnswer((_) => DateTime.now());
+  return mock;
+}
 
 void main() {
   late CompanyPeRatioBloc bloc;
@@ -42,6 +60,8 @@ void main() {
       mockConfigService,
       mockAnalytics,
       PeRatioMetricsService(),
+      stubbedTimeProvider(),
+      stubbedGetAuthStream(),
     );
   });
 

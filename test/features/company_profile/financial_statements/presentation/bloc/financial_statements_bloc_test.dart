@@ -27,6 +27,7 @@ import 'package:bizzie/features/company_profile/shared/domain/usecases/watch_act
 import 'package:bloc_test/bloc_test.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:bizzie/core/interfaces/i_time_provider.dart';
 import 'package:mocktail/mocktail.dart';
 
 class MockGetIncomeStatementsUseCase extends Mock
@@ -47,6 +48,14 @@ class MockCashStmtTabAnalytics extends Mock implements CashStmtTabAnalytics {}
 class MockConfigService extends Mock implements IConfigService {}
 
 class MockWatchActiveTabUseCase extends Mock implements WatchActiveTabUseCase {}
+
+class MockTimeProvider extends Mock implements ITimeProvider {}
+
+MockTimeProvider stubbedTimeProvider() {
+  final mock = MockTimeProvider();
+  when(() => mock.nowLocal).thenAnswer((_) => DateTime.now());
+  return mock;
+}
 
 void main() {
   setUpAll(() {
@@ -113,6 +122,7 @@ void main() {
       mockCashTracker,
       mockConfigService,
       mockWatchActiveTabUseCase,
+      stubbedTimeProvider(),
     );
 
     registerFallbackValue(const GetFinancialStatementParams(ticker: ''));

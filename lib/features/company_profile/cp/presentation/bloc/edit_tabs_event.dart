@@ -4,7 +4,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'edit_tabs_event.freezed.dart';
 
 @freezed
-class EditTabsEvent with _$EditTabsEvent {
+sealed class EditTabsEvent with _$EditTabsEvent {
   const factory EditTabsEvent.started({
     required List<CompanyProfileTab> mainTabs,
     required List<CompanyProfileTab> moreTabs,

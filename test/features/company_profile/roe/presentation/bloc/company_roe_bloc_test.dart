@@ -9,7 +9,9 @@ import 'package:bizzie/features/company_profile/roe/presentation/bloc/company_ro
 import 'package:bloc_test/bloc_test.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:bizzie/core/interfaces/i_time_provider.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:bizzie/features/auth/domain/usecases/get_auth_stream.dart';
 import 'package:bizzie/core/interfaces/i_config_service.dart';
 import 'package:bizzie/features/company_profile/roe/presentation/analytics/roe_tab_analytics.dart';
 import 'package:bizzie/features/company_profile/roe/presentation/analytics/roe_tab_view_state.dart';
@@ -19,6 +21,22 @@ class MockGetRoeUseCase extends Mock implements GetRoeUseCase {}
 class MockConfigService extends Mock implements IConfigService {}
 
 class MockRoeTabAnalytics extends Mock implements RoeTabAnalytics {}
+
+class MockGetAuthStream extends Mock implements GetAuthStream {}
+
+MockGetAuthStream stubbedGetAuthStream() {
+  final mock = MockGetAuthStream();
+  when(() => mock()).thenAnswer((_) => const Stream.empty());
+  return mock;
+}
+
+class MockTimeProvider extends Mock implements ITimeProvider {}
+
+MockTimeProvider stubbedTimeProvider() {
+  final mock = MockTimeProvider();
+  when(() => mock.nowLocal).thenAnswer((_) => DateTime.now());
+  return mock;
+}
 
 void main() {
   late CompanyRoeBloc bloc;
@@ -37,7 +55,13 @@ void main() {
     mockConfigService = MockConfigService();
     mockAnalytics = MockRoeTabAnalytics();
     when(() => mockConfigService.freePlanHistoryCount).thenReturn(7);
-    bloc = CompanyRoeBloc(mockGetRoe, mockConfigService, mockAnalytics);
+    bloc = CompanyRoeBloc(
+      mockGetRoe,
+      mockConfigService,
+      mockAnalytics,
+      stubbedTimeProvider(),
+      stubbedGetAuthStream(),
+    );
   });
 
   tearDown(() => bloc.close());

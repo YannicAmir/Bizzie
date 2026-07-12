@@ -1,9 +1,12 @@
+import 'package:bizzie/core/interfaces/i_time_provider.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:injectable/injectable.dart';
+import 'package:bizzie/features/auth/domain/usecases/get_auth_stream.dart';
+import 'package:bizzie/features/auth/presentation/bloc/auth_session_reset_mixin.dart';
 import 'package:bizzie/features/company_profile/security/domain/usecases/get_historical_eod_prices_use_case.dart';
-import 'package:bizzie/shared/utils/market_hours_helper.dart';
+import 'package:bizzie/features/company_profile/shared/domain/services/market_hours_freshness_service.dart';
 import 'historical_price_eod_event.dart';
 import 'historical_price_eod_state.dart';
 
@@ -11,23 +14,23 @@ final _logger = BizzieLogger('HistoricalPriceEodBloc');
 
 @injectable
 class HistoricalPriceEodBloc
-    extends Bloc<HistoricalPriceEodEvent, HistoricalPriceEodState> {
+    extends Bloc<HistoricalPriceEodEvent, HistoricalPriceEodState>
+    with
+        AuthSessionResetMixin<HistoricalPriceEodEvent, HistoricalPriceEodState> {
   final GetHistoricalEodPricesUseCase _getPrices;
+  final MarketHoursFreshnessService _freshnessService;
+  final ITimeProvider _timeProvider;
 
-  HistoricalPriceEodBloc(this._getPrices)
-    : super(const HistoricalPriceEodState.initial()) {
-    on<HistoricalPriceEodEvent>(_onEvent, transformer: droppable());
-  }
-
-  Future<void> _onEvent(
-    HistoricalPriceEodEvent event,
-    Emitter<HistoricalPriceEodState> emit,
-  ) async {
-    _logger.info('Handling event: $event');
-    await event.map(
-      loadRequested: (e) async => _onLoadRequested(e, emit),
-      stalenessCheckRequested: (e) async => _onStalenessCheckRequested(e),
-    );
+  HistoricalPriceEodBloc(
+    this._getPrices,
+    this._freshnessService,
+    this._timeProvider,
+    GetAuthStream getAuthStream,
+  ) : super(const HistoricalPriceEodState.initial()) {
+    on<LoadRequested>(_onLoadRequested, transformer: restartable());
+    on<StalenessCheckRequested>(_onStalenessCheckRequested);
+    on<EodReset>(_onReset);
+    resetOnSessionEnd(getAuthStream, const HistoricalPriceEodEvent.reset());
   }
 
   Future<void> _onLoadRequested(
@@ -47,9 +50,7 @@ class HistoricalPriceEodBloc
     );
     emit(const HistoricalPriceEodState.loading());
 
-    final stopwatch = Stopwatch()..start();
     final result = await _getPrices(event.ticker);
-    stopwatch.stop();
 
     result.fold(
       (failure) {
@@ -65,50 +66,37 @@ class HistoricalPriceEodBloc
           HistoricalPriceEodState.loaded(
             prices,
             dataSource: origin,
-            lastUpdated: DateTime.now(),
+            lastUpdated: _timeProvider.nowLocal,
           ),
         );
       },
     );
   }
 
-  Future<void> _onStalenessCheckRequested(StalenessCheckRequested event) async {
+  void _onStalenessCheckRequested(
+    StalenessCheckRequested event,
+    Emitter<HistoricalPriceEodState> emit,
+  ) {
     _logger.info('Staleness check requested for ${event.ticker}');
     state.mapOrNull(
       loaded: (loadedState) {
-        final isStale = MarketHoursHelper.isDataStale(loadedState.lastUpdated);
+        final isStale = _freshnessService.isStale(loadedState.lastUpdated);
         if (isStale) {
-          _logger.info(
-            'EOD prices stale (MarketHoursHelper check). Triggering load.',
-          );
-          add(
-            HistoricalPriceEodEvent.loadRequested(
-              event.ticker,
-              forceRefresh: true,
-            ),
-          );
+          _triggerForceReload(event.ticker, reason: 'stale');
         } else {
-          _logger.info('EOD prices still fresh (MarketHoursHelper check)');
+          _logger.info('EOD prices still fresh (market hours freshness check)');
         }
       },
-      failure: (_) {
-        _logger.info('EOD prices in failure state. Triggering retry.');
-        add(
-          HistoricalPriceEodEvent.loadRequested(
-            event.ticker,
-            forceRefresh: true,
-          ),
-        );
-      },
-      initial: (_) {
-        _logger.info('EOD prices in initial state. Triggering load.');
-        add(
-          HistoricalPriceEodEvent.loadRequested(
-            event.ticker,
-            forceRefresh: true,
-          ),
-        );
-      },
+      failure: (_) => _triggerForceReload(event.ticker, reason: 'failure state'),
+      initial: (_) => _triggerForceReload(event.ticker, reason: 'initial state'),
     );
   }
+
+  void _triggerForceReload(String ticker, {required String reason}) {
+    _logger.info('EOD prices $reason. Triggering load.');
+    add(HistoricalPriceEodEvent.loadRequested(ticker, forceRefresh: true));
+  }
+
+  void _onReset(EodReset event, Emitter<HistoricalPriceEodState> emit) =>
+      emit(const HistoricalPriceEodState.initial());
 }

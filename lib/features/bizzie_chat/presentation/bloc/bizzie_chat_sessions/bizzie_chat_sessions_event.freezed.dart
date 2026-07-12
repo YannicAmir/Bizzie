@@ -83,10 +83,7 @@ final _that = this;
 switch (_that) {
 case _Started():
 return started(_that);case _Reset():
-return reset(_that);case _:
-  throw StateError('Unexpected subclass');
-
-}
+return reset(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -148,10 +145,7 @@ return reset();case _:
 switch (_that) {
 case _Started():
 return started(_that.uid,_that.ticker);case _Reset():
-return reset();case _:
-  throw StateError('Unexpected subclass');
-
-}
+return reset();}
 }
 /// A variant of `when` that fallback to returning `null`
 ///

@@ -87,10 +87,7 @@ case EditTabsStarted():
 return started(_that);case EditTabsTabReordered():
 return tabReordered(_that);case EditTabsSaveRequested():
 return saveRequested(_that);case EditTabsReset():
-return reset(_that);case _:
-  throw StateError('Unexpected subclass');
-
-}
+return reset(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -158,10 +155,7 @@ case EditTabsStarted():
 return started(_that.mainTabs,_that.moreTabs,_that.isSubscribed);case EditTabsTabReordered():
 return tabReordered(_that.oldIndex,_that.newIndex);case EditTabsSaveRequested():
 return saveRequested();case EditTabsReset():
-return reset();case _:
-  throw StateError('Unexpected subclass');
-
-}
+return reset();}
 }
 /// A variant of `when` that fallback to returning `null`
 ///

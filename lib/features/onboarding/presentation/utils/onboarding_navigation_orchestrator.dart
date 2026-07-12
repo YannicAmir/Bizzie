@@ -14,7 +14,6 @@ class OnboardingNavigationOrchestrator {
   OnboardingNavigationOrchestrator(this._onboardingBloc);
 
   Future<void> startTerminalFlow(BuildContext context) async {
-    _onboardingBloc.add(const OnboardingEvent.profileReadyContinuePressed());
     context.go(AppRoutes.home);
 
     await Future.delayed(const Duration(milliseconds: 50));

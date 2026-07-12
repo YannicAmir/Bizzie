@@ -97,10 +97,7 @@ return appBackgrounded(_that);case AppForegrounded():
 return appForegrounded(_that);case PeriodViewed():
 return periodViewed(_that);case ViewAllTapped():
 return viewAllTapped(_that);case NetIncomeReset():
-return reset(_that);case _:
-  throw StateError('Unexpected subclass');
-
-}
+return reset(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -183,10 +180,7 @@ return appBackgrounded();case AppForegrounded():
 return appForegrounded();case PeriodViewed():
 return periodViewed(_that.isAnnual);case ViewAllTapped():
 return viewAllTapped(_that.isAnnual,_that.isChart);case NetIncomeReset():
-return reset();case _:
-  throw StateError('Unexpected subclass');
-
-}
+return reset();}
 }
 /// A variant of `when` that fallback to returning `null`
 ///

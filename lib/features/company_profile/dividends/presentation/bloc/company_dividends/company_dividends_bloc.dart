@@ -1,8 +1,11 @@
 import 'dart:async';
 
 import 'package:bizzie/core/interfaces/i_config_service.dart';
+import 'package:bizzie/core/interfaces/i_time_provider.dart';
 import 'package:bizzie/core/usecase/usecase.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
+import 'package:bizzie/features/auth/domain/usecases/get_auth_stream.dart';
+import 'package:bizzie/features/auth/presentation/bloc/auth_session_reset_mixin.dart';
 import 'package:bizzie/features/company_profile/dividends/domain/usecases/get_dividend_info_usecase.dart';
 import 'package:bizzie/features/company_profile/dividends/presentation/analytics/dividend_tab_analytics.dart';
 import 'package:bizzie/features/company_profile/dividends/presentation/analytics/dividend_tab_view_state.dart';
@@ -27,11 +30,13 @@ class CompanyDividendsBloc
           CompanyDividendsEvent,
           CompanyDividendsState,
           DividendTabViewState
-        > {
+        >,
+        AuthSessionResetMixin<CompanyDividendsEvent, CompanyDividendsState> {
   final GetDividendInfoUseCase _getDividendInfo;
   final IConfigService _configService;
   final DividendTabAnalytics _analytics;
   final WatchActiveTabUseCase _watchActiveTabUseCase;
+  final ITimeProvider _timeProvider;
 
   StreamSubscription<TabActivation>? _tabSubscription;
 
@@ -40,6 +45,8 @@ class CompanyDividendsBloc
     this._configService,
     this._analytics,
     this._watchActiveTabUseCase,
+    this._timeProvider,
+    GetAuthStream getAuthStream,
   ) : super(const CompanyDividendsState.initial()) {
     on<LoadRequested>(_onLoadRequested, transformer: restartable());
     on<StalenessCheckRequested>(
@@ -52,6 +59,7 @@ class CompanyDividendsBloc
     on<AppForegrounded>((_, __) => onAppForegrounded());
     on<ViewAllTapped>(_onViewAllTapped);
     on<Reset>((_, emit) => emit(const CompanyDividendsState.initial()));
+    resetOnSessionEnd(getAuthStream, const CompanyDividendsEvent.reset());
     _tabSubscription = _watchActiveTabUseCase(NoParams())
         .where((activation) => activation.tab == CompanyProfileTab.dividends)
         .listen((activation) {
@@ -88,7 +96,7 @@ class CompanyDividendsBloc
       event.ticker,
       DividendTabViewState(
         ticker: event.ticker,
-        timestamp: DateTime.now().toIso8601String(),
+        timestamp: _timeProvider.nowLocal.toIso8601String(),
         loadTimeMs: existingState?.loadTimeMs,
         isSuccess: existingState?.isSuccess ?? false,
         dataSource: existingState?.dataSource,
@@ -148,7 +156,7 @@ class CompanyDividendsBloc
             (analyticsSession ??
                     DividendTabViewState(
                       ticker: event.ticker,
-                      timestamp: DateTime.now().toIso8601String(),
+                      timestamp: _timeProvider.nowLocal.toIso8601String(),
                     ))
                 .copyWith(
                   isSuccess: false,
@@ -170,7 +178,7 @@ class CompanyDividendsBloc
             (analyticsSession ??
                     DividendTabViewState(
                       ticker: event.ticker,
-                      timestamp: DateTime.now().toIso8601String(),
+                      timestamp: _timeProvider.nowLocal.toIso8601String(),
                     ))
                 .copyWith(
                   isSuccess: true,
@@ -188,7 +196,7 @@ class CompanyDividendsBloc
             dividendInfo: info,
             historyLimit: _configService.freePlanHistoryCount,
             dataOrigin: origin,
-            lastUpdated: DateTime.now(),
+            lastUpdated: _timeProvider.nowLocal,
             analyticsState: metrics,
           ),
         );
@@ -205,7 +213,7 @@ class CompanyDividendsBloc
       loaded: (loadedState) {
         final lastUpdated = loadedState.lastUpdated;
         if (lastUpdated != null) {
-          final difference = DateTime.now().difference(lastUpdated);
+          final difference = _timeProvider.nowLocal.difference(lastUpdated);
           if (difference.inHours >= 24) {
             _logger.info(
               'Dividends stale (TTL expired: ${difference.inHours}h). Triggering load.',

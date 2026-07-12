@@ -10,7 +10,9 @@ import 'package:bizzie/features/company_profile/pfcf_ratio/presentation/bloc/com
 import 'package:bloc_test/bloc_test.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:bizzie/core/interfaces/i_time_provider.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:bizzie/features/auth/domain/usecases/get_auth_stream.dart';
 import 'package:bizzie/core/interfaces/i_config_service.dart';
 import 'package:bizzie/features/company_profile/pfcf_ratio/presentation/analytics/pfcf_ratio_tab_analytics.dart';
 import 'package:bizzie/features/company_profile/pfcf_ratio/presentation/analytics/pfcf_ratio_tab_view_state.dart';
@@ -25,6 +27,22 @@ class MockTabContentFreshnessService extends Mock
     implements TabContentFreshnessService {}
 
 class PfcfRatioTabViewStateFake extends Fake implements PfcfRatioTabViewState {}
+
+class MockGetAuthStream extends Mock implements GetAuthStream {}
+
+MockGetAuthStream stubbedGetAuthStream() {
+  final mock = MockGetAuthStream();
+  when(() => mock()).thenAnswer((_) => const Stream.empty());
+  return mock;
+}
+
+class MockTimeProvider extends Mock implements ITimeProvider {}
+
+MockTimeProvider stubbedTimeProvider() {
+  final mock = MockTimeProvider();
+  when(() => mock.nowLocal).thenAnswer((_) => DateTime.now());
+  return mock;
+}
 
 void main() {
   setUpAll(() {
@@ -49,6 +67,8 @@ void main() {
       mockConfigService,
       mockAnalytics,
       mockFreshnessService,
+      stubbedTimeProvider(),
+      stubbedGetAuthStream(),
     );
   });
 

@@ -91,7 +91,7 @@ void main() {
       verify: (_) {
         verify(
           () =>
-              mockOnboardingBloc.add(const OnboardingEvent.toggleBrand(tBrand)),
+              mockOnboardingBloc.add(const OnboardingEvent.brandToggled(tBrand)),
         ).called(1);
       },
     );

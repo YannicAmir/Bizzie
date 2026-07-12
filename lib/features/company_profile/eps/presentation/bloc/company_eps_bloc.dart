@@ -1,8 +1,13 @@
 import 'dart:async';
 
+import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:bizzie/core/interfaces/i_config_service.dart';
+import 'package:bizzie/core/interfaces/i_time_provider.dart';
 import 'package:bizzie/core/usecase/usecase.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
+import 'package:bizzie/features/auth/domain/usecases/get_auth_stream.dart';
+import 'package:bizzie/features/auth/presentation/bloc/auth_session_reset_mixin.dart';
+import 'package:bizzie/features/company_profile/eps/domain/models/eps_stats.dart';
 import 'package:bizzie/features/company_profile/eps/domain/usecases/get_eps_stats_usecase.dart';
 import 'package:bizzie/features/company_profile/eps/presentation/analytics/eps_tab_analytics.dart';
 import 'package:bizzie/features/company_profile/eps/presentation/analytics/eps_tab_view_state.dart';
@@ -10,6 +15,7 @@ import 'package:bizzie/features/company_profile/shared/domain/models/chart_data_
 import 'package:bizzie/features/company_profile/shared/domain/models/financial_data_point.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/analytics/base_analytics.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/bloc/company_profile_analytics_mixin.dart';
+import 'package:bizzie/features/company_profile/shared/presentation/bloc/company_profile_load_guard_mixin.dart';
 import 'package:bizzie/features/company_profile/shared/domain/enums/company_profile_tab.dart';
 import 'package:bizzie/features/company_profile/shared/domain/models/tab_activation.dart';
 import 'package:bizzie/features/company_profile/shared/domain/usecases/watch_active_tab_usecase.dart';
@@ -29,11 +35,14 @@ class CompanyEpsBloc extends Bloc<CompanyEpsEvent, CompanyEpsState>
           CompanyEpsEvent,
           CompanyEpsState,
           EpsTabViewState
-        > {
+        >,
+        AuthSessionResetMixin<CompanyEpsEvent, CompanyEpsState>,
+        CompanyProfileLoadGuardMixin {
   final GetEpsStatsUseCase _getEpsStatsUseCase;
   final IConfigService _configService;
   final EpsTabAnalytics _epsTabAnalytics;
   final WatchActiveTabUseCase _watchActiveTabUseCase;
+  final ITimeProvider _timeProvider;
 
   StreamSubscription<TabActivation>? _tabSubscription;
 
@@ -42,6 +51,8 @@ class CompanyEpsBloc extends Bloc<CompanyEpsEvent, CompanyEpsState>
     this._configService,
     this._epsTabAnalytics,
     this._watchActiveTabUseCase,
+    this._timeProvider,
+    GetAuthStream getAuthStream,
   ) : super(const CompanyEpsState.initial()) {
     on<LoadRequested>(_onLoadRequested, transformer: restartable());
     on<StalenessCheckRequested>(
@@ -49,18 +60,19 @@ class CompanyEpsBloc extends Bloc<CompanyEpsEvent, CompanyEpsState>
       transformer: sequential(),
     );
     on<Reset>((_, emit) => emit(const CompanyEpsState.initial()));
+    resetOnSessionEnd(getAuthStream, const CompanyEpsEvent.reset());
     _setupAnalyticsHandlers();
     _tabSubscription = _watchActiveTabUseCase(NoParams())
         .where((activation) => activation.tab == CompanyProfileTab.eps)
         .listen((activation) {
-            final shouldHandle = state.maybeMap(
-              loading: (_) => false,
-              loaded: (s) => s.ticker == activation.ticker,
-              orElse: () => true,
-            );
-            if (shouldHandle) {
-                          add(CompanyEpsEvent.stalenessCheckRequested(activation.ticker));
-            }
+          final shouldHandle = state.maybeMap(
+            loading: (_) => false,
+            loaded: (s) => s.ticker == activation.ticker,
+            orElse: () => true,
+          );
+          if (shouldHandle) {
+            add(CompanyEpsEvent.stalenessCheckRequested(activation.ticker));
+          }
         });
   }
 
@@ -73,6 +85,12 @@ class CompanyEpsBloc extends Bloc<CompanyEpsEvent, CompanyEpsState>
   @override
   CompanyProfileTabTracker<EpsTabViewState> get analyticsTracker =>
       _epsTabAnalytics;
+
+  @override
+  String get featureName => 'Company EPS';
+
+  @override
+  String? get loadedTicker => state.mapOrNull(loaded: (s) => s.ticker);
 
   Future<void> _onTabShown(
     TabShown event,
@@ -87,12 +105,13 @@ class CompanyEpsBloc extends Bloc<CompanyEpsEvent, CompanyEpsState>
       event.ticker,
       EpsTabViewState(
         ticker: event.ticker,
-        timestamp: DateTime.now().toIso8601String(),
+        timestamp: _timeProvider.nowLocal.toIso8601String(),
         loadTimeMs: existingState?.loadTimeMs,
         isSuccess: existingState?.isSuccess ?? false,
         dataSource: existingState?.dataSource,
       ),
-    );    add(CompanyEpsEvent.stalenessCheckRequested(event.ticker));
+    );
+    add(CompanyEpsEvent.stalenessCheckRequested(event.ticker));
   }
 
   Future<void> _onPeriodViewed(
@@ -103,7 +122,8 @@ class CompanyEpsBloc extends Bloc<CompanyEpsEvent, CompanyEpsState>
       (s) => event.isAnnual
           ? s.copyWith(viewedYearlyEpsTab: true)
           : s.copyWith(viewedQtrlyEpsTab: true),
-    );  }
+    );
+  }
 
   Future<void> _onViewAllTapped(
     ViewAllTapped event,
@@ -124,35 +144,21 @@ class CompanyEpsBloc extends Bloc<CompanyEpsEvent, CompanyEpsState>
             ? true
             : s.tappedYrtableViewAll,
       ),
-    );  }
+    );
+  }
 
   Future<void> _onLoadRequested(
     LoadRequested event,
     Emitter<CompanyEpsState> emit,
   ) async {
-    final isAlreadyLoaded = state.maybeMap(
-      loaded: (s) => true,
-      orElse: () => false,
-    );
-
-    final isRightTicker = state.maybeMap(
-      loaded: (s) => s.ticker == event.ticker,
-      orElse: () => false,
-    );
-
-    if (isAlreadyLoaded && isRightTicker && !event.forceRefresh) {
-      _logger.info(
-        'Company EPS already loaded for ${event.ticker} and is the correct ticker. Skipping load (Silent Refresh).',
-      );
+    if (shouldSkipLoad(event.ticker, forceRefresh: event.forceRefresh)) {
       return;
     }
 
     _logger.info(
       'Loading EPS stats for ${event.ticker} (force=${event.forceRefresh})',
     );
-    if (!isAlreadyLoaded || !isRightTicker || event.forceRefresh) {
-      emit(const CompanyEpsState.loading());
-    }
+    emit(const CompanyEpsState.loading());
 
     final stopwatch = Stopwatch()..start();
     final result = await _getEpsStatsUseCase(event.ticker);
@@ -161,58 +167,75 @@ class CompanyEpsBloc extends Bloc<CompanyEpsEvent, CompanyEpsState>
     result.fold(
       (failure) {
         _logger.severe('Failed to load EPS stats', failure);
-        final metrics =
-            (analyticsSession ??
-                    EpsTabViewState(
-                      ticker: event.ticker,
-                      timestamp: DateTime.now().toIso8601String(),
-                    ))
-                .copyWith(
-                  isSuccess: false,
-                  loadTimeMs: stopwatch.elapsedMilliseconds,
-                );
-
-        if (analyticsSession != null) {
-          updateAnalyticsState((s) => metrics);
-        }
+        _recordLoadMetrics(
+          ticker: event.ticker,
+          isSuccess: false,
+          loadTimeMs: stopwatch.elapsedMilliseconds,
+        );
         emit(CompanyEpsState.failure(failure));
       },
-      (tuple) {
-        final (stats, origin) = tuple;
-        _logger.info('Successfully loaded EPS stats (origin: $origin)');
+      (tuple) => _emitLoadedState(
+        ticker: event.ticker,
+        tuple: tuple,
+        loadTimeMs: stopwatch.elapsedMilliseconds,
+        emit: emit,
+      ),
+    );
+  }
 
-        final metrics =
-            (analyticsSession ??
-                    EpsTabViewState(
-                      ticker: event.ticker,
-                      timestamp: DateTime.now().toIso8601String(),
-                    ))
-                .copyWith(
-                  isSuccess: true,
-                  dataSource: origin,
-                  loadTimeMs: stopwatch.elapsedMilliseconds,
-                );
-
-        if (analyticsSession != null) {
-          updateAnalyticsState((s) => metrics);
-        }
-
-        emit(
-          CompanyEpsState.loaded(
-            ticker: event.ticker,
-            epsStats: stats,
-            annualChartData: _toChartData(stats.annualEps, isAnnual: true),
-            quarterlyChartData: _toChartData(
-              stats.quarterlyEps,
-              isAnnual: false,
-            ),
-            historyLimit: _configService.freePlanHistoryCount,
-            dataOrigin: origin,
-            lastUpdated: DateTime.now(),
-            analyticsState: metrics,
-          ),
+  EpsTabViewState _recordLoadMetrics({
+    required String ticker,
+    required bool isSuccess,
+    required int loadTimeMs,
+    CompanyProfileDataOrigin? dataSource,
+  }) {
+    final session =
+        analyticsSession ??
+        EpsTabViewState(
+          ticker: ticker,
+          timestamp: _timeProvider.nowLocal.toIso8601String(),
         );
-      },
+    final metrics = dataSource == null
+        ? session.copyWith(isSuccess: isSuccess, loadTimeMs: loadTimeMs)
+        : session.copyWith(
+            isSuccess: isSuccess,
+            dataSource: dataSource,
+            loadTimeMs: loadTimeMs,
+          );
+
+    if (analyticsSession != null) {
+      updateAnalyticsState((s) => metrics);
+    }
+    return metrics;
+  }
+
+  void _emitLoadedState({
+    required String ticker,
+    required (EpsStats, CompanyProfileDataOrigin) tuple,
+    required int loadTimeMs,
+    required Emitter<CompanyEpsState> emit,
+  }) {
+    final (stats, origin) = tuple;
+    _logger.info('Successfully loaded EPS stats (origin: $origin)');
+
+    final metrics = _recordLoadMetrics(
+      ticker: ticker,
+      isSuccess: true,
+      dataSource: origin,
+      loadTimeMs: loadTimeMs,
+    );
+
+    emit(
+      CompanyEpsState.loaded(
+        ticker: ticker,
+        epsStats: stats,
+        annualChartData: _toChartData(stats.annualEps, isAnnual: true),
+        quarterlyChartData: _toChartData(stats.quarterlyEps, isAnnual: false),
+        historyLimit: _configService.freePlanHistoryCount,
+        dataOrigin: origin,
+        lastUpdated: _timeProvider.nowLocal,
+        analyticsState: metrics,
+      ),
     );
   }
 
@@ -222,37 +245,40 @@ class CompanyEpsBloc extends Bloc<CompanyEpsEvent, CompanyEpsState>
   ) async {
     _logger.info('Staleness check requested for ${event.ticker}');
     state.mapOrNull(
-      loaded: (loadedState) {
-        final lastUpdated = loadedState.lastUpdated;
-        if (lastUpdated != null) {
-          final difference = DateTime.now().difference(lastUpdated);
-          if (difference.inHours >= 24) {
-            _logger.info(
-              'EPS stale (TTL expired: ${difference.inHours}h). Triggering load.',
-            );
-            add(
-              CompanyEpsEvent.loadRequested(event.ticker, forceRefresh: true),
-            );
-          } else {
-            _logger.info('EPS still fresh (Last updated: $lastUpdated)');
-          }
-        } else {
-          _logger.info('EPS lastUpdated is null. Triggering load.');
-          add(CompanyEpsEvent.loadRequested(event.ticker, forceRefresh: true));
-        }
-      },
-      failure: (_) {
-        _logger.info('EPS in failure state. Triggering retry.');
-        add(CompanyEpsEvent.loadRequested(event.ticker, forceRefresh: true));
-      },
-      initial: (_) {
-        _logger.info('EPS in initial state. Triggering load.');
-        add(CompanyEpsEvent.loadRequested(event.ticker, forceRefresh: true));
-      },
-      loading: (_) {
-        _logger.info('EPS already loading, skipping staleness check.');
-      },
+      loaded: (loadedState) =>
+          _evaluateStaleness(event.ticker, loadedState.lastUpdated),
+      failure: (_) => _triggerRefresh(
+        event.ticker,
+        'EPS in failure state. Triggering retry.',
+      ),
+      initial: (_) => _triggerRefresh(
+        event.ticker,
+        'EPS in initial state. Triggering load.',
+      ),
+      loading: (_) =>
+          _logger.info('EPS already loading, skipping staleness check.'),
     );
+  }
+
+  void _evaluateStaleness(String ticker, DateTime? lastUpdated) {
+    if (lastUpdated == null) {
+      _triggerRefresh(ticker, 'EPS lastUpdated is null. Triggering load.');
+      return;
+    }
+    final difference = _timeProvider.nowLocal.difference(lastUpdated);
+    if (difference.inHours >= 24) {
+      _triggerRefresh(
+        ticker,
+        'EPS stale (TTL expired: ${difference.inHours}h). Triggering load.',
+      );
+    } else {
+      _logger.info('EPS still fresh (Last updated: $lastUpdated)');
+    }
+  }
+
+  void _triggerRefresh(String ticker, String reason) {
+    _logger.info(reason);
+    add(CompanyEpsEvent.loadRequested(ticker, forceRefresh: true));
   }
 
   List<ChartDataPoint> _toChartData(

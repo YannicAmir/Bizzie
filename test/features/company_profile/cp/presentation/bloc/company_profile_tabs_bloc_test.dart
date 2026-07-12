@@ -13,12 +13,21 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:bizzie/features/auth/domain/usecases/get_auth_stream.dart';
 
 class MockGetTabLayoutUseCase extends Mock implements GetTabLayoutUseCase {}
 
 class MockSetActiveTabUseCase extends Mock implements SetActiveTabUseCase {}
 
 class MockConfigService extends Mock implements IConfigService {}
+
+class MockGetAuthStream extends Mock implements GetAuthStream {}
+
+MockGetAuthStream stubbedGetAuthStream() {
+  final mock = MockGetAuthStream();
+  when(() => mock()).thenAnswer((_) => const Stream.empty());
+  return mock;
+}
 
 void main() {
   late MockGetTabLayoutUseCase mockGetTabLayout;
@@ -57,6 +66,7 @@ void main() {
     mockGetTabLayout,
     mockSetActiveTab,
     mockConfigService,
+    stubbedGetAuthStream(),
   );
 
   group('CompanyProfileTabsBloc', () {
@@ -101,15 +111,12 @@ void main() {
       verify: (bloc) {
         expect(bloc.state.tabs.first, CompanyProfileTab.security);
         expect(bloc.state.tabs.last, CompanyProfileTab.more);
-        expect(
-          bloc.state.tabs,
-          const [
-            CompanyProfileTab.security,
-            CompanyProfileTab.business,
-            CompanyProfileTab.news,
-            CompanyProfileTab.more,
-          ],
-        );
+        expect(bloc.state.tabs, const [
+          CompanyProfileTab.security,
+          CompanyProfileTab.business,
+          CompanyProfileTab.news,
+          CompanyProfileTab.more,
+        ]);
       },
     );
 
@@ -127,7 +134,10 @@ void main() {
       verify: (_) {
         verify(
           () => mockSetActiveTab(
-            const TabActivation(tab: CompanyProfileTab.business, ticker: ticker),
+            const TabActivation(
+              tab: CompanyProfileTab.business,
+              ticker: ticker,
+            ),
           ),
         ).called(1);
       },

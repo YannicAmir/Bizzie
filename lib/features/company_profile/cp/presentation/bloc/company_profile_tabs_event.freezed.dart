@@ -89,10 +89,7 @@ return started(_that);case TabActivated():
 return tabActivated(_that);case MoreTabIndexChanged():
 return moreTabIndexChanged(_that);case TabOrderChanged():
 return tabOrderChanged(_that);case Reset():
-return reset(_that);case _:
-  throw StateError('Unexpected subclass');
-
-}
+return reset(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -163,10 +160,7 @@ return started();case TabActivated():
 return tabActivated(_that.tab,_that.ticker);case MoreTabIndexChanged():
 return moreTabIndexChanged(_that.index,_that.ticker);case TabOrderChanged():
 return tabOrderChanged();case Reset():
-return reset();case _:
-  throw StateError('Unexpected subclass');
-
-}
+return reset();}
 }
 /// A variant of `when` that fallback to returning `null`
 ///

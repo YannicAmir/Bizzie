@@ -1,15 +1,21 @@
 import 'dart:async';
 
+import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:bizzie/core/interfaces/i_config_service.dart';
+import 'package:bizzie/core/interfaces/i_time_provider.dart';
 import 'package:bizzie/core/usecase/usecase.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
+import 'package:bizzie/features/auth/domain/usecases/get_auth_stream.dart';
+import 'package:bizzie/features/auth/presentation/bloc/auth_session_reset_mixin.dart';
 import 'package:bizzie/features/company_profile/shared/domain/models/chart_data_point.dart';
 import 'package:bizzie/features/company_profile/shared/domain/models/financial_data_point.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/analytics/base_analytics.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/bloc/company_profile_analytics_mixin.dart';
+import 'package:bizzie/features/company_profile/shared/presentation/bloc/company_profile_load_guard_mixin.dart';
 import 'package:bizzie/features/company_profile/shared/domain/enums/company_profile_tab.dart';
 import 'package:bizzie/features/company_profile/shared/domain/models/tab_activation.dart';
 import 'package:bizzie/features/company_profile/shared/domain/usecases/watch_active_tab_usecase.dart';
+import 'package:bizzie/features/company_profile/shares/domain/models/share_stats.dart';
 import 'package:bizzie/features/company_profile/shares/domain/models/shares_summary_data.dart';
 import 'package:bizzie/features/company_profile/shares/domain/usecases/get_shares_usecase.dart';
 import 'package:bizzie/features/company_profile/shares/presentation/analytics/shares_tab_analytics.dart';
@@ -30,11 +36,14 @@ class CompanySharesBloc extends Bloc<CompanySharesEvent, CompanySharesState>
           CompanySharesEvent,
           CompanySharesState,
           SharesTabViewState
-        > {
+        >,
+        AuthSessionResetMixin<CompanySharesEvent, CompanySharesState>,
+        CompanyProfileLoadGuardMixin {
   final GetSharesUseCase _getShares;
   final IConfigService _configService;
   final SharesTabAnalytics _analytics;
   final WatchActiveTabUseCase _watchActiveTabUseCase;
+  final ITimeProvider _timeProvider;
 
   StreamSubscription<TabActivation>? _tabSubscription;
 
@@ -43,6 +52,8 @@ class CompanySharesBloc extends Bloc<CompanySharesEvent, CompanySharesState>
     this._configService,
     this._analytics,
     this._watchActiveTabUseCase,
+    this._timeProvider,
+    GetAuthStream getAuthStream,
   ) : super(const CompanySharesState.initial()) {
     on<LoadRequested>(_onLoadRequested, transformer: restartable());
     on<StalenessCheckRequested>(
@@ -56,17 +67,18 @@ class CompanySharesBloc extends Bloc<CompanySharesEvent, CompanySharesState>
     on<PeriodViewed>(_onPeriodViewed);
     on<ViewAllTapped>(_onViewAllTapped);
     on<Reset>(_onReset);
+    resetOnSessionEnd(getAuthStream, const CompanySharesEvent.reset());
     _tabSubscription = _watchActiveTabUseCase(NoParams())
         .where((activation) => activation.tab == CompanyProfileTab.shares)
         .listen((activation) {
-            final shouldHandle = state.maybeMap(
-              loading: (_) => false,
-              loaded: (s) => s.ticker == activation.ticker,
-              orElse: () => true,
-            );
-            if (shouldHandle) {
-                          add(CompanySharesEvent.stalenessCheckRequested(activation.ticker));
-            }
+          final shouldHandle = state.maybeMap(
+            loading: (_) => false,
+            loaded: (s) => s.ticker == activation.ticker,
+            orElse: () => true,
+          );
+          if (shouldHandle) {
+            add(CompanySharesEvent.stalenessCheckRequested(activation.ticker));
+          }
         });
   }
 
@@ -80,14 +92,21 @@ class CompanySharesBloc extends Bloc<CompanySharesEvent, CompanySharesState>
   CompanyProfileTabTracker<SharesTabViewState> get analyticsTracker =>
       _analytics;
 
+  @override
+  String get featureName => 'Company Shares';
+
+  @override
+  String? get loadedTicker => state.mapOrNull(loaded: (s) => s.ticker);
+
   void _onTabShown(TabShown event, Emitter<CompanySharesState> emit) {
     onTabShown(
       event.ticker,
       SharesTabViewState(
         ticker: event.ticker,
-        timestamp: DateTime.now().toIso8601String(),
+        timestamp: _timeProvider.nowLocal.toIso8601String(),
       ),
-    );    add(CompanySharesEvent.stalenessCheckRequested(event.ticker));
+    );
+    add(CompanySharesEvent.stalenessCheckRequested(event.ticker));
   }
 
   void _onPeriodViewed(PeriodViewed event, Emitter<CompanySharesState> emit) {
@@ -95,7 +114,8 @@ class CompanySharesBloc extends Bloc<CompanySharesEvent, CompanySharesState>
       (s) => event.isAnnual
           ? s.copyWith(viewedYearlySharesTab: true)
           : s.copyWith(viewedQtrlySharesTab: true),
-    );  }
+    );
+  }
 
   void _onViewAllTapped(ViewAllTapped event, Emitter<CompanySharesState> emit) {
     updateAnalyticsState((s) {
@@ -115,26 +135,11 @@ class CompanySharesBloc extends Bloc<CompanySharesEvent, CompanySharesState>
     LoadRequested event,
     Emitter<CompanySharesState> emit,
   ) async {
-    final isAlreadyLoaded = state.maybeMap(
-      loaded: (s) => true,
-      orElse: () => false,
-    );
-
-    final isRightTicker = state.maybeMap(
-      loaded: (s) => s.ticker == event.ticker,
-      orElse: () => false,
-    );
-
-    if (isAlreadyLoaded && isRightTicker && !event.forceRefresh) {
-      _logger.info(
-        'Company Shares already loaded for ${event.ticker} and is the correct ticker. Skipping load (Silent Refresh).',
-      );
+    if (shouldSkipLoad(event.ticker, forceRefresh: event.forceRefresh)) {
       return;
     }
 
-    if (!isAlreadyLoaded || !isRightTicker || event.forceRefresh) {
-      emit(const CompanySharesState.loading());
-    }
+    emit(const CompanySharesState.loading());
 
     final stopwatch = Stopwatch()..start();
     final result = await _getShares(event.ticker);
@@ -143,58 +148,80 @@ class CompanySharesBloc extends Bloc<CompanySharesEvent, CompanySharesState>
     result.fold(
       (failure) {
         _logger.severe('Failed to load Shares stats', failure);
-        updateAnalyticsState(
-          (s) => s.copyWith(
-            isSuccess: false,
-            loadTimeMs: stopwatch.elapsedMilliseconds,
-          ),
+        _recordLoadMetrics(
+          isSuccess: false,
+          loadTimeMs: stopwatch.elapsedMilliseconds,
         );
         emit(CompanySharesState.failure(failure));
       },
-      (tuple) {
-        final (data, origin) = tuple;
-        _logger.info('Successfully loaded Shares stats (origin: $origin)');
-        emit(
-          CompanySharesState.loaded(
-            ticker: event.ticker,
-            shareStats: data,
-            annualChartData: _toChartData(
-              data.annualWeightedAverageShares,
-              isAnnual: true,
-            ),
-            quarterlyChartData: _toChartData(
-              data.quarterlyWeightedAverageShares,
-              isAnnual: false,
-            ),
-            annualSummary: _computeSummary(
-              data.annualWeightedAverageShares,
-              isAnnual: true,
-            ),
-            quarterlySummary: _computeSummary(
-              data.quarterlyWeightedAverageShares,
-              isAnnual: false,
-            ),
-            historyLimit: _configService.freePlanHistoryCount,
-            dataOrigin: origin,
-            lastUpdated: DateTime.now(),
-          ),
-        );
-
-        updateAnalyticsState(
-          (s) => s.copyWith(
-            isSuccess: true,
-            dataSource: origin,
-            loadTimeMs: stopwatch.elapsedMilliseconds,
-          ),
-        );
-      },
+      (tuple) => _emitLoadedState(
+        ticker: event.ticker,
+        tuple: tuple,
+        loadTimeMs: stopwatch.elapsedMilliseconds,
+        emit: emit,
+      ),
     );
   }
 
-  Future<void> _onReset(
-    Reset event,
-    Emitter<CompanySharesState> emit,
-  ) async {
+  void _recordLoadMetrics({
+    required bool isSuccess,
+    required int loadTimeMs,
+    CompanyProfileDataOrigin? dataSource,
+  }) {
+    updateAnalyticsState(
+      (s) => dataSource == null
+          ? s.copyWith(isSuccess: isSuccess, loadTimeMs: loadTimeMs)
+          : s.copyWith(
+              isSuccess: isSuccess,
+              dataSource: dataSource,
+              loadTimeMs: loadTimeMs,
+            ),
+    );
+  }
+
+  void _emitLoadedState({
+    required String ticker,
+    required (ShareStats, CompanyProfileDataOrigin) tuple,
+    required int loadTimeMs,
+    required Emitter<CompanySharesState> emit,
+  }) {
+    final (data, origin) = tuple;
+    _logger.info('Successfully loaded Shares stats (origin: $origin)');
+
+    emit(
+      CompanySharesState.loaded(
+        ticker: ticker,
+        shareStats: data,
+        annualChartData: _toChartData(
+          data.annualWeightedAverageShares,
+          isAnnual: true,
+        ),
+        quarterlyChartData: _toChartData(
+          data.quarterlyWeightedAverageShares,
+          isAnnual: false,
+        ),
+        annualSummary: _computeSummary(
+          data.annualWeightedAverageShares,
+          isAnnual: true,
+        ),
+        quarterlySummary: _computeSummary(
+          data.quarterlyWeightedAverageShares,
+          isAnnual: false,
+        ),
+        historyLimit: _configService.freePlanHistoryCount,
+        dataOrigin: origin,
+        lastUpdated: _timeProvider.nowLocal,
+      ),
+    );
+
+    _recordLoadMetrics(
+      isSuccess: true,
+      dataSource: origin,
+      loadTimeMs: loadTimeMs,
+    );
+  }
+
+  Future<void> _onReset(Reset event, Emitter<CompanySharesState> emit) async {
     _logger.info('Resetting Shares state.');
     emit(const CompanySharesState.initial());
   }
@@ -205,42 +232,40 @@ class CompanySharesBloc extends Bloc<CompanySharesEvent, CompanySharesState>
   ) async {
     _logger.info('Staleness check requested for ${event.ticker}');
     state.mapOrNull(
-      loaded: (loadedState) {
-        final lastUpdated = loadedState.lastUpdated;
-        if (lastUpdated != null) {
-          final difference = DateTime.now().difference(lastUpdated);
-          if (difference.inHours >= 24) {
-            _logger.info(
-              'Shares stale (TTL expired: ${difference.inHours}h). Triggering load.',
-            );
-            add(
-              CompanySharesEvent.loadRequested(
-                event.ticker,
-                forceRefresh: true,
-              ),
-            );
-          } else {
-            _logger.info('Shares still fresh (Last updated: $lastUpdated)');
-          }
-        } else {
-          _logger.info('Shares lastUpdated is null. Triggering load.');
-          add(
-            CompanySharesEvent.loadRequested(event.ticker, forceRefresh: true),
-          );
-        }
-      },
-      failure: (_) {
-        _logger.info('Shares in failure state. Triggering retry.');
-        add(CompanySharesEvent.loadRequested(event.ticker, forceRefresh: true));
-      },
-      initial: (_) {
-        _logger.info('Shares in initial state. Triggering load.');
-        add(CompanySharesEvent.loadRequested(event.ticker, forceRefresh: true));
-      },
-      loading: (_) {
-        _logger.info('Shares already loading, skipping staleness check.');
-      },
+      loaded: (loadedState) =>
+          _evaluateStaleness(event.ticker, loadedState.lastUpdated),
+      failure: (_) => _triggerRefresh(
+        event.ticker,
+        'Shares in failure state. Triggering retry.',
+      ),
+      initial: (_) => _triggerRefresh(
+        event.ticker,
+        'Shares in initial state. Triggering load.',
+      ),
+      loading: (_) =>
+          _logger.info('Shares already loading, skipping staleness check.'),
     );
+  }
+
+  void _evaluateStaleness(String ticker, DateTime? lastUpdated) {
+    if (lastUpdated == null) {
+      _triggerRefresh(ticker, 'Shares lastUpdated is null. Triggering load.');
+      return;
+    }
+    final difference = _timeProvider.nowLocal.difference(lastUpdated);
+    if (difference.inHours >= 24) {
+      _triggerRefresh(
+        ticker,
+        'Shares stale (TTL expired: ${difference.inHours}h). Triggering load.',
+      );
+    } else {
+      _logger.info('Shares still fresh (Last updated: $lastUpdated)');
+    }
+  }
+
+  void _triggerRefresh(String ticker, String reason) {
+    _logger.info(reason);
+    add(CompanySharesEvent.loadRequested(ticker, forceRefresh: true));
   }
 
   List<ChartDataPoint> _toChartData(

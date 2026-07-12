@@ -1,7 +1,12 @@
 import 'dart:async';
 
+import 'package:bizzie/core/enums/data_origin.dart';
+import 'package:bizzie/core/interfaces/i_time_provider.dart';
 import 'package:bizzie/core/usecase/usecase.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
+import 'package:bizzie/features/auth/domain/usecases/get_auth_stream.dart';
+import 'package:bizzie/features/company_profile/news/domain/models/company_news.dart';
+import 'package:bizzie/features/auth/presentation/bloc/auth_session_reset_mixin.dart';
 import 'package:bizzie/features/company_profile/news/domain/usecases/get_company_news_usecase.dart';
 import 'package:bizzie/features/company_profile/news/presentation/bloc/company_news/company_news_event.dart';
 import 'package:bizzie/features/company_profile/news/presentation/bloc/company_news/company_news_state.dart';
@@ -24,10 +29,12 @@ class CompanyNewsBloc extends Bloc<CompanyNewsEvent, CompanyNewsState>
           CompanyNewsEvent,
           CompanyNewsState,
           NewsTabViewState
-        > {
+        >,
+        AuthSessionResetMixin<CompanyNewsEvent, CompanyNewsState> {
   final GetCompanyNewsUseCase _getCompanyNews;
   final NewsTabAnalytics _analytics;
   final WatchActiveTabUseCase _watchActiveTabUseCase;
+  final ITimeProvider _timeProvider;
 
   final Stopwatch _loadStopwatch = Stopwatch();
   StreamSubscription<TabActivation>? _tabSubscription;
@@ -35,8 +42,13 @@ class CompanyNewsBloc extends Bloc<CompanyNewsEvent, CompanyNewsState>
   @override
   NewsTabAnalytics get analyticsTracker => _analytics;
 
-  CompanyNewsBloc(this._getCompanyNews, this._analytics, this._watchActiveTabUseCase)
-    : super(const CompanyNewsState.initial()) {
+  CompanyNewsBloc(
+    this._getCompanyNews,
+    this._analytics,
+    this._watchActiveTabUseCase,
+    this._timeProvider,
+    GetAuthStream getAuthStream,
+  ) : super(const CompanyNewsState.initial()) {
     on<LoadRequested>(_onLoadRequested, transformer: restartable());
     on<StalenessCheckRequested>(
       _onStalenessCheckRequested,
@@ -48,16 +60,17 @@ class CompanyNewsBloc extends Bloc<CompanyNewsEvent, CompanyNewsState>
     on<AppForegrounded>((_, __) => onAppForegrounded());
     on<ArticleTapped>(_onArticleTapped);
     on<Reset>((_, emit) => emit(const CompanyNewsState.initial()));
+    resetOnSessionEnd(getAuthStream, const CompanyNewsEvent.reset());
     _tabSubscription = _watchActiveTabUseCase(NoParams())
         .where((activation) => activation.tab == CompanyProfileTab.news)
         .listen((activation) {
-            final shouldHandle = state.maybeMap(
-              loaded: (s) => s.ticker == activation.ticker,
-              orElse: () => true,
-            );
-            if (shouldHandle) {
-              add(CompanyNewsEvent.stalenessCheckRequested(activation.ticker));
-            }
+          final shouldHandle = state.maybeMap(
+            loaded: (s) => s.ticker == activation.ticker,
+            orElse: () => true,
+          );
+          if (shouldHandle) {
+            add(CompanyNewsEvent.stalenessCheckRequested(activation.ticker));
+          }
         });
   }
 
@@ -71,17 +84,7 @@ class CompanyNewsBloc extends Bloc<CompanyNewsEvent, CompanyNewsState>
     LoadRequested event,
     Emitter<CompanyNewsState> emit,
   ) async {
-    final isAlreadyLoaded = state.maybeMap(
-      loaded: (s) => true,
-      orElse: () => false,
-    );
-
-    final isRightTicker = state.maybeMap(
-      loaded: (s) => s.ticker == event.ticker,
-      orElse: () => false,
-    );
-
-    if (isAlreadyLoaded && isRightTicker && !event.forceRefresh) {
+    if (_shouldSkipLoad(event)) {
       _logger.info(
         'Company news already loaded for ${event.ticker} and is the correct ticker. Skipping load (Silent Refresh).',
       );
@@ -92,17 +95,8 @@ class CompanyNewsBloc extends Bloc<CompanyNewsEvent, CompanyNewsState>
       'Loading company news for ${event.ticker} (force=${event.forceRefresh})',
     );
 
-    if (event.forceRefresh) {
-      updateAnalyticsState(
-        (current) => current.copyWith(
-          refreshTriggeredCount: current.refreshTriggeredCount + 1,
-        ),
-      );
-    }
-
-    if (!isAlreadyLoaded || !isRightTicker || event.forceRefresh) {
-      emit(const CompanyNewsState.loading());
-    }
+    _trackRefreshTriggered(event);
+    emit(const CompanyNewsState.loading());
 
     _loadStopwatch.reset();
     _loadStopwatch.start();
@@ -115,33 +109,61 @@ class CompanyNewsBloc extends Bloc<CompanyNewsEvent, CompanyNewsState>
         _logger.severe('Failed to load company news', failure);
         emit(CompanyNewsState.failure(failure));
       },
-      (tuple) {
-        final news = tuple.$1;
-        final origin = tuple.$2;
-        _logger.info(
-          'Successfully loaded company news: ${news.articles.length} articles, origin=$origin',
-        );
+      (tuple) => _emitLoaded(event.ticker, tuple.$1, tuple.$2, emit),
+    );
+  }
 
-        final analytics = NewsTabViewState(
-          ticker: event.ticker,
-          timestamp: DateTime.now().toIso8601String(),
-          loadTimeMs: _loadStopwatch.elapsedMilliseconds,
-          isSuccess: true,
-          dataSource: origin,
-        );
+  bool _shouldSkipLoad(LoadRequested event) {
+    if (event.forceRefresh) return false;
+    return state.maybeMap(
+      loaded: (s) => s.ticker == event.ticker,
+      orElse: () => false,
+    );
+  }
 
-        updateAnalyticsState((_) => analytics);
+  void _trackRefreshTriggered(LoadRequested event) {
+    if (!event.forceRefresh) return;
+    updateAnalyticsState(
+      (current) => current.copyWith(
+        refreshTriggeredCount: current.refreshTriggeredCount + 1,
+      ),
+    );
+  }
 
-        emit(
-          CompanyNewsState.loaded(
-            articles: news.articles,
-            ticker: event.ticker,
-            dataOrigin: origin,
-            analyticsState: analytics,
-            lastUpdated: DateTime.now(),
-          ),
-        );
-      },
+  void _emitLoaded(
+    String ticker,
+    CompanyNews news,
+    CompanyProfileDataOrigin origin,
+    Emitter<CompanyNewsState> emit,
+  ) {
+    _logger.info(
+      'Successfully loaded company news: ${news.articles.length} articles, origin=$origin',
+    );
+
+    final analytics = _buildLoadedAnalytics(ticker, origin);
+    updateAnalyticsState((_) => analytics);
+
+    emit(
+      CompanyNewsState.loaded(
+        articles: news.articles,
+        ticker: ticker,
+        dataOrigin: origin,
+        analyticsState: analytics,
+        lastUpdated: _timeProvider.nowLocal,
+      ),
+    );
+  }
+
+  NewsTabViewState _buildLoadedAnalytics(
+    String ticker,
+    CompanyProfileDataOrigin origin,
+  ) {
+    return NewsTabViewState(
+      ticker: ticker,
+      timestamp: _timeProvider.nowLocal.toIso8601String(),
+      loadTimeMs: _loadStopwatch.elapsedMilliseconds,
+      isSuccess: true,
+      dataSource: origin,
     );
   }
 
@@ -153,7 +175,7 @@ class CompanyNewsBloc extends Bloc<CompanyNewsEvent, CompanyNewsState>
       loaded: (s) => s.analyticsState,
       orElse: () => NewsTabViewState(
         ticker: event.ticker,
-        timestamp: DateTime.now().toIso8601String(),
+        timestamp: _timeProvider.nowLocal.toIso8601String(),
       ),
     );
 
@@ -192,35 +214,41 @@ class CompanyNewsBloc extends Bloc<CompanyNewsEvent, CompanyNewsState>
   ) async {
     _logger.info('Staleness check requested for ${event.ticker}');
     state.mapOrNull(
-      loaded: (loadedState) {
-        final lastUpdated = loadedState.lastUpdated;
-        if (lastUpdated != null) {
-          final difference = DateTime.now().difference(lastUpdated);
-          if (difference.inMinutes >= 5) {
-            _logger.info(
-              'Company news stale (TTL expired: ${difference.inMinutes}m). Triggering load.',
-            );
-            add(
-              CompanyNewsEvent.loadRequested(event.ticker, forceRefresh: true),
-            );
-          } else {
-            _logger.info(
-              'Company news still fresh (Last updated: $lastUpdated)',
-            );
-          }
-        } else {
-          _logger.info('Company news lastUpdated is null. Triggering load.');
-          add(CompanyNewsEvent.loadRequested(event.ticker, forceRefresh: true));
-        }
-      },
-      failure: (_) {
-        _logger.info('Company news in failure state. Triggering retry.');
-        add(CompanyNewsEvent.loadRequested(event.ticker, forceRefresh: true));
-      },
-      initial: (_) {
-        _logger.info('Company news in initial state. Triggering load.');
-        add(CompanyNewsEvent.loadRequested(event.ticker, forceRefresh: true));
-      },
+      loaded: (loadedState) =>
+          _refreshIfStale(event.ticker, loadedState.lastUpdated),
+      failure: (_) => _triggerForceRefresh(
+        event.ticker,
+        'Company news in failure state. Triggering retry.',
+      ),
+      initial: (_) => _triggerForceRefresh(
+        event.ticker,
+        'Company news in initial state. Triggering load.',
+      ),
     );
+  }
+
+  void _refreshIfStale(String ticker, DateTime? lastUpdated) {
+    if (lastUpdated == null) {
+      _triggerForceRefresh(
+        ticker,
+        'Company news lastUpdated is null. Triggering load.',
+      );
+      return;
+    }
+
+    final difference = _timeProvider.nowLocal.difference(lastUpdated);
+    if (difference.inMinutes >= 5) {
+      _triggerForceRefresh(
+        ticker,
+        'Company news stale (TTL expired: ${difference.inMinutes}m). Triggering load.',
+      );
+    } else {
+      _logger.info('Company news still fresh (Last updated: $lastUpdated)');
+    }
+  }
+
+  void _triggerForceRefresh(String ticker, String reason) {
+    _logger.info(reason);
+    add(CompanyNewsEvent.loadRequested(ticker, forceRefresh: true));
   }
 }

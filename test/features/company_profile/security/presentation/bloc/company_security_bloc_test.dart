@@ -10,8 +10,11 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:bizzie/core/usecase/usecase.dart';
+import 'package:bizzie/features/company_profile/shared/domain/services/market_hours_freshness_service.dart';
 import 'package:bizzie/features/company_profile/shared/domain/usecases/watch_active_tab_usecase.dart';
+import 'package:bizzie/core/interfaces/i_time_provider.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:bizzie/features/auth/domain/usecases/get_auth_stream.dart';
 
 class MockGetSecurityDetailsUseCase extends Mock
     implements GetSecurityDetailsUseCase {}
@@ -20,11 +23,31 @@ class MockSecurityTabAnalytics extends Mock implements SecurityTabAnalytics {}
 
 class MockWatchActiveTabUseCase extends Mock implements WatchActiveTabUseCase {}
 
+class MockGetAuthStream extends Mock implements GetAuthStream {}
+
+class MockMarketHoursFreshnessService extends Mock
+    implements MarketHoursFreshnessService {}
+
+MockGetAuthStream stubbedGetAuthStream() {
+  final mock = MockGetAuthStream();
+  when(() => mock()).thenAnswer((_) => const Stream.empty());
+  return mock;
+}
+
+class MockTimeProvider extends Mock implements ITimeProvider {}
+
+MockTimeProvider stubbedTimeProvider() {
+  final mock = MockTimeProvider();
+  when(() => mock.nowLocal).thenAnswer((_) => DateTime.now());
+  return mock;
+}
+
 void main() {
   late CompanySecurityBloc bloc;
   late MockGetSecurityDetailsUseCase mockGetSecurityDetails;
   late MockSecurityTabAnalytics mockTracker;
   late MockWatchActiveTabUseCase mockWatchActiveTabUseCase;
+  late MockMarketHoursFreshnessService mockFreshnessService;
 
   setUpAll(() {
     registerFallbackValue(NoParams());
@@ -41,15 +64,23 @@ void main() {
     mockGetSecurityDetails = MockGetSecurityDetailsUseCase();
     mockTracker = MockSecurityTabAnalytics();
     mockWatchActiveTabUseCase = MockWatchActiveTabUseCase();
+    mockFreshnessService = MockMarketHoursFreshnessService();
 
-    when(() => mockWatchActiveTabUseCase(any()))
-        .thenAnswer((_) => const Stream.empty());
+    when(
+      () => mockWatchActiveTabUseCase(any()),
+    ).thenAnswer((_) => const Stream.empty());
+    when(() => mockFreshnessService.isStale(any())).thenReturn(false);
     bloc = CompanySecurityBloc(
       mockGetSecurityDetails,
       mockTracker,
       mockWatchActiveTabUseCase,
+      mockFreshnessService,
+      stubbedTimeProvider(),
+      stubbedGetAuthStream(),
     );
   });
+
+  tearDown(() => bloc.close());
 
   const tTicker = 'AAPL';
   const tSecurityDetails = SecurityDetails(
@@ -341,6 +372,7 @@ void main() {
       'stalenessCheckRequested_stale_triggersLoadRequested',
       build: () {
         // arrange
+        when(() => mockFreshnessService.isStale(any())).thenReturn(true);
         when(() => mockGetSecurityDetails(tTicker)).thenAnswer(
           (_) async =>
               const Right((tSecurityDetails, CompanyProfileDataOrigin.api)),

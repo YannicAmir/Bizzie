@@ -14,7 +14,9 @@ import 'package:bizzie/core/interfaces/i_config_service.dart';
 import 'package:bizzie/core/usecase/usecase.dart';
 import 'package:bizzie/features/company_profile/shared/domain/usecases/watch_active_tab_usecase.dart';
 import 'package:bizzie/features/company_profile/shares/presentation/analytics/shares_tab_analytics.dart';
+import 'package:bizzie/core/interfaces/i_time_provider.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:bizzie/features/auth/domain/usecases/get_auth_stream.dart';
 
 class MockGetSharesUseCase extends Mock implements GetSharesUseCase {}
 
@@ -23,6 +25,22 @@ class MockSharesTabAnalytics extends Mock implements SharesTabAnalytics {}
 class MockConfigService extends Mock implements IConfigService {}
 
 class MockWatchActiveTabUseCase extends Mock implements WatchActiveTabUseCase {}
+
+class MockGetAuthStream extends Mock implements GetAuthStream {}
+
+MockGetAuthStream stubbedGetAuthStream() {
+  final mock = MockGetAuthStream();
+  when(() => mock()).thenAnswer((_) => const Stream.empty());
+  return mock;
+}
+
+class MockTimeProvider extends Mock implements ITimeProvider {}
+
+MockTimeProvider stubbedTimeProvider() {
+  final mock = MockTimeProvider();
+  when(() => mock.nowLocal).thenAnswer((_) => DateTime.now());
+  return mock;
+}
 
 void main() {
   setUpAll(() {
@@ -42,13 +60,16 @@ void main() {
     mockWatchActiveTabUseCase = MockWatchActiveTabUseCase();
 
     when(() => mockConfigService.freePlanHistoryCount).thenReturn(7);
-    when(() => mockWatchActiveTabUseCase(any()))
-        .thenAnswer((_) => const Stream.empty());
+    when(
+      () => mockWatchActiveTabUseCase(any()),
+    ).thenAnswer((_) => const Stream.empty());
     bloc = CompanySharesBloc(
       mockGetShares,
       mockConfigService,
       mockAnalytics,
       mockWatchActiveTabUseCase,
+      stubbedTimeProvider(),
+      stubbedGetAuthStream(),
     );
   });
 

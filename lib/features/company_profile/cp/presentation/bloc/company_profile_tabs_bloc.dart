@@ -1,6 +1,8 @@
 import 'package:bizzie/core/interfaces/i_config_service.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:bizzie/core/usecase/usecase.dart';
+import 'package:bizzie/features/auth/domain/usecases/get_auth_stream.dart';
+import 'package:bizzie/features/auth/presentation/bloc/auth_session_reset_mixin.dart';
 import 'package:bizzie/features/company_profile/cp/presentation/bloc/company_profile_tabs_event.dart';
 import 'package:bizzie/features/company_profile/cp/presentation/bloc/company_profile_tabs_state.dart';
 import 'package:bizzie/features/company_profile/shared/domain/enums/company_profile_tab.dart';
@@ -16,7 +18,12 @@ final _logger = BizzieLogger('CompanyProfileTabsBloc');
 
 @injectable
 class CompanyProfileTabsBloc
-    extends Bloc<CompanyProfileTabsEvent, CompanyProfileTabsState> {
+    extends Bloc<CompanyProfileTabsEvent, CompanyProfileTabsState>
+    with
+        AuthSessionResetMixin<
+          CompanyProfileTabsEvent,
+          CompanyProfileTabsState
+        > {
   final GetTabLayoutUseCase _getTabLayout;
   final SetActiveTabUseCase _setActiveTab;
   final IConfigService _configService;
@@ -25,12 +32,14 @@ class CompanyProfileTabsBloc
     this._getTabLayout,
     this._setActiveTab,
     this._configService,
+    GetAuthStream getAuthStream,
   ) : super(const CompanyProfileTabsState.initial()) {
     on<Started>(_onStarted, transformer: restartable());
     on<TabActivated>(_onTabActivated, transformer: sequential());
     on<MoreTabIndexChanged>(_onMoreTabIndexChanged, transformer: sequential());
     on<TabOrderChanged>(_onTabOrderChanged, transformer: restartable());
     on<Reset>(_onReset);
+    resetOnSessionEnd(getAuthStream, const CompanyProfileTabsEvent.reset());
   }
 
   TabLayout _loadLayout() => _getTabLayout(NoParams()).fold((failure) {
@@ -66,9 +75,7 @@ class CompanyProfileTabsBloc
     Emitter<CompanyProfileTabsState> emit,
   ) {
     final layout = _loadLayout();
-    emit(
-      state.copyWith(mainTabs: layout.mainTabs, moreTabs: layout.moreTabs),
-    );
+    emit(state.copyWith(mainTabs: layout.mainTabs, moreTabs: layout.moreTabs));
   }
 
   void _onReset(Reset event, Emitter<CompanyProfileTabsState> emit) {

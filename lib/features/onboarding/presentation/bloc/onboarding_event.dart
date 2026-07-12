@@ -1,54 +1,66 @@
-part of 'onboarding_bloc.dart';
+import 'package:bizzie/core/domain/models/sector.dart';
+import 'package:bizzie/features/onboarding/domain/models/onboarding_step.dart';
+import 'package:bizzie/features/onboarding/select_brands/domain/models/brand.dart';
+import 'package:bizzie/features/user/domain/enums/investing_experience.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+
+part 'onboarding_event.freezed.dart';
 
 @freezed
-class OnboardingEvent with _$OnboardingEvent {
-  const factory OnboardingEvent.started() = _Started;
-  const factory OnboardingEvent.nameSubmitted(String name) = _NameSubmitted;
-  const factory OnboardingEvent.sectorSelected(Sector sector) = _SectorSelected;
-  const factory OnboardingEvent.loadSp500History() = _LoadSp500History;
+sealed class OnboardingEvent with _$OnboardingEvent {
+  const factory OnboardingEvent.started() = OnboardingStarted;
+  const factory OnboardingEvent.nameSubmitted(String name) =
+      OnboardingNameSubmitted;
+  const factory OnboardingEvent.sectorSelected(Sector sector) =
+      OnboardingSectorSelected;
+  const factory OnboardingEvent.sp500HistoryRequested() =
+      OnboardingSp500HistoryRequested;
 
-  const factory OnboardingEvent.toggleBrand(Brand brand) = _ToggleBrand;
+  const factory OnboardingEvent.brandToggled(Brand brand) =
+      OnboardingBrandToggled;
   const factory OnboardingEvent.experienceSelected(
     InvestingExperience experience,
-  ) = _ExperienceSelected;
+  ) = OnboardingExperienceSelected;
   const factory OnboardingEvent.notificationsToggled(bool enabled) =
-      _NotificationsToggled;
+      OnboardingNotificationsToggled;
 
-  const factory OnboardingEvent.completeOnboarding() = _CompleteOnboarding;
+  const factory OnboardingEvent.completionRequested() =
+      OnboardingCompletionRequested;
 
   // Analysis
-  const factory OnboardingEvent.startAnalysis() = _StartAnalysis;
-  const factory OnboardingEvent.updateAnalysisStep(int step) =
-      _UpdateAnalysisStep;
+  const factory OnboardingEvent.analysisStarted() = OnboardingAnalysisStarted;
+  const factory OnboardingEvent.analysisStepUpdated(int step) =
+      OnboardingAnalysisStepUpdated;
 
   // Watchlist Addition
-  const factory OnboardingEvent.startWatchlistAddition() =
-      _StartWatchlistAddition;
-  const factory OnboardingEvent.updateWatchlistStep(int step) =
-      _UpdateWatchlistStep;
+  const factory OnboardingEvent.watchlistAdditionStarted() =
+      OnboardingWatchlistAdditionStarted;
+  const factory OnboardingEvent.watchlistStepUpdated(int step) =
+      OnboardingWatchlistStepUpdated;
 
   // Feature Highlights
   const factory OnboardingEvent.highlightPageChanged(int index) =
-      _HighlightPageChanged;
+      OnboardingHighlightPageChanged;
   const factory OnboardingEvent.highlightContinuePressed() =
-      _HighlightContinuePressed;
-  const factory OnboardingEvent.highlightSkipPressed() = _HighlightSkipPressed;
+      OnboardingHighlightContinuePressed;
+  const factory OnboardingEvent.highlightSkipPressed() =
+      OnboardingHighlightSkipPressed;
 
   // Landing
-  const factory OnboardingEvent.landingPageViewed() = _LandingPageViewed;
-  const factory OnboardingEvent.loginRequested() = _LoginRequested;
+  const factory OnboardingEvent.landingPageViewed() =
+      OnboardingLandingPageViewed;
+  const factory OnboardingEvent.loginRequested() = OnboardingLoginRequested;
 
   // Profile Ready
   const factory OnboardingEvent.profileReadyPageViewed() =
-      _ProfileReadyPageViewed;
-  const factory OnboardingEvent.profileReadyContinuePressed() =
-      _ProfileReadyContinuePressed;
-  const factory OnboardingEvent.stepViewed(OnboardingStep step) = _StepViewed;
+      OnboardingProfileReadyPageViewed;
+  const factory OnboardingEvent.stepViewed(OnboardingStep step) =
+      OnboardingStepViewed;
   const factory OnboardingEvent.subscriptionStatusChanged({
     required bool didSubscribe,
     required String subscriptionType,
-  }) = SubscriptionStatusChanged;
+  }) = OnboardingSubscriptionStatusChanged;
   const factory OnboardingEvent.onboardingFlowFinished() =
-      _OnboardingFlowFinished;
-  const factory OnboardingEvent.reset() = _Reset;
+      OnboardingFlowFinished;
+  const factory OnboardingEvent.reset() = OnboardingReset;
 }

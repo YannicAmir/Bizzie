@@ -8,12 +8,30 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:bizzie/core/usecase/usecase.dart';
 import 'package:bizzie/features/company_profile/shared/domain/usecases/watch_active_tab_usecase.dart';
+import 'package:bizzie/core/interfaces/i_time_provider.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:bizzie/features/auth/domain/usecases/get_auth_stream.dart';
 
 class MockGetUpcomingEarningsUseCase extends Mock
     implements GetUpcomingEarningsUseCase {}
 
 class MockWatchActiveTabUseCase extends Mock implements WatchActiveTabUseCase {}
+
+class MockGetAuthStream extends Mock implements GetAuthStream {}
+
+MockGetAuthStream stubbedGetAuthStream() {
+  final mock = MockGetAuthStream();
+  when(() => mock()).thenAnswer((_) => const Stream.empty());
+  return mock;
+}
+
+class MockTimeProvider extends Mock implements ITimeProvider {}
+
+MockTimeProvider stubbedTimeProvider() {
+  final mock = MockTimeProvider();
+  when(() => mock.nowLocal).thenAnswer((_) => DateTime.now());
+  return mock;
+}
 
 void main() {
   setUpAll(() {
@@ -28,11 +46,14 @@ void main() {
     mockGetUpcomingEarnings = MockGetUpcomingEarningsUseCase();
     mockWatchActiveTabUseCase = MockWatchActiveTabUseCase();
 
-    when(() => mockWatchActiveTabUseCase(any()))
-        .thenAnswer((_) => const Stream.empty());
+    when(
+      () => mockWatchActiveTabUseCase(any()),
+    ).thenAnswer((_) => const Stream.empty());
     bloc = UpcomingEarningsBloc(
       mockGetUpcomingEarnings,
       mockWatchActiveTabUseCase,
+      stubbedTimeProvider(),
+      stubbedGetAuthStream(),
     );
   });
 

@@ -4,7 +4,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'company_profile_state.freezed.dart';
 
 @freezed
-class CompanyProfileState with _$CompanyProfileState {
+abstract class CompanyProfileState with _$CompanyProfileState {
   const factory CompanyProfileState.initial() = Initial;
 
   const factory CompanyProfileState.active({

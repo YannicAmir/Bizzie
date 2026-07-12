@@ -4,8 +4,11 @@ import 'package:injectable/injectable.dart';
 import 'package:intl/intl.dart';
 
 import 'package:bizzie/core/interfaces/i_config_service.dart';
+import 'package:bizzie/core/interfaces/i_time_provider.dart';
 import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
+import 'package:bizzie/features/auth/domain/usecases/get_auth_stream.dart';
+import 'package:bizzie/features/auth/presentation/bloc/auth_session_reset_mixin.dart';
 import 'package:bizzie/features/company_profile/shared/domain/models/chart_data_point.dart';
 import 'package:bizzie/features/company_profile/shared/domain/models/financial_data_point.dart';
 import 'package:bizzie/features/company_profile/shared/domain/services/tab_content_freshness_service.dart';
@@ -16,6 +19,7 @@ import 'package:bizzie/features/company_profile/pfcf_ratio/presentation/analytic
 import 'package:bizzie/features/company_profile/pfcf_ratio/presentation/analytics/pfcf_ratio_tab_view_state.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/analytics/base_analytics.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/bloc/company_profile_analytics_mixin.dart';
+import 'package:bizzie/features/company_profile/shared/presentation/bloc/company_profile_load_guard_mixin.dart';
 import 'company_pfcf_ratio_event.dart';
 import 'company_pfcf_ratio_state.dart';
 
@@ -29,17 +33,22 @@ class CompanyPfcfRatioBloc
           CompanyPfcfRatioEvent,
           CompanyPfcfRatioState,
           PfcfRatioTabViewState
-        > {
+        >,
+        AuthSessionResetMixin<CompanyPfcfRatioEvent, CompanyPfcfRatioState>,
+        CompanyProfileLoadGuardMixin {
   final GetPfcfRatioUseCase _getPfcfRatio;
   final IConfigService _configService;
   final PfcfRatioTabAnalytics _analytics;
   final TabContentFreshnessService _freshnessService;
+  final ITimeProvider _timeProvider;
 
   CompanyPfcfRatioBloc(
     this._getPfcfRatio,
     this._configService,
     this._analytics,
     this._freshnessService,
+    this._timeProvider,
+    GetAuthStream getAuthStream,
   ) : super(const CompanyPfcfRatioState.initial()) {
     on<LoadRequested>(_onLoadRequested, transformer: restartable());
     on<StalenessCheckRequested>(
@@ -52,11 +61,18 @@ class CompanyPfcfRatioBloc
     on<AppForegrounded>(_onAppForegrounded);
     on<ViewAllTapped>(_onViewAllTapped);
     on<Reset>((_, emit) => emit(const CompanyPfcfRatioState.initial()));
+    resetOnSessionEnd(getAuthStream, const CompanyPfcfRatioEvent.reset());
   }
 
   @override
   CompanyProfileTabTracker<PfcfRatioTabViewState> get analyticsTracker =>
       _analytics;
+
+  @override
+  String get featureName => 'Company PFCF Ratio';
+
+  @override
+  String? get loadedTicker => state.mapOrNull(loaded: (s) => s.ticker);
 
   void _onTabShown(TabShown event, Emitter<CompanyPfcfRatioState> emit) {
     state.maybeMap(
@@ -65,18 +81,19 @@ class CompanyPfcfRatioBloc
           event.ticker,
           PfcfRatioTabViewState(
             ticker: event.ticker,
-            timestamp: DateTime.now().toIso8601String(),
+            timestamp: _timeProvider.nowLocal.toIso8601String(),
             isSuccess: s.isSuccess,
             loadTimeMs: s.loadTimeMs,
             dataSource: s.dataOrigin,
           ),
-        );      },
+        );
+      },
       orElse: () {
         onTabShown(
           event.ticker,
           PfcfRatioTabViewState(
             ticker: event.ticker,
-            timestamp: DateTime.now().toIso8601String(),
+            timestamp: _timeProvider.nowLocal.toIso8601String(),
           ),
         );
       },
@@ -87,19 +104,22 @@ class CompanyPfcfRatioBloc
     TabHidden event,
     Emitter<CompanyPfcfRatioState> emit,
   ) async {
-    await onTabHidden();  }
+    await onTabHidden();
+  }
 
   Future<void> _onAppBackgrounded(
     AppBackgrounded event,
     Emitter<CompanyPfcfRatioState> emit,
   ) async {
-    await onAppBackgrounded();  }
+    await onAppBackgrounded();
+  }
 
   void _onAppForegrounded(
     AppForegrounded event,
     Emitter<CompanyPfcfRatioState> emit,
   ) {
-    onAppForegrounded();  }
+    onAppForegrounded();
+  }
 
   void _onViewAllTapped(
     ViewAllTapped event,
@@ -116,20 +136,7 @@ class CompanyPfcfRatioBloc
     LoadRequested event,
     Emitter<CompanyPfcfRatioState> emit,
   ) async {
-    final isAlreadyLoaded = state.maybeMap(
-      loaded: (s) => true,
-      orElse: () => false,
-    );
-
-    final isRightTicker = state.maybeMap(
-      loaded: (s) => s.ticker == event.ticker,
-      orElse: () => false,
-    );
-
-    if (isAlreadyLoaded && isRightTicker && !event.forceRefresh) {
-      _logger.info(
-        'Company PFCF Ratio already loaded for ${event.ticker} and is the correct ticker. Skipping reload.',
-      );
+    if (shouldSkipLoad(event.ticker, forceRefresh: event.forceRefresh)) {
       return;
     }
 
@@ -145,29 +152,53 @@ class CompanyPfcfRatioBloc
     result.fold(
       (failure) {
         _logger.severe('Failed to load PFCF Ratio stats', failure);
-        final loadTime = stopwatch.elapsedMilliseconds;
-        updateAnalyticsState(
-          (s) => s.copyWith(isSuccess: false, loadTimeMs: loadTime),
+        _recordLoadMetrics(
+          isSuccess: false,
+          loadTimeMs: stopwatch.elapsedMilliseconds,
         );
         emit(CompanyPfcfRatioState.failure(failure));
       },
-      (tuple) {
-        final stats = tuple.$1;
-        final origin = tuple.$2;
-        _logger.info(
-          'Successfully loaded PFCF Ratio stats: ${stats.dataPoints.length} points, origin=$origin',
-        );
+      (tuple) => _handleLoadSuccess(
+        ticker: event.ticker,
+        tuple: tuple,
+        loadTimeMs: stopwatch.elapsedMilliseconds,
+        emit: emit,
+      ),
+    );
+  }
 
-        final loadTime = stopwatch.elapsedMilliseconds;
-        updateAnalyticsState(
-          (s) => s.copyWith(
-            isSuccess: true,
-            dataSource: origin,
-            loadTimeMs: loadTime,
-          ),
-        );
-        _emitLoadedState(event.ticker, stats, origin, loadTime, true, emit);
-      },
+  void _handleLoadSuccess({
+    required String ticker,
+    required (PfcfRatioStats, CompanyProfileDataOrigin) tuple,
+    required int loadTimeMs,
+    required Emitter<CompanyPfcfRatioState> emit,
+  }) {
+    final stats = tuple.$1;
+    final origin = tuple.$2;
+    _logger.info(
+      'Successfully loaded PFCF Ratio stats: ${stats.dataPoints.length} points, origin=$origin',
+    );
+    _recordLoadMetrics(
+      isSuccess: true,
+      dataSource: origin,
+      loadTimeMs: loadTimeMs,
+    );
+    _emitLoadedState(ticker, stats, origin, loadTimeMs, true, emit);
+  }
+
+  void _recordLoadMetrics({
+    required bool isSuccess,
+    required int loadTimeMs,
+    CompanyProfileDataOrigin? dataSource,
+  }) {
+    updateAnalyticsState(
+      (s) => dataSource == null
+          ? s.copyWith(isSuccess: isSuccess, loadTimeMs: loadTimeMs)
+          : s.copyWith(
+              isSuccess: isSuccess,
+              dataSource: dataSource,
+              loadTimeMs: loadTimeMs,
+            ),
     );
   }
 
@@ -205,7 +236,7 @@ class CompanyPfcfRatioBloc
         dataOrigin: origin,
         loadTimeMs: loadTimeMs,
         isSuccess: isSuccess,
-        lastUpdated: DateTime.now(),
+        lastUpdated: _timeProvider.nowLocal,
         analyticsState: analyticsSession,
       ),
     );
@@ -243,7 +274,7 @@ class CompanyPfcfRatioBloc
       dataOrigin: origin,
       loadTimeMs: loadTimeMs,
       isSuccess: isSuccess,
-      lastUpdated: DateTime.now(),
+      lastUpdated: _timeProvider.nowLocal,
       analyticsState: analyticsSession,
     );
   }
@@ -254,41 +285,36 @@ class CompanyPfcfRatioBloc
   ) async {
     _logger.info('Staleness check requested for ${event.ticker}');
     state.mapOrNull(
-      loaded: (loadedState) {
-        if (_freshnessService.isStale(loadedState.lastUpdated)) {
-          _logger.info(
-            'PFCF Ratio stale (last updated: ${loadedState.lastUpdated}). Triggering load.',
-          );
-          add(
-            CompanyPfcfRatioEvent.loadRequested(
-              event.ticker,
-              forceRefresh: true,
-            ),
-          );
-        } else {
-          _logger.info(
-            'PFCF Ratio still fresh (Last updated: ${loadedState.lastUpdated})',
-          );
-        }
-      },
-      failure: (_) {
-        _logger.info('PFCF Ratio in failure state. Triggering retry.');
-        add(
-          CompanyPfcfRatioEvent.loadRequested(event.ticker, forceRefresh: true),
-        );
-      },
-      initial: (_) {
-        _logger.info('PFCF Ratio in initial state. Triggering load.');
-        add(
-          CompanyPfcfRatioEvent.loadRequested(event.ticker, forceRefresh: true),
-        );
-      },
-      loading: (_) {
-        _logger.info('PFCF Ratio in loading state. Restarting load.');
-        add(
-          CompanyPfcfRatioEvent.loadRequested(event.ticker, forceRefresh: true),
-        );
-      },
+      loaded: (loadedState) =>
+          _evaluateStaleness(event.ticker, loadedState.lastUpdated),
+      failure: (_) => _triggerRefresh(
+        event.ticker,
+        'PFCF Ratio in failure state. Triggering retry.',
+      ),
+      initial: (_) => _triggerRefresh(
+        event.ticker,
+        'PFCF Ratio in initial state. Triggering load.',
+      ),
+      loading: (_) => _triggerRefresh(
+        event.ticker,
+        'PFCF Ratio in loading state. Restarting load.',
+      ),
     );
+  }
+
+  void _evaluateStaleness(String ticker, DateTime? lastUpdated) {
+    if (_freshnessService.isStale(lastUpdated)) {
+      _triggerRefresh(
+        ticker,
+        'PFCF Ratio stale (last updated: $lastUpdated). Triggering load.',
+      );
+    } else {
+      _logger.info('PFCF Ratio still fresh (Last updated: $lastUpdated)');
+    }
+  }
+
+  void _triggerRefresh(String ticker, String reason) {
+    _logger.info(reason);
+    add(CompanyPfcfRatioEvent.loadRequested(ticker, forceRefresh: true));
   }
 }

@@ -95,10 +95,7 @@ return tabHidden(_that);case AppBackgrounded():
 return appBackgrounded(_that);case AppForegrounded():
 return appForegrounded(_that);case ArticleTapped():
 return articleTapped(_that);case Reset():
-return reset(_that);case _:
-  throw StateError('Unexpected subclass');
-
-}
+return reset(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -178,10 +175,7 @@ return tabHidden();case AppBackgrounded():
 return appBackgrounded();case AppForegrounded():
 return appForegrounded();case ArticleTapped():
 return articleTapped(_that.article,_that.isFeatured);case Reset():
-return reset();case _:
-  throw StateError('Unexpected subclass');
-
-}
+return reset();}
 }
 /// A variant of `when` that fallback to returning `null`
 ///

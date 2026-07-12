@@ -4,7 +4,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'company_profile_event.freezed.dart';
 
 @freezed
-class CompanyProfileEvent with _$CompanyProfileEvent {
+sealed class CompanyProfileEvent with _$CompanyProfileEvent {
   const factory CompanyProfileEvent.opened({
     required String ticker,
     required String companyName,

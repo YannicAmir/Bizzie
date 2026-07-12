@@ -4,7 +4,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'company_profile_tabs_event.freezed.dart';
 
 @freezed
-class CompanyProfileTabsEvent with _$CompanyProfileTabsEvent {
+sealed class CompanyProfileTabsEvent with _$CompanyProfileTabsEvent {
   const factory CompanyProfileTabsEvent.started() = Started;
 
   const factory CompanyProfileTabsEvent.tabActivated({

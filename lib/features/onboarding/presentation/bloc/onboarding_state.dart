@@ -18,8 +18,8 @@ enum AnalysisStepStatus { pending, active, completed }
 
 @freezed
 abstract class OnboardingState with _$OnboardingState {
-  const factory OnboardingState({
-    required OnboardingData onboardingData,
+  const factory OnboardingState.initial({
+    @Default(OnboardingData()) OnboardingData onboardingData,
     @Default(0) int currentStep,
     @Default(OnboardingStatus.initial) OnboardingStatus status,
 
@@ -40,8 +40,8 @@ abstract class OnboardingState with _$OnboardingState {
     @Default(0) int currentHighlightIndex,
     @Default(false) bool shouldNavigateToCreateAccount,
     @Default(false) bool shouldNavigateToBuildingProfile,
-    required DateTime sessionEntryTime,
-    required String sessionId,
+    DateTime? sessionEntryTime,
+    @Default('') String sessionId,
     OnboardingStep? lastStep,
     @Default(false) bool highlightsSkipped,
     @Default(false) bool didSubscribe,
@@ -49,12 +49,6 @@ abstract class OnboardingState with _$OnboardingState {
   }) = _OnboardingState;
 
   const OnboardingState._();
-
-  factory OnboardingState.initial() => OnboardingState(
-    onboardingData: const OnboardingData(),
-    sessionEntryTime: DateTime.now(),
-    sessionId: '', // Will be set in _Started
-  );
 
   String get analysisTitle {
     if (analysisStep >= 3) return 'All done!';

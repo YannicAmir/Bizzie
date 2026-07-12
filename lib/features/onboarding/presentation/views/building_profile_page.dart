@@ -74,7 +74,7 @@ class _BuildingProfilePageState extends State<BuildingProfilePage>
   void _triggerSave() {
     if (_isProfileSaved) return;
     context.read<OnboardingBloc>().add(
-      const OnboardingEvent.completeOnboarding(),
+      const OnboardingEvent.completionRequested(),
     );
   }
 

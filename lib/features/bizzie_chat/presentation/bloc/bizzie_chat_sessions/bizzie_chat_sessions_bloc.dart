@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
+import 'package:bizzie/features/auth/domain/usecases/get_auth_stream.dart';
+import 'package:bizzie/features/auth/presentation/bloc/auth_session_reset_mixin.dart';
 import 'package:bizzie/features/bizzie_chat/domain/models/get_sessions_params.dart';
 import 'package:bizzie/features/bizzie_chat/domain/usecases/get_sessions_stream_usecase.dart';
 import 'package:bizzie/features/bizzie_chat/presentation/bloc/bizzie_chat_sessions/bizzie_chat_sessions_event.dart';
@@ -13,20 +15,23 @@ final _logger = BizzieLogger('BizzieChatSessionsBloc');
 
 @injectable
 class BizzieChatSessionsBloc
-    extends Bloc<BizzieChatSessionsEvent, BizzieChatSessionsState> {
+    extends Bloc<BizzieChatSessionsEvent, BizzieChatSessionsState>
+    with
+        AuthSessionResetMixin<
+          BizzieChatSessionsEvent,
+          BizzieChatSessionsState
+        > {
   final GetSessionsStreamUseCase _getSessionsStream;
 
-  BizzieChatSessionsBloc(this._getSessionsStream)
-      : super(const BizzieChatSessionsState.initial()) {
-    on<BizzieChatSessionsEvent>(
-      (event, emit) async {
-        await event.map(
-          started: (e) => _onStarted(uid: e.uid, ticker: e.ticker, emit: emit),
-          reset: (_) async => _onReset(emit),
-        );
-      },
-      transformer: restartable(),
-    );
+  BizzieChatSessionsBloc(this._getSessionsStream, GetAuthStream getAuthStream)
+    : super(const BizzieChatSessionsState.initial()) {
+    on<BizzieChatSessionsEvent>((event, emit) async {
+      await event.map(
+        started: (e) => _onStarted(uid: e.uid, ticker: e.ticker, emit: emit),
+        reset: (_) async => _onReset(emit),
+      );
+    }, transformer: restartable());
+    resetOnSessionEnd(getAuthStream, const BizzieChatSessionsEvent.reset());
   }
 
   Future<void> _onStarted({
@@ -39,9 +44,7 @@ class BizzieChatSessionsBloc
       return;
     }
     emit(const BizzieChatSessionsState.loading());
-    _logger.info(
-      'Subscribing to sessions stream for uid=$uid, ticker=$ticker',
-    );
+    _logger.info('Subscribing to sessions stream for uid=$uid, ticker=$ticker');
     final stream = await _getSessionsStream(
       GetSessionsParams(uid: uid, ticker: ticker),
     );

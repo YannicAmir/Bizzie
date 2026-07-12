@@ -3,7 +3,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'company_roe_event.freezed.dart';
 
 @freezed
-class CompanyRoeEvent with _$CompanyRoeEvent {
+sealed class CompanyRoeEvent with _$CompanyRoeEvent {
   const factory CompanyRoeEvent.loadRequested(
     String ticker, {
     @Default(false) bool forceRefresh,

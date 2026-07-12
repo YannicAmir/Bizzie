@@ -107,10 +107,7 @@ return tabHidden(_that);case AppBackgrounded():
 return appBackgrounded(_that);case AppForegrounded():
 return appForegrounded(_that);case ViewAllTapped():
 return viewAllTapped(_that);case ChartSwiped():
-return chartSwiped(_that);case _:
-  throw StateError('Unexpected subclass');
-
-}
+return chartSwiped(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -208,10 +205,7 @@ return tabHidden();case AppBackgrounded():
 return appBackgrounded();case AppForegrounded():
 return appForegrounded();case ViewAllTapped():
 return viewAllTapped(_that.isAnnual);case ChartSwiped():
-return chartSwiped(_that.index);case _:
-  throw StateError('Unexpected subclass');
-
-}
+return chartSwiped(_that.index);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
