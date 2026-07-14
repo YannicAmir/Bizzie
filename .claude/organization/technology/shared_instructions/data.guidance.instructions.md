@@ -85,8 +85,8 @@ Rules:
 |---|---|
 | `@Injectable(as: IXxx)` | Datasource implementations |
 | `@LazySingleton(as: IXxx)` | Repository implementations |
-| `@lazySingleton` | Singletons with no interface (e.g. analytics trackers) |
-| `@injectable` | BLoCs and use cases |
+| `@lazySingleton` | Singletons with no interface (e.g. analytics trackers, use cases) |
+| `@injectable` | BLoCs |
 
 Never call `GetIt.I.registerSingleton()` or `registerFactory()` manually for app features.
 

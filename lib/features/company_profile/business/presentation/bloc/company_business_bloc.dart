@@ -94,10 +94,12 @@ class CompanyBusinessBloc
     return super.close();
   }
 
-  void _onTabHidden(TabHidden event, Emitter<CompanyBusinessState> emit) =>
-      onTabHidden();
+  Future<void> _onTabHidden(
+    TabHidden event,
+    Emitter<CompanyBusinessState> emit,
+  ) => onTabHidden();
 
-  void _onAppBackgrounded(
+  Future<void> _onAppBackgrounded(
     AppBackgrounded event,
     Emitter<CompanyBusinessState> emit,
   ) => onAppBackgrounded();
@@ -174,17 +176,17 @@ class CompanyBusinessBloc
     TabShown event,
     Emitter<CompanyBusinessState> emit,
   ) async {
-    final initialState = state.maybeMap(
-      loaded: (s) => s.analyticsState,
-      orElse: () => BusinessTabViewState(
-        ticker: event.ticker,
-        timestamp: _timeProvider.nowLocal.toIso8601String(),
-      ),
-    );
-
-    onTabShown(event.ticker, initialState);
+    onTabShown(event.ticker, _buildTabShownViewState(event.ticker));
     add(CompanyBusinessEvent.stalenessCheckRequested(event.ticker));
   }
+
+  BusinessTabViewState _buildTabShownViewState(String ticker) => state.maybeMap(
+    loaded: (s) => s.analyticsState,
+    orElse: () => BusinessTabViewState(
+      ticker: ticker,
+      timestamp: _timeProvider.nowLocal.toIso8601String(),
+    ),
+  );
 
   Future<void> _onAnalyticsInteractionOccurred(
     AnalyticsInteractionOccurred event,

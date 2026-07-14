@@ -73,28 +73,20 @@ class CompanyRoeBloc extends Bloc<CompanyRoeEvent, CompanyRoeState>
   String? get loadedTicker => state.mapOrNull(loaded: (s) => s.ticker);
 
   void _onTabShown(TabShown event, Emitter<CompanyRoeState> emit) {
-    state.maybeMap(
-      loaded: (s) {
-        onTabShown(
-          event.ticker,
-          RoeTabViewState(
-            ticker: event.ticker,
-            timestamp: _timeProvider.nowLocal.toIso8601String(),
-            loadTimeMs: s.loadTimeMs,
-            isSuccess: s.isSuccess,
-            dataSource: s.dataOrigin,
-          ),
-        );
-      },
-      orElse: () {
-        onTabShown(
-          event.ticker,
-          RoeTabViewState(
-            ticker: event.ticker,
-            timestamp: _timeProvider.nowLocal.toIso8601String(),
-          ),
-        );
-      },
+    onTabShown(event.ticker, _buildTabShownViewState(event.ticker));
+  }
+
+  RoeTabViewState _buildTabShownViewState(String ticker) {
+    final timestamp = _timeProvider.nowLocal.toIso8601String();
+    return state.maybeMap(
+      loaded: (s) => RoeTabViewState(
+        ticker: ticker,
+        timestamp: timestamp,
+        loadTimeMs: s.loadTimeMs,
+        isSuccess: s.isSuccess,
+        dataSource: s.dataOrigin,
+      ),
+      orElse: () => RoeTabViewState(ticker: ticker, timestamp: timestamp),
     );
   }
 

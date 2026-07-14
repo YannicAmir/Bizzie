@@ -18,9 +18,9 @@ sealed class CompanyFreeCashFlowEvent with _$CompanyFreeCashFlowEvent {
   const factory CompanyFreeCashFlowEvent.appBackgrounded() = AppBackgrounded;
   const factory CompanyFreeCashFlowEvent.appForegrounded() = AppForegrounded;
 
-  const factory CompanyFreeCashFlowEvent.periodViewed({
+  const factory CompanyFreeCashFlowEvent.periodChanged({
     required bool isAnnual,
-  }) = PeriodViewed;
+  }) = PeriodChanged;
   const factory CompanyFreeCashFlowEvent.viewAllTapped({
     required bool isAnnual,
     required bool isChart,

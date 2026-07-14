@@ -40,7 +40,7 @@ Execute the plan in step order. For every new domain artefact, verify:
 ### Use cases (`domain/usecases/`)
 - [ ] Named `XxxUseCase` (not `XxxUsecase`)
 - [ ] Implements `UseCase<Result, Params>`, `StreamUseCase<Result, Params>`, or `SynchronousUseCase<Result, Params>`
-- [ ] Annotated `@injectable`
+- [ ] Annotated `@lazySingleton`
 - [ ] Takes repository interface (not implementation) as constructor parameter
 - [ ] `call()` method delegates to repository — no business logic unless orchestrating multiple repositories
 - [ ] No Firebase, HTTP, or UI imports
@@ -85,6 +85,6 @@ Do not consider the task complete until build_runner has been run and its outcom
 - [ ] Plan steps executed in order
 - [ ] All domain models use `@freezed` with `part` directive
 - [ ] Repository interfaces use `I` prefix and return `Either<Failure, T>`
-- [ ] Use cases implement the correct base class and are annotated `@injectable`
+- [ ] Use cases implement the correct base class and are annotated `@lazySingleton`
 - [ ] No layer violations (no Firebase/HTTP/UI in domain)
 - [ ] build_runner run if any `@freezed` class was added or modified (directly via Bash in Claude Code, or via RunDepOps subagent) and outcome reported

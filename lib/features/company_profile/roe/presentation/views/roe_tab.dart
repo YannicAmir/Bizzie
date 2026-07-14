@@ -6,6 +6,7 @@ import '../bloc/company_roe_bloc.dart';
 import '../bloc/company_roe_event.dart';
 import '../bloc/company_roe_state.dart';
 import 'package:bizzie/features/company_profile/shared/domain/enums/company_profile_tab.dart';
+import 'package:bizzie/features/company_profile/shared/presentation/extensions/chart_data_point_list_x.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/extensions/company_profile_tab_x.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/widgets/company_profile_error_state.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/widgets/company_profile_loading_state.dart';
@@ -13,7 +14,6 @@ import 'package:bizzie/features/company_profile/shared/presentation/widgets/fina
 import 'package:bizzie/features/company_profile/shared/presentation/widgets/metric_summary_card.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/widgets/tab_visibility_observer.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
-import 'package:bizzie/shared/widgets/charts/bizzie_bar_chart.dart';
 import 'package:bizzie/shared/widgets/charts/bizzie_expandable_chart.dart';
 import 'package:bizzie/shared/widgets/modals/app_history_modal.dart';
 import 'package:bizzie/shared/widgets/states/bizzie_empty_state.dart';
@@ -168,9 +168,7 @@ class _RoeLoadedContent extends StatelessWidget {
           AppConstants.mainSectionSpacing,
           BizzieExpandableChart(
             key: ValueKey('roe_chart_${chartData.length}'),
-            data: chartData
-                .map((p) => BizzieChartData(p.label, p.value))
-                .toList(),
+            data: chartData.toBizzieChartData(),
             numberFormat: chartFormatter,
             visibleCount: historyLimit,
             thresholdCount: historyLimit,

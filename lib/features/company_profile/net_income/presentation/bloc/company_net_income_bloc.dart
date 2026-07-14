@@ -11,15 +11,13 @@ import 'package:bizzie/features/company_profile/net_income/domain/models/net_inc
 import 'package:bizzie/features/company_profile/net_income/domain/usecases/get_net_income_stats_usecase.dart';
 import 'package:bizzie/features/company_profile/net_income/presentation/analytics/net_income_tab_analytics.dart';
 import 'package:bizzie/features/company_profile/net_income/presentation/analytics/net_income_tab_view_state.dart';
-import 'package:bizzie/features/company_profile/shared/domain/models/chart_data_point.dart';
-import 'package:bizzie/features/company_profile/shared/domain/models/financial_data_point.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/analytics/base_analytics.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/bloc/company_profile_analytics_mixin.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/bloc/company_profile_load_guard_mixin.dart';
 import 'package:bizzie/features/company_profile/shared/domain/enums/company_profile_tab.dart';
 import 'package:bizzie/features/company_profile/shared/domain/models/tab_activation.dart';
 import 'package:bizzie/features/company_profile/shared/domain/usecases/watch_active_tab_usecase.dart';
-import 'package:bizzie/shared/utils/bizzie_date_formatter.dart';
+import 'package:bizzie/features/company_profile/shared/presentation/utils/chart_data_presentation_extensions.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
@@ -64,7 +62,7 @@ class CompanyNetIncomeBloc
     on<TabHidden>((_, __) async => await onTabHidden());
     on<AppBackgrounded>((_, __) async => await onAppBackgrounded());
     on<AppForegrounded>((_, __) => onAppForegrounded());
-    on<PeriodViewed>(_onPeriodViewed);
+    on<PeriodChanged>(_onPeriodChanged);
     on<ViewAllTapped>(_onViewAllTapped);
     on<NetIncomeReset>(_onReset);
     resetOnSessionEnd(getAuthStream, const CompanyNetIncomeEvent.reset());
@@ -104,33 +102,57 @@ class CompanyNetIncomeBloc
       emit(const CompanyNetIncomeState.initial());
 
   void _onTabShown(TabShown event, Emitter<CompanyNetIncomeState> emit) {
-    final existingState = state.maybeMap(
-      loaded: (s) => s.analyticsState,
-      orElse: () => null,
-    );
-
-    onTabShown(
-      event.ticker,
-      NetIncomeTabViewState(
-        ticker: event.ticker,
-        timestamp: _timeProvider.nowLocal.toIso8601String(),
-        loadTimeMs: existingState?.loadTimeMs,
-        isSuccess: existingState?.isSuccess ?? false,
-        dataSource: existingState?.dataSource,
+    onTabShown(event.ticker, _buildTabShownViewState(event.ticker));
+    state.mapOrNull(
+      loaded: (s) => _markVisiblePeriodViewedFor(
+        isAnnualView: s.isAnnualView,
+        hasData: s.isAnnualView
+            ? s.annualChartData.isNotEmpty
+            : s.quarterlyChartData.isNotEmpty,
       ),
     );
     add(CompanyNetIncomeEvent.stalenessCheckRequested(event.ticker));
   }
 
-  void _onPeriodViewed(
-    PeriodViewed event,
+  NetIncomeTabViewState _buildTabShownViewState(String ticker) {
+    final existingState = state.maybeMap(
+      loaded: (s) => s.analyticsState,
+      orElse: () => null,
+    );
+    return NetIncomeTabViewState(
+      ticker: ticker,
+      timestamp: _timeProvider.nowLocal.toIso8601String(),
+      loadTimeMs: existingState?.loadTimeMs,
+      isSuccess: existingState?.isSuccess ?? false,
+      dataSource: existingState?.dataSource,
+    );
+  }
+
+  void _onPeriodChanged(
+    PeriodChanged event,
     Emitter<CompanyNetIncomeState> emit,
   ) {
+    state.mapOrNull(
+      loaded: (s) => emit(s.copyWith(isAnnualView: event.isAnnual)),
+    );
+    _markPeriodViewed(isAnnual: event.isAnnual);
+  }
+
+  void _markPeriodViewed({required bool isAnnual}) {
     updateAnalyticsState(
-      (s) => event.isAnnual
+      (s) => isAnnual
           ? s.copyWith(viewedYearlyNetTab: true)
           : s.copyWith(viewedQtrlyNetTab: true),
     );
+  }
+
+  void _markVisiblePeriodViewedFor({
+    required bool isAnnualView,
+    required bool hasData,
+  }) {
+    if (hasData) {
+      _markPeriodViewed(isAnnual: isAnnualView);
+    }
   }
 
   void _onViewAllTapped(
@@ -166,6 +188,8 @@ class CompanyNetIncomeBloc
     _logger.info(
       'Loading Net Income stats for ${event.ticker} (force=${event.forceRefresh})',
     );
+    final wasAnnualView =
+        state.mapOrNull(loaded: (s) => s.isAnnualView) ?? true;
     emit(const CompanyNetIncomeState.loading());
 
     final stopwatch = Stopwatch()..start();
@@ -186,6 +210,7 @@ class CompanyNetIncomeBloc
         ticker: event.ticker,
         tuple: tuple,
         loadTimeMs: stopwatch.elapsedMilliseconds,
+        isAnnualView: wasAnnualView,
         emit: emit,
       ),
     );
@@ -221,6 +246,7 @@ class CompanyNetIncomeBloc
     required String ticker,
     required (NetIncomeStats, CompanyProfileDataOrigin) tuple,
     required int loadTimeMs,
+    required bool isAnnualView,
     required Emitter<CompanyNetIncomeState> emit,
   }) {
     final (stats, origin) = tuple;
@@ -237,15 +263,25 @@ class CompanyNetIncomeBloc
       CompanyNetIncomeState.loaded(
         ticker: ticker,
         netIncomeStats: stats,
-        annualChartData: _toChartData(stats.annualNetIncome, isAnnual: true),
-        quarterlyChartData: _toChartData(
-          stats.quarterlyNetIncome,
+        annualChartData: stats.annualNetIncome.toChartDataReversed(
+          isAnnual: true,
+        ),
+        quarterlyChartData: stats.quarterlyNetIncome.toChartDataReversed(
           isAnnual: false,
         ),
         historyLimit: _configService.freePlanHistoryCount,
         dataOrigin: origin,
+        isAnnualView: isAnnualView,
         lastUpdated: _timeProvider.nowLocal,
         analyticsState: metrics,
+      ),
+    );
+    state.mapOrNull(
+      loaded: (s) => _markVisiblePeriodViewedFor(
+        isAnnualView: s.isAnnualView,
+        hasData: s.isAnnualView
+            ? s.annualChartData.isNotEmpty
+            : s.quarterlyChartData.isNotEmpty,
       ),
     );
   }
@@ -293,18 +329,5 @@ class CompanyNetIncomeBloc
   void _triggerRefresh(String ticker, String reason) {
     _logger.info(reason);
     add(CompanyNetIncomeEvent.loadRequested(ticker, forceRefresh: true));
-  }
-
-  List<ChartDataPoint> _toChartData(
-    List<FinancialDataPoint> dataPoints, {
-    required bool isAnnual,
-  }) {
-    return dataPoints.reversed.map((p) {
-      final label = BizzieDateFormatter.formatChartLabel(
-        p.date,
-        isAnnual: isAnnual,
-      );
-      return ChartDataPoint(label: label, value: p.value);
-    }).toList();
   }
 }

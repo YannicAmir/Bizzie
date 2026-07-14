@@ -55,12 +55,12 @@ extension HistoricalPriceEodStatePatterns on HistoricalPriceEodState {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Initial value)?  initial,TResult Function( _Loading value)?  loading,TResult Function( _Loaded value)?  loaded,TResult Function( _Failure value)?  failure,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Initial value)?  initial,TResult Function( _Loading value)?  loading,TResult Function( HistoricalPriceEodLoaded value)?  loaded,TResult Function( _Failure value)?  failure,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial(_that);case _Loading() when loading != null:
-return loading(_that);case _Loaded() when loaded != null:
+return loading(_that);case HistoricalPriceEodLoaded() when loaded != null:
 return loaded(_that);case _Failure() when failure != null:
 return failure(_that);case _:
   return orElse();
@@ -80,12 +80,12 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Initial value)  initial,required TResult Function( _Loading value)  loading,required TResult Function( _Loaded value)  loaded,required TResult Function( _Failure value)  failure,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Initial value)  initial,required TResult Function( _Loading value)  loading,required TResult Function( HistoricalPriceEodLoaded value)  loaded,required TResult Function( _Failure value)  failure,}){
 final _that = this;
 switch (_that) {
 case _Initial():
 return initial(_that);case _Loading():
-return loading(_that);case _Loaded():
+return loading(_that);case HistoricalPriceEodLoaded():
 return loaded(_that);case _Failure():
 return failure(_that);case _:
   throw StateError('Unexpected subclass');
@@ -104,12 +104,12 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Initial value)?  initial,TResult? Function( _Loading value)?  loading,TResult? Function( _Loaded value)?  loaded,TResult? Function( _Failure value)?  failure,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Initial value)?  initial,TResult? Function( _Loading value)?  loading,TResult? Function( HistoricalPriceEodLoaded value)?  loaded,TResult? Function( _Failure value)?  failure,}){
 final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial(_that);case _Loading() when loading != null:
-return loading(_that);case _Loaded() when loaded != null:
+return loading(_that);case HistoricalPriceEodLoaded() when loaded != null:
 return loaded(_that);case _Failure() when failure != null:
 return failure(_that);case _:
   return null;
@@ -132,7 +132,7 @@ return failure(_that);case _:
 switch (_that) {
 case _Initial() when initial != null:
 return initial();case _Loading() when loading != null:
-return loading();case _Loaded() when loaded != null:
+return loading();case HistoricalPriceEodLoaded() when loaded != null:
 return loaded(_that.prices,_that.dataSource,_that.lastUpdated);case _Failure() when failure != null:
 return failure(_that.failure);case _:
   return orElse();
@@ -156,7 +156,7 @@ return failure(_that.failure);case _:
 switch (_that) {
 case _Initial():
 return initial();case _Loading():
-return loading();case _Loaded():
+return loading();case HistoricalPriceEodLoaded():
 return loaded(_that.prices,_that.dataSource,_that.lastUpdated);case _Failure():
 return failure(_that.failure);case _:
   throw StateError('Unexpected subclass');
@@ -179,7 +179,7 @@ return failure(_that.failure);case _:
 switch (_that) {
 case _Initial() when initial != null:
 return initial();case _Loading() when loading != null:
-return loading();case _Loaded() when loaded != null:
+return loading();case HistoricalPriceEodLoaded() when loaded != null:
 return loaded(_that.prices,_that.dataSource,_that.lastUpdated);case _Failure() when failure != null:
 return failure(_that.failure);case _:
   return null;
@@ -256,8 +256,8 @@ String toString() {
 /// @nodoc
 
 
-class _Loaded implements HistoricalPriceEodState {
-  const _Loaded(final  List<HistoricalPriceEod> prices, {required this.dataSource, this.lastUpdated}): _prices = prices;
+class HistoricalPriceEodLoaded implements HistoricalPriceEodState {
+  const HistoricalPriceEodLoaded(final  List<HistoricalPriceEod> prices, {required this.dataSource, this.lastUpdated}): _prices = prices;
   
 
  final  List<HistoricalPriceEod> _prices;
@@ -274,13 +274,13 @@ class _Loaded implements HistoricalPriceEodState {
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-_$LoadedCopyWith<_Loaded> get copyWith => __$LoadedCopyWithImpl<_Loaded>(this, _$identity);
+$HistoricalPriceEodLoadedCopyWith<HistoricalPriceEodLoaded> get copyWith => _$HistoricalPriceEodLoadedCopyWithImpl<HistoricalPriceEodLoaded>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Loaded&&const DeepCollectionEquality().equals(other._prices, _prices)&&(identical(other.dataSource, dataSource) || other.dataSource == dataSource)&&(identical(other.lastUpdated, lastUpdated) || other.lastUpdated == lastUpdated));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is HistoricalPriceEodLoaded&&const DeepCollectionEquality().equals(other._prices, _prices)&&(identical(other.dataSource, dataSource) || other.dataSource == dataSource)&&(identical(other.lastUpdated, lastUpdated) || other.lastUpdated == lastUpdated));
 }
 
 
@@ -296,8 +296,8 @@ String toString() {
 }
 
 /// @nodoc
-abstract mixin class _$LoadedCopyWith<$Res> implements $HistoricalPriceEodStateCopyWith<$Res> {
-  factory _$LoadedCopyWith(_Loaded value, $Res Function(_Loaded) _then) = __$LoadedCopyWithImpl;
+abstract mixin class $HistoricalPriceEodLoadedCopyWith<$Res> implements $HistoricalPriceEodStateCopyWith<$Res> {
+  factory $HistoricalPriceEodLoadedCopyWith(HistoricalPriceEodLoaded value, $Res Function(HistoricalPriceEodLoaded) _then) = _$HistoricalPriceEodLoadedCopyWithImpl;
 @useResult
 $Res call({
  List<HistoricalPriceEod> prices, CompanyProfileDataOrigin dataSource, DateTime? lastUpdated
@@ -308,17 +308,17 @@ $Res call({
 
 }
 /// @nodoc
-class __$LoadedCopyWithImpl<$Res>
-    implements _$LoadedCopyWith<$Res> {
-  __$LoadedCopyWithImpl(this._self, this._then);
+class _$HistoricalPriceEodLoadedCopyWithImpl<$Res>
+    implements $HistoricalPriceEodLoadedCopyWith<$Res> {
+  _$HistoricalPriceEodLoadedCopyWithImpl(this._self, this._then);
 
-  final _Loaded _self;
-  final $Res Function(_Loaded) _then;
+  final HistoricalPriceEodLoaded _self;
+  final $Res Function(HistoricalPriceEodLoaded) _then;
 
 /// Create a copy of HistoricalPriceEodState
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? prices = null,Object? dataSource = null,Object? lastUpdated = freezed,}) {
-  return _then(_Loaded(
+  return _then(HistoricalPriceEodLoaded(
 null == prices ? _self._prices : prices // ignore: cast_nullable_to_non_nullable
 as List<HistoricalPriceEod>,dataSource: null == dataSource ? _self.dataSource : dataSource // ignore: cast_nullable_to_non_nullable
 as CompanyProfileDataOrigin,lastUpdated: freezed == lastUpdated ? _self.lastUpdated : lastUpdated // ignore: cast_nullable_to_non_nullable

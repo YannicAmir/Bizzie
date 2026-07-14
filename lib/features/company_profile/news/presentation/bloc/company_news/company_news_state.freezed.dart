@@ -55,12 +55,12 @@ extension CompanyNewsStatePatterns on CompanyNewsState {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Initial value)?  initial,TResult Function( _Loading value)?  loading,TResult Function( _Loaded value)?  loaded,TResult Function( _Failure value)?  failure,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Initial value)?  initial,TResult Function( _Loading value)?  loading,TResult Function( CompanyNewsLoaded value)?  loaded,TResult Function( _Failure value)?  failure,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial(_that);case _Loading() when loading != null:
-return loading(_that);case _Loaded() when loaded != null:
+return loading(_that);case CompanyNewsLoaded() when loaded != null:
 return loaded(_that);case _Failure() when failure != null:
 return failure(_that);case _:
   return orElse();
@@ -80,12 +80,12 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Initial value)  initial,required TResult Function( _Loading value)  loading,required TResult Function( _Loaded value)  loaded,required TResult Function( _Failure value)  failure,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Initial value)  initial,required TResult Function( _Loading value)  loading,required TResult Function( CompanyNewsLoaded value)  loaded,required TResult Function( _Failure value)  failure,}){
 final _that = this;
 switch (_that) {
 case _Initial():
 return initial(_that);case _Loading():
-return loading(_that);case _Loaded():
+return loading(_that);case CompanyNewsLoaded():
 return loaded(_that);case _Failure():
 return failure(_that);case _:
   throw StateError('Unexpected subclass');
@@ -104,12 +104,12 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Initial value)?  initial,TResult? Function( _Loading value)?  loading,TResult? Function( _Loaded value)?  loaded,TResult? Function( _Failure value)?  failure,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Initial value)?  initial,TResult? Function( _Loading value)?  loading,TResult? Function( CompanyNewsLoaded value)?  loaded,TResult? Function( _Failure value)?  failure,}){
 final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial(_that);case _Loading() when loading != null:
-return loading(_that);case _Loaded() when loaded != null:
+return loading(_that);case CompanyNewsLoaded() when loaded != null:
 return loaded(_that);case _Failure() when failure != null:
 return failure(_that);case _:
   return null;
@@ -132,7 +132,7 @@ return failure(_that);case _:
 switch (_that) {
 case _Initial() when initial != null:
 return initial();case _Loading() when loading != null:
-return loading();case _Loaded() when loaded != null:
+return loading();case CompanyNewsLoaded() when loaded != null:
 return loaded(_that.articles,_that.ticker,_that.dataOrigin,_that.analyticsState,_that.lastUpdated);case _Failure() when failure != null:
 return failure(_that.failure);case _:
   return orElse();
@@ -156,7 +156,7 @@ return failure(_that.failure);case _:
 switch (_that) {
 case _Initial():
 return initial();case _Loading():
-return loading();case _Loaded():
+return loading();case CompanyNewsLoaded():
 return loaded(_that.articles,_that.ticker,_that.dataOrigin,_that.analyticsState,_that.lastUpdated);case _Failure():
 return failure(_that.failure);case _:
   throw StateError('Unexpected subclass');
@@ -179,7 +179,7 @@ return failure(_that.failure);case _:
 switch (_that) {
 case _Initial() when initial != null:
 return initial();case _Loading() when loading != null:
-return loading();case _Loaded() when loaded != null:
+return loading();case CompanyNewsLoaded() when loaded != null:
 return loaded(_that.articles,_that.ticker,_that.dataOrigin,_that.analyticsState,_that.lastUpdated);case _Failure() when failure != null:
 return failure(_that.failure);case _:
   return null;
@@ -256,8 +256,8 @@ String toString() {
 /// @nodoc
 
 
-class _Loaded implements CompanyNewsState {
-  const _Loaded({required final  List<NewsArticle> articles, required this.ticker, required this.dataOrigin, this.analyticsState, this.lastUpdated}): _articles = articles;
+class CompanyNewsLoaded implements CompanyNewsState {
+  const CompanyNewsLoaded({required final  List<NewsArticle> articles, required this.ticker, required this.dataOrigin, this.analyticsState, this.lastUpdated}): _articles = articles;
   
 
  final  List<NewsArticle> _articles;
@@ -276,13 +276,13 @@ class _Loaded implements CompanyNewsState {
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-_$LoadedCopyWith<_Loaded> get copyWith => __$LoadedCopyWithImpl<_Loaded>(this, _$identity);
+$CompanyNewsLoadedCopyWith<CompanyNewsLoaded> get copyWith => _$CompanyNewsLoadedCopyWithImpl<CompanyNewsLoaded>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Loaded&&const DeepCollectionEquality().equals(other._articles, _articles)&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.dataOrigin, dataOrigin) || other.dataOrigin == dataOrigin)&&(identical(other.analyticsState, analyticsState) || other.analyticsState == analyticsState)&&(identical(other.lastUpdated, lastUpdated) || other.lastUpdated == lastUpdated));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CompanyNewsLoaded&&const DeepCollectionEquality().equals(other._articles, _articles)&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.dataOrigin, dataOrigin) || other.dataOrigin == dataOrigin)&&(identical(other.analyticsState, analyticsState) || other.analyticsState == analyticsState)&&(identical(other.lastUpdated, lastUpdated) || other.lastUpdated == lastUpdated));
 }
 
 
@@ -298,8 +298,8 @@ String toString() {
 }
 
 /// @nodoc
-abstract mixin class _$LoadedCopyWith<$Res> implements $CompanyNewsStateCopyWith<$Res> {
-  factory _$LoadedCopyWith(_Loaded value, $Res Function(_Loaded) _then) = __$LoadedCopyWithImpl;
+abstract mixin class $CompanyNewsLoadedCopyWith<$Res> implements $CompanyNewsStateCopyWith<$Res> {
+  factory $CompanyNewsLoadedCopyWith(CompanyNewsLoaded value, $Res Function(CompanyNewsLoaded) _then) = _$CompanyNewsLoadedCopyWithImpl;
 @useResult
 $Res call({
  List<NewsArticle> articles, String ticker, CompanyProfileDataOrigin dataOrigin, NewsTabViewState? analyticsState, DateTime? lastUpdated
@@ -310,17 +310,17 @@ $NewsTabViewStateCopyWith<$Res>? get analyticsState;
 
 }
 /// @nodoc
-class __$LoadedCopyWithImpl<$Res>
-    implements _$LoadedCopyWith<$Res> {
-  __$LoadedCopyWithImpl(this._self, this._then);
+class _$CompanyNewsLoadedCopyWithImpl<$Res>
+    implements $CompanyNewsLoadedCopyWith<$Res> {
+  _$CompanyNewsLoadedCopyWithImpl(this._self, this._then);
 
-  final _Loaded _self;
-  final $Res Function(_Loaded) _then;
+  final CompanyNewsLoaded _self;
+  final $Res Function(CompanyNewsLoaded) _then;
 
 /// Create a copy of CompanyNewsState
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? articles = null,Object? ticker = null,Object? dataOrigin = null,Object? analyticsState = freezed,Object? lastUpdated = freezed,}) {
-  return _then(_Loaded(
+  return _then(CompanyNewsLoaded(
 articles: null == articles ? _self._articles : articles // ignore: cast_nullable_to_non_nullable
 as List<NewsArticle>,ticker: null == ticker ? _self.ticker : ticker // ignore: cast_nullable_to_non_nullable
 as String,dataOrigin: null == dataOrigin ? _self.dataOrigin : dataOrigin // ignore: cast_nullable_to_non_nullable

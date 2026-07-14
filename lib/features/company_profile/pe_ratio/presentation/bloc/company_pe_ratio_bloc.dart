@@ -77,28 +77,20 @@ class CompanyPeRatioBloc extends Bloc<CompanyPeRatioEvent, CompanyPeRatioState>
   String? get loadedTicker => state.mapOrNull(loaded: (s) => s.ticker);
 
   void _onTabShown(TabShown event, Emitter<CompanyPeRatioState> emit) {
-    state.maybeMap(
-      loaded: (s) {
-        onTabShown(
-          event.ticker,
-          PeRatioTabViewState(
-            ticker: event.ticker,
-            timestamp: _timeProvider.nowLocal.toIso8601String(),
-            isSuccess: s.isSuccess,
-            loadTimeMs: s.loadTimeMs,
-            dataSource: s.dataOrigin,
-          ),
-        );
-      },
-      orElse: () {
-        onTabShown(
-          event.ticker,
-          PeRatioTabViewState(
-            ticker: event.ticker,
-            timestamp: _timeProvider.nowLocal.toIso8601String(),
-          ),
-        );
-      },
+    onTabShown(event.ticker, _buildTabShownViewState(event.ticker));
+  }
+
+  PeRatioTabViewState _buildTabShownViewState(String ticker) {
+    final timestamp = _timeProvider.nowLocal.toIso8601String();
+    return state.maybeMap(
+      loaded: (s) => PeRatioTabViewState(
+        ticker: ticker,
+        timestamp: timestamp,
+        isSuccess: s.isSuccess,
+        loadTimeMs: s.loadTimeMs,
+        dataSource: s.dataOrigin,
+      ),
+      orElse: () => PeRatioTabViewState(ticker: ticker, timestamp: timestamp),
     );
   }
 

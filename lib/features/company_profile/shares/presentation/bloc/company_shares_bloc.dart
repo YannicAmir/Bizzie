@@ -7,20 +7,18 @@ import 'package:bizzie/core/usecase/usecase.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:bizzie/features/auth/domain/usecases/get_auth_stream.dart';
 import 'package:bizzie/features/auth/presentation/bloc/auth_session_reset_mixin.dart';
-import 'package:bizzie/features/company_profile/shared/domain/models/chart_data_point.dart';
-import 'package:bizzie/features/company_profile/shared/domain/models/financial_data_point.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/analytics/base_analytics.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/bloc/company_profile_analytics_mixin.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/bloc/company_profile_load_guard_mixin.dart';
 import 'package:bizzie/features/company_profile/shared/domain/enums/company_profile_tab.dart';
 import 'package:bizzie/features/company_profile/shared/domain/models/tab_activation.dart';
 import 'package:bizzie/features/company_profile/shared/domain/usecases/watch_active_tab_usecase.dart';
+import 'package:bizzie/features/company_profile/shared/presentation/utils/chart_data_presentation_extensions.dart';
 import 'package:bizzie/features/company_profile/shares/domain/models/share_stats.dart';
-import 'package:bizzie/features/company_profile/shares/domain/models/shares_summary_data.dart';
+import 'package:bizzie/features/company_profile/shares/domain/services/shares_summary_service.dart';
 import 'package:bizzie/features/company_profile/shares/domain/usecases/get_shares_usecase.dart';
 import 'package:bizzie/features/company_profile/shares/presentation/analytics/shares_tab_analytics.dart';
 import 'package:bizzie/features/company_profile/shares/presentation/analytics/shares_tab_view_state.dart';
-import 'package:bizzie/shared/utils/bizzie_date_formatter.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
@@ -44,6 +42,7 @@ class CompanySharesBloc extends Bloc<CompanySharesEvent, CompanySharesState>
   final SharesTabAnalytics _analytics;
   final WatchActiveTabUseCase _watchActiveTabUseCase;
   final ITimeProvider _timeProvider;
+  final SharesSummaryService _summaryService;
 
   StreamSubscription<TabActivation>? _tabSubscription;
 
@@ -53,6 +52,7 @@ class CompanySharesBloc extends Bloc<CompanySharesEvent, CompanySharesState>
     this._analytics,
     this._watchActiveTabUseCase,
     this._timeProvider,
+    this._summaryService,
     GetAuthStream getAuthStream,
   ) : super(const CompanySharesState.initial()) {
     on<LoadRequested>(_onLoadRequested, transformer: restartable());
@@ -64,7 +64,7 @@ class CompanySharesBloc extends Bloc<CompanySharesEvent, CompanySharesState>
     on<TabHidden>((_, __) async => await onTabHidden());
     on<AppBackgrounded>((_, __) async => await onAppBackgrounded());
     on<AppForegrounded>((_, __) => onAppForegrounded());
-    on<PeriodViewed>(_onPeriodViewed);
+    on<PeriodChanged>(_onPeriodChanged);
     on<ViewAllTapped>(_onViewAllTapped);
     on<Reset>(_onReset);
     resetOnSessionEnd(getAuthStream, const CompanySharesEvent.reset());
@@ -99,22 +99,46 @@ class CompanySharesBloc extends Bloc<CompanySharesEvent, CompanySharesState>
   String? get loadedTicker => state.mapOrNull(loaded: (s) => s.ticker);
 
   void _onTabShown(TabShown event, Emitter<CompanySharesState> emit) {
-    onTabShown(
-      event.ticker,
-      SharesTabViewState(
-        ticker: event.ticker,
-        timestamp: _timeProvider.nowLocal.toIso8601String(),
+    onTabShown(event.ticker, _buildTabShownViewState(event.ticker));
+    state.mapOrNull(
+      loaded: (s) => _markVisiblePeriodViewedFor(
+        isAnnualView: s.isAnnualView,
+        hasData: s.isAnnualView
+            ? s.annualChartData.isNotEmpty
+            : s.quarterlyChartData.isNotEmpty,
       ),
     );
     add(CompanySharesEvent.stalenessCheckRequested(event.ticker));
   }
 
-  void _onPeriodViewed(PeriodViewed event, Emitter<CompanySharesState> emit) {
+  SharesTabViewState _buildTabShownViewState(String ticker) =>
+      SharesTabViewState(
+        ticker: ticker,
+        timestamp: _timeProvider.nowLocal.toIso8601String(),
+      );
+
+  void _onPeriodChanged(PeriodChanged event, Emitter<CompanySharesState> emit) {
+    state.mapOrNull(
+      loaded: (s) => emit(s.copyWith(isAnnualView: event.isAnnual)),
+    );
+    _markPeriodViewed(isAnnual: event.isAnnual);
+  }
+
+  void _markPeriodViewed({required bool isAnnual}) {
     updateAnalyticsState(
-      (s) => event.isAnnual
+      (s) => isAnnual
           ? s.copyWith(viewedYearlySharesTab: true)
           : s.copyWith(viewedQtrlySharesTab: true),
     );
+  }
+
+  void _markVisiblePeriodViewedFor({
+    required bool isAnnualView,
+    required bool hasData,
+  }) {
+    if (hasData) {
+      _markPeriodViewed(isAnnual: isAnnualView);
+    }
   }
 
   void _onViewAllTapped(ViewAllTapped event, Emitter<CompanySharesState> emit) {
@@ -139,6 +163,8 @@ class CompanySharesBloc extends Bloc<CompanySharesEvent, CompanySharesState>
       return;
     }
 
+    final wasAnnualView =
+        state.mapOrNull(loaded: (s) => s.isAnnualView) ?? true;
     emit(const CompanySharesState.loading());
 
     final stopwatch = Stopwatch()..start();
@@ -158,6 +184,7 @@ class CompanySharesBloc extends Bloc<CompanySharesEvent, CompanySharesState>
         ticker: event.ticker,
         tuple: tuple,
         loadTimeMs: stopwatch.elapsedMilliseconds,
+        isAnnualView: wasAnnualView,
         emit: emit,
       ),
     );
@@ -183,6 +210,7 @@ class CompanySharesBloc extends Bloc<CompanySharesEvent, CompanySharesState>
     required String ticker,
     required (ShareStats, CompanyProfileDataOrigin) tuple,
     required int loadTimeMs,
+    required bool isAnnualView,
     required Emitter<CompanySharesState> emit,
   }) {
     final (data, origin) = tuple;
@@ -192,25 +220,30 @@ class CompanySharesBloc extends Bloc<CompanySharesEvent, CompanySharesState>
       CompanySharesState.loaded(
         ticker: ticker,
         shareStats: data,
-        annualChartData: _toChartData(
+        annualChartData: data.annualWeightedAverageShares
+            .toChartDataSortedByDate(isAnnual: true),
+        quarterlyChartData: data.quarterlyWeightedAverageShares
+            .toChartDataSortedByDate(isAnnual: false),
+        annualSummary: _summaryService.computeSummary(
           data.annualWeightedAverageShares,
           isAnnual: true,
         ),
-        quarterlyChartData: _toChartData(
-          data.quarterlyWeightedAverageShares,
-          isAnnual: false,
-        ),
-        annualSummary: _computeSummary(
-          data.annualWeightedAverageShares,
-          isAnnual: true,
-        ),
-        quarterlySummary: _computeSummary(
+        quarterlySummary: _summaryService.computeSummary(
           data.quarterlyWeightedAverageShares,
           isAnnual: false,
         ),
         historyLimit: _configService.freePlanHistoryCount,
         dataOrigin: origin,
+        isAnnualView: isAnnualView,
         lastUpdated: _timeProvider.nowLocal,
+      ),
+    );
+    state.mapOrNull(
+      loaded: (s) => _markVisiblePeriodViewedFor(
+        isAnnualView: s.isAnnualView,
+        hasData: s.isAnnualView
+            ? s.annualChartData.isNotEmpty
+            : s.quarterlyChartData.isNotEmpty,
       ),
     );
 
@@ -266,80 +299,5 @@ class CompanySharesBloc extends Bloc<CompanySharesEvent, CompanySharesState>
   void _triggerRefresh(String ticker, String reason) {
     _logger.info(reason);
     add(CompanySharesEvent.loadRequested(ticker, forceRefresh: true));
-  }
-
-  List<ChartDataPoint> _toChartData(
-    List<FinancialDataPoint> dataPoints, {
-    required bool isAnnual,
-  }) {
-    final sorted = List<FinancialDataPoint>.from(dataPoints)
-      ..sort((a, b) => a.date.compareTo(b.date));
-
-    return sorted.map((p) {
-      final label = BizzieDateFormatter.formatChartLabel(
-        p.date,
-        isAnnual: isAnnual,
-      );
-      return ChartDataPoint(label: label, value: p.value);
-    }).toList();
-  }
-
-  SharesSummaryData _computeSummary(
-    List<FinancialDataPoint> dataPoints, {
-    required bool isAnnual,
-  }) {
-    if (dataPoints.isEmpty) {
-      return const SharesSummaryData(
-        currentValue: 0,
-        growthPercentage: 0,
-        absoluteDelta: 0,
-        isPositive: false,
-        referenceLabel: '',
-      );
-    }
-
-    final sorted = List<FinancialDataPoint>.from(dataPoints)
-      ..sort((a, b) => a.date.compareTo(b.date));
-
-    final currentPoint = sorted.last;
-    var referencePoint = sorted.first;
-
-    final currentDate = DateTime.tryParse(currentPoint.date);
-    if (currentDate != null) {
-      final lookbackYears = isAnnual ? 5 : 1;
-      final cutoffDate = DateTime(
-        currentDate.year - lookbackYears,
-        currentDate.month,
-        currentDate.day,
-      );
-
-      for (final p in sorted) {
-        final d = DateTime.tryParse(p.date);
-        if (d != null && (d.isAfter(cutoffDate) || d == cutoffDate)) {
-          referencePoint = p;
-          break;
-        }
-      }
-    }
-
-    final currentValue = currentPoint.value;
-    final referenceValue = referencePoint.value;
-    final delta = currentValue - referenceValue;
-    final growthPercentage = referenceValue == 0
-        ? 0.0
-        : (delta / referenceValue) * 100;
-
-    final referenceLabel = BizzieDateFormatter.formatReferenceLabel(
-      referencePoint.date,
-      isAnnual: isAnnual,
-    );
-
-    return SharesSummaryData(
-      currentValue: currentValue,
-      growthPercentage: growthPercentage,
-      absoluteDelta: delta.abs(),
-      isPositive: delta >= 0,
-      referenceLabel: referenceLabel,
-    );
   }
 }

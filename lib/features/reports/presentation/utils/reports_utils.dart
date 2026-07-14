@@ -1,9 +1,8 @@
+import 'package:bizzie/shared/utils/currency_formatter.dart';
 import 'package:intl/intl.dart';
 
 String formatReportCurrency(double value, String currencyCode) {
-  final simple = NumberFormat.simpleCurrency(name: currencyCode);
-  final symbol = simple.currencySymbol;
-  return NumberFormat.compactCurrency(symbol: symbol).format(value);
+  return CurrencyFormatter.formatCompact(value, currencyCode);
 }
 
 String formatReportPercentage(double value) {

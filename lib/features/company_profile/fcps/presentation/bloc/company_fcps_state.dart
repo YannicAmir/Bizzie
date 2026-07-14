@@ -18,8 +18,9 @@ abstract class CompanyFcpsState with _$CompanyFcpsState {
     required List<ChartDataPoint> quarterlyChartData,
     required int historyLimit,
     required CompanyProfileDataOrigin dataOrigin,
+    @Default(true) bool isAnnualView,
     DateTime? lastUpdated,
     FcpsTabViewState? analyticsState,
-  }) = _Loaded;
+  }) = CompanyFcpsLoaded;
   const factory CompanyFcpsState.failure(Failure failure) = _Failure;
 }

@@ -18,7 +18,7 @@ abstract class CompanyProfileTabsState with _$CompanyProfileTabsState {
     required List<CompanyProfileTab> moreTabs,
     @Default(0) int moreTabIndex,
     required bool isBizzieChatEnabled,
-  }) = _Loaded;
+  }) = CompanyProfileTabsLoaded;
 
   const CompanyProfileTabsState._();
 

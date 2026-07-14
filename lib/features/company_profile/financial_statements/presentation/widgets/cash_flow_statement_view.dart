@@ -2,11 +2,10 @@ import 'package:bizzie/app/themes/app_theme.dart';
 import 'package:bizzie/features/company_profile/financial_statements/presentation/bloc/financial_statements_bloc.dart';
 import 'package:bizzie/features/company_profile/financial_statements/presentation/bloc/financial_statements_event.dart';
 import 'package:bizzie/features/company_profile/financial_statements/presentation/bloc/financial_statements_state.dart';
-import 'package:bizzie/features/company_profile/financial_statements/presentation/bloc/financial_statements_state_extensions.dart';
-import 'package:bizzie/features/company_profile/shared/presentation/models/financial_history_row_data.dart';
+import 'package:bizzie/features/company_profile/financial_statements/presentation/extensions/financial_statements_state_extensions.dart';
 import 'package:bizzie/features/company_profile/financial_statements/presentation/widgets/financial_statement_chart.dart';
-import 'package:bizzie/features/company_profile/financial_statements/presentation/widgets/financial_statement_selector.dart';
-import 'package:bizzie/features/company_profile/financial_statements/presentation/widgets/financial_statements_table.dart';
+import 'package:bizzie/features/company_profile/shared/presentation/widgets/period_selector_dropdown.dart';
+import 'package:bizzie/features/company_profile/shared/presentation/widgets/financial_statements_table.dart';
 import 'package:bizzie/features/company_profile/financial_statements/domain/models/cash_flow_statement.dart';
 import 'package:bizzie/app/themes/app_colors.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
@@ -28,10 +27,12 @@ class CashFlowStatementView extends StatelessWidget {
         final locale = Localizations.localeOf(context).toString();
         if (state.annualCashFlowStatements.isEmpty &&
             state.quarterlyCashFlowStatements.isEmpty) {
-          final userState = context.watch<UserBloc>().state;
+          final mascotAsset = context.select<UserBloc, String>(
+            (bloc) => bloc.state.mascotAsset,
+          );
           return BizzieEmptyState(
             message: 'No cash flow data available for this company.',
-            mascotAsset: userState.mascotAsset,
+            mascotAsset: mascotAsset,
           );
         }
 
@@ -41,50 +42,19 @@ class CashFlowStatementView extends StatelessWidget {
             if (state.annualCashFlowStatements.isNotEmpty) ...[
               _CashFlowStatementSection(
                 title: 'For the Year Ended',
-                data: state.annualCashFlowStatements,
-                selectedItem: state.annualCashFlowStatements.firstWhere(
-                  (e) => e.date == state.selectedAnnualCashFlowDate,
-                  orElse: () => state.annualCashFlowStatements.first,
-                ),
-                onSelect: (date) => context.read<FinancialStatementsBloc>().add(
-                  FinancialStatementsEvent.cashFlowDateSelected(
-                    date,
-                    isAnnual: true,
-                  ),
-                ),
-                dateFormat: 'MMM d, yyyy',
-                currency: state.reportedCurrency,
-                rows: state.cashFlowRows(locale: locale, isAnnual: true),
-                historyBuilder: (item) =>
-                    state.cashFlowHistoryRowData(item, locale),
-                historyLimit: state.freePlanHistoryCount,
+                state: state,
+                locale: locale,
                 isAnnual: true,
               ),
               AppConstants.mainSectionSpacing,
             ],
-            if (state.quarterlyCashFlowStatements.isNotEmpty) ...[
+            if (state.quarterlyCashFlowStatements.isNotEmpty)
               _CashFlowStatementSection(
                 title: 'For the Quarter Ended',
-                data: state.quarterlyCashFlowStatements,
-                selectedItem: state.quarterlyCashFlowStatements.firstWhere(
-                  (e) => e.date == state.selectedQuarterlyCashFlowDate,
-                  orElse: () => state.quarterlyCashFlowStatements.first,
-                ),
-                onSelect: (date) => context.read<FinancialStatementsBloc>().add(
-                  FinancialStatementsEvent.cashFlowDateSelected(
-                    date,
-                    isAnnual: false,
-                  ),
-                ),
-                dateFormat: 'MMM d, yyyy',
-                currency: state.reportedCurrency,
-                rows: state.cashFlowRows(locale: locale, isAnnual: false),
-                historyBuilder: (item) =>
-                    state.cashFlowHistoryRowData(item, locale),
-                historyLimit: state.freePlanHistoryCount,
+                state: state,
+                locale: locale,
                 isAnnual: false,
               ),
-            ],
           ],
         );
       },
@@ -94,63 +64,62 @@ class CashFlowStatementView extends StatelessWidget {
 
 class _CashFlowStatementSection extends StatelessWidget {
   final String title;
-  final List<CashFlowStatement> data;
-  final CashFlowStatement selectedItem;
-  final ValueChanged<String> onSelect;
-  final String dateFormat;
-  final String currency;
-  final List<FinancialStatementTableRow> rows;
-  final FinancialHistoryRowData Function(CashFlowStatement) historyBuilder;
-  final int historyLimit;
+  final FinancialStatementsState state;
+  final String locale;
   final bool isAnnual;
 
   const _CashFlowStatementSection({
     required this.title,
-    required this.data,
-    required this.selectedItem,
-    required this.onSelect,
-    required this.dateFormat,
-    required this.currency,
-    required this.rows,
-    required this.historyBuilder,
-    required this.historyLimit,
+    required this.state,
+    required this.locale,
     required this.isAnnual,
   });
 
+  List<CashFlowStatement> get _statements => isAnnual
+      ? state.annualCashFlowStatements
+      : state.quarterlyCashFlowStatements;
+
+  CashFlowStatement get _selectedStatement => isAnnual
+      ? state.selectedAnnualCashFlowStatement
+      : state.selectedQuarterlyCashFlowStatement;
+
   @override
   Widget build(BuildContext context) {
+    final selectedStatement = _selectedStatement;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        FinancialStatementSelector<CashFlowStatement>(
+        PeriodSelectorDropdown<CashFlowStatement>(
           title: title,
-          items: data,
-          selectedItem: selectedItem,
-          onItemSelected: (item) => onSelect(item.date),
+          items: _statements,
+          selectedItem: selectedStatement,
+          onItemSelected: (item) => context.read<FinancialStatementsBloc>().add(
+            FinancialStatementsEvent.cashFlowDateSelected(
+              item.date,
+              isAnnual: isAnnual,
+            ),
+          ),
           dateStringExtractor: (item) => item.date,
           periodExtractor: (item) => item.period,
-          dateFormat: dateFormat,
           modalTitle: 'Cash Flow Statement Periods',
-          historyLimit: historyLimit,
+          historyLimit: state.freePlanHistoryCount,
         ),
         AppConstants.mainSectionSpacing,
-        _CashFlowStatementChart(statement: selectedItem, currency: currency),
+        _CashFlowStatementChart(
+          statement: selectedStatement,
+          currency: state.reportedCurrency,
+        ),
         AppConstants.mainSectionSpacing,
         FinancialStatementsTable(
-          rows: rows,
+          rows: state.cashFlowRows(locale: locale, isAnnual: isAnnual),
           onViewAll: () {
             context.read<FinancialStatementsBloc>().add(
               FinancialStatementsEvent.viewAllTapped(isAnnual: isAnnual),
             );
 
-            final userState = context.read<UserBloc>().state;
-            final isSubscribed = userState.maybeMap(
-              loaded: (s) => s.user.isSubscribed,
-              orElse: () => false,
-            );
-
-            if (isSubscribed) {
-              _showFullHistory(context, data);
+            if (context.read<UserBloc>().state.canViewFullHistory) {
+              _showFullHistory(context);
             }
           },
           showPercentage: false,
@@ -162,7 +131,7 @@ class _CashFlowStatementSection extends StatelessWidget {
     );
   }
 
-  void _showFullHistory(BuildContext context, List<CashFlowStatement> dataset) {
+  void _showFullHistory(BuildContext context) {
     AppHistoryModalHelper.show<CashFlowStatement>(
       context: context,
       title: 'Cash Flow History',
@@ -172,9 +141,9 @@ class _CashFlowStatementSection extends StatelessWidget {
         header2: 'CapEx',
         header3: 'Free C.F',
       ),
-      data: dataset,
+      data: _statements,
       itemBuilder: (context, item, index) {
-        final data = historyBuilder(item);
+        final data = state.cashFlowHistoryRowData(item, locale);
         return FinancialHistoryRow(
           label: data.label,
           value1: data.value1,
@@ -200,9 +169,9 @@ class _CashFlowStatementChart extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final badgeTheme = theme.extension<BadgeThemeExtension>();
-    final freeCf = statement.freeCashFlow;
-    final green = badgeTheme?.goodText ?? AppColors.successText;
-    final red = badgeTheme?.criticalText ?? AppColors.criticalText;
+    final freeCashFlow = statement.freeCashFlow;
+    final positiveValueColor = badgeTheme?.goodText ?? AppColors.successText;
+    final negativeValueColor = badgeTheme?.criticalText ?? AppColors.criticalText;
     final primary = theme.colorScheme.primary;
 
     final data = [
@@ -223,8 +192,8 @@ class _CashFlowStatementChart extends StatelessWidget {
       ),
       FinancialStatementChartData(
         'Free.C.F',
-        freeCf,
-        freeCf >= 0 ? green : red,
+        freeCashFlow,
+        freeCashFlow >= 0 ? positiveValueColor : negativeValueColor,
       ),
     ];
 

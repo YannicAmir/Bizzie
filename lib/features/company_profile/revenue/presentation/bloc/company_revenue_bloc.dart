@@ -38,6 +38,8 @@ class CompanyRevenueBloc extends Bloc<CompanyRevenueEvent, CompanyRevenueState>
         >,
         AuthSessionResetMixin<CompanyRevenueEvent, CompanyRevenueState>,
         CompanyProfileLoadGuardMixin {
+  static const _refreshIntervalMinutes = 60;
+
   final GetRevenueStatsUseCase _getRevenueStatsUseCase;
   final IConfigService _configService;
   final RevenueTabAnalytics _analytics;
@@ -64,7 +66,7 @@ class CompanyRevenueBloc extends Bloc<CompanyRevenueEvent, CompanyRevenueState>
     on<TabHidden>((_, __) async => await onTabHidden());
     on<AppBackgrounded>((_, __) async => await onAppBackgrounded());
     on<AppForegrounded>((_, __) => onAppForegrounded());
-    on<PeriodViewed>(_onPeriodViewed);
+    on<PeriodChanged>(_onPeriodChanged);
     on<ViewAllTapped>(_onViewAllTapped);
     on<Reset>((_, emit) => emit(const CompanyRevenueState.initial()));
     resetOnSessionEnd(getAuthStream, const CompanyRevenueEvent.reset());
@@ -103,30 +105,57 @@ class CompanyRevenueBloc extends Bloc<CompanyRevenueEvent, CompanyRevenueState>
   }
 
   void _onTabShown(TabShown event, Emitter<CompanyRevenueState> emit) {
-    final existingState = state.maybeMap(
-      loaded: (s) => s.analyticsState,
-      orElse: () => null,
-    );
-
-    onTabShown(
-      event.ticker,
-      RevenueTabViewState(
-        ticker: event.ticker,
-        timestamp: _timeProvider.nowLocal.toIso8601String(),
-        loadTimeMs: existingState?.loadTimeMs,
-        isSuccess: existingState?.isSuccess ?? false,
-        dataSource: existingState?.dataSource,
+    onTabShown(event.ticker, _buildTabShownViewState(event.ticker));
+    state.mapOrNull(
+      loaded: (s) => _markVisiblePeriodViewedFor(
+        isAnnualView: s.isAnnualView,
+        hasData: s.isAnnualView
+            ? s.annualChartData.isNotEmpty
+            : s.quarterlyChartData.isNotEmpty,
       ),
     );
     add(CompanyRevenueEvent.stalenessCheckRequested(event.ticker));
   }
 
-  void _onPeriodViewed(PeriodViewed event, Emitter<CompanyRevenueState> emit) {
+  RevenueTabViewState _buildTabShownViewState(String ticker) {
+    final existingState = state.maybeMap(
+      loaded: (s) => s.analyticsState,
+      orElse: () => null,
+    );
+    return RevenueTabViewState(
+      ticker: ticker,
+      timestamp: _timeProvider.nowLocal.toIso8601String(),
+      loadTimeMs: existingState?.loadTimeMs,
+      isSuccess: existingState?.isSuccess ?? false,
+      dataSource: existingState?.dataSource,
+    );
+  }
+
+  void _onPeriodChanged(
+    PeriodChanged event,
+    Emitter<CompanyRevenueState> emit,
+  ) {
+    state.mapOrNull(
+      loaded: (s) => emit(s.copyWith(isAnnualView: event.isAnnual)),
+    );
+    _markPeriodViewed(isAnnual: event.isAnnual);
+  }
+
+  void _markPeriodViewed({required bool isAnnual}) {
     updateAnalyticsState(
-      (s) => event.isAnnual
+      (s) => isAnnual
           ? s.copyWith(viewedYearlyRevTab: true)
           : s.copyWith(viewedQtrlyRevTab: true),
     );
+  }
+
+  void _markVisiblePeriodViewedFor({
+    required bool isAnnualView,
+    required bool hasData,
+  }) {
+    if (hasData) {
+      _markPeriodViewed(isAnnual: isAnnualView);
+    }
   }
 
   void _onViewAllTapped(
@@ -157,6 +186,8 @@ class CompanyRevenueBloc extends Bloc<CompanyRevenueEvent, CompanyRevenueState>
     _logger.info(
       'Loading Revenue stats for ${event.ticker} (force=${event.forceRefresh})',
     );
+    final wasAnnualView =
+        state.mapOrNull(loaded: (s) => s.isAnnualView) ?? true;
     emit(const CompanyRevenueState.loading());
 
     final stopwatch = Stopwatch()..start();
@@ -177,6 +208,7 @@ class CompanyRevenueBloc extends Bloc<CompanyRevenueEvent, CompanyRevenueState>
         ticker: event.ticker,
         tuple: tuple,
         loadTimeMs: stopwatch.elapsedMilliseconds,
+        isAnnualView: wasAnnualView,
         emit: emit,
       ),
     );
@@ -212,6 +244,7 @@ class CompanyRevenueBloc extends Bloc<CompanyRevenueEvent, CompanyRevenueState>
     required String ticker,
     required (RevenueStats, CompanyProfileDataOrigin) tuple,
     required int loadTimeMs,
+    required bool isAnnualView,
     required Emitter<CompanyRevenueState> emit,
   }) {
     final (stats, origin) = tuple;
@@ -235,8 +268,17 @@ class CompanyRevenueBloc extends Bloc<CompanyRevenueEvent, CompanyRevenueState>
         ),
         historyLimit: _configService.freePlanHistoryCount,
         dataOrigin: origin,
+        isAnnualView: isAnnualView,
         lastUpdated: _timeProvider.nowLocal,
         analyticsState: metrics,
+      ),
+    );
+    state.mapOrNull(
+      loaded: (s) => _markVisiblePeriodViewedFor(
+        isAnnualView: s.isAnnualView,
+        hasData: s.isAnnualView
+            ? s.annualChartData.isNotEmpty
+            : s.quarterlyChartData.isNotEmpty,
       ),
     );
   }
@@ -264,7 +306,7 @@ class CompanyRevenueBloc extends Bloc<CompanyRevenueEvent, CompanyRevenueState>
   void _evaluateStaleness(String ticker, DateTime? lastUpdated) {
     if (BizzieDateFormatter.isStale(
       lastUpdated ?? _timeProvider.nowLocal.subtract(const Duration(days: 1)),
-      refreshIntervalMinutes: 60,
+      refreshIntervalMinutes: _refreshIntervalMinutes,
     )) {
       _logger.info('Revenue data is stale. Refreshing...');
       add(CompanyRevenueEvent.loadRequested(ticker, forceRefresh: false));

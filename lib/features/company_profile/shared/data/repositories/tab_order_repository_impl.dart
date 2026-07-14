@@ -18,8 +18,12 @@ class TabOrderRepositoryImpl implements ITabOrderRepository {
   @override
   Either<Failure, TabLayout> getTabLayout() {
     try {
+      final mainTabs = _readMainTabs();
       return Right(
-        TabLayout(mainTabs: _readMainTabs(), moreTabs: _readMoreTabs()),
+        TabLayout(
+          mainTabs: mainTabs,
+          moreTabs: TabLayout.reconcileMoreTabs(mainTabs, _readMoreTabs()),
+        ),
       );
     } catch (e) {
       _logger.warning('Failed to decode stored tab layout', e);
@@ -60,12 +64,14 @@ class TabOrderRepositoryImpl implements ITabOrderRepository {
 
   List<CompanyProfileTab> _decode(String encoded) {
     if (encoded.isEmpty) return [];
-    final tabs = encoded
-        .split(',')
-        .map(
-          (name) => CompanyProfileTab.values.firstWhere((t) => t.name == name),
-        )
-        .toList();
+    final tabByName = CompanyProfileTab.values.asNameMap();
+    final names = encoded.split(',');
+    final tabs = names.map((name) => tabByName[name]).nonNulls.toList();
+    if (tabs.length != names.length) {
+      _logger.warning(
+        'Skipped ${names.length - tabs.length} unknown stored tab name(s)',
+      );
+    }
     return TabLayout.sanitise(tabs);
   }
 }

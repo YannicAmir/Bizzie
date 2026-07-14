@@ -49,4 +49,6 @@ sealed class FinancialStatementsEvent with _$FinancialStatementsEvent {
     required bool isAnnual,
   }) = ViewAllTapped;
   const factory FinancialStatementsEvent.chartSwiped(int index) = ChartSwiped;
+
+  const factory FinancialStatementsEvent.reset() = Reset;
 }

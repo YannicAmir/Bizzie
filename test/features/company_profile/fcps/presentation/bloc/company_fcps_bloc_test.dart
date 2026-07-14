@@ -365,7 +365,7 @@ void main() {
 
   group('CompanyFcpsBloc - Interaction Events', () {
     blocTest<CompanyFcpsBloc, CompanyFcpsState>(
-      'periodViewed_isAnnualTrue_updatesviewedYearlyFcpsTabFlag',
+      'periodChanged_isAnnualTrue_updatesviewedYearlyFcpsTabFlag',
       build: () => bloc,
       // Arrange
       seed: () => CompanyFcpsState.loaded(
@@ -380,13 +380,43 @@ void main() {
       // Act
       act: (bloc) {
         bloc.add(const CompanyFcpsEvent.tabShown(tTicker));
-        bloc.add(const CompanyFcpsEvent.periodViewed(isAnnual: true));
+        bloc.add(const CompanyFcpsEvent.periodChanged(isAnnual: true));
       },
       // Assert
       expect: () => const <CompanyFcpsState>[],
       verify: (bloc) {
         expect(bloc.analyticsSession?.ticker, tTicker);
         expect(bloc.analyticsSession?.viewedYearlyFcpsTab, isTrue);
+      },
+    );
+
+    blocTest<CompanyFcpsBloc, CompanyFcpsState>(
+      'periodChanged_isAnnualFalse_emitsUpdatedIsAnnualViewAndUpdatesFlag',
+      build: () => bloc,
+      // Arrange
+      seed: () => CompanyFcpsState.loaded(
+        ticker: tTicker,
+        fcpsStats: tFcpsStats,
+        annualChartData: const [],
+        quarterlyChartData: const [],
+        historyLimit: 7,
+        dataOrigin: CompanyProfileDataOrigin.api,
+        lastUpdated: DateTime.now(),
+      ),
+      // Act
+      act: (bloc) => bloc
+        ..add(const CompanyFcpsEvent.tabShown(tTicker))
+        ..add(const CompanyFcpsEvent.periodChanged(isAnnual: false)),
+      // Assert
+      expect: () => [
+        isA<CompanyFcpsState>().having(
+          (s) => s.maybeMap(loaded: (l) => l.isAnnualView, orElse: () => null),
+          'isAnnualView',
+          false,
+        ),
+      ],
+      verify: (bloc) {
+        expect(bloc.analyticsSession?.viewedQtrlyFcpsTab, isTrue);
       },
     );
 

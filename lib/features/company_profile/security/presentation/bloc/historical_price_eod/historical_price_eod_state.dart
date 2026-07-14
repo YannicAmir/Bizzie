@@ -13,6 +13,6 @@ abstract class HistoricalPriceEodState with _$HistoricalPriceEodState {
     List<HistoricalPriceEod> prices, {
     required CompanyProfileDataOrigin dataSource,
     DateTime? lastUpdated,
-  }) = _Loaded;
+  }) = HistoricalPriceEodLoaded;
   const factory HistoricalPriceEodState.failure(Failure failure) = _Failure;
 }

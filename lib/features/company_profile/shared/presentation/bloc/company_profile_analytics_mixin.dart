@@ -1,6 +1,6 @@
 import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/analytics/base_analytics.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:bloc/bloc.dart';
 
 final _mixinLogger = BizzieLogger('CompanyProfileAnalyticsMixin');
 

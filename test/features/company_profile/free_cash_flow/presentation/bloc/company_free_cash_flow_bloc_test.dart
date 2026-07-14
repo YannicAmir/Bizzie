@@ -352,7 +352,7 @@ void main() {
 
   group('CompanyFreeCashFlowBloc - Interaction Events', () {
     blocTest<CompanyFreeCashFlowBloc, CompanyFreeCashFlowState>(
-      'periodViewed_isAnnualTrue_updatesviewedYearlyFcfTabFlag',
+      'periodChanged_isAnnualTrue_updatesviewedYearlyFcfTabFlag',
       build: () => bloc,
       // Arrange
       seed: () => CompanyFreeCashFlowState.loaded(
@@ -367,13 +367,45 @@ void main() {
       // Act
       act: (bloc) {
         bloc.add(const CompanyFreeCashFlowEvent.tabShown(tTicker));
-        bloc.add(const CompanyFreeCashFlowEvent.periodViewed(isAnnual: true));
+        bloc.add(const CompanyFreeCashFlowEvent.periodChanged(isAnnual: true));
       },
       // Assert
       expect: () => const <CompanyFreeCashFlowState>[],
       verify: (bloc) {
         expect(bloc.analyticsSession?.ticker, tTicker);
         expect(bloc.analyticsSession?.viewedYearlyFcfTab, isTrue);
+      },
+    );
+
+    blocTest<CompanyFreeCashFlowBloc, CompanyFreeCashFlowState>(
+      'periodChanged_isAnnualFalse_emitsUpdatedIsAnnualViewAndUpdatesFlag',
+      build: () => bloc,
+      // Arrange
+      seed: () => CompanyFreeCashFlowState.loaded(
+        ticker: tTicker,
+        fcfStats: tFcfStats,
+        annualChartData: const [],
+        quarterlyChartData: const [],
+        historyLimit: 7,
+        dataOrigin: CompanyProfileDataOrigin.api,
+        lastUpdated: DateTime.now(),
+      ),
+      // Act
+      act: (bloc) => bloc
+        ..add(const CompanyFreeCashFlowEvent.tabShown(tTicker))
+        ..add(
+          const CompanyFreeCashFlowEvent.periodChanged(isAnnual: false),
+        ),
+      // Assert
+      expect: () => [
+        isA<CompanyFreeCashFlowState>().having(
+          (s) => s.maybeMap(loaded: (l) => l.isAnnualView, orElse: () => null),
+          'isAnnualView',
+          false,
+        ),
+      ],
+      verify: (bloc) {
+        expect(bloc.analyticsSession?.viewedQtrlyFcfTab, isTrue);
       },
     );
 

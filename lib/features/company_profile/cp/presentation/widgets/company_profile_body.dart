@@ -13,6 +13,7 @@ import 'package:bizzie/features/company_profile/pfcf_ratio/presentation/views/pf
 import 'package:bizzie/features/company_profile/revenue/presentation/views/revenue_tab.dart';
 import 'package:bizzie/features/company_profile/roe/presentation/views/roe_tab.dart';
 import 'package:bizzie/features/company_profile/security/presentation/views/security_tab.dart';
+import 'package:bizzie/features/company_profile/segments/presentation/views/segments_tab.dart';
 import 'package:bizzie/features/company_profile/shared/domain/enums/company_profile_tab.dart';
 import 'package:bizzie/features/company_profile/shares/presentation/views/shares_tab.dart';
 import 'package:flutter/material.dart';
@@ -49,6 +50,8 @@ class CompanyProfileBody extends StatelessWidget {
             return DividendsTab(ticker: ticker);
           case CompanyProfileTab.revenue:
             return RevenueTab(ticker: ticker);
+          case CompanyProfileTab.segments:
+            return SegmentsTab(ticker: ticker);
           case CompanyProfileTab.netIncome:
             return NetIncomeTab(ticker: ticker);
           case CompanyProfileTab.eps:

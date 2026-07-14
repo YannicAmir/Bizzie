@@ -10,8 +10,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 
-class FinancialStatementSelector<T> extends StatelessWidget {
-  final String title;
+class PeriodSelectorDropdown<T> extends StatelessWidget {
+  final String? title;
   final List<T> items;
   final T selectedItem;
   final ValueChanged<T> onItemSelected;
@@ -21,9 +21,9 @@ class FinancialStatementSelector<T> extends StatelessWidget {
   final String modalTitle;
   final int historyLimit;
 
-  const FinancialStatementSelector({
+  const PeriodSelectorDropdown({
     super.key,
-    required this.title,
+    this.title,
     required this.items,
     required this.selectedItem,
     required this.onItemSelected,
@@ -54,11 +54,12 @@ class FinancialStatementSelector<T> extends StatelessWidget {
   Widget build(BuildContext context) {
     final formattedLabel = _formatItemLabel(selectedItem);
 
+    final title = this.title;
     final separator = title == 'On' ? ' ' : ' - ';
     return AppDropdownButton(
-      label: title.isNotEmpty
-          ? '$title$separator$formattedLabel'
-          : formattedLabel,
+      label: title == null || title.isEmpty
+          ? formattedLabel
+          : '$title$separator$formattedLabel',
       onTap: () => _showSelectorModal(context),
     );
   }

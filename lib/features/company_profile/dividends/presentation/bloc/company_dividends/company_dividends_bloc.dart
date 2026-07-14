@@ -1,11 +1,14 @@
 import 'dart:async';
 
+import 'package:bizzie/core/enums/data_origin.dart';
+import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/core/interfaces/i_config_service.dart';
 import 'package:bizzie/core/interfaces/i_time_provider.dart';
 import 'package:bizzie/core/usecase/usecase.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:bizzie/features/auth/domain/usecases/get_auth_stream.dart';
 import 'package:bizzie/features/auth/presentation/bloc/auth_session_reset_mixin.dart';
+import 'package:bizzie/features/company_profile/dividends/domain/models/dividend_info.dart';
 import 'package:bizzie/features/company_profile/dividends/domain/usecases/get_dividend_info_usecase.dart';
 import 'package:bizzie/features/company_profile/dividends/presentation/analytics/dividend_tab_analytics.dart';
 import 'package:bizzie/features/company_profile/dividends/presentation/analytics/dividend_tab_view_state.dart';
@@ -16,8 +19,8 @@ import 'package:bizzie/features/company_profile/shared/presentation/bloc/company
 import 'package:bizzie/features/company_profile/shared/domain/enums/company_profile_tab.dart';
 import 'package:bizzie/features/company_profile/shared/domain/models/tab_activation.dart';
 import 'package:bizzie/features/company_profile/shared/domain/usecases/watch_active_tab_usecase.dart';
+import 'package:bloc/bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
 final _logger = BizzieLogger('CompanyDividendsBloc');
@@ -32,6 +35,8 @@ class CompanyDividendsBloc
           DividendTabViewState
         >,
         AuthSessionResetMixin<CompanyDividendsEvent, CompanyDividendsState> {
+  static const int _staleTtlHours = 24;
+
   final GetDividendInfoUseCase _getDividendInfo;
   final IConfigService _configService;
   final DividendTabAnalytics _analytics;
@@ -87,22 +92,22 @@ class CompanyDividendsBloc
       _analytics;
 
   void _onTabShown(TabShown event, Emitter<CompanyDividendsState> emit) {
+    onTabShown(event.ticker, _buildTabShownViewState(event.ticker));
+    add(CompanyDividendsEvent.stalenessCheckRequested(event.ticker));
+  }
+
+  DividendTabViewState _buildTabShownViewState(String ticker) {
     final existingState = state.maybeMap(
       loaded: (s) => s.analyticsState,
       orElse: () => null,
     );
-
-    onTabShown(
-      event.ticker,
-      DividendTabViewState(
-        ticker: event.ticker,
-        timestamp: _timeProvider.nowLocal.toIso8601String(),
-        loadTimeMs: existingState?.loadTimeMs,
-        isSuccess: existingState?.isSuccess ?? false,
-        dataSource: existingState?.dataSource,
-      ),
+    return DividendTabViewState(
+      ticker: ticker,
+      timestamp: _timeProvider.nowLocal.toIso8601String(),
+      loadTimeMs: existingState?.loadTimeMs,
+      isSuccess: existingState?.isSuccess ?? false,
+      dataSource: existingState?.dataSource,
     );
-    add(CompanyDividendsEvent.stalenessCheckRequested(event.ticker));
   }
 
   void _onViewAllTapped(
@@ -120,17 +125,7 @@ class CompanyDividendsBloc
     LoadRequested event,
     Emitter<CompanyDividendsState> emit,
   ) async {
-    final isAlreadyLoaded = state.maybeMap(
-      loaded: (s) => true,
-      orElse: () => false,
-    );
-
-    final isRightTicker = state.maybeMap(
-      loaded: (s) => s.ticker == event.ticker,
-      orElse: () => false,
-    );
-
-    if (isAlreadyLoaded && isRightTicker && !event.forceRefresh) {
+    if (_shouldSkipLoad(event)) {
       _logger.info(
         'Company Dividends already loaded for ${event.ticker} and is the correct ticker. Skipping load (Silent Refresh).',
       );
@@ -140,68 +135,88 @@ class CompanyDividendsBloc
     _logger.info(
       'Loading dividends for ${event.ticker} (force=${event.forceRefresh})',
     );
-    if (!isAlreadyLoaded || !isRightTicker || event.forceRefresh) {
-      emit(const CompanyDividendsState.loading());
-    }
+    emit(const CompanyDividendsState.loading());
 
     final stopwatch = Stopwatch()..start();
     final result = await _getDividendInfo(event.ticker);
     stopwatch.stop();
 
     result.fold(
-      (failure) {
-        _logger.severe('Failed to load dividends', failure);
-
-        final metrics =
-            (analyticsSession ??
-                    DividendTabViewState(
-                      ticker: event.ticker,
-                      timestamp: _timeProvider.nowLocal.toIso8601String(),
-                    ))
-                .copyWith(
-                  isSuccess: false,
-                  loadTimeMs: stopwatch.elapsedMilliseconds,
-                );
-
-        if (analyticsSession != null) {
-          updateAnalyticsState((s) => metrics);
-        }
-
-        emit(CompanyDividendsState.failure(failure));
-      },
-      (tuple) {
-        final info = tuple.$1;
-        final origin = tuple.$2;
-        _logger.info('Successfully loaded dividends, origin=$origin');
-
-        final metrics =
-            (analyticsSession ??
-                    DividendTabViewState(
-                      ticker: event.ticker,
-                      timestamp: _timeProvider.nowLocal.toIso8601String(),
-                    ))
-                .copyWith(
-                  isSuccess: true,
-                  dataSource: origin,
-                  loadTimeMs: stopwatch.elapsedMilliseconds,
-                );
-
-        if (analyticsSession != null) {
-          updateAnalyticsState((s) => metrics);
-        }
-
-        emit(
-          CompanyDividendsState.loaded(
-            ticker: event.ticker,
-            dividendInfo: info,
-            historyLimit: _configService.freePlanHistoryCount,
-            dataOrigin: origin,
-            lastUpdated: _timeProvider.nowLocal,
-            analyticsState: metrics,
-          ),
-        );
-      },
+      (failure) => _emitLoadFailure(failure, event, stopwatch, emit),
+      (loaded) => _emitLoadSuccess(loaded, event, stopwatch, emit),
     );
+  }
+
+  bool _shouldSkipLoad(LoadRequested event) {
+    final isLoadedForTicker = state.maybeMap(
+      loaded: (s) => s.ticker == event.ticker,
+      orElse: () => false,
+    );
+    return isLoadedForTicker && !event.forceRefresh;
+  }
+
+  void _emitLoadFailure(
+    Failure failure,
+    LoadRequested event,
+    Stopwatch stopwatch,
+    Emitter<CompanyDividendsState> emit,
+  ) {
+    _logger.severe('Failed to load dividends', failure);
+    final metrics = _buildLoadMetrics(
+      event.ticker,
+      stopwatch,
+      isSuccess: false,
+    );
+    updateAnalyticsState((_) => metrics);
+    emit(CompanyDividendsState.failure(failure));
+  }
+
+  void _emitLoadSuccess(
+    (DividendInfo, CompanyProfileDataOrigin) loaded,
+    LoadRequested event,
+    Stopwatch stopwatch,
+    Emitter<CompanyDividendsState> emit,
+  ) {
+    final (info, origin) = loaded;
+    _logger.info('Successfully loaded dividends, origin=$origin');
+    final metrics = _buildLoadMetrics(
+      event.ticker,
+      stopwatch,
+      isSuccess: true,
+      dataSource: origin,
+    );
+    updateAnalyticsState((_) => metrics);
+    emit(
+      CompanyDividendsState.loaded(
+        ticker: event.ticker,
+        dividendInfo: info,
+        historyLimit: _configService.freePlanHistoryCount,
+        dataOrigin: origin,
+        lastUpdated: _timeProvider.nowLocal,
+        analyticsState: metrics,
+      ),
+    );
+  }
+
+  DividendTabViewState _buildLoadMetrics(
+    String ticker,
+    Stopwatch stopwatch, {
+    required bool isSuccess,
+    CompanyProfileDataOrigin? dataSource,
+  }) {
+    final base =
+        analyticsSession ??
+        DividendTabViewState(
+          ticker: ticker,
+          timestamp: _timeProvider.nowLocal.toIso8601String(),
+        );
+    final metrics = base.copyWith(
+      isSuccess: isSuccess,
+      loadTimeMs: stopwatch.elapsedMilliseconds,
+    );
+    return dataSource == null
+        ? metrics
+        : metrics.copyWith(dataSource: dataSource);
   }
 
   Future<void> _onStalenessCheckRequested(
@@ -211,47 +226,40 @@ class CompanyDividendsBloc
     _logger.info('Staleness check requested for ${event.ticker}');
     state.mapOrNull(
       loaded: (loadedState) {
-        final lastUpdated = loadedState.lastUpdated;
-        if (lastUpdated != null) {
-          final difference = _timeProvider.nowLocal.difference(lastUpdated);
-          if (difference.inHours >= 24) {
-            _logger.info(
-              'Dividends stale (TTL expired: ${difference.inHours}h). Triggering load.',
-            );
-            add(
-              CompanyDividendsEvent.loadRequested(
-                event.ticker,
-                forceRefresh: true,
-              ),
-            );
-          } else {
-            _logger.info('Dividends still fresh (Last updated: $lastUpdated)');
-          }
-        } else {
-          _logger.info('Dividends lastUpdated is null. Triggering load.');
-          add(
-            CompanyDividendsEvent.loadRequested(
-              event.ticker,
-              forceRefresh: true,
-            ),
-          );
-        }
+        _evaluateLoadedStaleness(event.ticker, loadedState.lastUpdated);
       },
       failure: (_) {
         _logger.info('Dividends in failure state. Triggering retry.');
-        add(
-          CompanyDividendsEvent.loadRequested(event.ticker, forceRefresh: true),
-        );
+        _triggerForceRefresh(event.ticker);
       },
       initial: (_) {
         _logger.info('Dividends in initial state. Triggering load.');
-        add(
-          CompanyDividendsEvent.loadRequested(event.ticker, forceRefresh: true),
-        );
+        _triggerForceRefresh(event.ticker);
       },
       loading: (_) {
         _logger.info('Dividends already loading, skipping staleness check.');
       },
     );
+  }
+
+  void _evaluateLoadedStaleness(String ticker, DateTime? lastUpdated) {
+    if (lastUpdated == null) {
+      _logger.info('Dividends lastUpdated is null. Triggering load.');
+      _triggerForceRefresh(ticker);
+      return;
+    }
+    final difference = _timeProvider.nowLocal.difference(lastUpdated);
+    if (difference.inHours >= _staleTtlHours) {
+      _logger.info(
+        'Dividends stale (TTL expired: ${difference.inHours}h). Triggering load.',
+      );
+      _triggerForceRefresh(ticker);
+    } else {
+      _logger.info('Dividends still fresh (Last updated: $lastUpdated)');
+    }
+  }
+
+  void _triggerForceRefresh(String ticker) {
+    add(CompanyDividendsEvent.loadRequested(ticker, forceRefresh: true));
   }
 }

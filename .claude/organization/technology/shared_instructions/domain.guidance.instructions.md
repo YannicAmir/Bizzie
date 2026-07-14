@@ -36,7 +36,7 @@ All use cases implement one of these from `lib/core/usecase/usecase.dart`:
 | `NoParams` | Sentinel when no parameters required |
 
 UseCase rules:
-- Annotate with `@injectable`
+- Annotate with `@lazySingleton`
 - Positional constructor parameter for the repository interface
 - `call()` returns `Either<Failure, T>` or `Stream<Either<Failure, T>>`
 - Named `XxxUseCase` (capital C)
@@ -123,7 +123,7 @@ Orchestrate UseCases / manage UI state?       → presentation/bloc/
 
 ## Checklist
 - [ ] UseCase implements `UseCase`, `StreamUseCase`, or `SynchronousUseCase`
-- [ ] UseCase annotated `@injectable`
+- [ ] UseCase annotated `@lazySingleton`
 - [ ] UseCase takes a repository interface (not implementation) as constructor parameter
 - [ ] Multi-param use cases use a `@freezed` params class in `domain/models/`
 - [ ] Repository interface in `domain/interfaces/` with `I` prefix

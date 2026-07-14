@@ -1,5 +1,5 @@
-import 'package:bizzie/features/company_profile/shares/presentation/extensions/shares_presentation_helper.dart';
 import 'package:bizzie/features/company_profile/shares/domain/models/shares_summary_data.dart';
+import 'package:bizzie/features/company_profile/shares/presentation/utils/shares_presentation_helper.dart';
 import 'package:bizzie/shared/widgets/app_badge.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:intl/intl.dart';

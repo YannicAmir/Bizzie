@@ -31,6 +31,8 @@ class FirestoreConstants {
   static const String incomeLegacyPrefix = 'income_legacy';
   static const String balanceSheetPrefix = 'balance_sheet';
   static const String cashFlowPrefix = 'cash_flow';
+  static const String productSegmentationPrefix = 'revenue_product_seg';
+  static const String geographicSegmentationPrefix = 'revenue_geographic_seg';
 
   // Weekly recap
   static const String weeklyRecap = 'weekly_recap';

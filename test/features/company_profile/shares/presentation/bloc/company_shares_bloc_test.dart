@@ -3,6 +3,7 @@ import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/features/company_profile/shared/domain/models/financial_data_point.dart';
 import 'package:bizzie/features/company_profile/shares/domain/models/share_stats.dart';
 import 'package:bizzie/features/company_profile/shares/domain/models/shares_summary_data.dart';
+import 'package:bizzie/features/company_profile/shares/domain/services/shares_summary_service.dart';
 import 'package:bizzie/features/company_profile/shares/domain/usecases/get_shares_usecase.dart';
 import 'package:bizzie/features/company_profile/shares/presentation/bloc/company_shares_bloc.dart';
 import 'package:bizzie/features/company_profile/shares/presentation/bloc/company_shares_event.dart';
@@ -69,6 +70,7 @@ void main() {
       mockAnalytics,
       mockWatchActiveTabUseCase,
       stubbedTimeProvider(),
+      SharesSummaryService(),
       stubbedGetAuthStream(),
     );
   });

@@ -17,8 +17,8 @@ sealed class CompanyNetIncomeEvent with _$CompanyNetIncomeEvent {
   const factory CompanyNetIncomeEvent.appBackgrounded() = AppBackgrounded;
   const factory CompanyNetIncomeEvent.appForegrounded() = AppForegrounded;
 
-  const factory CompanyNetIncomeEvent.periodViewed({required bool isAnnual}) =
-      PeriodViewed;
+  const factory CompanyNetIncomeEvent.periodChanged({required bool isAnnual}) =
+      PeriodChanged;
 
   const factory CompanyNetIncomeEvent.viewAllTapped({
     required bool isAnnual,

@@ -75,28 +75,20 @@ class CompanyPfcfRatioBloc
   String? get loadedTicker => state.mapOrNull(loaded: (s) => s.ticker);
 
   void _onTabShown(TabShown event, Emitter<CompanyPfcfRatioState> emit) {
-    state.maybeMap(
-      loaded: (s) {
-        onTabShown(
-          event.ticker,
-          PfcfRatioTabViewState(
-            ticker: event.ticker,
-            timestamp: _timeProvider.nowLocal.toIso8601String(),
-            isSuccess: s.isSuccess,
-            loadTimeMs: s.loadTimeMs,
-            dataSource: s.dataOrigin,
-          ),
-        );
-      },
-      orElse: () {
-        onTabShown(
-          event.ticker,
-          PfcfRatioTabViewState(
-            ticker: event.ticker,
-            timestamp: _timeProvider.nowLocal.toIso8601String(),
-          ),
-        );
-      },
+    onTabShown(event.ticker, _buildTabShownViewState(event.ticker));
+  }
+
+  PfcfRatioTabViewState _buildTabShownViewState(String ticker) {
+    final timestamp = _timeProvider.nowLocal.toIso8601String();
+    return state.maybeMap(
+      loaded: (s) => PfcfRatioTabViewState(
+        ticker: ticker,
+        timestamp: timestamp,
+        isSuccess: s.isSuccess,
+        loadTimeMs: s.loadTimeMs,
+        dataSource: s.dataOrigin,
+      ),
+      orElse: () => PfcfRatioTabViewState(ticker: ticker, timestamp: timestamp),
     );
   }
 

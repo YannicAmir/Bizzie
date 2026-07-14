@@ -19,8 +19,9 @@ abstract class CompanyEpsState with _$CompanyEpsState {
     required List<ChartDataPoint> quarterlyChartData,
     required int historyLimit,
     required CompanyProfileDataOrigin dataOrigin,
+    @Default(true) bool isAnnualView,
     DateTime? lastUpdated,
     EpsTabViewState? analyticsState,
-  }) = _Loaded;
+  }) = CompanyEpsLoaded;
   const factory CompanyEpsState.failure(Failure failure) = _Failure;
 }

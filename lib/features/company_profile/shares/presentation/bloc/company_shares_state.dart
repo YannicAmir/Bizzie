@@ -21,8 +21,9 @@ abstract class CompanySharesState with _$CompanySharesState {
     required SharesSummaryData quarterlySummary,
     required int historyLimit,
     required CompanyProfileDataOrigin dataOrigin,
+    @Default(true) bool isAnnualView,
     DateTime? lastUpdated,
     SharesTabViewState? analyticsState,
-  }) = _Loaded;
+  }) = CompanySharesLoaded;
   const factory CompanySharesState.failure(Failure failure) = _Failure;
 }

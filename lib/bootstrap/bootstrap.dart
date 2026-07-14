@@ -12,6 +12,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:timezone/data/latest.dart' as tz;
 
 final _logger = BizzieLogger('Bootstrap');
@@ -24,6 +25,7 @@ Future<void> bootstrap(
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
   FlavorConfig.init(environment.name);
+  GoogleFonts.config.allowRuntimeFetching = false;
   tz.initializeTimeZones();
   BizzieLogger.init(dev: !kReleaseMode);
 

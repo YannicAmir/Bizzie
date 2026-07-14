@@ -26,6 +26,6 @@ abstract class CompanyPfcfRatioState with _$CompanyPfcfRatioState {
     @Default(false) bool isSuccess,
     DateTime? lastUpdated,
     PfcfRatioTabViewState? analyticsState,
-  }) = _Loaded;
+  }) = CompanyPfcfRatioLoaded;
   const factory CompanyPfcfRatioState.failure(Failure failure) = _Failure;
 }

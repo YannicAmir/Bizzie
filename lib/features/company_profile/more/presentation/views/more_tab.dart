@@ -255,7 +255,7 @@ class _FeatureSelectorModalContent extends StatelessWidget {
         ),
         Padding(
           padding: AppConstants.moreTabModalEditButtonPadding,
-          child: BizziePrimaryButton(title: 'Edit', onPressed: onEditTap),
+          child: BizziePrimaryButton(title: 'Edit Tabs', onPressed: onEditTap),
         ),
       ],
     );

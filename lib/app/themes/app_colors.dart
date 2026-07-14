@@ -107,4 +107,24 @@ class AppColors {
   // Tooltips
   static const Color tooltipBackground = Color(0xFF0F172B);
   static const Color discountBadgeBackground = Color(0xFFD34F18);
+
+  // Charts — fixed categorical pool; consumers assign colors top-down so a
+  // series keeps its color once assigned.
+  static const List<Color> chartCategoricalPool = [
+    Color(0xFF155DFC), // blue
+    Color(0xFF16A34A), // green
+    Color(0xFFF59E0B), // amber
+    Color(0xFF8B5CF6), // violet
+    Color(0xFFE7000B), // red
+    Color(0xFF0D9488), // teal
+    Color(0xFFEC4899), // pink
+    Color(0xFF4F39F6), // indigo
+    Color(0xFFC2410C), // orange
+    Color(0xFF0EA5E9), // sky
+    Color(0xFF65A30D), // lime
+    Color(0xFF9F1239), // rose
+    Color(0xFF7C3AED), // purple
+    Color(0xFF0891B2), // cyan
+    Color(0xFF475569), // slate
+  ];
 }

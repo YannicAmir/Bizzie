@@ -20,8 +20,8 @@ sealed class CompanySharesEvent with _$CompanySharesEvent {
 
   const factory CompanySharesEvent.appForegrounded() = AppForegrounded;
 
-  const factory CompanySharesEvent.periodViewed({required bool isAnnual}) =
-      PeriodViewed;
+  const factory CompanySharesEvent.periodChanged({required bool isAnnual}) =
+      PeriodChanged;
 
   const factory CompanySharesEvent.viewAllTapped({
     required bool isAnnual,

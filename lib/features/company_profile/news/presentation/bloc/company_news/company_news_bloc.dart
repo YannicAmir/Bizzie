@@ -104,13 +104,10 @@ class CompanyNewsBloc extends Bloc<CompanyNewsEvent, CompanyNewsState>
     final result = await _getCompanyNews(event.ticker);
     _loadStopwatch.stop();
 
-    result.fold(
-      (failure) {
-        _logger.severe('Failed to load company news', failure);
-        emit(CompanyNewsState.failure(failure));
-      },
-      (tuple) => _emitLoaded(event.ticker, tuple.$1, tuple.$2, emit),
-    );
+    result.fold((failure) {
+      _logger.severe('Failed to load company news', failure);
+      emit(CompanyNewsState.failure(failure));
+    }, (tuple) => _emitLoaded(event.ticker, tuple.$1, tuple.$2, emit));
   }
 
   bool _shouldSkipLoad(LoadRequested event) {
@@ -167,21 +164,17 @@ class CompanyNewsBloc extends Bloc<CompanyNewsEvent, CompanyNewsState>
     );
   }
 
-  Future<void> _onTabShown(
-    TabShown event,
-    Emitter<CompanyNewsState> emit,
-  ) async {
-    final initialState = state.maybeMap(
-      loaded: (s) => s.analyticsState,
-      orElse: () => NewsTabViewState(
-        ticker: event.ticker,
-        timestamp: _timeProvider.nowLocal.toIso8601String(),
-      ),
-    );
-
-    onTabShown(event.ticker, initialState!);
+  void _onTabShown(TabShown event, Emitter<CompanyNewsState> emit) {
+    onTabShown(event.ticker, _buildTabShownViewState(event.ticker));
     add(CompanyNewsEvent.stalenessCheckRequested(event.ticker));
   }
+
+  NewsTabViewState _buildTabShownViewState(String ticker) =>
+      state.mapOrNull(loaded: (s) => s.analyticsState) ??
+      NewsTabViewState(
+        ticker: ticker,
+        timestamp: _timeProvider.nowLocal.toIso8601String(),
+      );
 
   Future<void> _onArticleTapped(
     ArticleTapped event,

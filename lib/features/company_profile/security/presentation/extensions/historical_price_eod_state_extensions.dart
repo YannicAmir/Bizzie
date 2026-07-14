@@ -1,5 +1,5 @@
 import 'package:bizzie/features/company_profile/security/presentation/bloc/historical_price_eod/historical_price_eod_state.dart';
-import 'package:intl/intl.dart';
+import 'package:bizzie/shared/utils/currency_formatter.dart';
 
 extension HistoricalPriceEodStateX on HistoricalPriceEodState {
   bool get isLoading =>
@@ -19,8 +19,8 @@ extension HistoricalPriceEodStateX on HistoricalPriceEodState {
       final percent = (change / previous.price) * 100;
       final isPositive = change >= 0;
       final sign = isPositive ? '+' : '';
-      final currencyFormat = NumberFormat.simpleCurrency();
-      return '$sign${currencyFormat.format(change)} ($sign${percent.toStringAsFixed(2)}%)';
+      final formattedChange = CurrencyFormatter.format(change, null);
+      return '$sign$formattedChange ($sign${percent.toStringAsFixed(2)}%)';
     },
     orElse: () => '--',
   );
@@ -40,6 +40,6 @@ extension HistoricalPriceEodStateX on HistoricalPriceEodState {
 
   static String _formatPrice(double? price) {
     if (price == null) return '--';
-    return NumberFormat.simpleCurrency().format(price);
+    return CurrencyFormatter.format(price, null);
   }
 }

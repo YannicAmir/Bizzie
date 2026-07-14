@@ -22,7 +22,7 @@ The DomainCorrector fixes specific, identified violations or bugs in the Flutter
 The DomainCorrector may fix:
 - Layer violations (e.g. Firebase import in domain, DTO type referenced in a use case)
 - Incorrect return types on repository interface methods (missing `Either` wrapper)
-- Missing `@injectable` annotation on a use case
+- Missing `@lazySingleton` annotation on a use case
 - Missing `I` prefix on a repository interface
 - Incorrect `UseCase` base class used
 - Incorrect `part` directive or missing freezed annotation on domain model

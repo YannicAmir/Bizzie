@@ -28,11 +28,12 @@ import 'package:bizzie/features/company_profile/security/domain/models/security_
 import 'package:bizzie/features/company_profile/security/presentation/bloc/company_security_bloc.dart';
 import 'package:bizzie/features/company_profile/security/presentation/bloc/company_security_event.dart';
 import 'package:bizzie/features/company_profile/security/presentation/bloc/company_security_state.dart';
-import 'package:bizzie/features/company_profile/security/presentation/bloc/company_security_state_extensions.dart';
+import 'package:bizzie/features/company_profile/security/presentation/extensions/company_security_state_extensions.dart';
 import 'package:bizzie/features/company_profile/security/presentation/bloc/historical_price_eod/historical_price_eod_bloc.dart';
 import 'package:bizzie/features/company_profile/security/presentation/bloc/historical_price_eod/historical_price_eod_event.dart';
 import 'package:bizzie/features/company_profile/security/presentation/bloc/upcoming_earnings/upcoming_earnings_bloc.dart';
 import 'package:bizzie/features/company_profile/security/presentation/bloc/upcoming_earnings/upcoming_earnings_event.dart';
+import 'package:bizzie/features/company_profile/segments/presentation/bloc/company_segments_bloc.dart';
 import 'package:bizzie/features/company_profile/shares/presentation/bloc/company_shares_bloc.dart';
 import 'package:bizzie/features/company_profile/shared/domain/enums/company_profile_tab.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/extensions/company_profile_tab_x.dart';
@@ -68,6 +69,7 @@ class CompanyProfilePage extends StatelessWidget {
         BlocProvider(create: (context) => getIt<CompanyNewsBloc>()),
         BlocProvider(create: (context) => getIt<CompanyDividendsBloc>()),
         BlocProvider(create: (context) => getIt<CompanyRevenueBloc>()),
+        BlocProvider(create: (context) => getIt<CompanySegmentsBloc>()),
         BlocProvider(create: (context) => getIt<CompanyNetIncomeBloc>()),
         BlocProvider(create: (context) => getIt<CompanyEpsBloc>()),
         BlocProvider(create: (context) => getIt<CompanyFreeCashFlowBloc>()),

@@ -70,6 +70,7 @@ class AppConstants {
   static const double tooltipPadding = 8.0;
   static const double chartLineWidth = 2.0;
   static const double chartPlotOffsetStart = 15.0;
+  static const double chartCarouselHeight = 400.0;
 
   static const double kChartAnimationDuration = 600;
 

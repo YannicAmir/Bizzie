@@ -27,6 +27,6 @@ abstract class CompanyRoeState with _$CompanyRoeState {
     @Default(false) bool isSuccess,
     DateTime? lastUpdated,
     RoeTabViewState? analyticsState,
-  }) = _Loaded;
+  }) = CompanyRoeLoaded;
   const factory CompanyRoeState.failure(Failure failure) = _Failure;
 }

@@ -7,6 +7,8 @@ extension UserStateX on UserState {
     orElse: () => false,
   );
 
+  bool get canViewFullHistory => isSubscribed;
+
   String? get uidOrNull => mapOrNull(loaded: (s) => s.user.uid);
 
   String get mascotAsset {

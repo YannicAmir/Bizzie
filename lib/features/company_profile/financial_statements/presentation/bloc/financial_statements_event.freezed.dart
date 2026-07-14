@@ -55,7 +55,7 @@ extension FinancialStatementsEventPatterns on FinancialStatementsEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( LoadIncomeStatements value)?  loadIncomeStatements,TResult Function( LoadBalanceSheets value)?  loadBalanceSheets,TResult Function( LoadCashFlows value)?  loadCashFlows,TResult Function( StalenessCheckRequested value)?  stalenessCheckRequested,TResult Function( ViewTypeChanged value)?  viewTypeChanged,TResult Function( IncomeDateSelected value)?  incomeDateSelected,TResult Function( BalanceDateSelected value)?  balanceDateSelected,TResult Function( CashFlowDateSelected value)?  cashFlowDateSelected,TResult Function( TabShown value)?  tabShown,TResult Function( TabHidden value)?  tabHidden,TResult Function( AppBackgrounded value)?  appBackgrounded,TResult Function( AppForegrounded value)?  appForegrounded,TResult Function( ViewAllTapped value)?  viewAllTapped,TResult Function( ChartSwiped value)?  chartSwiped,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( LoadIncomeStatements value)?  loadIncomeStatements,TResult Function( LoadBalanceSheets value)?  loadBalanceSheets,TResult Function( LoadCashFlows value)?  loadCashFlows,TResult Function( StalenessCheckRequested value)?  stalenessCheckRequested,TResult Function( ViewTypeChanged value)?  viewTypeChanged,TResult Function( IncomeDateSelected value)?  incomeDateSelected,TResult Function( BalanceDateSelected value)?  balanceDateSelected,TResult Function( CashFlowDateSelected value)?  cashFlowDateSelected,TResult Function( TabShown value)?  tabShown,TResult Function( TabHidden value)?  tabHidden,TResult Function( AppBackgrounded value)?  appBackgrounded,TResult Function( AppForegrounded value)?  appForegrounded,TResult Function( ViewAllTapped value)?  viewAllTapped,TResult Function( ChartSwiped value)?  chartSwiped,TResult Function( Reset value)?  reset,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case LoadIncomeStatements() when loadIncomeStatements != null:
@@ -72,7 +72,8 @@ return tabHidden(_that);case AppBackgrounded() when appBackgrounded != null:
 return appBackgrounded(_that);case AppForegrounded() when appForegrounded != null:
 return appForegrounded(_that);case ViewAllTapped() when viewAllTapped != null:
 return viewAllTapped(_that);case ChartSwiped() when chartSwiped != null:
-return chartSwiped(_that);case _:
+return chartSwiped(_that);case Reset() when reset != null:
+return reset(_that);case _:
   return orElse();
 
 }
@@ -90,7 +91,7 @@ return chartSwiped(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( LoadIncomeStatements value)  loadIncomeStatements,required TResult Function( LoadBalanceSheets value)  loadBalanceSheets,required TResult Function( LoadCashFlows value)  loadCashFlows,required TResult Function( StalenessCheckRequested value)  stalenessCheckRequested,required TResult Function( ViewTypeChanged value)  viewTypeChanged,required TResult Function( IncomeDateSelected value)  incomeDateSelected,required TResult Function( BalanceDateSelected value)  balanceDateSelected,required TResult Function( CashFlowDateSelected value)  cashFlowDateSelected,required TResult Function( TabShown value)  tabShown,required TResult Function( TabHidden value)  tabHidden,required TResult Function( AppBackgrounded value)  appBackgrounded,required TResult Function( AppForegrounded value)  appForegrounded,required TResult Function( ViewAllTapped value)  viewAllTapped,required TResult Function( ChartSwiped value)  chartSwiped,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( LoadIncomeStatements value)  loadIncomeStatements,required TResult Function( LoadBalanceSheets value)  loadBalanceSheets,required TResult Function( LoadCashFlows value)  loadCashFlows,required TResult Function( StalenessCheckRequested value)  stalenessCheckRequested,required TResult Function( ViewTypeChanged value)  viewTypeChanged,required TResult Function( IncomeDateSelected value)  incomeDateSelected,required TResult Function( BalanceDateSelected value)  balanceDateSelected,required TResult Function( CashFlowDateSelected value)  cashFlowDateSelected,required TResult Function( TabShown value)  tabShown,required TResult Function( TabHidden value)  tabHidden,required TResult Function( AppBackgrounded value)  appBackgrounded,required TResult Function( AppForegrounded value)  appForegrounded,required TResult Function( ViewAllTapped value)  viewAllTapped,required TResult Function( ChartSwiped value)  chartSwiped,required TResult Function( Reset value)  reset,}){
 final _that = this;
 switch (_that) {
 case LoadIncomeStatements():
@@ -107,7 +108,8 @@ return tabHidden(_that);case AppBackgrounded():
 return appBackgrounded(_that);case AppForegrounded():
 return appForegrounded(_that);case ViewAllTapped():
 return viewAllTapped(_that);case ChartSwiped():
-return chartSwiped(_that);}
+return chartSwiped(_that);case Reset():
+return reset(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -121,7 +123,7 @@ return chartSwiped(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( LoadIncomeStatements value)?  loadIncomeStatements,TResult? Function( LoadBalanceSheets value)?  loadBalanceSheets,TResult? Function( LoadCashFlows value)?  loadCashFlows,TResult? Function( StalenessCheckRequested value)?  stalenessCheckRequested,TResult? Function( ViewTypeChanged value)?  viewTypeChanged,TResult? Function( IncomeDateSelected value)?  incomeDateSelected,TResult? Function( BalanceDateSelected value)?  balanceDateSelected,TResult? Function( CashFlowDateSelected value)?  cashFlowDateSelected,TResult? Function( TabShown value)?  tabShown,TResult? Function( TabHidden value)?  tabHidden,TResult? Function( AppBackgrounded value)?  appBackgrounded,TResult? Function( AppForegrounded value)?  appForegrounded,TResult? Function( ViewAllTapped value)?  viewAllTapped,TResult? Function( ChartSwiped value)?  chartSwiped,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( LoadIncomeStatements value)?  loadIncomeStatements,TResult? Function( LoadBalanceSheets value)?  loadBalanceSheets,TResult? Function( LoadCashFlows value)?  loadCashFlows,TResult? Function( StalenessCheckRequested value)?  stalenessCheckRequested,TResult? Function( ViewTypeChanged value)?  viewTypeChanged,TResult? Function( IncomeDateSelected value)?  incomeDateSelected,TResult? Function( BalanceDateSelected value)?  balanceDateSelected,TResult? Function( CashFlowDateSelected value)?  cashFlowDateSelected,TResult? Function( TabShown value)?  tabShown,TResult? Function( TabHidden value)?  tabHidden,TResult? Function( AppBackgrounded value)?  appBackgrounded,TResult? Function( AppForegrounded value)?  appForegrounded,TResult? Function( ViewAllTapped value)?  viewAllTapped,TResult? Function( ChartSwiped value)?  chartSwiped,TResult? Function( Reset value)?  reset,}){
 final _that = this;
 switch (_that) {
 case LoadIncomeStatements() when loadIncomeStatements != null:
@@ -138,7 +140,8 @@ return tabHidden(_that);case AppBackgrounded() when appBackgrounded != null:
 return appBackgrounded(_that);case AppForegrounded() when appForegrounded != null:
 return appForegrounded(_that);case ViewAllTapped() when viewAllTapped != null:
 return viewAllTapped(_that);case ChartSwiped() when chartSwiped != null:
-return chartSwiped(_that);case _:
+return chartSwiped(_that);case Reset() when reset != null:
+return reset(_that);case _:
   return null;
 
 }
@@ -155,7 +158,7 @@ return chartSwiped(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String ticker,  bool forceRefresh)?  loadIncomeStatements,TResult Function( String ticker,  bool forceRefresh)?  loadBalanceSheets,TResult Function( String ticker,  bool forceRefresh)?  loadCashFlows,TResult Function( String ticker,  FinancialStatementType type)?  stalenessCheckRequested,TResult Function( String ticker,  FinancialStatementType type)?  viewTypeChanged,TResult Function( String date,  bool isAnnual)?  incomeDateSelected,TResult Function( String date,  bool isAnnual)?  balanceDateSelected,TResult Function( String date,  bool isAnnual)?  cashFlowDateSelected,TResult Function( String ticker)?  tabShown,TResult Function()?  tabHidden,TResult Function()?  appBackgrounded,TResult Function()?  appForegrounded,TResult Function( bool isAnnual)?  viewAllTapped,TResult Function( int index)?  chartSwiped,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String ticker,  bool forceRefresh)?  loadIncomeStatements,TResult Function( String ticker,  bool forceRefresh)?  loadBalanceSheets,TResult Function( String ticker,  bool forceRefresh)?  loadCashFlows,TResult Function( String ticker,  FinancialStatementType type)?  stalenessCheckRequested,TResult Function( String ticker,  FinancialStatementType type)?  viewTypeChanged,TResult Function( String date,  bool isAnnual)?  incomeDateSelected,TResult Function( String date,  bool isAnnual)?  balanceDateSelected,TResult Function( String date,  bool isAnnual)?  cashFlowDateSelected,TResult Function( String ticker)?  tabShown,TResult Function()?  tabHidden,TResult Function()?  appBackgrounded,TResult Function()?  appForegrounded,TResult Function( bool isAnnual)?  viewAllTapped,TResult Function( int index)?  chartSwiped,TResult Function()?  reset,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case LoadIncomeStatements() when loadIncomeStatements != null:
 return loadIncomeStatements(_that.ticker,_that.forceRefresh);case LoadBalanceSheets() when loadBalanceSheets != null:
@@ -171,7 +174,8 @@ return tabHidden();case AppBackgrounded() when appBackgrounded != null:
 return appBackgrounded();case AppForegrounded() when appForegrounded != null:
 return appForegrounded();case ViewAllTapped() when viewAllTapped != null:
 return viewAllTapped(_that.isAnnual);case ChartSwiped() when chartSwiped != null:
-return chartSwiped(_that.index);case _:
+return chartSwiped(_that.index);case Reset() when reset != null:
+return reset();case _:
   return orElse();
 
 }
@@ -189,7 +193,7 @@ return chartSwiped(_that.index);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String ticker,  bool forceRefresh)  loadIncomeStatements,required TResult Function( String ticker,  bool forceRefresh)  loadBalanceSheets,required TResult Function( String ticker,  bool forceRefresh)  loadCashFlows,required TResult Function( String ticker,  FinancialStatementType type)  stalenessCheckRequested,required TResult Function( String ticker,  FinancialStatementType type)  viewTypeChanged,required TResult Function( String date,  bool isAnnual)  incomeDateSelected,required TResult Function( String date,  bool isAnnual)  balanceDateSelected,required TResult Function( String date,  bool isAnnual)  cashFlowDateSelected,required TResult Function( String ticker)  tabShown,required TResult Function()  tabHidden,required TResult Function()  appBackgrounded,required TResult Function()  appForegrounded,required TResult Function( bool isAnnual)  viewAllTapped,required TResult Function( int index)  chartSwiped,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String ticker,  bool forceRefresh)  loadIncomeStatements,required TResult Function( String ticker,  bool forceRefresh)  loadBalanceSheets,required TResult Function( String ticker,  bool forceRefresh)  loadCashFlows,required TResult Function( String ticker,  FinancialStatementType type)  stalenessCheckRequested,required TResult Function( String ticker,  FinancialStatementType type)  viewTypeChanged,required TResult Function( String date,  bool isAnnual)  incomeDateSelected,required TResult Function( String date,  bool isAnnual)  balanceDateSelected,required TResult Function( String date,  bool isAnnual)  cashFlowDateSelected,required TResult Function( String ticker)  tabShown,required TResult Function()  tabHidden,required TResult Function()  appBackgrounded,required TResult Function()  appForegrounded,required TResult Function( bool isAnnual)  viewAllTapped,required TResult Function( int index)  chartSwiped,required TResult Function()  reset,}) {final _that = this;
 switch (_that) {
 case LoadIncomeStatements():
 return loadIncomeStatements(_that.ticker,_that.forceRefresh);case LoadBalanceSheets():
@@ -205,7 +209,8 @@ return tabHidden();case AppBackgrounded():
 return appBackgrounded();case AppForegrounded():
 return appForegrounded();case ViewAllTapped():
 return viewAllTapped(_that.isAnnual);case ChartSwiped():
-return chartSwiped(_that.index);}
+return chartSwiped(_that.index);case Reset():
+return reset();}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -219,7 +224,7 @@ return chartSwiped(_that.index);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String ticker,  bool forceRefresh)?  loadIncomeStatements,TResult? Function( String ticker,  bool forceRefresh)?  loadBalanceSheets,TResult? Function( String ticker,  bool forceRefresh)?  loadCashFlows,TResult? Function( String ticker,  FinancialStatementType type)?  stalenessCheckRequested,TResult? Function( String ticker,  FinancialStatementType type)?  viewTypeChanged,TResult? Function( String date,  bool isAnnual)?  incomeDateSelected,TResult? Function( String date,  bool isAnnual)?  balanceDateSelected,TResult? Function( String date,  bool isAnnual)?  cashFlowDateSelected,TResult? Function( String ticker)?  tabShown,TResult? Function()?  tabHidden,TResult? Function()?  appBackgrounded,TResult? Function()?  appForegrounded,TResult? Function( bool isAnnual)?  viewAllTapped,TResult? Function( int index)?  chartSwiped,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String ticker,  bool forceRefresh)?  loadIncomeStatements,TResult? Function( String ticker,  bool forceRefresh)?  loadBalanceSheets,TResult? Function( String ticker,  bool forceRefresh)?  loadCashFlows,TResult? Function( String ticker,  FinancialStatementType type)?  stalenessCheckRequested,TResult? Function( String ticker,  FinancialStatementType type)?  viewTypeChanged,TResult? Function( String date,  bool isAnnual)?  incomeDateSelected,TResult? Function( String date,  bool isAnnual)?  balanceDateSelected,TResult? Function( String date,  bool isAnnual)?  cashFlowDateSelected,TResult? Function( String ticker)?  tabShown,TResult? Function()?  tabHidden,TResult? Function()?  appBackgrounded,TResult? Function()?  appForegrounded,TResult? Function( bool isAnnual)?  viewAllTapped,TResult? Function( int index)?  chartSwiped,TResult? Function()?  reset,}) {final _that = this;
 switch (_that) {
 case LoadIncomeStatements() when loadIncomeStatements != null:
 return loadIncomeStatements(_that.ticker,_that.forceRefresh);case LoadBalanceSheets() when loadBalanceSheets != null:
@@ -235,7 +240,8 @@ return tabHidden();case AppBackgrounded() when appBackgrounded != null:
 return appBackgrounded();case AppForegrounded() when appForegrounded != null:
 return appForegrounded();case ViewAllTapped() when viewAllTapped != null:
 return viewAllTapped(_that.isAnnual);case ChartSwiped() when chartSwiped != null:
-return chartSwiped(_that.index);case _:
+return chartSwiped(_that.index);case Reset() when reset != null:
+return reset();case _:
   return null;
 
 }
@@ -1080,5 +1086,37 @@ as int,
 
 
 }
+
+/// @nodoc
+
+
+class Reset implements FinancialStatementsEvent {
+  const Reset();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Reset);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'FinancialStatementsEvent.reset()';
+}
+
+
+}
+
+
+
 
 // dart format on

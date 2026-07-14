@@ -11,6 +11,7 @@ import 'package:bizzie/features/company_profile/pe_ratio/presentation/views/pe_r
 import 'package:bizzie/features/company_profile/pfcf_ratio/presentation/views/pfcf_ratio_tab.dart';
 import 'package:bizzie/features/company_profile/revenue/presentation/views/revenue_tab.dart';
 import 'package:bizzie/features/company_profile/roe/presentation/views/roe_tab.dart';
+import 'package:bizzie/features/company_profile/segments/presentation/views/segments_tab.dart';
 import 'package:bizzie/features/company_profile/shares/presentation/views/shares_tab.dart';
 import 'package:bizzie/features/company_profile/shared/domain/enums/company_profile_tab.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/extensions/company_profile_tab_x.dart';
@@ -42,6 +43,7 @@ Widget _buildViewForTab(CompanyProfileTab tab, String ticker) {
     CompanyProfileTab.news => NewsTab(ticker: ticker),
     CompanyProfileTab.dividends => DividendsTab(ticker: ticker),
     CompanyProfileTab.revenue => RevenueTab(ticker: ticker),
+    CompanyProfileTab.segments => SegmentsTab(ticker: ticker),
     CompanyProfileTab.netIncome => NetIncomeTab(ticker: ticker),
     CompanyProfileTab.eps => EpsTab(ticker: ticker),
     CompanyProfileTab.freeCash => FreeCashFlowTab(ticker: ticker),

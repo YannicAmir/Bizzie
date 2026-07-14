@@ -172,17 +172,38 @@ void main() {
     );
 
     blocTest<CompanyEpsBloc, CompanyEpsState>(
-      'periodViewed_updatesAnalyticsState',
+      'periodChanged_updatesAnalyticsState',
       build: () => bloc,
       seed: () => tLoadedState, // arrange
       act: (bloc) => bloc
         // act
         ..add(const CompanyEpsEvent.tabShown(tTicker))
-        ..add(const CompanyEpsEvent.periodViewed(isAnnual: true)),
+        ..add(const CompanyEpsEvent.periodChanged(isAnnual: true)),
       expect: () => const <CompanyEpsState>[],
       verify: (bloc) {
         // assert
         expect(bloc.analyticsSession?.viewedYearlyEpsTab, isTrue);
+      },
+    );
+
+    blocTest<CompanyEpsBloc, CompanyEpsState>(
+      'periodChanged_toDifferentValue_emitsUpdatedIsAnnualView',
+      build: () => bloc,
+      seed: () => tLoadedState, // arrange
+      act: (bloc) => bloc
+        // act
+        ..add(const CompanyEpsEvent.tabShown(tTicker))
+        ..add(const CompanyEpsEvent.periodChanged(isAnnual: false)),
+      expect: () => [
+        isA<CompanyEpsState>().having(
+          (s) => s.maybeMap(loaded: (l) => l.isAnnualView, orElse: () => null),
+          'isAnnualView',
+          false,
+        ),
+      ],
+      verify: (bloc) {
+        // assert
+        expect(bloc.analyticsSession?.viewedQtrlyEpsTab, isTrue);
       },
     );
 

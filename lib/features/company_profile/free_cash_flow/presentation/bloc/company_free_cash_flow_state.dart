@@ -18,8 +18,9 @@ abstract class CompanyFreeCashFlowState with _$CompanyFreeCashFlowState {
     required List<ChartDataPoint> quarterlyChartData,
     required int historyLimit,
     required CompanyProfileDataOrigin dataOrigin,
+    @Default(true) bool isAnnualView,
     DateTime? lastUpdated,
     FreeCashFlowTabViewState? analyticsState,
-  }) = _Loaded;
+  }) = CompanyFreeCashFlowLoaded;
   const factory CompanyFreeCashFlowState.failure(Failure failure) = _Failure;
 }

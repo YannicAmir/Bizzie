@@ -89,11 +89,11 @@ extension CompanyProfileTabsStatePatterns on CompanyProfileTabsState {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Initial value)?  initial,TResult Function( _Loaded value)?  loaded,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Initial value)?  initial,TResult Function( CompanyProfileTabsLoaded value)?  loaded,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
-return initial(_that);case _Loaded() when loaded != null:
+return initial(_that);case CompanyProfileTabsLoaded() when loaded != null:
 return loaded(_that);case _:
   return orElse();
 
@@ -112,11 +112,11 @@ return loaded(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Initial value)  initial,required TResult Function( _Loaded value)  loaded,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Initial value)  initial,required TResult Function( CompanyProfileTabsLoaded value)  loaded,}){
 final _that = this;
 switch (_that) {
 case _Initial():
-return initial(_that);case _Loaded():
+return initial(_that);case CompanyProfileTabsLoaded():
 return loaded(_that);case _:
   throw StateError('Unexpected subclass');
 
@@ -134,11 +134,11 @@ return loaded(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Initial value)?  initial,TResult? Function( _Loaded value)?  loaded,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Initial value)?  initial,TResult? Function( CompanyProfileTabsLoaded value)?  loaded,}){
 final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
-return initial(_that);case _Loaded() when loaded != null:
+return initial(_that);case CompanyProfileTabsLoaded() when loaded != null:
 return loaded(_that);case _:
   return null;
 
@@ -159,7 +159,7 @@ return loaded(_that);case _:
 @optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( List<CompanyProfileTab> mainTabs,  List<CompanyProfileTab> moreTabs,  int moreTabIndex,  bool isBizzieChatEnabled)?  initial,TResult Function( List<CompanyProfileTab> mainTabs,  List<CompanyProfileTab> moreTabs,  int moreTabIndex,  bool isBizzieChatEnabled)?  loaded,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
-return initial(_that.mainTabs,_that.moreTabs,_that.moreTabIndex,_that.isBizzieChatEnabled);case _Loaded() when loaded != null:
+return initial(_that.mainTabs,_that.moreTabs,_that.moreTabIndex,_that.isBizzieChatEnabled);case CompanyProfileTabsLoaded() when loaded != null:
 return loaded(_that.mainTabs,_that.moreTabs,_that.moreTabIndex,_that.isBizzieChatEnabled);case _:
   return orElse();
 
@@ -181,7 +181,7 @@ return loaded(_that.mainTabs,_that.moreTabs,_that.moreTabIndex,_that.isBizzieCha
 @optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( List<CompanyProfileTab> mainTabs,  List<CompanyProfileTab> moreTabs,  int moreTabIndex,  bool isBizzieChatEnabled)  initial,required TResult Function( List<CompanyProfileTab> mainTabs,  List<CompanyProfileTab> moreTabs,  int moreTabIndex,  bool isBizzieChatEnabled)  loaded,}) {final _that = this;
 switch (_that) {
 case _Initial():
-return initial(_that.mainTabs,_that.moreTabs,_that.moreTabIndex,_that.isBizzieChatEnabled);case _Loaded():
+return initial(_that.mainTabs,_that.moreTabs,_that.moreTabIndex,_that.isBizzieChatEnabled);case CompanyProfileTabsLoaded():
 return loaded(_that.mainTabs,_that.moreTabs,_that.moreTabIndex,_that.isBizzieChatEnabled);case _:
   throw StateError('Unexpected subclass');
 
@@ -202,7 +202,7 @@ return loaded(_that.mainTabs,_that.moreTabs,_that.moreTabIndex,_that.isBizzieCha
 @optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( List<CompanyProfileTab> mainTabs,  List<CompanyProfileTab> moreTabs,  int moreTabIndex,  bool isBizzieChatEnabled)?  initial,TResult? Function( List<CompanyProfileTab> mainTabs,  List<CompanyProfileTab> moreTabs,  int moreTabIndex,  bool isBizzieChatEnabled)?  loaded,}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
-return initial(_that.mainTabs,_that.moreTabs,_that.moreTabIndex,_that.isBizzieChatEnabled);case _Loaded() when loaded != null:
+return initial(_that.mainTabs,_that.moreTabs,_that.moreTabIndex,_that.isBizzieChatEnabled);case CompanyProfileTabsLoaded() when loaded != null:
 return loaded(_that.mainTabs,_that.moreTabs,_that.moreTabIndex,_that.isBizzieChatEnabled);case _:
   return null;
 
@@ -298,8 +298,8 @@ as bool,
 /// @nodoc
 
 
-class _Loaded extends CompanyProfileTabsState {
-  const _Loaded({required final  List<CompanyProfileTab> mainTabs, required final  List<CompanyProfileTab> moreTabs, this.moreTabIndex = 0, required this.isBizzieChatEnabled}): _mainTabs = mainTabs,_moreTabs = moreTabs,super._();
+class CompanyProfileTabsLoaded extends CompanyProfileTabsState {
+  const CompanyProfileTabsLoaded({required final  List<CompanyProfileTab> mainTabs, required final  List<CompanyProfileTab> moreTabs, this.moreTabIndex = 0, required this.isBizzieChatEnabled}): _mainTabs = mainTabs,_moreTabs = moreTabs,super._();
   
 
  final  List<CompanyProfileTab> _mainTabs;
@@ -323,13 +323,13 @@ class _Loaded extends CompanyProfileTabsState {
 /// with the given fields replaced by the non-null parameter values.
 @override @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-_$LoadedCopyWith<_Loaded> get copyWith => __$LoadedCopyWithImpl<_Loaded>(this, _$identity);
+$CompanyProfileTabsLoadedCopyWith<CompanyProfileTabsLoaded> get copyWith => _$CompanyProfileTabsLoadedCopyWithImpl<CompanyProfileTabsLoaded>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Loaded&&const DeepCollectionEquality().equals(other._mainTabs, _mainTabs)&&const DeepCollectionEquality().equals(other._moreTabs, _moreTabs)&&(identical(other.moreTabIndex, moreTabIndex) || other.moreTabIndex == moreTabIndex)&&(identical(other.isBizzieChatEnabled, isBizzieChatEnabled) || other.isBizzieChatEnabled == isBizzieChatEnabled));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CompanyProfileTabsLoaded&&const DeepCollectionEquality().equals(other._mainTabs, _mainTabs)&&const DeepCollectionEquality().equals(other._moreTabs, _moreTabs)&&(identical(other.moreTabIndex, moreTabIndex) || other.moreTabIndex == moreTabIndex)&&(identical(other.isBizzieChatEnabled, isBizzieChatEnabled) || other.isBizzieChatEnabled == isBizzieChatEnabled));
 }
 
 
@@ -345,8 +345,8 @@ String toString() {
 }
 
 /// @nodoc
-abstract mixin class _$LoadedCopyWith<$Res> implements $CompanyProfileTabsStateCopyWith<$Res> {
-  factory _$LoadedCopyWith(_Loaded value, $Res Function(_Loaded) _then) = __$LoadedCopyWithImpl;
+abstract mixin class $CompanyProfileTabsLoadedCopyWith<$Res> implements $CompanyProfileTabsStateCopyWith<$Res> {
+  factory $CompanyProfileTabsLoadedCopyWith(CompanyProfileTabsLoaded value, $Res Function(CompanyProfileTabsLoaded) _then) = _$CompanyProfileTabsLoadedCopyWithImpl;
 @override @useResult
 $Res call({
  List<CompanyProfileTab> mainTabs, List<CompanyProfileTab> moreTabs, int moreTabIndex, bool isBizzieChatEnabled
@@ -357,17 +357,17 @@ $Res call({
 
 }
 /// @nodoc
-class __$LoadedCopyWithImpl<$Res>
-    implements _$LoadedCopyWith<$Res> {
-  __$LoadedCopyWithImpl(this._self, this._then);
+class _$CompanyProfileTabsLoadedCopyWithImpl<$Res>
+    implements $CompanyProfileTabsLoadedCopyWith<$Res> {
+  _$CompanyProfileTabsLoadedCopyWithImpl(this._self, this._then);
 
-  final _Loaded _self;
-  final $Res Function(_Loaded) _then;
+  final CompanyProfileTabsLoaded _self;
+  final $Res Function(CompanyProfileTabsLoaded) _then;
 
 /// Create a copy of CompanyProfileTabsState
 /// with the given fields replaced by the non-null parameter values.
 @override @pragma('vm:prefer-inline') $Res call({Object? mainTabs = null,Object? moreTabs = null,Object? moreTabIndex = null,Object? isBizzieChatEnabled = null,}) {
-  return _then(_Loaded(
+  return _then(CompanyProfileTabsLoaded(
 mainTabs: null == mainTabs ? _self._mainTabs : mainTabs // ignore: cast_nullable_to_non_nullable
 as List<CompanyProfileTab>,moreTabs: null == moreTabs ? _self._moreTabs : moreTabs // ignore: cast_nullable_to_non_nullable
 as List<CompanyProfileTab>,moreTabIndex: null == moreTabIndex ? _self.moreTabIndex : moreTabIndex // ignore: cast_nullable_to_non_nullable

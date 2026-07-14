@@ -16,6 +16,6 @@ abstract class CompanyNewsState with _$CompanyNewsState {
     required CompanyProfileDataOrigin dataOrigin,
     NewsTabViewState? analyticsState,
     DateTime? lastUpdated,
-  }) = _Loaded;
+  }) = CompanyNewsLoaded;
   const factory CompanyNewsState.failure(Failure failure) = _Failure;
 }

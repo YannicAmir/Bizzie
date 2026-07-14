@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/core/enums/data_origin.dart';
+import 'package:bizzie/features/auth/domain/usecases/get_auth_stream.dart';
 import 'package:bizzie/features/company_profile/financial_statements/domain/models/balance_sheet.dart';
 import 'package:bizzie/features/company_profile/financial_statements/domain/models/cash_flow_statement.dart';
 import 'package:bizzie/features/company_profile/financial_statements/domain/models/get_financial_statement_params.dart';
@@ -48,6 +49,14 @@ class MockCashStmtTabAnalytics extends Mock implements CashStmtTabAnalytics {}
 class MockConfigService extends Mock implements IConfigService {}
 
 class MockWatchActiveTabUseCase extends Mock implements WatchActiveTabUseCase {}
+
+class MockGetAuthStream extends Mock implements GetAuthStream {}
+
+MockGetAuthStream stubbedGetAuthStream() {
+  final mock = MockGetAuthStream();
+  when(() => mock()).thenAnswer((_) => const Stream.empty());
+  return mock;
+}
 
 class MockTimeProvider extends Mock implements ITimeProvider {}
 
@@ -123,6 +132,7 @@ void main() {
       mockConfigService,
       mockWatchActiveTabUseCase,
       stubbedTimeProvider(),
+      stubbedGetAuthStream(),
     );
 
     registerFallbackValue(const GetFinancialStatementParams(ticker: ''));
@@ -311,7 +321,13 @@ void main() {
           FinancialStatementsState.initial(
             ticker: '',
             freePlanHistoryCount: 5,
-          ).copyWith(annualIncomeStatements: [tIncome]),
+          ).copyWith(
+            income: const StatementFlow.loaded(
+              annual: [tIncome],
+              quarterly: [],
+              origin: CompanyProfileDataOrigin.api,
+            ),
+          ),
       act: (bloc) {
         // act
         bloc.add(const FinancialStatementsEvent.loadIncomeStatements(tTicker));
@@ -339,7 +355,13 @@ void main() {
           FinancialStatementsState.initial(
             ticker: '',
             freePlanHistoryCount: 5,
-          ).copyWith(annualIncomeStatements: [tIncome]),
+          ).copyWith(
+            income: const StatementFlow.loaded(
+              annual: [tIncome],
+              quarterly: [],
+              origin: CompanyProfileDataOrigin.api,
+            ),
+          ),
       act: (bloc) {
         // act
         bloc.add(
@@ -591,6 +613,17 @@ void main() {
         // Arrange
         return bloc;
       },
+      seed: () =>
+          FinancialStatementsState.initial(
+            ticker: '',
+            freePlanHistoryCount: 5,
+          ).copyWith(
+            income: const StatementFlow.loaded(
+              annual: [tIncome],
+              quarterly: [tIncome],
+              origin: CompanyProfileDataOrigin.api,
+            ),
+          ),
       act: (bloc) {
         // Act
         bloc.add(
@@ -634,6 +667,17 @@ void main() {
         // arrange
         return bloc;
       },
+      seed: () =>
+          FinancialStatementsState.initial(
+            ticker: '',
+            freePlanHistoryCount: 5,
+          ).copyWith(
+            income: const StatementFlow.loaded(
+              annual: [tIncome],
+              quarterly: [tIncome],
+              origin: CompanyProfileDataOrigin.api,
+            ),
+          ),
       act: (bloc) {
         // act
         bloc.add(
@@ -659,6 +703,17 @@ void main() {
         // arrange
         return bloc;
       },
+      seed: () =>
+          FinancialStatementsState.initial(
+            ticker: '',
+            freePlanHistoryCount: 5,
+          ).copyWith(
+            balance: const StatementFlow.loaded(
+              annual: [tBalance],
+              quarterly: [tBalance],
+              origin: CompanyProfileDataOrigin.api,
+            ),
+          ),
       act: (bloc) {
         // act
         bloc.add(
@@ -684,6 +739,17 @@ void main() {
         // arrange
         return bloc;
       },
+      seed: () =>
+          FinancialStatementsState.initial(
+            ticker: '',
+            freePlanHistoryCount: 5,
+          ).copyWith(
+            balance: const StatementFlow.loaded(
+              annual: [tBalance],
+              quarterly: [tBalance],
+              origin: CompanyProfileDataOrigin.api,
+            ),
+          ),
       act: (bloc) {
         // act
         bloc.add(
@@ -709,6 +775,17 @@ void main() {
         // arrange
         return bloc;
       },
+      seed: () =>
+          FinancialStatementsState.initial(
+            ticker: '',
+            freePlanHistoryCount: 5,
+          ).copyWith(
+            cashFlow: const StatementFlow.loaded(
+              annual: [tCashFlow],
+              quarterly: [tCashFlow],
+              origin: CompanyProfileDataOrigin.api,
+            ),
+          ),
       act: (bloc) {
         // act
         bloc.add(
@@ -734,6 +811,17 @@ void main() {
         // arrange
         return bloc;
       },
+      seed: () =>
+          FinancialStatementsState.initial(
+            ticker: '',
+            freePlanHistoryCount: 5,
+          ).copyWith(
+            cashFlow: const StatementFlow.loaded(
+              annual: [tCashFlow],
+              quarterly: [tCashFlow],
+              origin: CompanyProfileDataOrigin.api,
+            ),
+          ),
       act: (bloc) {
         // act
         bloc.add(
@@ -802,9 +890,12 @@ void main() {
             ticker: '',
             freePlanHistoryCount: 5,
           ).copyWith(
-            annualIncomeStatements: [tIncome],
-            incomeOrigin: CompanyProfileDataOrigin.api,
-            lastUpdatedIncome: DateTime.now(),
+            income: StatementFlow.loaded(
+              annual: [tIncome],
+              quarterly: const [],
+              origin: CompanyProfileDataOrigin.api,
+              lastUpdated: DateTime.now(),
+            ),
           ),
       act: (bloc) {
         // Act
@@ -835,10 +926,11 @@ void main() {
             ticker: '',
             freePlanHistoryCount: 5,
           ).copyWith(
-            annualIncomeStatements: [tIncome],
-            incomeOrigin: CompanyProfileDataOrigin.api,
-            lastUpdatedIncome: DateTime.now().subtract(
-              const Duration(hours: 25),
+            income: StatementFlow.loaded(
+              annual: [tIncome],
+              quarterly: const [],
+              origin: CompanyProfileDataOrigin.api,
+              lastUpdated: DateTime.now().subtract(const Duration(hours: 25)),
             ),
           ),
       act: (bloc) {
@@ -882,10 +974,11 @@ void main() {
             ticker: '',
             freePlanHistoryCount: 5,
           ).copyWith(
-            annualBalanceSheets: [tBalance],
-            balanceOrigin: CompanyProfileDataOrigin.api,
-            lastUpdatedBalance: DateTime.now().subtract(
-              const Duration(hours: 25),
+            balance: StatementFlow.loaded(
+              annual: [tBalance],
+              quarterly: const [],
+              origin: CompanyProfileDataOrigin.api,
+              lastUpdated: DateTime.now().subtract(const Duration(hours: 25)),
             ),
           ),
       act: (bloc) {
@@ -929,10 +1022,11 @@ void main() {
             ticker: '',
             freePlanHistoryCount: 5,
           ).copyWith(
-            annualCashFlowStatements: [tCashFlow],
-            cashFlowOrigin: CompanyProfileDataOrigin.api,
-            lastUpdatedCashFlow: DateTime.now().subtract(
-              const Duration(hours: 25),
+            cashFlow: StatementFlow.loaded(
+              annual: [tCashFlow],
+              quarterly: const [],
+              origin: CompanyProfileDataOrigin.api,
+              lastUpdated: DateTime.now().subtract(const Duration(hours: 25)),
             ),
           ),
       act: (bloc) {
@@ -1005,9 +1099,12 @@ void main() {
             ticker: tTicker,
             freePlanHistoryCount: 5,
           ).copyWith(
-            incomeLoadTimeMs: 123,
-            isIncomeSuccess: true,
-            incomeOrigin: CompanyProfileDataOrigin.db,
+            income: const StatementFlow.loaded(
+              annual: [],
+              quarterly: [],
+              origin: CompanyProfileDataOrigin.db,
+              loadTimeMs: 123,
+            ),
           ),
       act: (bloc) => bloc.add(const FinancialStatementsEvent.tabShown(tTicker)),
       expect: () => const <FinancialStatementsState>[],
@@ -1035,9 +1132,12 @@ void main() {
             freePlanHistoryCount: 5,
           ).copyWith(
             selectedType: FinancialStatementType.income,
-            incomeLoadTimeMs: 456,
-            isIncomeSuccess: true,
-            incomeOrigin: CompanyProfileDataOrigin.api,
+            income: const StatementFlow.loaded(
+              annual: [],
+              quarterly: [],
+              origin: CompanyProfileDataOrigin.api,
+              loadTimeMs: 456,
+            ),
           ),
       act: (bloc) => bloc
         ..add(const FinancialStatementsEvent.tabShown(tTicker))

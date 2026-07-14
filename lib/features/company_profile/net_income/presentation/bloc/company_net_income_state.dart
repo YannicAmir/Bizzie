@@ -18,8 +18,9 @@ abstract class CompanyNetIncomeState with _$CompanyNetIncomeState {
     required List<ChartDataPoint> quarterlyChartData,
     required int historyLimit,
     required CompanyProfileDataOrigin dataOrigin,
+    @Default(true) bool isAnnualView,
     DateTime? lastUpdated,
     NetIncomeTabViewState? analyticsState,
-  }) = _Loaded;
+  }) = CompanyNetIncomeLoaded;
   const factory CompanyNetIncomeState.failure(Failure failure) = _Failure;
 }

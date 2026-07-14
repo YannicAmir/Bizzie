@@ -176,15 +176,34 @@ void main() {
     );
 
     blocTest<CompanyRevenueBloc, CompanyRevenueState>(
-      'periodViewed_updatesAnalyticsState',
+      'periodChanged_updatesAnalyticsState',
       build: () => bloc,
       seed: () => tLoadedState,
       act: (bloc) => bloc
         ..add(const CompanyRevenueEvent.tabShown(tTicker))
-        ..add(const CompanyRevenueEvent.periodViewed(isAnnual: true)),
+        ..add(const CompanyRevenueEvent.periodChanged(isAnnual: true)),
       expect: () => const <CompanyRevenueState>[],
       verify: (bloc) {
         expect(bloc.analyticsSession?.viewedYearlyRevTab, isTrue);
+      },
+    );
+
+    blocTest<CompanyRevenueBloc, CompanyRevenueState>(
+      'periodChanged_toDifferentValue_emitsUpdatedIsAnnualView',
+      build: () => bloc,
+      seed: () => tLoadedState,
+      act: (bloc) => bloc
+        ..add(const CompanyRevenueEvent.tabShown(tTicker))
+        ..add(const CompanyRevenueEvent.periodChanged(isAnnual: false)),
+      expect: () => [
+        isA<CompanyRevenueState>().having(
+          (s) => s.maybeMap(loaded: (l) => l.isAnnualView, orElse: () => null),
+          'isAnnualView',
+          false,
+        ),
+      ],
+      verify: (bloc) {
+        expect(bloc.analyticsSession?.viewedQtrlyRevTab, isTrue);
       },
     );
 

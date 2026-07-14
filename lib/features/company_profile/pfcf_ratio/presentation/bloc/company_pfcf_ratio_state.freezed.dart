@@ -55,12 +55,12 @@ extension CompanyPfcfRatioStatePatterns on CompanyPfcfRatioState {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Initial value)?  initial,TResult Function( _Loading value)?  loading,TResult Function( _Loaded value)?  loaded,TResult Function( _Failure value)?  failure,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Initial value)?  initial,TResult Function( _Loading value)?  loading,TResult Function( CompanyPfcfRatioLoaded value)?  loaded,TResult Function( _Failure value)?  failure,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial(_that);case _Loading() when loading != null:
-return loading(_that);case _Loaded() when loaded != null:
+return loading(_that);case CompanyPfcfRatioLoaded() when loaded != null:
 return loaded(_that);case _Failure() when failure != null:
 return failure(_that);case _:
   return orElse();
@@ -80,12 +80,12 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Initial value)  initial,required TResult Function( _Loading value)  loading,required TResult Function( _Loaded value)  loaded,required TResult Function( _Failure value)  failure,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Initial value)  initial,required TResult Function( _Loading value)  loading,required TResult Function( CompanyPfcfRatioLoaded value)  loaded,required TResult Function( _Failure value)  failure,}){
 final _that = this;
 switch (_that) {
 case _Initial():
 return initial(_that);case _Loading():
-return loading(_that);case _Loaded():
+return loading(_that);case CompanyPfcfRatioLoaded():
 return loaded(_that);case _Failure():
 return failure(_that);case _:
   throw StateError('Unexpected subclass');
@@ -104,12 +104,12 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Initial value)?  initial,TResult? Function( _Loading value)?  loading,TResult? Function( _Loaded value)?  loaded,TResult? Function( _Failure value)?  failure,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Initial value)?  initial,TResult? Function( _Loading value)?  loading,TResult? Function( CompanyPfcfRatioLoaded value)?  loaded,TResult? Function( _Failure value)?  failure,}){
 final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial(_that);case _Loading() when loading != null:
-return loading(_that);case _Loaded() when loaded != null:
+return loading(_that);case CompanyPfcfRatioLoaded() when loaded != null:
 return loaded(_that);case _Failure() when failure != null:
 return failure(_that);case _:
   return null;
@@ -132,7 +132,7 @@ return failure(_that);case _:
 switch (_that) {
 case _Initial() when initial != null:
 return initial();case _Loading() when loading != null:
-return loading();case _Loaded() when loaded != null:
+return loading();case CompanyPfcfRatioLoaded() when loaded != null:
 return loaded(_that.ticker,_that.dataPoints,_that.chartData,_that.currentValue,_that.growthPercentage,_that.absoluteDelta,_that.isPositive,_that.referenceLabel,_that.historyLimit,_that.dataOrigin,_that.loadTimeMs,_that.isSuccess,_that.lastUpdated,_that.analyticsState);case _Failure() when failure != null:
 return failure(_that.failure);case _:
   return orElse();
@@ -156,7 +156,7 @@ return failure(_that.failure);case _:
 switch (_that) {
 case _Initial():
 return initial();case _Loading():
-return loading();case _Loaded():
+return loading();case CompanyPfcfRatioLoaded():
 return loaded(_that.ticker,_that.dataPoints,_that.chartData,_that.currentValue,_that.growthPercentage,_that.absoluteDelta,_that.isPositive,_that.referenceLabel,_that.historyLimit,_that.dataOrigin,_that.loadTimeMs,_that.isSuccess,_that.lastUpdated,_that.analyticsState);case _Failure():
 return failure(_that.failure);case _:
   throw StateError('Unexpected subclass');
@@ -179,7 +179,7 @@ return failure(_that.failure);case _:
 switch (_that) {
 case _Initial() when initial != null:
 return initial();case _Loading() when loading != null:
-return loading();case _Loaded() when loaded != null:
+return loading();case CompanyPfcfRatioLoaded() when loaded != null:
 return loaded(_that.ticker,_that.dataPoints,_that.chartData,_that.currentValue,_that.growthPercentage,_that.absoluteDelta,_that.isPositive,_that.referenceLabel,_that.historyLimit,_that.dataOrigin,_that.loadTimeMs,_that.isSuccess,_that.lastUpdated,_that.analyticsState);case _Failure() when failure != null:
 return failure(_that.failure);case _:
   return null;
@@ -256,8 +256,8 @@ String toString() {
 /// @nodoc
 
 
-class _Loaded implements CompanyPfcfRatioState {
-  const _Loaded({required this.ticker, required final  List<FinancialDataPoint> dataPoints, required final  List<ChartDataPoint> chartData, required this.currentValue, required this.growthPercentage, required this.absoluteDelta, required this.isPositive, required this.referenceLabel, required this.historyLimit, required this.dataOrigin, this.loadTimeMs, this.isSuccess = false, this.lastUpdated, this.analyticsState}): _dataPoints = dataPoints,_chartData = chartData;
+class CompanyPfcfRatioLoaded implements CompanyPfcfRatioState {
+  const CompanyPfcfRatioLoaded({required this.ticker, required final  List<FinancialDataPoint> dataPoints, required final  List<ChartDataPoint> chartData, required this.currentValue, required this.growthPercentage, required this.absoluteDelta, required this.isPositive, required this.referenceLabel, required this.historyLimit, required this.dataOrigin, this.loadTimeMs, this.isSuccess = false, this.lastUpdated, this.analyticsState}): _dataPoints = dataPoints,_chartData = chartData;
   
 
  final  String ticker;
@@ -291,13 +291,13 @@ class _Loaded implements CompanyPfcfRatioState {
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-_$LoadedCopyWith<_Loaded> get copyWith => __$LoadedCopyWithImpl<_Loaded>(this, _$identity);
+$CompanyPfcfRatioLoadedCopyWith<CompanyPfcfRatioLoaded> get copyWith => _$CompanyPfcfRatioLoadedCopyWithImpl<CompanyPfcfRatioLoaded>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Loaded&&(identical(other.ticker, ticker) || other.ticker == ticker)&&const DeepCollectionEquality().equals(other._dataPoints, _dataPoints)&&const DeepCollectionEquality().equals(other._chartData, _chartData)&&(identical(other.currentValue, currentValue) || other.currentValue == currentValue)&&(identical(other.growthPercentage, growthPercentage) || other.growthPercentage == growthPercentage)&&(identical(other.absoluteDelta, absoluteDelta) || other.absoluteDelta == absoluteDelta)&&(identical(other.isPositive, isPositive) || other.isPositive == isPositive)&&(identical(other.referenceLabel, referenceLabel) || other.referenceLabel == referenceLabel)&&(identical(other.historyLimit, historyLimit) || other.historyLimit == historyLimit)&&(identical(other.dataOrigin, dataOrigin) || other.dataOrigin == dataOrigin)&&(identical(other.loadTimeMs, loadTimeMs) || other.loadTimeMs == loadTimeMs)&&(identical(other.isSuccess, isSuccess) || other.isSuccess == isSuccess)&&(identical(other.lastUpdated, lastUpdated) || other.lastUpdated == lastUpdated)&&(identical(other.analyticsState, analyticsState) || other.analyticsState == analyticsState));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CompanyPfcfRatioLoaded&&(identical(other.ticker, ticker) || other.ticker == ticker)&&const DeepCollectionEquality().equals(other._dataPoints, _dataPoints)&&const DeepCollectionEquality().equals(other._chartData, _chartData)&&(identical(other.currentValue, currentValue) || other.currentValue == currentValue)&&(identical(other.growthPercentage, growthPercentage) || other.growthPercentage == growthPercentage)&&(identical(other.absoluteDelta, absoluteDelta) || other.absoluteDelta == absoluteDelta)&&(identical(other.isPositive, isPositive) || other.isPositive == isPositive)&&(identical(other.referenceLabel, referenceLabel) || other.referenceLabel == referenceLabel)&&(identical(other.historyLimit, historyLimit) || other.historyLimit == historyLimit)&&(identical(other.dataOrigin, dataOrigin) || other.dataOrigin == dataOrigin)&&(identical(other.loadTimeMs, loadTimeMs) || other.loadTimeMs == loadTimeMs)&&(identical(other.isSuccess, isSuccess) || other.isSuccess == isSuccess)&&(identical(other.lastUpdated, lastUpdated) || other.lastUpdated == lastUpdated)&&(identical(other.analyticsState, analyticsState) || other.analyticsState == analyticsState));
 }
 
 
@@ -313,8 +313,8 @@ String toString() {
 }
 
 /// @nodoc
-abstract mixin class _$LoadedCopyWith<$Res> implements $CompanyPfcfRatioStateCopyWith<$Res> {
-  factory _$LoadedCopyWith(_Loaded value, $Res Function(_Loaded) _then) = __$LoadedCopyWithImpl;
+abstract mixin class $CompanyPfcfRatioLoadedCopyWith<$Res> implements $CompanyPfcfRatioStateCopyWith<$Res> {
+  factory $CompanyPfcfRatioLoadedCopyWith(CompanyPfcfRatioLoaded value, $Res Function(CompanyPfcfRatioLoaded) _then) = _$CompanyPfcfRatioLoadedCopyWithImpl;
 @useResult
 $Res call({
  String ticker, List<FinancialDataPoint> dataPoints, List<ChartDataPoint> chartData, double currentValue, double growthPercentage, double absoluteDelta, bool isPositive, String referenceLabel, int historyLimit, CompanyProfileDataOrigin dataOrigin, int? loadTimeMs, bool isSuccess, DateTime? lastUpdated, PfcfRatioTabViewState? analyticsState
@@ -325,17 +325,17 @@ $PfcfRatioTabViewStateCopyWith<$Res>? get analyticsState;
 
 }
 /// @nodoc
-class __$LoadedCopyWithImpl<$Res>
-    implements _$LoadedCopyWith<$Res> {
-  __$LoadedCopyWithImpl(this._self, this._then);
+class _$CompanyPfcfRatioLoadedCopyWithImpl<$Res>
+    implements $CompanyPfcfRatioLoadedCopyWith<$Res> {
+  _$CompanyPfcfRatioLoadedCopyWithImpl(this._self, this._then);
 
-  final _Loaded _self;
-  final $Res Function(_Loaded) _then;
+  final CompanyPfcfRatioLoaded _self;
+  final $Res Function(CompanyPfcfRatioLoaded) _then;
 
 /// Create a copy of CompanyPfcfRatioState
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? ticker = null,Object? dataPoints = null,Object? chartData = null,Object? currentValue = null,Object? growthPercentage = null,Object? absoluteDelta = null,Object? isPositive = null,Object? referenceLabel = null,Object? historyLimit = null,Object? dataOrigin = null,Object? loadTimeMs = freezed,Object? isSuccess = null,Object? lastUpdated = freezed,Object? analyticsState = freezed,}) {
-  return _then(_Loaded(
+  return _then(CompanyPfcfRatioLoaded(
 ticker: null == ticker ? _self.ticker : ticker // ignore: cast_nullable_to_non_nullable
 as String,dataPoints: null == dataPoints ? _self._dataPoints : dataPoints // ignore: cast_nullable_to_non_nullable
 as List<FinancialDataPoint>,chartData: null == chartData ? _self._chartData : chartData // ignore: cast_nullable_to_non_nullable

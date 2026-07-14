@@ -210,14 +210,14 @@ void main() {
     );
 
     blocTest<CompanyNetIncomeBloc, CompanyNetIncomeState>(
-      'periodViewed_updatesAnalyticsFlags',
+      'periodChanged_updatesAnalyticsFlags',
       build: () => bloc,
       seed: () => loadedState,
       act: (bloc) {
         // act
         bloc.add(const CompanyNetIncomeEvent.tabShown(tTicker));
-        bloc.add(const CompanyNetIncomeEvent.periodViewed(isAnnual: true));
-        bloc.add(const CompanyNetIncomeEvent.periodViewed(isAnnual: false));
+        bloc.add(const CompanyNetIncomeEvent.periodChanged(isAnnual: true));
+        bloc.add(const CompanyNetIncomeEvent.periodChanged(isAnnual: false));
       },
       verify: (_) {
         // assert

@@ -174,19 +174,18 @@ class CompanySecurityBloc
 
   void _onTabShown(TabShown event, Emitter<CompanySecurityState> emit) {
     _logger.info('Security Tab Shown - Starting session tracker');
-
-    final initialState = state.maybeMap(
-      loaded: (s) => s.analyticsState,
-      unsupported: (s) => s.analyticsState,
-      orElse: () => SecurityTabViewState(
-        ticker: event.ticker,
-        securityType: _securityTypePending,
-        timestamp: _timeProvider.nowLocal.toIso8601String(),
-      ),
-    );
-
-    onTabShown(event.ticker, initialState);
+    onTabShown(event.ticker, _buildTabShownViewState(event.ticker));
   }
+
+  SecurityTabViewState _buildTabShownViewState(String ticker) => state.maybeMap(
+    loaded: (s) => s.analyticsState,
+    unsupported: (s) => s.analyticsState,
+    orElse: () => SecurityTabViewState(
+      ticker: ticker,
+      securityType: _securityTypePending,
+      timestamp: _timeProvider.nowLocal.toIso8601String(),
+    ),
+  );
 
   void _onPriceAnalyticsUpdated(
     PriceAnalyticsUpdated event,

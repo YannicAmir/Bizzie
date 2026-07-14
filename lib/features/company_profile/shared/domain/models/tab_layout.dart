@@ -23,6 +23,21 @@ abstract class TabLayout with _$TabLayout {
   static List<CompanyProfileTab> sanitise(List<CompanyProfileTab> tabs) =>
       tabs.where((tab) => !pinnedTabs.contains(tab)).toList();
 
+  static List<CompanyProfileTab> reconcileMoreTabs(
+    List<CompanyProfileTab> mainTabs,
+    List<CompanyProfileTab> moreTabs,
+  ) {
+    final mainSet = mainTabs.toSet();
+    final visible = sanitise(
+      moreTabs,
+    ).where((tab) => !mainSet.contains(tab)).toList();
+    final known = {...mainSet, ...visible, ...pinnedTabs};
+    return [
+      ...visible,
+      ...CompanyProfileTab.values.where((tab) => !known.contains(tab)),
+    ];
+  }
+
   static bool isValidMainTabCount(int mainTabCount) {
     final totalIncludingSecurity = mainTabCount + 1;
     return totalIncludingSecurity >= minMainTabs &&
@@ -32,14 +47,15 @@ abstract class TabLayout with _$TabLayout {
   static const List<CompanyProfileTab> defaultMainTabs = [
     CompanyProfileTab.chat,
     CompanyProfileTab.business,
+    CompanyProfileTab.segments,
     CompanyProfileTab.revenue,
     CompanyProfileTab.netIncome,
     CompanyProfileTab.freeCash,
-    CompanyProfileTab.financialStatements,
   ];
 
   static const List<CompanyProfileTab> defaultMoreTabs = [
     CompanyProfileTab.news,
+    CompanyProfileTab.financialStatements,
     CompanyProfileTab.dividends,
     CompanyProfileTab.eps,
     CompanyProfileTab.fcps,

@@ -14,9 +14,9 @@ import 'package:bizzie/features/company_profile/shared/presentation/widgets/fina
 import 'package:bizzie/features/company_profile/shared/presentation/widgets/metric_summary_card.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/widgets/tab_visibility_observer.dart';
 import 'package:bizzie/features/company_profile/shared/domain/enums/company_profile_tab.dart';
+import 'package:bizzie/features/company_profile/shared/presentation/extensions/chart_data_point_list_x.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/extensions/company_profile_tab_x.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
-import 'package:bizzie/shared/widgets/charts/bizzie_bar_chart.dart';
 import 'package:bizzie/shared/widgets/charts/bizzie_expandable_chart.dart';
 import 'package:bizzie/shared/widgets/modals/app_history_modal.dart';
 import 'package:bizzie/shared/widgets/states/bizzie_empty_state.dart';
@@ -171,9 +171,7 @@ class _PeRatioLoadedContent extends StatelessWidget {
             AppConstants.mainSectionSpacing,
             BizzieExpandableChart(
               key: ValueKey('pe_chart_${chartData.length}'),
-              data: chartData
-                  .map((p) => BizzieChartData(p.label, p.value))
-                  .toList(),
+              data: chartData.toBizzieChartData(),
               numberFormat: NumberFormat('#,##0.00', 'en_US'),
               visibleCount: historyLimit,
               thresholdCount: historyLimit,

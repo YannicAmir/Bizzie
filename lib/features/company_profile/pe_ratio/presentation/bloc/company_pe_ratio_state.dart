@@ -26,6 +26,6 @@ abstract class CompanyPeRatioState with _$CompanyPeRatioState {
     @Default(false) bool isSuccess,
     DateTime? lastUpdated,
     PeRatioTabViewState? analyticsState,
-  }) = _Loaded;
+  }) = CompanyPeRatioLoaded;
   const factory CompanyPeRatioState.failure(Failure failure) = _Failure;
 }

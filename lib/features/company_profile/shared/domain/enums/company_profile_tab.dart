@@ -5,6 +5,7 @@ enum CompanyProfileTab {
   news,
   dividends,
   revenue,
+  segments,
   netIncome,
   eps,
   freeCash,

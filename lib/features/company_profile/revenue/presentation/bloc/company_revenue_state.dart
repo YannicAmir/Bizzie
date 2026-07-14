@@ -18,8 +18,9 @@ abstract class CompanyRevenueState with _$CompanyRevenueState {
     required List<ChartDataPoint> quarterlyChartData,
     required int historyLimit,
     required CompanyProfileDataOrigin dataOrigin,
+    @Default(true) bool isAnnualView,
     DateTime? lastUpdated,
     RevenueTabViewState? analyticsState,
-  }) = _Loaded;
+  }) = CompanyRevenueLoaded;
   const factory CompanyRevenueState.failure(Failure failure) = _Failure;
 }

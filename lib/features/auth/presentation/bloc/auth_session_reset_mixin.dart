@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:bizzie/features/auth/domain/models/user_model.dart';
 import 'package:bizzie/features/auth/domain/usecases/get_auth_stream.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:bloc/bloc.dart';
 
 final _logger = BizzieLogger('AuthSessionResetMixin');
 

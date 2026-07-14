@@ -2,6 +2,7 @@ import 'package:bizzie/app/themes/app_colors.dart';
 import 'package:bizzie/features/company_profile/shared/domain/models/financial_data_point.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/enums/financial_table_enums.dart';
 import 'package:bizzie/shared/utils/bizzie_date_formatter.dart';
+import 'package:bizzie/shared/utils/currency_formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -19,13 +20,6 @@ extension FinancialDataPointPresentationX on FinancialDataPoint {
       return fmt.format(value);
     }
 
-    final fmt = NumberFormat.compactSimpleCurrency(
-      locale: Localizations.localeOf(context).toString(),
-      name: currency,
-    );
-    fmt.maximumFractionDigits = 2;
-    fmt.minimumFractionDigits = 2;
-
     if (currency.isEmpty) {
       final compactFmt = NumberFormat.compact(
         locale: Localizations.localeOf(context).toString(),
@@ -34,7 +28,11 @@ extension FinancialDataPointPresentationX on FinancialDataPoint {
       return compactFmt.format(value);
     }
 
-    return fmt.format(value);
+    return CurrencyFormatter.formatCompactFixed(
+      value,
+      currency,
+      locale: Localizations.localeOf(context).toString(),
+    );
   }
 
   String formatDate(FinancialDateFormat format) {

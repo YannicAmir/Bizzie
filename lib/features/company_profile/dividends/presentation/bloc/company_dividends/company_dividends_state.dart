@@ -17,6 +17,6 @@ abstract class CompanyDividendsState with _$CompanyDividendsState {
     required CompanyProfileDataOrigin dataOrigin,
     DateTime? lastUpdated,
     DividendTabViewState? analyticsState,
-  }) = _Loaded;
+  }) = CompanyDividendsLoaded;
   const factory CompanyDividendsState.failure(Failure failure) = _Failure;
 }

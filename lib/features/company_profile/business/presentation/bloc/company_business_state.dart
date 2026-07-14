@@ -14,6 +14,6 @@ abstract class CompanyBusinessState with _$CompanyBusinessState {
     required int historyLimit,
     required BusinessTabViewState analyticsState,
     DateTime? lastUpdated,
-  }) = _Loaded;
+  }) = CompanyBusinessLoaded;
   const factory CompanyBusinessState.failure(Failure failure) = _Failure;
 }
