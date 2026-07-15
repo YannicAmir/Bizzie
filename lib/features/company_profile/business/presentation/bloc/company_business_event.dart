@@ -17,6 +17,8 @@ sealed class CompanyBusinessEvent with _$CompanyBusinessEvent {
   const factory CompanyBusinessEvent.appBackgrounded() = AppBackgrounded;
   const factory CompanyBusinessEvent.appForegrounded() = AppForegrounded;
 
+  const factory CompanyBusinessEvent.reset() = BusinessReset;
+
   const factory CompanyBusinessEvent.analyticsInteractionOccurred({
     bool? tappedWebsite,
     bool? tappedProxy,

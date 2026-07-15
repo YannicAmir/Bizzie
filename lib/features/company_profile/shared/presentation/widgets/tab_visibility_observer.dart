@@ -30,42 +30,39 @@ class TabVisibilityObserver extends StatefulWidget {
 }
 
 class _TabVisibilityObserverState extends State<TabVisibilityObserver> {
-  _ObserverState _state = const _ObserverState();
+  bool _isVisible = false;
+  BizzieLifecycleState? _lastLifecycle;
 
   @override
   void initState() {
     super.initState();
-    final bloc = context.read<CompanyProfileBloc>();
-    final activeState = bloc.state.mapOrNull(active: (s) => s);
+    final activeState = _activeOf(context.read<CompanyProfileBloc>().state);
 
     if (activeState != null) {
-      final isVisible = activeState.activeTabName == widget.tabName;
-      _state = _state.copyWith(
-        isVisible: isVisible,
-        lastLifecycle: activeState.lifecycleState,
-      );
+      _isVisible = _isTabActive(activeState);
+      _lastLifecycle = activeState.lifecycleState;
 
-      if (isVisible) {
+      if (_isVisible) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
-          if (mounted) _safeNotify(widget.onTabShown, 'onTabShown');
+          if (mounted) _notifyTabShown();
         });
       }
     }
   }
 
-  @override
-  void dispose() {
-    if (_state.isVisible) {
-      _safeNotify(widget.onTabHidden, 'onTabHidden');
-    }
-    super.dispose();
-  }
+  Active? _activeOf(CompanyProfileState state) =>
+      state.mapOrNull(active: (active) => active);
+
+  bool _isTabActive(Active? activeState) =>
+      activeState != null && activeState.activeTabName == widget.tabName;
+
+  void _notifyTabShown() => _safeNotify(widget.onTabShown, 'onTabShown');
 
   void _safeNotify(VoidCallback? callback, String callbackName) {
     if (callback == null) return;
     try {
       callback();
-    } catch (e, stack) {
+    } on Object catch (e, stack) {
       _logger.severe(
         'Callback execution failed for $callbackName in tab: ${widget.tabName}',
         e,
@@ -78,8 +75,8 @@ class _TabVisibilityObserverState extends State<TabVisibilityObserver> {
   Widget build(BuildContext context) {
     return BlocListener<CompanyProfileBloc, CompanyProfileState>(
       listenWhen: (previous, current) {
-        final prevActive = previous.mapOrNull(active: (a) => a);
-        final currActive = current.mapOrNull(active: (a) => a);
+        final prevActive = _activeOf(previous);
+        final currActive = _activeOf(current);
 
         if (prevActive == null && currActive == null) return false;
 
@@ -87,7 +84,7 @@ class _TabVisibilityObserverState extends State<TabVisibilityObserver> {
 
         if (prevActive.activeTabName != currActive.activeTabName) return true;
 
-        if (currActive.activeTabName == widget.tabName &&
+        if (_isTabActive(currActive) &&
             prevActive.lifecycleState != currActive.lifecycleState) {
           return true;
         }
@@ -95,25 +92,22 @@ class _TabVisibilityObserverState extends State<TabVisibilityObserver> {
         return false;
       },
       listener: (context, state) {
-        final activeState = state.mapOrNull(active: (a) => a);
-        final bool isNowActive =
-            activeState != null && activeState.activeTabName == widget.tabName;
+        final activeState = _activeOf(state);
+        final isNowActive = _isTabActive(activeState);
 
-        // 1. Handle Visibility Transitions
-        if (isNowActive && !_state.isVisible) {
-          _state = _state.copyWith(isVisible: true);
-          _safeNotify(widget.onTabShown, 'onTabShown');
-        } else if (!isNowActive && _state.isVisible) {
-          _state = _state.copyWith(isVisible: false);
+        if (isNowActive && !_isVisible) {
+          _isVisible = true;
+          _notifyTabShown();
+        } else if (!isNowActive && _isVisible) {
+          _isVisible = false;
           _safeNotify(widget.onTabHidden, 'onTabHidden');
         }
 
-        // 2. Handle Lifecycle Transitions (only if tab is active)
         if (activeState != null &&
             isNowActive &&
-            activeState.lifecycleState != _state.lastLifecycle) {
-          final previousLifecycle = _state.lastLifecycle;
-          _state = _state.copyWith(lastLifecycle: activeState.lifecycleState);
+            activeState.lifecycleState != _lastLifecycle) {
+          final previousLifecycle = _lastLifecycle;
+          _lastLifecycle = activeState.lifecycleState;
 
           if (activeState.lifecycleState == BizzieLifecycleState.background) {
             _safeNotify(widget.onAppBackgrounded, 'onAppBackgrounded');
@@ -125,24 +119,6 @@ class _TabVisibilityObserverState extends State<TabVisibilityObserver> {
         }
       },
       child: widget.child,
-    );
-  }
-}
-
-/// Private state snapshot for atomic transitions within [TabVisibilityObserver].
-class _ObserverState {
-  final bool isVisible;
-  final BizzieLifecycleState? lastLifecycle;
-
-  const _ObserverState({this.isVisible = false, this.lastLifecycle});
-
-  _ObserverState copyWith({
-    bool? isVisible,
-    BizzieLifecycleState? lastLifecycle,
-  }) {
-    return _ObserverState(
-      isVisible: isVisible ?? this.isVisible,
-      lastLifecycle: lastLifecycle ?? this.lastLifecycle,
     );
   }
 }

@@ -145,7 +145,7 @@ class SelectBrandsBloc extends Bloc<SelectBrandsEvent, SelectBrandsState> {
 
   void _onToggleBrand(ToggleBrand event, Emitter<SelectBrandsState> emit) {
     _logger.info('Toggling brand: ${event.brand.name}');
-    _onboardingBloc.add(OnboardingEvent.toggleBrand(event.brand));
+    _onboardingBloc.add(OnboardingEvent.brandToggled(event.brand));
     if (_initialStaticItems.contains(event.brand.name)) {
       _initialStaticItems.remove(event.brand.name);
     }

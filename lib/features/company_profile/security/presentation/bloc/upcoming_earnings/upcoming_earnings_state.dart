@@ -12,7 +12,7 @@ abstract class UpcomingEarningsState with _$UpcomingEarningsState {
     DateTime earningsDate, {
     required CompanyProfileDataOrigin dataSource,
     DateTime? lastUpdated,
-  }) = _Loaded;
+  }) = UpcomingEarningsLoaded;
   const factory UpcomingEarningsState.empty() = _Empty;
   const factory UpcomingEarningsState.failure(Failure failure) = _Failure;
 }

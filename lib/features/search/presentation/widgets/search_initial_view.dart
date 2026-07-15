@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bizzie/features/search/presentation/bloc/search_bloc.dart';
 import 'package:bizzie/core/utils/string_extensions.dart';
-import 'package:bizzie/features/onboarding/domain/models/company.dart';
+import 'package:bizzie/core/domain/models/company.dart';
 import 'package:bizzie/shared/widgets/company_list_tile.dart';
 import 'package:bizzie/app/routes/app_routes.dart';
 import 'package:go_router/go_router.dart';

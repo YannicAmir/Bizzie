@@ -2,7 +2,7 @@ import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
 import 'package:bizzie/core/error/failures.dart';
-import 'package:bizzie/features/company_profile/news/data/datasources/news_firestore_data_source.dart';
+import 'package:bizzie/features/company_profile/news/data/interfaces/i_news_firestore_datasource.dart';
 import 'package:bizzie/features/company_profile/news/data/datasources/news_remote_data_source.dart';
 import 'package:bizzie/features/company_profile/news/domain/interfaces/i_news_repository.dart';
 import 'package:bizzie/features/company_profile/news/domain/models/company_news.dart';
@@ -10,7 +10,7 @@ import 'package:bizzie/features/company_profile/news/domain/models/company_news.
 @LazySingleton(as: INewsRepository)
 class NewsRepositoryImpl implements INewsRepository {
   final NewsRemoteDataSource _remoteDataSource;
-  final NewsFirestoreDataSource _localDataSource;
+  final INewsFirestoreDataSource _localDataSource;
 
   NewsRepositoryImpl(this._remoteDataSource, this._localDataSource);
 

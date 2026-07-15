@@ -1,3 +1,4 @@
+import 'package:bizzie/core/constants/firestore_constants.dart';
 import 'package:bizzie/core/data/models/cache_result.dart' as result;
 import 'package:bizzie/core/interfaces/i_time_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -6,26 +7,16 @@ import 'package:bizzie/core/data/datasources/base_firestore_cache_client.dart';
 import 'package:bizzie/core/data/models/firestore_cache_entry.dart';
 import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:bizzie/features/company_profile/shared/data/dtos/company_profile_dto.dart';
+import 'package:bizzie/features/company_profile/shared/data/interfaces/i_company_firestore_datasource.dart';
+import 'package:bizzie/services/firestore_service.dart';
 
-abstract class CompanyFirestoreDataSource {
-  Future<result.CacheResult<ProfileDto>> syncProfile(
-    String ticker, {
-    required Future<List<ProfileDto>> Function() remoteFetcher,
-    bool forceRefresh,
-  });
-
-  Future<(ProfileDto, CompanyProfileDataOrigin)?> getCachedProfile(
-    String ticker,
-  );
-}
-
-@LazySingleton(as: CompanyFirestoreDataSource)
+@Injectable(as: ICompanyFirestoreDataSource)
 class CompanyFirestoreDataSourceImpl extends BaseFirestoreCacheClient
-    implements CompanyFirestoreDataSource {
+    implements ICompanyFirestoreDataSource {
   CompanyFirestoreDataSourceImpl(
-    FirebaseFirestore firestore,
+    FirestoreService firestoreService,
     ITimeProvider timeProvider,
-  ) : super(firestore, timeProvider, 'CompanyFirestoreDataSource');
+  ) : super(firestoreService, timeProvider, 'CompanyFirestoreDataSource');
 
   @override
   Future<result.CacheResult<ProfileDto>> syncProfile(
@@ -41,6 +32,8 @@ class CompanyFirestoreDataSourceImpl extends BaseFirestoreCacheClient
         return results.first;
       },
       forceRefresh: forceRefresh,
+      weekendThresholdHour: 17,
+      strictMarketAware: true,
     );
   }
 
@@ -48,7 +41,11 @@ class CompanyFirestoreDataSourceImpl extends BaseFirestoreCacheClient
   Future<(ProfileDto, CompanyProfileDataOrigin)?> getCachedProfile(
     String ticker,
   ) async {
-    final res = await fetchWithCacheFirst(_profileRef(ticker));
+    final res = await fetchWithCacheFirst(
+      _profileRef(ticker),
+      weekendThresholdHour: 17,
+      strictMarketAware: true,
+    );
     if (res is result.CacheSuccess<ProfileDto>) return (res.data, res.origin);
     return null;
   }
@@ -57,8 +54,8 @@ class CompanyFirestoreDataSourceImpl extends BaseFirestoreCacheClient
     String ticker,
   ) => getDocRef<ProfileDto>(
     ticker,
-    'info',
-    'profile',
+    FirestoreConstants.info,
+    FirestoreConstants.profile,
     (json) => ProfileDto.fromJson(json as Map<String, dynamic>),
     (data) => data.toJson(),
   );

@@ -1,6 +1,7 @@
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:bizzie/features/company_profile/pe_ratio/domain/models/pe_ratio.dart';
+import 'package:bizzie/features/company_profile/pe_ratio/domain/services/pe_ratio_metrics_service.dart';
 import 'package:bizzie/features/company_profile/pe_ratio/domain/usecases/get_pe_ratio_usecase.dart';
 import 'package:bizzie/features/company_profile/pe_ratio/presentation/bloc/company_pe_ratio_bloc.dart';
 import 'package:bizzie/features/company_profile/pe_ratio/presentation/bloc/company_pe_ratio_event.dart';
@@ -10,7 +11,9 @@ import 'package:bizzie/features/company_profile/pe_ratio/presentation/analytics/
 import 'package:bloc_test/bloc_test.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:bizzie/core/interfaces/i_time_provider.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:bizzie/features/auth/domain/usecases/get_auth_stream.dart';
 
 import 'package:bizzie/core/interfaces/i_config_service.dart';
 
@@ -19,6 +22,22 @@ class MockGetPeRatioUseCase extends Mock implements GetPeRatioUseCase {}
 class MockConfigService extends Mock implements IConfigService {}
 
 class MockPeRatioTabAnalytics extends Mock implements PeRatioTabAnalytics {}
+
+class MockGetAuthStream extends Mock implements GetAuthStream {}
+
+MockGetAuthStream stubbedGetAuthStream() {
+  final mock = MockGetAuthStream();
+  when(() => mock()).thenAnswer((_) => const Stream.empty());
+  return mock;
+}
+
+class MockTimeProvider extends Mock implements ITimeProvider {}
+
+MockTimeProvider stubbedTimeProvider() {
+  final mock = MockTimeProvider();
+  when(() => mock.nowLocal).thenAnswer((_) => DateTime.now());
+  return mock;
+}
 
 void main() {
   late CompanyPeRatioBloc bloc;
@@ -36,7 +55,14 @@ void main() {
       () => mockAnalytics.logViewSummary(any(), isFinal: any(named: 'isFinal')),
     ).thenAnswer((_) async {});
 
-    bloc = CompanyPeRatioBloc(mockGetPeRatio, mockConfigService, mockAnalytics);
+    bloc = CompanyPeRatioBloc(
+      mockGetPeRatio,
+      mockConfigService,
+      mockAnalytics,
+      PeRatioMetricsService(),
+      stubbedTimeProvider(),
+      stubbedGetAuthStream(),
+    );
   });
 
   setUpAll(() {
@@ -367,17 +393,17 @@ void main() {
       expect: () => [
         const CompanyPeRatioState.loading(),
         isA<CompanyPeRatioState>(),
-        isA<CompanyPeRatioState>(),
       ],
       verify: (bloc) {
         bloc.state.maybeMap(
           loaded: (l) {
             expect(l.ticker, tTicker);
             expect(l.isSuccess, true);
-            expect(l.analyticsState, isNotNull);
           },
           orElse: () => fail('Should be in loaded state'),
         );
+        expect(bloc.analyticsSession, isNotNull);
+        expect(bloc.analyticsSession?.isSuccess, isTrue);
         verifyNever(
           () => mockAnalytics.logViewSummary(
             any(),
@@ -403,15 +429,9 @@ void main() {
         dataOrigin: CompanyProfileDataOrigin.api,
       ),
       act: (bloc) => bloc.add(const CompanyPeRatioEvent.tabShown(tTicker)),
-      expect: () => [
-        isA<CompanyPeRatioState>().having(
-          (s) =>
-              s.maybeMap(loaded: (l) => l.analyticsState, orElse: () => null),
-          'analyticsState',
-          isNotNull,
-        ),
-      ],
-      verify: (_) {
+      expect: () => const <CompanyPeRatioState>[],
+      verify: (bloc) {
+        expect(bloc.analyticsSession, isNotNull);
         verifyNever(
           () => mockAnalytics.logViewSummary(
             any(),
@@ -441,22 +461,10 @@ void main() {
         await Future.delayed(Duration.zero);
         bloc.add(const CompanyPeRatioEvent.viewAllTapped(isChart: true));
       },
-      expect: () => [
-        isA<CompanyPeRatioState>().having(
-          (s) =>
-              s.maybeMap(loaded: (l) => l.analyticsState, orElse: () => null),
-          'analyticsState',
-          isNotNull,
-        ),
-        isA<CompanyPeRatioState>().having(
-          (s) => s.maybeMap(
-            loaded: (l) => l.analyticsState?.tappedChartViewAll,
-            orElse: () => null,
-          ),
-          'tappedChartViewAll',
-          true,
-        ),
-      ],
+      expect: () => const <CompanyPeRatioState>[],
+      verify: (bloc) {
+        expect(bloc.analyticsSession?.tappedChartViewAll, isTrue);
+      },
     );
 
     blocTest<CompanyPeRatioBloc, CompanyPeRatioState>(
@@ -479,21 +487,9 @@ void main() {
         await Future.delayed(Duration.zero);
         bloc.add(const CompanyPeRatioEvent.tabHidden());
       },
-      expect: () => [
-        isA<CompanyPeRatioState>().having(
-          (s) =>
-              s.maybeMap(loaded: (l) => l.analyticsState, orElse: () => null),
-          'analyticsState',
-          isNotNull,
-        ),
-        isA<CompanyPeRatioState>().having(
-          (s) =>
-              s.maybeMap(loaded: (l) => l.analyticsState, orElse: () => null),
-          'analyticsState',
-          isNull,
-        ),
-      ],
-      verify: (_) {
+      expect: () => const <CompanyPeRatioState>[],
+      verify: (bloc) {
+        expect(bloc.analyticsSession, isNull);
         verify(
           () => mockAnalytics.logViewSummary(any(), isFinal: true),
         ).called(1);

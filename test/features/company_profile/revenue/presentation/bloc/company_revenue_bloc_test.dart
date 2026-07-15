@@ -11,8 +11,12 @@ import 'package:bizzie/features/company_profile/revenue/presentation/analytics/r
 import 'package:bloc_test/bloc_test.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mocktail/mocktail.dart';
 import 'package:bizzie/core/interfaces/i_config_service.dart';
+import 'package:bizzie/core/usecase/usecase.dart';
+import 'package:bizzie/features/company_profile/shared/domain/usecases/watch_active_tab_usecase.dart';
+import 'package:bizzie/core/interfaces/i_time_provider.dart';
+import 'package:mocktail/mocktail.dart';
+import 'package:bizzie/features/auth/domain/usecases/get_auth_stream.dart';
 
 class MockGetRevenueStatsUseCase extends Mock
     implements GetRevenueStatsUseCase {}
@@ -21,34 +25,30 @@ class MockConfigService extends Mock implements IConfigService {}
 
 class MockRevenueTabAnalytics extends Mock implements RevenueTabAnalytics {}
 
+class MockWatchActiveTabUseCase extends Mock implements WatchActiveTabUseCase {}
+
+class MockGetAuthStream extends Mock implements GetAuthStream {}
+
+MockGetAuthStream stubbedGetAuthStream() {
+  final mock = MockGetAuthStream();
+  when(() => mock()).thenAnswer((_) => const Stream.empty());
+  return mock;
+}
+
+class MockTimeProvider extends Mock implements ITimeProvider {}
+
+MockTimeProvider stubbedTimeProvider() {
+  final mock = MockTimeProvider();
+  when(() => mock.nowLocal).thenAnswer((_) => DateTime.now());
+  return mock;
+}
+
 void main() {
   late CompanyRevenueBloc bloc;
   late MockGetRevenueStatsUseCase mockGetRevenueStats;
   late MockConfigService mockConfigService;
   late MockRevenueTabAnalytics mockAnalytics;
-
-  setUpAll(() {
-    registerFallbackValue(
-      const RevenueTabViewState(ticker: 'AAPL', timestamp: ''),
-    );
-  });
-
-  setUp(() {
-    mockGetRevenueStats = MockGetRevenueStatsUseCase();
-    mockConfigService = MockConfigService();
-    mockAnalytics = MockRevenueTabAnalytics();
-
-    when(() => mockConfigService.freePlanHistoryCount).thenReturn(7);
-    when(
-      () => mockAnalytics.logViewSummary(any(), isFinal: any(named: 'isFinal')),
-    ).thenAnswer((_) async {});
-
-    bloc = CompanyRevenueBloc(
-      mockGetRevenueStats,
-      mockConfigService,
-      mockAnalytics,
-    );
-  });
+  late MockWatchActiveTabUseCase mockWatchActiveTabUseCase;
 
   const tTicker = 'AAPL';
   const tRevenueStats = RevenueStats(
@@ -62,6 +62,40 @@ void main() {
       FinancialDataPoint(date: '2023-07-01', period: 'Q3', value: 81797.0),
     ],
   );
+
+  setUpAll(() {
+    registerFallbackValue(NoParams());
+    registerFallbackValue(
+      const RevenueTabViewState(ticker: 'AAPL', timestamp: ''),
+    );
+  });
+
+  setUp(() {
+    mockGetRevenueStats = MockGetRevenueStatsUseCase();
+    mockConfigService = MockConfigService();
+    mockAnalytics = MockRevenueTabAnalytics();
+    mockWatchActiveTabUseCase = MockWatchActiveTabUseCase();
+
+    when(() => mockConfigService.freePlanHistoryCount).thenReturn(7);
+    when(
+      () => mockAnalytics.logViewSummary(any(), isFinal: any(named: 'isFinal')),
+    ).thenAnswer((_) async {});
+    when(
+      () => mockWatchActiveTabUseCase(any()),
+    ).thenAnswer((_) => const Stream.empty());
+    when(() => mockGetRevenueStats(any())).thenAnswer(
+      (_) async => Right((tRevenueStats, CompanyProfileDataOrigin.cache)),
+    );
+
+    bloc = CompanyRevenueBloc(
+      mockGetRevenueStats,
+      mockConfigService,
+      mockAnalytics,
+      mockWatchActiveTabUseCase,
+      stubbedTimeProvider(),
+      stubbedGetAuthStream(),
+    );
+  });
 
   test('initialState_isCorrect', () {
     expect(bloc.state, const CompanyRevenueState.initial());
@@ -119,10 +153,11 @@ void main() {
     final tLoadedState = CompanyRevenueState.loaded(
       ticker: tTicker,
       revenueStats: tRevenueStats,
-      annualChartData: [],
-      quarterlyChartData: [],
+      annualChartData: const [],
+      quarterlyChartData: const [],
       historyLimit: 7,
       dataOrigin: CompanyProfileDataOrigin.api,
+      lastUpdated: DateTime.now(),
       analyticsState: const RevenueTabViewState(
         ticker: tTicker,
         timestamp: '2024-01-01',
@@ -141,23 +176,35 @@ void main() {
     );
 
     blocTest<CompanyRevenueBloc, CompanyRevenueState>(
-      'periodViewed_updatesAnalyticsState',
+      'periodChanged_updatesAnalyticsState',
       build: () => bloc,
       seed: () => tLoadedState,
       act: (bloc) => bloc
         ..add(const CompanyRevenueEvent.tabShown(tTicker))
-        ..add(const CompanyRevenueEvent.periodViewed(isAnnual: true)),
+        ..add(const CompanyRevenueEvent.periodChanged(isAnnual: true)),
+      expect: () => const <CompanyRevenueState>[],
+      verify: (bloc) {
+        expect(bloc.analyticsSession?.viewedYearlyRevTab, isTrue);
+      },
+    );
+
+    blocTest<CompanyRevenueBloc, CompanyRevenueState>(
+      'periodChanged_toDifferentValue_emitsUpdatedIsAnnualView',
+      build: () => bloc,
+      seed: () => tLoadedState,
+      act: (bloc) => bloc
+        ..add(const CompanyRevenueEvent.tabShown(tTicker))
+        ..add(const CompanyRevenueEvent.periodChanged(isAnnual: false)),
       expect: () => [
-        isA<CompanyRevenueState>(), // State from tabShown
         isA<CompanyRevenueState>().having(
-          (s) => s.maybeMap(
-            loaded: (l) => l.analyticsState?.viewedYearlyRevTab,
-            orElse: () => null,
-          ),
-          'viewedYearlyRevTab',
-          true,
+          (s) => s.maybeMap(loaded: (l) => l.isAnnualView, orElse: () => null),
+          'isAnnualView',
+          false,
         ),
       ],
+      verify: (bloc) {
+        expect(bloc.analyticsSession?.viewedQtrlyRevTab, isTrue);
+      },
     );
 
     blocTest<CompanyRevenueBloc, CompanyRevenueState>(
@@ -172,17 +219,10 @@ void main() {
             isChart: true,
           ),
         ),
-      expect: () => [
-        isA<CompanyRevenueState>(), // State from tabShown
-        isA<CompanyRevenueState>().having(
-          (s) => s.maybeMap(
-            loaded: (l) => l.analyticsState?.tappedQtrchartViewAll,
-            orElse: () => null,
-          ),
-          'tappedQtrchartViewAll',
-          true,
-        ),
-      ],
+      expect: () => const <CompanyRevenueState>[],
+      verify: (bloc) {
+        expect(bloc.analyticsSession?.tappedQtrchartViewAll, isTrue);
+      },
     );
     group('CompanyRevenueBloc - Application Lifecycle Analytics', () {
       blocTest<CompanyRevenueBloc, CompanyRevenueState>(

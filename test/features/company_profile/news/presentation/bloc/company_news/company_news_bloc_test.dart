@@ -6,25 +6,62 @@ import 'package:bizzie/features/company_profile/news/domain/usecases/get_company
 import 'package:bizzie/features/company_profile/news/presentation/bloc/company_news/company_news_bloc.dart';
 import 'package:bizzie/features/company_profile/news/presentation/bloc/company_news/company_news_event.dart';
 import 'package:bizzie/features/company_profile/news/presentation/bloc/company_news/company_news_state.dart';
+import 'package:bizzie/core/usecase/usecase.dart';
+import 'package:bizzie/features/company_profile/shared/domain/usecases/watch_active_tab_usecase.dart';
 import 'package:bizzie/features/company_profile/news/presentation/analytics/news_tab_analytics.dart';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:bizzie/core/interfaces/i_time_provider.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:bizzie/features/auth/domain/usecases/get_auth_stream.dart';
 
 class MockGetCompanyNewsUseCase extends Mock implements GetCompanyNewsUseCase {}
 
 class MockNewsTabAnalytics extends Mock implements NewsTabAnalytics {}
 
+class MockWatchActiveTabUseCase extends Mock implements WatchActiveTabUseCase {}
+
+class MockGetAuthStream extends Mock implements GetAuthStream {}
+
+MockGetAuthStream stubbedGetAuthStream() {
+  final mock = MockGetAuthStream();
+  when(() => mock()).thenAnswer((_) => const Stream.empty());
+  return mock;
+}
+
+class MockTimeProvider extends Mock implements ITimeProvider {}
+
+MockTimeProvider stubbedTimeProvider() {
+  final mock = MockTimeProvider();
+  when(() => mock.nowLocal).thenAnswer((_) => DateTime.now());
+  return mock;
+}
+
 void main() {
+  setUpAll(() {
+    registerFallbackValue(NoParams());
+  });
+
   late CompanyNewsBloc bloc;
   late MockGetCompanyNewsUseCase mockGetCompanyNews;
   late MockNewsTabAnalytics mockAnalytics;
+  late MockWatchActiveTabUseCase mockWatchActiveTabUseCase;
 
   setUp(() {
     mockGetCompanyNews = MockGetCompanyNewsUseCase();
     mockAnalytics = MockNewsTabAnalytics();
-    bloc = CompanyNewsBloc(mockGetCompanyNews, mockAnalytics);
+    mockWatchActiveTabUseCase = MockWatchActiveTabUseCase();
+    when(
+      () => mockWatchActiveTabUseCase(any()),
+    ).thenAnswer((_) => const Stream.empty());
+    bloc = CompanyNewsBloc(
+      mockGetCompanyNews,
+      mockAnalytics,
+      mockWatchActiveTabUseCase,
+      stubbedTimeProvider(),
+      stubbedGetAuthStream(),
+    );
   });
 
   const tTicker = 'AAPL';

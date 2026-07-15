@@ -3,14 +3,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:bizzie/app/themes/app_assets.dart';
 import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
-import 'package:bizzie/shared/utils/paywall_helper.dart';
+import 'package:bizzie/features/subscription/presentation/utils/paywall_helper.dart';
 import 'package:bizzie/core/enums/paywall_source.dart';
 import 'package:bizzie/features/search/domain/models/stock_symbol.dart';
 import 'package:bizzie/features/search/presentation/bloc/search_bloc.dart';
 import 'package:bizzie/shared/widgets/company_list_tile.dart';
 import 'package:bizzie/shared/widgets/buttons/bizzie_primary_button.dart';
 import 'package:bizzie/app/routes/app_routes.dart';
-import 'package:bizzie/features/onboarding/domain/models/company.dart';
+import 'package:bizzie/core/domain/models/company.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:bizzie/features/search/domain/enums/search_analytics_enums.dart';

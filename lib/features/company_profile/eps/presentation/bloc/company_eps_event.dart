@@ -3,7 +3,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'company_eps_event.freezed.dart';
 
 @freezed
-abstract class CompanyEpsEvent with _$CompanyEpsEvent {
+sealed class CompanyEpsEvent with _$CompanyEpsEvent {
   const factory CompanyEpsEvent.loadRequested(
     String ticker, {
     @Default(false) bool forceRefresh,
@@ -17,11 +17,13 @@ abstract class CompanyEpsEvent with _$CompanyEpsEvent {
   const factory CompanyEpsEvent.appBackgrounded() = AppBackgrounded;
   const factory CompanyEpsEvent.appForegrounded() = AppForegrounded;
 
-  const factory CompanyEpsEvent.periodViewed({required bool isAnnual}) =
-      PeriodViewed;
+  const factory CompanyEpsEvent.periodChanged({required bool isAnnual}) =
+      PeriodChanged;
 
   const factory CompanyEpsEvent.viewAllTapped({
     required bool isAnnual,
     required bool isChart,
   }) = ViewAllTapped;
+
+  const factory CompanyEpsEvent.reset() = Reset;
 }

@@ -18,7 +18,7 @@ Verify all changed files against every checklist item in `flutter.bloc.best.prac
 - State class using Equatable or `props` instead of `@freezed`
 
 ### Event class violations
-- Event class not declared as `@freezed class XxxEvent with _$XxxEvent`
+- Event class not declared as `@freezed sealed class XxxEvent with _$XxxEvent`
 - Event class not using `const factory XxxEvent.xxx(...)` factory constructors
 - `part '<feature>_event.freezed.dart'` directive missing from event file
 - Event class using Equatable or `props` instead of `@freezed`
@@ -30,6 +30,9 @@ Verify all changed files against every checklist item in `flutter.bloc.best.prac
 - Dependency obtained via `GetIt.I()` inside the BLoC instead of via constructor injection
 - Business logic or domain logic placed directly in the BLoC instead of delegating to a use case
 - `Either<Failure, T>` result not folded in event handler — raw result accessed without `fold`
+- Event handler exceeding ~30 lines or mixing responsibilities — analytics metrics construction, data mapping, or guard evaluation inlined in the handler body instead of extracted to private helpers
+- Identical logic duplicated between the failure and success branches of a `fold` instead of extracted into a single parameterised helper
+- No-op event handler (empty body, comment-only body, or body with no behaviour) registered in the BLoC — the event pipeline is dead code (YAGNI) and must be removed end-to-end: event variant, `on<>` registration, handler, and all dispatch sites together (partial removal causes a runtime `StateError` on `add`)
 - Data-loading event handler missing `restartable()` transformer
 - Stream-backed event handler using `await for` instead of `emit.forEach` / `emit.onEach`
 - `StreamSubscription` created in BLoC but not cancelled in `close()` override

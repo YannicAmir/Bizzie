@@ -4,7 +4,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'financial_statements_event.freezed.dart';
 
 @freezed
-abstract class FinancialStatementsEvent with _$FinancialStatementsEvent {
+sealed class FinancialStatementsEvent with _$FinancialStatementsEvent {
   const factory FinancialStatementsEvent.loadIncomeStatements(
     String ticker, {
     @Default(false) bool forceRefresh,
@@ -49,4 +49,6 @@ abstract class FinancialStatementsEvent with _$FinancialStatementsEvent {
     required bool isAnnual,
   }) = ViewAllTapped;
   const factory FinancialStatementsEvent.chartSwiped(int index) = ChartSwiped;
+
+  const factory FinancialStatementsEvent.reset() = Reset;
 }

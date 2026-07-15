@@ -1,13 +1,19 @@
+import 'dart:async';
+
 import 'package:bizzie/app/themes/app_text_styles.dart';
 import 'package:bizzie/features/company_profile/news/domain/models/news_article.dart';
 import 'package:bizzie/features/company_profile/news/presentation/bloc/company_news/company_news_bloc.dart';
 import 'package:bizzie/features/company_profile/news/presentation/bloc/company_news/company_news_event.dart';
 import 'package:bizzie/features/company_profile/news/presentation/widgets/news_card.dart';
+import 'package:bizzie/features/company_profile/shared/presentation/widgets/carousel_page_indicator.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:bizzie/shared/utils/url_launcher_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+
+const int _maxDisplayedArticles = 3;
+const double _viewportFraction = 0.9;
+const double _carouselHeight = 250;
 
 class NewsCarousel extends StatefulWidget {
   final List<NewsArticle> news;
@@ -19,7 +25,22 @@ class NewsCarousel extends StatefulWidget {
 }
 
 class _NewsCarouselState extends State<NewsCarousel> {
-  final PageController _pageController = PageController(viewportFraction: 0.9);
+  final PageController _pageController = PageController(
+    viewportFraction: _viewportFraction,
+  );
+  late List<NewsArticle> _displayNews;
+
+  @override
+  void initState() {
+    super.initState();
+    _displayNews = _computeDisplayNews();
+  }
+
+  @override
+  void didUpdateWidget(NewsCarousel oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _displayNews = _computeDisplayNews();
+  }
 
   @override
   void dispose() {
@@ -27,31 +48,32 @@ class _NewsCarouselState extends State<NewsCarousel> {
     super.dispose();
   }
 
+  List<NewsArticle> _computeDisplayNews() =>
+      widget.news.take(_maxDisplayedArticles).toList();
+
   @override
   Widget build(BuildContext context) {
-    if (widget.news.isEmpty) return const SizedBox.shrink();
+    if (_displayNews.isEmpty) return const SizedBox.shrink();
 
     final theme = Theme.of(context);
-
-    final displayNews = widget.news.take(3).toList();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+          padding: const EdgeInsets.all(AppConstants.newsPagePadding),
           child: Text("Latest", style: AppTextStyles.h3),
         ),
         SizedBox(
-          height: 250,
+          height: _carouselHeight,
           child: PageView.builder(
             controller: _pageController,
             padEnds: false,
-            itemCount: displayNews.length,
+            itemCount: _displayNews.length,
             itemBuilder: (context, index) {
-              final article = displayNews[index];
+              final article = _displayNews[index];
               return Padding(
-                padding: index != 2
+                padding: index != _maxDisplayedArticles - 1
                     ? EdgeInsets.only(left: AppConstants.newsPagePadding)
                     : EdgeInsets.symmetric(
                         horizontal: AppConstants.newsPagePadding,
@@ -65,24 +87,19 @@ class _NewsCarouselState extends State<NewsCarousel> {
                         isFeatured: true,
                       ),
                     );
-                    UrlLauncherUtils.launch(article.url);
+                    unawaited(UrlLauncherUtils.launch(article.url));
                   },
                 ),
               );
             },
           ),
         ),
-        const SizedBox(height: 16),
+        AppConstants.secondarySectionSpacing,
         Center(
-          child: SmoothPageIndicator(
+          child: CarouselPageIndicator(
             controller: _pageController,
-            count: displayNews.length,
-            effect: ExpandingDotsEffect(
-              dotHeight: 6,
-              dotWidth: 6,
-              activeDotColor: theme.colorScheme.primary,
-              dotColor: theme.dividerColor,
-            ),
+            count: _displayNews.length,
+            dotColor: theme.dividerColor,
           ),
         ),
       ],

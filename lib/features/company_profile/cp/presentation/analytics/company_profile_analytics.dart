@@ -12,11 +12,13 @@ class CompanyProfileAnalytics {
 
   // Event Names
   static const String _kEventSessionSummary = 'cp_session_summary';
+  static const String _kEventEditTabs = 'cp_edit_tabs';
 
   // Screen Names
-  static const String kScreenCompanyProfile = 'company_profile';
+  static const String _kScreenName = 'company_profile';
 
   // Parameter Keys (Max 24 chars)
+  static const String _kParamScreenName = 'screen_name';
   static const String _kParamSessionId = 'session_id';
   static const String _kParamTicker = 'ticker';
   static const String _kParamCoName = 'co_name';
@@ -32,11 +34,31 @@ class CompanyProfileAnalytics {
   static const String _kParamIsFund = 'is_fund';
   static const String _kParamIsFinal = 'is_final';
   static const String _kParamTimestamp = 'timestamp';
+  static const String _kParamAction = 'action';
+  static const String _kParamMainTabs = 'main_tabs';
+  static const String _kParamMoreTabs = 'more_tabs';
+  static const String _kParamIsSubscribed = 'is_subscribed';
+  static const String _kActionOpened = 'opened';
+  static const String _kActionSaved = 'saved';
+  static const int _kTabNameMaxLength = 4;
 
   CompanyProfileAnalytics(this._analytics);
 
-  /// Logs a comprehensive session summary.
-  /// This is called on background (snapshot) and exit (final).
+  Future<void> _logEvent(String name, [Map<String, Object>? parameters]) async {
+    try {
+      await _analytics.logEvent(
+        name: name,
+        parameters: {
+          ...?parameters,
+          _kParamScreenName: _kScreenName,
+          _kParamTimestamp: DateTime.now().toIso8601String(),
+        },
+      );
+    } catch (e, stack) {
+      _logger.severe('Failed to log event: $name', e, stack);
+    }
+  }
+
   Future<void> logSessionSummary(CompanyProfileSessionSummary summary) async {
     final tabsString = summary.tabsList.map(AnalyticsUtils.truncate).join(',');
 
@@ -57,20 +79,44 @@ class CompanyProfileAnalytics {
       _kParamIsEtf: summary.isEtf,
       _kParamIsFund: summary.isFund,
       _kParamIsFinal: summary.isFinal,
-      _kParamTimestamp: DateTime.now().toIso8601String(),
     };
 
-    try {
-      await _analytics.logEvent(
-        name: _kEventSessionSummary,
-        parameters: params,
-      );
-    } catch (e, stack) {
-      _logger.severe(
-        'Failed to log session summary: ${summary.ticker}',
-        e,
-        stack,
-      );
-    }
+    await _logEvent(_kEventSessionSummary, params);
+  }
+
+  Future<void> logEditTabsOpened({
+    required String ticker,
+    required bool isSubscribed,
+  }) async {
+    await _logEvent(_kEventEditTabs, {
+      _kParamAction: _kActionOpened,
+      _kParamTicker: AnalyticsUtils.truncate(ticker),
+      _kParamIsSubscribed: isSubscribed,
+    });
+  }
+
+  Future<void> logEditTabsSaved({
+    required String ticker,
+    required bool isSubscribed,
+    required List<String> mainTabs,
+    required List<String> moreTabs,
+  }) async {
+    await _logEvent(_kEventEditTabs, {
+      _kParamAction: _kActionSaved,
+      _kParamTicker: AnalyticsUtils.truncate(ticker),
+      _kParamIsSubscribed: isSubscribed,
+      _kParamMainTabs: _joinTabNames(mainTabs),
+      _kParamMoreTabs: _joinTabNames(moreTabs),
+    });
+  }
+
+  static String _joinTabNames(List<String> tabs) {
+    return tabs
+        .map(
+          (tab) => tab.length <= _kTabNameMaxLength
+              ? tab
+              : tab.substring(0, _kTabNameMaxLength),
+        )
+        .join(',');
   }
 }

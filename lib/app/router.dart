@@ -1,5 +1,6 @@
 import 'package:bizzie/app/routes/app_routes.dart';
 import 'package:bizzie/app/routes/app_router_redirect.dart';
+import 'package:bizzie/core/constants/paywall_query_params.dart';
 import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
 import 'package:bizzie/features/reports/domain/enums/reports_analytics_enums.dart';
 import 'package:bizzie/features/reports/presentation/views/reports_page.dart';
@@ -8,7 +9,6 @@ import 'package:bizzie/features/search/presentation/bloc/search_bloc.dart';
 import 'package:bizzie/features/search/domain/enums/search_analytics_enums.dart';
 import 'package:collection/collection.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
-import 'package:bizzie/features/onboarding/domain/models/company.dart';
 
 import 'package:bizzie/features/auth/presentation/views/create_account_page.dart';
 import 'package:bizzie/features/onboarding/presentation/widgets/onboarding_shell.dart';
@@ -370,13 +370,13 @@ GoRoute _buildPaywallRoute({
       final queryParams = state.uri.queryParameters;
       final animateParam = queryParams['animate'];
       final animate = animateParam != 'false';
-      final sourceStr = queryParams['source'];
+      final sourceStr = queryParams[PaywallQueryParams.source];
       final source = PaywallSource.values.firstWhere(
         (e) => e.name == sourceStr,
         orElse: () => PaywallSource.unknown,
       );
-      final tabName = queryParams['tabName'];
-      final featureName = queryParams['featureName'];
+      final tabName = queryParams[PaywallQueryParams.tabName];
+      final featureName = queryParams[PaywallQueryParams.featureName];
       final onEnter = state.extra is VoidCallback
           ? state.extra as VoidCallback
           : null;
@@ -448,23 +448,10 @@ GoRoute _buildCompanyRoute(String routeName) {
     name: routeName,
     builder: (context, state) {
       final ticker = state.pathParameters['ticker']!;
-      Company? initialCompany;
-
-      final extra = state.extra;
-      if (extra is Company) {
-        initialCompany = extra;
-      } else if (extra is Map<String, dynamic> &&
-          extra.containsKey('ticker') &&
-          extra.containsKey('name')) {
-        try {
-          initialCompany = Company.fromJson(extra);
-        } catch (_) {}
-      }
 
       return CompanyProfilePage(
         key: ValueKey('${routeName}_$ticker'),
         ticker: ticker,
-        initialCompany: initialCompany,
       );
     },
   );

@@ -27,7 +27,7 @@ The StateBuilder is a **state-management-only** agent.
 
 ### Permitted Actions
 - Create new state files (`<feature>_state.dart`) with `@freezed abstract class` union states
-- Create new event files (`<feature>_event.dart`) with `@freezed class` union events
+- Create new event files (`<feature>_event.dart`) with `@freezed sealed class` union events
 - Create new BLoC files (`<feature>_bloc.dart`) with `@injectable` annotation
 - Implement `on<EventType>(handler)` registrations in the BLoC constructor
 - Implement event handler methods using `emit.forEach` / `emit.onEach` for streams
@@ -49,7 +49,7 @@ The StateBuilder is a **state-management-only** agent.
 Follow every convention in `flutter.bloc.best.practice.instructions.md` without exception:
 
 - State: `@freezed abstract class XxxState with _$XxxState` with `const factory XxxState.initial/loading/loaded/failure` variants
-- Event: `@freezed class XxxEvent with _$XxxEvent` with `const factory XxxEvent.xxx(...)` variants
+- Event: `@freezed sealed class XxxEvent with _$XxxEvent` with `const factory XxxEvent.xxx(...)` variants
 - BLoC: `@injectable class XxxBloc extends Bloc<XxxEvent, XxxState>` — positional constructor params
 - Use `restartable()` transformer for data-loading events
 - `Either<Failure, T>` folded in handlers to emit success/failure states
@@ -74,7 +74,7 @@ Follow every convention in `flutter.bloc.best.practice.instructions.md` without 
 ## Checklist
 - [ ] Implementation plan and target feature directory confirmed before starting
 - [ ] State class: `@freezed abstract class` with `const factory` variants and `part` directive
-- [ ] Event class: `@freezed class` with `const factory` variants and `part` directive
+- [ ] Event class: `@freezed sealed class` with `const factory` variants and `part` directive
 - [ ] BLoC class: `@injectable`, positional constructor params, `on<>` registrations
 - [ ] `_logger = BizzieLogger('XxxBloc')` defined at file level
 - [ ] `Either<Failure, T>` results folded in event handlers

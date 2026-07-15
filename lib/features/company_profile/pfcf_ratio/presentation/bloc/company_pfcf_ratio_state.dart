@@ -8,7 +8,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'company_pfcf_ratio_state.freezed.dart';
 
 @freezed
-class CompanyPfcfRatioState with _$CompanyPfcfRatioState {
+abstract class CompanyPfcfRatioState with _$CompanyPfcfRatioState {
   const factory CompanyPfcfRatioState.initial() = _Initial;
   const factory CompanyPfcfRatioState.loading() = _Loading;
   const factory CompanyPfcfRatioState.loaded({
@@ -26,6 +26,6 @@ class CompanyPfcfRatioState with _$CompanyPfcfRatioState {
     @Default(false) bool isSuccess,
     DateTime? lastUpdated,
     PfcfRatioTabViewState? analyticsState,
-  }) = _Loaded;
+  }) = CompanyPfcfRatioLoaded;
   const factory CompanyPfcfRatioState.failure(Failure failure) = _Failure;
 }

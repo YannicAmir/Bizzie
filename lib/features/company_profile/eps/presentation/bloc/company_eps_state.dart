@@ -9,7 +9,7 @@ import 'package:bizzie/features/company_profile/eps/presentation/analytics/eps_t
 part 'company_eps_state.freezed.dart';
 
 @freezed
-class CompanyEpsState with _$CompanyEpsState {
+abstract class CompanyEpsState with _$CompanyEpsState {
   const factory CompanyEpsState.initial() = _Initial;
   const factory CompanyEpsState.loading() = _Loading;
   const factory CompanyEpsState.loaded({
@@ -19,8 +19,9 @@ class CompanyEpsState with _$CompanyEpsState {
     required List<ChartDataPoint> quarterlyChartData,
     required int historyLimit,
     required CompanyProfileDataOrigin dataOrigin,
+    @Default(true) bool isAnnualView,
     DateTime? lastUpdated,
     EpsTabViewState? analyticsState,
-  }) = _Loaded;
+  }) = CompanyEpsLoaded;
   const factory CompanyEpsState.failure(Failure failure) = _Failure;
 }

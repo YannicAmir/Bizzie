@@ -1,6 +1,6 @@
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/core/usecase/usecase.dart';
-import 'package:bizzie/features/onboarding/domain/models/company.dart';
+import 'package:bizzie/core/domain/models/company.dart';
 import 'package:bizzie/features/watchlist/domain/interfaces/watchlist_repository.dart';
 import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';

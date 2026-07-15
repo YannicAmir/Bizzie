@@ -9,7 +9,7 @@ import 'package:bizzie/features/company_profile/roe/presentation/analytics/roe_t
 part 'company_roe_state.freezed.dart';
 
 @freezed
-class CompanyRoeState with _$CompanyRoeState {
+abstract class CompanyRoeState with _$CompanyRoeState {
   const factory CompanyRoeState.initial() = _Initial;
   const factory CompanyRoeState.loading() = _Loading;
   const factory CompanyRoeState.loaded({
@@ -27,6 +27,6 @@ class CompanyRoeState with _$CompanyRoeState {
     @Default(false) bool isSuccess,
     DateTime? lastUpdated,
     RoeTabViewState? analyticsState,
-  }) = _Loaded;
+  }) = CompanyRoeLoaded;
   const factory CompanyRoeState.failure(Failure failure) = _Failure;
 }

@@ -1,6 +1,6 @@
 import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:bizzie/core/error/failures.dart';
-import 'package:bizzie/features/company_profile/financial_statements/data/datasources/financial_statements_firestore_data_source.dart';
+import 'package:bizzie/features/company_profile/financial_statements/data/interfaces/i_financial_statements_firestore_datasource.dart';
 import 'package:bizzie/features/company_profile/financial_statements/data/datasources/financial_statements_remote_data_source.dart';
 import 'package:bizzie/features/company_profile/revenue/domain/interfaces/i_revenue_repository.dart';
 import 'package:bizzie/features/company_profile/revenue/domain/models/revenue_stats.dart';
@@ -16,7 +16,7 @@ abstract class _Consts {
 @LazySingleton(as: IRevenueRepository)
 class RevenueRepositoryImpl implements IRevenueRepository {
   final FinancialStatementsRemoteDataSource _remoteDataSource;
-  final FinancialStatementsFirestoreDataSource _localDataSource;
+  final IFinancialStatementsFirestoreDataSource _localDataSource;
   final IExchangeRateRepository _exchangeRateRepository;
 
   RevenueRepositoryImpl(

@@ -11,4 +11,6 @@ sealed class HistoricalPriceEodEvent with _$HistoricalPriceEodEvent {
 
   const factory HistoricalPriceEodEvent.stalenessCheckRequested(String ticker) =
       StalenessCheckRequested;
+
+  const factory HistoricalPriceEodEvent.reset() = EodReset;
 }

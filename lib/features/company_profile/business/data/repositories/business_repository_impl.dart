@@ -1,8 +1,8 @@
 import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
 import 'package:bizzie/core/error/failures.dart';
-import 'package:bizzie/features/company_profile/business/data/datasources/business_firestore_data_source.dart';
-import 'package:bizzie/features/company_profile/financial_statements/data/datasources/financial_statements_firestore_data_source.dart';
+import 'package:bizzie/features/company_profile/business/data/interfaces/i_business_firestore_datasource.dart';
+import 'package:bizzie/features/company_profile/financial_statements/data/interfaces/i_financial_statements_firestore_datasource.dart';
 import 'package:bizzie/features/company_profile/financial_statements/data/datasources/financial_statements_remote_data_source.dart';
 import 'package:bizzie/features/company_profile/financial_statements/data/dtos/fmp_sec_filing_dto.dart';
 import 'package:bizzie/features/company_profile/financial_statements/data/dtos/legacy_income_statement_dto.dart';
@@ -25,9 +25,9 @@ abstract class _Consts {
 @LazySingleton(as: IBusinessRepository)
 class BusinessRepositoryImpl implements IBusinessRepository {
   final ICompanyRepository _companyRepository;
-  final BusinessFirestoreDataSource _localDataSource;
+  final IBusinessFirestoreDataSource _localDataSource;
   final FinancialStatementsRemoteDataSource _financialRemoteDataSource;
-  final FinancialStatementsFirestoreDataSource _financialLocalDataSource;
+  final IFinancialStatementsFirestoreDataSource _financialLocalDataSource;
 
   BusinessRepositoryImpl(
     this._companyRepository,

@@ -8,7 +8,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'company_fcps_state.freezed.dart';
 
 @freezed
-class CompanyFcpsState with _$CompanyFcpsState {
+abstract class CompanyFcpsState with _$CompanyFcpsState {
   const factory CompanyFcpsState.initial() = _Initial;
   const factory CompanyFcpsState.loading() = _Loading;
   const factory CompanyFcpsState.loaded({
@@ -18,8 +18,9 @@ class CompanyFcpsState with _$CompanyFcpsState {
     required List<ChartDataPoint> quarterlyChartData,
     required int historyLimit,
     required CompanyProfileDataOrigin dataOrigin,
+    @Default(true) bool isAnnualView,
     DateTime? lastUpdated,
     FcpsTabViewState? analyticsState,
-  }) = _Loaded;
+  }) = CompanyFcpsLoaded;
   const factory CompanyFcpsState.failure(Failure failure) = _Failure;
 }

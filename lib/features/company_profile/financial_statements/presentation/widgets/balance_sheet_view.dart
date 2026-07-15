@@ -2,22 +2,27 @@ import 'package:bizzie/app/themes/app_theme.dart';
 import 'package:bizzie/features/company_profile/financial_statements/presentation/bloc/financial_statements_bloc.dart';
 import 'package:bizzie/features/company_profile/financial_statements/presentation/bloc/financial_statements_event.dart';
 import 'package:bizzie/features/company_profile/financial_statements/presentation/bloc/financial_statements_state.dart';
-import 'package:bizzie/features/company_profile/financial_statements/presentation/bloc/financial_statements_state_extensions.dart';
+import 'package:bizzie/features/company_profile/financial_statements/presentation/extensions/financial_statements_state_extensions.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/models/financial_history_row_data.dart';
-import 'package:bizzie/features/company_profile/financial_statements/presentation/widgets/balance_sheet_pie_chart.dart';
-import 'package:bizzie/features/company_profile/financial_statements/presentation/widgets/financial_statement_selector.dart';
-import 'package:bizzie/features/company_profile/financial_statements/presentation/widgets/financial_statements_table.dart';
+import 'package:bizzie/features/company_profile/shared/presentation/widgets/period_selector_dropdown.dart';
+import 'package:bizzie/features/company_profile/shared/presentation/widgets/carousel_page_indicator.dart';
+import 'package:bizzie/features/company_profile/shared/presentation/widgets/financial_statements_table.dart';
+import 'package:bizzie/features/company_profile/financial_statements/domain/extensions/balance_sheet_x.dart';
 import 'package:bizzie/features/company_profile/financial_statements/domain/models/balance_sheet.dart';
 import 'package:bizzie/app/themes/app_colors.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
+import 'package:bizzie/shared/utils/currency_formatter.dart';
+import 'package:bizzie/shared/widgets/charts/bizzie_pie_chart.dart';
 import 'package:bizzie/shared/widgets/modals/app_history_modal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
 import 'package:bizzie/features/user/presentation/extensions/user_state_extensions.dart';
 import 'package:bizzie/shared/widgets/states/bizzie_empty_state.dart';
 import 'package:bizzie/features/company_profile/financial_statements/presentation/widgets/shared/financial_history_row.dart';
+
+const String _chartTitle = 'Chart';
+const int _ratioDecimalPlaces = 2;
 
 class BalanceSheetView extends StatefulWidget {
   const BalanceSheetView({super.key});
@@ -71,14 +76,11 @@ class _BalanceSheetViewState extends State<BalanceSheetView> {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (state.quarterlyBalanceSheets.isNotEmpty) ...[
+            if (state.quarterlyBalanceSheets.isNotEmpty)
               _BalanceSheetSection(
                 title: 'On',
                 data: state.quarterlyBalanceSheets,
-                selectedItem: state.quarterlyBalanceSheets.firstWhere(
-                  (e) => e.date == state.selectedQuarterlyBalanceDate,
-                  orElse: () => state.quarterlyBalanceSheets.first,
-                ),
+                selectedItem: state.selectedQuarterlyBalanceSheet,
                 onSelect: (date) => context.read<FinancialStatementsBloc>().add(
                   FinancialStatementsEvent.balanceDateSelected(
                     date,
@@ -86,13 +88,11 @@ class _BalanceSheetViewState extends State<BalanceSheetView> {
                   ),
                 ),
                 pageController: _pageController,
-                rows: [...state.balanceRows(locale: locale, isAnnual: false)],
+                rows: state.balanceRows(locale: locale, isAnnual: false),
                 historyBuilder: (item) =>
                     state.balanceHistoryRowData(item, locale),
                 historyLimit: state.freePlanHistoryCount,
-                isAnnual: false,
               ),
-            ],
           ],
         );
       },
@@ -105,11 +105,10 @@ class _BalanceSheetSection extends StatelessWidget {
   final List<BalanceSheet> data;
   final BalanceSheet selectedItem;
   final ValueChanged<String> onSelect;
-  final PageController? pageController;
+  final PageController pageController;
   final List<FinancialStatementTableRow> rows;
   final FinancialHistoryRowData Function(BalanceSheet) historyBuilder;
   final int historyLimit;
-  final bool isAnnual;
 
   const _BalanceSheetSection({
     required this.title,
@@ -120,7 +119,6 @@ class _BalanceSheetSection extends StatelessWidget {
     required this.rows,
     required this.historyBuilder,
     required this.historyLimit,
-    required this.isAnnual,
   });
 
   @override
@@ -128,7 +126,7 @@ class _BalanceSheetSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        FinancialStatementSelector<BalanceSheet>(
+        PeriodSelectorDropdown<BalanceSheet>(
           title: title,
           items: data,
           selectedItem: selectedItem,
@@ -139,27 +137,19 @@ class _BalanceSheetSection extends StatelessWidget {
           historyLimit: historyLimit,
         ),
         AppConstants.mainSectionSpacing,
-        if (pageController != null) ...[
-          _BalanceSheetCharts(
-            statement: selectedItem,
-            controller: pageController!,
-          ),
-          AppConstants.mainSectionSpacing,
-        ],
+        _BalanceSheetCharts(
+          statement: selectedItem,
+          controller: pageController,
+        ),
+        AppConstants.mainSectionSpacing,
         FinancialStatementsTable(
           rows: rows,
           onViewAll: () {
             context.read<FinancialStatementsBloc>().add(
-              FinancialStatementsEvent.viewAllTapped(isAnnual: isAnnual),
+              const FinancialStatementsEvent.viewAllTapped(isAnnual: false),
             );
 
-            final userState = context.read<UserBloc>().state;
-            final isSubscribed = userState.maybeMap(
-              loaded: (s) => s.user.isSubscribed,
-              orElse: () => false,
-            );
-
-            if (isSubscribed) {
+            if (context.read<UserBloc>().state.canViewFullHistory) {
               _showBalanceSheetHistory(context, data);
             }
           },
@@ -214,83 +204,93 @@ class _BalanceSheetCharts extends StatelessWidget {
     final badgeTheme = theme.extension<BadgeThemeExtension>();
     final currency = statement.reportedCurrency;
     final charts = [
-      BalanceSheetPieChart(
+      BizziePieChart(
         key: const ValueKey('assets_chart'),
+        title: _chartTitle,
         currency: currency,
         data: [
-          BalanceSheetPieChartData(
-            'Assets',
-            statement.totalAssets,
-            badgeTheme?.goodText ?? AppColors.successText,
+          BizziePieChartData(
+            label: 'Assets',
+            value: statement.totalAssets,
+            color: badgeTheme?.goodText ?? AppColors.successText,
           ),
-          BalanceSheetPieChartData(
-            'Liabilities',
-            statement.totalLiabilities,
-            badgeTheme?.criticalText ?? AppColors.criticalText,
+          BizziePieChartData(
+            label: 'Liabilities',
+            value: statement.totalLiabilities,
+            color: badgeTheme?.criticalText ?? AppColors.criticalText,
           ),
-          BalanceSheetPieChartData(
-            'Equity',
-            statement.totalEquity,
-            badgeTheme?.neutralText ?? AppColors.primary,
+          BizziePieChartData(
+            label: 'Equity',
+            value: statement.totalEquity,
+            color: badgeTheme?.neutralText ?? AppColors.primary,
           ),
         ],
+        centerWidget: ChartCenterMetric(
+          label: 'Equity',
+          value: CurrencyFormatter.formatCompact(
+            statement.totalEquity,
+            currency,
+            locale: Localizations.localeOf(context).toString(),
+          ),
+        ),
       ),
-      BalanceSheetPieChart(
+      BizziePieChart(
         key: const ValueKey('ratio_chart'),
+        title: _chartTitle,
         currency: currency,
         data: [
-          BalanceSheetPieChartData(
-            'Current Assets',
-            statement.totalCurrentAssets,
-            badgeTheme?.goodText ?? AppColors.successText,
+          BizziePieChartData(
+            label: 'Current Assets',
+            value: statement.totalCurrentAssets,
+            color: badgeTheme?.goodText ?? AppColors.successText,
           ),
-          BalanceSheetPieChartData(
-            'Current Liabilities',
-            statement.totalCurrentLiabilities,
-            badgeTheme?.criticalText ?? AppColors.criticalText,
+          BizziePieChartData(
+            label: 'Current Liabilities',
+            value: statement.totalCurrentLiabilities,
+            color: badgeTheme?.criticalText ?? AppColors.criticalText,
           ),
         ],
+        centerWidget: ChartCenterMetric(
+          label: 'Current Ratio',
+          value: statement.currentRatio.toStringAsFixed(_ratioDecimalPlaces),
+        ),
       ),
-      BalanceSheetPieChart(
+      BizziePieChart(
         key: const ValueKey('capital_chart'),
+        title: _chartTitle,
         currency: currency,
         data: [
-          BalanceSheetPieChartData(
-            'L.T. Debt',
-            statement.longTermDebt,
-            badgeTheme?.criticalText ?? AppColors.criticalText,
+          BizziePieChartData(
+            label: 'L.T. Debt',
+            value: statement.longTermDebt,
+            color: badgeTheme?.criticalText ?? AppColors.criticalText,
           ),
-          BalanceSheetPieChartData(
-            'S.T. Debt',
-            statement.shortTermDebt,
-            AppColors.darkCritical,
+          BizziePieChartData(
+            label: 'S.T. Debt',
+            value: statement.shortTermDebt,
+            color: AppColors.darkCritical,
           ),
-          BalanceSheetPieChartData(
-            'Equity',
-            statement.totalEquity,
-            badgeTheme?.neutralText ?? AppColors.primary,
+          BizziePieChartData(
+            label: 'Equity',
+            value: statement.totalEquity,
+            color: badgeTheme?.neutralText ?? AppColors.primary,
           ),
         ],
+        centerWidget: ChartCenterMetric(
+          label: 'Debt-to-Equity',
+          value: statement.debtToEquity.toStringAsFixed(_ratioDecimalPlaces),
+        ),
       ),
     ];
 
     return Column(
       children: [
         SizedBox(
-          height: 400,
+          height: AppConstants.chartCarouselHeight,
           child: PageView(controller: controller, children: charts),
         ),
         AppConstants.secondarySectionSpacing,
-        SmoothPageIndicator(
-          controller: controller,
-          count: charts.length,
-          effect: ExpandingDotsEffect(
-            dotHeight: 6,
-            dotWidth: 6,
-            activeDotColor: theme.colorScheme.primary,
-            dotColor: theme.colorScheme.onSurfaceVariant,
-          ),
-        ),
+        CarouselPageIndicator(controller: controller, count: charts.length),
       ],
     );
   }

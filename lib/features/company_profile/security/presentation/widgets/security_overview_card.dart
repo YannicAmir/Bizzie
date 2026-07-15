@@ -1,7 +1,7 @@
 import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:bizzie/features/company_profile/security/domain/models/historical_price_eod.dart';
 import 'package:bizzie/features/company_profile/security/presentation/bloc/historical_price_eod/historical_price_eod_state.dart';
-import 'package:bizzie/features/company_profile/security/presentation/bloc/historical_price_eod/historical_price_eod_state_extensions.dart';
+import 'package:bizzie/features/company_profile/security/presentation/extensions/historical_price_eod_state_extensions.dart';
 import 'package:bizzie/features/company_profile/security/domain/models/security_details.dart';
 import 'package:bizzie/features/company_profile/security/presentation/widgets/price_display.dart';
 import 'package:bizzie/features/company_profile/security/presentation/widgets/security_header.dart';

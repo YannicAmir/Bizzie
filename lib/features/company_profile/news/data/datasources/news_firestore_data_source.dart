@@ -1,30 +1,22 @@
 import 'package:injectable/injectable.dart';
+import 'package:bizzie/core/constants/firestore_constants.dart';
 import 'package:bizzie/core/data/datasources/base_firestore_cache_client.dart';
 import 'package:bizzie/core/data/models/firestore_cache_entry.dart';
 import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:bizzie/features/company_profile/news/data/dtos/news_dto.dart';
+import 'package:bizzie/features/company_profile/news/data/interfaces/i_news_firestore_datasource.dart';
 import 'package:bizzie/core/data/models/cache_result.dart' as result;
 import 'package:bizzie/core/interfaces/i_time_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:bizzie/services/firestore_service.dart';
 
-abstract class NewsFirestoreDataSource {
-  Future<result.CacheResult<List<NewsDto>>> syncStockNews(
-    String ticker, {
-    required Future<List<NewsDto>> Function() remoteFetcher,
-    bool forceRefresh,
-  });
-  Future<(List<NewsDto>, CompanyProfileDataOrigin)?> getCachedStockNews(
-    String ticker,
-  );
-}
-
-@LazySingleton(as: NewsFirestoreDataSource)
+@Injectable(as: INewsFirestoreDataSource)
 class NewsFirestoreDataSourceImpl extends BaseFirestoreCacheClient
-    implements NewsFirestoreDataSource {
+    implements INewsFirestoreDataSource {
   NewsFirestoreDataSourceImpl(
-    FirebaseFirestore firestore,
+    FirestoreService firestoreService,
     ITimeProvider timeProvider,
-  ) : super(firestore, timeProvider, 'NewsFirestoreDataSource');
+  ) : super(firestoreService, timeProvider, 'NewsFirestoreDataSource');
 
   @override
   Future<result.CacheResult<List<NewsDto>>> syncStockNews(
@@ -58,8 +50,8 @@ class NewsFirestoreDataSourceImpl extends BaseFirestoreCacheClient
     String ticker,
   ) => getDocRef<List<NewsDto>>(
     ticker,
-    'market',
-    'news',
+    FirestoreConstants.market,
+    FirestoreConstants.news,
     (json) => (json as List).map((e) => NewsDto.fromJson(e)).toList(),
     (data) => data.map((e) => e.toJson()).toList(),
   );

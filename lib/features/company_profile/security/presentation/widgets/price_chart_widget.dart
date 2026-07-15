@@ -108,7 +108,7 @@ class _TimeFrameSelector extends StatelessWidget {
               decoration: BoxDecoration(
                 color: isSelected ? primaryColor : AppColors.slate100,
                 borderRadius: BorderRadius.circular(
-                  AppConstants.componyProfileButtonBorderRadius,
+                  AppConstants.companyProfileButtonBorderRadius,
                 ),
               ),
               child: Text(

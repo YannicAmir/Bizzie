@@ -12,7 +12,7 @@ import 'package:bizzie/features/onboarding/domain/usecases/get_sectors_usecase.d
 import 'package:bizzie/features/onboarding/domain/usecases/get_sp500_history_usecase.dart';
 import 'package:bizzie/core/domain/models/sector.dart';
 import 'package:bizzie/features/user/domain/enums/investing_experience.dart';
-import 'package:bizzie/features/onboarding/domain/models/company.dart';
+import 'package:bizzie/core/domain/models/company.dart';
 import 'package:bizzie/features/onboarding/presentation/models/feature_highlight_item.dart';
 import 'package:bizzie/features/onboarding/presentation/bloc/onboarding_bloc.dart';
 import 'package:bizzie/shared/models/sector_view_model.dart';
@@ -91,25 +91,38 @@ void main() {
     when(() => mockConfigService.stockMarketSectors).thenReturn([]);
 
     when(
-      () => mockOnboardingAnalytics.logStep(
-        stepName: any(named: 'stepName'),
-        durationSec: any(named: 'durationSec'),
-        extraParams: any(named: 'extraParams'),
+      () => mockOnboardingAnalytics.logStepViewed(
+        step: any(named: 'step'),
+        prevDurationSec: any(named: 'prevDurationSec'),
+        selectedSector: any(named: 'selectedSector'),
+        brandsSelectedCount: any(named: 'brandsSelectedCount'),
+        experienceSelected: any(named: 'experienceSelected'),
+        notificationsEnabled: any(named: 'notificationsEnabled'),
+        didSubscribe: any(named: 'didSubscribe'),
+        subscriptionType: any(named: 'subscriptionType'),
+        highlightsSkipped: any(named: 'highlightsSkipped'),
       ),
-    ).thenReturn(null);
+    ).thenAnswer((_) async {});
+    when(
+      () => mockOnboardingAnalytics.logCompletionFailed(
+        errorMessage: any(named: 'errorMessage'),
+      ),
+    ).thenAnswer((_) async {});
     when(
       () => mockOnboardingAnalytics.logSessionSummary(any()),
-    ).thenReturn(null);
+    ).thenAnswer((_) async {});
     when(
       () => mockOnboardingAnalytics.logSignUp(method: any(named: 'method')),
-    ).thenReturn(null);
+    ).thenAnswer((_) async {});
     when(
       () => mockOnboardingAnalytics.setUserProperties(
         experience: any(named: 'experience'),
         sector: any(named: 'sector'),
       ),
-    ).thenReturn(null);
-    when(() => mockOnboardingAnalytics.resetUserProperties()).thenReturn(null);
+    ).thenAnswer((_) async {});
+    when(
+      () => mockOnboardingAnalytics.resetUserProperties(),
+    ).thenAnswer((_) async {});
     when(
       () => mockGetSectorsUseCase(any()),
     ).thenAnswer((_) async => const Right([]));
@@ -194,7 +207,7 @@ void main() {
     );
 
     blocTest<OnboardingBloc, OnboardingState>(
-      'loadSp500History_success_emitsLoadingAndData',
+      'sp500HistoryRequested_success_emitsLoadingAndData',
       // arrange
       build: () {
         when(
@@ -203,7 +216,7 @@ void main() {
         return bloc;
       },
       // act
-      act: (bloc) => bloc.add(const OnboardingEvent.loadSp500History()),
+      act: (bloc) => bloc.add(const OnboardingEvent.sp500HistoryRequested()),
       // assert
       expect: () => [
         isA<OnboardingState>().having(
@@ -235,7 +248,7 @@ void main() {
       'sectorSelected_validSector_updatesData',
       // arrange
       build: () => bloc,
-      seed: () => OnboardingState(
+      seed: () => OnboardingState.initial(
         sessionId: 'test_id',
         sessionEntryTime: testTime,
         onboardingData: const OnboardingData(),
@@ -315,7 +328,7 @@ void main() {
       'highlightPageChanged_validIndex_updatesIndex',
       // arrange
       build: () => bloc,
-      seed: () => OnboardingState(
+      seed: () => OnboardingState.initial(
         sessionId: 'test_id',
         sessionEntryTime: testTime,
         onboardingData: const OnboardingData(),
@@ -361,11 +374,11 @@ void main() {
     );
 
     blocTest<OnboardingBloc, OnboardingState>(
-      'toggleBrand_brandNotSelected_addsBrand',
+      'brandToggled_brandNotSelected_addsBrand',
       // arrange
       build: () => bloc,
       // act
-      act: (bloc) => bloc.add(const OnboardingEvent.toggleBrand(tBrand)),
+      act: (bloc) => bloc.add(const OnboardingEvent.brandToggled(tBrand)),
       // assert
       expect: () => [
         isA<OnboardingState>()
@@ -379,8 +392,8 @@ void main() {
     );
 
     blocTest<OnboardingBloc, OnboardingState>(
-      'toggleBrand_brandSelected_removesBrand',
-      seed: () => OnboardingState(
+      'brandToggled_brandSelected_removesBrand',
+      seed: () => OnboardingState.initial(
         sessionId: 'test_id',
         sessionEntryTime: testTime,
         onboardingData: const OnboardingData(),
@@ -392,7 +405,7 @@ void main() {
       // arrange
       build: () => bloc,
       // act
-      act: (bloc) => bloc.add(const OnboardingEvent.toggleBrand(tBrand)),
+      act: (bloc) => bloc.add(const OnboardingEvent.brandToggled(tBrand)),
       // assert
       expect: () => [
         isA<OnboardingState>()
@@ -406,7 +419,7 @@ void main() {
     );
 
     blocTest<OnboardingBloc, OnboardingState>(
-      'loadSp500History_failure_emitsLoadingAndStops',
+      'sp500HistoryRequested_failure_emitsLoadingAndStops',
       // arrange
       build: () {
         when(
@@ -416,7 +429,7 @@ void main() {
         return bloc;
       },
       // act
-      act: (bloc) => bloc.add(const OnboardingEvent.loadSp500History()),
+      act: (bloc) => bloc.add(const OnboardingEvent.sp500HistoryRequested()),
       // assert
       expect: () => [
         isA<OnboardingState>().having(
@@ -433,14 +446,14 @@ void main() {
     );
 
     blocTest<OnboardingBloc, OnboardingState>(
-      'completeOnboarding_userNotAuthenticated_emitsFailure',
+      'completionRequested_userNotAuthenticated_emitsFailure',
       // arrange
       build: () {
         when(() => mockAuthRepository.currentUser).thenReturn(null);
         return bloc;
       },
       // act
-      act: (bloc) => bloc.add(const OnboardingEvent.completeOnboarding()),
+      act: (bloc) => bloc.add(const OnboardingEvent.completionRequested()),
       // assert
       expect: () => [
         isA<OnboardingState>().having(
@@ -459,18 +472,15 @@ void main() {
       ],
       verify: (_) {
         verify(
-          () => mockOnboardingAnalytics.logStep(
-            stepName: 'complete_onboarding',
+          () => mockOnboardingAnalytics.logCompletionFailed(
             errorMessage: 'User is not authenticated',
-            durationSec: any(named: 'durationSec'),
-            extraParams: any(named: 'extraParams'),
           ),
         ).called(1);
       },
     );
 
     blocTest<OnboardingBloc, OnboardingState>(
-      'completeOnboarding_useCaseFailure_emitsFailure',
+      'completionRequested_useCaseFailure_emitsFailure',
       // arrange
       build: () {
         when(() => mockAuthRepository.currentUser).thenReturn(
@@ -486,7 +496,7 @@ void main() {
         return bloc;
       },
       // act
-      act: (bloc) => bloc.add(const OnboardingEvent.completeOnboarding()),
+      act: (bloc) => bloc.add(const OnboardingEvent.completionRequested()),
       // assert
       expect: () => [
         isA<OnboardingState>().having(
@@ -501,18 +511,15 @@ void main() {
       ],
       verify: (_) {
         verify(
-          () => mockOnboardingAnalytics.logStep(
-            stepName: 'complete_onboarding',
+          () => mockOnboardingAnalytics.logCompletionFailed(
             errorMessage: 'UseCase Error',
-            durationSec: any(named: 'durationSec'),
-            extraParams: any(named: 'extraParams'),
           ),
         ).called(1);
       },
     );
 
     blocTest<OnboardingBloc, OnboardingState>(
-      'completeOnboarding_success_emitsSuccess',
+      'completionRequested_success_emitsSuccess',
       // arrange
       build: () {
         when(() => mockAuthRepository.currentUser).thenReturn(
@@ -527,7 +534,7 @@ void main() {
         ).thenAnswer((_) async => const Right(null));
         return bloc;
       },
-      seed: () => OnboardingState(
+      seed: () => OnboardingState.initial(
         sessionId: 'test_id',
         sessionEntryTime: testTime,
         didSubscribe: false,
@@ -539,7 +546,7 @@ void main() {
         ),
       ),
       // act
-      act: (bloc) => bloc.add(const OnboardingEvent.completeOnboarding()),
+      act: (bloc) => bloc.add(const OnboardingEvent.completionRequested()),
       // assert
       expect: () => [
         isA<OnboardingState>().having(
@@ -569,10 +576,10 @@ void main() {
     );
 
     blocTest<OnboardingBloc, OnboardingState>(
-      'startAnalysis_progressesThroughSteps',
+      'analysisStarted_progressesThroughSteps',
       // arrange
       build: () => bloc,
-      seed: () => OnboardingState(
+      seed: () => OnboardingState.initial(
         sessionId: 'test_id',
         sessionEntryTime: testTime,
         onboardingData: const OnboardingData(),
@@ -590,7 +597,7 @@ void main() {
         ],
       ),
       // act
-      act: (bloc) => bloc.add(const OnboardingEvent.startAnalysis()),
+      act: (bloc) => bloc.add(const OnboardingEvent.analysisStarted()),
       // wait for all Delayed and internal events
       wait: const Duration(milliseconds: 3500),
       // assert
@@ -610,10 +617,10 @@ void main() {
     );
 
     blocTest<OnboardingBloc, OnboardingState>(
-      'startWatchlistAddition_progressesThroughCompanies',
+      'watchlistAdditionStarted_progressesThroughCompanies',
       // arrange
       build: () => bloc,
-      seed: () => OnboardingState(
+      seed: () => OnboardingState.initial(
         sessionId: 'test_id',
         sessionEntryTime: testTime,
         didSubscribe: false,
@@ -627,7 +634,7 @@ void main() {
         ),
       ),
       // act
-      act: (bloc) => bloc.add(const OnboardingEvent.startWatchlistAddition()),
+      act: (bloc) => bloc.add(const OnboardingEvent.watchlistAdditionStarted()),
       wait: const Duration(milliseconds: 4000),
       // assert
       expect: () => [
@@ -651,7 +658,7 @@ void main() {
         when(() => mockAuthRepository.currentUser).thenReturn(null);
         return bloc;
       },
-      seed: () => OnboardingState(
+      seed: () => OnboardingState.initial(
         sessionId: 'test_id',
         sessionEntryTime: testTime,
         onboardingData: const OnboardingData(),
@@ -711,7 +718,7 @@ void main() {
         ).thenAnswer((_) async => const Right(null));
         return bloc;
       },
-      seed: () => OnboardingState(
+      seed: () => OnboardingState.initial(
         sessionId: 'test_id',
         sessionEntryTime: testTime,
         didSubscribe: false,
@@ -741,7 +748,7 @@ void main() {
     blocTest<OnboardingBloc, OnboardingState>(
       'stepViewed_logsAnalyticsAndUpdatesDurationState',
       build: () => bloc,
-      seed: () => OnboardingState(
+      seed: () => OnboardingState.initial(
         sessionId: 'test_id',
         sessionEntryTime: testTime,
         onboardingData: const OnboardingData(),
@@ -755,10 +762,9 @@ void main() {
       ),
       verify: (_) {
         verify(
-          () => mockOnboardingAnalytics.logStep(
-            stepName: OnboardingStep.landing.name,
-            durationSec: any(named: 'durationSec'),
-            extraParams: any(named: 'extraParams'),
+          () => mockOnboardingAnalytics.logStepViewed(
+            step: OnboardingStep.sectorSelection,
+            prevDurationSec: any(named: 'prevDurationSec'),
           ),
         ).called(1);
       },
@@ -767,7 +773,7 @@ void main() {
     blocTest<OnboardingBloc, OnboardingState>(
       'stepViewed_brandsSelection_logsWithBrandCount',
       build: () => bloc,
-      seed: () => OnboardingState(
+      seed: () => OnboardingState.initial(
         sessionId: 'test_id',
         sessionEntryTime: testTime,
         onboardingData: const OnboardingData(),
@@ -784,57 +790,33 @@ void main() {
       ),
       verify: (_) {
         verify(
-          () => mockOnboardingAnalytics.logStep(
-            stepName: OnboardingStep.brandsSelection.name,
-            durationSec: any(named: 'durationSec'),
-            extraParams: any(
-              named: 'extraParams',
-              that: isA<Map<String, Object>>().having(
-                (m) => m['brands_selected_count'],
-                'brands_selected_count',
-                1,
-              ),
-            ),
+          () => mockOnboardingAnalytics.logStepViewed(
+            step: OnboardingStep.analyzingSelectedBrands,
+            prevDurationSec: any(named: 'prevDurationSec'),
+            brandsSelectedCount: 1,
           ),
         ).called(1);
       },
     );
 
     blocTest<OnboardingBloc, OnboardingState>(
-      'profileReadyContinuePressed_logsAnalyticsAndDuration',
-      build: () => bloc,
-      act: (bloc) =>
-          bloc.add(const OnboardingEvent.profileReadyContinuePressed()),
-      verify: (_) {
-        verify(
-          () => mockOnboardingAnalytics.logStep(
-            stepName: OnboardingStep.profileReady.name,
-            durationSec: any(named: 'durationSec'),
-            extraParams: any(named: 'extraParams'),
-          ),
-        ).called(1);
-      },
-    );
-
-    blocTest<OnboardingBloc, OnboardingState>(
-      'landingPageViewed_dispatchesStepViewed',
+      'landingPageViewed_logsLandingStepEntry',
       build: () => bloc,
       act: (bloc) => bloc.add(const OnboardingEvent.landingPageViewed()),
       wait: const Duration(milliseconds: 100),
       verify: (_) {
-        verifyNever(
-          () => mockOnboardingAnalytics.logStep(
-            stepName: any(named: 'stepName'),
-            durationSec: any(named: 'durationSec'),
+        verify(
+          () => mockOnboardingAnalytics.logStepViewed(
+            step: OnboardingStep.landing,
           ),
-        );
+        ).called(1);
       },
     );
 
     blocTest<OnboardingBloc, OnboardingState>(
       'stepViewed_duplicateStep_logsNothingAndDoesNotEmit',
       build: () => bloc,
-      seed: () => OnboardingState(
+      seed: () => OnboardingState.initial(
         sessionId: 'test_id',
         sessionEntryTime: testTime,
         onboardingData: const OnboardingData(),
@@ -845,14 +827,17 @@ void main() {
       expect: () => [],
       verify: (_) {
         verifyNever(
-          () => mockOnboardingAnalytics.logStep(
-            stepName: any(named: 'stepName'),
-            durationSec: any(named: 'durationSec'),
+          () => mockOnboardingAnalytics.logStepViewed(
+            step: any(named: 'step'),
+            prevDurationSec: any(named: 'prevDurationSec'),
+            selectedSector: any(named: 'selectedSector'),
+            brandsSelectedCount: any(named: 'brandsSelectedCount'),
+            experienceSelected: any(named: 'experienceSelected'),
+            notificationsEnabled: any(named: 'notificationsEnabled'),
+            didSubscribe: any(named: 'didSubscribe'),
+            subscriptionType: any(named: 'subscriptionType'),
+            highlightsSkipped: any(named: 'highlightsSkipped'),
           ),
-        );
-        verifyNever(
-          () =>
-              mockOnboardingAnalytics.logStep(stepName: any(named: 'stepName')),
         );
       },
     );
@@ -860,7 +845,7 @@ void main() {
     blocTest<OnboardingBloc, OnboardingState>(
       'stepViewed_analyzingSelectedBrands_logsWhenMovingToNextStep',
       build: () => bloc,
-      seed: () => OnboardingState(
+      seed: () => OnboardingState.initial(
         sessionId: 'test_id',
         sessionEntryTime: testTime,
         onboardingData: const OnboardingData(),
@@ -874,10 +859,9 @@ void main() {
       ),
       verify: (_) {
         verify(
-          () => mockOnboardingAnalytics.logStep(
-            stepName: OnboardingStep.analyzingSelectedBrands.name,
-            durationSec: any(named: 'durationSec'),
-            extraParams: any(named: 'extraParams'),
+          () => mockOnboardingAnalytics.logStepViewed(
+            step: OnboardingStep.companiesFound,
+            prevDurationSec: any(named: 'prevDurationSec'),
           ),
         ).called(1);
       },
@@ -886,7 +870,7 @@ void main() {
     blocTest<OnboardingBloc, OnboardingState>(
       'stepViewed_sectorSelection_logsWhenMovingToNextStep',
       build: () => bloc,
-      seed: () => OnboardingState(
+      seed: () => OnboardingState.initial(
         sessionId: 'test_id',
         sessionEntryTime: testTime,
         onboardingData: const OnboardingData(
@@ -902,17 +886,10 @@ void main() {
       ),
       verify: (_) {
         verify(
-          () => mockOnboardingAnalytics.logStep(
-            stepName: OnboardingStep.sectorSelection.name,
-            durationSec: any(named: 'durationSec'),
-            extraParams: any(
-              named: 'extraParams',
-              that: isA<Map<String, Object>>().having(
-                (m) => m['selected_sector'],
-                'selected_sector',
-                Sector.informationTechnology.name,
-              ),
-            ),
+          () => mockOnboardingAnalytics.logStepViewed(
+            step: OnboardingStep.meetYourBizzie,
+            prevDurationSec: any(named: 'prevDurationSec'),
+            selectedSector: Sector.informationTechnology.name,
           ),
         ).called(1);
       },

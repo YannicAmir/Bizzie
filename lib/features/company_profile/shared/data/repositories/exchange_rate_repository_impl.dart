@@ -3,7 +3,7 @@ import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/core/interfaces/i_device_locale_service.dart';
 import 'package:bizzie/core/interfaces/i_time_provider.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
-import 'package:bizzie/features/company_profile/financial_statements/data/datasources/financial_statements_firestore_data_source.dart';
+import 'package:bizzie/features/company_profile/financial_statements/data/interfaces/i_financial_statements_firestore_datasource.dart';
 import 'package:bizzie/features/company_profile/financial_statements/data/datasources/i_exchange_rate_remote_data_source.dart';
 import 'package:bizzie/features/company_profile/shared/domain/interfaces/i_exchange_rate_repository.dart';
 import 'package:dartz/dartz.dart';
@@ -17,7 +17,7 @@ class ExchangeRateRepositoryImpl implements IExchangeRateRepository {
   final IDeviceLocaleService _localeService;
   final ITimeProvider _timeProvider;
   final IExchangeRateRemoteDataSource _remoteDataSource;
-  final FinancialStatementsFirestoreDataSource _localDataSource;
+  final IFinancialStatementsFirestoreDataSource _localDataSource;
 
   ExchangeRateRepositoryImpl(
     this._localeService,

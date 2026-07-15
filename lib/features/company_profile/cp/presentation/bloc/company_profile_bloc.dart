@@ -7,13 +7,10 @@ import 'package:bizzie/core/enums/bizzie_lifecycle_state.dart';
 import 'package:bizzie/core/interfaces/i_lifecycle_service.dart';
 import 'package:bizzie/features/company_profile/cp/presentation/analytics/company_profile_analytics.dart';
 import 'package:bizzie/features/company_profile/cp/presentation/analytics/company_profile_session_mapper.dart';
+import 'package:bizzie/features/company_profile/cp/presentation/bloc/company_profile_event.dart';
 import 'package:bizzie/features/company_profile/cp/presentation/bloc/company_profile_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
-
-part 'company_profile_event.dart';
-part 'company_profile_bloc.freezed.dart';
 
 final _logger = BizzieLogger('CompanyProfileBloc');
 
@@ -44,14 +41,15 @@ class CompanyProfileBloc
     event.map(
       opened: (e) => _onOpened(e, emit),
       tabViewed: (e) => _onTabViewed(e, emit),
-      moreTabIndexChanged: (e) => _onMoreTabIndexChanged(e, emit),
+      editTabsOpened: (e) => _onEditTabsOpened(e, emit),
+      tabOrderSaved: (e) => _onTabOrderSaved(e, emit),
       watchlistStatusChanged: (e) => _onWatchlistStatusChanged(e, emit),
       lifecycleChanged: (e) => _onLifecycleChanged(e, emit),
       closed: (e) => _onClosed(e, emit),
     );
   }
 
-  void _onOpened(_Opened event, Emitter<CompanyProfileState> emit) {
+  void _onOpened(Opened event, Emitter<CompanyProfileState> emit) {
     final currentTicker = state.mapOrNull(active: (s) => s.ticker);
     if (currentTicker == event.ticker) {
       _logger.info(
@@ -80,12 +78,11 @@ class CompanyProfileBloc
         isEtf: event.isEtf,
         isFund: event.isFund,
         lifecycleState: BizzieLifecycleState.foreground,
-        moreTabIndex: 0,
       ),
     );
   }
 
-  void _onTabViewed(_TabViewed event, Emitter<CompanyProfileState> emit) {
+  void _onTabViewed(TabViewed event, Emitter<CompanyProfileState> emit) {
     state.mapOrNull(
       active: (s) {
         final newTabs = Set<String>.from(s.viewedTabs)..add(event.tabName);
@@ -94,15 +91,38 @@ class CompanyProfileBloc
     );
   }
 
-  void _onMoreTabIndexChanged(
-    _MoreTabIndexChanged event,
+  void _onEditTabsOpened(
+    EditTabsOpened event,
     Emitter<CompanyProfileState> emit,
   ) {
-    state.mapOrNull(active: (s) => emit(s.copyWith(moreTabIndex: event.index)));
+    state.mapOrNull(
+      active: (s) => unawaited(
+        _analytics.logEditTabsOpened(
+          ticker: s.ticker,
+          isSubscribed: event.isSubscribed,
+        ),
+      ),
+    );
+  }
+
+  void _onTabOrderSaved(
+    TabOrderSaved event,
+    Emitter<CompanyProfileState> emit,
+  ) {
+    state.mapOrNull(
+      active: (s) => unawaited(
+        _analytics.logEditTabsSaved(
+          ticker: s.ticker,
+          isSubscribed: event.isSubscribed,
+          mainTabs: event.mainTabs,
+          moreTabs: event.moreTabs,
+        ),
+      ),
+    );
   }
 
   void _onWatchlistStatusChanged(
-    _WatchlistStatusChanged event,
+    WatchlistStatusChanged event,
     Emitter<CompanyProfileState> emit,
   ) {
     state.mapOrNull(
@@ -111,7 +131,7 @@ class CompanyProfileBloc
   }
 
   void _onLifecycleChanged(
-    _LifecycleChanged event,
+    LifecycleChanged event,
     Emitter<CompanyProfileState> emit,
   ) {
     state.mapOrNull(
@@ -141,7 +161,7 @@ class CompanyProfileBloc
     );
   }
 
-  void _onClosed(_Closed event, Emitter<CompanyProfileState> emit) {
+  void _onClosed(Closed event, Emitter<CompanyProfileState> emit) {
     state.mapOrNull(
       active: (s) {
         _sessionStopwatch.stop();
@@ -161,11 +181,7 @@ class CompanyProfileBloc
   void _logSnapshot(Active activeState, {required bool isFinal}) {
     final summary = activeState.toSummary(isFinal: isFinal);
     if (summary != null) {
-      try {
-        _analytics.logSessionSummary(summary);
-      } catch (e, s) {
-        _logger.severe('Failed to log session summary', e, s);
-      }
+      unawaited(_analytics.logSessionSummary(summary));
     }
   }
 

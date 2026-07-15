@@ -5,7 +5,8 @@ import 'package:bizzie/features/company_profile/business/presentation/bloc/compa
 import 'package:bizzie/features/company_profile/business/presentation/widgets/company_info_card.dart';
 import 'package:bizzie/features/company_profile/business/presentation/widgets/company_description_card.dart';
 import 'package:bizzie/features/company_profile/business/presentation/widgets/sec_filings_card.dart';
-import 'package:bizzie/features/company_profile/shared/presentation/enums/company_profile_tab.dart';
+import 'package:bizzie/features/company_profile/shared/domain/enums/company_profile_tab.dart';
+import 'package:bizzie/features/company_profile/shared/presentation/extensions/company_profile_tab_x.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/widgets/company_profile_error_state.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/widgets/company_profile_loading_state.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/widgets/tab_visibility_observer.dart';
@@ -24,6 +25,14 @@ class BusinessTab extends StatefulWidget {
 
 class _BusinessTabState extends State<BusinessTab>
     with AutomaticKeepAliveClientMixin {
+  @override
+  void initState() {
+    super.initState();
+    context.read<CompanyBusinessBloc>().add(
+      CompanyBusinessEvent.stalenessCheckRequested(widget.ticker),
+    );
+  }
+
   @override
   bool get wantKeepAlive => true;
 
@@ -49,7 +58,7 @@ class _BusinessTabState extends State<BusinessTab>
                 const CompanyProfileLoadingState(message: 'Loading Business'),
             loading: (_) =>
                 const CompanyProfileLoadingState(message: 'Loading Business'),
-            failure: (f) => CompanyProfileErrorState(
+            failure: (_) => CompanyProfileErrorState(
               message: 'Error loading business',
               onRetry: () => context.read<CompanyBusinessBloc>().add(
                 CompanyBusinessEvent.loadRequested(widget.ticker),

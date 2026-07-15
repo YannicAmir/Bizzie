@@ -55,7 +55,7 @@ extension CompanyFcpsEventPatterns on CompanyFcpsEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( LoadRequested value)?  loadRequested,TResult Function( StalenessCheckRequested value)?  stalenessCheckRequested,TResult Function( TabShown value)?  tabShown,TResult Function( TabHidden value)?  tabHidden,TResult Function( AppBackgrounded value)?  appBackgrounded,TResult Function( AppForegrounded value)?  appForegrounded,TResult Function( PeriodViewed value)?  periodViewed,TResult Function( ViewAllTapped value)?  viewAllTapped,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( LoadRequested value)?  loadRequested,TResult Function( StalenessCheckRequested value)?  stalenessCheckRequested,TResult Function( TabShown value)?  tabShown,TResult Function( TabHidden value)?  tabHidden,TResult Function( AppBackgrounded value)?  appBackgrounded,TResult Function( AppForegrounded value)?  appForegrounded,TResult Function( PeriodChanged value)?  periodChanged,TResult Function( ViewAllTapped value)?  viewAllTapped,TResult Function( Reset value)?  reset,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case LoadRequested() when loadRequested != null:
@@ -64,9 +64,10 @@ return stalenessCheckRequested(_that);case TabShown() when tabShown != null:
 return tabShown(_that);case TabHidden() when tabHidden != null:
 return tabHidden(_that);case AppBackgrounded() when appBackgrounded != null:
 return appBackgrounded(_that);case AppForegrounded() when appForegrounded != null:
-return appForegrounded(_that);case PeriodViewed() when periodViewed != null:
-return periodViewed(_that);case ViewAllTapped() when viewAllTapped != null:
-return viewAllTapped(_that);case _:
+return appForegrounded(_that);case PeriodChanged() when periodChanged != null:
+return periodChanged(_that);case ViewAllTapped() when viewAllTapped != null:
+return viewAllTapped(_that);case Reset() when reset != null:
+return reset(_that);case _:
   return orElse();
 
 }
@@ -84,7 +85,7 @@ return viewAllTapped(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( LoadRequested value)  loadRequested,required TResult Function( StalenessCheckRequested value)  stalenessCheckRequested,required TResult Function( TabShown value)  tabShown,required TResult Function( TabHidden value)  tabHidden,required TResult Function( AppBackgrounded value)  appBackgrounded,required TResult Function( AppForegrounded value)  appForegrounded,required TResult Function( PeriodViewed value)  periodViewed,required TResult Function( ViewAllTapped value)  viewAllTapped,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( LoadRequested value)  loadRequested,required TResult Function( StalenessCheckRequested value)  stalenessCheckRequested,required TResult Function( TabShown value)  tabShown,required TResult Function( TabHidden value)  tabHidden,required TResult Function( AppBackgrounded value)  appBackgrounded,required TResult Function( AppForegrounded value)  appForegrounded,required TResult Function( PeriodChanged value)  periodChanged,required TResult Function( ViewAllTapped value)  viewAllTapped,required TResult Function( Reset value)  reset,}){
 final _that = this;
 switch (_that) {
 case LoadRequested():
@@ -93,12 +94,10 @@ return stalenessCheckRequested(_that);case TabShown():
 return tabShown(_that);case TabHidden():
 return tabHidden(_that);case AppBackgrounded():
 return appBackgrounded(_that);case AppForegrounded():
-return appForegrounded(_that);case PeriodViewed():
-return periodViewed(_that);case ViewAllTapped():
-return viewAllTapped(_that);case _:
-  throw StateError('Unexpected subclass');
-
-}
+return appForegrounded(_that);case PeriodChanged():
+return periodChanged(_that);case ViewAllTapped():
+return viewAllTapped(_that);case Reset():
+return reset(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -112,7 +111,7 @@ return viewAllTapped(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( LoadRequested value)?  loadRequested,TResult? Function( StalenessCheckRequested value)?  stalenessCheckRequested,TResult? Function( TabShown value)?  tabShown,TResult? Function( TabHidden value)?  tabHidden,TResult? Function( AppBackgrounded value)?  appBackgrounded,TResult? Function( AppForegrounded value)?  appForegrounded,TResult? Function( PeriodViewed value)?  periodViewed,TResult? Function( ViewAllTapped value)?  viewAllTapped,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( LoadRequested value)?  loadRequested,TResult? Function( StalenessCheckRequested value)?  stalenessCheckRequested,TResult? Function( TabShown value)?  tabShown,TResult? Function( TabHidden value)?  tabHidden,TResult? Function( AppBackgrounded value)?  appBackgrounded,TResult? Function( AppForegrounded value)?  appForegrounded,TResult? Function( PeriodChanged value)?  periodChanged,TResult? Function( ViewAllTapped value)?  viewAllTapped,TResult? Function( Reset value)?  reset,}){
 final _that = this;
 switch (_that) {
 case LoadRequested() when loadRequested != null:
@@ -121,9 +120,10 @@ return stalenessCheckRequested(_that);case TabShown() when tabShown != null:
 return tabShown(_that);case TabHidden() when tabHidden != null:
 return tabHidden(_that);case AppBackgrounded() when appBackgrounded != null:
 return appBackgrounded(_that);case AppForegrounded() when appForegrounded != null:
-return appForegrounded(_that);case PeriodViewed() when periodViewed != null:
-return periodViewed(_that);case ViewAllTapped() when viewAllTapped != null:
-return viewAllTapped(_that);case _:
+return appForegrounded(_that);case PeriodChanged() when periodChanged != null:
+return periodChanged(_that);case ViewAllTapped() when viewAllTapped != null:
+return viewAllTapped(_that);case Reset() when reset != null:
+return reset(_that);case _:
   return null;
 
 }
@@ -140,7 +140,7 @@ return viewAllTapped(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String ticker,  bool forceRefresh)?  loadRequested,TResult Function( String ticker)?  stalenessCheckRequested,TResult Function( String ticker)?  tabShown,TResult Function()?  tabHidden,TResult Function()?  appBackgrounded,TResult Function()?  appForegrounded,TResult Function( bool isAnnual)?  periodViewed,TResult Function( bool isAnnual,  bool isChart)?  viewAllTapped,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String ticker,  bool forceRefresh)?  loadRequested,TResult Function( String ticker)?  stalenessCheckRequested,TResult Function( String ticker)?  tabShown,TResult Function()?  tabHidden,TResult Function()?  appBackgrounded,TResult Function()?  appForegrounded,TResult Function( bool isAnnual)?  periodChanged,TResult Function( bool isAnnual,  bool isChart)?  viewAllTapped,TResult Function()?  reset,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case LoadRequested() when loadRequested != null:
 return loadRequested(_that.ticker,_that.forceRefresh);case StalenessCheckRequested() when stalenessCheckRequested != null:
@@ -148,9 +148,10 @@ return stalenessCheckRequested(_that.ticker);case TabShown() when tabShown != nu
 return tabShown(_that.ticker);case TabHidden() when tabHidden != null:
 return tabHidden();case AppBackgrounded() when appBackgrounded != null:
 return appBackgrounded();case AppForegrounded() when appForegrounded != null:
-return appForegrounded();case PeriodViewed() when periodViewed != null:
-return periodViewed(_that.isAnnual);case ViewAllTapped() when viewAllTapped != null:
-return viewAllTapped(_that.isAnnual,_that.isChart);case _:
+return appForegrounded();case PeriodChanged() when periodChanged != null:
+return periodChanged(_that.isAnnual);case ViewAllTapped() when viewAllTapped != null:
+return viewAllTapped(_that.isAnnual,_that.isChart);case Reset() when reset != null:
+return reset();case _:
   return orElse();
 
 }
@@ -168,7 +169,7 @@ return viewAllTapped(_that.isAnnual,_that.isChart);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String ticker,  bool forceRefresh)  loadRequested,required TResult Function( String ticker)  stalenessCheckRequested,required TResult Function( String ticker)  tabShown,required TResult Function()  tabHidden,required TResult Function()  appBackgrounded,required TResult Function()  appForegrounded,required TResult Function( bool isAnnual)  periodViewed,required TResult Function( bool isAnnual,  bool isChart)  viewAllTapped,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String ticker,  bool forceRefresh)  loadRequested,required TResult Function( String ticker)  stalenessCheckRequested,required TResult Function( String ticker)  tabShown,required TResult Function()  tabHidden,required TResult Function()  appBackgrounded,required TResult Function()  appForegrounded,required TResult Function( bool isAnnual)  periodChanged,required TResult Function( bool isAnnual,  bool isChart)  viewAllTapped,required TResult Function()  reset,}) {final _that = this;
 switch (_that) {
 case LoadRequested():
 return loadRequested(_that.ticker,_that.forceRefresh);case StalenessCheckRequested():
@@ -176,12 +177,10 @@ return stalenessCheckRequested(_that.ticker);case TabShown():
 return tabShown(_that.ticker);case TabHidden():
 return tabHidden();case AppBackgrounded():
 return appBackgrounded();case AppForegrounded():
-return appForegrounded();case PeriodViewed():
-return periodViewed(_that.isAnnual);case ViewAllTapped():
-return viewAllTapped(_that.isAnnual,_that.isChart);case _:
-  throw StateError('Unexpected subclass');
-
-}
+return appForegrounded();case PeriodChanged():
+return periodChanged(_that.isAnnual);case ViewAllTapped():
+return viewAllTapped(_that.isAnnual,_that.isChart);case Reset():
+return reset();}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -195,7 +194,7 @@ return viewAllTapped(_that.isAnnual,_that.isChart);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String ticker,  bool forceRefresh)?  loadRequested,TResult? Function( String ticker)?  stalenessCheckRequested,TResult? Function( String ticker)?  tabShown,TResult? Function()?  tabHidden,TResult? Function()?  appBackgrounded,TResult? Function()?  appForegrounded,TResult? Function( bool isAnnual)?  periodViewed,TResult? Function( bool isAnnual,  bool isChart)?  viewAllTapped,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String ticker,  bool forceRefresh)?  loadRequested,TResult? Function( String ticker)?  stalenessCheckRequested,TResult? Function( String ticker)?  tabShown,TResult? Function()?  tabHidden,TResult? Function()?  appBackgrounded,TResult? Function()?  appForegrounded,TResult? Function( bool isAnnual)?  periodChanged,TResult? Function( bool isAnnual,  bool isChart)?  viewAllTapped,TResult? Function()?  reset,}) {final _that = this;
 switch (_that) {
 case LoadRequested() when loadRequested != null:
 return loadRequested(_that.ticker,_that.forceRefresh);case StalenessCheckRequested() when stalenessCheckRequested != null:
@@ -203,9 +202,10 @@ return stalenessCheckRequested(_that.ticker);case TabShown() when tabShown != nu
 return tabShown(_that.ticker);case TabHidden() when tabHidden != null:
 return tabHidden();case AppBackgrounded() when appBackgrounded != null:
 return appBackgrounded();case AppForegrounded() when appForegrounded != null:
-return appForegrounded();case PeriodViewed() when periodViewed != null:
-return periodViewed(_that.isAnnual);case ViewAllTapped() when viewAllTapped != null:
-return viewAllTapped(_that.isAnnual,_that.isChart);case _:
+return appForegrounded();case PeriodChanged() when periodChanged != null:
+return periodChanged(_that.isAnnual);case ViewAllTapped() when viewAllTapped != null:
+return viewAllTapped(_that.isAnnual,_that.isChart);case Reset() when reset != null:
+return reset();case _:
   return null;
 
 }
@@ -512,8 +512,8 @@ String toString() {
 /// @nodoc
 
 
-class PeriodViewed implements CompanyFcpsEvent {
-  const PeriodViewed({required this.isAnnual});
+class PeriodChanged implements CompanyFcpsEvent {
+  const PeriodChanged({required this.isAnnual});
   
 
  final  bool isAnnual;
@@ -522,13 +522,13 @@ class PeriodViewed implements CompanyFcpsEvent {
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-$PeriodViewedCopyWith<PeriodViewed> get copyWith => _$PeriodViewedCopyWithImpl<PeriodViewed>(this, _$identity);
+$PeriodChangedCopyWith<PeriodChanged> get copyWith => _$PeriodChangedCopyWithImpl<PeriodChanged>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PeriodViewed&&(identical(other.isAnnual, isAnnual) || other.isAnnual == isAnnual));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PeriodChanged&&(identical(other.isAnnual, isAnnual) || other.isAnnual == isAnnual));
 }
 
 
@@ -537,15 +537,15 @@ int get hashCode => Object.hash(runtimeType,isAnnual);
 
 @override
 String toString() {
-  return 'CompanyFcpsEvent.periodViewed(isAnnual: $isAnnual)';
+  return 'CompanyFcpsEvent.periodChanged(isAnnual: $isAnnual)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class $PeriodViewedCopyWith<$Res> implements $CompanyFcpsEventCopyWith<$Res> {
-  factory $PeriodViewedCopyWith(PeriodViewed value, $Res Function(PeriodViewed) _then) = _$PeriodViewedCopyWithImpl;
+abstract mixin class $PeriodChangedCopyWith<$Res> implements $CompanyFcpsEventCopyWith<$Res> {
+  factory $PeriodChangedCopyWith(PeriodChanged value, $Res Function(PeriodChanged) _then) = _$PeriodChangedCopyWithImpl;
 @useResult
 $Res call({
  bool isAnnual
@@ -556,17 +556,17 @@ $Res call({
 
 }
 /// @nodoc
-class _$PeriodViewedCopyWithImpl<$Res>
-    implements $PeriodViewedCopyWith<$Res> {
-  _$PeriodViewedCopyWithImpl(this._self, this._then);
+class _$PeriodChangedCopyWithImpl<$Res>
+    implements $PeriodChangedCopyWith<$Res> {
+  _$PeriodChangedCopyWithImpl(this._self, this._then);
 
-  final PeriodViewed _self;
-  final $Res Function(PeriodViewed) _then;
+  final PeriodChanged _self;
+  final $Res Function(PeriodChanged) _then;
 
 /// Create a copy of CompanyFcpsEvent
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? isAnnual = null,}) {
-  return _then(PeriodViewed(
+  return _then(PeriodChanged(
 isAnnual: null == isAnnual ? _self.isAnnual : isAnnual // ignore: cast_nullable_to_non_nullable
 as bool,
   ));
@@ -642,5 +642,37 @@ as bool,
 
 
 }
+
+/// @nodoc
+
+
+class Reset implements CompanyFcpsEvent {
+  const Reset();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Reset);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'CompanyFcpsEvent.reset()';
+}
+
+
+}
+
+
+
 
 // dart format on

@@ -21,7 +21,7 @@ class _AnalyzingBrandsPageState extends State<AnalyzingBrandsPage> {
   @override
   void initState() {
     super.initState();
-    context.read<OnboardingBloc>().add(const OnboardingEvent.startAnalysis());
+    context.read<OnboardingBloc>().add(const OnboardingEvent.analysisStarted());
     context.read<OnboardingBloc>().add(
       const OnboardingEvent.stepViewed(OnboardingStep.analyzingSelectedBrands),
     );

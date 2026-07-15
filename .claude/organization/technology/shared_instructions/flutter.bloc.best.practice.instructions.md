@@ -29,7 +29,7 @@ Rules:
 File: `<feature>_event.dart`
 
 Rules:
-- `@freezed class XxxEvent with _$XxxEvent` (not `abstract class`)
+- `@freezed sealed class XxxEvent with _$XxxEvent` (freezed 3.x requires `sealed` for event unions; not `abstract class`)
 - `part '<feature>_event.freezed.dart'` directive required
 - Concrete event class names in action noun or past tense: `Started`, `AddRequested`, `Reset`
 - Required fields use `required`; optional fields are nullable
@@ -62,6 +62,9 @@ Rules:
 - Emit `XxxState.loading()` before async calls where a loading indicator is needed
 - For Firestore streams use `emit.forEach<Either<Failure, T>>(stream, onData: ...)` — never `await for`
 - Log analytics via the injected tracker inside the handler — never in the widget
+- **Single responsibility — keep handlers thin (~30 lines max).** A handler orchestrates exactly: guard/short-circuit → emit loading → invoke use case → fold and emit. Every other concern (analytics metrics construction, data-to-view-model mapping, staleness/guard evaluation) must be extracted into named private helpers or a shared mixin — never inlined in the handler body
+- **No duplicated blocks between fold branches.** If the failure and success branches build the same structure (e.g. analytics metrics differing only in a flag), extract one helper parameterised by the difference
+- **No no-op event handlers (YAGNI).** If an event's handler body would be empty, the event must not exist — remove the entire pipeline together: the `const factory` event variant, the `on<>` registration, the handler method, and **every dispatch site** (`add(...)` calls in widgets, orchestrators, and other BLoCs). Never keep an empty handler as documentation (explain at the dispatch site instead) or register an event "for future use". Never delete only the handler/registration while dispatch sites remain — `Bloc.add` throws a `StateError` at runtime for events with no registered handler
 
 ---
 
@@ -128,10 +131,12 @@ build_runner -- run after any @freezed addition or change
 
 ## Checklist
 - [ ] State: `@freezed abstract class` with `const factory` variants and `part` directive
-- [ ] Event: `@freezed class` with `const factory` variants and `part` directive
+- [ ] Event: `@freezed sealed class` with `const factory` variants and `part` directive
 - [ ] BLoC: `@injectable`, positional constructor params, `on<>` registrations
 - [ ] `_logger = BizzieLogger('XxxBloc')` defined at **file level**
 - [ ] `Either<Failure, T>` results folded in event handlers
+- [ ] Event handlers ≤ ~30 lines, single responsibility — cross-cutting work (analytics metrics, mapping, guards) extracted to private helpers, no duplicated blocks between fold branches
+- [ ] No no-op event handlers — an event with an empty handler is removed end-to-end (variant + registration + handler + all dispatch sites), never partially
 - [ ] `restartable()` used for data-loading event handlers
 - [ ] `emit.forEach` / `emit.onEach` used for stream-backed handlers (not `await for`)
 - [ ] `StreamSubscription` cancelled in `close()` where applicable

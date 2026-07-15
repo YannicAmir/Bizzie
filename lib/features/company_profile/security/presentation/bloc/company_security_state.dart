@@ -13,10 +13,10 @@ abstract class CompanySecurityState with _$CompanySecurityState {
     SecurityDetails securityDetails, {
     required SecurityTabViewState analyticsState,
     DateTime? lastUpdated,
-  }) = _Loaded;
+  }) = SecurityLoaded;
   const factory CompanySecurityState.unsupported(
     SecurityDetails securityDetails, {
     required SecurityTabViewState analyticsState,
-  }) = _Unsupported;
+  }) = SecurityUnsupported;
   const factory CompanySecurityState.failure(Failure failure) = _Failure;
 }

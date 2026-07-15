@@ -11,8 +11,12 @@ import 'package:bizzie/features/company_profile/eps/presentation/analytics/eps_t
 import 'package:bloc_test/bloc_test.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mocktail/mocktail.dart';
 import 'package:bizzie/core/interfaces/i_config_service.dart';
+import 'package:bizzie/core/usecase/usecase.dart';
+import 'package:bizzie/features/company_profile/shared/domain/usecases/watch_active_tab_usecase.dart';
+import 'package:bizzie/core/interfaces/i_time_provider.dart';
+import 'package:mocktail/mocktail.dart';
+import 'package:bizzie/features/auth/domain/usecases/get_auth_stream.dart';
 
 class MockGetEpsStatsUseCase extends Mock implements GetEpsStatsUseCase {}
 
@@ -20,32 +24,30 @@ class MockConfigService extends Mock implements IConfigService {}
 
 class MockEpsTabAnalytics extends Mock implements EpsTabAnalytics {}
 
+class MockWatchActiveTabUseCase extends Mock implements WatchActiveTabUseCase {}
+
+class MockGetAuthStream extends Mock implements GetAuthStream {}
+
+MockGetAuthStream stubbedGetAuthStream() {
+  final mock = MockGetAuthStream();
+  when(() => mock()).thenAnswer((_) => const Stream.empty());
+  return mock;
+}
+
+class MockTimeProvider extends Mock implements ITimeProvider {}
+
+MockTimeProvider stubbedTimeProvider() {
+  final mock = MockTimeProvider();
+  when(() => mock.nowLocal).thenAnswer((_) => DateTime.now());
+  return mock;
+}
+
 void main() {
   late CompanyEpsBloc bloc;
   late MockGetEpsStatsUseCase mockGetEpsStatsUseCase;
   late MockConfigService mockConfigService;
   late MockEpsTabAnalytics mockAnalytics;
-
-  setUpAll(() {
-    registerFallbackValue(const EpsTabViewState(ticker: 'AAPL', timestamp: ''));
-  });
-
-  setUp(() {
-    mockGetEpsStatsUseCase = MockGetEpsStatsUseCase();
-    mockConfigService = MockConfigService();
-    mockAnalytics = MockEpsTabAnalytics();
-
-    when(() => mockConfigService.freePlanHistoryCount).thenReturn(7);
-    when(
-      () => mockAnalytics.logViewSummary(any(), isFinal: any(named: 'isFinal')),
-    ).thenAnswer((_) async {});
-
-    bloc = CompanyEpsBloc(
-      mockGetEpsStatsUseCase,
-      mockConfigService,
-      mockAnalytics,
-    );
-  });
+  late MockWatchActiveTabUseCase mockWatchActiveTabUseCase;
 
   const tTicker = 'AAPL';
   const tEpsStats = EpsStats(
@@ -58,6 +60,38 @@ void main() {
       FinancialDataPoint(date: '2023-07-01', period: 'Q3', value: 1.26),
     ],
   );
+
+  setUpAll(() {
+    registerFallbackValue(NoParams());
+    registerFallbackValue(const EpsTabViewState(ticker: 'AAPL', timestamp: ''));
+  });
+
+  setUp(() {
+    mockGetEpsStatsUseCase = MockGetEpsStatsUseCase();
+    mockConfigService = MockConfigService();
+    mockAnalytics = MockEpsTabAnalytics();
+    mockWatchActiveTabUseCase = MockWatchActiveTabUseCase();
+
+    when(() => mockConfigService.freePlanHistoryCount).thenReturn(7);
+    when(
+      () => mockAnalytics.logViewSummary(any(), isFinal: any(named: 'isFinal')),
+    ).thenAnswer((_) async {});
+    when(
+      () => mockWatchActiveTabUseCase(any()),
+    ).thenAnswer((_) => const Stream.empty());
+    when(() => mockGetEpsStatsUseCase(any())).thenAnswer(
+      (_) async => Right((tEpsStats, CompanyProfileDataOrigin.cache)),
+    );
+
+    bloc = CompanyEpsBloc(
+      mockGetEpsStatsUseCase,
+      mockConfigService,
+      mockAnalytics,
+      mockWatchActiveTabUseCase,
+      stubbedTimeProvider(),
+      stubbedGetAuthStream(),
+    );
+  });
 
   test('initialState_isCorrect', () {
     // act & assert
@@ -112,6 +146,8 @@ void main() {
         // act
         ..add(const CompanyEpsEvent.tabShown(tTicker))
         ..add(const CompanyEpsEvent.loadRequested(tTicker)),
+      skip:
+          2, // tabShown triggers stalenessCheck → loadRequested → loading + failure (1st cycle)
       expect: () => [
         // assert
         const CompanyEpsState.loading(),
@@ -124,10 +160,11 @@ void main() {
     final tLoadedState = CompanyEpsState.loaded(
       ticker: tTicker,
       epsStats: tEpsStats,
-      annualChartData: [],
-      quarterlyChartData: [],
+      annualChartData: const [],
+      quarterlyChartData: const [],
       historyLimit: 7,
       dataOrigin: CompanyProfileDataOrigin.api,
+      lastUpdated: DateTime.now(),
       analyticsState: const EpsTabViewState(
         ticker: tTicker,
         timestamp: '2024-01-01',
@@ -135,25 +172,39 @@ void main() {
     );
 
     blocTest<CompanyEpsBloc, CompanyEpsState>(
-      'periodViewed_updatesAnalyticsState',
+      'periodChanged_updatesAnalyticsState',
       build: () => bloc,
       seed: () => tLoadedState, // arrange
       act: (bloc) => bloc
         // act
         ..add(const CompanyEpsEvent.tabShown(tTicker))
-        ..add(const CompanyEpsEvent.periodViewed(isAnnual: true)),
-      expect: () => [
+        ..add(const CompanyEpsEvent.periodChanged(isAnnual: true)),
+      expect: () => const <CompanyEpsState>[],
+      verify: (bloc) {
         // assert
-        isA<CompanyEpsState>(),
+        expect(bloc.analyticsSession?.viewedYearlyEpsTab, isTrue);
+      },
+    );
+
+    blocTest<CompanyEpsBloc, CompanyEpsState>(
+      'periodChanged_toDifferentValue_emitsUpdatedIsAnnualView',
+      build: () => bloc,
+      seed: () => tLoadedState, // arrange
+      act: (bloc) => bloc
+        // act
+        ..add(const CompanyEpsEvent.tabShown(tTicker))
+        ..add(const CompanyEpsEvent.periodChanged(isAnnual: false)),
+      expect: () => [
         isA<CompanyEpsState>().having(
-          (s) => s.maybeMap(
-            loaded: (l) => l.analyticsState?.viewedYearlyEpsTab,
-            orElse: () => null,
-          ),
-          'viewedYearlyEpsTab',
-          true,
+          (s) => s.maybeMap(loaded: (l) => l.isAnnualView, orElse: () => null),
+          'isAnnualView',
+          false,
         ),
       ],
+      verify: (bloc) {
+        // assert
+        expect(bloc.analyticsSession?.viewedQtrlyEpsTab, isTrue);
+      },
     );
 
     blocTest<CompanyEpsBloc, CompanyEpsState>(
@@ -175,30 +226,14 @@ void main() {
         ..add(
           const CompanyEpsEvent.viewAllTapped(isAnnual: false, isChart: false),
         ),
-      expect: () => [
+      expect: () => const <CompanyEpsState>[],
+      verify: (bloc) {
         // assert
-        isA<CompanyEpsState>(),
-        isA<CompanyEpsState>().having(
-          (s) => (s as dynamic).analyticsState?.tappedYrchartViewAll,
-          'tappedYrchartViewAll',
-          true,
-        ),
-        isA<CompanyEpsState>().having(
-          (s) => (s as dynamic).analyticsState?.tappedYrtableViewAll,
-          'tappedYrtableViewAll',
-          true,
-        ),
-        isA<CompanyEpsState>().having(
-          (s) => (s as dynamic).analyticsState?.tappedQtrchartViewAll,
-          'tappedQtrchartViewAll',
-          true,
-        ),
-        isA<CompanyEpsState>().having(
-          (s) => (s as dynamic).analyticsState?.tappedQtrtableViewAll,
-          'tappedQtrtableViewAll',
-          true,
-        ),
-      ],
+        expect(bloc.analyticsSession?.tappedYrchartViewAll, isTrue);
+        expect(bloc.analyticsSession?.tappedYrtableViewAll, isTrue);
+        expect(bloc.analyticsSession?.tappedQtrchartViewAll, isTrue);
+        expect(bloc.analyticsSession?.tappedQtrtableViewAll, isTrue);
+      },
     );
 
     blocTest<CompanyEpsBloc, CompanyEpsState>(
@@ -234,26 +269,12 @@ void main() {
           bloc
           // act
           .add(const CompanyEpsEvent.tabShown(tTicker)),
-      expect: () => [
+      expect: () => const <CompanyEpsState>[],
+      verify: (bloc) {
         // assert
-        isA<CompanyEpsState>()
-            .having(
-              (s) => s.maybeMap(
-                loaded: (l) => l.analyticsState?.isSuccess,
-                orElse: () => null,
-              ),
-              'isSuccess',
-              true,
-            )
-            .having(
-              (s) => s.maybeMap(
-                loaded: (l) => l.analyticsState?.loadTimeMs,
-                orElse: () => null,
-              ),
-              'loadTimeMs',
-              123,
-            ),
-      ],
+        expect(bloc.analyticsSession?.isSuccess, isTrue);
+        expect(bloc.analyticsSession?.loadTimeMs, 123);
+      },
     );
   });
 }

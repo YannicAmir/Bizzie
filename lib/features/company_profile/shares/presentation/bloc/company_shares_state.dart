@@ -9,7 +9,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'company_shares_state.freezed.dart';
 
 @freezed
-class CompanySharesState with _$CompanySharesState {
+abstract class CompanySharesState with _$CompanySharesState {
   const factory CompanySharesState.initial() = _Initial;
   const factory CompanySharesState.loading() = _Loading;
   const factory CompanySharesState.loaded({
@@ -21,8 +21,9 @@ class CompanySharesState with _$CompanySharesState {
     required SharesSummaryData quarterlySummary,
     required int historyLimit,
     required CompanyProfileDataOrigin dataOrigin,
+    @Default(true) bool isAnnualView,
     DateTime? lastUpdated,
     SharesTabViewState? analyticsState,
-  }) = _Loaded;
+  }) = CompanySharesLoaded;
   const factory CompanySharesState.failure(Failure failure) = _Failure;
 }

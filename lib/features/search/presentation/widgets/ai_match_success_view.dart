@@ -6,7 +6,7 @@ import 'package:bizzie/app/themes/app_theme.dart';
 import 'package:bizzie/features/search/domain/models/stock_symbol.dart';
 import 'package:bizzie/shared/widgets/company_list_tile.dart';
 import 'package:bizzie/app/routes/app_routes.dart';
-import 'package:bizzie/features/onboarding/domain/models/company.dart';
+import 'package:bizzie/core/domain/models/company.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:bizzie/features/search/domain/enums/search_analytics_enums.dart';

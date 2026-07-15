@@ -25,6 +25,10 @@ class StorageConstants {
   static const String marketDataSnapshot =
       '${_globalPrefix}market_data_snapshot';
 
+  // Feature: Company Profile (Tab layout)
+  static const String companyProfileMainTabs = '${_globalPrefix}cp_main_tabs';
+  static const String companyProfileMoreTabs = '${_globalPrefix}cp_more_tabs';
+
   // Feature: App Status (Update management)
   static const String cachedMinAppVersion =
       '${_globalPrefix}cached_min_app_version';

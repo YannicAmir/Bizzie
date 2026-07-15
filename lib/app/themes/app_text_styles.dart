@@ -129,6 +129,22 @@ class AppTextStyles {
     letterSpacing: -0.2344,
   );
 
+  // Charts
+  static final TextStyle chartDataLabel = GoogleFonts.inter(
+    fontSize: 12,
+    fontWeight: FontWeight.w600,
+    height: 1.2,
+    letterSpacing: -0.2,
+    color: AppColors.textPrimary,
+  );
+
+  static final TextStyle chartCenterMetricLabel = GoogleFonts.inter(
+    fontSize: 13,
+    fontWeight: FontWeight.w500,
+    letterSpacing: -0.2,
+    color: AppColors.textSecondary,
+  );
+
   static final TextStyle caption = GoogleFonts.inter(
     fontSize: 15,
     fontWeight: FontWeight.normal,

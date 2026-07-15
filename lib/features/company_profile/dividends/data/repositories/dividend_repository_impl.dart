@@ -1,6 +1,6 @@
 import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:bizzie/core/error/failures.dart';
-import 'package:bizzie/features/company_profile/dividends/data/datasources/dividends_firestore_data_source.dart';
+import 'package:bizzie/features/company_profile/dividends/data/interfaces/i_dividends_firestore_datasource.dart';
 import 'package:bizzie/features/company_profile/dividends/data/datasources/dividends_remote_data_source.dart';
 import 'package:bizzie/features/company_profile/dividends/domain/interfaces/i_dividend_repository.dart';
 import 'package:bizzie/features/company_profile/dividends/domain/models/dividend_info.dart';
@@ -10,7 +10,7 @@ import 'package:injectable/injectable.dart';
 @LazySingleton(as: IDividendRepository)
 class DividendRepositoryImpl implements IDividendRepository {
   final DividendsRemoteDataSource _remoteDataSource;
-  final DividendsFirestoreDataSource _localDataSource;
+  final IDividendsFirestoreDataSource _localDataSource;
 
   DividendRepositoryImpl(this._remoteDataSource, this._localDataSource);
 

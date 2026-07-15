@@ -1,6 +1,6 @@
 import 'package:bizzie/features/user/data/dtos/user_dto.dart';
 import 'package:bizzie/features/onboarding/data/repositories/onboarding_repository_impl.dart';
-import 'package:bizzie/features/onboarding/domain/models/company.dart';
+import 'package:bizzie/core/domain/models/company.dart';
 
 import 'package:bizzie/core/domain/models/sector.dart';
 import 'package:bizzie/features/user/domain/enums/investing_experience.dart';

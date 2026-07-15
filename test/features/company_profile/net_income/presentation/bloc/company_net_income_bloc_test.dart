@@ -11,8 +11,12 @@ import 'package:bizzie/features/company_profile/net_income/presentation/analytic
 import 'package:bloc_test/bloc_test.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mocktail/mocktail.dart';
 import 'package:bizzie/core/interfaces/i_config_service.dart';
+import 'package:bizzie/core/usecase/usecase.dart';
+import 'package:bizzie/features/company_profile/shared/domain/usecases/watch_active_tab_usecase.dart';
+import 'package:bizzie/core/interfaces/i_time_provider.dart';
+import 'package:mocktail/mocktail.dart';
+import 'package:bizzie/features/auth/domain/usecases/get_auth_stream.dart';
 
 class MockGetNetIncomeStatsUseCase extends Mock
     implements GetNetIncomeStatsUseCase {}
@@ -21,13 +25,33 @@ class MockConfigService extends Mock implements IConfigService {}
 
 class MockNetIncomeTabAnalytics extends Mock implements NetIncomeTabAnalytics {}
 
+class MockWatchActiveTabUseCase extends Mock implements WatchActiveTabUseCase {}
+
+class MockGetAuthStream extends Mock implements GetAuthStream {}
+
+MockGetAuthStream stubbedGetAuthStream() {
+  final mock = MockGetAuthStream();
+  when(() => mock()).thenAnswer((_) => const Stream.empty());
+  return mock;
+}
+
+class MockTimeProvider extends Mock implements ITimeProvider {}
+
+MockTimeProvider stubbedTimeProvider() {
+  final mock = MockTimeProvider();
+  when(() => mock.nowLocal).thenAnswer((_) => DateTime.now());
+  return mock;
+}
+
 void main() {
   late CompanyNetIncomeBloc bloc;
   late MockGetNetIncomeStatsUseCase mockGetNetIncomeStats;
   late MockConfigService mockConfigService;
   late MockNetIncomeTabAnalytics mockTracker;
+  late MockWatchActiveTabUseCase mockWatchActiveTabUseCase;
 
   setUpAll(() {
+    registerFallbackValue(NoParams());
     registerFallbackValue(
       NetIncomeTabViewState(ticker: 'AAPL', timestamp: 'ts'),
     );
@@ -37,16 +61,23 @@ void main() {
     mockGetNetIncomeStats = MockGetNetIncomeStatsUseCase();
     mockConfigService = MockConfigService();
     mockTracker = MockNetIncomeTabAnalytics();
+    mockWatchActiveTabUseCase = MockWatchActiveTabUseCase();
 
     when(() => mockConfigService.freePlanHistoryCount).thenReturn(7);
     when(
       () => mockTracker.logViewSummary(any(), isFinal: any(named: 'isFinal')),
     ).thenAnswer((_) async {});
+    when(
+      () => mockWatchActiveTabUseCase(any()),
+    ).thenAnswer((_) => const Stream.empty());
 
     bloc = CompanyNetIncomeBloc(
       mockGetNetIncomeStats,
       mockConfigService,
       mockTracker,
+      mockWatchActiveTabUseCase,
+      stubbedTimeProvider(),
+      stubbedGetAuthStream(),
     );
   });
 
@@ -134,6 +165,7 @@ void main() {
       quarterlyChartData: const [],
       historyLimit: 7,
       dataOrigin: CompanyProfileDataOrigin.api,
+      lastUpdated: DateTime.now(),
       analyticsState: NetIncomeTabViewState(
         ticker: tTicker,
         timestamp: 'ts',
@@ -178,23 +210,19 @@ void main() {
     );
 
     blocTest<CompanyNetIncomeBloc, CompanyNetIncomeState>(
-      'periodViewed_updatesAnalyticsFlags',
+      'periodChanged_updatesAnalyticsFlags',
       build: () => bloc,
       seed: () => loadedState,
       act: (bloc) {
         // act
         bloc.add(const CompanyNetIncomeEvent.tabShown(tTicker));
-        bloc.add(const CompanyNetIncomeEvent.periodViewed(isAnnual: true));
-        bloc.add(const CompanyNetIncomeEvent.periodViewed(isAnnual: false));
+        bloc.add(const CompanyNetIncomeEvent.periodChanged(isAnnual: true));
+        bloc.add(const CompanyNetIncomeEvent.periodChanged(isAnnual: false));
       },
       verify: (_) {
         // assert
-        final state = bloc.state.maybeMap(
-          loaded: (l) => l.analyticsState,
-          orElse: () => null,
-        );
-        expect(state?.viewedYearlyNetTab, true);
-        expect(state?.viewedQtrlyNetTab, true);
+        expect(bloc.analyticsSession?.viewedYearlyNetTab, true);
+        expect(bloc.analyticsSession?.viewedQtrlyNetTab, true);
       },
     );
 
@@ -220,12 +248,8 @@ void main() {
       },
       verify: (_) {
         // assert
-        final state = bloc.state.maybeMap(
-          loaded: (l) => l.analyticsState,
-          orElse: () => null,
-        );
-        expect(state?.tappedYrchartViewAll, true);
-        expect(state?.tappedQtrtableViewAll, true);
+        expect(bloc.analyticsSession?.tappedYrchartViewAll, true);
+        expect(bloc.analyticsSession?.tappedQtrtableViewAll, true);
       },
     );
   });

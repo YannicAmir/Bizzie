@@ -55,13 +55,13 @@ extension CompanySecurityStatePatterns on CompanySecurityState {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Initial value)?  initial,TResult Function( _Loading value)?  loading,TResult Function( _Loaded value)?  loaded,TResult Function( _Unsupported value)?  unsupported,TResult Function( _Failure value)?  failure,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Initial value)?  initial,TResult Function( _Loading value)?  loading,TResult Function( SecurityLoaded value)?  loaded,TResult Function( SecurityUnsupported value)?  unsupported,TResult Function( _Failure value)?  failure,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial(_that);case _Loading() when loading != null:
-return loading(_that);case _Loaded() when loaded != null:
-return loaded(_that);case _Unsupported() when unsupported != null:
+return loading(_that);case SecurityLoaded() when loaded != null:
+return loaded(_that);case SecurityUnsupported() when unsupported != null:
 return unsupported(_that);case _Failure() when failure != null:
 return failure(_that);case _:
   return orElse();
@@ -81,13 +81,13 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Initial value)  initial,required TResult Function( _Loading value)  loading,required TResult Function( _Loaded value)  loaded,required TResult Function( _Unsupported value)  unsupported,required TResult Function( _Failure value)  failure,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Initial value)  initial,required TResult Function( _Loading value)  loading,required TResult Function( SecurityLoaded value)  loaded,required TResult Function( SecurityUnsupported value)  unsupported,required TResult Function( _Failure value)  failure,}){
 final _that = this;
 switch (_that) {
 case _Initial():
 return initial(_that);case _Loading():
-return loading(_that);case _Loaded():
-return loaded(_that);case _Unsupported():
+return loading(_that);case SecurityLoaded():
+return loaded(_that);case SecurityUnsupported():
 return unsupported(_that);case _Failure():
 return failure(_that);case _:
   throw StateError('Unexpected subclass');
@@ -106,13 +106,13 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Initial value)?  initial,TResult? Function( _Loading value)?  loading,TResult? Function( _Loaded value)?  loaded,TResult? Function( _Unsupported value)?  unsupported,TResult? Function( _Failure value)?  failure,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Initial value)?  initial,TResult? Function( _Loading value)?  loading,TResult? Function( SecurityLoaded value)?  loaded,TResult? Function( SecurityUnsupported value)?  unsupported,TResult? Function( _Failure value)?  failure,}){
 final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial(_that);case _Loading() when loading != null:
-return loading(_that);case _Loaded() when loaded != null:
-return loaded(_that);case _Unsupported() when unsupported != null:
+return loading(_that);case SecurityLoaded() when loaded != null:
+return loaded(_that);case SecurityUnsupported() when unsupported != null:
 return unsupported(_that);case _Failure() when failure != null:
 return failure(_that);case _:
   return null;
@@ -135,8 +135,8 @@ return failure(_that);case _:
 switch (_that) {
 case _Initial() when initial != null:
 return initial();case _Loading() when loading != null:
-return loading();case _Loaded() when loaded != null:
-return loaded(_that.securityDetails,_that.analyticsState,_that.lastUpdated);case _Unsupported() when unsupported != null:
+return loading();case SecurityLoaded() when loaded != null:
+return loaded(_that.securityDetails,_that.analyticsState,_that.lastUpdated);case SecurityUnsupported() when unsupported != null:
 return unsupported(_that.securityDetails,_that.analyticsState);case _Failure() when failure != null:
 return failure(_that.failure);case _:
   return orElse();
@@ -160,8 +160,8 @@ return failure(_that.failure);case _:
 switch (_that) {
 case _Initial():
 return initial();case _Loading():
-return loading();case _Loaded():
-return loaded(_that.securityDetails,_that.analyticsState,_that.lastUpdated);case _Unsupported():
+return loading();case SecurityLoaded():
+return loaded(_that.securityDetails,_that.analyticsState,_that.lastUpdated);case SecurityUnsupported():
 return unsupported(_that.securityDetails,_that.analyticsState);case _Failure():
 return failure(_that.failure);case _:
   throw StateError('Unexpected subclass');
@@ -184,8 +184,8 @@ return failure(_that.failure);case _:
 switch (_that) {
 case _Initial() when initial != null:
 return initial();case _Loading() when loading != null:
-return loading();case _Loaded() when loaded != null:
-return loaded(_that.securityDetails,_that.analyticsState,_that.lastUpdated);case _Unsupported() when unsupported != null:
+return loading();case SecurityLoaded() when loaded != null:
+return loaded(_that.securityDetails,_that.analyticsState,_that.lastUpdated);case SecurityUnsupported() when unsupported != null:
 return unsupported(_that.securityDetails,_that.analyticsState);case _Failure() when failure != null:
 return failure(_that.failure);case _:
   return null;
@@ -262,8 +262,8 @@ String toString() {
 /// @nodoc
 
 
-class _Loaded implements CompanySecurityState {
-  const _Loaded(this.securityDetails, {required this.analyticsState, this.lastUpdated});
+class SecurityLoaded implements CompanySecurityState {
+  const SecurityLoaded(this.securityDetails, {required this.analyticsState, this.lastUpdated});
   
 
  final  SecurityDetails securityDetails;
@@ -274,13 +274,13 @@ class _Loaded implements CompanySecurityState {
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-_$LoadedCopyWith<_Loaded> get copyWith => __$LoadedCopyWithImpl<_Loaded>(this, _$identity);
+$SecurityLoadedCopyWith<SecurityLoaded> get copyWith => _$SecurityLoadedCopyWithImpl<SecurityLoaded>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Loaded&&(identical(other.securityDetails, securityDetails) || other.securityDetails == securityDetails)&&(identical(other.analyticsState, analyticsState) || other.analyticsState == analyticsState)&&(identical(other.lastUpdated, lastUpdated) || other.lastUpdated == lastUpdated));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SecurityLoaded&&(identical(other.securityDetails, securityDetails) || other.securityDetails == securityDetails)&&(identical(other.analyticsState, analyticsState) || other.analyticsState == analyticsState)&&(identical(other.lastUpdated, lastUpdated) || other.lastUpdated == lastUpdated));
 }
 
 
@@ -296,8 +296,8 @@ String toString() {
 }
 
 /// @nodoc
-abstract mixin class _$LoadedCopyWith<$Res> implements $CompanySecurityStateCopyWith<$Res> {
-  factory _$LoadedCopyWith(_Loaded value, $Res Function(_Loaded) _then) = __$LoadedCopyWithImpl;
+abstract mixin class $SecurityLoadedCopyWith<$Res> implements $CompanySecurityStateCopyWith<$Res> {
+  factory $SecurityLoadedCopyWith(SecurityLoaded value, $Res Function(SecurityLoaded) _then) = _$SecurityLoadedCopyWithImpl;
 @useResult
 $Res call({
  SecurityDetails securityDetails, SecurityTabViewState analyticsState, DateTime? lastUpdated
@@ -308,17 +308,17 @@ $SecurityDetailsCopyWith<$Res> get securityDetails;$SecurityTabViewStateCopyWith
 
 }
 /// @nodoc
-class __$LoadedCopyWithImpl<$Res>
-    implements _$LoadedCopyWith<$Res> {
-  __$LoadedCopyWithImpl(this._self, this._then);
+class _$SecurityLoadedCopyWithImpl<$Res>
+    implements $SecurityLoadedCopyWith<$Res> {
+  _$SecurityLoadedCopyWithImpl(this._self, this._then);
 
-  final _Loaded _self;
-  final $Res Function(_Loaded) _then;
+  final SecurityLoaded _self;
+  final $Res Function(SecurityLoaded) _then;
 
 /// Create a copy of CompanySecurityState
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? securityDetails = null,Object? analyticsState = null,Object? lastUpdated = freezed,}) {
-  return _then(_Loaded(
+  return _then(SecurityLoaded(
 null == securityDetails ? _self.securityDetails : securityDetails // ignore: cast_nullable_to_non_nullable
 as SecurityDetails,analyticsState: null == analyticsState ? _self.analyticsState : analyticsState // ignore: cast_nullable_to_non_nullable
 as SecurityTabViewState,lastUpdated: freezed == lastUpdated ? _self.lastUpdated : lastUpdated // ignore: cast_nullable_to_non_nullable
@@ -350,8 +350,8 @@ $SecurityTabViewStateCopyWith<$Res> get analyticsState {
 /// @nodoc
 
 
-class _Unsupported implements CompanySecurityState {
-  const _Unsupported(this.securityDetails, {required this.analyticsState});
+class SecurityUnsupported implements CompanySecurityState {
+  const SecurityUnsupported(this.securityDetails, {required this.analyticsState});
   
 
  final  SecurityDetails securityDetails;
@@ -361,13 +361,13 @@ class _Unsupported implements CompanySecurityState {
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-_$UnsupportedCopyWith<_Unsupported> get copyWith => __$UnsupportedCopyWithImpl<_Unsupported>(this, _$identity);
+$SecurityUnsupportedCopyWith<SecurityUnsupported> get copyWith => _$SecurityUnsupportedCopyWithImpl<SecurityUnsupported>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Unsupported&&(identical(other.securityDetails, securityDetails) || other.securityDetails == securityDetails)&&(identical(other.analyticsState, analyticsState) || other.analyticsState == analyticsState));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SecurityUnsupported&&(identical(other.securityDetails, securityDetails) || other.securityDetails == securityDetails)&&(identical(other.analyticsState, analyticsState) || other.analyticsState == analyticsState));
 }
 
 
@@ -383,8 +383,8 @@ String toString() {
 }
 
 /// @nodoc
-abstract mixin class _$UnsupportedCopyWith<$Res> implements $CompanySecurityStateCopyWith<$Res> {
-  factory _$UnsupportedCopyWith(_Unsupported value, $Res Function(_Unsupported) _then) = __$UnsupportedCopyWithImpl;
+abstract mixin class $SecurityUnsupportedCopyWith<$Res> implements $CompanySecurityStateCopyWith<$Res> {
+  factory $SecurityUnsupportedCopyWith(SecurityUnsupported value, $Res Function(SecurityUnsupported) _then) = _$SecurityUnsupportedCopyWithImpl;
 @useResult
 $Res call({
  SecurityDetails securityDetails, SecurityTabViewState analyticsState
@@ -395,17 +395,17 @@ $SecurityDetailsCopyWith<$Res> get securityDetails;$SecurityTabViewStateCopyWith
 
 }
 /// @nodoc
-class __$UnsupportedCopyWithImpl<$Res>
-    implements _$UnsupportedCopyWith<$Res> {
-  __$UnsupportedCopyWithImpl(this._self, this._then);
+class _$SecurityUnsupportedCopyWithImpl<$Res>
+    implements $SecurityUnsupportedCopyWith<$Res> {
+  _$SecurityUnsupportedCopyWithImpl(this._self, this._then);
 
-  final _Unsupported _self;
-  final $Res Function(_Unsupported) _then;
+  final SecurityUnsupported _self;
+  final $Res Function(SecurityUnsupported) _then;
 
 /// Create a copy of CompanySecurityState
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? securityDetails = null,Object? analyticsState = null,}) {
-  return _then(_Unsupported(
+  return _then(SecurityUnsupported(
 null == securityDetails ? _self.securityDetails : securityDetails // ignore: cast_nullable_to_non_nullable
 as SecurityDetails,analyticsState: null == analyticsState ? _self.analyticsState : analyticsState // ignore: cast_nullable_to_non_nullable
 as SecurityTabViewState,

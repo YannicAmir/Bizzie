@@ -6,7 +6,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'company_business_state.freezed.dart';
 
 @freezed
-class CompanyBusinessState with _$CompanyBusinessState {
+abstract class CompanyBusinessState with _$CompanyBusinessState {
   const factory CompanyBusinessState.initial() = _Initial;
   const factory CompanyBusinessState.loading() = _Loading;
   const factory CompanyBusinessState.loaded(
@@ -14,6 +14,6 @@ class CompanyBusinessState with _$CompanyBusinessState {
     required int historyLimit,
     required BusinessTabViewState analyticsState,
     DateTime? lastUpdated,
-  }) = _Loaded;
+  }) = CompanyBusinessLoaded;
   const factory CompanyBusinessState.failure(Failure failure) = _Failure;
 }

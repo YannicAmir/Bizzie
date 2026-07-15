@@ -1,7 +1,10 @@
-part of 'company_profile_bloc.dart';
+import 'package:bizzie/core/enums/bizzie_lifecycle_state.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+
+part 'company_profile_event.freezed.dart';
 
 @freezed
-class CompanyProfileEvent with _$CompanyProfileEvent {
+sealed class CompanyProfileEvent with _$CompanyProfileEvent {
   const factory CompanyProfileEvent.opened({
     required String ticker,
     required String companyName,
@@ -12,21 +15,28 @@ class CompanyProfileEvent with _$CompanyProfileEvent {
     required bool isCompany,
     required bool isEtf,
     required bool isFund,
-  }) = _Opened;
+  }) = Opened;
 
   const factory CompanyProfileEvent.tabViewed({required String tabName}) =
-      _TabViewed;
+      TabViewed;
 
   const factory CompanyProfileEvent.watchlistStatusChanged({
     required bool isWatchlisted,
-  }) = _WatchlistStatusChanged;
+  }) = WatchlistStatusChanged;
 
   const factory CompanyProfileEvent.lifecycleChanged({
     required BizzieLifecycleState state,
-  }) = _LifecycleChanged;
+  }) = LifecycleChanged;
 
-  const factory CompanyProfileEvent.moreTabIndexChanged({required int index}) =
-      _MoreTabIndexChanged;
+  const factory CompanyProfileEvent.editTabsOpened({
+    required bool isSubscribed,
+  }) = EditTabsOpened;
 
-  const factory CompanyProfileEvent.closed() = _Closed;
+  const factory CompanyProfileEvent.tabOrderSaved({
+    required bool isSubscribed,
+    required List<String> mainTabs,
+    required List<String> moreTabs,
+  }) = TabOrderSaved;
+
+  const factory CompanyProfileEvent.closed() = Closed;
 }

@@ -1,6 +1,6 @@
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/core/enums/data_origin.dart';
-import 'package:bizzie/features/company_profile/news/data/datasources/news_firestore_data_source.dart';
+import 'package:bizzie/features/company_profile/news/data/interfaces/i_news_firestore_datasource.dart';
 import 'package:bizzie/features/company_profile/news/data/datasources/news_remote_data_source.dart';
 import 'package:bizzie/features/company_profile/news/data/dtos/news_dto.dart';
 import 'package:bizzie/features/company_profile/news/data/repositories/news_repository_impl.dart';
@@ -12,7 +12,7 @@ import 'package:bizzie/core/data/models/cache_result.dart' as cache;
 
 class MockNewsRemoteDataSource extends Mock implements NewsRemoteDataSource {}
 
-class MockNewsLocalDataSource extends Mock implements NewsFirestoreDataSource {}
+class MockNewsLocalDataSource extends Mock implements INewsFirestoreDataSource {}
 
 void main() {
   late NewsRepositoryImpl repository;

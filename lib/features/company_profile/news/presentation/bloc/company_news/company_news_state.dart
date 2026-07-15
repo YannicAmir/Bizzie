@@ -7,7 +7,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'company_news_state.freezed.dart';
 
 @freezed
-class CompanyNewsState with _$CompanyNewsState {
+abstract class CompanyNewsState with _$CompanyNewsState {
   const factory CompanyNewsState.initial() = _Initial;
   const factory CompanyNewsState.loading() = _Loading;
   const factory CompanyNewsState.loaded({
@@ -16,6 +16,6 @@ class CompanyNewsState with _$CompanyNewsState {
     required CompanyProfileDataOrigin dataOrigin,
     NewsTabViewState? analyticsState,
     DateTime? lastUpdated,
-  }) = _Loaded;
+  }) = CompanyNewsLoaded;
   const factory CompanyNewsState.failure(Failure failure) = _Failure;
 }

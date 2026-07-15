@@ -6,13 +6,15 @@ extension FinancialDataPointListX on List<FinancialDataPoint> {
     return fold<double>(0.0, (sum, item) => sum + item.value) / length;
   }
 
+  List<FinancialDataPoint> sortedByDateDescending() {
+    return List<FinancialDataPoint>.from(this)
+      ..sort((a, b) => b.date.compareTo(a.date));
+  }
+
   double? getAverageOfLatest(int count) {
     if (length < count) return null;
 
-    final sorted = List<FinancialDataPoint>.from(this)
-      ..sort((a, b) => b.date.compareTo(a.date));
-
-    final latest = sorted.take(count);
+    final latest = sortedByDateDescending().take(count);
     return latest.fold<double>(0.0, (sum, item) => sum + item.value) / count;
   }
 }

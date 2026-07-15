@@ -9,10 +9,15 @@ import 'package:bizzie/features/company_profile/fcps/presentation/bloc/company_f
 import 'package:bloc_test/bloc_test.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mocktail/mocktail.dart';
 import 'package:bizzie/core/interfaces/i_config_service.dart';
+import 'package:bizzie/core/usecase/usecase.dart';
+import 'package:bizzie/features/company_profile/shared/domain/services/tab_content_freshness_service.dart';
+import 'package:bizzie/features/company_profile/shared/domain/usecases/watch_active_tab_usecase.dart';
 import 'package:bizzie/features/company_profile/fcps/presentation/analytics/fcps_tab_analytics.dart';
 import 'package:bizzie/features/company_profile/fcps/presentation/analytics/fcps_tab_view_state.dart';
+import 'package:bizzie/core/interfaces/i_time_provider.dart';
+import 'package:mocktail/mocktail.dart';
+import 'package:bizzie/features/auth/domain/usecases/get_auth_stream.dart';
 
 class MockGetFcpsStatsUseCase extends Mock implements GetFcpsStatsUseCase {}
 
@@ -20,24 +25,65 @@ class MockConfigService extends Mock implements IConfigService {}
 
 class MockFcpsTabAnalytics extends Mock implements FcpsTabAnalytics {}
 
+class MockWatchActiveTabUseCase extends Mock implements WatchActiveTabUseCase {}
+
+class MockTabContentFreshnessService extends Mock
+    implements TabContentFreshnessService {}
+
+class MockGetAuthStream extends Mock implements GetAuthStream {}
+
+MockGetAuthStream stubbedGetAuthStream() {
+  final mock = MockGetAuthStream();
+  when(() => mock()).thenAnswer((_) => const Stream.empty());
+  return mock;
+}
+
+class MockTimeProvider extends Mock implements ITimeProvider {}
+
+MockTimeProvider stubbedTimeProvider() {
+  final mock = MockTimeProvider();
+  when(() => mock.nowLocal).thenAnswer((_) => DateTime.now());
+  return mock;
+}
+
 void main() {
   setUpAll(() {
+    registerFallbackValue(NoParams());
     registerFallbackValue(const FcpsTabViewState(ticker: '', timestamp: ''));
+    registerFallbackValue(DateTime(2020));
   });
 
   late CompanyFcpsBloc bloc;
   late MockGetFcpsStatsUseCase mockGetFcpsStats;
   late MockConfigService mockConfigService;
   late MockFcpsTabAnalytics mockAnalytics;
+  late MockWatchActiveTabUseCase mockWatchActiveTabUseCase;
+  late MockTabContentFreshnessService mockFreshnessService;
 
   setUp(() {
     mockGetFcpsStats = MockGetFcpsStatsUseCase();
     mockConfigService = MockConfigService();
     mockAnalytics = MockFcpsTabAnalytics();
+    mockWatchActiveTabUseCase = MockWatchActiveTabUseCase();
+    mockFreshnessService = MockTabContentFreshnessService();
 
     when(() => mockConfigService.freePlanHistoryCount).thenReturn(7);
-    bloc = CompanyFcpsBloc(mockGetFcpsStats, mockConfigService, mockAnalytics);
+    when(
+      () => mockWatchActiveTabUseCase(any()),
+    ).thenAnswer((_) => const Stream.empty());
+    when(() => mockFreshnessService.isStale(any())).thenReturn(false);
+    bloc = CompanyFcpsBloc(
+      mockGetFcpsStats,
+      mockConfigService,
+      mockAnalytics,
+      mockWatchActiveTabUseCase,
+      mockFreshnessService,
+      stubbedTimeProvider(),
+      stubbedGetAuthStream(),
+    );
   });
+
+  tearDown(() => bloc.close());
 
   const tTicker = 'AAPL';
   const tFcpsStats = FcpsStats(
@@ -232,8 +278,11 @@ void main() {
 
     blocTest<CompanyFcpsBloc, CompanyFcpsState>(
       'stalenessCheckRequested_fresh_doesNotTriggerLoad',
-      // Arrange
-      build: () => bloc,
+      build: () {
+        // Arrange
+        when(() => mockFreshnessService.isStale(any())).thenReturn(false);
+        return bloc;
+      },
       seed: () => CompanyFcpsState.loaded(
         ticker: tTicker,
         fcpsStats: tFcpsStats,
@@ -257,6 +306,7 @@ void main() {
       'stalenessCheckRequested_stale_triggersLoadRequested',
       build: () {
         // Arrange
+        when(() => mockFreshnessService.isStale(any())).thenReturn(true);
         when(() => mockGetFcpsStats(tTicker)).thenAnswer(
           (_) async => const Right((tFcpsStats, CompanyProfileDataOrigin.api)),
         );
@@ -293,11 +343,11 @@ void main() {
     );
   });
 
-  group('CompanyFcpsBloc - Interaction Events', () {
+  group('CompanyFcpsBloc - reset', () {
     blocTest<CompanyFcpsBloc, CompanyFcpsState>(
-      'periodViewed_isAnnualTrue_updatesviewedYearlyFcpsTabFlag',
-      build: () => bloc,
+      'reset_fromLoadedState_emitsInitial',
       // Arrange
+      build: () => bloc,
       seed: () => const CompanyFcpsState.loaded(
         ticker: tTicker,
         fcpsStats: tFcpsStats,
@@ -307,42 +357,81 @@ void main() {
         dataOrigin: CompanyProfileDataOrigin.api,
       ),
       // Act
+      act: (bloc) => bloc.add(const CompanyFcpsEvent.reset()),
+      // Assert
+      expect: () => [const CompanyFcpsState.initial()],
+    );
+  });
+
+  group('CompanyFcpsBloc - Interaction Events', () {
+    blocTest<CompanyFcpsBloc, CompanyFcpsState>(
+      'periodChanged_isAnnualTrue_updatesviewedYearlyFcpsTabFlag',
+      build: () => bloc,
+      // Arrange
+      seed: () => CompanyFcpsState.loaded(
+        ticker: tTicker,
+        fcpsStats: tFcpsStats,
+        annualChartData: const [],
+        quarterlyChartData: const [],
+        historyLimit: 7,
+        dataOrigin: CompanyProfileDataOrigin.api,
+        lastUpdated: DateTime.now(),
+      ),
+      // Act
       act: (bloc) {
         bloc.add(const CompanyFcpsEvent.tabShown(tTicker));
-        bloc.add(const CompanyFcpsEvent.periodViewed(isAnnual: true));
+        bloc.add(const CompanyFcpsEvent.periodChanged(isAnnual: true));
       },
+      // Assert
+      expect: () => const <CompanyFcpsState>[],
+      verify: (bloc) {
+        expect(bloc.analyticsSession?.ticker, tTicker);
+        expect(bloc.analyticsSession?.viewedYearlyFcpsTab, isTrue);
+      },
+    );
+
+    blocTest<CompanyFcpsBloc, CompanyFcpsState>(
+      'periodChanged_isAnnualFalse_emitsUpdatedIsAnnualViewAndUpdatesFlag',
+      build: () => bloc,
+      // Arrange
+      seed: () => CompanyFcpsState.loaded(
+        ticker: tTicker,
+        fcpsStats: tFcpsStats,
+        annualChartData: const [],
+        quarterlyChartData: const [],
+        historyLimit: 7,
+        dataOrigin: CompanyProfileDataOrigin.api,
+        lastUpdated: DateTime.now(),
+      ),
+      // Act
+      act: (bloc) => bloc
+        ..add(const CompanyFcpsEvent.tabShown(tTicker))
+        ..add(const CompanyFcpsEvent.periodChanged(isAnnual: false)),
       // Assert
       expect: () => [
         isA<CompanyFcpsState>().having(
-          (s) => s.maybeMap(
-            loaded: (l) => l.analyticsState?.ticker,
-            orElse: () => null,
-          ),
-          'ticker',
-          tTicker,
-        ),
-        isA<CompanyFcpsState>().having(
-          (s) => s.maybeMap(
-            loaded: (l) => l.analyticsState?.viewedYearlyFcpsTab,
-            orElse: () => false,
-          ),
-          'viewedYearlyFcpsTab',
-          true,
+          (s) => s.maybeMap(loaded: (l) => l.isAnnualView, orElse: () => null),
+          'isAnnualView',
+          false,
         ),
       ],
+      verify: (bloc) {
+        expect(bloc.analyticsSession?.viewedQtrlyFcpsTab, isTrue);
+      },
     );
 
     blocTest<CompanyFcpsBloc, CompanyFcpsState>(
       'viewAllTapped_chartAndTable_updatesCorrectInteractionFlags',
       build: () => bloc,
       // Arrange
-      seed: () => const CompanyFcpsState.loaded(
+      seed: () => CompanyFcpsState.loaded(
         ticker: tTicker,
         fcpsStats: tFcpsStats,
-        annualChartData: [],
-        quarterlyChartData: [],
+        annualChartData: const [],
+        quarterlyChartData: const [],
         historyLimit: 7,
         dataOrigin: CompanyProfileDataOrigin.api,
+        lastUpdated: DateTime.now(),
       ),
       // Act
       act: (bloc) {
@@ -355,32 +444,12 @@ void main() {
         );
       },
       // Assert
-      expect: () => [
-        isA<CompanyFcpsState>().having(
-          (s) => s.maybeMap(
-            loaded: (l) => l.analyticsState?.ticker,
-            orElse: () => null,
-          ),
-          'ticker',
-          tTicker,
-        ),
-        isA<CompanyFcpsState>().having(
-          (s) => s.maybeMap(
-            loaded: (l) => l.analyticsState?.tappedYrchartViewAll,
-            orElse: () => false,
-          ),
-          'tappedYrchartViewAll',
-          true,
-        ),
-        isA<CompanyFcpsState>().having(
-          (s) => s.maybeMap(
-            loaded: (l) => l.analyticsState?.tappedQtrtableViewAll,
-            orElse: () => false,
-          ),
-          'tappedQtrtableViewAll',
-          true,
-        ),
-      ],
+      expect: () => const <CompanyFcpsState>[],
+      verify: (bloc) {
+        expect(bloc.analyticsSession?.ticker, tTicker);
+        expect(bloc.analyticsSession?.tappedYrchartViewAll, isTrue);
+        expect(bloc.analyticsSession?.tappedQtrtableViewAll, isTrue);
+      },
     );
   });
 
@@ -397,13 +466,14 @@ void main() {
         ).thenAnswer((_) async {});
         return bloc;
       },
-      seed: () => const CompanyFcpsState.loaded(
+      seed: () => CompanyFcpsState.loaded(
         ticker: tTicker,
         fcpsStats: tFcpsStats,
-        annualChartData: [],
-        quarterlyChartData: [],
+        annualChartData: const [],
+        quarterlyChartData: const [],
         historyLimit: 7,
         dataOrigin: CompanyProfileDataOrigin.api,
+        lastUpdated: DateTime.now(),
       ),
       // Act
       act: (bloc) async {
@@ -430,13 +500,14 @@ void main() {
         ).thenAnswer((_) async {});
         return bloc;
       },
-      seed: () => const CompanyFcpsState.loaded(
+      seed: () => CompanyFcpsState.loaded(
         ticker: tTicker,
         fcpsStats: tFcpsStats,
-        annualChartData: [],
-        quarterlyChartData: [],
+        annualChartData: const [],
+        quarterlyChartData: const [],
         historyLimit: 7,
         dataOrigin: CompanyProfileDataOrigin.api,
+        lastUpdated: DateTime.now(),
       ),
       // Act
       act: (bloc) async {

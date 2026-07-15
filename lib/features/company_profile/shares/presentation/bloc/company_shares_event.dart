@@ -3,7 +3,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'company_shares_event.freezed.dart';
 
 @freezed
-abstract class CompanySharesEvent with _$CompanySharesEvent {
+sealed class CompanySharesEvent with _$CompanySharesEvent {
   const factory CompanySharesEvent.loadRequested(
     String ticker, {
     @Default(false) bool forceRefresh,
@@ -20,11 +20,13 @@ abstract class CompanySharesEvent with _$CompanySharesEvent {
 
   const factory CompanySharesEvent.appForegrounded() = AppForegrounded;
 
-  const factory CompanySharesEvent.periodViewed({required bool isAnnual}) =
-      PeriodViewed;
+  const factory CompanySharesEvent.periodChanged({required bool isAnnual}) =
+      PeriodChanged;
 
   const factory CompanySharesEvent.viewAllTapped({
     required bool isAnnual,
     required bool isChart,
   }) = ViewAllTapped;
+
+  const factory CompanySharesEvent.reset() = Reset;
 }

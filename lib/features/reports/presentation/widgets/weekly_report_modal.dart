@@ -1,6 +1,7 @@
 import 'package:bizzie/app/themes/app_colors.dart';
 import 'package:bizzie/features/reports/domain/models/weekly_report.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
+import 'package:bizzie/shared/utils/currency_formatter.dart';
 import 'package:bizzie/shared/widgets/app_badge.dart';
 import 'package:bizzie/shared/widgets/modals/app_bottom_modal.dart';
 import 'package:flutter/material.dart';
@@ -86,7 +87,6 @@ class _PriceSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final fmt = NumberFormat.simpleCurrency();
     final dateFmt = DateFormat('EEE., MMM d, yyyy');
     final start = priceMovement.startPrice;
     final end = priceMovement.endPrice;
@@ -108,7 +108,7 @@ class _PriceSection extends StatelessWidget {
                 label: 'Start',
                 subtitle: startDate != null ? dateFmt.format(startDate!) : null,
                 child: Text(
-                  start != null ? fmt.format(start) : '—',
+                  start != null ? CurrencyFormatter.format(start, null) : '—',
                   style: theme.textTheme.labelLarge,
                 ),
               ),
@@ -119,7 +119,7 @@ class _PriceSection extends StatelessWidget {
                 label: 'End',
                 subtitle: endDate != null ? dateFmt.format(endDate!) : null,
                 child: Text(
-                  end != null ? fmt.format(end) : '—',
+                  end != null ? CurrencyFormatter.format(end, null) : '—',
                   style: theme.textTheme.labelLarge,
                 ),
               ),
@@ -134,7 +134,7 @@ class _PriceSection extends StatelessWidget {
                 label: 'Change',
                 child: change != null
                     ? AppBadge(
-                        text: '$sign${fmt.format(change)}',
+                        text: '$sign${CurrencyFormatter.format(change, null)}',
                         style: badgeStyle,
                         isLarge: true,
                       )

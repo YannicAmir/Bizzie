@@ -55,7 +55,7 @@ extension CompanyNewsEventPatterns on CompanyNewsEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( LoadRequested value)?  loadRequested,TResult Function( StalenessCheckRequested value)?  stalenessCheckRequested,TResult Function( TabShown value)?  tabShown,TResult Function( TabHidden value)?  tabHidden,TResult Function( AppBackgrounded value)?  appBackgrounded,TResult Function( AppForegrounded value)?  appForegrounded,TResult Function( ArticleTapped value)?  articleTapped,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( LoadRequested value)?  loadRequested,TResult Function( StalenessCheckRequested value)?  stalenessCheckRequested,TResult Function( TabShown value)?  tabShown,TResult Function( TabHidden value)?  tabHidden,TResult Function( AppBackgrounded value)?  appBackgrounded,TResult Function( AppForegrounded value)?  appForegrounded,TResult Function( ArticleTapped value)?  articleTapped,TResult Function( Reset value)?  reset,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case LoadRequested() when loadRequested != null:
@@ -65,7 +65,8 @@ return tabShown(_that);case TabHidden() when tabHidden != null:
 return tabHidden(_that);case AppBackgrounded() when appBackgrounded != null:
 return appBackgrounded(_that);case AppForegrounded() when appForegrounded != null:
 return appForegrounded(_that);case ArticleTapped() when articleTapped != null:
-return articleTapped(_that);case _:
+return articleTapped(_that);case Reset() when reset != null:
+return reset(_that);case _:
   return orElse();
 
 }
@@ -83,7 +84,7 @@ return articleTapped(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( LoadRequested value)  loadRequested,required TResult Function( StalenessCheckRequested value)  stalenessCheckRequested,required TResult Function( TabShown value)  tabShown,required TResult Function( TabHidden value)  tabHidden,required TResult Function( AppBackgrounded value)  appBackgrounded,required TResult Function( AppForegrounded value)  appForegrounded,required TResult Function( ArticleTapped value)  articleTapped,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( LoadRequested value)  loadRequested,required TResult Function( StalenessCheckRequested value)  stalenessCheckRequested,required TResult Function( TabShown value)  tabShown,required TResult Function( TabHidden value)  tabHidden,required TResult Function( AppBackgrounded value)  appBackgrounded,required TResult Function( AppForegrounded value)  appForegrounded,required TResult Function( ArticleTapped value)  articleTapped,required TResult Function( Reset value)  reset,}){
 final _that = this;
 switch (_that) {
 case LoadRequested():
@@ -93,10 +94,8 @@ return tabShown(_that);case TabHidden():
 return tabHidden(_that);case AppBackgrounded():
 return appBackgrounded(_that);case AppForegrounded():
 return appForegrounded(_that);case ArticleTapped():
-return articleTapped(_that);case _:
-  throw StateError('Unexpected subclass');
-
-}
+return articleTapped(_that);case Reset():
+return reset(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -110,7 +109,7 @@ return articleTapped(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( LoadRequested value)?  loadRequested,TResult? Function( StalenessCheckRequested value)?  stalenessCheckRequested,TResult? Function( TabShown value)?  tabShown,TResult? Function( TabHidden value)?  tabHidden,TResult? Function( AppBackgrounded value)?  appBackgrounded,TResult? Function( AppForegrounded value)?  appForegrounded,TResult? Function( ArticleTapped value)?  articleTapped,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( LoadRequested value)?  loadRequested,TResult? Function( StalenessCheckRequested value)?  stalenessCheckRequested,TResult? Function( TabShown value)?  tabShown,TResult? Function( TabHidden value)?  tabHidden,TResult? Function( AppBackgrounded value)?  appBackgrounded,TResult? Function( AppForegrounded value)?  appForegrounded,TResult? Function( ArticleTapped value)?  articleTapped,TResult? Function( Reset value)?  reset,}){
 final _that = this;
 switch (_that) {
 case LoadRequested() when loadRequested != null:
@@ -120,7 +119,8 @@ return tabShown(_that);case TabHidden() when tabHidden != null:
 return tabHidden(_that);case AppBackgrounded() when appBackgrounded != null:
 return appBackgrounded(_that);case AppForegrounded() when appForegrounded != null:
 return appForegrounded(_that);case ArticleTapped() when articleTapped != null:
-return articleTapped(_that);case _:
+return articleTapped(_that);case Reset() when reset != null:
+return reset(_that);case _:
   return null;
 
 }
@@ -137,7 +137,7 @@ return articleTapped(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String ticker,  bool forceRefresh)?  loadRequested,TResult Function( String ticker)?  stalenessCheckRequested,TResult Function( String ticker)?  tabShown,TResult Function()?  tabHidden,TResult Function()?  appBackgrounded,TResult Function()?  appForegrounded,TResult Function( NewsArticle article,  bool isFeatured)?  articleTapped,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String ticker,  bool forceRefresh)?  loadRequested,TResult Function( String ticker)?  stalenessCheckRequested,TResult Function( String ticker)?  tabShown,TResult Function()?  tabHidden,TResult Function()?  appBackgrounded,TResult Function()?  appForegrounded,TResult Function( NewsArticle article,  bool isFeatured)?  articleTapped,TResult Function()?  reset,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case LoadRequested() when loadRequested != null:
 return loadRequested(_that.ticker,_that.forceRefresh);case StalenessCheckRequested() when stalenessCheckRequested != null:
@@ -146,7 +146,8 @@ return tabShown(_that.ticker);case TabHidden() when tabHidden != null:
 return tabHidden();case AppBackgrounded() when appBackgrounded != null:
 return appBackgrounded();case AppForegrounded() when appForegrounded != null:
 return appForegrounded();case ArticleTapped() when articleTapped != null:
-return articleTapped(_that.article,_that.isFeatured);case _:
+return articleTapped(_that.article,_that.isFeatured);case Reset() when reset != null:
+return reset();case _:
   return orElse();
 
 }
@@ -164,7 +165,7 @@ return articleTapped(_that.article,_that.isFeatured);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String ticker,  bool forceRefresh)  loadRequested,required TResult Function( String ticker)  stalenessCheckRequested,required TResult Function( String ticker)  tabShown,required TResult Function()  tabHidden,required TResult Function()  appBackgrounded,required TResult Function()  appForegrounded,required TResult Function( NewsArticle article,  bool isFeatured)  articleTapped,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String ticker,  bool forceRefresh)  loadRequested,required TResult Function( String ticker)  stalenessCheckRequested,required TResult Function( String ticker)  tabShown,required TResult Function()  tabHidden,required TResult Function()  appBackgrounded,required TResult Function()  appForegrounded,required TResult Function( NewsArticle article,  bool isFeatured)  articleTapped,required TResult Function()  reset,}) {final _that = this;
 switch (_that) {
 case LoadRequested():
 return loadRequested(_that.ticker,_that.forceRefresh);case StalenessCheckRequested():
@@ -173,10 +174,8 @@ return tabShown(_that.ticker);case TabHidden():
 return tabHidden();case AppBackgrounded():
 return appBackgrounded();case AppForegrounded():
 return appForegrounded();case ArticleTapped():
-return articleTapped(_that.article,_that.isFeatured);case _:
-  throw StateError('Unexpected subclass');
-
-}
+return articleTapped(_that.article,_that.isFeatured);case Reset():
+return reset();}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -190,7 +189,7 @@ return articleTapped(_that.article,_that.isFeatured);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String ticker,  bool forceRefresh)?  loadRequested,TResult? Function( String ticker)?  stalenessCheckRequested,TResult? Function( String ticker)?  tabShown,TResult? Function()?  tabHidden,TResult? Function()?  appBackgrounded,TResult? Function()?  appForegrounded,TResult? Function( NewsArticle article,  bool isFeatured)?  articleTapped,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String ticker,  bool forceRefresh)?  loadRequested,TResult? Function( String ticker)?  stalenessCheckRequested,TResult? Function( String ticker)?  tabShown,TResult? Function()?  tabHidden,TResult? Function()?  appBackgrounded,TResult? Function()?  appForegrounded,TResult? Function( NewsArticle article,  bool isFeatured)?  articleTapped,TResult? Function()?  reset,}) {final _that = this;
 switch (_that) {
 case LoadRequested() when loadRequested != null:
 return loadRequested(_that.ticker,_that.forceRefresh);case StalenessCheckRequested() when stalenessCheckRequested != null:
@@ -199,7 +198,8 @@ return tabShown(_that.ticker);case TabHidden() when tabHidden != null:
 return tabHidden();case AppBackgrounded() when appBackgrounded != null:
 return appBackgrounded();case AppForegrounded() when appForegrounded != null:
 return appForegrounded();case ArticleTapped() when articleTapped != null:
-return articleTapped(_that.article,_that.isFeatured);case _:
+return articleTapped(_that.article,_that.isFeatured);case Reset() when reset != null:
+return reset();case _:
   return null;
 
 }
@@ -579,5 +579,37 @@ $NewsArticleCopyWith<$Res> get article {
   });
 }
 }
+
+/// @nodoc
+
+
+class Reset implements CompanyNewsEvent {
+  const Reset();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Reset);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'CompanyNewsEvent.reset()';
+}
+
+
+}
+
+
+
 
 // dart format on

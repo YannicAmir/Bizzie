@@ -1,5 +1,5 @@
 import 'package:bizzie/core/utils/timestamp_converter.dart';
-import 'package:bizzie/features/onboarding/domain/models/company.dart';
+import 'package:bizzie/core/domain/models/company.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'watchlist_item_dto.freezed.dart';

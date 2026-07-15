@@ -55,12 +55,12 @@ extension CompanySharesStatePatterns on CompanySharesState {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Initial value)?  initial,TResult Function( _Loading value)?  loading,TResult Function( _Loaded value)?  loaded,TResult Function( _Failure value)?  failure,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Initial value)?  initial,TResult Function( _Loading value)?  loading,TResult Function( CompanySharesLoaded value)?  loaded,TResult Function( _Failure value)?  failure,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial(_that);case _Loading() when loading != null:
-return loading(_that);case _Loaded() when loaded != null:
+return loading(_that);case CompanySharesLoaded() when loaded != null:
 return loaded(_that);case _Failure() when failure != null:
 return failure(_that);case _:
   return orElse();
@@ -80,12 +80,12 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Initial value)  initial,required TResult Function( _Loading value)  loading,required TResult Function( _Loaded value)  loaded,required TResult Function( _Failure value)  failure,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Initial value)  initial,required TResult Function( _Loading value)  loading,required TResult Function( CompanySharesLoaded value)  loaded,required TResult Function( _Failure value)  failure,}){
 final _that = this;
 switch (_that) {
 case _Initial():
 return initial(_that);case _Loading():
-return loading(_that);case _Loaded():
+return loading(_that);case CompanySharesLoaded():
 return loaded(_that);case _Failure():
 return failure(_that);case _:
   throw StateError('Unexpected subclass');
@@ -104,12 +104,12 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Initial value)?  initial,TResult? Function( _Loading value)?  loading,TResult? Function( _Loaded value)?  loaded,TResult? Function( _Failure value)?  failure,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Initial value)?  initial,TResult? Function( _Loading value)?  loading,TResult? Function( CompanySharesLoaded value)?  loaded,TResult? Function( _Failure value)?  failure,}){
 final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial(_that);case _Loading() when loading != null:
-return loading(_that);case _Loaded() when loaded != null:
+return loading(_that);case CompanySharesLoaded() when loaded != null:
 return loaded(_that);case _Failure() when failure != null:
 return failure(_that);case _:
   return null;
@@ -128,12 +128,12 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( String ticker,  ShareStats shareStats,  List<ChartDataPoint> annualChartData,  List<ChartDataPoint> quarterlyChartData,  SharesSummaryData annualSummary,  SharesSummaryData quarterlySummary,  int historyLimit,  CompanyProfileDataOrigin dataOrigin,  DateTime? lastUpdated,  SharesTabViewState? analyticsState)?  loaded,TResult Function( Failure failure)?  failure,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( String ticker,  ShareStats shareStats,  List<ChartDataPoint> annualChartData,  List<ChartDataPoint> quarterlyChartData,  SharesSummaryData annualSummary,  SharesSummaryData quarterlySummary,  int historyLimit,  CompanyProfileDataOrigin dataOrigin,  bool isAnnualView,  DateTime? lastUpdated,  SharesTabViewState? analyticsState)?  loaded,TResult Function( Failure failure)?  failure,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial();case _Loading() when loading != null:
-return loading();case _Loaded() when loaded != null:
-return loaded(_that.ticker,_that.shareStats,_that.annualChartData,_that.quarterlyChartData,_that.annualSummary,_that.quarterlySummary,_that.historyLimit,_that.dataOrigin,_that.lastUpdated,_that.analyticsState);case _Failure() when failure != null:
+return loading();case CompanySharesLoaded() when loaded != null:
+return loaded(_that.ticker,_that.shareStats,_that.annualChartData,_that.quarterlyChartData,_that.annualSummary,_that.quarterlySummary,_that.historyLimit,_that.dataOrigin,_that.isAnnualView,_that.lastUpdated,_that.analyticsState);case _Failure() when failure != null:
 return failure(_that.failure);case _:
   return orElse();
 
@@ -152,12 +152,12 @@ return failure(_that.failure);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( String ticker,  ShareStats shareStats,  List<ChartDataPoint> annualChartData,  List<ChartDataPoint> quarterlyChartData,  SharesSummaryData annualSummary,  SharesSummaryData quarterlySummary,  int historyLimit,  CompanyProfileDataOrigin dataOrigin,  DateTime? lastUpdated,  SharesTabViewState? analyticsState)  loaded,required TResult Function( Failure failure)  failure,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( String ticker,  ShareStats shareStats,  List<ChartDataPoint> annualChartData,  List<ChartDataPoint> quarterlyChartData,  SharesSummaryData annualSummary,  SharesSummaryData quarterlySummary,  int historyLimit,  CompanyProfileDataOrigin dataOrigin,  bool isAnnualView,  DateTime? lastUpdated,  SharesTabViewState? analyticsState)  loaded,required TResult Function( Failure failure)  failure,}) {final _that = this;
 switch (_that) {
 case _Initial():
 return initial();case _Loading():
-return loading();case _Loaded():
-return loaded(_that.ticker,_that.shareStats,_that.annualChartData,_that.quarterlyChartData,_that.annualSummary,_that.quarterlySummary,_that.historyLimit,_that.dataOrigin,_that.lastUpdated,_that.analyticsState);case _Failure():
+return loading();case CompanySharesLoaded():
+return loaded(_that.ticker,_that.shareStats,_that.annualChartData,_that.quarterlyChartData,_that.annualSummary,_that.quarterlySummary,_that.historyLimit,_that.dataOrigin,_that.isAnnualView,_that.lastUpdated,_that.analyticsState);case _Failure():
 return failure(_that.failure);case _:
   throw StateError('Unexpected subclass');
 
@@ -175,12 +175,12 @@ return failure(_that.failure);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( String ticker,  ShareStats shareStats,  List<ChartDataPoint> annualChartData,  List<ChartDataPoint> quarterlyChartData,  SharesSummaryData annualSummary,  SharesSummaryData quarterlySummary,  int historyLimit,  CompanyProfileDataOrigin dataOrigin,  DateTime? lastUpdated,  SharesTabViewState? analyticsState)?  loaded,TResult? Function( Failure failure)?  failure,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( String ticker,  ShareStats shareStats,  List<ChartDataPoint> annualChartData,  List<ChartDataPoint> quarterlyChartData,  SharesSummaryData annualSummary,  SharesSummaryData quarterlySummary,  int historyLimit,  CompanyProfileDataOrigin dataOrigin,  bool isAnnualView,  DateTime? lastUpdated,  SharesTabViewState? analyticsState)?  loaded,TResult? Function( Failure failure)?  failure,}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial();case _Loading() when loading != null:
-return loading();case _Loaded() when loaded != null:
-return loaded(_that.ticker,_that.shareStats,_that.annualChartData,_that.quarterlyChartData,_that.annualSummary,_that.quarterlySummary,_that.historyLimit,_that.dataOrigin,_that.lastUpdated,_that.analyticsState);case _Failure() when failure != null:
+return loading();case CompanySharesLoaded() when loaded != null:
+return loaded(_that.ticker,_that.shareStats,_that.annualChartData,_that.quarterlyChartData,_that.annualSummary,_that.quarterlySummary,_that.historyLimit,_that.dataOrigin,_that.isAnnualView,_that.lastUpdated,_that.analyticsState);case _Failure() when failure != null:
 return failure(_that.failure);case _:
   return null;
 
@@ -256,8 +256,8 @@ String toString() {
 /// @nodoc
 
 
-class _Loaded implements CompanySharesState {
-  const _Loaded({required this.ticker, required this.shareStats, required final  List<ChartDataPoint> annualChartData, required final  List<ChartDataPoint> quarterlyChartData, required this.annualSummary, required this.quarterlySummary, required this.historyLimit, required this.dataOrigin, this.lastUpdated, this.analyticsState}): _annualChartData = annualChartData,_quarterlyChartData = quarterlyChartData;
+class CompanySharesLoaded implements CompanySharesState {
+  const CompanySharesLoaded({required this.ticker, required this.shareStats, required final  List<ChartDataPoint> annualChartData, required final  List<ChartDataPoint> quarterlyChartData, required this.annualSummary, required this.quarterlySummary, required this.historyLimit, required this.dataOrigin, this.isAnnualView = true, this.lastUpdated, this.analyticsState}): _annualChartData = annualChartData,_quarterlyChartData = quarterlyChartData;
   
 
  final  String ticker;
@@ -280,6 +280,7 @@ class _Loaded implements CompanySharesState {
  final  SharesSummaryData quarterlySummary;
  final  int historyLimit;
  final  CompanyProfileDataOrigin dataOrigin;
+@JsonKey() final  bool isAnnualView;
  final  DateTime? lastUpdated;
  final  SharesTabViewState? analyticsState;
 
@@ -287,33 +288,33 @@ class _Loaded implements CompanySharesState {
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-_$LoadedCopyWith<_Loaded> get copyWith => __$LoadedCopyWithImpl<_Loaded>(this, _$identity);
+$CompanySharesLoadedCopyWith<CompanySharesLoaded> get copyWith => _$CompanySharesLoadedCopyWithImpl<CompanySharesLoaded>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Loaded&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.shareStats, shareStats) || other.shareStats == shareStats)&&const DeepCollectionEquality().equals(other._annualChartData, _annualChartData)&&const DeepCollectionEquality().equals(other._quarterlyChartData, _quarterlyChartData)&&(identical(other.annualSummary, annualSummary) || other.annualSummary == annualSummary)&&(identical(other.quarterlySummary, quarterlySummary) || other.quarterlySummary == quarterlySummary)&&(identical(other.historyLimit, historyLimit) || other.historyLimit == historyLimit)&&(identical(other.dataOrigin, dataOrigin) || other.dataOrigin == dataOrigin)&&(identical(other.lastUpdated, lastUpdated) || other.lastUpdated == lastUpdated)&&(identical(other.analyticsState, analyticsState) || other.analyticsState == analyticsState));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CompanySharesLoaded&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.shareStats, shareStats) || other.shareStats == shareStats)&&const DeepCollectionEquality().equals(other._annualChartData, _annualChartData)&&const DeepCollectionEquality().equals(other._quarterlyChartData, _quarterlyChartData)&&(identical(other.annualSummary, annualSummary) || other.annualSummary == annualSummary)&&(identical(other.quarterlySummary, quarterlySummary) || other.quarterlySummary == quarterlySummary)&&(identical(other.historyLimit, historyLimit) || other.historyLimit == historyLimit)&&(identical(other.dataOrigin, dataOrigin) || other.dataOrigin == dataOrigin)&&(identical(other.isAnnualView, isAnnualView) || other.isAnnualView == isAnnualView)&&(identical(other.lastUpdated, lastUpdated) || other.lastUpdated == lastUpdated)&&(identical(other.analyticsState, analyticsState) || other.analyticsState == analyticsState));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,ticker,shareStats,const DeepCollectionEquality().hash(_annualChartData),const DeepCollectionEquality().hash(_quarterlyChartData),annualSummary,quarterlySummary,historyLimit,dataOrigin,lastUpdated,analyticsState);
+int get hashCode => Object.hash(runtimeType,ticker,shareStats,const DeepCollectionEquality().hash(_annualChartData),const DeepCollectionEquality().hash(_quarterlyChartData),annualSummary,quarterlySummary,historyLimit,dataOrigin,isAnnualView,lastUpdated,analyticsState);
 
 @override
 String toString() {
-  return 'CompanySharesState.loaded(ticker: $ticker, shareStats: $shareStats, annualChartData: $annualChartData, quarterlyChartData: $quarterlyChartData, annualSummary: $annualSummary, quarterlySummary: $quarterlySummary, historyLimit: $historyLimit, dataOrigin: $dataOrigin, lastUpdated: $lastUpdated, analyticsState: $analyticsState)';
+  return 'CompanySharesState.loaded(ticker: $ticker, shareStats: $shareStats, annualChartData: $annualChartData, quarterlyChartData: $quarterlyChartData, annualSummary: $annualSummary, quarterlySummary: $quarterlySummary, historyLimit: $historyLimit, dataOrigin: $dataOrigin, isAnnualView: $isAnnualView, lastUpdated: $lastUpdated, analyticsState: $analyticsState)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class _$LoadedCopyWith<$Res> implements $CompanySharesStateCopyWith<$Res> {
-  factory _$LoadedCopyWith(_Loaded value, $Res Function(_Loaded) _then) = __$LoadedCopyWithImpl;
+abstract mixin class $CompanySharesLoadedCopyWith<$Res> implements $CompanySharesStateCopyWith<$Res> {
+  factory $CompanySharesLoadedCopyWith(CompanySharesLoaded value, $Res Function(CompanySharesLoaded) _then) = _$CompanySharesLoadedCopyWithImpl;
 @useResult
 $Res call({
- String ticker, ShareStats shareStats, List<ChartDataPoint> annualChartData, List<ChartDataPoint> quarterlyChartData, SharesSummaryData annualSummary, SharesSummaryData quarterlySummary, int historyLimit, CompanyProfileDataOrigin dataOrigin, DateTime? lastUpdated, SharesTabViewState? analyticsState
+ String ticker, ShareStats shareStats, List<ChartDataPoint> annualChartData, List<ChartDataPoint> quarterlyChartData, SharesSummaryData annualSummary, SharesSummaryData quarterlySummary, int historyLimit, CompanyProfileDataOrigin dataOrigin, bool isAnnualView, DateTime? lastUpdated, SharesTabViewState? analyticsState
 });
 
 
@@ -321,17 +322,17 @@ $ShareStatsCopyWith<$Res> get shareStats;$SharesSummaryDataCopyWith<$Res> get an
 
 }
 /// @nodoc
-class __$LoadedCopyWithImpl<$Res>
-    implements _$LoadedCopyWith<$Res> {
-  __$LoadedCopyWithImpl(this._self, this._then);
+class _$CompanySharesLoadedCopyWithImpl<$Res>
+    implements $CompanySharesLoadedCopyWith<$Res> {
+  _$CompanySharesLoadedCopyWithImpl(this._self, this._then);
 
-  final _Loaded _self;
-  final $Res Function(_Loaded) _then;
+  final CompanySharesLoaded _self;
+  final $Res Function(CompanySharesLoaded) _then;
 
 /// Create a copy of CompanySharesState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? ticker = null,Object? shareStats = null,Object? annualChartData = null,Object? quarterlyChartData = null,Object? annualSummary = null,Object? quarterlySummary = null,Object? historyLimit = null,Object? dataOrigin = null,Object? lastUpdated = freezed,Object? analyticsState = freezed,}) {
-  return _then(_Loaded(
+@pragma('vm:prefer-inline') $Res call({Object? ticker = null,Object? shareStats = null,Object? annualChartData = null,Object? quarterlyChartData = null,Object? annualSummary = null,Object? quarterlySummary = null,Object? historyLimit = null,Object? dataOrigin = null,Object? isAnnualView = null,Object? lastUpdated = freezed,Object? analyticsState = freezed,}) {
+  return _then(CompanySharesLoaded(
 ticker: null == ticker ? _self.ticker : ticker // ignore: cast_nullable_to_non_nullable
 as String,shareStats: null == shareStats ? _self.shareStats : shareStats // ignore: cast_nullable_to_non_nullable
 as ShareStats,annualChartData: null == annualChartData ? _self._annualChartData : annualChartData // ignore: cast_nullable_to_non_nullable
@@ -340,7 +341,8 @@ as List<ChartDataPoint>,annualSummary: null == annualSummary ? _self.annualSumma
 as SharesSummaryData,quarterlySummary: null == quarterlySummary ? _self.quarterlySummary : quarterlySummary // ignore: cast_nullable_to_non_nullable
 as SharesSummaryData,historyLimit: null == historyLimit ? _self.historyLimit : historyLimit // ignore: cast_nullable_to_non_nullable
 as int,dataOrigin: null == dataOrigin ? _self.dataOrigin : dataOrigin // ignore: cast_nullable_to_non_nullable
-as CompanyProfileDataOrigin,lastUpdated: freezed == lastUpdated ? _self.lastUpdated : lastUpdated // ignore: cast_nullable_to_non_nullable
+as CompanyProfileDataOrigin,isAnnualView: null == isAnnualView ? _self.isAnnualView : isAnnualView // ignore: cast_nullable_to_non_nullable
+as bool,lastUpdated: freezed == lastUpdated ? _self.lastUpdated : lastUpdated // ignore: cast_nullable_to_non_nullable
 as DateTime?,analyticsState: freezed == analyticsState ? _self.analyticsState : analyticsState // ignore: cast_nullable_to_non_nullable
 as SharesTabViewState?,
   ));

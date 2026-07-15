@@ -1,11 +1,11 @@
 import 'package:bizzie/features/company_profile/financial_statements/presentation/bloc/financial_statements_bloc.dart';
 import 'package:bizzie/features/company_profile/financial_statements/presentation/bloc/financial_statements_event.dart';
 import 'package:bizzie/features/company_profile/financial_statements/presentation/bloc/financial_statements_state.dart';
-import 'package:bizzie/features/company_profile/financial_statements/presentation/bloc/financial_statements_state_extensions.dart';
+import 'package:bizzie/features/company_profile/financial_statements/presentation/extensions/financial_statements_state_extensions.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/models/financial_history_row_data.dart';
 import 'package:bizzie/features/company_profile/financial_statements/presentation/widgets/financial_statement_chart.dart';
-import 'package:bizzie/features/company_profile/financial_statements/presentation/widgets/financial_statement_selector.dart';
-import 'package:bizzie/features/company_profile/financial_statements/presentation/widgets/financial_statements_table.dart';
+import 'package:bizzie/features/company_profile/shared/presentation/widgets/period_selector_dropdown.dart';
+import 'package:bizzie/features/company_profile/shared/presentation/widgets/financial_statements_table.dart';
 import 'package:bizzie/features/company_profile/financial_statements/domain/models/income_statement.dart';
 import 'package:bizzie/app/themes/app_colors.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
@@ -24,7 +24,7 @@ class IncomeStatementView extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<FinancialStatementsBloc, FinancialStatementsState>(
       builder: (context, state) {
-        var locale = Localizations.localeOf(context).toString();
+        final locale = Localizations.localeOf(context).toString();
 
         if (state.annualIncomeStatements.isEmpty &&
             state.quarterlyIncomeStatements.isEmpty) {
@@ -42,17 +42,13 @@ class IncomeStatementView extends StatelessWidget {
               _IncomeStatementSection(
                 title: 'For the Year Ended',
                 data: state.annualIncomeStatements,
-                selectedItem: state.annualIncomeStatements.firstWhere(
-                  (e) => e.date == state.selectedAnnualIncomeDate,
-                  orElse: () => state.annualIncomeStatements.first,
-                ),
+                selectedItem: state.selectedAnnualIncomeStatement,
                 onSelect: (date) => context.read<FinancialStatementsBloc>().add(
                   FinancialStatementsEvent.incomeDateSelected(
                     date,
                     isAnnual: true,
                   ),
                 ),
-                dateFormat: 'MMM d, yyyy',
                 currency: state.reportedCurrency,
                 rows: state.incomeRows(locale: locale, isAnnual: true),
                 historyBuilder: (item) =>
@@ -66,17 +62,13 @@ class IncomeStatementView extends StatelessWidget {
               _IncomeStatementSection(
                 title: 'For the Quarter Ended',
                 data: state.quarterlyIncomeStatements,
-                selectedItem: state.quarterlyIncomeStatements.firstWhere(
-                  (e) => e.date == state.selectedQuarterlyIncomeDate,
-                  orElse: () => state.quarterlyIncomeStatements.first,
-                ),
+                selectedItem: state.selectedQuarterlyIncomeStatement,
                 onSelect: (date) => context.read<FinancialStatementsBloc>().add(
                   FinancialStatementsEvent.incomeDateSelected(
                     date,
                     isAnnual: false,
                   ),
                 ),
-                dateFormat: 'MMM d, yyyy',
                 currency: state.reportedCurrency,
                 rows: state.incomeRows(locale: locale, isAnnual: false),
                 historyBuilder: (item) =>
@@ -97,7 +89,6 @@ class _IncomeStatementSection extends StatelessWidget {
   final List<IncomeStatement> data;
   final IncomeStatement selectedItem;
   final ValueChanged<String> onSelect;
-  final String dateFormat;
   final String currency;
   final List<FinancialStatementTableRow> rows;
   final FinancialHistoryRowData Function(IncomeStatement) historyBuilder;
@@ -109,7 +100,6 @@ class _IncomeStatementSection extends StatelessWidget {
     required this.data,
     required this.selectedItem,
     required this.onSelect,
-    required this.dateFormat,
     required this.currency,
     required this.rows,
     required this.historyBuilder,
@@ -122,14 +112,13 @@ class _IncomeStatementSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        FinancialStatementSelector<IncomeStatement>(
+        PeriodSelectorDropdown<IncomeStatement>(
           title: title,
           items: data,
           selectedItem: selectedItem,
           onItemSelected: (item) => onSelect(item.date),
           dateStringExtractor: (item) => item.date,
           periodExtractor: (item) => item.period,
-          dateFormat: dateFormat,
           modalTitle: 'Income Statement Periods',
           historyLimit: historyLimit,
         ),
@@ -143,13 +132,7 @@ class _IncomeStatementSection extends StatelessWidget {
               FinancialStatementsEvent.viewAllTapped(isAnnual: isAnnual),
             );
 
-            final userState = context.read<UserBloc>().state;
-            final isSubscribed = userState.maybeMap(
-              loaded: (s) => s.user.isSubscribed,
-              orElse: () => false,
-            );
-
-            if (isSubscribed) {
+            if (context.read<UserBloc>().state.canViewFullHistory) {
               _showFullHistory(context, data);
             }
           },

@@ -25,7 +25,7 @@ class _AddingToWatchlistPageState extends State<AddingToWatchlistPage> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<OnboardingBloc>().add(
-        const OnboardingEvent.startWatchlistAddition(),
+        const OnboardingEvent.watchlistAdditionStarted(),
       );
       context.read<OnboardingBloc>().add(
         const OnboardingEvent.stepViewed(OnboardingStep.addingToWatchlist),

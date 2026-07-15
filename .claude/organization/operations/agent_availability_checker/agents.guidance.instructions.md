@@ -204,7 +204,7 @@ After AgentBuilder successfully builds a new agent, update the **Agent Registry*
 
 ## DomainBuilder
 - **Path:** `.claude/organization/technology/domain_agents/domain_builder/domain.builder.agent.md`
-- **Description:** Implements new Flutter domain layer code from scratch using a structured plan from DomainPlanner. Creates UseCase classes, repository interfaces, domain models with @freezed, and @injectable annotations. Invokes RunDepOps as the final step.
+- **Description:** Implements new Flutter domain layer code from scratch using a structured plan from DomainPlanner. Creates UseCase classes, repository interfaces, domain models with @freezed, and injectable DI annotations (`@lazySingleton` for use cases). Invokes RunDepOps as the final step.
 
 ## DomainUpdater
 - **Path:** `.claude/organization/technology/domain_agents/domain_updater/domain.updater.agent.md`

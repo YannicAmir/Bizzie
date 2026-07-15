@@ -55,7 +55,7 @@ extension CompanyBusinessEventPatterns on CompanyBusinessEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( LoadRequested value)?  loadRequested,TResult Function( StalenessCheckRequested value)?  stalenessCheckRequested,TResult Function( TabShown value)?  tabShown,TResult Function( TabHidden value)?  tabHidden,TResult Function( AppBackgrounded value)?  appBackgrounded,TResult Function( AppForegrounded value)?  appForegrounded,TResult Function( AnalyticsInteractionOccurred value)?  analyticsInteractionOccurred,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( LoadRequested value)?  loadRequested,TResult Function( StalenessCheckRequested value)?  stalenessCheckRequested,TResult Function( TabShown value)?  tabShown,TResult Function( TabHidden value)?  tabHidden,TResult Function( AppBackgrounded value)?  appBackgrounded,TResult Function( AppForegrounded value)?  appForegrounded,TResult Function( BusinessReset value)?  reset,TResult Function( AnalyticsInteractionOccurred value)?  analyticsInteractionOccurred,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case LoadRequested() when loadRequested != null:
@@ -64,7 +64,8 @@ return stalenessCheckRequested(_that);case TabShown() when tabShown != null:
 return tabShown(_that);case TabHidden() when tabHidden != null:
 return tabHidden(_that);case AppBackgrounded() when appBackgrounded != null:
 return appBackgrounded(_that);case AppForegrounded() when appForegrounded != null:
-return appForegrounded(_that);case AnalyticsInteractionOccurred() when analyticsInteractionOccurred != null:
+return appForegrounded(_that);case BusinessReset() when reset != null:
+return reset(_that);case AnalyticsInteractionOccurred() when analyticsInteractionOccurred != null:
 return analyticsInteractionOccurred(_that);case _:
   return orElse();
 
@@ -83,7 +84,7 @@ return analyticsInteractionOccurred(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( LoadRequested value)  loadRequested,required TResult Function( StalenessCheckRequested value)  stalenessCheckRequested,required TResult Function( TabShown value)  tabShown,required TResult Function( TabHidden value)  tabHidden,required TResult Function( AppBackgrounded value)  appBackgrounded,required TResult Function( AppForegrounded value)  appForegrounded,required TResult Function( AnalyticsInteractionOccurred value)  analyticsInteractionOccurred,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( LoadRequested value)  loadRequested,required TResult Function( StalenessCheckRequested value)  stalenessCheckRequested,required TResult Function( TabShown value)  tabShown,required TResult Function( TabHidden value)  tabHidden,required TResult Function( AppBackgrounded value)  appBackgrounded,required TResult Function( AppForegrounded value)  appForegrounded,required TResult Function( BusinessReset value)  reset,required TResult Function( AnalyticsInteractionOccurred value)  analyticsInteractionOccurred,}){
 final _that = this;
 switch (_that) {
 case LoadRequested():
@@ -92,7 +93,8 @@ return stalenessCheckRequested(_that);case TabShown():
 return tabShown(_that);case TabHidden():
 return tabHidden(_that);case AppBackgrounded():
 return appBackgrounded(_that);case AppForegrounded():
-return appForegrounded(_that);case AnalyticsInteractionOccurred():
+return appForegrounded(_that);case BusinessReset():
+return reset(_that);case AnalyticsInteractionOccurred():
 return analyticsInteractionOccurred(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
@@ -107,7 +109,7 @@ return analyticsInteractionOccurred(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( LoadRequested value)?  loadRequested,TResult? Function( StalenessCheckRequested value)?  stalenessCheckRequested,TResult? Function( TabShown value)?  tabShown,TResult? Function( TabHidden value)?  tabHidden,TResult? Function( AppBackgrounded value)?  appBackgrounded,TResult? Function( AppForegrounded value)?  appForegrounded,TResult? Function( AnalyticsInteractionOccurred value)?  analyticsInteractionOccurred,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( LoadRequested value)?  loadRequested,TResult? Function( StalenessCheckRequested value)?  stalenessCheckRequested,TResult? Function( TabShown value)?  tabShown,TResult? Function( TabHidden value)?  tabHidden,TResult? Function( AppBackgrounded value)?  appBackgrounded,TResult? Function( AppForegrounded value)?  appForegrounded,TResult? Function( BusinessReset value)?  reset,TResult? Function( AnalyticsInteractionOccurred value)?  analyticsInteractionOccurred,}){
 final _that = this;
 switch (_that) {
 case LoadRequested() when loadRequested != null:
@@ -116,7 +118,8 @@ return stalenessCheckRequested(_that);case TabShown() when tabShown != null:
 return tabShown(_that);case TabHidden() when tabHidden != null:
 return tabHidden(_that);case AppBackgrounded() when appBackgrounded != null:
 return appBackgrounded(_that);case AppForegrounded() when appForegrounded != null:
-return appForegrounded(_that);case AnalyticsInteractionOccurred() when analyticsInteractionOccurred != null:
+return appForegrounded(_that);case BusinessReset() when reset != null:
+return reset(_that);case AnalyticsInteractionOccurred() when analyticsInteractionOccurred != null:
 return analyticsInteractionOccurred(_that);case _:
   return null;
 
@@ -134,7 +137,7 @@ return analyticsInteractionOccurred(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String ticker,  bool forceRefresh)?  loadRequested,TResult Function( String ticker)?  stalenessCheckRequested,TResult Function( String ticker)?  tabShown,TResult Function()?  tabHidden,TResult Function()?  appBackgrounded,TResult Function()?  appForegrounded,TResult Function( bool? tappedWebsite,  bool? tappedProxy,  bool? didExpandDescription,  bool? viewed10Ks,  bool? viewed10Qs,  bool? viewAll10KsTapped,  bool? viewAll10QsTapped)?  analyticsInteractionOccurred,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String ticker,  bool forceRefresh)?  loadRequested,TResult Function( String ticker)?  stalenessCheckRequested,TResult Function( String ticker)?  tabShown,TResult Function()?  tabHidden,TResult Function()?  appBackgrounded,TResult Function()?  appForegrounded,TResult Function()?  reset,TResult Function( bool? tappedWebsite,  bool? tappedProxy,  bool? didExpandDescription,  bool? viewed10Ks,  bool? viewed10Qs,  bool? viewAll10KsTapped,  bool? viewAll10QsTapped)?  analyticsInteractionOccurred,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case LoadRequested() when loadRequested != null:
 return loadRequested(_that.ticker,_that.forceRefresh);case StalenessCheckRequested() when stalenessCheckRequested != null:
@@ -142,7 +145,8 @@ return stalenessCheckRequested(_that.ticker);case TabShown() when tabShown != nu
 return tabShown(_that.ticker);case TabHidden() when tabHidden != null:
 return tabHidden();case AppBackgrounded() when appBackgrounded != null:
 return appBackgrounded();case AppForegrounded() when appForegrounded != null:
-return appForegrounded();case AnalyticsInteractionOccurred() when analyticsInteractionOccurred != null:
+return appForegrounded();case BusinessReset() when reset != null:
+return reset();case AnalyticsInteractionOccurred() when analyticsInteractionOccurred != null:
 return analyticsInteractionOccurred(_that.tappedWebsite,_that.tappedProxy,_that.didExpandDescription,_that.viewed10Ks,_that.viewed10Qs,_that.viewAll10KsTapped,_that.viewAll10QsTapped);case _:
   return orElse();
 
@@ -161,7 +165,7 @@ return analyticsInteractionOccurred(_that.tappedWebsite,_that.tappedProxy,_that.
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String ticker,  bool forceRefresh)  loadRequested,required TResult Function( String ticker)  stalenessCheckRequested,required TResult Function( String ticker)  tabShown,required TResult Function()  tabHidden,required TResult Function()  appBackgrounded,required TResult Function()  appForegrounded,required TResult Function( bool? tappedWebsite,  bool? tappedProxy,  bool? didExpandDescription,  bool? viewed10Ks,  bool? viewed10Qs,  bool? viewAll10KsTapped,  bool? viewAll10QsTapped)  analyticsInteractionOccurred,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String ticker,  bool forceRefresh)  loadRequested,required TResult Function( String ticker)  stalenessCheckRequested,required TResult Function( String ticker)  tabShown,required TResult Function()  tabHidden,required TResult Function()  appBackgrounded,required TResult Function()  appForegrounded,required TResult Function()  reset,required TResult Function( bool? tappedWebsite,  bool? tappedProxy,  bool? didExpandDescription,  bool? viewed10Ks,  bool? viewed10Qs,  bool? viewAll10KsTapped,  bool? viewAll10QsTapped)  analyticsInteractionOccurred,}) {final _that = this;
 switch (_that) {
 case LoadRequested():
 return loadRequested(_that.ticker,_that.forceRefresh);case StalenessCheckRequested():
@@ -169,7 +173,8 @@ return stalenessCheckRequested(_that.ticker);case TabShown():
 return tabShown(_that.ticker);case TabHidden():
 return tabHidden();case AppBackgrounded():
 return appBackgrounded();case AppForegrounded():
-return appForegrounded();case AnalyticsInteractionOccurred():
+return appForegrounded();case BusinessReset():
+return reset();case AnalyticsInteractionOccurred():
 return analyticsInteractionOccurred(_that.tappedWebsite,_that.tappedProxy,_that.didExpandDescription,_that.viewed10Ks,_that.viewed10Qs,_that.viewAll10KsTapped,_that.viewAll10QsTapped);}
 }
 /// A variant of `when` that fallback to returning `null`
@@ -184,7 +189,7 @@ return analyticsInteractionOccurred(_that.tappedWebsite,_that.tappedProxy,_that.
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String ticker,  bool forceRefresh)?  loadRequested,TResult? Function( String ticker)?  stalenessCheckRequested,TResult? Function( String ticker)?  tabShown,TResult? Function()?  tabHidden,TResult? Function()?  appBackgrounded,TResult? Function()?  appForegrounded,TResult? Function( bool? tappedWebsite,  bool? tappedProxy,  bool? didExpandDescription,  bool? viewed10Ks,  bool? viewed10Qs,  bool? viewAll10KsTapped,  bool? viewAll10QsTapped)?  analyticsInteractionOccurred,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String ticker,  bool forceRefresh)?  loadRequested,TResult? Function( String ticker)?  stalenessCheckRequested,TResult? Function( String ticker)?  tabShown,TResult? Function()?  tabHidden,TResult? Function()?  appBackgrounded,TResult? Function()?  appForegrounded,TResult? Function()?  reset,TResult? Function( bool? tappedWebsite,  bool? tappedProxy,  bool? didExpandDescription,  bool? viewed10Ks,  bool? viewed10Qs,  bool? viewAll10KsTapped,  bool? viewAll10QsTapped)?  analyticsInteractionOccurred,}) {final _that = this;
 switch (_that) {
 case LoadRequested() when loadRequested != null:
 return loadRequested(_that.ticker,_that.forceRefresh);case StalenessCheckRequested() when stalenessCheckRequested != null:
@@ -192,7 +197,8 @@ return stalenessCheckRequested(_that.ticker);case TabShown() when tabShown != nu
 return tabShown(_that.ticker);case TabHidden() when tabHidden != null:
 return tabHidden();case AppBackgrounded() when appBackgrounded != null:
 return appBackgrounded();case AppForegrounded() when appForegrounded != null:
-return appForegrounded();case AnalyticsInteractionOccurred() when analyticsInteractionOccurred != null:
+return appForegrounded();case BusinessReset() when reset != null:
+return reset();case AnalyticsInteractionOccurred() when analyticsInteractionOccurred != null:
 return analyticsInteractionOccurred(_that.tappedWebsite,_that.tappedProxy,_that.didExpandDescription,_that.viewed10Ks,_that.viewed10Qs,_that.viewAll10KsTapped,_that.viewAll10QsTapped);case _:
   return null;
 
@@ -489,6 +495,38 @@ int get hashCode => runtimeType.hashCode;
 @override
 String toString() {
   return 'CompanyBusinessEvent.appForegrounded()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class BusinessReset implements CompanyBusinessEvent {
+  const BusinessReset();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is BusinessReset);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'CompanyBusinessEvent.reset()';
 }
 
 

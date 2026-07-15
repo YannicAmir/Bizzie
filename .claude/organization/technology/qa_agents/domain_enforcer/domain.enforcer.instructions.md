@@ -15,7 +15,7 @@ Verify all changed files against every checklist item in `domain.guidance.instru
 - UseCase calling a datasource directly instead of going through `IXxxRepository`
 - UseCase implementing business logic beyond delegating to a repository method
 - `call()` method not returning `Either<Failure, T>` (or `Stream<Either<Failure, T>>` for stream use cases)
-- Missing `@injectable` annotation on UseCase class
+- Missing `@lazySingleton` annotation on UseCase class
 - UseCase constructor obtaining dependency via `GetIt` inside a method body instead of constructor injection
 - `NoParams` not used when the use case requires no parameters
 - Params class not using `@freezed` when it has fields

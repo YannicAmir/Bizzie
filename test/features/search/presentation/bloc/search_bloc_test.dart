@@ -1,6 +1,6 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:bizzie/core/error/failures.dart';
-import 'package:bizzie/features/onboarding/domain/models/company.dart';
+import 'package:bizzie/core/domain/models/company.dart';
 import 'package:bizzie/features/search/domain/models/stock_symbol.dart';
 import 'package:bizzie/features/search/domain/usecases/find_stock_for_product_usecase.dart';
 import 'package:bizzie/features/search/domain/usecases/get_search_dashboard_data_usecase.dart';

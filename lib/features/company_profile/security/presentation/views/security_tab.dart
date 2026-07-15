@@ -1,8 +1,5 @@
 import 'package:bizzie/core/enums/data_origin.dart';
-import 'package:bizzie/shared/constants/app_constants.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-
+import 'package:bizzie/di/injection.dart';
 import 'package:bizzie/features/company_profile/security/domain/models/historical_price_eod.dart';
 import 'package:bizzie/features/company_profile/security/domain/models/security_details.dart';
 import 'package:bizzie/features/company_profile/security/presentation/bloc/company_security_bloc.dart';
@@ -11,26 +8,30 @@ import 'package:bizzie/features/company_profile/security/presentation/bloc/compa
 import 'package:bizzie/features/company_profile/security/presentation/bloc/historical_price_eod/historical_price_eod_bloc.dart';
 import 'package:bizzie/features/company_profile/security/presentation/bloc/historical_price_eod/historical_price_eod_event.dart';
 import 'package:bizzie/features/company_profile/security/presentation/bloc/historical_price_eod/historical_price_eod_state.dart';
-import 'package:bizzie/features/company_profile/security/presentation/widgets/price_chart_widget.dart';
-import 'package:bizzie/features/company_profile/shared/presentation/widgets/company_profile_error_state.dart';
-import 'package:bizzie/features/company_profile/shared/presentation/widgets/company_profile_loading_state.dart';
-import 'package:bizzie/features/company_profile/security/presentation/widgets/security_overview_card.dart';
-import 'package:bizzie/features/company_profile/security/presentation/widgets/upcoming_earnings_widget.dart';
-import 'package:bizzie/features/company_profile/security/presentation/widgets/key_metrics_section.dart';
-import 'package:bizzie/features/company_profile/shared/presentation/enums/company_profile_tab.dart';
-import 'package:bizzie/features/company_profile/shared/presentation/widgets/tab_visibility_observer.dart';
-import 'package:bizzie/features/company_profile/security/presentation/bloc/company_security_state_extensions.dart';
-import 'package:bizzie/features/company_profile/security/presentation/bloc/historical_price_eod/historical_price_eod_state_extensions.dart';
 import 'package:bizzie/features/company_profile/security/presentation/bloc/price_chart/price_chart_bloc.dart';
 import 'package:bizzie/features/company_profile/security/presentation/bloc/price_chart/price_chart_event.dart';
 import 'package:bizzie/features/company_profile/security/presentation/bloc/price_chart/price_chart_state.dart';
 import 'package:bizzie/features/company_profile/security/presentation/bloc/upcoming_earnings/upcoming_earnings_bloc.dart';
 import 'package:bizzie/features/company_profile/security/presentation/bloc/upcoming_earnings/upcoming_earnings_state.dart';
+import 'package:bizzie/features/company_profile/security/presentation/extensions/company_security_state_extensions.dart';
+import 'package:bizzie/features/company_profile/security/presentation/extensions/historical_price_eod_state_extensions.dart';
 import 'package:bizzie/features/company_profile/security/presentation/utils/upcoming_earnings_presentation_extensions.dart';
-import 'package:bizzie/di/injection.dart';
+import 'package:bizzie/features/company_profile/security/presentation/widgets/key_metrics_section.dart';
+import 'package:bizzie/features/company_profile/security/presentation/widgets/price_chart_widget.dart';
+import 'package:bizzie/features/company_profile/security/presentation/widgets/security_overview_card.dart';
+import 'package:bizzie/features/company_profile/security/presentation/widgets/upcoming_earnings_widget.dart';
+import 'package:bizzie/features/company_profile/shared/domain/enums/company_profile_tab.dart';
+import 'package:bizzie/features/company_profile/shared/presentation/extensions/company_profile_tab_x.dart';
+import 'package:bizzie/features/company_profile/shared/presentation/widgets/company_profile_error_state.dart';
+import 'package:bizzie/features/company_profile/shared/presentation/widgets/company_profile_loading_state.dart';
+import 'package:bizzie/features/company_profile/shared/presentation/widgets/tab_visibility_observer.dart';
+import 'package:bizzie/shared/constants/app_constants.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 const _loadingSecurityLabel = 'Loading Security';
 const _errorLoadingSecurityLabel = 'Error loading security';
+const _priceChartKeyPrefix = 'price_chart_';
 
 class SecurityTab extends StatefulWidget {
   final String ticker;
@@ -70,56 +71,74 @@ class _SecurityTabState extends State<SecurityTab>
           HistoricalPriceEodEvent.stalenessCheckRequested(widget.ticker),
         );
       },
-      child: BlocBuilder<CompanySecurityBloc, CompanySecurityState>(
-        builder: (context, securityState) {
-          return BlocBuilder<HistoricalPriceEodBloc, HistoricalPriceEodState>(
-            builder: (context, priceState) {
-              if (securityState.isLoading || priceState.isLoading) {
-                return const CompanyProfileLoadingState(
-                  message: _loadingSecurityLabel,
-                );
-              }
+      child: _SecurityTabBody(ticker: widget.ticker),
+    );
+  }
+}
 
-              return securityState.maybeMap(
-                failure: (f) => CompanyProfileErrorState(
-                  message: _errorLoadingSecurityLabel,
-                  onRetry: () {
-                    context.read<CompanySecurityBloc>().add(
-                      CompanySecurityEvent.loadRequested(
-                        widget.ticker,
-                        forceRefresh: true,
-                      ),
-                    );
-                    context.read<HistoricalPriceEodBloc>().add(
-                      HistoricalPriceEodEvent.loadRequested(widget.ticker),
-                    );
-                  },
-                ),
-                loaded: (state) {
-                  final securityDetails = state.securityDetails;
-                  final prices = priceState.maybeMap(
-                    loaded: (s) => s.prices,
-                    orElse: () => <HistoricalPriceEod>[],
-                  );
-                  final dataSource = priceState.maybeMap(
-                    loaded: (s) => s.dataSource,
-                    orElse: () => CompanyProfileDataOrigin.api,
-                  );
+class _SecurityTabBody extends StatelessWidget {
+  final String ticker;
 
-                  return _SecurityLoadedView(
-                    securityDetails: securityDetails,
-                    prices: prices,
-                    dataSource: dataSource,
-                  );
-                },
-                orElse: () => const CompanyProfileLoadingState(
-                  message: _loadingSecurityLabel,
-                ),
+  const _SecurityTabBody({required this.ticker});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<CompanySecurityBloc, CompanySecurityState>(
+      builder: (context, securityState) {
+        return BlocBuilder<HistoricalPriceEodBloc, HistoricalPriceEodState>(
+          builder: (context, priceState) {
+            if (securityState.isLoading || priceState.isLoading) {
+              return const CompanyProfileLoadingState(
+                message: _loadingSecurityLabel,
               );
-            },
-          );
-        },
-      ),
+            }
+
+            return securityState.maybeMap(
+              failure: (_) => _SecurityErrorView(ticker: ticker),
+              loaded: (state) {
+                final prices = priceState.maybeMap(
+                  loaded: (s) => s.prices,
+                  orElse: () => <HistoricalPriceEod>[],
+                );
+                final dataSource = priceState.maybeMap(
+                  loaded: (s) => s.dataSource,
+                  orElse: () => CompanyProfileDataOrigin.api,
+                );
+
+                return _SecurityLoadedView(
+                  securityDetails: state.securityDetails,
+                  prices: prices,
+                  dataSource: dataSource,
+                );
+              },
+              orElse: () => const CompanyProfileLoadingState(
+                message: _loadingSecurityLabel,
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+}
+
+class _SecurityErrorView extends StatelessWidget {
+  final String ticker;
+
+  const _SecurityErrorView({required this.ticker});
+
+  @override
+  Widget build(BuildContext context) {
+    return CompanyProfileErrorState(
+      message: _errorLoadingSecurityLabel,
+      onRetry: () {
+        context.read<CompanySecurityBloc>().add(
+          CompanySecurityEvent.loadRequested(ticker, forceRefresh: true),
+        );
+        context.read<HistoricalPriceEodBloc>().add(
+          HistoricalPriceEodEvent.loadRequested(ticker),
+        );
+      },
     );
   }
 }
@@ -142,11 +161,9 @@ class _SecurityLoadedView extends StatelessWidget {
         BlocListener<HistoricalPriceEodBloc, HistoricalPriceEodState>(
           listener: (context, eodState) {
             eodState.mapOrNull(
-              loaded: (s) {
+              loaded: (_) {
                 context.read<CompanySecurityBloc>().add(
-                  CompanySecurityEvent.priceAnalyticsUpdated(
-                    isSuccess: true,
-                  ),
+                  CompanySecurityEvent.priceAnalyticsUpdated(isSuccess: true),
                 );
               },
             );
@@ -210,7 +227,7 @@ class _SecurityContent extends StatelessWidget {
           KeyMetricsSection(details: securityDetails),
           AppConstants.mainSectionSpacing,
           BlocProvider(
-            key: ValueKey('price_chart_${prices.length}'),
+            key: ValueKey('$_priceChartKeyPrefix${prices.length}'),
             create: (context) =>
                 getIt<PriceChartBloc>()
                   ..add(PriceChartEvent.historyUpdated(prices)),

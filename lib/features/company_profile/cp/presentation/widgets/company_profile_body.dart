@@ -1,6 +1,5 @@
 import 'package:bizzie/features/bizzie_chat/presentation/views/bizzie_chat_tab.dart';
 import 'package:bizzie/features/company_profile/business/presentation/views/business_tab.dart';
-
 import 'package:bizzie/features/company_profile/dividends/presentation/views/dividends_tab.dart';
 import 'package:bizzie/features/company_profile/eps/presentation/views/eps_tab.dart';
 import 'package:bizzie/features/company_profile/fcps/presentation/views/fcps_tab.dart';
@@ -14,21 +13,23 @@ import 'package:bizzie/features/company_profile/pfcf_ratio/presentation/views/pf
 import 'package:bizzie/features/company_profile/revenue/presentation/views/revenue_tab.dart';
 import 'package:bizzie/features/company_profile/roe/presentation/views/roe_tab.dart';
 import 'package:bizzie/features/company_profile/security/presentation/views/security_tab.dart';
+import 'package:bizzie/features/company_profile/segments/presentation/views/segments_tab.dart';
+import 'package:bizzie/features/company_profile/shared/domain/enums/company_profile_tab.dart';
 import 'package:bizzie/features/company_profile/shares/presentation/views/shares_tab.dart';
 import 'package:flutter/material.dart';
-
-import 'package:bizzie/features/company_profile/shared/presentation/enums/company_profile_tab.dart';
 
 class CompanyProfileBody extends StatelessWidget {
   final String ticker;
   final TabController tabController;
   final List<CompanyProfileTab> tabs;
+  final List<CompanyProfileTab> moreTabs;
 
   const CompanyProfileBody({
     super.key,
     required this.ticker,
     required this.tabController,
     required this.tabs,
+    required this.moreTabs,
   });
 
   @override
@@ -49,6 +50,8 @@ class CompanyProfileBody extends StatelessWidget {
             return DividendsTab(ticker: ticker);
           case CompanyProfileTab.revenue:
             return RevenueTab(ticker: ticker);
+          case CompanyProfileTab.segments:
+            return SegmentsTab(ticker: ticker);
           case CompanyProfileTab.netIncome:
             return NetIncomeTab(ticker: ticker);
           case CompanyProfileTab.eps:
@@ -68,7 +71,7 @@ class CompanyProfileBody extends StatelessWidget {
           case CompanyProfileTab.pfcfRatio:
             return PfcfRatioTab(ticker: ticker);
           case CompanyProfileTab.more:
-            return MoreTab(ticker: ticker);
+            return MoreTab(ticker: ticker, moreTabs: moreTabs);
         }
       }).toList(),
     );

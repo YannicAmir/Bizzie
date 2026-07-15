@@ -37,7 +37,7 @@ For every change, verify:
 - [ ] No Firebase, HTTP, storage, or UI imports added to domain layer
 - [ ] Repository interface return types still use `Either<Failure, T>` for fallible methods
 - [ ] Use case `call()` method signature unchanged unless the plan explicitly changes it
-- [ ] `@injectable` annotation present on any new use case class
+- [ ] `@lazySingleton` annotation present on any new use case class
 - [ ] If `@freezed` model modified: `part` directive and generated files will need regeneration
 - [ ] No existing behaviour changed beyond what the plan specifies
 

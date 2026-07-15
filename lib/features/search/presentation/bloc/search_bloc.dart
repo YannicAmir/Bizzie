@@ -4,7 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 import 'package:bizzie/features/search/domain/models/stock_symbol.dart';
-import 'package:bizzie/features/onboarding/domain/models/company.dart';
+import 'package:bizzie/core/domain/models/company.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:bizzie/features/search/domain/usecases/search_stocks_usecase.dart';
 import 'package:bizzie/features/search/domain/usecases/get_search_dashboard_data_usecase.dart';

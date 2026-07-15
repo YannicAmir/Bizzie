@@ -2,7 +2,7 @@ import 'package:bizzie/app/router.dart';
 import 'package:bizzie/app/themes/app_assets.dart';
 import 'package:bizzie/app/routes/app_routes.dart';
 import 'package:bizzie/core/enums/paywall_source.dart';
-import 'package:bizzie/features/onboarding/domain/models/company.dart';
+import 'package:bizzie/core/domain/models/company.dart';
 import 'package:bizzie/features/reports/domain/models/weekly_report.dart';
 import 'package:bizzie/features/reports/presentation/bloc/reports_bloc.dart';
 import 'package:bizzie/features/reports/presentation/bloc/reports_event.dart';
@@ -10,7 +10,7 @@ import 'package:bizzie/features/reports/presentation/widgets/filing_card_header.
 import 'package:bizzie/shared/widgets/app_badge.dart';
 import 'package:bizzie/features/reports/presentation/widgets/weekly_report_modal.dart';
 import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
-import 'package:bizzie/shared/utils/paywall_helper.dart';
+import 'package:bizzie/features/subscription/presentation/utils/paywall_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';

@@ -3,7 +3,7 @@ import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/core/data/models/cache_result.dart' as result;
-import 'package:bizzie/features/company_profile/financial_statements/data/datasources/financial_statements_firestore_data_source.dart';
+import 'package:bizzie/features/company_profile/financial_statements/data/interfaces/i_financial_statements_firestore_datasource.dart';
 import 'package:bizzie/features/company_profile/financial_statements/data/datasources/financial_statements_remote_data_source.dart';
 import 'package:bizzie/features/company_profile/shared/domain/interfaces/i_company_repository.dart';
 import 'package:bizzie/features/company_profile/shared/domain/models/financial_data_point.dart';
@@ -19,7 +19,7 @@ abstract class _Consts {
 class SharesRepositoryImpl implements ISharesRepository {
   final ICompanyRepository _companyRepository;
   final FinancialStatementsRemoteDataSource _financialRemoteDataSource;
-  final FinancialStatementsFirestoreDataSource _financialLocalDataSource;
+  final IFinancialStatementsFirestoreDataSource _financialLocalDataSource;
 
   SharesRepositoryImpl(
     this._companyRepository,
