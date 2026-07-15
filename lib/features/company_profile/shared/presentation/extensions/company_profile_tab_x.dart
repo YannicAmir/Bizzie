@@ -1,6 +1,11 @@
 import 'package:bizzie/features/company_profile/shared/domain/enums/company_profile_tab.dart';
 
+const String _bizzieChatPaywallFeatureName = 'bizzie_chat';
+
 extension CompanyProfileTabX on CompanyProfileTab {
+  String? get paywallFeatureName =>
+      this == CompanyProfileTab.chat ? _bizzieChatPaywallFeatureName : null;
+
   String get label => switch (this) {
     CompanyProfileTab.security => 'Security',
     CompanyProfileTab.chat => 'Chat',

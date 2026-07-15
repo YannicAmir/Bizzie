@@ -128,10 +128,10 @@ return reset(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  started,TResult Function( CompanyProfileTab tab,  String ticker)?  tabActivated,TResult Function( int index,  String ticker)?  moreTabIndexChanged,TResult Function()?  tabOrderChanged,TResult Function()?  reset,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( bool isSubscribed)?  started,TResult Function( CompanyProfileTab tab,  String ticker)?  tabActivated,TResult Function( int index,  String ticker)?  moreTabIndexChanged,TResult Function()?  tabOrderChanged,TResult Function()?  reset,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case Started() when started != null:
-return started();case TabActivated() when tabActivated != null:
+return started(_that.isSubscribed);case TabActivated() when tabActivated != null:
 return tabActivated(_that.tab,_that.ticker);case MoreTabIndexChanged() when moreTabIndexChanged != null:
 return moreTabIndexChanged(_that.index,_that.ticker);case TabOrderChanged() when tabOrderChanged != null:
 return tabOrderChanged();case Reset() when reset != null:
@@ -153,10 +153,10 @@ return reset();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  started,required TResult Function( CompanyProfileTab tab,  String ticker)  tabActivated,required TResult Function( int index,  String ticker)  moreTabIndexChanged,required TResult Function()  tabOrderChanged,required TResult Function()  reset,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( bool isSubscribed)  started,required TResult Function( CompanyProfileTab tab,  String ticker)  tabActivated,required TResult Function( int index,  String ticker)  moreTabIndexChanged,required TResult Function()  tabOrderChanged,required TResult Function()  reset,}) {final _that = this;
 switch (_that) {
 case Started():
-return started();case TabActivated():
+return started(_that.isSubscribed);case TabActivated():
 return tabActivated(_that.tab,_that.ticker);case MoreTabIndexChanged():
 return moreTabIndexChanged(_that.index,_that.ticker);case TabOrderChanged():
 return tabOrderChanged();case Reset():
@@ -174,10 +174,10 @@ return reset();}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  started,TResult? Function( CompanyProfileTab tab,  String ticker)?  tabActivated,TResult? Function( int index,  String ticker)?  moreTabIndexChanged,TResult? Function()?  tabOrderChanged,TResult? Function()?  reset,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( bool isSubscribed)?  started,TResult? Function( CompanyProfileTab tab,  String ticker)?  tabActivated,TResult? Function( int index,  String ticker)?  moreTabIndexChanged,TResult? Function()?  tabOrderChanged,TResult? Function()?  reset,}) {final _that = this;
 switch (_that) {
 case Started() when started != null:
-return started();case TabActivated() when tabActivated != null:
+return started(_that.isSubscribed);case TabActivated() when tabActivated != null:
 return tabActivated(_that.tab,_that.ticker);case MoreTabIndexChanged() when moreTabIndexChanged != null:
 return moreTabIndexChanged(_that.index,_that.ticker);case TabOrderChanged() when tabOrderChanged != null:
 return tabOrderChanged();case Reset() when reset != null:
@@ -193,33 +193,67 @@ return reset();case _:
 
 
 class Started implements CompanyProfileTabsEvent {
-  const Started();
+  const Started({required this.isSubscribed});
   
 
+ final  bool isSubscribed;
 
-
+/// Create a copy of CompanyProfileTabsEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$StartedCopyWith<Started> get copyWith => _$StartedCopyWithImpl<Started>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Started);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Started&&(identical(other.isSubscribed, isSubscribed) || other.isSubscribed == isSubscribed));
 }
 
 
 @override
-int get hashCode => runtimeType.hashCode;
+int get hashCode => Object.hash(runtimeType,isSubscribed);
 
 @override
 String toString() {
-  return 'CompanyProfileTabsEvent.started()';
+  return 'CompanyProfileTabsEvent.started(isSubscribed: $isSubscribed)';
 }
 
 
 }
 
+/// @nodoc
+abstract mixin class $StartedCopyWith<$Res> implements $CompanyProfileTabsEventCopyWith<$Res> {
+  factory $StartedCopyWith(Started value, $Res Function(Started) _then) = _$StartedCopyWithImpl;
+@useResult
+$Res call({
+ bool isSubscribed
+});
 
 
+
+
+}
+/// @nodoc
+class _$StartedCopyWithImpl<$Res>
+    implements $StartedCopyWith<$Res> {
+  _$StartedCopyWithImpl(this._self, this._then);
+
+  final Started _self;
+  final $Res Function(Started) _then;
+
+/// Create a copy of CompanyProfileTabsEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? isSubscribed = null,}) {
+  return _then(Started(
+isSubscribed: null == isSubscribed ? _self.isSubscribed : isSubscribed // ignore: cast_nullable_to_non_nullable
+as bool,
+  ));
+}
+
+
+}
 
 /// @nodoc
 

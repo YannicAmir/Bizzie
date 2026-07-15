@@ -55,12 +55,13 @@ extension EditTabsNoticePatterns on EditTabsNotice {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( EditTabsTooManyMainTabs value)?  tooManyMainTabs,TResult Function( EditTabsTooFewMainTabs value)?  tooFewMainTabs,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( EditTabsTooManyMainTabs value)?  tooManyMainTabs,TResult Function( EditTabsTooFewMainTabs value)?  tooFewMainTabs,TResult Function( EditTabsTooFewMoreTabs value)?  tooFewMoreTabs,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case EditTabsTooManyMainTabs() when tooManyMainTabs != null:
 return tooManyMainTabs(_that);case EditTabsTooFewMainTabs() when tooFewMainTabs != null:
-return tooFewMainTabs(_that);case _:
+return tooFewMainTabs(_that);case EditTabsTooFewMoreTabs() when tooFewMoreTabs != null:
+return tooFewMoreTabs(_that);case _:
   return orElse();
 
 }
@@ -78,12 +79,13 @@ return tooFewMainTabs(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( EditTabsTooManyMainTabs value)  tooManyMainTabs,required TResult Function( EditTabsTooFewMainTabs value)  tooFewMainTabs,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( EditTabsTooManyMainTabs value)  tooManyMainTabs,required TResult Function( EditTabsTooFewMainTabs value)  tooFewMainTabs,required TResult Function( EditTabsTooFewMoreTabs value)  tooFewMoreTabs,}){
 final _that = this;
 switch (_that) {
 case EditTabsTooManyMainTabs():
 return tooManyMainTabs(_that);case EditTabsTooFewMainTabs():
-return tooFewMainTabs(_that);}
+return tooFewMainTabs(_that);case EditTabsTooFewMoreTabs():
+return tooFewMoreTabs(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -97,12 +99,13 @@ return tooFewMainTabs(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( EditTabsTooManyMainTabs value)?  tooManyMainTabs,TResult? Function( EditTabsTooFewMainTabs value)?  tooFewMainTabs,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( EditTabsTooManyMainTabs value)?  tooManyMainTabs,TResult? Function( EditTabsTooFewMainTabs value)?  tooFewMainTabs,TResult? Function( EditTabsTooFewMoreTabs value)?  tooFewMoreTabs,}){
 final _that = this;
 switch (_that) {
 case EditTabsTooManyMainTabs() when tooManyMainTabs != null:
 return tooManyMainTabs(_that);case EditTabsTooFewMainTabs() when tooFewMainTabs != null:
-return tooFewMainTabs(_that);case _:
+return tooFewMainTabs(_that);case EditTabsTooFewMoreTabs() when tooFewMoreTabs != null:
+return tooFewMoreTabs(_that);case _:
   return null;
 
 }
@@ -119,11 +122,12 @@ return tooFewMainTabs(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( int maxTabs)?  tooManyMainTabs,TResult Function( int minTabs)?  tooFewMainTabs,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( int maxTabs)?  tooManyMainTabs,TResult Function( int minTabs)?  tooFewMainTabs,TResult Function( int minTabs)?  tooFewMoreTabs,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case EditTabsTooManyMainTabs() when tooManyMainTabs != null:
 return tooManyMainTabs(_that.maxTabs);case EditTabsTooFewMainTabs() when tooFewMainTabs != null:
-return tooFewMainTabs(_that.minTabs);case _:
+return tooFewMainTabs(_that.minTabs);case EditTabsTooFewMoreTabs() when tooFewMoreTabs != null:
+return tooFewMoreTabs(_that.minTabs);case _:
   return orElse();
 
 }
@@ -141,11 +145,12 @@ return tooFewMainTabs(_that.minTabs);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( int maxTabs)  tooManyMainTabs,required TResult Function( int minTabs)  tooFewMainTabs,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( int maxTabs)  tooManyMainTabs,required TResult Function( int minTabs)  tooFewMainTabs,required TResult Function( int minTabs)  tooFewMoreTabs,}) {final _that = this;
 switch (_that) {
 case EditTabsTooManyMainTabs():
 return tooManyMainTabs(_that.maxTabs);case EditTabsTooFewMainTabs():
-return tooFewMainTabs(_that.minTabs);}
+return tooFewMainTabs(_that.minTabs);case EditTabsTooFewMoreTabs():
+return tooFewMoreTabs(_that.minTabs);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -159,11 +164,12 @@ return tooFewMainTabs(_that.minTabs);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( int maxTabs)?  tooManyMainTabs,TResult? Function( int minTabs)?  tooFewMainTabs,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( int maxTabs)?  tooManyMainTabs,TResult? Function( int minTabs)?  tooFewMainTabs,TResult? Function( int minTabs)?  tooFewMoreTabs,}) {final _that = this;
 switch (_that) {
 case EditTabsTooManyMainTabs() when tooManyMainTabs != null:
 return tooManyMainTabs(_that.maxTabs);case EditTabsTooFewMainTabs() when tooFewMainTabs != null:
-return tooFewMainTabs(_that.minTabs);case _:
+return tooFewMainTabs(_that.minTabs);case EditTabsTooFewMoreTabs() when tooFewMoreTabs != null:
+return tooFewMoreTabs(_that.minTabs);case _:
   return null;
 
 }
@@ -295,6 +301,72 @@ class _$EditTabsTooFewMainTabsCopyWithImpl<$Res>
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? minTabs = null,}) {
   return _then(EditTabsTooFewMainTabs(
+null == minTabs ? _self.minTabs : minTabs // ignore: cast_nullable_to_non_nullable
+as int,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class EditTabsTooFewMoreTabs implements EditTabsNotice {
+  const EditTabsTooFewMoreTabs(this.minTabs);
+  
+
+ final  int minTabs;
+
+/// Create a copy of EditTabsNotice
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$EditTabsTooFewMoreTabsCopyWith<EditTabsTooFewMoreTabs> get copyWith => _$EditTabsTooFewMoreTabsCopyWithImpl<EditTabsTooFewMoreTabs>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is EditTabsTooFewMoreTabs&&(identical(other.minTabs, minTabs) || other.minTabs == minTabs));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,minTabs);
+
+@override
+String toString() {
+  return 'EditTabsNotice.tooFewMoreTabs(minTabs: $minTabs)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $EditTabsTooFewMoreTabsCopyWith<$Res> implements $EditTabsNoticeCopyWith<$Res> {
+  factory $EditTabsTooFewMoreTabsCopyWith(EditTabsTooFewMoreTabs value, $Res Function(EditTabsTooFewMoreTabs) _then) = _$EditTabsTooFewMoreTabsCopyWithImpl;
+@useResult
+$Res call({
+ int minTabs
+});
+
+
+
+
+}
+/// @nodoc
+class _$EditTabsTooFewMoreTabsCopyWithImpl<$Res>
+    implements $EditTabsTooFewMoreTabsCopyWith<$Res> {
+  _$EditTabsTooFewMoreTabsCopyWithImpl(this._self, this._then);
+
+  final EditTabsTooFewMoreTabs _self;
+  final $Res Function(EditTabsTooFewMoreTabs) _then;
+
+/// Create a copy of EditTabsNotice
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? minTabs = null,}) {
+  return _then(EditTabsTooFewMoreTabs(
 null == minTabs ? _self.minTabs : minTabs // ignore: cast_nullable_to_non_nullable
 as int,
   ));

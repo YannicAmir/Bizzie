@@ -55,12 +55,14 @@ extension EditTabsRowPatterns on EditTabsRow {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( EditTabsSecurityRow value)?  security,TResult Function( EditTabsDividerRow value)?  divider,TResult Function( EditTabsTabRow value)?  tab,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( EditTabsMainDividerRow value)?  mainDivider,TResult Function( EditTabsSecurityRow value)?  security,TResult Function( EditTabsDividerRow value)?  divider,TResult Function( EditTabsBizziePlusDividerRow value)?  bizziePlusDivider,TResult Function( EditTabsTabRow value)?  tab,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
-case EditTabsSecurityRow() when security != null:
+case EditTabsMainDividerRow() when mainDivider != null:
+return mainDivider(_that);case EditTabsSecurityRow() when security != null:
 return security(_that);case EditTabsDividerRow() when divider != null:
-return divider(_that);case EditTabsTabRow() when tab != null:
+return divider(_that);case EditTabsBizziePlusDividerRow() when bizziePlusDivider != null:
+return bizziePlusDivider(_that);case EditTabsTabRow() when tab != null:
 return tab(_that);case _:
   return orElse();
 
@@ -79,12 +81,14 @@ return tab(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( EditTabsSecurityRow value)  security,required TResult Function( EditTabsDividerRow value)  divider,required TResult Function( EditTabsTabRow value)  tab,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( EditTabsMainDividerRow value)  mainDivider,required TResult Function( EditTabsSecurityRow value)  security,required TResult Function( EditTabsDividerRow value)  divider,required TResult Function( EditTabsBizziePlusDividerRow value)  bizziePlusDivider,required TResult Function( EditTabsTabRow value)  tab,}){
 final _that = this;
 switch (_that) {
-case EditTabsSecurityRow():
+case EditTabsMainDividerRow():
+return mainDivider(_that);case EditTabsSecurityRow():
 return security(_that);case EditTabsDividerRow():
-return divider(_that);case EditTabsTabRow():
+return divider(_that);case EditTabsBizziePlusDividerRow():
+return bizziePlusDivider(_that);case EditTabsTabRow():
 return tab(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
@@ -99,12 +103,14 @@ return tab(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( EditTabsSecurityRow value)?  security,TResult? Function( EditTabsDividerRow value)?  divider,TResult? Function( EditTabsTabRow value)?  tab,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( EditTabsMainDividerRow value)?  mainDivider,TResult? Function( EditTabsSecurityRow value)?  security,TResult? Function( EditTabsDividerRow value)?  divider,TResult? Function( EditTabsBizziePlusDividerRow value)?  bizziePlusDivider,TResult? Function( EditTabsTabRow value)?  tab,}){
 final _that = this;
 switch (_that) {
-case EditTabsSecurityRow() when security != null:
+case EditTabsMainDividerRow() when mainDivider != null:
+return mainDivider(_that);case EditTabsSecurityRow() when security != null:
 return security(_that);case EditTabsDividerRow() when divider != null:
-return divider(_that);case EditTabsTabRow() when tab != null:
+return divider(_that);case EditTabsBizziePlusDividerRow() when bizziePlusDivider != null:
+return bizziePlusDivider(_that);case EditTabsTabRow() when tab != null:
 return tab(_that);case _:
   return null;
 
@@ -122,11 +128,13 @@ return tab(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  security,TResult Function()?  divider,TResult Function( CompanyProfileTab tab,  bool isLocked)?  tab,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  mainDivider,TResult Function()?  security,TResult Function()?  divider,TResult Function()?  bizziePlusDivider,TResult Function( CompanyProfileTab tab,  bool isLocked)?  tab,required TResult orElse(),}) {final _that = this;
 switch (_that) {
-case EditTabsSecurityRow() when security != null:
+case EditTabsMainDividerRow() when mainDivider != null:
+return mainDivider();case EditTabsSecurityRow() when security != null:
 return security();case EditTabsDividerRow() when divider != null:
-return divider();case EditTabsTabRow() when tab != null:
+return divider();case EditTabsBizziePlusDividerRow() when bizziePlusDivider != null:
+return bizziePlusDivider();case EditTabsTabRow() when tab != null:
 return tab(_that.tab,_that.isLocked);case _:
   return orElse();
 
@@ -145,11 +153,13 @@ return tab(_that.tab,_that.isLocked);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  security,required TResult Function()  divider,required TResult Function( CompanyProfileTab tab,  bool isLocked)  tab,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  mainDivider,required TResult Function()  security,required TResult Function()  divider,required TResult Function()  bizziePlusDivider,required TResult Function( CompanyProfileTab tab,  bool isLocked)  tab,}) {final _that = this;
 switch (_that) {
-case EditTabsSecurityRow():
+case EditTabsMainDividerRow():
+return mainDivider();case EditTabsSecurityRow():
 return security();case EditTabsDividerRow():
-return divider();case EditTabsTabRow():
+return divider();case EditTabsBizziePlusDividerRow():
+return bizziePlusDivider();case EditTabsTabRow():
 return tab(_that.tab,_that.isLocked);}
 }
 /// A variant of `when` that fallback to returning `null`
@@ -164,11 +174,13 @@ return tab(_that.tab,_that.isLocked);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  security,TResult? Function()?  divider,TResult? Function( CompanyProfileTab tab,  bool isLocked)?  tab,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  mainDivider,TResult? Function()?  security,TResult? Function()?  divider,TResult? Function()?  bizziePlusDivider,TResult? Function( CompanyProfileTab tab,  bool isLocked)?  tab,}) {final _that = this;
 switch (_that) {
-case EditTabsSecurityRow() when security != null:
+case EditTabsMainDividerRow() when mainDivider != null:
+return mainDivider();case EditTabsSecurityRow() when security != null:
 return security();case EditTabsDividerRow() when divider != null:
-return divider();case EditTabsTabRow() when tab != null:
+return divider();case EditTabsBizziePlusDividerRow() when bizziePlusDivider != null:
+return bizziePlusDivider();case EditTabsTabRow() when tab != null:
 return tab(_that.tab,_that.isLocked);case _:
   return null;
 
@@ -176,6 +188,38 @@ return tab(_that.tab,_that.isLocked);case _:
 }
 
 }
+
+/// @nodoc
+
+
+class EditTabsMainDividerRow extends EditTabsRow {
+  const EditTabsMainDividerRow(): super._();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is EditTabsMainDividerRow);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'EditTabsRow.mainDivider()';
+}
+
+
+}
+
+
+
 
 /// @nodoc
 
@@ -233,6 +277,38 @@ int get hashCode => runtimeType.hashCode;
 @override
 String toString() {
   return 'EditTabsRow.divider()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class EditTabsBizziePlusDividerRow extends EditTabsRow {
+  const EditTabsBizziePlusDividerRow(): super._();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is EditTabsBizziePlusDividerRow);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'EditTabsRow.bizziePlusDivider()';
 }
 
 

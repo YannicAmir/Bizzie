@@ -49,7 +49,6 @@ import 'package:flutter/foundation.dart' show listEquals;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 class CompanyProfilePage extends StatelessWidget {
   final String ticker;
@@ -93,19 +92,17 @@ class CompanyProfilePage extends StatelessWidget {
         BlocProvider(create: (context) => getIt<CompanyProfileBloc>()),
         BlocProvider(
           create: (context) =>
-              getIt<CompanyProfileTabsBloc>()
-                ..add(const CompanyProfileTabsEvent.started()),
+              getIt<CompanyProfileTabsBloc>()..add(
+                CompanyProfileTabsEvent.started(
+                  isSubscribed: context.read<UserBloc>().state.isSubscribed,
+                ),
+              ),
         ),
         BlocProvider(create: (context) => getIt<BizzieChatSessionsBloc>()),
       ],
       child: _CompanyProfileView(ticker: ticker),
     );
   }
-}
-
-extension on CompanyProfileTab {
-  bool isLockedChatTab({required bool isSubscribed}) =>
-      this == CompanyProfileTab.chat && !isSubscribed;
 }
 
 class _CompanyProfileView extends StatefulWidget {
@@ -124,7 +121,7 @@ class _CompanyProfileViewState extends State<_CompanyProfileView>
   late final CompanyProfileBloc _profileBloc;
   late final CompanyProfileTabsBloc _tabsBloc;
   int _previousTabIndex = 0;
-  CompanyProfileTab _selectedTab = CompanyProfileTab.security;
+  late CompanyProfileTab _selectedTab;
 
   @override
   void initState() {
@@ -132,6 +129,7 @@ class _CompanyProfileViewState extends State<_CompanyProfileView>
     _entranceTime = DateTime.now();
     _profileBloc = context.read<CompanyProfileBloc>();
     _tabsBloc = context.read<CompanyProfileTabsBloc>();
+    _selectedTab = _tabsBloc.state.tabs.first;
     _tabController = _createTabController(length: _tabsBloc.state.tabs.length);
     _startChatSessions();
   }
@@ -177,34 +175,12 @@ class _CompanyProfileViewState extends State<_CompanyProfileView>
     });
   }
 
-  bool _isLockedChatTab(CompanyProfileTab tab) => tab.isLockedChatTab(
-    isSubscribed: context.read<UserBloc>().state.isSubscribed,
-  );
-
-  void _handleTabTap(int index) {
-    if (!_isLockedChatTab(_tabsBloc.state.tabs[index])) return;
-
-    _tabController.animateTo(_previousTabIndex, duration: Duration.zero);
-    PaywallHelper.showBizzieChatPaywall(context);
-  }
-
   void _handleTabSelection() {
     if (_tabController.indexIsChanging || !mounted) return;
     if (_tabController.index == _previousTabIndex) return;
 
     final newTabIndex = _tabController.index;
     final currentTab = _tabsBloc.state.tabs[newTabIndex];
-
-    if (_isLockedChatTab(currentTab)) {
-      final tabToRestore = _previousTabIndex;
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted) {
-          _tabController.animateTo(tabToRestore, duration: Duration.zero);
-        }
-      });
-      PaywallHelper.showBizzieChatPaywall(context);
-      return;
-    }
 
     _previousTabIndex = newTabIndex;
     _selectedTab = currentTab;
@@ -275,6 +251,13 @@ class _CompanyProfileViewState extends State<_CompanyProfileView>
               previous.uidOrNull == null && current.uidOrNull != null,
           listener: (context, state) => _startChatSessions(),
         ),
+        BlocListener<UserBloc, UserState>(
+          listenWhen: (previous, current) =>
+              previous.isSubscribed != current.isSubscribed,
+          listener: (context, state) => _tabsBloc.add(
+            CompanyProfileTabsEvent.started(isSubscribed: state.isSubscribed),
+          ),
+        ),
         BlocListener<WatchlistBloc, WatchlistState>(
           listenWhen: (prev, curr) =>
               prev.isInWatchlist(widget.ticker) !=
@@ -329,7 +312,6 @@ class _CompanyProfileViewState extends State<_CompanyProfileView>
                   tabController: _tabController,
                   tabs: tabsState.tabs,
                   entranceTime: _entranceTime,
-                  onTabTap: _handleTabTap,
                 ),
                 floatingActionButton:
                     (isUnsupported || !tabsState.isBizzieChatEnabled)
@@ -390,7 +372,6 @@ class _CompanyProfileAppBar extends StatelessWidget
   final TabController tabController;
   final List<CompanyProfileTab> tabs;
   final DateTime entranceTime;
-  final void Function(int index) onTabTap;
 
   const _CompanyProfileAppBar({
     required this.ticker,
@@ -398,19 +379,16 @@ class _CompanyProfileAppBar extends StatelessWidget
     required this.tabController,
     required this.tabs,
     required this.entranceTime,
-    required this.onTabTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     return BlocBuilder<CompanySecurityBloc, CompanySecurityState>(
       buildWhen: (previous, current) =>
           previous.resolvedDetails?.name != current.resolvedDetails?.name,
       builder: (context, state) {
         return AppBar(
-          leading: BackButton(color: theme.colorScheme.onSurface),
+          leading: const BackButton(),
           centerTitle: false,
           title: Text(ticker),
           actionsPadding: AppConstants.appBarActionsPadding,
@@ -430,23 +408,12 @@ class _CompanyProfileAppBar extends StatelessWidget
                   preferredSize: const Size.fromHeight(
                     AppConstants.tabBarHeight,
                   ),
-                  child: BlocSelector<UserBloc, UserState, bool>(
-                    selector: (state) => state.isSubscribed,
-                    builder: (context, isSubscribed) => TabBar(
-                      controller: tabController,
-                      isScrollable: true,
-                      tabAlignment: TabAlignment.start,
-                      padding: AppConstants.appBarBottomTabsPadding,
-                      onTap: onTabTap,
-                      tabs: tabs.map((tab) {
-                        if (tab.isLockedChatTab(isSubscribed: isSubscribed)) {
-                          return Tab(
-                            child: _LockedChatTabLabel(label: tab.label),
-                          );
-                        }
-                        return Tab(text: tab.label);
-                      }).toList(),
-                    ),
+                  child: TabBar(
+                    controller: tabController,
+                    isScrollable: true,
+                    tabAlignment: TabAlignment.start,
+                    padding: AppConstants.appBarBottomTabsPadding,
+                    tabs: tabs.map((tab) => Tab(text: tab.label)).toList(),
                   ),
                 ),
         );
@@ -458,33 +425,6 @@ class _CompanyProfileAppBar extends StatelessWidget
   Size get preferredSize => Size.fromHeight(
     kToolbarHeight + (isUnsupported ? 0 : AppConstants.tabBarHeight),
   );
-}
-
-class _LockedChatTabLabel extends StatelessWidget {
-  final String label;
-
-  const _LockedChatTabLabel({required this.label});
-
-  @override
-  Widget build(BuildContext context) {
-    final labelColor =
-        DefaultTextStyle.of(context).style.color ??
-        Theme.of(context).colorScheme.onSurface;
-
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Text(label),
-        const SizedBox(width: AppConstants.lockedChatTabIconSpacing),
-        SvgPicture.asset(
-          AppAssets.authLockIcon,
-          width: AppConstants.lockedChatTabIconSize,
-          height: AppConstants.lockedChatTabIconSize,
-          colorFilter: ColorFilter.mode(labelColor, BlendMode.srcIn),
-        ),
-      ],
-    );
-  }
 }
 
 class _BizzieChatFab extends StatelessWidget {
@@ -508,7 +448,11 @@ class _BizzieChatFab extends StatelessWidget {
                 companyName: companyName,
               );
             } else {
-              PaywallHelper.showBizzieChatPaywall(context);
+              PaywallHelper.showLockedTabPaywall(
+                context,
+                tabName: CompanyProfileTab.chat.analyticsName,
+                featureName: CompanyProfileTab.chat.paywallFeatureName,
+              );
             }
           },
           child: ClipRRect(

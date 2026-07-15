@@ -128,11 +128,11 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function( List<CompanyProfileTab> initialMainTabs,  List<CompanyProfileTab> initialMoreTabs,  List<CompanyProfileTab> mainTabs,  List<CompanyProfileTab> moreTabs,  bool isChatLocked,  bool isSaving,  EditTabsNotice? notice)?  editing,TResult Function( TabLayout layout)?  saved,TResult Function( Failure failure)?  failure,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function( List<CompanyProfileTab> initialMainTabs,  List<CompanyProfileTab> initialMoreTabs,  List<CompanyProfileTab> mainTabs,  List<CompanyProfileTab> moreTabs,  List<CompanyProfileTab> bizziePlusTabs,  bool isSubscribed,  bool isSaving,  EditTabsNotice? notice)?  editing,TResult Function( TabLayout layout)?  saved,TResult Function( Failure failure)?  failure,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial();case EditTabsEditing() when editing != null:
-return editing(_that.initialMainTabs,_that.initialMoreTabs,_that.mainTabs,_that.moreTabs,_that.isChatLocked,_that.isSaving,_that.notice);case EditTabsSaved() when saved != null:
+return editing(_that.initialMainTabs,_that.initialMoreTabs,_that.mainTabs,_that.moreTabs,_that.bizziePlusTabs,_that.isSubscribed,_that.isSaving,_that.notice);case EditTabsSaved() when saved != null:
 return saved(_that.layout);case _Failure() when failure != null:
 return failure(_that.failure);case _:
   return orElse();
@@ -152,11 +152,11 @@ return failure(_that.failure);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function( List<CompanyProfileTab> initialMainTabs,  List<CompanyProfileTab> initialMoreTabs,  List<CompanyProfileTab> mainTabs,  List<CompanyProfileTab> moreTabs,  bool isChatLocked,  bool isSaving,  EditTabsNotice? notice)  editing,required TResult Function( TabLayout layout)  saved,required TResult Function( Failure failure)  failure,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function( List<CompanyProfileTab> initialMainTabs,  List<CompanyProfileTab> initialMoreTabs,  List<CompanyProfileTab> mainTabs,  List<CompanyProfileTab> moreTabs,  List<CompanyProfileTab> bizziePlusTabs,  bool isSubscribed,  bool isSaving,  EditTabsNotice? notice)  editing,required TResult Function( TabLayout layout)  saved,required TResult Function( Failure failure)  failure,}) {final _that = this;
 switch (_that) {
 case _Initial():
 return initial();case EditTabsEditing():
-return editing(_that.initialMainTabs,_that.initialMoreTabs,_that.mainTabs,_that.moreTabs,_that.isChatLocked,_that.isSaving,_that.notice);case EditTabsSaved():
+return editing(_that.initialMainTabs,_that.initialMoreTabs,_that.mainTabs,_that.moreTabs,_that.bizziePlusTabs,_that.isSubscribed,_that.isSaving,_that.notice);case EditTabsSaved():
 return saved(_that.layout);case _Failure():
 return failure(_that.failure);case _:
   throw StateError('Unexpected subclass');
@@ -175,11 +175,11 @@ return failure(_that.failure);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function( List<CompanyProfileTab> initialMainTabs,  List<CompanyProfileTab> initialMoreTabs,  List<CompanyProfileTab> mainTabs,  List<CompanyProfileTab> moreTabs,  bool isChatLocked,  bool isSaving,  EditTabsNotice? notice)?  editing,TResult? Function( TabLayout layout)?  saved,TResult? Function( Failure failure)?  failure,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function( List<CompanyProfileTab> initialMainTabs,  List<CompanyProfileTab> initialMoreTabs,  List<CompanyProfileTab> mainTabs,  List<CompanyProfileTab> moreTabs,  List<CompanyProfileTab> bizziePlusTabs,  bool isSubscribed,  bool isSaving,  EditTabsNotice? notice)?  editing,TResult? Function( TabLayout layout)?  saved,TResult? Function( Failure failure)?  failure,}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial();case EditTabsEditing() when editing != null:
-return editing(_that.initialMainTabs,_that.initialMoreTabs,_that.mainTabs,_that.moreTabs,_that.isChatLocked,_that.isSaving,_that.notice);case EditTabsSaved() when saved != null:
+return editing(_that.initialMainTabs,_that.initialMoreTabs,_that.mainTabs,_that.moreTabs,_that.bizziePlusTabs,_that.isSubscribed,_that.isSaving,_that.notice);case EditTabsSaved() when saved != null:
 return saved(_that.layout);case _Failure() when failure != null:
 return failure(_that.failure);case _:
   return null;
@@ -225,7 +225,7 @@ String toString() {
 
 
 class EditTabsEditing implements EditTabsState {
-  const EditTabsEditing({required final  List<CompanyProfileTab> initialMainTabs, required final  List<CompanyProfileTab> initialMoreTabs, required final  List<CompanyProfileTab> mainTabs, required final  List<CompanyProfileTab> moreTabs, required this.isChatLocked, this.isSaving = false, this.notice}): _initialMainTabs = initialMainTabs,_initialMoreTabs = initialMoreTabs,_mainTabs = mainTabs,_moreTabs = moreTabs;
+  const EditTabsEditing({required final  List<CompanyProfileTab> initialMainTabs, required final  List<CompanyProfileTab> initialMoreTabs, required final  List<CompanyProfileTab> mainTabs, required final  List<CompanyProfileTab> moreTabs, required final  List<CompanyProfileTab> bizziePlusTabs, required this.isSubscribed, this.isSaving = false, this.notice}): _initialMainTabs = initialMainTabs,_initialMoreTabs = initialMoreTabs,_mainTabs = mainTabs,_moreTabs = moreTabs,_bizziePlusTabs = bizziePlusTabs;
   
 
  final  List<CompanyProfileTab> _initialMainTabs;
@@ -256,7 +256,14 @@ class EditTabsEditing implements EditTabsState {
   return EqualUnmodifiableListView(_moreTabs);
 }
 
- final  bool isChatLocked;
+ final  List<CompanyProfileTab> _bizziePlusTabs;
+ List<CompanyProfileTab> get bizziePlusTabs {
+  if (_bizziePlusTabs is EqualUnmodifiableListView) return _bizziePlusTabs;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_bizziePlusTabs);
+}
+
+ final  bool isSubscribed;
 @JsonKey() final  bool isSaving;
  final  EditTabsNotice? notice;
 
@@ -270,16 +277,16 @@ $EditTabsEditingCopyWith<EditTabsEditing> get copyWith => _$EditTabsEditingCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is EditTabsEditing&&const DeepCollectionEquality().equals(other._initialMainTabs, _initialMainTabs)&&const DeepCollectionEquality().equals(other._initialMoreTabs, _initialMoreTabs)&&const DeepCollectionEquality().equals(other._mainTabs, _mainTabs)&&const DeepCollectionEquality().equals(other._moreTabs, _moreTabs)&&(identical(other.isChatLocked, isChatLocked) || other.isChatLocked == isChatLocked)&&(identical(other.isSaving, isSaving) || other.isSaving == isSaving)&&(identical(other.notice, notice) || other.notice == notice));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is EditTabsEditing&&const DeepCollectionEquality().equals(other._initialMainTabs, _initialMainTabs)&&const DeepCollectionEquality().equals(other._initialMoreTabs, _initialMoreTabs)&&const DeepCollectionEquality().equals(other._mainTabs, _mainTabs)&&const DeepCollectionEquality().equals(other._moreTabs, _moreTabs)&&const DeepCollectionEquality().equals(other._bizziePlusTabs, _bizziePlusTabs)&&(identical(other.isSubscribed, isSubscribed) || other.isSubscribed == isSubscribed)&&(identical(other.isSaving, isSaving) || other.isSaving == isSaving)&&(identical(other.notice, notice) || other.notice == notice));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_initialMainTabs),const DeepCollectionEquality().hash(_initialMoreTabs),const DeepCollectionEquality().hash(_mainTabs),const DeepCollectionEquality().hash(_moreTabs),isChatLocked,isSaving,notice);
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_initialMainTabs),const DeepCollectionEquality().hash(_initialMoreTabs),const DeepCollectionEquality().hash(_mainTabs),const DeepCollectionEquality().hash(_moreTabs),const DeepCollectionEquality().hash(_bizziePlusTabs),isSubscribed,isSaving,notice);
 
 @override
 String toString() {
-  return 'EditTabsState.editing(initialMainTabs: $initialMainTabs, initialMoreTabs: $initialMoreTabs, mainTabs: $mainTabs, moreTabs: $moreTabs, isChatLocked: $isChatLocked, isSaving: $isSaving, notice: $notice)';
+  return 'EditTabsState.editing(initialMainTabs: $initialMainTabs, initialMoreTabs: $initialMoreTabs, mainTabs: $mainTabs, moreTabs: $moreTabs, bizziePlusTabs: $bizziePlusTabs, isSubscribed: $isSubscribed, isSaving: $isSaving, notice: $notice)';
 }
 
 
@@ -290,7 +297,7 @@ abstract mixin class $EditTabsEditingCopyWith<$Res> implements $EditTabsStateCop
   factory $EditTabsEditingCopyWith(EditTabsEditing value, $Res Function(EditTabsEditing) _then) = _$EditTabsEditingCopyWithImpl;
 @useResult
 $Res call({
- List<CompanyProfileTab> initialMainTabs, List<CompanyProfileTab> initialMoreTabs, List<CompanyProfileTab> mainTabs, List<CompanyProfileTab> moreTabs, bool isChatLocked, bool isSaving, EditTabsNotice? notice
+ List<CompanyProfileTab> initialMainTabs, List<CompanyProfileTab> initialMoreTabs, List<CompanyProfileTab> mainTabs, List<CompanyProfileTab> moreTabs, List<CompanyProfileTab> bizziePlusTabs, bool isSubscribed, bool isSaving, EditTabsNotice? notice
 });
 
 
@@ -307,13 +314,14 @@ class _$EditTabsEditingCopyWithImpl<$Res>
 
 /// Create a copy of EditTabsState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? initialMainTabs = null,Object? initialMoreTabs = null,Object? mainTabs = null,Object? moreTabs = null,Object? isChatLocked = null,Object? isSaving = null,Object? notice = freezed,}) {
+@pragma('vm:prefer-inline') $Res call({Object? initialMainTabs = null,Object? initialMoreTabs = null,Object? mainTabs = null,Object? moreTabs = null,Object? bizziePlusTabs = null,Object? isSubscribed = null,Object? isSaving = null,Object? notice = freezed,}) {
   return _then(EditTabsEditing(
 initialMainTabs: null == initialMainTabs ? _self._initialMainTabs : initialMainTabs // ignore: cast_nullable_to_non_nullable
 as List<CompanyProfileTab>,initialMoreTabs: null == initialMoreTabs ? _self._initialMoreTabs : initialMoreTabs // ignore: cast_nullable_to_non_nullable
 as List<CompanyProfileTab>,mainTabs: null == mainTabs ? _self._mainTabs : mainTabs // ignore: cast_nullable_to_non_nullable
 as List<CompanyProfileTab>,moreTabs: null == moreTabs ? _self._moreTabs : moreTabs // ignore: cast_nullable_to_non_nullable
-as List<CompanyProfileTab>,isChatLocked: null == isChatLocked ? _self.isChatLocked : isChatLocked // ignore: cast_nullable_to_non_nullable
+as List<CompanyProfileTab>,bizziePlusTabs: null == bizziePlusTabs ? _self._bizziePlusTabs : bizziePlusTabs // ignore: cast_nullable_to_non_nullable
+as List<CompanyProfileTab>,isSubscribed: null == isSubscribed ? _self.isSubscribed : isSubscribed // ignore: cast_nullable_to_non_nullable
 as bool,isSaving: null == isSaving ? _self.isSaving : isSaving // ignore: cast_nullable_to_non_nullable
 as bool,notice: freezed == notice ? _self.notice : notice // ignore: cast_nullable_to_non_nullable
 as EditTabsNotice?,

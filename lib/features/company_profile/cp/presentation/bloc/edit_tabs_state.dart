@@ -17,7 +17,8 @@ abstract class EditTabsState with _$EditTabsState {
     required List<CompanyProfileTab> initialMoreTabs,
     required List<CompanyProfileTab> mainTabs,
     required List<CompanyProfileTab> moreTabs,
-    required bool isChatLocked,
+    required List<CompanyProfileTab> bizziePlusTabs,
+    required bool isSubscribed,
     @Default(false) bool isSaving,
     EditTabsNotice? notice,
   }) = EditTabsEditing;
@@ -28,16 +29,16 @@ abstract class EditTabsState with _$EditTabsState {
 
 extension EditTabsEditingX on EditTabsEditing {
   List<EditTabsRow> get rows => [
+    const EditTabsRow.mainDivider(),
     const EditTabsRow.security(),
-    if (isChatLocked)
-      const EditTabsRow.tab(tab: CompanyProfileTab.chat, isLocked: true),
-    ..._unlocked(mainTabs).map((tab) => EditTabsRow.tab(tab: tab)),
+    ...mainTabs.map((tab) => EditTabsRow.tab(tab: tab)),
     const EditTabsRow.divider(),
-    ..._unlocked(moreTabs).map((tab) => EditTabsRow.tab(tab: tab)),
+    ...moreTabs.map((tab) => EditTabsRow.tab(tab: tab)),
+    if (bizziePlusTabs.isNotEmpty) ...[
+      const EditTabsRow.bizziePlusDivider(),
+      ...bizziePlusTabs.map((tab) => EditTabsRow.tab(tab: tab, isLocked: true)),
+    ],
   ];
-
-  Iterable<CompanyProfileTab> _unlocked(List<CompanyProfileTab> tabs) =>
-      tabs.where((tab) => !isChatLocked || tab != CompanyProfileTab.chat);
 
   bool get hasChanges =>
       !const ListEquality<CompanyProfileTab>().equals(

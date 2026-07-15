@@ -7,8 +7,10 @@ part 'edit_tabs_row.freezed.dart';
 sealed class EditTabsRow with _$EditTabsRow {
   const EditTabsRow._();
 
+  const factory EditTabsRow.mainDivider() = EditTabsMainDividerRow;
   const factory EditTabsRow.security() = EditTabsSecurityRow;
   const factory EditTabsRow.divider() = EditTabsDividerRow;
+  const factory EditTabsRow.bizziePlusDivider() = EditTabsBizziePlusDividerRow;
 
   const factory EditTabsRow.tab({
     required CompanyProfileTab tab,
@@ -16,8 +18,10 @@ sealed class EditTabsRow with _$EditTabsRow {
   }) = EditTabsTabRow;
 
   bool get isDraggable => map(
+    mainDivider: (_) => false,
     security: (_) => false,
     divider: (_) => false,
+    bizziePlusDivider: (_) => false,
     tab: (row) => !row.isLocked,
   );
 }

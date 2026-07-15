@@ -9,7 +9,7 @@
       }
     ]
   },
-  "identifier" : "33B22283",
+  "identifier" : "5B536F8E",
   "nonRenewingSubscriptions" : [
 
   ],
@@ -17,21 +17,25 @@
 
   ],
   "settings" : {
+    "_applicationInternalID" : "6758531273",
     "_askToBuyEnabled" : false,
     "_billingGracePeriodEnabled" : false,
     "_billingIssuesEnabled" : false,
+    "_developerTeamID" : "HXJHH2AS5L",
     "_disableDialogs" : false,
     "_failTransactionsEnabled" : false,
+    "_lastSynchronizedDate" : 805730201.32248294,
     "_locale" : "en_US",
     "_renewalBillingIssuesEnabled" : false,
     "_storefront" : "USA",
     "_storeKitErrors" : [
+
     ],
-    "_timeRate" : 5
+    "_timeRate" : 0
   },
   "subscriptionGroups" : [
     {
-      "id" : "21910954",
+      "id" : "21912772",
       "localizations" : [
 
       ],
@@ -44,10 +48,10 @@
           "codeOffers" : [
 
           ],
-          "displayPrice" : "143.99",
+          "displayPrice" : "39.99",
           "familyShareable" : false,
-          "groupNumber" : 1,
-          "internalID" : "6758458964",
+          "groupNumber" : 3,
+          "internalID" : "6758531505",
           "introductoryOffer" : null,
           "localizations" : [
             {
@@ -59,7 +63,7 @@
           "productID" : "io.getbizzie.bizzieapp.plus.annual.discount.dev",
           "recurringSubscriptionPeriod" : "P1Y",
           "referenceName" : "Premium Annual (Discount)",
-          "subscriptionGroupID" : "21910954",
+          "subscriptionGroupID" : "21912772",
           "type" : "RecurringSubscription",
           "winbackOffers" : [
 
@@ -72,12 +76,13 @@
           "codeOffers" : [
 
           ],
-          "displayPrice" : "239.99",
+          "displayPrice" : "59.99",
           "familyShareable" : false,
           "groupNumber" : 1,
-          "internalID" : "6758458797",
+          "internalID" : "6758531225",
           "introductoryOffer" : {
-            "internalID" : "4E66160C",
+            "internalID" : "B14C032A",
+            "numberOfPeriods" : 1,
             "paymentMode" : "free",
             "subscriptionPeriod" : "P1W"
           },
@@ -91,7 +96,7 @@
           "productID" : "io.getbizzie.bizzieapp.plus.annual.full.dev",
           "recurringSubscriptionPeriod" : "P1Y",
           "referenceName" : "Premium Annual (Full)",
-          "subscriptionGroupID" : "21910954",
+          "subscriptionGroupID" : "21912772",
           "type" : "RecurringSubscription",
           "winbackOffers" : [
 
@@ -104,10 +109,10 @@
           "codeOffers" : [
 
           ],
-          "displayPrice" : "34.99",
+          "displayPrice" : "8.99",
           "familyShareable" : false,
           "groupNumber" : 2,
-          "internalID" : "6758459076",
+          "internalID" : "6758531420",
           "introductoryOffer" : null,
           "localizations" : [
             {
@@ -119,7 +124,7 @@
           "productID" : "io.getbizzie.bizzieapp.plus.monthly.full.dev",
           "recurringSubscriptionPeriod" : "P1M",
           "referenceName" : "Premium Monthly (Full)",
-          "subscriptionGroupID" : "21910954",
+          "subscriptionGroupID" : "21912772",
           "type" : "RecurringSubscription",
           "winbackOffers" : [
 

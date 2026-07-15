@@ -1,10 +1,10 @@
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/core/interfaces/i_config_service.dart';
-import 'package:bizzie/core/usecase/usecase.dart';
 import 'package:bizzie/features/company_profile/cp/presentation/bloc/company_profile_tabs_bloc.dart';
 import 'package:bizzie/features/company_profile/cp/presentation/bloc/company_profile_tabs_event.dart';
 import 'package:bizzie/features/company_profile/cp/presentation/bloc/company_profile_tabs_state.dart';
 import 'package:bizzie/features/company_profile/shared/domain/enums/company_profile_tab.dart';
+import 'package:bizzie/features/company_profile/shared/domain/models/get_tab_layout_params.dart';
 import 'package:bizzie/features/company_profile/shared/domain/models/tab_activation.dart';
 import 'package:bizzie/features/company_profile/shared/domain/models/tab_layout.dart';
 import 'package:bizzie/features/company_profile/shared/domain/usecases/get_tab_layout_usecase.dart';
@@ -38,15 +38,18 @@ void main() {
   const layout = TabLayout(
     mainTabs: [CompanyProfileTab.business, CompanyProfileTab.news],
     moreTabs: [CompanyProfileTab.roe, CompanyProfileTab.dividends],
+    bizziePlusTabs: [CompanyProfileTab.chat, CompanyProfileTab.segments],
   );
   const loadedState = CompanyProfileTabsState.loaded(
     mainTabs: [CompanyProfileTab.business, CompanyProfileTab.news],
     moreTabs: [CompanyProfileTab.roe, CompanyProfileTab.dividends],
+    bizziePlusTabs: [CompanyProfileTab.chat, CompanyProfileTab.segments],
     isBizzieChatEnabled: true,
+    isSubscribed: false,
   );
 
   setUpAll(() {
-    registerFallbackValue(NoParams());
+    registerFallbackValue(const GetTabLayoutParams(isSubscribed: false));
     registerFallbackValue(
       const TabActivation(tab: CompanyProfileTab.business, ticker: ticker),
     );
@@ -74,32 +77,80 @@ void main() {
       final bloc = buildBloc();
 
       expect(bloc.state, const CompanyProfileTabsState.initial());
-      expect(bloc.state.mainTabs, TabLayout.defaults().mainTabs);
-      expect(bloc.state.moreTabs, TabLayout.defaults().moreTabs);
+      expect(bloc.state.mainTabs, TabLayout.freeDefaultMainTabs);
+      expect(bloc.state.moreTabs, TabLayout.freeDefaultMoreTabs);
+      expect(
+        bloc.state.bizziePlusTabs,
+        TabLayout.freeDefaultBizziePlusTabs,
+      );
       expect(bloc.state.isBizzieChatEnabled, isFalse);
       verifyNever(() => mockGetTabLayout(any()));
       bloc.close();
     });
 
     blocTest<CompanyProfileTabsBloc, CompanyProfileTabsState>(
-      'started_layoutAvailable_emitsLayoutWithConfigFlag',
+      'started_freeUserLayoutAvailable_emitsLayoutWithBizziePlusTabs',
       build: buildBloc,
-      act: (bloc) => bloc.add(const CompanyProfileTabsEvent.started()),
+      act: (bloc) =>
+          bloc.add(const CompanyProfileTabsEvent.started(isSubscribed: false)),
       expect: () => const [loadedState],
+      verify: (_) {
+        verify(
+          () => mockGetTabLayout(
+            const GetTabLayoutParams(isSubscribed: false),
+          ),
+        ).called(1);
+      },
     );
 
     blocTest<CompanyProfileTabsBloc, CompanyProfileTabsState>(
-      'started_layoutLoadFails_fallsBackToDefaultLayout',
+      'started_paidUser_requestsPaidLayoutAndEmitsSubscribedState',
+      build: () {
+        when(() => mockGetTabLayout(any())).thenReturn(
+          const Right(
+            TabLayout(
+              mainTabs: [CompanyProfileTab.business, CompanyProfileTab.news],
+              moreTabs: [CompanyProfileTab.roe, CompanyProfileTab.chat],
+            ),
+          ),
+        );
+        return buildBloc();
+      },
+      act: (bloc) =>
+          bloc.add(const CompanyProfileTabsEvent.started(isSubscribed: true)),
+      expect: () => const [
+        CompanyProfileTabsState.loaded(
+          mainTabs: [CompanyProfileTab.business, CompanyProfileTab.news],
+          moreTabs: [CompanyProfileTab.roe, CompanyProfileTab.chat],
+          isBizzieChatEnabled: true,
+          isSubscribed: true,
+        ),
+      ],
+      verify: (_) {
+        verify(
+          () =>
+              mockGetTabLayout(const GetTabLayoutParams(isSubscribed: true)),
+        ).called(1);
+      },
+    );
+
+    blocTest<CompanyProfileTabsBloc, CompanyProfileTabsState>(
+      'started_layoutLoadFails_fallsBackToTierDefaults',
       build: () {
         when(
           () => mockGetTabLayout(any()),
         ).thenReturn(const Left(Failure.cache('read failed')));
         return buildBloc();
       },
-      act: (bloc) => bloc.add(const CompanyProfileTabsEvent.started()),
+      act: (bloc) =>
+          bloc.add(const CompanyProfileTabsEvent.started(isSubscribed: false)),
       verify: (bloc) {
-        expect(bloc.state.mainTabs, TabLayout.defaults().mainTabs);
-        expect(bloc.state.moreTabs, TabLayout.defaults().moreTabs);
+        expect(bloc.state.mainTabs, TabLayout.freeDefaultMainTabs);
+        expect(bloc.state.moreTabs, TabLayout.freeDefaultMoreTabs);
+        expect(
+          bloc.state.bizziePlusTabs,
+          TabLayout.freeDefaultBizziePlusTabs,
+        );
         expect(bloc.state.isBizzieChatEnabled, isTrue);
       },
     );
@@ -107,7 +158,8 @@ void main() {
     blocTest<CompanyProfileTabsBloc, CompanyProfileTabsState>(
       'tabs_always_pinsSecurityFirstAndMoreLast',
       build: buildBloc,
-      act: (bloc) => bloc.add(const CompanyProfileTabsEvent.started()),
+      act: (bloc) =>
+          bloc.add(const CompanyProfileTabsEvent.started(isSubscribed: false)),
       verify: (bloc) {
         expect(bloc.state.tabs.first, CompanyProfileTab.security);
         expect(bloc.state.tabs.last, CompanyProfileTab.more);
@@ -170,6 +222,7 @@ void main() {
         mainTabs: [CompanyProfileTab.business],
         moreTabs: [],
         isBizzieChatEnabled: true,
+        isSubscribed: false,
       ),
       act: (bloc) => bloc.add(
         const CompanyProfileTabsEvent.tabActivated(
@@ -197,8 +250,10 @@ void main() {
         CompanyProfileTabsState.loaded(
           mainTabs: [CompanyProfileTab.business, CompanyProfileTab.news],
           moreTabs: [CompanyProfileTab.roe, CompanyProfileTab.dividends],
+          bizziePlusTabs: [CompanyProfileTab.chat, CompanyProfileTab.segments],
           moreTabIndex: 1,
           isBizzieChatEnabled: true,
+          isSubscribed: false,
         ),
       ],
       verify: (_) {
@@ -214,7 +269,7 @@ void main() {
     );
 
     blocTest<CompanyProfileTabsBloc, CompanyProfileTabsState>(
-      'tabOrderChanged_layoutSaved_reloadsLayoutIntoState',
+      'tabOrderChanged_layoutSaved_reloadsLayoutForCurrentTier',
       build: buildBloc,
       seed: () => loadedState,
       act: (bloc) {
@@ -226,6 +281,10 @@ void main() {
                 CompanyProfileTab.business,
                 CompanyProfileTab.roe,
                 CompanyProfileTab.dividends,
+              ],
+              bizziePlusTabs: [
+                CompanyProfileTab.chat,
+                CompanyProfileTab.segments,
               ],
             ),
           ),
@@ -240,9 +299,18 @@ void main() {
             CompanyProfileTab.roe,
             CompanyProfileTab.dividends,
           ],
+          bizziePlusTabs: [CompanyProfileTab.chat, CompanyProfileTab.segments],
           isBizzieChatEnabled: true,
+          isSubscribed: false,
         ),
       ],
+      verify: (_) {
+        verify(
+          () => mockGetTabLayout(
+            const GetTabLayoutParams(isSubscribed: false),
+          ),
+        ).called(1);
+      },
     );
 
     blocTest<CompanyProfileTabsBloc, CompanyProfileTabsState>(
@@ -253,6 +321,7 @@ void main() {
         moreTabs: [CompanyProfileTab.roe, CompanyProfileTab.dividends],
         moreTabIndex: 1,
         isBizzieChatEnabled: true,
+        isSubscribed: true,
       ),
       act: (bloc) {
         when(() => mockGetTabLayout(any())).thenReturn(
@@ -279,8 +348,15 @@ void main() {
           moreTabs: [CompanyProfileTab.roe],
           moreTabIndex: 1,
           isBizzieChatEnabled: true,
+          isSubscribed: true,
         ),
       ],
+      verify: (_) {
+        verify(
+          () =>
+              mockGetTabLayout(const GetTabLayoutParams(isSubscribed: true)),
+        ).called(1);
+      },
     );
 
     blocTest<CompanyProfileTabsBloc, CompanyProfileTabsState>(

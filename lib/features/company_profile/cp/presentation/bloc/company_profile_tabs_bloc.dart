@@ -1,11 +1,11 @@
 import 'package:bizzie/core/interfaces/i_config_service.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
-import 'package:bizzie/core/usecase/usecase.dart';
 import 'package:bizzie/features/auth/domain/usecases/get_auth_stream.dart';
 import 'package:bizzie/features/auth/presentation/bloc/auth_session_reset_mixin.dart';
 import 'package:bizzie/features/company_profile/cp/presentation/bloc/company_profile_tabs_event.dart';
 import 'package:bizzie/features/company_profile/cp/presentation/bloc/company_profile_tabs_state.dart';
 import 'package:bizzie/features/company_profile/shared/domain/enums/company_profile_tab.dart';
+import 'package:bizzie/features/company_profile/shared/domain/models/get_tab_layout_params.dart';
 import 'package:bizzie/features/company_profile/shared/domain/models/tab_activation.dart';
 import 'package:bizzie/features/company_profile/shared/domain/models/tab_layout.dart';
 import 'package:bizzie/features/company_profile/shared/domain/usecases/get_tab_layout_usecase.dart';
@@ -42,15 +42,19 @@ class CompanyProfileTabsBloc
     resetOnSessionEnd(getAuthStream, const CompanyProfileTabsEvent.reset());
   }
 
-  TabLayout _loadLayout() => _getTabLayout(NoParams()).fold((failure) {
-    _logger.warning('Failed to load tab layout, using defaults: $failure');
-    return TabLayout.defaults();
-  }, (layout) => layout);
+  TabLayout _loadLayout({required bool isSubscribed}) =>
+      _getTabLayout(GetTabLayoutParams(isSubscribed: isSubscribed)).fold((
+        failure,
+      ) {
+        _logger.warning('Failed to load tab layout, using defaults: $failure');
+        return TabLayout.defaults(isSubscribed: isSubscribed);
+      }, (layout) => layout);
 
   void _onStarted(Started event, Emitter<CompanyProfileTabsState> emit) {
     emit(
-      _loadLayout().toTabsState(
+      _loadLayout(isSubscribed: event.isSubscribed).toTabsState(
         isBizzieChatEnabled: _configService.bizzieChatEnabled,
+        isSubscribed: event.isSubscribed,
       ),
     );
   }
@@ -74,8 +78,14 @@ class CompanyProfileTabsBloc
     TabOrderChanged event,
     Emitter<CompanyProfileTabsState> emit,
   ) {
-    final layout = _loadLayout();
-    emit(state.copyWith(mainTabs: layout.mainTabs, moreTabs: layout.moreTabs));
+    final layout = _loadLayout(isSubscribed: state.isSubscribed);
+    emit(
+      state.copyWith(
+        mainTabs: layout.mainTabs,
+        moreTabs: layout.moreTabs,
+        bizziePlusTabs: layout.bizziePlusTabs,
+      ),
+    );
   }
 
   void _onReset(Reset event, Emitter<CompanyProfileTabsState> emit) {

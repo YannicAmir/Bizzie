@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:bizzie/core/data/dtos/company_tabs_config.dart';
 import 'package:bizzie/core/data/dtos/fmp_config.dart';
 import 'package:bizzie/core/interfaces/i_config_service.dart';
 import 'package:injectable/injectable.dart';
@@ -28,6 +29,10 @@ class RemoteConfigKeys {
   static const String frankfurterConfig = 'frankfurter_config';
   static const String bizzieChatBaseUrl = 'bizzie_chat_base_url';
   static const String bizzieChatEnabled = 'bizzie_chat_enabled';
+  static const String freeUsersCompanyTabsConfig =
+      'free_users_company_tabs_config';
+  static const String paidUsersCompanyTabsConfig =
+      'paid_users_company_tabs_config';
 }
 
 final _logger = BizzieLogger('ConfigService');
@@ -63,6 +68,39 @@ class ConfigService implements IConfigService {
     'Unlimited summaries of SEC filings',
   ];
   static const _defaultFrankfurterBaseUrl = "https://api.frankfurter.dev/v1";
+
+  static const _defaultFreeUsersCompanyTabsConfig = {
+    "mainTabs": ["business", "news", "dividends", "revenue"],
+    "moreTabs": ["netIncome", "eps"],
+    "bizziePlusTabs": [
+      "chat",
+      "segments",
+      "freeCash",
+      "fcps",
+      "shares",
+      "financialStatements",
+      "roe",
+      "peRatio",
+      "pfcfRatio",
+    ],
+  };
+
+  static const _defaultPaidUsersCompanyTabsConfig = {
+    "mainTabs": [
+      "business",
+      "news",
+      "dividends",
+      "revenue",
+      "segments",
+      "netIncome",
+      "eps",
+      "freeCash",
+      "fcps",
+      "shares",
+      "financialStatements",
+    ],
+    "moreTabs": ["roe", "peRatio", "pfcfRatio", "chat"],
+  };
 
   static const _defaultSectorDescriptions = {
     "Energy":
@@ -131,6 +169,12 @@ class ConfigService implements IConfigService {
       RemoteConfigKeys.frankfurterConfig: _defaultFrankfurterBaseUrl,
       RemoteConfigKeys.bizzieChatBaseUrl: '',
       RemoteConfigKeys.bizzieChatEnabled: true,
+      RemoteConfigKeys.freeUsersCompanyTabsConfig: jsonEncode(
+        _defaultFreeUsersCompanyTabsConfig,
+      ),
+      RemoteConfigKeys.paidUsersCompanyTabsConfig: jsonEncode(
+        _defaultPaidUsersCompanyTabsConfig,
+      ),
     });
 
     try {
@@ -252,6 +296,31 @@ class ConfigService implements IConfigService {
     } catch (e) {
       _logger.severe('Error parsing fmpConfig', e);
       return FmpConfig.fromJson(_defaultFmpConfig);
+    }
+  }
+
+  @override
+  CompanyTabsConfig get freeUsersCompanyTabsConfig => _companyTabsConfig(
+    RemoteConfigKeys.freeUsersCompanyTabsConfig,
+    _defaultFreeUsersCompanyTabsConfig,
+  );
+
+  @override
+  CompanyTabsConfig get paidUsersCompanyTabsConfig => _companyTabsConfig(
+    RemoteConfigKeys.paidUsersCompanyTabsConfig,
+    _defaultPaidUsersCompanyTabsConfig,
+  );
+
+  CompanyTabsConfig _companyTabsConfig(
+    String key,
+    Map<String, dynamic> fallback,
+  ) {
+    final jsonString = _remoteConfig.getString(key);
+    try {
+      return CompanyTabsConfig.fromJson(jsonDecode(jsonString));
+    } catch (e) {
+      _logger.severe('Error parsing $key', e);
+      return CompanyTabsConfig.fromJson(fallback);
     }
   }
 

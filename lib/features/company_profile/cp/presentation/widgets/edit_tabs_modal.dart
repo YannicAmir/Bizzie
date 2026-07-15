@@ -1,4 +1,5 @@
 import 'package:bizzie/app/themes/app_assets.dart';
+import 'package:bizzie/app/themes/app_text_styles.dart';
 import 'package:bizzie/di/injection.dart';
 import 'package:bizzie/features/company_profile/cp/presentation/bloc/edit_tabs_bloc.dart';
 import 'package:bizzie/features/company_profile/cp/presentation/bloc/edit_tabs_event.dart';
@@ -8,6 +9,7 @@ import 'package:bizzie/features/company_profile/cp/presentation/models/edit_tabs
 import 'package:bizzie/features/company_profile/shared/domain/enums/company_profile_tab.dart';
 import 'package:bizzie/features/company_profile/shared/domain/models/tab_layout.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/extensions/company_profile_tab_x.dart';
+import 'package:bizzie/features/company_profile/shared/presentation/widgets/tab_section_divider.dart';
 import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
 import 'package:bizzie/features/user/presentation/extensions/user_state_extensions.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
@@ -27,6 +29,7 @@ class EditTabsModal extends StatelessWidget {
     BuildContext context, {
     required List<CompanyProfileTab> mainTabs,
     required List<CompanyProfileTab> moreTabs,
+    required List<CompanyProfileTab> bizziePlusTabs,
     required void Function(TabLayout savedLayout) onSaved,
   }) {
     final isSubscribed = context.read<UserBloc>().state.isSubscribed;
@@ -40,6 +43,7 @@ class EditTabsModal extends StatelessWidget {
             EditTabsEvent.started(
               mainTabs: mainTabs,
               moreTabs: moreTabs,
+              bizziePlusTabs: bizziePlusTabs,
               isSubscribed: isSubscribed,
             ),
           ),
@@ -53,11 +57,7 @@ class EditTabsModal extends StatelessWidget {
       editing: (editing) {
         final notice = editing.notice;
         if (notice == null) return;
-        BizzieSnackBar.show(
-          context,
-          message: notice.message,
-          type: BizzieSnackBarType.error,
-        );
+        BizzieSnackBar.show(context, message: notice.message);
       },
       saved: (saved) {
         onSaved(saved.layout);
@@ -166,8 +166,10 @@ class _EditTabsRowItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return row.map(
+      mainDivider: (_) => const TabSectionDivider(label: 'Main'),
       security: (_) => const _PinnedSecurityItem(),
-      divider: (_) => const _MoreDivider(),
+      divider: (_) => const TabSectionDivider(label: 'More'),
+      bizziePlusDivider: (_) => const TabSectionDivider(label: 'Bizzie Plus'),
       tab: (tabRow) => _DraggableTabItem(
         tab: tabRow.tab,
         listIndex: listIndex,
@@ -185,36 +187,7 @@ class _PinnedSecurityItem extends StatelessWidget {
     return _TabItemContainer(
       child: Text(
         CompanyProfileTab.security.label,
-        style: Theme.of(context).textTheme.bodyMedium,
-      ),
-    );
-  }
-}
-
-class _MoreDivider extends StatelessWidget {
-  const _MoreDivider();
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Padding(
-      padding: AppConstants.editTabsDividerPadding,
-      child: Row(
-        children: [
-          Expanded(child: Divider(color: theme.dividerColor)),
-          Padding(
-            padding: AppConstants.editTabsDividerLabelPadding,
-            child: Text(
-              'More',
-              style: theme.textTheme.labelMedium?.copyWith(
-                color: theme.colorScheme.onSurface.withValues(
-                  alpha: AppConstants.editTabsDividerLabelOpacity,
-                ),
-              ),
-            ),
-          ),
-          Expanded(child: Divider(color: theme.dividerColor)),
-        ],
+        style: AppTextStyles.bodyMedium,
       ),
     );
   }
@@ -237,7 +210,7 @@ class _DraggableTabItem extends StatelessWidget {
     return _TabItemContainer(
       child: Row(
         children: [
-          Expanded(child: Text(tab.label, style: theme.textTheme.bodyMedium)),
+          Expanded(child: Text(tab.label, style: AppTextStyles.bodyMedium)),
           if (isLocked)
             SvgPicture.asset(
               AppAssets.authLockIcon,
@@ -285,13 +258,17 @@ class _TabItemContainer extends StatelessWidget {
   }
 }
 
+const _mainDividerKey = ValueKey<String>('main_divider');
 const _securityItemKey = ValueKey<String>('security');
 const _moreDividerKey = ValueKey<String>('more_divider');
+const _bizziePlusDividerKey = ValueKey<String>('bizzie_plus_divider');
 
 extension on EditTabsRow {
   Key get listKey => map(
+    mainDivider: (_) => _mainDividerKey,
     security: (_) => _securityItemKey,
     divider: (_) => _moreDividerKey,
+    bizziePlusDivider: (_) => _bizziePlusDividerKey,
     tab: (row) => ValueKey(row.tab.name),
   );
 }
@@ -302,5 +279,7 @@ extension on EditTabsNotice {
         'Main view can hold a maximum of ${notice.maxTabs} tabs',
     tooFewMainTabs: (notice) =>
         'Main view must have at least ${notice.minTabs} tabs',
+    tooFewMoreTabs: (notice) =>
+        'More view must have at least ${notice.minTabs} tabs',
   );
 }

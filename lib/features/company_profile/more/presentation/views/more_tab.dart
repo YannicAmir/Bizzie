@@ -8,6 +8,7 @@ import 'package:bizzie/features/company_profile/cp/presentation/widgets/edit_tab
 import 'package:bizzie/features/company_profile/more/presentation/models/more_feature.dart';
 import 'package:bizzie/features/company_profile/shared/domain/enums/company_profile_tab.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/extensions/company_profile_tab_x.dart';
+import 'package:bizzie/features/company_profile/shared/presentation/widgets/tab_section_divider.dart';
 import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
 import 'package:bizzie/features/user/presentation/extensions/user_state_extensions.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
@@ -17,6 +18,7 @@ import 'package:bizzie/shared/widgets/buttons/bizzie_primary_button.dart';
 import 'package:bizzie/shared/widgets/modals/app_bottom_modal.dart';
 import 'package:bizzie/shared/widgets/modals/app_modal_list_item.dart';
 import 'package:bizzie/shared/widgets/states/bizzie_empty_state.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -43,11 +45,8 @@ class _MoreTabState extends State<MoreTab> with AutomaticKeepAliveClientMixin {
     _tabsBloc = context.read<CompanyProfileTabsBloc>();
     _features = _buildFeatures();
     if (_features.isNotEmpty) {
-      final safeIdx = _tabsBloc.state.moreTabIndex.clamp(
-        0,
-        _features.length - 1,
-      );
-      _reportSubTabView(_features[safeIdx].analyticsName);
+      final safeIndex = _safeFeatureIndex(_tabsBloc.state.moreTabIndex);
+      _reportSubTabView(_features[safeIndex].analyticsName);
     }
     _activateMoreSection();
   }
@@ -55,7 +54,7 @@ class _MoreTabState extends State<MoreTab> with AutomaticKeepAliveClientMixin {
   @override
   void didUpdateWidget(MoreTab oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.moreTabs != widget.moreTabs ||
+    if (!listEquals(oldWidget.moreTabs, widget.moreTabs) ||
         oldWidget.ticker != widget.ticker) {
       _features = _buildFeatures();
       _activateMoreSection();
@@ -64,6 +63,9 @@ class _MoreTabState extends State<MoreTab> with AutomaticKeepAliveClientMixin {
 
   List<MoreFeature> _buildFeatures() =>
       widget.moreTabs.map(moreFeatureFromTab).toList();
+
+  int _safeFeatureIndex(int moreTabIndex) =>
+      moreTabIndex.clamp(0, _features.length - 1);
 
   void _activateMoreSection() {
     if (widget.moreTabs.isEmpty) return;
@@ -87,14 +89,14 @@ class _MoreTabState extends State<MoreTab> with AutomaticKeepAliveClientMixin {
     super.build(context);
 
     if (_features.isEmpty) {
-      return _MoreTabEmptyState(ticker: widget.ticker);
+      return const _MoreTabEmptyState();
     }
 
     return BlocBuilder<CompanyProfileTabsBloc, CompanyProfileTabsState>(
       buildWhen: (previous, current) =>
           previous.moreTabIndex != current.moreTabIndex,
       builder: (context, state) {
-        final safeIndex = state.moreTabIndex.clamp(0, _features.length - 1);
+        final safeIndex = _safeFeatureIndex(state.moreTabIndex);
         return Column(
           children: [
             Padding(
@@ -113,6 +115,7 @@ class _MoreTabState extends State<MoreTab> with AutomaticKeepAliveClientMixin {
 
   void _showSelectorModal(BuildContext outerContext, int currentSelection) {
     final isSubscribed = context.read<UserBloc>().state.isSubscribed;
+    final bizziePlusTabs = _tabsBloc.state.bizziePlusTabs;
 
     showModalBottomSheet(
       context: outerContext,
@@ -120,14 +123,14 @@ class _MoreTabState extends State<MoreTab> with AutomaticKeepAliveClientMixin {
       builder: (modalContext) {
         return AppBottomModal(
           title: 'Select Feature',
+          minChildSize: 0.875,
           builder: (_, scrollController) => _FeatureSelectorModalContent(
             scrollController: scrollController,
             features: _features,
-            moreTabs: widget.moreTabs,
             currentSelection: currentSelection,
-            isSubscribed: isSubscribed,
-            onLockedItemTap: () =>
-                _onLockedItemTapped(modalContext, outerContext),
+            bizziePlusTabs: bizziePlusTabs,
+            onBizziePlusItemTap: (tab) =>
+                _onBizziePlusItemTapped(modalContext, outerContext, tab),
             onItemSelected: (index) => _onItemSelected(modalContext, index),
             onEditTap: () => _onEditTapped(
               modalContext,
@@ -140,12 +143,17 @@ class _MoreTabState extends State<MoreTab> with AutomaticKeepAliveClientMixin {
     );
   }
 
-  void _onLockedItemTapped(
+  void _onBizziePlusItemTapped(
     BuildContext modalContext,
     BuildContext outerContext,
+    CompanyProfileTab tab,
   ) {
     Navigator.pop(modalContext);
-    PaywallHelper.showBizzieChatPaywall(outerContext);
+    PaywallHelper.showLockedTabPaywall(
+      outerContext,
+      tabName: tab.analyticsName,
+      featureName: tab.paywallFeatureName,
+    );
   }
 
   void _onItemSelected(BuildContext modalContext, int index) {
@@ -180,7 +188,9 @@ class _MoreTabState extends State<MoreTab> with AutomaticKeepAliveClientMixin {
       context,
       mainTabs: tabsState.mainTabs,
       moreTabs: tabsState.moreTabs,
+      bizziePlusTabs: tabsState.bizziePlusTabs,
       onSaved: (savedLayout) {
+        if (!mounted) return;
         _profileBloc.add(
           CompanyProfileEvent.tabOrderSaved(
             isSubscribed: this.context.read<UserBloc>().state.isSubscribed,
@@ -201,56 +211,51 @@ class _MoreTabState extends State<MoreTab> with AutomaticKeepAliveClientMixin {
 class _FeatureSelectorModalContent extends StatelessWidget {
   final ScrollController scrollController;
   final List<MoreFeature> features;
-  final List<CompanyProfileTab> moreTabs;
   final int currentSelection;
-  final bool isSubscribed;
-  final VoidCallback onLockedItemTap;
+  final List<CompanyProfileTab> bizziePlusTabs;
+  final ValueChanged<CompanyProfileTab> onBizziePlusItemTap;
   final ValueChanged<int> onItemSelected;
   final VoidCallback onEditTap;
 
   const _FeatureSelectorModalContent({
     required this.scrollController,
     required this.features,
-    required this.moreTabs,
     required this.currentSelection,
-    required this.isSubscribed,
-    required this.onLockedItemTap,
+    required this.bizziePlusTabs,
+    required this.onBizziePlusItemTap,
     required this.onItemSelected,
     required this.onEditTap,
   });
 
   @override
   Widget build(BuildContext context) {
+    final rows = [
+      const TabSectionDivider(label: 'More'),
+      for (final (index, feature) in features.indexed)
+        AppModalListItem(
+          label: feature.label,
+          isSelected: index == currentSelection,
+          onTap: () => onItemSelected(index),
+        ),
+      if (bizziePlusTabs.isNotEmpty) ...[
+        const TabSectionDivider(label: 'Bizzie Plus'),
+        for (final tab in bizziePlusTabs)
+          AppModalListItem(
+            label: tab.label,
+            isSelected: false,
+            suffix: const _BizziePlusLockIcon(),
+            onTap: () => onBizziePlusItemTap(tab),
+          ),
+      ],
+    ];
+
     return Column(
       children: [
         Expanded(
           child: ListView.builder(
             controller: scrollController,
-            itemCount: features.length,
-            itemBuilder: (context, index) {
-              final item = features[index];
-              final isSelected = index == currentSelection;
-              final isChatTab = moreTabs[index] == CompanyProfileTab.chat;
-              final isLocked = isChatTab && !isSubscribed;
-
-              return AppModalListItem(
-                label: item.label,
-                isSelected: isSelected,
-                suffix: isLocked
-                    ? SvgPicture.asset(
-                        AppAssets.authLockIcon,
-                        width: AppConstants.moreTabLockIconSize,
-                        height: AppConstants.moreTabLockIconSize,
-                        colorFilter: ColorFilter.mode(
-                          Theme.of(context).colorScheme.onSurface,
-                          BlendMode.srcIn,
-                        ),
-                      )
-                    : null,
-                onTap: () =>
-                    isLocked ? onLockedItemTap() : onItemSelected(index),
-              );
-            },
+            itemCount: rows.length,
+            itemBuilder: (context, index) => rows[index],
           ),
         ),
         Padding(
@@ -262,10 +267,25 @@ class _FeatureSelectorModalContent extends StatelessWidget {
   }
 }
 
-class _MoreTabEmptyState extends StatelessWidget {
-  final String ticker;
+class _BizziePlusLockIcon extends StatelessWidget {
+  const _BizziePlusLockIcon();
 
-  const _MoreTabEmptyState({required this.ticker});
+  @override
+  Widget build(BuildContext context) {
+    return SvgPicture.asset(
+      AppAssets.authLockIcon,
+      width: AppConstants.moreTabLockIconSize,
+      height: AppConstants.moreTabLockIconSize,
+      colorFilter: ColorFilter.mode(
+        Theme.of(context).colorScheme.onSurface,
+        BlendMode.srcIn,
+      ),
+    );
+  }
+}
+
+class _MoreTabEmptyState extends StatelessWidget {
+  const _MoreTabEmptyState();
 
   @override
   Widget build(BuildContext context) {
