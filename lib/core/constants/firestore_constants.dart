@@ -4,6 +4,7 @@ class FirestoreConstants {
   static const String financialReports = 'financial_reports';
   static const String secFilings = 'sec_filings';
   static const String upcomingEarnings = 'upcoming_earnings';
+  static const String stockNews = 'stock_news';
   static const String users = 'users';
   static const String activities = 'activities';
   static const String info = 'info';
@@ -41,4 +42,5 @@ class FirestoreConstants {
   // Fields
   static const String ticker = 'ticker';
   static const String symbol = 'symbol';
+  static const String publishedAt = 'publishedAt';
 }

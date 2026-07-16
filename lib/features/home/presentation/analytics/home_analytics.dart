@@ -12,6 +12,8 @@ class HomeAnalytics {
   static const _kEventWatchlistTapped = 'home_watchlist_tapped';
   static const _kEventEmptyStateViewed = 'home_empty_state_viewed';
   static const _kEventWatchlistError = 'home_watchlist_load_error';
+  static const _kEventNewsArticleTapped = 'home_news_article_tapped';
+  static const _kEventNewsError = 'home_news_load_error';
 
   // Parameter Keys
   static const _kParamScreenName = 'screen_name';
@@ -19,6 +21,7 @@ class HomeAnalytics {
   static const _kParamEventText = 'event_text';
   static const _kParamIsUpcoming = 'is_upcoming';
   static const _kParamErrorMessage = 'error_message';
+  static const _kParamSite = 'site';
 
   // Fixed Values
   static const String _screenName = 'home';
@@ -64,6 +67,38 @@ class HomeAnalytics {
       );
     } catch (e, stack) {
       _logger.severe('Failed to log home_empty_state_viewed', e, stack);
+    }
+  }
+
+  Future<void> logHomeNewsArticleTapped({
+    required String ticker,
+    required String site,
+  }) async {
+    try {
+      await _analytics.logEvent(
+        name: _kEventNewsArticleTapped,
+        parameters: {
+          _kParamScreenName: _screenName,
+          _kParamTicker: ticker,
+          _kParamSite: site,
+        },
+      );
+    } catch (e, stack) {
+      _logger.severe('Failed to log home_news_article_tapped', e, stack);
+    }
+  }
+
+  Future<void> logHomeNewsLoadError({required String message}) async {
+    try {
+      await _analytics.logEvent(
+        name: _kEventNewsError,
+        parameters: {
+          _kParamScreenName: _screenName,
+          _kParamErrorMessage: message,
+        },
+      );
+    } catch (e, stack) {
+      _logger.severe('Failed to log home_news_load_error', e, stack);
     }
   }
 

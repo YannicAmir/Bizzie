@@ -5,9 +5,9 @@ import 'package:bizzie/features/company_profile/news/domain/models/news_article.
 import 'package:bizzie/features/company_profile/news/presentation/bloc/company_news/company_news_bloc.dart';
 import 'package:bizzie/features/company_profile/news/presentation/bloc/company_news/company_news_event.dart';
 import 'package:bizzie/features/company_profile/news/presentation/widgets/news_card.dart';
-import 'package:bizzie/features/company_profile/shared/presentation/widgets/carousel_page_indicator.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:bizzie/shared/utils/url_launcher_utils.dart';
+import 'package:bizzie/shared/widgets/carousel_page_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

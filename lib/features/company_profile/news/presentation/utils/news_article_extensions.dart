@@ -1,12 +1,11 @@
 import 'package:bizzie/features/company_profile/news/domain/models/news_article.dart';
-import 'package:timeago/timeago.dart' as timeago;
+import 'package:bizzie/shared/utils/bizzie_date_formatter.dart';
 
 extension NewsArticlePresentationX on NewsArticle {
   String get timeAgo {
-    var published = DateTime.tryParse(publishedDate);
-    if (published != null && published.isAfter(DateTime.now())) {
-      published = DateTime.now();
-    }
-    return published != null ? timeago.format(published) : '';
+    final published = DateTime.tryParse(publishedDate);
+    return published != null
+        ? BizzieDateFormatter.formatTimeAgo(published)
+        : '';
   }
 }

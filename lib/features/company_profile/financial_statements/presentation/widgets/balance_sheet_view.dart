@@ -5,8 +5,8 @@ import 'package:bizzie/features/company_profile/financial_statements/presentatio
 import 'package:bizzie/features/company_profile/financial_statements/presentation/extensions/financial_statements_state_extensions.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/models/financial_history_row_data.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/widgets/period_selector_dropdown.dart';
-import 'package:bizzie/features/company_profile/shared/presentation/widgets/carousel_page_indicator.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/widgets/financial_statements_table.dart';
+import 'package:bizzie/shared/widgets/carousel_page_indicator.dart';
 import 'package:bizzie/features/company_profile/financial_statements/domain/extensions/balance_sheet_x.dart';
 import 'package:bizzie/features/company_profile/financial_statements/domain/models/balance_sheet.dart';
 import 'package:bizzie/app/themes/app_colors.dart';

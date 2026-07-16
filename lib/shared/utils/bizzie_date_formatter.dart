@@ -1,5 +1,6 @@
 import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:intl/intl.dart';
+import 'package:timeago/timeago.dart' as timeago;
 
 final _logger = BizzieLogger('BizzieDateFormatter');
 
@@ -134,6 +135,12 @@ class BizzieDateFormatter {
   static bool isStale(DateTime lastUpdated, {int refreshIntervalMinutes = 60}) {
     return DateTime.now().difference(lastUpdated).inMinutes >=
         refreshIntervalMinutes;
+  }
+
+  static String formatTimeAgo(DateTime published) {
+    final now = DateTime.now();
+    final clamped = published.isAfter(now) ? now : published;
+    return timeago.format(clamped);
   }
 
   static String formatQuarterYearShort(String dateStr) {

@@ -1,9 +1,9 @@
 import 'package:bizzie/app/themes/app_text_styles.dart';
 import 'package:bizzie/features/company_profile/segments/domain/models/revenue_segment.dart';
 import 'package:bizzie/features/company_profile/segments/presentation/utils/segment_presentation.dart';
-import 'package:bizzie/features/company_profile/shared/presentation/widgets/carousel_page_indicator.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/widgets/financial_statements_table.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
+import 'package:bizzie/shared/widgets/carousel_page_indicator.dart';
 import 'package:bizzie/shared/widgets/charts/bizzie_pie_chart.dart';
 import 'package:flutter/material.dart';
 
