@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$CompanyProfileTabsState {
 
- List<CompanyProfileTab> get mainTabs; List<CompanyProfileTab> get moreTabs; int get moreTabIndex; bool get isBizzieChatEnabled;
+ List<CompanyProfileTab> get mainTabs; List<CompanyProfileTab> get moreTabs; List<CompanyProfileTab> get bizziePlusTabs; int get moreTabIndex; bool get isBizzieChatEnabled; bool get isSubscribed;
 /// Create a copy of CompanyProfileTabsState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $CompanyProfileTabsStateCopyWith<CompanyProfileTabsState> get copyWith => _$Comp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CompanyProfileTabsState&&const DeepCollectionEquality().equals(other.mainTabs, mainTabs)&&const DeepCollectionEquality().equals(other.moreTabs, moreTabs)&&(identical(other.moreTabIndex, moreTabIndex) || other.moreTabIndex == moreTabIndex)&&(identical(other.isBizzieChatEnabled, isBizzieChatEnabled) || other.isBizzieChatEnabled == isBizzieChatEnabled));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CompanyProfileTabsState&&const DeepCollectionEquality().equals(other.mainTabs, mainTabs)&&const DeepCollectionEquality().equals(other.moreTabs, moreTabs)&&const DeepCollectionEquality().equals(other.bizziePlusTabs, bizziePlusTabs)&&(identical(other.moreTabIndex, moreTabIndex) || other.moreTabIndex == moreTabIndex)&&(identical(other.isBizzieChatEnabled, isBizzieChatEnabled) || other.isBizzieChatEnabled == isBizzieChatEnabled)&&(identical(other.isSubscribed, isSubscribed) || other.isSubscribed == isSubscribed));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(mainTabs),const DeepCollectionEquality().hash(moreTabs),moreTabIndex,isBizzieChatEnabled);
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(mainTabs),const DeepCollectionEquality().hash(moreTabs),const DeepCollectionEquality().hash(bizziePlusTabs),moreTabIndex,isBizzieChatEnabled,isSubscribed);
 
 @override
 String toString() {
-  return 'CompanyProfileTabsState(mainTabs: $mainTabs, moreTabs: $moreTabs, moreTabIndex: $moreTabIndex, isBizzieChatEnabled: $isBizzieChatEnabled)';
+  return 'CompanyProfileTabsState(mainTabs: $mainTabs, moreTabs: $moreTabs, bizziePlusTabs: $bizziePlusTabs, moreTabIndex: $moreTabIndex, isBizzieChatEnabled: $isBizzieChatEnabled, isSubscribed: $isSubscribed)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $CompanyProfileTabsStateCopyWith<$Res>  {
   factory $CompanyProfileTabsStateCopyWith(CompanyProfileTabsState value, $Res Function(CompanyProfileTabsState) _then) = _$CompanyProfileTabsStateCopyWithImpl;
 @useResult
 $Res call({
- List<CompanyProfileTab> mainTabs, List<CompanyProfileTab> moreTabs, int moreTabIndex, bool isBizzieChatEnabled
+ List<CompanyProfileTab> mainTabs, List<CompanyProfileTab> moreTabs, List<CompanyProfileTab> bizziePlusTabs, int moreTabIndex, bool isBizzieChatEnabled, bool isSubscribed
 });
 
 
@@ -62,12 +62,14 @@ class _$CompanyProfileTabsStateCopyWithImpl<$Res>
 
 /// Create a copy of CompanyProfileTabsState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? mainTabs = null,Object? moreTabs = null,Object? moreTabIndex = null,Object? isBizzieChatEnabled = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? mainTabs = null,Object? moreTabs = null,Object? bizziePlusTabs = null,Object? moreTabIndex = null,Object? isBizzieChatEnabled = null,Object? isSubscribed = null,}) {
   return _then(_self.copyWith(
 mainTabs: null == mainTabs ? _self.mainTabs : mainTabs // ignore: cast_nullable_to_non_nullable
 as List<CompanyProfileTab>,moreTabs: null == moreTabs ? _self.moreTabs : moreTabs // ignore: cast_nullable_to_non_nullable
+as List<CompanyProfileTab>,bizziePlusTabs: null == bizziePlusTabs ? _self.bizziePlusTabs : bizziePlusTabs // ignore: cast_nullable_to_non_nullable
 as List<CompanyProfileTab>,moreTabIndex: null == moreTabIndex ? _self.moreTabIndex : moreTabIndex // ignore: cast_nullable_to_non_nullable
 as int,isBizzieChatEnabled: null == isBizzieChatEnabled ? _self.isBizzieChatEnabled : isBizzieChatEnabled // ignore: cast_nullable_to_non_nullable
+as bool,isSubscribed: null == isSubscribed ? _self.isSubscribed : isSubscribed // ignore: cast_nullable_to_non_nullable
 as bool,
   ));
 }
@@ -156,11 +158,11 @@ return loaded(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( List<CompanyProfileTab> mainTabs,  List<CompanyProfileTab> moreTabs,  int moreTabIndex,  bool isBizzieChatEnabled)?  initial,TResult Function( List<CompanyProfileTab> mainTabs,  List<CompanyProfileTab> moreTabs,  int moreTabIndex,  bool isBizzieChatEnabled)?  loaded,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( List<CompanyProfileTab> mainTabs,  List<CompanyProfileTab> moreTabs,  List<CompanyProfileTab> bizziePlusTabs,  int moreTabIndex,  bool isBizzieChatEnabled,  bool isSubscribed)?  initial,TResult Function( List<CompanyProfileTab> mainTabs,  List<CompanyProfileTab> moreTabs,  List<CompanyProfileTab> bizziePlusTabs,  int moreTabIndex,  bool isBizzieChatEnabled,  bool isSubscribed)?  loaded,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
-return initial(_that.mainTabs,_that.moreTabs,_that.moreTabIndex,_that.isBizzieChatEnabled);case CompanyProfileTabsLoaded() when loaded != null:
-return loaded(_that.mainTabs,_that.moreTabs,_that.moreTabIndex,_that.isBizzieChatEnabled);case _:
+return initial(_that.mainTabs,_that.moreTabs,_that.bizziePlusTabs,_that.moreTabIndex,_that.isBizzieChatEnabled,_that.isSubscribed);case CompanyProfileTabsLoaded() when loaded != null:
+return loaded(_that.mainTabs,_that.moreTabs,_that.bizziePlusTabs,_that.moreTabIndex,_that.isBizzieChatEnabled,_that.isSubscribed);case _:
   return orElse();
 
 }
@@ -178,11 +180,11 @@ return loaded(_that.mainTabs,_that.moreTabs,_that.moreTabIndex,_that.isBizzieCha
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( List<CompanyProfileTab> mainTabs,  List<CompanyProfileTab> moreTabs,  int moreTabIndex,  bool isBizzieChatEnabled)  initial,required TResult Function( List<CompanyProfileTab> mainTabs,  List<CompanyProfileTab> moreTabs,  int moreTabIndex,  bool isBizzieChatEnabled)  loaded,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( List<CompanyProfileTab> mainTabs,  List<CompanyProfileTab> moreTabs,  List<CompanyProfileTab> bizziePlusTabs,  int moreTabIndex,  bool isBizzieChatEnabled,  bool isSubscribed)  initial,required TResult Function( List<CompanyProfileTab> mainTabs,  List<CompanyProfileTab> moreTabs,  List<CompanyProfileTab> bizziePlusTabs,  int moreTabIndex,  bool isBizzieChatEnabled,  bool isSubscribed)  loaded,}) {final _that = this;
 switch (_that) {
 case _Initial():
-return initial(_that.mainTabs,_that.moreTabs,_that.moreTabIndex,_that.isBizzieChatEnabled);case CompanyProfileTabsLoaded():
-return loaded(_that.mainTabs,_that.moreTabs,_that.moreTabIndex,_that.isBizzieChatEnabled);case _:
+return initial(_that.mainTabs,_that.moreTabs,_that.bizziePlusTabs,_that.moreTabIndex,_that.isBizzieChatEnabled,_that.isSubscribed);case CompanyProfileTabsLoaded():
+return loaded(_that.mainTabs,_that.moreTabs,_that.bizziePlusTabs,_that.moreTabIndex,_that.isBizzieChatEnabled,_that.isSubscribed);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -199,11 +201,11 @@ return loaded(_that.mainTabs,_that.moreTabs,_that.moreTabIndex,_that.isBizzieCha
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( List<CompanyProfileTab> mainTabs,  List<CompanyProfileTab> moreTabs,  int moreTabIndex,  bool isBizzieChatEnabled)?  initial,TResult? Function( List<CompanyProfileTab> mainTabs,  List<CompanyProfileTab> moreTabs,  int moreTabIndex,  bool isBizzieChatEnabled)?  loaded,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( List<CompanyProfileTab> mainTabs,  List<CompanyProfileTab> moreTabs,  List<CompanyProfileTab> bizziePlusTabs,  int moreTabIndex,  bool isBizzieChatEnabled,  bool isSubscribed)?  initial,TResult? Function( List<CompanyProfileTab> mainTabs,  List<CompanyProfileTab> moreTabs,  List<CompanyProfileTab> bizziePlusTabs,  int moreTabIndex,  bool isBizzieChatEnabled,  bool isSubscribed)?  loaded,}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
-return initial(_that.mainTabs,_that.moreTabs,_that.moreTabIndex,_that.isBizzieChatEnabled);case CompanyProfileTabsLoaded() when loaded != null:
-return loaded(_that.mainTabs,_that.moreTabs,_that.moreTabIndex,_that.isBizzieChatEnabled);case _:
+return initial(_that.mainTabs,_that.moreTabs,_that.bizziePlusTabs,_that.moreTabIndex,_that.isBizzieChatEnabled,_that.isSubscribed);case CompanyProfileTabsLoaded() when loaded != null:
+return loaded(_that.mainTabs,_that.moreTabs,_that.bizziePlusTabs,_that.moreTabIndex,_that.isBizzieChatEnabled,_that.isSubscribed);case _:
   return null;
 
 }
@@ -215,7 +217,7 @@ return loaded(_that.mainTabs,_that.moreTabs,_that.moreTabIndex,_that.isBizzieCha
 
 
 class _Initial extends CompanyProfileTabsState {
-  const _Initial({final  List<CompanyProfileTab> mainTabs = TabLayout.defaultMainTabs, final  List<CompanyProfileTab> moreTabs = TabLayout.defaultMoreTabs, this.moreTabIndex = 0, this.isBizzieChatEnabled = false}): _mainTabs = mainTabs,_moreTabs = moreTabs,super._();
+  const _Initial({final  List<CompanyProfileTab> mainTabs = TabLayout.freeDefaultMainTabs, final  List<CompanyProfileTab> moreTabs = TabLayout.freeDefaultMoreTabs, final  List<CompanyProfileTab> bizziePlusTabs = TabLayout.freeDefaultBizziePlusTabs, this.moreTabIndex = 0, this.isBizzieChatEnabled = false, this.isSubscribed = false}): _mainTabs = mainTabs,_moreTabs = moreTabs,_bizziePlusTabs = bizziePlusTabs,super._();
   
 
  final  List<CompanyProfileTab> _mainTabs;
@@ -232,8 +234,16 @@ class _Initial extends CompanyProfileTabsState {
   return EqualUnmodifiableListView(_moreTabs);
 }
 
+ final  List<CompanyProfileTab> _bizziePlusTabs;
+@override@JsonKey() List<CompanyProfileTab> get bizziePlusTabs {
+  if (_bizziePlusTabs is EqualUnmodifiableListView) return _bizziePlusTabs;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_bizziePlusTabs);
+}
+
 @override@JsonKey() final  int moreTabIndex;
 @override@JsonKey() final  bool isBizzieChatEnabled;
+@override@JsonKey() final  bool isSubscribed;
 
 /// Create a copy of CompanyProfileTabsState
 /// with the given fields replaced by the non-null parameter values.
@@ -245,16 +255,16 @@ _$InitialCopyWith<_Initial> get copyWith => __$InitialCopyWithImpl<_Initial>(thi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Initial&&const DeepCollectionEquality().equals(other._mainTabs, _mainTabs)&&const DeepCollectionEquality().equals(other._moreTabs, _moreTabs)&&(identical(other.moreTabIndex, moreTabIndex) || other.moreTabIndex == moreTabIndex)&&(identical(other.isBizzieChatEnabled, isBizzieChatEnabled) || other.isBizzieChatEnabled == isBizzieChatEnabled));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Initial&&const DeepCollectionEquality().equals(other._mainTabs, _mainTabs)&&const DeepCollectionEquality().equals(other._moreTabs, _moreTabs)&&const DeepCollectionEquality().equals(other._bizziePlusTabs, _bizziePlusTabs)&&(identical(other.moreTabIndex, moreTabIndex) || other.moreTabIndex == moreTabIndex)&&(identical(other.isBizzieChatEnabled, isBizzieChatEnabled) || other.isBizzieChatEnabled == isBizzieChatEnabled)&&(identical(other.isSubscribed, isSubscribed) || other.isSubscribed == isSubscribed));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_mainTabs),const DeepCollectionEquality().hash(_moreTabs),moreTabIndex,isBizzieChatEnabled);
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_mainTabs),const DeepCollectionEquality().hash(_moreTabs),const DeepCollectionEquality().hash(_bizziePlusTabs),moreTabIndex,isBizzieChatEnabled,isSubscribed);
 
 @override
 String toString() {
-  return 'CompanyProfileTabsState.initial(mainTabs: $mainTabs, moreTabs: $moreTabs, moreTabIndex: $moreTabIndex, isBizzieChatEnabled: $isBizzieChatEnabled)';
+  return 'CompanyProfileTabsState.initial(mainTabs: $mainTabs, moreTabs: $moreTabs, bizziePlusTabs: $bizziePlusTabs, moreTabIndex: $moreTabIndex, isBizzieChatEnabled: $isBizzieChatEnabled, isSubscribed: $isSubscribed)';
 }
 
 
@@ -265,7 +275,7 @@ abstract mixin class _$InitialCopyWith<$Res> implements $CompanyProfileTabsState
   factory _$InitialCopyWith(_Initial value, $Res Function(_Initial) _then) = __$InitialCopyWithImpl;
 @override @useResult
 $Res call({
- List<CompanyProfileTab> mainTabs, List<CompanyProfileTab> moreTabs, int moreTabIndex, bool isBizzieChatEnabled
+ List<CompanyProfileTab> mainTabs, List<CompanyProfileTab> moreTabs, List<CompanyProfileTab> bizziePlusTabs, int moreTabIndex, bool isBizzieChatEnabled, bool isSubscribed
 });
 
 
@@ -282,12 +292,14 @@ class __$InitialCopyWithImpl<$Res>
 
 /// Create a copy of CompanyProfileTabsState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? mainTabs = null,Object? moreTabs = null,Object? moreTabIndex = null,Object? isBizzieChatEnabled = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? mainTabs = null,Object? moreTabs = null,Object? bizziePlusTabs = null,Object? moreTabIndex = null,Object? isBizzieChatEnabled = null,Object? isSubscribed = null,}) {
   return _then(_Initial(
 mainTabs: null == mainTabs ? _self._mainTabs : mainTabs // ignore: cast_nullable_to_non_nullable
 as List<CompanyProfileTab>,moreTabs: null == moreTabs ? _self._moreTabs : moreTabs // ignore: cast_nullable_to_non_nullable
+as List<CompanyProfileTab>,bizziePlusTabs: null == bizziePlusTabs ? _self._bizziePlusTabs : bizziePlusTabs // ignore: cast_nullable_to_non_nullable
 as List<CompanyProfileTab>,moreTabIndex: null == moreTabIndex ? _self.moreTabIndex : moreTabIndex // ignore: cast_nullable_to_non_nullable
 as int,isBizzieChatEnabled: null == isBizzieChatEnabled ? _self.isBizzieChatEnabled : isBizzieChatEnabled // ignore: cast_nullable_to_non_nullable
+as bool,isSubscribed: null == isSubscribed ? _self.isSubscribed : isSubscribed // ignore: cast_nullable_to_non_nullable
 as bool,
   ));
 }
@@ -299,7 +311,7 @@ as bool,
 
 
 class CompanyProfileTabsLoaded extends CompanyProfileTabsState {
-  const CompanyProfileTabsLoaded({required final  List<CompanyProfileTab> mainTabs, required final  List<CompanyProfileTab> moreTabs, this.moreTabIndex = 0, required this.isBizzieChatEnabled}): _mainTabs = mainTabs,_moreTabs = moreTabs,super._();
+  const CompanyProfileTabsLoaded({required final  List<CompanyProfileTab> mainTabs, required final  List<CompanyProfileTab> moreTabs, final  List<CompanyProfileTab> bizziePlusTabs = const <CompanyProfileTab>[], this.moreTabIndex = 0, required this.isBizzieChatEnabled, required this.isSubscribed}): _mainTabs = mainTabs,_moreTabs = moreTabs,_bizziePlusTabs = bizziePlusTabs,super._();
   
 
  final  List<CompanyProfileTab> _mainTabs;
@@ -316,8 +328,16 @@ class CompanyProfileTabsLoaded extends CompanyProfileTabsState {
   return EqualUnmodifiableListView(_moreTabs);
 }
 
+ final  List<CompanyProfileTab> _bizziePlusTabs;
+@override@JsonKey() List<CompanyProfileTab> get bizziePlusTabs {
+  if (_bizziePlusTabs is EqualUnmodifiableListView) return _bizziePlusTabs;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_bizziePlusTabs);
+}
+
 @override@JsonKey() final  int moreTabIndex;
 @override final  bool isBizzieChatEnabled;
+@override final  bool isSubscribed;
 
 /// Create a copy of CompanyProfileTabsState
 /// with the given fields replaced by the non-null parameter values.
@@ -329,16 +349,16 @@ $CompanyProfileTabsLoadedCopyWith<CompanyProfileTabsLoaded> get copyWith => _$Co
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CompanyProfileTabsLoaded&&const DeepCollectionEquality().equals(other._mainTabs, _mainTabs)&&const DeepCollectionEquality().equals(other._moreTabs, _moreTabs)&&(identical(other.moreTabIndex, moreTabIndex) || other.moreTabIndex == moreTabIndex)&&(identical(other.isBizzieChatEnabled, isBizzieChatEnabled) || other.isBizzieChatEnabled == isBizzieChatEnabled));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CompanyProfileTabsLoaded&&const DeepCollectionEquality().equals(other._mainTabs, _mainTabs)&&const DeepCollectionEquality().equals(other._moreTabs, _moreTabs)&&const DeepCollectionEquality().equals(other._bizziePlusTabs, _bizziePlusTabs)&&(identical(other.moreTabIndex, moreTabIndex) || other.moreTabIndex == moreTabIndex)&&(identical(other.isBizzieChatEnabled, isBizzieChatEnabled) || other.isBizzieChatEnabled == isBizzieChatEnabled)&&(identical(other.isSubscribed, isSubscribed) || other.isSubscribed == isSubscribed));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_mainTabs),const DeepCollectionEquality().hash(_moreTabs),moreTabIndex,isBizzieChatEnabled);
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_mainTabs),const DeepCollectionEquality().hash(_moreTabs),const DeepCollectionEquality().hash(_bizziePlusTabs),moreTabIndex,isBizzieChatEnabled,isSubscribed);
 
 @override
 String toString() {
-  return 'CompanyProfileTabsState.loaded(mainTabs: $mainTabs, moreTabs: $moreTabs, moreTabIndex: $moreTabIndex, isBizzieChatEnabled: $isBizzieChatEnabled)';
+  return 'CompanyProfileTabsState.loaded(mainTabs: $mainTabs, moreTabs: $moreTabs, bizziePlusTabs: $bizziePlusTabs, moreTabIndex: $moreTabIndex, isBizzieChatEnabled: $isBizzieChatEnabled, isSubscribed: $isSubscribed)';
 }
 
 
@@ -349,7 +369,7 @@ abstract mixin class $CompanyProfileTabsLoadedCopyWith<$Res> implements $Company
   factory $CompanyProfileTabsLoadedCopyWith(CompanyProfileTabsLoaded value, $Res Function(CompanyProfileTabsLoaded) _then) = _$CompanyProfileTabsLoadedCopyWithImpl;
 @override @useResult
 $Res call({
- List<CompanyProfileTab> mainTabs, List<CompanyProfileTab> moreTabs, int moreTabIndex, bool isBizzieChatEnabled
+ List<CompanyProfileTab> mainTabs, List<CompanyProfileTab> moreTabs, List<CompanyProfileTab> bizziePlusTabs, int moreTabIndex, bool isBizzieChatEnabled, bool isSubscribed
 });
 
 
@@ -366,12 +386,14 @@ class _$CompanyProfileTabsLoadedCopyWithImpl<$Res>
 
 /// Create a copy of CompanyProfileTabsState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? mainTabs = null,Object? moreTabs = null,Object? moreTabIndex = null,Object? isBizzieChatEnabled = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? mainTabs = null,Object? moreTabs = null,Object? bizziePlusTabs = null,Object? moreTabIndex = null,Object? isBizzieChatEnabled = null,Object? isSubscribed = null,}) {
   return _then(CompanyProfileTabsLoaded(
 mainTabs: null == mainTabs ? _self._mainTabs : mainTabs // ignore: cast_nullable_to_non_nullable
 as List<CompanyProfileTab>,moreTabs: null == moreTabs ? _self._moreTabs : moreTabs // ignore: cast_nullable_to_non_nullable
+as List<CompanyProfileTab>,bizziePlusTabs: null == bizziePlusTabs ? _self._bizziePlusTabs : bizziePlusTabs // ignore: cast_nullable_to_non_nullable
 as List<CompanyProfileTab>,moreTabIndex: null == moreTabIndex ? _self.moreTabIndex : moreTabIndex // ignore: cast_nullable_to_non_nullable
 as int,isBizzieChatEnabled: null == isBizzieChatEnabled ? _self.isBizzieChatEnabled : isBizzieChatEnabled // ignore: cast_nullable_to_non_nullable
+as bool,isSubscribed: null == isSubscribed ? _self.isSubscribed : isSubscribed // ignore: cast_nullable_to_non_nullable
 as bool,
   ));
 }

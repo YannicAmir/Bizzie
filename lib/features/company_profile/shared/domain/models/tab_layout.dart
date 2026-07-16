@@ -8,65 +8,119 @@ abstract class TabLayout with _$TabLayout {
   const factory TabLayout({
     required List<CompanyProfileTab> mainTabs,
     required List<CompanyProfileTab> moreTabs,
+    @Default(<CompanyProfileTab>[]) List<CompanyProfileTab> bizziePlusTabs,
   }) = _TabLayout;
 
   const TabLayout._();
 
-  static const int minMainTabs = 4;
-  static const int maxMainTabs = 12;
+  static const int freeMinMainTabs = 4;
+  static const int freeMaxMainTabs = 5;
+  static const int freeMinMoreTabs = 2;
+  static const int paidMinMainTabs = 3;
+  static const int paidMaxMainTabs = 12;
+  static const int paidMinMoreTabs = 3;
 
   static const List<CompanyProfileTab> pinnedTabs = [
     CompanyProfileTab.security,
     CompanyProfileTab.more,
   ];
 
+  static int minMainTabsFor({required bool isSubscribed}) =>
+      isSubscribed ? paidMinMainTabs : freeMinMainTabs;
+
+  static int maxMainTabsFor({required bool isSubscribed}) =>
+      isSubscribed ? paidMaxMainTabs : freeMaxMainTabs;
+
+  static int minMoreTabsFor({required bool isSubscribed}) =>
+      isSubscribed ? paidMinMoreTabs : freeMinMoreTabs;
+
   static List<CompanyProfileTab> sanitise(List<CompanyProfileTab> tabs) =>
       tabs.where((tab) => !pinnedTabs.contains(tab)).toList();
 
   static List<CompanyProfileTab> reconcileMoreTabs(
     List<CompanyProfileTab> mainTabs,
-    List<CompanyProfileTab> moreTabs,
-  ) {
+    List<CompanyProfileTab> moreTabs, {
+    Set<CompanyProfileTab> excludedTabs = const {},
+  }) {
     final mainSet = mainTabs.toSet();
-    final visible = sanitise(
-      moreTabs,
-    ).where((tab) => !mainSet.contains(tab)).toList();
-    final known = {...mainSet, ...visible, ...pinnedTabs};
+    final visible = sanitise(moreTabs)
+        .where((tab) => !mainSet.contains(tab) && !excludedTabs.contains(tab))
+        .toList();
+    final known = {...mainSet, ...visible, ...excludedTabs, ...pinnedTabs};
     return [
       ...visible,
       ...CompanyProfileTab.values.where((tab) => !known.contains(tab)),
     ];
   }
 
-  static bool isValidMainTabCount(int mainTabCount) {
+  static bool isValidMainTabCount(
+    int mainTabCount, {
+    required bool isSubscribed,
+  }) {
     final totalIncludingSecurity = mainTabCount + 1;
-    return totalIncludingSecurity >= minMainTabs &&
-        totalIncludingSecurity <= maxMainTabs;
+    return totalIncludingSecurity >=
+            minMainTabsFor(isSubscribed: isSubscribed) &&
+        totalIncludingSecurity <= maxMainTabsFor(isSubscribed: isSubscribed);
   }
 
-  static const List<CompanyProfileTab> defaultMainTabs = [
-    CompanyProfileTab.chat,
+  static bool isValidMoreTabCount(
+    int moreTabCount, {
+    required bool isSubscribed,
+  }) => moreTabCount >= minMoreTabsFor(isSubscribed: isSubscribed);
+
+  static const List<CompanyProfileTab> freeDefaultMainTabs = [
     CompanyProfileTab.business,
-    CompanyProfileTab.segments,
+    CompanyProfileTab.news,
+    CompanyProfileTab.dividends,
     CompanyProfileTab.revenue,
-    CompanyProfileTab.netIncome,
-    CompanyProfileTab.freeCash,
   ];
 
-  static const List<CompanyProfileTab> defaultMoreTabs = [
-    CompanyProfileTab.news,
-    CompanyProfileTab.financialStatements,
-    CompanyProfileTab.dividends,
+  static const List<CompanyProfileTab> freeDefaultMoreTabs = [
+    CompanyProfileTab.netIncome,
     CompanyProfileTab.eps,
+  ];
+
+  static const List<CompanyProfileTab> freeDefaultBizziePlusTabs = [
+    CompanyProfileTab.chat,
+    CompanyProfileTab.segments,
+    CompanyProfileTab.freeCash,
     CompanyProfileTab.fcps,
     CompanyProfileTab.shares,
+    CompanyProfileTab.financialStatements,
     CompanyProfileTab.roe,
     CompanyProfileTab.peRatio,
     CompanyProfileTab.pfcfRatio,
   ];
 
-  factory TabLayout.defaults() => const TabLayout(
-    mainTabs: defaultMainTabs,
-    moreTabs: defaultMoreTabs,
-  );
+  static const List<CompanyProfileTab> paidDefaultMainTabs = [
+    CompanyProfileTab.business,
+    CompanyProfileTab.news,
+    CompanyProfileTab.dividends,
+    CompanyProfileTab.revenue,
+    CompanyProfileTab.segments,
+    CompanyProfileTab.netIncome,
+    CompanyProfileTab.eps,
+    CompanyProfileTab.freeCash,
+    CompanyProfileTab.fcps,
+    CompanyProfileTab.shares,
+    CompanyProfileTab.financialStatements,
+  ];
+
+  static const List<CompanyProfileTab> paidDefaultMoreTabs = [
+    CompanyProfileTab.roe,
+    CompanyProfileTab.peRatio,
+    CompanyProfileTab.pfcfRatio,
+    CompanyProfileTab.chat,
+  ];
+
+  factory TabLayout.defaults({required bool isSubscribed}) => isSubscribed
+      ? const TabLayout(
+          mainTabs: paidDefaultMainTabs,
+          moreTabs: paidDefaultMoreTabs,
+        )
+      : const TabLayout(
+          mainTabs: freeDefaultMainTabs,
+          moreTabs: freeDefaultMoreTabs,
+          bizziePlusTabs: freeDefaultBizziePlusTabs,
+        );
 }

@@ -125,10 +125,10 @@ return reset(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( List<CompanyProfileTab> mainTabs,  List<CompanyProfileTab> moreTabs,  bool isSubscribed)?  started,TResult Function( int oldIndex,  int newIndex)?  tabReordered,TResult Function()?  saveRequested,TResult Function()?  reset,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( List<CompanyProfileTab> mainTabs,  List<CompanyProfileTab> moreTabs,  List<CompanyProfileTab> bizziePlusTabs,  bool isSubscribed)?  started,TResult Function( int oldIndex,  int newIndex)?  tabReordered,TResult Function()?  saveRequested,TResult Function()?  reset,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case EditTabsStarted() when started != null:
-return started(_that.mainTabs,_that.moreTabs,_that.isSubscribed);case EditTabsTabReordered() when tabReordered != null:
+return started(_that.mainTabs,_that.moreTabs,_that.bizziePlusTabs,_that.isSubscribed);case EditTabsTabReordered() when tabReordered != null:
 return tabReordered(_that.oldIndex,_that.newIndex);case EditTabsSaveRequested() when saveRequested != null:
 return saveRequested();case EditTabsReset() when reset != null:
 return reset();case _:
@@ -149,10 +149,10 @@ return reset();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( List<CompanyProfileTab> mainTabs,  List<CompanyProfileTab> moreTabs,  bool isSubscribed)  started,required TResult Function( int oldIndex,  int newIndex)  tabReordered,required TResult Function()  saveRequested,required TResult Function()  reset,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( List<CompanyProfileTab> mainTabs,  List<CompanyProfileTab> moreTabs,  List<CompanyProfileTab> bizziePlusTabs,  bool isSubscribed)  started,required TResult Function( int oldIndex,  int newIndex)  tabReordered,required TResult Function()  saveRequested,required TResult Function()  reset,}) {final _that = this;
 switch (_that) {
 case EditTabsStarted():
-return started(_that.mainTabs,_that.moreTabs,_that.isSubscribed);case EditTabsTabReordered():
+return started(_that.mainTabs,_that.moreTabs,_that.bizziePlusTabs,_that.isSubscribed);case EditTabsTabReordered():
 return tabReordered(_that.oldIndex,_that.newIndex);case EditTabsSaveRequested():
 return saveRequested();case EditTabsReset():
 return reset();}
@@ -169,10 +169,10 @@ return reset();}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( List<CompanyProfileTab> mainTabs,  List<CompanyProfileTab> moreTabs,  bool isSubscribed)?  started,TResult? Function( int oldIndex,  int newIndex)?  tabReordered,TResult? Function()?  saveRequested,TResult? Function()?  reset,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( List<CompanyProfileTab> mainTabs,  List<CompanyProfileTab> moreTabs,  List<CompanyProfileTab> bizziePlusTabs,  bool isSubscribed)?  started,TResult? Function( int oldIndex,  int newIndex)?  tabReordered,TResult? Function()?  saveRequested,TResult? Function()?  reset,}) {final _that = this;
 switch (_that) {
 case EditTabsStarted() when started != null:
-return started(_that.mainTabs,_that.moreTabs,_that.isSubscribed);case EditTabsTabReordered() when tabReordered != null:
+return started(_that.mainTabs,_that.moreTabs,_that.bizziePlusTabs,_that.isSubscribed);case EditTabsTabReordered() when tabReordered != null:
 return tabReordered(_that.oldIndex,_that.newIndex);case EditTabsSaveRequested() when saveRequested != null:
 return saveRequested();case EditTabsReset() when reset != null:
 return reset();case _:
@@ -187,7 +187,7 @@ return reset();case _:
 
 
 class EditTabsStarted implements EditTabsEvent {
-  const EditTabsStarted({required final  List<CompanyProfileTab> mainTabs, required final  List<CompanyProfileTab> moreTabs, required this.isSubscribed}): _mainTabs = mainTabs,_moreTabs = moreTabs;
+  const EditTabsStarted({required final  List<CompanyProfileTab> mainTabs, required final  List<CompanyProfileTab> moreTabs, required final  List<CompanyProfileTab> bizziePlusTabs, required this.isSubscribed}): _mainTabs = mainTabs,_moreTabs = moreTabs,_bizziePlusTabs = bizziePlusTabs;
   
 
  final  List<CompanyProfileTab> _mainTabs;
@@ -204,6 +204,13 @@ class EditTabsStarted implements EditTabsEvent {
   return EqualUnmodifiableListView(_moreTabs);
 }
 
+ final  List<CompanyProfileTab> _bizziePlusTabs;
+ List<CompanyProfileTab> get bizziePlusTabs {
+  if (_bizziePlusTabs is EqualUnmodifiableListView) return _bizziePlusTabs;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_bizziePlusTabs);
+}
+
  final  bool isSubscribed;
 
 /// Create a copy of EditTabsEvent
@@ -216,16 +223,16 @@ $EditTabsStartedCopyWith<EditTabsStarted> get copyWith => _$EditTabsStartedCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is EditTabsStarted&&const DeepCollectionEquality().equals(other._mainTabs, _mainTabs)&&const DeepCollectionEquality().equals(other._moreTabs, _moreTabs)&&(identical(other.isSubscribed, isSubscribed) || other.isSubscribed == isSubscribed));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is EditTabsStarted&&const DeepCollectionEquality().equals(other._mainTabs, _mainTabs)&&const DeepCollectionEquality().equals(other._moreTabs, _moreTabs)&&const DeepCollectionEquality().equals(other._bizziePlusTabs, _bizziePlusTabs)&&(identical(other.isSubscribed, isSubscribed) || other.isSubscribed == isSubscribed));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_mainTabs),const DeepCollectionEquality().hash(_moreTabs),isSubscribed);
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_mainTabs),const DeepCollectionEquality().hash(_moreTabs),const DeepCollectionEquality().hash(_bizziePlusTabs),isSubscribed);
 
 @override
 String toString() {
-  return 'EditTabsEvent.started(mainTabs: $mainTabs, moreTabs: $moreTabs, isSubscribed: $isSubscribed)';
+  return 'EditTabsEvent.started(mainTabs: $mainTabs, moreTabs: $moreTabs, bizziePlusTabs: $bizziePlusTabs, isSubscribed: $isSubscribed)';
 }
 
 
@@ -236,7 +243,7 @@ abstract mixin class $EditTabsStartedCopyWith<$Res> implements $EditTabsEventCop
   factory $EditTabsStartedCopyWith(EditTabsStarted value, $Res Function(EditTabsStarted) _then) = _$EditTabsStartedCopyWithImpl;
 @useResult
 $Res call({
- List<CompanyProfileTab> mainTabs, List<CompanyProfileTab> moreTabs, bool isSubscribed
+ List<CompanyProfileTab> mainTabs, List<CompanyProfileTab> moreTabs, List<CompanyProfileTab> bizziePlusTabs, bool isSubscribed
 });
 
 
@@ -253,10 +260,11 @@ class _$EditTabsStartedCopyWithImpl<$Res>
 
 /// Create a copy of EditTabsEvent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? mainTabs = null,Object? moreTabs = null,Object? isSubscribed = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? mainTabs = null,Object? moreTabs = null,Object? bizziePlusTabs = null,Object? isSubscribed = null,}) {
   return _then(EditTabsStarted(
 mainTabs: null == mainTabs ? _self._mainTabs : mainTabs // ignore: cast_nullable_to_non_nullable
 as List<CompanyProfileTab>,moreTabs: null == moreTabs ? _self._moreTabs : moreTabs // ignore: cast_nullable_to_non_nullable
+as List<CompanyProfileTab>,bizziePlusTabs: null == bizziePlusTabs ? _self._bizziePlusTabs : bizziePlusTabs // ignore: cast_nullable_to_non_nullable
 as List<CompanyProfileTab>,isSubscribed: null == isSubscribed ? _self.isSubscribed : isSubscribed // ignore: cast_nullable_to_non_nullable
 as bool,
   ));

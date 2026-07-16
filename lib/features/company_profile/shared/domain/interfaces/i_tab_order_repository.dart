@@ -3,6 +3,6 @@ import 'package:bizzie/features/company_profile/shared/domain/models/tab_layout.
 import 'package:dartz/dartz.dart';
 
 abstract class ITabOrderRepository {
-  Either<Failure, TabLayout> getTabLayout();
+  Either<Failure, TabLayout> getTabLayout({required bool isSubscribed});
   Future<Either<Failure, void>> saveTabLayout(TabLayout layout);
 }

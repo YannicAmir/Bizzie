@@ -9,4 +9,7 @@ sealed class EditTabsNotice with _$EditTabsNotice {
 
   const factory EditTabsNotice.tooFewMainTabs(int minTabs) =
       EditTabsTooFewMainTabs;
+
+  const factory EditTabsNotice.tooFewMoreTabs(int minTabs) =
+      EditTabsTooFewMoreTabs;
 }

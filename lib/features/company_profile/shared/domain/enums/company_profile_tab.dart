@@ -15,5 +15,10 @@ enum CompanyProfileTab {
   roe,
   peRatio,
   pfcfRatio,
-  more,
+  more;
+
+  static List<CompanyProfileTab> fromNames(Iterable<String> names) {
+    final tabByName = values.asNameMap();
+    return names.map((name) => tabByName[name]).nonNulls.toList();
+  }
 }

@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$TabLayout {
 
- List<CompanyProfileTab> get mainTabs; List<CompanyProfileTab> get moreTabs;
+ List<CompanyProfileTab> get mainTabs; List<CompanyProfileTab> get moreTabs; List<CompanyProfileTab> get bizziePlusTabs;
 /// Create a copy of TabLayout
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $TabLayoutCopyWith<TabLayout> get copyWith => _$TabLayoutCopyWithImpl<TabLayout>
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TabLayout&&const DeepCollectionEquality().equals(other.mainTabs, mainTabs)&&const DeepCollectionEquality().equals(other.moreTabs, moreTabs));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TabLayout&&const DeepCollectionEquality().equals(other.mainTabs, mainTabs)&&const DeepCollectionEquality().equals(other.moreTabs, moreTabs)&&const DeepCollectionEquality().equals(other.bizziePlusTabs, bizziePlusTabs));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(mainTabs),const DeepCollectionEquality().hash(moreTabs));
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(mainTabs),const DeepCollectionEquality().hash(moreTabs),const DeepCollectionEquality().hash(bizziePlusTabs));
 
 @override
 String toString() {
-  return 'TabLayout(mainTabs: $mainTabs, moreTabs: $moreTabs)';
+  return 'TabLayout(mainTabs: $mainTabs, moreTabs: $moreTabs, bizziePlusTabs: $bizziePlusTabs)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $TabLayoutCopyWith<$Res>  {
   factory $TabLayoutCopyWith(TabLayout value, $Res Function(TabLayout) _then) = _$TabLayoutCopyWithImpl;
 @useResult
 $Res call({
- List<CompanyProfileTab> mainTabs, List<CompanyProfileTab> moreTabs
+ List<CompanyProfileTab> mainTabs, List<CompanyProfileTab> moreTabs, List<CompanyProfileTab> bizziePlusTabs
 });
 
 
@@ -62,10 +62,11 @@ class _$TabLayoutCopyWithImpl<$Res>
 
 /// Create a copy of TabLayout
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? mainTabs = null,Object? moreTabs = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? mainTabs = null,Object? moreTabs = null,Object? bizziePlusTabs = null,}) {
   return _then(_self.copyWith(
 mainTabs: null == mainTabs ? _self.mainTabs : mainTabs // ignore: cast_nullable_to_non_nullable
 as List<CompanyProfileTab>,moreTabs: null == moreTabs ? _self.moreTabs : moreTabs // ignore: cast_nullable_to_non_nullable
+as List<CompanyProfileTab>,bizziePlusTabs: null == bizziePlusTabs ? _self.bizziePlusTabs : bizziePlusTabs // ignore: cast_nullable_to_non_nullable
 as List<CompanyProfileTab>,
   ));
 }
@@ -151,10 +152,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<CompanyProfileTab> mainTabs,  List<CompanyProfileTab> moreTabs)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<CompanyProfileTab> mainTabs,  List<CompanyProfileTab> moreTabs,  List<CompanyProfileTab> bizziePlusTabs)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _TabLayout() when $default != null:
-return $default(_that.mainTabs,_that.moreTabs);case _:
+return $default(_that.mainTabs,_that.moreTabs,_that.bizziePlusTabs);case _:
   return orElse();
 
 }
@@ -172,10 +173,10 @@ return $default(_that.mainTabs,_that.moreTabs);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<CompanyProfileTab> mainTabs,  List<CompanyProfileTab> moreTabs)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<CompanyProfileTab> mainTabs,  List<CompanyProfileTab> moreTabs,  List<CompanyProfileTab> bizziePlusTabs)  $default,) {final _that = this;
 switch (_that) {
 case _TabLayout():
-return $default(_that.mainTabs,_that.moreTabs);case _:
+return $default(_that.mainTabs,_that.moreTabs,_that.bizziePlusTabs);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -192,10 +193,10 @@ return $default(_that.mainTabs,_that.moreTabs);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<CompanyProfileTab> mainTabs,  List<CompanyProfileTab> moreTabs)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<CompanyProfileTab> mainTabs,  List<CompanyProfileTab> moreTabs,  List<CompanyProfileTab> bizziePlusTabs)?  $default,) {final _that = this;
 switch (_that) {
 case _TabLayout() when $default != null:
-return $default(_that.mainTabs,_that.moreTabs);case _:
+return $default(_that.mainTabs,_that.moreTabs,_that.bizziePlusTabs);case _:
   return null;
 
 }
@@ -207,7 +208,7 @@ return $default(_that.mainTabs,_that.moreTabs);case _:
 
 
 class _TabLayout extends TabLayout {
-  const _TabLayout({required final  List<CompanyProfileTab> mainTabs, required final  List<CompanyProfileTab> moreTabs}): _mainTabs = mainTabs,_moreTabs = moreTabs,super._();
+  const _TabLayout({required final  List<CompanyProfileTab> mainTabs, required final  List<CompanyProfileTab> moreTabs, final  List<CompanyProfileTab> bizziePlusTabs = const <CompanyProfileTab>[]}): _mainTabs = mainTabs,_moreTabs = moreTabs,_bizziePlusTabs = bizziePlusTabs,super._();
   
 
  final  List<CompanyProfileTab> _mainTabs;
@@ -224,6 +225,13 @@ class _TabLayout extends TabLayout {
   return EqualUnmodifiableListView(_moreTabs);
 }
 
+ final  List<CompanyProfileTab> _bizziePlusTabs;
+@override@JsonKey() List<CompanyProfileTab> get bizziePlusTabs {
+  if (_bizziePlusTabs is EqualUnmodifiableListView) return _bizziePlusTabs;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_bizziePlusTabs);
+}
+
 
 /// Create a copy of TabLayout
 /// with the given fields replaced by the non-null parameter values.
@@ -235,16 +243,16 @@ _$TabLayoutCopyWith<_TabLayout> get copyWith => __$TabLayoutCopyWithImpl<_TabLay
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TabLayout&&const DeepCollectionEquality().equals(other._mainTabs, _mainTabs)&&const DeepCollectionEquality().equals(other._moreTabs, _moreTabs));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TabLayout&&const DeepCollectionEquality().equals(other._mainTabs, _mainTabs)&&const DeepCollectionEquality().equals(other._moreTabs, _moreTabs)&&const DeepCollectionEquality().equals(other._bizziePlusTabs, _bizziePlusTabs));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_mainTabs),const DeepCollectionEquality().hash(_moreTabs));
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_mainTabs),const DeepCollectionEquality().hash(_moreTabs),const DeepCollectionEquality().hash(_bizziePlusTabs));
 
 @override
 String toString() {
-  return 'TabLayout(mainTabs: $mainTabs, moreTabs: $moreTabs)';
+  return 'TabLayout(mainTabs: $mainTabs, moreTabs: $moreTabs, bizziePlusTabs: $bizziePlusTabs)';
 }
 
 
@@ -255,7 +263,7 @@ abstract mixin class _$TabLayoutCopyWith<$Res> implements $TabLayoutCopyWith<$Re
   factory _$TabLayoutCopyWith(_TabLayout value, $Res Function(_TabLayout) _then) = __$TabLayoutCopyWithImpl;
 @override @useResult
 $Res call({
- List<CompanyProfileTab> mainTabs, List<CompanyProfileTab> moreTabs
+ List<CompanyProfileTab> mainTabs, List<CompanyProfileTab> moreTabs, List<CompanyProfileTab> bizziePlusTabs
 });
 
 
@@ -272,10 +280,11 @@ class __$TabLayoutCopyWithImpl<$Res>
 
 /// Create a copy of TabLayout
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? mainTabs = null,Object? moreTabs = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? mainTabs = null,Object? moreTabs = null,Object? bizziePlusTabs = null,}) {
   return _then(_TabLayout(
 mainTabs: null == mainTabs ? _self._mainTabs : mainTabs // ignore: cast_nullable_to_non_nullable
 as List<CompanyProfileTab>,moreTabs: null == moreTabs ? _self._moreTabs : moreTabs // ignore: cast_nullable_to_non_nullable
+as List<CompanyProfileTab>,bizziePlusTabs: null == bizziePlusTabs ? _self._bizziePlusTabs : bizziePlusTabs // ignore: cast_nullable_to_non_nullable
 as List<CompanyProfileTab>,
   ));
 }

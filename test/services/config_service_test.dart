@@ -218,6 +218,77 @@ void main() {
       expect(result.baseUrl, contains('financialmodelingprep'));
     });
 
+    test('freeUsersCompanyTabsConfig_validJson_returnsAllThreeSections', () {
+      // ARRANGE
+      when(
+        () => mockRemoteConfig.getString(
+          RemoteConfigKeys.freeUsersCompanyTabsConfig,
+        ),
+      ).thenReturn(
+        '{"mainTabs": ["business", "news"], "moreTabs": ["netIncome"], '
+        '"bizziePlusTabs": ["chat", "segments"]}',
+      );
+
+      // ACT
+      final result = configService.freeUsersCompanyTabsConfig;
+
+      // ASSERT
+      expect(result.mainTabs, ['business', 'news']);
+      expect(result.moreTabs, ['netIncome']);
+      expect(result.bizziePlusTabs, ['chat', 'segments']);
+    });
+
+    test('freeUsersCompanyTabsConfig_invalidJson_returnsDefaults', () {
+      // ARRANGE
+      when(
+        () => mockRemoteConfig.getString(
+          RemoteConfigKeys.freeUsersCompanyTabsConfig,
+        ),
+      ).thenReturn('invalid-json');
+
+      // ACT
+      final result = configService.freeUsersCompanyTabsConfig;
+
+      // ASSERT
+      expect(result.mainTabs, isNotEmpty);
+      expect(result.moreTabs, isNotEmpty);
+      expect(result.bizziePlusTabs, contains('chat'));
+    });
+
+    test('paidUsersCompanyTabsConfig_validJson_returnsConfig', () {
+      // ARRANGE
+      when(
+        () => mockRemoteConfig.getString(
+          RemoteConfigKeys.paidUsersCompanyTabsConfig,
+        ),
+      ).thenReturn('{"mainTabs": ["business"], "moreTabs": ["roe", "chat"]}');
+
+      // ACT
+      final result = configService.paidUsersCompanyTabsConfig;
+
+      // ASSERT
+      expect(result.mainTabs, ['business']);
+      expect(result.moreTabs, ['roe', 'chat']);
+      expect(result.bizziePlusTabs, isEmpty);
+    });
+
+    test('paidUsersCompanyTabsConfig_invalidJson_returnsDefaults', () {
+      // ARRANGE
+      when(
+        () => mockRemoteConfig.getString(
+          RemoteConfigKeys.paidUsersCompanyTabsConfig,
+        ),
+      ).thenReturn('invalid-json');
+
+      // ACT
+      final result = configService.paidUsersCompanyTabsConfig;
+
+      // ASSERT
+      expect(result.mainTabs, isNotEmpty);
+      expect(result.moreTabs, contains('chat'));
+      expect(result.bizziePlusTabs, isEmpty);
+    });
+
     test('lastFetchTime_returnsRemoteConfigValue', () {
       // ARRANGE
       final time = DateTime(2025, 1, 1);

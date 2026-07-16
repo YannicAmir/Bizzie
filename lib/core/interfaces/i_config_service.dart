@@ -1,6 +1,9 @@
+import 'package:bizzie/core/data/dtos/company_tabs_config.dart';
 import 'package:bizzie/core/data/dtos/fmp_config.dart';
 
 abstract class IConfigService {
+  CompanyTabsConfig get freeUsersCompanyTabsConfig;
+  CompanyTabsConfig get paidUsersCompanyTabsConfig;
   String get geminiModelName;
   String get securityWatcherMail;
   List<String> get stockMarketSectors;

@@ -15,6 +15,8 @@ final _logger = BizzieLogger('EditTabsBloc');
 @injectable
 class EditTabsBloc extends Bloc<EditTabsEvent, EditTabsState> {
   static const int _pinnedMainTabCount = 1;
+
+  static const int _firstDraggableRowIndex = 2;
   final SaveTabLayoutUseCase _saveTabLayout;
 
   EditTabsBloc(SaveTabLayoutUseCase saveTabLayout)
@@ -33,7 +35,10 @@ class EditTabsBloc extends Bloc<EditTabsEvent, EditTabsState> {
         initialMoreTabs: event.moreTabs,
         mainTabs: event.mainTabs,
         moreTabs: event.moreTabs,
-        isChatLocked: !event.isSubscribed,
+        bizziePlusTabs: event.isSubscribed
+            ? const <CompanyProfileTab>[]
+            : event.bizziePlusTabs,
+        isSubscribed: event.isSubscribed,
       ),
     );
   }
@@ -50,12 +55,14 @@ class EditTabsBloc extends Bloc<EditTabsEvent, EditTabsState> {
     if (!dragging.isDraggable) return;
 
     rows.removeAt(event.oldIndex);
-    final minInsertIndex = editing.isChatLocked ? 2 : 1;
-    final insertIndex = event.newIndex.clamp(minInsertIndex, rows.length);
+    final insertIndex = event.newIndex.clamp(
+      _firstDraggableRowIndex,
+      _maxInsertIndex(rows),
+    );
     rows.insert(insertIndex, dragging);
 
     final layout = _partition(rows);
-    final notice = _validate(layout);
+    final notice = _validate(layout, isSubscribed: editing.isSubscribed);
     if (notice != null) {
       _emitNotice(editing, notice, emit);
       return;
@@ -81,17 +88,25 @@ class EditTabsBloc extends Bloc<EditTabsEvent, EditTabsState> {
     final layout = TabLayout(
       mainTabs: editing.mainTabs,
       moreTabs: editing.moreTabs,
+      bizziePlusTabs: editing.bizziePlusTabs,
     );
     final result = await _saveTabLayout(layout);
     result.fold((failure) {
       _logger.warning('Failed to save tab layout: $failure');
       emit(EditTabsState.failure(failure));
-      emit(editing.copyWith(isSaving: false));
+      emit(editing.copyWith(isSaving: false, notice: null));
     }, (_) => emit(EditTabsState.saved(layout)));
   }
 
   void _onReset(EditTabsReset event, Emitter<EditTabsState> emit) {
     emit(const EditTabsState.initial());
+  }
+
+  int _maxInsertIndex(List<EditTabsRow> rows) {
+    final plusDividerIndex = rows.indexWhere(
+      (row) => row is EditTabsBizziePlusDividerRow,
+    );
+    return plusDividerIndex < 0 ? rows.length : plusDividerIndex;
   }
 
   TabLayout _partition(List<EditTabsRow> rows) {
@@ -100,10 +115,13 @@ class EditTabsBloc extends Bloc<EditTabsEvent, EditTabsState> {
     var inMore = false;
     for (final row in rows) {
       switch (row) {
+        case EditTabsMainDividerRow():
         case EditTabsSecurityRow():
           break;
         case EditTabsDividerRow():
           inMore = true;
+        case EditTabsBizziePlusDividerRow():
+          return TabLayout(mainTabs: mainTabs, moreTabs: moreTabs);
         case EditTabsTabRow(:final tab):
           (inMore ? moreTabs : mainTabs).add(tab);
       }
@@ -111,13 +129,19 @@ class EditTabsBloc extends Bloc<EditTabsEvent, EditTabsState> {
     return TabLayout(mainTabs: mainTabs, moreTabs: moreTabs);
   }
 
-  EditTabsNotice? _validate(TabLayout layout) {
+  EditTabsNotice? _validate(TabLayout layout, {required bool isSubscribed}) {
     final mainTabCount = layout.mainTabs.length + _pinnedMainTabCount;
-    if (mainTabCount > TabLayout.maxMainTabs) {
-      return const EditTabsNotice.tooManyMainTabs(TabLayout.maxMainTabs);
+    final maxMainTabs = TabLayout.maxMainTabsFor(isSubscribed: isSubscribed);
+    final minMainTabs = TabLayout.minMainTabsFor(isSubscribed: isSubscribed);
+    final minMoreTabs = TabLayout.minMoreTabsFor(isSubscribed: isSubscribed);
+    if (mainTabCount > maxMainTabs) {
+      return EditTabsNotice.tooManyMainTabs(maxMainTabs);
     }
-    if (mainTabCount < TabLayout.minMainTabs) {
-      return const EditTabsNotice.tooFewMainTabs(TabLayout.minMainTabs);
+    if (mainTabCount < minMainTabs) {
+      return EditTabsNotice.tooFewMainTabs(minMainTabs);
+    }
+    if (layout.moreTabs.length < minMoreTabs) {
+      return EditTabsNotice.tooFewMoreTabs(minMoreTabs);
     }
     return null;
   }

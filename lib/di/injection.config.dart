@@ -1006,9 +1006,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i456.IStockRepository>(),
       ),
     );
-    gh.lazySingleton<_i765.ITabOrderRepository>(
-      () => _i925.TabOrderRepositoryImpl(gh<_i415.ITabOrderLocalDataSource>()),
-    );
     gh.factory<_i117.IDividendsFirestoreDataSource>(
       () => _i584.DividendsFirestoreDataSourceImpl(
         gh<_i52.FirestoreService>(),
@@ -1133,12 +1130,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i937.IConfigService>(),
       ),
     );
-    gh.lazySingleton<_i964.GetTabLayoutUseCase>(
-      () => _i964.GetTabLayoutUseCase(gh<_i765.ITabOrderRepository>()),
-    );
-    gh.lazySingleton<_i630.SaveTabLayoutUseCase>(
-      () => _i630.SaveTabLayoutUseCase(gh<_i765.ITabOrderRepository>()),
-    );
     gh.lazySingleton<_i607.IMarketRepository>(
       () => _i27.MarketRepositoryImpl(
         gh<_i454.MarketRemoteDataSource>(),
@@ -1172,6 +1163,12 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i999.UnsubscribeFromTopic>(
       () => _i999.UnsubscribeFromTopic(gh<_i622.INotificationRepository>()),
+    );
+    gh.lazySingleton<_i765.ITabOrderRepository>(
+      () => _i925.TabOrderRepositoryImpl(
+        gh<_i415.ITabOrderLocalDataSource>(),
+        gh<_i937.IConfigService>(),
+      ),
     );
     gh.lazySingleton<_i1039.IWatchlistRepository>(
       () => _i259.WatchlistRepositoryImpl(
@@ -1236,14 +1233,6 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i260.PeRatioRepositoryImpl(
         gh<_i423.RatiosRemoteDataSource>(),
         gh<_i709.IRatiosFirestoreDataSource>(),
-      ),
-    );
-    gh.factory<_i256.CompanyProfileTabsBloc>(
-      () => _i256.CompanyProfileTabsBloc(
-        gh<_i964.GetTabLayoutUseCase>(),
-        gh<_i713.SetActiveTabUseCase>(),
-        gh<_i937.IConfigService>(),
-        gh<_i427.GetAuthStream>(),
       ),
     );
     gh.lazySingleton<_i1043.NewsRemoteDataSource>(
@@ -1395,9 +1384,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i1016.IOnboardingRemoteDataSource>(),
       ),
     );
-    gh.factory<_i170.EditTabsBloc>(
-      () => _i170.EditTabsBloc(gh<_i630.SaveTabLayoutUseCase>()),
-    );
     gh.lazySingleton<_i1019.IPfcfRatioRepository>(
       () => _i398.PfcfRatioRepositoryImpl(
         gh<_i423.RatiosRemoteDataSource>(),
@@ -1409,6 +1395,12 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i30.ICompanyRemoteDataSource>(),
         gh<_i922.ICompanyFirestoreDataSource>(),
       ),
+    );
+    gh.lazySingleton<_i964.GetTabLayoutUseCase>(
+      () => _i964.GetTabLayoutUseCase(gh<_i765.ITabOrderRepository>()),
+    );
+    gh.lazySingleton<_i630.SaveTabLayoutUseCase>(
+      () => _i630.SaveTabLayoutUseCase(gh<_i765.ITabOrderRepository>()),
     );
     gh.lazySingleton<_i687.Stream<bool>>(
       () => subscriptionModule.isSubscribedStream(gh<_i615.IUserRepository>()),
@@ -1517,6 +1509,14 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i422.GetDailyBrandsUseCase>(
       () => _i422.GetDailyBrandsUseCase(gh<_i990.ISelectBrandsRepository>()),
+    );
+    gh.factory<_i256.CompanyProfileTabsBloc>(
+      () => _i256.CompanyProfileTabsBloc(
+        gh<_i964.GetTabLayoutUseCase>(),
+        gh<_i713.SetActiveTabUseCase>(),
+        gh<_i937.IConfigService>(),
+        gh<_i427.GetAuthStream>(),
+      ),
     );
     gh.lazySingleton<_i240.GetSharesUseCase>(
       () => _i240.GetSharesUseCase(gh<_i786.ISharesRepository>()),
@@ -1699,6 +1699,9 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i685.IAuthRepository>(),
         gh<_i830.WatchlistAnalytics>(),
       ),
+    );
+    gh.factory<_i170.EditTabsBloc>(
+      () => _i170.EditTabsBloc(gh<_i630.SaveTabLayoutUseCase>()),
     );
     gh.lazySingleton<_i594.GetSettingsDisplayDataUseCase>(
       () => _i594.GetSettingsDisplayDataUseCase(

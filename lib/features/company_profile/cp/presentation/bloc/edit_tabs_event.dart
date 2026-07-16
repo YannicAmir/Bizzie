@@ -8,6 +8,7 @@ sealed class EditTabsEvent with _$EditTabsEvent {
   const factory EditTabsEvent.started({
     required List<CompanyProfileTab> mainTabs,
     required List<CompanyProfileTab> moreTabs,
+    required List<CompanyProfileTab> bizziePlusTabs,
     required bool isSubscribed,
   }) = EditTabsStarted;
 

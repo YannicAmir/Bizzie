@@ -64,8 +64,6 @@ class AppConstants {
   static const double companyProfileButtonIconSize = 20.0;
   static const double companyProfileButtonIconSpacing = 4.0;
   static const double bizzieChatFabImageSize = 56.0;
-  static const double lockedChatTabIconSize = 12.0;
-  static const double lockedChatTabIconSpacing = 4.0;
   static const double tooltipBorderRadius = 4.0;
   static const double tooltipPadding = 8.0;
   static const double chartLineWidth = 2.0;
@@ -152,7 +150,6 @@ class AppConstants {
     horizontal: 12,
   );
   static const double editTabsLockIconSize = 16.0;
-  static const double editTabsDividerLabelOpacity = 0.5;
   static const double editTabsDragHandleOpacity = 0.4;
 
   // More Tab

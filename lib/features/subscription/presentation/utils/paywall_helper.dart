@@ -13,16 +13,16 @@ import 'package:go_router/go_router.dart';
 class PaywallHelper {
   PaywallHelper._();
 
-  static const String _chatTabName = 'chat';
-  static const String _bizzieChatFeatureName = 'bizzie_chat';
-
-  static Future<bool> showBizzieChatPaywall(BuildContext context) =>
-      showPaywallSequence(
-        context,
-        source: PaywallSource.company_profile,
-        tabName: _chatTabName,
-        featureName: _bizzieChatFeatureName,
-      );
+  static Future<bool> showLockedTabPaywall(
+    BuildContext context, {
+    required String tabName,
+    String? featureName,
+  }) => showPaywallSequence(
+    context,
+    source: PaywallSource.company_profile,
+    tabName: tabName,
+    featureName: featureName,
+  );
 
   static Future<bool> showPaywallSequence(
     BuildContext context, {
@@ -46,6 +46,20 @@ class PaywallHelper {
     if (!context.mounted) return false;
     if (_checkIsSubscribed(context)) return true;
 
+    return _showGiftFallbackSequence(
+      context,
+      theme: theme,
+      source: source,
+      queryParams: queryParams,
+    );
+  }
+
+  static Future<bool> _showGiftFallbackSequence(
+    BuildContext context, {
+    required ThemeData theme,
+    required PaywallSource source,
+    required Map<String, String> queryParams,
+  }) async {
     final giftAccepted = await _showGiftModal(
       context,
       theme: theme,
