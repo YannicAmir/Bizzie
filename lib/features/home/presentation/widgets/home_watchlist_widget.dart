@@ -1,49 +1,58 @@
 import 'package:bizzie/app/routes/app_routes.dart';
+import 'package:bizzie/features/home/domain/models/watchlist_stock_price.dart';
 import 'package:bizzie/features/home/presentation/bloc/home_bloc.dart';
-import 'package:bizzie/features/watchlist/presentation/bloc/watchlist_bloc.dart';
-import 'package:bizzie/features/watchlist/presentation/bloc/watchlist_state.dart';
+import 'package:bizzie/features/home/presentation/bloc/watchlist_prices/watchlist_prices_bloc.dart';
+import 'package:bizzie/features/home/presentation/bloc/watchlist_prices/watchlist_prices_state.dart';
+import 'package:bizzie/features/home/presentation/widgets/watchlist_price_trailing.dart';
 import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
 import 'package:bizzie/features/user/presentation/extensions/user_state_extensions.dart';
+import 'package:bizzie/features/watchlist/domain/extensions/watchlist_event_status_extensions.dart';
+import 'package:bizzie/features/watchlist/domain/models/watchlist_event_status.dart';
+import 'package:bizzie/features/watchlist/presentation/bloc/watchlist_bloc.dart';
+import 'package:bizzie/features/watchlist/presentation/bloc/watchlist_state.dart';
+import 'package:bizzie/shared/constants/app_constants.dart';
+import 'package:bizzie/shared/widgets/badges/watchlist_event_badge.dart';
 import 'package:bizzie/shared/widgets/company_list_tile.dart';
+import 'package:bizzie/shared/widgets/company_logo_avatar.dart';
 import 'package:bizzie/shared/widgets/error/bizzie_error.dart';
-import 'package:bizzie/shared/widgets/states/bizzie_empty_state.dart';
 import 'package:bizzie/shared/widgets/loading/bizzie_loader.dart';
+import 'package:bizzie/shared/widgets/states/bizzie_empty_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:bizzie/shared/widgets/badges/watchlist_event_badge.dart';
-import 'package:bizzie/features/watchlist/domain/extensions/watchlist_event_status_extensions.dart';
 
 class HomeWatchlistWidget extends StatelessWidget {
   const HomeWatchlistWidget({super.key});
 
+  void _onWatchlistStateChanged(BuildContext context, WatchlistState state) {
+    state.mapOrNull(
+      failure: (f) {
+        context.read<HomeBloc>().add(
+          HomeEvent.watchlistLoadFailed(error: f.failure.errorMessage),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     return BlocBuilder<UserBloc, UserState>(
       builder: (context, userState) {
         final mascot = userState.mascotAsset;
 
-        return BlocBuilder<WatchlistBloc, WatchlistState>(
+        return BlocConsumer<WatchlistBloc, WatchlistState>(
+          listener: _onWatchlistStateChanged,
           builder: (context, state) {
             return state.map(
               initial: (_) => _LoadingState(mascotAssetPath: mascot),
               loading: (_) => _LoadingState(mascotAssetPath: mascot),
-              failure: (f) {
-                WidgetsBinding.instance.addPostFrameCallback((_) {
-                  context.read<HomeBloc>().add(
-                    HomeEvent.watchlistLoadFailed(error: f.failure.errorMessage),
-                  );
-                });
-                return Center(
-                  child: BizzieError(
-                    message: 'Error loading watchlist',
-                    mascotAssetPath: mascot,
-                  ),
-                );
-              },
-              success: (s) => const SizedBox.shrink(),
+              failure: (_) => Center(
+                child: BizzieError(
+                  message: 'Error loading watchlist',
+                  mascotAssetPath: mascot,
+                ),
+              ),
+              success: (_) => const SizedBox.shrink(),
               loaded: (s) {
                 if (s.companies.isEmpty) {
                   return _EmptyState(mascotAssetPath: mascot);
@@ -51,14 +60,14 @@ class HomeWatchlistWidget extends StatelessWidget {
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Watchlist', style: theme.textTheme.displaySmall),
-                    const SizedBox(height: 16),
+                    const _WatchlistHeader(),
+                    AppConstants.secondarySectionSpacing,
                     ListView.separated(
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
                       itemCount: s.companies.length,
                       separatorBuilder: (context, index) =>
-                          const SizedBox(height: 16),
+                          AppConstants.secondarySectionSpacing,
                       itemBuilder: (context, index) {
                         final company = s.companies[index];
                         final event = s.events[company.ticker];
@@ -66,9 +75,14 @@ class HomeWatchlistWidget extends StatelessWidget {
                         return CompanyListTile(
                           symbol: company.ticker,
                           name: company.name,
-                          trailing: event != null
-                              ? WatchlistEventBadge(status: event)
-                              : null,
+                          leading: CompanyLogoAvatar(
+                            ticker: company.ticker,
+                            logoUrl: company.logoUrl,
+                          ),
+                          trailing: _WatchlistTileTrailing(
+                            ticker: company.ticker,
+                            event: event,
+                          ),
                           onTap: () {
                             context.read<HomeBloc>().add(
                               HomeEvent.watchlistTapped(
@@ -86,7 +100,7 @@ class HomeWatchlistWidget extends StatelessWidget {
                         );
                       },
                     ),
-                    const SizedBox(height: 24),
+                    AppConstants.mainSectionSpacing,
                   ],
                 );
               },
@@ -98,18 +112,53 @@ class HomeWatchlistWidget extends StatelessWidget {
   }
 }
 
+class _WatchlistHeader extends StatelessWidget {
+  const _WatchlistHeader();
+
+  @override
+  Widget build(BuildContext context) {
+    return Text('Watchlist', style: Theme.of(context).textTheme.displaySmall);
+  }
+}
+
+class _WatchlistTileTrailing extends StatelessWidget {
+  final String ticker;
+  final WatchlistEventStatus? event;
+
+  const _WatchlistTileTrailing({required this.ticker, this.event});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<WatchlistPricesBloc, WatchlistPricesState>(
+      builder: (context, state) {
+        final WatchlistStockPrice? stockPrice = state.maybeMap(
+          loaded: (s) => s.prices[ticker],
+          orElse: () => null,
+        );
+
+        if (stockPrice != null) {
+          return WatchlistPriceTrailing(stockPrice: stockPrice);
+        }
+        if (event != null) {
+          return WatchlistEventBadge(status: event!);
+        }
+        return const SizedBox.shrink();
+      },
+    );
+  }
+}
+
 class _LoadingState extends StatelessWidget {
   final String mascotAssetPath;
   const _LoadingState({required this.mascotAssetPath});
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Watchlist', style: theme.textTheme.displaySmall),
-        const SizedBox(height: 128),
+        const _WatchlistHeader(),
+        AppConstants.watchlistLoaderTopSpacing,
         BizzieLoader(
           message: 'Loading your watchlist...',
           mascotAssetPath: mascotAssetPath,

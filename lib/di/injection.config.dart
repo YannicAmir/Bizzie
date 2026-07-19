@@ -414,18 +414,30 @@ import '../features/feedback/presentation/analytics/feedback_tracker.dart'
 import '../features/feedback/presentation/bloc/feedback_bloc.dart' as _i673;
 import '../features/home/data/datasources/watchlist_news_remote_datasource.dart'
     as _i165;
+import '../features/home/data/datasources/watchlist_prices_remote_datasource.dart'
+    as _i831;
 import '../features/home/data/interfaces/i_watchlist_news_remote_datasource.dart'
     as _i745;
+import '../features/home/data/interfaces/i_watchlist_prices_remote_datasource.dart'
+    as _i784;
 import '../features/home/data/repositories/watchlist_news_repository_impl.dart'
     as _i564;
+import '../features/home/data/repositories/watchlist_prices_repository_impl.dart'
+    as _i434;
 import '../features/home/domain/interfaces/i_watchlist_news_repository.dart'
     as _i851;
+import '../features/home/domain/interfaces/i_watchlist_prices_repository.dart'
+    as _i1046;
+import '../features/home/domain/usecases/get_watchlist_prices_usecase.dart'
+    as _i413;
 import '../features/home/domain/usecases/watch_watchlist_news_usecase.dart'
     as _i510;
 import '../features/home/presentation/analytics/home_analytics.dart' as _i32;
 import '../features/home/presentation/bloc/home_bloc.dart' as _i824;
 import '../features/home/presentation/bloc/watchlist_news/watchlist_news_bloc.dart'
     as _i770;
+import '../features/home/presentation/bloc/watchlist_prices/watchlist_prices_bloc.dart'
+    as _i307;
 import '../features/market/data/datasources/market_local_datasource.dart'
     as _i1009;
 import '../features/market/data/datasources/market_remote_datasource.dart'
@@ -1009,6 +1021,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i622.INotificationRepository>(
       () => _i648.NotificationRepositoryImpl(gh<_i640.FcmRemoteDataSource>()),
     );
+    gh.factory<_i784.IWatchlistPricesRemoteDataSource>(
+      () => _i831.WatchlistPricesRemoteDataSource(gh<_i52.FirestoreService>()),
+    );
     gh.lazySingleton<_i851.IWatchlistNewsRepository>(
       () => _i564.WatchlistNewsRepositoryImpl(
         gh<_i745.IWatchlistNewsRemoteDataSource>(),
@@ -1232,6 +1247,11 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i659.ISubscriptionRepository>(),
       ),
     );
+    gh.lazySingleton<_i1046.IWatchlistPricesRepository>(
+      () => _i434.WatchlistPricesRepositoryImpl(
+        gh<_i784.IWatchlistPricesRemoteDataSource>(),
+      ),
+    );
     gh.singleton<_i361.Dio>(
       () => networkModule.bizzieDio(gh<_i937.IConfigService>()),
       instanceName: 'BizzieDio',
@@ -1362,6 +1382,11 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i501.IVertexAIProvider>(),
       ),
     );
+    gh.lazySingleton<_i413.GetWatchlistPricesUseCase>(
+      () => _i413.GetWatchlistPricesUseCase(
+        gh<_i1046.IWatchlistPricesRepository>(),
+      ),
+    );
     gh.factory<_i754.GetDividendInfoUseCase>(
       () => _i754.GetDividendInfoUseCase(gh<_i468.IDividendRepository>()),
     );
@@ -1411,6 +1436,13 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i605.GetPriceHistoryUseCase>(
       () => _i605.GetPriceHistoryUseCase(gh<_i876.IPriceRepository>()),
+    );
+    gh.factory<_i307.WatchlistPricesBloc>(
+      () => _i307.WatchlistPricesBloc(
+        gh<_i413.GetWatchlistPricesUseCase>(),
+        gh<_i937.IConfigService>(),
+        gh<_i427.GetAuthStream>(),
+      ),
     );
     gh.lazySingleton<_i329.IOnboardingRepository>(
       () => _i379.OnboardingRepositoryImpl(

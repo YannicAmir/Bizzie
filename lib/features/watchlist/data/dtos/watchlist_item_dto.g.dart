@@ -11,6 +11,7 @@ _WatchlistItemDto _$WatchlistItemDtoFromJson(Map<String, dynamic> json) =>
       ticker: json['ticker'] as String,
       companyName: json['companyName'] as String,
       createdAt: const TimestampConverter().fromJson(json['createdAt']),
+      logoUrl: json['logoUrl'] as String?,
     );
 
 Map<String, dynamic> _$WatchlistItemDtoToJson(_WatchlistItemDto instance) =>
@@ -18,4 +19,5 @@ Map<String, dynamic> _$WatchlistItemDtoToJson(_WatchlistItemDto instance) =>
       'ticker': instance.ticker,
       'companyName': instance.companyName,
       'createdAt': const TimestampConverter().toJson(instance.createdAt),
+      'logoUrl': instance.logoUrl,
     };

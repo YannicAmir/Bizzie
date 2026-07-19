@@ -33,6 +33,7 @@ class RemoteConfigKeys {
       'free_users_company_tabs_config';
   static const String paidUsersCompanyTabsConfig =
       'paid_users_company_tabs_config';
+  static const String showWatchlistPrice = 'show_watchlist_price';
 }
 
 final _logger = BizzieLogger('ConfigService');
@@ -175,6 +176,7 @@ class ConfigService implements IConfigService {
       RemoteConfigKeys.paidUsersCompanyTabsConfig: jsonEncode(
         _defaultPaidUsersCompanyTabsConfig,
       ),
+      RemoteConfigKeys.showWatchlistPrice: false,
     });
 
     try {
@@ -350,6 +352,10 @@ class ConfigService implements IConfigService {
   @override
   bool get bizzieChatEnabled =>
       _remoteConfig.getBool(RemoteConfigKeys.bizzieChatEnabled);
+
+  @override
+  bool get showWatchlistPrice =>
+      _remoteConfig.getBool(RemoteConfigKeys.showWatchlistPrice);
 
   @override
   Stream<void> get onConfigUpdated => _remoteConfig.onConfigUpdated;

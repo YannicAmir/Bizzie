@@ -19,6 +19,7 @@ import 'package:bizzie/features/auth/domain/enums/auth_source.dart';
 import 'package:bizzie/features/home/presentation/views/home_page.dart';
 import 'package:bizzie/features/home/presentation/bloc/home_bloc.dart';
 import 'package:bizzie/features/home/presentation/bloc/watchlist_news/watchlist_news_bloc.dart';
+import 'package:bizzie/features/home/presentation/bloc/watchlist_prices/watchlist_prices_bloc.dart';
 import 'package:bizzie/features/notifications/presentation/views/notification_request_page.dart';
 import 'package:bizzie/features/onboarding/presentation/views/ask_name_page.dart';
 import 'package:bizzie/features/onboarding/presentation/views/landing_page.dart';
@@ -110,6 +111,9 @@ GoRouter createRouter(
                     BlocProvider<HomeBloc>(create: (_) => getIt<HomeBloc>()),
                     BlocProvider<WatchlistNewsBloc>(
                       create: (_) => getIt<WatchlistNewsBloc>(),
+                    ),
+                    BlocProvider<WatchlistPricesBloc>(
+                      create: (_) => getIt<WatchlistPricesBloc>(),
                     ),
                   ],
                   child: const HomePage(),

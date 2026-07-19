@@ -10,6 +10,7 @@ class FirestoreConstants {
   static const String info = 'info';
   static const String market = 'market';
   static const String financials = 'financials';
+  static const String stockPrices = 'stock_prices';
 
   // Documents
   static const String userState = 'user_state';

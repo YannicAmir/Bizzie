@@ -54,6 +54,7 @@ class AppConstants {
   static const SizedBox subSectionSpacing = SizedBox(height: 8);
   static const SizedBox subSectionHorizontalSpacing = SizedBox(width: 8);
   static const SizedBox emptyStateTopSpacing = SizedBox(height: 48);
+  static const SizedBox watchlistLoaderTopSpacing = SizedBox(height: 128);
   static const double mainSectionBorderRadius = 16.0;
 
   static const double chartBarBorderRadius = 8.0;

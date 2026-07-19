@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$WatchlistItemDto {
 
- String get ticker; String get companyName;@TimestampConverter() DateTime get createdAt;
+ String get ticker; String get companyName;@TimestampConverter() DateTime get createdAt; String? get logoUrl;
 /// Create a copy of WatchlistItemDto
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $WatchlistItemDtoCopyWith<WatchlistItemDto> get copyWith => _$WatchlistItemDtoCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is WatchlistItemDto&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.companyName, companyName) || other.companyName == companyName)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is WatchlistItemDto&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.companyName, companyName) || other.companyName == companyName)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.logoUrl, logoUrl) || other.logoUrl == logoUrl));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,ticker,companyName,createdAt);
+int get hashCode => Object.hash(runtimeType,ticker,companyName,createdAt,logoUrl);
 
 @override
 String toString() {
-  return 'WatchlistItemDto(ticker: $ticker, companyName: $companyName, createdAt: $createdAt)';
+  return 'WatchlistItemDto(ticker: $ticker, companyName: $companyName, createdAt: $createdAt, logoUrl: $logoUrl)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $WatchlistItemDtoCopyWith<$Res>  {
   factory $WatchlistItemDtoCopyWith(WatchlistItemDto value, $Res Function(WatchlistItemDto) _then) = _$WatchlistItemDtoCopyWithImpl;
 @useResult
 $Res call({
- String ticker, String companyName,@TimestampConverter() DateTime createdAt
+ String ticker, String companyName,@TimestampConverter() DateTime createdAt, String? logoUrl
 });
 
 
@@ -65,12 +65,13 @@ class _$WatchlistItemDtoCopyWithImpl<$Res>
 
 /// Create a copy of WatchlistItemDto
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? ticker = null,Object? companyName = null,Object? createdAt = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? ticker = null,Object? companyName = null,Object? createdAt = null,Object? logoUrl = freezed,}) {
   return _then(_self.copyWith(
 ticker: null == ticker ? _self.ticker : ticker // ignore: cast_nullable_to_non_nullable
 as String,companyName: null == companyName ? _self.companyName : companyName // ignore: cast_nullable_to_non_nullable
 as String,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
-as DateTime,
+as DateTime,logoUrl: freezed == logoUrl ? _self.logoUrl : logoUrl // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 
@@ -155,10 +156,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String ticker,  String companyName, @TimestampConverter()  DateTime createdAt)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String ticker,  String companyName, @TimestampConverter()  DateTime createdAt,  String? logoUrl)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _WatchlistItemDto() when $default != null:
-return $default(_that.ticker,_that.companyName,_that.createdAt);case _:
+return $default(_that.ticker,_that.companyName,_that.createdAt,_that.logoUrl);case _:
   return orElse();
 
 }
@@ -176,10 +177,10 @@ return $default(_that.ticker,_that.companyName,_that.createdAt);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String ticker,  String companyName, @TimestampConverter()  DateTime createdAt)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String ticker,  String companyName, @TimestampConverter()  DateTime createdAt,  String? logoUrl)  $default,) {final _that = this;
 switch (_that) {
 case _WatchlistItemDto():
-return $default(_that.ticker,_that.companyName,_that.createdAt);case _:
+return $default(_that.ticker,_that.companyName,_that.createdAt,_that.logoUrl);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -196,10 +197,10 @@ return $default(_that.ticker,_that.companyName,_that.createdAt);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String ticker,  String companyName, @TimestampConverter()  DateTime createdAt)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String ticker,  String companyName, @TimestampConverter()  DateTime createdAt,  String? logoUrl)?  $default,) {final _that = this;
 switch (_that) {
 case _WatchlistItemDto() when $default != null:
-return $default(_that.ticker,_that.companyName,_that.createdAt);case _:
+return $default(_that.ticker,_that.companyName,_that.createdAt,_that.logoUrl);case _:
   return null;
 
 }
@@ -211,12 +212,13 @@ return $default(_that.ticker,_that.companyName,_that.createdAt);case _:
 @JsonSerializable()
 
 class _WatchlistItemDto extends WatchlistItemDto {
-  const _WatchlistItemDto({required this.ticker, required this.companyName, @TimestampConverter() required this.createdAt}): super._();
+  const _WatchlistItemDto({required this.ticker, required this.companyName, @TimestampConverter() required this.createdAt, this.logoUrl}): super._();
   factory _WatchlistItemDto.fromJson(Map<String, dynamic> json) => _$WatchlistItemDtoFromJson(json);
 
 @override final  String ticker;
 @override final  String companyName;
 @override@TimestampConverter() final  DateTime createdAt;
+@override final  String? logoUrl;
 
 /// Create a copy of WatchlistItemDto
 /// with the given fields replaced by the non-null parameter values.
@@ -231,16 +233,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _WatchlistItemDto&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.companyName, companyName) || other.companyName == companyName)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _WatchlistItemDto&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.companyName, companyName) || other.companyName == companyName)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.logoUrl, logoUrl) || other.logoUrl == logoUrl));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,ticker,companyName,createdAt);
+int get hashCode => Object.hash(runtimeType,ticker,companyName,createdAt,logoUrl);
 
 @override
 String toString() {
-  return 'WatchlistItemDto(ticker: $ticker, companyName: $companyName, createdAt: $createdAt)';
+  return 'WatchlistItemDto(ticker: $ticker, companyName: $companyName, createdAt: $createdAt, logoUrl: $logoUrl)';
 }
 
 
@@ -251,7 +253,7 @@ abstract mixin class _$WatchlistItemDtoCopyWith<$Res> implements $WatchlistItemD
   factory _$WatchlistItemDtoCopyWith(_WatchlistItemDto value, $Res Function(_WatchlistItemDto) _then) = __$WatchlistItemDtoCopyWithImpl;
 @override @useResult
 $Res call({
- String ticker, String companyName,@TimestampConverter() DateTime createdAt
+ String ticker, String companyName,@TimestampConverter() DateTime createdAt, String? logoUrl
 });
 
 
@@ -268,12 +270,13 @@ class __$WatchlistItemDtoCopyWithImpl<$Res>
 
 /// Create a copy of WatchlistItemDto
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? ticker = null,Object? companyName = null,Object? createdAt = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? ticker = null,Object? companyName = null,Object? createdAt = null,Object? logoUrl = freezed,}) {
   return _then(_WatchlistItemDto(
 ticker: null == ticker ? _self.ticker : ticker // ignore: cast_nullable_to_non_nullable
 as String,companyName: null == companyName ? _self.companyName : companyName // ignore: cast_nullable_to_non_nullable
 as String,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
-as DateTime,
+as DateTime,logoUrl: freezed == logoUrl ? _self.logoUrl : logoUrl // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 
