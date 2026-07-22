@@ -90,9 +90,21 @@ void main() {
     when(
       () => mockTracker.logUpcomingCompanyClicked(ticker: any(named: 'ticker')),
     ).thenAnswer((_) async {});
+    when(
+      () => mockTracker.logYtdCompanyClicked(ticker: any(named: 'ticker')),
+    ).thenAnswer((_) async {});
     when(() => mockTracker.setLastFilingTicker(any())).thenAnswer((_) async {});
     when(
       () => mockTracker.setReportsTotalViewed(any()),
+    ).thenAnswer((_) async {});
+    when(
+      () => mockTracker.logMarketNewsOpened(
+        publisher: any(named: 'publisher'),
+        site: any(named: 'site'),
+      ),
+    ).thenAnswer((_) async {});
+    when(
+      () => mockTracker.logMarketNewsFetchFailed(error: any(named: 'error')),
     ).thenAnswer((_) async {});
 
     when(() => mockLocalStorageService.getInt(any())).thenReturn(null);
@@ -118,6 +130,44 @@ void main() {
 
   test('initialState_isCorrect', () {
     expect(bloc.state, const ReportsState.initial());
+  });
+
+  group('ReportsBloc - MarketNewsArticleOpened', () {
+    blocTest<ReportsBloc, ReportsState>(
+      'marketNewsArticleOpened_logsTrackerEventAndEmitsNoState',
+      build: () => bloc,
+      act: (bloc) => bloc.add(
+        const ReportsEvent.marketNewsArticleOpened(
+          publisher: 'Reuters',
+          site: 'reuters.com',
+        ),
+      ),
+      expect: () => const <ReportsState>[],
+      verify: (_) {
+        verify(
+          () => mockTracker.logMarketNewsOpened(
+            publisher: 'Reuters',
+            site: 'reuters.com',
+          ),
+        ).called(1);
+      },
+    );
+  });
+
+  group('ReportsBloc - MarketNewsLoadFailed', () {
+    blocTest<ReportsBloc, ReportsState>(
+      'marketNewsLoadFailed_logsTrackerEventAndEmitsNoState',
+      build: () => bloc,
+      act: (bloc) => bloc.add(
+        const ReportsEvent.marketNewsLoadFailed(error: 'Stream Error'),
+      ),
+      expect: () => const <ReportsState>[],
+      verify: (_) {
+        verify(
+          () => mockTracker.logMarketNewsFetchFailed(error: 'Stream Error'),
+        ).called(1);
+      },
+    );
   });
 
   group('ReportsBloc - Started', () {
@@ -210,6 +260,19 @@ void main() {
           () => mockTracker.logUpcomingCompanyClicked(ticker: 'TSLA'),
         ).called(1);
         verify(() => mockTracker.setLastFilingTicker('TSLA')).called(1);
+      },
+    );
+
+    blocTest<ReportsBloc, ReportsState>(
+      'ytdCompanyClicked_logsAnalytics',
+      build: () => bloc,
+      act: (bloc) =>
+          bloc.add(const ReportsEvent.ytdCompanyClicked(ticker: 'FTNT')),
+      verify: (_) {
+        verify(
+          () => mockTracker.logYtdCompanyClicked(ticker: 'FTNT'),
+        ).called(1);
+        verify(() => mockTracker.setLastFilingTicker('FTNT')).called(1);
       },
     );
 

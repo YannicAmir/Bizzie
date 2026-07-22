@@ -14,6 +14,9 @@ import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
 import 'package:bizzie/features/notifications/presentation/bloc/notification_bloc.dart';
 import 'package:bizzie/features/watchlist/presentation/bloc/watchlist_bloc.dart';
 import 'package:bizzie/features/watchlist/presentation/bloc/watchlist_event.dart';
+import 'package:bizzie/features/watchlist/presentation/bloc/watchlist_state.dart';
+import 'package:bizzie/features/watchlist_ytd/presentation/bloc/watchlist_ytd/watchlist_ytd_bloc.dart';
+import 'package:bizzie/features/watchlist_ytd/presentation/bloc/watchlist_ytd/watchlist_ytd_event.dart';
 import 'package:bizzie/features/reports/presentation/bloc/reports_bloc.dart';
 import 'package:bizzie/features/reports/presentation/bloc/reports_event.dart';
 import 'package:bizzie/features/subscription/presentation/bloc/subscription_bloc.dart';
@@ -139,6 +142,21 @@ class _BizzieAppViewState extends State<BizzieAppView>
             _checkAndNotifyAppReady(context, userState: state);
           },
         ),
+        BlocListener<WatchlistBloc, WatchlistState>(
+          listener: (context, state) {
+            state.mapOrNull(
+              loaded: (loaded) {
+                context.read<WatchlistYtdBloc>().add(
+                  WatchlistYtdEvent.loadRequested(
+                    loaded.companies
+                        .map((company) => company.ticker)
+                        .toList(),
+                  ),
+                );
+              },
+            );
+          },
+        ),
         BlocListener<NotificationBloc, NotificationState>(
           listener: (context, state) {
             state.status.maybeMap(
@@ -170,6 +188,11 @@ class _BizzieAppViewState extends State<BizzieAppView>
                   paywall: (source) {
                     _router.push(
                       '${AppRoutes.discountedPaywall}?source=${source.name}',
+                    );
+                  },
+                  stockNews: (ticker, newsId) {
+                    _router.go(
+                      '${AppRoutes.home}?newsId=$newsId&ticker=$ticker',
                     );
                   },
                 );

@@ -23,6 +23,7 @@ const tTickers = ['AXP', 'NVDA'];
 const tFailure = Failure.server('error');
 
 final tArticle = WatchlistNewsArticle(
+  id: 'AXP_article',
   symbol: 'AXP',
   title: 'Article',
   site: 'zacks.com',

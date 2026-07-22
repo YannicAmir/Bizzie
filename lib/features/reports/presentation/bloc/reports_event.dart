@@ -8,7 +8,7 @@ import 'package:bizzie/features/reports/domain/enums/reports_analytics_enums.dar
 part 'reports_event.freezed.dart';
 
 @freezed
-class ReportsEvent with _$ReportsEvent {
+sealed class ReportsEvent with _$ReportsEvent {
   const factory ReportsEvent.started({String? uid}) = Started;
   const factory ReportsEvent.refresh() = Refresh;
   const factory ReportsEvent.watchlistUpdated(List<String> tickers) =
@@ -37,10 +37,18 @@ class ReportsEvent with _$ReportsEvent {
   const factory ReportsEvent.upcomingExpanded() = UpcomingExpanded;
   const factory ReportsEvent.upcomingCompanyClicked({required String ticker}) =
       UpcomingCompanyClicked;
+  const factory ReportsEvent.ytdCompanyClicked({required String ticker}) =
+      YtdCompanyClicked;
   const factory ReportsEvent.filingCardCompanyClicked({
     required String ticker,
   }) = FilingCardCompanyClicked;
   const factory ReportsEvent.emptyCtaClicked() = EmptyCtaClicked;
+  const factory ReportsEvent.marketNewsArticleOpened({
+    required String publisher,
+    required String site,
+  }) = MarketNewsArticleOpened;
+  const factory ReportsEvent.marketNewsLoadFailed({required String error}) =
+      MarketNewsLoadFailed;
   const factory ReportsEvent.activityUpdated(DateTime? lastViewedReports) =
       ActivityUpdated;
   const factory ReportsEvent.reset() = Reset;

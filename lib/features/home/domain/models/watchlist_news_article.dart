@@ -5,6 +5,7 @@ part 'watchlist_news_article.freezed.dart';
 @freezed
 abstract class WatchlistNewsArticle with _$WatchlistNewsArticle {
   const factory WatchlistNewsArticle({
+    required String id,
     required String symbol,
     required String title,
     required String site,

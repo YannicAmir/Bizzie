@@ -55,11 +55,12 @@ extension WatchlistPricesEventPatterns on WatchlistPricesEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( LoadRequested value)?  loadRequested,TResult Function( Reset value)?  reset,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( LoadRequested value)?  loadRequested,TResult Function( RefreshRequested value)?  refreshRequested,TResult Function( Reset value)?  reset,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case LoadRequested() when loadRequested != null:
-return loadRequested(_that);case Reset() when reset != null:
+return loadRequested(_that);case RefreshRequested() when refreshRequested != null:
+return refreshRequested(_that);case Reset() when reset != null:
 return reset(_that);case _:
   return orElse();
 
@@ -78,11 +79,12 @@ return reset(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( LoadRequested value)  loadRequested,required TResult Function( Reset value)  reset,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( LoadRequested value)  loadRequested,required TResult Function( RefreshRequested value)  refreshRequested,required TResult Function( Reset value)  reset,}){
 final _that = this;
 switch (_that) {
 case LoadRequested():
-return loadRequested(_that);case Reset():
+return loadRequested(_that);case RefreshRequested():
+return refreshRequested(_that);case Reset():
 return reset(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
@@ -97,11 +99,12 @@ return reset(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( LoadRequested value)?  loadRequested,TResult? Function( Reset value)?  reset,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( LoadRequested value)?  loadRequested,TResult? Function( RefreshRequested value)?  refreshRequested,TResult? Function( Reset value)?  reset,}){
 final _that = this;
 switch (_that) {
 case LoadRequested() when loadRequested != null:
-return loadRequested(_that);case Reset() when reset != null:
+return loadRequested(_that);case RefreshRequested() when refreshRequested != null:
+return refreshRequested(_that);case Reset() when reset != null:
 return reset(_that);case _:
   return null;
 
@@ -119,10 +122,11 @@ return reset(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( List<String> tickers)?  loadRequested,TResult Function()?  reset,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( List<String> tickers)?  loadRequested,TResult Function()?  refreshRequested,TResult Function()?  reset,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case LoadRequested() when loadRequested != null:
-return loadRequested(_that.tickers);case Reset() when reset != null:
+return loadRequested(_that.tickers);case RefreshRequested() when refreshRequested != null:
+return refreshRequested();case Reset() when reset != null:
 return reset();case _:
   return orElse();
 
@@ -141,10 +145,11 @@ return reset();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( List<String> tickers)  loadRequested,required TResult Function()  reset,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( List<String> tickers)  loadRequested,required TResult Function()  refreshRequested,required TResult Function()  reset,}) {final _that = this;
 switch (_that) {
 case LoadRequested():
-return loadRequested(_that.tickers);case Reset():
+return loadRequested(_that.tickers);case RefreshRequested():
+return refreshRequested();case Reset():
 return reset();}
 }
 /// A variant of `when` that fallback to returning `null`
@@ -159,10 +164,11 @@ return reset();}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( List<String> tickers)?  loadRequested,TResult? Function()?  reset,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( List<String> tickers)?  loadRequested,TResult? Function()?  refreshRequested,TResult? Function()?  reset,}) {final _that = this;
 switch (_that) {
 case LoadRequested() when loadRequested != null:
-return loadRequested(_that.tickers);case Reset() when reset != null:
+return loadRequested(_that.tickers);case RefreshRequested() when refreshRequested != null:
+return refreshRequested();case Reset() when reset != null:
 return reset();case _:
   return null;
 
@@ -242,6 +248,38 @@ as List<String>,
 
 
 }
+
+/// @nodoc
+
+
+class RefreshRequested implements WatchlistPricesEvent {
+  const RefreshRequested();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is RefreshRequested);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'WatchlistPricesEvent.refreshRequested()';
+}
+
+
+}
+
+
+
 
 /// @nodoc
 

@@ -8,6 +8,7 @@ part of 'watchlist_news_dto.dart';
 
 _WatchlistNewsDto _$WatchlistNewsDtoFromJson(Map<String, dynamic> json) =>
     _WatchlistNewsDto(
+      id: json['id'] as String,
       symbol: json['symbol'] as String,
       title: json['title'] as String,
       site: json['site'] as String,
@@ -18,6 +19,7 @@ _WatchlistNewsDto _$WatchlistNewsDtoFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$WatchlistNewsDtoToJson(_WatchlistNewsDto instance) =>
     <String, dynamic>{
+      'id': instance.id,
       'symbol': instance.symbol,
       'title': instance.title,
       'site': instance.site,

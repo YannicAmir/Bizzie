@@ -16,7 +16,6 @@ import 'package:bizzie/shared/widgets/company_list_tile.dart';
 import 'package:bizzie/shared/widgets/company_logo_avatar.dart';
 import 'package:bizzie/shared/widgets/error/bizzie_error.dart';
 import 'package:bizzie/shared/widgets/loading/bizzie_loader.dart';
-import 'package:bizzie/shared/widgets/states/bizzie_empty_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -54,9 +53,7 @@ class HomeWatchlistWidget extends StatelessWidget {
               ),
               success: (_) => const SizedBox.shrink(),
               loaded: (s) {
-                if (s.companies.isEmpty) {
-                  return _EmptyState(mascotAssetPath: mascot);
-                }
+                if (s.companies.isEmpty) return const SizedBox.shrink();
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -75,6 +72,8 @@ class HomeWatchlistWidget extends StatelessWidget {
                         return CompanyListTile(
                           symbol: company.ticker,
                           name: company.name,
+                          backgroundColor:
+                              Theme.of(context).colorScheme.surface,
                           leading: CompanyLogoAvatar(
                             ticker: company.ticker,
                             logoUrl: company.logoUrl,
@@ -164,36 +163,6 @@ class _LoadingState extends StatelessWidget {
           mascotAssetPath: mascotAssetPath,
         ),
       ],
-    );
-  }
-}
-
-class _EmptyState extends StatefulWidget {
-  final String mascotAssetPath;
-  const _EmptyState({required this.mascotAssetPath});
-
-  @override
-  State<_EmptyState> createState() => _EmptyStateState();
-}
-
-class _EmptyStateState extends State<_EmptyState> {
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) {
-        context.read<HomeBloc>().add(const HomeEvent.emptyStateViewed());
-      }
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return BizzieEmptyState(
-      mascotAsset: widget.mascotAssetPath,
-      title: 'No watchlist',
-      message: 'You have no companies in your watchlist',
-      isFullPage: true,
     );
   }
 }

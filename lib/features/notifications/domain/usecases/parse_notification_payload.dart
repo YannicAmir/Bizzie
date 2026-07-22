@@ -45,6 +45,17 @@ class ParseNotificationPayload
       );
     }
 
+    if (type == 'stock_news') {
+      final newsId = params['newsId'] as String?;
+      if (ticker != null &&
+          ticker.isNotEmpty &&
+          newsId != null &&
+          newsId.isNotEmpty) {
+        return NotificationIntent.stockNews(ticker: ticker, newsId: newsId);
+      }
+      return null;
+    }
+
     return null;
   }
 }

@@ -5,6 +5,7 @@ import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/features/auth/domain/interfaces/i_auth_repository.dart';
 import 'package:bizzie/features/reports/domain/models/financial_report.dart';
 import 'package:bizzie/features/reports/domain/models/reports_feed.dart';
+import 'package:bizzie/features/reports/domain/models/weekly_report.dart';
 import 'package:bizzie/features/reports/presentation/models/filing_view_model.dart';
 import 'package:bizzie/features/reports/domain/usecases/get_dashboard_reports_usecase.dart';
 import 'package:bizzie/features/reports/domain/usecases/get_user_activity_use_case.dart';
@@ -69,8 +70,11 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
     on<SummarizeLockedClicked>(_onSummarizeLockedClicked);
     on<UpcomingExpanded>(_onUpcomingExpanded);
     on<UpcomingCompanyClicked>(_onUpcomingCompanyClicked);
+    on<YtdCompanyClicked>(_onYtdCompanyClicked);
     on<FilingCardCompanyClicked>(_onFilingCardCompanyClicked);
     on<EmptyCtaClicked>(_onEmptyCtaClicked);
+    on<MarketNewsArticleOpened>(_onMarketNewsArticleOpened);
+    on<MarketNewsLoadFailed>(_onMarketNewsLoadFailed);
     on<ActivityUpdated>(_onActivityUpdated);
     on<Reset>(_onReset);
   }
@@ -120,6 +124,14 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
     _tracker.setLastFilingTicker(event.ticker);
   }
 
+  void _onYtdCompanyClicked(
+    YtdCompanyClicked event,
+    Emitter<ReportsState> emit,
+  ) {
+    _tracker.logYtdCompanyClicked(ticker: event.ticker);
+    _tracker.setLastFilingTicker(event.ticker);
+  }
+
   void _onFilingCardCompanyClicked(
     FilingCardCompanyClicked event,
     Emitter<ReportsState> emit,
@@ -130,6 +142,23 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
 
   void _onEmptyCtaClicked(EmptyCtaClicked event, Emitter<ReportsState> emit) {
     _tracker.logEmptyCtaClicked();
+  }
+
+  void _onMarketNewsArticleOpened(
+    MarketNewsArticleOpened event,
+    Emitter<ReportsState> emit,
+  ) {
+    _tracker.logMarketNewsOpened(
+      publisher: event.publisher,
+      site: event.site,
+    );
+  }
+
+  void _onMarketNewsLoadFailed(
+    MarketNewsLoadFailed event,
+    Emitter<ReportsState> emit,
+  ) {
+    _tracker.logMarketNewsFetchFailed(error: event.error);
   }
 
   @override
@@ -258,45 +287,51 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
             _lastViewedReports ??
             state.mapOrNull(loaded: (s) => s.lastViewedReports);
 
-        final now = DateTime.now();
-        final todaysFilings = feed.filings
-            .where((f) {
-              return f.createdAt != null &&
-                  f.createdAt!.year == now.year &&
-                  f.createdAt!.month == now.month &&
-                  f.createdAt!.day == now.day;
-            })
-            .map((filing) {
-              final report = feed.currentReports
-                  .cast<FinancialReport?>()
-                  .firstWhere(
-                    (r) =>
-                        r?.ticker == filing.symbol &&
-                        r?.formType == filing.formType,
-                    orElse: () => null,
-                  );
-              return FilingViewModel(filing: filing, report: report);
-            })
-            .toList();
-
-        final todaysWeeklyReports = feed.weeklyReports.where((r) {
-          final reportDate = DateTime.tryParse(r.id ?? '');
-          return reportDate != null &&
-              reportDate.year == now.year &&
-              reportDate.month == now.month &&
-              reportDate.day == now.day;
-        }).toList();
-
         emit(
           ReportsState.loaded(
             feed,
             lastViewedReports: currentLastViewed,
-            todaysFilings: todaysFilings,
-            todaysWeeklyReports: todaysWeeklyReports,
+            todaysFilings: _buildTodaysFilings(feed),
+            todaysWeeklyReports: _buildTodaysWeeklyReports(feed),
           ),
         );
       },
     );
+  }
+
+  List<FilingViewModel> _buildTodaysFilings(ReportsFeed feed) {
+    final now = DateTime.now();
+    final reportsByKey = <(String, String), FinancialReport>{};
+    for (final report in feed.currentReports) {
+      reportsByKey.putIfAbsent(
+        (report.ticker, report.formType),
+        () => report,
+      );
+    }
+
+    return feed.filings
+        .where((f) {
+          return f.createdAt != null &&
+              f.createdAt!.year == now.year &&
+              f.createdAt!.month == now.month &&
+              f.createdAt!.day == now.day;
+        })
+        .map((filing) {
+          final report = reportsByKey[(filing.symbol, filing.formType)];
+          return FilingViewModel(filing: filing, report: report);
+        })
+        .toList();
+  }
+
+  List<WeeklyReport> _buildTodaysWeeklyReports(ReportsFeed feed) {
+    final now = DateTime.now();
+    return feed.weeklyReports.where((r) {
+      final reportDate = DateTime.tryParse(r.id ?? '');
+      return reportDate != null &&
+          reportDate.year == now.year &&
+          reportDate.month == now.month &&
+          reportDate.day == now.day;
+    }).toList();
   }
 
   void _onRefresh(Refresh event, Emitter<ReportsState> emit) {

@@ -55,13 +55,14 @@ extension NotificationIntentPatterns on NotificationIntent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _CompanyProfile value)?  companyProfile,TResult Function( _Reports value)?  reports,TResult Function( _Paywall value)?  paywall,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _CompanyProfile value)?  companyProfile,TResult Function( _Reports value)?  reports,TResult Function( _Paywall value)?  paywall,TResult Function( _StockNews value)?  stockNews,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _CompanyProfile() when companyProfile != null:
 return companyProfile(_that);case _Reports() when reports != null:
 return reports(_that);case _Paywall() when paywall != null:
-return paywall(_that);case _:
+return paywall(_that);case _StockNews() when stockNews != null:
+return stockNews(_that);case _:
   return orElse();
 
 }
@@ -79,13 +80,14 @@ return paywall(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _CompanyProfile value)  companyProfile,required TResult Function( _Reports value)  reports,required TResult Function( _Paywall value)  paywall,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _CompanyProfile value)  companyProfile,required TResult Function( _Reports value)  reports,required TResult Function( _Paywall value)  paywall,required TResult Function( _StockNews value)  stockNews,}){
 final _that = this;
 switch (_that) {
 case _CompanyProfile():
 return companyProfile(_that);case _Reports():
 return reports(_that);case _Paywall():
-return paywall(_that);case _:
+return paywall(_that);case _StockNews():
+return stockNews(_that);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -102,13 +104,14 @@ return paywall(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _CompanyProfile value)?  companyProfile,TResult? Function( _Reports value)?  reports,TResult? Function( _Paywall value)?  paywall,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _CompanyProfile value)?  companyProfile,TResult? Function( _Reports value)?  reports,TResult? Function( _Paywall value)?  paywall,TResult? Function( _StockNews value)?  stockNews,}){
 final _that = this;
 switch (_that) {
 case _CompanyProfile() when companyProfile != null:
 return companyProfile(_that);case _Reports() when reports != null:
 return reports(_that);case _Paywall() when paywall != null:
-return paywall(_that);case _:
+return paywall(_that);case _StockNews() when stockNews != null:
+return stockNews(_that);case _:
   return null;
 
 }
@@ -125,12 +128,13 @@ return paywall(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String ticker)?  companyProfile,TResult Function( ReportsEntrySource source,  ReportsNotificationType notificationType)?  reports,TResult Function( PaywallSource source)?  paywall,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String ticker)?  companyProfile,TResult Function( ReportsEntrySource source,  ReportsNotificationType notificationType)?  reports,TResult Function( PaywallSource source)?  paywall,TResult Function( String ticker,  String newsId)?  stockNews,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _CompanyProfile() when companyProfile != null:
 return companyProfile(_that.ticker);case _Reports() when reports != null:
 return reports(_that.source,_that.notificationType);case _Paywall() when paywall != null:
-return paywall(_that.source);case _:
+return paywall(_that.source);case _StockNews() when stockNews != null:
+return stockNews(_that.ticker,_that.newsId);case _:
   return orElse();
 
 }
@@ -148,12 +152,13 @@ return paywall(_that.source);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String ticker)  companyProfile,required TResult Function( ReportsEntrySource source,  ReportsNotificationType notificationType)  reports,required TResult Function( PaywallSource source)  paywall,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String ticker)  companyProfile,required TResult Function( ReportsEntrySource source,  ReportsNotificationType notificationType)  reports,required TResult Function( PaywallSource source)  paywall,required TResult Function( String ticker,  String newsId)  stockNews,}) {final _that = this;
 switch (_that) {
 case _CompanyProfile():
 return companyProfile(_that.ticker);case _Reports():
 return reports(_that.source,_that.notificationType);case _Paywall():
-return paywall(_that.source);case _:
+return paywall(_that.source);case _StockNews():
+return stockNews(_that.ticker,_that.newsId);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -170,12 +175,13 @@ return paywall(_that.source);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String ticker)?  companyProfile,TResult? Function( ReportsEntrySource source,  ReportsNotificationType notificationType)?  reports,TResult? Function( PaywallSource source)?  paywall,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String ticker)?  companyProfile,TResult? Function( ReportsEntrySource source,  ReportsNotificationType notificationType)?  reports,TResult? Function( PaywallSource source)?  paywall,TResult? Function( String ticker,  String newsId)?  stockNews,}) {final _that = this;
 switch (_that) {
 case _CompanyProfile() when companyProfile != null:
 return companyProfile(_that.ticker);case _Reports() when reports != null:
 return reports(_that.source,_that.notificationType);case _Paywall() when paywall != null:
-return paywall(_that.source);case _:
+return paywall(_that.source);case _StockNews() when stockNews != null:
+return stockNews(_that.ticker,_that.newsId);case _:
   return null;
 
 }
@@ -377,6 +383,74 @@ class __$PaywallCopyWithImpl<$Res>
   return _then(_Paywall(
 null == source ? _self.source : source // ignore: cast_nullable_to_non_nullable
 as PaywallSource,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class _StockNews implements NotificationIntent {
+  const _StockNews({required this.ticker, required this.newsId});
+  
+
+ final  String ticker;
+ final  String newsId;
+
+/// Create a copy of NotificationIntent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$StockNewsCopyWith<_StockNews> get copyWith => __$StockNewsCopyWithImpl<_StockNews>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _StockNews&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.newsId, newsId) || other.newsId == newsId));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,ticker,newsId);
+
+@override
+String toString() {
+  return 'NotificationIntent.stockNews(ticker: $ticker, newsId: $newsId)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$StockNewsCopyWith<$Res> implements $NotificationIntentCopyWith<$Res> {
+  factory _$StockNewsCopyWith(_StockNews value, $Res Function(_StockNews) _then) = __$StockNewsCopyWithImpl;
+@useResult
+$Res call({
+ String ticker, String newsId
+});
+
+
+
+
+}
+/// @nodoc
+class __$StockNewsCopyWithImpl<$Res>
+    implements _$StockNewsCopyWith<$Res> {
+  __$StockNewsCopyWithImpl(this._self, this._then);
+
+  final _StockNews _self;
+  final $Res Function(_StockNews) _then;
+
+/// Create a copy of NotificationIntent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? ticker = null,Object? newsId = null,}) {
+  return _then(_StockNews(
+ticker: null == ticker ? _self.ticker : ticker // ignore: cast_nullable_to_non_nullable
+as String,newsId: null == newsId ? _self.newsId : newsId // ignore: cast_nullable_to_non_nullable
+as String,
   ));
 }
 

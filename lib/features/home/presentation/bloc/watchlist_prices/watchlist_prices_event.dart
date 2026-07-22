@@ -6,5 +6,6 @@ part 'watchlist_prices_event.freezed.dart';
 sealed class WatchlistPricesEvent with _$WatchlistPricesEvent {
   const factory WatchlistPricesEvent.loadRequested(List<String> tickers) =
       LoadRequested;
+  const factory WatchlistPricesEvent.refreshRequested() = RefreshRequested;
   const factory WatchlistPricesEvent.reset() = Reset;
 }

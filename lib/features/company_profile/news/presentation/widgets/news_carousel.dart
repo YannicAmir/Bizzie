@@ -4,9 +4,10 @@ import 'package:bizzie/app/themes/app_text_styles.dart';
 import 'package:bizzie/features/company_profile/news/domain/models/news_article.dart';
 import 'package:bizzie/features/company_profile/news/presentation/bloc/company_news/company_news_bloc.dart';
 import 'package:bizzie/features/company_profile/news/presentation/bloc/company_news/company_news_event.dart';
-import 'package:bizzie/features/company_profile/news/presentation/widgets/news_card.dart';
+import 'package:bizzie/features/company_profile/news/presentation/utils/news_article_extensions.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:bizzie/shared/utils/url_launcher_utils.dart';
+import 'package:bizzie/shared/widgets/cards/news_card.dart';
 import 'package:bizzie/shared/widgets/carousel_page_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -79,7 +80,18 @@ class _NewsCarouselState extends State<NewsCarousel> {
                         horizontal: AppConstants.newsPagePadding,
                       ),
                 child: NewsCard(
-                  article: article,
+                  imageUrl: article.image,
+                  title: article.title,
+                  metaSegments: [
+                    NewsCardMetaSegment(
+                      article.site,
+                      NewsCardMetaEmphasis.leading,
+                    ),
+                    NewsCardMetaSegment(
+                      article.timeAgo,
+                      NewsCardMetaEmphasis.muted,
+                    ),
+                  ],
                   onTap: () {
                     context.read<CompanyNewsBloc>().add(
                       CompanyNewsEvent.articleTapped(

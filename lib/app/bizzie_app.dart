@@ -3,6 +3,7 @@ import 'package:bizzie/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:bizzie/features/notifications/presentation/bloc/notification_bloc.dart';
 import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
 import 'package:bizzie/features/watchlist/presentation/bloc/watchlist_bloc.dart';
+import 'package:bizzie/features/watchlist_ytd/presentation/bloc/watchlist_ytd/watchlist_ytd_bloc.dart';
 import 'package:bizzie/features/subscription/presentation/bloc/subscription_bloc.dart';
 import 'package:bizzie/features/reports/presentation/bloc/reports_bloc.dart';
 import 'package:bizzie/features/app_status/presentation/bloc/app_status_bloc.dart';
@@ -35,6 +36,9 @@ class BizzieApp extends StatelessWidget {
         ),
         BlocProvider<UserBloc>(create: (_) => getIt<UserBloc>()),
         BlocProvider<WatchlistBloc>(create: (_) => getIt<WatchlistBloc>()),
+        BlocProvider<WatchlistYtdBloc>(
+          create: (_) => getIt<WatchlistYtdBloc>(),
+        ),
         BlocProvider<SubscriptionBloc>(
           create: (_) => getIt<SubscriptionBloc>(),
         ),

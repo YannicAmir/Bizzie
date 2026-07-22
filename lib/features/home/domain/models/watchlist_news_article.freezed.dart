@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$WatchlistNewsArticle {
 
- String get symbol; String get title; String get site; String get url; DateTime get publishedAt; String? get image;
+ String get id; String get symbol; String get title; String get site; String get url; DateTime get publishedAt; String? get image;
 /// Create a copy of WatchlistNewsArticle
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $WatchlistNewsArticleCopyWith<WatchlistNewsArticle> get copyWith => _$WatchlistN
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is WatchlistNewsArticle&&(identical(other.symbol, symbol) || other.symbol == symbol)&&(identical(other.title, title) || other.title == title)&&(identical(other.site, site) || other.site == site)&&(identical(other.url, url) || other.url == url)&&(identical(other.publishedAt, publishedAt) || other.publishedAt == publishedAt)&&(identical(other.image, image) || other.image == image));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is WatchlistNewsArticle&&(identical(other.id, id) || other.id == id)&&(identical(other.symbol, symbol) || other.symbol == symbol)&&(identical(other.title, title) || other.title == title)&&(identical(other.site, site) || other.site == site)&&(identical(other.url, url) || other.url == url)&&(identical(other.publishedAt, publishedAt) || other.publishedAt == publishedAt)&&(identical(other.image, image) || other.image == image));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,symbol,title,site,url,publishedAt,image);
+int get hashCode => Object.hash(runtimeType,id,symbol,title,site,url,publishedAt,image);
 
 @override
 String toString() {
-  return 'WatchlistNewsArticle(symbol: $symbol, title: $title, site: $site, url: $url, publishedAt: $publishedAt, image: $image)';
+  return 'WatchlistNewsArticle(id: $id, symbol: $symbol, title: $title, site: $site, url: $url, publishedAt: $publishedAt, image: $image)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $WatchlistNewsArticleCopyWith<$Res>  {
   factory $WatchlistNewsArticleCopyWith(WatchlistNewsArticle value, $Res Function(WatchlistNewsArticle) _then) = _$WatchlistNewsArticleCopyWithImpl;
 @useResult
 $Res call({
- String symbol, String title, String site, String url, DateTime publishedAt, String? image
+ String id, String symbol, String title, String site, String url, DateTime publishedAt, String? image
 });
 
 
@@ -62,9 +62,10 @@ class _$WatchlistNewsArticleCopyWithImpl<$Res>
 
 /// Create a copy of WatchlistNewsArticle
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? symbol = null,Object? title = null,Object? site = null,Object? url = null,Object? publishedAt = null,Object? image = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? symbol = null,Object? title = null,Object? site = null,Object? url = null,Object? publishedAt = null,Object? image = freezed,}) {
   return _then(_self.copyWith(
-symbol: null == symbol ? _self.symbol : symbol // ignore: cast_nullable_to_non_nullable
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String,symbol: null == symbol ? _self.symbol : symbol // ignore: cast_nullable_to_non_nullable
 as String,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
 as String,site: null == site ? _self.site : site // ignore: cast_nullable_to_non_nullable
 as String,url: null == url ? _self.url : url // ignore: cast_nullable_to_non_nullable
@@ -155,10 +156,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String symbol,  String title,  String site,  String url,  DateTime publishedAt,  String? image)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String symbol,  String title,  String site,  String url,  DateTime publishedAt,  String? image)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _WatchlistNewsArticle() when $default != null:
-return $default(_that.symbol,_that.title,_that.site,_that.url,_that.publishedAt,_that.image);case _:
+return $default(_that.id,_that.symbol,_that.title,_that.site,_that.url,_that.publishedAt,_that.image);case _:
   return orElse();
 
 }
@@ -176,10 +177,10 @@ return $default(_that.symbol,_that.title,_that.site,_that.url,_that.publishedAt,
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String symbol,  String title,  String site,  String url,  DateTime publishedAt,  String? image)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String symbol,  String title,  String site,  String url,  DateTime publishedAt,  String? image)  $default,) {final _that = this;
 switch (_that) {
 case _WatchlistNewsArticle():
-return $default(_that.symbol,_that.title,_that.site,_that.url,_that.publishedAt,_that.image);case _:
+return $default(_that.id,_that.symbol,_that.title,_that.site,_that.url,_that.publishedAt,_that.image);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -196,10 +197,10 @@ return $default(_that.symbol,_that.title,_that.site,_that.url,_that.publishedAt,
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String symbol,  String title,  String site,  String url,  DateTime publishedAt,  String? image)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String symbol,  String title,  String site,  String url,  DateTime publishedAt,  String? image)?  $default,) {final _that = this;
 switch (_that) {
 case _WatchlistNewsArticle() when $default != null:
-return $default(_that.symbol,_that.title,_that.site,_that.url,_that.publishedAt,_that.image);case _:
+return $default(_that.id,_that.symbol,_that.title,_that.site,_that.url,_that.publishedAt,_that.image);case _:
   return null;
 
 }
@@ -211,9 +212,10 @@ return $default(_that.symbol,_that.title,_that.site,_that.url,_that.publishedAt,
 
 
 class _WatchlistNewsArticle implements WatchlistNewsArticle {
-  const _WatchlistNewsArticle({required this.symbol, required this.title, required this.site, required this.url, required this.publishedAt, this.image});
+  const _WatchlistNewsArticle({required this.id, required this.symbol, required this.title, required this.site, required this.url, required this.publishedAt, this.image});
   
 
+@override final  String id;
 @override final  String symbol;
 @override final  String title;
 @override final  String site;
@@ -231,16 +233,16 @@ _$WatchlistNewsArticleCopyWith<_WatchlistNewsArticle> get copyWith => __$Watchli
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _WatchlistNewsArticle&&(identical(other.symbol, symbol) || other.symbol == symbol)&&(identical(other.title, title) || other.title == title)&&(identical(other.site, site) || other.site == site)&&(identical(other.url, url) || other.url == url)&&(identical(other.publishedAt, publishedAt) || other.publishedAt == publishedAt)&&(identical(other.image, image) || other.image == image));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _WatchlistNewsArticle&&(identical(other.id, id) || other.id == id)&&(identical(other.symbol, symbol) || other.symbol == symbol)&&(identical(other.title, title) || other.title == title)&&(identical(other.site, site) || other.site == site)&&(identical(other.url, url) || other.url == url)&&(identical(other.publishedAt, publishedAt) || other.publishedAt == publishedAt)&&(identical(other.image, image) || other.image == image));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,symbol,title,site,url,publishedAt,image);
+int get hashCode => Object.hash(runtimeType,id,symbol,title,site,url,publishedAt,image);
 
 @override
 String toString() {
-  return 'WatchlistNewsArticle(symbol: $symbol, title: $title, site: $site, url: $url, publishedAt: $publishedAt, image: $image)';
+  return 'WatchlistNewsArticle(id: $id, symbol: $symbol, title: $title, site: $site, url: $url, publishedAt: $publishedAt, image: $image)';
 }
 
 
@@ -251,7 +253,7 @@ abstract mixin class _$WatchlistNewsArticleCopyWith<$Res> implements $WatchlistN
   factory _$WatchlistNewsArticleCopyWith(_WatchlistNewsArticle value, $Res Function(_WatchlistNewsArticle) _then) = __$WatchlistNewsArticleCopyWithImpl;
 @override @useResult
 $Res call({
- String symbol, String title, String site, String url, DateTime publishedAt, String? image
+ String id, String symbol, String title, String site, String url, DateTime publishedAt, String? image
 });
 
 
@@ -268,9 +270,10 @@ class __$WatchlistNewsArticleCopyWithImpl<$Res>
 
 /// Create a copy of WatchlistNewsArticle
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? symbol = null,Object? title = null,Object? site = null,Object? url = null,Object? publishedAt = null,Object? image = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? symbol = null,Object? title = null,Object? site = null,Object? url = null,Object? publishedAt = null,Object? image = freezed,}) {
   return _then(_WatchlistNewsArticle(
-symbol: null == symbol ? _self.symbol : symbol // ignore: cast_nullable_to_non_nullable
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String,symbol: null == symbol ? _self.symbol : symbol // ignore: cast_nullable_to_non_nullable
 as String,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
 as String,site: null == site ? _self.site : site // ignore: cast_nullable_to_non_nullable
 as String,url: null == url ? _self.url : url // ignore: cast_nullable_to_non_nullable

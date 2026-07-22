@@ -13,14 +13,13 @@ class UpcomingEarningsModal extends StatelessWidget {
     return AppBottomModal(
       title: 'Upcoming',
       builder: (context, scrollController) {
-        return ListView.builder(
+        return ListView.separated(
           controller: scrollController,
+          padding: const EdgeInsets.symmetric(horizontal: 16),
           itemCount: earnings.length,
+          separatorBuilder: (context, index) => const SizedBox(height: 12),
           itemBuilder: (context, index) {
-            return UpcomingEarningsTile(
-              earnings: earnings[index],
-              isLast: index == earnings.length - 1,
-            );
+            return UpcomingEarningsTile(earnings: earnings[index]);
           },
         );
       },

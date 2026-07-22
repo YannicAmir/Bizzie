@@ -114,7 +114,7 @@ class _SegmentBreakdownSectionState extends State<SegmentBreakdownSection> {
       if (currentChartData != null)
         _ChartSlide(
           key: ValueKey('${widget.title}_$currentPeriod'),
-          title: widget.title,
+          title: '${widget.title} Chart',
           currency: widget.currency,
           data: currentChartData,
           periodLabel: currentPeriod,
@@ -122,7 +122,7 @@ class _SegmentBreakdownSectionState extends State<SegmentBreakdownSection> {
       if (previousChartData != null && previousPeriod != null)
         _ChartSlide(
           key: ValueKey('${widget.title}_$previousPeriod'),
-          title: widget.title,
+          title: '${widget.title} Chart',
           currency: widget.currency,
           data: previousChartData,
           periodLabel: previousPeriod,
@@ -144,7 +144,7 @@ class _SegmentBreakdownSectionState extends State<SegmentBreakdownSection> {
         if (slides.isNotEmpty)
           _ChartCarousel(controller: _pageController, slides: slides),
         FinancialStatementsTable(
-          title: widget.title,
+          title: '${widget.title} Table',
           rows: _rows,
           metricHeader: _segmentMetricHeader,
           amountHeader: widget.currentLabel,

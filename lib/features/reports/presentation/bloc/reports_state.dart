@@ -7,7 +7,7 @@ import 'package:bizzie/core/error/failures.dart';
 part 'reports_state.freezed.dart';
 
 @freezed
-class ReportsState with _$ReportsState {
+abstract class ReportsState with _$ReportsState {
   const factory ReportsState.initial() = Initial;
   const factory ReportsState.loading() = Loading;
   const factory ReportsState.loaded(

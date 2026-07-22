@@ -1,11 +1,10 @@
-import 'package:bizzie/app/themes/app_colors.dart';
 import 'package:bizzie/app/themes/app_text_styles.dart';
+import 'package:bizzie/shared/widgets/brightness_aware_logo_tile.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 const double _avatarSize = 48;
 const double _avatarBorderRadius = 12;
-const double _logoPadding = 8;
 const int _initialsLength = 2;
 
 class CompanyLogoAvatar extends StatelessWidget {
@@ -21,28 +20,36 @@ class CompanyLogoAvatar extends StatelessWidget {
       return _TickerInitialsTile(ticker: ticker);
     }
 
+    final devicePixelRatio = MediaQuery.devicePixelRatioOf(context);
+
+    return CachedNetworkImage(
+      imageUrl: logoUrl,
+      width: _avatarSize,
+      height: _avatarSize,
+      memCacheWidth: (_avatarSize * devicePixelRatio).round(),
+      imageBuilder: (context, imageProvider) => BrightnessAwareLogoTile(
+        imageProvider: imageProvider,
+        size: _avatarSize,
+        borderRadius: _avatarBorderRadius,
+      ),
+      placeholder: (context, url) => const _LogoPlaceholderTile(),
+      errorWidget: (context, url, error) =>
+          _TickerInitialsTile(ticker: ticker),
+    );
+  }
+}
+
+class _LogoPlaceholderTile extends StatelessWidget {
+  const _LogoPlaceholderTile();
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
       width: _avatarSize,
       height: _avatarSize,
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [AppColors.slate100, AppColors.slate200],
-        ),
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(_avatarBorderRadius),
-      ),
-      child: CachedNetworkImage(
-        imageUrl: logoUrl,
-        width: _avatarSize,
-        height: _avatarSize,
-        imageBuilder: (context, imageProvider) => Padding(
-          padding: const EdgeInsets.all(_logoPadding),
-          child: Image(image: imageProvider, fit: BoxFit.contain),
-        ),
-        placeholder: (context, url) => _TickerInitialsTile(ticker: ticker),
-        errorWidget: (context, url, error) =>
-            _TickerInitialsTile(ticker: ticker),
       ),
     );
   }

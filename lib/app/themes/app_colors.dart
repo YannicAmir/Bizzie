@@ -15,6 +15,8 @@ class AppColors {
   // Backgrounds & Surfaces
   static const Color surface = Colors.white;
   static const Color background = Colors.white;
+
+  static const Color scaffoldBackground = Color(0xFFF6F8FD);
   static const Color inputBackground = Color(0xFFF8FAFC); // Light Grey
 
   // Borders

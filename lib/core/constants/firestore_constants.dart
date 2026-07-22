@@ -5,12 +5,14 @@ class FirestoreConstants {
   static const String secFilings = 'sec_filings';
   static const String upcomingEarnings = 'upcoming_earnings';
   static const String stockNews = 'stock_news';
+  static const String generalMarketNews = 'general_market_news';
   static const String users = 'users';
   static const String activities = 'activities';
   static const String info = 'info';
   static const String market = 'market';
   static const String financials = 'financials';
   static const String stockPrices = 'stock_prices';
+  static const String ytdPriceChange = 'ytd_price_change';
 
   // Documents
   static const String userState = 'user_state';

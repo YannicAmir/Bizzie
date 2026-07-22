@@ -13,6 +13,7 @@ class CompanyListTile extends StatelessWidget {
   final Widget? leading;
   final Widget? trailing;
   final bool showLeading;
+  final Color? backgroundColor;
 
   const CompanyListTile({
     super.key,
@@ -24,6 +25,7 @@ class CompanyListTile extends StatelessWidget {
     this.showLeading = true,
     this.leading,
     this.trailing,
+    this.backgroundColor,
   });
 
   @override
@@ -37,6 +39,7 @@ class CompanyListTile extends StatelessWidget {
             contentPadding ??
             const EdgeInsets.all(AppConstants.mainSectionContainerPadding),
         decoration: BoxDecoration(
+          color: backgroundColor,
           border: Border.all(
             color: theme.dividerColor,
             width: theme.dividerTheme.thickness ?? .665,

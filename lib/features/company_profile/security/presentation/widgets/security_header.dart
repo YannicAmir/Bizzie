@@ -1,8 +1,8 @@
 import 'package:bizzie/app/themes/app_assets.dart';
-import 'package:bizzie/app/themes/app_colors.dart';
 import 'package:bizzie/app/themes/app_text_styles.dart';
 import 'package:bizzie/features/company_profile/security/domain/models/security_details.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
+import 'package:bizzie/shared/widgets/brightness_aware_logo_tile.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
@@ -39,32 +39,21 @@ class _CompanyLogo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    final imageUrl = this.imageUrl;
+    if (imageUrl == null || imageUrl.isEmpty) {
+      return const _PlaceholderLogo();
+    }
+
+    return CachedNetworkImage(
+      imageUrl: imageUrl,
       width: _size,
       height: _size,
-      decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [AppColors.slate100, AppColors.slate200],
-        ),
-        borderRadius: BorderRadius.circular(
-          AppConstants.mainSectionBorderRadius,
-        ),
+      imageBuilder: (context, imageProvider) => BrightnessAwareLogoTile(
+        imageProvider: imageProvider,
+        size: _size,
+        borderRadius: AppConstants.mainSectionBorderRadius,
       ),
-      alignment: Alignment.center,
-      child: imageUrl != null && imageUrl!.isNotEmpty
-          ? Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: CachedNetworkImage(
-                imageUrl: imageUrl!,
-                width: double.infinity,
-                height: double.infinity,
-                fit: BoxFit.contain,
-                errorWidget: (context, url, error) => const _PlaceholderLogo(),
-              ),
-            )
-          : const _PlaceholderLogo(),
+      errorWidget: (context, url, error) => const _PlaceholderLogo(),
     );
   }
 }
@@ -94,6 +83,7 @@ class _SecurityTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final exchange = this.exchange;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -102,11 +92,13 @@ class _SecurityTitle extends StatelessWidget {
         Row(
           children: [
             Text(ticker, style: AppTextStyles.bodyMedium),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 6),
-              child: Text('•', style: AppTextStyles.bodyMedium),
-            ),
-            Text(exchange ?? '', style: AppTextStyles.bodyMedium),
+            if (exchange != null && exchange.isNotEmpty) ...[
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 6),
+                child: Text('•', style: AppTextStyles.bodyMedium),
+              ),
+              Text(exchange, style: AppTextStyles.bodyMedium),
+            ],
           ],
         ),
       ],
