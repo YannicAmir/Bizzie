@@ -100,6 +100,7 @@ class WatchlistPricesBloc
     RefreshRequested event,
     Emitter<WatchlistPricesState> emit,
   ) async {
+    if (_currentTickers.isEmpty) return;
     await _loadPrices(_currentTickers, emit);
   }
 

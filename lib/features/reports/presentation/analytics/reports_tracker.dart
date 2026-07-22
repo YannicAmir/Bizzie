@@ -42,7 +42,6 @@ class ReportsTracker {
 
   // Metadata
   static const _kParamScreenName = 'screen_name';
-  static const _kParamTimestamp = 'timestamp';
 
   // User Properties
   static const _kUserPropLastFilingTicker = 'last_filing_ticker';
@@ -55,7 +54,6 @@ class ReportsTracker {
         parameters: {
           ...?parameters,
           _kParamScreenName: _kScreenName,
-          _kParamTimestamp: DateTime.now().toIso8601String(),
         },
       );
     } catch (e, stack) {
