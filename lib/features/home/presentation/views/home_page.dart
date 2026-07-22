@@ -1,6 +1,7 @@
 import 'package:bizzie/app/routes/app_routes.dart';
 import 'package:bizzie/core/enums/paywall_source.dart';
 import 'package:bizzie/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:bizzie/features/home/presentation/widgets/home_news_carousel.dart';
 import 'package:bizzie/features/home/presentation/widgets/home_watchlist_widget.dart';
 import 'package:bizzie/features/auth/presentation/bloc/auth_state.dart';
 import 'package:bizzie/features/home/presentation/bloc/home_bloc.dart';
@@ -78,7 +79,10 @@ class _HomePageState extends State<HomePage> {
             authenticated: (user) => SingleChildScrollView(
               child: Padding(
                 padding: AppConstants.pagePadding,
-                child: const HomeWatchlistWidget(),
+                child: const Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [HomeNewsCarousel(), HomeWatchlistWidget()],
+                ),
               ),
             ),
             orElse: () =>

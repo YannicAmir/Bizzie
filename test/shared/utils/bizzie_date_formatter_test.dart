@@ -153,6 +153,30 @@ void main() {
       });
     });
 
+    group('formatTimeAgo', () {
+      test('formatTimeAgo_pastDate_returnsRelativeString', () {
+        // arrange
+        final published = DateTime.now().subtract(const Duration(hours: 2));
+
+        // act
+        final result = BizzieDateFormatter.formatTimeAgo(published);
+
+        // assert
+        expect(result, contains('hours ago'));
+      });
+
+      test('formatTimeAgo_futureDate_clampsToNow', () {
+        // arrange
+        final published = DateTime.now().add(const Duration(days: 1));
+
+        // act
+        final result = BizzieDateFormatter.formatTimeAgo(published);
+
+        // assert
+        expect(result, equals('a moment ago'));
+      });
+    });
+
     group('isStale', () {
       test('isStale_withinInterval_returnsFalse', () {
         // arrange

@@ -11,4 +11,10 @@ class HomeEvent with _$HomeEvent {
   const factory HomeEvent.emptyStateViewed() = _EmptyStateViewed;
   const factory HomeEvent.watchlistLoadFailed({required String error}) =
       _WatchlistLoadFailed;
+  const factory HomeEvent.newsArticleTapped({
+    required String ticker,
+    required String site,
+  }) = _NewsArticleTapped;
+  const factory HomeEvent.newsLoadFailed({required String error}) =
+      _NewsLoadFailed;
 }

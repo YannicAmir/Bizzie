@@ -412,8 +412,20 @@ import '../features/feedback/domain/usecases/submit_feedback_usecase.dart'
 import '../features/feedback/presentation/analytics/feedback_tracker.dart'
     as _i591;
 import '../features/feedback/presentation/bloc/feedback_bloc.dart' as _i673;
+import '../features/home/data/datasources/watchlist_news_remote_datasource.dart'
+    as _i165;
+import '../features/home/data/interfaces/i_watchlist_news_remote_datasource.dart'
+    as _i745;
+import '../features/home/data/repositories/watchlist_news_repository_impl.dart'
+    as _i564;
+import '../features/home/domain/interfaces/i_watchlist_news_repository.dart'
+    as _i851;
+import '../features/home/domain/usecases/watch_watchlist_news_usecase.dart'
+    as _i510;
 import '../features/home/presentation/analytics/home_analytics.dart' as _i32;
 import '../features/home/presentation/bloc/home_bloc.dart' as _i824;
+import '../features/home/presentation/bloc/watchlist_news/watchlist_news_bloc.dart'
+    as _i770;
 import '../features/market/data/datasources/market_local_datasource.dart'
     as _i1009;
 import '../features/market/data/datasources/market_remote_datasource.dart'
@@ -811,6 +823,12 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i705.IAppRatingsLocalDataSource>(),
       ),
     );
+    gh.factory<_i745.IWatchlistNewsRemoteDataSource>(
+      () => _i165.WatchlistNewsRemoteDataSource(
+        gh<_i52.FirestoreService>(),
+        gh<_i879.ITimeProvider>(),
+      ),
+    );
     gh.factory<_i405.INewsFirestoreDataSource>(
       () => _i634.NewsFirestoreDataSourceImpl(
         gh<_i52.FirestoreService>(),
@@ -990,6 +1008,11 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i622.INotificationRepository>(
       () => _i648.NotificationRepositoryImpl(gh<_i640.FcmRemoteDataSource>()),
+    );
+    gh.lazySingleton<_i851.IWatchlistNewsRepository>(
+      () => _i564.WatchlistNewsRepositoryImpl(
+        gh<_i745.IWatchlistNewsRemoteDataSource>(),
+      ),
     );
     gh.factory<_i758.IChatRatingRemoteDataSource>(
       () => _i750.ChatRatingRemoteDataSource(gh<_i52.FirestoreService>()),
@@ -1229,6 +1252,10 @@ extension GetItInjectableX on _i174.GetIt {
       () => networkModule.frankfurterDio(gh<_i937.IConfigService>()),
       instanceName: 'FrankfurterDio',
     );
+    gh.lazySingleton<_i510.WatchWatchlistNewsUseCase>(
+      () =>
+          _i510.WatchWatchlistNewsUseCase(gh<_i851.IWatchlistNewsRepository>()),
+    );
     gh.lazySingleton<_i943.IPeRatioRepository>(
       () => _i260.PeRatioRepositoryImpl(
         gh<_i423.RatiosRemoteDataSource>(),
@@ -1359,6 +1386,12 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i1031.IExchangeRateRemoteDataSource>(
       () => _i77.FrankfurterRemoteDataSourceImpl(
         gh<_i361.Dio>(instanceName: 'FrankfurterDio'),
+      ),
+    );
+    gh.factory<_i770.WatchlistNewsBloc>(
+      () => _i770.WatchlistNewsBloc(
+        gh<_i510.WatchWatchlistNewsUseCase>(),
+        gh<_i427.GetAuthStream>(),
       ),
     );
     gh.factory<_i983.AppStatusBloc>(

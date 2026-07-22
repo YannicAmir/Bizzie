@@ -55,14 +55,16 @@ extension HomeEventPatterns on HomeEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Started value)?  started,TResult Function( _WatchlistTapped value)?  watchlistTapped,TResult Function( _EmptyStateViewed value)?  emptyStateViewed,TResult Function( _WatchlistLoadFailed value)?  watchlistLoadFailed,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Started value)?  started,TResult Function( _WatchlistTapped value)?  watchlistTapped,TResult Function( _EmptyStateViewed value)?  emptyStateViewed,TResult Function( _WatchlistLoadFailed value)?  watchlistLoadFailed,TResult Function( _NewsArticleTapped value)?  newsArticleTapped,TResult Function( _NewsLoadFailed value)?  newsLoadFailed,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _Started() when started != null:
 return started(_that);case _WatchlistTapped() when watchlistTapped != null:
 return watchlistTapped(_that);case _EmptyStateViewed() when emptyStateViewed != null:
 return emptyStateViewed(_that);case _WatchlistLoadFailed() when watchlistLoadFailed != null:
-return watchlistLoadFailed(_that);case _:
+return watchlistLoadFailed(_that);case _NewsArticleTapped() when newsArticleTapped != null:
+return newsArticleTapped(_that);case _NewsLoadFailed() when newsLoadFailed != null:
+return newsLoadFailed(_that);case _:
   return orElse();
 
 }
@@ -80,14 +82,16 @@ return watchlistLoadFailed(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Started value)  started,required TResult Function( _WatchlistTapped value)  watchlistTapped,required TResult Function( _EmptyStateViewed value)  emptyStateViewed,required TResult Function( _WatchlistLoadFailed value)  watchlistLoadFailed,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Started value)  started,required TResult Function( _WatchlistTapped value)  watchlistTapped,required TResult Function( _EmptyStateViewed value)  emptyStateViewed,required TResult Function( _WatchlistLoadFailed value)  watchlistLoadFailed,required TResult Function( _NewsArticleTapped value)  newsArticleTapped,required TResult Function( _NewsLoadFailed value)  newsLoadFailed,}){
 final _that = this;
 switch (_that) {
 case _Started():
 return started(_that);case _WatchlistTapped():
 return watchlistTapped(_that);case _EmptyStateViewed():
 return emptyStateViewed(_that);case _WatchlistLoadFailed():
-return watchlistLoadFailed(_that);case _:
+return watchlistLoadFailed(_that);case _NewsArticleTapped():
+return newsArticleTapped(_that);case _NewsLoadFailed():
+return newsLoadFailed(_that);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -104,14 +108,16 @@ return watchlistLoadFailed(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Started value)?  started,TResult? Function( _WatchlistTapped value)?  watchlistTapped,TResult? Function( _EmptyStateViewed value)?  emptyStateViewed,TResult? Function( _WatchlistLoadFailed value)?  watchlistLoadFailed,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Started value)?  started,TResult? Function( _WatchlistTapped value)?  watchlistTapped,TResult? Function( _EmptyStateViewed value)?  emptyStateViewed,TResult? Function( _WatchlistLoadFailed value)?  watchlistLoadFailed,TResult? Function( _NewsArticleTapped value)?  newsArticleTapped,TResult? Function( _NewsLoadFailed value)?  newsLoadFailed,}){
 final _that = this;
 switch (_that) {
 case _Started() when started != null:
 return started(_that);case _WatchlistTapped() when watchlistTapped != null:
 return watchlistTapped(_that);case _EmptyStateViewed() when emptyStateViewed != null:
 return emptyStateViewed(_that);case _WatchlistLoadFailed() when watchlistLoadFailed != null:
-return watchlistLoadFailed(_that);case _:
+return watchlistLoadFailed(_that);case _NewsArticleTapped() when newsArticleTapped != null:
+return newsArticleTapped(_that);case _NewsLoadFailed() when newsLoadFailed != null:
+return newsLoadFailed(_that);case _:
   return null;
 
 }
@@ -128,13 +134,15 @@ return watchlistLoadFailed(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  started,TResult Function( String ticker,  String? eventText,  bool? isUpcoming)?  watchlistTapped,TResult Function()?  emptyStateViewed,TResult Function( String error)?  watchlistLoadFailed,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  started,TResult Function( String ticker,  String? eventText,  bool? isUpcoming)?  watchlistTapped,TResult Function()?  emptyStateViewed,TResult Function( String error)?  watchlistLoadFailed,TResult Function( String ticker,  String site)?  newsArticleTapped,TResult Function( String error)?  newsLoadFailed,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Started() when started != null:
 return started();case _WatchlistTapped() when watchlistTapped != null:
 return watchlistTapped(_that.ticker,_that.eventText,_that.isUpcoming);case _EmptyStateViewed() when emptyStateViewed != null:
 return emptyStateViewed();case _WatchlistLoadFailed() when watchlistLoadFailed != null:
-return watchlistLoadFailed(_that.error);case _:
+return watchlistLoadFailed(_that.error);case _NewsArticleTapped() when newsArticleTapped != null:
+return newsArticleTapped(_that.ticker,_that.site);case _NewsLoadFailed() when newsLoadFailed != null:
+return newsLoadFailed(_that.error);case _:
   return orElse();
 
 }
@@ -152,13 +160,15 @@ return watchlistLoadFailed(_that.error);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  started,required TResult Function( String ticker,  String? eventText,  bool? isUpcoming)  watchlistTapped,required TResult Function()  emptyStateViewed,required TResult Function( String error)  watchlistLoadFailed,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  started,required TResult Function( String ticker,  String? eventText,  bool? isUpcoming)  watchlistTapped,required TResult Function()  emptyStateViewed,required TResult Function( String error)  watchlistLoadFailed,required TResult Function( String ticker,  String site)  newsArticleTapped,required TResult Function( String error)  newsLoadFailed,}) {final _that = this;
 switch (_that) {
 case _Started():
 return started();case _WatchlistTapped():
 return watchlistTapped(_that.ticker,_that.eventText,_that.isUpcoming);case _EmptyStateViewed():
 return emptyStateViewed();case _WatchlistLoadFailed():
-return watchlistLoadFailed(_that.error);case _:
+return watchlistLoadFailed(_that.error);case _NewsArticleTapped():
+return newsArticleTapped(_that.ticker,_that.site);case _NewsLoadFailed():
+return newsLoadFailed(_that.error);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -175,13 +185,15 @@ return watchlistLoadFailed(_that.error);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  started,TResult? Function( String ticker,  String? eventText,  bool? isUpcoming)?  watchlistTapped,TResult? Function()?  emptyStateViewed,TResult? Function( String error)?  watchlistLoadFailed,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  started,TResult? Function( String ticker,  String? eventText,  bool? isUpcoming)?  watchlistTapped,TResult? Function()?  emptyStateViewed,TResult? Function( String error)?  watchlistLoadFailed,TResult? Function( String ticker,  String site)?  newsArticleTapped,TResult? Function( String error)?  newsLoadFailed,}) {final _that = this;
 switch (_that) {
 case _Started() when started != null:
 return started();case _WatchlistTapped() when watchlistTapped != null:
 return watchlistTapped(_that.ticker,_that.eventText,_that.isUpcoming);case _EmptyStateViewed() when emptyStateViewed != null:
 return emptyStateViewed();case _WatchlistLoadFailed() when watchlistLoadFailed != null:
-return watchlistLoadFailed(_that.error);case _:
+return watchlistLoadFailed(_that.error);case _NewsArticleTapped() when newsArticleTapped != null:
+return newsArticleTapped(_that.ticker,_that.site);case _NewsLoadFailed() when newsLoadFailed != null:
+return newsLoadFailed(_that.error);case _:
   return null;
 
 }
@@ -381,6 +393,140 @@ class __$WatchlistLoadFailedCopyWithImpl<$Res>
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? error = null,}) {
   return _then(_WatchlistLoadFailed(
+error: null == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class _NewsArticleTapped implements HomeEvent {
+  const _NewsArticleTapped({required this.ticker, required this.site});
+  
+
+ final  String ticker;
+ final  String site;
+
+/// Create a copy of HomeEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$NewsArticleTappedCopyWith<_NewsArticleTapped> get copyWith => __$NewsArticleTappedCopyWithImpl<_NewsArticleTapped>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _NewsArticleTapped&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.site, site) || other.site == site));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,ticker,site);
+
+@override
+String toString() {
+  return 'HomeEvent.newsArticleTapped(ticker: $ticker, site: $site)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$NewsArticleTappedCopyWith<$Res> implements $HomeEventCopyWith<$Res> {
+  factory _$NewsArticleTappedCopyWith(_NewsArticleTapped value, $Res Function(_NewsArticleTapped) _then) = __$NewsArticleTappedCopyWithImpl;
+@useResult
+$Res call({
+ String ticker, String site
+});
+
+
+
+
+}
+/// @nodoc
+class __$NewsArticleTappedCopyWithImpl<$Res>
+    implements _$NewsArticleTappedCopyWith<$Res> {
+  __$NewsArticleTappedCopyWithImpl(this._self, this._then);
+
+  final _NewsArticleTapped _self;
+  final $Res Function(_NewsArticleTapped) _then;
+
+/// Create a copy of HomeEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? ticker = null,Object? site = null,}) {
+  return _then(_NewsArticleTapped(
+ticker: null == ticker ? _self.ticker : ticker // ignore: cast_nullable_to_non_nullable
+as String,site: null == site ? _self.site : site // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class _NewsLoadFailed implements HomeEvent {
+  const _NewsLoadFailed({required this.error});
+  
+
+ final  String error;
+
+/// Create a copy of HomeEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$NewsLoadFailedCopyWith<_NewsLoadFailed> get copyWith => __$NewsLoadFailedCopyWithImpl<_NewsLoadFailed>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _NewsLoadFailed&&(identical(other.error, error) || other.error == error));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,error);
+
+@override
+String toString() {
+  return 'HomeEvent.newsLoadFailed(error: $error)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$NewsLoadFailedCopyWith<$Res> implements $HomeEventCopyWith<$Res> {
+  factory _$NewsLoadFailedCopyWith(_NewsLoadFailed value, $Res Function(_NewsLoadFailed) _then) = __$NewsLoadFailedCopyWithImpl;
+@useResult
+$Res call({
+ String error
+});
+
+
+
+
+}
+/// @nodoc
+class __$NewsLoadFailedCopyWithImpl<$Res>
+    implements _$NewsLoadFailedCopyWith<$Res> {
+  __$NewsLoadFailedCopyWithImpl(this._self, this._then);
+
+  final _NewsLoadFailed _self;
+  final $Res Function(_NewsLoadFailed) _then;
+
+/// Create a copy of HomeEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? error = null,}) {
+  return _then(_NewsLoadFailed(
 error: null == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
 as String,
   ));

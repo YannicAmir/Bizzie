@@ -17,6 +17,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     on<_WatchlistTapped>(_onWatchlistTapped, transformer: droppable());
     on<_EmptyStateViewed>(_onEmptyStateViewed, transformer: droppable());
     on<_WatchlistLoadFailed>(_onWatchlistLoadFailed, transformer: droppable());
+    on<_NewsArticleTapped>(_onNewsArticleTapped, transformer: droppable());
+    on<_NewsLoadFailed>(_onNewsLoadFailed, transformer: droppable());
   }
 
   void _onStarted(_Started event, Emitter<HomeState> emit) {
@@ -40,5 +42,16 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     Emitter<HomeState> emit,
   ) {
     _analytics.logHomeWatchlistError(message: event.error);
+  }
+
+  void _onNewsArticleTapped(_NewsArticleTapped event, Emitter<HomeState> emit) {
+    _analytics.logHomeNewsArticleTapped(
+      ticker: event.ticker,
+      site: event.site,
+    );
+  }
+
+  void _onNewsLoadFailed(_NewsLoadFailed event, Emitter<HomeState> emit) {
+    _analytics.logHomeNewsLoadError(message: event.error);
   }
 }
