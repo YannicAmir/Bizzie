@@ -261,6 +261,40 @@ void main() {
         // assert
         expect: () => [const WatchlistPricesState.initial()],
       );
+
+      blocTest<WatchlistPricesBloc, WatchlistPricesState>(
+        'reset_thenSameTickers_reloadsInsteadOfDeduping',
+        build: () {
+          // arrange
+          when(() => mockGetWatchlistPrices(tTickers)).thenAnswer(
+            (_) async => const Right([tStockPrice]),
+          );
+          return bloc;
+        },
+        act: (bloc) async {
+          // act — load a ticker set, reset the session, then load the identical
+          // set again. The dedup baseline must clear on reset so the second load
+          // is not suppressed against the previous session.
+          bloc.add(const WatchlistPricesEvent.loadRequested(tTickers));
+          await bloc.stream.firstWhere((s) => s is WatchlistPricesLoaded);
+          bloc.add(const WatchlistPricesEvent.reset());
+          await bloc.stream.firstWhere(
+            (s) => s == const WatchlistPricesState.initial(),
+          );
+          bloc.add(const WatchlistPricesEvent.loadRequested(tTickers));
+        },
+        // assert
+        expect: () => [
+          const WatchlistPricesState.loading(),
+          const WatchlistPricesState.loaded({'AXP': tStockPrice}),
+          const WatchlistPricesState.initial(),
+          const WatchlistPricesState.loading(),
+          const WatchlistPricesState.loaded({'AXP': tStockPrice}),
+        ],
+        verify: (_) {
+          verify(() => mockGetWatchlistPrices(tTickers)).called(2);
+        },
+      );
     });
   });
 }

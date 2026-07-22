@@ -89,6 +89,7 @@ class _HomePageState extends State<HomePage> {
     if (!mounted) return Future<void>.value();
     final pricesBloc = context.read<WatchlistPricesBloc>();
     pricesBloc.add(const WatchlistPricesEvent.refreshRequested());
+    if (pricesBloc.state.isSettled) return Future<void>.value();
     return pricesBloc.stream
         .firstWhere((state) => state.isSettled)
         .timeout(

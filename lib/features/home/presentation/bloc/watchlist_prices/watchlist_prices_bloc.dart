@@ -33,6 +33,7 @@ class WatchlistPricesBloc
   StreamSubscription<Either<Failure, List<Company>>>? _watchlistSubscription;
   String? _currentUid;
   List<String> _currentTickers = const [];
+  Set<String>? _lastRequestedTickers;
 
   WatchlistPricesBloc(
     this._getWatchlistPrices,
@@ -46,17 +47,20 @@ class WatchlistPricesBloc
     resetOnSessionEnd(getAuthStream, const WatchlistPricesEvent.reset());
     _authSubscription = getAuthStream().listen(_onAuthChanged);
   }
+ 
+  EventTransformer<LoadRequested> _distinctRestartable() {
+    return (events, mapper) =>
+        restartable<LoadRequested>()(events.where(_isNewTickerSet), mapper);
+  }
 
-  static EventTransformer<LoadRequested> _distinctRestartable() {
-    return (events, mapper) => restartable<LoadRequested>()(
-      events.distinct(
-        (previous, next) => const SetEquality<String>().equals(
-          previous.tickers.toSet(),
-          next.tickers.toSet(),
-        ),
-      ),
-      mapper,
-    );
+  bool _isNewTickerSet(LoadRequested event) {
+    final tickers = event.tickers.toSet();
+    if (_lastRequestedTickers != null &&
+        const SetEquality<String>().equals(_lastRequestedTickers!, tickers)) {
+      return false;
+    }
+    _lastRequestedTickers = tickers;
+    return true;
   }
 
   bool get _hasLoadedPrices =>
@@ -142,6 +146,7 @@ class WatchlistPricesBloc
 
   void _onReset(Reset event, Emitter<WatchlistPricesState> emit) {
     _currentTickers = const [];
+    _lastRequestedTickers = null;
     emit(const WatchlistPricesState.initial());
   }
 

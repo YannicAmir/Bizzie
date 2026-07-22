@@ -22,25 +22,33 @@ class WatchlistNewsBloc extends Bloc<WatchlistNewsEvent, WatchlistNewsState>
     with AuthSessionResetMixin<WatchlistNewsEvent, WatchlistNewsState> {
   final WatchWatchlistNewsUseCase _watchWatchlistNews;
 
+  Set<String>? _lastRequestedTickers;
+
   WatchlistNewsBloc(this._watchWatchlistNews, GetAuthStream getAuthStream)
     : super(const WatchlistNewsState.initial()) {
     on<LoadRequested>(_onLoadRequested, transformer: _distinctRestartable());
-    on<Reset>((_, emit) => emit(const WatchlistNewsState.initial()));
+    on<Reset>(_onReset);
     resetOnSessionEnd(getAuthStream, const WatchlistNewsEvent.reset());
   }
 
-  /// Drops consecutive [LoadRequested] events carrying the same ticker set so
-  /// an unchanged watchlist does not cancel and resubscribe the live stream.
-  static EventTransformer<LoadRequested> _distinctRestartable() {
-    return (events, mapper) => restartable<LoadRequested>()(
-      events.distinct(
-        (previous, next) => const SetEquality<String>().equals(
-          previous.tickers.toSet(),
-          next.tickers.toSet(),
-        ),
-      ),
-      mapper,
-    );
+  EventTransformer<LoadRequested> _distinctRestartable() {
+    return (events, mapper) =>
+        restartable<LoadRequested>()(events.where(_isNewTickerSet), mapper);
+  }
+
+  bool _isNewTickerSet(LoadRequested event) {
+    final tickers = event.tickers.toSet();
+    if (_lastRequestedTickers != null &&
+        const SetEquality<String>().equals(_lastRequestedTickers!, tickers)) {
+      return false;
+    }
+    _lastRequestedTickers = tickers;
+    return true;
+  }
+
+  void _onReset(Reset event, Emitter<WatchlistNewsState> emit) {
+    _lastRequestedTickers = null;
+    emit(const WatchlistNewsState.initial());
   }
 
   Future<void> _onLoadRequested(
