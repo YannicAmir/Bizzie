@@ -67,7 +67,7 @@ class AppConstants {
 
   // Watchlist YTD
   static const EdgeInsets watchlistYtdTitlePadding = EdgeInsets.only(
-    top: 8,
+    top: 24,
     bottom: 16,
   );
   static const double watchlistYtdGridSpacing = 12.0;
