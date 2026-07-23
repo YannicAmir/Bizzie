@@ -208,6 +208,59 @@ void main() {
     );
 
     blocTest<WatchlistBloc, WatchlistState>(
+      'addRequested_withLogoUrl_passesLogoUrlToUseCase',
+      build: () {
+        when(() => mockAuthRepository.currentUser).thenReturn(tUser);
+        when(
+          () => mockAddToWatchlistUseCase(any()),
+        ).thenAnswer((_) async => const Right(null));
+        return bloc;
+      },
+      act: (bloc) => bloc.add(
+        const WatchlistEvent.addRequested(
+          ticker: 'AAPL',
+          name: 'Apple',
+          logoUrl: 'https://images.financialmodelingprep.com/symbol/AAPL.png',
+        ),
+      ),
+      expect: () => [],
+      verify: (_) {
+        final params =
+            verify(() => mockAddToWatchlistUseCase(captureAny())).captured.single
+                as AddToWatchlistParams;
+        expect(
+          params.company.logoUrl,
+          'https://images.financialmodelingprep.com/symbol/AAPL.png',
+        );
+      },
+    );
+
+    blocTest<WatchlistBloc, WatchlistState>(
+      'addRequested_emptyLogoUrl_normalizesToNull',
+      build: () {
+        when(() => mockAuthRepository.currentUser).thenReturn(tUser);
+        when(
+          () => mockAddToWatchlistUseCase(any()),
+        ).thenAnswer((_) async => const Right(null));
+        return bloc;
+      },
+      act: (bloc) => bloc.add(
+        const WatchlistEvent.addRequested(
+          ticker: 'AAPL',
+          name: 'Apple',
+          logoUrl: '',
+        ),
+      ),
+      expect: () => [],
+      verify: (_) {
+        final params =
+            verify(() => mockAddToWatchlistUseCase(captureAny())).captured.single
+                as AddToWatchlistParams;
+        expect(params.company.logoUrl, isNull);
+      },
+    );
+
+    blocTest<WatchlistBloc, WatchlistState>(
       'addRequested_failure_emitsFailureState',
       build: () {
         when(() => mockAuthRepository.currentUser).thenReturn(tUser);

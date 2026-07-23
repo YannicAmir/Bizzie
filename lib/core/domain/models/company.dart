@@ -5,8 +5,11 @@ part 'company.g.dart';
 
 @freezed
 abstract class Company with _$Company {
-  const factory Company({required String ticker, required String name}) =
-      _Company;
+  const factory Company({
+    required String ticker,
+    required String name,
+    String? logoUrl,
+  }) = _Company;
 
   factory Company.fromJson(Map<String, dynamic> json) =>
       _$CompanyFromJson(json);

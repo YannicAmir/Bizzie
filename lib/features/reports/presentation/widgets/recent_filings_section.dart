@@ -3,7 +3,6 @@ import 'package:bizzie/features/reports/domain/models/weekly_report.dart';
 import 'package:bizzie/features/reports/presentation/models/filing_view_model.dart';
 import 'package:bizzie/features/reports/presentation/widgets/sec_filing_card.dart';
 import 'package:bizzie/features/reports/presentation/widgets/weekly_report_card.dart';
-import 'package:bizzie/shared/widgets/states/bizzie_empty_state.dart';
 import 'package:flutter/material.dart';
 
 class RecentFilingsSection extends StatelessWidget {
@@ -23,22 +22,6 @@ class RecentFilingsSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-
-    if (filings.isEmpty && weeklyReports.isEmpty) {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(bottom: 16),
-            child: Text('Recent', style: theme.textTheme.displaySmall),
-          ),
-          BizzieEmptyState(
-            mascotAsset: mascotAsset,
-            message: 'There are no recent reports for the companies on your watchlist',
-          ),
-        ],
-      );
-    }
 
     final List<_RecentItem> items = [
       ...filings.map(

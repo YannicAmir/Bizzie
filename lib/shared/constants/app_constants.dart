@@ -51,10 +51,29 @@ class AppConstants {
 
   static const SizedBox mainSectionSpacing = SizedBox(height: 24);
   static const SizedBox secondarySectionSpacing = SizedBox(height: 16);
+  static const SizedBox compactSectionSpacing = SizedBox(height: 12);
   static const SizedBox subSectionSpacing = SizedBox(height: 8);
   static const SizedBox subSectionHorizontalSpacing = SizedBox(width: 8);
   static const SizedBox emptyStateTopSpacing = SizedBox(height: 48);
+  static const SizedBox watchlistLoaderTopSpacing = SizedBox(height: 128);
+
+  // Home Empty Watchlist
+  static const EdgeInsets emptyWatchlistPadding = EdgeInsets.symmetric(
+    horizontal: 24,
+  );
+  static const SizedBox emptyWatchlistTopSpacing = SizedBox(height: 200);
+  static const double emptyWatchlistMascotHeight = 160.0;
+  static const SizedBox emptyWatchlistBottomSpacing = SizedBox(height: 32);
+
+  // Watchlist YTD
+  static const EdgeInsets watchlistYtdTitlePadding = EdgeInsets.only(
+    top: 24,
+    bottom: 16,
+  );
+  static const double watchlistYtdGridSpacing = 12.0;
+
   static const double mainSectionBorderRadius = 16.0;
+  static const double cardBorderRadius = 12.0;
 
   static const double chartBarBorderRadius = 8.0;
   static const double companyProfileButtonBorderRadius = 10.0;

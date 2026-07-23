@@ -193,6 +193,22 @@ void main() {
       },
     );
 
+    test('logYtdCompanyClicked_success_logsEventWithCorrectParams', () async {
+      // arrange
+      const ticker = 'FTNT';
+
+      // act
+      await tracker.logYtdCompanyClicked(ticker: ticker);
+
+      // assert
+      verify(
+        () => mockAnalytics.logEvent(
+          name: 'ytd_co_clicked',
+          parameters: {'ticker': ticker, 'screen_name': screenName},
+        ),
+      ).called(1);
+    });
+
     test('logEmptyCtaClicked_success_logsEvent', () async {
       // arrange
 
@@ -207,6 +223,46 @@ void main() {
         ),
       ).called(1);
     });
+
+    test('logMarketNewsOpened_success_logsEventWithCorrectParams', () async {
+      // arrange
+      const publisher = 'Reuters';
+      const site = 'reuters.com';
+
+      // act
+      await tracker.logMarketNewsOpened(publisher: publisher, site: site);
+
+      // assert
+      verify(
+        () => mockAnalytics.logEvent(
+          name: 'market_news_opened',
+          parameters: {
+            'publisher': publisher,
+            'site': site,
+            'screen_name': screenName,
+          },
+        ),
+      ).called(1);
+    });
+
+    test(
+      'logMarketNewsFetchFailed_success_logsEventWithCorrectParams',
+      () async {
+        // arrange
+        const error = 'Stream Error';
+
+        // act
+        await tracker.logMarketNewsFetchFailed(error: error);
+
+        // assert
+        verify(
+          () => mockAnalytics.logEvent(
+            name: 'market_news_fetch_failed',
+            parameters: {'error': error, 'screen_name': screenName},
+          ),
+        ).called(1);
+      },
+    );
 
     test('logFetchFailed_success_logsEventWithCorrectParams', () async {
       // arrange

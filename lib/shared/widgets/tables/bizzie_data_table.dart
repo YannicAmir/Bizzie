@@ -38,6 +38,7 @@ class BizzieDataTable extends StatelessWidget {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
+        color: theme.colorScheme.surface,
         borderRadius: BorderRadius.circular(
           AppConstants.mainSectionBorderRadius,
         ),

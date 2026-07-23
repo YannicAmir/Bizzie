@@ -53,7 +53,7 @@ Remote datasource rules:
 - Annotate `@Injectable(as: IXxxRemoteDataSource)`
 - Inject `FirestoreService` via positional constructor parameter
 - Never call `FirebaseFirestore.instance` directly
-- Call `_firestoreService.setDocument / getDocumentStream / getCollectionStream / getCollectionStreamChunked / deleteDocument`
+- Call the `FirestoreService` methods listed in §7 — never build queries against the Firestore SDK directly
 - Attach `.handleError(...)` to all streams — log with `_logger.severe` on unexpected errors
 - Declare `final _logger = BizzieLogger('XxxRemoteDataSource')` at file level
 - `rethrow` on exceptions — the repository handles `Either` wrapping
@@ -95,11 +95,28 @@ Never call `GetIt.I.registerSingleton()` or `registerFactory()` manually for app
 ## 7. Firestore Methods via FirestoreService
 
 Available methods (never use `FirebaseFirestore.instance` directly):
-- `setDocument<T>(path, value, toJson)` — create or overwrite a document
-- `getDocumentStream<T>(path, fromJson, toJson)` — single doc real-time stream
-- `getCollectionStream<T>(path, fromJson, toJson, queryBuilder?)` — collection real-time stream; pass `queryBuilder` for ordering or filtering
-- `getCollectionStreamChunked<T>(path, whereInField, values, fromJson, toJson, chunkSize)` — chunked `whereIn`
+
+Writes:
+- `setDocument<T>(path, value, toJson, merge?)` — create or overwrite a document
+- `updateDocument(path, data)` — partial update of an existing document
 - `deleteDocument(path)` — delete a document
+- `batch()` — returns a `BizzieBatch` for atomic multi-document writes
+
+One-shot reads:
+- `getDocument<T>(path, fromJson, toJson)` — single document read
+- `getLatestDocument<T>(collectionPath, orderBy, fromJson, toJson, descending?)` — newest document in a collection
+- `getCollection<T>(path, fromJson, toJson, queryBuilder?)` — collection read
+- `getCollectionFuture<T>(path, fromJson, toJson, whereInField?, whereInValues?, queryBuilder?)` — collection read with optional single-chunk `whereIn` filter (≤ 30 values)
+- `getCollectionFutureChunked<T>(path, whereInField, values, fromJson, toJson, chunkSize?, queryBuilder?)` — chunked `whereIn` read for arbitrary value counts
+
+Real-time streams:
+- `getDocumentStream<T>(path, fromJson, toJson)` — single doc stream
+- `getCollectionStream<T>(path, fromJson, toJson, queryBuilder?)` — collection stream; pass `queryBuilder` for ordering or filtering
+- `getCollectionStreamChunked<T>(path, whereInField, values, fromJson, toJson, chunkSize?, queryBuilder?)` — chunked `whereIn` stream
+- `getCollectionGroupStreamChunked<T>(collectionId, whereInField, values, fromJson, chunkSize?)` — chunked `whereIn` stream over a collection group
+- `getMergedSubcollectionStreams<T>(rootCollection, documentIds, subcollectionId, fromJson, injectDocumentIdAs?)` — merged stream of the same subcollection across multiple documents
+
+Never chunk `whereIn` values manually in a datasource — use the `*Chunked` methods; chunk splitting lives only in `FirestoreService`.
 
 Subcollection paths are plain strings, e.g. `'users/$uid/conversations/$sessionId/messages'`.
 

@@ -4,12 +4,13 @@ import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:bizzie/features/home/data/dtos/watchlist_news_dto.dart';
 import 'package:bizzie/features/home/data/interfaces/i_watchlist_news_remote_datasource.dart';
 import 'package:bizzie/services/firestore_service.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:injectable/injectable.dart';
 
 final _logger = BizzieLogger('WatchlistNewsRemoteDataSource');
 
 const Duration _recencyWindow = Duration(days: 3);
-const int _articlesPerChunkLimit = 10;
+const int _articlesPerChunkLimit = 12;
 
 @Injectable(as: IWatchlistNewsRemoteDataSource)
 class WatchlistNewsRemoteDataSource implements IWatchlistNewsRemoteDataSource {
@@ -41,8 +42,14 @@ class WatchlistNewsRemoteDataSource implements IWatchlistNewsRemoteDataSource {
               .limit(_articlesPerChunkLimit),
         )
         .handleError((Object e, StackTrace s) {
-          _logger.severe('Error in watchlist news stream', e, s);
-          throw e;
+          if (e is FirebaseException && e.code == 'permission-denied') {
+            _logger.warning(
+              'Watchlist news stream permission denied (expected on logout)',
+            );
+          } else {
+            _logger.severe('Error in watchlist news stream', e, s);
+          }
+          Error.throwWithStackTrace(e, s);
         });
   }
 }

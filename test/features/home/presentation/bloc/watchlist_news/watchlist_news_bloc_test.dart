@@ -23,6 +23,7 @@ const tTickers = ['AXP', 'NVDA'];
 const tFailure = Failure.server('error');
 
 final tArticle = WatchlistNewsArticle(
+  id: 'AXP_article',
   symbol: 'AXP',
   title: 'Article',
   site: 'zacks.com',
@@ -153,6 +154,40 @@ void main() {
         },
         // assert
         expect: () => [const WatchlistNewsState.initial()],
+      );
+
+      blocTest<WatchlistNewsBloc, WatchlistNewsState>(
+        'reset_thenSameTickers_resubscribesInsteadOfDeduping',
+        build: () {
+          // arrange
+          when(() => mockWatchWatchlistNews(tTickers)).thenAnswer(
+            (_) => Stream.value(Right([tArticle])),
+          );
+          return bloc;
+        },
+        act: (bloc) async {
+          // act — load a ticker set, reset the session, then load the identical
+          // set again. The dedup baseline must clear on reset so the second load
+          // resubscribes instead of being suppressed against the prior session.
+          bloc.add(const WatchlistNewsEvent.loadRequested(tTickers));
+          await bloc.stream.firstWhere((s) => s is WatchlistNewsLoaded);
+          bloc.add(const WatchlistNewsEvent.reset());
+          await bloc.stream.firstWhere(
+            (s) => s == const WatchlistNewsState.initial(),
+          );
+          bloc.add(const WatchlistNewsEvent.loadRequested(tTickers));
+        },
+        // assert
+        expect: () => [
+          const WatchlistNewsState.loading(),
+          WatchlistNewsState.loaded([tArticle]),
+          const WatchlistNewsState.initial(),
+          const WatchlistNewsState.loading(),
+          WatchlistNewsState.loaded([tArticle]),
+        ],
+        verify: (_) {
+          verify(() => mockWatchWatchlistNews(tTickers)).called(2);
+        },
       );
     });
   });

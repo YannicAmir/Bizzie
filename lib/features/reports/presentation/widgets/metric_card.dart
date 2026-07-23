@@ -84,7 +84,7 @@ class MetricCard extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(AppConstants.mainSectionContainerPadding),
       decoration: BoxDecoration(
-        color: theme.cardColor,
+        color: theme.colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: theme.dividerColor, width: 0.665),
       ),

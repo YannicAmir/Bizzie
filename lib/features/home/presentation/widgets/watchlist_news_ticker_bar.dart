@@ -1,5 +1,7 @@
 import 'package:bizzie/app/themes/app_text_styles.dart';
+import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 
 const Duration _selectionAnimationDuration = Duration(milliseconds: 250);
@@ -25,20 +27,34 @@ class WatchlistNewsTickerBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Row(
-        children: [
-          for (var i = 0; i < tickers.length; i++) ...[
-            if (i > 0) const SizedBox(width: _pillSpacing),
-            _TickerPill(
-              ticker: tickers[i],
-              isSelected: tickers[i] == selectedTicker,
-              onTap: () => onTickerSelected(tickers[i]),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final bleedWidth =
+            constraints.maxWidth + AppConstants.pagePadding.horizontal;
+        return OverflowBox(
+          fit: OverflowBoxFit.deferToChild,
+          minWidth: bleedWidth,
+          maxWidth: bleedWidth,
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppConstants.newsPagePadding,
             ),
-          ],
-        ],
-      ),
+            child: Row(
+              children: [
+                for (var i = 0; i < tickers.length; i++) ...[
+                  if (i > 0) const SizedBox(width: _pillSpacing),
+                  _TickerPill(
+                    ticker: tickers[i],
+                    isSelected: tickers[i] == selectedTicker,
+                    onTap: () => onTickerSelected(tickers[i]),
+                  ),
+                ],
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }

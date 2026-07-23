@@ -91,10 +91,7 @@ return addRequested(_that);case RemoveRequested():
 return removeRequested(_that);case LoadRequested():
 return loadRequested(_that);case LoadWatchlistEvents():
 return loadWatchlistEvents(_that);case Reset():
-return reset(_that);case _:
-  throw StateError('Unexpected subclass');
-
-}
+return reset(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -134,11 +131,11 @@ return reset(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  syncRequested,TResult Function( String ticker,  String? name,  String? tabName,  int? durationOnPageSeconds)?  addRequested,TResult Function( String ticker,  String? tabName,  int? durationOnPageSeconds)?  removeRequested,TResult Function( String? uid)?  loadRequested,TResult Function( List<String> tickers)?  loadWatchlistEvents,TResult Function()?  reset,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  syncRequested,TResult Function( String ticker,  String? name,  String? logoUrl,  String? tabName,  int? durationOnPageSeconds)?  addRequested,TResult Function( String ticker,  String? tabName,  int? durationOnPageSeconds)?  removeRequested,TResult Function( String? uid)?  loadRequested,TResult Function( List<String> tickers)?  loadWatchlistEvents,TResult Function()?  reset,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case SyncRequested() when syncRequested != null:
 return syncRequested();case AddRequested() when addRequested != null:
-return addRequested(_that.ticker,_that.name,_that.tabName,_that.durationOnPageSeconds);case RemoveRequested() when removeRequested != null:
+return addRequested(_that.ticker,_that.name,_that.logoUrl,_that.tabName,_that.durationOnPageSeconds);case RemoveRequested() when removeRequested != null:
 return removeRequested(_that.ticker,_that.tabName,_that.durationOnPageSeconds);case LoadRequested() when loadRequested != null:
 return loadRequested(_that.uid);case LoadWatchlistEvents() when loadWatchlistEvents != null:
 return loadWatchlistEvents(_that.tickers);case Reset() when reset != null:
@@ -160,18 +157,15 @@ return reset();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  syncRequested,required TResult Function( String ticker,  String? name,  String? tabName,  int? durationOnPageSeconds)  addRequested,required TResult Function( String ticker,  String? tabName,  int? durationOnPageSeconds)  removeRequested,required TResult Function( String? uid)  loadRequested,required TResult Function( List<String> tickers)  loadWatchlistEvents,required TResult Function()  reset,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  syncRequested,required TResult Function( String ticker,  String? name,  String? logoUrl,  String? tabName,  int? durationOnPageSeconds)  addRequested,required TResult Function( String ticker,  String? tabName,  int? durationOnPageSeconds)  removeRequested,required TResult Function( String? uid)  loadRequested,required TResult Function( List<String> tickers)  loadWatchlistEvents,required TResult Function()  reset,}) {final _that = this;
 switch (_that) {
 case SyncRequested():
 return syncRequested();case AddRequested():
-return addRequested(_that.ticker,_that.name,_that.tabName,_that.durationOnPageSeconds);case RemoveRequested():
+return addRequested(_that.ticker,_that.name,_that.logoUrl,_that.tabName,_that.durationOnPageSeconds);case RemoveRequested():
 return removeRequested(_that.ticker,_that.tabName,_that.durationOnPageSeconds);case LoadRequested():
 return loadRequested(_that.uid);case LoadWatchlistEvents():
 return loadWatchlistEvents(_that.tickers);case Reset():
-return reset();case _:
-  throw StateError('Unexpected subclass');
-
-}
+return reset();}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -185,11 +179,11 @@ return reset();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  syncRequested,TResult? Function( String ticker,  String? name,  String? tabName,  int? durationOnPageSeconds)?  addRequested,TResult? Function( String ticker,  String? tabName,  int? durationOnPageSeconds)?  removeRequested,TResult? Function( String? uid)?  loadRequested,TResult? Function( List<String> tickers)?  loadWatchlistEvents,TResult? Function()?  reset,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  syncRequested,TResult? Function( String ticker,  String? name,  String? logoUrl,  String? tabName,  int? durationOnPageSeconds)?  addRequested,TResult? Function( String ticker,  String? tabName,  int? durationOnPageSeconds)?  removeRequested,TResult? Function( String? uid)?  loadRequested,TResult? Function( List<String> tickers)?  loadWatchlistEvents,TResult? Function()?  reset,}) {final _that = this;
 switch (_that) {
 case SyncRequested() when syncRequested != null:
 return syncRequested();case AddRequested() when addRequested != null:
-return addRequested(_that.ticker,_that.name,_that.tabName,_that.durationOnPageSeconds);case RemoveRequested() when removeRequested != null:
+return addRequested(_that.ticker,_that.name,_that.logoUrl,_that.tabName,_that.durationOnPageSeconds);case RemoveRequested() when removeRequested != null:
 return removeRequested(_that.ticker,_that.tabName,_that.durationOnPageSeconds);case LoadRequested() when loadRequested != null:
 return loadRequested(_that.uid);case LoadWatchlistEvents() when loadWatchlistEvents != null:
 return loadWatchlistEvents(_that.tickers);case Reset() when reset != null:
@@ -237,11 +231,12 @@ String toString() {
 
 
 class AddRequested implements WatchlistEvent {
-  const AddRequested({required this.ticker, this.name, this.tabName, this.durationOnPageSeconds});
+  const AddRequested({required this.ticker, this.name, this.logoUrl, this.tabName, this.durationOnPageSeconds});
   
 
  final  String ticker;
  final  String? name;
+ final  String? logoUrl;
  final  String? tabName;
  final  int? durationOnPageSeconds;
 
@@ -255,16 +250,16 @@ $AddRequestedCopyWith<AddRequested> get copyWith => _$AddRequestedCopyWithImpl<A
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AddRequested&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.name, name) || other.name == name)&&(identical(other.tabName, tabName) || other.tabName == tabName)&&(identical(other.durationOnPageSeconds, durationOnPageSeconds) || other.durationOnPageSeconds == durationOnPageSeconds));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AddRequested&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.name, name) || other.name == name)&&(identical(other.logoUrl, logoUrl) || other.logoUrl == logoUrl)&&(identical(other.tabName, tabName) || other.tabName == tabName)&&(identical(other.durationOnPageSeconds, durationOnPageSeconds) || other.durationOnPageSeconds == durationOnPageSeconds));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,ticker,name,tabName,durationOnPageSeconds);
+int get hashCode => Object.hash(runtimeType,ticker,name,logoUrl,tabName,durationOnPageSeconds);
 
 @override
 String toString() {
-  return 'WatchlistEvent.addRequested(ticker: $ticker, name: $name, tabName: $tabName, durationOnPageSeconds: $durationOnPageSeconds)';
+  return 'WatchlistEvent.addRequested(ticker: $ticker, name: $name, logoUrl: $logoUrl, tabName: $tabName, durationOnPageSeconds: $durationOnPageSeconds)';
 }
 
 
@@ -275,7 +270,7 @@ abstract mixin class $AddRequestedCopyWith<$Res> implements $WatchlistEventCopyW
   factory $AddRequestedCopyWith(AddRequested value, $Res Function(AddRequested) _then) = _$AddRequestedCopyWithImpl;
 @useResult
 $Res call({
- String ticker, String? name, String? tabName, int? durationOnPageSeconds
+ String ticker, String? name, String? logoUrl, String? tabName, int? durationOnPageSeconds
 });
 
 
@@ -292,10 +287,11 @@ class _$AddRequestedCopyWithImpl<$Res>
 
 /// Create a copy of WatchlistEvent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? ticker = null,Object? name = freezed,Object? tabName = freezed,Object? durationOnPageSeconds = freezed,}) {
+@pragma('vm:prefer-inline') $Res call({Object? ticker = null,Object? name = freezed,Object? logoUrl = freezed,Object? tabName = freezed,Object? durationOnPageSeconds = freezed,}) {
   return _then(AddRequested(
 ticker: null == ticker ? _self.ticker : ticker // ignore: cast_nullable_to_non_nullable
 as String,name: freezed == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+as String?,logoUrl: freezed == logoUrl ? _self.logoUrl : logoUrl // ignore: cast_nullable_to_non_nullable
 as String?,tabName: freezed == tabName ? _self.tabName : tabName // ignore: cast_nullable_to_non_nullable
 as String?,durationOnPageSeconds: freezed == durationOnPageSeconds ? _self.durationOnPageSeconds : durationOnPageSeconds // ignore: cast_nullable_to_non_nullable
 as int?,

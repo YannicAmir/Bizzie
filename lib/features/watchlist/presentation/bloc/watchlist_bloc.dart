@@ -44,11 +44,11 @@ class WatchlistBloc extends Bloc<WatchlistEvent, WatchlistState> {
     this._authRepository,
     this._watchlistAnalytics,
   ) : super(const WatchlistState.initial()) {
-    on<SyncRequested>(_onSyncRequested);
-    on<AddRequested>(_onAddRequested);
-    on<RemoveRequested>(_onRemoveRequested);
+    on<SyncRequested>(_onSyncRequested, transformer: droppable());
+    on<AddRequested>(_onAddRequested, transformer: droppable());
+    on<RemoveRequested>(_onRemoveRequested, transformer: droppable());
     on<LoadRequested>(_onLoadRequested, transformer: restartable());
-    on<LoadWatchlistEvents>(_onLoadWatchlistEvents);
+    on<LoadWatchlistEvents>(_onLoadWatchlistEvents, transformer: restartable());
     on<Reset>(_onReset);
   }
 
@@ -58,6 +58,35 @@ class WatchlistBloc extends Bloc<WatchlistEvent, WatchlistState> {
   }
 
   String? get _uid => _authRepository.currentUser?.id;
+
+  String? _normalizedLogoUrl(String? logoUrl) =>
+      (logoUrl == null || logoUrl.isEmpty) ? null : logoUrl;
+
+  String? _uidOrEmitFailure(Emitter<WatchlistState> emit) {
+    final uid = _uid;
+    if (uid == null) {
+      emit(WatchlistState.failure(Failure.server("User not authenticated")));
+    }
+    return uid;
+  }
+
+  void _emitOperationFailure(
+    String operation,
+    Failure failure,
+    Emitter<WatchlistState> emit,
+  ) {
+    _watchlistAnalytics.logOperationFailed(
+      operation: operation,
+      errorMessage: failure.errorMessage,
+    );
+    emit(WatchlistState.failure(failure));
+  }
+
+  Company _companyFromEvent(AddRequested event) => Company(
+    ticker: event.ticker,
+    name: event.name ?? event.ticker,
+    logoUrl: _normalizedLogoUrl(event.logoUrl),
+  );
 
   Future<void> _onLoadRequested(
     LoadRequested event,
@@ -132,51 +161,39 @@ class WatchlistBloc extends Bloc<WatchlistEvent, WatchlistState> {
             'Sync skipped: Watchlist fetch failed: ${failure.errorMessage}',
           );
         },
-        (companies) async {
-          final tickers = companies.map((c) => c.ticker).toList();
-          final syncResult = await _syncWatchlistUseCase(
-            SyncWatchlistParams(activeTickers: tickers),
-          );
-
-          syncResult.fold(
-            (failure) =>
-                _logger.warning('Background sync failed: ${failure.errorMessage}'),
-            (_) => _logger.info('Background sync successful'),
-          );
-        },
+        (companies) => _syncActiveTickers(companies),
       );
     } catch (e, stack) {
       _logger.severe('Sync failed unexpectedly', e, stack);
     }
   }
 
+  Future<void> _syncActiveTickers(List<Company> companies) async {
+    final tickers = companies.map((c) => c.ticker).toList();
+    final syncResult = await _syncWatchlistUseCase(
+      SyncWatchlistParams(activeTickers: tickers),
+    );
+
+    syncResult.fold(
+      (failure) =>
+          _logger.warning('Background sync failed: ${failure.errorMessage}'),
+      (_) => _logger.info('Background sync successful'),
+    );
+  }
+
   Future<void> _onAddRequested(
     AddRequested event,
     Emitter<WatchlistState> emit,
   ) async {
-    final uid = _uid;
-    if (uid == null) {
-      emit(WatchlistState.failure(Failure.server("User not authenticated")));
-      return;
-    }
-
-    final company = Company(
-      ticker: event.ticker,
-      name: event.name ?? event.ticker,
-    );
+    final uid = _uidOrEmitFailure(emit);
+    if (uid == null) return;
 
     final result = await _addToWatchlistUseCase(
-      AddToWatchlistParams(company: company, uid: uid),
+      AddToWatchlistParams(company: _companyFromEvent(event), uid: uid),
     );
 
     result.fold(
-      (failure) {
-        _watchlistAnalytics.logOperationFailed(
-          operation: 'add',
-          errorMessage: failure.errorMessage,
-        );
-        emit(WatchlistState.failure(failure));
-      },
+      (failure) => _emitOperationFailure('add', failure, emit),
       (_) {
         _logger.info("Added ${event.ticker}, waiting for stream update");
         _watchlistAnalytics.logItemAdded(
@@ -193,24 +210,15 @@ class WatchlistBloc extends Bloc<WatchlistEvent, WatchlistState> {
     RemoveRequested event,
     Emitter<WatchlistState> emit,
   ) async {
-    final uid = _uid;
-    if (uid == null) {
-      emit(WatchlistState.failure(Failure.server("User not authenticated")));
-      return;
-    }
+    final uid = _uidOrEmitFailure(emit);
+    if (uid == null) return;
 
     final result = await _removeFromWatchlistUseCase(
       RemoveFromWatchlistParams(ticker: event.ticker, uid: uid),
     );
 
     result.fold(
-      (failure) {
-        _watchlistAnalytics.logOperationFailed(
-          operation: 'remove',
-          errorMessage: failure.errorMessage,
-        );
-        emit(WatchlistState.failure(failure));
-      },
+      (failure) => _emitOperationFailure('remove', failure, emit),
       (_) {
         _logger.info("Removed ${event.ticker}, waiting for stream update");
         _watchlistAnalytics.logItemRemoved(

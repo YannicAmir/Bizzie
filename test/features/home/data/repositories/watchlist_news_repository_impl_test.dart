@@ -11,6 +11,7 @@ class MockWatchlistNewsRemoteDataSource extends Mock
 const tTickers = ['AXP', 'NVDA'];
 
 final tOlderDto = WatchlistNewsDto(
+  id: 'AXP_older',
   symbol: 'AXP',
   title: 'Older article',
   site: 'zacks.com',
@@ -19,6 +20,7 @@ final tOlderDto = WatchlistNewsDto(
 );
 
 final tNewerDto = WatchlistNewsDto(
+  id: 'NVDA_newer',
   symbol: 'NVDA',
   title: 'Newer article',
   site: '247wallst.com',
@@ -38,17 +40,18 @@ void main() {
   group('WatchlistNewsRepositoryImpl', () {
     group('watchWatchlistNews', () {
       test(
-        'watchWatchlistNews_datasourceEmitsDtos_returnsRightSortedNewestFirst',
+        'watchWatchlistNews_datasourceEmitsDtos_returnsRightMappedPreservingOrder',
         () async {
           // arrange
           when(
             () => mockRemoteDataSource.getWatchlistNewsStream(tTickers),
-          ).thenAnswer((_) => Stream.value([tOlderDto, tNewerDto]));
+          ).thenAnswer((_) => Stream.value([tNewerDto, tOlderDto]));
 
           // act
           final result = await sut.watchWatchlistNews(tTickers).first;
 
-          // assert
+          // assert — the repository is a pure mapper and preserves the
+          // datasource order; display ordering is applied in presentation.
           expect(result.isRight(), isTrue);
           expect(
             result.getOrElse(() => []),
@@ -58,12 +61,13 @@ void main() {
       );
 
       test(
-        'watchWatchlistNews_manyArticles_returnsAllSortedNewestFirst',
+        'watchWatchlistNews_manyArticles_mapsAllPreservingOrder',
         () async {
           // arrange
           final dtos = List.generate(
             12,
             (index) => WatchlistNewsDto(
+              id: 'AXP_article_$index',
               symbol: 'AXP',
               title: 'Article $index',
               site: 'zacks.com',
@@ -83,8 +87,8 @@ void main() {
           // assert
           final articles = result.getOrElse(() => []);
           expect(articles.length, 12);
-          expect(articles.first.title, 'Article 11');
-          expect(articles.last.title, 'Article 0');
+          expect(articles.first.title, 'Article 0');
+          expect(articles.last.title, 'Article 11');
         },
       );
 

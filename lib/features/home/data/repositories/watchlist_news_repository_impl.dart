@@ -30,7 +30,7 @@ class WatchlistNewsRepositoryImpl implements IWatchlistNewsRepository {
           >.fromHandlers(
             handleData: (dtos, sink) {
               try {
-                sink.add(Right(_toSortedFeed(dtos)));
+                sink.add(Right(dtos.map((dto) => dto.toDomain()).toList()));
               } catch (e, stack) {
                 _logger.severe('Failed to map watchlist news stream', e, stack);
                 sink.add(Left(Failure.server(e.toString())));
@@ -42,11 +42,5 @@ class WatchlistNewsRepositoryImpl implements IWatchlistNewsRepository {
             },
           ),
         );
-  }
-
-  List<WatchlistNewsArticle> _toSortedFeed(List<WatchlistNewsDto> dtos) {
-    final sorted = [...dtos]
-      ..sort((a, b) => b.publishedAt.compareTo(a.publishedAt));
-    return sorted.map((dto) => dto.toDomain()).toList();
   }
 }

@@ -10,8 +10,10 @@ class CompanyListTile extends StatelessWidget {
   final VoidCallback onTap;
   final EdgeInsetsGeometry? contentPadding;
   final ShapeBorder? shape;
+  final Widget? leading;
   final Widget? trailing;
   final bool showLeading;
+  final Color? backgroundColor;
 
   const CompanyListTile({
     super.key,
@@ -21,7 +23,9 @@ class CompanyListTile extends StatelessWidget {
     this.contentPadding,
     this.shape,
     this.showLeading = true,
+    this.leading,
     this.trailing,
+    this.backgroundColor,
   });
 
   @override
@@ -35,6 +39,7 @@ class CompanyListTile extends StatelessWidget {
             contentPadding ??
             const EdgeInsets.all(AppConstants.mainSectionContainerPadding),
         decoration: BoxDecoration(
+          color: backgroundColor,
           border: Border.all(
             color: theme.dividerColor,
             width: theme.dividerTheme.thickness ?? .665,
@@ -44,16 +49,17 @@ class CompanyListTile extends StatelessWidget {
         child: Row(
           children: [
             if (showLeading) ...[
-              Container(
-                width: 48,
-                height: 48,
-                decoration: BoxDecoration(
-                  color: theme.colorScheme.secondaryContainer,
-                  shape: BoxShape.circle,
-                ),
-                padding: const EdgeInsets.all(12),
-                child: SvgPicture.asset(AppAssets.businessIcon),
-              ),
+              leading ??
+                  Container(
+                    width: 48,
+                    height: 48,
+                    decoration: BoxDecoration(
+                      color: theme.colorScheme.secondaryContainer,
+                      shape: BoxShape.circle,
+                    ),
+                    padding: const EdgeInsets.all(12),
+                    child: SvgPicture.asset(AppAssets.businessIcon),
+                  ),
               const SizedBox(width: 16),
             ],
             Expanded(

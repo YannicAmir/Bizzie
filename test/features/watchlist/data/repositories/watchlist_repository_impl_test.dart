@@ -75,6 +75,40 @@ void main() {
       ).called(1);
     });
 
+    test('addToWatchlist_companyWithLogo_persistsLogoUrlInDto', () async {
+      // arrange
+      const tCompanyWithLogo = Company(
+        ticker: 'AAPL',
+        name: 'Apple',
+        logoUrl: 'https://images.financialmodelingprep.com/symbol/AAPL.png',
+      );
+      when(
+        () => mockRemoteDataSource.addWatchlistItem(any(), tUid),
+      ).thenAnswer((_) async {});
+      when(
+        () => mockFirebaseMessaging.subscribeToTopic(any()),
+      ).thenAnswer((_) async {});
+      when(() => mockLocalDataSource.getSubscribedTickers()).thenReturn([]);
+      when(
+        () => mockLocalDataSource.cacheSubscribedTickers(any()),
+      ).thenAnswer((_) async {});
+
+      // act
+      final result = await repository.addToWatchlist(tCompanyWithLogo, tUid);
+
+      // assert
+      expect(result, const Right(null));
+      final dto =
+          verify(
+                () => mockRemoteDataSource.addWatchlistItem(captureAny(), tUid),
+              ).captured.single
+              as WatchlistItemDto;
+      expect(
+        dto.logoUrl,
+        'https://images.financialmodelingprep.com/symbol/AAPL.png',
+      );
+    });
+
     test('addToWatchlist_remoteFailure_returnsServerFailure', () async {
       // arrange
       when(

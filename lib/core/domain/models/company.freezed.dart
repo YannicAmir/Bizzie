@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$Company {
 
- String get ticker; String get name;
+ String get ticker; String get name; String? get logoUrl;
 /// Create a copy of Company
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $CompanyCopyWith<Company> get copyWith => _$CompanyCopyWithImpl<Company>(this as
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Company&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.name, name) || other.name == name));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Company&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.name, name) || other.name == name)&&(identical(other.logoUrl, logoUrl) || other.logoUrl == logoUrl));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,ticker,name);
+int get hashCode => Object.hash(runtimeType,ticker,name,logoUrl);
 
 @override
 String toString() {
-  return 'Company(ticker: $ticker, name: $name)';
+  return 'Company(ticker: $ticker, name: $name, logoUrl: $logoUrl)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $CompanyCopyWith<$Res>  {
   factory $CompanyCopyWith(Company value, $Res Function(Company) _then) = _$CompanyCopyWithImpl;
 @useResult
 $Res call({
- String ticker, String name
+ String ticker, String name, String? logoUrl
 });
 
 
@@ -65,11 +65,12 @@ class _$CompanyCopyWithImpl<$Res>
 
 /// Create a copy of Company
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? ticker = null,Object? name = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? ticker = null,Object? name = null,Object? logoUrl = freezed,}) {
   return _then(_self.copyWith(
 ticker: null == ticker ? _self.ticker : ticker // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
-as String,
+as String,logoUrl: freezed == logoUrl ? _self.logoUrl : logoUrl // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 
@@ -154,10 +155,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String ticker,  String name)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String ticker,  String name,  String? logoUrl)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Company() when $default != null:
-return $default(_that.ticker,_that.name);case _:
+return $default(_that.ticker,_that.name,_that.logoUrl);case _:
   return orElse();
 
 }
@@ -175,10 +176,10 @@ return $default(_that.ticker,_that.name);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String ticker,  String name)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String ticker,  String name,  String? logoUrl)  $default,) {final _that = this;
 switch (_that) {
 case _Company():
-return $default(_that.ticker,_that.name);case _:
+return $default(_that.ticker,_that.name,_that.logoUrl);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -195,10 +196,10 @@ return $default(_that.ticker,_that.name);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String ticker,  String name)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String ticker,  String name,  String? logoUrl)?  $default,) {final _that = this;
 switch (_that) {
 case _Company() when $default != null:
-return $default(_that.ticker,_that.name);case _:
+return $default(_that.ticker,_that.name,_that.logoUrl);case _:
   return null;
 
 }
@@ -210,11 +211,12 @@ return $default(_that.ticker,_that.name);case _:
 @JsonSerializable()
 
 class _Company implements Company {
-  const _Company({required this.ticker, required this.name});
+  const _Company({required this.ticker, required this.name, this.logoUrl});
   factory _Company.fromJson(Map<String, dynamic> json) => _$CompanyFromJson(json);
 
 @override final  String ticker;
 @override final  String name;
+@override final  String? logoUrl;
 
 /// Create a copy of Company
 /// with the given fields replaced by the non-null parameter values.
@@ -229,16 +231,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Company&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.name, name) || other.name == name));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Company&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.name, name) || other.name == name)&&(identical(other.logoUrl, logoUrl) || other.logoUrl == logoUrl));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,ticker,name);
+int get hashCode => Object.hash(runtimeType,ticker,name,logoUrl);
 
 @override
 String toString() {
-  return 'Company(ticker: $ticker, name: $name)';
+  return 'Company(ticker: $ticker, name: $name, logoUrl: $logoUrl)';
 }
 
 
@@ -249,7 +251,7 @@ abstract mixin class _$CompanyCopyWith<$Res> implements $CompanyCopyWith<$Res> {
   factory _$CompanyCopyWith(_Company value, $Res Function(_Company) _then) = __$CompanyCopyWithImpl;
 @override @useResult
 $Res call({
- String ticker, String name
+ String ticker, String name, String? logoUrl
 });
 
 
@@ -266,11 +268,12 @@ class __$CompanyCopyWithImpl<$Res>
 
 /// Create a copy of Company
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? ticker = null,Object? name = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? ticker = null,Object? name = null,Object? logoUrl = freezed,}) {
   return _then(_Company(
 ticker: null == ticker ? _self.ticker : ticker // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
-as String,
+as String,logoUrl: freezed == logoUrl ? _self.logoUrl : logoUrl // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 

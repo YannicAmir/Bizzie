@@ -91,12 +91,12 @@ class CompanyProfilePage extends StatelessWidget {
         BlocProvider(create: (context) => getIt<AppRatingsBloc>()),
         BlocProvider(create: (context) => getIt<CompanyProfileBloc>()),
         BlocProvider(
-          create: (context) =>
-              getIt<CompanyProfileTabsBloc>()..add(
-                CompanyProfileTabsEvent.started(
-                  isSubscribed: context.read<UserBloc>().state.isSubscribed,
-                ),
+          create: (context) => getIt<CompanyProfileTabsBloc>()
+            ..add(
+              CompanyProfileTabsEvent.started(
+                isSubscribed: context.read<UserBloc>().state.isSubscribed,
               ),
+            ),
         ),
         BlocProvider(create: (context) => getIt<BizzieChatSessionsBloc>()),
       ],
@@ -180,7 +180,10 @@ class _CompanyProfileViewState extends State<_CompanyProfileView>
     if (_tabController.index == _previousTabIndex) return;
 
     final newTabIndex = _tabController.index;
-    final currentTab = _tabsBloc.state.tabs[newTabIndex];
+    final tabs = _tabsBloc.state.tabs;
+    if (newTabIndex >= tabs.length) return;
+
+    final currentTab = tabs[newTabIndex];
 
     _previousTabIndex = newTabIndex;
     _selectedTab = currentTab;
@@ -214,7 +217,8 @@ class _CompanyProfileViewState extends State<_CompanyProfileView>
     SecurityDetails details, {
     required bool isSupported,
   }) {
-    final currentTab = _tabsBloc.state.tabs[_tabController.index];
+    final tabs = _tabsBloc.state.tabs;
+    final currentTab = tabs[_tabController.index.clamp(0, tabs.length - 1)];
     _reportInteraction(currentTab);
 
     context.read<CompanyProfileBloc>().add(
@@ -291,55 +295,76 @@ class _CompanyProfileViewState extends State<_CompanyProfileView>
           listener: (context, state) => _rebuildTabController(state),
         ),
       ],
-      child: BlocBuilder<CompanyProfileTabsBloc, CompanyProfileTabsState>(
-        builder: (context, tabsState) {
-          return BlocBuilder<CompanySecurityBloc, CompanySecurityState>(
-            builder: (context, securityState) {
-              final isUnsupported = securityState.maybeMap(
-                unsupported: (_) => true,
-                orElse: () => false,
-              );
-
-              final isEtf = securityState.maybeMap(
-                unsupported: (s) => s.securityDetails.isEtf,
-                orElse: () => false,
-              );
-
-              return Scaffold(
-                appBar: _CompanyProfileAppBar(
-                  ticker: widget.ticker,
-                  isUnsupported: isUnsupported,
-                  tabController: _tabController,
-                  tabs: tabsState.tabs,
-                  entranceTime: _entranceTime,
-                ),
-                floatingActionButton:
-                    (isUnsupported || !tabsState.isBizzieChatEnabled)
-                    ? null
-                    : _BizzieChatFab(
-                        ticker: widget.ticker,
-                        companyName: securityState.maybeMap(
-                          loaded: (s) => s.securityDetails.name,
-                          orElse: () => widget.ticker,
-                        ),
-                      ),
-                body: isUnsupported
-                    ? ComingSoonPlaceholder(
-                        type: isEtf ? ComingSoonType.etf : ComingSoonType.fund,
-                      )
-                    : _HorizontalSwipeHaptics(
-                        child: CompanyProfileBody(
-                          ticker: widget.ticker,
-                          tabController: _tabController,
-                          tabs: tabsState.tabs,
-                          moreTabs: tabsState.moreTabs,
-                        ),
-                      ),
-              );
-            },
-          );
-        },
+      child: _CompanyProfileScaffold(
+        ticker: widget.ticker,
+        tabController: _tabController,
+        entranceTime: _entranceTime,
       ),
+    );
+  }
+}
+
+class _CompanyProfileScaffold extends StatelessWidget {
+  final String ticker;
+  final TabController tabController;
+  final DateTime entranceTime;
+
+  const _CompanyProfileScaffold({
+    required this.ticker,
+    required this.tabController,
+    required this.entranceTime,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<CompanyProfileTabsBloc, CompanyProfileTabsState>(
+      builder: (context, tabsState) {
+        return BlocBuilder<CompanySecurityBloc, CompanySecurityState>(
+          builder: (context, securityState) {
+            final isUnsupported = securityState.maybeMap(
+              unsupported: (_) => true,
+              orElse: () => false,
+            );
+
+            final isEtf = securityState.maybeMap(
+              unsupported: (s) => s.securityDetails.isEtf,
+              orElse: () => false,
+            );
+
+            return Scaffold(
+              appBar: _CompanyProfileAppBar(
+                ticker: ticker,
+                isUnsupported: isUnsupported,
+                tabController: tabController,
+                tabs: tabsState.tabs,
+                entranceTime: entranceTime,
+              ),
+              floatingActionButton:
+                  (isUnsupported || !tabsState.isBizzieChatEnabled)
+                  ? null
+                  : _BizzieChatFab(
+                      ticker: ticker,
+                      companyName: securityState.maybeMap(
+                        loaded: (s) => s.securityDetails.name,
+                        orElse: () => ticker,
+                      ),
+                    ),
+              body: isUnsupported
+                  ? ComingSoonPlaceholder(
+                      type: isEtf ? ComingSoonType.etf : ComingSoonType.fund,
+                    )
+                  : _HorizontalSwipeHaptics(
+                      child: CompanyProfileBody(
+                        ticker: ticker,
+                        tabController: tabController,
+                        tabs: tabsState.tabs,
+                        moreTabs: tabsState.moreTabs,
+                      ),
+                    ),
+            );
+          },
+        );
+      },
     );
   }
 }
@@ -385,7 +410,8 @@ class _CompanyProfileAppBar extends StatelessWidget
   Widget build(BuildContext context) {
     return BlocBuilder<CompanySecurityBloc, CompanySecurityState>(
       buildWhen: (previous, current) =>
-          previous.resolvedDetails?.name != current.resolvedDetails?.name,
+          previous.resolvedDetails?.name != current.resolvedDetails?.name ||
+          previous.resolvedDetails?.image != current.resolvedDetails?.image,
       builder: (context, state) {
         return AppBar(
           leading: const BackButton(),
@@ -398,6 +424,7 @@ class _CompanyProfileAppBar extends StatelessWidget
                   CompanyWatchlistButton(
                     ticker: ticker,
                     companyName: state.resolvedDetails?.name ?? ticker,
+                    logoUrl: state.resolvedDetails?.image,
                     currentTabName: () => tabs[tabController.index].name,
                     entranceTime: entranceTime,
                   ),

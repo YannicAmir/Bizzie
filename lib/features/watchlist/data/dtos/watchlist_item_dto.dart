@@ -13,6 +13,7 @@ abstract class WatchlistItemDto with _$WatchlistItemDto {
     required String ticker,
     required String companyName,
     @TimestampConverter() required DateTime createdAt,
+    String? logoUrl,
   }) = _WatchlistItemDto;
 
   factory WatchlistItemDto.fromJson(Map<String, dynamic> json) =>
@@ -23,10 +24,11 @@ abstract class WatchlistItemDto with _$WatchlistItemDto {
       ticker: company.ticker,
       companyName: company.name,
       createdAt: DateTime.now(),
+      logoUrl: company.logoUrl,
     );
   }
 
   Company toDomain() {
-    return Company(ticker: ticker, name: companyName);
+    return Company(ticker: ticker, name: companyName, logoUrl: logoUrl);
   }
 }

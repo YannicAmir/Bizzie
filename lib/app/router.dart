@@ -19,6 +19,8 @@ import 'package:bizzie/features/auth/domain/enums/auth_source.dart';
 import 'package:bizzie/features/home/presentation/views/home_page.dart';
 import 'package:bizzie/features/home/presentation/bloc/home_bloc.dart';
 import 'package:bizzie/features/home/presentation/bloc/watchlist_news/watchlist_news_bloc.dart';
+import 'package:bizzie/features/home/presentation/bloc/watchlist_prices/watchlist_prices_bloc.dart';
+import 'package:bizzie/features/market_news/presentation/bloc/market_news/market_news_bloc.dart';
 import 'package:bizzie/features/notifications/presentation/views/notification_request_page.dart';
 import 'package:bizzie/features/onboarding/presentation/views/ask_name_page.dart';
 import 'package:bizzie/features/onboarding/presentation/views/landing_page.dart';
@@ -111,8 +113,13 @@ GoRouter createRouter(
                     BlocProvider<WatchlistNewsBloc>(
                       create: (_) => getIt<WatchlistNewsBloc>(),
                     ),
+                    BlocProvider<WatchlistPricesBloc>(
+                      create: (_) => getIt<WatchlistPricesBloc>(),
+                    ),
                   ],
-                  child: const HomePage(),
+                  child: HomePage(
+                    pendingNewsId: state.uri.queryParameters['newsId'],
+                  ),
                 ),
                 routes: [
                   _buildCompanyRoute(AppRoutes.companyProfileHome),
@@ -146,9 +153,16 @@ GoRouter createRouter(
                   final notificationType = ReportsNotificationType.values
                       .firstWhereOrNull((e) => e.name == notificationTypeStr);
 
-                  return ReportsPage(
-                    entrySource: entrySource,
-                    notificationType: notificationType,
+                  return MultiBlocProvider(
+                    providers: [
+                      BlocProvider<MarketNewsBloc>(
+                        create: (_) => getIt<MarketNewsBloc>(),
+                      ),
+                    ],
+                    child: ReportsPage(
+                      entrySource: entrySource,
+                      notificationType: notificationType,
+                    ),
                   );
                 },
                 routes: [_buildCompanyRoute(AppRoutes.companyProfileReports)],

@@ -13,4 +13,8 @@ abstract class NotificationIntent with _$NotificationIntent {
     required ReportsNotificationType notificationType,
   }) = _Reports;
   const factory NotificationIntent.paywall(PaywallSource source) = _Paywall;
+  const factory NotificationIntent.stockNews({
+    required String ticker,
+    required String newsId,
+  }) = _StockNews;
 }

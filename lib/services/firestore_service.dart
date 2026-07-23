@@ -57,6 +57,19 @@ class FirestoreService {
         );
   }
 
+  List<List<dynamic>> _chunkValues(List<dynamic> values, int chunkSize) {
+    final chunks = <List<dynamic>>[];
+    for (var i = 0; i < values.length; i += chunkSize) {
+      chunks.add(
+        values.sublist(
+          i,
+          i + chunkSize > values.length ? values.length : i + chunkSize,
+        ),
+      );
+    }
+    return chunks;
+  }
+
   CollectionReference<T> getConvertedCollectionRef<T>({
     required String path,
     required T Function(Map<String, dynamic> json) fromJson,
@@ -152,6 +165,36 @@ class FirestoreService {
     return snapshot.docs.map((doc) => doc.data()).toList();
   }
 
+  Future<List<T>> getCollectionFutureChunked<T>({
+    required String path,
+    required String whereInField,
+    required List<dynamic> values,
+    required T Function(Map<String, dynamic> json) fromJson,
+    required Map<String, dynamic> Function(T value) toJson,
+    int chunkSize = 30,
+    Query<T> Function(Query<T> query)? queryBuilder,
+  }) async {
+    if (values.isEmpty) return [];
+
+    final chunks = _chunkValues(values, chunkSize);
+
+    final results = await Future.wait(
+      chunks.map((chunk) async {
+        Query<T> query = _getCollectionRef<T>(
+          path,
+          fromJson,
+          toJson,
+        ).where(whereInField, whereIn: chunk);
+        if (queryBuilder != null) {
+          query = queryBuilder(query);
+        }
+        final snapshot = await query.get();
+        return snapshot.docs.map((doc) => doc.data()).toList();
+      }),
+    );
+    return results.expand((x) => x).toList();
+  }
+
   Future<T?> getDocument<T>({
     required String path,
     required T Function(Map<String, dynamic> json) fromJson,
@@ -208,15 +251,7 @@ class FirestoreService {
   }) {
     if (values.isEmpty) return Stream.value([]);
 
-    final chunks = <List<dynamic>>[];
-    for (var i = 0; i < values.length; i += chunkSize) {
-      chunks.add(
-        values.sublist(
-          i,
-          i + chunkSize > values.length ? values.length : i + chunkSize,
-        ),
-      );
-    }
+    final chunks = _chunkValues(values, chunkSize);
 
     final streams = chunks.map((chunk) {
       return _firestore
@@ -287,15 +322,7 @@ class FirestoreService {
   }) {
     if (values.isEmpty) return Stream.value([]);
 
-    final chunks = <List<dynamic>>[];
-    for (var i = 0; i < values.length; i += chunkSize) {
-      chunks.add(
-        values.sublist(
-          i,
-          i + chunkSize > values.length ? values.length : i + chunkSize,
-        ),
-      );
-    }
+    final chunks = _chunkValues(values, chunkSize);
 
     final streams = chunks.map((chunk) {
       Query<T> query = _getCollectionRef<T>(

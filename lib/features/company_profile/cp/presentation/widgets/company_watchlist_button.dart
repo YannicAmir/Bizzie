@@ -18,6 +18,7 @@ const _animationCurve = Curves.easeInOut;
 class CompanyWatchlistButton extends StatelessWidget {
   final String ticker;
   final String? companyName;
+  final String? logoUrl;
   final ValueGetter<String> currentTabName;
   final DateTime entranceTime;
 
@@ -25,6 +26,7 @@ class CompanyWatchlistButton extends StatelessWidget {
     super.key,
     required this.ticker,
     this.companyName,
+    this.logoUrl,
     required this.currentTabName,
     required this.entranceTime,
   });
@@ -52,6 +54,7 @@ class CompanyWatchlistButton extends StatelessWidget {
         WatchlistEvent.addRequested(
           ticker: ticker,
           name: companyName,
+          logoUrl: logoUrl,
           tabName: tabName,
           durationOnPageSeconds: durationOnPageSeconds,
         ),

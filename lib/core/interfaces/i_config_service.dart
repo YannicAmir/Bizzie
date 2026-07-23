@@ -12,6 +12,7 @@ abstract class IConfigService {
   String get frankfurterBaseUrl;
   String get bizzieChatBaseUrl;
   bool get bizzieChatEnabled;
+  bool get showWatchlistPrice;
   String get privacyPolicyUrl;
   String get termsOfServiceUrl;
   String get minAppVersion;

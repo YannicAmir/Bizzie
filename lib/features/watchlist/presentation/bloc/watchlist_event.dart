@@ -3,11 +3,12 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'watchlist_event.freezed.dart';
 
 @freezed
-class WatchlistEvent with _$WatchlistEvent {
+sealed class WatchlistEvent with _$WatchlistEvent {
   const factory WatchlistEvent.syncRequested() = SyncRequested;
   const factory WatchlistEvent.addRequested({
     required String ticker,
     String? name,
+    String? logoUrl,
     String? tabName,
     int? durationOnPageSeconds,
   }) = AddRequested;

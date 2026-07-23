@@ -7,4 +7,11 @@ extension WatchlistStateX on WatchlistState {
       orElse: () => false,
     );
   }
+
+  List<String> get tickerOrder {
+    return maybeMap(
+      loaded: (s) => s.companies.map((company) => company.ticker).toList(),
+      orElse: () => const <String>[],
+    );
+  }
 }

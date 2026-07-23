@@ -8,6 +8,7 @@ part 'watchlist_news_dto.g.dart';
 @freezed
 abstract class WatchlistNewsDto with _$WatchlistNewsDto {
   const factory WatchlistNewsDto({
+    required String id,
     required String symbol,
     required String title,
     required String site,
@@ -23,6 +24,7 @@ abstract class WatchlistNewsDto with _$WatchlistNewsDto {
 
   WatchlistNewsArticle toDomain() {
     return WatchlistNewsArticle(
+      id: id,
       symbol: symbol,
       title: title,
       site: site,
