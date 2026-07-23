@@ -21,8 +21,7 @@ const int _marketTabIndex = 0;
 const int _reportsTabIndex = 1;
 
 const int _maxReportsBadgeCount = 9;
-const Offset _reportsBadgeOffset = Offset(4, -4);
-const EdgeInsets _reportsBadgeLabelPadding = EdgeInsets.symmetric(horizontal: 2);
+const double _reportsBadgeSpacing = 8;
 
 class ReportsPage extends StatefulWidget {
   final ReportsEntrySource entrySource;
@@ -218,18 +217,21 @@ class _ReportsTabLabel extends StatelessWidget {
         final unreadCount = state.unreadCount(
           context.read<ReportsBloc>().seenWeeklyReportIds,
         );
-        return Badge(
-          isLabelVisible: unreadCount > 0,
-          label: Text(
-            unreadCount > _maxReportsBadgeCount
-                ? '9+'
-                : unreadCount.toString(),
-          ),
-          offset: _reportsBadgeOffset,
-          child: const Padding(
-            padding: _reportsBadgeLabelPadding,
-            child: Text('Reports'),
-          ),
+        return Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text('Reports'),
+            if (unreadCount > 0) ...[
+              const SizedBox(width: _reportsBadgeSpacing),
+              Badge(
+                label: Text(
+                  unreadCount > _maxReportsBadgeCount
+                      ? '9+'
+                      : unreadCount.toString(),
+                ),
+              ),
+            ],
+          ],
         );
       },
     );
