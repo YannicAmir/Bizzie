@@ -99,105 +99,299 @@ void main() {
   });
 
   group('FinancialDataPointListPresentationX', () {
-    test('calculateGrowthAtIndex_validPoints_returnsPercentageChange', () {
-      // arrange
-      const points = [
-        FinancialDataPoint(date: '2024-01-01', period: 'FY', value: 120),
-        FinancialDataPoint(date: '2023-01-01', period: 'FY', value: 100),
+    List<FinancialDataPoint> pointsFromNewestFirst(List<double> values) {
+      return [
+        for (var i = 0; i < values.length; i++)
+          FinancialDataPoint(
+            date: '${2100 - i}-01-01',
+            period: 'FY',
+            value: values[i],
+          ),
       ];
+    }
+
+    test('calculateGrowthAtIndex_positiveToPositive_returnsNumericChange', () {
+      // arrange
+      final points = pointsFromNewestFirst([120, 100]);
 
       // act
       final result = points.calculateGrowthAtIndex(0);
 
       // assert
-      expect(result, 0.2);
+      expect(result.outcome, GrowthOutcome.numeric);
+      expect(result.percent, closeTo(0.2, 1e-9));
     });
 
-    test('calculateGrowthAtIndex_lastItem_returnsNull', () {
+    test('calculateGrowthAtIndex_lastItem_returnsNone', () {
       // arrange
-      const points = [
-        FinancialDataPoint(date: '2024-01-01', period: 'FY', value: 120),
-      ];
+      final points = pointsFromNewestFirst([120]);
 
-      // act
-      final result = points.calculateGrowthAtIndex(0);
+      // act & assert
+      expect(points.calculateGrowthAtIndex(0).outcome, GrowthOutcome.none);
+    });
 
-      // assert
-      expect(result, isNull);
+    test('calculateGrowthAtIndex_zeroBase_returnsNone', () {
+      // arrange — a zero prior period yields an undefined rate
+      final points = pointsFromNewestFirst([120, 0]);
+
+      // act & assert
+      expect(points.calculateGrowthAtIndex(0).outcome, GrowthOutcome.none);
+    });
+
+    test('calculateGrowthAtIndex_positiveToNegative_turnsNegative', () {
+      // arrange — swung from a profit into a loss
+      final points = pointsFromNewestFirst([-1930, 104]);
+
+      // act & assert
+      expect(
+        points.calculateGrowthAtIndex(0).outcome,
+        GrowthOutcome.turnedNegative,
+      );
+    });
+
+    test('calculateGrowthAtIndex_negativeToPositive_turnsPositive', () {
+      // arrange — turned a loss into a profit
+      final points = pointsFromNewestFirst([112, -23]);
+
+      // act & assert
+      expect(
+        points.calculateGrowthAtIndex(0).outcome,
+        GrowthOutcome.turnedPositive,
+      );
+    });
+
+    test('calculateGrowthAtIndex_negativeToNegative_isNotMeaningful', () {
+      // arrange — loss narrowed but still a loss
+      final points = pointsFromNewestFirst([-23, -1930]);
+
+      // act & assert
+      expect(
+        points.calculateGrowthAtIndex(0).outcome,
+        GrowthOutcome.notMeaningful,
+      );
     });
   });
 
   group('GrowthPresentationX', () {
-    test('formattedPercent_positiveDouble_returnsWithPlusSign', () {
+    Future<String> resolveFormattedPercent(
+      WidgetTester tester,
+      QuarterlyGrowth growth,
+    ) async {
+      late String result;
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Builder(
+            builder: (context) {
+              result = growth.formattedPercent(context);
+              return const SizedBox();
+            },
+          ),
+        ),
+      );
+      return result;
+    }
+
+    testWidgets('formattedPercent_numericPositive_returnsWithPlusSign', (
+      tester,
+    ) async {
       // arrange
-      const double growth = 0.052;
+      final growth = QuarterlyGrowth.numeric(0.052);
 
       // act
-      final result = growth.formattedPercent;
+      final result = await resolveFormattedPercent(tester, growth);
 
       // assert
       expect(result, '+5.2%');
     });
 
-    test('formattedPercent_nullDouble_returnsDash', () {
-      // arrange
-      const double? growth = null;
-
-      // act
-      final result = growth.formattedPercent;
-
-      // assert
+    testWidgets('formattedPercent_none_returnsDash', (tester) async {
+      final result = await resolveFormattedPercent(tester, QuarterlyGrowth.none);
       expect(result, '-');
     });
 
-    testWidgets('getGrowthColor_positiveValue_returnsGoodText', (tester) async {
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Builder(
-            builder: (context) {
-              // arrange
-              const double growth = 0.1;
-
-              // act
-              final result = growth.getGrowthColor(
-                context: context,
-                isInverse: false,
-                isNeutral: false,
-              );
-
-              // assert
-              expect(result, AppColors.goodText);
-              return const SizedBox();
-            },
-          ),
-        ),
+    testWidgets('formattedPercent_turnedPositive_returnsPos', (tester) async {
+      final result = await resolveFormattedPercent(
+        tester,
+        QuarterlyGrowth.turnedPositive,
       );
+      expect(result, 'Pos.');
     });
 
-    testWidgets('getGrowthColor_negativeValue_returnsCriticalText', (
+    testWidgets('formattedPercent_turnedNegative_returnsNeg', (tester) async {
+      final result = await resolveFormattedPercent(
+        tester,
+        QuarterlyGrowth.turnedNegative,
+      );
+      expect(result, 'Neg.');
+    });
+
+    testWidgets('formattedPercent_numericNegative_returnsWithoutPlusSign', (
       tester,
     ) async {
+      // arrange
+      final growth = QuarterlyGrowth.numeric(-0.052);
+
+      // act
+      final result = await resolveFormattedPercent(tester, growth);
+
+      // assert
+      expect(result, '-5.2%');
+    });
+
+    testWidgets('formattedPercent_notMeaningful_returnsNm', (tester) async {
+      final result = await resolveFormattedPercent(
+        tester,
+        QuarterlyGrowth.notMeaningful,
+      );
+      expect(result, 'N/M');
+    });
+
+    Future<Color> resolveColor(
+      WidgetTester tester,
+      QuarterlyGrowth growth, {
+      bool isInverse = false,
+      bool isNeutral = false,
+    }) async {
+      late Color result;
       await tester.pumpWidget(
         MaterialApp(
           home: Builder(
             builder: (context) {
-              // arrange
-              const double growth = -0.1;
-
-              // act
-              final result = growth.getGrowthColor(
+              result = growth.getGrowthColor(
                 context: context,
-                isInverse: false,
-                isNeutral: false,
+                isInverse: isInverse,
+                isNeutral: isNeutral,
               );
-
-              // assert
-              expect(result, AppColors.criticalText);
               return const SizedBox();
             },
           ),
         ),
       );
+      return result;
+    }
+
+    testWidgets('getGrowthColor_numericPositive_returnsGoodText', (
+      tester,
+    ) async {
+      final result = await resolveColor(tester, QuarterlyGrowth.numeric(0.1));
+      expect(result, AppColors.goodText);
+    });
+
+    testWidgets('getGrowthColor_numericNegative_returnsCriticalText', (
+      tester,
+    ) async {
+      final result = await resolveColor(tester, QuarterlyGrowth.numeric(-0.1));
+      expect(result, AppColors.criticalText);
+    });
+
+    testWidgets('getGrowthColor_turnedPositive_returnsGoodText', (
+      tester,
+    ) async {
+      final result = await resolveColor(tester, QuarterlyGrowth.turnedPositive);
+      expect(result, AppColors.goodText);
+    });
+
+    testWidgets('getGrowthColor_turnedNegative_returnsCriticalText', (
+      tester,
+    ) async {
+      final result = await resolveColor(tester, QuarterlyGrowth.turnedNegative);
+      expect(result, AppColors.criticalText);
+    });
+
+    testWidgets('getGrowthColor_notMeaningful_returnsNeutralSecondary', (
+      tester,
+    ) async {
+      final result = await resolveColor(tester, QuarterlyGrowth.notMeaningful);
+      expect(result, AppColors.textSecondary);
+    });
+
+    testWidgets('getGrowthColor_none_returnsSlate500', (tester) async {
+      final result = await resolveColor(tester, QuarterlyGrowth.none);
+      expect(result, AppColors.slate500);
+    });
+
+    testWidgets('getGrowthColor_numericZero_returnsTextPrimary', (
+      tester,
+    ) async {
+      final result = await resolveColor(tester, QuarterlyGrowth.numeric(0));
+      expect(result, AppColors.textPrimary);
+    });
+
+    testWidgets('getGrowthColor_numericNeutral_returnsTextPrimary', (
+      tester,
+    ) async {
+      final result = await resolveColor(
+        tester,
+        QuarterlyGrowth.numeric(0.1),
+        isNeutral: true,
+      );
+      expect(result, AppColors.textPrimary);
+    });
+
+    testWidgets('getGrowthColor_numericPositiveInverse_returnsCriticalText', (
+      tester,
+    ) async {
+      final result = await resolveColor(
+        tester,
+        QuarterlyGrowth.numeric(0.1),
+        isInverse: true,
+      );
+      expect(result, AppColors.criticalText);
+    });
+
+    testWidgets('getGrowthColor_numericNegativeInverse_returnsGoodText', (
+      tester,
+    ) async {
+      final result = await resolveColor(
+        tester,
+        QuarterlyGrowth.numeric(-0.1),
+        isInverse: true,
+      );
+      expect(result, AppColors.goodText);
+    });
+
+    testWidgets('getGrowthColor_turnedPositiveNeutral_returnsTextPrimary', (
+      tester,
+    ) async {
+      final result = await resolveColor(
+        tester,
+        QuarterlyGrowth.turnedPositive,
+        isNeutral: true,
+      );
+      expect(result, AppColors.textPrimary);
+    });
+
+    testWidgets('getGrowthColor_turnedPositiveInverse_returnsCriticalText', (
+      tester,
+    ) async {
+      final result = await resolveColor(
+        tester,
+        QuarterlyGrowth.turnedPositive,
+        isInverse: true,
+      );
+      expect(result, AppColors.criticalText);
+    });
+
+    testWidgets('getGrowthColor_turnedNegativeNeutral_returnsTextPrimary', (
+      tester,
+    ) async {
+      final result = await resolveColor(
+        tester,
+        QuarterlyGrowth.turnedNegative,
+        isNeutral: true,
+      );
+      expect(result, AppColors.textPrimary);
+    });
+
+    testWidgets('getGrowthColor_turnedNegativeInverse_returnsGoodText', (
+      tester,
+    ) async {
+      final result = await resolveColor(
+        tester,
+        QuarterlyGrowth.turnedNegative,
+        isInverse: true,
+      );
+      expect(result, AppColors.goodText);
     });
   });
 }

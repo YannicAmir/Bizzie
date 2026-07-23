@@ -19,6 +19,7 @@ class BrightnessAwareLogoTile extends StatefulWidget {
 
   static const double _defaultPadding = 8;
   static const double _nearWhiteLuminanceThreshold = 0.9;
+  static const int _luminanceSampleExtent = 32;
 
   @override
   State<BrightnessAwareLogoTile> createState() =>
@@ -26,9 +27,9 @@ class BrightnessAwareLogoTile extends StatefulWidget {
 }
 
 class _BrightnessAwareLogoTileState extends State<BrightnessAwareLogoTile> {
-  ImageStream? _imageStream;
-  ImageStreamListener? _imageStreamListener;
+  VoidCallback? _detachCurrentListener;
   bool _isNearWhiteLogo = false;
+  int _resolveGeneration = 0;
 
   @override
   void initState() {
@@ -53,39 +54,63 @@ class _BrightnessAwareLogoTileState extends State<BrightnessAwareLogoTile> {
   }
 
   void _detachListener() {
-    final imageStream = _imageStream;
-    final imageStreamListener = _imageStreamListener;
-    if (imageStream != null && imageStreamListener != null) {
-      imageStream.removeListener(imageStreamListener);
-    }
+    _detachCurrentListener?.call();
+    _detachCurrentListener = null;
   }
 
   void _resolveLogoBrightness() {
-    final imageStream = widget.imageProvider.resolve(
-      const ImageConfiguration(),
-    );
+    final generation = ++_resolveGeneration;
+    final imageStream = ResizeImage(
+      widget.imageProvider,
+      width: BrightnessAwareLogoTile._luminanceSampleExtent,
+      height: BrightnessAwareLogoTile._luminanceSampleExtent,
+      allowUpscaling: false,
+    ).resolve(const ImageConfiguration());
     late final ImageStreamListener imageStreamListener;
+    var isRemoved = false;
+    void removeListenerOnce() {
+      if (isRemoved) return;
+      isRemoved = true;
+      imageStream.removeListener(imageStreamListener);
+    }
+
     imageStreamListener = ImageStreamListener(
       (info, _) async {
-        final byteData = await info.image.toByteData(
-          format: ui.ImageByteFormat.rawStraightRgba,
-        );
-        imageStream.removeListener(imageStreamListener);
-        if (byteData == null || !mounted) return;
-        final averageLuminance = _averageOpaqueLuminance(byteData);
-        if (averageLuminance != null &&
-            averageLuminance >=
-                BrightnessAwareLogoTile._nearWhiteLuminanceThreshold) {
-          setState(() => _isNearWhiteLogo = true);
+        try {
+          final byteData = await info.image.toByteData(
+            format: ui.ImageByteFormat.rawStraightRgba,
+          );
+          if (byteData == null ||
+              !mounted ||
+              generation != _resolveGeneration) {
+            return;
+          }
+          final averageLuminance = _averageOpaqueLuminance(byteData);
+          if (averageLuminance != null &&
+              averageLuminance >=
+                  BrightnessAwareLogoTile._nearWhiteLuminanceThreshold) {
+            setState(() => _isNearWhiteLogo = true);
+          }
+        } catch (error, stackTrace) {
+          FlutterError.reportError(
+            FlutterErrorDetails(
+              exception: error,
+              stack: stackTrace,
+              library: 'BrightnessAwareLogoTile',
+              context: ErrorDescription('resolving logo brightness'),
+            ),
+          );
+        } finally {
+          removeListenerOnce();
+          info.dispose();
         }
       },
       onError: (_, __) {
-        imageStream.removeListener(imageStreamListener);
+        removeListenerOnce();
       },
     );
     imageStream.addListener(imageStreamListener);
-    _imageStream = imageStream;
-    _imageStreamListener = imageStreamListener;
+    _detachCurrentListener = removeListenerOnce;
   }
 
   double? _averageOpaqueLuminance(ByteData byteData) {

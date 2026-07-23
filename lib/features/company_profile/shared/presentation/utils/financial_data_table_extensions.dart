@@ -6,6 +6,11 @@ import 'package:bizzie/shared/utils/currency_formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+const int _maxFractionDigits = 2;
+const int _monthsPerQuarter = 3;
+const int _percentMultiplier = 100;
+const String _growthPercentPattern = '0.0';
+
 extension FinancialDataPointPresentationX on FinancialDataPoint {
   String formatCurrency({
     required BuildContext context,
@@ -13,19 +18,19 @@ extension FinancialDataPointPresentationX on FinancialDataPoint {
     required bool isPercentage,
   }) {
     if (isPercentage) {
-      final fmt = NumberFormat.percentPattern(
+      final percentFormat = NumberFormat.percentPattern(
         Localizations.localeOf(context).toString(),
       );
-      fmt.maximumFractionDigits = 2;
-      return fmt.format(value);
+      percentFormat.maximumFractionDigits = _maxFractionDigits;
+      return percentFormat.format(value);
     }
 
     if (currency.isEmpty) {
-      final compactFmt = NumberFormat.compact(
+      final compactFormat = NumberFormat.compact(
         locale: Localizations.localeOf(context).toString(),
       );
-      compactFmt.maximumFractionDigits = 2;
-      return compactFmt.format(value);
+      compactFormat.maximumFractionDigits = _maxFractionDigits;
+      return compactFormat.format(value);
     }
 
     return CurrencyFormatter.formatCompactFixed(
@@ -37,62 +42,113 @@ extension FinancialDataPointPresentationX on FinancialDataPoint {
 
   String formatDate(FinancialDateFormat format) {
     try {
-      final dt = DateTime.parse(date);
+      final parsedDate = DateTime.parse(date);
       switch (format) {
         case FinancialDateFormat.fullDate:
         case FinancialDateFormat.monthYear:
           return BizzieDateFormatter.formatMonthYearFull(date);
         case FinancialDateFormat.quarterShort:
-          String quarterStr = '';
-          if (period.isNotEmpty && period.startsWith('Q')) {
-            quarterStr = period;
-          } else {
-            int q = ((dt.month - 1) / 3).floor() + 1;
-            quarterStr = 'Q$q';
-          }
-          return "$quarterStr | ${BizzieDateFormatter.formatMonthYearFull(date)}";
+          final quarter = period.isNotEmpty && period.startsWith('Q')
+              ? period
+              : 'Q${((parsedDate.month - 1) / _monthsPerQuarter).floor() + 1}';
+          return '$quarter | ${BizzieDateFormatter.formatMonthYearFull(date)}';
         case FinancialDateFormat.period:
           return _formatPeriod();
       }
-    } catch (_) {
+    } on FormatException catch (_) {
       return date;
     }
   }
 
   String _formatPeriod() {
     try {
-      final dt = DateTime.parse(date);
+      final parsedDate = DateTime.parse(date);
       if (period == 'FY' || period == 'annual') {
-        return dt.year.toString();
+        return parsedDate.year.toString();
       }
       if (period.isNotEmpty && period.startsWith('Q')) {
-        return '$period ${dt.year}';
+        return '$period ${parsedDate.year}';
       }
-      return dt.year.toString();
-    } catch (_) {
+      return parsedDate.year.toString();
+    } on FormatException catch (_) {
       return date;
     }
   }
 }
 
+enum GrowthOutcome {
+  none,
+  numeric,
+  turnedPositive,
+  turnedNegative,
+  notMeaningful,
+}
+
+class QuarterlyGrowth {
+  final GrowthOutcome outcome;
+  final double? percent;
+
+  const QuarterlyGrowth._(this.outcome, [this.percent]);
+
+  static const none = QuarterlyGrowth._(GrowthOutcome.none);
+  static const turnedPositive =
+      QuarterlyGrowth._(GrowthOutcome.turnedPositive);
+  static const turnedNegative =
+      QuarterlyGrowth._(GrowthOutcome.turnedNegative);
+  static const notMeaningful =
+      QuarterlyGrowth._(GrowthOutcome.notMeaningful);
+
+  factory QuarterlyGrowth.numeric(double percent) =>
+      QuarterlyGrowth._(GrowthOutcome.numeric, percent);
+}
+
 extension FinancialDataPointListPresentationX on List<FinancialDataPoint> {
-  double? calculateGrowthAtIndex(int index) {
-    if (index + 1 >= length) return null;
-    final current = this[index];
-    final previous = this[index + 1];
-    if (previous.value == 0) return null;
-    return (current.value - previous.value) / previous.value.abs();
+  QuarterlyGrowth calculateGrowthAtIndex(int index) {
+    if (index + 1 >= length) return QuarterlyGrowth.none;
+
+    final current = this[index].value;
+    final previous = this[index + 1].value;
+
+    if (previous == 0) return QuarterlyGrowth.none;
+
+    final previousIsProfit = previous > 0;
+    final currentIsProfit = current >= 0;
+
+    if (previousIsProfit && currentIsProfit) {
+      return QuarterlyGrowth.numeric((current - previous) / previous);
+    }
+    if (previousIsProfit && !currentIsProfit) {
+      return QuarterlyGrowth.turnedNegative;
+    }
+    if (!previousIsProfit && currentIsProfit) {
+      return QuarterlyGrowth.turnedPositive;
+    }
+    return QuarterlyGrowth.notMeaningful;
   }
 }
 
-extension GrowthPresentationX on double? {
-  String get formattedPercent {
-    final value = this;
-    if (value == null) return '-';
-    final sign = value > 0 ? '+' : '';
-    final percentVal = value * 100;
-    final fmt = NumberFormat("0.0", "en_US");
-    return '$sign${fmt.format(percentVal)}%';
+extension GrowthPresentationX on QuarterlyGrowth {
+  String formattedPercent(BuildContext context) {
+    switch (outcome) {
+      case GrowthOutcome.none:
+        return '-';
+      case GrowthOutcome.numeric:
+        final percentValue = percent;
+        if (percentValue == null) return '-';
+        final scaledPercent = percentValue * _percentMultiplier;
+        final sign = scaledPercent > 0 ? '+' : '';
+        final format = NumberFormat(
+          _growthPercentPattern,
+          Localizations.localeOf(context).toString(),
+        );
+        return '$sign${format.format(scaledPercent)}%';
+      case GrowthOutcome.turnedPositive:
+        return 'Pos.';
+      case GrowthOutcome.turnedNegative:
+        return 'Neg.';
+      case GrowthOutcome.notMeaningful:
+        return 'N/M';
+    }
   }
 
   Color getGrowthColor({
@@ -100,15 +156,26 @@ extension GrowthPresentationX on double? {
     required bool isInverse,
     required bool isNeutral,
   }) {
-    final value = this;
-    if (value == null) return AppColors.slate500;
-    if (isNeutral || value == 0) return AppColors.textPrimary;
-
-    final isPositive = value > 0;
-
-    if (isInverse) {
-      return isPositive ? AppColors.criticalText : AppColors.goodText;
+    switch (outcome) {
+      case GrowthOutcome.none:
+        return AppColors.slate500;
+      case GrowthOutcome.notMeaningful:
+        return AppColors.textSecondary;
+      case GrowthOutcome.numeric:
+        final value = percent;
+        if (value == null) return AppColors.textPrimary;
+        if (isNeutral || value == 0) return AppColors.textPrimary;
+        final isPositive = value > 0;
+        if (isInverse) {
+          return isPositive ? AppColors.criticalText : AppColors.goodText;
+        }
+        return isPositive ? AppColors.goodText : AppColors.criticalText;
+      case GrowthOutcome.turnedPositive:
+        if (isNeutral) return AppColors.textPrimary;
+        return isInverse ? AppColors.criticalText : AppColors.goodText;
+      case GrowthOutcome.turnedNegative:
+        if (isNeutral) return AppColors.textPrimary;
+        return isInverse ? AppColors.goodText : AppColors.criticalText;
     }
-    return isPositive ? AppColors.goodText : AppColors.criticalText;
   }
 }
