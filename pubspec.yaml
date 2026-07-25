@@ -2,7 +2,7 @@ name: bizzie
 description: "AI Stock market mobile app"
 publish_to: 'none' 
 
-version: 1.0.4+1
+version: 1.0.5+1
 
 environment:
   sdk: ^3.8.0
