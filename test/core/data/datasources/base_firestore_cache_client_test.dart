@@ -515,6 +515,75 @@ void main() {
         );
 
         test(
+          'fetchWithCacheFirst_afterCloseSettledIntradayEntry_returnsCacheNotFound',
+          () async {
+            // arrange: now is 5pm ET (close settled); entry captured intraday
+            // at noon must be invalidated so the final close is re-fetched.
+            when(
+              () => mockTimeProvider.nowEt,
+            ).thenReturn(DateTime.utc(2026, 7, 8, 17, 0));
+            stubBothSources(buildEntry(DateTime.utc(2026, 7, 8, 12, 0)));
+
+            // act
+            final result = await sut.fetchWithCacheFirst(
+              mockDocRef,
+              strictMarketAware: true,
+            );
+
+            // assert
+            expect(result.isNotFound, isTrue);
+          },
+        );
+
+        test(
+          'fetchWithCacheFirst_afterCloseSettledEntryAfterSettlement_returnsCacheSuccess',
+          () async {
+            // arrange: entry captured after the close settled reflects the
+            // final closing price and stays valid.
+            when(
+              () => mockTimeProvider.nowEt,
+            ).thenReturn(DateTime.utc(2026, 7, 8, 18, 0));
+            stubGetForSource(
+              Source.cache,
+              buildSnapshot(buildEntry(DateTime.utc(2026, 7, 8, 16, 30))),
+            );
+
+            // act
+            final result = await sut.fetchWithCacheFirst(
+              mockDocRef,
+              strictMarketAware: true,
+            );
+
+            // assert
+            expect(result, isA<cache.CacheSuccess<String>>());
+          },
+        );
+
+        test(
+          'fetchWithCacheFirst_withinSettlementBufferIntradayEntry_returnsCacheSuccess',
+          () async {
+            // arrange: at 4:10pm ET the buffer has not elapsed, so the intraday
+            // entry is still treated as valid (no premature re-fetch).
+            when(
+              () => mockTimeProvider.nowEt,
+            ).thenReturn(DateTime.utc(2026, 7, 8, 16, 10));
+            stubGetForSource(
+              Source.cache,
+              buildSnapshot(buildEntry(DateTime.utc(2026, 7, 8, 12, 0))),
+            );
+
+            // act
+            final result = await sut.fetchWithCacheFirst(
+              mockDocRef,
+              strictMarketAware: true,
+            );
+
+            // assert
+            expect(result, isA<cache.CacheSuccess<String>>());
+          },
+        );
+
+        test(
           'fetchWithCacheFirst_beforeMarketOpenWithinTtl_returnsCacheSuccess',
           () async {
             // arrange
