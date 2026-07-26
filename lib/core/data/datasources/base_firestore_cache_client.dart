@@ -9,6 +9,8 @@ import 'package:bizzie/core/data/models/firestore_cache_entry.dart';
 import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:bizzie/services/firestore_service.dart';
 
+const int _eodSettlementBufferMinutes = 20;
+
 abstract class BaseFirestoreCacheClient {
   final FirestoreService _firestoreService;
   final ITimeProvider _timeProvider;
@@ -86,17 +88,26 @@ abstract class BaseFirestoreCacheClient {
     required DateTime lastUpdated,
     required DateTime nowEt,
   }) {
-    final marketOpenUtc = nowEt
-        .toUtc()
-        .subtract(
-          Duration(
-            hours: nowEt.hour,
-            minutes: nowEt.minute,
-            seconds: nowEt.second,
-          ),
-        )
-        .add(const Duration(hours: 9, minutes: 30));
-    return lastUpdated.toUtc().isAfter(marketOpenUtc);
+    final midnightEtUtc = nowEt.toUtc().subtract(
+      Duration(
+        hours: nowEt.hour,
+        minutes: nowEt.minute,
+        seconds: nowEt.second,
+      ),
+    );
+
+    final marketOpenUtc = midnightEtUtc.add(
+      const Duration(hours: 9, minutes: 30),
+    );
+    final closeSettledUtc = midnightEtUtc.add(
+      const Duration(hours: 16, minutes: _eodSettlementBufferMinutes),
+    );
+
+    final anchorUtc = nowEt.toUtc().isBefore(closeSettledUtc)
+        ? marketOpenUtc
+        : closeSettledUtc;
+
+    return lastUpdated.toUtc().isAfter(anchorUtc);
   }
 
   bool _isValidTtlCache({

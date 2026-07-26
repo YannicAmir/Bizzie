@@ -195,7 +195,7 @@ class FinancialTableRow extends StatelessWidget {
 }
 
 class _GrowthCell extends StatelessWidget {
-  final double? growth;
+  final QuarterlyGrowth growth;
   final bool isInverseGrowth;
   final bool isNeutralColor;
 
@@ -208,7 +208,7 @@ class _GrowthCell extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Text(
-      growth.formattedPercent,
+      growth.formattedPercent(context),
       textAlign: TextAlign.right,
       style: AppTextStyles.bodyMediumBold.copyWith(
         color: growth.getGrowthColor(
