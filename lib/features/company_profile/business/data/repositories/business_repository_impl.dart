@@ -62,7 +62,9 @@ class BusinessRepositoryImpl implements IBusinessRepository {
           results[4] as (String?, CompanyProfileDataOrigin)?;
       final cachedProxyUrl = cachedProxyUrlTuple?.$1;
 
-      return profileResult.fold((failure) => left(failure), (profileData) {
+      return await profileResult.fold((failure) => left(failure), (
+        profileData,
+      ) {
         final profile = profileData.$1;
         final profileOrigin = profileData.$2;
         final annualIncome = annualResult.$1;

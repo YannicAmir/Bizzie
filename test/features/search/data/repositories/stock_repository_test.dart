@@ -90,6 +90,29 @@ void main() {
       );
     });
 
+    group('getAllStocks', () {
+      test('getAllStocks_fileReadFails_returnsCacheFailure', () async {
+        // arrange
+        when(
+          () => mockLocalDataSource.getLocalStockFile(),
+        ).thenAnswer((_) async => mockFile);
+        when(() => mockFile.exists()).thenAnswer((_) async => true);
+        when(
+          () => mockFile.readAsString(),
+        ).thenThrow(const FileSystemException('read failed'));
+
+        // act
+        final result = await repository.getAllStocks();
+
+        // assert
+        expect(result.isLeft(), isTrue);
+        result.fold(
+          (failure) => expect(failure, isA<CacheFailure>()),
+          (_) => fail('Should return left'),
+        );
+      });
+    });
+
     group('hasLocalFile', () {
       test('hasLocalFile_dataSourceReturnsTrue_returnsTrue', () async {
         // arrange

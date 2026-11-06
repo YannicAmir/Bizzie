@@ -85,7 +85,7 @@ class SecurityRepositoryImpl implements ISecurityRepository {
             _securityRemoteDataSource.getEarningsReports(ticker),
       );
 
-      return res.map(
+      return await res.map(
         success: (s) => right((_processEarnings(s.data), s.origin)),
         failure: (f) => left(f.failure),
         notFound: (_) => right((null, CompanyProfileDataOrigin.cache)),

@@ -46,7 +46,7 @@ class FreeCashFlowRepositoryImpl implements IFreeCashFlowRepository {
         ),
       );
 
-      return annualRes.map(
+      return await annualRes.map(
         success: (annualS) => quartRes.map(
           success: (quartS) async {
             final annual = annualS.data;

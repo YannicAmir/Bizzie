@@ -23,7 +23,7 @@ class DividendRepositoryImpl implements IDividendRepository {
         remoteFetcher: () => _remoteDataSource.getDividends(ticker),
       );
 
-      return res.map(
+      return await res.map(
         success: (s) => right((
           DividendInfo(
             symbol: ticker,

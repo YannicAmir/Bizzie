@@ -30,7 +30,7 @@ class RoeRepositoryImpl implements IRoeRepository {
         remoteFetcher: () => _remoteDataSource.getKeyMetrics(ticker),
       );
 
-      return res.map(
+      return await res.map(
         success: (s) =>
             right((s.data.map((d) => d.toRoe()).toList(), s.origin)),
         failure: (f) => left(f.failure),

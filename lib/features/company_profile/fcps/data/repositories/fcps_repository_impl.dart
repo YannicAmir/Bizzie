@@ -64,7 +64,7 @@ class FcpsRepositoryImpl implements IFcpsRepository {
         ),
       );
 
-      return annualCFRes.map(
+      return await annualCFRes.map(
         success: (annualCFS) => quartCFRes.map(
           success: (quartCFS) => annualIncRes.map(
             success: (annualIncS) => quartIncRes.map(

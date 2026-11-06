@@ -222,7 +222,7 @@ class FinancialStatementsRepositoryImpl
         ticker: ticker,
       );
 
-      return conversionRes.fold((f) => left(f), (convData) {
+      return await conversionRes.fold((f) => left(f), (convData) {
         final conversion = convData.$1;
         final convOrigin = convData.$2;
         final multiplier = conversion.multiplier;

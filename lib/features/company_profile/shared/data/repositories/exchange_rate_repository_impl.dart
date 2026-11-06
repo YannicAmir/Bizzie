@@ -71,7 +71,7 @@ class ExchangeRateRepositoryImpl implements IExchangeRateRepository {
         },
       );
 
-      return res.map(
+      return await res.map(
         success: (s) => right((
           (multiplier: s.data, targetCurrency: targetCurrency),
           s.origin,

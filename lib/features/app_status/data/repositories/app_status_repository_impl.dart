@@ -214,7 +214,7 @@ class AppStatusRepositoryImpl implements IAppStatusRepository {
         _logger.info(
           'Fast Path: Checking cached minVersion: "$cachedMinVersion"',
         );
-        return _determineStatus(
+        return await _determineStatus(
           cachedMinVersion,
           cachedAppStoreLink ?? '',
           cachedPlayStoreLink ?? '',

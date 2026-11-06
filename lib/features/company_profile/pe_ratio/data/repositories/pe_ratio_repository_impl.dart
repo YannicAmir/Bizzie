@@ -47,7 +47,7 @@ class PeRatioRepositoryImpl implements IPeRatioRepository {
         },
       );
 
-      return res.map(
+      return await res.map(
         success: (s) =>
             right((s.data.map((d) => d.toPeRatio()).toList(), s.origin)),
         failure: (f) => left(f.failure),

@@ -230,6 +230,22 @@ void main() {
     });
 
     group('watchStatus', () {
+      test('watchStatus_cachedCheckFails_emitsNormal', () async {
+        // arrange
+        when(
+          () => mockLocalDataSource.getCachedMinAppVersion(),
+        ).thenReturn(tMinVersion);
+        when(
+          () => mockAppInfoService.getAppVersion(),
+        ).thenThrow(Exception('version unavailable'));
+
+        // act
+        final result = await repository.watchStatus().first;
+
+        // assert
+        expect(result, const AppStatus.normal());
+      });
+
       test('watchStatus_emitsInitialCachedThenFresh', () async {
         // arrange
         when(
