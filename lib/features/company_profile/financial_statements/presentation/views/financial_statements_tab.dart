@@ -1,4 +1,5 @@
 import 'package:bizzie/features/company_profile/financial_statements/presentation/enums/financial_statement_type.dart';
+import 'package:bizzie/features/company_profile/shared/presentation/widgets/currency_conversion_notice.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:bizzie/shared/widgets/inputs/bizzie_switch.dart';
 import 'package:flutter/material.dart';
@@ -82,7 +83,10 @@ class _FinancialStatementsTabState extends State<FinancialStatementsTab>
                         );
                       },
                     ),
-                    AppConstants.mainSectionSpacing,
+                    CurrencyConversionNotice(
+                      originalCurrency: state.originalCurrency,
+                      displayedCurrency: state.reportedCurrency,
+                    ),
                     _ActiveStatementSwitcher(
                       state: state,
                       ticker: widget.ticker,

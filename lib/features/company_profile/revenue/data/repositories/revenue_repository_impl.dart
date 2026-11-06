@@ -52,10 +52,12 @@ class RevenueRepositoryImpl implements IRevenueRepository {
             final annual = annualS.data;
             final quart = quartS.data;
 
+            final originalCurrency =
+                annual.firstOrNull?.reportedCurrency ??
+                quart.firstOrNull?.reportedCurrency;
+
             final conversionRes = await _exchangeRateRepository.getMultiplier(
-              reportedCurrency:
-                  annual.firstOrNull?.reportedCurrency ??
-                  quart.firstOrNull?.reportedCurrency,
+              reportedCurrency: originalCurrency,
               ticker: ticker,
             );
 
@@ -66,6 +68,7 @@ class RevenueRepositoryImpl implements IRevenueRepository {
               final result = RevenueStats(
                 symbol: ticker,
                 reportedCurrency: conversion.targetCurrency,
+                originalCurrency: originalCurrency,
                 annualRevenue: annual
                     .where((d) => d.date?.isNotEmpty == true)
                     .map(

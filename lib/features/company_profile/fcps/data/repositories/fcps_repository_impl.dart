@@ -74,11 +74,13 @@ class FcpsRepositoryImpl implements IFcpsRepository {
                 final annualInc = annualIncS.data;
                 final quartInc = quartIncS.data;
 
+                final originalCurrency =
+                    annualCF.firstOrNull?.reportedCurrency ??
+                    annualInc.firstOrNull?.reportedCurrency;
+
                 final conversionRes = await _exchangeRateRepository
                     .getMultiplier(
-                      reportedCurrency:
-                          annualCF.firstOrNull?.reportedCurrency ??
-                          annualInc.firstOrNull?.reportedCurrency,
+                      reportedCurrency: originalCurrency,
                       ticker: ticker,
                     );
 
@@ -116,6 +118,7 @@ class FcpsRepositoryImpl implements IFcpsRepository {
                         })
                         .toList(),
                     reportedCurrency: conversion.targetCurrency,
+                    originalCurrency: originalCurrency,
                   );
 
                   final origins = [

@@ -8,6 +8,7 @@ abstract class RevenueStats with _$RevenueStats {
   const factory RevenueStats({
     required String symbol,
     required String reportedCurrency,
+    String? originalCurrency,
     required List<FinancialDataPoint> annualRevenue,
     required List<FinancialDataPoint> quarterlyRevenue,
   }) = _RevenueStats;

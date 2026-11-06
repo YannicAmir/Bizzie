@@ -89,6 +89,7 @@ class _EpsTabState extends State<EpsTab> with AutomaticKeepAliveClientMixin {
                 annualData: stats.annualEps,
                 quarterlyData: stats.quarterlyEps,
                 currency: stats.reportedCurrency,
+                originalCurrency: stats.originalCurrency,
                 historyLimit: loadedState.historyLimit,
                 metricLabel: 'EPS',
                 ttmTitle: 'EPS TTM',

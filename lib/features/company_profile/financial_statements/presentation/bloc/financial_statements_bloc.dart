@@ -186,6 +186,7 @@ class FinancialStatementsBloc
       state.copyWith(
         income: _loadedFlowFrom(data, previous: previous, dateOf: (s) => s.date),
         reportedCurrency: _deriveReportedCurrency(data),
+        originalCurrency: _deriveOriginalCurrency(data),
       ),
     );
   }
@@ -371,6 +372,9 @@ class FinancialStatementsBloc
       : (data.quarterly.isNotEmpty
             ? data.quarterly.first.reportedCurrency
             : 'USD');
+
+  String? _deriveOriginalCurrency(_FetchedStatements<IncomeStatement> data) =>
+      (data.annual.firstOrNull ?? data.quarterly.firstOrNull)?.originalCurrency;
 
   Future<void> _onStalenessCheckRequested(
     StalenessCheckRequested e,

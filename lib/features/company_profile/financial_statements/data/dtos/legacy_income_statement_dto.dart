@@ -80,6 +80,7 @@ abstract class LegacyIncomeStatementDto with _$LegacyIncomeStatementDto {
       date: date ?? '',
       symbol: symbol ?? '',
       reportedCurrency: targetCurrency ?? reportedCurrency ?? '',
+      originalCurrency: reportedCurrency,
       period: period ?? '',
       revenue: (revenue ?? 0.0) * multiplier,
       grossProfit: (grossProfit ?? 0.0) * multiplier,

@@ -98,6 +98,64 @@ void main() {
       },
     );
 
+    group('originalCurrency', () {
+      void arrangeConversion({required String targetCurrency}) {
+        when(
+          () => mockLocalDataSource.syncIncomeStatements(
+            tTicker,
+            period: any(named: 'period'),
+            remoteFetcher: any(named: 'remoteFetcher'),
+          ),
+        ).thenAnswer(
+          (_) async => cache.CacheSuccess([
+            tIncomeStatementDto.copyWith(reportedCurrency: 'TWD'),
+          ], CompanyProfileDataOrigin.cache),
+        );
+        when(
+          () => mockExchangeRateRepository.getMultiplier(
+            reportedCurrency: any(named: 'reportedCurrency'),
+            ticker: any(named: 'ticker'),
+          ),
+        ).thenAnswer(
+          (_) async => right((
+            (multiplier: 0.03, targetCurrency: targetCurrency),
+            CompanyProfileDataOrigin.cache,
+          )),
+        );
+      }
+
+      test('getNetIncomeStats_converted_exposesOriginalCurrency', () async {
+        // arrange
+        arrangeConversion(targetCurrency: 'USD');
+
+        // act
+        final result = await repository.getNetIncomeStats(tTicker);
+
+        // assert
+        result.fold((l) => fail('Should return right'), (tuple) {
+          expect(tuple.$1.reportedCurrency, 'USD');
+          expect(tuple.$1.originalCurrency, 'TWD');
+        });
+      });
+
+      test(
+        'getNetIncomeStats_conversionFellBack_originalMatchesReported',
+        () async {
+          // arrange
+          arrangeConversion(targetCurrency: 'TWD');
+
+          // act
+          final result = await repository.getNetIncomeStats(tTicker);
+
+          // assert
+          result.fold((l) => fail('Should return right'), (tuple) {
+            expect(tuple.$1.reportedCurrency, 'TWD');
+            expect(tuple.$1.originalCurrency, 'TWD');
+          });
+        },
+      );
+    });
+
     test('getNetIncomeStats_serverExample_returnLeftFailure', () async {
       // Arrange
       when(

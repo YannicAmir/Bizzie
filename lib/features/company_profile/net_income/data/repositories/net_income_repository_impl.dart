@@ -52,10 +52,12 @@ class NetIncomeRepositoryImpl implements INetIncomeRepository {
             final annual = annualS.data;
             final quart = quartS.data;
 
+            final originalCurrency =
+                annual.firstOrNull?.reportedCurrency ??
+                quart.firstOrNull?.reportedCurrency;
+
             final conversionRes = await _exchangeRateRepository.getMultiplier(
-              reportedCurrency:
-                  annual.firstOrNull?.reportedCurrency ??
-                  quart.firstOrNull?.reportedCurrency,
+              reportedCurrency: originalCurrency,
               ticker: ticker,
             );
 
@@ -65,6 +67,7 @@ class NetIncomeRepositoryImpl implements INetIncomeRepository {
 
               final result = NetIncomeStats(
                 reportedCurrency: conversion.targetCurrency,
+                originalCurrency: originalCurrency,
                 annualNetIncome: annual
                     .where((d) => d.date?.isNotEmpty == true)
                     .map(

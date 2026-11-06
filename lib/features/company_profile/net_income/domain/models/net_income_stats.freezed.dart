@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$NetIncomeStats {
 
- String get reportedCurrency; List<FinancialDataPoint> get annualNetIncome; List<FinancialDataPoint> get quarterlyNetIncome;
+ String get reportedCurrency; String? get originalCurrency; List<FinancialDataPoint> get annualNetIncome; List<FinancialDataPoint> get quarterlyNetIncome;
 /// Create a copy of NetIncomeStats
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $NetIncomeStatsCopyWith<NetIncomeStats> get copyWith => _$NetIncomeStatsCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is NetIncomeStats&&(identical(other.reportedCurrency, reportedCurrency) || other.reportedCurrency == reportedCurrency)&&const DeepCollectionEquality().equals(other.annualNetIncome, annualNetIncome)&&const DeepCollectionEquality().equals(other.quarterlyNetIncome, quarterlyNetIncome));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is NetIncomeStats&&(identical(other.reportedCurrency, reportedCurrency) || other.reportedCurrency == reportedCurrency)&&(identical(other.originalCurrency, originalCurrency) || other.originalCurrency == originalCurrency)&&const DeepCollectionEquality().equals(other.annualNetIncome, annualNetIncome)&&const DeepCollectionEquality().equals(other.quarterlyNetIncome, quarterlyNetIncome));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,reportedCurrency,const DeepCollectionEquality().hash(annualNetIncome),const DeepCollectionEquality().hash(quarterlyNetIncome));
+int get hashCode => Object.hash(runtimeType,reportedCurrency,originalCurrency,const DeepCollectionEquality().hash(annualNetIncome),const DeepCollectionEquality().hash(quarterlyNetIncome));
 
 @override
 String toString() {
-  return 'NetIncomeStats(reportedCurrency: $reportedCurrency, annualNetIncome: $annualNetIncome, quarterlyNetIncome: $quarterlyNetIncome)';
+  return 'NetIncomeStats(reportedCurrency: $reportedCurrency, originalCurrency: $originalCurrency, annualNetIncome: $annualNetIncome, quarterlyNetIncome: $quarterlyNetIncome)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $NetIncomeStatsCopyWith<$Res>  {
   factory $NetIncomeStatsCopyWith(NetIncomeStats value, $Res Function(NetIncomeStats) _then) = _$NetIncomeStatsCopyWithImpl;
 @useResult
 $Res call({
- String reportedCurrency, List<FinancialDataPoint> annualNetIncome, List<FinancialDataPoint> quarterlyNetIncome
+ String reportedCurrency, String? originalCurrency, List<FinancialDataPoint> annualNetIncome, List<FinancialDataPoint> quarterlyNetIncome
 });
 
 
@@ -62,10 +62,11 @@ class _$NetIncomeStatsCopyWithImpl<$Res>
 
 /// Create a copy of NetIncomeStats
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? reportedCurrency = null,Object? annualNetIncome = null,Object? quarterlyNetIncome = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? reportedCurrency = null,Object? originalCurrency = freezed,Object? annualNetIncome = null,Object? quarterlyNetIncome = null,}) {
   return _then(_self.copyWith(
 reportedCurrency: null == reportedCurrency ? _self.reportedCurrency : reportedCurrency // ignore: cast_nullable_to_non_nullable
-as String,annualNetIncome: null == annualNetIncome ? _self.annualNetIncome : annualNetIncome // ignore: cast_nullable_to_non_nullable
+as String,originalCurrency: freezed == originalCurrency ? _self.originalCurrency : originalCurrency // ignore: cast_nullable_to_non_nullable
+as String?,annualNetIncome: null == annualNetIncome ? _self.annualNetIncome : annualNetIncome // ignore: cast_nullable_to_non_nullable
 as List<FinancialDataPoint>,quarterlyNetIncome: null == quarterlyNetIncome ? _self.quarterlyNetIncome : quarterlyNetIncome // ignore: cast_nullable_to_non_nullable
 as List<FinancialDataPoint>,
   ));
@@ -152,10 +153,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String reportedCurrency,  List<FinancialDataPoint> annualNetIncome,  List<FinancialDataPoint> quarterlyNetIncome)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String reportedCurrency,  String? originalCurrency,  List<FinancialDataPoint> annualNetIncome,  List<FinancialDataPoint> quarterlyNetIncome)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _NetIncomeStats() when $default != null:
-return $default(_that.reportedCurrency,_that.annualNetIncome,_that.quarterlyNetIncome);case _:
+return $default(_that.reportedCurrency,_that.originalCurrency,_that.annualNetIncome,_that.quarterlyNetIncome);case _:
   return orElse();
 
 }
@@ -173,10 +174,10 @@ return $default(_that.reportedCurrency,_that.annualNetIncome,_that.quarterlyNetI
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String reportedCurrency,  List<FinancialDataPoint> annualNetIncome,  List<FinancialDataPoint> quarterlyNetIncome)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String reportedCurrency,  String? originalCurrency,  List<FinancialDataPoint> annualNetIncome,  List<FinancialDataPoint> quarterlyNetIncome)  $default,) {final _that = this;
 switch (_that) {
 case _NetIncomeStats():
-return $default(_that.reportedCurrency,_that.annualNetIncome,_that.quarterlyNetIncome);case _:
+return $default(_that.reportedCurrency,_that.originalCurrency,_that.annualNetIncome,_that.quarterlyNetIncome);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -193,10 +194,10 @@ return $default(_that.reportedCurrency,_that.annualNetIncome,_that.quarterlyNetI
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String reportedCurrency,  List<FinancialDataPoint> annualNetIncome,  List<FinancialDataPoint> quarterlyNetIncome)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String reportedCurrency,  String? originalCurrency,  List<FinancialDataPoint> annualNetIncome,  List<FinancialDataPoint> quarterlyNetIncome)?  $default,) {final _that = this;
 switch (_that) {
 case _NetIncomeStats() when $default != null:
-return $default(_that.reportedCurrency,_that.annualNetIncome,_that.quarterlyNetIncome);case _:
+return $default(_that.reportedCurrency,_that.originalCurrency,_that.annualNetIncome,_that.quarterlyNetIncome);case _:
   return null;
 
 }
@@ -208,10 +209,11 @@ return $default(_that.reportedCurrency,_that.annualNetIncome,_that.quarterlyNetI
 
 
 class _NetIncomeStats implements NetIncomeStats {
-  const _NetIncomeStats({required this.reportedCurrency, required final  List<FinancialDataPoint> annualNetIncome, required final  List<FinancialDataPoint> quarterlyNetIncome}): _annualNetIncome = annualNetIncome,_quarterlyNetIncome = quarterlyNetIncome;
+  const _NetIncomeStats({required this.reportedCurrency, this.originalCurrency, required final  List<FinancialDataPoint> annualNetIncome, required final  List<FinancialDataPoint> quarterlyNetIncome}): _annualNetIncome = annualNetIncome,_quarterlyNetIncome = quarterlyNetIncome;
   
 
 @override final  String reportedCurrency;
+@override final  String? originalCurrency;
  final  List<FinancialDataPoint> _annualNetIncome;
 @override List<FinancialDataPoint> get annualNetIncome {
   if (_annualNetIncome is EqualUnmodifiableListView) return _annualNetIncome;
@@ -237,16 +239,16 @@ _$NetIncomeStatsCopyWith<_NetIncomeStats> get copyWith => __$NetIncomeStatsCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _NetIncomeStats&&(identical(other.reportedCurrency, reportedCurrency) || other.reportedCurrency == reportedCurrency)&&const DeepCollectionEquality().equals(other._annualNetIncome, _annualNetIncome)&&const DeepCollectionEquality().equals(other._quarterlyNetIncome, _quarterlyNetIncome));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _NetIncomeStats&&(identical(other.reportedCurrency, reportedCurrency) || other.reportedCurrency == reportedCurrency)&&(identical(other.originalCurrency, originalCurrency) || other.originalCurrency == originalCurrency)&&const DeepCollectionEquality().equals(other._annualNetIncome, _annualNetIncome)&&const DeepCollectionEquality().equals(other._quarterlyNetIncome, _quarterlyNetIncome));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,reportedCurrency,const DeepCollectionEquality().hash(_annualNetIncome),const DeepCollectionEquality().hash(_quarterlyNetIncome));
+int get hashCode => Object.hash(runtimeType,reportedCurrency,originalCurrency,const DeepCollectionEquality().hash(_annualNetIncome),const DeepCollectionEquality().hash(_quarterlyNetIncome));
 
 @override
 String toString() {
-  return 'NetIncomeStats(reportedCurrency: $reportedCurrency, annualNetIncome: $annualNetIncome, quarterlyNetIncome: $quarterlyNetIncome)';
+  return 'NetIncomeStats(reportedCurrency: $reportedCurrency, originalCurrency: $originalCurrency, annualNetIncome: $annualNetIncome, quarterlyNetIncome: $quarterlyNetIncome)';
 }
 
 
@@ -257,7 +259,7 @@ abstract mixin class _$NetIncomeStatsCopyWith<$Res> implements $NetIncomeStatsCo
   factory _$NetIncomeStatsCopyWith(_NetIncomeStats value, $Res Function(_NetIncomeStats) _then) = __$NetIncomeStatsCopyWithImpl;
 @override @useResult
 $Res call({
- String reportedCurrency, List<FinancialDataPoint> annualNetIncome, List<FinancialDataPoint> quarterlyNetIncome
+ String reportedCurrency, String? originalCurrency, List<FinancialDataPoint> annualNetIncome, List<FinancialDataPoint> quarterlyNetIncome
 });
 
 
@@ -274,10 +276,11 @@ class __$NetIncomeStatsCopyWithImpl<$Res>
 
 /// Create a copy of NetIncomeStats
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? reportedCurrency = null,Object? annualNetIncome = null,Object? quarterlyNetIncome = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? reportedCurrency = null,Object? originalCurrency = freezed,Object? annualNetIncome = null,Object? quarterlyNetIncome = null,}) {
   return _then(_NetIncomeStats(
 reportedCurrency: null == reportedCurrency ? _self.reportedCurrency : reportedCurrency // ignore: cast_nullable_to_non_nullable
-as String,annualNetIncome: null == annualNetIncome ? _self._annualNetIncome : annualNetIncome // ignore: cast_nullable_to_non_nullable
+as String,originalCurrency: freezed == originalCurrency ? _self.originalCurrency : originalCurrency // ignore: cast_nullable_to_non_nullable
+as String?,annualNetIncome: null == annualNetIncome ? _self._annualNetIncome : annualNetIncome // ignore: cast_nullable_to_non_nullable
 as List<FinancialDataPoint>,quarterlyNetIncome: null == quarterlyNetIncome ? _self._quarterlyNetIncome : quarterlyNetIncome // ignore: cast_nullable_to_non_nullable
 as List<FinancialDataPoint>,
   ));

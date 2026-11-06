@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$FcpsStats {
 
- List<FinancialDataPoint> get annualFcps; List<FinancialDataPoint> get quarterlyFcps; String get reportedCurrency;
+ List<FinancialDataPoint> get annualFcps; List<FinancialDataPoint> get quarterlyFcps; String get reportedCurrency; String? get originalCurrency;
 /// Create a copy of FcpsStats
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $FcpsStatsCopyWith<FcpsStats> get copyWith => _$FcpsStatsCopyWithImpl<FcpsStats>
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is FcpsStats&&const DeepCollectionEquality().equals(other.annualFcps, annualFcps)&&const DeepCollectionEquality().equals(other.quarterlyFcps, quarterlyFcps)&&(identical(other.reportedCurrency, reportedCurrency) || other.reportedCurrency == reportedCurrency));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is FcpsStats&&const DeepCollectionEquality().equals(other.annualFcps, annualFcps)&&const DeepCollectionEquality().equals(other.quarterlyFcps, quarterlyFcps)&&(identical(other.reportedCurrency, reportedCurrency) || other.reportedCurrency == reportedCurrency)&&(identical(other.originalCurrency, originalCurrency) || other.originalCurrency == originalCurrency));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(annualFcps),const DeepCollectionEquality().hash(quarterlyFcps),reportedCurrency);
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(annualFcps),const DeepCollectionEquality().hash(quarterlyFcps),reportedCurrency,originalCurrency);
 
 @override
 String toString() {
-  return 'FcpsStats(annualFcps: $annualFcps, quarterlyFcps: $quarterlyFcps, reportedCurrency: $reportedCurrency)';
+  return 'FcpsStats(annualFcps: $annualFcps, quarterlyFcps: $quarterlyFcps, reportedCurrency: $reportedCurrency, originalCurrency: $originalCurrency)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $FcpsStatsCopyWith<$Res>  {
   factory $FcpsStatsCopyWith(FcpsStats value, $Res Function(FcpsStats) _then) = _$FcpsStatsCopyWithImpl;
 @useResult
 $Res call({
- List<FinancialDataPoint> annualFcps, List<FinancialDataPoint> quarterlyFcps, String reportedCurrency
+ List<FinancialDataPoint> annualFcps, List<FinancialDataPoint> quarterlyFcps, String reportedCurrency, String? originalCurrency
 });
 
 
@@ -62,12 +62,13 @@ class _$FcpsStatsCopyWithImpl<$Res>
 
 /// Create a copy of FcpsStats
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? annualFcps = null,Object? quarterlyFcps = null,Object? reportedCurrency = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? annualFcps = null,Object? quarterlyFcps = null,Object? reportedCurrency = null,Object? originalCurrency = freezed,}) {
   return _then(_self.copyWith(
 annualFcps: null == annualFcps ? _self.annualFcps : annualFcps // ignore: cast_nullable_to_non_nullable
 as List<FinancialDataPoint>,quarterlyFcps: null == quarterlyFcps ? _self.quarterlyFcps : quarterlyFcps // ignore: cast_nullable_to_non_nullable
 as List<FinancialDataPoint>,reportedCurrency: null == reportedCurrency ? _self.reportedCurrency : reportedCurrency // ignore: cast_nullable_to_non_nullable
-as String,
+as String,originalCurrency: freezed == originalCurrency ? _self.originalCurrency : originalCurrency // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 
@@ -152,10 +153,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<FinancialDataPoint> annualFcps,  List<FinancialDataPoint> quarterlyFcps,  String reportedCurrency)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<FinancialDataPoint> annualFcps,  List<FinancialDataPoint> quarterlyFcps,  String reportedCurrency,  String? originalCurrency)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _FcpsStats() when $default != null:
-return $default(_that.annualFcps,_that.quarterlyFcps,_that.reportedCurrency);case _:
+return $default(_that.annualFcps,_that.quarterlyFcps,_that.reportedCurrency,_that.originalCurrency);case _:
   return orElse();
 
 }
@@ -173,10 +174,10 @@ return $default(_that.annualFcps,_that.quarterlyFcps,_that.reportedCurrency);cas
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<FinancialDataPoint> annualFcps,  List<FinancialDataPoint> quarterlyFcps,  String reportedCurrency)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<FinancialDataPoint> annualFcps,  List<FinancialDataPoint> quarterlyFcps,  String reportedCurrency,  String? originalCurrency)  $default,) {final _that = this;
 switch (_that) {
 case _FcpsStats():
-return $default(_that.annualFcps,_that.quarterlyFcps,_that.reportedCurrency);case _:
+return $default(_that.annualFcps,_that.quarterlyFcps,_that.reportedCurrency,_that.originalCurrency);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -193,10 +194,10 @@ return $default(_that.annualFcps,_that.quarterlyFcps,_that.reportedCurrency);cas
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<FinancialDataPoint> annualFcps,  List<FinancialDataPoint> quarterlyFcps,  String reportedCurrency)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<FinancialDataPoint> annualFcps,  List<FinancialDataPoint> quarterlyFcps,  String reportedCurrency,  String? originalCurrency)?  $default,) {final _that = this;
 switch (_that) {
 case _FcpsStats() when $default != null:
-return $default(_that.annualFcps,_that.quarterlyFcps,_that.reportedCurrency);case _:
+return $default(_that.annualFcps,_that.quarterlyFcps,_that.reportedCurrency,_that.originalCurrency);case _:
   return null;
 
 }
@@ -208,7 +209,7 @@ return $default(_that.annualFcps,_that.quarterlyFcps,_that.reportedCurrency);cas
 
 
 class _FcpsStats implements FcpsStats {
-  const _FcpsStats({required final  List<FinancialDataPoint> annualFcps, required final  List<FinancialDataPoint> quarterlyFcps, required this.reportedCurrency}): _annualFcps = annualFcps,_quarterlyFcps = quarterlyFcps;
+  const _FcpsStats({required final  List<FinancialDataPoint> annualFcps, required final  List<FinancialDataPoint> quarterlyFcps, required this.reportedCurrency, this.originalCurrency}): _annualFcps = annualFcps,_quarterlyFcps = quarterlyFcps;
   
 
  final  List<FinancialDataPoint> _annualFcps;
@@ -226,6 +227,7 @@ class _FcpsStats implements FcpsStats {
 }
 
 @override final  String reportedCurrency;
+@override final  String? originalCurrency;
 
 /// Create a copy of FcpsStats
 /// with the given fields replaced by the non-null parameter values.
@@ -237,16 +239,16 @@ _$FcpsStatsCopyWith<_FcpsStats> get copyWith => __$FcpsStatsCopyWithImpl<_FcpsSt
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _FcpsStats&&const DeepCollectionEquality().equals(other._annualFcps, _annualFcps)&&const DeepCollectionEquality().equals(other._quarterlyFcps, _quarterlyFcps)&&(identical(other.reportedCurrency, reportedCurrency) || other.reportedCurrency == reportedCurrency));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _FcpsStats&&const DeepCollectionEquality().equals(other._annualFcps, _annualFcps)&&const DeepCollectionEquality().equals(other._quarterlyFcps, _quarterlyFcps)&&(identical(other.reportedCurrency, reportedCurrency) || other.reportedCurrency == reportedCurrency)&&(identical(other.originalCurrency, originalCurrency) || other.originalCurrency == originalCurrency));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_annualFcps),const DeepCollectionEquality().hash(_quarterlyFcps),reportedCurrency);
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_annualFcps),const DeepCollectionEquality().hash(_quarterlyFcps),reportedCurrency,originalCurrency);
 
 @override
 String toString() {
-  return 'FcpsStats(annualFcps: $annualFcps, quarterlyFcps: $quarterlyFcps, reportedCurrency: $reportedCurrency)';
+  return 'FcpsStats(annualFcps: $annualFcps, quarterlyFcps: $quarterlyFcps, reportedCurrency: $reportedCurrency, originalCurrency: $originalCurrency)';
 }
 
 
@@ -257,7 +259,7 @@ abstract mixin class _$FcpsStatsCopyWith<$Res> implements $FcpsStatsCopyWith<$Re
   factory _$FcpsStatsCopyWith(_FcpsStats value, $Res Function(_FcpsStats) _then) = __$FcpsStatsCopyWithImpl;
 @override @useResult
 $Res call({
- List<FinancialDataPoint> annualFcps, List<FinancialDataPoint> quarterlyFcps, String reportedCurrency
+ List<FinancialDataPoint> annualFcps, List<FinancialDataPoint> quarterlyFcps, String reportedCurrency, String? originalCurrency
 });
 
 
@@ -274,12 +276,13 @@ class __$FcpsStatsCopyWithImpl<$Res>
 
 /// Create a copy of FcpsStats
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? annualFcps = null,Object? quarterlyFcps = null,Object? reportedCurrency = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? annualFcps = null,Object? quarterlyFcps = null,Object? reportedCurrency = null,Object? originalCurrency = freezed,}) {
   return _then(_FcpsStats(
 annualFcps: null == annualFcps ? _self._annualFcps : annualFcps // ignore: cast_nullable_to_non_nullable
 as List<FinancialDataPoint>,quarterlyFcps: null == quarterlyFcps ? _self._quarterlyFcps : quarterlyFcps // ignore: cast_nullable_to_non_nullable
 as List<FinancialDataPoint>,reportedCurrency: null == reportedCurrency ? _self.reportedCurrency : reportedCurrency // ignore: cast_nullable_to_non_nullable
-as String,
+as String,originalCurrency: freezed == originalCurrency ? _self.originalCurrency : originalCurrency // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 

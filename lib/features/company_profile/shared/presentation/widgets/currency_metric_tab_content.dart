@@ -3,6 +3,7 @@ import 'package:bizzie/features/company_profile/shared/domain/extensions/financi
 import 'package:bizzie/features/company_profile/shared/domain/models/chart_data_point.dart';
 import 'package:bizzie/features/company_profile/shared/domain/models/financial_data_point.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/extensions/chart_data_point_list_x.dart';
+import 'package:bizzie/features/company_profile/shared/presentation/widgets/currency_conversion_notice.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/widgets/financial_data_table.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/widgets/financial_highlights_section.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/widgets/period_switch.dart';
@@ -18,6 +19,7 @@ class CurrencyMetricTabContent extends StatelessWidget {
   final List<FinancialDataPoint> annualData;
   final List<FinancialDataPoint> quarterlyData;
   final String currency;
+  final String? originalCurrency;
   final int historyLimit;
   final String metricLabel;
   final String? modalMetricLabel;
@@ -34,6 +36,7 @@ class CurrencyMetricTabContent extends StatelessWidget {
     required this.annualData,
     required this.quarterlyData,
     required this.currency,
+    this.originalCurrency,
     required this.historyLimit,
     required this.metricLabel,
     this.modalMetricLabel,
@@ -58,7 +61,10 @@ class CurrencyMetricTabContent extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           PeriodSwitch(isAnnual: isAnnual, onPeriodChanged: onPeriodChanged),
-          AppConstants.mainSectionSpacing,
+          CurrencyConversionNotice(
+            originalCurrency: originalCurrency,
+            displayedCurrency: currency,
+          ),
           BizzieExpandableChart(
             key: ValueKey('${chartKeyPrefix}_$isAnnual'),
             data: chartData.toBizzieChartData(),

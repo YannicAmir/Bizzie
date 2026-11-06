@@ -8,6 +8,7 @@ abstract class RevenueProductSegments with _$RevenueProductSegments {
   const factory RevenueProductSegments({
     required String symbol,
     required String reportedCurrency,
+    String? originalCurrency,
     required List<RevenueSegment> annual,
     required List<RevenueSegment> quarterly,
   }) = _RevenueProductSegments;

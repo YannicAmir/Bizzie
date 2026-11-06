@@ -13,6 +13,9 @@ extension CompanySegmentsLoadedX on CompanySegmentsLoaded {
       ? productSegments.reportedCurrency
       : geographicSegments.reportedCurrency;
 
+  String? get originalCurrency =>
+      productSegments.originalCurrency ?? geographicSegments.originalCurrency;
+
   RevenueSegment? productSegmentForKey(String? key, {required bool isAnnual}) =>
       _segmentForKey(
         isAnnual ? productSegments.annual : productSegments.quarterly,

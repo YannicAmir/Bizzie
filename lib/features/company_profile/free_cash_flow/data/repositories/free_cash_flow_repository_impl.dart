@@ -52,10 +52,12 @@ class FreeCashFlowRepositoryImpl implements IFreeCashFlowRepository {
             final annual = annualS.data;
             final quart = quartS.data;
 
+            final originalCurrency =
+                annual.firstOrNull?.reportedCurrency ??
+                quart.firstOrNull?.reportedCurrency;
+
             final conversionRes = await _exchangeRateRepository.getMultiplier(
-              reportedCurrency:
-                  annual.firstOrNull?.reportedCurrency ??
-                  quart.firstOrNull?.reportedCurrency,
+              reportedCurrency: originalCurrency,
               ticker: ticker,
             );
 
@@ -65,6 +67,7 @@ class FreeCashFlowRepositoryImpl implements IFreeCashFlowRepository {
 
               final result = FreeCashFlowStats(
                 reportedCurrency: conversion.targetCurrency,
+                originalCurrency: originalCurrency,
                 annualFcf: annual
                     .where((d) => d.date?.isNotEmpty == true)
                     .map(

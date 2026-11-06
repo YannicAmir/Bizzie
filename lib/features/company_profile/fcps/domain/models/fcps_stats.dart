@@ -9,5 +9,6 @@ abstract class FcpsStats with _$FcpsStats {
     required List<FinancialDataPoint> annualFcps,
     required List<FinancialDataPoint> quarterlyFcps,
     required String reportedCurrency,
+    String? originalCurrency,
   }) = _FcpsStats;
 }

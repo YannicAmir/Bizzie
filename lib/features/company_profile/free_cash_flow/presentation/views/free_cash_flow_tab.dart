@@ -93,6 +93,7 @@ class _FreeCashFlowTabState extends State<FreeCashFlowTab>
                 annualData: stats.annualFcf,
                 quarterlyData: stats.quarterlyFcf,
                 currency: stats.reportedCurrency,
+                originalCurrency: stats.originalCurrency,
                 historyLimit: loadedState.historyLimit,
                 metricLabel: 'Free Cash Flow',
                 modalMetricLabel: 'FCF',

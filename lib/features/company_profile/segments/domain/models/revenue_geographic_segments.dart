@@ -8,6 +8,7 @@ abstract class RevenueGeographicSegments with _$RevenueGeographicSegments {
   const factory RevenueGeographicSegments({
     required String symbol,
     required String reportedCurrency,
+    String? originalCurrency,
     required List<RevenueSegment> annual,
     required List<RevenueSegment> quarterly,
   }) = _RevenueGeographicSegments;
