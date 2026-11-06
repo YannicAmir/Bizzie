@@ -13,7 +13,6 @@ class MockTabOrderLocalDataSource extends Mock
 class MockConfigService extends Mock implements IConfigService {}
 
 const tFreePlusNames = [
-  'chat',
   'segments',
   'freeCash',
   'fcps',
@@ -44,7 +43,7 @@ const tPaidRemoteConfig = CompanyTabsConfig(
     'shares',
     'financialStatements',
   ],
-  moreTabs: ['roe', 'peRatio', 'pfcfRatio', 'chat'],
+  moreTabs: ['roe', 'peRatio', 'pfcfRatio'],
 );
 
 void main() {
@@ -87,7 +86,6 @@ void main() {
             CompanyProfileTab.eps,
           ]);
           expect(layout.bizziePlusTabs, [
-            CompanyProfileTab.chat,
             CompanyProfileTab.segments,
             CompanyProfileTab.freeCash,
             CompanyProfileTab.fcps,
@@ -113,7 +111,6 @@ void main() {
             CompanyProfileTab.roe,
             CompanyProfileTab.peRatio,
             CompanyProfileTab.pfcfRatio,
-            CompanyProfileTab.chat,
           ]);
           expect(layout.bizziePlusTabs, isEmpty);
         });
@@ -133,7 +130,7 @@ void main() {
                 'netIncome',
               ],
               moreTabs: ['eps'],
-              bizziePlusTabs: ['chat'],
+              bizziePlusTabs: ['segments'],
             ),
           );
 
@@ -218,10 +215,10 @@ void main() {
       test(
         'getTabLayout_freeUserStoredLayoutContainsBizziePlusTab_removesIt',
         () {
-          // arrange - chat is a Bizzie Plus tab and must leave the main list
+          // arrange - segments is a Bizzie Plus tab and must leave the main list
           when(
             () => mockLocalDataSource.getMainTabs(),
-          ).thenReturn('business,news,dividends,chat');
+          ).thenReturn('business,news,dividends,segments');
           when(
             () => mockLocalDataSource.getMoreTabs(),
           ).thenReturn('netIncome,eps');
@@ -241,7 +238,7 @@ void main() {
               CompanyProfileTab.eps,
               CompanyProfileTab.revenue,
             ]);
-            expect(layout.bizziePlusTabs, contains(CompanyProfileTab.chat));
+            expect(layout.bizziePlusTabs, contains(CompanyProfileTab.segments));
           });
         },
       );
@@ -280,7 +277,7 @@ void main() {
           // arrange - persisted layout predates newer tabs
           when(
             () => mockLocalDataSource.getMainTabs(),
-          ).thenReturn('chat,business,revenue,netIncome');
+          ).thenReturn('fcps,business,revenue,netIncome');
           when(
             () => mockLocalDataSource.getMoreTabs(),
           ).thenReturn('news,dividends');
@@ -291,7 +288,7 @@ void main() {
           // assert
           result.fold((_) => fail('Should return right'), (layout) {
             expect(layout.mainTabs, [
-              CompanyProfileTab.chat,
+              CompanyProfileTab.fcps,
               CompanyProfileTab.business,
               CompanyProfileTab.revenue,
               CompanyProfileTab.netIncome,
@@ -312,10 +309,10 @@ void main() {
       );
 
       test('getTabLayout_unknownStoredTabName_skipsItAndKeepsRest', () {
-        // arrange - bogusTab simulates a tab removed in a later app version
+        // arrange - chat was removed from the app and bogusTab is unknown
         when(
           () => mockLocalDataSource.getMainTabs(),
-        ).thenReturn('chat,bogusTab,business,revenue,netIncome');
+        ).thenReturn('fcps,chat,bogusTab,business,revenue,netIncome');
 
         // act
         final result = repository.getTabLayout(isSubscribed: true);
@@ -323,7 +320,7 @@ void main() {
         // assert
         result.fold((_) => fail('Should return right'), (layout) {
           expect(layout.mainTabs, [
-            CompanyProfileTab.chat,
+            CompanyProfileTab.fcps,
             CompanyProfileTab.business,
             CompanyProfileTab.revenue,
             CompanyProfileTab.netIncome,
@@ -335,7 +332,7 @@ void main() {
         // arrange - business persisted in both lists (e.g. partial save)
         when(
           () => mockLocalDataSource.getMainTabs(),
-        ).thenReturn('chat,business,revenue,netIncome');
+        ).thenReturn('fcps,business,revenue,netIncome');
         when(
           () => mockLocalDataSource.getMoreTabs(),
         ).thenReturn('news,business,dividends');
@@ -368,7 +365,7 @@ void main() {
           () => mockLocalDataSource.setMoreTabs(any()),
         ).thenAnswer((_) async {});
         const layout = TabLayout(
-          mainTabs: [CompanyProfileTab.chat, CompanyProfileTab.revenue],
+          mainTabs: [CompanyProfileTab.fcps, CompanyProfileTab.revenue],
           moreTabs: [CompanyProfileTab.segments, CompanyProfileTab.news],
         );
 
@@ -378,7 +375,7 @@ void main() {
         // assert
         expect(result.isRight(), isTrue);
         verify(
-          () => mockLocalDataSource.setMainTabs('chat,revenue'),
+          () => mockLocalDataSource.setMainTabs('fcps,revenue'),
         ).called(1);
         verify(
           () => mockLocalDataSource.setMoreTabs('segments,news'),
@@ -391,7 +388,7 @@ void main() {
           () => mockLocalDataSource.setMainTabs(any()),
         ).thenThrow(Exception('disk full'));
         const layout = TabLayout(
-          mainTabs: [CompanyProfileTab.chat],
+          mainTabs: [CompanyProfileTab.fcps],
           moreTabs: [],
         );
 

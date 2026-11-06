@@ -252,7 +252,7 @@ void main() {
       // ASSERT
       expect(result.mainTabs, isNotEmpty);
       expect(result.moreTabs, isNotEmpty);
-      expect(result.bizziePlusTabs, contains('chat'));
+      expect(result.bizziePlusTabs, contains('segments'));
     });
 
     test('paidUsersCompanyTabsConfig_validJson_returnsConfig', () {
@@ -285,7 +285,7 @@ void main() {
 
       // ASSERT
       expect(result.mainTabs, isNotEmpty);
-      expect(result.moreTabs, contains('chat'));
+      expect(result.moreTabs, contains('roe'));
       expect(result.bizziePlusTabs, isEmpty);
     });
 

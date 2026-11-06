@@ -1,8 +1,6 @@
 import 'package:bizzie/app/themes/app_assets.dart';
 import 'package:bizzie/di/injection.dart';
 import 'package:bizzie/features/app_ratings/presentation/bloc/app_ratings_bloc.dart';
-import 'package:bizzie/features/bizzie_chat/presentation/bloc/bizzie_chat_sessions/bizzie_chat_sessions_bloc.dart';
-import 'package:bizzie/features/bizzie_chat/presentation/bloc/bizzie_chat_sessions/bizzie_chat_sessions_event.dart';
 import 'package:bizzie/features/bizzie_chat/presentation/views/bizzie_chat_modal.dart';
 import 'package:bizzie/features/company_profile/business/presentation/bloc/company_business_bloc.dart';
 import 'package:bizzie/features/company_profile/cp/presentation/bloc/company_profile_bloc.dart';
@@ -98,7 +96,6 @@ class CompanyProfilePage extends StatelessWidget {
               ),
             ),
         ),
-        BlocProvider(create: (context) => getIt<BizzieChatSessionsBloc>()),
       ],
       child: _CompanyProfileView(ticker: ticker),
     );
@@ -131,16 +128,6 @@ class _CompanyProfileViewState extends State<_CompanyProfileView>
     _tabsBloc = context.read<CompanyProfileTabsBloc>();
     _selectedTab = _tabsBloc.state.tabs.first;
     _tabController = _createTabController(length: _tabsBloc.state.tabs.length);
-    _startChatSessions();
-  }
-
-  void _startChatSessions() {
-    final uid = context.read<UserBloc>().state.uidOrNull;
-    if (uid == null) return;
-
-    context.read<BizzieChatSessionsBloc>().add(
-      BizzieChatSessionsEvent.started(uid: uid, ticker: widget.ticker),
-    );
   }
 
   TabController _createTabController({
@@ -250,11 +237,6 @@ class _CompanyProfileViewState extends State<_CompanyProfileView>
   Widget build(BuildContext context) {
     return MultiBlocListener(
       listeners: [
-        BlocListener<UserBloc, UserState>(
-          listenWhen: (previous, current) =>
-              previous.uidOrNull == null && current.uidOrNull != null,
-          listener: (context, state) => _startChatSessions(),
-        ),
         BlocListener<UserBloc, UserState>(
           listenWhen: (previous, current) =>
               previous.isSubscribed != current.isSubscribed,
@@ -454,6 +436,9 @@ class _CompanyProfileAppBar extends StatelessWidget
   );
 }
 
+const String _chatAnalyticsName = 'chat';
+const String _chatPaywallFeatureName = 'bizzie_chat';
+
 class _BizzieChatFab extends StatelessWidget {
   final String ticker;
   final String companyName;
@@ -477,8 +462,8 @@ class _BizzieChatFab extends StatelessWidget {
             } else {
               PaywallHelper.showLockedTabPaywall(
                 context,
-                tabName: CompanyProfileTab.chat.analyticsName,
-                featureName: CompanyProfileTab.chat.paywallFeatureName,
+                tabName: _chatAnalyticsName,
+                featureName: _chatPaywallFeatureName,
               );
             }
           },

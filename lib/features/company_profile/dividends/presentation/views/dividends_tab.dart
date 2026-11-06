@@ -6,12 +6,12 @@ import 'package:bizzie/features/company_profile/dividends/presentation/bloc/comp
 import 'package:bizzie/features/company_profile/dividends/presentation/bloc/company_dividends/company_dividends_state.dart';
 import 'package:bizzie/features/company_profile/security/presentation/bloc/company_security_bloc.dart';
 import 'package:bizzie/features/company_profile/security/presentation/bloc/company_security_state.dart';
-import 'package:bizzie/app/themes/app_assets.dart';
 import 'package:bizzie/features/company_profile/dividends/presentation/widgets/dividends/dividend_overview_section.dart';
 import 'package:bizzie/features/company_profile/dividends/presentation/widgets/dividends/dividend_payment_history_section.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/widgets/company_profile_error_state.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/widgets/company_profile_loading_state.dart';
 import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
+import 'package:bizzie/features/user/presentation/extensions/user_state_extensions.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/widgets/tab_visibility_observer.dart';
 import 'package:bizzie/features/company_profile/shared/domain/enums/company_profile_tab.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/extensions/company_profile_tab_x.dart';
@@ -170,10 +170,7 @@ class _DividendsEmptyState extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocSelector<UserBloc, UserState, String>(
-      selector: (state) => state.maybeMap(
-        loaded: (u) => AppAssets.getMascotForSector(u.user.favoriteSector),
-        orElse: () => AppAssets.defaultMascot,
-      ),
+      selector: (state) => state.mascotAsset,
       builder: (context, mascot) {
         return LayoutBuilder(
           builder: (context, constraints) => SingleChildScrollView(

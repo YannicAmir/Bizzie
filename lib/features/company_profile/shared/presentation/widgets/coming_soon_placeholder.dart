@@ -1,6 +1,6 @@
-import 'package:bizzie/app/themes/app_assets.dart';
 import 'package:bizzie/app/themes/app_text_styles.dart';
 import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
+import 'package:bizzie/features/user/presentation/extensions/user_state_extensions.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -28,11 +28,7 @@ class ComingSoonPlaceholder extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             BlocSelector<UserBloc, UserState, String>(
-              selector: (state) => state.maybeMap(
-                loaded: (u) =>
-                    AppAssets.getMascotForSector(u.user.favoriteSector),
-                orElse: () => AppAssets.defaultMascot,
-              ),
+              selector: (state) => state.mascotAsset,
               builder: (context, mascotAsset) {
                 return Image.asset(
                   mascotAsset,

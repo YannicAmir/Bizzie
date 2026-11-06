@@ -1,4 +1,3 @@
-import 'package:bizzie/app/themes/app_assets.dart';
 import 'package:bizzie/core/enums/paywall_source.dart';
 import 'package:bizzie/features/company_profile/shared/domain/models/chart_data_point.dart';
 import 'package:bizzie/features/company_profile/shared/domain/models/financial_data_point.dart';
@@ -8,6 +7,7 @@ import '../bloc/company_roe_state.dart';
 import 'package:bizzie/features/company_profile/shared/domain/enums/company_profile_tab.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/extensions/chart_data_point_list_x.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/extensions/company_profile_tab_x.dart';
+import 'package:bizzie/features/company_profile/shared/presentation/widgets/company_profile_empty_state.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/widgets/company_profile_error_state.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/widgets/company_profile_loading_state.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/widgets/financial_data_table.dart';
@@ -16,7 +16,6 @@ import 'package:bizzie/features/company_profile/shared/presentation/widgets/tab_
 import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:bizzie/shared/widgets/charts/bizzie_expandable_chart.dart';
 import 'package:bizzie/shared/widgets/modals/app_history_modal.dart';
-import 'package:bizzie/shared/widgets/states/bizzie_empty_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../extensions/roe_presentation_helper.dart';
@@ -135,10 +134,7 @@ class _RoeLoadedContent extends StatelessWidget {
     if (dataPoints.isEmpty) {
       return SingleChildScrollView(
         padding: AppConstants.pagePadding,
-        child: const BizzieEmptyState(
-          mascotAsset: AppAssets.defaultMascot,
-          message: 'No ROE data available',
-        ),
+        child: const CompanyProfileEmptyState(message: 'No ROE data available'),
       );
     }
 

@@ -1,4 +1,3 @@
-import 'package:bizzie/app/themes/app_assets.dart';
 import 'package:bizzie/features/company_profile/segments/domain/models/revenue_segment.dart';
 import 'package:bizzie/features/company_profile/segments/presentation/bloc/company_segments_bloc.dart';
 import 'package:bizzie/features/company_profile/segments/presentation/bloc/company_segments_event.dart';
@@ -8,6 +7,7 @@ import 'package:bizzie/features/company_profile/segments/presentation/utils/segm
 import 'package:bizzie/features/company_profile/segments/presentation/widgets/segment_breakdown_section.dart';
 import 'package:bizzie/features/company_profile/shared/domain/enums/company_profile_tab.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/extensions/company_profile_tab_x.dart';
+import 'package:bizzie/features/company_profile/shared/presentation/widgets/company_profile_empty_state.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/widgets/company_profile_error_state.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/widgets/company_profile_loading_state.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/widgets/currency_conversion_notice.dart';
@@ -15,7 +15,6 @@ import 'package:bizzie/features/company_profile/shared/presentation/widgets/peri
 import 'package:bizzie/features/company_profile/shared/presentation/widgets/tab_visibility_observer.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:bizzie/shared/widgets/inputs/bizzie_switch.dart';
-import 'package:bizzie/shared/widgets/states/bizzie_empty_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -98,8 +97,7 @@ class _LoadedView extends StatelessWidget {
         isAnnual: isAnnual,
         children: const [
           AppConstants.emptyStateTopSpacing,
-          BizzieEmptyState(
-            mascotAsset: AppAssets.defaultMascot,
+          CompanyProfileEmptyState(
             message: 'No segment data available for this period.',
           ),
         ],

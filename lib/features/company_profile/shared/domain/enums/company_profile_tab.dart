@@ -1,6 +1,5 @@
 enum CompanyProfileTab {
   security,
-  chat,
   business,
   news,
   dividends,

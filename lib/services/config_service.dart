@@ -74,7 +74,6 @@ class ConfigService implements IConfigService {
     "mainTabs": ["business", "news", "dividends", "revenue"],
     "moreTabs": ["netIncome", "eps"],
     "bizziePlusTabs": [
-      "chat",
       "segments",
       "freeCash",
       "fcps",
@@ -100,7 +99,7 @@ class ConfigService implements IConfigService {
       "shares",
       "financialStatements",
     ],
-    "moreTabs": ["roe", "peRatio", "pfcfRatio", "chat"],
+    "moreTabs": ["roe", "peRatio", "pfcfRatio"],
   };
 
   static const _defaultSectorDescriptions = {

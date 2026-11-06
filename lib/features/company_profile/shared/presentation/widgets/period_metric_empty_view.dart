@@ -1,7 +1,6 @@
-import 'package:bizzie/app/themes/app_assets.dart';
+import 'package:bizzie/features/company_profile/shared/presentation/widgets/company_profile_empty_state.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/widgets/period_switch.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
-import 'package:bizzie/shared/widgets/states/bizzie_empty_state.dart';
 import 'package:flutter/material.dart';
 
 class PeriodMetricEmptyView extends StatelessWidget {
@@ -25,10 +24,7 @@ class PeriodMetricEmptyView extends StatelessWidget {
         children: [
           PeriodSwitch(isAnnual: isAnnual, onPeriodChanged: onPeriodChanged),
           AppConstants.emptyStateTopSpacing,
-          BizzieEmptyState(
-            mascotAsset: AppAssets.defaultMascot,
-            message: message,
-          ),
+          CompanyProfileEmptyState(message: message),
         ],
       ),
     );

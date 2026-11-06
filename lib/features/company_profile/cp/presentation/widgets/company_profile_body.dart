@@ -1,4 +1,3 @@
-import 'package:bizzie/features/bizzie_chat/presentation/views/bizzie_chat_tab.dart';
 import 'package:bizzie/features/company_profile/business/presentation/views/business_tab.dart';
 import 'package:bizzie/features/company_profile/dividends/presentation/views/dividends_tab.dart';
 import 'package:bizzie/features/company_profile/eps/presentation/views/eps_tab.dart';
@@ -40,8 +39,6 @@ class CompanyProfileBody extends StatelessWidget {
         switch (tab) {
           case CompanyProfileTab.security:
             return SecurityTab(ticker: ticker);
-          case CompanyProfileTab.chat:
-            return BizzieChatTab(ticker: ticker);
           case CompanyProfileTab.business:
             return BusinessTab(ticker: ticker);
           case CompanyProfileTab.news:

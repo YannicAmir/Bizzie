@@ -152,7 +152,6 @@ class _MoreTabState extends State<MoreTab> with AutomaticKeepAliveClientMixin {
     PaywallHelper.showLockedTabPaywall(
       outerContext,
       tabName: tab.analyticsName,
-      featureName: tab.paywallFeatureName,
     );
   }
 
