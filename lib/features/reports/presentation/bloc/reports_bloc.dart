@@ -280,7 +280,7 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
     event.result.fold(
       (failure) {
         _tracker.logFetchFailed(error: failure.errorMessage);
-        emit(ReportsState.failure(failure));
+        if (state is! Loaded) emit(ReportsState.failure(failure));
       },
       (feed) {
         final currentLastViewed =

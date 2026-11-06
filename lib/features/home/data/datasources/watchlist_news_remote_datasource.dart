@@ -32,7 +32,6 @@ class WatchlistNewsRemoteDataSource implements IWatchlistNewsRemoteDataSource {
           whereInField: FirestoreConstants.symbol,
           values: tickers,
           fromJson: WatchlistNewsDto.fromJson,
-          toJson: (dto) => dto.toJson(),
           queryBuilder: (query) => query
               .where(
                 FirestoreConstants.publishedAt,
