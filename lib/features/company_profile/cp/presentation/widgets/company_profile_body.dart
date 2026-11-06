@@ -1,3 +1,4 @@
+import 'package:bizzie/features/company_profile/ai_reports/presentation/views/ai_reports_tab.dart';
 import 'package:bizzie/features/company_profile/business/presentation/views/business_tab.dart';
 import 'package:bizzie/features/company_profile/dividends/presentation/views/dividends_tab.dart';
 import 'package:bizzie/features/company_profile/eps/presentation/views/eps_tab.dart';
@@ -61,6 +62,8 @@ class CompanyProfileBody extends StatelessWidget {
             return SharesTab(ticker: ticker);
           case CompanyProfileTab.financialStatements:
             return FinancialStatementsTab(ticker: ticker);
+          case CompanyProfileTab.aiReports:
+            return AiReportsTab(ticker: ticker);
           case CompanyProfileTab.roe:
             return RoeTab(ticker: ticker);
           case CompanyProfileTab.peRatio:

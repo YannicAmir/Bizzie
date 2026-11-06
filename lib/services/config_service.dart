@@ -82,6 +82,7 @@ class ConfigService implements IConfigService {
       "roe",
       "peRatio",
       "pfcfRatio",
+      "aiReports",
     ],
   };
 
@@ -99,7 +100,7 @@ class ConfigService implements IConfigService {
       "shares",
       "financialStatements",
     ],
-    "moreTabs": ["roe", "peRatio", "pfcfRatio"],
+    "moreTabs": ["roe", "peRatio", "pfcfRatio", "aiReports"],
   };
 
   static const _defaultSectorDescriptions = {

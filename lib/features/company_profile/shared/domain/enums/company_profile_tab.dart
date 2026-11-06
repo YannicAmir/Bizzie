@@ -11,6 +11,7 @@ enum CompanyProfileTab {
   fcps,
   shares,
   financialStatements,
+  aiReports,
   roe,
   peRatio,
   pfcfRatio,

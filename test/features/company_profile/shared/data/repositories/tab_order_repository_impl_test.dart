@@ -21,6 +21,7 @@ const tFreePlusNames = [
   'roe',
   'peRatio',
   'pfcfRatio',
+  'aiReports',
 ];
 
 const tFreeRemoteConfig = CompanyTabsConfig(
@@ -43,7 +44,7 @@ const tPaidRemoteConfig = CompanyTabsConfig(
     'shares',
     'financialStatements',
   ],
-  moreTabs: ['roe', 'peRatio', 'pfcfRatio'],
+  moreTabs: ['roe', 'peRatio', 'pfcfRatio', 'aiReports'],
 );
 
 void main() {
@@ -94,6 +95,7 @@ void main() {
             CompanyProfileTab.roe,
             CompanyProfileTab.peRatio,
             CompanyProfileTab.pfcfRatio,
+            CompanyProfileTab.aiReports,
           ]);
         });
       });
@@ -111,6 +113,7 @@ void main() {
             CompanyProfileTab.roe,
             CompanyProfileTab.peRatio,
             CompanyProfileTab.pfcfRatio,
+            CompanyProfileTab.aiReports,
           ]);
           expect(layout.bizziePlusTabs, isEmpty);
         });

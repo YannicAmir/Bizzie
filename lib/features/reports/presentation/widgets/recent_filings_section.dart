@@ -1,7 +1,7 @@
 import 'package:bizzie/app/themes/app_assets.dart';
 import 'package:bizzie/features/reports/domain/models/weekly_report.dart';
-import 'package:bizzie/features/reports/presentation/models/filing_view_model.dart';
-import 'package:bizzie/features/reports/presentation/widgets/sec_filing_card.dart';
+import 'package:bizzie/shared/models/filing_view_model.dart';
+import 'package:bizzie/features/reports/presentation/widgets/reports_filing_card.dart';
 import 'package:bizzie/features/reports/presentation/widgets/weekly_report_card.dart';
 import 'package:flutter/material.dart';
 
@@ -59,7 +59,7 @@ class RecentFilingsSection extends StatelessWidget {
           itemBuilder: (context, index) {
             final item = items[index];
             if (item.filing != null) {
-              return SecFilingCard(
+              return ReportsFilingCard(
                 filing: item.filing!.filing,
                 financialReport: item.filing!.report,
                 lastViewed: lastViewed,

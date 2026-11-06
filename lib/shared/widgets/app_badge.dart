@@ -2,7 +2,7 @@ import 'package:bizzie/app/themes/app_text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:bizzie/app/themes/app_theme.dart';
 
-enum AppBadgeStyle { neutral, critical, good, warning, issue }
+enum AppBadgeStyle { neutral, muted, critical, good, warning, issue }
 
 class AppBadge extends StatelessWidget {
   final String text;
@@ -10,6 +10,7 @@ class AppBadge extends StatelessWidget {
   final bool isLarge;
   final bool isExtraLarge;
   final bool noBackground;
+  final bool isTruncated;
 
   const AppBadge({
     super.key,
@@ -18,6 +19,7 @@ class AppBadge extends StatelessWidget {
     this.isLarge = false,
     this.isExtraLarge = false,
     this.noBackground = false,
+    this.isTruncated = false,
   });
 
   @override
@@ -33,6 +35,11 @@ class AppBadge extends StatelessWidget {
         backgroundColor =
             badgeTheme?.neutralBackground ?? theme.colorScheme.surface;
         textColor = badgeTheme?.neutralText ?? theme.colorScheme.onSurface;
+        break;
+      case AppBadgeStyle.muted:
+        backgroundColor =
+            badgeTheme?.voidBackground ?? theme.colorScheme.tertiaryContainer;
+        textColor = badgeTheme?.voidText ?? theme.colorScheme.onSurfaceVariant;
         break;
       case AppBadgeStyle.critical:
         backgroundColor =
@@ -70,6 +77,8 @@ class AppBadge extends StatelessWidget {
       ),
       child: Text(
         text,
+        maxLines: isTruncated ? 1 : null,
+        overflow: isTruncated ? TextOverflow.ellipsis : null,
         style: isExtraLarge
             ? AppTextStyles.bodyLargeBold.copyWith(color: textColor)
             : isLarge

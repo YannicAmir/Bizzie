@@ -1,14 +1,28 @@
+import 'package:bizzie/app/themes/app_colors.dart';
 import 'package:bizzie/app/themes/app_text_styles.dart';
 import 'package:bizzie/app/themes/app_theme.dart';
-import 'package:bizzie/features/reports/domain/models/financial_report.dart';
-import 'package:bizzie/features/reports/domain/models/financial_report_extensions.dart';
-import 'package:bizzie/features/reports/presentation/widgets/metric_card.dart';
+import 'package:bizzie/core/domain/models/financial_report.dart';
+import 'package:bizzie/core/domain/models/financial_report_extensions.dart';
+import 'package:bizzie/shared/widgets/cards/metric_card.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:bizzie/shared/widgets/buttons/bizzie_primary_button.dart';
 import 'package:bizzie/shared/widgets/modals/app_bottom_modal.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+const String _kDateFormat = 'MMM d, yyyy';
+const String _kDateUnknownLabel = 'Date Unknown';
+const String _kEightKFormType = '8-K';
+const double _kFilingButtonHeight = 48;
+const double _kDisclaimerIconSize = 20;
+const double _kForwardLookingLineHeight = 1.5;
+const double _kForwardLookingFillAlpha = 0.05;
+const double _kForwardLookingBorderAlpha = 0.1;
+const double _kDisclaimerFillAlpha = 0.3;
+const EdgeInsets _kSectionPadding = EdgeInsets.all(16);
+const SizedBox _kSectionSpacing = SizedBox(height: 32);
+const SizedBox _kLabelSpacing = SizedBox(height: 4);
 
 class ReportSummaryModal extends StatelessWidget {
   final FinancialReport report;
@@ -19,10 +33,14 @@ class ReportSummaryModal extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final filingDate = report.filingDate;
+    final filingDateLabel = filingDate != null
+        ? DateFormat(_kDateFormat).format(filingDate)
+        : _kDateUnknownLabel;
     return AppBottomModal(
       title: 'AI Summary',
       subtitle: Text(
-        '${report.ticker} • ${report.filingDate != null ? DateFormat('MMM d, yyyy').format(report.filingDate!) : 'Date Unknown'} • ${report.formType}',
+        '${report.ticker} • $filingDateLabel • ${report.formType}',
         style: AppTextStyles.bodyMediumSecondary,
         overflow: TextOverflow.ellipsis,
       ),
@@ -65,7 +83,7 @@ class ReportSummaryModal extends StatelessWidget {
               currencyCode: report.summary.reportingCurrency,
             ),
 
-            const SizedBox(height: 32),
+            _kSectionSpacing,
 
             Text('Balance Sheet', style: theme.textTheme.displaySmall),
             AppConstants.secondarySectionSpacing,
@@ -88,7 +106,7 @@ class ReportSummaryModal extends StatelessWidget {
               currencyCode: report.summary.reportingCurrency,
             ),
 
-            const SizedBox(height: 32),
+            _kSectionSpacing,
 
             Text('Cash Flow', style: theme.textTheme.displaySmall),
             AppConstants.secondarySectionSpacing,
@@ -98,34 +116,34 @@ class ReportSummaryModal extends StatelessWidget {
               currencyCode: report.summary.reportingCurrency,
             ),
 
-            const SizedBox(height: 32),
+            _kSectionSpacing,
 
-            if (!report.formType.contains('8-K')) ...[
+            if (!report.formType.contains(_kEightKFormType)) ...[
               Text('Stock Repurchasing', style: theme.textTheme.displaySmall),
               AppConstants.secondarySectionSpacing,
               _StockActivityCard(activity: report.stockActivity),
-              const SizedBox(height: 32),
+              _kSectionSpacing,
               Text(
                 'Forward Looking Statements',
                 style: theme.textTheme.displaySmall,
               ),
               AppConstants.secondarySectionSpacing,
               _ForwardLookingSection(text: report.summary.forwardLooking),
-              const SizedBox(height: 32),
+              _kSectionSpacing,
             ],
 
             const _AiDisclaimerSection(),
-            if (filingUrl != null) ...[
-              const SizedBox(height: 32),
+            if (filingUrl case final url?) ...[
+              _kSectionSpacing,
               BizziePrimaryButton(
                 onPressed: () {
-                  launchUrl(Uri.parse(filingUrl!));
+                  launchUrl(Uri.parse(url));
                 },
                 title: 'View full SEC filing',
-                height: 48,
+                height: _kFilingButtonHeight,
               ),
             ],
-            const SizedBox(height: 32),
+            _kSectionSpacing,
           ],
         );
       },
@@ -152,11 +170,14 @@ class _StockActivityCard extends StatelessWidget {
     final isGood = activity.isBuyback;
 
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: _kSectionPadding,
       decoration: BoxDecoration(
         color: theme.cardColor,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: theme.dividerColor, width: 0.665),
+        borderRadius: BorderRadius.circular(AppConstants.cardBorderRadius),
+        border: Border.all(
+          color: theme.dividerColor,
+          width: AppConstants.defaultBorderWidth,
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -176,7 +197,7 @@ class _StockActivityCard extends StatelessWidget {
                 label: 'Net Change',
                 value: formatShares(activity.netStockChangeShares),
                 valueColor: isGood
-                    ? badgeTheme?.goodText ?? Colors.green
+                    ? badgeTheme?.goodText ?? AppColors.success
                     : theme.colorScheme.error,
               ),
             ],
@@ -210,7 +231,7 @@ class _ActivityColumn extends StatelessWidget {
             color: theme.hintColor,
           ),
         ),
-        const SizedBox(height: 4),
+        _kLabelSpacing,
         Text(
           value,
           style: theme.textTheme.headlineMedium?.copyWith(color: valueColor),
@@ -229,19 +250,23 @@ class _ForwardLookingSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: _kSectionPadding,
       decoration: BoxDecoration(
-        color: theme.colorScheme.primary.withValues(alpha: 0.05),
-        borderRadius: BorderRadius.circular(12),
+        color: theme.colorScheme.primary.withValues(
+          alpha: _kForwardLookingFillAlpha,
+        ),
+        borderRadius: BorderRadius.circular(AppConstants.cardBorderRadius),
         border: Border.all(
-          color: theme.colorScheme.primary.withValues(alpha: 0.1),
+          color: theme.colorScheme.primary.withValues(
+            alpha: _kForwardLookingBorderAlpha,
+          ),
         ),
       ),
       child: Text(
         text,
         style: theme.textTheme.bodyMedium?.copyWith(
           color: theme.textTheme.bodyMedium?.color,
-          height: 1.5,
+          height: _kForwardLookingLineHeight,
         ),
       ),
     );
@@ -255,10 +280,12 @@ class _AiDisclaimerSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: _kSectionPadding,
       decoration: BoxDecoration(
-        color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
-        borderRadius: BorderRadius.circular(12),
+        color: theme.colorScheme.surfaceContainerHighest.withValues(
+          alpha: _kDisclaimerFillAlpha,
+        ),
+        borderRadius: BorderRadius.circular(AppConstants.cardBorderRadius),
         border: Border.all(color: theme.dividerColor),
       ),
       child: Column(
@@ -269,9 +296,9 @@ class _AiDisclaimerSection extends StatelessWidget {
               Icon(
                 Icons.warning_amber_rounded,
                 color: theme.hintColor,
-                size: 20,
+                size: _kDisclaimerIconSize,
               ),
-              const SizedBox(width: 8),
+              AppConstants.subSectionHorizontalSpacing,
               Expanded(
                 child: Text(
                   'AI-Generated Summary',
@@ -282,7 +309,7 @@ class _AiDisclaimerSection extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 8),
+          AppConstants.subSectionSpacing,
           Text(
             'This summary was produced by AI and may contain inaccuracies. It is not financial advice. Always verify key data against the full SEC filing before making investment decisions.',
             style: theme.textTheme.bodyMedium,

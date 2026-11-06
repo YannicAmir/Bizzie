@@ -1,7 +1,7 @@
 // ignore_for_file: invalid_annotation_target
 import 'package:bizzie/core/utils/timestamp_converter.dart';
 import 'package:bizzie/core/utils/json_converters.dart';
-import 'package:bizzie/features/reports/domain/models/financial_report.dart';
+import 'package:bizzie/core/domain/models/financial_report.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'financial_report_dto.freezed.dart';

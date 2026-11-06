@@ -1,9 +1,13 @@
 import 'package:bizzie/app/themes/app_theme.dart';
-import 'package:bizzie/features/reports/domain/models/financial_report.dart';
-import 'package:bizzie/features/reports/presentation/utils/reports_utils.dart';
+import 'package:bizzie/core/domain/models/financial_report.dart';
+import 'package:bizzie/shared/utils/reports_utils.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:bizzie/shared/widgets/app_badge.dart';
 import 'package:flutter/material.dart';
+
+const double _kTrendIconSize = 20;
+const double _kDividerHeight = 1;
+const SizedBox _kTrendIconSpacing = SizedBox(width: 4);
 
 class MetricCard extends StatelessWidget {
   final String title;
@@ -85,23 +89,26 @@ class MetricCard extends StatelessWidget {
       padding: EdgeInsets.all(AppConstants.mainSectionContainerPadding),
       decoration: BoxDecoration(
         color: theme.colorScheme.surface,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: theme.dividerColor, width: 0.665),
+        borderRadius: BorderRadius.circular(AppConstants.cardBorderRadius),
+        border: Border.all(
+          color: theme.dividerColor,
+          width: AppConstants.defaultBorderWidth,
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _HeaderRow(title: title, amount: amount),
-          const SizedBox(height: 8),
+          AppConstants.subSectionSpacing,
           _TrendRow(
             changeAmount: changeAmount,
             changePercent: changePercent,
             isPositive: isPositive,
             isGood: isGood,
           ),
-          if (driver != null && driver!.isNotEmpty) ...[
-            const SizedBox(height: 16),
-            _DriverSection(driver: driver!),
+          if (driver case final driverText? when driverText.isNotEmpty) ...[
+            AppConstants.secondarySectionSpacing,
+            _DriverSection(driver: driverText),
           ],
         ],
       ),
@@ -155,8 +162,8 @@ class _TrendRow extends StatelessWidget {
 
     return Row(
       children: [
-        Icon(trendIcon, size: 20, color: trendColor),
-        const SizedBox(width: 4),
+        Icon(trendIcon, size: _kTrendIconSize, color: trendColor),
+        _kTrendIconSpacing,
         Text(
           changeAmount,
           style: theme.textTheme.headlineMedium?.copyWith(color: trendColor),
@@ -183,8 +190,8 @@ class _DriverSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Divider(height: 1),
-        const SizedBox(height: 16),
+        const Divider(height: _kDividerHeight),
+        AppConstants.secondarySectionSpacing,
         Text(driver, style: theme.textTheme.bodyMedium),
       ],
     );

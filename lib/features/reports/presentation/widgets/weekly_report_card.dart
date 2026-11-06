@@ -6,7 +6,7 @@ import 'package:bizzie/core/domain/models/company.dart';
 import 'package:bizzie/features/reports/domain/models/weekly_report.dart';
 import 'package:bizzie/features/reports/presentation/bloc/reports_bloc.dart';
 import 'package:bizzie/features/reports/presentation/bloc/reports_event.dart';
-import 'package:bizzie/features/reports/presentation/widgets/filing_card_header.dart';
+import 'package:bizzie/shared/widgets/cards/filing_card_header.dart';
 import 'package:bizzie/shared/widgets/app_badge.dart';
 import 'package:bizzie/features/reports/presentation/widgets/weekly_report_modal.dart';
 import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';

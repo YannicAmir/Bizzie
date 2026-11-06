@@ -6,6 +6,10 @@ import 'package:intl/intl.dart';
 const double _kUnreadDotSize = 8.0;
 const String _kUnreadLabel = 'UNREAD';
 const String _kDateUnknownLabel = 'Date Unknown';
+const String _kDateFormat = 'MMM d, yyyy';
+const EdgeInsets _kHeaderPadding = EdgeInsets.all(16);
+const EdgeInsets _kUnreadPadding = EdgeInsets.only(right: 8);
+const SizedBox _kCompanyNameSpacing = SizedBox(height: 4);
 
 class FilingCardHeader extends StatelessWidget {
   final String ticker;
@@ -34,13 +38,12 @@ class FilingCardHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final viewedAt = lastViewed;
     final isUnread =
-        lastViewed != null &&
-        createdAt != null &&
-        createdAt!.isAfter(lastViewed!);
+        viewedAt != null && (createdAt?.isAfter(viewedAt) ?? false);
 
     return Padding(
-      padding: const EdgeInsets.all(16),
+      padding: _kHeaderPadding,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -48,27 +51,41 @@ class FilingCardHeader extends StatelessWidget {
           AppConstants.subSectionSpacing,
           Row(
             children: [
-              GestureDetector(
-                onTap: onCompanyTapped,
-                child: Text(ticker, style: theme.textTheme.headlineMedium),
+              Semantics(
+                button: onCompanyTapped != null,
+                child: GestureDetector(
+                  onTap: onCompanyTapped,
+                  child: Text(ticker, style: theme.textTheme.headlineMedium),
+                ),
               ),
               AppConstants.subSectionHorizontalSpacing,
               AppBadge(text: formType, style: badgeStyle, isLarge: true),
-              if (topic != null) ...[
+              if (topic case final filingTopic?) ...[
                 AppConstants.subSectionHorizontalSpacing,
-                Text(topic!, style: theme.textTheme.bodyMedium),
-              ],
-              const Spacer(),
-              if (filingDate != null)
+                Expanded(
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: AppBadge(
+                      text: filingTopic,
+                      style: AppBadgeStyle.muted,
+                      isLarge: true,
+                      isTruncated: true,
+                    ),
+                  ),
+                ),
+                AppConstants.subSectionHorizontalSpacing,
+              ] else
+                const Spacer(),
+              if (filingDate case final date?)
                 Text(
-                  DateFormat('MMM d, yyyy').format(filingDate!),
+                  DateFormat(_kDateFormat).format(date),
                   style: theme.textTheme.bodyMedium,
                 )
               else
                 Text(_kDateUnknownLabel, style: theme.textTheme.bodyMedium),
             ],
           ),
-          const SizedBox(height: 4),
+          _kCompanyNameSpacing,
           Text(
             companyName,
             style: theme.textTheme.bodyMedium?.copyWith(
@@ -88,7 +105,7 @@ class _UnreadIndicator extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Padding(
-      padding: const EdgeInsets.only(right: 8),
+      padding: _kUnreadPadding,
       child: Row(
         children: [
           Container(

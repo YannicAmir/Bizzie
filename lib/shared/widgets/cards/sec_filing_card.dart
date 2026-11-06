@@ -1,37 +1,47 @@
 import 'package:bizzie/app/themes/app_assets.dart';
-import 'package:bizzie/features/subscription/presentation/utils/paywall_helper.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:bizzie/features/reports/presentation/bloc/reports_bloc.dart';
-import 'package:bizzie/features/reports/presentation/bloc/reports_event.dart';
-import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
-import 'package:bizzie/core/enums/paywall_source.dart';
-import 'package:bizzie/di/injection.dart';
-import 'package:bizzie/core/interfaces/i_config_service.dart';
-
-import 'package:bizzie/features/reports/domain/models/sec_filing.dart';
-import 'package:bizzie/features/reports/presentation/widgets/filing_card_header.dart';
+import 'package:bizzie/core/domain/models/financial_report.dart';
+import 'package:bizzie/core/domain/models/sec_filing.dart';
+import 'package:bizzie/shared/constants/app_constants.dart';
+import 'package:bizzie/shared/widgets/cards/filing_card_header.dart';
+import 'package:bizzie/shared/widgets/modals/report_summary_modal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-
 import 'package:intl/intl.dart';
-
-import 'package:bizzie/features/reports/domain/models/financial_report.dart';
-import 'package:bizzie/features/reports/presentation/widgets/report_summary_modal.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:go_router/go_router.dart';
-import 'package:bizzie/app/routes/app_routes.dart';
-import 'package:bizzie/core/domain/models/company.dart';
+
+const String _kTenKFormType = '10-K';
+const String _kTenQFormType = '10-Q';
+const String _kEightKFormType = '8-K';
+const double _kActionIconSize = 16;
+const double _kLockIconSize = 15;
+const double _kInProgressModalRadius = 24;
+const EdgeInsets _kSectionPadding = EdgeInsets.all(16);
+const EdgeInsets _kActionsPadding = EdgeInsets.fromLTRB(16, 0, 16, 16);
+const EdgeInsets _kInProgressModalPadding = EdgeInsets.all(24);
+const SizedBox _kFinancialLabelSpacing = SizedBox(height: 4);
 
 class SecFilingCard extends StatelessWidget {
   final SecFiling filing;
   final FinancialReport? financialReport;
   final DateTime? lastViewed;
+  final String summaryButtonLabel;
+  final bool isSummaryLocked;
+  final VoidCallback? onCompanyTapped;
+  final VoidCallback? onViewReportTapped;
+  final VoidCallback? onLockedSummaryTapped;
+  final ValueChanged<bool>? onSummaryRequested;
 
   const SecFilingCard({
     super.key,
     required this.filing,
+    required this.summaryButtonLabel,
+    required this.isSummaryLocked,
     this.financialReport,
     this.lastViewed,
+    this.onCompanyTapped,
+    this.onViewReportTapped,
+    this.onLockedSummaryTapped,
+    this.onSummaryRequested,
   });
 
   @override
@@ -39,8 +49,8 @@ class SecFilingCard extends StatelessWidget {
     final theme = Theme.of(context);
     final bool showFinancials =
         (filing.isEarnings ||
-            filing.formType == '10-Q' ||
-            filing.formType == '10-K') &&
+            filing.formType == _kTenQFormType ||
+            filing.formType == _kTenKFormType) &&
         filing.revenue != null &&
         filing.eps != null;
 
@@ -54,10 +64,13 @@ class SecFilingCard extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: theme.colorScheme.surface,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(
+          AppConstants.mainSectionBorderRadius,
+        ),
         border: Border.all(
           color: theme.dividerColor,
-          width: theme.dividerTheme.thickness ?? .665,
+          width:
+              theme.dividerTheme.thickness ?? AppConstants.defaultBorderWidth,
         ),
       ),
       child: Column(
@@ -71,21 +84,7 @@ class SecFilingCard extends StatelessWidget {
             createdAt: filing.createdAt,
             lastViewed: lastViewed,
             topic: filing.topic,
-            onCompanyTapped: () {
-              context.read<ReportsBloc>().add(
-                ReportsEvent.filingCardCompanyClicked(
-                  ticker: filing.symbol,
-                ),
-              );
-              context.goNamed(
-                AppRoutes.companyProfileReports,
-                pathParameters: {'ticker': filing.symbol},
-                extra: Company(
-                  ticker: filing.symbol,
-                  name: filing.companyName,
-                ),
-              );
-            },
+            onCompanyTapped: onCompanyTapped,
           ),
           if (showFinancials) ...[
             _FinancialsRow(
@@ -95,7 +94,7 @@ class SecFilingCard extends StatelessWidget {
             ),
           ],
           Padding(
-            padding: const EdgeInsets.all(16),
+            padding: _kSectionPadding,
             child: Text(
               filing.summary,
               style: theme.textTheme.bodyMedium,
@@ -104,29 +103,28 @@ class SecFilingCard extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+            padding: _kActionsPadding,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                if (filing.formType != '8-K' || filing.isEarnings)
+                if (filing.formType != _kEightKFormType || filing.isEarnings)
                   _SummarizeButton(
                     financialReport: financialReport,
-                    filing: filing,
+                    filingLink: filing.link,
+                    label: summaryButtonLabel,
+                    isLocked: isSummaryLocked,
+                    onLockedTapped: onLockedSummaryTapped,
+                    onRequested: onSummaryRequested,
                   ),
                 _ActionButton(
                   icon: Icon(
                     Icons.description_outlined,
-                    size: 16,
+                    size: _kActionIconSize,
                     color: theme.colorScheme.primary,
                   ),
                   label: 'View Full Report',
                   onTap: () {
-                    context.read<ReportsBloc>().add(
-                      ReportsEvent.linkOpened(
-                        ticker: filing.symbol,
-                        filingType: filing.formType,
-                      ),
-                    );
+                    onViewReportTapped?.call();
                     if (filing.link.isNotEmpty) {
                       launchUrl(Uri.parse(filing.link));
                     }
@@ -156,7 +154,7 @@ class _FinancialsRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Padding(
-      padding: const EdgeInsets.all(16),
+      padding: _kSectionPadding,
       child: Row(
         children: [
           Expanded(
@@ -169,7 +167,7 @@ class _FinancialsRow extends StatelessWidget {
                     color: theme.colorScheme.onSurfaceVariant,
                   ),
                 ),
-                const SizedBox(height: 4),
+                _kFinancialLabelSpacing,
                 Text(
                   currencyFormatter.format(filing.revenue),
                   style: theme.textTheme.headlineMedium,
@@ -187,7 +185,7 @@ class _FinancialsRow extends StatelessWidget {
                     color: theme.colorScheme.onSurfaceVariant,
                   ),
                 ),
-                const SizedBox(height: 4),
+                _kFinancialLabelSpacing,
                 Text(
                   epsFormatter.format(filing.eps),
                   style: theme.textTheme.headlineMedium,
@@ -203,81 +201,71 @@ class _FinancialsRow extends StatelessWidget {
 
 class _SummarizeButton extends StatelessWidget {
   final FinancialReport? financialReport;
-  final SecFiling filing;
+  final String filingLink;
+  final String label;
+  final bool isLocked;
+  final VoidCallback? onLockedTapped;
+  final ValueChanged<bool>? onRequested;
 
-  const _SummarizeButton({required this.financialReport, required this.filing});
+  const _SummarizeButton({
+    required this.financialReport,
+    required this.filingLink,
+    required this.label,
+    required this.isLocked,
+    required this.onLockedTapped,
+    required this.onRequested,
+  });
+
+  void _onTap(BuildContext context, Color scrimColor) {
+    if (isLocked) {
+      onLockedTapped?.call();
+      return;
+    }
+
+    final report = financialReport;
+    onRequested?.call(report != null);
+
+    if (report != null) {
+      showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        backgroundColor: scrimColor,
+        builder: (context) =>
+            ReportSummaryModal(report: report, filingUrl: filingLink),
+      );
+    } else {
+      showModalBottomSheet(
+        context: context,
+        backgroundColor: scrimColor,
+        builder: (context) => const _AnalysisInProgressModal(),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return BlocBuilder<UserBloc, UserState>(
-      builder: (context, state) {
-        final isSubscribed = state.maybeMap(
-          loaded: (s) => s.user.isSubscribed,
-          orElse: () => false,
-        );
-
-        return _ActionButton(
-          icon: isSubscribed
-              ? Image.asset(
-                  AppAssets.sparkleIcon,
-                  width: 16,
-                  height: 16,
-                  color: theme.colorScheme.primary,
-                )
-              : SvgPicture.asset(
-                  AppAssets.authLockIcon,
-                  width: 15,
-                  height: 15,
-                  colorFilter: ColorFilter.mode(
-                    theme.colorScheme.primary,
-                    BlendMode.srcIn,
-                  ),
-                ),
-          label: getIt<IConfigService>().aiSummaryButtonLabel,
-          onTap: () {
-            if (!isSubscribed) {
-              context.read<ReportsBloc>().add(
-                ReportsEvent.summarizeLockedClicked(
-                  ticker: filing.symbol,
-                  filingType: filing.formType,
-                ),
-              );
-              PaywallHelper.showPaywallSequence(
-                context,
-                source: PaywallSource.reports,
-              );
-              return;
-            }
-
-            context.read<ReportsBloc>().add(
-              ReportsEvent.summaryRequested(
-                ticker: filing.symbol,
-                filingType: filing.formType,
-                isReady: financialReport != null,
+    return _ActionButton(
+      icon: isLocked
+          ? SvgPicture.asset(
+              AppAssets.authLockIcon,
+              width: _kLockIconSize,
+              height: _kLockIconSize,
+              excludeFromSemantics: true,
+              colorFilter: ColorFilter.mode(
+                theme.colorScheme.primary,
+                BlendMode.srcIn,
               ),
-            );
-
-            if (financialReport != null) {
-              showModalBottomSheet(
-                context: context,
-                isScrollControlled: true,
-                backgroundColor: theme.colorScheme.scrim,
-                builder: (context) => ReportSummaryModal(
-                  report: financialReport!,
-                  filingUrl: filing.link,
-                ),
-              );
-            } else {
-              showModalBottomSheet(
-                context: context,
-                backgroundColor: theme.colorScheme.scrim,
-                builder: (context) => const _AnalysisInProgressModal(),
-              );
-            }
-          },
-        );
-      },
+            )
+          : Image.asset(
+              AppAssets.sparkleIcon,
+              width: _kActionIconSize,
+              height: _kActionIconSize,
+              color: theme.colorScheme.primary,
+              excludeFromSemantics: true,
+            ),
+      label: label,
+      onTap: () => _onTap(context, theme.colorScheme.scrim),
     );
   }
 }
@@ -291,20 +279,22 @@ class _AnalysisInProgressModal extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: theme.cardColor,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+        borderRadius: const BorderRadius.vertical(
+          top: Radius.circular(_kInProgressModalRadius),
+        ),
       ),
-      padding: const EdgeInsets.all(24),
+      padding: _kInProgressModalPadding,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text('Analysis in Progress', style: theme.textTheme.displaySmall),
-          const SizedBox(height: 8),
+          AppConstants.subSectionSpacing,
           Text(
             'Our AI is currently analyzing this report. Please check back shortly.',
             style: theme.textTheme.bodyMedium,
           ),
-          const SizedBox(height: 24),
+          AppConstants.mainSectionSpacing,
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
@@ -313,7 +303,9 @@ class _AnalysisInProgressModal extends StatelessWidget {
                 backgroundColor: theme.colorScheme.primary,
                 foregroundColor: theme.colorScheme.onPrimary,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(
+                    AppConstants.cardBorderRadius,
+                  ),
                 ),
               ),
               child: const Text('Close'),
@@ -344,7 +336,7 @@ class _ActionButton extends StatelessWidget {
       child: Row(
         children: [
           icon,
-          const SizedBox(width: 8),
+          AppConstants.subSectionHorizontalSpacing,
           Text(
             label,
             style: theme.textTheme.headlineMedium?.copyWith(

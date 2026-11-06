@@ -89,6 +89,7 @@ abstract class TabLayout with _$TabLayout {
     CompanyProfileTab.roe,
     CompanyProfileTab.peRatio,
     CompanyProfileTab.pfcfRatio,
+    CompanyProfileTab.aiReports,
   ];
 
   static const List<CompanyProfileTab> paidDefaultMainTabs = [
@@ -109,6 +110,7 @@ abstract class TabLayout with _$TabLayout {
     CompanyProfileTab.roe,
     CompanyProfileTab.peRatio,
     CompanyProfileTab.pfcfRatio,
+    CompanyProfileTab.aiReports,
   ];
 
   factory TabLayout.defaults({required bool isSubscribed}) => isSubscribed

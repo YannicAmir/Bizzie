@@ -2,6 +2,7 @@ import 'package:bizzie/app/themes/app_assets.dart';
 import 'package:bizzie/di/injection.dart';
 import 'package:bizzie/features/app_ratings/presentation/bloc/app_ratings_bloc.dart';
 import 'package:bizzie/features/bizzie_chat/presentation/views/bizzie_chat_modal.dart';
+import 'package:bizzie/features/company_profile/ai_reports/presentation/bloc/company_ai_reports_bloc.dart';
 import 'package:bizzie/features/company_profile/business/presentation/bloc/company_business_bloc.dart';
 import 'package:bizzie/features/company_profile/cp/presentation/bloc/company_profile_bloc.dart';
 import 'package:bizzie/features/company_profile/cp/presentation/bloc/company_profile_event.dart';
@@ -86,6 +87,7 @@ class CompanyProfilePage extends StatelessWidget {
                 ..add(UpcomingEarningsEvent.loadRequested(ticker)),
         ),
         BlocProvider(create: (context) => getIt<FinancialStatementsBloc>()),
+        BlocProvider(create: (context) => getIt<CompanyAiReportsBloc>()),
         BlocProvider(create: (context) => getIt<AppRatingsBloc>()),
         BlocProvider(create: (context) => getIt<CompanyProfileBloc>()),
         BlocProvider(
