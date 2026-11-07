@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$CompanyFilings {
 
- List<FinancialReport> get reports; List<SecFiling> get filings;
+ List<FinancialReport> get reports; List<SecFiling> get filings; List<WeeklyReport> get weeklyReports;
 /// Create a copy of CompanyFilings
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $CompanyFilingsCopyWith<CompanyFilings> get copyWith => _$CompanyFilingsCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CompanyFilings&&const DeepCollectionEquality().equals(other.reports, reports)&&const DeepCollectionEquality().equals(other.filings, filings));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CompanyFilings&&const DeepCollectionEquality().equals(other.reports, reports)&&const DeepCollectionEquality().equals(other.filings, filings)&&const DeepCollectionEquality().equals(other.weeklyReports, weeklyReports));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(reports),const DeepCollectionEquality().hash(filings));
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(reports),const DeepCollectionEquality().hash(filings),const DeepCollectionEquality().hash(weeklyReports));
 
 @override
 String toString() {
-  return 'CompanyFilings(reports: $reports, filings: $filings)';
+  return 'CompanyFilings(reports: $reports, filings: $filings, weeklyReports: $weeklyReports)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $CompanyFilingsCopyWith<$Res>  {
   factory $CompanyFilingsCopyWith(CompanyFilings value, $Res Function(CompanyFilings) _then) = _$CompanyFilingsCopyWithImpl;
 @useResult
 $Res call({
- List<FinancialReport> reports, List<SecFiling> filings
+ List<FinancialReport> reports, List<SecFiling> filings, List<WeeklyReport> weeklyReports
 });
 
 
@@ -62,11 +62,12 @@ class _$CompanyFilingsCopyWithImpl<$Res>
 
 /// Create a copy of CompanyFilings
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? reports = null,Object? filings = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? reports = null,Object? filings = null,Object? weeklyReports = null,}) {
   return _then(_self.copyWith(
 reports: null == reports ? _self.reports : reports // ignore: cast_nullable_to_non_nullable
 as List<FinancialReport>,filings: null == filings ? _self.filings : filings // ignore: cast_nullable_to_non_nullable
-as List<SecFiling>,
+as List<SecFiling>,weeklyReports: null == weeklyReports ? _self.weeklyReports : weeklyReports // ignore: cast_nullable_to_non_nullable
+as List<WeeklyReport>,
   ));
 }
 
@@ -151,10 +152,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<FinancialReport> reports,  List<SecFiling> filings)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<FinancialReport> reports,  List<SecFiling> filings,  List<WeeklyReport> weeklyReports)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _CompanyFilings() when $default != null:
-return $default(_that.reports,_that.filings);case _:
+return $default(_that.reports,_that.filings,_that.weeklyReports);case _:
   return orElse();
 
 }
@@ -172,10 +173,10 @@ return $default(_that.reports,_that.filings);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<FinancialReport> reports,  List<SecFiling> filings)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<FinancialReport> reports,  List<SecFiling> filings,  List<WeeklyReport> weeklyReports)  $default,) {final _that = this;
 switch (_that) {
 case _CompanyFilings():
-return $default(_that.reports,_that.filings);case _:
+return $default(_that.reports,_that.filings,_that.weeklyReports);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -192,10 +193,10 @@ return $default(_that.reports,_that.filings);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<FinancialReport> reports,  List<SecFiling> filings)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<FinancialReport> reports,  List<SecFiling> filings,  List<WeeklyReport> weeklyReports)?  $default,) {final _that = this;
 switch (_that) {
 case _CompanyFilings() when $default != null:
-return $default(_that.reports,_that.filings);case _:
+return $default(_that.reports,_that.filings,_that.weeklyReports);case _:
   return null;
 
 }
@@ -207,7 +208,7 @@ return $default(_that.reports,_that.filings);case _:
 
 
 class _CompanyFilings implements CompanyFilings {
-  const _CompanyFilings({final  List<FinancialReport> reports = const [], final  List<SecFiling> filings = const []}): _reports = reports,_filings = filings;
+  const _CompanyFilings({final  List<FinancialReport> reports = const [], final  List<SecFiling> filings = const [], final  List<WeeklyReport> weeklyReports = const []}): _reports = reports,_filings = filings,_weeklyReports = weeklyReports;
   
 
  final  List<FinancialReport> _reports;
@@ -224,6 +225,13 @@ class _CompanyFilings implements CompanyFilings {
   return EqualUnmodifiableListView(_filings);
 }
 
+ final  List<WeeklyReport> _weeklyReports;
+@override@JsonKey() List<WeeklyReport> get weeklyReports {
+  if (_weeklyReports is EqualUnmodifiableListView) return _weeklyReports;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_weeklyReports);
+}
+
 
 /// Create a copy of CompanyFilings
 /// with the given fields replaced by the non-null parameter values.
@@ -235,16 +243,16 @@ _$CompanyFilingsCopyWith<_CompanyFilings> get copyWith => __$CompanyFilingsCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CompanyFilings&&const DeepCollectionEquality().equals(other._reports, _reports)&&const DeepCollectionEquality().equals(other._filings, _filings));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CompanyFilings&&const DeepCollectionEquality().equals(other._reports, _reports)&&const DeepCollectionEquality().equals(other._filings, _filings)&&const DeepCollectionEquality().equals(other._weeklyReports, _weeklyReports));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_reports),const DeepCollectionEquality().hash(_filings));
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_reports),const DeepCollectionEquality().hash(_filings),const DeepCollectionEquality().hash(_weeklyReports));
 
 @override
 String toString() {
-  return 'CompanyFilings(reports: $reports, filings: $filings)';
+  return 'CompanyFilings(reports: $reports, filings: $filings, weeklyReports: $weeklyReports)';
 }
 
 
@@ -255,7 +263,7 @@ abstract mixin class _$CompanyFilingsCopyWith<$Res> implements $CompanyFilingsCo
   factory _$CompanyFilingsCopyWith(_CompanyFilings value, $Res Function(_CompanyFilings) _then) = __$CompanyFilingsCopyWithImpl;
 @override @useResult
 $Res call({
- List<FinancialReport> reports, List<SecFiling> filings
+ List<FinancialReport> reports, List<SecFiling> filings, List<WeeklyReport> weeklyReports
 });
 
 
@@ -272,11 +280,12 @@ class __$CompanyFilingsCopyWithImpl<$Res>
 
 /// Create a copy of CompanyFilings
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? reports = null,Object? filings = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? reports = null,Object? filings = null,Object? weeklyReports = null,}) {
   return _then(_CompanyFilings(
 reports: null == reports ? _self._reports : reports // ignore: cast_nullable_to_non_nullable
 as List<FinancialReport>,filings: null == filings ? _self._filings : filings // ignore: cast_nullable_to_non_nullable
-as List<SecFiling>,
+as List<SecFiling>,weeklyReports: null == weeklyReports ? _self._weeklyReports : weeklyReports // ignore: cast_nullable_to_non_nullable
+as List<WeeklyReport>,
   ));
 }
 

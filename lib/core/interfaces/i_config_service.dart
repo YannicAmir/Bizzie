@@ -24,6 +24,7 @@ abstract class IConfigService {
   int get freePlanHistoryCount;
   int get reviewPromptEventCount;
   String get aiSummaryButtonLabel;
+  List<String> get aiReportsTabFilingOrder;
   List<String> get subscriptionFeatureHighlights;
   DateTime get lastFetchTime;
 

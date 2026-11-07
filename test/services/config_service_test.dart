@@ -80,6 +80,36 @@ void main() {
       expect(result, 'gemini-pro');
     });
 
+    test('aiReportsTabFilingOrder_validJson_returnsValue', () {
+      // ARRANGE
+      when(
+        () => mockRemoteConfig.getString(
+          RemoteConfigKeys.aiReportsTabFilingOrder,
+        ),
+      ).thenReturn('["10-Q","8-K","10-K"]');
+
+      // ACT
+      final result = configService.aiReportsTabFilingOrder;
+
+      // ASSERT
+      expect(result, ['10-Q', '8-K', '10-K']);
+    });
+
+    test('aiReportsTabFilingOrder_invalidJson_returnsDefault', () {
+      // ARRANGE
+      when(
+        () => mockRemoteConfig.getString(
+          RemoteConfigKeys.aiReportsTabFilingOrder,
+        ),
+      ).thenReturn('not json');
+
+      // ACT
+      final result = configService.aiReportsTabFilingOrder;
+
+      // ASSERT
+      expect(result, ['8-K', '10-Q', '10-K', 'Recaps']);
+    });
+
     test('privacyPolicyUrl_remoteConfigValue_returnsValue', () {
       // ARRANGE
       when(

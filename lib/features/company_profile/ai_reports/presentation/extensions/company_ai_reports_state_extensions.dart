@@ -1,6 +1,7 @@
 import 'package:bizzie/core/domain/models/company_filings.dart';
 import 'package:bizzie/core/domain/models/financial_report.dart';
 import 'package:bizzie/core/domain/models/sec_filing.dart';
+import 'package:bizzie/core/domain/models/weekly_report.dart';
 import 'package:bizzie/features/company_profile/ai_reports/domain/enums/ai_report_form.dart';
 import 'package:bizzie/features/company_profile/ai_reports/domain/extensions/financial_report_list_extensions.dart';
 import 'package:bizzie/features/company_profile/ai_reports/presentation/bloc/company_ai_reports_state.dart';
@@ -14,8 +15,13 @@ extension CompanyAiReportsLoadedX on CompanyAiReportsLoaded {
   List<FilingViewModel> get visibleFilings =>
       companyFilings.aiReportFilings(selectedForm);
 
-  String get emptyMessage =>
-      'No AI ${selectedForm.formType} reports available for $ticker';
+  List<WeeklyReport> get visibleRecaps => selectedForm == AiReportForm.recaps
+      ? companyFilings.weeklyReports
+      : const [];
+
+  String get emptyMessage => selectedForm == AiReportForm.recaps
+      ? 'No recaps available for $ticker'
+      : 'No AI ${selectedForm.formType} reports available for $ticker';
 }
 
 extension CompanyFilingsAiReportsX on CompanyFilings {

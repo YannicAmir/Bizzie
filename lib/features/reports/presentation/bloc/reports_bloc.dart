@@ -5,7 +5,7 @@ import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/features/auth/domain/interfaces/i_auth_repository.dart';
 import 'package:bizzie/core/domain/models/financial_report.dart';
 import 'package:bizzie/features/reports/domain/models/reports_feed.dart';
-import 'package:bizzie/features/reports/domain/models/weekly_report.dart';
+import 'package:bizzie/core/domain/models/weekly_report.dart';
 import 'package:bizzie/shared/models/filing_view_model.dart';
 import 'package:bizzie/features/reports/domain/usecases/get_dashboard_reports_usecase.dart';
 import 'package:bizzie/features/reports/domain/usecases/get_user_activity_use_case.dart';
@@ -148,10 +148,7 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
     MarketNewsArticleOpened event,
     Emitter<ReportsState> emit,
   ) {
-    _tracker.logMarketNewsOpened(
-      publisher: event.publisher,
-      site: event.site,
-    );
+    _tracker.logMarketNewsOpened(publisher: event.publisher, site: event.site);
   }
 
   void _onMarketNewsLoadFailed(
@@ -303,10 +300,7 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
     final now = DateTime.now();
     final reportsByKey = <(String, String), FinancialReport>{};
     for (final report in feed.currentReports) {
-      reportsByKey.putIfAbsent(
-        (report.ticker, report.formType),
-        () => report,
-      );
+      reportsByKey.putIfAbsent((report.ticker, report.formType), () => report);
     }
 
     return feed.filings

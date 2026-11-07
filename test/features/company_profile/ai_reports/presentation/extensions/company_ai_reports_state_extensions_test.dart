@@ -4,6 +4,7 @@ import 'package:bizzie/features/company_profile/ai_reports/presentation/extensio
 import 'package:bizzie/core/domain/models/company_filings.dart';
 import 'package:bizzie/core/domain/models/financial_report.dart';
 import 'package:bizzie/core/domain/models/sec_filing.dart';
+import 'package:bizzie/core/domain/models/weekly_report.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 const tMetric = FinancialMetric(
@@ -179,5 +180,48 @@ void main() {
         expect(message, 'No AI $label reports available for AAPL');
       });
     }
+
+    CompanyAiReportsLoaded recapsState(AiReportForm form) =>
+        CompanyAiReportsState.loaded(
+              ticker: 'AAPL',
+              companyFilings: const CompanyFilings(
+                weeklyReports: [WeeklyReport(id: '2026-01-09')],
+              ),
+              summaryButtonLabel: 'Summarize',
+              selectedForm: form,
+            )
+            as CompanyAiReportsLoaded;
+
+    test('emptyMessage_recaps_namesRecapsAndTicker', () {
+      // act
+      final message = recapsState(AiReportForm.recaps).emptyMessage;
+
+      // assert
+      expect(message, 'No recaps available for AAPL');
+    });
+
+    test('visibleRecaps_recapsSelected_returnsWeeklyReports', () {
+      // act
+      final result = recapsState(AiReportForm.recaps).visibleRecaps;
+
+      // assert
+      expect(result.map((r) => r.id), ['2026-01-09']);
+    });
+
+    test('visibleRecaps_filingFormSelected_returnsEmpty', () {
+      // act
+      final result = recapsState(AiReportForm.tenK).visibleRecaps;
+
+      // assert
+      expect(result, isEmpty);
+    });
+
+    test('visibleFilings_recapsSelected_returnsEmpty', () {
+      // act
+      final result = recapsState(AiReportForm.recaps).visibleFilings;
+
+      // assert
+      expect(result, isEmpty);
+    });
   });
 }

@@ -128,12 +128,12 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( String ticker,  CompanyFilings companyFilings,  String summaryButtonLabel,  AiReportForm selectedForm,  AiReportsTabViewState? analyticsState)?  loaded,TResult Function( Failure failure)?  failure,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( String ticker,  CompanyFilings companyFilings,  String summaryButtonLabel,  AiReportForm selectedForm,  List<AiReportForm> forms,  AiReportsTabViewState? analyticsState)?  loaded,TResult Function( Failure failure)?  failure,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial();case _Loading() when loading != null:
 return loading();case CompanyAiReportsLoaded() when loaded != null:
-return loaded(_that.ticker,_that.companyFilings,_that.summaryButtonLabel,_that.selectedForm,_that.analyticsState);case _Failure() when failure != null:
+return loaded(_that.ticker,_that.companyFilings,_that.summaryButtonLabel,_that.selectedForm,_that.forms,_that.analyticsState);case _Failure() when failure != null:
 return failure(_that.failure);case _:
   return orElse();
 
@@ -152,12 +152,12 @@ return failure(_that.failure);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( String ticker,  CompanyFilings companyFilings,  String summaryButtonLabel,  AiReportForm selectedForm,  AiReportsTabViewState? analyticsState)  loaded,required TResult Function( Failure failure)  failure,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( String ticker,  CompanyFilings companyFilings,  String summaryButtonLabel,  AiReportForm selectedForm,  List<AiReportForm> forms,  AiReportsTabViewState? analyticsState)  loaded,required TResult Function( Failure failure)  failure,}) {final _that = this;
 switch (_that) {
 case _Initial():
 return initial();case _Loading():
 return loading();case CompanyAiReportsLoaded():
-return loaded(_that.ticker,_that.companyFilings,_that.summaryButtonLabel,_that.selectedForm,_that.analyticsState);case _Failure():
+return loaded(_that.ticker,_that.companyFilings,_that.summaryButtonLabel,_that.selectedForm,_that.forms,_that.analyticsState);case _Failure():
 return failure(_that.failure);case _:
   throw StateError('Unexpected subclass');
 
@@ -175,12 +175,12 @@ return failure(_that.failure);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( String ticker,  CompanyFilings companyFilings,  String summaryButtonLabel,  AiReportForm selectedForm,  AiReportsTabViewState? analyticsState)?  loaded,TResult? Function( Failure failure)?  failure,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( String ticker,  CompanyFilings companyFilings,  String summaryButtonLabel,  AiReportForm selectedForm,  List<AiReportForm> forms,  AiReportsTabViewState? analyticsState)?  loaded,TResult? Function( Failure failure)?  failure,}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial();case _Loading() when loading != null:
 return loading();case CompanyAiReportsLoaded() when loaded != null:
-return loaded(_that.ticker,_that.companyFilings,_that.summaryButtonLabel,_that.selectedForm,_that.analyticsState);case _Failure() when failure != null:
+return loaded(_that.ticker,_that.companyFilings,_that.summaryButtonLabel,_that.selectedForm,_that.forms,_that.analyticsState);case _Failure() when failure != null:
 return failure(_that.failure);case _:
   return null;
 
@@ -257,13 +257,20 @@ String toString() {
 
 
 class CompanyAiReportsLoaded implements CompanyAiReportsState {
-  const CompanyAiReportsLoaded({required this.ticker, required this.companyFilings, required this.summaryButtonLabel, this.selectedForm = AiReportForm.tenK, this.analyticsState});
+  const CompanyAiReportsLoaded({required this.ticker, required this.companyFilings, required this.summaryButtonLabel, this.selectedForm = AiReportForm.tenK, final  List<AiReportForm> forms = AiReportForm.values, this.analyticsState}): _forms = forms;
   
 
  final  String ticker;
  final  CompanyFilings companyFilings;
  final  String summaryButtonLabel;
 @JsonKey() final  AiReportForm selectedForm;
+ final  List<AiReportForm> _forms;
+@JsonKey() List<AiReportForm> get forms {
+  if (_forms is EqualUnmodifiableListView) return _forms;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_forms);
+}
+
  final  AiReportsTabViewState? analyticsState;
 
 /// Create a copy of CompanyAiReportsState
@@ -276,16 +283,16 @@ $CompanyAiReportsLoadedCopyWith<CompanyAiReportsLoaded> get copyWith => _$Compan
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CompanyAiReportsLoaded&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.companyFilings, companyFilings) || other.companyFilings == companyFilings)&&(identical(other.summaryButtonLabel, summaryButtonLabel) || other.summaryButtonLabel == summaryButtonLabel)&&(identical(other.selectedForm, selectedForm) || other.selectedForm == selectedForm)&&(identical(other.analyticsState, analyticsState) || other.analyticsState == analyticsState));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CompanyAiReportsLoaded&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.companyFilings, companyFilings) || other.companyFilings == companyFilings)&&(identical(other.summaryButtonLabel, summaryButtonLabel) || other.summaryButtonLabel == summaryButtonLabel)&&(identical(other.selectedForm, selectedForm) || other.selectedForm == selectedForm)&&const DeepCollectionEquality().equals(other._forms, _forms)&&(identical(other.analyticsState, analyticsState) || other.analyticsState == analyticsState));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,ticker,companyFilings,summaryButtonLabel,selectedForm,analyticsState);
+int get hashCode => Object.hash(runtimeType,ticker,companyFilings,summaryButtonLabel,selectedForm,const DeepCollectionEquality().hash(_forms),analyticsState);
 
 @override
 String toString() {
-  return 'CompanyAiReportsState.loaded(ticker: $ticker, companyFilings: $companyFilings, summaryButtonLabel: $summaryButtonLabel, selectedForm: $selectedForm, analyticsState: $analyticsState)';
+  return 'CompanyAiReportsState.loaded(ticker: $ticker, companyFilings: $companyFilings, summaryButtonLabel: $summaryButtonLabel, selectedForm: $selectedForm, forms: $forms, analyticsState: $analyticsState)';
 }
 
 
@@ -296,7 +303,7 @@ abstract mixin class $CompanyAiReportsLoadedCopyWith<$Res> implements $CompanyAi
   factory $CompanyAiReportsLoadedCopyWith(CompanyAiReportsLoaded value, $Res Function(CompanyAiReportsLoaded) _then) = _$CompanyAiReportsLoadedCopyWithImpl;
 @useResult
 $Res call({
- String ticker, CompanyFilings companyFilings, String summaryButtonLabel, AiReportForm selectedForm, AiReportsTabViewState? analyticsState
+ String ticker, CompanyFilings companyFilings, String summaryButtonLabel, AiReportForm selectedForm, List<AiReportForm> forms, AiReportsTabViewState? analyticsState
 });
 
 
@@ -313,13 +320,14 @@ class _$CompanyAiReportsLoadedCopyWithImpl<$Res>
 
 /// Create a copy of CompanyAiReportsState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? ticker = null,Object? companyFilings = null,Object? summaryButtonLabel = null,Object? selectedForm = null,Object? analyticsState = freezed,}) {
+@pragma('vm:prefer-inline') $Res call({Object? ticker = null,Object? companyFilings = null,Object? summaryButtonLabel = null,Object? selectedForm = null,Object? forms = null,Object? analyticsState = freezed,}) {
   return _then(CompanyAiReportsLoaded(
 ticker: null == ticker ? _self.ticker : ticker // ignore: cast_nullable_to_non_nullable
 as String,companyFilings: null == companyFilings ? _self.companyFilings : companyFilings // ignore: cast_nullable_to_non_nullable
 as CompanyFilings,summaryButtonLabel: null == summaryButtonLabel ? _self.summaryButtonLabel : summaryButtonLabel // ignore: cast_nullable_to_non_nullable
 as String,selectedForm: null == selectedForm ? _self.selectedForm : selectedForm // ignore: cast_nullable_to_non_nullable
-as AiReportForm,analyticsState: freezed == analyticsState ? _self.analyticsState : analyticsState // ignore: cast_nullable_to_non_nullable
+as AiReportForm,forms: null == forms ? _self._forms : forms // ignore: cast_nullable_to_non_nullable
+as List<AiReportForm>,analyticsState: freezed == analyticsState ? _self.analyticsState : analyticsState // ignore: cast_nullable_to_non_nullable
 as AiReportsTabViewState?,
   ));
 }

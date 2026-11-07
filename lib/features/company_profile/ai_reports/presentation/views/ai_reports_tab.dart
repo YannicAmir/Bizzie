@@ -1,3 +1,4 @@
+import 'package:bizzie/core/domain/models/weekly_report.dart';
 import 'package:bizzie/features/company_profile/ai_reports/domain/enums/ai_report_form.dart';
 import 'package:bizzie/features/company_profile/ai_reports/presentation/bloc/company_ai_reports_bloc.dart';
 import 'package:bizzie/features/company_profile/ai_reports/presentation/bloc/company_ai_reports_event.dart';
@@ -15,6 +16,7 @@ import 'package:bizzie/features/user/presentation/extensions/user_state_extensio
 import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:bizzie/shared/models/filing_view_model.dart';
 import 'package:bizzie/shared/widgets/cards/sec_filing_card.dart';
+import 'package:bizzie/shared/widgets/cards/weekly_report_card.dart';
 import 'package:bizzie/shared/widgets/inputs/bizzie_switch.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -87,15 +89,23 @@ class _LoadedView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final filings = state.visibleFilings;
+    final cards = [
+      ...state.visibleFilings.map(
+        (viewModel) => _AiReportCard(
+          viewModel: viewModel,
+          summaryButtonLabel: state.summaryButtonLabel,
+        ),
+      ),
+      ...state.visibleRecaps.map((report) => _RecapCard(report: report)),
+    ];
 
-    if (filings.isEmpty) {
+    if (cards.isEmpty) {
       return SingleChildScrollView(
         padding: AppConstants.pagePadding,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _FormSwitch(selectedForm: state.selectedForm),
+            _FormSwitch(forms: state.forms, selectedForm: state.selectedForm),
             AppConstants.emptyStateTopSpacing,
             CompanyProfileEmptyState(message: state.emptyMessage),
           ],
@@ -105,15 +115,16 @@ class _LoadedView extends StatelessWidget {
 
     return ListView.separated(
       padding: AppConstants.pagePadding,
-      itemCount: filings.length + 1,
+      itemCount: cards.length + 1,
       separatorBuilder: (_, __) => AppConstants.secondarySectionSpacing,
       itemBuilder: (context, index) {
-        if (index == 0) return _FormSwitch(selectedForm: state.selectedForm);
-        final viewModel = filings[index - 1];
-        return _AiReportCard(
-          viewModel: viewModel,
-          summaryButtonLabel: state.summaryButtonLabel,
-        );
+        if (index == 0) {
+          return _FormSwitch(
+            forms: state.forms,
+            selectedForm: state.selectedForm,
+          );
+        }
+        return cards[index - 1];
       },
     );
   }
@@ -152,18 +163,43 @@ class _AiReportCard extends StatelessWidget {
   }
 }
 
+class _RecapCard extends StatelessWidget {
+  final WeeklyReport report;
+
+  const _RecapCard({required this.report});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocSelector<UserBloc, UserState, bool>(
+      selector: (state) => state.isSubscribed,
+      builder: (context, isSubscribed) => WeeklyReportCard(
+        report: report,
+        isLocked: !isSubscribed,
+        onLockedTapped: () => PaywallHelper.showLockedTabPaywall(
+          context,
+          tabName: CompanyProfileTab.aiReports.analyticsName,
+        ),
+        onReportOpened: () => context.read<CompanyAiReportsBloc>().add(
+          const CompanyAiReportsEvent.reportOpened(),
+        ),
+      ),
+    );
+  }
+}
+
 class _FormSwitch extends StatelessWidget {
+  final List<AiReportForm> forms;
   final AiReportForm selectedForm;
 
-  const _FormSwitch({required this.selectedForm});
+  const _FormSwitch({required this.forms, required this.selectedForm});
 
   @override
   Widget build(BuildContext context) {
     return BizzieSwitch(
-      options: AiReportForm.values.map((form) => form.formType).toList(),
-      selectedIndex: selectedForm.index,
+      options: forms.map((form) => form.formType).toList(),
+      selectedIndex: forms.indexOf(selectedForm),
       onChanged: (index) => context.read<CompanyAiReportsBloc>().add(
-        CompanyAiReportsEvent.formChanged(AiReportForm.values[index]),
+        CompanyAiReportsEvent.formChanged(forms[index]),
       ),
     );
   }

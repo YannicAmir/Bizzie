@@ -1,5 +1,5 @@
 import 'package:bizzie/app/themes/app_colors.dart';
-import 'package:bizzie/features/reports/domain/models/weekly_report.dart';
+import 'package:bizzie/core/domain/models/weekly_report.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:bizzie/shared/utils/currency_formatter.dart';
 import 'package:bizzie/shared/widgets/app_badge.dart';

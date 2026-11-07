@@ -17,7 +17,7 @@ class AppBottomModal extends StatelessWidget {
     required this.title,
     required this.builder,
     this.initialChildSize = 0.875,
-    this.minChildSize = 0.5,
+    this.minChildSize = 0.875,
     this.maxChildSize = 0.875,
     this.subtitle,
     this.useDraggable = true,

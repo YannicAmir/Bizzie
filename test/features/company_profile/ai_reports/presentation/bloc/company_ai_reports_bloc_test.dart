@@ -65,6 +65,9 @@ void main() {
     mockUseCase = MockGetCompanyFilingsUseCase();
     mockConfigService = MockConfigService();
     when(() => mockConfigService.aiSummaryButtonLabel).thenReturn(tLabel);
+    when(
+      () => mockConfigService.aiReportsTabFilingOrder,
+    ).thenReturn(['8-K', '10-K', 'Recaps', '10-Q']);
     mockAnalytics = MockAiReportsTabAnalytics();
     mockGetAuthStream = MockGetAuthStream();
     mockTimeProvider = MockTimeProvider();
@@ -111,7 +114,13 @@ void main() {
                 tCompanyFilings,
               )
               .having((s) => s.summaryButtonLabel, 'label', tLabel)
-              .having((s) => s.selectedForm, 'form', AiReportForm.tenK)
+              .having((s) => s.selectedForm, 'form', AiReportForm.eightK)
+              .having((s) => s.forms, 'forms', [
+                AiReportForm.eightK,
+                AiReportForm.tenK,
+                AiReportForm.recaps,
+                AiReportForm.tenQ,
+              ])
               .having(
                 (s) => s.analyticsState?.dataSource,
                 'dataSource',
@@ -169,7 +178,7 @@ void main() {
         sut.add(const CompanyAiReportsEvent.loadRequested(tTicker));
         controller.add(const Right(tCompanyFilings));
         await sut.stream.firstWhere((s) => s is CompanyAiReportsLoaded);
-        sut.add(const CompanyAiReportsEvent.formChanged(AiReportForm.eightK));
+        sut.add(const CompanyAiReportsEvent.formChanged(AiReportForm.tenQ));
         await sut.stream.first;
 
         // act
@@ -177,7 +186,7 @@ void main() {
         await pumpEventQueue();
 
         // assert
-        expect(loadedOf(sut.state).selectedForm, AiReportForm.eightK);
+        expect(loadedOf(sut.state).selectedForm, AiReportForm.tenQ);
       });
     });
 
@@ -284,6 +293,34 @@ void main() {
           expect(logged.viewedEightKTab, isTrue);
           expect(logged.openedReport, isTrue);
           expect(logged.openedFilingLink, isTrue);
+        },
+      );
+
+      blocTest<CompanyAiReportsBloc, CompanyAiReportsState>(
+        'formChanged_recaps_marksRecapsViewedInSummary',
+        build: () => sut,
+        seed: () => const CompanyAiReportsState.loaded(
+          ticker: tTicker,
+          companyFilings: tCompanyFilings,
+          summaryButtonLabel: tLabel,
+        ),
+        act: (bloc) async {
+          bloc
+            ..add(const CompanyAiReportsEvent.tabShown(tTicker))
+            ..add(const CompanyAiReportsEvent.formChanged(AiReportForm.recaps));
+          await pumpEventQueue();
+          bloc.add(const CompanyAiReportsEvent.tabHidden());
+        },
+        verify: (_) {
+          final logged =
+              verify(
+                    () => mockAnalytics.logViewSummary(
+                      captureAny(),
+                      isFinal: true,
+                    ),
+                  ).captured.single
+                  as AiReportsTabViewState;
+          expect(logged.viewedRecapsTab, isTrue);
         },
       );
     });

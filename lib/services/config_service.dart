@@ -24,6 +24,7 @@ class RemoteConfigKeys {
   static const String freePlanHistoryCount = 'free_plan_history_count';
   static const String reviewPromptEventCount = 'review_prompt_event_count';
   static const String aiSummaryButtonLabel = 'ai_summary_button_label';
+  static const String aiReportsTabFilingOrder = 'ai_reports_tab_filing_order';
   static const String subscriptionFeatureHighlights =
       'subscription_feature_highlights';
   static const String frankfurterConfig = 'frankfurter_config';
@@ -67,6 +68,12 @@ class ConfigService implements IConfigService {
     'Unlimited AI analysis of financial reports',
     'Unlimited product search to find stocks',
     'Unlimited summaries of SEC filings',
+  ];
+  static const _defaultAiReportsTabFilingOrder = [
+    '8-K',
+    '10-Q',
+    '10-K',
+    'Recaps',
   ];
   static const _defaultFrankfurterBaseUrl = "https://api.frankfurter.dev/v2";
 
@@ -164,6 +171,9 @@ class ConfigService implements IConfigService {
       RemoteConfigKeys.freePlanHistoryCount: 5,
       RemoteConfigKeys.reviewPromptEventCount: 3,
       RemoteConfigKeys.aiSummaryButtonLabel: 'Summarize',
+      RemoteConfigKeys.aiReportsTabFilingOrder: jsonEncode(
+        _defaultAiReportsTabFilingOrder,
+      ),
       RemoteConfigKeys.subscriptionFeatureHighlights: jsonEncode(
         _defaultSubscriptionFeatureHighlights,
       ),
@@ -260,6 +270,19 @@ class ConfigService implements IConfigService {
     } catch (e) {
       _logger.severe('Error parsing stockMarketSectors', e);
       return _defaultSectors;
+    }
+  }
+
+  @override
+  List<String> get aiReportsTabFilingOrder {
+    final jsonString = _remoteConfig.getString(
+      RemoteConfigKeys.aiReportsTabFilingOrder,
+    );
+    try {
+      return List<String>.from(jsonDecode(jsonString));
+    } catch (e) {
+      _logger.severe('Error parsing aiReportsTabFilingOrder', e);
+      return _defaultAiReportsTabFilingOrder;
     }
   }
 

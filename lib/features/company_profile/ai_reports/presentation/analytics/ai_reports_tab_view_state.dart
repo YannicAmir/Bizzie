@@ -18,6 +18,7 @@ abstract class AiReportsTabViewState
     @Default(false) bool viewedTenKTab,
     @Default(false) bool viewedTenQTab,
     @Default(false) bool viewedEightKTab,
+    @Default(false) bool viewedRecapsTab,
     @Default(false) bool openedReport,
     @Default(false) bool openedFilingLink,
   }) = _AiReportsTabViewState;

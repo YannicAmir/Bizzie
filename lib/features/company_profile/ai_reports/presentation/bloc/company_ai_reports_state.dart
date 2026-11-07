@@ -15,6 +15,7 @@ abstract class CompanyAiReportsState with _$CompanyAiReportsState {
     required CompanyFilings companyFilings,
     required String summaryButtonLabel,
     @Default(AiReportForm.tenK) AiReportForm selectedForm,
+    @Default(AiReportForm.values) List<AiReportForm> forms,
     AiReportsTabViewState? analyticsState,
   }) = CompanyAiReportsLoaded;
   const factory CompanyAiReportsState.failure(Failure failure) = _Failure;

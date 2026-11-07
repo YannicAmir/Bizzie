@@ -58,6 +58,7 @@ void main() {
             'viewed_10k_tab': true,
             'viewed_10q_tab': false,
             'viewed_8k_tab': true,
+            'viewed_recaps_tab': false,
             'opened_report': true,
             'opened_filing_link': false,
             'is_final': true,

@@ -68,8 +68,11 @@ class CompanyAiReportsBloc
   @override
   String? get loadedTicker => state.mapOrNull(loaded: (s) => s.ticker);
 
+  List<AiReportForm> get _forms =>
+      AiReportForm.inOrder(_configService.aiReportsTabFilingOrder);
+
   AiReportForm get _selectedForm =>
-      state.mapOrNull(loaded: (s) => s.selectedForm) ?? AiReportForm.tenK;
+      state.mapOrNull(loaded: (s) => s.selectedForm) ?? _forms.first;
 
   void _onStarted(Started event, Emitter<CompanyAiReportsState> emit) {
     if (shouldSkipLoad(event.ticker, forceRefresh: false)) return;
@@ -132,6 +135,7 @@ class CompanyAiReportsBloc
       companyFilings: companyFilings,
       summaryButtonLabel: _configService.aiSummaryButtonLabel,
       selectedForm: _selectedForm,
+      forms: _forms,
       analyticsState: _recordLoadMetrics(
         ticker: ticker,
         isSuccess: true,
@@ -192,6 +196,7 @@ class CompanyAiReportsBloc
         AiReportForm.tenK => s.copyWith(viewedTenKTab: true),
         AiReportForm.tenQ => s.copyWith(viewedTenQTab: true),
         AiReportForm.eightK => s.copyWith(viewedEightKTab: true),
+        AiReportForm.recaps => s.copyWith(viewedRecapsTab: true),
       },
     );
   }

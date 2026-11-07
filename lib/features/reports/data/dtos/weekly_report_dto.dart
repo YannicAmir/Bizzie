@@ -1,6 +1,6 @@
 // ignore_for_file: invalid_annotation_target
 import 'package:bizzie/core/utils/timestamp_converter.dart';
-import 'package:bizzie/features/reports/domain/models/weekly_report.dart';
+import 'package:bizzie/core/domain/models/weekly_report.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'weekly_report_dto.freezed.dart';

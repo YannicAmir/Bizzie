@@ -49,74 +49,78 @@ class ReportSummaryModal extends StatelessWidget {
           controller: scrollController,
           padding: AppConstants.reportModalPadding,
           children: [
-            Text('Operations', style: theme.textTheme.displaySmall),
-            AppConstants.secondarySectionSpacing,
-            MetricCard.fromMetricWithDriver(
-              title: 'Revenue',
-              metric: report.income.revenue,
-              currencyCode: report.summary.reportingCurrency,
+            _MetricSection(
+              title: 'Operations',
+              cards: [
+                if (report.income.revenue.amount != 0)
+                  MetricCard.fromMetricWithDriver(
+                    title: 'Revenue',
+                    metric: report.income.revenue,
+                    currencyCode: report.summary.reportingCurrency,
+                  ),
+                if (report.income.costOfRevenue.amount != 0)
+                  MetricCard.fromMetric(
+                    title: 'Cost of Revenue',
+                    metric: report.income.costOfRevenue,
+                    isInverse: true,
+                    currencyCode: report.summary.reportingCurrency,
+                  ),
+                if (report.income.totalExpenses.amount != 0)
+                  MetricCard.fromMetricWithDriver(
+                    title: 'Total Expenses',
+                    metric: report.income.totalExpenses,
+                    isInverse: true,
+                    currencyCode: report.summary.reportingCurrency,
+                  ),
+                if (report.income.netIncome.amount != 0)
+                  MetricCard.fromMetricWithDriver(
+                    title: 'Net Income',
+                    metric: report.income.netIncome,
+                    currencyCode: report.summary.reportingCurrency,
+                  ),
+                if (report.income.eps.amount != 0)
+                  MetricCard.fromMetric(
+                    title: 'Earnings Per Share',
+                    metric: report.income.eps,
+                    currencyCode: report.summary.reportingCurrency,
+                  ),
+              ],
             ),
-            AppConstants.secondarySectionSpacing,
-            MetricCard.fromMetric(
-              title: 'Cost of Revenue',
-              metric: report.income.costOfRevenue,
-              isInverse: true,
-              currencyCode: report.summary.reportingCurrency,
+            _MetricSection(
+              title: 'Balance Sheet',
+              cards: [
+                if (report.balanceSheet.totalAssets.amount != 0)
+                  MetricCard.fromMetric(
+                    title: 'Total Assets',
+                    metric: report.balanceSheet.totalAssets,
+                    currencyCode: report.summary.reportingCurrency,
+                  ),
+                if (report.balanceSheet.totalLiabilities.amount != 0)
+                  MetricCard.fromMetric(
+                    title: 'Total Liabilities',
+                    metric: report.balanceSheet.totalLiabilities,
+                    isInverse: true,
+                    currencyCode: report.summary.reportingCurrency,
+                  ),
+                if (report.balanceSheet.equity.amount != 0)
+                  MetricCard.fromMetric(
+                    title: 'Stockholder\'s Equity',
+                    metric: report.balanceSheet.equity,
+                    currencyCode: report.summary.reportingCurrency,
+                  ),
+              ],
             ),
-            AppConstants.secondarySectionSpacing,
-            MetricCard.fromMetricWithDriver(
-              title: 'Total Expenses',
-              metric: report.income.totalExpenses,
-              isInverse: true,
-              currencyCode: report.summary.reportingCurrency,
+            _MetricSection(
+              title: 'Cash Flow',
+              cards: [
+                if (report.cashFlow.freeCashFlow.amount != 0)
+                  MetricCard.fromMetricWithDriver(
+                    title: 'Free Cash Flow',
+                    metric: report.cashFlow.freeCashFlow,
+                    currencyCode: report.summary.reportingCurrency,
+                  ),
+              ],
             ),
-            AppConstants.secondarySectionSpacing,
-            MetricCard.fromMetricWithDriver(
-              title: 'Net Income',
-              metric: report.income.netIncome,
-              currencyCode: report.summary.reportingCurrency,
-            ),
-            AppConstants.secondarySectionSpacing,
-            MetricCard.fromMetric(
-              title: 'Earnings Per Share',
-              metric: report.income.eps,
-              currencyCode: report.summary.reportingCurrency,
-            ),
-
-            _kSectionSpacing,
-
-            Text('Balance Sheet', style: theme.textTheme.displaySmall),
-            AppConstants.secondarySectionSpacing,
-            MetricCard.fromMetric(
-              title: 'Total Assets',
-              metric: report.balanceSheet.totalAssets,
-              currencyCode: report.summary.reportingCurrency,
-            ),
-            AppConstants.secondarySectionSpacing,
-            MetricCard.fromMetric(
-              title: 'Total Liabilities',
-              metric: report.balanceSheet.totalLiabilities,
-              isInverse: true,
-              currencyCode: report.summary.reportingCurrency,
-            ),
-            AppConstants.secondarySectionSpacing,
-            MetricCard.fromMetric(
-              title: 'Stockholder\'s Equity',
-              metric: report.balanceSheet.equity,
-              currencyCode: report.summary.reportingCurrency,
-            ),
-
-            _kSectionSpacing,
-
-            Text('Cash Flow', style: theme.textTheme.displaySmall),
-            AppConstants.secondarySectionSpacing,
-            MetricCard.fromMetricWithDriver(
-              title: 'Free Cash Flow',
-              metric: report.cashFlow.freeCashFlow,
-              currencyCode: report.summary.reportingCurrency,
-            ),
-
-            _kSectionSpacing,
 
             if (!report.formType.contains(_kEightKFormType)) ...[
               Text('Stock Repurchasing', style: theme.textTheme.displaySmall),
@@ -147,6 +151,30 @@ class ReportSummaryModal extends StatelessWidget {
           ],
         );
       },
+    );
+  }
+}
+
+class _MetricSection extends StatelessWidget {
+  final String title;
+  final List<MetricCard> cards;
+
+  const _MetricSection({required this.title, required this.cards});
+
+  @override
+  Widget build(BuildContext context) {
+    if (cards.isEmpty) return const SizedBox.shrink();
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(title, style: Theme.of(context).textTheme.displaySmall),
+        for (final card in cards) ...[
+          AppConstants.secondarySectionSpacing,
+          card,
+        ],
+        _kSectionSpacing,
+      ],
     );
   }
 }

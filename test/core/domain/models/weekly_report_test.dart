@@ -1,4 +1,4 @@
-import 'package:bizzie/features/reports/domain/models/weekly_report.dart';
+import 'package:bizzie/core/domain/models/weekly_report.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

@@ -11,7 +11,7 @@ import 'package:bizzie/core/domain/models/financial_report.dart';
 import 'package:bizzie/features/reports/domain/models/reports_feed.dart';
 import 'package:bizzie/core/domain/models/sec_filing.dart';
 import 'package:bizzie/features/reports/domain/models/upcoming_earnings.dart';
-import 'package:bizzie/features/reports/domain/models/weekly_report.dart';
+import 'package:bizzie/core/domain/models/weekly_report.dart';
 import 'package:bizzie/features/search/domain/interfaces/i_stock_repository.dart';
 import 'package:bizzie/features/search/domain/models/stock_symbol.dart';
 import 'package:bizzie/features/user/data/dtos/user_activity_dto.dart';
