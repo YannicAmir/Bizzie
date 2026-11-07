@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$FrankfurterResponseDto {
 
- double get amount; String get base; String get date; Map<String, double> get rates;
+ String get date; String get base; String get quote; double get rate;
 /// Create a copy of FrankfurterResponseDto
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $FrankfurterResponseDtoCopyWith<FrankfurterResponseDto> get copyWith => _$Frankf
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is FrankfurterResponseDto&&(identical(other.amount, amount) || other.amount == amount)&&(identical(other.base, base) || other.base == base)&&(identical(other.date, date) || other.date == date)&&const DeepCollectionEquality().equals(other.rates, rates));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is FrankfurterResponseDto&&(identical(other.date, date) || other.date == date)&&(identical(other.base, base) || other.base == base)&&(identical(other.quote, quote) || other.quote == quote)&&(identical(other.rate, rate) || other.rate == rate));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,amount,base,date,const DeepCollectionEquality().hash(rates));
+int get hashCode => Object.hash(runtimeType,date,base,quote,rate);
 
 @override
 String toString() {
-  return 'FrankfurterResponseDto(amount: $amount, base: $base, date: $date, rates: $rates)';
+  return 'FrankfurterResponseDto(date: $date, base: $base, quote: $quote, rate: $rate)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $FrankfurterResponseDtoCopyWith<$Res>  {
   factory $FrankfurterResponseDtoCopyWith(FrankfurterResponseDto value, $Res Function(FrankfurterResponseDto) _then) = _$FrankfurterResponseDtoCopyWithImpl;
 @useResult
 $Res call({
- double amount, String base, String date, Map<String, double> rates
+ String date, String base, String quote, double rate
 });
 
 
@@ -65,13 +65,13 @@ class _$FrankfurterResponseDtoCopyWithImpl<$Res>
 
 /// Create a copy of FrankfurterResponseDto
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? amount = null,Object? base = null,Object? date = null,Object? rates = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? date = null,Object? base = null,Object? quote = null,Object? rate = null,}) {
   return _then(_self.copyWith(
-amount: null == amount ? _self.amount : amount // ignore: cast_nullable_to_non_nullable
-as double,base: null == base ? _self.base : base // ignore: cast_nullable_to_non_nullable
-as String,date: null == date ? _self.date : date // ignore: cast_nullable_to_non_nullable
-as String,rates: null == rates ? _self.rates : rates // ignore: cast_nullable_to_non_nullable
-as Map<String, double>,
+date: null == date ? _self.date : date // ignore: cast_nullable_to_non_nullable
+as String,base: null == base ? _self.base : base // ignore: cast_nullable_to_non_nullable
+as String,quote: null == quote ? _self.quote : quote // ignore: cast_nullable_to_non_nullable
+as String,rate: null == rate ? _self.rate : rate // ignore: cast_nullable_to_non_nullable
+as double,
   ));
 }
 
@@ -156,10 +156,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( double amount,  String base,  String date,  Map<String, double> rates)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String date,  String base,  String quote,  double rate)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _FrankfurterResponseDto() when $default != null:
-return $default(_that.amount,_that.base,_that.date,_that.rates);case _:
+return $default(_that.date,_that.base,_that.quote,_that.rate);case _:
   return orElse();
 
 }
@@ -177,10 +177,10 @@ return $default(_that.amount,_that.base,_that.date,_that.rates);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( double amount,  String base,  String date,  Map<String, double> rates)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String date,  String base,  String quote,  double rate)  $default,) {final _that = this;
 switch (_that) {
 case _FrankfurterResponseDto():
-return $default(_that.amount,_that.base,_that.date,_that.rates);case _:
+return $default(_that.date,_that.base,_that.quote,_that.rate);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -197,10 +197,10 @@ return $default(_that.amount,_that.base,_that.date,_that.rates);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( double amount,  String base,  String date,  Map<String, double> rates)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String date,  String base,  String quote,  double rate)?  $default,) {final _that = this;
 switch (_that) {
 case _FrankfurterResponseDto() when $default != null:
-return $default(_that.amount,_that.base,_that.date,_that.rates);case _:
+return $default(_that.date,_that.base,_that.quote,_that.rate);case _:
   return null;
 
 }
@@ -212,19 +212,13 @@ return $default(_that.amount,_that.base,_that.date,_that.rates);case _:
 @JsonSerializable()
 
 class _FrankfurterResponseDto extends FrankfurterResponseDto {
-  const _FrankfurterResponseDto({required this.amount, required this.base, required this.date, required final  Map<String, double> rates}): _rates = rates,super._();
+  const _FrankfurterResponseDto({required this.date, required this.base, required this.quote, required this.rate}): super._();
   factory _FrankfurterResponseDto.fromJson(Map<String, dynamic> json) => _$FrankfurterResponseDtoFromJson(json);
 
-@override final  double amount;
-@override final  String base;
 @override final  String date;
- final  Map<String, double> _rates;
-@override Map<String, double> get rates {
-  if (_rates is EqualUnmodifiableMapView) return _rates;
-  // ignore: implicit_dynamic_type
-  return EqualUnmodifiableMapView(_rates);
-}
-
+@override final  String base;
+@override final  String quote;
+@override final  double rate;
 
 /// Create a copy of FrankfurterResponseDto
 /// with the given fields replaced by the non-null parameter values.
@@ -239,16 +233,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _FrankfurterResponseDto&&(identical(other.amount, amount) || other.amount == amount)&&(identical(other.base, base) || other.base == base)&&(identical(other.date, date) || other.date == date)&&const DeepCollectionEquality().equals(other._rates, _rates));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _FrankfurterResponseDto&&(identical(other.date, date) || other.date == date)&&(identical(other.base, base) || other.base == base)&&(identical(other.quote, quote) || other.quote == quote)&&(identical(other.rate, rate) || other.rate == rate));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,amount,base,date,const DeepCollectionEquality().hash(_rates));
+int get hashCode => Object.hash(runtimeType,date,base,quote,rate);
 
 @override
 String toString() {
-  return 'FrankfurterResponseDto(amount: $amount, base: $base, date: $date, rates: $rates)';
+  return 'FrankfurterResponseDto(date: $date, base: $base, quote: $quote, rate: $rate)';
 }
 
 
@@ -259,7 +253,7 @@ abstract mixin class _$FrankfurterResponseDtoCopyWith<$Res> implements $Frankfur
   factory _$FrankfurterResponseDtoCopyWith(_FrankfurterResponseDto value, $Res Function(_FrankfurterResponseDto) _then) = __$FrankfurterResponseDtoCopyWithImpl;
 @override @useResult
 $Res call({
- double amount, String base, String date, Map<String, double> rates
+ String date, String base, String quote, double rate
 });
 
 
@@ -276,13 +270,13 @@ class __$FrankfurterResponseDtoCopyWithImpl<$Res>
 
 /// Create a copy of FrankfurterResponseDto
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? amount = null,Object? base = null,Object? date = null,Object? rates = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? date = null,Object? base = null,Object? quote = null,Object? rate = null,}) {
   return _then(_FrankfurterResponseDto(
-amount: null == amount ? _self.amount : amount // ignore: cast_nullable_to_non_nullable
-as double,base: null == base ? _self.base : base // ignore: cast_nullable_to_non_nullable
-as String,date: null == date ? _self.date : date // ignore: cast_nullable_to_non_nullable
-as String,rates: null == rates ? _self._rates : rates // ignore: cast_nullable_to_non_nullable
-as Map<String, double>,
+date: null == date ? _self.date : date // ignore: cast_nullable_to_non_nullable
+as String,base: null == base ? _self.base : base // ignore: cast_nullable_to_non_nullable
+as String,quote: null == quote ? _self.quote : quote // ignore: cast_nullable_to_non_nullable
+as String,rate: null == rate ? _self.rate : rate // ignore: cast_nullable_to_non_nullable
+as double,
   ));
 }
 

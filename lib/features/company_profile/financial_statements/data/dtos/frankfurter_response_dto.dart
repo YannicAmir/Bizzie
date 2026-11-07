@@ -6,10 +6,10 @@ part 'frankfurter_response_dto.g.dart';
 @freezed
 abstract class FrankfurterResponseDto with _$FrankfurterResponseDto {
   const factory FrankfurterResponseDto({
-    required double amount,
-    required String base,
     required String date,
-    required Map<String, double> rates,
+    required String base,
+    required String quote,
+    required double rate,
   }) = _FrankfurterResponseDto;
 
   const FrankfurterResponseDto._();

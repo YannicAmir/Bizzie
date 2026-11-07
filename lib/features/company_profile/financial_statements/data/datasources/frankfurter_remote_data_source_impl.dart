@@ -13,18 +13,23 @@ class FrankfurterRemoteDataSourceImpl implements IExchangeRateRemoteDataSource {
   );
 
   @override
-  Future<FrankfurterResponseDto> getExchangeRate({
+  Future<List<FrankfurterResponseDto>> getExchangeRate({
     required String base,
     required String target,
     required String date,
   }) async {
-    return RetryUtil.retry<FrankfurterResponseDto>(
+    return RetryUtil.retry<List<FrankfurterResponseDto>>(
       task: () async {
-        final response = await _frankfurterDio.get(
-          '/$date',
-          queryParameters: {'base': base, 'symbols': target},
+        final response = await _frankfurterDio.get<List<dynamic>>(
+          '/rates',
+          queryParameters: {'date': date, 'base': base, 'quotes': target},
         );
-        return FrankfurterResponseDto.fromJson(response.data);
+        return response.data!
+            .map(
+              (json) =>
+                  FrankfurterResponseDto.fromJson(json as Map<String, dynamic>),
+            )
+            .toList();
       },
       maxRetries: 3,
       initialDelay: const Duration(seconds: 1),

@@ -68,7 +68,7 @@ class ConfigService implements IConfigService {
     'Unlimited product search to find stocks',
     'Unlimited summaries of SEC filings',
   ];
-  static const _defaultFrankfurterBaseUrl = "https://api.frankfurter.dev/v1";
+  static const _defaultFrankfurterBaseUrl = "https://api.frankfurter.dev/v2";
 
   static const _defaultFreeUsersCompanyTabsConfig = {
     "mainTabs": ["business", "news", "dividends", "revenue"],

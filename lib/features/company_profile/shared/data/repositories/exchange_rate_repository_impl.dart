@@ -63,7 +63,10 @@ class ExchangeRateRepositoryImpl implements IExchangeRateRepository {
             date: requestDate,
           );
 
-          final rate = response.rates[reportedCurrency];
+          final rate = response
+              .where((r) => r.quote == reportedCurrency)
+              .firstOrNull
+              ?.rate;
           if (rate == null || rate == 0) {
             throw Exception('Rate for $reportedCurrency not found in response');
           }
