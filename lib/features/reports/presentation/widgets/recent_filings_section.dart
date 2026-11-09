@@ -1,8 +1,8 @@
 import 'package:bizzie/app/themes/app_assets.dart';
-import 'package:bizzie/features/reports/domain/models/weekly_report.dart';
-import 'package:bizzie/features/reports/presentation/models/filing_view_model.dart';
-import 'package:bizzie/features/reports/presentation/widgets/sec_filing_card.dart';
-import 'package:bizzie/features/reports/presentation/widgets/weekly_report_card.dart';
+import 'package:bizzie/core/domain/models/weekly_report.dart';
+import 'package:bizzie/shared/models/filing_view_model.dart';
+import 'package:bizzie/features/reports/presentation/widgets/reports_filing_card.dart';
+import 'package:bizzie/features/reports/presentation/widgets/reports_weekly_report_card.dart';
 import 'package:flutter/material.dart';
 
 class RecentFilingsSection extends StatelessWidget {
@@ -25,16 +25,10 @@ class RecentFilingsSection extends StatelessWidget {
 
     final List<_RecentItem> items = [
       ...filings.map(
-        (vm) => _RecentItem(
-          createdAt: vm.filing.createdAt,
-          filing: vm,
-        ),
+        (vm) => _RecentItem(createdAt: vm.filing.createdAt, filing: vm),
       ),
       ...weeklyReports.map(
-        (r) => _RecentItem(
-          createdAt: r.createdAt,
-          weekly: r,
-        ),
+        (r) => _RecentItem(createdAt: r.createdAt, weekly: r),
       ),
     ];
 
@@ -59,13 +53,13 @@ class RecentFilingsSection extends StatelessWidget {
           itemBuilder: (context, index) {
             final item = items[index];
             if (item.filing != null) {
-              return SecFilingCard(
+              return ReportsFilingCard(
                 filing: item.filing!.filing,
                 financialReport: item.filing!.report,
                 lastViewed: lastViewed,
               );
             }
-            return WeeklyReportCard(
+            return ReportsWeeklyReportCard(
               report: item.weekly!,
               lastViewed: lastViewed,
             );

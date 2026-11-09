@@ -25,12 +25,14 @@ class _SegmentationData {
   final List<RevenueSegment> annual;
   final List<RevenueSegment> quarterly;
   final String reportedCurrency;
+  final String? originalCurrency;
   final CompanyProfileDataOrigin origin;
 
   const _SegmentationData({
     required this.annual,
     required this.quarterly,
     required this.reportedCurrency,
+    required this.originalCurrency,
     required this.origin,
   });
 }
@@ -66,6 +68,7 @@ class SegmentsRepositoryImpl implements ISegmentsRepository {
           RevenueProductSegments(
             symbol: ticker,
             reportedCurrency: data.reportedCurrency,
+            originalCurrency: data.originalCurrency,
             annual: data.annual,
             quarterly: data.quarterly,
           ),
@@ -101,6 +104,7 @@ class SegmentsRepositoryImpl implements ISegmentsRepository {
           RevenueGeographicSegments(
             symbol: ticker,
             reportedCurrency: data.reportedCurrency,
+            originalCurrency: data.originalCurrency,
             annual: data.annual,
             quarterly: data.quarterly,
           ),
@@ -130,10 +134,12 @@ class SegmentsRepositoryImpl implements ISegmentsRepository {
     final (annualDtos, annualOrigin) = _dataOf(annualRes);
     final (quartDtos, quartOrigin) = _dataOf(quartRes);
 
+    final originalCurrency =
+        annualDtos.firstOrNull?.reportedCurrency ??
+        quartDtos.firstOrNull?.reportedCurrency;
+
     final conversionRes = await _exchangeRateRepository.getMultiplier(
-      reportedCurrency:
-          annualDtos.firstOrNull?.reportedCurrency ??
-          quartDtos.firstOrNull?.reportedCurrency,
+      reportedCurrency: originalCurrency,
       ticker: ticker,
     );
 
@@ -145,6 +151,7 @@ class SegmentsRepositoryImpl implements ISegmentsRepository {
           annual: _toDomainList(annualDtos, conversion),
           quarterly: _toDomainList(quartDtos, conversion),
           reportedCurrency: conversion.targetCurrency,
+          originalCurrency: originalCurrency,
           origin: _resolveOrigin([annualOrigin, quartOrigin, convOrigin]),
         ),
       );

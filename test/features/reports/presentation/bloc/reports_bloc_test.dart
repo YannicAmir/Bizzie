@@ -234,6 +234,23 @@ void main() {
         verify(() => mockTracker.logFetchFailed(error: 'Error')).called(1);
       },
     );
+
+    blocTest<ReportsBloc, ReportsState>(
+      'reportsUpdated_failureWhileLoaded_keepsLoadedStateAndLogsFailure',
+      build: () => bloc,
+      seed: () => const ReportsState.loaded(
+        tReportsFeed,
+        lastViewedReports: null,
+        todaysFilings: [],
+      ),
+      act: (bloc) => bloc.add(
+        const ReportsEvent.reportsUpdated(Left(Failure.server("Error"))),
+      ),
+      expect: () => <ReportsState>[],
+      verify: (_) {
+        verify(() => mockTracker.logFetchFailed(error: 'Error')).called(1);
+      },
+    );
   });
 
   group('ReportsBloc - Analytics', () {

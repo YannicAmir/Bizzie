@@ -7,6 +7,7 @@ part 'eps_stats.freezed.dart';
 abstract class EpsStats with _$EpsStats {
   const factory EpsStats({
     required String reportedCurrency,
+    String? originalCurrency,
     required List<FinancialDataPoint> annualEps,
     required List<FinancialDataPoint> quarterlyEps,
   }) = _EpsStats;

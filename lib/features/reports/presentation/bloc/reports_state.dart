@@ -1,6 +1,6 @@
 import 'package:bizzie/features/reports/domain/models/reports_feed.dart';
-import 'package:bizzie/features/reports/domain/models/weekly_report.dart';
-import 'package:bizzie/features/reports/presentation/models/filing_view_model.dart';
+import 'package:bizzie/core/domain/models/weekly_report.dart';
+import 'package:bizzie/shared/models/filing_view_model.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:bizzie/core/error/failures.dart';
 

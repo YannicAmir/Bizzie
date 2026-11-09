@@ -29,7 +29,6 @@ class ReportsRemoteDataSource implements IReportsRemoteDataSource {
           whereInField: FirestoreConstants.ticker,
           values: tickers,
           fromJson: FinancialReportDto.fromJson,
-          toJson: (dto) => dto.toJson(),
         )
         .handleError((e, s) {
           if (e is FirebaseException && e.code == 'permission-denied') {
@@ -38,6 +37,7 @@ class ReportsRemoteDataSource implements IReportsRemoteDataSource {
             );
           } else {
             _logger.severe('Error in FinancialReport stream', e, s);
+            Error.throwWithStackTrace(e, s);
           }
         });
   }
@@ -51,7 +51,6 @@ class ReportsRemoteDataSource implements IReportsRemoteDataSource {
           whereInField: FirestoreConstants.symbol,
           values: tickers,
           fromJson: SecFilingDto.fromJson,
-          toJson: (dto) => dto.toJson(),
           chunkSize: 30,
         )
         .handleError((e, s) {
@@ -61,6 +60,7 @@ class ReportsRemoteDataSource implements IReportsRemoteDataSource {
             );
           } else {
             _logger.severe('Error in SecFilings stream', e, s);
+            Error.throwWithStackTrace(e, s);
           }
         });
   }
@@ -76,7 +76,6 @@ class ReportsRemoteDataSource implements IReportsRemoteDataSource {
           whereInField: FirestoreConstants.symbol,
           values: tickers,
           fromJson: UpcomingEarningsDto.fromJson,
-          toJson: (dto) => dto.toJson(),
           chunkSize: 30,
         )
         .handleError((e, s) {
@@ -86,6 +85,7 @@ class ReportsRemoteDataSource implements IReportsRemoteDataSource {
             );
           } else {
             _logger.severe('Error in UpcomingEarnings stream', e, s);
+            Error.throwWithStackTrace(e, s);
           }
         });
   }

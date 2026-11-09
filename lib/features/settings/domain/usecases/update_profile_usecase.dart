@@ -28,7 +28,7 @@ class UpdateProfileUseCase
     try {
       final result = await _userRepository.updateUser(user);
 
-      return result.fold(
+      return await result.fold(
         (failure) {
           _logger.warning('User repository profile update failed', failure);
           return Left(failure);

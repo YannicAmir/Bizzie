@@ -7,6 +7,7 @@ part 'net_income_stats.freezed.dart';
 abstract class NetIncomeStats with _$NetIncomeStats {
   const factory NetIncomeStats({
     required String reportedCurrency,
+    String? originalCurrency,
     required List<FinancialDataPoint> annualNetIncome,
     required List<FinancialDataPoint> quarterlyNetIncome,
   }) = _NetIncomeStats;

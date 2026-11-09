@@ -38,6 +38,7 @@ abstract class FinancialStatementsState with _$FinancialStatementsState {
     StatementFlow<CashFlowStatement> cashFlow,
     @Default(FinancialStatementType.income) FinancialStatementType selectedType,
     @Default('USD') String reportedCurrency,
+    String? originalCurrency,
     String? ticker,
     required int freePlanHistoryCount,
   }) = _FinancialStatementsState;

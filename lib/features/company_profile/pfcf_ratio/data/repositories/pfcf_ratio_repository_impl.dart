@@ -47,7 +47,7 @@ class PfcfRatioRepositoryImpl implements IPfcfRatioRepository {
         },
       );
 
-      return res.map(
+      return await res.map(
         success: (s) =>
             right((s.data.map((d) => d.toPfcfRatio()).toList(), s.origin)),
         failure: (f) => left(f.failure),

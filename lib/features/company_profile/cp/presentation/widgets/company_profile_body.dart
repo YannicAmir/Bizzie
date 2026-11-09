@@ -1,4 +1,4 @@
-import 'package:bizzie/features/bizzie_chat/presentation/views/bizzie_chat_tab.dart';
+import 'package:bizzie/features/company_profile/ai_reports/presentation/views/ai_reports_tab.dart';
 import 'package:bizzie/features/company_profile/business/presentation/views/business_tab.dart';
 import 'package:bizzie/features/company_profile/dividends/presentation/views/dividends_tab.dart';
 import 'package:bizzie/features/company_profile/eps/presentation/views/eps_tab.dart';
@@ -40,8 +40,6 @@ class CompanyProfileBody extends StatelessWidget {
         switch (tab) {
           case CompanyProfileTab.security:
             return SecurityTab(ticker: ticker);
-          case CompanyProfileTab.chat:
-            return BizzieChatTab(ticker: ticker);
           case CompanyProfileTab.business:
             return BusinessTab(ticker: ticker);
           case CompanyProfileTab.news:
@@ -64,6 +62,8 @@ class CompanyProfileBody extends StatelessWidget {
             return SharesTab(ticker: ticker);
           case CompanyProfileTab.financialStatements:
             return FinancialStatementsTab(ticker: ticker);
+          case CompanyProfileTab.aiReports:
+            return AiReportsTab(ticker: ticker);
           case CompanyProfileTab.roe:
             return RoeTab(ticker: ticker);
           case CompanyProfileTab.peRatio:

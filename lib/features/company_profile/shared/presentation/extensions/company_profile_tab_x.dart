@@ -1,14 +1,8 @@
 import 'package:bizzie/features/company_profile/shared/domain/enums/company_profile_tab.dart';
 
-const String _bizzieChatPaywallFeatureName = 'bizzie_chat';
-
 extension CompanyProfileTabX on CompanyProfileTab {
-  String? get paywallFeatureName =>
-      this == CompanyProfileTab.chat ? _bizzieChatPaywallFeatureName : null;
-
   String get label => switch (this) {
     CompanyProfileTab.security => 'Security',
-    CompanyProfileTab.chat => 'Chat',
     CompanyProfileTab.business => 'Business',
     CompanyProfileTab.news => 'News',
     CompanyProfileTab.dividends => 'Dividends',
@@ -20,6 +14,7 @@ extension CompanyProfileTabX on CompanyProfileTab {
     CompanyProfileTab.fcps => 'FCPS',
     CompanyProfileTab.shares => 'Shares',
     CompanyProfileTab.financialStatements => 'Financial Statements',
+    CompanyProfileTab.aiReports => 'AI Reports',
     CompanyProfileTab.roe => 'ROE',
     CompanyProfileTab.peRatio => 'PE',
     CompanyProfileTab.pfcfRatio => 'PFCF',
@@ -28,7 +23,6 @@ extension CompanyProfileTabX on CompanyProfileTab {
 
   String get analyticsName => switch (this) {
     CompanyProfileTab.security => 'security',
-    CompanyProfileTab.chat => 'chat',
     CompanyProfileTab.business => 'business',
     CompanyProfileTab.news => 'news',
     CompanyProfileTab.dividends => 'dividends',
@@ -40,6 +34,7 @@ extension CompanyProfileTabX on CompanyProfileTab {
     CompanyProfileTab.fcps => 'fcps',
     CompanyProfileTab.shares => 'share',
     CompanyProfileTab.financialStatements => 'financial_statements',
+    CompanyProfileTab.aiReports => 'ai_reports',
     CompanyProfileTab.roe => 'roe',
     CompanyProfileTab.peRatio => 'pe',
     CompanyProfileTab.pfcfRatio => 'pfcf',

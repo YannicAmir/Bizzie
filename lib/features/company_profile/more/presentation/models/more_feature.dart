@@ -1,4 +1,4 @@
-import 'package:bizzie/features/bizzie_chat/presentation/views/bizzie_chat_tab.dart';
+import 'package:bizzie/features/company_profile/ai_reports/presentation/views/ai_reports_tab.dart';
 import 'package:bizzie/features/company_profile/business/presentation/views/business_tab.dart';
 import 'package:bizzie/features/company_profile/dividends/presentation/views/dividends_tab.dart';
 import 'package:bizzie/features/company_profile/eps/presentation/views/eps_tab.dart';
@@ -50,11 +50,11 @@ Widget _buildViewForTab(CompanyProfileTab tab, String ticker) {
     CompanyProfileTab.fcps => FcpsTab(ticker: ticker),
     CompanyProfileTab.shares => SharesTab(ticker: ticker),
     CompanyProfileTab.financialStatements => FinancialStatementsTab(ticker: ticker),
+    CompanyProfileTab.aiReports => AiReportsTab(ticker: ticker),
     CompanyProfileTab.roe => RoeTab(ticker: ticker),
     CompanyProfileTab.peRatio => PeRatioTab(ticker: ticker),
     CompanyProfileTab.pfcfRatio => PfcfRatioTab(ticker: ticker),
     CompanyProfileTab.security => throw ArgumentError('security cannot be shown in the More section'),
-    CompanyProfileTab.chat => BizzieChatTab(ticker: ticker),
     CompanyProfileTab.more => throw ArgumentError('more cannot be shown in the More section'),
   };
 }

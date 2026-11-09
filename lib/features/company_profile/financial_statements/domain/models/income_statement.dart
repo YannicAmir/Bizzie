@@ -8,6 +8,7 @@ abstract class IncomeStatement with _$IncomeStatement {
     required String date,
     required String symbol,
     required String reportedCurrency,
+    String? originalCurrency,
     required String period,
     required double revenue,
     required double grossProfit,

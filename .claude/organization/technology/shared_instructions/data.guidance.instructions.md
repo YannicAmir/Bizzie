@@ -112,7 +112,7 @@ One-shot reads:
 Real-time streams:
 - `getDocumentStream<T>(path, fromJson, toJson)` — single doc stream
 - `getCollectionStream<T>(path, fromJson, toJson, queryBuilder?)` — collection stream; pass `queryBuilder` for ordering or filtering
-- `getCollectionStreamChunked<T>(path, whereInField, values, fromJson, toJson, chunkSize?, queryBuilder?)` — chunked `whereIn` stream
+- `getCollectionStreamChunked<T>(path, whereInField, values, fromJson, chunkSize?, queryBuilder?)` — chunked `whereIn` stream; malformed documents are logged and skipped
 - `getCollectionGroupStreamChunked<T>(collectionId, whereInField, values, fromJson, chunkSize?)` — chunked `whereIn` stream over a collection group
 - `getMergedSubcollectionStreams<T>(rootCollection, documentIds, subcollectionId, fromJson, injectDocumentIdAs?)` — merged stream of the same subcollection across multiple documents
 

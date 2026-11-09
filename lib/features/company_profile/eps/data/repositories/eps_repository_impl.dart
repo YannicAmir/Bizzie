@@ -68,19 +68,22 @@ class EpsRepositoryImpl implements IEpsRepository {
       final annualOrigin = (annualRes as result.CacheSuccess).origin;
       final quartOrigin = (quartRes as result.CacheSuccess).origin;
 
+      final String? originalCurrency =
+          annual.firstOrNull?.reportedCurrency ??
+          quart.firstOrNull?.reportedCurrency;
+
       final conversionRes = await _exchangeRateRepository.getMultiplier(
-        reportedCurrency:
-            annual.firstOrNull?.reportedCurrency ??
-            quart.firstOrNull?.reportedCurrency,
+        reportedCurrency: originalCurrency,
         ticker: ticker,
       );
 
-      return conversionRes.fold((f) => left(f), (convData) {
+      return await conversionRes.fold((f) => left(f), (convData) {
         final conversion = convData.$1;
         final convOrigin = convData.$2;
 
         final epsStats = EpsStats(
           reportedCurrency: conversion.targetCurrency,
+          originalCurrency: originalCurrency,
           annualEps: annual
               .where((d) => d.date?.isNotEmpty == true)
               .map(

@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$EpsStats {
 
- String get reportedCurrency; List<FinancialDataPoint> get annualEps; List<FinancialDataPoint> get quarterlyEps;
+ String get reportedCurrency; String? get originalCurrency; List<FinancialDataPoint> get annualEps; List<FinancialDataPoint> get quarterlyEps;
 /// Create a copy of EpsStats
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $EpsStatsCopyWith<EpsStats> get copyWith => _$EpsStatsCopyWithImpl<EpsStats>(thi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is EpsStats&&(identical(other.reportedCurrency, reportedCurrency) || other.reportedCurrency == reportedCurrency)&&const DeepCollectionEquality().equals(other.annualEps, annualEps)&&const DeepCollectionEquality().equals(other.quarterlyEps, quarterlyEps));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is EpsStats&&(identical(other.reportedCurrency, reportedCurrency) || other.reportedCurrency == reportedCurrency)&&(identical(other.originalCurrency, originalCurrency) || other.originalCurrency == originalCurrency)&&const DeepCollectionEquality().equals(other.annualEps, annualEps)&&const DeepCollectionEquality().equals(other.quarterlyEps, quarterlyEps));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,reportedCurrency,const DeepCollectionEquality().hash(annualEps),const DeepCollectionEquality().hash(quarterlyEps));
+int get hashCode => Object.hash(runtimeType,reportedCurrency,originalCurrency,const DeepCollectionEquality().hash(annualEps),const DeepCollectionEquality().hash(quarterlyEps));
 
 @override
 String toString() {
-  return 'EpsStats(reportedCurrency: $reportedCurrency, annualEps: $annualEps, quarterlyEps: $quarterlyEps)';
+  return 'EpsStats(reportedCurrency: $reportedCurrency, originalCurrency: $originalCurrency, annualEps: $annualEps, quarterlyEps: $quarterlyEps)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $EpsStatsCopyWith<$Res>  {
   factory $EpsStatsCopyWith(EpsStats value, $Res Function(EpsStats) _then) = _$EpsStatsCopyWithImpl;
 @useResult
 $Res call({
- String reportedCurrency, List<FinancialDataPoint> annualEps, List<FinancialDataPoint> quarterlyEps
+ String reportedCurrency, String? originalCurrency, List<FinancialDataPoint> annualEps, List<FinancialDataPoint> quarterlyEps
 });
 
 
@@ -62,10 +62,11 @@ class _$EpsStatsCopyWithImpl<$Res>
 
 /// Create a copy of EpsStats
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? reportedCurrency = null,Object? annualEps = null,Object? quarterlyEps = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? reportedCurrency = null,Object? originalCurrency = freezed,Object? annualEps = null,Object? quarterlyEps = null,}) {
   return _then(_self.copyWith(
 reportedCurrency: null == reportedCurrency ? _self.reportedCurrency : reportedCurrency // ignore: cast_nullable_to_non_nullable
-as String,annualEps: null == annualEps ? _self.annualEps : annualEps // ignore: cast_nullable_to_non_nullable
+as String,originalCurrency: freezed == originalCurrency ? _self.originalCurrency : originalCurrency // ignore: cast_nullable_to_non_nullable
+as String?,annualEps: null == annualEps ? _self.annualEps : annualEps // ignore: cast_nullable_to_non_nullable
 as List<FinancialDataPoint>,quarterlyEps: null == quarterlyEps ? _self.quarterlyEps : quarterlyEps // ignore: cast_nullable_to_non_nullable
 as List<FinancialDataPoint>,
   ));
@@ -152,10 +153,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String reportedCurrency,  List<FinancialDataPoint> annualEps,  List<FinancialDataPoint> quarterlyEps)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String reportedCurrency,  String? originalCurrency,  List<FinancialDataPoint> annualEps,  List<FinancialDataPoint> quarterlyEps)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _EpsStats() when $default != null:
-return $default(_that.reportedCurrency,_that.annualEps,_that.quarterlyEps);case _:
+return $default(_that.reportedCurrency,_that.originalCurrency,_that.annualEps,_that.quarterlyEps);case _:
   return orElse();
 
 }
@@ -173,10 +174,10 @@ return $default(_that.reportedCurrency,_that.annualEps,_that.quarterlyEps);case 
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String reportedCurrency,  List<FinancialDataPoint> annualEps,  List<FinancialDataPoint> quarterlyEps)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String reportedCurrency,  String? originalCurrency,  List<FinancialDataPoint> annualEps,  List<FinancialDataPoint> quarterlyEps)  $default,) {final _that = this;
 switch (_that) {
 case _EpsStats():
-return $default(_that.reportedCurrency,_that.annualEps,_that.quarterlyEps);case _:
+return $default(_that.reportedCurrency,_that.originalCurrency,_that.annualEps,_that.quarterlyEps);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -193,10 +194,10 @@ return $default(_that.reportedCurrency,_that.annualEps,_that.quarterlyEps);case 
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String reportedCurrency,  List<FinancialDataPoint> annualEps,  List<FinancialDataPoint> quarterlyEps)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String reportedCurrency,  String? originalCurrency,  List<FinancialDataPoint> annualEps,  List<FinancialDataPoint> quarterlyEps)?  $default,) {final _that = this;
 switch (_that) {
 case _EpsStats() when $default != null:
-return $default(_that.reportedCurrency,_that.annualEps,_that.quarterlyEps);case _:
+return $default(_that.reportedCurrency,_that.originalCurrency,_that.annualEps,_that.quarterlyEps);case _:
   return null;
 
 }
@@ -208,10 +209,11 @@ return $default(_that.reportedCurrency,_that.annualEps,_that.quarterlyEps);case 
 
 
 class _EpsStats implements EpsStats {
-  const _EpsStats({required this.reportedCurrency, required final  List<FinancialDataPoint> annualEps, required final  List<FinancialDataPoint> quarterlyEps}): _annualEps = annualEps,_quarterlyEps = quarterlyEps;
+  const _EpsStats({required this.reportedCurrency, this.originalCurrency, required final  List<FinancialDataPoint> annualEps, required final  List<FinancialDataPoint> quarterlyEps}): _annualEps = annualEps,_quarterlyEps = quarterlyEps;
   
 
 @override final  String reportedCurrency;
+@override final  String? originalCurrency;
  final  List<FinancialDataPoint> _annualEps;
 @override List<FinancialDataPoint> get annualEps {
   if (_annualEps is EqualUnmodifiableListView) return _annualEps;
@@ -237,16 +239,16 @@ _$EpsStatsCopyWith<_EpsStats> get copyWith => __$EpsStatsCopyWithImpl<_EpsStats>
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _EpsStats&&(identical(other.reportedCurrency, reportedCurrency) || other.reportedCurrency == reportedCurrency)&&const DeepCollectionEquality().equals(other._annualEps, _annualEps)&&const DeepCollectionEquality().equals(other._quarterlyEps, _quarterlyEps));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _EpsStats&&(identical(other.reportedCurrency, reportedCurrency) || other.reportedCurrency == reportedCurrency)&&(identical(other.originalCurrency, originalCurrency) || other.originalCurrency == originalCurrency)&&const DeepCollectionEquality().equals(other._annualEps, _annualEps)&&const DeepCollectionEquality().equals(other._quarterlyEps, _quarterlyEps));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,reportedCurrency,const DeepCollectionEquality().hash(_annualEps),const DeepCollectionEquality().hash(_quarterlyEps));
+int get hashCode => Object.hash(runtimeType,reportedCurrency,originalCurrency,const DeepCollectionEquality().hash(_annualEps),const DeepCollectionEquality().hash(_quarterlyEps));
 
 @override
 String toString() {
-  return 'EpsStats(reportedCurrency: $reportedCurrency, annualEps: $annualEps, quarterlyEps: $quarterlyEps)';
+  return 'EpsStats(reportedCurrency: $reportedCurrency, originalCurrency: $originalCurrency, annualEps: $annualEps, quarterlyEps: $quarterlyEps)';
 }
 
 
@@ -257,7 +259,7 @@ abstract mixin class _$EpsStatsCopyWith<$Res> implements $EpsStatsCopyWith<$Res>
   factory _$EpsStatsCopyWith(_EpsStats value, $Res Function(_EpsStats) _then) = __$EpsStatsCopyWithImpl;
 @override @useResult
 $Res call({
- String reportedCurrency, List<FinancialDataPoint> annualEps, List<FinancialDataPoint> quarterlyEps
+ String reportedCurrency, String? originalCurrency, List<FinancialDataPoint> annualEps, List<FinancialDataPoint> quarterlyEps
 });
 
 
@@ -274,10 +276,11 @@ class __$EpsStatsCopyWithImpl<$Res>
 
 /// Create a copy of EpsStats
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? reportedCurrency = null,Object? annualEps = null,Object? quarterlyEps = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? reportedCurrency = null,Object? originalCurrency = freezed,Object? annualEps = null,Object? quarterlyEps = null,}) {
   return _then(_EpsStats(
 reportedCurrency: null == reportedCurrency ? _self.reportedCurrency : reportedCurrency // ignore: cast_nullable_to_non_nullable
-as String,annualEps: null == annualEps ? _self._annualEps : annualEps // ignore: cast_nullable_to_non_nullable
+as String,originalCurrency: freezed == originalCurrency ? _self.originalCurrency : originalCurrency // ignore: cast_nullable_to_non_nullable
+as String?,annualEps: null == annualEps ? _self._annualEps : annualEps // ignore: cast_nullable_to_non_nullable
 as List<FinancialDataPoint>,quarterlyEps: null == quarterlyEps ? _self._quarterlyEps : quarterlyEps // ignore: cast_nullable_to_non_nullable
 as List<FinancialDataPoint>,
   ));

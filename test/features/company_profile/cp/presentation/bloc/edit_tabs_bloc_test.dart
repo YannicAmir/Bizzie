@@ -15,7 +15,7 @@ class MockSaveTabLayoutUseCase extends Mock implements SaveTabLayoutUseCase {}
 
 // Paid-tier fixtures: main 4 (+ security = 5, within 3..12), more 3 (min 3).
 const tMainTabs = [
-  CompanyProfileTab.chat,
+  CompanyProfileTab.fcps,
   CompanyProfileTab.business,
   CompanyProfileTab.revenue,
   CompanyProfileTab.netIncome,
@@ -43,7 +43,7 @@ const fMainTabs = [
   CompanyProfileTab.revenue,
 ];
 const fMoreTabs = [CompanyProfileTab.netIncome, CompanyProfileTab.eps];
-const fPlusTabs = [CompanyProfileTab.chat, CompanyProfileTab.segments];
+const fPlusTabs = [CompanyProfileTab.fcps, CompanyProfileTab.segments];
 
 const fEditing = EditTabsState.editing(
   initialMainTabs: fMainTabs,
@@ -56,7 +56,7 @@ const fEditing = EditTabsState.editing(
 
 const tChangedMainTabs = [
   CompanyProfileTab.business,
-  CompanyProfileTab.chat,
+  CompanyProfileTab.fcps,
   CompanyProfileTab.revenue,
   CompanyProfileTab.netIncome,
 ];
@@ -169,7 +169,7 @@ void main() {
             initialMainTabs: tMainTabs,
             initialMoreTabs: tMoreTabs,
             mainTabs: [
-              CompanyProfileTab.chat,
+              CompanyProfileTab.fcps,
               CompanyProfileTab.business,
               CompanyProfileTab.revenue,
             ],
@@ -200,7 +200,7 @@ void main() {
             initialMoreTabs: tMoreTabs,
             mainTabs: [
               CompanyProfileTab.netIncome,
-              CompanyProfileTab.chat,
+              CompanyProfileTab.fcps,
               CompanyProfileTab.business,
               CompanyProfileTab.revenue,
             ],
@@ -279,7 +279,7 @@ void main() {
             CompanyProfileTab.dividends,
           ],
           moreTabs: [CompanyProfileTab.revenue, CompanyProfileTab.netIncome],
-          bizziePlusTabs: [CompanyProfileTab.chat],
+          bizziePlusTabs: [CompanyProfileTab.fcps],
           isSubscribed: false,
         ),
         act: (bloc) => bloc.add(
@@ -302,7 +302,7 @@ void main() {
               CompanyProfileTab.dividends,
             ],
             moreTabs: [CompanyProfileTab.revenue, CompanyProfileTab.netIncome],
-            bizziePlusTabs: [CompanyProfileTab.chat],
+            bizziePlusTabs: [CompanyProfileTab.fcps],
             isSubscribed: false,
             notice: EditTabsNotice.tooFewMoreTabs(TabLayout.freeMinMoreTabs),
           ),
@@ -317,13 +317,13 @@ void main() {
         // min of 3 incl. security; moving business below the divider is
         // rejected.
         seed: () => const EditTabsState.editing(
-          initialMainTabs: [CompanyProfileTab.chat, CompanyProfileTab.business],
+          initialMainTabs: [CompanyProfileTab.fcps, CompanyProfileTab.business],
           initialMoreTabs: [
             CompanyProfileTab.news,
             CompanyProfileTab.dividends,
             CompanyProfileTab.revenue,
           ],
-          mainTabs: [CompanyProfileTab.chat, CompanyProfileTab.business],
+          mainTabs: [CompanyProfileTab.fcps, CompanyProfileTab.business],
           moreTabs: [
             CompanyProfileTab.news,
             CompanyProfileTab.dividends,
@@ -338,7 +338,7 @@ void main() {
         expect: () => const [
           EditTabsState.editing(
             initialMainTabs: [
-              CompanyProfileTab.chat,
+              CompanyProfileTab.fcps,
               CompanyProfileTab.business,
             ],
             initialMoreTabs: [
@@ -346,7 +346,7 @@ void main() {
               CompanyProfileTab.dividends,
               CompanyProfileTab.revenue,
             ],
-            mainTabs: [CompanyProfileTab.chat, CompanyProfileTab.business],
+            mainTabs: [CompanyProfileTab.fcps, CompanyProfileTab.business],
             moreTabs: [
               CompanyProfileTab.news,
               CompanyProfileTab.dividends,

@@ -5,7 +5,7 @@ abstract class IExchangeRateRemoteDataSource {
   /// [date] should be in YYYY-MM-DD format.
   /// [base] is the source currency (e.g., 'USD').
   /// [target] is the currency to convert to (e.g., 'CNY').
-  Future<FrankfurterResponseDto> getExchangeRate({
+  Future<List<FrankfurterResponseDto>> getExchangeRate({
     required String base,
     required String target,
     required String date,

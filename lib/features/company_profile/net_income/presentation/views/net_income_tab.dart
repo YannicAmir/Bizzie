@@ -93,6 +93,7 @@ class _NetIncomeTabState extends State<NetIncomeTab>
                 annualData: stats.annualNetIncome,
                 quarterlyData: stats.quarterlyNetIncome,
                 currency: stats.reportedCurrency,
+                originalCurrency: stats.originalCurrency,
                 historyLimit: loadedState.historyLimit,
                 metricLabel: 'Net Income',
                 ttmTitle: 'Net Income TTM',

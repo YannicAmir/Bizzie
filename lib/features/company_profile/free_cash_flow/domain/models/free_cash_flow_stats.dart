@@ -7,6 +7,7 @@ part 'free_cash_flow_stats.freezed.dart';
 abstract class FreeCashFlowStats with _$FreeCashFlowStats {
   const factory FreeCashFlowStats({
     required String reportedCurrency,
+    String? originalCurrency,
     required List<FinancialDataPoint> annualFcf,
     required List<FinancialDataPoint> quarterlyFcf,
   }) = _FreeCashFlowStats;

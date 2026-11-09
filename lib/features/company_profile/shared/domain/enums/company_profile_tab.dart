@@ -1,6 +1,5 @@
 enum CompanyProfileTab {
   security,
-  chat,
   business,
   news,
   dividends,
@@ -12,6 +11,7 @@ enum CompanyProfileTab {
   fcps,
   shares,
   financialStatements,
+  aiReports,
   roe,
   peRatio,
   pfcfRatio,

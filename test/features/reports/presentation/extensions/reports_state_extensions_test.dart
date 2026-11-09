@@ -1,7 +1,7 @@
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/features/reports/domain/models/reports_feed.dart';
-import 'package:bizzie/features/reports/domain/models/sec_filing.dart';
-import 'package:bizzie/features/reports/domain/models/weekly_report.dart';
+import 'package:bizzie/core/domain/models/sec_filing.dart';
+import 'package:bizzie/core/domain/models/weekly_report.dart';
 import 'package:bizzie/features/reports/presentation/bloc/reports_state.dart';
 import 'package:bizzie/features/reports/presentation/extensions/reports_state_extensions.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -18,8 +18,10 @@ SecFiling _filing({DateTime? createdAt}) => SecFiling(
   analyzedAt: null,
 );
 
-WeeklyReport _weeklyReport({String ticker = 'AAPL', String id = '2026-05-27'}) =>
-    WeeklyReport(ticker: ticker, id: id);
+WeeklyReport _weeklyReport({
+  String ticker = 'AAPL',
+  String id = '2026-05-27',
+}) => WeeklyReport(ticker: ticker, id: id);
 
 void main() {
   group('ReportsStateExtension.unreadCount', () {

@@ -23,6 +23,25 @@ class FirestoreService {
     throw e;
   }
 
+  List<T> _parseValidDocs<T>(
+    List<QueryDocumentSnapshot<Map<String, dynamic>>> docs,
+    T Function(QueryDocumentSnapshot<Map<String, dynamic>> doc) parse,
+  ) {
+    final parsed = <T>[];
+    for (final doc in docs) {
+      try {
+        parsed.add(parse(doc));
+      } catch (e, s) {
+        _logger.severe(
+          'Skipping malformed document ${doc.reference.path}',
+          e,
+          s,
+        );
+      }
+    }
+    return parsed;
+  }
+
   CollectionReference<T> _getCollectionRef<T>(
     String path,
     T Function(Map<String, dynamic> json) fromJson,
@@ -289,14 +308,16 @@ class FirestoreService {
           .doc(docId)
           .collection(subcollectionId)
           .snapshots()
-          .map((s) => s.docs.map((d) {
-                final data = Map<String, dynamic>.from(d.data());
-                data['id'] = d.id;
-                if (injectDocumentIdAs != null) {
-                  data.putIfAbsent(injectDocumentIdAs, () => docId);
-                }
-                return fromJson(data);
-              }).toList());
+          .map(
+            (s) => _parseValidDocs(s.docs, (d) {
+              final data = Map<String, dynamic>.from(d.data());
+              data['id'] = d.id;
+              if (injectDocumentIdAs != null) {
+                data.putIfAbsent(injectDocumentIdAs, () => docId);
+              }
+              return fromJson(data);
+            }),
+          );
     }).toList();
 
     return Rx.combineLatest<List<T>, List<T>>(
@@ -316,24 +337,27 @@ class FirestoreService {
     required String whereInField,
     required List<dynamic> values,
     required T Function(Map<String, dynamic> json) fromJson,
-    required Map<String, dynamic> Function(T value) toJson,
     int chunkSize = 30,
-    Query<T> Function(Query<T> query)? queryBuilder,
+    Query<Map<String, dynamic>> Function(Query<Map<String, dynamic>> query)?
+    queryBuilder,
   }) {
     if (values.isEmpty) return Stream.value([]);
 
     final chunks = _chunkValues(values, chunkSize);
 
     final streams = chunks.map((chunk) {
-      Query<T> query = _getCollectionRef<T>(
-        path,
-        fromJson,
-        toJson,
-      ).where(whereInField, whereIn: chunk);
+      Query<Map<String, dynamic>> query = _firestore
+          .collection(path)
+          .where(whereInField, whereIn: chunk);
       if (queryBuilder != null) {
         query = queryBuilder(query);
       }
-      return query.snapshots().map((s) => s.docs.map((d) => d.data()).toList());
+      return query.snapshots().map(
+        (s) => _parseValidDocs(
+          s.docs,
+          (d) => fromJson({...d.data(), 'id': d.id}),
+        ),
+      );
     }).toList();
 
     return Rx.combineLatest<List<T>, List<T>>(

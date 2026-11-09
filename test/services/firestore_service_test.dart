@@ -114,4 +114,83 @@ void main() {
       expect(s2.data()?['name'], 'BatchRaw');
     });
   });
+
+  group('FirestoreService malformed documents', () {
+    TestDto strictFromJson(Map<String, dynamic> json) {
+      return TestDto(
+        id: json['id'] as String,
+        name: (json['nested'] as Map<String, dynamic>)['name'] as String,
+      );
+    }
+
+    test(
+      'getCollectionStreamChunked_malformedDocument_skipsItAndEmitsValidDocuments',
+      () async {
+        // arrange
+        await fakeFirestore.doc('items/good').set({
+          'ticker': 'AAPL',
+          'nested': {'name': 'Valid'},
+        });
+        await fakeFirestore.doc('items/bad').set({'ticker': 'AAPL'});
+
+        // act
+        final result = await firestoreService
+            .getCollectionStreamChunked<TestDto>(
+              path: 'items',
+              whereInField: 'ticker',
+              values: ['AAPL'],
+              fromJson: strictFromJson,
+            )
+            .first;
+
+        // assert
+        expect(result.map((d) => d.id), ['good']);
+      },
+    );
+
+    test(
+      'getCollectionStreamChunked_allDocumentsMalformed_emitsEmptyList',
+      () async {
+        // arrange
+        await fakeFirestore.doc('items/bad').set({'ticker': 'AAPL'});
+
+        // act
+        final result = await firestoreService
+            .getCollectionStreamChunked<TestDto>(
+              path: 'items',
+              whereInField: 'ticker',
+              values: ['AAPL'],
+              fromJson: strictFromJson,
+            )
+            .first;
+
+        // assert
+        expect(result, isEmpty);
+      },
+    );
+
+    test(
+      'getMergedSubcollectionStreams_malformedDocument_skipsItAndEmitsValidDocuments',
+      () async {
+        // arrange
+        await fakeFirestore.doc('recap/AAPL/weeks/good').set({
+          'nested': {'name': 'Valid'},
+        });
+        await fakeFirestore.doc('recap/AAPL/weeks/bad').set({'other': 1});
+
+        // act
+        final result = await firestoreService
+            .getMergedSubcollectionStreams<TestDto>(
+              rootCollection: 'recap',
+              documentIds: ['AAPL'],
+              subcollectionId: 'weeks',
+              fromJson: strictFromJson,
+            )
+            .first;
+
+        // assert
+        expect(result.map((d) => d.id), ['good']);
+      },
+    );
+  });
 }

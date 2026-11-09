@@ -185,6 +185,7 @@ void main() {
               const RevenueProductSegments(
                 symbol: tTicker,
                 reportedCurrency: 'USD',
+                originalCurrency: 'EUR',
                 annual: [tAnnualSegment2023, tAnnualSegment2022],
                 quarterly: [tQuarterSegment],
               ),
@@ -267,6 +268,7 @@ void main() {
               const RevenueProductSegments(
                 symbol: tTicker,
                 reportedCurrency: 'USD',
+                originalCurrency: 'EUR',
                 annual: [tAnnualSegment2023],
                 quarterly: [tQuarterSegment],
               ),
@@ -369,6 +371,7 @@ void main() {
               const RevenueGeographicSegments(
                 symbol: tTicker,
                 reportedCurrency: 'USD',
+                originalCurrency: 'EUR',
                 annual: [tAnnualSegment2023, tAnnualSegment2022],
                 quarterly: [tQuarterSegment],
               ),

@@ -90,6 +90,7 @@ class _FcpsTabState extends State<FcpsTab> with AutomaticKeepAliveClientMixin {
                 annualData: stats.annualFcps,
                 quarterlyData: stats.quarterlyFcps,
                 currency: stats.reportedCurrency,
+                originalCurrency: stats.originalCurrency,
                 historyLimit: loadedState.historyLimit,
                 metricLabel: 'FCPS',
                 ttmTitle: 'FCPS TTM',

@@ -38,12 +38,12 @@ void main() {
   const layout = TabLayout(
     mainTabs: [CompanyProfileTab.business, CompanyProfileTab.news],
     moreTabs: [CompanyProfileTab.roe, CompanyProfileTab.dividends],
-    bizziePlusTabs: [CompanyProfileTab.chat, CompanyProfileTab.segments],
+    bizziePlusTabs: [CompanyProfileTab.fcps, CompanyProfileTab.segments],
   );
   const loadedState = CompanyProfileTabsState.loaded(
     mainTabs: [CompanyProfileTab.business, CompanyProfileTab.news],
     moreTabs: [CompanyProfileTab.roe, CompanyProfileTab.dividends],
-    bizziePlusTabs: [CompanyProfileTab.chat, CompanyProfileTab.segments],
+    bizziePlusTabs: [CompanyProfileTab.fcps, CompanyProfileTab.segments],
     isBizzieChatEnabled: true,
     isSubscribed: false,
   );
@@ -110,7 +110,7 @@ void main() {
           const Right(
             TabLayout(
               mainTabs: [CompanyProfileTab.business, CompanyProfileTab.news],
-              moreTabs: [CompanyProfileTab.roe, CompanyProfileTab.chat],
+              moreTabs: [CompanyProfileTab.roe, CompanyProfileTab.fcps],
             ),
           ),
         );
@@ -121,7 +121,7 @@ void main() {
       expect: () => const [
         CompanyProfileTabsState.loaded(
           mainTabs: [CompanyProfileTab.business, CompanyProfileTab.news],
-          moreTabs: [CompanyProfileTab.roe, CompanyProfileTab.chat],
+          moreTabs: [CompanyProfileTab.roe, CompanyProfileTab.fcps],
           isBizzieChatEnabled: true,
           isSubscribed: true,
         ),
@@ -250,7 +250,7 @@ void main() {
         CompanyProfileTabsState.loaded(
           mainTabs: [CompanyProfileTab.business, CompanyProfileTab.news],
           moreTabs: [CompanyProfileTab.roe, CompanyProfileTab.dividends],
-          bizziePlusTabs: [CompanyProfileTab.chat, CompanyProfileTab.segments],
+          bizziePlusTabs: [CompanyProfileTab.fcps, CompanyProfileTab.segments],
           moreTabIndex: 1,
           isBizzieChatEnabled: true,
           isSubscribed: false,
@@ -283,7 +283,7 @@ void main() {
                 CompanyProfileTab.dividends,
               ],
               bizziePlusTabs: [
-                CompanyProfileTab.chat,
+                CompanyProfileTab.fcps,
                 CompanyProfileTab.segments,
               ],
             ),
@@ -299,7 +299,7 @@ void main() {
             CompanyProfileTab.roe,
             CompanyProfileTab.dividends,
           ],
-          bizziePlusTabs: [CompanyProfileTab.chat, CompanyProfileTab.segments],
+          bizziePlusTabs: [CompanyProfileTab.fcps, CompanyProfileTab.segments],
           isBizzieChatEnabled: true,
           isSubscribed: false,
         ),

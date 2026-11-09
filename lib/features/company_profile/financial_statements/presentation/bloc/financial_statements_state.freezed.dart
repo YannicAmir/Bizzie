@@ -421,7 +421,7 @@ $FailureCopyWith<$Res> get failure {
 /// @nodoc
 mixin _$FinancialStatementsState {
 
- StatementFlow<IncomeStatement> get income; StatementFlow<BalanceSheet> get balance; StatementFlow<CashFlowStatement> get cashFlow; FinancialStatementType get selectedType; String get reportedCurrency; String? get ticker; int get freePlanHistoryCount;
+ StatementFlow<IncomeStatement> get income; StatementFlow<BalanceSheet> get balance; StatementFlow<CashFlowStatement> get cashFlow; FinancialStatementType get selectedType; String get reportedCurrency; String? get originalCurrency; String? get ticker; int get freePlanHistoryCount;
 /// Create a copy of FinancialStatementsState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -432,16 +432,16 @@ $FinancialStatementsStateCopyWith<FinancialStatementsState> get copyWith => _$Fi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is FinancialStatementsState&&(identical(other.income, income) || other.income == income)&&(identical(other.balance, balance) || other.balance == balance)&&(identical(other.cashFlow, cashFlow) || other.cashFlow == cashFlow)&&(identical(other.selectedType, selectedType) || other.selectedType == selectedType)&&(identical(other.reportedCurrency, reportedCurrency) || other.reportedCurrency == reportedCurrency)&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.freePlanHistoryCount, freePlanHistoryCount) || other.freePlanHistoryCount == freePlanHistoryCount));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is FinancialStatementsState&&(identical(other.income, income) || other.income == income)&&(identical(other.balance, balance) || other.balance == balance)&&(identical(other.cashFlow, cashFlow) || other.cashFlow == cashFlow)&&(identical(other.selectedType, selectedType) || other.selectedType == selectedType)&&(identical(other.reportedCurrency, reportedCurrency) || other.reportedCurrency == reportedCurrency)&&(identical(other.originalCurrency, originalCurrency) || other.originalCurrency == originalCurrency)&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.freePlanHistoryCount, freePlanHistoryCount) || other.freePlanHistoryCount == freePlanHistoryCount));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,income,balance,cashFlow,selectedType,reportedCurrency,ticker,freePlanHistoryCount);
+int get hashCode => Object.hash(runtimeType,income,balance,cashFlow,selectedType,reportedCurrency,originalCurrency,ticker,freePlanHistoryCount);
 
 @override
 String toString() {
-  return 'FinancialStatementsState(income: $income, balance: $balance, cashFlow: $cashFlow, selectedType: $selectedType, reportedCurrency: $reportedCurrency, ticker: $ticker, freePlanHistoryCount: $freePlanHistoryCount)';
+  return 'FinancialStatementsState(income: $income, balance: $balance, cashFlow: $cashFlow, selectedType: $selectedType, reportedCurrency: $reportedCurrency, originalCurrency: $originalCurrency, ticker: $ticker, freePlanHistoryCount: $freePlanHistoryCount)';
 }
 
 
@@ -452,7 +452,7 @@ abstract mixin class $FinancialStatementsStateCopyWith<$Res>  {
   factory $FinancialStatementsStateCopyWith(FinancialStatementsState value, $Res Function(FinancialStatementsState) _then) = _$FinancialStatementsStateCopyWithImpl;
 @useResult
 $Res call({
- StatementFlow<IncomeStatement> income, StatementFlow<BalanceSheet> balance, StatementFlow<CashFlowStatement> cashFlow, FinancialStatementType selectedType, String reportedCurrency, String? ticker, int freePlanHistoryCount
+ StatementFlow<IncomeStatement> income, StatementFlow<BalanceSheet> balance, StatementFlow<CashFlowStatement> cashFlow, FinancialStatementType selectedType, String reportedCurrency, String? originalCurrency, String? ticker, int freePlanHistoryCount
 });
 
 
@@ -469,14 +469,15 @@ class _$FinancialStatementsStateCopyWithImpl<$Res>
 
 /// Create a copy of FinancialStatementsState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? income = null,Object? balance = null,Object? cashFlow = null,Object? selectedType = null,Object? reportedCurrency = null,Object? ticker = freezed,Object? freePlanHistoryCount = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? income = null,Object? balance = null,Object? cashFlow = null,Object? selectedType = null,Object? reportedCurrency = null,Object? originalCurrency = freezed,Object? ticker = freezed,Object? freePlanHistoryCount = null,}) {
   return _then(_self.copyWith(
 income: null == income ? _self.income : income // ignore: cast_nullable_to_non_nullable
 as StatementFlow<IncomeStatement>,balance: null == balance ? _self.balance : balance // ignore: cast_nullable_to_non_nullable
 as StatementFlow<BalanceSheet>,cashFlow: null == cashFlow ? _self.cashFlow : cashFlow // ignore: cast_nullable_to_non_nullable
 as StatementFlow<CashFlowStatement>,selectedType: null == selectedType ? _self.selectedType : selectedType // ignore: cast_nullable_to_non_nullable
 as FinancialStatementType,reportedCurrency: null == reportedCurrency ? _self.reportedCurrency : reportedCurrency // ignore: cast_nullable_to_non_nullable
-as String,ticker: freezed == ticker ? _self.ticker : ticker // ignore: cast_nullable_to_non_nullable
+as String,originalCurrency: freezed == originalCurrency ? _self.originalCurrency : originalCurrency // ignore: cast_nullable_to_non_nullable
+as String?,ticker: freezed == ticker ? _self.ticker : ticker // ignore: cast_nullable_to_non_nullable
 as String?,freePlanHistoryCount: null == freePlanHistoryCount ? _self.freePlanHistoryCount : freePlanHistoryCount // ignore: cast_nullable_to_non_nullable
 as int,
   ));
@@ -590,10 +591,10 @@ return initial(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( StatementFlow<IncomeStatement> income,  StatementFlow<BalanceSheet> balance,  StatementFlow<CashFlowStatement> cashFlow,  FinancialStatementType selectedType,  String reportedCurrency,  String? ticker,  int freePlanHistoryCount)?  initial,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( StatementFlow<IncomeStatement> income,  StatementFlow<BalanceSheet> balance,  StatementFlow<CashFlowStatement> cashFlow,  FinancialStatementType selectedType,  String reportedCurrency,  String? originalCurrency,  String? ticker,  int freePlanHistoryCount)?  initial,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _FinancialStatementsState() when initial != null:
-return initial(_that.income,_that.balance,_that.cashFlow,_that.selectedType,_that.reportedCurrency,_that.ticker,_that.freePlanHistoryCount);case _:
+return initial(_that.income,_that.balance,_that.cashFlow,_that.selectedType,_that.reportedCurrency,_that.originalCurrency,_that.ticker,_that.freePlanHistoryCount);case _:
   return orElse();
 
 }
@@ -611,10 +612,10 @@ return initial(_that.income,_that.balance,_that.cashFlow,_that.selectedType,_tha
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( StatementFlow<IncomeStatement> income,  StatementFlow<BalanceSheet> balance,  StatementFlow<CashFlowStatement> cashFlow,  FinancialStatementType selectedType,  String reportedCurrency,  String? ticker,  int freePlanHistoryCount)  initial,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( StatementFlow<IncomeStatement> income,  StatementFlow<BalanceSheet> balance,  StatementFlow<CashFlowStatement> cashFlow,  FinancialStatementType selectedType,  String reportedCurrency,  String? originalCurrency,  String? ticker,  int freePlanHistoryCount)  initial,}) {final _that = this;
 switch (_that) {
 case _FinancialStatementsState():
-return initial(_that.income,_that.balance,_that.cashFlow,_that.selectedType,_that.reportedCurrency,_that.ticker,_that.freePlanHistoryCount);case _:
+return initial(_that.income,_that.balance,_that.cashFlow,_that.selectedType,_that.reportedCurrency,_that.originalCurrency,_that.ticker,_that.freePlanHistoryCount);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -631,10 +632,10 @@ return initial(_that.income,_that.balance,_that.cashFlow,_that.selectedType,_tha
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( StatementFlow<IncomeStatement> income,  StatementFlow<BalanceSheet> balance,  StatementFlow<CashFlowStatement> cashFlow,  FinancialStatementType selectedType,  String reportedCurrency,  String? ticker,  int freePlanHistoryCount)?  initial,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( StatementFlow<IncomeStatement> income,  StatementFlow<BalanceSheet> balance,  StatementFlow<CashFlowStatement> cashFlow,  FinancialStatementType selectedType,  String reportedCurrency,  String? originalCurrency,  String? ticker,  int freePlanHistoryCount)?  initial,}) {final _that = this;
 switch (_that) {
 case _FinancialStatementsState() when initial != null:
-return initial(_that.income,_that.balance,_that.cashFlow,_that.selectedType,_that.reportedCurrency,_that.ticker,_that.freePlanHistoryCount);case _:
+return initial(_that.income,_that.balance,_that.cashFlow,_that.selectedType,_that.reportedCurrency,_that.originalCurrency,_that.ticker,_that.freePlanHistoryCount);case _:
   return null;
 
 }
@@ -646,7 +647,7 @@ return initial(_that.income,_that.balance,_that.cashFlow,_that.selectedType,_tha
 
 
 class _FinancialStatementsState extends FinancialStatementsState {
-  const _FinancialStatementsState({this.income = const StatementFlow<IncomeStatement>.initial(), this.balance = const StatementFlow<BalanceSheet>.initial(), this.cashFlow = const StatementFlow<CashFlowStatement>.initial(), this.selectedType = FinancialStatementType.income, this.reportedCurrency = 'USD', this.ticker, required this.freePlanHistoryCount}): super._();
+  const _FinancialStatementsState({this.income = const StatementFlow<IncomeStatement>.initial(), this.balance = const StatementFlow<BalanceSheet>.initial(), this.cashFlow = const StatementFlow<CashFlowStatement>.initial(), this.selectedType = FinancialStatementType.income, this.reportedCurrency = 'USD', this.originalCurrency, this.ticker, required this.freePlanHistoryCount}): super._();
   
 
 @override@JsonKey() final  StatementFlow<IncomeStatement> income;
@@ -654,6 +655,7 @@ class _FinancialStatementsState extends FinancialStatementsState {
 @override@JsonKey() final  StatementFlow<CashFlowStatement> cashFlow;
 @override@JsonKey() final  FinancialStatementType selectedType;
 @override@JsonKey() final  String reportedCurrency;
+@override final  String? originalCurrency;
 @override final  String? ticker;
 @override final  int freePlanHistoryCount;
 
@@ -667,16 +669,16 @@ _$FinancialStatementsStateCopyWith<_FinancialStatementsState> get copyWith => __
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _FinancialStatementsState&&(identical(other.income, income) || other.income == income)&&(identical(other.balance, balance) || other.balance == balance)&&(identical(other.cashFlow, cashFlow) || other.cashFlow == cashFlow)&&(identical(other.selectedType, selectedType) || other.selectedType == selectedType)&&(identical(other.reportedCurrency, reportedCurrency) || other.reportedCurrency == reportedCurrency)&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.freePlanHistoryCount, freePlanHistoryCount) || other.freePlanHistoryCount == freePlanHistoryCount));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _FinancialStatementsState&&(identical(other.income, income) || other.income == income)&&(identical(other.balance, balance) || other.balance == balance)&&(identical(other.cashFlow, cashFlow) || other.cashFlow == cashFlow)&&(identical(other.selectedType, selectedType) || other.selectedType == selectedType)&&(identical(other.reportedCurrency, reportedCurrency) || other.reportedCurrency == reportedCurrency)&&(identical(other.originalCurrency, originalCurrency) || other.originalCurrency == originalCurrency)&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.freePlanHistoryCount, freePlanHistoryCount) || other.freePlanHistoryCount == freePlanHistoryCount));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,income,balance,cashFlow,selectedType,reportedCurrency,ticker,freePlanHistoryCount);
+int get hashCode => Object.hash(runtimeType,income,balance,cashFlow,selectedType,reportedCurrency,originalCurrency,ticker,freePlanHistoryCount);
 
 @override
 String toString() {
-  return 'FinancialStatementsState.initial(income: $income, balance: $balance, cashFlow: $cashFlow, selectedType: $selectedType, reportedCurrency: $reportedCurrency, ticker: $ticker, freePlanHistoryCount: $freePlanHistoryCount)';
+  return 'FinancialStatementsState.initial(income: $income, balance: $balance, cashFlow: $cashFlow, selectedType: $selectedType, reportedCurrency: $reportedCurrency, originalCurrency: $originalCurrency, ticker: $ticker, freePlanHistoryCount: $freePlanHistoryCount)';
 }
 
 
@@ -687,7 +689,7 @@ abstract mixin class _$FinancialStatementsStateCopyWith<$Res> implements $Financ
   factory _$FinancialStatementsStateCopyWith(_FinancialStatementsState value, $Res Function(_FinancialStatementsState) _then) = __$FinancialStatementsStateCopyWithImpl;
 @override @useResult
 $Res call({
- StatementFlow<IncomeStatement> income, StatementFlow<BalanceSheet> balance, StatementFlow<CashFlowStatement> cashFlow, FinancialStatementType selectedType, String reportedCurrency, String? ticker, int freePlanHistoryCount
+ StatementFlow<IncomeStatement> income, StatementFlow<BalanceSheet> balance, StatementFlow<CashFlowStatement> cashFlow, FinancialStatementType selectedType, String reportedCurrency, String? originalCurrency, String? ticker, int freePlanHistoryCount
 });
 
 
@@ -704,14 +706,15 @@ class __$FinancialStatementsStateCopyWithImpl<$Res>
 
 /// Create a copy of FinancialStatementsState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? income = null,Object? balance = null,Object? cashFlow = null,Object? selectedType = null,Object? reportedCurrency = null,Object? ticker = freezed,Object? freePlanHistoryCount = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? income = null,Object? balance = null,Object? cashFlow = null,Object? selectedType = null,Object? reportedCurrency = null,Object? originalCurrency = freezed,Object? ticker = freezed,Object? freePlanHistoryCount = null,}) {
   return _then(_FinancialStatementsState(
 income: null == income ? _self.income : income // ignore: cast_nullable_to_non_nullable
 as StatementFlow<IncomeStatement>,balance: null == balance ? _self.balance : balance // ignore: cast_nullable_to_non_nullable
 as StatementFlow<BalanceSheet>,cashFlow: null == cashFlow ? _self.cashFlow : cashFlow // ignore: cast_nullable_to_non_nullable
 as StatementFlow<CashFlowStatement>,selectedType: null == selectedType ? _self.selectedType : selectedType // ignore: cast_nullable_to_non_nullable
 as FinancialStatementType,reportedCurrency: null == reportedCurrency ? _self.reportedCurrency : reportedCurrency // ignore: cast_nullable_to_non_nullable
-as String,ticker: freezed == ticker ? _self.ticker : ticker // ignore: cast_nullable_to_non_nullable
+as String,originalCurrency: freezed == originalCurrency ? _self.originalCurrency : originalCurrency // ignore: cast_nullable_to_non_nullable
+as String?,ticker: freezed == ticker ? _self.ticker : ticker // ignore: cast_nullable_to_non_nullable
 as String?,freePlanHistoryCount: null == freePlanHistoryCount ? _self.freePlanHistoryCount : freePlanHistoryCount // ignore: cast_nullable_to_non_nullable
 as int,
   ));

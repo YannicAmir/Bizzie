@@ -23,7 +23,7 @@ class NewsRepositoryImpl implements INewsRepository {
         remoteFetcher: () => _remoteDataSource.getStockNews(ticker),
       );
 
-      return res.map(
+      return await res.map(
         success: (s) => right((
           CompanyNews(
             symbol: ticker,

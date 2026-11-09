@@ -96,6 +96,7 @@ class _RevenueTabState extends State<RevenueTab>
                 annualData: stats.annualRevenue,
                 quarterlyData: stats.quarterlyRevenue,
                 currency: stats.reportedCurrency,
+                originalCurrency: stats.originalCurrency,
                 historyLimit: loadedState.historyLimit,
                 metricLabel: 'Revenue',
                 ttmTitle: 'Revenue TTM',

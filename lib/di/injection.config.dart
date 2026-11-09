@@ -28,6 +28,7 @@ import 'package:injectable/injectable.dart' as _i526;
 import 'package:shared_preferences/shared_preferences.dart' as _i460;
 
 import '../core/analytics/analytics_context.dart' as _i450;
+import '../core/domain/interfaces/i_company_filings_repository.dart' as _i657;
 import '../core/domain/models/sector.dart' as _i162;
 import '../core/interfaces/i_analytics_service.dart' as _i529;
 import '../core/interfaces/i_config_service.dart' as _i937;
@@ -121,6 +122,12 @@ import '../features/bizzie_chat/presentation/bloc/bizzie_chat/bizzie_chat_bloc.d
     as _i993;
 import '../features/bizzie_chat/presentation/bloc/bizzie_chat_sessions/bizzie_chat_sessions_bloc.dart'
     as _i744;
+import '../features/company_profile/ai_reports/domain/usecases/get_company_filings_usecase.dart'
+    as _i629;
+import '../features/company_profile/ai_reports/presentation/analytics/ai_reports_tab_analytics.dart'
+    as _i168;
+import '../features/company_profile/ai_reports/presentation/bloc/company_ai_reports_bloc.dart'
+    as _i15;
 import '../features/company_profile/business/data/datasources/business_firestore_data_source.dart'
     as _i379;
 import '../features/company_profile/business/data/interfaces/i_business_firestore_datasource.dart'
@@ -526,6 +533,8 @@ import '../features/reports/data/datasources/reports_remote_datasource.dart'
     as _i532;
 import '../features/reports/data/interfaces/i_reports_remote_datasource.dart'
     as _i832;
+import '../features/reports/data/repositories/company_filings_repository_impl.dart'
+    as _i519;
 import '../features/reports/data/repositories/reports_repository_impl.dart'
     as _i1028;
 import '../features/reports/domain/interfaces/i_reports_repository.dart'
@@ -973,6 +982,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i310.SettingsTracker>(
       () => _i310.SettingsTracker(gh<_i529.IAnalyticsService>()),
     );
+    gh.lazySingleton<_i168.AiReportsTabAnalytics>(
+      () => _i168.AiReportsTabAnalytics(gh<_i529.IAnalyticsService>()),
+    );
     gh.lazySingleton<_i292.BusinessTabAnalytics>(
       () => _i292.BusinessTabAnalytics(gh<_i529.IAnalyticsService>()),
     );
@@ -1152,6 +1164,11 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i176.CompanyProfileBloc(
         gh<_i228.CompanyProfileAnalytics>(),
         gh<_i961.ILifecycleService>(),
+      ),
+    );
+    gh.lazySingleton<_i657.ICompanyFilingsRepository>(
+      () => _i519.CompanyFilingsRepositoryImpl(
+        gh<_i832.IReportsRemoteDataSource>(),
       ),
     );
     gh.singleton<_i361.Dio>(
@@ -1428,6 +1445,10 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i685.IAuthRepository>(),
       ),
     );
+    gh.lazySingleton<_i629.GetCompanyFilingsUseCase>(
+      () =>
+          _i629.GetCompanyFilingsUseCase(gh<_i657.ICompanyFilingsRepository>()),
+    );
     gh.singleton<_i977.AiProductSearchService>(
       () => _i977.AiProductSearchService(
         gh<_i937.IConfigService>(),
@@ -1441,6 +1462,15 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i754.GetDividendInfoUseCase>(
       () => _i754.GetDividendInfoUseCase(gh<_i468.IDividendRepository>()),
+    );
+    gh.factory<_i15.CompanyAiReportsBloc>(
+      () => _i15.CompanyAiReportsBloc(
+        gh<_i629.GetCompanyFilingsUseCase>(),
+        gh<_i937.IConfigService>(),
+        gh<_i168.AiReportsTabAnalytics>(),
+        gh<_i879.ITimeProvider>(),
+        gh<_i427.GetAuthStream>(),
+      ),
     );
     gh.lazySingleton<_i15.INewsRepository>(
       () => _i368.NewsRepositoryImpl(

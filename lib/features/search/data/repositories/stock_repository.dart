@@ -61,7 +61,7 @@ class StockRepository implements IStockRepository {
   Future<Either<Failure, List<StockSymbol>>> getAllStocks() async {
     try {
       final result = await getLocalStockListFile();
-      return result.fold((failure) => Left(failure), (file) async {
+      return await result.fold((failure) => Left(failure), (file) async {
         final content = await file.readAsString();
         final stocks = await compute(_parseStocks, content);
         return Right(stocks);

@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$IncomeStatement {
 
- String get date; String get symbol; String get reportedCurrency; String get period; double get revenue; double get grossProfit; double get operatingIncome; double get netIncome; double get eps; double get ebitda; double get costOfRevenue; double get operatingExpenses; double get costAndExpenses;
+ String get date; String get symbol; String get reportedCurrency; String? get originalCurrency; String get period; double get revenue; double get grossProfit; double get operatingIncome; double get netIncome; double get eps; double get ebitda; double get costOfRevenue; double get operatingExpenses; double get costAndExpenses;
 /// Create a copy of IncomeStatement
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $IncomeStatementCopyWith<IncomeStatement> get copyWith => _$IncomeStatementCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is IncomeStatement&&(identical(other.date, date) || other.date == date)&&(identical(other.symbol, symbol) || other.symbol == symbol)&&(identical(other.reportedCurrency, reportedCurrency) || other.reportedCurrency == reportedCurrency)&&(identical(other.period, period) || other.period == period)&&(identical(other.revenue, revenue) || other.revenue == revenue)&&(identical(other.grossProfit, grossProfit) || other.grossProfit == grossProfit)&&(identical(other.operatingIncome, operatingIncome) || other.operatingIncome == operatingIncome)&&(identical(other.netIncome, netIncome) || other.netIncome == netIncome)&&(identical(other.eps, eps) || other.eps == eps)&&(identical(other.ebitda, ebitda) || other.ebitda == ebitda)&&(identical(other.costOfRevenue, costOfRevenue) || other.costOfRevenue == costOfRevenue)&&(identical(other.operatingExpenses, operatingExpenses) || other.operatingExpenses == operatingExpenses)&&(identical(other.costAndExpenses, costAndExpenses) || other.costAndExpenses == costAndExpenses));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is IncomeStatement&&(identical(other.date, date) || other.date == date)&&(identical(other.symbol, symbol) || other.symbol == symbol)&&(identical(other.reportedCurrency, reportedCurrency) || other.reportedCurrency == reportedCurrency)&&(identical(other.originalCurrency, originalCurrency) || other.originalCurrency == originalCurrency)&&(identical(other.period, period) || other.period == period)&&(identical(other.revenue, revenue) || other.revenue == revenue)&&(identical(other.grossProfit, grossProfit) || other.grossProfit == grossProfit)&&(identical(other.operatingIncome, operatingIncome) || other.operatingIncome == operatingIncome)&&(identical(other.netIncome, netIncome) || other.netIncome == netIncome)&&(identical(other.eps, eps) || other.eps == eps)&&(identical(other.ebitda, ebitda) || other.ebitda == ebitda)&&(identical(other.costOfRevenue, costOfRevenue) || other.costOfRevenue == costOfRevenue)&&(identical(other.operatingExpenses, operatingExpenses) || other.operatingExpenses == operatingExpenses)&&(identical(other.costAndExpenses, costAndExpenses) || other.costAndExpenses == costAndExpenses));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,date,symbol,reportedCurrency,period,revenue,grossProfit,operatingIncome,netIncome,eps,ebitda,costOfRevenue,operatingExpenses,costAndExpenses);
+int get hashCode => Object.hash(runtimeType,date,symbol,reportedCurrency,originalCurrency,period,revenue,grossProfit,operatingIncome,netIncome,eps,ebitda,costOfRevenue,operatingExpenses,costAndExpenses);
 
 @override
 String toString() {
-  return 'IncomeStatement(date: $date, symbol: $symbol, reportedCurrency: $reportedCurrency, period: $period, revenue: $revenue, grossProfit: $grossProfit, operatingIncome: $operatingIncome, netIncome: $netIncome, eps: $eps, ebitda: $ebitda, costOfRevenue: $costOfRevenue, operatingExpenses: $operatingExpenses, costAndExpenses: $costAndExpenses)';
+  return 'IncomeStatement(date: $date, symbol: $symbol, reportedCurrency: $reportedCurrency, originalCurrency: $originalCurrency, period: $period, revenue: $revenue, grossProfit: $grossProfit, operatingIncome: $operatingIncome, netIncome: $netIncome, eps: $eps, ebitda: $ebitda, costOfRevenue: $costOfRevenue, operatingExpenses: $operatingExpenses, costAndExpenses: $costAndExpenses)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $IncomeStatementCopyWith<$Res>  {
   factory $IncomeStatementCopyWith(IncomeStatement value, $Res Function(IncomeStatement) _then) = _$IncomeStatementCopyWithImpl;
 @useResult
 $Res call({
- String date, String symbol, String reportedCurrency, String period, double revenue, double grossProfit, double operatingIncome, double netIncome, double eps, double ebitda, double costOfRevenue, double operatingExpenses, double costAndExpenses
+ String date, String symbol, String reportedCurrency, String? originalCurrency, String period, double revenue, double grossProfit, double operatingIncome, double netIncome, double eps, double ebitda, double costOfRevenue, double operatingExpenses, double costAndExpenses
 });
 
 
@@ -62,12 +62,13 @@ class _$IncomeStatementCopyWithImpl<$Res>
 
 /// Create a copy of IncomeStatement
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? date = null,Object? symbol = null,Object? reportedCurrency = null,Object? period = null,Object? revenue = null,Object? grossProfit = null,Object? operatingIncome = null,Object? netIncome = null,Object? eps = null,Object? ebitda = null,Object? costOfRevenue = null,Object? operatingExpenses = null,Object? costAndExpenses = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? date = null,Object? symbol = null,Object? reportedCurrency = null,Object? originalCurrency = freezed,Object? period = null,Object? revenue = null,Object? grossProfit = null,Object? operatingIncome = null,Object? netIncome = null,Object? eps = null,Object? ebitda = null,Object? costOfRevenue = null,Object? operatingExpenses = null,Object? costAndExpenses = null,}) {
   return _then(_self.copyWith(
 date: null == date ? _self.date : date // ignore: cast_nullable_to_non_nullable
 as String,symbol: null == symbol ? _self.symbol : symbol // ignore: cast_nullable_to_non_nullable
 as String,reportedCurrency: null == reportedCurrency ? _self.reportedCurrency : reportedCurrency // ignore: cast_nullable_to_non_nullable
-as String,period: null == period ? _self.period : period // ignore: cast_nullable_to_non_nullable
+as String,originalCurrency: freezed == originalCurrency ? _self.originalCurrency : originalCurrency // ignore: cast_nullable_to_non_nullable
+as String?,period: null == period ? _self.period : period // ignore: cast_nullable_to_non_nullable
 as String,revenue: null == revenue ? _self.revenue : revenue // ignore: cast_nullable_to_non_nullable
 as double,grossProfit: null == grossProfit ? _self.grossProfit : grossProfit // ignore: cast_nullable_to_non_nullable
 as double,operatingIncome: null == operatingIncome ? _self.operatingIncome : operatingIncome // ignore: cast_nullable_to_non_nullable
@@ -162,10 +163,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String date,  String symbol,  String reportedCurrency,  String period,  double revenue,  double grossProfit,  double operatingIncome,  double netIncome,  double eps,  double ebitda,  double costOfRevenue,  double operatingExpenses,  double costAndExpenses)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String date,  String symbol,  String reportedCurrency,  String? originalCurrency,  String period,  double revenue,  double grossProfit,  double operatingIncome,  double netIncome,  double eps,  double ebitda,  double costOfRevenue,  double operatingExpenses,  double costAndExpenses)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _IncomeStatement() when $default != null:
-return $default(_that.date,_that.symbol,_that.reportedCurrency,_that.period,_that.revenue,_that.grossProfit,_that.operatingIncome,_that.netIncome,_that.eps,_that.ebitda,_that.costOfRevenue,_that.operatingExpenses,_that.costAndExpenses);case _:
+return $default(_that.date,_that.symbol,_that.reportedCurrency,_that.originalCurrency,_that.period,_that.revenue,_that.grossProfit,_that.operatingIncome,_that.netIncome,_that.eps,_that.ebitda,_that.costOfRevenue,_that.operatingExpenses,_that.costAndExpenses);case _:
   return orElse();
 
 }
@@ -183,10 +184,10 @@ return $default(_that.date,_that.symbol,_that.reportedCurrency,_that.period,_tha
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String date,  String symbol,  String reportedCurrency,  String period,  double revenue,  double grossProfit,  double operatingIncome,  double netIncome,  double eps,  double ebitda,  double costOfRevenue,  double operatingExpenses,  double costAndExpenses)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String date,  String symbol,  String reportedCurrency,  String? originalCurrency,  String period,  double revenue,  double grossProfit,  double operatingIncome,  double netIncome,  double eps,  double ebitda,  double costOfRevenue,  double operatingExpenses,  double costAndExpenses)  $default,) {final _that = this;
 switch (_that) {
 case _IncomeStatement():
-return $default(_that.date,_that.symbol,_that.reportedCurrency,_that.period,_that.revenue,_that.grossProfit,_that.operatingIncome,_that.netIncome,_that.eps,_that.ebitda,_that.costOfRevenue,_that.operatingExpenses,_that.costAndExpenses);case _:
+return $default(_that.date,_that.symbol,_that.reportedCurrency,_that.originalCurrency,_that.period,_that.revenue,_that.grossProfit,_that.operatingIncome,_that.netIncome,_that.eps,_that.ebitda,_that.costOfRevenue,_that.operatingExpenses,_that.costAndExpenses);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -203,10 +204,10 @@ return $default(_that.date,_that.symbol,_that.reportedCurrency,_that.period,_tha
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String date,  String symbol,  String reportedCurrency,  String period,  double revenue,  double grossProfit,  double operatingIncome,  double netIncome,  double eps,  double ebitda,  double costOfRevenue,  double operatingExpenses,  double costAndExpenses)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String date,  String symbol,  String reportedCurrency,  String? originalCurrency,  String period,  double revenue,  double grossProfit,  double operatingIncome,  double netIncome,  double eps,  double ebitda,  double costOfRevenue,  double operatingExpenses,  double costAndExpenses)?  $default,) {final _that = this;
 switch (_that) {
 case _IncomeStatement() when $default != null:
-return $default(_that.date,_that.symbol,_that.reportedCurrency,_that.period,_that.revenue,_that.grossProfit,_that.operatingIncome,_that.netIncome,_that.eps,_that.ebitda,_that.costOfRevenue,_that.operatingExpenses,_that.costAndExpenses);case _:
+return $default(_that.date,_that.symbol,_that.reportedCurrency,_that.originalCurrency,_that.period,_that.revenue,_that.grossProfit,_that.operatingIncome,_that.netIncome,_that.eps,_that.ebitda,_that.costOfRevenue,_that.operatingExpenses,_that.costAndExpenses);case _:
   return null;
 
 }
@@ -218,12 +219,13 @@ return $default(_that.date,_that.symbol,_that.reportedCurrency,_that.period,_tha
 
 
 class _IncomeStatement implements IncomeStatement {
-  const _IncomeStatement({required this.date, required this.symbol, required this.reportedCurrency, required this.period, required this.revenue, required this.grossProfit, required this.operatingIncome, required this.netIncome, required this.eps, required this.ebitda, required this.costOfRevenue, required this.operatingExpenses, required this.costAndExpenses});
+  const _IncomeStatement({required this.date, required this.symbol, required this.reportedCurrency, this.originalCurrency, required this.period, required this.revenue, required this.grossProfit, required this.operatingIncome, required this.netIncome, required this.eps, required this.ebitda, required this.costOfRevenue, required this.operatingExpenses, required this.costAndExpenses});
   
 
 @override final  String date;
 @override final  String symbol;
 @override final  String reportedCurrency;
+@override final  String? originalCurrency;
 @override final  String period;
 @override final  double revenue;
 @override final  double grossProfit;
@@ -245,16 +247,16 @@ _$IncomeStatementCopyWith<_IncomeStatement> get copyWith => __$IncomeStatementCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _IncomeStatement&&(identical(other.date, date) || other.date == date)&&(identical(other.symbol, symbol) || other.symbol == symbol)&&(identical(other.reportedCurrency, reportedCurrency) || other.reportedCurrency == reportedCurrency)&&(identical(other.period, period) || other.period == period)&&(identical(other.revenue, revenue) || other.revenue == revenue)&&(identical(other.grossProfit, grossProfit) || other.grossProfit == grossProfit)&&(identical(other.operatingIncome, operatingIncome) || other.operatingIncome == operatingIncome)&&(identical(other.netIncome, netIncome) || other.netIncome == netIncome)&&(identical(other.eps, eps) || other.eps == eps)&&(identical(other.ebitda, ebitda) || other.ebitda == ebitda)&&(identical(other.costOfRevenue, costOfRevenue) || other.costOfRevenue == costOfRevenue)&&(identical(other.operatingExpenses, operatingExpenses) || other.operatingExpenses == operatingExpenses)&&(identical(other.costAndExpenses, costAndExpenses) || other.costAndExpenses == costAndExpenses));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _IncomeStatement&&(identical(other.date, date) || other.date == date)&&(identical(other.symbol, symbol) || other.symbol == symbol)&&(identical(other.reportedCurrency, reportedCurrency) || other.reportedCurrency == reportedCurrency)&&(identical(other.originalCurrency, originalCurrency) || other.originalCurrency == originalCurrency)&&(identical(other.period, period) || other.period == period)&&(identical(other.revenue, revenue) || other.revenue == revenue)&&(identical(other.grossProfit, grossProfit) || other.grossProfit == grossProfit)&&(identical(other.operatingIncome, operatingIncome) || other.operatingIncome == operatingIncome)&&(identical(other.netIncome, netIncome) || other.netIncome == netIncome)&&(identical(other.eps, eps) || other.eps == eps)&&(identical(other.ebitda, ebitda) || other.ebitda == ebitda)&&(identical(other.costOfRevenue, costOfRevenue) || other.costOfRevenue == costOfRevenue)&&(identical(other.operatingExpenses, operatingExpenses) || other.operatingExpenses == operatingExpenses)&&(identical(other.costAndExpenses, costAndExpenses) || other.costAndExpenses == costAndExpenses));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,date,symbol,reportedCurrency,period,revenue,grossProfit,operatingIncome,netIncome,eps,ebitda,costOfRevenue,operatingExpenses,costAndExpenses);
+int get hashCode => Object.hash(runtimeType,date,symbol,reportedCurrency,originalCurrency,period,revenue,grossProfit,operatingIncome,netIncome,eps,ebitda,costOfRevenue,operatingExpenses,costAndExpenses);
 
 @override
 String toString() {
-  return 'IncomeStatement(date: $date, symbol: $symbol, reportedCurrency: $reportedCurrency, period: $period, revenue: $revenue, grossProfit: $grossProfit, operatingIncome: $operatingIncome, netIncome: $netIncome, eps: $eps, ebitda: $ebitda, costOfRevenue: $costOfRevenue, operatingExpenses: $operatingExpenses, costAndExpenses: $costAndExpenses)';
+  return 'IncomeStatement(date: $date, symbol: $symbol, reportedCurrency: $reportedCurrency, originalCurrency: $originalCurrency, period: $period, revenue: $revenue, grossProfit: $grossProfit, operatingIncome: $operatingIncome, netIncome: $netIncome, eps: $eps, ebitda: $ebitda, costOfRevenue: $costOfRevenue, operatingExpenses: $operatingExpenses, costAndExpenses: $costAndExpenses)';
 }
 
 
@@ -265,7 +267,7 @@ abstract mixin class _$IncomeStatementCopyWith<$Res> implements $IncomeStatement
   factory _$IncomeStatementCopyWith(_IncomeStatement value, $Res Function(_IncomeStatement) _then) = __$IncomeStatementCopyWithImpl;
 @override @useResult
 $Res call({
- String date, String symbol, String reportedCurrency, String period, double revenue, double grossProfit, double operatingIncome, double netIncome, double eps, double ebitda, double costOfRevenue, double operatingExpenses, double costAndExpenses
+ String date, String symbol, String reportedCurrency, String? originalCurrency, String period, double revenue, double grossProfit, double operatingIncome, double netIncome, double eps, double ebitda, double costOfRevenue, double operatingExpenses, double costAndExpenses
 });
 
 
@@ -282,12 +284,13 @@ class __$IncomeStatementCopyWithImpl<$Res>
 
 /// Create a copy of IncomeStatement
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? date = null,Object? symbol = null,Object? reportedCurrency = null,Object? period = null,Object? revenue = null,Object? grossProfit = null,Object? operatingIncome = null,Object? netIncome = null,Object? eps = null,Object? ebitda = null,Object? costOfRevenue = null,Object? operatingExpenses = null,Object? costAndExpenses = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? date = null,Object? symbol = null,Object? reportedCurrency = null,Object? originalCurrency = freezed,Object? period = null,Object? revenue = null,Object? grossProfit = null,Object? operatingIncome = null,Object? netIncome = null,Object? eps = null,Object? ebitda = null,Object? costOfRevenue = null,Object? operatingExpenses = null,Object? costAndExpenses = null,}) {
   return _then(_IncomeStatement(
 date: null == date ? _self.date : date // ignore: cast_nullable_to_non_nullable
 as String,symbol: null == symbol ? _self.symbol : symbol // ignore: cast_nullable_to_non_nullable
 as String,reportedCurrency: null == reportedCurrency ? _self.reportedCurrency : reportedCurrency // ignore: cast_nullable_to_non_nullable
-as String,period: null == period ? _self.period : period // ignore: cast_nullable_to_non_nullable
+as String,originalCurrency: freezed == originalCurrency ? _self.originalCurrency : originalCurrency // ignore: cast_nullable_to_non_nullable
+as String?,period: null == period ? _self.period : period // ignore: cast_nullable_to_non_nullable
 as String,revenue: null == revenue ? _self.revenue : revenue // ignore: cast_nullable_to_non_nullable
 as double,grossProfit: null == grossProfit ? _self.grossProfit : grossProfit // ignore: cast_nullable_to_non_nullable
 as double,operatingIncome: null == operatingIncome ? _self.operatingIncome : operatingIncome // ignore: cast_nullable_to_non_nullable

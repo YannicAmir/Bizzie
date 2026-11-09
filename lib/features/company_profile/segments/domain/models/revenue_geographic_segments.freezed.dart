@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$RevenueGeographicSegments {
 
- String get symbol; String get reportedCurrency; List<RevenueSegment> get annual; List<RevenueSegment> get quarterly;
+ String get symbol; String get reportedCurrency; String? get originalCurrency; List<RevenueSegment> get annual; List<RevenueSegment> get quarterly;
 /// Create a copy of RevenueGeographicSegments
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $RevenueGeographicSegmentsCopyWith<RevenueGeographicSegments> get copyWith => _$
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is RevenueGeographicSegments&&(identical(other.symbol, symbol) || other.symbol == symbol)&&(identical(other.reportedCurrency, reportedCurrency) || other.reportedCurrency == reportedCurrency)&&const DeepCollectionEquality().equals(other.annual, annual)&&const DeepCollectionEquality().equals(other.quarterly, quarterly));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is RevenueGeographicSegments&&(identical(other.symbol, symbol) || other.symbol == symbol)&&(identical(other.reportedCurrency, reportedCurrency) || other.reportedCurrency == reportedCurrency)&&(identical(other.originalCurrency, originalCurrency) || other.originalCurrency == originalCurrency)&&const DeepCollectionEquality().equals(other.annual, annual)&&const DeepCollectionEquality().equals(other.quarterly, quarterly));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,symbol,reportedCurrency,const DeepCollectionEquality().hash(annual),const DeepCollectionEquality().hash(quarterly));
+int get hashCode => Object.hash(runtimeType,symbol,reportedCurrency,originalCurrency,const DeepCollectionEquality().hash(annual),const DeepCollectionEquality().hash(quarterly));
 
 @override
 String toString() {
-  return 'RevenueGeographicSegments(symbol: $symbol, reportedCurrency: $reportedCurrency, annual: $annual, quarterly: $quarterly)';
+  return 'RevenueGeographicSegments(symbol: $symbol, reportedCurrency: $reportedCurrency, originalCurrency: $originalCurrency, annual: $annual, quarterly: $quarterly)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $RevenueGeographicSegmentsCopyWith<$Res>  {
   factory $RevenueGeographicSegmentsCopyWith(RevenueGeographicSegments value, $Res Function(RevenueGeographicSegments) _then) = _$RevenueGeographicSegmentsCopyWithImpl;
 @useResult
 $Res call({
- String symbol, String reportedCurrency, List<RevenueSegment> annual, List<RevenueSegment> quarterly
+ String symbol, String reportedCurrency, String? originalCurrency, List<RevenueSegment> annual, List<RevenueSegment> quarterly
 });
 
 
@@ -62,11 +62,12 @@ class _$RevenueGeographicSegmentsCopyWithImpl<$Res>
 
 /// Create a copy of RevenueGeographicSegments
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? symbol = null,Object? reportedCurrency = null,Object? annual = null,Object? quarterly = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? symbol = null,Object? reportedCurrency = null,Object? originalCurrency = freezed,Object? annual = null,Object? quarterly = null,}) {
   return _then(_self.copyWith(
 symbol: null == symbol ? _self.symbol : symbol // ignore: cast_nullable_to_non_nullable
 as String,reportedCurrency: null == reportedCurrency ? _self.reportedCurrency : reportedCurrency // ignore: cast_nullable_to_non_nullable
-as String,annual: null == annual ? _self.annual : annual // ignore: cast_nullable_to_non_nullable
+as String,originalCurrency: freezed == originalCurrency ? _self.originalCurrency : originalCurrency // ignore: cast_nullable_to_non_nullable
+as String?,annual: null == annual ? _self.annual : annual // ignore: cast_nullable_to_non_nullable
 as List<RevenueSegment>,quarterly: null == quarterly ? _self.quarterly : quarterly // ignore: cast_nullable_to_non_nullable
 as List<RevenueSegment>,
   ));
@@ -153,10 +154,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String symbol,  String reportedCurrency,  List<RevenueSegment> annual,  List<RevenueSegment> quarterly)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String symbol,  String reportedCurrency,  String? originalCurrency,  List<RevenueSegment> annual,  List<RevenueSegment> quarterly)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _RevenueGeographicSegments() when $default != null:
-return $default(_that.symbol,_that.reportedCurrency,_that.annual,_that.quarterly);case _:
+return $default(_that.symbol,_that.reportedCurrency,_that.originalCurrency,_that.annual,_that.quarterly);case _:
   return orElse();
 
 }
@@ -174,10 +175,10 @@ return $default(_that.symbol,_that.reportedCurrency,_that.annual,_that.quarterly
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String symbol,  String reportedCurrency,  List<RevenueSegment> annual,  List<RevenueSegment> quarterly)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String symbol,  String reportedCurrency,  String? originalCurrency,  List<RevenueSegment> annual,  List<RevenueSegment> quarterly)  $default,) {final _that = this;
 switch (_that) {
 case _RevenueGeographicSegments():
-return $default(_that.symbol,_that.reportedCurrency,_that.annual,_that.quarterly);case _:
+return $default(_that.symbol,_that.reportedCurrency,_that.originalCurrency,_that.annual,_that.quarterly);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -194,10 +195,10 @@ return $default(_that.symbol,_that.reportedCurrency,_that.annual,_that.quarterly
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String symbol,  String reportedCurrency,  List<RevenueSegment> annual,  List<RevenueSegment> quarterly)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String symbol,  String reportedCurrency,  String? originalCurrency,  List<RevenueSegment> annual,  List<RevenueSegment> quarterly)?  $default,) {final _that = this;
 switch (_that) {
 case _RevenueGeographicSegments() when $default != null:
-return $default(_that.symbol,_that.reportedCurrency,_that.annual,_that.quarterly);case _:
+return $default(_that.symbol,_that.reportedCurrency,_that.originalCurrency,_that.annual,_that.quarterly);case _:
   return null;
 
 }
@@ -209,11 +210,12 @@ return $default(_that.symbol,_that.reportedCurrency,_that.annual,_that.quarterly
 
 
 class _RevenueGeographicSegments implements RevenueGeographicSegments {
-  const _RevenueGeographicSegments({required this.symbol, required this.reportedCurrency, required final  List<RevenueSegment> annual, required final  List<RevenueSegment> quarterly}): _annual = annual,_quarterly = quarterly;
+  const _RevenueGeographicSegments({required this.symbol, required this.reportedCurrency, this.originalCurrency, required final  List<RevenueSegment> annual, required final  List<RevenueSegment> quarterly}): _annual = annual,_quarterly = quarterly;
   
 
 @override final  String symbol;
 @override final  String reportedCurrency;
+@override final  String? originalCurrency;
  final  List<RevenueSegment> _annual;
 @override List<RevenueSegment> get annual {
   if (_annual is EqualUnmodifiableListView) return _annual;
@@ -239,16 +241,16 @@ _$RevenueGeographicSegmentsCopyWith<_RevenueGeographicSegments> get copyWith => 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _RevenueGeographicSegments&&(identical(other.symbol, symbol) || other.symbol == symbol)&&(identical(other.reportedCurrency, reportedCurrency) || other.reportedCurrency == reportedCurrency)&&const DeepCollectionEquality().equals(other._annual, _annual)&&const DeepCollectionEquality().equals(other._quarterly, _quarterly));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _RevenueGeographicSegments&&(identical(other.symbol, symbol) || other.symbol == symbol)&&(identical(other.reportedCurrency, reportedCurrency) || other.reportedCurrency == reportedCurrency)&&(identical(other.originalCurrency, originalCurrency) || other.originalCurrency == originalCurrency)&&const DeepCollectionEquality().equals(other._annual, _annual)&&const DeepCollectionEquality().equals(other._quarterly, _quarterly));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,symbol,reportedCurrency,const DeepCollectionEquality().hash(_annual),const DeepCollectionEquality().hash(_quarterly));
+int get hashCode => Object.hash(runtimeType,symbol,reportedCurrency,originalCurrency,const DeepCollectionEquality().hash(_annual),const DeepCollectionEquality().hash(_quarterly));
 
 @override
 String toString() {
-  return 'RevenueGeographicSegments(symbol: $symbol, reportedCurrency: $reportedCurrency, annual: $annual, quarterly: $quarterly)';
+  return 'RevenueGeographicSegments(symbol: $symbol, reportedCurrency: $reportedCurrency, originalCurrency: $originalCurrency, annual: $annual, quarterly: $quarterly)';
 }
 
 
@@ -259,7 +261,7 @@ abstract mixin class _$RevenueGeographicSegmentsCopyWith<$Res> implements $Reven
   factory _$RevenueGeographicSegmentsCopyWith(_RevenueGeographicSegments value, $Res Function(_RevenueGeographicSegments) _then) = __$RevenueGeographicSegmentsCopyWithImpl;
 @override @useResult
 $Res call({
- String symbol, String reportedCurrency, List<RevenueSegment> annual, List<RevenueSegment> quarterly
+ String symbol, String reportedCurrency, String? originalCurrency, List<RevenueSegment> annual, List<RevenueSegment> quarterly
 });
 
 
@@ -276,11 +278,12 @@ class __$RevenueGeographicSegmentsCopyWithImpl<$Res>
 
 /// Create a copy of RevenueGeographicSegments
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? symbol = null,Object? reportedCurrency = null,Object? annual = null,Object? quarterly = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? symbol = null,Object? reportedCurrency = null,Object? originalCurrency = freezed,Object? annual = null,Object? quarterly = null,}) {
   return _then(_RevenueGeographicSegments(
 symbol: null == symbol ? _self.symbol : symbol // ignore: cast_nullable_to_non_nullable
 as String,reportedCurrency: null == reportedCurrency ? _self.reportedCurrency : reportedCurrency // ignore: cast_nullable_to_non_nullable
-as String,annual: null == annual ? _self._annual : annual // ignore: cast_nullable_to_non_nullable
+as String,originalCurrency: freezed == originalCurrency ? _self.originalCurrency : originalCurrency // ignore: cast_nullable_to_non_nullable
+as String?,annual: null == annual ? _self._annual : annual // ignore: cast_nullable_to_non_nullable
 as List<RevenueSegment>,quarterly: null == quarterly ? _self._quarterly : quarterly // ignore: cast_nullable_to_non_nullable
 as List<RevenueSegment>,
   ));

@@ -81,7 +81,6 @@ abstract class TabLayout with _$TabLayout {
   ];
 
   static const List<CompanyProfileTab> freeDefaultBizziePlusTabs = [
-    CompanyProfileTab.chat,
     CompanyProfileTab.segments,
     CompanyProfileTab.freeCash,
     CompanyProfileTab.fcps,
@@ -90,6 +89,7 @@ abstract class TabLayout with _$TabLayout {
     CompanyProfileTab.roe,
     CompanyProfileTab.peRatio,
     CompanyProfileTab.pfcfRatio,
+    CompanyProfileTab.aiReports,
   ];
 
   static const List<CompanyProfileTab> paidDefaultMainTabs = [
@@ -110,7 +110,7 @@ abstract class TabLayout with _$TabLayout {
     CompanyProfileTab.roe,
     CompanyProfileTab.peRatio,
     CompanyProfileTab.pfcfRatio,
-    CompanyProfileTab.chat,
+    CompanyProfileTab.aiReports,
   ];
 
   factory TabLayout.defaults({required bool isSubscribed}) => isSubscribed

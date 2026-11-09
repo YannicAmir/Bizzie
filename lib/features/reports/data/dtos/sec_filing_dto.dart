@@ -1,5 +1,5 @@
 // ignore_for_file: invalid_annotation_target
-import 'package:bizzie/features/reports/domain/models/sec_filing.dart';
+import 'package:bizzie/core/domain/models/sec_filing.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:bizzie/core/utils/json_converters.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';

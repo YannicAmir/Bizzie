@@ -33,7 +33,7 @@ class ResetPasswordUseCase implements UseCase<Either<Failure, void>, String> {
     try {
       final result = await _authRepository.resetPassword(email: email);
 
-      return result.fold(
+      return await result.fold(
         (failure) {
           _logger.warning('Auth repository password reset failed', failure);
           return Left(failure);

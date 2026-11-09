@@ -25,7 +25,7 @@ class PriceRepositoryImpl implements IPriceRepository {
         remoteFetcher: () => _remoteDataSource.getHistoricalPrice(ticker),
       );
 
-      return res.map(
+      return await res.map(
         success: (s) => right((
           PriceHistory(
             symbol: ticker,
@@ -53,7 +53,7 @@ class PriceRepositoryImpl implements IPriceRepository {
         remoteFetcher: () => _remoteDataSource.getHistoricalEodPrices(ticker),
       );
 
-      return res.map(
+      return await res.map(
         success: (s) =>
             right((s.data.map((e) => e.toDomain()).toList(), s.origin)),
         failure: (f) => left(f.failure),

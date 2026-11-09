@@ -119,12 +119,14 @@ void main() {
 
     test('getMultiplier_remoteSuccess_returnsMultiplierFromRemote', () async {
       // arrange
-      final tResponse = FrankfurterResponseDto(
-        amount: 1.0,
-        base: 'USD',
-        date: tRequestDate,
-        rates: {'CNY': 7.0},
-      );
+      final tResponse = [
+        const FrankfurterResponseDto(
+          date: tRequestDate,
+          base: 'USD',
+          quote: 'CNY',
+          rate: 7.0,
+        ),
+      ];
 
       when(
         () => mockLocalDataSource.syncExchangeRate(
@@ -173,12 +175,14 @@ void main() {
 
     test('getMultiplier_remoteRateNotFound_failsbackToOne', () async {
       // arrange
-      final tResponse = FrankfurterResponseDto(
-        amount: 1.0,
-        base: 'USD',
-        date: tRequestDate,
-        rates: {'EUR': 0.9}, // CNY not in rates
-      );
+      final tResponse = [
+        const FrankfurterResponseDto(
+          date: tRequestDate,
+          base: 'USD',
+          quote: 'EUR',
+          rate: 0.9,
+        ),
+      ];
 
       when(
         () => mockLocalDataSource.syncExchangeRate(
@@ -206,6 +210,49 @@ void main() {
           date: any(named: 'date'),
         ),
       ).thenAnswer((_) async => tResponse);
+
+      // act
+      final result = await repository.getMultiplier(
+        reportedCurrency: tReportedCurrency,
+        ticker: tTicker,
+      );
+
+      // assert
+      expect(result.isRight(), true);
+      result.fold((l) => fail('Should return right'), (r) {
+        expect(r.$1.multiplier, 1.0);
+        expect(r.$1.targetCurrency, tReportedCurrency);
+      });
+    });
+
+    test('getMultiplier_remoteEmptyResponse_failsbackToOne', () async {
+      // arrange
+      when(
+        () => mockLocalDataSource.syncExchangeRate(
+          tPair,
+          remoteFetcher: any(named: 'remoteFetcher'),
+        ),
+      ).thenAnswer((invocation) async {
+        final fetcher =
+            invocation.namedArguments[#remoteFetcher]
+                as Future<double> Function();
+        try {
+          return cache.CacheSuccess(
+            await fetcher(),
+            CompanyProfileDataOrigin.api,
+          );
+        } catch (e) {
+          return cache.CacheFailure<double>(ServerFailure('Rate not found'));
+        }
+      });
+
+      when(
+        () => mockRemoteDataSource.getExchangeRate(
+          base: any(named: 'base'),
+          target: any(named: 'target'),
+          date: any(named: 'date'),
+        ),
+      ).thenAnswer((_) async => []);
 
       // act
       final result = await repository.getMultiplier(

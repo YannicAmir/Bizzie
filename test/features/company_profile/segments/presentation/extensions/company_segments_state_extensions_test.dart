@@ -44,18 +44,22 @@ const tGeographicAnnual2025 = RevenueSegment(
 CompanySegmentsLoaded buildLoadedState({
   String productCurrency = tCurrency,
   String geographicCurrency = tCurrency,
+  String? productOriginalCurrency,
+  String? geographicOriginalCurrency,
 }) {
   return CompanySegmentsState.loaded(
         ticker: tTicker,
         productSegments: RevenueProductSegments(
           symbol: tTicker,
           reportedCurrency: productCurrency,
+          originalCurrency: productOriginalCurrency,
           annual: const [tProductAnnual2025, tProductAnnual2024],
           quarterly: const [tProductQuarter],
         ),
         geographicSegments: RevenueGeographicSegments(
           symbol: tTicker,
           reportedCurrency: geographicCurrency,
+          originalCurrency: geographicOriginalCurrency,
           annual: const [tGeographicAnnual2025],
           quarterly: const [],
         ),
@@ -206,6 +210,44 @@ void main() {
       // assert
       expect(annualLabel, '2024');
       expect(quarterlyLabel, 'Q2 2026');
+    });
+  });
+
+  group('originalCurrency', () {
+    test('originalCurrency_productHasValue_returnsProductCurrency', () {
+      // arrange
+      final sut = buildLoadedState(
+        productOriginalCurrency: 'TWD',
+        geographicOriginalCurrency: 'JPY',
+      );
+
+      // act
+      final result = sut.originalCurrency;
+
+      // assert
+      expect(result, 'TWD');
+    });
+
+    test('originalCurrency_productMissing_fallsBackToGeographic', () {
+      // arrange
+      final sut = buildLoadedState(geographicOriginalCurrency: 'TWD');
+
+      // act
+      final result = sut.originalCurrency;
+
+      // assert
+      expect(result, 'TWD');
+    });
+
+    test('originalCurrency_noneAvailable_returnsNull', () {
+      // arrange
+      final sut = buildLoadedState();
+
+      // act
+      final result = sut.originalCurrency;
+
+      // assert
+      expect(result, isNull);
     });
   });
 }
