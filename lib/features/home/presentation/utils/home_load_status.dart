@@ -15,9 +15,8 @@ HomeLoadStatus resolveHomeLoadStatus(
     loading: (_) => HomeLoadStatus.loading,
     success: (_) => HomeLoadStatus.loading,
     failure: (_) => HomeLoadStatus.failure,
-    loaded: (loaded) => loaded.companies.isEmpty
-        ? HomeLoadStatus.empty
-        : HomeLoadStatus.ready,
+    loaded: (loaded) =>
+        loaded.companies.isEmpty ? HomeLoadStatus.empty : HomeLoadStatus.ready,
   );
 
   if (watchlistStatus != HomeLoadStatus.ready) return watchlistStatus;

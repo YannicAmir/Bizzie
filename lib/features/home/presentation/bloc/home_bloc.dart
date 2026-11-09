@@ -45,10 +45,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   }
 
   void _onNewsArticleTapped(_NewsArticleTapped event, Emitter<HomeState> emit) {
-    _analytics.logHomeNewsArticleTapped(
-      ticker: event.ticker,
-      site: event.site,
-    );
+    _analytics.logHomeNewsArticleTapped(ticker: event.ticker, site: event.site);
   }
 
   void _onNewsLoadFailed(_NewsLoadFailed event, Emitter<HomeState> emit) {

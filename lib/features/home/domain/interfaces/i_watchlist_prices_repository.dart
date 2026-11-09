@@ -3,7 +3,7 @@ import 'package:bizzie/features/home/domain/models/watchlist_stock_price.dart';
 import 'package:dartz/dartz.dart';
 
 abstract class IWatchlistPricesRepository {
-  Future<Either<Failure, List<WatchlistStockPrice>>> getWatchlistPrices(
+  Stream<Either<Failure, List<WatchlistStockPrice>>> watchWatchlistPrices(
     List<String> tickers,
   );
 }

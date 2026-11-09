@@ -38,51 +38,10 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  GoRouter? _router;
-  bool _wasOnHomeTab = true;
-
   @override
   void initState() {
     super.initState();
     context.read<HomeBloc>().add(const HomeEvent.started());
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    if (_router == null) {
-      final router = GoRouter.of(context);
-      _router = router;
-      _wasOnHomeTab = _isOnHomeTab;
-      router.routerDelegate.addListener(_onRouteChanged);
-    }
-  }
-
-  @override
-  void dispose() {
-    _router?.routerDelegate.removeListener(_onRouteChanged);
-    super.dispose();
-  }
-
-  bool get _isOnHomeTab {
-    final location =
-        _router?.routerDelegate.currentConfiguration.uri.path ?? '';
-    return location == AppRoutes.home;
-  }
-
-  void _onRouteChanged() {
-    final isOnHomeTab = _isOnHomeTab;
-    if (isOnHomeTab && !_wasOnHomeTab) {
-      _dispatchPricesRefresh();
-    }
-    _wasOnHomeTab = isOnHomeTab;
-  }
-
-  void _dispatchPricesRefresh() {
-    if (!mounted) return;
-    context.read<WatchlistPricesBloc>().add(
-      const WatchlistPricesEvent.refreshRequested(),
-    );
   }
 
   Future<void> _onRefresh() {

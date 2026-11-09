@@ -1,8 +1,10 @@
 import 'package:bizzie/core/constants/firestore_constants.dart';
+import 'package:bizzie/core/error/exceptions.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:bizzie/features/home/data/dtos/watchlist_stock_price_dto.dart';
 import 'package:bizzie/features/home/data/interfaces/i_watchlist_prices_remote_datasource.dart';
 import 'package:bizzie/services/firestore_service.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:injectable/injectable.dart';
 
 final _logger = BizzieLogger('WatchlistPricesRemoteDataSource');
@@ -15,25 +17,29 @@ class WatchlistPricesRemoteDataSource
   WatchlistPricesRemoteDataSource(this._firestoreService);
 
   @override
-  Future<List<WatchlistStockPriceDto>> getWatchlistPrices(
+  Stream<List<WatchlistStockPriceDto>> getWatchlistPricesStream(
     List<String> tickers,
-  ) async {
-    if (tickers.isEmpty) return [];
+  ) {
+    _logger.info(
+      'Requesting stock prices stream for ${tickers.length} tickers',
+    );
 
-    _logger.info('Fetching stock prices for ${tickers.length} tickers');
-
-    try {
-      return await _firestoreService
-          .getCollectionFutureChunked<WatchlistStockPriceDto>(
-        path: FirestoreConstants.stockPrices,
-        whereInField: FirestoreConstants.ticker,
-        values: tickers,
-        fromJson: WatchlistStockPriceDto.fromJson,
-        toJson: (dto) => dto.toJson(),
-      );
-    } catch (e, s) {
-      _logger.severe('Failed to fetch watchlist stock prices', e, s);
-      rethrow;
-    }
+    return _firestoreService
+        .getCollectionStreamChunked<WatchlistStockPriceDto>(
+          path: FirestoreConstants.stockPrices,
+          whereInField: FirestoreConstants.ticker,
+          values: tickers,
+          fromJson: WatchlistStockPriceDto.fromJson,
+        )
+        .handleError((Object e, StackTrace s) {
+          if (e is FirebaseException && e.code == 'permission-denied') {
+            _logger.warning(
+              'Stock prices stream permission denied (expected on logout)',
+            );
+            Error.throwWithStackTrace(PermissionDeniedException(), s);
+          }
+          _logger.severe('Error in stock prices stream', e, s);
+          Error.throwWithStackTrace(e, s);
+        });
   }
 }

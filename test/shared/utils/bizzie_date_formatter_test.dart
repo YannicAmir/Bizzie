@@ -6,23 +6,14 @@ void main() {
     group('formatLastUpdated', () {
       test('formatLastUpdated_today_returnsTodayWithCorrectLabel', () {
         // arrange
-        final now = DateTime.now();
-        final nowUtc = now.toUtc();
-        final etTime = nowUtc.subtract(const Duration(hours: 5));
-        final isAfterMarketClose =
-            etTime.hour > 16 || (etTime.hour == 16 && etTime.minute >= 15);
-        final dateStr = now.toIso8601String();
+        final dateStr = DateTime.now().toIso8601String();
 
         // act
         final result = BizzieDateFormatter.formatLastUpdated(dateStr);
 
         // assert
         expect(result, contains('Today at'));
-        if (isAfterMarketClose) {
-          expect(result, isNot(contains('(15 min delay)')));
-        } else {
-          expect(result, contains('(15 min delay)'));
-        }
+        expect(result, isNot(contains('delay')));
       });
 
       test('formatLastUpdated_historicalDate_returnsFormattedDate', () {

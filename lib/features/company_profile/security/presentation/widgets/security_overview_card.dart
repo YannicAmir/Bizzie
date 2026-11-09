@@ -1,8 +1,7 @@
-import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:bizzie/features/company_profile/security/domain/models/historical_price_eod.dart';
-import 'package:bizzie/features/company_profile/security/presentation/bloc/historical_price_eod/historical_price_eod_state.dart';
-import 'package:bizzie/features/company_profile/security/presentation/extensions/historical_price_eod_state_extensions.dart';
 import 'package:bizzie/features/company_profile/security/domain/models/security_details.dart';
+import 'package:bizzie/features/company_profile/security/domain/models/security_quote.dart';
+import 'package:bizzie/features/company_profile/security/presentation/utils/security_price_summary_extensions.dart';
 import 'package:bizzie/features/company_profile/security/presentation/widgets/price_display.dart';
 import 'package:bizzie/features/company_profile/security/presentation/widgets/security_header.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
@@ -11,22 +10,19 @@ import 'package:flutter/material.dart';
 class SecurityOverviewCard extends StatelessWidget {
   final SecurityDetails securityDetails;
   final List<HistoricalPriceEod> prices;
-  final CompanyProfileDataOrigin dataSource;
+  final SecurityQuote? quote;
 
   const SecurityOverviewCard({
     super.key,
     required this.securityDetails,
     required this.prices,
-    required this.dataSource,
+    this.quote,
   });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final priceState = HistoricalPriceEodState.loaded(
-      prices,
-      dataSource: dataSource,
-    );
+    final summary = quote?.toPriceSummary() ?? prices.toPriceSummary();
 
     return Container(
       padding: const EdgeInsets.all(AppConstants.mainSectionContainerPadding),
@@ -46,10 +42,11 @@ class SecurityOverviewCard extends StatelessWidget {
           SecurityHeader(securityDetails: securityDetails),
           AppConstants.secondarySectionSpacing,
           PriceDisplay(
-            price: priceState.currentPriceFormatted,
-            change: priceState.changeFormatted,
-            isPositive: priceState.isPositiveChange,
-            lastUpdated: priceState.lastUpdatedDate,
+            formattedPrice: summary.priceFormatted,
+            price: summary.price,
+            change: summary.changeFormatted,
+            isPositive: summary.isPositiveChange,
+            lastUpdated: summary.sessionDate,
           ),
         ],
       ),

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:bizzie/core/error/exceptions.dart';
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:bizzie/features/home/data/dtos/watchlist_news_dto.dart';
@@ -37,8 +38,13 @@ class WatchlistNewsRepositoryImpl implements IWatchlistNewsRepository {
               }
             },
             handleError: (error, stack, sink) {
-              _logger.severe('Watchlist news stream error', error, stack);
-              sink.add(Left(Failure.server(error.toString())));
+              sink.add(
+                Left(
+                  error is PermissionDeniedException
+                      ? const Failure.permission()
+                      : Failure.server(error.toString()),
+                ),
+              );
             },
           ),
         );

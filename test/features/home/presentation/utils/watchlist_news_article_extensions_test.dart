@@ -70,7 +70,11 @@ void main() {
         );
 
         // act
-        final result = [nvdaNewer, axpLater, axpOlder].sortedBySymbolThenRecency;
+        final result = [
+          nvdaNewer,
+          axpLater,
+          axpOlder,
+        ].sortedBySymbolThenRecency;
 
         // assert — symbols grouped alphabetically, newest-first within a group.
         expect(result.map((a) => a.symbol).toList(), ['AXP', 'AXP', 'NVDA']);
@@ -85,14 +89,8 @@ void main() {
     test('sortedBySymbolThenRecency_equalSymbolAndDate_breaksTieOnId', () {
       // arrange
       final publishedAt = DateTime.utc(2026, 7, 15, 10);
-      final articleB = tArticle(
-        id: 'AAPL_b',
-        publishedAt: publishedAt,
-      );
-      final articleA = tArticle(
-        id: 'AAPL_a',
-        publishedAt: publishedAt,
-      );
+      final articleB = tArticle(id: 'AAPL_b', publishedAt: publishedAt);
+      final articleA = tArticle(id: 'AAPL_a', publishedAt: publishedAt);
 
       // act
       final result = [articleB, articleA].sortedBySymbolThenRecency;

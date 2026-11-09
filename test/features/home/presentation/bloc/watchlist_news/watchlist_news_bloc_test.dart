@@ -53,9 +53,9 @@ void main() {
         'loadRequested_useCaseEmitsRight_emitsLoadingAndLoaded',
         build: () {
           // arrange
-          when(() => mockWatchWatchlistNews(tTickers)).thenAnswer(
-            (_) => Stream.value(Right([tArticle])),
-          );
+          when(
+            () => mockWatchWatchlistNews(tTickers),
+          ).thenAnswer((_) => Stream.value(Right([tArticle])));
           return bloc;
         },
         act: (bloc) {
@@ -73,9 +73,9 @@ void main() {
         'loadRequested_useCaseEmitsLeft_emitsLoadingAndFailure',
         build: () {
           // arrange
-          when(() => mockWatchWatchlistNews(tTickers)).thenAnswer(
-            (_) => Stream.value(const Left(tFailure)),
-          );
+          when(
+            () => mockWatchWatchlistNews(tTickers),
+          ).thenAnswer((_) => Stream.value(const Left(tFailure)));
           return bloc;
         },
         act: (bloc) {
@@ -93,9 +93,9 @@ void main() {
         'loadRequested_sameTickerSetTwice_subscribesOnlyOnce',
         build: () {
           // arrange
-          when(() => mockWatchWatchlistNews(any())).thenAnswer(
-            (_) => Stream.value(Right([tArticle])),
-          );
+          when(
+            () => mockWatchWatchlistNews(any()),
+          ).thenAnswer((_) => Stream.value(Right([tArticle])));
           return bloc;
         },
         act: (bloc) {
@@ -118,9 +118,9 @@ void main() {
         'loadRequested_changedTickerSet_resubscribesWithNewTickers',
         build: () {
           // arrange
-          when(() => mockWatchWatchlistNews(any())).thenAnswer(
-            (_) => Stream.value(Right([tArticle])),
-          );
+          when(
+            () => mockWatchWatchlistNews(any()),
+          ).thenAnswer((_) => Stream.value(Right([tArticle])));
           return bloc;
         },
         act: (bloc) async {
@@ -160,9 +160,9 @@ void main() {
         'reset_thenSameTickers_resubscribesInsteadOfDeduping',
         build: () {
           // arrange
-          when(() => mockWatchWatchlistNews(tTickers)).thenAnswer(
-            (_) => Stream.value(Right([tArticle])),
-          );
+          when(
+            () => mockWatchWatchlistNews(tTickers),
+          ).thenAnswer((_) => Stream.value(Right([tArticle])));
           return bloc;
         },
         act: (bloc) async {

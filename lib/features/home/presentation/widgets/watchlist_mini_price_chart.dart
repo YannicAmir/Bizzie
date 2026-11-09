@@ -1,6 +1,6 @@
-import 'package:bizzie/app/themes/app_colors.dart';
 import 'package:bizzie/app/themes/app_theme.dart';
 import 'package:bizzie/features/home/domain/models/watchlist_stock_price.dart';
+import 'package:bizzie/shared/utils/badge_theme_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
@@ -23,10 +23,8 @@ class WatchlistMiniPriceChart extends StatelessWidget {
 
   List<_MiniChartPoint> get _splinePoints => stockPrice.series
       .map(
-        (point) => _MiniChartPoint(
-          _minutesSinceMidnight(point.time),
-          point.close,
-        ),
+        (point) =>
+            _MiniChartPoint(_minutesSinceMidnight(point.time), point.close),
       )
       .where((point) => point.minutes != null)
       .toList();
@@ -69,8 +67,8 @@ class WatchlistMiniPriceChart extends StatelessWidget {
     }
 
     final lineColor = _isPositive
-        ? (badgeTheme?.goodText ?? AppColors.goodText)
-        : (badgeTheme?.criticalText ?? AppColors.criticalText);
+        ? badgeTheme.goodTextOrDefault
+        : badgeTheme.criticalTextOrDefault;
     final range = _yRange(splinePoints);
 
     return IgnorePointer(

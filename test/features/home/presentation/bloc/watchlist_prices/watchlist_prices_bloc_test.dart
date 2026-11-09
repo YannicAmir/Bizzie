@@ -1,10 +1,12 @@
+import 'dart:async';
+
 import 'package:bizzie/core/domain/models/company.dart';
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/core/interfaces/i_config_service.dart';
 import 'package:bizzie/features/auth/domain/models/user_model.dart';
 import 'package:bizzie/features/auth/domain/usecases/get_auth_stream.dart';
 import 'package:bizzie/features/home/domain/models/watchlist_stock_price.dart';
-import 'package:bizzie/features/home/domain/usecases/get_watchlist_prices_usecase.dart';
+import 'package:bizzie/features/home/domain/usecases/watch_watchlist_prices_usecase.dart';
 import 'package:bizzie/features/home/presentation/bloc/watchlist_prices/watchlist_prices_bloc.dart';
 import 'package:bizzie/features/home/presentation/bloc/watchlist_prices/watchlist_prices_event.dart';
 import 'package:bizzie/features/home/presentation/bloc/watchlist_prices/watchlist_prices_state.dart';
@@ -14,8 +16,8 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
-class MockGetWatchlistPricesUseCase extends Mock
-    implements GetWatchlistPricesUseCase {}
+class MockWatchWatchlistPricesUseCase extends Mock
+    implements WatchWatchlistPricesUseCase {}
 
 class MockGetWatchlistUseCase extends Mock implements GetWatchlistUseCase {}
 
@@ -54,23 +56,53 @@ const tStockPrice = WatchlistStockPrice(
   closeFinalized: false,
 );
 
+const tUpdatedStockPrice = WatchlistStockPrice(
+  ticker: 'AXP',
+  companyName: 'American Express Company',
+  price: 299.10,
+  previousClose: 294.75,
+  change: 4.35,
+  changePercent: 1.48,
+  sessionDate: '2026-07-17',
+  series: [WatchlistStockPricePoint(time: '09:30', close: 295.1)],
+  closeFinalized: false,
+);
+
+const tStaleStockPrice = WatchlistStockPrice(
+  ticker: 'AXP',
+  companyName: 'American Express Company',
+  price: 250.00,
+  previousClose: 251.00,
+  change: -1.00,
+  changePercent: -0.40,
+  sessionDate: '2026-07-16',
+  series: [],
+  closeFinalized: true,
+);
+
 void main() {
   late WatchlistPricesBloc bloc;
-  late MockGetWatchlistPricesUseCase mockGetWatchlistPrices;
+  late MockWatchWatchlistPricesUseCase mockWatchWatchlistPrices;
   late MockGetWatchlistUseCase mockGetWatchlist;
   late MockConfigService mockConfigService;
 
   WatchlistPricesBloc buildBloc({Stream<UserModel?>? authStream}) {
     return WatchlistPricesBloc(
-      mockGetWatchlistPrices,
+      mockWatchWatchlistPrices,
       mockGetWatchlist,
       mockConfigService,
       stubbedGetAuthStream(authStream),
     );
   }
 
+  void stubWatchPrices(
+    Stream<Either<Failure, List<WatchlistStockPrice>>> stream,
+  ) {
+    when(() => mockWatchWatchlistPrices(tTickers)).thenAnswer((_) => stream);
+  }
+
   setUp(() {
-    mockGetWatchlistPrices = MockGetWatchlistPricesUseCase();
+    mockWatchWatchlistPrices = MockWatchWatchlistPricesUseCase();
     mockGetWatchlist = MockGetWatchlistUseCase();
     mockConfigService = MockConfigService();
     when(() => mockConfigService.showWatchlistPrice).thenReturn(true);
@@ -81,13 +113,15 @@ void main() {
 
   group('WatchlistPricesBloc', () {
     test('initialState_isCorrect', () {
+      // arrange
+      // act
       // assert
       expect(bloc.state, const WatchlistPricesState.initial());
     });
 
     group('loadRequested', () {
       blocTest<WatchlistPricesBloc, WatchlistPricesState>(
-        'loadRequested_configFlagOff_emitsDisabledWithoutFetching',
+        'loadRequested_configFlagOff_emitsDisabledWithoutWatching',
         build: () {
           // arrange
           when(() => mockConfigService.showWatchlistPrice).thenReturn(false);
@@ -100,16 +134,99 @@ void main() {
         // assert
         expect: () => [const WatchlistPricesState.disabled()],
         verify: (_) {
-          verifyNever(() => mockGetWatchlistPrices(any()));
+          verifyNever(() => mockWatchWatchlistPrices(any()));
         },
       );
 
       blocTest<WatchlistPricesBloc, WatchlistPricesState>(
-        'loadRequested_useCaseReturnsRight_emitsLoadingAndLoaded',
+        'loadRequested_useCaseEmitsRight_emitsLoadingAndLoaded',
         build: () {
           // arrange
-          when(() => mockGetWatchlistPrices(tTickers)).thenAnswer(
-            (_) async => const Right([tStockPrice]),
+          stubWatchPrices(Stream.value(const Right([tStockPrice])));
+          return bloc;
+        },
+        act: (bloc) {
+          // act
+          bloc.add(const WatchlistPricesEvent.loadRequested(tTickers));
+        },
+        // assert
+        expect: () => [
+          const WatchlistPricesState.loading(),
+          const WatchlistPricesState.loaded({'AXP': tStockPrice}),
+        ],
+      );
+
+      blocTest<WatchlistPricesBloc, WatchlistPricesState>(
+        'loadRequested_pricesUpdate_emitsEachLiveSnapshot',
+        build: () {
+          // arrange
+          stubWatchPrices(
+            Stream.fromIterable(const [
+              Right([tStockPrice]),
+              Right([tUpdatedStockPrice]),
+            ]),
+          );
+          return bloc;
+        },
+        act: (bloc) {
+          // act
+          bloc.add(const WatchlistPricesEvent.loadRequested(tTickers));
+        },
+        // assert
+        expect: () => [
+          const WatchlistPricesState.loading(),
+          const WatchlistPricesState.loaded({'AXP': tStockPrice}),
+          const WatchlistPricesState.loaded({'AXP': tUpdatedStockPrice}),
+        ],
+      );
+
+      blocTest<WatchlistPricesBloc, WatchlistPricesState>(
+        'loadRequested_useCaseEmitsLeft_emitsLoadingAndFailure',
+        build: () {
+          // arrange
+          stubWatchPrices(Stream.value(const Left(tFailure)));
+          return bloc;
+        },
+        act: (bloc) {
+          // act
+          bloc.add(const WatchlistPricesEvent.loadRequested(tTickers));
+        },
+        // assert
+        expect: () => [
+          const WatchlistPricesState.loading(),
+          const WatchlistPricesState.failure(tFailure),
+        ],
+      );
+
+      blocTest<WatchlistPricesBloc, WatchlistPricesState>(
+        'loadRequested_streamErrors_emitsLoadingAndFailure',
+        build: () {
+          // arrange
+          stubWatchPrices(Stream.error(Exception('stream failed')));
+          return bloc;
+        },
+        act: (bloc) {
+          // act
+          bloc.add(const WatchlistPricesEvent.loadRequested(tTickers));
+        },
+        // assert
+        expect: () => [
+          const WatchlistPricesState.loading(),
+          const WatchlistPricesState.failure(
+            Failure.server('Exception: stream failed'),
+          ),
+        ],
+      );
+
+      blocTest<WatchlistPricesBloc, WatchlistPricesState>(
+        'loadRequested_failureAfterLiveSnapshot_keepsLoadedPrices',
+        build: () {
+          // arrange
+          stubWatchPrices(
+            Stream.fromIterable(const [
+              Right([tStockPrice]),
+              Left(tFailure),
+            ]),
           );
           return bloc;
         },
@@ -125,33 +242,11 @@ void main() {
       );
 
       blocTest<WatchlistPricesBloc, WatchlistPricesState>(
-        'loadRequested_useCaseReturnsLeft_emitsLoadingAndFailure',
-        build: () {
-          // arrange
-          when(() => mockGetWatchlistPrices(tTickers)).thenAnswer(
-            (_) async => const Left(tFailure),
-          );
-          return bloc;
-        },
-        act: (bloc) {
-          // act
-          bloc.add(const WatchlistPricesEvent.loadRequested(tTickers));
-        },
-        // assert
-        expect: () => [
-          const WatchlistPricesState.loading(),
-          const WatchlistPricesState.failure(tFailure),
-        ],
-      );
-
-      blocTest<WatchlistPricesBloc, WatchlistPricesState>(
         'loadRequested_refreshFailsAfterLoaded_keepsLoadedPrices',
         seed: () => const WatchlistPricesState.loaded({'AXP': tStockPrice}),
         build: () {
           // arrange
-          when(() => mockGetWatchlistPrices(tTickers)).thenAnswer(
-            (_) async => const Left(tFailure),
-          );
+          stubWatchPrices(Stream.value(const Left(tFailure)));
           return bloc;
         },
         act: (bloc) {
@@ -167,9 +262,7 @@ void main() {
         seed: () => const WatchlistPricesState.loaded({}),
         build: () {
           // arrange
-          when(() => mockGetWatchlistPrices(tTickers)).thenAnswer(
-            (_) async => const Right([tStockPrice]),
-          );
+          stubWatchPrices(Stream.value(const Right([tStockPrice])));
           return bloc;
         },
         act: (bloc) {
@@ -181,25 +274,56 @@ void main() {
           const WatchlistPricesState.loaded({'AXP': tStockPrice}),
         ],
       );
+
+      final sameTickersController =
+          StreamController<Either<Failure, List<WatchlistStockPrice>>>();
+      blocTest<WatchlistPricesBloc, WatchlistPricesState>(
+        'loadRequested_sameTickerSet_keepsExistingSubscription',
+        build: () {
+          // arrange
+          stubWatchPrices(sameTickersController.stream);
+          return bloc;
+        },
+        act: (bloc) async {
+          // act — the watchlist stream re-emits the same tickers on unrelated
+          // document changes; the live price stream must not restart.
+          bloc.add(const WatchlistPricesEvent.loadRequested(tTickers));
+          await Future<void>.delayed(Duration.zero);
+          sameTickersController.add(const Right([tStockPrice]));
+          await Future<void>.delayed(Duration.zero);
+          bloc.add(const WatchlistPricesEvent.loadRequested(['NVDA', 'AXP']));
+          await Future<void>.delayed(Duration.zero);
+          sameTickersController.add(const Right([tUpdatedStockPrice]));
+        },
+        // assert
+        expect: () => [
+          const WatchlistPricesState.loading(),
+          const WatchlistPricesState.loaded({'AXP': tStockPrice}),
+          const WatchlistPricesState.loaded({'AXP': tUpdatedStockPrice}),
+        ],
+        verify: (_) {
+          verify(() => mockWatchWatchlistPrices(tTickers)).called(1);
+        },
+        tearDown: sameTickersController.close,
+      );
     });
 
     group('watchlist subscription', () {
       blocTest<WatchlistPricesBloc, WatchlistPricesState>(
-        'signedInWatchlistEmits_autoLoadsPricesForTickers',
+        'signedInWatchlistEmits_autoWatchesPricesForTickers',
         build: () {
           // arrange
           when(() => mockGetWatchlist('uid-1')).thenAnswer(
             (_) async =>
                 Stream.value(const Right<Failure, List<Company>>(tCompanies)),
           );
-          when(() => mockGetWatchlistPrices(tTickers)).thenAnswer(
-            (_) async => const Right([tStockPrice]),
-          );
+          stubWatchPrices(Stream.value(const Right([tStockPrice])));
           return buildBloc(authStream: Stream.value(tUser));
         },
-        // assert — no widget-layer dispatch required; the bloc reacts to the
+        // act — no widget-layer dispatch required; the bloc reacts to the
         // watchlist stream on its own.
         wait: const Duration(milliseconds: 50),
+        // assert
         expect: () => [
           const WatchlistPricesState.loading(),
           const WatchlistPricesState.loaded({'AXP': tStockPrice}),
@@ -218,17 +342,17 @@ void main() {
         // assert
         expect: () => <WatchlistPricesState>[],
         verify: (_) {
-          verifyNever(() => mockGetWatchlistPrices(any()));
+          verifyNever(() => mockWatchWatchlistPrices(any()));
         },
       );
 
       blocTest<WatchlistPricesBloc, WatchlistPricesState>(
-        'refreshRequested_afterLoad_reloadsRememberedTickers',
+        'refreshRequested_afterLoad_resubscribesToRememberedTickers',
         build: () {
           // arrange
-          when(() => mockGetWatchlistPrices(tTickers)).thenAnswer(
-            (_) async => const Right([tStockPrice]),
-          );
+          when(
+            () => mockWatchWatchlistPrices(tTickers),
+          ).thenAnswer((_) => Stream.value(const Right([tStockPrice])));
           return bloc;
         },
         act: (bloc) async {
@@ -244,7 +368,48 @@ void main() {
           const WatchlistPricesState.loaded({'AXP': tStockPrice}),
         ],
         verify: (_) {
-          verify(() => mockGetWatchlistPrices(tTickers)).called(2);
+          verify(() => mockWatchWatchlistPrices(tTickers)).called(2);
+        },
+      );
+
+      final initialController =
+          StreamController<Either<Failure, List<WatchlistStockPrice>>>();
+      final refreshedController =
+          StreamController<Either<Failure, List<WatchlistStockPrice>>>();
+      blocTest<WatchlistPricesBloc, WatchlistPricesState>(
+        'refreshRequested_whileWatching_cancelsPreviousSubscription',
+        build: () {
+          // arrange
+          final streams = [
+            initialController.stream,
+            refreshedController.stream,
+          ];
+          when(
+            () => mockWatchWatchlistPrices(tTickers),
+          ).thenAnswer((_) => streams.removeAt(0));
+          return bloc;
+        },
+        act: (bloc) async {
+          // act
+          bloc.add(const WatchlistPricesEvent.loadRequested(tTickers));
+          await Future<void>.delayed(Duration.zero);
+          initialController.add(const Right([tStockPrice]));
+          await Future<void>.delayed(Duration.zero);
+          bloc.add(const WatchlistPricesEvent.refreshRequested());
+          await Future<void>.delayed(Duration.zero);
+          refreshedController.add(const Right([tUpdatedStockPrice]));
+          await Future<void>.delayed(Duration.zero);
+          initialController.add(const Right([tStaleStockPrice]));
+        },
+        // assert
+        expect: () => [
+          const WatchlistPricesState.loading(),
+          const WatchlistPricesState.loaded({'AXP': tStockPrice}),
+          const WatchlistPricesState.loaded({'AXP': tUpdatedStockPrice}),
+        ],
+        tearDown: () {
+          initialController.close();
+          refreshedController.close();
         },
       );
     });
@@ -262,13 +427,41 @@ void main() {
         expect: () => [const WatchlistPricesState.initial()],
       );
 
+      final controller =
+          StreamController<Either<Failure, List<WatchlistStockPrice>>>();
       blocTest<WatchlistPricesBloc, WatchlistPricesState>(
-        'reset_thenSameTickers_reloadsInsteadOfDeduping',
+        'reset_whileWatching_cancelsSubscription',
         build: () {
           // arrange
-          when(() => mockGetWatchlistPrices(tTickers)).thenAnswer(
-            (_) async => const Right([tStockPrice]),
-          );
+          stubWatchPrices(controller.stream);
+          return bloc;
+        },
+        act: (bloc) async {
+          // act
+          bloc.add(const WatchlistPricesEvent.loadRequested(tTickers));
+          await Future<void>.delayed(Duration.zero);
+          controller.add(const Right([tStockPrice]));
+          await Future<void>.delayed(Duration.zero);
+          bloc.add(const WatchlistPricesEvent.reset());
+          await Future<void>.delayed(Duration.zero);
+          controller.add(const Right([tUpdatedStockPrice]));
+        },
+        // assert
+        expect: () => [
+          const WatchlistPricesState.loading(),
+          const WatchlistPricesState.loaded({'AXP': tStockPrice}),
+          const WatchlistPricesState.initial(),
+        ],
+        tearDown: controller.close,
+      );
+
+      blocTest<WatchlistPricesBloc, WatchlistPricesState>(
+        'reset_thenSameTickers_resubscribesInsteadOfDeduping',
+        build: () {
+          // arrange
+          when(
+            () => mockWatchWatchlistPrices(tTickers),
+          ).thenAnswer((_) => Stream.value(const Right([tStockPrice])));
           return bloc;
         },
         act: (bloc) async {
@@ -292,7 +485,7 @@ void main() {
           const WatchlistPricesState.loaded({'AXP': tStockPrice}),
         ],
         verify: (_) {
-          verify(() => mockGetWatchlistPrices(tTickers)).called(2);
+          verify(() => mockWatchWatchlistPrices(tTickers)).called(2);
         },
       );
     });

@@ -40,9 +40,8 @@ class BizzieDateFormatter {
       return _formatMarketCloseBuffer(etTime);
     }
 
-    final fifteenMinutesAgo = now.subtract(const Duration(minutes: 15));
     final timeFormatter = DateFormat('h:mm a');
-    return "Today at ${timeFormatter.format(fifteenMinutesAgo)} $timeZone (15 min delay)";
+    return "Today at ${timeFormatter.format(now)} $timeZone";
   }
 
   static bool _isAfterMarketCloseBuffer(DateTime etTime) {

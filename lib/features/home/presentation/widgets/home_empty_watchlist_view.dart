@@ -30,8 +30,9 @@ class _HomeEmptyWatchlistViewState extends State<HomeEmptyWatchlistView> {
 
   @override
   Widget build(BuildContext context) {
-    final mascotAsset =
-        context.select<UserBloc, String>((bloc) => bloc.state.mascotAsset);
+    final mascotAsset = context.select<UserBloc, String>(
+      (bloc) => bloc.state.mascotAsset,
+    );
 
     return LayoutBuilder(
       builder: (context, constraints) {

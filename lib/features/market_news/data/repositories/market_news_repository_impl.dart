@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:bizzie/core/error/exceptions.dart';
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:bizzie/features/market_news/data/dtos/market_news_dto.dart';
@@ -19,26 +20,29 @@ class MarketNewsRepositoryImpl implements IMarketNewsRepository {
 
   @override
   Stream<Either<Failure, List<MarketNewsArticle>>> watchMarketNews() {
-    return _remoteDataSource
-        .getMarketNewsStream()
-        .transform(
-          StreamTransformer<
-            List<MarketNewsDto>,
-            Either<Failure, List<MarketNewsArticle>>
-          >.fromHandlers(
-            handleData: (dtos, sink) {
-              try {
-                sink.add(Right(dtos.map((dto) => dto.toDomain()).toList()));
-              } catch (e, stack) {
-                _logger.severe('Failed to map market news stream', e, stack);
-                sink.add(Left(Failure.server(e.toString())));
-              }
-            },
-            handleError: (error, stack, sink) {
-              _logger.severe('Market news stream error', error, stack);
-              sink.add(Left(Failure.server(error.toString())));
-            },
-          ),
-        );
+    return _remoteDataSource.getMarketNewsStream().transform(
+      StreamTransformer<
+        List<MarketNewsDto>,
+        Either<Failure, List<MarketNewsArticle>>
+      >.fromHandlers(
+        handleData: (dtos, sink) {
+          try {
+            sink.add(Right(dtos.map((dto) => dto.toDomain()).toList()));
+          } catch (e, stack) {
+            _logger.severe('Failed to map market news stream', e, stack);
+            sink.add(Left(Failure.server(e.toString())));
+          }
+        },
+        handleError: (error, stack, sink) {
+          sink.add(
+            Left(
+              error is PermissionDeniedException
+                  ? const Failure.permission()
+                  : Failure.server(error.toString()),
+            ),
+          );
+        },
+      ),
+    );
   }
 }

@@ -1,4 +1,5 @@
 import 'package:bizzie/core/constants/firestore_constants.dart';
+import 'package:bizzie/core/error/exceptions.dart';
 import 'package:bizzie/core/interfaces/i_time_provider.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:bizzie/features/home/data/dtos/watchlist_news_dto.dart';
@@ -45,9 +46,9 @@ class WatchlistNewsRemoteDataSource implements IWatchlistNewsRemoteDataSource {
             _logger.warning(
               'Watchlist news stream permission denied (expected on logout)',
             );
-          } else {
-            _logger.severe('Error in watchlist news stream', e, s);
+            Error.throwWithStackTrace(PermissionDeniedException(), s);
           }
+          _logger.severe('Error in watchlist news stream', e, s);
           Error.throwWithStackTrace(e, s);
         });
   }
