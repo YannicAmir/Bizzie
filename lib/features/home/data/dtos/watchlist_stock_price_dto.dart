@@ -40,10 +40,8 @@ abstract class WatchlistStockPriceDto with _$WatchlistStockPriceDto {
 
 @freezed
 abstract class StockPricePointDto with _$StockPricePointDto {
-  const factory StockPricePointDto({
-    required String t,
-    required double c,
-  }) = _StockPricePointDto;
+  const factory StockPricePointDto({required String t, required double c}) =
+      _StockPricePointDto;
 
   const StockPricePointDto._();
 

@@ -1,7 +1,6 @@
-import 'package:bizzie/core/enums/data_origin.dart';
-import 'package:bizzie/di/injection.dart';
 import 'package:bizzie/features/company_profile/security/domain/models/historical_price_eod.dart';
 import 'package:bizzie/features/company_profile/security/domain/models/security_details.dart';
+import 'package:bizzie/features/company_profile/security/domain/models/security_quote.dart';
 import 'package:bizzie/features/company_profile/security/presentation/bloc/company_security_bloc.dart';
 import 'package:bizzie/features/company_profile/security/presentation/bloc/company_security_event.dart';
 import 'package:bizzie/features/company_profile/security/presentation/bloc/company_security_state.dart';
@@ -9,12 +8,13 @@ import 'package:bizzie/features/company_profile/security/presentation/bloc/histo
 import 'package:bizzie/features/company_profile/security/presentation/bloc/historical_price_eod/historical_price_eod_event.dart';
 import 'package:bizzie/features/company_profile/security/presentation/bloc/historical_price_eod/historical_price_eod_state.dart';
 import 'package:bizzie/features/company_profile/security/presentation/bloc/price_chart/price_chart_bloc.dart';
-import 'package:bizzie/features/company_profile/security/presentation/bloc/price_chart/price_chart_event.dart';
 import 'package:bizzie/features/company_profile/security/presentation/bloc/price_chart/price_chart_state.dart';
+import 'package:bizzie/features/company_profile/security/presentation/bloc/security_quote/security_quote_bloc.dart';
 import 'package:bizzie/features/company_profile/security/presentation/bloc/upcoming_earnings/upcoming_earnings_bloc.dart';
 import 'package:bizzie/features/company_profile/security/presentation/bloc/upcoming_earnings/upcoming_earnings_state.dart';
 import 'package:bizzie/features/company_profile/security/presentation/extensions/company_security_state_extensions.dart';
 import 'package:bizzie/features/company_profile/security/presentation/extensions/historical_price_eod_state_extensions.dart';
+import 'package:bizzie/features/company_profile/security/presentation/extensions/security_quote_state_extensions.dart';
 import 'package:bizzie/features/company_profile/security/presentation/utils/upcoming_earnings_presentation_extensions.dart';
 import 'package:bizzie/features/company_profile/security/presentation/widgets/key_metrics_section.dart';
 import 'package:bizzie/features/company_profile/security/presentation/widgets/price_chart_widget.dart';
@@ -31,7 +31,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 const _loadingSecurityLabel = 'Loading Security';
 const _errorLoadingSecurityLabel = 'Error loading security';
-const _priceChartKeyPrefix = 'price_chart_';
 
 class SecurityTab extends StatefulWidget {
   final String ticker;
@@ -83,41 +82,26 @@ class _SecurityTabBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<CompanySecurityBloc, CompanySecurityState>(
-      builder: (context, securityState) {
-        return BlocBuilder<HistoricalPriceEodBloc, HistoricalPriceEodState>(
-          builder: (context, priceState) {
-            if (securityState.isLoading || priceState.isLoading) {
-              return const CompanyProfileLoadingState(
-                message: _loadingSecurityLabel,
-              );
-            }
+    final securityState = context.watch<CompanySecurityBloc>().state;
+    final priceState = context.watch<HistoricalPriceEodBloc>().state;
+    final quoteState = context.watch<SecurityQuoteBloc>().state;
 
-            return securityState.maybeMap(
-              failure: (_) => _SecurityErrorView(ticker: ticker),
-              loaded: (state) {
-                final prices = priceState.maybeMap(
-                  loaded: (s) => s.prices,
-                  orElse: () => <HistoricalPriceEod>[],
-                );
-                final dataSource = priceState.maybeMap(
-                  loaded: (s) => s.dataSource,
-                  orElse: () => CompanyProfileDataOrigin.api,
-                );
+    const loadingView = CompanyProfileLoadingState(
+      message: _loadingSecurityLabel,
+    );
 
-                return _SecurityLoadedView(
-                  securityDetails: state.securityDetails,
-                  prices: prices,
-                  dataSource: dataSource,
-                );
-              },
-              orElse: () => const CompanyProfileLoadingState(
-                message: _loadingSecurityLabel,
-              ),
-            );
-          },
-        );
-      },
+    if (securityState.isLoading || priceState.isLoading) {
+      return loadingView;
+    }
+
+    return securityState.maybeMap(
+      failure: (_) => _SecurityErrorView(ticker: ticker),
+      loaded: (state) => _SecurityLoadedView(
+        securityDetails: state.securityDetails,
+        prices: priceState.prices,
+        quote: quoteState.quote,
+      ),
+      orElse: () => loadingView,
     );
   }
 }
@@ -146,12 +130,12 @@ class _SecurityErrorView extends StatelessWidget {
 class _SecurityLoadedView extends StatelessWidget {
   final SecurityDetails securityDetails;
   final List<HistoricalPriceEod> prices;
-  final CompanyProfileDataOrigin dataSource;
+  final SecurityQuote? quote;
 
   const _SecurityLoadedView({
     required this.securityDetails,
     required this.prices,
-    required this.dataSource,
+    required this.quote,
   });
 
   @override
@@ -176,7 +160,7 @@ class _SecurityLoadedView extends StatelessWidget {
                 context.read<CompanySecurityBloc>().add(
                   CompanySecurityEvent.earningsAnalyticsUpdated(
                     hasUpcoming: true,
-                    daysAway: s.earningsDate.daysAwayLabel,
+                    daysAway: s.earningsDate.calendarDaysAway(),
                   ),
                 );
               },
@@ -194,7 +178,7 @@ class _SecurityLoadedView extends StatelessWidget {
       child: _SecurityContent(
         securityDetails: securityDetails,
         prices: prices,
-        dataSource: dataSource,
+        quote: quote,
       ),
     );
   }
@@ -203,12 +187,12 @@ class _SecurityLoadedView extends StatelessWidget {
 class _SecurityContent extends StatelessWidget {
   final SecurityDetails securityDetails;
   final List<HistoricalPriceEod> prices;
-  final CompanyProfileDataOrigin dataSource;
+  final SecurityQuote? quote;
 
   const _SecurityContent({
     required this.securityDetails,
     required this.prices,
-    required this.dataSource,
+    required this.quote,
   });
 
   @override
@@ -220,31 +204,51 @@ class _SecurityContent extends StatelessWidget {
           SecurityOverviewCard(
             securityDetails: securityDetails,
             prices: prices,
-            dataSource: dataSource,
+            quote: quote,
           ),
           const UpcomingEarningsWidget(),
           AppConstants.mainSectionSpacing,
           KeyMetricsSection(details: securityDetails),
           AppConstants.mainSectionSpacing,
-          BlocProvider(
-            key: ValueKey('$_priceChartKeyPrefix${prices.length}'),
-            create: (context) =>
-                getIt<PriceChartBloc>()
-                  ..add(PriceChartEvent.historyUpdated(prices)),
-            child: BlocListener<PriceChartBloc, PriceChartState>(
-              listener: (context, chartState) {
-                context.read<CompanySecurityBloc>().add(
-                  CompanySecurityEvent.priceAnalyticsUpdated(
-                    chartChangeCount: chartState.chartChangeCount,
-                    finalTimeframe: chartState.selectedTimeFrame.name,
-                  ),
-                );
-              },
-              child: const PriceChartWidget(),
-            ),
-          ),
+          const _PriceChartAnalyticsReporter(child: PriceChartWidget()),
         ],
       ),
+    );
+  }
+}
+
+class _PriceChartAnalyticsReporter extends StatefulWidget {
+  final Widget child;
+
+  const _PriceChartAnalyticsReporter({required this.child});
+
+  @override
+  State<_PriceChartAnalyticsReporter> createState() =>
+      _PriceChartAnalyticsReporterState();
+}
+
+class _PriceChartAnalyticsReporterState
+    extends State<_PriceChartAnalyticsReporter> {
+  @override
+  void initState() {
+    super.initState();
+    _report(context.read<PriceChartBloc>().state);
+  }
+
+  void _report(PriceChartState chartState) {
+    context.read<CompanySecurityBloc>().add(
+      CompanySecurityEvent.priceAnalyticsUpdated(
+        chartChangeCount: chartState.chartChangeCount,
+        finalTimeframe: chartState.selectedTimeFrame,
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocListener<PriceChartBloc, PriceChartState>(
+      listener: (_, chartState) => _report(chartState),
+      child: widget.child,
     );
   }
 }

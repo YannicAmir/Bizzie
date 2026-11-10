@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$SecurityTabViewState {
 
- String get ticker; String get securityType; String get timestamp; int? get loadTimeMs; int? get priceLoadMs; bool get isSuccess; bool get isPriceSuccess; CompanyProfileDataOrigin? get dataSource; int get viewDurationSec; bool get hasUpcomingEarnings; String? get earningsDaysAway; int get priceChartChangeCount; String get finalPriceTimeframe;
+ String get ticker; String get securityType; String get timestamp; int? get loadTimeMs; int? get priceLoadMs; bool get isSuccess; bool get isPriceSuccess; CompanyProfileDataOrigin? get dataSource; int get viewDurationSec; bool get hasUpcomingEarnings; int? get earningsDaysAway; int get priceChartChangeCount; ChartTimeFrame? get finalPriceTimeframe;
 /// Create a copy of SecurityTabViewState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -45,7 +45,7 @@ abstract mixin class $SecurityTabViewStateCopyWith<$Res>  {
   factory $SecurityTabViewStateCopyWith(SecurityTabViewState value, $Res Function(SecurityTabViewState) _then) = _$SecurityTabViewStateCopyWithImpl;
 @useResult
 $Res call({
- String ticker, String securityType, String timestamp, int? loadTimeMs, int? priceLoadMs, bool isSuccess, bool isPriceSuccess, CompanyProfileDataOrigin? dataSource, int viewDurationSec, bool hasUpcomingEarnings, String? earningsDaysAway, int priceChartChangeCount, String finalPriceTimeframe
+ String ticker, String securityType, String timestamp, int? loadTimeMs, int? priceLoadMs, bool isSuccess, bool isPriceSuccess, CompanyProfileDataOrigin? dataSource, int viewDurationSec, bool hasUpcomingEarnings, int? earningsDaysAway, int priceChartChangeCount, ChartTimeFrame? finalPriceTimeframe
 });
 
 
@@ -62,7 +62,7 @@ class _$SecurityTabViewStateCopyWithImpl<$Res>
 
 /// Create a copy of SecurityTabViewState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? ticker = null,Object? securityType = null,Object? timestamp = null,Object? loadTimeMs = freezed,Object? priceLoadMs = freezed,Object? isSuccess = null,Object? isPriceSuccess = null,Object? dataSource = freezed,Object? viewDurationSec = null,Object? hasUpcomingEarnings = null,Object? earningsDaysAway = freezed,Object? priceChartChangeCount = null,Object? finalPriceTimeframe = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? ticker = null,Object? securityType = null,Object? timestamp = null,Object? loadTimeMs = freezed,Object? priceLoadMs = freezed,Object? isSuccess = null,Object? isPriceSuccess = null,Object? dataSource = freezed,Object? viewDurationSec = null,Object? hasUpcomingEarnings = null,Object? earningsDaysAway = freezed,Object? priceChartChangeCount = null,Object? finalPriceTimeframe = freezed,}) {
   return _then(_self.copyWith(
 ticker: null == ticker ? _self.ticker : ticker // ignore: cast_nullable_to_non_nullable
 as String,securityType: null == securityType ? _self.securityType : securityType // ignore: cast_nullable_to_non_nullable
@@ -75,9 +75,9 @@ as bool,dataSource: freezed == dataSource ? _self.dataSource : dataSource // ign
 as CompanyProfileDataOrigin?,viewDurationSec: null == viewDurationSec ? _self.viewDurationSec : viewDurationSec // ignore: cast_nullable_to_non_nullable
 as int,hasUpcomingEarnings: null == hasUpcomingEarnings ? _self.hasUpcomingEarnings : hasUpcomingEarnings // ignore: cast_nullable_to_non_nullable
 as bool,earningsDaysAway: freezed == earningsDaysAway ? _self.earningsDaysAway : earningsDaysAway // ignore: cast_nullable_to_non_nullable
-as String?,priceChartChangeCount: null == priceChartChangeCount ? _self.priceChartChangeCount : priceChartChangeCount // ignore: cast_nullable_to_non_nullable
-as int,finalPriceTimeframe: null == finalPriceTimeframe ? _self.finalPriceTimeframe : finalPriceTimeframe // ignore: cast_nullable_to_non_nullable
-as String,
+as int?,priceChartChangeCount: null == priceChartChangeCount ? _self.priceChartChangeCount : priceChartChangeCount // ignore: cast_nullable_to_non_nullable
+as int,finalPriceTimeframe: freezed == finalPriceTimeframe ? _self.finalPriceTimeframe : finalPriceTimeframe // ignore: cast_nullable_to_non_nullable
+as ChartTimeFrame?,
   ));
 }
 
@@ -162,7 +162,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String ticker,  String securityType,  String timestamp,  int? loadTimeMs,  int? priceLoadMs,  bool isSuccess,  bool isPriceSuccess,  CompanyProfileDataOrigin? dataSource,  int viewDurationSec,  bool hasUpcomingEarnings,  String? earningsDaysAway,  int priceChartChangeCount,  String finalPriceTimeframe)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String ticker,  String securityType,  String timestamp,  int? loadTimeMs,  int? priceLoadMs,  bool isSuccess,  bool isPriceSuccess,  CompanyProfileDataOrigin? dataSource,  int viewDurationSec,  bool hasUpcomingEarnings,  int? earningsDaysAway,  int priceChartChangeCount,  ChartTimeFrame? finalPriceTimeframe)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _SecurityTabViewState() when $default != null:
 return $default(_that.ticker,_that.securityType,_that.timestamp,_that.loadTimeMs,_that.priceLoadMs,_that.isSuccess,_that.isPriceSuccess,_that.dataSource,_that.viewDurationSec,_that.hasUpcomingEarnings,_that.earningsDaysAway,_that.priceChartChangeCount,_that.finalPriceTimeframe);case _:
@@ -183,7 +183,7 @@ return $default(_that.ticker,_that.securityType,_that.timestamp,_that.loadTimeMs
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String ticker,  String securityType,  String timestamp,  int? loadTimeMs,  int? priceLoadMs,  bool isSuccess,  bool isPriceSuccess,  CompanyProfileDataOrigin? dataSource,  int viewDurationSec,  bool hasUpcomingEarnings,  String? earningsDaysAway,  int priceChartChangeCount,  String finalPriceTimeframe)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String ticker,  String securityType,  String timestamp,  int? loadTimeMs,  int? priceLoadMs,  bool isSuccess,  bool isPriceSuccess,  CompanyProfileDataOrigin? dataSource,  int viewDurationSec,  bool hasUpcomingEarnings,  int? earningsDaysAway,  int priceChartChangeCount,  ChartTimeFrame? finalPriceTimeframe)  $default,) {final _that = this;
 switch (_that) {
 case _SecurityTabViewState():
 return $default(_that.ticker,_that.securityType,_that.timestamp,_that.loadTimeMs,_that.priceLoadMs,_that.isSuccess,_that.isPriceSuccess,_that.dataSource,_that.viewDurationSec,_that.hasUpcomingEarnings,_that.earningsDaysAway,_that.priceChartChangeCount,_that.finalPriceTimeframe);case _:
@@ -203,7 +203,7 @@ return $default(_that.ticker,_that.securityType,_that.timestamp,_that.loadTimeMs
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String ticker,  String securityType,  String timestamp,  int? loadTimeMs,  int? priceLoadMs,  bool isSuccess,  bool isPriceSuccess,  CompanyProfileDataOrigin? dataSource,  int viewDurationSec,  bool hasUpcomingEarnings,  String? earningsDaysAway,  int priceChartChangeCount,  String finalPriceTimeframe)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String ticker,  String securityType,  String timestamp,  int? loadTimeMs,  int? priceLoadMs,  bool isSuccess,  bool isPriceSuccess,  CompanyProfileDataOrigin? dataSource,  int viewDurationSec,  bool hasUpcomingEarnings,  int? earningsDaysAway,  int priceChartChangeCount,  ChartTimeFrame? finalPriceTimeframe)?  $default,) {final _that = this;
 switch (_that) {
 case _SecurityTabViewState() when $default != null:
 return $default(_that.ticker,_that.securityType,_that.timestamp,_that.loadTimeMs,_that.priceLoadMs,_that.isSuccess,_that.isPriceSuccess,_that.dataSource,_that.viewDurationSec,_that.hasUpcomingEarnings,_that.earningsDaysAway,_that.priceChartChangeCount,_that.finalPriceTimeframe);case _:
@@ -218,7 +218,7 @@ return $default(_that.ticker,_that.securityType,_that.timestamp,_that.loadTimeMs
 
 
 class _SecurityTabViewState extends SecurityTabViewState {
-  const _SecurityTabViewState({required this.ticker, required this.securityType, required this.timestamp, this.loadTimeMs, this.priceLoadMs, this.isSuccess = false, this.isPriceSuccess = false, this.dataSource, this.viewDurationSec = 0, this.hasUpcomingEarnings = false, this.earningsDaysAway, this.priceChartChangeCount = 0, this.finalPriceTimeframe = '1D'}): super._();
+  const _SecurityTabViewState({required this.ticker, required this.securityType, required this.timestamp, this.loadTimeMs, this.priceLoadMs, this.isSuccess = false, this.isPriceSuccess = false, this.dataSource, this.viewDurationSec = 0, this.hasUpcomingEarnings = false, this.earningsDaysAway, this.priceChartChangeCount = 0, this.finalPriceTimeframe}): super._();
   
 
 @override final  String ticker;
@@ -231,9 +231,9 @@ class _SecurityTabViewState extends SecurityTabViewState {
 @override final  CompanyProfileDataOrigin? dataSource;
 @override@JsonKey() final  int viewDurationSec;
 @override@JsonKey() final  bool hasUpcomingEarnings;
-@override final  String? earningsDaysAway;
+@override final  int? earningsDaysAway;
 @override@JsonKey() final  int priceChartChangeCount;
-@override@JsonKey() final  String finalPriceTimeframe;
+@override final  ChartTimeFrame? finalPriceTimeframe;
 
 /// Create a copy of SecurityTabViewState
 /// with the given fields replaced by the non-null parameter values.
@@ -265,7 +265,7 @@ abstract mixin class _$SecurityTabViewStateCopyWith<$Res> implements $SecurityTa
   factory _$SecurityTabViewStateCopyWith(_SecurityTabViewState value, $Res Function(_SecurityTabViewState) _then) = __$SecurityTabViewStateCopyWithImpl;
 @override @useResult
 $Res call({
- String ticker, String securityType, String timestamp, int? loadTimeMs, int? priceLoadMs, bool isSuccess, bool isPriceSuccess, CompanyProfileDataOrigin? dataSource, int viewDurationSec, bool hasUpcomingEarnings, String? earningsDaysAway, int priceChartChangeCount, String finalPriceTimeframe
+ String ticker, String securityType, String timestamp, int? loadTimeMs, int? priceLoadMs, bool isSuccess, bool isPriceSuccess, CompanyProfileDataOrigin? dataSource, int viewDurationSec, bool hasUpcomingEarnings, int? earningsDaysAway, int priceChartChangeCount, ChartTimeFrame? finalPriceTimeframe
 });
 
 
@@ -282,7 +282,7 @@ class __$SecurityTabViewStateCopyWithImpl<$Res>
 
 /// Create a copy of SecurityTabViewState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? ticker = null,Object? securityType = null,Object? timestamp = null,Object? loadTimeMs = freezed,Object? priceLoadMs = freezed,Object? isSuccess = null,Object? isPriceSuccess = null,Object? dataSource = freezed,Object? viewDurationSec = null,Object? hasUpcomingEarnings = null,Object? earningsDaysAway = freezed,Object? priceChartChangeCount = null,Object? finalPriceTimeframe = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? ticker = null,Object? securityType = null,Object? timestamp = null,Object? loadTimeMs = freezed,Object? priceLoadMs = freezed,Object? isSuccess = null,Object? isPriceSuccess = null,Object? dataSource = freezed,Object? viewDurationSec = null,Object? hasUpcomingEarnings = null,Object? earningsDaysAway = freezed,Object? priceChartChangeCount = null,Object? finalPriceTimeframe = freezed,}) {
   return _then(_SecurityTabViewState(
 ticker: null == ticker ? _self.ticker : ticker // ignore: cast_nullable_to_non_nullable
 as String,securityType: null == securityType ? _self.securityType : securityType // ignore: cast_nullable_to_non_nullable
@@ -295,9 +295,9 @@ as bool,dataSource: freezed == dataSource ? _self.dataSource : dataSource // ign
 as CompanyProfileDataOrigin?,viewDurationSec: null == viewDurationSec ? _self.viewDurationSec : viewDurationSec // ignore: cast_nullable_to_non_nullable
 as int,hasUpcomingEarnings: null == hasUpcomingEarnings ? _self.hasUpcomingEarnings : hasUpcomingEarnings // ignore: cast_nullable_to_non_nullable
 as bool,earningsDaysAway: freezed == earningsDaysAway ? _self.earningsDaysAway : earningsDaysAway // ignore: cast_nullable_to_non_nullable
-as String?,priceChartChangeCount: null == priceChartChangeCount ? _self.priceChartChangeCount : priceChartChangeCount // ignore: cast_nullable_to_non_nullable
-as int,finalPriceTimeframe: null == finalPriceTimeframe ? _self.finalPriceTimeframe : finalPriceTimeframe // ignore: cast_nullable_to_non_nullable
-as String,
+as int?,priceChartChangeCount: null == priceChartChangeCount ? _self.priceChartChangeCount : priceChartChangeCount // ignore: cast_nullable_to_non_nullable
+as int,finalPriceTimeframe: freezed == finalPriceTimeframe ? _self.finalPriceTimeframe : finalPriceTimeframe // ignore: cast_nullable_to_non_nullable
+as ChartTimeFrame?,
   ));
 }
 

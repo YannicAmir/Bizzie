@@ -6,17 +6,20 @@ import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
 
 @lazySingleton
-class GetWatchlistPricesUseCase
+class WatchWatchlistPricesUseCase
     implements
-        UseCase<Either<Failure, List<WatchlistStockPrice>>, List<String>> {
+        StreamUseCase<
+          Either<Failure, List<WatchlistStockPrice>>,
+          List<String>
+        > {
   final IWatchlistPricesRepository _repository;
 
-  GetWatchlistPricesUseCase(this._repository);
+  WatchWatchlistPricesUseCase(this._repository);
 
   @override
-  Future<Either<Failure, List<WatchlistStockPrice>>> call(
-    List<String> params,
+  Stream<Either<Failure, List<WatchlistStockPrice>>> call(
+    List<String> tickers,
   ) {
-    return _repository.getWatchlistPrices(params);
+    return _repository.watchWatchlistPrices(tickers);
   }
 }

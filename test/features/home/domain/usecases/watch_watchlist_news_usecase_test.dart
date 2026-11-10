@@ -33,9 +33,9 @@ void main() {
   group('WatchWatchlistNewsUseCase', () {
     test('call_repositoryEmitsRight_returnsRightArticles', () async {
       // arrange
-      when(() => mockRepository.watchWatchlistNews(tTickers)).thenAnswer(
-        (_) => Stream.value(Right([tArticle])),
-      );
+      when(
+        () => mockRepository.watchWatchlistNews(tTickers),
+      ).thenAnswer((_) => Stream.value(Right([tArticle])));
 
       // act
       final result = await sut(tTickers).first;
@@ -48,9 +48,9 @@ void main() {
 
     test('call_repositoryEmitsLeft_returnsLeftFailure', () async {
       // arrange
-      when(() => mockRepository.watchWatchlistNews(tTickers)).thenAnswer(
-        (_) => Stream.value(const Left(tFailure)),
-      );
+      when(
+        () => mockRepository.watchWatchlistNews(tTickers),
+      ).thenAnswer((_) => Stream.value(const Left(tFailure)));
 
       // act
       final result = await sut(tTickers).first;

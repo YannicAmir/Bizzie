@@ -67,33 +67,37 @@ void main() {
       expect(result, HomeLoadStatus.empty);
     });
 
-    test('resolveHomeLoadStatus_watchlistSuccessWithFeedsLoading_returnsLoading',
-        () {
-      // act — success is a transient message-only state carrying no companies,
-      // so it maps to loading and never signals data-ready
-      final result = resolveHomeLoadStatus(
-        const WatchlistState.success('done'),
-        const WatchlistPricesState.loading(),
-        const WatchlistNewsState.loading(),
-      );
+    test(
+      'resolveHomeLoadStatus_watchlistSuccessWithFeedsLoading_returnsLoading',
+      () {
+        // act — success is a transient message-only state carrying no companies,
+        // so it maps to loading and never signals data-ready
+        final result = resolveHomeLoadStatus(
+          const WatchlistState.success('done'),
+          const WatchlistPricesState.loading(),
+          const WatchlistNewsState.loading(),
+        );
 
-      // assert
-      expect(result, HomeLoadStatus.loading);
-    });
+        // assert
+        expect(result, HomeLoadStatus.loading);
+      },
+    );
 
-    test('resolveHomeLoadStatus_watchlistSuccessWithFeedsResolved_returnsLoading',
-        () {
-      // act — success does not falsely signal data-ready even when the
-      // secondary feeds have loaded, because it holds no companies payload
-      final result = resolveHomeLoadStatus(
-        const WatchlistState.success('done'),
-        pricesLoaded,
-        newsLoaded,
-      );
+    test(
+      'resolveHomeLoadStatus_watchlistSuccessWithFeedsResolved_returnsLoading',
+      () {
+        // act — success does not falsely signal data-ready even when the
+        // secondary feeds have loaded, because it holds no companies payload
+        final result = resolveHomeLoadStatus(
+          const WatchlistState.success('done'),
+          pricesLoaded,
+          newsLoaded,
+        );
 
-      // assert
-      expect(result, HomeLoadStatus.loading);
-    });
+        // assert
+        expect(result, HomeLoadStatus.loading);
+      },
+    );
 
     // --- Populated watchlist: secondary feeds contribute ---
 

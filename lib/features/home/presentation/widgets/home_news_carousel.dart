@@ -130,9 +130,9 @@ class _HomeNewsCarouselState extends State<HomeNewsCarousel> {
 
     state.mapOrNull(
       loaded: (s) {
-        final index = _sortedFor(s.articles).indexWhere(
-          (article) => article.id == pendingNewsId,
-        );
+        final index = _sortedFor(
+          s.articles,
+        ).indexWhere((article) => article.id == pendingNewsId);
         if (index == -1) return;
         _pendingScrollNewsId = null;
         WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -283,9 +283,6 @@ class _LatestNewsHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(
-      'Latest News',
-      style: Theme.of(context).textTheme.displaySmall,
-    );
+    return Text('Latest News', style: Theme.of(context).textTheme.displaySmall);
   }
 }

@@ -72,8 +72,9 @@ class HomeWatchlistWidget extends StatelessWidget {
                         return CompanyListTile(
                           symbol: company.ticker,
                           name: company.name,
-                          backgroundColor:
-                              Theme.of(context).colorScheme.surface,
+                          backgroundColor: Theme.of(
+                            context,
+                          ).colorScheme.surface,
                           leading: CompanyLogoAvatar(
                             ticker: company.ticker,
                             logoUrl: company.logoUrl,

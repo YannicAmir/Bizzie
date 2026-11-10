@@ -1,8 +1,18 @@
+import 'package:bizzie/app/themes/app_colors.dart';
 import 'package:bizzie/app/themes/app_text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:bizzie/app/themes/app_theme.dart';
 
-enum AppBadgeStyle { neutral, muted, critical, good, warning, issue }
+enum AppBadgeStyle {
+  neutral,
+  muted,
+  critical,
+  good,
+  warning,
+  issue,
+  criticalSolid,
+  goodSolid,
+}
 
 class AppBadge extends StatelessWidget {
   final String text;
@@ -64,6 +74,16 @@ class AppBadge extends StatelessWidget {
         backgroundColor =
             badgeTheme?.issueBackground ?? theme.colorScheme.errorContainer;
         textColor = badgeTheme?.issueText ?? theme.colorScheme.onErrorContainer;
+        break;
+      case AppBadgeStyle.criticalSolid:
+        backgroundColor =
+            badgeTheme?.criticalText ?? theme.colorScheme.onErrorContainer;
+        textColor = AppColors.white;
+        break;
+      case AppBadgeStyle.goodSolid:
+        backgroundColor =
+            badgeTheme?.goodText ?? theme.colorScheme.onPrimaryContainer;
+        textColor = AppColors.white;
         break;
     }
 

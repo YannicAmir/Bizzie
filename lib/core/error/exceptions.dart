@@ -11,3 +11,5 @@ class SubscriptionException implements Exception {
 }
 
 class UserNotSignedInException implements Exception {}
+
+class PermissionDeniedException implements Exception {}

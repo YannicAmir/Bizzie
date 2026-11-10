@@ -140,7 +140,7 @@ return reset(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String ticker,  bool? forceRefresh)?  loadRequested,TResult Function( String ticker)?  stalenessCheckRequested,TResult Function( String ticker)?  tabShown,TResult Function()?  tabHidden,TResult Function()?  appBackgrounded,TResult Function()?  appForegrounded,TResult Function( int? loadTimeMs,  bool? isSuccess,  String? finalTimeframe,  int? chartChangeCount)?  priceAnalyticsUpdated,TResult Function( bool? hasUpcoming,  String? daysAway)?  earningsAnalyticsUpdated,TResult Function()?  reset,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String ticker,  bool? forceRefresh)?  loadRequested,TResult Function( String ticker)?  stalenessCheckRequested,TResult Function( String ticker)?  tabShown,TResult Function()?  tabHidden,TResult Function()?  appBackgrounded,TResult Function()?  appForegrounded,TResult Function( int? loadTimeMs,  bool? isSuccess,  ChartTimeFrame? finalTimeframe,  int? chartChangeCount)?  priceAnalyticsUpdated,TResult Function( bool? hasUpcoming,  int? daysAway)?  earningsAnalyticsUpdated,TResult Function()?  reset,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case LoadRequested() when loadRequested != null:
 return loadRequested(_that.ticker,_that.forceRefresh);case StalenessCheckRequested() when stalenessCheckRequested != null:
@@ -169,7 +169,7 @@ return reset();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String ticker,  bool? forceRefresh)  loadRequested,required TResult Function( String ticker)  stalenessCheckRequested,required TResult Function( String ticker)  tabShown,required TResult Function()  tabHidden,required TResult Function()  appBackgrounded,required TResult Function()  appForegrounded,required TResult Function( int? loadTimeMs,  bool? isSuccess,  String? finalTimeframe,  int? chartChangeCount)  priceAnalyticsUpdated,required TResult Function( bool? hasUpcoming,  String? daysAway)  earningsAnalyticsUpdated,required TResult Function()  reset,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String ticker,  bool? forceRefresh)  loadRequested,required TResult Function( String ticker)  stalenessCheckRequested,required TResult Function( String ticker)  tabShown,required TResult Function()  tabHidden,required TResult Function()  appBackgrounded,required TResult Function()  appForegrounded,required TResult Function( int? loadTimeMs,  bool? isSuccess,  ChartTimeFrame? finalTimeframe,  int? chartChangeCount)  priceAnalyticsUpdated,required TResult Function( bool? hasUpcoming,  int? daysAway)  earningsAnalyticsUpdated,required TResult Function()  reset,}) {final _that = this;
 switch (_that) {
 case LoadRequested():
 return loadRequested(_that.ticker,_that.forceRefresh);case StalenessCheckRequested():
@@ -194,7 +194,7 @@ return reset();}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String ticker,  bool? forceRefresh)?  loadRequested,TResult? Function( String ticker)?  stalenessCheckRequested,TResult? Function( String ticker)?  tabShown,TResult? Function()?  tabHidden,TResult? Function()?  appBackgrounded,TResult? Function()?  appForegrounded,TResult? Function( int? loadTimeMs,  bool? isSuccess,  String? finalTimeframe,  int? chartChangeCount)?  priceAnalyticsUpdated,TResult? Function( bool? hasUpcoming,  String? daysAway)?  earningsAnalyticsUpdated,TResult? Function()?  reset,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String ticker,  bool? forceRefresh)?  loadRequested,TResult? Function( String ticker)?  stalenessCheckRequested,TResult? Function( String ticker)?  tabShown,TResult? Function()?  tabHidden,TResult? Function()?  appBackgrounded,TResult? Function()?  appForegrounded,TResult? Function( int? loadTimeMs,  bool? isSuccess,  ChartTimeFrame? finalTimeframe,  int? chartChangeCount)?  priceAnalyticsUpdated,TResult? Function( bool? hasUpcoming,  int? daysAway)?  earningsAnalyticsUpdated,TResult? Function()?  reset,}) {final _that = this;
 switch (_that) {
 case LoadRequested() when loadRequested != null:
 return loadRequested(_that.ticker,_that.forceRefresh);case StalenessCheckRequested() when stalenessCheckRequested != null:
@@ -518,7 +518,7 @@ class PriceAnalyticsUpdated implements CompanySecurityEvent {
 
  final  int? loadTimeMs;
  final  bool? isSuccess;
- final  String? finalTimeframe;
+ final  ChartTimeFrame? finalTimeframe;
  final  int? chartChangeCount;
 
 /// Create a copy of CompanySecurityEvent
@@ -551,7 +551,7 @@ abstract mixin class $PriceAnalyticsUpdatedCopyWith<$Res> implements $CompanySec
   factory $PriceAnalyticsUpdatedCopyWith(PriceAnalyticsUpdated value, $Res Function(PriceAnalyticsUpdated) _then) = _$PriceAnalyticsUpdatedCopyWithImpl;
 @useResult
 $Res call({
- int? loadTimeMs, bool? isSuccess, String? finalTimeframe, int? chartChangeCount
+ int? loadTimeMs, bool? isSuccess, ChartTimeFrame? finalTimeframe, int? chartChangeCount
 });
 
 
@@ -573,7 +573,7 @@ class _$PriceAnalyticsUpdatedCopyWithImpl<$Res>
 loadTimeMs: freezed == loadTimeMs ? _self.loadTimeMs : loadTimeMs // ignore: cast_nullable_to_non_nullable
 as int?,isSuccess: freezed == isSuccess ? _self.isSuccess : isSuccess // ignore: cast_nullable_to_non_nullable
 as bool?,finalTimeframe: freezed == finalTimeframe ? _self.finalTimeframe : finalTimeframe // ignore: cast_nullable_to_non_nullable
-as String?,chartChangeCount: freezed == chartChangeCount ? _self.chartChangeCount : chartChangeCount // ignore: cast_nullable_to_non_nullable
+as ChartTimeFrame?,chartChangeCount: freezed == chartChangeCount ? _self.chartChangeCount : chartChangeCount // ignore: cast_nullable_to_non_nullable
 as int?,
   ));
 }
@@ -589,7 +589,7 @@ class EarningsAnalyticsUpdated implements CompanySecurityEvent {
   
 
  final  bool? hasUpcoming;
- final  String? daysAway;
+ final  int? daysAway;
 
 /// Create a copy of CompanySecurityEvent
 /// with the given fields replaced by the non-null parameter values.
@@ -621,7 +621,7 @@ abstract mixin class $EarningsAnalyticsUpdatedCopyWith<$Res> implements $Company
   factory $EarningsAnalyticsUpdatedCopyWith(EarningsAnalyticsUpdated value, $Res Function(EarningsAnalyticsUpdated) _then) = _$EarningsAnalyticsUpdatedCopyWithImpl;
 @useResult
 $Res call({
- bool? hasUpcoming, String? daysAway
+ bool? hasUpcoming, int? daysAway
 });
 
 
@@ -642,7 +642,7 @@ class _$EarningsAnalyticsUpdatedCopyWithImpl<$Res>
   return _then(EarningsAnalyticsUpdated(
 hasUpcoming: freezed == hasUpcoming ? _self.hasUpcoming : hasUpcoming // ignore: cast_nullable_to_non_nullable
 as bool?,daysAway: freezed == daysAway ? _self.daysAway : daysAway // ignore: cast_nullable_to_non_nullable
-as String?,
+as int?,
   ));
 }
 

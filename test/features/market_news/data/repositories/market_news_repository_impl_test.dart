@@ -1,3 +1,4 @@
+import 'package:bizzie/core/error/exceptions.dart';
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/features/market_news/data/dtos/market_news_dto.dart';
 import 'package:bizzie/features/market_news/data/interfaces/i_market_news_remote_datasource.dart';
@@ -58,39 +59,36 @@ void main() {
         },
       );
 
-      test(
-        'watchMarketNews_manyArticles_mapsAllPreservingOrder',
-        () async {
-          // arrange
-          final dtos = List.generate(
-            15,
-            (index) => MarketNewsDto(
-              id: 'news_$index',
-              title: 'Article $index',
-              site: 'reuters.com',
-              publisher: 'Reuters',
-              url: 'https://reuters.com/$index',
-              publishedAt: DateTime.utc(
-                2026,
-                7,
-                15,
-              ).add(Duration(minutes: index)),
-            ),
-          );
-          when(
-            () => mockRemoteDataSource.getMarketNewsStream(),
-          ).thenAnswer((_) => Stream.value(dtos));
+      test('watchMarketNews_manyArticles_mapsAllPreservingOrder', () async {
+        // arrange
+        final dtos = List.generate(
+          15,
+          (index) => MarketNewsDto(
+            id: 'news_$index',
+            title: 'Article $index',
+            site: 'reuters.com',
+            publisher: 'Reuters',
+            url: 'https://reuters.com/$index',
+            publishedAt: DateTime.utc(
+              2026,
+              7,
+              15,
+            ).add(Duration(minutes: index)),
+          ),
+        );
+        when(
+          () => mockRemoteDataSource.getMarketNewsStream(),
+        ).thenAnswer((_) => Stream.value(dtos));
 
-          // act
-          final result = await sut.watchMarketNews().first;
+        // act
+        final result = await sut.watchMarketNews().first;
 
-          // assert
-          final articles = result.getOrElse(() => []);
-          expect(articles.length, 15);
-          expect(articles.first.title, 'Article 0');
-          expect(articles.last.title, 'Article 14');
-        },
-      );
+        // assert
+        final articles = result.getOrElse(() => []);
+        expect(articles.length, 15);
+        expect(articles.first.title, 'Article 0');
+        expect(articles.last.title, 'Article 14');
+      });
 
       test(
         'watchMarketNews_datasourceStreamErrors_returnsLeftServerFailure',
@@ -107,6 +105,25 @@ void main() {
           expect(result.isLeft(), isTrue);
           result.fold(
             (failure) => expect(failure, isA<Failure>()),
+            (_) => fail('Expected Left'),
+          );
+        },
+      );
+
+      test(
+        'watchMarketNews_datasourcePermissionDenied_returnsLeftPermissionFailure',
+        () async {
+          // arrange
+          when(
+            () => mockRemoteDataSource.getMarketNewsStream(),
+          ).thenAnswer((_) => Stream.error(PermissionDeniedException()));
+
+          // act
+          final result = await sut.watchMarketNews().first;
+
+          // assert
+          result.fold(
+            (failure) => expect(failure, const Failure.permission()),
             (_) => fail('Expected Left'),
           );
         },

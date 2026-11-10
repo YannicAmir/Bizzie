@@ -300,16 +300,24 @@ import '../features/company_profile/roe/presentation/bloc/company_roe_bloc.dart'
     as _i1033;
 import '../features/company_profile/security/data/datasources/security_firestore_data_source.dart'
     as _i595;
+import '../features/company_profile/security/data/datasources/security_quote_remote_datasource.dart'
+    as _i440;
 import '../features/company_profile/security/data/datasources/security_remote_data_source.dart'
     as _i481;
 import '../features/company_profile/security/data/interfaces/i_security_firestore_datasource.dart'
     as _i486;
+import '../features/company_profile/security/data/interfaces/i_security_quote_remote_datasource.dart'
+    as _i424;
 import '../features/company_profile/security/data/repositories/price_repository_impl.dart'
     as _i952;
+import '../features/company_profile/security/data/repositories/security_quote_repository_impl.dart'
+    as _i755;
 import '../features/company_profile/security/data/repositories/security_repository_impl.dart'
     as _i503;
 import '../features/company_profile/security/domain/interfaces/i_price_repository.dart'
     as _i876;
+import '../features/company_profile/security/domain/interfaces/i_security_quote_repository.dart'
+    as _i620;
 import '../features/company_profile/security/domain/interfaces/i_security_repository.dart'
     as _i158;
 import '../features/company_profile/security/domain/usecases/get_historical_eod_prices_use_case.dart'
@@ -320,6 +328,8 @@ import '../features/company_profile/security/domain/usecases/get_security_detail
     as _i190;
 import '../features/company_profile/security/domain/usecases/get_upcoming_earnings_usecase.dart'
     as _i1055;
+import '../features/company_profile/security/domain/usecases/watch_security_quote_usecase.dart'
+    as _i726;
 import '../features/company_profile/security/presentation/analytics/security_tab_analytics.dart'
     as _i258;
 import '../features/company_profile/security/presentation/bloc/company_security_bloc.dart'
@@ -328,6 +338,8 @@ import '../features/company_profile/security/presentation/bloc/historical_price_
     as _i342;
 import '../features/company_profile/security/presentation/bloc/price_chart/price_chart_bloc.dart'
     as _i682;
+import '../features/company_profile/security/presentation/bloc/security_quote/security_quote_bloc.dart'
+    as _i212;
 import '../features/company_profile/security/presentation/bloc/upcoming_earnings/upcoming_earnings_bloc.dart'
     as _i73;
 import '../features/company_profile/segments/data/datasources/segments_firestore_datasource.dart'
@@ -435,10 +447,10 @@ import '../features/home/domain/interfaces/i_watchlist_news_repository.dart'
     as _i851;
 import '../features/home/domain/interfaces/i_watchlist_prices_repository.dart'
     as _i1046;
-import '../features/home/domain/usecases/get_watchlist_prices_usecase.dart'
-    as _i413;
 import '../features/home/domain/usecases/watch_watchlist_news_usecase.dart'
     as _i510;
+import '../features/home/domain/usecases/watch_watchlist_prices_usecase.dart'
+    as _i99;
 import '../features/home/presentation/analytics/home_analytics.dart' as _i32;
 import '../features/home/presentation/bloc/home_bloc.dart' as _i824;
 import '../features/home/presentation/bloc/watchlist_news/watchlist_news_bloc.dart'
@@ -1068,11 +1080,19 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i826.IFeedbackRepository>(
       () => _i326.FeedbackRepositoryImpl(gh<_i291.IFeedbackRemoteDataSource>()),
     );
+    gh.factory<_i424.ISecurityQuoteRemoteDataSource>(
+      () => _i440.SecurityQuoteRemoteDataSource(gh<_i52.FirestoreService>()),
+    );
     gh.lazySingleton<_i622.INotificationRepository>(
       () => _i648.NotificationRepositoryImpl(gh<_i640.FcmRemoteDataSource>()),
     );
     gh.factory<_i784.IWatchlistPricesRemoteDataSource>(
       () => _i831.WatchlistPricesRemoteDataSource(gh<_i52.FirestoreService>()),
+    );
+    gh.lazySingleton<_i620.ISecurityQuoteRepository>(
+      () => _i755.SecurityQuoteRepositoryImpl(
+        gh<_i424.ISecurityQuoteRemoteDataSource>(),
+      ),
     );
     gh.lazySingleton<_i851.IWatchlistNewsRepository>(
       () => _i564.WatchlistNewsRepositoryImpl(
@@ -1081,6 +1101,10 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i758.IChatRatingRemoteDataSource>(
       () => _i750.ChatRatingRemoteDataSource(gh<_i52.FirestoreService>()),
+    );
+    gh.lazySingleton<_i726.WatchSecurityQuoteUseCase>(
+      () =>
+          _i726.WatchSecurityQuoteUseCase(gh<_i620.ISecurityQuoteRepository>()),
     );
     gh.factory<_i6.ISelectBrandsRemoteDataSource>(
       () => _i6.SelectBrandsRemoteDataSource(gh<_i52.FirestoreService>()),
@@ -1249,6 +1273,12 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i473.DividendsRemoteDataSourceImpl(
         gh<_i361.Dio>(instanceName: 'FmpDio'),
         gh<_i937.IConfigService>(),
+      ),
+    );
+    gh.factory<_i212.SecurityQuoteBloc>(
+      () => _i212.SecurityQuoteBloc(
+        gh<_i726.WatchSecurityQuoteUseCase>(),
+        gh<_i427.GetAuthStream>(),
       ),
     );
     gh.factory<_i69.GetFcmToken>(
@@ -1455,8 +1485,8 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i501.IVertexAIProvider>(),
       ),
     );
-    gh.lazySingleton<_i413.GetWatchlistPricesUseCase>(
-      () => _i413.GetWatchlistPricesUseCase(
+    gh.lazySingleton<_i99.WatchWatchlistPricesUseCase>(
+      () => _i99.WatchWatchlistPricesUseCase(
         gh<_i1046.IWatchlistPricesRepository>(),
       ),
     );
@@ -1586,14 +1616,6 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i925.UpdateFavoriteSectorUseCase(
         gh<_i615.IUserRepository>(),
         gh<_i685.IAuthRepository>(),
-      ),
-    );
-    gh.factory<_i307.WatchlistPricesBloc>(
-      () => _i307.WatchlistPricesBloc(
-        gh<_i413.GetWatchlistPricesUseCase>(),
-        gh<_i759.GetWatchlistUseCase>(),
-        gh<_i937.IConfigService>(),
-        gh<_i427.GetAuthStream>(),
       ),
     );
     gh.lazySingleton<_i608.IAiProductSearchRepository>(
@@ -1805,6 +1827,14 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i912.GetPfcfRatioUseCase(
         gh<_i1019.IPfcfRatioRepository>(),
         gh<_i878.PfcfRatioStatsService>(),
+      ),
+    );
+    gh.factory<_i307.WatchlistPricesBloc>(
+      () => _i307.WatchlistPricesBloc(
+        gh<_i99.WatchWatchlistPricesUseCase>(),
+        gh<_i759.GetWatchlistUseCase>(),
+        gh<_i937.IConfigService>(),
+        gh<_i427.GetAuthStream>(),
       ),
     );
     gh.factory<_i874.CompleteOnboardingUseCase>(

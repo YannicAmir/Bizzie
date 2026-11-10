@@ -1,8 +1,8 @@
-import 'package:bizzie/app/themes/app_colors.dart';
 import 'package:bizzie/app/themes/app_text_styles.dart';
 import 'package:bizzie/app/themes/app_theme.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:bizzie/shared/models/chart_data_point.dart';
+import 'package:bizzie/shared/utils/badge_theme_extensions.dart';
 import 'package:bizzie/shared/widgets/charts/bizzie_chart_tooltip.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -55,8 +55,8 @@ class BizzieLineChart extends StatelessWidget {
     final effectiveLineColor =
         lineColor ??
         (isPositive
-            ? (badgeTheme?.goodText ?? AppColors.goodText)
-            : (badgeTheme?.criticalText ?? AppColors.criticalText));
+            ? badgeTheme.goodTextOrDefault
+            : badgeTheme.criticalTextOrDefault);
 
     final calculatedMinY =
         minY ?? data.map((e) => e.value).reduce((a, b) => a < b ? a : b);

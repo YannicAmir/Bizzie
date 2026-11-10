@@ -1,6 +1,7 @@
 import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:bizzie/core/interfaces/i_analytics_service.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
+import 'package:bizzie/features/company_profile/shared/domain/enums/chart_time_frame.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/analytics/base_analytics.dart';
 import 'package:bizzie/shared/utils/analytics_utils.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -35,6 +36,8 @@ class SecurityTabAnalytics
   static const _kParamIsFinal = 'is_final';
   static const _kParamTimestamp = 'timestamp';
 
+  static const _kDefaultPriceTimeframe = '1D';
+
   @override
   Future<void> logViewSummary(
     SecurityTabViewState state, {
@@ -56,7 +59,7 @@ class SecurityTabAnalytics
         _kParamEarningsDaysAway: state.earningsDaysAway!,
       _kParamPriceChartChangeCount: state.priceChartChangeCount,
       _kParamFinalPriceTimeframe: AnalyticsUtils.truncate(
-        state.finalPriceTimeframe,
+        state.finalPriceTimeframe?.name ?? _kDefaultPriceTimeframe,
       ),
       _kParamSecurityType: AnalyticsUtils.truncate(state.securityType),
       _kParamIsFinal: isFinal,
@@ -90,9 +93,9 @@ abstract class SecurityTabViewState
     CompanyProfileDataOrigin? dataSource,
     @Default(0) int viewDurationSec,
     @Default(false) bool hasUpcomingEarnings,
-    String? earningsDaysAway,
+    int? earningsDaysAway,
     @Default(0) int priceChartChangeCount,
-    @Default('1D') String finalPriceTimeframe,
+    ChartTimeFrame? finalPriceTimeframe,
   }) = _SecurityTabViewState;
 
   const SecurityTabViewState._();

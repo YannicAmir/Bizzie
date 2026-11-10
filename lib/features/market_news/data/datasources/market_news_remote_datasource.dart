@@ -1,4 +1,5 @@
 import 'package:bizzie/core/constants/firestore_constants.dart';
+import 'package:bizzie/core/error/exceptions.dart';
 import 'package:bizzie/core/interfaces/i_time_provider.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:bizzie/features/market_news/data/dtos/market_news_dto.dart';
@@ -42,9 +43,9 @@ class MarketNewsRemoteDataSource implements IMarketNewsRemoteDataSource {
             _logger.warning(
               'Market news stream permission denied (expected on logout)',
             );
-          } else {
-            _logger.severe('Error in market news stream', e, s);
+            Error.throwWithStackTrace(PermissionDeniedException(), s);
           }
+          _logger.severe('Error in market news stream', e, s);
           Error.throwWithStackTrace(e, s);
         });
   }

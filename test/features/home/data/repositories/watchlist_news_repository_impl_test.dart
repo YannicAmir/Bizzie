@@ -1,3 +1,4 @@
+import 'package:bizzie/core/error/exceptions.dart';
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/features/home/data/dtos/watchlist_news_dto.dart';
 import 'package:bizzie/features/home/data/interfaces/i_watchlist_news_remote_datasource.dart';
@@ -53,44 +54,43 @@ void main() {
           // assert — the repository is a pure mapper and preserves the
           // datasource order; display ordering is applied in presentation.
           expect(result.isRight(), isTrue);
-          expect(
-            result.getOrElse(() => []),
-            [tNewerDto.toDomain(), tOlderDto.toDomain()],
-          );
+          expect(result.getOrElse(() => []), [
+            tNewerDto.toDomain(),
+            tOlderDto.toDomain(),
+          ]);
         },
       );
 
-      test(
-        'watchWatchlistNews_manyArticles_mapsAllPreservingOrder',
-        () async {
-          // arrange
-          final dtos = List.generate(
-            12,
-            (index) => WatchlistNewsDto(
-              id: 'AXP_article_$index',
-              symbol: 'AXP',
-              title: 'Article $index',
-              site: 'zacks.com',
-              url: 'https://example.com/$index',
-              publishedAt: DateTime.utc(2026, 7, 15).add(
-                Duration(minutes: index),
-              ),
-            ),
-          );
-          when(
-            () => mockRemoteDataSource.getWatchlistNewsStream(tTickers),
-          ).thenAnswer((_) => Stream.value(dtos));
+      test('watchWatchlistNews_manyArticles_mapsAllPreservingOrder', () async {
+        // arrange
+        final dtos = List.generate(
+          12,
+          (index) => WatchlistNewsDto(
+            id: 'AXP_article_$index',
+            symbol: 'AXP',
+            title: 'Article $index',
+            site: 'zacks.com',
+            url: 'https://example.com/$index',
+            publishedAt: DateTime.utc(
+              2026,
+              7,
+              15,
+            ).add(Duration(minutes: index)),
+          ),
+        );
+        when(
+          () => mockRemoteDataSource.getWatchlistNewsStream(tTickers),
+        ).thenAnswer((_) => Stream.value(dtos));
 
-          // act
-          final result = await sut.watchWatchlistNews(tTickers).first;
+        // act
+        final result = await sut.watchWatchlistNews(tTickers).first;
 
-          // assert
-          final articles = result.getOrElse(() => []);
-          expect(articles.length, 12);
-          expect(articles.first.title, 'Article 0');
-          expect(articles.last.title, 'Article 11');
-        },
-      );
+        // assert
+        final articles = result.getOrElse(() => []);
+        expect(articles.length, 12);
+        expect(articles.first.title, 'Article 0');
+        expect(articles.last.title, 'Article 11');
+      });
 
       test(
         'watchWatchlistNews_datasourceStreamErrors_returnsLeftServerFailure',
@@ -107,6 +107,25 @@ void main() {
           expect(result.isLeft(), isTrue);
           result.fold(
             (failure) => expect(failure, isA<Failure>()),
+            (_) => fail('Expected Left'),
+          );
+        },
+      );
+
+      test(
+        'watchWatchlistNews_datasourcePermissionDenied_returnsLeftPermissionFailure',
+        () async {
+          // arrange
+          when(
+            () => mockRemoteDataSource.getWatchlistNewsStream(tTickers),
+          ).thenAnswer((_) => Stream.error(PermissionDeniedException()));
+
+          // act
+          final result = await sut.watchWatchlistNews(tTickers).first;
+
+          // assert
+          result.fold(
+            (failure) => expect(failure, const Failure.permission()),
             (_) => fail('Expected Left'),
           );
         },

@@ -1,3 +1,4 @@
+import 'package:bizzie/features/company_profile/shared/domain/enums/chart_time_frame.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'company_security_event.freezed.dart';
@@ -20,13 +21,13 @@ sealed class CompanySecurityEvent with _$CompanySecurityEvent {
   const factory CompanySecurityEvent.priceAnalyticsUpdated({
     int? loadTimeMs,
     bool? isSuccess,
-    String? finalTimeframe,
+    ChartTimeFrame? finalTimeframe,
     int? chartChangeCount,
   }) = PriceAnalyticsUpdated;
 
   const factory CompanySecurityEvent.earningsAnalyticsUpdated({
     bool? hasUpcoming,
-    String? daysAway,
+    int? daysAway,
   }) = EarningsAnalyticsUpdated;
 
   const factory CompanySecurityEvent.reset() = SecurityReset;

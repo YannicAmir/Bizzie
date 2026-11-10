@@ -21,3 +21,15 @@ extension StringCaseExtension on String {
     return sector?.displayName ?? toTitleCase();
   }
 }
+
+extension StringPrefixExtension on String {
+  String commonPrefixWith(String other) {
+    var length = 0;
+    while (length < this.length &&
+        length < other.length &&
+        this[length] == other[length]) {
+      length++;
+    }
+    return substring(0, length);
+  }
+}

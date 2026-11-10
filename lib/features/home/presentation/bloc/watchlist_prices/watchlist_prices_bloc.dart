@@ -8,7 +8,7 @@ import 'package:bizzie/features/auth/domain/models/user_model.dart';
 import 'package:bizzie/features/auth/domain/usecases/get_auth_stream.dart';
 import 'package:bizzie/features/auth/presentation/bloc/auth_session_reset_mixin.dart';
 import 'package:bizzie/features/home/domain/models/watchlist_stock_price.dart';
-import 'package:bizzie/features/home/domain/usecases/get_watchlist_prices_usecase.dart';
+import 'package:bizzie/features/home/domain/usecases/watch_watchlist_prices_usecase.dart';
 import 'package:bizzie/features/watchlist/domain/usecases/get_watchlist_usecase.dart';
 import 'package:bloc/bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
@@ -25,7 +25,7 @@ final _logger = BizzieLogger('WatchlistPricesBloc');
 class WatchlistPricesBloc
     extends Bloc<WatchlistPricesEvent, WatchlistPricesState>
     with AuthSessionResetMixin<WatchlistPricesEvent, WatchlistPricesState> {
-  final GetWatchlistPricesUseCase _getWatchlistPrices;
+  final WatchWatchlistPricesUseCase _watchWatchlistPrices;
   final GetWatchlistUseCase _getWatchlist;
   final IConfigService _configService;
 
@@ -36,22 +36,32 @@ class WatchlistPricesBloc
   Set<String>? _lastRequestedTickers;
 
   WatchlistPricesBloc(
-    this._getWatchlistPrices,
+    this._watchWatchlistPrices,
     this._getWatchlist,
     this._configService,
     GetAuthStream getAuthStream,
   ) : super(const WatchlistPricesState.initial()) {
-    on<LoadRequested>(_onLoadRequested, transformer: _distinctRestartable());
-    on<RefreshRequested>(_onRefreshRequested, transformer: restartable());
-    on<Reset>(_onReset);
+    on<WatchlistPricesEvent>(
+      (event, emit) => event.map(
+        loadRequested: (e) => _onLoadRequested(e, emit),
+        refreshRequested: (e) => _onRefreshRequested(e, emit),
+        reset: (e) async => _onReset(e, emit),
+      ),
+      transformer: _distinctRestartable(),
+    );
     resetOnSessionEnd(getAuthStream, const WatchlistPricesEvent.reset());
     _authSubscription = getAuthStream().listen(_onAuthChanged);
   }
- 
-  EventTransformer<LoadRequested> _distinctRestartable() {
-    return (events, mapper) =>
-        restartable<LoadRequested>()(events.where(_isNewTickerSet), mapper);
+
+  EventTransformer<WatchlistPricesEvent> _distinctRestartable() {
+    return (events, mapper) => restartable<WatchlistPricesEvent>()(
+      events.where(_isNewRequest),
+      mapper,
+    );
   }
+
+  bool _isNewRequest(WatchlistPricesEvent event) =>
+      event.maybeMap(loadRequested: _isNewTickerSet, orElse: () => true);
 
   bool _isNewTickerSet(LoadRequested event) {
     final tickers = event.tickers.toSet();
@@ -97,7 +107,7 @@ class WatchlistPricesBloc
     Emitter<WatchlistPricesState> emit,
   ) async {
     _currentTickers = event.tickers;
-    await _loadPrices(event.tickers, emit);
+    await _watchPrices(event.tickers, emit);
   }
 
   Future<void> _onRefreshRequested(
@@ -105,10 +115,10 @@ class WatchlistPricesBloc
     Emitter<WatchlistPricesState> emit,
   ) async {
     if (_currentTickers.isEmpty) return;
-    await _loadPrices(_currentTickers, emit);
+    await _watchPrices(_currentTickers, emit);
   }
 
-  Future<void> _loadPrices(
+  Future<void> _watchPrices(
     List<String> tickers,
     Emitter<WatchlistPricesState> emit,
   ) async {
@@ -117,31 +127,25 @@ class WatchlistPricesBloc
       return;
     }
 
-    _logger.info('Loading stock prices for ${tickers.length} tickers');
+    _logger.info('Watching stock prices for ${tickers.length} tickers');
     if (!_hasLoadedPrices) emit(const WatchlistPricesState.loading());
 
-    final result = await _getWatchlistPrices(tickers);
-
-    if (_tickersAreStale(tickers)) return;
-
-    result.fold(
-      (failure) => _emitLoadFailure(failure, emit),
-      (prices) => emit(WatchlistPricesState.loaded(_toPriceMap(prices))),
+    await emit.forEach<Either<Failure, List<WatchlistStockPrice>>>(
+      _watchWatchlistPrices(tickers),
+      onData: (result) => result.fold(
+        _stateForFailure,
+        (prices) => WatchlistPricesState.loaded(_toPriceMap(prices)),
+      ),
+      onError: (error, stack) {
+        _logger.severe('Watchlist prices stream error', error, stack);
+        return _stateForFailure(Failure.server(error.toString()));
+      },
     );
   }
 
-  bool _tickersAreStale(List<String> loadedTickers) =>
-      !const SetEquality<String>().equals(
-        loadedTickers.toSet(),
-        _currentTickers.toSet(),
-      );
-
-  void _emitLoadFailure(
-    Failure failure,
-    Emitter<WatchlistPricesState> emit,
-  ) {
+  WatchlistPricesState _stateForFailure(Failure failure) {
     _logger.warning('Failed to load stock prices: ${failure.errorMessage}');
-    if (!_hasLoadedPrices) emit(WatchlistPricesState.failure(failure));
+    return _hasLoadedPrices ? state : WatchlistPricesState.failure(failure);
   }
 
   void _onReset(Reset event, Emitter<WatchlistPricesState> emit) {

@@ -1,19 +1,27 @@
 import 'package:bizzie/app/themes/app_assets.dart';
-import 'package:bizzie/app/themes/app_colors.dart';
 import 'package:bizzie/app/themes/app_text_styles.dart';
+import 'package:bizzie/app/themes/app_theme.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
+import 'package:bizzie/shared/utils/badge_theme_extensions.dart';
 import 'package:bizzie/shared/utils/bizzie_date_formatter.dart';
+import 'package:bizzie/shared/widgets/animations/price_tick_flash.dart';
 import 'package:flutter/material.dart';
 
+const double _priceToChangeSpacing = 12;
+const double _arrowToChangeSpacing = 4;
+const double _changeArrowIconSize = 20;
+
 class PriceDisplay extends StatelessWidget {
-  final String price;
+  final String formattedPrice;
+  final double? price;
   final String change;
   final bool isPositive;
   final String lastUpdated;
 
   const PriceDisplay({
     super.key,
-    required this.price,
+    required this.formattedPrice,
+    this.price,
     required this.change,
     required this.isPositive,
     required this.lastUpdated,
@@ -28,8 +36,13 @@ class PriceDisplay extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.baseline,
           textBaseline: TextBaseline.alphabetic,
           children: [
-            Text(price, style: AppTextStyles.h3),
-            const SizedBox(width: 12),
+            PriceTickFlash(
+              price: price,
+              text: formattedPrice,
+              builder: (context, tick) =>
+                  PriceTickText(tick: tick, style: AppTextStyles.h3),
+            ),
+            const SizedBox(width: _priceToChangeSpacing),
             _PriceChangeIndicator(change: change, isPositive: isPositive),
           ],
         ),
@@ -48,19 +61,22 @@ class _PriceChangeIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = isPositive ? AppColors.goodText : AppColors.criticalText;
+    final badgeTheme = Theme.of(context).extension<BadgeThemeExtension>();
+    final color = isPositive
+        ? badgeTheme.goodTextOrDefault
+        : badgeTheme.criticalTextOrDefault;
     return Row(
       children: [
         Transform.flip(
           flipY: !isPositive,
           child: Image.asset(
             AppAssets.arrowUpIcon,
-            width: 20,
-            height: 20,
+            width: _changeArrowIconSize,
+            height: _changeArrowIconSize,
             color: color,
           ),
         ),
-        const SizedBox(width: 4),
+        const SizedBox(width: _arrowToChangeSpacing),
         Text(change, style: AppTextStyles.bodyLargeBold.copyWith(color: color)),
       ],
     );
