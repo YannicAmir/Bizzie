@@ -86,7 +86,7 @@ extension FailurePatterns on Failure {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( ServerFailure value)?  server,TResult Function( CacheFailure value)?  cache,TResult Function( PaymentFailure value)?  payment,TResult Function( CancelFailure value)?  cancel,TResult Function( UserNotFoundFailure value)?  userNotFound,TResult Function( PermissionFailure value)?  permission,TResult Function( PasswordMismatchFailure value)?  passwordMismatch,TResult Function( ReauthenticationFailure value)?  reauthentication,TResult Function( RateLimitFailure value)?  rateLimit,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( ServerFailure value)?  server,TResult Function( CacheFailure value)?  cache,TResult Function( PaymentFailure value)?  payment,TResult Function( CancelFailure value)?  cancel,TResult Function( UserNotFoundFailure value)?  userNotFound,TResult Function( PermissionFailure value)?  permission,TResult Function( PasswordMismatchFailure value)?  passwordMismatch,TResult Function( ReauthenticationFailure value)?  reauthentication,TResult Function( RateLimitFailure value)?  rateLimit,TResult Function( CredentialAlreadyInUseFailure value)?  credentialAlreadyInUse,TResult Function( EmailAlreadyInUseFailure value)?  emailAlreadyInUse,TResult Function( ProviderAlreadyLinkedFailure value)?  providerAlreadyLinked,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case ServerFailure() when server != null:
@@ -98,7 +98,10 @@ return userNotFound(_that);case PermissionFailure() when permission != null:
 return permission(_that);case PasswordMismatchFailure() when passwordMismatch != null:
 return passwordMismatch(_that);case ReauthenticationFailure() when reauthentication != null:
 return reauthentication(_that);case RateLimitFailure() when rateLimit != null:
-return rateLimit(_that);case _:
+return rateLimit(_that);case CredentialAlreadyInUseFailure() when credentialAlreadyInUse != null:
+return credentialAlreadyInUse(_that);case EmailAlreadyInUseFailure() when emailAlreadyInUse != null:
+return emailAlreadyInUse(_that);case ProviderAlreadyLinkedFailure() when providerAlreadyLinked != null:
+return providerAlreadyLinked(_that);case _:
   return orElse();
 
 }
@@ -116,7 +119,7 @@ return rateLimit(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( ServerFailure value)  server,required TResult Function( CacheFailure value)  cache,required TResult Function( PaymentFailure value)  payment,required TResult Function( CancelFailure value)  cancel,required TResult Function( UserNotFoundFailure value)  userNotFound,required TResult Function( PermissionFailure value)  permission,required TResult Function( PasswordMismatchFailure value)  passwordMismatch,required TResult Function( ReauthenticationFailure value)  reauthentication,required TResult Function( RateLimitFailure value)  rateLimit,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( ServerFailure value)  server,required TResult Function( CacheFailure value)  cache,required TResult Function( PaymentFailure value)  payment,required TResult Function( CancelFailure value)  cancel,required TResult Function( UserNotFoundFailure value)  userNotFound,required TResult Function( PermissionFailure value)  permission,required TResult Function( PasswordMismatchFailure value)  passwordMismatch,required TResult Function( ReauthenticationFailure value)  reauthentication,required TResult Function( RateLimitFailure value)  rateLimit,required TResult Function( CredentialAlreadyInUseFailure value)  credentialAlreadyInUse,required TResult Function( EmailAlreadyInUseFailure value)  emailAlreadyInUse,required TResult Function( ProviderAlreadyLinkedFailure value)  providerAlreadyLinked,}){
 final _that = this;
 switch (_that) {
 case ServerFailure():
@@ -128,7 +131,10 @@ return userNotFound(_that);case PermissionFailure():
 return permission(_that);case PasswordMismatchFailure():
 return passwordMismatch(_that);case ReauthenticationFailure():
 return reauthentication(_that);case RateLimitFailure():
-return rateLimit(_that);}
+return rateLimit(_that);case CredentialAlreadyInUseFailure():
+return credentialAlreadyInUse(_that);case EmailAlreadyInUseFailure():
+return emailAlreadyInUse(_that);case ProviderAlreadyLinkedFailure():
+return providerAlreadyLinked(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -142,7 +148,7 @@ return rateLimit(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( ServerFailure value)?  server,TResult? Function( CacheFailure value)?  cache,TResult? Function( PaymentFailure value)?  payment,TResult? Function( CancelFailure value)?  cancel,TResult? Function( UserNotFoundFailure value)?  userNotFound,TResult? Function( PermissionFailure value)?  permission,TResult? Function( PasswordMismatchFailure value)?  passwordMismatch,TResult? Function( ReauthenticationFailure value)?  reauthentication,TResult? Function( RateLimitFailure value)?  rateLimit,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( ServerFailure value)?  server,TResult? Function( CacheFailure value)?  cache,TResult? Function( PaymentFailure value)?  payment,TResult? Function( CancelFailure value)?  cancel,TResult? Function( UserNotFoundFailure value)?  userNotFound,TResult? Function( PermissionFailure value)?  permission,TResult? Function( PasswordMismatchFailure value)?  passwordMismatch,TResult? Function( ReauthenticationFailure value)?  reauthentication,TResult? Function( RateLimitFailure value)?  rateLimit,TResult? Function( CredentialAlreadyInUseFailure value)?  credentialAlreadyInUse,TResult? Function( EmailAlreadyInUseFailure value)?  emailAlreadyInUse,TResult? Function( ProviderAlreadyLinkedFailure value)?  providerAlreadyLinked,}){
 final _that = this;
 switch (_that) {
 case ServerFailure() when server != null:
@@ -154,7 +160,10 @@ return userNotFound(_that);case PermissionFailure() when permission != null:
 return permission(_that);case PasswordMismatchFailure() when passwordMismatch != null:
 return passwordMismatch(_that);case ReauthenticationFailure() when reauthentication != null:
 return reauthentication(_that);case RateLimitFailure() when rateLimit != null:
-return rateLimit(_that);case _:
+return rateLimit(_that);case CredentialAlreadyInUseFailure() when credentialAlreadyInUse != null:
+return credentialAlreadyInUse(_that);case EmailAlreadyInUseFailure() when emailAlreadyInUse != null:
+return emailAlreadyInUse(_that);case ProviderAlreadyLinkedFailure() when providerAlreadyLinked != null:
+return providerAlreadyLinked(_that);case _:
   return null;
 
 }
@@ -171,7 +180,7 @@ return rateLimit(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String message)?  server,TResult Function( String message)?  cache,TResult Function( String message)?  payment,TResult Function( String message)?  cancel,TResult Function( String message)?  userNotFound,TResult Function( String message)?  permission,TResult Function( String message)?  passwordMismatch,TResult Function( String message)?  reauthentication,TResult Function( int retryAfterSeconds,  String message)?  rateLimit,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String message)?  server,TResult Function( String message)?  cache,TResult Function( String message)?  payment,TResult Function( String message)?  cancel,TResult Function( String message)?  userNotFound,TResult Function( String message)?  permission,TResult Function( String message)?  passwordMismatch,TResult Function( String message)?  reauthentication,TResult Function( int retryAfterSeconds,  String message)?  rateLimit,TResult Function( String message)?  credentialAlreadyInUse,TResult Function( String message)?  emailAlreadyInUse,TResult Function( String message)?  providerAlreadyLinked,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case ServerFailure() when server != null:
 return server(_that.message);case CacheFailure() when cache != null:
@@ -182,7 +191,10 @@ return userNotFound(_that.message);case PermissionFailure() when permission != n
 return permission(_that.message);case PasswordMismatchFailure() when passwordMismatch != null:
 return passwordMismatch(_that.message);case ReauthenticationFailure() when reauthentication != null:
 return reauthentication(_that.message);case RateLimitFailure() when rateLimit != null:
-return rateLimit(_that.retryAfterSeconds,_that.message);case _:
+return rateLimit(_that.retryAfterSeconds,_that.message);case CredentialAlreadyInUseFailure() when credentialAlreadyInUse != null:
+return credentialAlreadyInUse(_that.message);case EmailAlreadyInUseFailure() when emailAlreadyInUse != null:
+return emailAlreadyInUse(_that.message);case ProviderAlreadyLinkedFailure() when providerAlreadyLinked != null:
+return providerAlreadyLinked(_that.message);case _:
   return orElse();
 
 }
@@ -200,7 +212,7 @@ return rateLimit(_that.retryAfterSeconds,_that.message);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String message)  server,required TResult Function( String message)  cache,required TResult Function( String message)  payment,required TResult Function( String message)  cancel,required TResult Function( String message)  userNotFound,required TResult Function( String message)  permission,required TResult Function( String message)  passwordMismatch,required TResult Function( String message)  reauthentication,required TResult Function( int retryAfterSeconds,  String message)  rateLimit,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String message)  server,required TResult Function( String message)  cache,required TResult Function( String message)  payment,required TResult Function( String message)  cancel,required TResult Function( String message)  userNotFound,required TResult Function( String message)  permission,required TResult Function( String message)  passwordMismatch,required TResult Function( String message)  reauthentication,required TResult Function( int retryAfterSeconds,  String message)  rateLimit,required TResult Function( String message)  credentialAlreadyInUse,required TResult Function( String message)  emailAlreadyInUse,required TResult Function( String message)  providerAlreadyLinked,}) {final _that = this;
 switch (_that) {
 case ServerFailure():
 return server(_that.message);case CacheFailure():
@@ -211,7 +223,10 @@ return userNotFound(_that.message);case PermissionFailure():
 return permission(_that.message);case PasswordMismatchFailure():
 return passwordMismatch(_that.message);case ReauthenticationFailure():
 return reauthentication(_that.message);case RateLimitFailure():
-return rateLimit(_that.retryAfterSeconds,_that.message);}
+return rateLimit(_that.retryAfterSeconds,_that.message);case CredentialAlreadyInUseFailure():
+return credentialAlreadyInUse(_that.message);case EmailAlreadyInUseFailure():
+return emailAlreadyInUse(_that.message);case ProviderAlreadyLinkedFailure():
+return providerAlreadyLinked(_that.message);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -225,7 +240,7 @@ return rateLimit(_that.retryAfterSeconds,_that.message);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String message)?  server,TResult? Function( String message)?  cache,TResult? Function( String message)?  payment,TResult? Function( String message)?  cancel,TResult? Function( String message)?  userNotFound,TResult? Function( String message)?  permission,TResult? Function( String message)?  passwordMismatch,TResult? Function( String message)?  reauthentication,TResult? Function( int retryAfterSeconds,  String message)?  rateLimit,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String message)?  server,TResult? Function( String message)?  cache,TResult? Function( String message)?  payment,TResult? Function( String message)?  cancel,TResult? Function( String message)?  userNotFound,TResult? Function( String message)?  permission,TResult? Function( String message)?  passwordMismatch,TResult? Function( String message)?  reauthentication,TResult? Function( int retryAfterSeconds,  String message)?  rateLimit,TResult? Function( String message)?  credentialAlreadyInUse,TResult? Function( String message)?  emailAlreadyInUse,TResult? Function( String message)?  providerAlreadyLinked,}) {final _that = this;
 switch (_that) {
 case ServerFailure() when server != null:
 return server(_that.message);case CacheFailure() when cache != null:
@@ -236,7 +251,10 @@ return userNotFound(_that.message);case PermissionFailure() when permission != n
 return permission(_that.message);case PasswordMismatchFailure() when passwordMismatch != null:
 return passwordMismatch(_that.message);case ReauthenticationFailure() when reauthentication != null:
 return reauthentication(_that.message);case RateLimitFailure() when rateLimit != null:
-return rateLimit(_that.retryAfterSeconds,_that.message);case _:
+return rateLimit(_that.retryAfterSeconds,_that.message);case CredentialAlreadyInUseFailure() when credentialAlreadyInUse != null:
+return credentialAlreadyInUse(_that.message);case EmailAlreadyInUseFailure() when emailAlreadyInUse != null:
+return emailAlreadyInUse(_that.message);case ProviderAlreadyLinkedFailure() when providerAlreadyLinked != null:
+return providerAlreadyLinked(_that.message);case _:
   return null;
 
 }
@@ -833,6 +851,204 @@ class _$RateLimitFailureCopyWithImpl<$Res>
   return _then(RateLimitFailure(
 retryAfterSeconds: null == retryAfterSeconds ? _self.retryAfterSeconds : retryAfterSeconds // ignore: cast_nullable_to_non_nullable
 as int,message: null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class CredentialAlreadyInUseFailure extends Failure {
+  const CredentialAlreadyInUseFailure([this.message = 'Credential already in use']): super._();
+  
+
+@override@JsonKey() final  String message;
+
+/// Create a copy of Failure
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$CredentialAlreadyInUseFailureCopyWith<CredentialAlreadyInUseFailure> get copyWith => _$CredentialAlreadyInUseFailureCopyWithImpl<CredentialAlreadyInUseFailure>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CredentialAlreadyInUseFailure&&(identical(other.message, message) || other.message == message));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,message);
+
+@override
+String toString() {
+  return 'Failure.credentialAlreadyInUse(message: $message)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $CredentialAlreadyInUseFailureCopyWith<$Res> implements $FailureCopyWith<$Res> {
+  factory $CredentialAlreadyInUseFailureCopyWith(CredentialAlreadyInUseFailure value, $Res Function(CredentialAlreadyInUseFailure) _then) = _$CredentialAlreadyInUseFailureCopyWithImpl;
+@override @useResult
+$Res call({
+ String message
+});
+
+
+
+
+}
+/// @nodoc
+class _$CredentialAlreadyInUseFailureCopyWithImpl<$Res>
+    implements $CredentialAlreadyInUseFailureCopyWith<$Res> {
+  _$CredentialAlreadyInUseFailureCopyWithImpl(this._self, this._then);
+
+  final CredentialAlreadyInUseFailure _self;
+  final $Res Function(CredentialAlreadyInUseFailure) _then;
+
+/// Create a copy of Failure
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? message = null,}) {
+  return _then(CredentialAlreadyInUseFailure(
+null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class EmailAlreadyInUseFailure extends Failure {
+  const EmailAlreadyInUseFailure([this.message = 'Email already in use']): super._();
+  
+
+@override@JsonKey() final  String message;
+
+/// Create a copy of Failure
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$EmailAlreadyInUseFailureCopyWith<EmailAlreadyInUseFailure> get copyWith => _$EmailAlreadyInUseFailureCopyWithImpl<EmailAlreadyInUseFailure>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is EmailAlreadyInUseFailure&&(identical(other.message, message) || other.message == message));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,message);
+
+@override
+String toString() {
+  return 'Failure.emailAlreadyInUse(message: $message)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $EmailAlreadyInUseFailureCopyWith<$Res> implements $FailureCopyWith<$Res> {
+  factory $EmailAlreadyInUseFailureCopyWith(EmailAlreadyInUseFailure value, $Res Function(EmailAlreadyInUseFailure) _then) = _$EmailAlreadyInUseFailureCopyWithImpl;
+@override @useResult
+$Res call({
+ String message
+});
+
+
+
+
+}
+/// @nodoc
+class _$EmailAlreadyInUseFailureCopyWithImpl<$Res>
+    implements $EmailAlreadyInUseFailureCopyWith<$Res> {
+  _$EmailAlreadyInUseFailureCopyWithImpl(this._self, this._then);
+
+  final EmailAlreadyInUseFailure _self;
+  final $Res Function(EmailAlreadyInUseFailure) _then;
+
+/// Create a copy of Failure
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? message = null,}) {
+  return _then(EmailAlreadyInUseFailure(
+null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class ProviderAlreadyLinkedFailure extends Failure {
+  const ProviderAlreadyLinkedFailure([this.message = 'Provider already linked']): super._();
+  
+
+@override@JsonKey() final  String message;
+
+/// Create a copy of Failure
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$ProviderAlreadyLinkedFailureCopyWith<ProviderAlreadyLinkedFailure> get copyWith => _$ProviderAlreadyLinkedFailureCopyWithImpl<ProviderAlreadyLinkedFailure>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProviderAlreadyLinkedFailure&&(identical(other.message, message) || other.message == message));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,message);
+
+@override
+String toString() {
+  return 'Failure.providerAlreadyLinked(message: $message)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $ProviderAlreadyLinkedFailureCopyWith<$Res> implements $FailureCopyWith<$Res> {
+  factory $ProviderAlreadyLinkedFailureCopyWith(ProviderAlreadyLinkedFailure value, $Res Function(ProviderAlreadyLinkedFailure) _then) = _$ProviderAlreadyLinkedFailureCopyWithImpl;
+@override @useResult
+$Res call({
+ String message
+});
+
+
+
+
+}
+/// @nodoc
+class _$ProviderAlreadyLinkedFailureCopyWithImpl<$Res>
+    implements $ProviderAlreadyLinkedFailureCopyWith<$Res> {
+  _$ProviderAlreadyLinkedFailureCopyWithImpl(this._self, this._then);
+
+  final ProviderAlreadyLinkedFailure _self;
+  final $Res Function(ProviderAlreadyLinkedFailure) _then;
+
+/// Create a copy of Failure
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? message = null,}) {
+  return _then(ProviderAlreadyLinkedFailure(
+null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
 as String,
   ));
 }

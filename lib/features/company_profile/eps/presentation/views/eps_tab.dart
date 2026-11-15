@@ -1,9 +1,11 @@
+import 'package:bizzie/core/enums/financial_period.dart';
 import 'package:bizzie/features/company_profile/eps/presentation/bloc/company_eps_bloc.dart';
 import 'package:bizzie/features/company_profile/eps/presentation/bloc/company_eps_event.dart';
 import 'package:bizzie/features/company_profile/eps/presentation/bloc/company_eps_state.dart';
 import 'package:bizzie/features/company_profile/eps/presentation/extensions/company_eps_state_extensions.dart';
 import 'package:bizzie/features/company_profile/shared/domain/enums/company_profile_tab.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/extensions/company_profile_tab_x.dart';
+import 'package:bizzie/features/company_profile/shared/presentation/models/currency_metric_labels.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/widgets/company_profile_error_state.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/widgets/company_profile_loading_state.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/widgets/currency_metric_tab_content.dart';
@@ -11,6 +13,12 @@ import 'package:bizzie/features/company_profile/shared/presentation/widgets/peri
 import 'package:bizzie/features/company_profile/shared/presentation/widgets/tab_visibility_observer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+const _labels = CurrencyMetricLabels(
+  metricLabel: 'EPS',
+  ttmTitle: 'EPS TTM',
+  chartKeyPrefix: 'eps_chart',
+);
 
 const Widget _loadingView = CompanyProfileLoadingState(message: 'Loading EPS');
 
@@ -35,9 +43,12 @@ class _EpsTabState extends State<EpsTab> with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
 
-  void _onPeriodChanged(BuildContext context, {required bool isAnnual}) {
+  void _onPeriodChanged(
+    BuildContext context, {
+    required FinancialPeriod period,
+  }) {
     context.read<CompanyEpsBloc>().add(
-      CompanyEpsEvent.periodChanged(isAnnual: isAnnual),
+      CompanyEpsEvent.periodChanged(period: period),
     );
   }
 
@@ -71,42 +82,34 @@ class _EpsTabState extends State<EpsTab> with AutomaticKeepAliveClientMixin {
             ),
             loaded: (loadedState) {
               final stats = loadedState.epsStats;
-              final isAnnual = loadedState.isAnnualView;
+              final period = loadedState.period;
               final chartData = loadedState.activeChartData;
 
               if (chartData.isEmpty) {
                 return PeriodMetricEmptyView(
-                  isAnnual: isAnnual,
+                  period: period,
                   message: 'No EPS data available for this period.',
-                  onPeriodChanged: (isAnnual) =>
-                      _onPeriodChanged(context, isAnnual: isAnnual),
+                  onPeriodChanged: (period) =>
+                      _onPeriodChanged(context, period: period),
                 );
               }
 
               return CurrencyMetricTabContent(
-                isAnnual: isAnnual,
+                period: period,
                 chartData: chartData,
                 annualData: stats.annualEps,
                 quarterlyData: stats.quarterlyEps,
                 currency: stats.reportedCurrency,
                 originalCurrency: stats.originalCurrency,
                 historyLimit: loadedState.historyLimit,
-                metricLabel: 'EPS',
-                ttmTitle: 'EPS TTM',
-                chartKeyPrefix: 'eps_chart',
-                onPeriodChanged: (isAnnual) =>
-                    _onPeriodChanged(context, isAnnual: isAnnual),
+                labels: _labels,
+                onPeriodChanged: (period) =>
+                    _onPeriodChanged(context, period: period),
                 onChartAnalyticsTap: () => context.read<CompanyEpsBloc>().add(
-                  CompanyEpsEvent.viewAllTapped(
-                    isAnnual: isAnnual,
-                    isChart: true,
-                  ),
+                  CompanyEpsEvent.viewAllTapped(period: period, isChart: true),
                 ),
                 onTableAnalyticsTap: () => context.read<CompanyEpsBloc>().add(
-                  CompanyEpsEvent.viewAllTapped(
-                    isAnnual: isAnnual,
-                    isChart: false,
-                  ),
+                  CompanyEpsEvent.viewAllTapped(period: period, isChart: false),
                 ),
               );
             },

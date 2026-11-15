@@ -1,3 +1,4 @@
+import 'package:bizzie/core/enums/financial_period.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'company_net_income_event.freezed.dart';
@@ -17,11 +18,12 @@ sealed class CompanyNetIncomeEvent with _$CompanyNetIncomeEvent {
   const factory CompanyNetIncomeEvent.appBackgrounded() = AppBackgrounded;
   const factory CompanyNetIncomeEvent.appForegrounded() = AppForegrounded;
 
-  const factory CompanyNetIncomeEvent.periodChanged({required bool isAnnual}) =
-      PeriodChanged;
+  const factory CompanyNetIncomeEvent.periodChanged({
+    required FinancialPeriod period,
+  }) = PeriodChanged;
 
   const factory CompanyNetIncomeEvent.viewAllTapped({
-    required bool isAnnual,
+    required FinancialPeriod period,
     required bool isChart,
   }) = ViewAllTapped;
 

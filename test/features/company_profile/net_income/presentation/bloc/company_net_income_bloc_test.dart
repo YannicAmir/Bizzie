@@ -1,3 +1,4 @@
+import 'package:bizzie/core/enums/financial_period.dart';
 import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/features/company_profile/shared/domain/models/financial_data_point.dart';
@@ -16,7 +17,7 @@ import 'package:bizzie/core/usecase/usecase.dart';
 import 'package:bizzie/features/company_profile/shared/domain/usecases/watch_active_tab_usecase.dart';
 import 'package:bizzie/core/interfaces/i_time_provider.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:bizzie/features/auth/domain/usecases/get_auth_stream.dart';
+import 'package:bizzie/features/auth/domain/usecases/get_auth_stream_usecase.dart';
 
 class MockGetNetIncomeStatsUseCase extends Mock
     implements GetNetIncomeStatsUseCase {}
@@ -27,10 +28,10 @@ class MockNetIncomeTabAnalytics extends Mock implements NetIncomeTabAnalytics {}
 
 class MockWatchActiveTabUseCase extends Mock implements WatchActiveTabUseCase {}
 
-class MockGetAuthStream extends Mock implements GetAuthStream {}
+class MockGetAuthStreamUseCase extends Mock implements GetAuthStreamUseCase {}
 
-MockGetAuthStream stubbedGetAuthStream() {
-  final mock = MockGetAuthStream();
+MockGetAuthStreamUseCase stubbedGetAuthStream() {
+  final mock = MockGetAuthStreamUseCase();
   when(() => mock()).thenAnswer((_) => const Stream.empty());
   return mock;
 }
@@ -216,8 +217,16 @@ void main() {
       act: (bloc) {
         // act
         bloc.add(const CompanyNetIncomeEvent.tabShown(tTicker));
-        bloc.add(const CompanyNetIncomeEvent.periodChanged(isAnnual: true));
-        bloc.add(const CompanyNetIncomeEvent.periodChanged(isAnnual: false));
+        bloc.add(
+          const CompanyNetIncomeEvent.periodChanged(
+            period: FinancialPeriod.annual,
+          ),
+        );
+        bloc.add(
+          const CompanyNetIncomeEvent.periodChanged(
+            period: FinancialPeriod.quarterly,
+          ),
+        );
       },
       verify: (_) {
         // assert
@@ -235,13 +244,13 @@ void main() {
         bloc.add(const CompanyNetIncomeEvent.tabShown(tTicker));
         bloc.add(
           const CompanyNetIncomeEvent.viewAllTapped(
-            isAnnual: true,
+            period: FinancialPeriod.annual,
             isChart: true,
           ),
         );
         bloc.add(
           const CompanyNetIncomeEvent.viewAllTapped(
-            isAnnual: false,
+            period: FinancialPeriod.quarterly,
             isChart: false,
           ),
         );

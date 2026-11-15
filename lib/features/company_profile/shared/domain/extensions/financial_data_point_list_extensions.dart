@@ -2,12 +2,7 @@ import 'dart:math';
 
 import 'package:bizzie/features/company_profile/shared/domain/models/financial_data_point.dart';
 
-enum TtmGrowthOutcome {
-  numeric,
-  turnedPositive,
-  turnedNegative,
-  notMeaningful,
-}
+enum TtmGrowthOutcome { numeric, turnedPositive, turnedNegative, notMeaningful }
 
 const int _quartersPerYear = 4;
 const int _minCagrYears = 2;
@@ -59,9 +54,11 @@ extension FinancialDataPointListX on List<FinancialDataPoint> {
     final maxYears = sorted.length ~/ _quartersPerYear;
     if (maxYears < _minCagrYears) return null;
 
-    for (var years = min(_maxCagrYears, maxYears);
-        years >= _minCagrYears;
-        years--) {
+    for (
+      var years = min(_maxCagrYears, maxYears);
+      years >= _minCagrYears;
+      years--
+    ) {
       final skipCount = years * _quartersPerYear;
       if (sorted.length < skipCount + _quartersPerYear) continue;
 
@@ -85,7 +82,8 @@ extension FinancialDataPointListX on List<FinancialDataPoint> {
     return null;
   }
 
-  ({TtmGrowthOutcome outcome, double percentage})? trailingTwelveMonthsGrowth() {
+  ({TtmGrowthOutcome outcome, double percentage})?
+  trailingTwelveMonthsGrowth() {
     final sorted = sortedUniqueByDateDescending();
     if (sorted.length < _quartersPerYear * 2) return null;
 

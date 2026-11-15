@@ -1,12 +1,11 @@
 import 'package:bizzie/app/themes/app_text_styles.dart';
-import 'package:bizzie/features/onboarding/select_brands/presentation/bloc/select_brands_bloc.dart';
+import 'package:bizzie/features/onboarding/select_brands/presentation/utils/brand_toggle_helper.dart';
 import 'package:bizzie/features/onboarding/select_brands/presentation/models/select_brands_view_model.dart';
 import 'package:bizzie/features/onboarding/select_brands/presentation/widgets/brand_chip.dart';
 import 'package:bizzie/features/onboarding/select_brands/presentation/widgets/section_visibility_animator.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:bizzie/shared/widgets/animations/bizzie_entrance_scale.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 class BrandCloudSection extends StatelessWidget {
   final String title;
@@ -57,9 +56,7 @@ class BrandCloudSection extends StatelessWidget {
                   iconData: iconData,
                   isEnabled: isEnabled,
                   leadingIcon: true,
-                  onTap: () => context.read<SelectBrandsBloc>().add(
-                    SelectBrandsEvent.toggleBrand(vm.brand),
-                  ),
+                  onTap: () => BrandToggleHelper.toggle(context, vm.brand),
                 );
 
                 if (vm.shouldAnimate) {

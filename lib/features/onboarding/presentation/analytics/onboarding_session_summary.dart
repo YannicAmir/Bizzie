@@ -8,8 +8,8 @@ class OnboardingSessionSummary {
   final String? experience;
   final int addedBrandsCount;
   final bool notificationsEnabled;
-  final bool highlightsSkipped;
   final bool didSignup;
+  final bool didSkip;
   final DayOfWeek dayOfWeek;
 
   const OnboardingSessionSummary({
@@ -20,8 +20,8 @@ class OnboardingSessionSummary {
     this.experience,
     required this.addedBrandsCount,
     required this.notificationsEnabled,
-    required this.highlightsSkipped,
     required this.didSignup,
+    this.didSkip = false,
     required this.dayOfWeek,
   });
 
@@ -33,8 +33,8 @@ class OnboardingSessionSummary {
     'experience': experience,
     'addedBrandsCount': addedBrandsCount,
     'notificationsEnabled': notificationsEnabled,
-    'highlightsSkipped': highlightsSkipped,
     'didSignup': didSignup,
+    'didSkip': didSkip,
     'dayOfWeek': dayOfWeek.name,
   };
 
@@ -47,8 +47,8 @@ class OnboardingSessionSummary {
         experience: json['experience'] as String?,
         addedBrandsCount: (json['addedBrandsCount'] as num?)?.toInt() ?? 0,
         notificationsEnabled: json['notificationsEnabled'] as bool,
-        highlightsSkipped: json['highlightsSkipped'] as bool,
         didSignup: json['didSignup'] as bool,
+        didSkip: json['didSkip'] as bool? ?? false,
         dayOfWeek: DayOfWeek.values.firstWhere(
           (e) => e.name == json['dayOfWeek'],
           orElse: () => DayOfWeek.monday,

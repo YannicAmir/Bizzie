@@ -32,4 +32,9 @@ class LocalStorageService implements ILocalStorageService {
   int? getInt(String key) {
     return _prefs.getInt(key);
   }
+
+  @override
+  Future<void> clear() async {
+    await _prefs.clear();
+  }
 }

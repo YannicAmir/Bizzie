@@ -277,11 +277,13 @@ class FirestoreService {
           .collectionGroup(collectionId)
           .where(whereInField, whereIn: chunk)
           .snapshots()
-          .map((s) => s.docs.map((d) {
-                final data = Map<String, dynamic>.from(d.data());
-                data['id'] = d.id;
-                return fromJson(data);
-              }).toList());
+          .map(
+            (s) => s.docs.map((d) {
+              final data = Map<String, dynamic>.from(d.data());
+              data['id'] = d.id;
+              return fromJson(data);
+            }).toList(),
+          );
     }).toList();
 
     return Rx.combineLatest<List<T>, List<T>>(
@@ -324,11 +326,8 @@ class FirestoreService {
       streams,
       (valuesList) => valuesList.expand((x) => x).toList(),
     ).handleError(
-      (Object e, StackTrace s) => _logAndRethrowStreamError(
-        e,
-        s,
-        '$rootCollection/*/$subcollectionId',
-      ),
+      (Object e, StackTrace s) =>
+          _logAndRethrowStreamError(e, s, '$rootCollection/*/$subcollectionId'),
     );
   }
 
@@ -353,10 +352,8 @@ class FirestoreService {
         query = queryBuilder(query);
       }
       return query.snapshots().map(
-        (s) => _parseValidDocs(
-          s.docs,
-          (d) => fromJson({...d.data(), 'id': d.id}),
-        ),
+        (s) =>
+            _parseValidDocs(s.docs, (d) => fromJson({...d.data(), 'id': d.id})),
       );
     }).toList();
 

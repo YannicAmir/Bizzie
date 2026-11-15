@@ -33,8 +33,7 @@ class CompanyLogoAvatar extends StatelessWidget {
         borderRadius: _avatarBorderRadius,
       ),
       placeholder: (context, url) => const _LogoPlaceholderTile(),
-      errorWidget: (context, url, error) =>
-          _TickerInitialsTile(ticker: ticker),
+      errorWidget: (context, url, error) => _TickerInitialsTile(ticker: ticker),
     );
   }
 }

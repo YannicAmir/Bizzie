@@ -1,6 +1,6 @@
 import 'package:bizzie/features/user/data/datasources/user_remote_datasource.dart';
-import 'package:bizzie/features/user/data/dtos/user_dto.dart';
-import 'package:bizzie/features/watchlist/data/dtos/watchlist_item_dto.dart';
+import 'package:bizzie/core/data/dtos/user_dto.dart';
+import 'package:bizzie/core/data/dtos/watchlist_item_dto.dart';
 import 'package:bizzie/services/firestore_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_test/flutter_test.dart';

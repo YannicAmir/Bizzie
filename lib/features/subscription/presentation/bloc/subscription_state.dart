@@ -4,6 +4,7 @@ import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/features/subscription/domain/models/subscription_offering.dart';
 import 'package:bizzie/features/subscription/domain/models/subscription_package.dart';
 import 'package:bizzie/core/enums/paywall_source.dart';
+import 'package:bizzie/features/subscription/domain/enums/subscription_package_type.dart';
 
 part 'subscription_state.freezed.dart';
 
@@ -37,6 +38,7 @@ abstract class SubscriptionState with _$SubscriptionState {
     @Default(false) bool isPurchasing,
     @Default(true) bool isAnnualSelection,
     PaywallSource? paywallSource,
+    SubscriptionPackageType? purchasedPackageType,
   }) = SubscriptionStateLoaded;
 
   const factory SubscriptionState.failure({

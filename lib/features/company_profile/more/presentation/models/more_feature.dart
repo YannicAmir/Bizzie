@@ -49,12 +49,18 @@ Widget _buildViewForTab(CompanyProfileTab tab, String ticker) {
     CompanyProfileTab.freeCash => FreeCashFlowTab(ticker: ticker),
     CompanyProfileTab.fcps => FcpsTab(ticker: ticker),
     CompanyProfileTab.shares => SharesTab(ticker: ticker),
-    CompanyProfileTab.financialStatements => FinancialStatementsTab(ticker: ticker),
+    CompanyProfileTab.financialStatements => FinancialStatementsTab(
+      ticker: ticker,
+    ),
     CompanyProfileTab.aiReports => AiReportsTab(ticker: ticker),
     CompanyProfileTab.roe => RoeTab(ticker: ticker),
     CompanyProfileTab.peRatio => PeRatioTab(ticker: ticker),
     CompanyProfileTab.pfcfRatio => PfcfRatioTab(ticker: ticker),
-    CompanyProfileTab.security => throw ArgumentError('security cannot be shown in the More section'),
-    CompanyProfileTab.more => throw ArgumentError('more cannot be shown in the More section'),
+    CompanyProfileTab.security => throw ArgumentError(
+      'security cannot be shown in the More section',
+    ),
+    CompanyProfileTab.more => throw ArgumentError(
+      'more cannot be shown in the More section',
+    ),
   };
 }

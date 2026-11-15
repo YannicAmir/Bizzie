@@ -8,8 +8,7 @@ part 'watchlist_ytd_state.freezed.dart';
 abstract class WatchlistYtdState with _$WatchlistYtdState {
   const factory WatchlistYtdState.initial() = _Initial;
   const factory WatchlistYtdState.loading() = _Loading;
-  const factory WatchlistYtdState.loaded(
-    Map<String, YtdPriceChange> changes,
-  ) = WatchlistYtdLoaded;
+  const factory WatchlistYtdState.loaded(Map<String, YtdPriceChange> changes) =
+      WatchlistYtdLoaded;
   const factory WatchlistYtdState.failure(Failure failure) = _Failure;
 }

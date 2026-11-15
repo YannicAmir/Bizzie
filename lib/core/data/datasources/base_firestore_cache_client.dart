@@ -89,11 +89,7 @@ abstract class BaseFirestoreCacheClient {
     required DateTime nowEt,
   }) {
     final midnightEtUtc = nowEt.toUtc().subtract(
-      Duration(
-        hours: nowEt.hour,
-        minutes: nowEt.minute,
-        seconds: nowEt.second,
-      ),
+      Duration(hours: nowEt.hour, minutes: nowEt.minute, seconds: nowEt.second),
     );
 
     final marketOpenUtc = midnightEtUtc.add(

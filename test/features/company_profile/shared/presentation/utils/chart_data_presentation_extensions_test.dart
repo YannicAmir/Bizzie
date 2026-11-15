@@ -1,3 +1,4 @@
+import 'package:bizzie/core/enums/financial_period.dart';
 import 'package:bizzie/features/company_profile/shared/domain/models/chart_data_point.dart';
 import 'package:bizzie/features/company_profile/shared/domain/models/financial_data_point.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/utils/chart_data_presentation_extensions.dart';
@@ -32,30 +33,34 @@ const tInvalidDatePoint = FinancialDataPoint(
 void main() {
   group('ChartDataListX', () {
     group('toChartDataReversed', () {
-      test('toChartDataReversed_annualPoints_returnsReversedOrderWithYearLabels',
-          () {
-        // arrange
-        const points = [tPointNewest, tPointMiddle, tPointOldest];
-
-        // act
-        final result = points.toChartDataReversed(isAnnual: true);
-
-        // assert
-        expect(result, const [
-          ChartDataPoint(label: '2022', value: 10.5),
-          ChartDataPoint(label: '2023', value: 12.25),
-          ChartDataPoint(label: '2024', value: 15.75),
-        ]);
-      });
-
       test(
-          'toChartDataReversed_quarterlyPoint_returnsMonthYearShortLabel',
-          () {
+        'toChartDataReversed_annualPoints_returnsReversedOrderWithYearLabels',
+        () {
+          // arrange
+          const points = [tPointNewest, tPointMiddle, tPointOldest];
+
+          // act
+          final result = points.toChartDataReversed(
+            period: FinancialPeriod.annual,
+          );
+
+          // assert
+          expect(result, const [
+            ChartDataPoint(label: '2022', value: 10.5),
+            ChartDataPoint(label: '2023', value: 12.25),
+            ChartDataPoint(label: '2024', value: 15.75),
+          ]);
+        },
+      );
+
+      test('toChartDataReversed_quarterlyPoint_returnsMonthYearShortLabel', () {
         // arrange
         const points = [tQuarterlyPoint];
 
         // act
-        final result = points.toChartDataReversed(isAnnual: false);
+        final result = points.toChartDataReversed(
+          period: FinancialPeriod.quarterly,
+        );
 
         // assert
         expect(result, const [
@@ -68,7 +73,9 @@ void main() {
         const points = <FinancialDataPoint>[];
 
         // act
-        final result = points.toChartDataReversed(isAnnual: true);
+        final result = points.toChartDataReversed(
+          period: FinancialPeriod.annual,
+        );
 
         // assert
         expect(result, isEmpty);
@@ -79,66 +86,76 @@ void main() {
         const points = [tInvalidDatePoint];
 
         // act
-        final result = points.toChartDataReversed(isAnnual: true);
+        final result = points.toChartDataReversed(
+          period: FinancialPeriod.annual,
+        );
 
         // assert
-        expect(result, const [
-          ChartDataPoint(label: 'not-a-date', value: 1.0),
-        ]);
+        expect(result, const [ChartDataPoint(label: 'not-a-date', value: 1.0)]);
       });
     });
 
     group('toChartDataSortedByDate', () {
       test(
-          'toChartDataSortedByDate_unsortedPoints_returnsChronologicalChartPoints',
-          () {
-        // arrange
-        const points = [tPointMiddle, tPointNewest, tPointOldest];
+        'toChartDataSortedByDate_unsortedPoints_returnsChronologicalChartPoints',
+        () {
+          // arrange
+          const points = [tPointMiddle, tPointNewest, tPointOldest];
 
-        // act
-        final result = points.toChartDataSortedByDate(isAnnual: true);
+          // act
+          final result = points.toChartDataSortedByDate(
+            period: FinancialPeriod.annual,
+          );
 
-        // assert
-        expect(result, const [
-          ChartDataPoint(label: '2022', value: 10.5),
-          ChartDataPoint(label: '2023', value: 12.25),
-          ChartDataPoint(label: '2024', value: 15.75),
-        ]);
-      });
-
-      test('toChartDataSortedByDate_unsortedPoints_doesNotMutateOriginalList',
-          () {
-        // arrange
-        final points = [tPointNewest, tPointOldest, tPointMiddle];
-
-        // act
-        points.toChartDataSortedByDate(isAnnual: true);
-
-        // assert
-        expect(points, const [tPointNewest, tPointOldest, tPointMiddle]);
-      });
+          // assert
+          expect(result, const [
+            ChartDataPoint(label: '2022', value: 10.5),
+            ChartDataPoint(label: '2023', value: 12.25),
+            ChartDataPoint(label: '2024', value: 15.75),
+          ]);
+        },
+      );
 
       test(
-          'toChartDataSortedByDate_quarterlyPoint_returnsMonthYearShortLabel',
-          () {
-        // arrange
-        const points = [tQuarterlyPoint];
+        'toChartDataSortedByDate_unsortedPoints_doesNotMutateOriginalList',
+        () {
+          // arrange
+          final points = [tPointNewest, tPointOldest, tPointMiddle];
 
-        // act
-        final result = points.toChartDataSortedByDate(isAnnual: false);
+          // act
+          points.toChartDataSortedByDate(period: FinancialPeriod.annual);
 
-        // assert
-        expect(result, const [
-          ChartDataPoint(label: "Mar. 31, '24", value: 3.5),
-        ]);
-      });
+          // assert
+          expect(points, const [tPointNewest, tPointOldest, tPointMiddle]);
+        },
+      );
+
+      test(
+        'toChartDataSortedByDate_quarterlyPoint_returnsMonthYearShortLabel',
+        () {
+          // arrange
+          const points = [tQuarterlyPoint];
+
+          // act
+          final result = points.toChartDataSortedByDate(
+            period: FinancialPeriod.quarterly,
+          );
+
+          // assert
+          expect(result, const [
+            ChartDataPoint(label: "Mar. 31, '24", value: 3.5),
+          ]);
+        },
+      );
 
       test('toChartDataSortedByDate_emptyList_returnsEmptyList', () {
         // arrange
         const points = <FinancialDataPoint>[];
 
         // act
-        final result = points.toChartDataSortedByDate(isAnnual: false);
+        final result = points.toChartDataSortedByDate(
+          period: FinancialPeriod.quarterly,
+        );
 
         // assert
         expect(result, isEmpty);

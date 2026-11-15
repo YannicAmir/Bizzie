@@ -140,7 +140,7 @@ return reset(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String ticker,  bool forceRefresh)?  loadRequested,TResult Function( String ticker)?  stalenessCheckRequested,TResult Function( String ticker)?  tabShown,TResult Function()?  tabHidden,TResult Function()?  appBackgrounded,TResult Function()?  appForegrounded,TResult Function( bool isAnnual)?  periodChanged,TResult Function( String key,  bool isAnnual)?  periodKeySelected,TResult Function()?  reset,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String ticker,  bool forceRefresh)?  loadRequested,TResult Function( String ticker)?  stalenessCheckRequested,TResult Function( String ticker)?  tabShown,TResult Function()?  tabHidden,TResult Function()?  appBackgrounded,TResult Function()?  appForegrounded,TResult Function( FinancialPeriod period)?  periodChanged,TResult Function( String key,  FinancialPeriod period)?  periodKeySelected,TResult Function()?  reset,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case LoadRequested() when loadRequested != null:
 return loadRequested(_that.ticker,_that.forceRefresh);case StalenessCheckRequested() when stalenessCheckRequested != null:
@@ -149,8 +149,8 @@ return tabShown(_that.ticker);case TabHidden() when tabHidden != null:
 return tabHidden();case AppBackgrounded() when appBackgrounded != null:
 return appBackgrounded();case AppForegrounded() when appForegrounded != null:
 return appForegrounded();case PeriodChanged() when periodChanged != null:
-return periodChanged(_that.isAnnual);case PeriodKeySelected() when periodKeySelected != null:
-return periodKeySelected(_that.key,_that.isAnnual);case Reset() when reset != null:
+return periodChanged(_that.period);case PeriodKeySelected() when periodKeySelected != null:
+return periodKeySelected(_that.key,_that.period);case Reset() when reset != null:
 return reset();case _:
   return orElse();
 
@@ -169,7 +169,7 @@ return reset();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String ticker,  bool forceRefresh)  loadRequested,required TResult Function( String ticker)  stalenessCheckRequested,required TResult Function( String ticker)  tabShown,required TResult Function()  tabHidden,required TResult Function()  appBackgrounded,required TResult Function()  appForegrounded,required TResult Function( bool isAnnual)  periodChanged,required TResult Function( String key,  bool isAnnual)  periodKeySelected,required TResult Function()  reset,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String ticker,  bool forceRefresh)  loadRequested,required TResult Function( String ticker)  stalenessCheckRequested,required TResult Function( String ticker)  tabShown,required TResult Function()  tabHidden,required TResult Function()  appBackgrounded,required TResult Function()  appForegrounded,required TResult Function( FinancialPeriod period)  periodChanged,required TResult Function( String key,  FinancialPeriod period)  periodKeySelected,required TResult Function()  reset,}) {final _that = this;
 switch (_that) {
 case LoadRequested():
 return loadRequested(_that.ticker,_that.forceRefresh);case StalenessCheckRequested():
@@ -178,8 +178,8 @@ return tabShown(_that.ticker);case TabHidden():
 return tabHidden();case AppBackgrounded():
 return appBackgrounded();case AppForegrounded():
 return appForegrounded();case PeriodChanged():
-return periodChanged(_that.isAnnual);case PeriodKeySelected():
-return periodKeySelected(_that.key,_that.isAnnual);case Reset():
+return periodChanged(_that.period);case PeriodKeySelected():
+return periodKeySelected(_that.key,_that.period);case Reset():
 return reset();}
 }
 /// A variant of `when` that fallback to returning `null`
@@ -194,7 +194,7 @@ return reset();}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String ticker,  bool forceRefresh)?  loadRequested,TResult? Function( String ticker)?  stalenessCheckRequested,TResult? Function( String ticker)?  tabShown,TResult? Function()?  tabHidden,TResult? Function()?  appBackgrounded,TResult? Function()?  appForegrounded,TResult? Function( bool isAnnual)?  periodChanged,TResult? Function( String key,  bool isAnnual)?  periodKeySelected,TResult? Function()?  reset,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String ticker,  bool forceRefresh)?  loadRequested,TResult? Function( String ticker)?  stalenessCheckRequested,TResult? Function( String ticker)?  tabShown,TResult? Function()?  tabHidden,TResult? Function()?  appBackgrounded,TResult? Function()?  appForegrounded,TResult? Function( FinancialPeriod period)?  periodChanged,TResult? Function( String key,  FinancialPeriod period)?  periodKeySelected,TResult? Function()?  reset,}) {final _that = this;
 switch (_that) {
 case LoadRequested() when loadRequested != null:
 return loadRequested(_that.ticker,_that.forceRefresh);case StalenessCheckRequested() when stalenessCheckRequested != null:
@@ -203,8 +203,8 @@ return tabShown(_that.ticker);case TabHidden() when tabHidden != null:
 return tabHidden();case AppBackgrounded() when appBackgrounded != null:
 return appBackgrounded();case AppForegrounded() when appForegrounded != null:
 return appForegrounded();case PeriodChanged() when periodChanged != null:
-return periodChanged(_that.isAnnual);case PeriodKeySelected() when periodKeySelected != null:
-return periodKeySelected(_that.key,_that.isAnnual);case Reset() when reset != null:
+return periodChanged(_that.period);case PeriodKeySelected() when periodKeySelected != null:
+return periodKeySelected(_that.key,_that.period);case Reset() when reset != null:
 return reset();case _:
   return null;
 
@@ -513,10 +513,10 @@ String toString() {
 
 
 class PeriodChanged implements CompanySegmentsEvent {
-  const PeriodChanged({required this.isAnnual});
+  const PeriodChanged({required this.period});
   
 
- final  bool isAnnual;
+ final  FinancialPeriod period;
 
 /// Create a copy of CompanySegmentsEvent
 /// with the given fields replaced by the non-null parameter values.
@@ -528,16 +528,16 @@ $PeriodChangedCopyWith<PeriodChanged> get copyWith => _$PeriodChangedCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PeriodChanged&&(identical(other.isAnnual, isAnnual) || other.isAnnual == isAnnual));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PeriodChanged&&(identical(other.period, period) || other.period == period));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,isAnnual);
+int get hashCode => Object.hash(runtimeType,period);
 
 @override
 String toString() {
-  return 'CompanySegmentsEvent.periodChanged(isAnnual: $isAnnual)';
+  return 'CompanySegmentsEvent.periodChanged(period: $period)';
 }
 
 
@@ -548,7 +548,7 @@ abstract mixin class $PeriodChangedCopyWith<$Res> implements $CompanySegmentsEve
   factory $PeriodChangedCopyWith(PeriodChanged value, $Res Function(PeriodChanged) _then) = _$PeriodChangedCopyWithImpl;
 @useResult
 $Res call({
- bool isAnnual
+ FinancialPeriod period
 });
 
 
@@ -565,10 +565,10 @@ class _$PeriodChangedCopyWithImpl<$Res>
 
 /// Create a copy of CompanySegmentsEvent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? isAnnual = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? period = null,}) {
   return _then(PeriodChanged(
-isAnnual: null == isAnnual ? _self.isAnnual : isAnnual // ignore: cast_nullable_to_non_nullable
-as bool,
+period: null == period ? _self.period : period // ignore: cast_nullable_to_non_nullable
+as FinancialPeriod,
   ));
 }
 
@@ -579,11 +579,11 @@ as bool,
 
 
 class PeriodKeySelected implements CompanySegmentsEvent {
-  const PeriodKeySelected(this.key, {required this.isAnnual});
+  const PeriodKeySelected(this.key, {required this.period});
   
 
  final  String key;
- final  bool isAnnual;
+ final  FinancialPeriod period;
 
 /// Create a copy of CompanySegmentsEvent
 /// with the given fields replaced by the non-null parameter values.
@@ -595,16 +595,16 @@ $PeriodKeySelectedCopyWith<PeriodKeySelected> get copyWith => _$PeriodKeySelecte
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PeriodKeySelected&&(identical(other.key, key) || other.key == key)&&(identical(other.isAnnual, isAnnual) || other.isAnnual == isAnnual));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PeriodKeySelected&&(identical(other.key, key) || other.key == key)&&(identical(other.period, period) || other.period == period));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,key,isAnnual);
+int get hashCode => Object.hash(runtimeType,key,period);
 
 @override
 String toString() {
-  return 'CompanySegmentsEvent.periodKeySelected(key: $key, isAnnual: $isAnnual)';
+  return 'CompanySegmentsEvent.periodKeySelected(key: $key, period: $period)';
 }
 
 
@@ -615,7 +615,7 @@ abstract mixin class $PeriodKeySelectedCopyWith<$Res> implements $CompanySegment
   factory $PeriodKeySelectedCopyWith(PeriodKeySelected value, $Res Function(PeriodKeySelected) _then) = _$PeriodKeySelectedCopyWithImpl;
 @useResult
 $Res call({
- String key, bool isAnnual
+ String key, FinancialPeriod period
 });
 
 
@@ -632,11 +632,11 @@ class _$PeriodKeySelectedCopyWithImpl<$Res>
 
 /// Create a copy of CompanySegmentsEvent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? key = null,Object? isAnnual = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? key = null,Object? period = null,}) {
   return _then(PeriodKeySelected(
 null == key ? _self.key : key // ignore: cast_nullable_to_non_nullable
-as String,isAnnual: null == isAnnual ? _self.isAnnual : isAnnual // ignore: cast_nullable_to_non_nullable
-as bool,
+as String,period: null == period ? _self.period : period // ignore: cast_nullable_to_non_nullable
+as FinancialPeriod,
   ));
 }
 

@@ -6,10 +6,9 @@ import 'package:bizzie/features/auth/domain/models/user_model.dart'
 import 'package:bizzie/features/feedback/domain/interfaces/i_feedback_repository.dart';
 import 'package:bizzie/features/feedback/domain/models/feedback_model.dart';
 import 'package:bizzie/features/feedback/domain/usecases/submit_feedback_usecase.dart';
-import 'package:bizzie/features/user/domain/enums/investing_experience.dart';
-import 'package:bizzie/features/user/domain/interfaces/user_repository.dart';
-import 'package:bizzie/features/user/domain/models/user_model.dart'
-    as user_model;
+import 'package:bizzie/core/enums/investing_experience.dart';
+import 'package:bizzie/features/user/domain/interfaces/i_user_repository.dart';
+import 'package:bizzie/core/domain/models/user_model.dart' as user_model;
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';

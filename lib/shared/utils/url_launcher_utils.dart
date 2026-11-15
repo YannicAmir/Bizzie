@@ -22,9 +22,7 @@ class UrlLauncherUtils {
       caseSensitive: false,
     ).firstMatch(finalUrl);
     if (wrappedScheme != null) {
-      _logger.warning(
-        'Detected wrapped URL scheme, unwrapping: "$finalUrl"',
-      );
+      _logger.warning('Detected wrapped URL scheme, unwrapping: "$finalUrl"');
       finalUrl = wrappedScheme.group(1)!;
     }
 

@@ -1,12 +1,13 @@
 import 'dart:async';
 
+import 'package:bizzie/core/enums/financial_period.dart';
 import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/core/interfaces/i_config_service.dart';
 import 'package:bizzie/core/interfaces/i_time_provider.dart';
 import 'package:bizzie/core/usecase/usecase.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
-import 'package:bizzie/features/auth/domain/usecases/get_auth_stream.dart';
+import 'package:bizzie/features/auth/domain/usecases/get_auth_stream_usecase.dart';
 import 'package:bizzie/features/auth/presentation/bloc/auth_session_reset_mixin.dart';
 import 'package:bizzie/features/company_profile/segments/domain/models/revenue_geographic_segments.dart';
 import 'package:bizzie/features/company_profile/segments/domain/models/revenue_product_segments.dart';
@@ -60,7 +61,7 @@ class CompanySegmentsBloc
     this._analytics,
     this._watchActiveTabUseCase,
     this._timeProvider,
-    GetAuthStream getAuthStream,
+    GetAuthStreamUseCase getAuthStream,
   ) : super(const CompanySegmentsState.initial()) {
     on<CompanySegmentsEvent>(_onEvent);
     on<LoadRequested>(_onLoadRequested, transformer: restartable());
@@ -139,26 +140,26 @@ class CompanySegmentsBloc
     PeriodChanged event,
     Emitter<CompanySegmentsState> emit,
   ) {
-    state.mapOrNull(
-      loaded: (s) => emit(s.copyWith(isAnnualView: event.isAnnual)),
-    );
-    _markPeriodViewed(isAnnual: event.isAnnual);
+    state.mapOrNull(loaded: (s) => emit(s.copyWith(period: event.period)));
+    _markPeriodViewed(period: event.period);
   }
 
-  void _markPeriodViewed({required bool isAnnual}) {
+  void _markPeriodViewed({required FinancialPeriod period}) {
     updateAnalyticsState(
-      (s) => isAnnual
-          ? s.copyWith(viewedYearlySegTab: true)
-          : s.copyWith(viewedQtrlySegTab: true),
+      (s) => switch (period) {
+        FinancialPeriod.annual => s.copyWith(viewedYearlySegTab: true),
+        FinancialPeriod.quarterly => s.copyWith(viewedQtrlySegTab: true),
+      },
     );
   }
 
   void _markVisiblePeriodViewed(CompanySegmentsLoaded loadedState) {
-    final hasData = loadedState.isAnnualView
-        ? loadedState.annualPeriodKeys.isNotEmpty
-        : loadedState.quarterlyPeriodKeys.isNotEmpty;
+    final hasData = switch (loadedState.period) {
+      FinancialPeriod.annual => loadedState.annualPeriodKeys.isNotEmpty,
+      FinancialPeriod.quarterly => loadedState.quarterlyPeriodKeys.isNotEmpty,
+    };
     if (hasData) {
-      _markPeriodViewed(isAnnual: loadedState.isAnnualView);
+      _markPeriodViewed(period: loadedState.period);
     }
   }
 
@@ -167,16 +168,18 @@ class CompanySegmentsBloc
     Emitter<CompanySegmentsState> emit,
   ) {
     state.mapOrNull(
-      loaded: (s) => emit(
-        event.isAnnual
-            ? s.copyWith(selectedAnnualKey: event.key)
-            : s.copyWith(selectedQuarterlyKey: event.key),
-      ),
+      loaded: (s) => emit(switch (event.period) {
+        FinancialPeriod.annual => s.copyWith(selectedAnnualKey: event.key),
+        FinancialPeriod.quarterly => s.copyWith(
+          selectedQuarterlyKey: event.key,
+        ),
+      }),
     );
     updateAnalyticsState(
-      (s) => event.isAnnual
-          ? s.copyWith(changedYrDate: true)
-          : s.copyWith(changedQtrDate: true),
+      (s) => switch (event.period) {
+        FinancialPeriod.annual => s.copyWith(changedYrDate: true),
+        FinancialPeriod.quarterly => s.copyWith(changedQtrDate: true),
+      },
     );
   }
 
@@ -223,16 +226,16 @@ class CompanySegmentsBloc
     );
   }
 
-  ({bool isAnnualView, String? annualKey, String? quarterlyKey})
+  ({FinancialPeriod period, String? annualKey, String? quarterlyKey})
   _previousViewSelection() =>
       state.mapOrNull(
         loaded: (s) => (
-          isAnnualView: s.isAnnualView,
+          period: s.period,
           annualKey: s.selectedAnnualKey,
           quarterlyKey: s.selectedQuarterlyKey,
         ),
       ) ??
-      (isAnnualView: true, annualKey: null, quarterlyKey: null);
+      (period: FinancialPeriod.annual, annualKey: null, quarterlyKey: null);
 
   String? _resolveSelectedKey(String? previousKey, List<String> keys) =>
       previousKey != null && keys.contains(previousKey)
@@ -283,7 +286,7 @@ class CompanySegmentsBloc
     >
     geographicResult,
     required int loadTimeMs,
-    required ({bool isAnnualView, String? annualKey, String? quarterlyKey})
+    required ({FinancialPeriod period, String? annualKey, String? quarterlyKey})
     previousView,
     required Emitter<CompanySegmentsState> emit,
   }) {
@@ -325,11 +328,11 @@ class CompanySegmentsBloc
     final annualKeys = _periodKeys([
       ...product.annual,
       ...geographic.annual,
-    ], isAnnual: true);
+    ], period: FinancialPeriod.annual);
     final quarterlyKeys = _periodKeys([
       ...product.quarterly,
       ...geographic.quarterly,
-    ], isAnnual: false);
+    ], period: FinancialPeriod.quarterly);
 
     emit(
       CompanySegmentsState.loaded(
@@ -338,7 +341,7 @@ class CompanySegmentsBloc
         geographicSegments: geographic,
         annualPeriodKeys: annualKeys,
         quarterlyPeriodKeys: quarterlyKeys,
-        isAnnualView: previousView.isAnnualView,
+        period: previousView.period,
         selectedAnnualKey: _resolveSelectedKey(
           previousView.annualKey,
           annualKeys,
@@ -378,14 +381,14 @@ class CompanySegmentsBloc
 
   List<String> _periodKeys(
     List<RevenueSegment> segments, {
-    required bool isAnnual,
+    required FinancialPeriod period,
   }) {
     final sorted = List<RevenueSegment>.from(segments)
       ..sort((a, b) => b.date.compareTo(a.date));
 
     final keys = <String>{
       for (final segment in sorted)
-        SegmentPeriodKey.of(segment, isAnnual: isAnnual),
+        SegmentPeriodKey.of(segment, period: period),
     };
     return keys.toList();
   }

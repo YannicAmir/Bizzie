@@ -13,7 +13,7 @@ Verify all changed files against every checklist item in `domain.guidance.instru
 ### UseCase violations
 - UseCase class not implementing `UseCase<Result, Params>`, `StreamUseCase<Result, Params>`, or `SynchronousUseCase<Result, Params>`
 - UseCase calling a datasource directly instead of going through `IXxxRepository`
-- UseCase implementing business logic beyond delegating to a repository method
+- UseCase implementing business logic beyond delegating to a repository method (aggregator coordination per `domain.guidance.instructions.md` §2 is permitted)
 - `call()` method not returning `Either<Failure, T>` (or `Stream<Either<Failure, T>>` for stream use cases)
 - Missing `@lazySingleton` annotation on UseCase class
 - UseCase constructor obtaining dependency via `GetIt` inside a method body instead of constructor injection

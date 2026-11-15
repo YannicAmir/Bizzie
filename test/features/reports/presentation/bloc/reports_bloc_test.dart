@@ -10,8 +10,8 @@ import 'package:bizzie/features/reports/presentation/bloc/reports_event.dart';
 import 'package:bizzie/features/reports/presentation/bloc/reports_state.dart';
 import 'package:bizzie/features/user/domain/models/user_activity.dart';
 import 'package:bizzie/features/watchlist/domain/interfaces/watchlist_repository.dart';
-import 'package:bizzie/features/user/domain/interfaces/user_repository.dart';
-import 'package:bizzie/features/user/domain/models/user_model.dart';
+import 'package:bizzie/features/user/domain/usecases/watch_current_user_usecase.dart';
+import 'package:bizzie/core/domain/models/user_model.dart';
 import 'package:bizzie/features/reports/domain/enums/reports_analytics_enums.dart';
 import 'package:bizzie/features/reports/presentation/analytics/reports_tracker.dart';
 import 'package:bizzie/core/interfaces/i_local_storage_service.dart';
@@ -35,7 +35,8 @@ class MockMarkReportsViewedUseCase extends Mock
 
 class MockReportsTracker extends Mock implements ReportsTracker {}
 
-class MockIUserRepository extends Mock implements IUserRepository {}
+class MockWatchCurrentUserUseCase extends Mock
+    implements WatchCurrentUserUseCase {}
 
 class MockILocalStorageService extends Mock implements ILocalStorageService {}
 
@@ -51,7 +52,7 @@ void main() {
   late MockIAuthRepository mockAuthRepository;
   late MockGetUserActivityUseCase mockGetUserActivityUseCase;
   late MockMarkReportsViewedUseCase mockMarkReportsViewedUseCase;
-  late MockIUserRepository mockUserRepository;
+  late MockWatchCurrentUserUseCase mockWatchCurrentUserUseCase;
   late auth.UserModel tUser;
   late MockReportsTracker mockTracker;
   late MockILocalStorageService mockLocalStorageService;
@@ -62,7 +63,7 @@ void main() {
     mockAuthRepository = MockIAuthRepository();
     mockGetUserActivityUseCase = MockGetUserActivityUseCase();
     mockMarkReportsViewedUseCase = MockMarkReportsViewedUseCase();
-    mockUserRepository = MockIUserRepository();
+    mockWatchCurrentUserUseCase = MockWatchCurrentUserUseCase();
     mockTracker = MockReportsTracker();
     mockLocalStorageService = MockILocalStorageService();
 
@@ -70,8 +71,8 @@ void main() {
 
     when(() => mockAuthRepository.currentUser).thenReturn(tUser);
     when(
-      () => mockUserRepository.userStream,
-    ).thenAnswer((_) => const Stream<UserModel>.empty());
+      () => mockWatchCurrentUserUseCase(),
+    ).thenAnswer((_) => const Stream<Either<Failure, UserModel?>>.empty());
 
     when(
       () => mockTracker.logFetchFailed(error: any(named: 'error')),
@@ -118,7 +119,7 @@ void main() {
       mockAuthRepository,
       mockGetUserActivityUseCase,
       mockMarkReportsViewedUseCase,
-      mockUserRepository,
+      mockWatchCurrentUserUseCase,
       mockLocalStorageService,
       mockTracker,
     );

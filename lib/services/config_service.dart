@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:bizzie/core/data/dtos/company_tabs_config.dart';
 import 'package:bizzie/core/data/dtos/fmp_config.dart';
+import 'package:bizzie/core/data/dtos/onboarding_skip_config.dart';
 import 'package:bizzie/core/interfaces/i_config_service.dart';
 import 'package:injectable/injectable.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
@@ -35,6 +36,7 @@ class RemoteConfigKeys {
   static const String paidUsersCompanyTabsConfig =
       'paid_users_company_tabs_config';
   static const String showWatchlistPrice = 'show_watchlist_price';
+  static const String onboardingSkipConfig = 'onboarding_skip_config';
 }
 
 final _logger = BizzieLogger('ConfigService');
@@ -108,6 +110,18 @@ class ConfigService implements IConfigService {
       "financialStatements",
     ],
     "moreTabs": ["roe", "peRatio", "pfcfRatio", "aiReports"],
+  };
+
+  static const _defaultOnboardingSkipConfig = {
+    "defaultWatchlist": [
+      {"ticker": "AAPL", "name": "Apple"},
+      {"ticker": "NVDA", "name": "NVIDIA"},
+      {"ticker": "MSFT", "name": "Microsoft"},
+      {"ticker": "GOOGL", "name": "Alphabet"},
+      {"ticker": "AMZN", "name": "Amazon"},
+    ],
+    "defaultSector": "Information Technology",
+    "initialCompanyTicker": "AAPL",
   };
 
   static const _defaultSectorDescriptions = {
@@ -187,6 +201,9 @@ class ConfigService implements IConfigService {
         _defaultPaidUsersCompanyTabsConfig,
       ),
       RemoteConfigKeys.showWatchlistPrice: false,
+      RemoteConfigKeys.onboardingSkipConfig: jsonEncode(
+        _defaultOnboardingSkipConfig,
+      ),
     });
 
     try {
@@ -321,6 +338,19 @@ class ConfigService implements IConfigService {
     } catch (e) {
       _logger.severe('Error parsing fmpConfig', e);
       return FmpConfig.fromJson(_defaultFmpConfig);
+    }
+  }
+
+  @override
+  OnboardingSkipConfig get onboardingSkipConfig {
+    final jsonString = _remoteConfig.getString(
+      RemoteConfigKeys.onboardingSkipConfig,
+    );
+    try {
+      return OnboardingSkipConfig.fromJson(jsonDecode(jsonString));
+    } catch (e) {
+      _logger.severe('Error parsing onboardingSkipConfig', e);
+      return OnboardingSkipConfig.fromJson(_defaultOnboardingSkipConfig);
     }
   }
 

@@ -16,7 +16,9 @@ class BizzieAuthInterceptor extends Interceptor {
         final token = await user.getIdToken();
         options.headers['Authorization'] = 'Bearer $token';
       } else {
-        _logger.warning('BizzieAuthInterceptor: no current user — request sent without token');
+        _logger.warning(
+          'BizzieAuthInterceptor: no current user — request sent without token',
+        );
       }
     } catch (e) {
       _logger.warning('BizzieAuthInterceptor: failed to fetch ID token — $e');

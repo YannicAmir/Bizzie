@@ -1,0 +1,1 @@
+enum OnboardingSaveOutcome { saved, existingProfile }

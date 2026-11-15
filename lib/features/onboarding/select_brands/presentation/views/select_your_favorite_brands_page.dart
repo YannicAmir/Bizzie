@@ -1,6 +1,5 @@
 import 'package:bizzie/features/onboarding/presentation/bloc/onboarding_bloc.dart';
 import 'package:bizzie/features/onboarding/select_brands/presentation/bloc/select_brands_bloc.dart';
-import 'package:bizzie/features/onboarding/select_brands/domain/usecases/get_daily_brands_usecase.dart';
 import 'package:bizzie/di/injection.dart';
 import 'package:bizzie/features/onboarding/select_brands/presentation/widgets/global_brands_section.dart';
 import 'package:bizzie/features/onboarding/select_brands/presentation/widgets/sector_brands_section.dart';
@@ -14,6 +13,7 @@ import 'package:go_router/go_router.dart';
 import 'package:bizzie/app/routes/app_routes.dart';
 import 'package:bizzie/features/onboarding/domain/models/onboarding_step.dart';
 import 'package:bizzie/features/onboarding/presentation/widgets/onboarding_header.dart';
+import 'package:bizzie/features/onboarding/presentation/widgets/onboarding_skip_overlay.dart';
 import 'package:bizzie/features/onboarding/presentation/widgets/onboarding_footer.dart';
 import 'package:bizzie/shared/widgets/buttons/bizzie_primary_button.dart';
 
@@ -38,16 +38,27 @@ class _SelectYourFavoriteBrandsPageState
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) {
-        final onboardingBloc = context.read<OnboardingBloc>();
-        final useCase = getIt<GetDailyBrandsUseCase>();
-        return SelectBrandsBloc(onboardingBloc, useCase)
-          ..add(const SelectBrandsEvent.started());
-      },
-      child: const _SelectYourFavoriteBrandsView(),
+      create: (context) =>
+          getIt<SelectBrandsBloc>()
+            ..add(_startedEvent(context.read<OnboardingBloc>().state)),
+      child: BlocListener<OnboardingBloc, OnboardingState>(
+        listenWhen: (previous, current) =>
+            previous.selectedBrands != current.selectedBrands,
+        listener: (context, state) => context.read<SelectBrandsBloc>().add(
+          SelectBrandsEvent.updated(selectedBrands: state.selectedBrands),
+        ),
+        child: const _SelectYourFavoriteBrandsView(),
+      ),
     );
   }
 }
+
+SelectBrandsEvent _startedEvent(OnboardingState state) =>
+    SelectBrandsEvent.started(
+      sector: state.onboardingData.selectedSector,
+      sectorName: state.displaySectorName,
+      selectedBrands: state.selectedBrands,
+    );
 
 class _SelectYourFavoriteBrandsView extends StatelessWidget {
   const _SelectYourFavoriteBrandsView();
@@ -56,16 +67,19 @@ class _SelectYourFavoriteBrandsView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const OnboardingHeader(
-              title: 'Select your favorite brands & products',
-              subtitle: 'Select up to 5. You can search for more later',
-            ),
-            const Expanded(child: _BrandsListContent()),
-            const _StickyFooter(),
-          ],
+        child: OnboardingSkipOverlay(
+          step: OnboardingStep.brandsSelection,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const OnboardingHeader(
+                title: 'Select your favorite brands & products',
+                subtitle: 'Select up to 5. You can search for more later',
+              ),
+              const Expanded(child: _BrandsListContent()),
+              const _StickyFooter(),
+            ],
+          ),
         ),
       ),
     );
@@ -78,7 +92,6 @@ class _BrandsListContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      clipBehavior: Clip.hardEdge,
       child: BlocBuilder<SelectBrandsBloc, SelectBrandsState>(
         builder: (context, state) {
           return state.map(
@@ -87,7 +100,7 @@ class _BrandsListContent extends StatelessWidget {
               message: 'Error loading brands',
               onRetry: () {
                 context.read<SelectBrandsBloc>().add(
-                  const SelectBrandsEvent.started(),
+                  _startedEvent(context.read<OnboardingBloc>().state),
                 );
               },
             ),
@@ -127,7 +140,7 @@ class _LoadedBrandsList extends StatelessWidget {
       children: [
         AppConstants.onboardSectionSpacing,
         SelectedBrandsSection(brands: selectedBrands),
-        if (sectorName != 'Your Sector')
+        if (sectorName.isNotEmpty)
           SectorBrandsSection(
             sectorName: sectorName,
             brands: sectorBrands,
@@ -146,6 +159,17 @@ class _LoadedBrandsList extends StatelessWidget {
 
 class _StickyFooter extends StatelessWidget {
   const _StickyFooter();
+
+  void _onContinuePressed(BuildContext context) {
+    final onboardingBloc = context.read<OnboardingBloc>();
+    final ticker = onboardingBloc.state.initialCompanyTicker;
+    if (ticker == null) return;
+
+    onboardingBloc.add(const OnboardingEvent.brandsConfirmed());
+    context.go(
+      AppRoutes.onboardingCompanyProfile.replaceFirst(':ticker', ticker),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -170,9 +194,7 @@ class _StickyFooter extends StatelessWidget {
             width: double.infinity,
             child: BizziePrimaryButton(
               onPressed: data.isEnabled
-                  ? () {
-                      context.push(AppRoutes.onboardingAnalyzing);
-                    }
+                  ? () => _onContinuePressed(context)
                   : null,
               title: data.count == 0 ? 'Continue' : 'Continue (${data.count})',
             ),

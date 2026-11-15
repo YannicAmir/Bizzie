@@ -1,18 +1,20 @@
-import 'package:bizzie/app/routes/app_routes.dart';
-import 'package:bizzie/features/reports/presentation/bloc/reports_bloc.dart';
-import 'package:bizzie/features/reports/presentation/bloc/reports_event.dart';
 import 'package:bizzie/features/watchlist_ytd/domain/models/ytd_price_change.dart';
 import 'package:bizzie/features/watchlist_ytd/presentation/utils/ytd_price_change_extensions.dart';
 import 'package:bizzie/features/watchlist_ytd/presentation/widgets/watchlist_ytd_card.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 
 class WatchlistYtdSection extends StatelessWidget {
   final List<YtdPriceChange> changes;
+  final Map<String, String> logoUrls;
+  final ValueChanged<YtdPriceChange> onCardTapped;
 
-  const WatchlistYtdSection({super.key, required this.changes});
+  const WatchlistYtdSection({
+    super.key,
+    required this.changes,
+    required this.logoUrls,
+    required this.onCardTapped,
+  });
 
   static const int _columns = 2;
 
@@ -37,20 +39,11 @@ class WatchlistYtdSection extends StatelessWidget {
           _WatchlistYtdRow(
             row: rows[r],
             columns: _columns,
-            onCardTapped: (change) => _onCardTapped(context, change),
+            logoUrls: logoUrls,
+            onCardTapped: onCardTapped,
           ),
         ],
       ],
-    );
-  }
-
-  void _onCardTapped(BuildContext context, YtdPriceChange change) {
-    context.read<ReportsBloc>().add(
-      ReportsEvent.ytdCompanyClicked(ticker: change.ticker),
-    );
-    context.pushNamed(
-      AppRoutes.companyProfileReports,
-      pathParameters: {'ticker': change.ticker},
     );
   }
 }
@@ -58,11 +51,13 @@ class WatchlistYtdSection extends StatelessWidget {
 class _WatchlistYtdRow extends StatelessWidget {
   final List<YtdPriceChange> row;
   final int columns;
+  final Map<String, String> logoUrls;
   final void Function(YtdPriceChange change) onCardTapped;
 
   const _WatchlistYtdRow({
     required this.row,
     required this.columns,
+    required this.logoUrls,
     required this.onCardTapped,
   });
 
@@ -79,6 +74,7 @@ class _WatchlistYtdRow extends StatelessWidget {
               child: c < row.length
                   ? WatchlistYtdCard(
                       change: row[c],
+                      logoUrl: logoUrls[row[c].ticker],
                       onTap: () => onCardTapped(row[c]),
                     )
                   : const SizedBox.shrink(),

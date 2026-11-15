@@ -1,6 +1,5 @@
-import 'package:bizzie/app/themes/app_assets.dart';
+import 'package:bizzie/shared/widgets/buttons/bizzie_close_icon.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 
 class BizzieAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -29,15 +28,7 @@ class BizzieAppBar extends StatelessWidget implements PreferredSizeWidget {
           behavior: HitTestBehavior.opaque,
           child: Padding(
             padding: const EdgeInsets.only(right: 16.0, left: 16.0),
-            child: SvgPicture.asset(
-              AppAssets.modalCloseIcon,
-              width: 24,
-              height: 24,
-              colorFilter: ColorFilter.mode(
-                theme.colorScheme.onSurface,
-                BlendMode.srcIn,
-              ),
-            ),
+            child: BizzieCloseIcon(color: theme.colorScheme.onSurface),
           ),
         ),
       ],

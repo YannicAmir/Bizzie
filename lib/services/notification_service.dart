@@ -12,7 +12,7 @@ import 'package:bizzie/features/notifications/data/datasources/local_notificatio
 import 'package:bizzie/features/notifications/domain/interfaces/i_notification_repository.dart';
 import 'package:bizzie/core/interfaces/i_local_storage_service.dart';
 import 'package:bizzie/features/notifications/presentation/analytics/notification_tracker.dart';
-import 'package:bizzie/features/user/domain/interfaces/user_repository.dart';
+import 'package:bizzie/features/user/domain/interfaces/i_user_repository.dart';
 import 'package:injectable/injectable.dart';
 
 final _logger = BizzieLogger('NotificationService');
@@ -144,7 +144,9 @@ class NotificationService implements INotificationService {
     _logger.info('Subscribing to topic: $topic');
     final result = await _notificationRepository.subscribeToTopic(topic);
     result.fold((failure) {
-      _logger.severe('Failed to subscribe to topic $topic: ${failure.errorMessage}');
+      _logger.severe(
+        'Failed to subscribe to topic $topic: ${failure.errorMessage}',
+      );
       throw Exception(failure.errorMessage);
     }, (_) => _logger.info('Successfully subscribed to topic: $topic'));
   }
@@ -294,12 +296,5 @@ class NotificationService implements INotificationService {
 
     _logger.info('Legacy parse result: $data');
     return data;
-  }
-
-  @override
-  Future<bool> isSystemAuthorized() async {
-    final settings = await _firebaseMessaging.getNotificationSettings();
-    return settings.authorizationStatus == AuthorizationStatus.authorized ||
-        settings.authorizationStatus == AuthorizationStatus.provisional;
   }
 }

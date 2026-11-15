@@ -1,5 +1,7 @@
 import 'package:bizzie/core/error/exceptions.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
+import 'package:bizzie/features/auth/data/dtos/auth_user_dto.dart';
+import 'package:bizzie/features/auth/data/interfaces/i_auth_remote_datasource.dart';
 import 'package:injectable/injectable.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -8,35 +10,8 @@ import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 final _logger = BizzieLogger('RemoteAuthDataSource');
 
-abstract class RemoteAuthDataSource {
-  Future<void> initialize();
-  Stream<User?> get authStateChanges;
-  User? get currentUser;
-  Future<User> signInWithEmail({
-    required String email,
-    required String password,
-  });
-  Future<User> signUpWithEmail({
-    required String email,
-    required String password,
-  });
-  Future<User> signInWithGoogle();
-  Future<User> signInWithApple();
-  Future<void> signOut();
-  Future<void> resetPassword({required String email});
-  Future<void> deleteAccount();
-  Future<void> reauthenticateWithApple();
-  Future<void> reauthenticateWithPassword(String password);
-  Future<void> reauthenticateWithGoogle();
-  Future<void> updateUserEmail(String newEmail);
-  Future<void> updateUserPassword({
-    required String oldPassword,
-    required String newPassword,
-  });
-}
-
-@LazySingleton(as: RemoteAuthDataSource)
-class RemoteAuthDataSourceImpl implements RemoteAuthDataSource {
+@LazySingleton(as: IAuthRemoteDataSource)
+class RemoteAuthDataSourceImpl implements IAuthRemoteDataSource {
   final FirebaseAuth _firebaseAuth;
   final GoogleSignIn _googleSignIn;
 
@@ -48,13 +23,18 @@ class RemoteAuthDataSourceImpl implements RemoteAuthDataSource {
   }
 
   @override
-  Stream<User?> get authStateChanges => _firebaseAuth.authStateChanges();
+  Stream<AuthUserDto?> get authStateChanges => _firebaseAuth.userChanges().map(
+    (user) => user == null ? null : AuthUserDto.fromFirebaseUser(user),
+  );
 
   @override
-  User? get currentUser => _firebaseAuth.currentUser;
+  AuthUserDto? get currentUser {
+    final user = _firebaseAuth.currentUser;
+    return user == null ? null : AuthUserDto.fromFirebaseUser(user);
+  }
 
   @override
-  Future<User> signInWithEmail({
+  Future<AuthUserDto> signInWithEmail({
     required String email,
     required String password,
   }) async {
@@ -65,7 +45,7 @@ class RemoteAuthDataSourceImpl implements RemoteAuthDataSource {
         password: password,
       );
       _logger.info('Sign in success for uid: ${credential.user?.uid}');
-      return credential.user!;
+      return AuthUserDto.fromFirebaseUser(credential.user!);
     } catch (e, s) {
       _logger.severe('Sign in failed for email: $email', e, s);
       rethrow;
@@ -73,7 +53,7 @@ class RemoteAuthDataSourceImpl implements RemoteAuthDataSource {
   }
 
   @override
-  Future<User> signUpWithEmail({
+  Future<AuthUserDto> signUpWithEmail({
     required String email,
     required String password,
   }) async {
@@ -84,7 +64,7 @@ class RemoteAuthDataSourceImpl implements RemoteAuthDataSource {
         password: password,
       );
       _logger.info('Sign up success for uid: ${credential.user?.uid}');
-      return credential.user!;
+      return AuthUserDto.fromFirebaseUser(credential.user!);
     } catch (e, s) {
       _logger.severe('Sign up failed for email: $email', e, s);
       rethrow;
@@ -92,7 +72,7 @@ class RemoteAuthDataSourceImpl implements RemoteAuthDataSource {
   }
 
   @override
-  Future<User> signInWithGoogle() async {
+  Future<AuthUserDto> signInWithGoogle() async {
     _logger.info('Starting Google Sign-In flow');
     try {
       final GoogleSignInAccount googleUser = await _googleSignIn.authenticate();
@@ -113,7 +93,7 @@ class RemoteAuthDataSourceImpl implements RemoteAuthDataSource {
       _logger.info(
         'Google Sign-In success for uid: ${userCredential.user?.uid}',
       );
-      return userCredential.user!;
+      return AuthUserDto.fromFirebaseUser(userCredential.user!);
     } catch (e, s) {
       _logger.severe('Google Sign-In failed', e, s);
       rethrow;
@@ -121,7 +101,7 @@ class RemoteAuthDataSourceImpl implements RemoteAuthDataSource {
   }
 
   @override
-  Future<User> signInWithApple() async {
+  Future<AuthUserDto> signInWithApple() async {
     _logger.info('Starting Apple Sign-In flow');
     try {
       final appleCredential = await SignInWithApple.getAppleIDCredential(
@@ -142,7 +122,7 @@ class RemoteAuthDataSourceImpl implements RemoteAuthDataSource {
       _logger.info(
         'Apple Sign-In success for uid: ${userCredential.user?.uid}',
       );
-      return userCredential.user!;
+      return AuthUserDto.fromFirebaseUser(userCredential.user!);
     } on PlatformException catch (e, s) {
       _logger.severe(
         'Apple Sign-In Platform Error: Code=${e.code}, Message=${e.message}, Details=${e.details}',
@@ -154,6 +134,113 @@ class RemoteAuthDataSourceImpl implements RemoteAuthDataSource {
       _logger.severe('Apple Sign-In Generic Error', e, s);
       rethrow;
     }
+  }
+
+  @override
+  Future<AuthUserDto> signInAnonymously() async {
+    _logger.info('Attempting anonymous sign in');
+    try {
+      final credential = await _firebaseAuth.signInAnonymously();
+      _logger.info(
+        'Anonymous sign in success for uid: ${credential.user?.uid}',
+      );
+      return AuthUserDto.fromFirebaseUser(credential.user!);
+    } catch (e, s) {
+      _logger.severe('Anonymous sign in failed', e, s);
+      rethrow;
+    }
+  }
+
+  @override
+  Future<AuthUserDto> linkWithEmail({
+    required String email,
+    required String password,
+  }) async {
+    final user = _firebaseAuth.currentUser;
+    if (user == null) {
+      throw UserNotSignedInException();
+    }
+    _logger.info('Attempting email link for uid: ${user.uid}');
+    try {
+      final credential = EmailAuthProvider.credential(
+        email: email,
+        password: password,
+      );
+      final userCredential = await user.linkWithCredential(credential);
+      _logger.info('Email link success for uid: ${userCredential.user?.uid}');
+      return AuthUserDto.fromFirebaseUser(userCredential.user!);
+    } catch (e, s) {
+      _logger.severe('Email link failed for uid: ${user.uid}', e, s);
+      rethrow;
+    }
+  }
+
+  @override
+  Future<AuthUserDto> linkWithGoogle() async {
+    final user = _firebaseAuth.currentUser;
+    if (user == null) {
+      throw UserNotSignedInException();
+    }
+    _logger.info('Starting Google link flow for uid: ${user.uid}');
+    try {
+      final credential = await _getGoogleCredential();
+      final userCredential = await user.linkWithCredential(credential);
+      _logger.info('Google link success for uid: ${userCredential.user?.uid}');
+      return AuthUserDto.fromFirebaseUser(userCredential.user!);
+    } catch (e, s) {
+      _logger.severe('Google link failed for uid: ${user.uid}', e, s);
+      rethrow;
+    }
+  }
+
+  @override
+  Future<AuthUserDto> linkWithApple() async {
+    final user = _firebaseAuth.currentUser;
+    if (user == null) {
+      throw UserNotSignedInException();
+    }
+    _logger.info('Starting Apple link flow for uid: ${user.uid}');
+    try {
+      final credential = await _getAppleCredential();
+      final userCredential = await user.linkWithCredential(credential);
+      _logger.info('Apple link success for uid: ${userCredential.user?.uid}');
+      return AuthUserDto.fromFirebaseUser(userCredential.user!);
+    } on PlatformException catch (e, s) {
+      _logger.severe(
+        'Apple link Platform Error: Code=${e.code}, Message=${e.message}, Details=${e.details}',
+        e,
+        s,
+      );
+      rethrow;
+    } catch (e, s) {
+      _logger.severe('Apple link failed for uid: ${user.uid}', e, s);
+      rethrow;
+    }
+  }
+
+  Future<AuthCredential> _getGoogleCredential() async {
+    final GoogleSignInAccount googleUser = await _googleSignIn.authenticate();
+    final GoogleSignInAuthentication googleAuth = googleUser.authentication;
+    final GoogleSignInClientAuthorization? authorization = await googleUser
+        .authorizationClient
+        .authorizationForScopes([]);
+    return GoogleAuthProvider.credential(
+      accessToken: authorization?.accessToken,
+      idToken: googleAuth.idToken,
+    );
+  }
+
+  Future<AuthCredential> _getAppleCredential() async {
+    final appleCredential = await SignInWithApple.getAppleIDCredential(
+      scopes: [
+        AppleIDAuthorizationScopes.email,
+        AppleIDAuthorizationScopes.fullName,
+      ],
+    );
+    return OAuthProvider('apple.com').credential(
+      idToken: appleCredential.identityToken,
+      accessToken: appleCredential.authorizationCode,
+    );
   }
 
   @override
@@ -291,6 +378,26 @@ class RemoteAuthDataSourceImpl implements RemoteAuthDataSource {
     } catch (e, s) {
       _logger.severe('Sign out failed for uid: $uid', e, s);
       rethrow;
+    }
+  }
+
+  @override
+  Future<void> deleteAnonymousUserAndSignOut() async {
+    await _deleteAnonymousUser();
+    await signOut();
+  }
+
+  Future<void> _deleteAnonymousUser() async {
+    final user = _firebaseAuth.currentUser;
+    if (user == null || !user.isAnonymous) return;
+    try {
+      await user.delete();
+      _logger.info('Anonymous user deleted for uid: ${user.uid}');
+    } on Exception catch (e) {
+      _logger.warning(
+        'Anonymous user delete failed for uid: ${user.uid}, continuing sign out',
+        e,
+      );
     }
   }
 

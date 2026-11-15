@@ -1,11 +1,12 @@
 import 'dart:async';
 
+import 'package:bizzie/core/enums/financial_period.dart';
 import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:bizzie/core/interfaces/i_config_service.dart';
 import 'package:bizzie/core/interfaces/i_time_provider.dart';
 import 'package:bizzie/core/usecase/usecase.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
-import 'package:bizzie/features/auth/domain/usecases/get_auth_stream.dart';
+import 'package:bizzie/features/auth/domain/usecases/get_auth_stream_usecase.dart';
 import 'package:bizzie/features/auth/presentation/bloc/auth_session_reset_mixin.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/analytics/base_analytics.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/bloc/company_profile_analytics_mixin.dart';
@@ -53,7 +54,7 @@ class CompanySharesBloc extends Bloc<CompanySharesEvent, CompanySharesState>
     this._watchActiveTabUseCase,
     this._timeProvider,
     this._summaryService,
-    GetAuthStream getAuthStream,
+    GetAuthStreamUseCase getAuthStream,
   ) : super(const CompanySharesState.initial()) {
     on<LoadRequested>(_onLoadRequested, transformer: restartable());
     on<StalenessCheckRequested>(
@@ -102,10 +103,11 @@ class CompanySharesBloc extends Bloc<CompanySharesEvent, CompanySharesState>
     onTabShown(event.ticker, _buildTabShownViewState(event.ticker));
     state.mapOrNull(
       loaded: (s) => _markVisiblePeriodViewedFor(
-        isAnnualView: s.isAnnualView,
-        hasData: s.isAnnualView
-            ? s.annualChartData.isNotEmpty
-            : s.quarterlyChartData.isNotEmpty,
+        period: s.period,
+        hasData: switch (s.period) {
+          FinancialPeriod.annual => s.annualChartData.isNotEmpty,
+          FinancialPeriod.quarterly => s.quarterlyChartData.isNotEmpty,
+        },
       ),
     );
     add(CompanySharesEvent.stalenessCheckRequested(event.ticker));
@@ -118,41 +120,41 @@ class CompanySharesBloc extends Bloc<CompanySharesEvent, CompanySharesState>
       );
 
   void _onPeriodChanged(PeriodChanged event, Emitter<CompanySharesState> emit) {
-    state.mapOrNull(
-      loaded: (s) => emit(s.copyWith(isAnnualView: event.isAnnual)),
-    );
-    _markPeriodViewed(isAnnual: event.isAnnual);
+    state.mapOrNull(loaded: (s) => emit(s.copyWith(period: event.period)));
+    _markPeriodViewed(period: event.period);
   }
 
-  void _markPeriodViewed({required bool isAnnual}) {
+  void _markPeriodViewed({required FinancialPeriod period}) {
     updateAnalyticsState(
-      (s) => isAnnual
-          ? s.copyWith(viewedYearlySharesTab: true)
-          : s.copyWith(viewedQtrlySharesTab: true),
+      (s) => switch (period) {
+        FinancialPeriod.annual => s.copyWith(viewedYearlySharesTab: true),
+        FinancialPeriod.quarterly => s.copyWith(viewedQtrlySharesTab: true),
+      },
     );
   }
 
   void _markVisiblePeriodViewedFor({
-    required bool isAnnualView,
+    required FinancialPeriod period,
     required bool hasData,
   }) {
     if (hasData) {
-      _markPeriodViewed(isAnnual: isAnnualView);
+      _markPeriodViewed(period: period);
     }
   }
 
   void _onViewAllTapped(ViewAllTapped event, Emitter<CompanySharesState> emit) {
-    updateAnalyticsState((s) {
-      if (event.isAnnual) {
-        return event.isChart
-            ? s.copyWith(tappedYrchartViewAll: true)
-            : s.copyWith(tappedYrtableViewAll: true);
-      } else {
-        return event.isChart
-            ? s.copyWith(tappedQtrchartViewAll: true)
-            : s.copyWith(tappedQtrtableViewAll: true);
-      }
-    });
+    updateAnalyticsState(
+      (s) => switch (event.period) {
+        FinancialPeriod.annual =>
+          event.isChart
+              ? s.copyWith(tappedYrchartViewAll: true)
+              : s.copyWith(tappedYrtableViewAll: true),
+        FinancialPeriod.quarterly =>
+          event.isChart
+              ? s.copyWith(tappedQtrchartViewAll: true)
+              : s.copyWith(tappedQtrtableViewAll: true),
+      },
+    );
   }
 
   Future<void> _onLoadRequested(
@@ -163,8 +165,8 @@ class CompanySharesBloc extends Bloc<CompanySharesEvent, CompanySharesState>
       return;
     }
 
-    final wasAnnualView =
-        state.mapOrNull(loaded: (s) => s.isAnnualView) ?? true;
+    final previousPeriod =
+        state.mapOrNull(loaded: (s) => s.period) ?? FinancialPeriod.annual;
     emit(const CompanySharesState.loading());
 
     final stopwatch = Stopwatch()..start();
@@ -184,7 +186,7 @@ class CompanySharesBloc extends Bloc<CompanySharesEvent, CompanySharesState>
         ticker: event.ticker,
         tuple: tuple,
         loadTimeMs: stopwatch.elapsedMilliseconds,
-        isAnnualView: wasAnnualView,
+        period: previousPeriod,
         emit: emit,
       ),
     );
@@ -210,7 +212,7 @@ class CompanySharesBloc extends Bloc<CompanySharesEvent, CompanySharesState>
     required String ticker,
     required (ShareStats, CompanyProfileDataOrigin) tuple,
     required int loadTimeMs,
-    required bool isAnnualView,
+    required FinancialPeriod period,
     required Emitter<CompanySharesState> emit,
   }) {
     final (data, origin) = tuple;
@@ -221,29 +223,30 @@ class CompanySharesBloc extends Bloc<CompanySharesEvent, CompanySharesState>
         ticker: ticker,
         shareStats: data,
         annualChartData: data.annualWeightedAverageShares
-            .toChartDataSortedByDate(isAnnual: true),
+            .toChartDataSortedByDate(period: FinancialPeriod.annual),
         quarterlyChartData: data.quarterlyWeightedAverageShares
-            .toChartDataSortedByDate(isAnnual: false),
+            .toChartDataSortedByDate(period: FinancialPeriod.quarterly),
         annualSummary: _summaryService.computeSummary(
           data.annualWeightedAverageShares,
-          isAnnual: true,
+          period: FinancialPeriod.annual,
         ),
         quarterlySummary: _summaryService.computeSummary(
           data.quarterlyWeightedAverageShares,
-          isAnnual: false,
+          period: FinancialPeriod.quarterly,
         ),
         historyLimit: _configService.freePlanHistoryCount,
         dataOrigin: origin,
-        isAnnualView: isAnnualView,
+        period: period,
         lastUpdated: _timeProvider.nowLocal,
       ),
     );
     state.mapOrNull(
       loaded: (s) => _markVisiblePeriodViewedFor(
-        isAnnualView: s.isAnnualView,
-        hasData: s.isAnnualView
-            ? s.annualChartData.isNotEmpty
-            : s.quarterlyChartData.isNotEmpty,
+        period: s.period,
+        hasData: switch (s.period) {
+          FinancialPeriod.annual => s.annualChartData.isNotEmpty,
+          FinancialPeriod.quarterly => s.quarterlyChartData.isNotEmpty,
+        },
       ),
     );
 

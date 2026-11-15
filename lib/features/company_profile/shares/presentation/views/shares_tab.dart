@@ -1,10 +1,12 @@
+import 'package:bizzie/core/enums/financial_period.dart';
 import 'package:bizzie/core/enums/paywall_source.dart';
 import 'package:bizzie/features/company_profile/shared/domain/enums/company_profile_tab.dart';
-import 'package:bizzie/features/company_profile/shared/domain/extensions/financial_data_point_list_extensions.dart';
 import 'package:bizzie/features/company_profile/shared/domain/models/chart_data_point.dart';
 import 'package:bizzie/features/company_profile/shared/domain/models/financial_data_point.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/extensions/chart_data_point_list_x.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/extensions/company_profile_tab_x.dart';
+import 'package:bizzie/features/company_profile/shared/presentation/utils/financial_history_modal_helper.dart';
+import 'package:bizzie/features/company_profile/shared/presentation/utils/financial_period_extensions.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/widgets/company_profile_error_state.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/widgets/company_profile_loading_state.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/widgets/financial_data_table.dart';
@@ -20,7 +22,6 @@ import 'package:bizzie/features/company_profile/shares/presentation/extensions/c
 import 'package:bizzie/features/company_profile/shares/presentation/utils/shares_presentation_helper.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:bizzie/shared/widgets/charts/bizzie_expandable_chart.dart';
-import 'package:bizzie/shared/widgets/modals/app_history_modal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -53,9 +54,12 @@ class _SharesTabState extends State<SharesTab>
   @override
   bool get wantKeepAlive => true;
 
-  void _onPeriodChanged(BuildContext context, {required bool isAnnual}) {
+  void _onPeriodChanged(
+    BuildContext context, {
+    required FinancialPeriod period,
+  }) {
     context.read<CompanySharesBloc>().add(
-      CompanySharesEvent.periodChanged(isAnnual: isAnnual),
+      CompanySharesEvent.periodChanged(period: period),
     );
   }
 
@@ -94,27 +98,27 @@ class _SharesTabState extends State<SharesTab>
               ),
             ),
             loaded: (loadedState) {
-              final isAnnual = loadedState.isAnnualView;
+              final period = loadedState.period;
               final chartData = loadedState.activeChartData;
 
               if (chartData.isEmpty) {
                 return PeriodMetricEmptyView(
-                  isAnnual: isAnnual,
+                  period: period,
                   message: 'No Share data available for this period.',
-                  onPeriodChanged: (isAnnual) =>
-                      _onPeriodChanged(context, isAnnual: isAnnual),
+                  onPeriodChanged: (period) =>
+                      _onPeriodChanged(context, period: period),
                 );
               }
 
               return _SharesLoadedView(
-                isAnnual: isAnnual,
+                period: period,
                 chartData: chartData,
                 summary: loadedState.activeSummary,
                 tableData: loadedState.activeTableData,
                 historyLimit: loadedState.historyLimit,
                 numberFormat: numberFormat,
-                onPeriodChanged: (isAnnual) =>
-                    _onPeriodChanged(context, isAnnual: isAnnual),
+                onPeriodChanged: (period) =>
+                    _onPeriodChanged(context, period: period),
               );
             },
           );
@@ -125,16 +129,16 @@ class _SharesTabState extends State<SharesTab>
 }
 
 class _SharesLoadedView extends StatelessWidget {
-  final bool isAnnual;
+  final FinancialPeriod period;
   final List<ChartDataPoint> chartData;
   final SharesSummaryData summary;
   final List<FinancialDataPoint> tableData;
   final int historyLimit;
   final NumberFormat numberFormat;
-  final ValueChanged<bool> onPeriodChanged;
+  final ValueChanged<FinancialPeriod> onPeriodChanged;
 
   const _SharesLoadedView({
-    required this.isAnnual,
+    required this.period,
     required this.chartData,
     required this.summary,
     required this.tableData,
@@ -145,10 +149,6 @@ class _SharesLoadedView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final dateFormat = isAnnual
-        ? FinancialDateFormat.monthYear
-        : FinancialDateFormat.quarterShort;
-    final periodHeaderLabel = isAnnual ? 'Year Ended' : 'Quarter Ended';
     final summaryFormatted = SharesPresentationHelper.formatSummary(
       summary,
       numberFormat,
@@ -159,7 +159,7 @@ class _SharesLoadedView extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          PeriodSwitch(isAnnual: isAnnual, onPeriodChanged: onPeriodChanged),
+          PeriodSwitch(period: period, onPeriodChanged: onPeriodChanged),
           AppConstants.mainSectionSpacing,
           MetricSummaryCard(
             title: 'Outstanding Shares',
@@ -170,7 +170,9 @@ class _SharesLoadedView extends StatelessWidget {
           ),
           AppConstants.mainSectionSpacing,
           BizzieExpandableChart(
-            key: ValueKey('shares_chart_${isAnnual}_${chartData.length}'),
+            key: ValueKey(
+              'shares_chart_${period.isAnnual}_${chartData.length}',
+            ),
             data: chartData.toBizzieChartData(),
             numberFormat: numberFormat,
             visibleCount: historyLimit,
@@ -184,14 +186,17 @@ class _SharesLoadedView extends StatelessWidget {
             metricLabel: 'Shares',
             currency: '',
             isInverseGrowth: true,
-            periodHeaderLabel: periodHeaderLabel,
-            dateFormat: dateFormat,
+            periodHeaderLabel: period.tableHeaderLabel,
+            dateFormat: period.tableDateFormat,
             onAnalyticsTap: () => _onViewAllTapped(context, isChart: false),
-            onViewMore: () => _showAllHistory(
+            onViewMore: () => FinancialHistoryModalHelper.show(
               context,
-              title: isAnnual ? 'Yearly Shares Data' : 'Quarterly Shares Data',
-              dateFormat: dateFormat,
-              periodHeaderLabel: periodHeaderLabel,
+              title: period.historyTitle('Shares Data'),
+              data: tableData,
+              metricLabel: 'Shares',
+              currency: '',
+              period: period,
+              isInverseGrowth: true,
             ),
             limit: historyLimit,
             source: PaywallSource.company_profile,
@@ -203,35 +208,7 @@ class _SharesLoadedView extends StatelessWidget {
 
   void _onViewAllTapped(BuildContext context, {required bool isChart}) {
     context.read<CompanySharesBloc>().add(
-      CompanySharesEvent.viewAllTapped(isAnnual: isAnnual, isChart: isChart),
-    );
-  }
-
-  void _showAllHistory(
-    BuildContext context, {
-    required String title,
-    required FinancialDateFormat dateFormat,
-    required String periodHeaderLabel,
-  }) {
-    final sortedData = tableData.sortedByDateDescending();
-
-    AppHistoryModalHelper.show<FinancialDataPoint>(
-      context: context,
-      title: title,
-      header: FinancialTableHeader(
-        metricLabel: 'Shares',
-        dateFormat: dateFormat,
-        periodHeaderLabel: periodHeaderLabel,
-      ),
-      data: sortedData,
-      itemBuilder: (context, item, index) => FinancialTableRow(
-        item: item,
-        index: index,
-        allData: sortedData,
-        currency: '',
-        isInverseGrowth: true,
-        dateFormat: dateFormat,
-      ),
+      CompanySharesEvent.viewAllTapped(period: period, isChart: isChart),
     );
   }
 }

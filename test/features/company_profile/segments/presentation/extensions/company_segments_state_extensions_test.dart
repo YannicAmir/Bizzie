@@ -1,3 +1,4 @@
+import 'package:bizzie/core/enums/financial_period.dart';
 import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:bizzie/features/company_profile/segments/domain/models/revenue_geographic_segments.dart';
 import 'package:bizzie/features/company_profile/segments/domain/models/revenue_product_segments.dart';
@@ -82,8 +83,8 @@ void main() {
       final state = buildLoadedState();
 
       // act
-      final annualKey = state.selectedKey(isAnnual: true);
-      final quarterlyKey = state.selectedKey(isAnnual: false);
+      final annualKey = state.selectedKey(period: FinancialPeriod.annual);
+      final quarterlyKey = state.selectedKey(period: FinancialPeriod.quarterly);
 
       // assert
       expect(annualKey, '2025');
@@ -95,8 +96,8 @@ void main() {
       final state = buildLoadedState();
 
       // act
-      final annualKeys = state.periodKeys(isAnnual: true);
-      final quarterlyKeys = state.periodKeys(isAnnual: false);
+      final annualKeys = state.periodKeys(period: FinancialPeriod.annual);
+      final quarterlyKeys = state.periodKeys(period: FinancialPeriod.quarterly);
 
       // assert
       expect(annualKeys, ['2025', '2024']);
@@ -136,7 +137,10 @@ void main() {
       final state = buildLoadedState();
 
       // act
-      final segment = state.productSegmentForKey('2024', isAnnual: true);
+      final segment = state.productSegmentForKey(
+        '2024',
+        period: FinancialPeriod.annual,
+      );
 
       // assert
       expect(segment, tProductAnnual2024);
@@ -147,7 +151,10 @@ void main() {
       final state = buildLoadedState();
 
       // act
-      final segment = state.productSegmentForKey('Q2 2026', isAnnual: false);
+      final segment = state.productSegmentForKey(
+        'Q2 2026',
+        period: FinancialPeriod.quarterly,
+      );
 
       // assert
       expect(segment, tProductQuarter);
@@ -158,8 +165,14 @@ void main() {
       final state = buildLoadedState();
 
       // act
-      final unknown = state.productSegmentForKey('1999', isAnnual: true);
-      final nullKey = state.productSegmentForKey(null, isAnnual: true);
+      final unknown = state.productSegmentForKey(
+        '1999',
+        period: FinancialPeriod.annual,
+      );
+      final nullKey = state.productSegmentForKey(
+        null,
+        period: FinancialPeriod.annual,
+      );
 
       // assert
       expect(unknown, isNull);
@@ -171,7 +184,10 @@ void main() {
       final state = buildLoadedState();
 
       // act
-      final segment = state.geographicSegmentForKey('2025', isAnnual: true);
+      final segment = state.geographicSegmentForKey(
+        '2025',
+        period: FinancialPeriod.annual,
+      );
 
       // assert
       expect(segment, tGeographicAnnual2025);
@@ -182,7 +198,10 @@ void main() {
       final state = buildLoadedState();
 
       // act
-      final segment = state.geographicSegmentForKey('Q1 2020', isAnnual: false);
+      final segment = state.geographicSegmentForKey(
+        'Q1 2020',
+        period: FinancialPeriod.quarterly,
+      );
 
       // assert
       expect(segment, isNull);
@@ -193,7 +212,7 @@ void main() {
       final state = buildLoadedState();
 
       // act
-      final label = state.pairLabel('2025', isAnnual: true);
+      final label = state.pairLabel('2025', period: FinancialPeriod.annual);
 
       // assert
       expect(label, '2025, 2024');
@@ -204,8 +223,14 @@ void main() {
       final state = buildLoadedState();
 
       // act
-      final annualLabel = state.pairLabel('2024', isAnnual: true);
-      final quarterlyLabel = state.pairLabel('Q2 2026', isAnnual: false);
+      final annualLabel = state.pairLabel(
+        '2024',
+        period: FinancialPeriod.annual,
+      );
+      final quarterlyLabel = state.pairLabel(
+        'Q2 2026',
+        period: FinancialPeriod.quarterly,
+      );
 
       // assert
       expect(annualLabel, '2024');

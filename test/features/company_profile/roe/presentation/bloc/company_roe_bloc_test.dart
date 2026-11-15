@@ -11,7 +11,7 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:bizzie/core/interfaces/i_time_provider.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:bizzie/features/auth/domain/usecases/get_auth_stream.dart';
+import 'package:bizzie/features/auth/domain/usecases/get_auth_stream_usecase.dart';
 import 'package:bizzie/core/interfaces/i_config_service.dart';
 import 'package:bizzie/features/company_profile/roe/presentation/analytics/roe_tab_analytics.dart';
 import 'package:bizzie/features/company_profile/roe/presentation/analytics/roe_tab_view_state.dart';
@@ -22,10 +22,10 @@ class MockConfigService extends Mock implements IConfigService {}
 
 class MockRoeTabAnalytics extends Mock implements RoeTabAnalytics {}
 
-class MockGetAuthStream extends Mock implements GetAuthStream {}
+class MockGetAuthStreamUseCase extends Mock implements GetAuthStreamUseCase {}
 
-MockGetAuthStream stubbedGetAuthStream() {
-  final mock = MockGetAuthStream();
+MockGetAuthStreamUseCase stubbedGetAuthStream() {
+  final mock = MockGetAuthStreamUseCase();
   when(() => mock()).thenAnswer((_) => const Stream.empty());
   return mock;
 }

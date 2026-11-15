@@ -8,13 +8,19 @@ import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 MarkdownStyleSheet _buildMarkdownStyleSheet(BuildContext context) {
   final colorScheme = Theme.of(context).colorScheme;
   return MarkdownStyleSheet(
-    p: AppTextStyles.bodyMedium.copyWith(height: AppConstants.chatMarkdownLineHeight),
-    strong: AppTextStyles.bodyMediumBold.copyWith(height: AppConstants.chatMarkdownLineHeight),
+    p: AppTextStyles.bodyMedium.copyWith(
+      height: AppConstants.chatMarkdownLineHeight,
+    ),
+    strong: AppTextStyles.bodyMediumBold.copyWith(
+      height: AppConstants.chatMarkdownLineHeight,
+    ),
     em: AppTextStyles.bodyMedium.copyWith(fontStyle: FontStyle.italic),
     h1: AppTextStyles.h1,
     h2: AppTextStyles.h2,
     h3: AppTextStyles.h3,
-    listBullet: AppTextStyles.bodyMedium.copyWith(height: AppConstants.chatMarkdownLineHeight),
+    listBullet: AppTextStyles.bodyMedium.copyWith(
+      height: AppConstants.chatMarkdownLineHeight,
+    ),
     code: AppTextStyles.bodyMedium,
     codeblockDecoration: BoxDecoration(
       color: colorScheme.tertiaryContainer,

@@ -1,12 +1,12 @@
 import 'package:bizzie/app/themes/app_assets.dart';
 import 'package:bizzie/features/auth/presentation/widgets/auth_divider.dart';
-import 'package:bizzie/shared/widgets/modals/bizzie_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../bloc/auth_bloc.dart';
 import '../bloc/auth_state.dart';
+import '../utils/auth_failure_snackbar.dart';
 import 'package:bizzie/features/auth/domain/enums/auth_source.dart';
 import '../widgets/auth_footer.dart';
 import '../widgets/login_form.dart';
@@ -23,13 +23,12 @@ class LoginPage extends StatelessWidget {
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
         state.maybeWhen(
-          failure: (failure) {
-            BizzieSnackBar.show(
-              context,
-              message: failure.errorMessage,
-              type: BizzieSnackBarType.error,
-            );
+          authenticated: (user) {
+            if (source == AuthSource.guestGate && !user.isAnonymous) {
+              context.pop(true);
+            }
           },
+          failure: (failure) => AuthFailureSnackBar.show(context, failure),
           orElse: () {},
         );
       },

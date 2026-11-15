@@ -1,18 +1,24 @@
 import 'dart:async';
+
 import 'package:bizzie/app/routes/app_routes.dart';
 import 'package:bizzie/app/themes/app_colors.dart';
-import 'package:bizzie/core/logging/bizzie_logger.dart';
-
-import 'package:bizzie/features/auth/presentation/bloc/auth_bloc.dart';
-import 'package:bizzie/features/auth/presentation/bloc/auth_state.dart';
-
-import 'package:bizzie/features/onboarding/presentation/bloc/onboarding_bloc.dart';
+import 'package:bizzie/app/themes/app_text_styles.dart';
 import 'package:bizzie/features/onboarding/domain/models/onboarding_step.dart';
+import 'package:bizzie/features/onboarding/presentation/bloc/onboarding_bloc.dart';
+import 'package:bizzie/features/onboarding/presentation/extensions/onboarding_state_x.dart';
+import 'package:bizzie/features/onboarding/presentation/models/profile_summary_item.dart';
+import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:bizzie/app/themes/app_assets.dart';
+
 import '../widgets/onboarding_header.dart';
+
+const _progressDuration = Duration(seconds: 5);
+const _carouselInterval = Duration(milliseconds: 1600);
+const _carouselTransitionDuration = Duration(milliseconds: 500);
+
+enum _BuildingProfilePhase { progressing, finishing, saveFailed }
 
 class BuildingProfilePage extends StatefulWidget {
   const BuildingProfilePage({super.key});
@@ -23,59 +29,60 @@ class BuildingProfilePage extends StatefulWidget {
 
 class _BuildingProfilePageState extends State<BuildingProfilePage>
     with SingleTickerProviderStateMixin {
-  late AnimationController _progressController;
-  late Animation<double> _progressAnimation;
-  late PageController _pageController;
-  late _CarouselAutoScroller _autoScroller;
+  late final AnimationController _progressController;
+  late final PageController _pageController;
+  late final _CarouselAutoScroller _autoScroller;
 
   bool _isAnimationComplete = false;
   bool _isProfileSaved = false;
-  final _logger = BizzieLogger('BuildingProfilePage');
 
   @override
   void initState() {
     super.initState();
-    context.read<OnboardingBloc>().add(
+    final onboardingBloc = context.read<OnboardingBloc>();
+    onboardingBloc.add(
       const OnboardingEvent.stepViewed(OnboardingStep.buildingProfile),
     );
 
-    _progressController = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 5),
-    );
-
-    _progressAnimation =
-        Tween<double>(begin: 0.0, end: 1.0).animate(_progressController)
-          ..addListener(() {
-            setState(() {});
-          })
-          ..addStatusListener((status) {
-            if (status == AnimationStatus.completed) {
-              _onAnimationComplete();
-            }
-          });
-
-    _progressController.forward();
+    _progressController =
+        AnimationController(vsync: this, duration: _progressDuration)
+          ..addStatusListener(_onProgressStatusChanged)
+          ..forward();
 
     _pageController = PageController();
-    _autoScroller = _CarouselAutoScroller(_pageController);
-    _autoScroller.start();
+    _autoScroller = _CarouselAutoScroller(
+      _pageController,
+      itemCount: onboardingBloc.state.profileSummaryItems.length,
+    )..start();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _checkAuthAndTrigger();
+      onboardingBloc.add(const OnboardingEvent.buildingProfileStarted());
     });
   }
 
-  void _checkAuthAndTrigger() {
-    final authState = context.read<AuthBloc>().state;
-    authState.mapOrNull(authenticated: (_) => _triggerSave());
+  void _onProgressStatusChanged(AnimationStatus status) {
+    if (status == AnimationStatus.completed) {
+      _onAnimationComplete();
+    }
   }
 
-  void _triggerSave() {
-    if (_isProfileSaved) return;
+  void _requestCompletion() {
     context.read<OnboardingBloc>().add(
       const OnboardingEvent.completionRequested(),
     );
+  }
+
+  void _onOnboardingStatusChanged(OnboardingStatus status) {
+    switch (status) {
+      case OnboardingStatus.success:
+        _onProfileSaveSuccess();
+      case OnboardingStatus.existingProfile:
+        _onExistingProfileFound();
+      case OnboardingStatus.initial ||
+          OnboardingStatus.loading ||
+          OnboardingStatus.failure:
+        break;
+    }
   }
 
   void _onAnimationComplete() {
@@ -92,11 +99,26 @@ class _BuildingProfilePageState extends State<BuildingProfilePage>
     _tryNavigate();
   }
 
+  void _onExistingProfileFound() {
+    _autoScroller.stop();
+    context.go(AppRoutes.home);
+  }
+
   void _tryNavigate() {
     if (_isAnimationComplete && _isProfileSaved) {
       _autoScroller.stop();
       context.go(AppRoutes.onboardingProfileReady);
     }
+  }
+
+  _BuildingProfilePhase _phaseFor(OnboardingState state) {
+    if (!_isAnimationComplete || _isProfileSaved) {
+      return _BuildingProfilePhase.progressing;
+    }
+    if (state.status == OnboardingStatus.failure && !state.isSubmitting) {
+      return _BuildingProfilePhase.saveFailed;
+    }
+    return _BuildingProfilePhase.finishing;
   }
 
   @override
@@ -109,135 +131,17 @@ class _BuildingProfilePageState extends State<BuildingProfilePage>
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocListener(
-      listeners: [
-        BlocListener<AuthBloc, AuthState>(
-          listener: (context, state) {
-            state.mapOrNull(
-              authenticated: (authState) {
-                if (!_isProfileSaved && !_isAnimationComplete) {
-                  _triggerSave();
-                }
-              },
-            );
-          },
-        ),
-        BlocListener<OnboardingBloc, OnboardingState>(
-          listener: (context, state) {
-            if (state.status == OnboardingStatus.success) {
-              _onProfileSaveSuccess();
-            } else if (state.status == OnboardingStatus.failure) {
-              _logger.severe(
-                'Background profile save failed: ${state.failureMessage}',
-              );
-            }
-          },
-        ),
-      ],
+    return BlocListener<OnboardingBloc, OnboardingState>(
+      listenWhen: (previous, current) => previous.status != current.status,
+      listener: (context, state) => _onOnboardingStatusChanged(state.status),
       child: BlocBuilder<OnboardingBloc, OnboardingState>(
-        builder: (context, state) {
-          final theme = Theme.of(context);
-          final experience = state.onboardingData.investingExperience;
-          final brandsCount = state.selectedBrands.length;
-
-          final carouselItems = [
-            _ProfileItemData(
-              iconAsset: AppAssets.favoriteSectorIcon,
-              title: state.displaySectorName,
-              subtitle: 'Favorite Sector',
-              gradientColors: [
-                const Color(0xFF2B7FFF),
-                const Color(0xFF155DFC),
-              ],
-            ),
-            _ProfileItemData(
-              iconAsset: AppAssets.investorClassificationIcon,
-              title: experience?.name.toUpperCase() ?? 'INVESTOR',
-              subtitle: 'Investor Classification',
-              gradientColors: [
-                const Color(0xFF2B7FFF),
-                const Color(0xFF155DFC),
-              ],
-            ),
-            _ProfileItemData(
-              iconAsset: AppAssets.favoriteBrandsIcon,
-              title: '$brandsCount',
-              subtitle: 'Favorite Brands Count',
-              gradientColors: [
-                const Color(0xFF2B7FFF),
-                const Color(0xFF155DFC),
-              ],
-            ),
-          ];
-
-          return Scaffold(
-            backgroundColor: theme.scaffoldBackgroundColor,
-            body: SafeArea(
-              child: Column(
-                children: [
-                  const OnboardingHeader(),
-                  Expanded(
-                    child: LayoutBuilder(
-                      builder: (context, constraints) {
-                        return SingleChildScrollView(
-                          child: ConstrainedBox(
-                            constraints: BoxConstraints(
-                              minHeight: constraints.maxHeight,
-                            ),
-                            child: IntrinsicHeight(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  _ProfileCarousel(
-                                    pageController: _pageController,
-                                    carouselItems: carouselItems,
-                                  ),
-                                  const SizedBox(height: 48),
-                                  _ProfileCreationProgress(
-                                    progressAnimation: _progressAnimation,
-                                  ),
-                                  const SizedBox(height: 32),
-                                  if (_isAnimationComplete && !_isProfileSaved)
-                                    Padding(
-                                      padding: const EdgeInsets.only(top: 8.0),
-                                      child: Text(
-                                        'Finishing up...',
-                                        style: theme.textTheme.displayMedium
-                                            ?.copyWith(
-                                              fontSize: 28,
-                                              fontWeight: FontWeight.w800,
-                                              color: AppColors.textPrimary,
-                                              height: 1.2,
-                                              letterSpacing: 0.383,
-                                            ),
-                                      ),
-                                    )
-                                  else
-                                    Text(
-                                      '   ${(_progressAnimation.value * 100).toInt()}%',
-                                      style: theme.textTheme.bodyLarge
-                                          ?.copyWith(
-                                            fontWeight: FontWeight.w900,
-                                            fontSize: 20,
-                                            height: 1.5,
-                                            letterSpacing: -0.449,
-                                            color: AppColors.primary,
-                                          ),
-                                    ),
-                                  const SizedBox(height: 56),
-                                ],
-                              ),
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          );
-        },
+        builder: (context, state) => _BuildingProfileView(
+          pageController: _pageController,
+          progressAnimation: _progressController,
+          summaryItems: state.profileSummaryItems,
+          phase: _phaseFor(state),
+          onRetry: _requestCompletion,
+        ),
       ),
     );
   }
@@ -245,23 +149,20 @@ class _BuildingProfilePageState extends State<BuildingProfilePage>
 
 class _CarouselAutoScroller {
   final PageController pageController;
+  final int itemCount;
   Timer? _timer;
   int _currentPage = 0;
 
-  _CarouselAutoScroller(this.pageController);
+  _CarouselAutoScroller(this.pageController, {required this.itemCount});
 
   void start() {
-    _timer = Timer.periodic(const Duration(milliseconds: 1600), (timer) {
-      if (_currentPage < 2) {
-        _currentPage++;
-      } else {
-        _currentPage = 0;
-      }
+    _timer = Timer.periodic(_carouselInterval, (_) {
+      _currentPage = (_currentPage + 1) % itemCount;
 
       if (pageController.hasClients) {
         pageController.animateToPage(
           _currentPage,
-          duration: const Duration(milliseconds: 500),
+          duration: _carouselTransitionDuration,
           curve: Curves.easeInOut,
         );
       }
@@ -277,9 +178,84 @@ class _CarouselAutoScroller {
   }
 }
 
+class _BuildingProfileView extends StatelessWidget {
+  final PageController pageController;
+  final Animation<double> progressAnimation;
+  final List<ProfileSummaryItem> summaryItems;
+  final _BuildingProfilePhase phase;
+  final VoidCallback onRetry;
+
+  const _BuildingProfileView({
+    required this.pageController,
+    required this.progressAnimation,
+    required this.summaryItems,
+    required this.phase,
+    required this.onRetry,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: SafeArea(
+        child: Column(
+          children: [
+            const OnboardingHeader(),
+            Expanded(
+              child: _CenteredScrollView(
+                children: [
+                  _ProfileCarousel(
+                    pageController: pageController,
+                    carouselItems: summaryItems,
+                  ),
+                  AppConstants.onboardBuildingProfileCarouselSpacing,
+                  _ProfileCreationProgress(
+                    progressAnimation: progressAnimation,
+                  ),
+                  AppConstants.onboardSectionSpacing,
+                  _ProgressStatus(
+                    phase: phase,
+                    progressAnimation: progressAnimation,
+                    onRetry: onRetry,
+                  ),
+                  AppConstants.onboardBuildingProfileBottomSpacing,
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _CenteredScrollView extends StatelessWidget {
+  final List<Widget> children;
+
+  const _CenteredScrollView({required this.children});
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return SingleChildScrollView(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(minHeight: constraints.maxHeight),
+            child: IntrinsicHeight(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: children,
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
 class _ProfileCarousel extends StatelessWidget {
   final PageController pageController;
-  final List<_ProfileItemData> carouselItems;
+  final List<ProfileSummaryItem> carouselItems;
 
   const _ProfileCarousel({
     required this.pageController,
@@ -289,7 +265,7 @@ class _ProfileCarousel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 110,
+      height: AppConstants.onboardBuildingProfileCarouselHeight,
       child: PageView.builder(
         controller: pageController,
         physics: const NeverScrollableScrollPhysics(),
@@ -297,7 +273,7 @@ class _ProfileCarousel extends StatelessWidget {
         itemBuilder: (context, index) {
           final item = carouselItems[index];
           return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24.0),
+            padding: AppConstants.onboardHorizontalPadding,
             child: _ProfileCarouselItem(item: item),
           );
         },
@@ -307,47 +283,25 @@ class _ProfileCarousel extends StatelessWidget {
 }
 
 class _ProfileCarouselItem extends StatelessWidget {
-  final _ProfileItemData item;
+  final ProfileSummaryItem item;
 
   const _ProfileCarouselItem({required this.item});
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: AppConstants.onboardProfileSummaryCardPadding,
       decoration: BoxDecoration(
-        color: theme.cardColor,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.inputBackground, width: 1),
+        color: Theme.of(context).cardColor,
+        borderRadius: BorderRadius.circular(
+          AppConstants.mainSectionBorderRadius,
+        ),
+        border: Border.all(color: AppColors.inputBackground),
       ),
       child: Row(
         children: [
-          Container(
-            width: 48,
-            height: 48,
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: item.gradientColors,
-              ),
-              borderRadius: BorderRadius.circular(14),
-            ),
-            child: Center(
-              child: Image.asset(
-                item.iconAsset,
-                width: 24,
-                height: 24,
-                errorBuilder: (c, o, s) => const Icon(
-                  Icons.check_circle,
-                  size: 24,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(width: 12),
+          _ProfileSummaryIcon(iconAsset: item.iconAsset),
+          AppConstants.onboardProfileSummaryIconSpacing,
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -355,27 +309,51 @@ class _ProfileCarouselItem extends StatelessWidget {
               children: [
                 Text(
                   item.subtitle,
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w500,
-                    color: AppColors.textSecondary,
-                    height: 1.5,
-                  ),
+                  style: AppTextStyles.onboardingSummaryLabel,
                 ),
-                Text(
-                  item.title,
-                  style: theme.textTheme.bodyLarge?.copyWith(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.textPrimary,
-                    height: 1.5,
-                    letterSpacing: -0.3125,
-                  ),
-                ),
+                Text(item.title, style: AppTextStyles.onboardingSummaryValue),
               ],
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _ProfileSummaryIcon extends StatelessWidget {
+  static const _gradient = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [AppColors.blueGradientStart, AppColors.primary],
+  );
+
+  final String iconAsset;
+
+  const _ProfileSummaryIcon({required this.iconAsset});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: AppConstants.onboardProfileSummaryIconContainerSize,
+      height: AppConstants.onboardProfileSummaryIconContainerSize,
+      decoration: BoxDecoration(
+        gradient: _gradient,
+        borderRadius: BorderRadius.circular(
+          AppConstants.onboardProfileSummaryIconContainerRadius,
+        ),
+      ),
+      child: Center(
+        child: Image.asset(
+          iconAsset,
+          width: AppConstants.onboardProfileSummaryIconSize,
+          height: AppConstants.onboardProfileSummaryIconSize,
+          errorBuilder: (_, _, _) => const Icon(
+            Icons.check_circle,
+            size: AppConstants.onboardProfileSummaryIconSize,
+            color: AppColors.white,
+          ),
+        ),
       ),
     );
   }
@@ -388,37 +366,21 @@ class _ProfileCreationProgress extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     return FittedBox(
       fit: BoxFit.scaleDown,
-      child: SizedBox(
-        width: 340,
-        height: 340,
+      child: SizedBox.square(
+        dimension: AppConstants.onboardBuildingProfileProgressSize,
         child: Stack(
           alignment: Alignment.center,
           children: [
-            SizedBox(
-              width: 340,
-              height: 340,
-              child: CircularProgressIndicator(
-                value: progressAnimation.value,
-                strokeWidth: 15,
-                backgroundColor: AppColors.slate100,
-                color: AppColors.primary,
-                strokeCap: StrokeCap.round,
-              ),
+            RepaintBoundary(
+              child: _ProgressRing(progressAnimation: progressAnimation),
             ),
             Padding(
-              padding: const EdgeInsets.all(40.0),
+              padding: AppConstants.onboardBuildingProfileProgressTextPadding,
               child: Text(
                 'Building your profile',
-                style: theme.textTheme.displayMedium?.copyWith(
-                  fontSize: 28,
-                  fontWeight: FontWeight.w800,
-                  color: AppColors.textPrimary,
-                  height: 1.2,
-                  letterSpacing: 0.383,
-                ),
+                style: AppTextStyles.onboardingDisplay,
                 textAlign: TextAlign.center,
               ),
             ),
@@ -429,16 +391,92 @@ class _ProfileCreationProgress extends StatelessWidget {
   }
 }
 
-class _ProfileItemData {
-  final String iconAsset;
-  final String title;
-  final String subtitle;
-  final List<Color> gradientColors;
+class _ProgressRing extends StatelessWidget {
+  final Animation<double> progressAnimation;
 
-  const _ProfileItemData({
-    required this.iconAsset,
-    required this.title,
-    required this.subtitle,
-    required this.gradientColors,
+  const _ProgressRing({required this.progressAnimation});
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox.square(
+      dimension: AppConstants.onboardBuildingProfileProgressSize,
+      child: AnimatedBuilder(
+        animation: progressAnimation,
+        builder: (context, _) => CircularProgressIndicator(
+          value: progressAnimation.value,
+          strokeWidth: AppConstants.onboardBuildingProfileProgressStrokeWidth,
+          backgroundColor: AppColors.slate100,
+          color: AppColors.primary,
+          strokeCap: StrokeCap.round,
+        ),
+      ),
+    );
+  }
+}
+
+class _ProgressStatus extends StatelessWidget {
+  final _BuildingProfilePhase phase;
+  final Animation<double> progressAnimation;
+  final VoidCallback onRetry;
+
+  const _ProgressStatus({
+    required this.phase,
+    required this.progressAnimation,
+    required this.onRetry,
   });
+
+  @override
+  Widget build(BuildContext context) {
+    return switch (phase) {
+      _BuildingProfilePhase.progressing => _ProgressPercentText(
+        progressAnimation: progressAnimation,
+      ),
+      _BuildingProfilePhase.finishing => Padding(
+        padding: AppConstants.onboardBuildingProfileStatusTopPadding,
+        child: Text('Finishing up...', style: AppTextStyles.onboardingDisplay),
+      ),
+      _BuildingProfilePhase.saveFailed => _SaveFailedMessage(onRetry: onRetry),
+    };
+  }
+}
+
+class _ProgressPercentText extends StatelessWidget {
+  final Animation<double> progressAnimation;
+
+  const _ProgressPercentText({required this.progressAnimation});
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: progressAnimation,
+      builder: (context, _) => Text(
+        '${(progressAnimation.value * 100).toInt()}%',
+        style: AppTextStyles.onboardingProgressPercent,
+      ),
+    );
+  }
+}
+
+class _SaveFailedMessage extends StatelessWidget {
+  final VoidCallback onRetry;
+
+  const _SaveFailedMessage({required this.onRetry});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: AppConstants.onboardBuildingProfileStatusTopPadding,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            "We couldn't save your profile.",
+            style: AppTextStyles.bodyMediumSecondary,
+            textAlign: TextAlign.center,
+          ),
+          TextButton(onPressed: onRetry, child: const Text('Try Again')),
+        ],
+      ),
+    );
+  }
 }

@@ -55,12 +55,12 @@ extension SettingsStatePatterns on SettingsState {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Initial value)?  initial,TResult Function( _Loading value)?  loading,TResult Function( _Loaded value)?  loaded,TResult Function( _Failure value)?  failure,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Initial value)?  initial,TResult Function( _Loading value)?  loading,TResult Function( SettingsLoaded value)?  loaded,TResult Function( _Failure value)?  failure,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial(_that);case _Loading() when loading != null:
-return loading(_that);case _Loaded() when loaded != null:
+return loading(_that);case SettingsLoaded() when loaded != null:
 return loaded(_that);case _Failure() when failure != null:
 return failure(_that);case _:
   return orElse();
@@ -80,12 +80,12 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Initial value)  initial,required TResult Function( _Loading value)  loading,required TResult Function( _Loaded value)  loaded,required TResult Function( _Failure value)  failure,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Initial value)  initial,required TResult Function( _Loading value)  loading,required TResult Function( SettingsLoaded value)  loaded,required TResult Function( _Failure value)  failure,}){
 final _that = this;
 switch (_that) {
 case _Initial():
 return initial(_that);case _Loading():
-return loading(_that);case _Loaded():
+return loading(_that);case SettingsLoaded():
 return loaded(_that);case _Failure():
 return failure(_that);case _:
   throw StateError('Unexpected subclass');
@@ -104,12 +104,12 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Initial value)?  initial,TResult? Function( _Loading value)?  loading,TResult? Function( _Loaded value)?  loaded,TResult? Function( _Failure value)?  failure,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Initial value)?  initial,TResult? Function( _Loading value)?  loading,TResult? Function( SettingsLoaded value)?  loaded,TResult? Function( _Failure value)?  failure,}){
 final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial(_that);case _Loading() when loading != null:
-return loading(_that);case _Loaded() when loaded != null:
+return loading(_that);case SettingsLoaded() when loaded != null:
 return loaded(_that);case _Failure() when failure != null:
 return failure(_that);case _:
   return null;
@@ -128,12 +128,12 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( SettingsDisplayData data)?  loaded,TResult Function( Failure failure)?  failure,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( SettingsDisplayData data,  bool shouldShowPermissionPrompt)?  loaded,TResult Function( Failure failure)?  failure,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial();case _Loading() when loading != null:
-return loading();case _Loaded() when loaded != null:
-return loaded(_that.data);case _Failure() when failure != null:
+return loading();case SettingsLoaded() when loaded != null:
+return loaded(_that.data,_that.shouldShowPermissionPrompt);case _Failure() when failure != null:
 return failure(_that.failure);case _:
   return orElse();
 
@@ -152,12 +152,12 @@ return failure(_that.failure);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( SettingsDisplayData data)  loaded,required TResult Function( Failure failure)  failure,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( SettingsDisplayData data,  bool shouldShowPermissionPrompt)  loaded,required TResult Function( Failure failure)  failure,}) {final _that = this;
 switch (_that) {
 case _Initial():
 return initial();case _Loading():
-return loading();case _Loaded():
-return loaded(_that.data);case _Failure():
+return loading();case SettingsLoaded():
+return loaded(_that.data,_that.shouldShowPermissionPrompt);case _Failure():
 return failure(_that.failure);case _:
   throw StateError('Unexpected subclass');
 
@@ -175,12 +175,12 @@ return failure(_that.failure);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( SettingsDisplayData data)?  loaded,TResult? Function( Failure failure)?  failure,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( SettingsDisplayData data,  bool shouldShowPermissionPrompt)?  loaded,TResult? Function( Failure failure)?  failure,}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial();case _Loading() when loading != null:
-return loading();case _Loaded() when loaded != null:
-return loaded(_that.data);case _Failure() when failure != null:
+return loading();case SettingsLoaded() when loaded != null:
+return loaded(_that.data,_that.shouldShowPermissionPrompt);case _Failure() when failure != null:
 return failure(_that.failure);case _:
   return null;
 
@@ -256,43 +256,44 @@ String toString() {
 /// @nodoc
 
 
-class _Loaded implements SettingsState {
-  const _Loaded(this.data);
+class SettingsLoaded implements SettingsState {
+  const SettingsLoaded(this.data, {this.shouldShowPermissionPrompt = false});
   
 
  final  SettingsDisplayData data;
+@JsonKey() final  bool shouldShowPermissionPrompt;
 
 /// Create a copy of SettingsState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-_$LoadedCopyWith<_Loaded> get copyWith => __$LoadedCopyWithImpl<_Loaded>(this, _$identity);
+$SettingsLoadedCopyWith<SettingsLoaded> get copyWith => _$SettingsLoadedCopyWithImpl<SettingsLoaded>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Loaded&&(identical(other.data, data) || other.data == data));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SettingsLoaded&&(identical(other.data, data) || other.data == data)&&(identical(other.shouldShowPermissionPrompt, shouldShowPermissionPrompt) || other.shouldShowPermissionPrompt == shouldShowPermissionPrompt));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,data);
+int get hashCode => Object.hash(runtimeType,data,shouldShowPermissionPrompt);
 
 @override
 String toString() {
-  return 'SettingsState.loaded(data: $data)';
+  return 'SettingsState.loaded(data: $data, shouldShowPermissionPrompt: $shouldShowPermissionPrompt)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class _$LoadedCopyWith<$Res> implements $SettingsStateCopyWith<$Res> {
-  factory _$LoadedCopyWith(_Loaded value, $Res Function(_Loaded) _then) = __$LoadedCopyWithImpl;
+abstract mixin class $SettingsLoadedCopyWith<$Res> implements $SettingsStateCopyWith<$Res> {
+  factory $SettingsLoadedCopyWith(SettingsLoaded value, $Res Function(SettingsLoaded) _then) = _$SettingsLoadedCopyWithImpl;
 @useResult
 $Res call({
- SettingsDisplayData data
+ SettingsDisplayData data, bool shouldShowPermissionPrompt
 });
 
 
@@ -300,19 +301,20 @@ $SettingsDisplayDataCopyWith<$Res> get data;
 
 }
 /// @nodoc
-class __$LoadedCopyWithImpl<$Res>
-    implements _$LoadedCopyWith<$Res> {
-  __$LoadedCopyWithImpl(this._self, this._then);
+class _$SettingsLoadedCopyWithImpl<$Res>
+    implements $SettingsLoadedCopyWith<$Res> {
+  _$SettingsLoadedCopyWithImpl(this._self, this._then);
 
-  final _Loaded _self;
-  final $Res Function(_Loaded) _then;
+  final SettingsLoaded _self;
+  final $Res Function(SettingsLoaded) _then;
 
 /// Create a copy of SettingsState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? data = null,}) {
-  return _then(_Loaded(
+@pragma('vm:prefer-inline') $Res call({Object? data = null,Object? shouldShowPermissionPrompt = null,}) {
+  return _then(SettingsLoaded(
 null == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
-as SettingsDisplayData,
+as SettingsDisplayData,shouldShowPermissionPrompt: null == shouldShowPermissionPrompt ? _self.shouldShowPermissionPrompt : shouldShowPermissionPrompt // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 

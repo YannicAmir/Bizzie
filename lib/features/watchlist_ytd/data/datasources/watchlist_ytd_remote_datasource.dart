@@ -22,12 +22,12 @@ class WatchlistYtdRemoteDataSource implements IWatchlistYtdRemoteDataSource {
     try {
       return await _firestoreService
           .getCollectionFutureChunked<YtdPriceChangeDto>(
-        path: FirestoreConstants.ytdPriceChange,
-        whereInField: FirestoreConstants.ticker,
-        values: tickers,
-        fromJson: YtdPriceChangeDto.fromJson,
-        toJson: (dto) => dto.toJson(),
-      );
+            path: FirestoreConstants.ytdPriceChange,
+            whereInField: FirestoreConstants.ticker,
+            values: tickers,
+            fromJson: YtdPriceChangeDto.fromJson,
+            toJson: (dto) => dto.toJson(),
+          );
     } catch (e, s) {
       _logger.severe('Failed to fetch watchlist YTD price change', e, s);
       rethrow;

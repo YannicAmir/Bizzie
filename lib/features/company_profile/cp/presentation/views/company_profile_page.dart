@@ -11,7 +11,13 @@ import 'package:bizzie/features/company_profile/cp/presentation/bloc/company_pro
 import 'package:bizzie/features/company_profile/cp/presentation/bloc/company_profile_tabs_bloc.dart';
 import 'package:bizzie/features/company_profile/cp/presentation/bloc/company_profile_tabs_event.dart';
 import 'package:bizzie/features/company_profile/cp/presentation/bloc/company_profile_tabs_state.dart';
+import 'package:bizzie/features/company_profile/cp/presentation/bloc/company_profile_tour_bloc.dart';
+import 'package:bizzie/features/company_profile/cp/presentation/bloc/company_profile_tour_event.dart';
+import 'package:bizzie/features/company_profile/cp/presentation/enums/company_profile_tour_step.dart';
+import 'package:bizzie/features/company_profile/cp/presentation/models/company_profile_tour_request.dart';
 import 'package:bizzie/features/company_profile/cp/presentation/widgets/company_profile_body.dart';
+import 'package:bizzie/features/company_profile/cp/presentation/widgets/company_profile_tour_host.dart';
+import 'package:bizzie/features/company_profile/cp/presentation/widgets/company_profile_tour_target.dart';
 import 'package:bizzie/features/company_profile/cp/presentation/widgets/company_watchlist_button.dart';
 import 'package:bizzie/features/company_profile/dividends/presentation/bloc/company_dividends/company_dividends_bloc.dart';
 import 'package:bizzie/features/company_profile/eps/presentation/bloc/company_eps_bloc.dart';
@@ -58,8 +64,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CompanyProfilePage extends StatelessWidget {
   final String ticker;
+  final CompanyProfileTourRequest? tourRequest;
+  final bool showBackButton;
 
-  const CompanyProfilePage({super.key, required this.ticker});
+  const CompanyProfilePage({
+    super.key,
+    required this.ticker,
+    this.tourRequest,
+    this.showBackButton = true,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -111,16 +124,27 @@ class CompanyProfilePage extends StatelessWidget {
               ),
             ),
         ),
+        BlocProvider(create: (context) => getIt<CompanyProfileTourBloc>()),
       ],
-      child: _CompanyProfileView(ticker: ticker),
+      child: _CompanyProfileView(
+        ticker: ticker,
+        tourRequest: tourRequest,
+        showBackButton: showBackButton,
+      ),
     );
   }
 }
 
 class _CompanyProfileView extends StatefulWidget {
   final String ticker;
+  final CompanyProfileTourRequest? tourRequest;
+  final bool showBackButton;
 
-  const _CompanyProfileView({required this.ticker});
+  const _CompanyProfileView({
+    required this.ticker,
+    this.tourRequest,
+    required this.showBackButton,
+  });
 
   @override
   State<_CompanyProfileView> createState() => _CompanyProfileViewState();
@@ -132,6 +156,8 @@ class _CompanyProfileViewState extends State<_CompanyProfileView>
   late final DateTime _entranceTime;
   late final CompanyProfileBloc _profileBloc;
   late final CompanyProfileTabsBloc _tabsBloc;
+  late final CompanyProfileTourBloc _tourBloc;
+  late final CompanyProfileTourRequest? _tourRequest;
   int _previousTabIndex = 0;
   late CompanyProfileTab _selectedTab;
 
@@ -141,6 +167,8 @@ class _CompanyProfileViewState extends State<_CompanyProfileView>
     _entranceTime = DateTime.now();
     _profileBloc = context.read<CompanyProfileBloc>();
     _tabsBloc = context.read<CompanyProfileTabsBloc>();
+    _tourBloc = context.read<CompanyProfileTourBloc>();
+    _tourRequest = widget.tourRequest;
     _selectedTab = _tabsBloc.state.tabs.first;
     _tabController = _createTabController(length: _tabsBloc.state.tabs.length);
   }
@@ -157,8 +185,8 @@ class _CompanyProfileViewState extends State<_CompanyProfileView>
   }
 
   void _rebuildTabController(CompanyProfileTabsState tabsState) {
-    _tabController.removeListener(_handleTabSelection);
-    _tabController.dispose();
+    final previousController = _tabController
+      ..removeListener(_handleTabSelection);
 
     final tabs = tabsState.tabs;
     final selectedIndex = tabs.indexOf(_selectedTab);
@@ -175,6 +203,9 @@ class _CompanyProfileViewState extends State<_CompanyProfileView>
         initialIndex: initialIndex,
       );
     });
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) => previousController.dispose(),
+    );
   }
 
   void _handleTabSelection() {
@@ -195,6 +226,9 @@ class _CompanyProfileViewState extends State<_CompanyProfileView>
       );
     }
     _reportInteraction(currentTab);
+    if (currentTab == CompanyProfileTab.revenue) {
+      _tourBloc.add(const CompanyProfileTourEvent.revenueTabSelected());
+    }
     _tabsBloc.add(
       CompanyProfileTabsEvent.tabActivated(
         tab: currentTab,
@@ -210,7 +244,7 @@ class _CompanyProfileViewState extends State<_CompanyProfileView>
     context.read<AppRatingsBloc>().add(
       AppRatingsEvent.interactionDetected(
         company: details.toCompanyProfile(),
-        currentTab: currentTab.name,
+        currentTab: currentTab.analyticsName,
       ),
     );
   }
@@ -264,7 +298,7 @@ class _CompanyProfileViewState extends State<_CompanyProfileView>
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocListener(
+    final view = MultiBlocListener(
       listeners: [
         BlocListener<UserBloc, UserState>(
           listenWhen: (previous, current) =>
@@ -299,7 +333,17 @@ class _CompanyProfileViewState extends State<_CompanyProfileView>
         ticker: widget.ticker,
         tabController: _tabController,
         entranceTime: _entranceTime,
+        showBackButton: widget.showBackButton,
       ),
+    );
+
+    final tourRequest = _tourRequest;
+    if (tourRequest == null) return view;
+
+    return CompanyProfileTourHost(
+      ticker: widget.ticker,
+      request: tourRequest,
+      child: view,
     );
   }
 }
@@ -308,11 +352,13 @@ class _CompanyProfileScaffold extends StatelessWidget {
   final String ticker;
   final TabController tabController;
   final DateTime entranceTime;
+  final bool showBackButton;
 
   const _CompanyProfileScaffold({
     required this.ticker,
     required this.tabController,
     required this.entranceTime,
+    required this.showBackButton,
   });
 
   @override
@@ -322,6 +368,10 @@ class _CompanyProfileScaffold extends StatelessWidget {
     );
 
     return BlocBuilder<CompanyProfileTabsBloc, CompanyProfileTabsState>(
+      buildWhen: (previous, current) =>
+          !listEquals(previous.mainTabs, current.mainTabs) ||
+          !listEquals(previous.moreTabs, current.moreTabs) ||
+          previous.isBizzieChatEnabled != current.isBizzieChatEnabled,
       builder: (context, tabsState) {
         return Scaffold(
           appBar: _CompanyProfileAppBar(
@@ -330,6 +380,7 @@ class _CompanyProfileScaffold extends StatelessWidget {
             tabController: tabController,
             tabs: tabsState.tabs,
             entranceTime: entranceTime,
+            showBackButton: showBackButton,
           ),
           floatingActionButton:
               (isUnsupported || !tabsState.isBizzieChatEnabled)
@@ -394,6 +445,7 @@ class _CompanyProfileAppBar extends StatelessWidget
   final TabController tabController;
   final List<CompanyProfileTab> tabs;
   final DateTime entranceTime;
+  final bool showBackButton;
 
   const _CompanyProfileAppBar({
     required this.ticker,
@@ -401,6 +453,7 @@ class _CompanyProfileAppBar extends StatelessWidget
     required this.tabController,
     required this.tabs,
     required this.entranceTime,
+    required this.showBackButton,
   });
 
   @override
@@ -410,36 +463,36 @@ class _CompanyProfileAppBar extends StatelessWidget
           previous.resolvedDetails?.name != current.resolvedDetails?.name ||
           previous.resolvedDetails?.image != current.resolvedDetails?.image,
       builder: (context, state) {
-        return AppBar(
-          leading: const BackButton(),
-          centerTitle: false,
-          title: Text(ticker),
-          actionsPadding: AppConstants.appBarActionsPadding,
-          actions: isUnsupported
-              ? null
-              : [
-                  CompanyWatchlistButton(
-                    ticker: ticker,
-                    companyName: state.resolvedDetails?.name ?? ticker,
-                    logoUrl: state.resolvedDetails?.image,
-                    currentTabName: () => tabs[tabController.index].name,
-                    entranceTime: entranceTime,
+        return CompanyProfileTourTarget(
+          step: CompanyProfileTourStep.companyOverview,
+          child: AppBar(
+            leading: showBackButton ? const BackButton() : null,
+            automaticallyImplyLeading: showBackButton,
+            centerTitle: false,
+            title: Text(ticker),
+            actionsPadding: AppConstants.appBarActionsPadding,
+            actions: isUnsupported
+                ? null
+                : [
+                    CompanyProfileTourTarget(
+                      step: CompanyProfileTourStep.stayUpdated,
+                      child: CompanyWatchlistButton(
+                        ticker: ticker,
+                        companyName: state.resolvedDetails?.name ?? ticker,
+                        logoUrl: state.resolvedDetails?.image,
+                        currentTabName: () =>
+                            tabs[tabController.index].analyticsName,
+                        entranceTime: entranceTime,
+                      ),
+                    ),
+                  ],
+            bottom: isUnsupported
+                ? null
+                : _CompanyProfileTabBar(
+                    tabController: tabController,
+                    tabs: tabs,
                   ),
-                ],
-          bottom: isUnsupported
-              ? null
-              : PreferredSize(
-                  preferredSize: const Size.fromHeight(
-                    AppConstants.tabBarHeight,
-                  ),
-                  child: TabBar(
-                    controller: tabController,
-                    isScrollable: true,
-                    tabAlignment: TabAlignment.start,
-                    padding: AppConstants.appBarBottomTabsPadding,
-                    tabs: tabs.map((tab) => Tab(text: tab.label)).toList(),
-                  ),
-                ),
+          ),
         );
       },
     );
@@ -449,6 +502,43 @@ class _CompanyProfileAppBar extends StatelessWidget
   Size get preferredSize => Size.fromHeight(
     kToolbarHeight + (isUnsupported ? 0 : AppConstants.tabBarHeight),
   );
+}
+
+class _CompanyProfileTabBar extends StatelessWidget
+    implements PreferredSizeWidget {
+  final TabController tabController;
+  final List<CompanyProfileTab> tabs;
+
+  const _CompanyProfileTabBar({
+    required this.tabController,
+    required this.tabs,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return CompanyProfileTourTarget(
+      step: CompanyProfileTourStep.tabs,
+      child: TabBar(
+        controller: tabController,
+        isScrollable: true,
+        tabAlignment: TabAlignment.start,
+        padding: AppConstants.appBarBottomTabsPadding,
+        tabs: [
+          for (final (index, tab) in tabs.indexed)
+            tab == CompanyProfileTab.revenue
+                ? CompanyProfileTourTarget(
+                    step: CompanyProfileTourStep.revenueTab,
+                    onTargetTap: () => tabController.animateTo(index),
+                    child: Tab(text: tab.label),
+                  )
+                : Tab(text: tab.label),
+        ],
+      ),
+    );
+  }
+
+  @override
+  Size get preferredSize => const Size.fromHeight(AppConstants.tabBarHeight);
 }
 
 const String _chatAnalyticsName = 'chat';

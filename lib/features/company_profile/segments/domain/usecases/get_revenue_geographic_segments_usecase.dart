@@ -21,9 +21,7 @@ class GetRevenueGeographicSegmentsUseCase
   GetRevenueGeographicSegmentsUseCase(this._repository);
 
   @override
-  Future<
-    Either<Failure, (RevenueGeographicSegments, CompanyProfileDataOrigin)>
-  >
+  Future<Either<Failure, (RevenueGeographicSegments, CompanyProfileDataOrigin)>>
   call(String ticker) {
     return _repository.getGeographicSegments(ticker);
   }

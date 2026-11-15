@@ -4,7 +4,7 @@ import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/core/interfaces/i_config_service.dart';
 import 'package:bizzie/core/interfaces/i_time_provider.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
-import 'package:bizzie/features/auth/domain/usecases/get_auth_stream.dart';
+import 'package:bizzie/features/auth/domain/usecases/get_auth_stream_usecase.dart';
 import 'package:bizzie/features/auth/presentation/bloc/auth_session_reset_mixin.dart';
 import 'package:bizzie/features/company_profile/ai_reports/domain/enums/ai_report_form.dart';
 import 'package:bizzie/features/company_profile/ai_reports/domain/usecases/get_company_filings_usecase.dart';
@@ -43,7 +43,7 @@ class CompanyAiReportsBloc
     this._configService,
     this._analytics,
     this._timeProvider,
-    GetAuthStream getAuthStream,
+    GetAuthStreamUseCase getAuthStream,
   ) : super(const CompanyAiReportsState.initial()) {
     on<Started>(_onStarted);
     on<LoadRequested>(_onLoadRequested, transformer: restartable());

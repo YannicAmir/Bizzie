@@ -3,7 +3,7 @@ import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:injectable/injectable.dart';
-import 'package:bizzie/features/auth/domain/usecases/get_auth_stream.dart';
+import 'package:bizzie/features/auth/domain/usecases/get_auth_stream_usecase.dart';
 import 'package:bizzie/features/auth/presentation/bloc/auth_session_reset_mixin.dart';
 import 'package:bizzie/features/company_profile/security/domain/usecases/get_historical_eod_prices_use_case.dart';
 import 'package:bizzie/features/company_profile/shared/domain/services/market_hours_freshness_service.dart';
@@ -16,7 +16,10 @@ final _logger = BizzieLogger('HistoricalPriceEodBloc');
 class HistoricalPriceEodBloc
     extends Bloc<HistoricalPriceEodEvent, HistoricalPriceEodState>
     with
-        AuthSessionResetMixin<HistoricalPriceEodEvent, HistoricalPriceEodState> {
+        AuthSessionResetMixin<
+          HistoricalPriceEodEvent,
+          HistoricalPriceEodState
+        > {
   final GetHistoricalEodPricesUseCase _getPrices;
   final MarketHoursFreshnessService _freshnessService;
   final ITimeProvider _timeProvider;
@@ -25,7 +28,7 @@ class HistoricalPriceEodBloc
     this._getPrices,
     this._freshnessService,
     this._timeProvider,
-    GetAuthStream getAuthStream,
+    GetAuthStreamUseCase getAuthStream,
   ) : super(const HistoricalPriceEodState.initial()) {
     on<LoadRequested>(_onLoadRequested, transformer: restartable());
     on<StalenessCheckRequested>(_onStalenessCheckRequested);
@@ -87,8 +90,10 @@ class HistoricalPriceEodBloc
           _logger.info('EOD prices still fresh (market hours freshness check)');
         }
       },
-      failure: (_) => _triggerForceReload(event.ticker, reason: 'failure state'),
-      initial: (_) => _triggerForceReload(event.ticker, reason: 'initial state'),
+      failure: (_) =>
+          _triggerForceReload(event.ticker, reason: 'failure state'),
+      initial: (_) =>
+          _triggerForceReload(event.ticker, reason: 'initial state'),
     );
   }
 

@@ -8,5 +8,8 @@ abstract class IReportsRepository {
 
   Stream<Either<Failure, UserActivity>> getUserActivityStream(String uid);
 
-  Future<Either<Failure, Unit>> markReportsViewed(String uid, DateTime timestamp);
+  Future<Either<Failure, Unit>> markReportsViewed(
+    String uid,
+    DateTime timestamp,
+  );
 }

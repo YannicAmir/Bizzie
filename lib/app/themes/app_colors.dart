@@ -61,6 +61,7 @@ class AppColors {
   static const Color orange700 = Color(0xFFC2410C);
   static const Color green600 = Color(0xFF16A34A);
   static const Color green700 = Color(0xFF15803D);
+  static const Color emerald500 = Color(0xFF10B981);
   static const Color indigo100 = Color(0xFFE0E7FF);
   // static const Color blue100 = Color(0xFFDBEAFE); // Alias for brandChipSelectedBackground
   static const Color graphBlueAccent = Color(0xFF51A2FF);

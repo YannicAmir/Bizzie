@@ -3,6 +3,7 @@ import 'package:bizzie/app/l10n/bizzie_localizations.dart';
 
 import 'package:bizzie/features/notifications/domain/models/notification_intent.dart';
 import 'package:bizzie/app/global_overlay_wrapper.dart';
+import 'package:bizzie/app/routes/app_router_redirect.dart';
 import 'package:bizzie/app/routes/app_routes.dart';
 import 'package:bizzie/app/router.dart';
 import 'package:bizzie/app/themes/app_theme.dart';
@@ -98,17 +99,20 @@ class _BizzieAppViewState extends State<BizzieAppView>
               authenticated: (user) {
                 final currentPath =
                     _router.routeInformationProvider.value.uri.path;
-                final isFromCreateAccount =
-                    currentPath == AppRoutes.createAccount;
 
                 context.read<UserBloc>().add(
-                  UserEvent.loadUser(uid: user.id, silent: isFromCreateAccount),
+                  UserEvent.loadUser(
+                    uid: user.id,
+                    silent: AppRouterRedirect.isOnboardingFlowPath(currentPath),
+                  ),
                 );
                 context.read<WatchlistBloc>().add(
                   WatchlistEvent.loadRequested(uid: user.id),
                 );
                 context.read<NotificationBloc>().add(
-                  const NotificationEvent.setupRequested(),
+                  user.isAnonymous
+                      ? const NotificationEvent.syncRequested()
+                      : const NotificationEvent.setupRequested(),
                 );
                 context.read<SubscriptionBloc>().add(
                   const SubscriptionEvent.initialized(),
@@ -119,8 +123,11 @@ class _BizzieAppViewState extends State<BizzieAppView>
               },
               unauthenticated: () {
                 _notifiedAppReady = false;
-                context.read<UserBloc>().add(const UserEvent.clear());
+                context.read<UserBloc>().add(const UserEvent.reset());
                 context.read<WatchlistBloc>().add(const WatchlistEvent.reset());
+                context.read<WatchlistYtdBloc>().add(
+                  const WatchlistYtdEvent.reset(),
+                );
                 context.read<NotificationBloc>().add(
                   const NotificationEvent.reset(),
                 );
@@ -148,9 +155,7 @@ class _BizzieAppViewState extends State<BizzieAppView>
               loaded: (loaded) {
                 context.read<WatchlistYtdBloc>().add(
                   WatchlistYtdEvent.loadRequested(
-                    loaded.companies
-                        .map((company) => company.ticker)
-                        .toList(),
+                    loaded.companies.map((company) => company.ticker).toList(),
                   ),
                 );
               },

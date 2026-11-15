@@ -1,6 +1,8 @@
 import 'package:bizzie/core/interfaces/i_analytics_service.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:bizzie/features/company_profile/cp/presentation/analytics/company_profile_session_summary.dart';
+import 'package:bizzie/features/company_profile/cp/presentation/enums/company_profile_tour_step.dart';
+import 'package:bizzie/features/company_profile/shared/presentation/enums/growth_band.dart';
 import 'package:bizzie/shared/utils/analytics_utils.dart';
 import 'package:injectable/injectable.dart';
 
@@ -13,6 +15,12 @@ class CompanyProfileAnalytics {
   // Event Names
   static const String _kEventSessionSummary = 'cp_session_summary';
   static const String _kEventEditTabs = 'cp_edit_tabs';
+  static const String _kEventTourStarted = 'cp_tour_started';
+  static const String _kEventTourStepViewed = 'cp_tour_step_viewed';
+  static const String _kEventTourCompleted = 'cp_tour_completed';
+  static const String _kEventTourSkipped = 'cp_tour_skipped';
+  static const String _kEventTourRevenueGrowthBandShown =
+      'cp_tour_revenue_growth_band_shown';
 
   // Screen Names
   static const String _kScreenName = 'company_profile';
@@ -38,8 +46,23 @@ class CompanyProfileAnalytics {
   static const String _kParamMainTabs = 'main_tabs';
   static const String _kParamMoreTabs = 'more_tabs';
   static const String _kParamIsSubscribed = 'is_subscribed';
+  static const String _kParamStepIndex = 'step_index';
+  static const String _kParamStepName = 'step_name';
+  static const String _kParamBand = 'band';
+  static const String _kParamYears = 'years';
   static const String _kActionOpened = 'opened';
   static const String _kActionSaved = 'saved';
+  static const String _kStepCompanyOverview = 'company_overview';
+  static const String _kStepTabs = 'tabs';
+  static const String _kStepRevenueTab = 'revenue_tab';
+  static const String _kStepRevenueGrowth = 'revenue_growth';
+  static const String _kStepStayUpdated = 'stay_updated';
+  static const String _kBandNegative = 'negative';
+  static const String _kBandLow = 'low';
+  static const String _kBandModerate = 'moderate';
+  static const String _kBandHigh = 'high';
+  static const String _kBandTurnedPositive = 'turned_positive';
+  static const String _kBandTurnedNegative = 'turned_negative';
   static const int _kTabNameMaxLength = 4;
 
   CompanyProfileAnalytics(this._analytics);
@@ -109,6 +132,59 @@ class CompanyProfileAnalytics {
       _kParamMoreTabs: _joinTabNames(moreTabs),
     });
   }
+
+  Future<void> logTourStarted({required String ticker}) async {
+    await _logEvent(_kEventTourStarted, {
+      _kParamTicker: AnalyticsUtils.truncate(ticker),
+    });
+  }
+
+  Future<void> logTourStepViewed({required CompanyProfileTourStep step}) async {
+    await _logEvent(_kEventTourStepViewed, {
+      _kParamStepIndex: step.number,
+      _kParamStepName: _tourStepName(step),
+    });
+  }
+
+  Future<void> logTourCompleted({required String ticker}) async {
+    await _logEvent(_kEventTourCompleted, {
+      _kParamTicker: AnalyticsUtils.truncate(ticker),
+    });
+  }
+
+  Future<void> logTourSkipped({required CompanyProfileTourStep step}) async {
+    await _logEvent(_kEventTourSkipped, {
+      _kParamStepIndex: step.number,
+      _kParamStepName: _tourStepName(step),
+    });
+  }
+
+  Future<void> logTourRevenueGrowthBandShown({
+    required GrowthBand band,
+    required int years,
+  }) async {
+    await _logEvent(_kEventTourRevenueGrowthBandShown, {
+      _kParamBand: _growthBandName(band),
+      _kParamYears: years,
+    });
+  }
+
+  static String _tourStepName(CompanyProfileTourStep step) => switch (step) {
+    CompanyProfileTourStep.companyOverview => _kStepCompanyOverview,
+    CompanyProfileTourStep.tabs => _kStepTabs,
+    CompanyProfileTourStep.revenueTab => _kStepRevenueTab,
+    CompanyProfileTourStep.revenueGrowth => _kStepRevenueGrowth,
+    CompanyProfileTourStep.stayUpdated => _kStepStayUpdated,
+  };
+
+  static String _growthBandName(GrowthBand band) => switch (band) {
+    GrowthBand.negative => _kBandNegative,
+    GrowthBand.low => _kBandLow,
+    GrowthBand.moderate => _kBandModerate,
+    GrowthBand.high => _kBandHigh,
+    GrowthBand.turnedPositive => _kBandTurnedPositive,
+    GrowthBand.turnedNegative => _kBandTurnedNegative,
+  };
 
   static String _joinTabNames(List<String> tabs) {
     return tabs

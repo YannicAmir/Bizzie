@@ -1,5 +1,6 @@
 import 'package:bizzie/core/data/dtos/company_tabs_config.dart';
 import 'package:bizzie/core/data/dtos/fmp_config.dart';
+import 'package:bizzie/core/data/dtos/onboarding_skip_config.dart';
 
 abstract class IConfigService {
   CompanyTabsConfig get freeUsersCompanyTabsConfig;
@@ -9,6 +10,7 @@ abstract class IConfigService {
   List<String> get stockMarketSectors;
   Map<String, String> get sectorDescriptions;
   FmpConfig get fmpConfig;
+  OnboardingSkipConfig get onboardingSkipConfig;
   String get frankfurterBaseUrl;
   String get bizzieChatBaseUrl;
   bool get bizzieChatEnabled;

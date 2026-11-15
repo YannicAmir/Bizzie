@@ -1,3 +1,4 @@
+import 'package:bizzie/core/enums/financial_period.dart';
 import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/features/company_profile/shared/domain/models/financial_data_point.dart';
@@ -16,7 +17,7 @@ import 'package:bizzie/core/usecase/usecase.dart';
 import 'package:bizzie/features/company_profile/shared/domain/usecases/watch_active_tab_usecase.dart';
 import 'package:bizzie/core/interfaces/i_time_provider.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:bizzie/features/auth/domain/usecases/get_auth_stream.dart';
+import 'package:bizzie/features/auth/domain/usecases/get_auth_stream_usecase.dart';
 
 class MockGetRevenueStatsUseCase extends Mock
     implements GetRevenueStatsUseCase {}
@@ -27,10 +28,10 @@ class MockRevenueTabAnalytics extends Mock implements RevenueTabAnalytics {}
 
 class MockWatchActiveTabUseCase extends Mock implements WatchActiveTabUseCase {}
 
-class MockGetAuthStream extends Mock implements GetAuthStream {}
+class MockGetAuthStreamUseCase extends Mock implements GetAuthStreamUseCase {}
 
-MockGetAuthStream stubbedGetAuthStream() {
-  final mock = MockGetAuthStream();
+MockGetAuthStreamUseCase stubbedGetAuthStream() {
+  final mock = MockGetAuthStreamUseCase();
   when(() => mock()).thenAnswer((_) => const Stream.empty());
   return mock;
 }
@@ -181,7 +182,11 @@ void main() {
       seed: () => tLoadedState,
       act: (bloc) => bloc
         ..add(const CompanyRevenueEvent.tabShown(tTicker))
-        ..add(const CompanyRevenueEvent.periodChanged(isAnnual: true)),
+        ..add(
+          const CompanyRevenueEvent.periodChanged(
+            period: FinancialPeriod.annual,
+          ),
+        ),
       expect: () => const <CompanyRevenueState>[],
       verify: (bloc) {
         expect(bloc.analyticsSession?.viewedYearlyRevTab, isTrue);
@@ -189,17 +194,21 @@ void main() {
     );
 
     blocTest<CompanyRevenueBloc, CompanyRevenueState>(
-      'periodChanged_toDifferentValue_emitsUpdatedIsAnnualView',
+      'periodChanged_toDifferentValue_emitsUpdatedPeriod',
       build: () => bloc,
       seed: () => tLoadedState,
       act: (bloc) => bloc
         ..add(const CompanyRevenueEvent.tabShown(tTicker))
-        ..add(const CompanyRevenueEvent.periodChanged(isAnnual: false)),
+        ..add(
+          const CompanyRevenueEvent.periodChanged(
+            period: FinancialPeriod.quarterly,
+          ),
+        ),
       expect: () => [
         isA<CompanyRevenueState>().having(
-          (s) => s.maybeMap(loaded: (l) => l.isAnnualView, orElse: () => null),
-          'isAnnualView',
-          false,
+          (s) => s.maybeMap(loaded: (l) => l.period, orElse: () => null),
+          'period',
+          FinancialPeriod.quarterly,
         ),
       ],
       verify: (bloc) {
@@ -215,7 +224,7 @@ void main() {
         ..add(const CompanyRevenueEvent.tabShown(tTicker))
         ..add(
           const CompanyRevenueEvent.viewAllTapped(
-            isAnnual: false,
+            period: FinancialPeriod.quarterly,
             isChart: true,
           ),
         ),

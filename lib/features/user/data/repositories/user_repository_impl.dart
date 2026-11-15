@@ -1,16 +1,16 @@
 import 'dart:async';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:bizzie/core/data/dtos/watchlist_item_dto.dart';
 import 'package:bizzie/core/error/failures.dart';
-import 'package:bizzie/features/user/data/dtos/user_dto.dart';
-import 'package:bizzie/features/user/domain/models/user_model.dart';
-import 'package:bizzie/features/user/data/datasources/user_remote_datasource.dart';
-import 'package:bizzie/features/user/domain/interfaces/user_repository.dart';
+import 'package:bizzie/core/data/dtos/user_dto.dart';
+import 'package:bizzie/core/domain/models/user_model.dart';
+import 'package:bizzie/features/user/data/interfaces/i_user_remote_datasource.dart';
+import 'package:bizzie/features/user/domain/interfaces/i_user_repository.dart';
 import 'package:dartz/dartz.dart';
-import 'package:bizzie/features/user/data/datasources/user_local_datasource.dart';
+import 'package:bizzie/features/user/data/interfaces/i_user_local_datasource.dart';
 import 'package:injectable/injectable.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:bizzie/features/auth/domain/interfaces/i_auth_repository.dart';
-import 'package:bizzie/features/watchlist/data/dtos/watchlist_item_dto.dart';
 import 'package:rxdart/rxdart.dart';
 
 final _logger = BizzieLogger('UserRepositoryImpl');
@@ -28,16 +28,18 @@ class UserRepositoryImpl implements IUserRepository {
   );
 
   @override
-  Stream<UserModel?> get userStream => _authRepository.authStateChanges
-      .map((user) => user?.id)
+  Stream<Either<Failure, UserModel?>> get userStream => _authRepository
+      .authStateChanges
+      .map((result) => result.map((user) => user?.id))
       .distinct()
-      .switchMap((uid) {
-        if (uid == null) {
-          return Stream<UserModel?>.value(null);
-        }
-        return watchUser(uid);
-      })
-      .asBroadcastStream();
+      .switchMap(
+        (uidResult) => uidResult.fold(
+          (failure) => Stream.value(Left<Failure, UserModel?>(failure)),
+          (uid) => uid == null
+              ? Stream.value(const Right<Failure, UserModel?>(null))
+              : watchUser(uid),
+        ),
+      );
 
   @override
   String? getCachedFavoriteSector() {
@@ -45,36 +47,32 @@ class UserRepositoryImpl implements IUserRepository {
   }
 
   @override
-  Stream<UserModel?> watchUser(String uid) {
+  Stream<Either<Failure, UserModel?>> watchUser(String uid) {
     _logger.info('Starting resilient reactive watch for user $uid');
 
-    Stream<UserModel?> buildStream() => Rx.combineLatest2<UserDto?,
-        List<WatchlistItemDto>,
-        UserModel?>(
-      _remoteDataSource.watchUser(uid),
-      _remoteDataSource.watchWatchlist(uid),
-      (userDto, List<WatchlistItemDto> watchlistDtos) =>
-          _mapUser(userDto, watchlistDtos, uid),
-    );
+    Stream<UserModel?> buildStream() =>
+        Rx.combineLatest2<UserDto?, List<WatchlistItemDto>, UserModel?>(
+          _remoteDataSource.watchUser(uid),
+          _remoteDataSource.watchWatchlist(uid),
+          (userDto, List<WatchlistItemDto> watchlistDtos) =>
+              _mapUser(userDto, watchlistDtos, uid),
+        );
 
     bool firstEventReceived = false;
-    return RetryWhenStream<UserModel?>(
-      buildStream,
-      (error, stackTrace) {
-        if (error is FirebaseException && error.code == 'permission-denied') {
-          _logger.info(
-            'Terminal permission-denied error for uid: $uid. Skipping retry.',
-          );
-          return Stream.error(error);
-        }
+    return RetryWhenStream<UserModel?>(buildStream, (error, stackTrace) {
+          if (error is FirebaseException && error.code == 'permission-denied') {
+            _logger.info(
+              'Terminal permission-denied error for uid: $uid. Skipping retry.',
+            );
+            return Stream.error(error);
+          }
 
-        _logger.warning(
-          'User stream encountered recoverable error, retrying in 5s...',
-          error,
-        );
-        return Stream.periodic(const Duration(seconds: 5)).take(3);
-      },
-    )
+          _logger.warning(
+            'User stream encountered recoverable error, retrying in 5s...',
+            error,
+          );
+          return Stream.periodic(const Duration(seconds: 5)).take(3);
+        })
         .doOnData((_) => firstEventReceived = true)
         .timeout(
           const Duration(seconds: 20),
@@ -89,14 +87,22 @@ class UserRepositoryImpl implements IUserRepository {
             }
           },
         )
-        .handleError((Object e, StackTrace s) {
-          _logger.severe(
-            'User stream persistent error or timeout for $uid',
-            e,
-            s,
-          );
-          throw e;
-        });
+        .transform(
+          StreamTransformer<
+            UserModel?,
+            Either<Failure, UserModel?>
+          >.fromHandlers(
+            handleData: (user, sink) => sink.add(Right(user)),
+            handleError: (error, stack, sink) {
+              _logger.severe(
+                'User stream persistent error or timeout for $uid',
+                error,
+                stack,
+              );
+              sink.add(Left(Failure.server(error.toString())));
+            },
+          ),
+        );
   }
 
   UserModel? _mapUser(
@@ -113,13 +119,12 @@ class UserRepositoryImpl implements IUserRepository {
       final watchlist = watchlistDtos.map((dto) => dto.toDomain()).toList();
       final user = userDto.toDomain().copyWith(watchlist: watchlist);
 
-      if (user.favoriteSector.isNotEmpty &&
-          _localDataSource.getCachedFavoriteSector() == null) {
-        _logger.info(
-          'Seeding local cache from stream: ${user.favoriteSector}',
-        );
-        _localDataSource.cacheFavoriteSector(user.favoriteSector);
-      }
+      unawaited(
+        _seedFavoriteSectorCache(user).catchError(
+          (Object e) =>
+              _logger.warning('Failed to seed local cache from stream', e),
+        ),
+      );
 
       return user;
     } catch (e, stack) {
@@ -128,9 +133,13 @@ class UserRepositoryImpl implements IUserRepository {
     }
   }
 
-  @override
-  void dispose() {
-    _logger.info('Disposing user repository (No-op after refactor)');
+  Future<void> _seedFavoriteSectorCache(UserModel user) async {
+    if (user.favoriteSector.isEmpty ||
+        _localDataSource.getCachedFavoriteSector() != null) {
+      return;
+    }
+    _logger.info('Seeding local cache: ${user.favoriteSector}');
+    await _localDataSource.cacheFavoriteSector(user.favoriteSector);
   }
 
   @override
@@ -147,22 +156,12 @@ class UserRepositoryImpl implements IUserRepository {
 
       final user = userDto.toDomain().copyWith(watchlist: watchlist);
 
-      final currentCached = _localDataSource.getCachedFavoriteSector();
-      if (user.favoriteSector.isNotEmpty && currentCached == null) {
-        _logger.info(
-          'Seeding local cache from remote profile: ${user.favoriteSector}',
-        );
-        await _localDataSource.cacheFavoriteSector(user.favoriteSector);
-      } else {
-        _logger.info(
-          'Skipping local cache update. Current: $currentCached, Remote: ${user.favoriteSector}',
-        );
-      }
+      await _seedFavoriteSectorCache(user);
 
       return Right(user);
     } catch (e, stack) {
       _logger.severe('Failed to get user', e, stack);
-      return const Left(ServerFailure('Failed to get user'));
+      return Left(Failure.server(e.toString()));
     }
   }
 
@@ -178,7 +177,7 @@ class UserRepositoryImpl implements IUserRepository {
       return const Right(null);
     } catch (e, stack) {
       _logger.severe('Failed to update user', e, stack);
-      return const Left(ServerFailure('Failed to update user'));
+      return Left(Failure.server(e.toString()));
     }
   }
 

@@ -42,10 +42,7 @@ class TabOrderRepositoryImpl implements ITabOrderRepository {
     }
   }
 
-  TabLayout? _storedLayout(
-    TabLayout defaults, {
-    required bool isSubscribed,
-  }) {
+  TabLayout? _storedLayout(TabLayout defaults, {required bool isSubscribed}) {
     final storedMain = _localDataSource.getMainTabs();
     final storedMore = _localDataSource.getMoreTabs();
     if (storedMain == null && storedMore == null) return null;

@@ -1,11 +1,18 @@
+import 'package:bizzie/core/enums/financial_period.dart';
 import 'package:bizzie/features/company_profile/business/domain/models/business_profile.dart';
 
 extension BusinessProfilePresentationX on BusinessProfile {
-  String getSecFilingsModalTitle(bool isAnnual) {
+  String getSecFilingsModalTitle(FinancialPeriod period) {
     if (isForeignCompany) {
-      return isAnnual ? 'All Annual Filings' : 'All Quarterly Filings';
+      return switch (period) {
+        FinancialPeriod.annual => 'All Annual Filings',
+        FinancialPeriod.quarterly => 'All Quarterly Filings',
+      };
     }
-    return isAnnual ? 'All 10-K Filings' : 'All 10-Q Filings';
+    return switch (period) {
+      FinancialPeriod.annual => 'All 10-K Filings',
+      FinancialPeriod.quarterly => 'All 10-Q Filings',
+    };
   }
 
   String getProxyFilingTitle() {

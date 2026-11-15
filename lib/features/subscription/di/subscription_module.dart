@@ -1,4 +1,4 @@
-import 'package:bizzie/features/user/domain/interfaces/user_repository.dart';
+import 'package:bizzie/features/user/domain/interfaces/i_user_repository.dart';
 import 'package:injectable/injectable.dart';
 
 /// Provides a `Stream<bool>` of the user's subscription status,
@@ -13,7 +13,12 @@ abstract class SubscriptionModule {
   @lazySingleton
   Stream<bool> isSubscribedStream(IUserRepository userRepository) =>
       userRepository.userStream
-          .map((user) => user?.isSubscribed ?? false)
+          .map(
+            (result) => result.fold(
+              (_) => false,
+              (user) => user?.isSubscribed ?? false,
+            ),
+          )
           .distinct()
           .asBroadcastStream();
 }

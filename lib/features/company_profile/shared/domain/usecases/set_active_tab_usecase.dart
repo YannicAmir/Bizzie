@@ -10,6 +10,5 @@ class SetActiveTabUseCase implements SynchronousUseCase<void, TabActivation> {
   SetActiveTabUseCase(this._tabActivationService);
 
   @override
-  void call(TabActivation params) =>
-      _tabActivationService.setActiveTab(params);
+  void call(TabActivation params) => _tabActivationService.setActiveTab(params);
 }

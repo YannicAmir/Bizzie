@@ -5,7 +5,7 @@ import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:bizzie/core/usecase/usecase.dart';
 import 'package:bizzie/features/app_ratings/domain/usecases/track_rating_conditions_usecase.dart';
 import 'package:bizzie/features/app_ratings/presentation/analytics/app_ratings_tracker.dart';
-import 'package:bizzie/features/auth/domain/usecases/get_current_user.dart';
+import 'package:bizzie/features/auth/domain/usecases/get_current_user_usecase.dart';
 import 'package:bizzie/features/user/domain/usecases/get_user_usecase.dart';
 import 'package:bizzie/features/company_profile/shared/domain/models/company_profile.dart';
 import 'package:bizzie/core/interfaces/i_in_app_review_service.dart';
@@ -24,7 +24,7 @@ class AppRatingsBloc extends Bloc<AppRatingsEvent, AppRatingsState> {
   final TrackRatingConditionsUseCase _trackRatingConditionsUseCase;
   final IInAppReviewService _reviewService;
   final AppRatingsTracker _tracker;
-  final GetCurrentUser _getCurrentUser;
+  final GetCurrentUserUseCase _getCurrentUser;
   final GetUserUseCase _getUserUseCase;
   final IConfigService _configService;
 
@@ -55,7 +55,9 @@ class AppRatingsBloc extends Bloc<AppRatingsEvent, AppRatingsState> {
     Failure failure,
     Emitter<AppRatingsState> emit,
   ) async {
-    _logger.severe('Failure tracking rating conditions: ${failure.errorMessage}');
+    _logger.severe(
+      'Failure tracking rating conditions: ${failure.errorMessage}',
+    );
     emit(const AppRatingsState.idle());
   }
 

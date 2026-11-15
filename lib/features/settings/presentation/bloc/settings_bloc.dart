@@ -1,16 +1,14 @@
 import 'dart:async';
-import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/core/usecase/usecase.dart';
-import 'package:bizzie/features/auth/domain/interfaces/i_auth_repository.dart';
+import 'package:bizzie/features/settings/domain/enums/sign_out_mode.dart';
 import 'package:bizzie/features/settings/domain/usecases/get_settings_display_data_usecase.dart';
 import 'package:bizzie/features/settings/domain/usecases/launch_url_usecase.dart';
 import 'package:bizzie/features/settings/domain/usecases/open_app_settings_usecase.dart';
-import 'package:bizzie/features/settings/domain/usecases/reset_password_usecase.dart';
 import 'package:bizzie/features/settings/domain/usecases/sign_out_usecase.dart';
-import 'package:bizzie/features/settings/domain/usecases/get_subscription_status_usecase.dart';
 import 'package:bizzie/features/settings/domain/usecases/toggle_notifications_usecase.dart';
 import 'package:bizzie/features/settings/presentation/bloc/settings_event.dart';
 import 'package:bizzie/features/settings/presentation/bloc/settings_state.dart';
+import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
@@ -25,10 +23,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
   final ToggleNotificationsUseCase _toggleNotificationsUseCase;
   final LaunchUrlUseCase _launchUrlUseCase;
   final SignOutUseCase _signOutUseCase;
-  final ResetPasswordUseCase _resetPasswordUseCase;
-  final IAuthRepository _authRepository;
   final OpenAppSettingsUseCase _openAppSettingsUseCase;
-  final GetSubscriptionStatusUseCase _getSubscriptionStatusUseCase;
   final SettingsTracker _tracker;
 
   SettingsBloc(
@@ -36,45 +31,43 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     this._toggleNotificationsUseCase,
     this._launchUrlUseCase,
     this._signOutUseCase,
-    this._resetPasswordUseCase,
-    this._authRepository,
     this._openAppSettingsUseCase,
-    this._getSubscriptionStatusUseCase,
     this._tracker,
   ) : super(const SettingsState.initial()) {
-    on<SettingsEvent>((event, emit) async {
-      await event.map(
-        started: (e) => _onStarted(e, emit),
-        toggledNotifications: (e) => _onToggledNotifications(e, emit),
-        openUrl: (e) => _onOpenUrl(e, emit),
-        signedOut: (e) => _onSignedOut(e, emit),
-        refreshSubscription: (e) => _onRefreshSubscription(e, emit),
-        resetPassword: (e) => _onResetPassword(e, emit),
-        openedSettings: (e) => _onOpenedSettings(e, emit),
-        editProfileClicked: (e) => _onEditProfileClicked(e, emit),
-        feedbackClicked: (e) => _onFeedbackClicked(e, emit),
-        membershipClicked: (e) => _onMembershipClicked(e, emit),
-      );
-    });
+    on<Started>(_onStarted, transformer: restartable());
+    on<ToggledNotifications>(_onToggledNotifications);
+    on<OpenUrl>(_onOpenUrl);
+    on<SignedOut>(_onSignedOut);
+    on<GuestLogoutPromptResolved>(_onGuestLogoutPromptResolved);
+    on<OpenedSettings>(_onOpenedSettings);
+    on<PermissionPromptProcessed>(_onPermissionPromptProcessed);
+    on<EditProfileClicked>(_onEditProfileClicked);
+    on<FeedbackClicked>(_onFeedbackClicked);
+    on<MembershipClicked>(_onMembershipClicked);
   }
 
-  Future<void> _onStarted(Started event, Emitter<SettingsState> emit) async {
-    final shouldLogView = state.maybeMap(
-      initial: (_) => true,
-      loading: (_) => true,
-      orElse: () => false,
-    );
+  bool get _shouldLogView => state.maybeMap(
+    initial: (_) => true,
+    loading: (_) => true,
+    orElse: () => false,
+  );
 
-    if (shouldLogView) {
+  bool get _isLoaded =>
+      state.maybeMap(loaded: (_) => true, orElse: () => false);
+
+  SettingsLoaded? get _loadedStateOrNull =>
+      state.mapOrNull(loaded: (loadedState) => loadedState);
+
+  Future<void> _onStarted(Started event, Emitter<SettingsState> emit) async {
+    if (_shouldLogView) {
       unawaited(_tracker.logSettingsViewed());
     }
 
-    final isSilent = state.maybeMap(loaded: (_) => true, orElse: () => false);
-    if (!isSilent) {
+    if (_isLoaded) {
+      _logger.info('Silently refreshing SettingsBloc');
+    } else {
       _logger.info('Initializing SettingsBloc');
       emit(const SettingsState.loading());
-    } else {
-      _logger.info('Silently refreshing SettingsBloc');
     }
 
     final result = await _getSettingsDisplayDataUseCase(NoParams());
@@ -90,19 +83,6 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     );
   }
 
-  Future<void> _onResetPassword(
-    ResetPassword event,
-    Emitter<SettingsState> emit,
-  ) async {
-    _logger.info('User requested password reset');
-    unawaited(_tracker.logPasswordResetClicked());
-
-    final user = _authRepository.currentUser;
-    if (user != null) {
-      await _resetPasswordUseCase(user.email);
-    }
-  }
-
   Future<void> _onToggledNotifications(
     ToggledNotifications event,
     Emitter<SettingsState> emit,
@@ -110,46 +90,55 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     final enable = event.enable;
     _logger.info('Toggling notifications to: $enable');
 
-    await state.maybeMap(
-      loaded: (loadedState) async {
-        final data = loadedState.data;
+    final loadedState = _loadedStateOrNull;
+    if (loadedState == null) return;
 
-        if (enable && !data.isSystemNotificationsEnabled) {
-          _logger.info(
-            'User enabled notifications but system permission is missing',
-          );
-          unawaited(_tracker.logNotificationsPermissionDenied());
+    if (enable && !loadedState.data.isSystemNotificationsEnabled) {
+      _emitNotificationsPermissionDenied(loadedState, emit);
+      return;
+    }
 
-          emit(SettingsState.failure(const Failure.permission()));
-          emit(
-            loadedState.copyWith(
-              data: data.copyWith(isAppNotificationsEnabled: false),
-            ),
-          );
-          return;
-        }
+    unawaited(_tracker.logNotificationsToggled(enabled: enable));
+    emit(_withAppNotifications(loadedState, enabled: enable));
 
-        unawaited(_tracker.logNotificationsToggled(enabled: enable));
+    final result = await _toggleNotificationsUseCase(enable);
+    result.fold((l) {
+      _logger.warning('Failed to toggle notifications', l);
+      emit(_withAppNotifications(loadedState, enabled: !enable));
+    }, (r) => null);
+  }
 
-        emit(
-          loadedState.copyWith(
-            data: data.copyWith(isAppNotificationsEnabled: enable),
-          ),
-        );
-        final result = await _toggleNotificationsUseCase(enable);
-        result.fold((l) {
-          _logger.warning('Failed to toggle notifications', l);
-          emit(
-            loadedState.copyWith(
-              data: loadedState.data.copyWith(
-                isAppNotificationsEnabled: !enable,
-              ),
-            ),
-          );
-        }, (r) => null);
-      },
-      orElse: () async {},
+  void _emitNotificationsPermissionDenied(
+    SettingsLoaded loadedState,
+    Emitter<SettingsState> emit,
+  ) {
+    _logger.info('User enabled notifications but system permission is missing');
+    unawaited(_tracker.logNotificationsPermissionDenied());
+
+    emit(
+      _withAppNotifications(
+        loadedState,
+        enabled: false,
+      ).copyWith(shouldShowPermissionPrompt: true),
     );
+  }
+
+  SettingsLoaded _withAppNotifications(
+    SettingsLoaded loadedState, {
+    required bool enabled,
+  }) {
+    return loadedState.copyWith(
+      data: loadedState.data.copyWith(isAppNotificationsEnabled: enabled),
+    );
+  }
+
+  Future<void> _onPermissionPromptProcessed(
+    PermissionPromptProcessed event,
+    Emitter<SettingsState> emit,
+  ) async {
+    final loadedState = _loadedStateOrNull;
+    if (loadedState == null) return;
+    emit(loadedState.copyWith(shouldShowPermissionPrompt: false));
   }
 
   Future<void> _onOpenedSettings(
@@ -158,7 +147,12 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
   ) async {
     _logger.info('Opening app settings from permission modal');
     unawaited(_tracker.logSystemSettingsOpened());
-    await _openAppSettingsUseCase(NoParams());
+
+    final result = await _openAppSettingsUseCase(NoParams());
+    result.fold(
+      (failure) => _logger.warning('Failed to open app settings', failure),
+      (_) => _logger.info('App settings opened successfully'),
+    );
   }
 
   Future<void> _onSignedOut(
@@ -166,10 +160,16 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     Emitter<SettingsState> emit,
   ) async {
     _logger.info('User signing out');
-    unawaited(_tracker.logSignOutClicked());
+    final isGuest = state.maybeMap(
+      loaded: (loadedState) => loadedState.data.isGuest,
+      orElse: () => false,
+    );
+    unawaited(_tracker.logSignOutClicked(isGuest: isGuest));
 
     emit(const SettingsState.loading());
-    final result = await _signOutUseCase(NoParams());
+    final result = await _signOutUseCase(
+      isGuest ? SignOutMode.deleteGuestAccount : SignOutMode.standard,
+    );
     result.fold(
       (l) {
         _logger.warning('Failed to sign out', l);
@@ -177,42 +177,30 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
       },
       (r) {
         _logger.info('User signed out successfully');
-        unawaited(_tracker.logSignOutSuccess());
+        unawaited(_tracker.logSignOutSuccess(isGuest: isGuest));
         emit(const SettingsState.initial());
       },
     );
   }
 
-  Future<void> _onRefreshSubscription(
-    RefreshSubscription event,
+  Future<void> _onGuestLogoutPromptResolved(
+    GuestLogoutPromptResolved event,
     Emitter<SettingsState> emit,
   ) async {
-    _logger.info('Refreshing subscription status');
-    final result = await _getSubscriptionStatusUseCase(NoParams());
-
-    result.fold(
-      (failure) => _logger.warning('Failed to refresh subscription', failure),
-      (status) {
-        _logger.info('Subscription refreshed successfully');
-        state.maybeMap(
-          loaded: (loadedState) {
-            emit(
-              loadedState.copyWith(
-                data: loadedState.data.copyWith(subscriptionStatus: status),
-              ),
-            );
-          },
-          orElse: () => null,
-        );
-      },
-    );
+    _logger.info('Guest logout prompt resolved: ${event.choice.name}');
+    unawaited(_tracker.logGuestLogoutChoice(choice: event.choice));
   }
 
   Future<void> _onOpenUrl(OpenUrl event, Emitter<SettingsState> emit) async {
     final url = event.url;
     _logger.info('Opening URL: $url');
-    unawaited(_tracker.logSettingsLinkClicked(type: url));
-    await _launchUrlUseCase(url);
+    unawaited(_tracker.logSettingsLinkClicked(type: event.type));
+
+    final result = await _launchUrlUseCase(url);
+    result.fold(
+      (failure) => _logger.warning('Failed to open URL: $url', failure),
+      (_) => _logger.info('URL opened successfully: $url'),
+    );
   }
 
   Future<void> _onEditProfileClicked(

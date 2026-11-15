@@ -21,6 +21,9 @@ class FcmRemoteDataSource {
     return settings;
   }
 
+  Future<NotificationSettings> getNotificationSettings() =>
+      _firebaseMessaging.getNotificationSettings();
+
   Future<String?> getToken() => _firebaseMessaging.getToken();
 
   Stream<RemoteMessage> get onMessage => FirebaseMessaging.onMessage;

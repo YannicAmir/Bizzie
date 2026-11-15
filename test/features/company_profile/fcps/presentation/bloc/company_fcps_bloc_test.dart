@@ -1,3 +1,4 @@
+import 'package:bizzie/core/enums/financial_period.dart';
 import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/features/company_profile/shared/domain/models/financial_data_point.dart';
@@ -17,7 +18,7 @@ import 'package:bizzie/features/company_profile/fcps/presentation/analytics/fcps
 import 'package:bizzie/features/company_profile/fcps/presentation/analytics/fcps_tab_view_state.dart';
 import 'package:bizzie/core/interfaces/i_time_provider.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:bizzie/features/auth/domain/usecases/get_auth_stream.dart';
+import 'package:bizzie/features/auth/domain/usecases/get_auth_stream_usecase.dart';
 
 class MockGetFcpsStatsUseCase extends Mock implements GetFcpsStatsUseCase {}
 
@@ -30,10 +31,10 @@ class MockWatchActiveTabUseCase extends Mock implements WatchActiveTabUseCase {}
 class MockTabContentFreshnessService extends Mock
     implements TabContentFreshnessService {}
 
-class MockGetAuthStream extends Mock implements GetAuthStream {}
+class MockGetAuthStreamUseCase extends Mock implements GetAuthStreamUseCase {}
 
-MockGetAuthStream stubbedGetAuthStream() {
-  final mock = MockGetAuthStream();
+MockGetAuthStreamUseCase stubbedGetAuthStream() {
+  final mock = MockGetAuthStreamUseCase();
   when(() => mock()).thenAnswer((_) => const Stream.empty());
   return mock;
 }
@@ -365,7 +366,7 @@ void main() {
 
   group('CompanyFcpsBloc - Interaction Events', () {
     blocTest<CompanyFcpsBloc, CompanyFcpsState>(
-      'periodChanged_isAnnualTrue_updatesviewedYearlyFcpsTabFlag',
+      'periodChanged_annualPeriod_updatesviewedYearlyFcpsTabFlag',
       build: () => bloc,
       // Arrange
       seed: () => CompanyFcpsState.loaded(
@@ -380,7 +381,9 @@ void main() {
       // Act
       act: (bloc) {
         bloc.add(const CompanyFcpsEvent.tabShown(tTicker));
-        bloc.add(const CompanyFcpsEvent.periodChanged(isAnnual: true));
+        bloc.add(
+          const CompanyFcpsEvent.periodChanged(period: FinancialPeriod.annual),
+        );
       },
       // Assert
       expect: () => const <CompanyFcpsState>[],
@@ -391,7 +394,7 @@ void main() {
     );
 
     blocTest<CompanyFcpsBloc, CompanyFcpsState>(
-      'periodChanged_isAnnualFalse_emitsUpdatedIsAnnualViewAndUpdatesFlag',
+      'periodChanged_quarterlyPeriod_emitsUpdatedPeriodAndUpdatesFlag',
       build: () => bloc,
       // Arrange
       seed: () => CompanyFcpsState.loaded(
@@ -406,13 +409,17 @@ void main() {
       // Act
       act: (bloc) => bloc
         ..add(const CompanyFcpsEvent.tabShown(tTicker))
-        ..add(const CompanyFcpsEvent.periodChanged(isAnnual: false)),
+        ..add(
+          const CompanyFcpsEvent.periodChanged(
+            period: FinancialPeriod.quarterly,
+          ),
+        ),
       // Assert
       expect: () => [
         isA<CompanyFcpsState>().having(
-          (s) => s.maybeMap(loaded: (l) => l.isAnnualView, orElse: () => null),
-          'isAnnualView',
-          false,
+          (s) => s.maybeMap(loaded: (l) => l.period, orElse: () => null),
+          'period',
+          FinancialPeriod.quarterly,
         ),
       ],
       verify: (bloc) {
@@ -437,10 +444,16 @@ void main() {
       act: (bloc) {
         bloc.add(const CompanyFcpsEvent.tabShown(tTicker));
         bloc.add(
-          const CompanyFcpsEvent.viewAllTapped(isAnnual: true, isChart: true),
+          const CompanyFcpsEvent.viewAllTapped(
+            period: FinancialPeriod.annual,
+            isChart: true,
+          ),
         );
         bloc.add(
-          const CompanyFcpsEvent.viewAllTapped(isAnnual: false, isChart: false),
+          const CompanyFcpsEvent.viewAllTapped(
+            period: FinancialPeriod.quarterly,
+            isChart: false,
+          ),
         );
       },
       // Assert

@@ -15,10 +15,7 @@ class SegmentsRemoteDataSourceImpl implements ISegmentsRemoteDataSource {
   final Dio _dio;
   final IConfigService _configService;
 
-  SegmentsRemoteDataSourceImpl(
-    @Named('FmpDio') this._dio,
-    this._configService,
-  );
+  SegmentsRemoteDataSourceImpl(@Named('FmpDio') this._dio, this._configService);
 
   String _sanitize(String ticker) => ticker.replaceAll('.', '-');
 

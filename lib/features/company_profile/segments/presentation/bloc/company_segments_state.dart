@@ -1,3 +1,4 @@
+import 'package:bizzie/core/enums/financial_period.dart';
 import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/features/company_profile/segments/domain/models/revenue_geographic_segments.dart';
@@ -21,7 +22,7 @@ abstract class CompanySegmentsState with _$CompanySegmentsState {
     required Map<String, int> geographicColorIndices,
     required int historyLimit,
     required CompanyProfileDataOrigin dataOrigin,
-    @Default(true) bool isAnnualView,
+    @Default(FinancialPeriod.annual) FinancialPeriod period,
     String? selectedAnnualKey,
     String? selectedQuarterlyKey,
     DateTime? lastUpdated,

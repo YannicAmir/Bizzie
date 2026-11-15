@@ -1,17 +1,18 @@
-import 'package:flutter/material.dart';
 import 'package:bizzie/app/routes/app_routes.dart';
+import 'package:bizzie/app/themes/app_assets.dart';
+import 'package:bizzie/app/themes/app_colors.dart';
+import 'package:bizzie/app/themes/app_text_styles.dart';
+import 'package:bizzie/features/onboarding/data/datasources/dummy_price_data.dart';
+import 'package:bizzie/features/onboarding/domain/models/onboarding_step.dart';
+import 'package:bizzie/features/onboarding/presentation/bloc/onboarding_bloc.dart';
+import 'package:bizzie/features/onboarding/presentation/models/price_chart_point.dart';
+import 'package:bizzie/features/onboarding/presentation/widgets/onboarding_footer.dart';
+import 'package:bizzie/shared/constants/app_constants.dart';
+import 'package:bizzie/shared/widgets/buttons/bizzie_primary_button.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
-import '../../../../app/themes/app_assets.dart';
-import '../../../../app/themes/app_colors.dart';
-
-import '../../data/datasources/dummy_price_data.dart';
-import '../widgets/onboarding_footer.dart';
-
-import 'package:bizzie/shared/widgets/buttons/bizzie_primary_button.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:bizzie/features/onboarding/presentation/bloc/onboarding_bloc.dart';
-import 'package:bizzie/features/onboarding/domain/models/onboarding_step.dart';
 
 class LandingPage extends StatefulWidget {
   const LandingPage({super.key});
@@ -31,14 +32,6 @@ class _LandingPageState extends State<LandingPage> {
 
   @override
   Widget build(BuildContext context) {
-    final List<ChartData> chartData = dummyData.map((data) {
-      return ChartData(
-        DateTime.parse(data['date'] as String),
-        (data['price'] as num).toDouble(),
-      );
-    }).toList();
-
-    final List<ChartData> reversedData = chartData.reversed.toList();
     final theme = Theme.of(context);
 
     return Scaffold(
@@ -46,10 +39,14 @@ class _LandingPageState extends State<LandingPage> {
       body: SafeArea(
         child: Stack(
           children: [
-            _BackgroundChart(data: reversedData),
+            const _BackgroundChart(),
             Column(
               children: [
-                SizedBox(height: MediaQuery.of(context).size.height * 0.24),
+                SizedBox(
+                  height:
+                      MediaQuery.of(context).size.height *
+                      AppConstants.onboardLandingMascotTopFactor,
+                ),
                 const _MascotImage(),
                 const Spacer(flex: 1),
                 OnboardingFooter(
@@ -58,7 +55,10 @@ class _LandingPageState extends State<LandingPage> {
                       'Your friend to take with you on your Stock Market journey',
                   primaryButton: BizziePrimaryButton(
                     onPressed: () {
-                      context.push(AppRoutes.onboardingName);
+                      context.read<OnboardingBloc>().add(
+                        const OnboardingEvent.guestSessionRequested(),
+                      );
+                      context.push(AppRoutes.onboardingSectors);
                     },
                     title: 'Get Started',
                   ),
@@ -74,59 +74,98 @@ class _LandingPageState extends State<LandingPage> {
 }
 
 class _BackgroundChart extends StatelessWidget {
-  final List<ChartData> data;
+  const _BackgroundChart();
 
-  const _BackgroundChart({required this.data});
+  static final List<PriceChartPoint> _points = dummyData
+      .map(
+        (data) => PriceChartPoint(
+          date: DateTime.parse(data['date'] as String),
+          price: (data['price'] as num).toDouble(),
+        ),
+      )
+      .toList()
+      .reversed
+      .toList();
 
   @override
   Widget build(BuildContext context) {
-    var theme = Theme.of(context);
     return Positioned(
-      top: 15,
+      top: AppConstants.onboardLandingChartTopOffset,
       left: 0,
       right: 0,
-      height: 200,
+      height: AppConstants.onboardLandingChartHeight,
       child: IgnorePointer(
-        child: ShaderMask(
-          shaderCallback: (Rect bounds) {
-            return LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                theme.scaffoldBackgroundColor,
-                theme.scaffoldBackgroundColor,
-                theme.colorScheme.scrim,
-              ],
-              stops: [0.0, 0.5, 1.0],
-            ).createShader(bounds);
-          },
-          blendMode: BlendMode.dstIn,
-          child: SfCartesianChart(
-            margin: EdgeInsets.zero,
-            plotAreaBorderWidth: 0,
-            primaryXAxis: DateTimeAxis(isVisible: false),
-            primaryYAxis: NumericAxis(isVisible: false),
-            series: <CartesianSeries>[
-              SplineAreaSeries<ChartData, DateTime>(
-                dataSource: data,
-                xValueMapper: (ChartData data, _) => data.date,
-                yValueMapper: (ChartData data, _) => data.price,
-                color: const Color(0xFF10B981).withValues(alpha: 0.1),
-                borderColor: const Color(0xFF10B981),
-                borderWidth: 2,
-                gradient: LinearGradient(
-                  colors: [
-                    const Color(0xFF10B981).withValues(alpha: 0.2),
-                    const Color(0xFF10B981).withValues(alpha: 0.0),
-                  ],
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                ),
-              ),
-            ],
-          ),
-        ),
+        child: _BottomFadeMask(child: _PriceAreaChart(points: _points)),
       ),
+    );
+  }
+}
+
+class _BottomFadeMask extends StatelessWidget {
+  final Widget child;
+
+  const _BottomFadeMask({required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return ShaderMask(
+      shaderCallback: (Rect bounds) {
+        return LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            theme.scaffoldBackgroundColor,
+            theme.scaffoldBackgroundColor,
+            theme.colorScheme.scrim,
+          ],
+          stops: AppConstants.onboardLandingChartFadeStops,
+        ).createShader(bounds);
+      },
+      blendMode: BlendMode.dstIn,
+      child: child,
+    );
+  }
+}
+
+class _PriceAreaChart extends StatelessWidget {
+  final List<PriceChartPoint> points;
+
+  const _PriceAreaChart({required this.points});
+
+  static final LinearGradient _areaGradient = LinearGradient(
+    colors: [
+      AppColors.emerald500.withValues(
+        alpha: AppConstants.onboardLandingChartGradientStartAlpha,
+      ),
+      AppColors.emerald500.withValues(
+        alpha: AppConstants.onboardLandingChartGradientEndAlpha,
+      ),
+    ],
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+  );
+
+  @override
+  Widget build(BuildContext context) {
+    return SfCartesianChart(
+      margin: EdgeInsets.zero,
+      plotAreaBorderWidth: 0,
+      primaryXAxis: DateTimeAxis(isVisible: false),
+      primaryYAxis: NumericAxis(isVisible: false),
+      series: <CartesianSeries<PriceChartPoint, DateTime>>[
+        SplineAreaSeries<PriceChartPoint, DateTime>(
+          dataSource: points,
+          xValueMapper: (PriceChartPoint point, _) => point.date,
+          yValueMapper: (PriceChartPoint point, _) => point.price,
+          color: AppColors.emerald500.withValues(
+            alpha: AppConstants.onboardLandingChartFillAlpha,
+          ),
+          borderColor: AppColors.emerald500,
+          borderWidth: AppConstants.chartLineWidth,
+          gradient: _areaGradient,
+        ),
+      ],
     );
   }
 }
@@ -137,10 +176,10 @@ class _MascotImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 40.0),
+      padding: AppConstants.onboardLandingMascotPadding,
       child: Image.asset(
         AppAssets.onboardingBizzieMascot,
-        height: 255,
+        height: AppConstants.onboardLandingMascotHeight,
         fit: BoxFit.contain,
       ),
     );
@@ -152,15 +191,13 @@ class _LoginRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var theme = Theme.of(context);
+    final theme = Theme.of(context);
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text(
           'Already have an account?',
-          style: theme.textTheme.bodyMedium?.copyWith(
-            color: AppColors.textSecondary,
-          ),
+          style: AppTextStyles.bodyMediumSecondary,
         ),
         TextButton(
           onPressed: () {
@@ -171,19 +208,12 @@ class _LoginRow extends StatelessWidget {
           },
           child: Text(
             'Login',
-            style: theme.textTheme.bodyMedium?.copyWith(
+            style: AppTextStyles.bodyMediumBold.copyWith(
               color: theme.colorScheme.primary,
-              fontWeight: FontWeight.w600,
             ),
           ),
         ),
       ],
     );
   }
-}
-
-class ChartData {
-  const ChartData(this.date, this.price);
-  final DateTime date;
-  final double price;
 }

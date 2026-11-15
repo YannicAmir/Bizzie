@@ -1,8 +1,9 @@
 import 'dart:async';
 
+import 'package:bizzie/core/enums/financial_period.dart';
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/core/enums/data_origin.dart';
-import 'package:bizzie/features/auth/domain/usecases/get_auth_stream.dart';
+import 'package:bizzie/features/auth/domain/usecases/get_auth_stream_usecase.dart';
 import 'package:bizzie/features/company_profile/financial_statements/domain/models/balance_sheet.dart';
 import 'package:bizzie/features/company_profile/financial_statements/domain/models/cash_flow_statement.dart';
 import 'package:bizzie/features/company_profile/financial_statements/domain/models/get_financial_statement_params.dart';
@@ -50,10 +51,10 @@ class MockConfigService extends Mock implements IConfigService {}
 
 class MockWatchActiveTabUseCase extends Mock implements WatchActiveTabUseCase {}
 
-class MockGetAuthStream extends Mock implements GetAuthStream {}
+class MockGetAuthStreamUseCase extends Mock implements GetAuthStreamUseCase {}
 
-MockGetAuthStream stubbedGetAuthStream() {
-  final mock = MockGetAuthStream();
+MockGetAuthStreamUseCase stubbedGetAuthStream() {
+  final mock = MockGetAuthStreamUseCase();
   when(() => mock()).thenAnswer((_) => const Stream.empty());
   return mock;
 }
@@ -104,22 +105,16 @@ void main() {
       () => mockWatchActiveTabUseCase(any()),
     ).thenAnswer((_) => tabActivationController.stream);
     when(
-      () => mockIncTracker.logViewSummary(
-        any(),
-        isFinal: any(named: 'isFinal'),
-      ),
+      () =>
+          mockIncTracker.logViewSummary(any(), isFinal: any(named: 'isFinal')),
     ).thenAnswer((_) async {});
     when(
-      () => mockBalTracker.logViewSummary(
-        any(),
-        isFinal: any(named: 'isFinal'),
-      ),
+      () =>
+          mockBalTracker.logViewSummary(any(), isFinal: any(named: 'isFinal')),
     ).thenAnswer((_) async {});
     when(
-      () => mockCashTracker.logViewSummary(
-        any(),
-        isFinal: any(named: 'isFinal'),
-      ),
+      () =>
+          mockCashTracker.logViewSummary(any(), isFinal: any(named: 'isFinal')),
     ).thenAnswer((_) async {});
 
     bloc = FinancialStatementsBloc(
@@ -380,11 +375,9 @@ void main() {
         ),
         isA<FinancialStatementsState>()
             .having((s) => s.isLoadingIncome, 'isLoadingIncome', false)
-            .having(
-              (s) => s.annualIncomeStatements,
-              'annualIncomeStatements',
-              [tIncome],
-            ),
+            .having((s) => s.annualIncomeStatements, 'annualIncomeStatements', [
+              tIncome,
+            ]),
       ],
     );
   });
@@ -629,7 +622,7 @@ void main() {
         bloc.add(
           const FinancialStatementsEvent.incomeDateSelected(
             '2022-09-24',
-            isAnnual: true,
+            period: FinancialPeriod.annual,
           ),
         );
       },
@@ -683,7 +676,7 @@ void main() {
         bloc.add(
           const FinancialStatementsEvent.incomeDateSelected(
             '2023-06-30',
-            isAnnual: false,
+            period: FinancialPeriod.quarterly,
           ),
         );
       },
@@ -719,7 +712,7 @@ void main() {
         bloc.add(
           const FinancialStatementsEvent.balanceDateSelected(
             '2022-09-24',
-            isAnnual: true,
+            period: FinancialPeriod.annual,
           ),
         );
       },
@@ -755,7 +748,7 @@ void main() {
         bloc.add(
           const FinancialStatementsEvent.balanceDateSelected(
             '2023-06-30',
-            isAnnual: false,
+            period: FinancialPeriod.quarterly,
           ),
         );
       },
@@ -791,7 +784,7 @@ void main() {
         bloc.add(
           const FinancialStatementsEvent.cashFlowDateSelected(
             '2022-09-24',
-            isAnnual: true,
+            period: FinancialPeriod.annual,
           ),
         );
       },
@@ -827,7 +820,7 @@ void main() {
         bloc.add(
           const FinancialStatementsEvent.cashFlowDateSelected(
             '2023-06-30',
-            isAnnual: false,
+            period: FinancialPeriod.quarterly,
           ),
         );
       },
@@ -1141,7 +1134,11 @@ void main() {
           ),
       act: (bloc) => bloc
         ..add(const FinancialStatementsEvent.tabShown(tTicker))
-        ..add(const FinancialStatementsEvent.viewAllTapped(isAnnual: true)),
+        ..add(
+          const FinancialStatementsEvent.viewAllTapped(
+            period: FinancialPeriod.annual,
+          ),
+        ),
       expect: () => const <FinancialStatementsState>[],
       verify: (bloc) {
         expect(
@@ -1233,11 +1230,10 @@ void main() {
         // arrange
         return bloc;
       },
-      seed: () =>
-          FinancialStatementsState.initial(
-            ticker: tTicker,
-            freePlanHistoryCount: 5,
-          ).copyWith(selectedType: FinancialStatementType.balance),
+      seed: () => FinancialStatementsState.initial(
+        ticker: tTicker,
+        freePlanHistoryCount: 5,
+      ).copyWith(selectedType: FinancialStatementType.balance),
       act: (bloc) {
         // act
         bloc

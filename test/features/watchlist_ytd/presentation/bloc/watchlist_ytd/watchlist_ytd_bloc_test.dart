@@ -1,5 +1,5 @@
 import 'package:bizzie/core/error/failures.dart';
-import 'package:bizzie/features/auth/domain/usecases/get_auth_stream.dart';
+import 'package:bizzie/features/auth/domain/usecases/get_auth_stream_usecase.dart';
 import 'package:bizzie/features/watchlist_ytd/domain/models/ytd_price_change.dart';
 import 'package:bizzie/features/watchlist_ytd/domain/usecases/get_watchlist_ytd_usecase.dart';
 import 'package:bizzie/features/watchlist_ytd/presentation/bloc/watchlist_ytd/watchlist_ytd_bloc.dart';
@@ -13,10 +13,10 @@ import 'package:mocktail/mocktail.dart';
 class MockGetWatchlistYtdUseCase extends Mock
     implements GetWatchlistYtdUseCase {}
 
-class MockGetAuthStream extends Mock implements GetAuthStream {}
+class MockGetAuthStreamUseCase extends Mock implements GetAuthStreamUseCase {}
 
-MockGetAuthStream stubbedGetAuthStream() {
-  final mock = MockGetAuthStream();
+MockGetAuthStreamUseCase stubbedGetAuthStream() {
+  final mock = MockGetAuthStreamUseCase();
   when(() => mock()).thenAnswer((_) => const Stream.empty());
   return mock;
 }

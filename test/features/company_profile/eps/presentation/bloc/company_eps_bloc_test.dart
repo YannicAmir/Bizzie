@@ -1,3 +1,4 @@
+import 'package:bizzie/core/enums/financial_period.dart';
 import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/features/company_profile/eps/domain/models/eps_stats.dart';
@@ -16,7 +17,7 @@ import 'package:bizzie/core/usecase/usecase.dart';
 import 'package:bizzie/features/company_profile/shared/domain/usecases/watch_active_tab_usecase.dart';
 import 'package:bizzie/core/interfaces/i_time_provider.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:bizzie/features/auth/domain/usecases/get_auth_stream.dart';
+import 'package:bizzie/features/auth/domain/usecases/get_auth_stream_usecase.dart';
 
 class MockGetEpsStatsUseCase extends Mock implements GetEpsStatsUseCase {}
 
@@ -26,10 +27,10 @@ class MockEpsTabAnalytics extends Mock implements EpsTabAnalytics {}
 
 class MockWatchActiveTabUseCase extends Mock implements WatchActiveTabUseCase {}
 
-class MockGetAuthStream extends Mock implements GetAuthStream {}
+class MockGetAuthStreamUseCase extends Mock implements GetAuthStreamUseCase {}
 
-MockGetAuthStream stubbedGetAuthStream() {
-  final mock = MockGetAuthStream();
+MockGetAuthStreamUseCase stubbedGetAuthStream() {
+  final mock = MockGetAuthStreamUseCase();
   when(() => mock()).thenAnswer((_) => const Stream.empty());
   return mock;
 }
@@ -178,7 +179,9 @@ void main() {
       act: (bloc) => bloc
         // act
         ..add(const CompanyEpsEvent.tabShown(tTicker))
-        ..add(const CompanyEpsEvent.periodChanged(isAnnual: true)),
+        ..add(
+          const CompanyEpsEvent.periodChanged(period: FinancialPeriod.annual),
+        ),
       expect: () => const <CompanyEpsState>[],
       verify: (bloc) {
         // assert
@@ -187,18 +190,22 @@ void main() {
     );
 
     blocTest<CompanyEpsBloc, CompanyEpsState>(
-      'periodChanged_toDifferentValue_emitsUpdatedIsAnnualView',
+      'periodChanged_toDifferentValue_emitsUpdatedPeriod',
       build: () => bloc,
       seed: () => tLoadedState, // arrange
       act: (bloc) => bloc
         // act
         ..add(const CompanyEpsEvent.tabShown(tTicker))
-        ..add(const CompanyEpsEvent.periodChanged(isAnnual: false)),
+        ..add(
+          const CompanyEpsEvent.periodChanged(
+            period: FinancialPeriod.quarterly,
+          ),
+        ),
       expect: () => [
         isA<CompanyEpsState>().having(
-          (s) => s.maybeMap(loaded: (l) => l.isAnnualView, orElse: () => null),
-          'isAnnualView',
-          false,
+          (s) => s.maybeMap(loaded: (l) => l.period, orElse: () => null),
+          'period',
+          FinancialPeriod.quarterly,
         ),
       ],
       verify: (bloc) {
@@ -215,16 +222,28 @@ void main() {
         // act
         ..add(const CompanyEpsEvent.tabShown(tTicker))
         ..add(
-          const CompanyEpsEvent.viewAllTapped(isAnnual: true, isChart: true),
+          const CompanyEpsEvent.viewAllTapped(
+            period: FinancialPeriod.annual,
+            isChart: true,
+          ),
         )
         ..add(
-          const CompanyEpsEvent.viewAllTapped(isAnnual: true, isChart: false),
+          const CompanyEpsEvent.viewAllTapped(
+            period: FinancialPeriod.annual,
+            isChart: false,
+          ),
         )
         ..add(
-          const CompanyEpsEvent.viewAllTapped(isAnnual: false, isChart: true),
+          const CompanyEpsEvent.viewAllTapped(
+            period: FinancialPeriod.quarterly,
+            isChart: true,
+          ),
         )
         ..add(
-          const CompanyEpsEvent.viewAllTapped(isAnnual: false, isChart: false),
+          const CompanyEpsEvent.viewAllTapped(
+            period: FinancialPeriod.quarterly,
+            isChart: false,
+          ),
         ),
       expect: () => const <CompanyEpsState>[],
       verify: (bloc) {

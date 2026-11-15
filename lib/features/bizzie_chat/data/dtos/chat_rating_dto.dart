@@ -26,24 +26,24 @@ abstract class ChatRatingDto with _$ChatRatingDto {
       _$ChatRatingDtoFromJson(json);
 
   factory ChatRatingDto.fromDomain(ChatRating model) => ChatRatingDto(
-        rating: model.rating.name,
-        question: model.question,
-        aiResponse: model.aiResponse,
-        time: model.time,
-        companyName: model.companyName,
-        companyTicker: model.companyTicker,
-        userId: model.userId,
-        assistantMessageId: model.assistantMessageId,
-      );
+    rating: model.rating.name,
+    question: model.question,
+    aiResponse: model.aiResponse,
+    time: model.time,
+    companyName: model.companyName,
+    companyTicker: model.companyTicker,
+    userId: model.userId,
+    assistantMessageId: model.assistantMessageId,
+  );
 
   ChatRating toDomain() => ChatRating(
-        rating: RatingType.fromString(rating),
-        question: question,
-        aiResponse: aiResponse,
-        time: time,
-        companyName: companyName,
-        companyTicker: companyTicker,
-        userId: userId,
-        assistantMessageId: assistantMessageId,
-      );
+    rating: RatingType.fromString(rating),
+    question: question,
+    aiResponse: aiResponse,
+    time: time,
+    companyName: companyName,
+    companyTicker: companyTicker,
+    userId: userId,
+    assistantMessageId: assistantMessageId,
+  );
 }

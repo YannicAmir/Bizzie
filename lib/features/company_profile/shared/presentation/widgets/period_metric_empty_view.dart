@@ -1,16 +1,17 @@
+import 'package:bizzie/core/enums/financial_period.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/widgets/company_profile_empty_state.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/widgets/period_switch.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:flutter/material.dart';
 
 class PeriodMetricEmptyView extends StatelessWidget {
-  final bool isAnnual;
+  final FinancialPeriod period;
   final String message;
-  final ValueChanged<bool> onPeriodChanged;
+  final ValueChanged<FinancialPeriod> onPeriodChanged;
 
   const PeriodMetricEmptyView({
     super.key,
-    required this.isAnnual,
+    required this.period,
     required this.message,
     required this.onPeriodChanged,
   });
@@ -22,7 +23,7 @@ class PeriodMetricEmptyView extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          PeriodSwitch(isAnnual: isAnnual, onPeriodChanged: onPeriodChanged),
+          PeriodSwitch(period: period, onPeriodChanged: onPeriodChanged),
           AppConstants.emptyStateTopSpacing,
           CompanyProfileEmptyState(message: message),
         ],

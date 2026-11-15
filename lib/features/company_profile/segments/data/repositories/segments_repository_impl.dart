@@ -82,9 +82,7 @@ class SegmentsRepositoryImpl implements ISegmentsRepository {
   }
 
   @override
-  Future<
-    Either<Failure, (RevenueGeographicSegments, CompanyProfileDataOrigin)>
-  >
+  Future<Either<Failure, (RevenueGeographicSegments, CompanyProfileDataOrigin)>>
   getGeographicSegments(String ticker) async {
     try {
       final res = await _loadSegmentation(

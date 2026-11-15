@@ -1,3 +1,4 @@
+import 'package:bizzie/core/enums/financial_period.dart';
 import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/features/company_profile/shared/domain/models/financial_data_point.dart';
@@ -17,7 +18,7 @@ import 'package:bizzie/features/company_profile/free_cash_flow/presentation/anal
 import 'package:bizzie/features/company_profile/free_cash_flow/presentation/analytics/free_cash_flow_tab_view_state.dart';
 import 'package:bizzie/core/interfaces/i_time_provider.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:bizzie/features/auth/domain/usecases/get_auth_stream.dart';
+import 'package:bizzie/features/auth/domain/usecases/get_auth_stream_usecase.dart';
 
 class MockGetFreeCashFlowStatsUseCase extends Mock
     implements GetFreeCashFlowStatsUseCase {}
@@ -32,10 +33,10 @@ class MockWatchActiveTabUseCase extends Mock implements WatchActiveTabUseCase {}
 class MockTabContentFreshnessService extends Mock
     implements TabContentFreshnessService {}
 
-class MockGetAuthStream extends Mock implements GetAuthStream {}
+class MockGetAuthStreamUseCase extends Mock implements GetAuthStreamUseCase {}
 
-MockGetAuthStream stubbedGetAuthStream() {
-  final mock = MockGetAuthStream();
+MockGetAuthStreamUseCase stubbedGetAuthStream() {
+  final mock = MockGetAuthStreamUseCase();
   when(() => mock()).thenAnswer((_) => const Stream.empty());
   return mock;
 }
@@ -352,7 +353,7 @@ void main() {
 
   group('CompanyFreeCashFlowBloc - Interaction Events', () {
     blocTest<CompanyFreeCashFlowBloc, CompanyFreeCashFlowState>(
-      'periodChanged_isAnnualTrue_updatesviewedYearlyFcfTabFlag',
+      'periodChanged_annualPeriod_updatesviewedYearlyFcfTabFlag',
       build: () => bloc,
       // Arrange
       seed: () => CompanyFreeCashFlowState.loaded(
@@ -367,7 +368,11 @@ void main() {
       // Act
       act: (bloc) {
         bloc.add(const CompanyFreeCashFlowEvent.tabShown(tTicker));
-        bloc.add(const CompanyFreeCashFlowEvent.periodChanged(isAnnual: true));
+        bloc.add(
+          const CompanyFreeCashFlowEvent.periodChanged(
+            period: FinancialPeriod.annual,
+          ),
+        );
       },
       // Assert
       expect: () => const <CompanyFreeCashFlowState>[],
@@ -378,7 +383,7 @@ void main() {
     );
 
     blocTest<CompanyFreeCashFlowBloc, CompanyFreeCashFlowState>(
-      'periodChanged_isAnnualFalse_emitsUpdatedIsAnnualViewAndUpdatesFlag',
+      'periodChanged_quarterlyPeriod_emitsUpdatedPeriodAndUpdatesFlag',
       build: () => bloc,
       // Arrange
       seed: () => CompanyFreeCashFlowState.loaded(
@@ -394,14 +399,16 @@ void main() {
       act: (bloc) => bloc
         ..add(const CompanyFreeCashFlowEvent.tabShown(tTicker))
         ..add(
-          const CompanyFreeCashFlowEvent.periodChanged(isAnnual: false),
+          const CompanyFreeCashFlowEvent.periodChanged(
+            period: FinancialPeriod.quarterly,
+          ),
         ),
       // Assert
       expect: () => [
         isA<CompanyFreeCashFlowState>().having(
-          (s) => s.maybeMap(loaded: (l) => l.isAnnualView, orElse: () => null),
-          'isAnnualView',
-          false,
+          (s) => s.maybeMap(loaded: (l) => l.period, orElse: () => null),
+          'period',
+          FinancialPeriod.quarterly,
         ),
       ],
       verify: (bloc) {
@@ -427,13 +434,13 @@ void main() {
         bloc.add(const CompanyFreeCashFlowEvent.tabShown(tTicker));
         bloc.add(
           const CompanyFreeCashFlowEvent.viewAllTapped(
-            isAnnual: true,
+            period: FinancialPeriod.annual,
             isChart: true,
           ),
         );
         bloc.add(
           const CompanyFreeCashFlowEvent.viewAllTapped(
-            isAnnual: false,
+            period: FinancialPeriod.quarterly,
             isChart: false,
           ),
         );

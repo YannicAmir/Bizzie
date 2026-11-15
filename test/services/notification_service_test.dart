@@ -8,7 +8,7 @@ import 'package:bizzie/features/notifications/domain/enums/notification_app_stat
 import 'package:bizzie/features/notifications/domain/enums/notification_trigger_source.dart';
 import 'package:bizzie/features/notifications/domain/models/notification_message.dart';
 import 'package:bizzie/features/notifications/presentation/analytics/notification_tracker.dart';
-import 'package:bizzie/features/user/domain/interfaces/user_repository.dart';
+import 'package:bizzie/features/user/domain/interfaces/i_user_repository.dart';
 import 'package:bizzie/services/notification_service.dart';
 import 'package:dartz/dartz.dart';
 import 'package:device_info_plus/device_info_plus.dart';
@@ -29,8 +29,6 @@ class MockFirebaseMessaging extends Mock implements FirebaseMessaging {}
 class MockILocalStorageService extends Mock implements ILocalStorageService {}
 
 class MockIUserRepository extends Mock implements IUserRepository {}
-
-class MockNotificationSettings extends Mock implements NotificationSettings {}
 
 class MockRemoteMessage extends Mock implements RemoteMessage {}
 
@@ -245,28 +243,6 @@ void main() {
         verify(
           () => mockUserRepository.updateFcmToken(any(), tToken),
         ).called(1);
-      },
-    );
-  });
-
-  group('isSystemAuthorized', () {
-    test(
-      'notificationService_isSystemAuthorized_authorized_returnsTrue',
-      () async {
-        // ARRANGE
-        final settings = MockNotificationSettings();
-        when(
-          () => settings.authorizationStatus,
-        ).thenReturn(AuthorizationStatus.authorized);
-        when(
-          () => mockFirebaseMessaging.getNotificationSettings(),
-        ).thenAnswer((_) async => settings);
-
-        // ACT
-        final result = await service.isSystemAuthorized();
-
-        // ASSERT
-        expect(result, isTrue);
       },
     );
   });

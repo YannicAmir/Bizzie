@@ -12,5 +12,6 @@ abstract class ProfileDisplayData with _$ProfileDisplayData {
     required double? sectorPe,
     required double? sectorAverageChange,
     required DateTime? marketDataDate,
+    @Default(false) bool isGuest,
   }) = _ProfileDisplayData;
 }

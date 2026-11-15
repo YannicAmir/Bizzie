@@ -155,14 +155,11 @@ class WatchlistBloc extends Bloc<WatchlistEvent, WatchlistState> {
       final stream = await _getWatchlistUseCase(uid);
       final result = await stream.first;
 
-      await result.fold(
-        (failure) async {
-          _logger.warning(
-            'Sync skipped: Watchlist fetch failed: ${failure.errorMessage}',
-          );
-        },
-        (companies) => _syncActiveTickers(companies),
-      );
+      await result.fold((failure) async {
+        _logger.warning(
+          'Sync skipped: Watchlist fetch failed: ${failure.errorMessage}',
+        );
+      }, (companies) => _syncActiveTickers(companies));
     } catch (e, stack) {
       _logger.severe('Sync failed unexpectedly', e, stack);
     }
@@ -192,18 +189,15 @@ class WatchlistBloc extends Bloc<WatchlistEvent, WatchlistState> {
       AddToWatchlistParams(company: _companyFromEvent(event), uid: uid),
     );
 
-    result.fold(
-      (failure) => _emitOperationFailure('add', failure, emit),
-      (_) {
-        _logger.info("Added ${event.ticker}, waiting for stream update");
-        _watchlistAnalytics.logItemAdded(
-          ticker: event.ticker,
-          companyName: event.name ?? event.ticker,
-          tabName: event.tabName ?? 'unknown',
-          durationOnPageSeconds: event.durationOnPageSeconds ?? 0,
-        );
-      },
-    );
+    result.fold((failure) => _emitOperationFailure('add', failure, emit), (_) {
+      _logger.info("Added ${event.ticker}, waiting for stream update");
+      _watchlistAnalytics.logItemAdded(
+        ticker: event.ticker,
+        companyName: event.name ?? event.ticker,
+        tabName: event.tabName ?? 'unknown',
+        durationOnPageSeconds: event.durationOnPageSeconds ?? 0,
+      );
+    });
   }
 
   Future<void> _onRemoveRequested(
@@ -217,16 +211,15 @@ class WatchlistBloc extends Bloc<WatchlistEvent, WatchlistState> {
       RemoveFromWatchlistParams(ticker: event.ticker, uid: uid),
     );
 
-    result.fold(
-      (failure) => _emitOperationFailure('remove', failure, emit),
-      (_) {
-        _logger.info("Removed ${event.ticker}, waiting for stream update");
-        _watchlistAnalytics.logItemRemoved(
-          ticker: event.ticker,
-          tabName: event.tabName ?? 'unknown',
-          durationOnPageSeconds: event.durationOnPageSeconds ?? 0,
-        );
-      },
-    );
+    result.fold((failure) => _emitOperationFailure('remove', failure, emit), (
+      _,
+    ) {
+      _logger.info("Removed ${event.ticker}, waiting for stream update");
+      _watchlistAnalytics.logItemRemoved(
+        ticker: event.ticker,
+        tabName: event.tabName ?? 'unknown',
+        durationOnPageSeconds: event.durationOnPageSeconds ?? 0,
+      );
+    });
   }
 }

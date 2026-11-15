@@ -49,8 +49,7 @@ class ChatMessageList extends StatelessWidget {
     final hasStreamingContent =
         streamingContent != null && streamingContent!.isNotEmpty;
     final showFooter = !showSpacer && messages.isNotEmpty;
-    final itemCount =
-        messages.length + (showSpacer ? 2 : (showFooter ? 1 : 0));
+    final itemCount = messages.length + (showSpacer ? 2 : (showFooter ? 1 : 0));
 
     return LayoutBuilder(
       builder: (context, constraints) {

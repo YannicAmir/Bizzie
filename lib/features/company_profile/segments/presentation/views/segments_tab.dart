@@ -1,3 +1,4 @@
+import 'package:bizzie/core/enums/financial_period.dart';
 import 'package:bizzie/features/company_profile/segments/domain/models/revenue_segment.dart';
 import 'package:bizzie/features/company_profile/segments/presentation/bloc/company_segments_bloc.dart';
 import 'package:bizzie/features/company_profile/segments/presentation/bloc/company_segments_event.dart';
@@ -89,12 +90,12 @@ class _LoadedView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isAnnual = state.isAnnualView;
-    final keys = state.periodKeys(isAnnual: isAnnual);
+    final period = state.period;
+    final keys = state.periodKeys(period: period);
 
     if (keys.isEmpty) {
       return _SegmentsTabShell(
-        isAnnual: isAnnual,
+        period: period,
         children: const [
           AppConstants.emptyStateTopSpacing,
           CompanyProfileEmptyState(
@@ -104,14 +105,11 @@ class _LoadedView extends StatelessWidget {
       );
     }
 
-    final selectedKey = state.selectedKey(isAnnual: isAnnual) ?? keys.first;
-    final previousKey = SegmentPeriodKey.previous(
-      selectedKey,
-      isAnnual: isAnnual,
-    );
+    final selectedKey = state.selectedKey(period: period) ?? keys.first;
+    final previousKey = SegmentPeriodKey.previous(selectedKey, period: period);
 
     return _SegmentsTabShell(
-      isAnnual: isAnnual,
+      period: period,
       children: [
         CurrencyConversionNotice(
           originalCurrency: state.originalCurrency,
@@ -121,13 +119,13 @@ class _LoadedView extends StatelessWidget {
           state: state,
           keys: keys,
           selectedKey: selectedKey,
-          isAnnual: isAnnual,
+          period: period,
         ),
         AppConstants.mainSectionSpacing,
         _SegmentBreakdown(
           kind: _SegmentBreakdownKind.product,
           state: state,
-          isAnnual: isAnnual,
+          period: period,
           selectedKey: selectedKey,
           previousKey: previousKey,
         ),
@@ -135,7 +133,7 @@ class _LoadedView extends StatelessWidget {
         _SegmentBreakdown(
           kind: _SegmentBreakdownKind.geographic,
           state: state,
-          isAnnual: isAnnual,
+          period: period,
           selectedKey: selectedKey,
           previousKey: previousKey,
         ),
@@ -145,10 +143,10 @@ class _LoadedView extends StatelessWidget {
 }
 
 class _SegmentsTabShell extends StatelessWidget {
-  final bool isAnnual;
+  final FinancialPeriod period;
   final List<Widget> children;
 
-  const _SegmentsTabShell({required this.isAnnual, required this.children});
+  const _SegmentsTabShell({required this.period, required this.children});
 
   @override
   Widget build(BuildContext context) {
@@ -156,7 +154,10 @@ class _SegmentsTabShell extends StatelessWidget {
       padding: AppConstants.pagePadding,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: [_PeriodSwitch(isAnnual: isAnnual), ...children],
+        children: [
+          _PeriodSwitch(period: period),
+          ...children,
+        ],
       ),
     );
   }
@@ -166,13 +167,13 @@ class _PeriodDropdown extends StatelessWidget {
   final CompanySegmentsLoaded state;
   final List<String> keys;
   final String selectedKey;
-  final bool isAnnual;
+  final FinancialPeriod period;
 
   const _PeriodDropdown({
     required this.state,
     required this.keys,
     required this.selectedKey,
-    required this.isAnnual,
+    required this.period,
   });
 
   @override
@@ -181,9 +182,9 @@ class _PeriodDropdown extends StatelessWidget {
       items: keys,
       selectedItem: selectedKey,
       onItemSelected: (key) => context.read<CompanySegmentsBloc>().add(
-        CompanySegmentsEvent.periodKeySelected(key, isAnnual: isAnnual),
+        CompanySegmentsEvent.periodKeySelected(key, period: period),
       ),
-      dateStringExtractor: (key) => state.pairLabel(key, isAnnual: isAnnual),
+      dateStringExtractor: (key) => state.pairLabel(key, period: period),
       modalTitle: 'Segment Periods',
       historyLimit: state.historyLimit,
     );
@@ -203,14 +204,14 @@ enum _SegmentBreakdownKind {
 class _SegmentBreakdown extends StatelessWidget {
   final _SegmentBreakdownKind kind;
   final CompanySegmentsLoaded state;
-  final bool isAnnual;
+  final FinancialPeriod period;
   final String selectedKey;
   final String? previousKey;
 
   const _SegmentBreakdown({
     required this.kind,
     required this.state,
-    required this.isAnnual,
+    required this.period,
     required this.selectedKey,
     required this.previousKey,
   });
@@ -218,18 +219,18 @@ class _SegmentBreakdown extends StatelessWidget {
   RevenueSegment? _segmentForKey(String? key) => switch (kind) {
     _SegmentBreakdownKind.product => state.productSegmentForKey(
       key,
-      isAnnual: isAnnual,
+      period: period,
     ),
     _SegmentBreakdownKind.geographic => state.geographicSegmentForKey(
       key,
-      isAnnual: isAnnual,
+      period: period,
     ),
   };
 
   @override
   Widget build(BuildContext context) {
     return SegmentBreakdownSection(
-      key: ValueKey('${kind.keyPrefix}_${isAnnual}_$selectedKey'),
+      key: ValueKey('${kind.keyPrefix}_${period.isAnnual}_$selectedKey'),
       title: kind.title,
       current: _segmentForKey(selectedKey),
       previous: _segmentForKey(previousKey),
@@ -240,23 +241,30 @@ class _SegmentBreakdown extends StatelessWidget {
         _SegmentBreakdownKind.geographic => state.geographicColorIndices,
       },
       currency: state.reportedCurrency,
-      isAnnual: isAnnual,
+      period: period,
     );
   }
 }
 
 class _PeriodSwitch extends StatelessWidget {
-  final bool isAnnual;
+  final FinancialPeriod period;
 
-  const _PeriodSwitch({required this.isAnnual});
+  const _PeriodSwitch({required this.period});
 
   @override
   Widget build(BuildContext context) {
     return BizzieSwitch(
       options: const ['Yearly', 'Quarterly'],
-      selectedIndex: isAnnual ? 0 : 1,
+      selectedIndex: switch (period) {
+        FinancialPeriod.annual => 0,
+        FinancialPeriod.quarterly => 1,
+      },
       onChanged: (index) => context.read<CompanySegmentsBloc>().add(
-        CompanySegmentsEvent.periodChanged(isAnnual: index == 0),
+        CompanySegmentsEvent.periodChanged(
+          period: index == 0
+              ? FinancialPeriod.annual
+              : FinancialPeriod.quarterly,
+        ),
       ),
     );
   }

@@ -2,7 +2,7 @@ import 'package:bizzie/core/interfaces/i_config_service.dart';
 import 'package:bizzie/core/interfaces/i_connectivity_service.dart';
 import 'package:bizzie/core/interfaces/i_lifecycle_service.dart';
 import 'package:bizzie/core/enums/bizzie_lifecycle_state.dart';
-import 'package:bizzie/core/services/app_info_service.dart';
+import 'package:bizzie/core/interfaces/i_app_info_service.dart';
 import 'package:bizzie/features/app_status/domain/interfaces/i_local_app_status_data_source.dart';
 import 'package:bizzie/features/app_status/domain/interfaces/i_app_status_repository.dart';
 import 'package:bizzie/features/app_status/domain/models/app_status.dart';

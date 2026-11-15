@@ -158,7 +158,7 @@ return reset(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String ticker,  bool forceRefresh)?  loadIncomeStatements,TResult Function( String ticker,  bool forceRefresh)?  loadBalanceSheets,TResult Function( String ticker,  bool forceRefresh)?  loadCashFlows,TResult Function( String ticker,  FinancialStatementType type)?  stalenessCheckRequested,TResult Function( String ticker,  FinancialStatementType type)?  viewTypeChanged,TResult Function( String date,  bool isAnnual)?  incomeDateSelected,TResult Function( String date,  bool isAnnual)?  balanceDateSelected,TResult Function( String date,  bool isAnnual)?  cashFlowDateSelected,TResult Function( String ticker)?  tabShown,TResult Function()?  tabHidden,TResult Function()?  appBackgrounded,TResult Function()?  appForegrounded,TResult Function( bool isAnnual)?  viewAllTapped,TResult Function( int index)?  chartSwiped,TResult Function()?  reset,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String ticker,  bool forceRefresh)?  loadIncomeStatements,TResult Function( String ticker,  bool forceRefresh)?  loadBalanceSheets,TResult Function( String ticker,  bool forceRefresh)?  loadCashFlows,TResult Function( String ticker,  FinancialStatementType type)?  stalenessCheckRequested,TResult Function( String ticker,  FinancialStatementType type)?  viewTypeChanged,TResult Function( String date,  FinancialPeriod period)?  incomeDateSelected,TResult Function( String date,  FinancialPeriod period)?  balanceDateSelected,TResult Function( String date,  FinancialPeriod period)?  cashFlowDateSelected,TResult Function( String ticker)?  tabShown,TResult Function()?  tabHidden,TResult Function()?  appBackgrounded,TResult Function()?  appForegrounded,TResult Function( FinancialPeriod period)?  viewAllTapped,TResult Function( int index)?  chartSwiped,TResult Function()?  reset,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case LoadIncomeStatements() when loadIncomeStatements != null:
 return loadIncomeStatements(_that.ticker,_that.forceRefresh);case LoadBalanceSheets() when loadBalanceSheets != null:
@@ -166,14 +166,14 @@ return loadBalanceSheets(_that.ticker,_that.forceRefresh);case LoadCashFlows() w
 return loadCashFlows(_that.ticker,_that.forceRefresh);case StalenessCheckRequested() when stalenessCheckRequested != null:
 return stalenessCheckRequested(_that.ticker,_that.type);case ViewTypeChanged() when viewTypeChanged != null:
 return viewTypeChanged(_that.ticker,_that.type);case IncomeDateSelected() when incomeDateSelected != null:
-return incomeDateSelected(_that.date,_that.isAnnual);case BalanceDateSelected() when balanceDateSelected != null:
-return balanceDateSelected(_that.date,_that.isAnnual);case CashFlowDateSelected() when cashFlowDateSelected != null:
-return cashFlowDateSelected(_that.date,_that.isAnnual);case TabShown() when tabShown != null:
+return incomeDateSelected(_that.date,_that.period);case BalanceDateSelected() when balanceDateSelected != null:
+return balanceDateSelected(_that.date,_that.period);case CashFlowDateSelected() when cashFlowDateSelected != null:
+return cashFlowDateSelected(_that.date,_that.period);case TabShown() when tabShown != null:
 return tabShown(_that.ticker);case TabHidden() when tabHidden != null:
 return tabHidden();case AppBackgrounded() when appBackgrounded != null:
 return appBackgrounded();case AppForegrounded() when appForegrounded != null:
 return appForegrounded();case ViewAllTapped() when viewAllTapped != null:
-return viewAllTapped(_that.isAnnual);case ChartSwiped() when chartSwiped != null:
+return viewAllTapped(_that.period);case ChartSwiped() when chartSwiped != null:
 return chartSwiped(_that.index);case Reset() when reset != null:
 return reset();case _:
   return orElse();
@@ -193,7 +193,7 @@ return reset();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String ticker,  bool forceRefresh)  loadIncomeStatements,required TResult Function( String ticker,  bool forceRefresh)  loadBalanceSheets,required TResult Function( String ticker,  bool forceRefresh)  loadCashFlows,required TResult Function( String ticker,  FinancialStatementType type)  stalenessCheckRequested,required TResult Function( String ticker,  FinancialStatementType type)  viewTypeChanged,required TResult Function( String date,  bool isAnnual)  incomeDateSelected,required TResult Function( String date,  bool isAnnual)  balanceDateSelected,required TResult Function( String date,  bool isAnnual)  cashFlowDateSelected,required TResult Function( String ticker)  tabShown,required TResult Function()  tabHidden,required TResult Function()  appBackgrounded,required TResult Function()  appForegrounded,required TResult Function( bool isAnnual)  viewAllTapped,required TResult Function( int index)  chartSwiped,required TResult Function()  reset,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String ticker,  bool forceRefresh)  loadIncomeStatements,required TResult Function( String ticker,  bool forceRefresh)  loadBalanceSheets,required TResult Function( String ticker,  bool forceRefresh)  loadCashFlows,required TResult Function( String ticker,  FinancialStatementType type)  stalenessCheckRequested,required TResult Function( String ticker,  FinancialStatementType type)  viewTypeChanged,required TResult Function( String date,  FinancialPeriod period)  incomeDateSelected,required TResult Function( String date,  FinancialPeriod period)  balanceDateSelected,required TResult Function( String date,  FinancialPeriod period)  cashFlowDateSelected,required TResult Function( String ticker)  tabShown,required TResult Function()  tabHidden,required TResult Function()  appBackgrounded,required TResult Function()  appForegrounded,required TResult Function( FinancialPeriod period)  viewAllTapped,required TResult Function( int index)  chartSwiped,required TResult Function()  reset,}) {final _that = this;
 switch (_that) {
 case LoadIncomeStatements():
 return loadIncomeStatements(_that.ticker,_that.forceRefresh);case LoadBalanceSheets():
@@ -201,14 +201,14 @@ return loadBalanceSheets(_that.ticker,_that.forceRefresh);case LoadCashFlows():
 return loadCashFlows(_that.ticker,_that.forceRefresh);case StalenessCheckRequested():
 return stalenessCheckRequested(_that.ticker,_that.type);case ViewTypeChanged():
 return viewTypeChanged(_that.ticker,_that.type);case IncomeDateSelected():
-return incomeDateSelected(_that.date,_that.isAnnual);case BalanceDateSelected():
-return balanceDateSelected(_that.date,_that.isAnnual);case CashFlowDateSelected():
-return cashFlowDateSelected(_that.date,_that.isAnnual);case TabShown():
+return incomeDateSelected(_that.date,_that.period);case BalanceDateSelected():
+return balanceDateSelected(_that.date,_that.period);case CashFlowDateSelected():
+return cashFlowDateSelected(_that.date,_that.period);case TabShown():
 return tabShown(_that.ticker);case TabHidden():
 return tabHidden();case AppBackgrounded():
 return appBackgrounded();case AppForegrounded():
 return appForegrounded();case ViewAllTapped():
-return viewAllTapped(_that.isAnnual);case ChartSwiped():
+return viewAllTapped(_that.period);case ChartSwiped():
 return chartSwiped(_that.index);case Reset():
 return reset();}
 }
@@ -224,7 +224,7 @@ return reset();}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String ticker,  bool forceRefresh)?  loadIncomeStatements,TResult? Function( String ticker,  bool forceRefresh)?  loadBalanceSheets,TResult? Function( String ticker,  bool forceRefresh)?  loadCashFlows,TResult? Function( String ticker,  FinancialStatementType type)?  stalenessCheckRequested,TResult? Function( String ticker,  FinancialStatementType type)?  viewTypeChanged,TResult? Function( String date,  bool isAnnual)?  incomeDateSelected,TResult? Function( String date,  bool isAnnual)?  balanceDateSelected,TResult? Function( String date,  bool isAnnual)?  cashFlowDateSelected,TResult? Function( String ticker)?  tabShown,TResult? Function()?  tabHidden,TResult? Function()?  appBackgrounded,TResult? Function()?  appForegrounded,TResult? Function( bool isAnnual)?  viewAllTapped,TResult? Function( int index)?  chartSwiped,TResult? Function()?  reset,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String ticker,  bool forceRefresh)?  loadIncomeStatements,TResult? Function( String ticker,  bool forceRefresh)?  loadBalanceSheets,TResult? Function( String ticker,  bool forceRefresh)?  loadCashFlows,TResult? Function( String ticker,  FinancialStatementType type)?  stalenessCheckRequested,TResult? Function( String ticker,  FinancialStatementType type)?  viewTypeChanged,TResult? Function( String date,  FinancialPeriod period)?  incomeDateSelected,TResult? Function( String date,  FinancialPeriod period)?  balanceDateSelected,TResult? Function( String date,  FinancialPeriod period)?  cashFlowDateSelected,TResult? Function( String ticker)?  tabShown,TResult? Function()?  tabHidden,TResult? Function()?  appBackgrounded,TResult? Function()?  appForegrounded,TResult? Function( FinancialPeriod period)?  viewAllTapped,TResult? Function( int index)?  chartSwiped,TResult? Function()?  reset,}) {final _that = this;
 switch (_that) {
 case LoadIncomeStatements() when loadIncomeStatements != null:
 return loadIncomeStatements(_that.ticker,_that.forceRefresh);case LoadBalanceSheets() when loadBalanceSheets != null:
@@ -232,14 +232,14 @@ return loadBalanceSheets(_that.ticker,_that.forceRefresh);case LoadCashFlows() w
 return loadCashFlows(_that.ticker,_that.forceRefresh);case StalenessCheckRequested() when stalenessCheckRequested != null:
 return stalenessCheckRequested(_that.ticker,_that.type);case ViewTypeChanged() when viewTypeChanged != null:
 return viewTypeChanged(_that.ticker,_that.type);case IncomeDateSelected() when incomeDateSelected != null:
-return incomeDateSelected(_that.date,_that.isAnnual);case BalanceDateSelected() when balanceDateSelected != null:
-return balanceDateSelected(_that.date,_that.isAnnual);case CashFlowDateSelected() when cashFlowDateSelected != null:
-return cashFlowDateSelected(_that.date,_that.isAnnual);case TabShown() when tabShown != null:
+return incomeDateSelected(_that.date,_that.period);case BalanceDateSelected() when balanceDateSelected != null:
+return balanceDateSelected(_that.date,_that.period);case CashFlowDateSelected() when cashFlowDateSelected != null:
+return cashFlowDateSelected(_that.date,_that.period);case TabShown() when tabShown != null:
 return tabShown(_that.ticker);case TabHidden() when tabHidden != null:
 return tabHidden();case AppBackgrounded() when appBackgrounded != null:
 return appBackgrounded();case AppForegrounded() when appForegrounded != null:
 return appForegrounded();case ViewAllTapped() when viewAllTapped != null:
-return viewAllTapped(_that.isAnnual);case ChartSwiped() when chartSwiped != null:
+return viewAllTapped(_that.period);case ChartSwiped() when chartSwiped != null:
 return chartSwiped(_that.index);case Reset() when reset != null:
 return reset();case _:
   return null;
@@ -593,11 +593,11 @@ as FinancialStatementType,
 
 
 class IncomeDateSelected implements FinancialStatementsEvent {
-  const IncomeDateSelected(this.date, {required this.isAnnual});
+  const IncomeDateSelected(this.date, {required this.period});
   
 
  final  String date;
- final  bool isAnnual;
+ final  FinancialPeriod period;
 
 /// Create a copy of FinancialStatementsEvent
 /// with the given fields replaced by the non-null parameter values.
@@ -609,16 +609,16 @@ $IncomeDateSelectedCopyWith<IncomeDateSelected> get copyWith => _$IncomeDateSele
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is IncomeDateSelected&&(identical(other.date, date) || other.date == date)&&(identical(other.isAnnual, isAnnual) || other.isAnnual == isAnnual));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is IncomeDateSelected&&(identical(other.date, date) || other.date == date)&&(identical(other.period, period) || other.period == period));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,date,isAnnual);
+int get hashCode => Object.hash(runtimeType,date,period);
 
 @override
 String toString() {
-  return 'FinancialStatementsEvent.incomeDateSelected(date: $date, isAnnual: $isAnnual)';
+  return 'FinancialStatementsEvent.incomeDateSelected(date: $date, period: $period)';
 }
 
 
@@ -629,7 +629,7 @@ abstract mixin class $IncomeDateSelectedCopyWith<$Res> implements $FinancialStat
   factory $IncomeDateSelectedCopyWith(IncomeDateSelected value, $Res Function(IncomeDateSelected) _then) = _$IncomeDateSelectedCopyWithImpl;
 @useResult
 $Res call({
- String date, bool isAnnual
+ String date, FinancialPeriod period
 });
 
 
@@ -646,11 +646,11 @@ class _$IncomeDateSelectedCopyWithImpl<$Res>
 
 /// Create a copy of FinancialStatementsEvent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? date = null,Object? isAnnual = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? date = null,Object? period = null,}) {
   return _then(IncomeDateSelected(
 null == date ? _self.date : date // ignore: cast_nullable_to_non_nullable
-as String,isAnnual: null == isAnnual ? _self.isAnnual : isAnnual // ignore: cast_nullable_to_non_nullable
-as bool,
+as String,period: null == period ? _self.period : period // ignore: cast_nullable_to_non_nullable
+as FinancialPeriod,
   ));
 }
 
@@ -661,11 +661,11 @@ as bool,
 
 
 class BalanceDateSelected implements FinancialStatementsEvent {
-  const BalanceDateSelected(this.date, {required this.isAnnual});
+  const BalanceDateSelected(this.date, {required this.period});
   
 
  final  String date;
- final  bool isAnnual;
+ final  FinancialPeriod period;
 
 /// Create a copy of FinancialStatementsEvent
 /// with the given fields replaced by the non-null parameter values.
@@ -677,16 +677,16 @@ $BalanceDateSelectedCopyWith<BalanceDateSelected> get copyWith => _$BalanceDateS
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is BalanceDateSelected&&(identical(other.date, date) || other.date == date)&&(identical(other.isAnnual, isAnnual) || other.isAnnual == isAnnual));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is BalanceDateSelected&&(identical(other.date, date) || other.date == date)&&(identical(other.period, period) || other.period == period));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,date,isAnnual);
+int get hashCode => Object.hash(runtimeType,date,period);
 
 @override
 String toString() {
-  return 'FinancialStatementsEvent.balanceDateSelected(date: $date, isAnnual: $isAnnual)';
+  return 'FinancialStatementsEvent.balanceDateSelected(date: $date, period: $period)';
 }
 
 
@@ -697,7 +697,7 @@ abstract mixin class $BalanceDateSelectedCopyWith<$Res> implements $FinancialSta
   factory $BalanceDateSelectedCopyWith(BalanceDateSelected value, $Res Function(BalanceDateSelected) _then) = _$BalanceDateSelectedCopyWithImpl;
 @useResult
 $Res call({
- String date, bool isAnnual
+ String date, FinancialPeriod period
 });
 
 
@@ -714,11 +714,11 @@ class _$BalanceDateSelectedCopyWithImpl<$Res>
 
 /// Create a copy of FinancialStatementsEvent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? date = null,Object? isAnnual = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? date = null,Object? period = null,}) {
   return _then(BalanceDateSelected(
 null == date ? _self.date : date // ignore: cast_nullable_to_non_nullable
-as String,isAnnual: null == isAnnual ? _self.isAnnual : isAnnual // ignore: cast_nullable_to_non_nullable
-as bool,
+as String,period: null == period ? _self.period : period // ignore: cast_nullable_to_non_nullable
+as FinancialPeriod,
   ));
 }
 
@@ -729,11 +729,11 @@ as bool,
 
 
 class CashFlowDateSelected implements FinancialStatementsEvent {
-  const CashFlowDateSelected(this.date, {required this.isAnnual});
+  const CashFlowDateSelected(this.date, {required this.period});
   
 
  final  String date;
- final  bool isAnnual;
+ final  FinancialPeriod period;
 
 /// Create a copy of FinancialStatementsEvent
 /// with the given fields replaced by the non-null parameter values.
@@ -745,16 +745,16 @@ $CashFlowDateSelectedCopyWith<CashFlowDateSelected> get copyWith => _$CashFlowDa
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CashFlowDateSelected&&(identical(other.date, date) || other.date == date)&&(identical(other.isAnnual, isAnnual) || other.isAnnual == isAnnual));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CashFlowDateSelected&&(identical(other.date, date) || other.date == date)&&(identical(other.period, period) || other.period == period));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,date,isAnnual);
+int get hashCode => Object.hash(runtimeType,date,period);
 
 @override
 String toString() {
-  return 'FinancialStatementsEvent.cashFlowDateSelected(date: $date, isAnnual: $isAnnual)';
+  return 'FinancialStatementsEvent.cashFlowDateSelected(date: $date, period: $period)';
 }
 
 
@@ -765,7 +765,7 @@ abstract mixin class $CashFlowDateSelectedCopyWith<$Res> implements $FinancialSt
   factory $CashFlowDateSelectedCopyWith(CashFlowDateSelected value, $Res Function(CashFlowDateSelected) _then) = _$CashFlowDateSelectedCopyWithImpl;
 @useResult
 $Res call({
- String date, bool isAnnual
+ String date, FinancialPeriod period
 });
 
 
@@ -782,11 +782,11 @@ class _$CashFlowDateSelectedCopyWithImpl<$Res>
 
 /// Create a copy of FinancialStatementsEvent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? date = null,Object? isAnnual = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? date = null,Object? period = null,}) {
   return _then(CashFlowDateSelected(
 null == date ? _self.date : date // ignore: cast_nullable_to_non_nullable
-as String,isAnnual: null == isAnnual ? _self.isAnnual : isAnnual // ignore: cast_nullable_to_non_nullable
-as bool,
+as String,period: null == period ? _self.period : period // ignore: cast_nullable_to_non_nullable
+as FinancialPeriod,
   ));
 }
 
@@ -959,10 +959,10 @@ String toString() {
 
 
 class ViewAllTapped implements FinancialStatementsEvent {
-  const ViewAllTapped({required this.isAnnual});
+  const ViewAllTapped({required this.period});
   
 
- final  bool isAnnual;
+ final  FinancialPeriod period;
 
 /// Create a copy of FinancialStatementsEvent
 /// with the given fields replaced by the non-null parameter values.
@@ -974,16 +974,16 @@ $ViewAllTappedCopyWith<ViewAllTapped> get copyWith => _$ViewAllTappedCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ViewAllTapped&&(identical(other.isAnnual, isAnnual) || other.isAnnual == isAnnual));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ViewAllTapped&&(identical(other.period, period) || other.period == period));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,isAnnual);
+int get hashCode => Object.hash(runtimeType,period);
 
 @override
 String toString() {
-  return 'FinancialStatementsEvent.viewAllTapped(isAnnual: $isAnnual)';
+  return 'FinancialStatementsEvent.viewAllTapped(period: $period)';
 }
 
 
@@ -994,7 +994,7 @@ abstract mixin class $ViewAllTappedCopyWith<$Res> implements $FinancialStatement
   factory $ViewAllTappedCopyWith(ViewAllTapped value, $Res Function(ViewAllTapped) _then) = _$ViewAllTappedCopyWithImpl;
 @useResult
 $Res call({
- bool isAnnual
+ FinancialPeriod period
 });
 
 
@@ -1011,10 +1011,10 @@ class _$ViewAllTappedCopyWithImpl<$Res>
 
 /// Create a copy of FinancialStatementsEvent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? isAnnual = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? period = null,}) {
   return _then(ViewAllTapped(
-isAnnual: null == isAnnual ? _self.isAnnual : isAnnual // ignore: cast_nullable_to_non_nullable
-as bool,
+period: null == period ? _self.period : period // ignore: cast_nullable_to_non_nullable
+as FinancialPeriod,
   ));
 }
 

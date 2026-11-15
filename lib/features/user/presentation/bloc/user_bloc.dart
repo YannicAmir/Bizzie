@@ -1,11 +1,11 @@
 import 'dart:async';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:bizzie/core/error/failures.dart';
-import 'package:bizzie/features/user/domain/interfaces/user_repository.dart';
-import 'package:bizzie/features/user/domain/models/user_model.dart';
+import 'package:bizzie/core/domain/models/user_model.dart';
 import 'package:bizzie/features/user/domain/usecases/get_user_usecase.dart';
 import 'package:bizzie/features/user/domain/usecases/watch_user_usecase.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
+import 'package:dartz/dartz.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
@@ -16,21 +16,19 @@ part 'user_bloc.freezed.dart';
 
 final _logger = BizzieLogger('UserBloc');
 
-@lazySingleton
+@injectable
 class UserBloc extends Bloc<UserEvent, UserState> {
   final GetUserUseCase _getUserUseCase;
   final WatchUserUseCase _watchUserUseCase;
-  final IUserRepository _userRepository;
 
-  UserBloc(this._getUserUseCase, this._watchUserUseCase, this._userRepository)
+  UserBloc(this._getUserUseCase, this._watchUserUseCase)
     : super(const UserState.initial()) {
+    // Reset shares the restartable registration so it cancels the active user stream.
     on<UserEvent>(
-      (event, emit) async {
-        await event.map(
-          loadUser: (e) => _onLoadUser(e, emit),
-          clear: (e) async => _onClear(e, emit),
-        );
-      },
+      (event, emit) => event.map<Future<void>>(
+        loadUser: (e) => _onLoadUser(e, emit),
+        reset: (e) => _onReset(e, emit),
+      ),
       transformer: restartable(),
     );
   }
@@ -51,41 +49,40 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     }
     _logger.info('Starting persistent stream for uid: ${event.uid}');
 
-    await emit.forEach<UserModel?>(
+    await emit.forEach<Either<Failure, UserModel?>>(
       _watchUserUseCase(event.uid),
-      onData: (user) {
-        if (user == null) {
-          _logger.info('User document not found, emitting needsProfile for uid: ${event.uid}');
-          return const UserState.needsProfile();
-        }
-        _logger.info('User stream emitted update for uid: ${user.uid}');
-        return UserState.loaded(user);
-      },
+      onData: (result) => result.fold(
+        (failure) => _failureState(failure, event.uid),
+        (user) => _userState(user, event.uid),
+      ),
       onError: (error, stackTrace) {
         _logger.severe('User stream error', error, stackTrace);
-        return UserState.failure(
-          Failure.server(error.toString()),
-          uid: event.uid,
-          cachedSector: _getUserUseCase.cachedSector,
-        );
+        return _failureState(Failure.server(error.toString()), event.uid);
       },
     );
   }
 
-  /// Stops the active Firestore stream and resets the state to [initial].
-  ///
-  /// Calls [IUserRepository.dispose] which closes the internal
-  /// [BehaviorSubject] — this causes [emit.forEach] in [_onLoadUser]
-  /// to complete naturally via the stream's `done` event.
-  void _onClear(UserClearRequested event, Emitter<UserState> emit) {
-    _logger.info('Clearing user profile and stopping stream');
-    _userRepository.dispose();
-    emit(const UserState.initial());
+  UserState _userState(UserModel? user, String uid) {
+    if (user == null) {
+      _logger.info(
+        'User document not found, emitting needsProfile for uid: $uid',
+      );
+      return const UserState.needsProfile();
+    }
+    _logger.info('User stream emitted update for uid: ${user.uid}');
+    return UserState.loaded(user);
   }
 
-  @override
-  Future<void> close() {
-    _userRepository.dispose();
-    return super.close();
+  UserState _failureState(Failure failure, String uid) {
+    return UserState.failure(
+      failure,
+      uid: uid,
+      cachedSector: _getUserUseCase.cachedSector,
+    );
+  }
+
+  Future<void> _onReset(UserReset event, Emitter<UserState> emit) async {
+    _logger.info('Resetting UserBloc');
+    emit(const UserState.initial());
   }
 }

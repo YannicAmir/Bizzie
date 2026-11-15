@@ -10,10 +10,7 @@ import '../services/roe_stats_service.dart';
 @lazySingleton
 class GetRoeUseCase
     implements
-        UseCase<
-          Either<Failure, (RoeStats, CompanyProfileDataOrigin)>,
-          String
-        > {
+        UseCase<Either<Failure, (RoeStats, CompanyProfileDataOrigin)>, String> {
   final IRoeRepository _repository;
   final RoeStatsService _statsService;
 

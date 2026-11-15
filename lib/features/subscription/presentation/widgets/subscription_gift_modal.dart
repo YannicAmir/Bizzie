@@ -1,6 +1,7 @@
 import 'package:bizzie/core/enums/paywall_source.dart';
 import 'package:bizzie/features/subscription/presentation/bloc/subscription_bloc.dart';
 import 'package:bizzie/features/subscription/presentation/bloc/subscription_event.dart';
+import 'package:bizzie/features/subscription/presentation/utils/onboarding_paywall_reporter.dart';
 import 'package:bizzie/shared/widgets/buttons/bizzie_primary_button.dart';
 import 'package:bizzie/shared/widgets/modals/app_bottom_modal.dart';
 import 'package:flutter/material.dart';
@@ -22,6 +23,7 @@ class _SubscriptionGiftModalState extends State<SubscriptionGiftModal> {
     context.read<SubscriptionBloc>().add(
       SubscriptionEvent.giftViewed(source: widget.source),
     );
+    OnboardingPaywallReporter.giftViewed(context, source: widget.source);
   }
 
   @override

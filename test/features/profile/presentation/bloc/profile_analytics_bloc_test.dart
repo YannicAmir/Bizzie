@@ -7,7 +7,7 @@ import 'package:bizzie/features/profile/presentation/analytics/profile_tracker.d
 import 'package:bizzie/features/profile/presentation/bloc/profile_bloc.dart';
 import 'package:bizzie/features/profile/presentation/bloc/profile_event.dart';
 import 'package:bizzie/features/profile/presentation/bloc/profile_state.dart';
-import 'package:bizzie/features/user/domain/interfaces/user_repository.dart';
+import 'package:bizzie/features/user/domain/usecases/watch_current_user_usecase.dart';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -16,7 +16,8 @@ import 'package:mocktail/mocktail.dart';
 class MockGetProfileDisplayDataUseCase extends Mock
     implements GetProfileDisplayDataUseCase {}
 
-class MockUserRepository extends Mock implements IUserRepository {}
+class MockWatchCurrentUserUseCase extends Mock
+    implements WatchCurrentUserUseCase {}
 
 class MockAnalyticsContext extends Mock implements AnalyticsContext {}
 
@@ -24,7 +25,7 @@ class MockProfileTracker extends Mock implements ProfileTracker {}
 
 void main() {
   late MockGetProfileDisplayDataUseCase mockGetProfileDisplayDataUseCase;
-  late MockUserRepository mockUserRepository;
+  late MockWatchCurrentUserUseCase mockWatchCurrentUserUseCase;
   late MockProfileTracker mockTracker;
 
   setUpAll(() {
@@ -45,10 +46,10 @@ void main() {
   setUp(() {
     mockTracker = MockProfileTracker();
     mockGetProfileDisplayDataUseCase = MockGetProfileDisplayDataUseCase();
-    mockUserRepository = MockUserRepository();
+    mockWatchCurrentUserUseCase = MockWatchCurrentUserUseCase();
 
     when(
-      () => mockUserRepository.userStream,
+      () => mockWatchCurrentUserUseCase(),
     ).thenAnswer((_) => const Stream.empty());
 
     when(() => mockTracker.logProfileLoaded(any())).thenAnswer((_) async {});
@@ -66,7 +67,7 @@ void main() {
 
   ProfileBloc buildBloc() => ProfileBloc(
     mockGetProfileDisplayDataUseCase,
-    mockUserRepository,
+    mockWatchCurrentUserUseCase,
     mockTracker,
   );
 

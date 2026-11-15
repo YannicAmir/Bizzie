@@ -4,4 +4,5 @@ abstract class ILocalStorageService {
   Future<void> remove(String key);
   Future<void> setInt(String key, int value);
   int? getInt(String key);
+  Future<void> clear();
 }

@@ -2,8 +2,8 @@ import 'dart:async';
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/core/usecase/usecase.dart';
 import 'package:bloc/bloc.dart';
-import 'package:bizzie/features/auth/presentation/bloc/auth_bloc.dart';
-import 'package:bizzie/features/auth/presentation/bloc/auth_state.dart';
+import 'package:bizzie/features/auth/domain/usecases/get_auth_stream_usecase.dart';
+import 'package:bizzie/features/auth/domain/usecases/get_current_user_usecase.dart';
 import 'package:bizzie/features/subscription/domain/usecases/watch_subscription_status_use_case.dart';
 import 'package:bizzie/features/subscription/domain/usecases/refresh_subscription_status_use_case.dart';
 import 'package:bizzie/features/subscription/domain/usecases/sync_identity_use_case.dart';
@@ -17,21 +17,18 @@ import 'package:injectable/injectable.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
 
 import 'package:bizzie/core/enums/paywall_source.dart';
-import 'package:bizzie/features/subscription/domain/enums/paywall_type.dart';
 import 'package:bizzie/features/subscription/domain/models/subscription_status.dart';
 import 'package:bizzie/features/subscription/domain/models/analytics_purchase_params.dart';
 import 'package:bizzie/features/subscription/presentation/analytics/paywall_analytics.dart';
 import 'package:bizzie/features/subscription/domain/enums/subscription_period_type.dart';
 import 'package:bizzie/features/subscription/domain/enums/subscription_package_type.dart';
-import 'package:bizzie/features/onboarding/domain/models/onboarding_step.dart';
-import 'package:bizzie/features/onboarding/presentation/bloc/onboarding_bloc.dart';
 import 'package:bizzie/features/subscription/presentation/analytics/subscription_tracker.dart';
 import 'subscription_event.dart';
 import 'subscription_state.dart';
 
 final _logger = BizzieLogger('SubscriptionBloc');
 
-@lazySingleton
+@injectable
 class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
   final WatchSubscriptionStatusUseCase _watchSubscriptionStatus;
   final RefreshSubscriptionStatusUseCase _refreshSubscriptionStatus;
@@ -39,11 +36,11 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
   final PurchaseSubscriptionUseCase _purchaseSubscription;
   final RestorePurchasesUseCase _restorePurchases;
   final GetOfferingsUseCase _getOfferings;
-  final AuthBloc _authBloc;
+  final GetAuthStreamUseCase _getAuthStream;
+  final GetCurrentUserUseCase _getCurrentUser;
   final SyncSubscriptionUseCase _syncSubscription;
   final Stream<bool> _isSubscribedStream;
   final PaywallAnalytics _analytics;
-  final OnboardingBloc _onboardingBloc;
   final SubscriptionTracker _subscriptionTracker;
   final IConfigService _configService;
 
@@ -58,11 +55,11 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
     this._purchaseSubscription,
     this._restorePurchases,
     this._getOfferings,
-    this._authBloc,
+    this._getAuthStream,
+    this._getCurrentUser,
     this._syncSubscription,
     @Named('isSubscribedStream') this._isSubscribedStream,
     this._analytics,
-    this._onboardingBloc,
     this._subscriptionTracker,
     this._configService,
   ) : super(SubscriptionState.initialState()) {
@@ -141,20 +138,6 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
       tabName: event.tabName,
       featureName: event.featureName,
     );
-
-    if (event.source == PaywallSource.onboarding) {
-      final step = event.paywallType == PaywallType.discount
-          ? OnboardingStep.discountPaywall
-          : OnboardingStep.paywall;
-
-      _onboardingBloc.add(
-        const OnboardingEvent.subscriptionStatusChanged(
-          didSubscribe: false,
-          subscriptionType: 'none',
-        ),
-      );
-      _onboardingBloc.add(OnboardingEvent.stepViewed(step));
-    }
   }
 
   Future<void> _onGiftViewed(
@@ -163,11 +146,6 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
   ) async {
     _logger.info('Gift modal viewed from source: ${event.source}');
     _analytics.logGiftViewed(source: event.source);
-    if (event.source == PaywallSource.onboarding) {
-      _onboardingBloc.add(
-        const OnboardingEvent.stepViewed(OnboardingStep.giftModal),
-      );
-    }
   }
 
   Future<void> _onGiftClaimed(
@@ -199,21 +177,23 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
     SubscriptionEventInitialized event,
     Emitter<SubscriptionState> emit,
   ) async {
-    final authState = _authBloc.state;
-    if (authState is AuthAuthenticated) {
-      add(SubscriptionEvent.userIdentityChanged(authState.user.id));
+    final initialUid = _getCurrentUser()?.id;
+    if (initialUid != null) {
+      add(SubscriptionEvent.userIdentityChanged(initialUid));
     } else {
       add(const SubscriptionEvent.offeringsRequested());
     }
 
     await _authSubscription?.cancel();
-    _authSubscription = _authBloc.stream.listen((authState) {
-      if (authState is AuthAuthenticated) {
-        add(SubscriptionEvent.userIdentityChanged(authState.user.id));
-      } else if (authState is AuthUnauthenticated) {
-        add(const SubscriptionEvent.userIdentityChanged(null));
-      }
-    });
+    _authSubscription = _getAuthStream(NoParams())
+        .map((user) => user?.id)
+        .distinct()
+        .skipWhile((uid) => uid == initialUid)
+        .listen(
+          (uid) => add(SubscriptionEvent.userIdentityChanged(uid)),
+          onError: (Object error, StackTrace stackTrace) =>
+              _logger.severe('Auth state stream error', error, stackTrace),
+        );
   }
 
   Future<void> _onUserIdentityChanged(
@@ -391,21 +371,13 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
           _analytics.logPurchaseSuccess(params);
         }
 
-        if (source == PaywallSource.onboarding) {
-          _onboardingBloc.add(
-            OnboardingEvent.subscriptionStatusChanged(
-              didSubscribe: true,
-              subscriptionType: event.package.packageType.name,
-            ),
-          );
-        }
-
         state.maybeMap(
           loaded: (s) => emit(
             s.copyWith(
               status: status,
               isLocalSuccessOverride: true,
               isPurchasing: true,
+              purchasedPackageType: event.package.packageType,
             ),
           ),
           orElse: () => emit(SubscriptionState.initial(status: status)),

@@ -1,17 +1,21 @@
 import 'package:bizzie/app/routes/app_routes.dart';
 import 'package:bizzie/app/themes/app_assets.dart';
+import 'package:bizzie/app/themes/app_colors.dart';
+import 'package:bizzie/app/themes/app_text_styles.dart';
+import 'package:bizzie/features/auth/domain/enums/auth_source.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
+import 'package:bizzie/shared/utils/input_formatters.dart';
+import 'package:bizzie/shared/utils/validators.dart';
 import 'package:bizzie/shared/widgets/buttons/bizzie_primary_button.dart';
 import 'package:bizzie/shared/widgets/inputs/auth_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+
 import '../bloc/auth_bloc.dart';
 import '../bloc/auth_event.dart';
 import '../bloc/auth_state.dart';
-import 'package:bizzie/shared/utils/validators.dart';
-import 'package:flutter/services.dart';
-import 'package:bizzie/features/auth/domain/enums/auth_source.dart';
+import '../enums/auth_loading_method.dart';
 
 class LoginForm extends StatefulWidget {
   final GlobalKey<FormState>? formKey;
@@ -43,7 +47,7 @@ class _LoginFormState extends State<LoginForm> {
   }
 
   void _onLoginPressed() {
-    if (_formKey.currentState!.validate()) {
+    if (_formKey.currentState?.validate() ?? false) {
       context.read<AuthBloc>().add(
         AuthEvent.emailSignInRequested(
           _emailController.text,
@@ -56,7 +60,6 @@ class _LoginFormState extends State<LoginForm> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     return Form(
       key: _formKey,
       child: Column(
@@ -70,9 +73,9 @@ class _LoginFormState extends State<LoginForm> {
             textInputAction: TextInputAction.next,
             validator: Validators.validateEmail,
             maxLength: AppConstants.textfieldCharLimit,
-            inputFormatters: [FilteringTextInputFormatter.deny(RegExp(r'\s'))],
+            inputFormatters: [InputFormatters.denyWhitespace],
           ),
-          const SizedBox(height: 16),
+          AppConstants.secondarySectionSpacing,
           AuthTextField(
             controller: _passwordController,
             hintText: 'Password',
@@ -87,26 +90,25 @@ class _LoginFormState extends State<LoginForm> {
             onSubmitted: _onLoginPressed,
             textInputAction: TextInputAction.done,
             maxLength: AppConstants.passwordFieldCharLimit,
-            inputFormatters: [FilteringTextInputFormatter.deny(RegExp(r'\s'))],
+            inputFormatters: [InputFormatters.denyWhitespace],
           ),
-          const SizedBox(height: 16),
+          AppConstants.secondarySectionSpacing,
           GestureDetector(
             onTap: () {
               context.push(AppRoutes.forgotPassword);
             },
             child: Text(
               'Forgot Password?',
-              style: theme.textTheme.bodySmall?.copyWith(
-                fontWeight: FontWeight.w600,
-                color: theme.colorScheme.primary,
+              style: AppTextStyles.bodySmallBold.copyWith(
+                color: AppColors.primary,
               ),
             ),
           ),
-          const SizedBox(height: 24),
+          AppConstants.mainSectionSpacing,
           BlocBuilder<AuthBloc, AuthState>(
             builder: (context, state) {
               final isLoading = state.maybeWhen(
-                loading: (method) => method == 'email_signin',
+                loading: (method) => method == AuthLoadingMethod.emailSignIn,
                 orElse: () => false,
               );
               return BizziePrimaryButton(

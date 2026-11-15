@@ -4,7 +4,7 @@ import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:bizzie/core/interfaces/i_time_provider.dart';
 import 'package:bizzie/core/usecase/usecase.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
-import 'package:bizzie/features/auth/domain/usecases/get_auth_stream.dart';
+import 'package:bizzie/features/auth/domain/usecases/get_auth_stream_usecase.dart';
 import 'package:bizzie/features/auth/presentation/bloc/auth_session_reset_mixin.dart';
 import 'package:bizzie/features/company_profile/security/domain/usecases/get_upcoming_earnings_usecase.dart';
 import 'package:bizzie/features/company_profile/security/presentation/bloc/upcoming_earnings/upcoming_earnings_event.dart';
@@ -33,7 +33,7 @@ class UpcomingEarningsBloc
     this._getUpcomingEarningsUseCase,
     this._watchActiveTabUseCase,
     this._timeProvider,
-    GetAuthStream getAuthStream,
+    GetAuthStreamUseCase getAuthStream,
   ) : super(const UpcomingEarningsState.initial()) {
     on<LoadRequested>(_onLoadRequested, transformer: restartable());
     on<StalenessCheckRequested>(
@@ -79,13 +79,10 @@ class UpcomingEarningsBloc
 
     final result = await _getUpcomingEarningsUseCase(event.ticker);
 
-    result.fold(
-      (failure) {
-        _logger.severe('Failed to load Upcoming Earnings', failure);
-        emit(UpcomingEarningsState.failure(failure));
-      },
-      (tuple) => _emitLoadedOrEmpty(event.ticker, tuple, emit),
-    );
+    result.fold((failure) {
+      _logger.severe('Failed to load Upcoming Earnings', failure);
+      emit(UpcomingEarningsState.failure(failure));
+    }, (tuple) => _emitLoadedOrEmpty(event.ticker, tuple, emit));
   }
 
   void _emitLoadedOrEmpty(

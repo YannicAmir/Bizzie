@@ -1,5 +1,5 @@
 import 'package:bizzie/features/subscription/domain/models/subscription_status.dart';
-import 'package:bizzie/features/user/domain/models/user_model.dart';
+import 'package:bizzie/core/domain/models/user_model.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'settings_display_data.freezed.dart';
@@ -15,5 +15,6 @@ abstract class SettingsDisplayData with _$SettingsDisplayData {
     required String favoriteSector,
     required String privacyPolicyUrl,
     required String termsOfServiceUrl,
+    @Default(false) bool isGuest,
   }) = _SettingsDisplayData;
 }

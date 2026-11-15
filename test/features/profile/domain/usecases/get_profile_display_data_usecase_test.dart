@@ -7,9 +7,9 @@ import 'package:bizzie/features/market/domain/entities/sector_performance.dart';
 import 'package:bizzie/features/market/domain/interfaces/i_market_repository.dart';
 import 'package:bizzie/features/profile/domain/models/profile_display_data.dart';
 import 'package:bizzie/features/profile/domain/usecases/get_profile_display_data_usecase.dart';
-import 'package:bizzie/features/user/domain/enums/investing_experience.dart';
-import 'package:bizzie/features/user/domain/interfaces/user_repository.dart';
-import 'package:bizzie/features/user/domain/models/user_model.dart';
+import 'package:bizzie/core/enums/investing_experience.dart';
+import 'package:bizzie/features/user/domain/interfaces/i_user_repository.dart';
+import 'package:bizzie/core/domain/models/user_model.dart';
 import 'package:bizzie/core/interfaces/i_sector_service.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -120,6 +120,40 @@ void main() {
       verify(() => mockUserRepository.getUser(tUserId)).called(1);
     });
 
+    test('call_anonymousAuthUser_returnsDataWithIsGuestTrue', () async {
+      // arrange
+      when(() => mockAuthRepository.currentUser).thenReturn(
+        const auth.UserModel(id: tUserId, email: '', isAnonymous: true),
+      );
+      when(
+        () => mockUserRepository.getUser(tUserId),
+      ).thenAnswer((_) async => Right(tUser));
+      when(
+        () => mockSectorService.getSectorDescription(any()),
+      ).thenReturn(tSectorDescription);
+      when(
+        () => mockSectorService.getSectorDisplayName(any()),
+      ).thenReturn(tSectorDisplayName);
+      when(
+        () => mockSectorService.getSectorApiName(any()),
+      ).thenReturn('technology');
+      when(
+        () => mockMarketRepository.getSectorPeList(),
+      ).thenAnswer((_) async => Right(tSectorPeList));
+      when(
+        () => mockMarketRepository.getSectorPerformanceList(),
+      ).thenAnswer((_) async => Right(tSectorPerformanceList));
+
+      // act
+      final result = await useCase(NoParams());
+
+      // assert
+      expect(
+        result.map((data) => data.isGuest),
+        const Right<Failure, bool>(true),
+      );
+    });
+
     test('call_noUserInCache_returnsCacheFailure', () async {
       // arrange
       when(() => mockAuthRepository.currentUser).thenReturn(null);
@@ -139,6 +173,12 @@ void main() {
       when(
         () => mockUserRepository.getUser(tUserId),
       ).thenAnswer((_) async => const Left(ServerFailure('User Error')));
+      when(
+        () => mockMarketRepository.getSectorPeList(),
+      ).thenAnswer((_) async => Right(tSectorPeList));
+      when(
+        () => mockMarketRepository.getSectorPerformanceList(),
+      ).thenAnswer((_) async => Right(tSectorPerformanceList));
 
       // act
       final result = await useCase(NoParams());
@@ -232,35 +272,115 @@ void main() {
       );
     });
 
-    group('Linear Failure Chain Verification', () {
-      test('given_peListFails_when_call_then_returnsLeftFailure', () async {
-        // arrange
+    group('Secondary Source Degradation', () {
+      setUp(() {
         when(() => mockAuthRepository.currentUser).thenReturn(tAuthUser);
         when(
           () => mockUserRepository.getUser(tUserId),
         ).thenAnswer((_) async => Right(tUser));
         when(
           () => mockSectorService.getSectorDescription(any()),
-        ).thenReturn('d');
+        ).thenReturn(tSectorDescription);
         when(
           () => mockSectorService.getSectorDisplayName(any()),
-        ).thenReturn('n');
+        ).thenReturn(tSectorDisplayName);
         when(
           () => mockSectorService.getSectorApiName(any()),
         ).thenReturn('technology');
+      });
+
+      test('call_peListFails_returnsDataWithNullSectorPe', () async {
+        // arrange
         when(
           () => mockMarketRepository.getSectorPeList(),
         ).thenAnswer((_) async => const Left(ServerFailure('PE Error')));
         when(
           () => mockMarketRepository.getSectorPerformanceList(),
-        ).thenAnswer((_) async => const Right([]));
+        ).thenAnswer((_) async => Right(tSectorPerformanceList));
 
         // act
         final result = await useCase(NoParams());
 
         // assert
-        expect(result, const Left(ServerFailure('PE Error')));
+        expect(
+          result,
+          Right(
+            ProfileDisplayData(
+              displayName: 'Test User',
+              sectorName: tSectorDisplayName,
+              sectorDescription: tSectorDescription,
+              joinedDate: tJoinedDate,
+              sectorPe: null,
+              sectorAverageChange: 1.5,
+              marketDataDate: DateTime(2023, 1, 1),
+            ),
+          ),
+        );
       });
+
+      test(
+        'call_performanceListFails_returnsDataWithNullAverageChange',
+        () async {
+          // arrange
+          when(
+            () => mockMarketRepository.getSectorPeList(),
+          ).thenAnswer((_) async => Right(tSectorPeList));
+          when(
+            () => mockMarketRepository.getSectorPerformanceList(),
+          ).thenAnswer((_) async => const Left(ServerFailure('Perf Error')));
+
+          // act
+          final result = await useCase(NoParams());
+
+          // assert
+          expect(
+            result,
+            Right(
+              ProfileDisplayData(
+                displayName: 'Test User',
+                sectorName: tSectorDisplayName,
+                sectorDescription: tSectorDescription,
+                joinedDate: tJoinedDate,
+                sectorPe: 25.5,
+                sectorAverageChange: null,
+                marketDataDate: DateTime(2023, 1, 1),
+              ),
+            ),
+          );
+        },
+      );
+
+      test(
+        'call_bothMarketSourcesFail_returnsDataWithNullMarketFields',
+        () async {
+          // arrange
+          when(
+            () => mockMarketRepository.getSectorPeList(),
+          ).thenAnswer((_) async => const Left(ServerFailure('PE Error')));
+          when(
+            () => mockMarketRepository.getSectorPerformanceList(),
+          ).thenAnswer((_) async => const Left(ServerFailure('Perf Error')));
+
+          // act
+          final result = await useCase(NoParams());
+
+          // assert
+          expect(
+            result,
+            Right(
+              ProfileDisplayData(
+                displayName: 'Test User',
+                sectorName: tSectorDisplayName,
+                sectorDescription: tSectorDescription,
+                joinedDate: tJoinedDate,
+                sectorPe: null,
+                sectorAverageChange: null,
+                marketDataDate: null,
+              ),
+            ),
+          );
+        },
+      );
     });
   });
 }

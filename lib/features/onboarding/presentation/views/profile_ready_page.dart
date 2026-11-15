@@ -1,7 +1,6 @@
 import 'package:bizzie/features/onboarding/presentation/bloc/onboarding_bloc.dart';
 import 'package:bizzie/features/onboarding/domain/models/onboarding_step.dart';
 import 'package:bizzie/features/onboarding/presentation/utils/onboarding_navigation_orchestrator.dart';
-import 'package:bizzie/di/injection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../widgets/onboarding_header.dart';
@@ -126,8 +125,8 @@ class _ContinueButton extends StatelessWidget {
       width: double.infinity,
       height: 56,
       child: BizziePrimaryButton(
-        onPressed: () => getIt<OnboardingNavigationOrchestrator>()
-            .startTerminalFlow(context),
+        onPressed: () =>
+            OnboardingNavigationOrchestrator.startTerminalFlow(context),
         title: 'Continue',
       ),
     );

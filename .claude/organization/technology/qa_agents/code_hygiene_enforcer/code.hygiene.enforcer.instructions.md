@@ -69,7 +69,7 @@ Verify all changed files against every checklist item in each of the following:
 - `Either<Failure, T>` result not folded in event handlers
 - `await for` used for stream-backed handlers instead of `emit.forEach` / `emit.onEach`
 - `StreamSubscription` not cancelled in `close()` override
-- Missing `Reset` event that emits `const XxxState.initial()`
+- Missing `Reset` event that emits `const XxxState.initial()` (`AuthBloc` exempt — see `flutter.bloc.best.practice.instructions.md` §6)
 - BLoC importing `flutter/widgets.dart` or performing navigation directly
 - BLoC provided via constructor passing through widget tree instead of `context.read<XxxBloc>()`
 - Analytics logged directly in a widget instead of via the injected tracker in an event handler

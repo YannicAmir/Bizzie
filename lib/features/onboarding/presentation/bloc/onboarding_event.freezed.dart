@@ -55,7 +55,7 @@ extension OnboardingEventPatterns on OnboardingEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( OnboardingStarted value)?  started,TResult Function( OnboardingNameSubmitted value)?  nameSubmitted,TResult Function( OnboardingSectorSelected value)?  sectorSelected,TResult Function( OnboardingSp500HistoryRequested value)?  sp500HistoryRequested,TResult Function( OnboardingBrandToggled value)?  brandToggled,TResult Function( OnboardingExperienceSelected value)?  experienceSelected,TResult Function( OnboardingNotificationsToggled value)?  notificationsToggled,TResult Function( OnboardingCompletionRequested value)?  completionRequested,TResult Function( OnboardingAnalysisStarted value)?  analysisStarted,TResult Function( OnboardingAnalysisStepUpdated value)?  analysisStepUpdated,TResult Function( OnboardingWatchlistAdditionStarted value)?  watchlistAdditionStarted,TResult Function( OnboardingWatchlistStepUpdated value)?  watchlistStepUpdated,TResult Function( OnboardingHighlightPageChanged value)?  highlightPageChanged,TResult Function( OnboardingHighlightContinuePressed value)?  highlightContinuePressed,TResult Function( OnboardingHighlightSkipPressed value)?  highlightSkipPressed,TResult Function( OnboardingLandingPageViewed value)?  landingPageViewed,TResult Function( OnboardingLoginRequested value)?  loginRequested,TResult Function( OnboardingProfileReadyPageViewed value)?  profileReadyPageViewed,TResult Function( OnboardingStepViewed value)?  stepViewed,TResult Function( OnboardingSubscriptionStatusChanged value)?  subscriptionStatusChanged,TResult Function( OnboardingFlowFinished value)?  onboardingFlowFinished,TResult Function( OnboardingReset value)?  reset,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( OnboardingStarted value)?  started,TResult Function( OnboardingNameSubmitted value)?  nameSubmitted,TResult Function( OnboardingSectorSelected value)?  sectorSelected,TResult Function( OnboardingSp500HistoryRequested value)?  sp500HistoryRequested,TResult Function( OnboardingBrandToggled value)?  brandToggled,TResult Function( OnboardingExperienceSelected value)?  experienceSelected,TResult Function( OnboardingNotificationsToggled value)?  notificationsToggled,TResult Function( OnboardingCompletionRequested value)?  completionRequested,TResult Function( OnboardingBuildingProfileStarted value)?  buildingProfileStarted,TResult Function( OnboardingSkipRequested value)?  skipRequested,TResult Function( OnboardingNotificationGrantPersistRequested value)?  notificationGrantPersistRequested,TResult Function( OnboardingInitialCompanyShown value)?  initialCompanyShown,TResult Function( OnboardingGuestSessionRequested value)?  guestSessionRequested,TResult Function( OnboardingBrandsConfirmed value)?  brandsConfirmed,TResult Function( OnboardingBrandsPrefetchRequested value)?  brandsPrefetchRequested,TResult Function( OnboardingHighlightPageChanged value)?  highlightPageChanged,TResult Function( OnboardingHighlightContinuePressed value)?  highlightContinuePressed,TResult Function( OnboardingLoginRequested value)?  loginRequested,TResult Function( OnboardingStepViewed value)?  stepViewed,TResult Function( OnboardingSubscriptionStatusChanged value)?  subscriptionStatusChanged,TResult Function( OnboardingFlowFinished value)?  onboardingFlowFinished,TResult Function( OnboardingReset value)?  reset,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case OnboardingStarted() when started != null:
@@ -66,17 +66,17 @@ return sp500HistoryRequested(_that);case OnboardingBrandToggled() when brandTogg
 return brandToggled(_that);case OnboardingExperienceSelected() when experienceSelected != null:
 return experienceSelected(_that);case OnboardingNotificationsToggled() when notificationsToggled != null:
 return notificationsToggled(_that);case OnboardingCompletionRequested() when completionRequested != null:
-return completionRequested(_that);case OnboardingAnalysisStarted() when analysisStarted != null:
-return analysisStarted(_that);case OnboardingAnalysisStepUpdated() when analysisStepUpdated != null:
-return analysisStepUpdated(_that);case OnboardingWatchlistAdditionStarted() when watchlistAdditionStarted != null:
-return watchlistAdditionStarted(_that);case OnboardingWatchlistStepUpdated() when watchlistStepUpdated != null:
-return watchlistStepUpdated(_that);case OnboardingHighlightPageChanged() when highlightPageChanged != null:
+return completionRequested(_that);case OnboardingBuildingProfileStarted() when buildingProfileStarted != null:
+return buildingProfileStarted(_that);case OnboardingSkipRequested() when skipRequested != null:
+return skipRequested(_that);case OnboardingNotificationGrantPersistRequested() when notificationGrantPersistRequested != null:
+return notificationGrantPersistRequested(_that);case OnboardingInitialCompanyShown() when initialCompanyShown != null:
+return initialCompanyShown(_that);case OnboardingGuestSessionRequested() when guestSessionRequested != null:
+return guestSessionRequested(_that);case OnboardingBrandsConfirmed() when brandsConfirmed != null:
+return brandsConfirmed(_that);case OnboardingBrandsPrefetchRequested() when brandsPrefetchRequested != null:
+return brandsPrefetchRequested(_that);case OnboardingHighlightPageChanged() when highlightPageChanged != null:
 return highlightPageChanged(_that);case OnboardingHighlightContinuePressed() when highlightContinuePressed != null:
-return highlightContinuePressed(_that);case OnboardingHighlightSkipPressed() when highlightSkipPressed != null:
-return highlightSkipPressed(_that);case OnboardingLandingPageViewed() when landingPageViewed != null:
-return landingPageViewed(_that);case OnboardingLoginRequested() when loginRequested != null:
-return loginRequested(_that);case OnboardingProfileReadyPageViewed() when profileReadyPageViewed != null:
-return profileReadyPageViewed(_that);case OnboardingStepViewed() when stepViewed != null:
+return highlightContinuePressed(_that);case OnboardingLoginRequested() when loginRequested != null:
+return loginRequested(_that);case OnboardingStepViewed() when stepViewed != null:
 return stepViewed(_that);case OnboardingSubscriptionStatusChanged() when subscriptionStatusChanged != null:
 return subscriptionStatusChanged(_that);case OnboardingFlowFinished() when onboardingFlowFinished != null:
 return onboardingFlowFinished(_that);case OnboardingReset() when reset != null:
@@ -98,7 +98,7 @@ return reset(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( OnboardingStarted value)  started,required TResult Function( OnboardingNameSubmitted value)  nameSubmitted,required TResult Function( OnboardingSectorSelected value)  sectorSelected,required TResult Function( OnboardingSp500HistoryRequested value)  sp500HistoryRequested,required TResult Function( OnboardingBrandToggled value)  brandToggled,required TResult Function( OnboardingExperienceSelected value)  experienceSelected,required TResult Function( OnboardingNotificationsToggled value)  notificationsToggled,required TResult Function( OnboardingCompletionRequested value)  completionRequested,required TResult Function( OnboardingAnalysisStarted value)  analysisStarted,required TResult Function( OnboardingAnalysisStepUpdated value)  analysisStepUpdated,required TResult Function( OnboardingWatchlistAdditionStarted value)  watchlistAdditionStarted,required TResult Function( OnboardingWatchlistStepUpdated value)  watchlistStepUpdated,required TResult Function( OnboardingHighlightPageChanged value)  highlightPageChanged,required TResult Function( OnboardingHighlightContinuePressed value)  highlightContinuePressed,required TResult Function( OnboardingHighlightSkipPressed value)  highlightSkipPressed,required TResult Function( OnboardingLandingPageViewed value)  landingPageViewed,required TResult Function( OnboardingLoginRequested value)  loginRequested,required TResult Function( OnboardingProfileReadyPageViewed value)  profileReadyPageViewed,required TResult Function( OnboardingStepViewed value)  stepViewed,required TResult Function( OnboardingSubscriptionStatusChanged value)  subscriptionStatusChanged,required TResult Function( OnboardingFlowFinished value)  onboardingFlowFinished,required TResult Function( OnboardingReset value)  reset,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( OnboardingStarted value)  started,required TResult Function( OnboardingNameSubmitted value)  nameSubmitted,required TResult Function( OnboardingSectorSelected value)  sectorSelected,required TResult Function( OnboardingSp500HistoryRequested value)  sp500HistoryRequested,required TResult Function( OnboardingBrandToggled value)  brandToggled,required TResult Function( OnboardingExperienceSelected value)  experienceSelected,required TResult Function( OnboardingNotificationsToggled value)  notificationsToggled,required TResult Function( OnboardingCompletionRequested value)  completionRequested,required TResult Function( OnboardingBuildingProfileStarted value)  buildingProfileStarted,required TResult Function( OnboardingSkipRequested value)  skipRequested,required TResult Function( OnboardingNotificationGrantPersistRequested value)  notificationGrantPersistRequested,required TResult Function( OnboardingInitialCompanyShown value)  initialCompanyShown,required TResult Function( OnboardingGuestSessionRequested value)  guestSessionRequested,required TResult Function( OnboardingBrandsConfirmed value)  brandsConfirmed,required TResult Function( OnboardingBrandsPrefetchRequested value)  brandsPrefetchRequested,required TResult Function( OnboardingHighlightPageChanged value)  highlightPageChanged,required TResult Function( OnboardingHighlightContinuePressed value)  highlightContinuePressed,required TResult Function( OnboardingLoginRequested value)  loginRequested,required TResult Function( OnboardingStepViewed value)  stepViewed,required TResult Function( OnboardingSubscriptionStatusChanged value)  subscriptionStatusChanged,required TResult Function( OnboardingFlowFinished value)  onboardingFlowFinished,required TResult Function( OnboardingReset value)  reset,}){
 final _that = this;
 switch (_that) {
 case OnboardingStarted():
@@ -109,17 +109,17 @@ return sp500HistoryRequested(_that);case OnboardingBrandToggled():
 return brandToggled(_that);case OnboardingExperienceSelected():
 return experienceSelected(_that);case OnboardingNotificationsToggled():
 return notificationsToggled(_that);case OnboardingCompletionRequested():
-return completionRequested(_that);case OnboardingAnalysisStarted():
-return analysisStarted(_that);case OnboardingAnalysisStepUpdated():
-return analysisStepUpdated(_that);case OnboardingWatchlistAdditionStarted():
-return watchlistAdditionStarted(_that);case OnboardingWatchlistStepUpdated():
-return watchlistStepUpdated(_that);case OnboardingHighlightPageChanged():
+return completionRequested(_that);case OnboardingBuildingProfileStarted():
+return buildingProfileStarted(_that);case OnboardingSkipRequested():
+return skipRequested(_that);case OnboardingNotificationGrantPersistRequested():
+return notificationGrantPersistRequested(_that);case OnboardingInitialCompanyShown():
+return initialCompanyShown(_that);case OnboardingGuestSessionRequested():
+return guestSessionRequested(_that);case OnboardingBrandsConfirmed():
+return brandsConfirmed(_that);case OnboardingBrandsPrefetchRequested():
+return brandsPrefetchRequested(_that);case OnboardingHighlightPageChanged():
 return highlightPageChanged(_that);case OnboardingHighlightContinuePressed():
-return highlightContinuePressed(_that);case OnboardingHighlightSkipPressed():
-return highlightSkipPressed(_that);case OnboardingLandingPageViewed():
-return landingPageViewed(_that);case OnboardingLoginRequested():
-return loginRequested(_that);case OnboardingProfileReadyPageViewed():
-return profileReadyPageViewed(_that);case OnboardingStepViewed():
+return highlightContinuePressed(_that);case OnboardingLoginRequested():
+return loginRequested(_that);case OnboardingStepViewed():
 return stepViewed(_that);case OnboardingSubscriptionStatusChanged():
 return subscriptionStatusChanged(_that);case OnboardingFlowFinished():
 return onboardingFlowFinished(_that);case OnboardingReset():
@@ -137,7 +137,7 @@ return reset(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( OnboardingStarted value)?  started,TResult? Function( OnboardingNameSubmitted value)?  nameSubmitted,TResult? Function( OnboardingSectorSelected value)?  sectorSelected,TResult? Function( OnboardingSp500HistoryRequested value)?  sp500HistoryRequested,TResult? Function( OnboardingBrandToggled value)?  brandToggled,TResult? Function( OnboardingExperienceSelected value)?  experienceSelected,TResult? Function( OnboardingNotificationsToggled value)?  notificationsToggled,TResult? Function( OnboardingCompletionRequested value)?  completionRequested,TResult? Function( OnboardingAnalysisStarted value)?  analysisStarted,TResult? Function( OnboardingAnalysisStepUpdated value)?  analysisStepUpdated,TResult? Function( OnboardingWatchlistAdditionStarted value)?  watchlistAdditionStarted,TResult? Function( OnboardingWatchlistStepUpdated value)?  watchlistStepUpdated,TResult? Function( OnboardingHighlightPageChanged value)?  highlightPageChanged,TResult? Function( OnboardingHighlightContinuePressed value)?  highlightContinuePressed,TResult? Function( OnboardingHighlightSkipPressed value)?  highlightSkipPressed,TResult? Function( OnboardingLandingPageViewed value)?  landingPageViewed,TResult? Function( OnboardingLoginRequested value)?  loginRequested,TResult? Function( OnboardingProfileReadyPageViewed value)?  profileReadyPageViewed,TResult? Function( OnboardingStepViewed value)?  stepViewed,TResult? Function( OnboardingSubscriptionStatusChanged value)?  subscriptionStatusChanged,TResult? Function( OnboardingFlowFinished value)?  onboardingFlowFinished,TResult? Function( OnboardingReset value)?  reset,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( OnboardingStarted value)?  started,TResult? Function( OnboardingNameSubmitted value)?  nameSubmitted,TResult? Function( OnboardingSectorSelected value)?  sectorSelected,TResult? Function( OnboardingSp500HistoryRequested value)?  sp500HistoryRequested,TResult? Function( OnboardingBrandToggled value)?  brandToggled,TResult? Function( OnboardingExperienceSelected value)?  experienceSelected,TResult? Function( OnboardingNotificationsToggled value)?  notificationsToggled,TResult? Function( OnboardingCompletionRequested value)?  completionRequested,TResult? Function( OnboardingBuildingProfileStarted value)?  buildingProfileStarted,TResult? Function( OnboardingSkipRequested value)?  skipRequested,TResult? Function( OnboardingNotificationGrantPersistRequested value)?  notificationGrantPersistRequested,TResult? Function( OnboardingInitialCompanyShown value)?  initialCompanyShown,TResult? Function( OnboardingGuestSessionRequested value)?  guestSessionRequested,TResult? Function( OnboardingBrandsConfirmed value)?  brandsConfirmed,TResult? Function( OnboardingBrandsPrefetchRequested value)?  brandsPrefetchRequested,TResult? Function( OnboardingHighlightPageChanged value)?  highlightPageChanged,TResult? Function( OnboardingHighlightContinuePressed value)?  highlightContinuePressed,TResult? Function( OnboardingLoginRequested value)?  loginRequested,TResult? Function( OnboardingStepViewed value)?  stepViewed,TResult? Function( OnboardingSubscriptionStatusChanged value)?  subscriptionStatusChanged,TResult? Function( OnboardingFlowFinished value)?  onboardingFlowFinished,TResult? Function( OnboardingReset value)?  reset,}){
 final _that = this;
 switch (_that) {
 case OnboardingStarted() when started != null:
@@ -148,17 +148,17 @@ return sp500HistoryRequested(_that);case OnboardingBrandToggled() when brandTogg
 return brandToggled(_that);case OnboardingExperienceSelected() when experienceSelected != null:
 return experienceSelected(_that);case OnboardingNotificationsToggled() when notificationsToggled != null:
 return notificationsToggled(_that);case OnboardingCompletionRequested() when completionRequested != null:
-return completionRequested(_that);case OnboardingAnalysisStarted() when analysisStarted != null:
-return analysisStarted(_that);case OnboardingAnalysisStepUpdated() when analysisStepUpdated != null:
-return analysisStepUpdated(_that);case OnboardingWatchlistAdditionStarted() when watchlistAdditionStarted != null:
-return watchlistAdditionStarted(_that);case OnboardingWatchlistStepUpdated() when watchlistStepUpdated != null:
-return watchlistStepUpdated(_that);case OnboardingHighlightPageChanged() when highlightPageChanged != null:
+return completionRequested(_that);case OnboardingBuildingProfileStarted() when buildingProfileStarted != null:
+return buildingProfileStarted(_that);case OnboardingSkipRequested() when skipRequested != null:
+return skipRequested(_that);case OnboardingNotificationGrantPersistRequested() when notificationGrantPersistRequested != null:
+return notificationGrantPersistRequested(_that);case OnboardingInitialCompanyShown() when initialCompanyShown != null:
+return initialCompanyShown(_that);case OnboardingGuestSessionRequested() when guestSessionRequested != null:
+return guestSessionRequested(_that);case OnboardingBrandsConfirmed() when brandsConfirmed != null:
+return brandsConfirmed(_that);case OnboardingBrandsPrefetchRequested() when brandsPrefetchRequested != null:
+return brandsPrefetchRequested(_that);case OnboardingHighlightPageChanged() when highlightPageChanged != null:
 return highlightPageChanged(_that);case OnboardingHighlightContinuePressed() when highlightContinuePressed != null:
-return highlightContinuePressed(_that);case OnboardingHighlightSkipPressed() when highlightSkipPressed != null:
-return highlightSkipPressed(_that);case OnboardingLandingPageViewed() when landingPageViewed != null:
-return landingPageViewed(_that);case OnboardingLoginRequested() when loginRequested != null:
-return loginRequested(_that);case OnboardingProfileReadyPageViewed() when profileReadyPageViewed != null:
-return profileReadyPageViewed(_that);case OnboardingStepViewed() when stepViewed != null:
+return highlightContinuePressed(_that);case OnboardingLoginRequested() when loginRequested != null:
+return loginRequested(_that);case OnboardingStepViewed() when stepViewed != null:
 return stepViewed(_that);case OnboardingSubscriptionStatusChanged() when subscriptionStatusChanged != null:
 return subscriptionStatusChanged(_that);case OnboardingFlowFinished() when onboardingFlowFinished != null:
 return onboardingFlowFinished(_that);case OnboardingReset() when reset != null:
@@ -179,7 +179,7 @@ return reset(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  started,TResult Function( String name)?  nameSubmitted,TResult Function( Sector sector)?  sectorSelected,TResult Function()?  sp500HistoryRequested,TResult Function( Brand brand)?  brandToggled,TResult Function( InvestingExperience experience)?  experienceSelected,TResult Function( bool enabled)?  notificationsToggled,TResult Function()?  completionRequested,TResult Function()?  analysisStarted,TResult Function( int step)?  analysisStepUpdated,TResult Function()?  watchlistAdditionStarted,TResult Function( int step)?  watchlistStepUpdated,TResult Function( int index)?  highlightPageChanged,TResult Function()?  highlightContinuePressed,TResult Function()?  highlightSkipPressed,TResult Function()?  landingPageViewed,TResult Function()?  loginRequested,TResult Function()?  profileReadyPageViewed,TResult Function( OnboardingStep step)?  stepViewed,TResult Function( bool didSubscribe,  String subscriptionType)?  subscriptionStatusChanged,TResult Function()?  onboardingFlowFinished,TResult Function()?  reset,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  started,TResult Function( String name)?  nameSubmitted,TResult Function( Sector sector)?  sectorSelected,TResult Function()?  sp500HistoryRequested,TResult Function( Brand brand)?  brandToggled,TResult Function( InvestingExperience experience)?  experienceSelected,TResult Function( bool enabled)?  notificationsToggled,TResult Function()?  completionRequested,TResult Function()?  buildingProfileStarted,TResult Function( OnboardingStep step,  OnboardingSkipReason reason)?  skipRequested,TResult Function()?  notificationGrantPersistRequested,TResult Function( PostOnboardingDestination destination)?  initialCompanyShown,TResult Function()?  guestSessionRequested,TResult Function()?  brandsConfirmed,TResult Function()?  brandsPrefetchRequested,TResult Function( int index)?  highlightPageChanged,TResult Function()?  highlightContinuePressed,TResult Function()?  loginRequested,TResult Function( OnboardingStep step)?  stepViewed,TResult Function( bool didSubscribe,  String subscriptionType)?  subscriptionStatusChanged,TResult Function()?  onboardingFlowFinished,TResult Function()?  reset,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case OnboardingStarted() when started != null:
 return started();case OnboardingNameSubmitted() when nameSubmitted != null:
@@ -189,17 +189,17 @@ return sp500HistoryRequested();case OnboardingBrandToggled() when brandToggled !
 return brandToggled(_that.brand);case OnboardingExperienceSelected() when experienceSelected != null:
 return experienceSelected(_that.experience);case OnboardingNotificationsToggled() when notificationsToggled != null:
 return notificationsToggled(_that.enabled);case OnboardingCompletionRequested() when completionRequested != null:
-return completionRequested();case OnboardingAnalysisStarted() when analysisStarted != null:
-return analysisStarted();case OnboardingAnalysisStepUpdated() when analysisStepUpdated != null:
-return analysisStepUpdated(_that.step);case OnboardingWatchlistAdditionStarted() when watchlistAdditionStarted != null:
-return watchlistAdditionStarted();case OnboardingWatchlistStepUpdated() when watchlistStepUpdated != null:
-return watchlistStepUpdated(_that.step);case OnboardingHighlightPageChanged() when highlightPageChanged != null:
+return completionRequested();case OnboardingBuildingProfileStarted() when buildingProfileStarted != null:
+return buildingProfileStarted();case OnboardingSkipRequested() when skipRequested != null:
+return skipRequested(_that.step,_that.reason);case OnboardingNotificationGrantPersistRequested() when notificationGrantPersistRequested != null:
+return notificationGrantPersistRequested();case OnboardingInitialCompanyShown() when initialCompanyShown != null:
+return initialCompanyShown(_that.destination);case OnboardingGuestSessionRequested() when guestSessionRequested != null:
+return guestSessionRequested();case OnboardingBrandsConfirmed() when brandsConfirmed != null:
+return brandsConfirmed();case OnboardingBrandsPrefetchRequested() when brandsPrefetchRequested != null:
+return brandsPrefetchRequested();case OnboardingHighlightPageChanged() when highlightPageChanged != null:
 return highlightPageChanged(_that.index);case OnboardingHighlightContinuePressed() when highlightContinuePressed != null:
-return highlightContinuePressed();case OnboardingHighlightSkipPressed() when highlightSkipPressed != null:
-return highlightSkipPressed();case OnboardingLandingPageViewed() when landingPageViewed != null:
-return landingPageViewed();case OnboardingLoginRequested() when loginRequested != null:
-return loginRequested();case OnboardingProfileReadyPageViewed() when profileReadyPageViewed != null:
-return profileReadyPageViewed();case OnboardingStepViewed() when stepViewed != null:
+return highlightContinuePressed();case OnboardingLoginRequested() when loginRequested != null:
+return loginRequested();case OnboardingStepViewed() when stepViewed != null:
 return stepViewed(_that.step);case OnboardingSubscriptionStatusChanged() when subscriptionStatusChanged != null:
 return subscriptionStatusChanged(_that.didSubscribe,_that.subscriptionType);case OnboardingFlowFinished() when onboardingFlowFinished != null:
 return onboardingFlowFinished();case OnboardingReset() when reset != null:
@@ -221,7 +221,7 @@ return reset();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  started,required TResult Function( String name)  nameSubmitted,required TResult Function( Sector sector)  sectorSelected,required TResult Function()  sp500HistoryRequested,required TResult Function( Brand brand)  brandToggled,required TResult Function( InvestingExperience experience)  experienceSelected,required TResult Function( bool enabled)  notificationsToggled,required TResult Function()  completionRequested,required TResult Function()  analysisStarted,required TResult Function( int step)  analysisStepUpdated,required TResult Function()  watchlistAdditionStarted,required TResult Function( int step)  watchlistStepUpdated,required TResult Function( int index)  highlightPageChanged,required TResult Function()  highlightContinuePressed,required TResult Function()  highlightSkipPressed,required TResult Function()  landingPageViewed,required TResult Function()  loginRequested,required TResult Function()  profileReadyPageViewed,required TResult Function( OnboardingStep step)  stepViewed,required TResult Function( bool didSubscribe,  String subscriptionType)  subscriptionStatusChanged,required TResult Function()  onboardingFlowFinished,required TResult Function()  reset,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  started,required TResult Function( String name)  nameSubmitted,required TResult Function( Sector sector)  sectorSelected,required TResult Function()  sp500HistoryRequested,required TResult Function( Brand brand)  brandToggled,required TResult Function( InvestingExperience experience)  experienceSelected,required TResult Function( bool enabled)  notificationsToggled,required TResult Function()  completionRequested,required TResult Function()  buildingProfileStarted,required TResult Function( OnboardingStep step,  OnboardingSkipReason reason)  skipRequested,required TResult Function()  notificationGrantPersistRequested,required TResult Function( PostOnboardingDestination destination)  initialCompanyShown,required TResult Function()  guestSessionRequested,required TResult Function()  brandsConfirmed,required TResult Function()  brandsPrefetchRequested,required TResult Function( int index)  highlightPageChanged,required TResult Function()  highlightContinuePressed,required TResult Function()  loginRequested,required TResult Function( OnboardingStep step)  stepViewed,required TResult Function( bool didSubscribe,  String subscriptionType)  subscriptionStatusChanged,required TResult Function()  onboardingFlowFinished,required TResult Function()  reset,}) {final _that = this;
 switch (_that) {
 case OnboardingStarted():
 return started();case OnboardingNameSubmitted():
@@ -231,17 +231,17 @@ return sp500HistoryRequested();case OnboardingBrandToggled():
 return brandToggled(_that.brand);case OnboardingExperienceSelected():
 return experienceSelected(_that.experience);case OnboardingNotificationsToggled():
 return notificationsToggled(_that.enabled);case OnboardingCompletionRequested():
-return completionRequested();case OnboardingAnalysisStarted():
-return analysisStarted();case OnboardingAnalysisStepUpdated():
-return analysisStepUpdated(_that.step);case OnboardingWatchlistAdditionStarted():
-return watchlistAdditionStarted();case OnboardingWatchlistStepUpdated():
-return watchlistStepUpdated(_that.step);case OnboardingHighlightPageChanged():
+return completionRequested();case OnboardingBuildingProfileStarted():
+return buildingProfileStarted();case OnboardingSkipRequested():
+return skipRequested(_that.step,_that.reason);case OnboardingNotificationGrantPersistRequested():
+return notificationGrantPersistRequested();case OnboardingInitialCompanyShown():
+return initialCompanyShown(_that.destination);case OnboardingGuestSessionRequested():
+return guestSessionRequested();case OnboardingBrandsConfirmed():
+return brandsConfirmed();case OnboardingBrandsPrefetchRequested():
+return brandsPrefetchRequested();case OnboardingHighlightPageChanged():
 return highlightPageChanged(_that.index);case OnboardingHighlightContinuePressed():
-return highlightContinuePressed();case OnboardingHighlightSkipPressed():
-return highlightSkipPressed();case OnboardingLandingPageViewed():
-return landingPageViewed();case OnboardingLoginRequested():
-return loginRequested();case OnboardingProfileReadyPageViewed():
-return profileReadyPageViewed();case OnboardingStepViewed():
+return highlightContinuePressed();case OnboardingLoginRequested():
+return loginRequested();case OnboardingStepViewed():
 return stepViewed(_that.step);case OnboardingSubscriptionStatusChanged():
 return subscriptionStatusChanged(_that.didSubscribe,_that.subscriptionType);case OnboardingFlowFinished():
 return onboardingFlowFinished();case OnboardingReset():
@@ -259,7 +259,7 @@ return reset();}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  started,TResult? Function( String name)?  nameSubmitted,TResult? Function( Sector sector)?  sectorSelected,TResult? Function()?  sp500HistoryRequested,TResult? Function( Brand brand)?  brandToggled,TResult? Function( InvestingExperience experience)?  experienceSelected,TResult? Function( bool enabled)?  notificationsToggled,TResult? Function()?  completionRequested,TResult? Function()?  analysisStarted,TResult? Function( int step)?  analysisStepUpdated,TResult? Function()?  watchlistAdditionStarted,TResult? Function( int step)?  watchlistStepUpdated,TResult? Function( int index)?  highlightPageChanged,TResult? Function()?  highlightContinuePressed,TResult? Function()?  highlightSkipPressed,TResult? Function()?  landingPageViewed,TResult? Function()?  loginRequested,TResult? Function()?  profileReadyPageViewed,TResult? Function( OnboardingStep step)?  stepViewed,TResult? Function( bool didSubscribe,  String subscriptionType)?  subscriptionStatusChanged,TResult? Function()?  onboardingFlowFinished,TResult? Function()?  reset,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  started,TResult? Function( String name)?  nameSubmitted,TResult? Function( Sector sector)?  sectorSelected,TResult? Function()?  sp500HistoryRequested,TResult? Function( Brand brand)?  brandToggled,TResult? Function( InvestingExperience experience)?  experienceSelected,TResult? Function( bool enabled)?  notificationsToggled,TResult? Function()?  completionRequested,TResult? Function()?  buildingProfileStarted,TResult? Function( OnboardingStep step,  OnboardingSkipReason reason)?  skipRequested,TResult? Function()?  notificationGrantPersistRequested,TResult? Function( PostOnboardingDestination destination)?  initialCompanyShown,TResult? Function()?  guestSessionRequested,TResult? Function()?  brandsConfirmed,TResult? Function()?  brandsPrefetchRequested,TResult? Function( int index)?  highlightPageChanged,TResult? Function()?  highlightContinuePressed,TResult? Function()?  loginRequested,TResult? Function( OnboardingStep step)?  stepViewed,TResult? Function( bool didSubscribe,  String subscriptionType)?  subscriptionStatusChanged,TResult? Function()?  onboardingFlowFinished,TResult? Function()?  reset,}) {final _that = this;
 switch (_that) {
 case OnboardingStarted() when started != null:
 return started();case OnboardingNameSubmitted() when nameSubmitted != null:
@@ -269,17 +269,17 @@ return sp500HistoryRequested();case OnboardingBrandToggled() when brandToggled !
 return brandToggled(_that.brand);case OnboardingExperienceSelected() when experienceSelected != null:
 return experienceSelected(_that.experience);case OnboardingNotificationsToggled() when notificationsToggled != null:
 return notificationsToggled(_that.enabled);case OnboardingCompletionRequested() when completionRequested != null:
-return completionRequested();case OnboardingAnalysisStarted() when analysisStarted != null:
-return analysisStarted();case OnboardingAnalysisStepUpdated() when analysisStepUpdated != null:
-return analysisStepUpdated(_that.step);case OnboardingWatchlistAdditionStarted() when watchlistAdditionStarted != null:
-return watchlistAdditionStarted();case OnboardingWatchlistStepUpdated() when watchlistStepUpdated != null:
-return watchlistStepUpdated(_that.step);case OnboardingHighlightPageChanged() when highlightPageChanged != null:
+return completionRequested();case OnboardingBuildingProfileStarted() when buildingProfileStarted != null:
+return buildingProfileStarted();case OnboardingSkipRequested() when skipRequested != null:
+return skipRequested(_that.step,_that.reason);case OnboardingNotificationGrantPersistRequested() when notificationGrantPersistRequested != null:
+return notificationGrantPersistRequested();case OnboardingInitialCompanyShown() when initialCompanyShown != null:
+return initialCompanyShown(_that.destination);case OnboardingGuestSessionRequested() when guestSessionRequested != null:
+return guestSessionRequested();case OnboardingBrandsConfirmed() when brandsConfirmed != null:
+return brandsConfirmed();case OnboardingBrandsPrefetchRequested() when brandsPrefetchRequested != null:
+return brandsPrefetchRequested();case OnboardingHighlightPageChanged() when highlightPageChanged != null:
 return highlightPageChanged(_that.index);case OnboardingHighlightContinuePressed() when highlightContinuePressed != null:
-return highlightContinuePressed();case OnboardingHighlightSkipPressed() when highlightSkipPressed != null:
-return highlightSkipPressed();case OnboardingLandingPageViewed() when landingPageViewed != null:
-return landingPageViewed();case OnboardingLoginRequested() when loginRequested != null:
-return loginRequested();case OnboardingProfileReadyPageViewed() when profileReadyPageViewed != null:
-return profileReadyPageViewed();case OnboardingStepViewed() when stepViewed != null:
+return highlightContinuePressed();case OnboardingLoginRequested() when loginRequested != null:
+return loginRequested();case OnboardingStepViewed() when stepViewed != null:
 return stepViewed(_that.step);case OnboardingSubscriptionStatusChanged() when subscriptionStatusChanged != null:
 return subscriptionStatusChanged(_that.didSubscribe,_that.subscriptionType);case OnboardingFlowFinished() when onboardingFlowFinished != null:
 return onboardingFlowFinished();case OnboardingReset() when reset != null:
@@ -632,7 +632,7 @@ as InvestingExperience,
 
 
 class OnboardingNotificationsToggled implements OnboardingEvent {
-  const OnboardingNotificationsToggled(this.enabled);
+  const OnboardingNotificationsToggled({required this.enabled});
   
 
  final  bool enabled;
@@ -686,7 +686,7 @@ class _$OnboardingNotificationsToggledCopyWithImpl<$Res>
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? enabled = null,}) {
   return _then(OnboardingNotificationsToggled(
-null == enabled ? _self.enabled : enabled // ignore: cast_nullable_to_non_nullable
+enabled: null == enabled ? _self.enabled : enabled // ignore: cast_nullable_to_non_nullable
 as bool,
   ));
 }
@@ -729,8 +729,8 @@ String toString() {
 /// @nodoc
 
 
-class OnboardingAnalysisStarted implements OnboardingEvent {
-  const OnboardingAnalysisStarted();
+class OnboardingBuildingProfileStarted implements OnboardingEvent {
+  const OnboardingBuildingProfileStarted();
   
 
 
@@ -740,7 +740,7 @@ class OnboardingAnalysisStarted implements OnboardingEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is OnboardingAnalysisStarted);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is OnboardingBuildingProfileStarted);
 }
 
 
@@ -749,7 +749,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'OnboardingEvent.analysisStarted()';
+  return 'OnboardingEvent.buildingProfileStarted()';
 }
 
 
@@ -761,43 +761,44 @@ String toString() {
 /// @nodoc
 
 
-class OnboardingAnalysisStepUpdated implements OnboardingEvent {
-  const OnboardingAnalysisStepUpdated(this.step);
+class OnboardingSkipRequested implements OnboardingEvent {
+  const OnboardingSkipRequested(this.step, {this.reason = OnboardingSkipReason.userSkipped});
   
 
- final  int step;
+ final  OnboardingStep step;
+@JsonKey() final  OnboardingSkipReason reason;
 
 /// Create a copy of OnboardingEvent
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-$OnboardingAnalysisStepUpdatedCopyWith<OnboardingAnalysisStepUpdated> get copyWith => _$OnboardingAnalysisStepUpdatedCopyWithImpl<OnboardingAnalysisStepUpdated>(this, _$identity);
+$OnboardingSkipRequestedCopyWith<OnboardingSkipRequested> get copyWith => _$OnboardingSkipRequestedCopyWithImpl<OnboardingSkipRequested>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is OnboardingAnalysisStepUpdated&&(identical(other.step, step) || other.step == step));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is OnboardingSkipRequested&&(identical(other.step, step) || other.step == step)&&(identical(other.reason, reason) || other.reason == reason));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,step);
+int get hashCode => Object.hash(runtimeType,step,reason);
 
 @override
 String toString() {
-  return 'OnboardingEvent.analysisStepUpdated(step: $step)';
+  return 'OnboardingEvent.skipRequested(step: $step, reason: $reason)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class $OnboardingAnalysisStepUpdatedCopyWith<$Res> implements $OnboardingEventCopyWith<$Res> {
-  factory $OnboardingAnalysisStepUpdatedCopyWith(OnboardingAnalysisStepUpdated value, $Res Function(OnboardingAnalysisStepUpdated) _then) = _$OnboardingAnalysisStepUpdatedCopyWithImpl;
+abstract mixin class $OnboardingSkipRequestedCopyWith<$Res> implements $OnboardingEventCopyWith<$Res> {
+  factory $OnboardingSkipRequestedCopyWith(OnboardingSkipRequested value, $Res Function(OnboardingSkipRequested) _then) = _$OnboardingSkipRequestedCopyWithImpl;
 @useResult
 $Res call({
- int step
+ OnboardingStep step, OnboardingSkipReason reason
 });
 
 
@@ -805,19 +806,20 @@ $Res call({
 
 }
 /// @nodoc
-class _$OnboardingAnalysisStepUpdatedCopyWithImpl<$Res>
-    implements $OnboardingAnalysisStepUpdatedCopyWith<$Res> {
-  _$OnboardingAnalysisStepUpdatedCopyWithImpl(this._self, this._then);
+class _$OnboardingSkipRequestedCopyWithImpl<$Res>
+    implements $OnboardingSkipRequestedCopyWith<$Res> {
+  _$OnboardingSkipRequestedCopyWithImpl(this._self, this._then);
 
-  final OnboardingAnalysisStepUpdated _self;
-  final $Res Function(OnboardingAnalysisStepUpdated) _then;
+  final OnboardingSkipRequested _self;
+  final $Res Function(OnboardingSkipRequested) _then;
 
 /// Create a copy of OnboardingEvent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? step = null,}) {
-  return _then(OnboardingAnalysisStepUpdated(
+@pragma('vm:prefer-inline') $Res call({Object? step = null,Object? reason = null,}) {
+  return _then(OnboardingSkipRequested(
 null == step ? _self.step : step // ignore: cast_nullable_to_non_nullable
-as int,
+as OnboardingStep,reason: null == reason ? _self.reason : reason // ignore: cast_nullable_to_non_nullable
+as OnboardingSkipReason,
   ));
 }
 
@@ -827,8 +829,8 @@ as int,
 /// @nodoc
 
 
-class OnboardingWatchlistAdditionStarted implements OnboardingEvent {
-  const OnboardingWatchlistAdditionStarted();
+class OnboardingNotificationGrantPersistRequested implements OnboardingEvent {
+  const OnboardingNotificationGrantPersistRequested();
   
 
 
@@ -838,7 +840,7 @@ class OnboardingWatchlistAdditionStarted implements OnboardingEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is OnboardingWatchlistAdditionStarted);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is OnboardingNotificationGrantPersistRequested);
 }
 
 
@@ -847,7 +849,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'OnboardingEvent.watchlistAdditionStarted()';
+  return 'OnboardingEvent.notificationGrantPersistRequested()';
 }
 
 
@@ -859,68 +861,173 @@ String toString() {
 /// @nodoc
 
 
-class OnboardingWatchlistStepUpdated implements OnboardingEvent {
-  const OnboardingWatchlistStepUpdated(this.step);
+class OnboardingInitialCompanyShown implements OnboardingEvent {
+  const OnboardingInitialCompanyShown(this.destination);
   
 
- final  int step;
+ final  PostOnboardingDestination destination;
 
 /// Create a copy of OnboardingEvent
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-$OnboardingWatchlistStepUpdatedCopyWith<OnboardingWatchlistStepUpdated> get copyWith => _$OnboardingWatchlistStepUpdatedCopyWithImpl<OnboardingWatchlistStepUpdated>(this, _$identity);
+$OnboardingInitialCompanyShownCopyWith<OnboardingInitialCompanyShown> get copyWith => _$OnboardingInitialCompanyShownCopyWithImpl<OnboardingInitialCompanyShown>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is OnboardingWatchlistStepUpdated&&(identical(other.step, step) || other.step == step));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is OnboardingInitialCompanyShown&&(identical(other.destination, destination) || other.destination == destination));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,step);
+int get hashCode => Object.hash(runtimeType,destination);
 
 @override
 String toString() {
-  return 'OnboardingEvent.watchlistStepUpdated(step: $step)';
+  return 'OnboardingEvent.initialCompanyShown(destination: $destination)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class $OnboardingWatchlistStepUpdatedCopyWith<$Res> implements $OnboardingEventCopyWith<$Res> {
-  factory $OnboardingWatchlistStepUpdatedCopyWith(OnboardingWatchlistStepUpdated value, $Res Function(OnboardingWatchlistStepUpdated) _then) = _$OnboardingWatchlistStepUpdatedCopyWithImpl;
+abstract mixin class $OnboardingInitialCompanyShownCopyWith<$Res> implements $OnboardingEventCopyWith<$Res> {
+  factory $OnboardingInitialCompanyShownCopyWith(OnboardingInitialCompanyShown value, $Res Function(OnboardingInitialCompanyShown) _then) = _$OnboardingInitialCompanyShownCopyWithImpl;
 @useResult
 $Res call({
- int step
+ PostOnboardingDestination destination
 });
 
 
-
+$PostOnboardingDestinationCopyWith<$Res> get destination;
 
 }
 /// @nodoc
-class _$OnboardingWatchlistStepUpdatedCopyWithImpl<$Res>
-    implements $OnboardingWatchlistStepUpdatedCopyWith<$Res> {
-  _$OnboardingWatchlistStepUpdatedCopyWithImpl(this._self, this._then);
+class _$OnboardingInitialCompanyShownCopyWithImpl<$Res>
+    implements $OnboardingInitialCompanyShownCopyWith<$Res> {
+  _$OnboardingInitialCompanyShownCopyWithImpl(this._self, this._then);
 
-  final OnboardingWatchlistStepUpdated _self;
-  final $Res Function(OnboardingWatchlistStepUpdated) _then;
+  final OnboardingInitialCompanyShown _self;
+  final $Res Function(OnboardingInitialCompanyShown) _then;
 
 /// Create a copy of OnboardingEvent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? step = null,}) {
-  return _then(OnboardingWatchlistStepUpdated(
-null == step ? _self.step : step // ignore: cast_nullable_to_non_nullable
-as int,
+@pragma('vm:prefer-inline') $Res call({Object? destination = null,}) {
+  return _then(OnboardingInitialCompanyShown(
+null == destination ? _self.destination : destination // ignore: cast_nullable_to_non_nullable
+as PostOnboardingDestination,
   ));
 }
 
+/// Create a copy of OnboardingEvent
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$PostOnboardingDestinationCopyWith<$Res> get destination {
+  
+  return $PostOnboardingDestinationCopyWith<$Res>(_self.destination, (value) {
+    return _then(_self.copyWith(destination: value));
+  });
+}
+}
+
+/// @nodoc
+
+
+class OnboardingGuestSessionRequested implements OnboardingEvent {
+  const OnboardingGuestSessionRequested();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is OnboardingGuestSessionRequested);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'OnboardingEvent.guestSessionRequested()';
+}
+
 
 }
+
+
+
+
+/// @nodoc
+
+
+class OnboardingBrandsConfirmed implements OnboardingEvent {
+  const OnboardingBrandsConfirmed();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is OnboardingBrandsConfirmed);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'OnboardingEvent.brandsConfirmed()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class OnboardingBrandsPrefetchRequested implements OnboardingEvent {
+  const OnboardingBrandsPrefetchRequested();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is OnboardingBrandsPrefetchRequested);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'OnboardingEvent.brandsPrefetchRequested()';
+}
+
+
+}
+
+
+
 
 /// @nodoc
 
@@ -1023,70 +1130,6 @@ String toString() {
 /// @nodoc
 
 
-class OnboardingHighlightSkipPressed implements OnboardingEvent {
-  const OnboardingHighlightSkipPressed();
-  
-
-
-
-
-
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is OnboardingHighlightSkipPressed);
-}
-
-
-@override
-int get hashCode => runtimeType.hashCode;
-
-@override
-String toString() {
-  return 'OnboardingEvent.highlightSkipPressed()';
-}
-
-
-}
-
-
-
-
-/// @nodoc
-
-
-class OnboardingLandingPageViewed implements OnboardingEvent {
-  const OnboardingLandingPageViewed();
-  
-
-
-
-
-
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is OnboardingLandingPageViewed);
-}
-
-
-@override
-int get hashCode => runtimeType.hashCode;
-
-@override
-String toString() {
-  return 'OnboardingEvent.landingPageViewed()';
-}
-
-
-}
-
-
-
-
-/// @nodoc
-
-
 class OnboardingLoginRequested implements OnboardingEvent {
   const OnboardingLoginRequested();
   
@@ -1108,38 +1151,6 @@ int get hashCode => runtimeType.hashCode;
 @override
 String toString() {
   return 'OnboardingEvent.loginRequested()';
-}
-
-
-}
-
-
-
-
-/// @nodoc
-
-
-class OnboardingProfileReadyPageViewed implements OnboardingEvent {
-  const OnboardingProfileReadyPageViewed();
-  
-
-
-
-
-
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is OnboardingProfileReadyPageViewed);
-}
-
-
-@override
-int get hashCode => runtimeType.hashCode;
-
-@override
-String toString() {
-  return 'OnboardingEvent.profileReadyPageViewed()';
 }
 
 

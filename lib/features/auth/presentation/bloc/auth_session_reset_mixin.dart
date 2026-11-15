@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:bizzie/features/auth/domain/models/user_model.dart';
-import 'package:bizzie/features/auth/domain/usecases/get_auth_stream.dart';
+import 'package:bizzie/features/auth/domain/usecases/get_auth_stream_usecase.dart';
 import 'package:bloc/bloc.dart';
 
 final _logger = BizzieLogger('AuthSessionResetMixin');
@@ -10,7 +10,7 @@ final _logger = BizzieLogger('AuthSessionResetMixin');
 mixin AuthSessionResetMixin<Event, State> on Bloc<Event, State> {
   StreamSubscription<UserModel?>? _authSessionSubscription;
 
-  void resetOnSessionEnd(GetAuthStream getAuthStream, Event resetEvent) {
+  void resetOnSessionEnd(GetAuthStreamUseCase getAuthStream, Event resetEvent) {
     _authSessionSubscription = getAuthStream()
         .where((user) => user == null)
         .listen((_) {

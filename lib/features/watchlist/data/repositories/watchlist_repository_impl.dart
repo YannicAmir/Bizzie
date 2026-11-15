@@ -5,7 +5,7 @@ import 'package:bizzie/core/utils/string_utils.dart';
 import 'package:bizzie/core/domain/models/company.dart';
 import 'package:bizzie/features/watchlist/data/interfaces/i_watchlist_local_datasource.dart';
 import 'package:bizzie/features/watchlist/data/interfaces/i_watchlist_remote_datasource.dart';
-import 'package:bizzie/features/watchlist/data/dtos/watchlist_item_dto.dart';
+import 'package:bizzie/core/data/dtos/watchlist_item_dto.dart';
 import 'package:bizzie/features/watchlist/domain/interfaces/watchlist_repository.dart';
 import 'package:dartz/dartz.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';

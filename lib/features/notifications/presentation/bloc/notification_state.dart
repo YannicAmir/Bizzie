@@ -5,10 +5,10 @@ import 'package:bizzie/features/notifications/presentation/bloc/notification_sta
 part 'notification_state.freezed.dart';
 
 @freezed
-sealed class NotificationState with _$NotificationState {
+abstract class NotificationState with _$NotificationState {
   const factory NotificationState({
-    required NotificationStatus status,
-    required bool isAppReady,
+    @Default(NotificationStatus.initial()) NotificationStatus status,
+    @Default(false) bool isAppReady,
     NotificationIntent? pendingIntent,
   }) = _NotificationState;
 }

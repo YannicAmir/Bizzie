@@ -1,11 +1,11 @@
-import 'dart:async';
-
 import 'package:bizzie/features/onboarding/select_brands/presentation/bloc/select_brands_event.dart';
 import 'package:bizzie/features/onboarding/select_brands/presentation/bloc/select_brands_state.dart';
 import 'package:bizzie/features/onboarding/select_brands/presentation/models/select_brands_view_model.dart';
-import 'package:bizzie/features/onboarding/presentation/bloc/onboarding_bloc.dart';
 import 'package:bizzie/features/onboarding/select_brands/domain/models/brand.dart';
 import 'package:bizzie/features/onboarding/select_brands/domain/models/get_daily_brands_params.dart';
+import 'package:bizzie/features/auth/domain/usecases/get_auth_stream_usecase.dart';
+import 'package:bizzie/features/auth/presentation/bloc/auth_session_reset_mixin.dart';
+import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
@@ -20,36 +20,30 @@ import 'package:bizzie/core/logging/bizzie_logger.dart';
 final _logger = BizzieLogger('SelectBrandsBloc');
 
 @injectable
-class SelectBrandsBloc extends Bloc<SelectBrandsEvent, SelectBrandsState> {
-  final Set<String> _initialStaticItems = {};
-
+class SelectBrandsBloc extends Bloc<SelectBrandsEvent, SelectBrandsState>
+    with AuthSessionResetMixin<SelectBrandsEvent, SelectBrandsState> {
   List<Brand> _masterSectorBrands = [];
   List<Brand> _masterGlobalBrands = [];
 
-  final OnboardingBloc _onboardingBloc;
+  List<Brand> _selectedBrands = const [];
+  String _sectorName = '';
+
   final GetDailyBrandsUseCase _getDailyBrandsUseCase;
-  StreamSubscription? _onboardingSubscription;
 
-  SelectBrandsBloc(this._onboardingBloc, this._getDailyBrandsUseCase)
-    : super(const SelectBrandsState.initial()) {
+  SelectBrandsBloc(
+    this._getDailyBrandsUseCase,
+    GetAuthStreamUseCase getAuthStream,
+  ) : super(const SelectBrandsState.initial()) {
     _logger.info('Initializing SelectBrandsBloc');
-    on<Started>(_onStarted);
+    on<Started>(_onStarted, transformer: restartable());
     on<Updated>(_onUpdated);
-    on<ToggleBrand>(_onToggleBrand);
-
-    _onboardingSubscription = _onboardingBloc.stream.listen((onboardingState) {
-      add(
-        SelectBrandsEvent.updated(
-          selectedBrands: onboardingState.selectedBrands,
-        ),
-      );
-    });
+    on<Reset>(_onReset);
+    resetOnSessionEnd(getAuthStream, const SelectBrandsEvent.reset());
   }
 
   @override
   Future<void> close() {
     _logger.info('Closing SelectBrandsBloc');
-    _onboardingSubscription?.cancel();
     return super.close();
   }
 
@@ -57,8 +51,9 @@ class SelectBrandsBloc extends Bloc<SelectBrandsEvent, SelectBrandsState> {
     Started event,
     Emitter<SelectBrandsState> emit,
   ) async {
-    final onboardingState = _onboardingBloc.state;
-    final userSector = onboardingState.onboardingData.selectedSector;
+    _selectedBrands = event.selectedBrands;
+    _sectorName = event.sectorName;
+    final userSector = event.sector;
 
     _logger.info(
       'Fetching daily brands for sector: ${userSector?.name ?? 'Global'}',
@@ -84,6 +79,7 @@ class SelectBrandsBloc extends Bloc<SelectBrandsEvent, SelectBrandsState> {
   }
 
   void _onUpdated(Updated event, Emitter<SelectBrandsState> emit) {
+    _selectedBrands = event.selectedBrands;
     state.mapOrNull(
       loaded: (loadedState) {
         final oldSelectedNames = loadedState.selectedBrands
@@ -106,18 +102,25 @@ class SelectBrandsBloc extends Bloc<SelectBrandsEvent, SelectBrandsState> {
     );
   }
 
+  void _onReset(Reset event, Emitter<SelectBrandsState> emit) {
+    _logger.info('Resetting SelectBrandsBloc');
+    _masterSectorBrands = [];
+    _masterGlobalBrands = [];
+    _selectedBrands = const [];
+    _sectorName = '';
+    emit(const SelectBrandsState.initial());
+  }
+
   void _storeMasterData(BrandListing brandListing) {
     _masterGlobalBrands = brandListing.globalBrands;
     _masterSectorBrands = brandListing.sectorBrands;
-    _initStaticItems([..._masterSectorBrands, ..._masterGlobalBrands]);
   }
 
   void _emitLoadedState(
     Emitter<SelectBrandsState> emit, {
     Set<String> newlyAddedNames = const {},
   }) {
-    final onboardingState = _onboardingBloc.state;
-    final selectedSet = onboardingState.selectedBrands.toSet();
+    final selectedSet = _selectedBrands.toSet();
 
     final sectorViewModels = _buildAvailableViewModels(
       _masterSectorBrands,
@@ -129,7 +132,7 @@ class SelectBrandsBloc extends Bloc<SelectBrandsEvent, SelectBrandsState> {
     );
 
     final selectedViewModels = _buildSelectedViewModels(
-      onboardingState.selectedBrands,
+      _selectedBrands,
       newlyAddedNames: newlyAddedNames,
     );
 
@@ -138,23 +141,9 @@ class SelectBrandsBloc extends Bloc<SelectBrandsEvent, SelectBrandsState> {
         sectorBrands: sectorViewModels,
         globalBrands: globalViewModels,
         selectedBrands: selectedViewModels,
-        sectorName: onboardingState.displaySectorName,
+        sectorName: _sectorName,
       ),
     );
-  }
-
-  void _onToggleBrand(ToggleBrand event, Emitter<SelectBrandsState> emit) {
-    _logger.info('Toggling brand: ${event.brand.name}');
-    _onboardingBloc.add(OnboardingEvent.brandToggled(event.brand));
-    if (_initialStaticItems.contains(event.brand.name)) {
-      _initialStaticItems.remove(event.brand.name);
-    }
-  }
-
-  void _initStaticItems(List<Brand> allBrands) {
-    for (var brand in allBrands) {
-      _initialStaticItems.add(brand.name);
-    }
   }
 
   List<SelectBrandsViewModel> _buildAvailableViewModels(

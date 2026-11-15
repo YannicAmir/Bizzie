@@ -51,10 +51,7 @@ class _HomePageState extends State<HomePage> {
     if (pricesBloc.state.isSettled) return Future<void>.value();
     return pricesBloc.stream
         .firstWhere((state) => state.isSettled)
-        .timeout(
-          _refreshSettleTimeout,
-          onTimeout: () => pricesBloc.state,
-        );
+        .timeout(_refreshSettleTimeout, onTimeout: () => pricesBloc.state);
   }
 
   @override
@@ -95,10 +92,7 @@ class _HomePageState extends State<HomePage> {
 }
 
 class _AuthenticatedHomeBody extends StatelessWidget {
-  const _AuthenticatedHomeBody({
-    required this.onRefresh,
-    this.pendingNewsId,
-  });
+  const _AuthenticatedHomeBody({required this.onRefresh, this.pendingNewsId});
 
   final Future<void> Function() onRefresh;
   final String? pendingNewsId;
@@ -106,10 +100,7 @@ class _AuthenticatedHomeBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return _WatchlistNewsLoader(
-      child: _HomeBodyGate(
-        onRefresh: onRefresh,
-        pendingNewsId: pendingNewsId,
-      ),
+      child: _HomeBodyGate(onRefresh: onRefresh, pendingNewsId: pendingNewsId),
     );
   }
 }
@@ -152,10 +143,7 @@ class _WatchlistNewsLoaderState extends State<_WatchlistNewsLoader> {
 }
 
 class _HomeBodyGate extends StatefulWidget {
-  const _HomeBodyGate({
-    required this.onRefresh,
-    this.pendingNewsId,
-  });
+  const _HomeBodyGate({required this.onRefresh, this.pendingNewsId});
 
   final Future<void> Function() onRefresh;
   final String? pendingNewsId;
@@ -251,10 +239,7 @@ class _HomeBodyGateState extends State<_HomeBodyGate> {
 }
 
 class _HomeContent extends StatelessWidget {
-  const _HomeContent({
-    required this.onRefresh,
-    this.pendingNewsId,
-  });
+  const _HomeContent({required this.onRefresh, this.pendingNewsId});
 
   final Future<void> Function() onRefresh;
   final String? pendingNewsId;

@@ -140,7 +140,7 @@ return reset(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String ticker,  bool forceRefresh)?  loadRequested,TResult Function( String ticker)?  stalenessCheckRequested,TResult Function( String ticker)?  tabShown,TResult Function()?  tabHidden,TResult Function()?  appBackgrounded,TResult Function()?  appForegrounded,TResult Function( bool isAnnual)?  periodChanged,TResult Function( bool isAnnual,  bool isChart)?  viewAllTapped,TResult Function()?  reset,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String ticker,  bool forceRefresh)?  loadRequested,TResult Function( String ticker)?  stalenessCheckRequested,TResult Function( String ticker)?  tabShown,TResult Function()?  tabHidden,TResult Function()?  appBackgrounded,TResult Function()?  appForegrounded,TResult Function( FinancialPeriod period)?  periodChanged,TResult Function( FinancialPeriod period,  bool isChart)?  viewAllTapped,TResult Function()?  reset,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case LoadRequested() when loadRequested != null:
 return loadRequested(_that.ticker,_that.forceRefresh);case StalenessCheckRequested() when stalenessCheckRequested != null:
@@ -149,8 +149,8 @@ return tabShown(_that.ticker);case TabHidden() when tabHidden != null:
 return tabHidden();case AppBackgrounded() when appBackgrounded != null:
 return appBackgrounded();case AppForegrounded() when appForegrounded != null:
 return appForegrounded();case PeriodChanged() when periodChanged != null:
-return periodChanged(_that.isAnnual);case ViewAllTapped() when viewAllTapped != null:
-return viewAllTapped(_that.isAnnual,_that.isChart);case Reset() when reset != null:
+return periodChanged(_that.period);case ViewAllTapped() when viewAllTapped != null:
+return viewAllTapped(_that.period,_that.isChart);case Reset() when reset != null:
 return reset();case _:
   return orElse();
 
@@ -169,7 +169,7 @@ return reset();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String ticker,  bool forceRefresh)  loadRequested,required TResult Function( String ticker)  stalenessCheckRequested,required TResult Function( String ticker)  tabShown,required TResult Function()  tabHidden,required TResult Function()  appBackgrounded,required TResult Function()  appForegrounded,required TResult Function( bool isAnnual)  periodChanged,required TResult Function( bool isAnnual,  bool isChart)  viewAllTapped,required TResult Function()  reset,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String ticker,  bool forceRefresh)  loadRequested,required TResult Function( String ticker)  stalenessCheckRequested,required TResult Function( String ticker)  tabShown,required TResult Function()  tabHidden,required TResult Function()  appBackgrounded,required TResult Function()  appForegrounded,required TResult Function( FinancialPeriod period)  periodChanged,required TResult Function( FinancialPeriod period,  bool isChart)  viewAllTapped,required TResult Function()  reset,}) {final _that = this;
 switch (_that) {
 case LoadRequested():
 return loadRequested(_that.ticker,_that.forceRefresh);case StalenessCheckRequested():
@@ -178,8 +178,8 @@ return tabShown(_that.ticker);case TabHidden():
 return tabHidden();case AppBackgrounded():
 return appBackgrounded();case AppForegrounded():
 return appForegrounded();case PeriodChanged():
-return periodChanged(_that.isAnnual);case ViewAllTapped():
-return viewAllTapped(_that.isAnnual,_that.isChart);case Reset():
+return periodChanged(_that.period);case ViewAllTapped():
+return viewAllTapped(_that.period,_that.isChart);case Reset():
 return reset();}
 }
 /// A variant of `when` that fallback to returning `null`
@@ -194,7 +194,7 @@ return reset();}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String ticker,  bool forceRefresh)?  loadRequested,TResult? Function( String ticker)?  stalenessCheckRequested,TResult? Function( String ticker)?  tabShown,TResult? Function()?  tabHidden,TResult? Function()?  appBackgrounded,TResult? Function()?  appForegrounded,TResult? Function( bool isAnnual)?  periodChanged,TResult? Function( bool isAnnual,  bool isChart)?  viewAllTapped,TResult? Function()?  reset,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String ticker,  bool forceRefresh)?  loadRequested,TResult? Function( String ticker)?  stalenessCheckRequested,TResult? Function( String ticker)?  tabShown,TResult? Function()?  tabHidden,TResult? Function()?  appBackgrounded,TResult? Function()?  appForegrounded,TResult? Function( FinancialPeriod period)?  periodChanged,TResult? Function( FinancialPeriod period,  bool isChart)?  viewAllTapped,TResult? Function()?  reset,}) {final _that = this;
 switch (_that) {
 case LoadRequested() when loadRequested != null:
 return loadRequested(_that.ticker,_that.forceRefresh);case StalenessCheckRequested() when stalenessCheckRequested != null:
@@ -203,8 +203,8 @@ return tabShown(_that.ticker);case TabHidden() when tabHidden != null:
 return tabHidden();case AppBackgrounded() when appBackgrounded != null:
 return appBackgrounded();case AppForegrounded() when appForegrounded != null:
 return appForegrounded();case PeriodChanged() when periodChanged != null:
-return periodChanged(_that.isAnnual);case ViewAllTapped() when viewAllTapped != null:
-return viewAllTapped(_that.isAnnual,_that.isChart);case Reset() when reset != null:
+return periodChanged(_that.period);case ViewAllTapped() when viewAllTapped != null:
+return viewAllTapped(_that.period,_that.isChart);case Reset() when reset != null:
 return reset();case _:
   return null;
 
@@ -513,10 +513,10 @@ String toString() {
 
 
 class PeriodChanged implements CompanyRevenueEvent {
-  const PeriodChanged({required this.isAnnual});
+  const PeriodChanged({required this.period});
   
 
- final  bool isAnnual;
+ final  FinancialPeriod period;
 
 /// Create a copy of CompanyRevenueEvent
 /// with the given fields replaced by the non-null parameter values.
@@ -528,16 +528,16 @@ $PeriodChangedCopyWith<PeriodChanged> get copyWith => _$PeriodChangedCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PeriodChanged&&(identical(other.isAnnual, isAnnual) || other.isAnnual == isAnnual));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PeriodChanged&&(identical(other.period, period) || other.period == period));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,isAnnual);
+int get hashCode => Object.hash(runtimeType,period);
 
 @override
 String toString() {
-  return 'CompanyRevenueEvent.periodChanged(isAnnual: $isAnnual)';
+  return 'CompanyRevenueEvent.periodChanged(period: $period)';
 }
 
 
@@ -548,7 +548,7 @@ abstract mixin class $PeriodChangedCopyWith<$Res> implements $CompanyRevenueEven
   factory $PeriodChangedCopyWith(PeriodChanged value, $Res Function(PeriodChanged) _then) = _$PeriodChangedCopyWithImpl;
 @useResult
 $Res call({
- bool isAnnual
+ FinancialPeriod period
 });
 
 
@@ -565,10 +565,10 @@ class _$PeriodChangedCopyWithImpl<$Res>
 
 /// Create a copy of CompanyRevenueEvent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? isAnnual = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? period = null,}) {
   return _then(PeriodChanged(
-isAnnual: null == isAnnual ? _self.isAnnual : isAnnual // ignore: cast_nullable_to_non_nullable
-as bool,
+period: null == period ? _self.period : period // ignore: cast_nullable_to_non_nullable
+as FinancialPeriod,
   ));
 }
 
@@ -579,10 +579,10 @@ as bool,
 
 
 class ViewAllTapped implements CompanyRevenueEvent {
-  const ViewAllTapped({required this.isAnnual, required this.isChart});
+  const ViewAllTapped({required this.period, required this.isChart});
   
 
- final  bool isAnnual;
+ final  FinancialPeriod period;
  final  bool isChart;
 
 /// Create a copy of CompanyRevenueEvent
@@ -595,16 +595,16 @@ $ViewAllTappedCopyWith<ViewAllTapped> get copyWith => _$ViewAllTappedCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ViewAllTapped&&(identical(other.isAnnual, isAnnual) || other.isAnnual == isAnnual)&&(identical(other.isChart, isChart) || other.isChart == isChart));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ViewAllTapped&&(identical(other.period, period) || other.period == period)&&(identical(other.isChart, isChart) || other.isChart == isChart));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,isAnnual,isChart);
+int get hashCode => Object.hash(runtimeType,period,isChart);
 
 @override
 String toString() {
-  return 'CompanyRevenueEvent.viewAllTapped(isAnnual: $isAnnual, isChart: $isChart)';
+  return 'CompanyRevenueEvent.viewAllTapped(period: $period, isChart: $isChart)';
 }
 
 
@@ -615,7 +615,7 @@ abstract mixin class $ViewAllTappedCopyWith<$Res> implements $CompanyRevenueEven
   factory $ViewAllTappedCopyWith(ViewAllTapped value, $Res Function(ViewAllTapped) _then) = _$ViewAllTappedCopyWithImpl;
 @useResult
 $Res call({
- bool isAnnual, bool isChart
+ FinancialPeriod period, bool isChart
 });
 
 
@@ -632,10 +632,10 @@ class _$ViewAllTappedCopyWithImpl<$Res>
 
 /// Create a copy of CompanyRevenueEvent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? isAnnual = null,Object? isChart = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? period = null,Object? isChart = null,}) {
   return _then(ViewAllTapped(
-isAnnual: null == isAnnual ? _self.isAnnual : isAnnual // ignore: cast_nullable_to_non_nullable
-as bool,isChart: null == isChart ? _self.isChart : isChart // ignore: cast_nullable_to_non_nullable
+period: null == period ? _self.period : period // ignore: cast_nullable_to_non_nullable
+as FinancialPeriod,isChart: null == isChart ? _self.isChart : isChart // ignore: cast_nullable_to_non_nullable
 as bool,
   ));
 }

@@ -1,9 +1,10 @@
+import 'package:bizzie/core/enums/financial_period.dart';
 import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/core/interfaces/i_config_service.dart';
 import 'package:bizzie/core/interfaces/i_time_provider.dart';
 import 'package:bizzie/core/usecase/usecase.dart';
-import 'package:bizzie/features/auth/domain/usecases/get_auth_stream.dart';
+import 'package:bizzie/features/auth/domain/usecases/get_auth_stream_usecase.dart';
 import 'package:bizzie/features/company_profile/segments/domain/models/revenue_geographic_segments.dart';
 import 'package:bizzie/features/company_profile/segments/domain/models/revenue_product_segments.dart';
 import 'package:bizzie/features/company_profile/segments/domain/models/revenue_segment.dart';
@@ -32,10 +33,10 @@ class MockSegmentsTabAnalytics extends Mock implements SegmentsTabAnalytics {}
 
 class MockWatchActiveTabUseCase extends Mock implements WatchActiveTabUseCase {}
 
-class MockGetAuthStream extends Mock implements GetAuthStream {}
+class MockGetAuthStreamUseCase extends Mock implements GetAuthStreamUseCase {}
 
-MockGetAuthStream stubbedGetAuthStream() {
-  final mock = MockGetAuthStream();
+MockGetAuthStreamUseCase stubbedGetAuthStream() {
+  final mock = MockGetAuthStreamUseCase();
   when(() => mock()).thenAnswer((_) => const Stream.empty());
   return mock;
 }
@@ -140,7 +141,8 @@ void main() {
       () => mockWatchActiveTabUseCase(any()),
     ).thenAnswer((_) => const Stream.empty());
     when(() => mockGetProductSegments(any())).thenAnswer(
-      (_) async => const Right((tProductSegments, CompanyProfileDataOrigin.api)),
+      (_) async =>
+          const Right((tProductSegments, CompanyProfileDataOrigin.api)),
     );
     when(() => mockGetGeographicSegments(any())).thenAnswer(
       (_) async =>
@@ -162,7 +164,7 @@ void main() {
 
   CompanySegmentsState tLoadedState({
     DateTime? lastUpdated,
-    bool isAnnualView = true,
+    FinancialPeriod period = FinancialPeriod.annual,
     String? selectedAnnualKey = '2025',
     String? selectedQuarterlyKey = 'Q2 2026',
     SegmentsTabViewState analyticsState = const SegmentsTabViewState(
@@ -179,15 +181,17 @@ void main() {
     geographicColorIndices: const {'Americas': 0, 'Europe': 1},
     historyLimit: 7,
     dataOrigin: CompanyProfileDataOrigin.api,
-    isAnnualView: isAnnualView,
+    period: period,
     selectedAnnualKey: selectedAnnualKey,
     selectedQuarterlyKey: selectedQuarterlyKey,
     lastUpdated: lastUpdated ?? DateTime.now(),
     analyticsState: analyticsState,
   );
 
-  T? loadedField<T>(CompanySegmentsState state, T? Function(CompanySegmentsLoaded) pick) =>
-      state.mapOrNull(loaded: pick);
+  T? loadedField<T>(
+    CompanySegmentsState state,
+    T? Function(CompanySegmentsLoaded) pick,
+  ) => state.mapOrNull(loaded: pick);
 
   test('initialState_isCorrect', () {
     expect(bloc.state, const CompanySegmentsState.initial());
@@ -224,9 +228,9 @@ void main() {
               'Q2 2026',
             )
             .having(
-              (s) => loadedField(s, (l) => l.isAnnualView),
-              'isAnnualView',
-              true,
+              (s) => loadedField(s, (l) => l.period),
+              'period',
+              FinancialPeriod.annual,
             )
             .having(
               (s) => loadedField(s, (l) => l.productColorIndices),
@@ -321,7 +325,10 @@ void main() {
     blocTest<CompanySegmentsBloc, CompanySegmentsState>(
       'loadRequested_refreshWithExistingSelection_preservesSelectedKeysAndView',
       build: () => bloc,
-      seed: () => tLoadedState(isAnnualView: false, selectedAnnualKey: '2024'),
+      seed: () => tLoadedState(
+        period: FinancialPeriod.quarterly,
+        selectedAnnualKey: '2024',
+      ),
       act: (bloc) => bloc.add(
         const CompanySegmentsEvent.loadRequested(tTicker, forceRefresh: true),
       ),
@@ -339,9 +346,9 @@ void main() {
               'Q2 2026',
             )
             .having(
-              (s) => loadedField(s, (l) => l.isAnnualView),
-              'isAnnualView',
-              false,
+              (s) => loadedField(s, (l) => l.period),
+              'period',
+              FinancialPeriod.quarterly,
             ),
       ],
     );
@@ -440,9 +447,8 @@ void main() {
         when(() => mockTimeProvider.nowLocal).thenReturn(tNow);
         return bloc;
       },
-      seed: () => tLoadedState(
-        lastUpdated: tNow.subtract(const Duration(minutes: 61)),
-      ),
+      seed: () =>
+          tLoadedState(lastUpdated: tNow.subtract(const Duration(minutes: 61))),
       act: (bloc) =>
           bloc.add(const CompanySegmentsEvent.stalenessCheckRequested(tTicker)),
       expect: () => [
@@ -464,9 +470,8 @@ void main() {
     blocTest<CompanySegmentsBloc, CompanySegmentsState>(
       'stalenessCheckRequested_nullLastUpdated_triggersForceReload',
       build: () => bloc,
-      seed: () => (tLoadedState() as CompanySegmentsLoaded).copyWith(
-        lastUpdated: null,
-      ),
+      seed: () =>
+          (tLoadedState() as CompanySegmentsLoaded).copyWith(lastUpdated: null),
       act: (bloc) =>
           bloc.add(const CompanySegmentsEvent.stalenessCheckRequested(tTicker)),
       expect: () => [
@@ -485,17 +490,21 @@ void main() {
 
   group('CompanySegmentsBloc - periodChanged', () {
     blocTest<CompanySegmentsBloc, CompanySegmentsState>(
-      'periodChanged_toQuarterly_emitsUpdatedIsAnnualViewAndMarksAnalytics',
+      'periodChanged_toQuarterly_emitsUpdatedPeriodAndMarksAnalytics',
       build: () => bloc,
       seed: tLoadedState,
       act: (bloc) => bloc
         ..add(const CompanySegmentsEvent.tabShown(tTicker))
-        ..add(const CompanySegmentsEvent.periodChanged(isAnnual: false)),
+        ..add(
+          const CompanySegmentsEvent.periodChanged(
+            period: FinancialPeriod.quarterly,
+          ),
+        ),
       expect: () => [
         isA<CompanySegmentsState>().having(
-          (s) => loadedField(s, (l) => l.isAnnualView),
-          'isAnnualView',
-          false,
+          (s) => loadedField(s, (l) => l.period),
+          'period',
+          FinancialPeriod.quarterly,
         ),
       ],
       verify: (bloc) {
@@ -523,7 +532,10 @@ void main() {
       act: (bloc) => bloc
         ..add(const CompanySegmentsEvent.tabShown(tTicker))
         ..add(
-          const CompanySegmentsEvent.periodKeySelected('2024', isAnnual: true),
+          const CompanySegmentsEvent.periodKeySelected(
+            '2024',
+            period: FinancialPeriod.annual,
+          ),
         ),
       expect: () => [
         isA<CompanySegmentsState>().having(
@@ -546,7 +558,7 @@ void main() {
         ..add(
           const CompanySegmentsEvent.periodKeySelected(
             'Q1 2026',
-            isAnnual: false,
+            period: FinancialPeriod.quarterly,
           ),
         ),
       expect: () => [

@@ -135,7 +135,10 @@ return $default(_that);case _:
 final _that = this;
 switch (_that) {
 case _NotificationState():
-return $default(_that);}
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -194,7 +197,10 @@ return $default(_that.status,_that.isAppReady,_that.pendingIntent);case _:
 @optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( NotificationStatus status,  bool isAppReady,  NotificationIntent? pendingIntent)  $default,) {final _that = this;
 switch (_that) {
 case _NotificationState():
-return $default(_that.status,_that.isAppReady,_that.pendingIntent);}
+return $default(_that.status,_that.isAppReady,_that.pendingIntent);case _:
+  throw StateError('Unexpected subclass');
+
+}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -223,11 +229,11 @@ return $default(_that.status,_that.isAppReady,_that.pendingIntent);case _:
 
 
 class _NotificationState implements NotificationState {
-  const _NotificationState({required this.status, required this.isAppReady, this.pendingIntent});
+  const _NotificationState({this.status = const NotificationStatus.initial(), this.isAppReady = false, this.pendingIntent});
   
 
-@override final  NotificationStatus status;
-@override final  bool isAppReady;
+@override@JsonKey() final  NotificationStatus status;
+@override@JsonKey() final  bool isAppReady;
 @override final  NotificationIntent? pendingIntent;
 
 /// Create a copy of NotificationState

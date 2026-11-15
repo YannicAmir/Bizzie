@@ -1,3 +1,4 @@
+import 'package:bizzie/core/enums/financial_period.dart';
 import 'package:bizzie/features/company_profile/shared/domain/models/financial_data_point.dart';
 import 'package:bizzie/features/company_profile/shares/domain/models/shares_summary_data.dart';
 import 'package:bizzie/shared/utils/bizzie_date_formatter.dart';
@@ -7,7 +8,7 @@ import 'package:injectable/injectable.dart';
 class SharesSummaryService {
   SharesSummaryData computeSummary(
     List<FinancialDataPoint> dataPoints, {
-    required bool isAnnual,
+    required FinancialPeriod period,
   }) {
     if (dataPoints.isEmpty) {
       return const SharesSummaryData(
@@ -27,7 +28,10 @@ class SharesSummaryService {
 
     final currentDate = DateTime.tryParse(currentPoint.date);
     if (currentDate != null) {
-      final lookbackYears = isAnnual ? 5 : 1;
+      final lookbackYears = switch (period) {
+        FinancialPeriod.annual => 5,
+        FinancialPeriod.quarterly => 1,
+      };
       final cutoffDate = DateTime(
         currentDate.year - lookbackYears,
         currentDate.month,
@@ -52,7 +56,7 @@ class SharesSummaryService {
 
     final referenceLabel = BizzieDateFormatter.formatReferenceLabel(
       referencePoint.date,
-      isAnnual: isAnnual,
+      period: period,
     );
 
     return SharesSummaryData(

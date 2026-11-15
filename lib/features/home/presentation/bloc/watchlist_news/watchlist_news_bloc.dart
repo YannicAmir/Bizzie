@@ -1,6 +1,6 @@
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
-import 'package:bizzie/features/auth/domain/usecases/get_auth_stream.dart';
+import 'package:bizzie/features/auth/domain/usecases/get_auth_stream_usecase.dart';
 import 'package:bizzie/features/auth/presentation/bloc/auth_session_reset_mixin.dart';
 import 'package:bizzie/features/home/domain/models/watchlist_news_article.dart';
 import 'package:bizzie/features/home/domain/usecases/watch_watchlist_news_usecase.dart';
@@ -24,8 +24,10 @@ class WatchlistNewsBloc extends Bloc<WatchlistNewsEvent, WatchlistNewsState>
 
   Set<String>? _lastRequestedTickers;
 
-  WatchlistNewsBloc(this._watchWatchlistNews, GetAuthStream getAuthStream)
-    : super(const WatchlistNewsState.initial()) {
+  WatchlistNewsBloc(
+    this._watchWatchlistNews,
+    GetAuthStreamUseCase getAuthStream,
+  ) : super(const WatchlistNewsState.initial()) {
     on<LoadRequested>(_onLoadRequested, transformer: _distinctRestartable());
     on<Reset>(_onReset);
     resetOnSessionEnd(getAuthStream, const WatchlistNewsEvent.reset());

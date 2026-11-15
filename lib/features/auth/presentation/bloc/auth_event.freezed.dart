@@ -55,7 +55,7 @@ extension AuthEventPatterns on AuthEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( AuthStatusRequested value)?  statusRequested,TResult Function( AuthLogoutRequested value)?  logoutRequested,TResult Function( AuthGoogleSignInRequested value)?  googleSignInRequested,TResult Function( AuthAppleSignInRequested value)?  appleSignInRequested,TResult Function( AuthResetPasswordRequested value)?  resetPasswordRequested,TResult Function( AuthDeleteAccountRequested value)?  deleteAccountRequested,TResult Function( AuthEmailSignInRequested value)?  emailSignInRequested,TResult Function( AuthEmailSignUpRequested value)?  emailSignUpRequested,TResult Function( AuthStatusChanged value)?  statusChanged,TResult Function( AuthLegalLinkOpened value)?  legalLinkOpened,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( AuthStatusRequested value)?  statusRequested,TResult Function( AuthLogoutRequested value)?  logoutRequested,TResult Function( AuthGoogleSignInRequested value)?  googleSignInRequested,TResult Function( AuthAppleSignInRequested value)?  appleSignInRequested,TResult Function( AuthResetPasswordRequested value)?  resetPasswordRequested,TResult Function( AuthDeleteAccountRequested value)?  deleteAccountRequested,TResult Function( AuthEmailSignInRequested value)?  emailSignInRequested,TResult Function( AuthEmailSignUpRequested value)?  emailSignUpRequested,TResult Function( AuthLegalLinkOpened value)?  legalLinkOpened,TResult Function( AuthGuestGateShown value)?  guestGateShown,TResult Function( AuthGuestGateDismissed value)?  guestGateDismissed,TResult Function( AuthGuestLinkStarted value)?  guestLinkStarted,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case AuthStatusRequested() when statusRequested != null:
@@ -66,9 +66,11 @@ return appleSignInRequested(_that);case AuthResetPasswordRequested() when resetP
 return resetPasswordRequested(_that);case AuthDeleteAccountRequested() when deleteAccountRequested != null:
 return deleteAccountRequested(_that);case AuthEmailSignInRequested() when emailSignInRequested != null:
 return emailSignInRequested(_that);case AuthEmailSignUpRequested() when emailSignUpRequested != null:
-return emailSignUpRequested(_that);case AuthStatusChanged() when statusChanged != null:
-return statusChanged(_that);case AuthLegalLinkOpened() when legalLinkOpened != null:
-return legalLinkOpened(_that);case _:
+return emailSignUpRequested(_that);case AuthLegalLinkOpened() when legalLinkOpened != null:
+return legalLinkOpened(_that);case AuthGuestGateShown() when guestGateShown != null:
+return guestGateShown(_that);case AuthGuestGateDismissed() when guestGateDismissed != null:
+return guestGateDismissed(_that);case AuthGuestLinkStarted() when guestLinkStarted != null:
+return guestLinkStarted(_that);case _:
   return orElse();
 
 }
@@ -86,7 +88,7 @@ return legalLinkOpened(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( AuthStatusRequested value)  statusRequested,required TResult Function( AuthLogoutRequested value)  logoutRequested,required TResult Function( AuthGoogleSignInRequested value)  googleSignInRequested,required TResult Function( AuthAppleSignInRequested value)  appleSignInRequested,required TResult Function( AuthResetPasswordRequested value)  resetPasswordRequested,required TResult Function( AuthDeleteAccountRequested value)  deleteAccountRequested,required TResult Function( AuthEmailSignInRequested value)  emailSignInRequested,required TResult Function( AuthEmailSignUpRequested value)  emailSignUpRequested,required TResult Function( AuthStatusChanged value)  statusChanged,required TResult Function( AuthLegalLinkOpened value)  legalLinkOpened,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( AuthStatusRequested value)  statusRequested,required TResult Function( AuthLogoutRequested value)  logoutRequested,required TResult Function( AuthGoogleSignInRequested value)  googleSignInRequested,required TResult Function( AuthAppleSignInRequested value)  appleSignInRequested,required TResult Function( AuthResetPasswordRequested value)  resetPasswordRequested,required TResult Function( AuthDeleteAccountRequested value)  deleteAccountRequested,required TResult Function( AuthEmailSignInRequested value)  emailSignInRequested,required TResult Function( AuthEmailSignUpRequested value)  emailSignUpRequested,required TResult Function( AuthLegalLinkOpened value)  legalLinkOpened,required TResult Function( AuthGuestGateShown value)  guestGateShown,required TResult Function( AuthGuestGateDismissed value)  guestGateDismissed,required TResult Function( AuthGuestLinkStarted value)  guestLinkStarted,}){
 final _that = this;
 switch (_that) {
 case AuthStatusRequested():
@@ -97,9 +99,11 @@ return appleSignInRequested(_that);case AuthResetPasswordRequested():
 return resetPasswordRequested(_that);case AuthDeleteAccountRequested():
 return deleteAccountRequested(_that);case AuthEmailSignInRequested():
 return emailSignInRequested(_that);case AuthEmailSignUpRequested():
-return emailSignUpRequested(_that);case AuthStatusChanged():
-return statusChanged(_that);case AuthLegalLinkOpened():
-return legalLinkOpened(_that);}
+return emailSignUpRequested(_that);case AuthLegalLinkOpened():
+return legalLinkOpened(_that);case AuthGuestGateShown():
+return guestGateShown(_that);case AuthGuestGateDismissed():
+return guestGateDismissed(_that);case AuthGuestLinkStarted():
+return guestLinkStarted(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -113,7 +117,7 @@ return legalLinkOpened(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( AuthStatusRequested value)?  statusRequested,TResult? Function( AuthLogoutRequested value)?  logoutRequested,TResult? Function( AuthGoogleSignInRequested value)?  googleSignInRequested,TResult? Function( AuthAppleSignInRequested value)?  appleSignInRequested,TResult? Function( AuthResetPasswordRequested value)?  resetPasswordRequested,TResult? Function( AuthDeleteAccountRequested value)?  deleteAccountRequested,TResult? Function( AuthEmailSignInRequested value)?  emailSignInRequested,TResult? Function( AuthEmailSignUpRequested value)?  emailSignUpRequested,TResult? Function( AuthStatusChanged value)?  statusChanged,TResult? Function( AuthLegalLinkOpened value)?  legalLinkOpened,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( AuthStatusRequested value)?  statusRequested,TResult? Function( AuthLogoutRequested value)?  logoutRequested,TResult? Function( AuthGoogleSignInRequested value)?  googleSignInRequested,TResult? Function( AuthAppleSignInRequested value)?  appleSignInRequested,TResult? Function( AuthResetPasswordRequested value)?  resetPasswordRequested,TResult? Function( AuthDeleteAccountRequested value)?  deleteAccountRequested,TResult? Function( AuthEmailSignInRequested value)?  emailSignInRequested,TResult? Function( AuthEmailSignUpRequested value)?  emailSignUpRequested,TResult? Function( AuthLegalLinkOpened value)?  legalLinkOpened,TResult? Function( AuthGuestGateShown value)?  guestGateShown,TResult? Function( AuthGuestGateDismissed value)?  guestGateDismissed,TResult? Function( AuthGuestLinkStarted value)?  guestLinkStarted,}){
 final _that = this;
 switch (_that) {
 case AuthStatusRequested() when statusRequested != null:
@@ -124,9 +128,11 @@ return appleSignInRequested(_that);case AuthResetPasswordRequested() when resetP
 return resetPasswordRequested(_that);case AuthDeleteAccountRequested() when deleteAccountRequested != null:
 return deleteAccountRequested(_that);case AuthEmailSignInRequested() when emailSignInRequested != null:
 return emailSignInRequested(_that);case AuthEmailSignUpRequested() when emailSignUpRequested != null:
-return emailSignUpRequested(_that);case AuthStatusChanged() when statusChanged != null:
-return statusChanged(_that);case AuthLegalLinkOpened() when legalLinkOpened != null:
-return legalLinkOpened(_that);case _:
+return emailSignUpRequested(_that);case AuthLegalLinkOpened() when legalLinkOpened != null:
+return legalLinkOpened(_that);case AuthGuestGateShown() when guestGateShown != null:
+return guestGateShown(_that);case AuthGuestGateDismissed() when guestGateDismissed != null:
+return guestGateDismissed(_that);case AuthGuestLinkStarted() when guestLinkStarted != null:
+return guestLinkStarted(_that);case _:
   return null;
 
 }
@@ -143,7 +149,7 @@ return legalLinkOpened(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  statusRequested,TResult Function()?  logoutRequested,TResult Function( AuthSource source)?  googleSignInRequested,TResult Function( AuthSource source)?  appleSignInRequested,TResult Function( String email,  AuthSource source)?  resetPasswordRequested,TResult Function()?  deleteAccountRequested,TResult Function( String email,  String password,  AuthSource source)?  emailSignInRequested,TResult Function( String email,  String password,  AuthSource source)?  emailSignUpRequested,TResult Function( UserModel? user)?  statusChanged,TResult Function( String url)?  legalLinkOpened,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  statusRequested,TResult Function()?  logoutRequested,TResult Function( AuthSource source)?  googleSignInRequested,TResult Function( AuthSource source)?  appleSignInRequested,TResult Function( String email,  AuthSource source)?  resetPasswordRequested,TResult Function()?  deleteAccountRequested,TResult Function( String email,  String password,  AuthSource source)?  emailSignInRequested,TResult Function( String email,  String password,  AuthSource source)?  emailSignUpRequested,TResult Function( String url)?  legalLinkOpened,TResult Function( GuestGateTrigger trigger)?  guestGateShown,TResult Function()?  guestGateDismissed,TResult Function( GuestGateTrigger trigger)?  guestLinkStarted,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case AuthStatusRequested() when statusRequested != null:
 return statusRequested();case AuthLogoutRequested() when logoutRequested != null:
@@ -153,9 +159,11 @@ return appleSignInRequested(_that.source);case AuthResetPasswordRequested() when
 return resetPasswordRequested(_that.email,_that.source);case AuthDeleteAccountRequested() when deleteAccountRequested != null:
 return deleteAccountRequested();case AuthEmailSignInRequested() when emailSignInRequested != null:
 return emailSignInRequested(_that.email,_that.password,_that.source);case AuthEmailSignUpRequested() when emailSignUpRequested != null:
-return emailSignUpRequested(_that.email,_that.password,_that.source);case AuthStatusChanged() when statusChanged != null:
-return statusChanged(_that.user);case AuthLegalLinkOpened() when legalLinkOpened != null:
-return legalLinkOpened(_that.url);case _:
+return emailSignUpRequested(_that.email,_that.password,_that.source);case AuthLegalLinkOpened() when legalLinkOpened != null:
+return legalLinkOpened(_that.url);case AuthGuestGateShown() when guestGateShown != null:
+return guestGateShown(_that.trigger);case AuthGuestGateDismissed() when guestGateDismissed != null:
+return guestGateDismissed();case AuthGuestLinkStarted() when guestLinkStarted != null:
+return guestLinkStarted(_that.trigger);case _:
   return orElse();
 
 }
@@ -173,7 +181,7 @@ return legalLinkOpened(_that.url);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  statusRequested,required TResult Function()  logoutRequested,required TResult Function( AuthSource source)  googleSignInRequested,required TResult Function( AuthSource source)  appleSignInRequested,required TResult Function( String email,  AuthSource source)  resetPasswordRequested,required TResult Function()  deleteAccountRequested,required TResult Function( String email,  String password,  AuthSource source)  emailSignInRequested,required TResult Function( String email,  String password,  AuthSource source)  emailSignUpRequested,required TResult Function( UserModel? user)  statusChanged,required TResult Function( String url)  legalLinkOpened,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  statusRequested,required TResult Function()  logoutRequested,required TResult Function( AuthSource source)  googleSignInRequested,required TResult Function( AuthSource source)  appleSignInRequested,required TResult Function( String email,  AuthSource source)  resetPasswordRequested,required TResult Function()  deleteAccountRequested,required TResult Function( String email,  String password,  AuthSource source)  emailSignInRequested,required TResult Function( String email,  String password,  AuthSource source)  emailSignUpRequested,required TResult Function( String url)  legalLinkOpened,required TResult Function( GuestGateTrigger trigger)  guestGateShown,required TResult Function()  guestGateDismissed,required TResult Function( GuestGateTrigger trigger)  guestLinkStarted,}) {final _that = this;
 switch (_that) {
 case AuthStatusRequested():
 return statusRequested();case AuthLogoutRequested():
@@ -183,9 +191,11 @@ return appleSignInRequested(_that.source);case AuthResetPasswordRequested():
 return resetPasswordRequested(_that.email,_that.source);case AuthDeleteAccountRequested():
 return deleteAccountRequested();case AuthEmailSignInRequested():
 return emailSignInRequested(_that.email,_that.password,_that.source);case AuthEmailSignUpRequested():
-return emailSignUpRequested(_that.email,_that.password,_that.source);case AuthStatusChanged():
-return statusChanged(_that.user);case AuthLegalLinkOpened():
-return legalLinkOpened(_that.url);}
+return emailSignUpRequested(_that.email,_that.password,_that.source);case AuthLegalLinkOpened():
+return legalLinkOpened(_that.url);case AuthGuestGateShown():
+return guestGateShown(_that.trigger);case AuthGuestGateDismissed():
+return guestGateDismissed();case AuthGuestLinkStarted():
+return guestLinkStarted(_that.trigger);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -199,7 +209,7 @@ return legalLinkOpened(_that.url);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  statusRequested,TResult? Function()?  logoutRequested,TResult? Function( AuthSource source)?  googleSignInRequested,TResult? Function( AuthSource source)?  appleSignInRequested,TResult? Function( String email,  AuthSource source)?  resetPasswordRequested,TResult? Function()?  deleteAccountRequested,TResult? Function( String email,  String password,  AuthSource source)?  emailSignInRequested,TResult? Function( String email,  String password,  AuthSource source)?  emailSignUpRequested,TResult? Function( UserModel? user)?  statusChanged,TResult? Function( String url)?  legalLinkOpened,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  statusRequested,TResult? Function()?  logoutRequested,TResult? Function( AuthSource source)?  googleSignInRequested,TResult? Function( AuthSource source)?  appleSignInRequested,TResult? Function( String email,  AuthSource source)?  resetPasswordRequested,TResult? Function()?  deleteAccountRequested,TResult? Function( String email,  String password,  AuthSource source)?  emailSignInRequested,TResult? Function( String email,  String password,  AuthSource source)?  emailSignUpRequested,TResult? Function( String url)?  legalLinkOpened,TResult? Function( GuestGateTrigger trigger)?  guestGateShown,TResult? Function()?  guestGateDismissed,TResult? Function( GuestGateTrigger trigger)?  guestLinkStarted,}) {final _that = this;
 switch (_that) {
 case AuthStatusRequested() when statusRequested != null:
 return statusRequested();case AuthLogoutRequested() when logoutRequested != null:
@@ -209,9 +219,11 @@ return appleSignInRequested(_that.source);case AuthResetPasswordRequested() when
 return resetPasswordRequested(_that.email,_that.source);case AuthDeleteAccountRequested() when deleteAccountRequested != null:
 return deleteAccountRequested();case AuthEmailSignInRequested() when emailSignInRequested != null:
 return emailSignInRequested(_that.email,_that.password,_that.source);case AuthEmailSignUpRequested() when emailSignUpRequested != null:
-return emailSignUpRequested(_that.email,_that.password,_that.source);case AuthStatusChanged() when statusChanged != null:
-return statusChanged(_that.user);case AuthLegalLinkOpened() when legalLinkOpened != null:
-return legalLinkOpened(_that.url);case _:
+return emailSignUpRequested(_that.email,_that.password,_that.source);case AuthLegalLinkOpened() when legalLinkOpened != null:
+return legalLinkOpened(_that.url);case AuthGuestGateShown() when guestGateShown != null:
+return guestGateShown(_that.trigger);case AuthGuestGateDismissed() when guestGateDismissed != null:
+return guestGateDismissed();case AuthGuestLinkStarted() when guestLinkStarted != null:
+return guestLinkStarted(_that.trigger);case _:
   return null;
 
 }
@@ -658,84 +670,6 @@ as AuthSource,
 /// @nodoc
 
 
-class AuthStatusChanged implements AuthEvent {
-  const AuthStatusChanged(this.user);
-  
-
- final  UserModel? user;
-
-/// Create a copy of AuthEvent
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-$AuthStatusChangedCopyWith<AuthStatusChanged> get copyWith => _$AuthStatusChangedCopyWithImpl<AuthStatusChanged>(this, _$identity);
-
-
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AuthStatusChanged&&(identical(other.user, user) || other.user == user));
-}
-
-
-@override
-int get hashCode => Object.hash(runtimeType,user);
-
-@override
-String toString() {
-  return 'AuthEvent.statusChanged(user: $user)';
-}
-
-
-}
-
-/// @nodoc
-abstract mixin class $AuthStatusChangedCopyWith<$Res> implements $AuthEventCopyWith<$Res> {
-  factory $AuthStatusChangedCopyWith(AuthStatusChanged value, $Res Function(AuthStatusChanged) _then) = _$AuthStatusChangedCopyWithImpl;
-@useResult
-$Res call({
- UserModel? user
-});
-
-
-$UserModelCopyWith<$Res>? get user;
-
-}
-/// @nodoc
-class _$AuthStatusChangedCopyWithImpl<$Res>
-    implements $AuthStatusChangedCopyWith<$Res> {
-  _$AuthStatusChangedCopyWithImpl(this._self, this._then);
-
-  final AuthStatusChanged _self;
-  final $Res Function(AuthStatusChanged) _then;
-
-/// Create a copy of AuthEvent
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? user = freezed,}) {
-  return _then(AuthStatusChanged(
-freezed == user ? _self.user : user // ignore: cast_nullable_to_non_nullable
-as UserModel?,
-  ));
-}
-
-/// Create a copy of AuthEvent
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$UserModelCopyWith<$Res>? get user {
-    if (_self.user == null) {
-    return null;
-  }
-
-  return $UserModelCopyWith<$Res>(_self.user!, (value) {
-    return _then(_self.copyWith(user: value));
-  });
-}
-}
-
-/// @nodoc
-
-
 class AuthLegalLinkOpened implements AuthEvent {
   const AuthLegalLinkOpened(this.url);
   
@@ -793,6 +727,170 @@ class _$AuthLegalLinkOpenedCopyWithImpl<$Res>
   return _then(AuthLegalLinkOpened(
 null == url ? _self.url : url // ignore: cast_nullable_to_non_nullable
 as String,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class AuthGuestGateShown implements AuthEvent {
+  const AuthGuestGateShown({required this.trigger});
+  
+
+ final  GuestGateTrigger trigger;
+
+/// Create a copy of AuthEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$AuthGuestGateShownCopyWith<AuthGuestGateShown> get copyWith => _$AuthGuestGateShownCopyWithImpl<AuthGuestGateShown>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AuthGuestGateShown&&(identical(other.trigger, trigger) || other.trigger == trigger));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,trigger);
+
+@override
+String toString() {
+  return 'AuthEvent.guestGateShown(trigger: $trigger)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $AuthGuestGateShownCopyWith<$Res> implements $AuthEventCopyWith<$Res> {
+  factory $AuthGuestGateShownCopyWith(AuthGuestGateShown value, $Res Function(AuthGuestGateShown) _then) = _$AuthGuestGateShownCopyWithImpl;
+@useResult
+$Res call({
+ GuestGateTrigger trigger
+});
+
+
+
+
+}
+/// @nodoc
+class _$AuthGuestGateShownCopyWithImpl<$Res>
+    implements $AuthGuestGateShownCopyWith<$Res> {
+  _$AuthGuestGateShownCopyWithImpl(this._self, this._then);
+
+  final AuthGuestGateShown _self;
+  final $Res Function(AuthGuestGateShown) _then;
+
+/// Create a copy of AuthEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? trigger = null,}) {
+  return _then(AuthGuestGateShown(
+trigger: null == trigger ? _self.trigger : trigger // ignore: cast_nullable_to_non_nullable
+as GuestGateTrigger,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class AuthGuestGateDismissed implements AuthEvent {
+  const AuthGuestGateDismissed();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AuthGuestGateDismissed);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'AuthEvent.guestGateDismissed()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class AuthGuestLinkStarted implements AuthEvent {
+  const AuthGuestLinkStarted({required this.trigger});
+  
+
+ final  GuestGateTrigger trigger;
+
+/// Create a copy of AuthEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$AuthGuestLinkStartedCopyWith<AuthGuestLinkStarted> get copyWith => _$AuthGuestLinkStartedCopyWithImpl<AuthGuestLinkStarted>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AuthGuestLinkStarted&&(identical(other.trigger, trigger) || other.trigger == trigger));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,trigger);
+
+@override
+String toString() {
+  return 'AuthEvent.guestLinkStarted(trigger: $trigger)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $AuthGuestLinkStartedCopyWith<$Res> implements $AuthEventCopyWith<$Res> {
+  factory $AuthGuestLinkStartedCopyWith(AuthGuestLinkStarted value, $Res Function(AuthGuestLinkStarted) _then) = _$AuthGuestLinkStartedCopyWithImpl;
+@useResult
+$Res call({
+ GuestGateTrigger trigger
+});
+
+
+
+
+}
+/// @nodoc
+class _$AuthGuestLinkStartedCopyWithImpl<$Res>
+    implements $AuthGuestLinkStartedCopyWith<$Res> {
+  _$AuthGuestLinkStartedCopyWithImpl(this._self, this._then);
+
+  final AuthGuestLinkStarted _self;
+  final $Res Function(AuthGuestLinkStarted) _then;
+
+/// Create a copy of AuthEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? trigger = null,}) {
+  return _then(AuthGuestLinkStarted(
+trigger: null == trigger ? _self.trigger : trigger // ignore: cast_nullable_to_non_nullable
+as GuestGateTrigger,
   ));
 }
 

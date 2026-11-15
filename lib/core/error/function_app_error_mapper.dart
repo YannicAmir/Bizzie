@@ -25,8 +25,9 @@ class FunctionAppErrorMapper {
         return const Failure.userNotFound();
       case 429:
         final data = e.response?.data;
-        final retryAfterSeconds =
-            (data is Map) ? (data['retryAfterSeconds'] as int? ?? 0) : 0;
+        final retryAfterSeconds = (data is Map)
+            ? (data['retryAfterSeconds'] as int? ?? 0)
+            : 0;
         _logger.warning(
           '$context: 429 rate limited — retryAfterSeconds=$retryAfterSeconds',
         );

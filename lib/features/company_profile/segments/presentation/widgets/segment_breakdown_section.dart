@@ -1,3 +1,4 @@
+import 'package:bizzie/core/enums/financial_period.dart';
 import 'package:bizzie/app/themes/app_text_styles.dart';
 import 'package:bizzie/features/company_profile/segments/domain/models/revenue_segment.dart';
 import 'package:bizzie/features/company_profile/segments/presentation/utils/segment_presentation.dart';
@@ -15,7 +16,7 @@ class SegmentBreakdownSection extends StatefulWidget {
   final String? previousLabel;
   final Map<String, int> colorIndices;
   final String currency;
-  final bool isAnnual;
+  final FinancialPeriod period;
 
   const SegmentBreakdownSection({
     super.key,
@@ -26,7 +27,7 @@ class SegmentBreakdownSection extends StatefulWidget {
     required this.previousLabel,
     required this.colorIndices,
     required this.currency,
-    required this.isAnnual,
+    required this.period,
   });
 
   @override
@@ -97,8 +98,10 @@ class _SegmentBreakdownSectionState extends State<SegmentBreakdownSection> {
     );
   }
 
-  String _periodLabel(String label) =>
-      widget.isAnnual ? '$_fiscalYearPrefix $label' : label;
+  String _periodLabel(String label) => switch (widget.period) {
+    FinancialPeriod.annual => '$_fiscalYearPrefix $label',
+    FinancialPeriod.quarterly => label,
+  };
 
   List<Widget> _buildSlides() {
     final currentChartData = _currentChartData;
