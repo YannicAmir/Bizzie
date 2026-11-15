@@ -40,6 +40,14 @@ extension SubscriptionStateX on SubscriptionState {
     );
   }
 
+  int? get discountSavingsPercentageOrNull => maybeMap(
+    loaded: (s) {
+      final percentage = s.offerings.discountSavingsPercentage;
+      return percentage > 0 ? percentage : null;
+    },
+    orElse: () => null,
+  );
+
   String get discountPercentageValueText =>
       discountPercentageText.replaceAll('-', '');
 

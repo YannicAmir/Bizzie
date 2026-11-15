@@ -205,7 +205,8 @@ void main() {
         ).thenAnswer((_) async => const Right(null));
         return settingsBloc;
       },
-      act: (bloc) => bloc.add(const SettingsEvent.toggledNotifications(true)),
+      act: (bloc) =>
+          bloc.add(const SettingsEvent.toggledNotifications(enable: true)),
       expect: () => [
         SettingsState.loaded(
           tSettingsData.copyWith(isAppNotificationsEnabled: true),
@@ -229,7 +230,8 @@ void main() {
         // arrange
         return settingsBloc;
       },
-      act: (bloc) => bloc.add(const SettingsEvent.toggledNotifications(true)),
+      act: (bloc) =>
+          bloc.add(const SettingsEvent.toggledNotifications(enable: true)),
       expect: () => [
         SettingsState.loaded(
           tSettingsData.copyWith(
@@ -452,7 +454,8 @@ void main() {
     blocTest<SettingsBloc, SettingsState>(
       'membershipClicked_logsEventWithStatus',
       build: () => settingsBloc,
-      act: (bloc) => bloc.add(const SettingsEvent.membershipClicked(true)),
+      act: (bloc) =>
+          bloc.add(const SettingsEvent.membershipClicked(isSubscribed: true)),
       expect: () => [],
       verify: (_) {
         verify(

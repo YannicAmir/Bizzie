@@ -605,8 +605,7 @@ void main() {
         onboardingData: OnboardingData(selectedSector: Sector.energy),
       ),
       // act
-      act: (bloc) =>
-          bloc.add(const OnboardingEvent.brandsPrefetchRequested()),
+      act: (bloc) => bloc.add(const OnboardingEvent.brandsPrefetchRequested()),
       // assert
       expect: () => <OnboardingState>[],
       verify: (_) {
@@ -628,8 +627,7 @@ void main() {
         return bloc;
       },
       // act
-      act: (bloc) =>
-          bloc.add(const OnboardingEvent.brandsPrefetchRequested()),
+      act: (bloc) => bloc.add(const OnboardingEvent.brandsPrefetchRequested()),
       // assert
       expect: () => <OnboardingState>[],
     );

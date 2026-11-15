@@ -222,6 +222,48 @@ void main() {
       });
     });
 
+    group('discountSavingsPercentageOrNull', () {
+      test(
+        'discountSavingsPercentageOrNull_onLoadedStateWithDiscount_returnsPercentage',
+        () {
+          // act
+          final result = tLoadedState.discountSavingsPercentageOrNull;
+
+          // assert
+          expect(result, equals(40));
+        },
+      );
+
+      test(
+        'discountSavingsPercentageOrNull_onLoadedStateWithoutDiscount_returnsNull',
+        () {
+          // arrange
+          final state = tLoadedState.copyWith(
+            offerings: tOffering.copyWith(
+              availablePackages: [tAnnualPackage, tMonthlyPackage],
+            ),
+          );
+
+          // act
+          final result = state.discountSavingsPercentageOrNull;
+
+          // assert
+          expect(result, isNull);
+        },
+      );
+
+      test('discountSavingsPercentageOrNull_onNonLoadedState_returnsNull', () {
+        // arrange
+        final state = SubscriptionState.loading(status: tInitialStatus);
+
+        // act
+        final result = state.discountSavingsPercentageOrNull;
+
+        // assert
+        expect(result, isNull);
+      });
+    });
+
     group('discountPercentageValueText', () {
       test('discountPercentageValueText_onLoadedState_returnsUnsignedText', () {
         // act

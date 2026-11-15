@@ -255,7 +255,7 @@ String toString() {
 
 
 class ToggledNotifications implements SettingsEvent {
-  const ToggledNotifications(this.enable);
+  const ToggledNotifications({required this.enable});
   
 
  final  bool enable;
@@ -309,7 +309,7 @@ class _$ToggledNotificationsCopyWithImpl<$Res>
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? enable = null,}) {
   return _then(ToggledNotifications(
-null == enable ? _self.enable : enable // ignore: cast_nullable_to_non_nullable
+enable: null == enable ? _self.enable : enable // ignore: cast_nullable_to_non_nullable
 as bool,
   ));
 }
@@ -615,7 +615,7 @@ String toString() {
 
 
 class MembershipClicked implements SettingsEvent {
-  const MembershipClicked(this.isSubscribed);
+  const MembershipClicked({required this.isSubscribed});
   
 
  final  bool isSubscribed;
@@ -669,7 +669,7 @@ class _$MembershipClickedCopyWithImpl<$Res>
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? isSubscribed = null,}) {
   return _then(MembershipClicked(
-null == isSubscribed ? _self.isSubscribed : isSubscribed // ignore: cast_nullable_to_non_nullable
+isSubscribed: null == isSubscribed ? _self.isSubscribed : isSubscribed // ignore: cast_nullable_to_non_nullable
 as bool,
   ));
 }

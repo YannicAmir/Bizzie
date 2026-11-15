@@ -2,7 +2,9 @@ import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:bizzie/features/onboarding/domain/enums/onboarding_save_outcome.dart';
 import 'package:bizzie/features/onboarding/domain/interfaces/i_onboarding_repository.dart';
 import 'package:bizzie/features/onboarding/domain/models/notification_topics_params.dart';
+import 'package:bizzie/features/onboarding/domain/models/onboarding_data.dart';
 import 'package:bizzie/features/onboarding/domain/services/onboarding_profile_builder.dart';
+import 'package:bizzie/features/onboarding/domain/services/onboarding_watchlist_resolver.dart';
 import 'package:bizzie/features/onboarding/domain/usecases/subscribe_to_notification_topics_usecase.dart';
 import 'package:bizzie/features/user/domain/interfaces/i_user_repository.dart';
 import 'package:bizzie/features/onboarding/domain/models/complete_onboarding_params.dart';
@@ -24,6 +26,7 @@ class CompleteOnboardingUseCase
   final INotificationService _notificationService;
   final SubscribeToNotificationTopicsUseCase _subscribeToTopicsUseCase;
   final OnboardingProfileBuilder _profileBuilder;
+  final OnboardingWatchlistResolver _watchlistResolver;
   final _logger = BizzieLogger('CompleteOnboardingUseCase');
 
   CompleteOnboardingUseCase(
@@ -32,6 +35,7 @@ class CompleteOnboardingUseCase
     this._notificationService,
     this._subscribeToTopicsUseCase,
     this._profileBuilder,
+    this._watchlistResolver,
   );
 
   @override
@@ -72,12 +76,33 @@ class CompleteOnboardingUseCase
     final result = await _repository.saveUserProfile(
       _profileBuilder.newUser(
         uid: params.uid,
-        data: params.data,
+        data: await _withDefaultWatchlist(params.data),
         fcmTokens: fcmTokens,
       ),
       awaitServerAck: params.awaitServerAck,
     );
     return _completeWith(result, uid: params.uid, fcmTokens: fcmTokens);
+  }
+
+  Future<OnboardingData> _withDefaultWatchlist(OnboardingData data) async {
+    final userSelectedCompanies = data.detectedCompanies;
+    if (!_watchlistResolver.needsDefaults(userSelectedCompanies)) return data;
+
+    final defaultsResult = await _repository.getSkipDefaults();
+    return defaultsResult.fold(
+      (failure) {
+        _logger.warning(
+          'Failed to load default watchlist (proceeding with user selection): ${failure.errorMessage}',
+        );
+        return data;
+      },
+      (defaults) => data.copyWith(
+        detectedCompanies: _watchlistResolver.resolve(
+          userSelectedCompanies: userSelectedCompanies,
+          defaultWatchlist: defaults.defaultWatchlist,
+        ),
+      ),
+    );
   }
 
   Future<Either<Failure, OnboardingSaveOutcome>> _completeWith(

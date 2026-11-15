@@ -1,6 +1,7 @@
 import 'package:bizzie/core/enums/paywall_source.dart';
 import 'package:bizzie/features/subscription/presentation/bloc/subscription_bloc.dart';
 import 'package:bizzie/features/subscription/presentation/bloc/subscription_event.dart';
+import 'package:bizzie/features/subscription/presentation/extensions/subscription_state_extensions.dart';
 import 'package:bizzie/features/subscription/presentation/utils/onboarding_paywall_reporter.dart';
 import 'package:bizzie/shared/widgets/buttons/bizzie_primary_button.dart';
 import 'package:bizzie/shared/widgets/modals/app_bottom_modal.dart';
@@ -28,10 +29,16 @@ class _SubscriptionGiftModalState extends State<SubscriptionGiftModal> {
 
   @override
   Widget build(BuildContext context) {
+    final discountPercentage = context.select<SubscriptionBloc, int?>(
+      (bloc) => bloc.state.discountSavingsPercentageOrNull,
+    );
+
     return AppBottomModal(
       title: 'We have a gift for you!',
-      subtitle: const Text(
-        'Enjoy 40% off the annual plan when you upgrade today.',
+      subtitle: Text(
+        discountPercentage == null
+            ? 'Enjoy a special discount on the annual plan when you upgrade today.'
+            : 'Enjoy $discountPercentage% off the annual plan when you upgrade today.',
       ),
       useDraggable: false,
       builder: (context, scrollController) {

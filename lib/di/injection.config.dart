@@ -536,6 +536,8 @@ import '../features/onboarding/domain/services/initial_company_resolver.dart'
     as _i709;
 import '../features/onboarding/domain/services/onboarding_profile_builder.dart'
     as _i335;
+import '../features/onboarding/domain/services/onboarding_watchlist_resolver.dart'
+    as _i110;
 import '../features/onboarding/domain/services/skipped_onboarding_data_resolver.dart'
     as _i949;
 import '../features/onboarding/domain/usecases/complete_onboarding_usecase.dart'
@@ -820,6 +822,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i335.OnboardingProfileBuilder>(
       () => _i335.OnboardingProfileBuilder(),
+    );
+    gh.lazySingleton<_i110.OnboardingWatchlistResolver>(
+      () => _i110.OnboardingWatchlistResolver(),
     );
     gh.lazySingleton<_i936.LaunchUrlUseCase>(() => _i936.LaunchUrlUseCase());
     gh.lazySingleton<_i807.WatchlistEventEvaluator>(
@@ -1933,6 +1938,16 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i240.GetSharesUseCase>(
       () => _i240.GetSharesUseCase(gh<_i786.ISharesRepository>()),
     );
+    gh.lazySingleton<_i874.CompleteOnboardingUseCase>(
+      () => _i874.CompleteOnboardingUseCase(
+        gh<_i329.IOnboardingRepository>(),
+        gh<_i11.IUserRepository>(),
+        gh<_i430.INotificationService>(),
+        gh<_i460.SubscribeToNotificationTopicsUseCase>(),
+        gh<_i335.OnboardingProfileBuilder>(),
+        gh<_i110.OnboardingWatchlistResolver>(),
+      ),
+    );
     gh.lazySingleton<_i856.GetEnrichedWatchlistUseCase>(
       () => _i856.GetEnrichedWatchlistUseCase(
         gh<_i759.GetWatchlistUseCase>(),
@@ -2003,15 +2018,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i830.TabContentFreshnessService>(),
         gh<_i879.ITimeProvider>(),
         gh<_i163.GetAuthStreamUseCase>(),
-      ),
-    );
-    gh.lazySingleton<_i874.CompleteOnboardingUseCase>(
-      () => _i874.CompleteOnboardingUseCase(
-        gh<_i329.IOnboardingRepository>(),
-        gh<_i11.IUserRepository>(),
-        gh<_i430.INotificationService>(),
-        gh<_i460.SubscribeToNotificationTopicsUseCase>(),
-        gh<_i335.OnboardingProfileBuilder>(),
       ),
     );
     gh.factory<_i342.HistoricalPriceEodBloc>(

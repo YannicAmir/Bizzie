@@ -7,7 +7,7 @@ part 'settings_event.freezed.dart';
 @freezed
 sealed class SettingsEvent with _$SettingsEvent {
   const factory SettingsEvent.started() = Started;
-  const factory SettingsEvent.toggledNotifications(bool enable) =
+  const factory SettingsEvent.toggledNotifications({required bool enable}) =
       ToggledNotifications;
   const factory SettingsEvent.signedOut() = SignedOut;
   const factory SettingsEvent.guestLogoutPromptResolved(
@@ -20,6 +20,6 @@ sealed class SettingsEvent with _$SettingsEvent {
       PermissionPromptProcessed;
   const factory SettingsEvent.editProfileClicked() = EditProfileClicked;
   const factory SettingsEvent.feedbackClicked() = FeedbackClicked;
-  const factory SettingsEvent.membershipClicked(bool isSubscribed) =
+  const factory SettingsEvent.membershipClicked({required bool isSubscribed}) =
       MembershipClicked;
 }

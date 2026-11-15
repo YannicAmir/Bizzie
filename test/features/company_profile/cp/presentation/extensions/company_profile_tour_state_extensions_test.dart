@@ -146,7 +146,7 @@ void main() {
       );
       expect(
         revenueTab,
-        "Let's check out Apple's revenue!\n"
+        "Let's check out Apple's revenue!\n\n"
         'Tap "Revenue" to continue.',
       );
       expect(

@@ -8,7 +8,9 @@ import 'package:bizzie/features/onboarding/domain/models/complete_onboarding_par
 import 'package:bizzie/features/onboarding/domain/models/notification_topics_params.dart';
 import 'package:bizzie/features/onboarding/domain/models/onboarding_data.dart';
 import 'package:bizzie/features/onboarding/domain/models/onboarding_profile_update.dart';
+import 'package:bizzie/features/onboarding/domain/models/onboarding_skip_defaults.dart';
 import 'package:bizzie/features/onboarding/domain/services/onboarding_profile_builder.dart';
+import 'package:bizzie/features/onboarding/domain/services/onboarding_watchlist_resolver.dart';
 import 'package:bizzie/features/onboarding/domain/usecases/complete_onboarding_usecase.dart';
 import 'package:bizzie/features/onboarding/domain/usecases/subscribe_to_notification_topics_usecase.dart';
 import 'package:bizzie/core/enums/investing_experience.dart';
@@ -37,6 +39,25 @@ const tData = OnboardingData(
   notificationsEnabled: true,
 );
 const tParams = CompleteOnboardingParams(data: tData, uid: tUid);
+const tEmptySkipDefaults = OnboardingSkipDefaults(
+  defaultWatchlist: [],
+  initialCompanyTicker: 'AAPL',
+);
+const tSkipDefaults = OnboardingSkipDefaults(
+  defaultWatchlist: [
+    Company(ticker: 'AAPL', name: 'Apple'),
+    Company(ticker: 'MSFT', name: 'Microsoft'),
+    Company(ticker: 'NVDA', name: 'Nvidia'),
+  ],
+  initialCompanyTicker: 'AAPL',
+);
+const tFiveCompanies = [
+  Company(ticker: 'AAPL', name: 'Apple'),
+  Company(ticker: 'TSLA', name: 'Tesla'),
+  Company(ticker: 'AMZN', name: 'Amazon'),
+  Company(ticker: 'GOOGL', name: 'Alphabet'),
+  Company(ticker: 'META', name: 'Meta'),
+];
 const tExistingProfileParams = CompleteOnboardingParams(
   data: OnboardingData(
     firstName: 'Jane',
@@ -95,11 +116,15 @@ void main() {
       mockNotificationService,
       mockSubscribeToTopics,
       OnboardingProfileBuilder(),
+      OnboardingWatchlistResolver(),
     );
 
     when(
       () => mockRepository.userProfileExists(any()),
     ).thenAnswer((_) async => const Right(false));
+    when(
+      () => mockRepository.getSkipDefaults(),
+    ).thenAnswer((_) async => const Right(tEmptySkipDefaults));
     when(
       () => mockUserRepository.getUser(any()),
     ).thenAnswer((_) async => Right(tSavedUser));
@@ -134,6 +159,76 @@ void main() {
   });
 
   group('CompleteOnboardingUseCase', () {
+    group('default watchlist top-up', () {
+      List<String> savedTickers() {
+        final savedUser =
+            verify(
+                  () => mockRepository.saveUserProfile(
+                    captureAny(),
+                    awaitServerAck: any(named: 'awaitServerAck'),
+                  ),
+                ).captured.single
+                as UserModel;
+        return savedUser.watchlist.map((c) => c.ticker).toList();
+      }
+
+      test(
+        'call_fewerThanFiveSelected_appendsMissingDefaultsWithoutDuplicates',
+        () async {
+          // arrange
+          when(
+            () => mockRepository.getSkipDefaults(),
+          ).thenAnswer((_) async => const Right(tSkipDefaults));
+
+          // act
+          final result = await sut(tParams);
+
+          // assert
+          expect(result, const Right(OnboardingSaveOutcome.saved));
+          expect(savedTickers(), ['AAPL', 'MSFT', 'NVDA']);
+        },
+      );
+
+      test('call_fiveOrMoreSelected_keepsSelectionWithoutDefaults', () async {
+        // arrange
+        final params = CompleteOnboardingParams(
+          data: tData.copyWith(detectedCompanies: tFiveCompanies),
+          uid: tUid,
+        );
+
+        // act
+        await sut(params);
+
+        // assert
+        expect(savedTickers(), ['AAPL', 'TSLA', 'AMZN', 'GOOGL', 'META']);
+        verifyNever(() => mockRepository.getSkipDefaults());
+      });
+
+      test('call_defaultsFetchFails_savesUserSelection', () async {
+        // arrange
+        when(
+          () => mockRepository.getSkipDefaults(),
+        ).thenAnswer((_) async => const Left(tFailure));
+
+        // act
+        final result = await sut(tParams);
+
+        // assert
+        expect(result, const Right(OnboardingSaveOutcome.saved));
+        expect(savedTickers(), ['AAPL']);
+      });
+
+      test('call_existingProfile_doesNotFetchDefaults', () async {
+        // arrange — stubs provided in setUp
+
+        // act
+        await sut(tExistingProfileParams);
+
+        // assert
+        verifyNever(() => mockRepository.getSkipDefaults());
+      });
+    });
+
     test(
       'call_notificationsEnabled_subscribesSavedProfileTopicsAndSavesToken',
       () async {

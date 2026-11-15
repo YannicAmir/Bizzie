@@ -39,7 +39,7 @@ extension CompanyProfileTourActiveX on CompanyProfileTourActive {
       'Use the tabs to get an in-depth look at the business, get company '
           'news, and information about the stock.',
     CompanyProfileTourStep.revenueTab =>
-      "Let's check out $companyName's revenue!\n"
+      "Let's check out $companyName's revenue!\n\n"
           'Tap "Revenue" to continue.',
     CompanyProfileTourStep.revenueGrowth => _revenueGrowthDescription(),
     CompanyProfileTourStep.stayUpdated =>

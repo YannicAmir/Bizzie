@@ -19,11 +19,14 @@ import 'package:bizzie/features/settings/presentation/widgets/change_sector_moda
 import 'package:bizzie/features/settings/presentation/widgets/guest_logout_confirmation_sheet.dart';
 import 'package:bizzie/features/settings/presentation/widgets/settings_section.dart';
 import 'package:bizzie/features/settings/presentation/widgets/settings_tile.dart';
+import 'package:bizzie/features/subscription/presentation/bloc/subscription_bloc.dart';
+import 'package:bizzie/features/subscription/presentation/extensions/subscription_state_extensions.dart';
 import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:bizzie/shared/widgets/app_bar/bizzie_app_bar.dart';
 import 'package:bizzie/shared/widgets/buttons/bizzie_primary_button.dart';
 import 'package:bizzie/shared/widgets/buttons/bizzie_secondary_button.dart';
+import 'package:bizzie/shared/widgets/error/bizzie_error.dart';
 import 'package:bizzie/shared/widgets/modals/app_bottom_modal.dart';
 import 'package:bizzie/shared/widgets/modals/bizzie_snackbar.dart';
 import 'package:flutter/material.dart';
@@ -81,6 +84,12 @@ class _SettingsViewContentState extends State<_SettingsViewContent>
     bloc.add(const SettingsEvent.started());
   }
 
+  Future<void> _onLogInTapped() async {
+    final isSignedIn = await context.push<bool>(AppRoutes.guestLogin) ?? false;
+    if (!isSignedIn || !mounted) return;
+    context.go(AppRoutes.home);
+  }
+
   Future<void> _onFavoriteSectorTapped(SettingsDisplayData data) async {
     final currentSector = data.favoriteSectorOrNull;
     if (currentSector == null) return;
@@ -101,10 +110,10 @@ class _SettingsViewContentState extends State<_SettingsViewContent>
   Future<void> _onGuestLogOutTapped() async {
     final bloc = context.read<SettingsBloc>();
     final choice = await GuestLogoutConfirmationSheet.show(context);
+    if (!mounted) return;
     bloc.add(SettingsEvent.guestLogoutPromptResolved(choice));
     switch (choice) {
       case GuestLogoutChoice.createAccount:
-        if (!mounted) return;
         await _onCreateAccountTapped();
       case GuestLogoutChoice.logOut:
         bloc.add(const SettingsEvent.signedOut());
@@ -143,7 +152,6 @@ class _SettingsViewContentState extends State<_SettingsViewContent>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: const BizzieAppBar(title: 'Settings'),
       body: BlocConsumer<SettingsBloc, SettingsState>(
         listener: _onStateChanged,
@@ -159,6 +167,7 @@ class _SettingsViewContentState extends State<_SettingsViewContent>
                     isGuest: data.isGuest,
                     onCreateAccountTapped: () =>
                         unawaited(_onCreateAccountTapped()),
+                    onLogInTapped: () => unawaited(_onLogInTapped()),
                     onFavoriteSectorTapped: () =>
                         unawaited(_onFavoriteSectorTapped(data)),
                   ),
@@ -173,6 +182,12 @@ class _SettingsViewContentState extends State<_SettingsViewContent>
                 ],
               );
             },
+            failure: (failureState) => BizzieError(
+              message: failureState.failure.errorMessage,
+              onRetry: () => context.read<SettingsBloc>().add(
+                const SettingsEvent.started(),
+              ),
+            ),
             orElse: () => const SizedBox.shrink(),
           );
         },
@@ -221,11 +236,13 @@ class _AccountSection extends StatelessWidget {
   const _AccountSection({
     required this.isGuest,
     required this.onCreateAccountTapped,
+    required this.onLogInTapped,
     required this.onFavoriteSectorTapped,
   });
 
   final bool isGuest;
   final VoidCallback onCreateAccountTapped;
+  final VoidCallback onLogInTapped;
   final VoidCallback onFavoriteSectorTapped;
 
   @override
@@ -233,9 +250,11 @@ class _AccountSection extends StatelessWidget {
     return SettingsSection(
       title: 'Account',
       children: [
-        if (isGuest)
-          SettingsTile(title: 'Create Account', onTap: onCreateAccountTapped)
-        else
+        if (isGuest) ...[
+          SettingsTile(title: 'Create Account', onTap: onCreateAccountTapped),
+          const _TileDivider(),
+          SettingsTile(title: 'Log In', onTap: onLogInTapped),
+        ] else
           SettingsTile(
             title: 'Edit Profile',
             onTap: () {
@@ -263,14 +282,19 @@ class _MembershipTile extends StatelessWidget {
       (bloc) =>
           bloc.state.mapOrNull(loaded: (loaded) => loaded.user.isSubscribed),
     );
+    final discountPercentage = context.select<SubscriptionBloc, int?>(
+      (bloc) => bloc.state.discountSavingsPercentageOrNull,
+    );
 
     return SettingsTile(
       title: 'Membership',
-      trailing: isSubscribed == false ? const _DiscountBadge() : null,
+      trailing: isSubscribed == false && discountPercentage != null
+          ? _DiscountBadge(percentage: discountPercentage)
+          : null,
       onTap: () {
         final hasSubscription = isSubscribed ?? false;
         context.read<SettingsBloc>().add(
-          SettingsEvent.membershipClicked(hasSubscription),
+          SettingsEvent.membershipClicked(isSubscribed: hasSubscription),
         );
         if (hasSubscription) {
           unawaited(context.pushNamed(AppRoutes.subscriptionDetails));
@@ -305,7 +329,7 @@ class _PreferencesSection extends StatelessWidget {
             value: data.isNotificationsToggleOn,
             onChanged: (value) {
               context.read<SettingsBloc>().add(
-                SettingsEvent.toggledNotifications(value),
+                SettingsEvent.toggledNotifications(enable: value),
               );
             },
           ),
@@ -413,7 +437,9 @@ class _TileDivider extends StatelessWidget {
 }
 
 class _DiscountBadge extends StatelessWidget {
-  const _DiscountBadge();
+  const _DiscountBadge({required this.percentage});
+
+  final int percentage;
 
   @override
   Widget build(BuildContext context) {
@@ -429,7 +455,7 @@ class _DiscountBadge extends StatelessWidget {
       child: Padding(
         padding: AppConstants.settingsDiscountBadgePadding,
         child: Text(
-          '40% OFF',
+          '$percentage% OFF',
           style: AppTextStyles.discountBadgeLabel.copyWith(
             color: theme.colorScheme.surface,
           ),
