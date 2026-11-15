@@ -6,7 +6,9 @@ import 'package:bizzie/features/auth/data/interfaces/i_auth_remote_datasource.da
 import 'package:bizzie/features/auth/data/repositories/auth_repository_impl.dart';
 import 'package:bizzie/features/auth/domain/models/user_model.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 class MockIAuthRemoteDataSource extends Mock implements IAuthRemoteDataSource {}
 
@@ -29,6 +31,26 @@ void main() {
   const tUserDto = AuthUserDto(uid: tUid, email: tEmail);
   const tUserModel = UserModel(id: tUid, email: tEmail);
   const tFailure = Failure.server('Exception');
+  const tGoogleSignInFailure = Failure.server(
+    "We couldn't sign you in with Google. Please try again.",
+  );
+  const tAppleSignInFailure = Failure.server(
+    "We couldn't sign you in with Apple. Please try again.",
+  );
+  const tGoogleCancelled = GoogleSignInException(
+    code: GoogleSignInExceptionCode.canceled,
+  );
+  const tGoogleInterrupted = GoogleSignInException(
+    code: GoogleSignInExceptionCode.interrupted,
+  );
+  final tAppleCancelled = SignInWithAppleAuthorizationException(
+    code: AuthorizationErrorCode.canceled,
+    message: 'cancelled',
+  );
+  final tAppleFailed = SignInWithAppleAuthorizationException(
+    code: AuthorizationErrorCode.failed,
+    message: 'failed',
+  );
 
   group('signInWithEmail', () {
     test('signInWithEmail_success_returnsRightUserModel', () async {
@@ -215,6 +237,182 @@ void main() {
 
         // assert
         expect(result, equals(const Left(tFailure)));
+      },
+    );
+  });
+
+  group('signInWithGoogle', () {
+    test('signInWithGoogle_success_returnsRightUserModel', () async {
+      // arrange
+      when(
+        () => mockRemoteDataSource.signInWithGoogle(),
+      ).thenAnswer((_) async => tUserDto);
+
+      // act
+      final result = await repository.signInWithGoogle();
+
+      // assert
+      expect(result, equals(const Right(tUserModel)));
+    });
+
+    test('signInWithGoogle_userCancels_returnsLeftCancelFailure', () async {
+      // arrange
+      when(
+        () => mockRemoteDataSource.signInWithGoogle(),
+      ).thenThrow(tGoogleCancelled);
+
+      // act
+      final result = await repository.signInWithGoogle();
+
+      // assert
+      expect(result, equals(const Left(Failure.cancel())));
+    });
+
+    test(
+      'signInWithGoogle_providerError_returnsLeftFriendlyServerFailure',
+      () async {
+        // arrange
+        when(
+          () => mockRemoteDataSource.signInWithGoogle(),
+        ).thenThrow(tGoogleInterrupted);
+
+        // act
+        final result = await repository.signInWithGoogle();
+
+        // assert
+        expect(result, equals(const Left(tGoogleSignInFailure)));
+      },
+    );
+  });
+
+  group('signInWithApple', () {
+    test('signInWithApple_success_returnsRightUserModel', () async {
+      // arrange
+      when(
+        () => mockRemoteDataSource.signInWithApple(),
+      ).thenAnswer((_) async => tUserDto);
+
+      // act
+      final result = await repository.signInWithApple();
+
+      // assert
+      expect(result, equals(const Right(tUserModel)));
+    });
+
+    test('signInWithApple_userCancels_returnsLeftCancelFailure', () async {
+      // arrange
+      when(
+        () => mockRemoteDataSource.signInWithApple(),
+      ).thenThrow(tAppleCancelled);
+
+      // act
+      final result = await repository.signInWithApple();
+
+      // assert
+      expect(result, equals(const Left(Failure.cancel())));
+    });
+
+    test(
+      'signInWithApple_providerError_returnsLeftFriendlyServerFailure',
+      () async {
+        // arrange
+        when(
+          () => mockRemoteDataSource.signInWithApple(),
+        ).thenThrow(tAppleFailed);
+
+        // act
+        final result = await repository.signInWithApple();
+
+        // assert
+        expect(result, equals(const Left(tAppleSignInFailure)));
+      },
+    );
+  });
+
+  group('linkWithGoogle', () {
+    test('linkWithGoogle_success_returnsRightUserModel', () async {
+      // arrange
+      when(
+        () => mockRemoteDataSource.linkWithGoogle(),
+      ).thenAnswer((_) async => tUserDto);
+
+      // act
+      final result = await repository.linkWithGoogle();
+
+      // assert
+      expect(result, equals(const Right(tUserModel)));
+    });
+
+    test('linkWithGoogle_userCancels_returnsLeftCancelFailure', () async {
+      // arrange
+      when(
+        () => mockRemoteDataSource.linkWithGoogle(),
+      ).thenThrow(tGoogleCancelled);
+
+      // act
+      final result = await repository.linkWithGoogle();
+
+      // assert
+      expect(result, equals(const Left(Failure.cancel())));
+    });
+
+    test(
+      'linkWithGoogle_providerError_returnsLeftFriendlyServerFailure',
+      () async {
+        // arrange
+        when(
+          () => mockRemoteDataSource.linkWithGoogle(),
+        ).thenThrow(tGoogleInterrupted);
+
+        // act
+        final result = await repository.linkWithGoogle();
+
+        // assert
+        expect(result, equals(const Left(tGoogleSignInFailure)));
+      },
+    );
+  });
+
+  group('linkWithApple', () {
+    test('linkWithApple_success_returnsRightUserModel', () async {
+      // arrange
+      when(
+        () => mockRemoteDataSource.linkWithApple(),
+      ).thenAnswer((_) async => tUserDto);
+
+      // act
+      final result = await repository.linkWithApple();
+
+      // assert
+      expect(result, equals(const Right(tUserModel)));
+    });
+
+    test('linkWithApple_userCancels_returnsLeftCancelFailure', () async {
+      // arrange
+      when(
+        () => mockRemoteDataSource.linkWithApple(),
+      ).thenThrow(tAppleCancelled);
+
+      // act
+      final result = await repository.linkWithApple();
+
+      // assert
+      expect(result, equals(const Left(Failure.cancel())));
+    });
+
+    test(
+      'linkWithApple_providerError_returnsLeftFriendlyServerFailure',
+      () async {
+        // arrange
+        when(
+          () => mockRemoteDataSource.linkWithApple(),
+        ).thenThrow(tAppleFailed);
+
+        // act
+        final result = await repository.linkWithApple();
+
+        // assert
+        expect(result, equals(const Left(tAppleSignInFailure)));
       },
     );
   });

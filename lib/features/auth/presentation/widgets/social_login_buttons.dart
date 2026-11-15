@@ -46,28 +46,34 @@ class _SocialLoginButtonsState extends State<SocialLoginButtons> {
 
     return BlocListener<AuthBloc, AuthState>(
       listener: _onAuthStateChanged,
-      child: Column(
+      child: Row(
         children: [
-          SocialLoginButton(
-            text: 'Continue with Apple',
-            iconAsset: AppAssets.authAppleIcon,
-            backgroundColor: socialTheme.appleBackgroundColor,
-            foregroundColor: socialTheme.appleForegroundColor,
-            isLoading: _loadingMethod == AuthLoadingMethod.apple,
-            onPressed: _dispatchUnlessLoading(
-              AuthEvent.appleSignInRequested(source: widget.source),
+          Expanded(
+            child: SocialLoginButton(
+              text: 'Continue with Apple',
+              iconAsset: AppAssets.authAppleIcon,
+              backgroundColor: socialTheme.appleBackgroundColor,
+              foregroundColor: socialTheme.appleForegroundColor,
+              isLoading: _loadingMethod == AuthLoadingMethod.apple,
+              iconOnly: true,
+              onPressed: _dispatchUnlessLoading(
+                AuthEvent.appleSignInRequested(source: widget.source),
+              ),
             ),
           ),
-          AppConstants.compactSectionSpacing,
-          SocialLoginButton(
-            text: 'Continue with Google',
-            iconAsset: AppAssets.authGoogleIcon,
-            backgroundColor: socialTheme.googleBackgroundColor,
-            foregroundColor: socialTheme.googleForegroundColor,
-            textColor: socialTheme.googleTextColor,
-            isLoading: _loadingMethod == AuthLoadingMethod.google,
-            onPressed: _dispatchUnlessLoading(
-              AuthEvent.googleSignInRequested(source: widget.source),
+          AppConstants.subSectionHorizontalSpacing,
+          Expanded(
+            child: SocialLoginButton(
+              text: 'Continue with Google',
+              iconAsset: AppAssets.authGoogleIcon,
+              backgroundColor: socialTheme.googleBackgroundColor,
+              foregroundColor: socialTheme.googleForegroundColor,
+              textColor: socialTheme.googleTextColor,
+              isLoading: _loadingMethod == AuthLoadingMethod.google,
+              iconOnly: true,
+              onPressed: _dispatchUnlessLoading(
+                AuthEvent.googleSignInRequested(source: widget.source),
+              ),
             ),
           ),
         ],

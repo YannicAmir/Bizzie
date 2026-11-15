@@ -226,7 +226,7 @@ class AppTextStyles {
 
   static final TextStyle onboardingProgressPercent = GoogleFonts.inter(
     fontSize: 20,
-    fontWeight: FontWeight.w900,
+    fontWeight: FontWeight.w800,
     height: 1.5,
     letterSpacing: -0.449,
     color: AppColors.primary,

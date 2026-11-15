@@ -126,6 +126,12 @@ class _CompanyProfileTourHostState extends State<CompanyProfileTourHost> {
   void _showStep(CompanyProfileTourStep step, {required int framesWaited}) {
     if (!mounted || _tourBloc.state.visibleStep != step) return;
 
+    final routeAnimation = ModalRoute.of(context)?.animation;
+    if (routeAnimation != null && !routeAnimation.isCompleted) {
+      _showStepWhenRouteSettled(step, routeAnimation);
+      return;
+    }
+
     final targetKey = CompanyProfileTourScope.targetKey(step);
     if (_showcaseView.isTargetRendered(targetKey)) {
       _logger.info(
@@ -144,6 +150,19 @@ class _CompanyProfileTourHostState extends State<CompanyProfileTourHost> {
       'skipping step',
     );
     _tourBloc.add(const CompanyProfileTourEvent.targetUnavailableReported());
+  }
+
+  void _showStepWhenRouteSettled(
+    CompanyProfileTourStep step,
+    Animation<double> routeAnimation,
+  ) {
+    void onStatusChanged(AnimationStatus status) {
+      if (!status.isCompleted) return;
+      routeAnimation.removeStatusListener(onStatusChanged);
+      _showStepAfterFrame(step);
+    }
+
+    routeAnimation.addStatusListener(onStatusChanged);
   }
 
   void _resolveRevenueGrowth(

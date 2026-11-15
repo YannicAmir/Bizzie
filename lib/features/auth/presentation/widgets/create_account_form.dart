@@ -15,14 +15,22 @@ import '../enums/auth_loading_method.dart';
 
 class CreateAccountForm extends StatefulWidget {
   final AuthSource source;
+  final String initialName;
+  final ValueChanged<String>? onNameSubmitted;
 
-  const CreateAccountForm({super.key, required this.source});
+  const CreateAccountForm({
+    super.key,
+    required this.source,
+    this.initialName = '',
+    this.onNameSubmitted,
+  });
 
   @override
   State<CreateAccountForm> createState() => _CreateAccountFormState();
 }
 
 class _CreateAccountFormState extends State<CreateAccountForm> {
+  late final _nameController = TextEditingController(text: widget.initialName);
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
@@ -30,6 +38,7 @@ class _CreateAccountFormState extends State<CreateAccountForm> {
 
   @override
   void dispose() {
+    _nameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
@@ -39,6 +48,7 @@ class _CreateAccountFormState extends State<CreateAccountForm> {
     final authBloc = context.read<AuthBloc>();
     if (authBloc.state is AuthLoading) return;
     if (_formKey.currentState?.validate() ?? false) {
+      widget.onNameSubmitted?.call(_nameController.text.trim());
       authBloc.add(
         AuthEvent.emailSignUpRequested(
           _emailController.text,
@@ -51,10 +61,31 @@ class _CreateAccountFormState extends State<CreateAccountForm> {
 
   @override
   Widget build(BuildContext context) {
+    final onNameSubmitted = widget.onNameSubmitted;
     return Form(
       key: _formKey,
       child: Column(
         children: [
+          if (onNameSubmitted != null) ...[
+            Focus(
+              canRequestFocus: false,
+              skipTraversal: true,
+              onFocusChange: (hasFocus) {
+                if (!hasFocus) onNameSubmitted(_nameController.text.trim());
+              },
+              child: AuthTextField(
+                controller: _nameController,
+                hintText: 'First name',
+                iconPath: AppAssets.homeProfileUnselectedIcon,
+                keyboardType: TextInputType.name,
+                textCapitalization: TextCapitalization.words,
+                textInputAction: TextInputAction.next,
+                validator: Validators.validateName,
+                maxLength: AppConstants.textfieldCharLimit,
+              ),
+            ),
+            AppConstants.secondarySectionSpacing,
+          ],
           AuthTextField(
             controller: _emailController,
             hintText: 'Email address',
@@ -91,7 +122,7 @@ class _CreateAccountFormState extends State<CreateAccountForm> {
                 orElse: () => false,
               );
               return BizziePrimaryButton(
-                title: 'Create Account',
+                title: 'Continue',
                 onPressed: _onCreateAccountPressed,
                 isLoading: isLoading,
               );

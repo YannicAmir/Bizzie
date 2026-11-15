@@ -178,7 +178,9 @@ class _ContinueButton extends StatelessWidget {
         width: double.infinity,
         child: FilledButton(
           onPressed: selectedExperience != null
-              ? () => unawaited(context.push(AppRoutes.onboardingName))
+              ? () => unawaited(
+                  context.push(AppRoutes.onboardingFeatureHighlights),
+                )
               : null,
           style: FilledButton.styleFrom(
             disabledBackgroundColor: AppColors.primary.withValues(

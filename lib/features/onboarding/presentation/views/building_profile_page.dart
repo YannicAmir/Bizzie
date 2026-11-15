@@ -14,7 +14,7 @@ import 'package:go_router/go_router.dart';
 
 import '../widgets/onboarding_header.dart';
 
-const _progressDuration = Duration(seconds: 5);
+const _progressDuration = Duration(seconds: 2);
 const _carouselInterval = Duration(milliseconds: 1600);
 const _carouselTransitionDuration = Duration(milliseconds: 500);
 

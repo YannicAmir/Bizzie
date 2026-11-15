@@ -5,7 +5,9 @@ import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase;
 import 'package:dartz/dartz.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:injectable/injectable.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 import '../../domain/interfaces/i_auth_repository.dart';
 import '../../domain/models/user_model.dart';
@@ -15,6 +17,11 @@ import '../interfaces/i_auth_local_datasource.dart';
 import '../interfaces/i_auth_remote_datasource.dart';
 
 final _logger = BizzieLogger('AuthRepositoryImpl');
+
+const _googleSignInFailedMessage =
+    "We couldn't sign you in with Google. Please try again.";
+const _appleSignInFailedMessage =
+    "We couldn't sign you in with Apple. Please try again.";
 
 @LazySingleton(as: IAuthRepository)
 class AuthRepositoryImpl implements IAuthRepository {
@@ -151,8 +158,12 @@ class AuthRepositoryImpl implements IAuthRepository {
       _logger.warning('SignInWithGoogle failed: ${e.code}', e);
       return Left(Failure.server(e.message ?? 'Google Sign-In failed'));
     } catch (e, s) {
+      if (_isUserCancellation(e)) {
+        _logger.info('SignInWithGoogle cancelled by user');
+        return const Left(Failure.cancel());
+      }
       _logger.severe('SignInWithGoogle unknown error', e, s);
-      return Left(Failure.server(e.toString()));
+      return const Left(Failure.server(_googleSignInFailedMessage));
     }
   }
 
@@ -167,8 +178,12 @@ class AuthRepositoryImpl implements IAuthRepository {
       _logger.warning('SignInWithApple failed: ${e.code}', e);
       return Left(Failure.server(e.message ?? 'Apple Sign-In failed'));
     } catch (e, s) {
+      if (_isUserCancellation(e)) {
+        _logger.info('SignInWithApple cancelled by user');
+        return const Left(Failure.cancel());
+      }
       _logger.severe('SignInWithApple unknown error', e, s);
-      return Left(Failure.server(e.toString()));
+      return const Left(Failure.server(_appleSignInFailedMessage));
     }
   }
 
@@ -225,8 +240,12 @@ class AuthRepositoryImpl implements IAuthRepository {
       _logger.warning('LinkWithGoogle failed: ${e.code}', e);
       return Left(_mapLinkFailure(e, 'Google link failed'));
     } catch (e, s) {
+      if (_isUserCancellation(e)) {
+        _logger.info('LinkWithGoogle cancelled by user');
+        return const Left(Failure.cancel());
+      }
       _logger.severe('LinkWithGoogle unknown error', e, s);
-      return Left(Failure.server(e.toString()));
+      return const Left(Failure.server(_googleSignInFailedMessage));
     }
   }
 
@@ -243,10 +262,22 @@ class AuthRepositoryImpl implements IAuthRepository {
       _logger.warning('LinkWithApple failed: ${e.code}', e);
       return Left(_mapLinkFailure(e, 'Apple link failed'));
     } catch (e, s) {
+      if (_isUserCancellation(e)) {
+        _logger.info('LinkWithApple cancelled by user');
+        return const Left(Failure.cancel());
+      }
       _logger.severe('LinkWithApple unknown error', e, s);
-      return Left(Failure.server(e.toString()));
+      return const Left(Failure.server(_appleSignInFailedMessage));
     }
   }
+
+  bool _isUserCancellation(Object error) => switch (error) {
+    GoogleSignInException(code: GoogleSignInExceptionCode.canceled) ||
+    SignInWithAppleAuthorizationException(
+      code: AuthorizationErrorCode.canceled,
+    ) => true,
+    _ => false,
+  };
 
   Failure _mapLinkFailure(
     firebase.FirebaseAuthException e,

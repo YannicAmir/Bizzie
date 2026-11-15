@@ -1,5 +1,6 @@
 import 'package:bizzie/app/themes/app_assets.dart';
 import 'package:bizzie/features/auth/presentation/widgets/auth_divider.dart';
+import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -56,8 +57,7 @@ class LoginPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 32),
                 const _LoginHeader(),
-                const SizedBox(height: 24),
-                const SizedBox(height: 24),
+                AppConstants.secondarySectionSpacing,
                 LoginForm(source: source),
                 const SizedBox(height: 24),
                 const AuthDivider(),
@@ -80,20 +80,9 @@ class _LoginHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text('Welcome Back!', style: theme.textTheme.displayLarge),
-        const SizedBox(height: 8),
-        Text(
-          'Log in to continue',
-          style: theme.textTheme.titleMedium?.copyWith(
-            fontSize: 16,
-            color: theme.colorScheme.onSurfaceVariant,
-          ),
-        ),
-      ],
+    return Text(
+      'Welcome Back!',
+      style: Theme.of(context).textTheme.displayLarge,
     );
   }
 }

@@ -1,5 +1,4 @@
 import 'package:bizzie/app/themes/app_text_styles.dart';
-import 'package:bizzie/app/themes/app_theme.dart';
 import 'package:flutter/material.dart';
 
 enum BizzieSnackBarType { neutral, error, success, brand }
@@ -21,14 +20,14 @@ class BizzieSnackBar {
       BizzieSnackBarType.error => theme.colorScheme.error,
       BizzieSnackBarType.success => theme.colorScheme.surfaceBright,
       BizzieSnackBarType.neutral => theme.snackBarTheme.backgroundColor,
-      BizzieSnackBarType.brand =>
-        theme.extension<MascotThemeExtension>()?.subtitleColor,
+      BizzieSnackBarType.brand => theme.colorScheme.inverseSurface,
     };
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
           message,
+          textAlign: type == BizzieSnackBarType.brand ? TextAlign.center : null,
           style: AppTextStyles.bodyLargeBold.copyWith(
             color: theme.colorScheme.surface,
           ),

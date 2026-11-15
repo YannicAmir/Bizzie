@@ -137,7 +137,7 @@ void main() {
       expect(
         overview,
         'You are currently in the Company Profile of Apple (AAPL). '
-        "Here's where you'll get the most value in Bizzie.",
+        "Company Profiles are where you'll get the most value in Bizzie.",
       );
       expect(
         tabs,

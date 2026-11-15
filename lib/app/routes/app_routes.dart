@@ -37,7 +37,6 @@ class AppRoutes {
   static const String onboardingNotifications = '/onboarding/notifications';
   static const String landing = '/landing';
   static const String onboardingPrefix = '/onboarding';
-  static const String onboardingName = '/onboarding/name';
   static const String onboardingSectors = '/onboarding/sectors';
   static const String onboardingBrands = '/onboarding/brands';
   static const String onboardingCompanyProfile = '/onboarding/company/:ticker';

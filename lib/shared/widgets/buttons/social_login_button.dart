@@ -8,6 +8,7 @@ class SocialLoginButton extends StatelessWidget {
   final Color foregroundColor;
   final Color? textColor;
   final bool isLoading;
+  final bool iconOnly;
   final VoidCallback? onPressed;
 
   const SocialLoginButton({
@@ -18,6 +19,7 @@ class SocialLoginButton extends StatelessWidget {
     required this.foregroundColor,
     this.textColor,
     required this.isLoading,
+    this.iconOnly = false,
     required this.onPressed,
   });
 
@@ -58,17 +60,20 @@ class SocialLoginButton extends StatelessWidget {
                   Image.asset(
                     iconAsset,
                     height: 24,
+                    semanticLabel: iconOnly ? text : null,
                     color: foregroundColor == theme.colorScheme.surface
                         ? theme.colorScheme.surface
                         : null,
                   ),
-                  const SizedBox(width: 12),
-                  Text(
-                    text,
-                    style: theme.textTheme.labelLarge?.copyWith(
-                      color: effectiveTextColor,
+                  if (!iconOnly) ...[
+                    const SizedBox(width: 12),
+                    Text(
+                      text,
+                      style: theme.textTheme.labelLarge?.copyWith(
+                        color: effectiveTextColor,
+                      ),
                     ),
-                  ),
+                  ],
                 ],
               ),
       ),

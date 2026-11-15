@@ -20,6 +20,7 @@ import '../widgets/auth_close_button.dart';
 import '../widgets/auth_footer.dart';
 import '../widgets/auth_sign_in_prompt.dart';
 import '../widgets/create_account_form.dart';
+import '../widgets/mascot_greeting.dart';
 import '../widgets/mascot_info_card.dart';
 import '../widgets/social_login_buttons.dart';
 
@@ -134,7 +135,7 @@ class _CreateAccountBody extends StatelessWidget {
       children: [
         const OnboardingHeader(),
         if (source == AuthSource.onboarding)
-          AppConstants.onboardHeaderSpacing
+          AppConstants.onboardSectionSpacing
         else ...[
           const AuthCloseButton(),
           AppConstants.subSectionSpacing,
@@ -173,16 +174,29 @@ class _CreateAccountFormSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const _CreateAccountHeader(),
-        AppConstants.onboardSectionSpacing,
-        CreateAccountForm(source: source),
-        AppConstants.mainSectionSpacing,
+        AppConstants.secondarySectionSpacing,
+        if (source == AuthSource.onboarding)
+          CreateAccountForm(
+            source: source,
+            initialName: context
+                .read<OnboardingBloc>()
+                .state
+                .onboardingData
+                .firstName,
+            onNameSubmitted: (name) => context.read<OnboardingBloc>().add(
+              OnboardingEvent.nameSubmitted(name),
+            ),
+          )
+        else
+          CreateAccountForm(source: source),
+        AppConstants.secondarySectionSpacing,
+        AuthSignInPrompt(onSignInPressed: onSignInPressed),
+        AppConstants.secondarySectionSpacing,
         const AuthDivider(),
         AppConstants.mainSectionSpacing,
         SocialLoginButtons(source: source),
-        AppConstants.onboardSectionSpacing,
-        const AuthFooter(),
         AppConstants.secondarySectionSpacing,
-        AuthSignInPrompt(onSignInPressed: onSignInPressed),
+        const AuthFooter(),
         AppConstants.mainSectionSpacing,
       ],
     );
@@ -194,14 +208,7 @@ class _CreateAccountHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text('Create your account', style: AppTextStyles.h1),
-        AppConstants.subSectionSpacing,
-        Text('Save your progress', style: AppTextStyles.subtitleSmall),
-      ],
-    );
+    return Text('Create your account', style: AppTextStyles.h1);
   }
 }
 
@@ -213,7 +220,7 @@ class _OnboardingMascotInfoCard extends StatelessWidget {
     return BlocBuilder<OnboardingBloc, OnboardingState>(
       builder: (context, onboardingState) {
         return MascotInfoCard(
-          name: onboardingState.greetingName,
+          title: MascotGreeting(name: onboardingState.onboardingData.firstName),
           sectorName: onboardingState.displaySectorName,
           mascotAsset: onboardingState.mascotAsset,
         );
@@ -230,7 +237,7 @@ class _GuestMascotInfoCard extends StatelessWidget {
     return BlocBuilder<UserBloc, UserState>(
       builder: (context, userState) {
         return MascotInfoCard(
-          name: userState.displayName,
+          title: Text(userState.displayName),
           sectorName: userState.favoriteSectorDisplayName,
           mascotAsset: userState.mascotAsset,
         );

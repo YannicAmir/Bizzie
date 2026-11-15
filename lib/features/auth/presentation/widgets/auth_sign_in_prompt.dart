@@ -27,6 +27,8 @@ class AuthSignInPrompt extends StatelessWidget {
             semanticsLabel: 'Log in to an existing account',
             style: AppTextStyles.bodyMediumBold.copyWith(
               color: theme.colorScheme.primary,
+              decoration: TextDecoration.underline,
+              decorationColor: theme.colorScheme.primary,
             ),
           ),
         ),

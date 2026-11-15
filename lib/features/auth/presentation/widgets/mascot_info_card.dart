@@ -2,13 +2,13 @@ import 'package:bizzie/app/themes/app_theme.dart';
 import 'package:flutter/material.dart';
 
 class MascotInfoCard extends StatelessWidget {
-  final String name;
+  final Widget title;
   final String sectorName;
   final String mascotAsset;
 
   const MascotInfoCard({
     super.key,
-    required this.name,
+    required this.title,
     required this.sectorName,
     required this.mascotAsset,
   });
@@ -72,28 +72,33 @@ class MascotInfoCard extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 16),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                name,
-                style: theme.textTheme.displayMedium?.copyWith(
-                  fontSize: 19,
-                  fontWeight: FontWeight.bold,
-                  color: theme.colorScheme.onSurface,
-                  height: 28.5 / 19,
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                DefaultTextStyle.merge(
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  softWrap: false,
+                  style: theme.textTheme.displayMedium?.copyWith(
+                    fontSize: 19,
+                    fontWeight: FontWeight.bold,
+                    color: theme.colorScheme.onSurface,
+                    height: 28.5 / 19,
+                  ),
+                  child: title,
                 ),
-              ),
-              const SizedBox(height: 2),
-              Text(
-                sectorName,
-                style: theme.textTheme.bodySmall?.copyWith(
-                  fontWeight: FontWeight.w500,
-                  color: mascotTheme.subtitleColor,
-                  height: 21 / 14,
+                const SizedBox(height: 2),
+                Text(
+                  sectorName,
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    fontWeight: FontWeight.w500,
+                    color: mascotTheme.subtitleColor,
+                    height: 21 / 14,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ],
       ),

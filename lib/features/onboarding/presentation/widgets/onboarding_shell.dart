@@ -13,7 +13,6 @@ class OnboardingShell extends StatelessWidget {
     AppRoutes.onboardingBrands,
     AppRoutes.onboardingNotifications,
     AppRoutes.onboardingExperience,
-    AppRoutes.onboardingName,
     AppRoutes.onboardingFeatureHighlights,
     AppRoutes.createAccount,
     AppRoutes.onboardingBuildingProfile,

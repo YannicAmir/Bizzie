@@ -6,6 +6,7 @@ class AuthFailureSnackBar {
   AuthFailureSnackBar._();
 
   static void show(BuildContext context, Failure failure) {
+    if (failure is CancelFailure) return;
     BizzieSnackBar.show(
       context,
       message: failure.errorMessage,

@@ -34,7 +34,7 @@ extension CompanyProfileTourActiveX on CompanyProfileTourActive {
   String? describe(CompanyProfileTourStep targetStep) => switch (targetStep) {
     CompanyProfileTourStep.companyOverview =>
       'You are currently in the Company Profile of $companyName ($ticker). '
-          "Here's where you'll get the most value in Bizzie.",
+          "Company Profiles are where you'll get the most value in Bizzie.",
     CompanyProfileTourStep.tabs =>
       'Use the tabs to get an in-depth look at the business, get company '
           'news, and information about the stock.',

@@ -23,7 +23,6 @@ import 'package:bizzie/features/home/presentation/bloc/watchlist_news/watchlist_
 import 'package:bizzie/features/home/presentation/bloc/watchlist_prices/watchlist_prices_bloc.dart';
 import 'package:bizzie/features/market_news/presentation/bloc/market_news/market_news_bloc.dart';
 import 'package:bizzie/features/onboarding/presentation/views/notification_request_page.dart';
-import 'package:bizzie/features/onboarding/presentation/views/ask_name_page.dart';
 import 'package:bizzie/features/onboarding/presentation/views/landing_page.dart';
 import 'package:bizzie/features/onboarding/presentation/views/feature_highlights_page.dart';
 import 'package:bizzie/features/onboarding/select_brands/presentation/views/select_your_favorite_brands_page.dart';
@@ -267,10 +266,6 @@ GoRouter createRouter(
               return OnboardingShell(child: child);
             },
             routes: [
-              _buildNoTransitionRoute(
-                AppRoutes.onboardingName,
-                const AskNamePage(),
-              ),
               _buildNoTransitionRoute(
                 AppRoutes.onboardingExperience,
                 const InvestingExperiencePage(),
