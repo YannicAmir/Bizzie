@@ -76,7 +76,7 @@ import '../features/app_status/domain/interfaces/i_local_app_status_data_source.
     as _i384;
 import '../features/app_status/presentation/analytics/app_status_tracker.dart'
     as _i4;
-import '../features/app_status/presentation/bloc/app_status_bloc.dart' as _i984;
+import '../features/app_status/presentation/bloc/app_status_bloc.dart' as _i985;
 import '../features/auth/data/datasources/auth_local_datasource.dart' as _i182;
 import '../features/auth/data/datasources/remote_auth_data_source.dart'
     as _i877;
@@ -135,7 +135,7 @@ import '../features/bizzie_chat/domain/usecases/send_message_usecase.dart'
 import '../features/bizzie_chat/domain/usecases/submit_chat_rating_usecase.dart'
     as _i995;
 import '../features/bizzie_chat/presentation/bloc/bizzie_chat/bizzie_chat_bloc.dart'
-    as _i993;
+    as _i994;
 import '../features/bizzie_chat/presentation/bloc/bizzie_chat_sessions/bizzie_chat_sessions_bloc.dart'
     as _i744;
 import '../features/company_profile/ai_reports/domain/usecases/get_company_filings_usecase.dart'
@@ -149,11 +149,11 @@ import '../features/company_profile/business/data/datasources/business_firestore
 import '../features/company_profile/business/data/interfaces/i_business_firestore_datasource.dart'
     as _i626;
 import '../features/company_profile/business/data/repositories/business_repository_impl.dart'
-    as _i606;
+    as _i609;
 import '../features/company_profile/business/domain/interfaces/i_business_repository.dart'
     as _i872;
 import '../features/company_profile/business/domain/usecases/get_business_profile_usecase.dart'
-    as _i582;
+    as _i585;
 import '../features/company_profile/business/presentation/analytics/business_tab_analytics.dart'
     as _i292;
 import '../features/company_profile/business/presentation/bloc/company_business_bloc.dart'
@@ -223,7 +223,7 @@ import '../features/company_profile/financial_statements/domain/usecases/get_bal
 import '../features/company_profile/financial_statements/domain/usecases/get_cash_flow_statements_usecase.dart'
     as _i64;
 import '../features/company_profile/financial_statements/domain/usecases/get_full_financials_usecase.dart'
-    as _i609;
+    as _i610;
 import '../features/company_profile/financial_statements/domain/usecases/get_income_statements_usecase.dart'
     as _i206;
 import '../features/company_profile/financial_statements/presentation/analytics/bal_stmt_tab_analytics.dart'
@@ -271,7 +271,7 @@ import '../features/company_profile/news/presentation/analytics/news_tab_analyti
 import '../features/company_profile/news/presentation/bloc/company_news/company_news_bloc.dart'
     as _i505;
 import '../features/company_profile/pe_ratio/data/repositories/pe_ratio_repository_impl.dart'
-    as _i262;
+    as _i261;
 import '../features/company_profile/pe_ratio/domain/interfaces/i_pe_ratio_repository.dart'
     as _i943;
 import '../features/company_profile/pe_ratio/domain/services/pe_ratio_metrics_service.dart'
@@ -299,7 +299,7 @@ import '../features/company_profile/revenue/data/repositories/revenue_repository
 import '../features/company_profile/revenue/domain/interfaces/i_revenue_repository.dart'
     as _i203;
 import '../features/company_profile/revenue/domain/usecases/get_revenue_stats_usecase.dart'
-    as _i585;
+    as _i588;
 import '../features/company_profile/revenue/presentation/analytics/revenue_tab_analytics.dart'
     as _i151;
 import '../features/company_profile/revenue/presentation/bloc/company_revenue_bloc.dart'
@@ -527,7 +527,7 @@ import '../features/onboarding/data/datasources/onboarding_remote_datasource.dar
 import '../features/onboarding/data/interfaces/i_onboarding_remote_datasource.dart'
     as _i31;
 import '../features/onboarding/data/repositories/onboarding_repository_impl.dart'
-    as _i380;
+    as _i381;
 import '../features/onboarding/domain/interfaces/i_onboarding_repository.dart'
     as _i329;
 import '../features/onboarding/domain/services/guest_username_generator.dart'
@@ -582,22 +582,36 @@ import '../features/profile/presentation/bloc/change_password_bloc.dart'
     as _i980;
 import '../features/profile/presentation/bloc/edit_profile_bloc.dart' as _i875;
 import '../features/profile/presentation/bloc/profile_bloc.dart' as _i571;
+import '../features/reports/data/datasources/reports_local_datasource.dart'
+    as _i993;
 import '../features/reports/data/datasources/reports_remote_datasource.dart'
     as _i532;
+import '../features/reports/data/interfaces/i_reports_local_datasource.dart'
+    as _i733;
 import '../features/reports/data/interfaces/i_reports_remote_datasource.dart'
     as _i832;
 import '../features/reports/data/repositories/company_filings_repository_impl.dart'
     as _i519;
 import '../features/reports/data/repositories/reports_repository_impl.dart'
     as _i1028;
+import '../features/reports/data/repositories/reports_view_history_repository_impl.dart'
+    as _i956;
 import '../features/reports/domain/interfaces/i_reports_repository.dart'
     as _i882;
+import '../features/reports/domain/interfaces/i_reports_view_history_repository.dart'
+    as _i380;
 import '../features/reports/domain/usecases/get_dashboard_reports_usecase.dart'
     as _i273;
-import '../features/reports/domain/usecases/get_user_activity_use_case.dart'
-    as _i1015;
-import '../features/reports/domain/usecases/mark_reports_viewed_use_case.dart'
-    as _i261;
+import '../features/reports/domain/usecases/get_seen_weekly_report_ids_usecase.dart'
+    as _i1008;
+import '../features/reports/domain/usecases/get_user_activity_usecase.dart'
+    as _i582;
+import '../features/reports/domain/usecases/increment_reports_feed_view_count_usecase.dart'
+    as _i984;
+import '../features/reports/domain/usecases/mark_reports_viewed_usecase.dart'
+    as _i606;
+import '../features/reports/domain/usecases/save_seen_weekly_report_ids_usecase.dart'
+    as _i282;
 import '../features/reports/presentation/analytics/reports_tracker.dart'
     as _i471;
 import '../features/reports/presentation/bloc/reports_bloc.dart' as _i1023;
@@ -611,7 +625,7 @@ import '../features/search/data/datasources/stock_remote_datasource.dart'
     as _i60;
 import '../features/search/data/datasources/vertex_ai_provider.dart' as _i501;
 import '../features/search/data/repositories/ai_product_search_repository.dart'
-    as _i1008;
+    as _i1010;
 import '../features/search/data/repositories/recommended_brands_repository.dart'
     as _i230;
 import '../features/search/data/repositories/stock_repository.dart' as _i392;
@@ -688,7 +702,11 @@ import '../features/user/data/interfaces/i_user_remote_datasource.dart'
     as _i938;
 import '../features/user/data/repositories/user_repository_impl.dart' as _i272;
 import '../features/user/domain/interfaces/i_user_repository.dart' as _i11;
+import '../features/user/domain/usecases/get_cached_favorite_sector_usecase.dart'
+    as _i280;
 import '../features/user/domain/usecases/get_user_usecase.dart' as _i561;
+import '../features/user/domain/usecases/update_last_viewed_at_usecase.dart'
+    as _i49;
 import '../features/user/domain/usecases/watch_current_user_usecase.dart'
     as _i204;
 import '../features/user/domain/usecases/watch_user_usecase.dart' as _i838;
@@ -961,10 +979,18 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i52.FirestoreService>(),
       ),
     );
+    gh.factory<_i733.IReportsLocalDataSource>(
+      () => _i993.ReportsLocalDataSource(gh<_i583.ILocalStorageService>()),
+    );
     gh.factory<_i626.IBusinessFirestoreDataSource>(
       () => _i379.BusinessFirestoreDataSourceImpl(
         gh<_i52.FirestoreService>(),
         gh<_i879.ITimeProvider>(),
+      ),
+    );
+    gh.lazySingleton<_i380.IReportsViewHistoryRepository>(
+      () => _i956.ReportsViewHistoryRepositoryImpl(
+        gh<_i733.IReportsLocalDataSource>(),
       ),
     );
     gh.lazySingleton<_i579.OpenAppSettingsUseCase>(
@@ -1469,6 +1495,21 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i659.ISubscriptionRepository>(),
       ),
     );
+    gh.lazySingleton<_i1008.GetSeenWeeklyReportIdsUseCase>(
+      () => _i1008.GetSeenWeeklyReportIdsUseCase(
+        gh<_i380.IReportsViewHistoryRepository>(),
+      ),
+    );
+    gh.lazySingleton<_i984.IncrementReportsFeedViewCountUseCase>(
+      () => _i984.IncrementReportsFeedViewCountUseCase(
+        gh<_i380.IReportsViewHistoryRepository>(),
+      ),
+    );
+    gh.lazySingleton<_i282.SaveSeenWeeklyReportIdsUseCase>(
+      () => _i282.SaveSeenWeeklyReportIdsUseCase(
+        gh<_i380.IReportsViewHistoryRepository>(),
+      ),
+    );
     gh.lazySingleton<_i1026.IRoeRepository>(
       () => _i218.RoeRepositoryImpl(
         gh<_i423.RatiosRemoteDataSource>(),
@@ -1548,11 +1589,11 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i273.GetDashboardReportsUseCase>(
       () => _i273.GetDashboardReportsUseCase(gh<_i882.IReportsRepository>()),
     );
-    gh.factory<_i1015.GetUserActivityUseCase>(
-      () => _i1015.GetUserActivityUseCase(gh<_i882.IReportsRepository>()),
+    gh.lazySingleton<_i606.MarkReportsViewedUseCase>(
+      () => _i606.MarkReportsViewedUseCase(gh<_i882.IReportsRepository>()),
     );
-    gh.factory<_i261.MarkReportsViewedUseCase>(
-      () => _i261.MarkReportsViewedUseCase(gh<_i882.IReportsRepository>()),
+    gh.factory<_i582.GetUserActivityUseCase>(
+      () => _i582.GetUserActivityUseCase(gh<_i882.IReportsRepository>()),
     );
     gh.lazySingleton<_i786.ISharesRepository>(
       () => _i274.SharesRepositoryImpl(
@@ -1562,7 +1603,7 @@ extension GetItInjectableX on _i174.GetIt {
       ),
     );
     gh.lazySingleton<_i329.IOnboardingRepository>(
-      () => _i380.OnboardingRepositoryImpl(
+      () => _i381.OnboardingRepositoryImpl(
         gh<_i31.IOnboardingRemoteDataSource>(),
       ),
     );
@@ -1590,7 +1631,7 @@ extension GetItInjectableX on _i174.GetIt {
       ),
     );
     gh.lazySingleton<_i943.IPeRatioRepository>(
-      () => _i262.PeRatioRepositoryImpl(
+      () => _i261.PeRatioRepositoryImpl(
         gh<_i423.RatiosRemoteDataSource>(),
         gh<_i710.IRatiosFirestoreDataSource>(),
       ),
@@ -1648,7 +1689,7 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i608.IAiProductSearchRepository>(
       () =>
-          _i1008.AiProductSearchRepository(gh<_i977.AiProductSearchService>()),
+          _i1010.AiProductSearchRepository(gh<_i977.AiProductSearchService>()),
     );
     gh.lazySingleton<_i468.IDividendRepository>(
       () => _i418.DividendRepositoryImpl(
@@ -1708,8 +1749,14 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i1009.MarketLocalDataSource>(),
       ),
     );
+    gh.lazySingleton<_i280.GetCachedFavoriteSectorUseCase>(
+      () => _i280.GetCachedFavoriteSectorUseCase(gh<_i11.IUserRepository>()),
+    );
     gh.lazySingleton<_i561.GetUserUseCase>(
       () => _i561.GetUserUseCase(gh<_i11.IUserRepository>()),
+    );
+    gh.lazySingleton<_i49.UpdateLastViewedAtUseCase>(
+      () => _i49.UpdateLastViewedAtUseCase(gh<_i11.IUserRepository>()),
     );
     gh.lazySingleton<_i240.GetSharesUseCase>(
       () => _i240.GetSharesUseCase(gh<_i786.ISharesRepository>()),
@@ -1754,23 +1801,11 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i693.GetRecommendedBrandsUseCase>(),
       ),
     );
-    gh.factory<_i1023.ReportsBloc>(
-      () => _i1023.ReportsBloc(
-        gh<_i273.GetDashboardReportsUseCase>(),
-        gh<_i1039.IWatchlistRepository>(),
-        gh<_i685.IAuthRepository>(),
-        gh<_i1015.GetUserActivityUseCase>(),
-        gh<_i261.MarkReportsViewedUseCase>(),
-        gh<_i204.WatchCurrentUserUseCase>(),
-        gh<_i583.ILocalStorageService>(),
-        gh<_i471.ReportsTracker>(),
-      ),
-    );
     gh.lazySingleton<_i954.WatchMarketNewsUseCase>(
       () => _i954.WatchMarketNewsUseCase(gh<_i930.IMarketNewsRepository>()),
     );
-    gh.factory<_i984.AppStatusBloc>(
-      () => _i984.AppStatusBloc(
+    gh.factory<_i985.AppStatusBloc>(
+      () => _i985.AppStatusBloc(
         gh<_i308.IAppStatusRepository>(),
         gh<_i4.AppStatusTracker>(),
       ),
@@ -1831,7 +1866,7 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i660.GetPeRatioUseCase(gh<_i943.IPeRatioRepository>()),
     );
     gh.lazySingleton<_i872.IBusinessRepository>(
-      () => _i606.BusinessRepositoryImpl(
+      () => _i609.BusinessRepositoryImpl(
         gh<_i376.ICompanyRepository>(),
         gh<_i626.IBusinessFirestoreDataSource>(),
         gh<_i348.FinancialStatementsRemoteDataSource>(),
@@ -1843,6 +1878,13 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i170.EditTabsBloc>(
       () => _i170.EditTabsBloc(gh<_i630.SaveTabLayoutUseCase>()),
+    );
+    gh.factory<_i200.UserBloc>(
+      () => _i200.UserBloc(
+        gh<_i280.GetCachedFavoriteSectorUseCase>(),
+        gh<_i838.WatchUserUseCase>(),
+        gh<_i49.UpdateLastViewedAtUseCase>(),
+      ),
     );
     gh.lazySingleton<_i597.ToggleNotificationsUseCase>(
       () => _i597.ToggleNotificationsUseCase(
@@ -1857,6 +1899,21 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i759.GetWatchlistUseCase>(),
         gh<_i937.IConfigService>(),
         gh<_i164.GetAuthStreamUseCase>(),
+      ),
+    );
+    gh.factory<_i1023.ReportsBloc>(
+      () => _i1023.ReportsBloc(
+        gh<_i273.GetDashboardReportsUseCase>(),
+        gh<_i759.GetWatchlistUseCase>(),
+        gh<_i636.GetCurrentUserUseCase>(),
+        gh<_i582.GetUserActivityUseCase>(),
+        gh<_i606.MarkReportsViewedUseCase>(),
+        gh<_i1008.GetSeenWeeklyReportIdsUseCase>(),
+        gh<_i282.SaveSeenWeeklyReportIdsUseCase>(),
+        gh<_i984.IncrementReportsFeedViewCountUseCase>(),
+        gh<_i471.ReportsTracker>(),
+        gh<_i879.ITimeProvider>(),
+        gh<_i961.ILifecycleService>(),
       ),
     );
     gh.lazySingleton<_i563.GetMessagesStreamUseCase>(
@@ -1881,8 +1938,8 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i164.GetAuthStreamUseCase>(),
       ),
     );
-    gh.lazySingleton<_i582.GetBusinessProfileUseCase>(
-      () => _i582.GetBusinessProfileUseCase(gh<_i872.IBusinessRepository>()),
+    gh.lazySingleton<_i585.GetBusinessProfileUseCase>(
+      () => _i585.GetBusinessProfileUseCase(gh<_i872.IBusinessRepository>()),
     );
     gh.factory<_i689.NotificationBloc>(
       () => _i689.NotificationBloc(
@@ -1918,16 +1975,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i636.GetCurrentUserUseCase>(),
         gh<_i561.GetUserUseCase>(),
         gh<_i937.IConfigService>(),
-      ),
-    );
-    gh.factory<_i875.EditProfileBloc>(
-      () => _i875.EditProfileBloc(
-        gh<_i636.GetCurrentUserUseCase>(),
-        gh<_i561.GetUserUseCase>(),
-        gh<_i586.UpdateProfileUseCase>(),
-        gh<_i5.DeleteAccountUseCase>(),
-        gh<_i205.ReauthenticateUseCase>(),
-        gh<_i963.ProfileTracker>(),
       ),
     );
     gh.factory<_i256.CompanyProfileTabsBloc>(
@@ -2017,16 +2064,21 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i164.GetAuthStreamUseCase>(),
       ),
     );
+    gh.factory<_i875.EditProfileBloc>(
+      () => _i875.EditProfileBloc(
+        gh<_i636.GetCurrentUserUseCase>(),
+        gh<_i561.GetUserUseCase>(),
+        gh<_i280.GetCachedFavoriteSectorUseCase>(),
+        gh<_i586.UpdateProfileUseCase>(),
+        gh<_i5.DeleteAccountUseCase>(),
+        gh<_i205.ReauthenticateUseCase>(),
+        gh<_i963.ProfileTracker>(),
+      ),
+    );
     gh.lazySingleton<_i856.GetEnrichedWatchlistUseCase>(
       () => _i856.GetEnrichedWatchlistUseCase(
         gh<_i759.GetWatchlistUseCase>(),
         gh<_i212.GetWatchlistEventsUseCase>(),
-      ),
-    );
-    gh.factory<_i200.UserBloc>(
-      () => _i200.UserBloc(
-        gh<_i561.GetUserUseCase>(),
-        gh<_i838.WatchUserUseCase>(),
       ),
     );
     gh.factory<_i980.ChangePasswordBloc>(
@@ -2092,7 +2144,7 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i506.CompanyBusinessBloc>(
       () => _i506.CompanyBusinessBloc(
-        gh<_i582.GetBusinessProfileUseCase>(),
+        gh<_i585.GetBusinessProfileUseCase>(),
         gh<_i937.IConfigService>(),
         gh<_i292.BusinessTabAnalytics>(),
         gh<_i836.WatchActiveTabUseCase>(),
@@ -2163,8 +2215,8 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i164.GetAuthStreamUseCase>(),
       ),
     );
-    gh.factory<_i993.BizzieChatBloc>(
-      () => _i993.BizzieChatBloc(
+    gh.factory<_i994.BizzieChatBloc>(
+      () => _i994.BizzieChatBloc(
         gh<_i563.GetMessagesStreamUseCase>(),
         gh<_i714.SendMessageStreamUseCase>(),
         gh<_i995.SubmitChatRatingUseCase>(),
@@ -2213,8 +2265,8 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i874.CompleteOnboardingUseCase>(),
       ),
     );
-    gh.lazySingleton<_i585.GetRevenueStatsUseCase>(
-      () => _i585.GetRevenueStatsUseCase(gh<_i203.IRevenueRepository>()),
+    gh.lazySingleton<_i588.GetRevenueStatsUseCase>(
+      () => _i588.GetRevenueStatsUseCase(gh<_i203.IRevenueRepository>()),
     );
     gh.factory<_i571.ProfileBloc>(
       () => _i571.ProfileBloc(
@@ -2259,8 +2311,8 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i865.IFinancialStatementsRepository>(),
       ),
     );
-    gh.lazySingleton<_i609.GetFullFinancialsUseCase>(
-      () => _i609.GetFullFinancialsUseCase(
+    gh.lazySingleton<_i610.GetFullFinancialsUseCase>(
+      () => _i610.GetFullFinancialsUseCase(
         gh<_i865.IFinancialStatementsRepository>(),
       ),
     );
@@ -2349,7 +2401,7 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i810.CompanyRevenueBloc>(
       () => _i810.CompanyRevenueBloc(
-        gh<_i585.GetRevenueStatsUseCase>(),
+        gh<_i588.GetRevenueStatsUseCase>(),
         gh<_i937.IConfigService>(),
         gh<_i151.RevenueTabAnalytics>(),
         gh<_i836.WatchActiveTabUseCase>(),

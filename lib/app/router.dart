@@ -2,12 +2,13 @@ import 'package:bizzie/app/routes/app_routes.dart';
 import 'package:bizzie/app/routes/app_router_redirect.dart';
 import 'package:bizzie/app/routes/app_router_refresh.dart';
 import 'package:bizzie/core/constants/paywall_query_params.dart';
+import 'package:bizzie/core/constants/search_query_params.dart';
+import 'package:bizzie/core/enums/search_source.dart';
 import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
 import 'package:bizzie/features/reports/domain/enums/reports_analytics_enums.dart';
 import 'package:bizzie/features/reports/presentation/views/reports_page.dart';
 import 'package:bizzie/features/search/presentation/views/search_page.dart';
 import 'package:bizzie/features/search/presentation/bloc/search_bloc.dart';
-import 'package:bizzie/features/search/domain/enums/search_analytics_enums.dart';
 import 'package:collection/collection.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 
@@ -151,6 +152,8 @@ GoRouter createRouter(
                       state.uri.queryParameters['entrySource'];
                   final notificationTypeStr =
                       state.uri.queryParameters['notificationType'];
+                  final navigationId =
+                      state.uri.queryParameters['navigationId'];
 
                   final entrySource = ReportsEntrySource.values.firstWhere(
                     (e) => e.name == entrySourceStr,
@@ -169,6 +172,7 @@ GoRouter createRouter(
                     child: ReportsPage(
                       entrySource: entrySource,
                       notificationType: notificationType,
+                      navigationId: navigationId,
                     ),
                   );
                 },
@@ -192,10 +196,13 @@ GoRouter createRouter(
 
       GoRoute(
         path: AppRoutes.search,
+        name: AppRoutes.search,
         pageBuilder: (context, state) {
-          final source = state.extra is SearchSource
-              ? state.extra as SearchSource
-              : SearchSource.home;
+          final sourceStr = state.uri.queryParameters[SearchQueryParams.source];
+          final source = SearchSource.values.firstWhere(
+            (e) => e.name == sourceStr,
+            orElse: () => SearchSource.home,
+          );
           return CustomTransitionPage(
             key: state.pageKey,
             child: BlocProvider<SearchBloc>(

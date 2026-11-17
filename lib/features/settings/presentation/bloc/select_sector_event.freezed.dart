@@ -84,10 +84,7 @@ final _that = this;
 switch (_that) {
 case SelectSector():
 return selectSector(_that);case SaveChanges():
-return saveChanges(_that);case _:
-  throw StateError('Unexpected subclass');
-
-}
+return saveChanges(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -149,10 +146,7 @@ return saveChanges();case _:
 switch (_that) {
 case SelectSector():
 return selectSector(_that.sector);case SaveChanges():
-return saveChanges();case _:
-  throw StateError('Unexpected subclass');
-
-}
+return saveChanges();}
 }
 /// A variant of `when` that fallback to returning `null`
 ///

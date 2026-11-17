@@ -1,7 +1,11 @@
-part of 'search_bloc.dart';
+import 'package:bizzie/core/domain/models/company.dart';
+import 'package:bizzie/features/search/domain/models/stock_symbol.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+
+part 'search_state.freezed.dart';
 
 @freezed
-class SearchState with _$SearchState {
+abstract class SearchState with _$SearchState {
   const factory SearchState.initial({
     String? favoriteSector,
     @Default([]) List<Company> recommendedBrands,

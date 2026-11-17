@@ -6,6 +6,7 @@ import 'package:bizzie/features/watchlist/presentation/bloc/watchlist_bloc.dart'
 import 'package:bizzie/features/watchlist_ytd/presentation/bloc/watchlist_ytd/watchlist_ytd_bloc.dart';
 import 'package:bizzie/features/subscription/presentation/bloc/subscription_bloc.dart';
 import 'package:bizzie/features/reports/presentation/bloc/reports_bloc.dart';
+import 'package:bizzie/features/reports/presentation/bloc/reports_event.dart';
 import 'package:bizzie/features/app_status/presentation/bloc/app_status_bloc.dart';
 import 'package:bizzie/features/security/presentation/bloc/security_bloc.dart';
 import 'package:bizzie/features/onboarding/presentation/bloc/onboarding_bloc.dart';
@@ -42,7 +43,10 @@ class BizzieApp extends StatelessWidget {
         BlocProvider<SubscriptionBloc>(
           create: (_) => getIt<SubscriptionBloc>(),
         ),
-        BlocProvider<ReportsBloc>(create: (_) => getIt<ReportsBloc>()),
+        BlocProvider<ReportsBloc>(
+          create: (_) =>
+              getIt<ReportsBloc>()..add(const ReportsEvent.started()),
+        ),
         BlocProvider<AppStatusBloc>(create: (_) => getIt<AppStatusBloc>()),
         BlocProvider<SecurityBloc>(create: (_) => getIt<SecurityBloc>()),
         BlocProvider<OnboardingBloc>(create: (_) => getIt<OnboardingBloc>()),

@@ -1,9 +1,7 @@
 import 'dart:async';
 import 'package:async/async.dart';
 import 'package:bloc/bloc.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
-import 'package:bizzie/features/search/domain/models/stock_symbol.dart';
 import 'package:bizzie/core/domain/models/company.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:bizzie/features/search/domain/usecases/search_stocks_usecase.dart';
@@ -14,9 +12,11 @@ import 'package:bizzie/features/search/domain/enums/search_analytics_enums.dart'
 import 'package:bizzie/features/search/presentation/analytics/search_tracker.dart';
 import 'package:bizzie/core/interfaces/i_local_storage_service.dart';
 
-part 'search_event.dart';
-part 'search_state.dart';
-part 'search_bloc.freezed.dart';
+import 'search_event.dart';
+import 'search_state.dart';
+
+export 'search_event.dart';
+export 'search_state.dart';
 
 final _logger = BizzieLogger('SearchBloc');
 
@@ -41,14 +41,14 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     this._tracker,
     this._localStorageService,
   ) : super(const SearchState.initial()) {
-    on<_Started>(_onStarted);
-    on<_QueryChanged>(_onQueryChanged);
-    on<_Cleared>(_onCleared);
-    on<_SearchCleared>(_onSearchCleared);
-    on<_AiSearchRequested>(_onAiSearchRequested);
-    on<_SearchCancelled>(_onSearchCancelled);
-    on<_ResultClicked>(_onResultClicked);
-    on<_RecommendedClicked>(_onRecommendedClicked);
+    on<SearchStarted>(_onStarted);
+    on<SearchQueryChanged>(_onQueryChanged);
+    on<SearchCleared>(_onCleared);
+    on<SearchSearchCleared>(_onSearchCleared);
+    on<SearchAiSearchRequested>(_onAiSearchRequested);
+    on<SearchSearchCancelled>(_onSearchCancelled);
+    on<SearchResultClicked>(_onResultClicked);
+    on<SearchRecommendedClicked>(_onRecommendedClicked);
   }
 
   @override
@@ -58,7 +58,10 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     return super.close();
   }
 
-  Future<void> _onStarted(_Started event, Emitter<SearchState> emit) async {
+  Future<void> _onStarted(
+    SearchStarted event,
+    Emitter<SearchState> emit,
+  ) async {
     _tracker.logPageView(source: event.source);
 
     emit(SearchState.loading(favoriteSector: _cachedFavoriteSector));
@@ -93,7 +96,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
   }
 
   Future<void> _onQueryChanged(
-    _QueryChanged event,
+    SearchQueryChanged event,
     Emitter<SearchState> emit,
   ) async {
     final normalized = _normalizeQuery(event.query);
@@ -129,7 +132,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
   }
 
   Future<void> _onAiSearchRequested(
-    _AiSearchRequested event,
+    SearchAiSearchRequested event,
     Emitter<SearchState> emit,
   ) async {
     final normalized = _normalizeQuery(event.query);
@@ -175,7 +178,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     }
   }
 
-  void _onCleared(_Cleared event, Emitter<SearchState> emit) {
+  void _onCleared(SearchCleared event, Emitter<SearchState> emit) {
     emit(
       SearchState.initial(
         favoriteSector: _cachedFavoriteSector,
@@ -184,13 +187,13 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     );
   }
 
-  void _onSearchCleared(_SearchCleared event, Emitter<SearchState> emit) {
+  void _onSearchCleared(SearchSearchCleared event, Emitter<SearchState> emit) {
     _tracker.logSearchCleared();
     add(const SearchEvent.cleared());
   }
 
   Future<void> _onResultClicked(
-    _ResultClicked event,
+    SearchResultClicked event,
     Emitter<SearchState> emit,
   ) async {
     final query = state.maybeMap(
@@ -206,7 +209,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
   }
 
   Future<void> _onRecommendedClicked(
-    _RecommendedClicked event,
+    SearchRecommendedClicked event,
     Emitter<SearchState> emit,
   ) async {
     final query = state.maybeMap(initial: (_) => '', orElse: () => '');
@@ -226,7 +229,10 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     return noPunctuation.trim().replaceAll(RegExp(r'\s+'), ' ');
   }
 
-  void _onSearchCancelled(_SearchCancelled event, Emitter<SearchState> emit) {
+  void _onSearchCancelled(
+    SearchSearchCancelled event,
+    Emitter<SearchState> emit,
+  ) {
     _tracker.logSearchCancelled();
   }
 }

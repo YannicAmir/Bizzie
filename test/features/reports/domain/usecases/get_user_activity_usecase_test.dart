@@ -1,6 +1,6 @@
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/features/reports/domain/interfaces/i_reports_repository.dart';
-import 'package:bizzie/features/reports/domain/usecases/get_user_activity_use_case.dart';
+import 'package:bizzie/features/reports/domain/usecases/get_user_activity_usecase.dart';
 import 'package:bizzie/features/user/domain/models/user_activity.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';

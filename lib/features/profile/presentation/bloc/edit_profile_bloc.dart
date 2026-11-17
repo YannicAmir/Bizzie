@@ -5,6 +5,7 @@ import 'package:bizzie/features/profile/domain/usecases/delete_account_usecase.d
 import 'package:bizzie/features/profile/domain/usecases/update_profile_usecase.dart';
 import 'package:bizzie/features/profile/presentation/bloc/edit_profile_event.dart';
 import 'package:bizzie/features/profile/presentation/bloc/edit_profile_state.dart';
+import 'package:bizzie/features/user/domain/usecases/get_cached_favorite_sector_usecase.dart';
 import 'package:bizzie/features/user/domain/usecases/get_user_usecase.dart';
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
@@ -24,6 +25,7 @@ class EditProfileBloc extends Bloc<EditProfileEvent, EditProfileState> {
 
   final GetCurrentUserUseCase _getCurrentUser;
   final GetUserUseCase _getUserUseCase;
+  final GetCachedFavoriteSectorUseCase _getCachedFavoriteSectorUseCase;
   final UpdateProfileUseCase _updateProfileUseCase;
   final DeleteAccountUseCase _deleteAccountUseCase;
   final ReauthenticateUseCase _reauthenticateUseCase;
@@ -32,12 +34,15 @@ class EditProfileBloc extends Bloc<EditProfileEvent, EditProfileState> {
   EditProfileBloc(
     this._getCurrentUser,
     this._getUserUseCase,
+    this._getCachedFavoriteSectorUseCase,
     this._updateProfileUseCase,
     this._deleteAccountUseCase,
     this._reauthenticateUseCase,
     this._tracker,
   ) : super(
-        EditProfileState.initial(favoriteSector: _getUserUseCase.cachedSector),
+        EditProfileState.initial(
+          favoriteSector: _getCachedFavoriteSectorUseCase(NoParams()),
+        ),
       ) {
     on<Started>(_onStarted, transformer: restartable());
     on<FirstNameChanged>(_onFirstNameChanged);
@@ -57,7 +62,7 @@ class EditProfileBloc extends Bloc<EditProfileEvent, EditProfileState> {
   Future<void> _onStarted(Started event, Emitter<EditProfileState> emit) async {
     _logger.info('EditProfile started');
     unawaited(_tracker.logEditProfileStarted());
-    final cachedSector = _getUserUseCase.cachedSector;
+    final cachedSector = _getCachedFavoriteSectorUseCase(NoParams());
     emit(EditProfileState.loading(favoriteSector: cachedSector));
 
     final currentUser = _getCurrentUser();

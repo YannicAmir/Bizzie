@@ -1,4 +1,5 @@
 import 'package:bizzie/core/interfaces/i_analytics_service.dart';
+import 'package:bizzie/core/enums/search_source.dart';
 import 'package:bizzie/features/search/domain/enums/search_analytics_enums.dart';
 import 'package:bizzie/features/search/presentation/analytics/search_tracker.dart';
 import 'package:flutter_test/flutter_test.dart';

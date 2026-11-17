@@ -8,7 +8,7 @@ import 'package:bizzie/core/enums/paywall_source.dart';
 part 'subscription_event.freezed.dart';
 
 @freezed
-abstract class SubscriptionEvent with _$SubscriptionEvent {
+sealed class SubscriptionEvent with _$SubscriptionEvent {
   const factory SubscriptionEvent.initialized() = SubscriptionEventInitialized;
   const factory SubscriptionEvent.statusUpdated(SubscriptionStatus status) =
       SubscriptionStatusUpdated;

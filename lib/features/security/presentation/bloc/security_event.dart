@@ -4,7 +4,7 @@ import 'package:bizzie/features/security/domain/enums/security_analytics_enums.d
 part 'security_event.freezed.dart';
 
 @freezed
-class SecurityEvent with _$SecurityEvent {
+sealed class SecurityEvent with _$SecurityEvent {
   const factory SecurityEvent.started() = Started;
   const factory SecurityEvent.lockoutActionTaken(SecurityLockoutAction action) =
       LockoutActionTaken;

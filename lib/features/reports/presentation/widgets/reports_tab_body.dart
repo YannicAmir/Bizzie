@@ -1,18 +1,19 @@
-import 'package:bizzie/app/routes/app_routes.dart';
+import 'package:bizzie/app/navigation/search_navigation.dart';
+import 'package:bizzie/core/enums/search_source.dart';
 import 'package:bizzie/features/reports/presentation/bloc/reports_bloc.dart';
 import 'package:bizzie/features/reports/presentation/bloc/reports_event.dart';
 import 'package:bizzie/features/reports/presentation/bloc/reports_state.dart';
-import 'package:bizzie/features/reports/presentation/widgets/recent_filings_section.dart';
+import 'package:bizzie/features/reports/presentation/extensions/reports_state_extensions.dart';
+import 'package:bizzie/features/reports/presentation/widgets/reports_feed_item_card.dart';
 import 'package:bizzie/features/reports/presentation/widgets/reports_status_views.dart';
-import 'package:bizzie/features/search/domain/enums/search_analytics_enums.dart';
 import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
 import 'package:bizzie/features/user/presentation/extensions/user_state_extensions.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:bizzie/shared/widgets/buttons/bizzie_primary_button.dart';
 import 'package:bizzie/shared/widgets/states/bizzie_empty_state.dart';
-import 'package:material_ui/material_ui.dart';
+import 'package:bizzie/shared/widgets/states/bizzie_full_page_empty_layout.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
+import 'package:material_ui/material_ui.dart';
 
 class ReportsTabBody extends StatelessWidget {
   const ReportsTabBody({super.key});
@@ -21,34 +22,24 @@ class ReportsTabBody extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<ReportsBloc, ReportsState>(
       builder: (context, state) {
-        return state.maybeWhen(
-          loading: () => const ReportsLoadingView(),
+        return state.maybeMap(
+          loading: (_) => const ReportsLoadingView(),
           failure: (_) => const ReportsErrorView(),
-          loaded:
-              (feed, lastViewedReports, todaysFilings, todaysWeeklyReports) {
-                final bool isRecentEmpty =
-                    todaysFilings.isEmpty && todaysWeeklyReports.isEmpty;
-                final mascotAsset = context.watch<UserBloc>().state.mascotAsset;
+          loaded: (loaded) {
+            final items = loaded.feedItems;
 
-                if (isRecentEmpty) {
-                  return _ReportsEmptyState(mascotAsset: mascotAsset);
-                }
+            if (items.isEmpty) {
+              return const _ReportsEmptyState();
+            }
 
-                return SingleChildScrollView(
-                  padding: AppConstants.pagePadding,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      RecentFilingsSection(
-                        filings: todaysFilings,
-                        weeklyReports: todaysWeeklyReports,
-                        lastViewed: lastViewedReports,
-                        mascotAsset: mascotAsset,
-                      ),
-                    ],
-                  ),
-                );
-              },
+            return ListView.separated(
+              padding: AppConstants.pagePadding,
+              itemCount: items.length,
+              separatorBuilder: (_, __) => AppConstants.secondarySectionSpacing,
+              itemBuilder: (context, index) =>
+                  ReportsFeedItemCard(item: items[index]),
+            );
+          },
           orElse: () => const SizedBox.shrink(),
         );
       },
@@ -57,54 +48,29 @@ class ReportsTabBody extends StatelessWidget {
 }
 
 class _ReportsEmptyState extends StatelessWidget {
-  final String mascotAsset;
-
-  const _ReportsEmptyState({required this.mascotAsset});
+  const _ReportsEmptyState();
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        return SingleChildScrollView(
-          padding: AppConstants.pagePadding,
-          child: ConstrainedBox(
-            constraints: BoxConstraints(
-              minHeight:
-                  constraints.maxHeight - AppConstants.pagePadding.vertical,
-            ),
-            child: IntrinsicHeight(
-              child: Column(
-                children: [
-                  Expanded(
-                    child: BizzieEmptyState(
-                      isFullPage: true,
-                      mascotAsset: mascotAsset,
-                      message:
-                          'There are no recent reports for the companies on your watchlist',
-                    ),
-                  ),
-                  SizedBox(
-                    width: double.infinity,
-                    child: BizziePrimaryButton(
-                      title: 'Search for stocks',
-                      onPressed: () {
-                        context.read<ReportsBloc>().add(
-                          const ReportsEvent.emptyCtaClicked(),
-                        );
-                        context.push(
-                          AppRoutes.search,
-                          extra: SearchSource.reports,
-                        );
-                      },
-                    ),
-                  ),
-                  AppConstants.emptyWatchlistBottomSpacing,
-                ],
-              ),
-            ),
-          ),
-        );
-      },
+    final mascotAsset = context.select<UserBloc, String>(
+      (bloc) => bloc.state.mascotAsset,
+    );
+
+    return BizzieFullPageEmptyLayout(
+      padding: AppConstants.pagePadding,
+      content: BizzieEmptyState(
+        isFullPage: true,
+        mascotAsset: mascotAsset,
+        message:
+            'There are no recent reports for the companies on your watchlist',
+      ),
+      action: BizziePrimaryButton(
+        title: 'Search for stocks',
+        onPressed: () {
+          context.read<ReportsBloc>().add(const ReportsEvent.emptyCtaClicked());
+          SearchNavigation.push(context, source: SearchSource.reports);
+        },
+      ),
     );
   }
 }

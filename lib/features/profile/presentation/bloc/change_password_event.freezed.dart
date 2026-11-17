@@ -90,10 +90,7 @@ return started(_that);case OldPasswordChanged():
 return oldPasswordChanged(_that);case NewPasswordChanged():
 return newPasswordChanged(_that);case ConfirmPasswordChanged():
 return confirmPasswordChanged(_that);case SaveRequested():
-return saveRequested(_that);case _:
-  throw StateError('Unexpected subclass');
-
-}
+return saveRequested(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -164,10 +161,7 @@ return started();case OldPasswordChanged():
 return oldPasswordChanged(_that.password);case NewPasswordChanged():
 return newPasswordChanged(_that.password);case ConfirmPasswordChanged():
 return confirmPasswordChanged(_that.password);case SaveRequested():
-return saveRequested();case _:
-  throw StateError('Unexpected subclass');
-
-}
+return saveRequested();}
 }
 /// A variant of `when` that fallback to returning `null`
 ///

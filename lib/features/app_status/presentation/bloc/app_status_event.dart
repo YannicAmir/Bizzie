@@ -1,11 +1,14 @@
-part of 'app_status_bloc.dart';
+import 'package:bizzie/features/app_status/domain/models/app_status.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+
+part 'app_status_event.freezed.dart';
 
 @freezed
-class AppStatusEvent with _$AppStatusEvent {
-  const factory AppStatusEvent.started() = _Started;
-  const factory AppStatusEvent.refreshed() = _Refreshed;
+sealed class AppStatusEvent with _$AppStatusEvent {
+  const factory AppStatusEvent.started() = AppStatusStarted;
+  const factory AppStatusEvent.refreshed() = AppStatusRefreshed;
   const factory AppStatusEvent.statusChanged(
     AppStatus status, {
     @Default(false) bool isManualRefresh,
-  }) = _StatusChanged;
+  }) = AppStatusStatusChanged;
 }

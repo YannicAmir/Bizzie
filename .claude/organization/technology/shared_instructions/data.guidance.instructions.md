@@ -72,7 +72,7 @@ Location: `data/repositories/xxx_repository_impl.dart`
 Rules:
 - Annotate `@LazySingleton(as: IXxxRepository)`
 - Inject `IXxxRemoteDataSource` (and `IXxxLocalDataSource` if needed) via positional constructor params
-- Declare `final _logger = BizzieLogger('XxxRepositoryImpl')` as a field
+- Declare `final _logger = BizzieLogger('XxxRepositoryImpl')` at file level
 - All methods return `Either<Failure, T>` — wrap every `catch` in `Left(Failure.server(e.toString()))`
 - Convert DTOs to domain models with `.toDomain()` before returning; use `XxxDto.fromDomain(model)` before writes
 - Stream methods map `List<XxxDto>` to `Either<Failure, List<XxxModel>>` using a `StreamTransformer` or `rxdart`

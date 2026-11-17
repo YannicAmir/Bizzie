@@ -6,7 +6,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'bizzie_chat_event.freezed.dart';
 
 @freezed
-class BizzieChatEvent with _$BizzieChatEvent {
+sealed class BizzieChatEvent with _$BizzieChatEvent {
   const factory BizzieChatEvent.sessionStarted({
     required String uid,
     required String ticker,

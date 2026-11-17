@@ -1,4 +1,8 @@
-part of 'user_bloc.dart';
+import 'package:bizzie/core/domain/models/user_model.dart';
+import 'package:bizzie/core/error/failures.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+
+part 'user_state.freezed.dart';
 
 @freezed
 abstract class UserState with _$UserState {

@@ -14,6 +14,7 @@ import 'package:bizzie/features/profile/presentation/bloc/edit_profile_event.dar
 import 'package:bizzie/features/profile/presentation/bloc/edit_profile_state.dart';
 import 'package:bizzie/core/enums/investing_experience.dart';
 import 'package:bizzie/core/domain/models/user_model.dart' as domain_model;
+import 'package:bizzie/features/user/domain/usecases/get_cached_favorite_sector_usecase.dart';
 import 'package:bizzie/features/user/domain/usecases/get_user_usecase.dart';
 import 'package:bizzie/features/profile/presentation/analytics/profile_tracker.dart';
 import 'package:bloc_test/bloc_test.dart';
@@ -24,6 +25,9 @@ import 'package:mocktail/mocktail.dart';
 class MockGetCurrentUserUseCase extends Mock implements GetCurrentUserUseCase {}
 
 class MockGetUserUseCase extends Mock implements GetUserUseCase {}
+
+class MockGetCachedFavoriteSectorUseCase extends Mock
+    implements GetCachedFavoriteSectorUseCase {}
 
 class MockUpdateProfileUseCase extends Mock implements UpdateProfileUseCase {}
 
@@ -39,6 +43,7 @@ void main() {
   late EditProfileBloc bloc;
   late MockGetCurrentUserUseCase mockGetCurrentUser;
   late MockGetUserUseCase mockGetUserUseCase;
+  late MockGetCachedFavoriteSectorUseCase mockGetCachedFavoriteSectorUseCase;
   late MockUpdateProfileUseCase mockUpdateProfileUseCase;
   late MockDeleteAccountUseCase mockDeleteAccountUseCase;
   late MockReauthenticateUseCase mockReauthenticateUseCase;
@@ -55,6 +60,7 @@ void main() {
   setUp(() {
     mockGetCurrentUser = MockGetCurrentUserUseCase();
     mockGetUserUseCase = MockGetUserUseCase();
+    mockGetCachedFavoriteSectorUseCase = MockGetCachedFavoriteSectorUseCase();
     mockUpdateProfileUseCase = MockUpdateProfileUseCase();
     mockDeleteAccountUseCase = MockDeleteAccountUseCase();
     mockReauthenticateUseCase = MockReauthenticateUseCase();
@@ -89,11 +95,14 @@ void main() {
       () => mockTracker.logAccountDeletionSuccess(),
     ).thenAnswer((_) async {});
 
-    when(() => mockGetUserUseCase.cachedSector).thenReturn('Technology');
+    when(
+      () => mockGetCachedFavoriteSectorUseCase(any()),
+    ).thenReturn('Technology');
 
     bloc = EditProfileBloc(
       mockGetCurrentUser,
       mockGetUserUseCase,
+      mockGetCachedFavoriteSectorUseCase,
       mockUpdateProfileUseCase,
       mockDeleteAccountUseCase,
       mockReauthenticateUseCase,

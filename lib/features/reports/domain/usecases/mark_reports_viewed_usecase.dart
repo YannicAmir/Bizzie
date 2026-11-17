@@ -5,7 +5,7 @@ import 'package:bizzie/features/reports/domain/models/mark_reports_viewed_params
 import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
 
-@injectable
+@lazySingleton
 class MarkReportsViewedUseCase
     implements UseCase<Either<Failure, Unit>, MarkReportsViewedParams> {
   final IReportsRepository _repository;

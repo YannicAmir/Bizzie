@@ -1,6 +1,7 @@
 import 'package:bizzie/core/error/exceptions.dart';
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
+import 'package:bizzie/core/utils/date_utils.dart';
 import 'package:bizzie/features/reports/data/interfaces/i_reports_remote_datasource.dart';
 import 'package:bizzie/features/reports/data/dtos/financial_report_dto.dart';
 import 'package:bizzie/features/reports/data/dtos/sec_filing_dto.dart';
@@ -201,8 +202,8 @@ class ReportsRepositoryImpl implements IReportsRepository {
   List<WeeklyReport> _processWeeklyReports(List<WeeklyReportDto> dtos) {
     final reports = dtos.map((e) => e.toDomain()).toList();
     reports.sort(
-      (a, b) =>
-          (b.createdAt ?? DateTime(0)).compareTo(a.createdAt ?? DateTime(0)),
+      (newer, older) =>
+          BizzieDateUtils.compareNewestFirst(newer.createdAt, older.createdAt),
     );
     return reports;
   }

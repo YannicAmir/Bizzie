@@ -2,49 +2,60 @@ import 'dart:async';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/core/domain/models/user_model.dart';
-import 'package:bizzie/features/user/domain/usecases/get_user_usecase.dart';
+import 'package:bizzie/core/usecase/usecase.dart';
+import 'package:bizzie/features/user/domain/usecases/get_cached_favorite_sector_usecase.dart';
+import 'package:bizzie/features/user/domain/usecases/update_last_viewed_at_usecase.dart';
 import 'package:bizzie/features/user/domain/usecases/watch_user_usecase.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 
-part 'user_event.dart';
-part 'user_state.dart';
-part 'user_bloc.freezed.dart';
+import 'user_event.dart';
+import 'user_state.dart';
+
+export 'user_event.dart';
+export 'user_state.dart';
 
 final _logger = BizzieLogger('UserBloc');
 
 @injectable
 class UserBloc extends Bloc<UserEvent, UserState> {
-  final GetUserUseCase _getUserUseCase;
+  final GetCachedFavoriteSectorUseCase _getCachedFavoriteSectorUseCase;
   final WatchUserUseCase _watchUserUseCase;
+  final UpdateLastViewedAtUseCase _updateLastViewedAtUseCase;
 
-  UserBloc(this._getUserUseCase, this._watchUserUseCase)
-    : super(const UserState.initial()) {
+  UserBloc(
+    this._getCachedFavoriteSectorUseCase,
+    this._watchUserUseCase,
+    this._updateLastViewedAtUseCase,
+  ) : super(const UserState.initial()) {
     // Reset shares the restartable registration so it cancels the active user stream.
     on<UserEvent>(
-      (event, emit) => event.map<Future<void>>(
+      (event, emit) => event.maybeMap<Future<void>>(
         loadUser: (e) => _onLoadUser(e, emit),
         reset: (e) => _onReset(e, emit),
+        orElse: () async {},
       ),
-      transformer: restartable(),
+      transformer: _restartableSession(),
     );
+    on<UserAppForegrounded>(_onAppForegrounded, transformer: droppable());
   }
 
-  /// Starts a persistent Firestore stream for the given [event.uid].
-  ///
-  /// Uses [emit.forEach] to keep the subscription alive and emit new states
-  /// whenever the underlying data changes. The [restartable()] transformer
-  /// ensures that if a new [UserLoadRequested] arrives, the previous
-  /// stream subscription is cancelled before starting a new one.
+  EventTransformer<UserEvent> _restartableSession() {
+    return (events, mapper) =>
+        restartable<UserEvent>()(events.where(_isSessionEvent), mapper);
+  }
+
+  bool _isSessionEvent(UserEvent event) =>
+      event is UserLoadRequested || event is UserReset;
+
   Future<void> _onLoadUser(
     UserLoadRequested event,
     Emitter<UserState> emit,
   ) async {
     if (!event.silent) {
-      final cached = _getUserUseCase.cachedSector;
+      final cached = _getCachedFavoriteSectorUseCase(NoParams());
       emit(UserState.loading(cachedSector: cached));
     }
     _logger.info('Starting persistent stream for uid: ${event.uid}');
@@ -77,7 +88,22 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     return UserState.failure(
       failure,
       uid: uid,
-      cachedSector: _getUserUseCase.cachedSector,
+      cachedSector: _getCachedFavoriteSectorUseCase(NoParams()),
+    );
+  }
+
+  Future<void> _onAppForegrounded(
+    UserAppForegrounded event,
+    Emitter<UserState> emit,
+  ) async {
+    if (state is! UserLoaded) return;
+
+    final result = await _updateLastViewedAtUseCase(NoParams());
+    result.fold(
+      (failure) => _logger.warning(
+        'Failed to update lastViewedAt: ${failure.errorMessage}',
+      ),
+      (_) => null,
     );
   }
 

@@ -1,18 +1,22 @@
-part of 'search_bloc.dart';
+import 'package:bizzie/core/enums/search_source.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+
+part 'search_event.freezed.dart';
 
 @freezed
-class SearchEvent with _$SearchEvent {
-  const factory SearchEvent.started({required SearchSource source}) = _Started;
-  const factory SearchEvent.queryChanged(String query) = _QueryChanged;
-  const factory SearchEvent.cleared() = _Cleared;
-  const factory SearchEvent.searchCleared() = _SearchCleared;
+sealed class SearchEvent with _$SearchEvent {
+  const factory SearchEvent.started({required SearchSource source}) =
+      SearchStarted;
+  const factory SearchEvent.queryChanged(String query) = SearchQueryChanged;
+  const factory SearchEvent.cleared() = SearchCleared;
+  const factory SearchEvent.searchCleared() = SearchSearchCleared;
   const factory SearchEvent.resultClicked({
     required String ticker,
     required bool isAiResult,
-  }) = _ResultClicked;
+  }) = SearchResultClicked;
   const factory SearchEvent.recommendedClicked({required String ticker}) =
-      _RecommendedClicked;
+      SearchRecommendedClicked;
   const factory SearchEvent.aiSearchRequested(String query) =
-      _AiSearchRequested;
-  const factory SearchEvent.searchCancelled() = _SearchCancelled;
+      SearchAiSearchRequested;
+  const factory SearchEvent.searchCancelled() = SearchSearchCancelled;
 }

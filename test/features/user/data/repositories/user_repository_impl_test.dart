@@ -297,6 +297,55 @@ void main() {
     });
   });
 
+  group('updateLastViewedAt', () {
+    test('userRepository_updateLastViewedAt_success_callsRemote', () async {
+      // arrange
+      when(() => mockAuthRepository.currentUser).thenReturn(tAuthUser);
+      when(
+        () => mockRemoteDataSource.updateLastViewedAt(any()),
+      ).thenAnswer((_) async {});
+
+      // act
+      final result = await repository.updateLastViewedAt();
+
+      // assert
+      expect(result, const Right(null));
+      verify(() => mockRemoteDataSource.updateLastViewedAt(tUid)).called(1);
+    });
+
+    test(
+      'userRepository_updateLastViewedAt_userNotFound_returnsFailure',
+      () async {
+        // arrange
+        when(() => mockAuthRepository.currentUser).thenReturn(null);
+
+        // act
+        final result = await repository.updateLastViewedAt();
+
+        // assert
+        expect(result, Left(Failure.userNotFound()));
+        verifyNever(() => mockRemoteDataSource.updateLastViewedAt(any()));
+      },
+    );
+
+    test(
+      'userRepository_updateLastViewedAt_failure_returnsServerFailure',
+      () async {
+        // arrange
+        when(() => mockAuthRepository.currentUser).thenReturn(tAuthUser);
+        when(
+          () => mockRemoteDataSource.updateLastViewedAt(any()),
+        ).thenThrow(Exception('error'));
+
+        // act
+        final result = await repository.updateLastViewedAt();
+
+        // assert
+        expect(result, isA<Left>());
+      },
+    );
+  });
+
   group('updateNotificationSettings', () {
     test(
       'userRepository_updateNotificationSettings_success_callsRemote',

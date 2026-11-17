@@ -48,7 +48,7 @@ Execute the plan in step order. For each new piece of data layer code, verify:
 
 ### Repository implementations (`data/repositories/`)
 - [ ] Annotated `@LazySingleton(as: IXxxRepository)`
-- [ ] `final _logger = BizzieLogger('XxxRepositoryImpl')` instance field
+- [ ] `final _logger = BizzieLogger('XxxRepositoryImpl')` at file level
 - [ ] Implements all methods from `IXxxRepository` domain interface
 - [ ] All methods catch exceptions and return `Left(Failure.server(e.toString()))`
 - [ ] Maps DTOs to domain models before returning — never returns DTOs

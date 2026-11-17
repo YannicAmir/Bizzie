@@ -4,6 +4,7 @@ import 'package:bizzie/core/domain/models/weekly_report.dart';
 import 'package:bizzie/core/error/exceptions.dart';
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
+import 'package:bizzie/core/utils/date_utils.dart';
 import 'package:bizzie/features/reports/data/dtos/financial_report_dto.dart';
 import 'package:bizzie/features/reports/data/dtos/sec_filing_dto.dart';
 import 'package:bizzie/features/reports/data/dtos/weekly_report_dto.dart';
@@ -60,8 +61,8 @@ class CompanyFilingsRepositoryImpl implements ICompanyFilingsRepository {
 
   List<WeeklyReport> _processWeeklyReports(List<WeeklyReportDto> dtos) {
     return dtos.map((dto) => dto.toDomain()).toList()..sort(
-      (a, b) =>
-          (b.createdAt ?? DateTime(0)).compareTo(a.createdAt ?? DateTime(0)),
+      (newer, older) =>
+          BizzieDateUtils.compareNewestFirst(newer.createdAt, older.createdAt),
     );
   }
 }

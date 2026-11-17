@@ -14,7 +14,7 @@ import 'package:bizzie/features/search/presentation/widgets/ai_no_match_view.dar
 import 'package:bizzie/shared/widgets/loading/bizzie_loader.dart';
 import 'package:bizzie/features/user/presentation/extensions/user_state_extensions.dart';
 
-import 'package:bizzie/features/search/domain/enums/search_analytics_enums.dart';
+import 'package:bizzie/core/enums/search_source.dart';
 
 import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
 

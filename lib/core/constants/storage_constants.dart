@@ -25,6 +25,10 @@ class StorageConstants {
   static const String marketDataSnapshot =
       '${_globalPrefix}market_data_snapshot';
 
+  // Feature: Reports — unprefixed legacy keys; renaming drops persisted values
+  static const String reportsSeenWeeklyReportIds = 'seen_weekly_report_ids';
+  static const String reportsFeedTotalViews = 'report_feed_total_views';
+
   // Feature: Company Profile (Tab layout)
   static const String companyProfileMainTabs = '${_globalPrefix}cp_main_tabs';
   static const String companyProfileMoreTabs = '${_globalPrefix}cp_more_tabs';

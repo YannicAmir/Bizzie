@@ -8,12 +8,13 @@ import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:collection/collection.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 
-part 'watchlist_news_event.dart';
-part 'watchlist_news_state.dart';
-part 'watchlist_news_bloc.freezed.dart';
+import 'watchlist_news_event.dart';
+import 'watchlist_news_state.dart';
+
+export 'watchlist_news_event.dart';
+export 'watchlist_news_state.dart';
 
 final _logger = BizzieLogger('WatchlistNewsBloc');
 

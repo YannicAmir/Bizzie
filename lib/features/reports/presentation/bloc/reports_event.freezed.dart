@@ -56,14 +56,13 @@ extension ReportsEventPatterns on ReportsEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( Started value)?  started,TResult Function( Refresh value)?  refresh,TResult Function( WatchlistUpdated value)?  watchlistUpdated,TResult Function( ReportsUpdated value)?  reportsUpdated,TResult Function( Viewed value)?  viewed,TResult Function( LinkOpened value)?  linkOpened,TResult Function( SummaryRequested value)?  summaryRequested,TResult Function( SummarizeLockedClicked value)?  summarizeLockedClicked,TResult Function( UpcomingExpanded value)?  upcomingExpanded,TResult Function( UpcomingCompanyClicked value)?  upcomingCompanyClicked,TResult Function( YtdCompanyClicked value)?  ytdCompanyClicked,TResult Function( FilingCardCompanyClicked value)?  filingCardCompanyClicked,TResult Function( EmptyCtaClicked value)?  emptyCtaClicked,TResult Function( MarketNewsArticleOpened value)?  marketNewsArticleOpened,TResult Function( MarketNewsLoadFailed value)?  marketNewsLoadFailed,TResult Function( ActivityUpdated value)?  activityUpdated,TResult Function( Reset value)?  reset,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( Started value)?  started,TResult Function( Refresh value)?  refresh,TResult Function( WatchlistUpdated value)?  watchlistUpdated,TResult Function( Viewed value)?  viewed,TResult Function( LinkOpened value)?  linkOpened,TResult Function( SummaryRequested value)?  summaryRequested,TResult Function( SummarizeLockedClicked value)?  summarizeLockedClicked,TResult Function( UpcomingExpanded value)?  upcomingExpanded,TResult Function( UpcomingCompanyClicked value)?  upcomingCompanyClicked,TResult Function( YtdCompanyClicked value)?  ytdCompanyClicked,TResult Function( FilingCardCompanyClicked value)?  filingCardCompanyClicked,TResult Function( EmptyCtaClicked value)?  emptyCtaClicked,TResult Function( MarketNewsArticleOpened value)?  marketNewsArticleOpened,TResult Function( MarketNewsLoadFailed value)?  marketNewsLoadFailed,TResult Function( DayCheckRequested value)?  dayCheckRequested,TResult Function( Reset value)?  reset,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case Started() when started != null:
 return started(_that);case Refresh() when refresh != null:
 return refresh(_that);case WatchlistUpdated() when watchlistUpdated != null:
-return watchlistUpdated(_that);case ReportsUpdated() when reportsUpdated != null:
-return reportsUpdated(_that);case Viewed() when viewed != null:
+return watchlistUpdated(_that);case Viewed() when viewed != null:
 return viewed(_that);case LinkOpened() when linkOpened != null:
 return linkOpened(_that);case SummaryRequested() when summaryRequested != null:
 return summaryRequested(_that);case SummarizeLockedClicked() when summarizeLockedClicked != null:
@@ -74,8 +73,8 @@ return ytdCompanyClicked(_that);case FilingCardCompanyClicked() when filingCardC
 return filingCardCompanyClicked(_that);case EmptyCtaClicked() when emptyCtaClicked != null:
 return emptyCtaClicked(_that);case MarketNewsArticleOpened() when marketNewsArticleOpened != null:
 return marketNewsArticleOpened(_that);case MarketNewsLoadFailed() when marketNewsLoadFailed != null:
-return marketNewsLoadFailed(_that);case ActivityUpdated() when activityUpdated != null:
-return activityUpdated(_that);case Reset() when reset != null:
+return marketNewsLoadFailed(_that);case DayCheckRequested() when dayCheckRequested != null:
+return dayCheckRequested(_that);case Reset() when reset != null:
 return reset(_that);case _:
   return orElse();
 
@@ -94,14 +93,13 @@ return reset(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( Started value)  started,required TResult Function( Refresh value)  refresh,required TResult Function( WatchlistUpdated value)  watchlistUpdated,required TResult Function( ReportsUpdated value)  reportsUpdated,required TResult Function( Viewed value)  viewed,required TResult Function( LinkOpened value)  linkOpened,required TResult Function( SummaryRequested value)  summaryRequested,required TResult Function( SummarizeLockedClicked value)  summarizeLockedClicked,required TResult Function( UpcomingExpanded value)  upcomingExpanded,required TResult Function( UpcomingCompanyClicked value)  upcomingCompanyClicked,required TResult Function( YtdCompanyClicked value)  ytdCompanyClicked,required TResult Function( FilingCardCompanyClicked value)  filingCardCompanyClicked,required TResult Function( EmptyCtaClicked value)  emptyCtaClicked,required TResult Function( MarketNewsArticleOpened value)  marketNewsArticleOpened,required TResult Function( MarketNewsLoadFailed value)  marketNewsLoadFailed,required TResult Function( ActivityUpdated value)  activityUpdated,required TResult Function( Reset value)  reset,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( Started value)  started,required TResult Function( Refresh value)  refresh,required TResult Function( WatchlistUpdated value)  watchlistUpdated,required TResult Function( Viewed value)  viewed,required TResult Function( LinkOpened value)  linkOpened,required TResult Function( SummaryRequested value)  summaryRequested,required TResult Function( SummarizeLockedClicked value)  summarizeLockedClicked,required TResult Function( UpcomingExpanded value)  upcomingExpanded,required TResult Function( UpcomingCompanyClicked value)  upcomingCompanyClicked,required TResult Function( YtdCompanyClicked value)  ytdCompanyClicked,required TResult Function( FilingCardCompanyClicked value)  filingCardCompanyClicked,required TResult Function( EmptyCtaClicked value)  emptyCtaClicked,required TResult Function( MarketNewsArticleOpened value)  marketNewsArticleOpened,required TResult Function( MarketNewsLoadFailed value)  marketNewsLoadFailed,required TResult Function( DayCheckRequested value)  dayCheckRequested,required TResult Function( Reset value)  reset,}){
 final _that = this;
 switch (_that) {
 case Started():
 return started(_that);case Refresh():
 return refresh(_that);case WatchlistUpdated():
-return watchlistUpdated(_that);case ReportsUpdated():
-return reportsUpdated(_that);case Viewed():
+return watchlistUpdated(_that);case Viewed():
 return viewed(_that);case LinkOpened():
 return linkOpened(_that);case SummaryRequested():
 return summaryRequested(_that);case SummarizeLockedClicked():
@@ -112,8 +110,8 @@ return ytdCompanyClicked(_that);case FilingCardCompanyClicked():
 return filingCardCompanyClicked(_that);case EmptyCtaClicked():
 return emptyCtaClicked(_that);case MarketNewsArticleOpened():
 return marketNewsArticleOpened(_that);case MarketNewsLoadFailed():
-return marketNewsLoadFailed(_that);case ActivityUpdated():
-return activityUpdated(_that);case Reset():
+return marketNewsLoadFailed(_that);case DayCheckRequested():
+return dayCheckRequested(_that);case Reset():
 return reset(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
@@ -128,14 +126,13 @@ return reset(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( Started value)?  started,TResult? Function( Refresh value)?  refresh,TResult? Function( WatchlistUpdated value)?  watchlistUpdated,TResult? Function( ReportsUpdated value)?  reportsUpdated,TResult? Function( Viewed value)?  viewed,TResult? Function( LinkOpened value)?  linkOpened,TResult? Function( SummaryRequested value)?  summaryRequested,TResult? Function( SummarizeLockedClicked value)?  summarizeLockedClicked,TResult? Function( UpcomingExpanded value)?  upcomingExpanded,TResult? Function( UpcomingCompanyClicked value)?  upcomingCompanyClicked,TResult? Function( YtdCompanyClicked value)?  ytdCompanyClicked,TResult? Function( FilingCardCompanyClicked value)?  filingCardCompanyClicked,TResult? Function( EmptyCtaClicked value)?  emptyCtaClicked,TResult? Function( MarketNewsArticleOpened value)?  marketNewsArticleOpened,TResult? Function( MarketNewsLoadFailed value)?  marketNewsLoadFailed,TResult? Function( ActivityUpdated value)?  activityUpdated,TResult? Function( Reset value)?  reset,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( Started value)?  started,TResult? Function( Refresh value)?  refresh,TResult? Function( WatchlistUpdated value)?  watchlistUpdated,TResult? Function( Viewed value)?  viewed,TResult? Function( LinkOpened value)?  linkOpened,TResult? Function( SummaryRequested value)?  summaryRequested,TResult? Function( SummarizeLockedClicked value)?  summarizeLockedClicked,TResult? Function( UpcomingExpanded value)?  upcomingExpanded,TResult? Function( UpcomingCompanyClicked value)?  upcomingCompanyClicked,TResult? Function( YtdCompanyClicked value)?  ytdCompanyClicked,TResult? Function( FilingCardCompanyClicked value)?  filingCardCompanyClicked,TResult? Function( EmptyCtaClicked value)?  emptyCtaClicked,TResult? Function( MarketNewsArticleOpened value)?  marketNewsArticleOpened,TResult? Function( MarketNewsLoadFailed value)?  marketNewsLoadFailed,TResult? Function( DayCheckRequested value)?  dayCheckRequested,TResult? Function( Reset value)?  reset,}){
 final _that = this;
 switch (_that) {
 case Started() when started != null:
 return started(_that);case Refresh() when refresh != null:
 return refresh(_that);case WatchlistUpdated() when watchlistUpdated != null:
-return watchlistUpdated(_that);case ReportsUpdated() when reportsUpdated != null:
-return reportsUpdated(_that);case Viewed() when viewed != null:
+return watchlistUpdated(_that);case Viewed() when viewed != null:
 return viewed(_that);case LinkOpened() when linkOpened != null:
 return linkOpened(_that);case SummaryRequested() when summaryRequested != null:
 return summaryRequested(_that);case SummarizeLockedClicked() when summarizeLockedClicked != null:
@@ -146,8 +143,8 @@ return ytdCompanyClicked(_that);case FilingCardCompanyClicked() when filingCardC
 return filingCardCompanyClicked(_that);case EmptyCtaClicked() when emptyCtaClicked != null:
 return emptyCtaClicked(_that);case MarketNewsArticleOpened() when marketNewsArticleOpened != null:
 return marketNewsArticleOpened(_that);case MarketNewsLoadFailed() when marketNewsLoadFailed != null:
-return marketNewsLoadFailed(_that);case ActivityUpdated() when activityUpdated != null:
-return activityUpdated(_that);case Reset() when reset != null:
+return marketNewsLoadFailed(_that);case DayCheckRequested() when dayCheckRequested != null:
+return dayCheckRequested(_that);case Reset() when reset != null:
 return reset(_that);case _:
   return null;
 
@@ -165,14 +162,13 @@ return reset(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String? uid)?  started,TResult Function()?  refresh,TResult Function( List<String> tickers)?  watchlistUpdated,TResult Function( Either<Failure, ReportsFeed> result)?  reportsUpdated,TResult Function( int unreadCount,  ReportsEntrySource entrySource,  ReportsNotificationType? notificationType)?  viewed,TResult Function( String ticker,  String filingType)?  linkOpened,TResult Function( String ticker,  String filingType,  bool isReady)?  summaryRequested,TResult Function( String ticker,  String filingType)?  summarizeLockedClicked,TResult Function()?  upcomingExpanded,TResult Function( String ticker)?  upcomingCompanyClicked,TResult Function( String ticker)?  ytdCompanyClicked,TResult Function( String ticker)?  filingCardCompanyClicked,TResult Function()?  emptyCtaClicked,TResult Function( String publisher,  String site)?  marketNewsArticleOpened,TResult Function( String error)?  marketNewsLoadFailed,TResult Function( DateTime? lastViewedReports)?  activityUpdated,TResult Function()?  reset,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String? uid)?  started,TResult Function()?  refresh,TResult Function( List<String> tickers)?  watchlistUpdated,TResult Function( ReportsEntrySource entrySource,  ReportsNotificationType? notificationType,  bool onlyIfUnread)?  viewed,TResult Function( String ticker,  String filingType)?  linkOpened,TResult Function( String ticker,  String filingType,  bool isReady)?  summaryRequested,TResult Function( String ticker,  String filingType)?  summarizeLockedClicked,TResult Function()?  upcomingExpanded,TResult Function( String ticker)?  upcomingCompanyClicked,TResult Function( String ticker)?  ytdCompanyClicked,TResult Function( String ticker)?  filingCardCompanyClicked,TResult Function()?  emptyCtaClicked,TResult Function( String publisher,  String site)?  marketNewsArticleOpened,TResult Function( String error)?  marketNewsLoadFailed,TResult Function()?  dayCheckRequested,TResult Function()?  reset,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case Started() when started != null:
 return started(_that.uid);case Refresh() when refresh != null:
 return refresh();case WatchlistUpdated() when watchlistUpdated != null:
-return watchlistUpdated(_that.tickers);case ReportsUpdated() when reportsUpdated != null:
-return reportsUpdated(_that.result);case Viewed() when viewed != null:
-return viewed(_that.unreadCount,_that.entrySource,_that.notificationType);case LinkOpened() when linkOpened != null:
+return watchlistUpdated(_that.tickers);case Viewed() when viewed != null:
+return viewed(_that.entrySource,_that.notificationType,_that.onlyIfUnread);case LinkOpened() when linkOpened != null:
 return linkOpened(_that.ticker,_that.filingType);case SummaryRequested() when summaryRequested != null:
 return summaryRequested(_that.ticker,_that.filingType,_that.isReady);case SummarizeLockedClicked() when summarizeLockedClicked != null:
 return summarizeLockedClicked(_that.ticker,_that.filingType);case UpcomingExpanded() when upcomingExpanded != null:
@@ -182,8 +178,8 @@ return ytdCompanyClicked(_that.ticker);case FilingCardCompanyClicked() when fili
 return filingCardCompanyClicked(_that.ticker);case EmptyCtaClicked() when emptyCtaClicked != null:
 return emptyCtaClicked();case MarketNewsArticleOpened() when marketNewsArticleOpened != null:
 return marketNewsArticleOpened(_that.publisher,_that.site);case MarketNewsLoadFailed() when marketNewsLoadFailed != null:
-return marketNewsLoadFailed(_that.error);case ActivityUpdated() when activityUpdated != null:
-return activityUpdated(_that.lastViewedReports);case Reset() when reset != null:
+return marketNewsLoadFailed(_that.error);case DayCheckRequested() when dayCheckRequested != null:
+return dayCheckRequested();case Reset() when reset != null:
 return reset();case _:
   return orElse();
 
@@ -202,14 +198,13 @@ return reset();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String? uid)  started,required TResult Function()  refresh,required TResult Function( List<String> tickers)  watchlistUpdated,required TResult Function( Either<Failure, ReportsFeed> result)  reportsUpdated,required TResult Function( int unreadCount,  ReportsEntrySource entrySource,  ReportsNotificationType? notificationType)  viewed,required TResult Function( String ticker,  String filingType)  linkOpened,required TResult Function( String ticker,  String filingType,  bool isReady)  summaryRequested,required TResult Function( String ticker,  String filingType)  summarizeLockedClicked,required TResult Function()  upcomingExpanded,required TResult Function( String ticker)  upcomingCompanyClicked,required TResult Function( String ticker)  ytdCompanyClicked,required TResult Function( String ticker)  filingCardCompanyClicked,required TResult Function()  emptyCtaClicked,required TResult Function( String publisher,  String site)  marketNewsArticleOpened,required TResult Function( String error)  marketNewsLoadFailed,required TResult Function( DateTime? lastViewedReports)  activityUpdated,required TResult Function()  reset,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String? uid)  started,required TResult Function()  refresh,required TResult Function( List<String> tickers)  watchlistUpdated,required TResult Function( ReportsEntrySource entrySource,  ReportsNotificationType? notificationType,  bool onlyIfUnread)  viewed,required TResult Function( String ticker,  String filingType)  linkOpened,required TResult Function( String ticker,  String filingType,  bool isReady)  summaryRequested,required TResult Function( String ticker,  String filingType)  summarizeLockedClicked,required TResult Function()  upcomingExpanded,required TResult Function( String ticker)  upcomingCompanyClicked,required TResult Function( String ticker)  ytdCompanyClicked,required TResult Function( String ticker)  filingCardCompanyClicked,required TResult Function()  emptyCtaClicked,required TResult Function( String publisher,  String site)  marketNewsArticleOpened,required TResult Function( String error)  marketNewsLoadFailed,required TResult Function()  dayCheckRequested,required TResult Function()  reset,}) {final _that = this;
 switch (_that) {
 case Started():
 return started(_that.uid);case Refresh():
 return refresh();case WatchlistUpdated():
-return watchlistUpdated(_that.tickers);case ReportsUpdated():
-return reportsUpdated(_that.result);case Viewed():
-return viewed(_that.unreadCount,_that.entrySource,_that.notificationType);case LinkOpened():
+return watchlistUpdated(_that.tickers);case Viewed():
+return viewed(_that.entrySource,_that.notificationType,_that.onlyIfUnread);case LinkOpened():
 return linkOpened(_that.ticker,_that.filingType);case SummaryRequested():
 return summaryRequested(_that.ticker,_that.filingType,_that.isReady);case SummarizeLockedClicked():
 return summarizeLockedClicked(_that.ticker,_that.filingType);case UpcomingExpanded():
@@ -219,8 +214,8 @@ return ytdCompanyClicked(_that.ticker);case FilingCardCompanyClicked():
 return filingCardCompanyClicked(_that.ticker);case EmptyCtaClicked():
 return emptyCtaClicked();case MarketNewsArticleOpened():
 return marketNewsArticleOpened(_that.publisher,_that.site);case MarketNewsLoadFailed():
-return marketNewsLoadFailed(_that.error);case ActivityUpdated():
-return activityUpdated(_that.lastViewedReports);case Reset():
+return marketNewsLoadFailed(_that.error);case DayCheckRequested():
+return dayCheckRequested();case Reset():
 return reset();}
 }
 /// A variant of `when` that fallback to returning `null`
@@ -235,14 +230,13 @@ return reset();}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String? uid)?  started,TResult? Function()?  refresh,TResult? Function( List<String> tickers)?  watchlistUpdated,TResult? Function( Either<Failure, ReportsFeed> result)?  reportsUpdated,TResult? Function( int unreadCount,  ReportsEntrySource entrySource,  ReportsNotificationType? notificationType)?  viewed,TResult? Function( String ticker,  String filingType)?  linkOpened,TResult? Function( String ticker,  String filingType,  bool isReady)?  summaryRequested,TResult? Function( String ticker,  String filingType)?  summarizeLockedClicked,TResult? Function()?  upcomingExpanded,TResult? Function( String ticker)?  upcomingCompanyClicked,TResult? Function( String ticker)?  ytdCompanyClicked,TResult? Function( String ticker)?  filingCardCompanyClicked,TResult? Function()?  emptyCtaClicked,TResult? Function( String publisher,  String site)?  marketNewsArticleOpened,TResult? Function( String error)?  marketNewsLoadFailed,TResult? Function( DateTime? lastViewedReports)?  activityUpdated,TResult? Function()?  reset,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String? uid)?  started,TResult? Function()?  refresh,TResult? Function( List<String> tickers)?  watchlistUpdated,TResult? Function( ReportsEntrySource entrySource,  ReportsNotificationType? notificationType,  bool onlyIfUnread)?  viewed,TResult? Function( String ticker,  String filingType)?  linkOpened,TResult? Function( String ticker,  String filingType,  bool isReady)?  summaryRequested,TResult? Function( String ticker,  String filingType)?  summarizeLockedClicked,TResult? Function()?  upcomingExpanded,TResult? Function( String ticker)?  upcomingCompanyClicked,TResult? Function( String ticker)?  ytdCompanyClicked,TResult? Function( String ticker)?  filingCardCompanyClicked,TResult? Function()?  emptyCtaClicked,TResult? Function( String publisher,  String site)?  marketNewsArticleOpened,TResult? Function( String error)?  marketNewsLoadFailed,TResult? Function()?  dayCheckRequested,TResult? Function()?  reset,}) {final _that = this;
 switch (_that) {
 case Started() when started != null:
 return started(_that.uid);case Refresh() when refresh != null:
 return refresh();case WatchlistUpdated() when watchlistUpdated != null:
-return watchlistUpdated(_that.tickers);case ReportsUpdated() when reportsUpdated != null:
-return reportsUpdated(_that.result);case Viewed() when viewed != null:
-return viewed(_that.unreadCount,_that.entrySource,_that.notificationType);case LinkOpened() when linkOpened != null:
+return watchlistUpdated(_that.tickers);case Viewed() when viewed != null:
+return viewed(_that.entrySource,_that.notificationType,_that.onlyIfUnread);case LinkOpened() when linkOpened != null:
 return linkOpened(_that.ticker,_that.filingType);case SummaryRequested() when summaryRequested != null:
 return summaryRequested(_that.ticker,_that.filingType,_that.isReady);case SummarizeLockedClicked() when summarizeLockedClicked != null:
 return summarizeLockedClicked(_that.ticker,_that.filingType);case UpcomingExpanded() when upcomingExpanded != null:
@@ -252,8 +246,8 @@ return ytdCompanyClicked(_that.ticker);case FilingCardCompanyClicked() when fili
 return filingCardCompanyClicked(_that.ticker);case EmptyCtaClicked() when emptyCtaClicked != null:
 return emptyCtaClicked();case MarketNewsArticleOpened() when marketNewsArticleOpened != null:
 return marketNewsArticleOpened(_that.publisher,_that.site);case MarketNewsLoadFailed() when marketNewsLoadFailed != null:
-return marketNewsLoadFailed(_that.error);case ActivityUpdated() when activityUpdated != null:
-return activityUpdated(_that.lastViewedReports);case Reset() when reset != null:
+return marketNewsLoadFailed(_that.error);case DayCheckRequested() when dayCheckRequested != null:
+return dayCheckRequested();case Reset() when reset != null:
 return reset();case _:
   return null;
 
@@ -439,81 +433,13 @@ as List<String>,
 /// @nodoc
 
 
-class ReportsUpdated implements ReportsEvent {
-  const ReportsUpdated(this.result);
-  
-
- final  Either<Failure, ReportsFeed> result;
-
-/// Create a copy of ReportsEvent
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-$ReportsUpdatedCopyWith<ReportsUpdated> get copyWith => _$ReportsUpdatedCopyWithImpl<ReportsUpdated>(this, _$identity);
-
-
-
-@override
-bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is ReportsUpdated&&(identical(other.result, result) || other.result == result));
-}
-
-
-@override
-int get hashCode {
-    return Object.hash(runtimeType,result);
-}
-
-@override
-String toString() {
-    return 'ReportsEvent.reportsUpdated(result: $result)';
-}
-
-
-}
-
-/// @nodoc
-abstract mixin class $ReportsUpdatedCopyWith<$Res> implements $ReportsEventCopyWith<$Res> {
-  factory $ReportsUpdatedCopyWith(ReportsUpdated value, $Res Function(ReportsUpdated) _then) = _$ReportsUpdatedCopyWithImpl;
-@useResult
-$Res call({
- Either<Failure, ReportsFeed> result
-});
-
-
-
-
-}
-/// @nodoc
-class _$ReportsUpdatedCopyWithImpl<$Res>
-    implements $ReportsUpdatedCopyWith<$Res> {
-  _$ReportsUpdatedCopyWithImpl(this._self, this._then);
-
-  final ReportsUpdated _self;
-  final $Res Function(ReportsUpdated) _then;
-
-/// Create a copy of ReportsEvent
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? result = null,}) {
-  return _then(ReportsUpdated(
-null == result ? _self.result : result // ignore: cast_nullable_to_non_nullable
-as Either<Failure, ReportsFeed>,
-  ));
-}
-
-
-}
-
-/// @nodoc
-
-
 class Viewed implements ReportsEvent {
-  const Viewed({required this.unreadCount, required this.entrySource, this.notificationType});
+  const Viewed({required this.entrySource, this.notificationType, this.onlyIfUnread = false});
   
 
- final  int unreadCount;
  final  ReportsEntrySource entrySource;
  final  ReportsNotificationType? notificationType;
+@JsonKey() final  bool onlyIfUnread;
 
 /// Create a copy of ReportsEvent
 /// with the given fields replaced by the non-null parameter values.
@@ -525,18 +451,18 @@ $ViewedCopyWith<Viewed> get copyWith => _$ViewedCopyWithImpl<Viewed>(this, _$ide
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is Viewed&&(identical(other.unreadCount, unreadCount) || other.unreadCount == unreadCount)&&(identical(other.entrySource, entrySource) || other.entrySource == entrySource)&&(identical(other.notificationType, notificationType) || other.notificationType == notificationType));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is Viewed&&(identical(other.entrySource, entrySource) || other.entrySource == entrySource)&&(identical(other.notificationType, notificationType) || other.notificationType == notificationType)&&(identical(other.onlyIfUnread, onlyIfUnread) || other.onlyIfUnread == onlyIfUnread));
 }
 
 
 @override
 int get hashCode {
-    return Object.hash(runtimeType,unreadCount,entrySource,notificationType);
+    return Object.hash(runtimeType,entrySource,notificationType,onlyIfUnread);
 }
 
 @override
 String toString() {
-    return 'ReportsEvent.viewed(unreadCount: $unreadCount, entrySource: $entrySource, notificationType: $notificationType)';
+    return 'ReportsEvent.viewed(entrySource: $entrySource, notificationType: $notificationType, onlyIfUnread: $onlyIfUnread)';
 }
 
 
@@ -547,7 +473,7 @@ abstract mixin class $ViewedCopyWith<$Res> implements $ReportsEventCopyWith<$Res
   factory $ViewedCopyWith(Viewed value, $Res Function(Viewed) _then) = _$ViewedCopyWithImpl;
 @useResult
 $Res call({
- int unreadCount, ReportsEntrySource entrySource, ReportsNotificationType? notificationType
+ ReportsEntrySource entrySource, ReportsNotificationType? notificationType, bool onlyIfUnread
 });
 
 
@@ -564,12 +490,12 @@ class _$ViewedCopyWithImpl<$Res>
 
 /// Create a copy of ReportsEvent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? unreadCount = null,Object? entrySource = null,Object? notificationType = freezed,}) {
+@pragma('vm:prefer-inline') $Res call({Object? entrySource = null,Object? notificationType = freezed,Object? onlyIfUnread = null,}) {
   return _then(Viewed(
-unreadCount: null == unreadCount ? _self.unreadCount : unreadCount // ignore: cast_nullable_to_non_nullable
-as int,entrySource: null == entrySource ? _self.entrySource : entrySource // ignore: cast_nullable_to_non_nullable
+entrySource: null == entrySource ? _self.entrySource : entrySource // ignore: cast_nullable_to_non_nullable
 as ReportsEntrySource,notificationType: freezed == notificationType ? _self.notificationType : notificationType // ignore: cast_nullable_to_non_nullable
-as ReportsNotificationType?,
+as ReportsNotificationType?,onlyIfUnread: null == onlyIfUnread ? _self.onlyIfUnread : onlyIfUnread // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 
@@ -1197,70 +1123,34 @@ as String,
 /// @nodoc
 
 
-class ActivityUpdated implements ReportsEvent {
-  const ActivityUpdated(this.lastViewedReports);
+class DayCheckRequested implements ReportsEvent {
+  const DayCheckRequested();
   
 
- final  DateTime? lastViewedReports;
 
-/// Create a copy of ReportsEvent
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-$ActivityUpdatedCopyWith<ActivityUpdated> get copyWith => _$ActivityUpdatedCopyWithImpl<ActivityUpdated>(this, _$identity);
+
 
 
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is ActivityUpdated&&(identical(other.lastViewedReports, lastViewedReports) || other.lastViewedReports == lastViewedReports));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is DayCheckRequested);
 }
 
 
 @override
-int get hashCode {
-    return Object.hash(runtimeType,lastViewedReports);
-}
+int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-    return 'ReportsEvent.activityUpdated(lastViewedReports: $lastViewedReports)';
+    return 'ReportsEvent.dayCheckRequested()';
 }
 
 
 }
 
-/// @nodoc
-abstract mixin class $ActivityUpdatedCopyWith<$Res> implements $ReportsEventCopyWith<$Res> {
-  factory $ActivityUpdatedCopyWith(ActivityUpdated value, $Res Function(ActivityUpdated) _then) = _$ActivityUpdatedCopyWithImpl;
-@useResult
-$Res call({
- DateTime? lastViewedReports
-});
 
 
-
-
-}
-/// @nodoc
-class _$ActivityUpdatedCopyWithImpl<$Res>
-    implements $ActivityUpdatedCopyWith<$Res> {
-  _$ActivityUpdatedCopyWithImpl(this._self, this._then);
-
-  final ActivityUpdated _self;
-  final $Res Function(ActivityUpdated) _then;
-
-/// Create a copy of ReportsEvent
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? lastViewedReports = freezed,}) {
-  return _then(ActivityUpdated(
-freezed == lastViewedReports ? _self.lastViewedReports : lastViewedReports // ignore: cast_nullable_to_non_nullable
-as DateTime?,
-  ));
-}
-
-
-}
 
 /// @nodoc
 

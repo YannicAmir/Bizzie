@@ -10,6 +10,7 @@ abstract class IUserRepository {
   Stream<Either<Failure, UserModel?>> watchUser(String uid);
   Future<Either<Failure, void>> updateFcmToken(String deviceId, String token);
   Future<Either<Failure, void>> removeFcmToken(String deviceId);
+  Future<Either<Failure, void>> updateLastViewedAt();
   Future<Either<Failure, void>> updateNotificationSettings(
     bool enabled, {
     String? deviceId,

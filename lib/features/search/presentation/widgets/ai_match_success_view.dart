@@ -9,7 +9,7 @@ import 'package:bizzie/app/routes/app_routes.dart';
 import 'package:bizzie/core/domain/models/company.dart';
 import 'package:go_router/go_router.dart';
 
-import 'package:bizzie/features/search/domain/enums/search_analytics_enums.dart';
+import 'package:bizzie/core/enums/search_source.dart';
 
 class AiMatchSuccessView extends StatelessWidget {
   final String productName;

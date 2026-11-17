@@ -13,6 +13,8 @@ import 'package:bizzie/features/company_profile/shared/presentation/widgets/tab_
 import 'package:bizzie/features/subscription/presentation/utils/paywall_helper.dart';
 import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
 import 'package:bizzie/features/user/presentation/extensions/user_state_extensions.dart';
+import 'package:bizzie/features/watchlist/presentation/bloc/watchlist_bloc.dart';
+import 'package:bizzie/features/watchlist/presentation/extensions/watchlist_state_extensions.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:bizzie/shared/models/filing_view_model.dart';
 import 'package:bizzie/shared/widgets/cards/sec_filing_card.dart';
@@ -20,6 +22,12 @@ import 'package:bizzie/shared/widgets/cards/weekly_report_card.dart';
 import 'package:bizzie/shared/widgets/inputs/bizzie_switch.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+void _showLockedPaywall(BuildContext context) =>
+    PaywallHelper.showLockedTabPaywall(
+      context,
+      tabName: CompanyProfileTab.aiReports.analyticsName,
+    );
 
 class AiReportsTab extends StatefulWidget {
   final String ticker;
@@ -141,20 +149,21 @@ class _AiReportCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final logoUrl = context.select<WatchlistBloc, String?>(
+      (bloc) => bloc.state.logoUrlFor(viewModel.filing.symbol),
+    );
     return BlocSelector<UserBloc, UserState, bool>(
       selector: (state) => state.isSubscribed,
       builder: (context, isSubscribed) => SecFilingCard(
         filing: viewModel.filing,
         financialReport: viewModel.report,
+        logoUrl: logoUrl,
         summaryButtonLabel: summaryButtonLabel,
         isSummaryLocked: !isSubscribed,
         onViewReportTapped: () => context.read<CompanyAiReportsBloc>().add(
           const CompanyAiReportsEvent.filingLinkOpened(),
         ),
-        onLockedSummaryTapped: () => PaywallHelper.showLockedTabPaywall(
-          context,
-          tabName: CompanyProfileTab.aiReports.analyticsName,
-        ),
+        onLockedSummaryTapped: () => _showLockedPaywall(context),
         onSummaryRequested: (_) => context.read<CompanyAiReportsBloc>().add(
           const CompanyAiReportsEvent.reportOpened(),
         ),
@@ -170,15 +179,16 @@ class _RecapCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final logoUrl = context.select<WatchlistBloc, String?>(
+      (bloc) => bloc.state.logoUrlFor(report.ticker),
+    );
     return BlocSelector<UserBloc, UserState, bool>(
       selector: (state) => state.isSubscribed,
       builder: (context, isSubscribed) => WeeklyReportCard(
         report: report,
+        logoUrl: logoUrl,
         isLocked: !isSubscribed,
-        onLockedTapped: () => PaywallHelper.showLockedTabPaywall(
-          context,
-          tabName: CompanyProfileTab.aiReports.analyticsName,
-        ),
+        onLockedTapped: () => _showLockedPaywall(context),
         onReportOpened: () => context.read<CompanyAiReportsBloc>().add(
           const CompanyAiReportsEvent.reportOpened(),
         ),

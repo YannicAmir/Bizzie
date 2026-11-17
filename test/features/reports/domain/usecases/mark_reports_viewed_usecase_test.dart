@@ -1,6 +1,6 @@
 import 'package:bizzie/features/reports/domain/interfaces/i_reports_repository.dart';
 import 'package:bizzie/features/reports/domain/models/mark_reports_viewed_params.dart';
-import 'package:bizzie/features/reports/domain/usecases/mark_reports_viewed_use_case.dart';
+import 'package:bizzie/features/reports/domain/usecases/mark_reports_viewed_usecase.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:dartz/dartz.dart';

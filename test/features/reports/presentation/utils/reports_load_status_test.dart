@@ -6,7 +6,10 @@ import 'package:bizzie/features/reports/presentation/utils/reports_load_status.d
 import 'package:bizzie/features/watchlist_ytd/presentation/bloc/watchlist_ytd/watchlist_ytd_state.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-const tReportsLoaded = ReportsState.loaded(ReportsFeed());
+final tReportsLoaded = ReportsState.loaded(
+  const ReportsFeed(),
+  today: DateTime(2026, 5, 27),
+);
 const tReportsLoading = ReportsState.loading();
 final tReportsFailure = ReportsState.failure(Failure.server('error'));
 

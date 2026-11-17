@@ -3,12 +3,13 @@ import 'package:bizzie/features/app_status/domain/models/app_status.dart';
 import 'package:bizzie/features/app_status/presentation/analytics/app_status_tracker.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 
-part 'app_status_event.dart';
-part 'app_status_state.dart';
-part 'app_status_bloc.freezed.dart';
+import 'app_status_event.dart';
+import 'app_status_state.dart';
+
+export 'app_status_event.dart';
+export 'app_status_state.dart';
 
 final _logger = BizzieLogger('AppStatusBloc');
 
@@ -19,12 +20,15 @@ class AppStatusBloc extends Bloc<AppStatusEvent, AppStatusState> {
 
   AppStatusBloc(this._repository, this._tracker)
     : super(const AppStatusState.initial()) {
-    on<_Started>(_onStarted);
-    on<_Refreshed>(_onRefreshed);
-    on<_StatusChanged>(_onStatusChanged);
+    on<AppStatusStarted>(_onStarted);
+    on<AppStatusRefreshed>(_onRefreshed);
+    on<AppStatusStatusChanged>(_onStatusChanged);
   }
 
-  Future<void> _onStarted(_Started event, Emitter<AppStatusState> emit) async {
+  Future<void> _onStarted(
+    AppStatusStarted event,
+    Emitter<AppStatusState> emit,
+  ) async {
     _logger.info('Monitoring app status stream...');
     return emit.forEach<AppStatus>(
       _repository.watchStatus().distinct(),
@@ -37,7 +41,7 @@ class AppStatusBloc extends Bloc<AppStatusEvent, AppStatusState> {
   }
 
   Future<void> _onRefreshed(
-    _Refreshed event,
+    AppStatusRefreshed event,
     Emitter<AppStatusState> emit,
   ) async {
     _logger.info('Manual status refresh requested');
@@ -53,7 +57,10 @@ class AppStatusBloc extends Bloc<AppStatusEvent, AppStatusState> {
     add(AppStatusEvent.statusChanged(status, isManualRefresh: true));
   }
 
-  void _onStatusChanged(_StatusChanged event, Emitter<AppStatusState> emit) {
+  void _onStatusChanged(
+    AppStatusStatusChanged event,
+    Emitter<AppStatusState> emit,
+  ) {
     _logger.info('Status change event received: ${event.status}');
     _trackStatus(event.status, isManualRefresh: event.isManualRefresh);
     emit(AppStatusState.checked(event.status));
