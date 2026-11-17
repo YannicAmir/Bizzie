@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'weekly_report_dto.dart';
@@ -9,6 +9,7 @@ part of 'weekly_report_dto.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 
@@ -28,16 +29,21 @@ $WeeklyReportDtoCopyWith<WeeklyReportDto> get copyWith => _$WeeklyReportDtoCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is WeeklyReportDto&&(identical(other.id, id) || other.id == id)&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.companyName, companyName) || other.companyName == companyName)&&(identical(other.messageTitle, messageTitle) || other.messageTitle == messageTitle)&&(identical(other.messageShortSummary, messageShortSummary) || other.messageShortSummary == messageShortSummary)&&(identical(other.messageLongSummary, messageLongSummary) || other.messageLongSummary == messageLongSummary)&&const DeepCollectionEquality().equals(other.newsLinks, newsLinks)&&const DeepCollectionEquality().equals(other.eightKLinks, eightKLinks)&&const DeepCollectionEquality().equals(other.priceMovement, priceMovement)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt));
+  final _this = this as WeeklyReportDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is WeeklyReportDto&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.ticker, _this.ticker) || other.ticker == _this.ticker)&&(identical(other.companyName, _this.companyName) || other.companyName == _this.companyName)&&(identical(other.messageTitle, _this.messageTitle) || other.messageTitle == _this.messageTitle)&&(identical(other.messageShortSummary, _this.messageShortSummary) || other.messageShortSummary == _this.messageShortSummary)&&(identical(other.messageLongSummary, _this.messageLongSummary) || other.messageLongSummary == _this.messageLongSummary)&&const DeepCollectionEquality().equals(other.newsLinks, _this.newsLinks)&&const DeepCollectionEquality().equals(other.eightKLinks, _this.eightKLinks)&&const DeepCollectionEquality().equals(other.priceMovement, _this.priceMovement)&&(identical(other.createdAt, _this.createdAt) || other.createdAt == _this.createdAt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,ticker,companyName,messageTitle,messageShortSummary,messageLongSummary,const DeepCollectionEquality().hash(newsLinks),const DeepCollectionEquality().hash(eightKLinks),const DeepCollectionEquality().hash(priceMovement),createdAt);
+int get hashCode {
+  final _this = this as WeeklyReportDto;
+  return Object.hash(runtimeType,_this.id,_this.ticker,_this.companyName,_this.messageTitle,_this.messageShortSummary,_this.messageLongSummary,const DeepCollectionEquality().hash(_this.newsLinks),const DeepCollectionEquality().hash(_this.eightKLinks),const DeepCollectionEquality().hash(_this.priceMovement),_this.createdAt);
+}
 
 @override
 String toString() {
-  return 'WeeklyReportDto(id: $id, ticker: $ticker, companyName: $companyName, messageTitle: $messageTitle, messageShortSummary: $messageShortSummary, messageLongSummary: $messageLongSummary, newsLinks: $newsLinks, eightKLinks: $eightKLinks, priceMovement: $priceMovement, createdAt: $createdAt)';
+  final _this = this as WeeklyReportDto;
+  return 'WeeklyReportDto(id: ${_this.id}, ticker: ${_this.ticker}, companyName: ${_this.companyName}, messageTitle: ${_this.messageTitle}, messageShortSummary: ${_this.messageShortSummary}, messageLongSummary: ${_this.messageLongSummary}, newsLinks: ${_this.newsLinks}, eightKLinks: ${_this.eightKLinks}, priceMovement: ${_this.priceMovement}, createdAt: ${_this.createdAt})';
 }
 
 
@@ -66,7 +72,7 @@ class _$WeeklyReportDtoCopyWithImpl<$Res>
 /// Create a copy of WeeklyReportDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = freezed,Object? ticker = freezed,Object? companyName = freezed,Object? messageTitle = freezed,Object? messageShortSummary = freezed,Object? messageLongSummary = freezed,Object? newsLinks = freezed,Object? eightKLinks = freezed,Object? priceMovement = freezed,Object? createdAt = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(WeeklyReportDto(
 id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String?,ticker: freezed == ticker ? _self.ticker : ticker // ignore: cast_nullable_to_non_nullable
 as String?,companyName: freezed == companyName ? _self.companyName : companyName // ignore: cast_nullable_to_non_nullable
@@ -218,7 +224,7 @@ return $default(_that.id,_that.ticker,_that.companyName,_that.messageTitle,_that
 
 @JsonSerializable()
 class _WeeklyReportDto extends WeeklyReportDto {
-  const _WeeklyReportDto({@JsonKey(includeToJson: false) this.id, this.ticker, this.companyName, this.messageTitle, this.messageShortSummary, this.messageLongSummary, final  List<String>? newsLinks, final  List<String>? eightKLinks, final  Map<String, dynamic>? priceMovement, @TimestampConverter() this.createdAt}): _newsLinks = newsLinks,_eightKLinks = eightKLinks,_priceMovement = priceMovement,super._();
+  const _WeeklyReportDto({@JsonKey(includeToJson: false) this.id, this.ticker, this.companyName, this.messageTitle, this.messageShortSummary, this.messageLongSummary,  List<String>? newsLinks,  List<String>? eightKLinks,  Map<String, dynamic>? priceMovement, @TimestampConverter() this.createdAt}): _newsLinks = newsLinks,_eightKLinks = eightKLinks,_priceMovement = priceMovement,super._();
   factory _WeeklyReportDto.fromJson(Map<String, dynamic> json) => _$WeeklyReportDtoFromJson(json);
 
 @override@JsonKey(includeToJson: false) final  String? id;
@@ -269,16 +275,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _WeeklyReportDto&&(identical(other.id, id) || other.id == id)&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.companyName, companyName) || other.companyName == companyName)&&(identical(other.messageTitle, messageTitle) || other.messageTitle == messageTitle)&&(identical(other.messageShortSummary, messageShortSummary) || other.messageShortSummary == messageShortSummary)&&(identical(other.messageLongSummary, messageLongSummary) || other.messageLongSummary == messageLongSummary)&&const DeepCollectionEquality().equals(other._newsLinks, _newsLinks)&&const DeepCollectionEquality().equals(other._eightKLinks, _eightKLinks)&&const DeepCollectionEquality().equals(other._priceMovement, _priceMovement)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _WeeklyReportDto&&(identical(other.id, id) || other.id == id)&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.companyName, companyName) || other.companyName == companyName)&&(identical(other.messageTitle, messageTitle) || other.messageTitle == messageTitle)&&(identical(other.messageShortSummary, messageShortSummary) || other.messageShortSummary == messageShortSummary)&&(identical(other.messageLongSummary, messageLongSummary) || other.messageLongSummary == messageLongSummary)&&const DeepCollectionEquality().equals(other.newsLinks, _newsLinks)&&const DeepCollectionEquality().equals(other.eightKLinks, _eightKLinks)&&const DeepCollectionEquality().equals(other.priceMovement, _priceMovement)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,ticker,companyName,messageTitle,messageShortSummary,messageLongSummary,const DeepCollectionEquality().hash(_newsLinks),const DeepCollectionEquality().hash(_eightKLinks),const DeepCollectionEquality().hash(_priceMovement),createdAt);
+int get hashCode {
+    return Object.hash(runtimeType,id,ticker,companyName,messageTitle,messageShortSummary,messageLongSummary,const DeepCollectionEquality().hash(_newsLinks),const DeepCollectionEquality().hash(_eightKLinks),const DeepCollectionEquality().hash(_priceMovement),createdAt);
+}
 
 @override
 String toString() {
-  return 'WeeklyReportDto(id: $id, ticker: $ticker, companyName: $companyName, messageTitle: $messageTitle, messageShortSummary: $messageShortSummary, messageLongSummary: $messageLongSummary, newsLinks: $newsLinks, eightKLinks: $eightKLinks, priceMovement: $priceMovement, createdAt: $createdAt)';
+    return 'WeeklyReportDto(id: $id, ticker: $ticker, companyName: $companyName, messageTitle: $messageTitle, messageShortSummary: $messageShortSummary, messageLongSummary: $messageLongSummary, newsLinks: $newsLinks, eightKLinks: $eightKLinks, priceMovement: $priceMovement, createdAt: $createdAt)';
 }
 
 

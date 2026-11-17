@@ -56,9 +56,9 @@ abstract class OnboardingState with _$OnboardingState {
     @Default(false) bool hasViewedCompanyProfile,
     String? savedProfileUid,
   }) = _OnboardingState;
+}
 
-  const OnboardingState._();
-
+extension OnboardingStateX on OnboardingState {
   String? get initialCompanyTicker => selectedBrands.firstOrNull?.ticker;
 
   String get notificationTicker =>

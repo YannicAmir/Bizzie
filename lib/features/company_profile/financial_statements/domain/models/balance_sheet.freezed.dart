@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'balance_sheet.dart';
@@ -9,6 +9,7 @@ part of 'balance_sheet.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $BalanceSheetCopyWith<BalanceSheet> get copyWith => _$BalanceSheetCopyWithImpl<B
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is BalanceSheet&&(identical(other.date, date) || other.date == date)&&(identical(other.symbol, symbol) || other.symbol == symbol)&&(identical(other.reportedCurrency, reportedCurrency) || other.reportedCurrency == reportedCurrency)&&(identical(other.period, period) || other.period == period)&&(identical(other.totalAssets, totalAssets) || other.totalAssets == totalAssets)&&(identical(other.totalLiabilities, totalLiabilities) || other.totalLiabilities == totalLiabilities)&&(identical(other.totalEquity, totalEquity) || other.totalEquity == totalEquity)&&(identical(other.cashAndShortTermInvestments, cashAndShortTermInvestments) || other.cashAndShortTermInvestments == cashAndShortTermInvestments)&&(identical(other.totalDebt, totalDebt) || other.totalDebt == totalDebt)&&(identical(other.totalCurrentAssets, totalCurrentAssets) || other.totalCurrentAssets == totalCurrentAssets)&&(identical(other.totalNonCurrentAssets, totalNonCurrentAssets) || other.totalNonCurrentAssets == totalNonCurrentAssets)&&(identical(other.totalCurrentLiabilities, totalCurrentLiabilities) || other.totalCurrentLiabilities == totalCurrentLiabilities)&&(identical(other.totalNonCurrentLiabilities, totalNonCurrentLiabilities) || other.totalNonCurrentLiabilities == totalNonCurrentLiabilities)&&(identical(other.longTermDebt, longTermDebt) || other.longTermDebt == longTermDebt)&&(identical(other.shortTermDebt, shortTermDebt) || other.shortTermDebt == shortTermDebt));
+  final _this = this as BalanceSheet;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is BalanceSheet&&(identical(other.date, _this.date) || other.date == _this.date)&&(identical(other.symbol, _this.symbol) || other.symbol == _this.symbol)&&(identical(other.reportedCurrency, _this.reportedCurrency) || other.reportedCurrency == _this.reportedCurrency)&&(identical(other.period, _this.period) || other.period == _this.period)&&(identical(other.totalAssets, _this.totalAssets) || other.totalAssets == _this.totalAssets)&&(identical(other.totalLiabilities, _this.totalLiabilities) || other.totalLiabilities == _this.totalLiabilities)&&(identical(other.totalEquity, _this.totalEquity) || other.totalEquity == _this.totalEquity)&&(identical(other.cashAndShortTermInvestments, _this.cashAndShortTermInvestments) || other.cashAndShortTermInvestments == _this.cashAndShortTermInvestments)&&(identical(other.totalDebt, _this.totalDebt) || other.totalDebt == _this.totalDebt)&&(identical(other.totalCurrentAssets, _this.totalCurrentAssets) || other.totalCurrentAssets == _this.totalCurrentAssets)&&(identical(other.totalNonCurrentAssets, _this.totalNonCurrentAssets) || other.totalNonCurrentAssets == _this.totalNonCurrentAssets)&&(identical(other.totalCurrentLiabilities, _this.totalCurrentLiabilities) || other.totalCurrentLiabilities == _this.totalCurrentLiabilities)&&(identical(other.totalNonCurrentLiabilities, _this.totalNonCurrentLiabilities) || other.totalNonCurrentLiabilities == _this.totalNonCurrentLiabilities)&&(identical(other.longTermDebt, _this.longTermDebt) || other.longTermDebt == _this.longTermDebt)&&(identical(other.shortTermDebt, _this.shortTermDebt) || other.shortTermDebt == _this.shortTermDebt));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,date,symbol,reportedCurrency,period,totalAssets,totalLiabilities,totalEquity,cashAndShortTermInvestments,totalDebt,totalCurrentAssets,totalNonCurrentAssets,totalCurrentLiabilities,totalNonCurrentLiabilities,longTermDebt,shortTermDebt);
+int get hashCode {
+  final _this = this as BalanceSheet;
+  return Object.hash(runtimeType,_this.date,_this.symbol,_this.reportedCurrency,_this.period,_this.totalAssets,_this.totalLiabilities,_this.totalEquity,_this.cashAndShortTermInvestments,_this.totalDebt,_this.totalCurrentAssets,_this.totalNonCurrentAssets,_this.totalCurrentLiabilities,_this.totalNonCurrentLiabilities,_this.longTermDebt,_this.shortTermDebt);
+}
 
 @override
 String toString() {
-  return 'BalanceSheet(date: $date, symbol: $symbol, reportedCurrency: $reportedCurrency, period: $period, totalAssets: $totalAssets, totalLiabilities: $totalLiabilities, totalEquity: $totalEquity, cashAndShortTermInvestments: $cashAndShortTermInvestments, totalDebt: $totalDebt, totalCurrentAssets: $totalCurrentAssets, totalNonCurrentAssets: $totalNonCurrentAssets, totalCurrentLiabilities: $totalCurrentLiabilities, totalNonCurrentLiabilities: $totalNonCurrentLiabilities, longTermDebt: $longTermDebt, shortTermDebt: $shortTermDebt)';
+  final _this = this as BalanceSheet;
+  return 'BalanceSheet(date: ${_this.date}, symbol: ${_this.symbol}, reportedCurrency: ${_this.reportedCurrency}, period: ${_this.period}, totalAssets: ${_this.totalAssets}, totalLiabilities: ${_this.totalLiabilities}, totalEquity: ${_this.totalEquity}, cashAndShortTermInvestments: ${_this.cashAndShortTermInvestments}, totalDebt: ${_this.totalDebt}, totalCurrentAssets: ${_this.totalCurrentAssets}, totalNonCurrentAssets: ${_this.totalNonCurrentAssets}, totalCurrentLiabilities: ${_this.totalCurrentLiabilities}, totalNonCurrentLiabilities: ${_this.totalNonCurrentLiabilities}, longTermDebt: ${_this.longTermDebt}, shortTermDebt: ${_this.shortTermDebt})';
 }
 
 
@@ -63,7 +69,7 @@ class _$BalanceSheetCopyWithImpl<$Res>
 /// Create a copy of BalanceSheet
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? date = null,Object? symbol = null,Object? reportedCurrency = null,Object? period = null,Object? totalAssets = null,Object? totalLiabilities = null,Object? totalEquity = null,Object? cashAndShortTermInvestments = null,Object? totalDebt = null,Object? totalCurrentAssets = null,Object? totalNonCurrentAssets = null,Object? totalCurrentLiabilities = null,Object? totalNonCurrentLiabilities = null,Object? longTermDebt = null,Object? shortTermDebt = null,}) {
-  return _then(_self.copyWith(
+  return _then(BalanceSheet(
 date: null == date ? _self.date : date // ignore: cast_nullable_to_non_nullable
 as String,symbol: null == symbol ? _self.symbol : symbol // ignore: cast_nullable_to_non_nullable
 as String,reportedCurrency: null == reportedCurrency ? _self.reportedCurrency : reportedCurrency // ignore: cast_nullable_to_non_nullable
@@ -249,16 +255,18 @@ _$BalanceSheetCopyWith<_BalanceSheet> get copyWith => __$BalanceSheetCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _BalanceSheet&&(identical(other.date, date) || other.date == date)&&(identical(other.symbol, symbol) || other.symbol == symbol)&&(identical(other.reportedCurrency, reportedCurrency) || other.reportedCurrency == reportedCurrency)&&(identical(other.period, period) || other.period == period)&&(identical(other.totalAssets, totalAssets) || other.totalAssets == totalAssets)&&(identical(other.totalLiabilities, totalLiabilities) || other.totalLiabilities == totalLiabilities)&&(identical(other.totalEquity, totalEquity) || other.totalEquity == totalEquity)&&(identical(other.cashAndShortTermInvestments, cashAndShortTermInvestments) || other.cashAndShortTermInvestments == cashAndShortTermInvestments)&&(identical(other.totalDebt, totalDebt) || other.totalDebt == totalDebt)&&(identical(other.totalCurrentAssets, totalCurrentAssets) || other.totalCurrentAssets == totalCurrentAssets)&&(identical(other.totalNonCurrentAssets, totalNonCurrentAssets) || other.totalNonCurrentAssets == totalNonCurrentAssets)&&(identical(other.totalCurrentLiabilities, totalCurrentLiabilities) || other.totalCurrentLiabilities == totalCurrentLiabilities)&&(identical(other.totalNonCurrentLiabilities, totalNonCurrentLiabilities) || other.totalNonCurrentLiabilities == totalNonCurrentLiabilities)&&(identical(other.longTermDebt, longTermDebt) || other.longTermDebt == longTermDebt)&&(identical(other.shortTermDebt, shortTermDebt) || other.shortTermDebt == shortTermDebt));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _BalanceSheet&&(identical(other.date, date) || other.date == date)&&(identical(other.symbol, symbol) || other.symbol == symbol)&&(identical(other.reportedCurrency, reportedCurrency) || other.reportedCurrency == reportedCurrency)&&(identical(other.period, period) || other.period == period)&&(identical(other.totalAssets, totalAssets) || other.totalAssets == totalAssets)&&(identical(other.totalLiabilities, totalLiabilities) || other.totalLiabilities == totalLiabilities)&&(identical(other.totalEquity, totalEquity) || other.totalEquity == totalEquity)&&(identical(other.cashAndShortTermInvestments, cashAndShortTermInvestments) || other.cashAndShortTermInvestments == cashAndShortTermInvestments)&&(identical(other.totalDebt, totalDebt) || other.totalDebt == totalDebt)&&(identical(other.totalCurrentAssets, totalCurrentAssets) || other.totalCurrentAssets == totalCurrentAssets)&&(identical(other.totalNonCurrentAssets, totalNonCurrentAssets) || other.totalNonCurrentAssets == totalNonCurrentAssets)&&(identical(other.totalCurrentLiabilities, totalCurrentLiabilities) || other.totalCurrentLiabilities == totalCurrentLiabilities)&&(identical(other.totalNonCurrentLiabilities, totalNonCurrentLiabilities) || other.totalNonCurrentLiabilities == totalNonCurrentLiabilities)&&(identical(other.longTermDebt, longTermDebt) || other.longTermDebt == longTermDebt)&&(identical(other.shortTermDebt, shortTermDebt) || other.shortTermDebt == shortTermDebt));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,date,symbol,reportedCurrency,period,totalAssets,totalLiabilities,totalEquity,cashAndShortTermInvestments,totalDebt,totalCurrentAssets,totalNonCurrentAssets,totalCurrentLiabilities,totalNonCurrentLiabilities,longTermDebt,shortTermDebt);
+int get hashCode {
+    return Object.hash(runtimeType,date,symbol,reportedCurrency,period,totalAssets,totalLiabilities,totalEquity,cashAndShortTermInvestments,totalDebt,totalCurrentAssets,totalNonCurrentAssets,totalCurrentLiabilities,totalNonCurrentLiabilities,longTermDebt,shortTermDebt);
+}
 
 @override
 String toString() {
-  return 'BalanceSheet(date: $date, symbol: $symbol, reportedCurrency: $reportedCurrency, period: $period, totalAssets: $totalAssets, totalLiabilities: $totalLiabilities, totalEquity: $totalEquity, cashAndShortTermInvestments: $cashAndShortTermInvestments, totalDebt: $totalDebt, totalCurrentAssets: $totalCurrentAssets, totalNonCurrentAssets: $totalNonCurrentAssets, totalCurrentLiabilities: $totalCurrentLiabilities, totalNonCurrentLiabilities: $totalNonCurrentLiabilities, longTermDebt: $longTermDebt, shortTermDebt: $shortTermDebt)';
+    return 'BalanceSheet(date: $date, symbol: $symbol, reportedCurrency: $reportedCurrency, period: $period, totalAssets: $totalAssets, totalLiabilities: $totalLiabilities, totalEquity: $totalEquity, cashAndShortTermInvestments: $cashAndShortTermInvestments, totalDebt: $totalDebt, totalCurrentAssets: $totalCurrentAssets, totalNonCurrentAssets: $totalNonCurrentAssets, totalCurrentLiabilities: $totalCurrentLiabilities, totalNonCurrentLiabilities: $totalNonCurrentLiabilities, longTermDebt: $longTermDebt, shortTermDebt: $shortTermDebt)';
 }
 
 

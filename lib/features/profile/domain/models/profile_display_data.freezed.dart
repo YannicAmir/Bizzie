@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'profile_display_data.dart';
@@ -9,6 +9,7 @@ part of 'profile_display_data.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $ProfileDisplayDataCopyWith<ProfileDisplayData> get copyWith => _$ProfileDisplay
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProfileDisplayData&&(identical(other.displayName, displayName) || other.displayName == displayName)&&(identical(other.sectorName, sectorName) || other.sectorName == sectorName)&&(identical(other.sectorDescription, sectorDescription) || other.sectorDescription == sectorDescription)&&(identical(other.joinedDate, joinedDate) || other.joinedDate == joinedDate)&&(identical(other.sectorPe, sectorPe) || other.sectorPe == sectorPe)&&(identical(other.sectorAverageChange, sectorAverageChange) || other.sectorAverageChange == sectorAverageChange)&&(identical(other.marketDataDate, marketDataDate) || other.marketDataDate == marketDataDate)&&(identical(other.isGuest, isGuest) || other.isGuest == isGuest));
+  final _this = this as ProfileDisplayData;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProfileDisplayData&&(identical(other.displayName, _this.displayName) || other.displayName == _this.displayName)&&(identical(other.sectorName, _this.sectorName) || other.sectorName == _this.sectorName)&&(identical(other.sectorDescription, _this.sectorDescription) || other.sectorDescription == _this.sectorDescription)&&(identical(other.joinedDate, _this.joinedDate) || other.joinedDate == _this.joinedDate)&&(identical(other.sectorPe, _this.sectorPe) || other.sectorPe == _this.sectorPe)&&(identical(other.sectorAverageChange, _this.sectorAverageChange) || other.sectorAverageChange == _this.sectorAverageChange)&&(identical(other.marketDataDate, _this.marketDataDate) || other.marketDataDate == _this.marketDataDate)&&(identical(other.isGuest, _this.isGuest) || other.isGuest == _this.isGuest));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,displayName,sectorName,sectorDescription,joinedDate,sectorPe,sectorAverageChange,marketDataDate,isGuest);
+int get hashCode {
+  final _this = this as ProfileDisplayData;
+  return Object.hash(runtimeType,_this.displayName,_this.sectorName,_this.sectorDescription,_this.joinedDate,_this.sectorPe,_this.sectorAverageChange,_this.marketDataDate,_this.isGuest);
+}
 
 @override
 String toString() {
-  return 'ProfileDisplayData(displayName: $displayName, sectorName: $sectorName, sectorDescription: $sectorDescription, joinedDate: $joinedDate, sectorPe: $sectorPe, sectorAverageChange: $sectorAverageChange, marketDataDate: $marketDataDate, isGuest: $isGuest)';
+  final _this = this as ProfileDisplayData;
+  return 'ProfileDisplayData(displayName: ${_this.displayName}, sectorName: ${_this.sectorName}, sectorDescription: ${_this.sectorDescription}, joinedDate: ${_this.joinedDate}, sectorPe: ${_this.sectorPe}, sectorAverageChange: ${_this.sectorAverageChange}, marketDataDate: ${_this.marketDataDate}, isGuest: ${_this.isGuest})';
 }
 
 
@@ -63,7 +69,7 @@ class _$ProfileDisplayDataCopyWithImpl<$Res>
 /// Create a copy of ProfileDisplayData
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? displayName = null,Object? sectorName = null,Object? sectorDescription = null,Object? joinedDate = null,Object? sectorPe = freezed,Object? sectorAverageChange = freezed,Object? marketDataDate = freezed,Object? isGuest = null,}) {
-  return _then(_self.copyWith(
+  return _then(ProfileDisplayData(
 displayName: null == displayName ? _self.displayName : displayName // ignore: cast_nullable_to_non_nullable
 as String,sectorName: null == sectorName ? _self.sectorName : sectorName // ignore: cast_nullable_to_non_nullable
 as String,sectorDescription: null == sectorDescription ? _self.sectorDescription : sectorDescription // ignore: cast_nullable_to_non_nullable
@@ -235,16 +241,18 @@ _$ProfileDisplayDataCopyWith<_ProfileDisplayData> get copyWith => __$ProfileDisp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ProfileDisplayData&&(identical(other.displayName, displayName) || other.displayName == displayName)&&(identical(other.sectorName, sectorName) || other.sectorName == sectorName)&&(identical(other.sectorDescription, sectorDescription) || other.sectorDescription == sectorDescription)&&(identical(other.joinedDate, joinedDate) || other.joinedDate == joinedDate)&&(identical(other.sectorPe, sectorPe) || other.sectorPe == sectorPe)&&(identical(other.sectorAverageChange, sectorAverageChange) || other.sectorAverageChange == sectorAverageChange)&&(identical(other.marketDataDate, marketDataDate) || other.marketDataDate == marketDataDate)&&(identical(other.isGuest, isGuest) || other.isGuest == isGuest));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ProfileDisplayData&&(identical(other.displayName, displayName) || other.displayName == displayName)&&(identical(other.sectorName, sectorName) || other.sectorName == sectorName)&&(identical(other.sectorDescription, sectorDescription) || other.sectorDescription == sectorDescription)&&(identical(other.joinedDate, joinedDate) || other.joinedDate == joinedDate)&&(identical(other.sectorPe, sectorPe) || other.sectorPe == sectorPe)&&(identical(other.sectorAverageChange, sectorAverageChange) || other.sectorAverageChange == sectorAverageChange)&&(identical(other.marketDataDate, marketDataDate) || other.marketDataDate == marketDataDate)&&(identical(other.isGuest, isGuest) || other.isGuest == isGuest));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,displayName,sectorName,sectorDescription,joinedDate,sectorPe,sectorAverageChange,marketDataDate,isGuest);
+int get hashCode {
+    return Object.hash(runtimeType,displayName,sectorName,sectorDescription,joinedDate,sectorPe,sectorAverageChange,marketDataDate,isGuest);
+}
 
 @override
 String toString() {
-  return 'ProfileDisplayData(displayName: $displayName, sectorName: $sectorName, sectorDescription: $sectorDescription, joinedDate: $joinedDate, sectorPe: $sectorPe, sectorAverageChange: $sectorAverageChange, marketDataDate: $marketDataDate, isGuest: $isGuest)';
+    return 'ProfileDisplayData(displayName: $displayName, sectorName: $sectorName, sectorDescription: $sectorDescription, joinedDate: $joinedDate, sectorPe: $sectorPe, sectorAverageChange: $sectorAverageChange, marketDataDate: $marketDataDate, isGuest: $isGuest)';
 }
 
 

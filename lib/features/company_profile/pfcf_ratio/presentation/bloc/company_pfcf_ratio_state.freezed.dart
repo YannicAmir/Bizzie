@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'company_pfcf_ratio_state.dart';
@@ -9,6 +9,7 @@ part of 'company_pfcf_ratio_state.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -20,7 +21,7 @@ mixin _$CompanyPfcfRatioState {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CompanyPfcfRatioState);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is CompanyPfcfRatioState);
 }
 
 
@@ -29,7 +30,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'CompanyPfcfRatioState()';
+    return 'CompanyPfcfRatioState()';
 }
 
 
@@ -203,7 +204,7 @@ class _Initial implements CompanyPfcfRatioState {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Initial);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Initial);
 }
 
 
@@ -212,7 +213,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'CompanyPfcfRatioState.initial()';
+    return 'CompanyPfcfRatioState.initial()';
 }
 
 
@@ -235,7 +236,7 @@ class _Loading implements CompanyPfcfRatioState {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Loading);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Loading);
 }
 
 
@@ -244,7 +245,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'CompanyPfcfRatioState.loading()';
+    return 'CompanyPfcfRatioState.loading()';
 }
 
 
@@ -257,7 +258,7 @@ String toString() {
 
 
 class CompanyPfcfRatioLoaded implements CompanyPfcfRatioState {
-  const CompanyPfcfRatioLoaded({required this.ticker, required final  List<FinancialDataPoint> dataPoints, required final  List<ChartDataPoint> chartData, required this.currentValue, required this.growthPercentage, required this.absoluteDelta, required this.isPositive, required this.referenceLabel, required this.historyLimit, required this.dataOrigin, this.loadTimeMs, this.isSuccess = false, this.lastUpdated, this.analyticsState}): _dataPoints = dataPoints,_chartData = chartData;
+  const CompanyPfcfRatioLoaded({required this.ticker, required  List<FinancialDataPoint> dataPoints, required  List<ChartDataPoint> chartData, required this.currentValue, required this.growthPercentage, required this.absoluteDelta, required this.isPositive, required this.referenceLabel, required this.historyLimit, required this.dataOrigin, this.loadTimeMs, this.isSuccess = false, this.lastUpdated, this.analyticsState}): _dataPoints = dataPoints,_chartData = chartData;
   
 
  final  String ticker;
@@ -297,16 +298,18 @@ $CompanyPfcfRatioLoadedCopyWith<CompanyPfcfRatioLoaded> get copyWith => _$Compan
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CompanyPfcfRatioLoaded&&(identical(other.ticker, ticker) || other.ticker == ticker)&&const DeepCollectionEquality().equals(other._dataPoints, _dataPoints)&&const DeepCollectionEquality().equals(other._chartData, _chartData)&&(identical(other.currentValue, currentValue) || other.currentValue == currentValue)&&(identical(other.growthPercentage, growthPercentage) || other.growthPercentage == growthPercentage)&&(identical(other.absoluteDelta, absoluteDelta) || other.absoluteDelta == absoluteDelta)&&(identical(other.isPositive, isPositive) || other.isPositive == isPositive)&&(identical(other.referenceLabel, referenceLabel) || other.referenceLabel == referenceLabel)&&(identical(other.historyLimit, historyLimit) || other.historyLimit == historyLimit)&&(identical(other.dataOrigin, dataOrigin) || other.dataOrigin == dataOrigin)&&(identical(other.loadTimeMs, loadTimeMs) || other.loadTimeMs == loadTimeMs)&&(identical(other.isSuccess, isSuccess) || other.isSuccess == isSuccess)&&(identical(other.lastUpdated, lastUpdated) || other.lastUpdated == lastUpdated)&&(identical(other.analyticsState, analyticsState) || other.analyticsState == analyticsState));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is CompanyPfcfRatioLoaded&&(identical(other.ticker, ticker) || other.ticker == ticker)&&const DeepCollectionEquality().equals(other.dataPoints, _dataPoints)&&const DeepCollectionEquality().equals(other.chartData, _chartData)&&(identical(other.currentValue, currentValue) || other.currentValue == currentValue)&&(identical(other.growthPercentage, growthPercentage) || other.growthPercentage == growthPercentage)&&(identical(other.absoluteDelta, absoluteDelta) || other.absoluteDelta == absoluteDelta)&&(identical(other.isPositive, isPositive) || other.isPositive == isPositive)&&(identical(other.referenceLabel, referenceLabel) || other.referenceLabel == referenceLabel)&&(identical(other.historyLimit, historyLimit) || other.historyLimit == historyLimit)&&(identical(other.dataOrigin, dataOrigin) || other.dataOrigin == dataOrigin)&&(identical(other.loadTimeMs, loadTimeMs) || other.loadTimeMs == loadTimeMs)&&(identical(other.isSuccess, isSuccess) || other.isSuccess == isSuccess)&&(identical(other.lastUpdated, lastUpdated) || other.lastUpdated == lastUpdated)&&(identical(other.analyticsState, analyticsState) || other.analyticsState == analyticsState));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,ticker,const DeepCollectionEquality().hash(_dataPoints),const DeepCollectionEquality().hash(_chartData),currentValue,growthPercentage,absoluteDelta,isPositive,referenceLabel,historyLimit,dataOrigin,loadTimeMs,isSuccess,lastUpdated,analyticsState);
+int get hashCode {
+    return Object.hash(runtimeType,ticker,const DeepCollectionEquality().hash(_dataPoints),const DeepCollectionEquality().hash(_chartData),currentValue,growthPercentage,absoluteDelta,isPositive,referenceLabel,historyLimit,dataOrigin,loadTimeMs,isSuccess,lastUpdated,analyticsState);
+}
 
 @override
 String toString() {
-  return 'CompanyPfcfRatioState.loaded(ticker: $ticker, dataPoints: $dataPoints, chartData: $chartData, currentValue: $currentValue, growthPercentage: $growthPercentage, absoluteDelta: $absoluteDelta, isPositive: $isPositive, referenceLabel: $referenceLabel, historyLimit: $historyLimit, dataOrigin: $dataOrigin, loadTimeMs: $loadTimeMs, isSuccess: $isSuccess, lastUpdated: $lastUpdated, analyticsState: $analyticsState)';
+    return 'CompanyPfcfRatioState.loaded(ticker: $ticker, dataPoints: $dataPoints, chartData: $chartData, currentValue: $currentValue, growthPercentage: $growthPercentage, absoluteDelta: $absoluteDelta, isPositive: $isPositive, referenceLabel: $referenceLabel, historyLimit: $historyLimit, dataOrigin: $dataOrigin, loadTimeMs: $loadTimeMs, isSuccess: $isSuccess, lastUpdated: $lastUpdated, analyticsState: $analyticsState)';
 }
 
 
@@ -388,16 +391,18 @@ _$FailureCopyWith<_Failure> get copyWith => __$FailureCopyWithImpl<_Failure>(thi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Failure&&(identical(other.failure, failure) || other.failure == failure));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Failure&&(identical(other.failure, failure) || other.failure == failure));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,failure);
+int get hashCode {
+    return Object.hash(runtimeType,failure);
+}
 
 @override
 String toString() {
-  return 'CompanyPfcfRatioState.failure(failure: $failure)';
+    return 'CompanyPfcfRatioState.failure(failure: $failure)';
 }
 
 

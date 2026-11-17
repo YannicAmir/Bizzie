@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'notification_state.dart';
@@ -9,6 +9,7 @@ part of 'notification_state.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $NotificationStateCopyWith<NotificationState> get copyWith => _$NotificationStat
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is NotificationState&&(identical(other.status, status) || other.status == status)&&(identical(other.isAppReady, isAppReady) || other.isAppReady == isAppReady)&&(identical(other.pendingIntent, pendingIntent) || other.pendingIntent == pendingIntent));
+  final _this = this as NotificationState;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is NotificationState&&(identical(other.status, _this.status) || other.status == _this.status)&&(identical(other.isAppReady, _this.isAppReady) || other.isAppReady == _this.isAppReady)&&(identical(other.pendingIntent, _this.pendingIntent) || other.pendingIntent == _this.pendingIntent));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,status,isAppReady,pendingIntent);
+int get hashCode {
+  final _this = this as NotificationState;
+  return Object.hash(runtimeType,_this.status,_this.isAppReady,_this.pendingIntent);
+}
 
 @override
 String toString() {
-  return 'NotificationState(status: $status, isAppReady: $isAppReady, pendingIntent: $pendingIntent)';
+  final _this = this as NotificationState;
+  return 'NotificationState(status: ${_this.status}, isAppReady: ${_this.isAppReady}, pendingIntent: ${_this.pendingIntent})';
 }
 
 
@@ -63,7 +69,7 @@ class _$NotificationStateCopyWithImpl<$Res>
 /// Create a copy of NotificationState
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? status = null,Object? isAppReady = null,Object? pendingIntent = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(NotificationState(
 status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as NotificationStatus,isAppReady: null == isAppReady ? _self.isAppReady : isAppReady // ignore: cast_nullable_to_non_nullable
 as bool,pendingIntent: freezed == pendingIntent ? _self.pendingIntent : pendingIntent // ignore: cast_nullable_to_non_nullable
@@ -246,16 +252,18 @@ _$NotificationStateCopyWith<_NotificationState> get copyWith => __$NotificationS
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _NotificationState&&(identical(other.status, status) || other.status == status)&&(identical(other.isAppReady, isAppReady) || other.isAppReady == isAppReady)&&(identical(other.pendingIntent, pendingIntent) || other.pendingIntent == pendingIntent));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _NotificationState&&(identical(other.status, status) || other.status == status)&&(identical(other.isAppReady, isAppReady) || other.isAppReady == isAppReady)&&(identical(other.pendingIntent, pendingIntent) || other.pendingIntent == pendingIntent));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,status,isAppReady,pendingIntent);
+int get hashCode {
+    return Object.hash(runtimeType,status,isAppReady,pendingIntent);
+}
 
 @override
 String toString() {
-  return 'NotificationState(status: $status, isAppReady: $isAppReady, pendingIntent: $pendingIntent)';
+    return 'NotificationState(status: $status, isAppReady: $isAppReady, pendingIntent: $pendingIntent)';
 }
 
 

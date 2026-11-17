@@ -16,7 +16,7 @@ import 'package:bizzie/features/company_profile/revenue/presentation/extensions/
 import 'package:bizzie/features/company_profile/security/presentation/bloc/company_security_bloc.dart';
 import 'package:bizzie/features/company_profile/security/presentation/bloc/company_security_state.dart';
 import 'package:bizzie/features/company_profile/security/presentation/extensions/company_security_state_extensions.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:showcaseview/showcaseview.dart';
 

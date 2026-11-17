@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'news_dto.dart';
@@ -9,6 +9,7 @@ part of 'news_dto.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 
@@ -28,16 +29,21 @@ $NewsDtoCopyWith<NewsDto> get copyWith => _$NewsDtoCopyWithImpl<NewsDto>(this as
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is NewsDto&&(identical(other.symbol, symbol) || other.symbol == symbol)&&(identical(other.publishedDate, publishedDate) || other.publishedDate == publishedDate)&&(identical(other.title, title) || other.title == title)&&(identical(other.image, image) || other.image == image)&&(identical(other.site, site) || other.site == site)&&(identical(other.url, url) || other.url == url)&&(identical(other.text, text) || other.text == text));
+  final _this = this as NewsDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is NewsDto&&(identical(other.symbol, _this.symbol) || other.symbol == _this.symbol)&&(identical(other.publishedDate, _this.publishedDate) || other.publishedDate == _this.publishedDate)&&(identical(other.title, _this.title) || other.title == _this.title)&&(identical(other.image, _this.image) || other.image == _this.image)&&(identical(other.site, _this.site) || other.site == _this.site)&&(identical(other.url, _this.url) || other.url == _this.url)&&(identical(other.text, _this.text) || other.text == _this.text));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,symbol,publishedDate,title,image,site,url,text);
+int get hashCode {
+  final _this = this as NewsDto;
+  return Object.hash(runtimeType,_this.symbol,_this.publishedDate,_this.title,_this.image,_this.site,_this.url,_this.text);
+}
 
 @override
 String toString() {
-  return 'NewsDto(symbol: $symbol, publishedDate: $publishedDate, title: $title, image: $image, site: $site, url: $url, text: $text)';
+  final _this = this as NewsDto;
+  return 'NewsDto(symbol: ${_this.symbol}, publishedDate: ${_this.publishedDate}, title: ${_this.title}, image: ${_this.image}, site: ${_this.site}, url: ${_this.url}, text: ${_this.text})';
 }
 
 
@@ -66,7 +72,7 @@ class _$NewsDtoCopyWithImpl<$Res>
 /// Create a copy of NewsDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? symbol = null,Object? publishedDate = null,Object? title = null,Object? image = freezed,Object? site = null,Object? url = null,Object? text = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(NewsDto(
 symbol: null == symbol ? _self.symbol : symbol // ignore: cast_nullable_to_non_nullable
 as String,publishedDate: null == publishedDate ? _self.publishedDate : publishedDate // ignore: cast_nullable_to_non_nullable
 as String,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
@@ -239,16 +245,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _NewsDto&&(identical(other.symbol, symbol) || other.symbol == symbol)&&(identical(other.publishedDate, publishedDate) || other.publishedDate == publishedDate)&&(identical(other.title, title) || other.title == title)&&(identical(other.image, image) || other.image == image)&&(identical(other.site, site) || other.site == site)&&(identical(other.url, url) || other.url == url)&&(identical(other.text, text) || other.text == text));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _NewsDto&&(identical(other.symbol, symbol) || other.symbol == symbol)&&(identical(other.publishedDate, publishedDate) || other.publishedDate == publishedDate)&&(identical(other.title, title) || other.title == title)&&(identical(other.image, image) || other.image == image)&&(identical(other.site, site) || other.site == site)&&(identical(other.url, url) || other.url == url)&&(identical(other.text, text) || other.text == text));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,symbol,publishedDate,title,image,site,url,text);
+int get hashCode {
+    return Object.hash(runtimeType,symbol,publishedDate,title,image,site,url,text);
+}
 
 @override
 String toString() {
-  return 'NewsDto(symbol: $symbol, publishedDate: $publishedDate, title: $title, image: $image, site: $site, url: $url, text: $text)';
+    return 'NewsDto(symbol: $symbol, publishedDate: $publishedDate, title: $title, image: $image, site: $site, url: $url, text: $text)';
 }
 
 

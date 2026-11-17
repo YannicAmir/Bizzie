@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'chat_sse_event.dart';
@@ -9,6 +9,7 @@ part of 'chat_sse_event.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -20,7 +21,7 @@ mixin _$ChatSseEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ChatSseEvent);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is ChatSseEvent);
 }
 
 
@@ -29,7 +30,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'ChatSseEvent()';
+    return 'ChatSseEvent()';
 }
 
 
@@ -196,16 +197,18 @@ $ChatTokenEventCopyWith<ChatTokenEvent> get copyWith => _$ChatTokenEventCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ChatTokenEvent&&(identical(other.token, token) || other.token == token));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is ChatTokenEvent&&(identical(other.token, token) || other.token == token));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,token);
+int get hashCode {
+    return Object.hash(runtimeType,token);
+}
 
 @override
 String toString() {
-  return 'ChatSseEvent.token(token: $token)';
+    return 'ChatSseEvent.token(token: $token)';
 }
 
 
@@ -247,7 +250,7 @@ as String,
 
 
 class ChatDoneEvent implements ChatSseEvent {
-  const ChatDoneEvent({required final  List<String> followUps, this.source, this.routePath}): _followUps = followUps;
+  const ChatDoneEvent({required  List<String> followUps, this.source, this.routePath}): _followUps = followUps;
   
 
  final  List<String> _followUps;
@@ -270,16 +273,18 @@ $ChatDoneEventCopyWith<ChatDoneEvent> get copyWith => _$ChatDoneEventCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ChatDoneEvent&&const DeepCollectionEquality().equals(other._followUps, _followUps)&&(identical(other.source, source) || other.source == source)&&(identical(other.routePath, routePath) || other.routePath == routePath));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is ChatDoneEvent&&const DeepCollectionEquality().equals(other.followUps, _followUps)&&(identical(other.source, source) || other.source == source)&&(identical(other.routePath, routePath) || other.routePath == routePath));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_followUps),source,routePath);
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_followUps),source,routePath);
+}
 
 @override
 String toString() {
-  return 'ChatSseEvent.done(followUps: $followUps, source: $source, routePath: $routePath)';
+    return 'ChatSseEvent.done(followUps: $followUps, source: $source, routePath: $routePath)';
 }
 
 
@@ -338,16 +343,18 @@ $ChatErrorEventCopyWith<ChatErrorEvent> get copyWith => _$ChatErrorEventCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ChatErrorEvent&&(identical(other.message, message) || other.message == message));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is ChatErrorEvent&&(identical(other.message, message) || other.message == message));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,message);
+int get hashCode {
+    return Object.hash(runtimeType,message);
+}
 
 @override
 String toString() {
-  return 'ChatSseEvent.error(message: $message)';
+    return 'ChatSseEvent.error(message: $message)';
 }
 
 

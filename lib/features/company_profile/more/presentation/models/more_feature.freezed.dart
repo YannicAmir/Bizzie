@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'more_feature.dart';
@@ -9,6 +9,7 @@ part of 'more_feature.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $MoreFeatureCopyWith<MoreFeature> get copyWith => _$MoreFeatureCopyWithImpl<More
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MoreFeature&&(identical(other.label, label) || other.label == label)&&(identical(other.analyticsName, analyticsName) || other.analyticsName == analyticsName)&&(identical(other.builder, builder) || other.builder == builder));
+  final _this = this as MoreFeature;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MoreFeature&&(identical(other.label, _this.label) || other.label == _this.label)&&(identical(other.analyticsName, _this.analyticsName) || other.analyticsName == _this.analyticsName)&&(identical(other.builder, _this.builder) || other.builder == _this.builder));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,label,analyticsName,builder);
+int get hashCode {
+  final _this = this as MoreFeature;
+  return Object.hash(runtimeType,_this.label,_this.analyticsName,_this.builder);
+}
 
 @override
 String toString() {
-  return 'MoreFeature(label: $label, analyticsName: $analyticsName, builder: $builder)';
+  final _this = this as MoreFeature;
+  return 'MoreFeature(label: ${_this.label}, analyticsName: ${_this.analyticsName}, builder: ${_this.builder})';
 }
 
 
@@ -63,7 +69,7 @@ class _$MoreFeatureCopyWithImpl<$Res>
 /// Create a copy of MoreFeature
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? label = null,Object? analyticsName = null,Object? builder = null,}) {
-  return _then(_self.copyWith(
+  return _then(MoreFeature(
 label: null == label ? _self.label : label // ignore: cast_nullable_to_non_nullable
 as String,analyticsName: null == analyticsName ? _self.analyticsName : analyticsName // ignore: cast_nullable_to_non_nullable
 as String,builder: null == builder ? _self.builder : builder // ignore: cast_nullable_to_non_nullable
@@ -225,16 +231,18 @@ _$MoreFeatureCopyWith<_MoreFeature> get copyWith => __$MoreFeatureCopyWithImpl<_
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _MoreFeature&&(identical(other.label, label) || other.label == label)&&(identical(other.analyticsName, analyticsName) || other.analyticsName == analyticsName)&&(identical(other.builder, builder) || other.builder == builder));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _MoreFeature&&(identical(other.label, label) || other.label == label)&&(identical(other.analyticsName, analyticsName) || other.analyticsName == analyticsName)&&(identical(other.builder, builder) || other.builder == builder));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,label,analyticsName,builder);
+int get hashCode {
+    return Object.hash(runtimeType,label,analyticsName,builder);
+}
 
 @override
 String toString() {
-  return 'MoreFeature(label: $label, analyticsName: $analyticsName, builder: $builder)';
+    return 'MoreFeature(label: $label, analyticsName: $analyticsName, builder: $builder)';
 }
 
 

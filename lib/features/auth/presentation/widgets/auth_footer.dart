@@ -2,7 +2,7 @@ import 'package:bizzie/core/interfaces/i_config_service.dart';
 import 'package:bizzie/di/injection.dart';
 import 'package:bizzie/features/auth/presentation/bloc/auth_event.dart';
 import 'package:flutter/gestures.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../bloc/auth_bloc.dart';

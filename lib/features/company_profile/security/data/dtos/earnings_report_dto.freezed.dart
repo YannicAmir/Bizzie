@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'earnings_report_dto.dart';
@@ -9,6 +9,7 @@ part of 'earnings_report_dto.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 
@@ -28,16 +29,21 @@ $EarningsReportDtoCopyWith<EarningsReportDto> get copyWith => _$EarningsReportDt
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is EarningsReportDto&&(identical(other.symbol, symbol) || other.symbol == symbol)&&(identical(other.date, date) || other.date == date)&&(identical(other.epsActual, epsActual) || other.epsActual == epsActual)&&(identical(other.epsEstimated, epsEstimated) || other.epsEstimated == epsEstimated)&&(identical(other.revenueActual, revenueActual) || other.revenueActual == revenueActual)&&(identical(other.revenueEstimated, revenueEstimated) || other.revenueEstimated == revenueEstimated)&&(identical(other.lastUpdated, lastUpdated) || other.lastUpdated == lastUpdated));
+  final _this = this as EarningsReportDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is EarningsReportDto&&(identical(other.symbol, _this.symbol) || other.symbol == _this.symbol)&&(identical(other.date, _this.date) || other.date == _this.date)&&(identical(other.epsActual, _this.epsActual) || other.epsActual == _this.epsActual)&&(identical(other.epsEstimated, _this.epsEstimated) || other.epsEstimated == _this.epsEstimated)&&(identical(other.revenueActual, _this.revenueActual) || other.revenueActual == _this.revenueActual)&&(identical(other.revenueEstimated, _this.revenueEstimated) || other.revenueEstimated == _this.revenueEstimated)&&(identical(other.lastUpdated, _this.lastUpdated) || other.lastUpdated == _this.lastUpdated));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,symbol,date,epsActual,epsEstimated,revenueActual,revenueEstimated,lastUpdated);
+int get hashCode {
+  final _this = this as EarningsReportDto;
+  return Object.hash(runtimeType,_this.symbol,_this.date,_this.epsActual,_this.epsEstimated,_this.revenueActual,_this.revenueEstimated,_this.lastUpdated);
+}
 
 @override
 String toString() {
-  return 'EarningsReportDto(symbol: $symbol, date: $date, epsActual: $epsActual, epsEstimated: $epsEstimated, revenueActual: $revenueActual, revenueEstimated: $revenueEstimated, lastUpdated: $lastUpdated)';
+  final _this = this as EarningsReportDto;
+  return 'EarningsReportDto(symbol: ${_this.symbol}, date: ${_this.date}, epsActual: ${_this.epsActual}, epsEstimated: ${_this.epsEstimated}, revenueActual: ${_this.revenueActual}, revenueEstimated: ${_this.revenueEstimated}, lastUpdated: ${_this.lastUpdated})';
 }
 
 
@@ -66,7 +72,7 @@ class _$EarningsReportDtoCopyWithImpl<$Res>
 /// Create a copy of EarningsReportDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? symbol = null,Object? date = null,Object? epsActual = freezed,Object? epsEstimated = freezed,Object? revenueActual = freezed,Object? revenueEstimated = freezed,Object? lastUpdated = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(EarningsReportDto(
 symbol: null == symbol ? _self.symbol : symbol // ignore: cast_nullable_to_non_nullable
 as String,date: null == date ? _self.date : date // ignore: cast_nullable_to_non_nullable
 as String,epsActual: freezed == epsActual ? _self.epsActual : epsActual // ignore: cast_nullable_to_non_nullable
@@ -239,16 +245,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _EarningsReportDto&&(identical(other.symbol, symbol) || other.symbol == symbol)&&(identical(other.date, date) || other.date == date)&&(identical(other.epsActual, epsActual) || other.epsActual == epsActual)&&(identical(other.epsEstimated, epsEstimated) || other.epsEstimated == epsEstimated)&&(identical(other.revenueActual, revenueActual) || other.revenueActual == revenueActual)&&(identical(other.revenueEstimated, revenueEstimated) || other.revenueEstimated == revenueEstimated)&&(identical(other.lastUpdated, lastUpdated) || other.lastUpdated == lastUpdated));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _EarningsReportDto&&(identical(other.symbol, symbol) || other.symbol == symbol)&&(identical(other.date, date) || other.date == date)&&(identical(other.epsActual, epsActual) || other.epsActual == epsActual)&&(identical(other.epsEstimated, epsEstimated) || other.epsEstimated == epsEstimated)&&(identical(other.revenueActual, revenueActual) || other.revenueActual == revenueActual)&&(identical(other.revenueEstimated, revenueEstimated) || other.revenueEstimated == revenueEstimated)&&(identical(other.lastUpdated, lastUpdated) || other.lastUpdated == lastUpdated));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,symbol,date,epsActual,epsEstimated,revenueActual,revenueEstimated,lastUpdated);
+int get hashCode {
+    return Object.hash(runtimeType,symbol,date,epsActual,epsEstimated,revenueActual,revenueEstimated,lastUpdated);
+}
 
 @override
 String toString() {
-  return 'EarningsReportDto(symbol: $symbol, date: $date, epsActual: $epsActual, epsEstimated: $epsEstimated, revenueActual: $revenueActual, revenueEstimated: $revenueEstimated, lastUpdated: $lastUpdated)';
+    return 'EarningsReportDto(symbol: $symbol, date: $date, epsActual: $epsActual, epsEstimated: $epsEstimated, revenueActual: $revenueActual, revenueEstimated: $revenueEstimated, lastUpdated: $lastUpdated)';
 }
 
 

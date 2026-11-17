@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'sec_filing.dart';
@@ -9,6 +9,7 @@ part of 'sec_filing.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $SecFilingCopyWith<SecFiling> get copyWith => _$SecFilingCopyWithImpl<SecFiling>
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SecFiling&&(identical(other.id, id) || other.id == id)&&(identical(other.symbol, symbol) || other.symbol == symbol)&&(identical(other.companyName, companyName) || other.companyName == companyName)&&(identical(other.filingDate, filingDate) || other.filingDate == filingDate)&&(identical(other.formType, formType) || other.formType == formType)&&(identical(other.link, link) || other.link == link)&&(identical(other.summary, summary) || other.summary == summary)&&(identical(other.eps, eps) || other.eps == eps)&&(identical(other.revenue, revenue) || other.revenue == revenue)&&(identical(other.sentiment, sentiment) || other.sentiment == sentiment)&&(identical(other.topic, topic) || other.topic == topic)&&(identical(other.isEarnings, isEarnings) || other.isEarnings == isEarnings)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.analyzedAt, analyzedAt) || other.analyzedAt == analyzedAt)&&(identical(other.deepAnalysisId, deepAnalysisId) || other.deepAnalysisId == deepAnalysisId)&&(identical(other.deepAnalysisStatus, deepAnalysisStatus) || other.deepAnalysisStatus == deepAnalysisStatus));
+  final _this = this as SecFiling;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SecFiling&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.symbol, _this.symbol) || other.symbol == _this.symbol)&&(identical(other.companyName, _this.companyName) || other.companyName == _this.companyName)&&(identical(other.filingDate, _this.filingDate) || other.filingDate == _this.filingDate)&&(identical(other.formType, _this.formType) || other.formType == _this.formType)&&(identical(other.link, _this.link) || other.link == _this.link)&&(identical(other.summary, _this.summary) || other.summary == _this.summary)&&(identical(other.eps, _this.eps) || other.eps == _this.eps)&&(identical(other.revenue, _this.revenue) || other.revenue == _this.revenue)&&(identical(other.sentiment, _this.sentiment) || other.sentiment == _this.sentiment)&&(identical(other.topic, _this.topic) || other.topic == _this.topic)&&(identical(other.isEarnings, _this.isEarnings) || other.isEarnings == _this.isEarnings)&&(identical(other.createdAt, _this.createdAt) || other.createdAt == _this.createdAt)&&(identical(other.analyzedAt, _this.analyzedAt) || other.analyzedAt == _this.analyzedAt)&&(identical(other.deepAnalysisId, _this.deepAnalysisId) || other.deepAnalysisId == _this.deepAnalysisId)&&(identical(other.deepAnalysisStatus, _this.deepAnalysisStatus) || other.deepAnalysisStatus == _this.deepAnalysisStatus));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,symbol,companyName,filingDate,formType,link,summary,eps,revenue,sentiment,topic,isEarnings,createdAt,analyzedAt,deepAnalysisId,deepAnalysisStatus);
+int get hashCode {
+  final _this = this as SecFiling;
+  return Object.hash(runtimeType,_this.id,_this.symbol,_this.companyName,_this.filingDate,_this.formType,_this.link,_this.summary,_this.eps,_this.revenue,_this.sentiment,_this.topic,_this.isEarnings,_this.createdAt,_this.analyzedAt,_this.deepAnalysisId,_this.deepAnalysisStatus);
+}
 
 @override
 String toString() {
-  return 'SecFiling(id: $id, symbol: $symbol, companyName: $companyName, filingDate: $filingDate, formType: $formType, link: $link, summary: $summary, eps: $eps, revenue: $revenue, sentiment: $sentiment, topic: $topic, isEarnings: $isEarnings, createdAt: $createdAt, analyzedAt: $analyzedAt, deepAnalysisId: $deepAnalysisId, deepAnalysisStatus: $deepAnalysisStatus)';
+  final _this = this as SecFiling;
+  return 'SecFiling(id: ${_this.id}, symbol: ${_this.symbol}, companyName: ${_this.companyName}, filingDate: ${_this.filingDate}, formType: ${_this.formType}, link: ${_this.link}, summary: ${_this.summary}, eps: ${_this.eps}, revenue: ${_this.revenue}, sentiment: ${_this.sentiment}, topic: ${_this.topic}, isEarnings: ${_this.isEarnings}, createdAt: ${_this.createdAt}, analyzedAt: ${_this.analyzedAt}, deepAnalysisId: ${_this.deepAnalysisId}, deepAnalysisStatus: ${_this.deepAnalysisStatus})';
 }
 
 
@@ -63,7 +69,7 @@ class _$SecFilingCopyWithImpl<$Res>
 /// Create a copy of SecFiling
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? symbol = null,Object? companyName = null,Object? filingDate = freezed,Object? formType = null,Object? link = null,Object? summary = null,Object? eps = freezed,Object? revenue = freezed,Object? sentiment = freezed,Object? topic = freezed,Object? isEarnings = null,Object? createdAt = freezed,Object? analyzedAt = freezed,Object? deepAnalysisId = freezed,Object? deepAnalysisStatus = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(SecFiling(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,symbol: null == symbol ? _self.symbol : symbol // ignore: cast_nullable_to_non_nullable
 as String,companyName: null == companyName ? _self.companyName : companyName // ignore: cast_nullable_to_non_nullable
@@ -251,16 +257,18 @@ _$SecFilingCopyWith<_SecFiling> get copyWith => __$SecFilingCopyWithImpl<_SecFil
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SecFiling&&(identical(other.id, id) || other.id == id)&&(identical(other.symbol, symbol) || other.symbol == symbol)&&(identical(other.companyName, companyName) || other.companyName == companyName)&&(identical(other.filingDate, filingDate) || other.filingDate == filingDate)&&(identical(other.formType, formType) || other.formType == formType)&&(identical(other.link, link) || other.link == link)&&(identical(other.summary, summary) || other.summary == summary)&&(identical(other.eps, eps) || other.eps == eps)&&(identical(other.revenue, revenue) || other.revenue == revenue)&&(identical(other.sentiment, sentiment) || other.sentiment == sentiment)&&(identical(other.topic, topic) || other.topic == topic)&&(identical(other.isEarnings, isEarnings) || other.isEarnings == isEarnings)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.analyzedAt, analyzedAt) || other.analyzedAt == analyzedAt)&&(identical(other.deepAnalysisId, deepAnalysisId) || other.deepAnalysisId == deepAnalysisId)&&(identical(other.deepAnalysisStatus, deepAnalysisStatus) || other.deepAnalysisStatus == deepAnalysisStatus));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _SecFiling&&(identical(other.id, id) || other.id == id)&&(identical(other.symbol, symbol) || other.symbol == symbol)&&(identical(other.companyName, companyName) || other.companyName == companyName)&&(identical(other.filingDate, filingDate) || other.filingDate == filingDate)&&(identical(other.formType, formType) || other.formType == formType)&&(identical(other.link, link) || other.link == link)&&(identical(other.summary, summary) || other.summary == summary)&&(identical(other.eps, eps) || other.eps == eps)&&(identical(other.revenue, revenue) || other.revenue == revenue)&&(identical(other.sentiment, sentiment) || other.sentiment == sentiment)&&(identical(other.topic, topic) || other.topic == topic)&&(identical(other.isEarnings, isEarnings) || other.isEarnings == isEarnings)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.analyzedAt, analyzedAt) || other.analyzedAt == analyzedAt)&&(identical(other.deepAnalysisId, deepAnalysisId) || other.deepAnalysisId == deepAnalysisId)&&(identical(other.deepAnalysisStatus, deepAnalysisStatus) || other.deepAnalysisStatus == deepAnalysisStatus));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,symbol,companyName,filingDate,formType,link,summary,eps,revenue,sentiment,topic,isEarnings,createdAt,analyzedAt,deepAnalysisId,deepAnalysisStatus);
+int get hashCode {
+    return Object.hash(runtimeType,id,symbol,companyName,filingDate,formType,link,summary,eps,revenue,sentiment,topic,isEarnings,createdAt,analyzedAt,deepAnalysisId,deepAnalysisStatus);
+}
 
 @override
 String toString() {
-  return 'SecFiling(id: $id, symbol: $symbol, companyName: $companyName, filingDate: $filingDate, formType: $formType, link: $link, summary: $summary, eps: $eps, revenue: $revenue, sentiment: $sentiment, topic: $topic, isEarnings: $isEarnings, createdAt: $createdAt, analyzedAt: $analyzedAt, deepAnalysisId: $deepAnalysisId, deepAnalysisStatus: $deepAnalysisStatus)';
+    return 'SecFiling(id: $id, symbol: $symbol, companyName: $companyName, filingDate: $filingDate, formType: $formType, link: $link, summary: $summary, eps: $eps, revenue: $revenue, sentiment: $sentiment, topic: $topic, isEarnings: $isEarnings, createdAt: $createdAt, analyzedAt: $analyzedAt, deepAnalysisId: $deepAnalysisId, deepAnalysisStatus: $deepAnalysisStatus)';
 }
 
 

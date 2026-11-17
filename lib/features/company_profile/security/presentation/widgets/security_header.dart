@@ -4,7 +4,7 @@ import 'package:bizzie/features/company_profile/security/domain/models/security_
 import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:bizzie/shared/widgets/brightness_aware_logo_tile.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class SecurityHeader extends StatelessWidget {
   final SecurityDetails securityDetails;

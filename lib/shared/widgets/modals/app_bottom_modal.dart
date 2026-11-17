@@ -1,5 +1,5 @@
 import 'package:bizzie/shared/widgets/modals/bottom_modal_header.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class AppBottomModal extends StatelessWidget {
   final String title;

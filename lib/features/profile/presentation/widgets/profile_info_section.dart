@@ -1,7 +1,7 @@
 import 'package:bizzie/app/l10n/bizzie_localizations.dart';
 import 'package:bizzie/features/profile/presentation/l10n/profile_localizations.dart';
 import 'package:bizzie/app/themes/app_text_styles.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:intl/intl.dart';
 
 class ProfileInfoSection extends StatelessWidget {

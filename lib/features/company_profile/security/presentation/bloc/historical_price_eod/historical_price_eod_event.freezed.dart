@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'historical_price_eod_event.dart';
@@ -9,6 +9,7 @@ part of 'historical_price_eod_event.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -20,7 +21,7 @@ mixin _$HistoricalPriceEodEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is HistoricalPriceEodEvent);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is HistoricalPriceEodEvent);
 }
 
 
@@ -29,7 +30,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'HistoricalPriceEodEvent()';
+    return 'HistoricalPriceEodEvent()';
 }
 
 
@@ -197,16 +198,18 @@ $LoadRequestedCopyWith<LoadRequested> get copyWith => _$LoadRequestedCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is LoadRequested&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.forceRefresh, forceRefresh) || other.forceRefresh == forceRefresh));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is LoadRequested&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.forceRefresh, forceRefresh) || other.forceRefresh == forceRefresh));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,ticker,forceRefresh);
+int get hashCode {
+    return Object.hash(runtimeType,ticker,forceRefresh);
+}
 
 @override
 String toString() {
-  return 'HistoricalPriceEodEvent.loadRequested(ticker: $ticker, forceRefresh: $forceRefresh)';
+    return 'HistoricalPriceEodEvent.loadRequested(ticker: $ticker, forceRefresh: $forceRefresh)';
 }
 
 
@@ -264,16 +267,18 @@ $StalenessCheckRequestedCopyWith<StalenessCheckRequested> get copyWith => _$Stal
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is StalenessCheckRequested&&(identical(other.ticker, ticker) || other.ticker == ticker));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is StalenessCheckRequested&&(identical(other.ticker, ticker) || other.ticker == ticker));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,ticker);
+int get hashCode {
+    return Object.hash(runtimeType,ticker);
+}
 
 @override
 String toString() {
-  return 'HistoricalPriceEodEvent.stalenessCheckRequested(ticker: $ticker)';
+    return 'HistoricalPriceEodEvent.stalenessCheckRequested(ticker: $ticker)';
 }
 
 
@@ -325,7 +330,7 @@ class EodReset implements HistoricalPriceEodEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is EodReset);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is EodReset);
 }
 
 
@@ -334,7 +339,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'HistoricalPriceEodEvent.reset()';
+    return 'HistoricalPriceEodEvent.reset()';
 }
 
 

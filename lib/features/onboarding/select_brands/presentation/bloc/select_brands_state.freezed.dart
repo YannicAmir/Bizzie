@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'select_brands_state.dart';
@@ -9,6 +9,7 @@ part of 'select_brands_state.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -20,7 +21,7 @@ mixin _$SelectBrandsState {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SelectBrandsState);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SelectBrandsState);
 }
 
 
@@ -29,7 +30,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'SelectBrandsState()';
+    return 'SelectBrandsState()';
 }
 
 
@@ -197,7 +198,7 @@ class _Initial extends SelectBrandsState {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Initial);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Initial);
 }
 
 
@@ -206,7 +207,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'SelectBrandsState.initial()';
+    return 'SelectBrandsState.initial()';
 }
 
 
@@ -234,16 +235,18 @@ _$ErrorCopyWith<_Error> get copyWith => __$ErrorCopyWithImpl<_Error>(this, _$ide
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Error&&(identical(other.message, message) || other.message == message));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Error&&(identical(other.message, message) || other.message == message));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,message);
+int get hashCode {
+    return Object.hash(runtimeType,message);
+}
 
 @override
 String toString() {
-  return 'SelectBrandsState.error(message: $message)';
+    return 'SelectBrandsState.error(message: $message)';
 }
 
 
@@ -285,7 +288,7 @@ as String,
 
 
 class _Loaded extends SelectBrandsState {
-  const _Loaded({required final  List<SelectBrandsViewModel> sectorBrands, required final  List<SelectBrandsViewModel> globalBrands, required final  List<SelectBrandsViewModel> selectedBrands, required this.sectorName}): _sectorBrands = sectorBrands,_globalBrands = globalBrands,_selectedBrands = selectedBrands,super._();
+  const _Loaded({required  List<SelectBrandsViewModel> sectorBrands, required  List<SelectBrandsViewModel> globalBrands, required  List<SelectBrandsViewModel> selectedBrands, required this.sectorName}): _sectorBrands = sectorBrands,_globalBrands = globalBrands,_selectedBrands = selectedBrands,super._();
   
 
  final  List<SelectBrandsViewModel> _sectorBrands;
@@ -321,16 +324,18 @@ _$LoadedCopyWith<_Loaded> get copyWith => __$LoadedCopyWithImpl<_Loaded>(this, _
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Loaded&&const DeepCollectionEquality().equals(other._sectorBrands, _sectorBrands)&&const DeepCollectionEquality().equals(other._globalBrands, _globalBrands)&&const DeepCollectionEquality().equals(other._selectedBrands, _selectedBrands)&&(identical(other.sectorName, sectorName) || other.sectorName == sectorName));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Loaded&&const DeepCollectionEquality().equals(other.sectorBrands, _sectorBrands)&&const DeepCollectionEquality().equals(other.globalBrands, _globalBrands)&&const DeepCollectionEquality().equals(other.selectedBrands, _selectedBrands)&&(identical(other.sectorName, sectorName) || other.sectorName == sectorName));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_sectorBrands),const DeepCollectionEquality().hash(_globalBrands),const DeepCollectionEquality().hash(_selectedBrands),sectorName);
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_sectorBrands),const DeepCollectionEquality().hash(_globalBrands),const DeepCollectionEquality().hash(_selectedBrands),sectorName);
+}
 
 @override
 String toString() {
-  return 'SelectBrandsState.loaded(sectorBrands: $sectorBrands, globalBrands: $globalBrands, selectedBrands: $selectedBrands, sectorName: $sectorName)';
+    return 'SelectBrandsState.loaded(sectorBrands: $sectorBrands, globalBrands: $globalBrands, selectedBrands: $selectedBrands, sectorName: $sectorName)';
 }
 
 

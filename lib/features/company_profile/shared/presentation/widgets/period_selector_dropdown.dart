@@ -5,7 +5,7 @@ import 'package:bizzie/core/enums/paywall_source.dart';
 import 'package:bizzie/shared/widgets/buttons/app_dropdown_button.dart';
 import 'package:bizzie/shared/widgets/modals/app_bottom_modal.dart';
 import 'package:bizzie/shared/widgets/modals/app_modal_list_item.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';

@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'user_bloc.dart';
@@ -9,6 +9,7 @@ part of 'user_bloc.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -20,7 +21,7 @@ mixin _$UserEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is UserEvent);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is UserEvent);
 }
 
 
@@ -29,7 +30,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'UserEvent()';
+    return 'UserEvent()';
 }
 
 
@@ -191,16 +192,18 @@ $UserLoadRequestedCopyWith<UserLoadRequested> get copyWith => _$UserLoadRequeste
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is UserLoadRequested&&(identical(other.uid, uid) || other.uid == uid)&&(identical(other.silent, silent) || other.silent == silent));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is UserLoadRequested&&(identical(other.uid, uid) || other.uid == uid)&&(identical(other.silent, silent) || other.silent == silent));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,uid,silent);
+int get hashCode {
+    return Object.hash(runtimeType,uid,silent);
+}
 
 @override
 String toString() {
-  return 'UserEvent.loadUser(uid: $uid, silent: $silent)';
+    return 'UserEvent.loadUser(uid: $uid, silent: $silent)';
 }
 
 
@@ -253,7 +256,7 @@ class UserReset implements UserEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is UserReset);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is UserReset);
 }
 
 
@@ -262,7 +265,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'UserEvent.reset()';
+    return 'UserEvent.reset()';
 }
 
 
@@ -280,7 +283,7 @@ mixin _$UserState {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is UserState);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is UserState);
 }
 
 
@@ -289,7 +292,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'UserState()';
+    return 'UserState()';
 }
 
 
@@ -469,7 +472,7 @@ class UserInitial implements UserState {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is UserInitial);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is UserInitial);
 }
 
 
@@ -478,7 +481,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'UserState.initial()';
+    return 'UserState.initial()';
 }
 
 
@@ -506,16 +509,18 @@ $UserLoadingCopyWith<UserLoading> get copyWith => _$UserLoadingCopyWithImpl<User
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is UserLoading&&(identical(other.cachedSector, cachedSector) || other.cachedSector == cachedSector));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is UserLoading&&(identical(other.cachedSector, cachedSector) || other.cachedSector == cachedSector));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,cachedSector);
+int get hashCode {
+    return Object.hash(runtimeType,cachedSector);
+}
 
 @override
 String toString() {
-  return 'UserState.loading(cachedSector: $cachedSector)';
+    return 'UserState.loading(cachedSector: $cachedSector)';
 }
 
 
@@ -572,16 +577,18 @@ $UserLoadedCopyWith<UserLoaded> get copyWith => _$UserLoadedCopyWithImpl<UserLoa
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is UserLoaded&&(identical(other.user, user) || other.user == user));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is UserLoaded&&(identical(other.user, user) || other.user == user));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,user);
+int get hashCode {
+    return Object.hash(runtimeType,user);
+}
 
 @override
 String toString() {
-  return 'UserState.loaded(user: $user)';
+    return 'UserState.loaded(user: $user)';
 }
 
 
@@ -642,7 +649,7 @@ class UserNeedsProfile implements UserState {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is UserNeedsProfile);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is UserNeedsProfile);
 }
 
 
@@ -651,7 +658,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'UserState.needsProfile()';
+    return 'UserState.needsProfile()';
 }
 
 
@@ -681,16 +688,18 @@ $UserFailureCopyWith<UserFailure> get copyWith => _$UserFailureCopyWithImpl<User
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is UserFailure&&(identical(other.failure, failure) || other.failure == failure)&&(identical(other.uid, uid) || other.uid == uid)&&(identical(other.cachedSector, cachedSector) || other.cachedSector == cachedSector));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is UserFailure&&(identical(other.failure, failure) || other.failure == failure)&&(identical(other.uid, uid) || other.uid == uid)&&(identical(other.cachedSector, cachedSector) || other.cachedSector == cachedSector));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,failure,uid,cachedSector);
+int get hashCode {
+    return Object.hash(runtimeType,failure,uid,cachedSector);
+}
 
 @override
 String toString() {
-  return 'UserState.failure(failure: $failure, uid: $uid, cachedSector: $cachedSector)';
+    return 'UserState.failure(failure: $failure, uid: $uid, cachedSector: $cachedSector)';
 }
 
 

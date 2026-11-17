@@ -1,7 +1,7 @@
 import 'package:bizzie/app/themes/app_theme.dart';
 import 'package:bizzie/features/home/domain/models/watchlist_stock_price.dart';
 import 'package:bizzie/shared/utils/badge_theme_extensions.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 const double _sessionOpenMinute = 9 * 60 + 30;

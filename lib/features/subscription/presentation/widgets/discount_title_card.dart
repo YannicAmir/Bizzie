@@ -1,5 +1,5 @@
 import 'package:bizzie/app/themes/app_text_styles.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class DiscountTitleCard extends StatelessWidget {
   final String percentage;

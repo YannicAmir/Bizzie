@@ -1,7 +1,7 @@
 import 'package:bizzie/app/themes/app_text_styles.dart';
 import 'package:bizzie/shared/widgets/brightness_aware_logo_tile.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 const double _avatarSize = 48;
 const double _avatarBorderRadius = 12;

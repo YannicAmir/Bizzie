@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'app_rating_prompt_context.dart';
@@ -9,16 +9,13 @@ part of 'app_rating_prompt_context.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$AppRatingPromptContext {
 
-// Company Information
- String get ticker; String get companyName; String get sector; String get industry;// User Profile
- String get experienceLevel; String get favoriteSector; bool get isPremium; int get watchlistCount;// Engagement & Status
- bool get notificationsEnabled; int get interactionCount; int get promptAttempts; String get currentTab;// Represents the specific value fetched from Remote Config (review_prompt_event_count)
- int get thresholdCount;
+ String get ticker; String get companyName; String get sector; String get industry; String get experienceLevel; String get favoriteSector; bool get isPremium; int get watchlistCount; bool get notificationsEnabled; int get interactionCount; int get promptAttempts; String get currentTab; int get thresholdCount;
 /// Create a copy of AppRatingPromptContext
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -29,16 +26,21 @@ $AppRatingPromptContextCopyWith<AppRatingPromptContext> get copyWith => _$AppRat
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AppRatingPromptContext&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.companyName, companyName) || other.companyName == companyName)&&(identical(other.sector, sector) || other.sector == sector)&&(identical(other.industry, industry) || other.industry == industry)&&(identical(other.experienceLevel, experienceLevel) || other.experienceLevel == experienceLevel)&&(identical(other.favoriteSector, favoriteSector) || other.favoriteSector == favoriteSector)&&(identical(other.isPremium, isPremium) || other.isPremium == isPremium)&&(identical(other.watchlistCount, watchlistCount) || other.watchlistCount == watchlistCount)&&(identical(other.notificationsEnabled, notificationsEnabled) || other.notificationsEnabled == notificationsEnabled)&&(identical(other.interactionCount, interactionCount) || other.interactionCount == interactionCount)&&(identical(other.promptAttempts, promptAttempts) || other.promptAttempts == promptAttempts)&&(identical(other.currentTab, currentTab) || other.currentTab == currentTab)&&(identical(other.thresholdCount, thresholdCount) || other.thresholdCount == thresholdCount));
+  final _this = this as AppRatingPromptContext;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AppRatingPromptContext&&(identical(other.ticker, _this.ticker) || other.ticker == _this.ticker)&&(identical(other.companyName, _this.companyName) || other.companyName == _this.companyName)&&(identical(other.sector, _this.sector) || other.sector == _this.sector)&&(identical(other.industry, _this.industry) || other.industry == _this.industry)&&(identical(other.experienceLevel, _this.experienceLevel) || other.experienceLevel == _this.experienceLevel)&&(identical(other.favoriteSector, _this.favoriteSector) || other.favoriteSector == _this.favoriteSector)&&(identical(other.isPremium, _this.isPremium) || other.isPremium == _this.isPremium)&&(identical(other.watchlistCount, _this.watchlistCount) || other.watchlistCount == _this.watchlistCount)&&(identical(other.notificationsEnabled, _this.notificationsEnabled) || other.notificationsEnabled == _this.notificationsEnabled)&&(identical(other.interactionCount, _this.interactionCount) || other.interactionCount == _this.interactionCount)&&(identical(other.promptAttempts, _this.promptAttempts) || other.promptAttempts == _this.promptAttempts)&&(identical(other.currentTab, _this.currentTab) || other.currentTab == _this.currentTab)&&(identical(other.thresholdCount, _this.thresholdCount) || other.thresholdCount == _this.thresholdCount));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,ticker,companyName,sector,industry,experienceLevel,favoriteSector,isPremium,watchlistCount,notificationsEnabled,interactionCount,promptAttempts,currentTab,thresholdCount);
+int get hashCode {
+  final _this = this as AppRatingPromptContext;
+  return Object.hash(runtimeType,_this.ticker,_this.companyName,_this.sector,_this.industry,_this.experienceLevel,_this.favoriteSector,_this.isPremium,_this.watchlistCount,_this.notificationsEnabled,_this.interactionCount,_this.promptAttempts,_this.currentTab,_this.thresholdCount);
+}
 
 @override
 String toString() {
-  return 'AppRatingPromptContext(ticker: $ticker, companyName: $companyName, sector: $sector, industry: $industry, experienceLevel: $experienceLevel, favoriteSector: $favoriteSector, isPremium: $isPremium, watchlistCount: $watchlistCount, notificationsEnabled: $notificationsEnabled, interactionCount: $interactionCount, promptAttempts: $promptAttempts, currentTab: $currentTab, thresholdCount: $thresholdCount)';
+  final _this = this as AppRatingPromptContext;
+  return 'AppRatingPromptContext(ticker: ${_this.ticker}, companyName: ${_this.companyName}, sector: ${_this.sector}, industry: ${_this.industry}, experienceLevel: ${_this.experienceLevel}, favoriteSector: ${_this.favoriteSector}, isPremium: ${_this.isPremium}, watchlistCount: ${_this.watchlistCount}, notificationsEnabled: ${_this.notificationsEnabled}, interactionCount: ${_this.interactionCount}, promptAttempts: ${_this.promptAttempts}, currentTab: ${_this.currentTab}, thresholdCount: ${_this.thresholdCount})';
 }
 
 
@@ -67,7 +69,7 @@ class _$AppRatingPromptContextCopyWithImpl<$Res>
 /// Create a copy of AppRatingPromptContext
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? ticker = null,Object? companyName = null,Object? sector = null,Object? industry = null,Object? experienceLevel = null,Object? favoriteSector = null,Object? isPremium = null,Object? watchlistCount = null,Object? notificationsEnabled = null,Object? interactionCount = null,Object? promptAttempts = null,Object? currentTab = null,Object? thresholdCount = null,}) {
-  return _then(_self.copyWith(
+  return _then(AppRatingPromptContext(
 ticker: null == ticker ? _self.ticker : ticker // ignore: cast_nullable_to_non_nullable
 as String,companyName: null == companyName ? _self.companyName : companyName // ignore: cast_nullable_to_non_nullable
 as String,sector: null == sector ? _self.sector : sector // ignore: cast_nullable_to_non_nullable
@@ -225,22 +227,18 @@ class _AppRatingPromptContext extends AppRatingPromptContext {
   const _AppRatingPromptContext({required this.ticker, required this.companyName, required this.sector, required this.industry, required this.experienceLevel, required this.favoriteSector, required this.isPremium, required this.watchlistCount, required this.notificationsEnabled, required this.interactionCount, required this.promptAttempts, required this.currentTab, required this.thresholdCount}): super._();
   
 
-// Company Information
 @override final  String ticker;
 @override final  String companyName;
 @override final  String sector;
 @override final  String industry;
-// User Profile
 @override final  String experienceLevel;
 @override final  String favoriteSector;
 @override final  bool isPremium;
 @override final  int watchlistCount;
-// Engagement & Status
 @override final  bool notificationsEnabled;
 @override final  int interactionCount;
 @override final  int promptAttempts;
 @override final  String currentTab;
-// Represents the specific value fetched from Remote Config (review_prompt_event_count)
 @override final  int thresholdCount;
 
 /// Create a copy of AppRatingPromptContext
@@ -253,16 +251,18 @@ _$AppRatingPromptContextCopyWith<_AppRatingPromptContext> get copyWith => __$App
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AppRatingPromptContext&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.companyName, companyName) || other.companyName == companyName)&&(identical(other.sector, sector) || other.sector == sector)&&(identical(other.industry, industry) || other.industry == industry)&&(identical(other.experienceLevel, experienceLevel) || other.experienceLevel == experienceLevel)&&(identical(other.favoriteSector, favoriteSector) || other.favoriteSector == favoriteSector)&&(identical(other.isPremium, isPremium) || other.isPremium == isPremium)&&(identical(other.watchlistCount, watchlistCount) || other.watchlistCount == watchlistCount)&&(identical(other.notificationsEnabled, notificationsEnabled) || other.notificationsEnabled == notificationsEnabled)&&(identical(other.interactionCount, interactionCount) || other.interactionCount == interactionCount)&&(identical(other.promptAttempts, promptAttempts) || other.promptAttempts == promptAttempts)&&(identical(other.currentTab, currentTab) || other.currentTab == currentTab)&&(identical(other.thresholdCount, thresholdCount) || other.thresholdCount == thresholdCount));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _AppRatingPromptContext&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.companyName, companyName) || other.companyName == companyName)&&(identical(other.sector, sector) || other.sector == sector)&&(identical(other.industry, industry) || other.industry == industry)&&(identical(other.experienceLevel, experienceLevel) || other.experienceLevel == experienceLevel)&&(identical(other.favoriteSector, favoriteSector) || other.favoriteSector == favoriteSector)&&(identical(other.isPremium, isPremium) || other.isPremium == isPremium)&&(identical(other.watchlistCount, watchlistCount) || other.watchlistCount == watchlistCount)&&(identical(other.notificationsEnabled, notificationsEnabled) || other.notificationsEnabled == notificationsEnabled)&&(identical(other.interactionCount, interactionCount) || other.interactionCount == interactionCount)&&(identical(other.promptAttempts, promptAttempts) || other.promptAttempts == promptAttempts)&&(identical(other.currentTab, currentTab) || other.currentTab == currentTab)&&(identical(other.thresholdCount, thresholdCount) || other.thresholdCount == thresholdCount));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,ticker,companyName,sector,industry,experienceLevel,favoriteSector,isPremium,watchlistCount,notificationsEnabled,interactionCount,promptAttempts,currentTab,thresholdCount);
+int get hashCode {
+    return Object.hash(runtimeType,ticker,companyName,sector,industry,experienceLevel,favoriteSector,isPremium,watchlistCount,notificationsEnabled,interactionCount,promptAttempts,currentTab,thresholdCount);
+}
 
 @override
 String toString() {
-  return 'AppRatingPromptContext(ticker: $ticker, companyName: $companyName, sector: $sector, industry: $industry, experienceLevel: $experienceLevel, favoriteSector: $favoriteSector, isPremium: $isPremium, watchlistCount: $watchlistCount, notificationsEnabled: $notificationsEnabled, interactionCount: $interactionCount, promptAttempts: $promptAttempts, currentTab: $currentTab, thresholdCount: $thresholdCount)';
+    return 'AppRatingPromptContext(ticker: $ticker, companyName: $companyName, sector: $sector, industry: $industry, experienceLevel: $experienceLevel, favoriteSector: $favoriteSector, isPremium: $isPremium, watchlistCount: $watchlistCount, notificationsEnabled: $notificationsEnabled, interactionCount: $interactionCount, promptAttempts: $promptAttempts, currentTab: $currentTab, thresholdCount: $thresholdCount)';
 }
 
 

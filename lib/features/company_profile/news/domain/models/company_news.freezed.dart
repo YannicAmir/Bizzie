@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'company_news.dart';
@@ -9,6 +9,7 @@ part of 'company_news.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $CompanyNewsCopyWith<CompanyNews> get copyWith => _$CompanyNewsCopyWithImpl<Comp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CompanyNews&&(identical(other.symbol, symbol) || other.symbol == symbol)&&const DeepCollectionEquality().equals(other.articles, articles));
+  final _this = this as CompanyNews;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CompanyNews&&(identical(other.symbol, _this.symbol) || other.symbol == _this.symbol)&&const DeepCollectionEquality().equals(other.articles, _this.articles));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,symbol,const DeepCollectionEquality().hash(articles));
+int get hashCode {
+  final _this = this as CompanyNews;
+  return Object.hash(runtimeType,_this.symbol,const DeepCollectionEquality().hash(_this.articles));
+}
 
 @override
 String toString() {
-  return 'CompanyNews(symbol: $symbol, articles: $articles)';
+  final _this = this as CompanyNews;
+  return 'CompanyNews(symbol: ${_this.symbol}, articles: ${_this.articles})';
 }
 
 
@@ -63,7 +69,7 @@ class _$CompanyNewsCopyWithImpl<$Res>
 /// Create a copy of CompanyNews
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? symbol = null,Object? articles = null,}) {
-  return _then(_self.copyWith(
+  return _then(CompanyNews(
 symbol: null == symbol ? _self.symbol : symbol // ignore: cast_nullable_to_non_nullable
 as String,articles: null == articles ? _self.articles : articles // ignore: cast_nullable_to_non_nullable
 as List<NewsArticle>,
@@ -207,7 +213,7 @@ return $default(_that.symbol,_that.articles);case _:
 
 
 class _CompanyNews implements CompanyNews {
-  const _CompanyNews({required this.symbol, required final  List<NewsArticle> articles}): _articles = articles;
+  const _CompanyNews({required this.symbol, required  List<NewsArticle> articles}): _articles = articles;
   
 
 @override final  String symbol;
@@ -229,16 +235,18 @@ _$CompanyNewsCopyWith<_CompanyNews> get copyWith => __$CompanyNewsCopyWithImpl<_
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CompanyNews&&(identical(other.symbol, symbol) || other.symbol == symbol)&&const DeepCollectionEquality().equals(other._articles, _articles));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _CompanyNews&&(identical(other.symbol, symbol) || other.symbol == symbol)&&const DeepCollectionEquality().equals(other.articles, _articles));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,symbol,const DeepCollectionEquality().hash(_articles));
+int get hashCode {
+    return Object.hash(runtimeType,symbol,const DeepCollectionEquality().hash(_articles));
+}
 
 @override
 String toString() {
-  return 'CompanyNews(symbol: $symbol, articles: $articles)';
+    return 'CompanyNews(symbol: $symbol, articles: $articles)';
 }
 
 

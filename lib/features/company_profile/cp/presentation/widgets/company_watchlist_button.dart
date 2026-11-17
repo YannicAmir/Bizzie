@@ -6,7 +6,7 @@ import 'package:bizzie/features/watchlist/presentation/bloc/watchlist_event.dart
 import 'package:bizzie/features/watchlist/presentation/bloc/watchlist_state.dart';
 import 'package:bizzie/features/watchlist/presentation/extensions/watchlist_state_extensions.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

@@ -2,7 +2,7 @@ import 'package:bizzie/features/settings/domain/enums/guest_logout_choice.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:bizzie/shared/widgets/buttons/bizzie_primary_button.dart';
 import 'package:bizzie/shared/widgets/modals/app_bottom_modal.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class GuestLogoutConfirmationSheet extends StatelessWidget {
   const GuestLogoutConfirmationSheet({super.key});

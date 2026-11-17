@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'fcps_stats.dart';
@@ -9,6 +9,7 @@ part of 'fcps_stats.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $FcpsStatsCopyWith<FcpsStats> get copyWith => _$FcpsStatsCopyWithImpl<FcpsStats>
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is FcpsStats&&const DeepCollectionEquality().equals(other.annualFcps, annualFcps)&&const DeepCollectionEquality().equals(other.quarterlyFcps, quarterlyFcps)&&(identical(other.reportedCurrency, reportedCurrency) || other.reportedCurrency == reportedCurrency)&&(identical(other.originalCurrency, originalCurrency) || other.originalCurrency == originalCurrency));
+  final _this = this as FcpsStats;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is FcpsStats&&const DeepCollectionEquality().equals(other.annualFcps, _this.annualFcps)&&const DeepCollectionEquality().equals(other.quarterlyFcps, _this.quarterlyFcps)&&(identical(other.reportedCurrency, _this.reportedCurrency) || other.reportedCurrency == _this.reportedCurrency)&&(identical(other.originalCurrency, _this.originalCurrency) || other.originalCurrency == _this.originalCurrency));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(annualFcps),const DeepCollectionEquality().hash(quarterlyFcps),reportedCurrency,originalCurrency);
+int get hashCode {
+  final _this = this as FcpsStats;
+  return Object.hash(runtimeType,const DeepCollectionEquality().hash(_this.annualFcps),const DeepCollectionEquality().hash(_this.quarterlyFcps),_this.reportedCurrency,_this.originalCurrency);
+}
 
 @override
 String toString() {
-  return 'FcpsStats(annualFcps: $annualFcps, quarterlyFcps: $quarterlyFcps, reportedCurrency: $reportedCurrency, originalCurrency: $originalCurrency)';
+  final _this = this as FcpsStats;
+  return 'FcpsStats(annualFcps: ${_this.annualFcps}, quarterlyFcps: ${_this.quarterlyFcps}, reportedCurrency: ${_this.reportedCurrency}, originalCurrency: ${_this.originalCurrency})';
 }
 
 
@@ -63,7 +69,7 @@ class _$FcpsStatsCopyWithImpl<$Res>
 /// Create a copy of FcpsStats
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? annualFcps = null,Object? quarterlyFcps = null,Object? reportedCurrency = null,Object? originalCurrency = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(FcpsStats(
 annualFcps: null == annualFcps ? _self.annualFcps : annualFcps // ignore: cast_nullable_to_non_nullable
 as List<FinancialDataPoint>,quarterlyFcps: null == quarterlyFcps ? _self.quarterlyFcps : quarterlyFcps // ignore: cast_nullable_to_non_nullable
 as List<FinancialDataPoint>,reportedCurrency: null == reportedCurrency ? _self.reportedCurrency : reportedCurrency // ignore: cast_nullable_to_non_nullable
@@ -209,7 +215,7 @@ return $default(_that.annualFcps,_that.quarterlyFcps,_that.reportedCurrency,_tha
 
 
 class _FcpsStats implements FcpsStats {
-  const _FcpsStats({required final  List<FinancialDataPoint> annualFcps, required final  List<FinancialDataPoint> quarterlyFcps, required this.reportedCurrency, this.originalCurrency}): _annualFcps = annualFcps,_quarterlyFcps = quarterlyFcps;
+  const _FcpsStats({required  List<FinancialDataPoint> annualFcps, required  List<FinancialDataPoint> quarterlyFcps, required this.reportedCurrency, this.originalCurrency}): _annualFcps = annualFcps,_quarterlyFcps = quarterlyFcps;
   
 
  final  List<FinancialDataPoint> _annualFcps;
@@ -239,16 +245,18 @@ _$FcpsStatsCopyWith<_FcpsStats> get copyWith => __$FcpsStatsCopyWithImpl<_FcpsSt
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _FcpsStats&&const DeepCollectionEquality().equals(other._annualFcps, _annualFcps)&&const DeepCollectionEquality().equals(other._quarterlyFcps, _quarterlyFcps)&&(identical(other.reportedCurrency, reportedCurrency) || other.reportedCurrency == reportedCurrency)&&(identical(other.originalCurrency, originalCurrency) || other.originalCurrency == originalCurrency));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _FcpsStats&&const DeepCollectionEquality().equals(other.annualFcps, _annualFcps)&&const DeepCollectionEquality().equals(other.quarterlyFcps, _quarterlyFcps)&&(identical(other.reportedCurrency, reportedCurrency) || other.reportedCurrency == reportedCurrency)&&(identical(other.originalCurrency, originalCurrency) || other.originalCurrency == originalCurrency));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_annualFcps),const DeepCollectionEquality().hash(_quarterlyFcps),reportedCurrency,originalCurrency);
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_annualFcps),const DeepCollectionEquality().hash(_quarterlyFcps),reportedCurrency,originalCurrency);
+}
 
 @override
 String toString() {
-  return 'FcpsStats(annualFcps: $annualFcps, quarterlyFcps: $quarterlyFcps, reportedCurrency: $reportedCurrency, originalCurrency: $originalCurrency)';
+    return 'FcpsStats(annualFcps: $annualFcps, quarterlyFcps: $quarterlyFcps, reportedCurrency: $reportedCurrency, originalCurrency: $originalCurrency)';
 }
 
 

@@ -6,7 +6,7 @@ import 'package:bizzie/features/subscription/presentation/bloc/subscription_even
 import 'package:bizzie/features/subscription/presentation/widgets/subscription_gift_modal.dart';
 import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
 import 'package:bizzie/features/user/presentation/extensions/user_state_extensions.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 

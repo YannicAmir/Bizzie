@@ -28,7 +28,7 @@ import 'package:bizzie/features/security/presentation/bloc/security_event.dart';
 import 'package:bizzie/features/security/presentation/bloc/security_state.dart';
 import 'package:bizzie/features/security/presentation/views/security_lockout_screen.dart';
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:go_router/go_router.dart';

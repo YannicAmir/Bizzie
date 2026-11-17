@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'cash_flow_statement.dart';
@@ -9,6 +9,7 @@ part of 'cash_flow_statement.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $CashFlowStatementCopyWith<CashFlowStatement> get copyWith => _$CashFlowStatemen
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CashFlowStatement&&(identical(other.date, date) || other.date == date)&&(identical(other.symbol, symbol) || other.symbol == symbol)&&(identical(other.reportedCurrency, reportedCurrency) || other.reportedCurrency == reportedCurrency)&&(identical(other.period, period) || other.period == period)&&(identical(other.operatingCashFlow, operatingCashFlow) || other.operatingCashFlow == operatingCashFlow)&&(identical(other.investingCashFlow, investingCashFlow) || other.investingCashFlow == investingCashFlow)&&(identical(other.financingCashFlow, financingCashFlow) || other.financingCashFlow == financingCashFlow)&&(identical(other.capitalExpenditure, capitalExpenditure) || other.capitalExpenditure == capitalExpenditure)&&(identical(other.freeCashFlow, freeCashFlow) || other.freeCashFlow == freeCashFlow)&&(identical(other.dividendsPaid, dividendsPaid) || other.dividendsPaid == dividendsPaid)&&(identical(other.cashAtBeginningOfPeriod, cashAtBeginningOfPeriod) || other.cashAtBeginningOfPeriod == cashAtBeginningOfPeriod)&&(identical(other.cashAtEndOfPeriod, cashAtEndOfPeriod) || other.cashAtEndOfPeriod == cashAtEndOfPeriod));
+  final _this = this as CashFlowStatement;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CashFlowStatement&&(identical(other.date, _this.date) || other.date == _this.date)&&(identical(other.symbol, _this.symbol) || other.symbol == _this.symbol)&&(identical(other.reportedCurrency, _this.reportedCurrency) || other.reportedCurrency == _this.reportedCurrency)&&(identical(other.period, _this.period) || other.period == _this.period)&&(identical(other.operatingCashFlow, _this.operatingCashFlow) || other.operatingCashFlow == _this.operatingCashFlow)&&(identical(other.investingCashFlow, _this.investingCashFlow) || other.investingCashFlow == _this.investingCashFlow)&&(identical(other.financingCashFlow, _this.financingCashFlow) || other.financingCashFlow == _this.financingCashFlow)&&(identical(other.capitalExpenditure, _this.capitalExpenditure) || other.capitalExpenditure == _this.capitalExpenditure)&&(identical(other.freeCashFlow, _this.freeCashFlow) || other.freeCashFlow == _this.freeCashFlow)&&(identical(other.dividendsPaid, _this.dividendsPaid) || other.dividendsPaid == _this.dividendsPaid)&&(identical(other.cashAtBeginningOfPeriod, _this.cashAtBeginningOfPeriod) || other.cashAtBeginningOfPeriod == _this.cashAtBeginningOfPeriod)&&(identical(other.cashAtEndOfPeriod, _this.cashAtEndOfPeriod) || other.cashAtEndOfPeriod == _this.cashAtEndOfPeriod));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,date,symbol,reportedCurrency,period,operatingCashFlow,investingCashFlow,financingCashFlow,capitalExpenditure,freeCashFlow,dividendsPaid,cashAtBeginningOfPeriod,cashAtEndOfPeriod);
+int get hashCode {
+  final _this = this as CashFlowStatement;
+  return Object.hash(runtimeType,_this.date,_this.symbol,_this.reportedCurrency,_this.period,_this.operatingCashFlow,_this.investingCashFlow,_this.financingCashFlow,_this.capitalExpenditure,_this.freeCashFlow,_this.dividendsPaid,_this.cashAtBeginningOfPeriod,_this.cashAtEndOfPeriod);
+}
 
 @override
 String toString() {
-  return 'CashFlowStatement(date: $date, symbol: $symbol, reportedCurrency: $reportedCurrency, period: $period, operatingCashFlow: $operatingCashFlow, investingCashFlow: $investingCashFlow, financingCashFlow: $financingCashFlow, capitalExpenditure: $capitalExpenditure, freeCashFlow: $freeCashFlow, dividendsPaid: $dividendsPaid, cashAtBeginningOfPeriod: $cashAtBeginningOfPeriod, cashAtEndOfPeriod: $cashAtEndOfPeriod)';
+  final _this = this as CashFlowStatement;
+  return 'CashFlowStatement(date: ${_this.date}, symbol: ${_this.symbol}, reportedCurrency: ${_this.reportedCurrency}, period: ${_this.period}, operatingCashFlow: ${_this.operatingCashFlow}, investingCashFlow: ${_this.investingCashFlow}, financingCashFlow: ${_this.financingCashFlow}, capitalExpenditure: ${_this.capitalExpenditure}, freeCashFlow: ${_this.freeCashFlow}, dividendsPaid: ${_this.dividendsPaid}, cashAtBeginningOfPeriod: ${_this.cashAtBeginningOfPeriod}, cashAtEndOfPeriod: ${_this.cashAtEndOfPeriod})';
 }
 
 
@@ -63,7 +69,7 @@ class _$CashFlowStatementCopyWithImpl<$Res>
 /// Create a copy of CashFlowStatement
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? date = null,Object? symbol = null,Object? reportedCurrency = null,Object? period = null,Object? operatingCashFlow = null,Object? investingCashFlow = null,Object? financingCashFlow = null,Object? capitalExpenditure = null,Object? freeCashFlow = null,Object? dividendsPaid = null,Object? cashAtBeginningOfPeriod = null,Object? cashAtEndOfPeriod = null,}) {
-  return _then(_self.copyWith(
+  return _then(CashFlowStatement(
 date: null == date ? _self.date : date // ignore: cast_nullable_to_non_nullable
 as String,symbol: null == symbol ? _self.symbol : symbol // ignore: cast_nullable_to_non_nullable
 as String,reportedCurrency: null == reportedCurrency ? _self.reportedCurrency : reportedCurrency // ignore: cast_nullable_to_non_nullable
@@ -243,16 +249,18 @@ _$CashFlowStatementCopyWith<_CashFlowStatement> get copyWith => __$CashFlowState
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CashFlowStatement&&(identical(other.date, date) || other.date == date)&&(identical(other.symbol, symbol) || other.symbol == symbol)&&(identical(other.reportedCurrency, reportedCurrency) || other.reportedCurrency == reportedCurrency)&&(identical(other.period, period) || other.period == period)&&(identical(other.operatingCashFlow, operatingCashFlow) || other.operatingCashFlow == operatingCashFlow)&&(identical(other.investingCashFlow, investingCashFlow) || other.investingCashFlow == investingCashFlow)&&(identical(other.financingCashFlow, financingCashFlow) || other.financingCashFlow == financingCashFlow)&&(identical(other.capitalExpenditure, capitalExpenditure) || other.capitalExpenditure == capitalExpenditure)&&(identical(other.freeCashFlow, freeCashFlow) || other.freeCashFlow == freeCashFlow)&&(identical(other.dividendsPaid, dividendsPaid) || other.dividendsPaid == dividendsPaid)&&(identical(other.cashAtBeginningOfPeriod, cashAtBeginningOfPeriod) || other.cashAtBeginningOfPeriod == cashAtBeginningOfPeriod)&&(identical(other.cashAtEndOfPeriod, cashAtEndOfPeriod) || other.cashAtEndOfPeriod == cashAtEndOfPeriod));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _CashFlowStatement&&(identical(other.date, date) || other.date == date)&&(identical(other.symbol, symbol) || other.symbol == symbol)&&(identical(other.reportedCurrency, reportedCurrency) || other.reportedCurrency == reportedCurrency)&&(identical(other.period, period) || other.period == period)&&(identical(other.operatingCashFlow, operatingCashFlow) || other.operatingCashFlow == operatingCashFlow)&&(identical(other.investingCashFlow, investingCashFlow) || other.investingCashFlow == investingCashFlow)&&(identical(other.financingCashFlow, financingCashFlow) || other.financingCashFlow == financingCashFlow)&&(identical(other.capitalExpenditure, capitalExpenditure) || other.capitalExpenditure == capitalExpenditure)&&(identical(other.freeCashFlow, freeCashFlow) || other.freeCashFlow == freeCashFlow)&&(identical(other.dividendsPaid, dividendsPaid) || other.dividendsPaid == dividendsPaid)&&(identical(other.cashAtBeginningOfPeriod, cashAtBeginningOfPeriod) || other.cashAtBeginningOfPeriod == cashAtBeginningOfPeriod)&&(identical(other.cashAtEndOfPeriod, cashAtEndOfPeriod) || other.cashAtEndOfPeriod == cashAtEndOfPeriod));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,date,symbol,reportedCurrency,period,operatingCashFlow,investingCashFlow,financingCashFlow,capitalExpenditure,freeCashFlow,dividendsPaid,cashAtBeginningOfPeriod,cashAtEndOfPeriod);
+int get hashCode {
+    return Object.hash(runtimeType,date,symbol,reportedCurrency,period,operatingCashFlow,investingCashFlow,financingCashFlow,capitalExpenditure,freeCashFlow,dividendsPaid,cashAtBeginningOfPeriod,cashAtEndOfPeriod);
+}
 
 @override
 String toString() {
-  return 'CashFlowStatement(date: $date, symbol: $symbol, reportedCurrency: $reportedCurrency, period: $period, operatingCashFlow: $operatingCashFlow, investingCashFlow: $investingCashFlow, financingCashFlow: $financingCashFlow, capitalExpenditure: $capitalExpenditure, freeCashFlow: $freeCashFlow, dividendsPaid: $dividendsPaid, cashAtBeginningOfPeriod: $cashAtBeginningOfPeriod, cashAtEndOfPeriod: $cashAtEndOfPeriod)';
+    return 'CashFlowStatement(date: $date, symbol: $symbol, reportedCurrency: $reportedCurrency, period: $period, operatingCashFlow: $operatingCashFlow, investingCashFlow: $investingCashFlow, financingCashFlow: $financingCashFlow, capitalExpenditure: $capitalExpenditure, freeCashFlow: $freeCashFlow, dividendsPaid: $dividendsPaid, cashAtBeginningOfPeriod: $cashAtBeginningOfPeriod, cashAtEndOfPeriod: $cashAtEndOfPeriod)';
 }
 
 

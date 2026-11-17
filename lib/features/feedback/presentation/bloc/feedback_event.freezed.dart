@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'feedback_event.dart';
@@ -9,6 +9,7 @@ part of 'feedback_event.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -20,7 +21,7 @@ mixin _$FeedbackEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is FeedbackEvent);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is FeedbackEvent);
 }
 
 
@@ -29,7 +30,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'FeedbackEvent()';
+    return 'FeedbackEvent()';
 }
 
 
@@ -208,16 +209,18 @@ $FeedbackViewedCopyWith<FeedbackViewed> get copyWith => _$FeedbackViewedCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is FeedbackViewed&&(identical(other.intentSource, intentSource) || other.intentSource == intentSource));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is FeedbackViewed&&(identical(other.intentSource, intentSource) || other.intentSource == intentSource));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,intentSource);
+int get hashCode {
+    return Object.hash(runtimeType,intentSource);
+}
 
 @override
 String toString() {
-  return 'FeedbackEvent.viewed(intentSource: $intentSource)';
+    return 'FeedbackEvent.viewed(intentSource: $intentSource)';
 }
 
 
@@ -274,16 +277,18 @@ $FeedbackSubmitCopyWith<FeedbackSubmit> get copyWith => _$FeedbackSubmitCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is FeedbackSubmit&&(identical(other.message, message) || other.message == message));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is FeedbackSubmit&&(identical(other.message, message) || other.message == message));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,message);
+int get hashCode {
+    return Object.hash(runtimeType,message);
+}
 
 @override
 String toString() {
-  return 'FeedbackEvent.submit(message: $message)';
+    return 'FeedbackEvent.submit(message: $message)';
 }
 
 
@@ -340,16 +345,18 @@ $FeedbackMessageChangedCopyWith<FeedbackMessageChanged> get copyWith => _$Feedba
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is FeedbackMessageChanged&&(identical(other.message, message) || other.message == message));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is FeedbackMessageChanged&&(identical(other.message, message) || other.message == message));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,message);
+int get hashCode {
+    return Object.hash(runtimeType,message);
+}
 
 @override
 String toString() {
-  return 'FeedbackEvent.messageChanged(message: $message)';
+    return 'FeedbackEvent.messageChanged(message: $message)';
 }
 
 
@@ -401,7 +408,7 @@ class FeedbackCooldownEnded implements FeedbackEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is FeedbackCooldownEnded);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is FeedbackCooldownEnded);
 }
 
 
@@ -410,7 +417,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'FeedbackEvent.cooldownEnded()';
+    return 'FeedbackEvent.cooldownEnded()';
 }
 
 

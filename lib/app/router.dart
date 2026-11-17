@@ -39,7 +39,7 @@ import 'package:bizzie/features/profile/presentation/views/profile_page.dart';
 import 'package:bizzie/features/profile/presentation/views/change_password_view.dart';
 import 'package:bizzie/features/profile/presentation/views/edit_profile_view.dart';
 import 'package:bizzie/app/navigation/bizzie_bottom_nav_wrapper.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:bizzie/features/auth/presentation/bloc/auth_bloc.dart';

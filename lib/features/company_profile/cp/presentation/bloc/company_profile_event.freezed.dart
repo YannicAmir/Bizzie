@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'company_profile_event.dart';
@@ -9,6 +9,7 @@ part of 'company_profile_event.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -20,7 +21,7 @@ mixin _$CompanyProfileEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CompanyProfileEvent);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is CompanyProfileEvent);
 }
 
 
@@ -29,7 +30,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'CompanyProfileEvent()';
+    return 'CompanyProfileEvent()';
 }
 
 
@@ -228,16 +229,18 @@ $OpenedCopyWith<Opened> get copyWith => _$OpenedCopyWithImpl<Opened>(this, _$ide
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Opened&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.companyName, companyName) || other.companyName == companyName)&&(identical(other.industry, industry) || other.industry == industry)&&(identical(other.sector, sector) || other.sector == sector)&&(identical(other.initialTabName, initialTabName) || other.initialTabName == initialTabName)&&(identical(other.isWatchlisted, isWatchlisted) || other.isWatchlisted == isWatchlisted)&&(identical(other.isCompany, isCompany) || other.isCompany == isCompany)&&(identical(other.isEtf, isEtf) || other.isEtf == isEtf)&&(identical(other.isFund, isFund) || other.isFund == isFund));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is Opened&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.companyName, companyName) || other.companyName == companyName)&&(identical(other.industry, industry) || other.industry == industry)&&(identical(other.sector, sector) || other.sector == sector)&&(identical(other.initialTabName, initialTabName) || other.initialTabName == initialTabName)&&(identical(other.isWatchlisted, isWatchlisted) || other.isWatchlisted == isWatchlisted)&&(identical(other.isCompany, isCompany) || other.isCompany == isCompany)&&(identical(other.isEtf, isEtf) || other.isEtf == isEtf)&&(identical(other.isFund, isFund) || other.isFund == isFund));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,ticker,companyName,industry,sector,initialTabName,isWatchlisted,isCompany,isEtf,isFund);
+int get hashCode {
+    return Object.hash(runtimeType,ticker,companyName,industry,sector,initialTabName,isWatchlisted,isCompany,isEtf,isFund);
+}
 
 @override
 String toString() {
-  return 'CompanyProfileEvent.opened(ticker: $ticker, companyName: $companyName, industry: $industry, sector: $sector, initialTabName: $initialTabName, isWatchlisted: $isWatchlisted, isCompany: $isCompany, isEtf: $isEtf, isFund: $isFund)';
+    return 'CompanyProfileEvent.opened(ticker: $ticker, companyName: $companyName, industry: $industry, sector: $sector, initialTabName: $initialTabName, isWatchlisted: $isWatchlisted, isCompany: $isCompany, isEtf: $isEtf, isFund: $isFund)';
 }
 
 
@@ -302,16 +305,18 @@ $TabViewedCopyWith<TabViewed> get copyWith => _$TabViewedCopyWithImpl<TabViewed>
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TabViewed&&(identical(other.tabName, tabName) || other.tabName == tabName));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is TabViewed&&(identical(other.tabName, tabName) || other.tabName == tabName));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,tabName);
+int get hashCode {
+    return Object.hash(runtimeType,tabName);
+}
 
 @override
 String toString() {
-  return 'CompanyProfileEvent.tabViewed(tabName: $tabName)';
+    return 'CompanyProfileEvent.tabViewed(tabName: $tabName)';
 }
 
 
@@ -368,16 +373,18 @@ $WatchlistStatusChangedCopyWith<WatchlistStatusChanged> get copyWith => _$Watchl
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is WatchlistStatusChanged&&(identical(other.isWatchlisted, isWatchlisted) || other.isWatchlisted == isWatchlisted));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is WatchlistStatusChanged&&(identical(other.isWatchlisted, isWatchlisted) || other.isWatchlisted == isWatchlisted));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,isWatchlisted);
+int get hashCode {
+    return Object.hash(runtimeType,isWatchlisted);
+}
 
 @override
 String toString() {
-  return 'CompanyProfileEvent.watchlistStatusChanged(isWatchlisted: $isWatchlisted)';
+    return 'CompanyProfileEvent.watchlistStatusChanged(isWatchlisted: $isWatchlisted)';
 }
 
 
@@ -434,16 +441,18 @@ $LifecycleChangedCopyWith<LifecycleChanged> get copyWith => _$LifecycleChangedCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is LifecycleChanged&&(identical(other.state, state) || other.state == state));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is LifecycleChanged&&(identical(other.state, state) || other.state == state));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,state);
+int get hashCode {
+    return Object.hash(runtimeType,state);
+}
 
 @override
 String toString() {
-  return 'CompanyProfileEvent.lifecycleChanged(state: $state)';
+    return 'CompanyProfileEvent.lifecycleChanged(state: $state)';
 }
 
 
@@ -500,16 +509,18 @@ $EditTabsOpenedCopyWith<EditTabsOpened> get copyWith => _$EditTabsOpenedCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is EditTabsOpened&&(identical(other.isSubscribed, isSubscribed) || other.isSubscribed == isSubscribed));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is EditTabsOpened&&(identical(other.isSubscribed, isSubscribed) || other.isSubscribed == isSubscribed));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,isSubscribed);
+int get hashCode {
+    return Object.hash(runtimeType,isSubscribed);
+}
 
 @override
 String toString() {
-  return 'CompanyProfileEvent.editTabsOpened(isSubscribed: $isSubscribed)';
+    return 'CompanyProfileEvent.editTabsOpened(isSubscribed: $isSubscribed)';
 }
 
 
@@ -551,7 +562,7 @@ as bool,
 
 
 class TabOrderSaved implements CompanyProfileEvent {
-  const TabOrderSaved({required this.isSubscribed, required final  List<String> mainTabs, required final  List<String> moreTabs}): _mainTabs = mainTabs,_moreTabs = moreTabs;
+  const TabOrderSaved({required this.isSubscribed, required  List<String> mainTabs, required  List<String> moreTabs}): _mainTabs = mainTabs,_moreTabs = moreTabs;
   
 
  final  bool isSubscribed;
@@ -580,16 +591,18 @@ $TabOrderSavedCopyWith<TabOrderSaved> get copyWith => _$TabOrderSavedCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TabOrderSaved&&(identical(other.isSubscribed, isSubscribed) || other.isSubscribed == isSubscribed)&&const DeepCollectionEquality().equals(other._mainTabs, _mainTabs)&&const DeepCollectionEquality().equals(other._moreTabs, _moreTabs));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is TabOrderSaved&&(identical(other.isSubscribed, isSubscribed) || other.isSubscribed == isSubscribed)&&const DeepCollectionEquality().equals(other.mainTabs, _mainTabs)&&const DeepCollectionEquality().equals(other.moreTabs, _moreTabs));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,isSubscribed,const DeepCollectionEquality().hash(_mainTabs),const DeepCollectionEquality().hash(_moreTabs));
+int get hashCode {
+    return Object.hash(runtimeType,isSubscribed,const DeepCollectionEquality().hash(_mainTabs),const DeepCollectionEquality().hash(_moreTabs));
+}
 
 @override
 String toString() {
-  return 'CompanyProfileEvent.tabOrderSaved(isSubscribed: $isSubscribed, mainTabs: $mainTabs, moreTabs: $moreTabs)';
+    return 'CompanyProfileEvent.tabOrderSaved(isSubscribed: $isSubscribed, mainTabs: $mainTabs, moreTabs: $moreTabs)';
 }
 
 
@@ -643,7 +656,7 @@ class Closed implements CompanyProfileEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Closed);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is Closed);
 }
 
 
@@ -652,7 +665,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'CompanyProfileEvent.closed()';
+    return 'CompanyProfileEvent.closed()';
 }
 
 

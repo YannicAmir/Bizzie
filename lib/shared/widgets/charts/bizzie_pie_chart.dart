@@ -3,7 +3,7 @@ import 'package:bizzie/app/themes/app_text_styles.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:bizzie/shared/utils/currency_formatter.dart';
 import 'package:bizzie/shared/widgets/charts/bizzie_chart_tooltip.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 

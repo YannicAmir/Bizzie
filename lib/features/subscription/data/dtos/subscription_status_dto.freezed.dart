@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'subscription_status_dto.dart';
@@ -9,6 +9,7 @@ part of 'subscription_status_dto.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 
@@ -27,23 +28,29 @@ $SubscriptionStatusDtoCopyWith<SubscriptionStatusDto> get copyWith => _$Subscrip
 
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  final _this = this as SubscriptionStatusDto;
   properties
     ..add(DiagnosticsProperty('type', 'SubscriptionStatusDto'))
-    ..add(DiagnosticsProperty('isSubscribed', isSubscribed))..add(DiagnosticsProperty('activeEntitlements', activeEntitlements))..add(DiagnosticsProperty('activeProductIds', activeProductIds))..add(DiagnosticsProperty('expirationDate', expirationDate))..add(DiagnosticsProperty('latestPurchaseDate', latestPurchaseDate))..add(DiagnosticsProperty('managementURL', managementURL))..add(DiagnosticsProperty('periodType', periodType))..add(DiagnosticsProperty('activePlanId', activePlanId));
+    ..add(DiagnosticsProperty('isSubscribed', _this.isSubscribed))..add(DiagnosticsProperty('activeEntitlements', _this.activeEntitlements))..add(DiagnosticsProperty('activeProductIds', _this.activeProductIds))..add(DiagnosticsProperty('expirationDate', _this.expirationDate))..add(DiagnosticsProperty('latestPurchaseDate', _this.latestPurchaseDate))..add(DiagnosticsProperty('managementURL', _this.managementURL))..add(DiagnosticsProperty('periodType', _this.periodType))..add(DiagnosticsProperty('activePlanId', _this.activePlanId));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SubscriptionStatusDto&&(identical(other.isSubscribed, isSubscribed) || other.isSubscribed == isSubscribed)&&const DeepCollectionEquality().equals(other.activeEntitlements, activeEntitlements)&&const DeepCollectionEquality().equals(other.activeProductIds, activeProductIds)&&(identical(other.expirationDate, expirationDate) || other.expirationDate == expirationDate)&&(identical(other.latestPurchaseDate, latestPurchaseDate) || other.latestPurchaseDate == latestPurchaseDate)&&(identical(other.managementURL, managementURL) || other.managementURL == managementURL)&&(identical(other.periodType, periodType) || other.periodType == periodType)&&(identical(other.activePlanId, activePlanId) || other.activePlanId == activePlanId));
+  final _this = this as SubscriptionStatusDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SubscriptionStatusDto&&(identical(other.isSubscribed, _this.isSubscribed) || other.isSubscribed == _this.isSubscribed)&&const DeepCollectionEquality().equals(other.activeEntitlements, _this.activeEntitlements)&&const DeepCollectionEquality().equals(other.activeProductIds, _this.activeProductIds)&&(identical(other.expirationDate, _this.expirationDate) || other.expirationDate == _this.expirationDate)&&(identical(other.latestPurchaseDate, _this.latestPurchaseDate) || other.latestPurchaseDate == _this.latestPurchaseDate)&&(identical(other.managementURL, _this.managementURL) || other.managementURL == _this.managementURL)&&(identical(other.periodType, _this.periodType) || other.periodType == _this.periodType)&&(identical(other.activePlanId, _this.activePlanId) || other.activePlanId == _this.activePlanId));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,isSubscribed,const DeepCollectionEquality().hash(activeEntitlements),const DeepCollectionEquality().hash(activeProductIds),expirationDate,latestPurchaseDate,managementURL,periodType,activePlanId);
+int get hashCode {
+  final _this = this as SubscriptionStatusDto;
+  return Object.hash(runtimeType,_this.isSubscribed,const DeepCollectionEquality().hash(_this.activeEntitlements),const DeepCollectionEquality().hash(_this.activeProductIds),_this.expirationDate,_this.latestPurchaseDate,_this.managementURL,_this.periodType,_this.activePlanId);
+}
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'SubscriptionStatusDto(isSubscribed: $isSubscribed, activeEntitlements: $activeEntitlements, activeProductIds: $activeProductIds, expirationDate: $expirationDate, latestPurchaseDate: $latestPurchaseDate, managementURL: $managementURL, periodType: $periodType, activePlanId: $activePlanId)';
+  final _this = this as SubscriptionStatusDto;
+  return 'SubscriptionStatusDto(isSubscribed: ${_this.isSubscribed}, activeEntitlements: ${_this.activeEntitlements}, activeProductIds: ${_this.activeProductIds}, expirationDate: ${_this.expirationDate}, latestPurchaseDate: ${_this.latestPurchaseDate}, managementURL: ${_this.managementURL}, periodType: ${_this.periodType}, activePlanId: ${_this.activePlanId})';
 }
 
 
@@ -72,7 +79,7 @@ class _$SubscriptionStatusDtoCopyWithImpl<$Res>
 /// Create a copy of SubscriptionStatusDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? isSubscribed = null,Object? activeEntitlements = null,Object? activeProductIds = null,Object? expirationDate = freezed,Object? latestPurchaseDate = freezed,Object? managementURL = freezed,Object? periodType = freezed,Object? activePlanId = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(SubscriptionStatusDto(
 isSubscribed: null == isSubscribed ? _self.isSubscribed : isSubscribed // ignore: cast_nullable_to_non_nullable
 as bool,activeEntitlements: null == activeEntitlements ? _self.activeEntitlements : activeEntitlements // ignore: cast_nullable_to_non_nullable
 as Set<String>,activeProductIds: null == activeProductIds ? _self.activeProductIds : activeProductIds // ignore: cast_nullable_to_non_nullable
@@ -222,7 +229,7 @@ return $default(_that.isSubscribed,_that.activeEntitlements,_that.activeProductI
 @JsonSerializable()
 
 class _SubscriptionStatusDto extends SubscriptionStatusDto with DiagnosticableTreeMixin {
-  const _SubscriptionStatusDto({required this.isSubscribed, required final  Set<String> activeEntitlements, required final  Set<String> activeProductIds, this.expirationDate, this.latestPurchaseDate, this.managementURL, this.periodType, this.activePlanId}): _activeEntitlements = activeEntitlements,_activeProductIds = activeProductIds,super._();
+  const _SubscriptionStatusDto({required this.isSubscribed, required  Set<String> activeEntitlements, required  Set<String> activeProductIds, this.expirationDate, this.latestPurchaseDate, this.managementURL, this.periodType, this.activePlanId}): _activeEntitlements = activeEntitlements,_activeProductIds = activeProductIds,super._();
   factory _SubscriptionStatusDto.fromJson(Map<String, dynamic> json) => _$SubscriptionStatusDtoFromJson(json);
 
 @override final  bool isSubscribed;
@@ -258,23 +265,25 @@ Map<String, dynamic> toJson() {
 }
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
+    properties
     ..add(DiagnosticsProperty('type', 'SubscriptionStatusDto'))
     ..add(DiagnosticsProperty('isSubscribed', isSubscribed))..add(DiagnosticsProperty('activeEntitlements', activeEntitlements))..add(DiagnosticsProperty('activeProductIds', activeProductIds))..add(DiagnosticsProperty('expirationDate', expirationDate))..add(DiagnosticsProperty('latestPurchaseDate', latestPurchaseDate))..add(DiagnosticsProperty('managementURL', managementURL))..add(DiagnosticsProperty('periodType', periodType))..add(DiagnosticsProperty('activePlanId', activePlanId));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SubscriptionStatusDto&&(identical(other.isSubscribed, isSubscribed) || other.isSubscribed == isSubscribed)&&const DeepCollectionEquality().equals(other._activeEntitlements, _activeEntitlements)&&const DeepCollectionEquality().equals(other._activeProductIds, _activeProductIds)&&(identical(other.expirationDate, expirationDate) || other.expirationDate == expirationDate)&&(identical(other.latestPurchaseDate, latestPurchaseDate) || other.latestPurchaseDate == latestPurchaseDate)&&(identical(other.managementURL, managementURL) || other.managementURL == managementURL)&&(identical(other.periodType, periodType) || other.periodType == periodType)&&(identical(other.activePlanId, activePlanId) || other.activePlanId == activePlanId));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _SubscriptionStatusDto&&(identical(other.isSubscribed, isSubscribed) || other.isSubscribed == isSubscribed)&&const DeepCollectionEquality().equals(other.activeEntitlements, _activeEntitlements)&&const DeepCollectionEquality().equals(other.activeProductIds, _activeProductIds)&&(identical(other.expirationDate, expirationDate) || other.expirationDate == expirationDate)&&(identical(other.latestPurchaseDate, latestPurchaseDate) || other.latestPurchaseDate == latestPurchaseDate)&&(identical(other.managementURL, managementURL) || other.managementURL == managementURL)&&(identical(other.periodType, periodType) || other.periodType == periodType)&&(identical(other.activePlanId, activePlanId) || other.activePlanId == activePlanId));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,isSubscribed,const DeepCollectionEquality().hash(_activeEntitlements),const DeepCollectionEquality().hash(_activeProductIds),expirationDate,latestPurchaseDate,managementURL,periodType,activePlanId);
+int get hashCode {
+    return Object.hash(runtimeType,isSubscribed,const DeepCollectionEquality().hash(_activeEntitlements),const DeepCollectionEquality().hash(_activeProductIds),expirationDate,latestPurchaseDate,managementURL,periodType,activePlanId);
+}
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'SubscriptionStatusDto(isSubscribed: $isSubscribed, activeEntitlements: $activeEntitlements, activeProductIds: $activeProductIds, expirationDate: $expirationDate, latestPurchaseDate: $latestPurchaseDate, managementURL: $managementURL, periodType: $periodType, activePlanId: $activePlanId)';
+    return 'SubscriptionStatusDto(isSubscribed: $isSubscribed, activeEntitlements: $activeEntitlements, activeProductIds: $activeProductIds, expirationDate: $expirationDate, latestPurchaseDate: $latestPurchaseDate, managementURL: $managementURL, periodType: $periodType, activePlanId: $activePlanId)';
 }
 
 

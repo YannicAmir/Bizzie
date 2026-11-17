@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'company_profile_state.dart';
@@ -9,6 +9,7 @@ part of 'company_profile_state.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -20,7 +21,7 @@ mixin _$CompanyProfileState {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CompanyProfileState);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is CompanyProfileState);
 }
 
 
@@ -29,7 +30,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'CompanyProfileState()';
+    return 'CompanyProfileState()';
 }
 
 
@@ -191,7 +192,7 @@ class Initial implements CompanyProfileState {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Initial);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is Initial);
 }
 
 
@@ -200,7 +201,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'CompanyProfileState.initial()';
+    return 'CompanyProfileState.initial()';
 }
 
 
@@ -213,7 +214,7 @@ String toString() {
 
 
 class Active implements CompanyProfileState {
-  const Active({required this.sessionId, required this.ticker, required this.companyName, required this.industry, required this.sector, required final  Set<String> viewedTabs, required this.activeTabName, required this.accumulatedSeconds, required this.lastActiveStartTime, required this.initiallyWatchlisted, required this.currentWatchlisted, required this.isCompany, required this.isEtf, required this.isFund, required this.lifecycleState}): _viewedTabs = viewedTabs;
+  const Active({required this.sessionId, required this.ticker, required this.companyName, required this.industry, required this.sector, required  Set<String> viewedTabs, required this.activeTabName, required this.accumulatedSeconds, required this.lastActiveStartTime, required this.initiallyWatchlisted, required this.currentWatchlisted, required this.isCompany, required this.isEtf, required this.isFund, required this.lifecycleState}): _viewedTabs = viewedTabs;
   
 
  final  String sessionId;
@@ -248,16 +249,18 @@ $ActiveCopyWith<Active> get copyWith => _$ActiveCopyWithImpl<Active>(this, _$ide
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Active&&(identical(other.sessionId, sessionId) || other.sessionId == sessionId)&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.companyName, companyName) || other.companyName == companyName)&&(identical(other.industry, industry) || other.industry == industry)&&(identical(other.sector, sector) || other.sector == sector)&&const DeepCollectionEquality().equals(other._viewedTabs, _viewedTabs)&&(identical(other.activeTabName, activeTabName) || other.activeTabName == activeTabName)&&(identical(other.accumulatedSeconds, accumulatedSeconds) || other.accumulatedSeconds == accumulatedSeconds)&&(identical(other.lastActiveStartTime, lastActiveStartTime) || other.lastActiveStartTime == lastActiveStartTime)&&(identical(other.initiallyWatchlisted, initiallyWatchlisted) || other.initiallyWatchlisted == initiallyWatchlisted)&&(identical(other.currentWatchlisted, currentWatchlisted) || other.currentWatchlisted == currentWatchlisted)&&(identical(other.isCompany, isCompany) || other.isCompany == isCompany)&&(identical(other.isEtf, isEtf) || other.isEtf == isEtf)&&(identical(other.isFund, isFund) || other.isFund == isFund)&&(identical(other.lifecycleState, lifecycleState) || other.lifecycleState == lifecycleState));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is Active&&(identical(other.sessionId, sessionId) || other.sessionId == sessionId)&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.companyName, companyName) || other.companyName == companyName)&&(identical(other.industry, industry) || other.industry == industry)&&(identical(other.sector, sector) || other.sector == sector)&&const DeepCollectionEquality().equals(other.viewedTabs, _viewedTabs)&&(identical(other.activeTabName, activeTabName) || other.activeTabName == activeTabName)&&(identical(other.accumulatedSeconds, accumulatedSeconds) || other.accumulatedSeconds == accumulatedSeconds)&&(identical(other.lastActiveStartTime, lastActiveStartTime) || other.lastActiveStartTime == lastActiveStartTime)&&(identical(other.initiallyWatchlisted, initiallyWatchlisted) || other.initiallyWatchlisted == initiallyWatchlisted)&&(identical(other.currentWatchlisted, currentWatchlisted) || other.currentWatchlisted == currentWatchlisted)&&(identical(other.isCompany, isCompany) || other.isCompany == isCompany)&&(identical(other.isEtf, isEtf) || other.isEtf == isEtf)&&(identical(other.isFund, isFund) || other.isFund == isFund)&&(identical(other.lifecycleState, lifecycleState) || other.lifecycleState == lifecycleState));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,sessionId,ticker,companyName,industry,sector,const DeepCollectionEquality().hash(_viewedTabs),activeTabName,accumulatedSeconds,lastActiveStartTime,initiallyWatchlisted,currentWatchlisted,isCompany,isEtf,isFund,lifecycleState);
+int get hashCode {
+    return Object.hash(runtimeType,sessionId,ticker,companyName,industry,sector,const DeepCollectionEquality().hash(_viewedTabs),activeTabName,accumulatedSeconds,lastActiveStartTime,initiallyWatchlisted,currentWatchlisted,isCompany,isEtf,isFund,lifecycleState);
+}
 
 @override
 String toString() {
-  return 'CompanyProfileState.active(sessionId: $sessionId, ticker: $ticker, companyName: $companyName, industry: $industry, sector: $sector, viewedTabs: $viewedTabs, activeTabName: $activeTabName, accumulatedSeconds: $accumulatedSeconds, lastActiveStartTime: $lastActiveStartTime, initiallyWatchlisted: $initiallyWatchlisted, currentWatchlisted: $currentWatchlisted, isCompany: $isCompany, isEtf: $isEtf, isFund: $isFund, lifecycleState: $lifecycleState)';
+    return 'CompanyProfileState.active(sessionId: $sessionId, ticker: $ticker, companyName: $companyName, industry: $industry, sector: $sector, viewedTabs: $viewedTabs, activeTabName: $activeTabName, accumulatedSeconds: $accumulatedSeconds, lastActiveStartTime: $lastActiveStartTime, initiallyWatchlisted: $initiallyWatchlisted, currentWatchlisted: $currentWatchlisted, isCompany: $isCompany, isEtf: $isEtf, isFund: $isFund, lifecycleState: $lifecycleState)';
 }
 
 

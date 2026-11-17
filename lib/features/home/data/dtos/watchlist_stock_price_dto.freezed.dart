@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'watchlist_stock_price_dto.dart';
@@ -9,6 +9,7 @@ part of 'watchlist_stock_price_dto.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 
@@ -28,16 +29,21 @@ $WatchlistStockPriceDtoCopyWith<WatchlistStockPriceDto> get copyWith => _$Watchl
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is WatchlistStockPriceDto&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.companyName, companyName) || other.companyName == companyName)&&(identical(other.price, price) || other.price == price)&&(identical(other.previousClose, previousClose) || other.previousClose == previousClose)&&(identical(other.change, change) || other.change == change)&&(identical(other.changePercent, changePercent) || other.changePercent == changePercent)&&(identical(other.sessionDate, sessionDate) || other.sessionDate == sessionDate)&&const DeepCollectionEquality().equals(other.series, series)&&(identical(other.closeFinalized, closeFinalized) || other.closeFinalized == closeFinalized));
+  final _this = this as WatchlistStockPriceDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is WatchlistStockPriceDto&&(identical(other.ticker, _this.ticker) || other.ticker == _this.ticker)&&(identical(other.companyName, _this.companyName) || other.companyName == _this.companyName)&&(identical(other.price, _this.price) || other.price == _this.price)&&(identical(other.previousClose, _this.previousClose) || other.previousClose == _this.previousClose)&&(identical(other.change, _this.change) || other.change == _this.change)&&(identical(other.changePercent, _this.changePercent) || other.changePercent == _this.changePercent)&&(identical(other.sessionDate, _this.sessionDate) || other.sessionDate == _this.sessionDate)&&const DeepCollectionEquality().equals(other.series, _this.series)&&(identical(other.closeFinalized, _this.closeFinalized) || other.closeFinalized == _this.closeFinalized));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,ticker,companyName,price,previousClose,change,changePercent,sessionDate,const DeepCollectionEquality().hash(series),closeFinalized);
+int get hashCode {
+  final _this = this as WatchlistStockPriceDto;
+  return Object.hash(runtimeType,_this.ticker,_this.companyName,_this.price,_this.previousClose,_this.change,_this.changePercent,_this.sessionDate,const DeepCollectionEquality().hash(_this.series),_this.closeFinalized);
+}
 
 @override
 String toString() {
-  return 'WatchlistStockPriceDto(ticker: $ticker, companyName: $companyName, price: $price, previousClose: $previousClose, change: $change, changePercent: $changePercent, sessionDate: $sessionDate, series: $series, closeFinalized: $closeFinalized)';
+  final _this = this as WatchlistStockPriceDto;
+  return 'WatchlistStockPriceDto(ticker: ${_this.ticker}, companyName: ${_this.companyName}, price: ${_this.price}, previousClose: ${_this.previousClose}, change: ${_this.change}, changePercent: ${_this.changePercent}, sessionDate: ${_this.sessionDate}, series: ${_this.series}, closeFinalized: ${_this.closeFinalized})';
 }
 
 
@@ -66,7 +72,7 @@ class _$WatchlistStockPriceDtoCopyWithImpl<$Res>
 /// Create a copy of WatchlistStockPriceDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? ticker = null,Object? companyName = null,Object? price = null,Object? previousClose = freezed,Object? change = freezed,Object? changePercent = freezed,Object? sessionDate = null,Object? series = null,Object? closeFinalized = null,}) {
-  return _then(_self.copyWith(
+  return _then(WatchlistStockPriceDto(
 ticker: null == ticker ? _self.ticker : ticker // ignore: cast_nullable_to_non_nullable
 as String,companyName: null == companyName ? _self.companyName : companyName // ignore: cast_nullable_to_non_nullable
 as String,price: null == price ? _self.price : price // ignore: cast_nullable_to_non_nullable
@@ -217,7 +223,7 @@ return $default(_that.ticker,_that.companyName,_that.price,_that.previousClose,_
 @JsonSerializable()
 
 class _WatchlistStockPriceDto extends WatchlistStockPriceDto {
-  const _WatchlistStockPriceDto({required this.ticker, required this.companyName, required this.price, this.previousClose, this.change, this.changePercent, required this.sessionDate, final  List<StockPricePointDto> series = const [], this.closeFinalized = false}): _series = series,super._();
+  const _WatchlistStockPriceDto({required this.ticker, required this.companyName, required this.price, this.previousClose, this.change, this.changePercent, required this.sessionDate,  List<StockPricePointDto> series = const [], this.closeFinalized = false}): _series = series,super._();
   factory _WatchlistStockPriceDto.fromJson(Map<String, dynamic> json) => _$WatchlistStockPriceDtoFromJson(json);
 
 @override final  String ticker;
@@ -249,16 +255,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _WatchlistStockPriceDto&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.companyName, companyName) || other.companyName == companyName)&&(identical(other.price, price) || other.price == price)&&(identical(other.previousClose, previousClose) || other.previousClose == previousClose)&&(identical(other.change, change) || other.change == change)&&(identical(other.changePercent, changePercent) || other.changePercent == changePercent)&&(identical(other.sessionDate, sessionDate) || other.sessionDate == sessionDate)&&const DeepCollectionEquality().equals(other._series, _series)&&(identical(other.closeFinalized, closeFinalized) || other.closeFinalized == closeFinalized));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _WatchlistStockPriceDto&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.companyName, companyName) || other.companyName == companyName)&&(identical(other.price, price) || other.price == price)&&(identical(other.previousClose, previousClose) || other.previousClose == previousClose)&&(identical(other.change, change) || other.change == change)&&(identical(other.changePercent, changePercent) || other.changePercent == changePercent)&&(identical(other.sessionDate, sessionDate) || other.sessionDate == sessionDate)&&const DeepCollectionEquality().equals(other.series, _series)&&(identical(other.closeFinalized, closeFinalized) || other.closeFinalized == closeFinalized));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,ticker,companyName,price,previousClose,change,changePercent,sessionDate,const DeepCollectionEquality().hash(_series),closeFinalized);
+int get hashCode {
+    return Object.hash(runtimeType,ticker,companyName,price,previousClose,change,changePercent,sessionDate,const DeepCollectionEquality().hash(_series),closeFinalized);
+}
 
 @override
 String toString() {
-  return 'WatchlistStockPriceDto(ticker: $ticker, companyName: $companyName, price: $price, previousClose: $previousClose, change: $change, changePercent: $changePercent, sessionDate: $sessionDate, series: $series, closeFinalized: $closeFinalized)';
+    return 'WatchlistStockPriceDto(ticker: $ticker, companyName: $companyName, price: $price, previousClose: $previousClose, change: $change, changePercent: $changePercent, sessionDate: $sessionDate, series: $series, closeFinalized: $closeFinalized)';
 }
 
 
@@ -321,16 +329,21 @@ $StockPricePointDtoCopyWith<StockPricePointDto> get copyWith => _$StockPricePoin
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is StockPricePointDto&&(identical(other.t, t) || other.t == t)&&(identical(other.c, c) || other.c == c));
+  final _this = this as StockPricePointDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is StockPricePointDto&&(identical(other.t, _this.t) || other.t == _this.t)&&(identical(other.c, _this.c) || other.c == _this.c));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,t,c);
+int get hashCode {
+  final _this = this as StockPricePointDto;
+  return Object.hash(runtimeType,_this.t,_this.c);
+}
 
 @override
 String toString() {
-  return 'StockPricePointDto(t: $t, c: $c)';
+  final _this = this as StockPricePointDto;
+  return 'StockPricePointDto(t: ${_this.t}, c: ${_this.c})';
 }
 
 
@@ -359,7 +372,7 @@ class _$StockPricePointDtoCopyWithImpl<$Res>
 /// Create a copy of StockPricePointDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? t = null,Object? c = null,}) {
-  return _then(_self.copyWith(
+  return _then(StockPricePointDto(
 t: null == t ? _self.t : t // ignore: cast_nullable_to_non_nullable
 as String,c: null == c ? _self.c : c // ignore: cast_nullable_to_non_nullable
 as double,
@@ -522,16 +535,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _StockPricePointDto&&(identical(other.t, t) || other.t == t)&&(identical(other.c, c) || other.c == c));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _StockPricePointDto&&(identical(other.t, t) || other.t == t)&&(identical(other.c, c) || other.c == c));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,t,c);
+int get hashCode {
+    return Object.hash(runtimeType,t,c);
+}
 
 @override
 String toString() {
-  return 'StockPricePointDto(t: $t, c: $c)';
+    return 'StockPricePointDto(t: $t, c: $c)';
 }
 
 

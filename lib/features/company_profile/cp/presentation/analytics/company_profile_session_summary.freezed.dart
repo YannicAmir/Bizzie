@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'company_profile_session_summary.dart';
@@ -9,6 +9,7 @@ part of 'company_profile_session_summary.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $CompanyProfileSessionSummaryCopyWith<CompanyProfileSessionSummary> get copyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CompanyProfileSessionSummary&&(identical(other.sessionId, sessionId) || other.sessionId == sessionId)&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.companyName, companyName) || other.companyName == companyName)&&(identical(other.industry, industry) || other.industry == industry)&&(identical(other.sector, sector) || other.sector == sector)&&(identical(other.tabsCount, tabsCount) || other.tabsCount == tabsCount)&&const DeepCollectionEquality().equals(other.tabsList, tabsList)&&(identical(other.durationSeconds, durationSeconds) || other.durationSeconds == durationSeconds)&&(identical(other.isWatchlisted, isWatchlisted) || other.isWatchlisted == isWatchlisted)&&(identical(other.initWatchlisted, initWatchlisted) || other.initWatchlisted == initWatchlisted)&&(identical(other.isCompany, isCompany) || other.isCompany == isCompany)&&(identical(other.isEtf, isEtf) || other.isEtf == isEtf)&&(identical(other.isFund, isFund) || other.isFund == isFund)&&(identical(other.isFinal, isFinal) || other.isFinal == isFinal));
+  final _this = this as CompanyProfileSessionSummary;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CompanyProfileSessionSummary&&(identical(other.sessionId, _this.sessionId) || other.sessionId == _this.sessionId)&&(identical(other.ticker, _this.ticker) || other.ticker == _this.ticker)&&(identical(other.companyName, _this.companyName) || other.companyName == _this.companyName)&&(identical(other.industry, _this.industry) || other.industry == _this.industry)&&(identical(other.sector, _this.sector) || other.sector == _this.sector)&&(identical(other.tabsCount, _this.tabsCount) || other.tabsCount == _this.tabsCount)&&const DeepCollectionEquality().equals(other.tabsList, _this.tabsList)&&(identical(other.durationSeconds, _this.durationSeconds) || other.durationSeconds == _this.durationSeconds)&&(identical(other.isWatchlisted, _this.isWatchlisted) || other.isWatchlisted == _this.isWatchlisted)&&(identical(other.initWatchlisted, _this.initWatchlisted) || other.initWatchlisted == _this.initWatchlisted)&&(identical(other.isCompany, _this.isCompany) || other.isCompany == _this.isCompany)&&(identical(other.isEtf, _this.isEtf) || other.isEtf == _this.isEtf)&&(identical(other.isFund, _this.isFund) || other.isFund == _this.isFund)&&(identical(other.isFinal, _this.isFinal) || other.isFinal == _this.isFinal));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,sessionId,ticker,companyName,industry,sector,tabsCount,const DeepCollectionEquality().hash(tabsList),durationSeconds,isWatchlisted,initWatchlisted,isCompany,isEtf,isFund,isFinal);
+int get hashCode {
+  final _this = this as CompanyProfileSessionSummary;
+  return Object.hash(runtimeType,_this.sessionId,_this.ticker,_this.companyName,_this.industry,_this.sector,_this.tabsCount,const DeepCollectionEquality().hash(_this.tabsList),_this.durationSeconds,_this.isWatchlisted,_this.initWatchlisted,_this.isCompany,_this.isEtf,_this.isFund,_this.isFinal);
+}
 
 @override
 String toString() {
-  return 'CompanyProfileSessionSummary(sessionId: $sessionId, ticker: $ticker, companyName: $companyName, industry: $industry, sector: $sector, tabsCount: $tabsCount, tabsList: $tabsList, durationSeconds: $durationSeconds, isWatchlisted: $isWatchlisted, initWatchlisted: $initWatchlisted, isCompany: $isCompany, isEtf: $isEtf, isFund: $isFund, isFinal: $isFinal)';
+  final _this = this as CompanyProfileSessionSummary;
+  return 'CompanyProfileSessionSummary(sessionId: ${_this.sessionId}, ticker: ${_this.ticker}, companyName: ${_this.companyName}, industry: ${_this.industry}, sector: ${_this.sector}, tabsCount: ${_this.tabsCount}, tabsList: ${_this.tabsList}, durationSeconds: ${_this.durationSeconds}, isWatchlisted: ${_this.isWatchlisted}, initWatchlisted: ${_this.initWatchlisted}, isCompany: ${_this.isCompany}, isEtf: ${_this.isEtf}, isFund: ${_this.isFund}, isFinal: ${_this.isFinal})';
 }
 
 
@@ -63,7 +69,7 @@ class _$CompanyProfileSessionSummaryCopyWithImpl<$Res>
 /// Create a copy of CompanyProfileSessionSummary
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? sessionId = null,Object? ticker = null,Object? companyName = null,Object? industry = freezed,Object? sector = freezed,Object? tabsCount = null,Object? tabsList = null,Object? durationSeconds = null,Object? isWatchlisted = null,Object? initWatchlisted = null,Object? isCompany = null,Object? isEtf = null,Object? isFund = null,Object? isFinal = null,}) {
-  return _then(_self.copyWith(
+  return _then(CompanyProfileSessionSummary(
 sessionId: null == sessionId ? _self.sessionId : sessionId // ignore: cast_nullable_to_non_nullable
 as String,ticker: null == ticker ? _self.ticker : ticker // ignore: cast_nullable_to_non_nullable
 as String,companyName: null == companyName ? _self.companyName : companyName // ignore: cast_nullable_to_non_nullable
@@ -219,7 +225,7 @@ return $default(_that.sessionId,_that.ticker,_that.companyName,_that.industry,_t
 
 
 class _CompanyProfileSessionSummary extends CompanyProfileSessionSummary {
-  const _CompanyProfileSessionSummary({required this.sessionId, required this.ticker, required this.companyName, this.industry, this.sector, required this.tabsCount, required final  List<String> tabsList, required this.durationSeconds, required this.isWatchlisted, required this.initWatchlisted, required this.isCompany, required this.isEtf, required this.isFund, required this.isFinal}): _tabsList = tabsList,super._();
+  const _CompanyProfileSessionSummary({required this.sessionId, required this.ticker, required this.companyName, this.industry, this.sector, required this.tabsCount, required  List<String> tabsList, required this.durationSeconds, required this.isWatchlisted, required this.initWatchlisted, required this.isCompany, required this.isEtf, required this.isFund, required this.isFinal}): _tabsList = tabsList,super._();
   
 
 @override final  String sessionId;
@@ -253,16 +259,18 @@ _$CompanyProfileSessionSummaryCopyWith<_CompanyProfileSessionSummary> get copyWi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CompanyProfileSessionSummary&&(identical(other.sessionId, sessionId) || other.sessionId == sessionId)&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.companyName, companyName) || other.companyName == companyName)&&(identical(other.industry, industry) || other.industry == industry)&&(identical(other.sector, sector) || other.sector == sector)&&(identical(other.tabsCount, tabsCount) || other.tabsCount == tabsCount)&&const DeepCollectionEquality().equals(other._tabsList, _tabsList)&&(identical(other.durationSeconds, durationSeconds) || other.durationSeconds == durationSeconds)&&(identical(other.isWatchlisted, isWatchlisted) || other.isWatchlisted == isWatchlisted)&&(identical(other.initWatchlisted, initWatchlisted) || other.initWatchlisted == initWatchlisted)&&(identical(other.isCompany, isCompany) || other.isCompany == isCompany)&&(identical(other.isEtf, isEtf) || other.isEtf == isEtf)&&(identical(other.isFund, isFund) || other.isFund == isFund)&&(identical(other.isFinal, isFinal) || other.isFinal == isFinal));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _CompanyProfileSessionSummary&&(identical(other.sessionId, sessionId) || other.sessionId == sessionId)&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.companyName, companyName) || other.companyName == companyName)&&(identical(other.industry, industry) || other.industry == industry)&&(identical(other.sector, sector) || other.sector == sector)&&(identical(other.tabsCount, tabsCount) || other.tabsCount == tabsCount)&&const DeepCollectionEquality().equals(other.tabsList, _tabsList)&&(identical(other.durationSeconds, durationSeconds) || other.durationSeconds == durationSeconds)&&(identical(other.isWatchlisted, isWatchlisted) || other.isWatchlisted == isWatchlisted)&&(identical(other.initWatchlisted, initWatchlisted) || other.initWatchlisted == initWatchlisted)&&(identical(other.isCompany, isCompany) || other.isCompany == isCompany)&&(identical(other.isEtf, isEtf) || other.isEtf == isEtf)&&(identical(other.isFund, isFund) || other.isFund == isFund)&&(identical(other.isFinal, isFinal) || other.isFinal == isFinal));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,sessionId,ticker,companyName,industry,sector,tabsCount,const DeepCollectionEquality().hash(_tabsList),durationSeconds,isWatchlisted,initWatchlisted,isCompany,isEtf,isFund,isFinal);
+int get hashCode {
+    return Object.hash(runtimeType,sessionId,ticker,companyName,industry,sector,tabsCount,const DeepCollectionEquality().hash(_tabsList),durationSeconds,isWatchlisted,initWatchlisted,isCompany,isEtf,isFund,isFinal);
+}
 
 @override
 String toString() {
-  return 'CompanyProfileSessionSummary(sessionId: $sessionId, ticker: $ticker, companyName: $companyName, industry: $industry, sector: $sector, tabsCount: $tabsCount, tabsList: $tabsList, durationSeconds: $durationSeconds, isWatchlisted: $isWatchlisted, initWatchlisted: $initWatchlisted, isCompany: $isCompany, isEtf: $isEtf, isFund: $isFund, isFinal: $isFinal)';
+    return 'CompanyProfileSessionSummary(sessionId: $sessionId, ticker: $ticker, companyName: $companyName, industry: $industry, sector: $sector, tabsCount: $tabsCount, tabsList: $tabsList, durationSeconds: $durationSeconds, isWatchlisted: $isWatchlisted, initWatchlisted: $initWatchlisted, isCompany: $isCompany, isEtf: $isEtf, isFund: $isFund, isFinal: $isFinal)';
 }
 
 

@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'ratios_ttm_dto.dart';
@@ -9,6 +9,7 @@ part of 'ratios_ttm_dto.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 
@@ -28,16 +29,21 @@ $RatiosTtmDtoCopyWith<RatiosTtmDto> get copyWith => _$RatiosTtmDtoCopyWithImpl<R
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is RatiosTtmDto&&(identical(other.symbol, symbol) || other.symbol == symbol)&&(identical(other.priceToEarningsRatioTTM, priceToEarningsRatioTTM) || other.priceToEarningsRatioTTM == priceToEarningsRatioTTM)&&(identical(other.priceToFreeCashFlowRatioTTM, priceToFreeCashFlowRatioTTM) || other.priceToFreeCashFlowRatioTTM == priceToFreeCashFlowRatioTTM));
+  final _this = this as RatiosTtmDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is RatiosTtmDto&&(identical(other.symbol, _this.symbol) || other.symbol == _this.symbol)&&(identical(other.priceToEarningsRatioTTM, _this.priceToEarningsRatioTTM) || other.priceToEarningsRatioTTM == _this.priceToEarningsRatioTTM)&&(identical(other.priceToFreeCashFlowRatioTTM, _this.priceToFreeCashFlowRatioTTM) || other.priceToFreeCashFlowRatioTTM == _this.priceToFreeCashFlowRatioTTM));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,symbol,priceToEarningsRatioTTM,priceToFreeCashFlowRatioTTM);
+int get hashCode {
+  final _this = this as RatiosTtmDto;
+  return Object.hash(runtimeType,_this.symbol,_this.priceToEarningsRatioTTM,_this.priceToFreeCashFlowRatioTTM);
+}
 
 @override
 String toString() {
-  return 'RatiosTtmDto(symbol: $symbol, priceToEarningsRatioTTM: $priceToEarningsRatioTTM, priceToFreeCashFlowRatioTTM: $priceToFreeCashFlowRatioTTM)';
+  final _this = this as RatiosTtmDto;
+  return 'RatiosTtmDto(symbol: ${_this.symbol}, priceToEarningsRatioTTM: ${_this.priceToEarningsRatioTTM}, priceToFreeCashFlowRatioTTM: ${_this.priceToFreeCashFlowRatioTTM})';
 }
 
 
@@ -66,7 +72,7 @@ class _$RatiosTtmDtoCopyWithImpl<$Res>
 /// Create a copy of RatiosTtmDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? symbol = freezed,Object? priceToEarningsRatioTTM = freezed,Object? priceToFreeCashFlowRatioTTM = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(RatiosTtmDto(
 symbol: freezed == symbol ? _self.symbol : symbol // ignore: cast_nullable_to_non_nullable
 as String?,priceToEarningsRatioTTM: freezed == priceToEarningsRatioTTM ? _self.priceToEarningsRatioTTM : priceToEarningsRatioTTM // ignore: cast_nullable_to_non_nullable
 as double?,priceToFreeCashFlowRatioTTM: freezed == priceToFreeCashFlowRatioTTM ? _self.priceToFreeCashFlowRatioTTM : priceToFreeCashFlowRatioTTM // ignore: cast_nullable_to_non_nullable
@@ -231,16 +237,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _RatiosTtmDto&&(identical(other.symbol, symbol) || other.symbol == symbol)&&(identical(other.priceToEarningsRatioTTM, priceToEarningsRatioTTM) || other.priceToEarningsRatioTTM == priceToEarningsRatioTTM)&&(identical(other.priceToFreeCashFlowRatioTTM, priceToFreeCashFlowRatioTTM) || other.priceToFreeCashFlowRatioTTM == priceToFreeCashFlowRatioTTM));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _RatiosTtmDto&&(identical(other.symbol, symbol) || other.symbol == symbol)&&(identical(other.priceToEarningsRatioTTM, priceToEarningsRatioTTM) || other.priceToEarningsRatioTTM == priceToEarningsRatioTTM)&&(identical(other.priceToFreeCashFlowRatioTTM, priceToFreeCashFlowRatioTTM) || other.priceToFreeCashFlowRatioTTM == priceToFreeCashFlowRatioTTM));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,symbol,priceToEarningsRatioTTM,priceToFreeCashFlowRatioTTM);
+int get hashCode {
+    return Object.hash(runtimeType,symbol,priceToEarningsRatioTTM,priceToFreeCashFlowRatioTTM);
+}
 
 @override
 String toString() {
-  return 'RatiosTtmDto(symbol: $symbol, priceToEarningsRatioTTM: $priceToEarningsRatioTTM, priceToFreeCashFlowRatioTTM: $priceToFreeCashFlowRatioTTM)';
+    return 'RatiosTtmDto(symbol: $symbol, priceToEarningsRatioTTM: $priceToEarningsRatioTTM, priceToFreeCashFlowRatioTTM: $priceToFreeCashFlowRatioTTM)';
 }
 
 

@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'profile_state.dart';
@@ -9,6 +9,7 @@ part of 'profile_state.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -20,7 +21,7 @@ mixin _$ProfileState {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProfileState);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is ProfileState);
 }
 
 
@@ -29,7 +30,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'ProfileState()';
+    return 'ProfileState()';
 }
 
 
@@ -203,7 +204,7 @@ class _Initial implements ProfileState {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Initial);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Initial);
 }
 
 
@@ -212,7 +213,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'ProfileState.initial()';
+    return 'ProfileState.initial()';
 }
 
 
@@ -235,7 +236,7 @@ class _Loading implements ProfileState {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Loading);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Loading);
 }
 
 
@@ -244,7 +245,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'ProfileState.loading()';
+    return 'ProfileState.loading()';
 }
 
 
@@ -274,16 +275,18 @@ _$LoadedCopyWith<_Loaded> get copyWith => __$LoadedCopyWithImpl<_Loaded>(this, _
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Loaded&&(identical(other.data, data) || other.data == data)&&(identical(other.shouldNavigateToSettings, shouldNavigateToSettings) || other.shouldNavigateToSettings == shouldNavigateToSettings)&&(identical(other.shouldShowPaywall, shouldShowPaywall) || other.shouldShowPaywall == shouldShowPaywall));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Loaded&&(identical(other.data, data) || other.data == data)&&(identical(other.shouldNavigateToSettings, shouldNavigateToSettings) || other.shouldNavigateToSettings == shouldNavigateToSettings)&&(identical(other.shouldShowPaywall, shouldShowPaywall) || other.shouldShowPaywall == shouldShowPaywall));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,data,shouldNavigateToSettings,shouldShowPaywall);
+int get hashCode {
+    return Object.hash(runtimeType,data,shouldNavigateToSettings,shouldShowPaywall);
+}
 
 @override
 String toString() {
-  return 'ProfileState.loaded(data: $data, shouldNavigateToSettings: $shouldNavigateToSettings, shouldShowPaywall: $shouldShowPaywall)';
+    return 'ProfileState.loaded(data: $data, shouldNavigateToSettings: $shouldNavigateToSettings, shouldShowPaywall: $shouldShowPaywall)';
 }
 
 
@@ -351,16 +354,18 @@ _$FailureCopyWith<_Failure> get copyWith => __$FailureCopyWithImpl<_Failure>(thi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Failure&&(identical(other.failure, failure) || other.failure == failure));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Failure&&(identical(other.failure, failure) || other.failure == failure));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,failure);
+int get hashCode {
+    return Object.hash(runtimeType,failure);
+}
 
 @override
 String toString() {
-  return 'ProfileState.failure(failure: $failure)';
+    return 'ProfileState.failure(failure: $failure)';
 }
 
 

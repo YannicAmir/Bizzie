@@ -4,7 +4,7 @@ import 'package:bizzie/features/company_profile/shared/domain/models/financial_d
 import 'package:bizzie/features/company_profile/shared/presentation/utils/financial_data_table_extensions.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/enums/financial_table_enums.dart';
 import 'package:bizzie/shared/widgets/tables/bizzie_data_table.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 export 'package:bizzie/features/company_profile/shared/presentation/enums/financial_table_enums.dart';
 

@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'ai_reports_tab_view_state.dart';
@@ -9,6 +9,7 @@ part of 'ai_reports_tab_view_state.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $AiReportsTabViewStateCopyWith<AiReportsTabViewState> get copyWith => _$AiReport
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AiReportsTabViewState&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.timestamp, timestamp) || other.timestamp == timestamp)&&(identical(other.loadTimeMs, loadTimeMs) || other.loadTimeMs == loadTimeMs)&&(identical(other.isSuccess, isSuccess) || other.isSuccess == isSuccess)&&(identical(other.dataSource, dataSource) || other.dataSource == dataSource)&&(identical(other.viewDurationSec, viewDurationSec) || other.viewDurationSec == viewDurationSec)&&(identical(other.viewedTenKTab, viewedTenKTab) || other.viewedTenKTab == viewedTenKTab)&&(identical(other.viewedTenQTab, viewedTenQTab) || other.viewedTenQTab == viewedTenQTab)&&(identical(other.viewedEightKTab, viewedEightKTab) || other.viewedEightKTab == viewedEightKTab)&&(identical(other.viewedRecapsTab, viewedRecapsTab) || other.viewedRecapsTab == viewedRecapsTab)&&(identical(other.openedReport, openedReport) || other.openedReport == openedReport)&&(identical(other.openedFilingLink, openedFilingLink) || other.openedFilingLink == openedFilingLink));
+  final _this = this as AiReportsTabViewState;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AiReportsTabViewState&&(identical(other.ticker, _this.ticker) || other.ticker == _this.ticker)&&(identical(other.timestamp, _this.timestamp) || other.timestamp == _this.timestamp)&&(identical(other.loadTimeMs, _this.loadTimeMs) || other.loadTimeMs == _this.loadTimeMs)&&(identical(other.isSuccess, _this.isSuccess) || other.isSuccess == _this.isSuccess)&&(identical(other.dataSource, _this.dataSource) || other.dataSource == _this.dataSource)&&(identical(other.viewDurationSec, _this.viewDurationSec) || other.viewDurationSec == _this.viewDurationSec)&&(identical(other.viewedTenKTab, _this.viewedTenKTab) || other.viewedTenKTab == _this.viewedTenKTab)&&(identical(other.viewedTenQTab, _this.viewedTenQTab) || other.viewedTenQTab == _this.viewedTenQTab)&&(identical(other.viewedEightKTab, _this.viewedEightKTab) || other.viewedEightKTab == _this.viewedEightKTab)&&(identical(other.viewedRecapsTab, _this.viewedRecapsTab) || other.viewedRecapsTab == _this.viewedRecapsTab)&&(identical(other.openedReport, _this.openedReport) || other.openedReport == _this.openedReport)&&(identical(other.openedFilingLink, _this.openedFilingLink) || other.openedFilingLink == _this.openedFilingLink));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,ticker,timestamp,loadTimeMs,isSuccess,dataSource,viewDurationSec,viewedTenKTab,viewedTenQTab,viewedEightKTab,viewedRecapsTab,openedReport,openedFilingLink);
+int get hashCode {
+  final _this = this as AiReportsTabViewState;
+  return Object.hash(runtimeType,_this.ticker,_this.timestamp,_this.loadTimeMs,_this.isSuccess,_this.dataSource,_this.viewDurationSec,_this.viewedTenKTab,_this.viewedTenQTab,_this.viewedEightKTab,_this.viewedRecapsTab,_this.openedReport,_this.openedFilingLink);
+}
 
 @override
 String toString() {
-  return 'AiReportsTabViewState(ticker: $ticker, timestamp: $timestamp, loadTimeMs: $loadTimeMs, isSuccess: $isSuccess, dataSource: $dataSource, viewDurationSec: $viewDurationSec, viewedTenKTab: $viewedTenKTab, viewedTenQTab: $viewedTenQTab, viewedEightKTab: $viewedEightKTab, viewedRecapsTab: $viewedRecapsTab, openedReport: $openedReport, openedFilingLink: $openedFilingLink)';
+  final _this = this as AiReportsTabViewState;
+  return 'AiReportsTabViewState(ticker: ${_this.ticker}, timestamp: ${_this.timestamp}, loadTimeMs: ${_this.loadTimeMs}, isSuccess: ${_this.isSuccess}, dataSource: ${_this.dataSource}, viewDurationSec: ${_this.viewDurationSec}, viewedTenKTab: ${_this.viewedTenKTab}, viewedTenQTab: ${_this.viewedTenQTab}, viewedEightKTab: ${_this.viewedEightKTab}, viewedRecapsTab: ${_this.viewedRecapsTab}, openedReport: ${_this.openedReport}, openedFilingLink: ${_this.openedFilingLink})';
 }
 
 
@@ -63,7 +69,7 @@ class _$AiReportsTabViewStateCopyWithImpl<$Res>
 /// Create a copy of AiReportsTabViewState
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? ticker = null,Object? timestamp = null,Object? loadTimeMs = freezed,Object? isSuccess = null,Object? dataSource = freezed,Object? viewDurationSec = null,Object? viewedTenKTab = null,Object? viewedTenQTab = null,Object? viewedEightKTab = null,Object? viewedRecapsTab = null,Object? openedReport = null,Object? openedFilingLink = null,}) {
-  return _then(_self.copyWith(
+  return _then(AiReportsTabViewState(
 ticker: null == ticker ? _self.ticker : ticker // ignore: cast_nullable_to_non_nullable
 as String,timestamp: null == timestamp ? _self.timestamp : timestamp // ignore: cast_nullable_to_non_nullable
 as String,loadTimeMs: freezed == loadTimeMs ? _self.loadTimeMs : loadTimeMs // ignore: cast_nullable_to_non_nullable
@@ -243,16 +249,18 @@ _$AiReportsTabViewStateCopyWith<_AiReportsTabViewState> get copyWith => __$AiRep
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AiReportsTabViewState&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.timestamp, timestamp) || other.timestamp == timestamp)&&(identical(other.loadTimeMs, loadTimeMs) || other.loadTimeMs == loadTimeMs)&&(identical(other.isSuccess, isSuccess) || other.isSuccess == isSuccess)&&(identical(other.dataSource, dataSource) || other.dataSource == dataSource)&&(identical(other.viewDurationSec, viewDurationSec) || other.viewDurationSec == viewDurationSec)&&(identical(other.viewedTenKTab, viewedTenKTab) || other.viewedTenKTab == viewedTenKTab)&&(identical(other.viewedTenQTab, viewedTenQTab) || other.viewedTenQTab == viewedTenQTab)&&(identical(other.viewedEightKTab, viewedEightKTab) || other.viewedEightKTab == viewedEightKTab)&&(identical(other.viewedRecapsTab, viewedRecapsTab) || other.viewedRecapsTab == viewedRecapsTab)&&(identical(other.openedReport, openedReport) || other.openedReport == openedReport)&&(identical(other.openedFilingLink, openedFilingLink) || other.openedFilingLink == openedFilingLink));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _AiReportsTabViewState&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.timestamp, timestamp) || other.timestamp == timestamp)&&(identical(other.loadTimeMs, loadTimeMs) || other.loadTimeMs == loadTimeMs)&&(identical(other.isSuccess, isSuccess) || other.isSuccess == isSuccess)&&(identical(other.dataSource, dataSource) || other.dataSource == dataSource)&&(identical(other.viewDurationSec, viewDurationSec) || other.viewDurationSec == viewDurationSec)&&(identical(other.viewedTenKTab, viewedTenKTab) || other.viewedTenKTab == viewedTenKTab)&&(identical(other.viewedTenQTab, viewedTenQTab) || other.viewedTenQTab == viewedTenQTab)&&(identical(other.viewedEightKTab, viewedEightKTab) || other.viewedEightKTab == viewedEightKTab)&&(identical(other.viewedRecapsTab, viewedRecapsTab) || other.viewedRecapsTab == viewedRecapsTab)&&(identical(other.openedReport, openedReport) || other.openedReport == openedReport)&&(identical(other.openedFilingLink, openedFilingLink) || other.openedFilingLink == openedFilingLink));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,ticker,timestamp,loadTimeMs,isSuccess,dataSource,viewDurationSec,viewedTenKTab,viewedTenQTab,viewedEightKTab,viewedRecapsTab,openedReport,openedFilingLink);
+int get hashCode {
+    return Object.hash(runtimeType,ticker,timestamp,loadTimeMs,isSuccess,dataSource,viewDurationSec,viewedTenKTab,viewedTenQTab,viewedEightKTab,viewedRecapsTab,openedReport,openedFilingLink);
+}
 
 @override
 String toString() {
-  return 'AiReportsTabViewState(ticker: $ticker, timestamp: $timestamp, loadTimeMs: $loadTimeMs, isSuccess: $isSuccess, dataSource: $dataSource, viewDurationSec: $viewDurationSec, viewedTenKTab: $viewedTenKTab, viewedTenQTab: $viewedTenQTab, viewedEightKTab: $viewedEightKTab, viewedRecapsTab: $viewedRecapsTab, openedReport: $openedReport, openedFilingLink: $openedFilingLink)';
+    return 'AiReportsTabViewState(ticker: $ticker, timestamp: $timestamp, loadTimeMs: $loadTimeMs, isSuccess: $isSuccess, dataSource: $dataSource, viewDurationSec: $viewDurationSec, viewedTenKTab: $viewedTenKTab, viewedTenQTab: $viewedTenQTab, viewedEightKTab: $viewedEightKTab, viewedRecapsTab: $viewedRecapsTab, openedReport: $openedReport, openedFilingLink: $openedFilingLink)';
 }
 
 

@@ -3,7 +3,7 @@ import 'package:bizzie/app/themes/app_theme.dart';
 import 'package:bizzie/features/auth/domain/enums/auth_source.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:bizzie/shared/widgets/buttons/social_login_button.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../bloc/auth_bloc.dart';

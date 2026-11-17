@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'fmp_sec_filing_dto.dart';
@@ -9,14 +9,14 @@ part of 'fmp_sec_filing_dto.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 
 /// @nodoc
 mixin _$FmpSecFilingDto {
 
- String? get symbol; String? get filingDate; String? get acceptedDate; String? get period; String? get formType;// "DEF 14A", "10-K" etc
- String? get link; String? get finalLink;
+ String? get symbol; String? get filingDate; String? get acceptedDate; String? get period; String? get formType; String? get link; String? get finalLink;
 /// Create a copy of FmpSecFilingDto
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -29,16 +29,21 @@ $FmpSecFilingDtoCopyWith<FmpSecFilingDto> get copyWith => _$FmpSecFilingDtoCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is FmpSecFilingDto&&(identical(other.symbol, symbol) || other.symbol == symbol)&&(identical(other.filingDate, filingDate) || other.filingDate == filingDate)&&(identical(other.acceptedDate, acceptedDate) || other.acceptedDate == acceptedDate)&&(identical(other.period, period) || other.period == period)&&(identical(other.formType, formType) || other.formType == formType)&&(identical(other.link, link) || other.link == link)&&(identical(other.finalLink, finalLink) || other.finalLink == finalLink));
+  final _this = this as FmpSecFilingDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is FmpSecFilingDto&&(identical(other.symbol, _this.symbol) || other.symbol == _this.symbol)&&(identical(other.filingDate, _this.filingDate) || other.filingDate == _this.filingDate)&&(identical(other.acceptedDate, _this.acceptedDate) || other.acceptedDate == _this.acceptedDate)&&(identical(other.period, _this.period) || other.period == _this.period)&&(identical(other.formType, _this.formType) || other.formType == _this.formType)&&(identical(other.link, _this.link) || other.link == _this.link)&&(identical(other.finalLink, _this.finalLink) || other.finalLink == _this.finalLink));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,symbol,filingDate,acceptedDate,period,formType,link,finalLink);
+int get hashCode {
+  final _this = this as FmpSecFilingDto;
+  return Object.hash(runtimeType,_this.symbol,_this.filingDate,_this.acceptedDate,_this.period,_this.formType,_this.link,_this.finalLink);
+}
 
 @override
 String toString() {
-  return 'FmpSecFilingDto(symbol: $symbol, filingDate: $filingDate, acceptedDate: $acceptedDate, period: $period, formType: $formType, link: $link, finalLink: $finalLink)';
+  final _this = this as FmpSecFilingDto;
+  return 'FmpSecFilingDto(symbol: ${_this.symbol}, filingDate: ${_this.filingDate}, acceptedDate: ${_this.acceptedDate}, period: ${_this.period}, formType: ${_this.formType}, link: ${_this.link}, finalLink: ${_this.finalLink})';
 }
 
 
@@ -67,7 +72,7 @@ class _$FmpSecFilingDtoCopyWithImpl<$Res>
 /// Create a copy of FmpSecFilingDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? symbol = freezed,Object? filingDate = freezed,Object? acceptedDate = freezed,Object? period = freezed,Object? formType = freezed,Object? link = freezed,Object? finalLink = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(FmpSecFilingDto(
 symbol: freezed == symbol ? _self.symbol : symbol // ignore: cast_nullable_to_non_nullable
 as String?,filingDate: freezed == filingDate ? _self.filingDate : filingDate // ignore: cast_nullable_to_non_nullable
 as String?,acceptedDate: freezed == acceptedDate ? _self.acceptedDate : acceptedDate // ignore: cast_nullable_to_non_nullable
@@ -224,7 +229,6 @@ class _FmpSecFilingDto implements FmpSecFilingDto {
 @override final  String? acceptedDate;
 @override final  String? period;
 @override final  String? formType;
-// "DEF 14A", "10-K" etc
 @override final  String? link;
 @override final  String? finalLink;
 
@@ -241,16 +245,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _FmpSecFilingDto&&(identical(other.symbol, symbol) || other.symbol == symbol)&&(identical(other.filingDate, filingDate) || other.filingDate == filingDate)&&(identical(other.acceptedDate, acceptedDate) || other.acceptedDate == acceptedDate)&&(identical(other.period, period) || other.period == period)&&(identical(other.formType, formType) || other.formType == formType)&&(identical(other.link, link) || other.link == link)&&(identical(other.finalLink, finalLink) || other.finalLink == finalLink));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _FmpSecFilingDto&&(identical(other.symbol, symbol) || other.symbol == symbol)&&(identical(other.filingDate, filingDate) || other.filingDate == filingDate)&&(identical(other.acceptedDate, acceptedDate) || other.acceptedDate == acceptedDate)&&(identical(other.period, period) || other.period == period)&&(identical(other.formType, formType) || other.formType == formType)&&(identical(other.link, link) || other.link == link)&&(identical(other.finalLink, finalLink) || other.finalLink == finalLink));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,symbol,filingDate,acceptedDate,period,formType,link,finalLink);
+int get hashCode {
+    return Object.hash(runtimeType,symbol,filingDate,acceptedDate,period,formType,link,finalLink);
+}
 
 @override
 String toString() {
-  return 'FmpSecFilingDto(symbol: $symbol, filingDate: $filingDate, acceptedDate: $acceptedDate, period: $period, formType: $formType, link: $link, finalLink: $finalLink)';
+    return 'FmpSecFilingDto(symbol: $symbol, filingDate: $filingDate, acceptedDate: $acceptedDate, period: $period, formType: $formType, link: $link, finalLink: $finalLink)';
 }
 
 

@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'company_news_event.dart';
@@ -9,6 +9,7 @@ part of 'company_news_event.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -20,7 +21,7 @@ mixin _$CompanyNewsEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CompanyNewsEvent);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is CompanyNewsEvent);
 }
 
 
@@ -29,7 +30,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'CompanyNewsEvent()';
+    return 'CompanyNewsEvent()';
 }
 
 
@@ -227,16 +228,18 @@ $LoadRequestedCopyWith<LoadRequested> get copyWith => _$LoadRequestedCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is LoadRequested&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.forceRefresh, forceRefresh) || other.forceRefresh == forceRefresh));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is LoadRequested&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.forceRefresh, forceRefresh) || other.forceRefresh == forceRefresh));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,ticker,forceRefresh);
+int get hashCode {
+    return Object.hash(runtimeType,ticker,forceRefresh);
+}
 
 @override
 String toString() {
-  return 'CompanyNewsEvent.loadRequested(ticker: $ticker, forceRefresh: $forceRefresh)';
+    return 'CompanyNewsEvent.loadRequested(ticker: $ticker, forceRefresh: $forceRefresh)';
 }
 
 
@@ -294,16 +297,18 @@ $StalenessCheckRequestedCopyWith<StalenessCheckRequested> get copyWith => _$Stal
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is StalenessCheckRequested&&(identical(other.ticker, ticker) || other.ticker == ticker));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is StalenessCheckRequested&&(identical(other.ticker, ticker) || other.ticker == ticker));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,ticker);
+int get hashCode {
+    return Object.hash(runtimeType,ticker);
+}
 
 @override
 String toString() {
-  return 'CompanyNewsEvent.stalenessCheckRequested(ticker: $ticker)';
+    return 'CompanyNewsEvent.stalenessCheckRequested(ticker: $ticker)';
 }
 
 
@@ -360,16 +365,18 @@ $TabShownCopyWith<TabShown> get copyWith => _$TabShownCopyWithImpl<TabShown>(thi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TabShown&&(identical(other.ticker, ticker) || other.ticker == ticker));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is TabShown&&(identical(other.ticker, ticker) || other.ticker == ticker));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,ticker);
+int get hashCode {
+    return Object.hash(runtimeType,ticker);
+}
 
 @override
 String toString() {
-  return 'CompanyNewsEvent.tabShown(ticker: $ticker)';
+    return 'CompanyNewsEvent.tabShown(ticker: $ticker)';
 }
 
 
@@ -421,7 +428,7 @@ class TabHidden implements CompanyNewsEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TabHidden);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is TabHidden);
 }
 
 
@@ -430,7 +437,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'CompanyNewsEvent.tabHidden()';
+    return 'CompanyNewsEvent.tabHidden()';
 }
 
 
@@ -453,7 +460,7 @@ class AppBackgrounded implements CompanyNewsEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AppBackgrounded);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is AppBackgrounded);
 }
 
 
@@ -462,7 +469,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'CompanyNewsEvent.appBackgrounded()';
+    return 'CompanyNewsEvent.appBackgrounded()';
 }
 
 
@@ -485,7 +492,7 @@ class AppForegrounded implements CompanyNewsEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AppForegrounded);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is AppForegrounded);
 }
 
 
@@ -494,7 +501,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'CompanyNewsEvent.appForegrounded()';
+    return 'CompanyNewsEvent.appForegrounded()';
 }
 
 
@@ -523,16 +530,18 @@ $ArticleTappedCopyWith<ArticleTapped> get copyWith => _$ArticleTappedCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ArticleTapped&&(identical(other.article, article) || other.article == article)&&(identical(other.isFeatured, isFeatured) || other.isFeatured == isFeatured));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is ArticleTapped&&(identical(other.article, article) || other.article == article)&&(identical(other.isFeatured, isFeatured) || other.isFeatured == isFeatured));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,article,isFeatured);
+int get hashCode {
+    return Object.hash(runtimeType,article,isFeatured);
+}
 
 @override
 String toString() {
-  return 'CompanyNewsEvent.articleTapped(article: $article, isFeatured: $isFeatured)';
+    return 'CompanyNewsEvent.articleTapped(article: $article, isFeatured: $isFeatured)';
 }
 
 
@@ -594,7 +603,7 @@ class Reset implements CompanyNewsEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Reset);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is Reset);
 }
 
 
@@ -603,7 +612,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'CompanyNewsEvent.reset()';
+    return 'CompanyNewsEvent.reset()';
 }
 
 

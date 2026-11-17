@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'security_tab_analytics.dart';
@@ -9,6 +9,7 @@ part of 'security_tab_analytics.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $SecurityTabViewStateCopyWith<SecurityTabViewState> get copyWith => _$SecurityTa
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SecurityTabViewState&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.securityType, securityType) || other.securityType == securityType)&&(identical(other.timestamp, timestamp) || other.timestamp == timestamp)&&(identical(other.loadTimeMs, loadTimeMs) || other.loadTimeMs == loadTimeMs)&&(identical(other.priceLoadMs, priceLoadMs) || other.priceLoadMs == priceLoadMs)&&(identical(other.isSuccess, isSuccess) || other.isSuccess == isSuccess)&&(identical(other.isPriceSuccess, isPriceSuccess) || other.isPriceSuccess == isPriceSuccess)&&(identical(other.dataSource, dataSource) || other.dataSource == dataSource)&&(identical(other.viewDurationSec, viewDurationSec) || other.viewDurationSec == viewDurationSec)&&(identical(other.hasUpcomingEarnings, hasUpcomingEarnings) || other.hasUpcomingEarnings == hasUpcomingEarnings)&&(identical(other.earningsDaysAway, earningsDaysAway) || other.earningsDaysAway == earningsDaysAway)&&(identical(other.priceChartChangeCount, priceChartChangeCount) || other.priceChartChangeCount == priceChartChangeCount)&&(identical(other.finalPriceTimeframe, finalPriceTimeframe) || other.finalPriceTimeframe == finalPriceTimeframe));
+  final _this = this as SecurityTabViewState;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SecurityTabViewState&&(identical(other.ticker, _this.ticker) || other.ticker == _this.ticker)&&(identical(other.securityType, _this.securityType) || other.securityType == _this.securityType)&&(identical(other.timestamp, _this.timestamp) || other.timestamp == _this.timestamp)&&(identical(other.loadTimeMs, _this.loadTimeMs) || other.loadTimeMs == _this.loadTimeMs)&&(identical(other.priceLoadMs, _this.priceLoadMs) || other.priceLoadMs == _this.priceLoadMs)&&(identical(other.isSuccess, _this.isSuccess) || other.isSuccess == _this.isSuccess)&&(identical(other.isPriceSuccess, _this.isPriceSuccess) || other.isPriceSuccess == _this.isPriceSuccess)&&(identical(other.dataSource, _this.dataSource) || other.dataSource == _this.dataSource)&&(identical(other.viewDurationSec, _this.viewDurationSec) || other.viewDurationSec == _this.viewDurationSec)&&(identical(other.hasUpcomingEarnings, _this.hasUpcomingEarnings) || other.hasUpcomingEarnings == _this.hasUpcomingEarnings)&&(identical(other.earningsDaysAway, _this.earningsDaysAway) || other.earningsDaysAway == _this.earningsDaysAway)&&(identical(other.priceChartChangeCount, _this.priceChartChangeCount) || other.priceChartChangeCount == _this.priceChartChangeCount)&&(identical(other.finalPriceTimeframe, _this.finalPriceTimeframe) || other.finalPriceTimeframe == _this.finalPriceTimeframe));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,ticker,securityType,timestamp,loadTimeMs,priceLoadMs,isSuccess,isPriceSuccess,dataSource,viewDurationSec,hasUpcomingEarnings,earningsDaysAway,priceChartChangeCount,finalPriceTimeframe);
+int get hashCode {
+  final _this = this as SecurityTabViewState;
+  return Object.hash(runtimeType,_this.ticker,_this.securityType,_this.timestamp,_this.loadTimeMs,_this.priceLoadMs,_this.isSuccess,_this.isPriceSuccess,_this.dataSource,_this.viewDurationSec,_this.hasUpcomingEarnings,_this.earningsDaysAway,_this.priceChartChangeCount,_this.finalPriceTimeframe);
+}
 
 @override
 String toString() {
-  return 'SecurityTabViewState(ticker: $ticker, securityType: $securityType, timestamp: $timestamp, loadTimeMs: $loadTimeMs, priceLoadMs: $priceLoadMs, isSuccess: $isSuccess, isPriceSuccess: $isPriceSuccess, dataSource: $dataSource, viewDurationSec: $viewDurationSec, hasUpcomingEarnings: $hasUpcomingEarnings, earningsDaysAway: $earningsDaysAway, priceChartChangeCount: $priceChartChangeCount, finalPriceTimeframe: $finalPriceTimeframe)';
+  final _this = this as SecurityTabViewState;
+  return 'SecurityTabViewState(ticker: ${_this.ticker}, securityType: ${_this.securityType}, timestamp: ${_this.timestamp}, loadTimeMs: ${_this.loadTimeMs}, priceLoadMs: ${_this.priceLoadMs}, isSuccess: ${_this.isSuccess}, isPriceSuccess: ${_this.isPriceSuccess}, dataSource: ${_this.dataSource}, viewDurationSec: ${_this.viewDurationSec}, hasUpcomingEarnings: ${_this.hasUpcomingEarnings}, earningsDaysAway: ${_this.earningsDaysAway}, priceChartChangeCount: ${_this.priceChartChangeCount}, finalPriceTimeframe: ${_this.finalPriceTimeframe})';
 }
 
 
@@ -63,7 +69,7 @@ class _$SecurityTabViewStateCopyWithImpl<$Res>
 /// Create a copy of SecurityTabViewState
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? ticker = null,Object? securityType = null,Object? timestamp = null,Object? loadTimeMs = freezed,Object? priceLoadMs = freezed,Object? isSuccess = null,Object? isPriceSuccess = null,Object? dataSource = freezed,Object? viewDurationSec = null,Object? hasUpcomingEarnings = null,Object? earningsDaysAway = freezed,Object? priceChartChangeCount = null,Object? finalPriceTimeframe = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(SecurityTabViewState(
 ticker: null == ticker ? _self.ticker : ticker // ignore: cast_nullable_to_non_nullable
 as String,securityType: null == securityType ? _self.securityType : securityType // ignore: cast_nullable_to_non_nullable
 as String,timestamp: null == timestamp ? _self.timestamp : timestamp // ignore: cast_nullable_to_non_nullable
@@ -245,16 +251,18 @@ _$SecurityTabViewStateCopyWith<_SecurityTabViewState> get copyWith => __$Securit
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SecurityTabViewState&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.securityType, securityType) || other.securityType == securityType)&&(identical(other.timestamp, timestamp) || other.timestamp == timestamp)&&(identical(other.loadTimeMs, loadTimeMs) || other.loadTimeMs == loadTimeMs)&&(identical(other.priceLoadMs, priceLoadMs) || other.priceLoadMs == priceLoadMs)&&(identical(other.isSuccess, isSuccess) || other.isSuccess == isSuccess)&&(identical(other.isPriceSuccess, isPriceSuccess) || other.isPriceSuccess == isPriceSuccess)&&(identical(other.dataSource, dataSource) || other.dataSource == dataSource)&&(identical(other.viewDurationSec, viewDurationSec) || other.viewDurationSec == viewDurationSec)&&(identical(other.hasUpcomingEarnings, hasUpcomingEarnings) || other.hasUpcomingEarnings == hasUpcomingEarnings)&&(identical(other.earningsDaysAway, earningsDaysAway) || other.earningsDaysAway == earningsDaysAway)&&(identical(other.priceChartChangeCount, priceChartChangeCount) || other.priceChartChangeCount == priceChartChangeCount)&&(identical(other.finalPriceTimeframe, finalPriceTimeframe) || other.finalPriceTimeframe == finalPriceTimeframe));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _SecurityTabViewState&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.securityType, securityType) || other.securityType == securityType)&&(identical(other.timestamp, timestamp) || other.timestamp == timestamp)&&(identical(other.loadTimeMs, loadTimeMs) || other.loadTimeMs == loadTimeMs)&&(identical(other.priceLoadMs, priceLoadMs) || other.priceLoadMs == priceLoadMs)&&(identical(other.isSuccess, isSuccess) || other.isSuccess == isSuccess)&&(identical(other.isPriceSuccess, isPriceSuccess) || other.isPriceSuccess == isPriceSuccess)&&(identical(other.dataSource, dataSource) || other.dataSource == dataSource)&&(identical(other.viewDurationSec, viewDurationSec) || other.viewDurationSec == viewDurationSec)&&(identical(other.hasUpcomingEarnings, hasUpcomingEarnings) || other.hasUpcomingEarnings == hasUpcomingEarnings)&&(identical(other.earningsDaysAway, earningsDaysAway) || other.earningsDaysAway == earningsDaysAway)&&(identical(other.priceChartChangeCount, priceChartChangeCount) || other.priceChartChangeCount == priceChartChangeCount)&&(identical(other.finalPriceTimeframe, finalPriceTimeframe) || other.finalPriceTimeframe == finalPriceTimeframe));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,ticker,securityType,timestamp,loadTimeMs,priceLoadMs,isSuccess,isPriceSuccess,dataSource,viewDurationSec,hasUpcomingEarnings,earningsDaysAway,priceChartChangeCount,finalPriceTimeframe);
+int get hashCode {
+    return Object.hash(runtimeType,ticker,securityType,timestamp,loadTimeMs,priceLoadMs,isSuccess,isPriceSuccess,dataSource,viewDurationSec,hasUpcomingEarnings,earningsDaysAway,priceChartChangeCount,finalPriceTimeframe);
+}
 
 @override
 String toString() {
-  return 'SecurityTabViewState(ticker: $ticker, securityType: $securityType, timestamp: $timestamp, loadTimeMs: $loadTimeMs, priceLoadMs: $priceLoadMs, isSuccess: $isSuccess, isPriceSuccess: $isPriceSuccess, dataSource: $dataSource, viewDurationSec: $viewDurationSec, hasUpcomingEarnings: $hasUpcomingEarnings, earningsDaysAway: $earningsDaysAway, priceChartChangeCount: $priceChartChangeCount, finalPriceTimeframe: $finalPriceTimeframe)';
+    return 'SecurityTabViewState(ticker: $ticker, securityType: $securityType, timestamp: $timestamp, loadTimeMs: $loadTimeMs, priceLoadMs: $priceLoadMs, isSuccess: $isSuccess, isPriceSuccess: $isPriceSuccess, dataSource: $dataSource, viewDurationSec: $viewDurationSec, hasUpcomingEarnings: $hasUpcomingEarnings, earningsDaysAway: $earningsDaysAway, priceChartChangeCount: $priceChartChangeCount, finalPriceTimeframe: $finalPriceTimeframe)';
 }
 
 

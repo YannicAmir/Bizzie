@@ -2,7 +2,7 @@ import 'package:bizzie/core/enums/bizzie_lifecycle_state.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:bizzie/features/company_profile/cp/presentation/bloc/company_profile_bloc.dart';
 import 'package:bizzie/features/company_profile/cp/presentation/bloc/company_profile_state.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 final _logger = BizzieLogger('TabVisibilityObserver');

@@ -1,5 +1,5 @@
 import 'package:bizzie/features/company_profile/cp/presentation/enums/company_profile_tour_step.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:showcaseview/showcaseview.dart';
 
 class CompanyProfileTourScope extends StatefulWidget {

@@ -5,7 +5,7 @@ import 'package:bizzie/features/company_profile/dividends/domain/extensions/divi
 import 'package:bizzie/features/company_profile/dividends/domain/models/dividend_event.dart';
 import 'package:bizzie/features/company_profile/dividends/presentation/utils/dividend_formatters.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class DividendOverviewSection extends StatelessWidget {
   final DividendEvent latestEvent;

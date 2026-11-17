@@ -1741,7 +1741,7 @@ SPEC CHECKSUMS:
   FirebaseRemoteConfigInterop: 4801ab93a543ef8fedfb40ae2f66d03e3fdcb864
   FirebaseSharedSwift: 76bdd9de8ff1da7a601236ee058253e36206978e
   FirebaseStorage: a4709ed4e33f0b19dc6ac4889bb3c946fe8865ef
-  Flutter: cabc95a1d2626b1b06e7179b784ebcf0c0cde467
+  Flutter: 71a624a5bc0c04062bf19101d501e466baf2fb47
   flutter_local_notifications: ff50f8405aaa0ccdc7dcfb9022ca192e8ad9688f
   flutter_native_splash: df59bb2e1421aa0282cb2e95618af4dcb0c56c29
   freerasp: bb827d80b926abcfb8f4ca4ff4557c2fe4a5ae21

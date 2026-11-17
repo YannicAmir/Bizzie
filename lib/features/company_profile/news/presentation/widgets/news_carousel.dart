@@ -9,7 +9,7 @@ import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:bizzie/shared/utils/url_launcher_utils.dart';
 import 'package:bizzie/shared/widgets/cards/news_card.dart';
 import 'package:bizzie/shared/widgets/carousel_page_indicator.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 const int _maxDisplayedArticles = 3;

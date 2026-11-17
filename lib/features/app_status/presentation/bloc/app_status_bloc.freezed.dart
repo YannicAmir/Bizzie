@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'app_status_bloc.dart';
@@ -9,6 +9,7 @@ part of 'app_status_bloc.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -20,7 +21,7 @@ mixin _$AppStatusEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AppStatusEvent);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is AppStatusEvent);
 }
 
 
@@ -29,7 +30,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'AppStatusEvent()';
+    return 'AppStatusEvent()';
 }
 
 
@@ -197,7 +198,7 @@ class _Started implements AppStatusEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Started);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Started);
 }
 
 
@@ -206,7 +207,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'AppStatusEvent.started()';
+    return 'AppStatusEvent.started()';
 }
 
 
@@ -229,7 +230,7 @@ class _Refreshed implements AppStatusEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Refreshed);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Refreshed);
 }
 
 
@@ -238,7 +239,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'AppStatusEvent.refreshed()';
+    return 'AppStatusEvent.refreshed()';
 }
 
 
@@ -267,16 +268,18 @@ _$StatusChangedCopyWith<_StatusChanged> get copyWith => __$StatusChangedCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _StatusChanged&&(identical(other.status, status) || other.status == status)&&(identical(other.isManualRefresh, isManualRefresh) || other.isManualRefresh == isManualRefresh));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _StatusChanged&&(identical(other.status, status) || other.status == status)&&(identical(other.isManualRefresh, isManualRefresh) || other.isManualRefresh == isManualRefresh));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,status,isManualRefresh);
+int get hashCode {
+    return Object.hash(runtimeType,status,isManualRefresh);
+}
 
 @override
 String toString() {
-  return 'AppStatusEvent.statusChanged(status: $status, isManualRefresh: $isManualRefresh)';
+    return 'AppStatusEvent.statusChanged(status: $status, isManualRefresh: $isManualRefresh)';
 }
 
 
@@ -333,7 +336,7 @@ mixin _$AppStatusState {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AppStatusState);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is AppStatusState);
 }
 
 
@@ -342,7 +345,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'AppStatusState()';
+    return 'AppStatusState()';
 }
 
 
@@ -504,7 +507,7 @@ class _Initial implements AppStatusState {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Initial);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Initial);
 }
 
 
@@ -513,7 +516,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'AppStatusState.initial()';
+    return 'AppStatusState.initial()';
 }
 
 
@@ -542,16 +545,18 @@ _$CheckedCopyWith<_Checked> get copyWith => __$CheckedCopyWithImpl<_Checked>(thi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Checked&&(identical(other.status, status) || other.status == status)&&(identical(other.isRefreshing, isRefreshing) || other.isRefreshing == isRefreshing));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Checked&&(identical(other.status, status) || other.status == status)&&(identical(other.isRefreshing, isRefreshing) || other.isRefreshing == isRefreshing));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,status,isRefreshing);
+int get hashCode {
+    return Object.hash(runtimeType,status,isRefreshing);
+}
 
 @override
 String toString() {
-  return 'AppStatusState.checked(status: $status, isRefreshing: $isRefreshing)';
+    return 'AppStatusState.checked(status: $status, isRefreshing: $isRefreshing)';
 }
 
 

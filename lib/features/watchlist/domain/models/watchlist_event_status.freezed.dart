@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'watchlist_event_status.dart';
@@ -9,6 +9,7 @@ part of 'watchlist_event_status.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $WatchlistEventStatusCopyWith<WatchlistEventStatus> get copyWith => _$WatchlistE
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is WatchlistEventStatus&&(identical(other.badgeText, badgeText) || other.badgeText == badgeText)&&(identical(other.badgeType, badgeType) || other.badgeType == badgeType)&&(identical(other.eventDate, eventDate) || other.eventDate == eventDate)&&(identical(other.lastUpdated, lastUpdated) || other.lastUpdated == lastUpdated));
+  final _this = this as WatchlistEventStatus;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is WatchlistEventStatus&&(identical(other.badgeText, _this.badgeText) || other.badgeText == _this.badgeText)&&(identical(other.badgeType, _this.badgeType) || other.badgeType == _this.badgeType)&&(identical(other.eventDate, _this.eventDate) || other.eventDate == _this.eventDate)&&(identical(other.lastUpdated, _this.lastUpdated) || other.lastUpdated == _this.lastUpdated));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,badgeText,badgeType,eventDate,lastUpdated);
+int get hashCode {
+  final _this = this as WatchlistEventStatus;
+  return Object.hash(runtimeType,_this.badgeText,_this.badgeType,_this.eventDate,_this.lastUpdated);
+}
 
 @override
 String toString() {
-  return 'WatchlistEventStatus(badgeText: $badgeText, badgeType: $badgeType, eventDate: $eventDate, lastUpdated: $lastUpdated)';
+  final _this = this as WatchlistEventStatus;
+  return 'WatchlistEventStatus(badgeText: ${_this.badgeText}, badgeType: ${_this.badgeType}, eventDate: ${_this.eventDate}, lastUpdated: ${_this.lastUpdated})';
 }
 
 
@@ -63,7 +69,7 @@ class _$WatchlistEventStatusCopyWithImpl<$Res>
 /// Create a copy of WatchlistEventStatus
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? badgeText = null,Object? badgeType = null,Object? eventDate = null,Object? lastUpdated = null,}) {
-  return _then(_self.copyWith(
+  return _then(WatchlistEventStatus(
 badgeText: null == badgeText ? _self.badgeText : badgeText // ignore: cast_nullable_to_non_nullable
 as String,badgeType: null == badgeType ? _self.badgeType : badgeType // ignore: cast_nullable_to_non_nullable
 as WatchlistBadgeType,eventDate: null == eventDate ? _self.eventDate : eventDate // ignore: cast_nullable_to_non_nullable
@@ -227,16 +233,18 @@ _$WatchlistEventStatusCopyWith<_WatchlistEventStatus> get copyWith => __$Watchli
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _WatchlistEventStatus&&(identical(other.badgeText, badgeText) || other.badgeText == badgeText)&&(identical(other.badgeType, badgeType) || other.badgeType == badgeType)&&(identical(other.eventDate, eventDate) || other.eventDate == eventDate)&&(identical(other.lastUpdated, lastUpdated) || other.lastUpdated == lastUpdated));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _WatchlistEventStatus&&(identical(other.badgeText, badgeText) || other.badgeText == badgeText)&&(identical(other.badgeType, badgeType) || other.badgeType == badgeType)&&(identical(other.eventDate, eventDate) || other.eventDate == eventDate)&&(identical(other.lastUpdated, lastUpdated) || other.lastUpdated == lastUpdated));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,badgeText,badgeType,eventDate,lastUpdated);
+int get hashCode {
+    return Object.hash(runtimeType,badgeText,badgeType,eventDate,lastUpdated);
+}
 
 @override
 String toString() {
-  return 'WatchlistEventStatus(badgeText: $badgeText, badgeType: $badgeType, eventDate: $eventDate, lastUpdated: $lastUpdated)';
+    return 'WatchlistEventStatus(badgeText: $badgeText, badgeType: $badgeType, eventDate: $eventDate, lastUpdated: $lastUpdated)';
 }
 
 

@@ -4,7 +4,7 @@ import 'package:bizzie/core/domain/models/weekly_report.dart';
 import 'package:bizzie/shared/widgets/app_badge.dart';
 import 'package:bizzie/shared/widgets/cards/filing_card_header.dart';
 import 'package:bizzie/shared/widgets/modals/weekly_report_modal.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class WeeklyReportCard extends StatelessWidget {

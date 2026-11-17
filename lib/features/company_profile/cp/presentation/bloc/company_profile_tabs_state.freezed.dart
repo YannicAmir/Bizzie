@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'company_profile_tabs_state.dart';
@@ -9,6 +9,7 @@ part of 'company_profile_tabs_state.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $CompanyProfileTabsStateCopyWith<CompanyProfileTabsState> get copyWith => _$Comp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CompanyProfileTabsState&&const DeepCollectionEquality().equals(other.mainTabs, mainTabs)&&const DeepCollectionEquality().equals(other.moreTabs, moreTabs)&&const DeepCollectionEquality().equals(other.bizziePlusTabs, bizziePlusTabs)&&(identical(other.moreTabIndex, moreTabIndex) || other.moreTabIndex == moreTabIndex)&&(identical(other.isBizzieChatEnabled, isBizzieChatEnabled) || other.isBizzieChatEnabled == isBizzieChatEnabled)&&(identical(other.isSubscribed, isSubscribed) || other.isSubscribed == isSubscribed));
+  final _this = this as CompanyProfileTabsState;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CompanyProfileTabsState&&const DeepCollectionEquality().equals(other.mainTabs, _this.mainTabs)&&const DeepCollectionEquality().equals(other.moreTabs, _this.moreTabs)&&const DeepCollectionEquality().equals(other.bizziePlusTabs, _this.bizziePlusTabs)&&(identical(other.moreTabIndex, _this.moreTabIndex) || other.moreTabIndex == _this.moreTabIndex)&&(identical(other.isBizzieChatEnabled, _this.isBizzieChatEnabled) || other.isBizzieChatEnabled == _this.isBizzieChatEnabled)&&(identical(other.isSubscribed, _this.isSubscribed) || other.isSubscribed == _this.isSubscribed));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(mainTabs),const DeepCollectionEquality().hash(moreTabs),const DeepCollectionEquality().hash(bizziePlusTabs),moreTabIndex,isBizzieChatEnabled,isSubscribed);
+int get hashCode {
+  final _this = this as CompanyProfileTabsState;
+  return Object.hash(runtimeType,const DeepCollectionEquality().hash(_this.mainTabs),const DeepCollectionEquality().hash(_this.moreTabs),const DeepCollectionEquality().hash(_this.bizziePlusTabs),_this.moreTabIndex,_this.isBizzieChatEnabled,_this.isSubscribed);
+}
 
 @override
 String toString() {
-  return 'CompanyProfileTabsState(mainTabs: $mainTabs, moreTabs: $moreTabs, bizziePlusTabs: $bizziePlusTabs, moreTabIndex: $moreTabIndex, isBizzieChatEnabled: $isBizzieChatEnabled, isSubscribed: $isSubscribed)';
+  final _this = this as CompanyProfileTabsState;
+  return 'CompanyProfileTabsState(mainTabs: ${_this.mainTabs}, moreTabs: ${_this.moreTabs}, bizziePlusTabs: ${_this.bizziePlusTabs}, moreTabIndex: ${_this.moreTabIndex}, isBizzieChatEnabled: ${_this.isBizzieChatEnabled}, isSubscribed: ${_this.isSubscribed})';
 }
 
 
@@ -217,7 +223,7 @@ return loaded(_that.mainTabs,_that.moreTabs,_that.bizziePlusTabs,_that.moreTabIn
 
 
 class _Initial extends CompanyProfileTabsState {
-  const _Initial({final  List<CompanyProfileTab> mainTabs = TabLayout.freeDefaultMainTabs, final  List<CompanyProfileTab> moreTabs = TabLayout.freeDefaultMoreTabs, final  List<CompanyProfileTab> bizziePlusTabs = TabLayout.freeDefaultBizziePlusTabs, this.moreTabIndex = 0, this.isBizzieChatEnabled = false, this.isSubscribed = false}): _mainTabs = mainTabs,_moreTabs = moreTabs,_bizziePlusTabs = bizziePlusTabs,super._();
+  const _Initial({ List<CompanyProfileTab> mainTabs = TabLayout.freeDefaultMainTabs,  List<CompanyProfileTab> moreTabs = TabLayout.freeDefaultMoreTabs,  List<CompanyProfileTab> bizziePlusTabs = TabLayout.freeDefaultBizziePlusTabs, this.moreTabIndex = 0, this.isBizzieChatEnabled = false, this.isSubscribed = false}): _mainTabs = mainTabs,_moreTabs = moreTabs,_bizziePlusTabs = bizziePlusTabs,super._();
   
 
  final  List<CompanyProfileTab> _mainTabs;
@@ -255,16 +261,18 @@ _$InitialCopyWith<_Initial> get copyWith => __$InitialCopyWithImpl<_Initial>(thi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Initial&&const DeepCollectionEquality().equals(other._mainTabs, _mainTabs)&&const DeepCollectionEquality().equals(other._moreTabs, _moreTabs)&&const DeepCollectionEquality().equals(other._bizziePlusTabs, _bizziePlusTabs)&&(identical(other.moreTabIndex, moreTabIndex) || other.moreTabIndex == moreTabIndex)&&(identical(other.isBizzieChatEnabled, isBizzieChatEnabled) || other.isBizzieChatEnabled == isBizzieChatEnabled)&&(identical(other.isSubscribed, isSubscribed) || other.isSubscribed == isSubscribed));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Initial&&const DeepCollectionEquality().equals(other.mainTabs, _mainTabs)&&const DeepCollectionEquality().equals(other.moreTabs, _moreTabs)&&const DeepCollectionEquality().equals(other.bizziePlusTabs, _bizziePlusTabs)&&(identical(other.moreTabIndex, moreTabIndex) || other.moreTabIndex == moreTabIndex)&&(identical(other.isBizzieChatEnabled, isBizzieChatEnabled) || other.isBizzieChatEnabled == isBizzieChatEnabled)&&(identical(other.isSubscribed, isSubscribed) || other.isSubscribed == isSubscribed));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_mainTabs),const DeepCollectionEquality().hash(_moreTabs),const DeepCollectionEquality().hash(_bizziePlusTabs),moreTabIndex,isBizzieChatEnabled,isSubscribed);
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_mainTabs),const DeepCollectionEquality().hash(_moreTabs),const DeepCollectionEquality().hash(_bizziePlusTabs),moreTabIndex,isBizzieChatEnabled,isSubscribed);
+}
 
 @override
 String toString() {
-  return 'CompanyProfileTabsState.initial(mainTabs: $mainTabs, moreTabs: $moreTabs, bizziePlusTabs: $bizziePlusTabs, moreTabIndex: $moreTabIndex, isBizzieChatEnabled: $isBizzieChatEnabled, isSubscribed: $isSubscribed)';
+    return 'CompanyProfileTabsState.initial(mainTabs: $mainTabs, moreTabs: $moreTabs, bizziePlusTabs: $bizziePlusTabs, moreTabIndex: $moreTabIndex, isBizzieChatEnabled: $isBizzieChatEnabled, isSubscribed: $isSubscribed)';
 }
 
 
@@ -311,7 +319,7 @@ as bool,
 
 
 class CompanyProfileTabsLoaded extends CompanyProfileTabsState {
-  const CompanyProfileTabsLoaded({required final  List<CompanyProfileTab> mainTabs, required final  List<CompanyProfileTab> moreTabs, final  List<CompanyProfileTab> bizziePlusTabs = const <CompanyProfileTab>[], this.moreTabIndex = 0, required this.isBizzieChatEnabled, required this.isSubscribed}): _mainTabs = mainTabs,_moreTabs = moreTabs,_bizziePlusTabs = bizziePlusTabs,super._();
+  const CompanyProfileTabsLoaded({required  List<CompanyProfileTab> mainTabs, required  List<CompanyProfileTab> moreTabs,  List<CompanyProfileTab> bizziePlusTabs = const <CompanyProfileTab>[], this.moreTabIndex = 0, required this.isBizzieChatEnabled, required this.isSubscribed}): _mainTabs = mainTabs,_moreTabs = moreTabs,_bizziePlusTabs = bizziePlusTabs,super._();
   
 
  final  List<CompanyProfileTab> _mainTabs;
@@ -349,16 +357,18 @@ $CompanyProfileTabsLoadedCopyWith<CompanyProfileTabsLoaded> get copyWith => _$Co
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CompanyProfileTabsLoaded&&const DeepCollectionEquality().equals(other._mainTabs, _mainTabs)&&const DeepCollectionEquality().equals(other._moreTabs, _moreTabs)&&const DeepCollectionEquality().equals(other._bizziePlusTabs, _bizziePlusTabs)&&(identical(other.moreTabIndex, moreTabIndex) || other.moreTabIndex == moreTabIndex)&&(identical(other.isBizzieChatEnabled, isBizzieChatEnabled) || other.isBizzieChatEnabled == isBizzieChatEnabled)&&(identical(other.isSubscribed, isSubscribed) || other.isSubscribed == isSubscribed));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is CompanyProfileTabsLoaded&&const DeepCollectionEquality().equals(other.mainTabs, _mainTabs)&&const DeepCollectionEquality().equals(other.moreTabs, _moreTabs)&&const DeepCollectionEquality().equals(other.bizziePlusTabs, _bizziePlusTabs)&&(identical(other.moreTabIndex, moreTabIndex) || other.moreTabIndex == moreTabIndex)&&(identical(other.isBizzieChatEnabled, isBizzieChatEnabled) || other.isBizzieChatEnabled == isBizzieChatEnabled)&&(identical(other.isSubscribed, isSubscribed) || other.isSubscribed == isSubscribed));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_mainTabs),const DeepCollectionEquality().hash(_moreTabs),const DeepCollectionEquality().hash(_bizziePlusTabs),moreTabIndex,isBizzieChatEnabled,isSubscribed);
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_mainTabs),const DeepCollectionEquality().hash(_moreTabs),const DeepCollectionEquality().hash(_bizziePlusTabs),moreTabIndex,isBizzieChatEnabled,isSubscribed);
+}
 
 @override
 String toString() {
-  return 'CompanyProfileTabsState.loaded(mainTabs: $mainTabs, moreTabs: $moreTabs, bizziePlusTabs: $bizziePlusTabs, moreTabIndex: $moreTabIndex, isBizzieChatEnabled: $isBizzieChatEnabled, isSubscribed: $isSubscribed)';
+    return 'CompanyProfileTabsState.loaded(mainTabs: $mainTabs, moreTabs: $moreTabs, bizziePlusTabs: $bizziePlusTabs, moreTabIndex: $moreTabIndex, isBizzieChatEnabled: $isBizzieChatEnabled, isSubscribed: $isSubscribed)';
 }
 
 

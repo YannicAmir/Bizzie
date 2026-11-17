@@ -2,7 +2,7 @@ import 'package:bizzie/app/themes/app_theme.dart';
 import 'package:bizzie/core/utils/string_extensions.dart';
 import 'package:bizzie/shared/models/price_tick.dart';
 import 'package:bizzie/shared/utils/badge_theme_extensions.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 const Duration _flashDuration = Duration(milliseconds: 1200);
 const double _flashHoldWeight = 25;

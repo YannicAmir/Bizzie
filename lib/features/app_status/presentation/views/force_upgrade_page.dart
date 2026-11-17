@@ -2,7 +2,7 @@ import 'package:bizzie/app/themes/app_assets.dart';
 import 'package:bizzie/features/app_status/domain/models/app_status.dart';
 import 'package:bizzie/shared/utils/url_launcher_utils.dart';
 import 'package:bizzie/shared/widgets/modals/bizzie_snackbar.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 import 'package:bizzie/features/app_status/presentation/widgets/generic_status_page.dart';
 import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';

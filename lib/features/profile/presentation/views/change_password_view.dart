@@ -8,7 +8,7 @@ import 'package:bizzie/shared/widgets/auth/password_requirement_row.dart';
 import 'package:bizzie/shared/widgets/buttons/bizzie_primary_button.dart';
 import 'package:bizzie/shared/widgets/inputs/auth_text_field.dart';
 import 'package:bizzie/shared/widgets/modals/bizzie_snackbar.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:get_it/get_it.dart';

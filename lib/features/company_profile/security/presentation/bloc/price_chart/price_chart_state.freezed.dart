@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'price_chart_state.dart';
@@ -9,6 +9,7 @@ part of 'price_chart_state.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $PriceChartStateCopyWith<PriceChartState> get copyWith => _$PriceChartStateCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PriceChartState&&const DeepCollectionEquality().equals(other.fullHistory, fullHistory)&&const DeepCollectionEquality().equals(other.viewData, viewData)&&(identical(other.selectedTimeFrame, selectedTimeFrame) || other.selectedTimeFrame == selectedTimeFrame)&&(identical(other.chartChangeCount, chartChangeCount) || other.chartChangeCount == chartChangeCount));
+  final _this = this as PriceChartState;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PriceChartState&&const DeepCollectionEquality().equals(other.fullHistory, _this.fullHistory)&&const DeepCollectionEquality().equals(other.viewData, _this.viewData)&&(identical(other.selectedTimeFrame, _this.selectedTimeFrame) || other.selectedTimeFrame == _this.selectedTimeFrame)&&(identical(other.chartChangeCount, _this.chartChangeCount) || other.chartChangeCount == _this.chartChangeCount));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(fullHistory),const DeepCollectionEquality().hash(viewData),selectedTimeFrame,chartChangeCount);
+int get hashCode {
+  final _this = this as PriceChartState;
+  return Object.hash(runtimeType,const DeepCollectionEquality().hash(_this.fullHistory),const DeepCollectionEquality().hash(_this.viewData),_this.selectedTimeFrame,_this.chartChangeCount);
+}
 
 @override
 String toString() {
-  return 'PriceChartState(fullHistory: $fullHistory, viewData: $viewData, selectedTimeFrame: $selectedTimeFrame, chartChangeCount: $chartChangeCount)';
+  final _this = this as PriceChartState;
+  return 'PriceChartState(fullHistory: ${_this.fullHistory}, viewData: ${_this.viewData}, selectedTimeFrame: ${_this.selectedTimeFrame}, chartChangeCount: ${_this.chartChangeCount})';
 }
 
 
@@ -63,7 +69,7 @@ class _$PriceChartStateCopyWithImpl<$Res>
 /// Create a copy of PriceChartState
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? fullHistory = null,Object? viewData = null,Object? selectedTimeFrame = null,Object? chartChangeCount = null,}) {
-  return _then(_self.copyWith(
+  return _then(PriceChartState(
 fullHistory: null == fullHistory ? _self.fullHistory : fullHistory // ignore: cast_nullable_to_non_nullable
 as List<HistoricalPriceEod>,viewData: null == viewData ? _self.viewData : viewData // ignore: cast_nullable_to_non_nullable
 as List<HistoricalPriceEod>,selectedTimeFrame: null == selectedTimeFrame ? _self.selectedTimeFrame : selectedTimeFrame // ignore: cast_nullable_to_non_nullable
@@ -209,7 +215,7 @@ return $default(_that.fullHistory,_that.viewData,_that.selectedTimeFrame,_that.c
 
 
 class _PriceChartState extends PriceChartState {
-  const _PriceChartState({required final  List<HistoricalPriceEod> fullHistory, required final  List<HistoricalPriceEod> viewData, required this.selectedTimeFrame, this.chartChangeCount = 0}): _fullHistory = fullHistory,_viewData = viewData,super._();
+  const _PriceChartState({required  List<HistoricalPriceEod> fullHistory, required  List<HistoricalPriceEod> viewData, required this.selectedTimeFrame, this.chartChangeCount = 0}): _fullHistory = fullHistory,_viewData = viewData,super._();
   
 
  final  List<HistoricalPriceEod> _fullHistory;
@@ -239,16 +245,18 @@ _$PriceChartStateCopyWith<_PriceChartState> get copyWith => __$PriceChartStateCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PriceChartState&&const DeepCollectionEquality().equals(other._fullHistory, _fullHistory)&&const DeepCollectionEquality().equals(other._viewData, _viewData)&&(identical(other.selectedTimeFrame, selectedTimeFrame) || other.selectedTimeFrame == selectedTimeFrame)&&(identical(other.chartChangeCount, chartChangeCount) || other.chartChangeCount == chartChangeCount));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _PriceChartState&&const DeepCollectionEquality().equals(other.fullHistory, _fullHistory)&&const DeepCollectionEquality().equals(other.viewData, _viewData)&&(identical(other.selectedTimeFrame, selectedTimeFrame) || other.selectedTimeFrame == selectedTimeFrame)&&(identical(other.chartChangeCount, chartChangeCount) || other.chartChangeCount == chartChangeCount));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_fullHistory),const DeepCollectionEquality().hash(_viewData),selectedTimeFrame,chartChangeCount);
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_fullHistory),const DeepCollectionEquality().hash(_viewData),selectedTimeFrame,chartChangeCount);
+}
 
 @override
 String toString() {
-  return 'PriceChartState(fullHistory: $fullHistory, viewData: $viewData, selectedTimeFrame: $selectedTimeFrame, chartChangeCount: $chartChangeCount)';
+    return 'PriceChartState(fullHistory: $fullHistory, viewData: $viewData, selectedTimeFrame: $selectedTimeFrame, chartChangeCount: $chartChangeCount)';
 }
 
 

@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'company_business_state.dart';
@@ -9,6 +9,7 @@ part of 'company_business_state.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -20,7 +21,7 @@ mixin _$CompanyBusinessState {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CompanyBusinessState);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is CompanyBusinessState);
 }
 
 
@@ -29,7 +30,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'CompanyBusinessState()';
+    return 'CompanyBusinessState()';
 }
 
 
@@ -203,7 +204,7 @@ class _Initial implements CompanyBusinessState {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Initial);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Initial);
 }
 
 
@@ -212,7 +213,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'CompanyBusinessState.initial()';
+    return 'CompanyBusinessState.initial()';
 }
 
 
@@ -235,7 +236,7 @@ class _Loading implements CompanyBusinessState {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Loading);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Loading);
 }
 
 
@@ -244,7 +245,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'CompanyBusinessState.loading()';
+    return 'CompanyBusinessState.loading()';
 }
 
 
@@ -275,16 +276,18 @@ $CompanyBusinessLoadedCopyWith<CompanyBusinessLoaded> get copyWith => _$CompanyB
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CompanyBusinessLoaded&&(identical(other.businessProfile, businessProfile) || other.businessProfile == businessProfile)&&(identical(other.historyLimit, historyLimit) || other.historyLimit == historyLimit)&&(identical(other.analyticsState, analyticsState) || other.analyticsState == analyticsState)&&(identical(other.lastUpdated, lastUpdated) || other.lastUpdated == lastUpdated));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is CompanyBusinessLoaded&&(identical(other.businessProfile, businessProfile) || other.businessProfile == businessProfile)&&(identical(other.historyLimit, historyLimit) || other.historyLimit == historyLimit)&&(identical(other.analyticsState, analyticsState) || other.analyticsState == analyticsState)&&(identical(other.lastUpdated, lastUpdated) || other.lastUpdated == lastUpdated));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,businessProfile,historyLimit,analyticsState,lastUpdated);
+int get hashCode {
+    return Object.hash(runtimeType,businessProfile,historyLimit,analyticsState,lastUpdated);
+}
 
 @override
 String toString() {
-  return 'CompanyBusinessState.loaded(businessProfile: $businessProfile, historyLimit: $historyLimit, analyticsState: $analyticsState, lastUpdated: $lastUpdated)';
+    return 'CompanyBusinessState.loaded(businessProfile: $businessProfile, historyLimit: $historyLimit, analyticsState: $analyticsState, lastUpdated: $lastUpdated)';
 }
 
 
@@ -362,16 +365,18 @@ _$FailureCopyWith<_Failure> get copyWith => __$FailureCopyWithImpl<_Failure>(thi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Failure&&(identical(other.failure, failure) || other.failure == failure));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Failure&&(identical(other.failure, failure) || other.failure == failure));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,failure);
+int get hashCode {
+    return Object.hash(runtimeType,failure);
+}
 
 @override
 String toString() {
-  return 'CompanyBusinessState.failure(failure: $failure)';
+    return 'CompanyBusinessState.failure(failure: $failure)';
 }
 
 

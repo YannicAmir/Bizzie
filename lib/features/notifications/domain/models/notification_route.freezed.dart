@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'notification_route.dart';
@@ -9,6 +9,7 @@ part of 'notification_route.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $NotificationRouteCopyWith<NotificationRoute> get copyWith => _$NotificationRout
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is NotificationRoute&&(identical(other.path, path) || other.path == path)&&const DeepCollectionEquality().equals(other.extra, extra));
+  final _this = this as NotificationRoute;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is NotificationRoute&&(identical(other.path, _this.path) || other.path == _this.path)&&const DeepCollectionEquality().equals(other.extra, _this.extra));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,path,const DeepCollectionEquality().hash(extra));
+int get hashCode {
+  final _this = this as NotificationRoute;
+  return Object.hash(runtimeType,_this.path,const DeepCollectionEquality().hash(_this.extra));
+}
 
 @override
 String toString() {
-  return 'NotificationRoute(path: $path, extra: $extra)';
+  final _this = this as NotificationRoute;
+  return 'NotificationRoute(path: ${_this.path}, extra: ${_this.extra})';
 }
 
 
@@ -63,8 +69,8 @@ class _$NotificationRouteCopyWithImpl<$Res>
 /// Create a copy of NotificationRoute
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? path = null,Object? extra = freezed,}) {
-  return _then(_self.copyWith(
-path: null == path ? _self.path : path // ignore: cast_nullable_to_non_nullable
+  return _then(NotificationRoute(
+null == path ? _self.path : path // ignore: cast_nullable_to_non_nullable
 as String,extra: freezed == extra ? _self.extra : extra ,
   ));
 }
@@ -222,16 +228,18 @@ _$NotificationRouteCopyWith<_NotificationRoute> get copyWith => __$NotificationR
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _NotificationRoute&&(identical(other.path, path) || other.path == path)&&const DeepCollectionEquality().equals(other.extra, extra));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _NotificationRoute&&(identical(other.path, path) || other.path == path)&&const DeepCollectionEquality().equals(other.extra, extra));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,path,const DeepCollectionEquality().hash(extra));
+int get hashCode {
+    return Object.hash(runtimeType,path,const DeepCollectionEquality().hash(extra));
+}
 
 @override
 String toString() {
-  return 'NotificationRoute(path: $path, extra: $extra)';
+    return 'NotificationRoute(path: $path, extra: $extra)';
 }
 
 

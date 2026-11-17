@@ -1,7 +1,7 @@
 import 'package:bizzie/app/themes/app_assets.dart';
 import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
 import 'package:custom_refresh_indicator/custom_refresh_indicator.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class MascotRefreshIndicator extends StatelessWidget {

@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'company_revenue_state.dart';
@@ -9,6 +9,7 @@ part of 'company_revenue_state.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -20,7 +21,7 @@ mixin _$CompanyRevenueState {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CompanyRevenueState);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is CompanyRevenueState);
 }
 
 
@@ -29,7 +30,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'CompanyRevenueState()';
+    return 'CompanyRevenueState()';
 }
 
 
@@ -203,7 +204,7 @@ class _Initial implements CompanyRevenueState {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Initial);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Initial);
 }
 
 
@@ -212,7 +213,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'CompanyRevenueState.initial()';
+    return 'CompanyRevenueState.initial()';
 }
 
 
@@ -235,7 +236,7 @@ class _Loading implements CompanyRevenueState {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Loading);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Loading);
 }
 
 
@@ -244,7 +245,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'CompanyRevenueState.loading()';
+    return 'CompanyRevenueState.loading()';
 }
 
 
@@ -257,7 +258,7 @@ String toString() {
 
 
 class CompanyRevenueLoaded implements CompanyRevenueState {
-  const CompanyRevenueLoaded({required this.ticker, required this.revenueStats, required final  List<ChartDataPoint> annualChartData, required final  List<ChartDataPoint> quarterlyChartData, required this.historyLimit, required this.dataOrigin, this.period = FinancialPeriod.annual, this.lastUpdated, this.analyticsState}): _annualChartData = annualChartData,_quarterlyChartData = quarterlyChartData;
+  const CompanyRevenueLoaded({required this.ticker, required this.revenueStats, required  List<ChartDataPoint> annualChartData, required  List<ChartDataPoint> quarterlyChartData, required this.historyLimit, required this.dataOrigin, this.period = FinancialPeriod.annual, this.lastUpdated, this.analyticsState}): _annualChartData = annualChartData,_quarterlyChartData = quarterlyChartData;
   
 
  final  String ticker;
@@ -292,16 +293,18 @@ $CompanyRevenueLoadedCopyWith<CompanyRevenueLoaded> get copyWith => _$CompanyRev
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CompanyRevenueLoaded&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.revenueStats, revenueStats) || other.revenueStats == revenueStats)&&const DeepCollectionEquality().equals(other._annualChartData, _annualChartData)&&const DeepCollectionEquality().equals(other._quarterlyChartData, _quarterlyChartData)&&(identical(other.historyLimit, historyLimit) || other.historyLimit == historyLimit)&&(identical(other.dataOrigin, dataOrigin) || other.dataOrigin == dataOrigin)&&(identical(other.period, period) || other.period == period)&&(identical(other.lastUpdated, lastUpdated) || other.lastUpdated == lastUpdated)&&(identical(other.analyticsState, analyticsState) || other.analyticsState == analyticsState));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is CompanyRevenueLoaded&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.revenueStats, revenueStats) || other.revenueStats == revenueStats)&&const DeepCollectionEquality().equals(other.annualChartData, _annualChartData)&&const DeepCollectionEquality().equals(other.quarterlyChartData, _quarterlyChartData)&&(identical(other.historyLimit, historyLimit) || other.historyLimit == historyLimit)&&(identical(other.dataOrigin, dataOrigin) || other.dataOrigin == dataOrigin)&&(identical(other.period, period) || other.period == period)&&(identical(other.lastUpdated, lastUpdated) || other.lastUpdated == lastUpdated)&&(identical(other.analyticsState, analyticsState) || other.analyticsState == analyticsState));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,ticker,revenueStats,const DeepCollectionEquality().hash(_annualChartData),const DeepCollectionEquality().hash(_quarterlyChartData),historyLimit,dataOrigin,period,lastUpdated,analyticsState);
+int get hashCode {
+    return Object.hash(runtimeType,ticker,revenueStats,const DeepCollectionEquality().hash(_annualChartData),const DeepCollectionEquality().hash(_quarterlyChartData),historyLimit,dataOrigin,period,lastUpdated,analyticsState);
+}
 
 @override
 String toString() {
-  return 'CompanyRevenueState.loaded(ticker: $ticker, revenueStats: $revenueStats, annualChartData: $annualChartData, quarterlyChartData: $quarterlyChartData, historyLimit: $historyLimit, dataOrigin: $dataOrigin, period: $period, lastUpdated: $lastUpdated, analyticsState: $analyticsState)';
+    return 'CompanyRevenueState.loaded(ticker: $ticker, revenueStats: $revenueStats, annualChartData: $annualChartData, quarterlyChartData: $quarterlyChartData, historyLimit: $historyLimit, dataOrigin: $dataOrigin, period: $period, lastUpdated: $lastUpdated, analyticsState: $analyticsState)';
 }
 
 
@@ -387,16 +390,18 @@ _$FailureCopyWith<_Failure> get copyWith => __$FailureCopyWithImpl<_Failure>(thi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Failure&&(identical(other.failure, failure) || other.failure == failure));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Failure&&(identical(other.failure, failure) || other.failure == failure));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,failure);
+int get hashCode {
+    return Object.hash(runtimeType,failure);
+}
 
 @override
 String toString() {
-  return 'CompanyRevenueState.failure(failure: $failure)';
+    return 'CompanyRevenueState.failure(failure: $failure)';
 }
 
 

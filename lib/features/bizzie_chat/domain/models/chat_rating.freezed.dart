@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'chat_rating.dart';
@@ -9,6 +9,7 @@ part of 'chat_rating.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $ChatRatingCopyWith<ChatRating> get copyWith => _$ChatRatingCopyWithImpl<ChatRat
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ChatRating&&(identical(other.rating, rating) || other.rating == rating)&&(identical(other.question, question) || other.question == question)&&(identical(other.aiResponse, aiResponse) || other.aiResponse == aiResponse)&&(identical(other.time, time) || other.time == time)&&(identical(other.companyName, companyName) || other.companyName == companyName)&&(identical(other.companyTicker, companyTicker) || other.companyTicker == companyTicker)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.assistantMessageId, assistantMessageId) || other.assistantMessageId == assistantMessageId));
+  final _this = this as ChatRating;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ChatRating&&(identical(other.rating, _this.rating) || other.rating == _this.rating)&&(identical(other.question, _this.question) || other.question == _this.question)&&(identical(other.aiResponse, _this.aiResponse) || other.aiResponse == _this.aiResponse)&&(identical(other.time, _this.time) || other.time == _this.time)&&(identical(other.companyName, _this.companyName) || other.companyName == _this.companyName)&&(identical(other.companyTicker, _this.companyTicker) || other.companyTicker == _this.companyTicker)&&(identical(other.userId, _this.userId) || other.userId == _this.userId)&&(identical(other.assistantMessageId, _this.assistantMessageId) || other.assistantMessageId == _this.assistantMessageId));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,rating,question,aiResponse,time,companyName,companyTicker,userId,assistantMessageId);
+int get hashCode {
+  final _this = this as ChatRating;
+  return Object.hash(runtimeType,_this.rating,_this.question,_this.aiResponse,_this.time,_this.companyName,_this.companyTicker,_this.userId,_this.assistantMessageId);
+}
 
 @override
 String toString() {
-  return 'ChatRating(rating: $rating, question: $question, aiResponse: $aiResponse, time: $time, companyName: $companyName, companyTicker: $companyTicker, userId: $userId, assistantMessageId: $assistantMessageId)';
+  final _this = this as ChatRating;
+  return 'ChatRating(rating: ${_this.rating}, question: ${_this.question}, aiResponse: ${_this.aiResponse}, time: ${_this.time}, companyName: ${_this.companyName}, companyTicker: ${_this.companyTicker}, userId: ${_this.userId}, assistantMessageId: ${_this.assistantMessageId})';
 }
 
 
@@ -63,7 +69,7 @@ class _$ChatRatingCopyWithImpl<$Res>
 /// Create a copy of ChatRating
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? rating = null,Object? question = null,Object? aiResponse = null,Object? time = null,Object? companyName = null,Object? companyTicker = null,Object? userId = null,Object? assistantMessageId = null,}) {
-  return _then(_self.copyWith(
+  return _then(ChatRating(
 rating: null == rating ? _self.rating : rating // ignore: cast_nullable_to_non_nullable
 as RatingType,question: null == question ? _self.question : question // ignore: cast_nullable_to_non_nullable
 as String,aiResponse: null == aiResponse ? _self.aiResponse : aiResponse // ignore: cast_nullable_to_non_nullable
@@ -235,16 +241,18 @@ _$ChatRatingCopyWith<_ChatRating> get copyWith => __$ChatRatingCopyWithImpl<_Cha
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ChatRating&&(identical(other.rating, rating) || other.rating == rating)&&(identical(other.question, question) || other.question == question)&&(identical(other.aiResponse, aiResponse) || other.aiResponse == aiResponse)&&(identical(other.time, time) || other.time == time)&&(identical(other.companyName, companyName) || other.companyName == companyName)&&(identical(other.companyTicker, companyTicker) || other.companyTicker == companyTicker)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.assistantMessageId, assistantMessageId) || other.assistantMessageId == assistantMessageId));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ChatRating&&(identical(other.rating, rating) || other.rating == rating)&&(identical(other.question, question) || other.question == question)&&(identical(other.aiResponse, aiResponse) || other.aiResponse == aiResponse)&&(identical(other.time, time) || other.time == time)&&(identical(other.companyName, companyName) || other.companyName == companyName)&&(identical(other.companyTicker, companyTicker) || other.companyTicker == companyTicker)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.assistantMessageId, assistantMessageId) || other.assistantMessageId == assistantMessageId));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,rating,question,aiResponse,time,companyName,companyTicker,userId,assistantMessageId);
+int get hashCode {
+    return Object.hash(runtimeType,rating,question,aiResponse,time,companyName,companyTicker,userId,assistantMessageId);
+}
 
 @override
 String toString() {
-  return 'ChatRating(rating: $rating, question: $question, aiResponse: $aiResponse, time: $time, companyName: $companyName, companyTicker: $companyTicker, userId: $userId, assistantMessageId: $assistantMessageId)';
+    return 'ChatRating(rating: $rating, question: $question, aiResponse: $aiResponse, time: $time, companyName: $companyName, companyTicker: $companyTicker, userId: $userId, assistantMessageId: $assistantMessageId)';
 }
 
 

@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'currency_metric_labels.dart';
@@ -9,6 +9,7 @@ part of 'currency_metric_labels.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $CurrencyMetricLabelsCopyWith<CurrencyMetricLabels> get copyWith => _$CurrencyMe
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CurrencyMetricLabels&&(identical(other.metricLabel, metricLabel) || other.metricLabel == metricLabel)&&(identical(other.modalMetricLabel, modalMetricLabel) || other.modalMetricLabel == modalMetricLabel)&&(identical(other.ttmTitle, ttmTitle) || other.ttmTitle == ttmTitle)&&(identical(other.chartKeyPrefix, chartKeyPrefix) || other.chartKeyPrefix == chartKeyPrefix));
+  final _this = this as CurrencyMetricLabels;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CurrencyMetricLabels&&(identical(other.metricLabel, _this.metricLabel) || other.metricLabel == _this.metricLabel)&&(identical(other.modalMetricLabel, _this.modalMetricLabel) || other.modalMetricLabel == _this.modalMetricLabel)&&(identical(other.ttmTitle, _this.ttmTitle) || other.ttmTitle == _this.ttmTitle)&&(identical(other.chartKeyPrefix, _this.chartKeyPrefix) || other.chartKeyPrefix == _this.chartKeyPrefix));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,metricLabel,modalMetricLabel,ttmTitle,chartKeyPrefix);
+int get hashCode {
+  final _this = this as CurrencyMetricLabels;
+  return Object.hash(runtimeType,_this.metricLabel,_this.modalMetricLabel,_this.ttmTitle,_this.chartKeyPrefix);
+}
 
 @override
 String toString() {
-  return 'CurrencyMetricLabels(metricLabel: $metricLabel, modalMetricLabel: $modalMetricLabel, ttmTitle: $ttmTitle, chartKeyPrefix: $chartKeyPrefix)';
+  final _this = this as CurrencyMetricLabels;
+  return 'CurrencyMetricLabels(metricLabel: ${_this.metricLabel}, modalMetricLabel: ${_this.modalMetricLabel}, ttmTitle: ${_this.ttmTitle}, chartKeyPrefix: ${_this.chartKeyPrefix})';
 }
 
 
@@ -63,7 +69,7 @@ class _$CurrencyMetricLabelsCopyWithImpl<$Res>
 /// Create a copy of CurrencyMetricLabels
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? metricLabel = null,Object? modalMetricLabel = freezed,Object? ttmTitle = null,Object? chartKeyPrefix = null,}) {
-  return _then(_self.copyWith(
+  return _then(CurrencyMetricLabels(
 metricLabel: null == metricLabel ? _self.metricLabel : metricLabel // ignore: cast_nullable_to_non_nullable
 as String,modalMetricLabel: freezed == modalMetricLabel ? _self.modalMetricLabel : modalMetricLabel // ignore: cast_nullable_to_non_nullable
 as String?,ttmTitle: null == ttmTitle ? _self.ttmTitle : ttmTitle // ignore: cast_nullable_to_non_nullable
@@ -227,16 +233,18 @@ _$CurrencyMetricLabelsCopyWith<_CurrencyMetricLabels> get copyWith => __$Currenc
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CurrencyMetricLabels&&(identical(other.metricLabel, metricLabel) || other.metricLabel == metricLabel)&&(identical(other.modalMetricLabel, modalMetricLabel) || other.modalMetricLabel == modalMetricLabel)&&(identical(other.ttmTitle, ttmTitle) || other.ttmTitle == ttmTitle)&&(identical(other.chartKeyPrefix, chartKeyPrefix) || other.chartKeyPrefix == chartKeyPrefix));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _CurrencyMetricLabels&&(identical(other.metricLabel, metricLabel) || other.metricLabel == metricLabel)&&(identical(other.modalMetricLabel, modalMetricLabel) || other.modalMetricLabel == modalMetricLabel)&&(identical(other.ttmTitle, ttmTitle) || other.ttmTitle == ttmTitle)&&(identical(other.chartKeyPrefix, chartKeyPrefix) || other.chartKeyPrefix == chartKeyPrefix));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,metricLabel,modalMetricLabel,ttmTitle,chartKeyPrefix);
+int get hashCode {
+    return Object.hash(runtimeType,metricLabel,modalMetricLabel,ttmTitle,chartKeyPrefix);
+}
 
 @override
 String toString() {
-  return 'CurrencyMetricLabels(metricLabel: $metricLabel, modalMetricLabel: $modalMetricLabel, ttmTitle: $ttmTitle, chartKeyPrefix: $chartKeyPrefix)';
+    return 'CurrencyMetricLabels(metricLabel: $metricLabel, modalMetricLabel: $modalMetricLabel, ttmTitle: $ttmTitle, chartKeyPrefix: $chartKeyPrefix)';
 }
 
 

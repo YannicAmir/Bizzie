@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'financial_statements_state.dart';
@@ -9,6 +9,7 @@ part of 'financial_statements_state.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -20,7 +21,7 @@ mixin _$StatementFlow<T> {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is StatementFlow<T>);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is StatementFlow<T>);
 }
 
 
@@ -29,7 +30,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'StatementFlow<$T>()';
+    return 'StatementFlow<$T>()';
 }
 
 
@@ -203,7 +204,7 @@ class StatementFlowInitial<T> implements StatementFlow<T> {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is StatementFlowInitial<T>);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is StatementFlowInitial<T>);
 }
 
 
@@ -212,7 +213,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'StatementFlow<$T>.initial()';
+    return 'StatementFlow<$T>.initial()';
 }
 
 
@@ -235,7 +236,7 @@ class StatementFlowLoading<T> implements StatementFlow<T> {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is StatementFlowLoading<T>);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is StatementFlowLoading<T>);
 }
 
 
@@ -244,7 +245,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'StatementFlow<$T>.loading()';
+    return 'StatementFlow<$T>.loading()';
 }
 
 
@@ -257,7 +258,7 @@ String toString() {
 
 
 class StatementFlowLoaded<T> implements StatementFlow<T> {
-  const StatementFlowLoaded({required final  List<T> annual, required final  List<T> quarterly, required this.origin, this.lastUpdated, this.loadTimeMs, this.selectedAnnualDate, this.selectedQuarterlyDate}): _annual = annual,_quarterly = quarterly;
+  const StatementFlowLoaded({required  List<T> annual, required  List<T> quarterly, required this.origin, this.lastUpdated, this.loadTimeMs, this.selectedAnnualDate, this.selectedQuarterlyDate}): _annual = annual,_quarterly = quarterly;
   
 
  final  List<T> _annual;
@@ -290,16 +291,18 @@ $StatementFlowLoadedCopyWith<T, StatementFlowLoaded<T>> get copyWith => _$Statem
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is StatementFlowLoaded<T>&&const DeepCollectionEquality().equals(other._annual, _annual)&&const DeepCollectionEquality().equals(other._quarterly, _quarterly)&&(identical(other.origin, origin) || other.origin == origin)&&(identical(other.lastUpdated, lastUpdated) || other.lastUpdated == lastUpdated)&&(identical(other.loadTimeMs, loadTimeMs) || other.loadTimeMs == loadTimeMs)&&(identical(other.selectedAnnualDate, selectedAnnualDate) || other.selectedAnnualDate == selectedAnnualDate)&&(identical(other.selectedQuarterlyDate, selectedQuarterlyDate) || other.selectedQuarterlyDate == selectedQuarterlyDate));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is StatementFlowLoaded<T>&&const DeepCollectionEquality().equals(other.annual, _annual)&&const DeepCollectionEquality().equals(other.quarterly, _quarterly)&&(identical(other.origin, origin) || other.origin == origin)&&(identical(other.lastUpdated, lastUpdated) || other.lastUpdated == lastUpdated)&&(identical(other.loadTimeMs, loadTimeMs) || other.loadTimeMs == loadTimeMs)&&(identical(other.selectedAnnualDate, selectedAnnualDate) || other.selectedAnnualDate == selectedAnnualDate)&&(identical(other.selectedQuarterlyDate, selectedQuarterlyDate) || other.selectedQuarterlyDate == selectedQuarterlyDate));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_annual),const DeepCollectionEquality().hash(_quarterly),origin,lastUpdated,loadTimeMs,selectedAnnualDate,selectedQuarterlyDate);
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_annual),const DeepCollectionEquality().hash(_quarterly),origin,lastUpdated,loadTimeMs,selectedAnnualDate,selectedQuarterlyDate);
+}
 
 @override
 String toString() {
-  return 'StatementFlow<$T>.loaded(annual: $annual, quarterly: $quarterly, origin: $origin, lastUpdated: $lastUpdated, loadTimeMs: $loadTimeMs, selectedAnnualDate: $selectedAnnualDate, selectedQuarterlyDate: $selectedQuarterlyDate)';
+    return 'StatementFlow<$T>.loaded(annual: $annual, quarterly: $quarterly, origin: $origin, lastUpdated: $lastUpdated, loadTimeMs: $loadTimeMs, selectedAnnualDate: $selectedAnnualDate, selectedQuarterlyDate: $selectedQuarterlyDate)';
 }
 
 
@@ -362,16 +365,18 @@ $StatementFlowFailureCopyWith<T, StatementFlowFailure<T>> get copyWith => _$Stat
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is StatementFlowFailure<T>&&(identical(other.failure, failure) || other.failure == failure));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is StatementFlowFailure<T>&&(identical(other.failure, failure) || other.failure == failure));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,failure);
+int get hashCode {
+    return Object.hash(runtimeType,failure);
+}
 
 @override
 String toString() {
-  return 'StatementFlow<$T>.failure(failure: $failure)';
+    return 'StatementFlow<$T>.failure(failure: $failure)';
 }
 
 
@@ -432,16 +437,21 @@ $FinancialStatementsStateCopyWith<FinancialStatementsState> get copyWith => _$Fi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is FinancialStatementsState&&(identical(other.income, income) || other.income == income)&&(identical(other.balance, balance) || other.balance == balance)&&(identical(other.cashFlow, cashFlow) || other.cashFlow == cashFlow)&&(identical(other.selectedType, selectedType) || other.selectedType == selectedType)&&(identical(other.reportedCurrency, reportedCurrency) || other.reportedCurrency == reportedCurrency)&&(identical(other.originalCurrency, originalCurrency) || other.originalCurrency == originalCurrency)&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.freePlanHistoryCount, freePlanHistoryCount) || other.freePlanHistoryCount == freePlanHistoryCount));
+  final _this = this as FinancialStatementsState;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is FinancialStatementsState&&(identical(other.income, _this.income) || other.income == _this.income)&&(identical(other.balance, _this.balance) || other.balance == _this.balance)&&(identical(other.cashFlow, _this.cashFlow) || other.cashFlow == _this.cashFlow)&&(identical(other.selectedType, _this.selectedType) || other.selectedType == _this.selectedType)&&(identical(other.reportedCurrency, _this.reportedCurrency) || other.reportedCurrency == _this.reportedCurrency)&&(identical(other.originalCurrency, _this.originalCurrency) || other.originalCurrency == _this.originalCurrency)&&(identical(other.ticker, _this.ticker) || other.ticker == _this.ticker)&&(identical(other.freePlanHistoryCount, _this.freePlanHistoryCount) || other.freePlanHistoryCount == _this.freePlanHistoryCount));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,income,balance,cashFlow,selectedType,reportedCurrency,originalCurrency,ticker,freePlanHistoryCount);
+int get hashCode {
+  final _this = this as FinancialStatementsState;
+  return Object.hash(runtimeType,_this.income,_this.balance,_this.cashFlow,_this.selectedType,_this.reportedCurrency,_this.originalCurrency,_this.ticker,_this.freePlanHistoryCount);
+}
 
 @override
 String toString() {
-  return 'FinancialStatementsState(income: $income, balance: $balance, cashFlow: $cashFlow, selectedType: $selectedType, reportedCurrency: $reportedCurrency, originalCurrency: $originalCurrency, ticker: $ticker, freePlanHistoryCount: $freePlanHistoryCount)';
+  final _this = this as FinancialStatementsState;
+  return 'FinancialStatementsState(income: ${_this.income}, balance: ${_this.balance}, cashFlow: ${_this.cashFlow}, selectedType: ${_this.selectedType}, reportedCurrency: ${_this.reportedCurrency}, originalCurrency: ${_this.originalCurrency}, ticker: ${_this.ticker}, freePlanHistoryCount: ${_this.freePlanHistoryCount})';
 }
 
 
@@ -470,7 +480,7 @@ class _$FinancialStatementsStateCopyWithImpl<$Res>
 /// Create a copy of FinancialStatementsState
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? income = null,Object? balance = null,Object? cashFlow = null,Object? selectedType = null,Object? reportedCurrency = null,Object? originalCurrency = freezed,Object? ticker = freezed,Object? freePlanHistoryCount = null,}) {
-  return _then(_self.copyWith(
+  return _then(FinancialStatementsState.initial(
 income: null == income ? _self.income : income // ignore: cast_nullable_to_non_nullable
 as StatementFlow<IncomeStatement>,balance: null == balance ? _self.balance : balance // ignore: cast_nullable_to_non_nullable
 as StatementFlow<BalanceSheet>,cashFlow: null == cashFlow ? _self.cashFlow : cashFlow // ignore: cast_nullable_to_non_nullable
@@ -646,8 +656,8 @@ return initial(_that.income,_that.balance,_that.cashFlow,_that.selectedType,_tha
 /// @nodoc
 
 
-class _FinancialStatementsState extends FinancialStatementsState {
-  const _FinancialStatementsState({this.income = const StatementFlow<IncomeStatement>.initial(), this.balance = const StatementFlow<BalanceSheet>.initial(), this.cashFlow = const StatementFlow<CashFlowStatement>.initial(), this.selectedType = FinancialStatementType.income, this.reportedCurrency = 'USD', this.originalCurrency, this.ticker, required this.freePlanHistoryCount}): super._();
+class _FinancialStatementsState implements FinancialStatementsState {
+  const _FinancialStatementsState({this.income = const StatementFlow<IncomeStatement>.initial(), this.balance = const StatementFlow<BalanceSheet>.initial(), this.cashFlow = const StatementFlow<CashFlowStatement>.initial(), this.selectedType = FinancialStatementType.income, this.reportedCurrency = 'USD', this.originalCurrency, this.ticker, required this.freePlanHistoryCount});
   
 
 @override@JsonKey() final  StatementFlow<IncomeStatement> income;
@@ -669,16 +679,18 @@ _$FinancialStatementsStateCopyWith<_FinancialStatementsState> get copyWith => __
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _FinancialStatementsState&&(identical(other.income, income) || other.income == income)&&(identical(other.balance, balance) || other.balance == balance)&&(identical(other.cashFlow, cashFlow) || other.cashFlow == cashFlow)&&(identical(other.selectedType, selectedType) || other.selectedType == selectedType)&&(identical(other.reportedCurrency, reportedCurrency) || other.reportedCurrency == reportedCurrency)&&(identical(other.originalCurrency, originalCurrency) || other.originalCurrency == originalCurrency)&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.freePlanHistoryCount, freePlanHistoryCount) || other.freePlanHistoryCount == freePlanHistoryCount));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _FinancialStatementsState&&(identical(other.income, income) || other.income == income)&&(identical(other.balance, balance) || other.balance == balance)&&(identical(other.cashFlow, cashFlow) || other.cashFlow == cashFlow)&&(identical(other.selectedType, selectedType) || other.selectedType == selectedType)&&(identical(other.reportedCurrency, reportedCurrency) || other.reportedCurrency == reportedCurrency)&&(identical(other.originalCurrency, originalCurrency) || other.originalCurrency == originalCurrency)&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.freePlanHistoryCount, freePlanHistoryCount) || other.freePlanHistoryCount == freePlanHistoryCount));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,income,balance,cashFlow,selectedType,reportedCurrency,originalCurrency,ticker,freePlanHistoryCount);
+int get hashCode {
+    return Object.hash(runtimeType,income,balance,cashFlow,selectedType,reportedCurrency,originalCurrency,ticker,freePlanHistoryCount);
+}
 
 @override
 String toString() {
-  return 'FinancialStatementsState.initial(income: $income, balance: $balance, cashFlow: $cashFlow, selectedType: $selectedType, reportedCurrency: $reportedCurrency, originalCurrency: $originalCurrency, ticker: $ticker, freePlanHistoryCount: $freePlanHistoryCount)';
+    return 'FinancialStatementsState.initial(income: $income, balance: $balance, cashFlow: $cashFlow, selectedType: $selectedType, reportedCurrency: $reportedCurrency, originalCurrency: $originalCurrency, ticker: $ticker, freePlanHistoryCount: $freePlanHistoryCount)';
 }
 
 

@@ -3,7 +3,7 @@ import 'package:bizzie/core/domain/models/financial_report.dart';
 import 'package:bizzie/shared/utils/reports_utils.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:bizzie/shared/widgets/app_badge.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 const double _kTrendIconSize = 20;
 const double _kDividerHeight = 1;

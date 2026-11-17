@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'get_financial_statement_params.dart';
@@ -9,6 +9,7 @@ part of 'get_financial_statement_params.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $GetFinancialStatementParamsCopyWith<GetFinancialStatementParams> get copyWith =
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is GetFinancialStatementParams&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.period, period) || other.period == period));
+  final _this = this as GetFinancialStatementParams;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is GetFinancialStatementParams&&(identical(other.ticker, _this.ticker) || other.ticker == _this.ticker)&&(identical(other.period, _this.period) || other.period == _this.period));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,ticker,period);
+int get hashCode {
+  final _this = this as GetFinancialStatementParams;
+  return Object.hash(runtimeType,_this.ticker,_this.period);
+}
 
 @override
 String toString() {
-  return 'GetFinancialStatementParams(ticker: $ticker, period: $period)';
+  final _this = this as GetFinancialStatementParams;
+  return 'GetFinancialStatementParams(ticker: ${_this.ticker}, period: ${_this.period})';
 }
 
 
@@ -63,7 +69,7 @@ class _$GetFinancialStatementParamsCopyWithImpl<$Res>
 /// Create a copy of GetFinancialStatementParams
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? ticker = null,Object? period = null,}) {
-  return _then(_self.copyWith(
+  return _then(GetFinancialStatementParams(
 ticker: null == ticker ? _self.ticker : ticker // ignore: cast_nullable_to_non_nullable
 as String,period: null == period ? _self.period : period // ignore: cast_nullable_to_non_nullable
 as String,
@@ -223,16 +229,18 @@ _$GetFinancialStatementParamsCopyWith<_GetFinancialStatementParams> get copyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _GetFinancialStatementParams&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.period, period) || other.period == period));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _GetFinancialStatementParams&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.period, period) || other.period == period));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,ticker,period);
+int get hashCode {
+    return Object.hash(runtimeType,ticker,period);
+}
 
 @override
 String toString() {
-  return 'GetFinancialStatementParams(ticker: $ticker, period: $period)';
+    return 'GetFinancialStatementParams(ticker: $ticker, period: $period)';
 }
 
 

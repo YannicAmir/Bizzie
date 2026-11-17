@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'news_article.dart';
@@ -9,6 +9,7 @@ part of 'news_article.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $NewsArticleCopyWith<NewsArticle> get copyWith => _$NewsArticleCopyWithImpl<News
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is NewsArticle&&(identical(other.title, title) || other.title == title)&&(identical(other.publishedDate, publishedDate) || other.publishedDate == publishedDate)&&(identical(other.site, site) || other.site == site)&&(identical(other.url, url) || other.url == url)&&(identical(other.image, image) || other.image == image)&&(identical(other.text, text) || other.text == text));
+  final _this = this as NewsArticle;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is NewsArticle&&(identical(other.title, _this.title) || other.title == _this.title)&&(identical(other.publishedDate, _this.publishedDate) || other.publishedDate == _this.publishedDate)&&(identical(other.site, _this.site) || other.site == _this.site)&&(identical(other.url, _this.url) || other.url == _this.url)&&(identical(other.image, _this.image) || other.image == _this.image)&&(identical(other.text, _this.text) || other.text == _this.text));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,title,publishedDate,site,url,image,text);
+int get hashCode {
+  final _this = this as NewsArticle;
+  return Object.hash(runtimeType,_this.title,_this.publishedDate,_this.site,_this.url,_this.image,_this.text);
+}
 
 @override
 String toString() {
-  return 'NewsArticle(title: $title, publishedDate: $publishedDate, site: $site, url: $url, image: $image, text: $text)';
+  final _this = this as NewsArticle;
+  return 'NewsArticle(title: ${_this.title}, publishedDate: ${_this.publishedDate}, site: ${_this.site}, url: ${_this.url}, image: ${_this.image}, text: ${_this.text})';
 }
 
 
@@ -63,7 +69,7 @@ class _$NewsArticleCopyWithImpl<$Res>
 /// Create a copy of NewsArticle
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? title = null,Object? publishedDate = null,Object? site = null,Object? url = null,Object? image = freezed,Object? text = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(NewsArticle(
 title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
 as String,publishedDate: null == publishedDate ? _self.publishedDate : publishedDate // ignore: cast_nullable_to_non_nullable
 as String,site: null == site ? _self.site : site // ignore: cast_nullable_to_non_nullable
@@ -231,16 +237,18 @@ _$NewsArticleCopyWith<_NewsArticle> get copyWith => __$NewsArticleCopyWithImpl<_
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _NewsArticle&&(identical(other.title, title) || other.title == title)&&(identical(other.publishedDate, publishedDate) || other.publishedDate == publishedDate)&&(identical(other.site, site) || other.site == site)&&(identical(other.url, url) || other.url == url)&&(identical(other.image, image) || other.image == image)&&(identical(other.text, text) || other.text == text));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _NewsArticle&&(identical(other.title, title) || other.title == title)&&(identical(other.publishedDate, publishedDate) || other.publishedDate == publishedDate)&&(identical(other.site, site) || other.site == site)&&(identical(other.url, url) || other.url == url)&&(identical(other.image, image) || other.image == image)&&(identical(other.text, text) || other.text == text));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,title,publishedDate,site,url,image,text);
+int get hashCode {
+    return Object.hash(runtimeType,title,publishedDate,site,url,image,text);
+}
 
 @override
 String toString() {
-  return 'NewsArticle(title: $title, publishedDate: $publishedDate, site: $site, url: $url, image: $image, text: $text)';
+    return 'NewsArticle(title: $title, publishedDate: $publishedDate, site: $site, url: $url, image: $image, text: $text)';
 }
 
 

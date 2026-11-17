@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'edit_profile_state.dart';
@@ -9,6 +9,7 @@ part of 'edit_profile_state.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $EditProfileStateCopyWith<EditProfileState> get copyWith => _$EditProfileStateCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is EditProfileState&&(identical(other.favoriteSector, favoriteSector) || other.favoriteSector == favoriteSector));
+  final _this = this as EditProfileState;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is EditProfileState&&(identical(other.favoriteSector, _this.favoriteSector) || other.favoriteSector == _this.favoriteSector));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,favoriteSector);
+int get hashCode {
+  final _this = this as EditProfileState;
+  return Object.hash(runtimeType,_this.favoriteSector);
+}
 
 @override
 String toString() {
-  return 'EditProfileState(favoriteSector: $favoriteSector)';
+  final _this = this as EditProfileState;
+  return 'EditProfileState(favoriteSector: ${_this.favoriteSector})';
 }
 
 
@@ -251,16 +257,18 @@ _$InitialCopyWith<_Initial> get copyWith => __$InitialCopyWithImpl<_Initial>(thi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Initial&&(identical(other.favoriteSector, favoriteSector) || other.favoriteSector == favoriteSector));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Initial&&(identical(other.favoriteSector, favoriteSector) || other.favoriteSector == favoriteSector));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,favoriteSector);
+int get hashCode {
+    return Object.hash(runtimeType,favoriteSector);
+}
 
 @override
 String toString() {
-  return 'EditProfileState.initial(favoriteSector: $favoriteSector)';
+    return 'EditProfileState.initial(favoriteSector: $favoriteSector)';
 }
 
 
@@ -317,16 +325,18 @@ _$LoadingCopyWith<_Loading> get copyWith => __$LoadingCopyWithImpl<_Loading>(thi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Loading&&(identical(other.favoriteSector, favoriteSector) || other.favoriteSector == favoriteSector));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Loading&&(identical(other.favoriteSector, favoriteSector) || other.favoriteSector == favoriteSector));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,favoriteSector);
+int get hashCode {
+    return Object.hash(runtimeType,favoriteSector);
+}
 
 @override
 String toString() {
-  return 'EditProfileState.loading(favoriteSector: $favoriteSector)';
+    return 'EditProfileState.loading(favoriteSector: $favoriteSector)';
 }
 
 
@@ -383,16 +393,18 @@ _$SuccessCopyWith<_Success> get copyWith => __$SuccessCopyWithImpl<_Success>(thi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Success&&(identical(other.favoriteSector, favoriteSector) || other.favoriteSector == favoriteSector));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Success&&(identical(other.favoriteSector, favoriteSector) || other.favoriteSector == favoriteSector));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,favoriteSector);
+int get hashCode {
+    return Object.hash(runtimeType,favoriteSector);
+}
 
 @override
 String toString() {
-  return 'EditProfileState.success(favoriteSector: $favoriteSector)';
+    return 'EditProfileState.success(favoriteSector: $favoriteSector)';
 }
 
 
@@ -450,16 +462,18 @@ _$FailureCopyWith<_Failure> get copyWith => __$FailureCopyWithImpl<_Failure>(thi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Failure&&(identical(other.failure, failure) || other.failure == failure)&&(identical(other.favoriteSector, favoriteSector) || other.favoriteSector == favoriteSector));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Failure&&(identical(other.failure, failure) || other.failure == failure)&&(identical(other.favoriteSector, favoriteSector) || other.favoriteSector == favoriteSector));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,failure,favoriteSector);
+int get hashCode {
+    return Object.hash(runtimeType,failure,favoriteSector);
+}
 
 @override
 String toString() {
-  return 'EditProfileState.failure(failure: $failure, favoriteSector: $favoriteSector)';
+    return 'EditProfileState.failure(failure: $failure, favoriteSector: $favoriteSector)';
 }
 
 
@@ -526,16 +540,18 @@ _$DeletedCopyWith<_Deleted> get copyWith => __$DeletedCopyWithImpl<_Deleted>(thi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Deleted&&(identical(other.favoriteSector, favoriteSector) || other.favoriteSector == favoriteSector));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Deleted&&(identical(other.favoriteSector, favoriteSector) || other.favoriteSector == favoriteSector));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,favoriteSector);
+int get hashCode {
+    return Object.hash(runtimeType,favoriteSector);
+}
 
 @override
 String toString() {
-  return 'EditProfileState.deleted(favoriteSector: $favoriteSector)';
+    return 'EditProfileState.deleted(favoriteSector: $favoriteSector)';
 }
 
 
@@ -577,7 +593,7 @@ as String?,
 
 
 class _Form extends EditProfileState {
-  const _Form({required this.firstName, required this.email, required this.originalFirstName, required this.originalEmail, this.favoriteSector, this.isSubmitting = false, this.saveFailure, this.isShowReauthModal = false, this.pendingReauthAction, this.isReauthSubmitting = false, this.reauthFailure, this.reauthAttempts = 0, final  List<String> providers = const [], this.isReauthPasswordVisible = false, this.isDeleting = false, this.isShowDeleteConfirmation = false}): _providers = providers,super._();
+  const _Form({required this.firstName, required this.email, required this.originalFirstName, required this.originalEmail, this.favoriteSector, this.isSubmitting = false, this.saveFailure, this.isShowReauthModal = false, this.pendingReauthAction, this.isReauthSubmitting = false, this.reauthFailure, this.reauthAttempts = 0,  List<String> providers = const [], this.isReauthPasswordVisible = false, this.isDeleting = false, this.isShowDeleteConfirmation = false}): _providers = providers,super._();
   
 
  final  String firstName;
@@ -613,16 +629,18 @@ _$FormCopyWith<_Form> get copyWith => __$FormCopyWithImpl<_Form>(this, _$identit
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Form&&(identical(other.firstName, firstName) || other.firstName == firstName)&&(identical(other.email, email) || other.email == email)&&(identical(other.originalFirstName, originalFirstName) || other.originalFirstName == originalFirstName)&&(identical(other.originalEmail, originalEmail) || other.originalEmail == originalEmail)&&(identical(other.favoriteSector, favoriteSector) || other.favoriteSector == favoriteSector)&&(identical(other.isSubmitting, isSubmitting) || other.isSubmitting == isSubmitting)&&(identical(other.saveFailure, saveFailure) || other.saveFailure == saveFailure)&&(identical(other.isShowReauthModal, isShowReauthModal) || other.isShowReauthModal == isShowReauthModal)&&(identical(other.pendingReauthAction, pendingReauthAction) || other.pendingReauthAction == pendingReauthAction)&&(identical(other.isReauthSubmitting, isReauthSubmitting) || other.isReauthSubmitting == isReauthSubmitting)&&(identical(other.reauthFailure, reauthFailure) || other.reauthFailure == reauthFailure)&&(identical(other.reauthAttempts, reauthAttempts) || other.reauthAttempts == reauthAttempts)&&const DeepCollectionEquality().equals(other._providers, _providers)&&(identical(other.isReauthPasswordVisible, isReauthPasswordVisible) || other.isReauthPasswordVisible == isReauthPasswordVisible)&&(identical(other.isDeleting, isDeleting) || other.isDeleting == isDeleting)&&(identical(other.isShowDeleteConfirmation, isShowDeleteConfirmation) || other.isShowDeleteConfirmation == isShowDeleteConfirmation));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Form&&(identical(other.firstName, firstName) || other.firstName == firstName)&&(identical(other.email, email) || other.email == email)&&(identical(other.originalFirstName, originalFirstName) || other.originalFirstName == originalFirstName)&&(identical(other.originalEmail, originalEmail) || other.originalEmail == originalEmail)&&(identical(other.favoriteSector, favoriteSector) || other.favoriteSector == favoriteSector)&&(identical(other.isSubmitting, isSubmitting) || other.isSubmitting == isSubmitting)&&(identical(other.saveFailure, saveFailure) || other.saveFailure == saveFailure)&&(identical(other.isShowReauthModal, isShowReauthModal) || other.isShowReauthModal == isShowReauthModal)&&(identical(other.pendingReauthAction, pendingReauthAction) || other.pendingReauthAction == pendingReauthAction)&&(identical(other.isReauthSubmitting, isReauthSubmitting) || other.isReauthSubmitting == isReauthSubmitting)&&(identical(other.reauthFailure, reauthFailure) || other.reauthFailure == reauthFailure)&&(identical(other.reauthAttempts, reauthAttempts) || other.reauthAttempts == reauthAttempts)&&const DeepCollectionEquality().equals(other.providers, _providers)&&(identical(other.isReauthPasswordVisible, isReauthPasswordVisible) || other.isReauthPasswordVisible == isReauthPasswordVisible)&&(identical(other.isDeleting, isDeleting) || other.isDeleting == isDeleting)&&(identical(other.isShowDeleteConfirmation, isShowDeleteConfirmation) || other.isShowDeleteConfirmation == isShowDeleteConfirmation));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,firstName,email,originalFirstName,originalEmail,favoriteSector,isSubmitting,saveFailure,isShowReauthModal,pendingReauthAction,isReauthSubmitting,reauthFailure,reauthAttempts,const DeepCollectionEquality().hash(_providers),isReauthPasswordVisible,isDeleting,isShowDeleteConfirmation);
+int get hashCode {
+    return Object.hash(runtimeType,firstName,email,originalFirstName,originalEmail,favoriteSector,isSubmitting,saveFailure,isShowReauthModal,pendingReauthAction,isReauthSubmitting,reauthFailure,reauthAttempts,const DeepCollectionEquality().hash(_providers),isReauthPasswordVisible,isDeleting,isShowDeleteConfirmation);
+}
 
 @override
 String toString() {
-  return 'EditProfileState.form(firstName: $firstName, email: $email, originalFirstName: $originalFirstName, originalEmail: $originalEmail, favoriteSector: $favoriteSector, isSubmitting: $isSubmitting, saveFailure: $saveFailure, isShowReauthModal: $isShowReauthModal, pendingReauthAction: $pendingReauthAction, isReauthSubmitting: $isReauthSubmitting, reauthFailure: $reauthFailure, reauthAttempts: $reauthAttempts, providers: $providers, isReauthPasswordVisible: $isReauthPasswordVisible, isDeleting: $isDeleting, isShowDeleteConfirmation: $isShowDeleteConfirmation)';
+    return 'EditProfileState.form(firstName: $firstName, email: $email, originalFirstName: $originalFirstName, originalEmail: $originalEmail, favoriteSector: $favoriteSector, isSubmitting: $isSubmitting, saveFailure: $saveFailure, isShowReauthModal: $isShowReauthModal, pendingReauthAction: $pendingReauthAction, isReauthSubmitting: $isReauthSubmitting, reauthFailure: $reauthFailure, reauthAttempts: $reauthAttempts, providers: $providers, isReauthPasswordVisible: $isReauthPasswordVisible, isDeleting: $isDeleting, isShowDeleteConfirmation: $isShowDeleteConfirmation)';
 }
 
 

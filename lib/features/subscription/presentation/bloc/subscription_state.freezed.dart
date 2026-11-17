@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'subscription_state.dart';
@@ -9,6 +9,7 @@ part of 'subscription_state.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $SubscriptionStateCopyWith<SubscriptionState> get copyWith => _$SubscriptionStat
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SubscriptionState&&(identical(other.status, status) || other.status == status)&&(identical(other.paywallSource, paywallSource) || other.paywallSource == paywallSource));
+  final _this = this as SubscriptionState;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SubscriptionState&&(identical(other.status, _this.status) || other.status == _this.status)&&(identical(other.paywallSource, _this.paywallSource) || other.paywallSource == _this.paywallSource));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,status,paywallSource);
+int get hashCode {
+  final _this = this as SubscriptionState;
+  return Object.hash(runtimeType,_this.status,_this.paywallSource);
+}
 
 @override
 String toString() {
-  return 'SubscriptionState(status: $status, paywallSource: $paywallSource)';
+  final _this = this as SubscriptionState;
+  return 'SubscriptionState(status: ${_this.status}, paywallSource: ${_this.paywallSource})';
 }
 
 
@@ -250,16 +256,18 @@ $SubscriptionStateInitialCopyWith<SubscriptionStateInitial> get copyWith => _$Su
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SubscriptionStateInitial&&(identical(other.status, status) || other.status == status)&&(identical(other.paywallSource, paywallSource) || other.paywallSource == paywallSource));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SubscriptionStateInitial&&(identical(other.status, status) || other.status == status)&&(identical(other.paywallSource, paywallSource) || other.paywallSource == paywallSource));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,status,paywallSource);
+int get hashCode {
+    return Object.hash(runtimeType,status,paywallSource);
+}
 
 @override
 String toString() {
-  return 'SubscriptionState.initial(status: $status, paywallSource: $paywallSource)';
+    return 'SubscriptionState.initial(status: $status, paywallSource: $paywallSource)';
 }
 
 
@@ -327,16 +335,18 @@ $SubscriptionStateLoadingCopyWith<SubscriptionStateLoading> get copyWith => _$Su
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SubscriptionStateLoading&&(identical(other.status, status) || other.status == status)&&(identical(other.paywallSource, paywallSource) || other.paywallSource == paywallSource));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SubscriptionStateLoading&&(identical(other.status, status) || other.status == status)&&(identical(other.paywallSource, paywallSource) || other.paywallSource == paywallSource));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,status,paywallSource);
+int get hashCode {
+    return Object.hash(runtimeType,status,paywallSource);
+}
 
 @override
 String toString() {
-  return 'SubscriptionState.loading(status: $status, paywallSource: $paywallSource)';
+    return 'SubscriptionState.loading(status: $status, paywallSource: $paywallSource)';
 }
 
 
@@ -388,7 +398,7 @@ $SubscriptionStatusCopyWith<$Res> get status {
 
 
 class SubscriptionStateLoaded extends SubscriptionState {
-  const SubscriptionStateLoaded({required this.status, required this.offerings, this.annualPackage, this.monthlyPackage, this.discountAnnualPackage, final  List<String> features = const [], this.isLocalSuccessOverride = false, this.isPurchasing = false, this.isAnnualSelection = true, this.paywallSource, this.purchasedPackageType}): _features = features,super._();
+  const SubscriptionStateLoaded({required this.status, required this.offerings, this.annualPackage, this.monthlyPackage, this.discountAnnualPackage,  List<String> features = const [], this.isLocalSuccessOverride = false, this.isPurchasing = false, this.isAnnualSelection = true, this.paywallSource, this.purchasedPackageType}): _features = features,super._();
   
 
 @override final  SubscriptionStatus status;
@@ -419,16 +429,18 @@ $SubscriptionStateLoadedCopyWith<SubscriptionStateLoaded> get copyWith => _$Subs
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SubscriptionStateLoaded&&(identical(other.status, status) || other.status == status)&&(identical(other.offerings, offerings) || other.offerings == offerings)&&(identical(other.annualPackage, annualPackage) || other.annualPackage == annualPackage)&&(identical(other.monthlyPackage, monthlyPackage) || other.monthlyPackage == monthlyPackage)&&(identical(other.discountAnnualPackage, discountAnnualPackage) || other.discountAnnualPackage == discountAnnualPackage)&&const DeepCollectionEquality().equals(other._features, _features)&&(identical(other.isLocalSuccessOverride, isLocalSuccessOverride) || other.isLocalSuccessOverride == isLocalSuccessOverride)&&(identical(other.isPurchasing, isPurchasing) || other.isPurchasing == isPurchasing)&&(identical(other.isAnnualSelection, isAnnualSelection) || other.isAnnualSelection == isAnnualSelection)&&(identical(other.paywallSource, paywallSource) || other.paywallSource == paywallSource)&&(identical(other.purchasedPackageType, purchasedPackageType) || other.purchasedPackageType == purchasedPackageType));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SubscriptionStateLoaded&&(identical(other.status, status) || other.status == status)&&(identical(other.offerings, offerings) || other.offerings == offerings)&&(identical(other.annualPackage, annualPackage) || other.annualPackage == annualPackage)&&(identical(other.monthlyPackage, monthlyPackage) || other.monthlyPackage == monthlyPackage)&&(identical(other.discountAnnualPackage, discountAnnualPackage) || other.discountAnnualPackage == discountAnnualPackage)&&const DeepCollectionEquality().equals(other.features, _features)&&(identical(other.isLocalSuccessOverride, isLocalSuccessOverride) || other.isLocalSuccessOverride == isLocalSuccessOverride)&&(identical(other.isPurchasing, isPurchasing) || other.isPurchasing == isPurchasing)&&(identical(other.isAnnualSelection, isAnnualSelection) || other.isAnnualSelection == isAnnualSelection)&&(identical(other.paywallSource, paywallSource) || other.paywallSource == paywallSource)&&(identical(other.purchasedPackageType, purchasedPackageType) || other.purchasedPackageType == purchasedPackageType));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,status,offerings,annualPackage,monthlyPackage,discountAnnualPackage,const DeepCollectionEquality().hash(_features),isLocalSuccessOverride,isPurchasing,isAnnualSelection,paywallSource,purchasedPackageType);
+int get hashCode {
+    return Object.hash(runtimeType,status,offerings,annualPackage,monthlyPackage,discountAnnualPackage,const DeepCollectionEquality().hash(_features),isLocalSuccessOverride,isPurchasing,isAnnualSelection,paywallSource,purchasedPackageType);
+}
 
 @override
 String toString() {
-  return 'SubscriptionState.loaded(status: $status, offerings: $offerings, annualPackage: $annualPackage, monthlyPackage: $monthlyPackage, discountAnnualPackage: $discountAnnualPackage, features: $features, isLocalSuccessOverride: $isLocalSuccessOverride, isPurchasing: $isPurchasing, isAnnualSelection: $isAnnualSelection, paywallSource: $paywallSource, purchasedPackageType: $purchasedPackageType)';
+    return 'SubscriptionState.loaded(status: $status, offerings: $offerings, annualPackage: $annualPackage, monthlyPackage: $monthlyPackage, discountAnnualPackage: $discountAnnualPackage, features: $features, isLocalSuccessOverride: $isLocalSuccessOverride, isPurchasing: $isPurchasing, isAnnualSelection: $isAnnualSelection, paywallSource: $paywallSource, purchasedPackageType: $purchasedPackageType)';
 }
 
 
@@ -551,16 +563,18 @@ $SubscriptionStateFailureCopyWith<SubscriptionStateFailure> get copyWith => _$Su
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SubscriptionStateFailure&&(identical(other.status, status) || other.status == status)&&(identical(other.failure, failure) || other.failure == failure)&&(identical(other.paywallSource, paywallSource) || other.paywallSource == paywallSource));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SubscriptionStateFailure&&(identical(other.status, status) || other.status == status)&&(identical(other.failure, failure) || other.failure == failure)&&(identical(other.paywallSource, paywallSource) || other.paywallSource == paywallSource));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,status,failure,paywallSource);
+int get hashCode {
+    return Object.hash(runtimeType,status,failure,paywallSource);
+}
 
 @override
 String toString() {
-  return 'SubscriptionState.failure(status: $status, failure: $failure, paywallSource: $paywallSource)';
+    return 'SubscriptionState.failure(status: $status, failure: $failure, paywallSource: $paywallSource)';
 }
 
 

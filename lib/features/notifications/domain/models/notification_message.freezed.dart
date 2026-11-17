@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'notification_message.dart';
@@ -9,6 +9,7 @@ part of 'notification_message.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 
@@ -28,16 +29,21 @@ $NotificationMessageCopyWith<NotificationMessage> get copyWith => _$Notification
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is NotificationMessage&&(identical(other.title, title) || other.title == title)&&(identical(other.body, body) || other.body == body)&&const DeepCollectionEquality().equals(other.data, data)&&(identical(other.sentTime, sentTime) || other.sentTime == sentTime));
+  final _this = this as NotificationMessage;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is NotificationMessage&&(identical(other.title, _this.title) || other.title == _this.title)&&(identical(other.body, _this.body) || other.body == _this.body)&&const DeepCollectionEquality().equals(other.data, _this.data)&&(identical(other.sentTime, _this.sentTime) || other.sentTime == _this.sentTime));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,title,body,const DeepCollectionEquality().hash(data),sentTime);
+int get hashCode {
+  final _this = this as NotificationMessage;
+  return Object.hash(runtimeType,_this.title,_this.body,const DeepCollectionEquality().hash(_this.data),_this.sentTime);
+}
 
 @override
 String toString() {
-  return 'NotificationMessage(title: $title, body: $body, data: $data, sentTime: $sentTime)';
+  final _this = this as NotificationMessage;
+  return 'NotificationMessage(title: ${_this.title}, body: ${_this.body}, data: ${_this.data}, sentTime: ${_this.sentTime})';
 }
 
 
@@ -66,7 +72,7 @@ class _$NotificationMessageCopyWithImpl<$Res>
 /// Create a copy of NotificationMessage
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? title = null,Object? body = null,Object? data = freezed,Object? sentTime = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(NotificationMessage(
 title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
 as String,body: null == body ? _self.body : body // ignore: cast_nullable_to_non_nullable
 as String,data: freezed == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
@@ -212,7 +218,7 @@ return $default(_that.title,_that.body,_that.data,_that.sentTime);case _:
 @JsonSerializable()
 
 class _NotificationMessage implements NotificationMessage {
-  const _NotificationMessage({required this.title, required this.body, final  Map<String, dynamic>? data, this.sentTime}): _data = data;
+  const _NotificationMessage({required this.title, required this.body,  Map<String, dynamic>? data, this.sentTime}): _data = data;
   factory _NotificationMessage.fromJson(Map<String, dynamic> json) => _$NotificationMessageFromJson(json);
 
 @override final  String title;
@@ -241,16 +247,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _NotificationMessage&&(identical(other.title, title) || other.title == title)&&(identical(other.body, body) || other.body == body)&&const DeepCollectionEquality().equals(other._data, _data)&&(identical(other.sentTime, sentTime) || other.sentTime == sentTime));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _NotificationMessage&&(identical(other.title, title) || other.title == title)&&(identical(other.body, body) || other.body == body)&&const DeepCollectionEquality().equals(other.data, _data)&&(identical(other.sentTime, sentTime) || other.sentTime == sentTime));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,title,body,const DeepCollectionEquality().hash(_data),sentTime);
+int get hashCode {
+    return Object.hash(runtimeType,title,body,const DeepCollectionEquality().hash(_data),sentTime);
+}
 
 @override
 String toString() {
-  return 'NotificationMessage(title: $title, body: $body, data: $data, sentTime: $sentTime)';
+    return 'NotificationMessage(title: $title, body: $body, data: $data, sentTime: $sentTime)';
 }
 
 

@@ -6,7 +6,7 @@ import 'package:bizzie/features/company_profile/shared/presentation/widgets/fina
 import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:bizzie/shared/widgets/carousel_page_indicator.dart';
 import 'package:bizzie/shared/widgets/charts/bizzie_pie_chart.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class SegmentBreakdownSection extends StatefulWidget {
   final String title;

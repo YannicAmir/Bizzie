@@ -4,7 +4,7 @@ import 'package:bizzie/features/app_status/presentation/widgets/generic_status_p
 import 'package:bizzie/features/security/domain/enums/security_analytics_enums.dart';
 import 'package:bizzie/features/security/presentation/bloc/security_bloc.dart';
 import 'package:bizzie/features/security/presentation/bloc/security_event.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

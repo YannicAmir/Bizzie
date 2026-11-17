@@ -3,7 +3,7 @@ import 'dart:math';
 
 import 'package:bizzie/app/themes/app_text_styles.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 const List<String> _kThinkingWords = [
   'Bootstrapping',

@@ -4,7 +4,7 @@ import 'package:bizzie/app/themes/app_assets.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:bizzie/features/profile/presentation/bloc/profile_bloc.dart';
 import 'package:bizzie/features/profile/presentation/bloc/profile_event.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 

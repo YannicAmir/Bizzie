@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'bal_stmt_tab_view_state.dart';
@@ -9,6 +9,7 @@ part of 'bal_stmt_tab_view_state.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $BalStmtTabViewStateCopyWith<BalStmtTabViewState> get copyWith => _$BalStmtTabVi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is BalStmtTabViewState&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.timestamp, timestamp) || other.timestamp == timestamp)&&(identical(other.loadTimeMs, loadTimeMs) || other.loadTimeMs == loadTimeMs)&&(identical(other.isSuccess, isSuccess) || other.isSuccess == isSuccess)&&(identical(other.dataSource, dataSource) || other.dataSource == dataSource)&&(identical(other.viewDurationSec, viewDurationSec) || other.viewDurationSec == viewDurationSec)&&(identical(other.viewedBalanceTab, viewedBalanceTab) || other.viewedBalanceTab == viewedBalanceTab)&&(identical(other.tappedAllBalSheet, tappedAllBalSheet) || other.tappedAllBalSheet == tappedAllBalSheet)&&(identical(other.switchedBalancePeriod, switchedBalancePeriod) || other.switchedBalancePeriod == switchedBalancePeriod)&&(identical(other.viewedNetWorthChart, viewedNetWorthChart) || other.viewedNetWorthChart == viewedNetWorthChart)&&(identical(other.viewedCurrChart, viewedCurrChart) || other.viewedCurrChart == viewedCurrChart)&&(identical(other.viewedDebteqChart, viewedDebteqChart) || other.viewedDebteqChart == viewedDebteqChart));
+  final _this = this as BalStmtTabViewState;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is BalStmtTabViewState&&(identical(other.ticker, _this.ticker) || other.ticker == _this.ticker)&&(identical(other.timestamp, _this.timestamp) || other.timestamp == _this.timestamp)&&(identical(other.loadTimeMs, _this.loadTimeMs) || other.loadTimeMs == _this.loadTimeMs)&&(identical(other.isSuccess, _this.isSuccess) || other.isSuccess == _this.isSuccess)&&(identical(other.dataSource, _this.dataSource) || other.dataSource == _this.dataSource)&&(identical(other.viewDurationSec, _this.viewDurationSec) || other.viewDurationSec == _this.viewDurationSec)&&(identical(other.viewedBalanceTab, _this.viewedBalanceTab) || other.viewedBalanceTab == _this.viewedBalanceTab)&&(identical(other.tappedAllBalSheet, _this.tappedAllBalSheet) || other.tappedAllBalSheet == _this.tappedAllBalSheet)&&(identical(other.switchedBalancePeriod, _this.switchedBalancePeriod) || other.switchedBalancePeriod == _this.switchedBalancePeriod)&&(identical(other.viewedNetWorthChart, _this.viewedNetWorthChart) || other.viewedNetWorthChart == _this.viewedNetWorthChart)&&(identical(other.viewedCurrChart, _this.viewedCurrChart) || other.viewedCurrChart == _this.viewedCurrChart)&&(identical(other.viewedDebteqChart, _this.viewedDebteqChart) || other.viewedDebteqChart == _this.viewedDebteqChart));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,ticker,timestamp,loadTimeMs,isSuccess,dataSource,viewDurationSec,viewedBalanceTab,tappedAllBalSheet,switchedBalancePeriod,viewedNetWorthChart,viewedCurrChart,viewedDebteqChart);
+int get hashCode {
+  final _this = this as BalStmtTabViewState;
+  return Object.hash(runtimeType,_this.ticker,_this.timestamp,_this.loadTimeMs,_this.isSuccess,_this.dataSource,_this.viewDurationSec,_this.viewedBalanceTab,_this.tappedAllBalSheet,_this.switchedBalancePeriod,_this.viewedNetWorthChart,_this.viewedCurrChart,_this.viewedDebteqChart);
+}
 
 @override
 String toString() {
-  return 'BalStmtTabViewState(ticker: $ticker, timestamp: $timestamp, loadTimeMs: $loadTimeMs, isSuccess: $isSuccess, dataSource: $dataSource, viewDurationSec: $viewDurationSec, viewedBalanceTab: $viewedBalanceTab, tappedAllBalSheet: $tappedAllBalSheet, switchedBalancePeriod: $switchedBalancePeriod, viewedNetWorthChart: $viewedNetWorthChart, viewedCurrChart: $viewedCurrChart, viewedDebteqChart: $viewedDebteqChart)';
+  final _this = this as BalStmtTabViewState;
+  return 'BalStmtTabViewState(ticker: ${_this.ticker}, timestamp: ${_this.timestamp}, loadTimeMs: ${_this.loadTimeMs}, isSuccess: ${_this.isSuccess}, dataSource: ${_this.dataSource}, viewDurationSec: ${_this.viewDurationSec}, viewedBalanceTab: ${_this.viewedBalanceTab}, tappedAllBalSheet: ${_this.tappedAllBalSheet}, switchedBalancePeriod: ${_this.switchedBalancePeriod}, viewedNetWorthChart: ${_this.viewedNetWorthChart}, viewedCurrChart: ${_this.viewedCurrChart}, viewedDebteqChart: ${_this.viewedDebteqChart})';
 }
 
 
@@ -63,7 +69,7 @@ class _$BalStmtTabViewStateCopyWithImpl<$Res>
 /// Create a copy of BalStmtTabViewState
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? ticker = null,Object? timestamp = null,Object? loadTimeMs = freezed,Object? isSuccess = null,Object? dataSource = freezed,Object? viewDurationSec = null,Object? viewedBalanceTab = null,Object? tappedAllBalSheet = null,Object? switchedBalancePeriod = null,Object? viewedNetWorthChart = null,Object? viewedCurrChart = null,Object? viewedDebteqChart = null,}) {
-  return _then(_self.copyWith(
+  return _then(BalStmtTabViewState(
 ticker: null == ticker ? _self.ticker : ticker // ignore: cast_nullable_to_non_nullable
 as String,timestamp: null == timestamp ? _self.timestamp : timestamp // ignore: cast_nullable_to_non_nullable
 as String,loadTimeMs: freezed == loadTimeMs ? _self.loadTimeMs : loadTimeMs // ignore: cast_nullable_to_non_nullable
@@ -243,16 +249,18 @@ _$BalStmtTabViewStateCopyWith<_BalStmtTabViewState> get copyWith => __$BalStmtTa
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _BalStmtTabViewState&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.timestamp, timestamp) || other.timestamp == timestamp)&&(identical(other.loadTimeMs, loadTimeMs) || other.loadTimeMs == loadTimeMs)&&(identical(other.isSuccess, isSuccess) || other.isSuccess == isSuccess)&&(identical(other.dataSource, dataSource) || other.dataSource == dataSource)&&(identical(other.viewDurationSec, viewDurationSec) || other.viewDurationSec == viewDurationSec)&&(identical(other.viewedBalanceTab, viewedBalanceTab) || other.viewedBalanceTab == viewedBalanceTab)&&(identical(other.tappedAllBalSheet, tappedAllBalSheet) || other.tappedAllBalSheet == tappedAllBalSheet)&&(identical(other.switchedBalancePeriod, switchedBalancePeriod) || other.switchedBalancePeriod == switchedBalancePeriod)&&(identical(other.viewedNetWorthChart, viewedNetWorthChart) || other.viewedNetWorthChart == viewedNetWorthChart)&&(identical(other.viewedCurrChart, viewedCurrChart) || other.viewedCurrChart == viewedCurrChart)&&(identical(other.viewedDebteqChart, viewedDebteqChart) || other.viewedDebteqChart == viewedDebteqChart));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _BalStmtTabViewState&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.timestamp, timestamp) || other.timestamp == timestamp)&&(identical(other.loadTimeMs, loadTimeMs) || other.loadTimeMs == loadTimeMs)&&(identical(other.isSuccess, isSuccess) || other.isSuccess == isSuccess)&&(identical(other.dataSource, dataSource) || other.dataSource == dataSource)&&(identical(other.viewDurationSec, viewDurationSec) || other.viewDurationSec == viewDurationSec)&&(identical(other.viewedBalanceTab, viewedBalanceTab) || other.viewedBalanceTab == viewedBalanceTab)&&(identical(other.tappedAllBalSheet, tappedAllBalSheet) || other.tappedAllBalSheet == tappedAllBalSheet)&&(identical(other.switchedBalancePeriod, switchedBalancePeriod) || other.switchedBalancePeriod == switchedBalancePeriod)&&(identical(other.viewedNetWorthChart, viewedNetWorthChart) || other.viewedNetWorthChart == viewedNetWorthChart)&&(identical(other.viewedCurrChart, viewedCurrChart) || other.viewedCurrChart == viewedCurrChart)&&(identical(other.viewedDebteqChart, viewedDebteqChart) || other.viewedDebteqChart == viewedDebteqChart));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,ticker,timestamp,loadTimeMs,isSuccess,dataSource,viewDurationSec,viewedBalanceTab,tappedAllBalSheet,switchedBalancePeriod,viewedNetWorthChart,viewedCurrChart,viewedDebteqChart);
+int get hashCode {
+    return Object.hash(runtimeType,ticker,timestamp,loadTimeMs,isSuccess,dataSource,viewDurationSec,viewedBalanceTab,tappedAllBalSheet,switchedBalancePeriod,viewedNetWorthChart,viewedCurrChart,viewedDebteqChart);
+}
 
 @override
 String toString() {
-  return 'BalStmtTabViewState(ticker: $ticker, timestamp: $timestamp, loadTimeMs: $loadTimeMs, isSuccess: $isSuccess, dataSource: $dataSource, viewDurationSec: $viewDurationSec, viewedBalanceTab: $viewedBalanceTab, tappedAllBalSheet: $tappedAllBalSheet, switchedBalancePeriod: $switchedBalancePeriod, viewedNetWorthChart: $viewedNetWorthChart, viewedCurrChart: $viewedCurrChart, viewedDebteqChart: $viewedDebteqChart)';
+    return 'BalStmtTabViewState(ticker: $ticker, timestamp: $timestamp, loadTimeMs: $loadTimeMs, isSuccess: $isSuccess, dataSource: $dataSource, viewDurationSec: $viewDurationSec, viewedBalanceTab: $viewedBalanceTab, tappedAllBalSheet: $tappedAllBalSheet, switchedBalancePeriod: $switchedBalancePeriod, viewedNetWorthChart: $viewedNetWorthChart, viewedCurrChart: $viewedCurrChart, viewedDebteqChart: $viewedDebteqChart)';
 }
 
 

@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'tab_layout.dart';
@@ -9,6 +9,7 @@ part of 'tab_layout.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $TabLayoutCopyWith<TabLayout> get copyWith => _$TabLayoutCopyWithImpl<TabLayout>
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TabLayout&&const DeepCollectionEquality().equals(other.mainTabs, mainTabs)&&const DeepCollectionEquality().equals(other.moreTabs, moreTabs)&&const DeepCollectionEquality().equals(other.bizziePlusTabs, bizziePlusTabs));
+  final _this = this as TabLayout;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TabLayout&&const DeepCollectionEquality().equals(other.mainTabs, _this.mainTabs)&&const DeepCollectionEquality().equals(other.moreTabs, _this.moreTabs)&&const DeepCollectionEquality().equals(other.bizziePlusTabs, _this.bizziePlusTabs));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(mainTabs),const DeepCollectionEquality().hash(moreTabs),const DeepCollectionEquality().hash(bizziePlusTabs));
+int get hashCode {
+  final _this = this as TabLayout;
+  return Object.hash(runtimeType,const DeepCollectionEquality().hash(_this.mainTabs),const DeepCollectionEquality().hash(_this.moreTabs),const DeepCollectionEquality().hash(_this.bizziePlusTabs));
+}
 
 @override
 String toString() {
-  return 'TabLayout(mainTabs: $mainTabs, moreTabs: $moreTabs, bizziePlusTabs: $bizziePlusTabs)';
+  final _this = this as TabLayout;
+  return 'TabLayout(mainTabs: ${_this.mainTabs}, moreTabs: ${_this.moreTabs}, bizziePlusTabs: ${_this.bizziePlusTabs})';
 }
 
 
@@ -63,7 +69,7 @@ class _$TabLayoutCopyWithImpl<$Res>
 /// Create a copy of TabLayout
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? mainTabs = null,Object? moreTabs = null,Object? bizziePlusTabs = null,}) {
-  return _then(_self.copyWith(
+  return _then(TabLayout(
 mainTabs: null == mainTabs ? _self.mainTabs : mainTabs // ignore: cast_nullable_to_non_nullable
 as List<CompanyProfileTab>,moreTabs: null == moreTabs ? _self.moreTabs : moreTabs // ignore: cast_nullable_to_non_nullable
 as List<CompanyProfileTab>,bizziePlusTabs: null == bizziePlusTabs ? _self.bizziePlusTabs : bizziePlusTabs // ignore: cast_nullable_to_non_nullable
@@ -208,7 +214,7 @@ return $default(_that.mainTabs,_that.moreTabs,_that.bizziePlusTabs);case _:
 
 
 class _TabLayout extends TabLayout {
-  const _TabLayout({required final  List<CompanyProfileTab> mainTabs, required final  List<CompanyProfileTab> moreTabs, final  List<CompanyProfileTab> bizziePlusTabs = const <CompanyProfileTab>[]}): _mainTabs = mainTabs,_moreTabs = moreTabs,_bizziePlusTabs = bizziePlusTabs,super._();
+  const _TabLayout({required  List<CompanyProfileTab> mainTabs, required  List<CompanyProfileTab> moreTabs,  List<CompanyProfileTab> bizziePlusTabs = const <CompanyProfileTab>[]}): _mainTabs = mainTabs,_moreTabs = moreTabs,_bizziePlusTabs = bizziePlusTabs,super._();
   
 
  final  List<CompanyProfileTab> _mainTabs;
@@ -243,16 +249,18 @@ _$TabLayoutCopyWith<_TabLayout> get copyWith => __$TabLayoutCopyWithImpl<_TabLay
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TabLayout&&const DeepCollectionEquality().equals(other._mainTabs, _mainTabs)&&const DeepCollectionEquality().equals(other._moreTabs, _moreTabs)&&const DeepCollectionEquality().equals(other._bizziePlusTabs, _bizziePlusTabs));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _TabLayout&&const DeepCollectionEquality().equals(other.mainTabs, _mainTabs)&&const DeepCollectionEquality().equals(other.moreTabs, _moreTabs)&&const DeepCollectionEquality().equals(other.bizziePlusTabs, _bizziePlusTabs));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_mainTabs),const DeepCollectionEquality().hash(_moreTabs),const DeepCollectionEquality().hash(_bizziePlusTabs));
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_mainTabs),const DeepCollectionEquality().hash(_moreTabs),const DeepCollectionEquality().hash(_bizziePlusTabs));
+}
 
 @override
 String toString() {
-  return 'TabLayout(mainTabs: $mainTabs, moreTabs: $moreTabs, bizziePlusTabs: $bizziePlusTabs)';
+    return 'TabLayout(mainTabs: $mainTabs, moreTabs: $moreTabs, bizziePlusTabs: $bizziePlusTabs)';
 }
 
 

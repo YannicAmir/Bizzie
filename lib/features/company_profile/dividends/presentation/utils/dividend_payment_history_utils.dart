@@ -1,7 +1,7 @@
 import 'package:bizzie/app/themes/app_colors.dart';
 import 'package:bizzie/features/company_profile/dividends/domain/models/dividend_event.dart';
 import 'package:bizzie/shared/utils/bizzie_date_formatter.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class DividendPaymentHistoryUtils {
   static (String, Color) calculateChange(

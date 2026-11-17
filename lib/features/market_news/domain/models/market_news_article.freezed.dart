@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'market_news_article.dart';
@@ -9,6 +9,7 @@ part of 'market_news_article.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $MarketNewsArticleCopyWith<MarketNewsArticle> get copyWith => _$MarketNewsArticl
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MarketNewsArticle&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.site, site) || other.site == site)&&(identical(other.publisher, publisher) || other.publisher == publisher)&&(identical(other.url, url) || other.url == url)&&(identical(other.publishedAt, publishedAt) || other.publishedAt == publishedAt)&&(identical(other.image, image) || other.image == image));
+  final _this = this as MarketNewsArticle;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MarketNewsArticle&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.title, _this.title) || other.title == _this.title)&&(identical(other.site, _this.site) || other.site == _this.site)&&(identical(other.publisher, _this.publisher) || other.publisher == _this.publisher)&&(identical(other.url, _this.url) || other.url == _this.url)&&(identical(other.publishedAt, _this.publishedAt) || other.publishedAt == _this.publishedAt)&&(identical(other.image, _this.image) || other.image == _this.image));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,title,site,publisher,url,publishedAt,image);
+int get hashCode {
+  final _this = this as MarketNewsArticle;
+  return Object.hash(runtimeType,_this.id,_this.title,_this.site,_this.publisher,_this.url,_this.publishedAt,_this.image);
+}
 
 @override
 String toString() {
-  return 'MarketNewsArticle(id: $id, title: $title, site: $site, publisher: $publisher, url: $url, publishedAt: $publishedAt, image: $image)';
+  final _this = this as MarketNewsArticle;
+  return 'MarketNewsArticle(id: ${_this.id}, title: ${_this.title}, site: ${_this.site}, publisher: ${_this.publisher}, url: ${_this.url}, publishedAt: ${_this.publishedAt}, image: ${_this.image})';
 }
 
 
@@ -63,7 +69,7 @@ class _$MarketNewsArticleCopyWithImpl<$Res>
 /// Create a copy of MarketNewsArticle
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? title = null,Object? site = null,Object? publisher = null,Object? url = null,Object? publishedAt = null,Object? image = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(MarketNewsArticle(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
 as String,site: null == site ? _self.site : site // ignore: cast_nullable_to_non_nullable
@@ -233,16 +239,18 @@ _$MarketNewsArticleCopyWith<_MarketNewsArticle> get copyWith => __$MarketNewsArt
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _MarketNewsArticle&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.site, site) || other.site == site)&&(identical(other.publisher, publisher) || other.publisher == publisher)&&(identical(other.url, url) || other.url == url)&&(identical(other.publishedAt, publishedAt) || other.publishedAt == publishedAt)&&(identical(other.image, image) || other.image == image));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _MarketNewsArticle&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.site, site) || other.site == site)&&(identical(other.publisher, publisher) || other.publisher == publisher)&&(identical(other.url, url) || other.url == url)&&(identical(other.publishedAt, publishedAt) || other.publishedAt == publishedAt)&&(identical(other.image, image) || other.image == image));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,title,site,publisher,url,publishedAt,image);
+int get hashCode {
+    return Object.hash(runtimeType,id,title,site,publisher,url,publishedAt,image);
+}
 
 @override
 String toString() {
-  return 'MarketNewsArticle(id: $id, title: $title, site: $site, publisher: $publisher, url: $url, publishedAt: $publishedAt, image: $image)';
+    return 'MarketNewsArticle(id: $id, title: $title, site: $site, publisher: $publisher, url: $url, publishedAt: $publishedAt, image: $image)';
 }
 
 

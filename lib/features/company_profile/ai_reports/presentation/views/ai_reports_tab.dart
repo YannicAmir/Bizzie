@@ -18,7 +18,7 @@ import 'package:bizzie/shared/models/filing_view_model.dart';
 import 'package:bizzie/shared/widgets/cards/sec_filing_card.dart';
 import 'package:bizzie/shared/widgets/cards/weekly_report_card.dart';
 import 'package:bizzie/shared/widgets/inputs/bizzie_switch.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AiReportsTab extends StatefulWidget {

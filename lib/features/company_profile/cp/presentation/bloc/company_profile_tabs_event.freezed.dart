@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'company_profile_tabs_event.dart';
@@ -9,6 +9,7 @@ part of 'company_profile_tabs_event.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -20,7 +21,7 @@ mixin _$CompanyProfileTabsEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CompanyProfileTabsEvent);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is CompanyProfileTabsEvent);
 }
 
 
@@ -29,7 +30,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'CompanyProfileTabsEvent()';
+    return 'CompanyProfileTabsEvent()';
 }
 
 
@@ -208,16 +209,18 @@ $StartedCopyWith<Started> get copyWith => _$StartedCopyWithImpl<Started>(this, _
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Started&&(identical(other.isSubscribed, isSubscribed) || other.isSubscribed == isSubscribed));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is Started&&(identical(other.isSubscribed, isSubscribed) || other.isSubscribed == isSubscribed));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,isSubscribed);
+int get hashCode {
+    return Object.hash(runtimeType,isSubscribed);
+}
 
 @override
 String toString() {
-  return 'CompanyProfileTabsEvent.started(isSubscribed: $isSubscribed)';
+    return 'CompanyProfileTabsEvent.started(isSubscribed: $isSubscribed)';
 }
 
 
@@ -275,16 +278,18 @@ $TabActivatedCopyWith<TabActivated> get copyWith => _$TabActivatedCopyWithImpl<T
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TabActivated&&(identical(other.tab, tab) || other.tab == tab)&&(identical(other.ticker, ticker) || other.ticker == ticker));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is TabActivated&&(identical(other.tab, tab) || other.tab == tab)&&(identical(other.ticker, ticker) || other.ticker == ticker));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,tab,ticker);
+int get hashCode {
+    return Object.hash(runtimeType,tab,ticker);
+}
 
 @override
 String toString() {
-  return 'CompanyProfileTabsEvent.tabActivated(tab: $tab, ticker: $ticker)';
+    return 'CompanyProfileTabsEvent.tabActivated(tab: $tab, ticker: $ticker)';
 }
 
 
@@ -343,16 +348,18 @@ $MoreTabIndexChangedCopyWith<MoreTabIndexChanged> get copyWith => _$MoreTabIndex
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MoreTabIndexChanged&&(identical(other.index, index) || other.index == index)&&(identical(other.ticker, ticker) || other.ticker == ticker));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is MoreTabIndexChanged&&(identical(other.index, index) || other.index == index)&&(identical(other.ticker, ticker) || other.ticker == ticker));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,index,ticker);
+int get hashCode {
+    return Object.hash(runtimeType,index,ticker);
+}
 
 @override
 String toString() {
-  return 'CompanyProfileTabsEvent.moreTabIndexChanged(index: $index, ticker: $ticker)';
+    return 'CompanyProfileTabsEvent.moreTabIndexChanged(index: $index, ticker: $ticker)';
 }
 
 
@@ -405,7 +412,7 @@ class TabOrderChanged implements CompanyProfileTabsEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TabOrderChanged);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is TabOrderChanged);
 }
 
 
@@ -414,7 +421,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'CompanyProfileTabsEvent.tabOrderChanged()';
+    return 'CompanyProfileTabsEvent.tabOrderChanged()';
 }
 
 
@@ -437,7 +444,7 @@ class Reset implements CompanyProfileTabsEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Reset);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is Reset);
 }
 
 
@@ -446,7 +453,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'CompanyProfileTabsEvent.reset()';
+    return 'CompanyProfileTabsEvent.reset()';
 }
 
 

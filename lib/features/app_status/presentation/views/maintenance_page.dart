@@ -1,6 +1,6 @@
 import 'package:bizzie/app/themes/app_assets.dart';
 import 'package:bizzie/features/app_status/presentation/widgets/generic_status_page.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class MaintenancePage extends StatelessWidget {
   const MaintenancePage({super.key});

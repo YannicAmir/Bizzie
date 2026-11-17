@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:bizzie/shared/widgets/inputs/bizzie_search_bar.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';

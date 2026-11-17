@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'free_cash_flow_stats.dart';
@@ -9,6 +9,7 @@ part of 'free_cash_flow_stats.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $FreeCashFlowStatsCopyWith<FreeCashFlowStats> get copyWith => _$FreeCashFlowStat
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is FreeCashFlowStats&&(identical(other.reportedCurrency, reportedCurrency) || other.reportedCurrency == reportedCurrency)&&(identical(other.originalCurrency, originalCurrency) || other.originalCurrency == originalCurrency)&&const DeepCollectionEquality().equals(other.annualFcf, annualFcf)&&const DeepCollectionEquality().equals(other.quarterlyFcf, quarterlyFcf));
+  final _this = this as FreeCashFlowStats;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is FreeCashFlowStats&&(identical(other.reportedCurrency, _this.reportedCurrency) || other.reportedCurrency == _this.reportedCurrency)&&(identical(other.originalCurrency, _this.originalCurrency) || other.originalCurrency == _this.originalCurrency)&&const DeepCollectionEquality().equals(other.annualFcf, _this.annualFcf)&&const DeepCollectionEquality().equals(other.quarterlyFcf, _this.quarterlyFcf));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,reportedCurrency,originalCurrency,const DeepCollectionEquality().hash(annualFcf),const DeepCollectionEquality().hash(quarterlyFcf));
+int get hashCode {
+  final _this = this as FreeCashFlowStats;
+  return Object.hash(runtimeType,_this.reportedCurrency,_this.originalCurrency,const DeepCollectionEquality().hash(_this.annualFcf),const DeepCollectionEquality().hash(_this.quarterlyFcf));
+}
 
 @override
 String toString() {
-  return 'FreeCashFlowStats(reportedCurrency: $reportedCurrency, originalCurrency: $originalCurrency, annualFcf: $annualFcf, quarterlyFcf: $quarterlyFcf)';
+  final _this = this as FreeCashFlowStats;
+  return 'FreeCashFlowStats(reportedCurrency: ${_this.reportedCurrency}, originalCurrency: ${_this.originalCurrency}, annualFcf: ${_this.annualFcf}, quarterlyFcf: ${_this.quarterlyFcf})';
 }
 
 
@@ -63,7 +69,7 @@ class _$FreeCashFlowStatsCopyWithImpl<$Res>
 /// Create a copy of FreeCashFlowStats
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? reportedCurrency = null,Object? originalCurrency = freezed,Object? annualFcf = null,Object? quarterlyFcf = null,}) {
-  return _then(_self.copyWith(
+  return _then(FreeCashFlowStats(
 reportedCurrency: null == reportedCurrency ? _self.reportedCurrency : reportedCurrency // ignore: cast_nullable_to_non_nullable
 as String,originalCurrency: freezed == originalCurrency ? _self.originalCurrency : originalCurrency // ignore: cast_nullable_to_non_nullable
 as String?,annualFcf: null == annualFcf ? _self.annualFcf : annualFcf // ignore: cast_nullable_to_non_nullable
@@ -209,7 +215,7 @@ return $default(_that.reportedCurrency,_that.originalCurrency,_that.annualFcf,_t
 
 
 class _FreeCashFlowStats implements FreeCashFlowStats {
-  const _FreeCashFlowStats({required this.reportedCurrency, this.originalCurrency, required final  List<FinancialDataPoint> annualFcf, required final  List<FinancialDataPoint> quarterlyFcf}): _annualFcf = annualFcf,_quarterlyFcf = quarterlyFcf;
+  const _FreeCashFlowStats({required this.reportedCurrency, this.originalCurrency, required  List<FinancialDataPoint> annualFcf, required  List<FinancialDataPoint> quarterlyFcf}): _annualFcf = annualFcf,_quarterlyFcf = quarterlyFcf;
   
 
 @override final  String reportedCurrency;
@@ -239,16 +245,18 @@ _$FreeCashFlowStatsCopyWith<_FreeCashFlowStats> get copyWith => __$FreeCashFlowS
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _FreeCashFlowStats&&(identical(other.reportedCurrency, reportedCurrency) || other.reportedCurrency == reportedCurrency)&&(identical(other.originalCurrency, originalCurrency) || other.originalCurrency == originalCurrency)&&const DeepCollectionEquality().equals(other._annualFcf, _annualFcf)&&const DeepCollectionEquality().equals(other._quarterlyFcf, _quarterlyFcf));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _FreeCashFlowStats&&(identical(other.reportedCurrency, reportedCurrency) || other.reportedCurrency == reportedCurrency)&&(identical(other.originalCurrency, originalCurrency) || other.originalCurrency == originalCurrency)&&const DeepCollectionEquality().equals(other.annualFcf, _annualFcf)&&const DeepCollectionEquality().equals(other.quarterlyFcf, _quarterlyFcf));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,reportedCurrency,originalCurrency,const DeepCollectionEquality().hash(_annualFcf),const DeepCollectionEquality().hash(_quarterlyFcf));
+int get hashCode {
+    return Object.hash(runtimeType,reportedCurrency,originalCurrency,const DeepCollectionEquality().hash(_annualFcf),const DeepCollectionEquality().hash(_quarterlyFcf));
+}
 
 @override
 String toString() {
-  return 'FreeCashFlowStats(reportedCurrency: $reportedCurrency, originalCurrency: $originalCurrency, annualFcf: $annualFcf, quarterlyFcf: $quarterlyFcf)';
+    return 'FreeCashFlowStats(reportedCurrency: $reportedCurrency, originalCurrency: $originalCurrency, annualFcf: $annualFcf, quarterlyFcf: $quarterlyFcf)';
 }
 
 

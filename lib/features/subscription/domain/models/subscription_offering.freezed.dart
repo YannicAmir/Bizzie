@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'subscription_offering.dart';
@@ -9,6 +9,7 @@ part of 'subscription_offering.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $SubscriptionOfferingCopyWith<SubscriptionOffering> get copyWith => _$Subscripti
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SubscriptionOffering&&(identical(other.identifier, identifier) || other.identifier == identifier)&&(identical(other.serverDescription, serverDescription) || other.serverDescription == serverDescription)&&const DeepCollectionEquality().equals(other.availablePackages, availablePackages));
+  final _this = this as SubscriptionOffering;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SubscriptionOffering&&(identical(other.identifier, _this.identifier) || other.identifier == _this.identifier)&&(identical(other.serverDescription, _this.serverDescription) || other.serverDescription == _this.serverDescription)&&const DeepCollectionEquality().equals(other.availablePackages, _this.availablePackages));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,identifier,serverDescription,const DeepCollectionEquality().hash(availablePackages));
+int get hashCode {
+  final _this = this as SubscriptionOffering;
+  return Object.hash(runtimeType,_this.identifier,_this.serverDescription,const DeepCollectionEquality().hash(_this.availablePackages));
+}
 
 @override
 String toString() {
-  return 'SubscriptionOffering(identifier: $identifier, serverDescription: $serverDescription, availablePackages: $availablePackages)';
+  final _this = this as SubscriptionOffering;
+  return 'SubscriptionOffering(identifier: ${_this.identifier}, serverDescription: ${_this.serverDescription}, availablePackages: ${_this.availablePackages})';
 }
 
 
@@ -63,7 +69,7 @@ class _$SubscriptionOfferingCopyWithImpl<$Res>
 /// Create a copy of SubscriptionOffering
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? identifier = null,Object? serverDescription = null,Object? availablePackages = null,}) {
-  return _then(_self.copyWith(
+  return _then(SubscriptionOffering(
 identifier: null == identifier ? _self.identifier : identifier // ignore: cast_nullable_to_non_nullable
 as String,serverDescription: null == serverDescription ? _self.serverDescription : serverDescription // ignore: cast_nullable_to_non_nullable
 as String,availablePackages: null == availablePackages ? _self.availablePackages : availablePackages // ignore: cast_nullable_to_non_nullable
@@ -208,7 +214,7 @@ return $default(_that.identifier,_that.serverDescription,_that.availablePackages
 
 
 class _SubscriptionOffering extends SubscriptionOffering {
-  const _SubscriptionOffering({required this.identifier, required this.serverDescription, required final  List<SubscriptionPackage> availablePackages}): _availablePackages = availablePackages,super._();
+  const _SubscriptionOffering({required this.identifier, required this.serverDescription, required  List<SubscriptionPackage> availablePackages}): _availablePackages = availablePackages,super._();
   
 
 @override final  String identifier;
@@ -231,16 +237,18 @@ _$SubscriptionOfferingCopyWith<_SubscriptionOffering> get copyWith => __$Subscri
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SubscriptionOffering&&(identical(other.identifier, identifier) || other.identifier == identifier)&&(identical(other.serverDescription, serverDescription) || other.serverDescription == serverDescription)&&const DeepCollectionEquality().equals(other._availablePackages, _availablePackages));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _SubscriptionOffering&&(identical(other.identifier, identifier) || other.identifier == identifier)&&(identical(other.serverDescription, serverDescription) || other.serverDescription == serverDescription)&&const DeepCollectionEquality().equals(other.availablePackages, _availablePackages));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,identifier,serverDescription,const DeepCollectionEquality().hash(_availablePackages));
+int get hashCode {
+    return Object.hash(runtimeType,identifier,serverDescription,const DeepCollectionEquality().hash(_availablePackages));
+}
 
 @override
 String toString() {
-  return 'SubscriptionOffering(identifier: $identifier, serverDescription: $serverDescription, availablePackages: $availablePackages)';
+    return 'SubscriptionOffering(identifier: $identifier, serverDescription: $serverDescription, availablePackages: $availablePackages)';
 }
 
 

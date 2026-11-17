@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'company_ai_reports_event.dart';
@@ -9,6 +9,7 @@ part of 'company_ai_reports_event.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -20,7 +21,7 @@ mixin _$CompanyAiReportsEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CompanyAiReportsEvent);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is CompanyAiReportsEvent);
 }
 
 
@@ -29,7 +30,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'CompanyAiReportsEvent()';
+    return 'CompanyAiReportsEvent()';
 }
 
 
@@ -238,16 +239,18 @@ $StartedCopyWith<Started> get copyWith => _$StartedCopyWithImpl<Started>(this, _
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Started&&(identical(other.ticker, ticker) || other.ticker == ticker));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is Started&&(identical(other.ticker, ticker) || other.ticker == ticker));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,ticker);
+int get hashCode {
+    return Object.hash(runtimeType,ticker);
+}
 
 @override
 String toString() {
-  return 'CompanyAiReportsEvent.started(ticker: $ticker)';
+    return 'CompanyAiReportsEvent.started(ticker: $ticker)';
 }
 
 
@@ -304,16 +307,18 @@ $LoadRequestedCopyWith<LoadRequested> get copyWith => _$LoadRequestedCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is LoadRequested&&(identical(other.ticker, ticker) || other.ticker == ticker));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is LoadRequested&&(identical(other.ticker, ticker) || other.ticker == ticker));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,ticker);
+int get hashCode {
+    return Object.hash(runtimeType,ticker);
+}
 
 @override
 String toString() {
-  return 'CompanyAiReportsEvent.loadRequested(ticker: $ticker)';
+    return 'CompanyAiReportsEvent.loadRequested(ticker: $ticker)';
 }
 
 
@@ -370,16 +375,18 @@ $TabShownCopyWith<TabShown> get copyWith => _$TabShownCopyWithImpl<TabShown>(thi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TabShown&&(identical(other.ticker, ticker) || other.ticker == ticker));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is TabShown&&(identical(other.ticker, ticker) || other.ticker == ticker));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,ticker);
+int get hashCode {
+    return Object.hash(runtimeType,ticker);
+}
 
 @override
 String toString() {
-  return 'CompanyAiReportsEvent.tabShown(ticker: $ticker)';
+    return 'CompanyAiReportsEvent.tabShown(ticker: $ticker)';
 }
 
 
@@ -431,7 +438,7 @@ class TabHidden implements CompanyAiReportsEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TabHidden);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is TabHidden);
 }
 
 
@@ -440,7 +447,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'CompanyAiReportsEvent.tabHidden()';
+    return 'CompanyAiReportsEvent.tabHidden()';
 }
 
 
@@ -463,7 +470,7 @@ class AppBackgrounded implements CompanyAiReportsEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AppBackgrounded);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is AppBackgrounded);
 }
 
 
@@ -472,7 +479,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'CompanyAiReportsEvent.appBackgrounded()';
+    return 'CompanyAiReportsEvent.appBackgrounded()';
 }
 
 
@@ -495,7 +502,7 @@ class AppForegrounded implements CompanyAiReportsEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AppForegrounded);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is AppForegrounded);
 }
 
 
@@ -504,7 +511,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'CompanyAiReportsEvent.appForegrounded()';
+    return 'CompanyAiReportsEvent.appForegrounded()';
 }
 
 
@@ -532,16 +539,18 @@ $FormChangedCopyWith<FormChanged> get copyWith => _$FormChangedCopyWithImpl<Form
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is FormChanged&&(identical(other.form, form) || other.form == form));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is FormChanged&&(identical(other.form, form) || other.form == form));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,form);
+int get hashCode {
+    return Object.hash(runtimeType,form);
+}
 
 @override
 String toString() {
-  return 'CompanyAiReportsEvent.formChanged(form: $form)';
+    return 'CompanyAiReportsEvent.formChanged(form: $form)';
 }
 
 
@@ -593,7 +602,7 @@ class ReportOpened implements CompanyAiReportsEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ReportOpened);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is ReportOpened);
 }
 
 
@@ -602,7 +611,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'CompanyAiReportsEvent.reportOpened()';
+    return 'CompanyAiReportsEvent.reportOpened()';
 }
 
 
@@ -625,7 +634,7 @@ class FilingLinkOpened implements CompanyAiReportsEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is FilingLinkOpened);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is FilingLinkOpened);
 }
 
 
@@ -634,7 +643,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'CompanyAiReportsEvent.filingLinkOpened()';
+    return 'CompanyAiReportsEvent.filingLinkOpened()';
 }
 
 
@@ -657,7 +666,7 @@ class Reset implements CompanyAiReportsEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Reset);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is Reset);
 }
 
 
@@ -666,7 +675,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'CompanyAiReportsEvent.reset()';
+    return 'CompanyAiReportsEvent.reset()';
 }
 
 

@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'pe_ratio.dart';
@@ -9,6 +9,7 @@ part of 'pe_ratio.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $PeRatioCopyWith<PeRatio> get copyWith => _$PeRatioCopyWithImpl<PeRatio>(this as
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PeRatio&&(identical(other.symbol, symbol) || other.symbol == symbol)&&(identical(other.date, date) || other.date == date)&&(identical(other.period, period) || other.period == period)&&(identical(other.priceToEarningsRatio, priceToEarningsRatio) || other.priceToEarningsRatio == priceToEarningsRatio));
+  final _this = this as PeRatio;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PeRatio&&(identical(other.symbol, _this.symbol) || other.symbol == _this.symbol)&&(identical(other.date, _this.date) || other.date == _this.date)&&(identical(other.period, _this.period) || other.period == _this.period)&&(identical(other.priceToEarningsRatio, _this.priceToEarningsRatio) || other.priceToEarningsRatio == _this.priceToEarningsRatio));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,symbol,date,period,priceToEarningsRatio);
+int get hashCode {
+  final _this = this as PeRatio;
+  return Object.hash(runtimeType,_this.symbol,_this.date,_this.period,_this.priceToEarningsRatio);
+}
 
 @override
 String toString() {
-  return 'PeRatio(symbol: $symbol, date: $date, period: $period, priceToEarningsRatio: $priceToEarningsRatio)';
+  final _this = this as PeRatio;
+  return 'PeRatio(symbol: ${_this.symbol}, date: ${_this.date}, period: ${_this.period}, priceToEarningsRatio: ${_this.priceToEarningsRatio})';
 }
 
 
@@ -63,7 +69,7 @@ class _$PeRatioCopyWithImpl<$Res>
 /// Create a copy of PeRatio
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? symbol = null,Object? date = null,Object? period = null,Object? priceToEarningsRatio = null,}) {
-  return _then(_self.copyWith(
+  return _then(PeRatio(
 symbol: null == symbol ? _self.symbol : symbol // ignore: cast_nullable_to_non_nullable
 as String,date: null == date ? _self.date : date // ignore: cast_nullable_to_non_nullable
 as String,period: null == period ? _self.period : period // ignore: cast_nullable_to_non_nullable
@@ -227,16 +233,18 @@ _$PeRatioCopyWith<_PeRatio> get copyWith => __$PeRatioCopyWithImpl<_PeRatio>(thi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PeRatio&&(identical(other.symbol, symbol) || other.symbol == symbol)&&(identical(other.date, date) || other.date == date)&&(identical(other.period, period) || other.period == period)&&(identical(other.priceToEarningsRatio, priceToEarningsRatio) || other.priceToEarningsRatio == priceToEarningsRatio));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _PeRatio&&(identical(other.symbol, symbol) || other.symbol == symbol)&&(identical(other.date, date) || other.date == date)&&(identical(other.period, period) || other.period == period)&&(identical(other.priceToEarningsRatio, priceToEarningsRatio) || other.priceToEarningsRatio == priceToEarningsRatio));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,symbol,date,period,priceToEarningsRatio);
+int get hashCode {
+    return Object.hash(runtimeType,symbol,date,period,priceToEarningsRatio);
+}
 
 @override
 String toString() {
-  return 'PeRatio(symbol: $symbol, date: $date, period: $period, priceToEarningsRatio: $priceToEarningsRatio)';
+    return 'PeRatio(symbol: $symbol, date: $date, period: $period, priceToEarningsRatio: $priceToEarningsRatio)';
 }
 
 

@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'sector_performance.dart';
@@ -9,6 +9,7 @@ part of 'sector_performance.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $SectorPerformanceCopyWith<SectorPerformance> get copyWith => _$SectorPerformanc
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SectorPerformance&&(identical(other.date, date) || other.date == date)&&(identical(other.sector, sector) || other.sector == sector)&&(identical(other.exchange, exchange) || other.exchange == exchange)&&(identical(other.averageChange, averageChange) || other.averageChange == averageChange));
+  final _this = this as SectorPerformance;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SectorPerformance&&(identical(other.date, _this.date) || other.date == _this.date)&&(identical(other.sector, _this.sector) || other.sector == _this.sector)&&(identical(other.exchange, _this.exchange) || other.exchange == _this.exchange)&&(identical(other.averageChange, _this.averageChange) || other.averageChange == _this.averageChange));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,date,sector,exchange,averageChange);
+int get hashCode {
+  final _this = this as SectorPerformance;
+  return Object.hash(runtimeType,_this.date,_this.sector,_this.exchange,_this.averageChange);
+}
 
 @override
 String toString() {
-  return 'SectorPerformance(date: $date, sector: $sector, exchange: $exchange, averageChange: $averageChange)';
+  final _this = this as SectorPerformance;
+  return 'SectorPerformance(date: ${_this.date}, sector: ${_this.sector}, exchange: ${_this.exchange}, averageChange: ${_this.averageChange})';
 }
 
 
@@ -63,7 +69,7 @@ class _$SectorPerformanceCopyWithImpl<$Res>
 /// Create a copy of SectorPerformance
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? date = null,Object? sector = null,Object? exchange = null,Object? averageChange = null,}) {
-  return _then(_self.copyWith(
+  return _then(SectorPerformance(
 date: null == date ? _self.date : date // ignore: cast_nullable_to_non_nullable
 as String,sector: null == sector ? _self.sector : sector // ignore: cast_nullable_to_non_nullable
 as String,exchange: null == exchange ? _self.exchange : exchange // ignore: cast_nullable_to_non_nullable
@@ -227,16 +233,18 @@ _$SectorPerformanceCopyWith<_SectorPerformance> get copyWith => __$SectorPerform
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SectorPerformance&&(identical(other.date, date) || other.date == date)&&(identical(other.sector, sector) || other.sector == sector)&&(identical(other.exchange, exchange) || other.exchange == exchange)&&(identical(other.averageChange, averageChange) || other.averageChange == averageChange));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _SectorPerformance&&(identical(other.date, date) || other.date == date)&&(identical(other.sector, sector) || other.sector == sector)&&(identical(other.exchange, exchange) || other.exchange == exchange)&&(identical(other.averageChange, averageChange) || other.averageChange == averageChange));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,date,sector,exchange,averageChange);
+int get hashCode {
+    return Object.hash(runtimeType,date,sector,exchange,averageChange);
+}
 
 @override
 String toString() {
-  return 'SectorPerformance(date: $date, sector: $sector, exchange: $exchange, averageChange: $averageChange)';
+    return 'SectorPerformance(date: $date, sector: $sector, exchange: $exchange, averageChange: $averageChange)';
 }
 
 

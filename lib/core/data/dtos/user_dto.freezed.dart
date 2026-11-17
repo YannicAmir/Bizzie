@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'user_dto.dart';
@@ -9,6 +9,7 @@ part of 'user_dto.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 
@@ -28,16 +29,21 @@ $UserDtoCopyWith<UserDto> get copyWith => _$UserDtoCopyWithImpl<UserDto>(this as
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is UserDto&&(identical(other.uid, uid) || other.uid == uid)&&(identical(other.name, name) || other.name == name)&&(identical(other.favoriteSector, favoriteSector) || other.favoriteSector == favoriteSector)&&(identical(other.investingExperience, investingExperience) || other.investingExperience == investingExperience)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.isSubscribed, isSubscribed) || other.isSubscribed == isSubscribed)&&(identical(other.notificationsEnabled, notificationsEnabled) || other.notificationsEnabled == notificationsEnabled)&&const DeepCollectionEquality().equals(other.fcmTokens, fcmTokens));
+  final _this = this as UserDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is UserDto&&(identical(other.uid, _this.uid) || other.uid == _this.uid)&&(identical(other.name, _this.name) || other.name == _this.name)&&(identical(other.favoriteSector, _this.favoriteSector) || other.favoriteSector == _this.favoriteSector)&&(identical(other.investingExperience, _this.investingExperience) || other.investingExperience == _this.investingExperience)&&(identical(other.createdAt, _this.createdAt) || other.createdAt == _this.createdAt)&&(identical(other.isSubscribed, _this.isSubscribed) || other.isSubscribed == _this.isSubscribed)&&(identical(other.notificationsEnabled, _this.notificationsEnabled) || other.notificationsEnabled == _this.notificationsEnabled)&&const DeepCollectionEquality().equals(other.fcmTokens, _this.fcmTokens));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,uid,name,favoriteSector,investingExperience,createdAt,isSubscribed,notificationsEnabled,const DeepCollectionEquality().hash(fcmTokens));
+int get hashCode {
+  final _this = this as UserDto;
+  return Object.hash(runtimeType,_this.uid,_this.name,_this.favoriteSector,_this.investingExperience,_this.createdAt,_this.isSubscribed,_this.notificationsEnabled,const DeepCollectionEquality().hash(_this.fcmTokens));
+}
 
 @override
 String toString() {
-  return 'UserDto(uid: $uid, name: $name, favoriteSector: $favoriteSector, investingExperience: $investingExperience, createdAt: $createdAt, isSubscribed: $isSubscribed, notificationsEnabled: $notificationsEnabled, fcmTokens: $fcmTokens)';
+  final _this = this as UserDto;
+  return 'UserDto(uid: ${_this.uid}, name: ${_this.name}, favoriteSector: ${_this.favoriteSector}, investingExperience: ${_this.investingExperience}, createdAt: ${_this.createdAt}, isSubscribed: ${_this.isSubscribed}, notificationsEnabled: ${_this.notificationsEnabled}, fcmTokens: ${_this.fcmTokens})';
 }
 
 
@@ -66,7 +72,7 @@ class _$UserDtoCopyWithImpl<$Res>
 /// Create a copy of UserDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? uid = null,Object? name = null,Object? favoriteSector = null,Object? investingExperience = null,Object? createdAt = null,Object? isSubscribed = null,Object? notificationsEnabled = null,Object? fcmTokens = null,}) {
-  return _then(_self.copyWith(
+  return _then(UserDto(
 uid: null == uid ? _self.uid : uid // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,favoriteSector: null == favoriteSector ? _self.favoriteSector : favoriteSector // ignore: cast_nullable_to_non_nullable
@@ -216,7 +222,7 @@ return $default(_that.uid,_that.name,_that.favoriteSector,_that.investingExperie
 @JsonSerializable()
 
 class _UserDto extends UserDto {
-  const _UserDto({required this.uid, required this.name, required this.favoriteSector, required this.investingExperience, @TimestampConverter() required this.createdAt, this.isSubscribed = false, this.notificationsEnabled = true, required final  Map<String, String> fcmTokens}): _fcmTokens = fcmTokens,super._();
+  const _UserDto({required this.uid, required this.name, required this.favoriteSector, required this.investingExperience, @TimestampConverter() required this.createdAt, this.isSubscribed = false, this.notificationsEnabled = true, required  Map<String, String> fcmTokens}): _fcmTokens = fcmTokens,super._();
   factory _UserDto.fromJson(Map<String, dynamic> json) => _$UserDtoFromJson(json);
 
 @override final  String uid;
@@ -247,16 +253,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _UserDto&&(identical(other.uid, uid) || other.uid == uid)&&(identical(other.name, name) || other.name == name)&&(identical(other.favoriteSector, favoriteSector) || other.favoriteSector == favoriteSector)&&(identical(other.investingExperience, investingExperience) || other.investingExperience == investingExperience)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.isSubscribed, isSubscribed) || other.isSubscribed == isSubscribed)&&(identical(other.notificationsEnabled, notificationsEnabled) || other.notificationsEnabled == notificationsEnabled)&&const DeepCollectionEquality().equals(other._fcmTokens, _fcmTokens));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _UserDto&&(identical(other.uid, uid) || other.uid == uid)&&(identical(other.name, name) || other.name == name)&&(identical(other.favoriteSector, favoriteSector) || other.favoriteSector == favoriteSector)&&(identical(other.investingExperience, investingExperience) || other.investingExperience == investingExperience)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.isSubscribed, isSubscribed) || other.isSubscribed == isSubscribed)&&(identical(other.notificationsEnabled, notificationsEnabled) || other.notificationsEnabled == notificationsEnabled)&&const DeepCollectionEquality().equals(other.fcmTokens, _fcmTokens));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,uid,name,favoriteSector,investingExperience,createdAt,isSubscribed,notificationsEnabled,const DeepCollectionEquality().hash(_fcmTokens));
+int get hashCode {
+    return Object.hash(runtimeType,uid,name,favoriteSector,investingExperience,createdAt,isSubscribed,notificationsEnabled,const DeepCollectionEquality().hash(_fcmTokens));
+}
 
 @override
 String toString() {
-  return 'UserDto(uid: $uid, name: $name, favoriteSector: $favoriteSector, investingExperience: $investingExperience, createdAt: $createdAt, isSubscribed: $isSubscribed, notificationsEnabled: $notificationsEnabled, fcmTokens: $fcmTokens)';
+    return 'UserDto(uid: $uid, name: $name, favoriteSector: $favoriteSector, investingExperience: $investingExperience, createdAt: $createdAt, isSubscribed: $isSubscribed, notificationsEnabled: $notificationsEnabled, fcmTokens: $fcmTokens)';
 }
 
 

@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'onboarding_profile_update.dart';
@@ -9,6 +9,7 @@ part of 'onboarding_profile_update.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $OnboardingProfileUpdateCopyWith<OnboardingProfileUpdate> get copyWith => _$Onbo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is OnboardingProfileUpdate&&(identical(other.uid, uid) || other.uid == uid)&&(identical(other.name, name) || other.name == name)&&(identical(other.investingExperience, investingExperience) || other.investingExperience == investingExperience)&&(identical(other.notificationsEnabled, notificationsEnabled) || other.notificationsEnabled == notificationsEnabled));
+  final _this = this as OnboardingProfileUpdate;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is OnboardingProfileUpdate&&(identical(other.uid, _this.uid) || other.uid == _this.uid)&&(identical(other.name, _this.name) || other.name == _this.name)&&(identical(other.investingExperience, _this.investingExperience) || other.investingExperience == _this.investingExperience)&&(identical(other.notificationsEnabled, _this.notificationsEnabled) || other.notificationsEnabled == _this.notificationsEnabled));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,uid,name,investingExperience,notificationsEnabled);
+int get hashCode {
+  final _this = this as OnboardingProfileUpdate;
+  return Object.hash(runtimeType,_this.uid,_this.name,_this.investingExperience,_this.notificationsEnabled);
+}
 
 @override
 String toString() {
-  return 'OnboardingProfileUpdate(uid: $uid, name: $name, investingExperience: $investingExperience, notificationsEnabled: $notificationsEnabled)';
+  final _this = this as OnboardingProfileUpdate;
+  return 'OnboardingProfileUpdate(uid: ${_this.uid}, name: ${_this.name}, investingExperience: ${_this.investingExperience}, notificationsEnabled: ${_this.notificationsEnabled})';
 }
 
 
@@ -63,7 +69,7 @@ class _$OnboardingProfileUpdateCopyWithImpl<$Res>
 /// Create a copy of OnboardingProfileUpdate
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? uid = null,Object? name = freezed,Object? investingExperience = freezed,Object? notificationsEnabled = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(OnboardingProfileUpdate(
 uid: null == uid ? _self.uid : uid // ignore: cast_nullable_to_non_nullable
 as String,name: freezed == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String?,investingExperience: freezed == investingExperience ? _self.investingExperience : investingExperience // ignore: cast_nullable_to_non_nullable
@@ -227,16 +233,18 @@ _$OnboardingProfileUpdateCopyWith<_OnboardingProfileUpdate> get copyWith => __$O
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _OnboardingProfileUpdate&&(identical(other.uid, uid) || other.uid == uid)&&(identical(other.name, name) || other.name == name)&&(identical(other.investingExperience, investingExperience) || other.investingExperience == investingExperience)&&(identical(other.notificationsEnabled, notificationsEnabled) || other.notificationsEnabled == notificationsEnabled));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _OnboardingProfileUpdate&&(identical(other.uid, uid) || other.uid == uid)&&(identical(other.name, name) || other.name == name)&&(identical(other.investingExperience, investingExperience) || other.investingExperience == investingExperience)&&(identical(other.notificationsEnabled, notificationsEnabled) || other.notificationsEnabled == notificationsEnabled));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,uid,name,investingExperience,notificationsEnabled);
+int get hashCode {
+    return Object.hash(runtimeType,uid,name,investingExperience,notificationsEnabled);
+}
 
 @override
 String toString() {
-  return 'OnboardingProfileUpdate(uid: $uid, name: $name, investingExperience: $investingExperience, notificationsEnabled: $notificationsEnabled)';
+    return 'OnboardingProfileUpdate(uid: $uid, name: $name, investingExperience: $investingExperience, notificationsEnabled: $notificationsEnabled)';
 }
 
 

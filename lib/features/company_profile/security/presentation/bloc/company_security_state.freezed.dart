@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'company_security_state.dart';
@@ -9,6 +9,7 @@ part of 'company_security_state.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -20,7 +21,7 @@ mixin _$CompanySecurityState {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CompanySecurityState);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is CompanySecurityState);
 }
 
 
@@ -29,7 +30,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'CompanySecurityState()';
+    return 'CompanySecurityState()';
 }
 
 
@@ -209,7 +210,7 @@ class _Initial implements CompanySecurityState {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Initial);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Initial);
 }
 
 
@@ -218,7 +219,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'CompanySecurityState.initial()';
+    return 'CompanySecurityState.initial()';
 }
 
 
@@ -241,7 +242,7 @@ class _Loading implements CompanySecurityState {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Loading);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Loading);
 }
 
 
@@ -250,7 +251,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'CompanySecurityState.loading()';
+    return 'CompanySecurityState.loading()';
 }
 
 
@@ -280,16 +281,18 @@ $SecurityLoadedCopyWith<SecurityLoaded> get copyWith => _$SecurityLoadedCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SecurityLoaded&&(identical(other.securityDetails, securityDetails) || other.securityDetails == securityDetails)&&(identical(other.analyticsState, analyticsState) || other.analyticsState == analyticsState)&&(identical(other.lastUpdated, lastUpdated) || other.lastUpdated == lastUpdated));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SecurityLoaded&&(identical(other.securityDetails, securityDetails) || other.securityDetails == securityDetails)&&(identical(other.analyticsState, analyticsState) || other.analyticsState == analyticsState)&&(identical(other.lastUpdated, lastUpdated) || other.lastUpdated == lastUpdated));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,securityDetails,analyticsState,lastUpdated);
+int get hashCode {
+    return Object.hash(runtimeType,securityDetails,analyticsState,lastUpdated);
+}
 
 @override
 String toString() {
-  return 'CompanySecurityState.loaded(securityDetails: $securityDetails, analyticsState: $analyticsState, lastUpdated: $lastUpdated)';
+    return 'CompanySecurityState.loaded(securityDetails: $securityDetails, analyticsState: $analyticsState, lastUpdated: $lastUpdated)';
 }
 
 
@@ -367,16 +370,18 @@ $SecurityUnsupportedCopyWith<SecurityUnsupported> get copyWith => _$SecurityUnsu
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SecurityUnsupported&&(identical(other.securityDetails, securityDetails) || other.securityDetails == securityDetails)&&(identical(other.analyticsState, analyticsState) || other.analyticsState == analyticsState));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SecurityUnsupported&&(identical(other.securityDetails, securityDetails) || other.securityDetails == securityDetails)&&(identical(other.analyticsState, analyticsState) || other.analyticsState == analyticsState));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,securityDetails,analyticsState);
+int get hashCode {
+    return Object.hash(runtimeType,securityDetails,analyticsState);
+}
 
 @override
 String toString() {
-  return 'CompanySecurityState.unsupported(securityDetails: $securityDetails, analyticsState: $analyticsState)';
+    return 'CompanySecurityState.unsupported(securityDetails: $securityDetails, analyticsState: $analyticsState)';
 }
 
 
@@ -452,16 +457,18 @@ _$FailureCopyWith<_Failure> get copyWith => __$FailureCopyWithImpl<_Failure>(thi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Failure&&(identical(other.failure, failure) || other.failure == failure));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Failure&&(identical(other.failure, failure) || other.failure == failure));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,failure);
+int get hashCode {
+    return Object.hash(runtimeType,failure);
+}
 
 @override
 String toString() {
-  return 'CompanySecurityState.failure(failure: $failure)';
+    return 'CompanySecurityState.failure(failure: $failure)';
 }
 
 

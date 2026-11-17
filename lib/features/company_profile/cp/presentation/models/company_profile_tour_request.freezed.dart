@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'company_profile_tour_request.dart';
@@ -9,6 +9,7 @@ part of 'company_profile_tour_request.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $CompanyProfileTourRequestCopyWith<CompanyProfileTourRequest> get copyWith => _$
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CompanyProfileTourRequest&&(identical(other.shouldPromptNotifications, shouldPromptNotifications) || other.shouldPromptNotifications == shouldPromptNotifications)&&(identical(other.onPromptNotifications, onPromptNotifications) || other.onPromptNotifications == onPromptNotifications)&&(identical(other.onTourSkipped, onTourSkipped) || other.onTourSkipped == onTourSkipped));
+  final _this = this as CompanyProfileTourRequest;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CompanyProfileTourRequest&&(identical(other.shouldPromptNotifications, _this.shouldPromptNotifications) || other.shouldPromptNotifications == _this.shouldPromptNotifications)&&(identical(other.onPromptNotifications, _this.onPromptNotifications) || other.onPromptNotifications == _this.onPromptNotifications)&&(identical(other.onTourSkipped, _this.onTourSkipped) || other.onTourSkipped == _this.onTourSkipped));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,shouldPromptNotifications,onPromptNotifications,onTourSkipped);
+int get hashCode {
+  final _this = this as CompanyProfileTourRequest;
+  return Object.hash(runtimeType,_this.shouldPromptNotifications,_this.onPromptNotifications,_this.onTourSkipped);
+}
 
 @override
 String toString() {
-  return 'CompanyProfileTourRequest(shouldPromptNotifications: $shouldPromptNotifications, onPromptNotifications: $onPromptNotifications, onTourSkipped: $onTourSkipped)';
+  final _this = this as CompanyProfileTourRequest;
+  return 'CompanyProfileTourRequest(shouldPromptNotifications: ${_this.shouldPromptNotifications}, onPromptNotifications: ${_this.onPromptNotifications}, onTourSkipped: ${_this.onTourSkipped})';
 }
 
 
@@ -63,7 +69,7 @@ class _$CompanyProfileTourRequestCopyWithImpl<$Res>
 /// Create a copy of CompanyProfileTourRequest
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? shouldPromptNotifications = null,Object? onPromptNotifications = null,Object? onTourSkipped = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(CompanyProfileTourRequest(
 shouldPromptNotifications: null == shouldPromptNotifications ? _self.shouldPromptNotifications : shouldPromptNotifications // ignore: cast_nullable_to_non_nullable
 as bool,onPromptNotifications: null == onPromptNotifications ? _self.onPromptNotifications : onPromptNotifications // ignore: cast_nullable_to_non_nullable
 as void Function(),onTourSkipped: freezed == onTourSkipped ? _self.onTourSkipped : onTourSkipped // ignore: cast_nullable_to_non_nullable
@@ -225,16 +231,18 @@ _$CompanyProfileTourRequestCopyWith<_CompanyProfileTourRequest> get copyWith => 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CompanyProfileTourRequest&&(identical(other.shouldPromptNotifications, shouldPromptNotifications) || other.shouldPromptNotifications == shouldPromptNotifications)&&(identical(other.onPromptNotifications, onPromptNotifications) || other.onPromptNotifications == onPromptNotifications)&&(identical(other.onTourSkipped, onTourSkipped) || other.onTourSkipped == onTourSkipped));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _CompanyProfileTourRequest&&(identical(other.shouldPromptNotifications, shouldPromptNotifications) || other.shouldPromptNotifications == shouldPromptNotifications)&&(identical(other.onPromptNotifications, onPromptNotifications) || other.onPromptNotifications == onPromptNotifications)&&(identical(other.onTourSkipped, onTourSkipped) || other.onTourSkipped == onTourSkipped));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,shouldPromptNotifications,onPromptNotifications,onTourSkipped);
+int get hashCode {
+    return Object.hash(runtimeType,shouldPromptNotifications,onPromptNotifications,onTourSkipped);
+}
 
 @override
 String toString() {
-  return 'CompanyProfileTourRequest(shouldPromptNotifications: $shouldPromptNotifications, onPromptNotifications: $onPromptNotifications, onTourSkipped: $onTourSkipped)';
+    return 'CompanyProfileTourRequest(shouldPromptNotifications: $shouldPromptNotifications, onPromptNotifications: $onPromptNotifications, onTourSkipped: $onTourSkipped)';
 }
 
 

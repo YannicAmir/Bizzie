@@ -7,7 +7,7 @@ import 'package:bizzie/shared/models/price_tick.dart';
 import 'package:bizzie/shared/utils/currency_formatter.dart';
 import 'package:bizzie/shared/widgets/animations/price_tick_flash.dart';
 import 'package:bizzie/shared/widgets/app_badge.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 const double _chartWidth = 64;
 const double _chartHeight = 32;

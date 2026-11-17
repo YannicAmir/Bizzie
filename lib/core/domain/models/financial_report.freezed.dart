@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'financial_report.dart';
@@ -9,6 +9,7 @@ part of 'financial_report.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $FinancialReportCopyWith<FinancialReport> get copyWith => _$FinancialReportCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is FinancialReport&&(identical(other.id, id) || other.id == id)&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.dateAnalyzed, dateAnalyzed) || other.dateAnalyzed == dateAnalyzed)&&(identical(other.filingDate, filingDate) || other.filingDate == filingDate)&&(identical(other.formType, formType) || other.formType == formType)&&(identical(other.summary, summary) || other.summary == summary)&&(identical(other.balanceSheet, balanceSheet) || other.balanceSheet == balanceSheet)&&(identical(other.cashFlow, cashFlow) || other.cashFlow == cashFlow)&&(identical(other.income, income) || other.income == income)&&(identical(other.stockActivity, stockActivity) || other.stockActivity == stockActivity));
+  final _this = this as FinancialReport;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is FinancialReport&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.ticker, _this.ticker) || other.ticker == _this.ticker)&&(identical(other.dateAnalyzed, _this.dateAnalyzed) || other.dateAnalyzed == _this.dateAnalyzed)&&(identical(other.filingDate, _this.filingDate) || other.filingDate == _this.filingDate)&&(identical(other.formType, _this.formType) || other.formType == _this.formType)&&(identical(other.summary, _this.summary) || other.summary == _this.summary)&&(identical(other.balanceSheet, _this.balanceSheet) || other.balanceSheet == _this.balanceSheet)&&(identical(other.cashFlow, _this.cashFlow) || other.cashFlow == _this.cashFlow)&&(identical(other.income, _this.income) || other.income == _this.income)&&(identical(other.stockActivity, _this.stockActivity) || other.stockActivity == _this.stockActivity));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,ticker,dateAnalyzed,filingDate,formType,summary,balanceSheet,cashFlow,income,stockActivity);
+int get hashCode {
+  final _this = this as FinancialReport;
+  return Object.hash(runtimeType,_this.id,_this.ticker,_this.dateAnalyzed,_this.filingDate,_this.formType,_this.summary,_this.balanceSheet,_this.cashFlow,_this.income,_this.stockActivity);
+}
 
 @override
 String toString() {
-  return 'FinancialReport(id: $id, ticker: $ticker, dateAnalyzed: $dateAnalyzed, filingDate: $filingDate, formType: $formType, summary: $summary, balanceSheet: $balanceSheet, cashFlow: $cashFlow, income: $income, stockActivity: $stockActivity)';
+  final _this = this as FinancialReport;
+  return 'FinancialReport(id: ${_this.id}, ticker: ${_this.ticker}, dateAnalyzed: ${_this.dateAnalyzed}, filingDate: ${_this.filingDate}, formType: ${_this.formType}, summary: ${_this.summary}, balanceSheet: ${_this.balanceSheet}, cashFlow: ${_this.cashFlow}, income: ${_this.income}, stockActivity: ${_this.stockActivity})';
 }
 
 
@@ -63,7 +69,7 @@ class _$FinancialReportCopyWithImpl<$Res>
 /// Create a copy of FinancialReport
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? ticker = null,Object? dateAnalyzed = freezed,Object? filingDate = freezed,Object? formType = null,Object? summary = null,Object? balanceSheet = null,Object? cashFlow = null,Object? income = null,Object? stockActivity = null,}) {
-  return _then(_self.copyWith(
+  return _then(FinancialReport(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,ticker: null == ticker ? _self.ticker : ticker // ignore: cast_nullable_to_non_nullable
 as String,dateAnalyzed: freezed == dateAnalyzed ? _self.dateAnalyzed : dateAnalyzed // ignore: cast_nullable_to_non_nullable
@@ -284,16 +290,18 @@ _$FinancialReportCopyWith<_FinancialReport> get copyWith => __$FinancialReportCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _FinancialReport&&(identical(other.id, id) || other.id == id)&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.dateAnalyzed, dateAnalyzed) || other.dateAnalyzed == dateAnalyzed)&&(identical(other.filingDate, filingDate) || other.filingDate == filingDate)&&(identical(other.formType, formType) || other.formType == formType)&&(identical(other.summary, summary) || other.summary == summary)&&(identical(other.balanceSheet, balanceSheet) || other.balanceSheet == balanceSheet)&&(identical(other.cashFlow, cashFlow) || other.cashFlow == cashFlow)&&(identical(other.income, income) || other.income == income)&&(identical(other.stockActivity, stockActivity) || other.stockActivity == stockActivity));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _FinancialReport&&(identical(other.id, id) || other.id == id)&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.dateAnalyzed, dateAnalyzed) || other.dateAnalyzed == dateAnalyzed)&&(identical(other.filingDate, filingDate) || other.filingDate == filingDate)&&(identical(other.formType, formType) || other.formType == formType)&&(identical(other.summary, summary) || other.summary == summary)&&(identical(other.balanceSheet, balanceSheet) || other.balanceSheet == balanceSheet)&&(identical(other.cashFlow, cashFlow) || other.cashFlow == cashFlow)&&(identical(other.income, income) || other.income == income)&&(identical(other.stockActivity, stockActivity) || other.stockActivity == stockActivity));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,ticker,dateAnalyzed,filingDate,formType,summary,balanceSheet,cashFlow,income,stockActivity);
+int get hashCode {
+    return Object.hash(runtimeType,id,ticker,dateAnalyzed,filingDate,formType,summary,balanceSheet,cashFlow,income,stockActivity);
+}
 
 @override
 String toString() {
-  return 'FinancialReport(id: $id, ticker: $ticker, dateAnalyzed: $dateAnalyzed, filingDate: $filingDate, formType: $formType, summary: $summary, balanceSheet: $balanceSheet, cashFlow: $cashFlow, income: $income, stockActivity: $stockActivity)';
+    return 'FinancialReport(id: $id, ticker: $ticker, dateAnalyzed: $dateAnalyzed, filingDate: $filingDate, formType: $formType, summary: $summary, balanceSheet: $balanceSheet, cashFlow: $cashFlow, income: $income, stockActivity: $stockActivity)';
 }
 
 
@@ -399,16 +407,21 @@ $ReportSummaryCopyWith<ReportSummary> get copyWith => _$ReportSummaryCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ReportSummary&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.forwardLooking, forwardLooking) || other.forwardLooking == forwardLooking)&&(identical(other.citationPage, citationPage) || other.citationPage == citationPage)&&(identical(other.reportingCurrency, reportingCurrency) || other.reportingCurrency == reportingCurrency));
+  final _this = this as ReportSummary;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ReportSummary&&(identical(other.ticker, _this.ticker) || other.ticker == _this.ticker)&&(identical(other.forwardLooking, _this.forwardLooking) || other.forwardLooking == _this.forwardLooking)&&(identical(other.citationPage, _this.citationPage) || other.citationPage == _this.citationPage)&&(identical(other.reportingCurrency, _this.reportingCurrency) || other.reportingCurrency == _this.reportingCurrency));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,ticker,forwardLooking,citationPage,reportingCurrency);
+int get hashCode {
+  final _this = this as ReportSummary;
+  return Object.hash(runtimeType,_this.ticker,_this.forwardLooking,_this.citationPage,_this.reportingCurrency);
+}
 
 @override
 String toString() {
-  return 'ReportSummary(ticker: $ticker, forwardLooking: $forwardLooking, citationPage: $citationPage, reportingCurrency: $reportingCurrency)';
+  final _this = this as ReportSummary;
+  return 'ReportSummary(ticker: ${_this.ticker}, forwardLooking: ${_this.forwardLooking}, citationPage: ${_this.citationPage}, reportingCurrency: ${_this.reportingCurrency})';
 }
 
 
@@ -437,7 +450,7 @@ class _$ReportSummaryCopyWithImpl<$Res>
 /// Create a copy of ReportSummary
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? ticker = null,Object? forwardLooking = null,Object? citationPage = null,Object? reportingCurrency = null,}) {
-  return _then(_self.copyWith(
+  return _then(ReportSummary(
 ticker: null == ticker ? _self.ticker : ticker // ignore: cast_nullable_to_non_nullable
 as String,forwardLooking: null == forwardLooking ? _self.forwardLooking : forwardLooking // ignore: cast_nullable_to_non_nullable
 as String,citationPage: null == citationPage ? _self.citationPage : citationPage // ignore: cast_nullable_to_non_nullable
@@ -601,16 +614,18 @@ _$ReportSummaryCopyWith<_ReportSummary> get copyWith => __$ReportSummaryCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ReportSummary&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.forwardLooking, forwardLooking) || other.forwardLooking == forwardLooking)&&(identical(other.citationPage, citationPage) || other.citationPage == citationPage)&&(identical(other.reportingCurrency, reportingCurrency) || other.reportingCurrency == reportingCurrency));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ReportSummary&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.forwardLooking, forwardLooking) || other.forwardLooking == forwardLooking)&&(identical(other.citationPage, citationPage) || other.citationPage == citationPage)&&(identical(other.reportingCurrency, reportingCurrency) || other.reportingCurrency == reportingCurrency));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,ticker,forwardLooking,citationPage,reportingCurrency);
+int get hashCode {
+    return Object.hash(runtimeType,ticker,forwardLooking,citationPage,reportingCurrency);
+}
 
 @override
 String toString() {
-  return 'ReportSummary(ticker: $ticker, forwardLooking: $forwardLooking, citationPage: $citationPage, reportingCurrency: $reportingCurrency)';
+    return 'ReportSummary(ticker: $ticker, forwardLooking: $forwardLooking, citationPage: $citationPage, reportingCurrency: $reportingCurrency)';
 }
 
 
@@ -665,16 +680,21 @@ $ReportBalanceSheetCopyWith<ReportBalanceSheet> get copyWith => _$ReportBalanceS
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ReportBalanceSheet&&(identical(other.equity, equity) || other.equity == equity)&&(identical(other.totalAssets, totalAssets) || other.totalAssets == totalAssets)&&(identical(other.totalLiabilities, totalLiabilities) || other.totalLiabilities == totalLiabilities));
+  final _this = this as ReportBalanceSheet;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ReportBalanceSheet&&(identical(other.equity, _this.equity) || other.equity == _this.equity)&&(identical(other.totalAssets, _this.totalAssets) || other.totalAssets == _this.totalAssets)&&(identical(other.totalLiabilities, _this.totalLiabilities) || other.totalLiabilities == _this.totalLiabilities));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,equity,totalAssets,totalLiabilities);
+int get hashCode {
+  final _this = this as ReportBalanceSheet;
+  return Object.hash(runtimeType,_this.equity,_this.totalAssets,_this.totalLiabilities);
+}
 
 @override
 String toString() {
-  return 'ReportBalanceSheet(equity: $equity, totalAssets: $totalAssets, totalLiabilities: $totalLiabilities)';
+  final _this = this as ReportBalanceSheet;
+  return 'ReportBalanceSheet(equity: ${_this.equity}, totalAssets: ${_this.totalAssets}, totalLiabilities: ${_this.totalLiabilities})';
 }
 
 
@@ -703,7 +723,7 @@ class _$ReportBalanceSheetCopyWithImpl<$Res>
 /// Create a copy of ReportBalanceSheet
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? equity = null,Object? totalAssets = null,Object? totalLiabilities = null,}) {
-  return _then(_self.copyWith(
+  return _then(ReportBalanceSheet(
 equity: null == equity ? _self.equity : equity // ignore: cast_nullable_to_non_nullable
 as FinancialMetric,totalAssets: null == totalAssets ? _self.totalAssets : totalAssets // ignore: cast_nullable_to_non_nullable
 as FinancialMetric,totalLiabilities: null == totalLiabilities ? _self.totalLiabilities : totalLiabilities // ignore: cast_nullable_to_non_nullable
@@ -892,16 +912,18 @@ _$ReportBalanceSheetCopyWith<_ReportBalanceSheet> get copyWith => __$ReportBalan
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ReportBalanceSheet&&(identical(other.equity, equity) || other.equity == equity)&&(identical(other.totalAssets, totalAssets) || other.totalAssets == totalAssets)&&(identical(other.totalLiabilities, totalLiabilities) || other.totalLiabilities == totalLiabilities));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ReportBalanceSheet&&(identical(other.equity, equity) || other.equity == equity)&&(identical(other.totalAssets, totalAssets) || other.totalAssets == totalAssets)&&(identical(other.totalLiabilities, totalLiabilities) || other.totalLiabilities == totalLiabilities));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,equity,totalAssets,totalLiabilities);
+int get hashCode {
+    return Object.hash(runtimeType,equity,totalAssets,totalLiabilities);
+}
 
 @override
 String toString() {
-  return 'ReportBalanceSheet(equity: $equity, totalAssets: $totalAssets, totalLiabilities: $totalLiabilities)';
+    return 'ReportBalanceSheet(equity: $equity, totalAssets: $totalAssets, totalLiabilities: $totalLiabilities)';
 }
 
 
@@ -982,16 +1004,21 @@ $ReportCashFlowCopyWith<ReportCashFlow> get copyWith => _$ReportCashFlowCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ReportCashFlow&&(identical(other.freeCashFlow, freeCashFlow) || other.freeCashFlow == freeCashFlow));
+  final _this = this as ReportCashFlow;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ReportCashFlow&&(identical(other.freeCashFlow, _this.freeCashFlow) || other.freeCashFlow == _this.freeCashFlow));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,freeCashFlow);
+int get hashCode {
+  final _this = this as ReportCashFlow;
+  return Object.hash(runtimeType,_this.freeCashFlow);
+}
 
 @override
 String toString() {
-  return 'ReportCashFlow(freeCashFlow: $freeCashFlow)';
+  final _this = this as ReportCashFlow;
+  return 'ReportCashFlow(freeCashFlow: ${_this.freeCashFlow})';
 }
 
 
@@ -1020,7 +1047,7 @@ class _$ReportCashFlowCopyWithImpl<$Res>
 /// Create a copy of ReportCashFlow
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? freeCashFlow = null,}) {
-  return _then(_self.copyWith(
+  return _then(ReportCashFlow(
 freeCashFlow: null == freeCashFlow ? _self.freeCashFlow : freeCashFlow // ignore: cast_nullable_to_non_nullable
 as FinancialMetricWithDriver,
   ));
@@ -1187,16 +1214,18 @@ _$ReportCashFlowCopyWith<_ReportCashFlow> get copyWith => __$ReportCashFlowCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ReportCashFlow&&(identical(other.freeCashFlow, freeCashFlow) || other.freeCashFlow == freeCashFlow));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ReportCashFlow&&(identical(other.freeCashFlow, freeCashFlow) || other.freeCashFlow == freeCashFlow));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,freeCashFlow);
+int get hashCode {
+    return Object.hash(runtimeType,freeCashFlow);
+}
 
 @override
 String toString() {
-  return 'ReportCashFlow(freeCashFlow: $freeCashFlow)';
+    return 'ReportCashFlow(freeCashFlow: $freeCashFlow)';
 }
 
 
@@ -1257,16 +1286,21 @@ $ReportIncomeCopyWith<ReportIncome> get copyWith => _$ReportIncomeCopyWithImpl<R
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ReportIncome&&(identical(other.costOfRevenue, costOfRevenue) || other.costOfRevenue == costOfRevenue)&&(identical(other.eps, eps) || other.eps == eps)&&(identical(other.netIncome, netIncome) || other.netIncome == netIncome)&&(identical(other.revenue, revenue) || other.revenue == revenue)&&(identical(other.totalExpenses, totalExpenses) || other.totalExpenses == totalExpenses));
+  final _this = this as ReportIncome;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ReportIncome&&(identical(other.costOfRevenue, _this.costOfRevenue) || other.costOfRevenue == _this.costOfRevenue)&&(identical(other.eps, _this.eps) || other.eps == _this.eps)&&(identical(other.netIncome, _this.netIncome) || other.netIncome == _this.netIncome)&&(identical(other.revenue, _this.revenue) || other.revenue == _this.revenue)&&(identical(other.totalExpenses, _this.totalExpenses) || other.totalExpenses == _this.totalExpenses));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,costOfRevenue,eps,netIncome,revenue,totalExpenses);
+int get hashCode {
+  final _this = this as ReportIncome;
+  return Object.hash(runtimeType,_this.costOfRevenue,_this.eps,_this.netIncome,_this.revenue,_this.totalExpenses);
+}
 
 @override
 String toString() {
-  return 'ReportIncome(costOfRevenue: $costOfRevenue, eps: $eps, netIncome: $netIncome, revenue: $revenue, totalExpenses: $totalExpenses)';
+  final _this = this as ReportIncome;
+  return 'ReportIncome(costOfRevenue: ${_this.costOfRevenue}, eps: ${_this.eps}, netIncome: ${_this.netIncome}, revenue: ${_this.revenue}, totalExpenses: ${_this.totalExpenses})';
 }
 
 
@@ -1295,7 +1329,7 @@ class _$ReportIncomeCopyWithImpl<$Res>
 /// Create a copy of ReportIncome
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? costOfRevenue = null,Object? eps = null,Object? netIncome = null,Object? revenue = null,Object? totalExpenses = null,}) {
-  return _then(_self.copyWith(
+  return _then(ReportIncome(
 costOfRevenue: null == costOfRevenue ? _self.costOfRevenue : costOfRevenue // ignore: cast_nullable_to_non_nullable
 as FinancialMetric,eps: null == eps ? _self.eps : eps // ignore: cast_nullable_to_non_nullable
 as FinancialMetric,netIncome: null == netIncome ? _self.netIncome : netIncome // ignore: cast_nullable_to_non_nullable
@@ -1506,16 +1540,18 @@ _$ReportIncomeCopyWith<_ReportIncome> get copyWith => __$ReportIncomeCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ReportIncome&&(identical(other.costOfRevenue, costOfRevenue) || other.costOfRevenue == costOfRevenue)&&(identical(other.eps, eps) || other.eps == eps)&&(identical(other.netIncome, netIncome) || other.netIncome == netIncome)&&(identical(other.revenue, revenue) || other.revenue == revenue)&&(identical(other.totalExpenses, totalExpenses) || other.totalExpenses == totalExpenses));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ReportIncome&&(identical(other.costOfRevenue, costOfRevenue) || other.costOfRevenue == costOfRevenue)&&(identical(other.eps, eps) || other.eps == eps)&&(identical(other.netIncome, netIncome) || other.netIncome == netIncome)&&(identical(other.revenue, revenue) || other.revenue == revenue)&&(identical(other.totalExpenses, totalExpenses) || other.totalExpenses == totalExpenses));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,costOfRevenue,eps,netIncome,revenue,totalExpenses);
+int get hashCode {
+    return Object.hash(runtimeType,costOfRevenue,eps,netIncome,revenue,totalExpenses);
+}
 
 @override
 String toString() {
-  return 'ReportIncome(costOfRevenue: $costOfRevenue, eps: $eps, netIncome: $netIncome, revenue: $revenue, totalExpenses: $totalExpenses)';
+    return 'ReportIncome(costOfRevenue: $costOfRevenue, eps: $eps, netIncome: $netIncome, revenue: $revenue, totalExpenses: $totalExpenses)';
 }
 
 
@@ -1616,16 +1652,21 @@ $ReportStockActivityCopyWith<ReportStockActivity> get copyWith => _$ReportStockA
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ReportStockActivity&&(identical(other.citationPage, citationPage) || other.citationPage == citationPage)&&(identical(other.issuedShares, issuedShares) || other.issuedShares == issuedShares)&&(identical(other.netStockChangeShares, netStockChangeShares) || other.netStockChangeShares == netStockChangeShares)&&(identical(other.repurchasedShares, repurchasedShares) || other.repurchasedShares == repurchasedShares));
+  final _this = this as ReportStockActivity;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ReportStockActivity&&(identical(other.citationPage, _this.citationPage) || other.citationPage == _this.citationPage)&&(identical(other.issuedShares, _this.issuedShares) || other.issuedShares == _this.issuedShares)&&(identical(other.netStockChangeShares, _this.netStockChangeShares) || other.netStockChangeShares == _this.netStockChangeShares)&&(identical(other.repurchasedShares, _this.repurchasedShares) || other.repurchasedShares == _this.repurchasedShares));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,citationPage,issuedShares,netStockChangeShares,repurchasedShares);
+int get hashCode {
+  final _this = this as ReportStockActivity;
+  return Object.hash(runtimeType,_this.citationPage,_this.issuedShares,_this.netStockChangeShares,_this.repurchasedShares);
+}
 
 @override
 String toString() {
-  return 'ReportStockActivity(citationPage: $citationPage, issuedShares: $issuedShares, netStockChangeShares: $netStockChangeShares, repurchasedShares: $repurchasedShares)';
+  final _this = this as ReportStockActivity;
+  return 'ReportStockActivity(citationPage: ${_this.citationPage}, issuedShares: ${_this.issuedShares}, netStockChangeShares: ${_this.netStockChangeShares}, repurchasedShares: ${_this.repurchasedShares})';
 }
 
 
@@ -1654,7 +1695,7 @@ class _$ReportStockActivityCopyWithImpl<$Res>
 /// Create a copy of ReportStockActivity
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? citationPage = null,Object? issuedShares = freezed,Object? netStockChangeShares = freezed,Object? repurchasedShares = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(ReportStockActivity(
 citationPage: null == citationPage ? _self.citationPage : citationPage // ignore: cast_nullable_to_non_nullable
 as int,issuedShares: freezed == issuedShares ? _self.issuedShares : issuedShares // ignore: cast_nullable_to_non_nullable
 as double?,netStockChangeShares: freezed == netStockChangeShares ? _self.netStockChangeShares : netStockChangeShares // ignore: cast_nullable_to_non_nullable
@@ -1818,16 +1859,18 @@ _$ReportStockActivityCopyWith<_ReportStockActivity> get copyWith => __$ReportSto
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ReportStockActivity&&(identical(other.citationPage, citationPage) || other.citationPage == citationPage)&&(identical(other.issuedShares, issuedShares) || other.issuedShares == issuedShares)&&(identical(other.netStockChangeShares, netStockChangeShares) || other.netStockChangeShares == netStockChangeShares)&&(identical(other.repurchasedShares, repurchasedShares) || other.repurchasedShares == repurchasedShares));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ReportStockActivity&&(identical(other.citationPage, citationPage) || other.citationPage == citationPage)&&(identical(other.issuedShares, issuedShares) || other.issuedShares == issuedShares)&&(identical(other.netStockChangeShares, netStockChangeShares) || other.netStockChangeShares == netStockChangeShares)&&(identical(other.repurchasedShares, repurchasedShares) || other.repurchasedShares == repurchasedShares));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,citationPage,issuedShares,netStockChangeShares,repurchasedShares);
+int get hashCode {
+    return Object.hash(runtimeType,citationPage,issuedShares,netStockChangeShares,repurchasedShares);
+}
 
 @override
 String toString() {
-  return 'ReportStockActivity(citationPage: $citationPage, issuedShares: $issuedShares, netStockChangeShares: $netStockChangeShares, repurchasedShares: $repurchasedShares)';
+    return 'ReportStockActivity(citationPage: $citationPage, issuedShares: $issuedShares, netStockChangeShares: $netStockChangeShares, repurchasedShares: $repurchasedShares)';
 }
 
 
@@ -1882,16 +1925,21 @@ $FinancialMetricCopyWith<FinancialMetric> get copyWith => _$FinancialMetricCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is FinancialMetric&&(identical(other.amount, amount) || other.amount == amount)&&(identical(other.changeAmount, changeAmount) || other.changeAmount == changeAmount)&&(identical(other.changePercent, changePercent) || other.changePercent == changePercent)&&(identical(other.citationPage, citationPage) || other.citationPage == citationPage));
+  final _this = this as FinancialMetric;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is FinancialMetric&&(identical(other.amount, _this.amount) || other.amount == _this.amount)&&(identical(other.changeAmount, _this.changeAmount) || other.changeAmount == _this.changeAmount)&&(identical(other.changePercent, _this.changePercent) || other.changePercent == _this.changePercent)&&(identical(other.citationPage, _this.citationPage) || other.citationPage == _this.citationPage));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,amount,changeAmount,changePercent,citationPage);
+int get hashCode {
+  final _this = this as FinancialMetric;
+  return Object.hash(runtimeType,_this.amount,_this.changeAmount,_this.changePercent,_this.citationPage);
+}
 
 @override
 String toString() {
-  return 'FinancialMetric(amount: $amount, changeAmount: $changeAmount, changePercent: $changePercent, citationPage: $citationPage)';
+  final _this = this as FinancialMetric;
+  return 'FinancialMetric(amount: ${_this.amount}, changeAmount: ${_this.changeAmount}, changePercent: ${_this.changePercent}, citationPage: ${_this.citationPage})';
 }
 
 
@@ -1920,7 +1968,7 @@ class _$FinancialMetricCopyWithImpl<$Res>
 /// Create a copy of FinancialMetric
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? amount = null,Object? changeAmount = null,Object? changePercent = null,Object? citationPage = null,}) {
-  return _then(_self.copyWith(
+  return _then(FinancialMetric(
 amount: null == amount ? _self.amount : amount // ignore: cast_nullable_to_non_nullable
 as double,changeAmount: null == changeAmount ? _self.changeAmount : changeAmount // ignore: cast_nullable_to_non_nullable
 as double,changePercent: null == changePercent ? _self.changePercent : changePercent // ignore: cast_nullable_to_non_nullable
@@ -2084,16 +2132,18 @@ _$FinancialMetricCopyWith<_FinancialMetric> get copyWith => __$FinancialMetricCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _FinancialMetric&&(identical(other.amount, amount) || other.amount == amount)&&(identical(other.changeAmount, changeAmount) || other.changeAmount == changeAmount)&&(identical(other.changePercent, changePercent) || other.changePercent == changePercent)&&(identical(other.citationPage, citationPage) || other.citationPage == citationPage));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _FinancialMetric&&(identical(other.amount, amount) || other.amount == amount)&&(identical(other.changeAmount, changeAmount) || other.changeAmount == changeAmount)&&(identical(other.changePercent, changePercent) || other.changePercent == changePercent)&&(identical(other.citationPage, citationPage) || other.citationPage == citationPage));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,amount,changeAmount,changePercent,citationPage);
+int get hashCode {
+    return Object.hash(runtimeType,amount,changeAmount,changePercent,citationPage);
+}
 
 @override
 String toString() {
-  return 'FinancialMetric(amount: $amount, changeAmount: $changeAmount, changePercent: $changePercent, citationPage: $citationPage)';
+    return 'FinancialMetric(amount: $amount, changeAmount: $changeAmount, changePercent: $changePercent, citationPage: $citationPage)';
 }
 
 
@@ -2148,16 +2198,21 @@ $FinancialMetricWithDriverCopyWith<FinancialMetricWithDriver> get copyWith => _$
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is FinancialMetricWithDriver&&(identical(other.amount, amount) || other.amount == amount)&&(identical(other.changeAmount, changeAmount) || other.changeAmount == changeAmount)&&(identical(other.changePercent, changePercent) || other.changePercent == changePercent)&&(identical(other.citationPage, citationPage) || other.citationPage == citationPage)&&(identical(other.driver, driver) || other.driver == driver));
+  final _this = this as FinancialMetricWithDriver;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is FinancialMetricWithDriver&&(identical(other.amount, _this.amount) || other.amount == _this.amount)&&(identical(other.changeAmount, _this.changeAmount) || other.changeAmount == _this.changeAmount)&&(identical(other.changePercent, _this.changePercent) || other.changePercent == _this.changePercent)&&(identical(other.citationPage, _this.citationPage) || other.citationPage == _this.citationPage)&&(identical(other.driver, _this.driver) || other.driver == _this.driver));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,amount,changeAmount,changePercent,citationPage,driver);
+int get hashCode {
+  final _this = this as FinancialMetricWithDriver;
+  return Object.hash(runtimeType,_this.amount,_this.changeAmount,_this.changePercent,_this.citationPage,_this.driver);
+}
 
 @override
 String toString() {
-  return 'FinancialMetricWithDriver(amount: $amount, changeAmount: $changeAmount, changePercent: $changePercent, citationPage: $citationPage, driver: $driver)';
+  final _this = this as FinancialMetricWithDriver;
+  return 'FinancialMetricWithDriver(amount: ${_this.amount}, changeAmount: ${_this.changeAmount}, changePercent: ${_this.changePercent}, citationPage: ${_this.citationPage}, driver: ${_this.driver})';
 }
 
 
@@ -2186,7 +2241,7 @@ class _$FinancialMetricWithDriverCopyWithImpl<$Res>
 /// Create a copy of FinancialMetricWithDriver
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? amount = null,Object? changeAmount = null,Object? changePercent = null,Object? citationPage = null,Object? driver = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(FinancialMetricWithDriver(
 amount: null == amount ? _self.amount : amount // ignore: cast_nullable_to_non_nullable
 as double,changeAmount: null == changeAmount ? _self.changeAmount : changeAmount // ignore: cast_nullable_to_non_nullable
 as double,changePercent: null == changePercent ? _self.changePercent : changePercent // ignore: cast_nullable_to_non_nullable
@@ -2352,16 +2407,18 @@ _$FinancialMetricWithDriverCopyWith<_FinancialMetricWithDriver> get copyWith => 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _FinancialMetricWithDriver&&(identical(other.amount, amount) || other.amount == amount)&&(identical(other.changeAmount, changeAmount) || other.changeAmount == changeAmount)&&(identical(other.changePercent, changePercent) || other.changePercent == changePercent)&&(identical(other.citationPage, citationPage) || other.citationPage == citationPage)&&(identical(other.driver, driver) || other.driver == driver));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _FinancialMetricWithDriver&&(identical(other.amount, amount) || other.amount == amount)&&(identical(other.changeAmount, changeAmount) || other.changeAmount == changeAmount)&&(identical(other.changePercent, changePercent) || other.changePercent == changePercent)&&(identical(other.citationPage, citationPage) || other.citationPage == citationPage)&&(identical(other.driver, driver) || other.driver == driver));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,amount,changeAmount,changePercent,citationPage,driver);
+int get hashCode {
+    return Object.hash(runtimeType,amount,changeAmount,changePercent,citationPage,driver);
+}
 
 @override
 String toString() {
-  return 'FinancialMetricWithDriver(amount: $amount, changeAmount: $changeAmount, changePercent: $changePercent, citationPage: $citationPage, driver: $driver)';
+    return 'FinancialMetricWithDriver(amount: $amount, changeAmount: $changeAmount, changePercent: $changePercent, citationPage: $citationPage, driver: $driver)';
 }
 
 

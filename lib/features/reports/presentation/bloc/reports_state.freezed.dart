@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'reports_state.dart';
@@ -9,6 +9,7 @@ part of 'reports_state.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -20,7 +21,7 @@ mixin _$ReportsState {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ReportsState);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is ReportsState);
 }
 
 
@@ -29,7 +30,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'ReportsState()';
+    return 'ReportsState()';
 }
 
 
@@ -203,7 +204,7 @@ class Initial implements ReportsState {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Initial);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is Initial);
 }
 
 
@@ -212,7 +213,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'ReportsState.initial()';
+    return 'ReportsState.initial()';
 }
 
 
@@ -235,7 +236,7 @@ class Loading implements ReportsState {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Loading);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is Loading);
 }
 
 
@@ -244,7 +245,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'ReportsState.loading()';
+    return 'ReportsState.loading()';
 }
 
 
@@ -257,7 +258,7 @@ String toString() {
 
 
 class Loaded implements ReportsState {
-  const Loaded(this.feed, {this.lastViewedReports, final  List<FilingViewModel> todaysFilings = const [], final  List<WeeklyReport> todaysWeeklyReports = const []}): _todaysFilings = todaysFilings,_todaysWeeklyReports = todaysWeeklyReports;
+  const Loaded(this.feed, {this.lastViewedReports,  List<FilingViewModel> todaysFilings = const [],  List<WeeklyReport> todaysWeeklyReports = const []}): _todaysFilings = todaysFilings,_todaysWeeklyReports = todaysWeeklyReports;
   
 
  final  ReportsFeed feed;
@@ -287,16 +288,18 @@ $LoadedCopyWith<Loaded> get copyWith => _$LoadedCopyWithImpl<Loaded>(this, _$ide
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Loaded&&(identical(other.feed, feed) || other.feed == feed)&&(identical(other.lastViewedReports, lastViewedReports) || other.lastViewedReports == lastViewedReports)&&const DeepCollectionEquality().equals(other._todaysFilings, _todaysFilings)&&const DeepCollectionEquality().equals(other._todaysWeeklyReports, _todaysWeeklyReports));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is Loaded&&(identical(other.feed, feed) || other.feed == feed)&&(identical(other.lastViewedReports, lastViewedReports) || other.lastViewedReports == lastViewedReports)&&const DeepCollectionEquality().equals(other.todaysFilings, _todaysFilings)&&const DeepCollectionEquality().equals(other.todaysWeeklyReports, _todaysWeeklyReports));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,feed,lastViewedReports,const DeepCollectionEquality().hash(_todaysFilings),const DeepCollectionEquality().hash(_todaysWeeklyReports));
+int get hashCode {
+    return Object.hash(runtimeType,feed,lastViewedReports,const DeepCollectionEquality().hash(_todaysFilings),const DeepCollectionEquality().hash(_todaysWeeklyReports));
+}
 
 @override
 String toString() {
-  return 'ReportsState.loaded(feed: $feed, lastViewedReports: $lastViewedReports, todaysFilings: $todaysFilings, todaysWeeklyReports: $todaysWeeklyReports)';
+    return 'ReportsState.loaded(feed: $feed, lastViewedReports: $lastViewedReports, todaysFilings: $todaysFilings, todaysWeeklyReports: $todaysWeeklyReports)';
 }
 
 
@@ -365,16 +368,18 @@ $ReportsFailureCopyWith<ReportsFailure> get copyWith => _$ReportsFailureCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ReportsFailure&&(identical(other.failure, failure) || other.failure == failure));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is ReportsFailure&&(identical(other.failure, failure) || other.failure == failure));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,failure);
+int get hashCode {
+    return Object.hash(runtimeType,failure);
+}
 
 @override
 String toString() {
-  return 'ReportsState.failure(failure: $failure)';
+    return 'ReportsState.failure(failure: $failure)';
 }
 
 

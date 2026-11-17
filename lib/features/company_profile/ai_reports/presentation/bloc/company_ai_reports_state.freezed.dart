@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'company_ai_reports_state.dart';
@@ -9,6 +9,7 @@ part of 'company_ai_reports_state.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -20,7 +21,7 @@ mixin _$CompanyAiReportsState {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CompanyAiReportsState);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is CompanyAiReportsState);
 }
 
 
@@ -29,7 +30,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'CompanyAiReportsState()';
+    return 'CompanyAiReportsState()';
 }
 
 
@@ -203,7 +204,7 @@ class _Initial implements CompanyAiReportsState {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Initial);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Initial);
 }
 
 
@@ -212,7 +213,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'CompanyAiReportsState.initial()';
+    return 'CompanyAiReportsState.initial()';
 }
 
 
@@ -235,7 +236,7 @@ class _Loading implements CompanyAiReportsState {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Loading);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Loading);
 }
 
 
@@ -244,7 +245,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'CompanyAiReportsState.loading()';
+    return 'CompanyAiReportsState.loading()';
 }
 
 
@@ -257,7 +258,7 @@ String toString() {
 
 
 class CompanyAiReportsLoaded implements CompanyAiReportsState {
-  const CompanyAiReportsLoaded({required this.ticker, required this.companyFilings, required this.summaryButtonLabel, this.selectedForm = AiReportForm.tenK, final  List<AiReportForm> forms = AiReportForm.values, this.analyticsState}): _forms = forms;
+  const CompanyAiReportsLoaded({required this.ticker, required this.companyFilings, required this.summaryButtonLabel, this.selectedForm = AiReportForm.tenK,  List<AiReportForm> forms = AiReportForm.values, this.analyticsState}): _forms = forms;
   
 
  final  String ticker;
@@ -283,16 +284,18 @@ $CompanyAiReportsLoadedCopyWith<CompanyAiReportsLoaded> get copyWith => _$Compan
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CompanyAiReportsLoaded&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.companyFilings, companyFilings) || other.companyFilings == companyFilings)&&(identical(other.summaryButtonLabel, summaryButtonLabel) || other.summaryButtonLabel == summaryButtonLabel)&&(identical(other.selectedForm, selectedForm) || other.selectedForm == selectedForm)&&const DeepCollectionEquality().equals(other._forms, _forms)&&(identical(other.analyticsState, analyticsState) || other.analyticsState == analyticsState));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is CompanyAiReportsLoaded&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.companyFilings, companyFilings) || other.companyFilings == companyFilings)&&(identical(other.summaryButtonLabel, summaryButtonLabel) || other.summaryButtonLabel == summaryButtonLabel)&&(identical(other.selectedForm, selectedForm) || other.selectedForm == selectedForm)&&const DeepCollectionEquality().equals(other.forms, _forms)&&(identical(other.analyticsState, analyticsState) || other.analyticsState == analyticsState));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,ticker,companyFilings,summaryButtonLabel,selectedForm,const DeepCollectionEquality().hash(_forms),analyticsState);
+int get hashCode {
+    return Object.hash(runtimeType,ticker,companyFilings,summaryButtonLabel,selectedForm,const DeepCollectionEquality().hash(_forms),analyticsState);
+}
 
 @override
 String toString() {
-  return 'CompanyAiReportsState.loaded(ticker: $ticker, companyFilings: $companyFilings, summaryButtonLabel: $summaryButtonLabel, selectedForm: $selectedForm, forms: $forms, analyticsState: $analyticsState)';
+    return 'CompanyAiReportsState.loaded(ticker: $ticker, companyFilings: $companyFilings, summaryButtonLabel: $summaryButtonLabel, selectedForm: $selectedForm, forms: $forms, analyticsState: $analyticsState)';
 }
 
 
@@ -375,16 +378,18 @@ _$FailureCopyWith<_Failure> get copyWith => __$FailureCopyWithImpl<_Failure>(thi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Failure&&(identical(other.failure, failure) || other.failure == failure));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Failure&&(identical(other.failure, failure) || other.failure == failure));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,failure);
+int get hashCode {
+    return Object.hash(runtimeType,failure);
+}
 
 @override
 String toString() {
-  return 'CompanyAiReportsState.failure(failure: $failure)';
+    return 'CompanyAiReportsState.failure(failure: $failure)';
 }
 
 

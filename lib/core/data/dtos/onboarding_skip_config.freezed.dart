@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'onboarding_skip_config.dart';
@@ -9,6 +9,7 @@ part of 'onboarding_skip_config.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 
@@ -28,16 +29,21 @@ $OnboardingSkipConfigCopyWith<OnboardingSkipConfig> get copyWith => _$Onboarding
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is OnboardingSkipConfig&&const DeepCollectionEquality().equals(other.defaultWatchlist, defaultWatchlist)&&(identical(other.defaultSector, defaultSector) || other.defaultSector == defaultSector)&&(identical(other.initialCompanyTicker, initialCompanyTicker) || other.initialCompanyTicker == initialCompanyTicker));
+  final _this = this as OnboardingSkipConfig;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is OnboardingSkipConfig&&const DeepCollectionEquality().equals(other.defaultWatchlist, _this.defaultWatchlist)&&(identical(other.defaultSector, _this.defaultSector) || other.defaultSector == _this.defaultSector)&&(identical(other.initialCompanyTicker, _this.initialCompanyTicker) || other.initialCompanyTicker == _this.initialCompanyTicker));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(defaultWatchlist),defaultSector,initialCompanyTicker);
+int get hashCode {
+  final _this = this as OnboardingSkipConfig;
+  return Object.hash(runtimeType,const DeepCollectionEquality().hash(_this.defaultWatchlist),_this.defaultSector,_this.initialCompanyTicker);
+}
 
 @override
 String toString() {
-  return 'OnboardingSkipConfig(defaultWatchlist: $defaultWatchlist, defaultSector: $defaultSector, initialCompanyTicker: $initialCompanyTicker)';
+  final _this = this as OnboardingSkipConfig;
+  return 'OnboardingSkipConfig(defaultWatchlist: ${_this.defaultWatchlist}, defaultSector: ${_this.defaultSector}, initialCompanyTicker: ${_this.initialCompanyTicker})';
 }
 
 
@@ -66,7 +72,7 @@ class _$OnboardingSkipConfigCopyWithImpl<$Res>
 /// Create a copy of OnboardingSkipConfig
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? defaultWatchlist = null,Object? defaultSector = null,Object? initialCompanyTicker = null,}) {
-  return _then(_self.copyWith(
+  return _then(OnboardingSkipConfig(
 defaultWatchlist: null == defaultWatchlist ? _self.defaultWatchlist : defaultWatchlist // ignore: cast_nullable_to_non_nullable
 as List<OnboardingSkipWatchlistItem>,defaultSector: null == defaultSector ? _self.defaultSector : defaultSector // ignore: cast_nullable_to_non_nullable
 as String,initialCompanyTicker: null == initialCompanyTicker ? _self.initialCompanyTicker : initialCompanyTicker // ignore: cast_nullable_to_non_nullable
@@ -211,7 +217,7 @@ return $default(_that.defaultWatchlist,_that.defaultSector,_that.initialCompanyT
 @JsonSerializable()
 
 class _OnboardingSkipConfig implements OnboardingSkipConfig {
-  const _OnboardingSkipConfig({final  List<OnboardingSkipWatchlistItem> defaultWatchlist = const [], required this.defaultSector, required this.initialCompanyTicker}): _defaultWatchlist = defaultWatchlist;
+  const _OnboardingSkipConfig({ List<OnboardingSkipWatchlistItem> defaultWatchlist = const [], required this.defaultSector, required this.initialCompanyTicker}): _defaultWatchlist = defaultWatchlist;
   factory _OnboardingSkipConfig.fromJson(Map<String, dynamic> json) => _$OnboardingSkipConfigFromJson(json);
 
  final  List<OnboardingSkipWatchlistItem> _defaultWatchlist;
@@ -237,16 +243,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _OnboardingSkipConfig&&const DeepCollectionEquality().equals(other._defaultWatchlist, _defaultWatchlist)&&(identical(other.defaultSector, defaultSector) || other.defaultSector == defaultSector)&&(identical(other.initialCompanyTicker, initialCompanyTicker) || other.initialCompanyTicker == initialCompanyTicker));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _OnboardingSkipConfig&&const DeepCollectionEquality().equals(other.defaultWatchlist, _defaultWatchlist)&&(identical(other.defaultSector, defaultSector) || other.defaultSector == defaultSector)&&(identical(other.initialCompanyTicker, initialCompanyTicker) || other.initialCompanyTicker == initialCompanyTicker));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_defaultWatchlist),defaultSector,initialCompanyTicker);
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_defaultWatchlist),defaultSector,initialCompanyTicker);
+}
 
 @override
 String toString() {
-  return 'OnboardingSkipConfig(defaultWatchlist: $defaultWatchlist, defaultSector: $defaultSector, initialCompanyTicker: $initialCompanyTicker)';
+    return 'OnboardingSkipConfig(defaultWatchlist: $defaultWatchlist, defaultSector: $defaultSector, initialCompanyTicker: $initialCompanyTicker)';
 }
 
 
@@ -303,16 +311,21 @@ $OnboardingSkipWatchlistItemCopyWith<OnboardingSkipWatchlistItem> get copyWith =
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is OnboardingSkipWatchlistItem&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.name, name) || other.name == name));
+  final _this = this as OnboardingSkipWatchlistItem;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is OnboardingSkipWatchlistItem&&(identical(other.ticker, _this.ticker) || other.ticker == _this.ticker)&&(identical(other.name, _this.name) || other.name == _this.name));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,ticker,name);
+int get hashCode {
+  final _this = this as OnboardingSkipWatchlistItem;
+  return Object.hash(runtimeType,_this.ticker,_this.name);
+}
 
 @override
 String toString() {
-  return 'OnboardingSkipWatchlistItem(ticker: $ticker, name: $name)';
+  final _this = this as OnboardingSkipWatchlistItem;
+  return 'OnboardingSkipWatchlistItem(ticker: ${_this.ticker}, name: ${_this.name})';
 }
 
 
@@ -341,7 +354,7 @@ class _$OnboardingSkipWatchlistItemCopyWithImpl<$Res>
 /// Create a copy of OnboardingSkipWatchlistItem
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? ticker = null,Object? name = null,}) {
-  return _then(_self.copyWith(
+  return _then(OnboardingSkipWatchlistItem(
 ticker: null == ticker ? _self.ticker : ticker // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,
@@ -504,16 +517,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _OnboardingSkipWatchlistItem&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.name, name) || other.name == name));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _OnboardingSkipWatchlistItem&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.name, name) || other.name == name));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,ticker,name);
+int get hashCode {
+    return Object.hash(runtimeType,ticker,name);
+}
 
 @override
 String toString() {
-  return 'OnboardingSkipWatchlistItem(ticker: $ticker, name: $name)';
+    return 'OnboardingSkipWatchlistItem(ticker: $ticker, name: $name)';
 }
 
 

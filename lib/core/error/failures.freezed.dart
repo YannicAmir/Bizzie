@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'failures.dart';
@@ -9,6 +9,7 @@ part of 'failures.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $FailureCopyWith<Failure> get copyWith => _$FailureCopyWithImpl<Failure>(this as
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Failure&&(identical(other.message, message) || other.message == message));
+  final _this = this as Failure;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Failure&&(identical(other.message, _this.message) || other.message == _this.message));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,message);
+int get hashCode {
+  final _this = this as Failure;
+  return Object.hash(runtimeType,_this.message);
+}
 
 @override
 String toString() {
-  return 'Failure(message: $message)';
+  final _this = this as Failure;
+  return 'Failure(message: ${_this.message})';
 }
 
 
@@ -281,16 +287,18 @@ $ServerFailureCopyWith<ServerFailure> get copyWith => _$ServerFailureCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ServerFailure&&(identical(other.message, message) || other.message == message));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is ServerFailure&&(identical(other.message, message) || other.message == message));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,message);
+int get hashCode {
+    return Object.hash(runtimeType,message);
+}
 
 @override
 String toString() {
-  return 'Failure.server(message: $message)';
+    return 'Failure.server(message: $message)';
 }
 
 
@@ -347,16 +355,18 @@ $CacheFailureCopyWith<CacheFailure> get copyWith => _$CacheFailureCopyWithImpl<C
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CacheFailure&&(identical(other.message, message) || other.message == message));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is CacheFailure&&(identical(other.message, message) || other.message == message));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,message);
+int get hashCode {
+    return Object.hash(runtimeType,message);
+}
 
 @override
 String toString() {
-  return 'Failure.cache(message: $message)';
+    return 'Failure.cache(message: $message)';
 }
 
 
@@ -413,16 +423,18 @@ $PaymentFailureCopyWith<PaymentFailure> get copyWith => _$PaymentFailureCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PaymentFailure&&(identical(other.message, message) || other.message == message));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is PaymentFailure&&(identical(other.message, message) || other.message == message));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,message);
+int get hashCode {
+    return Object.hash(runtimeType,message);
+}
 
 @override
 String toString() {
-  return 'Failure.payment(message: $message)';
+    return 'Failure.payment(message: $message)';
 }
 
 
@@ -479,16 +491,18 @@ $CancelFailureCopyWith<CancelFailure> get copyWith => _$CancelFailureCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CancelFailure&&(identical(other.message, message) || other.message == message));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is CancelFailure&&(identical(other.message, message) || other.message == message));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,message);
+int get hashCode {
+    return Object.hash(runtimeType,message);
+}
 
 @override
 String toString() {
-  return 'Failure.cancel(message: $message)';
+    return 'Failure.cancel(message: $message)';
 }
 
 
@@ -545,16 +559,18 @@ $UserNotFoundFailureCopyWith<UserNotFoundFailure> get copyWith => _$UserNotFound
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is UserNotFoundFailure&&(identical(other.message, message) || other.message == message));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is UserNotFoundFailure&&(identical(other.message, message) || other.message == message));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,message);
+int get hashCode {
+    return Object.hash(runtimeType,message);
+}
 
 @override
 String toString() {
-  return 'Failure.userNotFound(message: $message)';
+    return 'Failure.userNotFound(message: $message)';
 }
 
 
@@ -611,16 +627,18 @@ $PermissionFailureCopyWith<PermissionFailure> get copyWith => _$PermissionFailur
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PermissionFailure&&(identical(other.message, message) || other.message == message));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is PermissionFailure&&(identical(other.message, message) || other.message == message));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,message);
+int get hashCode {
+    return Object.hash(runtimeType,message);
+}
 
 @override
 String toString() {
-  return 'Failure.permission(message: $message)';
+    return 'Failure.permission(message: $message)';
 }
 
 
@@ -677,16 +695,18 @@ $PasswordMismatchFailureCopyWith<PasswordMismatchFailure> get copyWith => _$Pass
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PasswordMismatchFailure&&(identical(other.message, message) || other.message == message));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is PasswordMismatchFailure&&(identical(other.message, message) || other.message == message));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,message);
+int get hashCode {
+    return Object.hash(runtimeType,message);
+}
 
 @override
 String toString() {
-  return 'Failure.passwordMismatch(message: $message)';
+    return 'Failure.passwordMismatch(message: $message)';
 }
 
 
@@ -743,16 +763,18 @@ $ReauthenticationFailureCopyWith<ReauthenticationFailure> get copyWith => _$Reau
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ReauthenticationFailure&&(identical(other.message, message) || other.message == message));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is ReauthenticationFailure&&(identical(other.message, message) || other.message == message));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,message);
+int get hashCode {
+    return Object.hash(runtimeType,message);
+}
 
 @override
 String toString() {
-  return 'Failure.reauthentication(message: $message)';
+    return 'Failure.reauthentication(message: $message)';
 }
 
 
@@ -810,16 +832,18 @@ $RateLimitFailureCopyWith<RateLimitFailure> get copyWith => _$RateLimitFailureCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is RateLimitFailure&&(identical(other.retryAfterSeconds, retryAfterSeconds) || other.retryAfterSeconds == retryAfterSeconds)&&(identical(other.message, message) || other.message == message));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is RateLimitFailure&&(identical(other.retryAfterSeconds, retryAfterSeconds) || other.retryAfterSeconds == retryAfterSeconds)&&(identical(other.message, message) || other.message == message));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,retryAfterSeconds,message);
+int get hashCode {
+    return Object.hash(runtimeType,retryAfterSeconds,message);
+}
 
 @override
 String toString() {
-  return 'Failure.rateLimit(retryAfterSeconds: $retryAfterSeconds, message: $message)';
+    return 'Failure.rateLimit(retryAfterSeconds: $retryAfterSeconds, message: $message)';
 }
 
 
@@ -877,16 +901,18 @@ $CredentialAlreadyInUseFailureCopyWith<CredentialAlreadyInUseFailure> get copyWi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CredentialAlreadyInUseFailure&&(identical(other.message, message) || other.message == message));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is CredentialAlreadyInUseFailure&&(identical(other.message, message) || other.message == message));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,message);
+int get hashCode {
+    return Object.hash(runtimeType,message);
+}
 
 @override
 String toString() {
-  return 'Failure.credentialAlreadyInUse(message: $message)';
+    return 'Failure.credentialAlreadyInUse(message: $message)';
 }
 
 
@@ -943,16 +969,18 @@ $EmailAlreadyInUseFailureCopyWith<EmailAlreadyInUseFailure> get copyWith => _$Em
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is EmailAlreadyInUseFailure&&(identical(other.message, message) || other.message == message));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is EmailAlreadyInUseFailure&&(identical(other.message, message) || other.message == message));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,message);
+int get hashCode {
+    return Object.hash(runtimeType,message);
+}
 
 @override
 String toString() {
-  return 'Failure.emailAlreadyInUse(message: $message)';
+    return 'Failure.emailAlreadyInUse(message: $message)';
 }
 
 
@@ -1009,16 +1037,18 @@ $ProviderAlreadyLinkedFailureCopyWith<ProviderAlreadyLinkedFailure> get copyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProviderAlreadyLinkedFailure&&(identical(other.message, message) || other.message == message));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is ProviderAlreadyLinkedFailure&&(identical(other.message, message) || other.message == message));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,message);
+int get hashCode {
+    return Object.hash(runtimeType,message);
+}
 
 @override
 String toString() {
-  return 'Failure.providerAlreadyLinked(message: $message)';
+    return 'Failure.providerAlreadyLinked(message: $message)';
 }
 
 

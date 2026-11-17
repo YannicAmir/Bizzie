@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'edit_tabs_state.dart';
@@ -9,6 +9,7 @@ part of 'edit_tabs_state.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -20,7 +21,7 @@ mixin _$EditTabsState {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is EditTabsState);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is EditTabsState);
 }
 
 
@@ -29,7 +30,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'EditTabsState()';
+    return 'EditTabsState()';
 }
 
 
@@ -203,7 +204,7 @@ class _Initial implements EditTabsState {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Initial);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Initial);
 }
 
 
@@ -212,7 +213,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'EditTabsState.initial()';
+    return 'EditTabsState.initial()';
 }
 
 
@@ -225,7 +226,7 @@ String toString() {
 
 
 class EditTabsEditing implements EditTabsState {
-  const EditTabsEditing({required final  List<CompanyProfileTab> initialMainTabs, required final  List<CompanyProfileTab> initialMoreTabs, required final  List<CompanyProfileTab> mainTabs, required final  List<CompanyProfileTab> moreTabs, required final  List<CompanyProfileTab> bizziePlusTabs, required this.isSubscribed, this.isSaving = false, this.notice}): _initialMainTabs = initialMainTabs,_initialMoreTabs = initialMoreTabs,_mainTabs = mainTabs,_moreTabs = moreTabs,_bizziePlusTabs = bizziePlusTabs;
+  const EditTabsEditing({required  List<CompanyProfileTab> initialMainTabs, required  List<CompanyProfileTab> initialMoreTabs, required  List<CompanyProfileTab> mainTabs, required  List<CompanyProfileTab> moreTabs, required  List<CompanyProfileTab> bizziePlusTabs, required this.isSubscribed, this.isSaving = false, this.notice}): _initialMainTabs = initialMainTabs,_initialMoreTabs = initialMoreTabs,_mainTabs = mainTabs,_moreTabs = moreTabs,_bizziePlusTabs = bizziePlusTabs;
   
 
  final  List<CompanyProfileTab> _initialMainTabs;
@@ -277,16 +278,18 @@ $EditTabsEditingCopyWith<EditTabsEditing> get copyWith => _$EditTabsEditingCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is EditTabsEditing&&const DeepCollectionEquality().equals(other._initialMainTabs, _initialMainTabs)&&const DeepCollectionEquality().equals(other._initialMoreTabs, _initialMoreTabs)&&const DeepCollectionEquality().equals(other._mainTabs, _mainTabs)&&const DeepCollectionEquality().equals(other._moreTabs, _moreTabs)&&const DeepCollectionEquality().equals(other._bizziePlusTabs, _bizziePlusTabs)&&(identical(other.isSubscribed, isSubscribed) || other.isSubscribed == isSubscribed)&&(identical(other.isSaving, isSaving) || other.isSaving == isSaving)&&(identical(other.notice, notice) || other.notice == notice));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is EditTabsEditing&&const DeepCollectionEquality().equals(other.initialMainTabs, _initialMainTabs)&&const DeepCollectionEquality().equals(other.initialMoreTabs, _initialMoreTabs)&&const DeepCollectionEquality().equals(other.mainTabs, _mainTabs)&&const DeepCollectionEquality().equals(other.moreTabs, _moreTabs)&&const DeepCollectionEquality().equals(other.bizziePlusTabs, _bizziePlusTabs)&&(identical(other.isSubscribed, isSubscribed) || other.isSubscribed == isSubscribed)&&(identical(other.isSaving, isSaving) || other.isSaving == isSaving)&&(identical(other.notice, notice) || other.notice == notice));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_initialMainTabs),const DeepCollectionEquality().hash(_initialMoreTabs),const DeepCollectionEquality().hash(_mainTabs),const DeepCollectionEquality().hash(_moreTabs),const DeepCollectionEquality().hash(_bizziePlusTabs),isSubscribed,isSaving,notice);
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_initialMainTabs),const DeepCollectionEquality().hash(_initialMoreTabs),const DeepCollectionEquality().hash(_mainTabs),const DeepCollectionEquality().hash(_moreTabs),const DeepCollectionEquality().hash(_bizziePlusTabs),isSubscribed,isSaving,notice);
+}
 
 @override
 String toString() {
-  return 'EditTabsState.editing(initialMainTabs: $initialMainTabs, initialMoreTabs: $initialMoreTabs, mainTabs: $mainTabs, moreTabs: $moreTabs, bizziePlusTabs: $bizziePlusTabs, isSubscribed: $isSubscribed, isSaving: $isSaving, notice: $notice)';
+    return 'EditTabsState.editing(initialMainTabs: $initialMainTabs, initialMoreTabs: $initialMoreTabs, mainTabs: $mainTabs, moreTabs: $moreTabs, bizziePlusTabs: $bizziePlusTabs, isSubscribed: $isSubscribed, isSaving: $isSaving, notice: $notice)';
 }
 
 
@@ -362,16 +365,18 @@ $EditTabsSavedCopyWith<EditTabsSaved> get copyWith => _$EditTabsSavedCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is EditTabsSaved&&(identical(other.layout, layout) || other.layout == layout));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is EditTabsSaved&&(identical(other.layout, layout) || other.layout == layout));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,layout);
+int get hashCode {
+    return Object.hash(runtimeType,layout);
+}
 
 @override
 String toString() {
-  return 'EditTabsState.saved(layout: $layout)';
+    return 'EditTabsState.saved(layout: $layout)';
 }
 
 
@@ -437,16 +442,18 @@ _$FailureCopyWith<_Failure> get copyWith => __$FailureCopyWithImpl<_Failure>(thi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Failure&&(identical(other.failure, failure) || other.failure == failure));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Failure&&(identical(other.failure, failure) || other.failure == failure));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,failure);
+int get hashCode {
+    return Object.hash(runtimeType,failure);
+}
 
 @override
 String toString() {
-  return 'EditTabsState.failure(failure: $failure)';
+    return 'EditTabsState.failure(failure: $failure)';
 }
 
 

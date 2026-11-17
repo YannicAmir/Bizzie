@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'roe.dart';
@@ -9,6 +9,7 @@ part of 'roe.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $RoeCopyWith<Roe> get copyWith => _$RoeCopyWithImpl<Roe>(this as Roe, _$identity
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Roe&&(identical(other.symbol, symbol) || other.symbol == symbol)&&(identical(other.date, date) || other.date == date)&&(identical(other.period, period) || other.period == period)&&(identical(other.returnOnEquity, returnOnEquity) || other.returnOnEquity == returnOnEquity));
+  final _this = this as Roe;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Roe&&(identical(other.symbol, _this.symbol) || other.symbol == _this.symbol)&&(identical(other.date, _this.date) || other.date == _this.date)&&(identical(other.period, _this.period) || other.period == _this.period)&&(identical(other.returnOnEquity, _this.returnOnEquity) || other.returnOnEquity == _this.returnOnEquity));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,symbol,date,period,returnOnEquity);
+int get hashCode {
+  final _this = this as Roe;
+  return Object.hash(runtimeType,_this.symbol,_this.date,_this.period,_this.returnOnEquity);
+}
 
 @override
 String toString() {
-  return 'Roe(symbol: $symbol, date: $date, period: $period, returnOnEquity: $returnOnEquity)';
+  final _this = this as Roe;
+  return 'Roe(symbol: ${_this.symbol}, date: ${_this.date}, period: ${_this.period}, returnOnEquity: ${_this.returnOnEquity})';
 }
 
 
@@ -63,7 +69,7 @@ class _$RoeCopyWithImpl<$Res>
 /// Create a copy of Roe
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? symbol = null,Object? date = null,Object? period = null,Object? returnOnEquity = null,}) {
-  return _then(_self.copyWith(
+  return _then(Roe(
 symbol: null == symbol ? _self.symbol : symbol // ignore: cast_nullable_to_non_nullable
 as String,date: null == date ? _self.date : date // ignore: cast_nullable_to_non_nullable
 as String,period: null == period ? _self.period : period // ignore: cast_nullable_to_non_nullable
@@ -227,16 +233,18 @@ _$RoeCopyWith<_Roe> get copyWith => __$RoeCopyWithImpl<_Roe>(this, _$identity);
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Roe&&(identical(other.symbol, symbol) || other.symbol == symbol)&&(identical(other.date, date) || other.date == date)&&(identical(other.period, period) || other.period == period)&&(identical(other.returnOnEquity, returnOnEquity) || other.returnOnEquity == returnOnEquity));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Roe&&(identical(other.symbol, symbol) || other.symbol == symbol)&&(identical(other.date, date) || other.date == date)&&(identical(other.period, period) || other.period == period)&&(identical(other.returnOnEquity, returnOnEquity) || other.returnOnEquity == returnOnEquity));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,symbol,date,period,returnOnEquity);
+int get hashCode {
+    return Object.hash(runtimeType,symbol,date,period,returnOnEquity);
+}
 
 @override
 String toString() {
-  return 'Roe(symbol: $symbol, date: $date, period: $period, returnOnEquity: $returnOnEquity)';
+    return 'Roe(symbol: $symbol, date: $date, period: $period, returnOnEquity: $returnOnEquity)';
 }
 
 

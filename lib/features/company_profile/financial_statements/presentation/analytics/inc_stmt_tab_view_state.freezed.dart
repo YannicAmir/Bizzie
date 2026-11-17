@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'inc_stmt_tab_view_state.dart';
@@ -9,6 +9,7 @@ part of 'inc_stmt_tab_view_state.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $IncStmtTabViewStateCopyWith<IncStmtTabViewState> get copyWith => _$IncStmtTabVi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is IncStmtTabViewState&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.timestamp, timestamp) || other.timestamp == timestamp)&&(identical(other.loadTimeMs, loadTimeMs) || other.loadTimeMs == loadTimeMs)&&(identical(other.isSuccess, isSuccess) || other.isSuccess == isSuccess)&&(identical(other.dataSource, dataSource) || other.dataSource == dataSource)&&(identical(other.viewDurationSec, viewDurationSec) || other.viewDurationSec == viewDurationSec)&&(identical(other.viewedIncomeTab, viewedIncomeTab) || other.viewedIncomeTab == viewedIncomeTab)&&(identical(other.tappedAllIncomeYrly, tappedAllIncomeYrly) || other.tappedAllIncomeYrly == tappedAllIncomeYrly)&&(identical(other.tappedAllIncomeQtrly, tappedAllIncomeQtrly) || other.tappedAllIncomeQtrly == tappedAllIncomeQtrly)&&(identical(other.switchedIncomeYear, switchedIncomeYear) || other.switchedIncomeYear == switchedIncomeYear)&&(identical(other.switchedIncomeQtr, switchedIncomeQtr) || other.switchedIncomeQtr == switchedIncomeQtr));
+  final _this = this as IncStmtTabViewState;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is IncStmtTabViewState&&(identical(other.ticker, _this.ticker) || other.ticker == _this.ticker)&&(identical(other.timestamp, _this.timestamp) || other.timestamp == _this.timestamp)&&(identical(other.loadTimeMs, _this.loadTimeMs) || other.loadTimeMs == _this.loadTimeMs)&&(identical(other.isSuccess, _this.isSuccess) || other.isSuccess == _this.isSuccess)&&(identical(other.dataSource, _this.dataSource) || other.dataSource == _this.dataSource)&&(identical(other.viewDurationSec, _this.viewDurationSec) || other.viewDurationSec == _this.viewDurationSec)&&(identical(other.viewedIncomeTab, _this.viewedIncomeTab) || other.viewedIncomeTab == _this.viewedIncomeTab)&&(identical(other.tappedAllIncomeYrly, _this.tappedAllIncomeYrly) || other.tappedAllIncomeYrly == _this.tappedAllIncomeYrly)&&(identical(other.tappedAllIncomeQtrly, _this.tappedAllIncomeQtrly) || other.tappedAllIncomeQtrly == _this.tappedAllIncomeQtrly)&&(identical(other.switchedIncomeYear, _this.switchedIncomeYear) || other.switchedIncomeYear == _this.switchedIncomeYear)&&(identical(other.switchedIncomeQtr, _this.switchedIncomeQtr) || other.switchedIncomeQtr == _this.switchedIncomeQtr));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,ticker,timestamp,loadTimeMs,isSuccess,dataSource,viewDurationSec,viewedIncomeTab,tappedAllIncomeYrly,tappedAllIncomeQtrly,switchedIncomeYear,switchedIncomeQtr);
+int get hashCode {
+  final _this = this as IncStmtTabViewState;
+  return Object.hash(runtimeType,_this.ticker,_this.timestamp,_this.loadTimeMs,_this.isSuccess,_this.dataSource,_this.viewDurationSec,_this.viewedIncomeTab,_this.tappedAllIncomeYrly,_this.tappedAllIncomeQtrly,_this.switchedIncomeYear,_this.switchedIncomeQtr);
+}
 
 @override
 String toString() {
-  return 'IncStmtTabViewState(ticker: $ticker, timestamp: $timestamp, loadTimeMs: $loadTimeMs, isSuccess: $isSuccess, dataSource: $dataSource, viewDurationSec: $viewDurationSec, viewedIncomeTab: $viewedIncomeTab, tappedAllIncomeYrly: $tappedAllIncomeYrly, tappedAllIncomeQtrly: $tappedAllIncomeQtrly, switchedIncomeYear: $switchedIncomeYear, switchedIncomeQtr: $switchedIncomeQtr)';
+  final _this = this as IncStmtTabViewState;
+  return 'IncStmtTabViewState(ticker: ${_this.ticker}, timestamp: ${_this.timestamp}, loadTimeMs: ${_this.loadTimeMs}, isSuccess: ${_this.isSuccess}, dataSource: ${_this.dataSource}, viewDurationSec: ${_this.viewDurationSec}, viewedIncomeTab: ${_this.viewedIncomeTab}, tappedAllIncomeYrly: ${_this.tappedAllIncomeYrly}, tappedAllIncomeQtrly: ${_this.tappedAllIncomeQtrly}, switchedIncomeYear: ${_this.switchedIncomeYear}, switchedIncomeQtr: ${_this.switchedIncomeQtr})';
 }
 
 
@@ -63,7 +69,7 @@ class _$IncStmtTabViewStateCopyWithImpl<$Res>
 /// Create a copy of IncStmtTabViewState
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? ticker = null,Object? timestamp = null,Object? loadTimeMs = freezed,Object? isSuccess = null,Object? dataSource = freezed,Object? viewDurationSec = null,Object? viewedIncomeTab = null,Object? tappedAllIncomeYrly = null,Object? tappedAllIncomeQtrly = null,Object? switchedIncomeYear = null,Object? switchedIncomeQtr = null,}) {
-  return _then(_self.copyWith(
+  return _then(IncStmtTabViewState(
 ticker: null == ticker ? _self.ticker : ticker // ignore: cast_nullable_to_non_nullable
 as String,timestamp: null == timestamp ? _self.timestamp : timestamp // ignore: cast_nullable_to_non_nullable
 as String,loadTimeMs: freezed == loadTimeMs ? _self.loadTimeMs : loadTimeMs // ignore: cast_nullable_to_non_nullable
@@ -241,16 +247,18 @@ _$IncStmtTabViewStateCopyWith<_IncStmtTabViewState> get copyWith => __$IncStmtTa
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _IncStmtTabViewState&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.timestamp, timestamp) || other.timestamp == timestamp)&&(identical(other.loadTimeMs, loadTimeMs) || other.loadTimeMs == loadTimeMs)&&(identical(other.isSuccess, isSuccess) || other.isSuccess == isSuccess)&&(identical(other.dataSource, dataSource) || other.dataSource == dataSource)&&(identical(other.viewDurationSec, viewDurationSec) || other.viewDurationSec == viewDurationSec)&&(identical(other.viewedIncomeTab, viewedIncomeTab) || other.viewedIncomeTab == viewedIncomeTab)&&(identical(other.tappedAllIncomeYrly, tappedAllIncomeYrly) || other.tappedAllIncomeYrly == tappedAllIncomeYrly)&&(identical(other.tappedAllIncomeQtrly, tappedAllIncomeQtrly) || other.tappedAllIncomeQtrly == tappedAllIncomeQtrly)&&(identical(other.switchedIncomeYear, switchedIncomeYear) || other.switchedIncomeYear == switchedIncomeYear)&&(identical(other.switchedIncomeQtr, switchedIncomeQtr) || other.switchedIncomeQtr == switchedIncomeQtr));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _IncStmtTabViewState&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.timestamp, timestamp) || other.timestamp == timestamp)&&(identical(other.loadTimeMs, loadTimeMs) || other.loadTimeMs == loadTimeMs)&&(identical(other.isSuccess, isSuccess) || other.isSuccess == isSuccess)&&(identical(other.dataSource, dataSource) || other.dataSource == dataSource)&&(identical(other.viewDurationSec, viewDurationSec) || other.viewDurationSec == viewDurationSec)&&(identical(other.viewedIncomeTab, viewedIncomeTab) || other.viewedIncomeTab == viewedIncomeTab)&&(identical(other.tappedAllIncomeYrly, tappedAllIncomeYrly) || other.tappedAllIncomeYrly == tappedAllIncomeYrly)&&(identical(other.tappedAllIncomeQtrly, tappedAllIncomeQtrly) || other.tappedAllIncomeQtrly == tappedAllIncomeQtrly)&&(identical(other.switchedIncomeYear, switchedIncomeYear) || other.switchedIncomeYear == switchedIncomeYear)&&(identical(other.switchedIncomeQtr, switchedIncomeQtr) || other.switchedIncomeQtr == switchedIncomeQtr));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,ticker,timestamp,loadTimeMs,isSuccess,dataSource,viewDurationSec,viewedIncomeTab,tappedAllIncomeYrly,tappedAllIncomeQtrly,switchedIncomeYear,switchedIncomeQtr);
+int get hashCode {
+    return Object.hash(runtimeType,ticker,timestamp,loadTimeMs,isSuccess,dataSource,viewDurationSec,viewedIncomeTab,tappedAllIncomeYrly,tappedAllIncomeQtrly,switchedIncomeYear,switchedIncomeQtr);
+}
 
 @override
 String toString() {
-  return 'IncStmtTabViewState(ticker: $ticker, timestamp: $timestamp, loadTimeMs: $loadTimeMs, isSuccess: $isSuccess, dataSource: $dataSource, viewDurationSec: $viewDurationSec, viewedIncomeTab: $viewedIncomeTab, tappedAllIncomeYrly: $tappedAllIncomeYrly, tappedAllIncomeQtrly: $tappedAllIncomeQtrly, switchedIncomeYear: $switchedIncomeYear, switchedIncomeQtr: $switchedIncomeQtr)';
+    return 'IncStmtTabViewState(ticker: $ticker, timestamp: $timestamp, loadTimeMs: $loadTimeMs, isSuccess: $isSuccess, dataSource: $dataSource, viewDurationSec: $viewDurationSec, viewedIncomeTab: $viewedIncomeTab, tappedAllIncomeYrly: $tappedAllIncomeYrly, tappedAllIncomeQtrly: $tappedAllIncomeQtrly, switchedIncomeYear: $switchedIncomeYear, switchedIncomeQtr: $switchedIncomeQtr)';
 }
 
 

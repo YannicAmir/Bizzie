@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'app_status.dart';
@@ -9,6 +9,7 @@ part of 'app_status.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -20,7 +21,7 @@ mixin _$AppStatus {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AppStatus);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is AppStatus);
 }
 
 
@@ -29,7 +30,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'AppStatus()';
+    return 'AppStatus()';
 }
 
 
@@ -203,7 +204,7 @@ class _Normal implements AppStatus {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Normal);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Normal);
 }
 
 
@@ -212,7 +213,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'AppStatus.normal()';
+    return 'AppStatus.normal()';
 }
 
 
@@ -241,16 +242,18 @@ _$ForceUpgradeCopyWith<_ForceUpgrade> get copyWith => __$ForceUpgradeCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ForceUpgrade&&(identical(other.minVersion, minVersion) || other.minVersion == minVersion)&&(identical(other.storeUrl, storeUrl) || other.storeUrl == storeUrl));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ForceUpgrade&&(identical(other.minVersion, minVersion) || other.minVersion == minVersion)&&(identical(other.storeUrl, storeUrl) || other.storeUrl == storeUrl));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,minVersion,storeUrl);
+int get hashCode {
+    return Object.hash(runtimeType,minVersion,storeUrl);
+}
 
 @override
 String toString() {
-  return 'AppStatus.forceUpgrade(minVersion: $minVersion, storeUrl: $storeUrl)';
+    return 'AppStatus.forceUpgrade(minVersion: $minVersion, storeUrl: $storeUrl)';
 }
 
 
@@ -303,7 +306,7 @@ class _NoInternet implements AppStatus {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _NoInternet);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _NoInternet);
 }
 
 
@@ -312,7 +315,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'AppStatus.noInternet()';
+    return 'AppStatus.noInternet()';
 }
 
 
@@ -335,7 +338,7 @@ class _Maintenance implements AppStatus {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Maintenance);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Maintenance);
 }
 
 
@@ -344,7 +347,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'AppStatus.maintenance()';
+    return 'AppStatus.maintenance()';
 }
 
 

@@ -11,7 +11,7 @@ import 'package:bizzie/app/routes/app_routes.dart';
 import 'package:bizzie/core/enums/paywall_source.dart';
 import 'package:bizzie/features/profile/presentation/bloc/profile_event.dart';
 import 'package:bizzie/features/subscription/presentation/utils/paywall_helper.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'financial_report_dto.dart';
@@ -9,6 +9,7 @@ part of 'financial_report_dto.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 
@@ -28,16 +29,21 @@ $FinancialReportDtoCopyWith<FinancialReportDto> get copyWith => _$FinancialRepor
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is FinancialReportDto&&(identical(other.id, id) || other.id == id)&&(identical(other.summary, summary) || other.summary == summary)&&(identical(other.balanceSheet, balanceSheet) || other.balanceSheet == balanceSheet)&&(identical(other.cashFlow, cashFlow) || other.cashFlow == cashFlow)&&(identical(other.income, income) || other.income == income)&&(identical(other.stockActivity, stockActivity) || other.stockActivity == stockActivity)&&(identical(other.filingDate, filingDate) || other.filingDate == filingDate)&&(identical(other.dateAnalyzed, dateAnalyzed) || other.dateAnalyzed == dateAnalyzed)&&(identical(other.formType, formType) || other.formType == formType)&&(identical(other.ticker, ticker) || other.ticker == ticker));
+  final _this = this as FinancialReportDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is FinancialReportDto&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.summary, _this.summary) || other.summary == _this.summary)&&(identical(other.balanceSheet, _this.balanceSheet) || other.balanceSheet == _this.balanceSheet)&&(identical(other.cashFlow, _this.cashFlow) || other.cashFlow == _this.cashFlow)&&(identical(other.income, _this.income) || other.income == _this.income)&&(identical(other.stockActivity, _this.stockActivity) || other.stockActivity == _this.stockActivity)&&(identical(other.filingDate, _this.filingDate) || other.filingDate == _this.filingDate)&&(identical(other.dateAnalyzed, _this.dateAnalyzed) || other.dateAnalyzed == _this.dateAnalyzed)&&(identical(other.formType, _this.formType) || other.formType == _this.formType)&&(identical(other.ticker, _this.ticker) || other.ticker == _this.ticker));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,summary,balanceSheet,cashFlow,income,stockActivity,filingDate,dateAnalyzed,formType,ticker);
+int get hashCode {
+  final _this = this as FinancialReportDto;
+  return Object.hash(runtimeType,_this.id,_this.summary,_this.balanceSheet,_this.cashFlow,_this.income,_this.stockActivity,_this.filingDate,_this.dateAnalyzed,_this.formType,_this.ticker);
+}
 
 @override
 String toString() {
-  return 'FinancialReportDto(id: $id, summary: $summary, balanceSheet: $balanceSheet, cashFlow: $cashFlow, income: $income, stockActivity: $stockActivity, filingDate: $filingDate, dateAnalyzed: $dateAnalyzed, formType: $formType, ticker: $ticker)';
+  final _this = this as FinancialReportDto;
+  return 'FinancialReportDto(id: ${_this.id}, summary: ${_this.summary}, balanceSheet: ${_this.balanceSheet}, cashFlow: ${_this.cashFlow}, income: ${_this.income}, stockActivity: ${_this.stockActivity}, filingDate: ${_this.filingDate}, dateAnalyzed: ${_this.dateAnalyzed}, formType: ${_this.formType}, ticker: ${_this.ticker})';
 }
 
 
@@ -66,7 +72,7 @@ class _$FinancialReportDtoCopyWithImpl<$Res>
 /// Create a copy of FinancialReportDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? summary = null,Object? balanceSheet = null,Object? cashFlow = null,Object? income = null,Object? stockActivity = null,Object? filingDate = freezed,Object? dateAnalyzed = freezed,Object? formType = freezed,Object? ticker = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(FinancialReportDto(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,summary: null == summary ? _self.summary : summary // ignore: cast_nullable_to_non_nullable
 as ReportSummaryDto,balanceSheet: null == balanceSheet ? _self.balanceSheet : balanceSheet // ignore: cast_nullable_to_non_nullable
@@ -290,16 +296,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _FinancialReportDto&&(identical(other.id, id) || other.id == id)&&(identical(other.summary, summary) || other.summary == summary)&&(identical(other.balanceSheet, balanceSheet) || other.balanceSheet == balanceSheet)&&(identical(other.cashFlow, cashFlow) || other.cashFlow == cashFlow)&&(identical(other.income, income) || other.income == income)&&(identical(other.stockActivity, stockActivity) || other.stockActivity == stockActivity)&&(identical(other.filingDate, filingDate) || other.filingDate == filingDate)&&(identical(other.dateAnalyzed, dateAnalyzed) || other.dateAnalyzed == dateAnalyzed)&&(identical(other.formType, formType) || other.formType == formType)&&(identical(other.ticker, ticker) || other.ticker == ticker));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _FinancialReportDto&&(identical(other.id, id) || other.id == id)&&(identical(other.summary, summary) || other.summary == summary)&&(identical(other.balanceSheet, balanceSheet) || other.balanceSheet == balanceSheet)&&(identical(other.cashFlow, cashFlow) || other.cashFlow == cashFlow)&&(identical(other.income, income) || other.income == income)&&(identical(other.stockActivity, stockActivity) || other.stockActivity == stockActivity)&&(identical(other.filingDate, filingDate) || other.filingDate == filingDate)&&(identical(other.dateAnalyzed, dateAnalyzed) || other.dateAnalyzed == dateAnalyzed)&&(identical(other.formType, formType) || other.formType == formType)&&(identical(other.ticker, ticker) || other.ticker == ticker));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,summary,balanceSheet,cashFlow,income,stockActivity,filingDate,dateAnalyzed,formType,ticker);
+int get hashCode {
+    return Object.hash(runtimeType,id,summary,balanceSheet,cashFlow,income,stockActivity,filingDate,dateAnalyzed,formType,ticker);
+}
 
 @override
 String toString() {
-  return 'FinancialReportDto(id: $id, summary: $summary, balanceSheet: $balanceSheet, cashFlow: $cashFlow, income: $income, stockActivity: $stockActivity, filingDate: $filingDate, dateAnalyzed: $dateAnalyzed, formType: $formType, ticker: $ticker)';
+    return 'FinancialReportDto(id: $id, summary: $summary, balanceSheet: $balanceSheet, cashFlow: $cashFlow, income: $income, stockActivity: $stockActivity, filingDate: $filingDate, dateAnalyzed: $dateAnalyzed, formType: $formType, ticker: $ticker)';
 }
 
 
@@ -408,16 +416,21 @@ $ReportSummaryDtoCopyWith<ReportSummaryDto> get copyWith => _$ReportSummaryDtoCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ReportSummaryDto&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.forwardLooking, forwardLooking) || other.forwardLooking == forwardLooking)&&(identical(other.citationPage, citationPage) || other.citationPage == citationPage)&&(identical(other.reportingCurrency, reportingCurrency) || other.reportingCurrency == reportingCurrency));
+  final _this = this as ReportSummaryDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ReportSummaryDto&&(identical(other.ticker, _this.ticker) || other.ticker == _this.ticker)&&(identical(other.forwardLooking, _this.forwardLooking) || other.forwardLooking == _this.forwardLooking)&&(identical(other.citationPage, _this.citationPage) || other.citationPage == _this.citationPage)&&(identical(other.reportingCurrency, _this.reportingCurrency) || other.reportingCurrency == _this.reportingCurrency));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,ticker,forwardLooking,citationPage,reportingCurrency);
+int get hashCode {
+  final _this = this as ReportSummaryDto;
+  return Object.hash(runtimeType,_this.ticker,_this.forwardLooking,_this.citationPage,_this.reportingCurrency);
+}
 
 @override
 String toString() {
-  return 'ReportSummaryDto(ticker: $ticker, forwardLooking: $forwardLooking, citationPage: $citationPage, reportingCurrency: $reportingCurrency)';
+  final _this = this as ReportSummaryDto;
+  return 'ReportSummaryDto(ticker: ${_this.ticker}, forwardLooking: ${_this.forwardLooking}, citationPage: ${_this.citationPage}, reportingCurrency: ${_this.reportingCurrency})';
 }
 
 
@@ -446,7 +459,7 @@ class _$ReportSummaryDtoCopyWithImpl<$Res>
 /// Create a copy of ReportSummaryDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? ticker = null,Object? forwardLooking = null,Object? citationPage = null,Object? reportingCurrency = null,}) {
-  return _then(_self.copyWith(
+  return _then(ReportSummaryDto(
 ticker: null == ticker ? _self.ticker : ticker // ignore: cast_nullable_to_non_nullable
 as String,forwardLooking: null == forwardLooking ? _self.forwardLooking : forwardLooking // ignore: cast_nullable_to_non_nullable
 as String,citationPage: null == citationPage ? _self.citationPage : citationPage // ignore: cast_nullable_to_non_nullable
@@ -613,16 +626,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ReportSummaryDto&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.forwardLooking, forwardLooking) || other.forwardLooking == forwardLooking)&&(identical(other.citationPage, citationPage) || other.citationPage == citationPage)&&(identical(other.reportingCurrency, reportingCurrency) || other.reportingCurrency == reportingCurrency));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ReportSummaryDto&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.forwardLooking, forwardLooking) || other.forwardLooking == forwardLooking)&&(identical(other.citationPage, citationPage) || other.citationPage == citationPage)&&(identical(other.reportingCurrency, reportingCurrency) || other.reportingCurrency == reportingCurrency));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,ticker,forwardLooking,citationPage,reportingCurrency);
+int get hashCode {
+    return Object.hash(runtimeType,ticker,forwardLooking,citationPage,reportingCurrency);
+}
 
 @override
 String toString() {
-  return 'ReportSummaryDto(ticker: $ticker, forwardLooking: $forwardLooking, citationPage: $citationPage, reportingCurrency: $reportingCurrency)';
+    return 'ReportSummaryDto(ticker: $ticker, forwardLooking: $forwardLooking, citationPage: $citationPage, reportingCurrency: $reportingCurrency)';
 }
 
 
@@ -680,16 +695,21 @@ $ReportBalanceSheetDtoCopyWith<ReportBalanceSheetDto> get copyWith => _$ReportBa
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ReportBalanceSheetDto&&(identical(other.equity, equity) || other.equity == equity)&&(identical(other.totalAssets, totalAssets) || other.totalAssets == totalAssets)&&(identical(other.totalLiabilities, totalLiabilities) || other.totalLiabilities == totalLiabilities));
+  final _this = this as ReportBalanceSheetDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ReportBalanceSheetDto&&(identical(other.equity, _this.equity) || other.equity == _this.equity)&&(identical(other.totalAssets, _this.totalAssets) || other.totalAssets == _this.totalAssets)&&(identical(other.totalLiabilities, _this.totalLiabilities) || other.totalLiabilities == _this.totalLiabilities));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,equity,totalAssets,totalLiabilities);
+int get hashCode {
+  final _this = this as ReportBalanceSheetDto;
+  return Object.hash(runtimeType,_this.equity,_this.totalAssets,_this.totalLiabilities);
+}
 
 @override
 String toString() {
-  return 'ReportBalanceSheetDto(equity: $equity, totalAssets: $totalAssets, totalLiabilities: $totalLiabilities)';
+  final _this = this as ReportBalanceSheetDto;
+  return 'ReportBalanceSheetDto(equity: ${_this.equity}, totalAssets: ${_this.totalAssets}, totalLiabilities: ${_this.totalLiabilities})';
 }
 
 
@@ -718,7 +738,7 @@ class _$ReportBalanceSheetDtoCopyWithImpl<$Res>
 /// Create a copy of ReportBalanceSheetDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? equity = null,Object? totalAssets = null,Object? totalLiabilities = null,}) {
-  return _then(_self.copyWith(
+  return _then(ReportBalanceSheetDto(
 equity: null == equity ? _self.equity : equity // ignore: cast_nullable_to_non_nullable
 as FinancialMetricDto,totalAssets: null == totalAssets ? _self.totalAssets : totalAssets // ignore: cast_nullable_to_non_nullable
 as FinancialMetricDto,totalLiabilities: null == totalLiabilities ? _self.totalLiabilities : totalLiabilities // ignore: cast_nullable_to_non_nullable
@@ -910,16 +930,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ReportBalanceSheetDto&&(identical(other.equity, equity) || other.equity == equity)&&(identical(other.totalAssets, totalAssets) || other.totalAssets == totalAssets)&&(identical(other.totalLiabilities, totalLiabilities) || other.totalLiabilities == totalLiabilities));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ReportBalanceSheetDto&&(identical(other.equity, equity) || other.equity == equity)&&(identical(other.totalAssets, totalAssets) || other.totalAssets == totalAssets)&&(identical(other.totalLiabilities, totalLiabilities) || other.totalLiabilities == totalLiabilities));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,equity,totalAssets,totalLiabilities);
+int get hashCode {
+    return Object.hash(runtimeType,equity,totalAssets,totalLiabilities);
+}
 
 @override
 String toString() {
-  return 'ReportBalanceSheetDto(equity: $equity, totalAssets: $totalAssets, totalLiabilities: $totalLiabilities)';
+    return 'ReportBalanceSheetDto(equity: $equity, totalAssets: $totalAssets, totalLiabilities: $totalLiabilities)';
 }
 
 
@@ -1003,16 +1025,21 @@ $ReportCashFlowDtoCopyWith<ReportCashFlowDto> get copyWith => _$ReportCashFlowDt
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ReportCashFlowDto&&(identical(other.freeCashFlow, freeCashFlow) || other.freeCashFlow == freeCashFlow));
+  final _this = this as ReportCashFlowDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ReportCashFlowDto&&(identical(other.freeCashFlow, _this.freeCashFlow) || other.freeCashFlow == _this.freeCashFlow));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,freeCashFlow);
+int get hashCode {
+  final _this = this as ReportCashFlowDto;
+  return Object.hash(runtimeType,_this.freeCashFlow);
+}
 
 @override
 String toString() {
-  return 'ReportCashFlowDto(freeCashFlow: $freeCashFlow)';
+  final _this = this as ReportCashFlowDto;
+  return 'ReportCashFlowDto(freeCashFlow: ${_this.freeCashFlow})';
 }
 
 
@@ -1041,7 +1068,7 @@ class _$ReportCashFlowDtoCopyWithImpl<$Res>
 /// Create a copy of ReportCashFlowDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? freeCashFlow = null,}) {
-  return _then(_self.copyWith(
+  return _then(ReportCashFlowDto(
 freeCashFlow: null == freeCashFlow ? _self.freeCashFlow : freeCashFlow // ignore: cast_nullable_to_non_nullable
 as FinancialMetricWithDriverDto,
   ));
@@ -1211,16 +1238,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ReportCashFlowDto&&(identical(other.freeCashFlow, freeCashFlow) || other.freeCashFlow == freeCashFlow));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ReportCashFlowDto&&(identical(other.freeCashFlow, freeCashFlow) || other.freeCashFlow == freeCashFlow));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,freeCashFlow);
+int get hashCode {
+    return Object.hash(runtimeType,freeCashFlow);
+}
 
 @override
 String toString() {
-  return 'ReportCashFlowDto(freeCashFlow: $freeCashFlow)';
+    return 'ReportCashFlowDto(freeCashFlow: $freeCashFlow)';
 }
 
 
@@ -1284,16 +1313,21 @@ $ReportIncomeDtoCopyWith<ReportIncomeDto> get copyWith => _$ReportIncomeDtoCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ReportIncomeDto&&(identical(other.costOfRevenue, costOfRevenue) || other.costOfRevenue == costOfRevenue)&&(identical(other.eps, eps) || other.eps == eps)&&(identical(other.netIncome, netIncome) || other.netIncome == netIncome)&&(identical(other.revenue, revenue) || other.revenue == revenue)&&(identical(other.totalExpenses, totalExpenses) || other.totalExpenses == totalExpenses));
+  final _this = this as ReportIncomeDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ReportIncomeDto&&(identical(other.costOfRevenue, _this.costOfRevenue) || other.costOfRevenue == _this.costOfRevenue)&&(identical(other.eps, _this.eps) || other.eps == _this.eps)&&(identical(other.netIncome, _this.netIncome) || other.netIncome == _this.netIncome)&&(identical(other.revenue, _this.revenue) || other.revenue == _this.revenue)&&(identical(other.totalExpenses, _this.totalExpenses) || other.totalExpenses == _this.totalExpenses));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,costOfRevenue,eps,netIncome,revenue,totalExpenses);
+int get hashCode {
+  final _this = this as ReportIncomeDto;
+  return Object.hash(runtimeType,_this.costOfRevenue,_this.eps,_this.netIncome,_this.revenue,_this.totalExpenses);
+}
 
 @override
 String toString() {
-  return 'ReportIncomeDto(costOfRevenue: $costOfRevenue, eps: $eps, netIncome: $netIncome, revenue: $revenue, totalExpenses: $totalExpenses)';
+  final _this = this as ReportIncomeDto;
+  return 'ReportIncomeDto(costOfRevenue: ${_this.costOfRevenue}, eps: ${_this.eps}, netIncome: ${_this.netIncome}, revenue: ${_this.revenue}, totalExpenses: ${_this.totalExpenses})';
 }
 
 
@@ -1322,7 +1356,7 @@ class _$ReportIncomeDtoCopyWithImpl<$Res>
 /// Create a copy of ReportIncomeDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? costOfRevenue = null,Object? eps = null,Object? netIncome = null,Object? revenue = null,Object? totalExpenses = null,}) {
-  return _then(_self.copyWith(
+  return _then(ReportIncomeDto(
 costOfRevenue: null == costOfRevenue ? _self.costOfRevenue : costOfRevenue // ignore: cast_nullable_to_non_nullable
 as FinancialMetricDto,eps: null == eps ? _self.eps : eps // ignore: cast_nullable_to_non_nullable
 as FinancialMetricDto,netIncome: null == netIncome ? _self.netIncome : netIncome // ignore: cast_nullable_to_non_nullable
@@ -1536,16 +1570,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ReportIncomeDto&&(identical(other.costOfRevenue, costOfRevenue) || other.costOfRevenue == costOfRevenue)&&(identical(other.eps, eps) || other.eps == eps)&&(identical(other.netIncome, netIncome) || other.netIncome == netIncome)&&(identical(other.revenue, revenue) || other.revenue == revenue)&&(identical(other.totalExpenses, totalExpenses) || other.totalExpenses == totalExpenses));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ReportIncomeDto&&(identical(other.costOfRevenue, costOfRevenue) || other.costOfRevenue == costOfRevenue)&&(identical(other.eps, eps) || other.eps == eps)&&(identical(other.netIncome, netIncome) || other.netIncome == netIncome)&&(identical(other.revenue, revenue) || other.revenue == revenue)&&(identical(other.totalExpenses, totalExpenses) || other.totalExpenses == totalExpenses));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,costOfRevenue,eps,netIncome,revenue,totalExpenses);
+int get hashCode {
+    return Object.hash(runtimeType,costOfRevenue,eps,netIncome,revenue,totalExpenses);
+}
 
 @override
 String toString() {
-  return 'ReportIncomeDto(costOfRevenue: $costOfRevenue, eps: $eps, netIncome: $netIncome, revenue: $revenue, totalExpenses: $totalExpenses)';
+    return 'ReportIncomeDto(costOfRevenue: $costOfRevenue, eps: $eps, netIncome: $netIncome, revenue: $revenue, totalExpenses: $totalExpenses)';
 }
 
 
@@ -1649,16 +1685,21 @@ $ReportStockActivityDtoCopyWith<ReportStockActivityDto> get copyWith => _$Report
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ReportStockActivityDto&&(identical(other.citationPage, citationPage) || other.citationPage == citationPage)&&(identical(other.issuedShares, issuedShares) || other.issuedShares == issuedShares)&&(identical(other.netStockChangeShares, netStockChangeShares) || other.netStockChangeShares == netStockChangeShares)&&(identical(other.repurchasedShares, repurchasedShares) || other.repurchasedShares == repurchasedShares));
+  final _this = this as ReportStockActivityDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ReportStockActivityDto&&(identical(other.citationPage, _this.citationPage) || other.citationPage == _this.citationPage)&&(identical(other.issuedShares, _this.issuedShares) || other.issuedShares == _this.issuedShares)&&(identical(other.netStockChangeShares, _this.netStockChangeShares) || other.netStockChangeShares == _this.netStockChangeShares)&&(identical(other.repurchasedShares, _this.repurchasedShares) || other.repurchasedShares == _this.repurchasedShares));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,citationPage,issuedShares,netStockChangeShares,repurchasedShares);
+int get hashCode {
+  final _this = this as ReportStockActivityDto;
+  return Object.hash(runtimeType,_this.citationPage,_this.issuedShares,_this.netStockChangeShares,_this.repurchasedShares);
+}
 
 @override
 String toString() {
-  return 'ReportStockActivityDto(citationPage: $citationPage, issuedShares: $issuedShares, netStockChangeShares: $netStockChangeShares, repurchasedShares: $repurchasedShares)';
+  final _this = this as ReportStockActivityDto;
+  return 'ReportStockActivityDto(citationPage: ${_this.citationPage}, issuedShares: ${_this.issuedShares}, netStockChangeShares: ${_this.netStockChangeShares}, repurchasedShares: ${_this.repurchasedShares})';
 }
 
 
@@ -1687,7 +1728,7 @@ class _$ReportStockActivityDtoCopyWithImpl<$Res>
 /// Create a copy of ReportStockActivityDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? citationPage = null,Object? issuedShares = freezed,Object? netStockChangeShares = freezed,Object? repurchasedShares = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(ReportStockActivityDto(
 citationPage: null == citationPage ? _self.citationPage : citationPage // ignore: cast_nullable_to_non_nullable
 as int,issuedShares: freezed == issuedShares ? _self.issuedShares : issuedShares // ignore: cast_nullable_to_non_nullable
 as double?,netStockChangeShares: freezed == netStockChangeShares ? _self.netStockChangeShares : netStockChangeShares // ignore: cast_nullable_to_non_nullable
@@ -1854,16 +1895,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ReportStockActivityDto&&(identical(other.citationPage, citationPage) || other.citationPage == citationPage)&&(identical(other.issuedShares, issuedShares) || other.issuedShares == issuedShares)&&(identical(other.netStockChangeShares, netStockChangeShares) || other.netStockChangeShares == netStockChangeShares)&&(identical(other.repurchasedShares, repurchasedShares) || other.repurchasedShares == repurchasedShares));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ReportStockActivityDto&&(identical(other.citationPage, citationPage) || other.citationPage == citationPage)&&(identical(other.issuedShares, issuedShares) || other.issuedShares == issuedShares)&&(identical(other.netStockChangeShares, netStockChangeShares) || other.netStockChangeShares == netStockChangeShares)&&(identical(other.repurchasedShares, repurchasedShares) || other.repurchasedShares == repurchasedShares));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,citationPage,issuedShares,netStockChangeShares,repurchasedShares);
+int get hashCode {
+    return Object.hash(runtimeType,citationPage,issuedShares,netStockChangeShares,repurchasedShares);
+}
 
 @override
 String toString() {
-  return 'ReportStockActivityDto(citationPage: $citationPage, issuedShares: $issuedShares, netStockChangeShares: $netStockChangeShares, repurchasedShares: $repurchasedShares)';
+    return 'ReportStockActivityDto(citationPage: $citationPage, issuedShares: $issuedShares, netStockChangeShares: $netStockChangeShares, repurchasedShares: $repurchasedShares)';
 }
 
 
@@ -1921,16 +1964,21 @@ $FinancialMetricDtoCopyWith<FinancialMetricDto> get copyWith => _$FinancialMetri
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is FinancialMetricDto&&(identical(other.amount, amount) || other.amount == amount)&&(identical(other.changeAmount, changeAmount) || other.changeAmount == changeAmount)&&(identical(other.changePercent, changePercent) || other.changePercent == changePercent)&&(identical(other.citationPage, citationPage) || other.citationPage == citationPage));
+  final _this = this as FinancialMetricDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is FinancialMetricDto&&(identical(other.amount, _this.amount) || other.amount == _this.amount)&&(identical(other.changeAmount, _this.changeAmount) || other.changeAmount == _this.changeAmount)&&(identical(other.changePercent, _this.changePercent) || other.changePercent == _this.changePercent)&&(identical(other.citationPage, _this.citationPage) || other.citationPage == _this.citationPage));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,amount,changeAmount,changePercent,citationPage);
+int get hashCode {
+  final _this = this as FinancialMetricDto;
+  return Object.hash(runtimeType,_this.amount,_this.changeAmount,_this.changePercent,_this.citationPage);
+}
 
 @override
 String toString() {
-  return 'FinancialMetricDto(amount: $amount, changeAmount: $changeAmount, changePercent: $changePercent, citationPage: $citationPage)';
+  final _this = this as FinancialMetricDto;
+  return 'FinancialMetricDto(amount: ${_this.amount}, changeAmount: ${_this.changeAmount}, changePercent: ${_this.changePercent}, citationPage: ${_this.citationPage})';
 }
 
 
@@ -1959,7 +2007,7 @@ class _$FinancialMetricDtoCopyWithImpl<$Res>
 /// Create a copy of FinancialMetricDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? amount = null,Object? changeAmount = null,Object? changePercent = null,Object? citationPage = null,}) {
-  return _then(_self.copyWith(
+  return _then(FinancialMetricDto(
 amount: null == amount ? _self.amount : amount // ignore: cast_nullable_to_non_nullable
 as double,changeAmount: null == changeAmount ? _self.changeAmount : changeAmount // ignore: cast_nullable_to_non_nullable
 as double,changePercent: null == changePercent ? _self.changePercent : changePercent // ignore: cast_nullable_to_non_nullable
@@ -2126,16 +2174,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _FinancialMetricDto&&(identical(other.amount, amount) || other.amount == amount)&&(identical(other.changeAmount, changeAmount) || other.changeAmount == changeAmount)&&(identical(other.changePercent, changePercent) || other.changePercent == changePercent)&&(identical(other.citationPage, citationPage) || other.citationPage == citationPage));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _FinancialMetricDto&&(identical(other.amount, amount) || other.amount == amount)&&(identical(other.changeAmount, changeAmount) || other.changeAmount == changeAmount)&&(identical(other.changePercent, changePercent) || other.changePercent == changePercent)&&(identical(other.citationPage, citationPage) || other.citationPage == citationPage));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,amount,changeAmount,changePercent,citationPage);
+int get hashCode {
+    return Object.hash(runtimeType,amount,changeAmount,changePercent,citationPage);
+}
 
 @override
 String toString() {
-  return 'FinancialMetricDto(amount: $amount, changeAmount: $changeAmount, changePercent: $changePercent, citationPage: $citationPage)';
+    return 'FinancialMetricDto(amount: $amount, changeAmount: $changeAmount, changePercent: $changePercent, citationPage: $citationPage)';
 }
 
 
@@ -2193,16 +2243,21 @@ $FinancialMetricWithDriverDtoCopyWith<FinancialMetricWithDriverDto> get copyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is FinancialMetricWithDriverDto&&(identical(other.amount, amount) || other.amount == amount)&&(identical(other.changeAmount, changeAmount) || other.changeAmount == changeAmount)&&(identical(other.changePercent, changePercent) || other.changePercent == changePercent)&&(identical(other.citationPage, citationPage) || other.citationPage == citationPage)&&(identical(other.driver, driver) || other.driver == driver));
+  final _this = this as FinancialMetricWithDriverDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is FinancialMetricWithDriverDto&&(identical(other.amount, _this.amount) || other.amount == _this.amount)&&(identical(other.changeAmount, _this.changeAmount) || other.changeAmount == _this.changeAmount)&&(identical(other.changePercent, _this.changePercent) || other.changePercent == _this.changePercent)&&(identical(other.citationPage, _this.citationPage) || other.citationPage == _this.citationPage)&&(identical(other.driver, _this.driver) || other.driver == _this.driver));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,amount,changeAmount,changePercent,citationPage,driver);
+int get hashCode {
+  final _this = this as FinancialMetricWithDriverDto;
+  return Object.hash(runtimeType,_this.amount,_this.changeAmount,_this.changePercent,_this.citationPage,_this.driver);
+}
 
 @override
 String toString() {
-  return 'FinancialMetricWithDriverDto(amount: $amount, changeAmount: $changeAmount, changePercent: $changePercent, citationPage: $citationPage, driver: $driver)';
+  final _this = this as FinancialMetricWithDriverDto;
+  return 'FinancialMetricWithDriverDto(amount: ${_this.amount}, changeAmount: ${_this.changeAmount}, changePercent: ${_this.changePercent}, citationPage: ${_this.citationPage}, driver: ${_this.driver})';
 }
 
 
@@ -2231,7 +2286,7 @@ class _$FinancialMetricWithDriverDtoCopyWithImpl<$Res>
 /// Create a copy of FinancialMetricWithDriverDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? amount = null,Object? changeAmount = null,Object? changePercent = null,Object? citationPage = null,Object? driver = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(FinancialMetricWithDriverDto(
 amount: null == amount ? _self.amount : amount // ignore: cast_nullable_to_non_nullable
 as double,changeAmount: null == changeAmount ? _self.changeAmount : changeAmount // ignore: cast_nullable_to_non_nullable
 as double,changePercent: null == changePercent ? _self.changePercent : changePercent // ignore: cast_nullable_to_non_nullable
@@ -2400,16 +2455,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _FinancialMetricWithDriverDto&&(identical(other.amount, amount) || other.amount == amount)&&(identical(other.changeAmount, changeAmount) || other.changeAmount == changeAmount)&&(identical(other.changePercent, changePercent) || other.changePercent == changePercent)&&(identical(other.citationPage, citationPage) || other.citationPage == citationPage)&&(identical(other.driver, driver) || other.driver == driver));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _FinancialMetricWithDriverDto&&(identical(other.amount, amount) || other.amount == amount)&&(identical(other.changeAmount, changeAmount) || other.changeAmount == changeAmount)&&(identical(other.changePercent, changePercent) || other.changePercent == changePercent)&&(identical(other.citationPage, citationPage) || other.citationPage == citationPage)&&(identical(other.driver, driver) || other.driver == driver));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,amount,changeAmount,changePercent,citationPage,driver);
+int get hashCode {
+    return Object.hash(runtimeType,amount,changeAmount,changePercent,citationPage,driver);
+}
 
 @override
 String toString() {
-  return 'FinancialMetricWithDriverDto(amount: $amount, changeAmount: $changeAmount, changePercent: $changePercent, citationPage: $citationPage, driver: $driver)';
+    return 'FinancialMetricWithDriverDto(amount: $amount, changeAmount: $changeAmount, changePercent: $changePercent, citationPage: $citationPage, driver: $driver)';
 }
 
 

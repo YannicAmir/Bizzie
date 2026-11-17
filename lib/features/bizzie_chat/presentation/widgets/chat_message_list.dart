@@ -6,7 +6,7 @@ import 'package:bizzie/features/bizzie_chat/presentation/widgets/chat_empty_stat
 import 'package:bizzie/features/bizzie_chat/presentation/widgets/chat_message_bubble.dart';
 import 'package:bizzie/features/bizzie_chat/presentation/widgets/chat_response_footer.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class ChatMessageList extends StatelessWidget {
   final List<ChatMessage> messages;

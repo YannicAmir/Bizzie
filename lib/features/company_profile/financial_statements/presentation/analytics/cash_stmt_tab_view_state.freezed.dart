@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'cash_stmt_tab_view_state.dart';
@@ -9,6 +9,7 @@ part of 'cash_stmt_tab_view_state.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $CashStmtTabViewStateCopyWith<CashStmtTabViewState> get copyWith => _$CashStmtTa
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CashStmtTabViewState&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.timestamp, timestamp) || other.timestamp == timestamp)&&(identical(other.loadTimeMs, loadTimeMs) || other.loadTimeMs == loadTimeMs)&&(identical(other.isSuccess, isSuccess) || other.isSuccess == isSuccess)&&(identical(other.dataSource, dataSource) || other.dataSource == dataSource)&&(identical(other.viewDurationSec, viewDurationSec) || other.viewDurationSec == viewDurationSec)&&(identical(other.viewedCashFlowTab, viewedCashFlowTab) || other.viewedCashFlowTab == viewedCashFlowTab)&&(identical(other.tappedAllCashflYrly, tappedAllCashflYrly) || other.tappedAllCashflYrly == tappedAllCashflYrly)&&(identical(other.tappedAllCashflQtrly, tappedAllCashflQtrly) || other.tappedAllCashflQtrly == tappedAllCashflQtrly)&&(identical(other.switchedCashflYear, switchedCashflYear) || other.switchedCashflYear == switchedCashflYear)&&(identical(other.switchedCashflQtr, switchedCashflQtr) || other.switchedCashflQtr == switchedCashflQtr));
+  final _this = this as CashStmtTabViewState;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CashStmtTabViewState&&(identical(other.ticker, _this.ticker) || other.ticker == _this.ticker)&&(identical(other.timestamp, _this.timestamp) || other.timestamp == _this.timestamp)&&(identical(other.loadTimeMs, _this.loadTimeMs) || other.loadTimeMs == _this.loadTimeMs)&&(identical(other.isSuccess, _this.isSuccess) || other.isSuccess == _this.isSuccess)&&(identical(other.dataSource, _this.dataSource) || other.dataSource == _this.dataSource)&&(identical(other.viewDurationSec, _this.viewDurationSec) || other.viewDurationSec == _this.viewDurationSec)&&(identical(other.viewedCashFlowTab, _this.viewedCashFlowTab) || other.viewedCashFlowTab == _this.viewedCashFlowTab)&&(identical(other.tappedAllCashflYrly, _this.tappedAllCashflYrly) || other.tappedAllCashflYrly == _this.tappedAllCashflYrly)&&(identical(other.tappedAllCashflQtrly, _this.tappedAllCashflQtrly) || other.tappedAllCashflQtrly == _this.tappedAllCashflQtrly)&&(identical(other.switchedCashflYear, _this.switchedCashflYear) || other.switchedCashflYear == _this.switchedCashflYear)&&(identical(other.switchedCashflQtr, _this.switchedCashflQtr) || other.switchedCashflQtr == _this.switchedCashflQtr));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,ticker,timestamp,loadTimeMs,isSuccess,dataSource,viewDurationSec,viewedCashFlowTab,tappedAllCashflYrly,tappedAllCashflQtrly,switchedCashflYear,switchedCashflQtr);
+int get hashCode {
+  final _this = this as CashStmtTabViewState;
+  return Object.hash(runtimeType,_this.ticker,_this.timestamp,_this.loadTimeMs,_this.isSuccess,_this.dataSource,_this.viewDurationSec,_this.viewedCashFlowTab,_this.tappedAllCashflYrly,_this.tappedAllCashflQtrly,_this.switchedCashflYear,_this.switchedCashflQtr);
+}
 
 @override
 String toString() {
-  return 'CashStmtTabViewState(ticker: $ticker, timestamp: $timestamp, loadTimeMs: $loadTimeMs, isSuccess: $isSuccess, dataSource: $dataSource, viewDurationSec: $viewDurationSec, viewedCashFlowTab: $viewedCashFlowTab, tappedAllCashflYrly: $tappedAllCashflYrly, tappedAllCashflQtrly: $tappedAllCashflQtrly, switchedCashflYear: $switchedCashflYear, switchedCashflQtr: $switchedCashflQtr)';
+  final _this = this as CashStmtTabViewState;
+  return 'CashStmtTabViewState(ticker: ${_this.ticker}, timestamp: ${_this.timestamp}, loadTimeMs: ${_this.loadTimeMs}, isSuccess: ${_this.isSuccess}, dataSource: ${_this.dataSource}, viewDurationSec: ${_this.viewDurationSec}, viewedCashFlowTab: ${_this.viewedCashFlowTab}, tappedAllCashflYrly: ${_this.tappedAllCashflYrly}, tappedAllCashflQtrly: ${_this.tappedAllCashflQtrly}, switchedCashflYear: ${_this.switchedCashflYear}, switchedCashflQtr: ${_this.switchedCashflQtr})';
 }
 
 
@@ -63,7 +69,7 @@ class _$CashStmtTabViewStateCopyWithImpl<$Res>
 /// Create a copy of CashStmtTabViewState
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? ticker = null,Object? timestamp = null,Object? loadTimeMs = freezed,Object? isSuccess = null,Object? dataSource = freezed,Object? viewDurationSec = null,Object? viewedCashFlowTab = null,Object? tappedAllCashflYrly = null,Object? tappedAllCashflQtrly = null,Object? switchedCashflYear = null,Object? switchedCashflQtr = null,}) {
-  return _then(_self.copyWith(
+  return _then(CashStmtTabViewState(
 ticker: null == ticker ? _self.ticker : ticker // ignore: cast_nullable_to_non_nullable
 as String,timestamp: null == timestamp ? _self.timestamp : timestamp // ignore: cast_nullable_to_non_nullable
 as String,loadTimeMs: freezed == loadTimeMs ? _self.loadTimeMs : loadTimeMs // ignore: cast_nullable_to_non_nullable
@@ -241,16 +247,18 @@ _$CashStmtTabViewStateCopyWith<_CashStmtTabViewState> get copyWith => __$CashStm
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CashStmtTabViewState&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.timestamp, timestamp) || other.timestamp == timestamp)&&(identical(other.loadTimeMs, loadTimeMs) || other.loadTimeMs == loadTimeMs)&&(identical(other.isSuccess, isSuccess) || other.isSuccess == isSuccess)&&(identical(other.dataSource, dataSource) || other.dataSource == dataSource)&&(identical(other.viewDurationSec, viewDurationSec) || other.viewDurationSec == viewDurationSec)&&(identical(other.viewedCashFlowTab, viewedCashFlowTab) || other.viewedCashFlowTab == viewedCashFlowTab)&&(identical(other.tappedAllCashflYrly, tappedAllCashflYrly) || other.tappedAllCashflYrly == tappedAllCashflYrly)&&(identical(other.tappedAllCashflQtrly, tappedAllCashflQtrly) || other.tappedAllCashflQtrly == tappedAllCashflQtrly)&&(identical(other.switchedCashflYear, switchedCashflYear) || other.switchedCashflYear == switchedCashflYear)&&(identical(other.switchedCashflQtr, switchedCashflQtr) || other.switchedCashflQtr == switchedCashflQtr));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _CashStmtTabViewState&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.timestamp, timestamp) || other.timestamp == timestamp)&&(identical(other.loadTimeMs, loadTimeMs) || other.loadTimeMs == loadTimeMs)&&(identical(other.isSuccess, isSuccess) || other.isSuccess == isSuccess)&&(identical(other.dataSource, dataSource) || other.dataSource == dataSource)&&(identical(other.viewDurationSec, viewDurationSec) || other.viewDurationSec == viewDurationSec)&&(identical(other.viewedCashFlowTab, viewedCashFlowTab) || other.viewedCashFlowTab == viewedCashFlowTab)&&(identical(other.tappedAllCashflYrly, tappedAllCashflYrly) || other.tappedAllCashflYrly == tappedAllCashflYrly)&&(identical(other.tappedAllCashflQtrly, tappedAllCashflQtrly) || other.tappedAllCashflQtrly == tappedAllCashflQtrly)&&(identical(other.switchedCashflYear, switchedCashflYear) || other.switchedCashflYear == switchedCashflYear)&&(identical(other.switchedCashflQtr, switchedCashflQtr) || other.switchedCashflQtr == switchedCashflQtr));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,ticker,timestamp,loadTimeMs,isSuccess,dataSource,viewDurationSec,viewedCashFlowTab,tappedAllCashflYrly,tappedAllCashflQtrly,switchedCashflYear,switchedCashflQtr);
+int get hashCode {
+    return Object.hash(runtimeType,ticker,timestamp,loadTimeMs,isSuccess,dataSource,viewDurationSec,viewedCashFlowTab,tappedAllCashflYrly,tappedAllCashflQtrly,switchedCashflYear,switchedCashflQtr);
+}
 
 @override
 String toString() {
-  return 'CashStmtTabViewState(ticker: $ticker, timestamp: $timestamp, loadTimeMs: $loadTimeMs, isSuccess: $isSuccess, dataSource: $dataSource, viewDurationSec: $viewDurationSec, viewedCashFlowTab: $viewedCashFlowTab, tappedAllCashflYrly: $tappedAllCashflYrly, tappedAllCashflQtrly: $tappedAllCashflQtrly, switchedCashflYear: $switchedCashflYear, switchedCashflQtr: $switchedCashflQtr)';
+    return 'CashStmtTabViewState(ticker: $ticker, timestamp: $timestamp, loadTimeMs: $loadTimeMs, isSuccess: $isSuccess, dataSource: $dataSource, viewDurationSec: $viewDurationSec, viewedCashFlowTab: $viewedCashFlowTab, tappedAllCashflYrly: $tappedAllCashflYrly, tappedAllCashflQtrly: $tappedAllCashflQtrly, switchedCashflYear: $switchedCashflYear, switchedCashflQtr: $switchedCashflQtr)';
 }
 
 

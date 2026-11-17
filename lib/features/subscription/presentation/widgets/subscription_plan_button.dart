@@ -1,6 +1,6 @@
 import 'package:bizzie/features/subscription/domain/models/subscription_package.dart';
 import 'package:bizzie/features/subscription/domain/extensions/subscription_package_extensions.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class SubscriptionPlanButton extends StatelessWidget {
   final SubscriptionPackage? package;

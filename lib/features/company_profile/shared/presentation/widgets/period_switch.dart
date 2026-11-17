@@ -1,6 +1,6 @@
 import 'package:bizzie/core/enums/financial_period.dart';
 import 'package:bizzie/shared/widgets/inputs/bizzie_switch.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class PeriodSwitch extends StatelessWidget {
   final FinancialPeriod period;

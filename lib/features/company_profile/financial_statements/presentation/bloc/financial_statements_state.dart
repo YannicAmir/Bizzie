@@ -27,8 +27,6 @@ abstract class StatementFlow<T> with _$StatementFlow<T> {
 
 @freezed
 abstract class FinancialStatementsState with _$FinancialStatementsState {
-  const FinancialStatementsState._();
-
   const factory FinancialStatementsState.initial({
     @Default(StatementFlow<IncomeStatement>.initial())
     StatementFlow<IncomeStatement> income,
@@ -42,7 +40,9 @@ abstract class FinancialStatementsState with _$FinancialStatementsState {
     String? ticker,
     required int freePlanHistoryCount,
   }) = _FinancialStatementsState;
+}
 
+extension FinancialStatementsStateX on FinancialStatementsState {
   bool get isLoadingIncome =>
       income.maybeMap(loading: (_) => true, orElse: () => false);
   bool get isLoadingBalance =>

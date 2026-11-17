@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'initial_company_selection.dart';
@@ -9,6 +9,7 @@ part of 'initial_company_selection.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $InitialCompanySelectionCopyWith<InitialCompanySelection> get copyWith => _$Init
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is InitialCompanySelection&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.source, source) || other.source == source));
+  final _this = this as InitialCompanySelection;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is InitialCompanySelection&&(identical(other.ticker, _this.ticker) || other.ticker == _this.ticker)&&(identical(other.source, _this.source) || other.source == _this.source));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,ticker,source);
+int get hashCode {
+  final _this = this as InitialCompanySelection;
+  return Object.hash(runtimeType,_this.ticker,_this.source);
+}
 
 @override
 String toString() {
-  return 'InitialCompanySelection(ticker: $ticker, source: $source)';
+  final _this = this as InitialCompanySelection;
+  return 'InitialCompanySelection(ticker: ${_this.ticker}, source: ${_this.source})';
 }
 
 
@@ -63,7 +69,7 @@ class _$InitialCompanySelectionCopyWithImpl<$Res>
 /// Create a copy of InitialCompanySelection
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? ticker = null,Object? source = null,}) {
-  return _then(_self.copyWith(
+  return _then(InitialCompanySelection(
 ticker: null == ticker ? _self.ticker : ticker // ignore: cast_nullable_to_non_nullable
 as String,source: null == source ? _self.source : source // ignore: cast_nullable_to_non_nullable
 as OnboardingValueSource,
@@ -223,16 +229,18 @@ _$InitialCompanySelectionCopyWith<_InitialCompanySelection> get copyWith => __$I
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _InitialCompanySelection&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.source, source) || other.source == source));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _InitialCompanySelection&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.source, source) || other.source == source));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,ticker,source);
+int get hashCode {
+    return Object.hash(runtimeType,ticker,source);
+}
 
 @override
 String toString() {
-  return 'InitialCompanySelection(ticker: $ticker, source: $source)';
+    return 'InitialCompanySelection(ticker: $ticker, source: $source)';
 }
 
 

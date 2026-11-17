@@ -1,5 +1,5 @@
 import 'package:bizzie/shared/widgets/buttons/bizzie_close_icon.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:go_router/go_router.dart';
 
 class BizzieAppBar extends StatelessWidget implements PreferredSizeWidget {

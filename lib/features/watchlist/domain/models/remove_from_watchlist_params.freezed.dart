@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'remove_from_watchlist_params.dart';
@@ -9,6 +9,7 @@ part of 'remove_from_watchlist_params.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $RemoveFromWatchlistParamsCopyWith<RemoveFromWatchlistParams> get copyWith => _$
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is RemoveFromWatchlistParams&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.uid, uid) || other.uid == uid));
+  final _this = this as RemoveFromWatchlistParams;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is RemoveFromWatchlistParams&&(identical(other.ticker, _this.ticker) || other.ticker == _this.ticker)&&(identical(other.uid, _this.uid) || other.uid == _this.uid));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,ticker,uid);
+int get hashCode {
+  final _this = this as RemoveFromWatchlistParams;
+  return Object.hash(runtimeType,_this.ticker,_this.uid);
+}
 
 @override
 String toString() {
-  return 'RemoveFromWatchlistParams(ticker: $ticker, uid: $uid)';
+  final _this = this as RemoveFromWatchlistParams;
+  return 'RemoveFromWatchlistParams(ticker: ${_this.ticker}, uid: ${_this.uid})';
 }
 
 
@@ -63,7 +69,7 @@ class _$RemoveFromWatchlistParamsCopyWithImpl<$Res>
 /// Create a copy of RemoveFromWatchlistParams
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? ticker = null,Object? uid = null,}) {
-  return _then(_self.copyWith(
+  return _then(RemoveFromWatchlistParams(
 ticker: null == ticker ? _self.ticker : ticker // ignore: cast_nullable_to_non_nullable
 as String,uid: null == uid ? _self.uid : uid // ignore: cast_nullable_to_non_nullable
 as String,
@@ -223,16 +229,18 @@ _$RemoveFromWatchlistParamsCopyWith<_RemoveFromWatchlistParams> get copyWith => 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _RemoveFromWatchlistParams&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.uid, uid) || other.uid == uid));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _RemoveFromWatchlistParams&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.uid, uid) || other.uid == uid));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,ticker,uid);
+int get hashCode {
+    return Object.hash(runtimeType,ticker,uid);
+}
 
 @override
 String toString() {
-  return 'RemoveFromWatchlistParams(ticker: $ticker, uid: $uid)';
+    return 'RemoveFromWatchlistParams(ticker: $ticker, uid: $uid)';
 }
 
 

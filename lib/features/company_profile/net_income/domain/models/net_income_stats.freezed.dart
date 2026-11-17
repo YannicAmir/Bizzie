@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'net_income_stats.dart';
@@ -9,6 +9,7 @@ part of 'net_income_stats.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $NetIncomeStatsCopyWith<NetIncomeStats> get copyWith => _$NetIncomeStatsCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is NetIncomeStats&&(identical(other.reportedCurrency, reportedCurrency) || other.reportedCurrency == reportedCurrency)&&(identical(other.originalCurrency, originalCurrency) || other.originalCurrency == originalCurrency)&&const DeepCollectionEquality().equals(other.annualNetIncome, annualNetIncome)&&const DeepCollectionEquality().equals(other.quarterlyNetIncome, quarterlyNetIncome));
+  final _this = this as NetIncomeStats;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is NetIncomeStats&&(identical(other.reportedCurrency, _this.reportedCurrency) || other.reportedCurrency == _this.reportedCurrency)&&(identical(other.originalCurrency, _this.originalCurrency) || other.originalCurrency == _this.originalCurrency)&&const DeepCollectionEquality().equals(other.annualNetIncome, _this.annualNetIncome)&&const DeepCollectionEquality().equals(other.quarterlyNetIncome, _this.quarterlyNetIncome));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,reportedCurrency,originalCurrency,const DeepCollectionEquality().hash(annualNetIncome),const DeepCollectionEquality().hash(quarterlyNetIncome));
+int get hashCode {
+  final _this = this as NetIncomeStats;
+  return Object.hash(runtimeType,_this.reportedCurrency,_this.originalCurrency,const DeepCollectionEquality().hash(_this.annualNetIncome),const DeepCollectionEquality().hash(_this.quarterlyNetIncome));
+}
 
 @override
 String toString() {
-  return 'NetIncomeStats(reportedCurrency: $reportedCurrency, originalCurrency: $originalCurrency, annualNetIncome: $annualNetIncome, quarterlyNetIncome: $quarterlyNetIncome)';
+  final _this = this as NetIncomeStats;
+  return 'NetIncomeStats(reportedCurrency: ${_this.reportedCurrency}, originalCurrency: ${_this.originalCurrency}, annualNetIncome: ${_this.annualNetIncome}, quarterlyNetIncome: ${_this.quarterlyNetIncome})';
 }
 
 
@@ -63,7 +69,7 @@ class _$NetIncomeStatsCopyWithImpl<$Res>
 /// Create a copy of NetIncomeStats
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? reportedCurrency = null,Object? originalCurrency = freezed,Object? annualNetIncome = null,Object? quarterlyNetIncome = null,}) {
-  return _then(_self.copyWith(
+  return _then(NetIncomeStats(
 reportedCurrency: null == reportedCurrency ? _self.reportedCurrency : reportedCurrency // ignore: cast_nullable_to_non_nullable
 as String,originalCurrency: freezed == originalCurrency ? _self.originalCurrency : originalCurrency // ignore: cast_nullable_to_non_nullable
 as String?,annualNetIncome: null == annualNetIncome ? _self.annualNetIncome : annualNetIncome // ignore: cast_nullable_to_non_nullable
@@ -209,7 +215,7 @@ return $default(_that.reportedCurrency,_that.originalCurrency,_that.annualNetInc
 
 
 class _NetIncomeStats implements NetIncomeStats {
-  const _NetIncomeStats({required this.reportedCurrency, this.originalCurrency, required final  List<FinancialDataPoint> annualNetIncome, required final  List<FinancialDataPoint> quarterlyNetIncome}): _annualNetIncome = annualNetIncome,_quarterlyNetIncome = quarterlyNetIncome;
+  const _NetIncomeStats({required this.reportedCurrency, this.originalCurrency, required  List<FinancialDataPoint> annualNetIncome, required  List<FinancialDataPoint> quarterlyNetIncome}): _annualNetIncome = annualNetIncome,_quarterlyNetIncome = quarterlyNetIncome;
   
 
 @override final  String reportedCurrency;
@@ -239,16 +245,18 @@ _$NetIncomeStatsCopyWith<_NetIncomeStats> get copyWith => __$NetIncomeStatsCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _NetIncomeStats&&(identical(other.reportedCurrency, reportedCurrency) || other.reportedCurrency == reportedCurrency)&&(identical(other.originalCurrency, originalCurrency) || other.originalCurrency == originalCurrency)&&const DeepCollectionEquality().equals(other._annualNetIncome, _annualNetIncome)&&const DeepCollectionEquality().equals(other._quarterlyNetIncome, _quarterlyNetIncome));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _NetIncomeStats&&(identical(other.reportedCurrency, reportedCurrency) || other.reportedCurrency == reportedCurrency)&&(identical(other.originalCurrency, originalCurrency) || other.originalCurrency == originalCurrency)&&const DeepCollectionEquality().equals(other.annualNetIncome, _annualNetIncome)&&const DeepCollectionEquality().equals(other.quarterlyNetIncome, _quarterlyNetIncome));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,reportedCurrency,originalCurrency,const DeepCollectionEquality().hash(_annualNetIncome),const DeepCollectionEquality().hash(_quarterlyNetIncome));
+int get hashCode {
+    return Object.hash(runtimeType,reportedCurrency,originalCurrency,const DeepCollectionEquality().hash(_annualNetIncome),const DeepCollectionEquality().hash(_quarterlyNetIncome));
+}
 
 @override
 String toString() {
-  return 'NetIncomeStats(reportedCurrency: $reportedCurrency, originalCurrency: $originalCurrency, annualNetIncome: $annualNetIncome, quarterlyNetIncome: $quarterlyNetIncome)';
+    return 'NetIncomeStats(reportedCurrency: $reportedCurrency, originalCurrency: $originalCurrency, annualNetIncome: $annualNetIncome, quarterlyNetIncome: $quarterlyNetIncome)';
 }
 
 

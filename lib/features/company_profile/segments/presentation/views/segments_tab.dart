@@ -16,7 +16,7 @@ import 'package:bizzie/features/company_profile/shared/presentation/widgets/peri
 import 'package:bizzie/features/company_profile/shared/presentation/widgets/tab_visibility_observer.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:bizzie/shared/widgets/inputs/bizzie_switch.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class SegmentsTab extends StatefulWidget {

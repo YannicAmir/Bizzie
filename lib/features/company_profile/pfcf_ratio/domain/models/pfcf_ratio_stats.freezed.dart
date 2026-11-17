@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'pfcf_ratio_stats.dart';
@@ -9,6 +9,7 @@ part of 'pfcf_ratio_stats.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $PfcfRatioStatsCopyWith<PfcfRatioStats> get copyWith => _$PfcfRatioStatsCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PfcfRatioStats&&const DeepCollectionEquality().equals(other.dataPoints, dataPoints)&&(identical(other.currentValue, currentValue) || other.currentValue == currentValue)&&(identical(other.growthPercentage, growthPercentage) || other.growthPercentage == growthPercentage)&&(identical(other.absoluteDelta, absoluteDelta) || other.absoluteDelta == absoluteDelta)&&(identical(other.isPositive, isPositive) || other.isPositive == isPositive)&&(identical(other.referenceDate, referenceDate) || other.referenceDate == referenceDate));
+  final _this = this as PfcfRatioStats;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PfcfRatioStats&&const DeepCollectionEquality().equals(other.dataPoints, _this.dataPoints)&&(identical(other.currentValue, _this.currentValue) || other.currentValue == _this.currentValue)&&(identical(other.growthPercentage, _this.growthPercentage) || other.growthPercentage == _this.growthPercentage)&&(identical(other.absoluteDelta, _this.absoluteDelta) || other.absoluteDelta == _this.absoluteDelta)&&(identical(other.isPositive, _this.isPositive) || other.isPositive == _this.isPositive)&&(identical(other.referenceDate, _this.referenceDate) || other.referenceDate == _this.referenceDate));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(dataPoints),currentValue,growthPercentage,absoluteDelta,isPositive,referenceDate);
+int get hashCode {
+  final _this = this as PfcfRatioStats;
+  return Object.hash(runtimeType,const DeepCollectionEquality().hash(_this.dataPoints),_this.currentValue,_this.growthPercentage,_this.absoluteDelta,_this.isPositive,_this.referenceDate);
+}
 
 @override
 String toString() {
-  return 'PfcfRatioStats(dataPoints: $dataPoints, currentValue: $currentValue, growthPercentage: $growthPercentage, absoluteDelta: $absoluteDelta, isPositive: $isPositive, referenceDate: $referenceDate)';
+  final _this = this as PfcfRatioStats;
+  return 'PfcfRatioStats(dataPoints: ${_this.dataPoints}, currentValue: ${_this.currentValue}, growthPercentage: ${_this.growthPercentage}, absoluteDelta: ${_this.absoluteDelta}, isPositive: ${_this.isPositive}, referenceDate: ${_this.referenceDate})';
 }
 
 
@@ -63,7 +69,7 @@ class _$PfcfRatioStatsCopyWithImpl<$Res>
 /// Create a copy of PfcfRatioStats
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? dataPoints = null,Object? currentValue = null,Object? growthPercentage = null,Object? absoluteDelta = null,Object? isPositive = null,Object? referenceDate = null,}) {
-  return _then(_self.copyWith(
+  return _then(PfcfRatioStats(
 dataPoints: null == dataPoints ? _self.dataPoints : dataPoints // ignore: cast_nullable_to_non_nullable
 as List<FinancialDataPoint>,currentValue: null == currentValue ? _self.currentValue : currentValue // ignore: cast_nullable_to_non_nullable
 as double,growthPercentage: null == growthPercentage ? _self.growthPercentage : growthPercentage // ignore: cast_nullable_to_non_nullable
@@ -211,7 +217,7 @@ return $default(_that.dataPoints,_that.currentValue,_that.growthPercentage,_that
 
 
 class _PfcfRatioStats implements PfcfRatioStats {
-  const _PfcfRatioStats({required final  List<FinancialDataPoint> dataPoints, required this.currentValue, required this.growthPercentage, required this.absoluteDelta, required this.isPositive, required this.referenceDate}): _dataPoints = dataPoints;
+  const _PfcfRatioStats({required  List<FinancialDataPoint> dataPoints, required this.currentValue, required this.growthPercentage, required this.absoluteDelta, required this.isPositive, required this.referenceDate}): _dataPoints = dataPoints;
   
 
  final  List<FinancialDataPoint> _dataPoints;
@@ -237,16 +243,18 @@ _$PfcfRatioStatsCopyWith<_PfcfRatioStats> get copyWith => __$PfcfRatioStatsCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PfcfRatioStats&&const DeepCollectionEquality().equals(other._dataPoints, _dataPoints)&&(identical(other.currentValue, currentValue) || other.currentValue == currentValue)&&(identical(other.growthPercentage, growthPercentage) || other.growthPercentage == growthPercentage)&&(identical(other.absoluteDelta, absoluteDelta) || other.absoluteDelta == absoluteDelta)&&(identical(other.isPositive, isPositive) || other.isPositive == isPositive)&&(identical(other.referenceDate, referenceDate) || other.referenceDate == referenceDate));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _PfcfRatioStats&&const DeepCollectionEquality().equals(other.dataPoints, _dataPoints)&&(identical(other.currentValue, currentValue) || other.currentValue == currentValue)&&(identical(other.growthPercentage, growthPercentage) || other.growthPercentage == growthPercentage)&&(identical(other.absoluteDelta, absoluteDelta) || other.absoluteDelta == absoluteDelta)&&(identical(other.isPositive, isPositive) || other.isPositive == isPositive)&&(identical(other.referenceDate, referenceDate) || other.referenceDate == referenceDate));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_dataPoints),currentValue,growthPercentage,absoluteDelta,isPositive,referenceDate);
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_dataPoints),currentValue,growthPercentage,absoluteDelta,isPositive,referenceDate);
+}
 
 @override
 String toString() {
-  return 'PfcfRatioStats(dataPoints: $dataPoints, currentValue: $currentValue, growthPercentage: $growthPercentage, absoluteDelta: $absoluteDelta, isPositive: $isPositive, referenceDate: $referenceDate)';
+    return 'PfcfRatioStats(dataPoints: $dataPoints, currentValue: $currentValue, growthPercentage: $growthPercentage, absoluteDelta: $absoluteDelta, isPositive: $isPositive, referenceDate: $referenceDate)';
 }
 
 

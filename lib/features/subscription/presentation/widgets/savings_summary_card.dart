@@ -1,7 +1,7 @@
 import 'package:bizzie/app/themes/app_text_styles.dart';
 import 'package:bizzie/app/themes/app_theme.dart';
 import 'package:bizzie/features/subscription/domain/models/subscription_package.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class SavingsSummaryCard extends StatelessWidget {
   final SubscriptionPackage? package;

@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'subscription_status.dart';
@@ -9,6 +9,7 @@ part of 'subscription_status.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $SubscriptionStatusCopyWith<SubscriptionStatus> get copyWith => _$SubscriptionSt
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SubscriptionStatus&&(identical(other.isSubscribed, isSubscribed) || other.isSubscribed == isSubscribed)&&const DeepCollectionEquality().equals(other.activeEntitlements, activeEntitlements)&&const DeepCollectionEquality().equals(other.activeProductIds, activeProductIds)&&(identical(other.expirationDate, expirationDate) || other.expirationDate == expirationDate)&&(identical(other.latestPurchaseDate, latestPurchaseDate) || other.latestPurchaseDate == latestPurchaseDate)&&(identical(other.managementURL, managementURL) || other.managementURL == managementURL)&&(identical(other.activePlanId, activePlanId) || other.activePlanId == activePlanId)&&(identical(other.periodType, periodType) || other.periodType == periodType));
+  final _this = this as SubscriptionStatus;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SubscriptionStatus&&(identical(other.isSubscribed, _this.isSubscribed) || other.isSubscribed == _this.isSubscribed)&&const DeepCollectionEquality().equals(other.activeEntitlements, _this.activeEntitlements)&&const DeepCollectionEquality().equals(other.activeProductIds, _this.activeProductIds)&&(identical(other.expirationDate, _this.expirationDate) || other.expirationDate == _this.expirationDate)&&(identical(other.latestPurchaseDate, _this.latestPurchaseDate) || other.latestPurchaseDate == _this.latestPurchaseDate)&&(identical(other.managementURL, _this.managementURL) || other.managementURL == _this.managementURL)&&(identical(other.activePlanId, _this.activePlanId) || other.activePlanId == _this.activePlanId)&&(identical(other.periodType, _this.periodType) || other.periodType == _this.periodType));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,isSubscribed,const DeepCollectionEquality().hash(activeEntitlements),const DeepCollectionEquality().hash(activeProductIds),expirationDate,latestPurchaseDate,managementURL,activePlanId,periodType);
+int get hashCode {
+  final _this = this as SubscriptionStatus;
+  return Object.hash(runtimeType,_this.isSubscribed,const DeepCollectionEquality().hash(_this.activeEntitlements),const DeepCollectionEquality().hash(_this.activeProductIds),_this.expirationDate,_this.latestPurchaseDate,_this.managementURL,_this.activePlanId,_this.periodType);
+}
 
 @override
 String toString() {
-  return 'SubscriptionStatus(isSubscribed: $isSubscribed, activeEntitlements: $activeEntitlements, activeProductIds: $activeProductIds, expirationDate: $expirationDate, latestPurchaseDate: $latestPurchaseDate, managementURL: $managementURL, activePlanId: $activePlanId, periodType: $periodType)';
+  final _this = this as SubscriptionStatus;
+  return 'SubscriptionStatus(isSubscribed: ${_this.isSubscribed}, activeEntitlements: ${_this.activeEntitlements}, activeProductIds: ${_this.activeProductIds}, expirationDate: ${_this.expirationDate}, latestPurchaseDate: ${_this.latestPurchaseDate}, managementURL: ${_this.managementURL}, activePlanId: ${_this.activePlanId}, periodType: ${_this.periodType})';
 }
 
 
@@ -63,7 +69,7 @@ class _$SubscriptionStatusCopyWithImpl<$Res>
 /// Create a copy of SubscriptionStatus
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? isSubscribed = null,Object? activeEntitlements = null,Object? activeProductIds = null,Object? expirationDate = freezed,Object? latestPurchaseDate = freezed,Object? managementURL = freezed,Object? activePlanId = freezed,Object? periodType = null,}) {
-  return _then(_self.copyWith(
+  return _then(SubscriptionStatus(
 isSubscribed: null == isSubscribed ? _self.isSubscribed : isSubscribed // ignore: cast_nullable_to_non_nullable
 as bool,activeEntitlements: null == activeEntitlements ? _self.activeEntitlements : activeEntitlements // ignore: cast_nullable_to_non_nullable
 as Set<String>,activeProductIds: null == activeProductIds ? _self.activeProductIds : activeProductIds // ignore: cast_nullable_to_non_nullable
@@ -213,7 +219,7 @@ return $default(_that.isSubscribed,_that.activeEntitlements,_that.activeProductI
 
 
 class _SubscriptionStatus implements SubscriptionStatus {
-  const _SubscriptionStatus({required this.isSubscribed, required final  Set<String> activeEntitlements, required final  Set<String> activeProductIds, this.expirationDate, this.latestPurchaseDate, this.managementURL, this.activePlanId, this.periodType = SubscriptionPeriodType.unknown}): _activeEntitlements = activeEntitlements,_activeProductIds = activeProductIds;
+  const _SubscriptionStatus({required this.isSubscribed, required  Set<String> activeEntitlements, required  Set<String> activeProductIds, this.expirationDate, this.latestPurchaseDate, this.managementURL, this.activePlanId, this.periodType = SubscriptionPeriodType.unknown}): _activeEntitlements = activeEntitlements,_activeProductIds = activeProductIds;
   
 
 @override final  bool isSubscribed;
@@ -247,16 +253,18 @@ _$SubscriptionStatusCopyWith<_SubscriptionStatus> get copyWith => __$Subscriptio
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SubscriptionStatus&&(identical(other.isSubscribed, isSubscribed) || other.isSubscribed == isSubscribed)&&const DeepCollectionEquality().equals(other._activeEntitlements, _activeEntitlements)&&const DeepCollectionEquality().equals(other._activeProductIds, _activeProductIds)&&(identical(other.expirationDate, expirationDate) || other.expirationDate == expirationDate)&&(identical(other.latestPurchaseDate, latestPurchaseDate) || other.latestPurchaseDate == latestPurchaseDate)&&(identical(other.managementURL, managementURL) || other.managementURL == managementURL)&&(identical(other.activePlanId, activePlanId) || other.activePlanId == activePlanId)&&(identical(other.periodType, periodType) || other.periodType == periodType));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _SubscriptionStatus&&(identical(other.isSubscribed, isSubscribed) || other.isSubscribed == isSubscribed)&&const DeepCollectionEquality().equals(other.activeEntitlements, _activeEntitlements)&&const DeepCollectionEquality().equals(other.activeProductIds, _activeProductIds)&&(identical(other.expirationDate, expirationDate) || other.expirationDate == expirationDate)&&(identical(other.latestPurchaseDate, latestPurchaseDate) || other.latestPurchaseDate == latestPurchaseDate)&&(identical(other.managementURL, managementURL) || other.managementURL == managementURL)&&(identical(other.activePlanId, activePlanId) || other.activePlanId == activePlanId)&&(identical(other.periodType, periodType) || other.periodType == periodType));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,isSubscribed,const DeepCollectionEquality().hash(_activeEntitlements),const DeepCollectionEquality().hash(_activeProductIds),expirationDate,latestPurchaseDate,managementURL,activePlanId,periodType);
+int get hashCode {
+    return Object.hash(runtimeType,isSubscribed,const DeepCollectionEquality().hash(_activeEntitlements),const DeepCollectionEquality().hash(_activeProductIds),expirationDate,latestPurchaseDate,managementURL,activePlanId,periodType);
+}
 
 @override
 String toString() {
-  return 'SubscriptionStatus(isSubscribed: $isSubscribed, activeEntitlements: $activeEntitlements, activeProductIds: $activeProductIds, expirationDate: $expirationDate, latestPurchaseDate: $latestPurchaseDate, managementURL: $managementURL, activePlanId: $activePlanId, periodType: $periodType)';
+    return 'SubscriptionStatus(isSubscribed: $isSubscribed, activeEntitlements: $activeEntitlements, activeProductIds: $activeProductIds, expirationDate: $expirationDate, latestPurchaseDate: $latestPurchaseDate, managementURL: $managementURL, activePlanId: $activePlanId, periodType: $periodType)';
 }
 
 

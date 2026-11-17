@@ -5,7 +5,7 @@ import 'package:bizzie/features/onboarding/select_brands/presentation/widgets/br
 import 'package:bizzie/features/onboarding/select_brands/presentation/widgets/section_visibility_animator.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:bizzie/shared/widgets/animations/bizzie_entrance_scale.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class BrandCloudSection extends StatelessWidget {
   final String title;

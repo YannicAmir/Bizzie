@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'company_business_event.dart';
@@ -9,6 +9,7 @@ part of 'company_business_event.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -20,7 +21,7 @@ mixin _$CompanyBusinessEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CompanyBusinessEvent);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is CompanyBusinessEvent);
 }
 
 
@@ -29,7 +30,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'CompanyBusinessEvent()';
+    return 'CompanyBusinessEvent()';
 }
 
 
@@ -227,16 +228,18 @@ $LoadRequestedCopyWith<LoadRequested> get copyWith => _$LoadRequestedCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is LoadRequested&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.forceRefresh, forceRefresh) || other.forceRefresh == forceRefresh));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is LoadRequested&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.forceRefresh, forceRefresh) || other.forceRefresh == forceRefresh));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,ticker,forceRefresh);
+int get hashCode {
+    return Object.hash(runtimeType,ticker,forceRefresh);
+}
 
 @override
 String toString() {
-  return 'CompanyBusinessEvent.loadRequested(ticker: $ticker, forceRefresh: $forceRefresh)';
+    return 'CompanyBusinessEvent.loadRequested(ticker: $ticker, forceRefresh: $forceRefresh)';
 }
 
 
@@ -294,16 +297,18 @@ $StalenessCheckRequestedCopyWith<StalenessCheckRequested> get copyWith => _$Stal
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is StalenessCheckRequested&&(identical(other.ticker, ticker) || other.ticker == ticker));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is StalenessCheckRequested&&(identical(other.ticker, ticker) || other.ticker == ticker));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,ticker);
+int get hashCode {
+    return Object.hash(runtimeType,ticker);
+}
 
 @override
 String toString() {
-  return 'CompanyBusinessEvent.stalenessCheckRequested(ticker: $ticker)';
+    return 'CompanyBusinessEvent.stalenessCheckRequested(ticker: $ticker)';
 }
 
 
@@ -360,16 +365,18 @@ $TabShownCopyWith<TabShown> get copyWith => _$TabShownCopyWithImpl<TabShown>(thi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TabShown&&(identical(other.ticker, ticker) || other.ticker == ticker));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is TabShown&&(identical(other.ticker, ticker) || other.ticker == ticker));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,ticker);
+int get hashCode {
+    return Object.hash(runtimeType,ticker);
+}
 
 @override
 String toString() {
-  return 'CompanyBusinessEvent.tabShown(ticker: $ticker)';
+    return 'CompanyBusinessEvent.tabShown(ticker: $ticker)';
 }
 
 
@@ -421,7 +428,7 @@ class TabHidden implements CompanyBusinessEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TabHidden);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is TabHidden);
 }
 
 
@@ -430,7 +437,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'CompanyBusinessEvent.tabHidden()';
+    return 'CompanyBusinessEvent.tabHidden()';
 }
 
 
@@ -453,7 +460,7 @@ class AppBackgrounded implements CompanyBusinessEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AppBackgrounded);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is AppBackgrounded);
 }
 
 
@@ -462,7 +469,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'CompanyBusinessEvent.appBackgrounded()';
+    return 'CompanyBusinessEvent.appBackgrounded()';
 }
 
 
@@ -485,7 +492,7 @@ class AppForegrounded implements CompanyBusinessEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AppForegrounded);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is AppForegrounded);
 }
 
 
@@ -494,7 +501,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'CompanyBusinessEvent.appForegrounded()';
+    return 'CompanyBusinessEvent.appForegrounded()';
 }
 
 
@@ -517,7 +524,7 @@ class BusinessReset implements CompanyBusinessEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is BusinessReset);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is BusinessReset);
 }
 
 
@@ -526,7 +533,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'CompanyBusinessEvent.reset()';
+    return 'CompanyBusinessEvent.reset()';
 }
 
 
@@ -560,16 +567,18 @@ $AnalyticsInteractionOccurredCopyWith<AnalyticsInteractionOccurred> get copyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AnalyticsInteractionOccurred&&(identical(other.tappedWebsite, tappedWebsite) || other.tappedWebsite == tappedWebsite)&&(identical(other.tappedProxy, tappedProxy) || other.tappedProxy == tappedProxy)&&(identical(other.didExpandDescription, didExpandDescription) || other.didExpandDescription == didExpandDescription)&&(identical(other.viewed10Ks, viewed10Ks) || other.viewed10Ks == viewed10Ks)&&(identical(other.viewed10Qs, viewed10Qs) || other.viewed10Qs == viewed10Qs)&&(identical(other.viewAll10KsTapped, viewAll10KsTapped) || other.viewAll10KsTapped == viewAll10KsTapped)&&(identical(other.viewAll10QsTapped, viewAll10QsTapped) || other.viewAll10QsTapped == viewAll10QsTapped));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is AnalyticsInteractionOccurred&&(identical(other.tappedWebsite, tappedWebsite) || other.tappedWebsite == tappedWebsite)&&(identical(other.tappedProxy, tappedProxy) || other.tappedProxy == tappedProxy)&&(identical(other.didExpandDescription, didExpandDescription) || other.didExpandDescription == didExpandDescription)&&(identical(other.viewed10Ks, viewed10Ks) || other.viewed10Ks == viewed10Ks)&&(identical(other.viewed10Qs, viewed10Qs) || other.viewed10Qs == viewed10Qs)&&(identical(other.viewAll10KsTapped, viewAll10KsTapped) || other.viewAll10KsTapped == viewAll10KsTapped)&&(identical(other.viewAll10QsTapped, viewAll10QsTapped) || other.viewAll10QsTapped == viewAll10QsTapped));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,tappedWebsite,tappedProxy,didExpandDescription,viewed10Ks,viewed10Qs,viewAll10KsTapped,viewAll10QsTapped);
+int get hashCode {
+    return Object.hash(runtimeType,tappedWebsite,tappedProxy,didExpandDescription,viewed10Ks,viewed10Qs,viewAll10KsTapped,viewAll10QsTapped);
+}
 
 @override
 String toString() {
-  return 'CompanyBusinessEvent.analyticsInteractionOccurred(tappedWebsite: $tappedWebsite, tappedProxy: $tappedProxy, didExpandDescription: $didExpandDescription, viewed10Ks: $viewed10Ks, viewed10Qs: $viewed10Qs, viewAll10KsTapped: $viewAll10KsTapped, viewAll10QsTapped: $viewAll10QsTapped)';
+    return 'CompanyBusinessEvent.analyticsInteractionOccurred(tappedWebsite: $tappedWebsite, tappedProxy: $tappedProxy, didExpandDescription: $didExpandDescription, viewed10Ks: $viewed10Ks, viewed10Qs: $viewed10Qs, viewAll10KsTapped: $viewAll10KsTapped, viewAll10QsTapped: $viewAll10QsTapped)';
 }
 
 

@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:bizzie/app/themes/app_assets.dart';
 import 'package:bizzie/features/company_profile/cp/presentation/enums/company_profile_tour_step.dart';
 import 'package:bizzie/features/company_profile/cp/presentation/widgets/company_profile_tour_target.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';

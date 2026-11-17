@@ -16,7 +16,7 @@ import 'package:bizzie/features/company_profile/security/presentation/views/secu
 import 'package:bizzie/features/company_profile/segments/presentation/views/segments_tab.dart';
 import 'package:bizzie/features/company_profile/shared/domain/enums/company_profile_tab.dart';
 import 'package:bizzie/features/company_profile/shares/presentation/views/shares_tab.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class CompanyProfileBody extends StatelessWidget {
   final String ticker;
