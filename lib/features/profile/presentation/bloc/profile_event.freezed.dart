@@ -88,10 +88,7 @@ case Started():
 return started(_that);case SettingsClicked():
 return settingsClicked(_that);case PremiumCardClicked():
 return premiumCardClicked(_that);case NavigationProcessed():
-return navigationProcessed(_that);case _:
-  throw StateError('Unexpected subclass');
-
-}
+return navigationProcessed(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -159,10 +156,7 @@ case Started():
 return started();case SettingsClicked():
 return settingsClicked();case PremiumCardClicked():
 return premiumCardClicked();case NavigationProcessed():
-return navigationProcessed();case _:
-  throw StateError('Unexpected subclass');
-
-}
+return navigationProcessed();}
 }
 /// A variant of `when` that fallback to returning `null`
 ///

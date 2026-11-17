@@ -12,10 +12,3 @@ enum SearchOutcome {
 
   String get analyticsValue => name;
 }
-
-enum SearchSource {
-  home,
-  reports;
-
-  String get analyticsValue => name;
-}

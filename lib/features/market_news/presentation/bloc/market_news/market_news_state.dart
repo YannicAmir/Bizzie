@@ -1,4 +1,8 @@
-part of 'market_news_bloc.dart';
+import 'package:bizzie/core/error/failures.dart';
+import 'package:bizzie/features/market_news/domain/models/market_news_article.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+
+part 'market_news_state.freezed.dart';
 
 @freezed
 abstract class MarketNewsState with _$MarketNewsState {

@@ -7,7 +7,7 @@ import 'package:bizzie/shared/widgets/company_list_tile.dart';
 import 'package:bizzie/app/routes/app_routes.dart';
 import 'package:go_router/go_router.dart';
 
-import 'package:bizzie/features/search/domain/enums/search_analytics_enums.dart';
+import 'package:bizzie/core/enums/search_source.dart';
 
 class SearchInitialView extends StatelessWidget {
   final String? favoriteSector;

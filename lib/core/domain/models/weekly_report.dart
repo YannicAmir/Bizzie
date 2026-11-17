@@ -30,4 +30,6 @@ abstract class WeeklyReport with _$WeeklyReport {
   }) = _WeeklyReport;
 
   String get seenKey => '${ticker}_$id';
+
+  DateTime? get reportDate => DateTime.tryParse(id ?? '');
 }

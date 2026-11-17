@@ -9,6 +9,7 @@ abstract class IUserRemoteDataSource {
   Future<void> updateUser(UserDto user);
   Future<void> updateFcmToken(String uid, String deviceId, String token);
   Future<void> removeFcmToken(String uid, String deviceId);
+  Future<void> updateLastViewedAt(String uid);
   Future<void> updateNotificationSettings(
     String uid,
     bool enabled, {

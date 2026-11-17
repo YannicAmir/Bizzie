@@ -2,6 +2,8 @@ import 'package:bizzie/app/router.dart';
 import 'package:bizzie/app/themes/app_assets.dart';
 import 'package:bizzie/core/domain/models/weekly_report.dart';
 import 'package:bizzie/shared/widgets/app_badge.dart';
+import 'package:bizzie/shared/widgets/cards/filing_card_action_button.dart';
+import 'package:bizzie/shared/widgets/cards/filing_card_content.dart';
 import 'package:bizzie/shared/widgets/cards/filing_card_header.dart';
 import 'package:bizzie/shared/widgets/modals/weekly_report_modal.dart';
 import 'package:material_ui/material_ui.dart';
@@ -12,7 +14,7 @@ class WeeklyReportCard extends StatelessWidget {
 
   final WeeklyReport report;
   final bool isLocked;
-  final DateTime? lastViewed;
+  final String? logoUrl;
   final VoidCallback? onCompanyTapped;
   final VoidCallback? onLockedTapped;
   final VoidCallback? onReportOpened;
@@ -21,7 +23,7 @@ class WeeklyReportCard extends StatelessWidget {
     super.key,
     required this.report,
     required this.isLocked,
-    this.lastViewed,
+    this.logoUrl,
     this.onCompanyTapped,
     this.onLockedTapped,
     this.onReportOpened,
@@ -31,48 +33,36 @@ class WeeklyReportCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Container(
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surface,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: theme.dividerColor,
-          width: theme.dividerTheme.thickness ?? .665,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        FilingCardHeader(
+          ticker: report.ticker ?? '',
+          companyName: report.companyName ?? '',
+          filingDate: report.createdAt,
+          releasedAt: report.createdAt,
+          logoUrl: logoUrl,
+          onCompanyTapped: onCompanyTapped,
         ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          FilingCardHeader(
-            ticker: report.ticker ?? '',
-            companyName: report.companyName ?? '',
-            formType: filingType,
-            badgeStyle: AppBadgeStyle.warning,
-            filingDate: report.createdAt,
-            createdAt: report.createdAt,
-            lastViewed: lastViewed,
-            onCompanyTapped: onCompanyTapped,
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-            child: Text(
+        FilingCardContent(
+          formType: filingType,
+          badgeStyle: AppBadgeStyle.warning,
+          body: [
+            Text(
               report.messageShortSummary ?? '',
               style: theme.textTheme.bodyMedium,
-              maxLines: 3,
-              overflow: TextOverflow.ellipsis,
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-            child: _WeeklyReportActionButton(
+          ],
+          actions: FilingCardActionsRow(
+            trailing: _WeeklyReportActionButton(
               report: report,
               isLocked: isLocked,
               onLockedTapped: onLockedTapped,
               onReportOpened: onReportOpened,
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
@@ -112,35 +102,20 @@ class _WeeklyReportActionButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return InkWell(
-      onTap: () => _onTap(theme.colorScheme.scrim),
-      child: Row(
-        children: [
-          if (isLocked)
-            SvgPicture.asset(
+    return FilingCardActionButton(
+      iconBuilder: (color) => isLocked
+          ? SvgPicture.asset(
               AppAssets.authLockIcon,
-              width: 15,
-              height: 15,
-              colorFilter: ColorFilter.mode(
-                theme.colorScheme.primary,
-                BlendMode.srcIn,
-              ),
+              width: 20,
+              height: 20,
+              excludeFromSemantics: true,
+              colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
             )
-          else
-            Icon(
-              Icons.description_outlined,
-              size: 16,
-              color: theme.colorScheme.primary,
-            ),
-          const SizedBox(width: 8),
-          Text(
-            'View Full Report',
-            style: theme.textTheme.headlineMedium?.copyWith(
-              color: theme.colorScheme.primary,
-            ),
-          ),
-        ],
-      ),
+          : Icon(Icons.description_outlined, size: 22, color: color),
+      label: 'View Full Report',
+      style: FilingCardActionStyle.primary,
+      alignment: Alignment.centerRight,
+      onTap: () => _onTap(theme.colorScheme.scrim),
     );
   }
 }

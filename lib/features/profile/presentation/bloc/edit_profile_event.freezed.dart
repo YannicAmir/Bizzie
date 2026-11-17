@@ -106,10 +106,7 @@ return reauthModalDismissed(_that);case DeleteAccountConfirmed():
 return deleteAccountConfirmed(_that);case DeleteConfirmationDismissed():
 return deleteConfirmationDismissed(_that);case ShowDeleteConfirmation():
 return showDeleteConfirmation(_that);case ToggleReauthPasswordVisibility():
-return toggleReauthPasswordVisibility(_that);case _:
-  throw StateError('Unexpected subclass');
-
-}
+return toggleReauthPasswordVisibility(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -204,10 +201,7 @@ return reauthModalDismissed();case DeleteAccountConfirmed():
 return deleteAccountConfirmed();case DeleteConfirmationDismissed():
 return deleteConfirmationDismissed();case ShowDeleteConfirmation():
 return showDeleteConfirmation();case ToggleReauthPasswordVisibility():
-return toggleReauthPasswordVisibility();case _:
-  throw StateError('Unexpected subclass');
-
-}
+return toggleReauthPasswordVisibility();}
 }
 /// A variant of `when` that fallback to returning `null`
 ///

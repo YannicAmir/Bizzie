@@ -10,12 +10,13 @@ import 'package:bizzie/features/user/domain/usecases/get_user_usecase.dart';
 import 'package:bizzie/features/company_profile/shared/domain/models/company_profile.dart';
 import 'package:bizzie/core/interfaces/i_in_app_review_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 
-part 'app_ratings_event.dart';
-part 'app_ratings_state.dart';
-part 'app_ratings_bloc.freezed.dart';
+import 'app_ratings_event.dart';
+import 'app_ratings_state.dart';
+
+export 'app_ratings_event.dart';
+export 'app_ratings_state.dart';
 
 final _logger = BizzieLogger('AppRatingsBloc');
 
@@ -36,11 +37,11 @@ class AppRatingsBloc extends Bloc<AppRatingsEvent, AppRatingsState> {
     this._getUserUseCase,
     this._configService,
   ) : super(const AppRatingsState.initial()) {
-    on<_InteractionDetected>(_onInteractionDetected);
+    on<AppRatingsInteractionDetected>(_onInteractionDetected);
   }
 
   Future<void> _onInteractionDetected(
-    _InteractionDetected event,
+    AppRatingsInteractionDetected event,
     Emitter<AppRatingsState> emit,
   ) async {
     final result = await _trackRatingConditionsUseCase(NoParams());
@@ -63,7 +64,7 @@ class AppRatingsBloc extends Bloc<AppRatingsEvent, AppRatingsState> {
 
   Future<void> _onConditionsEvaluated(
     RatingConditionsResult conditions,
-    _InteractionDetected event,
+    AppRatingsInteractionDetected event,
     Emitter<AppRatingsState> emit,
   ) async {
     _logger.info('Rating conditions evaluation result: $conditions');
@@ -119,7 +120,7 @@ class AppRatingsBloc extends Bloc<AppRatingsEvent, AppRatingsState> {
   }
 
   Future<AppRatingPromptContext?> _gatherPromptContext(
-    _InteractionDetected event,
+    AppRatingsInteractionDetected event,
   ) async {
     final authUser = _getCurrentUser();
     if (authUser == null) return null;

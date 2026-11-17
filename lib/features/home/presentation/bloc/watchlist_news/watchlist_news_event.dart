@@ -1,4 +1,6 @@
-part of 'watchlist_news_bloc.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+
+part 'watchlist_news_event.freezed.dart';
 
 @freezed
 sealed class WatchlistNewsEvent with _$WatchlistNewsEvent {

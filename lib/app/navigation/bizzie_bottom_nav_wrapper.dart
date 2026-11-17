@@ -194,9 +194,7 @@ class _ReportsTabIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<ReportsBloc, ReportsState>(
       builder: (context, state) {
-        final unreadCount = state.unreadCount(
-          context.read<ReportsBloc>().seenWeeklyReportIds,
-        );
+        final unreadCount = state.unreadCount;
 
         return Badge(
           isLabelVisible: unreadCount > 0,

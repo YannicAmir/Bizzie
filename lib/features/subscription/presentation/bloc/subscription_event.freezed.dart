@@ -112,10 +112,7 @@ return resetPurchaseState(_that);case SubscriptionViewed():
 return viewed(_that);case SubscriptionGiftViewed():
 return giftViewed(_that);case SubscriptionGiftClaimed():
 return giftClaimed(_that);case SubscriptionGiftDismissed():
-return giftDismissed(_that);case _:
-  throw StateError('Unexpected subclass');
-
-}
+return giftDismissed(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -219,10 +216,7 @@ return resetPurchaseState();case SubscriptionViewed():
 return viewed(_that.source,_that.paywallType,_that.tabName,_that.featureName);case SubscriptionGiftViewed():
 return giftViewed(_that.source);case SubscriptionGiftClaimed():
 return giftClaimed(_that.source);case SubscriptionGiftDismissed():
-return giftDismissed(_that.source);case _:
-  throw StateError('Unexpected subclass');
-
-}
+return giftDismissed(_that.source);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///

@@ -1,20 +1,22 @@
-part of 'home_bloc.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+
+part 'home_event.freezed.dart';
 
 @freezed
-class HomeEvent with _$HomeEvent {
-  const factory HomeEvent.started() = _Started;
+sealed class HomeEvent with _$HomeEvent {
+  const factory HomeEvent.started() = HomeStarted;
   const factory HomeEvent.watchlistTapped({
     required String ticker,
     String? eventText,
     bool? isUpcoming,
-  }) = _WatchlistTapped;
-  const factory HomeEvent.emptyStateViewed() = _EmptyStateViewed;
+  }) = HomeWatchlistTapped;
+  const factory HomeEvent.emptyStateViewed() = HomeEmptyStateViewed;
   const factory HomeEvent.watchlistLoadFailed({required String error}) =
-      _WatchlistLoadFailed;
+      HomeWatchlistLoadFailed;
   const factory HomeEvent.newsArticleTapped({
     required String ticker,
     required String site,
-  }) = _NewsArticleTapped;
+  }) = HomeNewsArticleTapped;
   const factory HomeEvent.newsLoadFailed({required String error}) =
-      _NewsLoadFailed;
+      HomeNewsLoadFailed;
 }

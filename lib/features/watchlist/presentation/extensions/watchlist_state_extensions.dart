@@ -1,4 +1,5 @@
 import 'package:bizzie/features/watchlist/presentation/bloc/watchlist_state.dart';
+import 'package:collection/collection.dart';
 
 extension WatchlistStateX on WatchlistState {
   bool isInWatchlist(String ticker) {
@@ -25,6 +26,19 @@ extension WatchlistStateX on WatchlistState {
             company.ticker: logoUrl,
       },
       orElse: () => const <String, String>{},
+    );
+  }
+
+  String? logoUrlFor(String? ticker) {
+    return maybeMap(
+      loaded: (loaded) => loaded.companies
+          .lastWhereOrNull(
+            (company) =>
+                company.ticker == ticker &&
+                (company.logoUrl?.isNotEmpty ?? false),
+          )
+          ?.logoUrl,
+      orElse: () => null,
     );
   }
 }

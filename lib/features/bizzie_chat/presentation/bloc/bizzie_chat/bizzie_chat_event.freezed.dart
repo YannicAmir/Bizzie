@@ -98,10 +98,7 @@ return messagesLoadFailed(_that);case _SseTokenReceived():
 return sseTokenReceived(_that);case _SseDone():
 return sseDone(_that);case _SseFailed():
 return sseFailed(_that);case _MessageRated():
-return messageRated(_that);case _:
-  throw StateError('Unexpected subclass');
-
-}
+return messageRated(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -184,10 +181,7 @@ return messagesLoadFailed(_that.failure);case _SseTokenReceived():
 return sseTokenReceived(_that.token);case _SseDone():
 return sseDone(_that.followUps,_that.source);case _SseFailed():
 return sseFailed(_that.message);case _MessageRated():
-return messageRated(_that.rating,_that.question,_that.aiResponse,_that.companyName,_that.companyTicker,_that.assistantMessageId);case _:
-  throw StateError('Unexpected subclass');
-
-}
+return messageRated(_that.rating,_that.question,_that.aiResponse,_that.companyName,_that.companyTicker,_that.assistantMessageId);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///

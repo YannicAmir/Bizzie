@@ -1,4 +1,5 @@
 import 'package:bizzie/core/interfaces/i_analytics_service.dart';
+import 'package:bizzie/core/enums/search_source.dart';
 import 'package:bizzie/features/search/domain/enums/search_analytics_enums.dart';
 import 'package:injectable/injectable.dart';
 

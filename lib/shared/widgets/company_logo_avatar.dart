@@ -8,6 +8,8 @@ const double _avatarBorderRadius = 12;
 const int _initialsLength = 2;
 
 class CompanyLogoAvatar extends StatelessWidget {
+  static const double size = _avatarSize;
+
   final String ticker;
   final String? logoUrl;
 

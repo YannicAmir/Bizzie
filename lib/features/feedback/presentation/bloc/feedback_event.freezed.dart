@@ -88,10 +88,7 @@ case FeedbackViewed():
 return viewed(_that);case FeedbackSubmit():
 return submit(_that);case FeedbackMessageChanged():
 return messageChanged(_that);case FeedbackCooldownEnded():
-return cooldownEnded(_that);case _:
-  throw StateError('Unexpected subclass');
-
-}
+return cooldownEnded(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -159,10 +156,7 @@ case FeedbackViewed():
 return viewed(_that.intentSource);case FeedbackSubmit():
 return submit(_that.message);case FeedbackMessageChanged():
 return messageChanged(_that.message);case FeedbackCooldownEnded():
-return cooldownEnded();case _:
-  throw StateError('Unexpected subclass');
-
-}
+return cooldownEnded();}
 }
 /// A variant of `when` that fallback to returning `null`
 ///

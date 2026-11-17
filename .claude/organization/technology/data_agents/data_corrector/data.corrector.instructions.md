@@ -43,7 +43,7 @@ Add the missing conversion method. The DTO must have both `toDomain()` for reads
 Add `.handleError((e, s) { ... })` after the stream call. Distinguish `permission-denied` (use `_logger.warning`) from other errors (use `_logger.severe`).
 
 ### Missing BizzieLogger (using print/debugPrint)
-Replace with `final _logger = BizzieLogger('XxxClass')` at file or class level. Replace all `print`/`debugPrint` calls with appropriate `_logger` severity calls.
+Replace with `final _logger = BizzieLogger('XxxClass')` at file level. Replace all `print`/`debugPrint` calls with appropriate `_logger` severity calls.
 
 ---
 

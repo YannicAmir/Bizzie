@@ -109,4 +109,63 @@ void main() {
       expect(result, isEmpty);
     });
   });
+
+  group('WatchlistStateX.logoUrlFor', () {
+    const loadedState = WatchlistState.loaded([
+      tCompanyAaplWithLogo,
+      tCompanyMsftEmptyLogo,
+      tCompanyGoog,
+    ]);
+
+    test('logoUrlFor_tickerWithLogo_returnsLogoUrl', () {
+      // act
+      final result = loadedState.logoUrlFor('AAPL');
+
+      // assert
+      expect(result, tAaplLogoUrl);
+    });
+
+    test('logoUrlFor_tickerWithEmptyLogo_returnsNull', () {
+      // act
+      final result = loadedState.logoUrlFor('MSFT');
+
+      // assert
+      expect(result, isNull);
+    });
+
+    test('logoUrlFor_tickerWithoutLogo_returnsNull', () {
+      // act
+      final result = loadedState.logoUrlFor('GOOG');
+
+      // assert
+      expect(result, isNull);
+    });
+
+    test('logoUrlFor_tickerNotInWatchlist_returnsNull', () {
+      // act
+      final result = loadedState.logoUrlFor('TSLA');
+
+      // assert
+      expect(result, isNull);
+    });
+
+    test('logoUrlFor_nullTicker_returnsNull', () {
+      // act
+      final result = loadedState.logoUrlFor(null);
+
+      // assert
+      expect(result, isNull);
+    });
+
+    test('logoUrlFor_nonLoadedState_returnsNull', () {
+      // arrange
+      const state = WatchlistState.loading();
+
+      // act
+      final result = state.logoUrlFor('AAPL');
+
+      // assert
+      expect(result, isNull);
+    });
+  });
 }

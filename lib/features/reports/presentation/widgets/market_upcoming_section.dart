@@ -1,11 +1,12 @@
+import 'package:bizzie/app/navigation/search_navigation.dart';
 import 'package:bizzie/app/routes/app_routes.dart';
 import 'package:bizzie/app/themes/app_text_styles.dart';
+import 'package:bizzie/core/enums/search_source.dart';
 import 'package:bizzie/features/reports/domain/models/upcoming_earnings.dart';
 import 'package:bizzie/features/reports/presentation/bloc/reports_bloc.dart';
 import 'package:bizzie/features/reports/presentation/bloc/reports_event.dart';
 import 'package:bizzie/features/reports/presentation/widgets/upcoming_earnings_card.dart';
 import 'package:bizzie/features/reports/presentation/widgets/upcoming_earnings_modal.dart';
-import 'package:bizzie/features/search/domain/enums/search_analytics_enums.dart';
 import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
 import 'package:bizzie/features/user/presentation/extensions/user_state_extensions.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
@@ -129,7 +130,7 @@ class _UpcomingEmptyState extends StatelessWidget {
             message: 'No upcoming events for your watchlisted companies.',
             actionLabel: 'Search for stocks',
             onAction: () =>
-                context.push(AppRoutes.search, extra: SearchSource.reports),
+                SearchNavigation.push(context, source: SearchSource.reports),
           ),
         ),
       ],

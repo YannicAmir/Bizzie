@@ -101,6 +101,20 @@ class UserRemoteDataSource implements IUserRemoteDataSource {
   }
 
   @override
+  Future<void> updateLastViewedAt(String uid) async {
+    _logger.info('Updating lastViewedAt for UID: $uid');
+    try {
+      await _firestoreService.updateDocument(
+        path: 'users/$uid',
+        data: {'lastViewedAt': FieldValue.serverTimestamp()},
+      );
+    } catch (e, s) {
+      _logger.severe('Failed to update lastViewedAt', e, s);
+      rethrow;
+    }
+  }
+
+  @override
   Future<void> updateNotificationSettings(
     String uid,
     bool enabled, {

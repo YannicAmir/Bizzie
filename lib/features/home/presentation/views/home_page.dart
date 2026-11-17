@@ -1,4 +1,5 @@
-import 'package:bizzie/app/routes/app_routes.dart';
+import 'package:bizzie/app/navigation/search_navigation.dart';
+import 'package:bizzie/core/enums/search_source.dart';
 import 'package:bizzie/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:bizzie/features/auth/presentation/bloc/auth_state.dart';
 import 'package:bizzie/features/auth/presentation/utils/auth_failure_snackbar.dart';
@@ -12,7 +13,6 @@ import 'package:bizzie/features/home/presentation/utils/watchlist_prices_state_e
 import 'package:bizzie/features/home/presentation/widgets/home_empty_watchlist_view.dart';
 import 'package:bizzie/features/home/presentation/widgets/home_news_carousel.dart';
 import 'package:bizzie/features/home/presentation/widgets/home_watchlist_widget.dart';
-import 'package:bizzie/features/search/domain/enums/search_analytics_enums.dart';
 import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
 import 'package:bizzie/features/user/presentation/extensions/user_state_extensions.dart';
 import 'package:bizzie/features/watchlist/presentation/bloc/watchlist_bloc.dart';
@@ -24,7 +24,6 @@ import 'package:bizzie/shared/widgets/loading/bizzie_loader.dart';
 import 'package:bizzie/shared/widgets/loading/mascot_refresh_indicator.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 
 const _refreshSettleTimeout = Duration(seconds: 8);
 
@@ -61,7 +60,7 @@ class _HomePageState extends State<HomePage> {
         title: BizzieSearchBar(
           readOnly: true,
           onTap: () {
-            context.push(AppRoutes.search, extra: SearchSource.home);
+            SearchNavigation.push(context, source: SearchSource.home);
           },
         ),
       ),

@@ -6,12 +6,13 @@ import 'package:bizzie/features/market_news/domain/usecases/watch_market_news_us
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 
-part 'market_news_event.dart';
-part 'market_news_state.dart';
-part 'market_news_bloc.freezed.dart';
+import 'market_news_event.dart';
+import 'market_news_state.dart';
+
+export 'market_news_event.dart';
+export 'market_news_state.dart';
 
 final _logger = BizzieLogger('MarketNewsBloc');
 

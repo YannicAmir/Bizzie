@@ -226,8 +226,8 @@ return $default(_that.id,_that.symbol,_that.companyName,_that.filingDate,_that.f
 /// @nodoc
 
 
-class _SecFiling implements SecFiling {
-  const _SecFiling({required this.id, required this.symbol, required this.companyName, required this.filingDate, required this.formType, required this.link, required this.summary, this.eps, this.revenue, this.sentiment, this.topic, this.isEarnings = false, required this.createdAt, required this.analyzedAt, this.deepAnalysisId, this.deepAnalysisStatus});
+class _SecFiling extends SecFiling {
+  const _SecFiling({required this.id, required this.symbol, required this.companyName, required this.filingDate, required this.formType, required this.link, required this.summary, this.eps, this.revenue, this.sentiment, this.topic, this.isEarnings = false, required this.createdAt, required this.analyzedAt, this.deepAnalysisId, this.deepAnalysisStatus}): super._();
   
 
 @override final  String id;

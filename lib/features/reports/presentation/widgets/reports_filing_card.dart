@@ -10,6 +10,8 @@ import 'package:bizzie/features/reports/presentation/bloc/reports_event.dart';
 import 'package:bizzie/features/subscription/presentation/utils/paywall_helper.dart';
 import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
 import 'package:bizzie/features/user/presentation/extensions/user_state_extensions.dart';
+import 'package:bizzie/features/watchlist/presentation/bloc/watchlist_bloc.dart';
+import 'package:bizzie/features/watchlist/presentation/extensions/watchlist_state_extensions.dart';
 import 'package:bizzie/shared/widgets/cards/sec_filing_card.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -18,13 +20,11 @@ import 'package:go_router/go_router.dart';
 class ReportsFilingCard extends StatelessWidget {
   final SecFiling filing;
   final FinancialReport? financialReport;
-  final DateTime? lastViewed;
 
   const ReportsFilingCard({
     super.key,
     required this.filing,
     this.financialReport,
-    this.lastViewed,
   });
 
   void _onCompanyTapped(BuildContext context) {
@@ -50,12 +50,15 @@ class ReportsFilingCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final logoUrl = context.select<WatchlistBloc, String?>(
+      (bloc) => bloc.state.logoUrlFor(filing.symbol),
+    );
     return BlocSelector<UserBloc, UserState, bool>(
       selector: (state) => state.isSubscribed,
       builder: (context, isSubscribed) => SecFilingCard(
         filing: filing,
         financialReport: financialReport,
-        lastViewed: lastViewed,
+        logoUrl: logoUrl,
         summaryButtonLabel: getIt<IConfigService>().aiSummaryButtonLabel,
         isSummaryLocked: !isSubscribed,
         onCompanyTapped: () => _onCompanyTapped(context),

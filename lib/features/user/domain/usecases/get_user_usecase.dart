@@ -11,8 +11,6 @@ class GetUserUseCase implements UseCase<Either<Failure, UserModel>, String> {
 
   GetUserUseCase(this._repository);
 
-  String? get cachedSector => _repository.getCachedFavoriteSector();
-
   @override
   Future<Either<Failure, UserModel>> call(String params) async {
     return await _repository.getUser(params);

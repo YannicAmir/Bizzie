@@ -11,6 +11,7 @@ This document serves as the **Single Source of Truth** for the tools, libraries,
 * **IDEs:** Claude Code, VS Code, Cursor
 * **Language:** Dart (Latest Stable, SDK ^3.8.0)
 * **Framework:** Flutter (Latest Stable)
+* **Material Library:** `material_ui` — import `package:material_ui/material_ui.dart`, never `package:flutter/material.dart`
 
 ## 2. Core Architecture & Frontend
 * **Architecture Pattern:** Feature-Driven Clean Architecture (Data / Domain / Presentation)

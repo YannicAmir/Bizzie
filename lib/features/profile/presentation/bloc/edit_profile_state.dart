@@ -5,7 +5,7 @@ import 'package:bizzie/features/profile/domain/enums/reauth_action.dart';
 part 'edit_profile_state.freezed.dart';
 
 @freezed
-class EditProfileState with _$EditProfileState {
+abstract class EditProfileState with _$EditProfileState {
   const factory EditProfileState.initial({String? favoriteSector}) = _Initial;
   const factory EditProfileState.loading({String? favoriteSector}) = _Loading;
   const factory EditProfileState.success({String? favoriteSector}) = _Success;

@@ -86,10 +86,7 @@ switch (_that) {
 case Started():
 return started(_that);case LockoutActionTaken():
 return lockoutActionTaken(_that);case ThreatDetected():
-return threatDetected(_that);case _:
-  throw StateError('Unexpected subclass');
-
-}
+return threatDetected(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -154,10 +151,7 @@ switch (_that) {
 case Started():
 return started();case LockoutActionTaken():
 return lockoutActionTaken(_that.action);case ThreatDetected():
-return threatDetected(_that.type,_that.isCritical);case _:
-  throw StateError('Unexpected subclass');
-
-}
+return threatDetected(_that.type,_that.isCritical);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///

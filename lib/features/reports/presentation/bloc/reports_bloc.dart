@@ -1,70 +1,87 @@
 import 'dart:async';
-import 'dart:convert';
+import 'package:bizzie/core/enums/bizzie_lifecycle_state.dart';
+import 'package:bizzie/core/interfaces/i_lifecycle_service.dart';
+import 'package:bizzie/core/interfaces/i_time_provider.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:bizzie/core/error/failures.dart';
-import 'package:bizzie/features/auth/domain/interfaces/i_auth_repository.dart';
+import 'package:bizzie/features/auth/domain/usecases/get_current_user_usecase.dart';
 import 'package:bizzie/core/domain/models/financial_report.dart';
 import 'package:bizzie/features/reports/domain/models/reports_feed.dart';
 import 'package:bizzie/core/domain/models/weekly_report.dart';
 import 'package:bizzie/shared/models/filing_view_model.dart';
 import 'package:bizzie/features/reports/domain/usecases/get_dashboard_reports_usecase.dart';
-import 'package:bizzie/features/reports/domain/usecases/get_user_activity_use_case.dart';
-import 'package:bizzie/features/reports/domain/usecases/mark_reports_viewed_use_case.dart';
+import 'package:bizzie/features/reports/domain/usecases/get_seen_weekly_report_ids_usecase.dart';
+import 'package:bizzie/features/reports/domain/usecases/get_user_activity_usecase.dart';
+import 'package:bizzie/features/reports/domain/usecases/increment_reports_feed_view_count_usecase.dart';
+import 'package:bizzie/features/reports/domain/usecases/mark_reports_viewed_usecase.dart';
+import 'package:bizzie/features/reports/domain/usecases/save_seen_weekly_report_ids_usecase.dart';
 import 'package:bizzie/features/reports/domain/models/mark_reports_viewed_params.dart';
-import 'package:bizzie/features/watchlist/domain/interfaces/watchlist_repository.dart';
-import 'package:bizzie/features/user/domain/usecases/watch_current_user_usecase.dart';
-import 'package:bizzie/core/interfaces/i_local_storage_service.dart';
+import 'package:bizzie/features/watchlist/domain/usecases/get_watchlist_usecase.dart';
 import 'package:bloc/bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
+import 'package:collection/collection.dart';
+import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
+import 'package:rxdart/rxdart.dart';
 
 import 'reports_event.dart';
 import 'reports_state.dart';
 import 'package:bizzie/features/reports/presentation/analytics/reports_tracker.dart';
+import 'package:bizzie/features/reports/presentation/extensions/reports_state_extensions.dart';
 
 final _logger = BizzieLogger('ReportsBloc');
 
 @injectable
 class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
   final GetDashboardReportsUseCase _getReportsUseCase;
-  final IWatchlistRepository _watchlistRepository;
-  final IAuthRepository _authRepository;
+  final GetWatchlistUseCase _getWatchlistUseCase;
+  final GetCurrentUserUseCase _getCurrentUserUseCase;
   final GetUserActivityUseCase _getUserActivityUseCase;
   final MarkReportsViewedUseCase _markReportsViewedUseCase;
-  final WatchCurrentUserUseCase _watchCurrentUserUseCase;
-  final ILocalStorageService _localStorageService;
+  final GetSeenWeeklyReportIdsUseCase _getSeenWeeklyReportIdsUseCase;
+  final SaveSeenWeeklyReportIdsUseCase _saveSeenWeeklyReportIdsUseCase;
+  final IncrementReportsFeedViewCountUseCase _incrementFeedViewCountUseCase;
   final ReportsTracker _tracker;
-  StreamSubscription? _userSubscription;
+  final ITimeProvider _timeProvider;
+  final ILifecycleService _lifecycleService;
+
+  StreamSubscription<BizzieLifecycleState>? _lifecycleSubscription;
+
+  Timer? _dayCheckTimer;
+
+  final _sessionEnded = StreamController<void>.broadcast(sync: true);
 
   final Set<String> _pendingSummaryRequests = {};
 
   DateTime? _lastViewedReports;
 
   Set<String> _seenWeeklyReportIds = {};
-  Set<String> get seenWeeklyReportIds => _seenWeeklyReportIds;
-
-  static const _seenWeeklyStorageKey = 'seen_weekly_report_ids';
 
   ReportsBloc(
     this._getReportsUseCase,
-    this._watchlistRepository,
-    this._authRepository,
+    this._getWatchlistUseCase,
+    this._getCurrentUserUseCase,
     this._getUserActivityUseCase,
     this._markReportsViewedUseCase,
-    this._watchCurrentUserUseCase,
-    this._localStorageService,
+    this._getSeenWeeklyReportIdsUseCase,
+    this._saveSeenWeeklyReportIdsUseCase,
+    this._incrementFeedViewCountUseCase,
     this._tracker,
+    this._timeProvider,
+    this._lifecycleService,
   ) : super(const ReportsState.initial()) {
     _seenWeeklyReportIds = _loadSeenWeeklyIds();
-    _userSubscription = _watchCurrentUserUseCase().listen((_) {
-      add(const ReportsEvent.started());
-    });
+
+    _lifecycleSubscription = _lifecycleService.onLifecycleChanged
+        .where((state) => state == BizzieLifecycleState.foreground)
+        .listen((_) {
+          if (!isClosed) add(const ReportsEvent.dayCheckRequested());
+        });
 
     on<Started>(_onStarted, transformer: restartable());
     on<WatchlistUpdated>(_onWatchlistUpdated, transformer: restartable());
-    on<ReportsUpdated>(_onReportsUpdated);
     on<Refresh>(_onRefresh);
-    on<Viewed>(_onViewed);
+    on<Viewed>(_onViewed, transformer: sequential());
     on<LinkOpened>(_onLinkOpened);
     on<SummaryRequested>(_onSummaryRequested);
     on<SummarizeLockedClicked>(_onSummarizeLockedClicked);
@@ -75,7 +92,7 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
     on<EmptyCtaClicked>(_onEmptyCtaClicked);
     on<MarketNewsArticleOpened>(_onMarketNewsArticleOpened);
     on<MarketNewsLoadFailed>(_onMarketNewsLoadFailed);
-    on<ActivityUpdated>(_onActivityUpdated);
+    on<DayCheckRequested>(_onDayCheckRequested);
     on<Reset>(_onReset);
   }
 
@@ -159,38 +176,47 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
   }
 
   @override
-  Future<void> close() {
-    _userSubscription?.cancel();
+  Future<void> close() async {
+    _dayCheckTimer?.cancel();
+    await _lifecycleSubscription?.cancel();
+    await _sessionEnded.close();
     return super.close();
   }
 
-  void _onReset(Reset event, Emitter<ReportsState> emit) {
+  Future<void> _onReset(Reset event, Emitter<ReportsState> emit) async {
     _logger.info('Resetting ReportsBloc');
+    _sessionEnded.add(null);
+    _dayCheckTimer?.cancel();
     _lastViewedReports = null;
     _seenWeeklyReportIds = {};
-    _localStorageService.remove(_seenWeeklyStorageKey);
+    _pendingSummaryRequests.clear();
     emit(const ReportsState.initial());
+    await _saveSeenWeeklyIds();
   }
 
   Set<String> _loadSeenWeeklyIds() {
-    final stored = _localStorageService.getString(_seenWeeklyStorageKey);
-    if (stored == null) return {};
-    try {
-      return (jsonDecode(stored) as List).cast<String>().toSet();
-    } catch (e) {
-      _logger.warning('Failed to decode stored seen weekly IDs, resetting', e);
-      return {};
-    }
+    return _getSeenWeeklyReportIdsUseCase().fold((failure) {
+      _logger.warning(
+        'Failed to load seen weekly IDs, resetting: ${failure.errorMessage}',
+      );
+      return <String>{};
+    }, (ids) => ids);
   }
 
   Future<void> _saveSeenWeeklyIds() async {
-    await _localStorageService.setString(
-      _seenWeeklyStorageKey,
-      jsonEncode(_seenWeeklyReportIds.toList()),
+    final result = await _saveSeenWeeklyReportIdsUseCase(_seenWeeklyReportIds);
+    result.fold(
+      (failure) => _logger.warning(
+        'Failed to save seen weekly IDs: ${failure.errorMessage}',
+      ),
+      (_) {},
     );
   }
 
-  String? get _uid => _authRepository.currentUser?.id;
+  String? get _uid => _getCurrentUserUseCase()?.id;
+
+  Stream<T> _untilSessionEnds<T>(Stream<T> stream) =>
+      stream.takeUntil(_sessionEnded.stream);
 
   Future<void> _onStarted(Started event, Emitter<ReportsState> emit) async {
     final uid = event.uid ?? _uid;
@@ -202,6 +228,7 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
 
     _logger.info('Starting ReportsBloc for UID: $uid');
     emit(const ReportsState.loading());
+    _scheduleDayCheck();
 
     await Future.wait([
       _subscribeToActivityStream(uid, emit),
@@ -214,18 +241,13 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
     Emitter<ReportsState> emit,
   ) {
     return emit.onEach(
-      _getUserActivityUseCase(uid),
+      _untilSessionEnds(_getUserActivityUseCase(uid)),
       onData: (result) {
         result.fold(
           (failure) => _logger.warning(
             'Failed to receive user activity: ${failure.errorMessage}',
           ),
-          (activity) {
-            _logger.info(
-              'Activity stream emitted: ${activity.lastViewedReports}',
-            );
-            add(ReportsEvent.activityUpdated(activity.lastViewedReports));
-          },
+          (activity) => _applyLastViewed(activity.lastViewedReports, emit),
         );
       },
       onError: (e, s) {
@@ -234,12 +256,30 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
     );
   }
 
+  void _applyLastViewed(
+    DateTime? lastViewedReports,
+    Emitter<ReportsState> emit,
+  ) {
+    _lastViewedReports = lastViewedReports;
+    _logger.info('Activity stream emitted: $_lastViewedReports');
+
+    state.mapOrNull(
+      loaded: (s) {
+        emit(s.copyWith(lastViewedReports: _lastViewedReports));
+      },
+    );
+  }
+
   Future<void> _subscribeToWatchlistStream(
     String uid,
     Emitter<ReportsState> emit,
   ) {
+    final watchlist = Stream.fromFuture(
+      _getWatchlistUseCase(uid),
+    ).asyncExpand((stream) => stream);
+
     return emit.onEach(
-      _watchlistRepository.getWatchlistStream(uid),
+      _untilSessionEnds(watchlist),
       onData: (result) {
         result.fold(
           (failure) => _logger.warning(
@@ -261,70 +301,126 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
     WatchlistUpdated event,
     Emitter<ReportsState> emit,
   ) async {
-    if (state is! Loaded) {
+    if (state is! ReportsLoaded) {
       emit(const ReportsState.loading());
     }
 
-    final stream = _getReportsUseCase(event.tickers);
-
     await emit.onEach(
-      stream,
-      onData: (result) => add(ReportsEvent.reportsUpdated(result)),
+      _untilSessionEnds(_getReportsUseCase(event.tickers)),
+      onData: (result) => _applyReportsResult(result, emit),
     );
   }
 
-  void _onReportsUpdated(ReportsUpdated event, Emitter<ReportsState> emit) {
-    event.result.fold(
+  void _applyReportsResult(
+    Either<Failure, ReportsFeed> result,
+    Emitter<ReportsState> emit,
+  ) {
+    result.fold(
       (failure) {
         _tracker.logFetchFailed(error: failure.errorMessage);
-        if (state is! Loaded) emit(ReportsState.failure(failure));
+        if (state is! ReportsLoaded) emit(ReportsState.failure(failure));
       },
       (feed) {
         final currentLastViewed =
             _lastViewedReports ??
             state.mapOrNull(loaded: (s) => s.lastViewedReports);
 
-        emit(
-          ReportsState.loaded(
-            feed,
-            lastViewedReports: currentLastViewed,
-            todaysFilings: _buildTodaysFilings(feed),
-            todaysWeeklyReports: _buildTodaysWeeklyReports(feed),
-          ),
-        );
+        emit(_buildLoadedState(feed, lastViewedReports: currentLastViewed));
       },
     );
   }
 
-  List<FilingViewModel> _buildTodaysFilings(ReportsFeed feed) {
-    final now = DateTime.now();
-    final reportsByKey = <(String, String), FinancialReport>{};
-    for (final report in feed.currentReports) {
-      reportsByKey.putIfAbsent((report.ticker, report.formType), () => report);
-    }
+  ReportsState _buildLoadedState(
+    ReportsFeed feed, {
+    required DateTime? lastViewedReports,
+  }) {
+    final today = _today;
+    return ReportsState.loaded(
+      feed,
+      today: today,
+      lastViewedReports: lastViewedReports,
+      seenWeeklyReportIds: _seenWeeklyReportIds,
+      recentFilings: _buildRecentFilings(feed, today),
+      recentWeeklyReports: _buildRecentWeeklyReports(feed, today),
+      todaysWeeklyReports: _buildTodaysWeeklyReports(feed, today),
+    );
+  }
+
+  DateTime get _today {
+    final now = _timeProvider.nowLocal;
+    return DateTime(now.year, now.month, now.day);
+  }
+
+  DateTime _recentWindowStart(DateTime today) =>
+      DateTime(today.year - 1, today.month, today.day);
+
+  void _scheduleDayCheck() {
+    _dayCheckTimer?.cancel();
+    final now = _timeProvider.nowLocal;
+    final nextMidnight = DateTime(now.year, now.month, now.day + 1);
+    _dayCheckTimer = Timer(nextMidnight.difference(now), () {
+      if (!isClosed) add(const ReportsEvent.dayCheckRequested());
+    });
+  }
+
+  void _onDayCheckRequested(
+    DayCheckRequested event,
+    Emitter<ReportsState> emit,
+  ) {
+    if (state is ReportsInitial) return;
+    _scheduleDayCheck();
+
+    final currentState = state;
+    if (currentState is! ReportsLoaded || currentState.today == _today) return;
+
+    _logger.info('Calendar day changed, recomputing reports for $_today');
+    emit(
+      _buildLoadedState(
+        currentState.feed,
+        lastViewedReports: currentState.lastViewedReports,
+      ),
+    );
+  }
+
+  List<FilingViewModel> _buildRecentFilings(ReportsFeed feed, DateTime today) {
+    final since = _recentWindowStart(today);
+    final reportsByTicker = groupBy([
+      ...feed.currentReports,
+      ...feed.pastReports,
+    ], (FinancialReport report) => report.ticker);
 
     return feed.filings
-        .where((f) {
-          return f.createdAt != null &&
-              f.createdAt!.year == now.year &&
-              f.createdAt!.month == now.month &&
-              f.createdAt!.day == now.day;
-        })
+        .where((f) => f.createdAt != null && !f.createdAt!.isBefore(since))
         .map((filing) {
-          final report = reportsByKey[(filing.symbol, filing.formType)];
+          final report = reportsByTicker[filing.symbol]?.firstWhereOrNull(
+            filing.isFiledAs,
+          );
           return FilingViewModel(filing: filing, report: report);
         })
         .toList();
   }
 
-  List<WeeklyReport> _buildTodaysWeeklyReports(ReportsFeed feed) {
-    final now = DateTime.now();
+  List<WeeklyReport> _buildRecentWeeklyReports(
+    ReportsFeed feed,
+    DateTime today,
+  ) {
+    final since = _recentWindowStart(today);
+    return feed.weeklyReports.where((r) {
+      final reportDate = r.reportDate;
+      return reportDate != null && !reportDate.isBefore(since);
+    }).toList();
+  }
+
+  List<WeeklyReport> _buildTodaysWeeklyReports(
+    ReportsFeed feed,
+    DateTime today,
+  ) {
     return feed.weeklyReports.where((r) {
       final reportDate = DateTime.tryParse(r.id ?? '');
       return reportDate != null &&
-          reportDate.year == now.year &&
-          reportDate.month == now.month &&
-          reportDate.day == now.day;
+          reportDate.year == today.year &&
+          reportDate.month == today.month &&
+          reportDate.day == today.day;
     }).toList();
   }
 
@@ -332,41 +428,45 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
     add(const ReportsEvent.started());
   }
 
-  void _onActivityUpdated(ActivityUpdated event, Emitter<ReportsState> emit) {
-    _lastViewedReports = event.lastViewedReports;
-    _logger.info("ActivityUpdated: New LastViewed=$_lastViewedReports");
-
-    state.mapOrNull(
-      loaded: (s) {
-        emit(s.copyWith(lastViewedReports: _lastViewedReports));
-      },
-    );
-  }
-
   Future<void> _onViewed(Viewed event, Emitter<ReportsState> emit) async {
-    _tracker.logFeedViewed(
-      unreadCount: event.unreadCount,
-      entrySource: event.entrySource,
-      notificationType: event.notificationType,
-    );
+    if (state is! ReportsLoaded) return;
+    final unreadCount = state.unreadCount;
+    if (event.onlyIfUnread && unreadCount == 0) return;
 
-    const storageKey = 'report_feed_total_views';
-    final currentCount = _localStorageService.getInt(storageKey) ?? 0;
-    final newCount = currentCount + 1;
-    await _localStorageService.setInt(storageKey, newCount);
-    _tracker.setReportsTotalViewed(newCount);
+    await _recordFeedView(event, unreadCount: unreadCount);
 
     final uid = _uid;
     if (uid == null) return;
 
     final currentState = state;
-    if (currentState is! Loaded) return;
+    if (currentState is! ReportsLoaded) return;
 
     final hasNewWeekly = await _markWeeklyReportsSeen(currentState);
     await _markFilingsViewed(uid, currentState, hasNewWeekly, emit);
   }
 
-  Future<bool> _markWeeklyReportsSeen(Loaded currentState) async {
+  Future<void> _recordFeedView(
+    Viewed event, {
+    required int unreadCount,
+  }) async {
+    _tracker.logFeedViewed(
+      unreadCount: unreadCount,
+      entrySource: event.entrySource,
+      notificationType: event.notificationType,
+    );
+
+    final result = await _incrementFeedViewCountUseCase();
+    result.fold(
+      (failure) => _logger.warning(
+        'Failed to increment reports feed view count: ${failure.errorMessage}',
+      ),
+      (count) {
+        _tracker.setReportsTotalViewed(count);
+      },
+    );
+  }
+
+  Future<bool> _markWeeklyReportsSeen(ReportsLoaded currentState) async {
     final newlySeen = currentState.todaysWeeklyReports
         .map((r) => r.seenKey)
         .toSet();
@@ -380,7 +480,7 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
 
   Future<void> _markFilingsViewed(
     String uid,
-    Loaded currentState,
+    ReportsLoaded currentState,
     bool hasNewWeekly,
     Emitter<ReportsState> emit,
   ) async {
@@ -393,7 +493,14 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
     if (hasNewFilings || hasNewWeekly) {
       final now = DateTime.now();
       _lastViewedReports = now;
-      emit(currentState.copyWith(lastViewedReports: now));
+      state.mapOrNull(
+        loaded: (s) => emit(
+          s.copyWith(
+            lastViewedReports: now,
+            seenWeeklyReportIds: _seenWeeklyReportIds,
+          ),
+        ),
+      );
 
       if (hasNewFilings) {
         final result = await _markReportsViewedUseCase(

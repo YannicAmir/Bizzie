@@ -1,4 +1,8 @@
-part of 'watchlist_news_bloc.dart';
+import 'package:bizzie/core/error/failures.dart';
+import 'package:bizzie/features/home/domain/models/watchlist_news_article.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+
+part 'watchlist_news_state.freezed.dart';
 
 @freezed
 abstract class WatchlistNewsState with _$WatchlistNewsState {

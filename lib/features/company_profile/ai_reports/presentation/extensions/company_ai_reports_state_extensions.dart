@@ -8,9 +8,6 @@ import 'package:bizzie/features/company_profile/ai_reports/presentation/bloc/com
 import 'package:bizzie/shared/models/filing_view_model.dart';
 import 'package:collection/collection.dart';
 
-const String _kReportFormSeparator = '_';
-const String _kFilingFormSeparator = '/';
-
 extension CompanyAiReportsLoadedX on CompanyAiReportsLoaded {
   List<FilingViewModel> get visibleFilings =>
       companyFilings.aiReportFilings(selectedForm);
@@ -42,21 +39,5 @@ extension CompanyFilingsAiReportsX on CompanyFilings {
     final matches = filings.where((filing) => filing.isFiledAs(report));
     return matches.firstWhereOrNull((filing) => filing.isEarnings) ??
         matches.firstOrNull;
-  }
-}
-
-extension on SecFiling {
-  bool isFiledAs(FinancialReport report) {
-    final reportDate = report.filingDate;
-    final date = filingDate;
-    if (reportDate == null || date == null) return false;
-    return formType ==
-            report.formType.replaceAll(
-              _kReportFormSeparator,
-              _kFilingFormSeparator,
-            ) &&
-        date.year == reportDate.year &&
-        date.month == reportDate.month &&
-        date.day == reportDate.day;
   }
 }

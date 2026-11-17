@@ -1,4 +1,6 @@
-part of 'app_ratings_bloc.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+
+part 'app_ratings_state.freezed.dart';
 
 @freezed
 abstract class AppRatingsState with _$AppRatingsState {

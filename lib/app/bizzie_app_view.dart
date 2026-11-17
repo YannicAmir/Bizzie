@@ -67,6 +67,7 @@ class _BizzieAppViewState extends State<BizzieAppView>
         const SubscriptionEvent.appResumed(),
       );
       context.read<AppStatusBloc>().add(const AppStatusEvent.refreshed());
+      context.read<UserBloc>().add(const UserEvent.appForegrounded());
     }
   }
 
@@ -187,7 +188,7 @@ class _BizzieAppViewState extends State<BizzieAppView>
                   },
                   reports: (source, notificationType) {
                     _router.go(
-                      '${AppRoutes.reports}?entrySource=${source.name}&notificationType=${notificationType.name}',
+                      '${AppRoutes.reports}?entrySource=${source.name}&notificationType=${notificationType.name}&navigationId=${DateTime.now().microsecondsSinceEpoch}',
                     );
                   },
                   paywall: (source) {

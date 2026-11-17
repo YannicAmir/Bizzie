@@ -3,7 +3,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'edit_profile_event.freezed.dart';
 
 @freezed
-class EditProfileEvent with _$EditProfileEvent {
+sealed class EditProfileEvent with _$EditProfileEvent {
   const factory EditProfileEvent.started() = Started;
   const factory EditProfileEvent.firstNameChanged(String firstName) =
       FirstNameChanged;

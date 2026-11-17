@@ -215,6 +215,21 @@ class UserRepositoryImpl implements IUserRepository {
   }
 
   @override
+  Future<Either<Failure, void>> updateLastViewedAt() async {
+    final user = _authRepository.currentUser;
+    if (user == null) {
+      return Left(Failure.userNotFound());
+    }
+    try {
+      await _remoteDataSource.updateLastViewedAt(user.id);
+      return const Right(null);
+    } catch (e, stack) {
+      _logger.severe('Failed to update lastViewedAt', e, stack);
+      return Left(Failure.server(e.toString()));
+    }
+  }
+
+  @override
   Future<Either<Failure, void>> updateNotificationSettings(
     bool enabled, {
     String? deviceId,
