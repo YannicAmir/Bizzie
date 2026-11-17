@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'revenue_segmentation_dto.dart';
@@ -9,6 +9,7 @@ part of 'revenue_segmentation_dto.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 
@@ -28,16 +29,21 @@ $RevenueSegmentationDtoCopyWith<RevenueSegmentationDto> get copyWith => _$Revenu
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is RevenueSegmentationDto&&(identical(other.symbol, symbol) || other.symbol == symbol)&&(identical(other.fiscalYear, fiscalYear) || other.fiscalYear == fiscalYear)&&(identical(other.period, period) || other.period == period)&&(identical(other.reportedCurrency, reportedCurrency) || other.reportedCurrency == reportedCurrency)&&(identical(other.date, date) || other.date == date)&&const DeepCollectionEquality().equals(other.data, data));
+  final _this = this as RevenueSegmentationDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is RevenueSegmentationDto&&(identical(other.symbol, _this.symbol) || other.symbol == _this.symbol)&&(identical(other.fiscalYear, _this.fiscalYear) || other.fiscalYear == _this.fiscalYear)&&(identical(other.period, _this.period) || other.period == _this.period)&&(identical(other.reportedCurrency, _this.reportedCurrency) || other.reportedCurrency == _this.reportedCurrency)&&(identical(other.date, _this.date) || other.date == _this.date)&&const DeepCollectionEquality().equals(other.data, _this.data));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,symbol,fiscalYear,period,reportedCurrency,date,const DeepCollectionEquality().hash(data));
+int get hashCode {
+  final _this = this as RevenueSegmentationDto;
+  return Object.hash(runtimeType,_this.symbol,_this.fiscalYear,_this.period,_this.reportedCurrency,_this.date,const DeepCollectionEquality().hash(_this.data));
+}
 
 @override
 String toString() {
-  return 'RevenueSegmentationDto(symbol: $symbol, fiscalYear: $fiscalYear, period: $period, reportedCurrency: $reportedCurrency, date: $date, data: $data)';
+  final _this = this as RevenueSegmentationDto;
+  return 'RevenueSegmentationDto(symbol: ${_this.symbol}, fiscalYear: ${_this.fiscalYear}, period: ${_this.period}, reportedCurrency: ${_this.reportedCurrency}, date: ${_this.date}, data: ${_this.data})';
 }
 
 
@@ -66,7 +72,7 @@ class _$RevenueSegmentationDtoCopyWithImpl<$Res>
 /// Create a copy of RevenueSegmentationDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? symbol = freezed,Object? fiscalYear = freezed,Object? period = freezed,Object? reportedCurrency = freezed,Object? date = freezed,Object? data = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(RevenueSegmentationDto(
 symbol: freezed == symbol ? _self.symbol : symbol // ignore: cast_nullable_to_non_nullable
 as String?,fiscalYear: freezed == fiscalYear ? _self.fiscalYear : fiscalYear // ignore: cast_nullable_to_non_nullable
 as int?,period: freezed == period ? _self.period : period // ignore: cast_nullable_to_non_nullable
@@ -214,7 +220,7 @@ return $default(_that.symbol,_that.fiscalYear,_that.period,_that.reportedCurrenc
 
 @JsonSerializable()
 class _RevenueSegmentationDto extends RevenueSegmentationDto {
-  const _RevenueSegmentationDto({this.symbol, this.fiscalYear, this.period, this.reportedCurrency, this.date, final  Map<String, double>? data}): _data = data,super._();
+  const _RevenueSegmentationDto({this.symbol, this.fiscalYear, this.period, this.reportedCurrency, this.date,  Map<String, double>? data}): _data = data,super._();
   factory _RevenueSegmentationDto.fromJson(Map<String, dynamic> json) => _$RevenueSegmentationDtoFromJson(json);
 
 @override final  String? symbol;
@@ -245,16 +251,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _RevenueSegmentationDto&&(identical(other.symbol, symbol) || other.symbol == symbol)&&(identical(other.fiscalYear, fiscalYear) || other.fiscalYear == fiscalYear)&&(identical(other.period, period) || other.period == period)&&(identical(other.reportedCurrency, reportedCurrency) || other.reportedCurrency == reportedCurrency)&&(identical(other.date, date) || other.date == date)&&const DeepCollectionEquality().equals(other._data, _data));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _RevenueSegmentationDto&&(identical(other.symbol, symbol) || other.symbol == symbol)&&(identical(other.fiscalYear, fiscalYear) || other.fiscalYear == fiscalYear)&&(identical(other.period, period) || other.period == period)&&(identical(other.reportedCurrency, reportedCurrency) || other.reportedCurrency == reportedCurrency)&&(identical(other.date, date) || other.date == date)&&const DeepCollectionEquality().equals(other.data, _data));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,symbol,fiscalYear,period,reportedCurrency,date,const DeepCollectionEquality().hash(_data));
+int get hashCode {
+    return Object.hash(runtimeType,symbol,fiscalYear,period,reportedCurrency,date,const DeepCollectionEquality().hash(_data));
+}
 
 @override
 String toString() {
-  return 'RevenueSegmentationDto(symbol: $symbol, fiscalYear: $fiscalYear, period: $period, reportedCurrency: $reportedCurrency, date: $date, data: $data)';
+    return 'RevenueSegmentationDto(symbol: $symbol, fiscalYear: $fiscalYear, period: $period, reportedCurrency: $reportedCurrency, date: $date, data: $data)';
 }
 
 

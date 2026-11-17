@@ -7,7 +7,7 @@ import 'package:bizzie/features/app_status/presentation/views/no_internet_page.d
 
 import 'package:bizzie/app/pages/global_error_page.dart';
 import 'package:bizzie/app/pages/global_loading_page.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class GlobalOverlayWrapper extends StatelessWidget {

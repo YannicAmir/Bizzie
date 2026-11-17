@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'income_statement.dart';
@@ -9,6 +9,7 @@ part of 'income_statement.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $IncomeStatementCopyWith<IncomeStatement> get copyWith => _$IncomeStatementCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is IncomeStatement&&(identical(other.date, date) || other.date == date)&&(identical(other.symbol, symbol) || other.symbol == symbol)&&(identical(other.reportedCurrency, reportedCurrency) || other.reportedCurrency == reportedCurrency)&&(identical(other.originalCurrency, originalCurrency) || other.originalCurrency == originalCurrency)&&(identical(other.period, period) || other.period == period)&&(identical(other.revenue, revenue) || other.revenue == revenue)&&(identical(other.grossProfit, grossProfit) || other.grossProfit == grossProfit)&&(identical(other.operatingIncome, operatingIncome) || other.operatingIncome == operatingIncome)&&(identical(other.netIncome, netIncome) || other.netIncome == netIncome)&&(identical(other.eps, eps) || other.eps == eps)&&(identical(other.ebitda, ebitda) || other.ebitda == ebitda)&&(identical(other.costOfRevenue, costOfRevenue) || other.costOfRevenue == costOfRevenue)&&(identical(other.operatingExpenses, operatingExpenses) || other.operatingExpenses == operatingExpenses)&&(identical(other.costAndExpenses, costAndExpenses) || other.costAndExpenses == costAndExpenses));
+  final _this = this as IncomeStatement;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is IncomeStatement&&(identical(other.date, _this.date) || other.date == _this.date)&&(identical(other.symbol, _this.symbol) || other.symbol == _this.symbol)&&(identical(other.reportedCurrency, _this.reportedCurrency) || other.reportedCurrency == _this.reportedCurrency)&&(identical(other.originalCurrency, _this.originalCurrency) || other.originalCurrency == _this.originalCurrency)&&(identical(other.period, _this.period) || other.period == _this.period)&&(identical(other.revenue, _this.revenue) || other.revenue == _this.revenue)&&(identical(other.grossProfit, _this.grossProfit) || other.grossProfit == _this.grossProfit)&&(identical(other.operatingIncome, _this.operatingIncome) || other.operatingIncome == _this.operatingIncome)&&(identical(other.netIncome, _this.netIncome) || other.netIncome == _this.netIncome)&&(identical(other.eps, _this.eps) || other.eps == _this.eps)&&(identical(other.ebitda, _this.ebitda) || other.ebitda == _this.ebitda)&&(identical(other.costOfRevenue, _this.costOfRevenue) || other.costOfRevenue == _this.costOfRevenue)&&(identical(other.operatingExpenses, _this.operatingExpenses) || other.operatingExpenses == _this.operatingExpenses)&&(identical(other.costAndExpenses, _this.costAndExpenses) || other.costAndExpenses == _this.costAndExpenses));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,date,symbol,reportedCurrency,originalCurrency,period,revenue,grossProfit,operatingIncome,netIncome,eps,ebitda,costOfRevenue,operatingExpenses,costAndExpenses);
+int get hashCode {
+  final _this = this as IncomeStatement;
+  return Object.hash(runtimeType,_this.date,_this.symbol,_this.reportedCurrency,_this.originalCurrency,_this.period,_this.revenue,_this.grossProfit,_this.operatingIncome,_this.netIncome,_this.eps,_this.ebitda,_this.costOfRevenue,_this.operatingExpenses,_this.costAndExpenses);
+}
 
 @override
 String toString() {
-  return 'IncomeStatement(date: $date, symbol: $symbol, reportedCurrency: $reportedCurrency, originalCurrency: $originalCurrency, period: $period, revenue: $revenue, grossProfit: $grossProfit, operatingIncome: $operatingIncome, netIncome: $netIncome, eps: $eps, ebitda: $ebitda, costOfRevenue: $costOfRevenue, operatingExpenses: $operatingExpenses, costAndExpenses: $costAndExpenses)';
+  final _this = this as IncomeStatement;
+  return 'IncomeStatement(date: ${_this.date}, symbol: ${_this.symbol}, reportedCurrency: ${_this.reportedCurrency}, originalCurrency: ${_this.originalCurrency}, period: ${_this.period}, revenue: ${_this.revenue}, grossProfit: ${_this.grossProfit}, operatingIncome: ${_this.operatingIncome}, netIncome: ${_this.netIncome}, eps: ${_this.eps}, ebitda: ${_this.ebitda}, costOfRevenue: ${_this.costOfRevenue}, operatingExpenses: ${_this.operatingExpenses}, costAndExpenses: ${_this.costAndExpenses})';
 }
 
 
@@ -63,7 +69,7 @@ class _$IncomeStatementCopyWithImpl<$Res>
 /// Create a copy of IncomeStatement
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? date = null,Object? symbol = null,Object? reportedCurrency = null,Object? originalCurrency = freezed,Object? period = null,Object? revenue = null,Object? grossProfit = null,Object? operatingIncome = null,Object? netIncome = null,Object? eps = null,Object? ebitda = null,Object? costOfRevenue = null,Object? operatingExpenses = null,Object? costAndExpenses = null,}) {
-  return _then(_self.copyWith(
+  return _then(IncomeStatement(
 date: null == date ? _self.date : date // ignore: cast_nullable_to_non_nullable
 as String,symbol: null == symbol ? _self.symbol : symbol // ignore: cast_nullable_to_non_nullable
 as String,reportedCurrency: null == reportedCurrency ? _self.reportedCurrency : reportedCurrency // ignore: cast_nullable_to_non_nullable
@@ -247,16 +253,18 @@ _$IncomeStatementCopyWith<_IncomeStatement> get copyWith => __$IncomeStatementCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _IncomeStatement&&(identical(other.date, date) || other.date == date)&&(identical(other.symbol, symbol) || other.symbol == symbol)&&(identical(other.reportedCurrency, reportedCurrency) || other.reportedCurrency == reportedCurrency)&&(identical(other.originalCurrency, originalCurrency) || other.originalCurrency == originalCurrency)&&(identical(other.period, period) || other.period == period)&&(identical(other.revenue, revenue) || other.revenue == revenue)&&(identical(other.grossProfit, grossProfit) || other.grossProfit == grossProfit)&&(identical(other.operatingIncome, operatingIncome) || other.operatingIncome == operatingIncome)&&(identical(other.netIncome, netIncome) || other.netIncome == netIncome)&&(identical(other.eps, eps) || other.eps == eps)&&(identical(other.ebitda, ebitda) || other.ebitda == ebitda)&&(identical(other.costOfRevenue, costOfRevenue) || other.costOfRevenue == costOfRevenue)&&(identical(other.operatingExpenses, operatingExpenses) || other.operatingExpenses == operatingExpenses)&&(identical(other.costAndExpenses, costAndExpenses) || other.costAndExpenses == costAndExpenses));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _IncomeStatement&&(identical(other.date, date) || other.date == date)&&(identical(other.symbol, symbol) || other.symbol == symbol)&&(identical(other.reportedCurrency, reportedCurrency) || other.reportedCurrency == reportedCurrency)&&(identical(other.originalCurrency, originalCurrency) || other.originalCurrency == originalCurrency)&&(identical(other.period, period) || other.period == period)&&(identical(other.revenue, revenue) || other.revenue == revenue)&&(identical(other.grossProfit, grossProfit) || other.grossProfit == grossProfit)&&(identical(other.operatingIncome, operatingIncome) || other.operatingIncome == operatingIncome)&&(identical(other.netIncome, netIncome) || other.netIncome == netIncome)&&(identical(other.eps, eps) || other.eps == eps)&&(identical(other.ebitda, ebitda) || other.ebitda == ebitda)&&(identical(other.costOfRevenue, costOfRevenue) || other.costOfRevenue == costOfRevenue)&&(identical(other.operatingExpenses, operatingExpenses) || other.operatingExpenses == operatingExpenses)&&(identical(other.costAndExpenses, costAndExpenses) || other.costAndExpenses == costAndExpenses));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,date,symbol,reportedCurrency,originalCurrency,period,revenue,grossProfit,operatingIncome,netIncome,eps,ebitda,costOfRevenue,operatingExpenses,costAndExpenses);
+int get hashCode {
+    return Object.hash(runtimeType,date,symbol,reportedCurrency,originalCurrency,period,revenue,grossProfit,operatingIncome,netIncome,eps,ebitda,costOfRevenue,operatingExpenses,costAndExpenses);
+}
 
 @override
 String toString() {
-  return 'IncomeStatement(date: $date, symbol: $symbol, reportedCurrency: $reportedCurrency, originalCurrency: $originalCurrency, period: $period, revenue: $revenue, grossProfit: $grossProfit, operatingIncome: $operatingIncome, netIncome: $netIncome, eps: $eps, ebitda: $ebitda, costOfRevenue: $costOfRevenue, operatingExpenses: $operatingExpenses, costAndExpenses: $costAndExpenses)';
+    return 'IncomeStatement(date: $date, symbol: $symbol, reportedCurrency: $reportedCurrency, originalCurrency: $originalCurrency, period: $period, revenue: $revenue, grossProfit: $grossProfit, operatingIncome: $operatingIncome, netIncome: $netIncome, eps: $eps, ebitda: $ebitda, costOfRevenue: $costOfRevenue, operatingExpenses: $operatingExpenses, costAndExpenses: $costAndExpenses)';
 }
 
 

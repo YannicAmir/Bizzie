@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'security_quote.dart';
@@ -9,6 +9,7 @@ part of 'security_quote.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $SecurityQuoteCopyWith<SecurityQuote> get copyWith => _$SecurityQuoteCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SecurityQuote&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.price, price) || other.price == price)&&(identical(other.change, change) || other.change == change)&&(identical(other.changePercent, changePercent) || other.changePercent == changePercent)&&(identical(other.sessionDate, sessionDate) || other.sessionDate == sessionDate));
+  final _this = this as SecurityQuote;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SecurityQuote&&(identical(other.ticker, _this.ticker) || other.ticker == _this.ticker)&&(identical(other.price, _this.price) || other.price == _this.price)&&(identical(other.change, _this.change) || other.change == _this.change)&&(identical(other.changePercent, _this.changePercent) || other.changePercent == _this.changePercent)&&(identical(other.sessionDate, _this.sessionDate) || other.sessionDate == _this.sessionDate));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,ticker,price,change,changePercent,sessionDate);
+int get hashCode {
+  final _this = this as SecurityQuote;
+  return Object.hash(runtimeType,_this.ticker,_this.price,_this.change,_this.changePercent,_this.sessionDate);
+}
 
 @override
 String toString() {
-  return 'SecurityQuote(ticker: $ticker, price: $price, change: $change, changePercent: $changePercent, sessionDate: $sessionDate)';
+  final _this = this as SecurityQuote;
+  return 'SecurityQuote(ticker: ${_this.ticker}, price: ${_this.price}, change: ${_this.change}, changePercent: ${_this.changePercent}, sessionDate: ${_this.sessionDate})';
 }
 
 
@@ -63,7 +69,7 @@ class _$SecurityQuoteCopyWithImpl<$Res>
 /// Create a copy of SecurityQuote
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? ticker = null,Object? price = null,Object? change = freezed,Object? changePercent = freezed,Object? sessionDate = null,}) {
-  return _then(_self.copyWith(
+  return _then(SecurityQuote(
 ticker: null == ticker ? _self.ticker : ticker // ignore: cast_nullable_to_non_nullable
 as String,price: null == price ? _self.price : price // ignore: cast_nullable_to_non_nullable
 as double,change: freezed == change ? _self.change : change // ignore: cast_nullable_to_non_nullable
@@ -229,16 +235,18 @@ _$SecurityQuoteCopyWith<_SecurityQuote> get copyWith => __$SecurityQuoteCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SecurityQuote&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.price, price) || other.price == price)&&(identical(other.change, change) || other.change == change)&&(identical(other.changePercent, changePercent) || other.changePercent == changePercent)&&(identical(other.sessionDate, sessionDate) || other.sessionDate == sessionDate));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _SecurityQuote&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.price, price) || other.price == price)&&(identical(other.change, change) || other.change == change)&&(identical(other.changePercent, changePercent) || other.changePercent == changePercent)&&(identical(other.sessionDate, sessionDate) || other.sessionDate == sessionDate));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,ticker,price,change,changePercent,sessionDate);
+int get hashCode {
+    return Object.hash(runtimeType,ticker,price,change,changePercent,sessionDate);
+}
 
 @override
 String toString() {
-  return 'SecurityQuote(ticker: $ticker, price: $price, change: $change, changePercent: $changePercent, sessionDate: $sessionDate)';
+    return 'SecurityQuote(ticker: $ticker, price: $price, change: $change, changePercent: $changePercent, sessionDate: $sessionDate)';
 }
 
 

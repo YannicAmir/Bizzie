@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'revenue_stats.dart';
@@ -9,6 +9,7 @@ part of 'revenue_stats.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $RevenueStatsCopyWith<RevenueStats> get copyWith => _$RevenueStatsCopyWithImpl<R
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is RevenueStats&&(identical(other.symbol, symbol) || other.symbol == symbol)&&(identical(other.reportedCurrency, reportedCurrency) || other.reportedCurrency == reportedCurrency)&&(identical(other.originalCurrency, originalCurrency) || other.originalCurrency == originalCurrency)&&const DeepCollectionEquality().equals(other.annualRevenue, annualRevenue)&&const DeepCollectionEquality().equals(other.quarterlyRevenue, quarterlyRevenue));
+  final _this = this as RevenueStats;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is RevenueStats&&(identical(other.symbol, _this.symbol) || other.symbol == _this.symbol)&&(identical(other.reportedCurrency, _this.reportedCurrency) || other.reportedCurrency == _this.reportedCurrency)&&(identical(other.originalCurrency, _this.originalCurrency) || other.originalCurrency == _this.originalCurrency)&&const DeepCollectionEquality().equals(other.annualRevenue, _this.annualRevenue)&&const DeepCollectionEquality().equals(other.quarterlyRevenue, _this.quarterlyRevenue));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,symbol,reportedCurrency,originalCurrency,const DeepCollectionEquality().hash(annualRevenue),const DeepCollectionEquality().hash(quarterlyRevenue));
+int get hashCode {
+  final _this = this as RevenueStats;
+  return Object.hash(runtimeType,_this.symbol,_this.reportedCurrency,_this.originalCurrency,const DeepCollectionEquality().hash(_this.annualRevenue),const DeepCollectionEquality().hash(_this.quarterlyRevenue));
+}
 
 @override
 String toString() {
-  return 'RevenueStats(symbol: $symbol, reportedCurrency: $reportedCurrency, originalCurrency: $originalCurrency, annualRevenue: $annualRevenue, quarterlyRevenue: $quarterlyRevenue)';
+  final _this = this as RevenueStats;
+  return 'RevenueStats(symbol: ${_this.symbol}, reportedCurrency: ${_this.reportedCurrency}, originalCurrency: ${_this.originalCurrency}, annualRevenue: ${_this.annualRevenue}, quarterlyRevenue: ${_this.quarterlyRevenue})';
 }
 
 
@@ -63,7 +69,7 @@ class _$RevenueStatsCopyWithImpl<$Res>
 /// Create a copy of RevenueStats
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? symbol = null,Object? reportedCurrency = null,Object? originalCurrency = freezed,Object? annualRevenue = null,Object? quarterlyRevenue = null,}) {
-  return _then(_self.copyWith(
+  return _then(RevenueStats(
 symbol: null == symbol ? _self.symbol : symbol // ignore: cast_nullable_to_non_nullable
 as String,reportedCurrency: null == reportedCurrency ? _self.reportedCurrency : reportedCurrency // ignore: cast_nullable_to_non_nullable
 as String,originalCurrency: freezed == originalCurrency ? _self.originalCurrency : originalCurrency // ignore: cast_nullable_to_non_nullable
@@ -210,7 +216,7 @@ return $default(_that.symbol,_that.reportedCurrency,_that.originalCurrency,_that
 
 
 class _RevenueStats implements RevenueStats {
-  const _RevenueStats({required this.symbol, required this.reportedCurrency, this.originalCurrency, required final  List<FinancialDataPoint> annualRevenue, required final  List<FinancialDataPoint> quarterlyRevenue}): _annualRevenue = annualRevenue,_quarterlyRevenue = quarterlyRevenue;
+  const _RevenueStats({required this.symbol, required this.reportedCurrency, this.originalCurrency, required  List<FinancialDataPoint> annualRevenue, required  List<FinancialDataPoint> quarterlyRevenue}): _annualRevenue = annualRevenue,_quarterlyRevenue = quarterlyRevenue;
   
 
 @override final  String symbol;
@@ -241,16 +247,18 @@ _$RevenueStatsCopyWith<_RevenueStats> get copyWith => __$RevenueStatsCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _RevenueStats&&(identical(other.symbol, symbol) || other.symbol == symbol)&&(identical(other.reportedCurrency, reportedCurrency) || other.reportedCurrency == reportedCurrency)&&(identical(other.originalCurrency, originalCurrency) || other.originalCurrency == originalCurrency)&&const DeepCollectionEquality().equals(other._annualRevenue, _annualRevenue)&&const DeepCollectionEquality().equals(other._quarterlyRevenue, _quarterlyRevenue));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _RevenueStats&&(identical(other.symbol, symbol) || other.symbol == symbol)&&(identical(other.reportedCurrency, reportedCurrency) || other.reportedCurrency == reportedCurrency)&&(identical(other.originalCurrency, originalCurrency) || other.originalCurrency == originalCurrency)&&const DeepCollectionEquality().equals(other.annualRevenue, _annualRevenue)&&const DeepCollectionEquality().equals(other.quarterlyRevenue, _quarterlyRevenue));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,symbol,reportedCurrency,originalCurrency,const DeepCollectionEquality().hash(_annualRevenue),const DeepCollectionEquality().hash(_quarterlyRevenue));
+int get hashCode {
+    return Object.hash(runtimeType,symbol,reportedCurrency,originalCurrency,const DeepCollectionEquality().hash(_annualRevenue),const DeepCollectionEquality().hash(_quarterlyRevenue));
+}
 
 @override
 String toString() {
-  return 'RevenueStats(symbol: $symbol, reportedCurrency: $reportedCurrency, originalCurrency: $originalCurrency, annualRevenue: $annualRevenue, quarterlyRevenue: $quarterlyRevenue)';
+    return 'RevenueStats(symbol: $symbol, reportedCurrency: $reportedCurrency, originalCurrency: $originalCurrency, annualRevenue: $annualRevenue, quarterlyRevenue: $quarterlyRevenue)';
 }
 
 

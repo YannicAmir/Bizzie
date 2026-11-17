@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'dividend_dto.dart';
@@ -9,6 +9,7 @@ part of 'dividend_dto.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 
@@ -28,16 +29,21 @@ $DividendDtoCopyWith<DividendDto> get copyWith => _$DividendDtoCopyWithImpl<Divi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is DividendDto&&(identical(other.date, date) || other.date == date)&&(identical(other.dividend, dividend) || other.dividend == dividend)&&(identical(other.adjDividend, adjDividend) || other.adjDividend == adjDividend)&&(identical(other.recordDate, recordDate) || other.recordDate == recordDate)&&(identical(other.paymentDate, paymentDate) || other.paymentDate == paymentDate)&&(identical(other.declarationDate, declarationDate) || other.declarationDate == declarationDate)&&(identical(other.yield, yield) || other.yield == yield)&&(identical(other.frequency, frequency) || other.frequency == frequency));
+  final _this = this as DividendDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is DividendDto&&(identical(other.date, _this.date) || other.date == _this.date)&&(identical(other.dividend, _this.dividend) || other.dividend == _this.dividend)&&(identical(other.adjDividend, _this.adjDividend) || other.adjDividend == _this.adjDividend)&&(identical(other.recordDate, _this.recordDate) || other.recordDate == _this.recordDate)&&(identical(other.paymentDate, _this.paymentDate) || other.paymentDate == _this.paymentDate)&&(identical(other.declarationDate, _this.declarationDate) || other.declarationDate == _this.declarationDate)&&(identical(other.yield, _this.yield) || other.yield == _this.yield)&&(identical(other.frequency, _this.frequency) || other.frequency == _this.frequency));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,date,dividend,adjDividend,recordDate,paymentDate,declarationDate,yield,frequency);
+int get hashCode {
+  final _this = this as DividendDto;
+  return Object.hash(runtimeType,_this.date,_this.dividend,_this.adjDividend,_this.recordDate,_this.paymentDate,_this.declarationDate,_this.yield,_this.frequency);
+}
 
 @override
 String toString() {
-  return 'DividendDto(date: $date, dividend: $dividend, adjDividend: $adjDividend, recordDate: $recordDate, paymentDate: $paymentDate, declarationDate: $declarationDate, yield: $yield, frequency: $frequency)';
+  final _this = this as DividendDto;
+  return 'DividendDto(date: ${_this.date}, dividend: ${_this.dividend}, adjDividend: ${_this.adjDividend}, recordDate: ${_this.recordDate}, paymentDate: ${_this.paymentDate}, declarationDate: ${_this.declarationDate}, yield: ${_this.yield}, frequency: ${_this.frequency})';
 }
 
 
@@ -66,7 +72,7 @@ class _$DividendDtoCopyWithImpl<$Res>
 /// Create a copy of DividendDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? date = null,Object? dividend = freezed,Object? adjDividend = freezed,Object? recordDate = freezed,Object? paymentDate = freezed,Object? declarationDate = freezed,Object? yield = freezed,Object? frequency = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(DividendDto(
 date: null == date ? _self.date : date // ignore: cast_nullable_to_non_nullable
 as String,dividend: freezed == dividend ? _self.dividend : dividend // ignore: cast_nullable_to_non_nullable
 as double?,adjDividend: freezed == adjDividend ? _self.adjDividend : adjDividend // ignore: cast_nullable_to_non_nullable
@@ -241,16 +247,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _DividendDto&&(identical(other.date, date) || other.date == date)&&(identical(other.dividend, dividend) || other.dividend == dividend)&&(identical(other.adjDividend, adjDividend) || other.adjDividend == adjDividend)&&(identical(other.recordDate, recordDate) || other.recordDate == recordDate)&&(identical(other.paymentDate, paymentDate) || other.paymentDate == paymentDate)&&(identical(other.declarationDate, declarationDate) || other.declarationDate == declarationDate)&&(identical(other.yield, yield) || other.yield == yield)&&(identical(other.frequency, frequency) || other.frequency == frequency));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _DividendDto&&(identical(other.date, date) || other.date == date)&&(identical(other.dividend, dividend) || other.dividend == dividend)&&(identical(other.adjDividend, adjDividend) || other.adjDividend == adjDividend)&&(identical(other.recordDate, recordDate) || other.recordDate == recordDate)&&(identical(other.paymentDate, paymentDate) || other.paymentDate == paymentDate)&&(identical(other.declarationDate, declarationDate) || other.declarationDate == declarationDate)&&(identical(other.yield, yield) || other.yield == yield)&&(identical(other.frequency, frequency) || other.frequency == frequency));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,date,dividend,adjDividend,recordDate,paymentDate,declarationDate,yield,frequency);
+int get hashCode {
+    return Object.hash(runtimeType,date,dividend,adjDividend,recordDate,paymentDate,declarationDate,yield,frequency);
+}
 
 @override
 String toString() {
-  return 'DividendDto(date: $date, dividend: $dividend, adjDividend: $adjDividend, recordDate: $recordDate, paymentDate: $paymentDate, declarationDate: $declarationDate, yield: $yield, frequency: $frequency)';
+    return 'DividendDto(date: $date, dividend: $dividend, adjDividend: $adjDividend, recordDate: $recordDate, paymentDate: $paymentDate, declarationDate: $declarationDate, yield: $yield, frequency: $frequency)';
 }
 
 

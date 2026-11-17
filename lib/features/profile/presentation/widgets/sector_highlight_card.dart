@@ -1,7 +1,7 @@
 import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:bizzie/shared/utils/bizzie_date_formatter.dart';
 import 'package:bizzie/shared/widgets/app_badge.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class SectorHighlightCard extends StatelessWidget {
   final String sectorName;

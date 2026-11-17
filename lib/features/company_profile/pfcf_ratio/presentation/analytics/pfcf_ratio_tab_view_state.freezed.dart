@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'pfcf_ratio_tab_view_state.dart';
@@ -9,6 +9,7 @@ part of 'pfcf_ratio_tab_view_state.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $PfcfRatioTabViewStateCopyWith<PfcfRatioTabViewState> get copyWith => _$PfcfRati
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PfcfRatioTabViewState&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.timestamp, timestamp) || other.timestamp == timestamp)&&(identical(other.loadTimeMs, loadTimeMs) || other.loadTimeMs == loadTimeMs)&&(identical(other.isSuccess, isSuccess) || other.isSuccess == isSuccess)&&(identical(other.dataSource, dataSource) || other.dataSource == dataSource)&&(identical(other.viewDurationSec, viewDurationSec) || other.viewDurationSec == viewDurationSec)&&(identical(other.tappedChartViewAll, tappedChartViewAll) || other.tappedChartViewAll == tappedChartViewAll)&&(identical(other.tappedTableViewAll, tappedTableViewAll) || other.tappedTableViewAll == tappedTableViewAll));
+  final _this = this as PfcfRatioTabViewState;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PfcfRatioTabViewState&&(identical(other.ticker, _this.ticker) || other.ticker == _this.ticker)&&(identical(other.timestamp, _this.timestamp) || other.timestamp == _this.timestamp)&&(identical(other.loadTimeMs, _this.loadTimeMs) || other.loadTimeMs == _this.loadTimeMs)&&(identical(other.isSuccess, _this.isSuccess) || other.isSuccess == _this.isSuccess)&&(identical(other.dataSource, _this.dataSource) || other.dataSource == _this.dataSource)&&(identical(other.viewDurationSec, _this.viewDurationSec) || other.viewDurationSec == _this.viewDurationSec)&&(identical(other.tappedChartViewAll, _this.tappedChartViewAll) || other.tappedChartViewAll == _this.tappedChartViewAll)&&(identical(other.tappedTableViewAll, _this.tappedTableViewAll) || other.tappedTableViewAll == _this.tappedTableViewAll));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,ticker,timestamp,loadTimeMs,isSuccess,dataSource,viewDurationSec,tappedChartViewAll,tappedTableViewAll);
+int get hashCode {
+  final _this = this as PfcfRatioTabViewState;
+  return Object.hash(runtimeType,_this.ticker,_this.timestamp,_this.loadTimeMs,_this.isSuccess,_this.dataSource,_this.viewDurationSec,_this.tappedChartViewAll,_this.tappedTableViewAll);
+}
 
 @override
 String toString() {
-  return 'PfcfRatioTabViewState(ticker: $ticker, timestamp: $timestamp, loadTimeMs: $loadTimeMs, isSuccess: $isSuccess, dataSource: $dataSource, viewDurationSec: $viewDurationSec, tappedChartViewAll: $tappedChartViewAll, tappedTableViewAll: $tappedTableViewAll)';
+  final _this = this as PfcfRatioTabViewState;
+  return 'PfcfRatioTabViewState(ticker: ${_this.ticker}, timestamp: ${_this.timestamp}, loadTimeMs: ${_this.loadTimeMs}, isSuccess: ${_this.isSuccess}, dataSource: ${_this.dataSource}, viewDurationSec: ${_this.viewDurationSec}, tappedChartViewAll: ${_this.tappedChartViewAll}, tappedTableViewAll: ${_this.tappedTableViewAll})';
 }
 
 
@@ -63,7 +69,7 @@ class _$PfcfRatioTabViewStateCopyWithImpl<$Res>
 /// Create a copy of PfcfRatioTabViewState
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? ticker = null,Object? timestamp = null,Object? loadTimeMs = freezed,Object? isSuccess = null,Object? dataSource = freezed,Object? viewDurationSec = null,Object? tappedChartViewAll = null,Object? tappedTableViewAll = null,}) {
-  return _then(_self.copyWith(
+  return _then(PfcfRatioTabViewState(
 ticker: null == ticker ? _self.ticker : ticker // ignore: cast_nullable_to_non_nullable
 as String,timestamp: null == timestamp ? _self.timestamp : timestamp // ignore: cast_nullable_to_non_nullable
 as String,loadTimeMs: freezed == loadTimeMs ? _self.loadTimeMs : loadTimeMs // ignore: cast_nullable_to_non_nullable
@@ -235,16 +241,18 @@ _$PfcfRatioTabViewStateCopyWith<_PfcfRatioTabViewState> get copyWith => __$PfcfR
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PfcfRatioTabViewState&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.timestamp, timestamp) || other.timestamp == timestamp)&&(identical(other.loadTimeMs, loadTimeMs) || other.loadTimeMs == loadTimeMs)&&(identical(other.isSuccess, isSuccess) || other.isSuccess == isSuccess)&&(identical(other.dataSource, dataSource) || other.dataSource == dataSource)&&(identical(other.viewDurationSec, viewDurationSec) || other.viewDurationSec == viewDurationSec)&&(identical(other.tappedChartViewAll, tappedChartViewAll) || other.tappedChartViewAll == tappedChartViewAll)&&(identical(other.tappedTableViewAll, tappedTableViewAll) || other.tappedTableViewAll == tappedTableViewAll));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _PfcfRatioTabViewState&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.timestamp, timestamp) || other.timestamp == timestamp)&&(identical(other.loadTimeMs, loadTimeMs) || other.loadTimeMs == loadTimeMs)&&(identical(other.isSuccess, isSuccess) || other.isSuccess == isSuccess)&&(identical(other.dataSource, dataSource) || other.dataSource == dataSource)&&(identical(other.viewDurationSec, viewDurationSec) || other.viewDurationSec == viewDurationSec)&&(identical(other.tappedChartViewAll, tappedChartViewAll) || other.tappedChartViewAll == tappedChartViewAll)&&(identical(other.tappedTableViewAll, tappedTableViewAll) || other.tappedTableViewAll == tappedTableViewAll));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,ticker,timestamp,loadTimeMs,isSuccess,dataSource,viewDurationSec,tappedChartViewAll,tappedTableViewAll);
+int get hashCode {
+    return Object.hash(runtimeType,ticker,timestamp,loadTimeMs,isSuccess,dataSource,viewDurationSec,tappedChartViewAll,tappedTableViewAll);
+}
 
 @override
 String toString() {
-  return 'PfcfRatioTabViewState(ticker: $ticker, timestamp: $timestamp, loadTimeMs: $loadTimeMs, isSuccess: $isSuccess, dataSource: $dataSource, viewDurationSec: $viewDurationSec, tappedChartViewAll: $tappedChartViewAll, tappedTableViewAll: $tappedTableViewAll)';
+    return 'PfcfRatioTabViewState(ticker: $ticker, timestamp: $timestamp, loadTimeMs: $loadTimeMs, isSuccess: $isSuccess, dataSource: $dataSource, viewDurationSec: $viewDurationSec, tappedChartViewAll: $tappedChartViewAll, tappedTableViewAll: $tappedTableViewAll)';
 }
 
 

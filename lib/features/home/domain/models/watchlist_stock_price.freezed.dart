@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'watchlist_stock_price.dart';
@@ -9,6 +9,7 @@ part of 'watchlist_stock_price.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $WatchlistStockPriceCopyWith<WatchlistStockPrice> get copyWith => _$WatchlistSto
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is WatchlistStockPrice&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.companyName, companyName) || other.companyName == companyName)&&(identical(other.price, price) || other.price == price)&&(identical(other.previousClose, previousClose) || other.previousClose == previousClose)&&(identical(other.change, change) || other.change == change)&&(identical(other.changePercent, changePercent) || other.changePercent == changePercent)&&(identical(other.sessionDate, sessionDate) || other.sessionDate == sessionDate)&&const DeepCollectionEquality().equals(other.series, series)&&(identical(other.closeFinalized, closeFinalized) || other.closeFinalized == closeFinalized));
+  final _this = this as WatchlistStockPrice;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is WatchlistStockPrice&&(identical(other.ticker, _this.ticker) || other.ticker == _this.ticker)&&(identical(other.companyName, _this.companyName) || other.companyName == _this.companyName)&&(identical(other.price, _this.price) || other.price == _this.price)&&(identical(other.previousClose, _this.previousClose) || other.previousClose == _this.previousClose)&&(identical(other.change, _this.change) || other.change == _this.change)&&(identical(other.changePercent, _this.changePercent) || other.changePercent == _this.changePercent)&&(identical(other.sessionDate, _this.sessionDate) || other.sessionDate == _this.sessionDate)&&const DeepCollectionEquality().equals(other.series, _this.series)&&(identical(other.closeFinalized, _this.closeFinalized) || other.closeFinalized == _this.closeFinalized));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,ticker,companyName,price,previousClose,change,changePercent,sessionDate,const DeepCollectionEquality().hash(series),closeFinalized);
+int get hashCode {
+  final _this = this as WatchlistStockPrice;
+  return Object.hash(runtimeType,_this.ticker,_this.companyName,_this.price,_this.previousClose,_this.change,_this.changePercent,_this.sessionDate,const DeepCollectionEquality().hash(_this.series),_this.closeFinalized);
+}
 
 @override
 String toString() {
-  return 'WatchlistStockPrice(ticker: $ticker, companyName: $companyName, price: $price, previousClose: $previousClose, change: $change, changePercent: $changePercent, sessionDate: $sessionDate, series: $series, closeFinalized: $closeFinalized)';
+  final _this = this as WatchlistStockPrice;
+  return 'WatchlistStockPrice(ticker: ${_this.ticker}, companyName: ${_this.companyName}, price: ${_this.price}, previousClose: ${_this.previousClose}, change: ${_this.change}, changePercent: ${_this.changePercent}, sessionDate: ${_this.sessionDate}, series: ${_this.series}, closeFinalized: ${_this.closeFinalized})';
 }
 
 
@@ -63,7 +69,7 @@ class _$WatchlistStockPriceCopyWithImpl<$Res>
 /// Create a copy of WatchlistStockPrice
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? ticker = null,Object? companyName = null,Object? price = null,Object? previousClose = freezed,Object? change = freezed,Object? changePercent = freezed,Object? sessionDate = null,Object? series = null,Object? closeFinalized = null,}) {
-  return _then(_self.copyWith(
+  return _then(WatchlistStockPrice(
 ticker: null == ticker ? _self.ticker : ticker // ignore: cast_nullable_to_non_nullable
 as String,companyName: null == companyName ? _self.companyName : companyName // ignore: cast_nullable_to_non_nullable
 as String,price: null == price ? _self.price : price // ignore: cast_nullable_to_non_nullable
@@ -214,7 +220,7 @@ return $default(_that.ticker,_that.companyName,_that.price,_that.previousClose,_
 
 
 class _WatchlistStockPrice implements WatchlistStockPrice {
-  const _WatchlistStockPrice({required this.ticker, required this.companyName, required this.price, required this.previousClose, required this.change, required this.changePercent, required this.sessionDate, required final  List<WatchlistStockPricePoint> series, required this.closeFinalized}): _series = series;
+  const _WatchlistStockPrice({required this.ticker, required this.companyName, required this.price, required this.previousClose, required this.change, required this.changePercent, required this.sessionDate, required  List<WatchlistStockPricePoint> series, required this.closeFinalized}): _series = series;
   
 
 @override final  String ticker;
@@ -243,16 +249,18 @@ _$WatchlistStockPriceCopyWith<_WatchlistStockPrice> get copyWith => __$Watchlist
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _WatchlistStockPrice&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.companyName, companyName) || other.companyName == companyName)&&(identical(other.price, price) || other.price == price)&&(identical(other.previousClose, previousClose) || other.previousClose == previousClose)&&(identical(other.change, change) || other.change == change)&&(identical(other.changePercent, changePercent) || other.changePercent == changePercent)&&(identical(other.sessionDate, sessionDate) || other.sessionDate == sessionDate)&&const DeepCollectionEquality().equals(other._series, _series)&&(identical(other.closeFinalized, closeFinalized) || other.closeFinalized == closeFinalized));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _WatchlistStockPrice&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.companyName, companyName) || other.companyName == companyName)&&(identical(other.price, price) || other.price == price)&&(identical(other.previousClose, previousClose) || other.previousClose == previousClose)&&(identical(other.change, change) || other.change == change)&&(identical(other.changePercent, changePercent) || other.changePercent == changePercent)&&(identical(other.sessionDate, sessionDate) || other.sessionDate == sessionDate)&&const DeepCollectionEquality().equals(other.series, _series)&&(identical(other.closeFinalized, closeFinalized) || other.closeFinalized == closeFinalized));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,ticker,companyName,price,previousClose,change,changePercent,sessionDate,const DeepCollectionEquality().hash(_series),closeFinalized);
+int get hashCode {
+    return Object.hash(runtimeType,ticker,companyName,price,previousClose,change,changePercent,sessionDate,const DeepCollectionEquality().hash(_series),closeFinalized);
+}
 
 @override
 String toString() {
-  return 'WatchlistStockPrice(ticker: $ticker, companyName: $companyName, price: $price, previousClose: $previousClose, change: $change, changePercent: $changePercent, sessionDate: $sessionDate, series: $series, closeFinalized: $closeFinalized)';
+    return 'WatchlistStockPrice(ticker: $ticker, companyName: $companyName, price: $price, previousClose: $previousClose, change: $change, changePercent: $changePercent, sessionDate: $sessionDate, series: $series, closeFinalized: $closeFinalized)';
 }
 
 
@@ -312,16 +320,21 @@ $WatchlistStockPricePointCopyWith<WatchlistStockPricePoint> get copyWith => _$Wa
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is WatchlistStockPricePoint&&(identical(other.time, time) || other.time == time)&&(identical(other.close, close) || other.close == close));
+  final _this = this as WatchlistStockPricePoint;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is WatchlistStockPricePoint&&(identical(other.time, _this.time) || other.time == _this.time)&&(identical(other.close, _this.close) || other.close == _this.close));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,time,close);
+int get hashCode {
+  final _this = this as WatchlistStockPricePoint;
+  return Object.hash(runtimeType,_this.time,_this.close);
+}
 
 @override
 String toString() {
-  return 'WatchlistStockPricePoint(time: $time, close: $close)';
+  final _this = this as WatchlistStockPricePoint;
+  return 'WatchlistStockPricePoint(time: ${_this.time}, close: ${_this.close})';
 }
 
 
@@ -350,7 +363,7 @@ class _$WatchlistStockPricePointCopyWithImpl<$Res>
 /// Create a copy of WatchlistStockPricePoint
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? time = null,Object? close = null,}) {
-  return _then(_self.copyWith(
+  return _then(WatchlistStockPricePoint(
 time: null == time ? _self.time : time // ignore: cast_nullable_to_non_nullable
 as String,close: null == close ? _self.close : close // ignore: cast_nullable_to_non_nullable
 as double,
@@ -510,16 +523,18 @@ _$WatchlistStockPricePointCopyWith<_WatchlistStockPricePoint> get copyWith => __
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _WatchlistStockPricePoint&&(identical(other.time, time) || other.time == time)&&(identical(other.close, close) || other.close == close));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _WatchlistStockPricePoint&&(identical(other.time, time) || other.time == time)&&(identical(other.close, close) || other.close == close));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,time,close);
+int get hashCode {
+    return Object.hash(runtimeType,time,close);
+}
 
 @override
 String toString() {
-  return 'WatchlistStockPricePoint(time: $time, close: $close)';
+    return 'WatchlistStockPricePoint(time: $time, close: $close)';
 }
 
 

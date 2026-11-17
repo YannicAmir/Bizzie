@@ -1,6 +1,6 @@
 import 'package:bizzie/app/themes/app_colors.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/enums/growth_color_behavior.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 abstract class GrowthDisplayFormatter {
   static ({String text, Color color}) format(

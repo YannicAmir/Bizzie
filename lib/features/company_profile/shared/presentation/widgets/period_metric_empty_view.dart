@@ -2,7 +2,7 @@ import 'package:bizzie/core/enums/financial_period.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/widgets/company_profile_empty_state.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/widgets/period_switch.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class PeriodMetricEmptyView extends StatelessWidget {
   final FinancialPeriod period;

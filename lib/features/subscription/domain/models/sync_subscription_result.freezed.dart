@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'sync_subscription_result.dart';
@@ -9,6 +9,7 @@ part of 'sync_subscription_result.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $SyncSubscriptionResultCopyWith<SyncSubscriptionResult> get copyWith => _$SyncSu
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SyncSubscriptionResult&&(identical(other.isActive, isActive) || other.isActive == isActive)&&(identical(other.status, status) || other.status == status)&&(identical(other.expirationDate, expirationDate) || other.expirationDate == expirationDate));
+  final _this = this as SyncSubscriptionResult;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SyncSubscriptionResult&&(identical(other.isActive, _this.isActive) || other.isActive == _this.isActive)&&(identical(other.status, _this.status) || other.status == _this.status)&&(identical(other.expirationDate, _this.expirationDate) || other.expirationDate == _this.expirationDate));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,isActive,status,expirationDate);
+int get hashCode {
+  final _this = this as SyncSubscriptionResult;
+  return Object.hash(runtimeType,_this.isActive,_this.status,_this.expirationDate);
+}
 
 @override
 String toString() {
-  return 'SyncSubscriptionResult(isActive: $isActive, status: $status, expirationDate: $expirationDate)';
+  final _this = this as SyncSubscriptionResult;
+  return 'SyncSubscriptionResult(isActive: ${_this.isActive}, status: ${_this.status}, expirationDate: ${_this.expirationDate})';
 }
 
 
@@ -63,7 +69,7 @@ class _$SyncSubscriptionResultCopyWithImpl<$Res>
 /// Create a copy of SyncSubscriptionResult
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? isActive = null,Object? status = freezed,Object? expirationDate = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(SyncSubscriptionResult(
 isActive: null == isActive ? _self.isActive : isActive // ignore: cast_nullable_to_non_nullable
 as bool,status: freezed == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as String?,expirationDate: freezed == expirationDate ? _self.expirationDate : expirationDate // ignore: cast_nullable_to_non_nullable
@@ -225,16 +231,18 @@ _$SyncSubscriptionResultCopyWith<_SyncSubscriptionResult> get copyWith => __$Syn
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SyncSubscriptionResult&&(identical(other.isActive, isActive) || other.isActive == isActive)&&(identical(other.status, status) || other.status == status)&&(identical(other.expirationDate, expirationDate) || other.expirationDate == expirationDate));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _SyncSubscriptionResult&&(identical(other.isActive, isActive) || other.isActive == isActive)&&(identical(other.status, status) || other.status == status)&&(identical(other.expirationDate, expirationDate) || other.expirationDate == expirationDate));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,isActive,status,expirationDate);
+int get hashCode {
+    return Object.hash(runtimeType,isActive,status,expirationDate);
+}
 
 @override
 String toString() {
-  return 'SyncSubscriptionResult(isActive: $isActive, status: $status, expirationDate: $expirationDate)';
+    return 'SyncSubscriptionResult(isActive: $isActive, status: $status, expirationDate: $expirationDate)';
 }
 
 

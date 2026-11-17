@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'feedback_state.dart';
@@ -9,6 +9,7 @@ part of 'feedback_state.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $FeedbackStateCopyWith<FeedbackState> get copyWith => _$FeedbackStateCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is FeedbackState&&(identical(other.isCoolingDown, isCoolingDown) || other.isCoolingDown == isCoolingDown));
+  final _this = this as FeedbackState;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is FeedbackState&&(identical(other.isCoolingDown, _this.isCoolingDown) || other.isCoolingDown == _this.isCoolingDown));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,isCoolingDown);
+int get hashCode {
+  final _this = this as FeedbackState;
+  return Object.hash(runtimeType,_this.isCoolingDown);
+}
 
 @override
 String toString() {
-  return 'FeedbackState(isCoolingDown: $isCoolingDown)';
+  final _this = this as FeedbackState;
+  return 'FeedbackState(isCoolingDown: ${_this.isCoolingDown})';
 }
 
 
@@ -239,16 +245,18 @@ $InitialCopyWith<Initial> get copyWith => _$InitialCopyWithImpl<Initial>(this, _
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Initial&&(identical(other.isCoolingDown, isCoolingDown) || other.isCoolingDown == isCoolingDown));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is Initial&&(identical(other.isCoolingDown, isCoolingDown) || other.isCoolingDown == isCoolingDown));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,isCoolingDown);
+int get hashCode {
+    return Object.hash(runtimeType,isCoolingDown);
+}
 
 @override
 String toString() {
-  return 'FeedbackState.initial(isCoolingDown: $isCoolingDown)';
+    return 'FeedbackState.initial(isCoolingDown: $isCoolingDown)';
 }
 
 
@@ -305,16 +313,18 @@ $LoadingCopyWith<Loading> get copyWith => _$LoadingCopyWithImpl<Loading>(this, _
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Loading&&(identical(other.isCoolingDown, isCoolingDown) || other.isCoolingDown == isCoolingDown));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is Loading&&(identical(other.isCoolingDown, isCoolingDown) || other.isCoolingDown == isCoolingDown));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,isCoolingDown);
+int get hashCode {
+    return Object.hash(runtimeType,isCoolingDown);
+}
 
 @override
 String toString() {
-  return 'FeedbackState.loading(isCoolingDown: $isCoolingDown)';
+    return 'FeedbackState.loading(isCoolingDown: $isCoolingDown)';
 }
 
 
@@ -371,16 +381,18 @@ $SuccessCopyWith<Success> get copyWith => _$SuccessCopyWithImpl<Success>(this, _
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Success&&(identical(other.isCoolingDown, isCoolingDown) || other.isCoolingDown == isCoolingDown));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is Success&&(identical(other.isCoolingDown, isCoolingDown) || other.isCoolingDown == isCoolingDown));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,isCoolingDown);
+int get hashCode {
+    return Object.hash(runtimeType,isCoolingDown);
+}
 
 @override
 String toString() {
-  return 'FeedbackState.success(isCoolingDown: $isCoolingDown)';
+    return 'FeedbackState.success(isCoolingDown: $isCoolingDown)';
 }
 
 
@@ -438,16 +450,18 @@ $FailureStateCopyWith<FailureState> get copyWith => _$FailureStateCopyWithImpl<F
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is FailureState&&(identical(other.failure, failure) || other.failure == failure)&&(identical(other.isCoolingDown, isCoolingDown) || other.isCoolingDown == isCoolingDown));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is FailureState&&(identical(other.failure, failure) || other.failure == failure)&&(identical(other.isCoolingDown, isCoolingDown) || other.isCoolingDown == isCoolingDown));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,failure,isCoolingDown);
+int get hashCode {
+    return Object.hash(runtimeType,failure,isCoolingDown);
+}
 
 @override
 String toString() {
-  return 'FeedbackState.failure(failure: $failure, isCoolingDown: $isCoolingDown)';
+    return 'FeedbackState.failure(failure: $failure, isCoolingDown: $isCoolingDown)';
 }
 
 

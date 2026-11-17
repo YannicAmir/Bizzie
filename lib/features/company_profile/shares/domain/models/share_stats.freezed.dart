@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'share_stats.dart';
@@ -9,6 +9,7 @@ part of 'share_stats.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $ShareStatsCopyWith<ShareStats> get copyWith => _$ShareStatsCopyWithImpl<ShareSt
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ShareStats&&(identical(other.currentSharesOutstanding, currentSharesOutstanding) || other.currentSharesOutstanding == currentSharesOutstanding)&&const DeepCollectionEquality().equals(other.annualWeightedAverageShares, annualWeightedAverageShares)&&const DeepCollectionEquality().equals(other.quarterlyWeightedAverageShares, quarterlyWeightedAverageShares));
+  final _this = this as ShareStats;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ShareStats&&(identical(other.currentSharesOutstanding, _this.currentSharesOutstanding) || other.currentSharesOutstanding == _this.currentSharesOutstanding)&&const DeepCollectionEquality().equals(other.annualWeightedAverageShares, _this.annualWeightedAverageShares)&&const DeepCollectionEquality().equals(other.quarterlyWeightedAverageShares, _this.quarterlyWeightedAverageShares));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,currentSharesOutstanding,const DeepCollectionEquality().hash(annualWeightedAverageShares),const DeepCollectionEquality().hash(quarterlyWeightedAverageShares));
+int get hashCode {
+  final _this = this as ShareStats;
+  return Object.hash(runtimeType,_this.currentSharesOutstanding,const DeepCollectionEquality().hash(_this.annualWeightedAverageShares),const DeepCollectionEquality().hash(_this.quarterlyWeightedAverageShares));
+}
 
 @override
 String toString() {
-  return 'ShareStats(currentSharesOutstanding: $currentSharesOutstanding, annualWeightedAverageShares: $annualWeightedAverageShares, quarterlyWeightedAverageShares: $quarterlyWeightedAverageShares)';
+  final _this = this as ShareStats;
+  return 'ShareStats(currentSharesOutstanding: ${_this.currentSharesOutstanding}, annualWeightedAverageShares: ${_this.annualWeightedAverageShares}, quarterlyWeightedAverageShares: ${_this.quarterlyWeightedAverageShares})';
 }
 
 
@@ -63,7 +69,7 @@ class _$ShareStatsCopyWithImpl<$Res>
 /// Create a copy of ShareStats
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? currentSharesOutstanding = null,Object? annualWeightedAverageShares = null,Object? quarterlyWeightedAverageShares = null,}) {
-  return _then(_self.copyWith(
+  return _then(ShareStats(
 currentSharesOutstanding: null == currentSharesOutstanding ? _self.currentSharesOutstanding : currentSharesOutstanding // ignore: cast_nullable_to_non_nullable
 as double,annualWeightedAverageShares: null == annualWeightedAverageShares ? _self.annualWeightedAverageShares : annualWeightedAverageShares // ignore: cast_nullable_to_non_nullable
 as List<FinancialDataPoint>,quarterlyWeightedAverageShares: null == quarterlyWeightedAverageShares ? _self.quarterlyWeightedAverageShares : quarterlyWeightedAverageShares // ignore: cast_nullable_to_non_nullable
@@ -208,7 +214,7 @@ return $default(_that.currentSharesOutstanding,_that.annualWeightedAverageShares
 
 
 class _ShareStats implements ShareStats {
-  const _ShareStats({required this.currentSharesOutstanding, required final  List<FinancialDataPoint> annualWeightedAverageShares, required final  List<FinancialDataPoint> quarterlyWeightedAverageShares}): _annualWeightedAverageShares = annualWeightedAverageShares,_quarterlyWeightedAverageShares = quarterlyWeightedAverageShares;
+  const _ShareStats({required this.currentSharesOutstanding, required  List<FinancialDataPoint> annualWeightedAverageShares, required  List<FinancialDataPoint> quarterlyWeightedAverageShares}): _annualWeightedAverageShares = annualWeightedAverageShares,_quarterlyWeightedAverageShares = quarterlyWeightedAverageShares;
   
 
 @override final  double currentSharesOutstanding;
@@ -237,16 +243,18 @@ _$ShareStatsCopyWith<_ShareStats> get copyWith => __$ShareStatsCopyWithImpl<_Sha
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ShareStats&&(identical(other.currentSharesOutstanding, currentSharesOutstanding) || other.currentSharesOutstanding == currentSharesOutstanding)&&const DeepCollectionEquality().equals(other._annualWeightedAverageShares, _annualWeightedAverageShares)&&const DeepCollectionEquality().equals(other._quarterlyWeightedAverageShares, _quarterlyWeightedAverageShares));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ShareStats&&(identical(other.currentSharesOutstanding, currentSharesOutstanding) || other.currentSharesOutstanding == currentSharesOutstanding)&&const DeepCollectionEquality().equals(other.annualWeightedAverageShares, _annualWeightedAverageShares)&&const DeepCollectionEquality().equals(other.quarterlyWeightedAverageShares, _quarterlyWeightedAverageShares));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,currentSharesOutstanding,const DeepCollectionEquality().hash(_annualWeightedAverageShares),const DeepCollectionEquality().hash(_quarterlyWeightedAverageShares));
+int get hashCode {
+    return Object.hash(runtimeType,currentSharesOutstanding,const DeepCollectionEquality().hash(_annualWeightedAverageShares),const DeepCollectionEquality().hash(_quarterlyWeightedAverageShares));
+}
 
 @override
 String toString() {
-  return 'ShareStats(currentSharesOutstanding: $currentSharesOutstanding, annualWeightedAverageShares: $annualWeightedAverageShares, quarterlyWeightedAverageShares: $quarterlyWeightedAverageShares)';
+    return 'ShareStats(currentSharesOutstanding: $currentSharesOutstanding, annualWeightedAverageShares: $annualWeightedAverageShares, quarterlyWeightedAverageShares: $quarterlyWeightedAverageShares)';
 }
 
 

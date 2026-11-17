@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'post_onboarding_destination.dart';
@@ -9,6 +9,7 @@ part of 'post_onboarding_destination.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $PostOnboardingDestinationCopyWith<PostOnboardingDestination> get copyWith => _$
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PostOnboardingDestination&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.tickerSource, tickerSource) || other.tickerSource == tickerSource)&&(identical(other.shouldPromptNotifications, shouldPromptNotifications) || other.shouldPromptNotifications == shouldPromptNotifications)&&(identical(other.shouldPersistNotificationGrant, shouldPersistNotificationGrant) || other.shouldPersistNotificationGrant == shouldPersistNotificationGrant));
+  final _this = this as PostOnboardingDestination;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PostOnboardingDestination&&(identical(other.ticker, _this.ticker) || other.ticker == _this.ticker)&&(identical(other.tickerSource, _this.tickerSource) || other.tickerSource == _this.tickerSource)&&(identical(other.shouldPromptNotifications, _this.shouldPromptNotifications) || other.shouldPromptNotifications == _this.shouldPromptNotifications)&&(identical(other.shouldPersistNotificationGrant, _this.shouldPersistNotificationGrant) || other.shouldPersistNotificationGrant == _this.shouldPersistNotificationGrant));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,ticker,tickerSource,shouldPromptNotifications,shouldPersistNotificationGrant);
+int get hashCode {
+  final _this = this as PostOnboardingDestination;
+  return Object.hash(runtimeType,_this.ticker,_this.tickerSource,_this.shouldPromptNotifications,_this.shouldPersistNotificationGrant);
+}
 
 @override
 String toString() {
-  return 'PostOnboardingDestination(ticker: $ticker, tickerSource: $tickerSource, shouldPromptNotifications: $shouldPromptNotifications, shouldPersistNotificationGrant: $shouldPersistNotificationGrant)';
+  final _this = this as PostOnboardingDestination;
+  return 'PostOnboardingDestination(ticker: ${_this.ticker}, tickerSource: ${_this.tickerSource}, shouldPromptNotifications: ${_this.shouldPromptNotifications}, shouldPersistNotificationGrant: ${_this.shouldPersistNotificationGrant})';
 }
 
 
@@ -63,7 +69,7 @@ class _$PostOnboardingDestinationCopyWithImpl<$Res>
 /// Create a copy of PostOnboardingDestination
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? ticker = null,Object? tickerSource = null,Object? shouldPromptNotifications = null,Object? shouldPersistNotificationGrant = null,}) {
-  return _then(_self.copyWith(
+  return _then(PostOnboardingDestination(
 ticker: null == ticker ? _self.ticker : ticker // ignore: cast_nullable_to_non_nullable
 as String,tickerSource: null == tickerSource ? _self.tickerSource : tickerSource // ignore: cast_nullable_to_non_nullable
 as OnboardingValueSource,shouldPromptNotifications: null == shouldPromptNotifications ? _self.shouldPromptNotifications : shouldPromptNotifications // ignore: cast_nullable_to_non_nullable
@@ -227,16 +233,18 @@ _$PostOnboardingDestinationCopyWith<_PostOnboardingDestination> get copyWith => 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PostOnboardingDestination&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.tickerSource, tickerSource) || other.tickerSource == tickerSource)&&(identical(other.shouldPromptNotifications, shouldPromptNotifications) || other.shouldPromptNotifications == shouldPromptNotifications)&&(identical(other.shouldPersistNotificationGrant, shouldPersistNotificationGrant) || other.shouldPersistNotificationGrant == shouldPersistNotificationGrant));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _PostOnboardingDestination&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.tickerSource, tickerSource) || other.tickerSource == tickerSource)&&(identical(other.shouldPromptNotifications, shouldPromptNotifications) || other.shouldPromptNotifications == shouldPromptNotifications)&&(identical(other.shouldPersistNotificationGrant, shouldPersistNotificationGrant) || other.shouldPersistNotificationGrant == shouldPersistNotificationGrant));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,ticker,tickerSource,shouldPromptNotifications,shouldPersistNotificationGrant);
+int get hashCode {
+    return Object.hash(runtimeType,ticker,tickerSource,shouldPromptNotifications,shouldPersistNotificationGrant);
+}
 
 @override
 String toString() {
-  return 'PostOnboardingDestination(ticker: $ticker, tickerSource: $tickerSource, shouldPromptNotifications: $shouldPromptNotifications, shouldPersistNotificationGrant: $shouldPersistNotificationGrant)';
+    return 'PostOnboardingDestination(ticker: $ticker, tickerSource: $tickerSource, shouldPromptNotifications: $shouldPromptNotifications, shouldPersistNotificationGrant: $shouldPersistNotificationGrant)';
 }
 
 

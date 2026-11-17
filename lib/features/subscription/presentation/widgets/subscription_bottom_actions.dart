@@ -1,7 +1,7 @@
 import 'package:bizzie/shared/widgets/bottom_fade_gradient.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:bizzie/shared/widgets/buttons/bizzie_primary_button.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class SubscriptionBottomActions extends StatelessWidget {
   final bool isLoading;

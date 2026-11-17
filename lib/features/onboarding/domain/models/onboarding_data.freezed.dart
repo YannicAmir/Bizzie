@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'onboarding_data.dart';
@@ -9,6 +9,7 @@ part of 'onboarding_data.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $OnboardingDataCopyWith<OnboardingData> get copyWith => _$OnboardingDataCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is OnboardingData&&(identical(other.firstName, firstName) || other.firstName == firstName)&&(identical(other.selectedSector, selectedSector) || other.selectedSector == selectedSector)&&(identical(other.rawBrandsText, rawBrandsText) || other.rawBrandsText == rawBrandsText)&&const DeepCollectionEquality().equals(other.detectedCompanies, detectedCompanies)&&(identical(other.investingExperience, investingExperience) || other.investingExperience == investingExperience)&&(identical(other.notificationsEnabled, notificationsEnabled) || other.notificationsEnabled == notificationsEnabled)&&(identical(other.hasDecidedNotifications, hasDecidedNotifications) || other.hasDecidedNotifications == hasDecidedNotifications));
+  final _this = this as OnboardingData;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is OnboardingData&&(identical(other.firstName, _this.firstName) || other.firstName == _this.firstName)&&(identical(other.selectedSector, _this.selectedSector) || other.selectedSector == _this.selectedSector)&&(identical(other.rawBrandsText, _this.rawBrandsText) || other.rawBrandsText == _this.rawBrandsText)&&const DeepCollectionEquality().equals(other.detectedCompanies, _this.detectedCompanies)&&(identical(other.investingExperience, _this.investingExperience) || other.investingExperience == _this.investingExperience)&&(identical(other.notificationsEnabled, _this.notificationsEnabled) || other.notificationsEnabled == _this.notificationsEnabled)&&(identical(other.hasDecidedNotifications, _this.hasDecidedNotifications) || other.hasDecidedNotifications == _this.hasDecidedNotifications));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,firstName,selectedSector,rawBrandsText,const DeepCollectionEquality().hash(detectedCompanies),investingExperience,notificationsEnabled,hasDecidedNotifications);
+int get hashCode {
+  final _this = this as OnboardingData;
+  return Object.hash(runtimeType,_this.firstName,_this.selectedSector,_this.rawBrandsText,const DeepCollectionEquality().hash(_this.detectedCompanies),_this.investingExperience,_this.notificationsEnabled,_this.hasDecidedNotifications);
+}
 
 @override
 String toString() {
-  return 'OnboardingData(firstName: $firstName, selectedSector: $selectedSector, rawBrandsText: $rawBrandsText, detectedCompanies: $detectedCompanies, investingExperience: $investingExperience, notificationsEnabled: $notificationsEnabled, hasDecidedNotifications: $hasDecidedNotifications)';
+  final _this = this as OnboardingData;
+  return 'OnboardingData(firstName: ${_this.firstName}, selectedSector: ${_this.selectedSector}, rawBrandsText: ${_this.rawBrandsText}, detectedCompanies: ${_this.detectedCompanies}, investingExperience: ${_this.investingExperience}, notificationsEnabled: ${_this.notificationsEnabled}, hasDecidedNotifications: ${_this.hasDecidedNotifications})';
 }
 
 
@@ -63,7 +69,7 @@ class _$OnboardingDataCopyWithImpl<$Res>
 /// Create a copy of OnboardingData
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? firstName = null,Object? selectedSector = freezed,Object? rawBrandsText = null,Object? detectedCompanies = null,Object? investingExperience = freezed,Object? notificationsEnabled = null,Object? hasDecidedNotifications = null,}) {
-  return _then(_self.copyWith(
+  return _then(OnboardingData(
 firstName: null == firstName ? _self.firstName : firstName // ignore: cast_nullable_to_non_nullable
 as String,selectedSector: freezed == selectedSector ? _self.selectedSector : selectedSector // ignore: cast_nullable_to_non_nullable
 as Sector?,rawBrandsText: null == rawBrandsText ? _self.rawBrandsText : rawBrandsText // ignore: cast_nullable_to_non_nullable
@@ -212,7 +218,7 @@ return $default(_that.firstName,_that.selectedSector,_that.rawBrandsText,_that.d
 
 
 class _OnboardingData implements OnboardingData {
-  const _OnboardingData({this.firstName = '', this.selectedSector = null, this.rawBrandsText = '', final  List<Company> detectedCompanies = const [], this.investingExperience = null, this.notificationsEnabled = false, this.hasDecidedNotifications = false}): _detectedCompanies = detectedCompanies;
+  const _OnboardingData({this.firstName = '', this.selectedSector = null, this.rawBrandsText = '',  List<Company> detectedCompanies = const [], this.investingExperience = null, this.notificationsEnabled = false, this.hasDecidedNotifications = false}): _detectedCompanies = detectedCompanies;
   
 
 @override@JsonKey() final  String firstName;
@@ -239,16 +245,18 @@ _$OnboardingDataCopyWith<_OnboardingData> get copyWith => __$OnboardingDataCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _OnboardingData&&(identical(other.firstName, firstName) || other.firstName == firstName)&&(identical(other.selectedSector, selectedSector) || other.selectedSector == selectedSector)&&(identical(other.rawBrandsText, rawBrandsText) || other.rawBrandsText == rawBrandsText)&&const DeepCollectionEquality().equals(other._detectedCompanies, _detectedCompanies)&&(identical(other.investingExperience, investingExperience) || other.investingExperience == investingExperience)&&(identical(other.notificationsEnabled, notificationsEnabled) || other.notificationsEnabled == notificationsEnabled)&&(identical(other.hasDecidedNotifications, hasDecidedNotifications) || other.hasDecidedNotifications == hasDecidedNotifications));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _OnboardingData&&(identical(other.firstName, firstName) || other.firstName == firstName)&&(identical(other.selectedSector, selectedSector) || other.selectedSector == selectedSector)&&(identical(other.rawBrandsText, rawBrandsText) || other.rawBrandsText == rawBrandsText)&&const DeepCollectionEquality().equals(other.detectedCompanies, _detectedCompanies)&&(identical(other.investingExperience, investingExperience) || other.investingExperience == investingExperience)&&(identical(other.notificationsEnabled, notificationsEnabled) || other.notificationsEnabled == notificationsEnabled)&&(identical(other.hasDecidedNotifications, hasDecidedNotifications) || other.hasDecidedNotifications == hasDecidedNotifications));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,firstName,selectedSector,rawBrandsText,const DeepCollectionEquality().hash(_detectedCompanies),investingExperience,notificationsEnabled,hasDecidedNotifications);
+int get hashCode {
+    return Object.hash(runtimeType,firstName,selectedSector,rawBrandsText,const DeepCollectionEquality().hash(_detectedCompanies),investingExperience,notificationsEnabled,hasDecidedNotifications);
+}
 
 @override
 String toString() {
-  return 'OnboardingData(firstName: $firstName, selectedSector: $selectedSector, rawBrandsText: $rawBrandsText, detectedCompanies: $detectedCompanies, investingExperience: $investingExperience, notificationsEnabled: $notificationsEnabled, hasDecidedNotifications: $hasDecidedNotifications)';
+    return 'OnboardingData(firstName: $firstName, selectedSector: $selectedSector, rawBrandsText: $rawBrandsText, detectedCompanies: $detectedCompanies, investingExperience: $investingExperience, notificationsEnabled: $notificationsEnabled, hasDecidedNotifications: $hasDecidedNotifications)';
 }
 
 

@@ -1,7 +1,7 @@
 import 'package:bizzie/features/watchlist/domain/models/watchlist_event_status.dart';
 import 'package:bizzie/shared/utils/bizzie_date_formatter.dart';
 import 'package:bizzie/shared/widgets/app_badge.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class WatchlistEventBadge extends StatelessWidget {
   final WatchlistEventStatus status;

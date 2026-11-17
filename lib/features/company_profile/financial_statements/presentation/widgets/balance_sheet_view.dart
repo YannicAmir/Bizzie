@@ -15,7 +15,7 @@ import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:bizzie/shared/utils/currency_formatter.dart';
 import 'package:bizzie/shared/widgets/charts/bizzie_pie_chart.dart';
 import 'package:bizzie/shared/widgets/modals/app_history_modal.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
 import 'package:bizzie/features/user/presentation/extensions/user_state_extensions.dart';

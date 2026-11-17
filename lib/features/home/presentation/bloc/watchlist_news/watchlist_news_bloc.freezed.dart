@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'watchlist_news_bloc.dart';
@@ -9,6 +9,7 @@ part of 'watchlist_news_bloc.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -20,7 +21,7 @@ mixin _$WatchlistNewsEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is WatchlistNewsEvent);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is WatchlistNewsEvent);
 }
 
 
@@ -29,7 +30,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'WatchlistNewsEvent()';
+    return 'WatchlistNewsEvent()';
 }
 
 
@@ -175,7 +176,7 @@ return reset();case _:
 
 
 class LoadRequested implements WatchlistNewsEvent {
-  const LoadRequested(final  List<String> tickers): _tickers = tickers;
+  const LoadRequested( List<String> tickers): _tickers = tickers;
   
 
  final  List<String> _tickers;
@@ -196,16 +197,18 @@ $LoadRequestedCopyWith<LoadRequested> get copyWith => _$LoadRequestedCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is LoadRequested&&const DeepCollectionEquality().equals(other._tickers, _tickers));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is LoadRequested&&const DeepCollectionEquality().equals(other.tickers, _tickers));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_tickers));
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_tickers));
+}
 
 @override
 String toString() {
-  return 'WatchlistNewsEvent.loadRequested(tickers: $tickers)';
+    return 'WatchlistNewsEvent.loadRequested(tickers: $tickers)';
 }
 
 
@@ -257,7 +260,7 @@ class Reset implements WatchlistNewsEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Reset);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is Reset);
 }
 
 
@@ -266,7 +269,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'WatchlistNewsEvent.reset()';
+    return 'WatchlistNewsEvent.reset()';
 }
 
 
@@ -284,7 +287,7 @@ mixin _$WatchlistNewsState {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is WatchlistNewsState);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is WatchlistNewsState);
 }
 
 
@@ -293,7 +296,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'WatchlistNewsState()';
+    return 'WatchlistNewsState()';
 }
 
 
@@ -467,7 +470,7 @@ class _Initial implements WatchlistNewsState {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Initial);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Initial);
 }
 
 
@@ -476,7 +479,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'WatchlistNewsState.initial()';
+    return 'WatchlistNewsState.initial()';
 }
 
 
@@ -499,7 +502,7 @@ class _Loading implements WatchlistNewsState {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Loading);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Loading);
 }
 
 
@@ -508,7 +511,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'WatchlistNewsState.loading()';
+    return 'WatchlistNewsState.loading()';
 }
 
 
@@ -521,7 +524,7 @@ String toString() {
 
 
 class WatchlistNewsLoaded implements WatchlistNewsState {
-  const WatchlistNewsLoaded(final  List<WatchlistNewsArticle> articles): _articles = articles;
+  const WatchlistNewsLoaded( List<WatchlistNewsArticle> articles): _articles = articles;
   
 
  final  List<WatchlistNewsArticle> _articles;
@@ -542,16 +545,18 @@ $WatchlistNewsLoadedCopyWith<WatchlistNewsLoaded> get copyWith => _$WatchlistNew
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is WatchlistNewsLoaded&&const DeepCollectionEquality().equals(other._articles, _articles));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is WatchlistNewsLoaded&&const DeepCollectionEquality().equals(other.articles, _articles));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_articles));
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_articles));
+}
 
 @override
 String toString() {
-  return 'WatchlistNewsState.loaded(articles: $articles)';
+    return 'WatchlistNewsState.loaded(articles: $articles)';
 }
 
 
@@ -608,16 +613,18 @@ _$FailureCopyWith<_Failure> get copyWith => __$FailureCopyWithImpl<_Failure>(thi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Failure&&(identical(other.failure, failure) || other.failure == failure));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Failure&&(identical(other.failure, failure) || other.failure == failure));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,failure);
+int get hashCode {
+    return Object.hash(runtimeType,failure);
+}
 
 @override
 String toString() {
-  return 'WatchlistNewsState.failure(failure: $failure)';
+    return 'WatchlistNewsState.failure(failure: $failure)';
 }
 
 

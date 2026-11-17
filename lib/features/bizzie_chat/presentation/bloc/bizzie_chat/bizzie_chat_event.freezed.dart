@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'bizzie_chat_event.dart';
@@ -9,6 +9,7 @@ part of 'bizzie_chat_event.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -20,7 +21,7 @@ mixin _$BizzieChatEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is BizzieChatEvent);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is BizzieChatEvent);
 }
 
 
@@ -29,7 +30,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'BizzieChatEvent()';
+    return 'BizzieChatEvent()';
 }
 
 
@@ -241,16 +242,18 @@ _$SessionStartedCopyWith<_SessionStarted> get copyWith => __$SessionStartedCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SessionStarted&&(identical(other.uid, uid) || other.uid == uid)&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.companyName, companyName) || other.companyName == companyName)&&(identical(other.sessionId, sessionId) || other.sessionId == sessionId));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _SessionStarted&&(identical(other.uid, uid) || other.uid == uid)&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.companyName, companyName) || other.companyName == companyName)&&(identical(other.sessionId, sessionId) || other.sessionId == sessionId));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,uid,ticker,companyName,sessionId);
+int get hashCode {
+    return Object.hash(runtimeType,uid,ticker,companyName,sessionId);
+}
 
 @override
 String toString() {
-  return 'BizzieChatEvent.sessionStarted(uid: $uid, ticker: $ticker, companyName: $companyName, sessionId: $sessionId)';
+    return 'BizzieChatEvent.sessionStarted(uid: $uid, ticker: $ticker, companyName: $companyName, sessionId: $sessionId)';
 }
 
 
@@ -310,16 +313,18 @@ _$MessageSentCopyWith<_MessageSent> get copyWith => __$MessageSentCopyWithImpl<_
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _MessageSent&&(identical(other.query, query) || other.query == query));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _MessageSent&&(identical(other.query, query) || other.query == query));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,query);
+int get hashCode {
+    return Object.hash(runtimeType,query);
+}
 
 @override
 String toString() {
-  return 'BizzieChatEvent.messageSent(query: $query)';
+    return 'BizzieChatEvent.messageSent(query: $query)';
 }
 
 
@@ -371,7 +376,7 @@ class _Reset implements BizzieChatEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Reset);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Reset);
 }
 
 
@@ -380,7 +385,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'BizzieChatEvent.reset()';
+    return 'BizzieChatEvent.reset()';
 }
 
 
@@ -393,7 +398,7 @@ String toString() {
 
 
 class _MessagesLoaded implements BizzieChatEvent {
-  const _MessagesLoaded(final  List<ChatMessage> messages): _messages = messages;
+  const _MessagesLoaded( List<ChatMessage> messages): _messages = messages;
   
 
  final  List<ChatMessage> _messages;
@@ -414,16 +419,18 @@ _$MessagesLoadedCopyWith<_MessagesLoaded> get copyWith => __$MessagesLoadedCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _MessagesLoaded&&const DeepCollectionEquality().equals(other._messages, _messages));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _MessagesLoaded&&const DeepCollectionEquality().equals(other.messages, _messages));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_messages));
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_messages));
+}
 
 @override
 String toString() {
-  return 'BizzieChatEvent.messagesLoaded(messages: $messages)';
+    return 'BizzieChatEvent.messagesLoaded(messages: $messages)';
 }
 
 
@@ -480,16 +487,18 @@ _$MessagesLoadFailedCopyWith<_MessagesLoadFailed> get copyWith => __$MessagesLoa
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _MessagesLoadFailed&&(identical(other.failure, failure) || other.failure == failure));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _MessagesLoadFailed&&(identical(other.failure, failure) || other.failure == failure));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,failure);
+int get hashCode {
+    return Object.hash(runtimeType,failure);
+}
 
 @override
 String toString() {
-  return 'BizzieChatEvent.messagesLoadFailed(failure: $failure)';
+    return 'BizzieChatEvent.messagesLoadFailed(failure: $failure)';
 }
 
 
@@ -555,16 +564,18 @@ _$SseTokenReceivedCopyWith<_SseTokenReceived> get copyWith => __$SseTokenReceive
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SseTokenReceived&&(identical(other.token, token) || other.token == token));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _SseTokenReceived&&(identical(other.token, token) || other.token == token));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,token);
+int get hashCode {
+    return Object.hash(runtimeType,token);
+}
 
 @override
 String toString() {
-  return 'BizzieChatEvent.sseTokenReceived(token: $token)';
+    return 'BizzieChatEvent.sseTokenReceived(token: $token)';
 }
 
 
@@ -606,7 +617,7 @@ as String,
 
 
 class _SseDone implements BizzieChatEvent {
-  const _SseDone({required final  List<String> followUps, this.source}): _followUps = followUps;
+  const _SseDone({required  List<String> followUps, this.source}): _followUps = followUps;
   
 
  final  List<String> _followUps;
@@ -628,16 +639,18 @@ _$SseDoneCopyWith<_SseDone> get copyWith => __$SseDoneCopyWithImpl<_SseDone>(thi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SseDone&&const DeepCollectionEquality().equals(other._followUps, _followUps)&&(identical(other.source, source) || other.source == source));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _SseDone&&const DeepCollectionEquality().equals(other.followUps, _followUps)&&(identical(other.source, source) || other.source == source));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_followUps),source);
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_followUps),source);
+}
 
 @override
 String toString() {
-  return 'BizzieChatEvent.sseDone(followUps: $followUps, source: $source)';
+    return 'BizzieChatEvent.sseDone(followUps: $followUps, source: $source)';
 }
 
 
@@ -695,16 +708,18 @@ _$SseFailedCopyWith<_SseFailed> get copyWith => __$SseFailedCopyWithImpl<_SseFai
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SseFailed&&(identical(other.message, message) || other.message == message));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _SseFailed&&(identical(other.message, message) || other.message == message));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,message);
+int get hashCode {
+    return Object.hash(runtimeType,message);
+}
 
 @override
 String toString() {
-  return 'BizzieChatEvent.sseFailed(message: $message)';
+    return 'BizzieChatEvent.sseFailed(message: $message)';
 }
 
 
@@ -766,16 +781,18 @@ _$MessageRatedCopyWith<_MessageRated> get copyWith => __$MessageRatedCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _MessageRated&&(identical(other.rating, rating) || other.rating == rating)&&(identical(other.question, question) || other.question == question)&&(identical(other.aiResponse, aiResponse) || other.aiResponse == aiResponse)&&(identical(other.companyName, companyName) || other.companyName == companyName)&&(identical(other.companyTicker, companyTicker) || other.companyTicker == companyTicker)&&(identical(other.assistantMessageId, assistantMessageId) || other.assistantMessageId == assistantMessageId));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _MessageRated&&(identical(other.rating, rating) || other.rating == rating)&&(identical(other.question, question) || other.question == question)&&(identical(other.aiResponse, aiResponse) || other.aiResponse == aiResponse)&&(identical(other.companyName, companyName) || other.companyName == companyName)&&(identical(other.companyTicker, companyTicker) || other.companyTicker == companyTicker)&&(identical(other.assistantMessageId, assistantMessageId) || other.assistantMessageId == assistantMessageId));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,rating,question,aiResponse,companyName,companyTicker,assistantMessageId);
+int get hashCode {
+    return Object.hash(runtimeType,rating,question,aiResponse,companyName,companyTicker,assistantMessageId);
+}
 
 @override
 String toString() {
-  return 'BizzieChatEvent.messageRated(rating: $rating, question: $question, aiResponse: $aiResponse, companyName: $companyName, companyTicker: $companyTicker, assistantMessageId: $assistantMessageId)';
+    return 'BizzieChatEvent.messageRated(rating: $rating, question: $question, aiResponse: $aiResponse, companyName: $companyName, companyTicker: $companyTicker, assistantMessageId: $assistantMessageId)';
 }
 
 

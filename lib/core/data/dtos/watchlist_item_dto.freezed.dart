@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'watchlist_item_dto.dart';
@@ -9,6 +9,7 @@ part of 'watchlist_item_dto.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 
@@ -28,16 +29,21 @@ $WatchlistItemDtoCopyWith<WatchlistItemDto> get copyWith => _$WatchlistItemDtoCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is WatchlistItemDto&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.companyName, companyName) || other.companyName == companyName)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.logoUrl, logoUrl) || other.logoUrl == logoUrl));
+  final _this = this as WatchlistItemDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is WatchlistItemDto&&(identical(other.ticker, _this.ticker) || other.ticker == _this.ticker)&&(identical(other.companyName, _this.companyName) || other.companyName == _this.companyName)&&(identical(other.createdAt, _this.createdAt) || other.createdAt == _this.createdAt)&&(identical(other.logoUrl, _this.logoUrl) || other.logoUrl == _this.logoUrl));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,ticker,companyName,createdAt,logoUrl);
+int get hashCode {
+  final _this = this as WatchlistItemDto;
+  return Object.hash(runtimeType,_this.ticker,_this.companyName,_this.createdAt,_this.logoUrl);
+}
 
 @override
 String toString() {
-  return 'WatchlistItemDto(ticker: $ticker, companyName: $companyName, createdAt: $createdAt, logoUrl: $logoUrl)';
+  final _this = this as WatchlistItemDto;
+  return 'WatchlistItemDto(ticker: ${_this.ticker}, companyName: ${_this.companyName}, createdAt: ${_this.createdAt}, logoUrl: ${_this.logoUrl})';
 }
 
 
@@ -66,7 +72,7 @@ class _$WatchlistItemDtoCopyWithImpl<$Res>
 /// Create a copy of WatchlistItemDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? ticker = null,Object? companyName = null,Object? createdAt = null,Object? logoUrl = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(WatchlistItemDto(
 ticker: null == ticker ? _self.ticker : ticker // ignore: cast_nullable_to_non_nullable
 as String,companyName: null == companyName ? _self.companyName : companyName // ignore: cast_nullable_to_non_nullable
 as String,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
@@ -233,16 +239,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _WatchlistItemDto&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.companyName, companyName) || other.companyName == companyName)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.logoUrl, logoUrl) || other.logoUrl == logoUrl));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _WatchlistItemDto&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.companyName, companyName) || other.companyName == companyName)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.logoUrl, logoUrl) || other.logoUrl == logoUrl));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,ticker,companyName,createdAt,logoUrl);
+int get hashCode {
+    return Object.hash(runtimeType,ticker,companyName,createdAt,logoUrl);
+}
 
 @override
 String toString() {
-  return 'WatchlistItemDto(ticker: $ticker, companyName: $companyName, createdAt: $createdAt, logoUrl: $logoUrl)';
+    return 'WatchlistItemDto(ticker: $ticker, companyName: $companyName, createdAt: $createdAt, logoUrl: $logoUrl)';
 }
 
 

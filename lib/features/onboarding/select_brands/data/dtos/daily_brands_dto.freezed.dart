@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'daily_brands_dto.dart';
@@ -9,6 +9,7 @@ part of 'daily_brands_dto.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 
@@ -28,16 +29,21 @@ $DailyBrandsDtoCopyWith<DailyBrandsDto> get copyWith => _$DailyBrandsDtoCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is DailyBrandsDto&&(identical(other.date, date) || other.date == date)&&const DeepCollectionEquality().equals(other.sectors, sectors));
+  final _this = this as DailyBrandsDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is DailyBrandsDto&&(identical(other.date, _this.date) || other.date == _this.date)&&const DeepCollectionEquality().equals(other.sectors, _this.sectors));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,date,const DeepCollectionEquality().hash(sectors));
+int get hashCode {
+  final _this = this as DailyBrandsDto;
+  return Object.hash(runtimeType,_this.date,const DeepCollectionEquality().hash(_this.sectors));
+}
 
 @override
 String toString() {
-  return 'DailyBrandsDto(date: $date, sectors: $sectors)';
+  final _this = this as DailyBrandsDto;
+  return 'DailyBrandsDto(date: ${_this.date}, sectors: ${_this.sectors})';
 }
 
 
@@ -66,7 +72,7 @@ class _$DailyBrandsDtoCopyWithImpl<$Res>
 /// Create a copy of DailyBrandsDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? date = null,Object? sectors = null,}) {
-  return _then(_self.copyWith(
+  return _then(DailyBrandsDto(
 date: null == date ? _self.date : date // ignore: cast_nullable_to_non_nullable
 as DateTime,sectors: null == sectors ? _self.sectors : sectors // ignore: cast_nullable_to_non_nullable
 as List<DailyBrandSectorDto>,
@@ -210,7 +216,7 @@ return $default(_that.date,_that.sectors);case _:
 @JsonSerializable()
 
 class _DailyBrandsDto implements DailyBrandsDto {
-  const _DailyBrandsDto({@TimestampConverter() required this.date, required final  List<DailyBrandSectorDto> sectors}): _sectors = sectors;
+  const _DailyBrandsDto({@TimestampConverter() required this.date, required  List<DailyBrandSectorDto> sectors}): _sectors = sectors;
   factory _DailyBrandsDto.fromJson(Map<String, dynamic> json) => _$DailyBrandsDtoFromJson(json);
 
 @override@TimestampConverter() final  DateTime date;
@@ -235,16 +241,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _DailyBrandsDto&&(identical(other.date, date) || other.date == date)&&const DeepCollectionEquality().equals(other._sectors, _sectors));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _DailyBrandsDto&&(identical(other.date, date) || other.date == date)&&const DeepCollectionEquality().equals(other.sectors, _sectors));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,date,const DeepCollectionEquality().hash(_sectors));
+int get hashCode {
+    return Object.hash(runtimeType,date,const DeepCollectionEquality().hash(_sectors));
+}
 
 @override
 String toString() {
-  return 'DailyBrandsDto(date: $date, sectors: $sectors)';
+    return 'DailyBrandsDto(date: $date, sectors: $sectors)';
 }
 
 
@@ -300,16 +308,21 @@ $DailyBrandSectorDtoCopyWith<DailyBrandSectorDto> get copyWith => _$DailyBrandSe
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is DailyBrandSectorDto&&(identical(other.name, name) || other.name == name)&&const DeepCollectionEquality().equals(other.products, products));
+  final _this = this as DailyBrandSectorDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is DailyBrandSectorDto&&(identical(other.name, _this.name) || other.name == _this.name)&&const DeepCollectionEquality().equals(other.products, _this.products));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,name,const DeepCollectionEquality().hash(products));
+int get hashCode {
+  final _this = this as DailyBrandSectorDto;
+  return Object.hash(runtimeType,_this.name,const DeepCollectionEquality().hash(_this.products));
+}
 
 @override
 String toString() {
-  return 'DailyBrandSectorDto(name: $name, products: $products)';
+  final _this = this as DailyBrandSectorDto;
+  return 'DailyBrandSectorDto(name: ${_this.name}, products: ${_this.products})';
 }
 
 
@@ -338,7 +351,7 @@ class _$DailyBrandSectorDtoCopyWithImpl<$Res>
 /// Create a copy of DailyBrandSectorDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? name = null,Object? products = null,}) {
-  return _then(_self.copyWith(
+  return _then(DailyBrandSectorDto(
 name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,products: null == products ? _self.products : products // ignore: cast_nullable_to_non_nullable
 as List<DailyBrandProductDto>,
@@ -482,7 +495,7 @@ return $default(_that.name,_that.products);case _:
 @JsonSerializable()
 
 class _DailyBrandSectorDto implements DailyBrandSectorDto {
-  const _DailyBrandSectorDto({required this.name, required final  List<DailyBrandProductDto> products}): _products = products;
+  const _DailyBrandSectorDto({required this.name, required  List<DailyBrandProductDto> products}): _products = products;
   factory _DailyBrandSectorDto.fromJson(Map<String, dynamic> json) => _$DailyBrandSectorDtoFromJson(json);
 
 @override final  String name;
@@ -507,16 +520,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _DailyBrandSectorDto&&(identical(other.name, name) || other.name == name)&&const DeepCollectionEquality().equals(other._products, _products));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _DailyBrandSectorDto&&(identical(other.name, name) || other.name == name)&&const DeepCollectionEquality().equals(other.products, _products));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,name,const DeepCollectionEquality().hash(_products));
+int get hashCode {
+    return Object.hash(runtimeType,name,const DeepCollectionEquality().hash(_products));
+}
 
 @override
 String toString() {
-  return 'DailyBrandSectorDto(name: $name, products: $products)';
+    return 'DailyBrandSectorDto(name: $name, products: $products)';
 }
 
 
@@ -572,16 +587,21 @@ $DailyBrandProductDtoCopyWith<DailyBrandProductDto> get copyWith => _$DailyBrand
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is DailyBrandProductDto&&(identical(other.company, company) || other.company == company)&&(identical(other.description, description) || other.description == description)&&(identical(other.name, name) || other.name == name)&&(identical(other.ticker, ticker) || other.ticker == ticker));
+  final _this = this as DailyBrandProductDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is DailyBrandProductDto&&(identical(other.company, _this.company) || other.company == _this.company)&&(identical(other.description, _this.description) || other.description == _this.description)&&(identical(other.name, _this.name) || other.name == _this.name)&&(identical(other.ticker, _this.ticker) || other.ticker == _this.ticker));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,company,description,name,ticker);
+int get hashCode {
+  final _this = this as DailyBrandProductDto;
+  return Object.hash(runtimeType,_this.company,_this.description,_this.name,_this.ticker);
+}
 
 @override
 String toString() {
-  return 'DailyBrandProductDto(company: $company, description: $description, name: $name, ticker: $ticker)';
+  final _this = this as DailyBrandProductDto;
+  return 'DailyBrandProductDto(company: ${_this.company}, description: ${_this.description}, name: ${_this.name}, ticker: ${_this.ticker})';
 }
 
 
@@ -610,7 +630,7 @@ class _$DailyBrandProductDtoCopyWithImpl<$Res>
 /// Create a copy of DailyBrandProductDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? company = null,Object? description = null,Object? name = null,Object? ticker = null,}) {
-  return _then(_self.copyWith(
+  return _then(DailyBrandProductDto(
 company: null == company ? _self.company : company // ignore: cast_nullable_to_non_nullable
 as String,description: null == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
@@ -777,16 +797,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _DailyBrandProductDto&&(identical(other.company, company) || other.company == company)&&(identical(other.description, description) || other.description == description)&&(identical(other.name, name) || other.name == name)&&(identical(other.ticker, ticker) || other.ticker == ticker));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _DailyBrandProductDto&&(identical(other.company, company) || other.company == company)&&(identical(other.description, description) || other.description == description)&&(identical(other.name, name) || other.name == name)&&(identical(other.ticker, ticker) || other.ticker == ticker));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,company,description,name,ticker);
+int get hashCode {
+    return Object.hash(runtimeType,company,description,name,ticker);
+}
 
 @override
 String toString() {
-  return 'DailyBrandProductDto(company: $company, description: $description, name: $name, ticker: $ticker)';
+    return 'DailyBrandProductDto(company: $company, description: $description, name: $name, ticker: $ticker)';
 }
 
 

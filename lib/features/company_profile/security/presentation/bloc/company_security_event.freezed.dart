@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'company_security_event.dart';
@@ -9,6 +9,7 @@ part of 'company_security_event.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -20,7 +21,7 @@ mixin _$CompanySecurityEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CompanySecurityEvent);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is CompanySecurityEvent);
 }
 
 
@@ -29,7 +30,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'CompanySecurityEvent()';
+    return 'CompanySecurityEvent()';
 }
 
 
@@ -233,16 +234,18 @@ $LoadRequestedCopyWith<LoadRequested> get copyWith => _$LoadRequestedCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is LoadRequested&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.forceRefresh, forceRefresh) || other.forceRefresh == forceRefresh));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is LoadRequested&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.forceRefresh, forceRefresh) || other.forceRefresh == forceRefresh));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,ticker,forceRefresh);
+int get hashCode {
+    return Object.hash(runtimeType,ticker,forceRefresh);
+}
 
 @override
 String toString() {
-  return 'CompanySecurityEvent.loadRequested(ticker: $ticker, forceRefresh: $forceRefresh)';
+    return 'CompanySecurityEvent.loadRequested(ticker: $ticker, forceRefresh: $forceRefresh)';
 }
 
 
@@ -300,16 +303,18 @@ $StalenessCheckRequestedCopyWith<StalenessCheckRequested> get copyWith => _$Stal
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is StalenessCheckRequested&&(identical(other.ticker, ticker) || other.ticker == ticker));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is StalenessCheckRequested&&(identical(other.ticker, ticker) || other.ticker == ticker));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,ticker);
+int get hashCode {
+    return Object.hash(runtimeType,ticker);
+}
 
 @override
 String toString() {
-  return 'CompanySecurityEvent.stalenessCheckRequested(ticker: $ticker)';
+    return 'CompanySecurityEvent.stalenessCheckRequested(ticker: $ticker)';
 }
 
 
@@ -366,16 +371,18 @@ $TabShownCopyWith<TabShown> get copyWith => _$TabShownCopyWithImpl<TabShown>(thi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TabShown&&(identical(other.ticker, ticker) || other.ticker == ticker));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is TabShown&&(identical(other.ticker, ticker) || other.ticker == ticker));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,ticker);
+int get hashCode {
+    return Object.hash(runtimeType,ticker);
+}
 
 @override
 String toString() {
-  return 'CompanySecurityEvent.tabShown(ticker: $ticker)';
+    return 'CompanySecurityEvent.tabShown(ticker: $ticker)';
 }
 
 
@@ -427,7 +434,7 @@ class TabHidden implements CompanySecurityEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TabHidden);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is TabHidden);
 }
 
 
@@ -436,7 +443,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'CompanySecurityEvent.tabHidden()';
+    return 'CompanySecurityEvent.tabHidden()';
 }
 
 
@@ -459,7 +466,7 @@ class AppBackgrounded implements CompanySecurityEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AppBackgrounded);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is AppBackgrounded);
 }
 
 
@@ -468,7 +475,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'CompanySecurityEvent.appBackgrounded()';
+    return 'CompanySecurityEvent.appBackgrounded()';
 }
 
 
@@ -491,7 +498,7 @@ class AppForegrounded implements CompanySecurityEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AppForegrounded);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is AppForegrounded);
 }
 
 
@@ -500,7 +507,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'CompanySecurityEvent.appForegrounded()';
+    return 'CompanySecurityEvent.appForegrounded()';
 }
 
 
@@ -531,16 +538,18 @@ $PriceAnalyticsUpdatedCopyWith<PriceAnalyticsUpdated> get copyWith => _$PriceAna
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PriceAnalyticsUpdated&&(identical(other.loadTimeMs, loadTimeMs) || other.loadTimeMs == loadTimeMs)&&(identical(other.isSuccess, isSuccess) || other.isSuccess == isSuccess)&&(identical(other.finalTimeframe, finalTimeframe) || other.finalTimeframe == finalTimeframe)&&(identical(other.chartChangeCount, chartChangeCount) || other.chartChangeCount == chartChangeCount));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is PriceAnalyticsUpdated&&(identical(other.loadTimeMs, loadTimeMs) || other.loadTimeMs == loadTimeMs)&&(identical(other.isSuccess, isSuccess) || other.isSuccess == isSuccess)&&(identical(other.finalTimeframe, finalTimeframe) || other.finalTimeframe == finalTimeframe)&&(identical(other.chartChangeCount, chartChangeCount) || other.chartChangeCount == chartChangeCount));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,loadTimeMs,isSuccess,finalTimeframe,chartChangeCount);
+int get hashCode {
+    return Object.hash(runtimeType,loadTimeMs,isSuccess,finalTimeframe,chartChangeCount);
+}
 
 @override
 String toString() {
-  return 'CompanySecurityEvent.priceAnalyticsUpdated(loadTimeMs: $loadTimeMs, isSuccess: $isSuccess, finalTimeframe: $finalTimeframe, chartChangeCount: $chartChangeCount)';
+    return 'CompanySecurityEvent.priceAnalyticsUpdated(loadTimeMs: $loadTimeMs, isSuccess: $isSuccess, finalTimeframe: $finalTimeframe, chartChangeCount: $chartChangeCount)';
 }
 
 
@@ -601,16 +610,18 @@ $EarningsAnalyticsUpdatedCopyWith<EarningsAnalyticsUpdated> get copyWith => _$Ea
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is EarningsAnalyticsUpdated&&(identical(other.hasUpcoming, hasUpcoming) || other.hasUpcoming == hasUpcoming)&&(identical(other.daysAway, daysAway) || other.daysAway == daysAway));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is EarningsAnalyticsUpdated&&(identical(other.hasUpcoming, hasUpcoming) || other.hasUpcoming == hasUpcoming)&&(identical(other.daysAway, daysAway) || other.daysAway == daysAway));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,hasUpcoming,daysAway);
+int get hashCode {
+    return Object.hash(runtimeType,hasUpcoming,daysAway);
+}
 
 @override
 String toString() {
-  return 'CompanySecurityEvent.earningsAnalyticsUpdated(hasUpcoming: $hasUpcoming, daysAway: $daysAway)';
+    return 'CompanySecurityEvent.earningsAnalyticsUpdated(hasUpcoming: $hasUpcoming, daysAway: $daysAway)';
 }
 
 
@@ -663,7 +674,7 @@ class SecurityReset implements CompanySecurityEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SecurityReset);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SecurityReset);
 }
 
 
@@ -672,7 +683,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'CompanySecurityEvent.reset()';
+    return 'CompanySecurityEvent.reset()';
 }
 
 

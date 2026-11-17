@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'company_tabs_config.dart';
@@ -9,6 +9,7 @@ part of 'company_tabs_config.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 
@@ -28,16 +29,21 @@ $CompanyTabsConfigCopyWith<CompanyTabsConfig> get copyWith => _$CompanyTabsConfi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CompanyTabsConfig&&const DeepCollectionEquality().equals(other.mainTabs, mainTabs)&&const DeepCollectionEquality().equals(other.moreTabs, moreTabs)&&const DeepCollectionEquality().equals(other.bizziePlusTabs, bizziePlusTabs));
+  final _this = this as CompanyTabsConfig;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CompanyTabsConfig&&const DeepCollectionEquality().equals(other.mainTabs, _this.mainTabs)&&const DeepCollectionEquality().equals(other.moreTabs, _this.moreTabs)&&const DeepCollectionEquality().equals(other.bizziePlusTabs, _this.bizziePlusTabs));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(mainTabs),const DeepCollectionEquality().hash(moreTabs),const DeepCollectionEquality().hash(bizziePlusTabs));
+int get hashCode {
+  final _this = this as CompanyTabsConfig;
+  return Object.hash(runtimeType,const DeepCollectionEquality().hash(_this.mainTabs),const DeepCollectionEquality().hash(_this.moreTabs),const DeepCollectionEquality().hash(_this.bizziePlusTabs));
+}
 
 @override
 String toString() {
-  return 'CompanyTabsConfig(mainTabs: $mainTabs, moreTabs: $moreTabs, bizziePlusTabs: $bizziePlusTabs)';
+  final _this = this as CompanyTabsConfig;
+  return 'CompanyTabsConfig(mainTabs: ${_this.mainTabs}, moreTabs: ${_this.moreTabs}, bizziePlusTabs: ${_this.bizziePlusTabs})';
 }
 
 
@@ -66,7 +72,7 @@ class _$CompanyTabsConfigCopyWithImpl<$Res>
 /// Create a copy of CompanyTabsConfig
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? mainTabs = null,Object? moreTabs = null,Object? bizziePlusTabs = null,}) {
-  return _then(_self.copyWith(
+  return _then(CompanyTabsConfig(
 mainTabs: null == mainTabs ? _self.mainTabs : mainTabs // ignore: cast_nullable_to_non_nullable
 as List<String>,moreTabs: null == moreTabs ? _self.moreTabs : moreTabs // ignore: cast_nullable_to_non_nullable
 as List<String>,bizziePlusTabs: null == bizziePlusTabs ? _self.bizziePlusTabs : bizziePlusTabs // ignore: cast_nullable_to_non_nullable
@@ -211,7 +217,7 @@ return $default(_that.mainTabs,_that.moreTabs,_that.bizziePlusTabs);case _:
 @JsonSerializable()
 
 class _CompanyTabsConfig implements CompanyTabsConfig {
-  const _CompanyTabsConfig({final  List<String> mainTabs = const [], final  List<String> moreTabs = const [], final  List<String> bizziePlusTabs = const []}): _mainTabs = mainTabs,_moreTabs = moreTabs,_bizziePlusTabs = bizziePlusTabs;
+  const _CompanyTabsConfig({ List<String> mainTabs = const [],  List<String> moreTabs = const [],  List<String> bizziePlusTabs = const []}): _mainTabs = mainTabs,_moreTabs = moreTabs,_bizziePlusTabs = bizziePlusTabs;
   factory _CompanyTabsConfig.fromJson(Map<String, dynamic> json) => _$CompanyTabsConfigFromJson(json);
 
  final  List<String> _mainTabs;
@@ -249,16 +255,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CompanyTabsConfig&&const DeepCollectionEquality().equals(other._mainTabs, _mainTabs)&&const DeepCollectionEquality().equals(other._moreTabs, _moreTabs)&&const DeepCollectionEquality().equals(other._bizziePlusTabs, _bizziePlusTabs));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _CompanyTabsConfig&&const DeepCollectionEquality().equals(other.mainTabs, _mainTabs)&&const DeepCollectionEquality().equals(other.moreTabs, _moreTabs)&&const DeepCollectionEquality().equals(other.bizziePlusTabs, _bizziePlusTabs));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_mainTabs),const DeepCollectionEquality().hash(_moreTabs),const DeepCollectionEquality().hash(_bizziePlusTabs));
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_mainTabs),const DeepCollectionEquality().hash(_moreTabs),const DeepCollectionEquality().hash(_bizziePlusTabs));
+}
 
 @override
 String toString() {
-  return 'CompanyTabsConfig(mainTabs: $mainTabs, moreTabs: $moreTabs, bizziePlusTabs: $bizziePlusTabs)';
+    return 'CompanyTabsConfig(mainTabs: $mainTabs, moreTabs: $moreTabs, bizziePlusTabs: $bizziePlusTabs)';
 }
 
 

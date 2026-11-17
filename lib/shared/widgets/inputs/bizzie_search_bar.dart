@@ -1,6 +1,6 @@
 import 'package:bizzie/shared/widgets/badges/bizzie_plus_badge.dart';
 import 'package:bizzie/app/themes/app_assets.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 
 class BizzieSearchBar extends StatelessWidget {

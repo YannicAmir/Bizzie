@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'price_chart_point.dart';
@@ -9,6 +9,7 @@ part of 'price_chart_point.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $PriceChartPointCopyWith<PriceChartPoint> get copyWith => _$PriceChartPointCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PriceChartPoint&&(identical(other.date, date) || other.date == date)&&(identical(other.price, price) || other.price == price));
+  final _this = this as PriceChartPoint;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PriceChartPoint&&(identical(other.date, _this.date) || other.date == _this.date)&&(identical(other.price, _this.price) || other.price == _this.price));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,date,price);
+int get hashCode {
+  final _this = this as PriceChartPoint;
+  return Object.hash(runtimeType,_this.date,_this.price);
+}
 
 @override
 String toString() {
-  return 'PriceChartPoint(date: $date, price: $price)';
+  final _this = this as PriceChartPoint;
+  return 'PriceChartPoint(date: ${_this.date}, price: ${_this.price})';
 }
 
 
@@ -63,7 +69,7 @@ class _$PriceChartPointCopyWithImpl<$Res>
 /// Create a copy of PriceChartPoint
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? date = null,Object? price = null,}) {
-  return _then(_self.copyWith(
+  return _then(PriceChartPoint(
 date: null == date ? _self.date : date // ignore: cast_nullable_to_non_nullable
 as DateTime,price: null == price ? _self.price : price // ignore: cast_nullable_to_non_nullable
 as double,
@@ -223,16 +229,18 @@ _$PriceChartPointCopyWith<_PriceChartPoint> get copyWith => __$PriceChartPointCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PriceChartPoint&&(identical(other.date, date) || other.date == date)&&(identical(other.price, price) || other.price == price));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _PriceChartPoint&&(identical(other.date, date) || other.date == date)&&(identical(other.price, price) || other.price == price));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,date,price);
+int get hashCode {
+    return Object.hash(runtimeType,date,price);
+}
 
 @override
 String toString() {
-  return 'PriceChartPoint(date: $date, price: $price)';
+    return 'PriceChartPoint(date: $date, price: $price)';
 }
 
 

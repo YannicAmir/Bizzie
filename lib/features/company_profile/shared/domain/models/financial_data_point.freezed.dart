@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'financial_data_point.dart';
@@ -9,6 +9,7 @@ part of 'financial_data_point.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $FinancialDataPointCopyWith<FinancialDataPoint> get copyWith => _$FinancialDataP
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is FinancialDataPoint&&(identical(other.date, date) || other.date == date)&&(identical(other.period, period) || other.period == period)&&(identical(other.value, value) || other.value == value));
+  final _this = this as FinancialDataPoint;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is FinancialDataPoint&&(identical(other.date, _this.date) || other.date == _this.date)&&(identical(other.period, _this.period) || other.period == _this.period)&&(identical(other.value, _this.value) || other.value == _this.value));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,date,period,value);
+int get hashCode {
+  final _this = this as FinancialDataPoint;
+  return Object.hash(runtimeType,_this.date,_this.period,_this.value);
+}
 
 @override
 String toString() {
-  return 'FinancialDataPoint(date: $date, period: $period, value: $value)';
+  final _this = this as FinancialDataPoint;
+  return 'FinancialDataPoint(date: ${_this.date}, period: ${_this.period}, value: ${_this.value})';
 }
 
 
@@ -63,7 +69,7 @@ class _$FinancialDataPointCopyWithImpl<$Res>
 /// Create a copy of FinancialDataPoint
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? date = null,Object? period = null,Object? value = null,}) {
-  return _then(_self.copyWith(
+  return _then(FinancialDataPoint(
 date: null == date ? _self.date : date // ignore: cast_nullable_to_non_nullable
 as String,period: null == period ? _self.period : period // ignore: cast_nullable_to_non_nullable
 as String,value: null == value ? _self.value : value // ignore: cast_nullable_to_non_nullable
@@ -225,16 +231,18 @@ _$FinancialDataPointCopyWith<_FinancialDataPoint> get copyWith => __$FinancialDa
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _FinancialDataPoint&&(identical(other.date, date) || other.date == date)&&(identical(other.period, period) || other.period == period)&&(identical(other.value, value) || other.value == value));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _FinancialDataPoint&&(identical(other.date, date) || other.date == date)&&(identical(other.period, period) || other.period == period)&&(identical(other.value, value) || other.value == value));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,date,period,value);
+int get hashCode {
+    return Object.hash(runtimeType,date,period,value);
+}
 
 @override
 String toString() {
-  return 'FinancialDataPoint(date: $date, period: $period, value: $value)';
+    return 'FinancialDataPoint(date: $date, period: $period, value: $value)';
 }
 
 

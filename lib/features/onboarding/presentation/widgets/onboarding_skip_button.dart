@@ -4,7 +4,7 @@ import 'package:bizzie/app/themes/app_text_styles.dart';
 import 'package:bizzie/features/onboarding/domain/models/onboarding_step.dart';
 import 'package:bizzie/features/onboarding/presentation/utils/onboarding_navigation_orchestrator.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class OnboardingSkipButton extends StatelessWidget {
   final OnboardingStep step;

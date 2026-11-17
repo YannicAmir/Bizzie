@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'company_segments_state.dart';
@@ -9,6 +9,7 @@ part of 'company_segments_state.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -20,7 +21,7 @@ mixin _$CompanySegmentsState {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CompanySegmentsState);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is CompanySegmentsState);
 }
 
 
@@ -29,7 +30,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'CompanySegmentsState()';
+    return 'CompanySegmentsState()';
 }
 
 
@@ -203,7 +204,7 @@ class _Initial implements CompanySegmentsState {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Initial);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Initial);
 }
 
 
@@ -212,7 +213,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'CompanySegmentsState.initial()';
+    return 'CompanySegmentsState.initial()';
 }
 
 
@@ -235,7 +236,7 @@ class _Loading implements CompanySegmentsState {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Loading);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Loading);
 }
 
 
@@ -244,7 +245,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'CompanySegmentsState.loading()';
+    return 'CompanySegmentsState.loading()';
 }
 
 
@@ -257,7 +258,7 @@ String toString() {
 
 
 class CompanySegmentsLoaded implements CompanySegmentsState {
-  const CompanySegmentsLoaded({required this.ticker, required this.productSegments, required this.geographicSegments, required final  List<String> annualPeriodKeys, required final  List<String> quarterlyPeriodKeys, required final  Map<String, int> productColorIndices, required final  Map<String, int> geographicColorIndices, required this.historyLimit, required this.dataOrigin, this.period = FinancialPeriod.annual, this.selectedAnnualKey, this.selectedQuarterlyKey, this.lastUpdated, this.analyticsState}): _annualPeriodKeys = annualPeriodKeys,_quarterlyPeriodKeys = quarterlyPeriodKeys,_productColorIndices = productColorIndices,_geographicColorIndices = geographicColorIndices;
+  const CompanySegmentsLoaded({required this.ticker, required this.productSegments, required this.geographicSegments, required  List<String> annualPeriodKeys, required  List<String> quarterlyPeriodKeys, required  Map<String, int> productColorIndices, required  Map<String, int> geographicColorIndices, required this.historyLimit, required this.dataOrigin, this.period = FinancialPeriod.annual, this.selectedAnnualKey, this.selectedQuarterlyKey, this.lastUpdated, this.analyticsState}): _annualPeriodKeys = annualPeriodKeys,_quarterlyPeriodKeys = quarterlyPeriodKeys,_productColorIndices = productColorIndices,_geographicColorIndices = geographicColorIndices;
   
 
  final  String ticker;
@@ -309,16 +310,18 @@ $CompanySegmentsLoadedCopyWith<CompanySegmentsLoaded> get copyWith => _$CompanyS
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CompanySegmentsLoaded&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.productSegments, productSegments) || other.productSegments == productSegments)&&(identical(other.geographicSegments, geographicSegments) || other.geographicSegments == geographicSegments)&&const DeepCollectionEquality().equals(other._annualPeriodKeys, _annualPeriodKeys)&&const DeepCollectionEquality().equals(other._quarterlyPeriodKeys, _quarterlyPeriodKeys)&&const DeepCollectionEquality().equals(other._productColorIndices, _productColorIndices)&&const DeepCollectionEquality().equals(other._geographicColorIndices, _geographicColorIndices)&&(identical(other.historyLimit, historyLimit) || other.historyLimit == historyLimit)&&(identical(other.dataOrigin, dataOrigin) || other.dataOrigin == dataOrigin)&&(identical(other.period, period) || other.period == period)&&(identical(other.selectedAnnualKey, selectedAnnualKey) || other.selectedAnnualKey == selectedAnnualKey)&&(identical(other.selectedQuarterlyKey, selectedQuarterlyKey) || other.selectedQuarterlyKey == selectedQuarterlyKey)&&(identical(other.lastUpdated, lastUpdated) || other.lastUpdated == lastUpdated)&&(identical(other.analyticsState, analyticsState) || other.analyticsState == analyticsState));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is CompanySegmentsLoaded&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.productSegments, productSegments) || other.productSegments == productSegments)&&(identical(other.geographicSegments, geographicSegments) || other.geographicSegments == geographicSegments)&&const DeepCollectionEquality().equals(other.annualPeriodKeys, _annualPeriodKeys)&&const DeepCollectionEquality().equals(other.quarterlyPeriodKeys, _quarterlyPeriodKeys)&&const DeepCollectionEquality().equals(other.productColorIndices, _productColorIndices)&&const DeepCollectionEquality().equals(other.geographicColorIndices, _geographicColorIndices)&&(identical(other.historyLimit, historyLimit) || other.historyLimit == historyLimit)&&(identical(other.dataOrigin, dataOrigin) || other.dataOrigin == dataOrigin)&&(identical(other.period, period) || other.period == period)&&(identical(other.selectedAnnualKey, selectedAnnualKey) || other.selectedAnnualKey == selectedAnnualKey)&&(identical(other.selectedQuarterlyKey, selectedQuarterlyKey) || other.selectedQuarterlyKey == selectedQuarterlyKey)&&(identical(other.lastUpdated, lastUpdated) || other.lastUpdated == lastUpdated)&&(identical(other.analyticsState, analyticsState) || other.analyticsState == analyticsState));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,ticker,productSegments,geographicSegments,const DeepCollectionEquality().hash(_annualPeriodKeys),const DeepCollectionEquality().hash(_quarterlyPeriodKeys),const DeepCollectionEquality().hash(_productColorIndices),const DeepCollectionEquality().hash(_geographicColorIndices),historyLimit,dataOrigin,period,selectedAnnualKey,selectedQuarterlyKey,lastUpdated,analyticsState);
+int get hashCode {
+    return Object.hash(runtimeType,ticker,productSegments,geographicSegments,const DeepCollectionEquality().hash(_annualPeriodKeys),const DeepCollectionEquality().hash(_quarterlyPeriodKeys),const DeepCollectionEquality().hash(_productColorIndices),const DeepCollectionEquality().hash(_geographicColorIndices),historyLimit,dataOrigin,period,selectedAnnualKey,selectedQuarterlyKey,lastUpdated,analyticsState);
+}
 
 @override
 String toString() {
-  return 'CompanySegmentsState.loaded(ticker: $ticker, productSegments: $productSegments, geographicSegments: $geographicSegments, annualPeriodKeys: $annualPeriodKeys, quarterlyPeriodKeys: $quarterlyPeriodKeys, productColorIndices: $productColorIndices, geographicColorIndices: $geographicColorIndices, historyLimit: $historyLimit, dataOrigin: $dataOrigin, period: $period, selectedAnnualKey: $selectedAnnualKey, selectedQuarterlyKey: $selectedQuarterlyKey, lastUpdated: $lastUpdated, analyticsState: $analyticsState)';
+    return 'CompanySegmentsState.loaded(ticker: $ticker, productSegments: $productSegments, geographicSegments: $geographicSegments, annualPeriodKeys: $annualPeriodKeys, quarterlyPeriodKeys: $quarterlyPeriodKeys, productColorIndices: $productColorIndices, geographicColorIndices: $geographicColorIndices, historyLimit: $historyLimit, dataOrigin: $dataOrigin, period: $period, selectedAnnualKey: $selectedAnnualKey, selectedQuarterlyKey: $selectedQuarterlyKey, lastUpdated: $lastUpdated, analyticsState: $analyticsState)';
 }
 
 
@@ -418,16 +421,18 @@ _$FailureCopyWith<_Failure> get copyWith => __$FailureCopyWithImpl<_Failure>(thi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Failure&&(identical(other.failure, failure) || other.failure == failure));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Failure&&(identical(other.failure, failure) || other.failure == failure));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,failure);
+int get hashCode {
+    return Object.hash(runtimeType,failure);
+}
 
 @override
 String toString() {
-  return 'CompanySegmentsState.failure(failure: $failure)';
+    return 'CompanySegmentsState.failure(failure: $failure)';
 }
 
 

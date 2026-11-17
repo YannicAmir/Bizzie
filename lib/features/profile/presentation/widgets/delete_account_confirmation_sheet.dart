@@ -2,7 +2,7 @@ import 'package:bizzie/features/profile/presentation/bloc/edit_profile_bloc.dart
 import 'package:bizzie/features/profile/presentation/bloc/edit_profile_event.dart';
 import 'package:bizzie/shared/widgets/buttons/bizzie_secondary_button.dart';
 import 'package:bizzie/shared/widgets/modals/app_bottom_modal.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class DeleteAccountConfirmationSheet extends StatelessWidget {

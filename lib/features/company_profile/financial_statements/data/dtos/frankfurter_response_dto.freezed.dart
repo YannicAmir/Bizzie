@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'frankfurter_response_dto.dart';
@@ -9,6 +9,7 @@ part of 'frankfurter_response_dto.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 
@@ -28,16 +29,21 @@ $FrankfurterResponseDtoCopyWith<FrankfurterResponseDto> get copyWith => _$Frankf
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is FrankfurterResponseDto&&(identical(other.date, date) || other.date == date)&&(identical(other.base, base) || other.base == base)&&(identical(other.quote, quote) || other.quote == quote)&&(identical(other.rate, rate) || other.rate == rate));
+  final _this = this as FrankfurterResponseDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is FrankfurterResponseDto&&(identical(other.date, _this.date) || other.date == _this.date)&&(identical(other.base, _this.base) || other.base == _this.base)&&(identical(other.quote, _this.quote) || other.quote == _this.quote)&&(identical(other.rate, _this.rate) || other.rate == _this.rate));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,date,base,quote,rate);
+int get hashCode {
+  final _this = this as FrankfurterResponseDto;
+  return Object.hash(runtimeType,_this.date,_this.base,_this.quote,_this.rate);
+}
 
 @override
 String toString() {
-  return 'FrankfurterResponseDto(date: $date, base: $base, quote: $quote, rate: $rate)';
+  final _this = this as FrankfurterResponseDto;
+  return 'FrankfurterResponseDto(date: ${_this.date}, base: ${_this.base}, quote: ${_this.quote}, rate: ${_this.rate})';
 }
 
 
@@ -66,7 +72,7 @@ class _$FrankfurterResponseDtoCopyWithImpl<$Res>
 /// Create a copy of FrankfurterResponseDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? date = null,Object? base = null,Object? quote = null,Object? rate = null,}) {
-  return _then(_self.copyWith(
+  return _then(FrankfurterResponseDto(
 date: null == date ? _self.date : date // ignore: cast_nullable_to_non_nullable
 as String,base: null == base ? _self.base : base // ignore: cast_nullable_to_non_nullable
 as String,quote: null == quote ? _self.quote : quote // ignore: cast_nullable_to_non_nullable
@@ -233,16 +239,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _FrankfurterResponseDto&&(identical(other.date, date) || other.date == date)&&(identical(other.base, base) || other.base == base)&&(identical(other.quote, quote) || other.quote == quote)&&(identical(other.rate, rate) || other.rate == rate));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _FrankfurterResponseDto&&(identical(other.date, date) || other.date == date)&&(identical(other.base, base) || other.base == base)&&(identical(other.quote, quote) || other.quote == quote)&&(identical(other.rate, rate) || other.rate == rate));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,date,base,quote,rate);
+int get hashCode {
+    return Object.hash(runtimeType,date,base,quote,rate);
+}
 
 @override
 String toString() {
-  return 'FrankfurterResponseDto(date: $date, base: $base, quote: $quote, rate: $rate)';
+    return 'FrankfurterResponseDto(date: $date, base: $base, quote: $quote, rate: $rate)';
 }
 
 

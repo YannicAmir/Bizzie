@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'onboarding_event.dart';
@@ -9,6 +9,7 @@ part of 'onboarding_event.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -20,7 +21,7 @@ mixin _$OnboardingEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is OnboardingEvent);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is OnboardingEvent);
 }
 
 
@@ -29,7 +30,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'OnboardingEvent()';
+    return 'OnboardingEvent()';
 }
 
 
@@ -305,7 +306,7 @@ class OnboardingStarted implements OnboardingEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is OnboardingStarted);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is OnboardingStarted);
 }
 
 
@@ -314,7 +315,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'OnboardingEvent.started()';
+    return 'OnboardingEvent.started()';
 }
 
 
@@ -342,16 +343,18 @@ $OnboardingNameSubmittedCopyWith<OnboardingNameSubmitted> get copyWith => _$Onbo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is OnboardingNameSubmitted&&(identical(other.name, name) || other.name == name));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is OnboardingNameSubmitted&&(identical(other.name, name) || other.name == name));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,name);
+int get hashCode {
+    return Object.hash(runtimeType,name);
+}
 
 @override
 String toString() {
-  return 'OnboardingEvent.nameSubmitted(name: $name)';
+    return 'OnboardingEvent.nameSubmitted(name: $name)';
 }
 
 
@@ -408,16 +411,18 @@ $OnboardingSectorSelectedCopyWith<OnboardingSectorSelected> get copyWith => _$On
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is OnboardingSectorSelected&&(identical(other.sector, sector) || other.sector == sector));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is OnboardingSectorSelected&&(identical(other.sector, sector) || other.sector == sector));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,sector);
+int get hashCode {
+    return Object.hash(runtimeType,sector);
+}
 
 @override
 String toString() {
-  return 'OnboardingEvent.sectorSelected(sector: $sector)';
+    return 'OnboardingEvent.sectorSelected(sector: $sector)';
 }
 
 
@@ -469,7 +474,7 @@ class OnboardingSp500HistoryRequested implements OnboardingEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is OnboardingSp500HistoryRequested);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is OnboardingSp500HistoryRequested);
 }
 
 
@@ -478,7 +483,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'OnboardingEvent.sp500HistoryRequested()';
+    return 'OnboardingEvent.sp500HistoryRequested()';
 }
 
 
@@ -506,16 +511,18 @@ $OnboardingBrandToggledCopyWith<OnboardingBrandToggled> get copyWith => _$Onboar
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is OnboardingBrandToggled&&(identical(other.brand, brand) || other.brand == brand));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is OnboardingBrandToggled&&(identical(other.brand, brand) || other.brand == brand));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,brand);
+int get hashCode {
+    return Object.hash(runtimeType,brand);
+}
 
 @override
 String toString() {
-  return 'OnboardingEvent.brandToggled(brand: $brand)';
+    return 'OnboardingEvent.brandToggled(brand: $brand)';
 }
 
 
@@ -581,16 +588,18 @@ $OnboardingExperienceSelectedCopyWith<OnboardingExperienceSelected> get copyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is OnboardingExperienceSelected&&(identical(other.experience, experience) || other.experience == experience));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is OnboardingExperienceSelected&&(identical(other.experience, experience) || other.experience == experience));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,experience);
+int get hashCode {
+    return Object.hash(runtimeType,experience);
+}
 
 @override
 String toString() {
-  return 'OnboardingEvent.experienceSelected(experience: $experience)';
+    return 'OnboardingEvent.experienceSelected(experience: $experience)';
 }
 
 
@@ -647,16 +656,18 @@ $OnboardingNotificationsToggledCopyWith<OnboardingNotificationsToggled> get copy
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is OnboardingNotificationsToggled&&(identical(other.enabled, enabled) || other.enabled == enabled));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is OnboardingNotificationsToggled&&(identical(other.enabled, enabled) || other.enabled == enabled));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,enabled);
+int get hashCode {
+    return Object.hash(runtimeType,enabled);
+}
 
 @override
 String toString() {
-  return 'OnboardingEvent.notificationsToggled(enabled: $enabled)';
+    return 'OnboardingEvent.notificationsToggled(enabled: $enabled)';
 }
 
 
@@ -708,7 +719,7 @@ class OnboardingCompletionRequested implements OnboardingEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is OnboardingCompletionRequested);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is OnboardingCompletionRequested);
 }
 
 
@@ -717,7 +728,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'OnboardingEvent.completionRequested()';
+    return 'OnboardingEvent.completionRequested()';
 }
 
 
@@ -740,7 +751,7 @@ class OnboardingBuildingProfileStarted implements OnboardingEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is OnboardingBuildingProfileStarted);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is OnboardingBuildingProfileStarted);
 }
 
 
@@ -749,7 +760,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'OnboardingEvent.buildingProfileStarted()';
+    return 'OnboardingEvent.buildingProfileStarted()';
 }
 
 
@@ -778,16 +789,18 @@ $OnboardingSkipRequestedCopyWith<OnboardingSkipRequested> get copyWith => _$Onbo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is OnboardingSkipRequested&&(identical(other.step, step) || other.step == step)&&(identical(other.reason, reason) || other.reason == reason));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is OnboardingSkipRequested&&(identical(other.step, step) || other.step == step)&&(identical(other.reason, reason) || other.reason == reason));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,step,reason);
+int get hashCode {
+    return Object.hash(runtimeType,step,reason);
+}
 
 @override
 String toString() {
-  return 'OnboardingEvent.skipRequested(step: $step, reason: $reason)';
+    return 'OnboardingEvent.skipRequested(step: $step, reason: $reason)';
 }
 
 
@@ -840,7 +853,7 @@ class OnboardingNotificationGrantPersistRequested implements OnboardingEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is OnboardingNotificationGrantPersistRequested);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is OnboardingNotificationGrantPersistRequested);
 }
 
 
@@ -849,7 +862,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'OnboardingEvent.notificationGrantPersistRequested()';
+    return 'OnboardingEvent.notificationGrantPersistRequested()';
 }
 
 
@@ -877,16 +890,18 @@ $OnboardingInitialCompanyShownCopyWith<OnboardingInitialCompanyShown> get copyWi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is OnboardingInitialCompanyShown&&(identical(other.destination, destination) || other.destination == destination));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is OnboardingInitialCompanyShown&&(identical(other.destination, destination) || other.destination == destination));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,destination);
+int get hashCode {
+    return Object.hash(runtimeType,destination);
+}
 
 @override
 String toString() {
-  return 'OnboardingEvent.initialCompanyShown(destination: $destination)';
+    return 'OnboardingEvent.initialCompanyShown(destination: $destination)';
 }
 
 
@@ -947,7 +962,7 @@ class OnboardingGuestSessionRequested implements OnboardingEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is OnboardingGuestSessionRequested);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is OnboardingGuestSessionRequested);
 }
 
 
@@ -956,7 +971,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'OnboardingEvent.guestSessionRequested()';
+    return 'OnboardingEvent.guestSessionRequested()';
 }
 
 
@@ -979,7 +994,7 @@ class OnboardingBrandsConfirmed implements OnboardingEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is OnboardingBrandsConfirmed);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is OnboardingBrandsConfirmed);
 }
 
 
@@ -988,7 +1003,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'OnboardingEvent.brandsConfirmed()';
+    return 'OnboardingEvent.brandsConfirmed()';
 }
 
 
@@ -1011,7 +1026,7 @@ class OnboardingBrandsPrefetchRequested implements OnboardingEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is OnboardingBrandsPrefetchRequested);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is OnboardingBrandsPrefetchRequested);
 }
 
 
@@ -1020,7 +1035,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'OnboardingEvent.brandsPrefetchRequested()';
+    return 'OnboardingEvent.brandsPrefetchRequested()';
 }
 
 
@@ -1048,16 +1063,18 @@ $OnboardingHighlightPageChangedCopyWith<OnboardingHighlightPageChanged> get copy
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is OnboardingHighlightPageChanged&&(identical(other.index, index) || other.index == index));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is OnboardingHighlightPageChanged&&(identical(other.index, index) || other.index == index));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,index);
+int get hashCode {
+    return Object.hash(runtimeType,index);
+}
 
 @override
 String toString() {
-  return 'OnboardingEvent.highlightPageChanged(index: $index)';
+    return 'OnboardingEvent.highlightPageChanged(index: $index)';
 }
 
 
@@ -1109,7 +1126,7 @@ class OnboardingHighlightContinuePressed implements OnboardingEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is OnboardingHighlightContinuePressed);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is OnboardingHighlightContinuePressed);
 }
 
 
@@ -1118,7 +1135,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'OnboardingEvent.highlightContinuePressed()';
+    return 'OnboardingEvent.highlightContinuePressed()';
 }
 
 
@@ -1141,7 +1158,7 @@ class OnboardingLoginRequested implements OnboardingEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is OnboardingLoginRequested);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is OnboardingLoginRequested);
 }
 
 
@@ -1150,7 +1167,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'OnboardingEvent.loginRequested()';
+    return 'OnboardingEvent.loginRequested()';
 }
 
 
@@ -1178,16 +1195,18 @@ $OnboardingStepViewedCopyWith<OnboardingStepViewed> get copyWith => _$Onboarding
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is OnboardingStepViewed&&(identical(other.step, step) || other.step == step));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is OnboardingStepViewed&&(identical(other.step, step) || other.step == step));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,step);
+int get hashCode {
+    return Object.hash(runtimeType,step);
+}
 
 @override
 String toString() {
-  return 'OnboardingEvent.stepViewed(step: $step)';
+    return 'OnboardingEvent.stepViewed(step: $step)';
 }
 
 
@@ -1245,16 +1264,18 @@ $OnboardingSubscriptionStatusChangedCopyWith<OnboardingSubscriptionStatusChanged
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is OnboardingSubscriptionStatusChanged&&(identical(other.didSubscribe, didSubscribe) || other.didSubscribe == didSubscribe)&&(identical(other.subscriptionType, subscriptionType) || other.subscriptionType == subscriptionType));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is OnboardingSubscriptionStatusChanged&&(identical(other.didSubscribe, didSubscribe) || other.didSubscribe == didSubscribe)&&(identical(other.subscriptionType, subscriptionType) || other.subscriptionType == subscriptionType));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,didSubscribe,subscriptionType);
+int get hashCode {
+    return Object.hash(runtimeType,didSubscribe,subscriptionType);
+}
 
 @override
 String toString() {
-  return 'OnboardingEvent.subscriptionStatusChanged(didSubscribe: $didSubscribe, subscriptionType: $subscriptionType)';
+    return 'OnboardingEvent.subscriptionStatusChanged(didSubscribe: $didSubscribe, subscriptionType: $subscriptionType)';
 }
 
 
@@ -1307,7 +1328,7 @@ class OnboardingFlowFinished implements OnboardingEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is OnboardingFlowFinished);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is OnboardingFlowFinished);
 }
 
 
@@ -1316,7 +1337,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'OnboardingEvent.onboardingFlowFinished()';
+    return 'OnboardingEvent.onboardingFlowFinished()';
 }
 
 
@@ -1339,7 +1360,7 @@ class OnboardingReset implements OnboardingEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is OnboardingReset);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is OnboardingReset);
 }
 
 
@@ -1348,7 +1369,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'OnboardingEvent.reset()';
+    return 'OnboardingEvent.reset()';
 }
 
 

@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'subscription_package.dart';
@@ -9,6 +9,7 @@ part of 'subscription_package.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 
@@ -28,16 +29,21 @@ $SubscriptionPackageCopyWith<SubscriptionPackage> get copyWith => _$Subscription
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SubscriptionPackage&&(identical(other.id, id) || other.id == id)&&(identical(other.identifier, identifier) || other.identifier == identifier)&&(identical(other.productId, productId) || other.productId == productId)&&(identical(other.packageType, packageType) || other.packageType == packageType)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.priceString, priceString) || other.priceString == priceString)&&(identical(other.price, price) || other.price == price)&&(identical(other.currencyCode, currencyCode) || other.currencyCode == currencyCode)&&(identical(other.isEligibleForTrial, isEligibleForTrial) || other.isEligibleForTrial == isEligibleForTrial)&&(identical(other.hasFreeTrial, hasFreeTrial) || other.hasFreeTrial == hasFreeTrial));
+  final _this = this as SubscriptionPackage;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SubscriptionPackage&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.identifier, _this.identifier) || other.identifier == _this.identifier)&&(identical(other.productId, _this.productId) || other.productId == _this.productId)&&(identical(other.packageType, _this.packageType) || other.packageType == _this.packageType)&&(identical(other.title, _this.title) || other.title == _this.title)&&(identical(other.description, _this.description) || other.description == _this.description)&&(identical(other.priceString, _this.priceString) || other.priceString == _this.priceString)&&(identical(other.price, _this.price) || other.price == _this.price)&&(identical(other.currencyCode, _this.currencyCode) || other.currencyCode == _this.currencyCode)&&(identical(other.isEligibleForTrial, _this.isEligibleForTrial) || other.isEligibleForTrial == _this.isEligibleForTrial)&&(identical(other.hasFreeTrial, _this.hasFreeTrial) || other.hasFreeTrial == _this.hasFreeTrial));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,identifier,productId,packageType,title,description,priceString,price,currencyCode,isEligibleForTrial,hasFreeTrial);
+int get hashCode {
+  final _this = this as SubscriptionPackage;
+  return Object.hash(runtimeType,_this.id,_this.identifier,_this.productId,_this.packageType,_this.title,_this.description,_this.priceString,_this.price,_this.currencyCode,_this.isEligibleForTrial,_this.hasFreeTrial);
+}
 
 @override
 String toString() {
-  return 'SubscriptionPackage(id: $id, identifier: $identifier, productId: $productId, packageType: $packageType, title: $title, description: $description, priceString: $priceString, price: $price, currencyCode: $currencyCode, isEligibleForTrial: $isEligibleForTrial, hasFreeTrial: $hasFreeTrial)';
+  final _this = this as SubscriptionPackage;
+  return 'SubscriptionPackage(id: ${_this.id}, identifier: ${_this.identifier}, productId: ${_this.productId}, packageType: ${_this.packageType}, title: ${_this.title}, description: ${_this.description}, priceString: ${_this.priceString}, price: ${_this.price}, currencyCode: ${_this.currencyCode}, isEligibleForTrial: ${_this.isEligibleForTrial}, hasFreeTrial: ${_this.hasFreeTrial})';
 }
 
 
@@ -66,7 +72,7 @@ class _$SubscriptionPackageCopyWithImpl<$Res>
 /// Create a copy of SubscriptionPackage
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? identifier = null,Object? productId = null,Object? packageType = null,Object? title = null,Object? description = null,Object? priceString = null,Object? price = null,Object? currencyCode = null,Object? isEligibleForTrial = null,Object? hasFreeTrial = null,}) {
-  return _then(_self.copyWith(
+  return _then(SubscriptionPackage(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,identifier: null == identifier ? _self.identifier : identifier // ignore: cast_nullable_to_non_nullable
 as String,productId: null == productId ? _self.productId : productId // ignore: cast_nullable_to_non_nullable
@@ -247,16 +253,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SubscriptionPackage&&(identical(other.id, id) || other.id == id)&&(identical(other.identifier, identifier) || other.identifier == identifier)&&(identical(other.productId, productId) || other.productId == productId)&&(identical(other.packageType, packageType) || other.packageType == packageType)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.priceString, priceString) || other.priceString == priceString)&&(identical(other.price, price) || other.price == price)&&(identical(other.currencyCode, currencyCode) || other.currencyCode == currencyCode)&&(identical(other.isEligibleForTrial, isEligibleForTrial) || other.isEligibleForTrial == isEligibleForTrial)&&(identical(other.hasFreeTrial, hasFreeTrial) || other.hasFreeTrial == hasFreeTrial));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _SubscriptionPackage&&(identical(other.id, id) || other.id == id)&&(identical(other.identifier, identifier) || other.identifier == identifier)&&(identical(other.productId, productId) || other.productId == productId)&&(identical(other.packageType, packageType) || other.packageType == packageType)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.priceString, priceString) || other.priceString == priceString)&&(identical(other.price, price) || other.price == price)&&(identical(other.currencyCode, currencyCode) || other.currencyCode == currencyCode)&&(identical(other.isEligibleForTrial, isEligibleForTrial) || other.isEligibleForTrial == isEligibleForTrial)&&(identical(other.hasFreeTrial, hasFreeTrial) || other.hasFreeTrial == hasFreeTrial));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,identifier,productId,packageType,title,description,priceString,price,currencyCode,isEligibleForTrial,hasFreeTrial);
+int get hashCode {
+    return Object.hash(runtimeType,id,identifier,productId,packageType,title,description,priceString,price,currencyCode,isEligibleForTrial,hasFreeTrial);
+}
 
 @override
 String toString() {
-  return 'SubscriptionPackage(id: $id, identifier: $identifier, productId: $productId, packageType: $packageType, title: $title, description: $description, priceString: $priceString, price: $price, currencyCode: $currencyCode, isEligibleForTrial: $isEligibleForTrial, hasFreeTrial: $hasFreeTrial)';
+    return 'SubscriptionPackage(id: $id, identifier: $identifier, productId: $productId, packageType: $packageType, title: $title, description: $description, priceString: $priceString, price: $price, currencyCode: $currencyCode, isEligibleForTrial: $isEligibleForTrial, hasFreeTrial: $hasFreeTrial)';
 }
 
 

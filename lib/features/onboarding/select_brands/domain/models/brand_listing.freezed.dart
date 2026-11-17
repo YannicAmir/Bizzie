@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'brand_listing.dart';
@@ -9,6 +9,7 @@ part of 'brand_listing.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $BrandListingCopyWith<BrandListing> get copyWith => _$BrandListingCopyWithImpl<B
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is BrandListing&&const DeepCollectionEquality().equals(other.globalBrands, globalBrands)&&const DeepCollectionEquality().equals(other.sectorBrands, sectorBrands));
+  final _this = this as BrandListing;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is BrandListing&&const DeepCollectionEquality().equals(other.globalBrands, _this.globalBrands)&&const DeepCollectionEquality().equals(other.sectorBrands, _this.sectorBrands));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(globalBrands),const DeepCollectionEquality().hash(sectorBrands));
+int get hashCode {
+  final _this = this as BrandListing;
+  return Object.hash(runtimeType,const DeepCollectionEquality().hash(_this.globalBrands),const DeepCollectionEquality().hash(_this.sectorBrands));
+}
 
 @override
 String toString() {
-  return 'BrandListing(globalBrands: $globalBrands, sectorBrands: $sectorBrands)';
+  final _this = this as BrandListing;
+  return 'BrandListing(globalBrands: ${_this.globalBrands}, sectorBrands: ${_this.sectorBrands})';
 }
 
 
@@ -63,7 +69,7 @@ class _$BrandListingCopyWithImpl<$Res>
 /// Create a copy of BrandListing
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? globalBrands = null,Object? sectorBrands = null,}) {
-  return _then(_self.copyWith(
+  return _then(BrandListing(
 globalBrands: null == globalBrands ? _self.globalBrands : globalBrands // ignore: cast_nullable_to_non_nullable
 as List<Brand>,sectorBrands: null == sectorBrands ? _self.sectorBrands : sectorBrands // ignore: cast_nullable_to_non_nullable
 as List<Brand>,
@@ -207,7 +213,7 @@ return $default(_that.globalBrands,_that.sectorBrands);case _:
 
 
 class _BrandListing implements BrandListing {
-  const _BrandListing({required final  List<Brand> globalBrands, required final  List<Brand> sectorBrands}): _globalBrands = globalBrands,_sectorBrands = sectorBrands;
+  const _BrandListing({required  List<Brand> globalBrands, required  List<Brand> sectorBrands}): _globalBrands = globalBrands,_sectorBrands = sectorBrands;
   
 
  final  List<Brand> _globalBrands;
@@ -235,16 +241,18 @@ _$BrandListingCopyWith<_BrandListing> get copyWith => __$BrandListingCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _BrandListing&&const DeepCollectionEquality().equals(other._globalBrands, _globalBrands)&&const DeepCollectionEquality().equals(other._sectorBrands, _sectorBrands));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _BrandListing&&const DeepCollectionEquality().equals(other.globalBrands, _globalBrands)&&const DeepCollectionEquality().equals(other.sectorBrands, _sectorBrands));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_globalBrands),const DeepCollectionEquality().hash(_sectorBrands));
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_globalBrands),const DeepCollectionEquality().hash(_sectorBrands));
+}
 
 @override
 String toString() {
-  return 'BrandListing(globalBrands: $globalBrands, sectorBrands: $sectorBrands)';
+    return 'BrandListing(globalBrands: $globalBrands, sectorBrands: $sectorBrands)';
 }
 
 

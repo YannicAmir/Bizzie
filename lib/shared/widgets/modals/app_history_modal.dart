@@ -1,6 +1,6 @@
 import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:bizzie/shared/widgets/modals/app_bottom_modal.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class AppHistoryModal<T> extends StatelessWidget {
   final String title;

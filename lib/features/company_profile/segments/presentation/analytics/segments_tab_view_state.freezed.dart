@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'segments_tab_view_state.dart';
@@ -9,6 +9,7 @@ part of 'segments_tab_view_state.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $SegmentsTabViewStateCopyWith<SegmentsTabViewState> get copyWith => _$SegmentsTa
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SegmentsTabViewState&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.timestamp, timestamp) || other.timestamp == timestamp)&&(identical(other.loadTimeMs, loadTimeMs) || other.loadTimeMs == loadTimeMs)&&(identical(other.isSuccess, isSuccess) || other.isSuccess == isSuccess)&&(identical(other.dataSource, dataSource) || other.dataSource == dataSource)&&(identical(other.viewDurationSec, viewDurationSec) || other.viewDurationSec == viewDurationSec)&&(identical(other.viewedYearlySegTab, viewedYearlySegTab) || other.viewedYearlySegTab == viewedYearlySegTab)&&(identical(other.viewedQtrlySegTab, viewedQtrlySegTab) || other.viewedQtrlySegTab == viewedQtrlySegTab)&&(identical(other.changedYrDate, changedYrDate) || other.changedYrDate == changedYrDate)&&(identical(other.changedQtrDate, changedQtrDate) || other.changedQtrDate == changedQtrDate));
+  final _this = this as SegmentsTabViewState;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SegmentsTabViewState&&(identical(other.ticker, _this.ticker) || other.ticker == _this.ticker)&&(identical(other.timestamp, _this.timestamp) || other.timestamp == _this.timestamp)&&(identical(other.loadTimeMs, _this.loadTimeMs) || other.loadTimeMs == _this.loadTimeMs)&&(identical(other.isSuccess, _this.isSuccess) || other.isSuccess == _this.isSuccess)&&(identical(other.dataSource, _this.dataSource) || other.dataSource == _this.dataSource)&&(identical(other.viewDurationSec, _this.viewDurationSec) || other.viewDurationSec == _this.viewDurationSec)&&(identical(other.viewedYearlySegTab, _this.viewedYearlySegTab) || other.viewedYearlySegTab == _this.viewedYearlySegTab)&&(identical(other.viewedQtrlySegTab, _this.viewedQtrlySegTab) || other.viewedQtrlySegTab == _this.viewedQtrlySegTab)&&(identical(other.changedYrDate, _this.changedYrDate) || other.changedYrDate == _this.changedYrDate)&&(identical(other.changedQtrDate, _this.changedQtrDate) || other.changedQtrDate == _this.changedQtrDate));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,ticker,timestamp,loadTimeMs,isSuccess,dataSource,viewDurationSec,viewedYearlySegTab,viewedQtrlySegTab,changedYrDate,changedQtrDate);
+int get hashCode {
+  final _this = this as SegmentsTabViewState;
+  return Object.hash(runtimeType,_this.ticker,_this.timestamp,_this.loadTimeMs,_this.isSuccess,_this.dataSource,_this.viewDurationSec,_this.viewedYearlySegTab,_this.viewedQtrlySegTab,_this.changedYrDate,_this.changedQtrDate);
+}
 
 @override
 String toString() {
-  return 'SegmentsTabViewState(ticker: $ticker, timestamp: $timestamp, loadTimeMs: $loadTimeMs, isSuccess: $isSuccess, dataSource: $dataSource, viewDurationSec: $viewDurationSec, viewedYearlySegTab: $viewedYearlySegTab, viewedQtrlySegTab: $viewedQtrlySegTab, changedYrDate: $changedYrDate, changedQtrDate: $changedQtrDate)';
+  final _this = this as SegmentsTabViewState;
+  return 'SegmentsTabViewState(ticker: ${_this.ticker}, timestamp: ${_this.timestamp}, loadTimeMs: ${_this.loadTimeMs}, isSuccess: ${_this.isSuccess}, dataSource: ${_this.dataSource}, viewDurationSec: ${_this.viewDurationSec}, viewedYearlySegTab: ${_this.viewedYearlySegTab}, viewedQtrlySegTab: ${_this.viewedQtrlySegTab}, changedYrDate: ${_this.changedYrDate}, changedQtrDate: ${_this.changedQtrDate})';
 }
 
 
@@ -63,7 +69,7 @@ class _$SegmentsTabViewStateCopyWithImpl<$Res>
 /// Create a copy of SegmentsTabViewState
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? ticker = null,Object? timestamp = null,Object? loadTimeMs = freezed,Object? isSuccess = null,Object? dataSource = freezed,Object? viewDurationSec = null,Object? viewedYearlySegTab = null,Object? viewedQtrlySegTab = null,Object? changedYrDate = null,Object? changedQtrDate = null,}) {
-  return _then(_self.copyWith(
+  return _then(SegmentsTabViewState(
 ticker: null == ticker ? _self.ticker : ticker // ignore: cast_nullable_to_non_nullable
 as String,timestamp: null == timestamp ? _self.timestamp : timestamp // ignore: cast_nullable_to_non_nullable
 as String,loadTimeMs: freezed == loadTimeMs ? _self.loadTimeMs : loadTimeMs // ignore: cast_nullable_to_non_nullable
@@ -239,16 +245,18 @@ _$SegmentsTabViewStateCopyWith<_SegmentsTabViewState> get copyWith => __$Segment
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SegmentsTabViewState&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.timestamp, timestamp) || other.timestamp == timestamp)&&(identical(other.loadTimeMs, loadTimeMs) || other.loadTimeMs == loadTimeMs)&&(identical(other.isSuccess, isSuccess) || other.isSuccess == isSuccess)&&(identical(other.dataSource, dataSource) || other.dataSource == dataSource)&&(identical(other.viewDurationSec, viewDurationSec) || other.viewDurationSec == viewDurationSec)&&(identical(other.viewedYearlySegTab, viewedYearlySegTab) || other.viewedYearlySegTab == viewedYearlySegTab)&&(identical(other.viewedQtrlySegTab, viewedQtrlySegTab) || other.viewedQtrlySegTab == viewedQtrlySegTab)&&(identical(other.changedYrDate, changedYrDate) || other.changedYrDate == changedYrDate)&&(identical(other.changedQtrDate, changedQtrDate) || other.changedQtrDate == changedQtrDate));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _SegmentsTabViewState&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.timestamp, timestamp) || other.timestamp == timestamp)&&(identical(other.loadTimeMs, loadTimeMs) || other.loadTimeMs == loadTimeMs)&&(identical(other.isSuccess, isSuccess) || other.isSuccess == isSuccess)&&(identical(other.dataSource, dataSource) || other.dataSource == dataSource)&&(identical(other.viewDurationSec, viewDurationSec) || other.viewDurationSec == viewDurationSec)&&(identical(other.viewedYearlySegTab, viewedYearlySegTab) || other.viewedYearlySegTab == viewedYearlySegTab)&&(identical(other.viewedQtrlySegTab, viewedQtrlySegTab) || other.viewedQtrlySegTab == viewedQtrlySegTab)&&(identical(other.changedYrDate, changedYrDate) || other.changedYrDate == changedYrDate)&&(identical(other.changedQtrDate, changedQtrDate) || other.changedQtrDate == changedQtrDate));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,ticker,timestamp,loadTimeMs,isSuccess,dataSource,viewDurationSec,viewedYearlySegTab,viewedQtrlySegTab,changedYrDate,changedQtrDate);
+int get hashCode {
+    return Object.hash(runtimeType,ticker,timestamp,loadTimeMs,isSuccess,dataSource,viewDurationSec,viewedYearlySegTab,viewedQtrlySegTab,changedYrDate,changedQtrDate);
+}
 
 @override
 String toString() {
-  return 'SegmentsTabViewState(ticker: $ticker, timestamp: $timestamp, loadTimeMs: $loadTimeMs, isSuccess: $isSuccess, dataSource: $dataSource, viewDurationSec: $viewDurationSec, viewedYearlySegTab: $viewedYearlySegTab, viewedQtrlySegTab: $viewedQtrlySegTab, changedYrDate: $changedYrDate, changedQtrDate: $changedQtrDate)';
+    return 'SegmentsTabViewState(ticker: $ticker, timestamp: $timestamp, loadTimeMs: $loadTimeMs, isSuccess: $isSuccess, dataSource: $dataSource, viewDurationSec: $viewDurationSec, viewedYearlySegTab: $viewedYearlySegTab, viewedQtrlySegTab: $viewedQtrlySegTab, changedYrDate: $changedYrDate, changedQtrDate: $changedQtrDate)';
 }
 
 

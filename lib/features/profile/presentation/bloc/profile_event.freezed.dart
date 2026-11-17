@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'profile_event.dart';
@@ -9,6 +9,7 @@ part of 'profile_event.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -20,7 +21,7 @@ mixin _$ProfileEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProfileEvent);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is ProfileEvent);
 }
 
 
@@ -29,7 +30,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'ProfileEvent()';
+    return 'ProfileEvent()';
 }
 
 
@@ -203,7 +204,7 @@ class Started implements ProfileEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Started);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is Started);
 }
 
 
@@ -212,7 +213,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'ProfileEvent.started()';
+    return 'ProfileEvent.started()';
 }
 
 
@@ -235,7 +236,7 @@ class SettingsClicked implements ProfileEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SettingsClicked);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SettingsClicked);
 }
 
 
@@ -244,7 +245,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'ProfileEvent.settingsClicked()';
+    return 'ProfileEvent.settingsClicked()';
 }
 
 
@@ -267,7 +268,7 @@ class PremiumCardClicked implements ProfileEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PremiumCardClicked);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is PremiumCardClicked);
 }
 
 
@@ -276,7 +277,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'ProfileEvent.premiumCardClicked()';
+    return 'ProfileEvent.premiumCardClicked()';
 }
 
 
@@ -299,7 +300,7 @@ class NavigationProcessed implements ProfileEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is NavigationProcessed);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is NavigationProcessed);
 }
 
 
@@ -308,7 +309,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'ProfileEvent.navigationProcessed()';
+    return 'ProfileEvent.navigationProcessed()';
 }
 
 

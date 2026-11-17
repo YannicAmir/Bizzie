@@ -14,7 +14,7 @@ import 'package:bizzie/features/reports/presentation/widgets/reports_tab_body.da
 import 'package:bizzie/features/search/domain/enums/search_analytics_enums.dart';
 import 'package:bizzie/features/watchlist_ytd/presentation/bloc/watchlist_ytd/watchlist_ytd_bloc.dart';
 import 'package:bizzie/shared/widgets/inputs/bizzie_search_bar.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 

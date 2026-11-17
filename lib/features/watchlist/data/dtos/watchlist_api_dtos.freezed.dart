@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'watchlist_api_dtos.dart';
@@ -9,6 +9,7 @@ part of 'watchlist_api_dtos.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 
@@ -28,16 +29,21 @@ $WatchlistEarningsDtoCopyWith<WatchlistEarningsDto> get copyWith => _$WatchlistE
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is WatchlistEarningsDto&&(identical(other.symbol, symbol) || other.symbol == symbol)&&(identical(other.date, date) || other.date == date)&&(identical(other.expireAt, expireAt) || other.expireAt == expireAt));
+  final _this = this as WatchlistEarningsDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is WatchlistEarningsDto&&(identical(other.symbol, _this.symbol) || other.symbol == _this.symbol)&&(identical(other.date, _this.date) || other.date == _this.date)&&(identical(other.expireAt, _this.expireAt) || other.expireAt == _this.expireAt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,symbol,date,expireAt);
+int get hashCode {
+  final _this = this as WatchlistEarningsDto;
+  return Object.hash(runtimeType,_this.symbol,_this.date,_this.expireAt);
+}
 
 @override
 String toString() {
-  return 'WatchlistEarningsDto(symbol: $symbol, date: $date, expireAt: $expireAt)';
+  final _this = this as WatchlistEarningsDto;
+  return 'WatchlistEarningsDto(symbol: ${_this.symbol}, date: ${_this.date}, expireAt: ${_this.expireAt})';
 }
 
 
@@ -66,7 +72,7 @@ class _$WatchlistEarningsDtoCopyWithImpl<$Res>
 /// Create a copy of WatchlistEarningsDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? symbol = null,Object? date = null,Object? expireAt = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(WatchlistEarningsDto(
 symbol: null == symbol ? _self.symbol : symbol // ignore: cast_nullable_to_non_nullable
 as String,date: null == date ? _self.date : date // ignore: cast_nullable_to_non_nullable
 as DateTime,expireAt: freezed == expireAt ? _self.expireAt : expireAt // ignore: cast_nullable_to_non_nullable
@@ -231,16 +237,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _WatchlistEarningsDto&&(identical(other.symbol, symbol) || other.symbol == symbol)&&(identical(other.date, date) || other.date == date)&&(identical(other.expireAt, expireAt) || other.expireAt == expireAt));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _WatchlistEarningsDto&&(identical(other.symbol, symbol) || other.symbol == symbol)&&(identical(other.date, date) || other.date == date)&&(identical(other.expireAt, expireAt) || other.expireAt == expireAt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,symbol,date,expireAt);
+int get hashCode {
+    return Object.hash(runtimeType,symbol,date,expireAt);
+}
 
 @override
 String toString() {
-  return 'WatchlistEarningsDto(symbol: $symbol, date: $date, expireAt: $expireAt)';
+    return 'WatchlistEarningsDto(symbol: $symbol, date: $date, expireAt: $expireAt)';
 }
 
 
@@ -297,16 +305,21 @@ $WatchlistFilingDtoCopyWith<WatchlistFilingDto> get copyWith => _$WatchlistFilin
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is WatchlistFilingDto&&(identical(other.symbol, symbol) || other.symbol == symbol)&&(identical(other.formType, formType) || other.formType == formType)&&(identical(other.filingDate, filingDate) || other.filingDate == filingDate)&&(identical(other.topic, topic) || other.topic == topic)&&(identical(other.isEarnings, isEarnings) || other.isEarnings == isEarnings));
+  final _this = this as WatchlistFilingDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is WatchlistFilingDto&&(identical(other.symbol, _this.symbol) || other.symbol == _this.symbol)&&(identical(other.formType, _this.formType) || other.formType == _this.formType)&&(identical(other.filingDate, _this.filingDate) || other.filingDate == _this.filingDate)&&(identical(other.topic, _this.topic) || other.topic == _this.topic)&&(identical(other.isEarnings, _this.isEarnings) || other.isEarnings == _this.isEarnings));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,symbol,formType,filingDate,topic,isEarnings);
+int get hashCode {
+  final _this = this as WatchlistFilingDto;
+  return Object.hash(runtimeType,_this.symbol,_this.formType,_this.filingDate,_this.topic,_this.isEarnings);
+}
 
 @override
 String toString() {
-  return 'WatchlistFilingDto(symbol: $symbol, formType: $formType, filingDate: $filingDate, topic: $topic, isEarnings: $isEarnings)';
+  final _this = this as WatchlistFilingDto;
+  return 'WatchlistFilingDto(symbol: ${_this.symbol}, formType: ${_this.formType}, filingDate: ${_this.filingDate}, topic: ${_this.topic}, isEarnings: ${_this.isEarnings})';
 }
 
 
@@ -335,7 +348,7 @@ class _$WatchlistFilingDtoCopyWithImpl<$Res>
 /// Create a copy of WatchlistFilingDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? symbol = null,Object? formType = null,Object? filingDate = null,Object? topic = freezed,Object? isEarnings = null,}) {
-  return _then(_self.copyWith(
+  return _then(WatchlistFilingDto(
 symbol: null == symbol ? _self.symbol : symbol // ignore: cast_nullable_to_non_nullable
 as String,formType: null == formType ? _self.formType : formType // ignore: cast_nullable_to_non_nullable
 as String,filingDate: null == filingDate ? _self.filingDate : filingDate // ignore: cast_nullable_to_non_nullable
@@ -504,16 +517,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _WatchlistFilingDto&&(identical(other.symbol, symbol) || other.symbol == symbol)&&(identical(other.formType, formType) || other.formType == formType)&&(identical(other.filingDate, filingDate) || other.filingDate == filingDate)&&(identical(other.topic, topic) || other.topic == topic)&&(identical(other.isEarnings, isEarnings) || other.isEarnings == isEarnings));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _WatchlistFilingDto&&(identical(other.symbol, symbol) || other.symbol == symbol)&&(identical(other.formType, formType) || other.formType == formType)&&(identical(other.filingDate, filingDate) || other.filingDate == filingDate)&&(identical(other.topic, topic) || other.topic == topic)&&(identical(other.isEarnings, isEarnings) || other.isEarnings == isEarnings));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,symbol,formType,filingDate,topic,isEarnings);
+int get hashCode {
+    return Object.hash(runtimeType,symbol,formType,filingDate,topic,isEarnings);
+}
 
 @override
 String toString() {
-  return 'WatchlistFilingDto(symbol: $symbol, formType: $formType, filingDate: $filingDate, topic: $topic, isEarnings: $isEarnings)';
+    return 'WatchlistFilingDto(symbol: $symbol, formType: $formType, filingDate: $filingDate, topic: $topic, isEarnings: $isEarnings)';
 }
 
 

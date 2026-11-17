@@ -6,7 +6,7 @@ import 'package:bizzie/features/company_profile/dividends/presentation/utils/div
 import 'package:bizzie/features/company_profile/shared/presentation/widgets/financial_table_footer.dart';
 import 'package:bizzie/shared/widgets/modals/app_history_modal.dart';
 import 'package:bizzie/shared/widgets/tables/bizzie_data_table.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class DividendPaymentHistorySection extends StatelessWidget {
   final List<DividendEvent> history;

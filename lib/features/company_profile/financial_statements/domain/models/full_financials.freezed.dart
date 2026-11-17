@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'full_financials.dart';
@@ -9,6 +9,7 @@ part of 'full_financials.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $FullFinancialsCopyWith<FullFinancials> get copyWith => _$FullFinancialsCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is FullFinancials&&const DeepCollectionEquality().equals(other.annualIncomeStatements, annualIncomeStatements)&&const DeepCollectionEquality().equals(other.quarterlyIncomeStatements, quarterlyIncomeStatements)&&const DeepCollectionEquality().equals(other.annualBalanceSheets, annualBalanceSheets)&&const DeepCollectionEquality().equals(other.quarterlyBalanceSheets, quarterlyBalanceSheets)&&const DeepCollectionEquality().equals(other.annualCashFlows, annualCashFlows)&&const DeepCollectionEquality().equals(other.quarterlyCashFlows, quarterlyCashFlows));
+  final _this = this as FullFinancials;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is FullFinancials&&const DeepCollectionEquality().equals(other.annualIncomeStatements, _this.annualIncomeStatements)&&const DeepCollectionEquality().equals(other.quarterlyIncomeStatements, _this.quarterlyIncomeStatements)&&const DeepCollectionEquality().equals(other.annualBalanceSheets, _this.annualBalanceSheets)&&const DeepCollectionEquality().equals(other.quarterlyBalanceSheets, _this.quarterlyBalanceSheets)&&const DeepCollectionEquality().equals(other.annualCashFlows, _this.annualCashFlows)&&const DeepCollectionEquality().equals(other.quarterlyCashFlows, _this.quarterlyCashFlows));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(annualIncomeStatements),const DeepCollectionEquality().hash(quarterlyIncomeStatements),const DeepCollectionEquality().hash(annualBalanceSheets),const DeepCollectionEquality().hash(quarterlyBalanceSheets),const DeepCollectionEquality().hash(annualCashFlows),const DeepCollectionEquality().hash(quarterlyCashFlows));
+int get hashCode {
+  final _this = this as FullFinancials;
+  return Object.hash(runtimeType,const DeepCollectionEquality().hash(_this.annualIncomeStatements),const DeepCollectionEquality().hash(_this.quarterlyIncomeStatements),const DeepCollectionEquality().hash(_this.annualBalanceSheets),const DeepCollectionEquality().hash(_this.quarterlyBalanceSheets),const DeepCollectionEquality().hash(_this.annualCashFlows),const DeepCollectionEquality().hash(_this.quarterlyCashFlows));
+}
 
 @override
 String toString() {
-  return 'FullFinancials(annualIncomeStatements: $annualIncomeStatements, quarterlyIncomeStatements: $quarterlyIncomeStatements, annualBalanceSheets: $annualBalanceSheets, quarterlyBalanceSheets: $quarterlyBalanceSheets, annualCashFlows: $annualCashFlows, quarterlyCashFlows: $quarterlyCashFlows)';
+  final _this = this as FullFinancials;
+  return 'FullFinancials(annualIncomeStatements: ${_this.annualIncomeStatements}, quarterlyIncomeStatements: ${_this.quarterlyIncomeStatements}, annualBalanceSheets: ${_this.annualBalanceSheets}, quarterlyBalanceSheets: ${_this.quarterlyBalanceSheets}, annualCashFlows: ${_this.annualCashFlows}, quarterlyCashFlows: ${_this.quarterlyCashFlows})';
 }
 
 
@@ -63,7 +69,7 @@ class _$FullFinancialsCopyWithImpl<$Res>
 /// Create a copy of FullFinancials
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? annualIncomeStatements = null,Object? quarterlyIncomeStatements = null,Object? annualBalanceSheets = null,Object? quarterlyBalanceSheets = null,Object? annualCashFlows = null,Object? quarterlyCashFlows = null,}) {
-  return _then(_self.copyWith(
+  return _then(FullFinancials(
 annualIncomeStatements: null == annualIncomeStatements ? _self.annualIncomeStatements : annualIncomeStatements // ignore: cast_nullable_to_non_nullable
 as List<IncomeStatement>,quarterlyIncomeStatements: null == quarterlyIncomeStatements ? _self.quarterlyIncomeStatements : quarterlyIncomeStatements // ignore: cast_nullable_to_non_nullable
 as List<IncomeStatement>,annualBalanceSheets: null == annualBalanceSheets ? _self.annualBalanceSheets : annualBalanceSheets // ignore: cast_nullable_to_non_nullable
@@ -211,7 +217,7 @@ return $default(_that.annualIncomeStatements,_that.quarterlyIncomeStatements,_th
 
 
 class _FullFinancials implements FullFinancials {
-  const _FullFinancials({required final  List<IncomeStatement> annualIncomeStatements, required final  List<IncomeStatement> quarterlyIncomeStatements, required final  List<BalanceSheet> annualBalanceSheets, required final  List<BalanceSheet> quarterlyBalanceSheets, required final  List<CashFlowStatement> annualCashFlows, required final  List<CashFlowStatement> quarterlyCashFlows}): _annualIncomeStatements = annualIncomeStatements,_quarterlyIncomeStatements = quarterlyIncomeStatements,_annualBalanceSheets = annualBalanceSheets,_quarterlyBalanceSheets = quarterlyBalanceSheets,_annualCashFlows = annualCashFlows,_quarterlyCashFlows = quarterlyCashFlows;
+  const _FullFinancials({required  List<IncomeStatement> annualIncomeStatements, required  List<IncomeStatement> quarterlyIncomeStatements, required  List<BalanceSheet> annualBalanceSheets, required  List<BalanceSheet> quarterlyBalanceSheets, required  List<CashFlowStatement> annualCashFlows, required  List<CashFlowStatement> quarterlyCashFlows}): _annualIncomeStatements = annualIncomeStatements,_quarterlyIncomeStatements = quarterlyIncomeStatements,_annualBalanceSheets = annualBalanceSheets,_quarterlyBalanceSheets = quarterlyBalanceSheets,_annualCashFlows = annualCashFlows,_quarterlyCashFlows = quarterlyCashFlows;
   
 
  final  List<IncomeStatement> _annualIncomeStatements;
@@ -267,16 +273,18 @@ _$FullFinancialsCopyWith<_FullFinancials> get copyWith => __$FullFinancialsCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _FullFinancials&&const DeepCollectionEquality().equals(other._annualIncomeStatements, _annualIncomeStatements)&&const DeepCollectionEquality().equals(other._quarterlyIncomeStatements, _quarterlyIncomeStatements)&&const DeepCollectionEquality().equals(other._annualBalanceSheets, _annualBalanceSheets)&&const DeepCollectionEquality().equals(other._quarterlyBalanceSheets, _quarterlyBalanceSheets)&&const DeepCollectionEquality().equals(other._annualCashFlows, _annualCashFlows)&&const DeepCollectionEquality().equals(other._quarterlyCashFlows, _quarterlyCashFlows));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _FullFinancials&&const DeepCollectionEquality().equals(other.annualIncomeStatements, _annualIncomeStatements)&&const DeepCollectionEquality().equals(other.quarterlyIncomeStatements, _quarterlyIncomeStatements)&&const DeepCollectionEquality().equals(other.annualBalanceSheets, _annualBalanceSheets)&&const DeepCollectionEquality().equals(other.quarterlyBalanceSheets, _quarterlyBalanceSheets)&&const DeepCollectionEquality().equals(other.annualCashFlows, _annualCashFlows)&&const DeepCollectionEquality().equals(other.quarterlyCashFlows, _quarterlyCashFlows));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_annualIncomeStatements),const DeepCollectionEquality().hash(_quarterlyIncomeStatements),const DeepCollectionEquality().hash(_annualBalanceSheets),const DeepCollectionEquality().hash(_quarterlyBalanceSheets),const DeepCollectionEquality().hash(_annualCashFlows),const DeepCollectionEquality().hash(_quarterlyCashFlows));
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_annualIncomeStatements),const DeepCollectionEquality().hash(_quarterlyIncomeStatements),const DeepCollectionEquality().hash(_annualBalanceSheets),const DeepCollectionEquality().hash(_quarterlyBalanceSheets),const DeepCollectionEquality().hash(_annualCashFlows),const DeepCollectionEquality().hash(_quarterlyCashFlows));
+}
 
 @override
 String toString() {
-  return 'FullFinancials(annualIncomeStatements: $annualIncomeStatements, quarterlyIncomeStatements: $quarterlyIncomeStatements, annualBalanceSheets: $annualBalanceSheets, quarterlyBalanceSheets: $quarterlyBalanceSheets, annualCashFlows: $annualCashFlows, quarterlyCashFlows: $quarterlyCashFlows)';
+    return 'FullFinancials(annualIncomeStatements: $annualIncomeStatements, quarterlyIncomeStatements: $quarterlyIncomeStatements, annualBalanceSheets: $annualBalanceSheets, quarterlyBalanceSheets: $quarterlyBalanceSheets, annualCashFlows: $annualCashFlows, quarterlyCashFlows: $quarterlyCashFlows)';
 }
 
 

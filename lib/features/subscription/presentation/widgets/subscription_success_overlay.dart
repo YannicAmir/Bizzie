@@ -1,7 +1,7 @@
 import 'dart:math';
 import 'package:bizzie/app/themes/app_colors.dart';
 import 'package:bizzie/shared/widgets/animations/bizzie_confetti.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 
 class SubscriptionSuccessOverlay extends StatefulWidget {

@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'bizzie_chat_response_dto.dart';
@@ -9,6 +9,7 @@ part of 'bizzie_chat_response_dto.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 
@@ -28,16 +29,21 @@ $BizzieChatResponseDtoCopyWith<BizzieChatResponseDto> get copyWith => _$BizzieCh
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is BizzieChatResponseDto&&(identical(other.message, message) || other.message == message)&&const DeepCollectionEquality().equals(other.followUps, followUps)&&(identical(other.source, source) || other.source == source)&&(identical(other.metadata, metadata) || other.metadata == metadata));
+  final _this = this as BizzieChatResponseDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is BizzieChatResponseDto&&(identical(other.message, _this.message) || other.message == _this.message)&&const DeepCollectionEquality().equals(other.followUps, _this.followUps)&&(identical(other.source, _this.source) || other.source == _this.source)&&(identical(other.metadata, _this.metadata) || other.metadata == _this.metadata));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,message,const DeepCollectionEquality().hash(followUps),source,metadata);
+int get hashCode {
+  final _this = this as BizzieChatResponseDto;
+  return Object.hash(runtimeType,_this.message,const DeepCollectionEquality().hash(_this.followUps),_this.source,_this.metadata);
+}
 
 @override
 String toString() {
-  return 'BizzieChatResponseDto(message: $message, followUps: $followUps, source: $source, metadata: $metadata)';
+  final _this = this as BizzieChatResponseDto;
+  return 'BizzieChatResponseDto(message: ${_this.message}, followUps: ${_this.followUps}, source: ${_this.source}, metadata: ${_this.metadata})';
 }
 
 
@@ -66,7 +72,7 @@ class _$BizzieChatResponseDtoCopyWithImpl<$Res>
 /// Create a copy of BizzieChatResponseDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? message = null,Object? followUps = null,Object? source = freezed,Object? metadata = null,}) {
-  return _then(_self.copyWith(
+  return _then(BizzieChatResponseDto(
 message: null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
 as String,followUps: null == followUps ? _self.followUps : followUps // ignore: cast_nullable_to_non_nullable
 as List<String>,source: freezed == source ? _self.source : source // ignore: cast_nullable_to_non_nullable
@@ -221,7 +227,7 @@ return $default(_that.message,_that.followUps,_that.source,_that.metadata);case 
 @JsonSerializable()
 
 class _BizzieChatResponseDto extends BizzieChatResponseDto {
-  const _BizzieChatResponseDto({required this.message, required final  List<String> followUps, this.source, required this.metadata}): _followUps = followUps,super._();
+  const _BizzieChatResponseDto({required this.message, required  List<String> followUps, this.source, required this.metadata}): _followUps = followUps,super._();
   factory _BizzieChatResponseDto.fromJson(Map<String, dynamic> json) => _$BizzieChatResponseDtoFromJson(json);
 
 @override final  String message;
@@ -248,16 +254,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _BizzieChatResponseDto&&(identical(other.message, message) || other.message == message)&&const DeepCollectionEquality().equals(other._followUps, _followUps)&&(identical(other.source, source) || other.source == source)&&(identical(other.metadata, metadata) || other.metadata == metadata));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _BizzieChatResponseDto&&(identical(other.message, message) || other.message == message)&&const DeepCollectionEquality().equals(other.followUps, _followUps)&&(identical(other.source, source) || other.source == source)&&(identical(other.metadata, metadata) || other.metadata == metadata));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,message,const DeepCollectionEquality().hash(_followUps),source,metadata);
+int get hashCode {
+    return Object.hash(runtimeType,message,const DeepCollectionEquality().hash(_followUps),source,metadata);
+}
 
 @override
 String toString() {
-  return 'BizzieChatResponseDto(message: $message, followUps: $followUps, source: $source, metadata: $metadata)';
+    return 'BizzieChatResponseDto(message: $message, followUps: $followUps, source: $source, metadata: $metadata)';
 }
 
 
@@ -324,16 +332,21 @@ $BizzieChatResponseMetadataDtoCopyWith<BizzieChatResponseMetadataDto> get copyWi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is BizzieChatResponseMetadataDto&&(identical(other.sessionId, sessionId) || other.sessionId == sessionId)&&(identical(other.routePath, routePath) || other.routePath == routePath));
+  final _this = this as BizzieChatResponseMetadataDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is BizzieChatResponseMetadataDto&&(identical(other.sessionId, _this.sessionId) || other.sessionId == _this.sessionId)&&(identical(other.routePath, _this.routePath) || other.routePath == _this.routePath));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,sessionId,routePath);
+int get hashCode {
+  final _this = this as BizzieChatResponseMetadataDto;
+  return Object.hash(runtimeType,_this.sessionId,_this.routePath);
+}
 
 @override
 String toString() {
-  return 'BizzieChatResponseMetadataDto(sessionId: $sessionId, routePath: $routePath)';
+  final _this = this as BizzieChatResponseMetadataDto;
+  return 'BizzieChatResponseMetadataDto(sessionId: ${_this.sessionId}, routePath: ${_this.routePath})';
 }
 
 
@@ -362,7 +375,7 @@ class _$BizzieChatResponseMetadataDtoCopyWithImpl<$Res>
 /// Create a copy of BizzieChatResponseMetadataDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? sessionId = null,Object? routePath = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(BizzieChatResponseMetadataDto(
 sessionId: null == sessionId ? _self.sessionId : sessionId // ignore: cast_nullable_to_non_nullable
 as String,routePath: freezed == routePath ? _self.routePath : routePath // ignore: cast_nullable_to_non_nullable
 as String?,
@@ -525,16 +538,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _BizzieChatResponseMetadataDto&&(identical(other.sessionId, sessionId) || other.sessionId == sessionId)&&(identical(other.routePath, routePath) || other.routePath == routePath));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _BizzieChatResponseMetadataDto&&(identical(other.sessionId, sessionId) || other.sessionId == sessionId)&&(identical(other.routePath, routePath) || other.routePath == routePath));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,sessionId,routePath);
+int get hashCode {
+    return Object.hash(runtimeType,sessionId,routePath);
+}
 
 @override
 String toString() {
-  return 'BizzieChatResponseMetadataDto(sessionId: $sessionId, routePath: $routePath)';
+    return 'BizzieChatResponseMetadataDto(sessionId: $sessionId, routePath: $routePath)';
 }
 
 

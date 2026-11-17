@@ -5,7 +5,7 @@ import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:bizzie/shared/utils/badge_theme_extensions.dart';
 import 'package:bizzie/shared/utils/bizzie_date_formatter.dart';
 import 'package:bizzie/shared/widgets/animations/price_tick_flash.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 const double _priceToChangeSpacing = 12;
 const double _arrowToChangeSpacing = 4;

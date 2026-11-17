@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'settings_event.dart';
@@ -9,6 +9,7 @@ part of 'settings_event.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -20,7 +21,7 @@ mixin _$SettingsEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SettingsEvent);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SettingsEvent);
 }
 
 
@@ -29,7 +30,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'SettingsEvent()';
+    return 'SettingsEvent()';
 }
 
 
@@ -233,7 +234,7 @@ class Started implements SettingsEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Started);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is Started);
 }
 
 
@@ -242,7 +243,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'SettingsEvent.started()';
+    return 'SettingsEvent.started()';
 }
 
 
@@ -270,16 +271,18 @@ $ToggledNotificationsCopyWith<ToggledNotifications> get copyWith => _$ToggledNot
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ToggledNotifications&&(identical(other.enable, enable) || other.enable == enable));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is ToggledNotifications&&(identical(other.enable, enable) || other.enable == enable));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,enable);
+int get hashCode {
+    return Object.hash(runtimeType,enable);
+}
 
 @override
 String toString() {
-  return 'SettingsEvent.toggledNotifications(enable: $enable)';
+    return 'SettingsEvent.toggledNotifications(enable: $enable)';
 }
 
 
@@ -331,7 +334,7 @@ class SignedOut implements SettingsEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SignedOut);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SignedOut);
 }
 
 
@@ -340,7 +343,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'SettingsEvent.signedOut()';
+    return 'SettingsEvent.signedOut()';
 }
 
 
@@ -368,16 +371,18 @@ $GuestLogoutPromptResolvedCopyWith<GuestLogoutPromptResolved> get copyWith => _$
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is GuestLogoutPromptResolved&&(identical(other.choice, choice) || other.choice == choice));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is GuestLogoutPromptResolved&&(identical(other.choice, choice) || other.choice == choice));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,choice);
+int get hashCode {
+    return Object.hash(runtimeType,choice);
+}
 
 @override
 String toString() {
-  return 'SettingsEvent.guestLogoutPromptResolved(choice: $choice)';
+    return 'SettingsEvent.guestLogoutPromptResolved(choice: $choice)';
 }
 
 
@@ -435,16 +440,18 @@ $OpenUrlCopyWith<OpenUrl> get copyWith => _$OpenUrlCopyWithImpl<OpenUrl>(this, _
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is OpenUrl&&(identical(other.url, url) || other.url == url)&&(identical(other.type, type) || other.type == type));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is OpenUrl&&(identical(other.url, url) || other.url == url)&&(identical(other.type, type) || other.type == type));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,url,type);
+int get hashCode {
+    return Object.hash(runtimeType,url,type);
+}
 
 @override
 String toString() {
-  return 'SettingsEvent.openUrl(url: $url, type: $type)';
+    return 'SettingsEvent.openUrl(url: $url, type: $type)';
 }
 
 
@@ -497,7 +504,7 @@ class OpenedSettings implements SettingsEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is OpenedSettings);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is OpenedSettings);
 }
 
 
@@ -506,7 +513,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'SettingsEvent.openedSettings()';
+    return 'SettingsEvent.openedSettings()';
 }
 
 
@@ -529,7 +536,7 @@ class PermissionPromptProcessed implements SettingsEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PermissionPromptProcessed);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is PermissionPromptProcessed);
 }
 
 
@@ -538,7 +545,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'SettingsEvent.permissionPromptProcessed()';
+    return 'SettingsEvent.permissionPromptProcessed()';
 }
 
 
@@ -561,7 +568,7 @@ class EditProfileClicked implements SettingsEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is EditProfileClicked);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is EditProfileClicked);
 }
 
 
@@ -570,7 +577,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'SettingsEvent.editProfileClicked()';
+    return 'SettingsEvent.editProfileClicked()';
 }
 
 
@@ -593,7 +600,7 @@ class FeedbackClicked implements SettingsEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is FeedbackClicked);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is FeedbackClicked);
 }
 
 
@@ -602,7 +609,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'SettingsEvent.feedbackClicked()';
+    return 'SettingsEvent.feedbackClicked()';
 }
 
 
@@ -630,16 +637,18 @@ $MembershipClickedCopyWith<MembershipClicked> get copyWith => _$MembershipClicke
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MembershipClicked&&(identical(other.isSubscribed, isSubscribed) || other.isSubscribed == isSubscribed));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is MembershipClicked&&(identical(other.isSubscribed, isSubscribed) || other.isSubscribed == isSubscribed));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,isSubscribed);
+int get hashCode {
+    return Object.hash(runtimeType,isSubscribed);
+}
 
 @override
 String toString() {
-  return 'SettingsEvent.membershipClicked(isSubscribed: $isSubscribed)';
+    return 'SettingsEvent.membershipClicked(isSubscribed: $isSubscribed)';
 }
 
 

@@ -12,7 +12,7 @@ import 'package:bizzie/features/onboarding/presentation/bloc/onboarding_bloc.dar
 import 'package:bizzie/features/onboarding/presentation/utils/onboarding_notification_prompter.dart';
 import 'package:bizzie/features/subscription/presentation/utils/paywall_helper.dart';
 import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 

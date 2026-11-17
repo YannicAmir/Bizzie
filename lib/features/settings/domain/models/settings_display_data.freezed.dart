@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'settings_display_data.dart';
@@ -9,6 +9,7 @@ part of 'settings_display_data.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $SettingsDisplayDataCopyWith<SettingsDisplayData> get copyWith => _$SettingsDisp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SettingsDisplayData&&(identical(other.user, user) || other.user == user)&&(identical(other.subscriptionStatus, subscriptionStatus) || other.subscriptionStatus == subscriptionStatus)&&(identical(other.isAppNotificationsEnabled, isAppNotificationsEnabled) || other.isAppNotificationsEnabled == isAppNotificationsEnabled)&&(identical(other.isSystemNotificationsEnabled, isSystemNotificationsEnabled) || other.isSystemNotificationsEnabled == isSystemNotificationsEnabled)&&(identical(other.appVersion, appVersion) || other.appVersion == appVersion)&&(identical(other.favoriteSector, favoriteSector) || other.favoriteSector == favoriteSector)&&(identical(other.privacyPolicyUrl, privacyPolicyUrl) || other.privacyPolicyUrl == privacyPolicyUrl)&&(identical(other.termsOfServiceUrl, termsOfServiceUrl) || other.termsOfServiceUrl == termsOfServiceUrl)&&(identical(other.isGuest, isGuest) || other.isGuest == isGuest));
+  final _this = this as SettingsDisplayData;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SettingsDisplayData&&(identical(other.user, _this.user) || other.user == _this.user)&&(identical(other.subscriptionStatus, _this.subscriptionStatus) || other.subscriptionStatus == _this.subscriptionStatus)&&(identical(other.isAppNotificationsEnabled, _this.isAppNotificationsEnabled) || other.isAppNotificationsEnabled == _this.isAppNotificationsEnabled)&&(identical(other.isSystemNotificationsEnabled, _this.isSystemNotificationsEnabled) || other.isSystemNotificationsEnabled == _this.isSystemNotificationsEnabled)&&(identical(other.appVersion, _this.appVersion) || other.appVersion == _this.appVersion)&&(identical(other.favoriteSector, _this.favoriteSector) || other.favoriteSector == _this.favoriteSector)&&(identical(other.privacyPolicyUrl, _this.privacyPolicyUrl) || other.privacyPolicyUrl == _this.privacyPolicyUrl)&&(identical(other.termsOfServiceUrl, _this.termsOfServiceUrl) || other.termsOfServiceUrl == _this.termsOfServiceUrl)&&(identical(other.isGuest, _this.isGuest) || other.isGuest == _this.isGuest));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,user,subscriptionStatus,isAppNotificationsEnabled,isSystemNotificationsEnabled,appVersion,favoriteSector,privacyPolicyUrl,termsOfServiceUrl,isGuest);
+int get hashCode {
+  final _this = this as SettingsDisplayData;
+  return Object.hash(runtimeType,_this.user,_this.subscriptionStatus,_this.isAppNotificationsEnabled,_this.isSystemNotificationsEnabled,_this.appVersion,_this.favoriteSector,_this.privacyPolicyUrl,_this.termsOfServiceUrl,_this.isGuest);
+}
 
 @override
 String toString() {
-  return 'SettingsDisplayData(user: $user, subscriptionStatus: $subscriptionStatus, isAppNotificationsEnabled: $isAppNotificationsEnabled, isSystemNotificationsEnabled: $isSystemNotificationsEnabled, appVersion: $appVersion, favoriteSector: $favoriteSector, privacyPolicyUrl: $privacyPolicyUrl, termsOfServiceUrl: $termsOfServiceUrl, isGuest: $isGuest)';
+  final _this = this as SettingsDisplayData;
+  return 'SettingsDisplayData(user: ${_this.user}, subscriptionStatus: ${_this.subscriptionStatus}, isAppNotificationsEnabled: ${_this.isAppNotificationsEnabled}, isSystemNotificationsEnabled: ${_this.isSystemNotificationsEnabled}, appVersion: ${_this.appVersion}, favoriteSector: ${_this.favoriteSector}, privacyPolicyUrl: ${_this.privacyPolicyUrl}, termsOfServiceUrl: ${_this.termsOfServiceUrl}, isGuest: ${_this.isGuest})';
 }
 
 
@@ -63,7 +69,7 @@ class _$SettingsDisplayDataCopyWithImpl<$Res>
 /// Create a copy of SettingsDisplayData
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? user = null,Object? subscriptionStatus = null,Object? isAppNotificationsEnabled = null,Object? isSystemNotificationsEnabled = null,Object? appVersion = null,Object? favoriteSector = null,Object? privacyPolicyUrl = null,Object? termsOfServiceUrl = null,Object? isGuest = null,}) {
-  return _then(_self.copyWith(
+  return _then(SettingsDisplayData(
 user: null == user ? _self.user : user // ignore: cast_nullable_to_non_nullable
 as UserModel,subscriptionStatus: null == subscriptionStatus ? _self.subscriptionStatus : subscriptionStatus // ignore: cast_nullable_to_non_nullable
 as SubscriptionStatus,isAppNotificationsEnabled: null == isAppNotificationsEnabled ? _self.isAppNotificationsEnabled : isAppNotificationsEnabled // ignore: cast_nullable_to_non_nullable
@@ -255,16 +261,18 @@ _$SettingsDisplayDataCopyWith<_SettingsDisplayData> get copyWith => __$SettingsD
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SettingsDisplayData&&(identical(other.user, user) || other.user == user)&&(identical(other.subscriptionStatus, subscriptionStatus) || other.subscriptionStatus == subscriptionStatus)&&(identical(other.isAppNotificationsEnabled, isAppNotificationsEnabled) || other.isAppNotificationsEnabled == isAppNotificationsEnabled)&&(identical(other.isSystemNotificationsEnabled, isSystemNotificationsEnabled) || other.isSystemNotificationsEnabled == isSystemNotificationsEnabled)&&(identical(other.appVersion, appVersion) || other.appVersion == appVersion)&&(identical(other.favoriteSector, favoriteSector) || other.favoriteSector == favoriteSector)&&(identical(other.privacyPolicyUrl, privacyPolicyUrl) || other.privacyPolicyUrl == privacyPolicyUrl)&&(identical(other.termsOfServiceUrl, termsOfServiceUrl) || other.termsOfServiceUrl == termsOfServiceUrl)&&(identical(other.isGuest, isGuest) || other.isGuest == isGuest));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _SettingsDisplayData&&(identical(other.user, user) || other.user == user)&&(identical(other.subscriptionStatus, subscriptionStatus) || other.subscriptionStatus == subscriptionStatus)&&(identical(other.isAppNotificationsEnabled, isAppNotificationsEnabled) || other.isAppNotificationsEnabled == isAppNotificationsEnabled)&&(identical(other.isSystemNotificationsEnabled, isSystemNotificationsEnabled) || other.isSystemNotificationsEnabled == isSystemNotificationsEnabled)&&(identical(other.appVersion, appVersion) || other.appVersion == appVersion)&&(identical(other.favoriteSector, favoriteSector) || other.favoriteSector == favoriteSector)&&(identical(other.privacyPolicyUrl, privacyPolicyUrl) || other.privacyPolicyUrl == privacyPolicyUrl)&&(identical(other.termsOfServiceUrl, termsOfServiceUrl) || other.termsOfServiceUrl == termsOfServiceUrl)&&(identical(other.isGuest, isGuest) || other.isGuest == isGuest));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,user,subscriptionStatus,isAppNotificationsEnabled,isSystemNotificationsEnabled,appVersion,favoriteSector,privacyPolicyUrl,termsOfServiceUrl,isGuest);
+int get hashCode {
+    return Object.hash(runtimeType,user,subscriptionStatus,isAppNotificationsEnabled,isSystemNotificationsEnabled,appVersion,favoriteSector,privacyPolicyUrl,termsOfServiceUrl,isGuest);
+}
 
 @override
 String toString() {
-  return 'SettingsDisplayData(user: $user, subscriptionStatus: $subscriptionStatus, isAppNotificationsEnabled: $isAppNotificationsEnabled, isSystemNotificationsEnabled: $isSystemNotificationsEnabled, appVersion: $appVersion, favoriteSector: $favoriteSector, privacyPolicyUrl: $privacyPolicyUrl, termsOfServiceUrl: $termsOfServiceUrl, isGuest: $isGuest)';
+    return 'SettingsDisplayData(user: $user, subscriptionStatus: $subscriptionStatus, isAppNotificationsEnabled: $isAppNotificationsEnabled, isSystemNotificationsEnabled: $isSystemNotificationsEnabled, appVersion: $appVersion, favoriteSector: $favoriteSector, privacyPolicyUrl: $privacyPolicyUrl, termsOfServiceUrl: $termsOfServiceUrl, isGuest: $isGuest)';
 }
 
 

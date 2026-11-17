@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'feedback_model.dart';
@@ -9,6 +9,7 @@ part of 'feedback_model.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $FeedbackModelCopyWith<FeedbackModel> get copyWith => _$FeedbackModelCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is FeedbackModel&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.userName, userName) || other.userName == userName)&&(identical(other.message, message) || other.message == message)&&(identical(other.timestamp, timestamp) || other.timestamp == timestamp)&&(identical(other.userEmail, userEmail) || other.userEmail == userEmail)&&(identical(other.fcmToken, fcmToken) || other.fcmToken == fcmToken)&&(identical(other.isSubscribed, isSubscribed) || other.isSubscribed == isSubscribed)&&(identical(other.notificationsEnabled, notificationsEnabled) || other.notificationsEnabled == notificationsEnabled));
+  final _this = this as FeedbackModel;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is FeedbackModel&&(identical(other.userId, _this.userId) || other.userId == _this.userId)&&(identical(other.userName, _this.userName) || other.userName == _this.userName)&&(identical(other.message, _this.message) || other.message == _this.message)&&(identical(other.timestamp, _this.timestamp) || other.timestamp == _this.timestamp)&&(identical(other.userEmail, _this.userEmail) || other.userEmail == _this.userEmail)&&(identical(other.fcmToken, _this.fcmToken) || other.fcmToken == _this.fcmToken)&&(identical(other.isSubscribed, _this.isSubscribed) || other.isSubscribed == _this.isSubscribed)&&(identical(other.notificationsEnabled, _this.notificationsEnabled) || other.notificationsEnabled == _this.notificationsEnabled));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,userId,userName,message,timestamp,userEmail,fcmToken,isSubscribed,notificationsEnabled);
+int get hashCode {
+  final _this = this as FeedbackModel;
+  return Object.hash(runtimeType,_this.userId,_this.userName,_this.message,_this.timestamp,_this.userEmail,_this.fcmToken,_this.isSubscribed,_this.notificationsEnabled);
+}
 
 @override
 String toString() {
-  return 'FeedbackModel(userId: $userId, userName: $userName, message: $message, timestamp: $timestamp, userEmail: $userEmail, fcmToken: $fcmToken, isSubscribed: $isSubscribed, notificationsEnabled: $notificationsEnabled)';
+  final _this = this as FeedbackModel;
+  return 'FeedbackModel(userId: ${_this.userId}, userName: ${_this.userName}, message: ${_this.message}, timestamp: ${_this.timestamp}, userEmail: ${_this.userEmail}, fcmToken: ${_this.fcmToken}, isSubscribed: ${_this.isSubscribed}, notificationsEnabled: ${_this.notificationsEnabled})';
 }
 
 
@@ -63,7 +69,7 @@ class _$FeedbackModelCopyWithImpl<$Res>
 /// Create a copy of FeedbackModel
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? userId = null,Object? userName = null,Object? message = null,Object? timestamp = null,Object? userEmail = freezed,Object? fcmToken = freezed,Object? isSubscribed = null,Object? notificationsEnabled = null,}) {
-  return _then(_self.copyWith(
+  return _then(FeedbackModel(
 userId: null == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
 as String,userName: null == userName ? _self.userName : userName // ignore: cast_nullable_to_non_nullable
 as String,message: null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
@@ -235,16 +241,18 @@ _$FeedbackModelCopyWith<_FeedbackModel> get copyWith => __$FeedbackModelCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _FeedbackModel&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.userName, userName) || other.userName == userName)&&(identical(other.message, message) || other.message == message)&&(identical(other.timestamp, timestamp) || other.timestamp == timestamp)&&(identical(other.userEmail, userEmail) || other.userEmail == userEmail)&&(identical(other.fcmToken, fcmToken) || other.fcmToken == fcmToken)&&(identical(other.isSubscribed, isSubscribed) || other.isSubscribed == isSubscribed)&&(identical(other.notificationsEnabled, notificationsEnabled) || other.notificationsEnabled == notificationsEnabled));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _FeedbackModel&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.userName, userName) || other.userName == userName)&&(identical(other.message, message) || other.message == message)&&(identical(other.timestamp, timestamp) || other.timestamp == timestamp)&&(identical(other.userEmail, userEmail) || other.userEmail == userEmail)&&(identical(other.fcmToken, fcmToken) || other.fcmToken == fcmToken)&&(identical(other.isSubscribed, isSubscribed) || other.isSubscribed == isSubscribed)&&(identical(other.notificationsEnabled, notificationsEnabled) || other.notificationsEnabled == notificationsEnabled));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,userId,userName,message,timestamp,userEmail,fcmToken,isSubscribed,notificationsEnabled);
+int get hashCode {
+    return Object.hash(runtimeType,userId,userName,message,timestamp,userEmail,fcmToken,isSubscribed,notificationsEnabled);
+}
 
 @override
 String toString() {
-  return 'FeedbackModel(userId: $userId, userName: $userName, message: $message, timestamp: $timestamp, userEmail: $userEmail, fcmToken: $fcmToken, isSubscribed: $isSubscribed, notificationsEnabled: $notificationsEnabled)';
+    return 'FeedbackModel(userId: $userId, userName: $userName, message: $message, timestamp: $timestamp, userEmail: $userEmail, fcmToken: $fcmToken, isSubscribed: $isSubscribed, notificationsEnabled: $notificationsEnabled)';
 }
 
 

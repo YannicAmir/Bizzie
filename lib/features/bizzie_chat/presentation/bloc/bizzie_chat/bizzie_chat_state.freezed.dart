@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'bizzie_chat_state.dart';
@@ -9,6 +9,7 @@ part of 'bizzie_chat_state.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -20,7 +21,7 @@ mixin _$BizzieChatState {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is BizzieChatState);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is BizzieChatState);
 }
 
 
@@ -29,7 +30,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'BizzieChatState()';
+    return 'BizzieChatState()';
 }
 
 
@@ -203,7 +204,7 @@ class _Initial implements BizzieChatState {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Initial);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Initial);
 }
 
 
@@ -212,7 +213,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'BizzieChatState.initial()';
+    return 'BizzieChatState.initial()';
 }
 
 
@@ -243,16 +244,18 @@ _$LoadingCopyWith<_Loading> get copyWith => __$LoadingCopyWithImpl<_Loading>(thi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Loading&&(identical(other.sessionId, sessionId) || other.sessionId == sessionId)&&(identical(other.uid, uid) || other.uid == uid)&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.companyName, companyName) || other.companyName == companyName));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Loading&&(identical(other.sessionId, sessionId) || other.sessionId == sessionId)&&(identical(other.uid, uid) || other.uid == uid)&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.companyName, companyName) || other.companyName == companyName));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,sessionId,uid,ticker,companyName);
+int get hashCode {
+    return Object.hash(runtimeType,sessionId,uid,ticker,companyName);
+}
 
 @override
 String toString() {
-  return 'BizzieChatState.loading(sessionId: $sessionId, uid: $uid, ticker: $ticker, companyName: $companyName)';
+    return 'BizzieChatState.loading(sessionId: $sessionId, uid: $uid, ticker: $ticker, companyName: $companyName)';
 }
 
 
@@ -297,7 +300,7 @@ as String,
 
 
 class _Active implements BizzieChatState {
-  const _Active({required this.sessionId, required this.uid, required this.ticker, required this.companyName, required final  List<ChatMessage> messages, final  List<String> followUps = const <String>[], this.isStreaming = false, this.streamingContent, this.sseError, this.rating}): _messages = messages,_followUps = followUps;
+  const _Active({required this.sessionId, required this.uid, required this.ticker, required this.companyName, required  List<ChatMessage> messages,  List<String> followUps = const <String>[], this.isStreaming = false, this.streamingContent, this.sseError, this.rating}): _messages = messages,_followUps = followUps;
   
 
  final  String sessionId;
@@ -333,16 +336,18 @@ _$ActiveCopyWith<_Active> get copyWith => __$ActiveCopyWithImpl<_Active>(this, _
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Active&&(identical(other.sessionId, sessionId) || other.sessionId == sessionId)&&(identical(other.uid, uid) || other.uid == uid)&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.companyName, companyName) || other.companyName == companyName)&&const DeepCollectionEquality().equals(other._messages, _messages)&&const DeepCollectionEquality().equals(other._followUps, _followUps)&&(identical(other.isStreaming, isStreaming) || other.isStreaming == isStreaming)&&(identical(other.streamingContent, streamingContent) || other.streamingContent == streamingContent)&&(identical(other.sseError, sseError) || other.sseError == sseError)&&(identical(other.rating, rating) || other.rating == rating));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Active&&(identical(other.sessionId, sessionId) || other.sessionId == sessionId)&&(identical(other.uid, uid) || other.uid == uid)&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.companyName, companyName) || other.companyName == companyName)&&const DeepCollectionEquality().equals(other.messages, _messages)&&const DeepCollectionEquality().equals(other.followUps, _followUps)&&(identical(other.isStreaming, isStreaming) || other.isStreaming == isStreaming)&&(identical(other.streamingContent, streamingContent) || other.streamingContent == streamingContent)&&(identical(other.sseError, sseError) || other.sseError == sseError)&&(identical(other.rating, rating) || other.rating == rating));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,sessionId,uid,ticker,companyName,const DeepCollectionEquality().hash(_messages),const DeepCollectionEquality().hash(_followUps),isStreaming,streamingContent,sseError,rating);
+int get hashCode {
+    return Object.hash(runtimeType,sessionId,uid,ticker,companyName,const DeepCollectionEquality().hash(_messages),const DeepCollectionEquality().hash(_followUps),isStreaming,streamingContent,sseError,rating);
+}
 
 @override
 String toString() {
-  return 'BizzieChatState.active(sessionId: $sessionId, uid: $uid, ticker: $ticker, companyName: $companyName, messages: $messages, followUps: $followUps, isStreaming: $isStreaming, streamingContent: $streamingContent, sseError: $sseError, rating: $rating)';
+    return 'BizzieChatState.active(sessionId: $sessionId, uid: $uid, ticker: $ticker, companyName: $companyName, messages: $messages, followUps: $followUps, isStreaming: $isStreaming, streamingContent: $streamingContent, sseError: $sseError, rating: $rating)';
 }
 
 
@@ -408,16 +413,18 @@ _$FailureCopyWith<_Failure> get copyWith => __$FailureCopyWithImpl<_Failure>(thi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Failure&&(identical(other.failure, failure) || other.failure == failure));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Failure&&(identical(other.failure, failure) || other.failure == failure));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,failure);
+int get hashCode {
+    return Object.hash(runtimeType,failure);
+}
 
 @override
 String toString() {
-  return 'BizzieChatState.failure(failure: $failure)';
+    return 'BizzieChatState.failure(failure: $failure)';
 }
 
 

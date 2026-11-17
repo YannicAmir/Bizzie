@@ -1,7 +1,7 @@
 import 'package:bizzie/features/onboarding/presentation/bloc/onboarding_bloc.dart';
 import 'package:bizzie/features/onboarding/domain/models/onboarding_step.dart';
 import 'package:bizzie/features/onboarding/presentation/utils/onboarding_navigation_orchestrator.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../widgets/onboarding_header.dart';
 import 'package:bizzie/shared/widgets/buttons/bizzie_primary_button.dart';

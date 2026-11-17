@@ -10,7 +10,7 @@ import 'package:bizzie/features/company_profile/shared/presentation/utils/chart_
 import 'package:bizzie/features/company_profile/security/presentation/utils/historical_price_chart_extensions.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:bizzie/shared/widgets/charts/bizzie_line_chart.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class PriceChartWidget extends StatelessWidget {

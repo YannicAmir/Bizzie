@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class AppConstants {
   static const EdgeInsets appBarActionsPadding = EdgeInsets.only(right: 16.0);

@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'chat_response.dart';
@@ -9,6 +9,7 @@ part of 'chat_response.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $ChatResponseCopyWith<ChatResponse> get copyWith => _$ChatResponseCopyWithImpl<C
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ChatResponse&&(identical(other.message, message) || other.message == message)&&const DeepCollectionEquality().equals(other.followUps, followUps)&&(identical(other.source, source) || other.source == source)&&(identical(other.sessionId, sessionId) || other.sessionId == sessionId)&&(identical(other.routePath, routePath) || other.routePath == routePath));
+  final _this = this as ChatResponse;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ChatResponse&&(identical(other.message, _this.message) || other.message == _this.message)&&const DeepCollectionEquality().equals(other.followUps, _this.followUps)&&(identical(other.source, _this.source) || other.source == _this.source)&&(identical(other.sessionId, _this.sessionId) || other.sessionId == _this.sessionId)&&(identical(other.routePath, _this.routePath) || other.routePath == _this.routePath));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,message,const DeepCollectionEquality().hash(followUps),source,sessionId,routePath);
+int get hashCode {
+  final _this = this as ChatResponse;
+  return Object.hash(runtimeType,_this.message,const DeepCollectionEquality().hash(_this.followUps),_this.source,_this.sessionId,_this.routePath);
+}
 
 @override
 String toString() {
-  return 'ChatResponse(message: $message, followUps: $followUps, source: $source, sessionId: $sessionId, routePath: $routePath)';
+  final _this = this as ChatResponse;
+  return 'ChatResponse(message: ${_this.message}, followUps: ${_this.followUps}, source: ${_this.source}, sessionId: ${_this.sessionId}, routePath: ${_this.routePath})';
 }
 
 
@@ -63,7 +69,7 @@ class _$ChatResponseCopyWithImpl<$Res>
 /// Create a copy of ChatResponse
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? message = null,Object? followUps = null,Object? source = freezed,Object? sessionId = null,Object? routePath = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(ChatResponse(
 message: null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
 as String,followUps: null == followUps ? _self.followUps : followUps // ignore: cast_nullable_to_non_nullable
 as List<String>,source: freezed == source ? _self.source : source // ignore: cast_nullable_to_non_nullable
@@ -210,7 +216,7 @@ return $default(_that.message,_that.followUps,_that.source,_that.sessionId,_that
 
 
 class _ChatResponse implements ChatResponse {
-  const _ChatResponse({required this.message, required final  List<String> followUps, this.source, required this.sessionId, this.routePath}): _followUps = followUps;
+  const _ChatResponse({required this.message, required  List<String> followUps, this.source, required this.sessionId, this.routePath}): _followUps = followUps;
   
 
 @override final  String message;
@@ -235,16 +241,18 @@ _$ChatResponseCopyWith<_ChatResponse> get copyWith => __$ChatResponseCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ChatResponse&&(identical(other.message, message) || other.message == message)&&const DeepCollectionEquality().equals(other._followUps, _followUps)&&(identical(other.source, source) || other.source == source)&&(identical(other.sessionId, sessionId) || other.sessionId == sessionId)&&(identical(other.routePath, routePath) || other.routePath == routePath));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ChatResponse&&(identical(other.message, message) || other.message == message)&&const DeepCollectionEquality().equals(other.followUps, _followUps)&&(identical(other.source, source) || other.source == source)&&(identical(other.sessionId, sessionId) || other.sessionId == sessionId)&&(identical(other.routePath, routePath) || other.routePath == routePath));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,message,const DeepCollectionEquality().hash(_followUps),source,sessionId,routePath);
+int get hashCode {
+    return Object.hash(runtimeType,message,const DeepCollectionEquality().hash(_followUps),source,sessionId,routePath);
+}
 
 @override
 String toString() {
-  return 'ChatResponse(message: $message, followUps: $followUps, source: $source, sessionId: $sessionId, routePath: $routePath)';
+    return 'ChatResponse(message: $message, followUps: $followUps, source: $source, sessionId: $sessionId, routePath: $routePath)';
 }
 
 

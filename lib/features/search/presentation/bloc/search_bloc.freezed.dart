@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'search_bloc.dart';
@@ -9,6 +9,7 @@ part of 'search_bloc.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -20,7 +21,7 @@ mixin _$SearchEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchEvent);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchEvent);
 }
 
 
@@ -29,7 +30,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'SearchEvent()';
+    return 'SearchEvent()';
 }
 
 
@@ -232,16 +233,18 @@ _$StartedCopyWith<_Started> get copyWith => __$StartedCopyWithImpl<_Started>(thi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Started&&(identical(other.source, source) || other.source == source));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Started&&(identical(other.source, source) || other.source == source));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,source);
+int get hashCode {
+    return Object.hash(runtimeType,source);
+}
 
 @override
 String toString() {
-  return 'SearchEvent.started(source: $source)';
+    return 'SearchEvent.started(source: $source)';
 }
 
 
@@ -298,16 +301,18 @@ _$QueryChangedCopyWith<_QueryChanged> get copyWith => __$QueryChangedCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _QueryChanged&&(identical(other.query, query) || other.query == query));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _QueryChanged&&(identical(other.query, query) || other.query == query));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,query);
+int get hashCode {
+    return Object.hash(runtimeType,query);
+}
 
 @override
 String toString() {
-  return 'SearchEvent.queryChanged(query: $query)';
+    return 'SearchEvent.queryChanged(query: $query)';
 }
 
 
@@ -359,7 +364,7 @@ class _Cleared implements SearchEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Cleared);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Cleared);
 }
 
 
@@ -368,7 +373,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'SearchEvent.cleared()';
+    return 'SearchEvent.cleared()';
 }
 
 
@@ -391,7 +396,7 @@ class _SearchCleared implements SearchEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SearchCleared);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _SearchCleared);
 }
 
 
@@ -400,7 +405,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'SearchEvent.searchCleared()';
+    return 'SearchEvent.searchCleared()';
 }
 
 
@@ -429,16 +434,18 @@ _$ResultClickedCopyWith<_ResultClicked> get copyWith => __$ResultClickedCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ResultClicked&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.isAiResult, isAiResult) || other.isAiResult == isAiResult));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ResultClicked&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.isAiResult, isAiResult) || other.isAiResult == isAiResult));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,ticker,isAiResult);
+int get hashCode {
+    return Object.hash(runtimeType,ticker,isAiResult);
+}
 
 @override
 String toString() {
-  return 'SearchEvent.resultClicked(ticker: $ticker, isAiResult: $isAiResult)';
+    return 'SearchEvent.resultClicked(ticker: $ticker, isAiResult: $isAiResult)';
 }
 
 
@@ -496,16 +503,18 @@ _$RecommendedClickedCopyWith<_RecommendedClicked> get copyWith => __$Recommended
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _RecommendedClicked&&(identical(other.ticker, ticker) || other.ticker == ticker));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _RecommendedClicked&&(identical(other.ticker, ticker) || other.ticker == ticker));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,ticker);
+int get hashCode {
+    return Object.hash(runtimeType,ticker);
+}
 
 @override
 String toString() {
-  return 'SearchEvent.recommendedClicked(ticker: $ticker)';
+    return 'SearchEvent.recommendedClicked(ticker: $ticker)';
 }
 
 
@@ -562,16 +571,18 @@ _$AiSearchRequestedCopyWith<_AiSearchRequested> get copyWith => __$AiSearchReque
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AiSearchRequested&&(identical(other.query, query) || other.query == query));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _AiSearchRequested&&(identical(other.query, query) || other.query == query));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,query);
+int get hashCode {
+    return Object.hash(runtimeType,query);
+}
 
 @override
 String toString() {
-  return 'SearchEvent.aiSearchRequested(query: $query)';
+    return 'SearchEvent.aiSearchRequested(query: $query)';
 }
 
 
@@ -623,7 +634,7 @@ class _SearchCancelled implements SearchEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SearchCancelled);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _SearchCancelled);
 }
 
 
@@ -632,7 +643,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'SearchEvent.searchCancelled()';
+    return 'SearchEvent.searchCancelled()';
 }
 
 
@@ -650,7 +661,7 @@ mixin _$SearchState {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchState);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchState);
 }
 
 
@@ -659,7 +670,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'SearchState()';
+    return 'SearchState()';
 }
 
 
@@ -847,7 +858,7 @@ return failure(_that.message);case _:
 
 
 class _Initial implements SearchState {
-  const _Initial({this.favoriteSector, final  List<Company> recommendedBrands = const []}): _recommendedBrands = recommendedBrands;
+  const _Initial({this.favoriteSector,  List<Company> recommendedBrands = const []}): _recommendedBrands = recommendedBrands;
   
 
  final  String? favoriteSector;
@@ -869,16 +880,18 @@ _$InitialCopyWith<_Initial> get copyWith => __$InitialCopyWithImpl<_Initial>(thi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Initial&&(identical(other.favoriteSector, favoriteSector) || other.favoriteSector == favoriteSector)&&const DeepCollectionEquality().equals(other._recommendedBrands, _recommendedBrands));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Initial&&(identical(other.favoriteSector, favoriteSector) || other.favoriteSector == favoriteSector)&&const DeepCollectionEquality().equals(other.recommendedBrands, _recommendedBrands));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,favoriteSector,const DeepCollectionEquality().hash(_recommendedBrands));
+int get hashCode {
+    return Object.hash(runtimeType,favoriteSector,const DeepCollectionEquality().hash(_recommendedBrands));
+}
 
 @override
 String toString() {
-  return 'SearchState.initial(favoriteSector: $favoriteSector, recommendedBrands: $recommendedBrands)';
+    return 'SearchState.initial(favoriteSector: $favoriteSector, recommendedBrands: $recommendedBrands)';
 }
 
 
@@ -936,16 +949,18 @@ _$LoadingCopyWith<_Loading> get copyWith => __$LoadingCopyWithImpl<_Loading>(thi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Loading&&(identical(other.favoriteSector, favoriteSector) || other.favoriteSector == favoriteSector));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Loading&&(identical(other.favoriteSector, favoriteSector) || other.favoriteSector == favoriteSector));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,favoriteSector);
+int get hashCode {
+    return Object.hash(runtimeType,favoriteSector);
+}
 
 @override
 String toString() {
-  return 'SearchState.loading(favoriteSector: $favoriteSector)';
+    return 'SearchState.loading(favoriteSector: $favoriteSector)';
 }
 
 
@@ -987,7 +1002,7 @@ as String?,
 
 
 class _Loaded implements SearchState {
-  const _Loaded({required final  List<StockSymbol> results, required this.query}): _results = results;
+  const _Loaded({required  List<StockSymbol> results, required this.query}): _results = results;
   
 
  final  List<StockSymbol> _results;
@@ -1009,16 +1024,18 @@ _$LoadedCopyWith<_Loaded> get copyWith => __$LoadedCopyWithImpl<_Loaded>(this, _
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Loaded&&const DeepCollectionEquality().equals(other._results, _results)&&(identical(other.query, query) || other.query == query));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Loaded&&const DeepCollectionEquality().equals(other.results, _results)&&(identical(other.query, query) || other.query == query));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_results),query);
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_results),query);
+}
 
 @override
 String toString() {
-  return 'SearchState.loaded(results: $results, query: $query)';
+    return 'SearchState.loaded(results: $results, query: $query)';
 }
 
 
@@ -1076,16 +1093,18 @@ _$LocalEmptyCopyWith<_LocalEmpty> get copyWith => __$LocalEmptyCopyWithImpl<_Loc
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _LocalEmpty&&(identical(other.query, query) || other.query == query));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _LocalEmpty&&(identical(other.query, query) || other.query == query));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,query);
+int get hashCode {
+    return Object.hash(runtimeType,query);
+}
 
 @override
 String toString() {
-  return 'SearchState.localEmpty(query: $query)';
+    return 'SearchState.localEmpty(query: $query)';
 }
 
 
@@ -1142,16 +1161,18 @@ _$AiSearchingCopyWith<_AiSearching> get copyWith => __$AiSearchingCopyWithImpl<_
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AiSearching&&(identical(other.query, query) || other.query == query));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _AiSearching&&(identical(other.query, query) || other.query == query));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,query);
+int get hashCode {
+    return Object.hash(runtimeType,query);
+}
 
 @override
 String toString() {
-  return 'SearchState.aiSearching(query: $query)';
+    return 'SearchState.aiSearching(query: $query)';
 }
 
 
@@ -1209,16 +1230,18 @@ _$AiSuccessCopyWith<_AiSuccess> get copyWith => __$AiSuccessCopyWithImpl<_AiSucc
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AiSuccess&&(identical(other.productQuery, productQuery) || other.productQuery == productQuery)&&(identical(other.stock, stock) || other.stock == stock));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _AiSuccess&&(identical(other.productQuery, productQuery) || other.productQuery == productQuery)&&(identical(other.stock, stock) || other.stock == stock));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,productQuery,stock);
+int get hashCode {
+    return Object.hash(runtimeType,productQuery,stock);
+}
 
 @override
 String toString() {
-  return 'SearchState.aiSuccess(productQuery: $productQuery, stock: $stock)';
+    return 'SearchState.aiSuccess(productQuery: $productQuery, stock: $stock)';
 }
 
 
@@ -1285,16 +1308,18 @@ _$AiEmptyCopyWith<_AiEmpty> get copyWith => __$AiEmptyCopyWithImpl<_AiEmpty>(thi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AiEmpty&&(identical(other.productQuery, productQuery) || other.productQuery == productQuery));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _AiEmpty&&(identical(other.productQuery, productQuery) || other.productQuery == productQuery));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,productQuery);
+int get hashCode {
+    return Object.hash(runtimeType,productQuery);
+}
 
 @override
 String toString() {
-  return 'SearchState.aiEmpty(productQuery: $productQuery)';
+    return 'SearchState.aiEmpty(productQuery: $productQuery)';
 }
 
 
@@ -1351,16 +1376,18 @@ _$FailureCopyWith<_Failure> get copyWith => __$FailureCopyWithImpl<_Failure>(thi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Failure&&(identical(other.message, message) || other.message == message));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Failure&&(identical(other.message, message) || other.message == message));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,message);
+int get hashCode {
+    return Object.hash(runtimeType,message);
+}
 
 @override
 String toString() {
-  return 'SearchState.failure(message: $message)';
+    return 'SearchState.failure(message: $message)';
 }
 
 

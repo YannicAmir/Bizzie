@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'watchlist_prices_state.dart';
@@ -9,6 +9,7 @@ part of 'watchlist_prices_state.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -20,7 +21,7 @@ mixin _$WatchlistPricesState {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is WatchlistPricesState);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is WatchlistPricesState);
 }
 
 
@@ -29,7 +30,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'WatchlistPricesState()';
+    return 'WatchlistPricesState()';
 }
 
 
@@ -209,7 +210,7 @@ class _Initial implements WatchlistPricesState {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Initial);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Initial);
 }
 
 
@@ -218,7 +219,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'WatchlistPricesState.initial()';
+    return 'WatchlistPricesState.initial()';
 }
 
 
@@ -241,7 +242,7 @@ class _Loading implements WatchlistPricesState {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Loading);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Loading);
 }
 
 
@@ -250,7 +251,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'WatchlistPricesState.loading()';
+    return 'WatchlistPricesState.loading()';
 }
 
 
@@ -273,7 +274,7 @@ class _Disabled implements WatchlistPricesState {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Disabled);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Disabled);
 }
 
 
@@ -282,7 +283,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'WatchlistPricesState.disabled()';
+    return 'WatchlistPricesState.disabled()';
 }
 
 
@@ -295,7 +296,7 @@ String toString() {
 
 
 class WatchlistPricesLoaded implements WatchlistPricesState {
-  const WatchlistPricesLoaded(final  Map<String, WatchlistStockPrice> prices): _prices = prices;
+  const WatchlistPricesLoaded( Map<String, WatchlistStockPrice> prices): _prices = prices;
   
 
  final  Map<String, WatchlistStockPrice> _prices;
@@ -316,16 +317,18 @@ $WatchlistPricesLoadedCopyWith<WatchlistPricesLoaded> get copyWith => _$Watchlis
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is WatchlistPricesLoaded&&const DeepCollectionEquality().equals(other._prices, _prices));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is WatchlistPricesLoaded&&const DeepCollectionEquality().equals(other.prices, _prices));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_prices));
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_prices));
+}
 
 @override
 String toString() {
-  return 'WatchlistPricesState.loaded(prices: $prices)';
+    return 'WatchlistPricesState.loaded(prices: $prices)';
 }
 
 
@@ -382,16 +385,18 @@ _$FailureCopyWith<_Failure> get copyWith => __$FailureCopyWithImpl<_Failure>(thi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Failure&&(identical(other.failure, failure) || other.failure == failure));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Failure&&(identical(other.failure, failure) || other.failure == failure));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,failure);
+int get hashCode {
+    return Object.hash(runtimeType,failure);
+}
 
 @override
 String toString() {
-  return 'WatchlistPricesState.failure(failure: $failure)';
+    return 'WatchlistPricesState.failure(failure: $failure)';
 }
 
 

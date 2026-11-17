@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'auth_user_dto.dart';
@@ -9,6 +9,7 @@ part of 'auth_user_dto.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 
@@ -28,16 +29,21 @@ $AuthUserDtoCopyWith<AuthUserDto> get copyWith => _$AuthUserDtoCopyWithImpl<Auth
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AuthUserDto&&(identical(other.uid, uid) || other.uid == uid)&&(identical(other.email, email) || other.email == email)&&(identical(other.displayName, displayName) || other.displayName == displayName)&&(identical(other.photoUrl, photoUrl) || other.photoUrl == photoUrl)&&const DeepCollectionEquality().equals(other.providers, providers)&&(identical(other.isAnonymous, isAnonymous) || other.isAnonymous == isAnonymous));
+  final _this = this as AuthUserDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AuthUserDto&&(identical(other.uid, _this.uid) || other.uid == _this.uid)&&(identical(other.email, _this.email) || other.email == _this.email)&&(identical(other.displayName, _this.displayName) || other.displayName == _this.displayName)&&(identical(other.photoUrl, _this.photoUrl) || other.photoUrl == _this.photoUrl)&&const DeepCollectionEquality().equals(other.providers, _this.providers)&&(identical(other.isAnonymous, _this.isAnonymous) || other.isAnonymous == _this.isAnonymous));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,uid,email,displayName,photoUrl,const DeepCollectionEquality().hash(providers),isAnonymous);
+int get hashCode {
+  final _this = this as AuthUserDto;
+  return Object.hash(runtimeType,_this.uid,_this.email,_this.displayName,_this.photoUrl,const DeepCollectionEquality().hash(_this.providers),_this.isAnonymous);
+}
 
 @override
 String toString() {
-  return 'AuthUserDto(uid: $uid, email: $email, displayName: $displayName, photoUrl: $photoUrl, providers: $providers, isAnonymous: $isAnonymous)';
+  final _this = this as AuthUserDto;
+  return 'AuthUserDto(uid: ${_this.uid}, email: ${_this.email}, displayName: ${_this.displayName}, photoUrl: ${_this.photoUrl}, providers: ${_this.providers}, isAnonymous: ${_this.isAnonymous})';
 }
 
 
@@ -66,7 +72,7 @@ class _$AuthUserDtoCopyWithImpl<$Res>
 /// Create a copy of AuthUserDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? uid = null,Object? email = freezed,Object? displayName = freezed,Object? photoUrl = freezed,Object? providers = null,Object? isAnonymous = null,}) {
-  return _then(_self.copyWith(
+  return _then(AuthUserDto(
 uid: null == uid ? _self.uid : uid // ignore: cast_nullable_to_non_nullable
 as String,email: freezed == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
 as String?,displayName: freezed == displayName ? _self.displayName : displayName // ignore: cast_nullable_to_non_nullable
@@ -214,7 +220,7 @@ return $default(_that.uid,_that.email,_that.displayName,_that.photoUrl,_that.pro
 @JsonSerializable()
 
 class _AuthUserDto extends AuthUserDto {
-  const _AuthUserDto({required this.uid, this.email, this.displayName, this.photoUrl, final  List<String> providers = const [], this.isAnonymous = false}): _providers = providers,super._();
+  const _AuthUserDto({required this.uid, this.email, this.displayName, this.photoUrl,  List<String> providers = const [], this.isAnonymous = false}): _providers = providers,super._();
   factory _AuthUserDto.fromJson(Map<String, dynamic> json) => _$AuthUserDtoFromJson(json);
 
 @override final  String uid;
@@ -243,16 +249,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AuthUserDto&&(identical(other.uid, uid) || other.uid == uid)&&(identical(other.email, email) || other.email == email)&&(identical(other.displayName, displayName) || other.displayName == displayName)&&(identical(other.photoUrl, photoUrl) || other.photoUrl == photoUrl)&&const DeepCollectionEquality().equals(other._providers, _providers)&&(identical(other.isAnonymous, isAnonymous) || other.isAnonymous == isAnonymous));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _AuthUserDto&&(identical(other.uid, uid) || other.uid == uid)&&(identical(other.email, email) || other.email == email)&&(identical(other.displayName, displayName) || other.displayName == displayName)&&(identical(other.photoUrl, photoUrl) || other.photoUrl == photoUrl)&&const DeepCollectionEquality().equals(other.providers, _providers)&&(identical(other.isAnonymous, isAnonymous) || other.isAnonymous == isAnonymous));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,uid,email,displayName,photoUrl,const DeepCollectionEquality().hash(_providers),isAnonymous);
+int get hashCode {
+    return Object.hash(runtimeType,uid,email,displayName,photoUrl,const DeepCollectionEquality().hash(_providers),isAnonymous);
+}
 
 @override
 String toString() {
-  return 'AuthUserDto(uid: $uid, email: $email, displayName: $displayName, photoUrl: $photoUrl, providers: $providers, isAnonymous: $isAnonymous)';
+    return 'AuthUserDto(uid: $uid, email: $email, displayName: $displayName, photoUrl: $photoUrl, providers: $providers, isAnonymous: $isAnonymous)';
 }
 
 

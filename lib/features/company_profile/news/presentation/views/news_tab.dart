@@ -13,7 +13,7 @@ import 'package:bizzie/features/company_profile/shared/presentation/widgets/tab_
 import 'package:bizzie/features/company_profile/shared/domain/enums/company_profile_tab.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/extensions/company_profile_tab_x.dart';
 import 'package:bizzie/shared/utils/url_launcher_utils.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class NewsTab extends StatefulWidget {

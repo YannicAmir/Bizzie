@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'chat_message_dto.dart';
@@ -9,6 +9,7 @@ part of 'chat_message_dto.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 
@@ -28,16 +29,21 @@ $ChatMessageDtoCopyWith<ChatMessageDto> get copyWith => _$ChatMessageDtoCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ChatMessageDto&&(identical(other.id, id) || other.id == id)&&(identical(other.role, role) || other.role == role)&&(identical(other.content, content) || other.content == content)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&const DeepCollectionEquality().equals(other.followUps, followUps)&&(identical(other.source, source) || other.source == source)&&(identical(other.routePath, routePath) || other.routePath == routePath));
+  final _this = this as ChatMessageDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ChatMessageDto&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.role, _this.role) || other.role == _this.role)&&(identical(other.content, _this.content) || other.content == _this.content)&&(identical(other.createdAt, _this.createdAt) || other.createdAt == _this.createdAt)&&const DeepCollectionEquality().equals(other.followUps, _this.followUps)&&(identical(other.source, _this.source) || other.source == _this.source)&&(identical(other.routePath, _this.routePath) || other.routePath == _this.routePath));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,role,content,createdAt,const DeepCollectionEquality().hash(followUps),source,routePath);
+int get hashCode {
+  final _this = this as ChatMessageDto;
+  return Object.hash(runtimeType,_this.id,_this.role,_this.content,_this.createdAt,const DeepCollectionEquality().hash(_this.followUps),_this.source,_this.routePath);
+}
 
 @override
 String toString() {
-  return 'ChatMessageDto(id: $id, role: $role, content: $content, createdAt: $createdAt, followUps: $followUps, source: $source, routePath: $routePath)';
+  final _this = this as ChatMessageDto;
+  return 'ChatMessageDto(id: ${_this.id}, role: ${_this.role}, content: ${_this.content}, createdAt: ${_this.createdAt}, followUps: ${_this.followUps}, source: ${_this.source}, routePath: ${_this.routePath})';
 }
 
 
@@ -66,7 +72,7 @@ class _$ChatMessageDtoCopyWithImpl<$Res>
 /// Create a copy of ChatMessageDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? role = null,Object? content = null,Object? createdAt = null,Object? followUps = freezed,Object? source = freezed,Object? routePath = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(ChatMessageDto(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,role: null == role ? _self.role : role // ignore: cast_nullable_to_non_nullable
 as String,content: null == content ? _self.content : content // ignore: cast_nullable_to_non_nullable
@@ -215,7 +221,7 @@ return $default(_that.id,_that.role,_that.content,_that.createdAt,_that.followUp
 @JsonSerializable()
 
 class _ChatMessageDto extends ChatMessageDto {
-  const _ChatMessageDto({required this.id, required this.role, required this.content, @TimestampConverter() required this.createdAt, final  List<String>? followUps, this.source, this.routePath}): _followUps = followUps,super._();
+  const _ChatMessageDto({required this.id, required this.role, required this.content, @TimestampConverter() required this.createdAt,  List<String>? followUps, this.source, this.routePath}): _followUps = followUps,super._();
   factory _ChatMessageDto.fromJson(Map<String, dynamic> json) => _$ChatMessageDtoFromJson(json);
 
 @override final  String id;
@@ -247,16 +253,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ChatMessageDto&&(identical(other.id, id) || other.id == id)&&(identical(other.role, role) || other.role == role)&&(identical(other.content, content) || other.content == content)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&const DeepCollectionEquality().equals(other._followUps, _followUps)&&(identical(other.source, source) || other.source == source)&&(identical(other.routePath, routePath) || other.routePath == routePath));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ChatMessageDto&&(identical(other.id, id) || other.id == id)&&(identical(other.role, role) || other.role == role)&&(identical(other.content, content) || other.content == content)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&const DeepCollectionEquality().equals(other.followUps, _followUps)&&(identical(other.source, source) || other.source == source)&&(identical(other.routePath, routePath) || other.routePath == routePath));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,role,content,createdAt,const DeepCollectionEquality().hash(_followUps),source,routePath);
+int get hashCode {
+    return Object.hash(runtimeType,id,role,content,createdAt,const DeepCollectionEquality().hash(_followUps),source,routePath);
+}
 
 @override
 String toString() {
-  return 'ChatMessageDto(id: $id, role: $role, content: $content, createdAt: $createdAt, followUps: $followUps, source: $source, routePath: $routePath)';
+    return 'ChatMessageDto(id: $id, role: $role, content: $content, createdAt: $createdAt, followUps: $followUps, source: $source, routePath: $routePath)';
 }
 
 

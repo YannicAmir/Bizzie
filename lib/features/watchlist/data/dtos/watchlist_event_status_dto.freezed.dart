@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'watchlist_event_status_dto.dart';
@@ -9,14 +9,14 @@ part of 'watchlist_event_status_dto.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 
 /// @nodoc
 mixin _$WatchlistEventStatusDto {
 
- String get badgeText; String get badgeType;// Store enum as String
- DateTime get eventDate; DateTime get lastUpdated;
+ String get badgeText; String get badgeType; DateTime get eventDate; DateTime get lastUpdated;
 /// Create a copy of WatchlistEventStatusDto
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -29,16 +29,21 @@ $WatchlistEventStatusDtoCopyWith<WatchlistEventStatusDto> get copyWith => _$Watc
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is WatchlistEventStatusDto&&(identical(other.badgeText, badgeText) || other.badgeText == badgeText)&&(identical(other.badgeType, badgeType) || other.badgeType == badgeType)&&(identical(other.eventDate, eventDate) || other.eventDate == eventDate)&&(identical(other.lastUpdated, lastUpdated) || other.lastUpdated == lastUpdated));
+  final _this = this as WatchlistEventStatusDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is WatchlistEventStatusDto&&(identical(other.badgeText, _this.badgeText) || other.badgeText == _this.badgeText)&&(identical(other.badgeType, _this.badgeType) || other.badgeType == _this.badgeType)&&(identical(other.eventDate, _this.eventDate) || other.eventDate == _this.eventDate)&&(identical(other.lastUpdated, _this.lastUpdated) || other.lastUpdated == _this.lastUpdated));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,badgeText,badgeType,eventDate,lastUpdated);
+int get hashCode {
+  final _this = this as WatchlistEventStatusDto;
+  return Object.hash(runtimeType,_this.badgeText,_this.badgeType,_this.eventDate,_this.lastUpdated);
+}
 
 @override
 String toString() {
-  return 'WatchlistEventStatusDto(badgeText: $badgeText, badgeType: $badgeType, eventDate: $eventDate, lastUpdated: $lastUpdated)';
+  final _this = this as WatchlistEventStatusDto;
+  return 'WatchlistEventStatusDto(badgeText: ${_this.badgeText}, badgeType: ${_this.badgeType}, eventDate: ${_this.eventDate}, lastUpdated: ${_this.lastUpdated})';
 }
 
 
@@ -67,7 +72,7 @@ class _$WatchlistEventStatusDtoCopyWithImpl<$Res>
 /// Create a copy of WatchlistEventStatusDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? badgeText = null,Object? badgeType = null,Object? eventDate = null,Object? lastUpdated = null,}) {
-  return _then(_self.copyWith(
+  return _then(WatchlistEventStatusDto(
 badgeText: null == badgeText ? _self.badgeText : badgeText // ignore: cast_nullable_to_non_nullable
 as String,badgeType: null == badgeType ? _self.badgeType : badgeType // ignore: cast_nullable_to_non_nullable
 as String,eventDate: null == eventDate ? _self.eventDate : eventDate // ignore: cast_nullable_to_non_nullable
@@ -218,7 +223,6 @@ class _WatchlistEventStatusDto extends WatchlistEventStatusDto {
 
 @override final  String badgeText;
 @override final  String badgeType;
-// Store enum as String
 @override final  DateTime eventDate;
 @override final  DateTime lastUpdated;
 
@@ -235,16 +239,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _WatchlistEventStatusDto&&(identical(other.badgeText, badgeText) || other.badgeText == badgeText)&&(identical(other.badgeType, badgeType) || other.badgeType == badgeType)&&(identical(other.eventDate, eventDate) || other.eventDate == eventDate)&&(identical(other.lastUpdated, lastUpdated) || other.lastUpdated == lastUpdated));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _WatchlistEventStatusDto&&(identical(other.badgeText, badgeText) || other.badgeText == badgeText)&&(identical(other.badgeType, badgeType) || other.badgeType == badgeType)&&(identical(other.eventDate, eventDate) || other.eventDate == eventDate)&&(identical(other.lastUpdated, lastUpdated) || other.lastUpdated == lastUpdated));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,badgeText,badgeType,eventDate,lastUpdated);
+int get hashCode {
+    return Object.hash(runtimeType,badgeText,badgeType,eventDate,lastUpdated);
+}
 
 @override
 String toString() {
-  return 'WatchlistEventStatusDto(badgeText: $badgeText, badgeType: $badgeType, eventDate: $eventDate, lastUpdated: $lastUpdated)';
+    return 'WatchlistEventStatusDto(badgeText: $badgeText, badgeType: $badgeType, eventDate: $eventDate, lastUpdated: $lastUpdated)';
 }
 
 

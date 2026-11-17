@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'price_point.dart';
@@ -9,6 +9,7 @@ part of 'price_point.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $PricePointCopyWith<PricePoint> get copyWith => _$PricePointCopyWithImpl<PricePo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PricePoint&&(identical(other.date, date) || other.date == date)&&(identical(other.close, close) || other.close == close)&&(identical(other.volume, volume) || other.volume == volume));
+  final _this = this as PricePoint;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PricePoint&&(identical(other.date, _this.date) || other.date == _this.date)&&(identical(other.close, _this.close) || other.close == _this.close)&&(identical(other.volume, _this.volume) || other.volume == _this.volume));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,date,close,volume);
+int get hashCode {
+  final _this = this as PricePoint;
+  return Object.hash(runtimeType,_this.date,_this.close,_this.volume);
+}
 
 @override
 String toString() {
-  return 'PricePoint(date: $date, close: $close, volume: $volume)';
+  final _this = this as PricePoint;
+  return 'PricePoint(date: ${_this.date}, close: ${_this.close}, volume: ${_this.volume})';
 }
 
 
@@ -63,7 +69,7 @@ class _$PricePointCopyWithImpl<$Res>
 /// Create a copy of PricePoint
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? date = null,Object? close = null,Object? volume = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(PricePoint(
 date: null == date ? _self.date : date // ignore: cast_nullable_to_non_nullable
 as String,close: null == close ? _self.close : close // ignore: cast_nullable_to_non_nullable
 as double,volume: freezed == volume ? _self.volume : volume // ignore: cast_nullable_to_non_nullable
@@ -225,16 +231,18 @@ _$PricePointCopyWith<_PricePoint> get copyWith => __$PricePointCopyWithImpl<_Pri
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PricePoint&&(identical(other.date, date) || other.date == date)&&(identical(other.close, close) || other.close == close)&&(identical(other.volume, volume) || other.volume == volume));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _PricePoint&&(identical(other.date, date) || other.date == date)&&(identical(other.close, close) || other.close == close)&&(identical(other.volume, volume) || other.volume == volume));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,date,close,volume);
+int get hashCode {
+    return Object.hash(runtimeType,date,close,volume);
+}
 
 @override
 String toString() {
-  return 'PricePoint(date: $date, close: $close, volume: $volume)';
+    return 'PricePoint(date: $date, close: $close, volume: $volume)';
 }
 
 

@@ -2,45 +2,50 @@ import 'package:bizzie/app/themes/app_text_styles.dart';
 import 'package:bizzie/features/bizzie_chat/domain/enums/chat_message_role.dart';
 import 'package:bizzie/features/bizzie_chat/domain/models/chat_message.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
+import 'package:material_ui/material_ui.dart';
+import 'package:gpt_markdown/gpt_markdown.dart';
 
-MarkdownStyleSheet _buildMarkdownStyleSheet(BuildContext context) {
-  final colorScheme = Theme.of(context).colorScheme;
-  return MarkdownStyleSheet(
-    p: AppTextStyles.bodyMedium.copyWith(
-      height: AppConstants.chatMarkdownLineHeight,
-    ),
-    strong: AppTextStyles.bodyMediumBold.copyWith(
-      height: AppConstants.chatMarkdownLineHeight,
-    ),
-    em: AppTextStyles.bodyMedium.copyWith(fontStyle: FontStyle.italic),
+final TextStyle _markdownBodyStyle = AppTextStyles.bodyMedium.copyWith(
+  height: AppConstants.chatMarkdownLineHeight,
+);
+
+GptMarkdownThemeData _buildMarkdownTheme(BuildContext context) {
+  final theme = Theme.of(context);
+  final colorScheme = theme.colorScheme;
+  return GptMarkdownThemeData(
+    brightness: theme.brightness,
     h1: AppTextStyles.h1,
     h2: AppTextStyles.h2,
     h3: AppTextStyles.h3,
-    listBullet: AppTextStyles.bodyMedium.copyWith(
-      height: AppConstants.chatMarkdownLineHeight,
+    inlineCode: InlineCodeStyle(
+      fontFamily: AppTextStyles.bodyMedium.fontFamily,
     ),
-    code: AppTextStyles.bodyMedium,
-    codeblockDecoration: BoxDecoration(
-      color: colorScheme.tertiaryContainer,
-      borderRadius: BorderRadius.circular(AppConstants.chatMarkdownCodeRadius),
-    ),
-    blockquoteDecoration: BoxDecoration(
-      color: colorScheme.secondaryContainer,
-      border: Border(
-        left: BorderSide(
-          color: colorScheme.primary,
-          width: AppConstants.chatMarkdownBlockquoteBorderWidth,
+    styleSheet: GptMarkdownStyleSheet(
+      codeBlock: CodeBlockStyle(
+        backgroundColor: colorScheme.tertiaryContainer,
+        borderRadius: const Radius.circular(
+          AppConstants.chatMarkdownCodeRadius,
+        ),
+        fontFamily: AppTextStyles.bodyMedium.fontFamily,
+        fontSize: AppTextStyles.bodyMedium.fontSize,
+        showLanguageLabel: false,
+        showCopyButton: false,
+      ),
+      blockQuote: BlockQuoteStyle(
+        backgroundColor: colorScheme.secondaryContainer,
+        barColor: colorScheme.primary,
+        barWidth: AppConstants.chatMarkdownBlockquoteBorderWidth,
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppConstants.chatMarkdownBlockquotePaddingH,
+          vertical: AppConstants.chatMarkdownBlockquotePaddingV,
         ),
       ),
+      list: ListStyle(
+        indent: AppConstants.chatMarkdownListIndent,
+        markerTextStyle: _markdownBodyStyle,
+      ),
+      blockSpacing: AppConstants.chatMarkdownBlockSpacing,
     ),
-    blockquotePadding: const EdgeInsets.symmetric(
-      horizontal: AppConstants.chatMarkdownBlockquotePaddingH,
-      vertical: AppConstants.chatMarkdownBlockquotePaddingV,
-    ),
-    blockSpacing: AppConstants.chatMarkdownBlockSpacing,
-    listIndent: AppConstants.chatMarkdownListIndent,
   );
 }
 
@@ -58,6 +63,15 @@ class AssistantMessageBubble extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final markdown = GptMarkdownTheme(
+      gptThemeData: _buildMarkdownTheme(context),
+      child: GptMarkdown(
+        content,
+        style: _markdownBodyStyle,
+        onLinkTap: (_, _) {},
+      ),
+    );
+
     return Padding(
       padding: const EdgeInsets.symmetric(
         vertical: AppConstants.chatBubbleVerticalPadding,
@@ -71,13 +85,7 @@ class AssistantMessageBubble extends StatelessWidget {
             height: AppConstants.chatBubbleMascotSize,
           ),
           const SizedBox(height: AppConstants.chatBubbleMascotSpacing),
-          MarkdownBody(
-            data: content,
-            selectable: selectable,
-            softLineBreak: true,
-            styleSheet: _buildMarkdownStyleSheet(context),
-            onTapLink: (_, __, ___) {},
-          ),
+          if (selectable) SelectionArea(child: markdown) else markdown,
         ],
       ),
     );

@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'edit_tabs_event.dart';
@@ -9,6 +9,7 @@ part of 'edit_tabs_event.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -20,7 +21,7 @@ mixin _$EditTabsEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is EditTabsEvent);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is EditTabsEvent);
 }
 
 
@@ -29,7 +30,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'EditTabsEvent()';
+    return 'EditTabsEvent()';
 }
 
 
@@ -187,7 +188,7 @@ return reset();case _:
 
 
 class EditTabsStarted implements EditTabsEvent {
-  const EditTabsStarted({required final  List<CompanyProfileTab> mainTabs, required final  List<CompanyProfileTab> moreTabs, required final  List<CompanyProfileTab> bizziePlusTabs, required this.isSubscribed}): _mainTabs = mainTabs,_moreTabs = moreTabs,_bizziePlusTabs = bizziePlusTabs;
+  const EditTabsStarted({required  List<CompanyProfileTab> mainTabs, required  List<CompanyProfileTab> moreTabs, required  List<CompanyProfileTab> bizziePlusTabs, required this.isSubscribed}): _mainTabs = mainTabs,_moreTabs = moreTabs,_bizziePlusTabs = bizziePlusTabs;
   
 
  final  List<CompanyProfileTab> _mainTabs;
@@ -223,16 +224,18 @@ $EditTabsStartedCopyWith<EditTabsStarted> get copyWith => _$EditTabsStartedCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is EditTabsStarted&&const DeepCollectionEquality().equals(other._mainTabs, _mainTabs)&&const DeepCollectionEquality().equals(other._moreTabs, _moreTabs)&&const DeepCollectionEquality().equals(other._bizziePlusTabs, _bizziePlusTabs)&&(identical(other.isSubscribed, isSubscribed) || other.isSubscribed == isSubscribed));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is EditTabsStarted&&const DeepCollectionEquality().equals(other.mainTabs, _mainTabs)&&const DeepCollectionEquality().equals(other.moreTabs, _moreTabs)&&const DeepCollectionEquality().equals(other.bizziePlusTabs, _bizziePlusTabs)&&(identical(other.isSubscribed, isSubscribed) || other.isSubscribed == isSubscribed));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_mainTabs),const DeepCollectionEquality().hash(_moreTabs),const DeepCollectionEquality().hash(_bizziePlusTabs),isSubscribed);
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_mainTabs),const DeepCollectionEquality().hash(_moreTabs),const DeepCollectionEquality().hash(_bizziePlusTabs),isSubscribed);
+}
 
 @override
 String toString() {
-  return 'EditTabsEvent.started(mainTabs: $mainTabs, moreTabs: $moreTabs, bizziePlusTabs: $bizziePlusTabs, isSubscribed: $isSubscribed)';
+    return 'EditTabsEvent.started(mainTabs: $mainTabs, moreTabs: $moreTabs, bizziePlusTabs: $bizziePlusTabs, isSubscribed: $isSubscribed)';
 }
 
 
@@ -293,16 +296,18 @@ $EditTabsTabReorderedCopyWith<EditTabsTabReordered> get copyWith => _$EditTabsTa
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is EditTabsTabReordered&&(identical(other.oldIndex, oldIndex) || other.oldIndex == oldIndex)&&(identical(other.newIndex, newIndex) || other.newIndex == newIndex));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is EditTabsTabReordered&&(identical(other.oldIndex, oldIndex) || other.oldIndex == oldIndex)&&(identical(other.newIndex, newIndex) || other.newIndex == newIndex));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,oldIndex,newIndex);
+int get hashCode {
+    return Object.hash(runtimeType,oldIndex,newIndex);
+}
 
 @override
 String toString() {
-  return 'EditTabsEvent.tabReordered(oldIndex: $oldIndex, newIndex: $newIndex)';
+    return 'EditTabsEvent.tabReordered(oldIndex: $oldIndex, newIndex: $newIndex)';
 }
 
 
@@ -355,7 +360,7 @@ class EditTabsSaveRequested implements EditTabsEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is EditTabsSaveRequested);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is EditTabsSaveRequested);
 }
 
 
@@ -364,7 +369,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'EditTabsEvent.saveRequested()';
+    return 'EditTabsEvent.saveRequested()';
 }
 
 
@@ -387,7 +392,7 @@ class EditTabsReset implements EditTabsEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is EditTabsReset);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is EditTabsReset);
 }
 
 
@@ -396,7 +401,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'EditTabsEvent.reset()';
+    return 'EditTabsEvent.reset()';
 }
 
 

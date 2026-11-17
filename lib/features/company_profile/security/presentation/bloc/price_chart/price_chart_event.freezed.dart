@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'price_chart_event.dart';
@@ -9,6 +9,7 @@ part of 'price_chart_event.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -20,7 +21,7 @@ mixin _$PriceChartEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PriceChartEvent);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is PriceChartEvent);
 }
 
 
@@ -29,7 +30,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'PriceChartEvent()';
+    return 'PriceChartEvent()';
 }
 
 
@@ -175,7 +176,7 @@ return timeFrameChanged(_that.timeFrame);case _:
 
 
 class HistoryUpdated implements PriceChartEvent {
-  const HistoryUpdated(final  List<HistoricalPriceEod> history): _history = history;
+  const HistoryUpdated( List<HistoricalPriceEod> history): _history = history;
   
 
  final  List<HistoricalPriceEod> _history;
@@ -196,16 +197,18 @@ $HistoryUpdatedCopyWith<HistoryUpdated> get copyWith => _$HistoryUpdatedCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is HistoryUpdated&&const DeepCollectionEquality().equals(other._history, _history));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is HistoryUpdated&&const DeepCollectionEquality().equals(other.history, _history));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_history));
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_history));
+}
 
 @override
 String toString() {
-  return 'PriceChartEvent.historyUpdated(history: $history)';
+    return 'PriceChartEvent.historyUpdated(history: $history)';
 }
 
 
@@ -262,16 +265,18 @@ $TimeFrameChangedCopyWith<TimeFrameChanged> get copyWith => _$TimeFrameChangedCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TimeFrameChanged&&(identical(other.timeFrame, timeFrame) || other.timeFrame == timeFrame));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is TimeFrameChanged&&(identical(other.timeFrame, timeFrame) || other.timeFrame == timeFrame));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,timeFrame);
+int get hashCode {
+    return Object.hash(runtimeType,timeFrame);
+}
 
 @override
 String toString() {
-  return 'PriceChartEvent.timeFrameChanged(timeFrame: $timeFrame)';
+    return 'PriceChartEvent.timeFrameChanged(timeFrame: $timeFrame)';
 }
 
 

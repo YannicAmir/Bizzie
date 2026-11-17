@@ -4,7 +4,7 @@ import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:bizzie/shared/models/chart_data_point.dart';
 import 'package:bizzie/shared/utils/badge_theme_extensions.dart';
 import 'package:bizzie/shared/widgets/charts/bizzie_chart_tooltip.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 

@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'free_cash_flow_tab_view_state.dart';
@@ -9,6 +9,7 @@ part of 'free_cash_flow_tab_view_state.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $FreeCashFlowTabViewStateCopyWith<FreeCashFlowTabViewState> get copyWith => _$Fr
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is FreeCashFlowTabViewState&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.timestamp, timestamp) || other.timestamp == timestamp)&&(identical(other.loadTimeMs, loadTimeMs) || other.loadTimeMs == loadTimeMs)&&(identical(other.isSuccess, isSuccess) || other.isSuccess == isSuccess)&&(identical(other.dataSource, dataSource) || other.dataSource == dataSource)&&(identical(other.viewDurationSec, viewDurationSec) || other.viewDurationSec == viewDurationSec)&&(identical(other.viewedYearlyFcfTab, viewedYearlyFcfTab) || other.viewedYearlyFcfTab == viewedYearlyFcfTab)&&(identical(other.viewedQtrlyFcfTab, viewedQtrlyFcfTab) || other.viewedQtrlyFcfTab == viewedQtrlyFcfTab)&&(identical(other.tappedQtrchartViewAll, tappedQtrchartViewAll) || other.tappedQtrchartViewAll == tappedQtrchartViewAll)&&(identical(other.tappedYrchartViewAll, tappedYrchartViewAll) || other.tappedYrchartViewAll == tappedYrchartViewAll)&&(identical(other.tappedQtrtableViewAll, tappedQtrtableViewAll) || other.tappedQtrtableViewAll == tappedQtrtableViewAll)&&(identical(other.tappedYrtableViewAll, tappedYrtableViewAll) || other.tappedYrtableViewAll == tappedYrtableViewAll));
+  final _this = this as FreeCashFlowTabViewState;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is FreeCashFlowTabViewState&&(identical(other.ticker, _this.ticker) || other.ticker == _this.ticker)&&(identical(other.timestamp, _this.timestamp) || other.timestamp == _this.timestamp)&&(identical(other.loadTimeMs, _this.loadTimeMs) || other.loadTimeMs == _this.loadTimeMs)&&(identical(other.isSuccess, _this.isSuccess) || other.isSuccess == _this.isSuccess)&&(identical(other.dataSource, _this.dataSource) || other.dataSource == _this.dataSource)&&(identical(other.viewDurationSec, _this.viewDurationSec) || other.viewDurationSec == _this.viewDurationSec)&&(identical(other.viewedYearlyFcfTab, _this.viewedYearlyFcfTab) || other.viewedYearlyFcfTab == _this.viewedYearlyFcfTab)&&(identical(other.viewedQtrlyFcfTab, _this.viewedQtrlyFcfTab) || other.viewedQtrlyFcfTab == _this.viewedQtrlyFcfTab)&&(identical(other.tappedQtrchartViewAll, _this.tappedQtrchartViewAll) || other.tappedQtrchartViewAll == _this.tappedQtrchartViewAll)&&(identical(other.tappedYrchartViewAll, _this.tappedYrchartViewAll) || other.tappedYrchartViewAll == _this.tappedYrchartViewAll)&&(identical(other.tappedQtrtableViewAll, _this.tappedQtrtableViewAll) || other.tappedQtrtableViewAll == _this.tappedQtrtableViewAll)&&(identical(other.tappedYrtableViewAll, _this.tappedYrtableViewAll) || other.tappedYrtableViewAll == _this.tappedYrtableViewAll));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,ticker,timestamp,loadTimeMs,isSuccess,dataSource,viewDurationSec,viewedYearlyFcfTab,viewedQtrlyFcfTab,tappedQtrchartViewAll,tappedYrchartViewAll,tappedQtrtableViewAll,tappedYrtableViewAll);
+int get hashCode {
+  final _this = this as FreeCashFlowTabViewState;
+  return Object.hash(runtimeType,_this.ticker,_this.timestamp,_this.loadTimeMs,_this.isSuccess,_this.dataSource,_this.viewDurationSec,_this.viewedYearlyFcfTab,_this.viewedQtrlyFcfTab,_this.tappedQtrchartViewAll,_this.tappedYrchartViewAll,_this.tappedQtrtableViewAll,_this.tappedYrtableViewAll);
+}
 
 @override
 String toString() {
-  return 'FreeCashFlowTabViewState(ticker: $ticker, timestamp: $timestamp, loadTimeMs: $loadTimeMs, isSuccess: $isSuccess, dataSource: $dataSource, viewDurationSec: $viewDurationSec, viewedYearlyFcfTab: $viewedYearlyFcfTab, viewedQtrlyFcfTab: $viewedQtrlyFcfTab, tappedQtrchartViewAll: $tappedQtrchartViewAll, tappedYrchartViewAll: $tappedYrchartViewAll, tappedQtrtableViewAll: $tappedQtrtableViewAll, tappedYrtableViewAll: $tappedYrtableViewAll)';
+  final _this = this as FreeCashFlowTabViewState;
+  return 'FreeCashFlowTabViewState(ticker: ${_this.ticker}, timestamp: ${_this.timestamp}, loadTimeMs: ${_this.loadTimeMs}, isSuccess: ${_this.isSuccess}, dataSource: ${_this.dataSource}, viewDurationSec: ${_this.viewDurationSec}, viewedYearlyFcfTab: ${_this.viewedYearlyFcfTab}, viewedQtrlyFcfTab: ${_this.viewedQtrlyFcfTab}, tappedQtrchartViewAll: ${_this.tappedQtrchartViewAll}, tappedYrchartViewAll: ${_this.tappedYrchartViewAll}, tappedQtrtableViewAll: ${_this.tappedQtrtableViewAll}, tappedYrtableViewAll: ${_this.tappedYrtableViewAll})';
 }
 
 
@@ -63,7 +69,7 @@ class _$FreeCashFlowTabViewStateCopyWithImpl<$Res>
 /// Create a copy of FreeCashFlowTabViewState
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? ticker = null,Object? timestamp = null,Object? loadTimeMs = freezed,Object? isSuccess = null,Object? dataSource = freezed,Object? viewDurationSec = null,Object? viewedYearlyFcfTab = null,Object? viewedQtrlyFcfTab = null,Object? tappedQtrchartViewAll = null,Object? tappedYrchartViewAll = null,Object? tappedQtrtableViewAll = null,Object? tappedYrtableViewAll = null,}) {
-  return _then(_self.copyWith(
+  return _then(FreeCashFlowTabViewState(
 ticker: null == ticker ? _self.ticker : ticker // ignore: cast_nullable_to_non_nullable
 as String,timestamp: null == timestamp ? _self.timestamp : timestamp // ignore: cast_nullable_to_non_nullable
 as String,loadTimeMs: freezed == loadTimeMs ? _self.loadTimeMs : loadTimeMs // ignore: cast_nullable_to_non_nullable
@@ -243,16 +249,18 @@ _$FreeCashFlowTabViewStateCopyWith<_FreeCashFlowTabViewState> get copyWith => __
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _FreeCashFlowTabViewState&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.timestamp, timestamp) || other.timestamp == timestamp)&&(identical(other.loadTimeMs, loadTimeMs) || other.loadTimeMs == loadTimeMs)&&(identical(other.isSuccess, isSuccess) || other.isSuccess == isSuccess)&&(identical(other.dataSource, dataSource) || other.dataSource == dataSource)&&(identical(other.viewDurationSec, viewDurationSec) || other.viewDurationSec == viewDurationSec)&&(identical(other.viewedYearlyFcfTab, viewedYearlyFcfTab) || other.viewedYearlyFcfTab == viewedYearlyFcfTab)&&(identical(other.viewedQtrlyFcfTab, viewedQtrlyFcfTab) || other.viewedQtrlyFcfTab == viewedQtrlyFcfTab)&&(identical(other.tappedQtrchartViewAll, tappedQtrchartViewAll) || other.tappedQtrchartViewAll == tappedQtrchartViewAll)&&(identical(other.tappedYrchartViewAll, tappedYrchartViewAll) || other.tappedYrchartViewAll == tappedYrchartViewAll)&&(identical(other.tappedQtrtableViewAll, tappedQtrtableViewAll) || other.tappedQtrtableViewAll == tappedQtrtableViewAll)&&(identical(other.tappedYrtableViewAll, tappedYrtableViewAll) || other.tappedYrtableViewAll == tappedYrtableViewAll));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _FreeCashFlowTabViewState&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.timestamp, timestamp) || other.timestamp == timestamp)&&(identical(other.loadTimeMs, loadTimeMs) || other.loadTimeMs == loadTimeMs)&&(identical(other.isSuccess, isSuccess) || other.isSuccess == isSuccess)&&(identical(other.dataSource, dataSource) || other.dataSource == dataSource)&&(identical(other.viewDurationSec, viewDurationSec) || other.viewDurationSec == viewDurationSec)&&(identical(other.viewedYearlyFcfTab, viewedYearlyFcfTab) || other.viewedYearlyFcfTab == viewedYearlyFcfTab)&&(identical(other.viewedQtrlyFcfTab, viewedQtrlyFcfTab) || other.viewedQtrlyFcfTab == viewedQtrlyFcfTab)&&(identical(other.tappedQtrchartViewAll, tappedQtrchartViewAll) || other.tappedQtrchartViewAll == tappedQtrchartViewAll)&&(identical(other.tappedYrchartViewAll, tappedYrchartViewAll) || other.tappedYrchartViewAll == tappedYrchartViewAll)&&(identical(other.tappedQtrtableViewAll, tappedQtrtableViewAll) || other.tappedQtrtableViewAll == tappedQtrtableViewAll)&&(identical(other.tappedYrtableViewAll, tappedYrtableViewAll) || other.tappedYrtableViewAll == tappedYrtableViewAll));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,ticker,timestamp,loadTimeMs,isSuccess,dataSource,viewDurationSec,viewedYearlyFcfTab,viewedQtrlyFcfTab,tappedQtrchartViewAll,tappedYrchartViewAll,tappedQtrtableViewAll,tappedYrtableViewAll);
+int get hashCode {
+    return Object.hash(runtimeType,ticker,timestamp,loadTimeMs,isSuccess,dataSource,viewDurationSec,viewedYearlyFcfTab,viewedQtrlyFcfTab,tappedQtrchartViewAll,tappedYrchartViewAll,tappedQtrtableViewAll,tappedYrtableViewAll);
+}
 
 @override
 String toString() {
-  return 'FreeCashFlowTabViewState(ticker: $ticker, timestamp: $timestamp, loadTimeMs: $loadTimeMs, isSuccess: $isSuccess, dataSource: $dataSource, viewDurationSec: $viewDurationSec, viewedYearlyFcfTab: $viewedYearlyFcfTab, viewedQtrlyFcfTab: $viewedQtrlyFcfTab, tappedQtrchartViewAll: $tappedQtrchartViewAll, tappedYrchartViewAll: $tappedYrchartViewAll, tappedQtrtableViewAll: $tappedQtrtableViewAll, tappedYrtableViewAll: $tappedYrtableViewAll)';
+    return 'FreeCashFlowTabViewState(ticker: $ticker, timestamp: $timestamp, loadTimeMs: $loadTimeMs, isSuccess: $isSuccess, dataSource: $dataSource, viewDurationSec: $viewDurationSec, viewedYearlyFcfTab: $viewedYearlyFcfTab, viewedQtrlyFcfTab: $viewedQtrlyFcfTab, tappedQtrchartViewAll: $tappedQtrchartViewAll, tappedYrchartViewAll: $tappedYrchartViewAll, tappedQtrtableViewAll: $tappedQtrtableViewAll, tappedYrtableViewAll: $tappedYrtableViewAll)';
 }
 
 

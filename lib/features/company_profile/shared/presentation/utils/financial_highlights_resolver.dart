@@ -3,7 +3,7 @@ import 'package:bizzie/features/company_profile/shared/domain/extensions/financi
 import 'package:bizzie/features/company_profile/shared/domain/models/financial_data_point.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/enums/growth_band.dart';
 import 'package:bizzie/shared/utils/currency_formatter.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:intl/intl.dart';
 
 typedef HighlightCardData = ({

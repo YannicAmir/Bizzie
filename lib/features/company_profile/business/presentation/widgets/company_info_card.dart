@@ -6,7 +6,7 @@ import 'package:bizzie/features/company_profile/business/presentation/utils/busi
 import 'package:bizzie/features/company_profile/business/presentation/bloc/company_business_bloc.dart';
 import 'package:bizzie/features/company_profile/business/presentation/bloc/company_business_event.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:url_launcher/url_launcher.dart';

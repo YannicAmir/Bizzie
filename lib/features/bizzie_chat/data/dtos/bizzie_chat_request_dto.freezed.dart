@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'bizzie_chat_request_dto.dart';
@@ -9,6 +9,7 @@ part of 'bizzie_chat_request_dto.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 
@@ -28,16 +29,21 @@ $BizzieChatRequestDtoCopyWith<BizzieChatRequestDto> get copyWith => _$BizzieChat
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is BizzieChatRequestDto&&(identical(other.idempotencyKey, idempotencyKey) || other.idempotencyKey == idempotencyKey)&&(identical(other.query, query) || other.query == query)&&(identical(other.companyTicker, companyTicker) || other.companyTicker == companyTicker)&&(identical(other.companyName, companyName) || other.companyName == companyName)&&(identical(other.sessionId, sessionId) || other.sessionId == sessionId)&&(identical(other.stream, stream) || other.stream == stream));
+  final _this = this as BizzieChatRequestDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is BizzieChatRequestDto&&(identical(other.idempotencyKey, _this.idempotencyKey) || other.idempotencyKey == _this.idempotencyKey)&&(identical(other.query, _this.query) || other.query == _this.query)&&(identical(other.companyTicker, _this.companyTicker) || other.companyTicker == _this.companyTicker)&&(identical(other.companyName, _this.companyName) || other.companyName == _this.companyName)&&(identical(other.sessionId, _this.sessionId) || other.sessionId == _this.sessionId)&&(identical(other.stream, _this.stream) || other.stream == _this.stream));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,idempotencyKey,query,companyTicker,companyName,sessionId,stream);
+int get hashCode {
+  final _this = this as BizzieChatRequestDto;
+  return Object.hash(runtimeType,_this.idempotencyKey,_this.query,_this.companyTicker,_this.companyName,_this.sessionId,_this.stream);
+}
 
 @override
 String toString() {
-  return 'BizzieChatRequestDto(idempotencyKey: $idempotencyKey, query: $query, companyTicker: $companyTicker, companyName: $companyName, sessionId: $sessionId, stream: $stream)';
+  final _this = this as BizzieChatRequestDto;
+  return 'BizzieChatRequestDto(idempotencyKey: ${_this.idempotencyKey}, query: ${_this.query}, companyTicker: ${_this.companyTicker}, companyName: ${_this.companyName}, sessionId: ${_this.sessionId}, stream: ${_this.stream})';
 }
 
 
@@ -66,7 +72,7 @@ class _$BizzieChatRequestDtoCopyWithImpl<$Res>
 /// Create a copy of BizzieChatRequestDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? idempotencyKey = null,Object? query = null,Object? companyTicker = null,Object? companyName = null,Object? sessionId = null,Object? stream = null,}) {
-  return _then(_self.copyWith(
+  return _then(BizzieChatRequestDto(
 idempotencyKey: null == idempotencyKey ? _self.idempotencyKey : idempotencyKey // ignore: cast_nullable_to_non_nullable
 as String,query: null == query ? _self.query : query // ignore: cast_nullable_to_non_nullable
 as String,companyTicker: null == companyTicker ? _self.companyTicker : companyTicker // ignore: cast_nullable_to_non_nullable
@@ -237,16 +243,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _BizzieChatRequestDto&&(identical(other.idempotencyKey, idempotencyKey) || other.idempotencyKey == idempotencyKey)&&(identical(other.query, query) || other.query == query)&&(identical(other.companyTicker, companyTicker) || other.companyTicker == companyTicker)&&(identical(other.companyName, companyName) || other.companyName == companyName)&&(identical(other.sessionId, sessionId) || other.sessionId == sessionId)&&(identical(other.stream, stream) || other.stream == stream));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _BizzieChatRequestDto&&(identical(other.idempotencyKey, idempotencyKey) || other.idempotencyKey == idempotencyKey)&&(identical(other.query, query) || other.query == query)&&(identical(other.companyTicker, companyTicker) || other.companyTicker == companyTicker)&&(identical(other.companyName, companyName) || other.companyName == companyName)&&(identical(other.sessionId, sessionId) || other.sessionId == sessionId)&&(identical(other.stream, stream) || other.stream == stream));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,idempotencyKey,query,companyTicker,companyName,sessionId,stream);
+int get hashCode {
+    return Object.hash(runtimeType,idempotencyKey,query,companyTicker,companyName,sessionId,stream);
+}
 
 @override
 String toString() {
-  return 'BizzieChatRequestDto(idempotencyKey: $idempotencyKey, query: $query, companyTicker: $companyTicker, companyName: $companyName, sessionId: $sessionId, stream: $stream)';
+    return 'BizzieChatRequestDto(idempotencyKey: $idempotencyKey, query: $query, companyTicker: $companyTicker, companyName: $companyName, sessionId: $sessionId, stream: $stream)';
 }
 
 

@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'notification_status.dart';
@@ -9,6 +9,7 @@ part of 'notification_status.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -20,7 +21,7 @@ mixin _$NotificationStatus {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is NotificationStatus);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is NotificationStatus);
 }
 
 
@@ -29,7 +30,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'NotificationStatus()';
+    return 'NotificationStatus()';
 }
 
 
@@ -209,7 +210,7 @@ class NotificationStatusInitial implements NotificationStatus {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is NotificationStatusInitial);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is NotificationStatusInitial);
 }
 
 
@@ -218,7 +219,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'NotificationStatus.initial()';
+    return 'NotificationStatus.initial()';
 }
 
 
@@ -241,7 +242,7 @@ class NotificationStatusLoading implements NotificationStatus {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is NotificationStatusLoading);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is NotificationStatusLoading);
 }
 
 
@@ -250,7 +251,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'NotificationStatus.loading()';
+    return 'NotificationStatus.loading()';
 }
 
 
@@ -278,16 +279,18 @@ $NotificationStatusSuccessCopyWith<NotificationStatusSuccess> get copyWith => _$
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is NotificationStatusSuccess&&(identical(other.fcmToken, fcmToken) || other.fcmToken == fcmToken));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is NotificationStatusSuccess&&(identical(other.fcmToken, fcmToken) || other.fcmToken == fcmToken));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,fcmToken);
+int get hashCode {
+    return Object.hash(runtimeType,fcmToken);
+}
 
 @override
 String toString() {
-  return 'NotificationStatus.success(fcmToken: $fcmToken)';
+    return 'NotificationStatus.success(fcmToken: $fcmToken)';
 }
 
 
@@ -344,16 +347,18 @@ $NotificationStatusFailureCopyWith<NotificationStatusFailure> get copyWith => _$
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is NotificationStatusFailure&&(identical(other.message, message) || other.message == message));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is NotificationStatusFailure&&(identical(other.message, message) || other.message == message));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,message);
+int get hashCode {
+    return Object.hash(runtimeType,message);
+}
 
 @override
 String toString() {
-  return 'NotificationStatus.failure(message: $message)';
+    return 'NotificationStatus.failure(message: $message)';
 }
 
 
@@ -410,16 +415,18 @@ $NotificationStatusMessageReceivedCopyWith<NotificationStatusMessageReceived> ge
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is NotificationStatusMessageReceived&&(identical(other.message, message) || other.message == message));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is NotificationStatusMessageReceived&&(identical(other.message, message) || other.message == message));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,message);
+int get hashCode {
+    return Object.hash(runtimeType,message);
+}
 
 @override
 String toString() {
-  return 'NotificationStatus.messageReceived(message: $message)';
+    return 'NotificationStatus.messageReceived(message: $message)';
 }
 
 
@@ -486,16 +493,18 @@ $NotificationStatusNavigationRequestedCopyWith<NotificationStatusNavigationReque
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is NotificationStatusNavigationRequested&&(identical(other.intent, intent) || other.intent == intent)&&(identical(other.timestamp, timestamp) || other.timestamp == timestamp));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is NotificationStatusNavigationRequested&&(identical(other.intent, intent) || other.intent == intent)&&(identical(other.timestamp, timestamp) || other.timestamp == timestamp));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,intent,timestamp);
+int get hashCode {
+    return Object.hash(runtimeType,intent,timestamp);
+}
 
 @override
 String toString() {
-  return 'NotificationStatus.navigationRequested(intent: $intent, timestamp: $timestamp)';
+    return 'NotificationStatus.navigationRequested(intent: $intent, timestamp: $timestamp)';
 }
 
 

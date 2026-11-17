@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'edit_profile_event.dart';
@@ -9,6 +9,7 @@ part of 'edit_profile_event.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -20,7 +21,7 @@ mixin _$EditProfileEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is EditProfileEvent);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is EditProfileEvent);
 }
 
 
@@ -29,7 +30,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'EditProfileEvent()';
+    return 'EditProfileEvent()';
 }
 
 
@@ -257,7 +258,7 @@ class Started implements EditProfileEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Started);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is Started);
 }
 
 
@@ -266,7 +267,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'EditProfileEvent.started()';
+    return 'EditProfileEvent.started()';
 }
 
 
@@ -294,16 +295,18 @@ $FirstNameChangedCopyWith<FirstNameChanged> get copyWith => _$FirstNameChangedCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is FirstNameChanged&&(identical(other.firstName, firstName) || other.firstName == firstName));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is FirstNameChanged&&(identical(other.firstName, firstName) || other.firstName == firstName));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,firstName);
+int get hashCode {
+    return Object.hash(runtimeType,firstName);
+}
 
 @override
 String toString() {
-  return 'EditProfileEvent.firstNameChanged(firstName: $firstName)';
+    return 'EditProfileEvent.firstNameChanged(firstName: $firstName)';
 }
 
 
@@ -360,16 +363,18 @@ $EmailChangedCopyWith<EmailChanged> get copyWith => _$EmailChangedCopyWithImpl<E
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is EmailChanged&&(identical(other.email, email) || other.email == email));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is EmailChanged&&(identical(other.email, email) || other.email == email));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,email);
+int get hashCode {
+    return Object.hash(runtimeType,email);
+}
 
 @override
 String toString() {
-  return 'EditProfileEvent.emailChanged(email: $email)';
+    return 'EditProfileEvent.emailChanged(email: $email)';
 }
 
 
@@ -421,7 +426,7 @@ class SaveRequested implements EditProfileEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SaveRequested);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SaveRequested);
 }
 
 
@@ -430,7 +435,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'EditProfileEvent.saveRequested()';
+    return 'EditProfileEvent.saveRequested()';
 }
 
 
@@ -453,7 +458,7 @@ class DeleteAccountRequested implements EditProfileEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is DeleteAccountRequested);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is DeleteAccountRequested);
 }
 
 
@@ -462,7 +467,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'EditProfileEvent.deleteAccountRequested()';
+    return 'EditProfileEvent.deleteAccountRequested()';
 }
 
 
@@ -490,16 +495,18 @@ $ReauthenticateWithPasswordCopyWith<ReauthenticateWithPassword> get copyWith => 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ReauthenticateWithPassword&&(identical(other.password, password) || other.password == password));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is ReauthenticateWithPassword&&(identical(other.password, password) || other.password == password));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,password);
+int get hashCode {
+    return Object.hash(runtimeType,password);
+}
 
 @override
 String toString() {
-  return 'EditProfileEvent.reauthenticateWithPassword(password: $password)';
+    return 'EditProfileEvent.reauthenticateWithPassword(password: $password)';
 }
 
 
@@ -551,7 +558,7 @@ class ReauthenticateWithGoogle implements EditProfileEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ReauthenticateWithGoogle);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is ReauthenticateWithGoogle);
 }
 
 
@@ -560,7 +567,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'EditProfileEvent.reauthenticateWithGoogle()';
+    return 'EditProfileEvent.reauthenticateWithGoogle()';
 }
 
 
@@ -583,7 +590,7 @@ class ReauthenticateWithApple implements EditProfileEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ReauthenticateWithApple);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is ReauthenticateWithApple);
 }
 
 
@@ -592,7 +599,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'EditProfileEvent.reauthenticateWithApple()';
+    return 'EditProfileEvent.reauthenticateWithApple()';
 }
 
 
@@ -615,7 +622,7 @@ class ReauthModalDismissed implements EditProfileEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ReauthModalDismissed);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is ReauthModalDismissed);
 }
 
 
@@ -624,7 +631,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'EditProfileEvent.reauthModalDismissed()';
+    return 'EditProfileEvent.reauthModalDismissed()';
 }
 
 
@@ -647,7 +654,7 @@ class DeleteAccountConfirmed implements EditProfileEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is DeleteAccountConfirmed);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is DeleteAccountConfirmed);
 }
 
 
@@ -656,7 +663,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'EditProfileEvent.deleteAccountConfirmed()';
+    return 'EditProfileEvent.deleteAccountConfirmed()';
 }
 
 
@@ -679,7 +686,7 @@ class DeleteConfirmationDismissed implements EditProfileEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is DeleteConfirmationDismissed);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is DeleteConfirmationDismissed);
 }
 
 
@@ -688,7 +695,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'EditProfileEvent.deleteConfirmationDismissed()';
+    return 'EditProfileEvent.deleteConfirmationDismissed()';
 }
 
 
@@ -711,7 +718,7 @@ class ShowDeleteConfirmation implements EditProfileEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ShowDeleteConfirmation);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is ShowDeleteConfirmation);
 }
 
 
@@ -720,7 +727,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'EditProfileEvent.showDeleteConfirmation()';
+    return 'EditProfileEvent.showDeleteConfirmation()';
 }
 
 
@@ -743,7 +750,7 @@ class ToggleReauthPasswordVisibility implements EditProfileEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ToggleReauthPasswordVisibility);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is ToggleReauthPasswordVisibility);
 }
 
 
@@ -752,7 +759,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'EditProfileEvent.toggleReauthPasswordVisibility()';
+    return 'EditProfileEvent.toggleReauthPasswordVisibility()';
 }
 
 

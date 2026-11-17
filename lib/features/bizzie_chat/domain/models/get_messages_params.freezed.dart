@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'get_messages_params.dart';
@@ -9,6 +9,7 @@ part of 'get_messages_params.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $GetMessagesParamsCopyWith<GetMessagesParams> get copyWith => _$GetMessagesParam
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is GetMessagesParams&&(identical(other.uid, uid) || other.uid == uid)&&(identical(other.sessionId, sessionId) || other.sessionId == sessionId));
+  final _this = this as GetMessagesParams;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is GetMessagesParams&&(identical(other.uid, _this.uid) || other.uid == _this.uid)&&(identical(other.sessionId, _this.sessionId) || other.sessionId == _this.sessionId));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,uid,sessionId);
+int get hashCode {
+  final _this = this as GetMessagesParams;
+  return Object.hash(runtimeType,_this.uid,_this.sessionId);
+}
 
 @override
 String toString() {
-  return 'GetMessagesParams(uid: $uid, sessionId: $sessionId)';
+  final _this = this as GetMessagesParams;
+  return 'GetMessagesParams(uid: ${_this.uid}, sessionId: ${_this.sessionId})';
 }
 
 
@@ -63,7 +69,7 @@ class _$GetMessagesParamsCopyWithImpl<$Res>
 /// Create a copy of GetMessagesParams
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? uid = null,Object? sessionId = null,}) {
-  return _then(_self.copyWith(
+  return _then(GetMessagesParams(
 uid: null == uid ? _self.uid : uid // ignore: cast_nullable_to_non_nullable
 as String,sessionId: null == sessionId ? _self.sessionId : sessionId // ignore: cast_nullable_to_non_nullable
 as String,
@@ -223,16 +229,18 @@ _$GetMessagesParamsCopyWith<_GetMessagesParams> get copyWith => __$GetMessagesPa
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _GetMessagesParams&&(identical(other.uid, uid) || other.uid == uid)&&(identical(other.sessionId, sessionId) || other.sessionId == sessionId));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _GetMessagesParams&&(identical(other.uid, uid) || other.uid == uid)&&(identical(other.sessionId, sessionId) || other.sessionId == sessionId));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,uid,sessionId);
+int get hashCode {
+    return Object.hash(runtimeType,uid,sessionId);
+}
 
 @override
 String toString() {
-  return 'GetMessagesParams(uid: $uid, sessionId: $sessionId)';
+    return 'GetMessagesParams(uid: $uid, sessionId: $sessionId)';
 }
 
 

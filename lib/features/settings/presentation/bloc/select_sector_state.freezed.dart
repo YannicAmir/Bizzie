@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'select_sector_state.dart';
@@ -9,6 +9,7 @@ part of 'select_sector_state.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $SelectSectorStateCopyWith<SelectSectorState> get copyWith => _$SelectSectorStat
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SelectSectorState&&(identical(other.initialSector, initialSector) || other.initialSector == initialSector)&&(identical(other.selectedSector, selectedSector) || other.selectedSector == selectedSector)&&const DeepCollectionEquality().equals(other.availableSectors, availableSectors));
+  final _this = this as SelectSectorState;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SelectSectorState&&(identical(other.initialSector, _this.initialSector) || other.initialSector == _this.initialSector)&&(identical(other.selectedSector, _this.selectedSector) || other.selectedSector == _this.selectedSector)&&const DeepCollectionEquality().equals(other.availableSectors, _this.availableSectors));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,initialSector,selectedSector,const DeepCollectionEquality().hash(availableSectors));
+int get hashCode {
+  final _this = this as SelectSectorState;
+  return Object.hash(runtimeType,_this.initialSector,_this.selectedSector,const DeepCollectionEquality().hash(_this.availableSectors));
+}
 
 @override
 String toString() {
-  return 'SelectSectorState(initialSector: $initialSector, selectedSector: $selectedSector, availableSectors: $availableSectors)';
+  final _this = this as SelectSectorState;
+  return 'SelectSectorState(initialSector: ${_this.initialSector}, selectedSector: ${_this.selectedSector}, availableSectors: ${_this.availableSectors})';
 }
 
 
@@ -244,7 +250,7 @@ return failure(_that.initialSector,_that.selectedSector,_that.availableSectors,_
 
 
 class _Initial extends SelectSectorState {
-  const _Initial({required this.initialSector, required this.selectedSector, required final  List<SectorViewModel> availableSectors}): _availableSectors = availableSectors,super._();
+  const _Initial({required this.initialSector, required this.selectedSector, required  List<SectorViewModel> availableSectors}): _availableSectors = availableSectors,super._();
   
 
 @override final  SectorViewModel initialSector;
@@ -267,16 +273,18 @@ _$InitialCopyWith<_Initial> get copyWith => __$InitialCopyWithImpl<_Initial>(thi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Initial&&(identical(other.initialSector, initialSector) || other.initialSector == initialSector)&&(identical(other.selectedSector, selectedSector) || other.selectedSector == selectedSector)&&const DeepCollectionEquality().equals(other._availableSectors, _availableSectors));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Initial&&(identical(other.initialSector, initialSector) || other.initialSector == initialSector)&&(identical(other.selectedSector, selectedSector) || other.selectedSector == selectedSector)&&const DeepCollectionEquality().equals(other.availableSectors, _availableSectors));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,initialSector,selectedSector,const DeepCollectionEquality().hash(_availableSectors));
+int get hashCode {
+    return Object.hash(runtimeType,initialSector,selectedSector,const DeepCollectionEquality().hash(_availableSectors));
+}
 
 @override
 String toString() {
-  return 'SelectSectorState.initial(initialSector: $initialSector, selectedSector: $selectedSector, availableSectors: $availableSectors)';
+    return 'SelectSectorState.initial(initialSector: $initialSector, selectedSector: $selectedSector, availableSectors: $availableSectors)';
 }
 
 
@@ -338,7 +346,7 @@ $SectorViewModelCopyWith<$Res> get selectedSector {
 
 
 class _Loading extends SelectSectorState {
-  const _Loading({required this.initialSector, required this.selectedSector, required final  List<SectorViewModel> availableSectors}): _availableSectors = availableSectors,super._();
+  const _Loading({required this.initialSector, required this.selectedSector, required  List<SectorViewModel> availableSectors}): _availableSectors = availableSectors,super._();
   
 
 @override final  SectorViewModel initialSector;
@@ -361,16 +369,18 @@ _$LoadingCopyWith<_Loading> get copyWith => __$LoadingCopyWithImpl<_Loading>(thi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Loading&&(identical(other.initialSector, initialSector) || other.initialSector == initialSector)&&(identical(other.selectedSector, selectedSector) || other.selectedSector == selectedSector)&&const DeepCollectionEquality().equals(other._availableSectors, _availableSectors));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Loading&&(identical(other.initialSector, initialSector) || other.initialSector == initialSector)&&(identical(other.selectedSector, selectedSector) || other.selectedSector == selectedSector)&&const DeepCollectionEquality().equals(other.availableSectors, _availableSectors));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,initialSector,selectedSector,const DeepCollectionEquality().hash(_availableSectors));
+int get hashCode {
+    return Object.hash(runtimeType,initialSector,selectedSector,const DeepCollectionEquality().hash(_availableSectors));
+}
 
 @override
 String toString() {
-  return 'SelectSectorState.loading(initialSector: $initialSector, selectedSector: $selectedSector, availableSectors: $availableSectors)';
+    return 'SelectSectorState.loading(initialSector: $initialSector, selectedSector: $selectedSector, availableSectors: $availableSectors)';
 }
 
 
@@ -432,7 +442,7 @@ $SectorViewModelCopyWith<$Res> get selectedSector {
 
 
 class _Success extends SelectSectorState {
-  const _Success({required this.initialSector, required this.selectedSector, required final  List<SectorViewModel> availableSectors}): _availableSectors = availableSectors,super._();
+  const _Success({required this.initialSector, required this.selectedSector, required  List<SectorViewModel> availableSectors}): _availableSectors = availableSectors,super._();
   
 
 @override final  SectorViewModel initialSector;
@@ -455,16 +465,18 @@ _$SuccessCopyWith<_Success> get copyWith => __$SuccessCopyWithImpl<_Success>(thi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Success&&(identical(other.initialSector, initialSector) || other.initialSector == initialSector)&&(identical(other.selectedSector, selectedSector) || other.selectedSector == selectedSector)&&const DeepCollectionEquality().equals(other._availableSectors, _availableSectors));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Success&&(identical(other.initialSector, initialSector) || other.initialSector == initialSector)&&(identical(other.selectedSector, selectedSector) || other.selectedSector == selectedSector)&&const DeepCollectionEquality().equals(other.availableSectors, _availableSectors));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,initialSector,selectedSector,const DeepCollectionEquality().hash(_availableSectors));
+int get hashCode {
+    return Object.hash(runtimeType,initialSector,selectedSector,const DeepCollectionEquality().hash(_availableSectors));
+}
 
 @override
 String toString() {
-  return 'SelectSectorState.success(initialSector: $initialSector, selectedSector: $selectedSector, availableSectors: $availableSectors)';
+    return 'SelectSectorState.success(initialSector: $initialSector, selectedSector: $selectedSector, availableSectors: $availableSectors)';
 }
 
 
@@ -526,7 +538,7 @@ $SectorViewModelCopyWith<$Res> get selectedSector {
 
 
 class _Failure extends SelectSectorState {
-  const _Failure({required this.initialSector, required this.selectedSector, required final  List<SectorViewModel> availableSectors, required this.failure}): _availableSectors = availableSectors,super._();
+  const _Failure({required this.initialSector, required this.selectedSector, required  List<SectorViewModel> availableSectors, required this.failure}): _availableSectors = availableSectors,super._();
   
 
 @override final  SectorViewModel initialSector;
@@ -550,16 +562,18 @@ _$FailureCopyWith<_Failure> get copyWith => __$FailureCopyWithImpl<_Failure>(thi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Failure&&(identical(other.initialSector, initialSector) || other.initialSector == initialSector)&&(identical(other.selectedSector, selectedSector) || other.selectedSector == selectedSector)&&const DeepCollectionEquality().equals(other._availableSectors, _availableSectors)&&(identical(other.failure, failure) || other.failure == failure));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Failure&&(identical(other.initialSector, initialSector) || other.initialSector == initialSector)&&(identical(other.selectedSector, selectedSector) || other.selectedSector == selectedSector)&&const DeepCollectionEquality().equals(other.availableSectors, _availableSectors)&&(identical(other.failure, failure) || other.failure == failure));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,initialSector,selectedSector,const DeepCollectionEquality().hash(_availableSectors),failure);
+int get hashCode {
+    return Object.hash(runtimeType,initialSector,selectedSector,const DeepCollectionEquality().hash(_availableSectors),failure);
+}
 
 @override
 String toString() {
-  return 'SelectSectorState.failure(initialSector: $initialSector, selectedSector: $selectedSector, availableSectors: $availableSectors, failure: $failure)';
+    return 'SelectSectorState.failure(initialSector: $initialSector, selectedSector: $selectedSector, availableSectors: $availableSectors, failure: $failure)';
 }
 
 

@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'historical_price_dto.dart';
@@ -9,6 +9,7 @@ part of 'historical_price_dto.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 
@@ -28,16 +29,21 @@ $HistoricalPriceDtoCopyWith<HistoricalPriceDto> get copyWith => _$HistoricalPric
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is HistoricalPriceDto&&(identical(other.symbol, symbol) || other.symbol == symbol)&&(identical(other.date, date) || other.date == date)&&(identical(other.price, price) || other.price == price)&&(identical(other.volume, volume) || other.volume == volume));
+  final _this = this as HistoricalPriceDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is HistoricalPriceDto&&(identical(other.symbol, _this.symbol) || other.symbol == _this.symbol)&&(identical(other.date, _this.date) || other.date == _this.date)&&(identical(other.price, _this.price) || other.price == _this.price)&&(identical(other.volume, _this.volume) || other.volume == _this.volume));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,symbol,date,price,volume);
+int get hashCode {
+  final _this = this as HistoricalPriceDto;
+  return Object.hash(runtimeType,_this.symbol,_this.date,_this.price,_this.volume);
+}
 
 @override
 String toString() {
-  return 'HistoricalPriceDto(symbol: $symbol, date: $date, price: $price, volume: $volume)';
+  final _this = this as HistoricalPriceDto;
+  return 'HistoricalPriceDto(symbol: ${_this.symbol}, date: ${_this.date}, price: ${_this.price}, volume: ${_this.volume})';
 }
 
 
@@ -66,7 +72,7 @@ class _$HistoricalPriceDtoCopyWithImpl<$Res>
 /// Create a copy of HistoricalPriceDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? symbol = null,Object? date = null,Object? price = null,Object? volume = null,}) {
-  return _then(_self.copyWith(
+  return _then(HistoricalPriceDto(
 symbol: null == symbol ? _self.symbol : symbol // ignore: cast_nullable_to_non_nullable
 as String,date: null == date ? _self.date : date // ignore: cast_nullable_to_non_nullable
 as String,price: null == price ? _self.price : price // ignore: cast_nullable_to_non_nullable
@@ -233,16 +239,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _HistoricalPriceDto&&(identical(other.symbol, symbol) || other.symbol == symbol)&&(identical(other.date, date) || other.date == date)&&(identical(other.price, price) || other.price == price)&&(identical(other.volume, volume) || other.volume == volume));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _HistoricalPriceDto&&(identical(other.symbol, symbol) || other.symbol == symbol)&&(identical(other.date, date) || other.date == date)&&(identical(other.price, price) || other.price == price)&&(identical(other.volume, volume) || other.volume == volume));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,symbol,date,price,volume);
+int get hashCode {
+    return Object.hash(runtimeType,symbol,date,price,volume);
+}
 
 @override
 String toString() {
-  return 'HistoricalPriceDto(symbol: $symbol, date: $date, price: $price, volume: $volume)';
+    return 'HistoricalPriceDto(symbol: $symbol, date: $date, price: $price, volume: $volume)';
 }
 
 

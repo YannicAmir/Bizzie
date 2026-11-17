@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'dividend_event.dart';
@@ -9,6 +9,7 @@ part of 'dividend_event.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $DividendEventCopyWith<DividendEvent> get copyWith => _$DividendEventCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is DividendEvent&&(identical(other.date, date) || other.date == date)&&(identical(other.dividend, dividend) || other.dividend == dividend)&&(identical(other.adjDividend, adjDividend) || other.adjDividend == adjDividend)&&(identical(other.yield, yield) || other.yield == yield)&&(identical(other.recordDate, recordDate) || other.recordDate == recordDate)&&(identical(other.paymentDate, paymentDate) || other.paymentDate == paymentDate)&&(identical(other.declarationDate, declarationDate) || other.declarationDate == declarationDate)&&(identical(other.frequency, frequency) || other.frequency == frequency));
+  final _this = this as DividendEvent;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is DividendEvent&&(identical(other.date, _this.date) || other.date == _this.date)&&(identical(other.dividend, _this.dividend) || other.dividend == _this.dividend)&&(identical(other.adjDividend, _this.adjDividend) || other.adjDividend == _this.adjDividend)&&(identical(other.yield, _this.yield) || other.yield == _this.yield)&&(identical(other.recordDate, _this.recordDate) || other.recordDate == _this.recordDate)&&(identical(other.paymentDate, _this.paymentDate) || other.paymentDate == _this.paymentDate)&&(identical(other.declarationDate, _this.declarationDate) || other.declarationDate == _this.declarationDate)&&(identical(other.frequency, _this.frequency) || other.frequency == _this.frequency));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,date,dividend,adjDividend,yield,recordDate,paymentDate,declarationDate,frequency);
+int get hashCode {
+  final _this = this as DividendEvent;
+  return Object.hash(runtimeType,_this.date,_this.dividend,_this.adjDividend,_this.yield,_this.recordDate,_this.paymentDate,_this.declarationDate,_this.frequency);
+}
 
 @override
 String toString() {
-  return 'DividendEvent(date: $date, dividend: $dividend, adjDividend: $adjDividend, yield: $yield, recordDate: $recordDate, paymentDate: $paymentDate, declarationDate: $declarationDate, frequency: $frequency)';
+  final _this = this as DividendEvent;
+  return 'DividendEvent(date: ${_this.date}, dividend: ${_this.dividend}, adjDividend: ${_this.adjDividend}, yield: ${_this.yield}, recordDate: ${_this.recordDate}, paymentDate: ${_this.paymentDate}, declarationDate: ${_this.declarationDate}, frequency: ${_this.frequency})';
 }
 
 
@@ -63,7 +69,7 @@ class _$DividendEventCopyWithImpl<$Res>
 /// Create a copy of DividendEvent
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? date = null,Object? dividend = null,Object? adjDividend = null,Object? yield = freezed,Object? recordDate = freezed,Object? paymentDate = freezed,Object? declarationDate = freezed,Object? frequency = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(DividendEvent(
 date: null == date ? _self.date : date // ignore: cast_nullable_to_non_nullable
 as String,dividend: null == dividend ? _self.dividend : dividend // ignore: cast_nullable_to_non_nullable
 as double,adjDividend: null == adjDividend ? _self.adjDividend : adjDividend // ignore: cast_nullable_to_non_nullable
@@ -235,16 +241,18 @@ _$DividendEventCopyWith<_DividendEvent> get copyWith => __$DividendEventCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _DividendEvent&&(identical(other.date, date) || other.date == date)&&(identical(other.dividend, dividend) || other.dividend == dividend)&&(identical(other.adjDividend, adjDividend) || other.adjDividend == adjDividend)&&(identical(other.yield, yield) || other.yield == yield)&&(identical(other.recordDate, recordDate) || other.recordDate == recordDate)&&(identical(other.paymentDate, paymentDate) || other.paymentDate == paymentDate)&&(identical(other.declarationDate, declarationDate) || other.declarationDate == declarationDate)&&(identical(other.frequency, frequency) || other.frequency == frequency));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _DividendEvent&&(identical(other.date, date) || other.date == date)&&(identical(other.dividend, dividend) || other.dividend == dividend)&&(identical(other.adjDividend, adjDividend) || other.adjDividend == adjDividend)&&(identical(other.yield, yield) || other.yield == yield)&&(identical(other.recordDate, recordDate) || other.recordDate == recordDate)&&(identical(other.paymentDate, paymentDate) || other.paymentDate == paymentDate)&&(identical(other.declarationDate, declarationDate) || other.declarationDate == declarationDate)&&(identical(other.frequency, frequency) || other.frequency == frequency));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,date,dividend,adjDividend,yield,recordDate,paymentDate,declarationDate,frequency);
+int get hashCode {
+    return Object.hash(runtimeType,date,dividend,adjDividend,yield,recordDate,paymentDate,declarationDate,frequency);
+}
 
 @override
 String toString() {
-  return 'DividendEvent(date: $date, dividend: $dividend, adjDividend: $adjDividend, yield: $yield, recordDate: $recordDate, paymentDate: $paymentDate, declarationDate: $declarationDate, frequency: $frequency)';
+    return 'DividendEvent(date: $date, dividend: $dividend, adjDividend: $adjDividend, yield: $yield, recordDate: $recordDate, paymentDate: $paymentDate, declarationDate: $declarationDate, frequency: $frequency)';
 }
 
 

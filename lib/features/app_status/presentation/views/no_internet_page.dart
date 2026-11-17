@@ -2,7 +2,7 @@ import 'package:bizzie/app/themes/app_assets.dart';
 import 'package:bizzie/features/app_status/presentation/bloc/app_status_bloc.dart';
 import 'package:bizzie/features/app_status/presentation/widgets/generic_status_page.dart';
 import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class NoInternetPage extends StatelessWidget {

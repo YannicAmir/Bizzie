@@ -16,7 +16,7 @@ import 'package:bizzie/features/watchlist_ytd/presentation/extensions/watchlist_
 import 'package:bizzie/features/watchlist_ytd/presentation/widgets/watchlist_ytd_section.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:flutter/foundation.dart' show listEquals, mapEquals;
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 

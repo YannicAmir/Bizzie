@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'upcoming_earnings.dart';
@@ -9,6 +9,7 @@ part of 'upcoming_earnings.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $UpcomingEarningsCopyWith<UpcomingEarnings> get copyWith => _$UpcomingEarningsCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is UpcomingEarnings&&(identical(other.symbol, symbol) || other.symbol == symbol)&&(identical(other.companyName, companyName) || other.companyName == companyName)&&(identical(other.date, date) || other.date == date));
+  final _this = this as UpcomingEarnings;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is UpcomingEarnings&&(identical(other.symbol, _this.symbol) || other.symbol == _this.symbol)&&(identical(other.companyName, _this.companyName) || other.companyName == _this.companyName)&&(identical(other.date, _this.date) || other.date == _this.date));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,symbol,companyName,date);
+int get hashCode {
+  final _this = this as UpcomingEarnings;
+  return Object.hash(runtimeType,_this.symbol,_this.companyName,_this.date);
+}
 
 @override
 String toString() {
-  return 'UpcomingEarnings(symbol: $symbol, companyName: $companyName, date: $date)';
+  final _this = this as UpcomingEarnings;
+  return 'UpcomingEarnings(symbol: ${_this.symbol}, companyName: ${_this.companyName}, date: ${_this.date})';
 }
 
 
@@ -63,7 +69,7 @@ class _$UpcomingEarningsCopyWithImpl<$Res>
 /// Create a copy of UpcomingEarnings
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? symbol = null,Object? companyName = null,Object? date = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(UpcomingEarnings(
 symbol: null == symbol ? _self.symbol : symbol // ignore: cast_nullable_to_non_nullable
 as String,companyName: null == companyName ? _self.companyName : companyName // ignore: cast_nullable_to_non_nullable
 as String,date: freezed == date ? _self.date : date // ignore: cast_nullable_to_non_nullable
@@ -225,16 +231,18 @@ _$UpcomingEarningsCopyWith<_UpcomingEarnings> get copyWith => __$UpcomingEarning
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _UpcomingEarnings&&(identical(other.symbol, symbol) || other.symbol == symbol)&&(identical(other.companyName, companyName) || other.companyName == companyName)&&(identical(other.date, date) || other.date == date));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _UpcomingEarnings&&(identical(other.symbol, symbol) || other.symbol == symbol)&&(identical(other.companyName, companyName) || other.companyName == companyName)&&(identical(other.date, date) || other.date == date));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,symbol,companyName,date);
+int get hashCode {
+    return Object.hash(runtimeType,symbol,companyName,date);
+}
 
 @override
 String toString() {
-  return 'UpcomingEarnings(symbol: $symbol, companyName: $companyName, date: $date)';
+    return 'UpcomingEarnings(symbol: $symbol, companyName: $companyName, date: $date)';
 }
 
 

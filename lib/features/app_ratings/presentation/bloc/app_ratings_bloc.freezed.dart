@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'app_ratings_bloc.dart';
@@ -9,6 +9,7 @@ part of 'app_ratings_bloc.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $AppRatingsEventCopyWith<AppRatingsEvent> get copyWith => _$AppRatingsEventCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AppRatingsEvent&&(identical(other.company, company) || other.company == company)&&(identical(other.currentTab, currentTab) || other.currentTab == currentTab));
+  final _this = this as AppRatingsEvent;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AppRatingsEvent&&(identical(other.company, _this.company) || other.company == _this.company)&&(identical(other.currentTab, _this.currentTab) || other.currentTab == _this.currentTab));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,company,currentTab);
+int get hashCode {
+  final _this = this as AppRatingsEvent;
+  return Object.hash(runtimeType,_this.company,_this.currentTab);
+}
 
 @override
 String toString() {
-  return 'AppRatingsEvent(company: $company, currentTab: $currentTab)';
+  final _this = this as AppRatingsEvent;
+  return 'AppRatingsEvent(company: ${_this.company}, currentTab: ${_this.currentTab})';
 }
 
 
@@ -63,7 +69,7 @@ class _$AppRatingsEventCopyWithImpl<$Res>
 /// Create a copy of AppRatingsEvent
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? company = null,Object? currentTab = null,}) {
-  return _then(_self.copyWith(
+  return _then(AppRatingsEvent.interactionDetected(
 company: null == company ? _self.company : company // ignore: cast_nullable_to_non_nullable
 as CompanyProfile,currentTab: null == currentTab ? _self.currentTab : currentTab // ignore: cast_nullable_to_non_nullable
 as String,
@@ -232,16 +238,18 @@ _$InteractionDetectedCopyWith<_InteractionDetected> get copyWith => __$Interacti
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _InteractionDetected&&(identical(other.company, company) || other.company == company)&&(identical(other.currentTab, currentTab) || other.currentTab == currentTab));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _InteractionDetected&&(identical(other.company, company) || other.company == company)&&(identical(other.currentTab, currentTab) || other.currentTab == currentTab));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,company,currentTab);
+int get hashCode {
+    return Object.hash(runtimeType,company,currentTab);
+}
 
 @override
 String toString() {
-  return 'AppRatingsEvent.interactionDetected(company: $company, currentTab: $currentTab)';
+    return 'AppRatingsEvent.interactionDetected(company: $company, currentTab: $currentTab)';
 }
 
 
@@ -298,7 +306,7 @@ mixin _$AppRatingsState {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AppRatingsState);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is AppRatingsState);
 }
 
 
@@ -307,7 +315,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'AppRatingsState()';
+    return 'AppRatingsState()';
 }
 
 
@@ -475,7 +483,7 @@ class _Initial implements AppRatingsState {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Initial);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Initial);
 }
 
 
@@ -484,7 +492,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'AppRatingsState.initial()';
+    return 'AppRatingsState.initial()';
 }
 
 
@@ -507,7 +515,7 @@ class _RequestReview implements AppRatingsState {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _RequestReview);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _RequestReview);
 }
 
 
@@ -516,7 +524,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'AppRatingsState.requestReview()';
+    return 'AppRatingsState.requestReview()';
 }
 
 
@@ -539,7 +547,7 @@ class _Idle implements AppRatingsState {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Idle);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Idle);
 }
 
 
@@ -548,7 +556,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'AppRatingsState.idle()';
+    return 'AppRatingsState.idle()';
 }
 
 

@@ -2,7 +2,7 @@ import 'package:bizzie/app/themes/app_text_styles.dart';
 import 'package:bizzie/features/company_profile/news/presentation/utils/news_article_extensions.dart';
 import 'package:bizzie/shared/widgets/images/bizzie_network_image.dart';
 import 'package:bizzie/shared/constants/app_constants.dart'; // Required for defaultBorderWidth
-import 'package:flutter/material.dart'; // Required for StatelessWidget, Theme, etc.
+import 'package:material_ui/material_ui.dart'; // Required for StatelessWidget, Theme, etc.
 import 'package:bizzie/features/company_profile/news/domain/models/news_article.dart';
 
 class NewsListTile extends StatelessWidget {

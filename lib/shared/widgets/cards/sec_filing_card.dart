@@ -4,7 +4,7 @@ import 'package:bizzie/core/domain/models/sec_filing.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:bizzie/shared/widgets/cards/filing_card_header.dart';
 import 'package:bizzie/shared/widgets/modals/report_summary_modal.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';

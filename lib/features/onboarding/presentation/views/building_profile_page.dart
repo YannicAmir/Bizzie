@@ -8,7 +8,7 @@ import 'package:bizzie/features/onboarding/presentation/bloc/onboarding_bloc.dar
 import 'package:bizzie/features/onboarding/presentation/extensions/onboarding_state_x.dart';
 import 'package:bizzie/features/onboarding/presentation/models/profile_summary_item.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 

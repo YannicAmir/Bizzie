@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'company_profile_tour_state.dart';
@@ -9,6 +9,7 @@ part of 'company_profile_tour_state.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -20,7 +21,7 @@ mixin _$CompanyProfileTourState {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CompanyProfileTourState);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is CompanyProfileTourState);
 }
 
 
@@ -29,7 +30,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'CompanyProfileTourState()';
+    return 'CompanyProfileTourState()';
 }
 
 
@@ -197,7 +198,7 @@ class _Initial implements CompanyProfileTourState {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Initial);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Initial);
 }
 
 
@@ -206,7 +207,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'CompanyProfileTourState.initial()';
+    return 'CompanyProfileTourState.initial()';
 }
 
 
@@ -219,7 +220,7 @@ String toString() {
 
 
 class CompanyProfileTourActive implements CompanyProfileTourState {
-  const CompanyProfileTourActive({required this.ticker, required this.companyName, required this.shouldPromptNotifications, required this.step, this.isAwaitingRevenueData = false, this.revenueGrowth, final  Set<CompanyProfileTourStep> completedSteps = const <CompanyProfileTourStep>{}}): _completedSteps = completedSteps;
+  const CompanyProfileTourActive({required this.ticker, required this.companyName, required this.shouldPromptNotifications, required this.step, this.isAwaitingRevenueData = false, this.revenueGrowth,  Set<CompanyProfileTourStep> completedSteps = const <CompanyProfileTourStep>{}}): _completedSteps = completedSteps;
   
 
  final  String ticker;
@@ -246,16 +247,18 @@ $CompanyProfileTourActiveCopyWith<CompanyProfileTourActive> get copyWith => _$Co
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CompanyProfileTourActive&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.companyName, companyName) || other.companyName == companyName)&&(identical(other.shouldPromptNotifications, shouldPromptNotifications) || other.shouldPromptNotifications == shouldPromptNotifications)&&(identical(other.step, step) || other.step == step)&&(identical(other.isAwaitingRevenueData, isAwaitingRevenueData) || other.isAwaitingRevenueData == isAwaitingRevenueData)&&(identical(other.revenueGrowth, revenueGrowth) || other.revenueGrowth == revenueGrowth)&&const DeepCollectionEquality().equals(other._completedSteps, _completedSteps));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is CompanyProfileTourActive&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.companyName, companyName) || other.companyName == companyName)&&(identical(other.shouldPromptNotifications, shouldPromptNotifications) || other.shouldPromptNotifications == shouldPromptNotifications)&&(identical(other.step, step) || other.step == step)&&(identical(other.isAwaitingRevenueData, isAwaitingRevenueData) || other.isAwaitingRevenueData == isAwaitingRevenueData)&&(identical(other.revenueGrowth, revenueGrowth) || other.revenueGrowth == revenueGrowth)&&const DeepCollectionEquality().equals(other.completedSteps, _completedSteps));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,ticker,companyName,shouldPromptNotifications,step,isAwaitingRevenueData,revenueGrowth,const DeepCollectionEquality().hash(_completedSteps));
+int get hashCode {
+    return Object.hash(runtimeType,ticker,companyName,shouldPromptNotifications,step,isAwaitingRevenueData,revenueGrowth,const DeepCollectionEquality().hash(_completedSteps));
+}
 
 @override
 String toString() {
-  return 'CompanyProfileTourState.active(ticker: $ticker, companyName: $companyName, shouldPromptNotifications: $shouldPromptNotifications, step: $step, isAwaitingRevenueData: $isAwaitingRevenueData, revenueGrowth: $revenueGrowth, completedSteps: $completedSteps)';
+    return 'CompanyProfileTourState.active(ticker: $ticker, companyName: $companyName, shouldPromptNotifications: $shouldPromptNotifications, step: $step, isAwaitingRevenueData: $isAwaitingRevenueData, revenueGrowth: $revenueGrowth, completedSteps: $completedSteps)';
 }
 
 
@@ -319,16 +322,18 @@ $CompanyProfileTourFinishedCopyWith<CompanyProfileTourFinished> get copyWith => 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CompanyProfileTourFinished&&(identical(other.shouldPromptNotifications, shouldPromptNotifications) || other.shouldPromptNotifications == shouldPromptNotifications)&&(identical(other.wasSkipped, wasSkipped) || other.wasSkipped == wasSkipped));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is CompanyProfileTourFinished&&(identical(other.shouldPromptNotifications, shouldPromptNotifications) || other.shouldPromptNotifications == shouldPromptNotifications)&&(identical(other.wasSkipped, wasSkipped) || other.wasSkipped == wasSkipped));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,shouldPromptNotifications,wasSkipped);
+int get hashCode {
+    return Object.hash(runtimeType,shouldPromptNotifications,wasSkipped);
+}
 
 @override
 String toString() {
-  return 'CompanyProfileTourState.finished(shouldPromptNotifications: $shouldPromptNotifications, wasSkipped: $wasSkipped)';
+    return 'CompanyProfileTourState.finished(shouldPromptNotifications: $shouldPromptNotifications, wasSkipped: $wasSkipped)';
 }
 
 

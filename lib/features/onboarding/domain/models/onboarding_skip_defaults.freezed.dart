@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'onboarding_skip_defaults.dart';
@@ -9,6 +9,7 @@ part of 'onboarding_skip_defaults.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $OnboardingSkipDefaultsCopyWith<OnboardingSkipDefaults> get copyWith => _$Onboar
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is OnboardingSkipDefaults&&const DeepCollectionEquality().equals(other.defaultWatchlist, defaultWatchlist)&&(identical(other.defaultSector, defaultSector) || other.defaultSector == defaultSector)&&(identical(other.initialCompanyTicker, initialCompanyTicker) || other.initialCompanyTicker == initialCompanyTicker));
+  final _this = this as OnboardingSkipDefaults;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is OnboardingSkipDefaults&&const DeepCollectionEquality().equals(other.defaultWatchlist, _this.defaultWatchlist)&&(identical(other.defaultSector, _this.defaultSector) || other.defaultSector == _this.defaultSector)&&(identical(other.initialCompanyTicker, _this.initialCompanyTicker) || other.initialCompanyTicker == _this.initialCompanyTicker));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(defaultWatchlist),defaultSector,initialCompanyTicker);
+int get hashCode {
+  final _this = this as OnboardingSkipDefaults;
+  return Object.hash(runtimeType,const DeepCollectionEquality().hash(_this.defaultWatchlist),_this.defaultSector,_this.initialCompanyTicker);
+}
 
 @override
 String toString() {
-  return 'OnboardingSkipDefaults(defaultWatchlist: $defaultWatchlist, defaultSector: $defaultSector, initialCompanyTicker: $initialCompanyTicker)';
+  final _this = this as OnboardingSkipDefaults;
+  return 'OnboardingSkipDefaults(defaultWatchlist: ${_this.defaultWatchlist}, defaultSector: ${_this.defaultSector}, initialCompanyTicker: ${_this.initialCompanyTicker})';
 }
 
 
@@ -63,7 +69,7 @@ class _$OnboardingSkipDefaultsCopyWithImpl<$Res>
 /// Create a copy of OnboardingSkipDefaults
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? defaultWatchlist = null,Object? defaultSector = freezed,Object? initialCompanyTicker = null,}) {
-  return _then(_self.copyWith(
+  return _then(OnboardingSkipDefaults(
 defaultWatchlist: null == defaultWatchlist ? _self.defaultWatchlist : defaultWatchlist // ignore: cast_nullable_to_non_nullable
 as List<Company>,defaultSector: freezed == defaultSector ? _self.defaultSector : defaultSector // ignore: cast_nullable_to_non_nullable
 as Sector?,initialCompanyTicker: null == initialCompanyTicker ? _self.initialCompanyTicker : initialCompanyTicker // ignore: cast_nullable_to_non_nullable
@@ -208,7 +214,7 @@ return $default(_that.defaultWatchlist,_that.defaultSector,_that.initialCompanyT
 
 
 class _OnboardingSkipDefaults implements OnboardingSkipDefaults {
-  const _OnboardingSkipDefaults({required final  List<Company> defaultWatchlist, this.defaultSector, required this.initialCompanyTicker}): _defaultWatchlist = defaultWatchlist;
+  const _OnboardingSkipDefaults({required  List<Company> defaultWatchlist, this.defaultSector, required this.initialCompanyTicker}): _defaultWatchlist = defaultWatchlist;
   
 
  final  List<Company> _defaultWatchlist;
@@ -231,16 +237,18 @@ _$OnboardingSkipDefaultsCopyWith<_OnboardingSkipDefaults> get copyWith => __$Onb
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _OnboardingSkipDefaults&&const DeepCollectionEquality().equals(other._defaultWatchlist, _defaultWatchlist)&&(identical(other.defaultSector, defaultSector) || other.defaultSector == defaultSector)&&(identical(other.initialCompanyTicker, initialCompanyTicker) || other.initialCompanyTicker == initialCompanyTicker));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _OnboardingSkipDefaults&&const DeepCollectionEquality().equals(other.defaultWatchlist, _defaultWatchlist)&&(identical(other.defaultSector, defaultSector) || other.defaultSector == defaultSector)&&(identical(other.initialCompanyTicker, initialCompanyTicker) || other.initialCompanyTicker == initialCompanyTicker));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_defaultWatchlist),defaultSector,initialCompanyTicker);
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_defaultWatchlist),defaultSector,initialCompanyTicker);
+}
 
 @override
 String toString() {
-  return 'OnboardingSkipDefaults(defaultWatchlist: $defaultWatchlist, defaultSector: $defaultSector, initialCompanyTicker: $initialCompanyTicker)';
+    return 'OnboardingSkipDefaults(defaultWatchlist: $defaultWatchlist, defaultSector: $defaultSector, initialCompanyTicker: $initialCompanyTicker)';
 }
 
 

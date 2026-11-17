@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'send_message_params.dart';
@@ -9,6 +9,7 @@ part of 'send_message_params.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $SendMessageParamsCopyWith<SendMessageParams> get copyWith => _$SendMessageParam
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SendMessageParams&&(identical(other.idempotencyKey, idempotencyKey) || other.idempotencyKey == idempotencyKey)&&(identical(other.query, query) || other.query == query)&&(identical(other.companyTicker, companyTicker) || other.companyTicker == companyTicker)&&(identical(other.companyName, companyName) || other.companyName == companyName)&&(identical(other.sessionId, sessionId) || other.sessionId == sessionId));
+  final _this = this as SendMessageParams;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SendMessageParams&&(identical(other.idempotencyKey, _this.idempotencyKey) || other.idempotencyKey == _this.idempotencyKey)&&(identical(other.query, _this.query) || other.query == _this.query)&&(identical(other.companyTicker, _this.companyTicker) || other.companyTicker == _this.companyTicker)&&(identical(other.companyName, _this.companyName) || other.companyName == _this.companyName)&&(identical(other.sessionId, _this.sessionId) || other.sessionId == _this.sessionId));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,idempotencyKey,query,companyTicker,companyName,sessionId);
+int get hashCode {
+  final _this = this as SendMessageParams;
+  return Object.hash(runtimeType,_this.idempotencyKey,_this.query,_this.companyTicker,_this.companyName,_this.sessionId);
+}
 
 @override
 String toString() {
-  return 'SendMessageParams(idempotencyKey: $idempotencyKey, query: $query, companyTicker: $companyTicker, companyName: $companyName, sessionId: $sessionId)';
+  final _this = this as SendMessageParams;
+  return 'SendMessageParams(idempotencyKey: ${_this.idempotencyKey}, query: ${_this.query}, companyTicker: ${_this.companyTicker}, companyName: ${_this.companyName}, sessionId: ${_this.sessionId})';
 }
 
 
@@ -63,7 +69,7 @@ class _$SendMessageParamsCopyWithImpl<$Res>
 /// Create a copy of SendMessageParams
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? idempotencyKey = null,Object? query = null,Object? companyTicker = null,Object? companyName = null,Object? sessionId = null,}) {
-  return _then(_self.copyWith(
+  return _then(SendMessageParams(
 idempotencyKey: null == idempotencyKey ? _self.idempotencyKey : idempotencyKey // ignore: cast_nullable_to_non_nullable
 as String,query: null == query ? _self.query : query // ignore: cast_nullable_to_non_nullable
 as String,companyTicker: null == companyTicker ? _self.companyTicker : companyTicker // ignore: cast_nullable_to_non_nullable
@@ -229,16 +235,18 @@ _$SendMessageParamsCopyWith<_SendMessageParams> get copyWith => __$SendMessagePa
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SendMessageParams&&(identical(other.idempotencyKey, idempotencyKey) || other.idempotencyKey == idempotencyKey)&&(identical(other.query, query) || other.query == query)&&(identical(other.companyTicker, companyTicker) || other.companyTicker == companyTicker)&&(identical(other.companyName, companyName) || other.companyName == companyName)&&(identical(other.sessionId, sessionId) || other.sessionId == sessionId));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _SendMessageParams&&(identical(other.idempotencyKey, idempotencyKey) || other.idempotencyKey == idempotencyKey)&&(identical(other.query, query) || other.query == query)&&(identical(other.companyTicker, companyTicker) || other.companyTicker == companyTicker)&&(identical(other.companyName, companyName) || other.companyName == companyName)&&(identical(other.sessionId, sessionId) || other.sessionId == sessionId));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,idempotencyKey,query,companyTicker,companyName,sessionId);
+int get hashCode {
+    return Object.hash(runtimeType,idempotencyKey,query,companyTicker,companyName,sessionId);
+}
 
 @override
 String toString() {
-  return 'SendMessageParams(idempotencyKey: $idempotencyKey, query: $query, companyTicker: $companyTicker, companyName: $companyName, sessionId: $sessionId)';
+    return 'SendMessageParams(idempotencyKey: $idempotencyKey, query: $query, companyTicker: $companyTicker, companyName: $companyName, sessionId: $sessionId)';
 }
 
 

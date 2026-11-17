@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'notification_topics_params.dart';
@@ -9,6 +9,7 @@ part of 'notification_topics_params.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $NotificationTopicsParamsCopyWith<NotificationTopicsParams> get copyWith => _$No
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is NotificationTopicsParams&&(identical(other.sectorName, sectorName) || other.sectorName == sectorName)&&const DeepCollectionEquality().equals(other.tickers, tickers));
+  final _this = this as NotificationTopicsParams;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is NotificationTopicsParams&&(identical(other.sectorName, _this.sectorName) || other.sectorName == _this.sectorName)&&const DeepCollectionEquality().equals(other.tickers, _this.tickers));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,sectorName,const DeepCollectionEquality().hash(tickers));
+int get hashCode {
+  final _this = this as NotificationTopicsParams;
+  return Object.hash(runtimeType,_this.sectorName,const DeepCollectionEquality().hash(_this.tickers));
+}
 
 @override
 String toString() {
-  return 'NotificationTopicsParams(sectorName: $sectorName, tickers: $tickers)';
+  final _this = this as NotificationTopicsParams;
+  return 'NotificationTopicsParams(sectorName: ${_this.sectorName}, tickers: ${_this.tickers})';
 }
 
 
@@ -63,7 +69,7 @@ class _$NotificationTopicsParamsCopyWithImpl<$Res>
 /// Create a copy of NotificationTopicsParams
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? sectorName = freezed,Object? tickers = null,}) {
-  return _then(_self.copyWith(
+  return _then(NotificationTopicsParams(
 sectorName: freezed == sectorName ? _self.sectorName : sectorName // ignore: cast_nullable_to_non_nullable
 as String?,tickers: null == tickers ? _self.tickers : tickers // ignore: cast_nullable_to_non_nullable
 as List<String>,
@@ -207,7 +213,7 @@ return $default(_that.sectorName,_that.tickers);case _:
 
 
 class _NotificationTopicsParams implements NotificationTopicsParams {
-  const _NotificationTopicsParams({this.sectorName, final  List<String> tickers = const []}): _tickers = tickers;
+  const _NotificationTopicsParams({this.sectorName,  List<String> tickers = const []}): _tickers = tickers;
   
 
 @override final  String? sectorName;
@@ -229,16 +235,18 @@ _$NotificationTopicsParamsCopyWith<_NotificationTopicsParams> get copyWith => __
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _NotificationTopicsParams&&(identical(other.sectorName, sectorName) || other.sectorName == sectorName)&&const DeepCollectionEquality().equals(other._tickers, _tickers));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _NotificationTopicsParams&&(identical(other.sectorName, sectorName) || other.sectorName == sectorName)&&const DeepCollectionEquality().equals(other.tickers, _tickers));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,sectorName,const DeepCollectionEquality().hash(_tickers));
+int get hashCode {
+    return Object.hash(runtimeType,sectorName,const DeepCollectionEquality().hash(_tickers));
+}
 
 @override
 String toString() {
-  return 'NotificationTopicsParams(sectorName: $sectorName, tickers: $tickers)';
+    return 'NotificationTopicsParams(sectorName: $sectorName, tickers: $tickers)';
 }
 
 

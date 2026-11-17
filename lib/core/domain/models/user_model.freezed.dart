@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'user_model.dart';
@@ -9,6 +9,7 @@ part of 'user_model.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 
@@ -28,16 +29,21 @@ $UserModelCopyWith<UserModel> get copyWith => _$UserModelCopyWithImpl<UserModel>
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is UserModel&&(identical(other.uid, uid) || other.uid == uid)&&(identical(other.name, name) || other.name == name)&&(identical(other.favoriteSector, favoriteSector) || other.favoriteSector == favoriteSector)&&const DeepCollectionEquality().equals(other.watchlist, watchlist)&&(identical(other.investingExperience, investingExperience) || other.investingExperience == investingExperience)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.isSubscribed, isSubscribed) || other.isSubscribed == isSubscribed)&&(identical(other.notificationsEnabled, notificationsEnabled) || other.notificationsEnabled == notificationsEnabled)&&const DeepCollectionEquality().equals(other.fcmTokens, fcmTokens));
+  final _this = this as UserModel;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is UserModel&&(identical(other.uid, _this.uid) || other.uid == _this.uid)&&(identical(other.name, _this.name) || other.name == _this.name)&&(identical(other.favoriteSector, _this.favoriteSector) || other.favoriteSector == _this.favoriteSector)&&const DeepCollectionEquality().equals(other.watchlist, _this.watchlist)&&(identical(other.investingExperience, _this.investingExperience) || other.investingExperience == _this.investingExperience)&&(identical(other.createdAt, _this.createdAt) || other.createdAt == _this.createdAt)&&(identical(other.isSubscribed, _this.isSubscribed) || other.isSubscribed == _this.isSubscribed)&&(identical(other.notificationsEnabled, _this.notificationsEnabled) || other.notificationsEnabled == _this.notificationsEnabled)&&const DeepCollectionEquality().equals(other.fcmTokens, _this.fcmTokens));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,uid,name,favoriteSector,const DeepCollectionEquality().hash(watchlist),investingExperience,createdAt,isSubscribed,notificationsEnabled,const DeepCollectionEquality().hash(fcmTokens));
+int get hashCode {
+  final _this = this as UserModel;
+  return Object.hash(runtimeType,_this.uid,_this.name,_this.favoriteSector,const DeepCollectionEquality().hash(_this.watchlist),_this.investingExperience,_this.createdAt,_this.isSubscribed,_this.notificationsEnabled,const DeepCollectionEquality().hash(_this.fcmTokens));
+}
 
 @override
 String toString() {
-  return 'UserModel(uid: $uid, name: $name, favoriteSector: $favoriteSector, watchlist: $watchlist, investingExperience: $investingExperience, createdAt: $createdAt, isSubscribed: $isSubscribed, notificationsEnabled: $notificationsEnabled, fcmTokens: $fcmTokens)';
+  final _this = this as UserModel;
+  return 'UserModel(uid: ${_this.uid}, name: ${_this.name}, favoriteSector: ${_this.favoriteSector}, watchlist: ${_this.watchlist}, investingExperience: ${_this.investingExperience}, createdAt: ${_this.createdAt}, isSubscribed: ${_this.isSubscribed}, notificationsEnabled: ${_this.notificationsEnabled}, fcmTokens: ${_this.fcmTokens})';
 }
 
 
@@ -66,7 +72,7 @@ class _$UserModelCopyWithImpl<$Res>
 /// Create a copy of UserModel
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? uid = null,Object? name = null,Object? favoriteSector = null,Object? watchlist = null,Object? investingExperience = null,Object? createdAt = null,Object? isSubscribed = null,Object? notificationsEnabled = null,Object? fcmTokens = null,}) {
-  return _then(_self.copyWith(
+  return _then(UserModel(
 uid: null == uid ? _self.uid : uid // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,favoriteSector: null == favoriteSector ? _self.favoriteSector : favoriteSector // ignore: cast_nullable_to_non_nullable
@@ -217,7 +223,7 @@ return $default(_that.uid,_that.name,_that.favoriteSector,_that.watchlist,_that.
 @JsonSerializable()
 
 class _UserModel implements UserModel {
-  const _UserModel({required this.uid, required this.name, required this.favoriteSector, final  List<Company> watchlist = const [], required this.investingExperience, @TimestampConverter() required this.createdAt, required this.isSubscribed, this.notificationsEnabled = true, final  Map<String, String> fcmTokens = const {}}): _watchlist = watchlist,_fcmTokens = fcmTokens;
+  const _UserModel({required this.uid, required this.name, required this.favoriteSector,  List<Company> watchlist = const [], required this.investingExperience, @TimestampConverter() required this.createdAt, required this.isSubscribed, this.notificationsEnabled = true,  Map<String, String> fcmTokens = const {}}): _watchlist = watchlist,_fcmTokens = fcmTokens;
   factory _UserModel.fromJson(Map<String, dynamic> json) => _$UserModelFromJson(json);
 
 @override final  String uid;
@@ -255,16 +261,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _UserModel&&(identical(other.uid, uid) || other.uid == uid)&&(identical(other.name, name) || other.name == name)&&(identical(other.favoriteSector, favoriteSector) || other.favoriteSector == favoriteSector)&&const DeepCollectionEquality().equals(other._watchlist, _watchlist)&&(identical(other.investingExperience, investingExperience) || other.investingExperience == investingExperience)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.isSubscribed, isSubscribed) || other.isSubscribed == isSubscribed)&&(identical(other.notificationsEnabled, notificationsEnabled) || other.notificationsEnabled == notificationsEnabled)&&const DeepCollectionEquality().equals(other._fcmTokens, _fcmTokens));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _UserModel&&(identical(other.uid, uid) || other.uid == uid)&&(identical(other.name, name) || other.name == name)&&(identical(other.favoriteSector, favoriteSector) || other.favoriteSector == favoriteSector)&&const DeepCollectionEquality().equals(other.watchlist, _watchlist)&&(identical(other.investingExperience, investingExperience) || other.investingExperience == investingExperience)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.isSubscribed, isSubscribed) || other.isSubscribed == isSubscribed)&&(identical(other.notificationsEnabled, notificationsEnabled) || other.notificationsEnabled == notificationsEnabled)&&const DeepCollectionEquality().equals(other.fcmTokens, _fcmTokens));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,uid,name,favoriteSector,const DeepCollectionEquality().hash(_watchlist),investingExperience,createdAt,isSubscribed,notificationsEnabled,const DeepCollectionEquality().hash(_fcmTokens));
+int get hashCode {
+    return Object.hash(runtimeType,uid,name,favoriteSector,const DeepCollectionEquality().hash(_watchlist),investingExperience,createdAt,isSubscribed,notificationsEnabled,const DeepCollectionEquality().hash(_fcmTokens));
+}
 
 @override
 String toString() {
-  return 'UserModel(uid: $uid, name: $name, favoriteSector: $favoriteSector, watchlist: $watchlist, investingExperience: $investingExperience, createdAt: $createdAt, isSubscribed: $isSubscribed, notificationsEnabled: $notificationsEnabled, fcmTokens: $fcmTokens)';
+    return 'UserModel(uid: $uid, name: $name, favoriteSector: $favoriteSector, watchlist: $watchlist, investingExperience: $investingExperience, createdAt: $createdAt, isSubscribed: $isSubscribed, notificationsEnabled: $notificationsEnabled, fcmTokens: $fcmTokens)';
 }
 
 

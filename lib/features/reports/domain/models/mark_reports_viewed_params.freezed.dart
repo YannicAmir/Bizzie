@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'mark_reports_viewed_params.dart';
@@ -9,6 +9,7 @@ part of 'mark_reports_viewed_params.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $MarkReportsViewedParamsCopyWith<MarkReportsViewedParams> get copyWith => _$Mark
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MarkReportsViewedParams&&(identical(other.uid, uid) || other.uid == uid)&&(identical(other.timestamp, timestamp) || other.timestamp == timestamp));
+  final _this = this as MarkReportsViewedParams;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MarkReportsViewedParams&&(identical(other.uid, _this.uid) || other.uid == _this.uid)&&(identical(other.timestamp, _this.timestamp) || other.timestamp == _this.timestamp));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,uid,timestamp);
+int get hashCode {
+  final _this = this as MarkReportsViewedParams;
+  return Object.hash(runtimeType,_this.uid,_this.timestamp);
+}
 
 @override
 String toString() {
-  return 'MarkReportsViewedParams(uid: $uid, timestamp: $timestamp)';
+  final _this = this as MarkReportsViewedParams;
+  return 'MarkReportsViewedParams(uid: ${_this.uid}, timestamp: ${_this.timestamp})';
 }
 
 
@@ -63,7 +69,7 @@ class _$MarkReportsViewedParamsCopyWithImpl<$Res>
 /// Create a copy of MarkReportsViewedParams
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? uid = null,Object? timestamp = null,}) {
-  return _then(_self.copyWith(
+  return _then(MarkReportsViewedParams(
 uid: null == uid ? _self.uid : uid // ignore: cast_nullable_to_non_nullable
 as String,timestamp: null == timestamp ? _self.timestamp : timestamp // ignore: cast_nullable_to_non_nullable
 as DateTime,
@@ -223,16 +229,18 @@ _$MarkReportsViewedParamsCopyWith<_MarkReportsViewedParams> get copyWith => __$M
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _MarkReportsViewedParams&&(identical(other.uid, uid) || other.uid == uid)&&(identical(other.timestamp, timestamp) || other.timestamp == timestamp));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _MarkReportsViewedParams&&(identical(other.uid, uid) || other.uid == uid)&&(identical(other.timestamp, timestamp) || other.timestamp == timestamp));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,uid,timestamp);
+int get hashCode {
+    return Object.hash(runtimeType,uid,timestamp);
+}
 
 @override
 String toString() {
-  return 'MarkReportsViewedParams(uid: $uid, timestamp: $timestamp)';
+    return 'MarkReportsViewedParams(uid: $uid, timestamp: $timestamp)';
 }
 
 

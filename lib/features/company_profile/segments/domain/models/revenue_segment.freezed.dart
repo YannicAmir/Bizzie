@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'revenue_segment.dart';
@@ -9,6 +9,7 @@ part of 'revenue_segment.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $RevenueSegmentCopyWith<RevenueSegment> get copyWith => _$RevenueSegmentCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is RevenueSegment&&(identical(other.date, date) || other.date == date)&&(identical(other.fiscalYear, fiscalYear) || other.fiscalYear == fiscalYear)&&(identical(other.period, period) || other.period == period)&&(identical(other.reportedCurrency, reportedCurrency) || other.reportedCurrency == reportedCurrency)&&const DeepCollectionEquality().equals(other.data, data));
+  final _this = this as RevenueSegment;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is RevenueSegment&&(identical(other.date, _this.date) || other.date == _this.date)&&(identical(other.fiscalYear, _this.fiscalYear) || other.fiscalYear == _this.fiscalYear)&&(identical(other.period, _this.period) || other.period == _this.period)&&(identical(other.reportedCurrency, _this.reportedCurrency) || other.reportedCurrency == _this.reportedCurrency)&&const DeepCollectionEquality().equals(other.data, _this.data));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,date,fiscalYear,period,reportedCurrency,const DeepCollectionEquality().hash(data));
+int get hashCode {
+  final _this = this as RevenueSegment;
+  return Object.hash(runtimeType,_this.date,_this.fiscalYear,_this.period,_this.reportedCurrency,const DeepCollectionEquality().hash(_this.data));
+}
 
 @override
 String toString() {
-  return 'RevenueSegment(date: $date, fiscalYear: $fiscalYear, period: $period, reportedCurrency: $reportedCurrency, data: $data)';
+  final _this = this as RevenueSegment;
+  return 'RevenueSegment(date: ${_this.date}, fiscalYear: ${_this.fiscalYear}, period: ${_this.period}, reportedCurrency: ${_this.reportedCurrency}, data: ${_this.data})';
 }
 
 
@@ -63,7 +69,7 @@ class _$RevenueSegmentCopyWithImpl<$Res>
 /// Create a copy of RevenueSegment
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? date = null,Object? fiscalYear = null,Object? period = null,Object? reportedCurrency = null,Object? data = null,}) {
-  return _then(_self.copyWith(
+  return _then(RevenueSegment(
 date: null == date ? _self.date : date // ignore: cast_nullable_to_non_nullable
 as String,fiscalYear: null == fiscalYear ? _self.fiscalYear : fiscalYear // ignore: cast_nullable_to_non_nullable
 as int,period: null == period ? _self.period : period // ignore: cast_nullable_to_non_nullable
@@ -210,7 +216,7 @@ return $default(_that.date,_that.fiscalYear,_that.period,_that.reportedCurrency,
 
 
 class _RevenueSegment implements RevenueSegment {
-  const _RevenueSegment({required this.date, required this.fiscalYear, required this.period, required this.reportedCurrency, required final  Map<String, double> data}): _data = data;
+  const _RevenueSegment({required this.date, required this.fiscalYear, required this.period, required this.reportedCurrency, required  Map<String, double> data}): _data = data;
   
 
 @override final  String date;
@@ -235,16 +241,18 @@ _$RevenueSegmentCopyWith<_RevenueSegment> get copyWith => __$RevenueSegmentCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _RevenueSegment&&(identical(other.date, date) || other.date == date)&&(identical(other.fiscalYear, fiscalYear) || other.fiscalYear == fiscalYear)&&(identical(other.period, period) || other.period == period)&&(identical(other.reportedCurrency, reportedCurrency) || other.reportedCurrency == reportedCurrency)&&const DeepCollectionEquality().equals(other._data, _data));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _RevenueSegment&&(identical(other.date, date) || other.date == date)&&(identical(other.fiscalYear, fiscalYear) || other.fiscalYear == fiscalYear)&&(identical(other.period, period) || other.period == period)&&(identical(other.reportedCurrency, reportedCurrency) || other.reportedCurrency == reportedCurrency)&&const DeepCollectionEquality().equals(other.data, _data));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,date,fiscalYear,period,reportedCurrency,const DeepCollectionEquality().hash(_data));
+int get hashCode {
+    return Object.hash(runtimeType,date,fiscalYear,period,reportedCurrency,const DeepCollectionEquality().hash(_data));
+}
 
 @override
 String toString() {
-  return 'RevenueSegment(date: $date, fiscalYear: $fiscalYear, period: $period, reportedCurrency: $reportedCurrency, data: $data)';
+    return 'RevenueSegment(date: $date, fiscalYear: $fiscalYear, period: $period, reportedCurrency: $reportedCurrency, data: $data)';
 }
 
 

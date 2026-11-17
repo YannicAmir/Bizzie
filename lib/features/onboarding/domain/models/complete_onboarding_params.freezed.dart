@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'complete_onboarding_params.dart';
@@ -9,6 +9,7 @@ part of 'complete_onboarding_params.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $CompleteOnboardingParamsCopyWith<CompleteOnboardingParams> get copyWith => _$Co
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CompleteOnboardingParams&&(identical(other.data, data) || other.data == data)&&(identical(other.uid, uid) || other.uid == uid)&&(identical(other.awaitServerAck, awaitServerAck) || other.awaitServerAck == awaitServerAck)&&(identical(other.deferNotificationSetup, deferNotificationSetup) || other.deferNotificationSetup == deferNotificationSetup)&&(identical(other.hasExistingProfile, hasExistingProfile) || other.hasExistingProfile == hasExistingProfile));
+  final _this = this as CompleteOnboardingParams;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CompleteOnboardingParams&&(identical(other.data, _this.data) || other.data == _this.data)&&(identical(other.uid, _this.uid) || other.uid == _this.uid)&&(identical(other.awaitServerAck, _this.awaitServerAck) || other.awaitServerAck == _this.awaitServerAck)&&(identical(other.deferNotificationSetup, _this.deferNotificationSetup) || other.deferNotificationSetup == _this.deferNotificationSetup)&&(identical(other.hasExistingProfile, _this.hasExistingProfile) || other.hasExistingProfile == _this.hasExistingProfile));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,data,uid,awaitServerAck,deferNotificationSetup,hasExistingProfile);
+int get hashCode {
+  final _this = this as CompleteOnboardingParams;
+  return Object.hash(runtimeType,_this.data,_this.uid,_this.awaitServerAck,_this.deferNotificationSetup,_this.hasExistingProfile);
+}
 
 @override
 String toString() {
-  return 'CompleteOnboardingParams(data: $data, uid: $uid, awaitServerAck: $awaitServerAck, deferNotificationSetup: $deferNotificationSetup, hasExistingProfile: $hasExistingProfile)';
+  final _this = this as CompleteOnboardingParams;
+  return 'CompleteOnboardingParams(data: ${_this.data}, uid: ${_this.uid}, awaitServerAck: ${_this.awaitServerAck}, deferNotificationSetup: ${_this.deferNotificationSetup}, hasExistingProfile: ${_this.hasExistingProfile})';
 }
 
 
@@ -63,7 +69,7 @@ class _$CompleteOnboardingParamsCopyWithImpl<$Res>
 /// Create a copy of CompleteOnboardingParams
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? data = null,Object? uid = null,Object? awaitServerAck = null,Object? deferNotificationSetup = null,Object? hasExistingProfile = null,}) {
-  return _then(_self.copyWith(
+  return _then(CompleteOnboardingParams(
 data: null == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
 as OnboardingData,uid: null == uid ? _self.uid : uid // ignore: cast_nullable_to_non_nullable
 as String,awaitServerAck: null == awaitServerAck ? _self.awaitServerAck : awaitServerAck // ignore: cast_nullable_to_non_nullable
@@ -238,16 +244,18 @@ _$CompleteOnboardingParamsCopyWith<_CompleteOnboardingParams> get copyWith => __
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CompleteOnboardingParams&&(identical(other.data, data) || other.data == data)&&(identical(other.uid, uid) || other.uid == uid)&&(identical(other.awaitServerAck, awaitServerAck) || other.awaitServerAck == awaitServerAck)&&(identical(other.deferNotificationSetup, deferNotificationSetup) || other.deferNotificationSetup == deferNotificationSetup)&&(identical(other.hasExistingProfile, hasExistingProfile) || other.hasExistingProfile == hasExistingProfile));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _CompleteOnboardingParams&&(identical(other.data, data) || other.data == data)&&(identical(other.uid, uid) || other.uid == uid)&&(identical(other.awaitServerAck, awaitServerAck) || other.awaitServerAck == awaitServerAck)&&(identical(other.deferNotificationSetup, deferNotificationSetup) || other.deferNotificationSetup == deferNotificationSetup)&&(identical(other.hasExistingProfile, hasExistingProfile) || other.hasExistingProfile == hasExistingProfile));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,data,uid,awaitServerAck,deferNotificationSetup,hasExistingProfile);
+int get hashCode {
+    return Object.hash(runtimeType,data,uid,awaitServerAck,deferNotificationSetup,hasExistingProfile);
+}
 
 @override
 String toString() {
-  return 'CompleteOnboardingParams(data: $data, uid: $uid, awaitServerAck: $awaitServerAck, deferNotificationSetup: $deferNotificationSetup, hasExistingProfile: $hasExistingProfile)';
+    return 'CompleteOnboardingParams(data: $data, uid: $uid, awaitServerAck: $awaitServerAck, deferNotificationSetup: $deferNotificationSetup, hasExistingProfile: $hasExistingProfile)';
 }
 
 

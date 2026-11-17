@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'watchlist_event.dart';
@@ -9,6 +9,7 @@ part of 'watchlist_event.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -20,7 +21,7 @@ mixin _$WatchlistEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is WatchlistEvent);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is WatchlistEvent);
 }
 
 
@@ -29,7 +30,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'WatchlistEvent()';
+    return 'WatchlistEvent()';
 }
 
 
@@ -209,7 +210,7 @@ class SyncRequested implements WatchlistEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SyncRequested);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SyncRequested);
 }
 
 
@@ -218,7 +219,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'WatchlistEvent.syncRequested()';
+    return 'WatchlistEvent.syncRequested()';
 }
 
 
@@ -250,16 +251,18 @@ $AddRequestedCopyWith<AddRequested> get copyWith => _$AddRequestedCopyWithImpl<A
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AddRequested&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.name, name) || other.name == name)&&(identical(other.logoUrl, logoUrl) || other.logoUrl == logoUrl)&&(identical(other.tabName, tabName) || other.tabName == tabName)&&(identical(other.durationOnPageSeconds, durationOnPageSeconds) || other.durationOnPageSeconds == durationOnPageSeconds));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is AddRequested&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.name, name) || other.name == name)&&(identical(other.logoUrl, logoUrl) || other.logoUrl == logoUrl)&&(identical(other.tabName, tabName) || other.tabName == tabName)&&(identical(other.durationOnPageSeconds, durationOnPageSeconds) || other.durationOnPageSeconds == durationOnPageSeconds));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,ticker,name,logoUrl,tabName,durationOnPageSeconds);
+int get hashCode {
+    return Object.hash(runtimeType,ticker,name,logoUrl,tabName,durationOnPageSeconds);
+}
 
 @override
 String toString() {
-  return 'WatchlistEvent.addRequested(ticker: $ticker, name: $name, logoUrl: $logoUrl, tabName: $tabName, durationOnPageSeconds: $durationOnPageSeconds)';
+    return 'WatchlistEvent.addRequested(ticker: $ticker, name: $name, logoUrl: $logoUrl, tabName: $tabName, durationOnPageSeconds: $durationOnPageSeconds)';
 }
 
 
@@ -322,16 +325,18 @@ $RemoveRequestedCopyWith<RemoveRequested> get copyWith => _$RemoveRequestedCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is RemoveRequested&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.tabName, tabName) || other.tabName == tabName)&&(identical(other.durationOnPageSeconds, durationOnPageSeconds) || other.durationOnPageSeconds == durationOnPageSeconds));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is RemoveRequested&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.tabName, tabName) || other.tabName == tabName)&&(identical(other.durationOnPageSeconds, durationOnPageSeconds) || other.durationOnPageSeconds == durationOnPageSeconds));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,ticker,tabName,durationOnPageSeconds);
+int get hashCode {
+    return Object.hash(runtimeType,ticker,tabName,durationOnPageSeconds);
+}
 
 @override
 String toString() {
-  return 'WatchlistEvent.removeRequested(ticker: $ticker, tabName: $tabName, durationOnPageSeconds: $durationOnPageSeconds)';
+    return 'WatchlistEvent.removeRequested(ticker: $ticker, tabName: $tabName, durationOnPageSeconds: $durationOnPageSeconds)';
 }
 
 
@@ -390,16 +395,18 @@ $LoadRequestedCopyWith<LoadRequested> get copyWith => _$LoadRequestedCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is LoadRequested&&(identical(other.uid, uid) || other.uid == uid));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is LoadRequested&&(identical(other.uid, uid) || other.uid == uid));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,uid);
+int get hashCode {
+    return Object.hash(runtimeType,uid);
+}
 
 @override
 String toString() {
-  return 'WatchlistEvent.loadRequested(uid: $uid)';
+    return 'WatchlistEvent.loadRequested(uid: $uid)';
 }
 
 
@@ -441,7 +448,7 @@ as String?,
 
 
 class LoadWatchlistEvents implements WatchlistEvent {
-  const LoadWatchlistEvents(final  List<String> tickers): _tickers = tickers;
+  const LoadWatchlistEvents( List<String> tickers): _tickers = tickers;
   
 
  final  List<String> _tickers;
@@ -462,16 +469,18 @@ $LoadWatchlistEventsCopyWith<LoadWatchlistEvents> get copyWith => _$LoadWatchlis
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is LoadWatchlistEvents&&const DeepCollectionEquality().equals(other._tickers, _tickers));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is LoadWatchlistEvents&&const DeepCollectionEquality().equals(other.tickers, _tickers));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_tickers));
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_tickers));
+}
 
 @override
 String toString() {
-  return 'WatchlistEvent.loadWatchlistEvents(tickers: $tickers)';
+    return 'WatchlistEvent.loadWatchlistEvents(tickers: $tickers)';
 }
 
 
@@ -523,7 +532,7 @@ class Reset implements WatchlistEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Reset);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is Reset);
 }
 
 
@@ -532,7 +541,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'WatchlistEvent.reset()';
+    return 'WatchlistEvent.reset()';
 }
 
 

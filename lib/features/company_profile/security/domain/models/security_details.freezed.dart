@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'security_details.dart';
@@ -9,6 +9,7 @@ part of 'security_details.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $SecurityDetailsCopyWith<SecurityDetails> get copyWith => _$SecurityDetailsCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SecurityDetails&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.name, name) || other.name == name)&&(identical(other.sector, sector) || other.sector == sector)&&(identical(other.industry, industry) || other.industry == industry)&&(identical(other.description, description) || other.description == description)&&(identical(other.currency, currency) || other.currency == currency)&&(identical(other.isEtf, isEtf) || other.isEtf == isEtf)&&(identical(other.isFund, isFund) || other.isFund == isFund)&&(identical(other.isActivelyTrading, isActivelyTrading) || other.isActivelyTrading == isActivelyTrading)&&(identical(other.price, price) || other.price == price)&&(identical(other.changesPercentage, changesPercentage) || other.changesPercentage == changesPercentage)&&(identical(other.change, change) || other.change == change)&&(identical(other.marketCap, marketCap) || other.marketCap == marketCap)&&(identical(other.peRatioTTM, peRatioTTM) || other.peRatioTTM == peRatioTTM)&&(identical(other.priceToFreeCashFlowTTM, priceToFreeCashFlowTTM) || other.priceToFreeCashFlowTTM == priceToFreeCashFlowTTM)&&(identical(other.beta, beta) || other.beta == beta)&&(identical(other.image, image) || other.image == image)&&(identical(other.exchangeShortName, exchangeShortName) || other.exchangeShortName == exchangeShortName)&&(identical(other.country, country) || other.country == country)&&(identical(other.ipoDate, ipoDate) || other.ipoDate == ipoDate)&&(identical(other.website, website) || other.website == website));
+  final _this = this as SecurityDetails;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SecurityDetails&&(identical(other.ticker, _this.ticker) || other.ticker == _this.ticker)&&(identical(other.name, _this.name) || other.name == _this.name)&&(identical(other.sector, _this.sector) || other.sector == _this.sector)&&(identical(other.industry, _this.industry) || other.industry == _this.industry)&&(identical(other.description, _this.description) || other.description == _this.description)&&(identical(other.currency, _this.currency) || other.currency == _this.currency)&&(identical(other.isEtf, _this.isEtf) || other.isEtf == _this.isEtf)&&(identical(other.isFund, _this.isFund) || other.isFund == _this.isFund)&&(identical(other.isActivelyTrading, _this.isActivelyTrading) || other.isActivelyTrading == _this.isActivelyTrading)&&(identical(other.price, _this.price) || other.price == _this.price)&&(identical(other.changesPercentage, _this.changesPercentage) || other.changesPercentage == _this.changesPercentage)&&(identical(other.change, _this.change) || other.change == _this.change)&&(identical(other.marketCap, _this.marketCap) || other.marketCap == _this.marketCap)&&(identical(other.peRatioTTM, _this.peRatioTTM) || other.peRatioTTM == _this.peRatioTTM)&&(identical(other.priceToFreeCashFlowTTM, _this.priceToFreeCashFlowTTM) || other.priceToFreeCashFlowTTM == _this.priceToFreeCashFlowTTM)&&(identical(other.beta, _this.beta) || other.beta == _this.beta)&&(identical(other.image, _this.image) || other.image == _this.image)&&(identical(other.exchangeShortName, _this.exchangeShortName) || other.exchangeShortName == _this.exchangeShortName)&&(identical(other.country, _this.country) || other.country == _this.country)&&(identical(other.ipoDate, _this.ipoDate) || other.ipoDate == _this.ipoDate)&&(identical(other.website, _this.website) || other.website == _this.website));
 }
 
 
 @override
-int get hashCode => Object.hashAll([runtimeType,ticker,name,sector,industry,description,currency,isEtf,isFund,isActivelyTrading,price,changesPercentage,change,marketCap,peRatioTTM,priceToFreeCashFlowTTM,beta,image,exchangeShortName,country,ipoDate,website]);
+int get hashCode {
+  final _this = this as SecurityDetails;
+  return Object.hashAll([runtimeType,_this.ticker,_this.name,_this.sector,_this.industry,_this.description,_this.currency,_this.isEtf,_this.isFund,_this.isActivelyTrading,_this.price,_this.changesPercentage,_this.change,_this.marketCap,_this.peRatioTTM,_this.priceToFreeCashFlowTTM,_this.beta,_this.image,_this.exchangeShortName,_this.country,_this.ipoDate,_this.website]);
+}
 
 @override
 String toString() {
-  return 'SecurityDetails(ticker: $ticker, name: $name, sector: $sector, industry: $industry, description: $description, currency: $currency, isEtf: $isEtf, isFund: $isFund, isActivelyTrading: $isActivelyTrading, price: $price, changesPercentage: $changesPercentage, change: $change, marketCap: $marketCap, peRatioTTM: $peRatioTTM, priceToFreeCashFlowTTM: $priceToFreeCashFlowTTM, beta: $beta, image: $image, exchangeShortName: $exchangeShortName, country: $country, ipoDate: $ipoDate, website: $website)';
+  final _this = this as SecurityDetails;
+  return 'SecurityDetails(ticker: ${_this.ticker}, name: ${_this.name}, sector: ${_this.sector}, industry: ${_this.industry}, description: ${_this.description}, currency: ${_this.currency}, isEtf: ${_this.isEtf}, isFund: ${_this.isFund}, isActivelyTrading: ${_this.isActivelyTrading}, price: ${_this.price}, changesPercentage: ${_this.changesPercentage}, change: ${_this.change}, marketCap: ${_this.marketCap}, peRatioTTM: ${_this.peRatioTTM}, priceToFreeCashFlowTTM: ${_this.priceToFreeCashFlowTTM}, beta: ${_this.beta}, image: ${_this.image}, exchangeShortName: ${_this.exchangeShortName}, country: ${_this.country}, ipoDate: ${_this.ipoDate}, website: ${_this.website})';
 }
 
 
@@ -63,7 +69,7 @@ class _$SecurityDetailsCopyWithImpl<$Res>
 /// Create a copy of SecurityDetails
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? ticker = null,Object? name = null,Object? sector = null,Object? industry = null,Object? description = null,Object? currency = null,Object? isEtf = null,Object? isFund = null,Object? isActivelyTrading = null,Object? price = freezed,Object? changesPercentage = freezed,Object? change = freezed,Object? marketCap = freezed,Object? peRatioTTM = freezed,Object? priceToFreeCashFlowTTM = freezed,Object? beta = freezed,Object? image = freezed,Object? exchangeShortName = freezed,Object? country = freezed,Object? ipoDate = freezed,Object? website = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(SecurityDetails(
 ticker: null == ticker ? _self.ticker : ticker // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,sector: null == sector ? _self.sector : sector // ignore: cast_nullable_to_non_nullable
@@ -261,16 +267,18 @@ _$SecurityDetailsCopyWith<_SecurityDetails> get copyWith => __$SecurityDetailsCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SecurityDetails&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.name, name) || other.name == name)&&(identical(other.sector, sector) || other.sector == sector)&&(identical(other.industry, industry) || other.industry == industry)&&(identical(other.description, description) || other.description == description)&&(identical(other.currency, currency) || other.currency == currency)&&(identical(other.isEtf, isEtf) || other.isEtf == isEtf)&&(identical(other.isFund, isFund) || other.isFund == isFund)&&(identical(other.isActivelyTrading, isActivelyTrading) || other.isActivelyTrading == isActivelyTrading)&&(identical(other.price, price) || other.price == price)&&(identical(other.changesPercentage, changesPercentage) || other.changesPercentage == changesPercentage)&&(identical(other.change, change) || other.change == change)&&(identical(other.marketCap, marketCap) || other.marketCap == marketCap)&&(identical(other.peRatioTTM, peRatioTTM) || other.peRatioTTM == peRatioTTM)&&(identical(other.priceToFreeCashFlowTTM, priceToFreeCashFlowTTM) || other.priceToFreeCashFlowTTM == priceToFreeCashFlowTTM)&&(identical(other.beta, beta) || other.beta == beta)&&(identical(other.image, image) || other.image == image)&&(identical(other.exchangeShortName, exchangeShortName) || other.exchangeShortName == exchangeShortName)&&(identical(other.country, country) || other.country == country)&&(identical(other.ipoDate, ipoDate) || other.ipoDate == ipoDate)&&(identical(other.website, website) || other.website == website));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _SecurityDetails&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.name, name) || other.name == name)&&(identical(other.sector, sector) || other.sector == sector)&&(identical(other.industry, industry) || other.industry == industry)&&(identical(other.description, description) || other.description == description)&&(identical(other.currency, currency) || other.currency == currency)&&(identical(other.isEtf, isEtf) || other.isEtf == isEtf)&&(identical(other.isFund, isFund) || other.isFund == isFund)&&(identical(other.isActivelyTrading, isActivelyTrading) || other.isActivelyTrading == isActivelyTrading)&&(identical(other.price, price) || other.price == price)&&(identical(other.changesPercentage, changesPercentage) || other.changesPercentage == changesPercentage)&&(identical(other.change, change) || other.change == change)&&(identical(other.marketCap, marketCap) || other.marketCap == marketCap)&&(identical(other.peRatioTTM, peRatioTTM) || other.peRatioTTM == peRatioTTM)&&(identical(other.priceToFreeCashFlowTTM, priceToFreeCashFlowTTM) || other.priceToFreeCashFlowTTM == priceToFreeCashFlowTTM)&&(identical(other.beta, beta) || other.beta == beta)&&(identical(other.image, image) || other.image == image)&&(identical(other.exchangeShortName, exchangeShortName) || other.exchangeShortName == exchangeShortName)&&(identical(other.country, country) || other.country == country)&&(identical(other.ipoDate, ipoDate) || other.ipoDate == ipoDate)&&(identical(other.website, website) || other.website == website));
 }
 
 
 @override
-int get hashCode => Object.hashAll([runtimeType,ticker,name,sector,industry,description,currency,isEtf,isFund,isActivelyTrading,price,changesPercentage,change,marketCap,peRatioTTM,priceToFreeCashFlowTTM,beta,image,exchangeShortName,country,ipoDate,website]);
+int get hashCode {
+    return Object.hashAll([runtimeType,ticker,name,sector,industry,description,currency,isEtf,isFund,isActivelyTrading,price,changesPercentage,change,marketCap,peRatioTTM,priceToFreeCashFlowTTM,beta,image,exchangeShortName,country,ipoDate,website]);
+}
 
 @override
 String toString() {
-  return 'SecurityDetails(ticker: $ticker, name: $name, sector: $sector, industry: $industry, description: $description, currency: $currency, isEtf: $isEtf, isFund: $isFund, isActivelyTrading: $isActivelyTrading, price: $price, changesPercentage: $changesPercentage, change: $change, marketCap: $marketCap, peRatioTTM: $peRatioTTM, priceToFreeCashFlowTTM: $priceToFreeCashFlowTTM, beta: $beta, image: $image, exchangeShortName: $exchangeShortName, country: $country, ipoDate: $ipoDate, website: $website)';
+    return 'SecurityDetails(ticker: $ticker, name: $name, sector: $sector, industry: $industry, description: $description, currency: $currency, isEtf: $isEtf, isFund: $isFund, isActivelyTrading: $isActivelyTrading, price: $price, changesPercentage: $changesPercentage, change: $change, marketCap: $marketCap, peRatioTTM: $peRatioTTM, priceToFreeCashFlowTTM: $priceToFreeCashFlowTTM, beta: $beta, image: $image, exchangeShortName: $exchangeShortName, country: $country, ipoDate: $ipoDate, website: $website)';
 }
 
 

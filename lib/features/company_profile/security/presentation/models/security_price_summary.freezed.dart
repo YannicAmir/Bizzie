@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'security_price_summary.dart';
@@ -9,6 +9,7 @@ part of 'security_price_summary.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $SecurityPriceSummaryCopyWith<SecurityPriceSummary> get copyWith => _$SecurityPr
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SecurityPriceSummary&&(identical(other.priceFormatted, priceFormatted) || other.priceFormatted == priceFormatted)&&(identical(other.price, price) || other.price == price)&&(identical(other.changeFormatted, changeFormatted) || other.changeFormatted == changeFormatted)&&(identical(other.isPositiveChange, isPositiveChange) || other.isPositiveChange == isPositiveChange)&&(identical(other.sessionDate, sessionDate) || other.sessionDate == sessionDate));
+  final _this = this as SecurityPriceSummary;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SecurityPriceSummary&&(identical(other.priceFormatted, _this.priceFormatted) || other.priceFormatted == _this.priceFormatted)&&(identical(other.price, _this.price) || other.price == _this.price)&&(identical(other.changeFormatted, _this.changeFormatted) || other.changeFormatted == _this.changeFormatted)&&(identical(other.isPositiveChange, _this.isPositiveChange) || other.isPositiveChange == _this.isPositiveChange)&&(identical(other.sessionDate, _this.sessionDate) || other.sessionDate == _this.sessionDate));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,priceFormatted,price,changeFormatted,isPositiveChange,sessionDate);
+int get hashCode {
+  final _this = this as SecurityPriceSummary;
+  return Object.hash(runtimeType,_this.priceFormatted,_this.price,_this.changeFormatted,_this.isPositiveChange,_this.sessionDate);
+}
 
 @override
 String toString() {
-  return 'SecurityPriceSummary(priceFormatted: $priceFormatted, price: $price, changeFormatted: $changeFormatted, isPositiveChange: $isPositiveChange, sessionDate: $sessionDate)';
+  final _this = this as SecurityPriceSummary;
+  return 'SecurityPriceSummary(priceFormatted: ${_this.priceFormatted}, price: ${_this.price}, changeFormatted: ${_this.changeFormatted}, isPositiveChange: ${_this.isPositiveChange}, sessionDate: ${_this.sessionDate})';
 }
 
 
@@ -63,7 +69,7 @@ class _$SecurityPriceSummaryCopyWithImpl<$Res>
 /// Create a copy of SecurityPriceSummary
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? priceFormatted = null,Object? price = freezed,Object? changeFormatted = null,Object? isPositiveChange = null,Object? sessionDate = null,}) {
-  return _then(_self.copyWith(
+  return _then(SecurityPriceSummary(
 priceFormatted: null == priceFormatted ? _self.priceFormatted : priceFormatted // ignore: cast_nullable_to_non_nullable
 as String,price: freezed == price ? _self.price : price // ignore: cast_nullable_to_non_nullable
 as double?,changeFormatted: null == changeFormatted ? _self.changeFormatted : changeFormatted // ignore: cast_nullable_to_non_nullable
@@ -229,16 +235,18 @@ _$SecurityPriceSummaryCopyWith<_SecurityPriceSummary> get copyWith => __$Securit
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SecurityPriceSummary&&(identical(other.priceFormatted, priceFormatted) || other.priceFormatted == priceFormatted)&&(identical(other.price, price) || other.price == price)&&(identical(other.changeFormatted, changeFormatted) || other.changeFormatted == changeFormatted)&&(identical(other.isPositiveChange, isPositiveChange) || other.isPositiveChange == isPositiveChange)&&(identical(other.sessionDate, sessionDate) || other.sessionDate == sessionDate));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _SecurityPriceSummary&&(identical(other.priceFormatted, priceFormatted) || other.priceFormatted == priceFormatted)&&(identical(other.price, price) || other.price == price)&&(identical(other.changeFormatted, changeFormatted) || other.changeFormatted == changeFormatted)&&(identical(other.isPositiveChange, isPositiveChange) || other.isPositiveChange == isPositiveChange)&&(identical(other.sessionDate, sessionDate) || other.sessionDate == sessionDate));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,priceFormatted,price,changeFormatted,isPositiveChange,sessionDate);
+int get hashCode {
+    return Object.hash(runtimeType,priceFormatted,price,changeFormatted,isPositiveChange,sessionDate);
+}
 
 @override
 String toString() {
-  return 'SecurityPriceSummary(priceFormatted: $priceFormatted, price: $price, changeFormatted: $changeFormatted, isPositiveChange: $isPositiveChange, sessionDate: $sessionDate)';
+    return 'SecurityPriceSummary(priceFormatted: $priceFormatted, price: $price, changeFormatted: $changeFormatted, isPositiveChange: $isPositiveChange, sessionDate: $sessionDate)';
 }
 
 

@@ -25,7 +25,7 @@ import 'package:bizzie/features/subscription/presentation/widgets/discount_plan_
 import 'package:bizzie/features/subscription/presentation/widgets/savings_summary_card.dart';
 import 'package:bizzie/features/subscription/presentation/widgets/subscription_bottom_actions.dart';
 import 'package:bizzie/shared/widgets/modals/bizzie_snackbar.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

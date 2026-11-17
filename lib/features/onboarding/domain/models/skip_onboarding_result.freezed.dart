@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'skip_onboarding_result.dart';
@@ -9,6 +9,7 @@ part of 'skip_onboarding_result.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -20,7 +21,7 @@ mixin _$SkipOnboardingResult {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SkipOnboardingResult);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SkipOnboardingResult);
 }
 
 
@@ -29,7 +30,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'SkipOnboardingResult()';
+    return 'SkipOnboardingResult()';
 }
 
 
@@ -191,16 +192,18 @@ $SkipOnboardingCompletedCopyWith<SkipOnboardingCompleted> get copyWith => _$Skip
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SkipOnboardingCompleted&&(identical(other.destination, destination) || other.destination == destination)&&(identical(other.fieldSources, fieldSources) || other.fieldSources == fieldSources));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SkipOnboardingCompleted&&(identical(other.destination, destination) || other.destination == destination)&&(identical(other.fieldSources, fieldSources) || other.fieldSources == fieldSources));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,destination,fieldSources);
+int get hashCode {
+    return Object.hash(runtimeType,destination,fieldSources);
+}
 
 @override
 String toString() {
-  return 'SkipOnboardingResult.completed(destination: $destination, fieldSources: $fieldSources)';
+    return 'SkipOnboardingResult.completed(destination: $destination, fieldSources: $fieldSources)';
 }
 
 
@@ -271,7 +274,7 @@ class SkipOnboardingExistingProfile implements SkipOnboardingResult {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SkipOnboardingExistingProfile);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SkipOnboardingExistingProfile);
 }
 
 
@@ -280,7 +283,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'SkipOnboardingResult.existingProfile()';
+    return 'SkipOnboardingResult.existingProfile()';
 }
 
 

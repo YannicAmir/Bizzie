@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'reports_feed.dart';
@@ -9,6 +9,7 @@ part of 'reports_feed.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $ReportsFeedCopyWith<ReportsFeed> get copyWith => _$ReportsFeedCopyWithImpl<Repo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ReportsFeed&&const DeepCollectionEquality().equals(other.currentReports, currentReports)&&const DeepCollectionEquality().equals(other.pastReports, pastReports)&&const DeepCollectionEquality().equals(other.filings, filings)&&const DeepCollectionEquality().equals(other.upcomingEarnings, upcomingEarnings)&&const DeepCollectionEquality().equals(other.weeklyReports, weeklyReports));
+  final _this = this as ReportsFeed;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ReportsFeed&&const DeepCollectionEquality().equals(other.currentReports, _this.currentReports)&&const DeepCollectionEquality().equals(other.pastReports, _this.pastReports)&&const DeepCollectionEquality().equals(other.filings, _this.filings)&&const DeepCollectionEquality().equals(other.upcomingEarnings, _this.upcomingEarnings)&&const DeepCollectionEquality().equals(other.weeklyReports, _this.weeklyReports));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(currentReports),const DeepCollectionEquality().hash(pastReports),const DeepCollectionEquality().hash(filings),const DeepCollectionEquality().hash(upcomingEarnings),const DeepCollectionEquality().hash(weeklyReports));
+int get hashCode {
+  final _this = this as ReportsFeed;
+  return Object.hash(runtimeType,const DeepCollectionEquality().hash(_this.currentReports),const DeepCollectionEquality().hash(_this.pastReports),const DeepCollectionEquality().hash(_this.filings),const DeepCollectionEquality().hash(_this.upcomingEarnings),const DeepCollectionEquality().hash(_this.weeklyReports));
+}
 
 @override
 String toString() {
-  return 'ReportsFeed(currentReports: $currentReports, pastReports: $pastReports, filings: $filings, upcomingEarnings: $upcomingEarnings, weeklyReports: $weeklyReports)';
+  final _this = this as ReportsFeed;
+  return 'ReportsFeed(currentReports: ${_this.currentReports}, pastReports: ${_this.pastReports}, filings: ${_this.filings}, upcomingEarnings: ${_this.upcomingEarnings}, weeklyReports: ${_this.weeklyReports})';
 }
 
 
@@ -63,7 +69,7 @@ class _$ReportsFeedCopyWithImpl<$Res>
 /// Create a copy of ReportsFeed
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? currentReports = null,Object? pastReports = null,Object? filings = null,Object? upcomingEarnings = null,Object? weeklyReports = null,}) {
-  return _then(_self.copyWith(
+  return _then(ReportsFeed(
 currentReports: null == currentReports ? _self.currentReports : currentReports // ignore: cast_nullable_to_non_nullable
 as List<FinancialReport>,pastReports: null == pastReports ? _self.pastReports : pastReports // ignore: cast_nullable_to_non_nullable
 as List<FinancialReport>,filings: null == filings ? _self.filings : filings // ignore: cast_nullable_to_non_nullable
@@ -210,7 +216,7 @@ return $default(_that.currentReports,_that.pastReports,_that.filings,_that.upcom
 
 
 class _ReportsFeed implements ReportsFeed {
-  const _ReportsFeed({final  List<FinancialReport> currentReports = const [], final  List<FinancialReport> pastReports = const [], final  List<SecFiling> filings = const [], final  List<UpcomingEarnings> upcomingEarnings = const [], final  List<WeeklyReport> weeklyReports = const []}): _currentReports = currentReports,_pastReports = pastReports,_filings = filings,_upcomingEarnings = upcomingEarnings,_weeklyReports = weeklyReports;
+  const _ReportsFeed({ List<FinancialReport> currentReports = const [],  List<FinancialReport> pastReports = const [],  List<SecFiling> filings = const [],  List<UpcomingEarnings> upcomingEarnings = const [],  List<WeeklyReport> weeklyReports = const []}): _currentReports = currentReports,_pastReports = pastReports,_filings = filings,_upcomingEarnings = upcomingEarnings,_weeklyReports = weeklyReports;
   
 
  final  List<FinancialReport> _currentReports;
@@ -259,16 +265,18 @@ _$ReportsFeedCopyWith<_ReportsFeed> get copyWith => __$ReportsFeedCopyWithImpl<_
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ReportsFeed&&const DeepCollectionEquality().equals(other._currentReports, _currentReports)&&const DeepCollectionEquality().equals(other._pastReports, _pastReports)&&const DeepCollectionEquality().equals(other._filings, _filings)&&const DeepCollectionEquality().equals(other._upcomingEarnings, _upcomingEarnings)&&const DeepCollectionEquality().equals(other._weeklyReports, _weeklyReports));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ReportsFeed&&const DeepCollectionEquality().equals(other.currentReports, _currentReports)&&const DeepCollectionEquality().equals(other.pastReports, _pastReports)&&const DeepCollectionEquality().equals(other.filings, _filings)&&const DeepCollectionEquality().equals(other.upcomingEarnings, _upcomingEarnings)&&const DeepCollectionEquality().equals(other.weeklyReports, _weeklyReports));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_currentReports),const DeepCollectionEquality().hash(_pastReports),const DeepCollectionEquality().hash(_filings),const DeepCollectionEquality().hash(_upcomingEarnings),const DeepCollectionEquality().hash(_weeklyReports));
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_currentReports),const DeepCollectionEquality().hash(_pastReports),const DeepCollectionEquality().hash(_filings),const DeepCollectionEquality().hash(_upcomingEarnings),const DeepCollectionEquality().hash(_weeklyReports));
+}
 
 @override
 String toString() {
-  return 'ReportsFeed(currentReports: $currentReports, pastReports: $pastReports, filings: $filings, upcomingEarnings: $upcomingEarnings, weeklyReports: $weeklyReports)';
+    return 'ReportsFeed(currentReports: $currentReports, pastReports: $pastReports, filings: $filings, upcomingEarnings: $upcomingEarnings, weeklyReports: $weeklyReports)';
 }
 
 

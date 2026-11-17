@@ -4,7 +4,7 @@ import 'package:bizzie/features/company_profile/shared/domain/models/financial_d
 import 'package:bizzie/features/company_profile/shared/presentation/utils/financial_period_extensions.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/widgets/financial_data_table.dart';
 import 'package:bizzie/shared/widgets/modals/app_history_modal.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 abstract class FinancialHistoryModalHelper {
   static void show(

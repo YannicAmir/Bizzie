@@ -5,7 +5,7 @@ import 'package:bizzie/features/company_profile/shared/presentation/utils/growth
 import 'package:bizzie/features/company_profile/shared/presentation/widgets/financial_statements_table.dart';
 import 'package:bizzie/shared/utils/currency_formatter.dart';
 import 'package:bizzie/shared/widgets/charts/bizzie_pie_chart.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 abstract class SegmentPresentation {
   static Color colorFor(String topic, Map<String, int> colorIndices) {

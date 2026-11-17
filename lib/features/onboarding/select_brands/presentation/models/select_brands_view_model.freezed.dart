@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'select_brands_view_model.dart';
@@ -9,6 +9,7 @@ part of 'select_brands_view_model.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $SelectBrandsViewModelCopyWith<SelectBrandsViewModel> get copyWith => _$SelectBr
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SelectBrandsViewModel&&(identical(other.brand, brand) || other.brand == brand)&&(identical(other.isSelected, isSelected) || other.isSelected == isSelected)&&(identical(other.shouldAnimate, shouldAnimate) || other.shouldAnimate == shouldAnimate));
+  final _this = this as SelectBrandsViewModel;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SelectBrandsViewModel&&(identical(other.brand, _this.brand) || other.brand == _this.brand)&&(identical(other.isSelected, _this.isSelected) || other.isSelected == _this.isSelected)&&(identical(other.shouldAnimate, _this.shouldAnimate) || other.shouldAnimate == _this.shouldAnimate));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,brand,isSelected,shouldAnimate);
+int get hashCode {
+  final _this = this as SelectBrandsViewModel;
+  return Object.hash(runtimeType,_this.brand,_this.isSelected,_this.shouldAnimate);
+}
 
 @override
 String toString() {
-  return 'SelectBrandsViewModel(brand: $brand, isSelected: $isSelected, shouldAnimate: $shouldAnimate)';
+  final _this = this as SelectBrandsViewModel;
+  return 'SelectBrandsViewModel(brand: ${_this.brand}, isSelected: ${_this.isSelected}, shouldAnimate: ${_this.shouldAnimate})';
 }
 
 
@@ -63,7 +69,7 @@ class _$SelectBrandsViewModelCopyWithImpl<$Res>
 /// Create a copy of SelectBrandsViewModel
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? brand = null,Object? isSelected = null,Object? shouldAnimate = null,}) {
-  return _then(_self.copyWith(
+  return _then(SelectBrandsViewModel(
 brand: null == brand ? _self.brand : brand // ignore: cast_nullable_to_non_nullable
 as Brand,isSelected: null == isSelected ? _self.isSelected : isSelected // ignore: cast_nullable_to_non_nullable
 as bool,shouldAnimate: null == shouldAnimate ? _self.shouldAnimate : shouldAnimate // ignore: cast_nullable_to_non_nullable
@@ -234,16 +240,18 @@ _$SelectBrandsViewModelCopyWith<_SelectBrandsViewModel> get copyWith => __$Selec
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SelectBrandsViewModel&&(identical(other.brand, brand) || other.brand == brand)&&(identical(other.isSelected, isSelected) || other.isSelected == isSelected)&&(identical(other.shouldAnimate, shouldAnimate) || other.shouldAnimate == shouldAnimate));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _SelectBrandsViewModel&&(identical(other.brand, brand) || other.brand == brand)&&(identical(other.isSelected, isSelected) || other.isSelected == isSelected)&&(identical(other.shouldAnimate, shouldAnimate) || other.shouldAnimate == shouldAnimate));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,brand,isSelected,shouldAnimate);
+int get hashCode {
+    return Object.hash(runtimeType,brand,isSelected,shouldAnimate);
+}
 
 @override
 String toString() {
-  return 'SelectBrandsViewModel(brand: $brand, isSelected: $isSelected, shouldAnimate: $shouldAnimate)';
+    return 'SelectBrandsViewModel(brand: $brand, isSelected: $isSelected, shouldAnimate: $shouldAnimate)';
 }
 
 

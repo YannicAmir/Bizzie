@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'subscription_event.dart';
@@ -9,6 +9,7 @@ part of 'subscription_event.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -20,7 +21,7 @@ mixin _$SubscriptionEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SubscriptionEvent);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SubscriptionEvent);
 }
 
 
@@ -29,7 +30,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'SubscriptionEvent()';
+    return 'SubscriptionEvent()';
 }
 
 
@@ -275,7 +276,7 @@ class SubscriptionEventInitialized implements SubscriptionEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SubscriptionEventInitialized);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SubscriptionEventInitialized);
 }
 
 
@@ -284,7 +285,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'SubscriptionEvent.initialized()';
+    return 'SubscriptionEvent.initialized()';
 }
 
 
@@ -312,16 +313,18 @@ $SubscriptionStatusUpdatedCopyWith<SubscriptionStatusUpdated> get copyWith => _$
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SubscriptionStatusUpdated&&(identical(other.status, status) || other.status == status));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SubscriptionStatusUpdated&&(identical(other.status, status) || other.status == status));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,status);
+int get hashCode {
+    return Object.hash(runtimeType,status);
+}
 
 @override
 String toString() {
-  return 'SubscriptionEvent.statusUpdated(status: $status)';
+    return 'SubscriptionEvent.statusUpdated(status: $status)';
 }
 
 
@@ -387,16 +390,18 @@ $SubscriptionPurchaseRequestedCopyWith<SubscriptionPurchaseRequested> get copyWi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SubscriptionPurchaseRequested&&(identical(other.package, package) || other.package == package));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SubscriptionPurchaseRequested&&(identical(other.package, package) || other.package == package));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,package);
+int get hashCode {
+    return Object.hash(runtimeType,package);
+}
 
 @override
 String toString() {
-  return 'SubscriptionEvent.purchaseRequested(package: $package)';
+    return 'SubscriptionEvent.purchaseRequested(package: $package)';
 }
 
 
@@ -457,7 +462,7 @@ class SubscriptionRestoreRequested implements SubscriptionEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SubscriptionRestoreRequested);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SubscriptionRestoreRequested);
 }
 
 
@@ -466,7 +471,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'SubscriptionEvent.restoreRequested()';
+    return 'SubscriptionEvent.restoreRequested()';
 }
 
 
@@ -489,7 +494,7 @@ class SubscriptionPurchaseUICompleted implements SubscriptionEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SubscriptionPurchaseUICompleted);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SubscriptionPurchaseUICompleted);
 }
 
 
@@ -498,7 +503,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'SubscriptionEvent.purchaseUICompleted()';
+    return 'SubscriptionEvent.purchaseUICompleted()';
 }
 
 
@@ -526,16 +531,18 @@ $SubscriptionUserIdentityChangedCopyWith<SubscriptionUserIdentityChanged> get co
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SubscriptionUserIdentityChanged&&(identical(other.uid, uid) || other.uid == uid));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SubscriptionUserIdentityChanged&&(identical(other.uid, uid) || other.uid == uid));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,uid);
+int get hashCode {
+    return Object.hash(runtimeType,uid);
+}
 
 @override
 String toString() {
-  return 'SubscriptionEvent.userIdentityChanged(uid: $uid)';
+    return 'SubscriptionEvent.userIdentityChanged(uid: $uid)';
 }
 
 
@@ -587,7 +594,7 @@ class SubscriptionOfferingsRequested implements SubscriptionEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SubscriptionOfferingsRequested);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SubscriptionOfferingsRequested);
 }
 
 
@@ -596,7 +603,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'SubscriptionEvent.offeringsRequested()';
+    return 'SubscriptionEvent.offeringsRequested()';
 }
 
 
@@ -619,7 +626,7 @@ class SubscriptionRefreshRequested implements SubscriptionEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SubscriptionRefreshRequested);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SubscriptionRefreshRequested);
 }
 
 
@@ -628,7 +635,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'SubscriptionEvent.refreshRequested()';
+    return 'SubscriptionEvent.refreshRequested()';
 }
 
 
@@ -656,16 +663,18 @@ $SubscriptionPlanToggledCopyWith<SubscriptionPlanToggled> get copyWith => _$Subs
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SubscriptionPlanToggled&&(identical(other.isAnnual, isAnnual) || other.isAnnual == isAnnual));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SubscriptionPlanToggled&&(identical(other.isAnnual, isAnnual) || other.isAnnual == isAnnual));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,isAnnual);
+int get hashCode {
+    return Object.hash(runtimeType,isAnnual);
+}
 
 @override
 String toString() {
-  return 'SubscriptionEvent.planToggled(isAnnual: $isAnnual)';
+    return 'SubscriptionEvent.planToggled(isAnnual: $isAnnual)';
 }
 
 
@@ -717,7 +726,7 @@ class SubscriptionAppResumed implements SubscriptionEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SubscriptionAppResumed);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SubscriptionAppResumed);
 }
 
 
@@ -726,7 +735,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'SubscriptionEvent.appResumed()';
+    return 'SubscriptionEvent.appResumed()';
 }
 
 
@@ -749,7 +758,7 @@ class SubscriptionExpirationReached implements SubscriptionEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SubscriptionExpirationReached);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SubscriptionExpirationReached);
 }
 
 
@@ -758,7 +767,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'SubscriptionEvent.expirationReached()';
+    return 'SubscriptionEvent.expirationReached()';
 }
 
 
@@ -781,7 +790,7 @@ class SubscriptionResetPurchaseState implements SubscriptionEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SubscriptionResetPurchaseState);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SubscriptionResetPurchaseState);
 }
 
 
@@ -790,7 +799,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'SubscriptionEvent.resetPurchaseState()';
+    return 'SubscriptionEvent.resetPurchaseState()';
 }
 
 
@@ -821,16 +830,18 @@ $SubscriptionViewedCopyWith<SubscriptionViewed> get copyWith => _$SubscriptionVi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SubscriptionViewed&&(identical(other.source, source) || other.source == source)&&(identical(other.paywallType, paywallType) || other.paywallType == paywallType)&&(identical(other.tabName, tabName) || other.tabName == tabName)&&(identical(other.featureName, featureName) || other.featureName == featureName));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SubscriptionViewed&&(identical(other.source, source) || other.source == source)&&(identical(other.paywallType, paywallType) || other.paywallType == paywallType)&&(identical(other.tabName, tabName) || other.tabName == tabName)&&(identical(other.featureName, featureName) || other.featureName == featureName));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,source,paywallType,tabName,featureName);
+int get hashCode {
+    return Object.hash(runtimeType,source,paywallType,tabName,featureName);
+}
 
 @override
 String toString() {
-  return 'SubscriptionEvent.viewed(source: $source, paywallType: $paywallType, tabName: $tabName, featureName: $featureName)';
+    return 'SubscriptionEvent.viewed(source: $source, paywallType: $paywallType, tabName: $tabName, featureName: $featureName)';
 }
 
 
@@ -890,16 +901,18 @@ $SubscriptionGiftViewedCopyWith<SubscriptionGiftViewed> get copyWith => _$Subscr
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SubscriptionGiftViewed&&(identical(other.source, source) || other.source == source));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SubscriptionGiftViewed&&(identical(other.source, source) || other.source == source));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,source);
+int get hashCode {
+    return Object.hash(runtimeType,source);
+}
 
 @override
 String toString() {
-  return 'SubscriptionEvent.giftViewed(source: $source)';
+    return 'SubscriptionEvent.giftViewed(source: $source)';
 }
 
 
@@ -956,16 +969,18 @@ $SubscriptionGiftClaimedCopyWith<SubscriptionGiftClaimed> get copyWith => _$Subs
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SubscriptionGiftClaimed&&(identical(other.source, source) || other.source == source));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SubscriptionGiftClaimed&&(identical(other.source, source) || other.source == source));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,source);
+int get hashCode {
+    return Object.hash(runtimeType,source);
+}
 
 @override
 String toString() {
-  return 'SubscriptionEvent.giftClaimed(source: $source)';
+    return 'SubscriptionEvent.giftClaimed(source: $source)';
 }
 
 
@@ -1022,16 +1037,18 @@ $SubscriptionGiftDismissedCopyWith<SubscriptionGiftDismissed> get copyWith => _$
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SubscriptionGiftDismissed&&(identical(other.source, source) || other.source == source));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SubscriptionGiftDismissed&&(identical(other.source, source) || other.source == source));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,source);
+int get hashCode {
+    return Object.hash(runtimeType,source);
+}
 
 @override
 String toString() {
-  return 'SubscriptionEvent.giftDismissed(source: $source)';
+    return 'SubscriptionEvent.giftDismissed(source: $source)';
 }
 
 

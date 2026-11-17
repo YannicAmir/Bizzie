@@ -6,7 +6,7 @@ import 'package:bizzie/features/company_profile/shared/presentation/utils/ratio_
 import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:bizzie/shared/utils/currency_formatter.dart';
 import 'package:bizzie/shared/widgets/app_badge.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class KeyMetricsSection extends StatelessWidget {
   final SecurityDetails details;

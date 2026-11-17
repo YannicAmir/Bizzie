@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'notification_event.dart';
@@ -9,6 +9,7 @@ part of 'notification_event.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -20,7 +21,7 @@ mixin _$NotificationEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is NotificationEvent);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is NotificationEvent);
 }
 
 
@@ -29,7 +30,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'NotificationEvent()';
+    return 'NotificationEvent()';
 }
 
 
@@ -203,7 +204,7 @@ class NotificationSetupRequested implements NotificationEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is NotificationSetupRequested);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is NotificationSetupRequested);
 }
 
 
@@ -212,7 +213,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'NotificationEvent.setupRequested()';
+    return 'NotificationEvent.setupRequested()';
 }
 
 
@@ -235,7 +236,7 @@ class NotificationSyncRequested implements NotificationEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is NotificationSyncRequested);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is NotificationSyncRequested);
 }
 
 
@@ -244,7 +245,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'NotificationEvent.syncRequested()';
+    return 'NotificationEvent.syncRequested()';
 }
 
 
@@ -257,7 +258,7 @@ String toString() {
 
 
 class NotificationInteractionReceived implements NotificationEvent {
-  const NotificationInteractionReceived(final  Map<String, dynamic> payload): _payload = payload;
+  const NotificationInteractionReceived( Map<String, dynamic> payload): _payload = payload;
   
 
  final  Map<String, dynamic> _payload;
@@ -278,16 +279,18 @@ $NotificationInteractionReceivedCopyWith<NotificationInteractionReceived> get co
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is NotificationInteractionReceived&&const DeepCollectionEquality().equals(other._payload, _payload));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is NotificationInteractionReceived&&const DeepCollectionEquality().equals(other.payload, _payload));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_payload));
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_payload));
+}
 
 @override
 String toString() {
-  return 'NotificationEvent.interactionReceived(payload: $payload)';
+    return 'NotificationEvent.interactionReceived(payload: $payload)';
 }
 
 
@@ -339,7 +342,7 @@ class NotificationReset implements NotificationEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is NotificationReset);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is NotificationReset);
 }
 
 
@@ -348,7 +351,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'NotificationEvent.reset()';
+    return 'NotificationEvent.reset()';
 }
 
 
@@ -371,7 +374,7 @@ class NotificationAppReadyForNavigation implements NotificationEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is NotificationAppReadyForNavigation);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is NotificationAppReadyForNavigation);
 }
 
 
@@ -380,7 +383,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'NotificationEvent.appReadyForNavigation()';
+    return 'NotificationEvent.appReadyForNavigation()';
 }
 
 

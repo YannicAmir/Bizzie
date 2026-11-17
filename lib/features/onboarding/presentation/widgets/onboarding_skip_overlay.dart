@@ -1,6 +1,6 @@
 import 'package:bizzie/features/onboarding/domain/models/onboarding_step.dart';
 import 'package:bizzie/features/onboarding/presentation/widgets/onboarding_skip_button.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 const double _skipButtonTopInset = 0;
 const double _skipButtonEndInset = 12;

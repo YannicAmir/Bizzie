@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'add_to_watchlist_params.dart';
@@ -9,6 +9,7 @@ part of 'add_to_watchlist_params.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $AddToWatchlistParamsCopyWith<AddToWatchlistParams> get copyWith => _$AddToWatch
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AddToWatchlistParams&&(identical(other.company, company) || other.company == company)&&(identical(other.uid, uid) || other.uid == uid));
+  final _this = this as AddToWatchlistParams;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AddToWatchlistParams&&(identical(other.company, _this.company) || other.company == _this.company)&&(identical(other.uid, _this.uid) || other.uid == _this.uid));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,company,uid);
+int get hashCode {
+  final _this = this as AddToWatchlistParams;
+  return Object.hash(runtimeType,_this.company,_this.uid);
+}
 
 @override
 String toString() {
-  return 'AddToWatchlistParams(company: $company, uid: $uid)';
+  final _this = this as AddToWatchlistParams;
+  return 'AddToWatchlistParams(company: ${_this.company}, uid: ${_this.uid})';
 }
 
 
@@ -63,7 +69,7 @@ class _$AddToWatchlistParamsCopyWithImpl<$Res>
 /// Create a copy of AddToWatchlistParams
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? company = null,Object? uid = null,}) {
-  return _then(_self.copyWith(
+  return _then(AddToWatchlistParams(
 company: null == company ? _self.company : company // ignore: cast_nullable_to_non_nullable
 as Company,uid: null == uid ? _self.uid : uid // ignore: cast_nullable_to_non_nullable
 as String,
@@ -232,16 +238,18 @@ _$AddToWatchlistParamsCopyWith<_AddToWatchlistParams> get copyWith => __$AddToWa
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AddToWatchlistParams&&(identical(other.company, company) || other.company == company)&&(identical(other.uid, uid) || other.uid == uid));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _AddToWatchlistParams&&(identical(other.company, company) || other.company == company)&&(identical(other.uid, uid) || other.uid == uid));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,company,uid);
+int get hashCode {
+    return Object.hash(runtimeType,company,uid);
+}
 
 @override
 String toString() {
-  return 'AddToWatchlistParams(company: $company, uid: $uid)';
+    return 'AddToWatchlistParams(company: $company, uid: $uid)';
 }
 
 

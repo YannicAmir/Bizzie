@@ -2,7 +2,7 @@ import 'package:bizzie/features/watchlist_ytd/domain/models/ytd_price_change.dar
 import 'package:bizzie/features/watchlist_ytd/presentation/utils/ytd_price_change_extensions.dart';
 import 'package:bizzie/features/watchlist_ytd/presentation/widgets/watchlist_ytd_card.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class WatchlistYtdSection extends StatelessWidget {
   final List<YtdPriceChange> changes;

@@ -4,7 +4,7 @@ import 'package:bizzie/features/watchlist_ytd/presentation/utils/ytd_price_chang
 import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:bizzie/shared/widgets/app_badge.dart';
 import 'package:bizzie/shared/widgets/company_logo_avatar.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 const double _logoSize = 40;
 const double _logoToTextSpacing = 12;

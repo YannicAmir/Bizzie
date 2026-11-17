@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'security_event.dart';
@@ -9,6 +9,7 @@ part of 'security_event.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -20,7 +21,7 @@ mixin _$SecurityEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SecurityEvent);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SecurityEvent);
 }
 
 
@@ -29,7 +30,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'SecurityEvent()';
+    return 'SecurityEvent()';
 }
 
 
@@ -197,7 +198,7 @@ class Started implements SecurityEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Started);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is Started);
 }
 
 
@@ -206,7 +207,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'SecurityEvent.started()';
+    return 'SecurityEvent.started()';
 }
 
 
@@ -234,16 +235,18 @@ $LockoutActionTakenCopyWith<LockoutActionTaken> get copyWith => _$LockoutActionT
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is LockoutActionTaken&&(identical(other.action, action) || other.action == action));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is LockoutActionTaken&&(identical(other.action, action) || other.action == action));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,action);
+int get hashCode {
+    return Object.hash(runtimeType,action);
+}
 
 @override
 String toString() {
-  return 'SecurityEvent.lockoutActionTaken(action: $action)';
+    return 'SecurityEvent.lockoutActionTaken(action: $action)';
 }
 
 
@@ -301,16 +304,18 @@ $ThreatDetectedCopyWith<ThreatDetected> get copyWith => _$ThreatDetectedCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ThreatDetected&&(identical(other.type, type) || other.type == type)&&(identical(other.isCritical, isCritical) || other.isCritical == isCritical));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is ThreatDetected&&(identical(other.type, type) || other.type == type)&&(identical(other.isCritical, isCritical) || other.isCritical == isCritical));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,type,isCritical);
+int get hashCode {
+    return Object.hash(runtimeType,type,isCritical);
+}
 
 @override
 String toString() {
-  return 'SecurityEvent.threatDetected(type: $type, isCritical: $isCritical)';
+    return 'SecurityEvent.threatDetected(type: $type, isCritical: $isCritical)';
 }
 
 

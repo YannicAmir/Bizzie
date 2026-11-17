@@ -11,7 +11,7 @@ import 'package:bizzie/features/company_profile/shared/presentation/utils/growth
 import 'package:bizzie/features/company_profile/shared/presentation/widgets/financial_statements_table.dart';
 import 'package:bizzie/shared/utils/currency_formatter.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 const double _percentFactor = 100;
 const int _percentFractionDigits = 1;

@@ -1,7 +1,7 @@
 import 'package:bizzie/core/interfaces/i_config_service.dart';
 import 'package:bizzie/di/injection.dart';
 import 'package:bizzie/features/settings/domain/usecases/launch_url_usecase.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class SubscriptionLegalFooter extends StatelessWidget {
   final VoidCallback onRestore;

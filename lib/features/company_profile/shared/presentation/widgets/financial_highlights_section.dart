@@ -4,7 +4,7 @@ import 'package:bizzie/core/enums/financial_period.dart';
 import 'package:bizzie/features/company_profile/shared/domain/models/financial_data_point.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/utils/financial_highlights_resolver.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class FinancialHighlightsSection extends StatelessWidget {
   final List<FinancialDataPoint> annualData;

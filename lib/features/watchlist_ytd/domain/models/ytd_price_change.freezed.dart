@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'ytd_price_change.dart';
@@ -9,6 +9,7 @@ part of 'ytd_price_change.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $YtdPriceChangeCopyWith<YtdPriceChange> get copyWith => _$YtdPriceChangeCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is YtdPriceChange&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.companyName, companyName) || other.companyName == companyName)&&(identical(other.year, year) || other.year == year)&&(identical(other.baselineDate, baselineDate) || other.baselineDate == baselineDate)&&(identical(other.baselineClose, baselineClose) || other.baselineClose == baselineClose)&&(identical(other.latestDate, latestDate) || other.latestDate == latestDate)&&(identical(other.latestClose, latestClose) || other.latestClose == latestClose)&&(identical(other.ytdChange, ytdChange) || other.ytdChange == ytdChange)&&(identical(other.ytdChangePercent, ytdChangePercent) || other.ytdChangePercent == ytdChangePercent));
+  final _this = this as YtdPriceChange;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is YtdPriceChange&&(identical(other.ticker, _this.ticker) || other.ticker == _this.ticker)&&(identical(other.companyName, _this.companyName) || other.companyName == _this.companyName)&&(identical(other.year, _this.year) || other.year == _this.year)&&(identical(other.baselineDate, _this.baselineDate) || other.baselineDate == _this.baselineDate)&&(identical(other.baselineClose, _this.baselineClose) || other.baselineClose == _this.baselineClose)&&(identical(other.latestDate, _this.latestDate) || other.latestDate == _this.latestDate)&&(identical(other.latestClose, _this.latestClose) || other.latestClose == _this.latestClose)&&(identical(other.ytdChange, _this.ytdChange) || other.ytdChange == _this.ytdChange)&&(identical(other.ytdChangePercent, _this.ytdChangePercent) || other.ytdChangePercent == _this.ytdChangePercent));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,ticker,companyName,year,baselineDate,baselineClose,latestDate,latestClose,ytdChange,ytdChangePercent);
+int get hashCode {
+  final _this = this as YtdPriceChange;
+  return Object.hash(runtimeType,_this.ticker,_this.companyName,_this.year,_this.baselineDate,_this.baselineClose,_this.latestDate,_this.latestClose,_this.ytdChange,_this.ytdChangePercent);
+}
 
 @override
 String toString() {
-  return 'YtdPriceChange(ticker: $ticker, companyName: $companyName, year: $year, baselineDate: $baselineDate, baselineClose: $baselineClose, latestDate: $latestDate, latestClose: $latestClose, ytdChange: $ytdChange, ytdChangePercent: $ytdChangePercent)';
+  final _this = this as YtdPriceChange;
+  return 'YtdPriceChange(ticker: ${_this.ticker}, companyName: ${_this.companyName}, year: ${_this.year}, baselineDate: ${_this.baselineDate}, baselineClose: ${_this.baselineClose}, latestDate: ${_this.latestDate}, latestClose: ${_this.latestClose}, ytdChange: ${_this.ytdChange}, ytdChangePercent: ${_this.ytdChangePercent})';
 }
 
 
@@ -63,7 +69,7 @@ class _$YtdPriceChangeCopyWithImpl<$Res>
 /// Create a copy of YtdPriceChange
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? ticker = null,Object? companyName = null,Object? year = null,Object? baselineDate = null,Object? baselineClose = null,Object? latestDate = null,Object? latestClose = null,Object? ytdChange = null,Object? ytdChangePercent = null,}) {
-  return _then(_self.copyWith(
+  return _then(YtdPriceChange(
 ticker: null == ticker ? _self.ticker : ticker // ignore: cast_nullable_to_non_nullable
 as String,companyName: null == companyName ? _self.companyName : companyName // ignore: cast_nullable_to_non_nullable
 as String,year: null == year ? _self.year : year // ignore: cast_nullable_to_non_nullable
@@ -237,16 +243,18 @@ _$YtdPriceChangeCopyWith<_YtdPriceChange> get copyWith => __$YtdPriceChangeCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _YtdPriceChange&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.companyName, companyName) || other.companyName == companyName)&&(identical(other.year, year) || other.year == year)&&(identical(other.baselineDate, baselineDate) || other.baselineDate == baselineDate)&&(identical(other.baselineClose, baselineClose) || other.baselineClose == baselineClose)&&(identical(other.latestDate, latestDate) || other.latestDate == latestDate)&&(identical(other.latestClose, latestClose) || other.latestClose == latestClose)&&(identical(other.ytdChange, ytdChange) || other.ytdChange == ytdChange)&&(identical(other.ytdChangePercent, ytdChangePercent) || other.ytdChangePercent == ytdChangePercent));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _YtdPriceChange&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.companyName, companyName) || other.companyName == companyName)&&(identical(other.year, year) || other.year == year)&&(identical(other.baselineDate, baselineDate) || other.baselineDate == baselineDate)&&(identical(other.baselineClose, baselineClose) || other.baselineClose == baselineClose)&&(identical(other.latestDate, latestDate) || other.latestDate == latestDate)&&(identical(other.latestClose, latestClose) || other.latestClose == latestClose)&&(identical(other.ytdChange, ytdChange) || other.ytdChange == ytdChange)&&(identical(other.ytdChangePercent, ytdChangePercent) || other.ytdChangePercent == ytdChangePercent));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,ticker,companyName,year,baselineDate,baselineClose,latestDate,latestClose,ytdChange,ytdChangePercent);
+int get hashCode {
+    return Object.hash(runtimeType,ticker,companyName,year,baselineDate,baselineClose,latestDate,latestClose,ytdChange,ytdChangePercent);
+}
 
 @override
 String toString() {
-  return 'YtdPriceChange(ticker: $ticker, companyName: $companyName, year: $year, baselineDate: $baselineDate, baselineClose: $baselineClose, latestDate: $latestDate, latestClose: $latestClose, ytdChange: $ytdChange, ytdChangePercent: $ytdChangePercent)';
+    return 'YtdPriceChange(ticker: $ticker, companyName: $companyName, year: $year, baselineDate: $baselineDate, baselineClose: $baselineClose, latestDate: $latestDate, latestClose: $latestClose, ytdChange: $ytdChange, ytdChangePercent: $ytdChangePercent)';
 }
 
 

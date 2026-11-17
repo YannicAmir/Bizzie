@@ -13,7 +13,7 @@ import 'package:bizzie/features/company_profile/shared/presentation/widgets/comp
 import 'package:bizzie/features/company_profile/shared/presentation/widgets/currency_metric_tab_content.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/widgets/period_metric_empty_view.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/widgets/tab_visibility_observer.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 const _labels = CurrencyMetricLabels(

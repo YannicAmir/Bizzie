@@ -1,5 +1,5 @@
 import 'package:bizzie/shared/widgets/buttons/bizzie_close_button.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 const double _closeButtonEndInset = 12;
 

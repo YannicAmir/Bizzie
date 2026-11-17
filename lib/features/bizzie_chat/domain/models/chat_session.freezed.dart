@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'chat_session.dart';
@@ -9,6 +9,7 @@ part of 'chat_session.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $ChatSessionCopyWith<ChatSession> get copyWith => _$ChatSessionCopyWithImpl<Chat
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ChatSession&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.companyName, companyName) || other.companyName == companyName)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&(identical(other.messageCount, messageCount) || other.messageCount == messageCount));
+  final _this = this as ChatSession;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ChatSession&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.title, _this.title) || other.title == _this.title)&&(identical(other.ticker, _this.ticker) || other.ticker == _this.ticker)&&(identical(other.companyName, _this.companyName) || other.companyName == _this.companyName)&&(identical(other.createdAt, _this.createdAt) || other.createdAt == _this.createdAt)&&(identical(other.updatedAt, _this.updatedAt) || other.updatedAt == _this.updatedAt)&&(identical(other.messageCount, _this.messageCount) || other.messageCount == _this.messageCount));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,title,ticker,companyName,createdAt,updatedAt,messageCount);
+int get hashCode {
+  final _this = this as ChatSession;
+  return Object.hash(runtimeType,_this.id,_this.title,_this.ticker,_this.companyName,_this.createdAt,_this.updatedAt,_this.messageCount);
+}
 
 @override
 String toString() {
-  return 'ChatSession(id: $id, title: $title, ticker: $ticker, companyName: $companyName, createdAt: $createdAt, updatedAt: $updatedAt, messageCount: $messageCount)';
+  final _this = this as ChatSession;
+  return 'ChatSession(id: ${_this.id}, title: ${_this.title}, ticker: ${_this.ticker}, companyName: ${_this.companyName}, createdAt: ${_this.createdAt}, updatedAt: ${_this.updatedAt}, messageCount: ${_this.messageCount})';
 }
 
 
@@ -63,7 +69,7 @@ class _$ChatSessionCopyWithImpl<$Res>
 /// Create a copy of ChatSession
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? title = null,Object? ticker = null,Object? companyName = null,Object? createdAt = null,Object? updatedAt = null,Object? messageCount = null,}) {
-  return _then(_self.copyWith(
+  return _then(ChatSession(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
 as String,ticker: null == ticker ? _self.ticker : ticker // ignore: cast_nullable_to_non_nullable
@@ -233,16 +239,18 @@ _$ChatSessionCopyWith<_ChatSession> get copyWith => __$ChatSessionCopyWithImpl<_
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ChatSession&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.companyName, companyName) || other.companyName == companyName)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&(identical(other.messageCount, messageCount) || other.messageCount == messageCount));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ChatSession&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.companyName, companyName) || other.companyName == companyName)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&(identical(other.messageCount, messageCount) || other.messageCount == messageCount));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,title,ticker,companyName,createdAt,updatedAt,messageCount);
+int get hashCode {
+    return Object.hash(runtimeType,id,title,ticker,companyName,createdAt,updatedAt,messageCount);
+}
 
 @override
 String toString() {
-  return 'ChatSession(id: $id, title: $title, ticker: $ticker, companyName: $companyName, createdAt: $createdAt, updatedAt: $updatedAt, messageCount: $messageCount)';
+    return 'ChatSession(id: $id, title: $title, ticker: $ticker, companyName: $companyName, createdAt: $createdAt, updatedAt: $updatedAt, messageCount: $messageCount)';
 }
 
 

@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'revenue_product_segments.dart';
@@ -9,6 +9,7 @@ part of 'revenue_product_segments.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $RevenueProductSegmentsCopyWith<RevenueProductSegments> get copyWith => _$Revenu
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is RevenueProductSegments&&(identical(other.symbol, symbol) || other.symbol == symbol)&&(identical(other.reportedCurrency, reportedCurrency) || other.reportedCurrency == reportedCurrency)&&(identical(other.originalCurrency, originalCurrency) || other.originalCurrency == originalCurrency)&&const DeepCollectionEquality().equals(other.annual, annual)&&const DeepCollectionEquality().equals(other.quarterly, quarterly));
+  final _this = this as RevenueProductSegments;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is RevenueProductSegments&&(identical(other.symbol, _this.symbol) || other.symbol == _this.symbol)&&(identical(other.reportedCurrency, _this.reportedCurrency) || other.reportedCurrency == _this.reportedCurrency)&&(identical(other.originalCurrency, _this.originalCurrency) || other.originalCurrency == _this.originalCurrency)&&const DeepCollectionEquality().equals(other.annual, _this.annual)&&const DeepCollectionEquality().equals(other.quarterly, _this.quarterly));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,symbol,reportedCurrency,originalCurrency,const DeepCollectionEquality().hash(annual),const DeepCollectionEquality().hash(quarterly));
+int get hashCode {
+  final _this = this as RevenueProductSegments;
+  return Object.hash(runtimeType,_this.symbol,_this.reportedCurrency,_this.originalCurrency,const DeepCollectionEquality().hash(_this.annual),const DeepCollectionEquality().hash(_this.quarterly));
+}
 
 @override
 String toString() {
-  return 'RevenueProductSegments(symbol: $symbol, reportedCurrency: $reportedCurrency, originalCurrency: $originalCurrency, annual: $annual, quarterly: $quarterly)';
+  final _this = this as RevenueProductSegments;
+  return 'RevenueProductSegments(symbol: ${_this.symbol}, reportedCurrency: ${_this.reportedCurrency}, originalCurrency: ${_this.originalCurrency}, annual: ${_this.annual}, quarterly: ${_this.quarterly})';
 }
 
 
@@ -63,7 +69,7 @@ class _$RevenueProductSegmentsCopyWithImpl<$Res>
 /// Create a copy of RevenueProductSegments
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? symbol = null,Object? reportedCurrency = null,Object? originalCurrency = freezed,Object? annual = null,Object? quarterly = null,}) {
-  return _then(_self.copyWith(
+  return _then(RevenueProductSegments(
 symbol: null == symbol ? _self.symbol : symbol // ignore: cast_nullable_to_non_nullable
 as String,reportedCurrency: null == reportedCurrency ? _self.reportedCurrency : reportedCurrency // ignore: cast_nullable_to_non_nullable
 as String,originalCurrency: freezed == originalCurrency ? _self.originalCurrency : originalCurrency // ignore: cast_nullable_to_non_nullable
@@ -210,7 +216,7 @@ return $default(_that.symbol,_that.reportedCurrency,_that.originalCurrency,_that
 
 
 class _RevenueProductSegments implements RevenueProductSegments {
-  const _RevenueProductSegments({required this.symbol, required this.reportedCurrency, this.originalCurrency, required final  List<RevenueSegment> annual, required final  List<RevenueSegment> quarterly}): _annual = annual,_quarterly = quarterly;
+  const _RevenueProductSegments({required this.symbol, required this.reportedCurrency, this.originalCurrency, required  List<RevenueSegment> annual, required  List<RevenueSegment> quarterly}): _annual = annual,_quarterly = quarterly;
   
 
 @override final  String symbol;
@@ -241,16 +247,18 @@ _$RevenueProductSegmentsCopyWith<_RevenueProductSegments> get copyWith => __$Rev
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _RevenueProductSegments&&(identical(other.symbol, symbol) || other.symbol == symbol)&&(identical(other.reportedCurrency, reportedCurrency) || other.reportedCurrency == reportedCurrency)&&(identical(other.originalCurrency, originalCurrency) || other.originalCurrency == originalCurrency)&&const DeepCollectionEquality().equals(other._annual, _annual)&&const DeepCollectionEquality().equals(other._quarterly, _quarterly));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _RevenueProductSegments&&(identical(other.symbol, symbol) || other.symbol == symbol)&&(identical(other.reportedCurrency, reportedCurrency) || other.reportedCurrency == reportedCurrency)&&(identical(other.originalCurrency, originalCurrency) || other.originalCurrency == originalCurrency)&&const DeepCollectionEquality().equals(other.annual, _annual)&&const DeepCollectionEquality().equals(other.quarterly, _quarterly));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,symbol,reportedCurrency,originalCurrency,const DeepCollectionEquality().hash(_annual),const DeepCollectionEquality().hash(_quarterly));
+int get hashCode {
+    return Object.hash(runtimeType,symbol,reportedCurrency,originalCurrency,const DeepCollectionEquality().hash(_annual),const DeepCollectionEquality().hash(_quarterly));
+}
 
 @override
 String toString() {
-  return 'RevenueProductSegments(symbol: $symbol, reportedCurrency: $reportedCurrency, originalCurrency: $originalCurrency, annual: $annual, quarterly: $quarterly)';
+    return 'RevenueProductSegments(symbol: $symbol, reportedCurrency: $reportedCurrency, originalCurrency: $originalCurrency, annual: $annual, quarterly: $quarterly)';
 }
 
 

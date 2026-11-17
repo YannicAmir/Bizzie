@@ -3,7 +3,7 @@ import 'package:bizzie/core/domain/models/weekly_report.dart';
 import 'package:bizzie/shared/models/filing_view_model.dart';
 import 'package:bizzie/features/reports/presentation/widgets/reports_filing_card.dart';
 import 'package:bizzie/features/reports/presentation/widgets/reports_weekly_report_card.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class RecentFilingsSection extends StatelessWidget {
   final List<FilingViewModel> filings;

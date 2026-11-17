@@ -5,7 +5,7 @@ import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:bizzie/shared/widgets/animations/bizzie_entrance_scale.dart';
 import 'package:bizzie/features/onboarding/select_brands/presentation/widgets/brand_chip.dart';
 import 'package:bizzie/features/onboarding/select_brands/presentation/widgets/section_visibility_animator.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class SelectedBrandsSection extends StatelessWidget {
   final List<SelectBrandsViewModel> brands;

@@ -5,7 +5,7 @@ import 'package:bizzie/features/company_profile/security/presentation/utils/secu
 import 'package:bizzie/features/company_profile/security/presentation/widgets/price_display.dart';
 import 'package:bizzie/features/company_profile/security/presentation/widgets/security_header.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class SecurityOverviewCard extends StatelessWidget {
   final SecurityDetails securityDetails;

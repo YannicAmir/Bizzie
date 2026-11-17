@@ -3,7 +3,7 @@ import 'package:bizzie/app/themes/app_text_styles.dart';
 import 'package:bizzie/features/bizzie_chat/domain/enums/rating_type.dart';
 import 'package:bizzie/features/bizzie_chat/presentation/widgets/chat_follow_up_chips.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 

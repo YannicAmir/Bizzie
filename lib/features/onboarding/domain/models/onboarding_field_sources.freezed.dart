@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'onboarding_field_sources.dart';
@@ -9,6 +9,7 @@ part of 'onboarding_field_sources.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $OnboardingFieldSourcesCopyWith<OnboardingFieldSources> get copyWith => _$Onboar
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is OnboardingFieldSources&&(identical(other.name, name) || other.name == name)&&(identical(other.sector, sector) || other.sector == sector)&&(identical(other.companies, companies) || other.companies == companies)&&(identical(other.experience, experience) || other.experience == experience)&&(identical(other.notifications, notifications) || other.notifications == notifications));
+  final _this = this as OnboardingFieldSources;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is OnboardingFieldSources&&(identical(other.name, _this.name) || other.name == _this.name)&&(identical(other.sector, _this.sector) || other.sector == _this.sector)&&(identical(other.companies, _this.companies) || other.companies == _this.companies)&&(identical(other.experience, _this.experience) || other.experience == _this.experience)&&(identical(other.notifications, _this.notifications) || other.notifications == _this.notifications));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,name,sector,companies,experience,notifications);
+int get hashCode {
+  final _this = this as OnboardingFieldSources;
+  return Object.hash(runtimeType,_this.name,_this.sector,_this.companies,_this.experience,_this.notifications);
+}
 
 @override
 String toString() {
-  return 'OnboardingFieldSources(name: $name, sector: $sector, companies: $companies, experience: $experience, notifications: $notifications)';
+  final _this = this as OnboardingFieldSources;
+  return 'OnboardingFieldSources(name: ${_this.name}, sector: ${_this.sector}, companies: ${_this.companies}, experience: ${_this.experience}, notifications: ${_this.notifications})';
 }
 
 
@@ -63,7 +69,7 @@ class _$OnboardingFieldSourcesCopyWithImpl<$Res>
 /// Create a copy of OnboardingFieldSources
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? name = null,Object? sector = null,Object? companies = null,Object? experience = null,Object? notifications = null,}) {
-  return _then(_self.copyWith(
+  return _then(OnboardingFieldSources(
 name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as OnboardingValueSource,sector: null == sector ? _self.sector : sector // ignore: cast_nullable_to_non_nullable
 as OnboardingValueSource,companies: null == companies ? _self.companies : companies // ignore: cast_nullable_to_non_nullable
@@ -229,16 +235,18 @@ _$OnboardingFieldSourcesCopyWith<_OnboardingFieldSources> get copyWith => __$Onb
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _OnboardingFieldSources&&(identical(other.name, name) || other.name == name)&&(identical(other.sector, sector) || other.sector == sector)&&(identical(other.companies, companies) || other.companies == companies)&&(identical(other.experience, experience) || other.experience == experience)&&(identical(other.notifications, notifications) || other.notifications == notifications));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _OnboardingFieldSources&&(identical(other.name, name) || other.name == name)&&(identical(other.sector, sector) || other.sector == sector)&&(identical(other.companies, companies) || other.companies == companies)&&(identical(other.experience, experience) || other.experience == experience)&&(identical(other.notifications, notifications) || other.notifications == notifications));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,name,sector,companies,experience,notifications);
+int get hashCode {
+    return Object.hash(runtimeType,name,sector,companies,experience,notifications);
+}
 
 @override
 String toString() {
-  return 'OnboardingFieldSources(name: $name, sector: $sector, companies: $companies, experience: $experience, notifications: $notifications)';
+    return 'OnboardingFieldSources(name: $name, sector: $sector, companies: $companies, experience: $experience, notifications: $notifications)';
 }
 
 

@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'shares_summary_data.dart';
@@ -9,6 +9,7 @@ part of 'shares_summary_data.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $SharesSummaryDataCopyWith<SharesSummaryData> get copyWith => _$SharesSummaryDat
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SharesSummaryData&&(identical(other.currentValue, currentValue) || other.currentValue == currentValue)&&(identical(other.growthPercentage, growthPercentage) || other.growthPercentage == growthPercentage)&&(identical(other.absoluteDelta, absoluteDelta) || other.absoluteDelta == absoluteDelta)&&(identical(other.isPositive, isPositive) || other.isPositive == isPositive)&&(identical(other.referenceLabel, referenceLabel) || other.referenceLabel == referenceLabel));
+  final _this = this as SharesSummaryData;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SharesSummaryData&&(identical(other.currentValue, _this.currentValue) || other.currentValue == _this.currentValue)&&(identical(other.growthPercentage, _this.growthPercentage) || other.growthPercentage == _this.growthPercentage)&&(identical(other.absoluteDelta, _this.absoluteDelta) || other.absoluteDelta == _this.absoluteDelta)&&(identical(other.isPositive, _this.isPositive) || other.isPositive == _this.isPositive)&&(identical(other.referenceLabel, _this.referenceLabel) || other.referenceLabel == _this.referenceLabel));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,currentValue,growthPercentage,absoluteDelta,isPositive,referenceLabel);
+int get hashCode {
+  final _this = this as SharesSummaryData;
+  return Object.hash(runtimeType,_this.currentValue,_this.growthPercentage,_this.absoluteDelta,_this.isPositive,_this.referenceLabel);
+}
 
 @override
 String toString() {
-  return 'SharesSummaryData(currentValue: $currentValue, growthPercentage: $growthPercentage, absoluteDelta: $absoluteDelta, isPositive: $isPositive, referenceLabel: $referenceLabel)';
+  final _this = this as SharesSummaryData;
+  return 'SharesSummaryData(currentValue: ${_this.currentValue}, growthPercentage: ${_this.growthPercentage}, absoluteDelta: ${_this.absoluteDelta}, isPositive: ${_this.isPositive}, referenceLabel: ${_this.referenceLabel})';
 }
 
 
@@ -63,7 +69,7 @@ class _$SharesSummaryDataCopyWithImpl<$Res>
 /// Create a copy of SharesSummaryData
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? currentValue = null,Object? growthPercentage = null,Object? absoluteDelta = null,Object? isPositive = null,Object? referenceLabel = null,}) {
-  return _then(_self.copyWith(
+  return _then(SharesSummaryData(
 currentValue: null == currentValue ? _self.currentValue : currentValue // ignore: cast_nullable_to_non_nullable
 as double,growthPercentage: null == growthPercentage ? _self.growthPercentage : growthPercentage // ignore: cast_nullable_to_non_nullable
 as double,absoluteDelta: null == absoluteDelta ? _self.absoluteDelta : absoluteDelta // ignore: cast_nullable_to_non_nullable
@@ -229,16 +235,18 @@ _$SharesSummaryDataCopyWith<_SharesSummaryData> get copyWith => __$SharesSummary
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SharesSummaryData&&(identical(other.currentValue, currentValue) || other.currentValue == currentValue)&&(identical(other.growthPercentage, growthPercentage) || other.growthPercentage == growthPercentage)&&(identical(other.absoluteDelta, absoluteDelta) || other.absoluteDelta == absoluteDelta)&&(identical(other.isPositive, isPositive) || other.isPositive == isPositive)&&(identical(other.referenceLabel, referenceLabel) || other.referenceLabel == referenceLabel));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _SharesSummaryData&&(identical(other.currentValue, currentValue) || other.currentValue == currentValue)&&(identical(other.growthPercentage, growthPercentage) || other.growthPercentage == growthPercentage)&&(identical(other.absoluteDelta, absoluteDelta) || other.absoluteDelta == absoluteDelta)&&(identical(other.isPositive, isPositive) || other.isPositive == isPositive)&&(identical(other.referenceLabel, referenceLabel) || other.referenceLabel == referenceLabel));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,currentValue,growthPercentage,absoluteDelta,isPositive,referenceLabel);
+int get hashCode {
+    return Object.hash(runtimeType,currentValue,growthPercentage,absoluteDelta,isPositive,referenceLabel);
+}
 
 @override
 String toString() {
-  return 'SharesSummaryData(currentValue: $currentValue, growthPercentage: $growthPercentage, absoluteDelta: $absoluteDelta, isPositive: $isPositive, referenceLabel: $referenceLabel)';
+    return 'SharesSummaryData(currentValue: $currentValue, growthPercentage: $growthPercentage, absoluteDelta: $absoluteDelta, isPositive: $isPositive, referenceLabel: $referenceLabel)';
 }
 
 

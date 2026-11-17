@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'price_tick.dart';
@@ -9,6 +9,7 @@ part of 'price_tick.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $PriceTickCopyWith<PriceTick> get copyWith => _$PriceTickCopyWithImpl<PriceTick>
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PriceTick&&(identical(other.unchangedText, unchangedText) || other.unchangedText == unchangedText)&&(identical(other.changedText, changedText) || other.changedText == changedText)&&(identical(other.flashColor, flashColor) || other.flashColor == flashColor)&&(identical(other.intensity, intensity) || other.intensity == intensity));
+  final _this = this as PriceTick;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PriceTick&&(identical(other.unchangedText, _this.unchangedText) || other.unchangedText == _this.unchangedText)&&(identical(other.changedText, _this.changedText) || other.changedText == _this.changedText)&&(identical(other.flashColor, _this.flashColor) || other.flashColor == _this.flashColor)&&(identical(other.intensity, _this.intensity) || other.intensity == _this.intensity));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,unchangedText,changedText,flashColor,intensity);
+int get hashCode {
+  final _this = this as PriceTick;
+  return Object.hash(runtimeType,_this.unchangedText,_this.changedText,_this.flashColor,_this.intensity);
+}
 
 @override
 String toString() {
-  return 'PriceTick(unchangedText: $unchangedText, changedText: $changedText, flashColor: $flashColor, intensity: $intensity)';
+  final _this = this as PriceTick;
+  return 'PriceTick(unchangedText: ${_this.unchangedText}, changedText: ${_this.changedText}, flashColor: ${_this.flashColor}, intensity: ${_this.intensity})';
 }
 
 
@@ -63,7 +69,7 @@ class _$PriceTickCopyWithImpl<$Res>
 /// Create a copy of PriceTick
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? unchangedText = null,Object? changedText = null,Object? flashColor = freezed,Object? intensity = null,}) {
-  return _then(_self.copyWith(
+  return _then(PriceTick(
 unchangedText: null == unchangedText ? _self.unchangedText : unchangedText // ignore: cast_nullable_to_non_nullable
 as String,changedText: null == changedText ? _self.changedText : changedText // ignore: cast_nullable_to_non_nullable
 as String,flashColor: freezed == flashColor ? _self.flashColor : flashColor // ignore: cast_nullable_to_non_nullable
@@ -227,16 +233,18 @@ _$PriceTickCopyWith<_PriceTick> get copyWith => __$PriceTickCopyWithImpl<_PriceT
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PriceTick&&(identical(other.unchangedText, unchangedText) || other.unchangedText == unchangedText)&&(identical(other.changedText, changedText) || other.changedText == changedText)&&(identical(other.flashColor, flashColor) || other.flashColor == flashColor)&&(identical(other.intensity, intensity) || other.intensity == intensity));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _PriceTick&&(identical(other.unchangedText, unchangedText) || other.unchangedText == unchangedText)&&(identical(other.changedText, changedText) || other.changedText == changedText)&&(identical(other.flashColor, flashColor) || other.flashColor == flashColor)&&(identical(other.intensity, intensity) || other.intensity == intensity));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,unchangedText,changedText,flashColor,intensity);
+int get hashCode {
+    return Object.hash(runtimeType,unchangedText,changedText,flashColor,intensity);
+}
 
 @override
 String toString() {
-  return 'PriceTick(unchangedText: $unchangedText, changedText: $changedText, flashColor: $flashColor, intensity: $intensity)';
+    return 'PriceTick(unchangedText: $unchangedText, changedText: $changedText, flashColor: $flashColor, intensity: $intensity)';
 }
 
 
