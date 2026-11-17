@@ -6,9 +6,10 @@ extension MarketNewsArticlePresentationX on MarketNewsArticle {
 }
 
 extension MarketNewsArticleListPresentationX on List<MarketNewsArticle> {
-  List<MarketNewsArticle> get sortedByRecency => [...this]..sort((a, b) {
-    final dateComparison = b.publishedAt.compareTo(a.publishedAt);
-    if (dateComparison != 0) return dateComparison;
-    return a.id.compareTo(b.id);
-  });
+  List<MarketNewsArticle> get sortedByRecency => [...this]
+    ..sort((a, b) {
+      final dateComparison = b.publishedAt.compareTo(a.publishedAt);
+      if (dateComparison != 0) return dateComparison;
+      return a.id.compareTo(b.id);
+    });
 }

@@ -24,12 +24,12 @@ abstract class ChatMessageDto with _$ChatMessageDto {
       _$ChatMessageDtoFromJson(json);
 
   ChatMessage toDomain() => ChatMessage(
-        id: id,
-        role: ChatMessageRole.fromString(role),
-        content: content,
-        createdAt: createdAt,
-        followUps: followUps,
-        source: source,
-        routePath: routePath,
-      );
+    id: id,
+    role: ChatMessageRole.fromString(role),
+    content: content,
+    createdAt: createdAt,
+    followUps: followUps,
+    source: source,
+    routePath: routePath,
+  );
 }

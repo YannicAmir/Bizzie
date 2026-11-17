@@ -23,12 +23,12 @@ abstract class ChatSessionDto with _$ChatSessionDto {
       _$ChatSessionDtoFromJson(json);
 
   ChatSession toDomain() => ChatSession(
-        id: id,
-        title: title,
-        ticker: ticker,
-        companyName: companyName,
-        createdAt: createdAt,
-        updatedAt: updatedAt,
-        messageCount: messageCount,
-      );
+    id: id,
+    title: title,
+    ticker: ticker,
+    companyName: companyName,
+    createdAt: createdAt,
+    updatedAt: updatedAt,
+    messageCount: messageCount,
+  );
 }

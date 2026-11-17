@@ -55,14 +55,12 @@ extension NotificationEventPatterns on NotificationEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( NotificationSetupRequested value)?  setupRequested,TResult Function( NotificationSubscribeToTopicRequested value)?  subscribeToTopicRequested,TResult Function( NotificationUnsubscribeFromTopicRequested value)?  unsubscribeFromTopicRequested,TResult Function( NotificationMessageReceived value)?  messageReceived,TResult Function( NotificationInteractionReceived value)?  interactionReceived,TResult Function( NotificationReset value)?  reset,TResult Function( NotificationAppReadyForNavigation value)?  appReadyForNavigation,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( NotificationSetupRequested value)?  setupRequested,TResult Function( NotificationSyncRequested value)?  syncRequested,TResult Function( NotificationInteractionReceived value)?  interactionReceived,TResult Function( NotificationReset value)?  reset,TResult Function( NotificationAppReadyForNavigation value)?  appReadyForNavigation,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case NotificationSetupRequested() when setupRequested != null:
-return setupRequested(_that);case NotificationSubscribeToTopicRequested() when subscribeToTopicRequested != null:
-return subscribeToTopicRequested(_that);case NotificationUnsubscribeFromTopicRequested() when unsubscribeFromTopicRequested != null:
-return unsubscribeFromTopicRequested(_that);case NotificationMessageReceived() when messageReceived != null:
-return messageReceived(_that);case NotificationInteractionReceived() when interactionReceived != null:
+return setupRequested(_that);case NotificationSyncRequested() when syncRequested != null:
+return syncRequested(_that);case NotificationInteractionReceived() when interactionReceived != null:
 return interactionReceived(_that);case NotificationReset() when reset != null:
 return reset(_that);case NotificationAppReadyForNavigation() when appReadyForNavigation != null:
 return appReadyForNavigation(_that);case _:
@@ -83,14 +81,12 @@ return appReadyForNavigation(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( NotificationSetupRequested value)  setupRequested,required TResult Function( NotificationSubscribeToTopicRequested value)  subscribeToTopicRequested,required TResult Function( NotificationUnsubscribeFromTopicRequested value)  unsubscribeFromTopicRequested,required TResult Function( NotificationMessageReceived value)  messageReceived,required TResult Function( NotificationInteractionReceived value)  interactionReceived,required TResult Function( NotificationReset value)  reset,required TResult Function( NotificationAppReadyForNavigation value)  appReadyForNavigation,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( NotificationSetupRequested value)  setupRequested,required TResult Function( NotificationSyncRequested value)  syncRequested,required TResult Function( NotificationInteractionReceived value)  interactionReceived,required TResult Function( NotificationReset value)  reset,required TResult Function( NotificationAppReadyForNavigation value)  appReadyForNavigation,}){
 final _that = this;
 switch (_that) {
 case NotificationSetupRequested():
-return setupRequested(_that);case NotificationSubscribeToTopicRequested():
-return subscribeToTopicRequested(_that);case NotificationUnsubscribeFromTopicRequested():
-return unsubscribeFromTopicRequested(_that);case NotificationMessageReceived():
-return messageReceived(_that);case NotificationInteractionReceived():
+return setupRequested(_that);case NotificationSyncRequested():
+return syncRequested(_that);case NotificationInteractionReceived():
 return interactionReceived(_that);case NotificationReset():
 return reset(_that);case NotificationAppReadyForNavigation():
 return appReadyForNavigation(_that);}
@@ -107,14 +103,12 @@ return appReadyForNavigation(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( NotificationSetupRequested value)?  setupRequested,TResult? Function( NotificationSubscribeToTopicRequested value)?  subscribeToTopicRequested,TResult? Function( NotificationUnsubscribeFromTopicRequested value)?  unsubscribeFromTopicRequested,TResult? Function( NotificationMessageReceived value)?  messageReceived,TResult? Function( NotificationInteractionReceived value)?  interactionReceived,TResult? Function( NotificationReset value)?  reset,TResult? Function( NotificationAppReadyForNavigation value)?  appReadyForNavigation,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( NotificationSetupRequested value)?  setupRequested,TResult? Function( NotificationSyncRequested value)?  syncRequested,TResult? Function( NotificationInteractionReceived value)?  interactionReceived,TResult? Function( NotificationReset value)?  reset,TResult? Function( NotificationAppReadyForNavigation value)?  appReadyForNavigation,}){
 final _that = this;
 switch (_that) {
 case NotificationSetupRequested() when setupRequested != null:
-return setupRequested(_that);case NotificationSubscribeToTopicRequested() when subscribeToTopicRequested != null:
-return subscribeToTopicRequested(_that);case NotificationUnsubscribeFromTopicRequested() when unsubscribeFromTopicRequested != null:
-return unsubscribeFromTopicRequested(_that);case NotificationMessageReceived() when messageReceived != null:
-return messageReceived(_that);case NotificationInteractionReceived() when interactionReceived != null:
+return setupRequested(_that);case NotificationSyncRequested() when syncRequested != null:
+return syncRequested(_that);case NotificationInteractionReceived() when interactionReceived != null:
 return interactionReceived(_that);case NotificationReset() when reset != null:
 return reset(_that);case NotificationAppReadyForNavigation() when appReadyForNavigation != null:
 return appReadyForNavigation(_that);case _:
@@ -134,13 +128,11 @@ return appReadyForNavigation(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  setupRequested,TResult Function( String topic)?  subscribeToTopicRequested,TResult Function( String topic)?  unsubscribeFromTopicRequested,TResult Function( NotificationMessage message)?  messageReceived,TResult Function( Map<String, dynamic> payload)?  interactionReceived,TResult Function()?  reset,TResult Function()?  appReadyForNavigation,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  setupRequested,TResult Function()?  syncRequested,TResult Function( Map<String, dynamic> payload)?  interactionReceived,TResult Function()?  reset,TResult Function()?  appReadyForNavigation,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case NotificationSetupRequested() when setupRequested != null:
-return setupRequested();case NotificationSubscribeToTopicRequested() when subscribeToTopicRequested != null:
-return subscribeToTopicRequested(_that.topic);case NotificationUnsubscribeFromTopicRequested() when unsubscribeFromTopicRequested != null:
-return unsubscribeFromTopicRequested(_that.topic);case NotificationMessageReceived() when messageReceived != null:
-return messageReceived(_that.message);case NotificationInteractionReceived() when interactionReceived != null:
+return setupRequested();case NotificationSyncRequested() when syncRequested != null:
+return syncRequested();case NotificationInteractionReceived() when interactionReceived != null:
 return interactionReceived(_that.payload);case NotificationReset() when reset != null:
 return reset();case NotificationAppReadyForNavigation() when appReadyForNavigation != null:
 return appReadyForNavigation();case _:
@@ -161,13 +153,11 @@ return appReadyForNavigation();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  setupRequested,required TResult Function( String topic)  subscribeToTopicRequested,required TResult Function( String topic)  unsubscribeFromTopicRequested,required TResult Function( NotificationMessage message)  messageReceived,required TResult Function( Map<String, dynamic> payload)  interactionReceived,required TResult Function()  reset,required TResult Function()  appReadyForNavigation,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  setupRequested,required TResult Function()  syncRequested,required TResult Function( Map<String, dynamic> payload)  interactionReceived,required TResult Function()  reset,required TResult Function()  appReadyForNavigation,}) {final _that = this;
 switch (_that) {
 case NotificationSetupRequested():
-return setupRequested();case NotificationSubscribeToTopicRequested():
-return subscribeToTopicRequested(_that.topic);case NotificationUnsubscribeFromTopicRequested():
-return unsubscribeFromTopicRequested(_that.topic);case NotificationMessageReceived():
-return messageReceived(_that.message);case NotificationInteractionReceived():
+return setupRequested();case NotificationSyncRequested():
+return syncRequested();case NotificationInteractionReceived():
 return interactionReceived(_that.payload);case NotificationReset():
 return reset();case NotificationAppReadyForNavigation():
 return appReadyForNavigation();}
@@ -184,13 +174,11 @@ return appReadyForNavigation();}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  setupRequested,TResult? Function( String topic)?  subscribeToTopicRequested,TResult? Function( String topic)?  unsubscribeFromTopicRequested,TResult? Function( NotificationMessage message)?  messageReceived,TResult? Function( Map<String, dynamic> payload)?  interactionReceived,TResult? Function()?  reset,TResult? Function()?  appReadyForNavigation,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  setupRequested,TResult? Function()?  syncRequested,TResult? Function( Map<String, dynamic> payload)?  interactionReceived,TResult? Function()?  reset,TResult? Function()?  appReadyForNavigation,}) {final _that = this;
 switch (_that) {
 case NotificationSetupRequested() when setupRequested != null:
-return setupRequested();case NotificationSubscribeToTopicRequested() when subscribeToTopicRequested != null:
-return subscribeToTopicRequested(_that.topic);case NotificationUnsubscribeFromTopicRequested() when unsubscribeFromTopicRequested != null:
-return unsubscribeFromTopicRequested(_that.topic);case NotificationMessageReceived() when messageReceived != null:
-return messageReceived(_that.message);case NotificationInteractionReceived() when interactionReceived != null:
+return setupRequested();case NotificationSyncRequested() when syncRequested != null:
+return syncRequested();case NotificationInteractionReceived() when interactionReceived != null:
 return interactionReceived(_that.payload);case NotificationReset() when reset != null:
 return reset();case NotificationAppReadyForNavigation() when appReadyForNavigation != null:
 return appReadyForNavigation();case _:
@@ -236,209 +224,34 @@ String toString() {
 /// @nodoc
 
 
-class NotificationSubscribeToTopicRequested implements NotificationEvent {
-  const NotificationSubscribeToTopicRequested(this.topic);
+class NotificationSyncRequested implements NotificationEvent {
+  const NotificationSyncRequested();
   
 
- final  String topic;
 
-/// Create a copy of NotificationEvent
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-$NotificationSubscribeToTopicRequestedCopyWith<NotificationSubscribeToTopicRequested> get copyWith => _$NotificationSubscribeToTopicRequestedCopyWithImpl<NotificationSubscribeToTopicRequested>(this, _$identity);
+
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is NotificationSubscribeToTopicRequested&&(identical(other.topic, topic) || other.topic == topic));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is NotificationSyncRequested);
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,topic);
-
-@override
-String toString() {
-  return 'NotificationEvent.subscribeToTopicRequested(topic: $topic)';
-}
-
-
-}
-
-/// @nodoc
-abstract mixin class $NotificationSubscribeToTopicRequestedCopyWith<$Res> implements $NotificationEventCopyWith<$Res> {
-  factory $NotificationSubscribeToTopicRequestedCopyWith(NotificationSubscribeToTopicRequested value, $Res Function(NotificationSubscribeToTopicRequested) _then) = _$NotificationSubscribeToTopicRequestedCopyWithImpl;
-@useResult
-$Res call({
- String topic
-});
-
-
-
-
-}
-/// @nodoc
-class _$NotificationSubscribeToTopicRequestedCopyWithImpl<$Res>
-    implements $NotificationSubscribeToTopicRequestedCopyWith<$Res> {
-  _$NotificationSubscribeToTopicRequestedCopyWithImpl(this._self, this._then);
-
-  final NotificationSubscribeToTopicRequested _self;
-  final $Res Function(NotificationSubscribeToTopicRequested) _then;
-
-/// Create a copy of NotificationEvent
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? topic = null,}) {
-  return _then(NotificationSubscribeToTopicRequested(
-null == topic ? _self.topic : topic // ignore: cast_nullable_to_non_nullable
-as String,
-  ));
-}
-
-
-}
-
-/// @nodoc
-
-
-class NotificationUnsubscribeFromTopicRequested implements NotificationEvent {
-  const NotificationUnsubscribeFromTopicRequested(this.topic);
-  
-
- final  String topic;
-
-/// Create a copy of NotificationEvent
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-$NotificationUnsubscribeFromTopicRequestedCopyWith<NotificationUnsubscribeFromTopicRequested> get copyWith => _$NotificationUnsubscribeFromTopicRequestedCopyWithImpl<NotificationUnsubscribeFromTopicRequested>(this, _$identity);
-
-
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is NotificationUnsubscribeFromTopicRequested&&(identical(other.topic, topic) || other.topic == topic));
-}
-
-
-@override
-int get hashCode => Object.hash(runtimeType,topic);
+int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'NotificationEvent.unsubscribeFromTopicRequested(topic: $topic)';
+  return 'NotificationEvent.syncRequested()';
 }
 
 
 }
 
-/// @nodoc
-abstract mixin class $NotificationUnsubscribeFromTopicRequestedCopyWith<$Res> implements $NotificationEventCopyWith<$Res> {
-  factory $NotificationUnsubscribeFromTopicRequestedCopyWith(NotificationUnsubscribeFromTopicRequested value, $Res Function(NotificationUnsubscribeFromTopicRequested) _then) = _$NotificationUnsubscribeFromTopicRequestedCopyWithImpl;
-@useResult
-$Res call({
- String topic
-});
 
 
-
-
-}
-/// @nodoc
-class _$NotificationUnsubscribeFromTopicRequestedCopyWithImpl<$Res>
-    implements $NotificationUnsubscribeFromTopicRequestedCopyWith<$Res> {
-  _$NotificationUnsubscribeFromTopicRequestedCopyWithImpl(this._self, this._then);
-
-  final NotificationUnsubscribeFromTopicRequested _self;
-  final $Res Function(NotificationUnsubscribeFromTopicRequested) _then;
-
-/// Create a copy of NotificationEvent
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? topic = null,}) {
-  return _then(NotificationUnsubscribeFromTopicRequested(
-null == topic ? _self.topic : topic // ignore: cast_nullable_to_non_nullable
-as String,
-  ));
-}
-
-
-}
-
-/// @nodoc
-
-
-class NotificationMessageReceived implements NotificationEvent {
-  const NotificationMessageReceived(this.message);
-  
-
- final  NotificationMessage message;
-
-/// Create a copy of NotificationEvent
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-$NotificationMessageReceivedCopyWith<NotificationMessageReceived> get copyWith => _$NotificationMessageReceivedCopyWithImpl<NotificationMessageReceived>(this, _$identity);
-
-
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is NotificationMessageReceived&&(identical(other.message, message) || other.message == message));
-}
-
-
-@override
-int get hashCode => Object.hash(runtimeType,message);
-
-@override
-String toString() {
-  return 'NotificationEvent.messageReceived(message: $message)';
-}
-
-
-}
-
-/// @nodoc
-abstract mixin class $NotificationMessageReceivedCopyWith<$Res> implements $NotificationEventCopyWith<$Res> {
-  factory $NotificationMessageReceivedCopyWith(NotificationMessageReceived value, $Res Function(NotificationMessageReceived) _then) = _$NotificationMessageReceivedCopyWithImpl;
-@useResult
-$Res call({
- NotificationMessage message
-});
-
-
-$NotificationMessageCopyWith<$Res> get message;
-
-}
-/// @nodoc
-class _$NotificationMessageReceivedCopyWithImpl<$Res>
-    implements $NotificationMessageReceivedCopyWith<$Res> {
-  _$NotificationMessageReceivedCopyWithImpl(this._self, this._then);
-
-  final NotificationMessageReceived _self;
-  final $Res Function(NotificationMessageReceived) _then;
-
-/// Create a copy of NotificationEvent
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? message = null,}) {
-  return _then(NotificationMessageReceived(
-null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
-as NotificationMessage,
-  ));
-}
-
-/// Create a copy of NotificationEvent
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$NotificationMessageCopyWith<$Res> get message {
-  
-  return $NotificationMessageCopyWith<$Res>(_self.message, (value) {
-    return _then(_self.copyWith(message: value));
-  });
-}
-}
 
 /// @nodoc
 

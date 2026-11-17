@@ -45,6 +45,14 @@ class AppTextStyles {
     color: AppColors.textSecondary,
   );
 
+  static final TextStyle subtitleSmall = GoogleFonts.inter(
+    fontSize: 16,
+    fontWeight: FontWeight.normal,
+    height: 1.5,
+    letterSpacing: -0.4316,
+    color: AppColors.textSecondary,
+  );
+
   static final TextStyle bodyLarge = GoogleFonts.inter(
     fontSize: 17,
     fontWeight: FontWeight.normal,
@@ -205,5 +213,52 @@ class AppTextStyles {
     height: 1.2,
     letterSpacing: 0.383,
     color: AppColors.textPrimary,
+  );
+
+  // Onboarding
+  static final TextStyle onboardingDisplay = GoogleFonts.inter(
+    fontSize: 28,
+    fontWeight: FontWeight.w800,
+    height: 1.2,
+    letterSpacing: 0.383,
+    color: AppColors.textPrimary,
+  );
+
+  static final TextStyle onboardingProgressPercent = GoogleFonts.inter(
+    fontSize: 20,
+    fontWeight: FontWeight.w800,
+    height: 1.5,
+    letterSpacing: -0.449,
+    color: AppColors.primary,
+  );
+
+  static final TextStyle onboardingSummaryLabel = GoogleFonts.inter(
+    fontSize: 12,
+    fontWeight: FontWeight.w500,
+    height: 1.5,
+    letterSpacing: -0.2,
+    color: AppColors.textSecondary,
+  );
+
+  static final TextStyle onboardingSummaryValue = GoogleFonts.inter(
+    fontSize: 16,
+    fontWeight: FontWeight.w600,
+    height: 1.5,
+    letterSpacing: -0.3125,
+    color: AppColors.textPrimary,
+  );
+
+  static final TextStyle onboardingHighlightIndicator = GoogleFonts.inter(
+    fontSize: 15,
+    fontWeight: FontWeight.bold,
+    color: AppColors.textPrimary,
+    letterSpacing: -0.2344,
+  );
+
+  static final TextStyle discountBadgeLabel = GoogleFonts.inter(
+    fontSize: 15,
+    fontWeight: FontWeight.bold,
+    color: AppColors.textPrimary,
+    letterSpacing: -0.2344,
   );
 }

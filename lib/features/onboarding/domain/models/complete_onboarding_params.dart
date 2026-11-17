@@ -8,5 +8,8 @@ abstract class CompleteOnboardingParams with _$CompleteOnboardingParams {
   const factory CompleteOnboardingParams({
     required OnboardingData data,
     required String uid,
+    @Default(true) bool awaitServerAck,
+    @Default(false) bool deferNotificationSetup,
+    @Default(false) bool hasExistingProfile,
   }) = _CompleteOnboardingParams;
 }

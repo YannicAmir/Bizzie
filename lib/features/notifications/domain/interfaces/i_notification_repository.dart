@@ -4,8 +4,11 @@ import 'package:bizzie/features/notifications/domain/models/notification_message
 
 abstract class INotificationRepository {
   Future<Either<Failure, void>> requestPermission();
+  Future<Either<Failure, bool>> isSystemAuthorized();
   Future<Either<Failure, String?>> getFcmToken();
   Stream<NotificationMessage> get onMessage;
   Future<Either<Failure, void>> subscribeToTopic(String topic);
+  Future<Either<Failure, void>> subscribeToSectorTopic(String sectorName);
+  Future<Either<Failure, void>> subscribeToTickerTopic(String ticker);
   Future<Either<Failure, void>> unsubscribeFromTopic(String topic);
 }

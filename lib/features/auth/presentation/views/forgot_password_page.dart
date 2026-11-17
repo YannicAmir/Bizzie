@@ -1,9 +1,11 @@
 import 'package:bizzie/app/routes/app_routes.dart';
 import 'package:bizzie/app/themes/app_assets.dart';
+import 'package:bizzie/features/auth/domain/enums/auth_source.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
+import 'package:bizzie/shared/utils/input_formatters.dart';
+import 'package:bizzie/shared/utils/validators.dart';
 import 'package:bizzie/shared/widgets/buttons/bizzie_primary_button.dart';
 import 'package:bizzie/shared/widgets/inputs/auth_text_field.dart';
-import 'package:bizzie/shared/widgets/modals/bizzie_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -11,10 +13,7 @@ import 'package:go_router/go_router.dart';
 import '../bloc/auth_bloc.dart';
 import '../bloc/auth_event.dart';
 import '../bloc/auth_state.dart';
-import 'package:bizzie/shared/utils/validators.dart';
-import 'package:flutter/services.dart';
-
-import 'package:bizzie/features/auth/domain/enums/auth_source.dart';
+import '../utils/auth_failure_snackbar.dart';
 
 class ForgotPasswordPage extends StatefulWidget {
   final AuthSource source;
@@ -53,13 +52,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
         state.maybeWhen(
-          failure: (failure) {
-            BizzieSnackBar.show(
-              context,
-              message: failure.errorMessage,
-              type: BizzieSnackBarType.error,
-            );
-          },
+          failure: (failure) => AuthFailureSnackBar.show(context, failure),
           orElse: () {},
         );
       },
@@ -109,9 +102,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                     onSubmitted: _onSendResetLinkPressed,
                     validator: Validators.validateEmail,
                     maxLength: AppConstants.textfieldCharLimit,
-                    inputFormatters: [
-                      FilteringTextInputFormatter.deny(RegExp(r'\s')),
-                    ],
+                    inputFormatters: [InputFormatters.denyWhitespace],
                   ),
                   const SizedBox(height: 24),
                   BizziePrimaryButton(

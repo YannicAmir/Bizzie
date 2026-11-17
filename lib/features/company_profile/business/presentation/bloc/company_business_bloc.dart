@@ -5,7 +5,7 @@ import 'package:bizzie/core/interfaces/i_config_service.dart';
 import 'package:bizzie/core/interfaces/i_time_provider.dart';
 import 'package:bizzie/core/usecase/usecase.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
-import 'package:bizzie/features/auth/domain/usecases/get_auth_stream.dart';
+import 'package:bizzie/features/auth/domain/usecases/get_auth_stream_usecase.dart';
 import 'package:bizzie/features/auth/presentation/bloc/auth_session_reset_mixin.dart';
 import 'package:bizzie/features/company_profile/business/domain/models/business_profile.dart';
 import 'package:bizzie/features/company_profile/business/domain/usecases/get_business_profile_usecase.dart';
@@ -62,7 +62,7 @@ class CompanyBusinessBloc
     this._watchActiveTabUseCase,
     this._freshnessService,
     this._timeProvider,
-    GetAuthStream getAuthStream,
+    GetAuthStreamUseCase getAuthStream,
   ) : super(const CompanyBusinessState.initial()) {
     on<LoadRequested>(_onLoadRequested, transformer: restartable());
     on<StalenessCheckRequested>(_onStalenessCheckRequested);

@@ -5,7 +5,7 @@ import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/core/interfaces/i_config_service.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:bizzie/features/auth/domain/models/user_model.dart';
-import 'package:bizzie/features/auth/domain/usecases/get_auth_stream.dart';
+import 'package:bizzie/features/auth/domain/usecases/get_auth_stream_usecase.dart';
 import 'package:bizzie/features/auth/presentation/bloc/auth_session_reset_mixin.dart';
 import 'package:bizzie/features/home/domain/models/watchlist_stock_price.dart';
 import 'package:bizzie/features/home/domain/usecases/watch_watchlist_prices_usecase.dart';
@@ -39,7 +39,7 @@ class WatchlistPricesBloc
     this._watchWatchlistPrices,
     this._getWatchlist,
     this._configService,
-    GetAuthStream getAuthStream,
+    GetAuthStreamUseCase getAuthStream,
   ) : super(const WatchlistPricesState.initial()) {
     on<WatchlistPricesEvent>(
       (event, emit) => event.map(

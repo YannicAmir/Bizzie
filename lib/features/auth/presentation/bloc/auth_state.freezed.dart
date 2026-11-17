@@ -89,7 +89,10 @@ return initial(_that);case AuthLoading():
 return loading(_that);case AuthAuthenticated():
 return authenticated(_that);case AuthUnauthenticated():
 return unauthenticated(_that);case AuthFailure():
-return failure(_that);}
+return failure(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -128,7 +131,7 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function( String? method)?  loading,TResult Function( UserModel user)?  authenticated,TResult Function()?  unauthenticated,TResult Function( Failure failure)?  failure,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function( AuthLoadingMethod? method)?  loading,TResult Function( UserModel user)?  authenticated,TResult Function()?  unauthenticated,TResult Function( Failure failure)?  failure,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case AuthInitial() when initial != null:
 return initial();case AuthLoading() when loading != null:
@@ -153,14 +156,17 @@ return failure(_that.failure);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function( String? method)  loading,required TResult Function( UserModel user)  authenticated,required TResult Function()  unauthenticated,required TResult Function( Failure failure)  failure,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function( AuthLoadingMethod? method)  loading,required TResult Function( UserModel user)  authenticated,required TResult Function()  unauthenticated,required TResult Function( Failure failure)  failure,}) {final _that = this;
 switch (_that) {
 case AuthInitial():
 return initial();case AuthLoading():
 return loading(_that.method);case AuthAuthenticated():
 return authenticated(_that.user);case AuthUnauthenticated():
 return unauthenticated();case AuthFailure():
-return failure(_that.failure);}
+return failure(_that.failure);case _:
+  throw StateError('Unexpected subclass');
+
+}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -174,7 +180,7 @@ return failure(_that.failure);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function( String? method)?  loading,TResult? Function( UserModel user)?  authenticated,TResult? Function()?  unauthenticated,TResult? Function( Failure failure)?  failure,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function( AuthLoadingMethod? method)?  loading,TResult? Function( UserModel user)?  authenticated,TResult? Function()?  unauthenticated,TResult? Function( Failure failure)?  failure,}) {final _that = this;
 switch (_that) {
 case AuthInitial() when initial != null:
 return initial();case AuthLoading() when loading != null:
@@ -192,8 +198,8 @@ return failure(_that.failure);case _:
 /// @nodoc
 
 
-class AuthInitial implements AuthState {
-  const AuthInitial();
+class AuthInitial extends AuthState {
+  const AuthInitial(): super._();
   
 
 
@@ -224,11 +230,11 @@ String toString() {
 /// @nodoc
 
 
-class AuthLoading implements AuthState {
-  const AuthLoading({this.method});
+class AuthLoading extends AuthState {
+  const AuthLoading({this.method}): super._();
   
 
- final  String? method;
+ final  AuthLoadingMethod? method;
 
 /// Create a copy of AuthState
 /// with the given fields replaced by the non-null parameter values.
@@ -260,7 +266,7 @@ abstract mixin class $AuthLoadingCopyWith<$Res> implements $AuthStateCopyWith<$R
   factory $AuthLoadingCopyWith(AuthLoading value, $Res Function(AuthLoading) _then) = _$AuthLoadingCopyWithImpl;
 @useResult
 $Res call({
- String? method
+ AuthLoadingMethod? method
 });
 
 
@@ -280,7 +286,7 @@ class _$AuthLoadingCopyWithImpl<$Res>
 @pragma('vm:prefer-inline') $Res call({Object? method = freezed,}) {
   return _then(AuthLoading(
 method: freezed == method ? _self.method : method // ignore: cast_nullable_to_non_nullable
-as String?,
+as AuthLoadingMethod?,
   ));
 }
 
@@ -290,8 +296,8 @@ as String?,
 /// @nodoc
 
 
-class AuthAuthenticated implements AuthState {
-  const AuthAuthenticated(this.user);
+class AuthAuthenticated extends AuthState {
+  const AuthAuthenticated(this.user): super._();
   
 
  final  UserModel user;
@@ -365,8 +371,8 @@ $UserModelCopyWith<$Res> get user {
 /// @nodoc
 
 
-class AuthUnauthenticated implements AuthState {
-  const AuthUnauthenticated();
+class AuthUnauthenticated extends AuthState {
+  const AuthUnauthenticated(): super._();
   
 
 
@@ -397,8 +403,8 @@ String toString() {
 /// @nodoc
 
 
-class AuthFailure implements AuthState {
-  const AuthFailure(this.failure);
+class AuthFailure extends AuthState {
+  const AuthFailure(this.failure): super._();
   
 
  final  Failure failure;

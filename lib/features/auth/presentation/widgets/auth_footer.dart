@@ -16,7 +16,7 @@ class AuthFooter extends StatelessWidget {
     final configService = getIt<IConfigService>();
     final linkStyle = theme.textTheme.bodySmall?.copyWith(
       fontWeight: FontWeight.bold,
-      color: theme.colorScheme.primary,
+      color: theme.colorScheme.onSurfaceVariant,
       decoration: TextDecoration.underline,
     );
 

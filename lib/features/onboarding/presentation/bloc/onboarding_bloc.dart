@@ -1,19 +1,35 @@
+import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/core/usecase/usecase.dart';
-import 'package:bizzie/features/auth/domain/interfaces/i_auth_repository.dart';
+import 'package:bizzie/core/error/exceptions.dart';
+import 'package:bizzie/features/auth/domain/usecases/get_auth_stream_usecase.dart';
+import 'package:bizzie/features/auth/domain/usecases/get_current_user_usecase.dart';
+import 'package:bizzie/features/auth/domain/usecases/sign_in_anonymously_usecase.dart';
+import 'package:bizzie/features/auth/domain/models/user_model.dart';
 import 'package:bizzie/core/domain/models/company.dart';
 import 'package:bizzie/core/domain/models/sector.dart';
+import 'package:bizzie/features/onboarding/domain/enums/onboarding_save_outcome.dart';
 import 'package:bizzie/features/onboarding/domain/models/complete_onboarding_params.dart';
 import 'package:bizzie/features/onboarding/domain/models/onboarding_data.dart';
-import 'package:bizzie/features/user/domain/enums/investing_experience.dart';
+import 'package:bizzie/features/onboarding/domain/models/save_onboarding_progress_result.dart';
+import 'package:bizzie/features/onboarding/domain/models/skip_onboarding_params.dart';
+import 'package:bizzie/features/onboarding/domain/models/skip_onboarding_result.dart';
+import 'package:bizzie/core/enums/investing_experience.dart';
 import 'package:bizzie/features/onboarding/select_brands/domain/models/brand.dart';
+import 'package:bizzie/features/onboarding/select_brands/domain/models/get_daily_brands_params.dart';
+import 'package:bizzie/features/onboarding/select_brands/domain/usecases/get_daily_brands_usecase.dart';
 import 'package:bizzie/features/onboarding/domain/usecases/complete_onboarding_usecase.dart';
 import 'package:bizzie/features/onboarding/domain/usecases/get_sectors_usecase.dart';
 import 'package:bizzie/features/onboarding/domain/usecases/get_sp500_history_usecase.dart';
+import 'package:bizzie/features/onboarding/domain/usecases/persist_notification_grant_usecase.dart';
+import 'package:bizzie/features/onboarding/domain/usecases/save_onboarding_progress_usecase.dart';
+import 'package:bizzie/features/onboarding/domain/usecases/skip_onboarding_usecase.dart';
 import 'package:bizzie/features/onboarding/presentation/bloc/onboarding_event.dart';
 import 'package:bizzie/features/onboarding/presentation/bloc/onboarding_state.dart';
 import 'package:bizzie/features/onboarding/presentation/models/feature_highlight_item.dart';
 import 'package:bizzie/features/onboarding/presentation/analytics/onboarding_analytics.dart';
 import 'package:bizzie/features/onboarding/presentation/analytics/onboarding_session_summary.dart';
+import 'package:bizzie/features/onboarding/presentation/extensions/onboarding_state_x.dart';
+import 'package:bizzie/features/onboarding/presentation/extensions/onboarding_step_x.dart';
 import 'package:bizzie/features/onboarding/domain/models/onboarding_step.dart';
 import 'package:bizzie/core/enums/day_of_week.dart';
 import 'package:bizzie/core/interfaces/i_sector_service.dart';
@@ -21,6 +37,7 @@ import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:bizzie/core/utils/id_utils.dart';
 import 'package:bizzie/shared/models/sector_view_model.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
+import 'package:dartz/dartz.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
@@ -29,22 +46,36 @@ export 'onboarding_state.dart';
 
 final _logger = BizzieLogger('OnboardingBloc');
 
-@lazySingleton
+@injectable
 class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
-  final IAuthRepository _authRepository;
+  final GetCurrentUserUseCase _getCurrentUser;
+  final GetAuthStreamUseCase _getAuthStream;
   final CompleteOnboardingUseCase _completeOnboardingUseCase;
+  final SkipOnboardingUseCase _skipOnboardingUseCase;
+  final SaveOnboardingProgressUseCase _saveOnboardingProgressUseCase;
+  final SignInAnonymouslyUseCase _signInAnonymously;
+  final PersistNotificationGrantUseCase _persistNotificationGrantUseCase;
 
   final GetSectorsUseCase _getSectorsUseCase;
   final GetSp500HistoryUseCase _getSp500HistoryUseCase;
+  final GetDailyBrandsUseCase _getDailyBrandsUseCase;
   final ISectorService _sectorService;
   final OnboardingAnalytics _analytics;
   final Stopwatch _stepStopwatch = Stopwatch();
+  Future<Either<Failure, UserModel>>? _pendingGuestSignIn;
+  Future<bool>? _pendingProgressSave;
 
   OnboardingBloc(
-    this._authRepository,
+    this._getCurrentUser,
+    this._getAuthStream,
     this._completeOnboardingUseCase,
+    this._skipOnboardingUseCase,
+    this._saveOnboardingProgressUseCase,
+    this._signInAnonymously,
+    this._persistNotificationGrantUseCase,
     this._getSectorsUseCase,
     this._getSp500HistoryUseCase,
+    this._getDailyBrandsUseCase,
     this._sectorService,
     this._analytics,
   ) : super(const OnboardingState.initial()) {
@@ -56,33 +87,38 @@ class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
       _onCompletionRequested,
       transformer: droppable(),
     );
+    on<OnboardingBuildingProfileStarted>(
+      _onBuildingProfileStarted,
+      transformer: droppable(),
+    );
+    on<OnboardingSkipRequested>(_onSkipRequested, transformer: droppable());
+    on<OnboardingNotificationGrantPersistRequested>(
+      _onNotificationGrantPersistRequested,
+      transformer: droppable(),
+    );
     on<OnboardingSp500HistoryRequested>(
       _onSp500HistoryRequested,
       transformer: restartable(),
     );
+    on<OnboardingInitialCompanyShown>(_onInitialCompanyShown);
     on<OnboardingStepViewed>(_onStepViewed);
     on<OnboardingSubscriptionStatusChanged>(_onSubscriptionStatusChanged);
     on<OnboardingBrandToggled>(_onBrandToggled);
-    on<OnboardingAnalysisStarted>(_onAnalysisStarted);
-    on<OnboardingAnalysisStepUpdated>(_onAnalysisStepUpdated);
-    on<OnboardingWatchlistAdditionStarted>(_onWatchlistAdditionStarted);
-    on<OnboardingWatchlistStepUpdated>(_onWatchlistStepUpdated);
+    on<OnboardingGuestSessionRequested>(
+      _onGuestSessionRequested,
+      transformer: droppable(),
+    );
+    on<OnboardingBrandsConfirmed>(_onBrandsConfirmed, transformer: droppable());
+    on<OnboardingBrandsPrefetchRequested>(
+      _onBrandsPrefetchRequested,
+      transformer: restartable(),
+    );
     on<OnboardingHighlightPageChanged>(_onHighlightPageChanged);
     on<OnboardingHighlightContinuePressed>(_onHighlightContinuePressed);
-    on<OnboardingHighlightSkipPressed>(_onHighlightSkipPressed);
     on<OnboardingNotificationsToggled>(_onNotificationsToggled);
-    on<OnboardingProfileReadyPageViewed>(_onProfileReadyPageViewed);
-    on<OnboardingLandingPageViewed>(_onLandingPageViewed);
     on<OnboardingLoginRequested>(_onLoginRequested);
     on<OnboardingFlowFinished>(_onOnboardingFlowFinished);
     on<OnboardingReset>(_onReset);
-  }
-
-  void _onLandingPageViewed(
-    OnboardingLandingPageViewed event,
-    Emitter<OnboardingState> emit,
-  ) {
-    add(const OnboardingEvent.stepViewed(OnboardingStep.landing));
   }
 
   Future<void> _onLoginRequested(
@@ -90,14 +126,10 @@ class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
     Emitter<OnboardingState> emit,
   ) async {
     _stepStopwatch.stop();
-    _logSessionSummary(exitStep: OnboardingStep.landing.name, didSignup: false);
-  }
-
-  void _onProfileReadyPageViewed(
-    OnboardingProfileReadyPageViewed event,
-    Emitter<OnboardingState> emit,
-  ) {
-    add(const OnboardingEvent.stepViewed(OnboardingStep.profileReady));
+    _logSessionSummary(
+      exitStep: OnboardingStep.landing.analyticsName,
+      didSignup: false,
+    );
   }
 
   Future<void> _onNotificationsToggled(
@@ -108,6 +140,7 @@ class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
       state.copyWith(
         onboardingData: state.onboardingData.copyWith(
           notificationsEnabled: event.enabled,
+          hasDecidedNotifications: true,
         ),
       ),
     );
@@ -117,30 +150,48 @@ class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
     OnboardingStepViewed event,
     Emitter<OnboardingState> emit,
   ) async {
-    if (state.sessionId.isEmpty) {
-      add(const OnboardingEvent.started());
-    }
+    _ensureSessionStarted();
     final step = event.step;
+    final prevStep = state.lastStep;
 
-    if (step == state.lastStep) {
+    if (step == prevStep) {
       _logger.info('Skipping duration log for duplicate step: $step');
       return;
     }
 
-    final prevStep = state.lastStep;
-    if (_isHighlightStep(prevStep) && _isHighlightStep(step)) {
+    if (_isHighlightTransition(prevStep, step)) {
       emit(state.copyWith(lastStep: step));
       return;
     }
 
+    _trackStepTransition(step: step, prevStep: prevStep);
+    emit(
+      state.copyWith(
+        lastStep: step,
+        hasViewedCompanyProfile:
+            state.hasViewedCompanyProfile ||
+            step == OnboardingStep.companyProfile,
+      ),
+    );
+  }
+
+  void _ensureSessionStarted() {
+    if (state.sessionId.isEmpty) add(const OnboardingEvent.started());
+  }
+
+  bool _isHighlightTransition(OnboardingStep? prevStep, OnboardingStep step) =>
+      _isHighlightStep(prevStep) && _isHighlightStep(step);
+
+  void _trackStepTransition({
+    required OnboardingStep step,
+    required OnboardingStep? prevStep,
+  }) {
     final prevDurationSec = _restartStepTimer(hadPrevStep: prevStep != null);
     _logStepViewed(
       step: step,
       prevStep: prevStep,
       prevDurationSec: prevDurationSec,
     );
-
-    emit(state.copyWith(lastStep: step));
   }
 
   int? _restartStepTimer({required bool hadPrevStep}) {
@@ -163,7 +214,6 @@ class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
     final isPrevPaywall =
         prevStep == OnboardingStep.paywall ||
         prevStep == OnboardingStep.discountPaywall;
-    final isPrevHighlight = _isHighlightStep(prevStep);
 
     _analytics.logStepViewed(
       step: step,
@@ -182,7 +232,6 @@ class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
           : null,
       didSubscribe: isPrevPaywall ? state.didSubscribe : null,
       subscriptionType: isPrevPaywall ? state.subscriptionType : null,
-      highlightsSkipped: isPrevHighlight ? state.highlightsSkipped : null,
     );
   }
 
@@ -222,73 +271,88 @@ class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
     emit(state.copyWith(selectedBrands: currentSelected));
   }
 
-  Future<void> _onAnalysisStarted(
-    OnboardingAnalysisStarted event,
+  Future<void> _onGuestSessionRequested(
+    OnboardingGuestSessionRequested event,
     Emitter<OnboardingState> emit,
   ) async {
-    final detectedCompanies = state.selectedBrands
-        .map((brand) => Company(ticker: brand.ticker, name: brand.company))
-        .toSet()
-        .toList();
+    if (_getCurrentUser() != null) return;
 
-    final newData = state.onboardingData.copyWith(
-      detectedCompanies: detectedCompanies,
+    final signIn = _signInAnonymously(NoParams());
+    _pendingGuestSignIn = signIn;
+    final result = await signIn;
+    result.fold(
+      (failure) => _logger.warning(
+        'Background guest sign-in failed: ${failure.errorMessage}',
+      ),
+      (user) => _logger.info('Background guest sign-in succeeded'),
     );
+  }
 
+  Future<void> _awaitPendingGuestSignIn() async {
+    final pendingSignIn = _pendingGuestSignIn;
+    if (pendingSignIn != null) await pendingSignIn;
+  }
+
+  Future<void> _onBrandsConfirmed(
+    OnboardingBrandsConfirmed event,
+    Emitter<OnboardingState> emit,
+  ) async {
+    final data = _withSelectedBrandCompanies(state.onboardingData);
     emit(
       state.copyWith(
-        analysisStep: 0,
-        isAnalyzingBrands: true,
-        onboardingData: newData,
-        featureHighlights: _calculateFeatureHighlights(newData),
+        onboardingData: data,
+        featureHighlights: _calculateFeatureHighlights(data),
       ),
     );
 
-    await Future.delayed(const Duration(milliseconds: 1000));
-    if (isClosed) return;
-    add(const OnboardingEvent.analysisStepUpdated(1));
-    await Future.delayed(const Duration(milliseconds: 1000));
-    if (isClosed) return;
-    add(const OnboardingEvent.analysisStepUpdated(2));
-    await Future.delayed(const Duration(milliseconds: 1000));
-    if (isClosed) return;
-    add(const OnboardingEvent.analysisStepUpdated(3));
+    await _awaitPendingGuestSignIn();
+    final progressSave = _saveProgress(data, emit);
+    _pendingProgressSave = progressSave;
+    final isSaved = await progressSave;
+    if (isSaved) await _persistNotificationGrant();
   }
 
-  void _onAnalysisStepUpdated(
-    OnboardingAnalysisStepUpdated event,
-    Emitter<OnboardingState> emit,
-  ) {
-    emit(state.copyWith(analysisStep: event.step));
-    if (event.step == 3) {
-      emit(state.copyWith(isAnalyzingBrands: false));
-    }
-  }
-
-  Future<void> _onWatchlistAdditionStarted(
-    OnboardingWatchlistAdditionStarted event,
+  Future<bool> _saveProgress(
+    OnboardingData data,
     Emitter<OnboardingState> emit,
   ) async {
-    emit(state.copyWith(watchlistStep: 0, isAnalyzingBrands: true));
-
-    final count = state.onboardingData.detectedCompanies.length;
-    for (int i = 0; i <= count; i++) {
-      if (isClosed) return;
-      add(OnboardingEvent.watchlistStepUpdated(i));
-      if (i < count) {
-        await Future.delayed(const Duration(milliseconds: 1000));
-      }
-    }
-    await Future.delayed(const Duration(milliseconds: 500));
-    if (isClosed) return;
-    emit(state.copyWith(isAnalyzingBrands: false));
+    final result = await _saveOnboardingProgressUseCase(data);
+    return result.fold(
+      (failure) {
+        _logger.warning(
+          'Failed to save onboarding progress: ${failure.errorMessage}',
+        );
+        return false;
+      },
+      (progress) {
+        switch (progress) {
+          case SaveOnboardingProgressSaved(:final uid):
+            _logger.info('Onboarding progress saved');
+            emit(state.copyWith(savedProfileUid: uid));
+            return true;
+          case SaveOnboardingProgressExistingProfile():
+            _logger.info(
+              'Existing profile found; onboarding progress not saved',
+            );
+            return false;
+        }
+      },
+    );
   }
 
-  void _onWatchlistStepUpdated(
-    OnboardingWatchlistStepUpdated event,
-    Emitter<OnboardingState> emit,
-  ) {
-    emit(state.copyWith(watchlistStep: event.step));
+  Future<void> _awaitPendingProgressSave() async {
+    final pendingSave = _pendingProgressSave;
+    if (pendingSave != null) await pendingSave;
+  }
+
+  bool _hasSavedProfileFor(String? uid) =>
+      uid != null && uid == state.savedProfileUid;
+
+  List<Company> _companiesFromBrands(List<Brand> brands) {
+    return brands
+        .map((brand) => Company(ticker: brand.ticker, name: brand.company))
+        .toSet()
+        .toList();
   }
 
   Future<void> _onSp500HistoryRequested(
@@ -300,7 +364,9 @@ class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
     final result = await _getSp500HistoryUseCase(NoParams());
     result.fold(
       (failure) {
-        _logger.warning('Failed to load S&P 500 history: ${failure.errorMessage}');
+        _logger.warning(
+          'Failed to load S&P 500 history: ${failure.errorMessage}',
+        );
         emit(state.copyWith(isLoadingHistory: false));
       },
       (history) {
@@ -310,22 +376,26 @@ class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
     );
   }
 
+  Future<void> _onBrandsPrefetchRequested(
+    OnboardingBrandsPrefetchRequested event,
+    Emitter<OnboardingState> emit,
+  ) async {
+    final result = await _getDailyBrandsUseCase(
+      GetDailyBrandsParams(sector: state.onboardingData.selectedSector),
+    );
+    result.fold(
+      (failure) => _logger.warning(
+        'Failed to prefetch daily brands: ${failure.errorMessage}',
+      ),
+      (_) => _logger.info('Prefetched daily brands'),
+    );
+  }
+
   Future<void> _onStarted(
     OnboardingStarted event,
     Emitter<OnboardingState> emit,
   ) async {
-    _logger.info('Onboarding started');
-
-    _analytics.resetUserProperties();
-    _stepStopwatch.reset();
-
-    emit(
-      const OnboardingState.initial().copyWith(
-        isLoadingSectors: true,
-        sessionEntryTime: DateTime.now(),
-        sessionId: IdUtils.generateSessionId(),
-      ),
-    );
+    _startSession(emit);
 
     final result = await _getSectorsUseCase(NoParams());
     result.fold(
@@ -349,6 +419,21 @@ class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
     add(const OnboardingEvent.sp500HistoryRequested());
   }
 
+  void _startSession(Emitter<OnboardingState> emit) {
+    _logger.info('Onboarding started');
+    _analytics.resetUserProperties();
+    _stepStopwatch.reset();
+    emit(
+      const OnboardingState.initial().copyWith(
+        lastStep: state.lastStep,
+        hasViewedCompanyProfile: state.hasViewedCompanyProfile,
+        isLoadingSectors: true,
+        sessionEntryTime: DateTime.now(),
+        sessionId: IdUtils.generateSessionId(),
+      ),
+    );
+  }
+
   List<SectorViewModel> _toSectorViewModels(List<Sector> sectors) {
     return sectors
         .map(
@@ -368,7 +453,6 @@ class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
     emit(
       state.copyWith(
         onboardingData: state.onboardingData.copyWith(firstName: event.name),
-        currentStep: 2,
       ),
     );
   }
@@ -405,22 +489,65 @@ class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
   Future<void> _onCompletionRequested(
     OnboardingCompletionRequested event,
     Emitter<OnboardingState> emit,
+  ) => _completeOnboarding(emit);
+
+  Future<void> _onBuildingProfileStarted(
+    OnboardingBuildingProfileStarted event,
+    Emitter<OnboardingState> emit,
   ) async {
+    final isAuthenticated = await _awaitAuthenticatedUser();
+    if (!isAuthenticated) return;
+    await _completeOnboarding(emit);
+  }
+
+  Future<bool> _awaitAuthenticatedUser() async {
+    if (_getCurrentUser() != null) return true;
+    try {
+      final user = await _getAuthStream(
+        NoParams(),
+      ).firstWhere((user) => user != null, orElse: () => null);
+      return user != null;
+    } on ServerException catch (error) {
+      _logger.warning('Auth stream failed awaiting sign-in: ${error.message}');
+      return false;
+    }
+  }
+
+  Future<void> _completeOnboarding(Emitter<OnboardingState> emit) async {
     emit(state.copyWith(isSubmitting: true, failureMessage: null));
 
-    final currentUser = _authRepository.currentUser;
+    await _awaitPendingProgressSave();
+    final currentUser = _getCurrentUser();
     if (currentUser == null) {
       return _handleCompletionError('User is not authenticated', emit);
     }
 
     final result = await _completeOnboardingUseCase(
-      CompleteOnboardingParams(data: state.onboardingData, uid: currentUser.id),
+      CompleteOnboardingParams(
+        data: state.onboardingData,
+        uid: currentUser.id,
+        hasExistingProfile: _hasSavedProfileFor(currentUser.id),
+      ),
     );
 
     await result.fold(
       (failure) => _handleCompletionError(failure.errorMessage, emit),
-      (_) => _handleCompletionSuccess(emit),
+      (outcome) => switch (outcome) {
+        OnboardingSaveOutcome.saved => _handleCompletionSuccess(emit),
+        OnboardingSaveOutcome.existingProfile => _handleExistingProfile(emit),
+      },
     );
+  }
+
+  Future<void> _handleExistingProfile(Emitter<OnboardingState> emit) async {
+    _logger.info('Existing profile found; leaving onboarding without saving');
+    emit(
+      state.copyWith(
+        status: OnboardingStatus.existingProfile,
+        isSubmitting: false,
+      ),
+    );
+    _logSessionSummary(exitStep: OnboardingStep.buildingProfile.analyticsName);
   }
 
   Future<void> _handleCompletionError(
@@ -442,17 +569,7 @@ class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
     _logger.info('Onboarding completion successful');
     final data = state.onboardingData;
 
-    final user = _authRepository.currentUser;
-    String method = 'email';
-    if (user != null && user.providers.isNotEmpty) {
-      final provider = user.providers.first.toLowerCase();
-      if (provider.contains('google')) {
-        method = 'google';
-      } else if (provider.contains('apple')) {
-        method = 'apple';
-      }
-    }
-    _analytics.logSignUp(method: method);
+    _logSignUpForRegisteredUser();
 
     if (data.investingExperience != null && data.selectedSector != null) {
       _analytics.setUserProperties(
@@ -462,6 +579,163 @@ class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
     }
 
     emit(state.copyWith(status: OnboardingStatus.success, isSubmitting: false));
+  }
+
+  void _logSignUpForRegisteredUser() {
+    final user = _getCurrentUser();
+    if (user != null && user.isAnonymous) return;
+    _analytics.logSignUp(method: _signUpMethod(user));
+  }
+
+  String _signUpMethod(UserModel? user) {
+    if (user == null || user.providers.isEmpty) return 'email';
+    final provider = user.providers.first.toLowerCase();
+    if (provider.contains('google')) return 'google';
+    if (provider.contains('apple')) return 'apple';
+    return 'email';
+  }
+
+  Future<void> _onSkipRequested(
+    OnboardingSkipRequested event,
+    Emitter<OnboardingState> emit,
+  ) async {
+    final data = _withSelectedBrandCompanies(state.onboardingData);
+    final hadAccount = _getCurrentUser() != null;
+    emit(
+      state.copyWith(
+        onboardingData: data,
+        skipStatus: OnboardingSkipStatus.inProgress,
+        failureMessage: null,
+      ),
+    );
+
+    final result = await _skipOnboarding(data);
+    result.fold(
+      (failure) => _handleSkipError(failure.errorMessage, emit),
+      (skipResult) => switch (skipResult) {
+        SkipOnboardingCompleted() => _handleSkipSuccess(
+          event,
+          skipResult,
+          hadAccount,
+          emit,
+        ),
+        SkipOnboardingExistingProfile() => _handleSkipExistingProfile(
+          event.step,
+          emit,
+        ),
+      },
+    );
+  }
+
+  Future<Either<Failure, SkipOnboardingResult>> _skipOnboarding(
+    OnboardingData data,
+  ) async {
+    await _awaitPendingGuestSignIn();
+    await _awaitPendingProgressSave();
+    return _skipOnboardingUseCase(
+      SkipOnboardingParams(
+        data: data,
+        hasExistingProfile: _hasSavedProfileFor(_getCurrentUser()?.id),
+      ),
+    );
+  }
+
+  void _handleSkipExistingProfile(
+    OnboardingStep step,
+    Emitter<OnboardingState> emit,
+  ) {
+    _logger.info(
+      'Existing profile found; skipping at ${step.name} without saving',
+    );
+    emit(state.copyWith(skipStatus: OnboardingSkipStatus.existingProfile));
+    _logSessionSummary(exitStep: step.analyticsName);
+  }
+
+  OnboardingData _withSelectedBrandCompanies(OnboardingData data) {
+    if (state.selectedBrands.isEmpty) return data;
+    return data.copyWith(
+      detectedCompanies: _companiesFromBrands(state.selectedBrands),
+    );
+  }
+
+  void _handleSkipError(String message, Emitter<OnboardingState> emit) {
+    _logger.severe('Onboarding skip failed: $message');
+    emit(
+      state.copyWith(
+        skipStatus: OnboardingSkipStatus.failure,
+        failureMessage: message,
+      ),
+    );
+  }
+
+  void _handleSkipSuccess(
+    OnboardingSkipRequested event,
+    SkipOnboardingCompleted result,
+    bool hadAccount,
+    Emitter<OnboardingState> emit,
+  ) {
+    final step = event.step;
+    _logger.info('Onboarding skipped at step: ${step.name}');
+    emit(
+      state.copyWith(
+        skipStatus: OnboardingSkipStatus.success,
+        skippedAtStep: step,
+        skipFieldSources: result.fieldSources,
+        postOnboardingDestination: result.destination,
+      ),
+    );
+    emit(state.copyWith(postOnboardingDestination: null));
+    _logSkipped(event, result, hadAccount);
+  }
+
+  void _logSkipped(
+    OnboardingSkipRequested event,
+    SkipOnboardingCompleted result,
+    bool hadAccount,
+  ) {
+    final step = event.step;
+    _analytics.logSkipped(
+      step: step,
+      reason: event.reason,
+      sessionId: state.sessionId,
+      hadAccount: hadAccount,
+      brandsSelectedCount: state.selectedBrands.length,
+      fieldSources: result.fieldSources,
+      notificationsDecided: state.onboardingData.hasDecidedNotifications,
+    );
+    final user = _getCurrentUser();
+    _logSessionSummary(
+      exitStep: step.analyticsName,
+      didSignup: user != null && !user.isAnonymous,
+    );
+  }
+
+  void _onInitialCompanyShown(
+    OnboardingInitialCompanyShown event,
+    Emitter<OnboardingState> emit,
+  ) {
+    _analytics.logInitialCompanyShown(
+      ticker: event.destination.ticker,
+      tickerSource: event.destination.tickerSource,
+      isSkipped: state.skippedAtStep != null,
+      isGuest: _getCurrentUser()?.isAnonymous ?? false,
+    );
+  }
+
+  Future<void> _onNotificationGrantPersistRequested(
+    OnboardingNotificationGrantPersistRequested event,
+    Emitter<OnboardingState> emit,
+  ) => _persistNotificationGrant();
+
+  Future<void> _persistNotificationGrant() async {
+    final result = await _persistNotificationGrantUseCase(NoParams());
+    result.fold(
+      (failure) => _logger.warning(
+        'Failed to persist notification grant: ${failure.errorMessage}',
+      ),
+      (isPersisted) =>
+          _logger.info('Notification grant persisted: $isPersisted'),
+    );
   }
 
   Future<void> _onOnboardingFlowFinished(
@@ -505,15 +779,12 @@ class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
     OnboardingHighlightContinuePressed event,
     Emitter<OnboardingState> emit,
   ) {
-    if (state.currentHighlightIndex < state.featureHighlights.length - 1) {
+    if (!state.isOnLastHighlight) {
       emit(
         state.copyWith(currentHighlightIndex: state.currentHighlightIndex + 1),
       );
     } else {
-      emit(state.copyWith(highlightsSkipped: false));
-      final hasUser = _authRepository.currentUser != null;
-
-      if (hasUser) {
+      if (_isRegisteredUser()) {
         emit(state.copyWith(shouldNavigateToBuildingProfile: true));
         emit(state.copyWith(shouldNavigateToBuildingProfile: false));
       } else {
@@ -523,43 +794,29 @@ class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
     }
   }
 
-  Future<void> _onHighlightSkipPressed(
-    OnboardingHighlightSkipPressed event,
-    Emitter<OnboardingState> emit,
-  ) async {
-    final hasUser = _authRepository.currentUser != null;
-    emit(
-      state.copyWith(
-        highlightsSkipped: true,
-        shouldNavigateToBuildingProfile: hasUser,
-      ),
-    );
-
-    if (hasUser) {
-      emit(state.copyWith(shouldNavigateToBuildingProfile: false));
-    } else {
-      emit(state.copyWith(shouldNavigateToCreateAccount: true));
-      emit(state.copyWith(shouldNavigateToCreateAccount: false));
-    }
+  bool _isRegisteredUser() {
+    final user = _getCurrentUser();
+    return user != null && !user.isAnonymous;
   }
 
   void _logSessionSummary({required String exitStep, bool didSignup = false}) {
     final sessionEntryTime = state.sessionEntryTime;
     if (state.sessionId.isEmpty || sessionEntryTime == null) return;
+    final skippedAtStep = state.skippedAtStep;
 
-    final totalDuration = DateTime.now()
-        .difference(sessionEntryTime)
-        .inSeconds;
+    final totalDuration = DateTime.now().difference(sessionEntryTime).inSeconds;
 
     _analytics.logSessionSummary(
       OnboardingSessionSummary(
         sessionId: state.sessionId,
-        exitStep: exitStep,
+        exitStep: skippedAtStep != null
+            ? 'skipped_${skippedAtStep.analyticsName}'
+            : exitStep,
         totalDurationSeconds: totalDuration,
         addedBrandsCount: state.selectedBrands.length,
         notificationsEnabled: state.onboardingData.notificationsEnabled,
-        highlightsSkipped: state.highlightsSkipped,
         didSignup: didSignup,
+        didSkip: skippedAtStep != null,
         sector: state.onboardingData.selectedSector?.name,
         experience: state.onboardingData.investingExperience?.name,
         dayOfWeek: DayOfWeek.fromDateTime(DateTime.now()),
@@ -571,14 +828,25 @@ class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
     _stepStopwatch.stop();
     _stepStopwatch.reset();
     _analytics.resetUserProperties();
+    _pendingGuestSignIn = null;
+    _pendingProgressSave = null;
     emit(const OnboardingState.initial());
   }
 
   @override
   Future<void> close() {
-    if (state.status != OnboardingStatus.success) {
+    const terminalStatuses = {
+      OnboardingStatus.success,
+      OnboardingStatus.existingProfile,
+    };
+    const terminalSkipStatuses = {
+      OnboardingSkipStatus.success,
+      OnboardingSkipStatus.existingProfile,
+    };
+    if (!terminalStatuses.contains(state.status) &&
+        !terminalSkipStatuses.contains(state.skipStatus)) {
       _logSessionSummary(
-        exitStep: state.lastStep?.name ?? 'unknown',
+        exitStep: state.lastStep?.analyticsName ?? 'unknown',
         didSignup: false,
       );
     }
@@ -618,7 +886,7 @@ class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
           FeatureHighlightItem(
             title: 'Experienced investors will love',
             description:
-                'Visualize Apple and other company financials at a glance',
+                'Visualize $company and other company financials at a glance',
             type: FeatureHighlightType.visualFinancials,
           ),
           FeatureHighlightItem(
@@ -652,7 +920,7 @@ class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
           FeatureHighlightItem(
             title: 'Beginners will love',
             description:
-                'Visualize Apple and other company financials at a glance',
+                'Visualize $company and other company financials at a glance',
             type: FeatureHighlightType.visualFinancials,
           ),
         ];

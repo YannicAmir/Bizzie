@@ -1,17 +1,22 @@
+import 'dart:async';
+
 import 'package:bizzie/features/subscription/presentation/bloc/subscription_bloc.dart';
 import 'package:bizzie/features/subscription/presentation/bloc/subscription_event.dart';
 import 'package:bizzie/features/subscription/presentation/bloc/subscription_state.dart';
 import 'package:bizzie/core/enums/paywall_source.dart';
 import 'package:bizzie/features/subscription/domain/enums/paywall_type.dart';
 import 'package:bizzie/features/subscription/presentation/extensions/subscription_state_extensions.dart';
+import 'package:bizzie/features/subscription/presentation/utils/onboarding_paywall_reporter.dart';
+import 'package:bizzie/features/subscription/presentation/utils/paywall_helper.dart';
+import 'package:bizzie/features/subscription/presentation/utils/subscription_purchase_gate.dart';
 import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
 import 'package:bizzie/features/user/presentation/extensions/user_state_extensions.dart';
 import 'package:bizzie/features/subscription/presentation/widgets/subscription_mascot.dart';
-import 'package:bizzie/features/subscription/presentation/widgets/subscription_close_button.dart';
 import 'package:bizzie/features/subscription/presentation/widgets/subscription_feature_highlights.dart';
 import 'package:bizzie/features/subscription/presentation/widgets/subscription_legal_footer.dart';
 import 'package:bizzie/features/subscription/presentation/widgets/subscription_header.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
+import 'package:bizzie/shared/widgets/buttons/bizzie_close_button.dart';
 import 'package:bizzie/shared/widgets/error/bizzie_error.dart';
 import 'package:bizzie/shared/widgets/loading/bizzie_loader.dart';
 import 'package:bizzie/features/subscription/presentation/widgets/subscription_success_overlay.dart';
@@ -19,9 +24,7 @@ import 'package:bizzie/features/subscription/presentation/widgets/discount_title
 import 'package:bizzie/features/subscription/presentation/widgets/discount_plan_box.dart';
 import 'package:bizzie/features/subscription/presentation/widgets/savings_summary_card.dart';
 import 'package:bizzie/features/subscription/presentation/widgets/subscription_bottom_actions.dart';
-import 'package:bizzie/app/routes/app_routes.dart';
 import 'package:bizzie/shared/widgets/modals/bizzie_snackbar.dart';
-import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -58,11 +61,18 @@ class _DiscountedSubscriptionPageState
         featureName: widget.featureName,
       ),
     );
+    OnboardingPaywallReporter.paywallViewed(
+      context,
+      source: widget.source,
+      paywallType: PaywallType.discount,
+    );
 
     if (widget.onEnter != null) {
-      Future.delayed(const Duration(milliseconds: 300), () {
-        if (mounted) widget.onEnter!();
-      });
+      unawaited(
+        Future.delayed(AppConstants.paywallOnEnterDelay, () {
+          if (mounted) widget.onEnter?.call();
+        }),
+      );
     }
   }
 
@@ -72,71 +82,86 @@ class _DiscountedSubscriptionPageState
       value: SystemUiOverlayStyle.dark,
       child: Scaffold(
         body: SafeArea(
-          child: BlocConsumer<SubscriptionBloc, SubscriptionState>(
+          child: BlocListener<SubscriptionBloc, SubscriptionState>(
+            listenWhen: (previous, current) =>
+                previous.completedPurchaseType == null &&
+                current.completedPurchaseType != null,
             listener: (context, state) {
-              if (state.failure != null) {
-                BizzieSnackBar.show(
-                  context,
-                  message: state.failure!.message,
-                  type: BizzieSnackBarType.error,
-                );
-              }
-
-              if (state.maybeMap(
-                loaded: (s) => s.isLocalSuccessOverride,
-                orElse: () => false,
-              )) {
-                final userState = context.read<UserBloc>().state;
-                final userName = userState.maybeMap(
-                  loaded: (s) => s.user.name,
-                  orElse: () => null,
-                );
-
-                SubscriptionSuccessOverlay.show(
-                  context,
-                  userName: userName ?? 'Friend',
-                  onDismiss: () {
-                    if (context.canPop()) {
-                      context.pop();
-                    } else {
-                      context.go(AppRoutes.home);
-                    }
-                  },
-                );
-              }
-            },
-            buildWhen: (previous, current) {
-              return !current.status.isSubscribed;
-            },
-            builder: (context, subscriptionState) {
-              final mascotAsset = context.select<UserBloc, String>(
-                (bloc) => bloc.state.mascotAsset,
+              final purchasedPackageType = state.completedPurchaseType;
+              if (purchasedPackageType == null) return;
+              OnboardingPaywallReporter.purchaseCompleted(
+                context,
+                source: widget.source,
+                packageType: purchasedPackageType,
               );
+            },
+            child: BlocConsumer<SubscriptionBloc, SubscriptionState>(
+              listener: _onSubscriptionStateChanged,
+              buildWhen: (previous, current) {
+                return !current.status.isSubscribed;
+              },
+              builder: (context, subscriptionState) {
+                final mascotAsset = context.select<UserBloc, String>(
+                  (bloc) => bloc.state.mascotAsset,
+                );
+                final loader = BizzieLoader(
+                  message: 'Loading subscription',
+                  mascotAssetPath: mascotAsset,
+                );
 
-              return subscriptionState.map(
-                initial: (_) => BizzieLoader(
-                  message: 'Loading subscription',
-                  mascotAssetPath: mascotAsset,
-                ),
-                loading: (_) => BizzieLoader(
-                  message: 'Loading subscription',
-                  mascotAssetPath: mascotAsset,
-                ),
-                loaded: (s) => _DiscountedSubscriptionLoadedContent(
-                  state: s,
-                  mascotAsset: mascotAsset,
-                ),
-                failure: (s) => BizzieError(
-                  message: s.failure.errorMessage,
-                  onRetry: () => context.read<SubscriptionBloc>().add(
-                    const SubscriptionEvent.offeringsRequested(),
+                return subscriptionState.map(
+                  initial: (_) => loader,
+                  loading: (_) => loader,
+                  loaded: (s) => _DiscountedSubscriptionLoadedContent(
+                    state: s,
+                    mascotAsset: mascotAsset,
                   ),
-                ),
-              );
-            },
+                  failure: (s) => BizzieError(
+                    message: s.failure.errorMessage,
+                    onRetry: () => context.read<SubscriptionBloc>().add(
+                      const SubscriptionEvent.offeringsRequested(),
+                    ),
+                  ),
+                );
+              },
+            ),
           ),
         ),
       ),
+    );
+  }
+
+  void _onSubscriptionStateChanged(
+    BuildContext context,
+    SubscriptionState state,
+  ) {
+    final failure = state.failure;
+    if (failure != null) {
+      BizzieSnackBar.show(
+        context,
+        message: failure.message,
+        type: BizzieSnackBarType.error,
+      );
+    }
+
+    final loadedState = state.mapOrNull(loaded: (s) => s);
+    if (loadedState != null && loadedState.isLocalSuccessOverride) {
+      _onLocalPurchaseSucceeded(context, loadedState);
+    }
+  }
+
+  void _onLocalPurchaseSucceeded(
+    BuildContext context,
+    SubscriptionStateLoaded state,
+  ) {
+    SubscriptionSuccessOverlay.show(
+      context,
+      userName: context.read<UserBloc>().state.displayName,
+      onDismiss: () => PaywallHelper.closePaywall(context),
+    );
+
+    context.read<SubscriptionBloc>().add(
+      const SubscriptionEvent.purchaseUICompleted(),
     );
   }
 }
@@ -155,70 +180,98 @@ class _DiscountedSubscriptionLoadedContent extends StatelessWidget {
     return Stack(
       children: [
         Positioned.fill(
-          child: SingleChildScrollView(
-            padding: AppConstants.pagePadding.copyWith(bottom: 100),
-            child: Column(
-              children: [
-                const Row(children: [Spacer(), SubscriptionCloseButton()]),
-                SubscriptionMascot(asset: mascotAsset),
-                const SizedBox(height: 16),
-                DiscountTitleCard(percentage: state.discountPercentageText),
-                const SizedBox(height: 24),
-                const SubscriptionHeader(),
-                const SizedBox(height: 32),
-                DiscountPlanBox(
-                  package: state.discountAnnualPackage,
-                  standardAnnualPriceText: state.standardAnnualPriceText,
-                  savingsPercentageText: state.discountPercentageText,
-                ),
-                const SizedBox(height: 24),
-                SubscriptionFeatureHighlights(features: state.features),
-                const SizedBox(height: 24),
-                SavingsSummaryCard(
-                  package: state.discountAnnualPackage,
-                  totalSavingsText: state.totalDiscountSavingsText,
-                ),
-                const SizedBox(height: 32),
-                SubscriptionLegalFooter(
-                  onRestore: () {
-                    context.read<SubscriptionBloc>().add(
-                      const SubscriptionEvent.restoreRequested(),
-                    );
-                  },
-                ),
-                const SizedBox(height: 24),
-              ],
-            ),
+          child: _DiscountedSubscriptionScrollContent(
+            state: state,
+            mascotAsset: mascotAsset,
           ),
         ),
         Positioned(
           bottom: 0,
           left: 0,
           right: 0,
-          child: SubscriptionBottomActions(
-            isLoading: state.isPurchasing,
-            buttonTitle:
-                'Claim ${state.discountPercentageText.replaceAll('-', '')} Off Now',
-            disclaimer: state.discountRenewalDisclaimerText,
-            onTap: state.discountAnnualPackage != null
-                ? () {
-                    context.read<SubscriptionBloc>().add(
-                      SubscriptionEvent.purchaseRequested(
-                        state.discountAnnualPackage!,
-                      ),
-                    );
-                  }
-                : () {
-                    BizzieSnackBar.show(
-                      context,
-                      message:
-                          'Offer is currently unavailable. Please try again later.',
-                      type: BizzieSnackBarType.error,
-                    );
-                  },
-          ),
+          child: _DiscountedSubscriptionPurchaseBar(state: state),
         ),
       ],
+    );
+  }
+}
+
+class _DiscountedSubscriptionScrollContent extends StatelessWidget {
+  final SubscriptionStateLoaded state;
+  final String mascotAsset;
+
+  const _DiscountedSubscriptionScrollContent({
+    required this.state,
+    required this.mascotAsset,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      padding: AppConstants.pagePadding.copyWith(
+        bottom: AppConstants.discountedSubscriptionContentBottomInset,
+      ),
+      child: Column(
+        children: [
+          const Row(children: [Spacer(), BizzieCloseButton()]),
+          SubscriptionMascot(asset: mascotAsset),
+          AppConstants.secondarySectionSpacing,
+          DiscountTitleCard(percentage: state.discountPercentageText),
+          AppConstants.mainSectionSpacing,
+          const SubscriptionHeader(),
+          AppConstants.largeSectionSpacing,
+          DiscountPlanBox(
+            package: state.discountAnnualPackage,
+            standardAnnualPriceText: state.standardAnnualPriceText,
+            savingsPercentageText: state.discountPercentageText,
+          ),
+          AppConstants.mainSectionSpacing,
+          SubscriptionFeatureHighlights(features: state.features),
+          AppConstants.mainSectionSpacing,
+          SavingsSummaryCard(
+            package: state.discountAnnualPackage,
+            totalSavingsText: state.totalDiscountSavingsText,
+          ),
+          AppConstants.largeSectionSpacing,
+          SubscriptionLegalFooter(
+            onRestore: () =>
+                unawaited(SubscriptionPurchaseGate.requestRestore(context)),
+          ),
+          AppConstants.mainSectionSpacing,
+        ],
+      ),
+    );
+  }
+}
+
+class _DiscountedSubscriptionPurchaseBar extends StatelessWidget {
+  final SubscriptionStateLoaded state;
+
+  const _DiscountedSubscriptionPurchaseBar({required this.state});
+
+  @override
+  Widget build(BuildContext context) {
+    final discountPackage = state.discountAnnualPackage;
+
+    return SubscriptionBottomActions(
+      isLoading: state.isPurchasing,
+      buttonTitle: 'Claim ${state.discountPercentageValueText} Off Now',
+      disclaimer: state.discountRenewalDisclaimerText,
+      onTap: discountPackage != null
+          ? () => unawaited(
+              SubscriptionPurchaseGate.requestPurchase(
+                context,
+                package: discountPackage,
+              ),
+            )
+          : () {
+              BizzieSnackBar.show(
+                context,
+                message:
+                    'Offer is currently unavailable. Please try again later.',
+                type: BizzieSnackBarType.error,
+              );
+            },
     );
   }
 }

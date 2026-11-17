@@ -1,3 +1,4 @@
+import 'package:bizzie/core/enums/financial_period.dart';
 import 'package:bizzie/app/themes/app_colors.dart';
 import 'package:bizzie/app/themes/app_text_styles.dart';
 import 'package:bizzie/features/company_profile/business/domain/models/sec_filing.dart';
@@ -32,7 +33,7 @@ class SecFilingsCard extends StatefulWidget {
 }
 
 class _SecFilingsCardState extends State<SecFilingsCard> {
-  bool _isAnnual = true;
+  FinancialPeriod _period = FinancialPeriod.annual;
 
   @override
   Widget build(BuildContext context) {
@@ -56,16 +57,17 @@ class _SecFilingsCardState extends State<SecFilingsCard> {
           Text('SEC Filings', style: AppTextStyles.h3),
           const SizedBox(height: 16),
           _FilingTabs(
-            isAnnual: _isAnnual,
+            period: _period,
             isForeign: widget.profile.isForeignCompany,
-            onTabChanged: (isAnnual) => setState(() => _isAnnual = isAnnual),
+            onTabChanged: (period) => setState(() => _period = period),
           ),
           const SizedBox(height: 16),
           _FilingsList(
-            filings: _isAnnual
-                ? widget.profile.annualFilings
-                : widget.profile.quarterlyFilings,
-            isAnnual: _isAnnual,
+            filings: switch (_period) {
+              FinancialPeriod.annual => widget.profile.annualFilings,
+              FinancialPeriod.quarterly => widget.profile.quarterlyFilings,
+            },
+            period: _period,
             onShowAll: (filings) => _showAllFilings(context, filings),
             historyCount: widget.historyCount,
           ),
@@ -77,22 +79,22 @@ class _SecFilingsCardState extends State<SecFilingsCard> {
   void _showAllFilings(BuildContext context, List<SecFiling> filings) {
     AppHistoryModalHelper.show<SecFiling>(
       context: context,
-      title: widget.profile.getSecFilingsModalTitle(_isAnnual),
+      title: widget.profile.getSecFilingsModalTitle(_period),
       header: const SizedBox.shrink(),
       data: filings,
       itemBuilder: (context, filing, index) =>
-          _FilingItem(filing: filing, isAnnual: _isAnnual),
+          _FilingItem(filing: filing, period: _period),
     );
   }
 }
 
 class _FilingTabs extends StatelessWidget {
-  final bool isAnnual;
+  final FinancialPeriod period;
   final bool isForeign;
-  final ValueChanged<bool> onTabChanged;
+  final ValueChanged<FinancialPeriod> onTabChanged;
 
   const _FilingTabs({
-    required this.isAnnual,
+    required this.period,
     required this.isForeign,
     required this.onTabChanged,
   });
@@ -104,16 +106,16 @@ class _FilingTabs extends StatelessWidget {
         Expanded(
           child: _FilingTabButton(
             title: isForeign ? 'Annual' : '10-K (Annual)',
-            isActive: isAnnual,
-            onTap: () => onTabChanged(true),
+            isActive: period == FinancialPeriod.annual,
+            onTap: () => onTabChanged(FinancialPeriod.annual),
           ),
         ),
         const SizedBox(width: 8),
         Expanded(
           child: _FilingTabButton(
             title: isForeign ? 'Quarterly' : '10-Q (Quarterly)',
-            isActive: !isAnnual,
-            onTap: () => onTabChanged(false),
+            isActive: period == FinancialPeriod.quarterly,
+            onTap: () => onTabChanged(FinancialPeriod.quarterly),
           ),
         ),
       ],
@@ -163,13 +165,13 @@ class _FilingTabButton extends StatelessWidget {
 
 class _FilingsList extends StatelessWidget {
   final List<SecFiling> filings;
-  final bool isAnnual;
+  final FinancialPeriod period;
   final Function(List<SecFiling>) onShowAll;
   final int historyCount;
 
   const _FilingsList({
     required this.filings,
-    required this.isAnnual,
+    required this.period,
     required this.onShowAll,
     required this.historyCount,
   });
@@ -201,10 +203,7 @@ class _FilingsList extends StatelessWidget {
           itemCount: displayFilings.length,
           separatorBuilder: (context, index) => const SizedBox(height: 16),
           itemBuilder: (context, index) {
-            return _FilingItem(
-              filing: displayFilings[index],
-              isAnnual: isAnnual,
-            );
+            return _FilingItem(filing: displayFilings[index], period: period);
           },
         ),
         if (hasMore) ...[
@@ -220,8 +219,8 @@ class _FilingsList extends StatelessWidget {
                 onTap: () {
                   context.read<CompanyBusinessBloc>().add(
                     CompanyBusinessEvent.analyticsInteractionOccurred(
-                      viewAll10KsTapped: isAnnual ? true : null,
-                      viewAll10QsTapped: !isAnnual ? true : null,
+                      viewAll10KsTapped: period.isAnnual ? true : null,
+                      viewAll10QsTapped: !period.isAnnual ? true : null,
                     ),
                   );
 
@@ -232,7 +231,10 @@ class _FilingsList extends StatelessWidget {
                       context,
                       source: PaywallSource.company_profile,
                       tabName: 'business_tab',
-                      featureName: isAnnual ? '10_k_filings' : '10_q_filings',
+                      featureName: switch (period) {
+                        FinancialPeriod.annual => '10_k_filings',
+                        FinancialPeriod.quarterly => '10_q_filings',
+                      },
                     );
                   }
                 },
@@ -270,30 +272,27 @@ class _FilingsList extends StatelessWidget {
 
 class _FilingItem extends StatelessWidget {
   final SecFiling filing;
-  final bool isAnnual;
+  final FinancialPeriod period;
 
-  const _FilingItem({required this.filing, required this.isAnnual});
+  const _FilingItem({required this.filing, required this.period});
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    String title;
     final formattedDate = BizzieDateFormatter.formatMonthYearFull(filing.date);
-
-    if (isAnnual) {
-      title = 'FY | $formattedDate';
-    } else {
-      title =
-          '${filing.period.isNotEmpty ? filing.period.toUpperCase() : ''} | $formattedDate';
-    }
+    final title = switch (period) {
+      FinancialPeriod.annual => 'FY | $formattedDate',
+      FinancialPeriod.quarterly =>
+        '${filing.period.isNotEmpty ? filing.period.toUpperCase() : ''} | $formattedDate',
+    };
 
     return GestureDetector(
       onTap: () {
         context.read<CompanyBusinessBloc>().add(
           CompanyBusinessEvent.analyticsInteractionOccurred(
-            viewed10Ks: isAnnual ? true : null,
-            viewed10Qs: !isAnnual ? true : null,
+            viewed10Ks: period.isAnnual ? true : null,
+            viewed10Qs: !period.isAnnual ? true : null,
           ),
         );
         UrlLauncherUtils.launch(filing.link);

@@ -8,7 +8,8 @@ import 'package:bizzie/features/bizzie_chat/domain/models/get_sessions_params.da
 
 @lazySingleton
 class GetSessionsStreamUseCase
-    implements UseCase<Stream<Either<Failure, List<ChatSession>>>, GetSessionsParams> {
+    implements
+        UseCase<Stream<Either<Failure, List<ChatSession>>>, GetSessionsParams> {
   final IBizzieChatRepository _repository;
 
   GetSessionsStreamUseCase(this._repository);

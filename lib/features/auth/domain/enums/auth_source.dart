@@ -5,4 +5,5 @@ enum AuthSource {
   sessionExpired,
   forgotPassword,
   createAccount,
+  guestGate,
 }

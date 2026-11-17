@@ -1,3 +1,4 @@
+import 'package:bizzie/core/enums/financial_period.dart';
 import 'package:bizzie/app/themes/app_theme.dart';
 import 'package:bizzie/features/company_profile/financial_statements/presentation/bloc/financial_statements_bloc.dart';
 import 'package:bizzie/features/company_profile/financial_statements/presentation/bloc/financial_statements_event.dart';
@@ -84,11 +85,14 @@ class _BalanceSheetViewState extends State<BalanceSheetView> {
                 onSelect: (date) => context.read<FinancialStatementsBloc>().add(
                   FinancialStatementsEvent.balanceDateSelected(
                     date,
-                    isAnnual: false,
+                    period: FinancialPeriod.quarterly,
                   ),
                 ),
                 pageController: _pageController,
-                rows: state.balanceRows(locale: locale, isAnnual: false),
+                rows: state.balanceRows(
+                  locale: locale,
+                  period: FinancialPeriod.quarterly,
+                ),
                 historyBuilder: (item) =>
                     state.balanceHistoryRowData(item, locale),
                 historyLimit: state.freePlanHistoryCount,
@@ -146,7 +150,9 @@ class _BalanceSheetSection extends StatelessWidget {
           rows: rows,
           onViewAll: () {
             context.read<FinancialStatementsBloc>().add(
-              const FinancialStatementsEvent.viewAllTapped(isAnnual: false),
+              const FinancialStatementsEvent.viewAllTapped(
+                period: FinancialPeriod.quarterly,
+              ),
             );
 
             if (context.read<UserBloc>().state.canViewFullHistory) {

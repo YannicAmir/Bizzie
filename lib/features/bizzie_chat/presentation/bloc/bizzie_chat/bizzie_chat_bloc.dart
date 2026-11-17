@@ -33,42 +33,38 @@ class BizzieChatBloc extends Bloc<BizzieChatEvent, BizzieChatState> {
     this._getMessagesStream,
     this._sendMessageStream,
     this._submitChatRatingUseCase,
-  )
-      : super(const BizzieChatState.initial()) {
-    on<BizzieChatEvent>(
-      (event, emit) async {
-        await event.map(
-          sessionStarted: (e) => _onSessionStarted(
-            uid: e.uid,
-            ticker: e.ticker,
-            companyName: e.companyName,
-            sessionId: e.sessionId,
-            emit: emit,
-          ),
-          messageSent: (e) => _onMessageSent(query: e.query, emit: emit),
-          reset: (_) async => _onReset(emit),
-          messagesLoaded: (e) async =>
-              _onMessagesLoaded(messages: e.messages, emit: emit),
-          messagesLoadFailed: (e) async =>
-              _onMessagesLoadFailed(failure: e.failure, emit: emit),
-          sseTokenReceived: (e) async =>
-              _onSseTokenReceived(token: e.token, emit: emit),
-          sseDone: (e) =>
-              _onSseDone(followUps: e.followUps, source: e.source, emit: emit),
-          sseFailed: (e) async => _onSseFailed(message: e.message, emit: emit),
-          messageRated: (e) => _onMessageRated(
-            rating: e.rating,
-            question: e.question,
-            aiResponse: e.aiResponse,
-            companyName: e.companyName,
-            companyTicker: e.companyTicker,
-            assistantMessageId: e.assistantMessageId,
-            emit: emit,
-          ),
-        );
-      },
-      transformer: sequential(),
-    );
+  ) : super(const BizzieChatState.initial()) {
+    on<BizzieChatEvent>((event, emit) async {
+      await event.map(
+        sessionStarted: (e) => _onSessionStarted(
+          uid: e.uid,
+          ticker: e.ticker,
+          companyName: e.companyName,
+          sessionId: e.sessionId,
+          emit: emit,
+        ),
+        messageSent: (e) => _onMessageSent(query: e.query, emit: emit),
+        reset: (_) async => _onReset(emit),
+        messagesLoaded: (e) async =>
+            _onMessagesLoaded(messages: e.messages, emit: emit),
+        messagesLoadFailed: (e) async =>
+            _onMessagesLoadFailed(failure: e.failure, emit: emit),
+        sseTokenReceived: (e) async =>
+            _onSseTokenReceived(token: e.token, emit: emit),
+        sseDone: (e) =>
+            _onSseDone(followUps: e.followUps, source: e.source, emit: emit),
+        sseFailed: (e) async => _onSseFailed(message: e.message, emit: emit),
+        messageRated: (e) => _onMessageRated(
+          rating: e.rating,
+          question: e.question,
+          aiResponse: e.aiResponse,
+          companyName: e.companyName,
+          companyTicker: e.companyTicker,
+          assistantMessageId: e.assistantMessageId,
+          emit: emit,
+        ),
+      );
+    }, transformer: sequential());
   }
 
   Future<void> _onSessionStarted({
@@ -86,22 +82,28 @@ class BizzieChatBloc extends Bloc<BizzieChatEvent, BizzieChatState> {
     );
 
     if (isExisting) {
-      emit(BizzieChatState.loading(
-        sessionId: resolvedId,
-        uid: uid,
-        ticker: ticker,
-        companyName: companyName,
-      ));
+      emit(
+        BizzieChatState.loading(
+          sessionId: resolvedId,
+          uid: uid,
+          ticker: ticker,
+          companyName: companyName,
+        ),
+      );
       await _subscribeToMessages(uid: uid, sessionId: resolvedId);
     } else {
-      emit(BizzieChatState.active(
-        sessionId: resolvedId,
-        uid: uid,
-        ticker: ticker,
-        companyName: companyName,
-        messages: const [],
-      ));
-      _logger.info('New session — deferring messages subscription to first SSE done.');
+      emit(
+        BizzieChatState.active(
+          sessionId: resolvedId,
+          uid: uid,
+          ticker: ticker,
+          companyName: companyName,
+          messages: const [],
+        ),
+      );
+      _logger.info(
+        'New session — deferring messages subscription to first SSE done.',
+      );
     }
   }
 
@@ -130,13 +132,15 @@ class BizzieChatBloc extends Bloc<BizzieChatEvent, BizzieChatState> {
     state.map(
       initial: (_) =>
           _logger.info('messagesLoaded in initial state — ignoring'),
-      loading: (s) => emit(BizzieChatState.active(
-        sessionId: s.sessionId,
-        uid: s.uid,
-        ticker: s.ticker,
-        companyName: s.companyName,
-        messages: messages,
-      )),
+      loading: (s) => emit(
+        BizzieChatState.active(
+          sessionId: s.sessionId,
+          uid: s.uid,
+          ticker: s.ticker,
+          companyName: s.companyName,
+          messages: messages,
+        ),
+      ),
       active: (s) => emit(s.copyWith(messages: messages)),
       failure: (_) =>
           _logger.info('messagesLoaded in failure state — ignoring'),
@@ -175,13 +179,15 @@ class BizzieChatBloc extends Bloc<BizzieChatEvent, BizzieChatState> {
       content: query,
       createdAt: DateTime.now(),
     );
-    emit(activeState.copyWith(
-      messages: [...activeState.messages, optimisticMessage],
-      isStreaming: true,
-      streamingContent: null,
-      followUps: const [],
-      sseError: null,
-    ));
+    emit(
+      activeState.copyWith(
+        messages: [...activeState.messages, optimisticMessage],
+        isStreaming: true,
+        streamingContent: null,
+        followUps: const [],
+        sseError: null,
+      ),
+    );
 
     await _sseSubscription?.cancel();
 
@@ -215,9 +221,11 @@ class BizzieChatBloc extends Bloc<BizzieChatEvent, BizzieChatState> {
   }) {
     final activeState = state.mapOrNull(active: (s) => s);
     if (activeState == null) return;
-    emit(activeState.copyWith(
-      streamingContent: (activeState.streamingContent ?? '') + token,
-    ));
+    emit(
+      activeState.copyWith(
+        streamingContent: (activeState.streamingContent ?? '') + token,
+      ),
+    );
   }
 
   Future<void> _onSseDone({
@@ -232,19 +240,21 @@ class BizzieChatBloc extends Bloc<BizzieChatEvent, BizzieChatState> {
     if (activeState == null) return;
 
     if (activeState.streamingContent == null) {
-      _logger.warning('sseDone fired with no streaming content — backend returned empty response');
-      emit(activeState.copyWith(
-        isStreaming: false,
-        streamingContent: 'Something went wrong generating a response. Please try again.',
-        sseError: null,
-      ));
+      _logger.warning(
+        'sseDone fired with no streaming content — backend returned empty response',
+      );
+      emit(
+        activeState.copyWith(
+          isStreaming: false,
+          streamingContent:
+              'Something went wrong generating a response. Please try again.',
+          sseError: null,
+        ),
+      );
       return;
     }
 
-    emit(activeState.copyWith(
-      isStreaming: false,
-      followUps: followUps,
-    ));
+    emit(activeState.copyWith(isStreaming: false, followUps: followUps));
 
     if (_messagesSubscription == null) {
       _logger.info('First SSE done — subscribing to messages stream.');
@@ -264,11 +274,13 @@ class BizzieChatBloc extends Bloc<BizzieChatEvent, BizzieChatState> {
     _sseSubscription = null;
     final activeState = state.mapOrNull(active: (s) => s);
     if (activeState == null) return;
-    emit(activeState.copyWith(
-      isStreaming: false,
-      streamingContent: message,
-      sseError: null,
-    ));
+    emit(
+      activeState.copyWith(
+        isStreaming: false,
+        streamingContent: message,
+        sseError: null,
+      ),
+    );
   }
 
   Future<void> _onMessageRated({

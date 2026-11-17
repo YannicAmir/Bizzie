@@ -3,8 +3,8 @@ import 'package:bizzie/core/error/failures.dart';
 import '../models/user_model.dart';
 
 abstract class IAuthRepository {
-  Future<void> initialize();
-  Stream<UserModel?> get authStateChanges;
+  Future<Either<Failure, void>> initialize();
+  Stream<Either<Failure, UserModel?>> get authStateChanges;
   UserModel? get currentUser;
   Future<Either<Failure, UserModel>> signInWithEmail({
     required String email,
@@ -21,7 +21,15 @@ abstract class IAuthRepository {
   });
   Future<Either<Failure, UserModel>> signInWithGoogle();
   Future<Either<Failure, UserModel>> signInWithApple();
+  Future<Either<Failure, UserModel>> signInAnonymously();
+  Future<Either<Failure, UserModel>> linkWithEmail({
+    required String email,
+    required String password,
+  });
+  Future<Either<Failure, UserModel>> linkWithGoogle();
+  Future<Either<Failure, UserModel>> linkWithApple();
   Future<Either<Failure, void>> signOut();
+  Future<Either<Failure, void>> deleteAnonymousUserAndSignOut();
   Future<Either<Failure, void>> resetPassword({required String email});
   Future<Either<Failure, void>> deleteAccount();
   Future<Either<Failure, void>> reauthenticateWithPassword(String password);

@@ -36,20 +36,18 @@ class AppRoutes {
   static const String companyProfileProfile = 'companyProfileProfile';
   static const String onboardingNotifications = '/onboarding/notifications';
   static const String landing = '/landing';
-  static const String onboardingName = '/onboarding/name';
-  static const String onboardingWelcome = '/onboarding/welcome';
+  static const String onboardingPrefix = '/onboarding';
   static const String onboardingSectors = '/onboarding/sectors';
-  static const String onboardingMeetBizzie = '/onboarding/meet-bizzie';
   static const String onboardingBrands = '/onboarding/brands';
-  static const String onboardingAnalyzing = '/onboarding/analyzing';
-  static const String onboardingFoundCompanies = '/onboarding/found-companies';
-  static const String onboardingAddingWatchlist =
-      '/onboarding/adding-watchlist';
+  static const String onboardingCompanyProfile = '/onboarding/company/:ticker';
   static const String onboardingBuildingProfile =
       '/onboarding/building-profile';
   static const String onboardingProfileReady = '/onboarding/profile-ready';
   static const String onboardingExperience = '/onboarding/experience';
   static const String onboardingFeatureHighlights = '/onboarding/highlights';
+  static const String onboardingFinishing = '/onboarding/finishing';
+  static const String guestCreateAccount = '/account/create';
+  static const String guestLogin = '/account/login';
   static const String navHome = '/home';
   static const String search = '/search';
   static const String splash = '/splash';

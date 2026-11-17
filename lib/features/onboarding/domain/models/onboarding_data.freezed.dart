@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$OnboardingData {
 
- String get firstName; Sector? get selectedSector; String get rawBrandsText; List<Company> get detectedCompanies; InvestingExperience? get investingExperience; bool get notificationsEnabled;
+ String get firstName; Sector? get selectedSector; String get rawBrandsText; List<Company> get detectedCompanies; InvestingExperience? get investingExperience; bool get notificationsEnabled; bool get hasDecidedNotifications;
 /// Create a copy of OnboardingData
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $OnboardingDataCopyWith<OnboardingData> get copyWith => _$OnboardingDataCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is OnboardingData&&(identical(other.firstName, firstName) || other.firstName == firstName)&&(identical(other.selectedSector, selectedSector) || other.selectedSector == selectedSector)&&(identical(other.rawBrandsText, rawBrandsText) || other.rawBrandsText == rawBrandsText)&&const DeepCollectionEquality().equals(other.detectedCompanies, detectedCompanies)&&(identical(other.investingExperience, investingExperience) || other.investingExperience == investingExperience)&&(identical(other.notificationsEnabled, notificationsEnabled) || other.notificationsEnabled == notificationsEnabled));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is OnboardingData&&(identical(other.firstName, firstName) || other.firstName == firstName)&&(identical(other.selectedSector, selectedSector) || other.selectedSector == selectedSector)&&(identical(other.rawBrandsText, rawBrandsText) || other.rawBrandsText == rawBrandsText)&&const DeepCollectionEquality().equals(other.detectedCompanies, detectedCompanies)&&(identical(other.investingExperience, investingExperience) || other.investingExperience == investingExperience)&&(identical(other.notificationsEnabled, notificationsEnabled) || other.notificationsEnabled == notificationsEnabled)&&(identical(other.hasDecidedNotifications, hasDecidedNotifications) || other.hasDecidedNotifications == hasDecidedNotifications));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,firstName,selectedSector,rawBrandsText,const DeepCollectionEquality().hash(detectedCompanies),investingExperience,notificationsEnabled);
+int get hashCode => Object.hash(runtimeType,firstName,selectedSector,rawBrandsText,const DeepCollectionEquality().hash(detectedCompanies),investingExperience,notificationsEnabled,hasDecidedNotifications);
 
 @override
 String toString() {
-  return 'OnboardingData(firstName: $firstName, selectedSector: $selectedSector, rawBrandsText: $rawBrandsText, detectedCompanies: $detectedCompanies, investingExperience: $investingExperience, notificationsEnabled: $notificationsEnabled)';
+  return 'OnboardingData(firstName: $firstName, selectedSector: $selectedSector, rawBrandsText: $rawBrandsText, detectedCompanies: $detectedCompanies, investingExperience: $investingExperience, notificationsEnabled: $notificationsEnabled, hasDecidedNotifications: $hasDecidedNotifications)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $OnboardingDataCopyWith<$Res>  {
   factory $OnboardingDataCopyWith(OnboardingData value, $Res Function(OnboardingData) _then) = _$OnboardingDataCopyWithImpl;
 @useResult
 $Res call({
- String firstName, Sector? selectedSector, String rawBrandsText, List<Company> detectedCompanies, InvestingExperience? investingExperience, bool notificationsEnabled
+ String firstName, Sector? selectedSector, String rawBrandsText, List<Company> detectedCompanies, InvestingExperience? investingExperience, bool notificationsEnabled, bool hasDecidedNotifications
 });
 
 
@@ -62,7 +62,7 @@ class _$OnboardingDataCopyWithImpl<$Res>
 
 /// Create a copy of OnboardingData
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? firstName = null,Object? selectedSector = freezed,Object? rawBrandsText = null,Object? detectedCompanies = null,Object? investingExperience = freezed,Object? notificationsEnabled = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? firstName = null,Object? selectedSector = freezed,Object? rawBrandsText = null,Object? detectedCompanies = null,Object? investingExperience = freezed,Object? notificationsEnabled = null,Object? hasDecidedNotifications = null,}) {
   return _then(_self.copyWith(
 firstName: null == firstName ? _self.firstName : firstName // ignore: cast_nullable_to_non_nullable
 as String,selectedSector: freezed == selectedSector ? _self.selectedSector : selectedSector // ignore: cast_nullable_to_non_nullable
@@ -70,6 +70,7 @@ as Sector?,rawBrandsText: null == rawBrandsText ? _self.rawBrandsText : rawBrand
 as String,detectedCompanies: null == detectedCompanies ? _self.detectedCompanies : detectedCompanies // ignore: cast_nullable_to_non_nullable
 as List<Company>,investingExperience: freezed == investingExperience ? _self.investingExperience : investingExperience // ignore: cast_nullable_to_non_nullable
 as InvestingExperience?,notificationsEnabled: null == notificationsEnabled ? _self.notificationsEnabled : notificationsEnabled // ignore: cast_nullable_to_non_nullable
+as bool,hasDecidedNotifications: null == hasDecidedNotifications ? _self.hasDecidedNotifications : hasDecidedNotifications // ignore: cast_nullable_to_non_nullable
 as bool,
   ));
 }
@@ -155,10 +156,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String firstName,  Sector? selectedSector,  String rawBrandsText,  List<Company> detectedCompanies,  InvestingExperience? investingExperience,  bool notificationsEnabled)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String firstName,  Sector? selectedSector,  String rawBrandsText,  List<Company> detectedCompanies,  InvestingExperience? investingExperience,  bool notificationsEnabled,  bool hasDecidedNotifications)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _OnboardingData() when $default != null:
-return $default(_that.firstName,_that.selectedSector,_that.rawBrandsText,_that.detectedCompanies,_that.investingExperience,_that.notificationsEnabled);case _:
+return $default(_that.firstName,_that.selectedSector,_that.rawBrandsText,_that.detectedCompanies,_that.investingExperience,_that.notificationsEnabled,_that.hasDecidedNotifications);case _:
   return orElse();
 
 }
@@ -176,10 +177,10 @@ return $default(_that.firstName,_that.selectedSector,_that.rawBrandsText,_that.d
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String firstName,  Sector? selectedSector,  String rawBrandsText,  List<Company> detectedCompanies,  InvestingExperience? investingExperience,  bool notificationsEnabled)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String firstName,  Sector? selectedSector,  String rawBrandsText,  List<Company> detectedCompanies,  InvestingExperience? investingExperience,  bool notificationsEnabled,  bool hasDecidedNotifications)  $default,) {final _that = this;
 switch (_that) {
 case _OnboardingData():
-return $default(_that.firstName,_that.selectedSector,_that.rawBrandsText,_that.detectedCompanies,_that.investingExperience,_that.notificationsEnabled);case _:
+return $default(_that.firstName,_that.selectedSector,_that.rawBrandsText,_that.detectedCompanies,_that.investingExperience,_that.notificationsEnabled,_that.hasDecidedNotifications);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -196,10 +197,10 @@ return $default(_that.firstName,_that.selectedSector,_that.rawBrandsText,_that.d
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String firstName,  Sector? selectedSector,  String rawBrandsText,  List<Company> detectedCompanies,  InvestingExperience? investingExperience,  bool notificationsEnabled)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String firstName,  Sector? selectedSector,  String rawBrandsText,  List<Company> detectedCompanies,  InvestingExperience? investingExperience,  bool notificationsEnabled,  bool hasDecidedNotifications)?  $default,) {final _that = this;
 switch (_that) {
 case _OnboardingData() when $default != null:
-return $default(_that.firstName,_that.selectedSector,_that.rawBrandsText,_that.detectedCompanies,_that.investingExperience,_that.notificationsEnabled);case _:
+return $default(_that.firstName,_that.selectedSector,_that.rawBrandsText,_that.detectedCompanies,_that.investingExperience,_that.notificationsEnabled,_that.hasDecidedNotifications);case _:
   return null;
 
 }
@@ -211,7 +212,7 @@ return $default(_that.firstName,_that.selectedSector,_that.rawBrandsText,_that.d
 
 
 class _OnboardingData implements OnboardingData {
-  const _OnboardingData({this.firstName = '', this.selectedSector = null, this.rawBrandsText = '', final  List<Company> detectedCompanies = const [], this.investingExperience = null, this.notificationsEnabled = false}): _detectedCompanies = detectedCompanies;
+  const _OnboardingData({this.firstName = '', this.selectedSector = null, this.rawBrandsText = '', final  List<Company> detectedCompanies = const [], this.investingExperience = null, this.notificationsEnabled = false, this.hasDecidedNotifications = false}): _detectedCompanies = detectedCompanies;
   
 
 @override@JsonKey() final  String firstName;
@@ -226,6 +227,7 @@ class _OnboardingData implements OnboardingData {
 
 @override@JsonKey() final  InvestingExperience? investingExperience;
 @override@JsonKey() final  bool notificationsEnabled;
+@override@JsonKey() final  bool hasDecidedNotifications;
 
 /// Create a copy of OnboardingData
 /// with the given fields replaced by the non-null parameter values.
@@ -237,16 +239,16 @@ _$OnboardingDataCopyWith<_OnboardingData> get copyWith => __$OnboardingDataCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _OnboardingData&&(identical(other.firstName, firstName) || other.firstName == firstName)&&(identical(other.selectedSector, selectedSector) || other.selectedSector == selectedSector)&&(identical(other.rawBrandsText, rawBrandsText) || other.rawBrandsText == rawBrandsText)&&const DeepCollectionEquality().equals(other._detectedCompanies, _detectedCompanies)&&(identical(other.investingExperience, investingExperience) || other.investingExperience == investingExperience)&&(identical(other.notificationsEnabled, notificationsEnabled) || other.notificationsEnabled == notificationsEnabled));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _OnboardingData&&(identical(other.firstName, firstName) || other.firstName == firstName)&&(identical(other.selectedSector, selectedSector) || other.selectedSector == selectedSector)&&(identical(other.rawBrandsText, rawBrandsText) || other.rawBrandsText == rawBrandsText)&&const DeepCollectionEquality().equals(other._detectedCompanies, _detectedCompanies)&&(identical(other.investingExperience, investingExperience) || other.investingExperience == investingExperience)&&(identical(other.notificationsEnabled, notificationsEnabled) || other.notificationsEnabled == notificationsEnabled)&&(identical(other.hasDecidedNotifications, hasDecidedNotifications) || other.hasDecidedNotifications == hasDecidedNotifications));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,firstName,selectedSector,rawBrandsText,const DeepCollectionEquality().hash(_detectedCompanies),investingExperience,notificationsEnabled);
+int get hashCode => Object.hash(runtimeType,firstName,selectedSector,rawBrandsText,const DeepCollectionEquality().hash(_detectedCompanies),investingExperience,notificationsEnabled,hasDecidedNotifications);
 
 @override
 String toString() {
-  return 'OnboardingData(firstName: $firstName, selectedSector: $selectedSector, rawBrandsText: $rawBrandsText, detectedCompanies: $detectedCompanies, investingExperience: $investingExperience, notificationsEnabled: $notificationsEnabled)';
+  return 'OnboardingData(firstName: $firstName, selectedSector: $selectedSector, rawBrandsText: $rawBrandsText, detectedCompanies: $detectedCompanies, investingExperience: $investingExperience, notificationsEnabled: $notificationsEnabled, hasDecidedNotifications: $hasDecidedNotifications)';
 }
 
 
@@ -257,7 +259,7 @@ abstract mixin class _$OnboardingDataCopyWith<$Res> implements $OnboardingDataCo
   factory _$OnboardingDataCopyWith(_OnboardingData value, $Res Function(_OnboardingData) _then) = __$OnboardingDataCopyWithImpl;
 @override @useResult
 $Res call({
- String firstName, Sector? selectedSector, String rawBrandsText, List<Company> detectedCompanies, InvestingExperience? investingExperience, bool notificationsEnabled
+ String firstName, Sector? selectedSector, String rawBrandsText, List<Company> detectedCompanies, InvestingExperience? investingExperience, bool notificationsEnabled, bool hasDecidedNotifications
 });
 
 
@@ -274,7 +276,7 @@ class __$OnboardingDataCopyWithImpl<$Res>
 
 /// Create a copy of OnboardingData
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? firstName = null,Object? selectedSector = freezed,Object? rawBrandsText = null,Object? detectedCompanies = null,Object? investingExperience = freezed,Object? notificationsEnabled = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? firstName = null,Object? selectedSector = freezed,Object? rawBrandsText = null,Object? detectedCompanies = null,Object? investingExperience = freezed,Object? notificationsEnabled = null,Object? hasDecidedNotifications = null,}) {
   return _then(_OnboardingData(
 firstName: null == firstName ? _self.firstName : firstName // ignore: cast_nullable_to_non_nullable
 as String,selectedSector: freezed == selectedSector ? _self.selectedSector : selectedSector // ignore: cast_nullable_to_non_nullable
@@ -282,6 +284,7 @@ as Sector?,rawBrandsText: null == rawBrandsText ? _self.rawBrandsText : rawBrand
 as String,detectedCompanies: null == detectedCompanies ? _self._detectedCompanies : detectedCompanies // ignore: cast_nullable_to_non_nullable
 as List<Company>,investingExperience: freezed == investingExperience ? _self.investingExperience : investingExperience // ignore: cast_nullable_to_non_nullable
 as InvestingExperience?,notificationsEnabled: null == notificationsEnabled ? _self.notificationsEnabled : notificationsEnabled // ignore: cast_nullable_to_non_nullable
+as bool,hasDecidedNotifications: null == hasDecidedNotifications ? _self.hasDecidedNotifications : hasDecidedNotifications // ignore: cast_nullable_to_non_nullable
 as bool,
   ));
 }

@@ -1,5 +1,6 @@
 import 'package:bizzie/app/routes/app_routes.dart';
 import 'package:bizzie/app/routes/app_router_redirect.dart';
+import 'package:bizzie/app/routes/app_router_refresh.dart';
 import 'package:bizzie/core/constants/paywall_query_params.dart';
 import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
 import 'package:bizzie/features/reports/domain/enums/reports_analytics_enums.dart';
@@ -21,21 +22,19 @@ import 'package:bizzie/features/home/presentation/bloc/home_bloc.dart';
 import 'package:bizzie/features/home/presentation/bloc/watchlist_news/watchlist_news_bloc.dart';
 import 'package:bizzie/features/home/presentation/bloc/watchlist_prices/watchlist_prices_bloc.dart';
 import 'package:bizzie/features/market_news/presentation/bloc/market_news/market_news_bloc.dart';
-import 'package:bizzie/features/notifications/presentation/views/notification_request_page.dart';
-import 'package:bizzie/features/onboarding/presentation/views/ask_name_page.dart';
+import 'package:bizzie/features/onboarding/presentation/views/notification_request_page.dart';
 import 'package:bizzie/features/onboarding/presentation/views/landing_page.dart';
 import 'package:bizzie/features/onboarding/presentation/views/feature_highlights_page.dart';
-import 'package:bizzie/features/onboarding/presentation/views/meet_your_bizzie_page.dart';
 import 'package:bizzie/features/onboarding/select_brands/presentation/views/select_your_favorite_brands_page.dart';
-import 'package:bizzie/features/onboarding/presentation/views/analyzing_brands_page.dart';
-import 'package:bizzie/features/onboarding/presentation/views/bizzie_found_companies_page.dart';
 import 'package:bizzie/features/onboarding/presentation/views/building_profile_page.dart';
+import 'package:bizzie/features/onboarding/presentation/views/onboarding_company_profile_page.dart';
+import 'package:bizzie/features/onboarding/presentation/views/onboarding_finishing_page.dart';
 import 'package:bizzie/features/onboarding/presentation/views/profile_ready_page.dart';
-import 'package:bizzie/features/onboarding/presentation/views/adding_to_watchlist_page.dart';
 import 'package:bizzie/features/onboarding/presentation/views/investing_experience_page.dart';
 import 'package:bizzie/features/onboarding/presentation/views/sector_selection_page.dart';
-import 'package:bizzie/features/onboarding/presentation/views/welcome_name_page.dart';
+import 'package:bizzie/features/company_profile/cp/presentation/models/company_profile_tour_request.dart';
 import 'package:bizzie/features/company_profile/cp/presentation/views/company_profile_page.dart';
+import 'package:bizzie/features/company_profile/cp/presentation/widgets/company_profile_tour_scope.dart';
 import 'package:bizzie/features/profile/presentation/views/profile_page.dart';
 import 'package:bizzie/features/profile/presentation/views/change_password_view.dart';
 import 'package:bizzie/features/profile/presentation/views/edit_profile_view.dart';
@@ -45,11 +44,8 @@ import 'package:go_router/go_router.dart';
 
 import 'package:bizzie/features/auth/presentation/bloc/auth_bloc.dart';
 
-import 'package:bizzie/shared/utils/go_router_refresh_stream.dart';
-import 'package:bizzie/features/onboarding/presentation/bloc/onboarding_bloc.dart';
 import 'package:bizzie/di/injection.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:async/async.dart';
 
 import 'package:bizzie/features/subscription/presentation/views/discounted_subscription_page.dart';
 import 'package:bizzie/features/subscription/presentation/views/subscription_page.dart';
@@ -66,13 +62,10 @@ GoRouter createRouter(
   UserBloc userBloc, {
   String? initialLocation,
 }) {
-  return GoRouter(
+  final router = GoRouter(
     navigatorKey: rootNavigatorKey,
     initialLocation: initialLocation ?? AppRoutes.splash,
     observers: [getIt<FirebaseAnalyticsObserver>()],
-    refreshListenable: GoRouterRefreshStream(
-      StreamGroup.merge([authBloc.stream, userBloc.stream]),
-    ),
     redirect: (context, state) {
       final authState = authBloc.state;
       final userState = userBloc.state;
@@ -95,10 +88,24 @@ GoRouter createRouter(
         AppRoutes.login,
         const LoginPage(source: AuthSource.landing),
       ),
+      GoRoute(
+        path: AppRoutes.guestCreateAccount,
+        parentNavigatorKey: rootNavigatorKey,
+        builder: (context, state) =>
+            const CreateAccountPage(source: AuthSource.guestGate),
+      ),
+      GoRoute(
+        path: AppRoutes.guestLogin,
+        parentNavigatorKey: rootNavigatorKey,
+        builder: (context, state) =>
+            const LoginPage(source: AuthSource.guestGate),
+      ),
 
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) {
-          return BizzieBottomNavWrapper(navigationShell: navigationShell);
+          return CompanyProfileTourScope(
+            child: BizzieBottomNavWrapper(navigationShell: navigationShell),
+          );
         },
         branches: [
           // BRANCH 1: HOME
@@ -238,28 +245,27 @@ GoRouter createRouter(
       ),
 
       ShellRoute(
-        builder: (context, state, child) {
-          final bloc = getIt<OnboardingBloc>();
-          return BlocProvider<OnboardingBloc>.value(value: bloc, child: child);
-        },
+        builder: (context, state, child) => child,
         routes: [
           GoRoute(
             path: AppRoutes.landing,
             builder: (context, state) => const LandingPage(),
+          ),
+          GoRoute(
+            path: AppRoutes.onboardingCompanyProfile,
+            builder: (context, state) {
+              final ticker = state.pathParameters['ticker']!;
+              return OnboardingCompanyProfilePage(
+                key: ValueKey('onboarding_company_$ticker'),
+                ticker: ticker,
+              );
+            },
           ),
           ShellRoute(
             builder: (context, state, child) {
               return OnboardingShell(child: child);
             },
             routes: [
-              _buildNoTransitionRoute(
-                AppRoutes.onboardingName,
-                const AskNamePage(),
-              ),
-              _buildNoTransitionRoute(
-                AppRoutes.onboardingWelcome,
-                const WelcomeNamePage(),
-              ),
               _buildNoTransitionRoute(
                 AppRoutes.onboardingExperience,
                 const InvestingExperiencePage(),
@@ -273,24 +279,8 @@ GoRouter createRouter(
                 const SectorSelectionPage(),
               ),
               _buildNoTransitionRoute(
-                AppRoutes.onboardingMeetBizzie,
-                const MeetYourBizziePage(),
-              ),
-              _buildNoTransitionRoute(
                 AppRoutes.onboardingBrands,
                 const SelectYourFavoriteBrandsPage(),
-              ),
-              _buildNoTransitionRoute(
-                AppRoutes.onboardingAnalyzing,
-                const AnalyzingBrandsPage(),
-              ),
-              _buildNoTransitionRoute(
-                AppRoutes.onboardingFoundCompanies,
-                const BizzieFoundCompaniesPage(),
-              ),
-              _buildNoTransitionRoute(
-                AppRoutes.onboardingAddingWatchlist,
-                const AddingToWatchlistPage(),
               ),
               _buildNoTransitionRoute(
                 AppRoutes.onboardingBuildingProfile,
@@ -307,6 +297,10 @@ GoRouter createRouter(
               _buildNoTransitionRoute(
                 AppRoutes.onboardingNotifications,
                 const NotificationRequestPage(),
+              ),
+              _buildNoTransitionRoute(
+                AppRoutes.onboardingFinishing,
+                const OnboardingFinishingPage(),
               ),
             ],
           ),
@@ -374,6 +368,8 @@ GoRouter createRouter(
       ),
     ],
   );
+  AppRouterRefresh(router: router, authBloc: authBloc, userBloc: userBloc);
+  return router;
 }
 
 GoRoute _buildPaywallRoute({
@@ -468,10 +464,14 @@ GoRoute _buildCompanyRoute(String routeName) {
     name: routeName,
     builder: (context, state) {
       final ticker = state.pathParameters['ticker']!;
+      final tourRequest = state.extra is CompanyProfileTourRequest
+          ? state.extra as CompanyProfileTourRequest
+          : null;
 
       return CompanyProfilePage(
         key: ValueKey('${routeName}_$ticker'),
         ticker: ticker,
+        tourRequest: tourRequest,
       );
     },
   );

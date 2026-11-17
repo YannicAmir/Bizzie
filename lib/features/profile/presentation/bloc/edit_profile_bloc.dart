@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:bizzie/features/auth/domain/usecases/get_current_user.dart';
+import 'package:bizzie/features/auth/domain/usecases/get_current_user_usecase.dart';
 import 'package:bizzie/core/usecase/usecase.dart';
 import 'package:bizzie/features/profile/domain/usecases/delete_account_usecase.dart';
 import 'package:bizzie/features/profile/domain/usecases/update_profile_usecase.dart';
@@ -22,7 +22,7 @@ final _logger = BizzieLogger('EditProfileBloc');
 class EditProfileBloc extends Bloc<EditProfileEvent, EditProfileState> {
   static const int maxReauthAttempts = 3;
 
-  final GetCurrentUser _getCurrentUser;
+  final GetCurrentUserUseCase _getCurrentUser;
   final GetUserUseCase _getUserUseCase;
   final UpdateProfileUseCase _updateProfileUseCase;
   final DeleteAccountUseCase _deleteAccountUseCase;

@@ -42,6 +42,14 @@ UseCase rules:
 - Named `XxxUseCase` (capital C)
 - Delegates to the repository — no business logic beyond coordination
 
+### Aggregator UseCases
+A UseCase may coordinate several repository / core service interfaces to compose one screen-level domain model (e.g. `GetSettingsDisplayDataUseCase`). This counts as coordination, not business logic, when:
+- Every dependency is an interface (`IXxxRepository` / `IXxxService`), injected positionally
+- Independent fetches run concurrently (e.g. record `.wait`)
+- Exactly one primary source decides `Left` — its failure is returned as-is
+- Secondary sources degrade gracefully to a documented default (e.g. `SubscriptionStatus.initial()`, `false`) and log the failure with `_logger.warning`
+- No calculation, filtering, or transformation beyond mapping results into the composed model
+
 ---
 
 ## 3. UseCase Parameters
@@ -116,6 +124,7 @@ All errors wrap to `Failure` from `lib/core/error/failures.dart`:
 Pure logic / calculation with no I/O?         → domain/services/ or domain/extensions/
 Fetch or persist data (Firestore, storage)?   → data/ behind domain/interfaces/
 Coordinate one UseCase + one repository?      → domain/usecases/
+Compose one model from several sources?       → domain/usecases/ (aggregator, see §2)
 Orchestrate UseCases / manage UI state?       → presentation/bloc/
 ```
 
@@ -125,6 +134,7 @@ Orchestrate UseCases / manage UI state?       → presentation/bloc/
 - [ ] UseCase implements `UseCase`, `StreamUseCase`, or `SynchronousUseCase`
 - [ ] UseCase annotated `@lazySingleton`
 - [ ] UseCase takes a repository interface (not implementation) as constructor parameter
+- [ ] Aggregator UseCases have one primary `Left` source; secondary sources degrade to a default and log a warning
 - [ ] Multi-param use cases use a `@freezed` params class in `domain/models/`
 - [ ] Repository interface in `domain/interfaces/` with `I` prefix
 - [ ] Repository interface methods return `Either<Failure, T>`

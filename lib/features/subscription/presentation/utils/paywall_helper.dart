@@ -13,6 +13,14 @@ import 'package:go_router/go_router.dart';
 class PaywallHelper {
   PaywallHelper._();
 
+  static void closePaywall(BuildContext context) {
+    if (context.canPop()) {
+      context.pop();
+    } else {
+      context.go(AppRoutes.home);
+    }
+  }
+
   static Future<bool> showLockedTabPaywall(
     BuildContext context, {
     required String tabName,
@@ -96,8 +104,11 @@ class PaywallHelper {
 
   static bool _checkIsSubscribed(BuildContext context) {
     final isSubscribedViaUser = context.read<UserBloc>().state.isSubscribed;
-    final isSubscribedViaSubscription =
-        context.read<SubscriptionBloc>().state.status.isSubscribed;
+    final isSubscribedViaSubscription = context
+        .read<SubscriptionBloc>()
+        .state
+        .status
+        .isSubscribed;
 
     return isSubscribedViaUser || isSubscribedViaSubscription;
   }

@@ -1,5 +1,5 @@
 import 'package:bizzie/core/error/failures.dart';
-import 'package:bizzie/features/auth/domain/usecases/get_auth_stream.dart';
+import 'package:bizzie/features/auth/domain/usecases/get_auth_stream_usecase.dart';
 import 'package:bizzie/features/home/domain/models/watchlist_news_article.dart';
 import 'package:bizzie/features/home/domain/usecases/watch_watchlist_news_usecase.dart';
 import 'package:bizzie/features/home/presentation/bloc/watchlist_news/watchlist_news_bloc.dart';
@@ -11,10 +11,10 @@ import 'package:mocktail/mocktail.dart';
 class MockWatchWatchlistNewsUseCase extends Mock
     implements WatchWatchlistNewsUseCase {}
 
-class MockGetAuthStream extends Mock implements GetAuthStream {}
+class MockGetAuthStreamUseCase extends Mock implements GetAuthStreamUseCase {}
 
-MockGetAuthStream stubbedGetAuthStream() {
-  final mock = MockGetAuthStream();
+MockGetAuthStreamUseCase stubbedGetAuthStream() {
+  final mock = MockGetAuthStreamUseCase();
   when(() => mock()).thenAnswer((_) => const Stream.empty());
   return mock;
 }

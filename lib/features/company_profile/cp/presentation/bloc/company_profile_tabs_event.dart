@@ -5,9 +5,8 @@ part 'company_profile_tabs_event.freezed.dart';
 
 @freezed
 sealed class CompanyProfileTabsEvent with _$CompanyProfileTabsEvent {
-  const factory CompanyProfileTabsEvent.started({
-    required bool isSubscribed,
-  }) = Started;
+  const factory CompanyProfileTabsEvent.started({required bool isSubscribed}) =
+      Started;
 
   const factory CompanyProfileTabsEvent.tabActivated({
     required CompanyProfileTab tab,

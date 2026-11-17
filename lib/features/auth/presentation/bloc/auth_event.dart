@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import '../../domain/models/user_model.dart';
+import 'package:bizzie/core/enums/guest_gate_trigger.dart';
 import 'package:bizzie/features/auth/domain/enums/auth_source.dart';
 
 part 'auth_event.freezed.dart';
@@ -27,6 +27,11 @@ sealed class AuthEvent with _$AuthEvent {
     String password, {
     required AuthSource source,
   }) = AuthEmailSignUpRequested;
-  const factory AuthEvent.statusChanged(UserModel? user) = AuthStatusChanged;
   const factory AuthEvent.legalLinkOpened(String url) = AuthLegalLinkOpened;
+  const factory AuthEvent.guestGateShown({required GuestGateTrigger trigger}) =
+      AuthGuestGateShown;
+  const factory AuthEvent.guestGateDismissed() = AuthGuestGateDismissed;
+  const factory AuthEvent.guestLinkStarted({
+    required GuestGateTrigger trigger,
+  }) = AuthGuestLinkStarted;
 }

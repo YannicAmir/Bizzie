@@ -65,8 +65,9 @@ class BizzieChatRemoteDataSource implements IBizzieChatRemoteDataSource {
     final buffer = StringBuffer();
 
     try {
-      await for (final chunk
-          in response.data!.stream.map((bytes) => utf8.decode(bytes))) {
+      await for (final chunk in response.data!.stream.map(
+        (bytes) => utf8.decode(bytes),
+      )) {
         buffer.write(chunk);
 
         final text = buffer.toString();
@@ -84,7 +85,9 @@ class BizzieChatRemoteDataSource implements IBizzieChatRemoteDataSource {
           try {
             yield BizzieChatSseEventDto.fromRawLine(raw);
           } catch (e) {
-            _logger.warning('sendMessageStream: failed to parse SSE line: $raw');
+            _logger.warning(
+              'sendMessageStream: failed to parse SSE line: $raw',
+            );
           }
         }
       }
@@ -114,10 +117,7 @@ class BizzieChatRemoteDataSource implements IBizzieChatRemoteDataSource {
   }
 
   @override
-  Stream<List<ChatMessageDto>> getMessagesStream(
-    String uid,
-    String sessionId,
-  ) {
+  Stream<List<ChatMessageDto>> getMessagesStream(String uid, String sessionId) {
     return _firestoreService
         .getCollectionStream<ChatMessageDto>(
           path: 'users/$uid/$_kConversations/$sessionId/$_kMessages',

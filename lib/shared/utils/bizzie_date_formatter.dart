@@ -1,3 +1,4 @@
+import 'package:bizzie/core/enums/financial_period.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:intl/intl.dart';
 import 'package:timeago/timeago.dart' as timeago;
@@ -92,11 +93,20 @@ class BizzieDateFormatter {
     return DateFormat(monthYearFormat).format(date);
   }
 
-  static String formatChartLabel(String dateStr, {required bool isAnnual}) {
-    return isAnnual ? formatYearOnly(dateStr) : formatMonthYearShort(dateStr);
+  static String formatChartLabel(
+    String dateStr, {
+    required FinancialPeriod period,
+  }) {
+    return switch (period) {
+      FinancialPeriod.annual => formatYearOnly(dateStr),
+      FinancialPeriod.quarterly => formatMonthYearShort(dateStr),
+    };
   }
 
-  static String formatReferenceLabel(String dateStr, {required bool isAnnual}) {
+  static String formatReferenceLabel(
+    String dateStr, {
+    required FinancialPeriod period,
+  }) {
     return formatMonthYearFull(dateStr);
   }
 

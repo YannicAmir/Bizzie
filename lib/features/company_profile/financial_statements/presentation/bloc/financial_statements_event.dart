@@ -1,3 +1,4 @@
+import 'package:bizzie/core/enums/financial_period.dart';
 import 'package:bizzie/features/company_profile/financial_statements/presentation/enums/financial_statement_type.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
@@ -30,15 +31,15 @@ sealed class FinancialStatementsEvent with _$FinancialStatementsEvent {
 
   const factory FinancialStatementsEvent.incomeDateSelected(
     String date, {
-    required bool isAnnual,
+    required FinancialPeriod period,
   }) = IncomeDateSelected;
   const factory FinancialStatementsEvent.balanceDateSelected(
     String date, {
-    required bool isAnnual,
+    required FinancialPeriod period,
   }) = BalanceDateSelected;
   const factory FinancialStatementsEvent.cashFlowDateSelected(
     String date, {
-    required bool isAnnual,
+    required FinancialPeriod period,
   }) = CashFlowDateSelected;
 
   const factory FinancialStatementsEvent.tabShown(String ticker) = TabShown;
@@ -46,7 +47,7 @@ sealed class FinancialStatementsEvent with _$FinancialStatementsEvent {
   const factory FinancialStatementsEvent.appBackgrounded() = AppBackgrounded;
   const factory FinancialStatementsEvent.appForegrounded() = AppForegrounded;
   const factory FinancialStatementsEvent.viewAllTapped({
-    required bool isAnnual,
+    required FinancialPeriod period,
   }) = ViewAllTapped;
   const factory FinancialStatementsEvent.chartSwiped(int index) = ChartSwiped;
 

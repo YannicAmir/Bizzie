@@ -1,5 +1,6 @@
 import 'package:bizzie/app/themes/app_colors.dart';
 import 'package:bizzie/app/themes/app_text_styles.dart';
+import 'package:bizzie/core/enums/financial_period.dart';
 import 'package:bizzie/features/company_profile/shared/domain/models/financial_data_point.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/utils/financial_highlights_resolver.dart';
 import 'package:bizzie/shared/constants/app_constants.dart';
@@ -10,7 +11,7 @@ class FinancialHighlightsSection extends StatelessWidget {
   final List<FinancialDataPoint> quarterlyData;
   final String ttmTitle;
   final String currency;
-  final bool isAnnual;
+  final FinancialPeriod period;
 
   const FinancialHighlightsSection({
     super.key,
@@ -18,19 +19,27 @@ class FinancialHighlightsSection extends StatelessWidget {
     required this.quarterlyData,
     required this.ttmTitle,
     required this.currency,
-    this.isAnnual = true,
+    this.period = FinancialPeriod.annual,
   });
 
   @override
   Widget build(BuildContext context) {
-    final highlights = FinancialHighlightsResolver.resolve(
-      annualData: annualData,
-      quarterlyData: quarterlyData,
-      ttmTitle: ttmTitle,
-      currency: currency,
-      isAnnual: isAnnual,
-      locale: Localizations.localeOf(context).toString(),
-    );
+    final locale = Localizations.localeOf(context).toString();
+    final highlights = switch (period) {
+      FinancialPeriod.annual => FinancialHighlightsResolver.resolveAnnual(
+        annualData: annualData,
+        quarterlyData: quarterlyData,
+        ttmTitle: ttmTitle,
+        currency: currency,
+        locale: locale,
+      ),
+      FinancialPeriod.quarterly => FinancialHighlightsResolver.resolveQuarterly(
+        quarterlyData: quarterlyData,
+        ttmTitle: ttmTitle,
+        currency: currency,
+        locale: locale,
+      ),
+    };
     if (highlights == null) return const SizedBox.shrink();
 
     final secondary = highlights.secondary;

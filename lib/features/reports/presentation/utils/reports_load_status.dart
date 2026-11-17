@@ -23,10 +23,7 @@ ReportsLoadStatus resolveReportsLoadStatus(
       : ReportsLoadStatus.loading;
 }
 
-bool _secondaryFeedsSettled(
-  MarketNewsState marketNews,
-  WatchlistYtdState ytd,
-) {
+bool _secondaryFeedsSettled(MarketNewsState marketNews, WatchlistYtdState ytd) {
   final marketNewsSettled = marketNews.maybeMap(
     loaded: (_) => true,
     failure: (_) => true,

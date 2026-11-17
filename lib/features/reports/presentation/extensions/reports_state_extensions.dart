@@ -18,8 +18,9 @@ extension ReportsStateExtension on ReportsState {
           return createdAt.isAfter(s.lastViewedReports!);
         }
 
-        final filingCount =
-            s.feed.filings.where((f) => isFilingUnread(f.createdAt)).length;
+        final filingCount = s.feed.filings
+            .where((f) => isFilingUnread(f.createdAt))
+            .length;
 
         final weeklyCount = s.todaysWeeklyReports
             .where((r) => !seenWeeklyReportIds.contains(r.seenKey))

@@ -1,0 +1,1 @@
+enum SettingsLinkType { privacyPolicy, termsOfService }

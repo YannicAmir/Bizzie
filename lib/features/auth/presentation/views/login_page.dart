@@ -1,12 +1,13 @@
 import 'package:bizzie/app/themes/app_assets.dart';
 import 'package:bizzie/features/auth/presentation/widgets/auth_divider.dart';
-import 'package:bizzie/shared/widgets/modals/bizzie_snackbar.dart';
+import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../bloc/auth_bloc.dart';
 import '../bloc/auth_state.dart';
+import '../utils/auth_failure_snackbar.dart';
 import 'package:bizzie/features/auth/domain/enums/auth_source.dart';
 import '../widgets/auth_footer.dart';
 import '../widgets/login_form.dart';
@@ -23,13 +24,12 @@ class LoginPage extends StatelessWidget {
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
         state.maybeWhen(
-          failure: (failure) {
-            BizzieSnackBar.show(
-              context,
-              message: failure.errorMessage,
-              type: BizzieSnackBarType.error,
-            );
+          authenticated: (user) {
+            if (source == AuthSource.guestGate && !user.isAnonymous) {
+              context.pop(true);
+            }
           },
+          failure: (failure) => AuthFailureSnackBar.show(context, failure),
           orElse: () {},
         );
       },
@@ -57,8 +57,7 @@ class LoginPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 32),
                 const _LoginHeader(),
-                const SizedBox(height: 24),
-                const SizedBox(height: 24),
+                AppConstants.secondarySectionSpacing,
                 LoginForm(source: source),
                 const SizedBox(height: 24),
                 const AuthDivider(),
@@ -81,20 +80,9 @@ class _LoginHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text('Welcome Back!', style: theme.textTheme.displayLarge),
-        const SizedBox(height: 8),
-        Text(
-          'Log in to continue',
-          style: theme.textTheme.titleMedium?.copyWith(
-            fontSize: 16,
-            color: theme.colorScheme.onSurfaceVariant,
-          ),
-        ),
-      ],
+    return Text(
+      'Welcome Back!',
+      style: Theme.of(context).textTheme.displayLarge,
     );
   }
 }

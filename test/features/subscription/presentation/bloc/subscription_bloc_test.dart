@@ -5,9 +5,8 @@ import 'package:bizzie/core/enums/paywall_source.dart';
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/core/usecase/usecase.dart';
 import 'package:bizzie/features/auth/domain/models/user_model.dart';
-import 'package:bizzie/features/auth/presentation/bloc/auth_bloc.dart';
-import 'package:bizzie/features/auth/presentation/bloc/auth_event.dart';
-import 'package:bizzie/features/auth/presentation/bloc/auth_state.dart';
+import 'package:bizzie/features/auth/domain/usecases/get_auth_stream_usecase.dart';
+import 'package:bizzie/features/auth/domain/usecases/get_current_user_usecase.dart';
 import 'package:bizzie/features/subscription/domain/models/subscription_offering.dart';
 import 'package:bizzie/features/subscription/domain/models/subscription_package.dart';
 import 'package:bizzie/features/subscription/domain/models/subscription_status.dart';
@@ -30,9 +29,7 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:fake_async/fake_async.dart';
-import 'package:bizzie/features/onboarding/domain/models/onboarding_step.dart';
 import 'package:bizzie/features/onboarding/presentation/analytics/onboarding_analytics.dart';
-import 'package:bizzie/features/onboarding/presentation/bloc/onboarding_bloc.dart';
 import 'package:bizzie/features/subscription/presentation/analytics/subscription_tracker.dart';
 import 'package:bizzie/core/interfaces/i_config_service.dart';
 
@@ -55,16 +52,15 @@ class MockGetOfferingsUseCase extends Mock implements GetOfferingsUseCase {}
 class MockSyncSubscriptionUseCase extends Mock
     implements SyncSubscriptionUseCase {}
 
-class MockAuthBloc extends MockBloc<AuthEvent, AuthState> implements AuthBloc {}
+class MockGetAuthStreamUseCase extends Mock implements GetAuthStreamUseCase {}
+
+class MockGetCurrentUserUseCase extends Mock implements GetCurrentUserUseCase {}
 
 class MockPaywallAnalytics extends Mock implements PaywallAnalytics {}
 
 class MockOnboardingAnalytics extends Mock implements OnboardingAnalytics {}
 
 class MockSubscriptionTracker extends Mock implements SubscriptionTracker {}
-
-class MockOnboardingBloc extends MockBloc<OnboardingEvent, OnboardingState>
-    implements OnboardingBloc {}
 
 class MockIConfigService extends Mock implements IConfigService {}
 
@@ -76,9 +72,10 @@ void main() {
   late MockRestorePurchasesUseCase mockRestore;
   late MockGetOfferingsUseCase mockGetOfferings;
   late MockSyncSubscriptionUseCase mockSyncSubscription;
-  late MockAuthBloc mockAuthBloc;
+  late MockGetAuthStreamUseCase mockGetAuthStream;
+  late MockGetCurrentUserUseCase mockGetCurrentUser;
+  late StreamController<UserModel?> authController;
   late MockPaywallAnalytics mockAnalytics;
-  late MockOnboardingBloc mockOnboardingBloc;
   late MockSubscriptionTracker mockSubscriptionTracker;
   late MockIConfigService mockConfigService;
   late StreamController<bool> isSubscribedController;
@@ -129,7 +126,6 @@ void main() {
   final tSubscribedStatus = tStatus.copyWith(isSubscribed: true);
 
   setUpAll(() {
-    registerFallbackValue(OnboardingStep.landing);
     registerFallbackValue(NoParams());
     registerFallbackValue(tAnnualPackage);
     registerFallbackValue(SubscriptionStatus.initial());
@@ -149,8 +145,6 @@ void main() {
   setUpAll(() {
     registerFallbackValue(PaywallSource.settings);
     registerFallbackValue(PaywallType.regular);
-    registerFallbackValue(OnboardingStep.paywall);
-    registerFallbackValue(const OnboardingEvent.started());
   });
 
   setUp(() {
@@ -161,14 +155,14 @@ void main() {
     mockRestore = MockRestorePurchasesUseCase();
     mockGetOfferings = MockGetOfferingsUseCase();
     mockSyncSubscription = MockSyncSubscriptionUseCase();
-    mockAuthBloc = MockAuthBloc();
+    mockGetAuthStream = MockGetAuthStreamUseCase();
+    mockGetCurrentUser = MockGetCurrentUserUseCase();
     mockAnalytics = MockPaywallAnalytics();
     when(
       () => mockAnalytics.logGiftViewed(
         source: any<PaywallSource>(named: 'source'),
       ),
     ).thenAnswer((_) async => {});
-    mockOnboardingBloc = MockOnboardingBloc();
     mockSubscriptionTracker = MockSubscriptionTracker();
     mockConfigService = MockIConfigService();
 
@@ -210,14 +204,11 @@ void main() {
         source: any<PaywallSource>(named: 'source'),
       ),
     ).thenAnswer((_) async => {});
+    when(() => mockGetCurrentUser()).thenReturn(null);
+    authController = StreamController<UserModel?>.broadcast();
     when(
-      () => mockAuthBloc.state,
-    ).thenReturn(const AuthState.unauthenticated());
-    whenListen(
-      mockAuthBloc,
-      const Stream<AuthState>.empty(),
-      initialState: const AuthState.unauthenticated(),
-    );
+      () => mockGetAuthStream(any()),
+    ).thenAnswer((_) => authController.stream);
 
     when(
       () => mockSyncIdentity.call(any()),
@@ -244,11 +235,11 @@ void main() {
       mockPurchase,
       mockRestore,
       mockGetOfferings,
-      mockAuthBloc,
+      mockGetAuthStream,
+      mockGetCurrentUser,
       mockSyncSubscription,
       isSubscribedController.stream,
       mockAnalytics,
-      mockOnboardingBloc,
       mockSubscriptionTracker,
       mockConfigService,
     );
@@ -289,15 +280,92 @@ void main() {
         // arrange
         setUp: () {
           const tUser = UserModel(id: 'user_123', email: 'test@example.com');
-          when(
-            () => mockAuthBloc.state,
-          ).thenReturn(const AuthState.authenticated(tUser));
+          when(() => mockGetCurrentUser()).thenReturn(tUser);
         },
         build: () => createBloc(),
         // act
         act: (bloc) => bloc.add(const SubscriptionEvent.initialized()),
         // assert
         expect: () => [isA<SubscriptionStateLoaded>()],
+        verify: (_) {
+          verify(() => mockSyncIdentity.call('user_123')).called(1);
+        },
+      );
+    });
+
+    group('auth stream', () {
+      const tUser = UserModel(id: 'user_123', email: 'test@example.com');
+
+      blocTest<SubscriptionBloc, SubscriptionState>(
+        'authStream_signInAfterInitialized_syncsNewIdentity',
+        // arrange
+        build: () => createBloc(),
+        // act
+        act: (bloc) async {
+          bloc.add(const SubscriptionEvent.initialized());
+          await Future<void>.delayed(Duration.zero);
+          authController.add(tUser);
+        },
+        // assert
+        verify: (_) {
+          verify(() => mockSyncIdentity.call('user_123')).called(1);
+        },
+      );
+
+      blocTest<SubscriptionBloc, SubscriptionState>(
+        'authStream_replaysInitialUser_doesNotSyncTwice',
+        // arrange
+        setUp: () {
+          when(() => mockGetCurrentUser()).thenReturn(tUser);
+        },
+        build: () => createBloc(),
+        // act
+        act: (bloc) async {
+          bloc.add(const SubscriptionEvent.initialized());
+          await Future<void>.delayed(Duration.zero);
+          authController
+            ..add(tUser)
+            ..add(tUser.copyWith(isAnonymous: true));
+        },
+        // assert
+        verify: (_) {
+          verify(() => mockSyncIdentity.call('user_123')).called(1);
+        },
+      );
+
+      blocTest<SubscriptionBloc, SubscriptionState>(
+        'authStream_signOut_syncsNullIdentity',
+        // arrange
+        setUp: () {
+          when(() => mockGetCurrentUser()).thenReturn(tUser);
+        },
+        build: () => createBloc(),
+        // act
+        act: (bloc) async {
+          bloc.add(const SubscriptionEvent.initialized());
+          await Future<void>.delayed(Duration.zero);
+          authController.add(null);
+        },
+        // assert
+        verify: (_) {
+          verify(() => mockSyncIdentity.call('user_123')).called(1);
+          verify(() => mockSyncIdentity.call(null)).called(1);
+        },
+      );
+
+      blocTest<SubscriptionBloc, SubscriptionState>(
+        'authStream_error_keepsListeningForIdentityChanges',
+        // arrange
+        build: () => createBloc(),
+        // act
+        act: (bloc) async {
+          bloc.add(const SubscriptionEvent.initialized());
+          await Future<void>.delayed(Duration.zero);
+          authController
+            ..addError(Exception('auth stream failure'))
+            ..add(tUser);
+        },
+        // assert
         verify: (_) {
           verify(() => mockSyncIdentity.call('user_123')).called(1);
         },
@@ -408,11 +476,6 @@ void main() {
               featureName: '10_k_filings',
             ),
           ).called(1);
-          verify(
-            () => mockOnboardingBloc.add(
-              const OnboardingEvent.stepViewed(OnboardingStep.paywall),
-            ),
-          ).called(1);
         },
       );
     });
@@ -454,11 +517,11 @@ void main() {
             mockPurchase,
             mockRestore,
             mockGetOfferings,
-            mockAuthBloc,
+            mockGetAuthStream,
+            mockGetCurrentUser,
             mockSyncSubscription,
             isSubscribedController.stream,
             mockAnalytics,
-            mockOnboardingBloc,
             mockSubscriptionTracker,
             mockConfigService,
           );
@@ -630,7 +693,7 @@ void main() {
       );
 
       blocTest<SubscriptionBloc, SubscriptionState>(
-        'purchaseRequested_success_logsAnalyticsWithSource',
+        'purchaseRequested_success_recordsPurchasedPackageType',
         // arrange
         setUp: () {
           when(
@@ -651,23 +714,24 @@ void main() {
         act: (bloc) =>
             bloc.add(SubscriptionEvent.purchaseRequested(tAnnualPackage)),
         // assert
-        verify: (_) {
-          // verify(
-          //   () => mockOnboardingAnalytics.logStep(stepName: 'paywall'),
-          // ).called(1);
-          verify(
-            () => mockOnboardingBloc.add(
-              any(
-                that: predicate<OnboardingEvent>(
-                  (e) => e.maybeMap(
-                    subscriptionStatusChanged: (s) => s.didSubscribe == true,
-                    orElse: () => false,
-                  ),
-                ),
+        expect: () => [
+          isA<SubscriptionStateLoaded>().having(
+            (s) => s.isPurchasing,
+            'isPurchasing',
+            true,
+          ),
+          isA<SubscriptionStateLoaded>()
+              .having(
+                (s) => s.isLocalSuccessOverride,
+                'isLocalSuccessOverride',
+                true,
+              )
+              .having(
+                (s) => s.purchasedPackageType,
+                'purchasedPackageType',
+                tAnnualPackage.packageType,
               ),
-            ),
-          ).called(1);
-        },
+        ],
       );
     });
 
@@ -929,11 +993,11 @@ void main() {
             mockPurchase,
             mockRestore,
             mockGetOfferings,
-            mockAuthBloc,
+            mockGetAuthStream,
+            mockGetCurrentUser,
             mockSyncSubscription,
             firestoreStream.stream,
             mockAnalytics,
-            mockOnboardingBloc,
             mockSubscriptionTracker,
             mockConfigService,
           );
@@ -977,11 +1041,11 @@ void main() {
             mockPurchase,
             mockRestore,
             mockGetOfferings,
-            mockAuthBloc,
+            mockGetAuthStream,
+            mockGetCurrentUser,
             mockSyncSubscription,
             firestoreStream.stream,
             mockAnalytics,
-            mockOnboardingBloc,
             mockSubscriptionTracker,
             mockConfigService,
           );
@@ -1029,27 +1093,6 @@ void main() {
       // assert
       verify: (_) {
         verify(() => mockAnalytics.logGiftViewed(source: tSource)).called(1);
-      },
-    );
-
-    blocTest<SubscriptionBloc, SubscriptionState>(
-      'giftViewed_onboarding_logsAnalyticsAndNotifiesOnboardingBloc',
-      // arrange
-      build: () => createBloc(),
-      // act
-      act: (bloc) => bloc.add(
-        const SubscriptionEvent.giftViewed(source: PaywallSource.onboarding),
-      ),
-      // assert
-      verify: (_) {
-        verify(
-          () => mockAnalytics.logGiftViewed(source: PaywallSource.onboarding),
-        ).called(1);
-        verify(
-          () => mockOnboardingBloc.add(
-            const OnboardingEvent.stepViewed(OnboardingStep.giftModal),
-          ),
-        ).called(1);
       },
     );
 

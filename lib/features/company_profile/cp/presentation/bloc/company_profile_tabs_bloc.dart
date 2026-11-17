@@ -1,6 +1,6 @@
 import 'package:bizzie/core/interfaces/i_config_service.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
-import 'package:bizzie/features/auth/domain/usecases/get_auth_stream.dart';
+import 'package:bizzie/features/auth/domain/usecases/get_auth_stream_usecase.dart';
 import 'package:bizzie/features/auth/presentation/bloc/auth_session_reset_mixin.dart';
 import 'package:bizzie/features/company_profile/cp/presentation/bloc/company_profile_tabs_event.dart';
 import 'package:bizzie/features/company_profile/cp/presentation/bloc/company_profile_tabs_state.dart';
@@ -32,7 +32,7 @@ class CompanyProfileTabsBloc
     this._getTabLayout,
     this._setActiveTab,
     this._configService,
-    GetAuthStream getAuthStream,
+    GetAuthStreamUseCase getAuthStream,
   ) : super(const CompanyProfileTabsState.initial()) {
     on<Started>(_onStarted, transformer: restartable());
     on<TabActivated>(_onTabActivated, transformer: sequential());

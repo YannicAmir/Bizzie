@@ -10,5 +10,6 @@ abstract class UserModel with _$UserModel {
     String? displayName,
     String? photoUrl,
     @Default([]) List<String> providers,
+    @Default(false) bool isAnonymous,
   }) = _UserModel;
 }

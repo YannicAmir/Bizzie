@@ -4,13 +4,15 @@ import 'package:bizzie/features/subscription/presentation/bloc/subscription_even
 import 'package:bizzie/features/subscription/presentation/bloc/subscription_state.dart';
 import 'package:bizzie/features/subscription/domain/enums/paywall_type.dart';
 import 'package:bizzie/features/subscription/presentation/extensions/subscription_state_extensions.dart';
+import 'package:bizzie/features/subscription/presentation/utils/onboarding_paywall_reporter.dart';
+import 'package:bizzie/features/subscription/presentation/utils/paywall_helper.dart';
 import 'package:bizzie/features/user/presentation/bloc/user_bloc.dart';
 import 'package:bizzie/features/user/presentation/extensions/user_state_extensions.dart';
 import 'package:bizzie/features/subscription/presentation/widgets/subscription_loaded_content.dart';
 import 'package:bizzie/shared/widgets/error/bizzie_error.dart';
 import 'package:bizzie/shared/widgets/loading/bizzie_loader.dart';
 import 'package:bizzie/features/subscription/presentation/widgets/subscription_success_overlay.dart';
-import 'package:bizzie/app/routes/app_routes.dart';
+import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:bizzie/shared/widgets/modals/bizzie_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -63,9 +65,14 @@ class _SubscriptionPageState extends State<SubscriptionPage>
         featureName: widget.featureName,
       ),
     );
+    OnboardingPaywallReporter.paywallViewed(
+      context,
+      source: widget.source,
+      paywallType: PaywallType.regular,
+    );
 
     if (widget.onEnter != null) {
-      Future.delayed(const Duration(milliseconds: 300), () {
+      Future.delayed(AppConstants.paywallOnEnterDelay, () {
         if (mounted) widget.onEnter!();
       });
     }
@@ -96,56 +103,70 @@ class _SubscriptionPageState extends State<SubscriptionPage>
           child: Scaffold(
             body: SafeArea(
               child: BlocListener<SubscriptionBloc, SubscriptionState>(
+                listenWhen: (previous, current) =>
+                    previous.completedPurchaseType == null &&
+                    current.completedPurchaseType != null,
                 listener: (context, state) {
-                  if (state.failure != null) {
-                    BizzieSnackBar.show(
-                      context,
-                      message: state.failure!.message,
-                      type: BizzieSnackBarType.error,
-                    );
-                  }
-                  bool shouldShowOverlay = false;
-
-                  if (state.maybeMap(
-                    loaded: (s) => s.isLocalSuccessOverride,
-                    orElse: () => false,
-                  )) {
-                    shouldShowOverlay = true;
-                  }
-
-                  final isSubscribed = state.status.isSubscribed;
-                  if (isSubscribed && (_wasSubscribed == false)) {
-                    shouldShowOverlay = true;
-                  }
-                  _wasSubscribed = isSubscribed;
-
-                  if (shouldShowOverlay) {
-                    _scheduleSuccessOverlay();
-                  }
+                  final purchasedPackageType = state.completedPurchaseType;
+                  if (purchasedPackageType == null) return;
+                  OnboardingPaywallReporter.purchaseCompleted(
+                    context,
+                    source: widget.source,
+                    packageType: purchasedPackageType,
+                  );
                 },
-                child: BlocBuilder<SubscriptionBloc, SubscriptionState>(
-                  builder: (context, subscriptionState) {
-                    return subscriptionState.map(
-                      initial: (_) => BizzieLoader(
-                        message: 'Loading subscription',
-                        mascotAssetPath: mascotAsset,
-                      ),
-                      loading: (_) => BizzieLoader(
-                        message: 'Loading subscription',
-                        mascotAssetPath: mascotAsset,
-                      ),
-                      loaded: (s) => SubscriptionLoadedContent(
-                        state: s,
-                        mascotAsset: mascotAsset,
-                      ),
-                      failure: (s) => BizzieError(
-                        message: s.failure.errorMessage,
-                        onRetry: () => context.read<SubscriptionBloc>().add(
-                          const SubscriptionEvent.offeringsRequested(),
-                        ),
-                      ),
-                    );
+                child: BlocListener<SubscriptionBloc, SubscriptionState>(
+                  listener: (context, state) {
+                    if (state.failure != null) {
+                      BizzieSnackBar.show(
+                        context,
+                        message: state.failure!.message,
+                        type: BizzieSnackBarType.error,
+                      );
+                    }
+                    bool shouldShowOverlay = false;
+
+                    if (state.maybeMap(
+                      loaded: (s) => s.isLocalSuccessOverride,
+                      orElse: () => false,
+                    )) {
+                      shouldShowOverlay = true;
+                    }
+
+                    final isSubscribed = state.status.isSubscribed;
+                    if (isSubscribed && (_wasSubscribed == false)) {
+                      shouldShowOverlay = true;
+                    }
+                    _wasSubscribed = isSubscribed;
+
+                    if (shouldShowOverlay) {
+                      _scheduleSuccessOverlay();
+                    }
                   },
+                  child: BlocBuilder<SubscriptionBloc, SubscriptionState>(
+                    builder: (context, subscriptionState) {
+                      return subscriptionState.map(
+                        initial: (_) => BizzieLoader(
+                          message: 'Loading subscription',
+                          mascotAssetPath: mascotAsset,
+                        ),
+                        loading: (_) => BizzieLoader(
+                          message: 'Loading subscription',
+                          mascotAssetPath: mascotAsset,
+                        ),
+                        loaded: (s) => SubscriptionLoadedContent(
+                          state: s,
+                          mascotAsset: mascotAsset,
+                        ),
+                        failure: (s) => BizzieError(
+                          message: s.failure.errorMessage,
+                          onRetry: () => context.read<SubscriptionBloc>().add(
+                            const SubscriptionEvent.offeringsRequested(),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
                 ),
               ),
             ),
@@ -171,23 +192,15 @@ class _SubscriptionPageState extends State<SubscriptionPage>
 
     _hasShownSuccess = true;
 
-    final userState = context.read<UserBloc>().state;
-    final userName = userState.maybeMap(
-      loaded: (s) => s.user.name,
-      orElse: () => null,
-    );
-
     SubscriptionSuccessOverlay.show(
       context,
-      userName: userName ?? 'Friend',
+      userName: context.read<UserBloc>().state.displayName,
       onDismiss: () {
         if (mounted) {
           if (widget.isUpgradeFlow) {
             context.pop(true);
-          } else if (context.canPop()) {
-            context.pop();
           } else {
-            context.go(AppRoutes.home);
+            PaywallHelper.closePaywall(context);
           }
         }
       },

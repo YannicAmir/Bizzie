@@ -1,3 +1,4 @@
+import 'package:bizzie/core/enums/financial_period.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'company_revenue_event.freezed.dart';
@@ -20,11 +21,12 @@ sealed class CompanyRevenueEvent with _$CompanyRevenueEvent {
 
   const factory CompanyRevenueEvent.appForegrounded() = AppForegrounded;
 
-  const factory CompanyRevenueEvent.periodChanged({required bool isAnnual}) =
-      PeriodChanged;
+  const factory CompanyRevenueEvent.periodChanged({
+    required FinancialPeriod period,
+  }) = PeriodChanged;
 
   const factory CompanyRevenueEvent.viewAllTapped({
-    required bool isAnnual,
+    required FinancialPeriod period,
     required bool isChart,
   }) = ViewAllTapped;
 

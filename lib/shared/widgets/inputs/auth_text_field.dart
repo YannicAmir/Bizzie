@@ -14,6 +14,7 @@ class AuthTextField extends StatelessWidget {
     this.onVisibilityChanged,
     this.onSubmitted,
     this.keyboardType,
+    this.textCapitalization = TextCapitalization.none,
     this.textInputAction,
     this.validator,
     this.maxLength,
@@ -37,6 +38,7 @@ class AuthTextField extends StatelessWidget {
   final VoidCallback? onSubmitted;
   final ValueChanged<String>? onChanged;
   final TextInputType? keyboardType;
+  final TextCapitalization textCapitalization;
   final TextInputAction? textInputAction;
   final String? Function(String?)? validator;
   final int? maxLength;
@@ -71,6 +73,7 @@ class AuthTextField extends StatelessWidget {
       onChanged: onChanged,
       obscureText: isPassword && !isPasswordVisible,
       keyboardType: keyboardType,
+      textCapitalization: textCapitalization,
       textInputAction: textInputAction,
       onFieldSubmitted: onSubmitted != null ? (_) => onSubmitted!() : null,
       style: theme.textTheme.bodyLarge,

@@ -1,3 +1,4 @@
+import 'package:bizzie/core/enums/financial_period.dart';
 import 'package:bizzie/app/themes/app_theme.dart';
 import 'package:bizzie/features/company_profile/financial_statements/presentation/bloc/financial_statements_bloc.dart';
 import 'package:bizzie/features/company_profile/financial_statements/presentation/bloc/financial_statements_event.dart';
@@ -44,7 +45,7 @@ class CashFlowStatementView extends StatelessWidget {
                 title: 'For the Year Ended',
                 state: state,
                 locale: locale,
-                isAnnual: true,
+                period: FinancialPeriod.annual,
               ),
               AppConstants.mainSectionSpacing,
             ],
@@ -53,7 +54,7 @@ class CashFlowStatementView extends StatelessWidget {
                 title: 'For the Quarter Ended',
                 state: state,
                 locale: locale,
-                isAnnual: false,
+                period: FinancialPeriod.quarterly,
               ),
           ],
         );
@@ -66,22 +67,24 @@ class _CashFlowStatementSection extends StatelessWidget {
   final String title;
   final FinancialStatementsState state;
   final String locale;
-  final bool isAnnual;
+  final FinancialPeriod period;
 
   const _CashFlowStatementSection({
     required this.title,
     required this.state,
     required this.locale,
-    required this.isAnnual,
+    required this.period,
   });
 
-  List<CashFlowStatement> get _statements => isAnnual
-      ? state.annualCashFlowStatements
-      : state.quarterlyCashFlowStatements;
+  List<CashFlowStatement> get _statements => switch (period) {
+    FinancialPeriod.annual => state.annualCashFlowStatements,
+    FinancialPeriod.quarterly => state.quarterlyCashFlowStatements,
+  };
 
-  CashFlowStatement get _selectedStatement => isAnnual
-      ? state.selectedAnnualCashFlowStatement
-      : state.selectedQuarterlyCashFlowStatement;
+  CashFlowStatement get _selectedStatement => switch (period) {
+    FinancialPeriod.annual => state.selectedAnnualCashFlowStatement,
+    FinancialPeriod.quarterly => state.selectedQuarterlyCashFlowStatement,
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -97,7 +100,7 @@ class _CashFlowStatementSection extends StatelessWidget {
           onItemSelected: (item) => context.read<FinancialStatementsBloc>().add(
             FinancialStatementsEvent.cashFlowDateSelected(
               item.date,
-              isAnnual: isAnnual,
+              period: period,
             ),
           ),
           dateStringExtractor: (item) => item.date,
@@ -112,10 +115,10 @@ class _CashFlowStatementSection extends StatelessWidget {
         ),
         AppConstants.mainSectionSpacing,
         FinancialStatementsTable(
-          rows: state.cashFlowRows(locale: locale, isAnnual: isAnnual),
+          rows: state.cashFlowRows(locale: locale, period: period),
           onViewAll: () {
             context.read<FinancialStatementsBloc>().add(
-              FinancialStatementsEvent.viewAllTapped(isAnnual: isAnnual),
+              FinancialStatementsEvent.viewAllTapped(period: period),
             );
 
             if (context.read<UserBloc>().state.canViewFullHistory) {
@@ -171,7 +174,8 @@ class _CashFlowStatementChart extends StatelessWidget {
     final badgeTheme = theme.extension<BadgeThemeExtension>();
     final freeCashFlow = statement.freeCashFlow;
     final positiveValueColor = badgeTheme?.goodText ?? AppColors.successText;
-    final negativeValueColor = badgeTheme?.criticalText ?? AppColors.criticalText;
+    final negativeValueColor =
+        badgeTheme?.criticalText ?? AppColors.criticalText;
     final primary = theme.colorScheme.primary;
 
     final data = [

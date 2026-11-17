@@ -55,12 +55,12 @@ extension UserEventPatterns on UserEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( UserLoadRequested value)?  loadUser,TResult Function( UserClearRequested value)?  clear,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( UserLoadRequested value)?  loadUser,TResult Function( UserReset value)?  reset,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case UserLoadRequested() when loadUser != null:
-return loadUser(_that);case UserClearRequested() when clear != null:
-return clear(_that);case _:
+return loadUser(_that);case UserReset() when reset != null:
+return reset(_that);case _:
   return orElse();
 
 }
@@ -78,15 +78,12 @@ return clear(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( UserLoadRequested value)  loadUser,required TResult Function( UserClearRequested value)  clear,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( UserLoadRequested value)  loadUser,required TResult Function( UserReset value)  reset,}){
 final _that = this;
 switch (_that) {
 case UserLoadRequested():
-return loadUser(_that);case UserClearRequested():
-return clear(_that);case _:
-  throw StateError('Unexpected subclass');
-
-}
+return loadUser(_that);case UserReset():
+return reset(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -100,12 +97,12 @@ return clear(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( UserLoadRequested value)?  loadUser,TResult? Function( UserClearRequested value)?  clear,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( UserLoadRequested value)?  loadUser,TResult? Function( UserReset value)?  reset,}){
 final _that = this;
 switch (_that) {
 case UserLoadRequested() when loadUser != null:
-return loadUser(_that);case UserClearRequested() when clear != null:
-return clear(_that);case _:
+return loadUser(_that);case UserReset() when reset != null:
+return reset(_that);case _:
   return null;
 
 }
@@ -122,11 +119,11 @@ return clear(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String uid,  bool silent)?  loadUser,TResult Function()?  clear,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String uid,  bool silent)?  loadUser,TResult Function()?  reset,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case UserLoadRequested() when loadUser != null:
-return loadUser(_that.uid,_that.silent);case UserClearRequested() when clear != null:
-return clear();case _:
+return loadUser(_that.uid,_that.silent);case UserReset() when reset != null:
+return reset();case _:
   return orElse();
 
 }
@@ -144,14 +141,11 @@ return clear();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String uid,  bool silent)  loadUser,required TResult Function()  clear,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String uid,  bool silent)  loadUser,required TResult Function()  reset,}) {final _that = this;
 switch (_that) {
 case UserLoadRequested():
-return loadUser(_that.uid,_that.silent);case UserClearRequested():
-return clear();case _:
-  throw StateError('Unexpected subclass');
-
-}
+return loadUser(_that.uid,_that.silent);case UserReset():
+return reset();}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -165,11 +159,11 @@ return clear();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String uid,  bool silent)?  loadUser,TResult? Function()?  clear,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String uid,  bool silent)?  loadUser,TResult? Function()?  reset,}) {final _that = this;
 switch (_that) {
 case UserLoadRequested() when loadUser != null:
-return loadUser(_that.uid,_that.silent);case UserClearRequested() when clear != null:
-return clear();case _:
+return loadUser(_that.uid,_that.silent);case UserReset() when reset != null:
+return reset();case _:
   return null;
 
 }
@@ -248,8 +242,8 @@ as bool,
 /// @nodoc
 
 
-class UserClearRequested implements UserEvent {
-  const UserClearRequested();
+class UserReset implements UserEvent {
+  const UserReset();
   
 
 
@@ -259,7 +253,7 @@ class UserClearRequested implements UserEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is UserClearRequested);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is UserReset);
 }
 
 
@@ -268,7 +262,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'UserEvent.clear()';
+  return 'UserEvent.reset()';
 }
 
 

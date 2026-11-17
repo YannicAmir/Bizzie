@@ -1,6 +1,6 @@
 import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:bizzie/core/error/failures.dart';
-import 'package:bizzie/features/auth/domain/usecases/get_auth_stream.dart';
+import 'package:bizzie/features/auth/domain/usecases/get_auth_stream_usecase.dart';
 import 'package:bizzie/features/company_profile/security/domain/models/historical_price_eod.dart';
 import 'package:bizzie/features/company_profile/security/domain/usecases/get_historical_eod_prices_use_case.dart';
 import 'package:bizzie/features/company_profile/security/presentation/bloc/historical_price_eod/historical_price_eod_bloc.dart';
@@ -21,7 +21,7 @@ class MockMarketHoursFreshnessService extends Mock
 
 class MockTimeProvider extends Mock implements ITimeProvider {}
 
-class MockGetAuthStream extends Mock implements GetAuthStream {}
+class MockGetAuthStreamUseCase extends Mock implements GetAuthStreamUseCase {}
 
 MockTimeProvider stubbedTimeProvider() {
   final mock = MockTimeProvider();
@@ -29,8 +29,8 @@ MockTimeProvider stubbedTimeProvider() {
   return mock;
 }
 
-MockGetAuthStream stubbedGetAuthStream() {
-  final mock = MockGetAuthStream();
+MockGetAuthStreamUseCase stubbedGetAuthStream() {
+  final mock = MockGetAuthStreamUseCase();
   when(() => mock()).thenAnswer((_) => const Stream.empty());
   return mock;
 }

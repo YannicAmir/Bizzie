@@ -1,3 +1,4 @@
+import 'package:bizzie/core/enums/financial_period.dart';
 import 'package:bizzie/features/company_profile/business/domain/models/business_profile.dart';
 import 'package:bizzie/features/company_profile/business/presentation/utils/business_profile_extensions.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -26,7 +27,9 @@ void main() {
         final domesticProfile = profile;
 
         // act
-        final result = domesticProfile.getSecFilingsModalTitle(true);
+        final result = domesticProfile.getSecFilingsModalTitle(
+          FinancialPeriod.annual,
+        );
 
         // assert
         expect(result, 'All 10-K Filings');
@@ -37,7 +40,9 @@ void main() {
         final domesticProfile = profile;
 
         // act
-        final result = domesticProfile.getSecFilingsModalTitle(false);
+        final result = domesticProfile.getSecFilingsModalTitle(
+          FinancialPeriod.quarterly,
+        );
 
         // assert
         expect(result, 'All 10-Q Filings');
@@ -48,7 +53,9 @@ void main() {
         final foreignProfile = profile.copyWith(isForeignCompany: true);
 
         // act
-        final result = foreignProfile.getSecFilingsModalTitle(true);
+        final result = foreignProfile.getSecFilingsModalTitle(
+          FinancialPeriod.annual,
+        );
 
         // assert
         expect(result, 'All Annual Filings');
@@ -61,7 +68,9 @@ void main() {
           final foreignProfile = profile.copyWith(isForeignCompany: true);
 
           // act
-          final result = foreignProfile.getSecFilingsModalTitle(false);
+          final result = foreignProfile.getSecFilingsModalTitle(
+            FinancialPeriod.quarterly,
+          );
 
           // assert
           expect(result, 'All Quarterly Filings');

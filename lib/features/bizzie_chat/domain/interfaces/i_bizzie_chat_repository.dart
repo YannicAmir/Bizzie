@@ -27,7 +27,9 @@ abstract class IBizzieChatRepository {
   });
 
   /// Real-time stream of chat sessions for [params.uid] scoped to [params.ticker], ordered newest first.
-  Stream<Either<Failure, List<ChatSession>>> getSessionsStream(GetSessionsParams params);
+  Stream<Either<Failure, List<ChatSession>>> getSessionsStream(
+    GetSessionsParams params,
+  );
 
   /// Real-time stream of all messages for a given [sessionId], ordered oldest first.
   Stream<Either<Failure, List<ChatMessage>>> getMessagesStream(

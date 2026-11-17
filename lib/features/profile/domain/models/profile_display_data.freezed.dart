@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$ProfileDisplayData {
 
- String get displayName; String get sectorName; String get sectorDescription; DateTime get joinedDate; double? get sectorPe; double? get sectorAverageChange; DateTime? get marketDataDate;
+ String get displayName; String get sectorName; String get sectorDescription; DateTime get joinedDate; double? get sectorPe; double? get sectorAverageChange; DateTime? get marketDataDate; bool get isGuest;
 /// Create a copy of ProfileDisplayData
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $ProfileDisplayDataCopyWith<ProfileDisplayData> get copyWith => _$ProfileDisplay
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProfileDisplayData&&(identical(other.displayName, displayName) || other.displayName == displayName)&&(identical(other.sectorName, sectorName) || other.sectorName == sectorName)&&(identical(other.sectorDescription, sectorDescription) || other.sectorDescription == sectorDescription)&&(identical(other.joinedDate, joinedDate) || other.joinedDate == joinedDate)&&(identical(other.sectorPe, sectorPe) || other.sectorPe == sectorPe)&&(identical(other.sectorAverageChange, sectorAverageChange) || other.sectorAverageChange == sectorAverageChange)&&(identical(other.marketDataDate, marketDataDate) || other.marketDataDate == marketDataDate));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProfileDisplayData&&(identical(other.displayName, displayName) || other.displayName == displayName)&&(identical(other.sectorName, sectorName) || other.sectorName == sectorName)&&(identical(other.sectorDescription, sectorDescription) || other.sectorDescription == sectorDescription)&&(identical(other.joinedDate, joinedDate) || other.joinedDate == joinedDate)&&(identical(other.sectorPe, sectorPe) || other.sectorPe == sectorPe)&&(identical(other.sectorAverageChange, sectorAverageChange) || other.sectorAverageChange == sectorAverageChange)&&(identical(other.marketDataDate, marketDataDate) || other.marketDataDate == marketDataDate)&&(identical(other.isGuest, isGuest) || other.isGuest == isGuest));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,displayName,sectorName,sectorDescription,joinedDate,sectorPe,sectorAverageChange,marketDataDate);
+int get hashCode => Object.hash(runtimeType,displayName,sectorName,sectorDescription,joinedDate,sectorPe,sectorAverageChange,marketDataDate,isGuest);
 
 @override
 String toString() {
-  return 'ProfileDisplayData(displayName: $displayName, sectorName: $sectorName, sectorDescription: $sectorDescription, joinedDate: $joinedDate, sectorPe: $sectorPe, sectorAverageChange: $sectorAverageChange, marketDataDate: $marketDataDate)';
+  return 'ProfileDisplayData(displayName: $displayName, sectorName: $sectorName, sectorDescription: $sectorDescription, joinedDate: $joinedDate, sectorPe: $sectorPe, sectorAverageChange: $sectorAverageChange, marketDataDate: $marketDataDate, isGuest: $isGuest)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $ProfileDisplayDataCopyWith<$Res>  {
   factory $ProfileDisplayDataCopyWith(ProfileDisplayData value, $Res Function(ProfileDisplayData) _then) = _$ProfileDisplayDataCopyWithImpl;
 @useResult
 $Res call({
- String displayName, String sectorName, String sectorDescription, DateTime joinedDate, double? sectorPe, double? sectorAverageChange, DateTime? marketDataDate
+ String displayName, String sectorName, String sectorDescription, DateTime joinedDate, double? sectorPe, double? sectorAverageChange, DateTime? marketDataDate, bool isGuest
 });
 
 
@@ -62,7 +62,7 @@ class _$ProfileDisplayDataCopyWithImpl<$Res>
 
 /// Create a copy of ProfileDisplayData
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? displayName = null,Object? sectorName = null,Object? sectorDescription = null,Object? joinedDate = null,Object? sectorPe = freezed,Object? sectorAverageChange = freezed,Object? marketDataDate = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? displayName = null,Object? sectorName = null,Object? sectorDescription = null,Object? joinedDate = null,Object? sectorPe = freezed,Object? sectorAverageChange = freezed,Object? marketDataDate = freezed,Object? isGuest = null,}) {
   return _then(_self.copyWith(
 displayName: null == displayName ? _self.displayName : displayName // ignore: cast_nullable_to_non_nullable
 as String,sectorName: null == sectorName ? _self.sectorName : sectorName // ignore: cast_nullable_to_non_nullable
@@ -71,7 +71,8 @@ as String,joinedDate: null == joinedDate ? _self.joinedDate : joinedDate // igno
 as DateTime,sectorPe: freezed == sectorPe ? _self.sectorPe : sectorPe // ignore: cast_nullable_to_non_nullable
 as double?,sectorAverageChange: freezed == sectorAverageChange ? _self.sectorAverageChange : sectorAverageChange // ignore: cast_nullable_to_non_nullable
 as double?,marketDataDate: freezed == marketDataDate ? _self.marketDataDate : marketDataDate // ignore: cast_nullable_to_non_nullable
-as DateTime?,
+as DateTime?,isGuest: null == isGuest ? _self.isGuest : isGuest // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 
@@ -156,10 +157,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String displayName,  String sectorName,  String sectorDescription,  DateTime joinedDate,  double? sectorPe,  double? sectorAverageChange,  DateTime? marketDataDate)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String displayName,  String sectorName,  String sectorDescription,  DateTime joinedDate,  double? sectorPe,  double? sectorAverageChange,  DateTime? marketDataDate,  bool isGuest)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ProfileDisplayData() when $default != null:
-return $default(_that.displayName,_that.sectorName,_that.sectorDescription,_that.joinedDate,_that.sectorPe,_that.sectorAverageChange,_that.marketDataDate);case _:
+return $default(_that.displayName,_that.sectorName,_that.sectorDescription,_that.joinedDate,_that.sectorPe,_that.sectorAverageChange,_that.marketDataDate,_that.isGuest);case _:
   return orElse();
 
 }
@@ -177,10 +178,10 @@ return $default(_that.displayName,_that.sectorName,_that.sectorDescription,_that
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String displayName,  String sectorName,  String sectorDescription,  DateTime joinedDate,  double? sectorPe,  double? sectorAverageChange,  DateTime? marketDataDate)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String displayName,  String sectorName,  String sectorDescription,  DateTime joinedDate,  double? sectorPe,  double? sectorAverageChange,  DateTime? marketDataDate,  bool isGuest)  $default,) {final _that = this;
 switch (_that) {
 case _ProfileDisplayData():
-return $default(_that.displayName,_that.sectorName,_that.sectorDescription,_that.joinedDate,_that.sectorPe,_that.sectorAverageChange,_that.marketDataDate);case _:
+return $default(_that.displayName,_that.sectorName,_that.sectorDescription,_that.joinedDate,_that.sectorPe,_that.sectorAverageChange,_that.marketDataDate,_that.isGuest);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -197,10 +198,10 @@ return $default(_that.displayName,_that.sectorName,_that.sectorDescription,_that
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String displayName,  String sectorName,  String sectorDescription,  DateTime joinedDate,  double? sectorPe,  double? sectorAverageChange,  DateTime? marketDataDate)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String displayName,  String sectorName,  String sectorDescription,  DateTime joinedDate,  double? sectorPe,  double? sectorAverageChange,  DateTime? marketDataDate,  bool isGuest)?  $default,) {final _that = this;
 switch (_that) {
 case _ProfileDisplayData() when $default != null:
-return $default(_that.displayName,_that.sectorName,_that.sectorDescription,_that.joinedDate,_that.sectorPe,_that.sectorAverageChange,_that.marketDataDate);case _:
+return $default(_that.displayName,_that.sectorName,_that.sectorDescription,_that.joinedDate,_that.sectorPe,_that.sectorAverageChange,_that.marketDataDate,_that.isGuest);case _:
   return null;
 
 }
@@ -212,7 +213,7 @@ return $default(_that.displayName,_that.sectorName,_that.sectorDescription,_that
 
 
 class _ProfileDisplayData implements ProfileDisplayData {
-  const _ProfileDisplayData({required this.displayName, required this.sectorName, required this.sectorDescription, required this.joinedDate, required this.sectorPe, required this.sectorAverageChange, required this.marketDataDate});
+  const _ProfileDisplayData({required this.displayName, required this.sectorName, required this.sectorDescription, required this.joinedDate, required this.sectorPe, required this.sectorAverageChange, required this.marketDataDate, this.isGuest = false});
   
 
 @override final  String displayName;
@@ -222,6 +223,7 @@ class _ProfileDisplayData implements ProfileDisplayData {
 @override final  double? sectorPe;
 @override final  double? sectorAverageChange;
 @override final  DateTime? marketDataDate;
+@override@JsonKey() final  bool isGuest;
 
 /// Create a copy of ProfileDisplayData
 /// with the given fields replaced by the non-null parameter values.
@@ -233,16 +235,16 @@ _$ProfileDisplayDataCopyWith<_ProfileDisplayData> get copyWith => __$ProfileDisp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ProfileDisplayData&&(identical(other.displayName, displayName) || other.displayName == displayName)&&(identical(other.sectorName, sectorName) || other.sectorName == sectorName)&&(identical(other.sectorDescription, sectorDescription) || other.sectorDescription == sectorDescription)&&(identical(other.joinedDate, joinedDate) || other.joinedDate == joinedDate)&&(identical(other.sectorPe, sectorPe) || other.sectorPe == sectorPe)&&(identical(other.sectorAverageChange, sectorAverageChange) || other.sectorAverageChange == sectorAverageChange)&&(identical(other.marketDataDate, marketDataDate) || other.marketDataDate == marketDataDate));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ProfileDisplayData&&(identical(other.displayName, displayName) || other.displayName == displayName)&&(identical(other.sectorName, sectorName) || other.sectorName == sectorName)&&(identical(other.sectorDescription, sectorDescription) || other.sectorDescription == sectorDescription)&&(identical(other.joinedDate, joinedDate) || other.joinedDate == joinedDate)&&(identical(other.sectorPe, sectorPe) || other.sectorPe == sectorPe)&&(identical(other.sectorAverageChange, sectorAverageChange) || other.sectorAverageChange == sectorAverageChange)&&(identical(other.marketDataDate, marketDataDate) || other.marketDataDate == marketDataDate)&&(identical(other.isGuest, isGuest) || other.isGuest == isGuest));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,displayName,sectorName,sectorDescription,joinedDate,sectorPe,sectorAverageChange,marketDataDate);
+int get hashCode => Object.hash(runtimeType,displayName,sectorName,sectorDescription,joinedDate,sectorPe,sectorAverageChange,marketDataDate,isGuest);
 
 @override
 String toString() {
-  return 'ProfileDisplayData(displayName: $displayName, sectorName: $sectorName, sectorDescription: $sectorDescription, joinedDate: $joinedDate, sectorPe: $sectorPe, sectorAverageChange: $sectorAverageChange, marketDataDate: $marketDataDate)';
+  return 'ProfileDisplayData(displayName: $displayName, sectorName: $sectorName, sectorDescription: $sectorDescription, joinedDate: $joinedDate, sectorPe: $sectorPe, sectorAverageChange: $sectorAverageChange, marketDataDate: $marketDataDate, isGuest: $isGuest)';
 }
 
 
@@ -253,7 +255,7 @@ abstract mixin class _$ProfileDisplayDataCopyWith<$Res> implements $ProfileDispl
   factory _$ProfileDisplayDataCopyWith(_ProfileDisplayData value, $Res Function(_ProfileDisplayData) _then) = __$ProfileDisplayDataCopyWithImpl;
 @override @useResult
 $Res call({
- String displayName, String sectorName, String sectorDescription, DateTime joinedDate, double? sectorPe, double? sectorAverageChange, DateTime? marketDataDate
+ String displayName, String sectorName, String sectorDescription, DateTime joinedDate, double? sectorPe, double? sectorAverageChange, DateTime? marketDataDate, bool isGuest
 });
 
 
@@ -270,7 +272,7 @@ class __$ProfileDisplayDataCopyWithImpl<$Res>
 
 /// Create a copy of ProfileDisplayData
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? displayName = null,Object? sectorName = null,Object? sectorDescription = null,Object? joinedDate = null,Object? sectorPe = freezed,Object? sectorAverageChange = freezed,Object? marketDataDate = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? displayName = null,Object? sectorName = null,Object? sectorDescription = null,Object? joinedDate = null,Object? sectorPe = freezed,Object? sectorAverageChange = freezed,Object? marketDataDate = freezed,Object? isGuest = null,}) {
   return _then(_ProfileDisplayData(
 displayName: null == displayName ? _self.displayName : displayName // ignore: cast_nullable_to_non_nullable
 as String,sectorName: null == sectorName ? _self.sectorName : sectorName // ignore: cast_nullable_to_non_nullable
@@ -279,7 +281,8 @@ as String,joinedDate: null == joinedDate ? _self.joinedDate : joinedDate // igno
 as DateTime,sectorPe: freezed == sectorPe ? _self.sectorPe : sectorPe // ignore: cast_nullable_to_non_nullable
 as double?,sectorAverageChange: freezed == sectorAverageChange ? _self.sectorAverageChange : sectorAverageChange // ignore: cast_nullable_to_non_nullable
 as double?,marketDataDate: freezed == marketDataDate ? _self.marketDataDate : marketDataDate // ignore: cast_nullable_to_non_nullable
-as DateTime?,
+as DateTime?,isGuest: null == isGuest ? _self.isGuest : isGuest // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 

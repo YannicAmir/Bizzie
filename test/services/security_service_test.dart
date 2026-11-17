@@ -103,6 +103,21 @@ void main() {
         expect(securityService.isThreatDetected, isTrue);
         verify(() => mockAuthRepository.signOut()).called(1);
       });
+
+      test(
+        'handleThreat_prodThreat_signsOutWithoutDeletingAnonymousUser',
+        () async {
+          // arrange
+          const threat = SecurityConstants.simulator;
+
+          // act
+          await securityService.handleThreat(threat);
+
+          // assert
+          verify(() => mockAuthRepository.signOut()).called(1);
+          verifyNever(() => mockAuthRepository.deleteAnonymousUserAndSignOut());
+        },
+      );
     });
   });
 }

@@ -51,10 +51,7 @@ class ReportsTracker {
     try {
       await _analytics.logEvent(
         name: name,
-        parameters: {
-          ...?parameters,
-          _kParamScreenName: _kScreenName,
-        },
+        parameters: {...?parameters, _kParamScreenName: _kScreenName},
       );
     } catch (e, stack) {
       _logger.severe('Failed to log event: $name', e, stack);

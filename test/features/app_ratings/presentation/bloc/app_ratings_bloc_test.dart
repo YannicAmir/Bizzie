@@ -7,10 +7,9 @@ import 'package:bizzie/features/app_ratings/presentation/analytics/app_ratings_t
 import 'package:bizzie/features/app_ratings/presentation/bloc/app_ratings_bloc.dart';
 import 'package:bizzie/features/auth/domain/models/user_model.dart'
     as auth_user;
-import 'package:bizzie/features/auth/domain/usecases/get_current_user.dart';
-import 'package:bizzie/features/user/domain/enums/investing_experience.dart';
-import 'package:bizzie/features/user/domain/models/user_model.dart'
-    as user_model;
+import 'package:bizzie/features/auth/domain/usecases/get_current_user_usecase.dart';
+import 'package:bizzie/core/enums/investing_experience.dart';
+import 'package:bizzie/core/domain/models/user_model.dart' as user_model;
 import 'package:bizzie/features/user/domain/usecases/get_user_usecase.dart';
 import 'package:bizzie/features/company_profile/shared/domain/models/company_profile.dart';
 import 'package:bloc_test/bloc_test.dart';
@@ -25,7 +24,7 @@ class MockInAppReviewService extends Mock implements IInAppReviewService {}
 
 class MockAppRatingsTracker extends Mock implements AppRatingsTracker {}
 
-class MockGetCurrentUser extends Mock implements GetCurrentUser {}
+class MockGetCurrentUserUseCase extends Mock implements GetCurrentUserUseCase {}
 
 class MockGetUserUseCase extends Mock implements GetUserUseCase {}
 
@@ -57,7 +56,7 @@ void main() {
   late MockTrackRatingConditionsUseCase mockUseCase;
   late MockInAppReviewService mockReviewService;
   late MockAppRatingsTracker mockTracker;
-  late MockGetCurrentUser mockGetCurrentUser;
+  late MockGetCurrentUserUseCase mockGetCurrentUser;
   late MockGetUserUseCase mockGetUserUseCase;
   late MockConfigService mockConfigService;
   late AppRatingsBloc bloc;
@@ -89,7 +88,7 @@ void main() {
     mockUseCase = MockTrackRatingConditionsUseCase();
     mockReviewService = MockInAppReviewService();
     mockTracker = MockAppRatingsTracker();
-    mockGetCurrentUser = MockGetCurrentUser();
+    mockGetCurrentUser = MockGetCurrentUserUseCase();
     mockGetUserUseCase = MockGetUserUseCase();
     mockConfigService = MockConfigService();
 

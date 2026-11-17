@@ -7,7 +7,7 @@ import 'package:bizzie/core/interfaces/i_config_service.dart';
 import 'package:bizzie/core/interfaces/i_time_provider.dart';
 import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
-import 'package:bizzie/features/auth/domain/usecases/get_auth_stream.dart';
+import 'package:bizzie/features/auth/domain/usecases/get_auth_stream_usecase.dart';
 import 'package:bizzie/features/auth/presentation/bloc/auth_session_reset_mixin.dart';
 import 'package:bizzie/features/company_profile/shared/domain/models/chart_data_point.dart';
 import 'package:bizzie/features/company_profile/shared/domain/models/financial_data_point.dart';
@@ -47,7 +47,7 @@ class CompanyPeRatioBloc extends Bloc<CompanyPeRatioEvent, CompanyPeRatioState>
     this._analytics,
     this._metricsService,
     this._timeProvider,
-    GetAuthStream getAuthStream,
+    GetAuthStreamUseCase getAuthStream,
   ) : super(const CompanyPeRatioState.initial()) {
     on<LoadRequested>(_onLoadRequested, transformer: restartable());
     on<StalenessCheckRequested>(

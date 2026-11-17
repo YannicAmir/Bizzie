@@ -1,3 +1,4 @@
+import 'package:bizzie/core/enums/financial_period.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'company_segments_event.freezed.dart';
@@ -20,12 +21,13 @@ sealed class CompanySegmentsEvent with _$CompanySegmentsEvent {
 
   const factory CompanySegmentsEvent.appForegrounded() = AppForegrounded;
 
-  const factory CompanySegmentsEvent.periodChanged({required bool isAnnual}) =
-      PeriodChanged;
+  const factory CompanySegmentsEvent.periodChanged({
+    required FinancialPeriod period,
+  }) = PeriodChanged;
 
   const factory CompanySegmentsEvent.periodKeySelected(
     String key, {
-    required bool isAnnual,
+    required FinancialPeriod period,
   }) = PeriodKeySelected;
 
   const factory CompanySegmentsEvent.reset() = Reset;

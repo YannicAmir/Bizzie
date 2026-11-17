@@ -1,6 +1,6 @@
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
-import 'package:bizzie/features/auth/domain/usecases/get_auth_stream.dart';
+import 'package:bizzie/features/auth/domain/usecases/get_auth_stream_usecase.dart';
 import 'package:bizzie/features/auth/presentation/bloc/auth_session_reset_mixin.dart';
 import 'package:bizzie/features/company_profile/security/domain/models/security_quote.dart';
 import 'package:bizzie/features/company_profile/security/domain/usecases/watch_security_quote_usecase.dart';
@@ -18,8 +18,10 @@ class SecurityQuoteBloc extends Bloc<SecurityQuoteEvent, SecurityQuoteState>
     with AuthSessionResetMixin<SecurityQuoteEvent, SecurityQuoteState> {
   final WatchSecurityQuoteUseCase _watchSecurityQuote;
 
-  SecurityQuoteBloc(this._watchSecurityQuote, GetAuthStream getAuthStream)
-    : super(const SecurityQuoteState.initial()) {
+  SecurityQuoteBloc(
+    this._watchSecurityQuote,
+    GetAuthStreamUseCase getAuthStream,
+  ) : super(const SecurityQuoteState.initial()) {
     on<SecurityQuoteEvent>(
       (event, emit) => event.map(
         loadRequested: (e) => _onLoadRequested(e, emit),

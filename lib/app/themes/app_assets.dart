@@ -25,8 +25,6 @@ class AppAssets {
       'assets/images/onboarding/bizzie_mascot_waving_hello.png';
   static const String onboardingBizzieMascotAskName =
       'assets/images/onboarding/bizzie_mascot_ask_name.png';
-  static const String onboardingBizzieMascotWelcome =
-      'assets/images/onboarding/bizzie_mascot_welcome.png';
   static const String onboardingBizzieMascotInvestingExperience =
       'assets/images/onboarding/bizzie_mascot_investing_experience.png';
   static const String onboardingBizzieMascotFoundCompanies =

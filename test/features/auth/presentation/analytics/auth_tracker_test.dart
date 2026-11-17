@@ -1,3 +1,4 @@
+import 'package:bizzie/core/enums/guest_gate_trigger.dart';
 import 'package:bizzie/core/interfaces/i_analytics_service.dart';
 import 'package:bizzie/features/auth/domain/enums/auth_method.dart';
 import 'package:bizzie/features/auth/domain/enums/auth_source.dart';
@@ -282,6 +283,7 @@ void main() {
             AuthSource.sessionExpired => 'session_expired',
             AuthSource.forgotPassword => 'forgot_password',
             AuthSource.createAccount => 'create_account',
+            AuthSource.guestGate => 'guest_gate',
           };
 
           // act
@@ -299,6 +301,121 @@ void main() {
             ),
           ).called(1);
         }
+      });
+    });
+
+    group('Guest Gate Tracking', () {
+      test('setAccountType_guest_setsGuestUserProperty', () async {
+        // act
+        await sut.setAccountType(isGuest: true);
+
+        // assert
+        verify(
+          () => mockAnalyticsService.setUserProperty(
+            name: 'account_type',
+            value: 'guest',
+          ),
+        ).called(1);
+      });
+
+      test('setAccountType_registered_setsRegisteredUserProperty', () async {
+        // act
+        await sut.setAccountType(isGuest: false);
+
+        // assert
+        verify(
+          () => mockAnalyticsService.setUserProperty(
+            name: 'account_type',
+            value: 'registered',
+          ),
+        ).called(1);
+      });
+
+      test('logGuestGateShown_allTriggers_mapsSnakeCaseTrigger', () async {
+        for (final trigger in GuestGateTrigger.values) {
+          // arrange
+          final expectedTrigger = switch (trigger) {
+            GuestGateTrigger.subscribe => 'subscribe',
+            GuestGateTrigger.restore => 'restore',
+            GuestGateTrigger.settings => 'settings',
+          };
+
+          // act
+          await sut.logGuestGateShown(trigger: trigger);
+
+          // assert
+          verify(
+            () => mockAnalyticsService.logEvent(
+              name: 'guest_gate_shown',
+              parameters: {
+                'trigger': expectedTrigger,
+                'screen_name': kScreenName,
+              },
+            ),
+          ).called(1);
+        }
+      });
+
+      test(
+        'logGuestAccountLinked_withTrigger_logsMethodTriggerAndFallback',
+        () async {
+          // act
+          await sut.logGuestAccountLinked(
+            method: AuthMethod.google,
+            trigger: GuestGateTrigger.subscribe,
+            fallbackSignIn: true,
+          );
+
+          // assert
+          verify(
+            () => mockAnalyticsService.logEvent(
+              name: 'guest_account_linked',
+              parameters: {
+                'method': 'google',
+                'trigger': 'subscribe',
+                'fallback_sign_in': true,
+                'screen_name': kScreenName,
+              },
+            ),
+          ).called(1);
+        },
+      );
+
+      test('logGuestAccountLinked_noTrigger_omitsTriggerParam', () async {
+        // act
+        await sut.logGuestAccountLinked(
+          method: AuthMethod.email,
+          trigger: null,
+          fallbackSignIn: false,
+        );
+
+        // assert
+        verify(
+          () => mockAnalyticsService.logEvent(
+            name: 'guest_account_linked',
+            parameters: {
+              'method': 'email',
+              'fallback_sign_in': false,
+              'screen_name': kScreenName,
+            },
+          ),
+        ).called(1);
+      });
+
+      test('logGuestGateShown_serviceThrows_doesNotRethrow', () async {
+        // arrange
+        when(
+          () => mockAnalyticsService.logEvent(
+            name: any(named: 'name'),
+            parameters: any(named: 'parameters'),
+          ),
+        ).thenThrow(Exception('analytics down'));
+
+        // act / assert
+        await expectLater(
+          sut.logGuestGateShown(trigger: GuestGateTrigger.restore),
+          completes,
+        );
       });
     });
   });

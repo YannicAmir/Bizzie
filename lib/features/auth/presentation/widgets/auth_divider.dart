@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class AuthDivider extends StatelessWidget {
-  const AuthDivider({super.key, this.text = 'or continue with'});
+  const AuthDivider({super.key, this.text = 'or'});
 
   final String text;
 

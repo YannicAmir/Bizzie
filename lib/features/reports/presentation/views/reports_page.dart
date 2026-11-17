@@ -6,6 +6,7 @@ import 'package:bizzie/features/reports/presentation/bloc/reports_bloc.dart';
 import 'package:bizzie/features/reports/presentation/bloc/reports_event.dart';
 import 'package:bizzie/features/reports/presentation/bloc/reports_state.dart';
 import 'package:bizzie/features/reports/presentation/extensions/reports_state_extensions.dart';
+import 'package:bizzie/features/reports/presentation/utils/reports_badge_formatter.dart';
 import 'package:bizzie/features/reports/presentation/utils/reports_load_status.dart';
 import 'package:bizzie/features/reports/presentation/widgets/market_tab_body.dart';
 import 'package:bizzie/features/reports/presentation/widgets/reports_status_views.dart';
@@ -20,7 +21,6 @@ import 'package:go_router/go_router.dart';
 const int _marketTabIndex = 0;
 const int _reportsTabIndex = 1;
 
-const int _maxReportsBadgeCount = 9;
 const double _reportsBadgeSpacing = 8;
 
 class ReportsPage extends StatefulWidget {
@@ -47,9 +47,7 @@ class _ReportsPageState extends State<ReportsPage>
     _tabController = TabController(
       length: 2,
       vsync: this,
-      initialIndex: _wantsReportsTab()
-          ? _reportsTabIndex
-          : _marketTabIndex,
+      initialIndex: _wantsReportsTab() ? _reportsTabIndex : _marketTabIndex,
     );
     _tabController.addListener(_onTabChanged);
     context.read<MarketNewsBloc>().add(const MarketNewsEvent.loadRequested());
@@ -225,9 +223,7 @@ class _ReportsTabLabel extends StatelessWidget {
               const SizedBox(width: _reportsBadgeSpacing),
               Badge(
                 label: Text(
-                  unreadCount > _maxReportsBadgeCount
-                      ? '9+'
-                      : unreadCount.toString(),
+                  ReportsBadgeFormatter.formatUnreadCount(unreadCount),
                 ),
               ),
             ],

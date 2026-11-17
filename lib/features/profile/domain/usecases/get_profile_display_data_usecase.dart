@@ -1,3 +1,4 @@
+import 'package:bizzie/core/domain/models/user_model.dart';
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:bizzie/core/usecase/usecase.dart';
@@ -8,17 +9,12 @@ import 'package:bizzie/features/market/domain/entities/sector_pe.dart';
 import 'package:bizzie/features/market/domain/entities/sector_performance.dart';
 import 'package:bizzie/features/market/domain/interfaces/i_market_repository.dart';
 import 'package:bizzie/features/profile/domain/models/profile_display_data.dart';
-import 'package:bizzie/features/user/domain/interfaces/user_repository.dart';
+import 'package:bizzie/features/user/domain/interfaces/i_user_repository.dart';
 import 'package:bizzie/core/interfaces/i_sector_service.dart';
 import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
 
 final _logger = BizzieLogger('GetProfileDisplayDataUseCase');
-
-typedef MarketDataRecord = ({
-  List<SectorPe> peList,
-  List<SectorPerformance> performanceList,
-});
 
 @lazySingleton
 class GetProfileDisplayDataUseCase
@@ -45,64 +41,73 @@ class GetProfileDisplayDataUseCase
       return const Left(CacheFailure('User not found in cache'));
     }
 
-    final userResult = await _userRepository.getUser(currentUser.id);
-    return userResult.fold(
-      (failure) {
-        _logger.severe('Failed to fetch user model', failure);
-        return Left(failure);
+    final (userRes, peRes, perfRes) = await (
+      _userRepository.getUser(currentUser.id),
+      _marketRepository.getSectorPeList(),
+      _marketRepository.getSectorPerformanceList(),
+    ).wait;
+
+    return _aggregateData((
+      userRes,
+      peRes,
+      perfRes,
+    ), isGuest: currentUser.isAnonymous);
+  }
+
+  Either<Failure, ProfileDisplayData> _aggregateData(
+    (
+      Either<Failure, UserModel>,
+      Either<Failure, List<SectorPe>>,
+      Either<Failure, List<SectorPerformance>>,
+    )
+    results, {
+    required bool isGuest,
+  }) {
+    final (userRes, peRes, perfRes) = results;
+
+    return userRes.fold(
+      (f) {
+        _logger.severe('Failed to fetch user model', f);
+        return Left(f);
       },
-      (userModel) async {
+      (userModel) {
+        final peList = peRes.fold((f) {
+          _logger.warning('Failed to fetch PE list (using default)', f);
+          return const <SectorPe>[];
+        }, (list) => list);
+        final performanceList = perfRes.fold((f) {
+          _logger.warning(
+            'Failed to fetch performance list (using default)',
+            f,
+          );
+          return const <SectorPerformance>[];
+        }, (list) => list);
+
         final sectorName = userModel.favoriteSector;
         final sectorApiName = _sectorService.getSectorApiName(sectorName);
 
-        final results = await (
-          _marketRepository.getSectorPeList(),
-          _marketRepository.getSectorPerformanceList(),
-        ).wait;
+        final peDate = peList.getDateForSector(sectorApiName);
+        final perfDate = performanceList.getDateForSector(sectorApiName);
+        final marketDateStr = peDate ?? perfDate;
 
-        return _aggregateSectorData(results).map((data) {
-          _logger.info('Successfully aggregated all data');
-
-          final peDate = data.peList.getDateForSector(sectorApiName);
-          final perfDate = data.performanceList.getDateForSector(sectorApiName);
-          final marketDateStr = peDate ?? perfDate;
-
-          final displayName = _sectorService.getSectorDisplayName(sectorName);
-          final description = _sectorService.getSectorDescription(sectorName);
-
-          return ProfileDisplayData(
+        _logger.info('Successfully aggregated all data');
+        return Right(
+          ProfileDisplayData(
             displayName: userModel.name,
-            sectorName: displayName,
-            sectorDescription: description,
+            sectorName: _sectorService.getSectorDisplayName(sectorName),
+            sectorDescription: _sectorService.getSectorDescription(sectorName),
             joinedDate: userModel.createdAt,
-            sectorPe: data.peList.getPeForSector(sectorApiName),
-            sectorAverageChange: data.performanceList.getAverageChangeForSector(
+            sectorPe: peList.getPeForSector(sectorApiName),
+            sectorAverageChange: performanceList.getAverageChangeForSector(
               sectorApiName,
             ),
             marketDataDate: marketDateStr != null
                 ? DateTime.tryParse(marketDateStr)
                 : null,
-          );
-        });
+            isGuest: isGuest,
+          ),
+        );
       },
-    );
-  }
-
-  Either<Failure, MarketDataRecord> _aggregateSectorData(
-    (Either<Failure, List<SectorPe>>, Either<Failure, List<SectorPerformance>>)
-    results,
-  ) {
-    final (peRes, perfRes) = results;
-
-    return peRes.fold(
-      (f) {
-        _logger.warning('Failed to fetch PE list', f);
-        return Left(f);
-      },
-      (peList) => perfRes.fold((f) {
-        _logger.warning('Failed to fetch performance list', f);
-        return Left(f);
-      }, (perfList) => Right((peList: peList, performanceList: perfList))),
     );
   }
 }

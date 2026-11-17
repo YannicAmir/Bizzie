@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:bizzie/shared/widgets/inputs/bizzie_search_bar.dart';
+import 'package:bizzie/shared/constants/app_constants.dart';
 
 class SearchAppBar extends StatelessWidget implements PreferredSizeWidget {
   final TextEditingController controller;
@@ -45,7 +46,7 @@ class SearchAppBar extends StatelessWidget implements PreferredSizeWidget {
             child: TextButton(
               onPressed: onCancel,
               style: TextButton.styleFrom(
-                minimumSize: const Size(48, 48),
+                minimumSize: AppConstants.minTouchTargetSize,
                 foregroundColor: theme.colorScheme.primary,
                 splashFactory: NoSplash.splashFactory,
               ),

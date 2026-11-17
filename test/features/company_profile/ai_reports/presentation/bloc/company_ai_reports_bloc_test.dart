@@ -6,7 +6,7 @@ import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/core/interfaces/i_config_service.dart';
 import 'package:bizzie/core/interfaces/i_time_provider.dart';
-import 'package:bizzie/features/auth/domain/usecases/get_auth_stream.dart';
+import 'package:bizzie/features/auth/domain/usecases/get_auth_stream_usecase.dart';
 import 'package:bizzie/features/company_profile/ai_reports/domain/enums/ai_report_form.dart';
 import 'package:bizzie/features/company_profile/ai_reports/domain/usecases/get_company_filings_usecase.dart';
 import 'package:bizzie/features/company_profile/ai_reports/presentation/analytics/ai_reports_tab_analytics.dart';
@@ -26,7 +26,7 @@ class MockConfigService extends Mock implements IConfigService {}
 
 class MockAiReportsTabAnalytics extends Mock implements AiReportsTabAnalytics {}
 
-class MockGetAuthStream extends Mock implements GetAuthStream {}
+class MockGetAuthStreamUseCase extends Mock implements GetAuthStreamUseCase {}
 
 class MockTimeProvider extends Mock implements ITimeProvider {}
 
@@ -51,7 +51,7 @@ void main() {
   late MockGetCompanyFilingsUseCase mockUseCase;
   late MockConfigService mockConfigService;
   late MockAiReportsTabAnalytics mockAnalytics;
-  late MockGetAuthStream mockGetAuthStream;
+  late MockGetAuthStreamUseCase mockGetAuthStream;
   late MockTimeProvider mockTimeProvider;
   late CompanyAiReportsBloc sut;
 
@@ -69,7 +69,7 @@ void main() {
       () => mockConfigService.aiReportsTabFilingOrder,
     ).thenReturn(['8-K', '10-K', 'Recaps', '10-Q']);
     mockAnalytics = MockAiReportsTabAnalytics();
-    mockGetAuthStream = MockGetAuthStream();
+    mockGetAuthStream = MockGetAuthStreamUseCase();
     mockTimeProvider = MockTimeProvider();
     when(() => mockGetAuthStream()).thenAnswer((_) => const Stream.empty());
     when(() => mockTimeProvider.nowLocal).thenReturn(tNow);

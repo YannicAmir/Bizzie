@@ -1,8 +1,7 @@
-import 'package:bizzie/app/themes/app_assets.dart';
 import 'package:bizzie/app/themes/app_colors.dart';
+import 'package:bizzie/shared/widgets/buttons/bizzie_close_icon.dart';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 class BottomModalHeader extends StatelessWidget {
   final String title;
@@ -42,11 +41,7 @@ class BottomModalHeader extends StatelessWidget {
 
               GestureDetector(
                 onTap: onClose ?? () => Navigator.pop(context),
-                child: SvgPicture.asset(
-                  AppAssets.modalCloseIcon,
-                  width: 24,
-                  height: 24,
-                ),
+                child: const BizzieCloseIcon(),
               ),
             ],
           ),

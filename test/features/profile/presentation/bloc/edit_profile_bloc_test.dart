@@ -4,7 +4,7 @@ import 'package:bizzie/core/usecase/usecase.dart';
 import 'package:bizzie/features/auth/domain/enums/auth_provider.dart';
 import 'package:bizzie/features/auth/domain/models/user_model.dart'
     as auth_model;
-import 'package:bizzie/features/auth/domain/usecases/get_current_user.dart';
+import 'package:bizzie/features/auth/domain/usecases/get_current_user_usecase.dart';
 import 'package:bizzie/features/auth/domain/usecases/reauthenticate_usecase.dart';
 import 'package:bizzie/features/profile/domain/enums/reauth_action.dart';
 import 'package:bizzie/features/profile/domain/usecases/delete_account_usecase.dart';
@@ -12,9 +12,8 @@ import 'package:bizzie/features/profile/domain/usecases/update_profile_usecase.d
 import 'package:bizzie/features/profile/presentation/bloc/edit_profile_bloc.dart';
 import 'package:bizzie/features/profile/presentation/bloc/edit_profile_event.dart';
 import 'package:bizzie/features/profile/presentation/bloc/edit_profile_state.dart';
-import 'package:bizzie/features/user/domain/enums/investing_experience.dart';
-import 'package:bizzie/features/user/domain/models/user_model.dart'
-    as domain_model;
+import 'package:bizzie/core/enums/investing_experience.dart';
+import 'package:bizzie/core/domain/models/user_model.dart' as domain_model;
 import 'package:bizzie/features/user/domain/usecases/get_user_usecase.dart';
 import 'package:bizzie/features/profile/presentation/analytics/profile_tracker.dart';
 import 'package:bloc_test/bloc_test.dart';
@@ -22,7 +21,7 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
-class MockGetCurrentUser extends Mock implements GetCurrentUser {}
+class MockGetCurrentUserUseCase extends Mock implements GetCurrentUserUseCase {}
 
 class MockGetUserUseCase extends Mock implements GetUserUseCase {}
 
@@ -38,7 +37,7 @@ class MockProfileTracker extends Mock implements ProfileTracker {}
 
 void main() {
   late EditProfileBloc bloc;
-  late MockGetCurrentUser mockGetCurrentUser;
+  late MockGetCurrentUserUseCase mockGetCurrentUser;
   late MockGetUserUseCase mockGetUserUseCase;
   late MockUpdateProfileUseCase mockUpdateProfileUseCase;
   late MockDeleteAccountUseCase mockDeleteAccountUseCase;
@@ -54,7 +53,7 @@ void main() {
   });
 
   setUp(() {
-    mockGetCurrentUser = MockGetCurrentUser();
+    mockGetCurrentUser = MockGetCurrentUserUseCase();
     mockGetUserUseCase = MockGetUserUseCase();
     mockUpdateProfileUseCase = MockUpdateProfileUseCase();
     mockDeleteAccountUseCase = MockDeleteAccountUseCase();

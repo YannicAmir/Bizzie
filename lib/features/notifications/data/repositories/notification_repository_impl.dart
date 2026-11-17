@@ -1,8 +1,10 @@
 import 'dart:async';
 import 'package:dartz/dartz.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:injectable/injectable.dart';
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
+import 'package:bizzie/core/utils/string_utils.dart';
 import 'package:bizzie/features/notifications/data/datasources/fcm_remote_datasource.dart';
 import 'package:bizzie/features/notifications/domain/interfaces/i_notification_repository.dart';
 import 'package:bizzie/features/notifications/domain/models/notification_message.dart';
@@ -25,6 +27,20 @@ class NotificationRepositoryImpl implements INotificationRepository {
     } catch (e, s) {
       _logger.severe('Failed to request notification permissions', e, s);
       return Left(Failure.server(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, bool>> isSystemAuthorized() async {
+    try {
+      final settings = await _fcmRemoteDataSource.getNotificationSettings();
+      return Right(
+        settings.authorizationStatus == AuthorizationStatus.authorized ||
+            settings.authorizationStatus == AuthorizationStatus.provisional,
+      );
+    } catch (e, s) {
+      _logger.severe('Failed to read notification authorization status', e, s);
+      return Left(Failure.permission(e.toString()));
     }
   }
 
@@ -74,6 +90,22 @@ class NotificationRepositoryImpl implements INotificationRepository {
       _logger.severe('Failed to subscribe to topic: $topic', e, s);
       return Left(Failure.server(e.toString()));
     }
+  }
+
+  @override
+  Future<Either<Failure, void>> subscribeToSectorTopic(
+    String sectorName,
+  ) async {
+    final topic = StringUtils.sanitizeTopic(sectorName);
+    if (topic.isEmpty) return const Right(null);
+    return subscribeToTopic(topic);
+  }
+
+  @override
+  Future<Either<Failure, void>> subscribeToTickerTopic(String ticker) async {
+    final topic = StringUtils.sanitizeTicker(ticker);
+    if (topic.isEmpty) return const Right(null);
+    return subscribeToTopic(topic);
   }
 
   @override

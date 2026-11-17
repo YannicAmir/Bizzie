@@ -1,10 +1,11 @@
 import 'dart:async';
 
+import 'package:bizzie/core/enums/financial_period.dart';
 import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/core/usecase/usecase.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
-import 'package:bizzie/features/auth/domain/usecases/get_auth_stream.dart';
+import 'package:bizzie/features/auth/domain/usecases/get_auth_stream_usecase.dart';
 import 'package:bizzie/features/auth/presentation/bloc/auth_session_reset_mixin.dart';
 import 'package:bizzie/features/company_profile/financial_statements/presentation/bloc/financial_statements_event.dart';
 import 'package:bizzie/features/company_profile/financial_statements/presentation/bloc/financial_statements_state.dart';
@@ -49,8 +50,10 @@ class FinancialStatementsBloc
     extends Bloc<FinancialStatementsEvent, FinancialStatementsState>
     with
         FinancialStatementsAnalyticsMixin,
-        AuthSessionResetMixin<FinancialStatementsEvent,
-            FinancialStatementsState> {
+        AuthSessionResetMixin<
+          FinancialStatementsEvent,
+          FinancialStatementsState
+        > {
   final GetIncomeStatementsUseCase _getIncomeStatements;
   final GetBalanceSheetsUseCase _getBalanceSheets;
   final GetCashFlowStatementsUseCase _getCashFlowStatements;
@@ -77,7 +80,7 @@ class FinancialStatementsBloc
     IConfigService configService,
     this._watchActiveTabUseCase,
     this._timeProvider,
-    GetAuthStream getAuthStream,
+    GetAuthStreamUseCase getAuthStream,
   ) : super(
         FinancialStatementsState.initial(
           ticker: '',
@@ -184,7 +187,11 @@ class FinancialStatementsBloc
     );
     emit(
       state.copyWith(
-        income: _loadedFlowFrom(data, previous: previous, dateOf: (s) => s.date),
+        income: _loadedFlowFrom(
+          data,
+          previous: previous,
+          dateOf: (s) => s.date,
+        ),
         reportedCurrency: _deriveReportedCurrency(data),
         originalCurrency: _deriveOriginalCurrency(data),
       ),
@@ -233,7 +240,11 @@ class FinancialStatementsBloc
     );
     emit(
       state.copyWith(
-        balance: _loadedFlowFrom(data, previous: previous, dateOf: (s) => s.date),
+        balance: _loadedFlowFrom(
+          data,
+          previous: previous,
+          dateOf: (s) => s.date,
+        ),
       ),
     );
   }
@@ -280,7 +291,11 @@ class FinancialStatementsBloc
     );
     emit(
       state.copyWith(
-        cashFlow: _loadedFlowFrom(data, previous: previous, dateOf: (s) => s.date),
+        cashFlow: _loadedFlowFrom(
+          data,
+          previous: previous,
+          dateOf: (s) => s.date,
+        ),
       ),
     );
   }
@@ -424,11 +439,14 @@ class FinancialStatementsBloc
     required void Function() refresh,
   }) {
     flow.map(
-      initial: (_) => _triggerRefresh(refresh, '$label empty. Triggering load.'),
+      initial: (_) =>
+          _triggerRefresh(refresh, '$label empty. Triggering load.'),
       loading: (_) =>
           _logger.info('$label already loading. Skipping staleness check.'),
-      failure: (_) =>
-          _triggerRefresh(refresh, '$label in failure state. Triggering retry.'),
+      failure: (_) => _triggerRefresh(
+        refresh,
+        '$label in failure state. Triggering retry.',
+      ),
       loaded: (s) {
         final isStale =
             s.lastUpdated != null &&
@@ -484,16 +502,18 @@ class FinancialStatementsBloc
     IncomeDateSelected e,
     Emitter<FinancialStatementsState> emit,
   ) async {
-    _logger.info('Income date selected: ${e.date}, annual=${e.isAnnual}');
+    _logger.info(
+      'Income date selected: ${e.date}, annual=${e.period.isAnnual}',
+    );
     updateIncAnalytics(
       (inc) => inc.copyWith(
-        switchedIncomeYear: e.isAnnual ? true : inc.switchedIncomeYear,
-        switchedIncomeQtr: !e.isAnnual ? true : inc.switchedIncomeQtr,
+        switchedIncomeYear: e.period.isAnnual ? true : inc.switchedIncomeYear,
+        switchedIncomeQtr: !e.period.isAnnual ? true : inc.switchedIncomeQtr,
       ),
     );
     state.income.mapOrNull(
       loaded: (s) => emit(
-        state.copyWith(income: _withSelectedDate(s, e.date, isAnnual: e.isAnnual)),
+        state.copyWith(income: _withSelectedDate(s, e.date, period: e.period)),
       ),
     );
   }
@@ -502,11 +522,13 @@ class FinancialStatementsBloc
     BalanceDateSelected e,
     Emitter<FinancialStatementsState> emit,
   ) async {
-    _logger.info('Balance date selected: ${e.date}, annual=${e.isAnnual}');
+    _logger.info(
+      'Balance date selected: ${e.date}, annual=${e.period.isAnnual}',
+    );
     updateBalAnalytics((bal) => bal.copyWith(switchedBalancePeriod: true));
     state.balance.mapOrNull(
       loaded: (s) => emit(
-        state.copyWith(balance: _withSelectedDate(s, e.date, isAnnual: e.isAnnual)),
+        state.copyWith(balance: _withSelectedDate(s, e.date, period: e.period)),
       ),
     );
   }
@@ -515,16 +537,20 @@ class FinancialStatementsBloc
     CashFlowDateSelected e,
     Emitter<FinancialStatementsState> emit,
   ) async {
-    _logger.info('Cash flow date selected: ${e.date}, annual=${e.isAnnual}');
+    _logger.info(
+      'Cash flow date selected: ${e.date}, annual=${e.period.isAnnual}',
+    );
     updateCashAnalytics(
       (cash) => cash.copyWith(
-        switchedCashflYear: e.isAnnual ? true : cash.switchedCashflYear,
-        switchedCashflQtr: !e.isAnnual ? true : cash.switchedCashflQtr,
+        switchedCashflYear: e.period.isAnnual ? true : cash.switchedCashflYear,
+        switchedCashflQtr: !e.period.isAnnual ? true : cash.switchedCashflQtr,
       ),
     );
     state.cashFlow.mapOrNull(
       loaded: (s) => emit(
-        state.copyWith(cashFlow: _withSelectedDate(s, e.date, isAnnual: e.isAnnual)),
+        state.copyWith(
+          cashFlow: _withSelectedDate(s, e.date, period: e.period),
+        ),
       ),
     );
   }
@@ -532,10 +558,11 @@ class FinancialStatementsBloc
   StatementFlow<T> _withSelectedDate<T>(
     StatementFlowLoaded<T> flow,
     String date, {
-    required bool isAnnual,
-  }) => isAnnual
-      ? flow.copyWith(selectedAnnualDate: date)
-      : flow.copyWith(selectedQuarterlyDate: date);
+    required FinancialPeriod period,
+  }) => switch (period) {
+    FinancialPeriod.annual => flow.copyWith(selectedAnnualDate: date),
+    FinancialPeriod.quarterly => flow.copyWith(selectedQuarterlyDate: date),
+  };
 
   Future<void> _onTabShown(
     TabShown e,
@@ -623,8 +650,12 @@ class FinancialStatementsBloc
       case FinancialStatementType.income:
         updateIncAnalytics(
           (inc) => inc.copyWith(
-            tappedAllIncomeYrly: e.isAnnual ? true : inc.tappedAllIncomeYrly,
-            tappedAllIncomeQtrly: !e.isAnnual ? true : inc.tappedAllIncomeQtrly,
+            tappedAllIncomeYrly: e.period.isAnnual
+                ? true
+                : inc.tappedAllIncomeYrly,
+            tappedAllIncomeQtrly: !e.period.isAnnual
+                ? true
+                : inc.tappedAllIncomeQtrly,
           ),
         );
       case FinancialStatementType.balance:
@@ -632,8 +663,10 @@ class FinancialStatementsBloc
       case FinancialStatementType.cashFlow:
         updateCashAnalytics(
           (cash) => cash.copyWith(
-            tappedAllCashflYrly: e.isAnnual ? true : cash.tappedAllCashflYrly,
-            tappedAllCashflQtrly: !e.isAnnual
+            tappedAllCashflYrly: e.period.isAnnual
+                ? true
+                : cash.tappedAllCashflYrly,
+            tappedAllCashflQtrly: !e.period.isAnnual
                 ? true
                 : cash.tappedAllCashflQtrly,
           ),

@@ -28,16 +28,28 @@ sealed class Failure with _$Failure {
     required int retryAfterSeconds,
     @Default('Daily chat limit reached') String message,
   }) = RateLimitFailure;
+  const factory Failure.credentialAlreadyInUse([
+    @Default('Credential already in use') String message,
+  ]) = CredentialAlreadyInUseFailure;
+  const factory Failure.emailAlreadyInUse([
+    @Default('Email already in use') String message,
+  ]) = EmailAlreadyInUseFailure;
+  const factory Failure.providerAlreadyLinked([
+    @Default('Provider already linked') String message,
+  ]) = ProviderAlreadyLinkedFailure;
 
   String get errorMessage => map(
-        server: (f) => f.message,
-        cache: (f) => f.message,
-        payment: (f) => f.message,
-        cancel: (f) => f.message,
-        userNotFound: (f) => f.message,
-        permission: (f) => f.message,
-        passwordMismatch: (f) => f.message,
-        reauthentication: (f) => f.message,
-        rateLimit: (f) => f.message,
-      );
+    server: (f) => f.message,
+    cache: (f) => f.message,
+    payment: (f) => f.message,
+    cancel: (f) => f.message,
+    userNotFound: (f) => f.message,
+    permission: (f) => f.message,
+    passwordMismatch: (f) => f.message,
+    reauthentication: (f) => f.message,
+    rateLimit: (f) => f.message,
+    credentialAlreadyInUse: (f) => f.message,
+    emailAlreadyInUse: (f) => f.message,
+    providerAlreadyLinked: (f) => f.message,
+  );
 }

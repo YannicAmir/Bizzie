@@ -1,3 +1,4 @@
+import 'package:bizzie/core/enums/financial_period.dart';
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/features/company_profile/shared/domain/models/chart_data_point.dart';
 import 'package:bizzie/features/company_profile/shares/domain/models/shares_summary_data.dart';
@@ -21,7 +22,7 @@ abstract class CompanySharesState with _$CompanySharesState {
     required SharesSummaryData quarterlySummary,
     required int historyLimit,
     required CompanyProfileDataOrigin dataOrigin,
-    @Default(true) bool isAnnualView,
+    @Default(FinancialPeriod.annual) FinancialPeriod period,
     DateTime? lastUpdated,
     SharesTabViewState? analyticsState,
   }) = CompanySharesLoaded;

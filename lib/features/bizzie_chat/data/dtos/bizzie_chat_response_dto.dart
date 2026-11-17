@@ -19,12 +19,12 @@ abstract class BizzieChatResponseDto with _$BizzieChatResponseDto {
       _$BizzieChatResponseDtoFromJson(json);
 
   ChatResponse toDomain() => ChatResponse(
-        message: message,
-        followUps: followUps,
-        source: source,
-        sessionId: metadata.sessionId,
-        routePath: metadata.routePath,
-      );
+    message: message,
+    followUps: followUps,
+    source: source,
+    sessionId: metadata.sessionId,
+    routePath: metadata.routePath,
+  );
 }
 
 @freezed

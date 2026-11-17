@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:bizzie/core/error/failures.dart';
-import 'package:bizzie/features/auth/domain/usecases/get_auth_stream.dart';
+import 'package:bizzie/features/auth/domain/usecases/get_auth_stream_usecase.dart';
 import 'package:bizzie/features/company_profile/security/domain/models/security_quote.dart';
 import 'package:bizzie/features/company_profile/security/domain/usecases/watch_security_quote_usecase.dart';
 import 'package:bizzie/features/company_profile/security/presentation/bloc/security_quote/security_quote_bloc.dart';
@@ -15,10 +15,10 @@ import 'package:mocktail/mocktail.dart';
 class MockWatchSecurityQuoteUseCase extends Mock
     implements WatchSecurityQuoteUseCase {}
 
-class MockGetAuthStream extends Mock implements GetAuthStream {}
+class MockGetAuthStreamUseCase extends Mock implements GetAuthStreamUseCase {}
 
-MockGetAuthStream stubbedGetAuthStream() {
-  final mock = MockGetAuthStream();
+MockGetAuthStreamUseCase stubbedGetAuthStream() {
+  final mock = MockGetAuthStreamUseCase();
   when(() => mock()).thenAnswer((_) => const Stream.empty());
   return mock;
 }

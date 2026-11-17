@@ -1,29 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:bizzie/features/user/data/dtos/user_dto.dart';
-import 'package:bizzie/features/watchlist/data/dtos/watchlist_item_dto.dart';
+import 'package:bizzie/core/data/dtos/user_dto.dart';
+import 'package:bizzie/features/user/data/interfaces/i_user_remote_datasource.dart';
+import 'package:bizzie/core/data/dtos/watchlist_item_dto.dart';
 import 'package:bizzie/services/firestore_service.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:injectable/injectable.dart';
 
 final _logger = BizzieLogger('UserRemoteDataSource');
 
-abstract class IUserRemoteDataSource {
-  Future<UserDto?> getUser(String uid);
-  Stream<UserDto?> watchUser(String uid);
-  Future<List<WatchlistItemDto>> getWatchlist(String uid);
-  Stream<List<WatchlistItemDto>> watchWatchlist(String uid);
-  Future<void> updateUser(UserDto user);
-  Future<void> updateFcmToken(String uid, String deviceId, String token);
-  Future<void> removeFcmToken(String uid, String deviceId);
-  Future<void> updateNotificationSettings(
-    String uid,
-    bool enabled, {
-    String? deviceId,
-    String? token,
-  });
-}
-
-@LazySingleton(as: IUserRemoteDataSource)
+@Injectable(as: IUserRemoteDataSource)
 class UserRemoteDataSource implements IUserRemoteDataSource {
   final FirestoreService _firestoreService;
 

@@ -12,7 +12,7 @@ import 'package:bizzie/features/reports/domain/usecases/get_user_activity_use_ca
 import 'package:bizzie/features/reports/domain/usecases/mark_reports_viewed_use_case.dart';
 import 'package:bizzie/features/reports/domain/models/mark_reports_viewed_params.dart';
 import 'package:bizzie/features/watchlist/domain/interfaces/watchlist_repository.dart';
-import 'package:bizzie/features/user/domain/interfaces/user_repository.dart';
+import 'package:bizzie/features/user/domain/usecases/watch_current_user_usecase.dart';
 import 'package:bizzie/core/interfaces/i_local_storage_service.dart';
 import 'package:bloc/bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
@@ -31,7 +31,7 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
   final IAuthRepository _authRepository;
   final GetUserActivityUseCase _getUserActivityUseCase;
   final MarkReportsViewedUseCase _markReportsViewedUseCase;
-  final IUserRepository _userRepository;
+  final WatchCurrentUserUseCase _watchCurrentUserUseCase;
   final ILocalStorageService _localStorageService;
   final ReportsTracker _tracker;
   StreamSubscription? _userSubscription;
@@ -51,12 +51,12 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
     this._authRepository,
     this._getUserActivityUseCase,
     this._markReportsViewedUseCase,
-    this._userRepository,
+    this._watchCurrentUserUseCase,
     this._localStorageService,
     this._tracker,
   ) : super(const ReportsState.initial()) {
     _seenWeeklyReportIds = _loadSeenWeeklyIds();
-    _userSubscription = _userRepository.userStream.listen((_) {
+    _userSubscription = _watchCurrentUserUseCase().listen((_) {
       add(const ReportsEvent.started());
     });
 

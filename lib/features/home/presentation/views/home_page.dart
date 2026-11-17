@@ -1,6 +1,7 @@
 import 'package:bizzie/app/routes/app_routes.dart';
 import 'package:bizzie/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:bizzie/features/auth/presentation/bloc/auth_state.dart';
+import 'package:bizzie/features/auth/presentation/utils/auth_failure_snackbar.dart';
 import 'package:bizzie/features/home/presentation/bloc/home_bloc.dart';
 import 'package:bizzie/features/home/presentation/bloc/watchlist_news/watchlist_news_bloc.dart';
 import 'package:bizzie/features/home/presentation/bloc/watchlist_prices/watchlist_prices_bloc.dart';
@@ -21,7 +22,6 @@ import 'package:bizzie/shared/widgets/error/bizzie_error.dart';
 import 'package:bizzie/shared/widgets/inputs/bizzie_search_bar.dart';
 import 'package:bizzie/shared/widgets/loading/bizzie_loader.dart';
 import 'package:bizzie/shared/widgets/loading/mascot_refresh_indicator.dart';
-import 'package:bizzie/shared/widgets/modals/bizzie_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -51,10 +51,7 @@ class _HomePageState extends State<HomePage> {
     if (pricesBloc.state.isSettled) return Future<void>.value();
     return pricesBloc.stream
         .firstWhere((state) => state.isSettled)
-        .timeout(
-          _refreshSettleTimeout,
-          onTimeout: () => pricesBloc.state,
-        );
+        .timeout(_refreshSettleTimeout, onTimeout: () => pricesBloc.state);
   }
 
   @override
@@ -71,11 +68,7 @@ class _HomePageState extends State<HomePage> {
       body: BlocConsumer<AuthBloc, AuthState>(
         listener: (context, state) {
           state.maybeWhen(
-            failure: (failure) => BizzieSnackBar.show(
-              context,
-              message: failure.errorMessage,
-              type: BizzieSnackBarType.error,
-            ),
+            failure: (failure) => AuthFailureSnackBar.show(context, failure),
             orElse: () {},
           );
         },
@@ -95,10 +88,7 @@ class _HomePageState extends State<HomePage> {
 }
 
 class _AuthenticatedHomeBody extends StatelessWidget {
-  const _AuthenticatedHomeBody({
-    required this.onRefresh,
-    this.pendingNewsId,
-  });
+  const _AuthenticatedHomeBody({required this.onRefresh, this.pendingNewsId});
 
   final Future<void> Function() onRefresh;
   final String? pendingNewsId;
@@ -106,10 +96,7 @@ class _AuthenticatedHomeBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return _WatchlistNewsLoader(
-      child: _HomeBodyGate(
-        onRefresh: onRefresh,
-        pendingNewsId: pendingNewsId,
-      ),
+      child: _HomeBodyGate(onRefresh: onRefresh, pendingNewsId: pendingNewsId),
     );
   }
 }
@@ -152,10 +139,7 @@ class _WatchlistNewsLoaderState extends State<_WatchlistNewsLoader> {
 }
 
 class _HomeBodyGate extends StatefulWidget {
-  const _HomeBodyGate({
-    required this.onRefresh,
-    this.pendingNewsId,
-  });
+  const _HomeBodyGate({required this.onRefresh, this.pendingNewsId});
 
   final Future<void> Function() onRefresh;
   final String? pendingNewsId;
@@ -251,10 +235,7 @@ class _HomeBodyGateState extends State<_HomeBodyGate> {
 }
 
 class _HomeContent extends StatelessWidget {
-  const _HomeContent({
-    required this.onRefresh,
-    this.pendingNewsId,
-  });
+  const _HomeContent({required this.onRefresh, this.pendingNewsId});
 
   final Future<void> Function() onRefresh;
   final String? pendingNewsId;

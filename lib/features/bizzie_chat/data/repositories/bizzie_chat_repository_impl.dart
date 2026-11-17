@@ -68,12 +68,15 @@ class BizzieChatRepositoryImpl implements IBizzieChatRepository {
         stream: true,
       );
 
-      await for (final eventDto
-          in _remoteDataSource.sendMessageStream(streamRequest)) {
+      await for (final eventDto in _remoteDataSource.sendMessageStream(
+        streamRequest,
+      )) {
         final event = eventDto.toDomain();
 
         if (event is ChatErrorEvent) {
-          _logger.warning('sendMessageStream: SSE error event — ${event.message}');
+          _logger.warning(
+            'sendMessageStream: SSE error event — ${event.message}',
+          );
           yield Left(Failure.server(event.message));
           return;
         }
@@ -129,5 +132,4 @@ class BizzieChatRepositoryImpl implements IBizzieChatRepository {
           return Left(Failure.server(e.toString()));
         });
   }
-
 }

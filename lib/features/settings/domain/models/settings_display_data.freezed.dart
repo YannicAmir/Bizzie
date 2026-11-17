@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$SettingsDisplayData {
 
- UserModel get user; SubscriptionStatus get subscriptionStatus; bool get isAppNotificationsEnabled; bool get isSystemNotificationsEnabled; String get appVersion; String get favoriteSector; String get privacyPolicyUrl; String get termsOfServiceUrl;
+ UserModel get user; SubscriptionStatus get subscriptionStatus; bool get isAppNotificationsEnabled; bool get isSystemNotificationsEnabled; String get appVersion; String get favoriteSector; String get privacyPolicyUrl; String get termsOfServiceUrl; bool get isGuest;
 /// Create a copy of SettingsDisplayData
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $SettingsDisplayDataCopyWith<SettingsDisplayData> get copyWith => _$SettingsDisp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SettingsDisplayData&&(identical(other.user, user) || other.user == user)&&(identical(other.subscriptionStatus, subscriptionStatus) || other.subscriptionStatus == subscriptionStatus)&&(identical(other.isAppNotificationsEnabled, isAppNotificationsEnabled) || other.isAppNotificationsEnabled == isAppNotificationsEnabled)&&(identical(other.isSystemNotificationsEnabled, isSystemNotificationsEnabled) || other.isSystemNotificationsEnabled == isSystemNotificationsEnabled)&&(identical(other.appVersion, appVersion) || other.appVersion == appVersion)&&(identical(other.favoriteSector, favoriteSector) || other.favoriteSector == favoriteSector)&&(identical(other.privacyPolicyUrl, privacyPolicyUrl) || other.privacyPolicyUrl == privacyPolicyUrl)&&(identical(other.termsOfServiceUrl, termsOfServiceUrl) || other.termsOfServiceUrl == termsOfServiceUrl));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SettingsDisplayData&&(identical(other.user, user) || other.user == user)&&(identical(other.subscriptionStatus, subscriptionStatus) || other.subscriptionStatus == subscriptionStatus)&&(identical(other.isAppNotificationsEnabled, isAppNotificationsEnabled) || other.isAppNotificationsEnabled == isAppNotificationsEnabled)&&(identical(other.isSystemNotificationsEnabled, isSystemNotificationsEnabled) || other.isSystemNotificationsEnabled == isSystemNotificationsEnabled)&&(identical(other.appVersion, appVersion) || other.appVersion == appVersion)&&(identical(other.favoriteSector, favoriteSector) || other.favoriteSector == favoriteSector)&&(identical(other.privacyPolicyUrl, privacyPolicyUrl) || other.privacyPolicyUrl == privacyPolicyUrl)&&(identical(other.termsOfServiceUrl, termsOfServiceUrl) || other.termsOfServiceUrl == termsOfServiceUrl)&&(identical(other.isGuest, isGuest) || other.isGuest == isGuest));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,user,subscriptionStatus,isAppNotificationsEnabled,isSystemNotificationsEnabled,appVersion,favoriteSector,privacyPolicyUrl,termsOfServiceUrl);
+int get hashCode => Object.hash(runtimeType,user,subscriptionStatus,isAppNotificationsEnabled,isSystemNotificationsEnabled,appVersion,favoriteSector,privacyPolicyUrl,termsOfServiceUrl,isGuest);
 
 @override
 String toString() {
-  return 'SettingsDisplayData(user: $user, subscriptionStatus: $subscriptionStatus, isAppNotificationsEnabled: $isAppNotificationsEnabled, isSystemNotificationsEnabled: $isSystemNotificationsEnabled, appVersion: $appVersion, favoriteSector: $favoriteSector, privacyPolicyUrl: $privacyPolicyUrl, termsOfServiceUrl: $termsOfServiceUrl)';
+  return 'SettingsDisplayData(user: $user, subscriptionStatus: $subscriptionStatus, isAppNotificationsEnabled: $isAppNotificationsEnabled, isSystemNotificationsEnabled: $isSystemNotificationsEnabled, appVersion: $appVersion, favoriteSector: $favoriteSector, privacyPolicyUrl: $privacyPolicyUrl, termsOfServiceUrl: $termsOfServiceUrl, isGuest: $isGuest)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $SettingsDisplayDataCopyWith<$Res>  {
   factory $SettingsDisplayDataCopyWith(SettingsDisplayData value, $Res Function(SettingsDisplayData) _then) = _$SettingsDisplayDataCopyWithImpl;
 @useResult
 $Res call({
- UserModel user, SubscriptionStatus subscriptionStatus, bool isAppNotificationsEnabled, bool isSystemNotificationsEnabled, String appVersion, String favoriteSector, String privacyPolicyUrl, String termsOfServiceUrl
+ UserModel user, SubscriptionStatus subscriptionStatus, bool isAppNotificationsEnabled, bool isSystemNotificationsEnabled, String appVersion, String favoriteSector, String privacyPolicyUrl, String termsOfServiceUrl, bool isGuest
 });
 
 
@@ -62,7 +62,7 @@ class _$SettingsDisplayDataCopyWithImpl<$Res>
 
 /// Create a copy of SettingsDisplayData
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? user = null,Object? subscriptionStatus = null,Object? isAppNotificationsEnabled = null,Object? isSystemNotificationsEnabled = null,Object? appVersion = null,Object? favoriteSector = null,Object? privacyPolicyUrl = null,Object? termsOfServiceUrl = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? user = null,Object? subscriptionStatus = null,Object? isAppNotificationsEnabled = null,Object? isSystemNotificationsEnabled = null,Object? appVersion = null,Object? favoriteSector = null,Object? privacyPolicyUrl = null,Object? termsOfServiceUrl = null,Object? isGuest = null,}) {
   return _then(_self.copyWith(
 user: null == user ? _self.user : user // ignore: cast_nullable_to_non_nullable
 as UserModel,subscriptionStatus: null == subscriptionStatus ? _self.subscriptionStatus : subscriptionStatus // ignore: cast_nullable_to_non_nullable
@@ -72,7 +72,8 @@ as bool,appVersion: null == appVersion ? _self.appVersion : appVersion // ignore
 as String,favoriteSector: null == favoriteSector ? _self.favoriteSector : favoriteSector // ignore: cast_nullable_to_non_nullable
 as String,privacyPolicyUrl: null == privacyPolicyUrl ? _self.privacyPolicyUrl : privacyPolicyUrl // ignore: cast_nullable_to_non_nullable
 as String,termsOfServiceUrl: null == termsOfServiceUrl ? _self.termsOfServiceUrl : termsOfServiceUrl // ignore: cast_nullable_to_non_nullable
-as String,
+as String,isGuest: null == isGuest ? _self.isGuest : isGuest // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 /// Create a copy of SettingsDisplayData
@@ -175,10 +176,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( UserModel user,  SubscriptionStatus subscriptionStatus,  bool isAppNotificationsEnabled,  bool isSystemNotificationsEnabled,  String appVersion,  String favoriteSector,  String privacyPolicyUrl,  String termsOfServiceUrl)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( UserModel user,  SubscriptionStatus subscriptionStatus,  bool isAppNotificationsEnabled,  bool isSystemNotificationsEnabled,  String appVersion,  String favoriteSector,  String privacyPolicyUrl,  String termsOfServiceUrl,  bool isGuest)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _SettingsDisplayData() when $default != null:
-return $default(_that.user,_that.subscriptionStatus,_that.isAppNotificationsEnabled,_that.isSystemNotificationsEnabled,_that.appVersion,_that.favoriteSector,_that.privacyPolicyUrl,_that.termsOfServiceUrl);case _:
+return $default(_that.user,_that.subscriptionStatus,_that.isAppNotificationsEnabled,_that.isSystemNotificationsEnabled,_that.appVersion,_that.favoriteSector,_that.privacyPolicyUrl,_that.termsOfServiceUrl,_that.isGuest);case _:
   return orElse();
 
 }
@@ -196,10 +197,10 @@ return $default(_that.user,_that.subscriptionStatus,_that.isAppNotificationsEnab
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( UserModel user,  SubscriptionStatus subscriptionStatus,  bool isAppNotificationsEnabled,  bool isSystemNotificationsEnabled,  String appVersion,  String favoriteSector,  String privacyPolicyUrl,  String termsOfServiceUrl)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( UserModel user,  SubscriptionStatus subscriptionStatus,  bool isAppNotificationsEnabled,  bool isSystemNotificationsEnabled,  String appVersion,  String favoriteSector,  String privacyPolicyUrl,  String termsOfServiceUrl,  bool isGuest)  $default,) {final _that = this;
 switch (_that) {
 case _SettingsDisplayData():
-return $default(_that.user,_that.subscriptionStatus,_that.isAppNotificationsEnabled,_that.isSystemNotificationsEnabled,_that.appVersion,_that.favoriteSector,_that.privacyPolicyUrl,_that.termsOfServiceUrl);case _:
+return $default(_that.user,_that.subscriptionStatus,_that.isAppNotificationsEnabled,_that.isSystemNotificationsEnabled,_that.appVersion,_that.favoriteSector,_that.privacyPolicyUrl,_that.termsOfServiceUrl,_that.isGuest);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -216,10 +217,10 @@ return $default(_that.user,_that.subscriptionStatus,_that.isAppNotificationsEnab
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( UserModel user,  SubscriptionStatus subscriptionStatus,  bool isAppNotificationsEnabled,  bool isSystemNotificationsEnabled,  String appVersion,  String favoriteSector,  String privacyPolicyUrl,  String termsOfServiceUrl)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( UserModel user,  SubscriptionStatus subscriptionStatus,  bool isAppNotificationsEnabled,  bool isSystemNotificationsEnabled,  String appVersion,  String favoriteSector,  String privacyPolicyUrl,  String termsOfServiceUrl,  bool isGuest)?  $default,) {final _that = this;
 switch (_that) {
 case _SettingsDisplayData() when $default != null:
-return $default(_that.user,_that.subscriptionStatus,_that.isAppNotificationsEnabled,_that.isSystemNotificationsEnabled,_that.appVersion,_that.favoriteSector,_that.privacyPolicyUrl,_that.termsOfServiceUrl);case _:
+return $default(_that.user,_that.subscriptionStatus,_that.isAppNotificationsEnabled,_that.isSystemNotificationsEnabled,_that.appVersion,_that.favoriteSector,_that.privacyPolicyUrl,_that.termsOfServiceUrl,_that.isGuest);case _:
   return null;
 
 }
@@ -231,7 +232,7 @@ return $default(_that.user,_that.subscriptionStatus,_that.isAppNotificationsEnab
 
 
 class _SettingsDisplayData implements SettingsDisplayData {
-  const _SettingsDisplayData({required this.user, required this.subscriptionStatus, required this.isAppNotificationsEnabled, required this.isSystemNotificationsEnabled, required this.appVersion, required this.favoriteSector, required this.privacyPolicyUrl, required this.termsOfServiceUrl});
+  const _SettingsDisplayData({required this.user, required this.subscriptionStatus, required this.isAppNotificationsEnabled, required this.isSystemNotificationsEnabled, required this.appVersion, required this.favoriteSector, required this.privacyPolicyUrl, required this.termsOfServiceUrl, this.isGuest = false});
   
 
 @override final  UserModel user;
@@ -242,6 +243,7 @@ class _SettingsDisplayData implements SettingsDisplayData {
 @override final  String favoriteSector;
 @override final  String privacyPolicyUrl;
 @override final  String termsOfServiceUrl;
+@override@JsonKey() final  bool isGuest;
 
 /// Create a copy of SettingsDisplayData
 /// with the given fields replaced by the non-null parameter values.
@@ -253,16 +255,16 @@ _$SettingsDisplayDataCopyWith<_SettingsDisplayData> get copyWith => __$SettingsD
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SettingsDisplayData&&(identical(other.user, user) || other.user == user)&&(identical(other.subscriptionStatus, subscriptionStatus) || other.subscriptionStatus == subscriptionStatus)&&(identical(other.isAppNotificationsEnabled, isAppNotificationsEnabled) || other.isAppNotificationsEnabled == isAppNotificationsEnabled)&&(identical(other.isSystemNotificationsEnabled, isSystemNotificationsEnabled) || other.isSystemNotificationsEnabled == isSystemNotificationsEnabled)&&(identical(other.appVersion, appVersion) || other.appVersion == appVersion)&&(identical(other.favoriteSector, favoriteSector) || other.favoriteSector == favoriteSector)&&(identical(other.privacyPolicyUrl, privacyPolicyUrl) || other.privacyPolicyUrl == privacyPolicyUrl)&&(identical(other.termsOfServiceUrl, termsOfServiceUrl) || other.termsOfServiceUrl == termsOfServiceUrl));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SettingsDisplayData&&(identical(other.user, user) || other.user == user)&&(identical(other.subscriptionStatus, subscriptionStatus) || other.subscriptionStatus == subscriptionStatus)&&(identical(other.isAppNotificationsEnabled, isAppNotificationsEnabled) || other.isAppNotificationsEnabled == isAppNotificationsEnabled)&&(identical(other.isSystemNotificationsEnabled, isSystemNotificationsEnabled) || other.isSystemNotificationsEnabled == isSystemNotificationsEnabled)&&(identical(other.appVersion, appVersion) || other.appVersion == appVersion)&&(identical(other.favoriteSector, favoriteSector) || other.favoriteSector == favoriteSector)&&(identical(other.privacyPolicyUrl, privacyPolicyUrl) || other.privacyPolicyUrl == privacyPolicyUrl)&&(identical(other.termsOfServiceUrl, termsOfServiceUrl) || other.termsOfServiceUrl == termsOfServiceUrl)&&(identical(other.isGuest, isGuest) || other.isGuest == isGuest));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,user,subscriptionStatus,isAppNotificationsEnabled,isSystemNotificationsEnabled,appVersion,favoriteSector,privacyPolicyUrl,termsOfServiceUrl);
+int get hashCode => Object.hash(runtimeType,user,subscriptionStatus,isAppNotificationsEnabled,isSystemNotificationsEnabled,appVersion,favoriteSector,privacyPolicyUrl,termsOfServiceUrl,isGuest);
 
 @override
 String toString() {
-  return 'SettingsDisplayData(user: $user, subscriptionStatus: $subscriptionStatus, isAppNotificationsEnabled: $isAppNotificationsEnabled, isSystemNotificationsEnabled: $isSystemNotificationsEnabled, appVersion: $appVersion, favoriteSector: $favoriteSector, privacyPolicyUrl: $privacyPolicyUrl, termsOfServiceUrl: $termsOfServiceUrl)';
+  return 'SettingsDisplayData(user: $user, subscriptionStatus: $subscriptionStatus, isAppNotificationsEnabled: $isAppNotificationsEnabled, isSystemNotificationsEnabled: $isSystemNotificationsEnabled, appVersion: $appVersion, favoriteSector: $favoriteSector, privacyPolicyUrl: $privacyPolicyUrl, termsOfServiceUrl: $termsOfServiceUrl, isGuest: $isGuest)';
 }
 
 
@@ -273,7 +275,7 @@ abstract mixin class _$SettingsDisplayDataCopyWith<$Res> implements $SettingsDis
   factory _$SettingsDisplayDataCopyWith(_SettingsDisplayData value, $Res Function(_SettingsDisplayData) _then) = __$SettingsDisplayDataCopyWithImpl;
 @override @useResult
 $Res call({
- UserModel user, SubscriptionStatus subscriptionStatus, bool isAppNotificationsEnabled, bool isSystemNotificationsEnabled, String appVersion, String favoriteSector, String privacyPolicyUrl, String termsOfServiceUrl
+ UserModel user, SubscriptionStatus subscriptionStatus, bool isAppNotificationsEnabled, bool isSystemNotificationsEnabled, String appVersion, String favoriteSector, String privacyPolicyUrl, String termsOfServiceUrl, bool isGuest
 });
 
 
@@ -290,7 +292,7 @@ class __$SettingsDisplayDataCopyWithImpl<$Res>
 
 /// Create a copy of SettingsDisplayData
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? user = null,Object? subscriptionStatus = null,Object? isAppNotificationsEnabled = null,Object? isSystemNotificationsEnabled = null,Object? appVersion = null,Object? favoriteSector = null,Object? privacyPolicyUrl = null,Object? termsOfServiceUrl = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? user = null,Object? subscriptionStatus = null,Object? isAppNotificationsEnabled = null,Object? isSystemNotificationsEnabled = null,Object? appVersion = null,Object? favoriteSector = null,Object? privacyPolicyUrl = null,Object? termsOfServiceUrl = null,Object? isGuest = null,}) {
   return _then(_SettingsDisplayData(
 user: null == user ? _self.user : user // ignore: cast_nullable_to_non_nullable
 as UserModel,subscriptionStatus: null == subscriptionStatus ? _self.subscriptionStatus : subscriptionStatus // ignore: cast_nullable_to_non_nullable
@@ -300,7 +302,8 @@ as bool,appVersion: null == appVersion ? _self.appVersion : appVersion // ignore
 as String,favoriteSector: null == favoriteSector ? _self.favoriteSector : favoriteSector // ignore: cast_nullable_to_non_nullable
 as String,privacyPolicyUrl: null == privacyPolicyUrl ? _self.privacyPolicyUrl : privacyPolicyUrl // ignore: cast_nullable_to_non_nullable
 as String,termsOfServiceUrl: null == termsOfServiceUrl ? _self.termsOfServiceUrl : termsOfServiceUrl // ignore: cast_nullable_to_non_nullable
-as String,
+as String,isGuest: null == isGuest ? _self.isGuest : isGuest // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 

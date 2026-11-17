@@ -1,15 +1,15 @@
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/core/interfaces/i_config_service.dart';
-import 'package:bizzie/core/interfaces/i_notification_service.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
-import 'package:bizzie/core/services/app_info_service.dart';
+import 'package:bizzie/core/interfaces/i_app_info_service.dart';
 import 'package:bizzie/core/usecase/usecase.dart';
 import 'package:bizzie/features/auth/domain/interfaces/i_auth_repository.dart';
+import 'package:bizzie/features/notifications/domain/interfaces/i_notification_repository.dart';
 import 'package:bizzie/features/settings/domain/models/settings_display_data.dart';
 import 'package:bizzie/features/subscription/domain/interfaces/i_subscription_repository.dart';
 import 'package:bizzie/features/subscription/domain/models/subscription_status.dart';
-import 'package:bizzie/features/user/domain/interfaces/user_repository.dart';
-import 'package:bizzie/features/user/domain/models/user_model.dart' as domain;
+import 'package:bizzie/features/user/domain/interfaces/i_user_repository.dart';
+import 'package:bizzie/core/domain/models/user_model.dart' as domain;
 import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
 
@@ -22,7 +22,7 @@ class GetSettingsDisplayDataUseCase
   final IUserRepository _userRepository;
   final ISubscriptionRepository _subscriptionRepository;
   final IAppInfoService _appInfoService;
-  final INotificationService _notificationService;
+  final INotificationRepository _notificationRepository;
   final IConfigService _configService;
 
   GetSettingsDisplayDataUseCase(
@@ -30,7 +30,7 @@ class GetSettingsDisplayDataUseCase
     this._userRepository,
     this._subscriptionRepository,
     this._appInfoService,
-    this._notificationService,
+    this._notificationRepository,
     this._configService,
   );
 
@@ -48,10 +48,15 @@ class GetSettingsDisplayDataUseCase
       _userRepository.getUser(user.id),
       _subscriptionRepository.getSubscriptionStatus(),
       _getAppVersionSafe(),
-      _notificationService.isSystemAuthorized(),
+      _isSystemAuthorizedSafe(),
     ).wait;
 
-    return _aggregateData((userRes, subRes, appVersion, isSystemAuthorized));
+    return _aggregateData((
+      userRes,
+      subRes,
+      appVersion,
+      isSystemAuthorized,
+    ), isGuest: user.isAnonymous);
   }
 
   Future<String> _getAppVersionSafe() async {
@@ -63,6 +68,14 @@ class GetSettingsDisplayDataUseCase
     }
   }
 
+  Future<bool> _isSystemAuthorizedSafe() async {
+    final result = await _notificationRepository.isSystemAuthorized();
+    return result.fold((f) {
+      _logger.warning('Failed to read system notification permission', f);
+      return false;
+    }, (isAuthorized) => isAuthorized);
+  }
+
   Either<Failure, SettingsDisplayData> _aggregateData(
     (
       Either<Failure, domain.UserModel>,
@@ -70,8 +83,9 @@ class GetSettingsDisplayDataUseCase
       String,
       bool,
     )
-    results,
-  ) {
+    results, {
+    required bool isGuest,
+  }) {
     final (userRes, subRes, appVersion, isSystemAuthorized) = results;
 
     return userRes.fold(
@@ -99,6 +113,7 @@ class GetSettingsDisplayDataUseCase
             favoriteSector: user.favoriteSector,
             privacyPolicyUrl: _configService.privacyPolicyUrl,
             termsOfServiceUrl: _configService.termsOfServiceUrl,
+            isGuest: isGuest,
           ),
         );
       },

@@ -7,6 +7,17 @@ import 'package:flutter_test/flutter_test.dart';
 const tCompanyAapl = Company(ticker: 'AAPL', name: 'Apple Inc.');
 const tCompanyMsft = Company(ticker: 'MSFT', name: 'Microsoft Corp.');
 const tCompanyGoog = Company(ticker: 'GOOG', name: 'Alphabet Inc.');
+const tAaplLogoUrl = 'https://example.com/aapl.png';
+const tCompanyAaplWithLogo = Company(
+  ticker: 'AAPL',
+  name: 'Apple Inc.',
+  logoUrl: tAaplLogoUrl,
+);
+const tCompanyMsftEmptyLogo = Company(
+  ticker: 'MSFT',
+  name: 'Microsoft Corp.',
+  logoUrl: '',
+);
 
 void main() {
   group('WatchlistStateX.tickerOrder', () {
@@ -68,6 +79,34 @@ void main() {
         // act & assert
         expect(state.tickerOrder, isEmpty);
       });
+    });
+  });
+
+  group('WatchlistStateX.logoUrlsByTicker', () {
+    test('logoUrlsByTicker_loaded_mapsOnlyNonEmptyLogoUrlsByTicker', () {
+      // arrange
+      const state = WatchlistState.loaded([
+        tCompanyAaplWithLogo,
+        tCompanyMsftEmptyLogo,
+        tCompanyGoog,
+      ]);
+
+      // act
+      final result = state.logoUrlsByTicker;
+
+      // assert
+      expect(result, {'AAPL': tAaplLogoUrl});
+    });
+
+    test('logoUrlsByTicker_nonLoadedState_returnsEmptyMap', () {
+      // arrange
+      const state = WatchlistState.loading();
+
+      // act
+      final result = state.logoUrlsByTicker;
+
+      // assert
+      expect(result, isEmpty);
     });
   });
 }

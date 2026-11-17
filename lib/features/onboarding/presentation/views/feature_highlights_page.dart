@@ -1,17 +1,23 @@
+import 'package:bizzie/app/routes/app_routes.dart';
 import 'package:bizzie/app/themes/app_colors.dart';
-
 import 'package:bizzie/app/themes/app_text_styles.dart';
-import 'package:bizzie/features/onboarding/presentation/bloc/onboarding_bloc.dart';
 import 'package:bizzie/features/onboarding/domain/models/onboarding_step.dart';
+import 'package:bizzie/features/onboarding/presentation/bloc/onboarding_bloc.dart';
+import 'package:bizzie/features/onboarding/presentation/extensions/onboarding_state_x.dart';
+import 'package:bizzie/features/onboarding/presentation/models/feature_highlight_item.dart';
+import 'package:bizzie/features/onboarding/presentation/widgets/onboarding_footer.dart';
+import 'package:bizzie/features/onboarding/presentation/widgets/onboarding_skip_button.dart';
+import 'package:bizzie/shared/constants/app_constants.dart';
+import 'package:bizzie/shared/widgets/buttons/bizzie_primary_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:bizzie/app/routes/app_routes.dart';
-import 'package:bizzie/features/onboarding/presentation/widgets/onboarding_footer.dart';
-import '../widgets/onboarding_header.dart';
-import '../widgets/feature_highlights/feature_highlight_factory.dart';
 
-import 'package:bizzie/shared/widgets/buttons/bizzie_primary_button.dart';
+import '../widgets/feature_highlights/feature_highlight_illustration.dart';
+import '../widgets/onboarding_header.dart';
+
+const _pageTransitionDuration = Duration(milliseconds: 300);
+const _indicatorAnimationDuration = Duration(milliseconds: 300);
 
 class FeatureHighlightsPage extends StatefulWidget {
   const FeatureHighlightsPage({super.key});
@@ -55,51 +61,30 @@ class _FeatureHighlightsPageState extends State<FeatureHighlightsPage> {
             _pageController.page?.round() != state.currentHighlightIndex) {
           _pageController.animateToPage(
             state.currentHighlightIndex,
-            duration: const Duration(milliseconds: 300),
+            duration: _pageTransitionDuration,
             curve: Curves.easeInOut,
           );
         }
       },
       builder: (context, state) {
-        final items = state.featureHighlights;
-        final currentIndex = state.currentHighlightIndex;
-
         return Scaffold(
           body: SafeArea(
             child: Column(
               children: [
                 OnboardingHeader(
                   onBackPressed: () => context.pop(),
-                  trailing: const _SkipButton(),
-                ),
-                const SizedBox(height: 24),
-                Expanded(
-                  child: Column(
-                    children: [
-                      _HighlightsCarousel(
-                        pageController: _pageController,
-                        items: items,
-                        state: state,
-                      ),
-                      const SizedBox(height: 24),
-                      _PageIndicators(
-                        itemCount: items.length,
-                        currentIndex: currentIndex,
-                      ),
-                    ],
+                  trailing: const OnboardingSkipButton(
+                    step: OnboardingStep.featureHighlights,
                   ),
                 ),
-                if (items.isNotEmpty)
-                  OnboardingFooter(
-                    shiftDown: true,
-                    fixedTextHeight: 160,
-                    title: items[currentIndex].title,
-                    subtitle: items[currentIndex].description,
-                    primaryButton: _ContinueButton(
-                      isLastPage: currentIndex >= items.length - 1,
-                    ),
+                AppConstants.mainSectionSpacing,
+                _HighlightsBody(pageController: _pageController, state: state),
+                if (state.featureHighlights.isNotEmpty)
+                  _HighlightsFooter(
+                    item: state.featureHighlights[state.currentHighlightIndex],
+                    isLastPage: state.isOnLastHighlight,
                   ),
-                const SizedBox(height: 16),
+                AppConstants.onboardSecondarySectionSpacing,
               ],
             ),
           ),
@@ -109,28 +94,24 @@ class _FeatureHighlightsPageState extends State<FeatureHighlightsPage> {
   }
 }
 
-class _SkipButton extends StatelessWidget {
-  const _SkipButton();
+class _HighlightsBody extends StatelessWidget {
+  final PageController pageController;
+  final OnboardingState state;
+
+  const _HighlightsBody({required this.pageController, required this.state});
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => context.read<OnboardingBloc>().add(
-        const OnboardingEvent.highlightSkipPressed(),
-      ),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        decoration: BoxDecoration(
-          color: AppColors.slate100,
-          borderRadius: BorderRadius.circular(22),
-        ),
-        child: Text(
-          'Skip',
-          style: AppTextStyles.bodyMedium.copyWith(
-            color: AppColors.brandChipOtherForeground,
-            fontWeight: FontWeight.w600,
+    return Expanded(
+      child: Column(
+        children: [
+          _HighlightsCarousel(pageController: pageController, state: state),
+          AppConstants.mainSectionSpacing,
+          _PageIndicators(
+            itemCount: state.featureHighlights.length,
+            currentIndex: state.currentHighlightIndex,
           ),
-        ),
+        ],
       ),
     );
   }
@@ -138,17 +119,17 @@ class _SkipButton extends StatelessWidget {
 
 class _HighlightsCarousel extends StatelessWidget {
   final PageController pageController;
-  final List<dynamic> items;
   final OnboardingState state;
 
   const _HighlightsCarousel({
     required this.pageController,
-    required this.items,
     required this.state,
   });
 
   @override
   Widget build(BuildContext context) {
+    final items = state.featureHighlights;
+
     return Expanded(
       child: PageView.builder(
         controller: pageController,
@@ -162,7 +143,7 @@ class _HighlightsCarousel extends StatelessWidget {
           final item = items[index];
           return SizedBox(
             width: double.infinity,
-            child: FeatureHighlightFactory.buildIllustration(item.type, state),
+            child: FeatureHighlightIllustration(type: item.type, state: state),
           );
         },
       ),
@@ -179,32 +160,63 @@ class _PageIndicators extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24.0),
+      padding: AppConstants.onboardHorizontalPadding,
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: List.generate(itemCount, (index) {
-          final isSelected = currentIndex == index;
-          return AnimatedContainer(
-            duration: const Duration(milliseconds: 300),
-            margin: const EdgeInsets.only(right: 12),
-            width: 32,
-            height: 32,
-            decoration: BoxDecoration(
-              color: isSelected ? AppColors.primary : AppColors.slate200,
-              shape: BoxShape.circle,
-            ),
-            child: Center(
-              child: Text(
-                '${index + 1}',
-                style: AppTextStyles.bodyMedium.copyWith(
-                  color: isSelected ? AppColors.white : AppColors.textSecondary,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-          );
-        }),
+        children: List.generate(
+          itemCount,
+          (index) => _PageIndicatorDot(
+            index: index,
+            isSelected: currentIndex == index,
+          ),
+        ),
       ),
+    );
+  }
+}
+
+class _PageIndicatorDot extends StatelessWidget {
+  final int index;
+  final bool isSelected;
+
+  const _PageIndicatorDot({required this.index, required this.isSelected});
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedContainer(
+      duration: _indicatorAnimationDuration,
+      margin: AppConstants.onboardHighlightIndicatorMargin,
+      width: AppConstants.onboardHighlightIndicatorSize,
+      height: AppConstants.onboardHighlightIndicatorSize,
+      decoration: BoxDecoration(
+        color: isSelected ? AppColors.primary : AppColors.slate200,
+        shape: BoxShape.circle,
+      ),
+      child: Center(
+        child: Text(
+          '${index + 1}',
+          style: AppTextStyles.onboardingHighlightIndicator.copyWith(
+            color: isSelected ? AppColors.white : AppColors.textSecondary,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _HighlightsFooter extends StatelessWidget {
+  final FeatureHighlightItem item;
+  final bool isLastPage;
+
+  const _HighlightsFooter({required this.item, required this.isLastPage});
+
+  @override
+  Widget build(BuildContext context) {
+    return OnboardingFooter(
+      shiftDown: true,
+      fixedTextHeight: AppConstants.onboardHighlightFooterTextHeight,
+      title: item.title,
+      subtitle: item.description,
+      primaryButton: _ContinueButton(isLastPage: isLastPage),
     );
   }
 }

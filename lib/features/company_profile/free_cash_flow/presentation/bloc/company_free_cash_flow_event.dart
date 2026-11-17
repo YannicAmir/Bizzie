@@ -1,3 +1,4 @@
+import 'package:bizzie/core/enums/financial_period.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'company_free_cash_flow_event.freezed.dart';
@@ -19,10 +20,10 @@ sealed class CompanyFreeCashFlowEvent with _$CompanyFreeCashFlowEvent {
   const factory CompanyFreeCashFlowEvent.appForegrounded() = AppForegrounded;
 
   const factory CompanyFreeCashFlowEvent.periodChanged({
-    required bool isAnnual,
+    required FinancialPeriod period,
   }) = PeriodChanged;
   const factory CompanyFreeCashFlowEvent.viewAllTapped({
-    required bool isAnnual,
+    required FinancialPeriod period,
     required bool isChart,
   }) = ViewAllTapped;
 

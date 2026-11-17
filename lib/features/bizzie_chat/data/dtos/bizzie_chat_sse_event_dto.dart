@@ -1,30 +1,28 @@
 import 'dart:convert';
 import 'package:bizzie/features/bizzie_chat/domain/models/chat_sse_event.dart';
 
-
 sealed class BizzieChatSseEventDto {
   const BizzieChatSseEventDto();
 
   factory BizzieChatSseEventDto.fromRawLine(String dataLine) {
     final json = jsonDecode(dataLine) as Map<String, dynamic>;
     return switch (json['type'] as String?) {
-      'token' => BizzieChatTokenEventDto(
-          token: json['token'] as String? ?? '',
-        ),
+      'token' => BizzieChatTokenEventDto(token: json['token'] as String? ?? ''),
       'done' => BizzieChatDoneEventDto(
-          followUps: (json['follow_ups'] as List<dynamic>?)
-                  ?.whereType<String>()
-                  .toList() ??
-              [],
-          source: json['source'] as String?,
-          routePath: json['route_path'] as String?,
-        ),
+        followUps:
+            (json['follow_ups'] as List<dynamic>?)
+                ?.whereType<String>()
+                .toList() ??
+            [],
+        source: json['source'] as String?,
+        routePath: json['route_path'] as String?,
+      ),
       'error' => BizzieChatErrorEventDto(
-          message: json['message'] as String? ?? 'Unknown error',
-        ),
+        message: json['message'] as String? ?? 'Unknown error',
+      ),
       final unknown => BizzieChatErrorEventDto(
-          message: 'Unrecognised SSE event type: $unknown',
-        ),
+        message: 'Unrecognised SSE event type: $unknown',
+      ),
     };
   }
 
@@ -52,10 +50,10 @@ final class BizzieChatDoneEventDto extends BizzieChatSseEventDto {
 
   @override
   ChatSseEvent toDomain() => ChatSseEvent.done(
-        followUps: followUps,
-        source: source,
-        routePath: routePath,
-      );
+    followUps: followUps,
+    source: source,
+    routePath: routePath,
+  );
 }
 
 final class BizzieChatErrorEventDto extends BizzieChatSseEventDto {

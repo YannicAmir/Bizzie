@@ -129,13 +129,7 @@ class AppTheme {
           subtitleColor: AppColors.mascotSubtitle,
           cardShadow: AppShadows.standardCard,
         ),
-        SocialLoginThemeExtension(
-          appleBackgroundColor: AppColors.appleBlack,
-          appleForegroundColor: AppColors.surface,
-          googleBackgroundColor: AppColors.googleBackground,
-          googleForegroundColor: AppColors.textPrimary,
-          googleTextColor: AppColors.googleText,
-        ),
+        SocialLoginThemeExtension.light,
         BadgeThemeExtension(
           neutralBackground: AppColors.mascotBackground,
           neutralText: AppColors.primary,
@@ -237,6 +231,14 @@ class SocialLoginThemeExtension
     required this.googleForegroundColor,
     required this.googleTextColor,
   });
+
+  static const light = SocialLoginThemeExtension(
+    appleBackgroundColor: AppColors.appleBlack,
+    appleForegroundColor: AppColors.surface,
+    googleBackgroundColor: AppColors.googleBackground,
+    googleForegroundColor: AppColors.textPrimary,
+    googleTextColor: AppColors.googleText,
+  );
 
   @override
   SocialLoginThemeExtension copyWith({

@@ -60,6 +60,7 @@ This document serves as the **Single Source of Truth** for the tools, libraries,
 * **Typography:** `lib/app/themes/app_text_styles.dart` (Strict Source of Truth)
     * **Rule:** Do NOT use `GoogleFonts` or inline `TextStyle`. Always define a constant in `AppTextStyles` and reference it.
 * **UI Components:** `flutter_svg`, `cached_network_image`, `smooth_page_indicator`, `custom_refresh_indicator`, `flutter_native_splash`
+* **Guided Tours:** `showcaseview` (first-run guided tour / feature highlights)
 
 ## 9. Utilities & Helpers
 * **Device Info:** `device_info_plus`, `package_info_plus`

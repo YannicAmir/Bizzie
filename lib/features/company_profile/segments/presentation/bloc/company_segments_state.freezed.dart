@@ -128,12 +128,12 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( String ticker,  RevenueProductSegments productSegments,  RevenueGeographicSegments geographicSegments,  List<String> annualPeriodKeys,  List<String> quarterlyPeriodKeys,  Map<String, int> productColorIndices,  Map<String, int> geographicColorIndices,  int historyLimit,  CompanyProfileDataOrigin dataOrigin,  bool isAnnualView,  String? selectedAnnualKey,  String? selectedQuarterlyKey,  DateTime? lastUpdated,  SegmentsTabViewState? analyticsState)?  loaded,TResult Function( Failure failure)?  failure,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( String ticker,  RevenueProductSegments productSegments,  RevenueGeographicSegments geographicSegments,  List<String> annualPeriodKeys,  List<String> quarterlyPeriodKeys,  Map<String, int> productColorIndices,  Map<String, int> geographicColorIndices,  int historyLimit,  CompanyProfileDataOrigin dataOrigin,  FinancialPeriod period,  String? selectedAnnualKey,  String? selectedQuarterlyKey,  DateTime? lastUpdated,  SegmentsTabViewState? analyticsState)?  loaded,TResult Function( Failure failure)?  failure,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial();case _Loading() when loading != null:
 return loading();case CompanySegmentsLoaded() when loaded != null:
-return loaded(_that.ticker,_that.productSegments,_that.geographicSegments,_that.annualPeriodKeys,_that.quarterlyPeriodKeys,_that.productColorIndices,_that.geographicColorIndices,_that.historyLimit,_that.dataOrigin,_that.isAnnualView,_that.selectedAnnualKey,_that.selectedQuarterlyKey,_that.lastUpdated,_that.analyticsState);case _Failure() when failure != null:
+return loaded(_that.ticker,_that.productSegments,_that.geographicSegments,_that.annualPeriodKeys,_that.quarterlyPeriodKeys,_that.productColorIndices,_that.geographicColorIndices,_that.historyLimit,_that.dataOrigin,_that.period,_that.selectedAnnualKey,_that.selectedQuarterlyKey,_that.lastUpdated,_that.analyticsState);case _Failure() when failure != null:
 return failure(_that.failure);case _:
   return orElse();
 
@@ -152,12 +152,12 @@ return failure(_that.failure);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( String ticker,  RevenueProductSegments productSegments,  RevenueGeographicSegments geographicSegments,  List<String> annualPeriodKeys,  List<String> quarterlyPeriodKeys,  Map<String, int> productColorIndices,  Map<String, int> geographicColorIndices,  int historyLimit,  CompanyProfileDataOrigin dataOrigin,  bool isAnnualView,  String? selectedAnnualKey,  String? selectedQuarterlyKey,  DateTime? lastUpdated,  SegmentsTabViewState? analyticsState)  loaded,required TResult Function( Failure failure)  failure,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( String ticker,  RevenueProductSegments productSegments,  RevenueGeographicSegments geographicSegments,  List<String> annualPeriodKeys,  List<String> quarterlyPeriodKeys,  Map<String, int> productColorIndices,  Map<String, int> geographicColorIndices,  int historyLimit,  CompanyProfileDataOrigin dataOrigin,  FinancialPeriod period,  String? selectedAnnualKey,  String? selectedQuarterlyKey,  DateTime? lastUpdated,  SegmentsTabViewState? analyticsState)  loaded,required TResult Function( Failure failure)  failure,}) {final _that = this;
 switch (_that) {
 case _Initial():
 return initial();case _Loading():
 return loading();case CompanySegmentsLoaded():
-return loaded(_that.ticker,_that.productSegments,_that.geographicSegments,_that.annualPeriodKeys,_that.quarterlyPeriodKeys,_that.productColorIndices,_that.geographicColorIndices,_that.historyLimit,_that.dataOrigin,_that.isAnnualView,_that.selectedAnnualKey,_that.selectedQuarterlyKey,_that.lastUpdated,_that.analyticsState);case _Failure():
+return loaded(_that.ticker,_that.productSegments,_that.geographicSegments,_that.annualPeriodKeys,_that.quarterlyPeriodKeys,_that.productColorIndices,_that.geographicColorIndices,_that.historyLimit,_that.dataOrigin,_that.period,_that.selectedAnnualKey,_that.selectedQuarterlyKey,_that.lastUpdated,_that.analyticsState);case _Failure():
 return failure(_that.failure);case _:
   throw StateError('Unexpected subclass');
 
@@ -175,12 +175,12 @@ return failure(_that.failure);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( String ticker,  RevenueProductSegments productSegments,  RevenueGeographicSegments geographicSegments,  List<String> annualPeriodKeys,  List<String> quarterlyPeriodKeys,  Map<String, int> productColorIndices,  Map<String, int> geographicColorIndices,  int historyLimit,  CompanyProfileDataOrigin dataOrigin,  bool isAnnualView,  String? selectedAnnualKey,  String? selectedQuarterlyKey,  DateTime? lastUpdated,  SegmentsTabViewState? analyticsState)?  loaded,TResult? Function( Failure failure)?  failure,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( String ticker,  RevenueProductSegments productSegments,  RevenueGeographicSegments geographicSegments,  List<String> annualPeriodKeys,  List<String> quarterlyPeriodKeys,  Map<String, int> productColorIndices,  Map<String, int> geographicColorIndices,  int historyLimit,  CompanyProfileDataOrigin dataOrigin,  FinancialPeriod period,  String? selectedAnnualKey,  String? selectedQuarterlyKey,  DateTime? lastUpdated,  SegmentsTabViewState? analyticsState)?  loaded,TResult? Function( Failure failure)?  failure,}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial();case _Loading() when loading != null:
 return loading();case CompanySegmentsLoaded() when loaded != null:
-return loaded(_that.ticker,_that.productSegments,_that.geographicSegments,_that.annualPeriodKeys,_that.quarterlyPeriodKeys,_that.productColorIndices,_that.geographicColorIndices,_that.historyLimit,_that.dataOrigin,_that.isAnnualView,_that.selectedAnnualKey,_that.selectedQuarterlyKey,_that.lastUpdated,_that.analyticsState);case _Failure() when failure != null:
+return loaded(_that.ticker,_that.productSegments,_that.geographicSegments,_that.annualPeriodKeys,_that.quarterlyPeriodKeys,_that.productColorIndices,_that.geographicColorIndices,_that.historyLimit,_that.dataOrigin,_that.period,_that.selectedAnnualKey,_that.selectedQuarterlyKey,_that.lastUpdated,_that.analyticsState);case _Failure() when failure != null:
 return failure(_that.failure);case _:
   return null;
 
@@ -257,7 +257,7 @@ String toString() {
 
 
 class CompanySegmentsLoaded implements CompanySegmentsState {
-  const CompanySegmentsLoaded({required this.ticker, required this.productSegments, required this.geographicSegments, required final  List<String> annualPeriodKeys, required final  List<String> quarterlyPeriodKeys, required final  Map<String, int> productColorIndices, required final  Map<String, int> geographicColorIndices, required this.historyLimit, required this.dataOrigin, this.isAnnualView = true, this.selectedAnnualKey, this.selectedQuarterlyKey, this.lastUpdated, this.analyticsState}): _annualPeriodKeys = annualPeriodKeys,_quarterlyPeriodKeys = quarterlyPeriodKeys,_productColorIndices = productColorIndices,_geographicColorIndices = geographicColorIndices;
+  const CompanySegmentsLoaded({required this.ticker, required this.productSegments, required this.geographicSegments, required final  List<String> annualPeriodKeys, required final  List<String> quarterlyPeriodKeys, required final  Map<String, int> productColorIndices, required final  Map<String, int> geographicColorIndices, required this.historyLimit, required this.dataOrigin, this.period = FinancialPeriod.annual, this.selectedAnnualKey, this.selectedQuarterlyKey, this.lastUpdated, this.analyticsState}): _annualPeriodKeys = annualPeriodKeys,_quarterlyPeriodKeys = quarterlyPeriodKeys,_productColorIndices = productColorIndices,_geographicColorIndices = geographicColorIndices;
   
 
  final  String ticker;
@@ -293,7 +293,7 @@ class CompanySegmentsLoaded implements CompanySegmentsState {
 
  final  int historyLimit;
  final  CompanyProfileDataOrigin dataOrigin;
-@JsonKey() final  bool isAnnualView;
+@JsonKey() final  FinancialPeriod period;
  final  String? selectedAnnualKey;
  final  String? selectedQuarterlyKey;
  final  DateTime? lastUpdated;
@@ -309,16 +309,16 @@ $CompanySegmentsLoadedCopyWith<CompanySegmentsLoaded> get copyWith => _$CompanyS
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CompanySegmentsLoaded&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.productSegments, productSegments) || other.productSegments == productSegments)&&(identical(other.geographicSegments, geographicSegments) || other.geographicSegments == geographicSegments)&&const DeepCollectionEquality().equals(other._annualPeriodKeys, _annualPeriodKeys)&&const DeepCollectionEquality().equals(other._quarterlyPeriodKeys, _quarterlyPeriodKeys)&&const DeepCollectionEquality().equals(other._productColorIndices, _productColorIndices)&&const DeepCollectionEquality().equals(other._geographicColorIndices, _geographicColorIndices)&&(identical(other.historyLimit, historyLimit) || other.historyLimit == historyLimit)&&(identical(other.dataOrigin, dataOrigin) || other.dataOrigin == dataOrigin)&&(identical(other.isAnnualView, isAnnualView) || other.isAnnualView == isAnnualView)&&(identical(other.selectedAnnualKey, selectedAnnualKey) || other.selectedAnnualKey == selectedAnnualKey)&&(identical(other.selectedQuarterlyKey, selectedQuarterlyKey) || other.selectedQuarterlyKey == selectedQuarterlyKey)&&(identical(other.lastUpdated, lastUpdated) || other.lastUpdated == lastUpdated)&&(identical(other.analyticsState, analyticsState) || other.analyticsState == analyticsState));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CompanySegmentsLoaded&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.productSegments, productSegments) || other.productSegments == productSegments)&&(identical(other.geographicSegments, geographicSegments) || other.geographicSegments == geographicSegments)&&const DeepCollectionEquality().equals(other._annualPeriodKeys, _annualPeriodKeys)&&const DeepCollectionEquality().equals(other._quarterlyPeriodKeys, _quarterlyPeriodKeys)&&const DeepCollectionEquality().equals(other._productColorIndices, _productColorIndices)&&const DeepCollectionEquality().equals(other._geographicColorIndices, _geographicColorIndices)&&(identical(other.historyLimit, historyLimit) || other.historyLimit == historyLimit)&&(identical(other.dataOrigin, dataOrigin) || other.dataOrigin == dataOrigin)&&(identical(other.period, period) || other.period == period)&&(identical(other.selectedAnnualKey, selectedAnnualKey) || other.selectedAnnualKey == selectedAnnualKey)&&(identical(other.selectedQuarterlyKey, selectedQuarterlyKey) || other.selectedQuarterlyKey == selectedQuarterlyKey)&&(identical(other.lastUpdated, lastUpdated) || other.lastUpdated == lastUpdated)&&(identical(other.analyticsState, analyticsState) || other.analyticsState == analyticsState));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,ticker,productSegments,geographicSegments,const DeepCollectionEquality().hash(_annualPeriodKeys),const DeepCollectionEquality().hash(_quarterlyPeriodKeys),const DeepCollectionEquality().hash(_productColorIndices),const DeepCollectionEquality().hash(_geographicColorIndices),historyLimit,dataOrigin,isAnnualView,selectedAnnualKey,selectedQuarterlyKey,lastUpdated,analyticsState);
+int get hashCode => Object.hash(runtimeType,ticker,productSegments,geographicSegments,const DeepCollectionEquality().hash(_annualPeriodKeys),const DeepCollectionEquality().hash(_quarterlyPeriodKeys),const DeepCollectionEquality().hash(_productColorIndices),const DeepCollectionEquality().hash(_geographicColorIndices),historyLimit,dataOrigin,period,selectedAnnualKey,selectedQuarterlyKey,lastUpdated,analyticsState);
 
 @override
 String toString() {
-  return 'CompanySegmentsState.loaded(ticker: $ticker, productSegments: $productSegments, geographicSegments: $geographicSegments, annualPeriodKeys: $annualPeriodKeys, quarterlyPeriodKeys: $quarterlyPeriodKeys, productColorIndices: $productColorIndices, geographicColorIndices: $geographicColorIndices, historyLimit: $historyLimit, dataOrigin: $dataOrigin, isAnnualView: $isAnnualView, selectedAnnualKey: $selectedAnnualKey, selectedQuarterlyKey: $selectedQuarterlyKey, lastUpdated: $lastUpdated, analyticsState: $analyticsState)';
+  return 'CompanySegmentsState.loaded(ticker: $ticker, productSegments: $productSegments, geographicSegments: $geographicSegments, annualPeriodKeys: $annualPeriodKeys, quarterlyPeriodKeys: $quarterlyPeriodKeys, productColorIndices: $productColorIndices, geographicColorIndices: $geographicColorIndices, historyLimit: $historyLimit, dataOrigin: $dataOrigin, period: $period, selectedAnnualKey: $selectedAnnualKey, selectedQuarterlyKey: $selectedQuarterlyKey, lastUpdated: $lastUpdated, analyticsState: $analyticsState)';
 }
 
 
@@ -329,7 +329,7 @@ abstract mixin class $CompanySegmentsLoadedCopyWith<$Res> implements $CompanySeg
   factory $CompanySegmentsLoadedCopyWith(CompanySegmentsLoaded value, $Res Function(CompanySegmentsLoaded) _then) = _$CompanySegmentsLoadedCopyWithImpl;
 @useResult
 $Res call({
- String ticker, RevenueProductSegments productSegments, RevenueGeographicSegments geographicSegments, List<String> annualPeriodKeys, List<String> quarterlyPeriodKeys, Map<String, int> productColorIndices, Map<String, int> geographicColorIndices, int historyLimit, CompanyProfileDataOrigin dataOrigin, bool isAnnualView, String? selectedAnnualKey, String? selectedQuarterlyKey, DateTime? lastUpdated, SegmentsTabViewState? analyticsState
+ String ticker, RevenueProductSegments productSegments, RevenueGeographicSegments geographicSegments, List<String> annualPeriodKeys, List<String> quarterlyPeriodKeys, Map<String, int> productColorIndices, Map<String, int> geographicColorIndices, int historyLimit, CompanyProfileDataOrigin dataOrigin, FinancialPeriod period, String? selectedAnnualKey, String? selectedQuarterlyKey, DateTime? lastUpdated, SegmentsTabViewState? analyticsState
 });
 
 
@@ -346,7 +346,7 @@ class _$CompanySegmentsLoadedCopyWithImpl<$Res>
 
 /// Create a copy of CompanySegmentsState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? ticker = null,Object? productSegments = null,Object? geographicSegments = null,Object? annualPeriodKeys = null,Object? quarterlyPeriodKeys = null,Object? productColorIndices = null,Object? geographicColorIndices = null,Object? historyLimit = null,Object? dataOrigin = null,Object? isAnnualView = null,Object? selectedAnnualKey = freezed,Object? selectedQuarterlyKey = freezed,Object? lastUpdated = freezed,Object? analyticsState = freezed,}) {
+@pragma('vm:prefer-inline') $Res call({Object? ticker = null,Object? productSegments = null,Object? geographicSegments = null,Object? annualPeriodKeys = null,Object? quarterlyPeriodKeys = null,Object? productColorIndices = null,Object? geographicColorIndices = null,Object? historyLimit = null,Object? dataOrigin = null,Object? period = null,Object? selectedAnnualKey = freezed,Object? selectedQuarterlyKey = freezed,Object? lastUpdated = freezed,Object? analyticsState = freezed,}) {
   return _then(CompanySegmentsLoaded(
 ticker: null == ticker ? _self.ticker : ticker // ignore: cast_nullable_to_non_nullable
 as String,productSegments: null == productSegments ? _self.productSegments : productSegments // ignore: cast_nullable_to_non_nullable
@@ -357,8 +357,8 @@ as List<String>,productColorIndices: null == productColorIndices ? _self._produc
 as Map<String, int>,geographicColorIndices: null == geographicColorIndices ? _self._geographicColorIndices : geographicColorIndices // ignore: cast_nullable_to_non_nullable
 as Map<String, int>,historyLimit: null == historyLimit ? _self.historyLimit : historyLimit // ignore: cast_nullable_to_non_nullable
 as int,dataOrigin: null == dataOrigin ? _self.dataOrigin : dataOrigin // ignore: cast_nullable_to_non_nullable
-as CompanyProfileDataOrigin,isAnnualView: null == isAnnualView ? _self.isAnnualView : isAnnualView // ignore: cast_nullable_to_non_nullable
-as bool,selectedAnnualKey: freezed == selectedAnnualKey ? _self.selectedAnnualKey : selectedAnnualKey // ignore: cast_nullable_to_non_nullable
+as CompanyProfileDataOrigin,period: null == period ? _self.period : period // ignore: cast_nullable_to_non_nullable
+as FinancialPeriod,selectedAnnualKey: freezed == selectedAnnualKey ? _self.selectedAnnualKey : selectedAnnualKey // ignore: cast_nullable_to_non_nullable
 as String?,selectedQuarterlyKey: freezed == selectedQuarterlyKey ? _self.selectedQuarterlyKey : selectedQuarterlyKey // ignore: cast_nullable_to_non_nullable
 as String?,lastUpdated: freezed == lastUpdated ? _self.lastUpdated : lastUpdated // ignore: cast_nullable_to_non_nullable
 as DateTime?,analyticsState: freezed == analyticsState ? _self.analyticsState : analyticsState // ignore: cast_nullable_to_non_nullable

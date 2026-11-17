@@ -1,4 +1,6 @@
 import 'package:bizzie/core/interfaces/i_analytics_service.dart';
+import 'package:bizzie/features/settings/domain/enums/guest_logout_choice.dart';
+import 'package:bizzie/features/settings/domain/enums/settings_link_type.dart';
 import 'package:bizzie/features/settings/presentation/analytics/settings_tracker.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
@@ -133,30 +135,13 @@ void main() {
       );
     });
 
-    group('logPasswordResetClicked', () {
-      test('logPasswordResetClicked_triggered_logsCorrectEvent', () async {
-        // act
-        await tracker.logPasswordResetClicked();
-
-        // assert
-        verify(
-          () => mockAnalyticsService.logEvent(
-            name: 'settings_password_reset_clicked',
-            parameters: any(
-              named: 'parameters',
-              that: isA<Map<String, dynamic>>()
-                  .having((p) => p['screen_name'], 'screen_name', kScreenName)
-                  .having((p) => p['timestamp'], 'timestamp', isA<String>()),
-            ),
-          ),
-        ).called(1);
-      });
-    });
-
     group('logSignOutClicked', () {
-      test('logSignOutClicked_triggered_logsCorrectEvent', () async {
+      test('logSignOutClicked_guest_logsEventWithGuestAccountType', () async {
+        // arrange
+        const isGuest = true;
+
         // act
-        await tracker.logSignOutClicked();
+        await tracker.logSignOutClicked(isGuest: isGuest);
 
         // assert
         verify(
@@ -165,18 +150,48 @@ void main() {
             parameters: any(
               named: 'parameters',
               that: isA<Map<String, dynamic>>()
+                  .having((p) => p['account_type'], 'account_type', 'guest')
                   .having((p) => p['screen_name'], 'screen_name', kScreenName)
                   .having((p) => p['timestamp'], 'timestamp', isA<String>()),
             ),
           ),
         ).called(1);
       });
+
+      test(
+        'logSignOutClicked_registered_logsEventWithRegisteredAccountType',
+        () async {
+          // arrange
+          const isGuest = false;
+
+          // act
+          await tracker.logSignOutClicked(isGuest: isGuest);
+
+          // assert
+          verify(
+            () => mockAnalyticsService.logEvent(
+              name: 'settings_sign_out_clicked',
+              parameters: any(
+                named: 'parameters',
+                that: isA<Map<String, dynamic>>().having(
+                  (p) => p['account_type'],
+                  'account_type',
+                  'registered',
+                ),
+              ),
+            ),
+          ).called(1);
+        },
+      );
     });
 
     group('logSignOutSuccess', () {
-      test('logSignOutSuccess_triggered_logsCorrectEvent', () async {
+      test('logSignOutSuccess_guest_logsEventWithGuestAccountType', () async {
+        // arrange
+        const isGuest = true;
+
         // act
-        await tracker.logSignOutSuccess();
+        await tracker.logSignOutSuccess(isGuest: isGuest);
 
         // assert
         verify(
@@ -185,36 +200,143 @@ void main() {
             parameters: any(
               named: 'parameters',
               that: isA<Map<String, dynamic>>()
+                  .having((p) => p['account_type'], 'account_type', 'guest')
                   .having((p) => p['screen_name'], 'screen_name', kScreenName)
                   .having((p) => p['timestamp'], 'timestamp', isA<String>()),
             ),
           ),
         ).called(1);
       });
+
+      test(
+        'logSignOutSuccess_registered_logsEventWithRegisteredAccountType',
+        () async {
+          // arrange
+          const isGuest = false;
+
+          // act
+          await tracker.logSignOutSuccess(isGuest: isGuest);
+
+          // assert
+          verify(
+            () => mockAnalyticsService.logEvent(
+              name: 'settings_sign_out_success',
+              parameters: any(
+                named: 'parameters',
+                that: isA<Map<String, dynamic>>().having(
+                  (p) => p['account_type'],
+                  'account_type',
+                  'registered',
+                ),
+              ),
+            ),
+          ).called(1);
+        },
+      );
+
+      test(
+        'logSignOutSuccess_analyticsServiceThrows_completesNormally',
+        () async {
+          // arrange
+          when(
+            () => mockAnalyticsService.logEvent(
+              name: any(named: 'name'),
+              parameters: any(named: 'parameters'),
+            ),
+          ).thenThrow(Exception('analytics down'));
+
+          // act
+          final call = tracker.logSignOutSuccess(isGuest: true);
+
+          // assert
+          await expectLater(call, completes);
+        },
+      );
+    });
+
+    group('logGuestLogoutChoice', () {
+      const tExpectedChoiceValues = {
+        GuestLogoutChoice.createAccount: 'create_account',
+        GuestLogoutChoice.logOut: 'log_out',
+        GuestLogoutChoice.dismissed: 'dismissed',
+      };
+
+      for (final entry in tExpectedChoiceValues.entries) {
+        test(
+          'logGuestLogoutChoice_${entry.key.name}_logsEventWithChoiceParam',
+          () async {
+            // arrange
+            final choice = entry.key;
+
+            // act
+            await tracker.logGuestLogoutChoice(choice: choice);
+
+            // assert
+            verify(
+              () => mockAnalyticsService.logEvent(
+                name: 'settings_guest_logout_choice',
+                parameters: any(
+                  named: 'parameters',
+                  that: isA<Map<String, dynamic>>()
+                      .having((p) => p['choice'], 'choice', entry.value)
+                      .having(
+                        (p) => p['screen_name'],
+                        'screen_name',
+                        kScreenName,
+                      )
+                      .having(
+                        (p) => p['timestamp'],
+                        'timestamp',
+                        isA<String>(),
+                      ),
+                ),
+              ),
+            ).called(1);
+          },
+        );
+      }
     });
 
     group('logSettingsLinkClicked', () {
-      test('logSettingsLinkClicked_triggered_logsCorrectEvent', () async {
-        // arrange
-        const type = 'privacy_policy';
+      const tExpectedTypeValues = {
+        SettingsLinkType.privacyPolicy: 'privacy_policy',
+        SettingsLinkType.termsOfService: 'terms_of_service',
+      };
 
-        // act
-        await tracker.logSettingsLinkClicked(type: type);
+      for (final entry in tExpectedTypeValues.entries) {
+        test(
+          'logSettingsLinkClicked_${entry.key.name}_logsEventWithTypeParam',
+          () async {
+            // arrange
+            final type = entry.key;
 
-        // assert
-        verify(
-          () => mockAnalyticsService.logEvent(
-            name: 'settings_link_clicked',
-            parameters: any(
-              named: 'parameters',
-              that: isA<Map<String, dynamic>>()
-                  .having((p) => p['type'], 'type', type)
-                  .having((p) => p['screen_name'], 'screen_name', kScreenName)
-                  .having((p) => p['timestamp'], 'timestamp', isA<String>()),
-            ),
-          ),
-        ).called(1);
-      });
+            // act
+            await tracker.logSettingsLinkClicked(type: type);
+
+            // assert
+            verify(
+              () => mockAnalyticsService.logEvent(
+                name: 'settings_link_clicked',
+                parameters: any(
+                  named: 'parameters',
+                  that: isA<Map<String, dynamic>>()
+                      .having((p) => p['type'], 'type', entry.value)
+                      .having(
+                        (p) => p['screen_name'],
+                        'screen_name',
+                        kScreenName,
+                      )
+                      .having(
+                        (p) => p['timestamp'],
+                        'timestamp',
+                        isA<String>(),
+                      ),
+                ),
+              ),
+            ).called(1);
+          },
+        );
+      }
     });
 
     group('logSystemSettingsOpened', () {

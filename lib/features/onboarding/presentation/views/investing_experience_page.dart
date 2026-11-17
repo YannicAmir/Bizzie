@@ -1,16 +1,26 @@
+import 'dart:async';
+
+import 'package:bizzie/app/routes/app_routes.dart';
 import 'package:bizzie/app/themes/app_assets.dart';
 import 'package:bizzie/app/themes/app_colors.dart';
-
-import 'package:bizzie/features/user/domain/enums/investing_experience.dart';
-import 'package:bizzie/features/onboarding/presentation/bloc/onboarding_bloc.dart';
+import 'package:bizzie/app/themes/app_text_styles.dart';
 import 'package:bizzie/features/onboarding/domain/models/onboarding_step.dart';
+import 'package:bizzie/features/onboarding/presentation/bloc/onboarding_bloc.dart';
+import 'package:bizzie/features/onboarding/presentation/extensions/investing_experience_x.dart';
+import 'package:bizzie/features/onboarding/presentation/widgets/onboarding_footer.dart';
+import 'package:bizzie/features/onboarding/presentation/widgets/onboarding_header.dart';
+import 'package:bizzie/features/onboarding/presentation/widgets/onboarding_skip_overlay.dart';
+import 'package:bizzie/core/enums/investing_experience.dart';
+import 'package:bizzie/shared/constants/app_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:bizzie/app/routes/app_routes.dart';
 
-import 'package:bizzie/features/onboarding/presentation/widgets/onboarding_footer.dart';
-import 'package:bizzie/features/onboarding/presentation/widgets/onboarding_header.dart';
+const _experienceDisplayOrder = [
+  InvestingExperience.expert,
+  InvestingExperience.intermediate,
+  InvestingExperience.beginner,
+];
 
 class InvestingExperiencePage extends StatefulWidget {
   const InvestingExperiencePage({super.key});
@@ -31,59 +41,80 @@ class _InvestingExperiencePageState extends State<InvestingExperiencePage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<OnboardingBloc, OnboardingState>(
-      builder: (context, state) {
-        final selectedExperience = state.onboardingData.investingExperience;
-        final theme = Theme.of(context);
+    final selectedExperience = context
+        .select<OnboardingBloc, InvestingExperience?>(
+          (bloc) => bloc.state.onboardingData.investingExperience,
+        );
+    final theme = Theme.of(context);
 
-        return Scaffold(
-          backgroundColor: theme.scaffoldBackgroundColor,
-          body: SafeArea(
-            child: Column(
-              children: [
-                const OnboardingHeader(
-                  title: 'Describe your investing experience',
+    return Scaffold(
+      backgroundColor: theme.scaffoldBackgroundColor,
+      body: SafeArea(
+        child: OnboardingSkipOverlay(
+          step: OnboardingStep.investingExperience,
+          child: Column(
+            children: [
+              const OnboardingHeader(
+                title: 'Describe your investing experience',
+              ),
+              Expanded(
+                child: _InvestingExperienceContent(
+                  selectedExperience: selectedExperience,
                 ),
-                Expanded(
-                  child: LayoutBuilder(
-                    builder: (context, constraints) {
-                      return SingleChildScrollView(
-                        physics: const ClampingScrollPhysics(),
-                        child: ConstrainedBox(
-                          constraints: BoxConstraints(
-                            minHeight: constraints.maxHeight,
-                          ),
-                          child: IntrinsicHeight(
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 24.0,
-                              ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const SizedBox(height: 40),
-                                  const _InvestingExperienceMascot(),
-                                  const Spacer(),
-                                  _ExperienceOptionsList(
-                                    selectedExperience: selectedExperience,
-                                  ),
-                                  const SizedBox(height: 24),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                ),
+              ),
+              _ContinueButton(selectedExperience: selectedExperience),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
 
-                _ContinueButton(selectedExperience: selectedExperience),
-              ],
+class _InvestingExperienceContent extends StatelessWidget {
+  final InvestingExperience? selectedExperience;
+
+  const _InvestingExperienceContent({required this.selectedExperience});
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return SingleChildScrollView(
+          physics: const ClampingScrollPhysics(),
+          child: ConstrainedBox(
+            constraints: BoxConstraints(minHeight: constraints.maxHeight),
+            child: IntrinsicHeight(
+              child: Padding(
+                padding: AppConstants.onboardHorizontalPadding,
+                child: _InvestingExperienceBody(
+                  selectedExperience: selectedExperience,
+                ),
+              ),
             ),
           ),
         );
       },
+    );
+  }
+}
+
+class _InvestingExperienceBody extends StatelessWidget {
+  final InvestingExperience? selectedExperience;
+
+  const _InvestingExperienceBody({required this.selectedExperience});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        AppConstants.onboardHeaderSpacing,
+        const _InvestingExperienceMascot(),
+        const Spacer(),
+        _ExperienceOptionsList(selectedExperience: selectedExperience),
+        AppConstants.mainSectionSpacing,
+      ],
     );
   }
 }
@@ -94,11 +125,13 @@ class _InvestingExperienceMascot extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
-    final responsiveHeight = screenHeight * 0.225;
+    final responsiveHeight =
+        screenHeight * AppConstants.onboardMascotScreenHeightFactor;
 
     return Center(
       child: Image.asset(
         AppAssets.onboardingBizzieMascotInvestingExperience,
+        width: double.infinity,
         height: responsiveHeight,
         fit: BoxFit.contain,
       ),
@@ -115,41 +148,18 @@ class _ExperienceOptionsList extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        _ExperienceOption(
-          title: "Expert",
-          description: "I'm an experienced investor",
-          iconPath: AppAssets.arrowUpIcon,
-          isSelected: selectedExperience == InvestingExperience.expert,
-          onTap: () => context.read<OnboardingBloc>().add(
-            const OnboardingEvent.experienceSelected(
-              InvestingExperience.expert,
+        for (final (index, experience) in _experienceDisplayOrder.indexed) ...[
+          if (index > 0) AppConstants.onboardSecondarySectionSpacing,
+          _ExperienceOption(
+            title: experience.title,
+            description: experience.description,
+            iconPath: experience.iconPath,
+            isSelected: selectedExperience == experience,
+            onTap: () => context.read<OnboardingBloc>().add(
+              OnboardingEvent.experienceSelected(experience),
             ),
           ),
-        ),
-        const SizedBox(height: 16),
-        _ExperienceOption(
-          title: "Intermediate",
-          description: "I have some experience",
-          iconPath: AppAssets.barChartIcon,
-          isSelected: selectedExperience == InvestingExperience.intermediate,
-          onTap: () => context.read<OnboardingBloc>().add(
-            const OnboardingEvent.experienceSelected(
-              InvestingExperience.intermediate,
-            ),
-          ),
-        ),
-        const SizedBox(height: 16),
-        _ExperienceOption(
-          title: "Beginner",
-          description: "I'm new to investing",
-          iconPath: AppAssets.sparkleIcon,
-          isSelected: selectedExperience == InvestingExperience.beginner,
-          onTap: () => context.read<OnboardingBloc>().add(
-            const OnboardingEvent.experienceSelected(
-              InvestingExperience.beginner,
-            ),
-          ),
-        ),
+        ],
       ],
     );
   }
@@ -168,22 +178,19 @@ class _ContinueButton extends StatelessWidget {
         width: double.infinity,
         child: FilledButton(
           onPressed: selectedExperience != null
-              ? () {
-                  context.push(AppRoutes.onboardingFeatureHighlights);
-                }
+              ? () => unawaited(
+                  context.push(AppRoutes.onboardingFeatureHighlights),
+                )
               : null,
           style: FilledButton.styleFrom(
-            backgroundColor: AppColors.primary,
-            disabledBackgroundColor: AppColors.primary.withValues(alpha: 0.5),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16),
+            disabledBackgroundColor: AppColors.primary.withValues(
+              alpha: AppConstants.onboardContinueButtonDisabledAlpha,
             ),
-            padding: const EdgeInsets.symmetric(vertical: 16),
-            elevation: 0,
+            padding: AppConstants.onboardContinueButtonPadding,
           ),
           child: Text(
             'Continue',
-            style: theme.textTheme.labelLarge?.copyWith(color: Colors.white),
+            style: theme.textTheme.labelLarge?.copyWith(color: AppColors.white),
           ),
         ),
       ),
@@ -212,56 +219,27 @@ class _ExperienceOption extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.all(16),
+        padding: AppConstants.onboardExperienceOptionPadding,
         decoration: BoxDecoration(
           color: isSelected ? AppColors.mascotBackground : theme.cardColor,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(
+            AppConstants.mainSectionBorderRadius,
+          ),
           border: Border.all(
             color: isSelected
                 ? theme.colorScheme.primary
                 : theme.colorScheme.outline,
-            width: 2,
+            width: AppConstants.onboardExperienceOptionBorderWidth,
           ),
         ),
         child: Row(
           children: [
-            Container(
-              width: 48,
-              height: 48,
-              decoration: BoxDecoration(
-                color: theme.cardColor,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: theme.colorScheme.outline, width: 2),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: Image.asset(
-                  iconPath,
-                  color: isSelected
-                      ? theme.colorScheme.primary
-                      : theme.colorScheme.onSurfaceVariant,
-                ),
-              ),
-            ),
-            const SizedBox(width: 16),
+            _ExperienceOptionIcon(iconPath: iconPath, isSelected: isSelected),
+            AppConstants.onboardExperienceOptionContentSpacing,
             Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: theme.textTheme.bodyLarge?.copyWith(
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    description,
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: theme.colorScheme.onSurfaceVariant,
-                    ),
-                  ),
-                ],
+              child: _ExperienceOptionLabels(
+                title: title,
+                description: description,
               ),
             ),
             if (isSelected)
@@ -269,6 +247,77 @@ class _ExperienceOption extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class _ExperienceOptionIcon extends StatelessWidget {
+  final String iconPath;
+  final bool isSelected;
+
+  const _ExperienceOptionIcon({
+    required this.iconPath,
+    required this.isSelected,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Container(
+      width: AppConstants.onboardExperienceIconContainerSize,
+      height: AppConstants.onboardExperienceIconContainerSize,
+      decoration: BoxDecoration(
+        color: theme.cardColor,
+        borderRadius: BorderRadius.circular(AppConstants.cardBorderRadius),
+        border: Border.all(
+          color: theme.colorScheme.outline,
+          width: AppConstants.onboardExperienceOptionBorderWidth,
+        ),
+      ),
+      child: Padding(
+        padding: AppConstants.onboardExperienceIconPadding,
+        child: Image.asset(
+          iconPath,
+          width: AppConstants.onboardExperienceIconSize,
+          height: AppConstants.onboardExperienceIconSize,
+          color: isSelected
+              ? theme.colorScheme.primary
+              : theme.colorScheme.onSurfaceVariant,
+        ),
+      ),
+    );
+  }
+}
+
+class _ExperienceOptionLabels extends StatelessWidget {
+  final String title;
+  final String description;
+
+  const _ExperienceOptionLabels({
+    required this.title,
+    required this.description,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          style: theme.textTheme.bodyLarge?.copyWith(
+            fontWeight: AppTextStyles.bodyLargeBold.fontWeight,
+          ),
+        ),
+        AppConstants.onboardExperienceTitleSpacing,
+        Text(
+          description,
+          style: theme.textTheme.bodyMedium?.copyWith(
+            color: theme.colorScheme.onSurfaceVariant,
+          ),
+        ),
+      ],
     );
   }
 }

@@ -4,7 +4,7 @@ import 'package:bizzie/core/domain/models/company.dart';
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/core/interfaces/i_config_service.dart';
 import 'package:bizzie/features/auth/domain/models/user_model.dart';
-import 'package:bizzie/features/auth/domain/usecases/get_auth_stream.dart';
+import 'package:bizzie/features/auth/domain/usecases/get_auth_stream_usecase.dart';
 import 'package:bizzie/features/home/domain/models/watchlist_stock_price.dart';
 import 'package:bizzie/features/home/domain/usecases/watch_watchlist_prices_usecase.dart';
 import 'package:bizzie/features/home/presentation/bloc/watchlist_prices/watchlist_prices_bloc.dart';
@@ -23,10 +23,10 @@ class MockGetWatchlistUseCase extends Mock implements GetWatchlistUseCase {}
 
 class MockConfigService extends Mock implements IConfigService {}
 
-class MockGetAuthStream extends Mock implements GetAuthStream {}
+class MockGetAuthStreamUseCase extends Mock implements GetAuthStreamUseCase {}
 
-MockGetAuthStream stubbedGetAuthStream([Stream<UserModel?>? stream]) {
-  final mock = MockGetAuthStream();
+MockGetAuthStreamUseCase stubbedGetAuthStream([Stream<UserModel?>? stream]) {
+  final mock = MockGetAuthStreamUseCase();
   // Firebase's authStateChanges is a broadcast stream; mirror that so the
   // bloc's reset subscription and watchlist subscription can both listen.
   final broadcast = stream?.asBroadcastStream() ?? const Stream.empty();

@@ -91,12 +91,9 @@ class QuarterlyGrowth {
   const QuarterlyGrowth._(this.outcome, [this.percent]);
 
   static const none = QuarterlyGrowth._(GrowthOutcome.none);
-  static const turnedPositive =
-      QuarterlyGrowth._(GrowthOutcome.turnedPositive);
-  static const turnedNegative =
-      QuarterlyGrowth._(GrowthOutcome.turnedNegative);
-  static const notMeaningful =
-      QuarterlyGrowth._(GrowthOutcome.notMeaningful);
+  static const turnedPositive = QuarterlyGrowth._(GrowthOutcome.turnedPositive);
+  static const turnedNegative = QuarterlyGrowth._(GrowthOutcome.turnedNegative);
+  static const notMeaningful = QuarterlyGrowth._(GrowthOutcome.notMeaningful);
 
   factory QuarterlyGrowth.numeric(double percent) =>
       QuarterlyGrowth._(GrowthOutcome.numeric, percent);

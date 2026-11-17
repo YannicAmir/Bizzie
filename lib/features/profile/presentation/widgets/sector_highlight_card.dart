@@ -41,12 +41,11 @@ class SectorHighlightCard extends StatelessWidget {
             color: theme.colorScheme.surface,
             border: Border.all(
               color: theme.dividerColor,
-              width: theme.dividerTheme.thickness ??
+              width:
+                  theme.dividerTheme.thickness ??
                   AppConstants.defaultBorderWidth,
             ),
-            borderRadius: BorderRadius.circular(
-              AppConstants.cardBorderRadius,
-            ),
+            borderRadius: BorderRadius.circular(AppConstants.cardBorderRadius),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,

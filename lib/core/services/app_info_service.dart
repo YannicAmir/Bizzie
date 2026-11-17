@@ -1,12 +1,9 @@
+import 'package:bizzie/core/interfaces/i_app_info_service.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
 import 'package:injectable/injectable.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 final _logger = BizzieLogger('AppInfoService');
-
-abstract class IAppInfoService {
-  Future<String> getAppVersion();
-}
 
 @LazySingleton(as: IAppInfoService)
 class AppInfoServiceImpl implements IAppInfoService {

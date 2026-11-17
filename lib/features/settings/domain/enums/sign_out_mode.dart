@@ -1,0 +1,1 @@
+enum SignOutMode { standard, deleteGuestAccount }

@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 
 const double _carouselHeight = 250;
 
-
 class NewsCardCarousel extends StatelessWidget {
   static const double viewportFraction = 0.9;
 

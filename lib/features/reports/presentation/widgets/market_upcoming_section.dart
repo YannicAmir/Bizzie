@@ -118,7 +118,8 @@ class _UpcomingEmptyState extends StatelessWidget {
             color: theme.colorScheme.surface,
             border: Border.all(
               color: theme.dividerColor,
-              width: theme.dividerTheme.thickness ??
+              width:
+                  theme.dividerTheme.thickness ??
                   AppConstants.defaultBorderWidth,
             ),
             borderRadius: BorderRadius.circular(12),
@@ -143,10 +144,7 @@ class _UpcomingHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 16),
-      child: Text(
-        'Upcoming',
-        style: Theme.of(context).textTheme.displaySmall,
-      ),
+      child: Text('Upcoming', style: Theme.of(context).textTheme.displaySmall),
     );
   }
 }

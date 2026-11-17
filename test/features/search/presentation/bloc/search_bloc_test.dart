@@ -10,8 +10,8 @@ import 'package:bizzie/features/search/presentation/analytics/search_tracker.dar
 import 'package:bizzie/features/search/domain/enums/search_analytics_enums.dart';
 import 'package:bizzie/core/interfaces/i_local_storage_service.dart';
 import 'package:dartz/dartz.dart';
-import 'package:bizzie/features/user/domain/interfaces/user_repository.dart';
-import 'package:bizzie/features/user/domain/models/user_model.dart';
+import 'package:bizzie/features/user/domain/interfaces/i_user_repository.dart';
+import 'package:bizzie/core/domain/models/user_model.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -58,7 +58,7 @@ void main() {
 
     when(
       () => mockUserRepository.userStream,
-    ).thenAnswer((_) => const Stream<UserModel>.empty());
+    ).thenAnswer((_) => const Stream<Either<Failure, UserModel?>>.empty());
 
     when(
       () => mockTracker.logPageView(source: any(named: 'source')),

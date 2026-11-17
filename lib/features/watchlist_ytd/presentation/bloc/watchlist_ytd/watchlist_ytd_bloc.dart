@@ -1,6 +1,6 @@
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
-import 'package:bizzie/features/auth/domain/usecases/get_auth_stream.dart';
+import 'package:bizzie/features/auth/domain/usecases/get_auth_stream_usecase.dart';
 import 'package:bizzie/features/auth/presentation/bloc/auth_session_reset_mixin.dart';
 import 'package:bizzie/features/watchlist_ytd/domain/models/ytd_price_change.dart';
 import 'package:bizzie/features/watchlist_ytd/domain/usecases/get_watchlist_ytd_usecase.dart';
@@ -18,7 +18,7 @@ class WatchlistYtdBloc extends Bloc<WatchlistYtdEvent, WatchlistYtdState>
     with AuthSessionResetMixin<WatchlistYtdEvent, WatchlistYtdState> {
   final GetWatchlistYtdUseCase _getWatchlistYtd;
 
-  WatchlistYtdBloc(this._getWatchlistYtd, GetAuthStream getAuthStream)
+  WatchlistYtdBloc(this._getWatchlistYtd, GetAuthStreamUseCase getAuthStream)
     : super(const WatchlistYtdState.initial()) {
     on<LoadRequested>(_onLoadRequested, transformer: restartable());
     on<Reset>((_, emit) => emit(const WatchlistYtdState.initial()));
@@ -32,7 +32,9 @@ class WatchlistYtdBloc extends Bloc<WatchlistYtdEvent, WatchlistYtdState>
     LoadRequested event,
     Emitter<WatchlistYtdState> emit,
   ) async {
-    _logger.info('Loading YTD price change for ${event.tickers.length} tickers');
+    _logger.info(
+      'Loading YTD price change for ${event.tickers.length} tickers',
+    );
     if (!_hasLoadedChanges) emit(const WatchlistYtdState.loading());
 
     final result = await _getWatchlistYtd(event.tickers);

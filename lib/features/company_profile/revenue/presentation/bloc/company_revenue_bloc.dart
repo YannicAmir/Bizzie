@@ -1,11 +1,12 @@
 import 'dart:async';
 
+import 'package:bizzie/core/enums/financial_period.dart';
 import 'package:bizzie/core/enums/data_origin.dart';
 import 'package:bizzie/core/interfaces/i_config_service.dart';
 import 'package:bizzie/core/interfaces/i_time_provider.dart';
 import 'package:bizzie/core/usecase/usecase.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
-import 'package:bizzie/features/auth/domain/usecases/get_auth_stream.dart';
+import 'package:bizzie/features/auth/domain/usecases/get_auth_stream_usecase.dart';
 import 'package:bizzie/features/auth/presentation/bloc/auth_session_reset_mixin.dart';
 import 'package:bizzie/features/company_profile/revenue/domain/models/revenue_stats.dart';
 import 'package:bizzie/features/company_profile/revenue/domain/usecases/get_revenue_stats_usecase.dart';
@@ -54,7 +55,7 @@ class CompanyRevenueBloc extends Bloc<CompanyRevenueEvent, CompanyRevenueState>
     this._analytics,
     this._watchActiveTabUseCase,
     this._timeProvider,
-    GetAuthStream getAuthStream,
+    GetAuthStreamUseCase getAuthStream,
   ) : super(const CompanyRevenueState.initial()) {
     on<CompanyRevenueEvent>(_onEvent);
     on<LoadRequested>(_onLoadRequested, transformer: restartable());
@@ -108,10 +109,11 @@ class CompanyRevenueBloc extends Bloc<CompanyRevenueEvent, CompanyRevenueState>
     onTabShown(event.ticker, _buildTabShownViewState(event.ticker));
     state.mapOrNull(
       loaded: (s) => _markVisiblePeriodViewedFor(
-        isAnnualView: s.isAnnualView,
-        hasData: s.isAnnualView
-            ? s.annualChartData.isNotEmpty
-            : s.quarterlyChartData.isNotEmpty,
+        period: s.period,
+        hasData: switch (s.period) {
+          FinancialPeriod.annual => s.annualChartData.isNotEmpty,
+          FinancialPeriod.quarterly => s.quarterlyChartData.isNotEmpty,
+        },
       ),
     );
     add(CompanyRevenueEvent.stalenessCheckRequested(event.ticker));
@@ -135,26 +137,25 @@ class CompanyRevenueBloc extends Bloc<CompanyRevenueEvent, CompanyRevenueState>
     PeriodChanged event,
     Emitter<CompanyRevenueState> emit,
   ) {
-    state.mapOrNull(
-      loaded: (s) => emit(s.copyWith(isAnnualView: event.isAnnual)),
-    );
-    _markPeriodViewed(isAnnual: event.isAnnual);
+    state.mapOrNull(loaded: (s) => emit(s.copyWith(period: event.period)));
+    _markPeriodViewed(period: event.period);
   }
 
-  void _markPeriodViewed({required bool isAnnual}) {
+  void _markPeriodViewed({required FinancialPeriod period}) {
     updateAnalyticsState(
-      (s) => isAnnual
-          ? s.copyWith(viewedYearlyRevTab: true)
-          : s.copyWith(viewedQtrlyRevTab: true),
+      (s) => switch (period) {
+        FinancialPeriod.annual => s.copyWith(viewedYearlyRevTab: true),
+        FinancialPeriod.quarterly => s.copyWith(viewedQtrlyRevTab: true),
+      },
     );
   }
 
   void _markVisiblePeriodViewedFor({
-    required bool isAnnualView,
+    required FinancialPeriod period,
     required bool hasData,
   }) {
     if (hasData) {
-      _markPeriodViewed(isAnnual: isAnnualView);
+      _markPeriodViewed(period: period);
     }
   }
 
@@ -162,17 +163,18 @@ class CompanyRevenueBloc extends Bloc<CompanyRevenueEvent, CompanyRevenueState>
     ViewAllTapped event,
     Emitter<CompanyRevenueState> emit,
   ) {
-    updateAnalyticsState((s) {
-      if (event.isAnnual) {
-        return event.isChart
-            ? s.copyWith(tappedYrchartViewAll: true)
-            : s.copyWith(tappedYrtableViewAll: true);
-      } else {
-        return event.isChart
-            ? s.copyWith(tappedQtrchartViewAll: true)
-            : s.copyWith(tappedQtrtableViewAll: true);
-      }
-    });
+    updateAnalyticsState(
+      (s) => switch (event.period) {
+        FinancialPeriod.annual =>
+          event.isChart
+              ? s.copyWith(tappedYrchartViewAll: true)
+              : s.copyWith(tappedYrtableViewAll: true),
+        FinancialPeriod.quarterly =>
+          event.isChart
+              ? s.copyWith(tappedQtrchartViewAll: true)
+              : s.copyWith(tappedQtrtableViewAll: true),
+      },
+    );
   }
 
   Future<void> _onLoadRequested(
@@ -186,8 +188,8 @@ class CompanyRevenueBloc extends Bloc<CompanyRevenueEvent, CompanyRevenueState>
     _logger.info(
       'Loading Revenue stats for ${event.ticker} (force=${event.forceRefresh})',
     );
-    final wasAnnualView =
-        state.mapOrNull(loaded: (s) => s.isAnnualView) ?? true;
+    final previousPeriod =
+        state.mapOrNull(loaded: (s) => s.period) ?? FinancialPeriod.annual;
     emit(const CompanyRevenueState.loading());
 
     final stopwatch = Stopwatch()..start();
@@ -208,7 +210,7 @@ class CompanyRevenueBloc extends Bloc<CompanyRevenueEvent, CompanyRevenueState>
         ticker: event.ticker,
         tuple: tuple,
         loadTimeMs: stopwatch.elapsedMilliseconds,
-        isAnnualView: wasAnnualView,
+        period: previousPeriod,
         emit: emit,
       ),
     );
@@ -244,7 +246,7 @@ class CompanyRevenueBloc extends Bloc<CompanyRevenueEvent, CompanyRevenueState>
     required String ticker,
     required (RevenueStats, CompanyProfileDataOrigin) tuple,
     required int loadTimeMs,
-    required bool isAnnualView,
+    required FinancialPeriod period,
     required Emitter<CompanyRevenueState> emit,
   }) {
     final (stats, origin) = tuple;
@@ -261,24 +263,28 @@ class CompanyRevenueBloc extends Bloc<CompanyRevenueEvent, CompanyRevenueState>
       CompanyRevenueState.loaded(
         ticker: ticker,
         revenueStats: stats,
-        annualChartData: _toChartData(stats.annualRevenue, isAnnual: true),
+        annualChartData: _toChartData(
+          stats.annualRevenue,
+          period: FinancialPeriod.annual,
+        ),
         quarterlyChartData: _toChartData(
           stats.quarterlyRevenue,
-          isAnnual: false,
+          period: FinancialPeriod.quarterly,
         ),
         historyLimit: _configService.freePlanHistoryCount,
         dataOrigin: origin,
-        isAnnualView: isAnnualView,
+        period: period,
         lastUpdated: _timeProvider.nowLocal,
         analyticsState: metrics,
       ),
     );
     state.mapOrNull(
       loaded: (s) => _markVisiblePeriodViewedFor(
-        isAnnualView: s.isAnnualView,
-        hasData: s.isAnnualView
-            ? s.annualChartData.isNotEmpty
-            : s.quarterlyChartData.isNotEmpty,
+        period: s.period,
+        hasData: switch (s.period) {
+          FinancialPeriod.annual => s.annualChartData.isNotEmpty,
+          FinancialPeriod.quarterly => s.quarterlyChartData.isNotEmpty,
+        },
       ),
     );
   }
@@ -322,7 +328,7 @@ class CompanyRevenueBloc extends Bloc<CompanyRevenueEvent, CompanyRevenueState>
 
   List<ChartDataPoint> _toChartData(
     List<FinancialDataPoint> points, {
-    required bool isAnnual,
+    required FinancialPeriod period,
   }) {
     final sortedPoints = List<FinancialDataPoint>.from(points)
       ..sort((a, b) => a.date.compareTo(b.date));
@@ -330,9 +336,13 @@ class CompanyRevenueBloc extends Bloc<CompanyRevenueEvent, CompanyRevenueState>
     return sortedPoints
         .map(
           (p) => ChartDataPoint(
-            label: isAnnual
-                ? BizzieDateFormatter.formatYearOnly(p.date)
-                : BizzieDateFormatter.formatQuarterYearShort(p.date),
+            label: switch (period) {
+              FinancialPeriod.annual => BizzieDateFormatter.formatYearOnly(
+                p.date,
+              ),
+              FinancialPeriod.quarterly =>
+                BizzieDateFormatter.formatQuarterYearShort(p.date),
+            },
             value: p.value.toDouble(),
           ),
         )

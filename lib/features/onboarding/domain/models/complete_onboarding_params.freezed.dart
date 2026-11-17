@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$CompleteOnboardingParams {
 
- OnboardingData get data; String get uid;
+ OnboardingData get data; String get uid; bool get awaitServerAck; bool get deferNotificationSetup; bool get hasExistingProfile;
 /// Create a copy of CompleteOnboardingParams
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $CompleteOnboardingParamsCopyWith<CompleteOnboardingParams> get copyWith => _$Co
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CompleteOnboardingParams&&(identical(other.data, data) || other.data == data)&&(identical(other.uid, uid) || other.uid == uid));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CompleteOnboardingParams&&(identical(other.data, data) || other.data == data)&&(identical(other.uid, uid) || other.uid == uid)&&(identical(other.awaitServerAck, awaitServerAck) || other.awaitServerAck == awaitServerAck)&&(identical(other.deferNotificationSetup, deferNotificationSetup) || other.deferNotificationSetup == deferNotificationSetup)&&(identical(other.hasExistingProfile, hasExistingProfile) || other.hasExistingProfile == hasExistingProfile));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,data,uid);
+int get hashCode => Object.hash(runtimeType,data,uid,awaitServerAck,deferNotificationSetup,hasExistingProfile);
 
 @override
 String toString() {
-  return 'CompleteOnboardingParams(data: $data, uid: $uid)';
+  return 'CompleteOnboardingParams(data: $data, uid: $uid, awaitServerAck: $awaitServerAck, deferNotificationSetup: $deferNotificationSetup, hasExistingProfile: $hasExistingProfile)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $CompleteOnboardingParamsCopyWith<$Res>  {
   factory $CompleteOnboardingParamsCopyWith(CompleteOnboardingParams value, $Res Function(CompleteOnboardingParams) _then) = _$CompleteOnboardingParamsCopyWithImpl;
 @useResult
 $Res call({
- OnboardingData data, String uid
+ OnboardingData data, String uid, bool awaitServerAck, bool deferNotificationSetup, bool hasExistingProfile
 });
 
 
@@ -62,11 +62,14 @@ class _$CompleteOnboardingParamsCopyWithImpl<$Res>
 
 /// Create a copy of CompleteOnboardingParams
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? data = null,Object? uid = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? data = null,Object? uid = null,Object? awaitServerAck = null,Object? deferNotificationSetup = null,Object? hasExistingProfile = null,}) {
   return _then(_self.copyWith(
 data: null == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
 as OnboardingData,uid: null == uid ? _self.uid : uid // ignore: cast_nullable_to_non_nullable
-as String,
+as String,awaitServerAck: null == awaitServerAck ? _self.awaitServerAck : awaitServerAck // ignore: cast_nullable_to_non_nullable
+as bool,deferNotificationSetup: null == deferNotificationSetup ? _self.deferNotificationSetup : deferNotificationSetup // ignore: cast_nullable_to_non_nullable
+as bool,hasExistingProfile: null == hasExistingProfile ? _self.hasExistingProfile : hasExistingProfile // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 /// Create a copy of CompleteOnboardingParams
@@ -160,10 +163,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( OnboardingData data,  String uid)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( OnboardingData data,  String uid,  bool awaitServerAck,  bool deferNotificationSetup,  bool hasExistingProfile)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _CompleteOnboardingParams() when $default != null:
-return $default(_that.data,_that.uid);case _:
+return $default(_that.data,_that.uid,_that.awaitServerAck,_that.deferNotificationSetup,_that.hasExistingProfile);case _:
   return orElse();
 
 }
@@ -181,10 +184,10 @@ return $default(_that.data,_that.uid);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( OnboardingData data,  String uid)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( OnboardingData data,  String uid,  bool awaitServerAck,  bool deferNotificationSetup,  bool hasExistingProfile)  $default,) {final _that = this;
 switch (_that) {
 case _CompleteOnboardingParams():
-return $default(_that.data,_that.uid);case _:
+return $default(_that.data,_that.uid,_that.awaitServerAck,_that.deferNotificationSetup,_that.hasExistingProfile);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -201,10 +204,10 @@ return $default(_that.data,_that.uid);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( OnboardingData data,  String uid)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( OnboardingData data,  String uid,  bool awaitServerAck,  bool deferNotificationSetup,  bool hasExistingProfile)?  $default,) {final _that = this;
 switch (_that) {
 case _CompleteOnboardingParams() when $default != null:
-return $default(_that.data,_that.uid);case _:
+return $default(_that.data,_that.uid,_that.awaitServerAck,_that.deferNotificationSetup,_that.hasExistingProfile);case _:
   return null;
 
 }
@@ -216,11 +219,14 @@ return $default(_that.data,_that.uid);case _:
 
 
 class _CompleteOnboardingParams implements CompleteOnboardingParams {
-  const _CompleteOnboardingParams({required this.data, required this.uid});
+  const _CompleteOnboardingParams({required this.data, required this.uid, this.awaitServerAck = true, this.deferNotificationSetup = false, this.hasExistingProfile = false});
   
 
 @override final  OnboardingData data;
 @override final  String uid;
+@override@JsonKey() final  bool awaitServerAck;
+@override@JsonKey() final  bool deferNotificationSetup;
+@override@JsonKey() final  bool hasExistingProfile;
 
 /// Create a copy of CompleteOnboardingParams
 /// with the given fields replaced by the non-null parameter values.
@@ -232,16 +238,16 @@ _$CompleteOnboardingParamsCopyWith<_CompleteOnboardingParams> get copyWith => __
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CompleteOnboardingParams&&(identical(other.data, data) || other.data == data)&&(identical(other.uid, uid) || other.uid == uid));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CompleteOnboardingParams&&(identical(other.data, data) || other.data == data)&&(identical(other.uid, uid) || other.uid == uid)&&(identical(other.awaitServerAck, awaitServerAck) || other.awaitServerAck == awaitServerAck)&&(identical(other.deferNotificationSetup, deferNotificationSetup) || other.deferNotificationSetup == deferNotificationSetup)&&(identical(other.hasExistingProfile, hasExistingProfile) || other.hasExistingProfile == hasExistingProfile));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,data,uid);
+int get hashCode => Object.hash(runtimeType,data,uid,awaitServerAck,deferNotificationSetup,hasExistingProfile);
 
 @override
 String toString() {
-  return 'CompleteOnboardingParams(data: $data, uid: $uid)';
+  return 'CompleteOnboardingParams(data: $data, uid: $uid, awaitServerAck: $awaitServerAck, deferNotificationSetup: $deferNotificationSetup, hasExistingProfile: $hasExistingProfile)';
 }
 
 
@@ -252,7 +258,7 @@ abstract mixin class _$CompleteOnboardingParamsCopyWith<$Res> implements $Comple
   factory _$CompleteOnboardingParamsCopyWith(_CompleteOnboardingParams value, $Res Function(_CompleteOnboardingParams) _then) = __$CompleteOnboardingParamsCopyWithImpl;
 @override @useResult
 $Res call({
- OnboardingData data, String uid
+ OnboardingData data, String uid, bool awaitServerAck, bool deferNotificationSetup, bool hasExistingProfile
 });
 
 
@@ -269,11 +275,14 @@ class __$CompleteOnboardingParamsCopyWithImpl<$Res>
 
 /// Create a copy of CompleteOnboardingParams
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? data = null,Object? uid = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? data = null,Object? uid = null,Object? awaitServerAck = null,Object? deferNotificationSetup = null,Object? hasExistingProfile = null,}) {
   return _then(_CompleteOnboardingParams(
 data: null == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
 as OnboardingData,uid: null == uid ? _self.uid : uid // ignore: cast_nullable_to_non_nullable
-as String,
+as String,awaitServerAck: null == awaitServerAck ? _self.awaitServerAck : awaitServerAck // ignore: cast_nullable_to_non_nullable
+as bool,deferNotificationSetup: null == deferNotificationSetup ? _self.deferNotificationSetup : deferNotificationSetup // ignore: cast_nullable_to_non_nullable
+as bool,hasExistingProfile: null == hasExistingProfile ? _self.hasExistingProfile : hasExistingProfile // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 

@@ -2,13 +2,13 @@ import 'dart:async';
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/features/auth/domain/interfaces/i_auth_repository.dart';
 import 'package:bizzie/features/auth/domain/models/user_model.dart' as auth;
-import 'package:bizzie/features/user/data/datasources/user_local_datasource.dart';
-import 'package:bizzie/features/user/data/datasources/user_remote_datasource.dart';
-import 'package:bizzie/features/user/data/dtos/user_dto.dart';
+import 'package:bizzie/core/data/dtos/user_dto.dart';
+import 'package:bizzie/features/user/data/interfaces/i_user_local_datasource.dart';
+import 'package:bizzie/features/user/data/interfaces/i_user_remote_datasource.dart';
 import 'package:bizzie/features/user/data/repositories/user_repository_impl.dart';
-import 'package:bizzie/features/user/domain/enums/investing_experience.dart';
-import 'package:bizzie/features/user/domain/models/user_model.dart';
-import 'package:bizzie/features/watchlist/data/dtos/watchlist_item_dto.dart';
+import 'package:bizzie/core/enums/investing_experience.dart';
+import 'package:bizzie/core/domain/models/user_model.dart';
+import 'package:bizzie/core/data/dtos/watchlist_item_dto.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
@@ -132,7 +132,7 @@ void main() {
       final result = await repository.getUser(tUid);
 
       // assert
-      expect(result, const Left(ServerFailure('Failed to get user')));
+      expect(result, Left(Failure.server(Exception('DB Error').toString())));
     });
   });
 
@@ -154,21 +154,16 @@ void main() {
         ).thenReturn('Technology');
 
         // act
-        final streamResult = repository.watchUser(tUid);
+        final result = await repository.watchUser(tUid).first;
 
         // assert
-        expect(
-          streamResult,
-          emits(
-            isA<UserModel>()
-                .having((u) => u.uid, 'uid', tUid)
-                .having((u) => u.watchlist.length, 'watchlist length', 1),
-          ),
-        );
+        final user = result.getOrElse(() => null);
+        expect(user?.uid, tUid);
+        expect(user?.watchlist.length, 1);
       },
     );
 
-    test('userRepository_watchUser_mappingError_throwsException', () async {
+    test('userRepository_watchUser_streamError_emitsServerFailure', () async {
       // arrange
       when(
         () => mockRemoteDataSource.watchUser(tUid),
@@ -180,10 +175,10 @@ void main() {
       );
 
       // act
-      final streamResult = repository.watchUser(tUid);
+      final result = await repository.watchUser(tUid).first;
 
       // assert
-      expect(() => streamResult.first, throwsA(isA<Exception>()));
+      expect(result, isA<Left<Failure, UserModel?>>());
     });
   });
 
@@ -217,7 +212,7 @@ void main() {
       final result = await repository.updateUser(tUserModel);
 
       // assert
-      expect(result, const Left(ServerFailure('Failed to update user')));
+      expect(result, Left(Failure.server(Exception().toString())));
     });
   });
 
@@ -341,7 +336,8 @@ void main() {
   group('userStream', () {
     test('userRepository_userStream_emitsUserWhenAuthenticated', () async {
       // arrange
-      final authController = StreamController<auth.UserModel?>();
+      final authController =
+          StreamController<Either<Failure, auth.UserModel?>>();
       final userController = StreamController<UserDto>();
       final watchlistController = StreamController<List<WatchlistItemDto>>();
 
@@ -364,10 +360,16 @@ void main() {
       // assert
       final expectFuture = expectLater(
         stream,
-        emits(isA<UserModel>().having((u) => u.uid, 'uid', tUid)),
+        emits(
+          isA<Right<Failure, UserModel?>>().having(
+            (r) => r.getOrElse(() => null)?.uid,
+            'uid',
+            tUid,
+          ),
+        ),
       );
 
-      authController.add(tAuthUser);
+      authController.add(Right(tAuthUser));
       await Future.delayed(Duration.zero);
       userController.add(tUserDto);
       watchlistController.add([]);
@@ -378,7 +380,8 @@ void main() {
 
     test('userRepository_userStream_emitsEmptyWhenLoggedOut', () async {
       // arrange
-      final authController = StreamController<auth.UserModel?>();
+      final authController =
+          StreamController<Either<Failure, auth.UserModel?>>();
       when(
         () => mockAuthRepository.authStateChanges,
       ).thenAnswer((_) => authController.stream);
@@ -387,9 +390,32 @@ void main() {
       final stream = repository.userStream;
 
       // assert
-      authController.add(null);
+      authController.add(const Right(null));
 
-      await expectLater(stream, emits(null));
+      await expectLater(stream, emits(const Right<Failure, UserModel?>(null)));
+
+      authController.close();
+    });
+
+    test('userRepository_userStream_authFailure_emitsFailure', () async {
+      // arrange
+      final authController =
+          StreamController<Either<Failure, auth.UserModel?>>();
+      when(
+        () => mockAuthRepository.authStateChanges,
+      ).thenAnswer((_) => authController.stream);
+      const tFailure = Failure.server('auth error');
+
+      // act
+      final stream = repository.userStream;
+
+      // assert
+      authController.add(const Left(tFailure));
+
+      await expectLater(
+        stream,
+        emits(const Left<Failure, UserModel?>(tFailure)),
+      );
 
       authController.close();
     });

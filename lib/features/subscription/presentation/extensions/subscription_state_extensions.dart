@@ -1,5 +1,6 @@
 import 'package:bizzie/features/subscription/presentation/bloc/subscription_state.dart';
 import 'package:bizzie/core/error/failures.dart';
+import 'package:bizzie/features/subscription/domain/enums/subscription_package_type.dart';
 import 'package:bizzie/features/subscription/domain/models/subscription_package.dart';
 import 'package:bizzie/features/subscription/domain/extensions/subscription_package_extensions.dart';
 import 'package:bizzie/features/subscription/domain/extensions/subscription_offering_extensions.dart';
@@ -19,8 +20,18 @@ extension SubscriptionStateX on SubscriptionState {
   SubscriptionPackage? get discountAnnualPackage =>
       maybeMap(loaded: (s) => s.discountAnnualPackage, orElse: () => null);
 
+  SubscriptionPackage? get selectedPackage => maybeMap(
+    loaded: (s) => s.isAnnualSelection ? s.annualPackage : s.monthlyPackage,
+    orElse: () => null,
+  );
+
   bool get isPurchasing =>
       maybeMap(loaded: (s) => s.isPurchasing, orElse: () => false);
+
+  SubscriptionPackageType? get completedPurchaseType => maybeMap(
+    loaded: (s) => s.isLocalSuccessOverride ? s.purchasedPackageType : null,
+    orElse: () => null,
+  );
 
   String get discountPercentageText {
     return maybeMap(
@@ -28,6 +39,17 @@ extension SubscriptionStateX on SubscriptionState {
       orElse: () => '',
     );
   }
+
+  int? get discountSavingsPercentageOrNull => maybeMap(
+    loaded: (s) {
+      final percentage = s.offerings.discountSavingsPercentage;
+      return percentage > 0 ? percentage : null;
+    },
+    orElse: () => null,
+  );
+
+  String get discountPercentageValueText =>
+      discountPercentageText.replaceAll('-', '');
 
   String get annualSavingsText {
     return maybeMap(
@@ -59,9 +81,7 @@ extension SubscriptionStateX on SubscriptionState {
   String get renewalDisclaimerText {
     return maybeMap(
       loaded: (s) {
-        final isAnnual = s.isAnnualSelection;
-        final package = isAnnual ? s.annualPackage : s.monthlyPackage;
-        return _buildDisclaimer(s, package, isAnnual);
+        return _buildDisclaimer(s, s.selectedPackage, s.isAnnualSelection);
       },
       orElse: () => '',
     );

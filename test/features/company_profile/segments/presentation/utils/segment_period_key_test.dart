@@ -1,3 +1,4 @@
+import 'package:bizzie/core/enums/financial_period.dart';
 import 'package:bizzie/features/company_profile/segments/domain/models/revenue_segment.dart';
 import 'package:bizzie/features/company_profile/segments/presentation/utils/segment_period_key.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -49,7 +50,10 @@ void main() {
         // arrange - tAnnualSegment
 
         // act
-        final key = SegmentPeriodKey.of(tAnnualSegment, isAnnual: true);
+        final key = SegmentPeriodKey.of(
+          tAnnualSegment,
+          period: FinancialPeriod.annual,
+        );
 
         // assert
         expect(key, '2025');
@@ -59,7 +63,10 @@ void main() {
         // arrange - tQuarterlySegment
 
         // act
-        final key = SegmentPeriodKey.of(tQuarterlySegment, isAnnual: false);
+        final key = SegmentPeriodKey.of(
+          tQuarterlySegment,
+          period: FinancialPeriod.quarterly,
+        );
 
         // assert
         expect(key, 'Q2 2026');
@@ -72,7 +79,10 @@ void main() {
         const key = '2025';
 
         // act
-        final previous = SegmentPeriodKey.previous(key, isAnnual: true);
+        final previous = SegmentPeriodKey.previous(
+          key,
+          period: FinancialPeriod.annual,
+        );
 
         // assert
         expect(previous, '2024');
@@ -83,7 +93,10 @@ void main() {
         const key = 'Q2 2026';
 
         // act
-        final previous = SegmentPeriodKey.previous(key, isAnnual: false);
+        final previous = SegmentPeriodKey.previous(
+          key,
+          period: FinancialPeriod.quarterly,
+        );
 
         // assert
         expect(previous, 'Q2 2025');
@@ -94,7 +107,10 @@ void main() {
         const key = 'not-a-year';
 
         // act
-        final previous = SegmentPeriodKey.previous(key, isAnnual: true);
+        final previous = SegmentPeriodKey.previous(
+          key,
+          period: FinancialPeriod.annual,
+        );
 
         // assert
         expect(previous, isNull);
@@ -105,7 +121,10 @@ void main() {
         const key = 'Q2-2026';
 
         // act
-        final previous = SegmentPeriodKey.previous(key, isAnnual: false);
+        final previous = SegmentPeriodKey.previous(
+          key,
+          period: FinancialPeriod.quarterly,
+        );
 
         // assert
         expect(previous, isNull);
@@ -116,7 +135,10 @@ void main() {
         const key = 'Q2 abcd';
 
         // act
-        final previous = SegmentPeriodKey.previous(key, isAnnual: false);
+        final previous = SegmentPeriodKey.previous(
+          key,
+          period: FinancialPeriod.quarterly,
+        );
 
         // assert
         expect(previous, isNull);

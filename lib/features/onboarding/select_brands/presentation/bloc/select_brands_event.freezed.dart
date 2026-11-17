@@ -55,13 +55,13 @@ extension SelectBrandsEventPatterns on SelectBrandsEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( Started value)?  started,TResult Function( Updated value)?  updated,TResult Function( ToggleBrand value)?  toggleBrand,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( Started value)?  started,TResult Function( Updated value)?  updated,TResult Function( Reset value)?  reset,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case Started() when started != null:
 return started(_that);case Updated() when updated != null:
-return updated(_that);case ToggleBrand() when toggleBrand != null:
-return toggleBrand(_that);case _:
+return updated(_that);case Reset() when reset != null:
+return reset(_that);case _:
   return orElse();
 
 }
@@ -79,16 +79,13 @@ return toggleBrand(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( Started value)  started,required TResult Function( Updated value)  updated,required TResult Function( ToggleBrand value)  toggleBrand,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( Started value)  started,required TResult Function( Updated value)  updated,required TResult Function( Reset value)  reset,}){
 final _that = this;
 switch (_that) {
 case Started():
 return started(_that);case Updated():
-return updated(_that);case ToggleBrand():
-return toggleBrand(_that);case _:
-  throw StateError('Unexpected subclass');
-
-}
+return updated(_that);case Reset():
+return reset(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -102,13 +99,13 @@ return toggleBrand(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( Started value)?  started,TResult? Function( Updated value)?  updated,TResult? Function( ToggleBrand value)?  toggleBrand,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( Started value)?  started,TResult? Function( Updated value)?  updated,TResult? Function( Reset value)?  reset,}){
 final _that = this;
 switch (_that) {
 case Started() when started != null:
 return started(_that);case Updated() when updated != null:
-return updated(_that);case ToggleBrand() when toggleBrand != null:
-return toggleBrand(_that);case _:
+return updated(_that);case Reset() when reset != null:
+return reset(_that);case _:
   return null;
 
 }
@@ -125,12 +122,12 @@ return toggleBrand(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  started,TResult Function( List<Brand> selectedBrands)?  updated,TResult Function( Brand brand)?  toggleBrand,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( Sector? sector,  String sectorName,  List<Brand> selectedBrands)?  started,TResult Function( List<Brand> selectedBrands)?  updated,TResult Function()?  reset,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case Started() when started != null:
-return started();case Updated() when updated != null:
-return updated(_that.selectedBrands);case ToggleBrand() when toggleBrand != null:
-return toggleBrand(_that.brand);case _:
+return started(_that.sector,_that.sectorName,_that.selectedBrands);case Updated() when updated != null:
+return updated(_that.selectedBrands);case Reset() when reset != null:
+return reset();case _:
   return orElse();
 
 }
@@ -148,15 +145,12 @@ return toggleBrand(_that.brand);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  started,required TResult Function( List<Brand> selectedBrands)  updated,required TResult Function( Brand brand)  toggleBrand,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( Sector? sector,  String sectorName,  List<Brand> selectedBrands)  started,required TResult Function( List<Brand> selectedBrands)  updated,required TResult Function()  reset,}) {final _that = this;
 switch (_that) {
 case Started():
-return started();case Updated():
-return updated(_that.selectedBrands);case ToggleBrand():
-return toggleBrand(_that.brand);case _:
-  throw StateError('Unexpected subclass');
-
-}
+return started(_that.sector,_that.sectorName,_that.selectedBrands);case Updated():
+return updated(_that.selectedBrands);case Reset():
+return reset();}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -170,12 +164,12 @@ return toggleBrand(_that.brand);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  started,TResult? Function( List<Brand> selectedBrands)?  updated,TResult? Function( Brand brand)?  toggleBrand,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( Sector? sector,  String sectorName,  List<Brand> selectedBrands)?  started,TResult? Function( List<Brand> selectedBrands)?  updated,TResult? Function()?  reset,}) {final _that = this;
 switch (_that) {
 case Started() when started != null:
-return started();case Updated() when updated != null:
-return updated(_that.selectedBrands);case ToggleBrand() when toggleBrand != null:
-return toggleBrand(_that.brand);case _:
+return started(_that.sector,_that.sectorName,_that.selectedBrands);case Updated() when updated != null:
+return updated(_that.selectedBrands);case Reset() when reset != null:
+return reset();case _:
   return null;
 
 }
@@ -187,33 +181,77 @@ return toggleBrand(_that.brand);case _:
 
 
 class Started implements SelectBrandsEvent {
-  const Started();
+  const Started({this.sector, required this.sectorName, required final  List<Brand> selectedBrands}): _selectedBrands = selectedBrands;
   
 
+ final  Sector? sector;
+ final  String sectorName;
+ final  List<Brand> _selectedBrands;
+ List<Brand> get selectedBrands {
+  if (_selectedBrands is EqualUnmodifiableListView) return _selectedBrands;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_selectedBrands);
+}
 
 
+/// Create a copy of SelectBrandsEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$StartedCopyWith<Started> get copyWith => _$StartedCopyWithImpl<Started>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Started);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Started&&(identical(other.sector, sector) || other.sector == sector)&&(identical(other.sectorName, sectorName) || other.sectorName == sectorName)&&const DeepCollectionEquality().equals(other._selectedBrands, _selectedBrands));
 }
 
 
 @override
-int get hashCode => runtimeType.hashCode;
+int get hashCode => Object.hash(runtimeType,sector,sectorName,const DeepCollectionEquality().hash(_selectedBrands));
 
 @override
 String toString() {
-  return 'SelectBrandsEvent.started()';
+  return 'SelectBrandsEvent.started(sector: $sector, sectorName: $sectorName, selectedBrands: $selectedBrands)';
 }
 
 
 }
 
+/// @nodoc
+abstract mixin class $StartedCopyWith<$Res> implements $SelectBrandsEventCopyWith<$Res> {
+  factory $StartedCopyWith(Started value, $Res Function(Started) _then) = _$StartedCopyWithImpl;
+@useResult
+$Res call({
+ Sector? sector, String sectorName, List<Brand> selectedBrands
+});
 
 
+
+
+}
+/// @nodoc
+class _$StartedCopyWithImpl<$Res>
+    implements $StartedCopyWith<$Res> {
+  _$StartedCopyWithImpl(this._self, this._then);
+
+  final Started _self;
+  final $Res Function(Started) _then;
+
+/// Create a copy of SelectBrandsEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? sector = freezed,Object? sectorName = null,Object? selectedBrands = null,}) {
+  return _then(Started(
+sector: freezed == sector ? _self.sector : sector // ignore: cast_nullable_to_non_nullable
+as Sector?,sectorName: null == sectorName ? _self.sectorName : sectorName // ignore: cast_nullable_to_non_nullable
+as String,selectedBrands: null == selectedBrands ? _self._selectedBrands : selectedBrands // ignore: cast_nullable_to_non_nullable
+as List<Brand>,
+  ));
+}
+
+
+}
 
 /// @nodoc
 
@@ -290,76 +328,33 @@ as List<Brand>,
 /// @nodoc
 
 
-class ToggleBrand implements SelectBrandsEvent {
-  const ToggleBrand(this.brand);
+class Reset implements SelectBrandsEvent {
+  const Reset();
   
 
- final  Brand brand;
 
-/// Create a copy of SelectBrandsEvent
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-$ToggleBrandCopyWith<ToggleBrand> get copyWith => _$ToggleBrandCopyWithImpl<ToggleBrand>(this, _$identity);
+
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ToggleBrand&&(identical(other.brand, brand) || other.brand == brand));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Reset);
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,brand);
+int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'SelectBrandsEvent.toggleBrand(brand: $brand)';
+  return 'SelectBrandsEvent.reset()';
 }
 
 
 }
 
-/// @nodoc
-abstract mixin class $ToggleBrandCopyWith<$Res> implements $SelectBrandsEventCopyWith<$Res> {
-  factory $ToggleBrandCopyWith(ToggleBrand value, $Res Function(ToggleBrand) _then) = _$ToggleBrandCopyWithImpl;
-@useResult
-$Res call({
- Brand brand
-});
 
 
-$BrandCopyWith<$Res> get brand;
-
-}
-/// @nodoc
-class _$ToggleBrandCopyWithImpl<$Res>
-    implements $ToggleBrandCopyWith<$Res> {
-  _$ToggleBrandCopyWithImpl(this._self, this._then);
-
-  final ToggleBrand _self;
-  final $Res Function(ToggleBrand) _then;
-
-/// Create a copy of SelectBrandsEvent
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? brand = null,}) {
-  return _then(ToggleBrand(
-null == brand ? _self.brand : brand // ignore: cast_nullable_to_non_nullable
-as Brand,
-  ));
-}
-
-/// Create a copy of SelectBrandsEvent
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$BrandCopyWith<$Res> get brand {
-  
-  return $BrandCopyWith<$Res>(_self.brand, (value) {
-    return _then(_self.copyWith(brand: value));
-  });
-}
-}
 
 // dart format on

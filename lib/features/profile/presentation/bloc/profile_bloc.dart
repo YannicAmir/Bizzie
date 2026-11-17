@@ -5,7 +5,7 @@ import 'package:bizzie/features/profile/domain/usecases/get_profile_display_data
 import 'package:bizzie/features/profile/presentation/bloc/profile_event.dart';
 import 'package:bizzie/features/profile/presentation/bloc/profile_state.dart';
 import 'package:bizzie/features/profile/presentation/analytics/profile_tracker.dart';
-import 'package:bizzie/features/user/domain/interfaces/user_repository.dart';
+import 'package:bizzie/features/user/domain/usecases/watch_current_user_usecase.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
@@ -15,16 +15,16 @@ final _logger = BizzieLogger('ProfileBloc');
 @injectable
 class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   final GetProfileDisplayDataUseCase _getProfileDisplayDataUseCase;
-  final IUserRepository _userRepository;
+  final WatchCurrentUserUseCase _watchCurrentUserUseCase;
   final ProfileTracker _tracker;
   StreamSubscription? _userSubscription;
 
   ProfileBloc(
     this._getProfileDisplayDataUseCase,
-    this._userRepository,
+    this._watchCurrentUserUseCase,
     this._tracker,
   ) : super(const ProfileState.initial()) {
-    _userSubscription = _userRepository.userStream.listen(
+    _userSubscription = _watchCurrentUserUseCase().listen(
       (_) {
         add(const ProfileEvent.started());
       },

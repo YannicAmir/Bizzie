@@ -1,3 +1,4 @@
+import 'package:bizzie/core/enums/financial_period.dart';
 import 'package:bizzie/app/themes/app_colors.dart';
 import 'package:bizzie/features/company_profile/financial_statements/domain/models/balance_sheet.dart';
 import 'package:bizzie/features/company_profile/financial_statements/domain/models/cash_flow_statement.dart';
@@ -143,13 +144,17 @@ extension FinancialStatementsStateX on FinancialStatementsState {
 
   List<FinancialStatementTableRow> incomeRows({
     required String locale,
-    required bool isAnnual,
+    required FinancialPeriod period,
   }) {
     return _tableRows(
-      statements: isAnnual ? annualIncomeStatements : quarterlyIncomeStatements,
-      selectedDate: isAnnual
-          ? selectedAnnualIncomeDate
-          : selectedQuarterlyIncomeDate,
+      statements: switch (period) {
+        FinancialPeriod.annual => annualIncomeStatements,
+        FinancialPeriod.quarterly => quarterlyIncomeStatements,
+      },
+      selectedDate: switch (period) {
+        FinancialPeriod.annual => selectedAnnualIncomeDate,
+        FinancialPeriod.quarterly => selectedQuarterlyIncomeDate,
+      },
       dateOf: (statement) => statement.date,
       totalBaseOf: (statement) => statement.revenue,
       rowSpecs: _incomeRowSpecs,
@@ -159,13 +164,17 @@ extension FinancialStatementsStateX on FinancialStatementsState {
 
   List<FinancialStatementTableRow> balanceRows({
     required String locale,
-    required bool isAnnual,
+    required FinancialPeriod period,
   }) {
     return _tableRows(
-      statements: isAnnual ? annualBalanceSheets : quarterlyBalanceSheets,
-      selectedDate: isAnnual
-          ? selectedAnnualBalanceDate
-          : selectedQuarterlyBalanceDate,
+      statements: switch (period) {
+        FinancialPeriod.annual => annualBalanceSheets,
+        FinancialPeriod.quarterly => quarterlyBalanceSheets,
+      },
+      selectedDate: switch (period) {
+        FinancialPeriod.annual => selectedAnnualBalanceDate,
+        FinancialPeriod.quarterly => selectedQuarterlyBalanceDate,
+      },
       dateOf: (statement) => statement.date,
       totalBaseOf: (statement) => statement.totalAssets,
       rowSpecs: _balanceRowSpecs,
@@ -175,15 +184,17 @@ extension FinancialStatementsStateX on FinancialStatementsState {
 
   List<FinancialStatementTableRow> cashFlowRows({
     required String locale,
-    required bool isAnnual,
+    required FinancialPeriod period,
   }) {
     return _tableRows(
-      statements: isAnnual
-          ? annualCashFlowStatements
-          : quarterlyCashFlowStatements,
-      selectedDate: isAnnual
-          ? selectedAnnualCashFlowDate
-          : selectedQuarterlyCashFlowDate,
+      statements: switch (period) {
+        FinancialPeriod.annual => annualCashFlowStatements,
+        FinancialPeriod.quarterly => quarterlyCashFlowStatements,
+      },
+      selectedDate: switch (period) {
+        FinancialPeriod.annual => selectedAnnualCashFlowDate,
+        FinancialPeriod.quarterly => selectedQuarterlyCashFlowDate,
+      },
       dateOf: (statement) => statement.date,
       rowSpecs: _cashFlowRowSpecs,
       locale: locale,

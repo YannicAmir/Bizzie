@@ -128,12 +128,12 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( String ticker,  FreeCashFlowStats fcfStats,  List<ChartDataPoint> annualChartData,  List<ChartDataPoint> quarterlyChartData,  int historyLimit,  CompanyProfileDataOrigin dataOrigin,  bool isAnnualView,  DateTime? lastUpdated,  FreeCashFlowTabViewState? analyticsState)?  loaded,TResult Function( Failure failure)?  failure,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( String ticker,  FreeCashFlowStats fcfStats,  List<ChartDataPoint> annualChartData,  List<ChartDataPoint> quarterlyChartData,  int historyLimit,  CompanyProfileDataOrigin dataOrigin,  FinancialPeriod period,  DateTime? lastUpdated,  FreeCashFlowTabViewState? analyticsState)?  loaded,TResult Function( Failure failure)?  failure,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial();case _Loading() when loading != null:
 return loading();case CompanyFreeCashFlowLoaded() when loaded != null:
-return loaded(_that.ticker,_that.fcfStats,_that.annualChartData,_that.quarterlyChartData,_that.historyLimit,_that.dataOrigin,_that.isAnnualView,_that.lastUpdated,_that.analyticsState);case _Failure() when failure != null:
+return loaded(_that.ticker,_that.fcfStats,_that.annualChartData,_that.quarterlyChartData,_that.historyLimit,_that.dataOrigin,_that.period,_that.lastUpdated,_that.analyticsState);case _Failure() when failure != null:
 return failure(_that.failure);case _:
   return orElse();
 
@@ -152,12 +152,12 @@ return failure(_that.failure);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( String ticker,  FreeCashFlowStats fcfStats,  List<ChartDataPoint> annualChartData,  List<ChartDataPoint> quarterlyChartData,  int historyLimit,  CompanyProfileDataOrigin dataOrigin,  bool isAnnualView,  DateTime? lastUpdated,  FreeCashFlowTabViewState? analyticsState)  loaded,required TResult Function( Failure failure)  failure,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( String ticker,  FreeCashFlowStats fcfStats,  List<ChartDataPoint> annualChartData,  List<ChartDataPoint> quarterlyChartData,  int historyLimit,  CompanyProfileDataOrigin dataOrigin,  FinancialPeriod period,  DateTime? lastUpdated,  FreeCashFlowTabViewState? analyticsState)  loaded,required TResult Function( Failure failure)  failure,}) {final _that = this;
 switch (_that) {
 case _Initial():
 return initial();case _Loading():
 return loading();case CompanyFreeCashFlowLoaded():
-return loaded(_that.ticker,_that.fcfStats,_that.annualChartData,_that.quarterlyChartData,_that.historyLimit,_that.dataOrigin,_that.isAnnualView,_that.lastUpdated,_that.analyticsState);case _Failure():
+return loaded(_that.ticker,_that.fcfStats,_that.annualChartData,_that.quarterlyChartData,_that.historyLimit,_that.dataOrigin,_that.period,_that.lastUpdated,_that.analyticsState);case _Failure():
 return failure(_that.failure);case _:
   throw StateError('Unexpected subclass');
 
@@ -175,12 +175,12 @@ return failure(_that.failure);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( String ticker,  FreeCashFlowStats fcfStats,  List<ChartDataPoint> annualChartData,  List<ChartDataPoint> quarterlyChartData,  int historyLimit,  CompanyProfileDataOrigin dataOrigin,  bool isAnnualView,  DateTime? lastUpdated,  FreeCashFlowTabViewState? analyticsState)?  loaded,TResult? Function( Failure failure)?  failure,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( String ticker,  FreeCashFlowStats fcfStats,  List<ChartDataPoint> annualChartData,  List<ChartDataPoint> quarterlyChartData,  int historyLimit,  CompanyProfileDataOrigin dataOrigin,  FinancialPeriod period,  DateTime? lastUpdated,  FreeCashFlowTabViewState? analyticsState)?  loaded,TResult? Function( Failure failure)?  failure,}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial();case _Loading() when loading != null:
 return loading();case CompanyFreeCashFlowLoaded() when loaded != null:
-return loaded(_that.ticker,_that.fcfStats,_that.annualChartData,_that.quarterlyChartData,_that.historyLimit,_that.dataOrigin,_that.isAnnualView,_that.lastUpdated,_that.analyticsState);case _Failure() when failure != null:
+return loaded(_that.ticker,_that.fcfStats,_that.annualChartData,_that.quarterlyChartData,_that.historyLimit,_that.dataOrigin,_that.period,_that.lastUpdated,_that.analyticsState);case _Failure() when failure != null:
 return failure(_that.failure);case _:
   return null;
 
@@ -257,7 +257,7 @@ String toString() {
 
 
 class CompanyFreeCashFlowLoaded implements CompanyFreeCashFlowState {
-  const CompanyFreeCashFlowLoaded({required this.ticker, required this.fcfStats, required final  List<ChartDataPoint> annualChartData, required final  List<ChartDataPoint> quarterlyChartData, required this.historyLimit, required this.dataOrigin, this.isAnnualView = true, this.lastUpdated, this.analyticsState}): _annualChartData = annualChartData,_quarterlyChartData = quarterlyChartData;
+  const CompanyFreeCashFlowLoaded({required this.ticker, required this.fcfStats, required final  List<ChartDataPoint> annualChartData, required final  List<ChartDataPoint> quarterlyChartData, required this.historyLimit, required this.dataOrigin, this.period = FinancialPeriod.annual, this.lastUpdated, this.analyticsState}): _annualChartData = annualChartData,_quarterlyChartData = quarterlyChartData;
   
 
  final  String ticker;
@@ -278,7 +278,7 @@ class CompanyFreeCashFlowLoaded implements CompanyFreeCashFlowState {
 
  final  int historyLimit;
  final  CompanyProfileDataOrigin dataOrigin;
-@JsonKey() final  bool isAnnualView;
+@JsonKey() final  FinancialPeriod period;
  final  DateTime? lastUpdated;
  final  FreeCashFlowTabViewState? analyticsState;
 
@@ -292,16 +292,16 @@ $CompanyFreeCashFlowLoadedCopyWith<CompanyFreeCashFlowLoaded> get copyWith => _$
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CompanyFreeCashFlowLoaded&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.fcfStats, fcfStats) || other.fcfStats == fcfStats)&&const DeepCollectionEquality().equals(other._annualChartData, _annualChartData)&&const DeepCollectionEquality().equals(other._quarterlyChartData, _quarterlyChartData)&&(identical(other.historyLimit, historyLimit) || other.historyLimit == historyLimit)&&(identical(other.dataOrigin, dataOrigin) || other.dataOrigin == dataOrigin)&&(identical(other.isAnnualView, isAnnualView) || other.isAnnualView == isAnnualView)&&(identical(other.lastUpdated, lastUpdated) || other.lastUpdated == lastUpdated)&&(identical(other.analyticsState, analyticsState) || other.analyticsState == analyticsState));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CompanyFreeCashFlowLoaded&&(identical(other.ticker, ticker) || other.ticker == ticker)&&(identical(other.fcfStats, fcfStats) || other.fcfStats == fcfStats)&&const DeepCollectionEquality().equals(other._annualChartData, _annualChartData)&&const DeepCollectionEquality().equals(other._quarterlyChartData, _quarterlyChartData)&&(identical(other.historyLimit, historyLimit) || other.historyLimit == historyLimit)&&(identical(other.dataOrigin, dataOrigin) || other.dataOrigin == dataOrigin)&&(identical(other.period, period) || other.period == period)&&(identical(other.lastUpdated, lastUpdated) || other.lastUpdated == lastUpdated)&&(identical(other.analyticsState, analyticsState) || other.analyticsState == analyticsState));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,ticker,fcfStats,const DeepCollectionEquality().hash(_annualChartData),const DeepCollectionEquality().hash(_quarterlyChartData),historyLimit,dataOrigin,isAnnualView,lastUpdated,analyticsState);
+int get hashCode => Object.hash(runtimeType,ticker,fcfStats,const DeepCollectionEquality().hash(_annualChartData),const DeepCollectionEquality().hash(_quarterlyChartData),historyLimit,dataOrigin,period,lastUpdated,analyticsState);
 
 @override
 String toString() {
-  return 'CompanyFreeCashFlowState.loaded(ticker: $ticker, fcfStats: $fcfStats, annualChartData: $annualChartData, quarterlyChartData: $quarterlyChartData, historyLimit: $historyLimit, dataOrigin: $dataOrigin, isAnnualView: $isAnnualView, lastUpdated: $lastUpdated, analyticsState: $analyticsState)';
+  return 'CompanyFreeCashFlowState.loaded(ticker: $ticker, fcfStats: $fcfStats, annualChartData: $annualChartData, quarterlyChartData: $quarterlyChartData, historyLimit: $historyLimit, dataOrigin: $dataOrigin, period: $period, lastUpdated: $lastUpdated, analyticsState: $analyticsState)';
 }
 
 
@@ -312,7 +312,7 @@ abstract mixin class $CompanyFreeCashFlowLoadedCopyWith<$Res> implements $Compan
   factory $CompanyFreeCashFlowLoadedCopyWith(CompanyFreeCashFlowLoaded value, $Res Function(CompanyFreeCashFlowLoaded) _then) = _$CompanyFreeCashFlowLoadedCopyWithImpl;
 @useResult
 $Res call({
- String ticker, FreeCashFlowStats fcfStats, List<ChartDataPoint> annualChartData, List<ChartDataPoint> quarterlyChartData, int historyLimit, CompanyProfileDataOrigin dataOrigin, bool isAnnualView, DateTime? lastUpdated, FreeCashFlowTabViewState? analyticsState
+ String ticker, FreeCashFlowStats fcfStats, List<ChartDataPoint> annualChartData, List<ChartDataPoint> quarterlyChartData, int historyLimit, CompanyProfileDataOrigin dataOrigin, FinancialPeriod period, DateTime? lastUpdated, FreeCashFlowTabViewState? analyticsState
 });
 
 
@@ -329,7 +329,7 @@ class _$CompanyFreeCashFlowLoadedCopyWithImpl<$Res>
 
 /// Create a copy of CompanyFreeCashFlowState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? ticker = null,Object? fcfStats = null,Object? annualChartData = null,Object? quarterlyChartData = null,Object? historyLimit = null,Object? dataOrigin = null,Object? isAnnualView = null,Object? lastUpdated = freezed,Object? analyticsState = freezed,}) {
+@pragma('vm:prefer-inline') $Res call({Object? ticker = null,Object? fcfStats = null,Object? annualChartData = null,Object? quarterlyChartData = null,Object? historyLimit = null,Object? dataOrigin = null,Object? period = null,Object? lastUpdated = freezed,Object? analyticsState = freezed,}) {
   return _then(CompanyFreeCashFlowLoaded(
 ticker: null == ticker ? _self.ticker : ticker // ignore: cast_nullable_to_non_nullable
 as String,fcfStats: null == fcfStats ? _self.fcfStats : fcfStats // ignore: cast_nullable_to_non_nullable
@@ -337,8 +337,8 @@ as FreeCashFlowStats,annualChartData: null == annualChartData ? _self._annualCha
 as List<ChartDataPoint>,quarterlyChartData: null == quarterlyChartData ? _self._quarterlyChartData : quarterlyChartData // ignore: cast_nullable_to_non_nullable
 as List<ChartDataPoint>,historyLimit: null == historyLimit ? _self.historyLimit : historyLimit // ignore: cast_nullable_to_non_nullable
 as int,dataOrigin: null == dataOrigin ? _self.dataOrigin : dataOrigin // ignore: cast_nullable_to_non_nullable
-as CompanyProfileDataOrigin,isAnnualView: null == isAnnualView ? _self.isAnnualView : isAnnualView // ignore: cast_nullable_to_non_nullable
-as bool,lastUpdated: freezed == lastUpdated ? _self.lastUpdated : lastUpdated // ignore: cast_nullable_to_non_nullable
+as CompanyProfileDataOrigin,period: null == period ? _self.period : period // ignore: cast_nullable_to_non_nullable
+as FinancialPeriod,lastUpdated: freezed == lastUpdated ? _self.lastUpdated : lastUpdated // ignore: cast_nullable_to_non_nullable
 as DateTime?,analyticsState: freezed == analyticsState ? _self.analyticsState : analyticsState // ignore: cast_nullable_to_non_nullable
 as FreeCashFlowTabViewState?,
   ));

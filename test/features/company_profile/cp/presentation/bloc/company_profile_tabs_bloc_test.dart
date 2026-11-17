@@ -13,7 +13,7 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:bizzie/features/auth/domain/usecases/get_auth_stream.dart';
+import 'package:bizzie/features/auth/domain/usecases/get_auth_stream_usecase.dart';
 
 class MockGetTabLayoutUseCase extends Mock implements GetTabLayoutUseCase {}
 
@@ -21,10 +21,10 @@ class MockSetActiveTabUseCase extends Mock implements SetActiveTabUseCase {}
 
 class MockConfigService extends Mock implements IConfigService {}
 
-class MockGetAuthStream extends Mock implements GetAuthStream {}
+class MockGetAuthStreamUseCase extends Mock implements GetAuthStreamUseCase {}
 
-MockGetAuthStream stubbedGetAuthStream() {
-  final mock = MockGetAuthStream();
+MockGetAuthStreamUseCase stubbedGetAuthStream() {
+  final mock = MockGetAuthStreamUseCase();
   when(() => mock()).thenAnswer((_) => const Stream.empty());
   return mock;
 }
@@ -79,10 +79,7 @@ void main() {
       expect(bloc.state, const CompanyProfileTabsState.initial());
       expect(bloc.state.mainTabs, TabLayout.freeDefaultMainTabs);
       expect(bloc.state.moreTabs, TabLayout.freeDefaultMoreTabs);
-      expect(
-        bloc.state.bizziePlusTabs,
-        TabLayout.freeDefaultBizziePlusTabs,
-      );
+      expect(bloc.state.bizziePlusTabs, TabLayout.freeDefaultBizziePlusTabs);
       expect(bloc.state.isBizzieChatEnabled, isFalse);
       verifyNever(() => mockGetTabLayout(any()));
       bloc.close();
@@ -96,9 +93,7 @@ void main() {
       expect: () => const [loadedState],
       verify: (_) {
         verify(
-          () => mockGetTabLayout(
-            const GetTabLayoutParams(isSubscribed: false),
-          ),
+          () => mockGetTabLayout(const GetTabLayoutParams(isSubscribed: false)),
         ).called(1);
       },
     );
@@ -128,8 +123,7 @@ void main() {
       ],
       verify: (_) {
         verify(
-          () =>
-              mockGetTabLayout(const GetTabLayoutParams(isSubscribed: true)),
+          () => mockGetTabLayout(const GetTabLayoutParams(isSubscribed: true)),
         ).called(1);
       },
     );
@@ -147,10 +141,7 @@ void main() {
       verify: (bloc) {
         expect(bloc.state.mainTabs, TabLayout.freeDefaultMainTabs);
         expect(bloc.state.moreTabs, TabLayout.freeDefaultMoreTabs);
-        expect(
-          bloc.state.bizziePlusTabs,
-          TabLayout.freeDefaultBizziePlusTabs,
-        );
+        expect(bloc.state.bizziePlusTabs, TabLayout.freeDefaultBizziePlusTabs);
         expect(bloc.state.isBizzieChatEnabled, isTrue);
       },
     );
@@ -306,9 +297,7 @@ void main() {
       ],
       verify: (_) {
         verify(
-          () => mockGetTabLayout(
-            const GetTabLayoutParams(isSubscribed: false),
-          ),
+          () => mockGetTabLayout(const GetTabLayoutParams(isSubscribed: false)),
         ).called(1);
       },
     );
@@ -353,8 +342,7 @@ void main() {
       ],
       verify: (_) {
         verify(
-          () =>
-              mockGetTabLayout(const GetTabLayoutParams(isSubscribed: true)),
+          () => mockGetTabLayout(const GetTabLayoutParams(isSubscribed: true)),
         ).called(1);
       },
     );

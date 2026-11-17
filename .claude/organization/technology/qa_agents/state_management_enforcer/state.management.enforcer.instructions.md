@@ -13,7 +13,7 @@ Verify all changed files against every checklist item in `flutter.bloc.best.prac
 ### State class violations
 - State class not declared as `@freezed abstract class XxxState with _$XxxState`
 - State class not using `const factory XxxState.xxx(...)` factory constructors
-- Missing `initial`, `loading`, `loaded`, or `failure` factory variant for any async flow
+- Missing `initial`, `loading`, `loaded`, or `failure` factory variant for any async flow (`OnboardingBloc` exempt — see guidance §1)
 - `part '<feature>_state.freezed.dart'` directive missing from state file
 - State class using Equatable or `props` instead of `@freezed`
 
@@ -40,8 +40,8 @@ Verify all changed files against every checklist item in `flutter.bloc.best.prac
 - `package:flutter/widgets.dart` or any Flutter UI package imported in a BLoC file
 
 ### BlocProvider / widget wiring violations
-- `BlocProvider` created with `getIt<XxxBloc>()` but without the initial `..add(XxxEvent.started())` call where required
-- Feature-level BLoC provided too high in the widget tree (outside the feature's page)
+- `BlocProvider` created with `getIt<XxxBloc>()` but without the initial `..add(XxxEvent.started())` call where required (`OnboardingBloc` exempt — see guidance §7)
+- Feature-level BLoC provided too high in the widget tree (outside the feature's page) (`OnboardingBloc` exempt — see guidance §7)
 
 ## Enforcement Loop
 Follow the retry loop rules in `qa.enforcement.pattern.instructions.md`.

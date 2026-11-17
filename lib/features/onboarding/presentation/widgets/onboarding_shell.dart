@@ -1,28 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:bizzie/app/routes/app_routes.dart';
+import 'package:bizzie/shared/constants/app_constants.dart';
 
 class OnboardingShell extends StatelessWidget {
   final Widget child;
 
   const OnboardingShell({super.key, required this.child});
 
+  static const List<String> _progressSteps = [
+    AppRoutes.onboardingSectors,
+    AppRoutes.onboardingBrands,
+    AppRoutes.onboardingNotifications,
+    AppRoutes.onboardingExperience,
+    AppRoutes.onboardingFeatureHighlights,
+    AppRoutes.createAccount,
+    AppRoutes.onboardingBuildingProfile,
+    AppRoutes.onboardingProfileReady,
+  ];
+
   double _getProgressValue(String path) {
-    if (path == AppRoutes.onboardingName) return 1 / 14;
-    if (path == AppRoutes.onboardingWelcome) return 2 / 14;
-    if (path == AppRoutes.onboardingSectors) return 3 / 14;
-    if (path == AppRoutes.onboardingMeetBizzie) return 4 / 14;
-    if (path == AppRoutes.onboardingBrands) return 5 / 14;
-    if (path == AppRoutes.onboardingAnalyzing) return 6 / 14;
-    if (path == AppRoutes.onboardingFoundCompanies) return 7 / 14;
-    if (path == AppRoutes.onboardingAddingWatchlist) return 8 / 14;
-    if (path == AppRoutes.onboardingNotifications) return 9 / 14;
-    if (path == AppRoutes.onboardingExperience) return 10 / 14;
-    if (path == AppRoutes.onboardingFeatureHighlights) return 11 / 14;
-    if (path == AppRoutes.createAccount) return 12 / 14;
-    if (path == AppRoutes.onboardingBuildingProfile) return 13 / 14;
-    if (path == AppRoutes.onboardingProfileReady) return 14 / 14;
-    return 0.0;
+    final stepIndex = _progressSteps.indexOf(path);
+    if (stepIndex < 0) return 0.0;
+    return (stepIndex + 1) / _progressSteps.length;
   }
 
   @override
@@ -34,24 +34,35 @@ class OnboardingShell extends StatelessWidget {
       onTap: () => FocusScope.of(context).unfocus(),
       behavior: HitTestBehavior.opaque,
       child: Scaffold(
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         resizeToAvoidBottomInset: false,
         body: SafeArea(
           child: Column(
             children: [
-              TweenAnimationBuilder<double>(
-                tween: Tween<double>(begin: 0, end: progress),
-                duration: const Duration(milliseconds: 300),
-                curve: Curves.easeInOut,
-                builder: (context, value, _) {
-                  return LinearProgressIndicator(value: value);
-                },
-              ),
+              if (location != AppRoutes.onboardingFinishing)
+                _OnboardingProgressBar(progress: progress),
               Expanded(child: child),
             ],
           ),
         ),
       ),
+    );
+  }
+}
+
+class _OnboardingProgressBar extends StatelessWidget {
+  final double progress;
+
+  const _OnboardingProgressBar({required this.progress});
+
+  @override
+  Widget build(BuildContext context) {
+    return TweenAnimationBuilder<double>(
+      tween: Tween<double>(begin: 0, end: progress),
+      duration: AppConstants.onboardProgressAnimationDuration,
+      curve: Curves.easeInOut,
+      builder: (context, value, _) {
+        return LinearProgressIndicator(value: value);
+      },
     );
   }
 }

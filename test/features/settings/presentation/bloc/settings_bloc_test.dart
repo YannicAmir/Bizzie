@@ -1,22 +1,20 @@
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/core/usecase/usecase.dart';
-import 'package:bizzie/features/auth/domain/interfaces/i_auth_repository.dart';
-import 'package:bizzie/features/auth/domain/models/user_model.dart'
-    as auth_user;
+import 'package:bizzie/features/settings/domain/enums/guest_logout_choice.dart';
+import 'package:bizzie/features/settings/domain/enums/settings_link_type.dart';
+import 'package:bizzie/features/settings/domain/enums/sign_out_mode.dart';
 import 'package:bizzie/features/settings/domain/models/settings_display_data.dart';
 import 'package:bizzie/features/settings/domain/usecases/get_settings_display_data_usecase.dart';
 import 'package:bizzie/features/settings/domain/usecases/launch_url_usecase.dart';
 import 'package:bizzie/features/settings/domain/usecases/open_app_settings_usecase.dart';
-import 'package:bizzie/features/settings/domain/usecases/reset_password_usecase.dart';
 import 'package:bizzie/features/settings/domain/usecases/sign_out_usecase.dart';
 import 'package:bizzie/features/settings/domain/usecases/toggle_notifications_usecase.dart';
-import 'package:bizzie/features/settings/domain/usecases/get_subscription_status_usecase.dart';
 import 'package:bizzie/features/settings/presentation/bloc/settings_bloc.dart';
 import 'package:bizzie/features/settings/presentation/bloc/settings_event.dart';
 import 'package:bizzie/features/settings/presentation/bloc/settings_state.dart';
 import 'package:bizzie/features/subscription/domain/models/subscription_status.dart';
-import 'package:bizzie/features/user/domain/enums/investing_experience.dart';
-import 'package:bizzie/features/user/domain/models/user_model.dart';
+import 'package:bizzie/core/enums/investing_experience.dart';
+import 'package:bizzie/core/domain/models/user_model.dart';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -34,15 +32,8 @@ class MockLaunchUrlUseCase extends Mock implements LaunchUrlUseCase {}
 
 class MockSignOutUseCase extends Mock implements SignOutUseCase {}
 
-class MockResetPasswordUseCase extends Mock implements ResetPasswordUseCase {}
-
-class MockAuthRepository extends Mock implements IAuthRepository {}
-
 class MockOpenAppSettingsUseCase extends Mock
     implements OpenAppSettingsUseCase {}
-
-class MockGetSubscriptionStatusUseCase extends Mock
-    implements GetSubscriptionStatusUseCase {}
 
 class MockSettingsTracker extends Mock implements SettingsTracker {}
 
@@ -51,10 +42,7 @@ void main() {
   late MockToggleNotificationsUseCase mockToggleNotificationsUseCase;
   late MockLaunchUrlUseCase mockLaunchUrlUseCase;
   late MockSignOutUseCase mockSignOutUseCase;
-  late MockResetPasswordUseCase mockResetPasswordUseCase;
-  late MockAuthRepository mockAuthRepository;
   late MockOpenAppSettingsUseCase mockOpenAppSettingsUseCase;
-  late MockGetSubscriptionStatusUseCase mockGetSubscriptionStatusUseCase;
   late MockSettingsTracker mockTracker;
   late SettingsBloc settingsBloc;
 
@@ -63,10 +51,7 @@ void main() {
     mockToggleNotificationsUseCase = MockToggleNotificationsUseCase();
     mockLaunchUrlUseCase = MockLaunchUrlUseCase();
     mockSignOutUseCase = MockSignOutUseCase();
-    mockResetPasswordUseCase = MockResetPasswordUseCase();
-    mockAuthRepository = MockAuthRepository();
     mockOpenAppSettingsUseCase = MockOpenAppSettingsUseCase();
-    mockGetSubscriptionStatusUseCase = MockGetSubscriptionStatusUseCase();
     mockTracker = MockSettingsTracker();
 
     settingsBloc = SettingsBloc(
@@ -74,14 +59,14 @@ void main() {
       mockToggleNotificationsUseCase,
       mockLaunchUrlUseCase,
       mockSignOutUseCase,
-      mockResetPasswordUseCase,
-      mockAuthRepository,
       mockOpenAppSettingsUseCase,
-      mockGetSubscriptionStatusUseCase,
       mockTracker,
     );
 
     registerFallbackValue(NoParams());
+    registerFallbackValue(GuestLogoutChoice.dismissed);
+    registerFallbackValue(SignOutMode.standard);
+    registerFallbackValue(SettingsLinkType.privacyPolicy);
 
     when(() => mockTracker.logSettingsViewed()).thenAnswer((_) async {});
     when(
@@ -90,9 +75,15 @@ void main() {
     when(
       () => mockTracker.logNotificationsPermissionDenied(),
     ).thenAnswer((_) async {});
-    when(() => mockTracker.logPasswordResetClicked()).thenAnswer((_) async {});
-    when(() => mockTracker.logSignOutClicked()).thenAnswer((_) async {});
-    when(() => mockTracker.logSignOutSuccess()).thenAnswer((_) async {});
+    when(
+      () => mockTracker.logSignOutClicked(isGuest: any(named: 'isGuest')),
+    ).thenAnswer((_) async {});
+    when(
+      () => mockTracker.logSignOutSuccess(isGuest: any(named: 'isGuest')),
+    ).thenAnswer((_) async {});
+    when(
+      () => mockTracker.logGuestLogoutChoice(choice: any(named: 'choice')),
+    ).thenAnswer((_) async {});
     when(
       () => mockTracker.logSettingsLinkClicked(type: any(named: 'type')),
     ).thenAnswer((_) async {});
@@ -214,7 +205,8 @@ void main() {
         ).thenAnswer((_) async => const Right(null));
         return settingsBloc;
       },
-      act: (bloc) => bloc.add(const SettingsEvent.toggledNotifications(true)),
+      act: (bloc) =>
+          bloc.add(const SettingsEvent.toggledNotifications(enable: true)),
       expect: () => [
         SettingsState.loaded(
           tSettingsData.copyWith(isAppNotificationsEnabled: true),
@@ -230,7 +222,7 @@ void main() {
     );
 
     blocTest<SettingsBloc, SettingsState>(
-      'toggledNotifications_systemPermissionMissing_revertsStateAndLogsDenial',
+      'toggledNotifications_systemPermissionMissing_requestsPermissionPromptAndLogsDenial',
       seed: () => SettingsState.loaded(
         tSettingsData.copyWith(isSystemNotificationsEnabled: false),
       ),
@@ -238,15 +230,16 @@ void main() {
         // arrange
         return settingsBloc;
       },
-      act: (bloc) => bloc.add(const SettingsEvent.toggledNotifications(true)),
+      act: (bloc) =>
+          bloc.add(const SettingsEvent.toggledNotifications(enable: true)),
       expect: () => [
-        const SettingsState.failure(Failure.permission()),
         SettingsState.loaded(
           tSettingsData.copyWith(
             isSystemNotificationsEnabled: false,
             isAppNotificationsEnabled: false,
             favoriteSector: 'Technology',
           ),
+          shouldShowPermissionPrompt: true,
         ),
       ],
       verify: (_) {
@@ -254,6 +247,24 @@ void main() {
         verifyZeroInteractions(mockToggleNotificationsUseCase);
         verify(() => mockTracker.logNotificationsPermissionDenied()).called(1);
       },
+    );
+  });
+
+  group('Permission Prompt', () {
+    blocTest<SettingsBloc, SettingsState>(
+      'permissionPromptProcessed_promptPending_clearsPromptFlag',
+      seed: () =>
+          SettingsState.loaded(tSettingsData, shouldShowPermissionPrompt: true),
+      build: () => settingsBloc,
+      act: (bloc) => bloc.add(const SettingsEvent.permissionPromptProcessed()),
+      expect: () => [SettingsState.loaded(tSettingsData)],
+    );
+
+    blocTest<SettingsBloc, SettingsState>(
+      'permissionPromptProcessed_notLoaded_emitsNothing',
+      build: () => settingsBloc,
+      act: (bloc) => bloc.add(const SettingsEvent.permissionPromptProcessed()),
+      expect: () => [],
     );
   });
 
@@ -274,11 +285,104 @@ void main() {
       ],
       verify: (_) {
         // assert
-        verify(() => mockSignOutUseCase(any())).called(1);
-        verify(() => mockTracker.logSignOutClicked()).called(1);
-        verify(() => mockTracker.logSignOutSuccess()).called(1);
+        verify(() => mockSignOutUseCase(SignOutMode.standard)).called(1);
+        verify(() => mockTracker.logSignOutClicked(isGuest: false)).called(1);
+        verify(() => mockTracker.logSignOutSuccess(isGuest: false)).called(1);
       },
     );
+
+    blocTest<SettingsBloc, SettingsState>(
+      'signedOut_guestSuccess_logsGuestAccountType',
+      build: () {
+        // arrange
+        when(
+          () => mockSignOutUseCase(any()),
+        ).thenAnswer((_) async => const Right(null));
+        return settingsBloc;
+      },
+      seed: () => SettingsState.loaded(tSettingsData.copyWith(isGuest: true)),
+      act: (bloc) => bloc.add(const SettingsEvent.signedOut()),
+      expect: () => [
+        const SettingsState.loading(),
+        const SettingsState.initial(),
+      ],
+      verify: (_) {
+        // assert
+        verify(
+          () => mockSignOutUseCase(SignOutMode.deleteGuestAccount),
+        ).called(1);
+        verifyNever(() => mockSignOutUseCase(SignOutMode.standard));
+        verify(() => mockTracker.logSignOutClicked(isGuest: true)).called(1);
+        verify(() => mockTracker.logSignOutSuccess(isGuest: true)).called(1);
+      },
+    );
+
+    blocTest<SettingsBloc, SettingsState>(
+      'signedOut_registeredSuccess_logsRegisteredAccountType',
+      build: () {
+        // arrange
+        when(
+          () => mockSignOutUseCase(any()),
+        ).thenAnswer((_) async => const Right(null));
+        return settingsBloc;
+      },
+      seed: () => SettingsState.loaded(tSettingsData),
+      act: (bloc) => bloc.add(const SettingsEvent.signedOut()),
+      expect: () => [
+        const SettingsState.loading(),
+        const SettingsState.initial(),
+      ],
+      verify: (_) {
+        // assert
+        verify(() => mockSignOutUseCase(SignOutMode.standard)).called(1);
+        verifyNever(() => mockSignOutUseCase(SignOutMode.deleteGuestAccount));
+        verify(() => mockTracker.logSignOutClicked(isGuest: false)).called(1);
+        verify(() => mockTracker.logSignOutSuccess(isGuest: false)).called(1);
+      },
+    );
+
+    blocTest<SettingsBloc, SettingsState>(
+      'signedOut_useCaseFails_emitsLoadingAndFailureWithoutSuccessLog',
+      build: () {
+        // arrange
+        when(() => mockSignOutUseCase(any())).thenAnswer(
+          (_) async => const Left(Failure.server('Sign out failed')),
+        );
+        return settingsBloc;
+      },
+      seed: () => SettingsState.loaded(tSettingsData.copyWith(isGuest: true)),
+      act: (bloc) => bloc.add(const SettingsEvent.signedOut()),
+      expect: () => [
+        const SettingsState.loading(),
+        const SettingsState.failure(Failure.server('Sign out failed')),
+      ],
+      verify: (_) {
+        // assert
+        verify(() => mockTracker.logSignOutClicked(isGuest: true)).called(1);
+        verifyNever(
+          () => mockTracker.logSignOutSuccess(isGuest: any(named: 'isGuest')),
+        );
+      },
+    );
+  });
+
+  group('Guest Logout Prompt', () {
+    for (final choice in GuestLogoutChoice.values) {
+      blocTest<SettingsBloc, SettingsState>(
+        'guestLogoutPromptResolved_${choice.name}_logsChoiceWithoutStateChange',
+        build: () => settingsBloc,
+        act: (bloc) =>
+            bloc.add(SettingsEvent.guestLogoutPromptResolved(choice)),
+        expect: () => [],
+        verify: (_) {
+          // assert
+          verify(
+            () => mockTracker.logGuestLogoutChoice(choice: choice),
+          ).called(1);
+          verifyZeroInteractions(mockSignOutUseCase);
+        },
+      );
+    }
   });
 
   group('Other Actions', () {
@@ -291,35 +395,21 @@ void main() {
         ).thenAnswer((_) async => const Right(null));
         return settingsBloc;
       },
-      act: (bloc) => bloc.add(const SettingsEvent.openUrl('https://test.com')),
+      act: (bloc) => bloc.add(
+        const SettingsEvent.openUrl(
+          'https://test.com',
+          SettingsLinkType.privacyPolicy,
+        ),
+      ),
       expect: () => [],
       verify: (_) {
         // assert
         verify(() => mockLaunchUrlUseCase('https://test.com')).called(1);
         verify(
-          () => mockTracker.logSettingsLinkClicked(type: 'https://test.com'),
+          () => mockTracker.logSettingsLinkClicked(
+            type: SettingsLinkType.privacyPolicy,
+          ),
         ).called(1);
-      },
-    );
-
-    blocTest<SettingsBloc, SettingsState>(
-      'resetPassword_userLoggedIn_callsUseCaseAndLogs',
-      build: () {
-        // arrange
-        when(() => mockAuthRepository.currentUser).thenReturn(
-          const auth_user.UserModel(id: '123', email: 'test@test.com'),
-        );
-        when(
-          () => mockResetPasswordUseCase(any()),
-        ).thenAnswer((_) async => const Right(null));
-        return settingsBloc;
-      },
-      act: (bloc) => bloc.add(const SettingsEvent.resetPassword()),
-      expect: () => [],
-      verify: (_) {
-        // assert
-        verify(() => mockResetPasswordUseCase('test@test.com')).called(1);
-        verify(() => mockTracker.logPasswordResetClicked()).called(1);
       },
     );
 
@@ -364,7 +454,8 @@ void main() {
     blocTest<SettingsBloc, SettingsState>(
       'membershipClicked_logsEventWithStatus',
       build: () => settingsBloc,
-      act: (bloc) => bloc.add(const SettingsEvent.membershipClicked(true)),
+      act: (bloc) =>
+          bloc.add(const SettingsEvent.membershipClicked(isSubscribed: true)),
       expect: () => [],
       verify: (_) {
         verify(

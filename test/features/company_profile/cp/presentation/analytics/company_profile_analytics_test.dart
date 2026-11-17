@@ -1,6 +1,8 @@
 import 'package:bizzie/core/interfaces/i_analytics_service.dart';
 import 'package:bizzie/features/company_profile/cp/presentation/analytics/company_profile_analytics.dart';
 import 'package:bizzie/features/company_profile/cp/presentation/analytics/company_profile_session_summary.dart';
+import 'package:bizzie/features/company_profile/cp/presentation/enums/company_profile_tour_step.dart';
+import 'package:bizzie/features/company_profile/shared/presentation/enums/growth_band.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -375,6 +377,160 @@ void main() {
           await expectLater(future, completes);
         },
       );
+    });
+
+    group('tour', () {
+      test('logTourStarted_ticker_logsTourStartedWithTicker', () async {
+        // arrange
+        const tExpectedScreenName = 'company_profile';
+
+        // act
+        await sut.logTourStarted(ticker: tTicker);
+
+        // assert
+        verify(
+          () => mockAnalyticsService.logEvent(
+            name: 'cp_tour_started',
+            parameters: any(
+              that: allOf([
+                containsPair('ticker', tTicker),
+                containsPair('screen_name', tExpectedScreenName),
+              ]),
+              named: 'parameters',
+            ),
+          ),
+        ).called(1);
+      });
+
+      test('logTourStepViewed_eachStep_logsIndexAndName', () async {
+        // arrange
+        const tExpected = {
+          CompanyProfileTourStep.companyOverview: (1, 'company_overview'),
+          CompanyProfileTourStep.tabs: (2, 'tabs'),
+          CompanyProfileTourStep.revenueTab: (3, 'revenue_tab'),
+          CompanyProfileTourStep.revenueGrowth: (4, 'revenue_growth'),
+          CompanyProfileTourStep.stayUpdated: (5, 'stay_updated'),
+        };
+
+        for (final entry in tExpected.entries) {
+          // act
+          await sut.logTourStepViewed(step: entry.key);
+
+          // assert
+          verify(
+            () => mockAnalyticsService.logEvent(
+              name: 'cp_tour_step_viewed',
+              parameters: any(
+                that: allOf([
+                  containsPair('step_index', entry.value.$1),
+                  containsPair('step_name', entry.value.$2),
+                ]),
+                named: 'parameters',
+              ),
+            ),
+          ).called(1);
+        }
+      });
+
+      test('logTourCompleted_ticker_logsTourCompletedWithTicker', () async {
+        // arrange
+        final tExpectedTicker = tLongTicker.substring(0, 24);
+
+        // act
+        await sut.logTourCompleted(ticker: tLongTicker);
+
+        // assert
+        verify(
+          () => mockAnalyticsService.logEvent(
+            name: 'cp_tour_completed',
+            parameters: any(
+              that: containsPair('ticker', tExpectedTicker),
+              named: 'parameters',
+            ),
+          ),
+        ).called(1);
+      });
+
+      test('logTourSkipped_eachStep_logsIndexAndName', () async {
+        // arrange
+        const tExpected = {
+          CompanyProfileTourStep.companyOverview: (1, 'company_overview'),
+          CompanyProfileTourStep.tabs: (2, 'tabs'),
+          CompanyProfileTourStep.revenueTab: (3, 'revenue_tab'),
+          CompanyProfileTourStep.revenueGrowth: (4, 'revenue_growth'),
+          CompanyProfileTourStep.stayUpdated: (5, 'stay_updated'),
+        };
+
+        for (final entry in tExpected.entries) {
+          // act
+          await sut.logTourSkipped(step: entry.key);
+
+          // assert
+          verify(
+            () => mockAnalyticsService.logEvent(
+              name: 'cp_tour_skipped',
+              parameters: any(
+                that: allOf([
+                  containsPair('step_index', entry.value.$1),
+                  containsPair('step_name', entry.value.$2),
+                ]),
+                named: 'parameters',
+              ),
+            ),
+          ).called(1);
+        }
+      });
+
+      test('logTourRevenueGrowthBandShown_eachBand_logsBandAndYears', () async {
+        // arrange
+        const tExpected = {
+          GrowthBand.negative: 'negative',
+          GrowthBand.low: 'low',
+          GrowthBand.moderate: 'moderate',
+          GrowthBand.high: 'high',
+          GrowthBand.turnedPositive: 'turned_positive',
+          GrowthBand.turnedNegative: 'turned_negative',
+        };
+        const tYears = 5;
+
+        for (final entry in tExpected.entries) {
+          // act
+          await sut.logTourRevenueGrowthBandShown(
+            band: entry.key,
+            years: tYears,
+          );
+
+          // assert
+          verify(
+            () => mockAnalyticsService.logEvent(
+              name: 'cp_tour_revenue_growth_band_shown',
+              parameters: any(
+                that: allOf([
+                  containsPair('band', entry.value),
+                  containsPair('years', tYears),
+                ]),
+                named: 'parameters',
+              ),
+            ),
+          ).called(1);
+        }
+      });
+
+      test('logTourStarted_serviceThrowsException_catchesGracefully', () async {
+        // arrange
+        when(
+          () => mockAnalyticsService.logEvent(
+            name: any(named: 'name'),
+            parameters: any(named: 'parameters'),
+          ),
+        ).thenThrow(Exception('Analytics failure'));
+
+        // act
+        final future = sut.logTourStarted(ticker: tTicker);
+
+        // assert
+        await expectLater(future, completes);
+      });
     });
   });
 }

@@ -140,6 +140,67 @@ void main() {
       });
     });
 
+    group('completedPurchaseType', () {
+      test(
+        'completedPurchaseType_onLoadedWithSuccessOverrideAndPackageType_returnsPackageType',
+        () {
+          // arrange
+          final state = tLoadedState.copyWith(
+            isLocalSuccessOverride: true,
+            purchasedPackageType: SubscriptionPackageType.annual,
+          );
+
+          // act
+          final result = state.completedPurchaseType;
+
+          // assert
+          expect(result, equals(SubscriptionPackageType.annual));
+        },
+      );
+
+      test(
+        'completedPurchaseType_onLoadedWithoutSuccessOverride_returnsNull',
+        () {
+          // arrange
+          final state = tLoadedState.copyWith(
+            isLocalSuccessOverride: false,
+            purchasedPackageType: SubscriptionPackageType.annual,
+          );
+
+          // act
+          final result = state.completedPurchaseType;
+
+          // assert
+          expect(result, isNull);
+        },
+      );
+
+      test(
+        'completedPurchaseType_onLoadedWithSuccessOverrideAndNoPackageType_returnsNull',
+        () {
+          // arrange
+          final state = tLoadedState.copyWith(isLocalSuccessOverride: true);
+
+          // act
+          final result = state.completedPurchaseType;
+
+          // assert
+          expect(result, isNull);
+        },
+      );
+
+      test('completedPurchaseType_onNonLoadedState_returnsNull', () {
+        // arrange
+        final state = SubscriptionState.loading(status: tInitialStatus);
+
+        // act
+        final result = state.completedPurchaseType;
+
+        // assert
+        expect(result, isNull);
+      });
+    });
+
     group('discountPercentageText', () {
       test('discountPercentageText_onLoadedState_returnsFormattedText', () {
         // act
@@ -159,6 +220,72 @@ void main() {
         // assert
         expect(result, isEmpty);
       });
+    });
+
+    group('discountSavingsPercentageOrNull', () {
+      test(
+        'discountSavingsPercentageOrNull_onLoadedStateWithDiscount_returnsPercentage',
+        () {
+          // act
+          final result = tLoadedState.discountSavingsPercentageOrNull;
+
+          // assert
+          expect(result, equals(40));
+        },
+      );
+
+      test(
+        'discountSavingsPercentageOrNull_onLoadedStateWithoutDiscount_returnsNull',
+        () {
+          // arrange
+          final state = tLoadedState.copyWith(
+            offerings: tOffering.copyWith(
+              availablePackages: [tAnnualPackage, tMonthlyPackage],
+            ),
+          );
+
+          // act
+          final result = state.discountSavingsPercentageOrNull;
+
+          // assert
+          expect(result, isNull);
+        },
+      );
+
+      test('discountSavingsPercentageOrNull_onNonLoadedState_returnsNull', () {
+        // arrange
+        final state = SubscriptionState.loading(status: tInitialStatus);
+
+        // act
+        final result = state.discountSavingsPercentageOrNull;
+
+        // assert
+        expect(result, isNull);
+      });
+    });
+
+    group('discountPercentageValueText', () {
+      test('discountPercentageValueText_onLoadedState_returnsUnsignedText', () {
+        // act
+        final result = tLoadedState.discountPercentageValueText;
+
+        // assert
+        expect(result, equals('40%'));
+      });
+
+      test(
+        'discountPercentageValueText_onNonLoadedState_returnsEmptyString',
+        () {
+          // arrange
+          final state = SubscriptionState.loading(status: tInitialStatus);
+
+          // act
+          final result = state.discountPercentageValueText;
+
+          // assert
+          expect(result, isEmpty);
+        },
+      );
     });
 
     group('annualSavingsText', () {

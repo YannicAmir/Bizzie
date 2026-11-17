@@ -1,3 +1,4 @@
+import 'package:bizzie/core/enums/financial_period.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'company_fcps_event.freezed.dart';
@@ -16,10 +17,11 @@ sealed class CompanyFcpsEvent with _$CompanyFcpsEvent {
   const factory CompanyFcpsEvent.tabHidden() = TabHidden;
   const factory CompanyFcpsEvent.appBackgrounded() = AppBackgrounded;
   const factory CompanyFcpsEvent.appForegrounded() = AppForegrounded;
-  const factory CompanyFcpsEvent.periodChanged({required bool isAnnual}) =
-      PeriodChanged;
+  const factory CompanyFcpsEvent.periodChanged({
+    required FinancialPeriod period,
+  }) = PeriodChanged;
   const factory CompanyFcpsEvent.viewAllTapped({
-    required bool isAnnual,
+    required FinancialPeriod period,
     required bool isChart,
   }) = ViewAllTapped;
   const factory CompanyFcpsEvent.reset() = Reset;

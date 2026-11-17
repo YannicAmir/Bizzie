@@ -1,3 +1,4 @@
+import 'package:bizzie/core/enums/financial_period.dart';
 import 'package:bizzie/core/error/failures.dart';
 import 'package:bizzie/features/company_profile/shared/domain/models/chart_data_point.dart';
 import 'package:bizzie/features/company_profile/eps/domain/models/eps_stats.dart';
@@ -19,7 +20,7 @@ abstract class CompanyEpsState with _$CompanyEpsState {
     required List<ChartDataPoint> quarterlyChartData,
     required int historyLimit,
     required CompanyProfileDataOrigin dataOrigin,
-    @Default(true) bool isAnnualView,
+    @Default(FinancialPeriod.annual) FinancialPeriod period,
     DateTime? lastUpdated,
     EpsTabViewState? analyticsState,
   }) = CompanyEpsLoaded;

@@ -1,9 +1,11 @@
+import 'package:bizzie/core/enums/financial_period.dart';
 import 'package:bizzie/features/company_profile/free_cash_flow/presentation/bloc/company_free_cash_flow_bloc.dart';
 import 'package:bizzie/features/company_profile/free_cash_flow/presentation/bloc/company_free_cash_flow_event.dart';
 import 'package:bizzie/features/company_profile/free_cash_flow/presentation/bloc/company_free_cash_flow_state.dart';
 import 'package:bizzie/features/company_profile/free_cash_flow/presentation/extensions/company_free_cash_flow_state_extensions.dart';
 import 'package:bizzie/features/company_profile/shared/domain/enums/company_profile_tab.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/extensions/company_profile_tab_x.dart';
+import 'package:bizzie/features/company_profile/shared/presentation/models/currency_metric_labels.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/widgets/company_profile_error_state.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/widgets/company_profile_loading_state.dart';
 import 'package:bizzie/features/company_profile/shared/presentation/widgets/currency_metric_tab_content.dart';
@@ -11,6 +13,13 @@ import 'package:bizzie/features/company_profile/shared/presentation/widgets/peri
 import 'package:bizzie/features/company_profile/shared/presentation/widgets/tab_visibility_observer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+const _labels = CurrencyMetricLabels(
+  metricLabel: 'Free Cash Flow',
+  modalMetricLabel: 'FCF',
+  ttmTitle: 'FCF TTM',
+  chartKeyPrefix: 'fcf_chart',
+);
 
 const Widget _loadingView = CompanyProfileLoadingState(
   message: 'Loading free cash flow',
@@ -38,9 +47,12 @@ class _FreeCashFlowTabState extends State<FreeCashFlowTab>
   @override
   bool get wantKeepAlive => true;
 
-  void _onPeriodChanged(BuildContext context, {required bool isAnnual}) {
+  void _onPeriodChanged(
+    BuildContext context, {
+    required FinancialPeriod period,
+  }) {
     context.read<CompanyFreeCashFlowBloc>().add(
-      CompanyFreeCashFlowEvent.periodChanged(isAnnual: isAnnual),
+      CompanyFreeCashFlowEvent.periodChanged(period: period),
     );
   }
 
@@ -75,43 +87,40 @@ class _FreeCashFlowTabState extends State<FreeCashFlowTab>
             ),
             loaded: (loadedState) {
               final stats = loadedState.fcfStats;
-              final isAnnual = loadedState.isAnnualView;
+              final period = loadedState.period;
               final chartData = loadedState.activeChartData;
 
               if (chartData.isEmpty) {
                 return PeriodMetricEmptyView(
-                  isAnnual: isAnnual,
+                  period: period,
                   message: 'No Free Cash Flow data available for this period.',
-                  onPeriodChanged: (isAnnual) =>
-                      _onPeriodChanged(context, isAnnual: isAnnual),
+                  onPeriodChanged: (period) =>
+                      _onPeriodChanged(context, period: period),
                 );
               }
 
               return CurrencyMetricTabContent(
-                isAnnual: isAnnual,
+                period: period,
                 chartData: chartData,
                 annualData: stats.annualFcf,
                 quarterlyData: stats.quarterlyFcf,
                 currency: stats.reportedCurrency,
                 originalCurrency: stats.originalCurrency,
                 historyLimit: loadedState.historyLimit,
-                metricLabel: 'Free Cash Flow',
-                modalMetricLabel: 'FCF',
-                ttmTitle: 'FCF TTM',
-                chartKeyPrefix: 'fcf_chart',
-                onPeriodChanged: (isAnnual) =>
-                    _onPeriodChanged(context, isAnnual: isAnnual),
+                labels: _labels,
+                onPeriodChanged: (period) =>
+                    _onPeriodChanged(context, period: period),
                 onChartAnalyticsTap: () =>
                     context.read<CompanyFreeCashFlowBloc>().add(
                       CompanyFreeCashFlowEvent.viewAllTapped(
-                        isAnnual: isAnnual,
+                        period: period,
                         isChart: true,
                       ),
                     ),
                 onTableAnalyticsTap: () =>
                     context.read<CompanyFreeCashFlowBloc>().add(
                       CompanyFreeCashFlowEvent.viewAllTapped(
-                        isAnnual: isAnnual,
+                        period: period,
                         isChart: false,
                       ),
                     ),

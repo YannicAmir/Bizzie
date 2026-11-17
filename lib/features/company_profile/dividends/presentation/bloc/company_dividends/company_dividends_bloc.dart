@@ -6,7 +6,7 @@ import 'package:bizzie/core/interfaces/i_config_service.dart';
 import 'package:bizzie/core/interfaces/i_time_provider.dart';
 import 'package:bizzie/core/usecase/usecase.dart';
 import 'package:bizzie/core/logging/bizzie_logger.dart';
-import 'package:bizzie/features/auth/domain/usecases/get_auth_stream.dart';
+import 'package:bizzie/features/auth/domain/usecases/get_auth_stream_usecase.dart';
 import 'package:bizzie/features/auth/presentation/bloc/auth_session_reset_mixin.dart';
 import 'package:bizzie/features/company_profile/dividends/domain/models/dividend_info.dart';
 import 'package:bizzie/features/company_profile/dividends/domain/usecases/get_dividend_info_usecase.dart';
@@ -51,7 +51,7 @@ class CompanyDividendsBloc
     this._analytics,
     this._watchActiveTabUseCase,
     this._timeProvider,
-    GetAuthStream getAuthStream,
+    GetAuthStreamUseCase getAuthStream,
   ) : super(const CompanyDividendsState.initial()) {
     on<LoadRequested>(_onLoadRequested, transformer: restartable());
     on<StalenessCheckRequested>(
